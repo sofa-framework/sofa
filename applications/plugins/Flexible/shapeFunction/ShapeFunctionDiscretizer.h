@@ -76,12 +76,12 @@ public:
 
     typedef unsigned int IndT;
     typedef defaulttype::Image<IndT> IndTypes;
-    typedef helper::WriteAccessor<Data< IndTypes > > waInd;
+    typedef helper::WriteOnlyAccessor<Data< IndTypes > > waInd;
     Data< IndTypes > f_index;
 
     typedef double DistT;
     typedef defaulttype::Image<DistT> DistTypes;
-    typedef helper::WriteAccessor<Data< DistTypes > > waDist;
+    typedef helper::WriteOnlyAccessor<Data< DistTypes > > waDist;
     Data< DistTypes > f_w;
     //@}
 

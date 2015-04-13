@@ -128,7 +128,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 
             defaulttype::Mat<3,3,Real> block;
 
-            for( int w=0 ; w<it->second.size() ; ++w )
+            for( unsigned int w=0 ; w<it->second.size() ; ++w )
             {
                 const unsigned i = it->second[w];
 

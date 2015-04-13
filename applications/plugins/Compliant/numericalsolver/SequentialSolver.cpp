@@ -470,7 +470,7 @@ bool SequentialSolver::LocalSubKKT::projected_primal_and_bilateral( AssembledSys
                 static rmat tmp; // try to improve matrix allocation
 
                 tmp = Q_unil.transpose() * sys.J * P;
-                for(unsigned i = 0; i < tmp.rows(); ++i)
+                for( rmat::Index i = 0; i < tmp.rows(); ++i)
                 {
                     res.J.startVec( i );
                     for(rmat::InnerIterator it(tmp, i); it; ++it) {

@@ -11,7 +11,7 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(Benchmark);
+SOFA_DECL_CLASS(Benchmark)
 int BenchmarkClass = core::RegisterObject("A benchmark for iterative solvers.").add< Benchmark >();
 
 Benchmark::Benchmark()
@@ -28,11 +28,11 @@ Benchmark::Benchmark()
 
 void Benchmark::clear() {
 	
-	edit(primal)->clear();
-	edit(dual)->clear();
-	edit(complementarity)->clear();
-	edit(optimality)->clear();
-	edit(duration)->clear();
+    editOnly(primal)->clear();
+    editOnly(dual)->clear();
+    editOnly(complementarity)->clear();
+    editOnly(optimality)->clear();
+    editOnly(duration)->clear();
 	
 }
 
@@ -45,9 +45,9 @@ void Benchmark::push(const vec& primal,
 	real err_dual = dual.cwiseMin( vec::Zero(n) ).norm() / n;
 	real err_compl = std::abs(primal.dot(dual)) / n;
 	
-	edit(this->primal)->push_back(err_primal);
-	edit(this->dual)->push_back(err_dual);
-	edit(this->complementarity)->push_back(err_compl);
+    editOnly(this->primal)->push_back(err_primal);
+    editOnly(this->dual)->push_back(err_dual);
+    editOnly(this->complementarity)->push_back(err_compl);
 
 }
 

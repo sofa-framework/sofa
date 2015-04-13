@@ -141,8 +141,8 @@ protected:
         rmat Me(3*nb,3*nb);
         Me.reserve(3*nb);
         dofs->resize(nb);
-        helper::WriteAccessor<Data<VecCoord> > rpos ( dofs->writeRestPositions() );
-        helper::WriteAccessor<Data<VecCoord> > pos ( dofs->writePositions() );
+        helper::WriteOnlyAccessor<Data<VecCoord> > rpos ( dofs->writeOnlyRestPositions() );
+        helper::WriteOnlyAccessor<Data<VecCoord> > pos ( dofs->writeOnlyPositions() );
 
         Real voxelVol = inT->getScale()[0]*inT->getScale()[1]*inT->getScale()[2];
         nb=0;
@@ -176,7 +176,7 @@ protected:
             {
                 MySPtr<rmat> J( convertSPtr<rmat>( (*js)[i] ) );
                 rmat JTMe=J->transpose()*Me;
-                MassMatrix& M = *massMatrix.beginEdit();
+                MassMatrix& M = *massMatrix.beginWriteOnly();
                 M.compressedMatrix=JTMe*(*J);
                 if( f_lumping.getValue()==BLOCK_LUMPING )
                 {
@@ -190,7 +190,7 @@ protected:
                     //             for (int c=0; c<nbBlocks; ++c)
                     //                 nM.compressedMatrix.coeffRef(r*M.Nout+n,r*M.Nout+m) += M(r*M.Nout+n,c*M.Nin+m);
                     // keep only diagonal block -> symmetric mass
-                    for (int r=0; r<nbBlocks; ++r)
+                    for (unsigned int r=0; r<nbBlocks; ++r)
                         for (int n=0; n<M.Nout; ++n)
                             for (int m=0; m<M.Nin; ++m)
                                     nM.compressedMatrix.coeffRef(r*M.Nout+n,r*M.Nout+m) += M(r*M.Nout+n,r*M.Nin+m);

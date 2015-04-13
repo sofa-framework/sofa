@@ -51,7 +51,7 @@ void MechanicalObject<F331Types>::init()
         this->resize(nbp);
 
         Data<VecCoord>* x_wAData = this->write(VecCoordId::position());
-        VecCoord& x_wA = *x_wAData->beginEdit();
+        VecCoord& x_wA = *x_wAData->beginWriteOnly();
         for(unsigned int i=0;i<nbp;i++) DataTypes::set(x_wA[i], sampler->getSample(i)[0], sampler->getSample(i)[1], sampler->getSample(i)[2]);
 
         VecCoord *x0_edit = x0.beginEdit();
@@ -75,7 +75,7 @@ void MechanicalObject<F332Types>::init()
         this->resize(nbp);
 
         Data<VecCoord>* x_wAData = this->write(VecCoordId::position());
-        VecCoord& x_wA = *x_wAData->beginEdit();
+        VecCoord& x_wA = *x_wAData->beginWriteOnly();
         for(unsigned int i=0;i<nbp;i++) DataTypes::set(x_wA[i], sampler->getSample(i)[0], sampler->getSample(i)[1], sampler->getSample(i)[2]);
 
         VecCoord *x0_edit = x0.beginEdit();

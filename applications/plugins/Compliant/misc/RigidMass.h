@@ -205,8 +205,8 @@ public:
 	                    DataVecDeriv& _f, 
 	                    const DataVecDeriv& _dx, 
                         SReal factor) {
-		helper::WriteAccessor< DataVecDeriv >  f(_f);
-		helper::ReadAccessor< DataVecDeriv >  dx(_dx);
+        helper::WriteAccessor< DataVecDeriv > f(_f);
+        helper::ReadAccessor< DataVecDeriv > dx(_dx);
 
 		for(unsigned i = 0, n = this->mstate->getSize(); i < n; ++i) {
 			const unsigned index = clamp(i);

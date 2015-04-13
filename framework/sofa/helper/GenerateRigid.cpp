@@ -165,7 +165,34 @@ void generateRigid(Rigid3Mass& mass, Vector3& center, const sofa::helper::io::Me
     mass.inertiaMatrix /= mass.mass;
 }
 
+void generateRigid( defaulttype::Rigid3Mass& mass, defaulttype::Vector3& center, helper::io::Mesh* mesh
+                                  , SReal density
+                                  , const defaulttype::Vector3& scale
+                                  , const defaulttype::Vector3& rotation /*Euler angles*/
+                                  )
+{
+    if( scale != Vector3(1, 1, 1) ) {
+        for(size_t i = 0, n = mesh->getVertices().size(); i < n; ++i) {
+            mesh->getVertices()[i] = mesh->getVertices()[i].linearProduct(scale);
+        }
+    }
 
+    if( rotation != Vector3(0,0,0) ) {
+
+        Quaternion q = sofa::helper::Quater<SReal>::createQuaterFromEuler( rotation*M_PI/180.0 );
+
+        for(size_t i = 0, n = mesh->getVertices().size(); i < n; ++i) {
+            mesh->getVertices()[i] = q.rotate( mesh->getVertices()[i] );
+        }
+    }
+
+    generateRigid( mass, center, mesh );
+
+    mass.recalc();
+
+    mass.mass *= density;
+
+}
 
 bool generateRigid(Rigid3Mass& mass, Vector3& center, const std::string& meshFilename
                    , SReal density
@@ -180,46 +207,43 @@ bool generateRigid(Rigid3Mass& mass, Vector3& center, const std::string& meshFil
         return false;
     }
 
-    if( scale != Vector3(1, 1, 1) ) {
-        for(unsigned i = 0, n = mesh->getVertices().size(); i < n; ++i) {
-            mesh->getVertices()[i] = mesh->getVertices()[i].linearProduct(scale);
-        }
-    }
-
-    if( rotation != Vector3(0,0,0) ) {
-
-        Quaternion q = sofa::helper::Quater<SReal>::createQuaterFromEuler( rotation*M_PI/180.0 );
-
-        for(unsigned i = 0, n = mesh->getVertices().size(); i < n; ++i) {
-            mesh->getVertices()[i] = q.rotate( mesh->getVertices()[i] );
-        }
-    }
-
-    generateRigid( mass, center, mesh );
-
-    mass.recalc();
-
-    mass.mass *= density;
+    generateRigid(mass, center, mesh, density, scale, rotation);
 
     return true;
 }
 
 
 
-bool SOFA_HELPER_API generateRigid( GenerateRigidInfo& res
+bool generateRigid( GenerateRigidInfo& res
                                   , const std::string& meshFilename
+                                  , SReal density
+                                  , const defaulttype::Vector3& scale
+                                  )
+{
+    sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create( meshFilename );
+    if (mesh == NULL)
+    {
+        std::cerr << "ERROR loading mesh "<<meshFilename<<std::endl;
+        return false;
+    }
+    generateRigid(res, mesh, meshFilename, density, scale);
+    return true;
+}
+
+void generateRigid( GenerateRigidInfo& res
+                                  , io::Mesh *mesh
+                                  , std::string const& meshName
                                   , SReal density
                                   , const defaulttype::Vector3& scale
                                   )
 {
     Rigid3Mass rigidMass;
 
-    if( !generateRigid( rigidMass, res.com, meshFilename, density, scale ) )
-        return false;
+    generateRigid( rigidMass, res.com, mesh, density, scale );
 
     if( rigidMass.mass < 0 )
     {
-        std::cerr<<"WARNING: generateRigid: are normals inverted? "<<meshFilename<<std::endl;
+        std::cerr<<"WARNING: generateRigid: are normals inverted? "<<meshName<<std::endl;
         rigidMass.mass = -rigidMass.mass;
         rigidMass.inertiaMatrix = -rigidMass.inertiaMatrix;
     }
@@ -253,8 +277,6 @@ bool SOFA_HELPER_API generateRigid( GenerateRigidInfo& res
         res.inertia_diagonal[2] = res.inertia[2][2];
         res.inertia_rotation.clear();
     }
-
-    return true;
 }
 
 

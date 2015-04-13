@@ -721,7 +721,7 @@ namespace mass
 //{
 //    if (this->totalMass.getValue()>0 && this->mstate!=NULL)
 //    {
-//        MassType* m = this->mass.beginEdit();
+//        MassType* m = this->mass.beginWriteOnly();
 //        *m = ((Real)this->totalMass.getValue() / this->mstate->getSize());
 //        this->mass.endEdit();
 //    }
@@ -737,7 +737,7 @@ namespace mass
 //{
 //    if (this->totalMass.getValue()>0 && this->mstate!=NULL)
 //    {
-//        MassType* m = this->mass.beginEdit();
+//        MassType* m = this->mass.beginWriteOnly();
 //        *m = ((Real)this->totalMass.getValue() / this->mstate->getSize());
 //        this->mass.endEdit();
 //    }

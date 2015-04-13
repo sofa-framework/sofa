@@ -145,7 +145,7 @@ public:
         if(this->assemble.getValue()) updateJ();
 
         // clear forces
-        helper::WriteAccessor<Data< OutVecDeriv > >  f(*this->toModel->write(core::VecDerivId::force())); for(unsigned int i=0;i<f.size();i++) f[i].clear();
+        helper::WriteOnlyAccessor<Data< OutVecDeriv > > f(*this->toModel->write(core::VecDerivId::force())); for(unsigned int i=0;i<f.size();i++) f[i].clear();
 
         apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel->read(core::ConstVecCoordId::position()));
         applyJ(NULL, *this->toModel->write(core::VecDerivId::velocity()), *this->fromModel->read(core::ConstVecDerivId::velocity()));
@@ -187,7 +187,7 @@ public:
         jacobianBlock.resize(in.size());
         initJacobianBlock(jacobianBlock);
 
-        OutVecDeriv&  out = *dOut.beginEdit();
+        OutVecDeriv& out = *dOut.beginWriteOnly();
 #ifdef _OPENMP
 		#pragma omp parallel for
 #endif
@@ -207,8 +207,8 @@ public:
         helper::ReadAccessor<Data<OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));
         if(inpos.size()!=outpos.size()) this->resizeOut();
 
-        OutVecCoord&  out = *dOut.beginEdit();
-        const InVecCoord&  in = dIn.getValue();
+        OutVecCoord& out = *dOut.beginWriteOnly();
+        const InVecCoord& in = dIn.getValue();
 
 #ifdef _OPENMP
         #pragma omp parallel for
@@ -228,8 +228,8 @@ public:
         if(this->assemble.getValue())  eigenJacobian.mult(dOut,dIn);
         else
         {
-            OutVecDeriv&  out = *dOut.beginEdit();
-            const InVecDeriv&  in = dIn.getValue();
+            OutVecDeriv& out = *dOut.beginWriteOnly();
+            const InVecDeriv& in = dIn.getValue();
 
 #ifdef _OPENMP
         #pragma omp parallel for
@@ -249,8 +249,8 @@ public:
         if(this->assemble.getValue())  eigenJacobian.addMultTranspose(dIn,dOut);
         else
         {
-            InVecDeriv&  in = *dIn.beginEdit();
-            const OutVecDeriv&  out = dOut.getValue();
+            InVecDeriv& in = *dIn.beginEdit();
+            const OutVecDeriv& out = dOut.getValue();
 
 #ifdef _OPENMP
         #pragma omp parallel for

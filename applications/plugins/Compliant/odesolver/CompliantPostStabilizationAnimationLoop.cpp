@@ -64,7 +64,7 @@ void CompliantPostStabilizationAnimationLoop::step(const sofa::core::ExecParams*
     // the stabilization will be handled by this animation loop, so enforce no stabilization during solve
     if( m_solver->stabilization.getValue().getSelectedId()!=odesolver::CompliantImplicitSolver::NO_STABILIZATION )
     {
-        m_solver->stabilization.beginEdit()->setSelectedItem(odesolver::CompliantImplicitSolver::NO_STABILIZATION);
+        m_solver->stabilization.beginWriteOnly()->setSelectedItem(odesolver::CompliantImplicitSolver::NO_STABILIZATION);
         m_solver->stabilization.endEdit();
     }
 
@@ -103,14 +103,14 @@ void CompliantPostStabilizationAnimationLoop::step(const sofa::core::ExecParams*
 
 
     // replace the current ContactManager response by the one creating unilateral contacts for correction pass
-    m_contact->response.beginEdit()->setSelectedItem(m_correctionResponseId); m_contact->response.endEdit();
+    m_contact->response.beginWriteOnly()->setSelectedItem(m_correctionResponseId); m_contact->response.endEdit();
     m_contact->responseParams.setValue(m_correctionResponseParams);
 
     // create UNILATERAL CONTACTS with the new positions
     computeCollision(params);
 
     // restore the previous ContactManager response
-    m_contact->response.beginEdit()->setSelectedItem(m_responseId); m_contact->response.endEdit();
+    m_contact->response.beginWriteOnly()->setSelectedItem(m_responseId); m_contact->response.endEdit();
     m_contact->responseParams.setValue(m_responseParams);
 
     // solve the correction system

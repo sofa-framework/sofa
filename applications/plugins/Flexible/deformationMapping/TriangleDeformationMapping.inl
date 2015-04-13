@@ -73,7 +73,7 @@ void TriangleDeformationMapping<TIn, TOut>::init()
     if( f_inverseRestEdges.getValue().size() != triangles.size() )
     {
         typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
-        helper::WriteAccessor< Data<VMMat> > inverseRestEdges(f_inverseRestEdges);
+        helper::WriteOnlyAccessor< Data<VMMat> > inverseRestEdges(f_inverseRestEdges);
         inverseRestEdges.resize( triangles.size() );
 
         // look for the shape function, to get the material coordinates
@@ -144,7 +144,7 @@ inline typename TriangleDeformationMapping<TIn, TOut>::Block TriangleDeformation
 template <class TIn, class TOut>
 void TriangleDeformationMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
-    helper::WriteAccessor< Data<OutVecCoord> >  F = dOut;
+    helper::WriteOnlyAccessor< Data<OutVecCoord> >  F = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  pos = dIn;
     helper::ReadAccessor<Data<VMMat> > inverseRestEdges(f_inverseRestEdges);
     SeqTriangles triangles = triangleContainer->getTriangles();

@@ -120,8 +120,8 @@ protected:
         contact_map->setName( this->getName() + " contact mapping" );
         contact_node->addObject( contact_map.get() );
 
-        this->copyNormals( *edit(contact_map->normal) );
-        this->copyPenetrations( *edit(*contact_dofs->write(core::VecCoordId::position())) );
+        this->copyNormals( *editOnly(contact_map->normal) );
+        this->copyPenetrations( *editOnly(*contact_dofs->write(core::VecCoordId::position())) );
 
         // every contact points must propagate constraint forces
         for(unsigned i = 0; i < size; ++i)
@@ -191,7 +191,7 @@ protected:
                 contact_map->mask = *cvmask; // by pointer copy, the vector was deleted before being used in contact mapping...
                 contact_node->addObject( contact_map.get() );
 
-                this->copyNormals( *edit(contact_map->normal) );
+                this->copyNormals( *editOnly(contact_map->normal) );
 
                 // every contact points must propagate constraint forces
                 for(unsigned i = 0; i < size; ++i)

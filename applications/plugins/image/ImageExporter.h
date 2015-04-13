@@ -322,7 +322,7 @@ protected:
                 write();
             }
         }
-        if (sofa::core::objectmodel::GUIEvent * guiEvent = dynamic_cast<sofa::core::objectmodel::GUIEvent*>(event)) {
+        else if (sofa::core::objectmodel::GUIEvent * guiEvent = dynamic_cast<sofa::core::objectmodel::GUIEvent*>(event)) {
             if (guiEvent->getValueName().compare("ImageExport") == 0)
                 write();
         }
