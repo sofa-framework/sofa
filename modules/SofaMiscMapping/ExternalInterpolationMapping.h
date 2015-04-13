@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_EXTERNALINTERPOLATIONMAPPING_H
 #define SOFA_COMPONENT_MAPPING_EXTERNALINTERPOLATIONMAPPING_H
 
-#include <sofa/core/Mapping.inl>
+#include <sofa/core/Mapping.h>
 
 #include <sofa/component/component.h>
 

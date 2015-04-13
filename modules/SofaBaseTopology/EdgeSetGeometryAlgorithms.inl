@@ -30,7 +30,6 @@
 #include <sofa/helper/MatEigen.h>
 #include <sofa/defaulttype/Mat_solve_Cholesky.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
-#include <SofaBaseTopology/PointSetGeometryAlgorithms.inl>
 
 namespace sofa
 {
