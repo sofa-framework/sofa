@@ -28,6 +28,7 @@
 #include <SofaEngine/ClusteringEngine.h>
 #include <sofa/helper/gl/template.h>
 #include <iostream>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {

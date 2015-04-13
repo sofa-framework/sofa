@@ -29,8 +29,6 @@
 
 #include "UncoupledConstraintCorrection.h"
 
-#include <sofa/core/behavior/ConstraintCorrection.inl>
-
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>

@@ -212,6 +212,6 @@ if(SOFA-CUDA_CUBLAS)
     target_link_libraries(${PROJECT_NAME} ${CUDA_SPARSE_LIBRARY})
 endif()
 
-AddLinkerDependencies(SofaHelper SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData)
+AddLinkerDependencies(SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

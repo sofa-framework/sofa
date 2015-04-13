@@ -39,7 +39,6 @@
 #include <SofaMiscMapping/CurveMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/core/Mapping.inl>
 #include <sofa/core/VecId.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>

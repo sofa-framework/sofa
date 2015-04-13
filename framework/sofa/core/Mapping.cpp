@@ -25,6 +25,7 @@
 #include "Mapping.inl"
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 
 namespace sofa
 {
@@ -49,7 +50,10 @@ template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3dTypes, sofa::def
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Rigid2dTypes >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::ExtVec3fTypes >;  // this one is special; ExtVec3fTypes are used for output outside of Sofa.
+template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::ExtVec3dTypes >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec6dTypes, sofa::defaulttype::ExtVec3fTypes >;
+template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec2dTypes, sofa::defaulttype::ExtVec2fTypes >;
+template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::ExtVec3dTypes >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::ExtVec3fTypes >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Rigid3dTypes >;
 #endif
@@ -64,6 +68,7 @@ template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec6fTypes, sofa::defau
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec6fTypes, sofa::defaulttype::Vec3fTypes >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::ExtVec3fTypes >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec6fTypes, sofa::defaulttype::ExtVec3fTypes >;
+template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec2fTypes, sofa::defaulttype::ExtVec2fTypes >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3fTypes >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec1fTypes >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3fTypes >;
@@ -99,8 +104,12 @@ template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid2dTypes, sofa::def
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Rigid2dTypes >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Rigid3fTypes >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Rigid3dTypes >;
+template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::ExtVec3dTypes >;
+template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::ExtVec3dTypes >;
 #endif
 #endif
+
+template class SOFA_CORE_API Mapping< sofa::defaulttype::LaparoscopicRigidTypes, sofa::defaulttype::RigidTypes >;
 
 } // namespace core
 

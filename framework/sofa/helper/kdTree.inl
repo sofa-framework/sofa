@@ -29,8 +29,8 @@
 
 #include <map>
 #include <limits>
-#include <set>
 #include <iterator>
+#include <cmath>
 
 namespace sofa
 {
@@ -129,7 +129,7 @@ void kdTree<Coord>::closest(distanceToPoint &cl,const Coord &x, const unsigned i
     unsigned int splitdir=tree[currentnode].splitdir;
     Coord pos=positions[currentnode];
     Real c1=x[splitdir],c2=pos[splitdir];
-    if(fabs(c1-c2)<=Dmax)
+    if(std::abs(c1-c2)<=Dmax)
     {
         Real d=(x-pos).norm();
         if(d<Dmax)

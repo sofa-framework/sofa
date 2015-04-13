@@ -204,7 +204,7 @@ include(./python/python.cmake)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_Compliant")
-AddLinkerDependencies( SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaHelper SofaSimulationGraph )
+AddLinkerDependencies( SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaSimulationGraph )
 
 
 

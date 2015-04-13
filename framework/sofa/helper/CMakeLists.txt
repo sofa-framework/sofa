@@ -146,6 +146,7 @@ set(SOURCE_FILES
     Polynomial_LD.cpp
     UnitTest.cpp
     GenerateRigid.cpp
+    kdTree.cpp
     Utils.cpp
 	)
 

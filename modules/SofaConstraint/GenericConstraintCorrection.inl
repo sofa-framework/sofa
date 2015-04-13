@@ -26,13 +26,11 @@
 #define SOFA_CORE_COLLISION_GENERICCONTACTCORRECTION_INL
 
 #include "GenericConstraintCorrection.h"
-#include <sofa/core/behavior/ConstraintCorrection.inl>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseLinearSolver/GraphScatteredTypes.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 
 #include <sstream>
 #include <list>

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,66 +16,38 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: The SOFA Team (see Authors.txt)                                    *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_H
-#define SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_H
 
-#include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
-#include <sofa/helper/map.h>
-#include <math.h>
-#include <csparse.h>
+
+#include "kdTree.inl"
+
+
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
 
-namespace component
+namespace helper
 {
 
-namespace linearsolver
-{
+using namespace defaulttype;
 
-/// Direct linear solver based on Sparse LU factorization, implemented with the CSPARSE library
-template<class TMatrix, class TVector>
-class SparseLUSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SparseLUSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
 
-    typedef TMatrix Matrix;
-    typedef TVector Vector;
-    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
-
-    Data<bool> f_verbose;
-    Data<double> f_tol;
-
-    SparseLUSolver();
-    ~SparseLUSolver();
-    void solve (Matrix& M, Vector& x, Vector& b);
-    void invert(Matrix& M);
-
-private :
-    css *S;
-    csn *N;
-    cs A;
-    helper::vector<int> A_i, A_p;
-    helper::vector<double> A_x;
-    double * tmp;
-
-};
-
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
+#ifndef SOFA_FLOAT
+template class kdTree< Vec2d >;
+template class kdTree< Vec3d >;
 #endif
+
+#ifndef SOFA_DOUBLE
+template class kdTree< Vec2f >;
+template class kdTree< Vec3f >;
+#endif
+
+
+}
+}

@@ -27,7 +27,6 @@
 
 #include <SofaDeformable/RegularGridSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaDeformable/StiffSpringForceField.inl>
 #include <sofa/helper/gl/template.h>
 using std::cerr;
 using std::endl;

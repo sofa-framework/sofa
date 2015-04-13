@@ -27,7 +27,6 @@
 
 #include <SofaObjectInteraction/RepulsiveSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaDeformable/StiffSpringForceField.inl>
 
 namespace sofa
 {

@@ -27,7 +27,6 @@
 
 #include <SofaNonUniformFem/NonUniformHexahedralFEMForceFieldAndMass.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
 #include <SofaNonUniformFem/MultilevelHexahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/objectmodel/Base.h>

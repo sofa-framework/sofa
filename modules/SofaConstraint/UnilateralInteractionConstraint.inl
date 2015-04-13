@@ -27,7 +27,6 @@
 
 #include <SofaConstraint/UnilateralInteractionConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/behavior/PairInteractionConstraint.inl>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/gl/template.h>
 namespace sofa

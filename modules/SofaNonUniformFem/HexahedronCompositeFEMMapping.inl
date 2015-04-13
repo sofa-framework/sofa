@@ -30,7 +30,6 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/gl/template.h>
-//#include <sofa/core/behavior/MechanicalMapping.inl>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <string>
 #include <iostream>
