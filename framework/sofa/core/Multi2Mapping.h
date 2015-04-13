@@ -191,7 +191,7 @@ public:
     /// @deprecated
     virtual void applyJ(const helper::vector< OutVecDeriv*>& /* outDeriv */,
             const helper::vector<const In1VecDeriv*>& /* inDeriv1 */,
-            const helper::vector<const In2VecDeriv*>& /* inDeriv2 */) { };
+            const helper::vector<const In2VecDeriv*>& /* inDeriv2 */) {}
 #endif //SOFA_DEPRECATE_OLD_API
 
     /// ApplyJT (Force)///
