@@ -39,13 +39,13 @@ using namespace defaulttype;
 
 
 #ifndef SOFA_FLOAT
-template class kdTree< Vec2d >;
-template class kdTree< Vec3d >;
+template class SOFA_HELPER_API kdTree< Vec2d >;
+template class SOFA_HELPER_API kdTree< Vec3d >;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class kdTree< Vec2f >;
-template class kdTree< Vec3f >;
+template class SOFA_HELPER_API kdTree< Vec2f >;
+template class SOFA_HELPER_API kdTree< Vec3f >;
 #endif
 
 
