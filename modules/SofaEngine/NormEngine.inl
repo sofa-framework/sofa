@@ -44,7 +44,7 @@ void NormEngine<DataType>::update()
     cleanDirty();
 
     helper::ReadAccessor<Data<VecData> > in = d_input;
-    helper::WriteAccessor<Data<VecReal> > out = d_output;
+    helper::WriteOnlyAccessor<Data<VecReal> > out = d_output;
     int l = d_normType.getValue();
 
     out.resize( in.size() );

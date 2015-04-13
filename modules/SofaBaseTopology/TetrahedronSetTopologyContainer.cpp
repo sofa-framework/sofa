@@ -788,7 +788,7 @@ unsigned int TetrahedronSetTopologyContainer::getNumberOfConnectedComponent()
     while (elemAll.size() < nbr)
     {
         std::sort(elemAll.begin(), elemAll.end());
-        TetraID other_tetraID = elemAll.size();
+        TetraID other_tetraID = (TetraID)elemAll.size();
 
         for (TetraID i = 0; i<elemAll.size(); ++i)
             if (elemAll[i] != i)

@@ -136,7 +136,7 @@ protected:
         unsigned int nelems = 0;
         for (unsigned int i=0; i<nb; ++i)
             nelems += inVF[i]->getValue().size();
-        helper::WriteAccessor< Data<T> > out = outF;
+        helper::WriteOnlyAccessor< Data<T> > out = outF;
         out.clear();
         out.reserve(nelems);
         unsigned int shift = 0;
@@ -158,7 +158,7 @@ protected:
         unsigned int nelems = 0;
         for (unsigned int i=0; i<nb; ++i)
             nelems += inVF[i]->getValue().size();
-        helper::WriteAccessor< Data<VecCoord> > out = outF;
+        helper::WriteOnlyAccessor< Data<VecCoord> > out = outF;
         out.clear();
         out.reserve(nelems);
         for (unsigned int i=0; i<nb; ++i)

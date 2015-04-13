@@ -142,7 +142,7 @@ void BaseDeformationMappingT<JacobianBlockType>::updateIndex()
     }
 
     //Check size just in case
-    if(childSize != this->f_index.getValue().size())
+    if( (unsigned)childSize != this->f_index.getValue().size() )
     {
         std::cout << SOFA_CLASS_METHOD << " f_index has wrong size" << std::endl;
         serr << "index size : " << f_index.getValue().size() << sendl;
@@ -174,32 +174,32 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeAll(const InVecCoord& p0,
         std::cout << SOFA_CLASS_METHOD << " : wrong sizes " << std::endl;
     }
 
-    helper::WriteAccessor<Data<VecCoord> > wa_x0 (this->f_pos0);
+    helper::WriteOnlyAccessor<Data<VecCoord> > wa_x0 (this->f_pos0);
     wa_x0.resize(cSize);
     for(size_t i=0; i<cSize; ++i)
         wa_x0[i] = x0[i];
 
-    helper::WriteAccessor<Data<VecVRef > > wa_index (this->f_index);
+    helper::WriteOnlyAccessor<Data<VecVRef > > wa_index (this->f_index);
     wa_index.resize(cSize);
     for(size_t i=0; i<cSize; ++i)
         wa_index[i].assign(index[i].begin(), index[i].end());
 
-    helper::WriteAccessor<Data<VecVReal > > wa_w (this->f_w);
+    helper::WriteOnlyAccessor<Data<VecVReal > > wa_w (this->f_w);
     wa_w.resize(cSize);
     for(size_t i=0; i<cSize; ++i)
         wa_w[i].assign(w[i].begin(), w[i].end());
 
-    helper::WriteAccessor<Data<vector<VGradient> > > wa_dw (this->f_dw);
+    helper::WriteOnlyAccessor<Data<vector<VGradient> > > wa_dw (this->f_dw);
     wa_dw.resize(cSize);
     for(size_t i=0; i<cSize; ++i)
         wa_dw[i].assign(dw[i].begin(), dw[i].end());
 
-    helper::WriteAccessor<Data<vector<VHessian> > > wa_ddw (this->f_ddw);
+    helper::WriteOnlyAccessor<Data<vector<VHessian> > > wa_ddw (this->f_ddw);
     wa_ddw.resize(cSize);
     for(size_t i=0; i<cSize; ++i)
         wa_ddw[i].assign(ddw[i].begin(), ddw[i].end());
 
-    helper::WriteAccessor<Data< VMaterialToSpatial > >  wa_F0(this->f_F0);
+    helper::WriteOnlyAccessor<Data< VMaterialToSpatial > >  wa_F0(this->f_F0);
     wa_F0.resize(cSize);
     for(size_t i=0; i<cSize; ++i)
         wa_F0[i] = F0[i];
@@ -216,8 +216,8 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
 
     helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
 
-    helper::WriteAccessor<Data<VecCoord> > pos0 (this->f_pos0);
-    helper::WriteAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
+    helper::WriteOnlyAccessor<Data<VecCoord> > pos0 (this->f_pos0);
+    helper::WriteOnlyAccessor<Data< VMaterialToSpatial > > F0(this->f_F0);
     this->missingInformationDirty=true; this->KdTreeDirty=true; // need to update mapped spatial positions if needed for visualization
 
     size_t size;
@@ -270,8 +270,8 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
         for(size_t i=0; i<pos0.size(); ++i) defaulttype::StdVectorTypes<mCoord,mCoord>::set( mpos0[i], pos0[i][0] , pos0[i][1] , pos0[i][2]);
 
         // interpolate weights at sample positions
-        if(this->f_cell.getValue().size()==size) _shapeFunction->computeShapeFunction(mpos0,*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit(),this->f_cell.getValue());
-        else _shapeFunction->computeShapeFunction(mpos0,*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
+        if(this->f_cell.getValue().size()==size) _shapeFunction->computeShapeFunction(mpos0,*this->f_index.beginWriteOnly(),*this->f_w.beginWriteOnly(),*this->f_dw.beginWriteOnly(),*this->f_ddw.beginWriteOnly(),this->f_cell.getValue());
+        else _shapeFunction->computeShapeFunction(mpos0,*this->f_index.beginWriteOnly(),*this->f_w.beginWriteOnly(),*this->f_dw.beginWriteOnly(),*this->f_ddw.beginWriteOnly());
         this->f_index.endEdit();      this->f_w.endEdit();        this->f_dw.endEdit();        this->f_ddw.endEdit();
     }
     else if(0 != f_index.getValue().size() && pos0.size() == f_index.getValue().size() && f_w.getValue().size() == f_index.getValue().size()) // if we do not have a shape function but we already have the needed data, we directly use them
@@ -289,9 +289,9 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     initJacobianBlocks();
 
     // clear forces
-    if(this->toModel->write(core::VecDerivId::force())) { helper::WriteAccessor<Data< OutVecDeriv > >  f(*this->toModel->write(core::VecDerivId::force())); for(size_t i=0;i<f.size();i++) f[i].clear(); }
+    if(this->toModel->write(core::VecDerivId::force())) { helper::WriteOnlyAccessor<Data< OutVecDeriv > >  f(*this->toModel->write(core::VecDerivId::force())); for(size_t i=0;i<f.size();i++) f[i].clear(); }
     // clear velocities
-    if(this->toModel->write(core::VecDerivId::velocity())) { helper::WriteAccessor<Data< OutVecDeriv > >  vel(*this->toModel->write(core::VecDerivId::velocity())); for(size_t i=0;i<vel.size();i++) vel[i].clear(); }
+    if(this->toModel->write(core::VecDerivId::velocity())) { helper::WriteOnlyAccessor<Data< OutVecDeriv > >  vel(*this->toModel->write(core::VecDerivId::velocity())); for(size_t i=0;i<vel.size();i++) vel[i].clear(); }
 
     //Apply mapping to init child positions
     reinit();
@@ -300,7 +300,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     if(sampler && restPositionSet == false && this->toModel->read(core::VecCoordId::restPosition())->getValue().size()==size ) // not for states that do not have restpos (like visualmodel)
     {
         helper::ReadAccessor<Data< VMaterialToSpatial > >  ra_F0(this->f_F0);
-        helper::WriteAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));
+        helper::WriteOnlyAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));
         for(size_t i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = ra_F0[i][j][k];
     }
 }
@@ -312,7 +312,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
 {
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
 
-    helper::WriteAccessor<Data<VecCoord> > pos0 (this->f_pos0);
+    helper::WriteOnlyAccessor<Data<VecCoord> > pos0 (this->f_pos0);
     this->missingInformationDirty=true; this->KdTreeDirty=true; // need to update mapped spatial positions if needed for visualization
 
     size_t size = position0.size();
@@ -321,11 +321,11 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
     this->toModel->resize(size);
     pos0.resize(size);  for(size_t i=0; i<size; i++ )        pos0[i]=position0[i];
 
-    helper::WriteAccessor<Data<VecVRef > > wa_index (this->f_index);   wa_index.resize(size);  for(size_t i=0; i<size; i++ )    wa_index[i].assign(index[i].begin(), index[i].end());
-    helper::WriteAccessor<Data<VecVReal > > wa_w (this->f_w);          wa_w.resize(size);  for(size_t i=0; i<size; i++ )    wa_w[i].assign(w[i].begin(), w[i].end());
-    helper::WriteAccessor<Data<vector<VGradient> > > wa_dw (this->f_dw);    wa_dw.resize(size);  for(size_t i=0; i<size; i++ )    wa_dw[i].assign(dw[i].begin(), dw[i].end());
-    helper::WriteAccessor<Data<vector<VHessian> > > wa_ddw (this->f_ddw);   wa_ddw.resize(size);  for(size_t i=0; i<size; i++ )    wa_ddw[i].assign(ddw[i].begin(), ddw[i].end());
-    helper::WriteAccessor<Data<VMaterialToSpatial> > wa_F0 (this->f_F0);    wa_F0.resize(size);  for(size_t i=0; i<size; i++ )    for(size_t j=0; j<spatial_dimensions; j++ ) for(size_t k=0; k<material_dimensions; k++ )   wa_F0[i][j][k]=F0[i][j][k];
+    helper::WriteOnlyAccessor<Data<VecVRef > > wa_index (this->f_index);   wa_index.resize(size);  for(size_t i=0; i<size; i++ )    wa_index[i].assign(index[i].begin(), index[i].end());
+    helper::WriteOnlyAccessor<Data<VecVReal > > wa_w (this->f_w);          wa_w.resize(size);  for(size_t i=0; i<size; i++ )    wa_w[i].assign(w[i].begin(), w[i].end());
+    helper::WriteOnlyAccessor<Data<vector<VGradient> > > wa_dw (this->f_dw);    wa_dw.resize(size);  for(size_t i=0; i<size; i++ )    wa_dw[i].assign(dw[i].begin(), dw[i].end());
+    helper::WriteOnlyAccessor<Data<vector<VHessian> > > wa_ddw (this->f_ddw);   wa_ddw.resize(size);  for(size_t i=0; i<size; i++ )    wa_ddw[i].assign(ddw[i].begin(), ddw[i].end());
+    helper::WriteOnlyAccessor<Data<VMaterialToSpatial> > wa_F0 (this->f_F0);    wa_F0.resize(size);  for(size_t i=0; i<size; i++ )    for(size_t j=0; j<spatial_dimensions; j++ ) for(size_t k=0; k<material_dimensions; k++ )   wa_F0[i][j][k]=F0[i][j][k];
 
     if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< size <<" custom gauss points imported"<<std::endl;
 
@@ -335,9 +335,9 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
     initJacobianBlocks();
 
     // clear forces
-    if(this->toModel->write(core::VecDerivId::force())) { helper::WriteAccessor<Data< OutVecDeriv > >  f(*this->toModel->write(core::VecDerivId::force())); for(size_t i=0;i<f.size();i++) f[i].clear(); }
+    if(this->toModel->write(core::VecDerivId::force())) { helper::WriteOnlyAccessor<Data< OutVecDeriv > >  f(*this->toModel->write(core::VecDerivId::force())); for(size_t i=0;i<f.size();i++) f[i].clear(); }
     // clear velocities
-    if(this->toModel->write(core::VecDerivId::velocity())) { helper::WriteAccessor<Data< OutVecDeriv > >  vel(*this->toModel->write(core::VecDerivId::velocity())); for(size_t i=0;i<vel.size();i++) vel[i].clear(); }
+    if(this->toModel->write(core::VecDerivId::velocity())) { helper::WriteOnlyAccessor<Data< OutVecDeriv > >  vel(*this->toModel->write(core::VecDerivId::velocity())); for(size_t i=0;i<vel.size();i++) vel[i].clear(); }
 
     //Apply mapping to init child positions
     reinit();
@@ -348,7 +348,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
     if(sampler && this->toModel->read(core::VecCoordId::restPosition())->getValue().size()==size ) // not for states that do not have restpos (like visualmodel)
     {
         helper::ReadAccessor<Data< VMaterialToSpatial > >  ra_F0(this->f_F0);
-        helper::WriteAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));
+        helper::WriteOnlyAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));
         for(size_t i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = ra_F0[i][j][k];
     }
 }
@@ -586,8 +586,8 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
 {
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
 
-    OutVecCoord&  out = *dOut.beginEdit();
-    const InVecCoord&  in = dIn.getValue();
+    OutVecCoord& out = *dOut.beginWriteOnly();
+    const InVecCoord& in = dIn.getValue();
 
 #ifdef _OPENMP
 #pragma omp parallel for
@@ -634,7 +634,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJ(const core::MechanicalPa
     }
     else
     {
-        OutVecDeriv& out = *dOut.beginEdit();
+        OutVecDeriv& out = *dOut.beginWriteOnly();
         const InVecDeriv& in = dIn.getValue();
 
         if( !this->maskTo || !this->maskTo->isInUse() )
@@ -678,8 +678,8 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
     if(this->assemble.getValue())  eigenJacobian.addMultTranspose(dIn,dOut);
     else
     {
-        InVecDeriv&  in = *dIn.beginEdit();
-        const OutVecDeriv&  out = dOut.getValue();
+        InVecDeriv& in = *dIn.beginEdit();
+        const OutVecDeriv& out = dOut.getValue();
 
         if( !this->maskTo || !this->maskTo->isInUse() )
         {

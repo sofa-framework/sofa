@@ -272,12 +272,12 @@ void CompliantAttachPerformer<DataTypes>::start()
     if( _visualmodel )
     {
         _vm = core::objectmodel::New<visualmodel::OglModel>();
-        defaulttype::ResizableExtVector<visualmodel::OglModel::Coord>& vmpos= *_vm->m_positions.beginEdit();
+        defaulttype::ResizableExtVector<visualmodel::OglModel::Coord>& vmpos= *_vm->m_positions.beginWriteOnly();
         vmpos.resize(2);
         vmpos[0] = visualmodel::OglModel::Coord( _baseCollisionMState->getPX(pickedParticleIndex), _baseCollisionMState->getPY(pickedParticleIndex), _baseCollisionMState->getPZ(pickedParticleIndex) );
         vmpos[1] = pointOnRay;
         _vm->m_positions.endEdit();
-        defaulttype::ResizableExtVector< visualmodel::OglModel::Triangle >& vmtri= *_vm->m_triangles.beginEdit();
+        defaulttype::ResizableExtVector< visualmodel::OglModel::Triangle >& vmtri= *_vm->m_triangles.beginWriteOnly();
         vmtri.resize(1);
         vmtri[0] = visualmodel::OglModel::Triangle( 0, 0, 1 );
         _vm->m_triangles.endEdit();
@@ -319,7 +319,7 @@ void CompliantAttachPerformer<DataTypes>::execute()
 
     if( _visualmodel )
     {
-        defaulttype::ResizableExtVector<visualmodel::OglModel::Coord>& vmpos= *_vm->m_positions.beginEdit();
+        defaulttype::ResizableExtVector<visualmodel::OglModel::Coord>& vmpos= *_vm->m_positions.beginWriteOnly();
         vmpos[0] = visualmodel::OglModel::Coord( _baseCollisionMState->getPX(pickedParticleIndex), _baseCollisionMState->getPY(pickedParticleIndex), _baseCollisionMState->getPZ(pickedParticleIndex) );
         vmpos[1] = DataTypes::getCPos(xmouse[0]);
         _vm->m_positions.endEdit();

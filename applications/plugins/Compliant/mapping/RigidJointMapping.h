@@ -85,7 +85,7 @@ protected:
 
 		J.setZero();
 		
-		pairs_type& p = *pairs.beginEdit();
+        const pairs_type& p = pairs.getValue();
 
 		typedef typename se3::mat66 mat66;
 		typedef typename se3::mat33 mat33;
@@ -158,7 +158,7 @@ protected:
 	
 	virtual void apply(typename self::out_pos_type& out,
 	                   const typename self::in_pos_type& in ) {
-		pairs_type& p = *pairs.beginEdit();
+        const pairs_type& p = pairs.getValue();
 		
 		assert( out.size() == p.size() );				        
 

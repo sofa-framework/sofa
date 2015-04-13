@@ -77,17 +77,17 @@ template< class DataTypes>
 		bernsteinCoefficientArray.clear();
 		bernsteinCoeffMap.clear();
 		bernsteinCoefficientArray.resize(tbiArray.size());
-		size_t i;
+
 		TetrahedronBezierIndex tbi;
 		/// precompute the factorial of the degree.
-		for (i=0;i<tbiArray.size();++i) {
+		for (size_t i=0;i<tbiArray.size();++i) {
 			tbi=tbiArray[i];
 			bernsteinCoefficientArray[i]=multinomial(degree,tbi); 
 			bernsteinCoeffMap.insert(std::pair<TetrahedronBezierIndex,Real>(tbi,(double) bernsteinCoefficientArray[i]));
 		}
 		/// insert coefficient for the inferior degree
-		size_t j,k,l,m,n,index1,index2;
-		for (i=0;i<=(size_t)(degree-1);++i) {
+		BezierDegreeType i,j,k,l,m,n,index1,index2;
+		for (i=0;i<=(degree-1);++i) {
 			for (j=0;j<=(degree-i-1);++j) {
 				for (k=0;k<=(degree-j-i-1);++k) {
 					l=degree-1-i-j-k;
@@ -114,7 +114,7 @@ template< class DataTypes>
 									tbiNext[m]=tbi[m]+1;
 									tbiNext[(m+n)%4]=tbi[(m+n)%4]-1;
 									index2=container->getLocalIndexFromTetrahedronBezierIndex(tbiNext);
-									Edge e(std::min(index1,index2),std::max(index1,index2));
+									Edge e((PointID)std::min(index1,index2),(PointID)std::max(index1,index2));
 									bezierTetrahedronEdgeSet.insert(e);
 								}
 							}

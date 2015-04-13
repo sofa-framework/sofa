@@ -1462,12 +1462,12 @@ Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes
         vectorsCoord[v.index] = new Data< VecCoord >;
         if (f_reserve.getValue() > 0)
         {
-            vectorsCoord[v.index]->beginEdit()->reserve(f_reserve.getValue());
+            vectorsCoord[v.index]->beginWriteOnly()->reserve(f_reserve.getValue());
             vectorsCoord[v.index]->endEdit();
         }
         if (vectorsCoord[v.index]->getValue().size() != (size_t)getSize())
         {
-            vectorsCoord[v.index]->beginEdit()->resize( getSize() );
+            vectorsCoord[v.index]->beginWriteOnly()->resize( getSize() );
             vectorsCoord[v.index]->endEdit();
         }
     }
@@ -1481,6 +1481,8 @@ Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes
 #endif
     return d;
 }
+
+
 
 template <class DataTypes>
 const Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes>::read(core::ConstVecCoordId v) const

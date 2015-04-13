@@ -116,7 +116,7 @@ public:
             if(!_state) { serr<<"state not found"<< sendl; return; }
             else
             {
-				helper::WriteAccessor<Data<VCoord > > pos(this->f_position);
+                helper::WriteOnlyAccessor<Data<VCoord > > pos(this->f_position);
                 pos.resize(_state->getSize());
                 for(unsigned int i=0; i<pos.size(); ++i)
                 {

@@ -381,7 +381,7 @@ protected:
         /// colors definition
         T FillColor = (T)getValue(meshId,0);
         T InsideColor = (T)this->vf_InsideValues[meshId]->getValue();
-        T OutsideColor = (T)this->backgroundValue.getValue();
+//        T OutsideColor = (T)this->backgroundValue.getValue();
 
         /// draw surface
         CImg<bool> mask;
@@ -489,7 +489,7 @@ protected:
 
 
 
-    virtual void draw(const core::visual::VisualParams* vparams)
+    virtual void draw(const core::visual::VisualParams* /*vparams*/)
     {
     }
 
