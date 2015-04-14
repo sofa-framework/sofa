@@ -45,17 +45,6 @@ SOFA_DECL_CLASS(LinearMapping_point)
 
 using namespace defaulttype;
 
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::LinearJacobianBlock< Vec3Types, Vec3Types > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::LinearJacobianBlock< Vec3Types, ExtVec3fTypes > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::LinearJacobianBlock< Vec3Types, F331Types > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::LinearJacobianBlock< Vec3Types, F332Types > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::LinearJacobianBlock< Vec3Types, F321Types > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::LinearJacobianBlock< Vec3Types, F311Types > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::LinearJacobianBlock< Vec2Types, Vec2Types > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::LinearJacobianBlock< Vec2Types, F221Types > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::LinearJacobianBlock< Vec3Types, Affine3Types > >;
-
-
 // Register in the Factory
 int LinearMappingClass_point = core::RegisterObject("Map child positions as a linear combination of parents.")
 
@@ -79,7 +68,6 @@ template class SOFA_Flexible_API LinearMapping< Vec3Types, F311Types >;
 template class SOFA_Flexible_API LinearMapping< Vec2Types, Vec2Types >;
 template class SOFA_Flexible_API LinearMapping< Vec2Types, F221Types >;
 template class SOFA_Flexible_API LinearMapping< Vec3Types, Affine3Types >;
-
 
 } // namespace mapping
 } // namespace component

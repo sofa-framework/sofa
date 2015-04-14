@@ -47,12 +47,6 @@ SOFA_DECL_CLASS(MLSMapping_affine)
 
 using namespace defaulttype;
 
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::MLSJacobianBlock< Affine3Types, Vec3Types > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::MLSJacobianBlock< Affine3Types, ExtVec3fTypes > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::MLSJacobianBlock< Affine3Types, F331Types > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::MLSJacobianBlock< Affine3Types, F332Types > >;
-
-
 // Register in the Factory
 int MLSMappingClass_affine = core::RegisterObject("Map child positions using generalized moving least squares.")
         .add< MLSMapping< Affine3Types, Vec3Types > >()
