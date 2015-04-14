@@ -1072,14 +1072,6 @@ void QtViewer::calcProjection(int width, int height)
 
     glGetDoublev(GL_PROJECTION_MATRIX, lastProjectionMatrix);
 
-    std::cout << "Proj OGL" << std::endl;
-    for(unsigned int i=0 ; i<4 ; i++)
-    {
-        for(unsigned int j=0 ; j<4 ; j++)
-            std::cout << lastProjectionMatrix[i*4+j] << "\t";
-        std::cout << std::endl;
-    }
-
     glMatrixMode(GL_MODELVIEW);
 }
 
