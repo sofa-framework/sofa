@@ -26,103 +26,120 @@ namespace MovingObjects
 {
 
 enum {
-	NO_CROSS,
-	CROSS_FACE,
-	CROSS_OTHER
+    NO_CROSS,
+    CROSS_FACE,
+    CROSS_OTHER
 };
 
 template <typename PFP>
 class ParticleCell3D : public Algo::MovingObjects::ParticleBase<PFP>
 {
 public :
-	typedef typename PFP::MAP MAP;
-	typedef typename PFP::VEC3 VEC3;
-	typedef VertexAttribute<VEC3, MAP> TAB_POS;
+    typedef Algo::MovingObjects::ParticleBase<PFP> Inherit;
+    typedef typename PFP::MAP MAP;
+    typedef typename PFP::VEC3 VEC3;
+    typedef VertexAttribute<VEC3, MAP> TAB_POS;
+    typedef FaceAttribute<VEC3,MAP> TAB_FACE;
+    typedef VolumeAttribute<VEC3,MAP> TAB_VOL;
+    MAP& m;
 
-	MAP& m;
+    const TAB_POS& position;
+    const TAB_FACE* face_center;
+    const TAB_VOL* volume_center;
 
-	const TAB_POS& position;
 
-	Dart d;
-	Dart lastCrossed;
 
-	VEC3 m_positionFace;
+    VEC3 m_positionFace;
+    VEC3 m_positionVolume;
 
-	unsigned int state;
 
-	unsigned int crossCell ;
+    unsigned int crossCell ;
 
-	ParticleCell3D(MAP& map) : m(map)
-	{}
+    ParticleCell3D(MAP& map) : m(map)
+    {}
 
-	ParticleCell3D(MAP& map, Dart belonging_cell, VEC3 pos, const TAB_POS& tabPos) :
-		Algo::MovingObjects::ParticleBase<PFP>(pos),
-		m(map),
-		position(tabPos),
-		d(belonging_cell),
-		state(3)
-	{
-		m_positionFace = pointInFace(d);
-	}
+    ParticleCell3D(MAP& map, Dart belonging_cell, VEC3 pos, const TAB_POS& tabPos,const TAB_FACE * fa_center = nullptr,
+    const TAB_VOL * vol_center=nullptr) :
+        Algo::MovingObjects::ParticleBase<PFP>(pos),
+        m(map),
+        position(tabPos),
+        face_center(fa_center),
+        volume_center(vol_center),
+        d(belonging_cell)
 
-	void display();
+    {
+        reset_positionFace();
+        reset_positionVolume();
+        this->setState(VOLUME);
+    }
 
-	Dart getCell() { return d; }
+    void display();
 
-	VEC3 pointInFace(Dart d);
+    inline Dart getCell() const
+    {
+        return d;
+    }
 
-	Geom::Orientation3D isLeftENextVertex(VEC3 c, Dart d, VEC3 base);
+    inline void setCell(Dart cell)
+    {
+        d = cell;
+    }
 
-	bool isRightVertex(VEC3 c, Dart d, VEC3 base);
+//    inline Geom::Orientation3D isLeftENextVertex(const VEC3& c, Dart d, const VEC3& base);
 
-	Geom::Orientation3D whichSideOfFace(VEC3 c, Dart d);
+//    inline bool isRightVertex(const VEC3& c, Dart d, const VEC3& base);
 
-	Geom::Orientation3D isLeftL1DVol(VEC3 c, Dart d, VEC3 base, VEC3 top);
+    inline Geom::Orientation3D whichSideOfFace(const VEC3& c, Dart d);
 
-	Geom::Orientation3D isRightDVol(VEC3 c, Dart d, VEC3 base, VEC3 top);
+//    inline Geom::Orientation3D whichSideOfPlanVolume(const VEC3& c, Dart d, const VEC3& base, const VEC3& top);
 
-	Geom::Orientation3D isAbove(VEC3 c, Dart d, VEC3 top);
+//    inline int whichSideOfPlan(const VEC3& c, Dart d, const VEC3& base, const VEC3& normal); // orientation par rapport au plan de gauche de l'arete visée
+    inline Geom::Orientation3D orientationPlan(const VEC3& c,const VEC3& p1, const VEC3& p2, const VEC3& p3);
 
-	int isLeftL1DFace(VEC3 c, Dart d, VEC3 base, VEC3 normal);
+//    Dart nextDartOfVertexNotMarked(Dart d, CellMarkerStore<MAP, FACE>& mark);
 
-	bool isRightDFace(VEC3 c, Dart d, VEC3 base, VEC3 normal);
+//    Dart nextNonPlanar(Dart d);
 
-	Dart nextDartOfVertexNotMarked(Dart d, CellMarkerStore<MAP, FACE>& mark);
+//    Dart nextFaceNotMarked(Dart d, CellMarkerStore<MAP, FACE>& mark);
 
-	Dart nextNonPlanar(Dart d);
+    Geom::Orientation3D whichSideOfEdge(const VEC3& c, Dart d);
 
-	Dart nextFaceNotMarked(Dart d, CellMarkerStore<MAP, FACE>& mark);
+    bool isOnHalfEdge(VEC3 c, Dart d);
 
-	Geom::Orientation3D whichSideOfEdge(VEC3 c, Dart d);
+    void vertexState(const VEC3& current);
 
-	bool isOnHalfEdge(VEC3 c, Dart d);
+    void edgeState(const VEC3& current);
 
-	void vertexState(const VEC3& current);
+    void faceState(const VEC3& current, Geom::Orientation3D sideOfFace = Geom::ON);
 
-	void edgeState(const VEC3& current);
+    void volumeState(const VEC3& current);
 
-	void faceState(const VEC3& current, Geom::Orientation3D sideOfFace = Geom::ON);
+    void placeOnRightFaceAndRightEdge(const VEC3& current,bool * casON, bool * enDessous);
 
-	void volumeState(const VEC3& current);
+    void reset_positionFace(); // remet a jour la positionFace
+    void reset_positionVolume(); // remet a jour la positionVolume
 
-	void volumeSpecialCase(const VEC3& current);
+    void resetParticule(); // a appeler pour replacer correctement une particule (apres une subdivision par exemple)
+    void move(const VEC3& newCurrent)
+    {
+        crossCell = NO_CROSS ;
+//        if(!Geom::arePointsEquals(newCurrent, this->getPosition()))
+        {
+            switch(this->getState()) {
+            case VERTEX : vertexState(newCurrent); break;
+            case EDGE : 	edgeState(newCurrent);   break;
+            case FACE : 	faceState(newCurrent);   break;
+            case VOLUME : volumeState(newCurrent);   break;
+            }
 
-	void move(const VEC3& newCurrent)
-	{
-		crossCell = NO_CROSS ;
+            display();
+        }
+    }
 
-		if(!Geom::arePointsEquals(newCurrent, this->getPosition()))
-		{
-			switch(state) {
-			case VERTEX : vertexState(newCurrent); break;
-			case EDGE : 	edgeState(newCurrent);   break;
-			case FACE : 	faceState(newCurrent);   break;
-			case VOLUME : volumeState(newCurrent);   break;
-			}
 
-			display();
-		}
-	}
+protected:
+    Dart d;
+    Dart lastCrossed;
 };
 
 } // namespace MovingObjects
