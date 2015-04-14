@@ -44,13 +44,6 @@ SOFA_DECL_CLASS(MLSMapping_point)
 
 using namespace defaulttype;
 
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::MLSJacobianBlock< Vec3Types, Vec3Types > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::MLSJacobianBlock< Vec3Types, ExtVec3fTypes > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::MLSJacobianBlock< Vec3Types, F331Types > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::MLSJacobianBlock< Vec3Types, F332Types > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::MLSJacobianBlock< Vec3Types, F321Types > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::MLSJacobianBlock< Vec3Types, F311Types > >;
-
 // Register in the Factory
 int MLSMappingClass_point = core::RegisterObject("Map child positions using moving least squares.")
 
@@ -68,7 +61,6 @@ template class SOFA_Flexible_API MLSMapping< Vec3Types, F331Types >;
 template class SOFA_Flexible_API MLSMapping< Vec3Types, F332Types >;
 template class SOFA_Flexible_API MLSMapping< Vec3Types, F321Types >;
 template class SOFA_Flexible_API MLSMapping< Vec3Types, F311Types >;
-
 
 } // namespace mapping
 } // namespace component

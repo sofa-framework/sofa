@@ -47,16 +47,6 @@ SOFA_DECL_CLASS(LinearMapping_rigid)
 
 using namespace defaulttype;
 
-
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::LinearJacobianBlock<  Quadratic3Types, Vec3Types > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::LinearJacobianBlock<  Quadratic3Types, ExtVec3fTypes > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::LinearJacobianBlock<  Quadratic3Types, F331Types > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::LinearJacobianBlock<  Quadratic3Types, F321Types > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::LinearJacobianBlock<  Quadratic3Types, F311Types > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::LinearJacobianBlock<  Quadratic3Types, F332Types > >;
-template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::LinearJacobianBlock<  Quadratic3Types, Affine3Types > >;
-
-
 // Register in the Factory
 int LinearMappingClass_rigid = core::RegisterObject("Map child positions as a linear combination of parents.")
         .add< LinearMapping< Rigid3Types, Vec3Types > >()
