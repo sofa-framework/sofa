@@ -33,6 +33,10 @@
 #include "MLSJacobianBlock_rigid.inl"
 #include "MLSJacobianBlock_quadratic.inl"
 
+#ifdef __APPLE__
+// a strange behaviour of the mac's linker requires to compile a few stuffs again
+#include "BaseDeformationMapping.inl"
+#endif
 
 namespace sofa
 {
