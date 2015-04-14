@@ -218,7 +218,6 @@ Dart EmbeddedMap3::collapseEdge(Dart d, bool delDegenerateVolumes)
 
 bool EmbeddedMap3::flipEdge(Dart d)
 {
-    std::cerr << "EmbeddedMap3::flipEdge" << std::endl;
     if (Map2::flipEdge(d))
     {
         const Dart dd = phi3(d);
@@ -254,7 +253,6 @@ bool EmbeddedMap3::flipEdge(Dart d)
 
 bool EmbeddedMap3::flipBackEdge(Dart d)
 {
-    std::cerr << "EmbeddedMap3::flipBackEdge" << std::endl;
     if (Map2::flipBackEdge(d))
     {
         const Dart dd = phi3(d);
