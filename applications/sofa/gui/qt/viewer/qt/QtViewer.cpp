@@ -1026,40 +1026,59 @@ void QtViewer::calcProjection(int width, int height)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    xFactor *= 0.01;
-    yFactor *= 0.01;
+    if(!currentCamera->d_computeProjectionMatrix.getValue())
+    {
+        xFactor *= 0.01;
+        yFactor *= 0.01;
 
-    //std::cout << xNear << " " << yNear << std::endl;
+        //std::cout << xNear << " " << yNear << std::endl;
 
-    zForeground = -vparams->zNear() - offset;
-    zBackground = -vparams->zFar() + offset;
+        zForeground = -vparams->zNear() - offset;
+        zBackground = -vparams->zFar() + offset;
 
-    if (currentCamera->getCameraType() == core::visual::VisualParams::PERSPECTIVE_TYPE)
-        gluPerspective(currentCamera->getFieldOfView(), (double) width / (double) height, vparams->zNear(), vparams->zFar());
+        if (currentCamera->getCameraType() == core::visual::VisualParams::PERSPECTIVE_TYPE)
+            gluPerspective(currentCamera->getFieldOfView(), (double) width / (double) height, vparams->zNear(), vparams->zFar());
+        else
+        {
+            float ratio = vparams->zFar() / (vparams->zNear() * 20);
+            Vector3 tcenter = vparams->sceneTransform() * center;
+            if (tcenter[2] < 0.0)
+            {
+                ratio = -300 * (tcenter.norm2()) / tcenter[2];
+            }
+            glOrtho((-xNear * xFactor) * ratio, (xNear * xFactor) * ratio, (-yNear
+                    * yFactor) * ratio, (yNear * yFactor) * ratio,
+                    vparams->zNear(), vparams->zFar());
+        }
+
+        xForeground = -zForeground * xNear / vparams->zNear();
+        yForeground = -zForeground * yNear / vparams->zNear();
+        xBackground = -zBackground * xNear / vparams->zNear();
+        yBackground = -zBackground * yNear / vparams->zNear();
+
+        xForeground *= xFactor;
+        yForeground *= yFactor;
+        xBackground *= xFactor;
+        yBackground *= yFactor;
+
+    }
     else
     {
-        float ratio = vparams->zFar() / (vparams->zNear() * 20);
-        Vector3 tcenter = vparams->sceneTransform() * center;
-        if (tcenter[2] < 0.0)
-        {
-            ratio = -300 * (tcenter.norm2()) / tcenter[2];
-        }
-        glOrtho((-xNear * xFactor) * ratio, (xNear * xFactor) * ratio, (-yNear
-                * yFactor) * ratio, (yNear * yFactor) * ratio,
-                vparams->zNear(), vparams->zFar());
+        GLdouble projectionMatrix[16];
+        currentCamera->getOpenGLProjectionMatrix(projectionMatrix);
+
+        glMultMatrixd(projectionMatrix);
     }
 
-    xForeground = -zForeground * xNear / vparams->zNear();
-    yForeground = -zForeground * yNear / vparams->zNear();
-    xBackground = -zBackground * xNear / vparams->zNear();
-    yBackground = -zBackground * yNear / vparams->zNear();
-
-    xForeground *= xFactor;
-    yForeground *= yFactor;
-    xBackground *= xFactor;
-    yBackground *= yFactor;
-
     glGetDoublev(GL_PROJECTION_MATRIX, lastProjectionMatrix);
+
+    std::cout << "Proj OGL" << std::endl;
+    for(unsigned int i=0 ; i<4 ; i++)
+    {
+        for(unsigned int j=0 ; j<4 ; j++)
+            std::cout << lastProjectionMatrix[i*4+j] << "\t";
+        std::cout << std::endl;
+    }
 
     glMatrixMode(GL_MODELVIEW);
 }

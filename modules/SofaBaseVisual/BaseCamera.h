@@ -29,6 +29,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/Quater.h>
 #include <sofa/helper/gl/Trackball.h>
 #include <sofa/helper/gl/Transformation.h>
@@ -54,7 +55,10 @@ public:
     SOFA_CLASS(BaseCamera, core::objectmodel::BaseObject);
 
     typedef sofa::core::visual::VisualParams::CameraType CameraType;
+    typedef defaulttype::Vec3Types::Real Real;
     typedef defaulttype::Vector3 Vec3;
+    typedef defaulttype::Matrix3 Mat3;
+    typedef defaulttype::Matrix4 Mat4;
     typedef defaulttype::Quat Quat;
 
     Data<Vec3> p_position;
@@ -68,10 +72,11 @@ public:
     Data<unsigned int> p_widthViewport, p_heightViewport;
     Data<int> p_type;
 
-
-
     Data<bool> p_activated;
 	Data<bool> p_fixedLookAtPoint;
+
+    Data<bool> d_computeProjectionMatrix;
+    Data<Mat3> d_intrinsicParameters;
 
     BaseCamera();
     virtual ~BaseCamera();
@@ -200,7 +205,10 @@ public:
     //be according to the gravity.
     void setDefaultView(const Vec3& gravity = Vec3(0, -9.81, 0));
 
+    void getProjectionMatrix(Mat4 &projectionMatrix);
+
     void getOpenGLMatrix(GLdouble mat[16]);
+    void getOpenGLProjectionMatrix(GLdouble oglProjectionMatrix[]);
 
     Quat getOrientationFromLookAt(const Vec3 &pos, const Vec3& lookat);
     Vec3 getLookAtFromOrientation(const Vec3 &pos, const double &distance,const Quat & orientation);
