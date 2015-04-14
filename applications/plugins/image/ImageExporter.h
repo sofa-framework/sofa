@@ -237,7 +237,7 @@ public:
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef typename TransformType::Coord Coord;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
-    Data< TransformType > transform;;
+    Data< TransformType > transform;
 
     // output file
     sofa::core::objectmodel::DataFileName m_filename;
