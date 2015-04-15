@@ -121,7 +121,7 @@ void ParticleCell3DMemo<PFP>::vertexState(const VEC3& current, CellMarkerMemo<MA
         }
         switch (this->orientationPlan(current,this->position[this->d],this->position[this->m.phi1(this->d)],this->position[this->m.phi_1(this->d)]))
         {
-            case Geom::UNDER : this->d=this->m.phi3(this->d); reset =true;
+            case Geom::OVER : this->d=this->m.phi2(this->m.phi3(this->d)); reset =true;
                             break;
             default : this->d=this->m.phi1(this->m.phi2(this->d)); // over ou ON on tourne sur les faces
                             break;
@@ -335,9 +335,9 @@ void ParticleCell3DMemo<PFP>::edgeState(const VEC3& current, CellMarkerMemo<MAP,
         switch(this->orientationPlan(current,this->position[this->d],this->m_positionFace,this->m_positionVolume))
         {
 
-            case Geom::OVER : aDroite=true; if(!aGauche)this->d=this->m.phi1(this->d);
+            case Geom::UNDER : aDroite=true; if(!aGauche)this->d=this->m.phi1(this->d);
                             break;
-            case Geom::UNDER :aGauche=true;this->d=this->m.phi_1(this->d);
+            case Geom::OVER :aGauche=true;this->d=this->m.phi_1(this->d);
                             break;
             case Geom::ON :
                             do

@@ -105,6 +105,9 @@ inline Geom::Orientation3D ParticleCell3D<PFP>::whichSideOfFace(const VEC3& c, D
 template <typename PFP>
 Geom::Orientation3D ParticleCell3D<PFP>::orientationPlan(const VEC3& c,const VEC3& p1, const VEC3& p2, const VEC3& p3)
 {
+#ifdef DEBUG
+    std::cout << "Test orientation plan (obj,p1,p2,p3, test)" <<c<<" || "<<p1<<" || "<<p2<<" ||"<<p3<<" ||" <<Geom::Plane3D<typename PFP::REAL>(p3, p1, p2).orient(c)<< std::endl;
+#endif
      return Geom::Plane3D<typename PFP::REAL>(p3, p1, p2).orient(c);
 }
 
@@ -179,7 +182,7 @@ Geom::Orientation3D ParticleCell3D<PFP>::whichSideOfEdge(const VEC3& c, Dart d) 
     VEC3 p3 = m_positionFace;
     const Geom::Plane3D<typename PFP::REAL> pl (p1,p2,p3);
     VEC3 norm = pl.normal();
-    VEC3 n2 = norm ^ VEC3(p1-p2);
+    VEC3 n2 = norm.cross(p1-p2);
 #ifdef DEBUG
     std::cout << "Test side of edge (obj,d,position[d], position(phi1), test)" <<c<<" || "<<d<<" || "<<position[d]<<" || "<<position[m.phi1(d)]<<" || "<<Geom::Plane3D<typename PFP::REAL>(n2,p1).orient(c)<< std::endl;
 #endif
@@ -240,7 +243,7 @@ void ParticleCell3D<PFP>::vertexState(const VEC3& current)
         }
         switch (orientationPlan(current,position[d],position[m.phi1(d)],position[m.phi_1(d)]))
         {
-            case Geom::UNDER : d=m.phi3(d); reset =true;
+            case Geom::OVER : d=m.phi2(m.phi3(d)); reset =true;
                             break;
             default : d=m.phi1(m.phi2(d)); // over ou ON on tourne sur les faces
                             break;
@@ -442,9 +445,9 @@ void ParticleCell3D<PFP>::faceState(const VEC3& current, Geom::Orientation3D wso
         switch(orientationPlan(current,position[d],this->m_positionFace,this->m_positionVolume))
         {
 
-            case Geom::OVER : aDroite=true; if(!aGauche)d=m.phi1(d);
+            case Geom::UNDER : aDroite=true; if(!aGauche)d=m.phi1(d);
                             break;
-            case Geom::UNDER :aGauche=true;d=m.phi_1(d);
+            case Geom::OVER :aGauche=true;d=m.phi_1(d);
                             break;
             case Geom::ON :
                             do

@@ -54,15 +54,15 @@ inline bool MapRender::cmpVP(VertexPoly* lhs, VertexPoly* rhs)
 template<typename VEC3>
 bool MapRender::inTriangle(const VEC3& P, const VEC3& normal, const VEC3& Ta,  const VEC3& Tb, const VEC3& Tc)
 {
-    typedef typename VEC3::DATA_TYPE T ;
+    typedef typename VEC3::value_type T ;
 
-    if (Geom::tripleProduct(P-Ta, (Tb-Ta), normal) >= T(0))
+    if (Geom::tripleProduct<3,T>(P-Ta, (Tb-Ta), normal) >= T(0))
         return false;
 
-    if (Geom::tripleProduct(P-Tb, (Tc-Tb), normal) >= T(0))
+    if (Geom::tripleProduct<3,T>(P-Tb, (Tc-Tb), normal) >= T(0))
         return false;
 
-    if (Geom::tripleProduct(P-Tc, (Ta-Tc), normal) >= T(0))
+    if (Geom::tripleProduct<3,T>(P-Tc, (Ta-Tc), normal) >= T(0))
         return false;
 
     return true;
@@ -98,8 +98,8 @@ void MapRender::recompute2Ears(const VertexAttribute<typename PFP::VEC3, typenam
 
     if (!convex)	// if convex no need to test if vertex is an ear (yes)
     {
-        VEC3 nv1 = v1^v2;
-        VEC3 nv2 = v1^v3;
+        VEC3 nv1 = v1.cross(v2);
+        VEC3 nv2 = v1.cross(v3);
 
         if (nv1*normalPoly < 0.0)
             dotpr1 = 10.0f - dotpr1;// not an ears  (concave)
@@ -145,7 +145,7 @@ float MapRender::computeEarAngle(const typename PFP::VEC3& P1, const typename PF
     //	float dotpr = 1.0f - (v1*v2);
     float dotpr = acos(v1*v2) / (M_PI/2.0f);
 
-    VEC3 vn = v1^v2;
+    VEC3 vn = v1.cross(v2);
     if (vn*normalPoly > 0.0f)
         dotpr = 10.0f - dotpr; 		// not an ears  (concave, store at the end for optimized use for intersections)
 
@@ -302,35 +302,46 @@ inline void MapRender::addTri(typename PFP::MAP& map, Face f, std::vector<GLuint
 }
 
 template<typename PFP>
-void MapRender::initTriangles(typename PFP::MAP& map, std::vector<GLuint>& tableIndices, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>* position, unsigned int thread)
+void MapRender::initTriangles(typename PFP::MAP& map, std::vector<GLuint>& tableIndices, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>* position)
 {
     typedef typename PFP::MAP MAP;
     tableIndices.reserve(4 * map.getNbDarts() / 3);
 
     if(position == NULL)
     {
-        foreach_cell<FACE>(map,
+        TraversorCell<MAP, FACE,AUTO> trav(map, false);
+        for (Cell<FACE> c = trav.begin(), e = trav.end(); c.dart != e.dart; c = trav.next())
+            addTri<PFP>(map, c, tableIndices);
+        /*        foreach_cell<FACE>(map,
                            (
                                bl::bind(&addTri<PFP>, boost::ref(map), bl::_1, boost::ref(tableIndices))
-                               ), AUTO, thread);
+                               ), AUTO)*/;
     }
     else
     {
-        foreach_cell<FACE>(map,
-                           (
-                               bl::if_(bl::bind(&MAP::faceDegree, boost::ref(map), bl::_1) == 3)[
-                               bl::bind(&addTri<PFP>, boost::ref(map), bl::_1, boost::ref(tableIndices))
-                           ].else_[
-                           bl::bind(&addEarTri<PFP>, boost::ref(map), bl::_1, boost::ref(tableIndices), boost::ref(position)) ]
-                ), AUTO, thread);
+        TraversorCell<MAP, FACE,AUTO> trav(map, false);
+        for (Cell<FACE> c = trav.begin(), e = trav.end(); c.dart != e.dart; c = trav.next())
+        {
+            if(map.faceDegree(c) == 3)
+                addTri<PFP>(map, c, tableIndices);
+            else
+                addEarTri<PFP>(map, c, tableIndices, position);
+        }
+        //        foreach_cell<FACE>(map,
+        //                           (
+        //                               bl::if_(bl::bind(&MAP::faceDegree, boost::ref(map), bl::_1) == 3)[
+        //                               bl::bind(&addTri<PFP>, boost::ref(map), bl::_1, boost::ref(tableIndices))
+        //                           ].else_[
+        //                           bl::bind(&addEarTri<PFP>, boost::ref(map), bl::_1, boost::ref(tableIndices), boost::ref(position)) ]
+        //                ), AUTO);
     }
 }
 
 template<typename PFP>
-void MapRender::initTrianglesOptimized(typename PFP::MAP& map, std::vector<GLuint>& tableIndices, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>* position, unsigned int thread)
+void MapRender::initTrianglesOptimized(typename PFP::MAP& map, std::vector<GLuint>& tableIndices, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>* position)
 {
 #define LIST_SIZE 20
-    DartMarker<typename PFP::MAP> m(map, thread);
+    DartMarker<typename PFP::MAP> m(map);
     // reserve memory for triangles ( nb indices == nb darts )
     // and a little bit more
     // if lots of polygonal faces, realloc is done by vector
@@ -403,42 +414,57 @@ void MapRender::initTrianglesOptimized(typename PFP::MAP& map, std::vector<GLuin
 }
 
 template<typename PFP>
-void MapRender::initLines(typename PFP::MAP& map, std::vector<GLuint>& tableIndices, unsigned int thread)
+void MapRender::initLines(typename PFP::MAP& map, std::vector<GLuint>& tableIndices)
 {
     typedef typename PFP::MAP MAP;
     tableIndices.reserve(map.getNbDarts());
 
-    //	TraversorE<typename PFP::MAP> trav(map, thread);
-    foreach_cell<EDGE>(map,
-                       (
-                           bl::bind(&std::vector<GLuint>::push_back,boost::ref(tableIndices),  bl::bind(&MAP::template getEmbedding<VERTEX>, boost::ref(map), bl::_1)),
-                           bl::bind(&std::vector<GLuint>::push_back,boost::ref(tableIndices),  bl::bind(&MAP::template getEmbedding<VERTEX>, boost::ref(map), bl::bind(&MAP::phi1, boost::ref(map), bl::_1)))
-                           )
-                       ,AUTO,thread);
+    //	TraversorE<typename PFP::MAP> trav(map);
+    TraversorCell<MAP, EDGE,AUTO> trav(map, false);
+    for (Cell<EDGE> c = trav.begin(), e = trav.end(); c.dart != e.dart; c = trav.next())
+    {
+        tableIndices.push_back(map.template getEmbedding<VERTEX>(e.dart));
+        tableIndices.push_back(map.template getEmbedding<VERTEX>(map.phi1(e)));
+    }
+    //    foreach_cell<EDGE>(map,
+    //                       (
+    //                           bl::bind(&std::vector<GLuint>::push_back,boost::ref(tableIndices),  bl::bind(&MAP::template getEmbedding<VERTEX>, boost::ref(map), bl::_1)),
+    //                           bl::bind(&std::vector<GLuint>::push_back,boost::ref(tableIndices),  bl::bind(&MAP::template getEmbedding<VERTEX>, boost::ref(map), bl::bind(&MAP::phi1, boost::ref(map), bl::_1)))
+    //                           )
+    //                       ,AUTO);
 }
 
 template<typename PFP>
-void MapRender::initBoundaries(typename PFP::MAP& map, std::vector<GLuint>& tableIndices, unsigned int thread)
+void MapRender::initBoundaries(typename PFP::MAP& map, std::vector<GLuint>& tableIndices)
 {
     typedef typename PFP::MAP MAP;
     tableIndices.reserve(map.getNbDarts()); //TODO optimisation ?
 
-    //	TraversorE<typename PFP::MAP> trav(map, thread);
+    //	TraversorE<typename PFP::MAP> trav(map);
     //	for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
-    foreach_cell<EDGE>(map,
-                       bl::if_(bl::bind(&MAP::isBoundaryEdge, boost::ref(map), bl::_1))
-                       [(
-                bl::bind(&std::vector<GLuint>::push_back,boost::ref(tableIndices),  bl::bind(&MAP::template getEmbedding<VERTEX>, boost::ref(map), bl::_1)),
-                bl::bind(&std::vector<GLuint>::push_back,boost::ref(tableIndices),  bl::bind(&MAP::template getEmbedding<VERTEX>, boost::ref(map), bl::bind(&MAP::phi1, boost::ref(map), bl::_1)))
-                )]
-            ,AUTO,thread);
+    TraversorCell<MAP, EDGE,AUTO> trav(map, false);
+    for (Cell<EDGE> c = trav.begin(), e = trav.end(); c.dart != e.dart; c = trav.next())
+    {
+        if (map.isBoundaryEdge(e))
+        {
+            tableIndices.push_back(map.template getEmbedding<VERTEX>(e.dart));
+            tableIndices.push_back(map.template getEmbedding<VERTEX>(map.phi1(e)));
+        }
+    }
+    //    foreach_cell<EDGE>(map,
+    //                       bl::if_(bl::bind(&MAP::isBoundaryEdge, boost::ref(map), bl::_1))
+    //                       [(
+    //                bl::bind(&std::vector<GLuint>::push_back,boost::ref(tableIndices),  bl::bind(&MAP::template getEmbedding<VERTEX>, boost::ref(map), bl::_1)),
+    //                bl::bind(&std::vector<GLuint>::push_back,boost::ref(tableIndices),  bl::bind(&MAP::template getEmbedding<VERTEX>, boost::ref(map), bl::bind(&MAP::phi1, boost::ref(map), bl::_1)))
+    //                )]
+    //            ,AUTO);
 }
 
 template<typename PFP>
-void MapRender::initLinesOptimized(typename PFP::MAP& map, std::vector<GLuint>& tableIndices, unsigned int thread)
+void MapRender::initLinesOptimized(typename PFP::MAP& map, std::vector<GLuint>& tableIndices)
 {
 #define LIST_SIZE 20
-    DartMarker<typename PFP::MAP> m(map, thread);
+    DartMarker<typename PFP::MAP> m(map);
 
     // reserve memory for edges indices ( nb indices == nb darts)
     tableIndices.reserve(map.getNbDarts());
@@ -482,27 +508,34 @@ void MapRender::initLinesOptimized(typename PFP::MAP& map, std::vector<GLuint>& 
 }
 
 template<typename PFP>
-void MapRender::initPoints(typename PFP::MAP& map, std::vector<GLuint>& tableIndices, unsigned int thread)
+void MapRender::initPoints(typename PFP::MAP& map, std::vector<GLuint>& tableIndices)
 {
     typedef typename PFP::MAP MAP;
     tableIndices.reserve(map.getNbDarts() / 5);
 
-    //	TraversorV<typename PFP::MAP> trav(map, thread);
-    foreach_cell<VERTEX>(map,
-    (
-        bl::bind(&std::vector<GLuint>::push_back, boost::ref(tableIndices), bl::bind(&MAP::getEmbedding, boost::ref(map), bl::_1))
-    )
-    ,FORCE_CELL_MARKING,thread); //
+    //	TraversorV<typename PFP::MAP> trav(map);
+    TraversorCell<MAP, VERTEX,FORCE_CELL_MARKING> trav(map, false);
+    for (Cell<VERTEX> c = trav.begin(), e = trav.end(); c.dart != e.dart; c = trav.next())
+    {
+        tableIndices.push_back(map.getEmbedding(c));
+    }
+
+
+    //    foreach_cell<VERTEX>(map,
+    //    (
+    //        bl::bind(&std::vector<GLuint>::push_back, boost::ref(tableIndices), bl::bind(&MAP::getEmbedding, boost::ref(map), bl::_1))
+    //    )
+    //    ,FORCE_CELL_MARKING); //
 }
 
 template<typename PFP>
-void MapRender::initPrimitives(typename PFP::MAP& map, int prim, bool optimized, unsigned int thread)
+void MapRender::initPrimitives(typename PFP::MAP& map, int prim, bool optimized)
 {
-    initPrimitives<PFP>(map, prim, NULL, optimized, thread) ;
+    initPrimitives<PFP>(map, prim, NULL, optimized) ;
 }
 
 template <typename PFP>
-void MapRender::initPrimitives(typename PFP::MAP& map, int prim, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>* position, bool optimized, unsigned int thread)
+void MapRender::initPrimitives(typename PFP::MAP& map, int prim, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>* position, bool optimized)
 {
     std::vector<GLuint> tableIndices;
 
@@ -510,24 +543,24 @@ void MapRender::initPrimitives(typename PFP::MAP& map, int prim, const VertexAtt
     {
     case POINTS:
 
-        initPoints<PFP>(map, tableIndices, thread);
+        initPoints<PFP>(map, tableIndices);
         break;
     case LINES:
         if(optimized)
-            initLinesOptimized<PFP>(map, tableIndices, thread);
+            initLinesOptimized<PFP>(map, tableIndices);
         else
-            initLines<PFP>(map, tableIndices, thread) ;
+            initLines<PFP>(map, tableIndices) ;
         break;
     case TRIANGLES:
         if(optimized)
-            initTrianglesOptimized<PFP>(map, tableIndices, position, thread);
+            initTrianglesOptimized<PFP>(map, tableIndices, position);
         else
-            initTriangles<PFP>(map, tableIndices, position, thread) ;
+            initTriangles<PFP>(map, tableIndices, position) ;
         break;
     case FLAT_TRIANGLES:
         break;
     case BOUNDARY:
-        initBoundaries<PFP>(map, tableIndices, thread) ;
+        initBoundaries<PFP>(map, tableIndices) ;
         break;
     default:
         CGoGNerr << "problem initializing VBO indices" << CGoGNendl;
@@ -543,7 +576,7 @@ void MapRender::initPrimitives(typename PFP::MAP& map, int prim, const VertexAtt
 }
 
 template <typename PFP>
-void MapRender::addPrimitives(typename PFP::MAP& map, int prim, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>* position, bool optimized, unsigned int thread)
+void MapRender::addPrimitives(typename PFP::MAP& map, int prim, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>* position, bool optimized)
 {
     std::vector<GLuint> tableIndices;
 
@@ -551,24 +584,24 @@ void MapRender::addPrimitives(typename PFP::MAP& map, int prim, const VertexAttr
     {
     case POINTS:
 
-        initPoints<PFP>(map, tableIndices, thread);
+        initPoints<PFP>(map, tableIndices);
         break;
     case LINES:
         if(optimized)
-            initLinesOptimized<PFP>(map, tableIndices, thread);
+            initLinesOptimized<PFP>(map, tableIndices);
         else
-            initLines<PFP>(map, tableIndices, thread) ;
+            initLines<PFP>(map, tableIndices) ;
         break;
     case TRIANGLES:
         if(optimized)
-            initTrianglesOptimized<PFP>(map, tableIndices, position, thread);
+            initTrianglesOptimized<PFP>(map, tableIndices, position);
         else
-            initTriangles<PFP>(map, tableIndices, position, thread) ;
+            initTriangles<PFP>(map, tableIndices, position) ;
         break;
     case FLAT_TRIANGLES:
         break;
     case BOUNDARY:
-        initBoundaries<PFP>(map, tableIndices, thread) ;
+        initBoundaries<PFP>(map, tableIndices) ;
         break;
     default:
         CGoGNerr << "problem initializing VBO indices" << CGoGNendl;

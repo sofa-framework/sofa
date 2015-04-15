@@ -58,8 +58,8 @@ public :
     ParticleCell3D(MAP& map) : m(map)
     {}
 
-    ParticleCell3D(MAP& map, Dart belonging_cell, VEC3 pos, const TAB_POS& tabPos,const TAB_FACE * fa_center = nullptr,
-    const TAB_VOL * vol_center=nullptr) :
+    ParticleCell3D(MAP& map, Dart belonging_cell, VEC3 pos, const TAB_POS& tabPos,const TAB_FACE * fa_center = NULL,
+    const TAB_VOL * vol_center=NULL) :
         Algo::MovingObjects::ParticleBase<PFP>(pos),
         m(map),
         position(tabPos),
