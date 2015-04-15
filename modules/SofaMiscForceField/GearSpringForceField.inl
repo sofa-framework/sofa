@@ -27,7 +27,6 @@
 
 #include <SofaMiscForceField/GearSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>

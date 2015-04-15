@@ -30,7 +30,6 @@
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
-#include <SofaBaseTopology/NumericalIntegrationDescriptor.inl>
 namespace sofa
 {
 

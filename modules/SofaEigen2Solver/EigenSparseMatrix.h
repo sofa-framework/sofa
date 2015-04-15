@@ -440,7 +440,7 @@ public:
 
     /// compute result = A * data
     void mult( Data<OutVecDeriv>& _result, const Data<InVecDeriv>& _data ) const {
-        helper::WriteAccessor<Data<OutVecDeriv> > result (_result);
+        helper::WriteOnlyAccessor<Data<OutVecDeriv> > result (_result);
         helper::ReadAccessor<Data<InVecDeriv> > data (_data);
 
         mult_impl(result, data);

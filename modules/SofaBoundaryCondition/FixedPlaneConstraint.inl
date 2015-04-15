@@ -25,7 +25,6 @@
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_INL
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_INL
 
-#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <SofaBoundaryCondition/FixedPlaneConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

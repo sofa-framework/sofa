@@ -29,7 +29,6 @@
 #include <SofaBoundaryCondition/FixedTranslationConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
 namespace sofa

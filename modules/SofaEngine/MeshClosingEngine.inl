@@ -45,12 +45,12 @@ void MeshClosingEngine<DataTypes>::update()
     helper::ReadAccessor<Data< SeqTriangles > > tri(this->inputTriangles);
     helper::ReadAccessor<Data< SeqQuads > > qd(this->inputQuads);
 
-    helper::WriteAccessor<Data< SeqPositions > > opos(this->position);
-    helper::WriteAccessor<Data< SeqTriangles > >  otri(this->triangles);
-    helper::WriteAccessor<Data< SeqQuads > > oqd(this->quads);
-    helper::WriteAccessor<Data< VecSeqIndex > >  oindices(this->indices);
-    helper::WriteAccessor<Data< SeqPositions > > clpos(this->closingPosition);
-    helper::WriteAccessor<Data< SeqTriangles > >  cltri(this->closingTriangles);
+    helper::WriteOnlyAccessor<Data< SeqPositions > > opos(this->position);
+    helper::WriteOnlyAccessor<Data< SeqTriangles > >  otri(this->triangles);
+    helper::WriteOnlyAccessor<Data< SeqQuads > > oqd(this->quads);
+    helper::WriteOnlyAccessor<Data< VecSeqIndex > >  oindices(this->indices);
+    helper::WriteOnlyAccessor<Data< SeqPositions > > clpos(this->closingPosition);
+    helper::WriteOnlyAccessor<Data< SeqTriangles > >  cltri(this->closingTriangles);
 
     // copy input mesh to output
     opos.resize(pos.size()); for(size_t i=0; i<pos.size(); i++) opos[i]=pos[i];

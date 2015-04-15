@@ -176,13 +176,6 @@ void *hapticSimuExecute( void *ptr )
     unsigned int numPts = pts.size();
     unsigned int numSegs = tmg.size();
 
-    helper::vector< unsigned int > stepNum;
-    // Init the Step list
-    for (unsigned int i = 0; i < numPts+1; i++)
-    {
-        stepNum.push_back(tmg[i] * omniDrv->simuFreq.getValue());
-    }
-
     // test if "trajectory" data are correct
     if (numSegs != numPts)
     {
@@ -190,6 +183,12 @@ void *hapticSimuExecute( void *ptr )
         return 0;
     }
 
+    helper::vector< unsigned int > stepNum;
+    // Init the Step list
+    for (unsigned int i = 0; i < numPts; i++)
+    {
+        stepNum.push_back(tmg[i] * omniDrv->simuFreq.getValue());
+    }
 
     /* //Igor version
 

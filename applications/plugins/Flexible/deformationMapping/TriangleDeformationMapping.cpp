@@ -25,7 +25,7 @@
 #define SOFA_COMPONENT_MAPPING_TriangleDeformationMapping_CPP
 
 #include "../initFlexible.h"
-#include "../deformationMapping/TriangleDeformationMapping.inl"
+#include "TriangleDeformationMapping.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/Mapping.inl>
 

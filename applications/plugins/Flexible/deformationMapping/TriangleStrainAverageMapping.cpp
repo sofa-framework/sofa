@@ -25,7 +25,7 @@
 #define SOFA_COMPONENT_MAPPING_TriangleStrainAverageMapping_CPP
 
 #include "../initFlexible.h"
-#include "../deformationMapping/TriangleStrainAverageMapping.inl"
+#include "TriangleStrainAverageMapping.inl"
 #include "../types/StrainTypes.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/Mapping.inl>

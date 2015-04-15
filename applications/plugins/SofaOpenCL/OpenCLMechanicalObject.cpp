@@ -31,6 +31,7 @@
 #include "OpenCLMechanicalObject.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <SofaBaseMechanics/MappedObject.inl>
+#include <sofa/core/State.inl>
 
 //#include "tools/top.h"
 
@@ -39,6 +40,18 @@
 
 namespace sofa
 {
+
+namespace core {
+
+template class State<gpu::opencl::OpenCLVec3fTypes>;
+template class State<gpu::opencl::OpenCLVec3f1Types>;
+template class State<gpu::opencl::OpenCLRigid3fTypes>;
+
+template class State<gpu::opencl::OpenCLVec3dTypes>;
+template class State<gpu::opencl::OpenCLVec3d1Types>;
+template class State<gpu::opencl::OpenCLRigid3dTypes>;
+
+}
 
 namespace component
 {

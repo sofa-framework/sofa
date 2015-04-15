@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPlaneConstraint_INL
 
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <SofaBoundaryCondition/ProjectToPlaneConstraint.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>

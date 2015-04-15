@@ -27,7 +27,6 @@
 
 #include "../initFlexible.h"
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
 

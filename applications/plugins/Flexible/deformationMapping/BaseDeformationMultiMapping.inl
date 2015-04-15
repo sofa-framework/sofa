@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_MAPPING_BaseDeformationMultiMapping_INL
 #define SOFA_COMPONENT_MAPPING_BaseDeformationMultiMapping_INL
 
-#include "../deformationMapping/BaseDeformationMultiMapping.h"
-#include "../deformationMapping/BaseDeformationImpl.inl"
+#include "BaseDeformationMultiMapping.h"
+#include "BaseDeformationImpl.inl"
 #include <SofaBaseVisual/VisualModelImpl.h>
 #include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/helper/gl/Color.h>
@@ -160,8 +160,8 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
         for(size_t i=0; i<pos0.size(); ++i)  defaulttype::StdVectorTypes<mCoord,mCoord>::set( mpos0[i], pos0[i][0] , pos0[i][1] , pos0[i][2]);
 
         // interpolate weights at sample positions
-        if(this->f_cell.getValue().size()==size) _shapeFunction->computeShapeFunction(mpos0,*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit(),this->f_cell.getValue());
-        else _shapeFunction->computeShapeFunction(mpos0,*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
+        if(this->f_cell.getValue().size()==size) _shapeFunction->computeShapeFunction(mpos0,*this->f_index.beginWriteOnly(),*this->f_w.beginWriteOnly(),*this->f_dw.beginWriteOnly(),*this->f_ddw.beginWriteOnly(),this->f_cell.getValue());
+        else _shapeFunction->computeShapeFunction(mpos0,*this->f_index.beginWriteOnly(),*this->f_w.beginWriteOnly(),*this->f_dw.beginWriteOnly(),*this->f_ddw.beginWriteOnly());
         this->f_index.endEdit();    this->f_w.endEdit();        this->f_dw.endEdit();        this->f_ddw.endEdit();
     }
 
@@ -410,9 +410,9 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::apply(
     helper::ReadAccessor<Data<OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));
     //    if(_sampler) if(_sampler->getNbSamples()!=outpos.size()) resizeOut();
 
-    OutVecCoord&  out = *dOut.beginEdit();
-    const InVecCoord1&  in1 = dIn1.getValue();
-    const InVecCoord2&  in2 = dIn2.getValue();
+    OutVecCoord& out = *dOut.beginWriteOnly();
+    const InVecCoord1& in1 = dIn1.getValue();
+    const InVecCoord2& in2 = dIn2.getValue();
 
 #ifdef _OPENMP
 #pragma omp parallel for
@@ -481,9 +481,9 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
     }
     else
     {
-        OutVecDeriv&  out = *dOut.beginEdit();
-        const InVecDeriv1&  in1 = dIn1.getValue();
-        const InVecDeriv2&  in2 = dIn2.getValue();
+        OutVecDeriv& out = *dOut.beginWriteOnly();
+        const InVecDeriv1& in1 = dIn1.getValue();
+        const InVecDeriv2& in2 = dIn2.getValue();
 
         if( !this->maskTo || !this->maskTo->isInUse() )
         {
@@ -538,9 +538,9 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
     if(this->assemble.getValue())  { eigenJacobian1.addMultTranspose(dIn1,dOut); eigenJacobian2.addMultTranspose(dIn2,dOut); }
     else
     {
-        InVecDeriv1&  in1 = *dIn1.beginEdit();
-        InVecDeriv2&  in2 = *dIn2.beginEdit();
-        const OutVecDeriv&  out = dOut.getValue();
+        InVecDeriv1& in1 = *dIn1.beginEdit();
+        InVecDeriv2& in2 = *dIn2.beginEdit();
+        const OutVecDeriv& out = dOut.getValue();
 
         if( !this->maskTo || !this->maskTo->isInUse() )
         {

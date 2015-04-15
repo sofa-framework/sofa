@@ -26,13 +26,19 @@
 #define SOFA_COMPONENT_MAPPING_LINEARMAPPING_H
 
 #include "../initFlexible.h"
-#include "../deformationMapping/BaseDeformationMapping.inl"
-#include "../deformationMapping/LinearJacobianBlock_point.inl"
-#include "../deformationMapping/LinearJacobianBlock_rigid.inl"
-#include "../deformationMapping/LinearJacobianBlock_affine.inl"
-#include "../deformationMapping/LinearJacobianBlock_quadratic.inl"
-//#include <SofaBaseMechanics/MechanicalObject.inl>
-#include <sofa/core/State.inl>
+#include "BaseDeformationMapping.h"
+#include "BaseDeformationImpl.inl"
+#include "LinearJacobianBlock_point.inl"
+#include "LinearJacobianBlock_rigid.inl"
+#include "LinearJacobianBlock_affine.inl"
+#include "LinearJacobianBlock_quadratic.inl"
+
+
+#ifdef __APPLE__
+// a strange behaviour of the mac's linker requires to compile a few stuffs again
+#include "BaseDeformationMapping.inl"
+#endif
+
 
 namespace sofa
 {

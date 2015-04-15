@@ -28,7 +28,6 @@
 #include <SofaMiscMapping/DeformableOnRigidFrameMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/Multi2Mapping.inl>
 #include <sofa/core/behavior/MechanicalState.h>
 
 #include <sofa/core/VecId.h>

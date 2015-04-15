@@ -137,6 +137,7 @@ set(SOFAHELPER_SOURCES
     Polynomial_LD.cpp
     UnitTest.cpp
     GenerateRigid.cpp
+    kdTree.cpp
     Utils.cpp
 	)
 

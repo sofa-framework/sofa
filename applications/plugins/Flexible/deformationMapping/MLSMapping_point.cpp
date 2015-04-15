@@ -25,11 +25,13 @@
 #define SOFA_COMPONENT_MAPPING_MLSMAPPING_point_CPP
 
 #include "../initFlexible.h"
-#include "../deformationMapping/MLSMapping.h"
+#include "MLSMapping.h"
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include "../types/DeformationGradientTypes.h"
+
+#include "BaseDeformationMapping.inl"
 
 namespace sofa
 {
@@ -38,7 +40,7 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(MLSMapping_point);
+SOFA_DECL_CLASS(MLSMapping_point)
 
 using namespace defaulttype;
 

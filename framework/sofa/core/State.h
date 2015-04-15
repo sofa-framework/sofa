@@ -29,6 +29,7 @@
 #include <sofa/core/BaseState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <limits>
 
 namespace sofa
@@ -86,26 +87,35 @@ public:
     typedef helper::ReadAccessor <Data<VecReal> > ReadVecReal;
     typedef helper::WriteAccessor<Data<VecReal> > WriteVecReal;
 
-    typedef helper::ReadAccessor <Data<Coord> >    ReadCoord;
-    typedef helper::WriteAccessor<Data<Coord> >    WriteCoord;
-    typedef helper::ReadAccessor <Data<VecCoord> > ReadVecCoord;
-    typedef helper::WriteAccessor<Data<VecCoord> > WriteVecCoord;
+    typedef helper::ReadAccessor     <Data<Coord> >    ReadCoord;
+    typedef helper::WriteAccessor    <Data<Coord> >    WriteCoord;
+    typedef helper::WriteOnlyAccessor<Data<Coord> >    WriteOnlyCoord;
+    typedef helper::ReadAccessor     <Data<VecCoord> > ReadVecCoord;
+    typedef helper::WriteAccessor    <Data<VecCoord> > WriteVecCoord;
+    typedef helper::WriteOnlyAccessor<Data<VecCoord> > WriteOnlyVecCoord;
     ReadVecCoord  readPositions() const     { return ReadVecCoord (*this->read (core::ConstVecCoordId::position())); }
     WriteVecCoord writePositions()          { return WriteVecCoord(*this->write(core::VecCoordId::position())); }
+    WriteOnlyVecCoord writeOnlyPositions()      { return WriteOnlyVecCoord(*this->write(core::VecCoordId::position())); }
     ReadVecCoord  readRestPositions() const { return ReadVecCoord (*this->read (core::ConstVecCoordId::restPosition())); }
     WriteVecCoord writeRestPositions()      { return WriteVecCoord(*this->write(core::VecCoordId::restPosition())); }
+    WriteOnlyVecCoord writeOnlyRestPositions()  { return WriteOnlyVecCoord(*this->write(core::VecCoordId::restPosition())); }
 
-    typedef helper::ReadAccessor <Data<Deriv> >    ReadDeriv;
-    typedef helper::WriteAccessor<Data<Deriv> >    WriteDeriv;
-    typedef helper::ReadAccessor <Data<VecDeriv> > ReadVecDeriv;
-    typedef helper::WriteAccessor<Data<VecDeriv> > WriteVecDeriv;
-    ReadVecDeriv  readVelocities() const { return ReadVecDeriv (*this->read (core::ConstVecDerivId::velocity())); }
-    WriteVecDeriv writeVelocities()      { return WriteVecDeriv(*this->write(core::VecDerivId::velocity())); }
-    ReadVecDeriv  readForces() const     { return ReadVecDeriv (*this->read (core::ConstVecDerivId::force())); }
-    WriteVecDeriv writeForces()          { return WriteVecDeriv(*this->write(core::VecDerivId::force())); }
-    ReadVecDeriv  readDx() const         { return ReadVecDeriv (*this->read (core::ConstVecDerivId::dx())); }
-    WriteVecDeriv writeDx()              { return WriteVecDeriv(*this->write(core::VecDerivId::dx())); }
-    ReadVecDeriv  readNormals() const    { return ReadVecDeriv (*this->read (core::ConstVecDerivId::normal())); }
+    typedef helper::ReadAccessor     <Data<Deriv> >    ReadDeriv;
+    typedef helper::WriteAccessor    <Data<Deriv> >    WriteDeriv;
+    typedef helper::WriteOnlyAccessor<Data<Deriv> >    WriteOnlyDeriv;
+    typedef helper::ReadAccessor     <Data<VecDeriv> > ReadVecDeriv;
+    typedef helper::WriteAccessor    <Data<VecDeriv> > WriteVecDeriv;
+    typedef helper::WriteOnlyAccessor<Data<VecDeriv> > WriteOnlyVecDeriv;
+    ReadVecDeriv  readVelocities() const    { return ReadVecDeriv (*this->read (core::ConstVecDerivId::velocity())); }
+    WriteVecDeriv writeVelocities()         { return WriteVecDeriv(*this->write(core::VecDerivId::velocity())); }
+    WriteOnlyVecDeriv writeOnlyVelocities() { return WriteOnlyVecDeriv(*this->write(core::VecDerivId::velocity())); }
+    ReadVecDeriv  readForces() const        { return ReadVecDeriv (*this->read (core::ConstVecDerivId::force())); }
+    WriteVecDeriv writeForces()             { return WriteVecDeriv(*this->write(core::VecDerivId::force())); }
+    WriteOnlyVecDeriv writeOnlyForces()     { return WriteOnlyVecDeriv(*this->write(core::VecDerivId::force())); }
+    ReadVecDeriv  readDx() const            { return ReadVecDeriv (*this->read (core::ConstVecDerivId::dx())); }
+    WriteVecDeriv writeDx()                 { return WriteVecDeriv(*this->write(core::VecDerivId::dx())); }
+    WriteOnlyVecDeriv writeOnlyDx()         { return WriteOnlyVecDeriv(*this->write(core::VecDerivId::dx())); }
+    ReadVecDeriv  readNormals() const       { return ReadVecDeriv (*this->read (core::ConstVecDerivId::normal())); }
     //@}
 
 
@@ -130,7 +140,6 @@ public:
     /// @{
 
     virtual objectmodel::BaseData* baseWrite(VecId v);
-
     virtual const objectmodel::BaseData* baseRead(ConstVecId v) const;
 
     /// @}
@@ -171,13 +180,12 @@ extern template class SOFA_CORE_API State<defaulttype::Rigid3fTypes>;
 
 extern template class SOFA_CORE_API State<defaulttype::ExtVec3fTypes>;
 
+extern template class SOFA_CORE_API State<defaulttype::LaparoscopicRigid3Types>;
+
 #endif
 } // namespace core
 
 } // namespace sofa
 
-#ifndef SOFA_EXTERN_TEMPLATE
-#include <sofa/core/State.inl>
-#endif
 
 #endif

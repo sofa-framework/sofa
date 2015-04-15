@@ -28,7 +28,6 @@
 #include <sofa/SofaFramework.h>
 
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
 

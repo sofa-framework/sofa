@@ -28,8 +28,6 @@
 #include <SofaMiscMapping/CenterOfMassMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/core/Mapping.inl>
-
 #include <sofa/simulation/common/Simulation.h>
 
 #include <sofa/defaulttype/VecTypes.h>

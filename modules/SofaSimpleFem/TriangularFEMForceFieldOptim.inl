@@ -31,7 +31,6 @@
 #endif
 
 #include "TriangularFEMForceFieldOptim.h"
-#include <sofa/core/behavior/ForceField.inl>
 
 #include <SofaBaseLinearSolver/BlocMatrixWriter.h>
 

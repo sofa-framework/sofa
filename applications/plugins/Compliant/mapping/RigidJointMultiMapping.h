@@ -6,7 +6,6 @@
 
 #include "utils/se3.h"
 #include "utils/map.h"
-#include "utils/edit.h"
 
 namespace sofa {
 

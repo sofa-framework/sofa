@@ -723,7 +723,7 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
         if( stabilization.getValue().getSelectedId()!=POST_STABILIZATION_ASSEMBLY )
         {
             serr<<"Only full post-stabilization "<<POST_STABILIZATION_ASSEMBLY<<" can be (and will be) computed"<<sendl;
-            stabilization.beginEdit()->setSelectedItem(POST_STABILIZATION_ASSEMBLY); stabilization.endEdit();
+            stabilization.beginWriteOnly()->setSelectedItem(POST_STABILIZATION_ASSEMBLY); stabilization.endEdit();
         }
         post_stabilization( sop, posId, velId, true, true );
     }

@@ -27,7 +27,6 @@
 
 #include <SofaBoundaryCondition/EllipsoidForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/system/gl.h>

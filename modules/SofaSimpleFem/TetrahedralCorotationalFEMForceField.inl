@@ -25,11 +25,9 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_INL
 
-#include <sofa/core/behavior/ForceField.inl>
 #include "TetrahedralCorotationalFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/GridTopology.h>
-#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/decompose.h>
 #include <sofa/helper/gl/template.h>

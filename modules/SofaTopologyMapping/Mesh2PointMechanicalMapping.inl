@@ -29,7 +29,6 @@
 
 #include <SofaTopologyMapping/Mesh2PointTopologicalMapping.h>
 
-#include <sofa/core/Mapping.inl>
 
 namespace sofa
 {

@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_FORCEFIELD_INTERACTION_ELLIPSOIDFORCEFIELD_INL
 
 #include <sofa/SofaFramework.h>
-//#include <sofa/core/behavior/ForceField.inl>
 #include <SofaObjectInteraction/InteractionEllipsoidForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>

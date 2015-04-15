@@ -4,7 +4,6 @@
 #include "AssembledMapping.h"
 #include <Compliant/Compliant.h>
 #include "utils/map.h"
-#include "utils/edit.h"
 
 namespace sofa {
 
