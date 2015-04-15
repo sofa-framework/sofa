@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 2.8)
 
 project(Flexible_test)
 
+set(HEADER_FILES
+    StrainMapping_test.h)
+
 set(SOURCE_FILES
    AffinePatch_test.cpp
    AffineDeformationMapping_test.cpp
@@ -17,7 +20,13 @@ set(SOURCE_FILES
    ShapeFunction_test.cpp
    StabilizedNeoHookeHexahedraMaterial_test.cpp
    TetrahedraMaterial_test.cpp
-   TetrahedronVolumeMapping_test.cpp)
+   TetrahedronVolumeMapping_test.cpp
+
+   CorotationalStrainMapping_test.cpp
+   CauchyStrainMapping_test.cpp
+   GreenStrainMapping_test.cpp
+   InvariantMapping_test.cpp
+   PrincipalStretchesMapping_test.cpp)
 
 if(WIN32)
     list(APPEND HEADER_FILES "stdafx.h")
@@ -37,7 +46,7 @@ add_definitions("-DFLEXIBLE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes
 # find_package(image QUIET)
 # find_package(Compliant QUIET)
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${PYTHON_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} Flexible SofaTest gtest_main)
 target_link_libraries(${PROJECT_NAME} image)
 # target_link_libraries(${PROJECT_NAME} DiffusionSolver)

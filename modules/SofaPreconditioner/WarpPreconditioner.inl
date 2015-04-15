@@ -41,7 +41,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/simulation/common/MechanicalMatrixVisitor.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 
 #include <iostream>
 #include <math.h>

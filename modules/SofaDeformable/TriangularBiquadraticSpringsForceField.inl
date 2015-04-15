@@ -34,7 +34,6 @@
 #include <sofa/helper/gl/template.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/core/behavior/ForceField.inl>
 
 namespace sofa
 {

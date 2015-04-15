@@ -25,7 +25,6 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_INL
 
-#include <sofa/core/behavior/ForceField.inl>
 #include "RestShapeSpringsForceField.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/config.h>

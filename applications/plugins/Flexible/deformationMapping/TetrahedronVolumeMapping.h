@@ -80,7 +80,7 @@ public:
     {
         if( !m_topology ) return;
 
-        helper::WriteAccessor< Data<OutVecCoord> >  v = dOut;
+        helper::WriteOnlyAccessor< Data<OutVecCoord> >  v = dOut;
         helper::ReadAccessor< Data<InVecCoord> >  x = dIn;
 
         jacobian.resizeBlocks( v.size(), x.size() );
@@ -120,7 +120,7 @@ public:
         if( this->f_applyRestPosition.getValue() && !d_offsets.getValue().empty() )
         {
             const OutVecCoord& x0 = d_offsets.getValue();
-            OutVecCoord& x = *dOut.beginEdit();
+            OutVecCoord& x = *dOut.beginWriteOnly();
             for( size_t i=0 ; i<x.size() ; ++i ) x[i] -= x0[std::min(i,x0.size()-1)];
             dOut.endEdit();
         }

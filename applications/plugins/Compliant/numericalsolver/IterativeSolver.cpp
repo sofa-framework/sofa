@@ -1,5 +1,4 @@
 #include "IterativeSolver.h"
-#include "../utils/edit.h"
 
 
 namespace sofa {

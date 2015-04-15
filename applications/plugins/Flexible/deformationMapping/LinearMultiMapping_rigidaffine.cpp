@@ -25,8 +25,7 @@
 #define SOFA_COMPONENT_MAPPING_LINEARMULTIMAPPING_rigidaffine_CPP
 
 #include "../initFlexible.h"
-#include "../deformationMapping/LinearMultiMapping.h"
-#include <sofa/core/Multi2Mapping.inl>
+#include "LinearMultiMapping.h"
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/VecTypes.h>
@@ -35,6 +34,9 @@
 #include "../types/QuadraticTypes.h"
 #include "../types/DeformationGradientTypes.h"
 
+
+#include "BaseDeformationMultiMapping.inl"
+
 namespace sofa
 {
 namespace component
@@ -42,7 +44,7 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(LinearMultiMapping_rigidaffine);
+SOFA_DECL_CLASS(LinearMultiMapping_rigidaffine)
 
 using namespace defaulttype;
 

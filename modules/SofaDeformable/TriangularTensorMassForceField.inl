@@ -33,7 +33,6 @@
 #include <iostream> //for debugging
 #include <sofa/helper/gl/template.h>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <sofa/core/behavior/ForceField.inl>
 
 namespace sofa
 {

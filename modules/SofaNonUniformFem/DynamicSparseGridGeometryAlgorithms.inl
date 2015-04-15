@@ -28,7 +28,6 @@
 #include <SofaNonUniformFem/DynamicSparseGridGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
-//#include <SofaBaseMechanics/MechanicalObject.inl>
 
 namespace sofa
 {

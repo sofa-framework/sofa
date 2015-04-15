@@ -25,7 +25,7 @@
 #define SOFA_COMPONENT_MAPPING_LINEARMAPPING_rigid_CPP
 
 #include "../initFlexible.h"
-#include "../deformationMapping/LinearMapping.h"
+#include "LinearMapping.h"
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/VecTypes.h>
@@ -33,6 +33,8 @@
 #include "../types/AffineTypes.h"
 #include "../types/QuadraticTypes.h"
 #include "../types/DeformationGradientTypes.h"
+
+#include "BaseDeformationMapping.inl"
 
 namespace sofa
 {

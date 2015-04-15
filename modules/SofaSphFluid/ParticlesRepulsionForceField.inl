@@ -25,7 +25,6 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_INL
 
-#include <sofa/core/behavior/ForceField.inl>
 #include <SofaSphFluid/ParticlesRepulsionForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaSphFluid/SpatialGridContainer.inl>

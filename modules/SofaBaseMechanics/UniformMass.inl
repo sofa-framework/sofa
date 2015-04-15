@@ -189,7 +189,7 @@ void UniformMass<DataTypes, MassType>::addMDx ( const core::MechanicalParams*, D
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::accFromF ( const core::MechanicalParams*, DataVecDeriv& va, const DataVecDeriv& vf )
 {
-    helper::WriteAccessor<DataVecDeriv> a = va;
+    helper::WriteOnlyAccessor<DataVecDeriv> a = va;
     helper::ReadAccessor<DataVecDeriv> f = vf;
 
     unsigned int ibegin = 0;

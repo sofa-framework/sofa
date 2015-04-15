@@ -29,7 +29,6 @@
 #include "../strainMapping/BaseStrainMapping.h"
 #include "../strainMapping/InvariantJacobianBlock.inl"
 
-
 namespace sofa
 {
 namespace component

@@ -55,6 +55,8 @@ BaseCamera::BaseCamera()
     ,p_type(initData(&p_type, (int) core::visual::VisualParams::PERSPECTIVE_TYPE, "projectionType", "Camera Type (0 = Perspective, 1 = Orthographic)"))
     ,p_activated(initData(&p_activated, true , "activated", "Camera activated ?"))
 	,p_fixedLookAtPoint(initData(&p_fixedLookAtPoint, false, "fixedLookAt", "keep the lookAt point always fixed"))
+    ,d_computeProjectionMatrix(initData(&d_computeProjectionMatrix, false , "computeProjectionMatrix", "If true, compute projection matrix according to the given intrinsic parameters"))
+    ,d_intrinsicParameters(initData(&d_intrinsicParameters, Mat3(), "intrinsicParameters", "Intrinsic parameters (used to compute projection matrix"))
 {
 
 }
@@ -223,6 +225,52 @@ void BaseCamera::getOpenGLMatrix(GLdouble mat[16])
     world_H_cam.inversed().writeOpenGlMatrix(mat);
 }
 
+void BaseCamera::getProjectionMatrix(Mat4& projectionMatrix)
+{
+    Mat3 intrinsicParameters = d_intrinsicParameters.getValue();
+    computeZ();
+
+    projectionMatrix[0][0] = intrinsicParameters[0][0] / intrinsicParameters[0][2]; // FocalX
+    projectionMatrix[0][1] = 0.0;
+    projectionMatrix[0][2] = 0.0;
+    projectionMatrix[0][3] = 0.0;
+
+    projectionMatrix[1][0] = 0.0;
+    projectionMatrix[1][1] = intrinsicParameters[1][1] / intrinsicParameters[1][2]; // FocalY
+    projectionMatrix[1][2] = 0.0;
+    projectionMatrix[1][3] = 0.0;
+
+    projectionMatrix[2][0] = 0;
+    projectionMatrix[2][1] = 0;
+    projectionMatrix[2][2] = -( currentZFar + currentZNear ) / ( currentZFar - currentZNear );
+    projectionMatrix[2][3] = -1.0;
+
+    projectionMatrix[3][0] = 0.0;
+    projectionMatrix[3][1] = 0.0;
+    projectionMatrix[3][2] = -2.0 * currentZFar * currentZNear / ( currentZFar - currentZNear );
+    projectionMatrix[3][3] = 0.0;
+}
+
+void BaseCamera::getOpenGLProjectionMatrix(GLdouble oglProjectionMatrix[16])
+{
+    Mat4 projectionMatrix;
+    this->getProjectionMatrix(projectionMatrix);
+
+//    projectionMatrix.transpose();
+    for(unsigned int i=0 ; i<4 ; i++)
+    {
+        for(unsigned int j=0 ; j<4 ; j++)
+            oglProjectionMatrix[i*4+j] = projectionMatrix[i][j];
+    }
+//    oglProjectionMatrix = projectionMatrix.ptr();
+//    std::cout << "Proj OGL1" << std::endl;
+//    for(unsigned int i=0 ; i<4 ; i++)
+//    {
+//        for(unsigned int j=0 ; j<4 ; j++)
+//            std::cout << oglProjectionMatrix[i*4+j] << "\t";
+//        std::cout << std::endl;
+//    }
+}
 
 void BaseCamera::reinit()
 {

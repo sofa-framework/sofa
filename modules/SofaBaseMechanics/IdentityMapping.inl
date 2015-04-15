@@ -53,7 +53,7 @@ void IdentityMapping<TIn, TOut>::init()
 template <class TIn, class TOut>
 void IdentityMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/, Data<VecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
-    helper::WriteAccessor< Data<VecCoord> > out = dOut;
+    helper::WriteOnlyAccessor< Data<VecCoord> > out = dOut;
     helper::ReadAccessor< Data<InVecCoord> > in = dIn;
 
     out.resize(in.size());
@@ -67,7 +67,7 @@ void IdentityMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
 template <class TIn, class TOut>
 void IdentityMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/, Data<VecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
-    helper::WriteAccessor< Data<VecDeriv> > out = dOut;
+    helper::WriteOnlyAccessor< Data<VecDeriv> > out = dOut;
     helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
 
     out.resize(in.size());

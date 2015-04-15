@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_TriangleDeformationMapping_H
 #define SOFA_COMPONENT_MAPPING_TriangleDeformationMapping_H
 
-#include <sofa/core/Mapping.inl>
+#include <sofa/core/Mapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>

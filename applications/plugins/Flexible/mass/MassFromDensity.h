@@ -139,8 +139,8 @@ protected:
         rmat Me(3*nb,3*nb);
         Me.reserve(3*nb);
         dofs->resize(nb);
-        helper::WriteAccessor<Data<VecCoord> > rpos ( dofs->writeRestPositions() );
-        helper::WriteAccessor<Data<VecCoord> > pos ( dofs->writePositions() );
+        helper::WriteOnlyAccessor<Data<VecCoord> > rpos ( dofs->writeOnlyRestPositions() );
+        helper::WriteOnlyAccessor<Data<VecCoord> > pos ( dofs->writeOnlyPositions() );
 
         Real voxelVol = inT->getScale()[0]*inT->getScale()[1]*inT->getScale()[2];
         nb=0;
@@ -174,7 +174,7 @@ protected:
             {
                 MySPtr<rmat> J( convertSPtr<rmat>( (*js)[i] ) );
                 rmat JTMe=J->transpose()*Me;
-                MassMatrix& M = *massMatrix.beginEdit();
+                MassMatrix& M = *massMatrix.beginWriteOnly();
                 M.compressedMatrix=JTMe*(*J);
                 if( f_lumping.getValue()==BLOCK_LUMPING )
                 {

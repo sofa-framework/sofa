@@ -27,8 +27,6 @@
 
 #include "CenterPointMechanicalMapping.h"
 
-#include <sofa/core/Mapping.inl>
-
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 

@@ -28,10 +28,8 @@
 #include <SofaMiscMapping/PCAOnRigidFrameMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/core/Multi2Mapping.inl>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/Mapping.inl>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/Quat.h>
 

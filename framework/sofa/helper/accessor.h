@@ -143,6 +143,26 @@ public:
     }
 };
 
+
+/// identical to WriteAccessor for default implementation
+template<class T>
+class WriteOnlyAccessor : public WriteAccessor<T>
+{
+protected:
+    typedef WriteAccessor<T> Inherit;
+    typedef typename Inherit::container_type container_type;
+
+public:
+    explicit WriteOnlyAccessor(container_type& container) : WriteAccessor<T>(container) {}
+};
+
+
+
+//////////////////////////
+
+
+
+
 /// ReadAccessor implementation class for vector types
 template<class T>
 class ReadAccessorVector
@@ -265,7 +285,6 @@ public:
     typedef typename Inherit::container_type container_type;
     WriteAccessor(container_type& c) : Inherit(c) {}
 };
-
 
 
 

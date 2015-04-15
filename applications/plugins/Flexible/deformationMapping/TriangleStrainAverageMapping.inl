@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_TriangleStrainAverageMapping_INL
 #define SOFA_COMPONENT_MAPPING_TriangleStrainAverageMapping_INL
 
-#include "../deformationMapping/TriangleStrainAverageMapping.h"
+#include "TriangleStrainAverageMapping.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <map>
 #include <iostream>
@@ -126,7 +126,7 @@ void TriangleStrainAverageMapping<TIn, TOut>::init()
 template <class TIn, class TOut>
 void TriangleStrainAverageMapping<TIn, TOut>::mult( Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn )
 {
-    helper::WriteAccessor< Data<OutVecCoord> >  nodeValues = dOut;
+    helper::WriteOnlyAccessor< Data<OutVecCoord> >  nodeValues = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  triangleValues = dIn;
     helper::ReadAccessor< Data<vector<unsigned> > > triangleIndices(f_triangleIndices);
     helper::ReadAccessor< Data<vector<unsigned> > > endIndices(f_endIndices);

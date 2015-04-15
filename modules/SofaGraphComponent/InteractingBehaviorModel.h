@@ -25,8 +25,8 @@
 #ifndef SOFA_CORE_INTERACTINGBEHAVIORMODEL_H
 #define SOFA_CORE_INTERACTINGBEHAVIORMODEL_H
 
-#include <sofa/core/behavior/Mass.inl>
 #include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/core/behavior/Mass.h>
 
 
 namespace sofa

@@ -70,7 +70,7 @@ struct DiffusionSolver
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(__DIFFUSIONSOLVER_CPP)
-    extern template class IMPORT_DYNAMIC_LIBRARY DiffusionSolver<float>;
+    extern template struct IMPORT_DYNAMIC_LIBRARY DiffusionSolver<float>;
 #endif
 
 

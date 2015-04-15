@@ -77,8 +77,8 @@ void ComputeWeightEngine::update()
     size_t nb_vertices = vertices.size();
 
     // Get indices and weight
-    sofa::helper::vector< Indices >& indices = *d_indices.beginEdit();
-    sofa::helper::vector< Weights >& weights = *d_weights.beginEdit();
+    sofa::helper::vector< Indices >& indices = *d_indices.beginWriteOnly();
+    sofa::helper::vector< Weights >& weights = *d_weights.beginWriteOnly();
 
     indices.resize( nb_vertices );
     weights.resize( nb_vertices );

@@ -276,7 +276,7 @@ set(CUDA_NVCC_FLAGS_DEBUG "-g")
 set(CUDA_NVCC_FLAGS_RELEASE "-DNDEBUG")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
-target_link_libraries(${PROJECT_NAME} SofaHelper SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData SofaComponentAdvanced SofaComponentMisc)
+target_link_libraries(${PROJECT_NAME} SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData SofaComponentAdvanced SofaComponentMisc)
 
 # Make the compiler definitions available to nvcc
 add_definitions("${SOFACUDA_COMPILE_DEFINITIONS}")

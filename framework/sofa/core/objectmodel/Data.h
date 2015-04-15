@@ -607,6 +607,8 @@ extern template class SOFA_CORE_API Data< bool >;
 namespace helper
 {
 
+
+/// @warning the Data is updated (if needed) only by the Accessor constructor
 template<class T>
 class ReadAccessor< core::objectmodel::Data<T> > : public ReadAccessor<T>
 {
@@ -615,22 +617,27 @@ public:
     typedef core::objectmodel::Data<T> data_container_type;
     typedef T container_type;
 
-protected:
-    const data_container_type* data;
+//protected:
+//    const data_container_type* data;
 public:
-    ReadAccessor(const data_container_type& d) : Inherit(d.getValue()), data(&d) {}
-    ReadAccessor(const data_container_type* d) : Inherit(d->getValue()), data(d) {}
-    ReadAccessor(const core::ExecParams* params, const data_container_type& d) : Inherit(d.getValue(params)), data(&d) {}
-    ReadAccessor(const core::ExecParams* params, const data_container_type* d) : Inherit(d->getValue(params)), data(d) {}
+    ReadAccessor(const data_container_type& d) : Inherit(d.getValue())/*, data(&d)*/ {}
+    ReadAccessor(const data_container_type* d) : Inherit(d->getValue())/*, data(d)*/ {}
+    ReadAccessor(const core::ExecParams* params, const data_container_type& d) : Inherit(d.getValue(params))/*, data(&d)*/ {}
+    ReadAccessor(const core::ExecParams* params, const data_container_type* d) : Inherit(d->getValue(params))/*, data(d)*/ {}
 };
 
+/// Read/Write Accessor.
+/// The Data is updated before being accessible.
+/// This means an expensive chain of Data link and Engine updates can be called
+/// For a pure write only Accessor, prefer WriteOnlyAccessor
+/// @warning the Data is updated (if needed) only by the Accessor constructor
 template<class T>
 class WriteAccessor< core::objectmodel::Data<T> > : public WriteAccessor<T>
 {
 public:
     typedef WriteAccessor<T> Inherit;
     typedef core::objectmodel::Data<T> data_container_type;
-    typedef T container_type;
+    typedef typename Inherit::container_type container_type;
 
 	// these are forbidden (until c++11 move semantics) as they break
 	// RAII encapsulation. the reference member 'data' prevents them
@@ -642,6 +649,9 @@ protected:
     data_container_type& data;
     const core::ExecParams* dparams;
 
+    /// @internal used by WriteOnlyAccessor
+    WriteAccessor( container_type* c, data_container_type& d, const core::ExecParams* params=NULL ) : Inherit(*c), data(d), dparams(params) {}
+
 public:
     WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d), dparams(NULL) {}
     WriteAccessor(data_container_type* d) : Inherit(*d->beginEdit()), data(*d), dparams(NULL) {}
@@ -650,9 +660,39 @@ public:
     ~WriteAccessor() { if (dparams) data.endEdit(dparams); else data.endEdit(); }
 };
 
-/// Easy syntax for getting write access to a Data using operator ->. Example: write(someFlagData)->setFlagValue(true);
+
+
+/** @brief The WriteOnlyAccessor provides an access to the Data without triggering an engine update.
+ * This should be the prefered writeAccessor for most of the cases as it avoids uncessary Data updates.
+ * @warning read access to the Data is NOT up-to-date
+ */
+template<class T>
+class WriteOnlyAccessor< core::objectmodel::Data<T> > : public WriteAccessor< core::objectmodel::Data<T> >
+{
+public:
+    typedef WriteAccessor< core::objectmodel::Data<T> > Inherit;
+    typedef typename Inherit::data_container_type data_container_type;
+    typedef typename Inherit::container_type container_type;
+
+    // these are forbidden (until c++11 move semantics) as they break
+    // RAII encapsulation. the reference member 'data' prevents them
+    // anyways, but the intent is more obvious like this.
+    WriteOnlyAccessor(const WriteOnlyAccessor& );
+    WriteOnlyAccessor& operator=(const WriteOnlyAccessor& );
+
+    WriteOnlyAccessor(data_container_type& d) : Inherit( d.beginWriteOnly(), d ) {}
+    WriteOnlyAccessor(data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
+    WriteOnlyAccessor(const core::ExecParams* params, data_container_type& d) : Inherit( d.beginWriteOnly(), d, params ) {}
+    WriteOnlyAccessor(const core::ExecParams* params, data_container_type* d) : Inherit( d->beginWriteOnly(), *d, params ) {}
+};
+
+/// Easy syntax for getting read/write access to a Data using operator ->. Example: write(someFlagData)->setFlagValue(true);
 template<class T>
 inline WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data) { return WriteAccessor<core::objectmodel::Data<T> >(data); }
+
+/// Easy syntax for getting write only access to a Data using operator ->. Example: writeOnly(someFlagData)->setFlagValue(true);
+template<class T>
+inline WriteOnlyAccessor<core::objectmodel::Data<T> > writeOnly(core::objectmodel::Data<T>& data) { return WriteOnlyAccessor<core::objectmodel::Data<T> >(data); }
 
 
 } // namespace helper

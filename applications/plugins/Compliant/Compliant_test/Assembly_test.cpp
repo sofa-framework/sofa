@@ -135,7 +135,7 @@ struct Assembly_test : public CompliantSolver_test
         // Opposite forces applied to the ends
         ConstantForceField<Vec3Types>::SPtr ff = New<ConstantForceField<Vec3Types> >();
         string1->addObject(ff);
-        vector<unsigned>* indices =  ff->points.beginEdit(); // not managed to create a WriteAccessor with a resize function for a ConstantForceField::SetIndex
+        vector<unsigned>* indices = ff->points.beginEdit(); // not managed to create a WriteAccessor with a resize function for a ConstantForceField::SetIndex
         helper::WriteAccessor< Data<vector<Vec3> > > forces( ff->forces );
         (*indices).resize(2);
         forces.resize(2);

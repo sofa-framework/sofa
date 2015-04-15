@@ -16,7 +16,6 @@
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 #include "../shapeFunction/BaseShapeFunction.h"
-//#include "../deformationMapping/LinearJacobianBlock.h"
 #include "../deformationMapping/LinearJacobianBlock_point.inl"
 #include "../deformationMapping/LinearJacobianBlock_rigid.inl"
 #include "../deformationMapping/LinearJacobianBlock_affine.inl"

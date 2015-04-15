@@ -105,9 +105,9 @@ public:
     virtual void resize(int vsize)
     {
         modified = true;
-        helper::WriteAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > positions = m_positions;
-        helper::WriteAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > restPositions = m_restPositions;
-        helper::WriteAccessor< Data<sofa::defaulttype::ResizableExtVector<Deriv> > > normals = m_vnormals;
+        helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > positions = m_positions;
+        helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > restPositions = m_restPositions;
+        helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Deriv> > > normals = m_vnormals;
 
         positions.resize(vsize);
         restPositions.resize(vsize);
