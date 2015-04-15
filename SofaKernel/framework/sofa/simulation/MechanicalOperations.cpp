@@ -129,40 +129,36 @@ void MechanicalOperations::propagateDxAndResetDf(core::MultiVecDerivId dx, core:
 }
 
 /// Propagate the given position through all mappings
-void MechanicalOperations::propagateX(core::MultiVecCoordId x, bool applyProjections)
+void MechanicalOperations::propagateX(core::MultiVecCoordId x)
 {
     setX(x);
     MechanicalPropagatePositionVisitor visitor(&mparams, 0.0, x, false); //Don't ignore the masks
-    visitor.applyProjections = applyProjections;
     executeVisitor( visitor );
 }
 
 /// Propagate the given velocity through all mappings
-void MechanicalOperations::propagateV(core::MultiVecDerivId v, bool applyProjections)
+void MechanicalOperations::propagateV(core::MultiVecDerivId v)
 {
     setV(v);
     MechanicalPropagateVelocityVisitor visitor(&mparams, 0.0, v, false); //Don't ignore the masks
-    visitor.applyProjections = applyProjections;
     executeVisitor( visitor );
 }
 
 /// Propagate the given position and velocity through all mappings
-void MechanicalOperations::propagateXAndV(core::MultiVecCoordId x, core::MultiVecDerivId v, bool applyProjections)
+void MechanicalOperations::propagateXAndV(core::MultiVecCoordId x, core::MultiVecDerivId v)
 {
     setX(x);
     setV(v);
     MechanicalPropagatePositionAndVelocityVisitor visitor(&mparams, 0.0, x, v, false); //Don't ignore the masks
-    visitor.applyProjections = applyProjections;
     executeVisitor( visitor );
 }
 
 /// Propagate the given position through all mappings and reset the current force delta
-void MechanicalOperations::propagateXAndResetF(core::MultiVecCoordId x, core::MultiVecDerivId f, bool applyProjections)
+void MechanicalOperations::propagateXAndResetF(core::MultiVecCoordId x, core::MultiVecDerivId f)
 {
     setX(x);
     setF(f);
     MechanicalPropagatePositionAndResetForceVisitor visitor(&mparams, x, f, false);
-    visitor.applyProjections = applyProjections;
     executeVisitor( visitor );
 }
 
@@ -195,6 +191,14 @@ void MechanicalOperations::projectResponse(core::MultiVecDerivId dx, double **W)
 {
     setDx(dx);
     executeVisitor( MechanicalApplyConstraintsVisitor(&mparams, dx, W) );
+}
+
+/// Apply projective constraints to the given position and velocity vectors
+void MechanicalOperations::projectPositionAndVelocity(core::MultiVecCoordId x, core::MultiVecDerivId v, double time)
+{
+    setX(x);
+    setV(v);
+    executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, time, x, v) );
 }
 
 void MechanicalOperations::addMdx(core::MultiVecDerivId res, core::MultiVecDerivId dx, SReal factor)

@@ -1094,18 +1094,15 @@ public:
     sofa::core::MultiVecCoordId x;
     sofa::core::MultiVecDerivId f;
     bool ignoreMask;
-    bool applyProjections;
 
     MechanicalPropagatePositionAndResetForceVisitor(const sofa::core::MechanicalParams* mparams,
                                                     sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId f, bool m)
-        : MechanicalVisitor(mparams) , x(x), f(f), ignoreMask(m), applyProjections(true)
+        : MechanicalVisitor(mparams) , x(x), f(f), ignoreMask(m)
     {
     }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -1327,6 +1324,48 @@ public:
 #endif
 };
 
+class SOFA_SIMULATION_CORE_API MechanicalProjectPositionAndVelocityVisitor : public MechanicalVisitor
+{
+public:
+    double t;
+    sofa::core::MultiVecCoordId pos;
+    sofa::core::MultiVecDerivId vel;
+    MechanicalProjectPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams , double time=0,
+                                                sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position(),
+                                                sofa::core::MultiVecDerivId v = sofa::core::VecDerivId::velocity())
+        : MechanicalVisitor(mparams) , t(time), pos(x), vel(v)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
+    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
+
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalProjectPositionAndVelocityVisitor"; }
+    virtual std::string getInfos() const
+    {
+        std::string name="x["+pos.getName()+"] v["+vel.getName()+"]";
+        return name;
+    }
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addReadWriteVector(pos);
+        addReadWriteVector(vel);
+    }
+#endif
+};
+
 /** Propagate positions  to all the levels of the hierarchy.
 At each level, the mappings form the parent to the child is applied.
 */
@@ -1336,15 +1375,12 @@ public:
     SReal t;
     sofa::core::MultiVecCoordId x;
     bool ignoreMask;
-    bool applyProjections;
 
     MechanicalPropagatePositionVisitor( const sofa::core::MechanicalParams* mparams, SReal time=0,
                                         sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position(), bool m=true);
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
@@ -1387,7 +1423,6 @@ public:
     sofa::core::MultiVecCoordId x;
     sofa::core::MultiVecDerivId v;
     bool ignoreMask;
-    bool applyProjections;
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
     // compute the acceleration created by the input velocity and the derivative of the mapping
@@ -1405,8 +1440,6 @@ public:
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
@@ -1432,6 +1465,7 @@ public:
     }
 #endif
 };
+
 /** Propagate velocities to all the levels of the hierarchy.
 At each level, the mappings form the parent to the child is applied.
 After the execution of this action, all the (mapped) degrees of freedom are consistent with the independent degrees of freedom.
@@ -1442,7 +1476,6 @@ public:
     SReal currentTime;
     sofa::core::MultiVecDerivId v;
     bool ignoreMask;    
-    bool applyProjections;
     
 #ifdef SOFA_SUPPORT_MAPPED_MASS
     // compute the acceleration created by the input velocity and the derivative of the mapping
@@ -1459,8 +1492,6 @@ public:
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c);
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)

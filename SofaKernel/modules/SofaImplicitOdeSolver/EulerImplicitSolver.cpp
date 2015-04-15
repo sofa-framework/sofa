@@ -36,12 +36,6 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-#ifdef SOFA_SMP
-#include <SofaSimulationTree/TreeSimulation.h>
-#include <SofaSimulationTree/GNode.h>
-#endif
-
-
 
 namespace sofa
 {
@@ -113,28 +107,6 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     sofa::simulation::Visitor::printCloseNode("SolverVectorAllocation");
 #endif
 
-#ifdef SOFA_SMP
-    sofa::simulation::Node *context=static_cast<sofa::simulation::Node *>(getContext());
-    //   if (!getPartition()&&context&&!context->is_partition())
-    {
-        Iterative::IterativePartition *p;
-        Iterative::IterativePartition *firstPartition=context->getFirstPartition();
-        if (firstPartition)
-        {
-            //p->setCPU(firstPartition->getCPU());
-            p=firstPartition;
-        }
-        else if (context->getPartition())
-        {
-            p=context->getPartition();
-        }
-        else
-        {
-            p= new Iterative::IterativePartition();
-        }
-        setPartition(p);
-    }
-#endif
 
     const SReal& h = dt;
     const bool verbose  = f_verbose.getValue();
@@ -165,18 +137,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     }
     else
     {
-#ifdef SOFA_SMP
-        // B v is missing i n this equation. Is this normal?
-        mop.computeDfV(b);                // b = K v    , with K=df/dx
-        b.teq(h+f_rayleighStiffness.getValue());      // b = (h+rs) K v
-        b.peq(f,1.0/tr);      // b = f0 + (h+rs) K v
-
-        if (f_rayleighMass.getValue() != 0.0)
-        {
-            mop.addMdx(b,vel,-f_rayleighMass.getValue()); // no need to propagate vel as dx again
-        }
-        b.teq(tr*h);                           // b = h(f0 + (h+rs) K v - rm M v)    Rayleigh mass factor rm is used with a negative sign because it is recorded as a positive real, while its force is opposed to the velocity
-#else  // new more powerful visitors
+        // new more powerful visitors
 
         // force in the current configuration
         b.eq(f,1.0/tr);                                                                         // b = f0
@@ -188,7 +149,6 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
         // integration over a time step
         b.teq(h*tr);                                                                        // b = h(f0 + ( rm M + B + (h+rs) K ) v )
-#endif
     }
 
     if( verbose )
@@ -229,15 +189,12 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
     // apply the solution
 
-    //For to No MultiOp, as it would be impossible to apply the constraints
-#define SOFA_NO_VMULTIOP
+    const bool solveConstraint = f_solveConstraint.getValue();
 
-#ifdef SOFA_SMP
-    // For SofaSMP we would need VMultiOp to be implemented in a SofaSMP compatible way
-#define SOFA_NO_VMULTIOP
+#ifndef SOFA_NO_VMULTIOP // unoptimized version
+    if (solveConstraint)
 #endif
-
-#ifdef SOFA_NO_VMULTIOP // unoptimized version
+    {
     if (firstOrder)
     {
         sofa::helper::AdvancedTimer::stepBegin("UpdateV");
@@ -264,9 +221,9 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         mop.solveConstraint(newPos,core::ConstraintParams::POS);
         sofa::helper::AdvancedTimer::stepEnd  ("CorrectX");
     }
-
-
-#else // single-operation optimization
+    }
+#ifndef SOFA_NO_VMULTIOP
+    else
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
@@ -291,13 +248,8 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         }
 
         sofa::helper::AdvancedTimer::stepBegin("UpdateVAndX");
-
         vop.v_multiop(ops);
-        sofa::helper::AdvancedTimer::stepNext ("UpdateVAndX", "CorrectV");
-        mop.solveConstraint(newVel,core::ConstraintParams::VEL);
-        sofa::helper::AdvancedTimer::stepNext ("CorrectV", "CorrectX");
-        mop.solveConstraint(newPos,core::ConstraintParams::POS);
-        sofa::helper::AdvancedTimer::stepEnd  ("CorrectX");
+        sofa::helper::AdvancedTimer::stepEnd("UpdateVAndX");
     }
 #endif
 
@@ -307,8 +259,10 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
     if( verbose )
     {
-        mop.propagateX(newPos, true);
-        mop.propagateDx(newVel);
+        mop.projectPosition(newPos);
+        mop.projectVelocity(newVel);
+        mop.propagateX(newPos);
+        mop.propagateV(newVel);
         serr<<"EulerImplicitSolver, final x = "<< newPos <<sendl;
         serr<<"EulerImplicitSolver, final v = "<< newVel <<sendl;
         mop.computeForce(f);
