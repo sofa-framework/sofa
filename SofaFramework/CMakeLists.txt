@@ -35,14 +35,6 @@ endif()
 set(DETECTIONOUTPUT_FREEMOTION ${SOFAFRAMEWORK_DETECTIONOUTPUT_FREEMOTION} )
 set(DETECTIONOUTPUT_BARYCENTRICINFO ${SOFAFRAMEWORK_DETECTIONOUTPUT_BARYCENTRICINFO} )
 
-##
-## SofaFramework version
-##
-set( SOFAFRAMEWORK_MAJOR_VERSION 0 )
-set( SOFAFRAMEWORK_MINOR_VERSION 0 )
-set( SOFAFRAMEWORK_BUILD_VERSION 1 )
-
-set( SOFAFRAMEWORK_VERSION ${SOFAFRAMEWORK_MAJOR_VERSION}.${SOFAFRAMEWORK_MINOR_VERSION}.${SOFAFRAMEWORK_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
 set( SOFAFRAMEWORK_EXTLIBS_DIR "${SofaFramework_ACTUAL_SOURCE_DIR}/../extlibs")
 
@@ -193,7 +185,20 @@ set_target_properties(SofaHelper PROPERTIES FOLDER "SofaFramework")
 set_target_properties(SofaDefaultType PROPERTIES FOLDER "SofaFramework")
 set_target_properties(SofaCore PROPERTIES FOLDER "SofaFramework")
 
+
 include(CMakePackageConfigHelpers)
+
+## Version
+
+# Not really pretty, just a number that satisfies SOFA_VERSION > LAST_RELEASED_VERSION
+set(SOFA_VERSION "999999")
+set(SOFA_VERSION_STR "\"devel\"")
+set(SOFAFRAMEWORK_VERSION "99.99.99")
+# Generate sofa/version.h
+configure_file(${SofaFramework_ACTUAL_SOURCE_DIR}/sofa/version.h.in
+               ${CMAKE_CURRENT_BINARY_DIR}/sofa/version.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/version.h
+        DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}/sofa")
 
 # SofaFrameworkConfigVersion.cmake file (same for build tree and intall)
 write_basic_package_version_file(${SOFAFRAMEWORK_BUILD_CMAKE_DIR}/SofaFrameworkConfigVersion.cmake

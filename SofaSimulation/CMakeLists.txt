@@ -5,15 +5,6 @@ project(${SOLUTION_NAME})
 #temporary until we move the sub projects
 set( SofaSimulation_ACTUAL_SOURCE_DIR ${SofaSimulation_SOURCE_DIR}/../modules/sofa/simulation)
 
-##
-## SofaSimulation version
-##
-set( SOFASIMULATION_MAJOR_VERSION 0 )
-set( SOFASIMULATION_MINOR_VERSION 0 )
-set( SOFASIMULATION_BUILD_VERSION 1 )
-
-set( SOFASIMULATION_VERSION ${SOFASIMULATION_MAJOR_VERSION}.${SOFASIMULATION_MINOR_VERSION}.${SOFASIMULATION_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
-
 set(SOFASIMULATION_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR}/lib)
 set(SOFASIMULATION_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(SOFASIMULATION_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
@@ -50,11 +41,12 @@ set_target_properties(SofaSimulationCommon PROPERTIES FOLDER "SofaSimulation")
 set_target_properties(SofaSimulationGraph PROPERTIES FOLDER "SofaSimulation")
 set_target_properties(SofaSimulationTree PROPERTIES FOLDER "SofaSimulation")
 
+
 include(CMakePackageConfigHelpers)
 
 # SofaSimulationConfigVersion.cmake file (same for build tree and intall)
 write_basic_package_version_file(${SOFASIMULATION_BUILD_CMAKE_DIR}/SofaSimulationConfigVersion.cmake
-                                 VERSION ${SOFASIMULATION_VERSION}
+                                 VERSION ${SofaFramework_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
 install(FILES ${SOFASIMULATION_BUILD_CMAKE_DIR}/SofaSimulationConfigVersion.cmake
         DESTINATION ${SOFASIMULATION_INSTALL_CMAKE_DIR})
