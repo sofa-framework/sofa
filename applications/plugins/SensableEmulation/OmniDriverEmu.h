@@ -33,7 +33,10 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 #include <sofa/helper/system/thread/CTime.h>
-#include <pthread.h>
+
+#ifndef WIN32
+#  include <pthread.h>
+#endif
 
 #include "initSensableEmulation.h"
 
