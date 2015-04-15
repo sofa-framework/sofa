@@ -51,9 +51,9 @@
 //sensable namespace
 
 #ifndef WIN32
-#include <pthread.h>
+#  include <pthread.h>
 #else
-#include <boost/thread/thread.hpp>
+#  include <boost/thread/thread.hpp>
 #endif
 
 
@@ -61,7 +61,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
 #ifdef WIN32
-	#include <windows.h>
+#  include <windows.h>
 #endif
 
 double prevTime;
