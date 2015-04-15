@@ -125,8 +125,9 @@ public:
     virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const;
 
 
-
-
+    /// Mesh Topology that is relevant for this context
+    /// (within it or its parents until a mapping is reached that does not preserve topologies).
+    virtual core::topology::BaseMeshTopology* getActiveMeshTopology() const;
 
 
     /// Called during initialization to corectly propagate the visual context to the children

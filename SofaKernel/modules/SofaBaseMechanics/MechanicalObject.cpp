@@ -270,8 +270,9 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
 
     if (showObject.getValue())
     {
-        const float& scale = showObjectScale.getValue();
+        const float scale = showObjectScale.getValue();
         helper::ReadAccessor<Data<VecCoord> > x = *this->read(core::VecCoordId::position());
+        const size_t vsize = d_size.getValue();
         for (size_t i = 0; i < vsize; ++i)
         {
             vparams->drawTool()->pushMatrix();
@@ -468,8 +469,9 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
 
     if (showObject.getValue())
     {
-        const float& scale = showObjectScale.getValue();
+        const float scale = showObjectScale.getValue();
         helper::ReadAccessor<Data<VecCoord> > x = *this->read(core::VecCoordId::position());
+        const size_t vsize = d_size.getValue();
         for (size_t i = 0; i < vsize; ++i)
         {
             vparams->drawTool()->pushMatrix();
@@ -523,8 +525,9 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
 
     if (showObject.getValue())
     {
-        const float& scale = showObjectScale.getValue();
+        const float scale = showObjectScale.getValue();
         helper::ReadAccessor<Data<VecCoord> > x = *this->read(core::VecCoordId::position());
+        const size_t vsize = d_size.getValue();
         for (size_t i = 0; i < vsize; ++i)
         {
             vparams->drawTool()->pushMatrix();

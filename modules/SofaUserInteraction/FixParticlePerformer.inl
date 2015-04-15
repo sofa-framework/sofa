@@ -68,7 +68,6 @@ void FixParticlePerformer<DataTypes>::start()
 
     //Create the Container of points
     typename MouseContainer::SPtr mstateFixation = sofa::core::objectmodel::New< MouseContainer >();
-    mstateFixation->setIgnoreLoader(true);
 
     mstateFixation->resize(1);
     {
