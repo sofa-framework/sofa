@@ -227,7 +227,6 @@ WorkerThread::WorkerThread(TaskScheduler* const& pScheduler, int index)
 
 WorkerThread::~WorkerThread()
 {
-    this->mThread;
     //{
     //	release( this->mThread );
     //}
