@@ -3,6 +3,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include "../initCompliant.h"
+#include <sofa/core/behavior/BaseMechanicalState.h>
 
 namespace sofa {
 namespace component {

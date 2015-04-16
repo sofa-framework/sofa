@@ -5,13 +5,13 @@
 
 #include "../initCompliant.h"
 
-#include "../constraint/CoulombConstraint.h"
-#include "../mapping/ContactMapping.h"
+#include <Compliant/constraint/CoulombConstraint.h>
+#include <Compliant/mapping/ContactMapping.h>
 
-#include "../compliance/UniformCompliance.h"
+#include <Compliant/compliance/UniformCompliance.h>
 
-#include "utils/map.h"
-#include "utils/edit.h"
+#include <Compliant/utils/map.h>
+#include <Compliant/utils/edit.h>
 
 namespace sofa
 {
