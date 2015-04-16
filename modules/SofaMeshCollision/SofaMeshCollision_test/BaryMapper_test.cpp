@@ -1,5 +1,5 @@
-#include <plugins/SofaTest/Sofa_test.h>
-#include <plugins/SofaTest/PrimitiveCreation.h>
+#include <SofaTest/Sofa_test.h>
+#include <SofaTest/PrimitiveCreation.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
 

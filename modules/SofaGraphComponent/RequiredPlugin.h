@@ -26,18 +26,11 @@
 #ifndef REQUIREDPLUGIN_H_
 #define REQUIREDPLUGIN_H_
 
-#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/component/component.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/core.h>
-#include <sofa/core/behavior/BaseForceField.h>
-#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/MechanicalParams.h>
-#include <sofa/defaulttype/BaseVector.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+
+
 
 namespace sofa
 {

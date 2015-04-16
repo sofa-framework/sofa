@@ -1,7 +1,10 @@
 #ifndef INTRMESHUTIL_H
 #define INTRMESHUTIL_H
 
+#include <sofa/component/component.h>
 #include <SofaBaseCollision/IntrUtility3.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <sofa/defaulttype/Vec3Types.h>
 
 namespace sofa{
 namespace component{

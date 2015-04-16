@@ -48,8 +48,8 @@
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaMeshCollision/MeshIntTool.h>
 
-#include <plugins/SofaTest/Sofa_test.h>
-#include <plugins/SofaTest/PrimitiveCreation.h>
+#include <SofaTest/Sofa_test.h>
+#include <SofaTest/PrimitiveCreation.h>
 
 using namespace sofa::PrimitiveCreationTest;
 using namespace sofa::defaulttype;

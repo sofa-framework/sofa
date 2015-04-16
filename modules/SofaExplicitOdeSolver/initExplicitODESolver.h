@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_EXPLICIT_ODE_SOLVER_INIT_H
 
 #include <sofa/component/component.h>
-
 namespace sofa
 {
 

@@ -1,5 +1,5 @@
 // Base class
-#include "ForceField_test.h"
+#include <SofaTest/ForceField_test.h>
 //Force field
 #include <SofaBoundaryCondition/QuadPressureForceField.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
@@ -20,7 +20,7 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
     typedef typename ForceType::Coord Coord;
     typedef typename ForceType::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef helper::Vec<3,Real> Vec3;
+    typedef defaulttype::Vec<3,Real> Vec3;
 
     VecCoord x;
     VecDeriv v,f;
@@ -41,7 +41,7 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
         DataTypes::set( v[2], 0,0,0);
         DataTypes::set( v[3], 0,0,0);
         //Force
-         f.resize(4);
+        f.resize(4);
         Vec3 f0(0,0,0.05);
         DataTypes::set( f[0],  f0[0], f0[1], f0[2]);
         DataTypes::set( f[1],  f0[0], f0[1], f0[2]);

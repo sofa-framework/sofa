@@ -53,7 +53,6 @@ url          = "http://www-evasion.imag.fr/Publications/2006/NPF06"
 
 */
 
-
 template<class DataTypes>
 class NonUniformHexahedronFEMForceFieldAndMass : virtual public HexahedronFEMForceFieldAndMass<DataTypes>
 {

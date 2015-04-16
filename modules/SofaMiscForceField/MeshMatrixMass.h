@@ -41,15 +41,8 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-
-
-
-
-
-
 namespace sofa
 {
-
 namespace component
 {
 namespace topology

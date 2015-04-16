@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <plugins/SofaTest/Sofa_test.h>
+#include <SofaTest/Sofa_test.h>
 #include<sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <SofaComponentMain/init.h>
@@ -38,7 +38,7 @@
 #include <SofaBaseTopology/BezierTetrahedronSetGeometryAlgorithms.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneCreator.h>
 #include <SofaMiscForceField/MeshMatrixMass.h>
 #include <SofaEngine/GenerateCylinder.h>
 #include <SofaTopologyMapping/Mesh2BezierTopologicalMapping.h>

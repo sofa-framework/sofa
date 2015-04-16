@@ -26,6 +26,8 @@
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
 
+#include <SofaMiscCollision/TetrahedronModel.h>
+
 namespace sofa
 {
 

@@ -23,8 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <plugins/SofaTest/Elasticity_test.h>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SofaTest/Elasticity_test.h>
+#include <SceneCreator/SceneCreator.h>
 
 #include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
@@ -92,7 +92,7 @@ struct VariationalSymplecticImplicitSolverDynamic_test : public Elasticity_test<
         root = simulation::getSimulation()->createNewGraph("root");
 
         // Create the scene
-        root->setGravity(Coord3(0,-10,0));
+        root->setGravity(Coord(0,-10,0));
 
         // Solver
         variationalSolver = addNew<VariationalSymplecticSolver> (getRoot());

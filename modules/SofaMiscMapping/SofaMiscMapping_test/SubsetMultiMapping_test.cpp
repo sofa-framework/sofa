@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 /* Francois Faure, 2013 */
-#include <plugins/SofaTest/MultiMapping_test.h>
+#include <SofaTest/MultiMapping_test.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 //#include <sofa/defaulttype/RigidTypes.h>

@@ -26,7 +26,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_SOLVERMERGER_H
 #define SOFA_COMPONENT_COLLISION_SOLVERMERGER_H
 
-#include "sofa/component/component.h"
+#include <sofa/component/component.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/ConstraintSolver.h>

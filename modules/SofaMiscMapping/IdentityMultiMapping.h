@@ -25,9 +25,9 @@
 #ifndef SOFA_COMPONENT_MAPPING_IDENTITYMULTIMAPPING_H
 #define SOFA_COMPONENT_MAPPING_IDENTITYMULTIMAPPING_H
 
+#include <sofa/component/component.h>
 #include <sofa/core/MultiMapping.h>
 //#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {

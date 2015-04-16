@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_MeshClosingEngine_INL
 #define SOFA_COMPONENT_ENGINE_MeshClosingEngine_INL
 
-#include <MeshClosingEngine.h>
+#include "MeshClosingEngine.h"
 
 namespace sofa
 {

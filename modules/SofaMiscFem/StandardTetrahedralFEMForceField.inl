@@ -26,13 +26,13 @@
 #define SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_INL
 
 #include <SofaMiscFem/BoyceAndArruda.h>
-#include <sofa/component/fem/material/NeoHookean.h>
+#include <SofaMiscFem/NeoHookean.h>
 #include <SofaMiscFem/MooneyRivlin.h>
 #include <SofaMiscFem/VerondaWestman.h>
 #include <SofaMiscFem/STVenantKirchhoff.h>
 #include <SofaMiscFem/HyperelasticMaterial.h>
 #include <SofaMiscFem/Costa.h>
-#include <sofa/component/fem/material/Ogden.h>
+#include <SofaMiscFem/Ogden.h>
 #include "StandardTetrahedralFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Vec3Types.h>
