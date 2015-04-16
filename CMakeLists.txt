@@ -30,7 +30,6 @@ include(CMakeSofaBuildFlags)
 
 # Sofa libraries
 set(SOFA_EXTERNALS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/sofa-win-dependencies-21-11-2013")
-set(SOFA_DEPS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaDeps")
 set(SOFA_FRAMEWORK_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaFramework")
 set(SOFA_SIMULATION_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaSimulation")
 set(SOFA_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaBase")
@@ -76,8 +75,33 @@ install(FILES ${CMAKE_BINARY_DIR}/etc/installedSofa.ini
         DESTINATION etc
         RENAME sofa.ini)
 
-# deps
-add_subdirectory("${SOFA_DEPS_DIR}")
+### Extlibs
+
+## Necessary ones
+add_subdirectory(extlibs/SuiteSparse)
+add_subdirectory(extlibs/csparse)
+add_subdirectory(extlibs/eigen-3.2.1)
+add_subdirectory(extlibs/miniFlowVR)
+add_subdirectory(extlibs/newmat)
+add_subdirectory(extlibs/tinyxml)
+
+## Optional ones
+add_subdirectory(extlibs/CImg)
+
+option(SOFA_USE_MINIBOOST
+"Use the (header-only) subset of Boost distributed in the extlibs/ directory
+(a.k.a. miniBoost).  This subset is sufficient to compile the framework and the
+default components, but some plugins need other components of Boost." ON)
+if(SOFA_USE_MINIBOOST)
+    add_subdirectory(extlibs/miniBoost ${CMAKE_CURRENT_BINARY_DIR}/miniBoost)
+endif()
+
+option(SOFA_COMPILE_ARTRACK
+"Build the ARTrack library distributed in the extlibs/ directory.  This library
+is used only by the ARTrack plugin."  OFF)
+if(SOFA_COMPILE_ARTRACK)
+    add_subdirectory(extlibs/ARTrack ${CMAKE_CURRENT_BINARY_DIR}/ARTrackLib)
+endif()
 
 # framework
 add_subdirectory("${SOFA_FRAMEWORK_DIR}")
