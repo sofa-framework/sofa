@@ -102,11 +102,11 @@ static sofa::helper::system::atomic<int> doUpdate;
 //TODO: rajouter le numero de l'interface qui pose pb
 void printError(const HDErrorInfo *error, const char *message)
 {
-    cout<<hdGetErrorString(error->errorCode)<<endl;
-    cout<<"HHD: "<<error->hHD<<endl;
-    cout<<"Error Code: "<<error->hHD<<endl;
-    cout<<"Internal Error Code: "<<error->internalErrorCode<<endl;
-    cout<<"Message: "<<message<<endl;
+    std::cout<<hdGetErrorString(error->errorCode)<<std::endl;
+    std::cout<<"HHD: "<<error->hHD<<std::endl;
+    std::cout<<"Error Code: "<<error->hHD<<std::endl;
+    std::cout<<"Internal Error Code: "<<error->internalErrorCode<<std::endl;
+    std::cout<<"Message: "<<message<<std::endl;
 }
 
 
@@ -189,8 +189,8 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
             autreOmniDriver[i]->data.servoDeviceData.quat[u] = rot[u];
 
         //std::cout << pos << "    " << rot << std::endl;
-        SolidTypes<double>::Transform baseOmni_H_endOmni(pos* autreOmniDriver[i]->data.scale, rot);
-        SolidTypes<double>::Transform world_H_virtualTool = autreOmniDriver[i]->data.world_H_baseOmni * baseOmni_H_endOmni * autreOmniDriver[i]->data.endOmni_H_virtualTool;
+        sofa::defaulttype::SolidTypes<double>::Transform baseOmni_H_endOmni(pos* autreOmniDriver[i]->data.scale, rot);
+        sofa::defaulttype::SolidTypes<double>::Transform world_H_virtualTool = autreOmniDriver[i]->data.world_H_baseOmni * baseOmni_H_endOmni * autreOmniDriver[i]->data.endOmni_H_virtualTool;
    
 
 //partie pour ff simulatnnée
@@ -217,17 +217,17 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
 		}
 
         /// COMPUTATION OF THE vituralTool 6D POSITION IN THE World COORDINATES
-        SolidTypes<double>::Transform baseOmni_H_endOmni((autreOmniDriver[i]->data.servoDeviceData.pos)* autreOmniDriver[i]->data.scale, autreOmniDriver[i]->data.servoDeviceData.quat);
+        sofa::defaulttype::SolidTypes<double>::Transform baseOmni_H_endOmni((autreOmniDriver[i]->data.servoDeviceData.pos)* autreOmniDriver[i]->data.scale, autreOmniDriver[i]->data.servoDeviceData.quat);
 
         Vec3d world_pos_tool = positionDevs[i].getCenter();
         Quat world_quat_tool = positionDevs[i].getOrientation();
 
         // we compute its value in the current Tool frame:
-        SolidTypes<double>::SpatialVector Wrench_tool_inTool(world_quat_tool.inverseRotate(forceDevs[i].getVCenter()),  world_quat_tool.inverseRotate(forceDevs[i].getVOrientation())  );
+        sofa::defaulttype::SolidTypes<double>::SpatialVector Wrench_tool_inTool(world_quat_tool.inverseRotate(forceDevs[i].getVCenter()),  world_quat_tool.inverseRotate(forceDevs[i].getVOrientation())  );
         // we transport (change of application point) its value to the endOmni frame
-        SolidTypes<double>::SpatialVector Wrench_endOmni_inEndOmni = autreOmniDriver[i]->data.endOmni_H_virtualTool * Wrench_tool_inTool;
+        sofa::defaulttype::SolidTypes<double>::SpatialVector Wrench_endOmni_inEndOmni = autreOmniDriver[i]->data.endOmni_H_virtualTool * Wrench_tool_inTool;
         // we compute its value in the baseOmni frame
-        SolidTypes<double>::SpatialVector Wrench_endOmni_inBaseOmni( baseOmni_H_endOmni.projectVector(Wrench_endOmni_inEndOmni.getForce()), baseOmni_H_endOmni.projectVector(Wrench_endOmni_inEndOmni.getTorque()) );
+        sofa::defaulttype::SolidTypes<double>::SpatialVector Wrench_endOmni_inBaseOmni( baseOmni_H_endOmni.projectVector(Wrench_endOmni_inEndOmni.getForce()), baseOmni_H_endOmni.projectVector(Wrench_endOmni_inEndOmni.getTorque()) );
 
         autreOmniDriver[i]->data.currentForce[0] = Wrench_endOmni_inBaseOmni.getForce()[0] * autreOmniDriver[i]->data.forceScale;
         autreOmniDriver[i]->data.currentForce[1] = Wrench_endOmni_inBaseOmni.getForce()[1] * autreOmniDriver[i]->data.forceScale;
@@ -255,18 +255,18 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
         Quat world_quat_tool = world_H_virtualTool.getOrientation();
         //truc sur le forcefeedback
         /////////////// 6D rendering ////////////////
-        SolidTypes<double>::SpatialVector Twist_tool_inWorld(Vec3d(0.0,0.0,0.0), Vec3d(0.0,0.0,0.0)); // Todo: compute a velocity !!
-        SolidTypes<double>::SpatialVector Wrench_tool_inWorld(Vec3d(0.0,0.0,0.0), Vec3d(0.0,0.0,0.0));
+        sofa::defaulttype::SolidTypes<double>::SpatialVector Twist_tool_inWorld(Vec3d(0.0,0.0,0.0), Vec3d(0.0,0.0,0.0)); // Todo: compute a velocity !!
+        sofa::defaulttype::SolidTypes<double>::SpatialVector Wrench_tool_inWorld(Vec3d(0.0,0.0,0.0), Vec3d(0.0,0.0,0.0));
 
         if (autreOmniDriver[i]->data.forceFeedback != NULL)
             (autreOmniDriver[i]->data.forceFeedback)->computeWrench(world_H_virtualTool,Twist_tool_inWorld,Wrench_tool_inWorld ); //en faire qu'un et uttiliser compute force
 
         // we compute its value in the current Tool frame:
-        SolidTypes<double>::SpatialVector Wrench_tool_inTool(world_quat_tool.inverseRotate(Wrench_tool_inWorld.getForce()),  world_quat_tool.inverseRotate(Wrench_tool_inWorld.getTorque())  );
+        sofa::defaulttype::SolidTypes<double>::SpatialVector Wrench_tool_inTool(world_quat_tool.inverseRotate(Wrench_tool_inWorld.getForce()),  world_quat_tool.inverseRotate(Wrench_tool_inWorld.getTorque())  );
         // we transport (change of application point) its value to the endOmni frame
-        SolidTypes<double>::SpatialVector Wrench_endOmni_inEndOmni = autreOmniDriver[i]->data.endOmni_H_virtualTool * Wrench_tool_inTool;
+        sofa::defaulttype::SolidTypes<double>::SpatialVector Wrench_endOmni_inEndOmni = autreOmniDriver[i]->data.endOmni_H_virtualTool * Wrench_tool_inTool;
         // we compute its value in the baseOmni frame
-        SolidTypes<double>::SpatialVector Wrench_endOmni_inBaseOmni( baseOmni_H_endOmni.projectVector(Wrench_endOmni_inEndOmni.getForce()), baseOmni_H_endOmni.projectVector(Wrench_endOmni_inEndOmni.getTorque()) );
+        sofa::defaulttype::SolidTypes<double>::SpatialVector Wrench_endOmni_inBaseOmni( baseOmni_H_endOmni.projectVector(Wrench_endOmni_inEndOmni.getForce()), baseOmni_H_endOmni.projectVector(Wrench_endOmni_inEndOmni.getTorque()) );
 
         double currentForce[3];
         currentForce[0] = Wrench_endOmni_inBaseOmni.getForce()[0] * autreOmniDriver[i]->data.forceScale;
@@ -365,11 +365,11 @@ int NewOmniDriver::initDevice()
 
             if (HD_DEVICE_ERROR(error = hdGetError()))
             {
-                cout<<"[NewOmni] Failed to initialize the device "<<autreOmniDriver[i]->deviceName.getValue()<<endl;
+                std::cout<<"[NewOmni] Failed to initialize the device "<<autreOmniDriver[i]->deviceName.getValue()<<std::endl;
             }
             else
             {
-                cout<<deviceName.getValue()<<"[NewOmni] Found device "<<autreOmniDriver[i]->deviceName.getValue()<<endl;
+                std::cout<<deviceName.getValue()<<"[NewOmni] Found device "<<autreOmniDriver[i]->deviceName.getValue()<<std::endl;
 
                 hdEnable(HD_FORCE_OUTPUT);
                 hdEnable(HD_MAX_FORCE_CLAMPING);
@@ -912,7 +912,7 @@ void NewOmniDriver::onAnimateBeginEvent()
         data.deviceData.quat.normalize();
 
         // COMPUTATION OF THE vituralTool 6D POSITION IN THE World COORDINATES
-        SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
+        sofa::defaulttype::SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
 
     
         Quat& orientB =(*orientationBase.beginEdit());
@@ -930,8 +930,8 @@ void NewOmniDriver::onAnimateBeginEvent()
         VecCoord& posD =(*posDevice.beginEdit());
         //posD.resize(NVISUALNODE+1);
 
-        SolidTypes<double>::Transform world_H_virtualTool = data.world_H_baseOmni * baseOmni_H_endOmni * data.endOmni_H_virtualTool;
-        SolidTypes<double>::Transform tampon = data.world_H_baseOmni;
+        sofa::defaulttype::SolidTypes<double>::Transform world_H_virtualTool = data.world_H_baseOmni * baseOmni_H_endOmni * data.endOmni_H_virtualTool;
+        sofa::defaulttype::SolidTypes<double>::Transform tampon = data.world_H_baseOmni;
 
         sofa::helper::Quater<double> q;
 #if 1
@@ -945,41 +945,41 @@ void NewOmniDriver::onAnimateBeginEvent()
 
         //get pos joint 2
         sofa::helper::Quater<double> quarter2(Vec3d(0.0,0.0,1.0),angle2[2]);
-        SolidTypes<double>::Transform transform_segr2(Vec3d(0.0,0.0,0.0),quarter2);
+        sofa::defaulttype::SolidTypes<double>::Transform transform_segr2(Vec3d(0.0,0.0,0.0),quarter2);
         tampon*=transform_segr2;
         posD[1+VN_joint2] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
         //get pos joint 1
         sofa::helper::Quater<double> quarter3(Vec3d(1.0,0.0,0.0),angle2[1]);
-        SolidTypes<double>::Transform transform_segr3(Vec3d(0.0,0.0,0.0),quarter3);
+        sofa::defaulttype::SolidTypes<double>::Transform transform_segr3(Vec3d(0.0,0.0,0.0),quarter3);
         tampon*=transform_segr3;
         posD[1+VN_joint1] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
         //get pos arm 2
         sofa::helper::Quater<double> quarter4(Vec3d(0.0,1.0,0.0),-angle2[0]);
-        SolidTypes<double>::Transform transform_segr4(Vec3d(0.0,0.0,0.0),quarter4);
+        sofa::defaulttype::SolidTypes<double>::Transform transform_segr4(Vec3d(0.0,0.0,0.0),quarter4);
         tampon*=transform_segr4;
         posD[1+VN_arm2] = Coord(tampon.getOrigin(), tampon.getOrientation());
         //get pos arm 1
         sofa::helper::Quater<double> quarter5(Vec3d(1.0,0.0,0.0),-(M_PI/2)+angle1[2]-angle1[1]);
-        SolidTypes<double>::Transform transform_segr5(Vec3d(0.0,13.33*data.scale/100,0.0),quarter5);
+        sofa::defaulttype::SolidTypes<double>::Transform transform_segr5(Vec3d(0.0,13.33*data.scale/100,0.0),quarter5);
         tampon*=transform_segr5;
         posD[1+VN_arm1] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
         //get pos joint 0
         sofa::helper::Quater<double> quarter6(Vec3d(1.0,0.0,0.0),angle1[1]);
-        SolidTypes<double>::Transform transform_segr6(Vec3d(0.0,13.33*data.scale/100,0.0),quarter6);
+        sofa::defaulttype::SolidTypes<double>::Transform transform_segr6(Vec3d(0.0,13.33*data.scale/100,0.0),quarter6);
         tampon*=transform_segr6;
         posD[1+VN_joint0] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
         //get pos base
         sofa::helper::Quater<double> quarter7(Vec3d(0.0,0.0,1.0),angle1[0]);
-        SolidTypes<double>::Transform transform_segr7(Vec3d(0.0,0.0,0.0),quarter7);
+        sofa::defaulttype::SolidTypes<double>::Transform transform_segr7(Vec3d(0.0,0.0,0.0),quarter7);
         tampon*=transform_segr7;
         posD[1+VN_base] = Coord(tampon.getOrigin(), tampon.getOrientation());
 #else
         q.clear();
-        SolidTypes<double>::Transform transform_segr[6];
+        sofa::defaulttype::SolidTypes<double>::Transform transform_segr[6];
         transform_segr[0].set(Vec3d(0.0,0.0,0.0),q);//get position base
         transform_segr[1].set(baseOmni_H_endOmni.getOrigin(),baseOmni_H_endOmni.getOrientation());//get position stylus
         transform_segr[2].set(Vec3d(0.0,0.0,0.0),q.axisToQuat(Vec3d(0.0,0.0,1.0),angle2[2]));//get pos articulation 2
