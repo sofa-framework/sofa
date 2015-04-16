@@ -53,6 +53,7 @@ set(SOURCE_FILES
 	)
 
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaExtlibs")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:${NEWMAT_INSTALL_INCLUDE_DIR}>")
 target_compile_definitions(${PROJECT_NAME} PRIVATE "use_namespace")

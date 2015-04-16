@@ -5,6 +5,7 @@ set(HEADER_FILES dtracklib.h)
 set(SOURCE_FILES mainTracker.cpp)
 
 add_library(ARTrackLib ${HEADER_FILES} ${SOURCE_FILES})
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaExtlibs")
 target_include_directories(ARTrackLib PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 set_target_properties(ARTrackLib PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
