@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_INL
 #define SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_INL
 
-#include <ARTrackController.h>
-#include <ARTrackEvent.h>
+#include "ARTrackController.h"
+#include "ARTrackEvent.h"
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/VecId.h>
