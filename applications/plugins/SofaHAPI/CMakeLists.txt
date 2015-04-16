@@ -140,6 +140,8 @@ install(TARGETS ${PROJECT_NAME}
     PUBLIC_HEADER DESTINATION "${SOFAHAPI_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}"
     )
 
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
+
 # SofaHAPITargets.cmake (installed)
 # install(EXPORT SofaHAPITargets
         # DESTINATION ${SOFAHAPI_INSTALL_CMAKE_DIR} )

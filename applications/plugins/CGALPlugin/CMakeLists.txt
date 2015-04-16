@@ -94,6 +94,8 @@ install(TARGETS ${PROJECT_NAME}
     PUBLIC_HEADER DESTINATION "${CGALPLUGIN_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}"
     )
 
+install(DIRECTORY scenes/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
+
 
 include(CMakePackageConfigHelpers)
 # CGALPluginConfigVersion.cmake file (same for build tree and intall)
