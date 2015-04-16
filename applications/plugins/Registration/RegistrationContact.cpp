@@ -23,12 +23,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "RegistrationContact.inl"
-#include <SofaMeshCollision/BarycentricContactMapper.inl>
+#include "RegistrationContactForceField.inl"
 
-#include <SofaVolumetricData/RigidDistanceGridDiscreteIntersection.h>
+#include <SofaMeshCollision/BarycentricContactMapper.inl>
 #include <SofaMeshCollision/IdentityContactMapper.inl>
 #include <SofaMeshCollision/RigidContactMapper.inl>
-#include "RegistrationContactForceField.inl"
+#include <SofaMiscCollision/TetrahedronModel.h>
+#include <SofaVolumetricData/DistanceGridCollisionModel.h>
 
 namespace sofa
 {
