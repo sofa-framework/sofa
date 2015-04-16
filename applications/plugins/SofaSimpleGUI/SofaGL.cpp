@@ -4,6 +4,10 @@
 #include <sofa/core/objectmodel/Tag.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
+using std::cout;
+using std::cerr;
+using std::endl;
+
 namespace sofa {
 using core::objectmodel::Tag;
 
