@@ -46,7 +46,7 @@ template<typename PFP, typename V_ATT>
 typename V_ATT::DATA_TYPE triangleNormal(typename PFP::MAP& map, Face f, const V_ATT& position)
 {
 	typename V_ATT::DATA_TYPE N = Geom::triangleNormal(
-        position[f],
+        position[f.dart],
 		position[map.phi1(f)],
 		position[map.phi_1(f)]
 	) ;

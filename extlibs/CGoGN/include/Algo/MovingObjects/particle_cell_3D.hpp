@@ -23,6 +23,7 @@
 *******************************************************************************/
 
 // #define DEBUG
+#include "particle_cell_3D.h"
 
 namespace CGoGN
 {
@@ -35,10 +36,6 @@ namespace Volume
 
 namespace MovingObjects
 {
-
-//#define DELTA 0.00001
-//static const float DELTA=0.00001;
-
 
 template <typename PFP>
 void ParticleCell3D<PFP>::display()
@@ -75,7 +72,7 @@ void ParticleCell3D<PFP>:: reset_positionVolume()
 }
 
 template <typename PFP>
-void ParticleCell3D<PFP>::resetParticule(){
+void ParticleCell3D<PFP>::resetParticuleSubdiv(){
     VEC3 oldPos=this->m_position;
     reset_positionFace();
     reset_positionVolume();
@@ -89,6 +86,13 @@ void ParticleCell3D<PFP>::resetParticule(){
     move(oldPos);
 }
 
+template <typename PFP>
+void ParticleCell3D<PFP>::resetParticuleSimplif(Dart newD){
+    d=newD;
+    reset_positionFace();
+    reset_positionVolume();
+
+}
 
 template <typename PFP>
 inline Geom::Orientation3D ParticleCell3D<PFP>::whichSideOfFace(const VEC3& c, Dart da) //renvoie la position par rapport au plan défini apr le triangle défini par l'arete visée et le centre de la face
@@ -177,12 +181,11 @@ Geom::Orientation3D ParticleCell3D<PFP>::orientationPlan(const VEC3& c,const VEC
 template <typename PFP>
 Geom::Orientation3D ParticleCell3D<PFP>::whichSideOfEdge(const VEC3& c, Dart d) // orientation par rapport au plan orthogonal a la face passant par l'arete visée
 {
-    VEC3 p1 = position[m.phi1(d)];
-    VEC3 p2 = position[d];
-    VEC3 p3 = m_positionFace;
-    const Geom::Plane3D<typename PFP::REAL> pl (p1,p2,p3);
-    VEC3 norm = pl.normal();
-    VEC3 n2 = norm.cross(p1-p2);
+    const VEC3& p1 = position[m.phi1(d)];
+    const VEC3& p2 = position[d];
+    const VEC3& p3 = m_positionFace;
+    const VEC3& norm = Geom::Plane3D<typename PFP::REAL>(p1,p2,p3).normal();
+    const VEC3& n2 = norm.cross(p1-p2);
 #ifdef DEBUG
     std::cout << "Test side of edge (obj,d,position[d], position(phi1), test)" <<c<<" || "<<d<<" || "<<position[d]<<" || "<<position[m.phi1(d)]<<" || "<<Geom::Plane3D<typename PFP::REAL>(n2,p1).orient(c)<< std::endl;
 #endif
@@ -192,8 +195,8 @@ Geom::Orientation3D ParticleCell3D<PFP>::whichSideOfEdge(const VEC3& c, Dart d) 
 template <typename PFP>
 bool ParticleCell3D<PFP>::isOnHalfEdge(VEC3 c, Dart d) // booleen : vrai si on est sur l'arete mais pas sur le sommet
 {
-    VEC3 p1 = position[d];
-    VEC3 p2 = position[m.phi1(d)];
+    const VEC3& p1 = position[d];
+    const VEC3& p2 = position[m.phi1(d)];
 
     VEC3 norm(p2-p1);
     norm.normalize();
@@ -218,7 +221,7 @@ void ParticleCell3D<PFP>::vertexState(const VEC3& current)
 
     crossCell = CROSS_OTHER ;
 
-    VEC3 som = position[d];
+    const VEC3& som = position[d];
 
     if(Geom::arePointsEquals(current, som)) { // si on est sur le sommet on s'arrete
 #ifdef DEBUG
@@ -379,7 +382,7 @@ void ParticleCell3D<PFP>::edgeState(const VEC3& current)
                             break;
             default : //ON
                             switch (whichSideOfEdge(current,d)) {
-                            case Geom::OVER :       // on est sur la face en question
+                            case Geom::UNDER :       // on est sur la face en question
                                 d=m.phi1(d);
                                 reset_positionVolume();
                                 faceState(current);
@@ -387,7 +390,7 @@ void ParticleCell3D<PFP>::edgeState(const VEC3& current)
                             case Geom::ON :// on est sur l'arete, il faut tester les sommets
                                 onEdge=true;
                                 break;
-                            default : //UNDER  on est de l'autre coté de l'arête, il faut commencer de tourner (on ne peut pas finir ici sauf si on commence en face)
+                            default : //OVER  on est de l'autre coté de l'arête, il faut commencer de tourner (on ne peut pas finir ici sauf si on commence en face)
                                 aGauche=true;d=m.alpha_2(d);reset_positionFace();
                                 break;
                             }
@@ -498,7 +501,7 @@ void ParticleCell3D<PFP>::faceState(const VEC3& current, Geom::Orientation3D wso
         default : // sur la face et dans le secteur
                 switch (whichSideOfEdge(current,d))
                 {
-                    case Geom::OVER : // on est sur la face dans ce secteur
+                    case Geom::UNDER : // on est sur la face dans ce secteur
 
                         this->m_position = current;
                         this->setState(FACE);

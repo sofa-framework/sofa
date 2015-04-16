@@ -36,7 +36,7 @@ public :
     typedef VolumeAttribute<VEC3,MAP> TAB_VOL;
 
     ParticleCell3DMemo(MAP& map, Dart belonging_cell, VEC3 pos, const TAB_POS& tabPos,const TAB_FACE * fa_center = NULL,
-                       const TAB_VOL * vol_center=NULL) :
+                       const TAB_VOL * vol_center = NULL) :
     ParticleCell3D<PFP>(map, belonging_cell, pos, tabPos,fa_center,vol_center)
 	{
 

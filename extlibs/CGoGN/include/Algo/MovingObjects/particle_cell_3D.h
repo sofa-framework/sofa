@@ -68,6 +68,7 @@ public :
         d(belonging_cell)
 
     {
+        crossCell=NO_CROSS;
         reset_positionFace();
         reset_positionVolume();
         this->setState(VOLUME);
@@ -118,8 +119,8 @@ public :
 
     void reset_positionFace(); // remet a jour la positionFace
     void reset_positionVolume(); // remet a jour la positionVolume
-
-    void resetParticule(); // a appeler pour replacer correctement une particule (apres une subdivision par exemple)
+    void resetParticuleSimplif(Dart newD); // a appeler pour changer la dart visée par une particule et réinitialiser ses positionsFace et Volume ( en cas de simplif )
+    void resetParticuleSubdiv(); // a appeler pour replacer correctement une particule (apres une subdivision par exemple)
     void move(const VEC3& newCurrent)
     {
         crossCell = NO_CROSS ;
