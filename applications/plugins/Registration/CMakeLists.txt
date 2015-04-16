@@ -120,3 +120,5 @@ install(FILES ${REGISTRATION_BUILD_CMAKE_DIR}/RegistrationConfigInstall.cmake
 # RegistrationTargets.cmake (installed)
 install(EXPORT RegistrationTargets
         DESTINATION ${REGISTRATION_INSTALL_CMAKE_DIR})
+
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

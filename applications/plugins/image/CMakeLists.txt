@@ -145,6 +145,8 @@ install(TARGETS ${PROJECT_NAME}
         ARCHIVE DESTINATION "${IMAGE_INSTALL_LIB_DIR}"
         PUBLIC_HEADER DESTINATION "${IMAGE_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}")
 
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
+
 find_package(SofaTest QUIET)
 if(SofaTest_FOUND)
     add_subdirectory(image_test)
