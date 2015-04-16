@@ -9,6 +9,7 @@ using std::endl;
 #include <SofaComponentMain/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 
 // sofa types should not be exposed
