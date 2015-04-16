@@ -27,13 +27,7 @@
 
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/FnDispatcher.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/PointModel.h>
-#include <SofaMeshCollision/LineModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseCollision/CubeModel.h>
 #include <SofaUserInteraction/RayModel.h>
-#include <SofaVolumetricData/DistanceGridCollisionModel.h>
 #include <SofaMiscCollision/TetrahedronModel.h>
 #include <SofaBaseCollision/DiscreteIntersection.h>
 

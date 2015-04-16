@@ -25,7 +25,7 @@
 #define SOFA_COMPONENT_MAPPING_DistanceMapping_CPP
 
 #include "DistanceMapping.inl"
-#include "MultiMapping.inl"
+#include <sofa/core/MultiMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

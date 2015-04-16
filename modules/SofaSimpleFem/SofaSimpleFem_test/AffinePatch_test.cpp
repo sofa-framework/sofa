@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <plugins/SofaTest/Elasticity_test.h>
+#include <SofaTest/Elasticity_test.h>
 #include <sofa/helper/Quater.h>
 #include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
@@ -41,7 +41,7 @@
 #include <sofa/core/MechanicalParams.h>
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneCreator.h>
 
 namespace sofa {
 

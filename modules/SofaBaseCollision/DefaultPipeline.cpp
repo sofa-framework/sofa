@@ -32,7 +32,6 @@
 #include <sofa/core/collision/ContactManager.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <SofaUserInteraction/RayModel.h>
 #include <sofa/simulation/common/Node.h>
 
 #ifdef SOFA_DUMP_VISITOR_INFO

@@ -25,6 +25,7 @@
 #include "RegistrationContact.inl"
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
 
+#include <SofaVolumetricData/RigidDistanceGridDiscreteIntersection.h>
 #include <SofaMeshCollision/IdentityContactMapper.inl>
 #include <SofaMeshCollision/RigidContactMapper.inl>
 #include "RegistrationContactForceField.inl"

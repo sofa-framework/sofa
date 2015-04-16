@@ -41,7 +41,6 @@ namespace component
 namespace collision
 {
 
-
 /**
  *  \brief It is a Ray Trace based collision detection algorithm
  *

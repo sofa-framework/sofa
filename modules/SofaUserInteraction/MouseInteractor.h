@@ -53,7 +53,7 @@ struct BodyPicked
     unsigned int indexCollisionElement;
     defaulttype::Vector3 point;
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    Vector3 baryCoords;
+    defaulttype::Vector3 baryCoords;
 #endif
     SReal dist;
     SReal rayLength;

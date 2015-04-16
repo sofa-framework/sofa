@@ -32,7 +32,7 @@
 #include <sofa/component/component.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/component/collision/EndPoint.h>
+#include <SofaMeshCollision/EndPoint.h>
 #include <set>
 #include <map>
 #include <deque>
@@ -42,7 +42,7 @@
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaBaseCollision/SphereModel.h>
-#include <sofa/component/collision/CollisionPM.h>
+#include <SofaMeshCollision/CollisionPM.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <vector>
 

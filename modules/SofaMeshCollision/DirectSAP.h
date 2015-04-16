@@ -32,7 +32,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/component/component.h>
 #include <SofaBaseCollision/CubeModel.h>
-#include <sofa/component/collision/EndPoint.h>
+#include <SofaMeshCollision/EndPoint.h>
 #include <sofa/defaulttype/Vec.h>
 #include <set>
 #include <map>

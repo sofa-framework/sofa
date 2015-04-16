@@ -34,7 +34,7 @@
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <iostream>
-#include "sofa/helper/system/thread/CTime.h"
+#include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -170,7 +170,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
 
     if (share_matrix.getValue() && internalData.MinvPtr->rowSize() == (defaulttype::BaseMatrix::Index)systemSize)
     {
-        cout << "shared matrix : " << fname << " is already built" << endl;
+        std::cout << "shared matrix : " << fname << " is already built" << std::endl;
     }
     else
     {
@@ -180,14 +180,14 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
 
         if(compFileIn.good() && use_file.getValue())
         {
-            cout << "file open : " << fname << " compliance being loaded" << endl;
+            std::cout << "file open : " << fname << " compliance being loaded" << std::endl;
             internalData.readMinvFomFile(compFileIn);
             //compFileIn.read((char*) (*internalData.MinvPtr)[0], matrixSize * matrixSize * sizeof(Real));
             compFileIn.close();
         }
         else
         {
-            cout << "Precompute : " << fname << " compliance" << endl;
+            std::cout << "Precompute : " << fname << " compliance" << std::endl;
             if (solverName.getValue().empty()) loadMatrixWithCSparse(M);
             else loadMatrixWithSolver();
 
@@ -221,7 +221,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M)
 {
-    cout << "Compute the initial invert matrix with CS_PARSE" << endl;
+    std::cout << "Compute the initial invert matrix with CS_PARSE" << std::endl;
 
     FullVector<Real> r;
     FullVector<Real> b;
@@ -282,7 +282,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 {
     usePrecond = false;//Don'Use precond during precomputing
 
-    cout << "Compute the initial invert matrix with solver" << endl;
+    std::cout << "Compute the initial invert matrix with solver" << std::endl;
 
     if (mstate==NULL)
     {

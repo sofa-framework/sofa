@@ -22,10 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <plugins/SofaTest/Sofa_test.h>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SofaTest/Sofa_test.h>
+#include <SceneCreator/SceneCreator.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <SofaBaseMechanics/UniformMass.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBoundaryCondition/FixedConstraint.h>
+#include <SofaDeformable/StiffSpringForceField.h>
+
 #include <sofa/simulation/common/Simulation.h>
 
 namespace sofa {
@@ -34,7 +39,11 @@ using namespace modeling;
 using namespace defaulttype;
 using core::objectmodel::New;
 
-typedef component::odesolver::EulerImplicitSolver EulerImplicitSolver;
+using sofa::component::mass::UniformMass;
+using sofa::component::container::MechanicalObject;
+using sofa::component::interactionforcefield::StiffSpringForceField;
+using sofa::component::projectiveconstraintset::FixedConstraint;
+using sofa::component::odesolver::EulerImplicitSolver;
 typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
 
@@ -63,7 +72,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
                     1000.0, // stiffness
                     0.1     // damping ratio
                     );
-        FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(string,"fixedConstraint");
+        FixedConstraint<Vec3Types>::SPtr fixed = modeling::addNew<FixedConstraint<Vec3Types> >(string,"fixedConstraint");
         fixed->addConstraint(0);      // attach first particle
 
         Vec3d expected(0,-0.00981,0); // expected position of second particle after relaxation
@@ -135,9 +144,9 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
         CGLinearSolver::SPtr linearSolver = addNew<CGLinearSolver>   (getRoot() );
 
 
-        MechanicalObject3::SPtr DOF = addNew<MechanicalObject3>(getRoot(),"DOF");
+        MechanicalObject<Vec3Types>::SPtr DOF = addNew<MechanicalObject<Vec3Types> >(getRoot(),"DOF");
 
-        UniformMass3::SPtr mass = addNew<UniformMass3>(getRoot(),"mass");
+        UniformMass<Vec3Types, SReal>::SPtr mass = addNew<UniformMass<Vec3Types, SReal> >(getRoot(),"mass");
         mass->mass.setValue( 1. );
 
 
@@ -146,29 +155,29 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
 
         // create a child node with its own DOF
         simulation::Node::SPtr child = getRoot()->createChild("childNode");
-        MechanicalObject3::SPtr childDof = addNew<MechanicalObject3>(child);
-        UniformMass3::SPtr childMass = addNew<UniformMass3>(child,"childMass");
+        MechanicalObject<Vec3Types>::SPtr childDof = addNew<MechanicalObject<Vec3Types> >(child);
+        UniformMass<Vec3Types, SReal>::SPtr childMass = addNew<UniformMass<Vec3Types, SReal> >(child,"childMass");
         childMass->mass.setValue( 1. );
 
         // attach a spring
-        StiffSpringForceField3::SPtr spring = New<StiffSpringForceField3>(DOF.get(), childDof.get());
+        StiffSpringForceField<Vec3Types>::SPtr spring = New<StiffSpringForceField<Vec3Types> >(DOF.get(), childDof.get());
         getRoot()->addObject(spring);
         spring->addSpring(0,0,  1000. ,0.1, 1.);
 
         // set position and velocity vectors, using DataTypes::set to cope with tests in dimension 2
-        MechanicalObject3::VecCoord xp(1),xc(1);
-        MechanicalObject3::DataTypes::set( xp[0], 0., 2.,0.);
-        MechanicalObject3::DataTypes::set( xc[0], 0.,-1.,0.);
-        MechanicalObject3::VecDeriv vp(1),vc(1);
-        MechanicalObject3::DataTypes::set( vp[0], 0.,0.,0.);
-        MechanicalObject3::DataTypes::set( vc[0], 0.,0.,0.);
+        MechanicalObject<Vec3Types>::VecCoord xp(1),xc(1);
+        MechanicalObject<Vec3Types>::DataTypes::set( xp[0], 0., 2.,0.);
+        MechanicalObject<Vec3Types>::DataTypes::set( xc[0], 0.,-1.,0.);
+        MechanicalObject<Vec3Types>::VecDeriv vp(1),vc(1);
+        MechanicalObject<Vec3Types>::DataTypes::set( vp[0], 0.,0.,0.);
+        MechanicalObject<Vec3Types>::DataTypes::set( vc[0], 0.,0.,0.);
         // copy the position and velocities to the scene graph
         DOF->resize(1);
         childDof->resize(1);
-        MechanicalObject3::WriteVecCoord xdof = DOF->writePositions(), xchildDof = childDof->writePositions();
+        MechanicalObject<Vec3Types>::WriteVecCoord xdof = DOF->writePositions(), xchildDof = childDof->writePositions();
         copyToData( xdof, xp );
         copyToData( xchildDof, xc );
-        MechanicalObject3::WriteVecDeriv vdof = DOF->writeVelocities(), vchildDof = childDof->writeVelocities();
+        MechanicalObject<Vec3Types>::WriteVecDeriv vdof = DOF->writeVelocities(), vchildDof = childDof->writeVelocities();
         copyToData( vdof, vp );
         copyToData( vchildDof, vc );
 

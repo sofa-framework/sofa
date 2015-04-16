@@ -6,7 +6,6 @@
 #define WM5INTRUTILITY3_H
 #include <sofa/defaulttype/Vec.h>
 #include <SofaBaseCollision/OBBModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
 
 
 namespace sofa{

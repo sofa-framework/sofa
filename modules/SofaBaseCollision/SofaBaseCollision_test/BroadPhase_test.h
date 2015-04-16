@@ -41,10 +41,10 @@
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
-//#include <plugins/SceneCreator/SceneCreator.h>
+//#include <SceneCreator/SceneCreator.h>
 
-//#include <plugins/Flexible/deformationMapping/DistanceMapping.h>
-//#include <plugins/Flexible/deformationMapping/DistanceFromTargetMapping.h>
+//#include <Flexible/deformationMapping/DistanceMapping.h>
+//#include <Flexible/deformationMapping/DistanceFromTargetMapping.h>
 
 #include <sofa/simulation/common/Simulation.h>
 #include <SofaMiscCollision/DefaultCollisionGroupManager.h>

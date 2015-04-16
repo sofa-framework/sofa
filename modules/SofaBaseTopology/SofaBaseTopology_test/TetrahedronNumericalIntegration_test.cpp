@@ -22,9 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <plugins/SofaTest/Sofa_test.h>
+#include <SofaTest/Sofa_test.h>
 #include <SofaComponentMain/init.h>
-//#include <plugins/SceneCreator/SceneCreator.h>
 //Including Simulation
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -35,7 +34,7 @@
 #include <SofaBaseTopology/CommonAlgorithms.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <ctime>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneCreator.h>
 
 
 namespace sofa {

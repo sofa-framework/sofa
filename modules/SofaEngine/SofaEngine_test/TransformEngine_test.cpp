@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "Sofa_test.h"
+#include <SofaTest/Sofa_test.h>
 #include <SofaEngine/TransformEngine.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/defaulttype/Vec3Types.h>

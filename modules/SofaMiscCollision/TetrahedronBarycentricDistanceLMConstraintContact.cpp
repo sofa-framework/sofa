@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BarycentricDistanceLMConstraintContact.inl"
+#include <SofaConstraint/BarycentricDistanceLMConstraintContact.inl>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
-
+#include <SofaMiscCollision/TetrahedronModel.h>
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;

@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <plugins/SofaTest/Elasticity_test.h>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SofaTest/Elasticity_test.h>
+#include <SceneCreator/SceneCreator.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
@@ -39,6 +39,7 @@
 #include <SofaEngine/PairBoxRoi.h>
 #include <SofaImplicitOdeSolver/StaticSolver.h>
 #include <SofaBoundaryCondition/ProjectToLineConstraint.h>
+#include <SofaMiscForceField/MeshMatrixMass.h>
 
 namespace sofa {
 

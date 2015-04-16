@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 #include <SofaSimpleFem/HexahedronFEMForceField.h>
-#include <plugins/SofaTest/ForceField_test.h>
+#include <SofaTest/ForceField_test.h>
 
 namespace sofa {
 

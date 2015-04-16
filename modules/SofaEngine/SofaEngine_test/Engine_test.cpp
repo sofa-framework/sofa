@@ -23,8 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaEngine/TestEngine.h>
-#include <plugins/SceneCreator/SceneCreator.h>
-#include <plugins/SofaTest/Sofa_test.h>
+#include <SceneCreator/SceneCreator.h>
+#include <SofaTest/Sofa_test.h>
 
 
 namespace sofa {

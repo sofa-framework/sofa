@@ -23,11 +23,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "Elasticity_test.h"
+#include <SofaTest/Elasticity_test.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaDeformable/MeshSpringForceField.h>
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/RandomGenerator.h>
 
 using namespace sofa::defaulttype;
 

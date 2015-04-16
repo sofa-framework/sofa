@@ -27,6 +27,7 @@
 
 #include <SofaMeshCollision/BarycentricPenalityContact.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <SofaBaseCollision/BaseContactMapper.h>
 
 namespace sofa
 {

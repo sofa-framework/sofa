@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaDeformable/StiffSpringForceField.h>
-#include <plugins/SofaTest/ForceField_test.h>
+#include <SofaTest/ForceField_test.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
@@ -81,7 +81,7 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
     typedef typename ForceType::Coord Coord;
     typedef typename ForceType::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef helper::Vec<3,Real> Vec3;
+    typedef defaulttype::Vec<3,Real> Vec3;
 
     typedef ForceType Spring;
     typedef component::container::MechanicalObject<DataTypes> DOF;
