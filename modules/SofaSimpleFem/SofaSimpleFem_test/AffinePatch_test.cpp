@@ -23,9 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <plugins/SofaTest/Elasticity_test.h>
+#include <SofaTest/Elasticity_test.h>
 #include <sofa/helper/Quater.h>
-#include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation
@@ -41,7 +40,7 @@
 #include <sofa/core/MechanicalParams.h>
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneCreator.h>
 
 namespace sofa {
 
@@ -87,7 +86,6 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
     void SetUp()
     { 
         // Init simulation
-        sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
          root = simulation::getSimulation()->createNewGraph("root");

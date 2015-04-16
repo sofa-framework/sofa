@@ -22,9 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <plugins/SofaTest/Sofa_test.h>
+#include <SofaTest/Sofa_test.h>
 
-#include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation
@@ -68,7 +67,6 @@ struct SpringSolverDynamic_test : public Sofa_test<typename _DataTypes::Real>
     void SetUp()
     { 
         // Init simulation
-        sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
         root = simulation::getSimulation()->createNewGraph("root");
     }

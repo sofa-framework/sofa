@@ -22,12 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <plugins/SofaTest/Elasticity_test.h>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SofaTest/Elasticity_test.h>
+#include <SceneCreator/SceneCreator.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
-#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
 #include <SofaMiscFem/TetrahedralTensorMassForceField.h>
@@ -39,6 +38,7 @@
 #include <SofaEngine/PairBoxRoi.h>
 #include <SofaImplicitOdeSolver/StaticSolver.h>
 #include <SofaBoundaryCondition/ProjectToLineConstraint.h>
+#include <SofaMiscForceField/MeshMatrixMass.h>
 
 namespace sofa {
 
@@ -88,7 +88,6 @@ struct LinearElasticity_test : public Elasticity_test<_DataTypes>
     void SetUp()
     { 
         // Init simulation
-        sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 		size_t resolutionCircumferential=7;
 		size_t  resolutionRadial=3;

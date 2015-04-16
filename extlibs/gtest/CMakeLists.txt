@@ -257,6 +257,7 @@ endif()
 
 
 
+include(CMakePackageConfigHelpers)
 
 target_include_directories(gtest PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
 target_include_directories(gtest_main PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")

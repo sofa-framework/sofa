@@ -63,7 +63,7 @@ endif()
 include_directories(${BULLET_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${BULLET_LIBRARIES})
 
-find_package(SofaTest)
+find_package(SofaTest QUIET)
 if(SofaTest_FOUND)
     add_subdirectory(BulletCollisionDetection_test)
 endif()

@@ -28,7 +28,6 @@
 #define SOFA_STANDARDTEST_ForceField_test_H
 
 #include "Sofa_test.h"
-#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
@@ -94,7 +93,6 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
     {
         using modeling::addNew;
         simulation::Simulation* simu;
-        sofa::component::init();
         sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
 
         ///  node 1
@@ -114,7 +112,6 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
     {
         using modeling::addNew;
         simulation::Simulation* simu;
-        sofa::component::init();
         sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
 
         /// Load the scene

@@ -23,11 +23,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "Elasticity_test.h"
+#include <SofaTest/Elasticity_test.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaDeformable/MeshSpringForceField.h>
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/RandomGenerator.h>
 
 using namespace sofa::defaulttype;
 
@@ -66,7 +67,6 @@ struct AffineMovementConstraint_test : public Elasticity_test<_DataTypes>
      void SetUp()
      { 
         // Init simulation
-        sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
          root = simulation::getSimulation()->createNewGraph("root");

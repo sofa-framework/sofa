@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "Sofa_test.h"
+#include <SofaTest/Sofa_test.h>
 
 #include "SofaLoader/MeshVTKLoader.h"
 

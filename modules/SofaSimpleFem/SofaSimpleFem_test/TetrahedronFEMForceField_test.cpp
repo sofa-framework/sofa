@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
-#include <plugins/SofaTest/ForceField_test.h>
+#include <SofaTest/ForceField_test.h>
 
 namespace sofa {
 
@@ -45,7 +45,7 @@ struct TetrahedronFEMForceField_test : public ForceField_test<_TetrahedronFEMFor
     typedef typename ForceType::Coord Coord;
     typedef typename ForceType::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef helper::Vec<3,Real> Vec3;
+    typedef defaulttype::Vec<3,Real> Vec3;
 
     typedef ForceType Spring;
     typedef component::container::MechanicalObject<DataTypes> DOF;
