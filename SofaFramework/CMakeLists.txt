@@ -16,7 +16,6 @@ set( SofaFramework_ACTUAL_SOURCE_DIR ${SofaFramework_SOURCE_DIR}/../framework)
 option(SOFAFRAMEWORK_DETECTIONOUTPUT_FREEMOTION      "Compile SofaCore library with DETECTIONOUTPUT_FREEMOTION preprocessor definition" OFF)
 option(SOFAFRAMEWORK_DETECTIONOUTPUT_BARYCENTRICINFO "Compile SofaCore library with DETECTIONOUTPUT_BARYCENTRICINFO preprocessor definition" OFF)
 option(SOFA_NO_OPENGL                                "Compile SofaFramework libraries without OpenGL dependencies" OFF )
-option(SOFA_TESTS                                    "Compile the gtest library, and the automatic tests" ON)
 
 set(SOFA_FLOATING_POINT_TYPE double CACHE STRING
 "Type used for floating point values in SOFA.  It actually determines:
@@ -56,16 +55,11 @@ set(SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 ## Dependencies lookup 
 ##
 
-if(SOFA_TESTS)
-    set(gtest_force_shared_crt ON CACHE BOOL "")
-    add_subdirectory(../extlibs/gtest ${CMAKE_CURRENT_BINARY_DIR}/gtest)
-
-    find_package(GTest CONFIG REQUIRED)
-    # sofa_create_target(GTest SofaFramework "${GTEST_LIBRARY}" "${GTEST_INCLUDE_DIR}" )
-    # sofa_create_target(GTestMain SofaFramework "${GTEST_MAIN_LIBRARY}" "${GTEST_INCLUDE_DIR}" )
-    set(SOFA_HAVE_GTEST 1)
+find_package(GTest CONFIG QUIET)
+if(GTest_FOUND)
+    set(SOFA_HAVE_GTEST ${GTest_FOUND})
 else()
-    set(SOFA_HAVE_GTEST 0)
+    set(SOFA_HAVE_GTEST ${GTest_FOUND})
 endif()
 
 if( NOT SOFA_NO_OPENGL )

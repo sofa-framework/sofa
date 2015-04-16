@@ -30,7 +30,6 @@
 #include <sstream>
 
 #include "Sofa_test.h"
-#include <SofaComponentMain/init.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/common/VectorOperations.h>
 #include <SofaBaseLinearSolver/FullVector.h>
@@ -39,6 +38,7 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
 #include <sofa/helper/vector.h>
+#include <sofa/core/MultiMapping.h>
 
 
 namespace sofa {
@@ -101,7 +101,6 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
 
     MultiMapping_test():deltaRange(1,1000),errorMax(10)
     {
-        sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
     }

@@ -77,6 +77,12 @@ install(FILES ${CMAKE_BINARY_DIR}/etc/installedSofa.ini
 
 ### Extlibs
 
+option(SOFA_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
+if(SOFA_TESTS)
+    set(gtest_force_shared_crt ON CACHE BOOL "")
+    add_subdirectory(extlibs/gtest)
+endif()
+
 ## Necessary ones
 add_subdirectory(extlibs/SuiteSparse)
 add_subdirectory(extlibs/csparse)
@@ -129,3 +135,12 @@ add_subdirectory("${SOFA_GUI_DIR}")
 
 # plugins
 add_subdirectory("${SOFA_PLUGINS_DIR}")
+
+if(SOFA_TESTS)
+    # Library used by SofaTest.
+    add_subdirectory(applications/plugins/SceneCreator)
+    # Library used to write high level tests involving many components.
+    add_subdirectory(applications/plugins/SofaTest)
+    # Tests for all the modules, written using SofaTest.
+    add_subdirectory(modules/tests)
+endif()

@@ -20,7 +20,6 @@
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <SofaComponentMain/init.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaMiscMapping/DistanceMapping.h>
 #include <SofaMiscMapping/DistanceFromTargetMapping.h>
@@ -38,7 +37,7 @@
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
-//#include <plugins/SceneCreator/SceneCreator.h>
+//#include <SceneCreator/SceneCreator.h>
 
 
 #include <sofa/simulation/common/Simulation.h>
@@ -50,7 +49,7 @@
 #include <SofaMeshCollision/MeshMinProximityIntersection.h>
 #include <SofaMeshCollision/MeshNewProximityIntersection.inl>
 
-#include <plugins/SofaTest/PrimitiveCreation.h>
+#include <SofaTest/PrimitiveCreation.h>
 
 namespace sofa {
 

@@ -49,10 +49,6 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFABASE_VERSION} )
 set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFABASEMECHANICS_COMPILER_FLAGS}"  )
 set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
 
-if(SOFA_HAVE_GTEST)
-    add_subdirectory(SofaBaseMechanics_test)
-endif()
-
 
 install(TARGETS ${PROJECT_NAME}
         EXPORT  SofaBaseTargets

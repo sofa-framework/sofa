@@ -24,7 +24,6 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 
-#include <SofaComponentMain/init.h>
 #include <SofaComponentBase/initComponentBase.h>
 #include <SofaComponentCommon/initComponentCommon.h>
 #include <SofaComponentGeneral/initComponentGeneral.h>

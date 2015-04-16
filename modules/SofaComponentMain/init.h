@@ -25,7 +25,6 @@
 #ifndef SOFA_COMPONENT_INIT_H
 #define SOFA_COMPONENT_INIT_H
 
-#include <sofa/component/component.h>
 
 namespace sofa
 {

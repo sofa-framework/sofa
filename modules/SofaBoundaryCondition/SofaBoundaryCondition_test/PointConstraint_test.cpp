@@ -24,7 +24,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "Sofa_test.h"
+#include <SofaTest/Sofa_test.h>
 #include <SofaBoundaryCondition/PointConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/common/Simulation.h>
@@ -32,7 +32,7 @@
 #include <sofa/simulation/common/Node.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseMechanics/UniformMass.h>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneCreator.h>
 #include <SofaBoundaryCondition/ConstantForceField.h>
 
 namespace sofa{
