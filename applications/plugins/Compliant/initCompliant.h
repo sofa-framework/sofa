@@ -53,8 +53,6 @@
 namespace sofa
 {
 	SOFA_Compliant_API void initCompliant();
-
-
 }
 
 #endif // INITCompliant_H

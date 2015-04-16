@@ -24,8 +24,6 @@
 ******************************************************************************/
 #include "initCompliant.h"
 #include "misc/CompliantSolverMerger.h"
-#include <sofa/gui/OperationFactory.h>
-#include <sofa/gui/MouseOperations.h>
 #include <contact/CompliantContact.h>
 
 namespace sofa

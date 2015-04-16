@@ -1,8 +1,8 @@
-#include <plugins/Compliant/numericalsolver/MinresSolver.h>
-#include <plugins/Compliant/numericalsolver/EigenSparseSolver.h>
-#include <plugins/Compliant/numericalsolver/EigenSparseResponse.h>
-#include <plugins/Compliant/Compliant_test/Compliant_test.h>
-#include <plugins/Compliant/odesolver/CompliantImplicitSolver.h>
+#include "Compliant_test.h"
+#include "../numericalsolver/MinresSolver.h"
+#include "../odesolver/CompliantImplicitSolver.h"
+
+#include <SofaBaseMechanics/IdentityMapping.h>
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 

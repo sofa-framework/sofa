@@ -1,5 +1,8 @@
 #include "ResistanceConstraint.h"
+
 #include <sofa/core/ObjectFactory.h>
+
+#include <cmath>
 
 namespace sofa {
 namespace component {

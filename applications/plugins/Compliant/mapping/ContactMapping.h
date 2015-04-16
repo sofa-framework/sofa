@@ -7,9 +7,9 @@
 
 //#include "debug.h"
 
-#include "utils/map.h"
-#include "utils/basis.h"
-#include "utils/nan.h"
+#include <Compliant/utils/map.h>
+#include <Compliant/utils/basis.h>
+#include <Compliant/utils/nan.h>
 
 #include <limits>
 

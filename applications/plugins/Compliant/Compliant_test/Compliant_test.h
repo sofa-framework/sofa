@@ -27,8 +27,8 @@
 
 
 
-#include <plugins/SofaTest/Sofa_test.h>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SofaTest/Sofa_test.h>
+#include <SceneCreator/SceneCreator.h>
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
