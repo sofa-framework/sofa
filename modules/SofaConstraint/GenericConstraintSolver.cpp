@@ -26,7 +26,6 @@
 #include <SofaConstraint/GenericConstraintSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/SolveVisitor.h>
 #include <sofa/simulation/VectorOperations.h>
@@ -174,8 +173,8 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 	// calling buildConstraintMatrix
 	//simulation::MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
 
-	MechanicalSetConstraint(cParams, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
-    MechanicalAccumulateConstraint2(cParams, core::MatrixDerivId::holonomicC(), reverseAccumulateOrder.getValue()).execute(context);
+	simulation::MechanicalBuildConstraintMatrix(cParams, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
+    simulation::MechanicalAccumulateMatrixDeriv(cParams, core::MatrixDerivId::holonomicC(), reverseAccumulateOrder.getValue()).execute(context);
 
     // suppress the constraints that are on DOFS currently concerned by projective constraint
     core::MechanicalParams mparams = core::MechanicalParams(*cParams);
