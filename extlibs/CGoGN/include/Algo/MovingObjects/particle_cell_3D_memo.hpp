@@ -264,7 +264,7 @@ void ParticleCell3DMemo<PFP>::edgeState(const VEC3& current, CellMarkerMemo<MAP,
                             break;
             default : //ON
                             switch (this->whichSideOfEdge(current,this->d)) {
-                            case Geom::OVER :       // on est sur la face en question
+                            case Geom::UNDER :       // on est sur la face en question
                                 this->d=this->m.phi1(this->d);
                                  this->reset_positionVolume();
                                 faceState(current,memo_cross);
@@ -272,7 +272,7 @@ void ParticleCell3DMemo<PFP>::edgeState(const VEC3& current, CellMarkerMemo<MAP,
                             case Geom::ON :// on est sur l'arete, il faut tester les sommets
                                 onEdge=true;
                                 break;
-                            default : //UNDER  on est de l'autre coté de l'arête, il faut commencer de tourner (on ne peut pas finir ici sauf si on commence en face)
+                            default : //OVER  on est de l'autre coté de l'arête, il faut commencer de tourner (on ne peut pas finir ici sauf si on commence en face)
                                 if(aGauche||aDroite) CGoGNout<< "PROBLEME |||||||||||||||||||||||||||||||||||||"<<CGoGNendl;
                                 aGauche=true;this->d=this->m.alpha_2(this->d); this->reset_positionFace();
                                 break;
@@ -387,7 +387,7 @@ void ParticleCell3DMemo<PFP>::edgeState(const VEC3& current, CellMarkerMemo<MAP,
         default : // sur la face et dans le secteur
                 switch (this->whichSideOfEdge(current,this->d))
                 {
-                    case Geom::OVER : // on est sur la face dans ce secteur
+                    case Geom::UNDER : // on est sur la face dans ce secteur
 
                         this->m_position = current;
                         this->setState(FACE);

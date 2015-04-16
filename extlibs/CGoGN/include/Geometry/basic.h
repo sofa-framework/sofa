@@ -99,7 +99,7 @@ typename VEC3::value_type triangleArea(const VEC3& p1, const VEC3& p2, const VEC
 template <typename VEC3>
 VEC3 triangleNormal(const VEC3& p1, const VEC3& p2, const VEC3& p3)
 {
-	return (p2 - p1) ^ (p3 - p1) ;
+        return (p2 - p1).cross(p3 - p1) ;
 }
 
 // return true if the triangle formed by 3 points in 3D is obtuse, false otherwise
