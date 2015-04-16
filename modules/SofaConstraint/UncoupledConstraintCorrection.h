@@ -153,22 +153,8 @@ template<>
 void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::init();
 
 template<>
-void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix * /*W*/);
-
-template<>
 void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::getComplianceMatrix(sofa::defaulttype::BaseMatrix * /*m*/) const;
 
-template<>
-void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::computeDx(const sofa::core::objectmodel::Data< VecDeriv > &/*f*/);
-
-template<>
-void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::applyContactForce(const sofa::defaulttype::BaseVector * /*f*/);
-
-template<>
-void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::setConstraintDForce(double * /*df*/, int /*begin*/, int /*end*/, bool /*update*/);
-
-template<>
-void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getBlockDiagonalCompliance(defaulttype::BaseMatrix * /*W*/, int /*begin*/, int /*end*/);
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_CPP)
 #ifndef SOFA_FLOAT
