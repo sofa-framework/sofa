@@ -39,7 +39,7 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 #include <sofa/helper/vector.h>
-
+#include <sofa/core/MultiMapping.h>
 
 namespace sofa {
 

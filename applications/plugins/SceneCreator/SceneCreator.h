@@ -31,9 +31,9 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/objectmodel/BaseData.h>
-
-//Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
-#include <sofa/component/typedef/Sofa_typedef.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseLinearSolver/FullVector.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 namespace sofa
 {
@@ -41,8 +41,11 @@ namespace sofa
 namespace modeling {
 
 typedef SReal Scalar;
+typedef sofa::defaulttype::Vec3Types::Deriv Deriv3;
 typedef sofa::defaulttype::Vec<3,SReal> Vec3;
 typedef sofa::defaulttype::Vec<1,SReal> Vec1;
+typedef component::container::MechanicalObject<defaulttype::Vec3Types> MechanicalObject3;
+typedef component::container::MechanicalObject<defaulttype::Rigid3Types> MechanicalObjectRigid3;
 
 SOFA_SceneCreator_API simulation::Node::SPtr createRootWithCollisionPipeline(const std::string &responseType=std::string("default"));
 SOFA_SceneCreator_API simulation::Node::SPtr createEulerSolverNode(simulation::Node::SPtr parent, const std::string& name, const std::string &integrationScheme=std::string("Implicit"));

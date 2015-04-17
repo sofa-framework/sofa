@@ -43,7 +43,6 @@
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaLoader/MeshObjLoader.h>
 
 //Including components for collision detection
@@ -64,6 +63,12 @@
 #include <SofaBaseVisual/VisualStyle.h>
 #include <SofaOpenglVisual/OglModel.h>
 
+#include <SofaRigid/RigidMapping.h>
+#include <SofaBaseMechanics/UniformMass.h>
+#include <SofaBaseTopology/MeshTopology.h>
+#include <SofaBaseMechanics/BarycentricMapping.h>
+#include <SofaDeformable/StiffSpringForceField.h>
+
 namespace sofa
 {
 namespace modeling {
@@ -77,10 +82,14 @@ using namespace component::container;
 using namespace component::topology;
 using namespace component::collision;
 using namespace component::visualmodel;
-using namespace component::mapping;
-using namespace component::forcefield;
 
 typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
+typedef component::mapping::BarycentricMapping<defaulttype::Vec3Types, defaulttype::Vec3Types > BarycentricMapping3_to_3;
+typedef component::mapping::BarycentricMapping<defaulttype::Vec3Types, defaulttype::ExtVec3fTypes> BarycentricMapping3_to_Ext3;
+typedef component::mapping::RigidMapping<defaulttype::Rigid3Types, defaulttype::Vec3Types > RigidMappingRigid3_to_3;
+typedef component::mapping::RigidMapping<defaulttype::Rigid3Types, defaulttype::ExtVec3fTypes > RigidMappingRigid3_to_Ext3;
+typedef component::mass::UniformMass<defaulttype::Vec3Types, double> UniformMass3;
+typedef component::interactionforcefield::StiffSpringForceField<defaulttype::Vec3Types > StiffSpringForceField3;
 
 simulation::Node::SPtr createRootWithCollisionPipeline(const std::string& responseType)
 {

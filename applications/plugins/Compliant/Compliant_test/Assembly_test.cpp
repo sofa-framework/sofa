@@ -1,7 +1,7 @@
 #include "Compliant_test.h"
 
 #include "../assembly/AssemblyVisitor.h"
-
+#include <SofaBoundaryCondition/ConstantForceField.h>
 
 namespace sofa
 {
@@ -17,6 +17,8 @@ struct Assembly_test : public CompliantSolver_test
     typedef odesolver::CompliantImplicitSolver OdeSolver;
     typedef linearsolver::LDLTSolver LinearSolver;
     typedef sofa::Vec3 Vec3;
+    typedef forcefield::ConstantForceField<defaulttype::Vec3Types> ConstantForceField3;
+
     OdeSolver::SPtr complianceSolver; ///< Solver used to perform the test simulation, and which contains the actual results, to be compared with the expected ones.
     LinearSolver::SPtr linearSolver; ///< Auxiliary linear equation solver used by the ode solver
 
