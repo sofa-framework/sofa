@@ -480,8 +480,6 @@ void facesPlanSelection(
 			vecFaces.push_back(f);
 		}
 	});
-
-	std::cout << "nb faces = " << vecFaces.size() << std::endl;
 }
 
 /**
