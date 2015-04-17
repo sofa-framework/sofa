@@ -279,10 +279,10 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
             HDErrorInfo error;
             if (HD_DEVICE_ERROR(error = hdGetError()))
             {
-                cout<<hdGetErrorString(error.errorCode)<<endl;
-                cout<<"HHD: "<<error.hHD<<endl;
-                cout<<"Error Code: "<<error.hHD<<endl;
-                cout<<"Internal Error Code: "<<error.internalErrorCode<<endl;
+                std::cout<<hdGetErrorString(error.errorCode)<<std::endl;
+                std::cout<<"HHD: "<<error.hHD<<std::endl;
+                std::cout<<"Error Code: "<<error.hHD<<std::endl;
+                std::cout<<"Internal Error Code: "<<error.internalErrorCode<<std::endl;
             }
         }
 
@@ -344,7 +344,7 @@ HDCallbackCode HDCALLBACK stopCallback(void * /*pUserData*/)
 //initialise l'omni > TODO: a appeler plusieur fois depuis l'interface n�1
 int NewOmniDriver::initDevice()
 {
-    cout<<"init Device is called"<<endl;
+    std::cout<<"init Device is called"<<std::endl;
     HDErrorInfo error;
     for(unsigned int i=0; i<autreOmniDriver.size(); i++)
     {
@@ -382,7 +382,7 @@ int NewOmniDriver::initDevice()
     hdStartScheduler();
     if (HD_DEVICE_ERROR(error = hdGetError()))
     {
-        cout<<"[NewOmni] Failed to start the scheduler"<<endl;
+        std::cout<<"[NewOmni] Failed to start the scheduler"<<std::endl;
     }
 
     for(unsigned int i=0; i<autreOmniDriver.size(); i++)
@@ -396,7 +396,7 @@ int NewOmniDriver::initDevice()
     if (HD_DEVICE_ERROR(error = hdGetError()))
     {
         printError(&error, "erreur avec le device");
-        cout<<deviceName.getValue()<<endl;
+        std::cout<<deviceName.getValue()<<std::endl;
     }
     return 0;
 }
@@ -443,7 +443,7 @@ NewOmniDriver::~NewOmniDriver()
 //arrete le call back TODO: a ne lancer que depuis l'interface n�1
 void NewOmniDriver::cleanup()
 {
-    cout << "NewOmniDriver::cleanup()" << endl;
+    std::cout << "NewOmniDriver::cleanup()" << std::endl;
     if(firstDevice)
         hdScheduleSynchronous(stopCallback, (void*) &autreOmniDriver, HD_MAX_SCHEDULER_PRIORITY);
     isInitialized = false;
@@ -768,7 +768,7 @@ void NewOmniDriver::draw()
 
 void NewOmniDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
 {
-    //cout<<kpe->getKey()<<" "<<int(kpe->getKey())<<endl;
+    //cout<<kpe->getKey()<<" "<<int(kpe->getKey())<<std::endl;
     if(axesActif && omniVisu.getValue())
     {
         if ((kpe->getKey()=='X' || kpe->getKey()=='x') && !modX )

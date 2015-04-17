@@ -111,7 +111,7 @@ protected:
     MultiLink<SofaHAPIHapticsDevice, SofaHAPIForceFeedbackEffect, BaseLink::FLAG_STRONGLINK> feedbackEffects;
     H3DUtil::AutoRef<HAPI::HapticSpring> transitionEffect;
 
-    sofa::core::behavior::MechanicalState<Rigid3dTypes> *mState; ///< Controlled MechanicalState.
+    sofa::core::behavior::MechanicalState<sofa::defaulttype::Rigid3dTypes> *mState; ///< Controlled MechanicalState.
 
     bool isToolControlled;
 

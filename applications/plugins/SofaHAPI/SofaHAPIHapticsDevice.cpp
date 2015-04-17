@@ -183,7 +183,7 @@ void SofaHAPIHapticsDevice::setForceFeedbacks(vector<ForceFeedback*> ffs)
 
 void SofaHAPIHapticsDevice::init()
 {
-    mState = dynamic_cast<MechanicalState<Rigid3dTypes> *> (this->getContext()->getMechanicalState());
+	mState = dynamic_cast<MechanicalState<sofa::defaulttype::Rigid3dTypes> *> (this->getContext()->getMechanicalState());
     if (!mState) serr << "SofaHAPIHapticsDevice has no binding MechanicalState" << sendl;
     else sout << "[Device] init" << sendl;
 
