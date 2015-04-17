@@ -6,6 +6,7 @@
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 
+#include <SofaBaseMechanics/IdentityMapping.h>
 
 namespace sofa
 {

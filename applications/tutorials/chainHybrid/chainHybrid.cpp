@@ -33,6 +33,7 @@
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
+#include <sofa/component/typedef/Sofa_typedef.h>
 
 #include <SofaLoader/MeshGmshLoader.h>
 #include <SofaBaseTopology/MeshTopology.h>

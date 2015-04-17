@@ -36,10 +36,6 @@
 #include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
-//Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
-#include <sofa/component/typedef/Sofa_typedef.h>
-//#include <plugins/SceneCreator/SceneCreator.h>
-
 
 #include <sofa/simulation/common/Simulation.h>
 #include <SofaMiscCollision/DefaultCollisionGroupManager.h>

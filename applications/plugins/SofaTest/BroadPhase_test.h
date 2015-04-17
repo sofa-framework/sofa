@@ -39,17 +39,12 @@
 #include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
-//Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
-#include <sofa/component/typedef/Sofa_typedef.h>
-//#include <plugins/SceneCreator/SceneCreator.h>
-
-//#include <plugins/Flexible/deformationMapping/DistanceMapping.h>
-//#include <plugins/Flexible/deformationMapping/DistanceFromTargetMapping.h>
-
 #include <sofa/simulation/common/Simulation.h>
 #include <SofaMiscCollision/DefaultCollisionGroupManager.h>
 #include <sofa/simulation/tree/GNode.h>
 
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseCollision/NewProximityIntersection.h>
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaMeshCollision/MeshIntTool.h>
 #include <sofa/helper/vector.h>
@@ -58,6 +53,8 @@
 #include <stdlib.h>
 //#include <sofa/component/collision/TeschnerSpatialHashing.h>
 
+typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
+typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
 
 struct MyBox{
 

@@ -47,15 +47,31 @@
 #include <SofaBoundaryCondition/TrianglePressureForceField.h>
 #include <SofaMiscForceField/LennardJonesForceField.h>
 
-#include <SofaBaseVisual/VisualStyle.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseMechanics/UniformMass.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
-
-//Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
-#include <sofa/component/typedef/Sofa_typedef.h>
+#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
+#include <SofaBaseVisual/VisualStyle.h>
+#include <SofaDeformable/RegularGridSpringForceField.h>
+#include <SofaDeformable/StiffSpringForceField.h>
+#include <SofaMiscForceField/MeshMatrixMass.h>
+#include <SofaMiscMapping/SubsetMultiMapping.h>
+#include <SofaRigid/RigidMapping.h>
 
 namespace sofa
 {
+
+typedef component::container::MechanicalObject<defaulttype::Rigid3Types> MechanicalObjectRigid3;
+typedef component::container::MechanicalObject<defaulttype::Vec3Types> MechanicalObject3;
+typedef component::interactionforcefield::RegularGridSpringForceField<defaulttype::Vec3Types> RegularGridSpringForceField3;
+typedef component::interactionforcefield::StiffSpringForceField<defaulttype::Vec3Types > StiffSpringForceField3;
 typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
+typedef component::mapping::RigidMapping<defaulttype::Rigid3Types, defaulttype::Vec3Types> RigidMappingRigid3_to_3;
+typedef component::mapping::SubsetMultiMapping<defaulttype::Vec3Types, defaulttype::Vec3Types> SubsetMultiMapping3_to_3;
+typedef component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> UniformMassRigid3;
+typedef component::mass::UniformMass<defaulttype::Vec3Types, SReal> UniformMass3;
+typedef component::projectiveconstraintset::FixedConstraint<defaulttype::Rigid3Types> FixedConstraintRigid3;
+typedef component::projectiveconstraintset::FixedConstraint<defaulttype::Vec3Types> FixedConstraint3;
 
 /// Create a scene with a regular grid and an affine constraint for patch test
 
@@ -83,7 +99,7 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
     // Root node
-    root->setGravity( Coord3(0,0,0) );
+    root->setGravity( Coord(0,0,0) );
     root->setAnimate(false);
     root->setDt(0.05);
 
@@ -149,7 +165,7 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     root = sofa::simulation::getSimulation()->createNewGraph("root");
     tractionStruct.root=root;
 
-    root->setGravity( Coord3(0,0,0) );
+    root->setGravity( Coord(0,0,0) );
     root->setAnimate(false);
     root->setDt(0.05);
 
@@ -242,7 +258,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
 
     // The graph root node
     simulation::Node::SPtr  root = simulation::getSimulation()->createNewGraph("root");
-    root->setGravity( Coord3(0,-10,0) );
+    root->setGravity( Coord(0,-10,0) );
     root->setAnimate(false);
     root->setDt(0.01);
     component::visualmodel::addVisualStyle(root)->setShowVisual(false).setShowCollision(false).setShowMapping(true).setShowBehavior(true);
@@ -343,13 +359,13 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
     MechanicalObject3::WriteVecCoord xmapped = mappedParticles_dof->writePositions();
     mappedParticles_mapping->globalToLocalCoords.setValue(true); // to define the mapped positions in world coordinates
     MechanicalObject3::WriteVecCoord xindependent = independentParticles_dof->writePositions();
-    vector< pair<MechanicalObject3*,size_t> > parentParticles(xgrid.size());
+    vector< std::pair<MechanicalObject3*,size_t> > parentParticles(xgrid.size());
 
     // independent particles
     size_t independentIndex=0;
     for( size_t i=0; i<xgrid.size(); i++ ){
         if( isFree[i] ){
-            parentParticles[i]=make_pair(independentParticles_dof.get(),independentIndex);
+            parentParticles[i]=std::make_pair(independentParticles_dof.get(),independentIndex);
             xindependent[independentIndex] = xgrid[i];
             independentIndex++;
         }
@@ -364,7 +380,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
         for(size_t i=0; i<ind.size(); i++)
         {
             rigidIndexPerPoint->push_back( b ); // tell the mapping the number of points associated with this frame
-            parentParticles[ind[i]]=make_pair(mappedParticles_dof.get(),mappedIndex);
+            parentParticles[ind[i]]=std::make_pair(mappedParticles_dof.get(),mappedIndex);
             xmapped[mappedIndex] = xgrid[ ind[i] ];
             mappedIndex++;
 
