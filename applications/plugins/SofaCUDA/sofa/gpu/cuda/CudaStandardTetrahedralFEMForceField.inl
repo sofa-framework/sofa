@@ -395,7 +395,7 @@ void StandardTetrahedralFEMForceField<CudaVec3dTypes>::initNeighbourhoodEdges()
             {
                 unsigned int tetraID;
                 tetraID = _topology->getTetrahedraAroundEdge(i)[j];
-                topology::BaseMeshTopology::EdgesInTetrahedron te=_topology->getEdgesInTetrahedron(tetraID);
+                topology::EdgesInTetrahedron te=_topology->getEdgesInTetrahedron(tetraID);
                 if( (unsigned) i == te[0])
                     StandardTetrahedralFEMForceField_neighbourhoodEdges[i*StandardTetrahedralFEMForceField_nbMaxTetraPerEdge + j] = tetraID*6 + 0;
                 else if( (unsigned) i == te[1])

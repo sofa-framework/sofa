@@ -22,24 +22,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SofaHAPI.h"
+
+#include "initSofaHAPI.h"
+#include <sofa/helper/system/config.h>
 
 namespace SofaHAPI
 {
 
 /// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
-SOFA_LINK_CLASS(SofaHAPIHapticsDevice)
+SOFA_LINK_CLASS(SofaHAPIHapticsDevice);
 
 //Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_SOFAHAPI_API void initExternalModule();
-    SOFA_SOFAHAPI_API const char* getModuleName();
-    SOFA_SOFAHAPI_API const char* getModuleVersion();
-    SOFA_SOFAHAPI_API const char* getModuleLicense();
-    SOFA_SOFAHAPI_API const char* getModuleDescription();
-    SOFA_SOFAHAPI_API const char* getModuleComponentList();
-}
 
 void initExternalModule()
 {

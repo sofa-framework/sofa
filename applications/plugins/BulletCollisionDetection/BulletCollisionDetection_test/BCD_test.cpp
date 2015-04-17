@@ -1,7 +1,7 @@
 #include <SofaTest/BroadPhase_test.h>
 #include <SofaTest/PrimitiveCreation.h>
 #include <SofaBaseCollision/BruteForceDetection.h>
-#include "BulletCollisionDetection.h"
+#include "../BulletCollisionDetection.h"
 #include <SofaTest/PrimitiveCreation.h>
 #include <SofaBaseCollision/DefaultPipeline.h>
 #include <SofaBaseCollision/BruteForceDetection.h>
