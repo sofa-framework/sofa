@@ -1,4 +1,4 @@
-#include <plugins/SofaTest/BroadPhase_test.h>
+#include <SofaTest/BroadPhase_test.h>
 #include "../THMPGSpatialHashing.h"
 
 typedef BroadPhaseTest<sofa::component::collision::THMPGSpatialHashing> Teschner;
