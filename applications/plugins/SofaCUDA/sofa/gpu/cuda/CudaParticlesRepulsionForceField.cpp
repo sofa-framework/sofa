@@ -25,6 +25,8 @@
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include "CudaParticlesRepulsionForceField.inl"
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/ForceField.inl>
+#include <SofaSphFluid/ParticlesRepulsionForceField.inl>
 
 namespace sofa
 {
