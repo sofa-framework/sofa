@@ -1,0 +1,18 @@
+# - CMake package configuration file for libQGLViewer
+# It defines the following variables
+#  QGLViewer_INCLUDE_DIRS  - include directories for QGLViewer
+#  QGLViewer_LIBRARIES     - libraries to link against
+
+@PACKAGE_INIT@
+
+set_and_check(QGLVIEWER_INCLUDE_DIR "@PACKAGE_QGLVIEWER_INCLUDE_DIR@")
+
+check_required_components(QGLViewer)
+
+if( NOT TARGET QGLViewer ) 
+	include("${CMAKE_CURRENT_LIST_DIR}/QGLViewerTargets.cmake")
+endif() 
+
+# Variables for compatibility with MODULE mode find_package. 
+set(QGLViewer_LIBRARIES QGLViewer)
+set(QGLViewer_INCLUDE_DIRS ${QGLVIEWER_INCLUDE_DIR})
