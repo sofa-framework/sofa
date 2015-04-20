@@ -1,7 +1,6 @@
-#include <Compliant/numericalsolver/MinresSolver.h>
-#include <Compliant/numericalsolver/LDLTSolver.h>
-#include <Compliant/Compliant_test/Compliant_test.h>
-#include <Compliant/odesolver/CompliantImplicitSolver.h>
+#include "Compliant_test.h"
+#include "../numericalsolver/MinresSolver.h"
+#include "../odesolver/CompliantImplicitSolver.h"
 
 #include <SofaBoundaryCondition/FixedConstraint.h>
 #include <SofaExplicitOdeSolver/EulerSolver.h>
@@ -10,8 +9,6 @@
 using namespace sofa::modeling;
 using namespace sofa::component;
 using namespace sofa::simulation;
-
-using sofa::component::projectiveconstraintset::FixedConstraint;
 
 namespace sofa
 {
@@ -56,12 +53,12 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
         string1.compliance->isCompliance.setValue(false); // handle it as a stiffness
         string1.compliance->compliance.setValue(1.0e-3);
 
-        FixedConstraint<Vec3Types>::SPtr fixed = addNew<FixedConstraint<Vec3Types> >(string1.string_node,"fixedConstraint");
+        FixedConstraint3::SPtr fixed = addNew<FixedConstraint3>(string1.string_node,"fixedConstraint");
         fixed->addConstraint(0);      // attach first particle
 
         // velocity parallel to the spring
         {
-        MechanicalObject<Vec3Types>::WriteVecCoord v = string1.DOF->writeVelocities();
+        MechanicalObject3::WriteVecCoord v = string1.DOF->writeVelocities();
         v[1] = Vec3(1,0,0);
         }
 
@@ -131,12 +128,12 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
         string1.compliance->isCompliance.setValue(true);
         string1.compliance->compliance.setValue(1.0e-3);
 
-        FixedConstraint<Vec3Types>::SPtr fixed = modeling::addNew<FixedConstraint<Vec3Types> >(string1.string_node,"fixedConstraint");
+        FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(string1.string_node,"fixedConstraint");
         fixed->addConstraint(0);      // attach first particle
 
         // velocity parallel to the spring
         {
-        MechanicalObject<Vec3Types>::WriteVecCoord v = string1.DOF->writeVelocities();
+        MechanicalObject3::WriteVecCoord v = string1.DOF->writeVelocities();
         v[1] = Vec3(1,0,0);
         }
 
@@ -208,11 +205,11 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
         string1.compliance->isCompliance.setValue(false);
         string1.compliance->compliance.setValue(1.0e-3);
 
-        FixedConstraint<Vec3Types>::SPtr fixed = modeling::addNew<FixedConstraint<Vec3Types> >(string1.string_node,"fixedConstraint");
+        FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(string1.string_node,"fixedConstraint");
         fixed->addConstraint(0);      // attach first particle
 
         {
-        MechanicalObject<Vec3Types>::WriteVecCoord x = string1.DOF->writePositions();
+        MechanicalObject3::WriteVecCoord x = string1.DOF->writePositions();
         x[1] = Vec3(2,0,0);
         }
 
@@ -287,11 +284,11 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
         string1.compliance->isCompliance.setValue(true);
         string1.compliance->compliance.setValue(1.0e-3);
 
-        FixedConstraint<Vec3Types>::SPtr fixed = modeling::addNew<FixedConstraint<Vec3Types> >(string1.string_node,"fixedConstraint");
+        FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(string1.string_node,"fixedConstraint");
         fixed->addConstraint(0);      // attach first particle
 
         {
-        MechanicalObject<Vec3Types>::WriteVecCoord x = string1.DOF->writePositions();
+        MechanicalObject3::WriteVecCoord x = string1.DOF->writePositions();
         x[1] = Vec3(2,0,0);
         }
 
@@ -322,9 +319,9 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
         // 2- with lambda propagation -> force must be NOT null
         odeSolver->propagate_lambdas.setValue(true);
         {
-        MechanicalObject<Vec3Types>::WriteVecCoord x = string1.DOF->writePositions();
+        MechanicalObject3::WriteVecCoord x = string1.DOF->writePositions();
         x[1] = Vec3(2,0,0);
-        MechanicalObject<Vec3Types>::WriteVecCoord v = string1.DOF->writeVelocities();
+        MechanicalObject3::WriteVecCoord v = string1.DOF->writeVelocities();
         v.clear();
         }
         sofa::simulation::getSimulation()->init(root.get());

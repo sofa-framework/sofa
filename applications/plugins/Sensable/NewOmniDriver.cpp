@@ -279,10 +279,10 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
             HDErrorInfo error;
             if (HD_DEVICE_ERROR(error = hdGetError()))
             {
-                cout<<hdGetErrorString(error.errorCode)<<endl;
-                cout<<"HHD: "<<error.hHD<<endl;
-                cout<<"Error Code: "<<error.hHD<<endl;
-                cout<<"Internal Error Code: "<<error.internalErrorCode<<endl;
+                std::cout<<hdGetErrorString(error.errorCode)<<std::endl;
+                std::cout<<"HHD: "<<error.hHD<<std::endl;
+                std::cout<<"Error Code: "<<error.hHD<<std::endl;
+                std::cout<<"Internal Error Code: "<<error.internalErrorCode<<std::endl;
             }
         }
 
@@ -768,7 +768,7 @@ void NewOmniDriver::draw()
 
 void NewOmniDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
 {
-    //cout<<kpe->getKey()<<" "<<int(kpe->getKey())<<endl;
+    //cout<<kpe->getKey()<<" "<<int(kpe->getKey())<<std::endl;
     if(axesActif && omniVisu.getValue())
     {
         if ((kpe->getKey()=='X' || kpe->getKey()=='x') && !modX )

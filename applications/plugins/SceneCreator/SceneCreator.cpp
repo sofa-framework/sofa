@@ -29,6 +29,7 @@
 
 #include <sofa/helper/system/SetDirectory.h>
 
+
 //Including Simulation
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -40,7 +41,6 @@
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaLoader/MeshObjLoader.h>
 
 //Including components for collision detection
@@ -62,8 +62,8 @@
 #include <SofaOpenglVisual/OglModel.h>
 
 #include <SofaRigid/RigidMapping.h>
-#include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseMechanics/UniformMass.h>
+#include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
 #include <SofaDeformable/StiffSpringForceField.h>
 
@@ -80,6 +80,7 @@ using namespace component::container;
 using namespace component::topology;
 using namespace component::collision;
 using namespace component::visualmodel;
+using namespace component::mapping;
 
 typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 typedef component::mapping::BarycentricMapping<defaulttype::Vec3Types, defaulttype::Vec3Types > BarycentricMapping3_to_3;

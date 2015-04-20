@@ -1,16 +1,7 @@
 #include "Compliant_test.h"
 
 #include "../assembly/AssemblyVisitor.h"
-
-#include <SofaRigid/RigidMapping.h>
-#include <SofaMiscMapping/SubsetMultiMapping.h>
-#include <SofaBoundaryCondition/FixedConstraint.h>
 #include <SofaBoundaryCondition/ConstantForceField.h>
-
-using sofa::component::mapping::RigidMapping;
-using sofa::component::mapping::SubsetMultiMapping;
-using sofa::component::forcefield::ConstantForceField;
-using sofa::component::projectiveconstraintset::FixedConstraint;
 
 namespace sofa
 {
@@ -26,6 +17,8 @@ struct Assembly_test : public CompliantSolver_test
     typedef odesolver::CompliantImplicitSolver OdeSolver;
     typedef linearsolver::LDLTSolver LinearSolver;
     typedef sofa::Vec3 Vec3;
+    typedef forcefield::ConstantForceField<defaulttype::Vec3Types> ConstantForceField3;
+
     OdeSolver::SPtr complianceSolver; ///< Solver used to perform the test simulation, and which contains the actual results, to be compared with the expected ones.
     LinearSolver::SPtr linearSolver; ///< Auxiliary linear equation solver used by the ode solver
 
@@ -133,7 +126,7 @@ struct Assembly_test : public CompliantSolver_test
         simulation::Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0. );
 
         // Opposite forces applied to the ends
-        ConstantForceField<Vec3Types>::SPtr ff = New<ConstantForceField<Vec3Types> >();
+        ConstantForceField3::SPtr ff = New<ConstantForceField3>();
         string1->addObject(ff);
         vector<unsigned>* indices = ff->points.beginEdit(); // not managed to create a WriteAccessor with a resize function for a ConstantForceField::SetIndex
         helper::WriteAccessor< Data<vector<Vec3> > > forces( ff->forces );
@@ -226,7 +219,7 @@ struct Assembly_test : public CompliantSolver_test
         simulation::Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0. );
 
         // attached
-        FixedConstraint<Vec3Types>::SPtr fixed1 = addNew<FixedConstraint<Vec3Types> >(string1);
+        FixedConstraint3::SPtr fixed1 = addNew<FixedConstraint3>(string1);
 
 
 
@@ -309,7 +302,7 @@ struct Assembly_test : public CompliantSolver_test
         //-------- fix a particle using a constraint: map the distance of the particle to its initial position, and constrain this to 0
         std::string nodeName = "fixDistance_";
         Node::SPtr fixNode = string1->createChild(nodeName + "Node");
-        MechanicalObject<Vec1Types>::SPtr extensions = New<MechanicalObject<Vec1Types> >();
+        MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
         extensions->setName(nodeName+"DOF");
         fixNode->addObject(extensions);
 
@@ -436,7 +429,7 @@ struct Assembly_test : public CompliantSolver_test
 
         MechanicalObject3::SPtr mappedDOF = addNew<MechanicalObject3>(commonChild); // to contain particles from the two strings
 
-        SubsetMultiMapping<Vec3Types, Vec3Types>::SPtr multimapping = New<SubsetMultiMapping<Vec3Types, Vec3Types> >();
+        SubsetMultiMapping3_to_3::SPtr multimapping = New<SubsetMultiMapping3_to_3>();
         multimapping->setName("ConnectionMultiMapping");
         multimapping->addInputModel( string1->getMechanicalState() );
         multimapping->addInputModel( outOfScope->getMechanicalState() );
@@ -448,7 +441,7 @@ struct Assembly_test : public CompliantSolver_test
         // ..========  Node to handle the extension of the interaction link
         Node::SPtr extension_node = commonChild->createChild("ConnectionExtensionNode");
 
-        MechanicalObject<Vec1Types>::SPtr extensions = New<MechanicalObject<Vec1Types> >();
+        MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
         extension_node->addObject(extensions);
         extensions->setName("extensionsDOF");
 
@@ -565,7 +558,7 @@ struct Assembly_test : public CompliantSolver_test
         Node::SPtr  string2 = createCompliantString( root, Vec3(2,0,0), Vec3(3,0,0), n, 1.0*n, 0 );
 
         // string1 is attached
-        FixedConstraint<Vec3Types>::SPtr fixed1 = New<FixedConstraint<Vec3Types> >();
+        FixedConstraint3::SPtr fixed1 = New<FixedConstraint3>();
         string1->addObject( fixed1 );
 
 
@@ -577,7 +570,7 @@ struct Assembly_test : public CompliantSolver_test
         commonChild->addObject(mappedDOF);
         mappedDOF->setName("multiMappedDOF");
 
-        SubsetMultiMapping<Vec3Types, Vec3Types>::SPtr multimapping = New<SubsetMultiMapping<Vec3Types, Vec3Types> >();
+        SubsetMultiMapping3_to_3::SPtr multimapping = New<SubsetMultiMapping3_to_3>();
         multimapping->setName("ConnectionMultiMapping");
         multimapping->addInputModel( string1->getMechanicalState() );
         multimapping->addInputModel( string2->getMechanicalState() );
@@ -589,7 +582,7 @@ struct Assembly_test : public CompliantSolver_test
         //  ========  Node to handle the extension of the interaction link
         Node::SPtr extension_node = commonChild->createChild("ConnectionExtensionNode");
 
-        MechanicalObject<Vec1Types>::SPtr extensions = New<MechanicalObject<Vec1Types> >();
+        MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
         extension_node->addObject(extensions);
         extensions->setName("extensionsDOF");
 
@@ -711,32 +704,33 @@ struct Assembly_test : public CompliantSolver_test
 
         // ========= The rigid object
         simulation::Node::SPtr rigid = root->createChild("rigid");
-        MechanicalObject<Rigid3>::SPtr rigidDOF = addNew<MechanicalObject<Rigid3> >(rigid);
+        MechanicalObjectRigid3::SPtr rigidDOF = addNew<MechanicalObjectRigid3>(rigid);
         rigidDOF->resize(1);
-        MechanicalObject<Rigid3>::WriteVecCoord x = rigidDOF->writePositions();
+        MechanicalObjectRigid3::WriteVecCoord x = rigidDOF->writePositions();
         x[0].getCenter() = Vec3(n,0,0);
-        UniformMass<Rigid3, Rigid3Mass>::SPtr rigidMass = addNew<UniformMass<Rigid3, Rigid3Mass> >(rigid);
+        UniformMassRigid3::SPtr rigidMass = addNew<UniformMassRigid3>(rigid);
 
         // .========= Particle attached to the rigid object
         simulation::Node::SPtr particleOnRigid = rigid->createChild("particleOnRigid");
-        MechanicalObject<Vec3Types>::SPtr particleOnRigidDOF = addNew<MechanicalObject<Vec3Types> >(particleOnRigid);
+        MechanicalObject3::SPtr particleOnRigidDOF = addNew<MechanicalObject3>(particleOnRigid);
         particleOnRigidDOF->resize(1);
-        RigidMapping<Rigid3, Vec3Types>::SPtr particleOnRigidMapping = addNew<RigidMapping<Rigid3, Vec3Types> >(particleOnRigid);
+
+        RigidMappingRigid3_to_3::SPtr particleOnRigidMapping = addNew<RigidMappingRigid3_to_3>(particleOnRigid);
         particleOnRigidMapping->setModels(rigidDOF.get(),particleOnRigidDOF.get());
 
         // ========= The string
         simulation::Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0. );
 
         // Fix the first particle of the string
-        FixedConstraint<Vec3Types>::SPtr fixed1 = New<FixedConstraint<Vec3Types> >();
+        FixedConstraint3::SPtr fixed1 = New<FixedConstraint3>();
         string1->addObject( fixed1 );
 
         // ..======== Mixed subset containing the last particle of the string and the particle attached to the rigid object
         simulation::Node::SPtr pointPair = particleOnRigid->createChild("pointPair");
         string1->addChild(pointPair); // two parents: particleOnRigid and string1
 
-        MechanicalObject<Vec3Types>::SPtr pointPairDOF = addNew<MechanicalObject<Vec3Types> >(pointPair);
-        SubsetMultiMapping<Vec3Types, Vec3Types>::SPtr pointPairMapping = addNew<SubsetMultiMapping<Vec3Types, Vec3Types> >(pointPair);
+        MechanicalObject3::SPtr pointPairDOF = addNew<MechanicalObject3>(pointPair);
+        SubsetMultiMapping3_to_3::SPtr pointPairMapping = addNew<SubsetMultiMapping3_to_3>(pointPair);
         pointPairMapping->addInputModel(string1->mechanicalState);
         pointPairMapping->addInputModel(particleOnRigid->mechanicalState);
         pointPairMapping->addOutputModel(pointPair->mechanicalState);
@@ -746,7 +740,7 @@ struct Assembly_test : public CompliantSolver_test
         //  ...========  Distance between the particles in pointPair
         Node::SPtr extension = pointPair->createChild("extension");
 
-        MechanicalObject<Vec1Types>::SPtr extensionDOF = addNew<MechanicalObject<Vec1Types> >(extension);
+        MechanicalObject1::SPtr extensionDOF = addNew<MechanicalObject1>(extension);
 
         EdgeSetTopologyContainer::SPtr extensionEdgeSet = addNew<EdgeSetTopologyContainer>(extension);
         extensionEdgeSet->addEdge(0,1);
@@ -839,27 +833,27 @@ struct Assembly_test : public CompliantSolver_test
 
         // ========= DOF1
         simulation::Node::SPtr node1 = root->createChild("node1");
-        MechanicalObject<Vec3Types>::SPtr dof1 = addNew<MechanicalObject<Vec3Types> >(node1);
+        MechanicalObject3::SPtr dof1 = addNew<MechanicalObject3>(node1);
         dof1->resize(1);
-        MechanicalObject<Vec3Types>::WriteVecCoord x1 = dof1->writePositions();
+        MechanicalObject3::WriteVecCoord x1 = dof1->writePositions();
         x1[0] = p0;
-        UniformMass<Vec3Types, SReal>::SPtr mass1 = addNew<UniformMass<Vec3Types, SReal> >(node1);
+        UniformMass3::SPtr mass1 = addNew<UniformMass3>(node1);
         mass1->setTotalMass( 1 );
 
         // ========= DOF2
         simulation::Node::SPtr node2 = root->createChild("node2");
-        MechanicalObject<Vec3Types>::SPtr dof2 = addNew<MechanicalObject<Vec3Types> >(node2);
+        MechanicalObject3::SPtr dof2 = addNew<MechanicalObject3>(node2);
         dof2->resize(1);
-        MechanicalObject<Vec3Types>::WriteVecCoord x2 = dof2->writePositions();
+        MechanicalObject3::WriteVecCoord x2 = dof2->writePositions();
         x2[0] = p1;
-        UniformMass<Vec3Types, SReal>::SPtr mass2 = addNew<UniformMass<Vec3Types, SReal> >(node2);
+        UniformMass3::SPtr mass2 = addNew<UniformMass3>(node2);
         mass1->setTotalMass( 1 );
 
         // =========== common DOFs
         simulation::Node::SPtr subset_node = node1->createChild( "SubsetNode");
         node2->addChild( subset_node );
-        MechanicalObject<Vec3Types>::SPtr allDofs = addNew<MechanicalObject<Vec3Types> >(subset_node);
-        SubsetMultiMapping<Vec3Types, Vec3Types>::SPtr subsetMapping = addNew<SubsetMultiMapping<Vec3Types, Vec3Types> >(subset_node);
+        MechanicalObject3::SPtr allDofs = addNew<MechanicalObject3>(subset_node);
+        SubsetMultiMapping3_to_3::SPtr subsetMapping = addNew<SubsetMultiMapping3_to_3>(subset_node);
         subsetMapping->addInputModel( dof1.get() );
         subsetMapping->addInputModel( dof2.get() );
         subsetMapping->addOutputModel( allDofs.get() );
@@ -869,7 +863,7 @@ struct Assembly_test : public CompliantSolver_test
         // ========= extension
         simulation::Node::SPtr extension_node = subset_node->createChild( "ExtensionNode");
 
-        MechanicalObject<Vec1Types>::SPtr extensions = addNew<MechanicalObject<Vec1Types> >(extension_node);
+        MechanicalObject1::SPtr extensions = addNew<MechanicalObject1>(extension_node);
         EdgeSetTopologyContainer::SPtr edgeSet = addNew<EdgeSetTopologyContainer>(extension_node);
         edgeSet->addEdge(0,1);
 
@@ -913,26 +907,26 @@ struct Assembly_test : public CompliantSolver_test
 
         // ========= DOF1
         node1 = root->createChild("node1");
-        dof1 = addNew<MechanicalObject<Vec3Types> >(node1);
+        dof1 = addNew<MechanicalObject3>(node1);
         dof1->resize(1);
-        MechanicalObject<Vec3Types>::WriteVecCoord x3 = dof1->writePositions();
+        MechanicalObject3::WriteVecCoord x3 = dof1->writePositions();
         x3[0] = p0;
-        mass1 = addNew<UniformMass<Vec3Types, SReal> >(node1);
+        mass1 = addNew<UniformMass3>(node1);
         mass1->setTotalMass( 1 );
 
         // ========= DOF2
         node2 = root->createChild("node2");
-        dof2 = addNew<MechanicalObject<Vec3Types> >(node2);
+        dof2 = addNew<MechanicalObject3>(node2);
         dof2->resize(1);
-        MechanicalObject<Vec3Types>::WriteVecCoord x4 = dof2->writePositions();
+        MechanicalObject3::WriteVecCoord x4 = dof2->writePositions();
         x4[0] = p1;
-        mass2 = addNew<UniformMass<Vec3Types, SReal> >(node2);
+        mass2 = addNew<UniformMass3>(node2);
         mass1->setTotalMass( 1 );
 
         // =========== common DOFs
         extension_node = node1->createChild( "ExtensionNode");
         node2->addChild( extension_node );
-        extensions = addNew<MechanicalObject<Vec1Types> >(extension_node);
+        extensions = addNew<MechanicalObject1>(extension_node);
         edgeSet = addNew<EdgeSetTopologyContainer>(extension_node);
         edgeSet->addEdge(0,1);
         DistanceMultiMapping31::SPtr distanceMultiMapping = addNew<DistanceMultiMapping31>(extension_node);
@@ -968,12 +962,12 @@ struct Assembly_test : public CompliantSolver_test
         complianceSolver->beta.setValue(1.0);
         response = addNew<linearsolver::LDLTResponse>(root);
 
-        dof1 = addNew<MechanicalObject<Vec3Types> >(root);
+        dof1 = addNew<MechanicalObject3>(root);
         dof1->resize(2);
-        MechanicalObject<Vec3Types>::WriteVecCoord x5 = dof1->writePositions();
+        MechanicalObject3::WriteVecCoord x5 = dof1->writePositions();
         x5[0] = p0;
         x5[1] = p1;
-        mass1 = addNew<UniformMass<Vec3Types, SReal> >(root);
+        mass1 = addNew<UniformMass3>(root);
         mass1->setMass( 1 );
         StiffSpringForceField3::SPtr ff = addNew<StiffSpringForceField3>(root);
         ff->addSpring(0,1,stiffness,0,1);
@@ -1000,22 +994,22 @@ struct Assembly_test : public CompliantSolver_test
 
         // ========= DOF1
         node1 = root->createChild("node1");
-        dof1 = addNew<MechanicalObject<Vec3Types> >(node1);
+        dof1 = addNew<MechanicalObject3>(node1);
         dof1->setName("dof1");
         dof1->resize(1);
-        MechanicalObject<Vec3Types>::WriteVecCoord x6 = dof1->writePositions();
+        MechanicalObject3::WriteVecCoord x6 = dof1->writePositions();
         x6[0] = p0;
-        mass1 = addNew<UniformMass<Vec3Types, SReal> >(node1);
+        mass1 = addNew<UniformMass3>(node1);
         mass1->setTotalMass( 1 );
 
         // ========= DOF2
         node2 = root->createChild("node2");
-        dof2 = addNew<MechanicalObject<Vec3Types> >(node2);
+        dof2 = addNew<MechanicalObject3>(node2);
         dof2->setName("dof2");
         dof2->resize(1);
-        MechanicalObject<Vec3Types>::WriteVecCoord x7 = dof2->writePositions();
+        MechanicalObject3::WriteVecCoord x7 = dof2->writePositions();
         x7[0] = p1;
-        mass2 = addNew<UniformMass<Vec3Types, SReal> >(node2);
+        mass2 = addNew<UniformMass3>(node2);
         mass1->setTotalMass( 1 );
 
         ff = New<StiffSpringForceField3>(dof1.get(), dof2.get());

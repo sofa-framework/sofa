@@ -61,7 +61,7 @@ public:
 		m_state = state ;
 	}
 
-	unsigned int getState()
+        unsigned int getState() const
 	{
 		return m_state ;
 	}

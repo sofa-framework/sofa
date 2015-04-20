@@ -85,7 +85,7 @@ class AffineMass:
     def massFromDensityImage(self, dofRigidNode, densityImage, lumping='0'):
         node = self.node.createChild('Mass')
         dof = node.createObject('MechanicalObject', name='massPoints', template='Vec3d')
-        insertLinearMapping(node, dofRigidNode, self.dofAffineNode, dof, assemble=False)
+        insertLinearMapping(node, dofRigidNode, self.dofAffineNode, dof, assemble=False) # TODO: ERROR: AssemblyVisitor: if matrix is not assembled, crash when the matrix is assembled
         densityImage.addBranchingToImage('0') # MassFromDensity on branching images does not exist yet
         massFromDensity = node.createObject('MassFromDensity',  name="MassFromDensity",  template="Affine,ImageD", image="@"+SofaPython.Tools.getObjectPath(densityImage.converter)+".image", transform="@"+SofaPython.Tools.getObjectPath(densityImage.converter)+'.transform', lumping=lumping)
         self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix="@"+SofaPython.Tools.getObjectPath(massFromDensity)+".massMatrix")

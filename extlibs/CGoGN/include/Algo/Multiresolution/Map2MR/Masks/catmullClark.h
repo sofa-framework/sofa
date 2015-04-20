@@ -57,8 +57,8 @@ public:
 	{
 		m_map.decCurrentLevel() ;
 
-		typename PFP::VEC3 np1(0) ;
-		typename PFP::VEC3 np2(0) ;
+        typename PFP::VEC3 np1(0,0,0) ;
+        typename PFP::VEC3 np2(0,0,0) ;
 		unsigned int degree1 = 0 ;
 		unsigned int degree2 = 0 ;
 		Dart it = d ;
@@ -156,7 +156,7 @@ public:
 
 		m_map.decCurrentLevel() ;
 
-		typename PFP::VEC3 p(0) ;
+        typename PFP::VEC3 p(0,0,0) ;
 		unsigned int degree = 0 ;
 		Traversor2FV<typename PFP::MAP> trav(m_map, df) ;
 		for(Dart it = trav.begin(); it != trav.end(); it = trav.next())

@@ -43,7 +43,7 @@ QSofaViewer::QSofaViewer(QSofaScene *sofaScene, QGLWidget* contextSharing, QWidg
 
 void QSofaViewer::toggleFullScreen()
 {
-    cerr<<"QSofaViewer::toggleFullScreen()" << endl;
+    std::cerr<<"QSofaViewer::toggleFullScreen()" << std::endl;
     if( this->isFullScreen() ){
         this->showNormal();
     }

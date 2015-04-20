@@ -34,8 +34,6 @@
 #include <SofaBaseCollision/OBBModel.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
-//#include <SceneCreator/SceneCreator.h>
-
 
 #include <sofa/simulation/common/Simulation.h>
 #include <SofaMiscCollision/DefaultCollisionGroupManager.h>

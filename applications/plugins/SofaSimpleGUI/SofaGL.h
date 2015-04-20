@@ -4,6 +4,7 @@
 #include "initSimpleGUI.h"
 #include "SofaScene.h"
 #include <sofa/core/visual/DrawToolGL.h>
+#include <sofa/helper/system/gl.h>
 
 #include "PickedPoint.h"
 #include "SpringInteractor.h"
