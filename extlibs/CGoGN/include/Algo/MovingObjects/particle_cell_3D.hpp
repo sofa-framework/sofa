@@ -193,7 +193,7 @@ Geom::Orientation3D ParticleCell3D<PFP>::whichSideOfEdge(const VEC3& c, Dart d) 
 }
 
 template <typename PFP>
-bool ParticleCell3D<PFP>::isOnHalfEdge(VEC3 c, Dart d) // booleen : vrai si on est sur l'arete mais pas sur le sommet
+bool ParticleCell3D<PFP>::isOnHalfEdge(const VEC3& c, Dart d) // booleen : vrai si on est sur l'arete mais pas sur le sommet
 {
     const VEC3& p1 = position[d];
     const VEC3& p2 = position[m.phi1(d)];
@@ -201,7 +201,7 @@ bool ParticleCell3D<PFP>::isOnHalfEdge(VEC3 c, Dart d) // booleen : vrai si on e
     VEC3 norm(p2-p1);
     norm.normalize();
 
-    Geom::Plane3D<typename PFP::REAL> pl(norm,p1);
+    const Geom::Plane3D<typename PFP::REAL>& pl = Geom::Plane3D<typename PFP::REAL>(norm,p1);
 #ifdef DEBUG
     std::cout << "is on half efge (obj , d, p1, p2, orient,points equal)"<< c <<  d <<  " || " << p1 <<  " || " << p2 <<  " || " << pl.orient(c) <<  " || " << Geom::arePointsEquals(c,p1) << std::endl;
 
@@ -475,7 +475,7 @@ void ParticleCell3D<PFP>::faceState(const VEC3& current, Geom::Orientation3D wso
 
     if(d==dd && (!aDroite || !aGauche ))
     {
-        CGoGNout<<"on a fait un tour sans trouver ..."<<d<<" "<<aDroite<<" "<<aGauche<<" "<<orientationPlan(current,position[d],this->m_positionFace,this->m_positionVolume)<<__LINE__<<__FILE__<<CGoGNendl;
+        CGoGNout<<"on a fait un tour sans trouver ..."<<d<<" "<<aDroite<<" "<<aGauche<<" "<<orientationPlan(current,position[d],this->m_positionFace,this->m_positionVolume)<< __LINE__ << __FILE__ <<CGoGNendl;
         return;
     }
    // ici on a trouvé le secteur de la face qui contient l'objectif
