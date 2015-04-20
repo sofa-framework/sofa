@@ -107,7 +107,7 @@ void ParticleCell2DAndHalfMemo<PFP>::vertexState(VEC3 current, CellMarkerMemo<MA
 	CGoGNout << "vertexState" << d << CGoGNendl;
 	#endif
 	assert(current.isFinite());
-
+     if(!memo_cross.isMarked(this->d)) memo_cross.mark(this->d);
 	this->crossCell = CROSS_OTHER;
 
 	if(Geometry::isPointOnVertex<PFP>(this->m,this->d,this->m_positions,current))
@@ -176,7 +176,7 @@ void ParticleCell2DAndHalfMemo<PFP>::edgeState(VEC3 current, CellMarkerMemo<MAP,
 	#ifdef DEBUG
 	CGoGNout << "edgeState" <<  d << CGoGNendl;
 	#endif
-
+     if(!memo_cross.isMarked(this->d)) memo_cross.mark(this->d);
 	assert(current.isFinite());
 // 	assert(Geometry::isPointOnEdge<PFP>(m,d,m_positions,m_position));
 
@@ -247,7 +247,7 @@ void ParticleCell2DAndHalfMemo<PFP>::faceState(VEC3 current, CellMarkerMemo<MAP,
 	CGoGNout << "faceState" <<  this->d << CGoGNendl;
 	#endif
 	if(memo_cross.isMarked(this->d)) return ;
-	memo_cross.mark(this->d);
+     if(!memo_cross.isMarked(this->d)) memo_cross.mark(this->d);
 
  	assert(this->getPosition().isFinite());
  	assert(current.isFinite());

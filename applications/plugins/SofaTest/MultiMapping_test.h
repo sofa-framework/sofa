@@ -40,7 +40,6 @@
 #include <sofa/helper/vector.h>
 #include <sofa/core/MultiMapping.h>
 
-
 namespace sofa {
 
 using std::cout;

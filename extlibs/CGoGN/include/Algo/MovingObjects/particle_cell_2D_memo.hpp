@@ -101,7 +101,7 @@ void ParticleCell2DMemo<PFP>::vertexState(const VEC3& current, CellMarkerMemo<MA
 	CGoGNout << "vertexState" << this->d << CGoGNendl ;
 #endif
 	assert(std::isfinite(current[0]) && std::isfinite(current[1]) && std::isfinite(current[2])) ;
-	memo_cross.mark(this->d);
+    if(!memo_cross.isMarked(this->d))memo_cross.mark(this->d);
 	this->crossCell = CROSS_OTHER ;
 
 	if (Geometry::isPointOnVertex < PFP > (this->m, this->d, this->positionAttribut, current))
@@ -190,7 +190,7 @@ void ParticleCell2DMemo<PFP>::edgeState(const VEC3& current, CellMarkerMemo<MAP,
 
 	assert(std::isfinite(current[0]) && std::isfinite(current[1]) && std::isfinite(current[2])) ;
 // 	assert(Geometry::isPointOnEdge<PFP>(m,d,m_positions,m_position));
-	memo_cross.mark(this->d);
+    if(!memo_cross.isMarked(this->d)) memo_cross.mark(this->d);
 	if (this->crossCell == NO_CROSS)
 	{
 		this->crossCell = CROSS_EDGE ;
@@ -247,7 +247,7 @@ void ParticleCell2DMemo<PFP>::faceState(const VEC3& current, CellMarkerMemo<MAP,
 	        && std::isfinite(this->getPosition()[2])) ;
 	assert(std::isfinite(current[0]) && std::isfinite(current[1]) && std::isfinite(current[2])) ;
 // 	assert(Geometry::isPointInConvexFace2D<PFP>(m,d,m_positions,m_position,true));
-	memo_cross.mark(this->d);
+    if(!memo_cross.isMarked(this->d)) memo_cross.mark(this->d);
 	Dart dd = this->d ;
 	float wsoe = this->getOrientationFace(current, this->m.phi1(this->d)) ;
 

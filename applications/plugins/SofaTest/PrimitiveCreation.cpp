@@ -1,5 +1,9 @@
 //#include "stdafx.h"
 #include "PrimitiveCreation.h"
+#include <SofaBaseMechanics/MechanicalObject.h>
+
+typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
+typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
 
 using sofa::core::objectmodel::New;
 using sofa::component::container::MechanicalObject;

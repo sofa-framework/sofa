@@ -4,7 +4,23 @@ import numpy.linalg
 
 from SofaPython import Quaternion
 
+def decomposeInertia(inertia):
+    """ Decompose an inertia matrix into
+    - a diagonal inertia
+    - the rotation (quaternion) to get to the frame in wich the inertia is diagonal
+    """
+    U, diagonal_inertia, V = numpy.linalg.svd(inertia)
+    # det should be 1->rotation or -1->reflexion
+    if numpy.linalg.det(U) < 0 : # reflexion
+        # made it a rotation by negating a column
+        U[:,0] = -U[:,0]
+    inertia_rotation = Quaternion.from_matrix( U )
+    return diagonal_inertia, inertia_rotation
+
 class RigidMassInfo:
+    """ A structure to set and store a RgidMass as used by sofa: mass, com, diagonal_inertia and inertia_rotation
+    """
+
     def __init__(self):
         self.mass=0.
         self.com=[0.,0.,0.]
@@ -17,6 +33,14 @@ class RigidMassInfo:
         self.com = rigidInfo[1:4]
         self.diagonal_inertia = rigidInfo[4:7]
         self.inertia_rotation = rigidInfo[7:11]
+
+    def setFromInertia(self, Ixx, Ixy, Ixz, Iyy, Iyz, Izz):
+        """ set the diagonal_inertia and inertia_rotation from the full inertia matrix
+        """
+        I = numpy.array([ [Ixx, Ixy, Ixz],
+                          [Ixy, Iyy, Iyz],
+                          [Ixz, Iyz, Izz] ])
+        self.diagonal_inertia, self.inertia_rotation = decomposeInertia(I)
 
     def getWorldInertia(self):
         """ @return inertia with respect to world reference frame
@@ -45,11 +69,5 @@ class RigidMassInfo:
         a=numpy.array(res.com).reshape(3,1)
         res_I_com = res_I_w - res.mass*(pow(numpy.linalg.norm(res.com),2)*numpy.eye(3) - a*a.transpose())
 
-        U, res.diagonal_inertia, V = numpy.linalg.svd(res_I_com)
-        # det should be 1->rotation or -1->reflexion
-        if numpy.linalg.det(U) < 0 : # reflexion
-            # made it a rotation by negating a column
-            U[:,0] = -U[:,0]
-        res.inertia_rotation = Quaternion.from_matrix( U )
-
+        res.diagonal_inertia, res.inertia_rotation = decomposeInertia(res_I_com)
         return res

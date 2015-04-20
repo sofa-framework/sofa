@@ -1,14 +1,12 @@
-#include <Compliant/numericalsolver/MinresSolver.h>
-#include <Compliant/numericalsolver/LDLTSolver.h>
-#include <Compliant/numericalsolver/LDLTResponse.h>
-#include <Compliant/Compliant_test/Compliant_test.h>
-#include <Compliant/odesolver/CompliantImplicitSolver.h>
+#include "Compliant_test.h"
+#include "../numericalsolver/MinresSolver.h"
+#include "../odesolver/CompliantImplicitSolver.h"
 
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <SofaExplicitOdeSolver/EulerSolver.h>
-#include <SceneCreator/SceneCreator.h>
+#include <plugins/SceneCreator/SceneCreator.h>
 
-using sofa::component::mapping::IdentityMapping;
+#include <SofaBaseMechanics/IdentityMapping.h>
 
 namespace sofa
 {
@@ -27,7 +25,7 @@ struct DampedOscillator_test : public CompliantSolver_test
     SReal v0;
 
     simulation::Node::SPtr node;
-    MechanicalObject<Vec1Types>::SPtr DOF;
+    MechanicalObject1::SPtr DOF;
     UniformCompliance1::SPtr compliance;
 
     /**
@@ -55,12 +53,12 @@ struct DampedOscillator_test : public CompliantSolver_test
         // The oscillator
         simulation::Node::SPtr oscillator = node->createChild("oscillator");
 
-        DOF = addNew<MechanicalObject<Vec1Types> >(oscillator,"DOF");
+        DOF = addNew<MechanicalObject1>(oscillator,"DOF");
         DOF->resize(1);
         DOF->writePositions()[0]  = Vec1(x0);
         DOF->writeVelocities()[0] = Vec1(v0);
 
-        UniformMass<Vec1Types, SReal>::SPtr Mass = addNew<UniformMass<Vec1Types, SReal> >(oscillator,"mass");
+        UniformMass1::SPtr Mass = addNew<UniformMass1>(oscillator,"mass");
         Mass->mass.setValue( mass );
 
         compliance = addNew<UniformCompliance1>(oscillator,"compliance");
@@ -148,8 +146,8 @@ struct DampedOscillator_test : public CompliantSolver_test
         if( !debug )
             return;
 
-        MechanicalObject<Vec1Types>::ReadVecCoord X = DOF->readPositions();
-        MechanicalObject<Vec1Types>::ReadVecDeriv V = DOF->readVelocities();
+        MechanicalObject1::ReadVecCoord X = DOF->readPositions();
+        MechanicalObject1::ReadVecDeriv V = DOF->readVelocities();
 
         cout<<"computed x= "<< X[0][0] << " , v= " << V[0][0] << " , t= "<< t << endl;
         cout<<"   exact x= "<< theoreticalPosition(t) << endl;
@@ -265,20 +263,21 @@ TEST_F(DampedOscillator_test, compliance_second_degree )
     // The oscillator
     simulation::Node::SPtr oscillator = node->createChild("oscillator");
 
-    DOF = addNew<MechanicalObject<Vec1Types> >(oscillator,"DOF");
+    DOF = addNew<MechanicalObject1>(oscillator,"DOF");
     DOF->resize(1);
     DOF->writePositions()[0]  = Vec1(x0);
     DOF->writeVelocities()[0] = Vec1(v0);
 
-    UniformMass<Vec1Types, SReal>::SPtr Mass = addNew<UniformMass<Vec1Types, SReal> >(oscillator,"mass");
+    UniformMass1::SPtr Mass = addNew<UniformMass1>(oscillator,"mass");
     Mass->mass.setValue( mass );
 
     simulation::Node::SPtr constraint = oscillator->createChild( "constraint" );
 
-    MechanicalObject<Vec1Types>::SPtr constraintDOF = addNew<MechanicalObject<Vec1Types> >(constraint,"DOF");
+    MechanicalObject1::SPtr constraintDOF = addNew<MechanicalObject1>(constraint,"DOF");
     constraintDOF->resize(1);
 
-    IdentityMapping<Vec1Types, Vec1Types>::SPtr mapping = addNew< IdentityMapping<Vec1Types, Vec1Types> >(constraint,"mapping");
+    typedef component::mapping::IdentityMapping<defaulttype::StdVectorTypes<defaulttype::Vec<1, SReal>, defaulttype::Vec<1, SReal>, SReal>,defaulttype::StdVectorTypes<defaulttype::Vec<1, SReal>, defaulttype::Vec<1, SReal>, SReal> > IdentityMapping11;
+    IdentityMapping11::SPtr mapping = addNew< IdentityMapping11 >(constraint,"mapping");
     mapping->setModels(DOF.get(), constraintDOF.get());
     compliance = addNew<UniformCompliance1>(constraint,"compliance");
     compliance->isCompliance.setValue(true);

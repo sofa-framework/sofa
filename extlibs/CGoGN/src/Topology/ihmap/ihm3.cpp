@@ -728,8 +728,9 @@ bool ImplicitHierarchicalMap3::volumeIsSubdividedOnce(Dart d)
 		Traversor3VW<ImplicitHierarchicalMap3> trav3(*this, dcenter);
 		for(Dart dit = trav3.begin() ; subdOnce && dit != trav3.end() && subdOnce; dit = trav3.next())
 		{
-			if(m_dartLevel[phi2(phi1(phi1(dit)))] == m_curLevel && m_faceId[phi2(phi1(phi1(dit)))] != m_faceId[dit])
-				subdOnce = false;
+//			if(m_dartLevel[phi2(phi1(phi1(dit)))] == m_curLevel && m_faceId[phi2(phi1(phi1(dit)))] != m_faceId[dit])
+            if(volumeLevel(dit)>vLevel+1)
+                subdOnce = false;
 		}
 		--m_curLevel;
 	}

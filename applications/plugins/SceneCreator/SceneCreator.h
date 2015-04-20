@@ -32,6 +32,7 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 namespace sofa
@@ -40,10 +41,9 @@ namespace sofa
 namespace modeling {
 
 typedef SReal Scalar;
+typedef sofa::defaulttype::Vec3Types::Deriv Deriv3;
 typedef sofa::defaulttype::Vec<3,SReal> Vec3;
 typedef sofa::defaulttype::Vec<1,SReal> Vec1;
-
-typedef defaulttype::Vec3Types::Deriv Deriv3;
 typedef component::container::MechanicalObject<defaulttype::Vec3Types> MechanicalObject3;
 typedef component::container::MechanicalObject<defaulttype::Rigid3Types> MechanicalObjectRigid3;
 
