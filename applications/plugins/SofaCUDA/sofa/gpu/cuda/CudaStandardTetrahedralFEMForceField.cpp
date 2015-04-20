@@ -25,6 +25,8 @@
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/ForceField.inl>
+#include <SofaMiscFem/StandardTetrahedralFEMForceField.inl>
 
 namespace sofa
 {
