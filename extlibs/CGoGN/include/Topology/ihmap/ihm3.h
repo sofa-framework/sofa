@@ -353,10 +353,8 @@ public:
 	/*!
 	 */
 	bool volumeIsSubdividedOnce(Dart d);
-    /**
-     * checkForSurrounded check if the cell wont be surrounded by subdivided cells (before subdividing phi2(d)) to avoid the case of a non subdivided cell surrounded by subdivided ones.
-     */
-    bool checkForSurrounded (Dart d);
+
+
 
 	/*! @name
 	 *************************************************************************/

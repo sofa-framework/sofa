@@ -376,26 +376,63 @@ unsigned int ImplicitHierarchicalMap3::faceLevel(Dart d)
 
 unsigned int ImplicitHierarchicalMap3::volumeLevel(Dart d)
 {
-	if(m_curLevel == 0)
-		return 0 ;
+    assert(getDartLevel(d) <= getCurrentLevel() || !"Access to a dart introduced after current level") ;
 
-	unsigned int vLevel = std::numeric_limits<unsigned int>::max(); //hook sioux
+    if(getCurrentLevel() == 0)
+        return 0 ;
 
-	//First : the level of a volume is the minimum of the levels of its faces
-	Traversor3WF<ImplicitHierarchicalMap3> travF(*this, d);
-	for (Dart dit = travF.begin(); dit != travF.end(); dit = travF.next())
-	{
-		// in a first time, the level of a face
-		//the level of the volume is the minimum of the
-		//levels of its faces
-		unsigned int fLevel = faceLevel(dit);
-		vLevel = fLevel < vLevel ? fLevel : vLevel ;
-	}
+    Dart oldest = d ;
+    unsigned int l_oldest=getDartLevel(d);
+    unsigned int vLevel = std::numeric_limits<unsigned int>::max(); //hook sioux
+//	//First : the level of a volume is the minimum of the levels of its faces
+    Traversor3WF<ImplicitHierarchicalMap3> travF(*this, d);
+    for (Dart dit = travF.begin(); dit != travF.end(); dit = travF.next())
+    {
+        // in a first time, the level of a face
+        //the level of the volume is the minimum of the
+        //levels of its faces
+        unsigned int fLevel = faceLevel(dit);
+        vLevel = fLevel < vLevel ? fLevel : vLevel ;
+        Dart old =faceOldestDart(dit);
+        unsigned int l_old=getDartLevel(old);
+        if(l_old < l_oldest)
+        {
+            l_oldest=l_old;
+            oldest = old ;
+        }
+    }
 
-	//Second : the case of all faces regularly subdivided but not the volume itself
-    // --> Impossible case since we use checkIfSurrounded
+    //Second : the case of all faces regularly subdivided but not the volume itself
+    unsigned int cur = getCurrentLevel() ;
+    setCurrentLevel(vLevel) ;
 
-	return vLevel;
+    unsigned int nbSubd = 0 ;
+    Dart it = oldest ;
+    unsigned int eId = getEdgeId(oldest) ;
+    unsigned int fId = getFaceId(oldest);
+
+
+
+    do
+    {
+        ++nbSubd ;
+        it = phi1(it) ;
+        while(getEdgeId(it)!=eId && getFaceId(it) == fId  && getDartLevel(it) != l_oldest)
+        {
+            it=phi1(phi2(it));
+        }
+    } while(getFaceId(it) == fId  && getDartLevel(it) != l_oldest) ;
+
+
+    while(nbSubd > 1)
+    {
+        nbSubd /= 2 ;
+        --vLevel ;
+    }
+
+    setCurrentLevel(cur) ;
+
+    return vLevel;
 }
 
 /*
@@ -777,22 +814,6 @@ bool ImplicitHierarchicalMap3::volumeIsSubdividedOnce(Dart d)
 
 }
 
-bool ImplicitHierarchicalMap3::checkForSurrounded (Dart d)
-{
-    typedef Iteratorize< Traversor3WWaF<ImplicitHierarchicalMap3> > volumesAdjacentByFace3Traversor;
-    volumesAdjacentByFace3Traversor vols(volumesAdjacentByFace3<ImplicitHierarchicalMap3>(*this,d));
-    for (volumesAdjacentByFace3Traversor::iterator it = vols.begin(), end = vols.end() ; it != end; ++it)
-    {
-        if(!sameVolume(phi3(d),*it))
-        {
-            if(!volumeIsSubdivided(*it))
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
 
 bool ImplicitHierarchicalMap3::neighborhoodLevelDiffersMoreThanOne(Dart d)
 {
