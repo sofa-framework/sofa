@@ -22,7 +22,17 @@ def insertRigid(parentNode, rigidModel, param=None):
     for mesh in rigidModel.mesh :
         meshFormatSupported &= mesh.format=="obj" or mesh.format=="vtk"
 
-    if len(rigidModel.mesh)!=0 and meshFormatSupported:
+    if not rigidModel.mass is None and not rigidModel.com is None and not rigidModel.inertia is None:
+        # all inertial data is present, let's use it
+        massinfo = SofaPython.mass.RigidMassInfo()
+        massinfo.mass = rigidModel.mass
+        massinfo.com = rigidModel.com
+        massinfo.setFromInertia(rigidModel.inertia[0], rigidModel.inertia[1], rigidModel.inertia[2], # Ixx, Ixy, Ixz
+                                rigidModel.inertia[3], rigidModel.inertia[4], # Iyy, Iyz
+                                rigidModel.inertia[5] ) # Izz
+        rigid.setFromRigidInfo(massinfo, offset=rigidModel.position , inertia_forces = False )    # TODO: handle inertia_forces ?
+    elif len(rigidModel.mesh)!=0 and meshFormatSupported:
+        # get inertia from mesh and density
         massinfo = SofaPython.mass.RigidMassInfo()
 
         density = SofaPython.units.density_from_SI(rigidModel.density) if not rigidModel.density is None else SofaPython.units.density_from_SI(1000.)
@@ -46,9 +56,7 @@ def insertRigid(parentNode, rigidModel, param=None):
         mass=SofaPython.units.mass_from_SI(1.)
         if not rigidModel.mass is None:
             mass = rigidModel.mass
-        inertia = [1,1,1] #TODO: take care of full inertia matrix, which may be given in sml, update SofaPython.mass.RigidMassInfo to diagonalize it
-        if not rigidModel.inertia is None:
-            inertia = rigidModel.inertia
+        inertia = [1,1,1]
         rigid.setManually(rigidModel.position, mass, inertia)
 
     if not param is None:
