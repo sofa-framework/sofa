@@ -25,6 +25,8 @@
 #include "CudaTypes.h"
 #include "CudaTriangularFEMForceFieldOptim.inl"
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/ForceField.inl>
+#include <SofaSimpleFem/TriangularFEMForceFieldOptim.inl>
 
 namespace sofa
 {

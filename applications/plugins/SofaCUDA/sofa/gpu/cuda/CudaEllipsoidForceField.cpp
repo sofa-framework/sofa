@@ -24,6 +24,8 @@
 ******************************************************************************/
 #include "CudaTypes.h"
 #include "CudaEllipsoidForceField.inl"
+#include <sofa/core/behavior/ForceField.inl>
+#include <SofaBoundaryCondition/EllipsoidForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
