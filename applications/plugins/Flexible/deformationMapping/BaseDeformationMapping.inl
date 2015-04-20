@@ -384,7 +384,7 @@ void BaseDeformationMappingT<JacobianBlockType>::init()
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::reinit()
 {
-    //    if(this->assemble.getValue()) updateJ();
+    if(this->assemble.getValue()) updateJ();
 
     apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel->read(core::ConstVecCoordId::position()));
 
