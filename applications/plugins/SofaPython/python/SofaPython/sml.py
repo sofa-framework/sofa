@@ -72,7 +72,8 @@ class Model:
             self.mesh = list() # list of meshes
             self.density = None
             self.mass = None
-            self.inertia = None
+            self.com = None # x,y,z
+            self.inertia = None # Ixx, Ixy, Ixz, Iyy, Iyz, Izz
             self.skinnings=list()
             if not solidXml is None:
                 self.parseXml(solidXml)
