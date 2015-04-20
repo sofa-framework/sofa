@@ -105,7 +105,7 @@ public :
 
     Geom::Orientation3D whichSideOfEdge(const VEC3& c, Dart d);
 
-    bool isOnHalfEdge(VEC3 c, Dart d);
+    bool isOnHalfEdge(const VEC3& c, Dart d);
 
     void vertexState(const VEC3& current);
 
