@@ -139,11 +139,13 @@ endif()
 	list(APPEND SOURCE_FILES viewer/qt/QtViewer.cpp)
 #endif()
 
-if(SOFA_HAVE_QGLVIEWER)
+find_package(QGLViewer)
+
+# if(QGLViewer_FOUND)
 	list(APPEND MOC_HEADER_FILES viewer/qgl/QtGLViewer.h)
 	list(APPEND SOURCE_FILES viewer/qgl/QtGLViewer.cpp)
 	list(APPEND SOFAGUIQT_LINK_LIBRARIES QGLViewer)
-endif()
+# endif()
 
 # make mocced header / form files path from absolute to relative
 #ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")

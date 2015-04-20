@@ -34,7 +34,7 @@
 #include <string.h>
 #include <fstream>
 
-#include <viewer/SofaViewer.h>
+#include <sofa/gui/qt/viewer/SofaViewer.h>
 #include <sofa/gui/ViewerFactory.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
