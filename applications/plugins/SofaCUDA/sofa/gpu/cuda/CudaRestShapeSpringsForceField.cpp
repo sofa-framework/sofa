@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include "CudaTypes.h"
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <SofaDeformable/RestShapeSpringsForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
