@@ -93,6 +93,7 @@ add_subdirectory(extlibs/tinyxml)
 
 ## Optional ones
 add_subdirectory(extlibs/CImg)
+add_subdirectory(extlibs/libQGLViewer-2.4.0/QGLViewer)
 
 option(SOFA_USE_MINIBOOST
 "Use the (header-only) subset of Boost distributed in the extlibs/ directory
