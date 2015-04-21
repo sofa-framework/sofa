@@ -167,6 +167,19 @@ list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_
 
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 
+## Version
+
+# Not really pretty, just a number that satisfies SOFA_VERSION > LAST_RELEASED_VERSION
+set(SOFA_VERSION "999999")
+set(SOFA_VERSION_STR "\"devel\"")
+set(SOFAFRAMEWORK_VERSION "99.99.99")
+# Generate sofa/version.h
+configure_file(${SofaFramework_ACTUAL_SOURCE_DIR}/sofa/version.h.in
+               ${CMAKE_CURRENT_BINARY_DIR}/sofa/version.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/version.h
+        DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}/sofa")
+
+
 add_subdirectory( ${SofaFramework_ACTUAL_SOURCE_DIR}/sofa/helper      ${CMAKE_CURRENT_BINARY_DIR}/SofaHelper )
 add_subdirectory( ${SofaFramework_ACTUAL_SOURCE_DIR}/sofa/defaulttype ${CMAKE_CURRENT_BINARY_DIR}/SofaDefaultType )
 add_subdirectory( ${SofaFramework_ACTUAL_SOURCE_DIR}/sofa/core        ${CMAKE_CURRENT_BINARY_DIR}/SofaCore )
@@ -181,18 +194,6 @@ set_target_properties(SofaCore PROPERTIES FOLDER "SofaFramework")
 
 
 include(CMakePackageConfigHelpers)
-
-## Version
-
-# Not really pretty, just a number that satisfies SOFA_VERSION > LAST_RELEASED_VERSION
-set(SOFA_VERSION "999999")
-set(SOFA_VERSION_STR "\"devel\"")
-set(SOFAFRAMEWORK_VERSION "99.99.99")
-# Generate sofa/version.h
-configure_file(${SofaFramework_ACTUAL_SOURCE_DIR}/sofa/version.h.in
-               ${CMAKE_CURRENT_BINARY_DIR}/sofa/version.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/version.h
-        DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}/sofa")
 
 # SofaFrameworkConfigVersion.cmake file (same for build tree and intall)
 write_basic_package_version_file(${SOFAFRAMEWORK_BUILD_CMAKE_DIR}/SofaFrameworkConfigVersion.cmake
