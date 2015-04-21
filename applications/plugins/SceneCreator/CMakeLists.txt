@@ -34,16 +34,16 @@ find_package(SofaMisc REQUIRED)
 
 set(SCENECREATOR_DEPENDENCY_INCLUDE_DIR ${SofaSimulation_INCLUDE_DIRS} ${SofaMisc_INCLUDE_DIRS})
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SceneCreator.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/SceneCreator/SceneCreator.h)
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/SceneCreator/SceneCreator.h
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SceneCreatorConfig.h.in
+                ${CMAKE_CURRENT_BINARY_DIR}/SceneCreator/SceneCreatorConfig.h)
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/SceneCreator/SceneCreatorConfig.h
          DESTINATION "${SCENECREATOR_INSTALL_INCLUDE_DIR}/SceneCreator")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaSimulationTree SofaComponentMisc SofaSimulationGraph SofaLoader)
+target_link_libraries(${PROJECT_NAME} SofaSimulationTree SofaComponentMisc SofaSimulationGraph SofaLoader SofaEngine)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>") 
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SCENECREATOR_DEPENDENCY_INCLUDE_DIR}>")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SCENECREATOR_VERSION})
