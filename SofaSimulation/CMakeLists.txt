@@ -32,6 +32,8 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaSimulation.h
 #include_directories(${CMAKE_CURRENT_BINARY_DIR})
 #include_directories(${SofaSimulation_ACTUAL_SOURCE_DIR}/../../)
 
+set(SOFASIMULATION_VERSION ${SofaFramework_VERSION})
+
 add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/common ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationCommon )
 add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/tree   ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationTree   )
 add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/graph  ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationGraph  )
@@ -40,7 +42,6 @@ add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/graph  ${CMAKE_CURRENT_BINA
 set_target_properties(SofaSimulationCommon PROPERTIES FOLDER "SofaSimulation")
 set_target_properties(SofaSimulationGraph PROPERTIES FOLDER "SofaSimulation")
 set_target_properties(SofaSimulationTree PROPERTIES FOLDER "SofaSimulation")
-
 
 include(CMakePackageConfigHelpers)
 
