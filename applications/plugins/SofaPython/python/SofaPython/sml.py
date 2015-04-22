@@ -308,13 +308,13 @@ class Model:
                     self.solidsByTag[tag]=list()
                 self.solidsByTag[tag].append(solid)
 
-def insertVisual(parentNode,obj,color):
-    node = parentNode.createChild("node_"+obj.name)
-    translation=obj.position[:3]
-    rotation = Quaternion.to_euler(obj.position[3:])  * 180.0 / math.pi
-    for m in obj.mesh:
-        Tools.meshLoader(node, obj.mesh.source, name="loader_"+obj.name)
-        node.createObject("OglModel",src="@loader_"+obj.name, translation=concat(translation),rotation=concat(rotation), color=color)
+def insertVisual(parentNode, solid, color):
+    node = parentNode.createChild("node_"+solid.name)
+    translation=solid.position[:3]
+    rotation = Quaternion.to_euler(solid.position[3:])  * 180.0 / math.pi
+    for m in solid.mesh:
+        Tools.meshLoader(node, m.source, name="loader_"+solid.name)
+        node.createObject("OglModel",src="@loader_"+solid.name, translation=concat(translation),rotation=concat(rotation), color=color)
     
 def setupUnits(myUnits):
     message = "units:"
