@@ -1,0 +1,3 @@
+{    
+    "steel": { "density": 7800, "youngModulus": 1e100, "poissonRatio": 0.3 }
+}

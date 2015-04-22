@@ -67,10 +67,10 @@ class Model:
         def __init__(self, solidXml=None):
             self.id = None
             self.name = None
+            self.material = "default"
             self.tags = set()
             self.position = None
             self.mesh = list() # list of meshes
-            self.density = None
             self.mass = None
             self.com = None # x,y,z
             self.inertia = None # Ixx, Ixy, Ixz, Iyy, Iyz, Izz
@@ -81,11 +81,14 @@ class Model:
         def parseXml(self, objXml):
             parseIdName(self, objXml)
             parseTag(self,objXml)
+            self.material=objXml.find("material").text
             self.position=Tools.strToListFloat(objXml.find("position").text)
-            if not objXml.find("density") is None:
-                self.density=float(objXml.find("density").text)
             if not objXml.find("mass") is None:
                 self.mass = float(objXml.find("mass").text)
+            if not objXml.find("com") is None:
+                self.com = Tools.strToListFloat(objXml.find("com").text)
+            if not objXml.find("inertia") is None:
+                self.inertia = Tools.strToListFloat(objXml.find("inertia").text)
 
     class Offset:
         def __init__(self, offsetXml):
@@ -308,13 +311,13 @@ class Model:
                     self.solidsByTag[tag]=list()
                 self.solidsByTag[tag].append(solid)
 
-def insertVisual(parentNode,obj,color):
-    node = parentNode.createChild("node_"+obj.name)
-    translation=obj.position[:3]
-    rotation = Quaternion.to_euler(obj.position[3:])  * 180.0 / math.pi
-    for m in obj.mesh:
-        Tools.meshLoader(node, obj.mesh.source, name="loader_"+obj.name)
-        node.createObject("OglModel",src="@loader_"+obj.name, translation=concat(translation),rotation=concat(rotation), color=color)
+def insertVisual(parentNode, solid, color):
+    node = parentNode.createChild("node_"+solid.name)
+    translation=solid.position[:3]
+    rotation = Quaternion.to_euler(solid.position[3:])  * 180.0 / math.pi
+    for m in solid.mesh:
+        Tools.meshLoader(node, m.source, name="loader_"+solid.name)
+        node.createObject("OglModel",src="@loader_"+solid.name, translation=concat(translation),rotation=concat(rotation), color=color)
     
 def setupUnits(myUnits):
     message = "units:"
@@ -330,8 +333,9 @@ class BaseScene:
         pass
 
     def __init__(self,parentNode,model,name=None):
-        self.model=model
-        self.param=BaseScene.Param()
+        self.model = model
+        self.param = BaseScene.Param()
+        self.material = Tools.Material() # a default material set
         self.nodes = dict() # to store special nodes
         n=name
         if n is None:
