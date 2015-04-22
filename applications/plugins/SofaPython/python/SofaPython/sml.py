@@ -67,6 +67,7 @@ class Model:
         def __init__(self, solidXml=None):
             self.id = None
             self.name = None
+            self.material = "default"
             self.tags = set()
             self.position = None
             self.mesh = list() # list of meshes
@@ -81,6 +82,7 @@ class Model:
         def parseXml(self, objXml):
             parseIdName(self, objXml)
             parseTag(self,objXml)
+            self.material=objXml.find("material").text
             self.position=Tools.strToListFloat(objXml.find("position").text)
             if not objXml.find("density") is None:
                 self.density=float(objXml.find("density").text)
@@ -330,8 +332,9 @@ class BaseScene:
         pass
 
     def __init__(self,parentNode,model,name=None):
-        self.model=model
-        self.param=BaseScene.Param()
+        self.model = model
+        self.param = BaseScene.Param()
+        self.material = Tools.Material() # a default material set
         self.nodes = dict() # to store special nodes
         n=name
         if n is None:
