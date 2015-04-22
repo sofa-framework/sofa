@@ -1,14 +1,14 @@
-# - Config file for the SofaGui package
-# It defines the following variables
-#  SofaGui_INCLUDE_DIRS - include directories for SofaGui
-#  SofaGui_LIBRARIES    - libraries to link against
+# CMake package configuration file for SofaGui.
+# It defines the following variables:
+# - SofaGui_INCLUDE_DIRS
+# - SofaGui_LIBRARIES
 
 @PACKAGE_INIT@
 
 set(SOFAGUI_INCLUDE_DIR "@PACKAGE_SOFAGUI_INCLUDE_DIR@")
 set(SofaGUI_TARGETS @SOFAGUI_TARGETS@)
 
-# required for transitive dependencies
+# Transitive dependencies
 find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(SofaAdvanced REQUIRED)

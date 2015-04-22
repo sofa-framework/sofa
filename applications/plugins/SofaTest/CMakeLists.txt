@@ -18,16 +18,14 @@ set(HEADER_FILES
     Elasticity_test.inl
     ForceField_test.h
     BroadPhase_test.h
-    PrimitiveCreation.h
-	)
+    PrimitiveCreation.h)
 
 set(SOURCE_FILES
 
     InitPlugin_test.cpp
     Sofa_test.cpp
     Elasticity_test.cpp
-    PrimitiveCreation.cpp
-	)
+    PrimitiveCreation.cpp)
 
 if(WIN32)
     # MSVC2012 has some troubles with the way gtest use the STL, this

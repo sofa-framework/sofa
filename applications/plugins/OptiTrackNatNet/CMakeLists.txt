@@ -1,18 +1,18 @@
 cmake_minimum_required(VERSION 2.8)
 project(OptiTrackNatNet)
 
-set(OPTITRACKNATNET_INSTALL_LIB_DIR     lib     CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(OPTITRACKNATNET_INSTALL_BIN_DIR     bin     CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(OPTITRACKNATNET_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(OPTITRACKNATNET_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
 set(OPTITRACKNATNET_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
-    initOptiTrackNatNet.h 
-	OptiTrackNatNetClient.h 
+    initOptiTrackNatNet.h
+	OptiTrackNatNetClient.h
 	OptiTrackNatNetDevice.h)
 
 set(SOURCE_FILES
-    initOptiTrackNatNet.cpp 
-	OptiTrackNatNetClient.cpp 
+    initOptiTrackNatNet.cpp
+	OptiTrackNatNetClient.cpp
 	OptiTrackNatNetDevice.cpp)
 
 find_package(SofaGeneral REQUIRED)

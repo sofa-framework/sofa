@@ -7,10 +7,10 @@ set(SOFASIMPLEGUI_BUILD_VERSION 1)
 
 set(SOFASIMPLEGUI_VERSION ${SOFASIMPLEGUI_MAJOR_VERSION}.${SOFASIMPLEGUI_MINOR_VERSION}.${SOFASIMPLEGUI_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(SOFASIMPLEGUI_INSTALL_LIB_DIR     lib                      CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFASIMPLEGUI_INSTALL_BIN_DIR     bin                      CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFASIMPLEGUI_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFASIMPLEGUI_INSTALL_CMAKE_DIR   ${SOFASIMPLEGUI_INSTALL_LIB_DIR}/cmake/SofaSimpleGUI )
+set(SOFASIMPLEGUI_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(SOFASIMPLEGUI_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(SOFASIMPLEGUI_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
+set(SOFASIMPLEGUI_INSTALL_CMAKE_DIR ${SOFASIMPLEGUI_INSTALL_LIB_DIR}/cmake/SofaSimpleGUI)
 
 set(HEADER_FILES
     initSimpleGUI.h
@@ -44,7 +44,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 
 install(TARGETS ${PROJECT_NAME}
         COMPONENT SofaSimpleGUI_libraries
-        EXPORT  SofaSimpleGUITargets
+        EXPORT SofaSimpleGUITargets
         RUNTIME DESTINATION "${SOFASIMPLEGUI_INSTALL_BIN_DIR}"
         LIBRARY DESTINATION "${SOFASIMPLEGUI_INSTALL_LIB_DIR}"
         ARCHIVE DESTINATION "${SOFASIMPLEGUI_INSTALL_LIB_DIR}"

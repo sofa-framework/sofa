@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 project(THMPGSpatialHashing)
 
-set(THMPGSPATIALHASHING_INSTALL_LIB_DIR     lib     CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(THMPGSPATIALHASHING_INSTALL_BIN_DIR     bin     CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(THMPGSPATIALHASHING_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(THMPGSPATIALHASHING_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
 set(THMPGSPATIALHASHING_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
@@ -24,7 +24,7 @@ target_link_libraries(${PROJECT_NAME} SofaComponentCommon)
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 
 if(LINUX OR UNIX AND NOT APPLE)
-    target_link_libraries(${PROJECT_NAME} rt)   # for clock_gettime()
+    target_link_libraries(${PROJECT_NAME} rt) # for clock_gettime()
 endif()
 
 find_package(SofaTest QUIET)

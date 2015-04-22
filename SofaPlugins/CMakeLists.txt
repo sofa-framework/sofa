@@ -14,12 +14,12 @@ endmacro()
 
 add_plugin(image)
 add_plugin(Compliant)
-add_plugin(CGALPlugin)          # Depends on image
-add_plugin(Flexible)            # Depends on image
-add_plugin(Registration)        # Depends on image
+add_plugin(CGALPlugin)               # Depends on image
+add_plugin(Flexible)                 # Depends on image
+add_plugin(Registration)             # Depends on image
 add_plugin(BulletCollisionDetection) # Depends on Compliant
-add_plugin(ColladaSceneLoader)  # Depends on Flexible and image
-add_plugin(PreassembledMass)    # Depends on Flexible and Compliant
+add_plugin(ColladaSceneLoader)       # Depends on Flexible and image
+add_plugin(PreassembledMass)         # Depends on Flexible and Compliant
 
 
 # Plugins that don't depend on other plugins

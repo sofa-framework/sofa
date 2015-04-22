@@ -7,15 +7,15 @@ set(REGISTRATION_BUILD_VERSION 1)
 
 set(REGISTRATION_VERSION ${REGISTRATION_MAJOR_VERSION}.${REGISTRATION_MINOR_VERSION}.${REGISTRATION_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(REGISTRATION_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(REGISTRATION_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set(REGISTRATION_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
+set(REGISTRATION_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(REGISTRATION_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(REGISTRATION_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/Registration)
+set(REGISTRATION_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/Registration)
 
-set(REGISTRATION_INSTALL_LIB_DIR     lib                      CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(REGISTRATION_INSTALL_BIN_DIR     bin                      CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(REGISTRATION_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(REGISTRATION_INSTALL_CMAKE_DIR   ${REGISTRATION_INSTALL_LIB_DIR}/cmake/Registration )
+set(REGISTRATION_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(REGISTRATION_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(REGISTRATION_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
+set(REGISTRATION_INSTALL_CMAKE_DIR ${REGISTRATION_INSTALL_LIB_DIR}/cmake/Registration)
 
 set(HEADER_FILES
     initRegistration.h
@@ -57,7 +57,7 @@ set(REGISTRATION_DEPENDENCY_INCLUDE_DIR ${SofaBase_INCLUDE_DIRS} ${Newmat_INCLUD
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Registration.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/Registration/Registration.h)
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/Registration/Registration.h
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Registration/Registration.h
          DESTINATION "${REGISTRATION_INSTALL_INCLUDE_DIR}/Registration")
 
 
@@ -68,7 +68,7 @@ if(image_FOUND)
 endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>") 
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${REGISTRATION_DEPENDENCY_INCLUDE_DIR}>")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${REGISTRATION_VERSION})
@@ -82,7 +82,7 @@ endif()
 
 install(TARGETS ${PROJECT_NAME}
         COMPONENT Registration_libraries
-        EXPORT  RegistrationTargets
+        EXPORT RegistrationTargets
         RUNTIME DESTINATION "${REGISTRATION_INSTALL_BIN_DIR}"
         LIBRARY DESTINATION "${REGISTRATION_INSTALL_LIB_DIR}"
         ARCHIVE DESTINATION "${REGISTRATION_INSTALL_LIB_DIR}"

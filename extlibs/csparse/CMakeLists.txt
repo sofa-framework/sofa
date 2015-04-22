@@ -37,14 +37,14 @@ set(CSPARSE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 configure_package_config_file(CSparseConfig.cmake.in
                               ${CMAKE_BINARY_DIR}/CSparse/CSparseConfig.cmake
                               INSTALL_DESTINATION CSparse
-                              PATH_VARS CSPARSE_INCLUDE_DIR )
+                              PATH_VARS CSPARSE_INCLUDE_DIR)
 
 # CSparseConfig.cmake (installed)
 set(CSPARSE_INCLUDE_DIR include)
 configure_package_config_file(CSparseConfig.cmake.in
                               ${CMAKE_BINARY_DIR}/CSparse/CSparseConfigInstall.cmake
                               INSTALL_DESTINATION lib/cmake/CSparse
-                              PATH_VARS CSPARSE_INCLUDE_DIR )
+                              PATH_VARS CSPARSE_INCLUDE_DIR)
 
 install(FILES ${CMAKE_BINARY_DIR}/CSparse/CSparseConfigInstall.cmake
         DESTINATION lib/cmake/CSparse

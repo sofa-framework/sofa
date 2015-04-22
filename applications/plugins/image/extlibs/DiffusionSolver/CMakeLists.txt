@@ -13,14 +13,14 @@ if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no ne
         if(UNIX AND NOT APPLE)
             # GCC implements OpenMP, so if OpenMP is not "FOUND", then the current
             # compiler must be something else, so we change it to g++.
-            message(WARNING "your compiler does not implement OpenMP, DiffusionSolver will be compiled with g++" )
+            message(WARNING "your compiler does not implement OpenMP, DiffusionSolver will be compiled with g++")
             set(CMAKE_CXX_COMPILER "/usr/bin/g++")
             set(CMAKE_CXX_COMPILER_ARG1 "")
             set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fopenmp")
             set(CMAKE_CXX_LINK_FLAGS_RELEASE "${CMAKE_CXX_LINK_FLAGS_RELEASE} -fopenmp")
         else()
             # Using clang on OS X? Then no OpenMP...
-            message(WARNING "your compiler does not implement OpenMP, DiffusionSolver will be single-threaded and very inefficient..." )
+            message(WARNING "your compiler does not implement OpenMP, DiffusionSolver will be single-threaded and very inefficient...")
         endif()
     endif()
 
@@ -53,7 +53,7 @@ endif()
 
 install(TARGETS ${PROJECT_NAME}
         COMPONENT DiffusionSolver_libraries
-        EXPORT  DiffusionSolverTargets
+        EXPORT DiffusionSolverTargets
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)

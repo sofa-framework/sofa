@@ -1,11 +1,11 @@
-# - Config file for the SofaTest package
-# It defines the following variables
-#  SofaTest_INCLUDE_DIRS - include directories for SofaTest
-#  SofaTest_LIBRARIES    - libraries to link against
+# CMake package configuration file for SofaTest.
+# It defines the following variables:
+# - SofaTest_INCLUDE_DIRS
+# - SofaTest_LIBRARIES
 
 @PACKAGE_INIT@
 
-set_and_check(SOFATEST_INCLUDE_DIR  "@PACKAGE_SOFATEST_INCLUDE_DIR@")
+set_and_check(SOFATEST_INCLUDE_DIR "@PACKAGE_SOFATEST_INCLUDE_DIR@")
 
 check_required_components(SofaTest)
 
@@ -17,7 +17,7 @@ find_package(image QUIET)
 
 if(NOT TARGET SofaTest)
 	include("${CMAKE_CURRENT_LIST_DIR}/SofaTestTargets.cmake")
-endif() 
+endif()
 
 set(SofaTest_LIBRARIES SofaTest)
 set(SofaTest_INCLUDE_DIRS ${SOFATEST_INCLUDE_DIR})

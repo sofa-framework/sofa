@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 project(MultiThreading)
 
-set(MULTITHREADING_INSTALL_LIB_DIR     lib     CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(MULTITHREADING_INSTALL_BIN_DIR     bin     CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(MULTITHREADING_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(MULTITHREADING_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
 set(MULTITHREADING_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
@@ -53,7 +53,7 @@ target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaMiscMapping)
 # # Useful ?
 # find_package(SofaCUDA)
 # if(SofaCUDA_FOUND)
-#     target_link_libraries(${PROJECT_NAME} SofaCUDA)
+# target_link_libraries(${PROJECT_NAME} SofaCUDA)
 # endif()
 
 install(TARGETS ${PROJECT_NAME}

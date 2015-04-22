@@ -4,23 +4,23 @@ project(SofaPython)
 ##
 ## SofaPython version
 ##
-set( SOFAPYTHON_MAJOR_VERSION 0 )
-set( SOFAPYTHON_MINOR_VERSION 0 )
-set( SOFAPYTHON_BUILD_VERSION 1 )
+set(SOFAPYTHON_MAJOR_VERSION 0)
+set(SOFAPYTHON_MINOR_VERSION 0)
+set(SOFAPYTHON_BUILD_VERSION 1)
 
-set( SOFAPYTHON_VERSION ${SOFAPYTHON_MAJOR_VERSION}.${SOFAPYTHON_MINOR_VERSION}.${SOFAPYTHON_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
+set(SOFAPYTHON_VERSION ${SOFAPYTHON_MAJOR_VERSION}.${SOFAPYTHON_MINOR_VERSION}.${SOFAPYTHON_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
 
-set(SOFAPYTHON_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(SOFAPYTHON_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set(SOFAPYTHON_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
+set(SOFAPYTHON_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(SOFAPYTHON_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(SOFAPYTHON_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaPython)
+set(SOFAPYTHON_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/SofaPython)
 
 # Offer the user the choice of overriding the installation directories
-set(SOFAPYTHON_INSTALL_LIB_DIR     lib                      CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFAPYTHON_INSTALL_BIN_DIR     bin                      CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFAPYTHON_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFAPYTHON_INSTALL_CMAKE_DIR   ${SOFAPYTHON_INSTALL_LIB_DIR}/cmake/SofaPython )
+set(SOFAPYTHON_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(SOFAPYTHON_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(SOFAPYTHON_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
+set(SOFAPYTHON_INSTALL_CMAKE_DIR ${SOFAPYTHON_INSTALL_LIB_DIR}/cmake/SofaPython)
 
 
 find_package(PythonLibs 2.7 REQUIRED)
@@ -28,7 +28,7 @@ find_package(PythonLibs 2.7 REQUIRED)
 find_package(SofaGui REQUIRED)
 find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
-set(SOFAPYTHON_DEPENDENCY_INCLUDE_DIR ${SofaGui_INCLUDE_DIRS} ${SofaGeneral_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS} )
+set(SOFAPYTHON_DEPENDENCY_INCLUDE_DIR ${SofaGui_INCLUDE_DIRS} ${SofaGeneral_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
 
 set(SOFA_HAVE_PYTHON 1)
 
@@ -63,19 +63,18 @@ set(HEADER_FILES
     Binding_MeshTopology.h
     Binding_GridTopology.h
     Binding_RegularGridTopology.h
-    Binding_BaseMapping.h 
-    Binding_MultiMapping.h 
-    Binding_SubsetMultiMapping.h 
-    Binding_Mapping.h 
-    Binding_RigidMapping.h 
+    Binding_BaseMapping.h
+    Binding_MultiMapping.h
+    Binding_SubsetMultiMapping.h
+    Binding_Mapping.h
+    Binding_RigidMapping.h
     Binding_MechanicalObject.h
     Binding_BaseMechanicalState.h
     Binding_PythonScriptController.h
     Binding_LinearSpring.h
     Binding_VisualModel.h
     SceneLoaderPY.h
-    ScriptEnvironment.h
-	)
+    ScriptEnvironment.h)
 
 set(SOURCE_FILES
 
@@ -108,42 +107,40 @@ set(SOURCE_FILES
     Binding_MeshTopology.cpp
     Binding_GridTopology.cpp
     Binding_RegularGridTopology.cpp
-    Binding_BaseMapping.cpp 
-    Binding_MultiMapping.cpp 
-    Binding_Mapping.cpp 
-    Binding_RigidMapping.cpp 
-    Binding_SubsetMultiMapping.cpp 
+    Binding_BaseMapping.cpp
+    Binding_MultiMapping.cpp
+    Binding_Mapping.cpp
+    Binding_RigidMapping.cpp
+    Binding_SubsetMultiMapping.cpp
     Binding_MechanicalObject.cpp
     Binding_BaseMechanicalState.cpp
     Binding_PythonScriptController.cpp
     Binding_LinearSpring.cpp
     Binding_VisualModel.cpp
     SceneLoaderPY.cpp
-    ScriptEnvironment.cpp
-	)
+    ScriptEnvironment.cpp)
 
 set(PYTHON_FILES
-    SofaPython.py
-)
+    SofaPython.py)
 
 # include python files
 include(./python/python.cmake)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SofaPython.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/SofaPython/SofaPython.h)
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaPython/SofaPython.h
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaPython/SofaPython.h
          DESTINATION "${SOFAPYTHON_INSTALL_INCLUDE_DIR}/SofaPython")
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} )
-target_link_libraries( ${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral ${PYTHON_LIBRARIES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral ${PYTHON_LIBRARIES})
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     # dlopen() is used on Linux for a workaround (see PythonEnvironnement.cpp)
     target_link_libraries(${PROJECT_NAME} PRIVATE dl)
 endif()
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>") 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>") 
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAPYTHON_DEPENDENCY_INCLUDE_DIR}>")
-set( SOFAPYTHON_COMPILER_FLAGS "-DSOFA_BUILD_SOFAPYTHON")
+set(SOFAPYTHON_COMPILER_FLAGS "-DSOFA_BUILD_SOFAPYTHON")
 
 # The implementation of Python deliberately breaks strict-aliasing rules, so we
 # compile with -fno-strict-aliasing to prevent the compiler from relying on
@@ -153,10 +150,10 @@ if(${CMAKE_COMPILER_IS_GNUCC})
 endif()
 
 # make the name of debug libraries end in _d.
-set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
-set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFAPYTHON_VERSION} )
-set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAPYTHON_COMPILER_FLAGS}"  )
-set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAPYTHON_VERSION})
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAPYTHON_COMPILER_FLAGS}")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 include(CMakePackageConfigHelpers)
 # SofaPythonConfigVersion.cmake file (same for build tree and intall)
@@ -189,15 +186,14 @@ install(FILES ${SOFAPYTHON_BUILD_CMAKE_DIR}/SofaPythonConfigInstall.cmake
 
 install(TARGETS ${PROJECT_NAME}
     COMPONENT SofaPython_libraries
-    EXPORT  SofaPythonTargets
+    EXPORT SofaPythonTargets
     RUNTIME DESTINATION "${SOFAPYTHON_INSTALL_BIN_DIR}"
     LIBRARY DESTINATION "${SOFAPYTHON_INSTALL_LIB_DIR}"
     ARCHIVE DESTINATION "${SOFAPYTHON_INSTALL_LIB_DIR}"
-    PUBLIC_HEADER DESTINATION "${SOFAPYTHON_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}"
-    )
+    PUBLIC_HEADER DESTINATION "${SOFAPYTHON_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}")
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
- 
+
 # SofaPythonTargets.cmake (installed)
 install(EXPORT SofaPythonTargets
-        DESTINATION ${SOFAPYTHON_INSTALL_CMAKE_DIR} )
+        DESTINATION ${SOFAPYTHON_INSTALL_CMAKE_DIR})

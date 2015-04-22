@@ -1,7 +1,7 @@
-# - Config file for the ARTrackLib package
-# It defines the following variables
-#  ARTrackLib_INCLUDE_DIRS  - include directories for ARTrackLib
-#  ARTrackLib_LIBRARIES     - libraries to link against
+# CMake package configuration file for the ARTrack library.
+# It defines the following variables:
+# - ARTrackLib_INCLUDE_DIRS
+# - ARTrackLib_LIBRARIES
 
 @PACKAGE_INIT@
 

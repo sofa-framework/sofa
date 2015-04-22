@@ -3,30 +3,30 @@ set(SOLUTION_NAME "SofaSimulation")
 project(${SOLUTION_NAME})
 
 #temporary until we move the sub projects
-set( SofaSimulation_ACTUAL_SOURCE_DIR ${SofaSimulation_SOURCE_DIR}/../modules/sofa/simulation)
+set(SofaSimulation_ACTUAL_SOURCE_DIR ${SofaSimulation_SOURCE_DIR}/../modules/sofa/simulation)
 
-set(SOFASIMULATION_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(SOFASIMULATION_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set(SOFASIMULATION_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
+set(SOFASIMULATION_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(SOFASIMULATION_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(SOFASIMULATION_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaSimulation)
+set(SOFASIMULATION_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/SofaSimulation)
 
 # Offer the user the choice of overriding the installation directories
-set(SOFASIMULATION_INSTALL_LIB_DIR     lib     					  CACHE PATH "Installation directory for libraries")
-set(SOFASIMULATION_INSTALL_BIN_DIR     bin     					  CACHE PATH "Installation directory for executables")
-set(SOFASIMULATION_INSTALL_INCLUDE_DIR include 					  CACHE PATH "Installation directory for header files")
-set(SOFASIMULATION_INSTALL_CMAKE_DIR   ${SOFASIMULATION_INSTALL_LIB_DIR}/cmake/SofaSimulation)
+set(SOFASIMULATION_INSTALL_LIB_DIR lib 					 CACHE PATH "Installation directory for libraries")
+set(SOFASIMULATION_INSTALL_BIN_DIR bin 					 CACHE PATH "Installation directory for executables")
+set(SOFASIMULATION_INSTALL_INCLUDE_DIR include 					 CACHE PATH "Installation directory for header files")
+set(SOFASIMULATION_INSTALL_CMAKE_DIR ${SOFASIMULATION_INSTALL_LIB_DIR}/cmake/SofaSimulation)
 
-set(SOFASIMULATION_DEPENDENCY_INCLUDE_DIRS )
+set(SOFASIMULATION_DEPENDENCY_INCLUDE_DIRS)
 ## SofaSimulation dependencies
 ##
 find_package(SofaFramework REQUIRED)
 
 list(APPEND SOFASIMULATION_DEPENDENCY_INCLUDE_DIRS ${SofaFramework_INCLUDE_DIRS})
-#include_directories( ${SofaFramework_INCLUDE_DIRS} )
+#include_directories(${SofaFramework_INCLUDE_DIRS})
 
-configure_file( ${SofaSimulation_SOURCE_DIR}/SofaSimulation.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaSimulation.h )
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaSimulation.h
+configure_file(${SofaSimulation_SOURCE_DIR}/SofaSimulation.h.in
+                ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaSimulation.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaSimulation.h
          DESTINATION "${SOFASIMULATION_INSTALL_INCLUDE_DIR}/sofa")
 # make sure everyone in the build tree can see <sofa/SofaSimulation.h>
 #include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -34,9 +34,9 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaSimulation.h
 
 set(SOFASIMULATION_VERSION ${SofaFramework_VERSION})
 
-add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/common ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationCommon )
-add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/tree   ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationTree   )
-add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/graph  ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationGraph  )
+add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/common ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationCommon)
+add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/tree ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationTree)
+add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/graph ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationGraph)
 
 # IDE folder
 set_target_properties(SofaSimulationCommon PROPERTIES FOLDER "SofaSimulation")
@@ -64,7 +64,7 @@ set(SOFASIMULATION_INCLUDE_DIR "${SOFASIMULATION_INSTALL_INCLUDE_DIR}")
 configure_package_config_file(SofaSimulationConfig.cmake.in
                               ${SOFASIMULATION_BUILD_CMAKE_DIR}/SofaSimulationConfigInstall.cmake
                               INSTALL_DESTINATION ${SOFASIMULATION_INSTALL_CMAKE_DIR}
-                              PATH_VARS SOFASIMULATION_INCLUDE_DIR )
+                              PATH_VARS SOFASIMULATION_INCLUDE_DIR)
 
 install(FILES ${SOFASIMULATION_BUILD_CMAKE_DIR}/SofaSimulationConfigInstall.cmake
         DESTINATION ${SOFASIMULATION_INSTALL_CMAKE_DIR}
@@ -72,4 +72,4 @@ install(FILES ${SOFASIMULATION_BUILD_CMAKE_DIR}/SofaSimulationConfigInstall.cmak
 
 # SofaSimulationTargets.cmake (installed)
 install(EXPORT SofaSimulationTargets
-        DESTINATION ${SOFASIMULATION_INSTALL_CMAKE_DIR} )
+        DESTINATION ${SOFASIMULATION_INSTALL_CMAKE_DIR})

@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SuiteSparse)
 
 if(MSVC)
-    set(SUITESPARSE_INSTALL_LIB_DIR     lib                 CACHE PATH "Installation directory for libraries")
-    set(SUITESPARSE_INSTALL_BIN_DIR     bin                 CACHE PATH "Installation directory for executables")
-    set(SUITESPARSE_INSTALL_INCLUDE_DIR include             CACHE PATH "Installation directory for header files")
+    set(SUITESPARSE_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
+    set(SUITESPARSE_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
+    set(SUITESPARSE_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files")
 
     # # I think we don't need this, because nobody actually ever
     # # includes a cholmod file in SOFA
