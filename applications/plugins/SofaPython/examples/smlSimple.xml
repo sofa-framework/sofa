@@ -10,15 +10,15 @@
     </mesh>
     
     <solid id="armadillo">
-        <tag>red</tag>
         <material>default</material>
+        <tag>red</tag>
         <position>0 0 0 0 0 0 1</position>
         <mesh id="armadillo" />
     </solid>
     
     <solid id="ball01">
-        <tag>green</tag>
         <material>default</material>
+        <tag>green</tag>
         <position>0 8 -5 0 0 0 1</position>
         <mesh id="ball" />
     </solid>
