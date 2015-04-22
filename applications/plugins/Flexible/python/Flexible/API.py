@@ -12,15 +12,12 @@ from SofaPython import Quaternion
 
 __file = __file__.replace('\\', '/')  # windows compatible filename
 
-def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, position=None, labelImage=None, labels=None, assemble=True):
+def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, position=None, labelImage=None, labels=None, assemble=True, geometricStiffness=2):
     """ insert the correct Linear(Multi)Mapping
     hopefully the template is deduced automatically by the component
     """
     if dofRigidNode is None and dofAffineNode is None:
         print "[Flexible.API.insertLinearMapping] ERROR: no dof given"
-    if dofAffineNode is None:
-        #TODO
-        return None
     else:
         cell = ''
         if not labelImage is None and not labels is None : # use labels to select specific voxels in branching image
@@ -31,12 +28,17 @@ def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, position=No
             cell = "@cell.cell"
 
         if dofRigidNode is None:
-            #TODO
-            return None
+            return node.createObject(
+                "LinearMapping", cell=cell,
+                input="@"+dofAffineNode.getPathName(), output="@.", assemble=assemble)
+        elif dofAffineNode is None:
+            return node.createObject(
+                "LinearMapping", cell=cell,
+                input="@"+dofRigidNode.getPathName(), output="@.", assemble=assemble, geometricStiffness=geometricStiffness)
         else:
             return node.createObject(
                 "LinearMultiMapping", cell=cell,
-                input1="@"+dofRigidNode.getPathName(), input2="@"+dofAffineNode.getPathName(), output="@.", assemble=assemble)
+                input1="@"+dofRigidNode.getPathName(), input2="@"+dofAffineNode.getPathName(), output="@.", assemble=assemble, geometricStiffness=geometricStiffness)
 
 class Deformable:
     
@@ -85,7 +87,7 @@ class AffineMass:
     def massFromDensityImage(self, dofRigidNode, densityImage, lumping='0'):
         node = self.node.createChild('Mass')
         dof = node.createObject('MechanicalObject', name='massPoints', template='Vec3d')
-        insertLinearMapping(node, dofRigidNode, self.dofAffineNode, dof, assemble=False) # TODO: ERROR: AssemblyVisitor: if matrix is not assembled, crash when the matrix is assembled
+        insertLinearMapping(node, dofRigidNode, self.dofAffineNode, dof, assemble=False)
         densityImage.addBranchingToImage('0') # MassFromDensity on branching images does not exist yet
         massFromDensity = node.createObject('MassFromDensity',  name="MassFromDensity",  template="Affine,ImageD", image="@"+SofaPython.Tools.getObjectPath(densityImage.converter)+".image", transform="@"+SofaPython.Tools.getObjectPath(densityImage.converter)+'.transform', lumping=lumping)
         self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix="@"+SofaPython.Tools.getObjectPath(massFromDensity)+".massMatrix")

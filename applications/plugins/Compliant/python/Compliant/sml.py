@@ -122,20 +122,22 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         optionnaly give a tag to select the rigids which are merged
         return the list of merged rigids id"""
 
-        mergeNode.createObject("MechanicalObject", template = "Rigid3d", name="dofs")
         rigidsId = list() # keep track of merged rigids, rigid index and rigid id
         input=""
         indexPairs=""
-        for solid in self.model.solidsByTag[tag]:
-            if not solid.id in self.rigids:
-                print "[Compliant.sml.SceneArticulatedRigid.insertMergeRigid] WARNING: "+solid.name+" is not a rigid"
-                continue
-            rigid = self.rigids[solid.id]
-            rigid.node.addChild(mergeNode)
-            input += '@'+rigid.node.getPathName()+" "
-            indexPairs += str(len(rigidsId)) + " 0 "
-            rigidsId.append(solid.id)
-        mergeNode.createObject('SubsetMultiMapping', template = "Rigid3d,Rigid3d", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
+        if tag in self.model.solidsByTag:
+            for solid in self.model.solidsByTag[tag]:
+                if not solid.id in self.rigids:
+                    print "[Compliant.sml.SceneArticulatedRigid.insertMergeRigid] WARNING: "+solid.name+" is not a rigid"
+                    continue
+                rigid = self.rigids[solid.id]
+                rigid.node.addChild(mergeNode)
+                input += '@'+rigid.node.getPathName()+" "
+                indexPairs += str(len(rigidsId)) + " 0 "
+                rigidsId.append(solid.id)
+        if input:
+            mergeNode.createObject("MechanicalObject", template = "Rigid3d", name="dofs")
+            mergeNode.createObject('SubsetMultiMapping', template = "Rigid3d,Rigid3d", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
         return rigidsId
 
     def createScene(self):
@@ -145,8 +147,9 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         SofaPython.sml.setupUnits(self.model.units)
 
         # rigids
-        for rigidModel in self.model.solidsByTag["rigid"]:
-            self.rigids[rigidModel.id] = insertRigid(self.node, rigidModel, self.material, self.param)
+        if "rigid" in self.model.solidsByTag:
+            for rigidModel in self.model.solidsByTag["rigid"]:
+                self.rigids[rigidModel.id] = insertRigid(self.node, rigidModel, self.material, self.param)
         
         # joints
         for jointModel in self.model.genericJoints.values():
