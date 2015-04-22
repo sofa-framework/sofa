@@ -136,8 +136,12 @@ add_subdirectory("${SOFA_MISC_DIR}")
 # gui
 add_subdirectory("${SOFA_GUI_DIR}")
 
-# plugins
-add_subdirectory("${SOFA_PLUGINS_DIR}")
+# SofaTest depends on SofaPython, so we add it first.
+option(SOFA-PLUGIN_SOFAPYTHON "Build the SofaPython plugin." OFF)
+if(SOFA-PLUGIN_SOFAPYTHON)
+    add_subdirectory(applications/plugins/SofaPython ${CMAKE_CURRENT_BINARY_DIR}/SofaPlugins/SofaPython)
+    set_target_properties(SofaPython PROPERTIES FOLDER "SofaPlugins") # IDE folder
+endif()
 
 if(SOFA_TESTS)
     # Library used by SofaTest.
@@ -147,3 +151,6 @@ if(SOFA_TESTS)
     # Tests for all the modules, written using SofaTest.
     add_subdirectory(modules/tests)
 endif()
+
+# plugins
+add_subdirectory("${SOFA_PLUGINS_DIR}")

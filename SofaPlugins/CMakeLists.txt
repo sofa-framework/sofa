@@ -12,7 +12,7 @@ endmacro()
 
 # Plugins that depend on other plugins: order matters!
 
-add_plugin(SofaPython)
+# add_plugin(SofaPython)          # Moved to ../CMakeLists.txt
 add_plugin(SofaSimpleGUI)
 add_plugin(image)
 add_plugin(Compliant)
