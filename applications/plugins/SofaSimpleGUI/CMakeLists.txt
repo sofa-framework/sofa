@@ -42,6 +42,28 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOF
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 
+# SofaSimpleGUIConfig.cmake (build tree)
+set(SOFASIMPLEGUI_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+configure_package_config_file(SofaSimpleGUIConfig.cmake.in
+                              ${CMAKE_BINARY_DIR}/SofaSimpleGUI/SofaSimpleGUIConfig.cmake
+                              INSTALL_DESTINATION ${CMAKE_BINARY_DIR}/SofaSimpleGUI
+                              PATH_VARS SOFASIMPLEGUI_INCLUDE_DIR)
+
+# SofaSimpleGUIConfig.cmake (installed)
+set(SOFASIMPLEGUI_INCLUDE_DIR "include")
+configure_package_config_file(SofaSimpleGUIConfig.cmake.in
+                              ${CMAKE_BINARY_DIR}/SofaSimpleGUI/SofaSimpleGUIConfigInstall.cmake
+                              INSTALL_DESTINATION ${SOFASIMPLEGUI_INSTALL_CMAKE_DIR}
+                              PATH_VARS SOFASIMPLEGUI_INCLUDE_DIR)
+
+# SofaSimpleGUITargets.cmake (installed)
+install(EXPORT SofaSimpleGUITargets
+        DESTINATION ${SOFASIMPLEGUI_INSTALL_CMAKE_DIR})
+
+install(FILES ${SOFASIMPLEGUI_BUILD_CMAKE_DIR}/SofaSimpleGUIConfigInstall.cmake
+        DESTINATION ${SOFASIMPLEGUI_INSTALL_CMAKE_DIR}
+        RENAME SofaSimpleGUIConfig.cmake)
+
 install(TARGETS ${PROJECT_NAME}
         COMPONENT SofaSimpleGUI_libraries
         EXPORT SofaSimpleGUITargets
