@@ -95,7 +95,7 @@ class SOFA_CONSTRAINT_API GenericConstraintSolver : public ConstraintSolverImpl
 	typedef sofa::core::MultiVecId MultiVecId;
 
 public:
-	SOFA_CLASS(GenericConstraintSolver, sofa::core::behavior::ConstraintSolver);
+	SOFA_CLASS(GenericConstraintSolver, ConstraintSolverImpl);
 protected:
 	GenericConstraintSolver();
 	virtual ~GenericConstraintSolver();
