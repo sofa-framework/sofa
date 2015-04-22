@@ -15,7 +15,6 @@ set(SOURCE_FILES
     NeoHookeHexahedraMaterial_test.cpp
     PointDeformationMapping_test.cpp
     Patch_test.cpp
-    StrainMappings_test.cpp
     RigidDeformationMapping_test.cpp
     ShapeFunction_test.cpp
     StabilizedNeoHookeHexahedraMaterial_test.cpp
