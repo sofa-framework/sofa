@@ -132,7 +132,7 @@ void ParticleCell3DMemo<PFP>::vertexState(const VEC3& current, CellMarkerMemo<MA
     }while(this->d!=depart);
 
     this->reset_positionFace();
-    this->m_position = this->m_positionFace ;
+//    this->m_position = this->m_positionFace ;
     volumeState(current,memo_cross);
 
 
@@ -309,7 +309,7 @@ void ParticleCell3DMemo<PFP>::edgeState(const VEC3& current, CellMarkerMemo<MAP,
 
 //        d = nextNonPlanar(m.phi1(d));
         this->d=this->m.phi1(this->d);
-        this->m_position = this->m_positionFace ;
+//        this->m_position = this->m_positionFace ;
         volumeState(current,memo_cross);
         return;
     }
@@ -347,7 +347,7 @@ void ParticleCell3DMemo<PFP>::edgeState(const VEC3& current, CellMarkerMemo<MAP,
                                 case Geom::OVER : this->d=this->m.phi_1(this->d);
                                     break;
                                 default :
-                                    this->m_position=this->position[this->d]; // on est sur le sommet ou de l'autre coté, dans tous les cas c'est au vertex de voir
+//                                    this->m_position=this->position[this->d]; // on est sur le sommet ou de l'autre coté, dans tous les cas c'est au vertex de voir
                                     vertexState(current,memo_cross);
                                     return;
                                 }
@@ -399,7 +399,7 @@ void ParticleCell3DMemo<PFP>::edgeState(const VEC3& current, CellMarkerMemo<MAP,
                         this->setState(EDGE);
                         break;
                     default :   // on est de l'autre côté de l'edge on laisse donc l'edge décider
-                        this->m_position = (this->position[this->m.phi1(this->d)]+this->position[this->d])/2;
+//                        this->m_position = (this->position[this->m.phi1(this->d)]+this->position[this->d])/2;
 
                         edgeState(current,memo_cross);
                         break;
@@ -415,6 +415,12 @@ void ParticleCell3DMemo<PFP>::volumeState(const VEC3& current, CellMarkerMemo<MA
 	#ifdef DEBUG
     std::cout << "volumeStateMemo " <<  this->d <<  " " << this->m_position<<  " " << this->m_positionFace<< std::endl;
 	#endif
+    if(this->m.isBoundaryMarkedCurrent(this->d))
+    {
+        this->reset_positionVolume();
+        this->reset_positionFace();
+        return;
+    }
     if(!memo_cross.isMarked(this->d)) memo_cross.mark(this->d);
     if(this->crossCell!=NO_CROSS)
      {
@@ -451,7 +457,7 @@ void ParticleCell3DMemo<PFP>::volumeState(const VEC3& current, CellMarkerMemo<MA
             }
             return;
         default : // over l'obj est de l'autre coté de la face
-            this->m_position=this->m_positionFace;
+//            this->m_position=this->m_positionFace;
             if(enDessous)
             {
                 this->reset_positionFace();

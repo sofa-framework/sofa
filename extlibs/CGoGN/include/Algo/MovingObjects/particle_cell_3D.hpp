@@ -60,14 +60,21 @@ void ParticleCell3D<PFP>:: reset_positionFace()
 template <typename PFP>
 void ParticleCell3D<PFP>:: reset_positionVolume()
 {
-    if(this->volume_center)
+    if(!m.isBoundaryMarkedCurrent(d))
     {
-        this->m_positionVolume=(*volume_center)[d];
+        if(this->volume_center)
+        {
+            this->m_positionVolume = (*volume_center)[d];
+        }
+        else
+        {
+            this->m_positionVolume = Algo::Surface::Geometry::volumeCentroid<PFP>(m,d,position);
+        }
     }
     else
     {
-        this->m_positionVolume=Algo::Surface::Geometry::volumeCentroid<PFP>(m,d,position);
-
+        d = m.phi3(d);
+        reset_positionVolume();
     }
 }
 
@@ -256,7 +263,7 @@ void ParticleCell3D<PFP>::vertexState(const VEC3& current)
     }while(d!=depart);
 
     reset_positionFace();
-    this->m_position = this->m_positionFace ;
+//    this->m_position = this->m_positionFace ;
     volumeState(current);
 
 //    Dart dd=d;
@@ -424,7 +431,7 @@ void ParticleCell3D<PFP>::edgeState(const VEC3& current)
     else { // on a trouvé le camembert et on est dans le volume
 
         d=m.phi1(d);
-        this->m_position = this->m_positionFace ;
+//        this->m_position = this->m_positionFace ;
         volumeState(current);
         return;
     }
@@ -459,7 +466,7 @@ void ParticleCell3D<PFP>::faceState(const VEC3& current, Geom::Orientation3D wso
                                 case Geom::OVER : d=m.phi_1(d);
                                     break;
                                 default :
-                                    this->m_position=position[d]; // on est sur le sommet ou de l'autre coté, dans tous les cas c'est au vertex de voir
+//                                    this->m_position=position[d]; // on est sur le sommet ou de l'autre coté, dans tous les cas c'est au vertex de voir
                                     vertexState(current);
                                     return;
                                 }
@@ -512,7 +519,7 @@ void ParticleCell3D<PFP>::faceState(const VEC3& current, Geom::Orientation3D wso
                         this->setState(EDGE);
                         break;
                     default :   // on est de l'autre côté de l'edge on laisse donc l'edge décider
-                        this->m_position = (position[m.phi1(d)]+position[d])/2;
+//                        this->m_position = (position[m.phi1(d)]+position[d])/2;
 
                         edgeState(current);
                 }
@@ -580,6 +587,12 @@ void ParticleCell3D<PFP>::volumeState(const VEC3& current)
 #ifdef DEBUG
     std::cout << "volumeState " <<  d <<  " " << this->m_position<<  " " << this->m_positionFace<< std::endl;
 #endif
+    if(m.isBoundaryMarkedCurrent(d))
+    {
+        reset_positionVolume();
+        reset_positionFace();
+        return;
+    }
     reset_positionVolume();
 
     if(this->crossCell!=NO_CROSS)
@@ -617,7 +630,7 @@ void ParticleCell3D<PFP>::volumeState(const VEC3& current)
             }
             return;
         default : // over l'obj est de l'autre coté de la face
-            this->m_position=m_positionFace;
+//            this->m_position=m_positionFace;
             if(enDessous)
             {
                 faceState(current,wsof);
