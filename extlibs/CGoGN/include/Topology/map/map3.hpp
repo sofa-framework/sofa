@@ -301,8 +301,8 @@ Dart Map3<MAP_IMPL>::splitVertex(std::vector<Dart>& vd)
 template <typename MAP_IMPL>
 Dart Map3<MAP_IMPL>::deleteVertex(Dart d)
 {
-	//if(isBoundaryVertex(d))
-	//	return NIL ;
+    if(isBoundaryVertex(d))
+        return NIL ;
 
 	// Save the darts around the vertex
 	// (one dart per face should be enough)

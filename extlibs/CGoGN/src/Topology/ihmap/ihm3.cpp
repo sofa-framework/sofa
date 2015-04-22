@@ -241,6 +241,8 @@ Dart ImplicitHierarchicalMap3::quadranguleFace(Dart d)
 
 void ImplicitHierarchicalMap3::deleteVertexSubdividedFace(Dart d)
 {
+    assert(this->volumeOldestDart(d) == d);
+
 	Dart centralV = phi1(phi1(d));
 	Dart res = NIL;
 	Dart vit = centralV ;
