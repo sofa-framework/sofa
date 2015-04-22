@@ -1,42 +1,33 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(Registration_run)
 
-if(SOFA-LIB_GUI_QT)
+find_package(SofaSimpleGUI QUIET)
+find_package(SofaPython QUIET)
 
-set(SOURCE_FILES
-	Registration_run.cpp
+if(SofaPython_FOUND AND SofaSimpleGUI_FOUND)
+
+    find_package(Qt4 REQUIRED QtCore)
+    include(${QT_USE_FILE})
+
+    set(SOURCE_FILES
+	    Registration_run.cpp
         QSofaScene.cpp
         QSofaViewer.cpp
-        QMainWindow_RegistrationRun.cpp
-)
-set(HEADER_FILES
+        QMainWindow_RegistrationRun.cpp)
+
+    set(HEADER_FILES
         QSofaScene.h
         QSofaViewer.h
-        QMainWindow_RegistrationRun.h
-)
+        QMainWindow_RegistrationRun.h)
 
-UseQt()
+    qt4_wrap_cpp(MOC_FILES ${HEADER_FILES})
 
-SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
+    qt4_add_resources(RESOURCE_FILES "./icons.qrc")
 
-# make resource files path from absolute to relative
-ToRelativePath(RESOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${RESOURCE_FILES}")
+    add_definitions("-Dregistration_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"")
 
-set(RESOURCE_FILES_GROUP "Generated")
-
-QT4_ADD_RESOURCES(RESOURCE_FILES "./icons.qrc")
-
-# make mocced header / form files path from absolute to relative
-ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
-
-set(MOC_FILES_GROUP "Generated")
-	
-AddCompilerDefinitions("registration_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"")
-
-add_executable(${PROJECT_NAME} ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${RESOURCE_FILES})
-
-AddLinkerDependencies(SofaPython SofaSimpleGUI ${GLUT_LIBRARIES})
+    add_executable(${PROJECT_NAME} ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${RESOURCE_FILES})
+    target_include_directories(${PROJECT_NAME} PRIVATE ${QT_INCLUDES})
+    target_link_libraries(${PROJECT_NAME} SofaPython SofaSimpleGUI ${QT_LIBRARIES} ${GLUT_LIBRARIES})
 
 endif()
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
