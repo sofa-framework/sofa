@@ -581,6 +581,12 @@ void ParticleCell3D<PFP>::volumeState(const VEC3& current)
     std::cout << "volumeState " <<  d <<  " " << this->m_position<<  " " << this->m_positionFace<< std::endl;
 #endif
     reset_positionVolume();
+
+    if(this->crossCell!=NO_CROSS)
+    {
+        this->newVol=true;
+    }
+
     bool casON=false;
     bool enDessous=false;
 

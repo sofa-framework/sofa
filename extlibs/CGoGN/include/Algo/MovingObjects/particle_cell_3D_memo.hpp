@@ -40,7 +40,7 @@ template <typename PFP>
 std::vector<Dart> ParticleCell3DMemo<PFP>::move(const VEC3& newCurrent)
 {
     this->crossCell = NO_CROSS ;
-
+    this->newVol=false;
 //	if(!Geom::arePointsEquals(newCurrent, this->getPosition()))
 	{
         CellMarkerMemo<MAP, VOLUME> memo_cross(this->m);
@@ -64,6 +64,7 @@ template <typename PFP>
 std::vector<Dart> ParticleCell3DMemo<PFP>::move(const VEC3& newCurrent, CellMarkerMemo<MAP, VOLUME>& memo_cross)
 {
     this->crossCell = NO_CROSS ;
+    this->newVol=false;
 
 //	if(!Geom::arePointsEquals(newCurrent, this->getPosition()))
 	{
@@ -415,6 +416,10 @@ void ParticleCell3DMemo<PFP>::volumeState(const VEC3& current, CellMarkerMemo<MA
     std::cout << "volumeStateMemo " <<  this->d <<  " " << this->m_position<<  " " << this->m_positionFace<< std::endl;
 	#endif
     if(!memo_cross.isMarked(this->d)) memo_cross.mark(this->d);
+    if(this->crossCell!=NO_CROSS)
+     {
+         this->newVol=true;
+     }
     this->reset_positionVolume();
     bool casON=false;
     bool enDessous=false;

@@ -54,7 +54,7 @@ public :
 
 
     unsigned int crossCell ;
-
+    bool newVol;
     ParticleCell3D(MAP& map) : m(map)
     {}
 
@@ -68,6 +68,7 @@ public :
         d(belonging_cell)
 
     {
+        newVol = false;
         crossCell=NO_CROSS;
         reset_positionFace();
         reset_positionVolume();
@@ -124,6 +125,7 @@ public :
     void move(const VEC3& newCurrent)
     {
         crossCell = NO_CROSS ;
+        newVol = false;
 //        if(!Geom::arePointsEquals(newCurrent, this->getPosition()))
         {
             switch(this->getState()) {
