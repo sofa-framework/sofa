@@ -2,16 +2,16 @@ cmake_minimum_required(VERSION 2.8.12)
 
 project(newmat)
 
-set(NEWMAT_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(NEWMAT_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set(NEWMAT_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
+set(NEWMAT_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(NEWMAT_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(NEWMAT_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/Newmat)
+set(NEWMAT_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/Newmat)
 
 # Offer the user the choice of overriding the installation directories
-set(NEWMAT_INSTALL_LIB_DIR     lib                      CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(NEWMAT_INSTALL_BIN_DIR     bin                      CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(NEWMAT_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(NEWMAT_INSTALL_CMAKE_DIR   ${NEWMAT_INSTALL_LIB_DIR}/cmake/Newmat )
+set(NEWMAT_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(NEWMAT_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(NEWMAT_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
+set(NEWMAT_INSTALL_CMAKE_DIR ${NEWMAT_INSTALL_LIB_DIR}/cmake/Newmat)
 
 set(HEADER_FILES
 
@@ -20,11 +20,10 @@ set(HEADER_FILES
     newmat/newmatrc.h
     newmat/boolean.h
     newmat/myexcept.h
-    newmat/controlw.h 
+    newmat/controlw.h
     newmat/newmatap.h
     newmat/newmatrm.h
-    newmat/precisio.h 
-	)
+    newmat/precisio.h)
 
 set(SOURCE_FILES
 
@@ -49,8 +48,7 @@ set(SOURCE_FILES
     newmat/jacobi.cpp
     newmat/newfft.cpp
     newmat/sort.cpp
-    newmat/svd.cpp 
-	)
+    newmat/svd.cpp)
 
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaExtlibs")
@@ -64,8 +62,8 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"
     target_compile_options(${PROJECT_NAME} PRIVATE "-fPIC")
 endif()
 
-set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
-set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"  )
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 include(CMakePackageConfigHelpers)
 
@@ -88,14 +86,12 @@ install(FILES ${NEWMAT_BUILD_CMAKE_DIR}/NewmatConfigInstall.cmake
         RENAME NewmatConfig.cmake)
 
 install(TARGETS ${PROJECT_NAME}
-    EXPORT  NewmatTargets
+    EXPORT NewmatTargets
     RUNTIME DESTINATION "${NEWMAT_INSTALL_BIN_DIR}" COMPONENT Newmat_libraries
     LIBRARY DESTINATION "${NEWMAT_INSTALL_LIB_DIR}" COMPONENT Newmat_libraries
     ARCHIVE DESTINATION "${NEWMAT_INSTALL_LIB_DIR}" COMPONENT Newmat_libraries
-    PUBLIC_HEADER DESTINATION "${NEWMAT_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}" COMPONENT Newmat_headers
-    )
-        
+    PUBLIC_HEADER DESTINATION "${NEWMAT_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}" COMPONENT Newmat_headers)
+
 # NewmatTargets.cmake (installed)
 install(EXPORT NewmatTargets
-        DESTINATION ${NEWMAT_INSTALL_CMAKE_DIR} )
-
+        DESTINATION ${NEWMAT_INSTALL_CMAKE_DIR})

@@ -1,11 +1,11 @@
-# - Config file for the CGALPlugin package
-# It defines the following variables
-#  CGALPlugin_INCLUDE_DIRS - include directories for CGALPlugin
-#  CGALPlugin_LIBRARIES    - libraries to link against
+# CMake package configuration file for the CGALPlugin plugin.
+# It defines the following variables:
+# - CGALPlugin_INCLUDE_DIRS
+# - CGALPlugin_LIBRARIES
 
 @PACKAGE_INIT@
 
-set_and_check(CGALPLUGIN_INCLUDE_DIR  "@PACKAGE_CGALPLUGIN_INCLUDE_DIR@")
+set_and_check(CGALPLUGIN_INCLUDE_DIR "@PACKAGE_CGALPLUGIN_INCLUDE_DIR@")
 
 check_required_components(CGALPlugin)
 
@@ -17,7 +17,7 @@ find_package(Boost REQUIRED COMPONENTS system thread)
 
 if(NOT TARGET CGALPlugin)
 	include("${CMAKE_CURRENT_LIST_DIR}/CGALPluginTargets.cmake")
-endif() 
+endif()
 
 set(CGALPlugin_LIBRARIES CGALPlugin)
 set(CGALPlugin_INCLUDE_DIRS ${CGALPLUGIN_INCLUDE_DIR})

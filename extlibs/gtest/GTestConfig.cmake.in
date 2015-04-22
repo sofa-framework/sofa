@@ -1,18 +1,18 @@
-# - Config file for the gtest package
+# CMake package configuration file for the gtest library.
 # It defines the following variables:
-#  GTEST_INCLUDE_DIR
-#  GTEST_LIBRARY
-#  GTEST_MAIN_LIBRARY
+# - GTest_INCLUDE_DIR
+# - GTest_LIBRARY
+# - GTest_MAIN_LIBRARY
 
 @PACKAGE_INIT@
 
-set_and_check(GTEST_INCLUDE_DIR "@PACKAGE_GTEST_INCLUDE_DIR@")
+set_and_check(GTest_INCLUDE_DIR "@PACKAGE_GTEST_INCLUDE_DIR@")
 
-if(NOT TARGET gtest) 
+if(NOT TARGET gtest)
 	include("${CMAKE_CURRENT_LIST_DIR}/GTestTargets.cmake")
-endif() 
+endif()
 
 check_required_components(gtest gtest_main)
 
-set(GTEST_LIBRARY gtest)
-set(GTEST_MAIN_LIBRARY gtest_main)
+set(GTest_LIBRARY gtest)
+set(GTest_MAIN_LIBRARY gtest_main)

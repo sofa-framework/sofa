@@ -18,26 +18,26 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"
 endif()
 
 set_target_properties(ARTrackLib PROPERTIES COMPILE_FLAGS ${ARTRACK_COMPILER_FLAGS})
-		  
+
 install(TARGETS ARTrackLib
         EXPORT ARTrackLibTargets
         RUNTIME DESTINATION bin COMPONENT ARTrackLib_libraries
         LIBRARY DESTINATION lib COMPONENT ARTrackLib_libraries
         ARCHIVE DESTINATION lib COMPONENT ARTrackLib_libraries
-        PUBLIC_HEADER DESTINATION include COMPONENT ARTrackLib_headers) 
+        PUBLIC_HEADER DESTINATION include COMPONENT ARTrackLib_headers)
 
 include(CMakePackageConfigHelpers)
 
 # ARTrackLibConfig.cmake (build tree)
 set(ARTRACK_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
-configure_package_config_file(ARTrackLibConfig.cmake.in 
+configure_package_config_file(ARTrackLibConfig.cmake.in
                               ${CMAKE_BINARY_DIR}/ARTrackLib/ARTrackLibConfig.cmake
                               INSTALL_DESTINATION ${CMAKE_BINARY_DIR}/ARTrackLib
                               PATH_VARS ARTRACK_INCLUDE_DIR)
 
 # ARTrackLibConfig.cmake (installed)
 set(ARTRACK_INCLUDE_DIR include)
-configure_package_config_file(ARTrackLibConfig.cmake.in 
+configure_package_config_file(ARTrackLibConfig.cmake.in
                               ${CMAKE_BINARY_DIR}/ARTrackLib/ARTrackLibConfigInstall.cmake
                               INSTALL_DESTINATION lib/cmake/ARTrackLib
                               PATH_VARS ARTRACK_INCLUDE_DIR)
@@ -45,7 +45,7 @@ configure_package_config_file(ARTrackLibConfig.cmake.in
 install(FILES ${CMAKE_BINARY_DIR}/ARTrackLib/ARTrackLibConfigInstall.cmake
         DESTINATION lib/cmake/ARTrackLib
         RENAME ARTrackLibConfig.cmake)
-	   
+
 # ARTrackLibTargets.cmake (installed)
 install(EXPORT ARTrackLibTargets
         DESTINATION lib/cmake/ARTrackLib)

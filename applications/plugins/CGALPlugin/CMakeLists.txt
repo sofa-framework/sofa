@@ -7,15 +7,15 @@ set(CGALPLUGIN_BUILD_VERSION 1)
 
 set(CGALPLUGIN_VERSION ${CGALPLUGIN_MAJOR_VERSION}.${CGALPLUGIN_MINOR_VERSION}.${CGALPLUGIN_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(CGALPLUGIN_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(CGALPLUGIN_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set(CGALPLUGIN_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
+set(CGALPLUGIN_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(CGALPLUGIN_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(CGALPLUGIN_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/image)
+set(CGALPLUGIN_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/image)
 
-set(CGALPLUGIN_INSTALL_LIB_DIR     lib                      CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(CGALPLUGIN_INSTALL_BIN_DIR     bin                      CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(CGALPLUGIN_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(CGALPLUGIN_INSTALL_CMAKE_DIR   ${CGALPLUGIN_INSTALL_LIB_DIR}/cmake/image )
+set(CGALPLUGIN_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(CGALPLUGIN_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(CGALPLUGIN_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
+set(CGALPLUGIN_INSTALL_CMAKE_DIR ${CGALPLUGIN_INSTALL_LIB_DIR}/cmake/image)
 
 set(HEADER_FILES
     initCGALPlugin.h
@@ -56,7 +56,7 @@ set(CGALPLUGIN_DEPENDENCY_INCLUDE_DIR ${SofaFramework_INCLUDE_DIRS}
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CGALPlugin.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/CGALPlugin/CGALPlugin.h)
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/CGALPlugin/CGALPlugin.h
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CGALPlugin/CGALPlugin.h
          DESTINATION "${CGALPLUGIN_INSTALL_INCLUDE_DIR}/CGALPlugin")
 
 if(WIN32)
@@ -64,13 +64,13 @@ if(WIN32)
     file(GLOB sharedObjects "${CGAL_DIR}/bin/*.dll")
     foreach(sharedObject ${sharedObjects})
         file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-    endforeach()    
+    endforeach()
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>") 
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CGALPLUGIN_DEPENDENCY_INCLUDE_DIR}>")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
@@ -87,12 +87,11 @@ endif()
 
 install(TARGETS ${PROJECT_NAME}
     COMPONENT CGALPlugin_libraries
-    EXPORT  CGALPluginTargets
+    EXPORT CGALPluginTargets
     RUNTIME DESTINATION "${CGALPLUGIN_INSTALL_BIN_DIR}"
     LIBRARY DESTINATION "${CGALPLUGIN_INSTALL_LIB_DIR}"
     ARCHIVE DESTINATION "${CGALPLUGIN_INSTALL_LIB_DIR}"
-    PUBLIC_HEADER DESTINATION "${CGALPLUGIN_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}"
-    )
+    PUBLIC_HEADER DESTINATION "${CGALPLUGIN_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}")
 
 install(DIRECTORY scenes/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
@@ -127,4 +126,4 @@ install(FILES ${CGALPLUGIN_BUILD_CMAKE_DIR}/CGALPluginConfigInstall.cmake
 
 # CGALPluginTargets.cmake (installed)
 install(EXPORT CGALPluginTargets
-        DESTINATION ${CGALPLUGIN_INSTALL_CMAKE_DIR} )
+        DESTINATION ${CGALPLUGIN_INSTALL_CMAKE_DIR})

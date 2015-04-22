@@ -7,15 +7,15 @@ set(FLEXIBLE_BUILD_VERSION 1)
 
 set(FLEXIBLE_VERSION ${FLEXIBLE_MAJOR_VERSION}.${FLEXIBLE_MINOR_VERSION}.${FLEXIBLE_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(FLEXIBLE_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(FLEXIBLE_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set(FLEXIBLE_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
+set(FLEXIBLE_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(FLEXIBLE_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(FLEXIBLE_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/Flexible)
+set(FLEXIBLE_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/Flexible)
 
-set(FLEXIBLE_INSTALL_LIB_DIR     lib                      CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(FLEXIBLE_INSTALL_BIN_DIR     bin                      CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(FLEXIBLE_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(FLEXIBLE_INSTALL_CMAKE_DIR   ${FLEXIBLE_INSTALL_LIB_DIR}/cmake/Flexible )
+set(FLEXIBLE_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(FLEXIBLE_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(FLEXIBLE_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
+set(FLEXIBLE_INSTALL_CMAKE_DIR ${FLEXIBLE_INSTALL_LIB_DIR}/cmake/Flexible)
 
 set(HEADER_FILES
 
@@ -116,9 +116,8 @@ set(HEADER_FILES
     material/TendonMaterialForceField.h
     material/TendonMaterialBlock.h
     material/ProjectiveForceField.h
-    material/ProjectiveMaterialBlock.h
-    #forceField/FlexibleTetrahedronFEMForceField.h
-    )
+    material/ProjectiveMaterialBlock.h)
+    #forceField/FlexibleTetrahedronFEMForceField.h)
 
 set(SOURCE_FILES
     initFlexible.cpp
@@ -174,9 +173,8 @@ set(SOURCE_FILES
     material/PolynomialMaterialForceField.cpp
     material/MuscleMaterialForceField.cpp
     material/TendonMaterialForceField.cpp
-    material/ProjectiveForceField.cpp
-    #forceField/FlexibleTetrahedronFEMForceField.cpp
-    )
+    material/ProjectiveForceField.cpp)
+    #forceField/FlexibleTetrahedronFEMForceField.cpp)
 
 
 find_package(SofaMisc REQUIRED)
@@ -211,7 +209,7 @@ set(FLEXIBLE_DEPENDENCY_INCLUDE_DIR ${SofaMisc_INCLUDE_DIRS})
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Flexible.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/Flexible/Flexible.h)
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/Flexible/Flexible.h
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Flexible/Flexible.h
          DESTINATION "${FLEXIBLE_INSTALL_INCLUDE_DIR}/Flexible")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
@@ -229,10 +227,10 @@ if(NOT SOFA-EXTERNAL_MGDIFFUSI0N_PATH STREQUAL "")
     set(FLEXIBLE_COMPILER_FLAGS "${FLEXIBLE_COMPILER_FLAGS} -DSOFA_HAVE_MGDIFFUSI0N")
     target_include_directories(${PROJECT_NAME} "${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/mgdiffusion/DiffusionSolver/")
 
-    # link_directories( ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/mgdiffusion/DiffusionSolver/ )
+    # link_directories(${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/mgdiffusion/DiffusionSolver/)
     # target_link_libraries(${PROJECT_NAME} "DiffusionSolver")
-    # link_directories( ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Public_Library/ )
-    # link_directories( ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Common_Libraries/ )
+    # link_directories(${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Public_Library/)
+    # link_directories(${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Common_Libraries/)
     # target_link_libraries(${PROJECT_NAME} "PhysBAM_PhysBAM_Tools" "Threading_Tools")
 
     # TODO fix this!
@@ -264,7 +262,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${FLEXIBLE_COMPI
 
 install(TARGETS ${PROJECT_NAME}
         COMPONENT Flexible_libraries
-        EXPORT  FlexibleTargets
+        EXPORT FlexibleTargets
         RUNTIME DESTINATION "${FLEXIBLE_INSTALL_BIN_DIR}"
         LIBRARY DESTINATION "${FLEXIBLE_INSTALL_LIB_DIR}"
         ARCHIVE DESTINATION "${FLEXIBLE_INSTALL_LIB_DIR}")

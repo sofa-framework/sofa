@@ -7,15 +7,15 @@ set(SCENECREATOR_BUILD_VERSION 1)
 
 set(SCENECREATOR_VERSION ${SCENECREATOR_MAJOR_VERSION}.${SCENECREATOR_MINOR_VERSION}.${SCENECREATOR_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(SCENECREATOR_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(SCENECREATOR_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set(SCENECREATOR_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
+set(SCENECREATOR_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(SCENECREATOR_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(SCENECREATOR_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SceneCreator)
+set(SCENECREATOR_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/SceneCreator)
 
-set(SCENECREATOR_INSTALL_LIB_DIR     lib                      CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(SCENECREATOR_INSTALL_BIN_DIR     bin                      CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(SCENECREATOR_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(SCENECREATOR_INSTALL_CMAKE_DIR   ${SCENECREATOR_INSTALL_LIB_DIR}/cmake/SceneCreator )
+set(SCENECREATOR_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(SCENECREATOR_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(SCENECREATOR_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
+set(SCENECREATOR_INSTALL_CMAKE_DIR ${SCENECREATOR_INSTALL_LIB_DIR}/cmake/SceneCreator)
 
 set(HEADER_FILES
     initSceneCreator.h
@@ -36,7 +36,7 @@ set(SCENECREATOR_DEPENDENCY_INCLUDE_DIR ${SofaSimulation_INCLUDE_DIRS} ${SofaMis
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SceneCreatorConfig.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/SceneCreator/SceneCreatorConfig.h)
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/SceneCreator/SceneCreatorConfig.h
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SceneCreator/SceneCreatorConfig.h
          DESTINATION "${SCENECREATOR_INSTALL_INCLUDE_DIR}/SceneCreator")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
@@ -53,7 +53,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 
 install(TARGETS ${PROJECT_NAME}
         COMPONENT SceneCreator_libraries
-        EXPORT  SceneCreatorTargets
+        EXPORT SceneCreatorTargets
         RUNTIME DESTINATION "${SCENECREATOR_INSTALL_BIN_DIR}"
         LIBRARY DESTINATION "${SCENECREATOR_INSTALL_LIB_DIR}"
         ARCHIVE DESTINATION "${SCENECREATOR_INSTALL_LIB_DIR}"

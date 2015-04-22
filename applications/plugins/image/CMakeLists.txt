@@ -9,15 +9,15 @@ set(IMAGE_BUILD_VERSION 1)
 
 set(IMAGE_VERSION ${IMAGE_MAJOR_VERSION}.${IMAGE_MINOR_VERSION}.${IMAGE_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(IMAGE_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(IMAGE_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set(IMAGE_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
+set(IMAGE_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(IMAGE_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(IMAGE_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/image)
+set(IMAGE_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/image)
 
-set(IMAGE_INSTALL_LIB_DIR     lib                      CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(IMAGE_INSTALL_BIN_DIR     bin                      CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(IMAGE_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(IMAGE_INSTALL_CMAKE_DIR   ${IMAGE_INSTALL_LIB_DIR}/cmake/image )
+set(IMAGE_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(IMAGE_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(IMAGE_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
+set(IMAGE_INSTALL_CMAKE_DIR ${IMAGE_INSTALL_LIB_DIR}/cmake/image)
 
 set(SOURCE_FILES
     initImage.cpp
@@ -32,9 +32,9 @@ set(SOURCE_FILES
     ImageAccumulator.cpp
     DepthMapToMeshEngine.cpp
     MeshToImageEngine.cpp
-    MarchingCubesEngine.cpp 
-    ImageSampler.cpp 
-    ImageExporter.cpp 
+    MarchingCubesEngine.cpp
+    ImageSampler.cpp
+    ImageExporter.cpp
     ImageDataDisplay.cpp
     VoronoiToMeshEngine.cpp
     ImageToRigidMassEngine.cpp)
@@ -56,9 +56,9 @@ set(HEADER_FILES
     MarchingCubesEngine.h
     ImageSampler.h
     ImageExporter.h
-    VectorVis.h 
-    ImageAlgorithms.h 
-    Containers.h 
+    VectorVis.h
+    ImageAlgorithms.h
+    Containers.h
     ImageDataDisplay.h
     VoronoiToMeshEngine.h
     ImageToRigidMassEngine.h)
@@ -76,7 +76,7 @@ set(IMAGE_DEPENDENCY_INCLUDE_DIR ${CImg_INCLUDE_DIRS} ${SofaBase_INCLUDE_DIRS} $
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/image.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/image/image.h)
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/image/image.h
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/image/image.h
          DESTINATION "${IMAGE_INSTALL_INCLUDE_DIR}/image")
 
 if (NOT SOFA-NO_OPENGL)
@@ -96,11 +96,11 @@ endif()
 # todo
 
 # if(SOFA-EXTERNAL_OPENCV)
-#     AddLinkerDependencies("ml")
-#     AddLinkerDependencies("cvaux")
-#     AddLinkerDependencies("highgui")
-#     AddLinkerDependencies("cv")
-#     AddLinkerDependencies("cxcore")
+# AddLinkerDependencies("ml")
+# AddLinkerDependencies("cvaux")
+# AddLinkerDependencies("highgui")
+# AddLinkerDependencies("cv")
+# AddLinkerDependencies("cxcore")
 # endif()
 
 find_package(DiffusionSolver CONFIG REQUIRED)
@@ -116,7 +116,7 @@ if(FREENECT_FOUND)
 endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>") 
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${IMAGE_DEPENDENCY_INCLUDE_DIR}>")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${IMAGE_VERSION})
@@ -139,7 +139,7 @@ endif()
 
 install(TARGETS ${PROJECT_NAME}
         COMPONENT image_libraries
-        EXPORT  imageTargets
+        EXPORT imageTargets
         RUNTIME DESTINATION "${IMAGE_INSTALL_BIN_DIR}"
         LIBRARY DESTINATION "${IMAGE_INSTALL_LIB_DIR}"
         ARCHIVE DESTINATION "${IMAGE_INSTALL_LIB_DIR}"

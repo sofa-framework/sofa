@@ -1,19 +1,19 @@
 cmake_minimum_required(VERSION 2.8)
 project(Haption)
 
-set(HAPTION_INSTALL_LIB_DIR     lib     CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(HAPTION_INSTALL_BIN_DIR     bin     CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(HAPTION_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(HAPTION_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
 set(HAPTION_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
     HaptionDriver.h)
 
 set(SOURCE_FILES
-    initHaption.cpp 
+    initHaption.cpp
     HaptionDriver.cpp)
 
 set(README_FILES
-	PluginHaption.txt)	
+	PluginHaption.txt)
 
 find_package(SofaGeneral REQUIRED)
 
