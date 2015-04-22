@@ -295,7 +295,7 @@ public:
 	CellMarkerStore(MAP& map) :
 		CellMarkerBase<MAP, CELL>(map)
 	{
-//		m_markedCells.reserve(128);
+//		m_markedCells.reservef(128);
 		m_markedCells = this->m_map.askUIntBuffer();
 	}
 
@@ -334,6 +334,21 @@ public:
 //        std::cerr << "CellMarkerStore marking " << CELL << "-cell. embedding : " << em << std::endl;
 		m_markedCells->push_back(em) ;
 	}
+
+    inline void unmark(Cell<CELL> c)
+    {
+        CellMarkerBase<MAP, CELL>::unmark(c);
+        const unsigned cellID = this->m_map.getEmbedding(c);
+        for (std::vector<unsigned int>::iterator it = m_markedCells->begin(), end = m_markedCells->end() ; it != end ; ++it)
+        {
+            if (*it == cellID)
+            {
+                std::swap(*it, m_markedCells->back());
+                m_markedCells->pop_back();
+                break;
+            }
+        }
+    }
 
 	inline void unmarkAll()
 	{
@@ -389,6 +404,21 @@ public:
 			m_markedDarts.push_back(c.dart) ;
 		}
 	}
+
+    inline void unmark(Cell<CELL> c)
+    {
+        CellMarkerBase<MAP, CELL>::unmark(c);
+        const unsigned cellID = this->m_map.getEmbedding(c);
+        for (std::vector<Dart>::iterator dit = m_markedDarts.begin(), dend = m_markedDarts.end() ; dit != dend ; ++dit)
+        {
+            if (this->m_map.getEmbedding(Cell<CELL>(*dit)) == cellID)
+            {
+                std::swap(*dit, m_markedDarts.back());
+                m_markedDarts.pop_back();
+                break;
+            }
+        }
+    }
 
 	inline void unmarkAll()
 	{
