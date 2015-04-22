@@ -1,6 +1,9 @@
 import Sofa
 
 import os.path
+import json
+
+import units
 
 def listToStr(x):
     """ concatenate lists for use with data.
@@ -59,3 +62,43 @@ def meshLoader(parentNode, filename, name=None, **args):
     else:
         print "ERROR SofaPython.Tools.meshLoader: unknown mesh extension:", ext
         return None
+
+class Material:
+    """ This class reads a json file which contains different materials parameters.
+        The json file must contain values in SI units
+        This class provides an API to access these values, the access methods convert the parameters to the current units, if the requested material or parameter does not exist, the value from the default material is returned
+        @sa units.py for units management
+        @sa example/material.py for an example
+    """
+
+    def __init__(self, filename=None):
+        self._reset()
+        if not filename is None:
+            self.load(filename)
+
+    def _reset(self):
+        self.data = dict()
+        # to be sure to have a default material
+        self.data["default"] = { "density": 1000, "youngModulus": 10e3, "poissonRatio": 0.3 }
+        
+    def _get(self, material, parameter):
+        if material in self.data and parameter in self.data[material]:
+            return self.data[material][parameter]
+        else:
+            return self.data["default"][parameter]
+        
+    def load(self, filename):
+        self._reset()
+        with open(filename,'r') as file:
+            self.data.update(json.load(file))
+            
+    def density(self, material):
+        return units.density_from_SI(self._get(material, "density"))
+    
+    def youngModulus(self, material):
+        return units.elasticity_from_SI(self._get(material, "youngModulus"))
+    
+    def poissonRatio(self, material):
+        return self._get(material, "poissonRatio")
+        
+        
