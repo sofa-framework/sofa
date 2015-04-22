@@ -342,25 +342,7 @@ Dart Map3<MAP_IMPL>::deleteVertex(Dart d)
 
 		if(fit == end)
 		{
-			std::cout << " mmmmmmmmmmmmmmmmmmmmmerrrrrrrrrrrrrrrrrde !!!!!!!!!!!! " << std::endl;
-
-//			Dart d2 = phi2(fit) ;
-//			Dart d23 = phi3(d2) ;
-//			Dart d3 = phi3(fit) ;
-//			Dart d32 = phi2(d3) ;
-//
-//			//phi3unsew()
-//			phi3sew(d3,23);
-//
-//			fit = phi_1(fit);
-//
-//			d2 = phi2(fit) ;
-//			d23 = phi3(d2) ;
-//			d3 = phi3(fit) ;
-//			d32 = phi2(d3) ;
-//			phi3sew(d3,23);
-
-//			Map2::deleteCC(fit);
+        assert(false && !"Map3<MAP_IMPL>::deleteVertex(Dart d) : should not happen !");
 		}
 		else
 		{
