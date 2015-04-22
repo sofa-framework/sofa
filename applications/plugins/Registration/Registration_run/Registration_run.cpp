@@ -12,9 +12,23 @@
 #include <string>
 #include <iostream>
 
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/Utils.h>
+
+using sofa::helper::system::FileSystem;
+using sofa::helper::Utils;
+
 int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
+
+#ifdef WIN32
+    const std::string pluginsDir = "bin";
+#else
+    const std::string pluginsDir = "lib";
+#endif
+    sofa::helper::system::PluginRepository.addFirstPath(Utils::getSofaPathPrefix() + "/" + pluginsDir);
 
     std::string fileName;
     // these can be passed using the command line
