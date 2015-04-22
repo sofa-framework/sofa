@@ -1,0 +1,5 @@
+{
+    "default":  { "density": 1000, "youngModulus": 10e3, "poissonRatio": 0.3 },
+    "wood":     { "density": 750,  "youngModulus": 1e10, "poissonRatio": 0.3 },
+    "steel":    { "density": 7800, "youngModulus": 1e20, "poissonRatio": 0.3 }
+}

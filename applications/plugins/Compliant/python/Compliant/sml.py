@@ -12,8 +12,12 @@ import SofaPython.mass
 import SofaPython.sml
 import Flexible.sml
 
-def insertRigid(parentNode, rigidModel, param=None):
-    """ create a StructuralAPI.RigidBody from the rigidModel """
+def insertRigid(parentNode, rigidModel, material, param=None):
+    """ create a StructuralAPI.RigidBody from the rigidModel, compute rigidMass from
+        1) mass, com and inertia if present
+        2) mesh if possible
+        3) default to a unit sphere TODO: is it relevant to do so ?
+    """
     print "rigid:", rigidModel.name
     rigid = StructuralAPI.RigidBody(parentNode, rigidModel.name)
 
@@ -25,8 +29,9 @@ def insertRigid(parentNode, rigidModel, param=None):
     if not rigidModel.mass is None and not rigidModel.com is None and not rigidModel.inertia is None:
         # all inertial data is present, let's use it
         massinfo = SofaPython.mass.RigidMassInfo()
-        massinfo.mass = rigidModel.mass
+        massinfo.mass = rigidModel.mass # TODO: convert units ?
         massinfo.com = rigidModel.com
+        # TODO: convert units ?
         massinfo.setFromInertia(rigidModel.inertia[0], rigidModel.inertia[1], rigidModel.inertia[2], # Ixx, Ixy, Ixz
                                 rigidModel.inertia[3], rigidModel.inertia[4], # Iyy, Iyz
                                 rigidModel.inertia[5] ) # Izz
@@ -35,24 +40,24 @@ def insertRigid(parentNode, rigidModel, param=None):
         # get inertia from mesh and density
         massinfo = SofaPython.mass.RigidMassInfo()
 
-        density = SofaPython.units.density_from_SI(rigidModel.density) if not rigidModel.density is None else SofaPython.units.density_from_SI(1000.)
         for mesh in rigidModel.mesh :
             mi = SofaPython.mass.RigidMassInfo()
-            mi.setFromMesh(mesh.source, density=density)
+            mi.setFromMesh(mesh.source, density=material.density(rigidModel.material))
             massinfo+=mi
         rigid.setFromRigidInfo(massinfo, offset=rigidModel.position , inertia_forces = False )    # TODO: handle inertia_forces ?
 
-        if rigidModel.density is None and not rigidModel.mass is None :
-            # no density but a mesh let's normalise computed mass with specified mass
-            mass= SofaPython.units.mass_from_SI(rigidModel.mass)
-            inertia = []
-            for inert,m in zip(rigid.mass.inertia, rigid.mass.mass):
-                for i in inert:
-                    inertia.append( i/m[0]*mass)
-            rigid.mass.inertia = concat(inertia)
-            rigid.mass.mass = mass
+        #if not rigidModel.mass is None :
+            ## no density but a mesh let's normalise computed mass with specified mass
+            #mass= SofaPython.units.mass_from_SI(rigidModel.mass)
+            #inertia = []
+            #for inert,m in zip(rigid.mass.inertia, rigid.mass.mass):
+                #for i in inert:
+                    #inertia.append( i/m[0]*mass)
+            #rigid.mass.inertia = concat(inertia)
+            #rigid.mass.mass = mass
     else:
         # no mesh, get mass/inertia if present, default to a unit sphere
+        print "WARNING: Compliant.sml.insertRigid using default rigidMass"
         mass=SofaPython.units.mass_from_SI(1.)
         if not rigidModel.mass is None:
             mass = rigidModel.mass
@@ -141,7 +146,7 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
 
         # rigids
         for rigidModel in self.model.solidsByTag["rigid"]:
-            self.rigids[rigidModel.id] = insertRigid(self.node, rigidModel, self.param)
+            self.rigids[rigidModel.id] = insertRigid(self.node, rigidModel, self.material, self.param)
         
         # joints
         for jointModel in self.model.genericJoints.values():

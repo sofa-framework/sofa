@@ -13,38 +13,38 @@
     
     <solid id="1">
         <name>Corps</name>
+        <material>steel</material>
         <tag>rigid</tag>
         <position>0 0 0 0 0 0 1</position>
         <mesh id="0.obj">
             <source format="obj">0.obj</source>
         </mesh>
-        <density>7.8e+3</density>
     </solid>
     
     <solid id="2">
         <name>Roue</name>
+        <material>steel</material>
         <tag>rigid</tag>
         <position>0 0 -0.148 0 0 0 1</position>
         <mesh id="3.obj" />
-        <density>7.8e+3</density>
     </solid>
     
     <solid id="3">
         <name>Came</name>
+        <material>steel</material>
         <tag>rigid</tag>
         <position>1.085 -0.072 0.33 0 0 0 1</position>
         <mesh id="2.obj" />
-        <density>7.8e+3</density>
     </solid>
     
     <solid id="4">
         <name>Piston</name>
+        <material>steel</material>
         <tag>rigid</tag>
         <position>2.05 0 0.33 0 0 0 1</position>
         <mesh id="1.obj">
             <source format="obj">1.obj</source>
         </mesh>
-        <density>7.8e+3</density>
     </solid>
     
     <jointGeneric id="5">
