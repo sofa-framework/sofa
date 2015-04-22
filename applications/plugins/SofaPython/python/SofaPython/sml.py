@@ -71,7 +71,6 @@ class Model:
             self.tags = set()
             self.position = None
             self.mesh = list() # list of meshes
-            self.density = None
             self.mass = None
             self.com = None # x,y,z
             self.inertia = None # Ixx, Ixy, Ixz, Iyy, Iyz, Izz
@@ -84,10 +83,12 @@ class Model:
             parseTag(self,objXml)
             self.material=objXml.find("material").text
             self.position=Tools.strToListFloat(objXml.find("position").text)
-            if not objXml.find("density") is None:
-                self.density=float(objXml.find("density").text)
             if not objXml.find("mass") is None:
                 self.mass = float(objXml.find("mass").text)
+            if not objXml.find("com") is None:
+                self.com = Tools.strToListFloat(objXml.find("com").text)
+            if not objXml.find("inertia") is None:
+                self.inertia = Tools.strToListFloat(objXml.find("inertia").text)
 
     class Offset:
         def __init__(self, offsetXml):
