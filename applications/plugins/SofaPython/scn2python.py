@@ -89,17 +89,18 @@ def printChildren(parent, tabs, numberOfUnnamedNodes, scenePath='rootNode', node
     parentName = parent.get('name')
     if nodeIsRootNode :
         parentName = 'rootNode'
+    parentVariableName = stringToVariableName(parentName)
     myChildren = str()
     for child in parent :
         if child.tag == "Node" :
             childName, numberOfUnnamedNodes = getNodeName(child,numberOfUnnamedNodes)
             currentScenePath = scenePath+"/"+childName
             myChildren += "\n"+tabs+"# "+currentScenePath+"\n"
-            myChildren += tabs+stringToVariableName(childName)+" = "+parentName+"."+createChild(childName)+"\n"
+            myChildren += tabs+stringToVariableName(childName)+" = "+parentVariableName+"."+createChild(childName)+"\n"
             myChildren += childAttributesToStringPython(child,childName,tabs)
             myChildren += printChildren(child,tabs,numberOfUnnamedNodes,scenePath=currentScenePath)
         else :
-            myChildren += tabs+parentName+"."+createObject(child)+"\n"
+            myChildren += tabs+parentVariableName+"."+createObject(child)+"\n"
     return myChildren;
 
 def getElement (node,name) :
