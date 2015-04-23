@@ -129,7 +129,7 @@ class Sampler:
         self.dof=None
 
     def _addImageSampler(self, template, nbSamples, src, fixedPosition, **kwargs):
-        self.sampler = self.node.createObject("ImageSampler", template=template, name="sampler", src=src, method="1", param=str(nbSamples)+" 1", fixedPosition=SofaPython.Tools.listListToStr(fixedPosition), **kwargs)
+        self.sampler = self.node.createObject("ImageSampler", template=template, name="sampler", image=src+".image", transform=src+".transform", method="1", param=str(nbSamples)+" 1", fixedPosition=SofaPython.Tools.listListToStr(fixedPosition), **kwargs)
         return self.sampler
 
     #def addImageSampler(self, image, nbSamples, fixedPosition=list(), **kwargs):
