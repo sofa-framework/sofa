@@ -526,7 +526,10 @@ bool WorkerThread::giveUpSomeWork(WorkerThread* idleThread)
     if (!mStealableTaskCount)
         return false;
 
-    SpinMutexLock	lockIdleThread( &idleThread->mTaskMutex );
+    SpinMutexLock	lockIdleThread;
+
+    if ( !lockIdleThread.try_lock( &idleThread->mTaskMutex ) )
+        return false;
 
     if ( idleThread->mStealableTaskCount )
         return false;
