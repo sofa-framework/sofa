@@ -135,7 +135,7 @@ namespace simulation
 		//TaskScheduler::getInstance().stop();
 	}
 
-	void AnimationLoopParallelScheduler::step(const core::ExecParams* params, double dt)
+	void AnimationLoopParallelScheduler::step(const core::ExecParams* params, SReal dt)
 	{
 
 		static boost::pool<> task_pool(sizeof(StepTask));

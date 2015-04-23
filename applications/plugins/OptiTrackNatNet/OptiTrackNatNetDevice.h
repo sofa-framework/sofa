@@ -54,7 +54,7 @@ class OptiTrackNatNetDevice :  public sofa::component::controller::Controller, p
 public:
     SOFA_CLASS2(OptiTrackNatNetDevice, sofa::component::controller::Controller, OptiTrackNatNetDataReceiver);
 
-    typedef sofa::defaulttype::Rigid3dTypes DataTypes;
+    typedef sofa::defaulttype::Rigid3Types DataTypes;
     typedef DataTypes::Real Real;
     typedef DataTypes::Coord Coord;
     typedef DataTypes::CPos CPos;

@@ -41,7 +41,9 @@ using namespace defaulttype;
 
 template class SOFA_Flexible_API Mapping< Affine3Types, Vec3Types >;
 template class SOFA_Flexible_API Mapping< Affine3Types, ExtVec3fTypes >;
+#ifndef SOFA_FLOAT
 template class SOFA_Flexible_API Mapping< Affine3Types, ExtVec3dTypes >;
+#endif
 template class SOFA_Flexible_API Mapping< Affine3Types, F331Types >;
 template class SOFA_Flexible_API Mapping< Affine3Types, F332Types >;
 template class SOFA_Flexible_API Mapping< Affine3Types, F321Types >;

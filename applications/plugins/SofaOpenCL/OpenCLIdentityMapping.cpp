@@ -34,11 +34,13 @@
 namespace sofa
 {
 
+#ifndef SOFA_FLOAT
 namespace core
 {
     // wtf is it needed by gcc to link? I suspect a namespace complex situation
     template class core::Mapping< defaulttype::Vec3dTypes, gpu::opencl::OpenCLVec3fTypes>;
 }
+#endif
 
 namespace component
 {
@@ -53,26 +55,38 @@ using namespace sofa::gpu::opencl;
 
 template class IdentityMapping< OpenCLVec3fTypes, OpenCLVec3fTypes>;
 template class IdentityMapping< OpenCLVec3fTypes, Vec3fTypes>;
+#ifndef SOFA_FLOAT
 template class IdentityMapping< OpenCLVec3fTypes, Vec3dTypes>;
+#endif
 template class IdentityMapping< Vec3fTypes, OpenCLVec3fTypes>;
+#ifndef SOFA_FLOAT
 template class IdentityMapping< Vec3dTypes, OpenCLVec3fTypes>;
+#endif
 
 template class IdentityMapping< OpenCLVec3fTypes, OpenCLVec3dTypes>;
 template class IdentityMapping< OpenCLVec3dTypes, OpenCLVec3fTypes>;
 template class IdentityMapping< OpenCLVec3dTypes, OpenCLVec3dTypes>;
 template class IdentityMapping< OpenCLVec3dTypes, Vec3fTypes>;
+#ifndef SOFA_FLOAT
 template class IdentityMapping< OpenCLVec3dTypes, Vec3dTypes>;
+#endif
 template class IdentityMapping< Vec3fTypes, OpenCLVec3dTypes>;
+#ifndef SOFA_FLOAT
 template class IdentityMapping< Vec3dTypes, OpenCLVec3dTypes>;
+#endif
 
 template class IdentityMapping< OpenCLVec3d1Types, ExtVec3fTypes>;
 template class IdentityMapping< OpenCLVec3dTypes, ExtVec3fTypes>;
 
 template class IdentityMapping< OpenCLVec3fTypes, ExtVec3fTypes>;
 template class IdentityMapping< OpenCLVec3f1Types, OpenCLVec3f1Types>;
+#ifndef SOFA_FLOAT
 template class IdentityMapping< OpenCLVec3f1Types, Vec3dTypes>;
+#endif
 template class IdentityMapping< OpenCLVec3f1Types, Vec3fTypes>;
+#ifndef SOFA_FLOAT
 template class IdentityMapping< Vec3dTypes, OpenCLVec3f1Types>;
+#endif
 template class IdentityMapping< Vec3fTypes, OpenCLVec3f1Types>;
 template class IdentityMapping< OpenCLVec3f1Types, ExtVec3fTypes>;
 template class IdentityMapping< OpenCLVec3f1Types, OpenCLVec3fTypes>;
@@ -98,26 +112,38 @@ SOFA_DECL_CLASS(OpenCLIdentityMapping)
 int IdentityMappingOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
         .add< IdentityMapping< OpenCLVec3fTypes, OpenCLVec3fTypes> >()
         .add< IdentityMapping< OpenCLVec3fTypes, Vec3fTypes> >()
+#ifndef SOFA_FLOAT
         .add< IdentityMapping< OpenCLVec3fTypes, Vec3dTypes> >()
+#endif
         .add< IdentityMapping< Vec3fTypes, OpenCLVec3fTypes> >()
+#ifndef SOFA_FLOAT
         .add< IdentityMapping< Vec3dTypes, OpenCLVec3fTypes> >()
+#endif
 
         .add< IdentityMapping< OpenCLVec3fTypes, OpenCLVec3dTypes> >()
         .add< IdentityMapping< OpenCLVec3dTypes, OpenCLVec3fTypes> >()
         .add< IdentityMapping< OpenCLVec3dTypes, OpenCLVec3dTypes> >()
         .add< IdentityMapping< OpenCLVec3dTypes, Vec3fTypes> >()
+#ifndef SOFA_FLOAT
         .add< IdentityMapping< OpenCLVec3dTypes, Vec3dTypes> >()
+#endif
         .add< IdentityMapping< Vec3fTypes, OpenCLVec3dTypes> >()
+#ifndef SOFA_FLOAT
         .add< IdentityMapping< Vec3dTypes, OpenCLVec3dTypes> >()
+#endif
 
         .add< IdentityMapping< OpenCLVec3d1Types, ExtVec3fTypes> >()
         .add< IdentityMapping< OpenCLVec3dTypes, ExtVec3fTypes> >()
 
         .add< IdentityMapping< OpenCLVec3fTypes, ExtVec3fTypes> >()
         .add< IdentityMapping< OpenCLVec3f1Types, OpenCLVec3f1Types> >()
+#ifndef SOFA_FLOAT
         .add< IdentityMapping< OpenCLVec3f1Types, Vec3dTypes> >()
+#endif
         .add< IdentityMapping< OpenCLVec3f1Types, Vec3fTypes> >()
+#ifndef SOFA_FLOAT
         .add< IdentityMapping< Vec3dTypes, OpenCLVec3f1Types> >()
+#endif
         .add< IdentityMapping< Vec3fTypes, OpenCLVec3f1Types> >()
         .add< IdentityMapping< OpenCLVec3f1Types, ExtVec3fTypes> >()
         .add< IdentityMapping< OpenCLVec3f1Types, OpenCLVec3fTypes> >()
