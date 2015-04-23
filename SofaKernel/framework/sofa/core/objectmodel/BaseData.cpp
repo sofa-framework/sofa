@@ -167,9 +167,29 @@ void BaseData::doDelInput(DDGNode* n)
     DDGNode::doDelInput(n);
 }
 
+SOFA_CORE_API int logDataUpdates = 0;
+
 void BaseData::update()
 {
     cleanDirty();
+    if (logDataUpdates)
+    {
+        std::cout << "Data " << m_name;
+        if (m_owner)
+            std::cout << " in " << m_owner->getTypeName() << " " << m_owner->getName();
+        std::cout << " update";
+        if (parentBaseData)
+        {
+            std::cout << " from parent " << parentBaseData->m_name;
+            if (parentBaseData->m_owner)
+                std::cout << " in " << parentBaseData->m_owner->getTypeName() << " " << parentBaseData->m_owner->getName();
+        }
+        else
+        {
+            std::cout << " from " << inputs.size() << " inputs";
+        }
+        std::cout << std::endl;
+    }
     for(DDGLinkIterator it=inputs.begin(); it!=inputs.end(); ++it)
     {
         if ((*it)->isDirty())
