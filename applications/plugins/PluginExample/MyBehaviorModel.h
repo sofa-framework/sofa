@@ -22,12 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_BEHAVIORMODEL_MyBehaviorModel_H
-#define SOFA_COMPONENT_BEHAVIORMODEL_MyBehaviorModel_H
+#ifndef PLUGINEXAMPLE_MYBEHAVIORMODEL_H
+#define PLUGINEXAMPLE_MYBEHAVIORMODEL_H
 
 #include "initPlugin.h"
 #include <sofa/core/BehaviorModel.h>
+
 
 namespace sofa
 {
@@ -38,40 +38,36 @@ namespace component
 namespace behaviormodel
 {
 
-/**
-  This BehaviorModel does nothing but contain a custom data widget.
-  */
 
-class SOFA_MyPluginExample_API MyBehaviorModel : public sofa::core::BehaviorModel
+/**
+ * This BehaviorModel does nothing but contain a custom data widget.
+ */
+class MyBehaviorModel : public sofa::core::BehaviorModel
 {
+
 public:
-    SOFA_CLASS(MyBehaviorModel,sofa::core::BehaviorModel);
+    SOFA_CLASS(MyBehaviorModel, sofa::core::BehaviorModel);
+
 protected:
     MyBehaviorModel();
     ~MyBehaviorModel();
+
 public:
     virtual void init();
-
     virtual void reinit();
-
     virtual void updatePosition(double dt);
 
-
 protected:
-
     Data<unsigned> customUnsignedData;
     Data<unsigned> regularUnsignedData;
-private:
-
 };
 
 
-}
+} // namespace behaviormodel
 
-}
+} // namespace component
 
-}
+} // namespace sofa
 
 
-
-#endif
+#endif // PLUGINEXAMPLE_MYBEHAVIORMODEL_H
