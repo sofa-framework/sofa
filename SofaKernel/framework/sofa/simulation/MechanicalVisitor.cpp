@@ -595,7 +595,7 @@ Visitor::Result MechanicalVReallocVisitor<vtype>::fwdMappedMechanicalState(simul
 
 template< VecType vtype>
 Visitor::Result MechanicalVReallocVisitor<vtype>::fwdInteractionForceField(simulation::Node* /*node*/, core::behavior::BaseInteractionForceField* ff)
-{
+{/*
     if (m_interactionForceField)
     {
         core::behavior::BaseMechanicalState* mm = ff->getMechModel1();
@@ -603,7 +603,7 @@ Visitor::Result MechanicalVReallocVisitor<vtype>::fwdInteractionForceField(simul
         mm = ff->getMechModel2();
         mm->vRealloc( this->params, this->getId(mm) );
     }
-
+ */
     return RESULT_CONTINUE;
 }
 
@@ -645,6 +645,7 @@ Visitor::Result MechanicalVFreeVisitor<vtype>::fwdMappedMechanicalState(simulati
 template< VecType vtype>
 Visitor::Result MechanicalVFreeVisitor<vtype>::fwdInteractionForceField(simulation::Node* /*node*/, core::behavior::BaseInteractionForceField* ff)
 {
+    /*
     if( interactionForceField )
     {
         core::behavior::BaseMechanicalState* mm = ff->getMechModel1();
@@ -652,6 +653,7 @@ Visitor::Result MechanicalVFreeVisitor<vtype>::fwdInteractionForceField(simulati
         mm = ff->getMechModel2();
         mm->vFree( this->params, v.getId(mm) );
     }
+*/
     return RESULT_CONTINUE;
 }
 
