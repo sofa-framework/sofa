@@ -33,7 +33,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
 #include <SofaBaseLinearSolver/SingleMatrixAccessor.h>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneCreator.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -246,10 +246,10 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         force->addKToMatrix( &mparams, &accessor);
         K.compress();
         //        cout << "stiffness: " << K << endl;
-        Eigen::VectorXd dx;
+        modeling::Vector dx;
         data_traits<DataTypes>::VecDeriv_to_Vector( dx, dX );
 
-        Eigen::VectorXd Kdx = K * dx;
+        modeling::Vector Kdx = K * dx;
         if( debug ){
             cout << "                  dX = " << dX << endl;
             cout << "                newF = " << newF << endl;
@@ -258,7 +258,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
             cout << "                 Kdx = " << Kdx.transpose() << endl;
         }
 
-        Eigen::VectorXd df;
+        modeling::Vector df;
         data_traits<DataTypes>::VecDeriv_to_Vector( df, changeOfForce );
         if( this->vectorMaxDiff(Kdx,df)> errorMax*this->epsilon() )
             ADD_FAILURE()<<"Kdx differs from change of force"<< endl << "Failed seed number = " << BaseSofa_test::seed << endl;;

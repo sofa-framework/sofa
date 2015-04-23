@@ -187,7 +187,7 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
 // Define the list of DataTypes to instanciate
 using testing::Types;
 typedef Types<
-    Rigid3dTypes
+    Rigid3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations

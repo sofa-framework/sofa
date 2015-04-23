@@ -47,7 +47,7 @@ static int ModulusSolverClass = core::RegisterObject("Modulus solver").add< Modu
 
 ModulusSolver::ModulusSolver() 
     : omega(initData(&omega,
-                     1.0,
+                     (real)1.0,
                      "omega",
                      "magic stuff")),
       anderson(initData(&anderson, unsigned(0),

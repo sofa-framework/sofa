@@ -264,7 +264,7 @@ struct copyBulletConvexHull{
 
 static sofa::component::collision::OBBModel::SPtr makeRandOBB(const Vec3 & pos_min,const Vec3 & pos_max,sofa::simulation::Node::SPtr &father){
     Vec3 p = randVect(pos_min,pos_max);
-    SReal angles[3];
+    double angles[3];
 
     for(int i = 0 ; i < 3 ; ++i){
         angles[i] = (sofa::helper::drand())*  2 * M_PI;
