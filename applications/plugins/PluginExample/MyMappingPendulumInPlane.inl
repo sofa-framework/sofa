@@ -48,66 +48,66 @@ using defaulttype::Vector3;
 
 
 template <class In, class Out>
-MyMappingPendulumInPlane<In,Out>::MyMappingPendulumInPlane()
-    : Inherit ( )
-    , f_length ( initData ( &f_length,"lengths","distances from the fixed point to the end of the pendulum" ) )
+MyMappingPendulumInPlane<In, Out>::MyMappingPendulumInPlane():
+    Inherit(),
+    f_length(initData(&f_length, "lengths", "distances from the fixed point to the end of the pendulum"))
 {
 }
 
 
 template <class In, class Out>
-MyMappingPendulumInPlane<In,Out>::~MyMappingPendulumInPlane()
+MyMappingPendulumInPlane<In, Out>::~MyMappingPendulumInPlane()
 {
 }
 
 template <class In, class Out>
-void MyMappingPendulumInPlane<In,Out>::init()
+void MyMappingPendulumInPlane<In, Out>::init()
 {
     ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
     WriteAccessor<Data<VecInCoord> > in (*this->fromModel->write(core::VecCoordId::position()));
     WriteAccessor<Data<vector<OutReal> > > distances (f_length);
-    if( distances.size() != out.size() ) // values not read from file
+    if (distances.size() != out.size()) // values not read from file
     {
         in.resize(out.size());
         distances.resize(out.size());
         gap.resize(out.size());
         for(unsigned i=0; i<out.size(); i++)
         {
-            typename Out::Real x,y,z;
-            Out::get( x,y,z, out[i] );
-            in[i][0] = (InReal) atan2(y,x);
+            typename Out::Real x, y,z;
+            Out::get(x, y,z, out[i]);
+            in[i][0] = (InReal) atan2(y, x);
             distances[i] = sqrt(x*x+y*y);
         }
     }
 }
 
 template <class In, class Out>
-void MyMappingPendulumInPlane<In,Out>::draw(const core::visual::VisualParams* vparams)
+void MyMappingPendulumInPlane<In, Out>::draw(const core::visual::VisualParams* vparams)
 {
-    if ( !vparams->displayFlags().getShowMappings() ) return;
+    if (!vparams->displayFlags().getShowMappings()) return;
 
     ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
     std::vector< Vector3 > points(out.size());
 
-    for ( unsigned int i=0; i<out.size(); i++ )
+    for (unsigned int i=0; i<out.size(); i++)
     {
         points[i] = Out::getCPos(out[i]);
     }
-    vparams->drawTool()->drawPoints ( points, 7, Vec<4,float> ( 1,1,0,1 ) );
+    vparams->drawTool()->drawPoints (points, 7, Vec<4, float> (1,1,0,1));
 
     points.resize(2*out.size());
-    for ( unsigned int i=0; i<out.size(); i++ )
+    for (unsigned int i=0; i<out.size(); i++)
     {
-        points[2*i] =   Vector3(0,0,0);
+        points[2*i] =   Vector3(0, 0,0);
         points[2*i+1] = Out::getCPos(out[i]);
     }
-    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 0,1,0,1 ) );
+    vparams->drawTool()->drawLines (points, 1, Vec<4, float> (0,1,0,1));
 
 
 }
 
 template <class In, class Out>
-void MyMappingPendulumInPlane<In,Out>::apply(const core::MechanicalParams* mparams,
+void MyMappingPendulumInPlane<In, Out>::apply(const core::MechanicalParams* mparams,
                                              OutDataVecCoord& out,
                                              const InDataVecCoord& in)
 {
@@ -127,7 +127,7 @@ void MyMappingPendulumInPlane<In,Out>::apply(const core::MechanicalParams* mpara
 }
 
 template <class In, class Out>
-void MyMappingPendulumInPlane<In,Out>::applyJ(const core::MechanicalParams* mparams,
+void MyMappingPendulumInPlane<In, Out>::applyJ(const core::MechanicalParams* mparams,
                                               OutDataVecDeriv& out,
                                               const InDataVecDeriv& in)
 {
@@ -147,7 +147,7 @@ void MyMappingPendulumInPlane<In,Out>::applyJ(const core::MechanicalParams* mpar
 }
 
 template <class In, class Out>
-void MyMappingPendulumInPlane<In,Out>::applyJT(const core::MechanicalParams* mparams,
+void MyMappingPendulumInPlane<In, Out>::applyJT(const core::MechanicalParams* mparams,
                                                InDataVecDeriv& out,
                                                const OutDataVecDeriv& in)
 {
@@ -164,7 +164,7 @@ void MyMappingPendulumInPlane<In,Out>::applyJT(const core::MechanicalParams* mpa
 }
 
 template <class In, class Out>
-void MyMappingPendulumInPlane<In,Out>::applyJT(const core::ConstraintParams* mparams,
+void MyMappingPendulumInPlane<In, Out>::applyJT(const core::ConstraintParams* mparams,
                                                InDataMatrixDeriv& out,
                                                const OutDataMatrixDeriv& in)
 {
@@ -188,7 +188,7 @@ void MyMappingPendulumInPlane<In,Out>::applyJT(const core::ConstraintParams* mpa
 }
 
 template <class In, class Out>
-void MyMappingPendulumInPlane<In,Out>::applyDJT(const core::MechanicalParams* mparams,
+void MyMappingPendulumInPlane<In, Out>::applyDJT(const core::MechanicalParams* mparams,
                                                 core::MultiVecDerivId parentForceChangeId,
                                                 core::ConstMultiVecDerivId)
 {
@@ -197,14 +197,14 @@ void MyMappingPendulumInPlane<In,Out>::applyDJT(const core::MechanicalParams* mp
     ReadAccessor<Data<VecInDeriv> > parentDx (*mparams->readDx(this->fromModel));
     InReal kfactor = (InReal)mparams->kFactor();
 
-//    serr<<"MyMappingPendulumInPlane2<In,Out>::applyDJT"<< sendl;
+//    serr<<"MyMappingPendulumInPlane2<In, Out>::applyDJT"<< sendl;
     for(unsigned i=0; i<parentForce.size(); i++)
     {
-        parentForce[i][0] -= ( gap[i][0] * childForce[i][0] +  gap[i][1] * childForce[i][1] ) * parentDx[i][0] * kfactor;
-//        serr<<"MyMappingPendulumInPlane2<In,Out>::applyDJT, gap[i] = "<< gap[i] << sendl;
-//        serr<<"MyMappingPendulumInPlane2<In,Out>::applyDJT, childForce[i] = "<< childForce[i] << sendl;
-//        serr<<"MyMappingPendulumInPlane2<In,Out>::applyDJT, parent displacement = "<< parentDx[i][0] << sendl;
-//        serr<<"MyMappingPendulumInPlane2<In,Out>::applyDJT, parent force -= "<< ( gap[i][0] * childForce[i][0] +  gap[i][1] * childForce[i][1] ) * parentDx[i][0] << sendl;
+        parentForce[i][0] -= (gap[i][0] * childForce[i][0] +  gap[i][1] * childForce[i][1]) * parentDx[i][0] * kfactor;
+//        serr<<"MyMappingPendulumInPlane2<In, Out>::applyDJT, gap[i] = "<< gap[i] << sendl;
+//        serr<<"MyMappingPendulumInPlane2<In, Out>::applyDJT, childForce[i] = "<< childForce[i] << sendl;
+//        serr<<"MyMappingPendulumInPlane2<In, Out>::applyDJT, parent displacement = "<< parentDx[i][0] << sendl;
+//        serr<<"MyMappingPendulumInPlane2<In, Out>::applyDJT, parent force -= "<< (gap[i][0] * childForce[i][0] +  gap[i][1] * childForce[i][1]) * parentDx[i][0] << sendl;
     }
 }
 

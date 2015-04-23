@@ -24,66 +24,41 @@
 ******************************************************************************/
 #include "initPlugin.h"
 
-namespace sofa
-{
-
-namespace component
-{
-
-//Here are just several convenient functions to help user to know what contains the plugin
-
 extern "C" {
-    SOFA_MyPluginExample_API void initExternalModule();
-    SOFA_MyPluginExample_API const char* getModuleName();
-    SOFA_MyPluginExample_API const char* getModuleVersion();
-    SOFA_MyPluginExample_API const char* getModuleLicense();
-    SOFA_MyPluginExample_API const char* getModuleDescription();
-    SOFA_MyPluginExample_API const char* getModuleComponentList();
-}
 
-void initExternalModule()
+SOFA_PLUGINEXAMPLE_API void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    // Nothing to initialize
 }
 
-const char* getModuleName()
+SOFA_PLUGINEXAMPLE_API const char* getModuleName()
 {
-    return "MyPluginExample";
+    return "PluginExample";
 }
 
-const char* getModuleVersion()
+SOFA_PLUGINEXAMPLE_API const char* getModuleVersion()
 {
     return "0.2";
 }
 
-const char* getModuleLicense()
+SOFA_PLUGINEXAMPLE_API const char* getModuleLicense()
 {
     return "LGPL";
 }
 
-
-const char* getModuleDescription()
+SOFA_PLUGINEXAMPLE_API const char* getModuleDescription()
 {
-    return "a simple example of a plugin component module";
+    return "Simple example of a Sofa plugin";
 }
 
-const char* getModuleComponentList()
+SOFA_PLUGINEXAMPLE_API const char* getModuleComponentList()
 {
-    return "MyMappingPendulumInPlane, MyBehaviorModel, MyProjectiveConstraintSet";
-}
-
-
-
+    return "MyBehaviorModel, MyMappingPendulumInPlane, MyProjectiveConstraintSet";
 }
 
 }
 
 
-SOFA_LINK_CLASS(MyMappingPendulumInPlane)
 SOFA_LINK_CLASS(MyBehaviorModel)
+SOFA_LINK_CLASS(MyMappingPendulumInPlane)
 SOFA_LINK_CLASS(MyProjectiveConstraintSet)
-

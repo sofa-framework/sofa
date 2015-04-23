@@ -22,9 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include "MyProjectiveConstraintSet.inl"
+
 #include <sofa/core/ObjectFactory.h>
+
 
 namespace sofa
 {
@@ -38,35 +39,32 @@ namespace projectiveconstraintset
 using namespace sofa::defaulttype;
 
 
-
 SOFA_DECL_CLASS(MyProjectiveConstraintSet)
-
 
 int MyProjectiveConstraintSetClass = core::RegisterObject("just an example of templated component")
 #ifndef SOFA_FLOAT
-        .add< MyProjectiveConstraintSet<Vec3dTypes> >()
-        .add< MyProjectiveConstraintSet<Vec1dTypes> >()
-        .add< MyProjectiveConstraintSet<Rigid3dTypes> >()
+    .add< MyProjectiveConstraintSet<Vec3dTypes> >()
+    .add< MyProjectiveConstraintSet<Vec1dTypes> >()
+    .add< MyProjectiveConstraintSet<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< MyProjectiveConstraintSet<Vec3fTypes> >()
-        .add< MyProjectiveConstraintSet<Rigid3fTypes> >()
+    .add< MyProjectiveConstraintSet<Vec3fTypes> >()
+    .add< MyProjectiveConstraintSet<Rigid3fTypes> >()
 #endif
-        ;
+    ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_MyPluginExample_API MyProjectiveConstraintSet<Rigid3dTypes>;
-template class SOFA_MyPluginExample_API MyProjectiveConstraintSet<Vec3dTypes>;
+template class MyProjectiveConstraintSet<Rigid3dTypes>;
+template class MyProjectiveConstraintSet<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_MyPluginExample_API MyProjectiveConstraintSet<Rigid3fTypes>;
-template class SOFA_MyPluginExample_API MyProjectiveConstraintSet<Vec3fTypes>;
+template class MyProjectiveConstraintSet<Rigid3fTypes>;
+template class MyProjectiveConstraintSet<Vec3fTypes>;
 #endif
 
 
+} // namespace projectiveconstraintset
 
-}	//constraint
+} // namespace component
 
-}	//component
-
-}	//sofa
+} // namespace sofa

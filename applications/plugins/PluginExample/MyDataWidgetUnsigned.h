@@ -22,47 +22,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_MyDataWidgetUnsigned_H
-#define SOFA_GUI_QT_MyDataWidgetUnsigned_H
+#ifndef PLUGINEXAMPLE_MYDATAWIDGETUNSIGNED_H
+#define PLUGINEXAMPLE_MYDATAWIDGETUNSIGNED_H
 
 #include "initPlugin.h"
+
 #include <sofa/gui/qt/DataWidget.h>
 
-#ifdef SOFA_QT4
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QSlider>
 #include <QString>
-#else
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qslider.h>
-#include <qstring.h>
-#endif
-
 
 
 namespace sofa
 {
+
 namespace gui
 {
+
 namespace qt
 {
+
+
 /**
-*\brief Customization of the representation of Data<unsigned> types
-* in the gui. In the .cpp file this widget is registered to represent
-* myData from MyBehaviorModel in the gui.
-**/
-class SOFA_MyPluginExample_API MyDataWidgetUnsigned : public TDataWidget<unsigned>
+ * \brief Customization of the representation of Data<unsigned> types
+ * in the gui. In the .cpp file this widget is registered to represent
+ * myData from MyBehaviorModel in the gui.
+ **/
+class MyDataWidgetUnsigned : public TDataWidget<unsigned>
 {
     Q_OBJECT
 public :
-    ///The class constructor takes a TData<unsigned> since it creates
-    ///a widget for a that particular data type.
-    MyDataWidgetUnsigned(QWidget* parent, const char* name, core::objectmodel::Data<unsigned>* data):
-        TDataWidget<unsigned>(parent,name,data) {};
-    ///In this method we  create the widgets and perform the signal / slots
-    ///connections.
+    // The class constructor takes a TData<unsigned> since it creates
+    // a widget for a that particular data type.
+    MyDataWidgetUnsigned(QWidget* parent, const char* name, core::objectmodel::Data<unsigned> *data):
+        TDataWidget<unsigned>(parent, name,data) {};
+
+    // In this method we  create the widgets and perform the signal / slots
+    // connections.
     virtual bool createWidgets();
     virtual void setDataReadOnly(bool readOnly);
 protected slots:
@@ -72,14 +70,17 @@ protected:
     virtual void readFromData();
     ///Implements how to update the data, knowing the widget value.
     virtual void writeToData();
-    QSlider* qslider;
-    QLabel*  label1;
-    QLabel*  label2;
+    QSlider *qslider;
+    QLabel *label1;
+    QLabel *label2;
 };
 
-}
 
-}
+} // namespace qt
 
-}
-#endif
+} // namespace gui
+
+} // namespace sofa
+
+
+#endif // PLUGINEXAMPLE_MYDATAWIDGETUNSIGNED_H

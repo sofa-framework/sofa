@@ -22,20 +22,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITMyPluginExample_H
-#define INITMyPluginExample_H
-
+#ifndef PLUGINEXAMPLE_INITPLUGIN_H
+#define PLUGINEXAMPLE_INITPLUGIN_H
 
 #include <sofa/helper/system/config.h>
 
 #ifdef SOFA_BUILD_PLUGINEXAMPLE
-#define SOFA_MyPluginExample_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#define SOFA_PLUGINEXAMPLE_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_MyPluginExample_API  SOFA_IMPORT_DYNAMIC_LIBRARY
+#define SOFA_PLUGINEXAMPLE_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-/** \mainpage
-  This is a simple example plugin.
-  */
+/**
+   \mainpage
 
-#endif // INITMyPluginExample_H
+   This is a simple example of a Sofa plugin.
+*/
+
+#endif // PLUGINEXAMPLE_INITPLUGIN_H
