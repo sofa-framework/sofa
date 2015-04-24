@@ -22,16 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_NormalsFromPoints_H
-#define SOFA_COMPONENT_ENGINE_NormalsFromPoints_H
-
-#include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec3Types.h>
-
-#include <sofa/component/component.h>
+#define SOFA_COMPONENT_ENGINE_MeshSubsetEngine_CPP
+#include <SofaEngine/MeshSubsetEngine.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -42,55 +35,30 @@ namespace component
 namespace engine
 {
 
-/**
- * This class compute vertex normals by averaging face normals
- */
-template <class DataTypes>
-class NormalsFromPoints : public core::DataEngine
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(NormalsFromPoints,DataTypes),core::DataEngine);
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::VecCoord VecCoord;
+SOFA_DECL_CLASS(MeshSubsetEngine)
 
-protected:
+int MeshSubsetEngineClass = core::RegisterObject("Extract a mesh subset based on selected vertices")
+#ifdef SOFA_FLOAT
+        .add< MeshSubsetEngine<defaulttype::Vec3fTypes> >(true) // default template
+#else
+        .add< MeshSubsetEngine<defaulttype::Vec3dTypes> >(true) // default template
+#ifndef SOFA_DOUBLE
+        .add< MeshSubsetEngine<defaulttype::Vec3fTypes> >()
+#endif
+#endif
+        ;
 
-    NormalsFromPoints();
-
-    virtual ~NormalsFromPoints() {}
-public:
-    void init();
-
-    void reinit();
-
-    void update();
-
-    Data< VecCoord > position;
-    Data< helper::vector< helper::fixed_array <unsigned int,3> > > triangles;
-    Data< helper::vector< helper::fixed_array <unsigned int,4> > > quads;
-    Data< VecCoord > normals;       ///< result
-    Data<bool> invertNormals;
-    Data<bool> useAngles;
-
-    virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const NormalsFromPoints<DataTypes>* = NULL) { return DataTypes::Name();    }
-
-};
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_NormalsFromPoints_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_ENGINE_API NormalsFromPoints<defaulttype::Vec3dTypes>;
+template class SOFA_ENGINE_API MeshSubsetEngine<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_ENGINE_API NormalsFromPoints<defaulttype::Vec3fTypes>;
+template class SOFA_ENGINE_API MeshSubsetEngine<defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
-#endif
 
-} // namespace engine
+
+} // namespace constraint
 
 } // namespace component
 
 } // namespace sofa
 
-#endif

@@ -22,16 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_NormalsFromPoints_H
-#define SOFA_COMPONENT_ENGINE_NormalsFromPoints_H
+#ifndef SOFA_COMPONENT_ENGINE_MeshSubsetEngine_INL
+#define SOFA_COMPONENT_ENGINE_MeshSubsetEngine_INL
 
-#include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec3Types.h>
-
-#include <sofa/component/component.h>
+#include "MeshSubsetEngine.h"
 
 namespace sofa
 {
@@ -42,48 +36,51 @@ namespace component
 namespace engine
 {
 
-/**
- * This class compute vertex normals by averaging face normals
- */
 template <class DataTypes>
-class NormalsFromPoints : public core::DataEngine
+void MeshSubsetEngine<DataTypes>::update()
 {
-public:
-    SOFA_CLASS(SOFA_TEMPLATE(NormalsFromPoints,DataTypes),core::DataEngine);
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::VecCoord VecCoord;
+    this->cleanDirty();
 
-protected:
+    helper::ReadAccessor<Data< SeqPositions > > pos(this->inputPosition);
+    helper::ReadAccessor<Data< SeqTriangles > > tri(this->inputTriangles);
+    helper::ReadAccessor<Data< SeqQuads > > qd(this->inputQuads);
+    helper::ReadAccessor<Data< SetIndices > >  ind(this->indices);
 
-    NormalsFromPoints();
+    helper::WriteOnlyAccessor<Data< SeqPositions > > opos(this->position);
+    helper::WriteOnlyAccessor<Data< SeqTriangles > >  otri(this->triangles);
+    helper::WriteOnlyAccessor<Data< SeqQuads > > oqd(this->quads);
 
-    virtual ~NormalsFromPoints() {}
-public:
-    void init();
+    opos.resize(ind.size());
+    std::map<PointID,PointID> FtoS;
+    for(size_t i=0; i<ind.size(); i++)
+    {
+        opos[i]=pos[ind[i]];
+        FtoS[ind[i]]=i;
+    }
+    for(size_t i=0; i<tri.size(); i++)
+    {
+        bool inside=true;
+        Triangle cell;
+        for(size_t j=0; j<3; j++) if(FtoS.find(tri[i][j])==FtoS.end()) { inside=false; break; } else cell[j]=FtoS[tri[i][j]];
+        if(inside) otri.push_back(cell);
+    }
+    for(size_t i=0; i<qd.size(); i++)
+    {
+        bool inside=true;
+        Quad cell;
+        for(size_t j=0; j<4; j++) if(FtoS.find(qd[i][j])==FtoS.end()) { inside=false; break; } else cell[j]=FtoS[qd[i][j]];
+        if(inside) oqd.push_back(cell);
+    }
+}
 
-    void reinit();
 
-    void update();
 
-    Data< VecCoord > position;
-    Data< helper::vector< helper::fixed_array <unsigned int,3> > > triangles;
-    Data< helper::vector< helper::fixed_array <unsigned int,4> > > quads;
-    Data< VecCoord > normals;       ///< result
-    Data<bool> invertNormals;
-    Data<bool> useAngles;
-
-    virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const NormalsFromPoints<DataTypes>* = NULL) { return DataTypes::Name();    }
-
-};
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_NormalsFromPoints_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MeshSubsetEngine_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_ENGINE_API NormalsFromPoints<defaulttype::Vec3dTypes>;
+extern template class SOFA_ENGINE_API MeshSubsetEngine<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_ENGINE_API NormalsFromPoints<defaulttype::Vec3fTypes>;
+extern template class SOFA_ENGINE_API MeshSubsetEngine<defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 
