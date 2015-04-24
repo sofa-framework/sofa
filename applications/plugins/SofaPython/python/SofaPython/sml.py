@@ -141,18 +141,24 @@ class Model:
             self.object=None
             self.mesh=None
             self.group=None
-            
+            self.image=None
+
     class ContactSliding:
-        def __init__(self,contactXml):
-            parseIdName(self,contactXml)
+        def __init__(self,xml):
+            parseIdName(self,xml)
             self.surfaces = [None,None]
             self.distance=None
-            if contactXml.find("distance"):
-                self.distance=float(contactXml.findText("distance"))
+            if xml.find("distance"):
+                self.distance=float(xml.findText("distance"))
     
     class ContactAttached:
-        def __init__(self,contactXml):
-            parseIdName(self,contactXml)
+        def __init__(self,xml):
+            parseIdName(self,xml)
+            self.surfaces = [None,None]
+
+    class Registration:
+        def __init__(self,xml):
+            parseIdName(self,xml)
             self.surfaces = [None,None]
 
     dofIndex={"x":0,"y":1,"z":2,"rx":3,"ry":4,"rz":5}
@@ -167,6 +173,7 @@ class Model:
         self.genericJoints=dict()
         self.slidingContacts=dict()
         self.attachedContacts=dict()
+        self.registrations=dict()
 
         if not filename is None:
             self.open(filename)
@@ -269,6 +276,32 @@ class Model:
                         if len(s.attrib["group"]): # discard empty string
                             contact.surfaces[i].group = s.attrib["group"]
                 self.attachedContacts[contact.id]=contact
+
+            # registrations
+            for c in modelXml.iter("registration"):
+                if c.attrib["id"] in self.registrations:
+                    print "ERROR: sml.Model: registration defined twice, id:", c.attrib["id"]
+                    continue
+                reg = Model.Registration(c)
+                surfaces=c.findall("surface")
+                for i,s in enumerate(surfaces):
+                    reg.surfaces[i] = Model.Surface()
+                    if s.attrib["solid"] in self.solids:
+                        reg.surfaces[i].solid = self.solids[s.attrib["solid"]]
+                    else:
+                        print "ERROR: sml.Model: in registration {0}, unknown solid {1} referenced".format(reg.name, s.attrib["solid"])
+                    if s.attrib["mesh"] in self.meshes:
+                        reg.surfaces[i].mesh = self.meshes[s.attrib["mesh"]]
+                    else:
+                        print "ERROR: sml.Model: in registration {0}, unknown mesh {1} referenced".format(reg.name, s.attrib["mesh"])
+                    if "group" in s.attrib: # optional
+                        if len(s.attrib["group"]): # discard empty string
+                            reg.surfaces[i].group = s.attrib["group"]
+#                    if "image" in s.attrib: # optional
+#                        if len(s.attrib["image"]): # discard empty string
+#                            if s.attrib["image"] in self.images:
+#                               reg.surfaces[i].image = self.images[s.attrib["image"]]
+                self.registrations[reg.id]=reg
 
 
     def parseUnits(self, modelXml):
