@@ -79,15 +79,20 @@ class Deformable:
             self.mapping = self.node.createObject("IdentityMapping", name="mapping")
 
     def addSubset(self, indices ):
-        self.subset = Deformable.SubsetModel(self.node, indices, self.normals)
+        self.subset = Deformable.SubsetModel(self.node, indices, self.topology)
 
     class SubsetModel:
-        def __init__(self, node, indices, normals=None):
+        def __init__(self, node, indices, topology=None):
             self.node = node.createChild("subset")
             self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs")
             self.mapping = self.node.createObject("SubsetMapping", template = "Vec3d,Vec3d", indices=concat(indices))
-            if normals:
-                self.normals = self.node.createObject("PointsFromIndices", template = "Vec3d", position='@../'+normals.name+'.normals', indices=concat(indices))
+            if topology:
+                self.subsetEngine = self.node.createObject("MeshSubsetEngine", template = "Vec3d", inputPosition='@../'+topology.name+'.position', inputTriangles='@../'+topology.name+'.triangles', inputQuads='@../'+topology.name+'.quads', indices=concat(indices))
+                self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.subsetEngine.name )
+        def addNormals(self, invert=False):
+            self.normals = self.node.createObject("NormalsFromPoints", template='Vec3d', name="normalsFromPoints", position='@'+self.dofs.name+'.position', triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
+        def addVisual(self, color=[1,1,1,1]):
+            self.visual = Deformable.VisualModel(self.node, color)
 
 
 
