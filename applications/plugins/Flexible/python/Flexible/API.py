@@ -51,24 +51,23 @@ class Deformable:
         self.mass=None
         self.visual=None
         self.mapping=None
-        
+        self.normals=None
+        self.subset=None
+
     def addMesh(self, meshPath, offset = [0,0,0,0,0,0,1]):
         r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
         self.meshLoader = SofaPython.Tools.meshLoader(self.node, meshPath, translation=concat(offset[:3]) , rotation=concat(r))
         self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.meshLoader.name )
         self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs", src="@"+self.meshLoader.name)
 
+    def addNormals(self, invert=False):
+        self.normals = self.node.createObject("NormalsFromPoints", template='Vec3d', name="normalsFromPoints", position='@'+self.dofs.name+'.position', triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
+
     def addMass(self,totalMass):
         self.mass = self.node.createObject('UniformMass', totalMass=totalMass)
 
     def addMapping(self, dofRigidNode=None, dofAffineNode=None, labelImage=None, labels=None, assemble=True):
         self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, self.topology, labelImage, labels, assemble)
-
-# TODO: refactor this
-    def addSkinning(self, bonesPath, indices, weights, assemble=True):
-        self.mapping = self.node.createObject(
-            "LinearMapping", template="Rigid3d,Vec3d", name="skinning",
-            input="@"+bonesPath, indices=concat(indices), weights=concat(weights), assemble=assemble)
 
     def addVisual(self, color=[1,1,1,1]):
         self.visual = Deformable.VisualModel(self.node, color)
@@ -78,6 +77,25 @@ class Deformable:
             self.node = node.createChild("visual")
             self.model = self.node.createObject("VisualModel", name="model", color=concat(color))
             self.mapping = self.node.createObject("IdentityMapping", name="mapping")
+
+    def addSubset(self, indices ):
+        self.subset = Deformable.SubsetModel(self.node, indices, self.normals)
+
+    class SubsetModel:
+        def __init__(self, node, indices, normals=None):
+            self.node = node.createChild("subset")
+            self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs")
+            self.mapping = self.node.createObject("SubsetMapping", template = "Vec3d,Vec3d", indices=concat(indices))
+            if normals:
+                self.normals = self.node.createObject("PointsFromIndices", template = "Vec3d", position='@../'+normals.name+'.normals', indices=concat(indices))
+
+
+
+# TODO: refactor this
+    def addSkinning(self, bonesPath, indices, weights, assemble=True):
+        self.mapping = self.node.createObject(
+            "LinearMapping", template="Rigid3d,Vec3d", name="skinning",
+            input="@"+bonesPath, indices=concat(indices), weights=concat(weights), assemble=assemble)
 
 class AffineMass:
     def __init__(self, node, dofAffineNode):
