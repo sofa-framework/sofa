@@ -423,7 +423,7 @@ function(ComputeDependencies projectName forceEnable fromProject offset)
                         message(STATUS "Adding project '${projectName}'")
                     endif()
 
-                    if(NOT ${GLOBAL_PROJECT_PATH_${projectName}/} MATCHES "^${CMAKE_CURRENT_SOURCE_DIR/}")
+ 		    if(NOT ${GLOBAL_PROJECT_PATH_${projectName}}/ MATCHES "^${CMAKE_CURRENT_SOURCE_DIR}/")
                         add_subdirectory("${GLOBAL_PROJECT_PATH_${projectName}}" "./build-external/${projectName}")
                     else()
                         add_subdirectory("${GLOBAL_PROJECT_PATH_${projectName}}")
