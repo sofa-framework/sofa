@@ -83,7 +83,6 @@ namespace sofa
 {
     using core::objectmodel::New;
 
-    typedef component::container::MechanicalObject<defaulttype::Rigid3Types> MechanicalObjectRigid3;
     typedef component::container::MechanicalObject<defaulttype::Vec1Types> MechanicalObject1;
     typedef component::mapping::RigidMapping<defaulttype::Rigid3Types, defaulttype::Vec3Types> RigidMappingRigid3_to_3;
     typedef component::mapping::SubsetMultiMapping<defaulttype::Vec3Types, defaulttype::Vec3Types> SubsetMultiMapping3_to_3;
