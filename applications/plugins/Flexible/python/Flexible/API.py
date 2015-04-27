@@ -10,8 +10,6 @@ import SofaPython.Tools
 from SofaPython.Tools import listToStr as concat
 from SofaPython import Quaternion
 
-__file = __file__.replace('\\', '/')  # windows compatible filename
-
 def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, position=None, labelImage=None, labels=None, assemble=True, geometricStiffness=2):
     """ insert the correct Linear(Multi)Mapping
     hopefully the template is deduced automatically by the component
@@ -41,6 +39,9 @@ def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, position=No
                 input1="@"+dofRigidNode.getPathName(), input2="@"+dofAffineNode.getPathName(), output="@.", assemble=assemble, geometricStiffness=geometricStiffness)
 
 class Deformable:
+    """ This class reprents a deformable object build from a mesh.
+    @todo: make it multi mesh
+    """
     
     def __init__(self, node, name):
         self.node=node.createChild(name)
