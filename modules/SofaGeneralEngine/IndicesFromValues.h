@@ -72,6 +72,16 @@ public:
     core::objectmodel::Data<VecIndex> f_indices;
     core::objectmodel::Data<VecIndex> f_otherIndices;
     core::objectmodel::Data<bool> f_recursiveSearch;
+
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const IndicesFromValues<T>* = NULL)
+    {
+        return sofa::defaulttype::DataTypeName<T>::name();
+    }
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_CPP)
