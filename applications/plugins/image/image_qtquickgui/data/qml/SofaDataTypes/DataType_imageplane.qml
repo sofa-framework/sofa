@@ -59,6 +59,7 @@ GridLayout {
 
                 minimumValue: 0
                 maximumValue: slice.length > 0 ? slice.length - 1 : 0
+                value: slice.length / 2
                 stepSize: 1
                 tickmarksEnabled: true
             }
