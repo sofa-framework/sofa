@@ -145,7 +145,7 @@ public:
     {
     public:
         FCTPointHandler(DOFBlockerLMConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<helper::vector<unsigned int> >* _data)
-            : TopologySubsetDataHandler<sofa::component::topology::Point, sofa::helper::vector<unsigned int> >(_data), fc(_fc) {}
+            : sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, sofa::helper::vector<unsigned int> >(_data), fc(_fc) {}
 
 
 
