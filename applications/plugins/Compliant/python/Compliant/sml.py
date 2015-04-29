@@ -38,12 +38,7 @@ def insertRigid(parentNode, rigidModel, material, param=None):
         rigid.setFromRigidInfo(massinfo, offset=rigidModel.position , inertia_forces = False )    # TODO: handle inertia_forces ?
     elif len(rigidModel.mesh)!=0 and meshFormatSupported:
         # get inertia from mesh and density
-        massinfo = SofaPython.mass.RigidMassInfo()
-
-        for mesh in rigidModel.mesh :
-            mi = SofaPython.mass.RigidMassInfo()
-            mi.setFromMesh(mesh.source, density=material.density(rigidModel.material))
-            massinfo+=mi
+        massinfo = SofaPython.sml.getSolidRigidMassInfo(rigidModel, material)
         rigid.setFromRigidInfo(massinfo, offset=rigidModel.position , inertia_forces = False )    # TODO: handle inertia_forces ?
 
         #if not rigidModel.mass is None :
