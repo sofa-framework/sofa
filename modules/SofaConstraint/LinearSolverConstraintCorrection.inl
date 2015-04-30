@@ -30,6 +30,7 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/behavior/ConstraintCorrection.inl>
 
 #include <sstream>
 #include <list>
