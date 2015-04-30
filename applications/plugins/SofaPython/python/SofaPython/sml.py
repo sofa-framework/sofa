@@ -8,6 +8,7 @@ import Quaternion
 import Tools
 from Tools import listToStr as concat
 import units
+import mass
 
 def parseIdName(obj,objXml):
     """ set id and name of obj
@@ -358,6 +359,15 @@ def setupUnits(myUnits):
         exec("units.local_{0} = units.{0}_{1}".format(quantity,unit))
         message+=" "+quantity+":"+unit
     print message    
+
+def getSolidRigidMassInfo(solid, material):
+    massInfo = mass.RigidMassInfo()
+    for mesh in solid.mesh:
+        # mesh mass info
+        mmi = mass.RigidMassInfo()
+        mmi.setFromMesh(mesh.source, density=material.density(solid.material))
+        massInfo += mmi
+    return massInfo
 
 class BaseScene:
     """ Base class for Scene class, creates a node for this Scene
