@@ -55,9 +55,9 @@ class Deformable:
         self.normals=None
         self.subset=None
 
-    def addMesh(self, meshPath, offset = [0,0,0,0,0,0,1]):
+    def addMesh(self, meshPath, offset = [0,0,0,0,0,0,1], scale=[1,1,1], triangulate=False):
         r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
-        self.meshLoader = SofaPython.Tools.meshLoader(self.node, meshPath, translation=concat(offset[:3]) , rotation=concat(r))
+        self.meshLoader = SofaPython.Tools.meshLoader(self.node, meshPath, translation=concat(offset[:3]) , rotation=concat(r), scale3d=concat(scale), triangulate=triangulate)
         self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.meshLoader.name )
         self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs", src="@"+self.meshLoader.name)
 
@@ -154,7 +154,7 @@ class ShapeFunction:
         self.position = position # component which contains shape function position (spatial coordinates of the parent nodes)
         self.shapeFunction=None
    
-    def addVoronoi(self, image):
+    def addVoronoi(self, image, cells=''):
         """ Add a Voronoi shape function using position from position component and BranchingImage image
         """
         if self.position is None:
@@ -162,7 +162,7 @@ class ShapeFunction:
         imagePath = SofaPython.Tools.getObjectPath(image.branchingImage)
         self.shapeFunction = self.node.createObject(
             "VoronoiShapeFunction", template="ShapeFunctiond,"+"Branching"+image.imageType, 
-            name="shapeFunction",
+            name="shapeFunction", cells=cells,
             position="@"+SofaPython.Tools.getObjectPath(self.position)+".position",
             src="@"+imagePath, method=0, nbRef=8, bias=True)
    
@@ -220,13 +220,13 @@ class Behavior:
         self.dofs = None
         self.mapping = None
 
-    def addGaussPointSampler(self, shapeFunction, nbPoint):
+    def addGaussPointSampler(self, shapeFunction, nbPoints):
         shapeFunctionPath = SofaPython.Tools.getObjectPath(shapeFunction.shapeFunction)
         self.sampler = self.node.createObject(
             "ImageGaussPointSampler", template="BranchingImageD,BranchingImageUC", name="sampler",
             indices="@"+shapeFunctionPath+".indices", weights="@"+shapeFunctionPath+".weights", transform="@"+shapeFunctionPath+".transform", 
-            method="2", order=self.type[2:], targetNumber=nbPoint,
-            mask="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage)+".branchingImage", maskLabels=concat(self.labels), clearData=True)
+            method="2", order=self.type[2:], targetNumber=nbPoints, sampleRigidParts="1", clearData=False,
+            mask="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage)+".branchingImage", maskLabels=concat(self.labels))
         
     def addMechanicalObject(self, dofRigidNode=None, dofAffineNode=None, assemble=True):
         if self.sampler is None:
@@ -239,5 +239,7 @@ class Behavior:
         eNode.createObject('MechanicalObject',  template="E"+self.type, name="E")
         eNode.createObject(strainMeasure+'StrainMapping', template="F"+self.type+",E"+self.type, assemble=assemble)
         eNode.createObject('HookeForceField',  template="E"+self.type, youngModulus= youngModulus, poissonRatio=poissonRatio, viscosity=viscosity, assemble=assemble, isCompliance=False)
-        
-        
+
+    def addProjective(self, youngModulus=0, viscosity=0, assemble=True):
+        self.node.createObject('ProjectiveForceField', template="F"+self.type,  youngModulus=youngModulus, viscosity=viscosity,assemble=assemble)
+
