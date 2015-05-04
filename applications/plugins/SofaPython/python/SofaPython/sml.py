@@ -68,7 +68,6 @@ class Model:
         def __init__(self, solidXml=None):
             self.id = None
             self.name = None
-            self.material = "default"
             self.tags = set()
             self.position = None
             self.mesh = list() # list of meshes
@@ -82,7 +81,6 @@ class Model:
         def parseXml(self, objXml):
             parseIdName(self, objXml)
             parseTag(self,objXml)
-            self.material=objXml.find("material").text
             self.position=Tools.strToListFloat(objXml.find("position").text)
             if not objXml.find("mass") is None:
                 self.mass = float(objXml.find("mass").text)
@@ -360,12 +358,12 @@ def setupUnits(myUnits):
         message+=" "+quantity+":"+unit
     print message    
 
-def getSolidRigidMassInfo(solid, material):
+def getSolidRigidMassInfo(solid, density):
     massInfo = mass.RigidMassInfo()
     for mesh in solid.mesh:
         # mesh mass info
         mmi = mass.RigidMassInfo()
-        mmi.setFromMesh(mesh.source, density=material.density(solid.material))
+        mmi.setFromMesh(mesh.source, density=density)
         massInfo += mmi
     return massInfo
 
@@ -379,6 +377,7 @@ class BaseScene:
         self.model = model
         self.param = BaseScene.Param()
         self.material = Tools.Material() # a default material set
+        self.solidMaterial = dict() # assign a material to a solid
         self.nodes = dict() # to store special nodes
         n=name
         if n is None:
@@ -390,6 +389,25 @@ class BaseScene:
         node = parent.createChild(name)
         self.nodes[name] = node
         return node
+    
+    def setMaterial(self, solid, material):
+        """ assign material to solid
+        """
+        self.solidMaterial[solid]=material
+    
+    def setMaterialByTag(self, tag, material):
+        """ assign material to all solids with tag
+        """
+        for solid in self.model.solidsByTag[tag]:
+            self.solidMaterial[solid.id] = material
+    
+    def getMaterial(self, solid):
+        """ return the solid material, "default" if none is defined
+        """
+        if solid in self.solidMaterial:
+            return self.solidMaterial[solid]
+        else :
+            return "default"
 
 class SceneDisplay(BaseScene):
     """ Creates a scene to display solid meshes
