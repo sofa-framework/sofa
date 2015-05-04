@@ -202,21 +202,56 @@ protected :
     }
 
     void LDL_ordering(int n,int * M_colptr,int * M_rowind,int * perm,int * invperm) {
-        xadj.resize(n+1);
-        adj.resize(M_colptr[n]-n);
+        //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
+        tran_countvec.clear();
+        tran_countvec.resize(n);
 
-        int it = 0;
+        //First we count the number of value on each row.
+        for (int j=0;j<n;j++) {
+          for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
+              int col = M_rowind[i];
+              if (col>j) tran_countvec[col]++;
+          }
+        }
+
+        //Now we make a scan to build tran_colptr
+        t_xadj.resize(n+1);
+        t_xadj[0] = 0;
+        for (int j=0;j<n;j++) t_xadj[j+1] = t_xadj[j] + tran_countvec[j];
+
+        //we clear tran_countvec becaus we use it now to stro hown many value are written on each line
+        tran_countvec.clear();
+        tran_countvec.resize(n);
+
+        t_adj.resize(t_xadj[n]);
+        for (int j=0;j<n;j++) {
+          for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
+            int line = M_rowind[i];
+            if (line>j) {
+                t_adj[t_xadj[line] + tran_countvec[line]] = j;
+                tran_countvec[line]++;
+            }
+          }
+        }
+
+        adj.clear();
+        xadj.resize(n+1);
+        xadj[0] = 0;
         for (int j=0; j<n; j++)
         {
-            xadj[j] = M_colptr[j] - j;
-
-            for (int ip = M_colptr[j]; ip < M_colptr[j+1]; ip++)
-            {
-                int i = M_rowind[ip];
-                if (i != j) adj[it++] = i;
+            //copy the lower part
+            for (int ip = t_xadj[j]; ip < t_xadj[j+1]; ip++) {
+                adj.push_back(t_adj[ip]);
             }
+
+            //copy only the upper part
+            for (int ip = M_colptr[j]; ip < M_colptr[j+1]; ip++) {
+                int col = M_rowind[ip];
+                if (col > j) adj.push_back(col);
+            }
+
+            xadj[j+1] = adj.size();
         }
-        xadj[n] = M_colptr[n] - n;
 
         //int numflag = 0, options = 0;
         // The new API of metis requires pointers on numflag and "options" which are "structure" to parametrize the factorization
@@ -331,7 +366,7 @@ protected :
 
     helper::vector<Real> Tmp;
 protected : //the folowing variables are used during the factorization they canno be used in the main thread !
-    helper::vector<int> xadj,adj;
+    helper::vector<int> xadj,adj,t_xadj,t_adj;
     helper::vector<Real> Y;
     helper::vector<int> Lnz,Flag,Pattern;
     helper::vector<int> tran_countvec;
