@@ -587,9 +587,10 @@ public:
         filterValues(M, nonzeros, Bloc());
     }
 
-    void copyNonSmall(Matrix& M, const Bloc& ref)
+    template <class TMatrix>
+    void copyNonSmall(TMatrix& M, const Bloc& ref)
     {
-        filterValues(M, nonzeros, ref);
+        filterValues(M, nonsmall, ref);
     }
 
     void copyUpper(Matrix& M)
