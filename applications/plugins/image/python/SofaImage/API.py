@@ -1,7 +1,10 @@
 import os.path
+import math
 
 import SofaPython.Tools
 import SofaPython.units
+from SofaPython.Tools import listToStr as concat
+from SofaPython import Quaternion
 
 class Image:
     """ This class proposes a high-level API to build images. It support multiple meshes rasterization.
@@ -28,10 +31,10 @@ class Image:
         self.exporter = None
 
 
-    def addMeshLoader(self, meshFile, value, insideValue=None, closingValue=None, roiIndices=list(), roiValue=list(), name=None):
+    def addMeshLoader(self, meshFile, value, insideValue=None, closingValue=None, roiIndices=list(), roiValue=list(), name=None, offset = [0,0,0,0,0,0,1], scale=[1,1,1]):
         mesh = Image.Mesh(value, insideValue)
         _name = name if not name is None else os.path.splitext(os.path.basename(meshFile))[0]
-        mesh.mesh = SofaPython.Tools.meshLoader(self.node, meshFile, name="meshLoader_"+_name, triangulate=True)
+        mesh.mesh = SofaPython.Tools.meshLoader(self.node, meshFile, name="meshLoader_"+_name, triangulate=True, translation=concat(offset[:3]) , rotation=concat(Quaternion.to_euler(offset[3:])  * 180.0 / math.pi), scale3d=concat(scale))
         self.__addMesh(mesh,closingValue,roiIndices,roiValue,_name)
 
     def addExternMesh(self, externMesh, value, insideValue=None, closingValue=None, roiIndices=list(), roiValue=list(), name=None):
@@ -139,5 +142,5 @@ class Sampler:
         if self.sampler is None:
             print "[ImageAPI.Sampler] ERROR: no sampler"
         samplerPath = SofaPython.Tools.getObjectPath(self.sampler)
-        self.dof = self.node.createObject("MechanicalObject", template=template, name="dof", position="@"+samplerPath+".position", **kwargs)
+        self.dof = self.node.createObject("MechanicalObject", template=template, name="dofs", position="@"+samplerPath+".position", **kwargs)
 
