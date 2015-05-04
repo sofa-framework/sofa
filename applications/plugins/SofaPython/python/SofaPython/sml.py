@@ -398,8 +398,9 @@ class BaseScene:
     def setMaterialByTag(self, tag, material):
         """ assign material to all solids with tag
         """
-        for solid in self.model.solidsByTag[tag]:
-            self.solidMaterial[solid.id] = material
+        if tag in self.model.solidsByTag:
+            for solid in self.model.solidsByTag[tag]:
+                self.solidMaterial[solid.id] = material
     
     def getMaterial(self, solid):
         """ return the solid material, "default" if none is defined
