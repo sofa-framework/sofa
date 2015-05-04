@@ -12,7 +12,7 @@ import SofaPython.mass
 import SofaPython.sml
 import Flexible.sml
 
-def insertRigid(parentNode, rigidModel, material, param=None):
+def insertRigid(parentNode, rigidModel, density, param=None):
     """ create a StructuralAPI.RigidBody from the rigidModel, compute rigidMass from
         1) mass, com and inertia if present
         2) mesh if possible
@@ -38,7 +38,7 @@ def insertRigid(parentNode, rigidModel, material, param=None):
         rigid.setFromRigidInfo(massinfo, offset=rigidModel.position , inertia_forces = False )    # TODO: handle inertia_forces ?
     elif len(rigidModel.mesh)!=0 and meshFormatSupported:
         # get inertia from mesh and density
-        massinfo = SofaPython.sml.getSolidRigidMassInfo(rigidModel, material)
+        massinfo = SofaPython.sml.getSolidRigidMassInfo(rigidModel, density)
         rigid.setFromRigidInfo(massinfo, offset=rigidModel.position , inertia_forces = False )    # TODO: handle inertia_forces ?
 
         #if not rigidModel.mass is None :
@@ -144,7 +144,7 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         # rigids
         if "rigid" in self.model.solidsByTag:
             for rigidModel in self.model.solidsByTag["rigid"]:
-                self.rigids[rigidModel.id] = insertRigid(self.node, rigidModel, self.material, self.param)
+                self.rigids[rigidModel.id] = insertRigid(self.node, rigidModel, self.material.density(self.getMaterial(rigidModel.id)) , self.param)
         
         # joints
         for jointModel in self.model.genericJoints.values():
