@@ -186,11 +186,11 @@ class ShapeFunction:
             "ImageExporter", template="BranchingImageUI", name="exporterIndices", 
             image="@"+sfPath+".indices", transform="@"+sfPath+".transform",
             filename=self.getFilenameIndices(filenamePrefix, directory),
-            exportAtEnd=True, printLog=True)
+            exportAtBegin=True, printLog=True)
         self.node.createObject(
             "ImageExporter", template="BranchingImageD", name="exporterWeights", 
             image="@"+sfPath+".weights", transform="@"+sfPath+".transform",
-            filename=self.getFilenameWeights(filenamePrefix, directory), exportAtEnd=True, printLog=True)
+            filename=self.getFilenameWeights(filenamePrefix, directory), exportAtBegin=True, printLog=True)
        
     def addContainer(self, filenamePrefix=None, directory=""):
         if self.position is None:

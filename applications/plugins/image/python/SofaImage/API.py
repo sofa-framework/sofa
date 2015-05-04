@@ -119,7 +119,7 @@ class Image:
         if self.image is None:
             print "[ImageAPI.Image] ERROR: no image"
         imagePath = SofaPython.Tools.getObjectPath(self.image)
-        self.exporter = self.node.createObject('ImageExporter', template=self.imageType, name="exporter", image="@"+imagePath+".image", transform="@"+imagePath+".transform", filename=self.getFilename(filename, directory), exportAtEnd=True, printLog=True)
+        self.exporter = self.node.createObject('ImageExporter', template=self.imageType, name="exporter", image="@"+imagePath+".image", transform="@"+imagePath+".transform", filename=self.getFilename(filename, directory), exportAtBegin=True, printLog=True)
 
 class Sampler:
     """ This class proposes a high-level API to build ImageSamplers
