@@ -222,15 +222,9 @@ public:
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         std::string input  = arg->getAttribute("input","");
+        if( input.empty() || !LinkFromModels::CheckPaths( input, context ) ) return false;
         std::string output = arg->getAttribute("output","");
-        if (input.empty() || !LinkFromModels::CheckPaths(input, context)) {
-            std::cerr << "[" << arg->getAttribute("name") << "(" << arg->getAttribute("type") << ")]: " << "bad input" << std::endl;
-            return false;
-        }
-        if (output.empty() || !LinkToModels::CheckPaths(output, context)) {
-            std::cerr << "[" << arg->getAttribute("name") << "(" << arg->getAttribute("type") << ")]: " << "bad output" << std::endl;
-            return false;
-        }
+        if( output.empty() || !LinkToModels::CheckPaths( output, context ) ) return false;
         return BaseMapping::canCreate(obj, context, arg);
     }
 
