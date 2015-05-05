@@ -19,6 +19,8 @@
 # - CI_HAVE_OPENCASCADE
 # - CI_HAVE_CUDA
 # - CI_HAVE_OPENCL
+# - CI_HAVE_CSPARSE
+# - CI_HAVE_METIS
 
 
 # Exit on error
@@ -238,15 +240,23 @@ case $CI_JOB in
         else
             append "-DSOFA-PLUGIN_THMPGSPATIALHASHING=OFF"
         fi
-        # Requires SofaCUDALDI (Strange, SofaCUDALDI is in sofa-dev!)
-        append "-DSOFA-PLUGIN_VOXELIZER=OFF"
         # Requires XiRobot library.
         append "-DSOFA-PLUGIN_XITACT=OFF"
 
         ### Misc
 
-        append "-DSOFA-EXTERNAL_CSPARSE=ON"
+        if [[ -n "$CI_HAVE_CSPARSE" ]]; then
+            append "-DSOFA-EXTERNAL_CSPARSE=OFF"
+        else
+            append "-DSOFA-EXTERNAL_CSPARSE=ON"
+        fi
+        if [[ -n "$CI_HAVE_METIS" ]]; then
+            append "-DSOFA-EXTERNAL_METIS=OFF"
+        else
+            append "-DSOFA-EXTERNAL_METIS=ON"
+        fi
         append "-DSOFA-LIB_COMPONENT_SPARSE_SOLVER=ON"
+
         append "-DSOFA-LIB_GUI_INTERACTION=ON"
         append "-DSOFA-LIB_GUI_QGLVIEWER=ON"
         ;;
