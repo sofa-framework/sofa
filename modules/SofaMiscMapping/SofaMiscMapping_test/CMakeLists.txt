@@ -3,6 +3,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(SOURCE_FILES
 
  #alphabetical order
+    ProjectionToTargetLineMapping_test.cpp
     SubsetMultiMapping_test.cpp
 )
 
