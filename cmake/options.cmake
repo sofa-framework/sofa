@@ -54,7 +54,6 @@ endif()
 ### the ENV{QTDIR} MUST BE DEFINED in order to find Qt (giving a path in find_package does not work)
 sofa_option(SOFA-EXTERNAL_QT_PATH PATH "${QTDIR}" "Qt dir path")
 sofa_option(SOFA-EXTERNAL_QT5_PATH PATH "${QTDIR}" "Qt5 dir path")
-list(APPEND compilerDefines SOFA_QT4)
 
 ## boost
 set(MINIBOOST_PATH "${SOFA_EXTLIBS_DIR}/miniBoost")
