@@ -84,7 +84,7 @@ public:
     /// Under WIN32 the method returns a lower cased unix formatted path.
     static std::string relativeToPath(std::string path, std::string refPath);
 
-    const std::vector< std::string > &getPaths() const {return vpath;};
+    const std::vector< std::string > &getPaths() const {return vpath;}
 
     /// Find file using the stored set of paths.
     /// @param basedir override current directory (optional)
