@@ -12,7 +12,7 @@
 
         <Node name="projection">        
         
-            <MechanicalObject template="Vec3d" position="0 0 0" showObject="1" showObjectScale="5" />
+            <MechanicalObject template="Vec3d" showObject="1" showObjectScale="5" />
             
             <ProjectionToTargetLineMapping     indices="0   0"   origins="0 0 0    0 -2 3"    directions="1 0 0    -.3 0.8 0.1" />
             
