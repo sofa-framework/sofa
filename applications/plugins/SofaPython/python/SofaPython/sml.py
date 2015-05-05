@@ -99,34 +99,42 @@ class Model:
             return self.type == "absolute"
             
     class Dof:
-        def __init__(self, dofXml):
-            self.index = Model.dofIndex[dofXml.attrib["index"]]
+        def __init__(self, dofXml=None):
+            self.index = None
             self.min = None
             self.max = None
+            if not dofXml is None:
+                self.parseXml(dofXml)
+
+        def parseXml(self, dofXml):
+            self.index = Model.dofIndex[dofXml.attrib["index"]]
             if "min" in dofXml.attrib:
                 self.min = float(dofXml.attrib["min"])
             if "max" in dofXml.attrib:
                 self.max = float(dofXml.attrib["max"])
-        
+
     class JointGeneric:
-        #def __init__(self, name="Unknown",object1,offset1,object2,offset2):
-        def __init__(self, jointXml):
-            parseIdName(self,jointXml)
+        def __init__(self, jointXml=None):
+            self.id = None
+            self.name = None
             self.solids = [None,None]
             # offsets
             self.offsets = [None,None]
+            # dofs
+            self.dofs = []
+            if not jointXml is None:
+                self.parseXml(jointXml)
+        
+        def parseXml(self, jointXml):
+            parseIdName(self,jointXml)
             solidsRef = jointXml.findall("jointSolidRef")
             for i in range(0,2):
                 if not solidsRef[i].find("offset") is None:
                     self.offsets[i] = Model.Offset(solidsRef[i].find("offset"))
                     self.offsets[i].name = "offset_{0}".format(self.name)
-                    
-            # dofs
-            self.dofs = [] 
             for dof in jointXml.iter("dof"):
                 self.dofs.append(Model.Dof(dof))
-        
-        
+
     class Skinning:
         """ Skinning definition, vertices index influenced by bone with weight
         """
