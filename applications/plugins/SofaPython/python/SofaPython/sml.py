@@ -333,6 +333,15 @@ class Model:
                     print "ERROR: sml.Model: in joint {0}, unknown solid {1} referenced".format(joint.name, o.attrib["id"])
             self.genericJoints[joint.id]=joint
 
+
+    def setTagFromTag(self, tag, newTag):
+        """ assign newTag to all solids with tag
+        """
+        if tag in self.solidsByTag:
+            for solid in self.solidsByTag[tag]:
+                solid.tags.add(newTag)
+        self.updateTag()
+
     def updateTag(self):
         """ Update internal Model tag structures
         Call this method after you changed solids tag """
