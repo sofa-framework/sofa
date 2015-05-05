@@ -27,15 +27,15 @@ def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, position=No
 
         if dofRigidNode is None:
             return node.createObject(
-                "LinearMapping", cell=cell,
+                "LinearMapping", cell=cell, shapeFunction = 'shapeFunction',
                 input="@"+dofAffineNode.getPathName(), output="@.", assemble=assemble)
         elif dofAffineNode is None:
             return node.createObject(
-                "LinearMapping", cell=cell,
+                "LinearMapping", cell=cell, shapeFunction = 'shapeFunction',
                 input="@"+dofRigidNode.getPathName(), output="@.", assemble=assemble, geometricStiffness=geometricStiffness)
         else:
             return node.createObject(
-                "LinearMultiMapping", cell=cell,
+                "LinearMultiMapping", cell=cell, shapeFunction = 'shapeFunction',
                 input1="@"+dofRigidNode.getPathName(), input2="@"+dofAffineNode.getPathName(), output="@.", assemble=assemble, geometricStiffness=geometricStiffness)
 
 class Deformable:
@@ -149,21 +149,20 @@ class ShapeFunction:
     """ High-level API to manipulate ShapeFunction
     @todo better handle template
     """
-    def __init__(self, node, position=None):
+    def __init__(self, node):
         self.node = node
-        self.position = position # component which contains shape function position (spatial coordinates of the parent nodes)
         self.shapeFunction=None
    
-    def addVoronoi(self, image, cells=''):
+    def addVoronoi(self, image, position=None, cells=''):
         """ Add a Voronoi shape function using position from position component and BranchingImage image
         """
-        if self.position is None:
+        if position is None:
             print "[Flexible.API.ShapeFunction] ERROR: no position"
         imagePath = SofaPython.Tools.getObjectPath(image.branchingImage)
         self.shapeFunction = self.node.createObject(
             "VoronoiShapeFunction", template="ShapeFunctiond,"+"Branching"+image.imageType, 
             name="shapeFunction", cells=cells,
-            position="@"+SofaPython.Tools.getObjectPath(self.position)+".position",
+            position="@"+SofaPython.Tools.getObjectPath(position)+".position",
             src="@"+imagePath, method=0, nbRef=8, bias=True)
    
     def getFilenameIndices(self, filenamePrefix=None, directory=""):
@@ -193,8 +192,6 @@ class ShapeFunction:
             filename=self.getFilenameWeights(filenamePrefix, directory), exportAtBegin=True, printLog=True)
        
     def addContainer(self, filenamePrefix=None, directory=""):
-        if self.position is None:
-            print "[Flexible.API.ShapeFunction] ERROR: no position"
         self.node.createObject(
             "ImageContainer", template="BranchingImageUI", name="containerIndices", 
             filename=self.getFilenameIndices(filenamePrefix, directory), drawBB=False)
@@ -202,10 +199,10 @@ class ShapeFunction:
             "ImageContainer", template="BranchingImageD", name="containerWeights", 
             filename=self.getFilenameWeights(filenamePrefix, directory), drawBB=False)
         self.shapeFunction = self.node.createObject(
-            "ImageShapeFunctionContainer", template="ShapeFunctiond,BranchingImageUC", name="shapeFunction", position="@"+SofaPython.Tools.getObjectPath(self.position)+".position",
+            "ImageShapeFunctionContainer", template="ShapeFunctiond,BranchingImageUC", name="shapeFunction",
+            position='0 0 0', # dummy value to avoid a warning from baseShapeFunction
             transform="@containerWeights.transform",
             weights="@containerWeights.image", indices="@containerIndices.image")
-        
         
 class Behavior:
     """ High level API to add a behavior

@@ -125,8 +125,8 @@ class Sampler:
     """ This class proposes a high-level API to build ImageSamplers
     """
 
-    def __init__(self, parentNode, name):
-        self.node = parentNode.createChild(name)
+    def __init__(self, parentNode, name=''):
+        self.node = parentNode if name=='' else parentNode.createChild(name)
         self.name = name
         self.sampler=None
         self.dof=None
