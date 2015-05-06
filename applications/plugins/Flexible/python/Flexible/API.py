@@ -2,6 +2,7 @@ import math
 import os.path
 import pickle
 import Sofa
+import json
 
 import Flexible.IO
 import sys
@@ -107,6 +108,7 @@ class AffineMass:
     def __init__(self, node, dofAffineNode):
         self.node = node # a children node of all nodes and shape function
         self.dofAffineNode = dofAffineNode # where the mechanical state is located
+        self.mass = None
 
     def massFromDensityImage(self, dofRigidNode, densityImage, lumping='0'):
         node = self.node.createChild('Mass')
@@ -114,36 +116,29 @@ class AffineMass:
         insertLinearMapping(node, dofRigidNode, self.dofAffineNode, dof, assemble=False)
         densityImage.addBranchingToImage('0') # MassFromDensity on branching images does not exist yet
         massFromDensity = node.createObject('MassFromDensity',  name="MassFromDensity",  template="Affine,ImageD", image="@"+SofaPython.Tools.getObjectPath(densityImage.converter)+".image", transform="@"+SofaPython.Tools.getObjectPath(densityImage.converter)+'.transform', lumping=lumping)
-        self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix="@"+SofaPython.Tools.getObjectPath(massFromDensity)+".massMatrix")
+        self.mass = self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix="@"+SofaPython.Tools.getObjectPath(massFromDensity)+".massMatrix")
 
-    def read(self, directory):
-#        with open(os.path.join(directory,"affineMass.pkl"), "r") as f:
-#            data = pickle.load(f)
-#            self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix=data.mass)
-#            print 'Imported Affine Mass from '+directory+"/affineMass.pkl"
-        sys.path.insert(0, directory)
-        __import__('affineMass').loadMass(self.dofAffineNode)
-        print 'Imported Affine Mass from '+directory+"/affineMass.py"
+    def getFilename(self, filenamePrefix=None, directory=""):
+        _filename=filenamePrefix if not filenamePrefix is None else "affineMass"
+        _filename+=".json"
+        _filename=os.path.join(directory, _filename)
+        return _filename
 
-    class InternalData:
-        def __init__(self,node):
-            self.mass = None
+    def read(self, filenamePrefix=None, directory=""):
+        filename = self.getFilename(filenamePrefix,directory)
+        data = dict()
+        with open(filename,'r') as f:
+            data.update(json.load(f))
+        self.mass = self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix=data['massMatrix'])
+        print 'Imported Affine Mass from '+filename
 
-    def write(self, directory):
-        self.dofAffineNode.createObject('PythonScriptController', filename=__file__, classname='massExporter', variables=directory)
+    def write(self, filenamePrefix=None, directory=""):
+        filename = self.getFilename(filenamePrefix,directory)
+        data = {'massMatrix': str(self.mass.findData('massMatrix').value).replace('\n',' ')}
+        with open(filename, 'w') as f:
+            json.dump(data, f)
+        print 'Exported Affine Mass to '+filename
 
-class massExporter(Sofa.PythonScriptController):
-    def bwdInitGraph(self,node):
-        directory = self.findData('variables').value[0][0]
-#        with open(os.path.join(directory,"affineMass.pkl"), "w") as f:
-#            pickle.dump(self.InternalData(node), f)
-#        print 'Exported Affine Mass in '+directory+"/affineMass.pkl";
-        Flexible.IO.export_AffineMass(node.getObject('mass'), directory+"/affineMass.py")
-        print 'Exported Affine Mass in '+directory+"/affineMass.py"
-        return 0
-    class InternalData:
-        def __init__(self,node):
-            self.mass = str(node.getObject('mass').massMatrix).replace('\n',' ')
 
 class ShapeFunction:
     """ High-level API to manipulate ShapeFunction
