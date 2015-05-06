@@ -39,7 +39,7 @@ namespace container
 using namespace defaulttype;
 
 
-SOFA_DECL_CLASS (ImageContainer);
+SOFA_DECL_CLASS (ImageContainer)
 // Register in the Factory
 
 int ImageContainerClass = core::RegisterObject ( "Image Container" )
