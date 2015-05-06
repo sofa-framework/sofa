@@ -211,22 +211,15 @@ AddLinkerDependencies( SofaEigen2Solver SofaUserInteraction SofaComponentMisc So
 
 #### BOOST ######
 
-# linking with boost-system is needed
-# that means an installed version of boost is mandatory (sadly)
-# I loved the header-only boost
-
-# max: hopefully this is not needed anymore
-
-# if(NOT SOFA-EXTERNAL_BOOST)
-#    message(FATAL_ERROR "Compliant plugin needs a compiled Boost library >= 1.48. Please modify the SOFA-EXTERNAL_BOOST_PATH option to fix it...")
-# endif()
-# find_package(Boost COMPONENTS system REQUIRED)
-# AddLinkerDependencies( ${Boost_SYSTEM_LIBRARY} )
-
-
-if(CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES DEBUG)
-    # c'est à n'y rien comprendre mais j'en ai besoin uniquement en debug avec certains compilos (e.g. gcc4.6)
-    find_package(Boost COMPONENTS system REQUIRED)
+# Compliant is forced to use a header-only Boost
+# But sadely, some configs (e.g. gcc4.6 only in debug)
+# still require to link with a compiled Boost system lib.
+# So if this lib is installed we always link with it.
+# Otherwise we pray the header-only compilation works.
+# Note at this level the system component has already been looked
+# for in externals.cmake, so no need to look for it again
+# (and with a risk of mixing several boost versions)
+if( Boost_SYSTEM_LIBRARY )
     AddLinkerDependencies( ${Boost_SYSTEM_LIBRARY} )
 endif()
 

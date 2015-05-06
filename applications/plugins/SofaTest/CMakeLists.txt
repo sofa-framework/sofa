@@ -45,20 +45,22 @@ AddLinkerDependencies(SceneCreator)
 
 include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
 
-# TODO: shouldn't this be on for everyone ?
-# FF: it seems that it is not needed, and even problematic, on Linux (?)
 
-if(CMAKE_SYSTEM MATCHES "Windows")
-    AddLinkerDependencies(gtest)
-endif(CMAKE_SYSTEM MATCHES "Windows")
-
-if(APPLE)
+# it is problematic on Linux (and no needed ?)
+# a story of fPIC
+if(CMAKE_SYSTEM MATCHES "Windows" OR APPLE)
     AddLinkerDependencies(gtest)
 endif()
 
 if(UNIX)
-    find_package(Boost COMPONENTS system REQUIRED)
-    AddLinkerDependencies(${Boost_SYSTEM_LIBRARY})
+    # Note at this level the system component has already been looked
+    # for in externals.cmake, so no need to look for it again
+    # (and with a risk of mixing several boost versions)
+    if( NOT Boost_SYSTEM_LIBRARY )
+        message("A compiled Boost system library is mandatory for SofaTest")
+    else()
+        AddLinkerDependencies(${Boost_SYSTEM_LIBRARY})
+    endif()
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
