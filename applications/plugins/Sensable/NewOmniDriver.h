@@ -183,6 +183,7 @@ public:
     int initDevice();
 
     void cleanup();
+	virtual void draw(const core::visual::VisualParams*) override;
     virtual void draw();
 
     void setForceFeedback(ForceFeedback* ff);

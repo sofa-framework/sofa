@@ -304,8 +304,15 @@ void OglModel::drawGroup(int ig, bool transparent)
         default:
             break;
         }
-
-        glDrawElements(prim, g.nbe * 2, GL_UNSIGNED_INT, indices + g.edge0);
+		if(indices+g.edge0 == 0)
+		{
+#ifdef DEBUG_DRAW
+			serr << "OglModel::drawGroup : Preventing draw of a null element. It is known that a NewOmniDriver cause this kind of issue" << sendl;
+#endif
+		}
+		else
+		{
+			glDrawElements(prim, g.nbe * 2, GL_UNSIGNED_INT, indices + g.edge0);
 
 #ifdef SOFA_HAVE_GLEW
         if (useBufferObjects)
