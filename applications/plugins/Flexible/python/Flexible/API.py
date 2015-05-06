@@ -1,6 +1,5 @@
 import math
 import os.path
-import pickle
 import Sofa
 import json
 
@@ -212,13 +211,14 @@ class Behavior:
         self.dofs = None
         self.mapping = None
 
-    def addGaussPointSampler(self, shapeFunction, nbPoints):
+    def addGaussPointSampler(self, shapeFunction, nbPoints, **kwargs):
         shapeFunctionPath = SofaPython.Tools.getObjectPath(shapeFunction.shapeFunction)
         self.sampler = self.node.createObject(
             "ImageGaussPointSampler", template="BranchingImageD,BranchingImageUC", name="sampler",
             indices="@"+shapeFunctionPath+".indices", weights="@"+shapeFunctionPath+".weights", transform="@"+shapeFunctionPath+".transform", 
-            method="2", order=self.type[2:], targetNumber=nbPoints, sampleRigidParts="1", clearData=False,
-            mask="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage)+".branchingImage", maskLabels=concat(self.labels))
+            method="2", order=self.type[2:], targetNumber=nbPoints,
+            mask="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage)+".branchingImage", maskLabels=concat(self.labels),
+            **kwargs)
         
     def addMechanicalObject(self, dofRigidNode=None, dofAffineNode=None, assemble=True):
         if self.sampler is None:
@@ -226,6 +226,31 @@ class Behavior:
         self.dofs = self.node.createObject("MechanicalObject", template="F"+self.type, name="dofs")
         self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, self.sampler, self.labelImage, self.labels, assemble)
     
+
+    def getFilename(self, filenamePrefix=None, directory=""):
+        _filename=filenamePrefix if not filenamePrefix is None else self.name
+        _filename+=".json"
+        _filename=os.path.join(directory, _filename)
+        return _filename
+
+    def read(self, filenamePrefix=None, directory=""):
+        filename = self.getFilename(filenamePrefix,directory)
+        data = dict()
+        with open(filename,'r') as f:
+            data.update(json.load(f))
+        self.sampler = self.node.createObject('GaussPointContainer',name='GPContainer', volumeDim=data['volumeDim'], inputVolume=data['inputVolume'], position=data['position'])
+        print 'Imported Gauss Points from '+filename
+
+    def write(self, filenamePrefix=None, directory=""):
+        filename = self.getFilename(filenamePrefix,directory)
+        volumeDim = len(self.sampler.volume)/ len(self.sampler.position) if isinstance(self.sampler.volume, list) is True else 1 # when volume is a list (several GPs or order> 1)
+        data = {'volumeDim': str(volumeDim), 'inputVolume': str(self.sampler.volume).replace('[', '').replace("]", '').replace(",", ' '), 'position': str(self.sampler.position).replace('[', '').replace("]", '').replace(",", ' ')}
+        with open(filename, 'w') as f:
+            json.dump(data, f)
+        print 'Exported Gauss Points to '+filename
+
+
+
     def addHooke(self, strainMeasure="Corotational", youngModulus=0, poissonRatio=0, viscosity=0, assemble=True):
         eNode = self.node.createChild("E")
         eNode.createObject('MechanicalObject',  template="E"+self.type, name="E")
