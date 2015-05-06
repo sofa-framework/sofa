@@ -235,16 +235,16 @@ class GenericRigidJoint:
             l = 0
             limitMasks=[]
             for m in xrange(6):
-                if self.mask[m] == 0 and limits[l] != None and limits[l+1] != None: # unconstrained direction with limits
+                if self.mask[m] == 0 and limits[l] is not None and limits[l+1] is not None: # unconstrained direction with limits
                     limits[l+1] *= -1.0 # inverted upper bound
-                    l+=1
-                    limitMaskL = [0]*6;
-                    limitMaskU = [0]*6;
+                    l += 2
+                    limitMaskL = [0]*6
+                    limitMaskU = [0]*6
                     # lower bound
-                    limitMaskL[m] = 1;
+                    limitMaskL[m] = 1
                     limitMasks.append( limitMaskL )
                     # upper bound
-                    limitMaskU[m] = -1;  # inverted upper bound
+                    limitMaskU[m] = -1  # inverted upper bound
                     limitMasks.append( limitMaskU )
             return GenericRigidJoint.Limits( self.node, limitMasks, limits, compliance )
 
