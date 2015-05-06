@@ -4,8 +4,9 @@
 
 
 from SofaTest.Macro import *
-from Compliant import Rigid, Tools
+from Compliant import Tools
 from SofaPython import Quaternion
+import SofaPython.mass
 import numpy
 
 path = Tools.path( __file__ ) + "/geometric_primitives/"
@@ -102,6 +103,8 @@ def run():
 
     ok = True
 
+    info = SofaPython.mass.RigidMassInfo()
+
 # testing axis-aligned known geometric shapes
     for m in xrange(len(meshes)):
         mesh = meshes[m]
@@ -116,13 +119,13 @@ def run():
             for d in xrange(len(densities)):
                 density=densities[d]
 
-                info = Rigid.generate_rigid( mesh_path, density, scale )
+                info.setFromMesh( mesh_path, density, scale )
 
                 error = " ("+meshes[m]+", s="+Tools.cat(scale)+" d="+str(density)+")"
 
                 ok &= EXPECT_TRUE( almostEqualReal(info.mass, masses[m][s][d]), "mass"+error+" "+str(info.mass)+"!="+str(masses[m][s][d]) )
                 ok &= EXPECT_TRUE( almostEqualLists(info.com,[x*0.5 for x in scale]), "com"+error+" "+Tools.cat(info.com)+"!="+Tools.cat([x*0.5 for x in scale]) )
-                ok &= EXPECT_TRUE( almostEqualLists(info.diagonal_inertia.tolist(),inertia[m][s][d]), "inertia"+error+" "+str(info.diagonal_inertia)+"!="+str(inertia[m][s][d])+" "+str(info.inertia) )
+                ok &= EXPECT_TRUE( almostEqualLists(info.diagonal_inertia,inertia[m][s][d]), "inertia"+error+" "+str(info.diagonal_inertia)+"!="+str(inertia[m][s][d]) )
 
 # testing diagonal inertia extraction from a rotated cuboid
     mesh = "cube.obj"
@@ -131,15 +134,15 @@ def run():
     density = 1
     theory = sorted(inertia[0][3][0])
     for r in rotations:
-        info = Rigid.generate_rigid( mesh_path, density, scale, r )
-        local = sorted(info.diagonal_inertia.tolist())
+        info.setFromMesh( mesh_path, density, scale, r )
+        local = sorted(info.diagonal_inertia)
         ok &= EXPECT_TRUE( almostEqualLists(local,theory), "inertia "+str(local)+"!="+str(theory)+" (rotation="+str(r)+")" )
 
 # testing extracted inertia rotation
     mesh = "rotated_cuboid_12_35_-27.obj"
     mesh_path = path + mesh
     density = 1
-    info = Rigid.generate_rigid( mesh_path, density  )
+    info.setFromMesh( mesh_path, density )
 
     # theoretical results
     scale = [2,3,1]

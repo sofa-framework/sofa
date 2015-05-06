@@ -214,11 +214,11 @@ bool generateRigid(Rigid3Mass& mass, Vector3& center, const std::string& meshFil
 
 
 
-bool generateRigid( GenerateRigidInfo& res
+bool generateRigid(GenerateRigidInfo& res
                                   , const std::string& meshFilename
                                   , SReal density
                                   , const defaulttype::Vector3& scale
-                                  )
+                                  , const Vector3 &rotation)
 {
     sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create( meshFilename );
     if (mesh == NULL)
@@ -226,7 +226,7 @@ bool generateRigid( GenerateRigidInfo& res
         std::cerr << "ERROR loading mesh "<<meshFilename<<std::endl;
         return false;
     }
-    generateRigid(res, mesh, meshFilename, density, scale);
+    generateRigid(res, mesh, meshFilename, density, scale, rotation);
     return true;
 }
 
@@ -235,11 +235,12 @@ void generateRigid( GenerateRigidInfo& res
                                   , std::string const& meshName
                                   , SReal density
                                   , const defaulttype::Vector3& scale
+                                  , const Vector3 &rotation
                                   )
 {
     Rigid3Mass rigidMass;
 
-    generateRigid( rigidMass, res.com, mesh, density, scale );
+    generateRigid( rigidMass, res.com, mesh, density, scale, rotation  );
 
     if( rigidMass.mass < 0 )
     {
