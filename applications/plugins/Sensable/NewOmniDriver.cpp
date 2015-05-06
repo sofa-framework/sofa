@@ -706,6 +706,10 @@ void NewOmniDriver::reinit()
     std::cout<<"NewOmniDriver::reinit() done" <<std::endl;
 }
 
+void NewOmniDriver::draw(const core::visual::VisualParams* vparam){
+	draw();
+}
+
 // setup omni device visualization
 void NewOmniDriver::draw()
 {
