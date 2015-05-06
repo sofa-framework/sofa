@@ -58,7 +58,16 @@ list(APPEND compilerDefines SOFA_QT4)
 
 ## boost
 set(MINIBOOST_PATH "${SOFA_EXTLIBS_DIR}/miniBoost")
-sofa_option(SOFA-EXTERNAL_BOOST_PATH PATH "${MINIBOOST_PATH}" "Boost path, set to blank if you want to use the boost installed on your system or set a path if you want to use a compiled boost")
+
+find_package(Boost QUIET) # test is a boost is installed
+if( Boost_INCLUDE_DIR )
+    set(BOOST_DEFAULT_PATH "${Boost_INCLUDE_DIR}") # use system boost in priority
+else()
+    set(BOOST_DEFAULT_PATH "${MINIBOOST_PATH}")  # otherwise use miniboost as a failsafe
+endif()
+
+sofa_option(SOFA-EXTERNAL_BOOST_PATH PATH "${BOOST_DEFAULT_PATH}" "Boost path")
+
 if(SOFA-EXTERNAL_BOOST_PATH STREQUAL "${MINIBOOST_PATH}")
     unset(SOFA-EXTERNAL_BOOST CACHE)
 else()
