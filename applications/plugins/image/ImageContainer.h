@@ -539,9 +539,10 @@ protected:
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
     }
 
-    virtual void computeBBox(const core::ExecParams*  params, bool /*onlyVisible=false*/ )
+    virtual void computeBBox(const core::ExecParams*  params, bool onlyVisible=false )
     {
-        //        if( onlyVisible && !drawBB.getValue()) return;
+        if( onlyVisible && !drawBB.getValue()) return;
+
         Vec<8,Vector3> c;
         getCorners(c);
 
