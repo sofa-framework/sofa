@@ -324,14 +324,15 @@ extern "C" PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args)
     char* meshFilename;
     double density;
     double sx,sy,sz;
-    if (!PyArg_ParseTuple(args, "sdddd",&meshFilename,&density,&sx,&sy,&sz))
+    double rx,ry,rz;
+    if (!PyArg_ParseTuple(args, "sddddddd",&meshFilename,&density,&sx,&sy,&sz,&rx,&ry,&rz))
     {
         PyErr_BadArgument();
         Py_RETURN_NONE;
     }
 
     sofa::helper::GenerateRigidInfo rigid;
-    if( !sofa::helper::generateRigid( rigid, meshFilename, density, Vector3(sx,sy,sz) ) )
+    if( !sofa::helper::generateRigid( rigid, meshFilename, density, Vector3(sx,sy,sz), Vector3(rx,ry,rz) ) )
         exit(0);
 
     return Py_BuildValue("ddddddddddd",rigid.mass
