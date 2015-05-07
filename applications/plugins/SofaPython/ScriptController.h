@@ -124,7 +124,6 @@ public:
 	 */
 	virtual void draw(const core::visual::VisualParams*);
 
-
 protected:
 
     /// @name Script interface

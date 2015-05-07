@@ -34,6 +34,7 @@
 #include <sstream>
 
 #include "PythonMainScriptController.h"
+#include "PythonEnvironment.h"
 
 using namespace sofa::core::objectmodel;
 
@@ -43,7 +44,31 @@ namespace sofa
 namespace simulation
 {
 
+std::map<std::string, PyMethodDef*> SceneLoaderPY::OurModules;
 
+void SceneLoaderPY::addModules(const std::string& name, PyMethodDef* methodDef)
+{
+    OurModules[name] = methodDef;
+}
+
+void SceneLoaderPY::removeModules(const std::string& name)
+{
+    std::map<std::string, PyMethodDef*>::const_iterator it = OurModules.find(name);
+    if(OurModules.end() != it)
+        OurModules.erase(it);
+}
+
+void SceneLoaderPY::clearModules()
+{
+    OurModules.clear();
+}
+
+std::string SceneLoaderPY::OurHeader;
+
+void SceneLoaderPY::setHeader(const std::string& header)
+{
+    OurHeader = header;
+}
 
 bool SceneLoaderPY::canLoadFileExtension(const char *extension)
 {
@@ -51,8 +76,6 @@ bool SceneLoaderPY::canLoadFileExtension(const char *extension)
     std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
     return (ext=="py");
 }
-
-
 
 bool SceneLoaderPY::canWriteFileExtension(const char *extension)
 {
@@ -73,31 +96,38 @@ void SceneLoaderPY::getExtensionList(ExtensionList* list)
     list->push_back("py");
 }
 
-sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
+PyMODINIT_FUNC initModulesHelper(const std::map<std::string, PyMethodDef*>& modules)
 {
-    return loadSceneWithArguments( filename );
+    for(std::map<std::string, PyMethodDef*>::const_iterator it = modules.begin(); it != modules.end(); ++it)
+        Py_InitModule(it->first.c_str(), it->second);
 }
 
-
+sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
+{
+    return loadSceneWithArguments(filename);
+}
 
 sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments)
 {
-    PyObject *script = PythonEnvironment::importScript(filename,arguments);
-    if (!script)
+    sofa::simulation::PythonEnvironment::Release();
+    sofa::simulation::PythonEnvironment::Init();     // MUST be called at least once; so let's call it each time we load a python script
+
+    initModulesHelper(OurModules);
+
+    if(!OurHeader.empty() && 0 != PyRun_SimpleString(OurHeader.c_str()))
+    {
+        SP_MESSAGE_ERROR( "header script run error." )
+        return NULL;
+    }
+
+    if(!PythonEnvironment::runFile(filename, arguments))
     {
         // LOAD ERROR
         SP_MESSAGE_ERROR( "scene script load error." )
         return NULL;
     }
 
-    // pDict is a borrowed reference
-    PyObject *pDict = PyModule_GetDict(script);
-    if (!pDict)
-    {
-        // DICT ERROR
-        SP_MESSAGE_ERROR( "script dictionnary load error." )
-        return NULL;
-    }
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
     // pFunc is also a borrowed reference
     PyObject *pFunc = PyDict_GetItemString(pDict, "createScene");
@@ -107,6 +137,7 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
         ScriptEnvironment::enableNodeQueuedInit(false);
         SP_CALL_MODULEFUNC(pFunc, "(O)", SP_BUILD_PYSPTR(rootNode.get()))
         ScriptEnvironment::enableNodeQueuedInit(true);
+
         return rootNode;
     }
     else
@@ -132,23 +163,26 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
 
 bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments)
 {
+    sofa::simulation::PythonEnvironment::Release();
+    sofa::simulation::PythonEnvironment::Init();     // MUST be called at least once; so let's call it each time we load a python script
+
+    initModulesHelper(OurModules);
+
+    if(!OurHeader.empty() && 0 != PyRun_SimpleString(OurHeader.c_str()))
+    {
+        SP_MESSAGE_ERROR( "header script run error." )
+        return NULL;
+    }
+
     // it runs the unecessary SofaPython script but it is not a big deal
-    PyObject *script = PythonEnvironment::importScript(filename,arguments);
-    if (!script)
+    if(!PythonEnvironment::runFile(filename,arguments))
     {
         // LOAD ERROR
         SP_MESSAGE_ERROR( "script load error." )
         return false;
     }
 
-    // pDict is a borrowed reference
-    PyObject *pDict = PyModule_GetDict(script);
-    if (!pDict)
-    {
-        // DICT ERROR
-        SP_MESSAGE_ERROR( "script dictionnary load error." )
-        return false;
-    }
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
     // pFunc is also a borrowed reference
     PyObject *pFunc = PyDict_GetItemString(pDict, "run");
@@ -200,7 +234,7 @@ void SceneLoaderPY::write(Node* node, const char *filename)
 static const std::string s_tab = "    ";
 
 
-inline void printHeader( std::ostream& out, Node* node )
+inline void printBaseHeader( std::ostream& out, Node* node )
 {
     out << "import Sofa\n\n\n";
     out << "def createScene(root):\n";
@@ -219,14 +253,14 @@ void exportPython( Node* node, const char* fileName )
     {
         std::ofstream out( fileName );
 
-        printHeader( out, node );
+        printBaseHeader( out, node );
 
         PythonExporterVisitor print( out );
         node->execute( print );
     }
     else
     {
-        printHeader( std::cout, node );
+        printBaseHeader( std::cout, node );
 
         PythonExporterVisitor print( std::cout );
         node->execute( print );

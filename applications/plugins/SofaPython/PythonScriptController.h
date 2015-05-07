@@ -97,9 +97,6 @@ public:
     sofa::core::objectmodel::Data< helper::vector< std::string > >  m_variables; // array of string variables (equivalent to a c-like argv), while waiting to have a better way to share variables
 
 protected:
-    PyObject *m_Script;         // python script module
-    PyObject *m_ScriptDict;     // functions dictionnary
-
     PyObject *m_ScriptControllerClass;      // class implemented in the script to use to instanciate the python controller
 //    PyObject *m_ScriptControllerInstanceDict;  // functions dictionnary
     PyObject *m_ScriptControllerInstance;   // instance of m_ScriptControllerClass
