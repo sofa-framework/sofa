@@ -138,6 +138,51 @@ class AffineMass:
             json.dump(data, f)
         print 'Exported Affine Mass to '+filename
 
+# fix of Sofa<->python serialization
+def affineDatatostr(data):
+        L = ""
+        for it in data :
+                for i in xrange(3):
+                        L = L+ str(it[i])+" "
+                L = L+ "["
+                for i in xrange(9):
+                        L = L+ str(it[3+i])+" "
+                L = L+ "] "
+        return L
+
+class AffineDof:
+    def __init__(self, node):
+        self.node = node
+        self.dof = None
+        self.src = ''   # source of initial node positions
+
+    def addMechanicalObject(self, src, **kwargs):
+        if src is None:
+            print "[Flexible.API.AffineDof] ERROR: no source"
+        self.src = "@"+SofaPython.Tools.getObjectPath(src)+".position"
+        self.dof = self.node.createObject("MechanicalObject", template="Affine", name="dofs", position=self.src, **kwargs)
+
+    def getFilename(self, filenamePrefix=None, directory=""):
+        _filename=filenamePrefix if not filenamePrefix is None else "affineDof"
+        _filename+=".json"
+        _filename=os.path.join(directory, _filename)
+        return _filename
+
+    def read(self, filenamePrefix=None, directory=""):
+        filename = self.getFilename(filenamePrefix,directory)
+        data = dict()
+        with open(filename,'r') as f:
+            data.update(json.load(f))
+        self.dof = self.node.createObject("MechanicalObject", template="Affine", name="dofs", position=data['position'], rest_position=data['rest_position'])
+        print 'Imported Affine Dof from '+filename
+
+    def write(self, filenamePrefix=None, directory=""):
+        filename = self.getFilename(filenamePrefix,directory)
+        data = {'template':'Affine', 'rest_position': affineDatatostr(self.dof.rest_position), 'position': affineDatatostr(self.dof.position)}
+        with open(filename, 'w') as f:
+            json.dump(data, f)
+        print 'Exported Affine Dof to '+filename
+
 
 class ShapeFunction:
     """ High-level API to manipulate ShapeFunction

@@ -138,9 +138,3 @@ class Sampler:
     #def addImageSampler(self, image, nbSamples, fixedPosition=list(), **kwargs):
         #return self._addImageSampler(nbSamples, fixedPosition, template=image.imageType, src=SofaPython.Tools.getObjectPath(image.image), **kwargs)
 
-    def addMechanicalObject(self, template="Affine", **kwargs):
-        if self.sampler is None:
-            print "[ImageAPI.Sampler] ERROR: no sampler"
-        samplerPath = SofaPython.Tools.getObjectPath(self.sampler)
-        self.dof = self.node.createObject("MechanicalObject", template=template, name="dofs", position="@"+samplerPath+".position", **kwargs)
-
