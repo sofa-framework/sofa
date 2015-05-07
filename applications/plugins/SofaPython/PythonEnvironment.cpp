@@ -27,7 +27,6 @@
 #include "PythonMacros.h"
 #include "PythonScriptController.h"
 
-#include <sofa/config.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -108,6 +107,7 @@ except:\n\
     // exist: SOFAPYTHON_PLUGINS_PATH is a colon-separated list of paths to
     // directories that contain Sofa plugins.
 
+#ifdef SOFA_SRC_DIR
     const std::string pluginsDir = std::string(SOFA_SRC_DIR) + "/applications/plugins";
     if (FileSystem::exists(pluginsDir))
         addPythonModulePathsForPlugins(pluginsDir);
@@ -115,6 +115,7 @@ except:\n\
     const std::string devPluginsDir = std::string(SOFA_SRC_DIR) + "/applications-dev/plugins";
     if (FileSystem::exists(devPluginsDir))
         addPythonModulePathsForPlugins(devPluginsDir);
+#endif
 
     char * pathVar = getenv("SOFAPYTHON_PLUGINS_PATH");
     if (pathVar != NULL)

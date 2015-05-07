@@ -83,7 +83,7 @@ struct DataImageLink_test : public Sofa_test<>
         // Change value of data1
         // Set new path to image for imageContainer
         imageContainer2 = sofa::core::objectmodel::New<ImageContainer>();
-        std::string fileName = std::string(IMAGETEST_SCENES_DIR) + "/" + "pelvis_f.raw";
+        std::string fileName = std::string(IMAGE_TEST_SCENES_DIR) + "/" + "pelvis_f.raw";
         imageContainer2->m_filename.setValue(fileName);
         imageContainer2->init();
         data1.setValue(imageContainer2->image.getValue());
