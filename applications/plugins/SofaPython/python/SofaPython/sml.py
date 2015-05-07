@@ -104,8 +104,14 @@ class Model:
                 self.inertia = Tools.strToListFloat(objXml.find("inertia").text)
 
     class Offset:
-        def __init__(self, offsetXml):
+        def __init__(self, offsetXml=None):
             self.name = "offset"
+            self.value = [0., 0., 0., 0., 0., 0., 1.]
+            self.type = "absolute"
+            if not offsetXml is None:
+                self.parseXml(offsetXml)
+
+        def parseXml(self, offsetXml):
             self.value = Tools.strToListFloat(offsetXml.text)
             self.type = offsetXml.attrib["type"]
             
