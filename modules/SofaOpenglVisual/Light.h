@@ -90,6 +90,8 @@ public:
     Data<double> p_zNear, p_zFar;
     Data<bool> shadowsEnabled;
     Data<bool> softShadows;
+    Data<unsigned short> d_textureUnit;
+
 protected:
     Light();
     virtual ~Light();
@@ -108,11 +110,13 @@ public:
     virtual void preDrawShadow(core::visual::VisualParams* vp);
     virtual void postDrawShadow();
     virtual GLuint getShadowMapSize();
-    virtual GLuint getDepthTexture() { return 0 ;};
-    virtual GLuint getColorTexture() { return 0 ;};
-    virtual GLfloat* getProjectionMatrix() { return NULL ;};
-    virtual GLfloat* getModelviewMatrix() { return NULL ;};
+    virtual GLuint getDepthTexture() { return 0 ;}
+    virtual GLuint getColorTexture() { return 0 ;}
+    virtual GLfloat* getProjectionMatrix() { return NULL ;}
+    virtual GLfloat* getModelviewMatrix() { return NULL ;}
     virtual const sofa::defaulttype::Vector3 getPosition() { return sofa::defaulttype::Vector3(0.0,0.0,0.0); }
+    virtual const unsigned short getShadowTextureUnit() { return d_textureUnit.getValue(); }
+    virtual void setShadowTextureUnit(const unsigned short unit) { d_textureUnit.setValue(unit); }
 
 protected:
     bool needUpdate;
