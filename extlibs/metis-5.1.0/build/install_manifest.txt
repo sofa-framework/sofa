@@ -1,0 +1,5 @@
+/storage/vault/sofa/branches/build-system/extlibs/metis-5.1.0/build/install/lib/metis/cmake/MetisConfig.cmake
+/storage/vault/sofa/branches/build-system/extlibs/metis-5.1.0/build/install/lib/libmetis.a
+/storage/vault/sofa/branches/build-system/extlibs/metis-5.1.0/build/install/include/metis.h
+/storage/vault/sofa/branches/build-system/extlibs/metis-5.1.0/build/install/lib/metis/cmake/MetisTargets.cmake
+/storage/vault/sofa/branches/build-system/extlibs/metis-5.1.0/build/install/lib/metis/cmake/MetisTargets-noconfig.cmake
