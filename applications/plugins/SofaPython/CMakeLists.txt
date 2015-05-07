@@ -96,14 +96,10 @@ set(SOURCE_FILES
     ScriptEnvironment.cpp
 	)
 
-set(PYTHON_FILES
-    SofaPython.py
-)
-
 # include python files
 include(./python/python.cmake)
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 # Python's implementation deliberately breaks strict-aliasing rules, so we
 # compile with -fno-strict-aliasing to prevent the compiler from relying on
