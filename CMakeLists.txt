@@ -112,6 +112,14 @@ if(SOFA_COMPILE_ARTRACK)
     add_subdirectory(extlibs/ARTrack ${CMAKE_CURRENT_BINARY_DIR}/ARTrackLib)
 endif()
 
+option(SOFA_COMPILE_METIS
+"Build the metis library distributed in the extlibs/ directory.  It is used only
+by the SparseLDLSolver component.  Note that this library is usually available
+on Linux distributions." OFF)
+if(SOFA_COMPILE_METIS)
+    add_subdirectory(extlibs/metis-5.1.0 ${CMAKE_CURRENT_BINARY_DIR}/metis)
+endif()
+
 # framework
 add_subdirectory("${SOFA_FRAMEWORK_DIR}")
 
