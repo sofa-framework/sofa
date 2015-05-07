@@ -41,10 +41,10 @@ void EigenSparseResponse<LinearSolver,symmetric>::factor(const rmat& H, bool sem
     if( symmetric ) tmp = H.triangularView< Eigen::Lower >(); // only copy the triangular part (default to Lower)
     else tmp = H; // TODO there IS a temporary here, from rmat to cmat. Explicit copy is needed for iterative solvers
 
-    if( d_regularize.getValue() && semidefinite ) {
-
+    if( d_regularize.getValue() && semidefinite )
+    {
 		// add a tiny diagonal matrix to make H psd.
-        // TODO add epsilon only on the empty diagonal entries?
+        // TODO add epsilon only on the empty diagonal entries? NO it would not work for linearly dependent constraints
         cmat identity(H.rows(),H.cols());
         identity.setIdentity();
 
@@ -53,8 +53,26 @@ void EigenSparseResponse<LinearSolver,symmetric>::factor(const rmat& H, bool sem
 
     response.compute( tmp );
 	
-	if( response.info() != Eigen::Success ) {
-        serr << "non invertible matrix" << sendl;
+    if( response.info() != Eigen::Success )
+    {
+        // try to enforce regularization anyway
+        if( d_regularize.getValue() && !semidefinite )
+        {
+            cmat identity(H.rows(),H.cols());
+            identity.setIdentity();
+            tmp += identity * d_regularize.getValue();
+            response.compute( tmp );
+
+            serr << "non invertible matrix, regularizing" << sendl;
+
+            if( response.info() != Eigen::Success )
+            {
+                serr << "non invertible matrix, even after automatic regularization" << sendl;
+//                serr << dmat( tmp ) << sendl;
+            }
+        }
+        else
+            serr << "non invertible matrix" << sendl;
 	}
 
     assert( response.info() == Eigen::Success );

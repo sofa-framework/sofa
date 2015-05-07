@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<Node 	 name="root"  dt="0.02"  >
+	<BackgroundSetting color="0.8 0.8 0.8" />
+	<LightManager name="lightManager1"  listening="1"  shadows="1"  softShadows="1" />
+	
+	<SpotLight name="spotLight1"  shadowTextureSize="2048"  position="0 5 -15"  direction="0 -0.2 1"  cutoff="45" />
+	<SpotLight name="spotLight2"  shadowTextureSize="128"  position="0 5 10"  direction="0 -0.2 -1"  cutoff="45"  />
+	
+	<Node>
+		<OglShadowShader name="oglShadowShader1" />
+
+		<OglModel template="ExtVec3f" name="VisualModel"  fileMesh="mesh/dragon.obj"  translation="0 0 -5"  scale3d="0.3 0.3 0.3"  material="Default Diffuse 1 0 1 0 1 Ambient 1 0 0.2 0 1 Specular 0 0 1 0 1 Emissive 0 0 1 0 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material "  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+	</Node>
+	<Node>
+		<OglShadowShader name="oglShadowShader1" />
+ 		<OglTexture textureFilename="textures/ice_chess.bmp" indexShader="0" id="colorTexture" textureUnit="0"  repeat="true" />
+		<OglTexture textureFilename="textures/ice_chess.bmp" indexShader="1" id="colorTexture" textureUnit="1"  repeat="true" />
+		
+		<OglShaderDefineMacro id="USE_TEXTURE" indexShader="0" />
+		<OglShaderDefineMacro id="USE_TEXTURE" indexShader="1" />
+
+		<OglModel template="ExtVec3f"  putOnlyTexCoords="true" name="FloorV"  fileMesh="mesh/floor2.obj"  translation="0 -2.5 0"  scale3d="1 1 1"  material="Default Diffuse 1 0.5 0.5 0.5 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material "  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />	
+	</Node>
+
+
+</Node>

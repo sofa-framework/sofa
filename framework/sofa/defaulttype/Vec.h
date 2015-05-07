@@ -651,17 +651,31 @@ public:
 
 
     /// Normalize the vector taking advantage of its already computed norm, equivalent to /=norm
-    void normalizeWithNorm(real norm, real threshold=std::numeric_limits<real>::epsilon())
+    /// returns false iff the norm is too small
+    bool normalizeWithNorm(real norm, real threshold=std::numeric_limits<real>::epsilon())
     {
         if (norm>threshold)
+        {
             for (int i=0; i<N; i++)
                 this->elems[i]/=norm;
+            return true;
+        }
+        else
+            return false;
     }
 
     /// Normalize the vector.
-    void normalize(real threshold=std::numeric_limits<real>::epsilon())
+    /// returns false iff the norm is too small
+    bool normalize(real threshold=std::numeric_limits<real>::epsilon())
     {
-        normalizeWithNorm(norm(),threshold);
+        return normalizeWithNorm(norm(),threshold);
+    }
+
+    /// Normalize the vector with a failsafe.
+    /// If the norm is too small, the vector becomes the failsafe.
+    void normalize(Vec<N,real> failsafe, real threshold=std::numeric_limits<real>::epsilon())
+    {
+        if( !normalize() ) *this=failsafe;
     }
 
     /// Return the normalized the vector.

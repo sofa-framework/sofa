@@ -22,10 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include "MyBehaviorModel.h"
-#include <sofa/core/ObjectFactory.h>
 
+#include <sofa/core/ObjectFactory.h>
 
 
 namespace sofa
@@ -38,10 +37,9 @@ namespace behaviormodel
 {
 
 
-
-MyBehaviorModel::MyBehaviorModel()
-    : customUnsignedData( initData(&customUnsignedData,(unsigned)1,"Custom Unsigned Data","Example of unsigned data with custom widget") ),
-      regularUnsignedData( initData(&regularUnsignedData,(unsigned)1,"Unsigned Data","Example of unsigned data with standard widget") )
+MyBehaviorModel::MyBehaviorModel():
+    customUnsignedData(initData(&customUnsignedData, (unsigned)1,"Custom Unsigned Data","Example of unsigned data with custom widget")),
+    regularUnsignedData(initData(&regularUnsignedData, (unsigned)1,"Unsigned Data","Example of unsigned data with standard widget"))
 {
     customUnsignedData.setWidget("widget_myData");
 }
@@ -63,18 +61,13 @@ void MyBehaviorModel::updatePosition(double /*dt*/)
 {
 }
 
-
-
-
 SOFA_DECL_CLASS(MyBehaviorModel)
 
-int MyBehaviorModelClass = core::RegisterObject("just an example of component")
-        .add< MyBehaviorModel >()
-        ;
+int MyBehaviorModelClass = core::RegisterObject("Dummy component with a custom widget.").add< MyBehaviorModel >();
 
-}	//behaviormodel
 
-}	//component
+} // namespace behaviormodel
 
-}	//sofa
+} // namespace component
 
+} // namespace sofa

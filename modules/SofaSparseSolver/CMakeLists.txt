@@ -7,6 +7,8 @@ set(HEADER_FILES
     initSparseSolver.h
     PrecomputedLinearSolver.h
     PrecomputedLinearSolver.inl
+    SparseCholeskySolver.h
+    SparseLUSolver.h
     SparseLDLSolverImpl.h
     SparseLDLSolver.h
     SparseLDLSolver.inl
@@ -16,6 +18,8 @@ set(SOURCE_FILES
 
     initSparseSolver.cpp
     PrecomputedLinearSolver.cpp
+    SparseCholeskySolver.cpp
+    SparseLUSolver.cpp
     SparseLDLSolver.cpp
     )
 

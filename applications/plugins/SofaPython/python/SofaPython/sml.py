@@ -8,6 +8,7 @@ import Quaternion
 import Tools
 from Tools import listToStr as concat
 import units
+import mass
 
 def parseIdName(obj,objXml):
     """ set id and name of obj
@@ -67,7 +68,6 @@ class Model:
         def __init__(self, solidXml=None):
             self.id = None
             self.name = None
-            self.material = "default"
             self.tags = set()
             self.position = None
             self.mesh = list() # list of meshes
@@ -81,7 +81,6 @@ class Model:
         def parseXml(self, objXml):
             parseIdName(self, objXml)
             parseTag(self,objXml)
-            self.material=objXml.find("material").text
             self.position=Tools.strToListFloat(objXml.find("position").text)
             if not objXml.find("mass") is None:
                 self.mass = float(objXml.find("mass").text)
@@ -100,34 +99,42 @@ class Model:
             return self.type == "absolute"
             
     class Dof:
-        def __init__(self, dofXml):
-            self.index = Model.dofIndex[dofXml.attrib["index"]]
+        def __init__(self, dofXml=None):
+            self.index = None
             self.min = None
             self.max = None
+            if not dofXml is None:
+                self.parseXml(dofXml)
+
+        def parseXml(self, dofXml):
+            self.index = Model.dofIndex[dofXml.attrib["index"]]
             if "min" in dofXml.attrib:
                 self.min = float(dofXml.attrib["min"])
             if "max" in dofXml.attrib:
                 self.max = float(dofXml.attrib["max"])
-        
+
     class JointGeneric:
-        #def __init__(self, name="Unknown",object1,offset1,object2,offset2):
-        def __init__(self, jointXml):
-            parseIdName(self,jointXml)
+        def __init__(self, jointXml=None):
+            self.id = None
+            self.name = None
             self.solids = [None,None]
             # offsets
             self.offsets = [None,None]
+            # dofs
+            self.dofs = []
+            if not jointXml is None:
+                self.parseXml(jointXml)
+        
+        def parseXml(self, jointXml):
+            parseIdName(self,jointXml)
             solidsRef = jointXml.findall("jointSolidRef")
             for i in range(0,2):
                 if not solidsRef[i].find("offset") is None:
                     self.offsets[i] = Model.Offset(solidsRef[i].find("offset"))
                     self.offsets[i].name = "offset_{0}".format(self.name)
-                    
-            # dofs
-            self.dofs = [] 
             for dof in jointXml.iter("dof"):
                 self.dofs.append(Model.Dof(dof))
-        
-        
+
     class Skinning:
         """ Skinning definition, vertices index influenced by bone with weight
         """
@@ -141,18 +148,24 @@ class Model:
             self.object=None
             self.mesh=None
             self.group=None
-            
+            self.image=None
+
     class ContactSliding:
-        def __init__(self,contactXml):
-            parseIdName(self,contactXml)
+        def __init__(self,xml):
+            parseIdName(self,xml)
             self.surfaces = [None,None]
             self.distance=None
-            if contactXml.find("distance"):
-                self.distance=float(contactXml.findText("distance"))
+            if xml.find("distance"):
+                self.distance=float(xml.findText("distance"))
     
     class ContactAttached:
-        def __init__(self,contactXml):
-            parseIdName(self,contactXml)
+        def __init__(self,xml):
+            parseIdName(self,xml)
+            self.surfaces = [None,None]
+
+    class Registration:
+        def __init__(self,xml):
+            parseIdName(self,xml)
             self.surfaces = [None,None]
 
     dofIndex={"x":0,"y":1,"z":2,"rx":3,"ry":4,"rz":5}
@@ -167,6 +180,7 @@ class Model:
         self.genericJoints=dict()
         self.slidingContacts=dict()
         self.attachedContacts=dict()
+        self.registrations=dict()
 
         if not filename is None:
             self.open(filename)
@@ -270,6 +284,32 @@ class Model:
                             contact.surfaces[i].group = s.attrib["group"]
                 self.attachedContacts[contact.id]=contact
 
+            # registrations
+            for c in modelXml.iter("registration"):
+                if c.attrib["id"] in self.registrations:
+                    print "ERROR: sml.Model: registration defined twice, id:", c.attrib["id"]
+                    continue
+                reg = Model.Registration(c)
+                surfaces=c.findall("surface")
+                for i,s in enumerate(surfaces):
+                    reg.surfaces[i] = Model.Surface()
+                    if s.attrib["solid"] in self.solids:
+                        reg.surfaces[i].solid = self.solids[s.attrib["solid"]]
+                    else:
+                        print "ERROR: sml.Model: in registration {0}, unknown solid {1} referenced".format(reg.name, s.attrib["solid"])
+                    if s.attrib["mesh"] in self.meshes:
+                        reg.surfaces[i].mesh = self.meshes[s.attrib["mesh"]]
+                    else:
+                        print "ERROR: sml.Model: in registration {0}, unknown mesh {1} referenced".format(reg.name, s.attrib["mesh"])
+                    if "group" in s.attrib: # optional
+                        if len(s.attrib["group"]): # discard empty string
+                            reg.surfaces[i].group = s.attrib["group"]
+#                    if "image" in s.attrib: # optional
+#                        if len(s.attrib["image"]): # discard empty string
+#                            if s.attrib["image"] in self.images:
+#                               reg.surfaces[i].image = self.images[s.attrib["image"]]
+                self.registrations[reg.id]=reg
+
 
     def parseUnits(self, modelXml):
         xmlUnits = modelXml.find("units")
@@ -301,6 +341,15 @@ class Model:
                     print "ERROR: sml.Model: in joint {0}, unknown solid {1} referenced".format(joint.name, o.attrib["id"])
             self.genericJoints[joint.id]=joint
 
+
+    def setTagFromTag(self, tag, newTag):
+        """ assign newTag to all solids with tag
+        """
+        if tag in self.solidsByTag:
+            for solid in self.solidsByTag[tag]:
+                solid.tags.add(newTag)
+        self.updateTag()
+
     def updateTag(self):
         """ Update internal Model tag structures
         Call this method after you changed solids tag """
@@ -326,6 +375,15 @@ def setupUnits(myUnits):
         message+=" "+quantity+":"+unit
     print message    
 
+def getSolidRigidMassInfo(solid, density):
+    massInfo = mass.RigidMassInfo()
+    for mesh in solid.mesh:
+        # mesh mass info
+        mmi = mass.RigidMassInfo()
+        mmi.setFromMesh(mesh.source, density=density)
+        massInfo += mmi
+    return massInfo
+
 class BaseScene:
     """ Base class for Scene class, creates a node for this Scene
     """
@@ -336,6 +394,7 @@ class BaseScene:
         self.model = model
         self.param = BaseScene.Param()
         self.material = Tools.Material() # a default material set
+        self.solidMaterial = dict() # assign a material to a solid
         self.nodes = dict() # to store special nodes
         n=name
         if n is None:
@@ -347,6 +406,26 @@ class BaseScene:
         node = parent.createChild(name)
         self.nodes[name] = node
         return node
+    
+    def setMaterial(self, solid, material):
+        """ assign material to solid
+        """
+        self.solidMaterial[solid]=material
+    
+    def setMaterialByTag(self, tag, material):
+        """ assign material to all solids with tag
+        """
+        if tag in self.model.solidsByTag:
+            for solid in self.model.solidsByTag[tag]:
+                self.solidMaterial[solid.id] = material
+    
+    def getMaterial(self, solid):
+        """ return the solid material, "default" if none is defined
+        """
+        if solid in self.solidMaterial:
+            return self.solidMaterial[solid]
+        else :
+            return "default"
 
 class SceneDisplay(BaseScene):
     """ Creates a scene to display solid meshes

@@ -13,7 +13,7 @@
     
     <solid id="1">
         <name>Corps</name>
-        <material>steel</material>
+        <tag>part</tag>
         <tag>rigid</tag>
         <position>0 0 0 0 0 0 1</position>
         <mesh id="0.obj">
@@ -23,7 +23,7 @@
     
     <solid id="2">
         <name>Roue</name>
-        <material>steel</material>
+        <tag>part</tag>
         <tag>rigid</tag>
         <position>0 0 -0.148 0 0 0 1</position>
         <mesh id="3.obj" />
@@ -31,7 +31,7 @@
     
     <solid id="3">
         <name>Came</name>
-        <material>steel</material>
+        <tag>part</tag>
         <tag>rigid</tag>
         <position>1.085 -0.072 0.33 0 0 0 1</position>
         <mesh id="2.obj" />
@@ -39,7 +39,7 @@
     
     <solid id="4">
         <name>Piston</name>
-        <material>steel</material>
+        <tag>part</tag>
         <tag>rigid</tag>
         <position>2.05 0 0.33 0 0 0 1</position>
         <mesh id="1.obj">

@@ -1,0 +1,11 @@
+ObjectType = Image
+NDims = 3
+DimSize = 221 271 69
+ElementSpacing = 0.0078125 0.0078125 0.0246876
+Position = -1.86497 -0.968755 -0.0824288
+ElementNumberOfChannels = 1
+ElementType = MET_UCHAR
+HeaderSize = -1
+isPerpective = 0
+ElementDataFile = pelvis_f.raw
+

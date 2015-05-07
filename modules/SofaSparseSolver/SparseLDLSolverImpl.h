@@ -28,11 +28,9 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 
-#ifdef SOFA_HAVE_METIS
 extern "C" {
 #include <metis.h>
 }
-#endif
 
 namespace sofa
 {
@@ -47,48 +45,12 @@ namespace linearsolver
 template<class VecInt,class VecReal>
 class SpaseLDLImplInvertData : public MatrixInvertData {
 public :
-    int n, P_nnz, L_nnz, group;
+    int n, P_nnz, L_nnz;
     VecInt P_rowind,P_colptr,L_rowind,L_colptr,LT_rowind,LT_colptr;
     VecInt perm, invperm;
     VecReal P_values,L_values,LT_values,invD;
-    VecReal Bdiag;
     helper::vector<int> Parent;
 };
-
-
-#ifdef SOFA_HAVE_METIS
-inline void CSPARSE_ordering(int n,int * M_colptr,int * M_rowind,int * perm,int * invperm, int * xadj, int * adj)
-{
-    int it = 0;
-    for (int j=0; j<n; j++)
-    {
-        xadj[j] = M_colptr[j] - j;
-
-        for (int ip = M_colptr[j]; ip < M_colptr[j+1]; ip++)
-        {
-            int i = M_rowind[ip];
-            if (i != j) adj[it++] = i;
-        }
-    }
-    xadj[n] = M_colptr[n] - n;
-
-    //int numflag = 0, options = 0;
-    // The new API of metis requires pointers on numflag and "options" which are "structure" to parametrize the factorization
-    // We give NULL and NULL to use the default option (see doc of metis for details) !
-    // If you have the error "SparseLDLSolver failure to factorize, D(k,k) is zero" that probably means that you use the previsou version of metis.
-    // In this case you have to download and install the last version from : www.cs.umn.edu/~metis‎
-    METIS_NodeND(&n, xadj,adj, NULL, NULL, perm,invperm);
-}
-#else
-inline void CSPARSE_ordering(int n,int * /*M_colptr*/,int * /*M_rowind*/,int * perm,int * invperm, int * /*xadj*/, int * /*adj*/)
-{
-    for (int i=0; i<n; i++)
-    {
-        perm[i] = i;
-        invperm[i] = i;
-    }
-}
-#endif
 
 inline void CSPARSE_symbolic (int n,int * M_colptr,int * M_rowind,int * colptr,int * perm,int * invperm,int * Parent, int * Flag, int * Lnz)
 {
@@ -240,10 +202,63 @@ protected :
     }
 
     void LDL_ordering(int n,int * M_colptr,int * M_rowind,int * perm,int * invperm) {
-        xadj.resize(n+1);
-        adj.resize(M_colptr[n]-n);
+        //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
+        tran_countvec.clear();
+        tran_countvec.resize(n);
 
-        CSPARSE_ordering(n,M_colptr,M_rowind,perm,invperm,&xadj[0],&adj[0]);
+        //First we count the number of value on each row.
+        for (int j=0;j<n;j++) {
+          for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
+              int col = M_rowind[i];
+              if (col>j) tran_countvec[col]++;
+          }
+        }
+
+        //Now we make a scan to build tran_colptr
+        t_xadj.resize(n+1);
+        t_xadj[0] = 0;
+        for (int j=0;j<n;j++) t_xadj[j+1] = t_xadj[j] + tran_countvec[j];
+
+        //we clear tran_countvec becaus we use it now to stro hown many value are written on each line
+        tran_countvec.clear();
+        tran_countvec.resize(n);
+
+        t_adj.resize(t_xadj[n]);
+        for (int j=0;j<n;j++) {
+          for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
+            int line = M_rowind[i];
+            if (line>j) {
+                t_adj[t_xadj[line] + tran_countvec[line]] = j;
+                tran_countvec[line]++;
+            }
+          }
+        }
+
+        adj.clear();
+        xadj.resize(n+1);
+        xadj[0] = 0;
+        for (int j=0; j<n; j++)
+        {
+            //copy the lower part
+            for (int ip = t_xadj[j]; ip < t_xadj[j+1]; ip++) {
+                adj.push_back(t_adj[ip]);
+            }
+
+            //copy only the upper part
+            for (int ip = M_colptr[j]; ip < M_colptr[j+1]; ip++) {
+                int col = M_rowind[ip];
+                if (col > j) adj.push_back(col);
+            }
+
+            xadj[j+1] = adj.size();
+        }
+
+        //int numflag = 0, options = 0;
+        // The new API of metis requires pointers on numflag and "options" which are "structure" to parametrize the factorization
+        // We give NULL and NULL to use the default option (see doc of metis for details) !
+        // If you have the error "SparseLDLSolver failure to factorize, D(k,k) is zero" that probably means that you use the previsou version of metis.
+        // In this case you have to download and install the last version from : www.cs.umn.edu/~metis‎
+        METIS_NodeND(&n, &xadj[0],&adj[0], NULL, NULL, perm,invperm);
     }
 
     void LDL_symbolic (int n,int * M_colptr,int * M_rowind,int * colptr,int * perm,int * invperm,int * Parent) {
@@ -265,7 +280,7 @@ protected :
     }
 
     template<class VecInt,class VecReal>
-    void factorize(int n,int * M_colptr, int * M_rowind, Real * M_values, SpaseLDLImplInvertData<VecInt,VecReal> * data,int group = 1) {
+    void factorize(int n,int * M_colptr, int * M_rowind, Real * M_values, SpaseLDLImplInvertData<VecInt,VecReal> * data) {
         bool new_factorization_needed = data->P_colptr.size() == 0 || data->P_rowind.size() == 0 
 			|| CSPARSE_need_symbolic_factorization(n, M_colptr, M_rowind, data->n, (int *) &data->P_colptr[0],(int *) &data->P_rowind[0]);
 
@@ -322,34 +337,6 @@ protected :
 
         // split the bloc diag in data->Bdiag
 
-        data->group=group;
-        if (group>1) {
-            data->Bdiag.clear();
-            data->Bdiag.resize(data->n * group);
-            Real * diag = &data->Bdiag[0];
-
-//            int ptr = 0;
-            int begin = colptr[0];
-
-            for (int j=0;j<data->n;j++) {
-                int bn = (j/group) * group;
-
-                for (int i=begin;i<colptr[j+1];i++) {
-                    if (rowind[i]-bn<group) {
-                        diag[j*group + rowind[i]-bn] = values[i];
-                        diag[rowind[i]*group + j-bn] = values[i];
-                    } else {
-//                        rowind[ptr] = rowind[i];
-//                        values[ptr] = values[i];
-//                        ptr++;
-                    }
-                }
-
-                begin = colptr[j+1];
-//                colptr[j+1] = ptr;
-            }
-        }
-
         if (new_factorization_needed) {
             //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
             tran_countvec.clear();
@@ -379,7 +366,7 @@ protected :
 
     helper::vector<Real> Tmp;
 protected : //the folowing variables are used during the factorization they canno be used in the main thread !
-    helper::vector<int> xadj,adj;
+    helper::vector<int> xadj,adj,t_xadj,t_adj;
     helper::vector<Real> Y;
     helper::vector<int> Lnz,Flag,Pattern;
     helper::vector<int> tran_countvec;

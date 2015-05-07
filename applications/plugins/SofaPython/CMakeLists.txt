@@ -120,9 +120,6 @@ set(SOURCE_FILES
     SceneLoaderPY.cpp
     ScriptEnvironment.cpp)
 
-set(PYTHON_FILES
-    SofaPython.py)
-
 # include python files
 include(./python/python.cmake)
 

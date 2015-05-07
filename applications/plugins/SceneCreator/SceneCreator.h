@@ -78,8 +78,11 @@ SOFA_SceneCreator_API simulation::Node::SPtr createGridScene(Vec3 startPoint, Ve
 SOFA_SceneCreator_API void addCollisionModels(simulation::Node::SPtr CollisionNode, const std::vector<std::string> &elements);
 
 
-
+#ifndef SOFA_FLOAT
 typedef Eigen::VectorXd Vector;
+#else
+typedef Eigen::VectorXf Vector;
+#endif
 typedef Eigen::Matrix<SReal, Eigen::Dynamic,Eigen::Dynamic> DenseMatrix;
 typedef Eigen::SparseMatrix<SReal, Eigen::RowMajor> SparseMatrix;
 

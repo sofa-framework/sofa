@@ -71,12 +71,13 @@ public:
     SOFA_CLASS(LightManager, core::visual::VisualManager);
 
 private:
-    std::vector<Light*> lights;
+    std::vector<Light::SPtr> lights;
     std::vector<defaulttype::Mat4x4f> lightModelViewMatrix;
     std::vector<defaulttype::Mat4x4f> lightProjectionMatrix;
+    std::vector<unsigned short> m_mapShadowTextureUnit;
 #ifdef SOFA_HAVE_GLEW
     //OglShadowShader* shadowShader;
-    helper::vector<OglShadowShader*> shadowShaders;
+    helper::vector<OglShadowShader::SPtr> shadowShaders;
 #endif
     void makeShadowMatrix(unsigned int i);
 
@@ -90,6 +91,7 @@ public:
     Data<bool> shadowsEnabled;
     Data<bool> softShadowsEnabled;
     Data<defaulttype::Vec4f> ambient;
+
 protected:
     LightManager();
     virtual ~LightManager();
@@ -108,10 +110,10 @@ public:
     void bwdDraw(core::visual::VisualParams*);
 
     ///Register a light into the LightManager
-    void putLight(Light* light);
+    void putLight(Light::SPtr light);
 
     ///Register a vector of lights into the LightManager
-    void putLights(std::vector<Light*> lights);
+    void putLights(std::vector<Light::SPtr> lights);
 
     ///Remove all lights of the LightManager
     void clear();

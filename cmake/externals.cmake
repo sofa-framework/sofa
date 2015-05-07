@@ -81,7 +81,7 @@ if(SOFA-EXTERNAL_BOOST)
 	endif()
 
     set(Boost_USE_MULTITHREADED ON)
-    find_package("Boost" REQUIRED COMPONENTS thread graph system)
+    find_package("Boost" REQUIRED COMPONENTS thread graph system QUIET)
     set(Boost_LIB_DIAGNOSTIC_DEFINITIONS ${Boost_LIB_DIAGNOSTIC_DEFINITIONS} CACHE INTERNAL "Boost lib diagnostic definitions" FORCE)
     set(GLOBAL_COMPILER_DEFINES ${GLOBAL_COMPILER_DEFINES} BOOST_ALL_NO_LIB CACHE INTERNAL "Global Compiler Defines" FORCE)
     list(APPEND GLOBAL_INCLUDE_DIRECTORIES "${Boost_INCLUDE_DIRS}")

@@ -43,6 +43,9 @@
 
 //sensable namespace
 
+using std::cout;
+using std::endl;
+
 double prevTime;
 bool frame;
 bool visuCreation;
@@ -701,6 +704,10 @@ void NewOmniDriver::reinit()
         changeScale = true;
 
     std::cout<<"NewOmniDriver::reinit() done" <<std::endl;
+}
+
+void NewOmniDriver::draw(const core::visual::VisualParams* vparam){
+	draw();
 }
 
 // setup omni device visualization

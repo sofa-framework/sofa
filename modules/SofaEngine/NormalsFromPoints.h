@@ -43,7 +43,7 @@ namespace engine
 {
 
 /**
- * This class computes the average of a set of Coordinates
+ * This class compute vertex normals by averaging face normals
  */
 template <class DataTypes>
 class NormalsFromPoints : public core::DataEngine

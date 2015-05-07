@@ -12,7 +12,7 @@ import SofaPython.mass
 import SofaPython.sml
 import Flexible.sml
 
-def insertRigid(parentNode, rigidModel, material, param=None):
+def insertRigid(parentNode, rigidModel, density, param=None):
     """ create a StructuralAPI.RigidBody from the rigidModel, compute rigidMass from
         1) mass, com and inertia if present
         2) mesh if possible
@@ -38,12 +38,7 @@ def insertRigid(parentNode, rigidModel, material, param=None):
         rigid.setFromRigidInfo(massinfo, offset=rigidModel.position , inertia_forces = False )    # TODO: handle inertia_forces ?
     elif len(rigidModel.mesh)!=0 and meshFormatSupported:
         # get inertia from mesh and density
-        massinfo = SofaPython.mass.RigidMassInfo()
-
-        for mesh in rigidModel.mesh :
-            mi = SofaPython.mass.RigidMassInfo()
-            mi.setFromMesh(mesh.source, density=material.density(rigidModel.material))
-            massinfo+=mi
+        massinfo = SofaPython.sml.getSolidRigidMassInfo(rigidModel, density)
         rigid.setFromRigidInfo(massinfo, offset=rigidModel.position , inertia_forces = False )    # TODO: handle inertia_forces ?
 
         #if not rigidModel.mass is None :
@@ -122,20 +117,22 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         optionnaly give a tag to select the rigids which are merged
         return the list of merged rigids id"""
 
-        mergeNode.createObject("MechanicalObject", template = "Rigid3d", name="dofs")
         rigidsId = list() # keep track of merged rigids, rigid index and rigid id
         input=""
         indexPairs=""
-        for solid in self.model.solidsByTag[tag]:
-            if not solid.id in self.rigids:
-                print "[Compliant.sml.SceneArticulatedRigid.insertMergeRigid] WARNING: "+solid.name+" is not a rigid"
-                continue
-            rigid = self.rigids[solid.id]
-            rigid.node.addChild(mergeNode)
-            input += '@'+rigid.node.getPathName()+" "
-            indexPairs += str(len(rigidsId)) + " 0 "
-            rigidsId.append(solid.id)
-        mergeNode.createObject('SubsetMultiMapping', template = "Rigid3d,Rigid3d", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
+        if tag in self.model.solidsByTag:
+            for solid in self.model.solidsByTag[tag]:
+                if not solid.id in self.rigids:
+                    print "[Compliant.sml.SceneArticulatedRigid.insertMergeRigid] WARNING: "+solid.name+" is not a rigid"
+                    continue
+                rigid = self.rigids[solid.id]
+                rigid.node.addChild(mergeNode)
+                input += '@'+rigid.node.getPathName()+" "
+                indexPairs += str(len(rigidsId)) + " 0 "
+                rigidsId.append(solid.id)
+        if input:
+            mergeNode.createObject("MechanicalObject", template = "Rigid3d", name="dofs")
+            mergeNode.createObject('SubsetMultiMapping', template = "Rigid3d,Rigid3d", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
         return rigidsId
 
     def createScene(self):
@@ -145,8 +142,9 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         SofaPython.sml.setupUnits(self.model.units)
 
         # rigids
-        for rigidModel in self.model.solidsByTag["rigid"]:
-            self.rigids[rigidModel.id] = insertRigid(self.node, rigidModel, self.material, self.param)
+        if "rigid" in self.model.solidsByTag:
+            for rigidModel in self.model.solidsByTag["rigid"]:
+                self.rigids[rigidModel.id] = insertRigid(self.node, rigidModel, self.material.density(self.getMaterial(rigidModel.id)) , self.param)
         
         # joints
         for jointModel in self.model.genericJoints.values():

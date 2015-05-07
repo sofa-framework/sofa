@@ -94,6 +94,7 @@ Light::Light()
     , p_zFar(initData(&p_zFar, "zFar", "Camera's ZFar"))
     , shadowsEnabled(initData(&shadowsEnabled, (bool) true, "shadowsEnabled", "Enable Shadow from this light"))
     , softShadows(initData(&softShadows, (bool) false, "softShadows", "Turn on Soft Shadow from this light"))
+    , d_textureUnit(initData(&d_textureUnit, (unsigned short) 1, "textureUnit", "Texture unit for the genereated shadow texture"))
     , needUpdate(false)
 {
 }

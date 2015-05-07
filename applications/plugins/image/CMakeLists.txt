@@ -37,7 +37,8 @@ set(SOURCE_FILES
     ImageExporter.cpp
     ImageDataDisplay.cpp
     VoronoiToMeshEngine.cpp
-    ImageToRigidMassEngine.cpp)
+    ImageToRigidMassEngine.cpp
+    TestImageEngine.cpp)
 
 set(HEADER_FILES
     initImage.h
@@ -61,7 +62,8 @@ set(HEADER_FILES
     Containers.h
     ImageDataDisplay.h
     VoronoiToMeshEngine.h
-    ImageToRigidMassEngine.h)
+    ImageToRigidMassEngine.h
+    TestImageEngine.h)
 
 set(README_FILES image.txt)
 
@@ -91,6 +93,8 @@ if(FREENECT_FOUND)
     list(APPEND IMAGE_DEPENDENCY_INCLUDE_DIR ${FREENECT_INCLUDE_DIR})
     list(APPEND HEADER_FILES "Kinect.h")
     list(APPEND SOURCE_FILES "Kinect.cpp")
+    AddLinkerDependencies("freenect")
+    AddLinkerDependencies("freenect_sync")
 endif()
 
 # todo
