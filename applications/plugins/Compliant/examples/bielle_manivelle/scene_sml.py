@@ -19,6 +19,8 @@ def createScene(node):
     
     scene_bielle_manivelle = Compliant.sml.SceneArticulatedRigid(node, model)
     scene_bielle_manivelle.material.load(os.path.join(os.path.dirname(__file__), "material.json"))
+    scene_bielle_manivelle.setMaterialByTag("part", "steel")
+    
     scene_bielle_manivelle.param.showRigid=True
     scene_bielle_manivelle.param.showOffset=True
     scene_bielle_manivelle.createScene()

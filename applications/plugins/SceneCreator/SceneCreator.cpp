@@ -87,7 +87,7 @@ typedef component::mapping::BarycentricMapping<defaulttype::Vec3Types, defaultty
 typedef component::mapping::BarycentricMapping<defaulttype::Vec3Types, defaulttype::ExtVec3fTypes> BarycentricMapping3_to_Ext3;
 typedef component::mapping::RigidMapping<defaulttype::Rigid3Types, defaulttype::Vec3Types > RigidMappingRigid3_to_3;
 typedef component::mapping::RigidMapping<defaulttype::Rigid3Types, defaulttype::ExtVec3fTypes > RigidMappingRigid3_to_Ext3;
-typedef component::mass::UniformMass<defaulttype::Vec3Types, double> UniformMass3;
+typedef component::mass::UniformMass<defaulttype::Vec3Types, SReal> UniformMass3;
 typedef component::interactionforcefield::StiffSpringForceField<defaulttype::Vec3Types > StiffSpringForceField3;
 
 simulation::Node::SPtr createRootWithCollisionPipeline(const std::string& responseType)

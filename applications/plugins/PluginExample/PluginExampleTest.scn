@@ -1,16 +1,17 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 0 0" time="0" animate="0"   >
-<VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
-<Node 	name="parent node with independent DOFs" >
-		<EulerSolver name="ODE solver" />
-		<MechanicalObject template="Vec1d" name="angles" />
-		<UniformMass template="Vec1d" name="mass" />
-		<Node 	name="child node with DOFs mapped from the parent" >
-			<MechanicalObject template="Vec3d" name="endpoint coordinates" position="1 -0.1 0" />
-			<MyMappingPendulumInPlane name="angle->coord mapping" input="@.." output="@."/>
-			<ConstantForceField force="1 -1 0" points="0" />
-			<MyBehaviorModel name="dummy component" />
-			<MyProjectiveConstraintSet name="dummy component" />
-		</Node>
-	</Node>
+<Node name="Root" gravity="0 0 0" time="0" animate="0">
+    <RequiredPlugin name="PluginExample" pluginName="PluginExample"/>
+    <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields"/>
+    <Node name="parent node with independent DOFs">
+        <EulerSolver name="ODE solver"/>
+        <MechanicalObject template="Vec1d" name="angles"/>
+        <UniformMass template="Vec1d" name="mass"/>
+        <Node name="child node with DOFs mapped from the parent">
+            <MechanicalObject template="Vec3d" name="endpoint coordinates" position="1 -0.1 0"/>
+            <MyMappingPendulumInPlane name="angle->coord mapping" input="@.." output="@."/>
+            <ConstantForceField force="1 -1 0" points="0"/>
+            <MyBehaviorModel name="dummy component"/>
+            <MyProjectiveConstraintSet name="dummy component"/>
+        </Node>
+    </Node>
 </Node>

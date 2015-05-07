@@ -6,7 +6,7 @@ python createPythonScene.py -h
 or
 ./createPythonScene.py -h
 """
-import re    
+import re
 import xml.etree.ElementTree as ET
 from subprocess import check_output
 import argparse
@@ -71,7 +71,7 @@ def attributesToStringXML(child) :
 def createObject(child) :
     createObject_str = "createObject(\'" + child.tag + "\'" + attributesToStringPython(child,1) +")"
     return createObject_str;
-    
+
 def createChild(childName) :
     createChild_str = "createChild(\'" + childName + "\'" +")"
     return createChild_str;
@@ -89,17 +89,18 @@ def printChildren(parent, tabs, numberOfUnnamedNodes, scenePath='rootNode', node
     parentName = parent.get('name')
     if nodeIsRootNode :
         parentName = 'rootNode'
+    parentVariableName = stringToVariableName(parentName)
     myChildren = str()
     for child in parent :
         if child.tag == "Node" :
             childName, numberOfUnnamedNodes = getNodeName(child,numberOfUnnamedNodes)
             currentScenePath = scenePath+"/"+childName
             myChildren += "\n"+tabs+"# "+currentScenePath+"\n"
-            myChildren += tabs+stringToVariableName(childName)+" = "+parentName+"."+createChild(childName)+"\n"
+            myChildren += tabs+stringToVariableName(childName)+" = "+parentVariableName+"."+createChild(childName)+"\n"
             myChildren += childAttributesToStringPython(child,childName,tabs)
             myChildren += printChildren(child,tabs,numberOfUnnamedNodes,scenePath=currentScenePath)
         else :
-            myChildren += tabs+parentName+"."+createObject(child)+"\n"
+            myChildren += tabs+parentVariableName+"."+createObject(child)+"\n"
     return myChildren;
 
 def getElement (node,name) :
@@ -143,18 +144,18 @@ def parseInput() :
     return parser,args;
 
 def pythonScriptControllerFunctions(produceSceneAndPythonFile) :
-    allScriptControllerFunctions = ['onKeyPressed(self,c)','onKeyReleased(self,c)','onLoaded(self,node)','onMouseButtonLeft(self,mouseX,mouseY,isPressed)','onMouseButtonRight(self,mouseX,mouseY,isPressed)','onMouseButtonMiddle(self,mouseX,mouseY,isPressed)','onMouseWheel(self,mouseX,mouseY,wheelDelta)','onGUIEvent(self,strControlID,valueName,strValue)','onBeginAnimationStep(self,deltaTime)','onEndAnimationStep(self,deltaTime)','onScriptEvent(self,senderNode, eventName,data)','initGraph(self,node)','bwdInitGraph(self,node)','storeResetState(self)','reset(self)','cleanup(self)']
+    allScriptControllerFunctions = ['onKeyPressed(self, c)','onKeyReleased(self, c)','onLoaded(self, node)','onMouseButtonLeft(self, mouseX,mouseY,isPressed)','onMouseButtonRight(self, mouseX,mouseY,isPressed)','onMouseButtonMiddle(self, mouseX,mouseY,isPressed)','onMouseWheel(self, mouseX,mouseY,wheelDelta)','onGUIEvent(self, strControlID,valueName,strValue)','onBeginAnimationStep(self, deltaTime)','onEndAnimationStep(self, deltaTime)','onScriptEvent(self, senderNode, eventName,data)','initGraph(self, node)','bwdInitGraph(self, node)','storeResetState(self)','reset(self)','cleanup(self)']
     result = '\n'
-    tabs = ""    
+    tabs = ""
     if produceSceneAndPythonFile :
         tabs = "    "
     for curFct in allScriptControllerFunctions :
-        result += '\n'+tabs+'def ' + curFct + ' : \n'+tabs+'    return 0;\n'
+        result += '\n'+tabs+'def ' + curFct + ':\n'+tabs+'    return 0;\n'
     return result
 
 def writePythonFile(info_str,classNamePythonFile,node,outputFilenamePython,produceSceneAndPythonFile=1,nodeIsRootNode=1) :
     # get correct number of tabs
-    tabs = "    "    
+    tabs = "    "
     if produceSceneAndPythonFile :
         tabs = "        "
 
@@ -198,7 +199,7 @@ def transformXMLSceneToPythonScene(pythonFilename,inputScene,produceSceneAndPyth
 
     # string with a few informations on the file
     info_str = outputFilenameWithoutPath + "\n"
-    info_str += "is based on the scene \n" 
+    info_str += "is based on the scene \n"
     info_str += inputSceneWithAbsPath + "\n"
     info_str += "but it uses the SofaPython plugin. \n"
     info_str += "Further informations on the usage of the plugin can be found in \n"
@@ -274,4 +275,3 @@ def main() :
 
 if __name__ == "__main__":
     main()
-    

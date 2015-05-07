@@ -47,6 +47,8 @@ void ARTrackController<DataTypes>::init()
     std::cout<<" ARTrackController<DataTypes>::init"<<std::endl;
 }
 
+
+#ifndef SOFA_FLOAT
 template <>
 void ARTrackController<Vec1dTypes>::init()
 {
@@ -71,6 +73,7 @@ void ARTrackController<Vec3dTypes>::onARTrackEvent(core::objectmodel::ARTrackEve
         }
     }
 }
+#endif
 
 template <>
 void ARTrackController<RigidTypes>::onARTrackEvent(core::objectmodel::ARTrackEvent *aev)
@@ -99,6 +102,7 @@ void ARTrackController<RigidTypes>::onARTrackEvent(core::objectmodel::ARTrackEve
     }
 }
 
+#ifndef SOFA_FLOAT
 template <>
 void ARTrackController<Vec1dTypes>::onARTrackEvent(core::objectmodel::ARTrackEvent *aev)
 {
@@ -149,6 +153,7 @@ void ARTrackController<Vec1dTypes>::onARTrackEvent(core::objectmodel::ARTrackEve
         }
     }
 }
+#endif
 
 template <class DataTypes>
 void ARTrackController<DataTypes>::onARTrackEvent(core::objectmodel::ARTrackEvent* /*aev*/)
@@ -160,6 +165,7 @@ void ARTrackController<DataTypes>::onMouseEvent(core::objectmodel::MouseEvent * 
 {
 }
 
+#ifndef SOFA_FLOAT
 template <>
 void ARTrackController<Vec1dTypes>::onMouseEvent(core::objectmodel::MouseEvent * mev)
 {
@@ -211,6 +217,7 @@ void ARTrackController<Vec1dTypes>::onMouseEvent(core::objectmodel::MouseEvent *
         wheel=false;
     }
 }
+#endif
 
 template <>
 void ARTrackController<RigidTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)

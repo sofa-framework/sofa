@@ -138,7 +138,7 @@ public:
     public:
         typedef typename FixedLMConstraint<DataTypes>::SetIndexArray SetIndexArray;
         FCPointHandler(FixedLMConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray >* _data)
-            : TopologySubsetDataHandler<sofa::component::topology::Point, SetIndexArray >(_data), fc(_fc) {}
+            : sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, SetIndexArray >(_data), fc(_fc) {}
 
 
 

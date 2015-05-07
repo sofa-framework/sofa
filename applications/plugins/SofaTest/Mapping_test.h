@@ -439,6 +439,25 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         return succeed;
     }
 
+
+    /** Test the mapping using the given values and small changes.
+     * Return true in case of success, if all errors are below maxError*epsilon.
+     * The mapping is initialized using the first parameter,
+     * @warning this version supposes the mapping initialization does not depends on child positions
+     * otherwise, use the runTest functions with 4 parameters
+     * the child position is computed from parent position and compared with the expected one.
+     * Additionally, the Jacobian-related methods are tested using finite differences.
+     *
+     *\param parent parent position
+     *\param expectedChild expected position of the child corresponding to the parent position
+     */
+    virtual bool runTest( const InVecCoord& parent,
+                          const OutVecCoord expectedChild)
+    {
+        OutVecCoord childInit( expectedChild.size() ); // start with null child
+        return runTest( parent, childInit, parent, expectedChild );
+    }
+
     virtual ~Mapping_test()
     {
         if (root!=NULL)

@@ -102,3 +102,40 @@ class Material:
         return self._get(material, "poissonRatio")
         
         
+class ComponentDataIO:
+    """ Read/Write component data to/from a json file
+        @sa example/componentDataIO_write.py
+        @sa example/componentDataIO_read.py
+    """
+    def __init__(self, component=None, dataList=[]):
+        self.component = component
+        self.setDataList(dataList)
+        
+    def setDataList(self, dataList):
+        # TODO check the data exist in the component
+        self.dataList = dataList
+        
+    def writeData(self, filename=None):
+        componentData=dict()
+        for d in self.dataList:
+            componentData[d] = self.component.findData(d).value
+        _filename = filename
+        if _filename is None:
+            _filename = self.component.name+".json"
+        with open(_filename,'w') as file:
+            json.dump(componentData, file)
+        print "[ComponentDataIO]: component:", self.component.name, "data written to:", _filename
+        
+    def readData(self, filename=None):
+        _filename = filename
+        if _filename is None:
+            _filename = self.component.name+".json"
+        with open(_filename,'r') as file:
+            componentData = json.load(file)
+            for d in self.dataList:
+                self.component.findData(d).value = componentData[d]
+        print "[ComponentDataIO]: component:", self.component.name, "data read from:", _filename
+        
+        
+        
+

@@ -165,7 +165,7 @@ void  ProjectToLineConstraint<DataTypes>::reinit()
     // normalize the normal vector
     CPos n = f_direction.getValue();
     if( n.norm()==0 )
-        n[1]=0;
+        n[0]=1; // arbritary normal vector
     else n *= 1/n.norm();
     f_direction.setValue(n);
 

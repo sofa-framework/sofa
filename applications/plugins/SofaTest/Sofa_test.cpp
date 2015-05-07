@@ -43,11 +43,11 @@ int BaseSofa_test::seed = (unsigned int)time(NULL);
 int initFileRepositories()
 {
 #ifdef WIN32
-    const std::string pluginsDir = "bin";
+    const std::string pluginDir = Utils::getExecutableDirectory();
 #else
-    const std::string pluginsDir = "lib";
+    const std::string pluginDir = Utils::getSofaPathPrefix() + "/lib";
 #endif
-    PluginRepository.addFirstPath(FileSystem::getParentDirectory(FileSystem::getParentDirectory(Utils::getExecutablePath())) + "/" + pluginsDir);
+    sofa::helper::system::PluginRepository.addFirstPath(pluginDir);
     DataRepository.addFirstPath(std::string(SOFA_SRC_DIR) + "/share");
     return 42;
 }

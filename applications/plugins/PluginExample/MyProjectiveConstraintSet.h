@@ -22,14 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_CONSTRAINT_MyProjectiveConstraintSet_H
-#define SOFA_COMPONENT_CONSTRAINT_MyProjectiveConstraintSet_H
+#ifndef PLUGINEXAMPLE_MYPROJECTIVECONSTRAINTSET_H
+#define PLUGINEXAMPLE_MYPROJECTIVECONSTRAINTSET_H
 
 #include "initPlugin.h"
+
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
-#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/VecTypes.h>
+
 
 namespace sofa
 {
@@ -40,11 +41,12 @@ namespace component
 namespace projectiveconstraintset
 {
 
+
 template <class DataTypes>
-class  MyProjectiveConstraintSet : public core::behavior::ProjectiveConstraintSet<DataTypes>
+class MyProjectiveConstraintSet: public core::behavior::ProjectiveConstraintSet<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(MyProjectiveConstraintSet,DataTypes),SOFA_TEMPLATE(core::behavior::ProjectiveConstraintSet,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(MyProjectiveConstraintSet, DataTypes), SOFA_TEMPLATE(core::behavior::ProjectiveConstraintSet, DataTypes));
     typedef core::behavior::ProjectiveConstraintSet<DataTypes> Inherit;
     typedef typename Inherit::DataVecCoord DataVecCoord;
     typedef typename Inherit::DataVecDeriv DataVecDeriv;
@@ -53,9 +55,11 @@ public:
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
     typedef typename DataTypes::VecCoord VecCoord;
+
 protected:
     MyProjectiveConstraintSet();
     ~MyProjectiveConstraintSet();
+
 public:
     void init();
 
@@ -65,31 +69,13 @@ public:
     void projectVelocity(const core::MechanicalParams* /* mparams */, DataVecDeriv& /* v */) {};
     void projectPosition(const core::MechanicalParams* /* mparams */, DataVecCoord& /* x */) {};
     void projectJacobianMatrix(const core::MechanicalParams* /* mparams */, DataMatrixDeriv& /* cData */) {};
-
-
-protected:
-
-
-private:
-
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_PLUGINEXAMPLE)
-#ifndef SOFA_FLOAT
-extern template class MyProjectiveConstraintSet<defaulttype::Vec3dTypes>;
-extern template class MyProjectiveConstraintSet<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class MyProjectiveConstraintSet<defaulttype::Vec3fTypes>;
-extern template class MyProjectiveConstraintSet<defaulttype::Rigid3fTypes>;
-#endif
-#endif
-}
 
-}
+} // namespace projectiveconstraintset
 
-}
+} // namespace component
 
+} // namespace sofa
 
-
-#endif
+#endif // PLUGINEXAMPLE_MYPROJECTIVECONSTRAINTSET_H

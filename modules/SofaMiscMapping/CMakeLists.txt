@@ -37,6 +37,8 @@ set(HEADER_FILES
     CatmullRomSplineMapping.inl
     IdentityMultiMapping.h
     IdentityMultiMapping.inl
+    ProjectionToLineMapping.h
+    ProjectionToLineMapping.inl
 
     )
 
@@ -60,7 +62,7 @@ set(SOURCE_FILES
     PCAOnRigidFrameMapping.cpp
     CatmullRomSplineMapping.cpp
     IdentityMultiMapping.cpp
-
+    ProjectionToLineMapping.cpp
     )
 
 set(GROUP_BASE_DIR "..")

@@ -121,14 +121,14 @@ void SubKKT::filter_kkt(rmat& res,
     for(unsigned i = 0, n = P.rows(); i < n; ++i) {
 
         unsigned sub_row = 0;
-        if(! has_row(i, P, &sub_row, P_is_identity) ) continue;
+        if( !has_row(i, P, &sub_row, P_is_identity) ) continue;
 
         res.startVec(sub_row);
 
         // H
         for(rmat::InnerIterator itH(H, i); itH; ++itH) {
 
-            if(only_lower && itH.col() > itH.row() ) break;
+            if( only_lower && itH.col() > itH.row() ) break;
 
             unsigned sub_col = 0;
             if(! has_row(itH.col(), P, &sub_col, P_is_identity) ) continue;
@@ -142,7 +142,7 @@ void SubKKT::filter_kkt(rmat& res,
         for(rmat::InnerIterator itJT(JT, i); itJT; ++itJT) {
 
             unsigned sub_col = 0;
-            if(! has_row(itJT.col(), Q, &sub_col, Q_is_identity) ) continue;
+            if( !has_row(itJT.col(), Q, &sub_col, Q_is_identity) ) continue;
 
             res.insertBack(sub_row, P_cols + sub_col) = -itJT.value();
         }
@@ -152,7 +152,7 @@ void SubKKT::filter_kkt(rmat& res,
     for(unsigned i = 0, n = J.rows(); i < n; ++i) {
 
         unsigned sub_row = 0;
-        if(!has_row(i, Q, &sub_row, Q_is_identity) ) continue;
+        if( !has_row(i, Q, &sub_row, Q_is_identity) ) continue;
 
         res.startVec(P_cols + sub_row);
 
@@ -166,25 +166,30 @@ void SubKKT::filter_kkt(rmat& res,
         }
 
         // C
-
         SReal* diag = 0;
         for(rmat::InnerIterator itC(C, i); itC; ++itC) {
+
+            if( only_lower && itC.col() > itC.row() ) break;
+
             SReal& ref = res.insertBack(P_cols + sub_row, P_cols + itC.col());
             ref = -itC.value();
 
             // store diagonal ref
             if(itC.col() == itC.row()) diag = &ref;
-
         }
 
-        if( !diag && eps ) {
-            SReal& ref = res.insertBack(P_cols + sub_row, P_cols + sub_row);
-            ref = 0;
-            diag = &ref;
+        if( eps ) // regularization
+        {
+            if( !diag ) // diagonal entry needs to be inserted
+            {
+                res.insertBack(P_cols + sub_row, P_cols + sub_row) = -eps;
+            }
+            else
+            {
+//                *diag = std::min(-eps, *diag); // adding regularization only on null diagonal is not always enough (constraints can be linearly dependent)
+                *diag -= eps; // regularization must be added to every constraint lines
+            }
         }
-
-        if( eps ) *diag = std::min(-eps, *diag);
-        // if( eps ) *diag -= eps;
     }
 
     res.finalize();

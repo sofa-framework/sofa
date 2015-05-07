@@ -722,7 +722,7 @@ void AssemblyVisitor::assemble(system_type& res) const {
             // by mapping with the specific jacobian from master to the (current-1) level
 
 
-            std::cerr<<"multimapping "<<c.dofs->getName()<<std::endl;
+//            std::cerr<<"multimapping "<<c.dofs->getName()<<std::endl;
 
             // full mapping chunk for geometric stiffness
             const rmat& geometricStiffnessJc = _processed->fullmappinggeometricstiffness[ graph[ prefix[i] ].dofs ];
@@ -730,8 +730,8 @@ void AssemblyVisitor::assemble(system_type& res) const {
 
 
             //std::cerr<<geometricStiffnessJc<<std::endl;
-            std::cerr<<*Ktilde<<std::endl;
-            std::cerr<<Ktilde->nonZeros()<<std::endl;
+//            std::cerr<<*Ktilde<<std::endl;
+//            std::cerr<<Ktilde->nonZeros()<<std::endl;
 
 //            std::cerr<<res.H.rows()<<" "<<geometricStiffnessJc.rows()<<std::endl;
 

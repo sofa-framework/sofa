@@ -8,16 +8,16 @@ varying vec3 lightDir[MAX_NUMBER_OF_LIGHTS];
 varying float dist[MAX_NUMBER_OF_LIGHTS];
 varying float spotOff[MAX_NUMBER_OF_LIGHTS];
 
-#ifdef USE_TEXTURE
-uniform sampler2D colorTexture;
-#endif // USE_TEXTURE
-
 #if ENABLE_SHADOW == 1 
 uniform sampler2D shadowTexture[MAX_NUMBER_OF_LIGHTS];
 uniform float zFar[MAX_NUMBER_OF_LIGHTS];
 uniform float zNear[MAX_NUMBER_OF_LIGHTS];
 varying vec4 shadowTexCoord[MAX_NUMBER_OF_LIGHTS];
 #endif // ENABLE_SHADOW == 1 
+
+#ifdef USE_TEXTURE
+uniform sampler2D colorTexture;
+#endif // USE_TEXTURE
 
 #if ENABLE_SHADOW == 1 
 float g_MinVariance = 0.01;
@@ -160,6 +160,7 @@ void main()
 
 #ifdef USE_TEXTURE
 	final_color.rgb *= texture2D(colorTexture,gl_TexCoord[0].st).rgb;
+	// final_color.rgb = vec3(1.0,0.0,0.0);
 #endif
 
 	final_color.rgb += specular_color.rgb;
@@ -169,7 +170,16 @@ void main()
 	else
 		gl_FragColor = gl_Color;
 
-	//gl_FragColor = vec4(shadowsVar[0], shadowsVar[0], shadowsVar[0], 1.0);
+// gl_FragColor = vec4((texture2D(shadowTexture[0],gl_TexCoord[0].st).xyz), 1.0);
+
+// #ifdef USE_TEXTURE
+// 	gl_FragColor = vec4(vec3(1.0,0.0,0.0), 1.0);
+// #endif
+
+// #if ENABLE_SHADOW == 1 
+// 	// gl_FragColor = vec4(shadowsVar[0], shadowsVar[0], shadowsVar[0], 1.0);
+// 	// gl_FragColor = vec4((texture2D(shadowTexture[0],gl_TexCoord[0].st).xyz), 1.0);
+// #endif
 }
 
 

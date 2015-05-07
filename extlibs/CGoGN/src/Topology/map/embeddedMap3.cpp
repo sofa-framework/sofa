@@ -506,25 +506,15 @@ void EmbeddedMap3::unsewVolumes(Dart d, bool withBoundary)
 bool EmbeddedMap3::mergeVolumes(Dart d, bool deleteFace)
 {
     Dart d2 = phi2(d);
-    const unsigned int deletedFaceID = getEmbedding<FACE>(d);
-    const unsigned deleteVolumeID = getEmbedding<VOLUME>(phi3(d));
-    if (deleteVolumeID == CGoGN::EMBNULL)
-        return false;
-    //    std::cerr << "mergeVolumes deletedFaceID = " << deletedFaceID << std::endl;
+
     if(Map3::mergeVolumes(d, deleteFace))
     {
         if (isOrbitEmbedded<VOLUME>())
         {
             Algo::Topo::setOrbitEmbedding<VOLUME>(*this, d2, getEmbedding<VOLUME>(d2)) ;
-            //            getAttributeContainer(VOLUME).updateHole(deleteVolumeID);
         }
-        if (deleteFace && (deletedFaceID != EMBNULL)) {
-            //            getAttributeContainer(FACE).updateHole(deletedFaceID);
-        }
-        //        this->check();
         return true;
     }
-    //    this->check();
     return false;
 }
 
@@ -582,7 +572,7 @@ void EmbeddedMap3::splitVolume(std::vector<Dart>& vd)
         Dart v23 = phi3(phi2(v));
         Algo::Topo::setOrbitEmbeddingOnNewCell<VOLUME>(*this, v23) ;
         Algo::Topo::copyCellAttributes<VOLUME>(*this, v23, v);
-        Algo::Topo::setOrbitEmbedding<VOLUME>(*this,v, this->getEmbedding<VOLUME>(v));
+//        Algo::Topo::setOrbitEmbedding<VOLUME>(*this,v, this->getEmbedding<VOLUME>(v));
     }
     //    assert(this->template checkEmbeddings<VOLUME>());
 }

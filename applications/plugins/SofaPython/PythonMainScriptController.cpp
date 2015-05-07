@@ -98,7 +98,7 @@ using namespace sofa::core::objectmodel;
             PyObject *res = PyObject_CallFunction(pFunc,__VA_ARGS__); \
             if( res )  Py_DECREF(res); \
         }\
-    else {serr<<"SP_CALL_FILEFUNC "<<func<<" not callable"<<sendl;}\
+/*    else {serr<<"SP_CALL_FILEFUNC "<<func<<" not callable"<<sendl;}*/ \
 }
 
 void PythonMainScriptController::script_onLoaded(sofa::simulation::Node *node)

@@ -81,7 +81,7 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
 
 // Types to instantiate.
 typedef testing::Types<
-    component::forcefield::QuadPressureForceField<defaulttype::Vec3dTypes>
+    component::forcefield::QuadPressureForceField<defaulttype::Vec3Types>
 > TestTypes; 
 
 

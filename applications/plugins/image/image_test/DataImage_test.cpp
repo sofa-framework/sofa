@@ -27,6 +27,7 @@
 
 #include <SofaTest/Sofa_test.h>
 #include <image/ImageContainer.h>
+#include <image/ImageViewer.h>
 
 namespace sofa {
 
@@ -40,6 +41,7 @@ struct DataImageLink_test : public Sofa_test<>
     // Image Container
     typedef sofa::component::container::ImageContainer< defaulttype::Image<unsigned char> > ImageContainer;
     ImageContainer::SPtr imageContainer;
+    ImageContainer::SPtr imageContainer2;
 
     // 2 data images
     core::objectmodel::Data< defaulttype::Image<unsigned char> > data1;
@@ -78,6 +80,16 @@ struct DataImageLink_test : public Sofa_test<>
             ADD_FAILURE() << "Data Link duplicates the datas ! " << std::endl;
         }
 
+        // Change value of data1
+        // Set new path to image for imageContainer
+        imageContainer2 = sofa::core::objectmodel::New<ImageContainer>();
+        std::string fileName = std::string(IMAGETEST_SCENES_DIR) + "/" + "pelvis_f.raw";
+        imageContainer2->m_filename.setValue(fileName);
+        imageContainer2->init();
+        data1.setValue(imageContainer2->image.getValue());
+
+        // Check that data values are the same
+        ASSERT_EQ(data1.getValue(),data2.getValue());
     }
 
 };

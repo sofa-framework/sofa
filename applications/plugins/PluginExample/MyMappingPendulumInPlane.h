@@ -22,37 +22,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_CONSTRAINT_MyMappingPendulumInPlane_H
-#define SOFA_COMPONENT_CONSTRAINT_MyMappingPendulumInPlane_H
-
+#ifndef PLUGINEXAMPLE_MYMAPPINGPENDULUMINPLANE_H
+#define PLUGINEXAMPLE_MYMAPPINGPENDULUMINPLANE_H
 
 #include <sofa/core/Mapping.h>
-#include <sofa/helper/OptionsGroup.h>
 #include <sofa/defaulttype/Vec.h>
-
-
+#include <sofa/helper/OptionsGroup.h>
 
 
 namespace sofa
 {
-
 namespace component
 {
-
 namespace mapping
 {
+
 using helper::vector;
 using defaulttype::Vec;
 
 /** input: pendulum angle; output: coordinates of the endpoint of the pendulum
-  */
-
+ */
 template <class TIn, class TOut>
-class MyMappingPendulumInPlane : public core::Mapping<TIn, TOut>
+class MyMappingPendulumInPlane: public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS( SOFA_TEMPLATE2(MyMappingPendulumInPlane,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut) );
+    SOFA_CLASS(SOFA_TEMPLATE2(MyMappingPendulumInPlane, TIn, TOut), SOFA_TEMPLATE2(core::Mapping, TIn, TOut));
     typedef core::Mapping<TIn, TOut> Inherit;
     typedef TIn In;
     typedef TOut Out;
@@ -78,6 +72,7 @@ public:
 protected:
     MyMappingPendulumInPlane();
     ~MyMappingPendulumInPlane();
+
 public:
     Data<vector<OutReal> > f_length;
 
@@ -88,24 +83,15 @@ public:
     virtual void applyJ(const core::MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in);
     virtual void applyJT(const core::MechanicalParams* mparams, InDataVecDeriv& out, const OutDataVecDeriv& in);
     virtual void applyJT(const core::ConstraintParams* mparams, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in);
-    virtual void applyDJT(const core::MechanicalParams* mparams , core::MultiVecDerivId parentForceChange, core::ConstMultiVecDerivId);
-
+    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceChange, core::ConstMultiVecDerivId);
 
 protected:
-    typedef Vec<2,OutReal> Vec2;
+    typedef Vec<2, OutReal> Vec2;
     vector<Vec2> gap;
-
-private:
-
 };
 
+} // namespace mapping
+} // namespace component
+} // namespace sofa
 
-}
-
-}
-
-}
-
-
-
-#endif
+#endif // PLUGINEXAMPLE_MYMAPPINGPENDULUMINPLANE_H
