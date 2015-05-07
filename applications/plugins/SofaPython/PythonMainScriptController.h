@@ -96,10 +96,6 @@ protected:
 public:
     sofa::core::objectmodel::DataFileName d_filename;
 
-protected:
-    PyObject *m_Script;         // python script module
-    PyObject *m_ScriptDict;     // functions dictionnary
-
 };
 
 

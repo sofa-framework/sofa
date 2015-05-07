@@ -26,6 +26,7 @@
 #define PYTHONENVIRONMENT_H
 
 #include "PythonCommon.h"
+#include "PythonMacros.h"
 
 //#include <sofa/simulation/tree/GNode.h>
 #include "Binding.h"
@@ -38,7 +39,6 @@ namespace sofa
 
 namespace simulation
 {
-
 
 class SOFA_SOFAPYTHON_API PythonEnvironment
 {
@@ -55,8 +55,13 @@ public:
     // helper functions
     //static sofa::simulation::tree::GNode::SPtr  initGraphFromScript( const char *filename );        // returns root node
 
+    static bool         PythonInitDone;
+
     // basic script functions
-    static PyObject*    importScript( const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0) );
+    static std::string  getError();
+    static bool         runString(const std::string& script);
+    static bool         runFile( const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0) );
+
     //static bool         initGraph(PyObject *script, sofa::simulation::tree::GNode::SPtr graphRoot);  // calls the method "initGraph(root)" of the script
 };
 

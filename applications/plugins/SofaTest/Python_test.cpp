@@ -6,7 +6,6 @@
 #include <sofa/simulation/common/Simulation.h>
 
 
-
 namespace sofa {
 
 
