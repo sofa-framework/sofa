@@ -46,6 +46,12 @@ public:
     static void     Init();
     static void     Release();
 
+    /// Add a path to sys.path, the list of search path for Python modules.
+    static void addPythonModulePath(const std::string& path);
+
+    /// Add all the directories matching <pluginsDirectory>/*/python to sys.path
+    static void addPythonModulePathsForPlugins(const std::string& pluginsDirectory);
+
     // helper functions
     //static sofa::simulation::tree::GNode::SPtr  initGraphFromScript( const char *filename );        // returns root node
 

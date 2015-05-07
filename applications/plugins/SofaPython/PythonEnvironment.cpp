@@ -23,26 +23,26 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "PythonEnvironment.h"
+
 #include "PythonMacros.h"
-#include <sofa/helper/system/FileRepository.h>
-
-#include <sofa/simulation/common/Node.h>
-#include <sofa/helper/system/SetDirectory.h>
-#include <sofa/component/contextobject/CoordinateSystem.h>
-#include <sofa/config.h>
-
 #include "PythonScriptController.h"
+
+#include <sofa/config.h>
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/system/SetDirectory.h>
+#include <sofa/simulation/common/Node.h>
+#include <sofa/component/contextobject/CoordinateSystem.h>
+
+#if __linux__
+#  include <dlfcn.h>            // for dlopen(), see workaround in Init()
+#endif
+
+
 using namespace sofa::component::controller;
 
-//using namespace sofa::simulation::tree;
+using sofa::helper::system::FileSystem;
 
-
-// WARNING workaround to be able to import python libraries on linux (like numpy) at least on ubuntu
-// more details on http://bugs.python.org/issue4434
-// It is not fixing the real problem, but at least it is working for now
-#if __linux__
-#include <dlfcn.h>
-#endif
 
 namespace sofa
 {
@@ -52,69 +52,82 @@ namespace simulation
 
 void PythonEnvironment::Init()
 {
-    // Initialize the Python Interpreter
-    // SP_MESSAGE_INFO( "Initializing python framework..." )
-
     std::string pythonVersion = Py_GetVersion();
-    SP_MESSAGE_INFO( "Python framework version: "<<pythonVersion )
-//    PyEval_InitThreads();
+    SP_MESSAGE_INFO("Python version: " + pythonVersion);
 
+    // WARNING: workaround to be able to import python libraries on linux (like
+    // numpy), at least on Ubuntu (see http://bugs.python.org/issue4434). It is
+    // not fixing the real problem, but at least it is working for now.
 #if __linux__
-    // fixing the library import on ubuntu
     std::string pythonLibraryName = "libpython" + std::string(pythonVersion,0,3) + ".so";
     dlopen( pythonLibraryName.c_str(), RTLD_LAZY|RTLD_GLOBAL );
 #endif
 
-    // force python terminal no to be buffered not to miss or mix-up traces
-    if( putenv((char*)"PYTHONUNBUFFERED=1") )
-        SP_MESSAGE_WARNING( "failed to define environment variable PYTHONUNBUFFERED" )
+    // Prevent the python terminal from being buffered, not to miss or mix up traces.
+    if (putenv((char*)"PYTHONUNBUFFERED=1"))
+        SP_MESSAGE_WARNING("failed to set environment variable PYTHONUNBUFFERED");
 
-
-    //SP_MESSAGE_INFO( "Py_Initialize()" )
+    // Initialize the Python Interpreter.
     Py_Initialize();
-    //SP_MESSAGE_INFO( "Registering Sofa bindings..." )
 
-
-    // append sofa modules to the embedded python environment
+    // Append sofa modules to the embedded python environment.
     bindSofaPythonModule();
 
-    // load a python script which search for python packages defined in the modules
-    //sofaPython.py should imo be located outside of the sources at install stage for instance, like in the shared directory ; 
-    // so as to get rid of this source located path
-    //and so do the different plugins python script
-    std::string scriptPy = "applications/plugins/SofaPython/SofaPython.py"; 
-    std::string scriptPyPath = scriptPy;
+    // Required for sys.path, used in addPythonModulePath().
+    PyRun_SimpleString("import sys");
 
-    if(    !sofa::helper::system::DataRepository.findFile(scriptPy, "", NULL)
-        && !sofa::helper::system::PluginRepository.findFile(scriptPy, "", NULL)
-        && !sofa::helper::system::DataRepository.findFile(scriptPy, std::string(SOFA_SRC_DIR), NULL))
+    // Force C locale.
+    PyRun_SimpleString("import locale");
+    PyRun_SimpleString("locale.setlocale(locale.LC_ALL, 'C')");
+
+    // Workaround: try to import numpy and to launch numpy.finfo to cache data;
+    // this prevents a deadlock when calling numpy.finfo from a worker thread.
+    PyRun_SimpleString("\
+try:\n\
+    import numpy\n\
+    numpy.finfo(float)\n\
+except:\n\
+    pass");
+
+
+    // Fill sys.path with the paths to the python modules defined in plugins.
+
+    // Currently, if a plugin defines one or more python modules, it must be in
+    // a "python" directory at the root of the plugin directory.  Here we add
+    // those "python" directories to sys.path, so that we can "import" those
+    // modules in python scripts.
+
+    // For now, this initialization function is called automatically when
+    // loading the library; this is horrendous, and prevents us from accepting
+    // parameters.  As a result, we use hard-coded path to the source tree to
+    // find the usual plugin directories.
+
+    // As a workaround, we allow passing additional paths via an environnement
+    // variable, to allow for use cases where this hard-coded path does not
+    // exist: SOFAPYTHON_PLUGINS_PATH is a colon-separated list of paths to
+    // directories that contain Sofa plugins.
+
+    const std::string pluginsDir = std::string(SOFA_SRC_DIR) + "/applications/plugins";
+    if (FileSystem::exists(pluginsDir))
+        addPythonModulePathsForPlugins(pluginsDir);
+
+    const std::string devPluginsDir = std::string(SOFA_SRC_DIR) + "/applications-dev/plugins";
+    if (FileSystem::exists(devPluginsDir))
+        addPythonModulePathsForPlugins(devPluginsDir);
+
+    char * pathVar = getenv("SOFAPYTHON_PLUGINS_PATH");
+    if (pathVar != NULL)
     {
-        std::cerr << "SofaPython.py configuration file NOT FOUND in: " << sofa::helper::system::DataRepository <<std::endl
-                    <<sofa::helper::system::PluginRepository<< std::endl
-                    <<std::string(SOFA_SRC_DIR)<< std::endl;
-        return ;
+        std::istringstream ss(pathVar);
+        std::string path;
+        while(std::getline(ss, path, ':'))
+        {
+            if (FileSystem::exists(path))
+                addPythonModulePathsForPlugins(path);
+            else
+                SP_MESSAGE_WARNING("no such directory: '" + path + "'");
+        }
     }
-
-    scriptPyPath=scriptPy.substr(0,scriptPy.size()-scriptPyPath.size());
-    std::string setPyVar="SOFA_PythonScriptPath=\'"+scriptPyPath+"\'";
-    PyRun_SimpleString(setPyVar.c_str());
-
-#ifdef WIN32
-    char* scriptPyChar = (char*) malloc((scriptPy.size()+1)*sizeof(char));
-    strcpy(scriptPyChar,scriptPy.c_str());
-    PyObject* PyFileObject = PyFile_FromString(scriptPyChar, "r");
-    if(PyFileObject){
-        PyRun_SimpleFileEx(PyFile_AsFile(PyFileObject), scriptPyChar, 1);
-    }
-    free(scriptPyChar);
-#else
-    FILE* scriptPyFile = fopen(scriptPy.c_str(),"r");
-    PyRun_SimpleFile(scriptPyFile, scriptPy.c_str());
-    fclose(scriptPyFile);
-#endif 
-
-    //SP_MESSAGE_INFO( "Initialization done." )
-
 }
 
 void PythonEnvironment::Release()
@@ -122,7 +135,32 @@ void PythonEnvironment::Release()
     // Finish the Python Interpreter
     Py_Finalize();
 }
-  
+
+void PythonEnvironment::addPythonModulePath(const std::string& path)
+{
+    PyRun_SimpleString(std::string("sys.path.insert(0, \"" + path + "\")").c_str());
+    SP_MESSAGE_INFO("Added '" + path + "' to sys.path");
+}
+
+void PythonEnvironment::addPythonModulePathsForPlugins(const std::string& pluginsDirectory)
+{
+    std::vector<std::string> files;
+    FileSystem::listDirectory(pluginsDirectory, files);
+
+    for (std::vector<std::string>::iterator i = files.begin(); i != files.end(); ++i)
+    {
+        const std::string pluginPath = pluginsDirectory + "/" + *i;
+        if (FileSystem::isDirectory(pluginPath))
+        {
+            const std::string pythonDir = pluginPath + "/python";
+            if (FileSystem::exists(pythonDir) && FileSystem::isDirectory(pythonDir))
+            {
+                addPythonModulePath(pythonDir);
+            }
+        }
+    }
+}
+
 /*
 // helper functions
 sofa::simulation::tree::GNode::SPtr PythonEnvironment::initGraphFromScript( const char *filename )
