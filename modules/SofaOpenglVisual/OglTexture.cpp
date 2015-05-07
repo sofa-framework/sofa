@@ -46,7 +46,7 @@ unsigned short OglTexture::MAX_NUMBER_OF_TEXTURE_UNIT = 1;
 
 OglTexture::OglTexture()
     :textureFilename(initData(&textureFilename, (std::string) "", "textureFilename", "Texture Filename"))
-    ,textureUnit(initData(&textureUnit, 1, "textureUnit", "Set the texture unit"))
+    ,textureUnit(initData(&textureUnit, (unsigned short) 1, "textureUnit", "Set the texture unit"))
     ,enabled(initData(&enabled, (bool) true, "enabled", "enabled ?"))
     ,repeat(initData(&repeat, (bool) false, "repeat", "Repeat Texture ?"))
     ,linearInterpolation(initData(&linearInterpolation, (bool) true, "linearInterpolation", "Interpolate Texture ?"))

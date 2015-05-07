@@ -58,7 +58,7 @@ public:
 
 protected:
     sofa::core::objectmodel::DataFileName textureFilename;
-    Data<int> textureUnit;
+    Data<unsigned short> textureUnit;
     Data<bool> enabled;
     Data<bool> repeat;
     Data<bool> linearInterpolation;
@@ -93,7 +93,7 @@ public:
     void bwdDraw(core::visual::VisualParams*);
 
     std::string getTextureName();
-    void getTextureUnit();
+    unsigned short getTextureUnit() { return textureUnit.getValue(); }
 
     void bind();
     void unbind();

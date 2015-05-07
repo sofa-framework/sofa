@@ -7,6 +7,7 @@ varying vec3 normal;
 varying vec4 ambientGlobal;
 varying vec3 lightDir[MAX_NUMBER_OF_LIGHTS];
 varying float spotOff[MAX_NUMBER_OF_LIGHTS];
+uniform int shadowTextureUnit[MAX_NUMBER_OF_LIGHTS];
 
 #if ENABLE_SHADOW == 1 
 varying vec4 shadowTexCoord[MAX_NUMBER_OF_LIGHTS];
@@ -48,7 +49,7 @@ void main()
 			if (lightFlag[i] == 2)
 			{
 				//shadowTexCoord[i] = shadowMatrix[i] * gl_ModelViewMatrix * gl_Vertex;
-				shadowTexCoord[i] = gl_TextureMatrix[i] * gl_ModelViewMatrix * gl_Vertex;
+				shadowTexCoord[i] = gl_TextureMatrix[shadowTextureUnit[i]] * gl_ModelViewMatrix * gl_Vertex;
 			}
 #endif // ENABLE_SHADOW == 1 
 		}
