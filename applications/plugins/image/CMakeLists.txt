@@ -93,8 +93,6 @@ if(FREENECT_FOUND)
     list(APPEND IMAGE_DEPENDENCY_INCLUDE_DIR ${FREENECT_INCLUDE_DIR})
     list(APPEND HEADER_FILES "Kinect.h")
     list(APPEND SOURCE_FILES "Kinect.cpp")
-    AddLinkerDependencies("freenect")
-    AddLinkerDependencies("freenect_sync")
 endif()
 
 # todo
