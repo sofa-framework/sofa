@@ -53,7 +53,7 @@ void SceneLoaderPY::addModules(const std::string& name, PyMethodDef* methodDef)
 
 void SceneLoaderPY::removeModules(const std::string& name)
 {
-    std::map<std::string, PyMethodDef*>::const_iterator it = OurModules.find(name);
+    std::map<std::string, PyMethodDef*>::iterator it = OurModules.find(name);
     if(OurModules.end() != it)
         OurModules.erase(it);
 }
