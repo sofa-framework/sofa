@@ -72,8 +72,10 @@ class Model:
                 self.parseXml(objXml)
 
         def parseXml(self, objXml):
-            self.collision = False if objXml.attrib["collision"] in {'False','0','false'} else True
-            self.simulation = False if objXml.attrib["simulation"] in {'False','0','false'} else True
+            if "collision" in objXml.attrib:
+                self.collision = False if objXml.attrib["collision"] in {'False','0','false'} else True
+            if "simulation" in objXml.attrib:
+                self.simulation = False if objXml.attrib["simulation"] in {'False','0','false'} else True
 
     class Solid:
         def __init__(self, solidXml=None):
