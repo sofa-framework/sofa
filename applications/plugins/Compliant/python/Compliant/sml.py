@@ -62,11 +62,14 @@ def insertRigid(parentNode, rigidModel, density, param=None):
     if not param is None:
         rigid.dofs.showObject = param.showRigid
         rigid.dofs.showObjectScale = SofaPython.units.length_from_SI(param.showRigidScale)
-    # visual
 
+    # walk around to handle multiple meshes
+    # @todo: handle them in StructuralAPI ?
+    rigid.collisions=dict()
+    rigid.visuals=dict()
     for mesh in rigidModel.mesh :
-        cm = rigid.addCollisionMesh(mesh.source)
-        rigid.visual = cm.addVisualModel()
+        rigid.collisions[mesh.id] = rigid.addCollisionMesh(mesh.source)
+        rigid.visuals[mesh.id] = rigid.collisions[mesh.id].addVisualModel()
        
     return rigid
 
