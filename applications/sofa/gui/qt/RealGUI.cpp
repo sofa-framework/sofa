@@ -324,6 +324,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     m_viewerMSAANbSampling(1)
 {
     setupUi(this),
+//    this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
     parseOptions(options);
 
     createPluginManager();
@@ -347,16 +348,16 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     connect ( exportGnuplotFilesCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportGnuplot ( bool ) ) );
     connect ( tabs, SIGNAL ( currentChanged ( QWidget* ) ), this, SLOT ( currentTabChanged ( QWidget* ) ) );
 
-	QDockWindow *dockTools=new QDockWindow(this);
-	dockTools->setResizeEnabled(true);
-	dockTools->setFixedExtentWidth(300);
-	this->moveDockWindow( dockTools, Qt::DockLeft);
-	this->topDock() ->setAcceptDockWindow(dockTools,false);
-	this->bottomDock()->setAcceptDockWindow(dockTools,false);
+    m_dockTools=new QDockWindow(this);
+    m_dockTools->setResizeEnabled(true);
+    m_dockTools->setFixedExtentWidth(300);
+    this->moveDockWindow( m_dockTools, Qt::DockLeft);
+    this->topDock() ->setAcceptDockWindow(m_dockTools,false);
+    this->bottomDock()->setAcceptDockWindow(m_dockTools,false);
 
-	dockTools->setWidget(optionTabs);
+    m_dockTools->setWidget(optionTabs);
 
-	connect(dockTools, SIGNAL(placeChanged(Q3DockWindow::Place)), this, SLOT(toolsDockMoved(Q3DockWindow::Place)));
+    connect(m_dockTools, SIGNAL(placeChanged(Q3DockWindow::Place)), this, SLOT(toolsDockMoved(Q3DockWindow::Place)));
 
 	/*moveDockWindow(dockWidget, Qt::DockLeft);
 	dockWidget->setFixedExtentWidth(400);
@@ -389,14 +390,15 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     statWidget = new QSofaStatWidget(TabStats);
     TabStats->layout()->add(statWidget);
 
-	createSimulationGraph();
+    createSimulationGraph();
 
     //disable widget, can be bothersome with objects with a lot of data
-    // createPropertyWidget();
+    //createPropertyWidget();
 
     //viewer
     informationOnPickCallBack = InformationOnPickCallBack(this);
     left_stack = new QWidgetStack ( splitter2 );
+
     viewerMap.clear();
     if (mCreateViewersOpt)
         createViewer(viewername, true);
@@ -470,6 +472,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     if(mCreateViewersOpt)
         getQtViewer()->getQWidget()->installEventFilter(this);
 #endif
+
 }
 
 //------------------------------------
@@ -1172,15 +1175,15 @@ void RealGUI::setFullScreen (bool enable)
 
         if (enable)
         {
-            savedsizes = splitter_ptr->sizes();
+            //savedsizes = splitter_ptr->sizes();
             optionTabs->hide();
-            optionTabs->setParent(static_cast<QWidget*>(splitter_ptr->parent()));
+            //optionTabs->setParent(static_cast<QWidget*>(splitter_ptr->parent()));
         }
         else if (m_fullScreen)
         {
-            splitter_ptr->insertWidget(0,optionTabs);
+            //splitter_ptr->insertWidget(0,optionTabs);
             optionTabs->show();
-            splitter_ptr->setSizes ( savedsizes );
+            //splitter_ptr->setSizes ( savedsizes );
         }
 
         if (enable)
@@ -1188,12 +1191,17 @@ void RealGUI::setFullScreen (bool enable)
             std::cout << "Set Full Screen Mode" << std::endl;
             showFullScreen();
             m_fullScreen = true;
+
+            m_dockTools->undock();
+            m_dockTools->setVisible(false);
         }
         else
         {
             std::cout << "Set Windowed Mode" << std::endl;
             showNormal();
             m_fullScreen = false;
+            m_dockTools->setVisible(true);
+            m_dockTools->dock();
         }
 
         if (enable)
@@ -1832,7 +1840,7 @@ void RealGUI::createBackgroundGUIInfos()
 void RealGUI::createSimulationGraph()
 {
     simulationGraph = new QSofaListView(SIMULATION,TabGraph,"SimuGraph");
-	TabGraph->layout()->addWidget(simulationGraph);
+    TabGraph->layout()->addWidget(simulationGraph);
 
     connect ( ExportGraphButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( Export() ) );
     connect(simulationGraph, SIGNAL( RootNodeChanged(sofa::simulation::Node*, const char*) ), this, SLOT ( NewRootNode(sofa::simulation::Node* , const char*) ) );
