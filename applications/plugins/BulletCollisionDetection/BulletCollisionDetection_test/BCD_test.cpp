@@ -12,7 +12,7 @@
 #include <sofa/simulation/common/CollisionBeginEvent.h>
 #include <sofa/simulation/common/PropagateEventVisitor.h>
 
-
+using sofa::component::container::MechanicalObject;
 
 typedef sofa::defaulttype::Vector3 Vec3;
 
