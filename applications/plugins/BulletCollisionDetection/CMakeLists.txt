@@ -47,6 +47,8 @@ find_package(SofaMisc REQUIRED)
 find_package(Compliant QUIET)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 find_package(Bullet CONFIG REQUIRED)
+include_directories(${BULLET_INCLUDE_DIR})
+link_directories(${BULLET_LIBRARY_DIRS})
 
 if(Compliant_FOUND)
     list(APPEND SOURCE_FILES BulletConvexHullCompliantContacts.cpp)
@@ -60,8 +62,7 @@ if(Compliant_FOUND)
     target_link_libraries(${PROJECT_NAME} Compliant)
 endif()
 
-include_directories(${BULLET_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} ${BULLET_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${BULLET_LIBRARIES} HACD)
 
 find_package(SofaTest QUIET)
 if(SofaTest_FOUND)
