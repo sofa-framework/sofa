@@ -46,7 +46,7 @@ set(README_FILES
 find_package(SofaMisc REQUIRED)
 find_package(Compliant QUIET)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
-find_package(Bullet REQUIRED)
+find_package(Bullet CONFIG REQUIRED)
 
 if(Compliant_FOUND)
     list(APPEND SOURCE_FILES BulletConvexHullCompliantContacts.cpp)
