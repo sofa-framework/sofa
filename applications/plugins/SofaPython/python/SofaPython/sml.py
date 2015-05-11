@@ -62,8 +62,19 @@ class Model:
                 self.group[g.attrib["id"]] = Model.Mesh.Group()
                 self.group[g.attrib["id"]].index = Tools.strToListInt(g.find("index").text)
                 for d in g.iter("data"):
-                    self.group[g.attrib["id"]].data[d.attrib["name"]]=parseData(d)                    
-    
+                    self.group[g.attrib["id"]].data[d.attrib["name"]]=parseData(d)
+
+    class MeshAttributes:
+        def __init__(self,objXml=None):
+            self.collision=True
+            self.simulation=True
+            if not objXml is None:
+                self.parseXml(objXml)
+
+        def parseXml(self, objXml):
+            self.collision = False if objXml.attrib["collision"] in {'False','0','false'} else True
+            self.simulation = False if objXml.attrib["simulation"] in {'False','0','false'} else True
+
     class Solid:
         def __init__(self, solidXml=None):
             self.id = None
@@ -71,6 +82,7 @@ class Model:
             self.tags = set()
             self.position = None
             self.mesh = list() # list of meshes
+            self.meshAttributes = dict() # attributes associated with each mesh
             self.mass = None
             self.com = None # x,y,z
             self.inertia = None # Ixx, Ixy, Ixz, Iyy, Iyz, Izz
@@ -321,8 +333,10 @@ class Model:
         meshes=objXml.findall("mesh")
         for i,m in enumerate(meshes):
             meshId = m.attrib["id"]
+            attr = Model.MeshAttributes(m)
             if meshId in self.meshes:
                 obj.mesh.append(self.meshes[meshId])
+                obj.meshAttributes[meshId]=attr
             else:
                 print "ERROR: sml.Model: solid {0} references undefined mesh {1}".format(obj.name, meshId)
 
