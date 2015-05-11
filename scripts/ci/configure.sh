@@ -103,54 +103,23 @@ case $CI_JOB in
     # Build with as many options enabled
     *options*)
 
-        append "-DSOFA-MISC_TESTS=ON"
+        append "-DSOFA_TESTS=ON"
+
+        append "-DSOFA_COMPILE_METIS=ON"
+        append "-DSOFA_COMPILE_ARTRACK=ON"
 
         if [[ -n "$CI_QT_PATH" ]]; then
-            append "-DSOFA-EXTERNAL_QT_PATH=$CI_QT_PATH"
+            append "-DQT_ROOT=$CI_QT_PATH"
         fi
 
         if [[ -n "$CI_HAVE_BOOST" ]]; then
-            append "-DSOFA-EXTERNAL_BOOST_PATH=$CI_BOOST_PATH"
+            append "-DBOOST_ROOT=$CI_BOOST_PATH"
         fi
 
         if [[ -n "$CI_BULLET_DIR" ]]; then
             append "-DBullet_DIR=$CI_BULLET_DIR"
         fi
 
-        ### Tutorials
-
-        append "-DSOFA-TUTORIAL_CHAIN_HYBRID=ON"
-        append "-DSOFA-TUTORIAL_COMPOSITE_OBJECT=ON"
-        append "-DSOFA-TUTORIAL_HOUSE_OF_CARDS=ON"
-        append "-DSOFA-TUTORIAL_MIXED_PENDULUM=ON"
-        append "-DSOFA-TUTORIAL_ONE_PARTICLE=ON"
-        append "-DSOFA-TUTORIAL_ONE_TETRAHEDRON=ON"
-
-        ### Applications
-
-        append "-DSOFA-APPLICATION_GENERATEDOC=ON"
-        append "-DSOFA-APPLICATION_GENERATERIGID=ON"
-        append "-DSOFA-APPLICATION_GENERATETYPEDEFS=ON"
-        append "-DSOFA-APPLICATION_GLUTONEPICK=ON"
-        # ?
-        append "-DSOFA-APPLICATION_MESHCONV=OFF"
-        append "-DSOFA-APPLICATION_MODELER=ON"
-        append "-DSOFA-APPLICATION_QTSOFA=ON"
-        append "-DSOFA-APPLICATION_RUNSOFA=ON"
-        append "-DSOFA-APPLICATION_SOFABATCH=ON"
-        # ?
-        append "-DSOFA-APPLICATION_SOFAFLOWVR=OFF"
-        append "-DSOFA-APPLICATION_SOFAINFO=ON"
-        append "-DSOFA-APPLICATION_SOFAINITTIMER=ON"
-        if [[ -n "$CI_HAVE_OPENCL" ]]; then
-            append "-DSOFA-APPLICATION_SOFAOPENCL=ON"
-        else
-            append "-DSOFA-APPLICATION_SOFAOPENCL=OFF"
-        fi
-        # ?
-        append "-DSOFA-APPLICATION_SOFAPHYSICSAPI=OFF"
-        # ?
-        append "-DSOFA-APPLICATION_SOFAPROJECTEXAMPLE=OFF"
         # Bug on Ubuntu 14.04:
         #   Linking CXX executable ../../../bin/sofaTypedefs
         #   Inconsistency detected by ld.so: dl-version.c: 224: _dl_check_map_versions: Assertion `needed != ((void *)0)' failed!
@@ -244,13 +213,6 @@ case $CI_JOB in
         append "-DSOFA-PLUGIN_VOXELIZER=OFF"
         # Requires XiRobot library.
         append "-DSOFA-PLUGIN_XITACT=OFF"
-
-        ### Misc
-
-        append "-DSOFA-EXTERNAL_CSPARSE=ON"
-        append "-DSOFA-LIB_COMPONENT_SPARSE_SOLVER=ON"
-        append "-DSOFA-LIB_GUI_INTERACTION=ON"
-        append "-DSOFA-LIB_GUI_QGLVIEWER=ON"
         ;;
 esac
 
