@@ -219,9 +219,6 @@ set(README_FILES Compliant.txt)
 # include python files
 include(./python/python.cmake)
 
-	
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
-
 find_package(SofaMisc REQUIRED)
 
 set(COMPLIANT_DEPENDENCY_INCLUDE_DIR ${SofaMisc_INCLUDE_DIRS})
