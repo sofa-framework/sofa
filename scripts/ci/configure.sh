@@ -185,11 +185,6 @@ case $CI_JOB in
         fi
         # Requires HAPI libraries.
         append "-DSOFA-PLUGIN_SOFAHAPI=OFF"
-        if [[ -n "$CI_HAVE_OPENCL" ]]; then
-            append "-DSOFA-PLUGIN_SOFAOPENCL=ON"
-        else
-            append "-DSOFA-PLUGIN_SOFAOPENCL=OFF"
-        fi
         # Not sure if worth maintaining
         append "-DSOFA-PLUGIN_SOFAPML=OFF"
         if [[ -n "$CI_HAVE_LIBPYTHON" ]]; then
