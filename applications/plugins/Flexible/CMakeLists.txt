@@ -179,7 +179,7 @@ set(SOURCE_FILES
 
 find_package(SofaMisc REQUIRED)
 
-find_package(image)
+find_package(image QUIET)
 if(image_FOUND)
    	list(APPEND HEADER_FILES "quadrature/ImageGaussPointSampler.h")
    	list(APPEND HEADER_FILES "shapeFunction/BaseImageShapeFunction.h")
