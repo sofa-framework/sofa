@@ -120,6 +120,8 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
         return NULL;
     }
 
+    PythonEnvironment::runString(std::string("__file__=\"") + filename + "\"");
+
     if(!PythonEnvironment::runFile(filename, arguments))
     {
         // LOAD ERROR
@@ -173,6 +175,8 @@ bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vecto
         SP_MESSAGE_ERROR( "header script run error." )
         return NULL;
     }
+
+    PythonEnvironment::runString(std::string("__file__=\"") + filename + "\"");
 
     // it runs the unecessary SofaPython script but it is not a big deal
     if(!PythonEnvironment::runFile(filename,arguments))

@@ -211,9 +211,19 @@ if(WIN32)
 else()
 	include_directories("/usr/include/suitesparse/")
 endif()
+
 if(UNIX)
     link_directories("/usr/lib/x86_64-linux-gnu/")
     AddLinkerDependencies("pthread")
+endif()
+
+if(APPLE)
+    find_package(X11)
+    if(NOT X11_FOUND)
+        message(FATAL_ERROR "Failed to find X11 which is required to build image plugin")
+    endif(NOT X11_FOUND)
+    AddLinkerDependencies(${X11_X11_LIB})
+    include_directories(${X11_X11_INCLUDE_PATH})
 endif()
 
 
