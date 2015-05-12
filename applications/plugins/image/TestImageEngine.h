@@ -90,23 +90,20 @@ public:
 
     void update()
     {
-        std::cout << "Call update method of TestImageEngine.h" << std::endl;
         cleanDirty();
 
         waImage out(this->outputImage);
         raImage in(this->inputImage);
 
         // Get the dimensions of input image
-        const cimg_library::CImg<T>& img = in->getCImg(this->getContext()->getTime());
         imCoord dim = in->getDimensions();
 
         // Set the dimensions of outputImage
         out->setDimensions(dim);
 
         //  Fill all pixel values of ouputImage with 0
-        cimg_library::CImg<T>& outImg=out->getCImg(0);
+        cimg_library::CImg<T>& outImg = out->getCImg(0);
         outImg.fill(0);
-
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)

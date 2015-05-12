@@ -4,7 +4,8 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-   DataImage_test.cpp
+#   DataImage_test.cpp
+    ImageEngine_test.cpp
         )
 
 if(APPLE)
