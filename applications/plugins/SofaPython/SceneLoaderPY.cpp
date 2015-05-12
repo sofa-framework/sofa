@@ -44,25 +44,6 @@ namespace sofa
 namespace simulation
 {
 
-std::map<std::string, PyMethodDef*> SceneLoaderPY::OurModules;
-
-void SceneLoaderPY::addModules(const std::string& name, PyMethodDef* methodDef)
-{
-    OurModules[name] = methodDef;
-}
-
-void SceneLoaderPY::removeModules(const std::string& name)
-{
-    std::map<std::string, PyMethodDef*>::iterator it = OurModules.find(name);
-    if(OurModules.end() != it)
-        OurModules.erase(it);
-}
-
-void SceneLoaderPY::clearModules()
-{
-    OurModules.clear();
-}
-
 std::string SceneLoaderPY::OurHeader;
 
 void SceneLoaderPY::setHeader(const std::string& header)
@@ -96,12 +77,6 @@ void SceneLoaderPY::getExtensionList(ExtensionList* list)
     list->push_back("py");
 }
 
-PyMODINIT_FUNC initModulesHelper(const std::map<std::string, PyMethodDef*>& modules)
-{
-    for(std::map<std::string, PyMethodDef*>::const_iterator it = modules.begin(); it != modules.end(); ++it)
-        Py_InitModule(it->first.c_str(), it->second);
-}
-
 sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
 {
     return loadSceneWithArguments(filename);
@@ -109,11 +84,6 @@ sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
 
 sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments)
 {
-    sofa::simulation::PythonEnvironment::Release();
-    sofa::simulation::PythonEnvironment::Init();     // MUST be called at least once; so let's call it each time we load a python script
-
-    initModulesHelper(OurModules);
-
     if(!OurHeader.empty() && 0 != PyRun_SimpleString(OurHeader.c_str()))
     {
         SP_MESSAGE_ERROR( "header script run error." )
@@ -165,11 +135,6 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
 
 bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments)
 {
-    sofa::simulation::PythonEnvironment::Release();
-    sofa::simulation::PythonEnvironment::Init();     // MUST be called at least once; so let's call it each time we load a python script
-
-    initModulesHelper(OurModules);
-
     if(!OurHeader.empty() && 0 != PyRun_SimpleString(OurHeader.c_str()))
     {
         SP_MESSAGE_ERROR( "header script run error." )

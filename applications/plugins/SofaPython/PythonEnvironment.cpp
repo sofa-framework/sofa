@@ -50,7 +50,15 @@ namespace sofa
 namespace simulation
 {
 
-bool PythonEnvironment::PythonInitDone = false;
+PyMODINIT_FUNC initModulesHelper(const std::string& name, PyMethodDef* methodDef)
+{
+    Py_InitModule(name.c_str(), methodDef);
+}
+
+void PythonEnvironment::addModule(const std::string& name, PyMethodDef* methodDef)
+{
+    initModulesHelper(name, methodDef);
+}
 
 void PythonEnvironment::Init()
 {
@@ -85,14 +93,12 @@ void PythonEnvironment::Init()
     // Workaround: try to import numpy and to launch numpy.finfo to cache data;
     // this prevents a deadlock when calling numpy.finfo from a worker thread.
     // ocarre: may crash on some configurations, we have to find a fix
-    /*
     PyRun_SimpleString("\
 try:\n\
     import numpy\n\
     numpy.finfo(float)\n\
 except:\n\
     pass");
-     */
 
     // Fill sys.path with the paths to the python modules defined in plugins.
 
@@ -132,17 +138,12 @@ except:\n\
                 SP_MESSAGE_WARNING("no such directory: '" + path + "'");
         }
     }
-
-    PythonInitDone = true;
 }
 
 void PythonEnvironment::Release()
 {
     // Finish the Python Interpreter
-    if(PythonInitDone) {
-        Py_Finalize();
-        PythonInitDone = false;
-    }
+    Py_Finalize();
 }
 
 void PythonEnvironment::addPythonModulePath(const std::string& path)
@@ -195,22 +196,22 @@ sofa::simulation::tree::GNode::SPtr PythonEnvironment::initGraphFromScript( cons
 }
 */
 
-  // some basic RAII stuff to handle init/termination cleanly
-//  namespace {
+// some basic RAII stuff to handle init/termination cleanly
+  namespace {
 	
-//    struct raii {
-//      raii() {
-//        PythonEnvironment::Init();
-//      }
+    struct raii {
+      raii() {
+        PythonEnvironment::Init();
+      }
 
-//      ~raii() {
-//        PythonEnvironment::Release();
-//      }
+      ~raii() {
+        PythonEnvironment::Release();
+      }
 	  
-//    };
+    };
 
-//    static raii singleton;
-//  }
+    static raii singleton;
+  }
 
 // basic script functions
 std::string PythonEnvironment::getError()
