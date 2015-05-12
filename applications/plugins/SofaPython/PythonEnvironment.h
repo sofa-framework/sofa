@@ -55,7 +55,8 @@ public:
     // helper functions
     //static sofa::simulation::tree::GNode::SPtr  initGraphFromScript( const char *filename );        // returns root node
 
-    static bool         PythonInitDone;
+    /// add module to python context, Init() must have been called before
+    static void addModule(const std::string& name, PyMethodDef* methodDef);
 
     // basic script functions
     static std::string  getError();
@@ -63,6 +64,7 @@ public:
     static bool         runFile( const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0) );
 
     //static bool         initGraph(PyObject *script, sofa::simulation::tree::GNode::SPtr graphRoot);  // calls the method "initGraph(root)" of the script
+
 };
 
 
