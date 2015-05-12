@@ -150,6 +150,10 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
 
         hdBeginFrame(hapticHD);
 
+		//m_buttonState contient la valeur fusionné des boutons de l'omni. Pour recuperer ces valeurs, on passe donc par un décalage de bits.
+		autreOmniDriver[i]->stateButton1 = (((autreOmniDriver[i]->data.servoDeviceData.m_buttonState)>>0)<<31)>>31;
+		autreOmniDriver[i]->stateButton2 = (((autreOmniDriver[i]->data.servoDeviceData.m_buttonState)>>1)<<31)>>31;
+
         if((autreOmniDriver[i]->data.servoDeviceData.m_buttonState & HD_DEVICE_BUTTON_1) || autreOmniDriver[i]->data.permanent_feedback)
             hdSetDoublev(HD_CURRENT_FORCE, autreOmniDriver[i]->data.currentForce);
 
@@ -428,6 +432,8 @@ NewOmniDriver::NewOmniDriver()
     , setRestShape(initData(&setRestShape, false, "setRestShape", "True to control the rest position instead of the current position directly"))
     , applyMappings(initData(&applyMappings, true, "applyMappings", "True to enable applying the mappings after setting the position"))
     , alignOmniWithCamera(initData(&alignOmniWithCamera, true, "alignOmniWithCamera", "True to keep the Omni's movements in the same reference frame as the camera"))
+	, stateButton1(initData(&stateButton1, false, "stateButton1", "True if the First button of the Omni is pressed"))
+	, stateButton2(initData(&stateButton2, false, "stateButton2", "True if the Second button of the Omni is pressed"))
 {
     this->f_listening.setValue(true);
     data.forceFeedback = NULL;
