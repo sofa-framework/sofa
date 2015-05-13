@@ -394,10 +394,11 @@ def setupUnits(myUnits):
 def getSolidRigidMassInfo(solid, density):
     massInfo = mass.RigidMassInfo()
     for mesh in solid.mesh:
-        # mesh mass info
-        mmi = mass.RigidMassInfo()
-        mmi.setFromMesh(mesh.source, density=density)
-        massInfo += mmi
+        if solid.meshAttributes[mesh.id].simulation is True:
+            # mesh mass info
+            mmi = mass.RigidMassInfo()
+            mmi.setFromMesh(mesh.source, density=density)
+            massInfo += mmi
     return massInfo
 
 class BaseScene:
