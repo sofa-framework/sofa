@@ -117,7 +117,7 @@ sofa_option(SOFA-EXTERNAL_FREEGLUT BOOL OFF "Use the FreeGLUT library (instead o
 sofa_option(SOFA-EXTERNAL_GLEW BOOL ON "Use the GLEW library")
 
 ## python
-sofa_option(SOFA-EXTERNAL_PYTHON BOOL OFF "Use the Python embedded environment")
+sofa_option(SOFA-EXTERNAL_PYTHON BOOL ON "Use the Python embedded environment")
 
 ## ffmpeg
 set(FFMPEG_PATH "")
