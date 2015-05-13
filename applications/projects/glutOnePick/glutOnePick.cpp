@@ -33,6 +33,8 @@
   @author Francois Faure, 2014
   */
 
+#include "oneTetra.h"
+
 #include <iostream>
 #include <fstream>
 #include <ctime>
@@ -54,8 +56,6 @@ using namespace sofa::simplegui;
 sofa::simplegui::SofaScene* sofaScene;     ///< The interface of the application with Sofa
 sofa::simplegui::SofaGL* sofaGL;     ///< The interface of the application with the viewer
 sofa::simplegui::SpringInteractor* drag = NULL; ///< Mouse interactor
-
-#include "oneTetra.h"
 
 #include <SofaSimpleGUI/Camera.h>
 sofa::simplegui::Camera camera;
