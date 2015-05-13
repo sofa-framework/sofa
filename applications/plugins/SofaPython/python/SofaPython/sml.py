@@ -92,6 +92,13 @@ class Model:
             if not solidXml is None:
                 self.parseXml(solidXml)
 
+        def addMesh(self, mesh, attr=None):
+            self.mesh.append(mesh)
+            if not attr is None:
+                self.meshAttributes[mesh.id]=attr
+            else:
+                self.meshAttributes[mesh.id]= Model.MeshAttributes()
+
         def parseXml(self, objXml):
             parseIdName(self, objXml)
             parseTag(self,objXml)
@@ -343,8 +350,7 @@ class Model:
             meshId = m.attrib["id"]
             attr = Model.MeshAttributes(m)
             if meshId in self.meshes:
-                obj.mesh.append(self.meshes[meshId])
-                obj.meshAttributes[meshId]=attr
+                obj.addMesh(self.meshes[meshId], attr)
             else:
                 print "ERROR: sml.Model: solid {0} references undefined mesh {1}".format(obj.name, meshId)
 
