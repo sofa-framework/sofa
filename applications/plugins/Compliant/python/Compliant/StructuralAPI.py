@@ -122,6 +122,11 @@ class RigidBody:
             self.dofs = self.node.createObject('MechanicalObject', name='dofs', template="Vec3"+template_suffix )
             self.triangles = self.node.createObject('TriangleModel', name='model')
             self.mapping = self.node.createObject('RigidMapping', name="mapping")
+            self.normals = None
+
+        def addNormals(self, invert=False):
+            ## add a component to compute mesh normals at each timestep
+            self.normals = self.node.createObject("NormalsFromPoints", template='Vec3'+template_suffix, name="normalsFromPoints", position='@'+self.dofs.name+'.position', triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
 
         def addVisualModel(self):
             ## add a visual model identical to the collision model
