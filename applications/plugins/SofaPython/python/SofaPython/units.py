@@ -215,15 +215,26 @@ def elasticity_to_SI( e, length_unit=None, mass_unit=None, time_unit=None ):
     return pressure_to_SI( e, length_unit, mass_unit, time_unit )
 
 # kg/m3
-def density_from_SI( d, length_unit=None, mass_unit=None ):
+def massDensity_from_SI( d, length_unit=None, mass_unit=None ):
     length_unit = length_unit or local_length
     mass_unit = mass_unit or local_mass
     return d * length_unit * length_unit * length_unit / mass_unit
 
-def density_to_SI( d, length_unit=None, mass_unit=None ):
+def massDensity_to_SI( d, length_unit=None, mass_unit=None ):
     length_unit = length_unit or local_length
     mass_unit = mass_unit or local_mass
     return d / length_unit / length_unit / length_unit * mass_unit
+
+# /m3
+def density_from_SI( d, length_unit=None ):
+    length_unit = length_unit or local_length
+    return d * length_unit * length_unit * length_unit
+
+def density_to_SI( d, length_unit=None ):
+    length_unit = length_unit or local_length
+    mass_unit = mass_unit or local_mass
+    return d / length_unit / length_unit / length_unit
+
 
 # w/o
 def poissonRatio_from_SI( pr ):

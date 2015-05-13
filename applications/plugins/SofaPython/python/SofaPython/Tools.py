@@ -93,7 +93,7 @@ class Material:
             self.data.update(json.load(file))
             
     def density(self, material):
-        return units.density_from_SI(self._get(material, "density"))
+        return units.massDensity_from_SI(self._get(material, "density"))
     
     def youngModulus(self, material):
         return units.elasticity_from_SI(self._get(material, "youngModulus"))
