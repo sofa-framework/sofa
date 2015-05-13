@@ -68,8 +68,9 @@ def insertRigid(parentNode, rigidModel, density, param=None):
     rigid.collisions=dict()
     rigid.visuals=dict()
     for mesh in rigidModel.mesh :
-        rigid.collisions[mesh.id] = rigid.addCollisionMesh(mesh.source)
-        rigid.visuals[mesh.id] = rigid.collisions[mesh.id].addVisualModel()
+        if rigidModel.meshAttributes[mesh.id].collision is True:
+            rigid.collisions[mesh.id] = rigid.addCollisionMesh(mesh.source)
+            rigid.visuals[mesh.id] = rigid.collisions[mesh.id].addVisualModel()
        
     return rigid
 
