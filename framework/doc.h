@@ -33,6 +33,7 @@
  *
  * It is the starting point of the documentation of the classes of the
  * framework itself.
+ * A general introduction is available on https://www.sofa-framework.org/documentation/general-documentation/
  *
  * This page also lists the individual documentation of most modules
  * and plugins below.
@@ -144,7 +145,13 @@
  */
 
 /** \namespace sofa::simulation::tree
- *  \brief Default (and currently only) implementation of the simulation data structure using a tree.
+ *  \brief Default implementation of the simulation data structure using a tree.
+ * @sa sofa::simulation::graph
+ */
+
+/** \namespace sofa::simulation::graph
+ *  \brief New implementation of the simulation data structure using a directed acyclic graph.
+ * This it necessary for node with multiple parents and MultiMappings.
  */
 
 /** \namespace sofa::simulation::xml
