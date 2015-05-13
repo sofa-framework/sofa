@@ -250,3 +250,6 @@ if (gtest_build_tests)
   cxx_executable(gtest_xml_output_unittest_ test gtest)
   py_test(gtest_xml_output_unittest)
 endif()
+
+set_target_properties(gtest PROPERTIES DEBUG_POSTFIX d RELWITHDEBINFO_POSTFIX rd)
+set_target_properties(gtest_main PROPERTIES DEBUG_POSTFIX d RELWITHDEBINFO_POSTFIX rd)
