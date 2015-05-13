@@ -75,17 +75,17 @@ class RigidBody:
                                 inertia = concat(inertia),
                                 inertia_forces = inertia_forces )
 
-    def addCollisionMesh(self, filepath, scale3d=[1,1,1], offset=[0,0,0,0,0,0,1]):
+    def addCollisionMesh(self, filepath, scale3d=[1,1,1], offset=[0,0,0,0,0,0,1], name_suffix=''):
         ## adding a collision mesh to the rigid body with a relative offset
         # (only a Triangle collision model is created, more models can be added manually)
         # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-        self.collision = RigidBody.CollisionMesh( self.node, filepath, scale3d, ( self.framecom.inv() * Frame.Frame(offset) ).offset() )
+        self.collision = RigidBody.CollisionMesh( self.node, filepath, scale3d, ( self.framecom.inv() * Frame.Frame(offset) ).offset(), name_suffix )
         return self.collision
 
-    def addVisualModel(self, filepath, scale3d=[1,1,1], offset=[0,0,0,0,0,0,1]):
+    def addVisualModel(self, filepath, scale3d=[1,1,1], offset=[0,0,0,0,0,0,1], name_suffix=''):
         ## adding a visual model to the rigid body with a relative offset
         # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-        self.visual = RigidBody.VisualModel( self.node, filepath, scale3d, ( self.framecom.inv() * Frame.Frame(offset) ).offset() )
+        self.visual = RigidBody.VisualModel( self.node, filepath, scale3d, ( self.framecom.inv() * Frame.Frame(offset) ).offset(), name_suffix )
         return self.visual
 
     def addOffset(self, name, offset=[0,0,0,0,0,0,1]):
@@ -114,8 +114,8 @@ class RigidBody:
 
     class CollisionMesh:
 
-        def __init__(self, node, filepath, scale3d, offset):
-            self.node = node.createChild( "collision" )  # node
+        def __init__(self, node, filepath, scale3d, offset, name_suffix=''):
+            self.node = node.createChild( "collision"+name_suffix )  # node
             r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
             self.loader = SofaPython.Tools.meshLoader(self.node, filename=filepath, name='loader', scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r), triangulate=True)
             self.topology = self.node.createObject('MeshTopology', name='topology', src="@loader" )
@@ -142,9 +142,9 @@ class RigidBody:
 
 
     class VisualModel:
-        def __init__(self, node, filepath, scale3d, offset):
+        def __init__(self, node, filepath, scale3d, offset, name_suffix=''):
             global idxVisualModel;
-            self.node = node.createChild( "visual" )  # node
+            self.node = node.createChild( "visual"+name_suffix )  # node
             r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
             meshLoader = SofaPython.Tools.meshLoader(self.node, filepath, scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r))
             self.model = self.node.createObject('VisualModel', name="visual"+str(idxVisualModel), src="@"+meshLoader.name)
