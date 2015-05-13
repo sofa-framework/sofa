@@ -61,6 +61,23 @@ class Deformable:
         self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.meshLoader.name )
         self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs", src="@"+self.meshLoader.name)
 
+    def addFromDeformables(self, deformables=list()):
+        args=dict()
+        inputs=[]
+        i=1
+        for s in deformables:
+            s.node.addChild(self.node)
+            args["position"+str(i)]="@"+SofaPython.Tools.getObjectPath(s.topology)+".position"
+            args["triangles"+str(i)]="@"+SofaPython.Tools.getObjectPath(s.topology)+".triangles"
+            args["quads"+str(i)]="@"+SofaPython.Tools.getObjectPath(s.topology)+".quads"
+            inputs.append('@'+s.node.getPathName())
+            i+=1
+
+        self.meshLoader =  self.node.createObject('MergeMeshes', name='MergeMeshes', nbMeshes=len(inputs), **args )
+        self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.meshLoader.name )
+        self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs")
+        self.mapping = self.node.createObject("IdentityMultiMapping", template = "Vec3d,Vec3d",name='mapping',input=SofaPython.Tools.listToStr(inputs),output="@.")
+
     def addNormals(self, invert=False):
         self.normals = self.node.createObject("NormalsFromPoints", template='Vec3d', name="normalsFromPoints", position='@'+self.dofs.name+'.position', triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
 
