@@ -106,7 +106,7 @@ class Model:
     class Offset:
         def __init__(self, offsetXml=None):
             self.name = "offset"
-            self.value = [0., 0., 0., 0., 0., 0., 1.]
+            self.value = [0., 0., 0., 0., 0., 0., 1.] # x y z qx qy qz qw
             self.type = "absolute"
             if not offsetXml is None:
                 self.parseXml(offsetXml)
