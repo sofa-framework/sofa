@@ -183,7 +183,11 @@ struct ImageEngine_test : public Sofa_test<>
         for(int l=0;l<2;++l)
         {
             sofa::simulation::getSimulation()->animate(root.get(),0.5);
-            std::cerr << "loop, value " << imageViewer->image.getValue().getCImg(0).size() << std::endl;
+            std::cerr << "loop, value size " << imageViewer->image.getValue().getCImg(0).size() << std::endl;
+            std::cerr << "loop, shared: " << imageContainer->image.getValue().getCImg(0).is_shared() << std::endl;
+            std::cerr << "loop, shared: " << imageEngine->inputImage.getValue().getCImg(0).is_shared() << std::endl;
+            std::cerr << "loop, shared: " << imageEngine->outputImage.getValue().getCImg(0).is_shared() << std::endl;
+            std::cerr << "loop, shared: " << imageViewer->image.getValue().getCImg(0).is_shared() << std::endl;
         }
 
     }
@@ -200,10 +204,6 @@ struct ImageEngine_test : public Sofa_test<>
         // Image Engine
         typedef sofa::component::engine::TestImageEngine< defaulttype::Image<unsigned char> > TestImageEngine;
         TestImageEngine::SPtr imageEngine;
-
-        // Image Viewer
-        typedef sofa::component::misc::ImageViewer< defaulttype::Image<unsigned char> > ImageViewer;
-        ImageViewer::SPtr imageViewer;
 
         // Create a scene
         sofa::component::init();
@@ -242,6 +242,11 @@ struct ImageEngine_test : public Sofa_test<>
         for(int l=0;l<2;++l)
         {
             sofa::simulation::getSimulation()->animate(root.get(),0.5);
+            std::cerr << "loop, value size " << imageEngine2->inputImage.getValue().getCImg(0).size() << std::endl;
+            std::cerr << "loop, shared: " << imageContainer->image.getValue().getCImg(0).is_shared() << std::endl;
+            std::cerr << "loop, shared: " << imageEngine->inputImage.getValue().getCImg(0).is_shared() << std::endl;
+            std::cerr << "loop, shared: " << imageEngine->outputImage.getValue().getCImg(0).is_shared() << std::endl;
+            std::cerr << "loop, shared: " << imageEngine2->inputImage.getValue().getCImg(0).is_shared() << std::endl;
         }
 
     }
