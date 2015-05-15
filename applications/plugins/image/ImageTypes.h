@@ -101,8 +101,20 @@ public:
     cimg_library::CImgList<T>& getCImgList() { return img; }
     const cimg_library::CImgList<T>& getCImgList() const { return img; }
 
-    cimg_library::CImg<T>& getCImg(const unsigned int t=0) { if (t>=img.size())   return *img._data;		return img(t);    }
-    const cimg_library::CImg<T>& getCImg(const unsigned int t=0) const {   if (t>=img.size())   return *img._data;		return img(t);   }
+    cimg_library::CImg<T>& getCImg(const unsigned int t=0) {
+        if (t>=img.size())   {
+            assert(img._data != NULL);
+            return *img._data;
+        }
+        return img(t);
+    }
+    const cimg_library::CImg<T>& getCImg(const unsigned int t=0) const {
+        if (t>=img.size())   {
+            assert(img._data != NULL);
+            return *img._data;
+        }
+        return img(t);
+    }
 
     inline bool isEmpty() const {return img.size()==0;}
 

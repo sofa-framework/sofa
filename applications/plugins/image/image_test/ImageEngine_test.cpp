@@ -46,27 +46,102 @@ namespace sofa {
   */
 struct ImageEngine_test : public Sofa_test<>
 {
-    // Image Container
-    typedef sofa::component::container::ImageContainer< defaulttype::Image<unsigned char> > ImageContainer;
-    ImageContainer::SPtr imageContainer;
-
-    // Image Engine
-    typedef sofa::component::engine::TestImageEngine< defaulttype::Image<unsigned char> > TestImageEngine;
-    TestImageEngine::SPtr imageEngine;
-
-    // Image Viewer
-    typedef sofa::component::misc::ImageViewer< defaulttype::Image<unsigned char> > ImageViewer;
-    ImageViewer::SPtr imageViewer;
 
     // Root of the scene graph
     simulation::Node::SPtr root;
 
-    // simulation
-    simulation::Simulation* simulation;
+    // Test link
+    void testDataLink()
+    {
+        typedef defaulttype::Image<unsigned char> Image;
 
-    /// Create the scene to test
-    void SetUp()
-    { 
+//        // Create a scene
+//        sofa::component::init();
+//        sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+//        root = sofa::simulation::getSimulation()->createNewGraph("root");
+
+//        // Image Engine
+//        typedef sofa::component::engine::TestImageEngine< defaulttype::Image<unsigned char> > TestImageEngine;
+//        TestImageEngine::SPtr imageEngine  = sofa::modeling::addNew<TestImageEngine>(root);
+//        imageEngine->init();
+
+//        // Image Viewer
+//        typedef sofa::component::misc::ImageViewer< defaulttype::Image<unsigned char> > ImageViewer;
+//        ImageViewer::SPtr imageViewer = sofa::modeling::addNew<ImageViewer>(root);
+//        imageViewer->init();
+
+
+//        core::objectmodel::Data< Image >& data1 = imageEngine->outputImage;
+//        core::objectmodel::Data< Image >& data2 = imageViewer->image;
+//        data2.getValue();
+
+//        // Set data1 = image in imageContainer
+//        Image::CImgT img;
+//        imageEngine->inputImage.setValue(img);
+
+        core::objectmodel::Data< Image > data1;
+        core::objectmodel::Data< Image > data2;
+
+
+        // Image container
+        typedef sofa::component::container::ImageContainer< Image > ImageContainer;
+        ImageContainer::SPtr imageContainer = sofa::core::objectmodel::New<ImageContainer>();
+
+        // Set path to image for imageContainer
+        std::string fileName = std::string(IMAGETEST_SCENES_DIR) + "/" + "beam.raw";
+        imageContainer->m_filename.setValue(fileName);
+
+        // Init image container
+        imageContainer->init();
+
+        // Set data1 = image in imageContainer
+        Image::CImgT img;
+        data1.setValue(img);
+
+
+        // Set data link
+        sofa::modeling::setDataLink(&data1,&data2);
+        data1.getValue();
+
+
+        // Check that data values are the same
+        ASSERT_EQ(data1.getValue(),data2.getValue());
+
+        // Check if pointers are equal
+        if(&data1.getValue()!= &data2.getValue())
+        {
+            ADD_FAILURE() << "Data Link duplicates the datas ! " << std::endl;
+        }
+
+        // Change value of data1
+        helper::WriteAccessor<Data< Image > > w1(data1);
+        Image::CImgT outImg = w1->getCImg(0);
+        outImg.fill(0);
+
+        // Check that data values are the same
+        ASSERT_EQ(data1.getValue(),data2.getValue());
+    }
+
+
+
+    /// Scene with an ImageViewer
+    void testImageViewer()
+    {
+        // simulation
+        simulation::Simulation* simulation;
+
+        // Image Container
+        typedef sofa::component::container::ImageContainer< defaulttype::Image<unsigned char> > ImageContainer;
+        ImageContainer::SPtr imageContainer;
+
+        // Image Engine
+        typedef sofa::component::engine::TestImageEngine< defaulttype::Image<unsigned char> > TestImageEngine;
+        TestImageEngine::SPtr imageEngine;
+
+        // Image Viewer
+        typedef sofa::component::misc::ImageViewer< defaulttype::Image<unsigned char> > ImageViewer;
+        ImageViewer::SPtr imageViewer;
+
         // Create a scene
         sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -91,17 +166,75 @@ struct ImageEngine_test : public Sofa_test<>
         // ImageEngine listening is true to update image at each time step
         imageEngine->f_listening.setValue(true);
 
+
         //ImageViewer
         imageViewer = sofa::modeling::addNew<ImageViewer>(root);
 
         // Set data link: output image of engine is image of ImageViewer.
         sofa::modeling::setDataLink(&imageEngine->outputImage,&imageViewer->image);
+        //sofa::modeling::setDataLink(&imageContainer->image,&imageViewer->image);
+
+
+
+        // Init simulation
+        sofa::simulation::getSimulation()->init(root.get());
+
+        //  do several steps of animation
+        for(int l=0;l<2;++l)
+        {
+            sofa::simulation::getSimulation()->animate(root.get(),0.5);
+            std::cerr << "loop, value " << imageViewer->image.getValue().getCImg(0).size() << std::endl;
+        }
 
     }
-
-    // Test animate
+    /// Scene with simple engines
     void testAnimate()
     {
+        // simulation
+        simulation::Simulation* simulation;
+
+        // Image Container
+        typedef sofa::component::container::ImageContainer< defaulttype::Image<unsigned char> > ImageContainer;
+        ImageContainer::SPtr imageContainer;
+
+        // Image Engine
+        typedef sofa::component::engine::TestImageEngine< defaulttype::Image<unsigned char> > TestImageEngine;
+        TestImageEngine::SPtr imageEngine;
+
+        // Image Viewer
+        typedef sofa::component::misc::ImageViewer< defaulttype::Image<unsigned char> > ImageViewer;
+        ImageViewer::SPtr imageViewer;
+
+        // Create a scene
+        sofa::component::init();
+        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+
+        // Root node
+        root = simulation->createNewGraph("root");
+
+        // Input image
+        // Image container
+        imageContainer = sofa::modeling::addNew<ImageContainer>(root);
+
+        // Set path to image for imageContainer
+        std::string fileName = std::string(IMAGETEST_SCENES_DIR) + "/" + "beam.raw";
+        imageContainer->m_filename.setValue(fileName);
+
+        // ImageEngine
+        imageEngine = sofa::modeling::addNew<TestImageEngine>(root);
+
+        // Set data link: image of ImageContainer is input image of Engine.
+        sofa::modeling::setDataLink(&imageContainer->image,&imageEngine->inputImage);
+
+        // ImageEngine listening is true to update image at each time step
+        imageEngine->f_listening.setValue(true);
+
+        TestImageEngine::SPtr imageEngine2 = sofa::modeling::addNew<TestImageEngine>(root);
+        sofa::modeling::setDataLink(&imageEngine->outputImage,&imageEngine2->inputImage);
+
+
+
+
         // Init simulation
         sofa::simulation::getSimulation()->init(root.get());
 
@@ -116,17 +249,30 @@ struct ImageEngine_test : public Sofa_test<>
     // Unload scene
     void TearDown()
     {
+        std::cerr << "start TearDown" << std::endl;
         if (root!=NULL)
             sofa::simulation::getSimulation()->unload(root);
+        std::cerr << "end TearDown" << std::endl;
     }
 
 };
 
 // Test
-TEST_F(ImageEngine_test , testImageDataLink )
+TEST_F(ImageEngine_test , testDataLink )
+{
+    ASSERT_NO_THROW(this->testDataLink());
+}
+
+TEST_F(ImageEngine_test , testEngineDataLink )
 {
     ASSERT_NO_THROW(this->testAnimate());
 }
+
+TEST_F(ImageEngine_test , testImageViewer )
+{
+    ASSERT_NO_THROW(this->testImageViewer());
+}
+
 
 }// namespace sofa
 

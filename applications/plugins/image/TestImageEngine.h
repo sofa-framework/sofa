@@ -42,6 +42,7 @@ namespace component
 namespace engine
 {
 
+
 /**
  * This class is only used to test engine with image data.
  * Given a input image the ouput image will have the same dimension as input image and all pixels will be 0.
@@ -101,9 +102,11 @@ public:
         // Set the dimensions of outputImage
         out->setDimensions(dim);
 
-        //  Fill all pixel values of ouputImage with 0
+        //  Copy input on output
         cimg_library::CImg<T>& outImg = out->getCImg(0);
-        outImg.fill(0);
+
+        out->getCImg(0) = in->getCImg(0);
+       std::cerr << "TestImageEngine input shared: " << in->getCImg(0).is_shared() << std::endl;
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)
