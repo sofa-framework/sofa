@@ -29,18 +29,22 @@
 
 /** \mainpage SOFA API Documentation
  *
- * You are on the main page of the SOFA API Documentation.
+ * You are on the main page of the SOFA API Documentation.  This is the starting
+ * point of the documentation of the classes of the framework itself.
  *
- * It is the starting point of the documentation of the classes of the
- * framework itself.
- * A general introduction is available on https://www.sofa-framework.org/documentation/general-documentation/
+ * A general introduction to SOFA is available on
+ * https://www.sofa-framework.org/documentation/general-documentation/
  *
- * This page also lists the individual documentation of most modules
- * and plugins below.
  *
- * @LINK_TO_COMPONENT_LIST_PAGE@
+ * <h4>Plugins</h4>
  *
- * @DOCUMENTATION_LIST@
+ * The doxygen documentations of individual plugins are listed on the <b> \ref sofa_plugins "Plugins" </b> page.
+ *
+ *
+ * <h4>Modules</h4>
+ *
+ * If you are looking for the documentation of a specific component that does not belong to a plugin, check out the <b> \ref sofa_modules_component_list "Component List" </b> page instead.
+ *
  *
  * <h4>Generating this documentation</h4>
  *
