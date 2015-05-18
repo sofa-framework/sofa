@@ -41,6 +41,25 @@
  * @LINK_TO_COMPONENT_LIST_PAGE@
  *
  * @DOCUMENTATION_LIST@
+ *
+ * <h4>Generating this documentation</h4>
+ *
+ * To generate this documentation from the source of Sofa, create a build
+ * directory and enable the SOFA-MISC_DOXYGEN CMake option.  This will create
+ * various documentation targets:
+ *
+ * - Use <i><tt>make doc</tt></i> to generate all the documentation; the main page
+ *   (this page) is <tt>doc/SOFA/index.html</tt>;
+ *
+ * - Use <i><tt>make doc-SOFA</tt></i> to re-generate only the documentation of SOFA
+ *   (not the plugins);
+ *
+ * - Use <i><tt>make doc-Foo</tt></i> to generate the documentation of the Foo plugin, as well
+ *   as the documentation of Foo's dependencies;
+ *
+ * - Use <i><tt>make doc-Foo/fast</tt></i> to re-generate only the documentation of the Foo
+ *   plugin, without generating again the documentation for its dependencies.
+ *
  */
 
 /** \namespace sofa
