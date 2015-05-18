@@ -35,13 +35,19 @@
 #endif
 
 /** \mainpage
-This is the test suite of Sofa. It contains:
-- base classes to ease the development of tests, such as sofa::Sofa_test , sofa::Mapping_test
-- tests of Sofa classes, in project SofaTest_test/. This currently contains all the tests of the standard (non-plugin) classes. It is far from complete.
+This is the test suite of Sofa. It contains base classes to ease the development of tests, such as sofa::Sofa_test , sofa::Mapping_test, etc.
+The actual tests are implemented in sub-directories of the modules and plugins. For instance, SofaRigid/SofaRigid_test/RigidMapping_test.cpp.
+
+The tests are optional. They are activated using the SOFA-MISC_TESTS flag of the cmake configuration.
+This generates a set of executables, each of them running the test suite of the module. For instance, from the debug build directory, run:
+ \code{.sh} bin/SofaConstraint_testd \endcode
+To run all the tests, run command \code{.sh} ctest --verbose \endcode
 
 Motivation and detail about activation is given in http://wiki.sofa-framework.org/wiki/UnitTesting
 
 The tests are based on the googletest framework http://code.google.com/p/googletest/wiki/Documentation
+
+
 
 <h3> Data files</h3>
 Some tests require to open data files. These are typically located in the same directory as the test code.
