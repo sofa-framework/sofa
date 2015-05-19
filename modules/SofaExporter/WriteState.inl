@@ -125,7 +125,15 @@ void WriteState::init()
     }
 }
 
-
+void WriteState::reinit(){
+if (outfile)
+    delete outfile;
+#ifdef SOFA_HAVE_ZLIB
+if (gzfile)
+    gzclose(gzfile);
+#endif
+init();
+}
 void WriteState::reset()
 {
     nextTime = 0;
