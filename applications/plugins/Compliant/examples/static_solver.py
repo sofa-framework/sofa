@@ -53,6 +53,7 @@ def beam(node, **kwargs):
 
 def createScene(node):
 
+    node.gravity = '0 -1 0'
     node.dt = 1
     
     display_flags(node, show = 'Behavior Visual',
