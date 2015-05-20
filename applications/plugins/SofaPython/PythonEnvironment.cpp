@@ -287,10 +287,16 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     PyRun_SimpleString(commandString.c_str());
 
     // Load the scene script
-    std::string scriptPy = filename;
+    FILE* scriptPyFile = fopen(filename,"r");
 
-    FILE* scriptPyFile = fopen(scriptPy.c_str(),"r");
-    int error = PyRun_SimpleFileEx(scriptPyFile, scriptPy.c_str(), 1);
+    if( !scriptPyFile )
+    {
+        SP_MESSAGE_ERROR("cannot open file:" << filename)
+        PyErr_Print();
+        return false;
+    }
+
+    int error = PyRun_SimpleFileEx(scriptPyFile,filename, 1);
 
     //  Py_END_ALLOW_THREADS
 
