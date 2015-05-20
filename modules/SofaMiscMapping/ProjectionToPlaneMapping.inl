@@ -51,7 +51,7 @@ template <class TIn, class TOut>
 void ProjectionToTargetPlaneMapping<TIn, TOut>::init()
 {
     assert( f_indices.getValue().size()==f_origins.getValue().size()) ;
-    assert( f_indices.getValue().size()==f_directions.getValue().size()) ;
+    assert( f_indices.getValue().size()==f_normals.getValue().size()) ;
 
     this->getToModel()->resize( f_indices.getValue().size() );
 
