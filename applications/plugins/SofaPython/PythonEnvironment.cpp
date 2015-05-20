@@ -296,7 +296,17 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
         return false;
     }
 
-    int error = PyRun_SimpleFileEx(scriptPyFile,filename, 1);
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
+
+    PyObject* backupFileObject = PyDict_GetItemString(pDict, "__file__");
+    PyObject* newFileObject = Py_BuildValue("s", filename.c_str());
+    PyDict_SetItemString(pDict, "__file__", newFileObject);
+
+    FILE* scriptPyFile = fopen(filename.c_str(),"r");
+    int error = PyRun_SimpleFileEx(scriptPyFile, filename.c_str(), 1);
+
+    PyDict_SetItemString(pDict, "__file__", backupFileObject);
+    Py_DECREF(newFileObject);
 
     //  Py_END_ALLOW_THREADS
 
