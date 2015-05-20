@@ -139,11 +139,11 @@ if (SOFA-MISC_DOXYGEN)
 
     set(DOCUMENTATION_TEXT "")
     doc_append_list("Plugins" ".*/plugins/.*")
-    configure_file("cmake/doxygen/sofa_plugins.h.in" "${SOFA_BUILD_DIR}/misc/sofa_plugins.h")
+    configure_file("cmake/doxygen/sofa_plugins.dox.in" "${SOFA_BUILD_DIR}/misc/sofa_plugins.dox")
 
     set(DOCUMENTATION_TEXT "")
     doc_append_list("Modules" ".*/modules/.*")
-    configure_file("cmake/doxygen/sofa_modules.h.in" "${SOFA_BUILD_DIR}/misc/sofa_modules.h")
+    configure_file("cmake/doxygen/sofa_modules.dox.in" "${SOFA_BUILD_DIR}/misc/sofa_modules.dox")
 
     if(SOFA-MISC_DOXYGEN_COMPONENT_LIST)
         add_subdirectory(cmake/doxygen)
@@ -152,13 +152,13 @@ if (SOFA-MISC_DOXYGEN)
     # Create the 'doc-SOFA' target for the documentation of framework/
     if(SOFA-MISC_DOXYGEN_COMPONENT_LIST)
         add_custom_target("component_list"
-            COMMAND bin/generateComponentList > misc/sofa_modules_component_list.h
+            COMMAND bin/generateComponentList > misc/sofa_modules_component_list.dox
             DEPENDS generateComponentList)
     else()
         add_custom_target("component_list"
-            COMMAND cp ${SOFA_CMAKE_DIR}/doxygen/empty_sofa_modules_component_list.h ${CMAKE_BINARY_DIR}/misc/sofa_modules_component_list.h)
+            COMMAND cp ${SOFA_CMAKE_DIR}/doxygen/empty_sofa_modules_component_list.dox ${CMAKE_BINARY_DIR}/misc/sofa_modules_component_list.dox)
     endif()
-    add_doc_target("SOFA" "${SOFA_FRAMEWORK_DIR} ${SOFA_MODULES_DIR}/sofa ${CMAKE_BINARY_DIR}/misc/sofa_modules.h ${CMAKE_BINARY_DIR}/misc/sofa_plugins.h ${CMAKE_BINARY_DIR}/misc/sofa_modules_component_list.h" "")
+    add_doc_target("SOFA" "${SOFA_FRAMEWORK_DIR} ${SOFA_MODULES_DIR}/sofa ${CMAKE_BINARY_DIR}/misc/sofa_modules.dox ${CMAKE_BINARY_DIR}/misc/sofa_plugins.dox ${CMAKE_BINARY_DIR}/misc/sofa_modules_component_list.dox" "")
     add_dependencies("doc-SOFA" "component_list")
     set_target_properties("doc-SOFA" PROPERTIES FOLDER "Documentation") # IDE Folder
 
