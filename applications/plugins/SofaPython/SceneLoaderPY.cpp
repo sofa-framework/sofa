@@ -141,7 +141,7 @@ bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vecto
     if(!OurHeader.empty() && 0 != PyRun_SimpleString(OurHeader.c_str()))
     {
         SP_MESSAGE_ERROR( "header script run error." )
-        return NULL;
+        return false;
     }
 
     PythonEnvironment::runString(std::string("__file__=\"") + filename + "\"");
