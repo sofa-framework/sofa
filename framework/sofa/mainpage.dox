@@ -1,0 +1,44 @@
+/**
+
+@mainpage SOFA API Documentation
+
+You are on the main page of the SOFA API Documentation.  This is the starting
+point of the documentation of the classes of the framework itself.
+
+A general introduction to SOFA is available on
+https://www.sofa-framework.org/documentation/general-documentation/
+
+
+<h4>Plugins</h4>
+
+The doxygen documentations of individual plugins are listed on the <b> @ref
+sofa_plugins "Plugins" </b> page.
+
+
+<h4>Modules</h4>
+
+If you are looking for the documentation of a specific component that does not
+belong to a plugin, check out the <b> @ref sofa_modules_component_list
+"Component List" </b> page instead.
+
+
+<h4>Generating this documentation</h4>
+
+To generate this documentation from the source of Sofa, create a build directory
+and enable the SOFA-MISC_DOXYGEN CMake option.  This will create various
+documentation targets:
+
+- Use <i><tt>make doc</tt></i> to generate all the documentation; the main page
+  (this page) is <tt>doc/SOFA/index.html</tt>;
+
+- Use <i><tt>make doc-SOFA</tt></i> to re-generate only the documentation of
+  SOFA (not the plugins);
+
+- Use <i><tt>make doc-Foo</tt></i> to generate the documentation of the Foo
+  plugin, as well as the documentation of Foo's dependencies;
+
+- Use <i><tt>make doc-Foo/fast</tt></i> to re-generate only the documentation of
+  the Foo plugin, without generating again the documentation for its
+  dependencies.
+
+*/
