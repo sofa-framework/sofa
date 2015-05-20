@@ -105,7 +105,7 @@ void IntersectorMap::ignore()
 template<class Model1, class Model2>
 void IntersectorMap::add_impl(ElementIntersector* intersector)
 {
-    add_impl(classid(Model1), classid(Model2), intersector);
+    add_impl(Model1::GetClass(), Model2::GetClass(), intersector);
 }
 
 } // namespace collision

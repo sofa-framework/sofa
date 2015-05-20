@@ -42,28 +42,28 @@ namespace collision
 
 SOFA_DECL_CLASS(BarycentricStickContact)
 
-Creator<Contact::Factory, BarycentricStickContact<SphereModel, SphereModel> > SphereSphereStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<SphereModel, PointModel> > SpherePointStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<PointModel, PointModel> > PointPointStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<LineModel, PointModel> > LinePointStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<LineModel, LineModel> > LineLineStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<LineModel, SphereModel> > LineSphereStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<TriangleModel, SphereModel> > TriangleSphereStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<TriangleModel, PointModel> > TrianglePointStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<TriangleModel, LineModel> > TriangleLineStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<TriangleModel, TriangleModel> > TriangleTriangleStickContactClass("stick",true);
+sofa::core::collision::ContactCreator< BarycentricStickContact<SphereModel, SphereModel> > SphereSphereStickContactClass("stick",true);
+sofa::core::collision::ContactCreator< BarycentricStickContact<SphereModel, PointModel> > SpherePointStickContactClass("stick",true);
+sofa::core::collision::ContactCreator< BarycentricStickContact<PointModel, PointModel> > PointPointStickContactClass("stick",true);
+sofa::core::collision::ContactCreator< BarycentricStickContact<LineModel, PointModel> > LinePointStickContactClass("stick",true);
+sofa::core::collision::ContactCreator< BarycentricStickContact<LineModel, LineModel> > LineLineStickContactClass("stick",true);
+sofa::core::collision::ContactCreator< BarycentricStickContact<LineModel, SphereModel> > LineSphereStickContactClass("stick",true);
+sofa::core::collision::ContactCreator< BarycentricStickContact<TriangleModel, SphereModel> > TriangleSphereStickContactClass("stick",true);
+sofa::core::collision::ContactCreator< BarycentricStickContact<TriangleModel, PointModel> > TrianglePointStickContactClass("stick",true);
+sofa::core::collision::ContactCreator< BarycentricStickContact<TriangleModel, LineModel> > TriangleLineStickContactClass("stick",true);
+sofa::core::collision::ContactCreator< BarycentricStickContact<TriangleModel, TriangleModel> > TriangleTriangleStickContactClass("stick",true);
 
 #ifdef SOFA_HAVE_MINIFLOWVR
-Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, PointModel> > DistanceGridPointStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, SphereModel> > DistanceGridSphereStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, TriangleModel> > DistanceGridTriangleStickContactClass("stick", true);
+sofa::core::collision::ContactCreator< BarycentricStickContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridStickContactClass("stick", true);
+sofa::core::collision::ContactCreator< BarycentricStickContact<RigidDistanceGridCollisionModel, PointModel> > DistanceGridPointStickContactClass("stick", true);
+sofa::core::collision::ContactCreator< BarycentricStickContact<RigidDistanceGridCollisionModel, SphereModel> > DistanceGridSphereStickContactClass("stick", true);
+sofa::core::collision::ContactCreator< BarycentricStickContact<RigidDistanceGridCollisionModel, TriangleModel> > DistanceGridTriangleStickContactClass("stick", true);
 
-Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, FFDDistanceGridCollisionModel> > FFDDistanceGridStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > FFDDistanceGridRigidDistanceGridStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, PointModel> > FFDDistanceGridPointStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, SphereModel> > FFDDistanceGridSphereStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, TriangleModel> > FFDDistanceGridTriangleStickContactClass("stick", true);
+sofa::core::collision::ContactCreator< BarycentricStickContact<FFDDistanceGridCollisionModel, FFDDistanceGridCollisionModel> > FFDDistanceGridStickContactClass("stick", true);
+sofa::core::collision::ContactCreator< BarycentricStickContact<FFDDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > FFDDistanceGridRigidDistanceGridStickContactClass("stick", true);
+sofa::core::collision::ContactCreator< BarycentricStickContact<FFDDistanceGridCollisionModel, PointModel> > FFDDistanceGridPointStickContactClass("stick", true);
+sofa::core::collision::ContactCreator< BarycentricStickContact<FFDDistanceGridCollisionModel, SphereModel> > FFDDistanceGridSphereStickContactClass("stick", true);
+sofa::core::collision::ContactCreator< BarycentricStickContact<FFDDistanceGridCollisionModel, TriangleModel> > FFDDistanceGridTriangleStickContactClass("stick", true);
 #endif
 
 } // namespace collision

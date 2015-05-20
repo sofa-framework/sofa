@@ -103,7 +103,6 @@ set(HEADER_FILES
     objectmodel/BaseNode.h
     objectmodel/BaseObject.h
     objectmodel/BaseObjectDescription.h
-    objectmodel/ClassInfo.h
     objectmodel/ConfigurationSetting.h
     objectmodel/Context.h
     objectmodel/ContextObject.h
@@ -201,7 +200,6 @@ set(SOURCE_FILES
     objectmodel/BaseNode.cpp
     objectmodel/BaseObject.cpp
     objectmodel/BaseObjectDescription.cpp
-    objectmodel/ClassInfo.cpp
     objectmodel/ConfigurationSetting.cpp
     objectmodel/ContextObject.cpp
     objectmodel/Context.cpp

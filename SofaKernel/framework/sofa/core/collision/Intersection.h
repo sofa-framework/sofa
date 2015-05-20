@@ -27,7 +27,6 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/collision/DetectionOutput.h>
-#include <sofa/helper/FnDispatcher.h>
 #include <boost/unordered_map.hpp>
 
 
@@ -97,11 +96,11 @@ public:
 
 /// Table storing associations between types of collision models and intersectors implementing intersection tests
 ///
-/// This class uses the new ClassInfo metaclass to be able to recognize derived classes. So it is no longer necessary
+/// This class uses the new BaseClass metaclass to be able to recognize derived classes. So it is no longer necessary
 /// to register all derived collision models (i.e. an intersector registered for RayModel will also be used for RayPickIntersector).
 class SOFA_CORE_API IntersectorMap
 {
-    typedef std::map<std::pair<helper::TypeInfo, helper::TypeInfo>, ElementIntersector*> InternalMap;
+    typedef std::map<std::pair<const objectmodel::BaseClass*, const objectmodel::BaseClass*>, ElementIntersector*> InternalMap;
     typedef InternalMap::key_type MapKey;
     typedef InternalMap::value_type MapValue;
 public:
@@ -114,7 +113,7 @@ public:
 
     ~IntersectorMap();
 
-    helper::TypeInfo getType(core::CollisionModel* model);
+    const objectmodel::BaseClass* getType(core::CollisionModel* model);
 
     ElementIntersector* get(core::CollisionModel* model1, core::CollisionModel* model2, bool& swapModels);
 
@@ -122,13 +121,13 @@ protected:
     template<class Model1, class Model2>
     void add_impl(ElementIntersector* intersector);
 
-    void add_impl(const objectmodel::ClassInfo& c1, const objectmodel::ClassInfo& c2, ElementIntersector* intersector);
+    void add_impl(const objectmodel::BaseClass* c1, const objectmodel::BaseClass* c2, ElementIntersector* intersector);
 
-    void insert(const helper::TypeInfo& t1, const helper::TypeInfo& t2, ElementIntersector* intersector);
+    void insert(const objectmodel::BaseClass* t1, const objectmodel::BaseClass* t2, ElementIntersector* intersector);
 
     InternalMap intersectorsMap;
-    std::map< helper::TypeInfo, helper::TypeInfo > castMap;
-    std::set< const objectmodel::ClassInfo* > classes;
+    std::map< const objectmodel::BaseClass*, const objectmodel::BaseClass* > castMap;
+    std::set< const objectmodel::BaseClass* > classes;
 };
 
 /** @brief Given 2 collision elements, test if an intersection is possible (for bounding volumes), or compute intersection points if any

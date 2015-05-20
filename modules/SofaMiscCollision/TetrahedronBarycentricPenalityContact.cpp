@@ -43,11 +43,11 @@ using namespace sofa::core::collision;
 
 SOFA_DECL_CLASS(TetrahedronBarycentricPenalityContact)
 
-Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronModel, SphereModel> > TetrahedronSpherePenalityContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronModel, PointModel> > TetrahedronPointPenalityContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronModel, LineModel> > TetrahedronLinePenalityContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronModel, TriangleModel> > TetrahedronTrianglePenalityContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronModel, TetrahedronModel> > TetrahedronTetrahedronPenalityContactClass("default",true);
+sofa::core::collision::ContactCreator< BarycentricPenalityContact<TetrahedronModel, SphereModel> > TetrahedronSpherePenalityContactClass("default",true);
+sofa::core::collision::ContactCreator< BarycentricPenalityContact<TetrahedronModel, PointModel> > TetrahedronPointPenalityContactClass("default",true);
+sofa::core::collision::ContactCreator< BarycentricPenalityContact<TetrahedronModel, LineModel> > TetrahedronLinePenalityContactClass("default",true);
+sofa::core::collision::ContactCreator< BarycentricPenalityContact<TetrahedronModel, TriangleModel> > TetrahedronTrianglePenalityContactClass("default",true);
+sofa::core::collision::ContactCreator< BarycentricPenalityContact<TetrahedronModel, TetrahedronModel> > TetrahedronTetrahedronPenalityContactClass("default",true);
 
 } // namespace collision
 

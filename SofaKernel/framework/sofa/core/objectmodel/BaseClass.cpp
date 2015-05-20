@@ -45,6 +45,21 @@ BaseClass::~BaseClass()
 {
 }
 
+void BaseClass::logNewClass()
+{
+    /*std::cout << "NEW class " << className;
+    if (!templateName.empty()) std::cout << '<' << templateName << '>';
+    if (!namespaceName.empty()) std::cout << " in " << namespaceName;
+    if (!shortName.empty()) std::cout << " short " << shortName;
+    for (std::size_t i = 0; i < parents.size(); ++i)
+    {
+        std::cout << ((i == 0) ? ": " : ", ");
+        std::cout << parents[i]->className;
+        if (!parents[i]->templateName.empty()) std::cout << '<' << parents[i]->templateName << '>';
+    }
+    std::cout << std::endl;*/
+}
+
 /// Helper method to BaseClass::decode the type name
 std::string BaseClass::decodeFullName(const std::type_info& t)
 {

@@ -118,17 +118,17 @@ public:
     /// Generic object access, given a set of required tags, possibly searching up or down from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const;
+    virtual void* getObject(const sofa::core::objectmodel::BaseClass* class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const;
 
     /// Generic object access, given a path from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const;
+    virtual void* getObject(const sofa::core::objectmodel::BaseClass* class_info, const std::string& path) const;
 
     /// Generic list of objects access, given a set of required tags, possibly searching up or down from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const;
+    virtual void getObjects(const sofa::core::objectmodel::BaseClass* class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const;
 
 
 
@@ -243,12 +243,12 @@ protected:
     /// @{
 
     /// get node's local objects respecting specified class_info and tags
-    inline void getLocalObjects( const sofa::core::objectmodel::ClassInfo& class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags ) const
+    inline void getLocalObjects( const sofa::core::objectmodel::BaseClass* class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags ) const
     {
         for (DAGNode::ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
         {
             core::objectmodel::BaseObject* obj = it->get();
-            void* result = class_info.dynamicCast(obj);
+            void* result = class_info->dynamicCast(obj);
             if (result != NULL && (tags.empty() || (obj)->getTags().includes(tags)))
                 container(result);
         }
@@ -259,7 +259,7 @@ protected:
     {
     public:
 
-        GetDownObjectsVisitor(const sofa::core::objectmodel::ClassInfo& class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags)
+        GetDownObjectsVisitor(const sofa::core::objectmodel::BaseClass* class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags)
             : Visitor( core::ExecParams::defaultInstance() )
             , _class_info(class_info)
             , _container(container)
@@ -283,7 +283,7 @@ protected:
 
     protected:
 
-        const sofa::core::objectmodel::ClassInfo& _class_info;
+        const sofa::core::objectmodel::BaseClass* _class_info;
         DAGNode::GetObjectsCallBack& _container;
         const sofa::core::objectmodel::TagSet& _tags;
     };
@@ -294,7 +294,7 @@ protected:
     {
     public:
 
-        GetUpObjectsVisitor(DAGNode* searchNode, const sofa::core::objectmodel::ClassInfo& class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags)
+        GetUpObjectsVisitor(DAGNode* searchNode, const sofa::core::objectmodel::BaseClass* class_info, DAGNode::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags)
             : Visitor( core::ExecParams::defaultInstance() )
             , _searchNode( searchNode )
             , _class_info(class_info)
@@ -328,7 +328,7 @@ protected:
     protected:
 
         DAGNode* _searchNode;
-        const sofa::core::objectmodel::ClassInfo& _class_info;
+        const sofa::core::objectmodel::BaseClass* _class_info;
         DAGNode::GetObjectsCallBack& _container;
         const sofa::core::objectmodel::TagSet& _tags;
 

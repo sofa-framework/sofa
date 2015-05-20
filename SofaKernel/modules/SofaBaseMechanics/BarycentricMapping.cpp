@@ -135,6 +135,79 @@ template class SOFA_BASE_MECHANICS_API BarycentricMapperHexahedronSetTopology< V
 #endif
 #endif
 
+// Quick and dirty way to make sure all mapper metaclasses are instantiated before multiple threads can be used
+static const sofa::core::objectmodel::BaseClass* classes[] = {
+#ifndef SOFA_FLOAT
+    BarycentricMapper< Vec3dTypes, Vec3dTypes >::GetClass(),
+    BarycentricMapper< Vec3dTypes, ExtVec3fTypes >::GetClass(),
+    TopologyBarycentricMapper< Vec3dTypes, Vec3dTypes >::GetClass(),
+    TopologyBarycentricMapper< Vec3dTypes, ExtVec3fTypes >::GetClass(),
+    BarycentricMapperRegularGridTopology< Vec3dTypes, Vec3dTypes >::GetClass(),
+    BarycentricMapperRegularGridTopology< Vec3dTypes, ExtVec3fTypes >::GetClass(),
+    BarycentricMapperSparseGridTopology< Vec3dTypes, Vec3dTypes >::GetClass(),
+    BarycentricMapperSparseGridTopology< Vec3dTypes, ExtVec3fTypes >::GetClass(),
+    BarycentricMapperMeshTopology< Vec3dTypes, Vec3dTypes >::GetClass(),
+    BarycentricMapperMeshTopology< Vec3dTypes, ExtVec3fTypes >::GetClass(),
+    BarycentricMapperEdgeSetTopology< Vec3dTypes, Vec3dTypes >::GetClass(),
+    BarycentricMapperEdgeSetTopology< Vec3dTypes, ExtVec3fTypes >::GetClass(),
+    BarycentricMapperTriangleSetTopology< Vec3dTypes, Vec3dTypes >::GetClass(),
+    BarycentricMapperTriangleSetTopology< Vec3dTypes, ExtVec3fTypes >::GetClass(),
+    BarycentricMapperQuadSetTopology< Vec3dTypes, Vec3dTypes >::GetClass(),
+    BarycentricMapperQuadSetTopology< Vec3dTypes, ExtVec3fTypes >::GetClass(),
+    BarycentricMapperTetrahedronSetTopology< Vec3dTypes, Vec3dTypes >::GetClass(),
+    BarycentricMapperTetrahedronSetTopology< Vec3dTypes, ExtVec3fTypes >::GetClass(),
+    BarycentricMapperHexahedronSetTopology< Vec3dTypes, Vec3dTypes >::GetClass(),
+    BarycentricMapperHexahedronSetTopology< Vec3dTypes, ExtVec3fTypes >::GetClass(),
+#endif
+#ifndef SOFA_DOUBLE
+    BarycentricMapper< Vec3fTypes, Vec3fTypes >::GetClass(),
+    BarycentricMapper< Vec3fTypes, ExtVec3fTypes >::GetClass(),
+    TopologyBarycentricMapper< Vec3fTypes, Vec3fTypes >::GetClass(),
+    TopologyBarycentricMapper< Vec3fTypes, ExtVec3fTypes >::GetClass(),
+    BarycentricMapperRegularGridTopology< Vec3fTypes, Vec3fTypes >::GetClass(),
+    BarycentricMapperRegularGridTopology< Vec3fTypes, ExtVec3fTypes >::GetClass(),
+    BarycentricMapperSparseGridTopology< Vec3fTypes, Vec3fTypes >::GetClass(),
+    BarycentricMapperSparseGridTopology< Vec3fTypes, ExtVec3fTypes >::GetClass(),
+    BarycentricMapperMeshTopology< Vec3fTypes, Vec3fTypes >::GetClass(),
+    BarycentricMapperMeshTopology< Vec3fTypes, ExtVec3fTypes >::GetClass(),
+    BarycentricMapperEdgeSetTopology< Vec3fTypes, Vec3fTypes >::GetClass(),
+    BarycentricMapperEdgeSetTopology< Vec3fTypes, ExtVec3fTypes >::GetClass(),
+    BarycentricMapperTriangleSetTopology< Vec3fTypes, Vec3fTypes >::GetClass(),
+    BarycentricMapperTriangleSetTopology< Vec3fTypes, ExtVec3fTypes >::GetClass(),
+    BarycentricMapperQuadSetTopology< Vec3fTypes, Vec3fTypes >::GetClass(),
+    BarycentricMapperQuadSetTopology< Vec3fTypes, ExtVec3fTypes >::GetClass(),
+    BarycentricMapperTetrahedronSetTopology< Vec3fTypes, Vec3fTypes >::GetClass(),
+    BarycentricMapperTetrahedronSetTopology< Vec3fTypes, ExtVec3fTypes >::GetClass(),
+    BarycentricMapperHexahedronSetTopology< Vec3fTypes, Vec3fTypes >::GetClass(),
+    BarycentricMapperHexahedronSetTopology< Vec3fTypes, ExtVec3fTypes >::GetClass(),
+#endif
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+    BarycentricMapper< Vec3dTypes, Vec3fTypes >::GetClass(),
+    BarycentricMapper< Vec3fTypes, Vec3dTypes >::GetClass(),
+    TopologyBarycentricMapper< Vec3dTypes, Vec3fTypes >::GetClass(),
+    TopologyBarycentricMapper< Vec3fTypes, Vec3dTypes >::GetClass(),
+    BarycentricMapperRegularGridTopology< Vec3dTypes, Vec3fTypes >::GetClass(),
+    BarycentricMapperRegularGridTopology< Vec3fTypes, Vec3dTypes >::GetClass(),
+    BarycentricMapperSparseGridTopology< Vec3dTypes, Vec3fTypes >::GetClass(),
+    BarycentricMapperSparseGridTopology< Vec3fTypes, Vec3dTypes >::GetClass(),
+    BarycentricMapperMeshTopology< Vec3dTypes, Vec3fTypes >::GetClass(),
+    BarycentricMapperMeshTopology< Vec3fTypes, Vec3dTypes >::GetClass(),
+    BarycentricMapperEdgeSetTopology< Vec3dTypes, Vec3fTypes >::GetClass(),
+    BarycentricMapperEdgeSetTopology< Vec3fTypes, Vec3dTypes >::GetClass(),
+    BarycentricMapperTriangleSetTopology< Vec3dTypes, Vec3fTypes >::GetClass(),
+    BarycentricMapperTriangleSetTopology< Vec3fTypes, Vec3dTypes >::GetClass(),
+    BarycentricMapperQuadSetTopology< Vec3dTypes, Vec3fTypes >::GetClass(),
+    BarycentricMapperQuadSetTopology< Vec3fTypes, Vec3dTypes >::GetClass(),
+    BarycentricMapperTetrahedronSetTopology< Vec3dTypes, Vec3fTypes >::GetClass(),
+    BarycentricMapperTetrahedronSetTopology< Vec3fTypes, Vec3dTypes >::GetClass(),
+    BarycentricMapperHexahedronSetTopology< Vec3dTypes, Vec3fTypes >::GetClass(),
+    BarycentricMapperHexahedronSetTopology< Vec3fTypes, Vec3dTypes >::GetClass(),
+#endif
+#endif
+    NULL
+};
+
 } // namespace mapping
 
 } // namespace component

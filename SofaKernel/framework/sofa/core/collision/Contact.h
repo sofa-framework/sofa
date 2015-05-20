@@ -128,6 +128,19 @@ public:
 
 };
 
+template < class RealContact >
+class ContactCreator : public helper::Creator < Contact::Factory, RealContact >
+{
+public:
+    typedef helper::Creator < Contact::Factory, RealContact > Inherit;
+    ContactCreator(std::string name, bool multi = true)
+    : Inherit(name, multi)
+    {
+        // make sure metaclass info is initialized (fixing issues with multiple threads)
+        RealContact::GetClass();
+    }
+};
+
 } // namespace collision
 
 } // namespace core

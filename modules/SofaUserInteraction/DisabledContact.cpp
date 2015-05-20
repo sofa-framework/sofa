@@ -47,29 +47,29 @@ SOFA_DECL_CLASS(DisabledContact)
 
 using namespace sofa::core::collision;
 
-Creator<Contact::Factory, DisabledContact<SphereModel, SphereModel> > SphereSphereDisabledContactClass("disabled",true);
-Creator<Contact::Factory, DisabledContact<SphereModel, PointModel> > SpherePointDisabledContactClass("disabled",true);
-Creator<Contact::Factory, DisabledContact<PointModel, PointModel> > PointPointDisabledContactClass("disabled",true);
-Creator<Contact::Factory, DisabledContact<LineModel, PointModel> > LinePointDisabledContactClass("disabled",true);
-Creator<Contact::Factory, DisabledContact<LineModel, LineModel> > LineLineDisabledContactClass("disabled",true);
-Creator<Contact::Factory, DisabledContact<LineModel, SphereModel> > LineSphereDisabledContactClass("disabled",true);
-Creator<Contact::Factory, DisabledContact<TriangleModel, SphereModel> > TriangleSphereDisabledContactClass("disabled",true);
-Creator<Contact::Factory, DisabledContact<TriangleModel, PointModel> > TrianglePointDisabledContactClass("disabled",true);
-Creator<Contact::Factory, DisabledContact<TriangleModel, LineModel> > TriangleLineDisabledContactClass("disabled",true);
-Creator<Contact::Factory, DisabledContact<TriangleModel, TriangleModel> > TriangleTriangleDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<SphereModel, SphereModel> > SphereSphereDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<SphereModel, PointModel> > SpherePointDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<PointModel, PointModel> > PointPointDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<LineModel, PointModel> > LinePointDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<LineModel, LineModel> > LineLineDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<LineModel, SphereModel> > LineSphereDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<TriangleModel, SphereModel> > TriangleSphereDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<TriangleModel, PointModel> > TrianglePointDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<TriangleModel, LineModel> > TriangleLineDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<TriangleModel, TriangleModel> > TriangleTriangleDisabledContactClass("disabled",true);
 
 
-Creator<Contact::Factory, DisabledContact<TriangleModel, RigidSphereModel> > TriangleRigidSphereDisabledContactClass("disabled",true);
-Creator<Contact::Factory, DisabledContact<CapsuleModel, TriangleModel> > CapsuleTriangleDisabledContactClass("disabled",true);
-Creator<Contact::Factory, DisabledContact<CapsuleModel, LineModel> > CapsuleLineDisabledContactClass("disabled",true);
-Creator<Contact::Factory, DisabledContact<CapsuleModel, CapsuleModel> > CapsuleCapsuleDisabledContactClass("disabled",true);
-Creator<Contact::Factory, DisabledContact<CapsuleModel, SphereModel> > CapsuleSphereDisabledContactClass("disabled",true);
-Creator<Contact::Factory, DisabledContact<CapsuleModel, RigidSphereModel> > CapsuleRigidSphereDisabledContactClass("disabled",true);
-Creator<Contact::Factory, DisabledContact<OBBModel, OBBModel> > OBBOBBDisabledContactClass("disabled",true);
-Creator<Contact::Factory, DisabledContact<CapsuleModel, OBBModel> > CapsuleOBBDisabledContactClass("disabled",true);
-Creator<Contact::Factory, DisabledContact<SphereModel, OBBModel> > SphereOBBDisabledContactClass("disabled",true);
-Creator<Contact::Factory, DisabledContact<RigidSphereModel, OBBModel> > RigidSphereOBBDisabledContactClass("disabled",true);
-Creator<Contact::Factory, DisabledContact<TriangleModel, OBBModel> > TriangleOBBDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<TriangleModel, RigidSphereModel> > TriangleRigidSphereDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<CapsuleModel, TriangleModel> > CapsuleTriangleDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<CapsuleModel, LineModel> > CapsuleLineDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<CapsuleModel, CapsuleModel> > CapsuleCapsuleDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<CapsuleModel, SphereModel> > CapsuleSphereDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<CapsuleModel, RigidSphereModel> > CapsuleRigidSphereDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<OBBModel, OBBModel> > OBBOBBDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<CapsuleModel, OBBModel> > CapsuleOBBDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<SphereModel, OBBModel> > SphereOBBDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<RigidSphereModel, OBBModel> > RigidSphereOBBDisabledContactClass("disabled",true);
+sofa::core::collision::ContactCreator< DisabledContact<TriangleModel, OBBModel> > TriangleOBBDisabledContactClass("disabled",true);
 
 } // namespace collision
 

@@ -45,18 +45,18 @@ IntersectorMap::~IntersectorMap()
     }
 }
 
-helper::TypeInfo IntersectorMap::getType(core::CollisionModel* model)
+const objectmodel::BaseClass* IntersectorMap::getType(core::CollisionModel* model)
 {
-    helper::TypeInfo t(typeid(*model));
-    const std::map<helper::TypeInfo,helper::TypeInfo>::iterator it = castMap.find(t);
+    const objectmodel::BaseClass* t = model->getClass();
+    const std::map<const objectmodel::BaseClass*,const objectmodel::BaseClass*>::iterator it = castMap.find(t);
     if (it == castMap.end())
     {
-        helper::TypeInfo t2 = t;
-        for (std::set<const objectmodel::ClassInfo* >::iterator it = classes.begin(); it != classes.end(); ++it)
+        const objectmodel::BaseClass* t2 = t;
+        for (std::set<const objectmodel::BaseClass* >::iterator it = classes.begin(); it != classes.end(); ++it)
         {
             if ((*it)->isInstance(model))
             {
-                t2 = (*it)->type();
+                t2 = (*it);
                 break;
             }
         }
@@ -68,8 +68,8 @@ helper::TypeInfo IntersectorMap::getType(core::CollisionModel* model)
 
 ElementIntersector* IntersectorMap::get(core::CollisionModel* model1, core::CollisionModel* model2, bool& swapModels)
 {
-    helper::TypeInfo t1 = getType(model1);
-    helper::TypeInfo t2 = getType(model2);
+    const objectmodel::BaseClass* t1 = getType(model1);
+    const objectmodel::BaseClass* t2 = getType(model2);
     InternalMap::iterator it = intersectorsMap.find(std::make_pair(t1,t2));
     if (it != intersectorsMap.end())
     {
@@ -85,15 +85,15 @@ ElementIntersector* IntersectorMap::get(core::CollisionModel* model1, core::Coll
     }
 
     std::cerr << "ERROR: Element Intersector "
-            << gettypename(t1) << "-"
-            << gettypename(t2) << " NOT FOUND within :" << std::endl;
+            << t1->className << "-"
+            << t2->className << " NOT FOUND within :" << std::endl;
     for(InternalMap::const_iterator it = intersectorsMap.begin(), itEnd = intersectorsMap.end(); it != itEnd; ++it)
     {
-        helper::TypeInfo t1 = it->first.first;
-        helper::TypeInfo t2 = it->first.second;
+        const objectmodel::BaseClass* t1 = it->first.first;
+        const objectmodel::BaseClass* t2 = it->first.second;
         std::cerr << "  "
-                << gettypename(t1) << "-"
-                << gettypename(t2);
+                << t1->className << "-"
+                << t2->className;
         ElementIntersector* i = it->second;
         if (!i) std::cout << "  NULL";
         else
@@ -106,23 +106,23 @@ ElementIntersector* IntersectorMap::get(core::CollisionModel* model1, core::Coll
     return 0;
 }
 
-void IntersectorMap::add_impl(const objectmodel::ClassInfo& c1,
-        const objectmodel::ClassInfo& c2,
+void IntersectorMap::add_impl(const objectmodel::BaseClass* c1,
+        const objectmodel::BaseClass* c2,
         ElementIntersector* intersector)
 {
-    classes.insert(&c1);
-    classes.insert(&c2);
+    classes.insert(c1);
+    classes.insert(c2);
     castMap.clear();
     // rebuild castMap
-    for (std::set<const objectmodel::ClassInfo* >::iterator it = classes.begin(); it != classes.end(); ++it)
+    for (std::set<const objectmodel::BaseClass* >::iterator it = classes.begin(); it != classes.end(); ++it)
     {
-        castMap.insert(std::make_pair((*it)->type(),(*it)->type()));
+        castMap.insert(std::make_pair((*it),(*it)));
     }
 
-    insert(c1.type(), c2.type(), intersector);
+    insert(c1, c2, intersector);
 }
 
-void IntersectorMap::insert(const helper::TypeInfo& t1, const helper::TypeInfo& t2, ElementIntersector* intersector)
+void IntersectorMap::insert(const objectmodel::BaseClass* t1, const objectmodel::BaseClass* t2, ElementIntersector* intersector)
 {
     const MapValue mapValue(MapKey(t1, t2), intersector);
     InternalMap::iterator it = intersectorsMap.find(mapValue.first);
