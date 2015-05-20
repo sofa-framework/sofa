@@ -299,11 +299,11 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
     PyObject* backupFileObject = PyDict_GetItemString(pDict, "__file__");
-    PyObject* newFileObject = Py_BuildValue("s", filename.c_str());
+    PyObject* newFileObject = Py_BuildValue("s", filename);
     PyDict_SetItemString(pDict, "__file__", newFileObject);
 
-    FILE* scriptPyFile = fopen(filename.c_str(),"r");
-    int error = PyRun_SimpleFileEx(scriptPyFile, filename.c_str(), 1);
+    FILE* scriptPyFile = fopen(filename,"r");
+    int error = PyRun_SimpleFileEx(scriptPyFile, filename, 1);
 
     PyDict_SetItemString(pDict, "__file__", backupFileObject);
     Py_DECREF(newFileObject);
