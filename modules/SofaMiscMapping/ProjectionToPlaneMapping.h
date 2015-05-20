@@ -43,7 +43,7 @@ namespace mapping
 
 
 
-/** Maps point positions to their projections on a fixed target line.
+/** Maps point positions to their projections on a fixed target plane.
     Only a subset of the parent points is mapped. This can be used to constrain the trajectories of one or several particles.
 
     In: parent point positions
@@ -53,10 +53,10 @@ namespace mapping
     @author Matthieu Nesme
   */
 template <class TIn, class TOut>
-class ProjectionToTargetLineMapping : public core::Mapping<TIn, TOut>
+class ProjectionToTargetPlaneMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(ProjectionToTargetLineMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(ProjectionToTargetPlaneMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
     typedef core::Mapping<TIn, TOut> Inherit;
     typedef TIn In;
@@ -74,11 +74,11 @@ public:
     typedef typename In::VecDeriv InVecDeriv;
     typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
-    typedef defaulttype::Vec<In::spatial_dimensions> Direction;
+    typedef defaulttype::Vec<In::spatial_dimensions> Normals;
 
     Data< vector<unsigned> > f_indices;         ///< indices of the parent points
     Data< OutVecCoord >      f_origins; ///< origins of the lines the point is projected to
-    Data< OutVecCoord >      f_directions; ///< directions of the lines the point is projected to (should be normalized, and are normalized in init)
+    Data< OutVecCoord >      f_normals; ///< directions of the lines the point is projected to (should be normalized, and are normalized in init)
 
 
     virtual void init();
@@ -106,22 +106,22 @@ public:
 
 
 protected:
-    ProjectionToTargetLineMapping();
-    virtual ~ProjectionToTargetLineMapping() {}
+    ProjectionToTargetPlaneMapping();
+    virtual ~ProjectionToTargetPlaneMapping() {}
 
     SparseMatrixEigen jacobian;                      ///< Jacobian of the mapping
     vector<defaulttype::BaseMatrix*> baseMatrices;   ///< Jacobian of the mapping, in a vector
-};
+    };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_ProjectionToPlaneMapping_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_ProjectionToLineMapping_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API ProjectionToTargetLineMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
-extern template class SOFA_MISC_MAPPING_API ProjectionToTargetLineMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API ProjectionToTargetLineMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API ProjectionToTargetLineMapping< defaulttype::Rigid3fTypes, defaulttype::Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defaulttype::Rigid3fTypes, defaulttype::Vec3fTypes >;
 #endif
 
 #endif
