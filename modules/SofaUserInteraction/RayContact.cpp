@@ -42,10 +42,10 @@ using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(RayContact)
 
-Creator<core::collision::Contact::Factory, RayContact<SphereModel> > RaySphereContactClass("ray",true);
-Creator<core::collision::Contact::Factory, RayContact<RigidSphereModel> > RayRigidSphereContactClass("ray",true);
-Creator<core::collision::Contact::Factory, RayContact<TriangleModel> > RayTriangleContactClass("ray",true);
-Creator<core::collision::Contact::Factory, RayContact<OBBModel> > RayRigidBoxContactClass("ray", true); //cast not wroking
+sofa::core::collision::ContactCreator< RayContact<SphereModel> > RaySphereContactClass("ray",true);
+sofa::core::collision::ContactCreator< RayContact<RigidSphereModel> > RayRigidSphereContactClass("ray",true);
+sofa::core::collision::ContactCreator< RayContact<TriangleModel> > RayTriangleContactClass("ray",true);
+sofa::core::collision::ContactCreator< RayContact<OBBModel> > RayRigidBoxContactClass("ray", true); //cast not wroking
 
 
 

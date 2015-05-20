@@ -24,23 +24,23 @@ using namespace sofa::helper;
 using simulation::Node;
 using core::collision::Contact;
 
-Creator<Contact::Factory, CompliantContact<BulletConvexHullModel, BulletConvexHullModel> > BCHullBCHullCompliantContactClassClass("CompliantContact",true);
-Creator<Contact::Factory, CompliantContact<BulletConvexHullModel, CylinderModel> > BCHullCylinderCompliantContactClassClass("CompliantContact",true);
-Creator<Contact::Factory, CompliantContact<BulletConvexHullModel, TriangleModel> > BCHullTriangleCompliantContactClassClass("CompliantContact",true);
-Creator<Contact::Factory, CompliantContact<BulletConvexHullModel, RigidCapsuleModel> > BCHullRigidCapsuleCompliantContactClassClass("CompliantContact",true);
-Creator<Contact::Factory, CompliantContact<BulletConvexHullModel, CapsuleModel> > CapsuleBCHullCompliantContactClassClass("CompliantContact",true);
-Creator<Contact::Factory, CompliantContact<BulletConvexHullModel, SphereModel> > BCHullSphereCompliantContactClassClass("CompliantContact",true);
-Creator<Contact::Factory, CompliantContact<BulletConvexHullModel, RigidSphereModel> > BCHullRigidSphereCompliantContactClassClass("CompliantContact",true);
-Creator<Contact::Factory, CompliantContact<BulletConvexHullModel, OBBModel> > BCHullOBBCompliantContactClassClass("CompliantContact",true);
+sofa::core::collision::ContactCreator< CompliantContact<BulletConvexHullModel, BulletConvexHullModel> > BCHullBCHullCompliantContactClassClass("CompliantContact",true);
+sofa::core::collision::ContactCreator< CompliantContact<BulletConvexHullModel, CylinderModel> > BCHullCylinderCompliantContactClassClass("CompliantContact",true);
+sofa::core::collision::ContactCreator< CompliantContact<BulletConvexHullModel, TriangleModel> > BCHullTriangleCompliantContactClassClass("CompliantContact",true);
+sofa::core::collision::ContactCreator< CompliantContact<BulletConvexHullModel, RigidCapsuleModel> > BCHullRigidCapsuleCompliantContactClassClass("CompliantContact",true);
+sofa::core::collision::ContactCreator< CompliantContact<BulletConvexHullModel, CapsuleModel> > CapsuleBCHullCompliantContactClassClass("CompliantContact",true);
+sofa::core::collision::ContactCreator< CompliantContact<BulletConvexHullModel, SphereModel> > BCHullSphereCompliantContactClassClass("CompliantContact",true);
+sofa::core::collision::ContactCreator< CompliantContact<BulletConvexHullModel, RigidSphereModel> > BCHullRigidSphereCompliantContactClassClass("CompliantContact",true);
+sofa::core::collision::ContactCreator< CompliantContact<BulletConvexHullModel, OBBModel> > BCHullOBBCompliantContactClassClass("CompliantContact",true);
 
-Creator<Contact::Factory, FrictionCompliantContact<BulletConvexHullModel, BulletConvexHullModel> > BCHullBCHullFrictionCompliantContactClassClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<BulletConvexHullModel, CylinderModel> > BCHullCylinderFrictionCompliantContactClassClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<BulletConvexHullModel, TriangleModel> > BCHullTriangleFrictionCompliantContactClassClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<BulletConvexHullModel, RigidCapsuleModel> > BCHullRigidCapsuleFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<BulletConvexHullModel, CapsuleModel> > CapsuleBCHullFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<BulletConvexHullModel, SphereModel> > BCHullSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<BulletConvexHullModel, RigidSphereModel> > BCHullRigidSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<BulletConvexHullModel, OBBModel> > BCHullOBBCompliantFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<BulletConvexHullModel, BulletConvexHullModel> > BCHullBCHullFrictionCompliantContactClassClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<BulletConvexHullModel, CylinderModel> > BCHullCylinderFrictionCompliantContactClassClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<BulletConvexHullModel, TriangleModel> > BCHullTriangleFrictionCompliantContactClassClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<BulletConvexHullModel, RigidCapsuleModel> > BCHullRigidCapsuleFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<BulletConvexHullModel, CapsuleModel> > CapsuleBCHullFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<BulletConvexHullModel, SphereModel> > BCHullSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<BulletConvexHullModel, RigidSphereModel> > BCHullRigidSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<BulletConvexHullModel, OBBModel> > BCHullOBBCompliantFrictionCompliantContactClass("FrictionCompliantContact",true);
 } // namespace collision
 
 } // namespace component

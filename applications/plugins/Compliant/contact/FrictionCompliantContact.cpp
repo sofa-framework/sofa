@@ -21,36 +21,36 @@ using core::collision::Contact;
 SOFA_DECL_CLASS(FrictionCompliantContact)
 
 
-Creator<Contact::Factory, FrictionCompliantContact<PointModel, PointModel> > PointPointFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<LineModel, SphereModel> > LineSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<LineModel, PointModel> > LinePointFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<LineModel, LineModel> > LineLineFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<TriangleModel, SphereModel> > TriangleSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<TriangleModel, PointModel> > TrianglePointFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<TriangleModel, LineModel> > TriangleLineFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<TriangleModel, TriangleModel> > TriangleTriangleFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<SphereModel, SphereModel> > SphereSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<SphereModel, PointModel> > SpherePointFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<CapsuleModel, CapsuleModel> > CapsuleCapsuleFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<CapsuleModel, TriangleModel> > CapsuleTriangleFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<CapsuleModel, SphereModel> > CapsuleSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<OBBModel, OBBModel> > OBBOBBFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<SphereModel, OBBModel> > SphereOBBFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<CapsuleModel, OBBModel> > CapsuleOBBFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<TriangleModel, OBBModel> > TriangleOBBFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<RigidSphereModel, RigidSphereModel> > RigidSphereRigidSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<SphereModel, RigidSphereModel> > SphereRigidSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<LineModel, RigidSphereModel> > LineRigidSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<TriangleModel, RigidSphereModel> > TriangleRigidSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<RigidSphereModel, PointModel> > RigidSpherePointFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<CapsuleModel, RigidSphereModel> > CapsuleRigidSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<RigidSphereModel, OBBModel> > RigidSphereOBBFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<OBBModel ,RigidSphereModel> > OBBRigidSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<CylinderModel, OBBModel> >	CylinderModelOBBModelFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<CylinderModel, TriangleModel> >	CylinderModelTriangleModelFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<TriangleModel, CylinderModel> >	TriangleModelCylinderModelFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<CylinderModel, SphereModel> >	CylinderModelSphereModelFrictionCompliantContactClass("FrictionCompliantContact",true);
-Creator<Contact::Factory, FrictionCompliantContact<SphereModel, CylinderModel> >	SphereModelCylinderModelFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<PointModel, PointModel> > PointPointFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<LineModel, SphereModel> > LineSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<LineModel, PointModel> > LinePointFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<LineModel, LineModel> > LineLineFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<TriangleModel, SphereModel> > TriangleSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<TriangleModel, PointModel> > TrianglePointFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<TriangleModel, LineModel> > TriangleLineFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<TriangleModel, TriangleModel> > TriangleTriangleFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<SphereModel, SphereModel> > SphereSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<SphereModel, PointModel> > SpherePointFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<CapsuleModel, CapsuleModel> > CapsuleCapsuleFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<CapsuleModel, TriangleModel> > CapsuleTriangleFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<CapsuleModel, SphereModel> > CapsuleSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<OBBModel, OBBModel> > OBBOBBFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<SphereModel, OBBModel> > SphereOBBFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<CapsuleModel, OBBModel> > CapsuleOBBFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<TriangleModel, OBBModel> > TriangleOBBFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<RigidSphereModel, RigidSphereModel> > RigidSphereRigidSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<SphereModel, RigidSphereModel> > SphereRigidSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<LineModel, RigidSphereModel> > LineRigidSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<TriangleModel, RigidSphereModel> > TriangleRigidSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<RigidSphereModel, PointModel> > RigidSpherePointFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<CapsuleModel, RigidSphereModel> > CapsuleRigidSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<RigidSphereModel, OBBModel> > RigidSphereOBBFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<OBBModel ,RigidSphereModel> > OBBRigidSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<CylinderModel, OBBModel> >	CylinderModelOBBModelFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<CylinderModel, TriangleModel> >	CylinderModelTriangleModelFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<TriangleModel, CylinderModel> >	TriangleModelCylinderModelFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<CylinderModel, SphereModel> >	CylinderModelSphereModelFrictionCompliantContactClass("FrictionCompliantContact",true);
+sofa::core::collision::ContactCreator< FrictionCompliantContact<SphereModel, CylinderModel> >	SphereModelCylinderModelFrictionCompliantContactClass("FrictionCompliantContact",true);
 
 } // namespace collision
 

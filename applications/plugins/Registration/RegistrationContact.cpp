@@ -45,34 +45,34 @@ using simulation::Node;
 
 SOFA_DECL_CLASS(RegistrationContact)
 
-Creator<Contact::Factory, RegistrationContact<SphereModel, SphereModel> > SphereSphereRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<SphereModel, PointModel> > SpherePointRegistrationContactClass("registration",true);
-//Creator<Contact::Factory, RegistrationContact<SphereTreeModel, SphereTreeModel> > SphereTreeSphereTreeRegistrationContactClass("registration", true);
-//Creator<Contact::Factory, RegistrationContact<SphereTreeModel, TriangleModel> > SphereTreeTriangleContactClass("registration", true);
-Creator<Contact::Factory, RegistrationContact<PointModel, PointModel> > PointPointRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<LineModel, PointModel> > LinePointRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<LineModel, LineModel> > LineLineRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<LineModel, SphereModel> > LineSphereRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<TriangleModel, SphereModel> > TriangleSphereRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<TriangleModel, PointModel> > TrianglePointRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<TriangleModel, LineModel> > TriangleLineRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<TriangleModel, TriangleModel> > TriangleTriangleRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<TetrahedronModel, SphereModel> > TetrahedronSphereRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<TetrahedronModel, PointModel> > TetrahedronPointRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<TetrahedronModel, LineModel> > TetrahedronLineRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<TetrahedronModel, TriangleModel> > TetrahedronTriangleRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<TetrahedronModel, TetrahedronModel> > TetrahedronTetrahedronRegistrationContactClass("registration",true);
+sofa::core::collision::ContactCreator< RegistrationContact<SphereModel, SphereModel> > SphereSphereRegistrationContactClass("registration",true);
+sofa::core::collision::ContactCreator< RegistrationContact<SphereModel, PointModel> > SpherePointRegistrationContactClass("registration",true);
+//sofa::core::collision::ContactCreator< RegistrationContact<SphereTreeModel, SphereTreeModel> > SphereTreeSphereTreeRegistrationContactClass("registration", true);
+//sofa::core::collision::ContactCreator< RegistrationContact<SphereTreeModel, TriangleModel> > SphereTreeTriangleContactClass("registration", true);
+sofa::core::collision::ContactCreator< RegistrationContact<PointModel, PointModel> > PointPointRegistrationContactClass("registration",true);
+sofa::core::collision::ContactCreator< RegistrationContact<LineModel, PointModel> > LinePointRegistrationContactClass("registration",true);
+sofa::core::collision::ContactCreator< RegistrationContact<LineModel, LineModel> > LineLineRegistrationContactClass("registration",true);
+sofa::core::collision::ContactCreator< RegistrationContact<LineModel, SphereModel> > LineSphereRegistrationContactClass("registration",true);
+sofa::core::collision::ContactCreator< RegistrationContact<TriangleModel, SphereModel> > TriangleSphereRegistrationContactClass("registration",true);
+sofa::core::collision::ContactCreator< RegistrationContact<TriangleModel, PointModel> > TrianglePointRegistrationContactClass("registration",true);
+sofa::core::collision::ContactCreator< RegistrationContact<TriangleModel, LineModel> > TriangleLineRegistrationContactClass("registration",true);
+sofa::core::collision::ContactCreator< RegistrationContact<TriangleModel, TriangleModel> > TriangleTriangleRegistrationContactClass("registration",true);
+sofa::core::collision::ContactCreator< RegistrationContact<TetrahedronModel, SphereModel> > TetrahedronSphereRegistrationContactClass("registration",true);
+sofa::core::collision::ContactCreator< RegistrationContact<TetrahedronModel, PointModel> > TetrahedronPointRegistrationContactClass("registration",true);
+sofa::core::collision::ContactCreator< RegistrationContact<TetrahedronModel, LineModel> > TetrahedronLineRegistrationContactClass("registration",true);
+sofa::core::collision::ContactCreator< RegistrationContact<TetrahedronModel, TriangleModel> > TetrahedronTriangleRegistrationContactClass("registration",true);
+sofa::core::collision::ContactCreator< RegistrationContact<TetrahedronModel, TetrahedronModel> > TetrahedronTetrahedronRegistrationContactClass("registration",true);
 
-Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridRegistrationContactClass("registration", true);
-Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, PointModel> > DistanceGridPointRegistrationContactClass("registration", true);
-Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, SphereModel> > DistanceGridSphereRegistrationContactClass("registration", true);
-Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, TriangleModel> > DistanceGridTriangleRegistrationContactClass("registration", true);
+sofa::core::collision::ContactCreator< RegistrationContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridRegistrationContactClass("registration", true);
+sofa::core::collision::ContactCreator< RegistrationContact<RigidDistanceGridCollisionModel, PointModel> > DistanceGridPointRegistrationContactClass("registration", true);
+sofa::core::collision::ContactCreator< RegistrationContact<RigidDistanceGridCollisionModel, SphereModel> > DistanceGridSphereRegistrationContactClass("registration", true);
+sofa::core::collision::ContactCreator< RegistrationContact<RigidDistanceGridCollisionModel, TriangleModel> > DistanceGridTriangleRegistrationContactClass("registration", true);
 
-Creator<Contact::Factory, RegistrationContact<FFDDistanceGridCollisionModel, FFDDistanceGridCollisionModel> > FFDDistanceGridRegistrationContactClass("registration", true);
-Creator<Contact::Factory, RegistrationContact<FFDDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > FFDDistanceGridRigidDistanceGridRegistrationContactClass("registration", true);
-Creator<Contact::Factory, RegistrationContact<FFDDistanceGridCollisionModel, PointModel> > FFDDistanceGridPoinRegistrationtContactClass("registration", true);
-Creator<Contact::Factory, RegistrationContact<FFDDistanceGridCollisionModel, SphereModel> > FFDDistanceGridSphereRegistrationContactClass("registration", true);
-Creator<Contact::Factory, RegistrationContact<FFDDistanceGridCollisionModel, TriangleModel> > FFDDistanceGridTriangleRegistrationContactClass("registration", true);
+sofa::core::collision::ContactCreator< RegistrationContact<FFDDistanceGridCollisionModel, FFDDistanceGridCollisionModel> > FFDDistanceGridRegistrationContactClass("registration", true);
+sofa::core::collision::ContactCreator< RegistrationContact<FFDDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > FFDDistanceGridRigidDistanceGridRegistrationContactClass("registration", true);
+sofa::core::collision::ContactCreator< RegistrationContact<FFDDistanceGridCollisionModel, PointModel> > FFDDistanceGridPoinRegistrationtContactClass("registration", true);
+sofa::core::collision::ContactCreator< RegistrationContact<FFDDistanceGridCollisionModel, SphereModel> > FFDDistanceGridSphereRegistrationContactClass("registration", true);
+sofa::core::collision::ContactCreator< RegistrationContact<FFDDistanceGridCollisionModel, TriangleModel> > FFDDistanceGridTriangleRegistrationContactClass("registration", true);
 
 
 } // namespace collision

@@ -38,10 +38,10 @@ using namespace sofa::helper;
 
 SOFA_DECL_CLASS(PersistentFrictionContact)
 
-Creator<Contact::Factory, PersistentFrictionContact<PointModel, PointModel> > PointPointPersistentFrictionContactClass("PersistentFrictionContact",true);
-Creator<Contact::Factory, PersistentFrictionContact<LineModel, PointModel> > LinePointPersistentFrictionContactClass("PersistentFrictionContact",true);
-Creator<Contact::Factory, PersistentFrictionContact<LineModel, LineModel> > LineLinePersistentFrictionContactClass("PersistentFrictionContact",true);
-Creator<Contact::Factory, PersistentFrictionContact<TriangleModel, PointModel> > TrianglePointPersistentFrictionContactContactClass("PersistentFrictionContact",true);
+sofa::core::collision::ContactCreator< PersistentFrictionContact<PointModel, PointModel> > PointPointPersistentFrictionContactClass("PersistentFrictionContact",true);
+sofa::core::collision::ContactCreator< PersistentFrictionContact<LineModel, PointModel> > LinePointPersistentFrictionContactClass("PersistentFrictionContact",true);
+sofa::core::collision::ContactCreator< PersistentFrictionContact<LineModel, LineModel> > LineLinePersistentFrictionContactClass("PersistentFrictionContact",true);
+sofa::core::collision::ContactCreator< PersistentFrictionContact<TriangleModel, PointModel> > TrianglePointPersistentFrictionContactContactClass("PersistentFrictionContact",true);
 
 
 template<>

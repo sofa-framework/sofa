@@ -19,26 +19,26 @@ using namespace defaulttype;
 using simulation::Node;
 using core::collision::Contact;
 
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, BulletConvexHullModel> > BulletConvexHullModelBulletConvexHullContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, SphereModel> > BulletConvexHullModelSphereModelContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, RigidSphereModel> > BulletConvexHullModelRigidSphereModelContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, TriangleModel> > BulletConvexHullModelTriangleModelContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, LineModel> > BulletConvexHullModelLineModelContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, PointModel> > BulletConvexHullModelPointModelContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, OBBModel> > BulletConvexHullModelOBBModelContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, CapsuleModel> > BulletConvexHullModelCapsuleModelContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, RigidCapsuleModel> > BulletConvexHullModelRigidCapsuleModelContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, CylinderModel> > BulletConvexHullModelCylinderModelContactClass("default",true);
+sofa::core::collision::ContactCreator< BarycentricPenalityContact<BulletConvexHullModel, BulletConvexHullModel> > BulletConvexHullModelBulletConvexHullContactClass("default",true);
+sofa::core::collision::ContactCreator< BarycentricPenalityContact<BulletConvexHullModel, SphereModel> > BulletConvexHullModelSphereModelContactClass("default",true);
+sofa::core::collision::ContactCreator< BarycentricPenalityContact<BulletConvexHullModel, RigidSphereModel> > BulletConvexHullModelRigidSphereModelContactClass("default",true);
+sofa::core::collision::ContactCreator< BarycentricPenalityContact<BulletConvexHullModel, TriangleModel> > BulletConvexHullModelTriangleModelContactClass("default",true);
+sofa::core::collision::ContactCreator< BarycentricPenalityContact<BulletConvexHullModel, LineModel> > BulletConvexHullModelLineModelContactClass("default",true);
+sofa::core::collision::ContactCreator< BarycentricPenalityContact<BulletConvexHullModel, PointModel> > BulletConvexHullModelPointModelContactClass("default",true);
+sofa::core::collision::ContactCreator< BarycentricPenalityContact<BulletConvexHullModel, OBBModel> > BulletConvexHullModelOBBModelContactClass("default",true);
+sofa::core::collision::ContactCreator< BarycentricPenalityContact<BulletConvexHullModel, CapsuleModel> > BulletConvexHullModelCapsuleModelContactClass("default",true);
+sofa::core::collision::ContactCreator< BarycentricPenalityContact<BulletConvexHullModel, RigidCapsuleModel> > BulletConvexHullModelRigidCapsuleModelContactClass("default",true);
+sofa::core::collision::ContactCreator< BarycentricPenalityContact<BulletConvexHullModel, CylinderModel> > BulletConvexHullModelCylinderModelContactClass("default",true);
 
 
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<BulletConvexHullModel, BulletConvexHullModel> > BCHullBCHullLMConstraintContactClassClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<BulletConvexHullModel, CylinderModel> > BCHullCylinderLMConstraintContactClassClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<BulletConvexHullModel, TriangleModel> > BCHullTriangleLMConstraintContactClassClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<BulletConvexHullModel, RigidCapsuleModel> > BCHullRigidCapsuleLMConstraintContactClassClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<BulletConvexHullModel, CapsuleModel> > CapsuleBCHullLMConstraintContactClassClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<BulletConvexHullModel, SphereModel> > BCHullSphereLMConstraintContactClassClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<BulletConvexHullModel, RigidSphereModel> > BCHullRigidSphereLMConstraintContactClassClass("distanceLMConstraint",true);
-Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<BulletConvexHullModel, OBBModel> > BCHullOBBLMConstraintContactClassClass("distanceLMConstraint",true);
+sofa::core::collision::ContactCreator< BarycentricDistanceLMConstraintContact<BulletConvexHullModel, BulletConvexHullModel> > BCHullBCHullLMConstraintContactClassClass("distanceLMConstraint",true);
+sofa::core::collision::ContactCreator< BarycentricDistanceLMConstraintContact<BulletConvexHullModel, CylinderModel> > BCHullCylinderLMConstraintContactClassClass("distanceLMConstraint",true);
+sofa::core::collision::ContactCreator< BarycentricDistanceLMConstraintContact<BulletConvexHullModel, TriangleModel> > BCHullTriangleLMConstraintContactClassClass("distanceLMConstraint",true);
+sofa::core::collision::ContactCreator< BarycentricDistanceLMConstraintContact<BulletConvexHullModel, RigidCapsuleModel> > BCHullRigidCapsuleLMConstraintContactClassClass("distanceLMConstraint",true);
+sofa::core::collision::ContactCreator< BarycentricDistanceLMConstraintContact<BulletConvexHullModel, CapsuleModel> > CapsuleBCHullLMConstraintContactClassClass("distanceLMConstraint",true);
+sofa::core::collision::ContactCreator< BarycentricDistanceLMConstraintContact<BulletConvexHullModel, SphereModel> > BCHullSphereLMConstraintContactClassClass("distanceLMConstraint",true);
+sofa::core::collision::ContactCreator< BarycentricDistanceLMConstraintContact<BulletConvexHullModel, RigidSphereModel> > BCHullRigidSphereLMConstraintContactClassClass("distanceLMConstraint",true);
+sofa::core::collision::ContactCreator< BarycentricDistanceLMConstraintContact<BulletConvexHullModel, OBBModel> > BCHullOBBLMConstraintContactClassClass("distanceLMConstraint",true);
 
 }
 }
