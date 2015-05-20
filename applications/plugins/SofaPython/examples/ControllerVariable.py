@@ -10,7 +10,7 @@ from SofaPython import script
 
 def createScene( root ):
     
-    myController = MyControllerClass(root,"toto")
+    myController = MyControllerClass(root,"hello world controller")
     myController.helloWorld()
     myController.myText = "hello world!"
     
