@@ -5,11 +5,12 @@ import inspect
 
 class Controller(Sofa.PythonScriptController):
 
-    def __new__(cls, node):
+    def __new__(cls, node, name='PythonScriptController'):
 
         node.createObject('PythonScriptController',
                           filename = inspect.getfile(cls),
-                          classname = cls.__name__)
+                          classname = cls.__name__,
+                          name = name)
         try:
             res = Controller.instance
             del Controller.instance

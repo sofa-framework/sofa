@@ -125,5 +125,5 @@ class Plugin(object):
         
 
 
-from types import Rigid, Quaternion
+#from types import Rigid, Quaternion
 
