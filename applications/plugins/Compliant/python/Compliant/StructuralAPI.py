@@ -44,6 +44,7 @@ class RigidBody:
         self.mass = None   # mass
         self.frame = Frame.Frame()
         self.framecom = Frame.Frame()
+        self.fixedConstraint = None # to fix the RigidBody
 
     def setFromMesh(self, filepath, density = 1000, offset = [0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces = False ):
         ## create the rigid body from a mesh (inertia and com are automatically computed)
@@ -111,6 +112,15 @@ class RigidBody:
     def addMotor( self, forces=[0,0,0,0,0,0] ):
         ## adding a constant force/torque to the rigid body (that could be driven by a controller to simulate a motor)
         return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
+
+    def setFixed(self, isFixed=True):
+        """ Add/remove a fixed constraint for this rigid
+        """
+        if isFixed and self.fixedConstraint is None:
+            self.fixedConstraint = self.node.createObject("FixedConstraint", name="fixedConstraint")
+        elif not isFixed and not self.fixedConstraint is None:
+            self.node.removeObject(self.fixedConstraint)
+            self.fixedConstraint=None
 
     class CollisionMesh:
 
