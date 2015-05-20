@@ -40,8 +40,6 @@ namespace sofa {
  * Visualize the output image of the engine with ImageViewer.
  * The input image of ImageViewer is then linked to the ouput image of the engine.
  * Copy on Write option is true.
- * When we launch the simulation at the end during destruction there is a segmentation fault,
- * because the buffer data of the ouput image of the Engine is shared with the buffer of the image of image viewer.
  * Note: the function draw of ImageViewer is acutally not called in this test (it works with the gui).
   */
 struct ImageEngine_test : public Sofa_test<>
