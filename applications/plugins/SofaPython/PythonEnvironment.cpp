@@ -302,7 +302,6 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     PyObject* newFileObject = Py_BuildValue("s", filename);
     PyDict_SetItemString(pDict, "__file__", newFileObject);
 
-    FILE* scriptPyFile = fopen(filename,"r");
     int error = PyRun_SimpleFileEx(scriptPyFile, filename, 1);
 
     PyDict_SetItemString(pDict, "__file__", backupFileObject);
