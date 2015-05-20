@@ -6,4 +6,5 @@ list(APPEND PYTHON_FILES
     python/SofaPython/console.py
     python/SofaPython/sml.py
     python/SofaPython/mass.py
+    python/SofaPython/script.py
 )
