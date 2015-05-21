@@ -90,6 +90,9 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
         return NULL;
     }
 
+    PythonEnvironment::runString("createScene=None");
+    PythonEnvironment::runString("createSceneAndController=None");
+
     PythonEnvironment::runString(std::string("__file__=\"") + filename + "\"");
 
     if(!PythonEnvironment::runFile(filename, arguments))
@@ -140,6 +143,9 @@ bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vecto
         SP_MESSAGE_ERROR( "header script run error." )
         return false;
     }
+
+    PythonEnvironment::runString("createScene=None");
+    PythonEnvironment::runString("createSceneAndController=None");
 
     PythonEnvironment::runString(std::string("__file__=\"") + filename + "\"");
 
