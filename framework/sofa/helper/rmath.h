@@ -218,46 +218,70 @@ inline T sign0( const T& v )
 }
 
 
-// default implementation for integers
 // (FF) why do we need a comparison function for integers ? Why not operator == ?
 // (MattN) to allow a common code templated for both integers and floating points
+
+/// @internal
+template<bool is_integer=false>
+struct IsEqual
+{
+    template<typename T> inline static bool test( T x, T y, T threshold )
+    {
+       return rabs(x-y) <= threshold;
+    }
+};
+
+/// @internal specialization for integer types
+template<>
+struct IsEqual<true>
+{
+    template<typename T> inline static bool test( T x, T y, T )
+    {
+       return x==y;
+    }
+};
+
+/// number comparison
+/// rough floating point comparison (threshold)
+/// exact integer comparison
 template<class T>
-inline bool isEqual( T x, T y, T =std::numeric_limits<T>::epsilon() )
+inline bool isEqual( T x, T y, T threshold = (std::numeric_limits<T>::epsilon)() )
 {
-    assert( std::numeric_limits<T>::is_integer );
-    return x==y;
-}
-// specialization for floating points
-template<>
-inline bool isEqual( float x, float y, float threshold )
-{
-    return rabs(x-y) <= threshold;
-}
-template<>
-inline bool isEqual( double x, double y, double threshold )
-{
-    return rabs(x-y) <= threshold;
+    return IsEqual<std::numeric_limits<T>::is_integer>::test( x, y, threshold );
 }
 
-// default implementation for integers
-template<class T>
-inline bool isNull( T x, T = (std::numeric_limits<T>::epsilon)() )
+
+
+/// @internal
+template<bool is_integer=false>
+struct IsNull
 {
-    assert( std::numeric_limits<T>::is_integer );
-    return x==0;
-}
-// specialization for floating points
+    template<typename T> static bool test( T x, T threshold )
+    {
+       return rabs(x) <= threshold;
+    }
+};
+
+/// @internal specialization for integer types
 template<>
-inline bool isNull( float x, float threshold )
+struct IsNull<true>
 {
-    return rabs(x) <= threshold;
+    template<typename T> static bool test( T x, T )
+    {
+       return x==0;
+    }
+};
+
+/// number null test
+/// rough floating point test ( <= threshold)
+/// exact integer test
+template<class T>
+inline bool isNull( T x, T threshold = (std::numeric_limits<T>::epsilon)() )
+{
+    return IsNull<std::numeric_limits<T>::is_integer>::test( x, threshold );
 }
 
-template<>
-inline bool isNull( double x, double threshold )
-{
-    return rabs(x) <= threshold;
-}
+
 
 inline double rcos(double x){
 	return cos(x);
