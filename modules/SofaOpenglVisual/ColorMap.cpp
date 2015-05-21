@@ -128,7 +128,6 @@ ColorMap::ColorMap()
         "Red",          // RGB space
         "Green",        // RGB space
         "Blue",         // RGB space
-        "Custom",        // TODO: Custom colors
 		"Yellow to Cyan",// HSV space
 		"Cyan to Yellow",// HSV space
 		"Red to Yellow",// RGB space
@@ -141,7 +140,8 @@ ColorMap::ColorMap()
 		"Blue to Cyan",// RGB space
 		"BlueInv",// HSV space
 		"GreenInv",// HSV space
-		"RedInv"// HSV space
+		"RedInv",// HSV space
+        "Custom"// TODO: Custom colors
         );
     f_colorScheme.beginEdit()->setSelectedItem("HSV");
     f_colorScheme.endEdit();
