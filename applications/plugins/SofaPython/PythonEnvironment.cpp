@@ -299,13 +299,15 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
     PyObject* backupFileObject = PyDict_GetItemString(pDict, "__file__");
-    PyObject* newFileObject = Py_BuildValue("s", filename);
+    std::string backupFileName = PyString_AsString(backupFileObject);
+
+    PyObject* newFileObject = PyString_FromString(filename);
     PyDict_SetItemString(pDict, "__file__", newFileObject);
 
     int error = PyRun_SimpleFileEx(scriptPyFile, filename, 1);
 
+    backupFileObject = PyString_FromString(backupFileName.c_str());
     PyDict_SetItemString(pDict, "__file__", backupFileObject);
-    Py_DECREF(newFileObject);
 
     //  Py_END_ALLOW_THREADS
 
