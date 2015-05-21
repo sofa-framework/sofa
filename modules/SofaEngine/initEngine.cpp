@@ -79,6 +79,7 @@ SOFA_LINK_CLASS(ClusteringEngine)
 SOFA_LINK_CLASS(ShapeMatching)
 SOFA_LINK_CLASS(ProximityROI)
 SOFA_LINK_CLASS(MeshClosingEngine)
+SOFA_LINK_CLASS(MeshSampler)
 
 } // namespace component
 

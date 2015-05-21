@@ -95,6 +95,8 @@ set(HEADER_FILES
     MeshClosingEngine.inl
     MeshSubsetEngine.h
     MeshSubsetEngine.inl
+    MeshSampler.h
+    MeshSampler.inl
     )
 
 set(SOURCE_FILES
@@ -148,6 +150,7 @@ set(SOURCE_FILES
     TestEngine.cpp
     MeshClosingEngine.cpp
     MeshSubsetEngine.cpp
+    MeshSampler.cpp
     )
 
 set(GROUP_BASE_DIR "..")
