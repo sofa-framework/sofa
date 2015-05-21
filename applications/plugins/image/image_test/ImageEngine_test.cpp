@@ -95,8 +95,7 @@ struct ImageEngine_test : public Sofa_test<>
 
         // Change value of data1
         helper::WriteAccessor<Data< Image > > w1(data1);
-        Image::CImgT outImg = w1->getCImg(0);
-        outImg.fill(0);
+        w1->getCImg(0).fill(0);
 //        data1.getValue().getCImg().display("data1 after clear");
 
         // Check that data values are the same
@@ -108,6 +107,21 @@ struct ImageEngine_test : public Sofa_test<>
         {
             ADD_FAILURE() << "Data Link duplicates the datas ! " << std::endl;
         }
+
+//        // Change value of data2
+//        helper::WriteAccessor<Data< Image > > w2(data2);
+//        w2->getCImg(0).fill(1);
+//        data2.getValue().getCImg().display("data2 after modif");
+//        data1.getValue().getCImg().display("data1 after modif");
+
+//        // Check that data values are the same
+//        ASSERT_EQ(data1.getValue(),data2.getValue());
+
+//        // Check if pointers are still equal
+//        if(&data1.getValue()!= &data2.getValue())
+//        {
+//            ADD_FAILURE() << "Data Link duplicates the datas ! " << std::endl;
+//        }
     }
 
 
@@ -176,8 +190,8 @@ struct ImageEngine_test : public Sofa_test<>
 
 
         // Check if pointers of images that should be shared are equal
-        ASSERT_EQ(imageContainer->image.getValue(),imageEngine->inputImage.getValue());
-        ASSERT_EQ(imageEngine->outputImage.getValue(),imageEngine2->inputImage.getValue());
+        ASSERT_EQ(&imageContainer->image.getValue(),&imageEngine->inputImage.getValue());
+        ASSERT_EQ(&imageEngine->outputImage.getValue(),&imageEngine2->inputImage.getValue());
 
 
     }
@@ -253,8 +267,8 @@ struct ImageEngine_test : public Sofa_test<>
 
 
         // Check if pointers of images that should be shared are equal
-        ASSERT_EQ(imageContainer->image.getValue(),imageEngine->inputImage.getValue());
-        ASSERT_EQ(imageEngine->outputImage.getValue(),imageViewer->image.getValue());
+        ASSERT_EQ(&imageContainer->image.getValue(),&imageEngine->inputImage.getValue());
+        ASSERT_EQ(&imageEngine->outputImage.getValue(),&imageViewer->image.getValue());
 
     }
 
