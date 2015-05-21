@@ -241,10 +241,9 @@ inline bool isEqual( double x, double y, double threshold )
 
 // default implementation for integers
 template<class T>
-inline bool isNull( T x, T threshold = std::numeric_limits<T>::epsilon() )
+inline bool isNull( T x, T = (std::numeric_limits<T>::epsilon)() )
 {
     assert( std::numeric_limits<T>::is_integer );
-    (void) threshold;
     return x==0;
 }
 // specialization for floating points
