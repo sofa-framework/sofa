@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_MESHSAMPLER_CPP
-#include <sofa/component/engine/MeshSampler.inl>
+#include <SofaEngine/MeshSampler.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
