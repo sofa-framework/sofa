@@ -76,6 +76,7 @@ struct Engine_test : public Sofa_test<>
     {
         //Get output engine2
        SReal result2 = engine2->f_result.getValue();
+       result2 = engine2->f_result.getValue();
 
        // Test if update method of engine1 is called 1 time
        if(engine1->getCounterUpdate()!=1)
