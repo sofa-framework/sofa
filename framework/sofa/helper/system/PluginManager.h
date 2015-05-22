@@ -139,7 +139,9 @@ public:
 
     static PluginManager& getInstance();
     bool loadPlugin(std::string& path, std::ostream* errlog=&std::cerr);
+    void loadPluginWithGui(const std::string& path, std::ostream* log=&std::cout, const std::string& guipostfix=s_gui_postfix ); ///< try to load a plugin and its associated gui plugin
     bool unloadPlugin(std::string& path, std::ostream* errlog=&std::cerr);
+
 
     void init();
 	void init(const std::string& pluginName);
@@ -157,6 +159,8 @@ public:
 
     void readFromIniFile(const std::string& path);
     void writeToIniFile(const std::string& path);
+
+    static std::string s_gui_postfix; ///< the postfix to gui plugin, default="gui" (e.g. myplugin_gui.so)
 
 private:
     PluginManager() {}
