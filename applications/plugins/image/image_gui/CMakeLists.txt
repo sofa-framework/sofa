@@ -35,7 +35,7 @@ set(MOC_FILES_GROUP "Generated")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${HEADER_MOC_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_IMAGE_GUI")
-AddLinkerDependencies(SofaGuiQt image ${OPENGL_LIBRARIES})
+AddLinkerDependencies(SofaGuiMain image ${OPENGL_LIBRARIES})
 
 endif()
 
