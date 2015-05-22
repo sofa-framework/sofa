@@ -74,7 +74,6 @@ void MeshSubsetEngine<DataTypes>::update()
         if(inside) oqd.push_back(cell);
     }
 
-    std::cout<<"update"<<std::endl;
 }
 
 
