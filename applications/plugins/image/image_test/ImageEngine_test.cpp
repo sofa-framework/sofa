@@ -64,6 +64,9 @@ struct ImageEngine_test : public Sofa_test<>
     // Test link
     void testDataLink()
     {
+
+//#define __DISPLAY__
+
         typedef defaulttype::Image<unsigned char> Image;
 
         core::objectmodel::Data< Image > data1;
@@ -72,16 +75,25 @@ struct ImageEngine_test : public Sofa_test<>
 
         // Set data1
         Image::CImgT img( (std::string(IMAGETEST_SCENES_DIR) + "/lena.jpg").c_str() );
-//        img.display("loaded image");
+
+#ifdef __DISPLAY__
+        img.display("loaded image");
+#endif
+
         data1.setValue(img);
-//        data1.getValue().getCImg().display("data1");
+
+#ifdef __DISPLAY__
+        data1.getValue().getCImg().display("data1");
+#endif
 
 
         // Set data link
         sofa::modeling::setDataLink(&data1,&data2);
         data1.getValue();
 
-//        data2.getValue().getCImg().display("data2");
+#ifdef __DISPLAY__
+        data2.getValue().getCImg().display("data2");
+#endif
 
 
         // Check that data values are the same
@@ -96,11 +108,17 @@ struct ImageEngine_test : public Sofa_test<>
         // Change value of data1
         helper::WriteAccessor<Data< Image > > w1(data1);
         w1->getCImg(0).fill(0);
-//        data1.getValue().getCImg().display("data1 after clear");
+
+#ifdef __DISPLAY__
+        data1.getValue().getCImg().display("data1 after clear");
+#endif
 
         // Check that data values are the same
         ASSERT_EQ(data1.getValue(),data2.getValue());
-//        data2.getValue().getCImg().display("data2 after clear");
+
+#ifdef __DISPLAY__
+        data2.getValue().getCImg().display("data2 after clear");
+#endif
 
         // Check if pointers are still equal
         if(&data1.getValue()!= &data2.getValue())
@@ -108,20 +126,32 @@ struct ImageEngine_test : public Sofa_test<>
             ADD_FAILURE() << "Data Link duplicates the datas ! " << std::endl;
         }
 
+
+
+
+
 //        // Change value of data2
+////        data2.getValue();
 //        helper::WriteAccessor<Data< Image > > w2(data2);
-//        w2->getCImg(0).fill(1);
+//        w2->getCImg(0).fill(255,0,0);
+
+//#ifdef __DISPLAY__
 //        data2.getValue().getCImg().display("data2 after modif");
 //        data1.getValue().getCImg().display("data1 after modif");
+//#endif
 
-//        // Check that data values are the same
-//        ASSERT_EQ(data1.getValue(),data2.getValue());
+//        std::cerr<<&data1.getValue()<<" "<<&data2.getValue()<<" "<<(data1.getValue()==data2.getValue())<<std::endl;
 
-//        // Check if pointers are still equal
-//        if(&data1.getValue()!= &data2.getValue())
-//        {
-//            ADD_FAILURE() << "Data Link duplicates the datas ! " << std::endl;
-//        }
+//        w1->getCImg(0).load((std::string(IMAGETEST_SCENES_DIR) + "/lena.jpg").c_str());
+
+//        std::cerr<<&data1.getValue()<<" "<<&data2.getValue()<<" "<<(data1.getValue()==data2.getValue())<<std::endl;
+
+
+//#ifdef __DISPLAY__
+//        data1.getValue().getCImg().display("data1 end");
+//        data2.getValue().getCImg().display("data2 end");
+//#endif
+
     }
 
 
