@@ -57,6 +57,7 @@ void MeshSubsetEngine<DataTypes>::update()
         opos[i]=pos[ind[i]];
         FtoS[ind[i]]=i;
     }
+    otri.clear();
     for(size_t i=0; i<tri.size(); i++)
     {
         bool inside=true;
@@ -64,6 +65,7 @@ void MeshSubsetEngine<DataTypes>::update()
         for(size_t j=0; j<3; j++) if(FtoS.find(tri[i][j])==FtoS.end()) { inside=false; break; } else cell[j]=FtoS[tri[i][j]];
         if(inside) otri.push_back(cell);
     }
+    oqd.clear();
     for(size_t i=0; i<qd.size(); i++)
     {
         bool inside=true;
@@ -71,6 +73,8 @@ void MeshSubsetEngine<DataTypes>::update()
         for(size_t j=0; j<4; j++) if(FtoS.find(qd[i][j])==FtoS.end()) { inside=false; break; } else cell[j]=FtoS[qd[i][j]];
         if(inside) oqd.push_back(cell);
     }
+
+    std::cout<<"update"<<std::endl;
 }
 
 
