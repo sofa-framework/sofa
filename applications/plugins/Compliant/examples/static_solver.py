@@ -53,8 +53,8 @@ def beam(node, **kwargs):
 
 def createScene(node):
 
-    node.gravity = '0 -1 0'
-    node.dt = 1
+    node.gravity = '0 -10 0'
+    node.dt = 1e-5
     
     display_flags(node, show = 'Behavior Visual',
                   hide = 'MechanicalMappings')
@@ -62,20 +62,17 @@ def createScene(node):
     requires(node, 'Flexible', 'Compliant')
 
     static = beam(node, name = 'static', color = '1 0.8 0.2')
-
-    static.createObject('CompliantPseudoStaticSolver',
-                        iterations = 1,
-                        velocityFactor= 0,
-                        threshold= 1e-4)
-    static.createObject('CgSolver',
-                        iterations = 100,
-                        precision= 1e-6)
-                        
-
-    dynamic = beam(node, name = 'dynamic', color = '0.8 0.8 1')
+    ode = static.createObject('CompliantStaticSolver',
+                              epsilon = 1e-6,
+                              beta_max = 1,
+                              line_search = False,
+                              fletcher_reeves = True)
+    ode.printLog = True
     
-    dynamic.createObject('CompliantImplicitSolver')
+    # dynamic = beam(node, name = 'dynamic', color = '0.8 0.8 1')
+    
+    # dynamic.createObject('CompliantImplicitSolver')
 
-    dynamic.createObject('CgSolver',
-                         iterations = 100,
-                         precision= 1e-6)
+    # dynamic.createObject('CgSolver',
+    #                      iterations = 100,
+    #                      precision= 1e-6)
