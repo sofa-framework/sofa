@@ -287,7 +287,9 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     PyRun_SimpleString(commandString.c_str());
 
     // Load the scene script
-    FILE* scriptPyFile = fopen(filename,"r");
+	char* pythonFilename = strdup(filename);
+    PyObject* scriptPyFile = PyFile_FromString(pythonFilename, "r");
+	free(pythonFilename);
 
     if( !scriptPyFile )
     {
@@ -304,7 +306,7 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     PyObject* newFileObject = PyString_FromString(filename);
     PyDict_SetItemString(pDict, "__file__", newFileObject);
 
-    int error = PyRun_SimpleFileEx(scriptPyFile, filename, 1);
+    int error = PyRun_SimpleFileEx(PyFile_AsFile(scriptPyFile), filename, 1);
 
     backupFileObject = PyString_FromString(backupFileName.c_str());
     PyDict_SetItemString(pDict, "__file__", backupFileObject);
