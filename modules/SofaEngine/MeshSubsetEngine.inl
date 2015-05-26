@@ -39,8 +39,6 @@ namespace engine
 template <class DataTypes>
 void MeshSubsetEngine<DataTypes>::update()
 {
-    this->cleanDirty();
-
     helper::ReadAccessor<Data< SeqPositions > > pos(this->inputPosition);
     helper::ReadAccessor<Data< SeqTriangles > > tri(this->inputTriangles);
     helper::ReadAccessor<Data< SeqQuads > > qd(this->inputQuads);
@@ -74,6 +72,7 @@ void MeshSubsetEngine<DataTypes>::update()
         if(inside) oqd.push_back(cell);
     }
 
+    this->cleanDirty();
 }
 
 

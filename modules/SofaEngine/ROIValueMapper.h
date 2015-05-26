@@ -118,15 +118,13 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         size_t nb = nbROIs.getValue();
         f_indices.resize(nb);
         f_value.resize(nb);
         if(!nb) return;
 
         const Real& defaultValue = p_defaultValue.getValue();
-        helper::WriteAccessor< Data< helper::vector<Real> > > outputValues = f_outputValues;
+        helper::WriteOnlyAccessor< Data< helper::vector<Real> > > outputValues = f_outputValues;
         outputValues.clear();
 
         for(size_t j=0; j<nb;j++)
@@ -146,6 +144,8 @@ protected:
                 outputValues[ind] = value;
             }
         }
+
+        cleanDirty();
     }
 
     template<class t>
