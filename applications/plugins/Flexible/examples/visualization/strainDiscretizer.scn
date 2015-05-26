@@ -64,7 +64,7 @@
 
 	    	<ImageDataDisplay name="disp" template="ImageUC,ImageD"  inputImage="@image.image" />
 	    	<ImageViewer template="ImageD" image="@disp.outputImage" transform="@image.transform" plane="10 10 10"/>
-		<PythonScriptController filename="../../python/Flexible/StressVisu" classname="ColorMap_Image" /> 
+		<PythonScriptController filename="../../python/Flexible/StressVisu.py" classname="ColorMap_Image" /> 
 
     	</Node>
 
@@ -144,7 +144,7 @@
 
 	    	<ImageDataDisplay name="disp" template="ImageUC,ImageD"  inputImage="@image.image" />
 	    	<ImageViewer template="ImageD" image="@disp.outputImage" transform="@image.transform" plane="10 10 10"/>
-		<PythonScriptController filename="../../python/Flexible/StressVisu" classname="ColorMap_Image" /> 
+		<PythonScriptController filename="../../python/Flexible/StressVisu.py" classname="ColorMap_Image" /> 
     	</Node>
 
 

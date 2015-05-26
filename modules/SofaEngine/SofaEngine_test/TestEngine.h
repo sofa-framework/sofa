@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,10 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_MESHSAMPLER_CPP
-#include <sofa/component/engine/MeshSampler.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#ifndef SOFA_COMPONENT_ENGINE_TestEngine_H
+#define SOFA_COMPONENT_ENGINE_TestEngine_H
+
+#include <sofa/core/DataEngine.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -36,28 +38,52 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(MeshSampler)
+using namespace core::behavior;
+using namespace core::topology;
+using namespace core::objectmodel;
 
-int MeshSamplerClass = core::RegisterObject("Select uniformly distributed points on a mesh based on Euclidean or Geodesic distance measure")
-#ifndef SOFA_FLOAT
-        .add< MeshSampler<Vec3dTypes> >(true)
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< MeshSampler<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
-        ;
+/**
+ * This class is only used to test engine. 
+ */
+class TestEngine : public core::DataEngine
+{
 
-#ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API MeshSampler<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API MeshSampler<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+protected:
 
+    TestEngine();
 
+    virtual ~TestEngine() {}
+public:
+    SOFA_CLASS(TestEngine,core::DataEngine);
+    void init();
 
-} //
+    void reinit();
+
+    void update();
+
+    // To see how many times update function is called
+    int getCounterUpdate();
+
+    void printUpdateCallList();
+
+    Data<SReal> f_numberToMultiply;    ///< number to multiply
+    Data<SReal> f_factor;  ///< multiplication factor
+    Data<SReal> f_result;       ///< result
+
+    int counter;
+
+    int identifier;
+
+    static int instance;
+
+    static std::list<int> updateCallList;
+
+};
+
+} // namespace engine
+
 } // namespace component
 
 } // namespace sofa
 
+#endif

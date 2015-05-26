@@ -56,6 +56,8 @@ public:
     typedef topology::Topology::Quad Quad;
     typedef topology::Topology::Tetrahedron Tetrahedron;
     typedef topology::Topology::Hexahedron Hexahedron;
+    typedef topology::Topology::Pentahedron Pentahedron;
+    typedef topology::Topology::Pyramid Pyramid;
 
 protected:
     MeshLoader();
@@ -109,6 +111,9 @@ public:
     // Tab of 3D elements composition
     Data< helper::vector< Tetrahedron > > tetrahedra;
     Data< helper::vector< Hexahedron > > hexahedra;
+    Data< helper::vector< Pentahedron > > pentahedra;
+    Data< helper::vector< Pyramid > > pyramids;
+
     // polygons in 3D ?
 
     //Misc
@@ -121,6 +126,8 @@ public:
     Data< helper::vector< PrimitiveGroup > > polygonsGroups;
     Data< helper::vector< PrimitiveGroup > > tetrahedraGroups;
     Data< helper::vector< PrimitiveGroup > > hexahedraGroups;
+    Data< helper::vector< PrimitiveGroup > > pentahedraGroups;
+    Data< helper::vector< PrimitiveGroup > > pyramidsGroups;
 
     Data< bool > flipNormals;
     Data< bool > triangulate;
@@ -165,6 +172,14 @@ protected:
             unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3,
             unsigned int p4, unsigned int p5, unsigned int p6, unsigned int p7);
 
+    void addPentahedron(helper::vector< Pentahedron>* pPentahedra, const Pentahedron &p);
+    void addPentahedron(helper::vector< Pentahedron>* pPentahedra,
+            unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3,
+            unsigned int p4, unsigned int p5);
+
+    void addPyramid(helper::vector< Pyramid>* pPyramids, const Pyramid &p);
+    void addPyramid(helper::vector< Pyramid>* pPyramids,
+            unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3, unsigned int p4);
 };
 
 

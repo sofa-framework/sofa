@@ -83,16 +83,21 @@ public:
 
     ///constructors/destructors
     Image() {}
-    Image(const Image<T>& _img, bool shared):img(_img.getCImgList(), shared) {}
+    Image(const Image<T>& _img, bool shared=false) : img(_img.getCImgList(), shared) {}
+    Image( const cimg_library::CImg<T>& _img ) : img(_img) {}
 
-    // shared instances
-    Image( const Image<T>& _img ):img(_img.getCImgList(),true)		{}
-    Image( const cimg_library::CImg<T>& _img ):img(_img,true)		{}
+    /// copy operators
     Image<T>& operator=(const Image<T>& im)
     {
-        if(im.getCImgList().size()) img.assign(im.getCImgList(),true);
+        if(im.getCImgList().size()) img.assign(im.getCImgList());
         return *this;
     }
+    Image<T>& assign(const Image<T>& im, const bool shared=false)
+    {
+        if(im.getCImgList().size()) img.assign(im.getCImgList(),shared);
+        return *this;
+    }
+
 
     void clear() { img.assign(); }
     ~Image() { clear(); }

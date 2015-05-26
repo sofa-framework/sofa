@@ -107,13 +107,11 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         size_t nb = nbROIs.getValue();
         f_indices.resize(nb);
         if(!nb) return;
 
-        helper::WriteAccessor< Data< helper::vector<helper::SVector<Index> > > > outputIndices = f_outputIndices;
+        helper::WriteOnlyAccessor< Data< helper::vector<helper::SVector<Index> > > > outputIndices = f_outputIndices;
         outputIndices.resize(nb);
 
         for(size_t j=0; j<nb;j++)
@@ -122,6 +120,8 @@ protected:
             outputIndices[j].resize(indices.size());
             for(size_t i=0 ; i<indices.size() ; i++) outputIndices[j][i]=indices[i];
         }
+
+        cleanDirty();
     }
 
     template<class t>

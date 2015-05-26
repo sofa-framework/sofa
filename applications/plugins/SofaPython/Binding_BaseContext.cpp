@@ -116,7 +116,7 @@ extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args,
         Py_RETURN_NONE;
     }
 
-    Node *node = dynamic_cast<Node*>(context);
+    Node *node = static_cast<Node*>(context);
     if (node)
     {
         //SP_MESSAGE_INFO( "Sofa.Node.createObject("<<type<<") node="<<node->getName()<<" isInitialized()="<<node->isInitialized() )

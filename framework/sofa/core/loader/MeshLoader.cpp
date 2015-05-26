@@ -44,6 +44,8 @@ MeshLoader::MeshLoader() : BaseLoader()
     , polygons(initData(&polygons,"polygons","Polygons of the mesh loaded"))
     , tetrahedra(initData(&tetrahedra,"tetrahedra","Tetrahedra of the mesh loaded"))
     , hexahedra(initData(&hexahedra,"hexahedra","Hexahedra of the mesh loaded"))
+    , pentahedra(initData(&pentahedra,"pentahedra","Pentahedra of the mesh loaded"))
+    , pyramids(initData(&pyramids,"pyramids","Pyramids of the mesh loaded"))
     , normals(initData(&normals,"normals","Normals of the mesh loaded"))
     , edgesGroups(initData(&edgesGroups,"edgesGroups","Groups of Edges"))
     , trianglesGroups(initData(&trianglesGroups,"trianglesGroups","Groups of Triangles"))
@@ -51,6 +53,8 @@ MeshLoader::MeshLoader() : BaseLoader()
     , polygonsGroups(initData(&polygonsGroups,"polygonsGroups","Groups of Polygons"))
     , tetrahedraGroups(initData(&tetrahedraGroups,"tetrahedraGroups","Groups of Tetrahedra"))
     , hexahedraGroups(initData(&hexahedraGroups,"hexahedraGroups","Groups of Hexahedra"))
+    , pentahedraGroups(initData(&pentahedraGroups,"pentahedraGroups","Groups of Pentahedra"))
+    , pyramidsGroups(initData(&pyramidsGroups,"pyramidsGroups","Groups of Pyramids"))
     , flipNormals(initData(&flipNormals, false,"flipNormals","Flip Normals"))
     , triangulate(initData(&triangulate,false,"triangulate","Divide all polygons into triangles"))
     , createSubelements(initData(&createSubelements,false,"createSubelements","Divide all n-D elements into their (n-1)-D boundary elements (e.g. tetrahedra to triangles)"))
@@ -62,6 +66,7 @@ MeshLoader::MeshLoader() : BaseLoader()
 {
     addAlias(&tetrahedra,"tetras");
     addAlias(&hexahedra,"hexas");
+    addAlias(&hexahedra,"pentas");
 
     flipNormals.setAutoLink(false);
     triangulate.setAutoLink(false);
@@ -80,6 +85,8 @@ MeshLoader::MeshLoader() : BaseLoader()
     polygons.setPersistent(false);
     tetrahedra.setPersistent(false);
     hexahedra.setPersistent(false);
+    pentahedra.setPersistent(false);
+    pyramids.setPersistent(false);
     normals.setPersistent(false);
 }
 
@@ -205,6 +212,75 @@ void MeshLoader::updateElements()
         if (nbnew > 0)
             sout << nbnew << " quads were missing around the hexahedra" << sendl;
     }
+    if (pentahedra.getValue().size() > 0 && createSubelements.getValue())
+    {
+        helper::ReadAccessor<Data<helper::vector< Pentahedron > > > pentahedra = this->pentahedra;
+        helper::WriteAccessor<Data<helper::vector< Pyramid > > > pyramids = this->pyramids;
+        helper::WriteAccessor<Data<helper::vector< Tetrahedron > > > tetrahedra = this->tetrahedra;
+
+        std::set<Pyramid > ePyramidSet;
+        std::set<Tetrahedron > eTetraSet;
+
+        for (size_t i = 0; i < pyramids.size(); ++i)
+            ePyramidSet.insert(uniqueOrder(pyramids[i]));
+
+        for (size_t i = 0; i < tetrahedra.size(); ++i)
+            eTetraSet.insert(uniqueOrder(tetrahedra[i]));
+
+        int nbnewPyra = 0;
+        int nbnewTet = 0;
+        for (size_t i = 0; i < pentahedra.size(); ++i)
+        {
+            Pentahedron p = pentahedra[i];
+            Pyramid pyra(p[0],p[1],p[4],p[3],p[2]); //vtk ordering http://www.vtk.org/wp-content/uploads/2015/04/file-formats.pdf
+            Tetrahedron tet(p[2],p[4],p[3],p[5]);
+            
+            if (ePyramidSet.insert(uniqueOrder(pyra)).second) // the element was inserted
+            {
+                pyramids.push_back(pyra);
+                ++nbnewPyra;
+            }
+            if (eTetraSet.insert(uniqueOrder(tet)).second) // the element was inserted
+            {
+                tetrahedra.push_back(tet);
+                ++nbnewTet;
+            }
+        }
+        if (nbnewPyra > 0 || nbnewTet>0 )
+            sout << nbnewPyra << " pyramids, "<<nbnewTet<<" tetrahedra were missing in the pentahedra" << sendl;
+    }
+    if (pyramids.getValue().size() > 0 && createSubelements.getValue())
+    {
+        helper::ReadAccessor<Data<helper::vector< Pyramid > > > pyramids = this->pyramids;
+        helper::WriteAccessor<Data<helper::vector< Tetrahedron > > > tetrahedra = this->tetrahedra;
+
+       std::set<Tetrahedron > eTetraSet;
+        for (size_t i = 0; i < tetrahedra.size(); ++i)
+            eTetraSet.insert(uniqueOrder(tetrahedra[i]));
+
+        int nbnew = 0;
+        for (size_t i = 0; i < pyramids.size(); ++i)
+        {
+            Pyramid p = pyramids[i];
+           
+            Tetrahedron tet1(p[0],p[1],p[3],p[4]);
+            Tetrahedron tet2(p[1],p[2],p[3],p[4]);
+            
+            if (eTetraSet.insert(uniqueOrder(tet1)).second) // the element was inserted
+            {
+                tetrahedra.push_back(tet1);
+                ++nbnew;
+            }
+            if (eTetraSet.insert(uniqueOrder(tet2)).second) // the element was inserted
+            {
+                tetrahedra.push_back(tet2);
+                ++nbnew;
+            }
+
+        }
+        if (nbnew > 0)
+            sout << nbnew << " tetrahedra were missing in the pyramids" << sendl;
+    }
     if (tetrahedra.getValue().size() > 0 && createSubelements.getValue())
     {
         helper::ReadAccessor<Data<helper::vector< Tetrahedron > > > tetrahedra = this->tetrahedra;
@@ -309,6 +385,18 @@ void MeshLoader::updatePoints()
                     attachedPoints.insert(elems[i][j]);
         }
         {
+            helper::ReadAccessor<Data< helper::vector< Pentahedron > > > elems = pentahedra;
+            for (size_t i=0; i<elems.size(); ++i)
+                for (size_t j=0; j<elems[i].size(); ++j)
+                    attachedPoints.insert(elems[i][j]);
+        }
+        {
+            helper::ReadAccessor<Data< helper::vector< Pyramid > > > elems = pyramids;
+            for (size_t i=0; i<elems.size(); ++i)
+                for (size_t j=0; j<elems[i].size(); ++j)
+                    attachedPoints.insert(elems[i][j]);
+        }
+        {
             helper::ReadAccessor<Data< helper::vector< Hexahedron > > > elems = hexahedra;
             for (size_t i=0; i<elems.size(); ++i)
                 for (size_t j=0; j<elems[i].size(); ++j)
@@ -348,6 +436,18 @@ void MeshLoader::updatePoints()
         }
         {
             helper::WriteAccessor<Data< helper::vector< Tetrahedron > > > elems = tetrahedra;
+            for (size_t i=0; i<elems.size(); ++i)
+                for (size_t j=0; j<elems[i].size(); ++j)
+                    elems[i][j] = old2new[elems[i][j]];
+        }
+        {
+            helper::WriteAccessor<Data< helper::vector< Pentahedron > > > elems = pentahedra;
+            for (size_t i=0; i<elems.size(); ++i)
+                for (size_t j=0; j<elems[i].size(); ++j)
+                    elems[i][j] = old2new[elems[i][j]];
+        }
+        {
+            helper::WriteAccessor<Data< helper::vector< Pyramid > > > elems = pyramids;
             for (size_t i=0; i<elems.size(); ++i)
                 for (size_t j=0; j<elems[i].size(); ++j)
                     elems[i][j] = old2new[elems[i][j]];
@@ -553,6 +653,28 @@ void MeshLoader::addHexahedron(helper::vector< Hexahedron >* pHexahedra, const H
     pHexahedra->push_back(p);
 }
 
+void MeshLoader::addPentahedron(helper::vector< Pentahedron >* pPentahedra,
+        unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3,
+        unsigned int p4, unsigned int p5)
+{
+    addPentahedron(pPentahedra, Pentahedron(p0, p1, p2, p3, p4, p5));
+}
+
+void MeshLoader::addPentahedron(helper::vector< Pentahedron >* pPentahedra, const Pentahedron &p)
+{
+    pPentahedra->push_back(p);
+}
+
+void MeshLoader::addPyramid(helper::vector< Pyramid >* pPyramids,
+        unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3, unsigned int p4)
+{
+    addPyramid(pPyramids, Pyramid(p0, p1, p2, p3, p4));
+}
+
+void MeshLoader::addPyramid(helper::vector< Pyramid >* pPyramids, const Pyramid &p)
+{
+    pPyramids->push_back(p);
+}
 
 } // namespace loader
 

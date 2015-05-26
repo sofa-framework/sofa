@@ -286,10 +286,29 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     PyRun_SimpleString(commandString.c_str());
 
     // Load the scene script
-    std::string scriptPy = filename;
+	char* pythonFilename = strdup(filename);
+    PyObject* scriptPyFile = PyFile_FromString(pythonFilename, (char*)("r"));
+	free(pythonFilename);
 
-    FILE* scriptPyFile = fopen(scriptPy.c_str(),"r");
-    int error = PyRun_SimpleFileEx(scriptPyFile, scriptPy.c_str(), 1);
+    if( !scriptPyFile )
+    {
+        SP_MESSAGE_ERROR("cannot open file:" << filename)
+        PyErr_Print();
+        return false;
+    }
+
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
+
+    PyObject* backupFileObject = PyDict_GetItemString(pDict, "__file__");
+    std::string backupFileName = PyString_AsString(backupFileObject);
+
+    PyObject* newFileObject = PyString_FromString(filename);
+    PyDict_SetItemString(pDict, "__file__", newFileObject);
+
+    int error = PyRun_SimpleFileEx(PyFile_AsFile(scriptPyFile), filename, 1);
+
+    backupFileObject = PyString_FromString(backupFileName.c_str());
+    PyDict_SetItemString(pDict, "__file__", backupFileObject);
 
     //  Py_END_ALLOW_THREADS
 

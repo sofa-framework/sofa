@@ -96,8 +96,6 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         raDist weightData(this->d_weights);
         cimg_library::CImg<DistT> const& weight=weightData->getCImg();
         raInd indicesData(this->d_indices);
@@ -119,6 +117,7 @@ protected:
                         if (indices(x,y,z,i)==d_nodeIndex.getValue())
                             nodeWeigh(x,y,z,0)=weight(x,y,z,i);
 
+        cleanDirty();
     }
 };
 

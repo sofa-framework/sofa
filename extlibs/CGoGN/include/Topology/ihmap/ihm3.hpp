@@ -727,85 +727,85 @@ inline bool ImplicitHierarchicalMap3::isWellEmbedded()
  *               ATTRIBUTE HANDLER                 *
  ***************************************************/
 
-template <typename T, unsigned int ORBIT>
-T& AttributeHandler_IHM<T, ORBIT>::operator[](Dart d)
-{
-	ImplicitHierarchicalMap3* m = reinterpret_cast<ImplicitHierarchicalMap3*>(this->m_map) ;
-	assert(m->m_dartLevel[d] <= m->m_curLevel || !"Access to a dart introduced after current level") ;
-	assert(m->vertexInsertionLevel(d) <= m->m_curLevel || !"Access to the embedding of a vertex inserted after current level") ;
+//template <typename T, unsigned int ORBIT>
+//T& AttributeHandler_IHM<T, ORBIT>::operator[](Dart d)
+//{
+//    ImplicitHierarchicalMap3* m = reinterpret_cast<ImplicitHierarchicalMap3*>(this->m_map) ;
+//    assert(m->m_dartLevel[d] <= m->m_curLevel || !"Access to a dart introduced after current level") ;
+//    assert(m->vertexInsertionLevel(d) <= m->m_curLevel || !"Access to the embedding of a vertex inserted after current level") ;
 
-//	std::cout << std::endl << "vertexInsertionLevel[" << d <<"] = " << m->vertexInsertionLevel(d) << "\t";
+////	std::cout << std::endl << "vertexInsertionLevel[" << d <<"] = " << m->vertexInsertionLevel(d) << "\t";
 
-	unsigned int nbSteps = m->m_curLevel - m->vertexInsertionLevel(d) ;
-	unsigned int index = m->EmbeddedMap3::getEmbedding<ORBIT>(d) ;
+//    unsigned int nbSteps = m->m_curLevel - m->vertexInsertionLevel(d) ;
+//    unsigned int index = m->EmbeddedMap3::getEmbedding<ORBIT>(d) ;
 
-//	std::cout << " m->vertexInsertionLevel(d) = " <<  m->vertexInsertionLevel(d) << std::endl;
-//	std::cout << "m_curLevel = " << m->m_curLevel << std::endl;
-//	std::cout << " nbSteps = " <<  nbSteps << std::endl;
-//	std::cout << "index EmbMap3 = " << index << std::endl;
+////	std::cout << " m->vertexInsertionLevel(d) = " <<  m->vertexInsertionLevel(d) << std::endl;
+////	std::cout << "m_curLevel = " << m->m_curLevel << std::endl;
+////	std::cout << " nbSteps = " <<  nbSteps << std::endl;
+////	std::cout << "index EmbMap3 = " << index << std::endl;
 
-	if(index == EMBNULL)
-	{
-		index = Algo::Topo::setOrbitEmbeddingOnNewCell<ORBIT>(*m, d) ;
-		m->m_nextLevelCell[ORBIT]->operator[](index) = EMBNULL ;
-	}
+//    if(index == EMBNULL)
+//    {
+//        index = Algo::Topo::setOrbitEmbeddingOnNewCell<ORBIT>(*m, d) ;
+//        m->m_nextLevelCell[ORBIT]->operator[](index) = EMBNULL ;
+//    }
 
-	AttributeContainer& cont = m->getAttributeContainer<ORBIT>() ;
-	unsigned int step = 0 ;
-	while(step < nbSteps)
-	{
-		step++ ;
-		unsigned int nextIdx = m->m_nextLevelCell[ORBIT]->operator[](index) ;
-		if (nextIdx == EMBNULL)
-		{
-			nextIdx = m->newCell<ORBIT>() ;
-			m->copyCell<ORBIT>(nextIdx, index) ;
-			m->m_nextLevelCell[ORBIT]->operator[](index) = nextIdx ;
-			m->m_nextLevelCell[ORBIT]->operator[](nextIdx) = EMBNULL ;
-			cont.refLine(index) ;
-		}
-		index = nextIdx ;
-	}
+//    AttributeContainer& cont = m->getAttributeContainer<ORBIT>() ;
+//    unsigned int step = 0 ;
+//    while(step < nbSteps)
+//    {
+//        step++ ;
+//        unsigned int nextIdx = m->m_nextLevelCell[ORBIT]->operator[](index) ;
+//        if (nextIdx == EMBNULL)
+//        {
+//            nextIdx = m->newCell<ORBIT>() ;
+//            m->copyCell<ORBIT>(nextIdx, index) ;
+//            m->m_nextLevelCell[ORBIT]->operator[](index) = nextIdx ;
+//            m->m_nextLevelCell[ORBIT]->operator[](nextIdx) = EMBNULL ;
+//            cont.refLine(index) ;
+//        }
+//        index = nextIdx ;
+//    }
 
-//	std::cout << "emb = " << index << std::endl;
+////	std::cout << "emb = " << index << std::endl;
 
-//	std::cout << "index IHM = " << index << std::endl;
-//	if(index != EMBNULL)
-//		std::cout << " emb = " << this->m_attrib->operator[](index) << std::endl << std::endl;
+////	std::cout << "index IHM = " << index << std::endl;
+////	if(index != EMBNULL)
+////		std::cout << " emb = " << this->m_attrib->operator[](index) << std::endl << std::endl;
 
-	return this->m_attrib->operator[](index);
-}
+//    return this->m_attrib->operator[](index);
+//}
 
-template <typename T, unsigned int ORBIT>
-const T& AttributeHandler_IHM<T, ORBIT>::operator[](Dart d) const
-{
-	ImplicitHierarchicalMap3* m = reinterpret_cast<ImplicitHierarchicalMap3*>(this->m_map) ;
-	assert(m->m_dartLevel[d] <= m->m_curLevel || !"Access to a dart introduced after current level") ;
-	assert(m->vertexInsertionLevel(d) <= m->m_curLevel || !"Access to the embedding of a vertex inserted after current level") ;
+//template <typename T, unsigned int ORBIT>
+//const T& AttributeHandler_IHM<T, ORBIT>::operator[](Dart d) const
+//{
+//    ImplicitHierarchicalMap3* m = reinterpret_cast<ImplicitHierarchicalMap3*>(this->m_map) ;
+//    assert(m->m_dartLevel[d] <= m->m_curLevel || !"Access to a dart introduced after current level") ;
+//    assert(m->vertexInsertionLevel(d) <= m->m_curLevel || !"Access to the embedding of a vertex inserted after current level") ;
 
-	unsigned int nbSteps = m->m_curLevel - m->vertexInsertionLevel(d) ;
-    //unsigned int index = m->EmbeddedMap3::getEmbedding<ORBIT>(d) ;
-    unsigned int index = m->EmbeddedMap3::getEmbedding<ORBIT>(d) ;
+//    unsigned int nbSteps = m->m_curLevel - m->vertexInsertionLevel(d) ;
+//    //unsigned int index = m->EmbeddedMap3::getEmbedding<ORBIT>(d) ;
+//    unsigned int index = m->EmbeddedMap3::getEmbedding<ORBIT>(d) ;
 
-//	std::cout << "(const) m->vertexInsertionLevel(d) = " <<  m->vertexInsertionLevel(d) << std::endl;
-//	std::cout << "(const) m_curLevel = " << m->m_curLevel << std::endl;
-//	std::cout << "(const) nbSteps = " <<  nbSteps << std::endl;
-//	std::cout << "(const) index EmbMap3 = " << index << std::endl;
+////	std::cout << "(const) m->vertexInsertionLevel(d) = " <<  m->vertexInsertionLevel(d) << std::endl;
+////	std::cout << "(const) m_curLevel = " << m->m_curLevel << std::endl;
+////	std::cout << "(const) nbSteps = " <<  nbSteps << std::endl;
+////	std::cout << "(const) index EmbMap3 = " << index << std::endl;
 
-	unsigned int step = 0 ;
-	while(step < nbSteps)
-	{
-		step++ ;
-		unsigned int nextIdx = m->m_nextLevelCell[ORBIT]->operator[](index) ;
-		if(nextIdx != EMBNULL) index = nextIdx ;
-		else break ;
-	}
+//    unsigned int step = 0 ;
+//    while(step < nbSteps)
+//    {
+//        step++ ;
+//        unsigned int nextIdx = m->m_nextLevelCell[ORBIT]->operator[](index) ;
+//        if(nextIdx != EMBNULL) index = nextIdx ;
+//        else break ;
+//    }
 
-//	if(index != EMBNULL)
-//		std::cout << "(const) emb = " << this->m_attrib->operator[](index) << std::endl << std::endl;
+////	if(index != EMBNULL)
+////		std::cout << "(const) emb = " << this->m_attrib->operator[](index) << std::endl << std::endl;
 
-	return this->m_attrib->operator[](index);
-}
+//    return this->m_attrib->operator[](index);
+//}
 
 
 } //namespace IHM

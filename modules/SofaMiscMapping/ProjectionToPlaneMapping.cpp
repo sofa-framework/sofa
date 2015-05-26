@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_TestEngine_INL
-#define SOFA_COMPONENT_ENGINE_TestEngine_INL
+#define SOFA_COMPONENT_MAPPING_ProjectionToPlaneMapping_CPP
 
-#include "TestEngine.h"
+#include "ProjectionToPlaneMapping.inl"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -33,76 +33,41 @@ namespace sofa
 namespace component
 {
 
-namespace engine
+namespace mapping
 {
 
-int TestEngine::instance = 0;
-std::list<int> TestEngine::updateCallList;
+SOFA_DECL_CLASS(ProjectionToTargetPlaneMapping)
 
-using namespace core::behavior;
-using namespace core::objectmodel;
+using namespace defaulttype;
 
-TestEngine::TestEngine()
-    : f_numberToMultiply( initData (&f_numberToMultiply, "number", "number that will be multiplied by the factor") )
-    , f_factor(initData (&f_factor,"factor", "multiplication factor") )
-    , f_result( initData (&f_result, "result", "result of the multiplication of numberToMultiply by factor") )
-{
-    counter = 0;
-    instance++;
-    this->identifier =  instance;
-}
+// Register in the Factory
+int ProjectionToTargetPlaneMappingClass = core::RegisterObject("Compute distance between a moving point and fixed line")
+#ifndef SOFA_FLOAT
+        .add< ProjectionToTargetPlaneMapping< Vec3dTypes, Vec3dTypes > >()
+        .add< ProjectionToTargetPlaneMapping< Rigid3dTypes, Vec3dTypes > >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< ProjectionToTargetPlaneMapping< Vec3fTypes, Vec3fTypes > >()
+        .add< ProjectionToTargetPlaneMapping< Rigid3fTypes, Vec3fTypes > >()
+#endif
+        ;
 
-void TestEngine::init()
-{
-    addInput(&f_factor);
-    addInput(&f_numberToMultiply);
-    addOutput(&f_result);
-    setDirtyValue();
-}
+#ifndef SOFA_FLOAT
+template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< Rigid3dTypes, Vec3dTypes >;
+#endif
 
-void TestEngine::reinit()
-{
-    update();
-}
-
-void TestEngine::update()
-{
-    // Count how many times the update method is called
-    counter ++;
-
-    cleanDirty();
-
-    // Get number to multiply
-    SReal number = f_numberToMultiply.getValue(); 
-    
-    // Get factor
-    SReal factor = f_factor.getValue();
-
-    // Set result
-    f_result.setValue(number*factor);
-   
-    // Update call list
-    updateCallList.push_back(this->identifier);
-}
-
-int TestEngine::getCounterUpdate()
-{
-    return this->counter;
-}
-
-void TestEngine::printUpdateCallList()
-{
-
-    for (std::list<int>::iterator it=updateCallList.begin(); it != updateCallList.end(); ++it)
-        std::cout << " Call engine " <<  *it <<std::endl;
-   
-}
+#ifndef SOFA_DOUBLE
+template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< Vec3fTypes, Vec3fTypes >;
+template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< Rigid3fTypes, Vec3fTypes >;
+#endif
 
 
-} // namespace engine
+
+
+} // namespace mapping
 
 } // namespace component
 
 } // namespace sofa
 
-#endif

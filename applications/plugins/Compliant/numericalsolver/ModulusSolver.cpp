@@ -71,9 +71,11 @@ void ModulusSolver::factor(const system_type& sys) {
     for(unsigned i = 0, n = sys.constraints.size(); i < n; ++i) {
         const unsigned dim = sys.compliant[i]->getMatrixSize();
 
-        if( sys.constraints[i].projector ) {
+        linearsolver::Constraint* projector = sys.constraints[i].projector.get();
 
-            const std::type_info& type = typeid(*sys.constraints[i].projector);
+        if( projector ) {
+
+            const std::type_info& type = typeid(*projector);
             
             if( type == typeid(CoulombConstraint) ) {
                 unilateral( off ) = 1;

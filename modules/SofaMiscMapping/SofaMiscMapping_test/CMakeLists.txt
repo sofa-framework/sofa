@@ -4,6 +4,7 @@ set(SOURCE_FILES
 
  #alphabetical order
     ProjectionToTargetLineMapping_test.cpp
+    ProjectionToTargetPlaneMapping_test.cpp
     SubsetMultiMapping_test.cpp
 )
 

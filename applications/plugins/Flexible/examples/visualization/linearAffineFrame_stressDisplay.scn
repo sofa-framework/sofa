@@ -42,7 +42,7 @@
 		    <GreenStrainMapping template="F331,E331"    />
 		    <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="5"/> 
 		    <!-- pyhon script takes a path to a node containing a static mesh named 'mesh' and mapped points -->
-                    <PythonScriptController filename="../../python/Flexible/StressVisu" classname="ColorMap_Frame" variables="../../collision "/> 
+                    <PythonScriptController filename="../../python/Flexible/StressVisu.py" classname="ColorMap_Frame" variables="../../collision "/> 
 		</Node>
 	  </Node>
 

@@ -75,13 +75,13 @@ public:
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
     typedef typename ImageTypes::imCoord imCoord;
-    typedef helper::WriteAccessor<Data< ImageTypes > > waImage;
+    typedef helper::WriteOnlyAccessor<Data< ImageTypes > > waImage;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
 
     typedef SReal Real;
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef typename TransformType::Coord Coord;
-    typedef helper::WriteAccessor<Data< TransformType > > waTransform;
+    typedef helper::WriteOnlyAccessor<Data< TransformType > > waTransform;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
 
     static const int spatial_dimensions=3; // used in point mapper
@@ -154,8 +154,6 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         if(!deformationMapping) return;
 
         raParam params(this->param);
@@ -316,6 +314,8 @@ protected:
         default:
             break;
         }
+
+        cleanDirty();
     }
 
 
