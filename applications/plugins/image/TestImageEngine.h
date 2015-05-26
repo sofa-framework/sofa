@@ -62,7 +62,7 @@ public:
     typedef typename TransformType::Coord Coord;
     typedef typename ImageTypes::imCoord imCoord;
     typedef typename ImageTypes::T T;
-    typedef helper::WriteAccessor<Data< ImageTypes > > waImage;
+    typedef helper::WriteOnlyAccessor<Data< ImageTypes > > waImage;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
 
     Data< ImageTypes > inputImage;  ///< input image
@@ -91,8 +91,6 @@ public:
 
     void update()
     {
-        cleanDirty();
-
         waImage out(this->outputImage);
         raImage in(this->inputImage);
 
@@ -107,6 +105,7 @@ public:
 
         out->getCImg(0) = in->getCImg(0);
        std::cerr << "TestImageEngine input shared: " << in->getCImg(0).is_shared() << std::endl;
+        cleanDirty();
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)

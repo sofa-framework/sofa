@@ -156,7 +156,7 @@ public:
     Data< helper::OptionsGroup > Interpolation;  ///< nearest, linear, cubic
 
     typedef vector<Real> valuesType;
-    typedef helper::WriteAccessor<Data< valuesType > > waValues;
+    typedef helper::WriteOnlyAccessor<Data< valuesType > > waValues;
     Data< valuesType > values;  ///< output interpolated values
     Data< Real > outValue;
 
@@ -199,9 +199,8 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         ImageValuesFromPositionsSpecialization<ImageTypes::label>::update( *this );
+        cleanDirty();
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)

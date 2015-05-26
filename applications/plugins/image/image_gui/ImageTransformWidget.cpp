@@ -187,7 +187,7 @@ void ImageLPTransformWidget<TransformType>::readFromData()
 template<class TransformType>
 void ImageLPTransformWidget<TransformType>::writeToData()
 {
-    helper::WriteAccessor<MyTData> wa (this->getData());
+    helper::WriteOnlyAccessor<MyTData> wa (this->getData());
 
     wa->getTranslation()[0]=translation[0]->getValue();
     wa->getTranslation()[1]=translation[1]->getValue();

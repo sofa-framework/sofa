@@ -77,13 +77,11 @@ void ClusteringEngine<DataTypes>::init()
 template <class DataTypes>
 void ClusteringEngine<DataTypes>::update()
 {
-    cleanDirty();
-
     if(load()) return;
 
     sofa::helper::ReadAccessor< Data< VecCoord > > fixedPositions = this->fixedPosition;
     sofa::helper::ReadAccessor< Data< VecCoord > > restPositions = this->position;
-    sofa::helper::WriteAccessor< Data< VVI > > clust = this->cluster;
+    sofa::helper::WriteOnlyAccessor< Data< VVI > > clust = this->cluster;
     const unsigned int nbPoints =  restPositions.size(), nbFixed = fixedPositions.size();
 
     // get cluster centers
@@ -146,6 +144,7 @@ void ClusteringEngine<DataTypes>::update()
     }
 
     save();
+    cleanDirty();
 }
 
 
@@ -154,7 +153,7 @@ template <class DataTypes>
 void ClusteringEngine<DataTypes>::AddNeighborhoodFromNeighborhood(VI& lastNgb, const unsigned int i,const VI& voronoi)
 {
     sofa::helper::ReadAccessor< Data< VecCoord > > restPositions = this->position;
-    sofa::helper::WriteAccessor< Data< VVI > > clust = this->cluster;
+    sofa::helper::WriteOnlyAccessor< Data< VVI > > clust = this->cluster;
 
     VI newNgb;
     VI *Ngb=&clust[i];
@@ -296,7 +295,7 @@ bool ClusteringEngine<DataTypes>::load()
     std::ifstream fileStream (fname.c_str(), std::ifstream::in);
     if (!fileStream.is_open())	{ serr << "ClusteringEngine: cannot open "<<fname<<sendl;  return false;	}
 
-    sofa::helper::WriteAccessor< Data< VVI > > clust = this->cluster;
+    sofa::helper::WriteOnlyAccessor< Data< VVI > > clust = this->cluster;
     clust.clear();
 
     bool usetopo; fileStream >> usetopo;	this->useTopo.setValue(usetopo);

@@ -94,11 +94,10 @@ protected:
 public:
     virtual void init()
     {
-        // hack: use getValue to avoid multiple initializations
-        addInput(&inputPosition);   inputPosition.getValue();
-        addInput(&inputTriangles);  inputTriangles.getValue();
-        addInput(&inputQuads);      inputQuads.getValue();
-        addInput(&indices);         indices.getValue();
+        addInput(&inputPosition);
+        addInput(&inputTriangles);
+        addInput(&inputQuads);
+        addInput(&indices);
         addOutput(&position);
         addOutput(&triangles);
         addOutput(&quads);

@@ -88,20 +88,20 @@ public:
 
     typedef vector<Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
-    typedef helper::WriteAccessor<Data< SeqPositions > > waPositions;
+    typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > position;
 
     typedef fixed_array<Real,2> TexCoord;
     typedef vector<TexCoord> SeqTexCoords;
     typedef helper::ReadAccessor<Data< SeqTexCoords > > raTexCoords;
-    typedef helper::WriteAccessor<Data< SeqTexCoords > > waTexCoords;
+    typedef helper::WriteOnlyAccessor<Data< SeqTexCoords > > waTexCoords;
     Data< SeqTexCoords > texCoord;
     Data< TexCoord > texOffset;
 
     typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef helper::ReadAccessor<Data< SeqTriangles > > raTriangles;
-    typedef helper::WriteAccessor<Data< SeqTriangles > > waTriangles;
+    typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
     Data< SeqTriangles > triangles;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
@@ -163,8 +163,6 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         raImage in(this->image);
         raTransform inT(this->transform);
         raTexture inTex(this->texImage);
@@ -228,6 +226,7 @@ protected:
                 p1=x+1+y*dimx; p2=x+1+(y+1)*dimx; p3=x+(y+1)*dimx;
                 if(isValid[p1] && isValid[p2] && isValid[p3] && diff1<diffT && diff2<diffT && diff3<diffT) tri.push_back(Triangle(p1,p2,p3));
             }
+        cleanDirty();
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)

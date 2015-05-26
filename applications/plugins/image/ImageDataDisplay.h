@@ -61,14 +61,12 @@ public:
     typedef _InImageTypes InImageTypes;
     typedef typename InImageTypes::T Ti;
     typedef typename InImageTypes::imCoord imCoordi;
-    typedef helper::WriteAccessor<Data< InImageTypes > > waImagei;
     typedef helper::ReadAccessor<Data< InImageTypes > > raImagei;
 
     typedef _OutImageTypes OutImageTypes;
     typedef typename OutImageTypes::T To;
     typedef typename OutImageTypes::imCoord imCoordo;
-    typedef helper::WriteAccessor<Data< OutImageTypes > > waImageo;
-    typedef helper::ReadAccessor<Data< OutImageTypes > > raImageo;
+    typedef helper::WriteOnlyAccessor<Data< OutImageTypes > > waImageo;
 
     Data< InImageTypes > inputImage;
     Data< OutImageTypes > outputImage;
@@ -102,8 +100,6 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         const SVector<SVector<To> >& dat = this->VoxelData.getValue();
 
         waImageo out(this->outputImage);
@@ -125,6 +121,7 @@ protected:
             cimg_forC(outImg,c) outImg(x,y,z,c)=dat[count][c];
             count++;
         }
+        cleanDirty();
     }
 
 };
