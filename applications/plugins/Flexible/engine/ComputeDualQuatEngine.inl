@@ -61,7 +61,6 @@ ComputeDualQuatEngine< DataTypes >::ComputeDualQuatEngine()
 template < class DataTypes >
 void ComputeDualQuatEngine< DataTypes >::update()
 {
-    cleanDirty();
     typedef sofa::helper::DualQuatCoord3<Real> DualQuat;
 
     // Clean the output
@@ -105,6 +104,7 @@ void ComputeDualQuatEngine< DataTypes >::update()
     }
 
     d_dualQuats.endEdit();
+    cleanDirty();
 }
 
 } // namespace engine

@@ -131,8 +131,6 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         if( !_shapeFunction ) return;
 
         // read input image and transform
@@ -171,6 +169,7 @@ protected:
                         }
                     }
 
+        cleanDirty();
     }
 
 };

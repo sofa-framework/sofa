@@ -126,8 +126,6 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         if(!this->parentTopology) return;
 
         raPositions parent(this->f_inPosition);
@@ -381,6 +379,7 @@ protected:
         }
 
         if(this->f_printLog.getValue()) if(pos.size())    std::cout<<"TopologyGaussPointSampler: "<< pos.size() <<" generated samples"<<std::endl;
+        cleanDirty();
     }
 
 
