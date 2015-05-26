@@ -478,14 +478,14 @@ public:
     typedef typename ImageGaussPointSamplerSpec::IndT IndT;
     typedef typename ImageGaussPointSamplerSpec::IndTypes IndTypes;
     typedef helper::ReadAccessor<Data< IndTypes > > raInd;
-    typedef helper::WriteAccessor<Data< IndTypes > > waInd;
+    typedef helper::WriteOnlyAccessor<Data< IndTypes > > waInd;
     Data< IndTypes > f_index;
 
     typedef ImageTypes_ DistTypes;
     typedef typename DistTypes::T DistT;
     typedef typename DistTypes::imCoord imCoord;
     typedef helper::ReadAccessor<Data< DistTypes > > raDist;
-    typedef helper::WriteAccessor<Data< DistTypes > > waDist;
+    typedef helper::WriteOnlyAccessor<Data< DistTypes > > waDist;
     Data< DistTypes > f_w;
 
     typedef MaskTypes_ MaskTypes;

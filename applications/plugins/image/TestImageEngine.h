@@ -62,7 +62,7 @@ public:
     typedef typename TransformType::Coord Coord;
     typedef typename ImageTypes::imCoord imCoord;
     typedef typename ImageTypes::T T;
-    typedef helper::WriteAccessor<Data< ImageTypes > > waImage;
+    typedef helper::WriteOnlyAccessor<Data< ImageTypes > > waImage;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
 
     Data< ImageTypes > inputImage;  ///< input image
