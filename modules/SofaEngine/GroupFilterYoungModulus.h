@@ -51,7 +51,7 @@ template <class DataTypes>
 class GroupFilterYoungModulus : public core::DataEngine
 {
 public:
-    SOFA_CLASS(GroupFilterYoungModulus,core::DataEngine);
+    SOFA_CLASS( SOFA_TEMPLATE(GroupFilterYoungModulus,DataTypes),core::DataEngine);
 
     typedef typename DataTypes::Real Real;
 
