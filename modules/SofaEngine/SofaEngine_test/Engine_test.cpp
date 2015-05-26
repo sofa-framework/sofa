@@ -25,6 +25,10 @@
 #include "TestEngine.h"
 #include <SceneCreator/SceneCreator.h>
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/DataEngine_test.h>
+
+#include <sofa/defaulttype/VecTypes.h>
+
 
 
 namespace sofa {
@@ -182,5 +186,35 @@ TEST_F(Engine_test , check_propagation )
     this->testPropagationDirection();
 }
 
+
+}// namespace sofa
+
+
+
+
+//////////////////////////
+
+#include <SofaEngine/DilateEngine.h>
+#include <SofaEngine/NormEngine.h>
+
+namespace sofa {
+
+
+// TODO put every engines of SofaEngine here
+
+typedef testing::Types<
+TestDataEngine< sofa::component::engine::DilateEngine<defaulttype::Vec3Types> >,
+TestDataEngine< sofa::component::engine::NormEngine<defaulttype::Vector3> >
+> TestTypes; // the types to instanciate.
+
+
+//// ========= Tests to run for each instanciated type
+TYPED_TEST_CASE(DataEngine_test, TestTypes);
+
+//// test number of call to DataEngine::update
+TYPED_TEST( DataEngine_test , basic_test )
+{
+    this->run_basic_test();
+}
 
 }// namespace sofa
