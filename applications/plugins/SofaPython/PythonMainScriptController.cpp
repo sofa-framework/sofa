@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "PythonMainScriptController.h"
 #include "PythonMacros.h"
+#include "PythonMainScriptController.h"
 #include <sofa/core/ObjectFactory.h>
 
 #include "Binding_Base.h"

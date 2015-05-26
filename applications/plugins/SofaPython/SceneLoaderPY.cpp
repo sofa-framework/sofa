@@ -22,10 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "PythonMacros.h"
 #include "PythonEnvironment.h"
 #include "SceneLoaderPY.h"
 #include "ScriptEnvironment.h"
-#include "PythonMacros.h"
+
 
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/xml/NodeElement.h>
