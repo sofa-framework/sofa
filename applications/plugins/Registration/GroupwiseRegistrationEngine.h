@@ -101,14 +101,13 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
         createDataVectors();
 
         const unsigned int M = vf_inputs.size();
         if(!M) return;
 
         helper::ReadAccessor<Data<VecCoord> > pos0(vf_inputs[0]);
-        helper::WriteAccessor<Data<VecCoord> > outPos0(vf_outputs[0]);
+        helper::WriteOnlyAccessor<Data<VecCoord> > outPos0(vf_outputs[0]);
 
         const unsigned int N = pos0.size();
 
@@ -119,7 +118,7 @@ protected:
         for (unsigned int i=1; i<M; ++i)
         {
             helper::ReadAccessor<Data<VecCoord> > pos(vf_inputs[i]);
-            helper::WriteAccessor<Data<VecCoord> > outPos(vf_outputs[i]);
+            helper::WriteOnlyAccessor<Data<VecCoord> > outPos(vf_outputs[i]);
             if(N!=pos.size()) { serr<<"input"<<i+1<<" has an invalid size"<<sendl; return; }
 
             affine R; Coord t;
@@ -128,6 +127,7 @@ protected:
             outPos.resize(N);
             for(unsigned int j=0; j<N; ++j) outPos[j] = R*pos[j] + t;
         }
+        cleanDirty();
     }
 
 

@@ -58,10 +58,9 @@ MeshSampler<DataTypes>::MeshSampler()
 template <class DataTypes>
 void MeshSampler<DataTypes>::init()
 {
-    // hack: use getValue to avoid multiple initializations
     addInput(&number);
-    addInput(&position);    position.getValue();
-    addInput(&f_edges);     f_edges.getValue();
+    addInput(&position);
+    addInput(&f_edges);
     addInput(&maxIter);
     addOutput(&outputIndices);
     addOutput(&outputPosition);
@@ -73,8 +72,6 @@ void MeshSampler<DataTypes>::init()
 template <class DataTypes>
 void MeshSampler<DataTypes>::update()
 {
-    cleanDirty();
-
     sofa::helper::ReadAccessor< Data< VecCoord > > pos = this->position;
 
     VVI ngb;    if(this->f_edges.getValue().size()!=0) computeNeighbors(ngb); // one ring neighbors from edges
@@ -94,9 +91,11 @@ void MeshSampler<DataTypes>::update()
     if (this->f_printLog.getValue()) std::cout<<this->getName()<<": Lloyd relaxation done in "<<count<<" iterations\n";
 
     // get export position from indices
-    sofa::helper::ReadAccessor< Data< VI > > ind = this->outputIndices;
+    sofa::helper::WriteOnlyAccessor< Data< VI > > ind = this->outputIndices;
     sofa::helper::WriteOnlyAccessor< Data< VecCoord > > outPos = this->outputPosition;
     outPos.resize(ind.size());		for (unsigned int i=0; i<ind.size(); ++i)  outPos[i]=pos[ind[i]];
+
+    cleanDirty();
 }
 
 template <class DataTypes>
@@ -116,7 +115,7 @@ void MeshSampler<DataTypes>::computeNeighbors(VVI& ngb)
 template <class DataTypes>
 void MeshSampler<DataTypes>::farthestPointSampling(VD& distances,VI& voronoi,const VVI& ngb)
 {
-    sofa::helper::WriteAccessor< Data< VI > > ind = this->outputIndices;
+    sofa::helper::WriteOnlyAccessor< Data< VI > > ind = this->outputIndices;
 
     ind.clear();
     ind.push_back(0); // add first point
@@ -141,7 +140,7 @@ void MeshSampler<DataTypes>::farthestPointSampling(VD& distances,VI& voronoi,con
 template <class DataTypes>
 bool MeshSampler<DataTypes>::LLoyd(VD& distances,VI& voronoi,const VVI& ngb)
 {
-    sofa::helper::WriteAccessor< Data< VI > > ind = this->outputIndices;
+    sofa::helper::WriteOnlyAccessor< Data< VI > > ind = this->outputIndices;
     sofa::helper::ReadAccessor< Data< VecCoord > > pos = this->position;
 
     unsigned int nbp = pos.size(), nbs = ind.size();
@@ -170,7 +169,7 @@ bool MeshSampler<DataTypes>::LLoyd(VD& distances,VI& voronoi,const VVI& ngb)
 template <class DataTypes>
 void MeshSampler<DataTypes>::computeDistances(VD& distances, VI& voronoi,const VVI& ngb)
 {
-    sofa::helper::ReadAccessor< Data< VI > > ind = this->outputIndices;
+    sofa::helper::WriteOnlyAccessor< Data< VI > > ind = this->outputIndices;
     sofa::helper::ReadAccessor< Data< VecCoord > > pos = this->position;
 
     unsigned int nbp = pos.size();

@@ -105,7 +105,7 @@ public:
     typedef typename ImageTypes::T T;
     typedef typename ImageTypes::imCoord imCoord;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
-    typedef helper::WriteAccessor<Data< ImageTypes > > waImage;
+    typedef helper::WriteOnlyAccessor<Data< ImageTypes > > waImage;
     Data< ImageTypes > refImage;
     Data< ImageTypes > image;
 
@@ -123,7 +123,7 @@ public:
     typedef typename defaulttype::Image<Real> similarityTypes;
     typedef typename similarityTypes::T Ts;
     typedef helper::ReadAccessor<Data< similarityTypes > > raSimilarity;
-    typedef helper::WriteAccessor<Data< similarityTypes > > waSimilarity;
+    typedef helper::WriteOnlyAccessor<Data< similarityTypes > > waSimilarity;
     Data < similarityTypes > similarity;
 	
     // mask for values outside images

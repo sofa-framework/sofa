@@ -83,18 +83,18 @@ public:
 
     typedef vector<Coord > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
-    typedef helper::WriteAccessor<Data< SeqPositions > > waPositions;
+    typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > position;
 
     typedef typename core::topology::BaseMeshTopology::Edge Edge;
     typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef helper::ReadAccessor<Data< SeqEdges > > raEdges;
-    typedef helper::WriteAccessor<Data< SeqEdges > > waEdges;
+    typedef helper::WriteOnlyAccessor<Data< SeqEdges > > waEdges;
     Data< SeqEdges > edges;
 
     typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
-    typedef helper::WriteAccessor<Data< SeqTriangles > > waTriangles;
+    typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
     Data< SeqTriangles > triangles;
 
     Data< Real > minLength;
@@ -242,8 +242,6 @@ protected:
         raImage in(this->image);
         raImage inb(this->background);
         raTransform inT(this->transform);
-
-        cleanDirty();
 
         // get image at time t
         CImg<T> img = in->getCImg(this->time);
@@ -398,6 +396,7 @@ protected:
         }
 
         if(this->f_printLog.getValue()) std::cout<<this->name<<": done"<<std::endl;
+        cleanDirty();
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)

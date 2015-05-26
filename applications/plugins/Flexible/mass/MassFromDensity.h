@@ -122,8 +122,6 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         if(!deformationMapping) { serr<<SOFA_CLASS_METHOD<<"can't compute the mass : no mapping found"<<sendl; return; }
         if(!dofs) { serr<<SOFA_CLASS_METHOD<<"can't compute the mass : no MechanicalObject<Vec3> found"<<sendl; return; }
 
@@ -215,6 +213,7 @@ protected:
         // clean
         dofs->resize(0);
         deformationMapping->init();
+        cleanDirty();
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)

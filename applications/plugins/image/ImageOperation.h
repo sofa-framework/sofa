@@ -71,7 +71,7 @@ public:
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
     typedef typename ImageTypes::imCoord imCoord;
-    typedef helper::WriteAccessor<Data< ImageTypes > > waImage;
+    typedef helper::WriteOnlyAccessor<Data< ImageTypes > > waImage;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
 
     Data<helper::OptionsGroup> operation;
@@ -120,8 +120,6 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         raImage in1(this->inputImage1);
         raImage in2(this->inputImage2);
         waImage out(this->outputImage);
@@ -172,6 +170,8 @@ protected:
             break;
         default:            break;
         }
+
+        cleanDirty();
     }
 
 };
