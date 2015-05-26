@@ -22,9 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "PythonEnvironment.h"
-
 #include "PythonMacros.h"
+#include "PythonEnvironment.h"
 #include "PythonScriptController.h"
 
 #include <sofa/config.h>
