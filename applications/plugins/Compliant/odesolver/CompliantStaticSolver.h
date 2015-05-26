@@ -56,6 +56,22 @@ class SOFA_Compliant_API CompliantStaticSolver : public sofa::core::behavior::Od
     
   protected:
 
+    struct helper;
+
+    struct ls_info {
+        ls_info();
+
+        SReal eps;
+        unsigned iterations;
+        SReal precision;
+        SReal step;
+    };
+    
+    static void secant_ls(helper& op,
+                          core::MultiVecCoordId pos,
+                          core::MultiVecDerivId dir,
+                          const ls_info& info);
+    
 
     // descent direction
     core::behavior::MultiVecDeriv descent;
@@ -64,10 +80,12 @@ class SOFA_Compliant_API CompliantStaticSolver : public sofa::core::behavior::Od
     SReal previous;
     unsigned iteration;
 
-    Data<SReal> epsilon, beta_max;
+    Data<SReal> epsilon;
 
-
-    Data<bool> line_search, fletcher_reeves;
+    Data<bool> line_search, conjugate;
+    
+    Data<SReal> ls_precision;
+    Data<unsigned> ls_iterations;
 };
 
 }

@@ -8,24 +8,29 @@ namespace component {
 namespace odesolver {
 
 CompliantStaticSolver::CompliantStaticSolver()
-    : epsilon(initData(&epsilon, 1e-5, "epsilon", "division by zero threshold")),
-      beta_max(initData(&beta_max, 10.0, "beta_max", "magic")),
-      line_search(initData(&line_search, true, "line_search", "line search")),
-      fletcher_reeves(initData(&fletcher_reeves, true, "fletcher_reeves", "fletcher-reeves")) {
-
+    : epsilon(initData(&epsilon, 1e-14, "epsilon", "division by zero threshold")),
+      line_search(initData(&line_search, true, "line_search", "perform line search")),
+      conjugate(initData(&conjugate, true, "conjugate", "conjugate descent directions")),
+      ls_precision(initData(&ls_precision, 1e-7, "ls_precision", "line search precision")),
+      ls_iterations(initData(&ls_iterations, unsigned(10), "ls_iterations", "line search iterations"))
+{
+    
 }
 
 
-struct helper {
-    sofa::simulation::common::VectorOperations vec;
-    sofa::simulation::common::MechanicalOperations mec;
+struct CompliantStaticSolver::helper {
+
+    simulation::common::VectorOperations vec;
+    simulation::common::MechanicalOperations mec;
+
     core::behavior::MultiVecDeriv dx;
+    core::behavior::MultiVecDeriv f;
     
     helper(const core::ExecParams* params,
            core::objectmodel::BaseContext* ctx) : vec(params, ctx),
                                                   mec(params, ctx),
-                                                  dx( &vec, core::VecDerivId::dx() ){
-        
+                                                  dx( &vec, core::VecDerivId::dx() ),
+                                                  f( &vec, core::VecDerivId::force() )    {
     }
 
     // TODO const args ?
@@ -51,8 +56,72 @@ struct helper {
     void realloc(core::behavior::MultiVecDeriv& res) {
         res.realloc( &vec, false, true );
     }
-           
+
+    template<class A, class B>
+    void set(const A& res,
+             const A& a,
+             const B& b,
+             SReal lambda) {
+        vec.v_op(res, a, b, lambda);
+    }
+
+
+    
 };
+
+CompliantStaticSolver::ls_info::ls_info()
+    : eps(0),
+      iterations(15),
+      precision(1e-7),
+      step(1e-5){
+    
+}
+
+void CompliantStaticSolver::secant_ls(helper& op,
+                                      core::MultiVecCoordId pos,
+                                      core::MultiVecDerivId dir,
+                                      const ls_info& info) {
+    // assumes op.f contains forces already !
+    SReal dg = 0;
+    SReal dx = 0;
+
+    SReal g_old = 0;
+    SReal total = 0;
+    
+    for(unsigned k = 0, n = info.iterations; k < n; ++k) {
+
+        const SReal g = op.dot(op.f, dir);
+
+        // std::cout << "line search (secant) " << k << " " << g << std::endl;
+        
+        if( std::abs(g) <= info.precision ) break;
+        
+        dg = g - g_old;
+        
+        const SReal dx_prev = dx;
+
+        // fallback on fixed step
+        dx = info.step;
+
+        // secant method
+        if( (k > 0) && (std::abs(dg) > info.eps)) {
+            dx = -(dx_prev / dg) * g;
+        }
+        
+        total += dx;
+        
+        // move dx along dir
+        op.set(pos, pos, dir, dx);
+        op.mec.propagateX(pos, true);
+
+        // update forces
+        op.forces( op.f );
+
+        g_old = g;
+    }
+    
+    
+}
 
 
 
@@ -68,82 +137,68 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
 
         helper op(params, getContext() );
         
-        op.mec.mparams.setImplicit(true);
-        op.mec.mparams.setEnergy(true);
+        op.mec.mparams.setImplicit(false);
+        op.mec.mparams.setEnergy(false);
         
         // (negative) gradient
-        core::behavior::MultiVecDeriv f( &op.vec, core::VecDerivId::force() );
         
         // descent direction
         op.realloc(descent);
 
         // obtain (projected) gradient
-        op.forces( f );
+        op.forces( op.f );
         
-        SReal f2 = op.dot(f, f);
+        // note: we *could* skip the above when line-search is on
+        // after the first iteration, but we would miss any change in
+        // the scene (e.g. mouse interaction)
+        
+        const SReal current = op.dot(op.f, op.f);
         SReal beta = 0;
 
         const SReal eps = epsilon.getValue();
-        
-        if( fletcher_reeves.getValue() && std::abs(previous) > 0 ) {
+        if( conjugate.getValue() && std::abs(previous) > eps ) {
 
-            // fletcher-reeves
-            beta = f2 / previous;
+            // polak ribiere
+            {
+                if(iteration > 0) {
+                    beta = (current - op.dot(vel, op.f) ) / previous;
 
-        }
-
-        // std::cout << "g2, " << f2 << ", beta " << beta << std::endl;
-        //beta = 0;
-        
-        // reset in case we increased gradient
-        if( beta > beta_max.getValue() ) {
-            std::cout << iteration << ", reset" << std::endl;
-            std::cout << "beta: " << beta
-                      << ", g2: " << previous
-                      << ", g2_next: " << f2 << std::endl;
-            std::cout << "beta max " << beta_max.getValue() << std::endl;
-
-            beta = 0;
-            f2 = 0;
-        }
-
-        // conjugation
-        op.vec.v_op(descent, f, descent, beta);
-
-        
-        // TODO an actual line-search
-        SReal alpha = dt;
-
-        // quadratic line-search
-        if( line_search.getValue() ) {
-
-            // vel = K * descent
-            op.K(vel, descent);
-
-            const SReal num = op.dot(f, descent);
-            const SReal den = op.dot(vel, descent);
-            
-            std::cout << num << " / " << den << " = " << num / den << std::endl;
-
-            if( den <= eps ) {
-
-                // descent direction is zero/negative curvature
-                std::cout << iteration << ", derp" << std::endl;
-                f2 = 0;
-                
-            } else {
-                alpha = num / den;
+                    // direction reset
+                    beta = std::max(0.0, beta);
+                }
             }
             
         }
-        
-        
 
-        // position integration
-        op.vec.v_op(pos, pos, descent, alpha);
+        // conjugation
+        op.vec.v_op(descent, op.f, descent, beta);
+
+        // polak-ribiere
+        {
+            // backup previous f to vel
+            op.vec.v_eq(vel, op.f);
+        }
+
+        
+        // line search
+        if( line_search.getValue() ) {
+            ls_info info;
+
+            info.eps = eps;
+            info.precision = ls_precision.getValue();
+            info.iterations = ls_iterations.getValue();
+            info.step = dt;
+            
+            secant_ls(op, pos, descent.id(), info);
+        } else {
+            // fixed step
+            op.set(pos, pos, descent.id(), dt);
+        }
         
         // next iteration
-        previous = f2;
+        previous = current;
+
+        
         ++iteration;
     }
 

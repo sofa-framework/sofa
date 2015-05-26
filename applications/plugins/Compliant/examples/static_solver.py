@@ -63,10 +63,8 @@ def createScene(node):
 
     static = beam(node, name = 'static', color = '1 0.8 0.2')
     ode = static.createObject('CompliantStaticSolver',
-                              epsilon = 1e-6,
-                              beta_max = 1,
-                              line_search = False,
-                              fletcher_reeves = True)
+                              line_search = True,
+                              conjugate = True)
     ode.printLog = True
     
     # dynamic = beam(node, name = 'dynamic', color = '0.8 0.8 1')
