@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaEngine/TestEngine.h>
+#include "TestEngine.h"
 #include <SceneCreator/SceneCreator.h>
 #include <SofaTest/Sofa_test.h>
 

@@ -90,7 +90,6 @@ set(HEADER_FILES
     HausdorffDistance.inl
     NormEngine.h
     NormEngine.inl
-    TestEngine.h
     MeshClosingEngine.h
     MeshClosingEngine.inl
     MeshSubsetEngine.h
@@ -147,7 +146,6 @@ set(SOURCE_FILES
     ProximityROI.cpp
     HausdorffDistance.cpp
     NormEngine.cpp
-    TestEngine.cpp
     MeshClosingEngine.cpp
     MeshSubsetEngine.cpp
     MeshSampler.cpp
