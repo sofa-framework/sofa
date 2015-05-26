@@ -154,8 +154,6 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         if(!deformationMapping) return;
 
         raParam params(this->param);
@@ -316,6 +314,8 @@ protected:
         default:
             break;
         }
+
+        cleanDirty();
     }
 
 
