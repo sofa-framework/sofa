@@ -77,47 +77,55 @@ CompliantStaticSolver::ls_info::ls_info()
     
 }
 
+
+// minimizes (implicit) potential function in direction dir) by
+// zeroing g = grad^T dir using secant method
+
+// precond:
+// - op.f contains forces for current pos
 void CompliantStaticSolver::secant_ls(helper& op,
                                       core::MultiVecCoordId pos,
                                       core::MultiVecDerivId dir,
                                       const ls_info& info) {
-    // assumes op.f contains forces already !
     SReal dg = 0;
     SReal dx = 0;
 
-    SReal g_old = 0;
+    SReal g_prev = 0;
     SReal total = 0;
     
     for(unsigned k = 0, n = info.iterations; k < n; ++k) {
 
+        // assumes op.f contains forces (=-grad) already !
         const SReal g = op.dot(op.f, dir);
 
         // std::cout << "line search (secant) " << k << " " << g << std::endl;
-        
+
+        // are we done ?
         if( std::abs(g) <= info.precision ) break;
         
-        dg = g - g_old;
+        dg = g - g_prev;
         
         const SReal dx_prev = dx;
 
         // fallback on fixed step
         dx = info.step;
 
-        // secant method
+        // (damped) secant method
         if( (k > 0) && (std::abs(dg) > info.eps)) {
-            dx = -(dx_prev / dg) * g;
+            dx = -(dx_prev / (dg + info.eps)) * g;
         }
         
         total += dx;
         
         // move dx along dir
         op.set(pos, pos, dir, dx);
-        op.mec.propagateX(pos, true);
 
         // update forces
+        op.mec.propagateX(pos, true);
         op.forces( op.f );
 
-        g_old = g;
+        // next
+        g_prev = g;
     }
     
     
@@ -143,7 +151,7 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
         // (negative) gradient
         
         // descent direction
-        op.realloc(descent);
+        op.realloc(dir);
 
         // obtain (projected) gradient
         op.forces( op.f );
@@ -151,27 +159,33 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
         // note: we *could* skip the above when line-search is on
         // after the first iteration, but we would miss any change in
         // the scene (e.g. mouse interaction)
-        
+
+        // polar-ribiere
         const SReal current = op.dot(op.f, op.f);
+
+        
         SReal beta = 0;
 
         const SReal eps = epsilon.getValue();
         if( conjugate.getValue() && std::abs(previous) > eps ) {
 
-            // polak ribiere
             {
                 if(iteration > 0) {
+                    // polak-ribiere
                     beta = (current - op.dot(vel, op.f) ) / previous;
 
-                    // direction reset
-                    beta = std::max(0.0, beta);
+                    // dai-yuan
+                    // beta = current / (op.dot(dir, vel) - op.dot(dir, op.f) );
                 }
+
+                // direction reset
+                // beta = std::max(0.0, beta);
             }
             
         }
 
         // conjugation
-        op.vec.v_op(descent, op.f, descent, beta);
+        op.vec.v_op(dir, op.f, dir, beta);
 
         // polak-ribiere
         {
@@ -189,10 +203,10 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
             info.iterations = ls_iterations.getValue();
             info.step = dt;
             
-            secant_ls(op, pos, descent.id(), info);
+            secant_ls(op, pos, dir.id(), info);
         } else {
             // fixed step
-            op.set(pos, pos, descent.id(), dt);
+            op.set(pos, pos, dir.id(), dt);
         }
         
         // next iteration
@@ -207,7 +221,7 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
 
     void CompliantStaticSolver::reset() {
         iteration = 0;
-       
+        
     }
 
     void CompliantStaticSolver::init() {

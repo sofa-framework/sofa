@@ -74,7 +74,7 @@ class SOFA_Compliant_API CompliantStaticSolver : public sofa::core::behavior::Od
     
 
     // descent direction
-    core::behavior::MultiVecDeriv descent;
+    core::behavior::MultiVecDeriv dir;
 
 
     SReal previous;
