@@ -106,7 +106,7 @@ public:
     // @name Histogram
     /**@{*/
     typedef defaulttype::Histogram<T> HistogramType;
-    typedef helper::WriteAccessor<Data< HistogramType > > waHisto;
+    typedef helper::WriteOnlyAccessor<Data< HistogramType > > waHisto;
     typedef helper::ReadAccessor<Data< HistogramType > > raHisto;
     Data< HistogramType > histo;
     /**@}*/
@@ -124,21 +124,21 @@ public:
     /**@{*/
     typedef defaulttype::ImagePlane<T> ImagePlaneType;
     typedef helper::ReadAccessor<Data< ImagePlaneType > > raPlane;
-    typedef helper::WriteAccessor<Data< ImagePlaneType > > waPlane;
+    typedef helper::WriteOnlyAccessor<Data< ImagePlaneType > > waPlane;
     Data< ImagePlaneType > plane;
     /**@}*/
 
     // @name Vector of 3D points for navigation
     /**@{*/
     typedef helper::ReadAccessor <core::objectmodel::Data<helper::vector<Coord> > >raPoints;
-    typedef helper::WriteAccessor<core::objectmodel::Data<helper::vector<Coord> > >waPoints;
+    typedef helper::WriteOnlyAccessor<core::objectmodel::Data<helper::vector<Coord> > >waPoints;
     Data< helper::vector<Coord> > points;
     /**@}*/
     
     // @name Vector visualization
     /**@{*/
     typedef helper::ReadAccessor<Data< defaulttype::VectorVis > > raVis;
-    typedef helper::WriteAccessor<Data< defaulttype::VectorVis > > waVis;
+    typedef helper::WriteOnlyAccessor<Data< defaulttype::VectorVis > > waVis;
     Data<defaulttype::VectorVis> vectorVisualization;
     /**@}*/
     

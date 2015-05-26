@@ -77,21 +77,21 @@ void DilateEngine<DataTypes>::reinit()
 template <class DataTypes>
 void DilateEngine<DataTypes>::update()
 {
-    cleanDirty();
-
     helper::ReadAccessor<Data<VecCoord> > in = f_inputX;
     helper::ReadAccessor<Data<SeqTriangles> > triangles = f_triangles;
-    helper::ReadAccessor<Data<SeqQuads> > quads = f_quads;
-    helper::WriteAccessor<Data<VecCoord> > out = f_outputX;
-
+    helper::ReadAccessor<Data<SeqQuads> > quads = f_quads;    
     const Real distance = f_distance.getValue();
     const Real minThickness = f_minThickness.getValue();
+
+    cleanDirty();
+
+    helper::WriteOnlyAccessor<Data<VecCoord> > out = f_outputX;
 
     const int nbp = in.size();
     const int nbt = triangles.size();
     const int nbq = quads.size();
 
-    helper::WriteAccessor<Data<VecCoord> > normals = f_normals;
+    helper::WriteOnlyAccessor<Data<VecCoord> > normals = f_normals;
     normals.resize(nbp);
     for (int i=0; i<nbp; ++i)
         normals[i].clear();
@@ -121,7 +121,7 @@ void DilateEngine<DataTypes>::update()
             alltri.push_back(Triangle(quads[i][0], quads[i][1], quads[i][2]));
             alltri.push_back(Triangle(quads[i][0], quads[i][2], quads[i][3]));
         }
-        helper::WriteAccessor<Data<helper::vector<Real> > > thickness = f_thickness;
+        helper::WriteOnlyAccessor<Data<helper::vector<Real> > > thickness = f_thickness;
         thickness.resize(nbp);
         octree.buildOctree(&alltri, &(in.ref()));
         for (int ip=0; ip<nbp; ++ip)
@@ -158,6 +158,7 @@ void DilateEngine<DataTypes>::update()
         }
         out[i] = in[i] + normals[i] * d;
     }
+
 }
 
 

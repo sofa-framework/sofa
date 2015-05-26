@@ -115,11 +115,11 @@ public:
         helper::ReadAccessor<Data< SeqQuads > > rquads(this->in_quads);
         helper::ReadAccessor<Data< SeqEdges > > redges(this->in_edges);
 
-        helper::WriteAccessor<Data< SeqTetrahedra > > wtetrahedra(this->out_tetrahedra);
-        helper::WriteAccessor<Data< SeqHexahedra > > whexahedra(this->out_hexahedra);
-        helper::WriteAccessor<Data< SeqTriangles > > wtriangles(this->out_triangles);
-        helper::WriteAccessor<Data< SeqQuads > > wquads(this->out_quads);
-        helper::WriteAccessor<Data< SeqEdges > > wedges(this->out_edges);
+        helper::WriteOnlyAccessor<Data< SeqTetrahedra > > wtetrahedra(this->out_tetrahedra); wtetrahedra.resize(0);
+        helper::WriteOnlyAccessor<Data< SeqHexahedra > > whexahedra(this->out_hexahedra); whexahedra.resize(0);
+        helper::WriteOnlyAccessor<Data< SeqTriangles > > wtriangles(this->out_triangles); wtriangles.resize(0);
+        helper::WriteOnlyAccessor<Data< SeqQuads > > wquads(this->out_quads); wquads.resize(0);
+        helper::WriteOnlyAccessor<Data< SeqEdges > > wedges(this->out_edges); wedges.resize(0);
 
         this->index_parentToChild.resize(pos0.size());
         size_t nbOut=0;

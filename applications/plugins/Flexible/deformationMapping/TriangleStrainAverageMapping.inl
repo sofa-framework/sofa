@@ -75,9 +75,9 @@ void TriangleStrainAverageMapping<TIn, TOut>::init()
             nodeToTriangles[triangles[i][j]].insert(i);
     }
 
-    helper::WriteAccessor< Data<vector<unsigned> > > triangleIndices(f_triangleIndices);
-    helper::WriteAccessor< Data<vector<unsigned> > > endIndices(f_endIndices);
-    helper::WriteAccessor< Data<vector<Real> > > weights(f_weights);
+    helper::WriteOnlyAccessor< Data<vector<unsigned> > > triangleIndices(f_triangleIndices); triangleIndices.resize(0);
+    helper::WriteOnlyAccessor< Data<vector<unsigned> > > endIndices(f_endIndices); endIndices.resize(0);
+    helper::WriteOnlyAccessor< Data<vector<Real> > > weights(f_weights); weights.resize(0);
     unsigned endIndex=0;
     for( MapNodeToTriangles::const_iterator i=nodeToTriangles.begin(), iend=nodeToTriangles.end(); i!=iend; i++ ) // for each node
     {

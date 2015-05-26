@@ -82,13 +82,13 @@ public:
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
     typedef typename ImageTypes::imCoord imCoord;
-    typedef helper::WriteAccessor<Data< ImageTypes > > waImage;
+    typedef helper::WriteOnlyAccessor<Data< ImageTypes > > waImage;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
 
     typedef SReal Real;
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef typename TransformType::Coord Coord;
-    typedef helper::WriteAccessor<Data< TransformType > > waTransform;
+    typedef helper::WriteOnlyAccessor<Data< TransformType > > waTransform;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
 
     Data<helper::OptionsGroup> overlap;
@@ -214,8 +214,6 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         unsigned int nb = nbImages.getValue();
         inputImages.resize(nb);
         inputTransforms.resize(nb);
@@ -363,6 +361,7 @@ protected:
         }
 
         sout << "Created merged image from " << nb << " input images." << sendl;
+        cleanDirty();
     }
 
     Vec<2,Coord> getBB(unsigned int i) // get image corners

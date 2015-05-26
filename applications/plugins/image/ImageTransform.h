@@ -61,7 +61,7 @@ public:
     typedef sofa::defaulttype::Vec<3,Real> Vec3;
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
-    typedef helper::WriteAccessor<Data< TransformType > > waTransform;
+    typedef helper::WriteOnlyAccessor<Data< TransformType > > waTransform;
     typedef sofa::component::container::ImageContainer<ImageTypes> ImageContainer;
 
     ImageTransform()    :   Inherited()

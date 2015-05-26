@@ -110,7 +110,7 @@ struct DataTypeInfo
     enum { Integer         = 0 /**< 1 if this type uses integer values*/ };
     enum { Scalar          = 0 /**< 1 if this type uses scalar values*/ };
     enum { Text            = 0 /**< 1 if this type uses text values*/ };
-    enum { CopyOnWrite     = 0 /**< 1 if this type uses copy-on-write*/ };
+    enum { CopyOnWrite     = 0 /**< 1 if this type uses copy-on-write. The memory is shared with its source Data while only the source is changing (and the source modifications are then visible in the current Data). As soon as modifications are applied to the current Data, it will allocate its own value, and no longer shares memory with the source.*/ };
     enum { Container       = 0 /**< 1 if this type is a container*/ };
     enum { Size = 1 /**< largest known fixed size for this type, as returned by size() */ };
 

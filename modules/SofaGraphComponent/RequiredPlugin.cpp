@@ -59,30 +59,11 @@ void RequiredPlugin::loadPlugin()
 {
     if(pluginName.getValue().empty()) pluginName.setValue( name.getValue() );
 
-    std::string pluginPath = pluginName.getValue();
+    const std::string& pluginPath = pluginName.getValue();
 
     sout << "Loading " << pluginPath << sendl;
-    if (sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginPath)) // pluginPath is modified here
-    {
-        sout << "Loaded " << pluginPath << sendl;
-        sofa::helper::system::PluginManager::getInstance().init();
-    }
-
-    // try to load the eventual plugin gui using Qt4
-    std::string pluginGuiPath = pluginName.getValue() + "_gui";
-    if (sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginGuiPath,NULL))
-    {
-        sout << "Loaded " << pluginGuiPath << sendl;
-        sofa::helper::system::PluginManager::getInstance().init();
-    }
-
-    // try to load the eventual plugin gui using Qt5
-    std::string pluginQtQuickGuiPath = pluginName.getValue() + "_qtquickgui";
-    if (sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginQtQuickGuiPath,NULL))
-    {
-        sout << "Loaded " << pluginQtQuickGuiPath << sendl;
-        sofa::helper::system::PluginManager::getInstance().init();
-    }
+    sofa::helper::system::PluginManager::getInstance().loadPluginWithGui(pluginPath,&sout);
+    if( sout.tellp() ) sout << sendl;
 }
 
 }

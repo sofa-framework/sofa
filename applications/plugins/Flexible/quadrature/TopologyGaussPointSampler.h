@@ -126,8 +126,6 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         if(!this->parentTopology) return;
 
         raPositions parent(this->f_inPosition);
@@ -141,9 +139,9 @@ protected:
 
         waPositions pos(this->f_position);
         waVolume vol(this->f_volume);
-        helper::WriteAccessor<Data< VTransform > > transforms(this->f_transforms);
+        helper::WriteOnlyAccessor<Data< VTransform > > transforms(this->f_transforms);
 
-        helper::WriteAccessor<Data< vector<unsigned int> > > cel(this->f_cell);
+        helper::WriteOnlyAccessor<Data< vector<unsigned int> > > cel(this->f_cell);
 
         if ( tetrahedra.empty() && cubes.empty() )
         {
@@ -381,6 +379,7 @@ protected:
         }
 
         if(this->f_printLog.getValue()) if(pos.size())    std::cout<<"TopologyGaussPointSampler: "<< pos.size() <<" generated samples"<<std::endl;
+        cleanDirty();
     }
 
 
