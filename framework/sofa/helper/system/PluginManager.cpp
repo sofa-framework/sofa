@@ -180,7 +180,7 @@ void PluginManager::loadPluginWithGui(const std::string& path, std::ostream* log
         std::string pluginGuiPath = path + "_" + guipostfix;
         if( loadPlugin(pluginGuiPath,NULL) )
         {
-            if(log) *log << " ( + _" << guipostfix << ")";
+            if(log) *log << " (+ _" << guipostfix << ")";
             sofa::helper::system::PluginManager::getInstance().init();
         }
     }
