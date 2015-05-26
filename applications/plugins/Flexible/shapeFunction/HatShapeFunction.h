@@ -73,7 +73,6 @@ public:
     typedef HatShapeFunctionInternalData<ShapeFunctionTypes_> InternalData;
 
     typedef vector<double> ParamTypes;
-    typedef helper::WriteAccessor<Data< ParamTypes > > waParam;
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 
     Data<helper::OptionsGroup> method;
