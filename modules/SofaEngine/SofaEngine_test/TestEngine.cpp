@@ -70,7 +70,8 @@ void TestEngine::update()
     // Count how many times the update method is called
     counter ++;
 
-    cleanDirty();
+
+///// FIRST get (and update) all read-only inputs
 
     // Get number to multiply
     SReal number = f_numberToMultiply.getValue(); 
@@ -78,6 +79,14 @@ void TestEngine::update()
     // Get factor
     SReal factor = f_factor.getValue();
 
+
+///// THEN tell everthing is (will be) up to date now
+/// @warning This must be done AFTER updating all inputs
+/// can be done before or after setting up the outputs
+    cleanDirty();
+
+
+///// Compute all write-only outputs
     // Set result
     f_result.setValue(number*factor);
    
