@@ -11,6 +11,7 @@ set(HEADER_FILES
     ForceField_test.h
     BroadPhase_test.h
     PrimitiveCreation.h
+    DataEngine_test.h
 	)
 
 set(SOURCE_FILES
