@@ -15,7 +15,7 @@ def listListToStr(xx):
     """
     str_xx=""
     for x in xx:
-        str_xx += listToStr(x)
+        str_xx += listToStr(x) + " "
     return str_xx
 
 def strToListFloat(s):
