@@ -45,7 +45,7 @@ using namespace core::objectmodel;
 /**
  * This class is only used to test engine. 
  */
-class SOFA_ENGINE_API TestEngine : public core::DataEngine
+class TestEngine : public core::DataEngine
 {
 
 protected:
