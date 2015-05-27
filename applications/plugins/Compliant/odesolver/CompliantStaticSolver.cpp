@@ -2,6 +2,11 @@
 
 #include <sofa/core/ObjectFactory.h>
 
+#include <boost/math/tools/minima.hpp>
+#include <boost/tuple/tuple.hpp>
+
+#include "../utils/nr.h"
+#include "../utils/scoped.h"
 
 namespace sofa {
 namespace component {
@@ -9,10 +14,14 @@ namespace odesolver {
 
 CompliantStaticSolver::CompliantStaticSolver()
     : epsilon(initData(&epsilon, 1e-14, "epsilon", "division by zero threshold")),
-      line_search(initData(&line_search, true, "line_search", "perform line search")),
+      line_search(initData(&line_search, unsigned(LS_BRENT), "line_search",
+                           "line search method, 0: none (use dt), 1: brent (default), 2: secant")),
       conjugate(initData(&conjugate, true, "conjugate", "conjugate descent directions")),
       ls_precision(initData(&ls_precision, 1e-7, "ls_precision", "line search precision")),
-      ls_iterations(initData(&ls_iterations, unsigned(10), "ls_iterations", "line search iterations"))
+      ls_iterations(initData(&ls_iterations, unsigned(10), "ls_iterations",
+                             "line search iterations")),
+      ls_step(initData(&ls_step, 1e-8, "ls_step",
+                       "line search safe step (should not cross any extrema from current position"))
 {
     
 }
@@ -25,6 +34,7 @@ struct CompliantStaticSolver::helper {
 
     core::behavior::MultiVecDeriv dx;
     core::behavior::MultiVecDeriv f;
+    
     
     helper(const core::ExecParams* params,
            core::objectmodel::BaseContext* ctx) : vec(params, ctx),
@@ -53,21 +63,32 @@ struct CompliantStaticSolver::helper {
         mec.projectResponse( res );
     }
 
-    void realloc(core::behavior::MultiVecDeriv& res) {
+    template<class Vec>
+    void realloc(Vec& res) {
         res.realloc( &vec, false, true );
     }
 
-    template<class A, class B>
-    void set(const A& res,
-             const A& a,
-             const B& b,
+    
+    template<class Res, class A, class B>
+    void set(Res& res,
+             A& a,
+             B& b,
              SReal lambda) {
         vec.v_op(res, a, b, lambda);
     }
 
-
+    template<class A, class B>
+    void set(A& res,
+             B& b) {
+        vec.v_eq(res, b);
+    }
     
 };
+
+
+
+
+
 
 CompliantStaticSolver::ls_info::ls_info()
     : eps(0),
@@ -83,19 +104,29 @@ CompliantStaticSolver::ls_info::ls_info()
 
 // precond:
 // - op.f contains forces for current pos
-void CompliantStaticSolver::secant_ls(helper& op,
+void CompliantStaticSolver::ls_secant(helper& op,
                                       core::MultiVecCoordId pos,
                                       core::MultiVecDerivId dir,
                                       const ls_info& info) {
+    scoped::timer step("ls_secant");
+    
     SReal dg = 0;
     SReal dx = 0;
 
     SReal g_prev = 0;
     SReal total = 0;
+
+    // slightly damp newton iterations
+    static const SReal damping = 1e-14;
     
     for(unsigned k = 0, n = info.iterations; k < n; ++k) {
 
-        // assumes op.f contains forces (=-grad) already !
+        if( k ) {
+            // update forces
+            op.mec.propagateX(pos, true);
+            op.forces( op.f );
+        }
+        
         const SReal g = op.dot(op.f, dir);
 
         // std::cout << "line search (secant) " << k << " " << g << std::endl;
@@ -111,23 +142,123 @@ void CompliantStaticSolver::secant_ls(helper& op,
         dx = info.step;
 
         // (damped) secant method
-        if( (k > 0) && (std::abs(dg) > info.eps)) {
-            dx = -(dx_prev / (dg + info.eps)) * g;
+        if( k && (std::abs(dg) > info.eps)) {
+            dx = -(dx_prev / (dg + damping)) * g;
         }
         
         total += dx;
         
         // move dx along dir
         op.set(pos, pos, dir, dx);
-
-        // update forces
-        op.mec.propagateX(pos, true);
-        op.forces( op.f );
-
+            
         // next
         g_prev = g;
     }
     
+}
+
+
+
+struct CompliantStaticSolver::potential_energy {
+
+    // WARNING: backup/restore pos on scope entry/exit
+    potential_energy(helper& op,
+                     const core::MultiVecCoordId& pos,
+                     const core::MultiVecDerivId& dir,
+                     const core::MultiVecCoordId& tmp,
+                     bool restore = true)
+        : op(op),
+          pos(pos),
+          dir(dir),
+          tmp(tmp),
+          restore(restore) {
+
+        // backup start position
+        op.set(tmp, pos);
+    }
+    
+    
+    helper& op;
+
+    const core::MultiVecCoordId& pos;
+    const core::MultiVecDerivId& dir;
+    const core::MultiVecCoordId& tmp;    
+
+    // do we restore pos in dtor ?
+    bool restore;
+    
+    SReal operator()(SReal x) const {
+
+        // move to x along dir
+        op.set(pos, tmp, dir, x);
+        
+        // update forces/energy
+        op.mec.propagateX(pos, true);
+
+        // TODO apparently, this is not needed
+        // op.forces(op.f);
+
+        // note: potential energy only works for pos !
+        SReal dummy, result;
+        op.mec.computeEnergy(dummy, result);
+
+        // std::cout << "potential energy: " << x << ", " << result << std::endl;
+        
+        return result;
+    }
+
+    
+    ~potential_energy() {
+        if( restore ) {
+            op.set(pos, tmp);
+        }
+    }
+    
+};
+
+void CompliantStaticSolver::ls_brent(helper& op,
+                                     core::MultiVecCoordId pos,
+                                     core::MultiVecDerivId dir,
+                                     const ls_info& info,
+                                     core::MultiVecCoordId tmp) {
+    scoped::timer step("ls_brent");
+    typedef utils::nr::optimization<SReal> opt;
+    
+    opt::func_call a, b, c;
+    
+    a.x = 0;
+    b.x = info.step;
+
+    opt::func_call res;
+
+    {
+        // we need the scope because f might reset pos on scope exit
+        const potential_energy f(op, pos, dir, tmp, false);
+
+        opt::minimum_bracket(a, b, c, f);
+
+        // std::cout << "bracketing: " << a.x << ", " << c.x << std::endl;
+    
+        // TODO compute this from precision
+        const int bits = 24;
+        {
+            using namespace boost;
+            unsigned long iter = info.iterations;
+            tie(res.x, res.f) = math::tools::brent_find_minima(f,
+                                                               a.x, c.x,
+                                                               bits,
+                                                               iter);
+            // std::cout << "brent: " << res.x << std::endl;
+        }
+
+    }
+    
+    // TODO make sure the last function call is the closest to the optimium
+    // op.set(pos, pos, dir, res.x);
+    
+    // TODO do we want to do this ?
+    // op.mec.propagateX(pos, true);
+    // op.forces(op.f);
     
 }
 
@@ -146,13 +277,18 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
         helper op(params, getContext() );
         
         op.mec.mparams.setImplicit(false);
-        op.mec.mparams.setEnergy(false);
+        op.mec.mparams.setEnergy(true);
         
         // (negative) gradient
         
         // descent direction
         op.realloc(dir);
+        op.realloc(tmp);
 
+
+        // TODO inner loop here
+        
+        
         // obtain (projected) gradient
         op.forces( op.f );
         
@@ -163,7 +299,6 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
         // polar-ribiere
         const SReal current = op.dot(op.f, op.f);
 
-        
         SReal beta = 0;
 
         const SReal eps = epsilon.getValue();
@@ -185,25 +320,39 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
         }
 
         // conjugation
-        op.vec.v_op(dir, op.f, dir, beta);
+        op.set(dir, op.f, dir, beta);
 
         // polak-ribiere
         {
             // backup previous f to vel
-            op.vec.v_eq(vel, op.f);
+            op.set(vel, op.f);
         }
 
         
         // line search
-        if( line_search.getValue() ) {
+        const unsigned ls = line_search.getValue();
+        if( ls ) {
             ls_info info;
 
             info.eps = eps;
             info.precision = ls_precision.getValue();
             info.iterations = ls_iterations.getValue();
-            info.step = dt;
+            info.step = ls_step.getValue();
+
+            switch( ls ) {
+                
+            case LS_SECANT:
+                ls_secant(op, pos, dir.id(), info);
+                break;
+                
+            case LS_BRENT:
+                ls_brent(op, pos, dir.id(), info, tmp.id());
+                break;
+                
+            default:
+                throw std::runtime_error("bad line-search");
+            }
             
-            secant_ls(op, pos, dir.id(), info);
         } else {
             // fixed step
             op.set(pos, pos, dir.id(), dt);
@@ -212,7 +361,6 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
         // next iteration
         previous = current;
 
-        
         ++iteration;
     }
 

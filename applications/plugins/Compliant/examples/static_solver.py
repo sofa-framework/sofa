@@ -65,7 +65,7 @@ def createScene(node):
     ode = static.createObject('CompliantStaticSolver',
                               ls_iterations = 10,
                               ls_precision = 1e-5,
-                              line_search = True,
+                              line_search = 1,
                               conjugate = True)
     ode.printLog = True
     
