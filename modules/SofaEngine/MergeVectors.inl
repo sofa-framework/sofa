@@ -131,17 +131,17 @@ void MergeVectors<VecT>::reinit()
 template <class VecT>
 void MergeVectors<VecT>::update()
 {
-    cleanDirty();
-    createInputs();
-
-    VecValue* out = f_output.beginEdit();
-    helper::vector<const VecValue*> in;
     unsigned int nbin = vf_inputs.size();
+
+    helper::vector<const VecValue*> in;
     in.reserve(nbin);
     for (unsigned int idin = 0; idin < nbin; ++idin)
     {
         in.push_back(&(vf_inputs[idin]->getValue()));
     }
+
+    cleanDirty();
+
     unsigned int size = 0;
     if (nbin > 0)
     {
@@ -150,6 +150,8 @@ void MergeVectors<VecT>::update()
             size += in[idin]->size();
         }
     }
+
+    VecValue* out = f_output.beginWriteOnly();
     out->clear();
     out->reserve(size);
     for (unsigned int idin = 0; idin < nbin; ++idin)

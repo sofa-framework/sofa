@@ -106,10 +106,12 @@ struct DataEngine_test : public Sofa_test<>
     }
 
 // Note it is implemented as a macro so the error line number is better
-#if 1
+#if 0
     #define CHECKCOUNTER( value ) ASSERT_TRUE( m_engine->getCounter() == value );
+    #define CHECKMAXCOUNTER( value ) ASSERT_TRUE( m_engine->getCounter() <= value );
 #else
-    #define CHECKCOUNTER( value ) if( m_engine->getCounter() != value ) ADD_FAILURE() << "Counter == "<<m_engine->getCounter()<<" != "<<value<<std::endl;
+    #define CHECKCOUNTER( value ) if( m_engine->getCounter() != value ) { ADD_FAILURE() << "Counter == "<<m_engine->getCounter()<<" != "<<value<<std::endl; ASSERT_TRUE( m_engine->getCounter() == value ); }
+    #define CHECKMAXCOUNTER( value ) if( m_engine->getCounter() > value ) { ADD_FAILURE() << "Counter == "<<m_engine->getCounter()<<" > "<<value<<std::endl; ASSERT_TRUE( m_engine->getCounter() <= value ); }
 #endif
 
     /// Testing the number of call to the DataEngine::update() function
@@ -120,17 +122,28 @@ struct DataEngine_test : public Sofa_test<>
         m_engine->resetCounter();
 
         const DDGLinkContainer& inputs = m_engine->DDGNode::getInputs();
+
+        CHECKCOUNTER( 0 );  // c'est parti mon kiki
         const DDGLinkContainer& parent_inputs = m_engineInput->DDGNode::getInputs();
+
+
+        CHECKCOUNTER( 0 );  // c'est parti mon kiki
         const DDGLinkContainer& outputs = m_engine->DDGNode::getOutputs();
 
-        // modifying inputs to ensure the engine should be evaluated
-        for( unsigned i=0, iend=parent_inputs.size() ; i<iend ; ++i )
-            parent_inputs[i]->setDirtyValue();
 
         CHECKCOUNTER( 0 );  // c'est parti mon kiki
 
-        outputs[0]->updateIfDirty(); // should call the engine
-        CHECKCOUNTER( 1 );
+        // modifying inputs to ensure the engine should be evaluated
+        for( unsigned i=0, iend=parent_inputs.size() ; i<iend ; ++i )
+        {
+            parent_inputs[i]->setDirtyValue();            
+            CHECKCOUNTER( 0 );  // c'est parti mon kiki
+        }
+
+        CHECKCOUNTER( 0 );  // c'est parti mon kiki
+
+        outputs[0]->updateIfDirty(); // could call the engine
+        CHECKMAXCOUNTER( 1 );
 
         m_engine->resetCounter();
         outputs[0]->updateIfDirty(); // should not call the engine
@@ -142,18 +155,18 @@ struct DataEngine_test : public Sofa_test<>
         for( unsigned i=0, iend=parent_inputs.size() ; i<iend ; ++i )
         {
             parent_inputs[i]->setDirtyValue(); // to check if the engine is evaluated for this input
-            outputs[0]->updateIfDirty(); // should call the engine
-            CHECKCOUNTER( i+1 );
+            outputs[0]->updateIfDirty(); // could call the engine
         }
+        CHECKMAXCOUNTER( parent_inputs.size() );
 
         // modifying the engine inputs one by one
         m_engine->resetCounter();
         for( unsigned i=0, iend=inputs.size() ; i<iend ; ++i )
         {
             inputs[i]->setDirtyValue(); // to check if the engine is evaluated for this input
-            outputs[0]->updateIfDirty(); // should call the engine
-            CHECKCOUNTER( i+1 );
+            outputs[0]->updateIfDirty(); // could call the engine
         }
+        CHECKMAXCOUNTER( parent_inputs.size() );
     }
 
 

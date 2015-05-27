@@ -318,8 +318,6 @@ bool BoxROI<DataTypes>::isQuadInBox(const Quad& q, const Vec6& b)
 template <class DataTypes>
 void BoxROI<DataTypes>::update()
 {
-    cleanDirty();
-
     helper::vector<Vec6>& vb = *(boxes.beginEdit());
 
     if (vb.empty())
@@ -344,13 +342,19 @@ void BoxROI<DataTypes>::update()
     helper::ReadAccessor< Data<helper::vector<Hexa> > > hexahedra = f_hexahedra;
     helper::ReadAccessor< Data<helper::vector<Quad> > > quad = f_quad;
 
+    const VecCoord* x0 = &f_X0.getValue();
+
+
+    cleanDirty();
+
+
     // Write accessor for topological element indices in BOX
-    SetIndex& indices = *f_indices.beginEdit();
-    SetIndex& edgeIndices = *f_edgeIndices.beginEdit();
-    SetIndex& triangleIndices = *f_triangleIndices.beginEdit();
-    SetIndex& tetrahedronIndices = *f_tetrahedronIndices.beginEdit();
-    SetIndex& hexahedronIndices = *f_hexahedronIndices.beginEdit();
-    SetIndex& quadIndices = *f_quadIndices.beginEdit();
+    SetIndex& indices = *f_indices.beginWriteOnly();
+    SetIndex& edgeIndices = *f_edgeIndices.beginWriteOnly();
+    SetIndex& triangleIndices = *f_triangleIndices.beginWriteOnly();
+    SetIndex& tetrahedronIndices = *f_tetrahedronIndices.beginWriteOnly();
+    SetIndex& hexahedronIndices = *f_hexahedronIndices.beginWriteOnly();
+    SetIndex& quadIndices = *f_quadIndices.beginWriteOnly();
 
     // Write accessor for toplogical element in BOX
     helper::WriteOnlyAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
@@ -377,7 +381,6 @@ void BoxROI<DataTypes>::update()
     hexahedraInROI.clear();
     quadInROI.clear();
 
-    const VecCoord* x0 = &f_X0.getValue();
 
     //Points
     for( unsigned i=0; i<x0->size(); ++i )

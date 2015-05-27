@@ -404,11 +404,12 @@ bool MeshROI<DataTypes>::isTetrahedronInMesh(const Tetra &t, const Vec6 &b)
 template <class DataTypes>
 void MeshROI<DataTypes>::update()
 {
+
+
     if(first.getValue() || p_doUpdate.getValue() )
     {
         first.setValue(false);
 
-        cleanDirty();
 
         // Read accessor for input topology
         helper::ReadAccessor< Data<helper::vector<Edge> > > edges = f_edges;
@@ -417,26 +418,30 @@ void MeshROI<DataTypes>::update()
 //        helper::ReadAccessor< Data<helper::vector<Edge> > > edges_i = f_edges_i;
 //        helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles_i = f_triangles_i;
 
+        updateAllInputsIfDirty(); // the easy way to make sure every inputs are up-to-date
+
+        cleanDirty();
+
         // Write accessor for topological element indices in MESH
-        SetIndex& indices = *f_indices.beginEdit();
-        SetIndex& edgeIndices = *f_edgeIndices.beginEdit();
-        SetIndex& triangleIndices = *f_triangleIndices.beginEdit();
-        SetIndex& tetrahedronIndices = *f_tetrahedronIndices.beginEdit();
-        SetIndex& indicesOut = *f_indicesOut.beginEdit();
-        SetIndex& edgeOutIndices = *f_edgeOutIndices.beginEdit();
-        SetIndex& triangleOutIndices = *f_triangleOutIndices.beginEdit();
-        SetIndex& tetrahedronOutIndices = *f_tetrahedronOutIndices.beginEdit();
+        SetIndex& indices = *f_indices.beginWriteOnly();
+        SetIndex& edgeIndices = *f_edgeIndices.beginWriteOnly();
+        SetIndex& triangleIndices = *f_triangleIndices.beginWriteOnly();
+        SetIndex& tetrahedronIndices = *f_tetrahedronIndices.beginWriteOnly();
+        SetIndex& indicesOut = *f_indicesOut.beginWriteOnly();
+        SetIndex& edgeOutIndices = *f_edgeOutIndices.beginWriteOnly();
+        SetIndex& triangleOutIndices = *f_triangleOutIndices.beginWriteOnly();
+        SetIndex& tetrahedronOutIndices = *f_tetrahedronOutIndices.beginWriteOnly();
 
         // Write accessor for toplogical element in MESH
-        helper::WriteAccessor< Data<Vec6> > box = f_box;
-        helper::WriteAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
-        helper::WriteAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
-        helper::WriteAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
-        helper::WriteAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
-        helper::WriteAccessor< Data<VecCoord > > pointsOutROI = f_pointsOutROI;
-        helper::WriteAccessor< Data<helper::vector<Edge> > > edgesOutROI = f_edgesOutROI;
-        helper::WriteAccessor< Data<helper::vector<Triangle> > > trianglesOutROI = f_trianglesOutROI;
-        helper::WriteAccessor< Data<helper::vector<Tetra> > > tetrahedraOutROI = f_tetrahedraOutROI;
+        helper::WriteOnlyAccessor< Data<Vec6> > box = f_box;
+        helper::WriteOnlyAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
+        helper::WriteOnlyAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
+        helper::WriteOnlyAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
+        helper::WriteOnlyAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
+        helper::WriteOnlyAccessor< Data<VecCoord > > pointsOutROI = f_pointsOutROI;
+        helper::WriteOnlyAccessor< Data<helper::vector<Edge> > > edgesOutROI = f_edgesOutROI;
+        helper::WriteOnlyAccessor< Data<helper::vector<Triangle> > > trianglesOutROI = f_trianglesOutROI;
+        helper::WriteOnlyAccessor< Data<helper::vector<Tetra> > > tetrahedraOutROI = f_tetrahedraOutROI;
 
         // Clear lists
         indices.clear();

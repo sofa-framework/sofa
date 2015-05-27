@@ -136,6 +136,11 @@ protected:
         if(in->isEmpty()) return;
         const CImg<T>& img = in->getCImg(this->time);
 
+        d_density.updateIfDirty();
+        d_mult.updateIfDirty();
+
+        cleanDirty();
+
         helper::WriteOnlyAccessor<Data< RigidCoord > > pos(this->d_position);
         helper::WriteOnlyAccessor<Data< RigidMass > > rigidMass(this->d_rigidMass);
         helper::WriteOnlyAccessor<Data< Coord > > inertia(this->d_inertia);
@@ -178,7 +183,6 @@ protected:
             rigidMass->recalc();
         }
 
-        cleanDirty();
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)
