@@ -129,12 +129,30 @@ class Sampler:
         self.node = parentNode if name=='' else parentNode.createChild(name)
         self.name = name
         self.sampler=None
-        self.dof=None
+        self.mesh=None
+        self.dofs=None
 
     def _addImageSampler(self, template, nbSamples, src, fixedPosition, **kwargs):
         self.sampler = self.node.createObject("ImageSampler", template=template, name="sampler", image=src+".image", transform=src+".transform", method="1", param=str(nbSamples)+" 1", fixedPosition=SofaPython.Tools.listListToStr(fixedPosition), **kwargs)
         return self.sampler
 
-    #def addImageSampler(self, image, nbSamples, fixedPosition=list(), **kwargs):
-        #return self._addImageSampler(nbSamples, fixedPosition, template=image.imageType, src=SofaPython.Tools.getObjectPath(image.image), **kwargs)
+    def _addImageRegularSampler(self, template, src, **kwargs):
+        self.sampler = self.node.createObject("ImageSampler", template=template, name="sampler", image=src+".image", transform=src+".transform", method="0", param="1", **kwargs)
+        return self.sampler
 
+    def addImageSampler(self, image, nbSamples, fixedPosition=list(), **kwargs):
+        return self._addImageSampler(image.imageType, nbSamples, "@"+SofaPython.Tools.getObjectPath(image.image), fixedPosition, **kwargs)
+
+    def addImageRegularSampler(self, image, **kwargs):
+        return self._addImageRegularSampler(image.imageType, "@"+SofaPython.Tools.getObjectPath(image.image), **kwargs)
+
+    def addMesh(self):
+        if self.sampler is None:
+            print "[SofaImage.API.Sampler] ERROR: no sampler"
+            return None
+        self.mesh = self.node.createObject('Mesh', name="mesh" ,src="@"+SofaPython.Tools.getObjectPath(self.sampler))
+        return self.mesh
+
+    def addMechanicalObject(self):
+        self.dofs = self.node.createObject("MechanicalObject", template="Vec3d", name="dofs")
+        return self.dofs

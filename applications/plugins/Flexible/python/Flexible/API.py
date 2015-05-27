@@ -131,7 +131,7 @@ class AffineMass:
         dof = node.createObject('MechanicalObject', name='massPoints', template='Vec3d')
         insertLinearMapping(node, dofRigidNode, self.dofAffineNode, dof, assemble=False)
         densityImage.addBranchingToImage('0') # MassFromDensity on branching images does not exist yet
-        massFromDensity = node.createObject('MassFromDensity',  name="MassFromDensity",  template="Affine,ImageD", image="@"+SofaPython.Tools.getObjectPath(densityImage.converter)+".image", transform="@"+SofaPython.Tools.getObjectPath(densityImage.converter)+'.transform', lumping=lumping)
+        massFromDensity = node.createObject('MassFromDensity',  name="MassFromDensity",  template="Affine,ImageD", image="@"+SofaPython.Tools.getObjectPath(densityImage.image)+".image", transform="@"+SofaPython.Tools.getObjectPath(densityImage.image)+'.transform', lumping=lumping)
         self.mass = self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix="@"+SofaPython.Tools.getObjectPath(massFromDensity)+".massMatrix")
 
     def getFilename(self, filenamePrefix=None, directory=""):
@@ -281,7 +281,12 @@ class Behavior:
             method="2", order=self.type[2:], targetNumber=nbPoints,
             mask="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage)+".branchingImage", maskLabels=concat(self.labels),
             **kwargs)
-        
+
+
+    def addTopologyGaussPointSampler(self, mesh, order="2", **kwargs):
+        meshPath = SofaPython.Tools.getObjectPath(mesh)
+        self.sampler = self.node.createObject("TopologyGaussPointSampler", name="sampler", method="0", inPosition="@"+meshPath+".position", order=order, **kwargs)
+
     def addMechanicalObject(self, dofRigidNode=None, dofAffineNode=None, assemble=True):
         if self.sampler is None:
             print "[Flexible.API.Behavior] ERROR: no sampler"
