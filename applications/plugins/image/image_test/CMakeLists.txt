@@ -1,9 +1,11 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
+    TestImageEngine.h
 )
 
 set(SOURCE_FILES
+    TestImageEngine.cpp
     DataImage_test.cpp
     ImageEngine_test.cpp
         )

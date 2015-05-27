@@ -382,12 +382,10 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
 template <class DataTypes>
 void TransformPosition<DataTypes>::update()
 {
-    cleanDirty();
-
     selectTransformationMethod();
 
     helper::ReadAccessor< Data<VecCoord> > in = f_inputX;
-    helper::WriteAccessor< Data<VecCoord> > out = f_outputX;
+
     helper::ReadAccessor< Data<Coord> > normal = f_normal;
     helper::ReadAccessor< Data<Coord> > origin = f_origin;
     helper::ReadAccessor< Data<Coord> > translation = f_translation;
@@ -396,6 +394,10 @@ void TransformPosition<DataTypes>::update()
     helper::ReadAccessor< Data<Real> > maxDisplacement = f_maxRandomDisplacement;
     helper::ReadAccessor< Data<long> > seed = f_seed;
     helper::ReadAccessor< Data<SetIndex> > fixedIndices = f_fixedIndices;
+
+    cleanDirty();
+
+    helper::WriteOnlyAccessor< Data<VecCoord> > out = f_outputX;
 
     out.resize(in.size());
     unsigned int i;
