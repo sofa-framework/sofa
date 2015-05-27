@@ -260,7 +260,7 @@ TestDataEngine< component::engine::ExtrudeSurface<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::ExtrudeQuadsAndGenerateHexas<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::ExtrudeEdgesAndGenerateQuads<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::GenerateRigidMass<defaulttype::Rigid3Types,defaulttype::Rigid3Mass> >,
-//TestDataEngine< component::engine::GroupFilterYoungModulus<defaulttype::Vec3Types> >, // compilation pb
+TestDataEngine< component::engine::GroupFilterYoungModulus<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::MathOp< helper::vector<int> > >,
 TestDataEngine< component::engine::MergeMeshes<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::MergePoints<defaulttype::Vec3Types> >,
