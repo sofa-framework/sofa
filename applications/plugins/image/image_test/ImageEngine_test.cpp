@@ -370,7 +370,7 @@ struct ImageDataEngine_test : public DataEngine_test<DataEngineType>
             if( typeinfo->name().find("Image") != std::string::npos || typeinfo->name().find("BranchingImage") != std::string::npos )
             {
                 defaulttype::BaseImage* img = static_cast<defaulttype::BaseImage*>( data->beginEditVoidPtr() );
-                std::cerr<<data->getName()<<" is a Data<Image>\n";
+//                std::cerr<<data->getName()<<" is a Data<Image>\n";
                 // allocate input
                 img->setDimensions( defaulttype::BaseImage::imCoord(1,1,1,1,1) );
                 data->endEditVoidPtr();
@@ -406,12 +406,11 @@ typedef testing::Types<
 
 
 //// ========= Tests to run for each instanciated type
-TYPED_TEST_CASE(ImageDataEngine_test, TestTypes);
+TYPED_TEST_CASE( ImageDataEngine_test, TestTypes );
 
 //// test number of call to DataEngine::update
 TYPED_TEST( ImageDataEngine_test , basic_test )
 {
-//    this->inputImage.getValue();
     this->run_basic_test();
 }
 
