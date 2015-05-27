@@ -185,7 +185,7 @@ void SphereROI<DataTypes>::init()
     addOutput(&f_edgeIndices);
     addOutput(&f_triangleIndices);
     addOutput(&f_quadIndices);
-    addOutput(&f_tetrahedronIndices);
+//    addOutput(&f_tetrahedronIndices);
     addOutput(&f_pointsInROI);
     addOutput(&f_edgesInROI);
     addOutput(&f_trianglesInROI);
@@ -281,8 +281,6 @@ bool SphereROI<DataTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, c
 template <class DataTypes>
 void SphereROI<DataTypes>::update()
 {
-    cleanDirty();
-
     const helper::vector<Vec3>& cen = (centers.getValue());
     const helper::vector<Real>& rad = (radii.getValue());
 
@@ -312,20 +310,28 @@ void SphereROI<DataTypes>::update()
     helper::ReadAccessor< Data<helper::vector<Quad> > > quads = f_quads;
     helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
 
+    const VecCoord* x0 = &f_X0.getValue();
+
+
+    cleanDirty();
+
+
+
+
     // Write accessor for topological element indices in SPHERE
-    SetIndex& indices = *(f_indices.beginEdit());
-    SetIndex& edgeIndices = *(f_edgeIndices.beginEdit());
-    SetIndex& triangleIndices = *(f_triangleIndices.beginEdit());
-    SetIndex& quadIndices = *(f_quadIndices.beginEdit());
-    SetIndex& tetrahedronIndices = *f_tetrahedronIndices.beginEdit();
-    SetIndex& indicesOut = *(f_indicesOut.beginEdit());
+    SetIndex& indices = *(f_indices.beginWriteOnly());
+    SetIndex& edgeIndices = *(f_edgeIndices.beginWriteOnly());
+    SetIndex& triangleIndices = *(f_triangleIndices.beginWriteOnly());
+    SetIndex& quadIndices = *(f_quadIndices.beginWriteOnly());
+    SetIndex& tetrahedronIndices = *f_tetrahedronIndices.beginWriteOnly();
+    SetIndex& indicesOut = *(f_indicesOut.beginWriteOnly());
 
     // Write accessor for toplogical element in SPHERE
-    helper::WriteAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
-    helper::WriteAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
-    helper::WriteAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
-    helper::WriteAccessor< Data<helper::vector<Quad> > > quadsInROI = f_quadsInROI;
-    helper::WriteAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
+    helper::WriteOnlyAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Quad> > > quadsInROI = f_quadsInROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
 
     // Clear lists
     indices.clear();
@@ -341,7 +347,6 @@ void SphereROI<DataTypes>::update()
     quadsInROI.clear();
     tetrahedraInROI.clear();
 
-    const VecCoord* x0 = &f_X0.getValue();
 
     //Points
     for( unsigned i=0; i<x0->size(); ++i )
