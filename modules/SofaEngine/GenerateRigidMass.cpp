@@ -54,7 +54,7 @@ template class SOFA_ENGINE_API GenerateRigidMass<Rigid3dTypes, Rigid3dMass>;
 template class SOFA_ENGINE_API GenerateRigidMass<Rigid3fTypes, Rigid3fMass>;
 #endif
 
-SOFA_DECL_CLASS(GenerateRigidMass);
+SOFA_DECL_CLASS(GenerateRigidMass)
 
 } // namespace loader
 

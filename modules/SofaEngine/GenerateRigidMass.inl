@@ -94,9 +94,8 @@ void GenerateRigidMass<DataTypes, MassType>::reinit()
 template <class DataTypes, class MassType>
 void GenerateRigidMass<DataTypes, MassType>::update()
 {
-    cleanDirty();
-
     integrateMesh();
+    cleanDirty();
     generateRigid();
 }
 
@@ -219,7 +218,7 @@ void GenerateRigidMass<DataTypes, MassType>::generateRigid()
             sout << "WARNING: Mesh volume is negative" << sendl;
     }
 
-    MassType *rigidmass = this->rigidMass.beginEdit();
+    MassType *rigidmass = this->rigidMass.beginWriteOnly();
 
     // volume
     rigidmass->volume = static_cast<Real>( volume );

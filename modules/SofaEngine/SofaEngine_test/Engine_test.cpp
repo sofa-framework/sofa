@@ -25,6 +25,10 @@
 #include "TestEngine.h"
 #include <SceneCreator/SceneCreator.h>
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/DataEngine_test.h>
+
+#include <sofa/defaulttype/VecTypes.h>
+
 
 
 namespace sofa {
@@ -182,5 +186,127 @@ TEST_F(Engine_test , check_propagation )
     this->testPropagationDirection();
 }
 
+
+}// namespace sofa
+
+
+
+
+//////////////////////////
+
+#include <AverageCoord.h>
+#include <SofaEngine/BoxROI.h>
+#include <SofaEngine/PairBoxRoi.h>
+#include <SofaEngine/PlaneROI.h>
+#include <SofaEngine/SphereROI.h>
+#include <SofaEngine/DilateEngine.h>
+#include <SofaEngine/GenerateCylinder.h>
+#include <SofaEngine/ExtrudeSurface.h>
+#include <SofaEngine/ExtrudeQuadsAndGenerateHexas.h>
+#include <SofaEngine/ExtrudeEdgesAndGenerateQuads.h>
+#include <SofaEngine/GenerateRigidMass.h>
+#include <SofaEngine/GroupFilterYoungModulus.h>
+#include <SofaEngine/MathOp.h>
+#include <SofaEngine/MergeMeshes.h>
+#include <SofaEngine/MergePoints.h>
+#include <SofaEngine/MergeSets.h>
+#include <SofaEngine/MergeVectors.h>
+#include <SofaEngine/MergeROIs.h>
+#include <SofaEngine/MeshBarycentricMapperEngine.h>
+#include <SofaEngine/MeshROI.h>
+#include <SofaEngine/TransformPosition.h>
+#include <SofaEngine/TransformEngine.h>
+#include <SofaEngine/TransformMatrixEngine.h>
+#include <SofaEngine/PointsFromIndices.h>
+#include <SofaEngine/ValuesFromIndices.h>
+#include <SofaEngine/IndicesFromValues.h>
+#include <SofaEngine/IndexValueMapper.h>
+#include <SofaEngine/ROIValueMapper.h>
+#include <SofaEngine/JoinPoints.h>
+#include <SofaEngine/MapIndices.h>
+#include <SofaEngine/RandomPointDistributionInSurface.h>
+#include <SofaEngine/SmoothMeshEngine.h>
+#include <SofaEngine/Spiral.h>
+#include <SofaEngine/Vertex2Frame.h>
+#include <SofaEngine/TextureInterpolation.h>
+#include <SofaEngine/SubsetTopology.h>
+#include <SofaEngine/RigidToQuatEngine.h>
+#include <SofaEngine/QuatToRigidEngine.h>
+#include <SofaEngine/ValuesFromPositions.h>
+#include <SofaEngine/NormalsFromPoints.h>
+#include <SofaEngine/ClusteringEngine.h>
+#include <SofaEngine/ShapeMatching.h>
+#include <SofaEngine/ProximityROI.h>
+#include <SofaEngine/HausdorffDistance.h>
+#include <SofaEngine/NormEngine.h>
+#include <SofaEngine/MeshClosingEngine.h>
+#include <SofaEngine/MeshSubsetEngine.h>
+#include <SofaEngine/MeshSampler.h>
+
+namespace sofa {
+
+
+// testing every engines of SofaEngine here
+
+typedef testing::Types<
+//TestDataEngine< component::engine::AverageCoord<defaulttype::Vec3Types> >,  // getObject pb -> require a scene
+//TestDataEngine< component::engine::BoxROI<defaulttype::Vec3Types> >, // getObject pb -> recuire a scene
+//TestDataEngine< component::engine::PairBoxROI<defaulttype::Vec3Types> >, // getObject pb -> require a scene
+//TestDataEngine< component::engine::PlaneROI<defaulttype::Vec3Types> >, // getObject pb -> require a scene
+//TestDataEngine< component::engine::SphereROI<defaulttype::Vec3Types> >, // getObject pb -> require a scene
+TestDataEngine< component::engine::DilateEngine<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::GenerateCylinder<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::ExtrudeSurface<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::ExtrudeQuadsAndGenerateHexas<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::ExtrudeEdgesAndGenerateQuads<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::GenerateRigidMass<defaulttype::Rigid3Types,defaulttype::Rigid3Mass> >,
+//TestDataEngine< component::engine::GroupFilterYoungModulus<defaulttype::Vec3Types> >, // compilation pb
+TestDataEngine< component::engine::MathOp< helper::vector<int> > >,
+TestDataEngine< component::engine::MergeMeshes<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::MergePoints<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::MergeSets<int> >,
+TestDataEngine< component::engine::MergeVectors< helper::vector<defaulttype::Vector3> > >,
+TestDataEngine< component::engine::MergeROIs >,
+//TestDataEngine< component::engine::MeshBarycentricMapperEngine<defaulttype::Vec3Types> >, // require a scene
+TestDataEngine< component::engine::MeshROI<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::TransformPosition<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::TransformEngine<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::TranslateTransformMatrixEngine >,
+TestDataEngine< component::engine::PointsFromIndices<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::ValuesFromIndices<int> >,
+TestDataEngine< component::engine::IndicesFromValues<int> >,
+TestDataEngine< component::engine::IndexValueMapper<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::ROIValueMapper >,
+TestDataEngine< component::engine::JoinPoints<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::MapIndices<int> >,
+TestDataEngine< component::engine::RandomPointDistributionInSurface<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::SmoothMeshEngine<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::Spiral<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::Vertex2Frame<defaulttype::Rigid3Types> >,
+TestDataEngine< component::engine::TextureInterpolation<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::SubsetTopology<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::RigidToQuatEngine<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::QuatToRigidEngine<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::ValuesFromPositions<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::NormalsFromPoints<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::ClusteringEngine<defaulttype::Vec3Types> >,
+//TestDataEngine< component::engine::ShapeMatching<defaulttype::Vec3Types> >, // getObject pb -> require a scene
+TestDataEngine< component::engine::ProximityROI<defaulttype::Vec3Types> >,
+//TestDataEngine< component::engine::HausdorffDistance<defaulttype::Vec3Types> >, // ???
+TestDataEngine< component::engine::NormEngine<defaulttype::Vector3> >,
+TestDataEngine< component::engine::MeshClosingEngine<defaulttype::Vec3Types> >,
+TestDataEngine< component::engine::MeshSubsetEngine<defaulttype::Vec3Types> >
+//TestDataEngine< component::engine::MeshSampler<defaulttype::Vec3Types> > // ???
+> TestTypes; // the types to instanciate.
+
+
+//// ========= Tests to run for each instanciated type
+TYPED_TEST_CASE(DataEngine_test, TestTypes);
+
+//// test number of call to DataEngine::update
+TYPED_TEST( DataEngine_test , basic_test )
+{
+    this->run_basic_test();
+}
 
 }// namespace sofa
