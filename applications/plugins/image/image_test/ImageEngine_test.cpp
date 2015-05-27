@@ -29,9 +29,10 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 
 #include <plugins/SofaTest/Sofa_test.h>
+#include <plugins/SofaTest/DataEngine_test.h>
 #include <plugins/image/ImageContainer.h>
 #include <plugins/image/ImageViewer.h>
-#include <plugins/image/TestImageEngine.h>
+#include "TestImageEngine.h"
 
 namespace sofa {
 
@@ -326,3 +327,89 @@ TEST_F(ImageEngine_test , testImageViewer )
 }// namespace sofa
 
 
+
+////////////////////////////////////
+
+#include "../DepthMapToMeshEngine.h"
+#include "../ImageAccumulator.h"
+#include "../ImageDataDisplay.h"
+#include "../ImageFilter.h"
+#include "../ImageOperation.h"
+#include "../ImageSampler.h"
+#include "../ImageToRigidMassEngine.h"
+#include "../ImageTransformEngine.h"
+#include "../ImageTransform.h"
+#include "../ImageValuesFromPositions.h"
+#include "../MarchingCubesEngine.h"
+#include "../MergeImages.h"
+#include "../MeshToImageEngine.h"
+#include "TestImageEngine.h"
+#include "../TransferFunction.h"
+#include "../VoronoiToMeshEngine.h"
+
+
+namespace sofa {
+
+/// a utility for ImageDataEngine test
+/// allocating all engine's input Data<Image>
+template <typename DataEngineType>
+struct ImageDataEngine_test : public DataEngine_test<DataEngineType>
+{
+    typedef core::objectmodel::DDGNode DDGNode;
+    typedef DDGNode::DDGLinkContainer DDGLinkContainer;
+
+    typedef defaulttype::ImageUC ImageType; // todo make it a template parameter
+
+    ImageDataEngine_test() : DataEngine_test<DataEngineType>()
+    {
+        const DDGLinkContainer& parent_inputs = this->m_engineInput->DDGNode::getInputs();
+        for( unsigned i=0, iend=parent_inputs.size() ; i<iend ; ++i )
+        {
+            core::objectmodel::Data<ImageType>* d = dynamic_cast<core::objectmodel::Data<ImageType>*>(parent_inputs[i]);
+            if( d )
+            {
+//                std::cerr<<d->getName()<<" is a Data<ImageUC>\n";
+                // allocate input
+                d->beginWriteOnly()->setDimensions( ImageType::imCoord(1,1,1,1,1) ); d->endEdit();
+            }
+        }
+    }
+
+};
+
+
+
+
+// testing every engines of image plugin here
+
+typedef testing::Types<
+ TestDataEngine< component::engine::DepthMapToMeshEngine<defaulttype::ImageUC> >
+,TestDataEngine< component::engine::ImageAccumulator<defaulttype::ImageUC> >
+,TestDataEngine< component::engine::ImageDataDisplay<defaulttype::ImageUC,defaulttype::ImageUC> >
+,TestDataEngine< component::engine::ImageFilter<defaulttype::ImageUC,defaulttype::ImageUC> >
+,TestDataEngine< component::engine::ImageOperation<defaulttype::ImageUC> >
+,TestDataEngine< component::engine::ImageSampler<defaulttype::ImageUC> > // ???
+,TestDataEngine< component::engine::ImageToRigidMassEngine<defaulttype::ImageUC> >
+,TestDataEngine< component::engine::ImageTransformEngine >
+//,TestDataEngine< component::engine::ImageTransform<defaulttype::ImageUC> > // other components are required
+,TestDataEngine< component::engine::ImageValuesFromPositions<defaulttype::ImageUC> >
+,TestDataEngine< component::engine::MarchingCubesEngine<defaulttype::ImageUC> >
+,TestDataEngine< component::engine::MergeImages<defaulttype::ImageUC> >
+,TestDataEngine< component::engine::MeshToImageEngine<defaulttype::ImageUC> >
+,TestDataEngine< component::engine::TestImageEngine<defaulttype::ImageUC> >
+,TestDataEngine< component::engine::TransferFunction<defaulttype::ImageUC,defaulttype::ImageUC> >
+,TestDataEngine< component::engine::VoronoiToMeshEngine<defaulttype::ImageUC> >
+> TestTypes; // the types to instanciate.
+
+
+//// ========= Tests to run for each instanciated type
+TYPED_TEST_CASE(ImageDataEngine_test, TestTypes);
+
+//// test number of call to DataEngine::update
+TYPED_TEST( ImageDataEngine_test , basic_test )
+{
+//    this->inputImage.getValue();
+    this->run_basic_test();
+}
+
+}// namespace sofa

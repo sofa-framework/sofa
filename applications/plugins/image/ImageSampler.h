@@ -589,6 +589,8 @@ protected:
 
     virtual void update()
     {
+        updateAllInputsIfDirty(); // easy to ensure that all inputs are up-to-date
+
         cleanDirty();
 
         raParam params(this->param);
