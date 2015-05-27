@@ -300,8 +300,10 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
 
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
+	std::string backupFileName;
     PyObject* backupFileObject = PyDict_GetItemString(pDict, "__file__");
-    std::string backupFileName = PyString_AsString(backupFileObject);
+	if(backupFileObject)
+		backupFileName = PyString_AsString(backupFileObject);
 
     PyObject* newFileObject = PyString_FromString(filename);
     PyDict_SetItemString(pDict, "__file__", newFileObject);
