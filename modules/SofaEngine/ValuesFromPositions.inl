@@ -296,6 +296,8 @@ typename ValuesFromPositions<DataTypes>::Vec3 ValuesFromPositions<DataTypes>::ve
 template <class DataTypes>
 void ValuesFromPositions<DataTypes>::update()
 {
+    updateAllInputsIfDirty(); // the easy way to make sure every inputs are up-to-date
+
     cleanDirty();
 
     TempData data;
@@ -331,10 +333,10 @@ void ValuesFromPositions<DataTypes>::updateValues(TempData &_data)
     helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
 
     // Write accessor for topological element values
-    helper::WriteAccessor< Data<VecReal> > values = f_values;
-    helper::WriteAccessor< Data<VecReal> > edgeValues = f_edgeValues;
-    helper::WriteAccessor< Data<VecReal> > triangleValues = f_triangleValues;
-    helper::WriteAccessor< Data<VecReal> > tetrahedronValues = f_tetrahedronValues;
+    helper::WriteOnlyAccessor< Data<VecReal> > values = f_values;
+    helper::WriteOnlyAccessor< Data<VecReal> > edgeValues = f_edgeValues;
+    helper::WriteOnlyAccessor< Data<VecReal> > triangleValues = f_triangleValues;
+    helper::WriteOnlyAccessor< Data<VecReal> > tetrahedronValues = f_tetrahedronValues;
 
     // Clear lists
     values.clear();

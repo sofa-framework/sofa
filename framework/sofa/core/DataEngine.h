@@ -54,6 +54,13 @@ protected:
 
     /// Destructor. Do nothing
     virtual ~DataEngine();
+
+    /// utility fonction to ensure all inputs are up-to-date
+    /// can be useful for particulary complex DataEngine
+    /// with a lot input/output imbricated access
+    void updateAllInputsIfDirty();
+
+
 public:
     /// Add a new input to this engine
     void addInput(objectmodel::BaseData* n);

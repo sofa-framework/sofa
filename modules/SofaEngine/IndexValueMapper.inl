@@ -70,13 +70,13 @@ void IndexValueMapper<DataTypes>::reinit()
 template <class DataTypes>
 void IndexValueMapper<DataTypes>::update()
 {
-    cleanDirty();
-
     helper::ReadAccessor< Data< helper::vector<Real> > > inputValues = f_inputValues;
     helper::ReadAccessor< Data< helper::vector<Index> > > indices = f_indices;
     const Real& value = f_value.getValue();
 
-    helper::WriteAccessor< Data< helper::vector<Real> > > outputValues = f_outputValues;
+    cleanDirty();
+
+    helper::WriteOnlyAccessor< Data< helper::vector<Real> > > outputValues = f_outputValues;
 
     const Real& defaultValue = p_defaultValue.getValue();
 

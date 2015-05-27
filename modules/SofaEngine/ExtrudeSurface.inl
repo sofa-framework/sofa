@@ -79,7 +79,6 @@ void ExtrudeSurface<DataTypes>::update()
 {
     using sofa::core::topology::BaseMeshTopology;
 
-    cleanDirty();
 
     const helper::vector<BaseMeshTopology::TriangleID>& surfaceTriangles = f_surfaceTriangles.getValue();
     const VecCoord& surfaceVertices = f_surfaceVertices.getValue();
@@ -89,9 +88,11 @@ void ExtrudeSurface<DataTypes>::update()
 
     const BaseMeshTopology::SeqTriangles* triangles = &f_triangles.getValue();
 
-    VecCoord* extrusionVertices = f_extrusionVertices.beginEdit();
+    cleanDirty();
+
+    VecCoord* extrusionVertices = f_extrusionVertices.beginWriteOnly();
     extrusionVertices->clear();
-    helper::vector<BaseMeshTopology::Triangle>* extrusionTriangles = f_extrusionTriangles.beginEdit();
+    helper::vector<BaseMeshTopology::Triangle>* extrusionTriangles = f_extrusionTriangles.beginWriteOnly();
     extrusionTriangles->clear();
 
     helper::vector<BaseMeshTopology::TriangleID>::const_iterator itTriangles, itTrianglesSide;

@@ -211,8 +211,6 @@ bool RandomPointDistributionInSurface<DataTypes>::testDistance(Coord p)
 template <class DataTypes>
 void RandomPointDistributionInSurface<DataTypes>::update()
 {
-    cleanDirty();
-
     const VecCoord& vertices = f_vertices.getValue();
     const helper::vector<sofa::core::topology::BaseMeshTopology::Triangle>& triangles = f_triangles.getValue();
 
@@ -222,9 +220,11 @@ void RandomPointDistributionInSurface<DataTypes>::update()
         return;
     }
 
-    VecCoord* inPoints = f_inPoints.beginEdit();
+    cleanDirty();
+
+    VecCoord* inPoints = f_inPoints.beginWriteOnly();
     inPoints->clear();
-    VecCoord* outPoints = f_outPoints.beginEdit();
+    VecCoord* outPoints = f_outPoints.beginWriteOnly();
     outPoints->clear();
 
     //Hack : octree is not templated
