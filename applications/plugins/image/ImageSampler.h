@@ -478,7 +478,6 @@ public:
     /**@{*/
     typedef vector<double> ParamTypes;
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
-	typedef helper::WriteAccessor<Data< ParamTypes > > waParam;
 
     Data<helper::OptionsGroup> method;
     Data< bool > computeRecursive;
@@ -496,30 +495,27 @@ public:
     typedef typename core::topology::BaseMeshTopology::Edge Edge;
     typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef helper::ReadAccessor<Data< SeqEdges > > raEdges;
-    typedef helper::WriteAccessor<Data< SeqEdges > > waEdges;
+    typedef helper::WriteOnlyAccessor<Data< SeqEdges > > waEdges;
     Data< SeqEdges > edges;
     Data< SeqEdges > graphEdges;
 
     typedef typename core::topology::BaseMeshTopology::Hexa Hexa;
     typedef typename core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
-    typedef helper::ReadAccessor<Data< SeqHexahedra > > raHexa;
-    typedef helper::WriteAccessor<Data< SeqHexahedra > > waHexa;
+    typedef helper::WriteOnlyAccessor<Data< SeqHexahedra > > waHexa;
     Data< SeqHexahedra > hexahedra;
     /**@}*/
 
     //@name distances (may be used for shape function computation)
     /**@{*/
     typedef typename ImageSamplerSpecialization<ImageTypes::label>::DistTypes DistTypes;
-    typedef helper::ReadAccessor<Data< DistTypes > > raDist;
-    typedef helper::WriteAccessor<Data< DistTypes > > waDist;
+    typedef helper::WriteOnlyAccessor<Data< DistTypes > > waDist;
     Data< DistTypes > distances;
     /**@}*/
 
     //@name voronoi
     /**@{*/
     typedef typename ImageSamplerSpecialization<ImageTypes::label>::VorTypes VorTypes;
-    typedef helper::ReadAccessor<Data< VorTypes > > raVor;
-    typedef helper::WriteAccessor<Data< VorTypes > > waVor;
+    typedef helper::WriteOnlyAccessor<Data< VorTypes > > waVor;
     Data< VorTypes > voronoi;
     /**@}*/
 
