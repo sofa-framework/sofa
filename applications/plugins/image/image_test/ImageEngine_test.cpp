@@ -358,19 +358,22 @@ struct ImageDataEngine_test : public DataEngine_test<DataEngineType>
     typedef core::objectmodel::DDGNode DDGNode;
     typedef DDGNode::DDGLinkContainer DDGLinkContainer;
 
-    typedef defaulttype::ImageUC ImageType; // todo make it a template parameter
-
     ImageDataEngine_test() : DataEngine_test<DataEngineType>()
     {
         const DDGLinkContainer& parent_inputs = this->m_engineInput->DDGNode::getInputs();
         for( unsigned i=0, iend=parent_inputs.size() ; i<iend ; ++i )
         {
-            core::objectmodel::Data<ImageType>* d = dynamic_cast<core::objectmodel::Data<ImageType>*>(parent_inputs[i]);
-            if( d )
+            core::objectmodel::BaseData* data = static_cast<core::objectmodel::BaseData*>(parent_inputs[i]);
+
+            const defaulttype::AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+
+            if( typeinfo->name().find("Image") != std::string::npos || typeinfo->name().find("BranchingImage") != std::string::npos )
             {
-//                std::cerr<<d->getName()<<" is a Data<ImageUC>\n";
+                defaulttype::BaseImage* img = static_cast<defaulttype::BaseImage*>( data->beginEditVoidPtr() );
+                std::cerr<<data->getName()<<" is a Data<Image>\n";
                 // allocate input
-                d->beginWriteOnly()->setDimensions( ImageType::imCoord(1,1,1,1,1) ); d->endEdit();
+                img->setDimensions( defaulttype::BaseImage::imCoord(1,1,1,1,1) );
+                data->endEditVoidPtr();
             }
         }
     }
