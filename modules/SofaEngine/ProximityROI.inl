@@ -138,8 +138,6 @@ public:
 template <class DataTypes>
 void ProximityROI<DataTypes>::update()
 {
-    cleanDirty();
-
     const helper::vector<Vec3>& cen = (centers.getValue());
     const helper::vector<Real>& rad = (radii.getValue());
 
@@ -175,13 +173,19 @@ void ProximityROI<DataTypes>::update()
         serr << "There parameter 'Radius' has more elements than parameters 'center'." << sendl;
     }
 
+
+    const VecCoord* x0 = &f_X0.getValue();
+
+    cleanDirty();
+
+
     // Write accessor for topological element indices
-    SetIndex& indices = *(f_indices.beginEdit());
-    SetIndex& indicesOut = *(f_indicesOut.beginEdit());
+    SetIndex& indices = *(f_indices.beginWriteOnly());
+    SetIndex& indicesOut = *(f_indicesOut.beginWriteOnly());
 
     // Write accessor for toplogical element
-    helper::WriteAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
-    helper::WriteAccessor< Data<helper::vector<Real> > > distanceInROI = f_distanceInROI;
+    helper::WriteOnlyAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Real> > > distanceInROI = f_distanceInROI;
 
     // Clear lists
     indices.clear();
@@ -190,7 +194,6 @@ void ProximityROI<DataTypes>::update()
     distanceInROI.clear();
     pointsInROI.clear();
 
-    const VecCoord* x0 = &f_X0.getValue();
 
     std::vector<SortingPair> sortingheap;
 

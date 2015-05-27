@@ -139,10 +139,22 @@ void MergeMeshes<DataTypes>::reinit()
 template <class DataTypes>
 void MergeMeshes<DataTypes>::update()
 {
-    cleanDirty();
-    createInputMeshesData();
+//    createInputMeshesData();
 
     unsigned int nb = f_nbMeshes.getValue();
+
+    for (unsigned int i=0; i<nb; ++i)
+    {
+        vf_positions[i]->updateIfDirty();
+        vf_edges[i]->updateIfDirty();
+        vf_triangles[i]->updateIfDirty();
+        vf_quads[i]->updateIfDirty();
+        vf_tetrahedra[i]->updateIfDirty();
+        vf_hexahedra[i]->updateIfDirty();
+    }
+
+    cleanDirty();
+
     mergeInputDataVector(nb, f_output_positions, vf_positions);
     mergeInputDataVector(nb, f_output_edges, vf_edges, vf_positions);
     mergeInputDataVector(nb, f_output_triangles, vf_triangles, vf_positions);
@@ -150,7 +162,8 @@ void MergeMeshes<DataTypes>::update()
     mergeInputDataVector(nb, f_output_tetrahedra, vf_tetrahedra, vf_positions);
     mergeInputDataVector(nb, f_output_hexahedra, vf_hexahedra, vf_positions);
 
-    unsigned & npoints = *f_output_npoints.beginEdit();
+
+    unsigned & npoints = *f_output_npoints.beginWriteOnly();
     npoints = (unsigned) f_output_positions.getValue().size();
     f_output_npoints.endEdit();
 
