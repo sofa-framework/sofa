@@ -141,7 +141,9 @@ bool PairBoxROI<DataTypes>::isPointInBox(const PointID& pid, const Vec6& b)
 template <class DataTypes>
 void PairBoxROI<DataTypes>::update()
 {
-    cleanDirty();
+   const VecCoord* x0 = &f_X0.getValue();
+
+   cleanDirty();
 
    Vec6& maxvb = *(inclusiveBox.beginEdit());
    Vec6& minvb = *(includedBox.beginEdit());
@@ -164,18 +166,19 @@ void PairBoxROI<DataTypes>::update()
     
     inclusiveBox.endEdit();
 
+
+
     // Write accessor for topological element indices in BOX
-    SetIndex& indices = *f_indices.beginEdit();
+    SetIndex& indices = *f_indices.beginWriteOnly();
    
     // Write accessor for toplogical element in BOX
-    helper::WriteAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
+    helper::WriteOnlyAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
 
     // Clear lists
     indices.clear();
    
     pointsInROI.clear();
 
-    const VecCoord* x0 = &f_X0.getValue();
 
     //Points
     for(size_t i=0; i<x0->size(); ++i )
