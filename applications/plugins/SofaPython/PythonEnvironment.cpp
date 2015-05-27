@@ -288,7 +288,7 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
 
     // Load the scene script
 	char* pythonFilename = strdup(filename);
-    PyObject* scriptPyFile = PyFile_FromString(pythonFilename, "r");
+    PyObject* scriptPyFile = PyFile_FromString(pythonFilename, (char*)("r"));
 	free(pythonFilename);
 
     if( !scriptPyFile )

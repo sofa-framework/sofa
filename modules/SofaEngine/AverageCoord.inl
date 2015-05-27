@@ -71,8 +71,6 @@ void AverageCoord<DataTypes>::reinit()
 template <class DataTypes>
 void AverageCoord<DataTypes>::update()
 {
-    cleanDirty();
-
     helper::ReadAccessor< Data<VecCoord> > coord = *mstate->read(core::VecCoordId(f_vecId.getValue()));
     const VecIndex& indices = f_indices.getValue();
 
@@ -87,6 +85,9 @@ void AverageCoord<DataTypes>::update()
     c *= 1./n;
 
 //    cerr<<"AverageCoord<DataTypes>::update, c= "<< c << endl;
+
+
+    cleanDirty();
 
     f_average.setValue(c);
 }

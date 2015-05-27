@@ -53,7 +53,9 @@ enum TopologyObjectType
     TRIANGLE,
     QUAD,
     TETRAHEDRON,
-    HEXAHEDRON
+    HEXAHEDRON,
+    PENTAHEDRON,
+    PYRAMID
 };
 
 SOFA_CORE_API TopologyObjectType parseTopologyObjectTypeFromString(const std::string& s);
@@ -74,6 +76,9 @@ public:
     typedef index_type	                    TetrahedronID;
     typedef index_type	                    HexaID;
     typedef index_type	                    HexahedronID;
+    typedef index_type	                    PentahedronID;
+    typedef index_type	                    PentaID;
+    typedef index_type	                    PyramidID;
 
 
     typedef sofa::helper::vector<index_type>                  SetIndex;
@@ -106,6 +111,19 @@ public:
         Tetrahedron(PointID a, PointID b, PointID c, PointID d) : sofa::helper::fixed_array<PointID,4>(a,b,c,d) {}
     };
     typedef Tetrahedron                         Tetra;
+    class Pyramid : public sofa::helper::fixed_array<PointID,5>
+    {
+    public:
+        Pyramid() {}
+        Pyramid(PointID a, PointID b, PointID c, PointID d, PointID e) : sofa::helper::fixed_array<PointID,5>(a,b,c,d,e) {}
+    };
+    class Pentahedron : public sofa::helper::fixed_array<PointID,6>
+    {
+    public:
+        Pentahedron() {}
+        Pentahedron(PointID a, PointID b, PointID c, PointID d, PointID e, PointID f) : sofa::helper::fixed_array<PointID,6>(a,b,c,d,e,f) {}
+    };
+    typedef Pentahedron                          Penta;
     class Hexahedron : public sofa::helper::fixed_array<PointID,8>
     {
     public:
@@ -113,6 +131,8 @@ public:
         Hexahedron(PointID a, PointID b, PointID c, PointID d, PointID e, PointID f, PointID g, PointID h) : sofa::helper::fixed_array<PointID,8>(a,b,c,d,e,f,g,h) {}
     };
     typedef Hexahedron                          Hexa;
+
+
 
     SOFA_CLASS(Topology, core::objectmodel::BaseObject);
 protected:
@@ -170,11 +190,28 @@ struct TopologyElementInfo<Topology::Tetrahedron>
 };
 
 template<>
+struct TopologyElementInfo<Topology::Pyramid>
+{
+    static TopologyObjectType type() { return PYRAMID; }
+    static const char* name() { return "Pyramid"; }
+};
+
+template<>
+struct TopologyElementInfo<Topology::Pentahedron>
+{
+    static TopologyObjectType type() { return PENTAHEDRON; }
+    static const char* name() { return "Pentahedron"; }
+};
+
+template<>
 struct TopologyElementInfo<Topology::Hexahedron>
 {
     static TopologyObjectType type() { return HEXAHEDRON; }
     static const char* name() { return "Hexahedron"; }
 };
+
+
+
 
 } // namespace topology
 
@@ -215,10 +252,26 @@ struct DataTypeInfo< sofa::core::topology::Topology::Tetrahedron > : public Fixe
 };
 
 template<>
+struct DataTypeInfo< sofa::core::topology::Topology::Pyramid > : public FixedArrayTypeInfo<sofa::helper::fixed_array<unsigned int,5> >
+{
+    static std::string name() { return "Pyramid"; }
+};
+
+template<>
+struct DataTypeInfo< sofa::core::topology::Topology::Pentahedron > : public FixedArrayTypeInfo<sofa::helper::fixed_array<unsigned int,6> >
+{
+    static std::string name() { return "Pentahedron"; }
+};
+
+template<>
 struct DataTypeInfo< sofa::core::topology::Topology::Hexahedron > : public FixedArrayTypeInfo<sofa::helper::fixed_array<unsigned int,8> >
 {
     static std::string name() { return "Hexahedron"; }
 };
+
+
+
+
 
 } // namespace defaulttype
 

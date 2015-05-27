@@ -73,10 +73,11 @@ void Spiral<DataTypes>::reinit()
 template <class DataTypes>
 void Spiral<DataTypes>::update()
 {
+    const VecCoord x0 = f_X0.getValue();
+
     cleanDirty();
 
-    const VecCoord x0 = f_X0.getValue();
-    VecCoord* x = f_X.beginEdit();
+    VecCoord* x = f_X.beginWriteOnly();
     x->clear();
 
     for( unsigned i=0; i<x0.size(); ++i )
