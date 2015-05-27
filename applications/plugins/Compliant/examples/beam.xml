@@ -1,6 +1,6 @@
 <Node>
   <!--Subdivided cube-->
-  <RegularGridTopology name="grid" n="6 12 32" min="0 0 0" max="3 3 12"  />
+  <RegularGridTopology name="grid" n="6 10 20" min="0 0 0" max="3 3 12"  />
   <MechanicalObject name="DOF" template="Vec3d" />
   <UniformMass name="themass" totalMass="100" />
 
