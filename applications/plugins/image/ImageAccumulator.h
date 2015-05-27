@@ -64,7 +64,7 @@ public:
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
     typedef typename ImageTypes::imCoord imCoord;
-    typedef helper::WriteOnlyAccessor<Data< ImageTypes > > waImage;
+    typedef helper::WriteAccessor<Data< ImageTypes > > waImage;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
 
     typedef SReal Real;
@@ -128,15 +128,17 @@ protected:
 
         raImage in(this->inputImage);
         if(in->isEmpty()) return;
-        waImage out(this->outputImage);
         raTransform inT(this->inputTransform);
+
+        cleanDirty();
+
+        waImage out(this->outputImage);
         waTransform outT(this->outputTransform);
 
         if(out->isEmpty()) {t0=CTime::getTime(); outT->operator=(inT);}
         else { count++; t=CTime::getTime(); outT->getScaleT()=0.000001*(t-t0)/(Real)count; } // update time scale to fit acquisition rate
 
         out->getCImgList().push_back(in->getCImg(0));
-        cleanDirty();
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)

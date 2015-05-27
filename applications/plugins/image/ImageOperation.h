@@ -122,6 +122,9 @@ protected:
     {
         raImage in1(this->inputImage1);
         raImage in2(this->inputImage2);
+
+        cleanDirty();
+
         waImage out(this->outputImage);
 
         if(in1->isEmpty() || in2->isEmpty()) return;
@@ -170,8 +173,6 @@ protected:
             break;
         default:            break;
         }
-
-        cleanDirty();
     }
 
 };

@@ -104,7 +104,7 @@ public:
         cimg_library::CImg<T>& outImg = out->getCImg(0);
 
         out->getCImg(0) = in->getCImg(0);
-       std::cerr << "TestImageEngine input shared: " << in->getCImg(0).is_shared() << std::endl;
+//        std::cerr << "TestImageEngine input shared: " << in->getCImg(0).is_shared() << std::endl;
         cleanDirty();
     }
 
