@@ -62,10 +62,11 @@ def createScene(node):
     requires(node, 'Flexible', 'Compliant')
 
     static = beam(node, name = 'static', color = '1 0.8 0.2')
+
     ode = static.createObject('CompliantStaticSolver',
                               ls_iterations = 10,
                               ls_precision = 1e-5,
-                              line_search = 1,
+                              line_search = 2,
                               conjugate = True)
     ode.printLog = True
     
