@@ -16,8 +16,8 @@ namespace odesolver {
 
 CompliantStaticSolver::CompliantStaticSolver()
     : epsilon(initData(&epsilon, 1e-14, "epsilon", "division by zero threshold")),
-      line_search(initData(&line_search, unsigned(LS_BRENT), "line_search",
-                           "line search method, 0: none (use dt), 1: brent (default), 2: secant")),
+      line_search(initData(&line_search, unsigned(LS_SECANT), "line_search",
+                           "line search method, 0: none (use dt), 1: brent, 2: secant (default). (warning: brent does not work with constraints.")),
       conjugate(initData(&conjugate, true, "conjugate", "conjugate descent directions")),
       ls_precision(initData(&ls_precision, 1e-7, "ls_precision", "line search precision")),
       ls_iterations(initData(&ls_iterations, unsigned(10), "ls_iterations",
