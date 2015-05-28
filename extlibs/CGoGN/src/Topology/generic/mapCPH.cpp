@@ -1,10 +1,9 @@
-#include "Topology/generic/mapImpl/mapIH2.hpp"
-#include "Topology/map/map2.h"
+#include "Topology/generic/mapImpl/mapCPH.hpp"
 
 namespace CGoGN
 {
 
-void MapIH2::clear(bool removeAttrib)
+void MapCPH::clear(bool removeAttrib)
 {
     GenericMap::clear(removeAttrib) ;
     if (removeAttrib)
@@ -15,14 +14,14 @@ void MapIH2::clear(bool removeAttrib)
     }
 }
 
-void MapIH2::addInvolution()
+void MapCPH::addInvolution()
 {
     std::stringstream sstm;
     sstm << "involution_" << m_involution.size();
     m_involution.push_back(addRelation(sstm.str()));
 }
 
-void MapIH2::addPermutation()
+void MapCPH::addPermutation()
 {
     std::stringstream sstm;
     sstm << "permutation_" << m_permutation.size();
@@ -32,12 +31,12 @@ void MapIH2::addPermutation()
     m_permutation_inv.push_back(addRelation(sstm2.str()));
 }
 
-void MapIH2::removeLastInvolutionPtr()
+void MapCPH::removeLastInvolutionPtr()
 {
     m_involution.pop_back();
 }
 
-void MapIH2::compactTopo()
+void MapCPH::compactTopo()
 {
     std::vector<unsigned int> oldnew;
     m_attribs[DART].compact(oldnew);
@@ -65,32 +64,32 @@ void MapIH2::compactTopo()
     }
 }
 
-bool MapIH2::saveMapBin(const std::string &filename) const
+bool MapCPH::saveMapBin(const std::string &filename) const
 {
     // TODO
     return false;
 }
 
-bool MapIH2::loadMapBin(const std::string &filename)
+bool MapCPH::loadMapBin(const std::string &filename)
 {
     // TODO
     return false;
 }
 
-bool MapIH2::copyFrom(const GenericMap &map)
+bool MapCPH::copyFrom(const GenericMap &map)
 {
     // TODO
     return false;
 }
 
-void MapIH2::restore_topo_shortcuts()
+void MapCPH::restore_topo_shortcuts()
 {
 
 }
 
 
 
-Dart MapIH2::newDart()
+Dart MapCPH::newDart()
 {
     const Dart d = GenericMap::newDart() ;
 
@@ -100,10 +99,9 @@ Dart MapIH2::newDart()
         (*m_permutation_inv[i])[d.index] = d ;
     for (unsigned int i = 0; i < m_involution.size(); ++i)
         (*m_involution[i])[d.index] = d ;
-
-    (*m_dartLevel)[d.index] = m_curLevel ;
-    if(m_curLevel > m_maxLevel)			// update max level
-        m_maxLevel = m_curLevel ;		// if needed
+//    (*m_dartLevel)[d.index] = m_curLevel ;
+//    if(m_curLevel > m_maxLevel)			// update max level
+//        m_maxLevel = m_curLevel ;		// if needed
     return d ;
 }
 

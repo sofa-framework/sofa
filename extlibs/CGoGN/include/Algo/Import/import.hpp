@@ -815,7 +815,7 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             const Dart f = map.phi1(map.phi2(map.phi1(e)));
             const Dart g = map.phi1(map.phi2(map.phi1(f)));
 
-            VertexAttribute<typename PFP::VEC3, MAP> position =  map.template getAttribute<typename PFP::VEC3, VERTEX, MAP>("position") ;
+            AttributeHandler<typename PFP::VEC3, VERTEX, MAP> position =  map.template getAttribute<typename PFP::VEC3, VERTEX, MAP, typename AttributeHandler<VEC3, VERTEX, MAP>::HandlerAccessorPolicy >("position") ;
 
             // 1.
             unsigned int em = vertexEmbeddingsBuffer[0];		// get embedding

@@ -133,32 +133,32 @@ public:
 	* @param nameAttr attribute name
 	* @return an AttributeHandler
 	*/
-	template <typename T, unsigned int ORBIT, typename MAP>
-	inline AttributeHandler<T, ORBIT, MAP> addAttribute(const std::string& nameAttr = "") ;
+    template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy>
+    inline AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy > addAttribute(const std::string& nameAttr = "") ;
 
 	/**
 	 * remove an attribute
 	 * @param attr a handler to the attribute to remove
 	 * @return true if remove succeed else false
 	 */
-	template <typename T, unsigned int ORBIT, typename MAP>
-	inline bool removeAttribute(AttributeHandler<T, ORBIT, MAP>& attr) ;
+    template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy>
+    inline bool removeAttribute(AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& attr) ;
 
 	/**
 	* search an attribute for a given orbit
 	* @param nameAttr attribute name
 	* @return an AttributeHandler
 	*/
-	template <typename T, unsigned int ORBIT, typename MAP>
-	inline AttributeHandler<T, ORBIT, MAP> getAttribute(const std::string& nameAttr) ;
+    template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy>
+    inline AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy > getAttribute(const std::string& nameAttr) ;
 
 	/**
 	* check if an attribute exist ( get, test if valid and add if necessary)
 	* @param nameAttr attribute name
 	* @return an AttributeHandler
 	*/
-	template <typename T, unsigned int ORBIT, typename MAP>
-	AttributeHandler<T, ORBIT, MAP> checkAttribute(const std::string& nameAttr) ;
+    template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy>
+    AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy > checkAttribute(const std::string& nameAttr) ;
 
 	/**
 	 * swap the content of two attributes (efficient, only swap pointers)

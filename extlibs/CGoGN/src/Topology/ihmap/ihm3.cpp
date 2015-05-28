@@ -42,10 +42,10 @@ namespace IHM
 
 ImplicitHierarchicalMap3::ImplicitHierarchicalMap3() : m_curLevel(0), m_maxLevel(0), m_edgeIdCount(0), m_faceIdCount(0)
 {
-	m_dartLevel = Map3::addAttribute<unsigned int, DART, EmbeddedMap3>("dartLevel") ;
-	m_edgeId = Map3::addAttribute<unsigned int, DART, EmbeddedMap3>("edgeId") ;
-	m_faceId = Map3::addAttribute<unsigned int, DART, EmbeddedMap3>("faceId") ;
-
+    m_dartLevel = this->addAttribute<unsigned int, DART, MAP, HandlerAccessorPolicy >("dartLevel") ;
+    IMPL::m_dartLevel = m_dartLevel.getDataVector();
+    m_edgeId = this->addAttribute<unsigned int, DART, MAP, HandlerAccessorPolicy >("edgeId") ;
+    m_faceId = this->addAttribute<unsigned int, DART, MAP, HandlerAccessorPolicy >("faceId") ;
 	for(unsigned int i = 0; i < NB_ORBITS; ++i)
 		m_nextLevelCell[i] = NULL ;
 }
@@ -59,12 +59,12 @@ ImplicitHierarchicalMap3::~ImplicitHierarchicalMap3()
 
 void ImplicitHierarchicalMap3::clear(bool removeAttrib)
 {
-	Map3::clear(removeAttrib) ;
+    Parent::clear(removeAttrib) ;
 	if (removeAttrib)
 	{
-		m_dartLevel = Map3::addAttribute<unsigned int, DART, EmbeddedMap3>("dartLevel") ;
-		m_faceId = Map3::addAttribute<unsigned int, DART, EmbeddedMap3>("faceId") ;
-		m_edgeId = Map3::addAttribute<unsigned int, DART, EmbeddedMap3>("edgeId") ;
+        m_dartLevel = this->addAttribute<unsigned int, DART, MAP, HandlerAccessorPolicy >("dartLevel") ;
+        m_edgeId = this->addAttribute<unsigned int, DART, MAP, HandlerAccessorPolicy >("edgeId") ;
+        m_faceId = this->addAttribute<unsigned int, DART, MAP, HandlerAccessorPolicy >("faceId") ;
 
 		for(unsigned int i = 0; i < NB_ORBITS; ++i)
 			m_nextLevelCell[i] = NULL ;
@@ -288,10 +288,10 @@ void ImplicitHierarchicalMap3::initEdgeId()
 				m_edgeId[e] = m_edgeIdCount;
 				edgeMark.mark(e);
 
-				m_edgeId[Map3::phi2(e)] = m_edgeIdCount ;
-				edgeMark.mark(Map3::phi2(e));
+                m_edgeId[phi2MaxLvl(e)] = m_edgeIdCount ;
+                edgeMark.mark(phi2MaxLvl(e));
 
-				e = Map3::alpha2(e);
+                e = this->alpha2MaxLvl(e);
 			} while(e != d);
 
 			m_edgeIdCount++;
@@ -312,11 +312,11 @@ void ImplicitHierarchicalMap3::initFaceId()
 				m_faceId[e] = m_faceIdCount ;
 				faceMark.mark(e);
 
-				Dart e3 = Map3::phi3(e);
+                Dart e3 = phi3MaxLvl(e);
 				m_faceId[e3] = m_faceIdCount ;
 				faceMark.mark(e3);
 
-				e = Map3::phi1(e);
+                e = phi1MaxLvl(e);
 			} while(e != d);
 
 			m_faceIdCount++;
@@ -717,7 +717,161 @@ bool ImplicitHierarchicalMap3::coarsenNeighborhoodLevelDiffersMoreThanOne(Dart d
 //		} while(e != visitedFaces[i]) ;
 //	}
 //
-//	return found;
+    //	return found;
+}
+
+void ImplicitHierarchicalMap3::sewVolumes(Dart d, Dart e, bool withBoundary)
+{
+    if (!withBoundary)
+    {
+        Map3::sewVolumes(d, e, false) ;
+        return ;
+    }
+
+    Map3::sewVolumes(d, e, withBoundary);
+
+    // embed the vertex orbits from the oriented face with dart e
+    // with vertex orbits value from oriented face with dart d
+    if (isOrbitEmbedded<VERTEX>())
+    {
+        Dart it = d ;
+        do
+        {
+            Algo::Topo::setOrbitEmbedding<VERTEX>(*this, it, getEmbedding<VERTEX>(it)) ;
+            it = phi1(it) ;
+        } while(it != d) ;
+    }
+
+    // embed the new edge orbit with the old edge orbit value
+    // for all the face
+    if (isOrbitEmbedded<EDGE>())
+    {
+        Dart it = d ;
+        do
+        {
+            Algo::Topo::setOrbitEmbedding<EDGE>(*this, it, getEmbedding<EDGE>(it)) ;
+            it = phi1(it) ;
+        } while(it != d) ;
+    }
+
+    // embed the face orbit from the volume sewn
+    if (isOrbitEmbedded<FACE>())
+    {
+        Algo::Topo::setOrbitEmbedding<FACE>(*this, e, getEmbedding<FACE>(d)) ;
+    }
+}
+
+void ImplicitHierarchicalMap3::splitFace(Dart d, Dart e)
+{
+    Dart dd = phi1(phi3(d));
+    Dart ee = phi1(phi3(e));
+    Map3::splitFace(d, e);
+
+    if(isOrbitEmbedded<VERTEX>())
+    {
+        unsigned int vEmb1 = getEmbedding<VERTEX>(d) ;
+        unsigned int vEmb2 = getEmbedding<VERTEX>(e) ;
+        setDartEmbedding<VERTEX>(phi_1(e), vEmb1);
+        setDartEmbedding<VERTEX>(phi_1(ee), vEmb1);
+        setDartEmbedding<VERTEX>(phi_1(d), vEmb2);
+        setDartEmbedding<VERTEX>(phi_1(dd), vEmb2);
+    }
+
+    if(isOrbitEmbedded<EDGE>())
+    {
+        Algo::Topo::initOrbitEmbeddingOnNewCell<EDGE>(*this,phi_1(d)) ;
+    }
+
+    if(isOrbitEmbedded<FACE2>())
+    {
+        copyDartEmbedding<FACE2>(phi_1(d), d) ;
+        Algo::Topo::setOrbitEmbeddingOnNewCell<FACE2>(*this, e) ;
+        Algo::Topo::copyCellAttributes<FACE2>(*this, e, d) ;
+
+        copyDartEmbedding<FACE2>(phi_1(dd), dd) ;
+        Algo::Topo::setOrbitEmbeddingOnNewCell<FACE2>(*this, ee) ;
+        Algo::Topo::copyCellAttributes<FACE2>(*this, ee, dd) ;
+    }
+
+    if(isOrbitEmbedded<FACE>())
+    {
+        unsigned int fEmb = getEmbedding<FACE>(d) ;
+        setDartEmbedding<FACE>(phi_1(d), fEmb) ;
+        setDartEmbedding<FACE>(phi_1(ee), fEmb) ;
+        Algo::Topo::setOrbitEmbeddingOnNewCell<FACE>(*this, e);
+        Algo::Topo::copyCellAttributes<FACE>(*this, e, d);
+
+    }
+
+    if(isOrbitEmbedded<VOLUME>())
+    {
+        unsigned int vEmb1 = getEmbedding<VOLUME>(d) ;
+        setDartEmbedding<VOLUME>(phi_1(d),  vEmb1);
+        setDartEmbedding<VOLUME>(phi_1(e),  vEmb1);
+
+        unsigned int vEmb2 = getEmbedding<VOLUME>(dd) ;
+        setDartEmbedding<VOLUME>(phi_1(dd),  vEmb2);
+        setDartEmbedding<VOLUME>(phi_1(ee),  vEmb2);
+    }
+}
+
+Dart ImplicitHierarchicalMap3::cutEdge(Dart d)
+{
+    Dart nd = Map3::cutEdge(d);
+
+    if(isOrbitEmbedded<VERTEX>())
+    {
+        Algo::Topo::initOrbitEmbeddingOnNewCell<VERTEX>(*this, nd) ;
+    }
+
+    if(isOrbitEmbedded<EDGE>())
+    {
+        // embed the new darts created in the cut edge
+        Algo::Topo::setOrbitEmbedding<EDGE>(*this, d, getEmbedding<EDGE>(d)) ;
+        // embed a new cell for the new edge and copy the attributes' line (c) Lionel
+        Algo::Topo::setOrbitEmbeddingOnNewCell<EDGE>(*this, nd) ;
+        Algo::Topo::copyCellAttributes<EDGE>(*this, nd, d) ;
+    }
+
+    if(isOrbitEmbedded<FACE2>())
+    {
+        Dart f = d;
+        do
+        {
+            Dart f1 = phi1(f) ;
+
+            copyDartEmbedding<FACE2>(f1, f);
+            Dart e = phi3(f1);
+            copyDartEmbedding<FACE2>(phi1(e), e);
+            f = alpha2(f);
+        } while(f != d);
+    }
+
+    if(isOrbitEmbedded<FACE>())
+    {
+        Dart f = d;
+        do
+        {
+            unsigned int fEmb = getEmbedding<FACE>(f) ;
+            setDartEmbedding<FACE>(phi1(f), fEmb);
+            setDartEmbedding<FACE>(phi3(f), fEmb);
+            f = alpha2(f);
+        } while(f != d);
+    }
+
+    if(isOrbitEmbedded<VOLUME>())
+    {
+        Dart f = d;
+        do
+        {
+            unsigned int vEmb = getEmbedding<VOLUME>(f) ;
+            setDartEmbedding<VOLUME>(phi1(f), vEmb);
+            setDartEmbedding<VOLUME>(phi2(f), vEmb);
+            f = alpha2(f);
+        } while(f != d);
+    }
+
+    return nd ;
 }
 
 } // namespace IHM
