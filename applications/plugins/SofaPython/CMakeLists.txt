@@ -5,8 +5,8 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 	if(WIN32)
 	set(PYTHON_LIBRARIES ${PYTHON_LIBRARY}/python27.lib)
 	endif()
-    Message(STATUS ${PYTHON_LIBRARIES})
-    Message(STATUS PYTHON_INCLUDE_DIRS=${PYTHON_INCLUDE_DIRS})
+#    Message(STATUS ${PYTHON_LIBRARIES})
+#    Message(STATUS PYTHON_INCLUDE_DIRS=${PYTHON_INCLUDE_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 set(HEADER_FILES
