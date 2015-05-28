@@ -131,6 +131,7 @@ class Sampler:
         self.sampler=None
         self.mesh=None
         self.dofs=None
+        self.mass=None
 
     def _addImageSampler(self, template, nbSamples, src, fixedPosition, **kwargs):
         self.sampler = self.node.createObject("ImageSampler", template=template, name="sampler", image=src+".image", transform=src+".transform", method="1", param=str(nbSamples)+" 1", fixedPosition=SofaPython.Tools.listListToStr(fixedPosition), **kwargs)
@@ -156,3 +157,7 @@ class Sampler:
     def addMechanicalObject(self):
         self.dofs = self.node.createObject("MechanicalObject", template="Vec3d", name="dofs")
         return self.dofs
+
+    def addUniformMass(self,totalMass):
+        self.mass = self.node.createObject("UniformMass", template="Vec3d", name="mass", totalMass=totalMass)
+        return self.mass
