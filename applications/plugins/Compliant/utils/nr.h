@@ -77,6 +77,8 @@ struct optimization {
     static void minimum_bracket(func_call& a, func_call& b, func_call& c,
                                 const F& f) {
 
+        using namespace std;
+        
         // maximum magnification
         static const U glimit = 100;
 
@@ -86,7 +88,7 @@ struct optimization {
         b.f = f(b.x);
 
         if (b.f > a.f) {
-            std::swap(a, b);
+            swap(a, b);
         }
 
         c.x = b.x + gold * (b.x - a.x);
@@ -97,7 +99,7 @@ struct optimization {
             const U q = (b.x - c.x) * (b.f - a.f);
 
             u.x = b.x - ((b.x - c.x) * q - (b.x - a.x) * r ) /
-                (2 * std::copysign(std::max(std::abs(q - r), tiny),
+                (2 * copysign(max(abs(q - r), tiny),
                                    q - r) );
             
             const U ulim = b.x + glimit * (c.x - b.x);
@@ -125,6 +127,7 @@ struct optimization {
                     b = c;
                     c = u;
 
+                    // the tricky one
                     u.x = c.x + gold * (c.x - b.x);
                     u.f = f(u.x);
                     
