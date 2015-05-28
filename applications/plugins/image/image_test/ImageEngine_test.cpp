@@ -358,8 +358,10 @@ struct ImageDataEngine_test : public DataEngine_test<DataEngineType>
     typedef core::objectmodel::DDGNode DDGNode;
     typedef DDGNode::DDGLinkContainer DDGLinkContainer;
 
-    ImageDataEngine_test() : DataEngine_test<DataEngineType>()
+    virtual void init()
     {
+        DataEngine_test<DataEngineType>::init();
+
         const DDGLinkContainer& parent_inputs = this->m_engineInput->DDGNode::getInputs();
         for( unsigned i=0, iend=parent_inputs.size() ; i<iend ; ++i )
         {

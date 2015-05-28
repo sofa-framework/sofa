@@ -45,7 +45,10 @@ void DataEngine::updateAllInputsIfDirty()
 {
     const DDGLinkContainer& inputs = DDGNode::getInputs();
     for( unsigned i=0, iend=inputs.size() ; i<iend ; ++i )
+    {
+//        std::cerr<<"DataEngine::updateAllInputsIfDirty() updating "<<static_cast<core::objectmodel::BaseData*>(inputs[i])->getName()<<std::endl;
         static_cast<core::objectmodel::BaseData*>(inputs[i])->updateIfDirty();
+    }
 }
 
 /// Add a new input to this engine

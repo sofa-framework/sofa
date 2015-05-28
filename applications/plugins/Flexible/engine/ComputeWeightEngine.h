@@ -49,12 +49,13 @@ public:
     typedef defaulttype::Vector4 Weights;
 
 
- protected:
 
     void init();
     void reinit();
     // Update the engine
     void update();
+
+protected:
 
     // Indices
     Data< helper::vector< Indices > > d_indices;

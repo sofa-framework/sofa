@@ -146,6 +146,7 @@ public:
         setDirtyValue();
 
         this->getContext()->get( deformationMapping, core::objectmodel::BaseContext::Local);
+        if( !deformationMapping ) serr<<"No deformation mapping found"<<sendl;
     }
 
     virtual void reinit() { update(); }
