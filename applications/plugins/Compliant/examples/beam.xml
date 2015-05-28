@@ -5,8 +5,22 @@
   <UniformMass name="themass" totalMass="100" />
 
   <!--maintain points of plane x=0 fixed -->
-  <BoxROI template="Vec3d" name="O_box_roi" box="-0.01 -0.01 -0.01   3.01 3.01 0.01"  drawPoints="1" drawSize="30" />
-  <FixedConstraint indices="@[-1].indices" />
+  <BoxROI template="Vec3d" name="ROI" box="-0.01 -0.01 -0.01   3.01 3.01 0.01"  drawPoints="1" drawSize="2" />
+  
+  <Node name="constraint">
+	<MechanicalObject template="Vec3d" name="dofs"/>
+	<SubsetMapping indices="@../ROI.indices" />
+
+	<Node name="offset">
+	  <MechanicalObject template="Vec3d" name="dofs" />
+	  <!-- <DifferenceFromTargetMapping auto="true" /> -->
+	  <DifferenceFromTargetMapping targets="@../../ROI.pointsInROI" />
+	  <UniformCompliance isCompliance="false" compliance="1e-3" />
+	  <Constraint />
+	</Node>
+	
+  </Node>
+  <!-- <FixedConstraint indices="@[-1].indices" /> -->
 
   <!--Hexahedral FEM-->
   <Node name="Hexa" >
@@ -15,11 +29,11 @@
     <Node 	name="behavior"   >
       <TopologyGaussPointSampler name="sampler" inPosition="@../../DOF.rest_position" method="0" order="2"/>
       <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-      <LinearMapping template="Vec3d,F331" name="linearMapping" assemble="true"/>
+      <LinearMapping template="Vec3d,F331" name="linearMapping" assemble="false"/>
 
-      <Node 	name="Strain"   >
+      <Node name="Strain"   >
         <MechanicalObject  template="E331" name="E"  />
-        <CorotationalStrainMapping template="F331,E331" assemble="true" method="large" name="corotstrainmap"/>
+        <CorotationalStrainMapping template="F331,E331" assemble="false" method="large" name="corotstrainmap"/>
         <HookeForceField  template="E331" name="ff" youngModulus="10000" poissonRatio="0.3" viscosity="0" assemble="true" />
       </Node>
     </Node>
@@ -34,4 +48,7 @@
 	<VisualModel color="0.8 0.8 1 1" />
 	<IdentityMapping />
   </Node>
+
+
+
 </Node>

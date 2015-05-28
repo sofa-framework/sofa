@@ -8,6 +8,8 @@
 #include "../utils/nr.h"
 #include "../utils/scoped.h"
 
+#include "../constraint/Constraint.h"
+
 namespace sofa {
 namespace component {
 namespace odesolver {
@@ -263,6 +265,82 @@ void CompliantStaticSolver::ls_brent(helper& op,
 }
 
 
+// accumulate force in an external vector
+class AugmentedLagrangianVisitor : public simulation::MechanicalVisitor {
+
+public:
+    AugmentedLagrangianVisitor(const sofa::core::MechanicalParams* mparams,
+                               core::MultiVecId id)
+        : MechanicalVisitor(mparams),
+          id(id) { }
+
+    core::MultiVecId id;
+    
+    Result mstate(simulation::Node* node,
+                  core::behavior::BaseMechanicalState* mm) {
+
+        linearsolver::Constraint* c = node->get<linearsolver::Constraint>(core::objectmodel::BaseContext::Local);
+
+
+        if( c ) {
+            // TODO project ?
+            
+            // add force to external force
+            mm->vOp(params, id.getId(mm), core::ConstVecId::force() );            
+        }
+
+        return RESULT_CONTINUE;
+    }
+    
+    virtual Result fwdMappedMechanicalState(simulation::Node* node,
+                                            core::behavior::BaseMechanicalState* mm) {
+        return mstate(node, mm);
+    }
+
+    virtual Result fwdMechanicalState(simulation::Node* node,
+                                      core::behavior::BaseMechanicalState* mm) {
+        return mstate(node, mm);
+    }
+
+};
+
+
+// somehow setting external force directly does not work 
+class WriteExternalForceVisitor : public simulation::MechanicalVisitor {
+public:
+    WriteExternalForceVisitor(const sofa::core::MechanicalParams* mparams,
+                              core::MultiVecId id)
+        : MechanicalVisitor(mparams),
+          id(id) { }
+
+
+    core::MultiVecId id;
+    
+    Result mstate(simulation::Node* node,
+                  core::behavior::BaseMechanicalState* mm) {
+
+        // add force to external force
+
+        // we need to add to externalForce (gravity)
+        mm->vOp(params, core::VecId::externalForce(), id.getId(mm));
+        // core::VecId::externalForce(),
+        // , 1.0 );
+        
+        return RESULT_CONTINUE;
+    }
+    
+    virtual Result fwdMappedMechanicalState(simulation::Node* node,
+                                            core::behavior::BaseMechanicalState* mm) {
+        return mstate(node, mm);
+    }
+
+    virtual Result fwdMechanicalState(simulation::Node* node,
+                                      core::behavior::BaseMechanicalState* mm) {
+        return mstate(node, mm);
+    }
+
+};
+
 
 SOFA_DECL_CLASS(CompliantStaticSolver)
 static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
@@ -275,19 +353,40 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
                                 core::MultiVecDerivId vel) {
 
         helper op(params, getContext() );
-        
+
+        // mparams setup
         op.mec.mparams.setImplicit(false);
         op.mec.mparams.setEnergy(true);
         
-        // (negative) gradient
-        
         // descent direction
         op.realloc(dir);
+
+        // lagrange multipliers
+        op.realloc(lambda);
+
+        // some work vector for postions
         op.realloc(tmp);
 
+        // first iteration
+        if(!iteration) {
+            op.vec.v_clear( lambda );
+            previous = 0;
 
-        // TODO inner loop here
-        
+            // something large at first
+            augmented = 1e8;
+        }
+
+        // why on earth does this dot work ?!
+
+        // core::behavior::MultiVecDeriv ext(&op.vec, core::VecDerivId::externalForce() );
+        // op.set(ext, lambda);
+        {
+            WriteExternalForceVisitor vis(&op.mec.mparams, lambda.id());
+            getContext()->executeVisitor(&vis, true);
+
+            // core::behavior::MultiVecDeriv ext(&op.vec, core::VecDerivId::externalForce() );
+            // std::cout << ext << std::endl;
+        }
         
         // obtain (projected) gradient
         op.forces( op.f );
@@ -357,7 +456,28 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
             // fixed step
             op.set(pos, pos, dir.id(), dt);
         }
+
+        const SReal error = std::sqrt( op.dot(op.f, op.f) );
+
+        // TODO proper logging using f_printLog
+        std::cout << "forces norm: " << error << std::endl;
         
+        // augmented lagrangian
+        if( error <= augmented ) {
+            
+            // TODO don't waste time if we have no constraints
+            op.mec.propagateX(pos, true);
+            op.forces(op.f);
+
+            AugmentedLagrangianVisitor vis(&op.mec.mparams, lambda.id() );
+            getContext()->executeVisitor( &vis, true );
+
+            // TODO should we reset CG ?
+            // op.vec.v_clear(dir);
+            augmented /= 2;
+        }
+
+
         // next iteration
         previous = current;
 
@@ -369,11 +489,11 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
 
     void CompliantStaticSolver::reset() {
         iteration = 0;
-        
+
     }
 
     void CompliantStaticSolver::init() {
-        previous = 0;
+
     }
 
 

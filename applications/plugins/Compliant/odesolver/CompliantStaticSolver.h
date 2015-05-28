@@ -81,7 +81,7 @@ class SOFA_Compliant_API CompliantStaticSolver : public sofa::core::behavior::Od
     
 
     // descent direction
-    core::behavior::MultiVecDeriv dir;
+    core::behavior::MultiVecDeriv dir, lambda;
 
     // temporary position
     core::behavior::MultiVecCoord tmp;
@@ -103,6 +103,8 @@ class SOFA_Compliant_API CompliantStaticSolver : public sofa::core::behavior::Od
         LS_BRENT,
         LS_SECANT
     };
+
+    SReal augmented;
     
 };
 
