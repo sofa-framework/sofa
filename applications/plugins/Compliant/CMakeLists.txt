@@ -176,7 +176,8 @@ set(SOURCE_FILES
     odesolver/CompliantPseudoStaticSolver.cpp
     odesolver/CompliantPostStabilizationAnimationLoop.cpp
 	odesolver/CompliantStaticSolver.cpp
-	
+
+	constraint/Constraint.cpp
     constraint/CoulombConstraint.cpp
     constraint/UnilateralConstraint.cpp
     constraint/ResistanceConstraint.cpp

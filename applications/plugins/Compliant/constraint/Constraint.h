@@ -12,11 +12,9 @@ namespace linearsolver {
 struct SOFA_Compliant_API Constraint : public core::objectmodel::BaseObject {
 
     SOFA_ABSTRACT_CLASS(Constraint, sofa::core::objectmodel::BaseObject);
- 
-    Constraint() : mask( NULL ) {}
 
-    virtual ~Constraint() {}
-	
+    Constraint();
+
     /// project the response on the valid sub-space
     /// @correctionPass informs if the correction pass is performing (in which case only a friction projection should only treat the unilateral projection for example)
     virtual void project(SReal* out, unsigned n, unsigned index, bool correctionPass=false) const = 0;
