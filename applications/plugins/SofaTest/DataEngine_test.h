@@ -92,9 +92,10 @@ struct DataEngine_test : public Sofa_test<>
     {
         m_engine = sofa::core::objectmodel::New<Engine>();
         m_engineInput = sofa::core::objectmodel::New<DataEngineType>();
+    }
 
-
-
+    virtual void init()
+    {
         m_engineInput->init();
         m_engine->init();
 
@@ -104,6 +105,8 @@ struct DataEngine_test : public Sofa_test<>
         for( unsigned i=0, iend=engine_inputs.size() ; i<iend ; ++i )
             static_cast<core::objectmodel::BaseData*>(engine_inputs[i])->setParent(static_cast<core::objectmodel::BaseData*>(parent_inputs[i]));
     }
+
+
 
 // Note it is implemented as a macro so the error line number is better
 #if 0
@@ -119,6 +122,8 @@ struct DataEngine_test : public Sofa_test<>
     /// To do so, you can inherit this class and add a test function that takes inputs and ouputs to test
     void run_basic_test()
     {
+        init();
+
         m_engine->resetCounter();
 
         const DDGLinkContainer& inputs = m_engine->DDGNode::getInputs();
