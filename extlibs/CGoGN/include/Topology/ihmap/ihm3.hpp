@@ -21,7 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
-
+#include "ihm3.h"
 #include <algorithm>
 namespace CGoGN
 {
@@ -70,9 +70,10 @@ AttributeHandler_IHM<T, ORBIT> ImplicitHierarchicalMap3::getAttribute(const std:
 inline void ImplicitHierarchicalMap3::update_topo_shortcuts()
 {
 //	Map3::update_topo_shortcuts();
-	m_dartLevel = Map3::getAttribute<unsigned int, DART, EmbeddedMap3>("dartLevel") ;
-	m_faceId = Map3::getAttribute<unsigned int, DART, EmbeddedMap3>("faceId") ;
-	m_edgeId = Map3::getAttribute<unsigned int, DART, EmbeddedMap3>("edgeId") ;
+    // TODO
+    m_dartLevel = getAttribute<unsigned int, DART, ImplicitHierarchicalMap3, HandlerAccessorPolicy >("dartLevel") ;
+    m_faceId = getAttribute<unsigned int, DART, ImplicitHierarchicalMap3, HandlerAccessorPolicy >("faceId") ;
+    m_edgeId = getAttribute<unsigned int, DART, ImplicitHierarchicalMap3, HandlerAccessorPolicy >("edgeId") ;
 
     //AttributeContainer& cont = m_attribs[DART] ;
     //m_nextLevelCell = cont.getDataVector<unsigned int>(cont.getAttributeIndex("nextLevelCell")) ;
@@ -104,14 +105,13 @@ inline Dart ImplicitHierarchicalMap3::phi1(Dart d) const
 
     do
     {
-
-        it = Map3::phi1(it) ;
+        it = phi1MaxLvl(it) ;
         if(m_dartLevel[it] <= m_curLevel)
             finished = true ;
         else
         {
             while(m_edgeId[it] != edgeId)
-                it = Map3::phi1(phi2bis(it));
+                it = this->phi1MaxLvl(phi2bis(it));
 
         }
     } while(!finished) ;
@@ -124,7 +124,7 @@ inline Dart ImplicitHierarchicalMap3::phi_1(Dart d) const
     assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
     bool finished = false ;
 
-    Dart it = Map3::phi_1(d) ;
+    Dart it = this->phi_1MaxLvl(d) ;
     unsigned int edgeId = m_edgeId[it] ;
     do
     {
@@ -132,9 +132,9 @@ inline Dart ImplicitHierarchicalMap3::phi_1(Dart d) const
             finished = true ;
         else
         {
-            it = Map3::phi_1(it) ;
+            it = this->phi_1MaxLvl(d) ;
             while(m_edgeId[it] != edgeId)
-                it = Map3::phi_1(phi2bis(it));
+                it = this->phi_1MaxLvl(phi2bis(it));
         }
     } while(!finished) ;
 
@@ -146,7 +146,7 @@ inline Dart ImplicitHierarchicalMap3::phi2bis(Dart d) const
     unsigned int faceId = m_faceId[d];
     Dart it = d;
 
-    it = Map3::phi2(it) ;
+    it = this->phi2MaxLvl(it) ;
 
     /* du cote des volumes non subdivise (subdiv adapt) */
     if(m_faceId[it] == faceId)
@@ -155,7 +155,7 @@ inline Dart ImplicitHierarchicalMap3::phi2bis(Dart d) const
     {
         do
         {
-            it = Map3::phi2(Map3::phi3(it));
+            it = this->phi2MaxLvl(this->phi3MaxLvl(it));
         }
         while(m_faceId[it] != faceId);
 
@@ -167,17 +167,17 @@ inline Dart ImplicitHierarchicalMap3::phi2(Dart d) const
 {
     assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
 
-    return Map3::phi2(Map3::phi_1(phi1(d))) ;
+    return this->phi2MaxLvl(this->phi_1MaxLvl(phi1(d))) ;
 }
 
 inline Dart ImplicitHierarchicalMap3::phi3(Dart d) const
 {
     assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
 
-    if(Map3::phi3(d) == d)
+    if(this->phi3MaxLvl(d) == d)
         return d;
 
-    return Map3::phi3(Map3::phi_1(phi1(d)));
+    return this->phi3MaxLvl(this->phi_1MaxLvl(phi1(d)));
 }
 
 inline Dart ImplicitHierarchicalMap3::alpha0(Dart d) const
@@ -208,22 +208,22 @@ inline Dart ImplicitHierarchicalMap3::alpha_2(Dart d) const
 
 inline Dart ImplicitHierarchicalMap3::begin() const
 {
-    Dart d = Map3::begin() ;
+    Dart d = Parent::begin() ;
     while(m_dartLevel[d] > m_curLevel)
-        Map3::next(d) ;
+        Parent::next(d) ;
     return d ;
 }
 
 inline Dart ImplicitHierarchicalMap3::end() const
 {
-    return Map3::end() ;
+    return Parent::end() ;
 }
 
 inline void ImplicitHierarchicalMap3::next(Dart& d) const
 {
     do
     {
-        Map3::next(d) ;
+        Parent::next(d) ;
     } while(d != Map3::end() && m_dartLevel[d] > m_curLevel) ;
 }
 
@@ -268,7 +268,7 @@ void ImplicitHierarchicalMap3::foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f) cons
 template <typename FUNC>
 inline void ImplicitHierarchicalMap3::foreach_dart_of_vertex(Dart d, const FUNC& f) const
 {
-	DartMarkerStore<Map3> mv(*this);	// Lock a marker
+    DartMarkerStore< MAP > mv(*this);	// Lock a marker
 
     std::vector<Dart> darts;	// Darts that are traversed
     darts.reserve(256);
@@ -328,7 +328,7 @@ inline void ImplicitHierarchicalMap3::foreach_dart_of_face(Dart d, const FUNC& f
 template <typename FUNC>
 inline void ImplicitHierarchicalMap3::foreach_dart_of_oriented_volume(Dart d, const FUNC& f) const
 {
-	DartMarkerStore<Map3> mark(*this);	// Lock a marker
+    DartMarkerStore< MAP > mark(*this);	// Lock a marker
 
     std::vector<Dart> visitedFaces;	// Faces that are traversed
     visitedFaces.reserve(1024) ;
@@ -402,7 +402,7 @@ inline void ImplicitHierarchicalMap3::foreach_dart_of_face2(Dart d, const FUNC& 
 template <typename FUNC>
 inline void ImplicitHierarchicalMap3::foreach_dart_of_cc(Dart d, const FUNC& f) const
 {
-	DartMarkerStore<Map3> mark(*this);	// Lock a marker
+    DartMarkerStore< MAP > mark(*this);	// Lock a marker
 
     std::vector<Dart> visitedFaces;	// Faces that are traversed
     visitedFaces.reserve(1024) ;
@@ -536,9 +536,9 @@ inline void ImplicitHierarchicalMap3::setEdgeId(Dart d, unsigned int i, unsigned
 		do
 		{
 			m_edgeId[e] = i;
-			m_edgeId[Map3::phi2(e)] = i;
+            m_edgeId[this->phi2MaxLvl(e)] = i;
 
-			e = Map3::alpha2(e);
+            e = this->alpha2MaxLvl(e);
 		} while(e != d);
 	}
 	else if(orbit == DART)
@@ -570,11 +570,10 @@ inline void ImplicitHierarchicalMap3::setFaceId(unsigned int orbit, Dart d)
 
 		do
 		{
-			m_faceId[Map3::phi1(e)] = m_faceId[e];
+            m_faceId[this->phi1MaxLvl(e)] = m_faceId[e];
 
-			e = Map3::alpha2(e);
+            e = this->alpha2MaxLvl(e);
 		}while(e != d);
-
 	}
 }
 
@@ -590,19 +589,19 @@ inline void ImplicitHierarchicalMap3::setFaceId(Dart d, unsigned int i, unsigned
 		{
 			m_faceId[e] = i;
 
-			Dart e3 = Map3::phi3(e);
+            Dart e3 = this->phi3MaxLvl(e);
 			if(e3 != e)
 				m_faceId[e3] = i;
 
-			e = Map3::phi1(e);
+            e = this->phi1MaxLvl(e);
 		} while(e != d);
 	}
 	else if(orbit == DART)
 	{
 		m_faceId[d] = i;
 
-		if(Map3::phi3(d) != d)
-			m_faceId[Map3::phi3(d)] = i;
+        if(this->phi3MaxLvl(d) != d)
+            m_faceId[phi3MaxLvl(d)] = i;
 	}
 }
 
@@ -681,7 +680,7 @@ inline bool ImplicitHierarchicalMap3::isWellEmbedded()
 				std::cout << std::endl;
 			}
 
-			std::cout << EmbeddedMap3::getEmbedding<VERTEX>(dit) << "(" << this->getEmbedding<VERTEX>(dit) << ")" << " / ";
+            std::cout << this->getEmbedding<VERTEX>(dit) << "(" << this->getEmbedding<VERTEX>(dit) << ")" << " / ";
 			++count;
 		}
 		std::cout << " / vertex degree = " << count << std::endl;
@@ -783,7 +782,7 @@ inline bool ImplicitHierarchicalMap3::isWellEmbedded()
 //    assert(m->m_dartLevel[d] <= m->m_curLevel || !"Access to a dart introduced after current level") ;
 //    assert(m->vertexInsertionLevel(d) <= m->m_curLevel || !"Access to the embedding of a vertex inserted after current level") ;
 
-//    unsigned int nbSteps = m->m_curLevel - m->vertexInsertionLevel(d) ;
+//    unsigned int nbSteps = m->m_curLevel - m->vertexInsertionLefvel(d) ;
 //    //unsigned int index = m->EmbeddedMap3::getEmbedding<ORBIT>(d) ;
 //    unsigned int index = m->EmbeddedMap3::getEmbedding<ORBIT>(d) ;
 

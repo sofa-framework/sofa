@@ -44,9 +44,9 @@ private:
 	unsigned int m_maxLevel ;
 	unsigned int m_idCount ;
 
-	DartAttribute<unsigned int, ImplicitHierarchicalMap2> m_dartLevel ;
-	DartAttribute<unsigned int, ImplicitHierarchicalMap2> m_edgeId ;
-
+    AttributeHandler<unsigned int, DART, ImplicitHierarchicalMap2> m_dartLevel ;
+    AttributeHandler<unsigned int, DART, ImplicitHierarchicalMap2> m_edgeId ;
+    typedef AttributeHandler<unsigned int, DART, ImplicitHierarchicalMap2>::HandlerAccessorPolicy  HandlerAccessorPolicy;
 //	AttributeMultiVector<unsigned int>* m_nextLevelCell[NB_ORBITS] ;
 
 public:

@@ -7,7 +7,7 @@
 #include "Geometry/intersection.h"
 #include "Geometry/orientation.h"
 #include "Geometry/plane_3d.h"
-
+#include "Topology/ihmap/ihm3.h"
 #include <iostream>
 
 /* A particle cell is a particle base within a map, within a precise cell, the displacement function should indicate
@@ -38,9 +38,13 @@ public :
     typedef Algo::MovingObjects::ParticleBase<PFP> Inherit;
     typedef typename PFP::MAP MAP;
     typedef typename PFP::VEC3 VEC3;
-    typedef VertexAttribute<VEC3, MAP> TAB_POS;
-    typedef FaceAttribute<VEC3,MAP> TAB_FACE;
-    typedef VolumeAttribute<VEC3,MAP> TAB_VOL;
+//    typedef AttributeHandler<VEC3, VERTEX, MAP> TAB_POS;
+    //    typedef AttributeHandler<VEC3, VOLUME, MAP> TAB_VOL;
+    //    typedef AttributeHandler<VEC3,FACE, MAP> TAB_FACE;
+    typedef typename AttributeHandler_Traits< VEC3, VERTEX, MAP>::Handler TAB_POS;
+    typedef typename AttributeHandler_Traits< VEC3, FACE, MAP>::Handler TAB_FACE;
+    typedef typename AttributeHandler_Traits< VEC3, VOLUME, MAP>::Handler TAB_VOL;
+
     MAP& m;
 
     const TAB_POS& position;

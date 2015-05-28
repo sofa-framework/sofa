@@ -96,7 +96,7 @@ class MapManipulator;
 
 class GenericMap
 {
-	template<typename T, unsigned int ORBIT, typename MAP> friend class AttributeHandler ;
+    template<typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy> friend class AttributeHandler ;
 	template<typename T, typename MAP> friend class DartAutoAttribute ;
 	template<typename T, typename MAP> friend class VertexAutoAttribute ;
 	template<typename T, typename MAP> friend class EdgeAutoAttribute ;
