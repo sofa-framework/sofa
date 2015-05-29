@@ -37,7 +37,7 @@
 #include <string.h>
 
 //#define NO_VBO
-//#define DEBUG_DRAW
+
 namespace sofa
 {
 
