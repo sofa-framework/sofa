@@ -383,7 +383,8 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
             previous = 0;
 
             // something large at first
-            augmented = 1e8;
+            // TODO figure out a reasonable default
+            augmented = 1;
         }
 
         // why on earth does this dot work ?!
@@ -486,7 +487,13 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
 
             // TODO should we reset CG ?
             // op.vec.v_clear(dir);
+            
             augmented /= 2;
+
+            if( f_printLog.getValue() ) {
+                sout << "augmented lagrangian threshold: " << augmented << sendl;
+            }
+                    
         }
 
 
