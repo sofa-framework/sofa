@@ -62,10 +62,11 @@ class SOFA_Compliant_API CompliantStaticSolver : public sofa::core::behavior::Od
     struct ls_info {
         ls_info();
 
-        SReal eps;
-        unsigned iterations;
-        SReal precision;
-        SReal step;
+        SReal eps;              // zero threshold for divisions
+        unsigned iterations;    // iteration count
+        SReal precision;        // stop criterion
+        SReal fixed_step;       // fallback fixed step
+        SReal bracket_step;        // init bracketing step
     };
     
     static void ls_secant(helper& op,
