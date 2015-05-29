@@ -1,36 +1,6 @@
-import xml.etree.ElementTree as ET
+
 from itertools import izip
-
-def requires(node, *names):
-
-    for name in names:
-        node.createObject( 'RequiredPlugin',
-                           name = name,
-                           pluginName = name )
-
-def display_flags(node, **kwargs):
-
-    items = [k + x for k, v in kwargs.iteritems() for x in v.split()]
-    node.createObject('VisualStyle', displayFlags = ' '.join(items))
-
-    
-        
-
-def load_xml(sofanode, xmlnode):
-    '''load xml node under sofa node'''
-    
-    if xmlnode.tag == 'Node':
-
-        name = xmlnode.attrib.get('name', '')
-        sofachild = sofanode.createChild(name)
-        
-        for xmlchild in xmlnode:
-            load_xml(sofachild, xmlchild)
-
-        return sofachild
-    else:
-        return sofanode.createObject(xmlnode.tag, **xmlnode.attrib)
-        
+import scene
     
 def beam(node, **kwargs):
 
@@ -41,12 +11,12 @@ def beam(node, **kwargs):
               color + ' 1']
     
     
-    root = ET.parse('beam.xml').getroot()
+    root = scene.xml_load('beam.xml')
     
     for model, c in izip(root.iter('VisualModel'), color):
         model.attrib['color'] = c
         
-    res = load_xml(node, root)
+    res = scene.xml_insert(node, root)
     res.name = name
     return res
     
@@ -56,10 +26,10 @@ def createScene(node):
     node.gravity = '0 -10 0'
     node.dt = 1e-5
     
-    display_flags(node, show = 'Behavior Visual',
+    scene.display_flags(node, show = 'Behavior Visual',
                   hide = 'MechanicalMappings')
     
-    requires(node, 'Flexible', 'Compliant')
+    scene.requires(node, 'Flexible', 'Compliant')
 
     static = beam(node, name = 'static', color = '1 0.8 0.2')
 
