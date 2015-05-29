@@ -14,16 +14,18 @@ namespace sofa {
 namespace component {
 namespace odesolver {
 
+// TODO use std::numeric_limits
+
 CompliantStaticSolver::CompliantStaticSolver()
-    : epsilon(initData(&epsilon, 1e-14, "epsilon", "division by zero threshold")),
+    : epsilon(initData(&epsilon, 1e-16, "epsilon", "division by zero threshold")),
       line_search(initData(&line_search, unsigned(LS_SECANT), "line_search",
                            "line search method, 0: none (use dt), 1: brent, 2: secant (default). (warning: brent does not work with constraints.")),
       conjugate(initData(&conjugate, true, "conjugate", "conjugate descent directions")),
-      ls_precision(initData(&ls_precision, 1e-7, "ls_precision", "line search precision")),
+      ls_precision(initData(&ls_precision, 1e-8, "ls_precision", "line search precision")),
       ls_iterations(initData(&ls_iterations, unsigned(10), "ls_iterations",
                              "line search iterations")),
       ls_step(initData(&ls_step, 1e-8, "ls_step",
-                       "line search safe step (should not cross any extrema from current position"))
+                       "line search bracketing step (should not cross any extrema from current position"))
 {
     
 }
@@ -96,7 +98,8 @@ CompliantStaticSolver::ls_info::ls_info()
     : eps(0),
       iterations(15),
       precision(1e-7),
-      step(1e-5){
+      fixed_step(1e-5),
+      bracket_step(1e-8) {
     
 }
 
@@ -118,8 +121,10 @@ void CompliantStaticSolver::ls_secant(helper& op,
     SReal g_prev = 0;
     SReal total = 0;
 
-    // slightly damp newton iterations
+    // slightly damp newton iterations TODO hardcode
     static const SReal damping = 1e-14;
+
+    SReal fixed = info.fixed_step;
     
     for(unsigned k = 0, n = info.iterations; k < n; ++k) {
 
@@ -131,7 +136,7 @@ void CompliantStaticSolver::ls_secant(helper& op,
         
         const SReal g = op.dot(op.f, dir);
 
-        // std::cout << "line search (secant) " << k << " " << g << std::endl;
+        // std::cout << "line search (secant) " << k << " "  << total << " " << g << std::endl;
 
         // are we done ?
         if( std::abs(g) <= info.precision ) break;
@@ -141,11 +146,16 @@ void CompliantStaticSolver::ls_secant(helper& op,
         const SReal dx_prev = dx;
 
         // fallback on fixed step
-        dx = info.step;
+        dx = fixed;
 
         // (damped) secant method
         if( k && (std::abs(dg) > info.eps)) {
             dx = -(dx_prev / (dg + damping)) * g;
+        } else {
+            
+            // try to move more to change function
+            fixed *= 2;
+            
         }
         
         total += dx;
@@ -229,7 +239,7 @@ void CompliantStaticSolver::ls_brent(helper& op,
     opt::func_call a, b, c;
     
     a.x = 0;
-    b.x = info.step;
+    b.x = info.bracket_step;
 
     opt::func_call res;
 
@@ -242,7 +252,7 @@ void CompliantStaticSolver::ls_brent(helper& op,
         // std::cout << "bracketing: " << a.x << ", " << c.x << std::endl;
     
         // TODO compute this from precision
-        const int bits = 24;
+        const int bits = 32;
         {
             using namespace boost;
             unsigned long iter = info.iterations;
@@ -436,8 +446,9 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
             info.eps = eps;
             info.precision = ls_precision.getValue();
             info.iterations = ls_iterations.getValue();
-            info.step = ls_step.getValue();
-
+            info.fixed_step = dt; 
+            info.bracket_step = ls_step.getValue();
+            
             switch( ls ) {
                 
             case LS_SECANT:
@@ -459,8 +470,9 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
 
         const SReal error = std::sqrt( op.dot(op.f, op.f) );
 
-        // TODO proper logging using f_printLog
-        std::cout << "forces norm: " << error << std::endl;
+        if( f_printLog.getValue() ) {
+            sout << "forces norm: " << error << sendl;
+        }
         
         // augmented lagrangian
         if( error <= augmented ) {
@@ -493,7 +505,7 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
     }
 
     void CompliantStaticSolver::init() {
-
+        
     }
 
 
