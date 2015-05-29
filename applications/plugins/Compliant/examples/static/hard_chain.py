@@ -81,7 +81,7 @@ def createScene(node):
     
     scene.requires(node, 'Flexible', 'Compliant')
 
-    n = 20
+    n = 100
     c = chain(node, name = 'chain', n = n)
     
     ode = c.createObject('CompliantStaticSolver',
