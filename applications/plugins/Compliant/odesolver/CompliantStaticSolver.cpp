@@ -381,12 +381,9 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
         if(!iteration) {
             op.vec.v_clear( lambda );
             previous = 0;
-
-            // something large at first
-            // TODO figure out a reasonable default
-            augmented = 1;
+            
         }
-
+        
         // why on earth does this dot work ?!
 
         // core::behavior::MultiVecDeriv ext(&op.vec, core::VecDerivId::externalForce() );
@@ -409,6 +406,15 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
         // polar-ribiere
         const SReal current = op.dot(op.f, op.f);
 
+        if(!iteration) {
+            // something large at first ?
+            
+            // TODO figure out a reasonable default
+            augmented = std::sqrt(current) / 2.0;
+        }
+
+
+        
         SReal beta = 0;
 
         const SReal eps = epsilon.getValue();
