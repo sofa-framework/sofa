@@ -122,7 +122,6 @@ public:
 
     void cleanup();
     virtual void draw();
-	virtual void draw(const core::visual::VisualParams*) override;
 
     void setForceFeedbacks(vector<ForceFeedback*> ffs);
 

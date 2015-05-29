@@ -43,9 +43,6 @@
 
 //sensable namespace
 
-using std::cout;
-using std::endl;
-
 double prevTime;
 bool frame;
 bool visuCreation;
