@@ -38,6 +38,7 @@ Then compare data pointers to see if data link duplicates the datas.
   */
 struct DataImageLink_test : public Sofa_test<>
 {
+    typedef defaulttype::Image<unsigned char> Image;
     // Image Container
     typedef sofa::component::container::ImageContainer< defaulttype::Image<unsigned char> > ImageContainer;
     ImageContainer::SPtr imageContainer;
@@ -50,6 +51,11 @@ struct DataImageLink_test : public Sofa_test<>
     /// Create a link between the two images
     void SetUp()
     { 
+    }
+
+    // Test link
+    void testImageDataLink()
+    {
         // Image container
         imageContainer = sofa::core::objectmodel::New<ImageContainer>();
 
@@ -66,11 +72,7 @@ struct DataImageLink_test : public Sofa_test<>
         // Set data link
         sofa::modeling::setDataLink(&data1,&data2);
 
-    }
 
-    // Test link
-    void testImageDataLink()
-    {
         // Check that data values are the same
         ASSERT_EQ(data1.getValue(),data2.getValue());
 
@@ -81,20 +83,43 @@ struct DataImageLink_test : public Sofa_test<>
         }
 
         // Change value of data1
-        // Set new path to image for imageContainer
-        imageContainer2 = sofa::core::objectmodel::New<ImageContainer>();
-        std::string fileName = std::string(IMAGE_TEST_SCENES_DIR) + "/" + "pelvis_f.raw";
-        imageContainer2->m_filename.setValue(fileName);
-        imageContainer2->init();
-        data1.setValue(imageContainer2->image.getValue());
+        helper::WriteAccessor<Data< Image > > w1(data1);
+        w1->getCImg(0).fill(0);
 
         // Check that data values are the same
         ASSERT_EQ(data1.getValue(),data2.getValue());
     }
 
+    void loadImage()
+    {
+        ImageContainer::SPtr ic = sofa::core::objectmodel::New<ImageContainer>();
+        // Set path to image for imageContainer
+        std::string fileName = std::string(IMAGETEST_SCENES_DIR) + "/" + "beam.raw";
+        ic->m_filename.setValue(fileName);
+
+        // Init image container
+        ic->init();
+
+        sofa::modeling::setDataLink(&ic->image,&data1);
+        ASSERT_NE(data1.getValue(),data2.getValue());
+    }
+
+    void createAndDeleteLinkedData()
+    {
+
+        loadImage();
+        // Check that data values are the same
+        ASSERT_NE(data1.getValue(),data2.getValue());
+
+    }
+
 };
 
 // Test
+TEST_F(DataImageLink_test , createAndDeleteLinkedData )
+{
+    ASSERT_NO_THROW( this->createAndDeleteLinkedData() );
+}
 TEST_F(DataImageLink_test , testImageDataLink )
 {
     this->testImageDataLink();

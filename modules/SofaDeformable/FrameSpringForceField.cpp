@@ -41,7 +41,7 @@ namespace interactionforcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS ( FrameSpringForceField );
+SOFA_DECL_CLASS ( FrameSpringForceField )
 // Register in the Factory
 
 int FrameSpringForceFieldClass = core::RegisterObject ( "Springs for Flexibles" )

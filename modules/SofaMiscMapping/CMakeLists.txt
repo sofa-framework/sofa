@@ -39,6 +39,8 @@ set(HEADER_FILES
     IdentityMultiMapping.inl
     ProjectionToLineMapping.h
     ProjectionToLineMapping.inl
+    ProjectionToPlaneMapping.h
+    ProjectionToPlaneMapping.inl
 
     )
 
@@ -63,6 +65,7 @@ set(SOURCE_FILES
     CatmullRomSplineMapping.cpp
     IdentityMultiMapping.cpp
     ProjectionToLineMapping.cpp
+    ProjectionToPlaneMapping.cpp
     )
 
 set(GROUP_BASE_DIR "..")

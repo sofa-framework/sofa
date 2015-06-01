@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "PythonCommon.h"
+#include "PythonMacros.h"
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>

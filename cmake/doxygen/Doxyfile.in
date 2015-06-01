@@ -677,14 +677,7 @@ INPUT_ENCODING         = UTF-8
 # *.hxx *.hpp *.h++ *.idl *.odl *.cs *.php *.php3 *.inc *.m *.mm *.dox *.py 
 # *.f90 *.f *.for *.vhd *.vhdl
 
-FILE_PATTERNS          = *.h \
-                         *.hh \
-                         *.hxx \
-                         *.hpp \
-                         *.h++ \
-                         *.inc \
-                         *.dox \
-                         *.py
+FILE_PATTERNS          =
 
 # The RECURSIVE tag can be used to turn specify whether or not subdirectories 
 # should be searched for input files as well. Possible values are YES and NO. 
@@ -746,7 +739,7 @@ EXAMPLE_RECURSIVE      = NO
 # directories that contain image that are included in the documentation (see 
 # the \image command).
 
-IMAGE_PATH             = 
+IMAGE_PATH             = @IMAGE_PATH@
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should 
 # invoke to filter for each input file. Doxygen will invoke the filter program 
@@ -790,7 +783,7 @@ FILTER_SOURCE_PATTERNS =
 # Note: To get rid of all source code in the generated output, make sure also 
 # VERBATIM_HEADERS is set to NO.
 
-SOURCE_BROWSER         = NO
+SOURCE_BROWSER         = YES
 
 # Setting the INLINE_SOURCES tag to YES will include the body 
 # of functions and classes directly in the documentation.

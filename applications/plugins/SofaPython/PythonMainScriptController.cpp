@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "PythonMainScriptController.h"
 #include "PythonMacros.h"
+#include "PythonMainScriptController.h"
 #include <sofa/core/ObjectFactory.h>
 
 #include "Binding_Base.h"
@@ -48,43 +48,23 @@ int PythonMainScriptControllerClass = core::RegisterObject("A Sofa controller sc
 PythonMainScriptController::PythonMainScriptController()
     : ScriptController()
     , d_filename(initData(&d_filename, "filename","Python script filename"))
-    , m_Script(0)
-    , m_ScriptDict(0)
 {}
 
 PythonMainScriptController::PythonMainScriptController(const char* filename)
     : ScriptController()
     , d_filename(initData(&d_filename, "filename","Python script filename"))
-    , m_Script(0)
-    , m_ScriptDict(0)
 {
     d_filename.setValue( filename );
 }
 
 void PythonMainScriptController::loadScript()
 {
-    if (m_Script) return;
-
-    m_Script = sofa::simulation::PythonEnvironment::importScript(d_filename.getFullPath().c_str());
-
-    if (!m_Script)
+    if(!sofa::simulation::PythonEnvironment::runFile(d_filename.getFullPath().c_str()))
     {
         // LOAD ERROR
         SP_MESSAGE_ERROR( getName() << " object - "<<d_filename.getFullPath().c_str()<<" script load error." )
         return;
     }
-
-    // binder les différents points d'entrée du script
-
-    // pDict is a borrowed reference; no need to release it
-    m_ScriptDict = PyModule_GetDict(m_Script);
-    if (!m_ScriptDict)
-    {
-        // LOAD ERROR
-        SP_MESSAGE_ERROR( getName() << " load error (dictionnary not found)." )
-        return;
-    }
-
 }
 
 using namespace sofa::core::objectmodel;
@@ -92,7 +72,8 @@ using namespace sofa::core::objectmodel;
 
 #define SP_CALL_FILEFUNC(func, ...){\
         loadScript(); \
-        PyObject *pFunc = PyDict_GetItemString(m_ScriptDict, func);\
+        PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));\
+        PyObject *pFunc = PyDict_GetItemString(pDict, func);\
         if (PyCallable_Check(pFunc))\
         {\
             PyObject *res = PyObject_CallFunction(pFunc,__VA_ARGS__); \

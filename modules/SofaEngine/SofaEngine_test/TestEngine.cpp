@@ -22,12 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_TestEngine_H
-#define SOFA_COMPONENT_ENGINE_TestEngine_H
+#ifndef SOFA_COMPONENT_ENGINE_TestEngine_INL
+#define SOFA_COMPONENT_ENGINE_TestEngine_INL
 
-#include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/SofaGeneral.h>
+#include "TestEngine.h"
 
 namespace sofa
 {
@@ -38,47 +36,77 @@ namespace component
 namespace engine
 {
 
+int TestEngine::instance = 0;
+std::list<int> TestEngine::updateCallList;
+
 using namespace core::behavior;
-using namespace core::topology;
 using namespace core::objectmodel;
 
-/**
- * This class is only used to test engine. 
- */
-class SOFA_ENGINE_API TestEngine : public core::DataEngine
+TestEngine::TestEngine()
+    : f_numberToMultiply( initData (&f_numberToMultiply, "number", "number that will be multiplied by the factor") )
+    , f_factor(initData (&f_factor,"factor", "multiplication factor") )
+    , f_result( initData (&f_result, "result", "result of the multiplication of numberToMultiply by factor") )
+{
+    counter = 0;
+    instance++;
+    this->identifier =  instance;
+}
+
+void TestEngine::init()
+{
+    addInput(&f_factor);
+    addInput(&f_numberToMultiply);
+    addOutput(&f_result);
+    setDirtyValue();
+}
+
+void TestEngine::reinit()
+{
+    update();
+}
+
+void TestEngine::update()
+{
+    // Count how many times the update method is called
+    counter ++;
+
+
+///// FIRST get (and update) all read-only inputs
+
+    // Get number to multiply
+    SReal number = f_numberToMultiply.getValue(); 
+    
+    // Get factor
+    SReal factor = f_factor.getValue();
+
+
+///// THEN tell everthing is (will be) up to date now
+/// @warning This must be done AFTER updating all inputs
+/// can be done before or after setting up the outputs
+    cleanDirty();
+
+
+///// Compute all write-only outputs
+    // Set result
+    f_result.setValue(number*factor);
+   
+    // Update call list
+    updateCallList.push_back(this->identifier);
+}
+
+int TestEngine::getCounterUpdate()
+{
+    return this->counter;
+}
+
+void TestEngine::printUpdateCallList()
 {
 
-protected:
+    for (std::list<int>::iterator it=updateCallList.begin(); it != updateCallList.end(); ++it)
+        std::cout << " Call engine " <<  *it <<std::endl;
+   
+}
 
-    TestEngine();
-
-    virtual ~TestEngine() {}
-public:
-    SOFA_CLASS(TestEngine,core::DataEngine);
-    void init();
-
-    void reinit();
-
-    void update();
-
-    // To see how many times update function is called
-    int getCounterUpdate();
-
-    void printUpdateCallList();
-
-    Data<SReal> f_numberToMultiply;    ///< number to multiply
-    Data<SReal> f_factor;  ///< multiplication factor
-    Data<SReal> f_result;       ///< result
-
-    int counter;
-
-    int identifier;
-
-    static int instance;
-
-    static std::list<int> updateCallList;
-
-};
 
 } // namespace engine
 

@@ -63,13 +63,13 @@ public:
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
     typedef typename ImageTypes::imCoord imCoord;
-    typedef helper::WriteAccessor<Data< ImageTypes > > waImage;
+    typedef helper::WriteOnlyAccessor<Data< ImageTypes > > waImage;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
 
     typedef SReal Real;
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef typename TransformType::Coord Coord;
-    typedef helper::WriteAccessor<Data< TransformType > > waTransform;
+    typedef helper::WriteOnlyAccessor<Data< TransformType > > waTransform;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
 
     typedef sofa::helper::system::thread::ctime_t ctime_t;
@@ -120,7 +120,6 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
         if(SimuTime==this->getContext()->getTime()) return; // check if simutime has changed
         SimuTime=this->getContext()->getTime();
 
@@ -128,8 +127,11 @@ protected:
 
         raImage in(this->inputImage);
         if(in->isEmpty()) return;
-        waImage out(this->outputImage);
         raTransform inT(this->inputTransform);
+
+        cleanDirty();
+
+        waImage out(this->outputImage);
         waTransform outT(this->outputTransform);
 
         if(out->isEmpty()) {t0=CTime::getTime(); outT->operator=(inT);}

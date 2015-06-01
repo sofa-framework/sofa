@@ -66,7 +66,7 @@ if (SOFA-MISC_DOXYGEN)
     # name: a name for the documentation (also used as the title)
     # input: source files or directories
     # dependencies: the names of the documentations that must be generated before this one
-    function(add_doc_target name input dependencies)
+    function(add_doc_target name input dependencies image_path)
 
         # Build the list of targets we depend on, and the list of corresponding tag files
         set(dependencies_targets)
@@ -81,6 +81,7 @@ if (SOFA-MISC_DOXYGEN)
         set(TAGFILES "${tag_files}")
         set(INPUT "${input}")
         set(NAME "${name}")
+        set(IMAGE_PATH "${image_path}")
         # If this is not the main page, include the custom header with a link to the main page
         if(NOT ${name} STREQUAL "SOFA")
             set(HTML_HEADER_FILE "${SOFA_CMAKE_DIR}/doxygen/header.html")
@@ -104,24 +105,16 @@ if (SOFA-MISC_DOXYGEN)
         sofa_list_intersection(documentable_dependencies project_dependencies SOFA_DOCUMENTABLE_PROJECTS)
         set(input "${GLOBAL_PROJECT_PATH_${project}}")
 
-        # Temporary workaround for modules, which are not organised by directory:
-        # we extract the list of source files from the CMakeLists.txt files.
-        if("${input}" MATCHES ".*/modules/sofa/component/.*")
-            if(NOT WIN32)
-                execute_process(COMMAND bash -c "sed -e 's/#.*//' ${input}/CMakeLists.txt | sed -ne '/\\.\\.\\/.*\\(h\\|cpp\\|inl\\)/s/.*\\(\\.\\.\\/.*\\(h\\|cpp\\|inl\\)\\).*/\\1/p' | sed -e ':foo;N;$!bfoo;s/\\n/ /g' | sed -e 's:\\.\\.:${SOFA_SRC_DIR}/modules/sofa/component:g'" OUTPUT_VARIABLE input)
-            endif()
-        endif()
-
-        add_doc_target("${project}" "${input}" "${documentable_dependencies};SOFA")
+        add_doc_target("${project}" "${input}" "${documentable_dependencies};SOFA" "${input}/doc")
     endforeach()
 
 
     # Use configure_file() to generate the source for the main page of
     # the documentation, which lists all the other documentations.
 
-    set(DOCUMENTATION_LIST "")
+    set(DOCUMENTATION_TEXT "")
     macro(doc_append txt)
-        set(DOCUMENTATION_LIST "${DOCUMENTATION_LIST}${txt}\n")
+        set(DOCUMENTATION_TEXT "${DOCUMENTATION_TEXT}${txt}\n")
     endmacro()
 
     # Macro: create a list of links to other documentations,
@@ -135,7 +128,6 @@ if (SOFA-MISC_DOXYGEN)
             endif()
         endforeach()
         if(filtered_list)
-            doc_append("  <li><b>${category}</b>")
             doc_append("  <ul>")
             foreach(project ${filtered_list})
                 if(${GLOBAL_PROJECT_PATH_${project}} MATCHES "${pattern}")
@@ -143,21 +135,16 @@ if (SOFA-MISC_DOXYGEN)
                 endif()
             endforeach()
             doc_append("  </ul>")
-            doc_append("  </li>")
         endif()
     endmacro()
 
-    doc_append("<ul>")
-    doc_append_list("Modules" ".*/modules/.*")
+    set(DOCUMENTATION_TEXT "")
     doc_append_list("Plugins" ".*/plugins/.*")
-    doc_append("</ul>")
+    configure_file("cmake/doxygen/sofa_plugins.dox.in" "${SOFA_BUILD_DIR}/misc/sofa_plugins.dox")
 
-    set(LINK_TO_COMPONENT_LIST_PAGE "")
-    if(SOFA-MISC_DOXYGEN_COMPONENT_LIST)
-        set(LINK_TO_COMPONENT_LIST_PAGE "If you are looking for the documentation of a specific component, check out the <a href=\"component_list.html\"><b>Component List</b></a> (modules only).")
-    endif()
-    configure_file("${SOFA_FRAMEWORK_DIR}/doc.h" "${SOFA_BUILD_DIR}/misc/doc.h")
-
+    set(DOCUMENTATION_TEXT "")
+    doc_append_list("Modules" ".*/modules/.*")
+    configure_file("cmake/doxygen/sofa_modules.dox.in" "${SOFA_BUILD_DIR}/misc/sofa_modules.dox")
 
     if(SOFA-MISC_DOXYGEN_COMPONENT_LIST)
         add_subdirectory(cmake/doxygen)
@@ -166,13 +153,14 @@ if (SOFA-MISC_DOXYGEN)
     # Create the 'doc-SOFA' target for the documentation of framework/
     if(SOFA-MISC_DOXYGEN_COMPONENT_LIST)
         add_custom_target("component_list"
-            COMMAND bin/generateComponentList > misc/component_list.h
+            COMMAND bin/generateComponentList > misc/sofa_modules_component_list.dox
             DEPENDS generateComponentList)
-        add_doc_target("SOFA" "${SOFA_FRAMEWORK_DIR}/sofa ${SOFA_BUILD_DIR}/misc/doc.h ${SOFA_BUILD_DIR}/misc/component_list.h" "")
-        add_dependencies("doc-SOFA" "component_list")
     else()
-        add_doc_target("SOFA" "${SOFA_FRAMEWORK_DIR}/sofa ${SOFA_BUILD_DIR}/misc/doc.h" "")
+        add_custom_target("component_list"
+            COMMAND cp ${SOFA_CMAKE_DIR}/doxygen/empty_sofa_modules_component_list.dox ${CMAKE_BINARY_DIR}/misc/sofa_modules_component_list.dox)
     endif()
+    add_doc_target("SOFA" "${SOFA_FRAMEWORK_DIR} ${SOFA_MODULES_DIR}/sofa ${CMAKE_BINARY_DIR}/misc/sofa_modules.dox ${CMAKE_BINARY_DIR}/misc/sofa_plugins.dox ${CMAKE_BINARY_DIR}/misc/sofa_modules_component_list.dox" "" "")
+    add_dependencies("doc-SOFA" "component_list")
     set_target_properties("doc-SOFA" PROPERTIES FOLDER "Documentation") # IDE Folder
 
     # Create the 'doc' target, to build every documentation

@@ -60,15 +60,25 @@ namespace defaulttype
 static const int IMAGELABEL_IMAGE = 0;
 static const int IMAGELABEL_BRANCHINGIMAGE = 1;
 
+
+
+/// a virtual, non templated Image class that can be allocated without knowing its exact type
+struct BaseImage
+{
+    typedef Vec<5,unsigned int> imCoord; // [x,y,z,s,t]
+    virtual void setDimensions(const imCoord& dim) = 0;
+    virtual ~BaseImage() {}
+};
+
 //-----------------------------------------------------------------------------------------------//
-// 5d-image structure on top of a shared memory CImgList
+/// 5d-image structure on top of a shared memory CImgList
 //-----------------------------------------------------------------------------------------------//
 
+
 template<typename _T>
-struct Image
+struct Image : public BaseImage
 {
     typedef _T T;
-    typedef Vec<5,unsigned int> imCoord; // [x,y,z,s,t]
     typedef cimg_library::CImg<T> CImgT;
 
     static const int label = IMAGELABEL_IMAGE; // type identifier, must be unique
@@ -83,16 +93,21 @@ public:
 
     ///constructors/destructors
     Image() {}
-    Image(const Image<T>& _img, bool shared):img(_img.getCImgList(), shared) {}
+    Image(const Image<T>& _img, bool shared=false) : img(_img.getCImgList(), shared) {}
+    Image( const cimg_library::CImg<T>& _img ) : img(_img) {}
 
-    // shared instances
-    Image( const Image<T>& _img ):img(_img.getCImgList(),true)		{}
-    Image( const cimg_library::CImg<T>& _img ):img(_img,true)		{}
+    /// copy operators
     Image<T>& operator=(const Image<T>& im)
     {
-        if(im.getCImgList().size()) img.assign(im.getCImgList(),true);
+        if(im.getCImgList().size()) img.assign(im.getCImgList());
         return *this;
     }
+    Image<T>& assign(const Image<T>& im, const bool shared=false)
+    {
+        if(im.getCImgList().size()) img.assign(im.getCImgList(),shared);
+        return *this;
+    }
+
 
     void clear() { img.assign(); }
     ~Image() { clear(); }
@@ -101,8 +116,20 @@ public:
     cimg_library::CImgList<T>& getCImgList() { return img; }
     const cimg_library::CImgList<T>& getCImgList() const { return img; }
 
-    cimg_library::CImg<T>& getCImg(const unsigned int t=0) { if (t>=img.size())   return *img._data;		return img(t);    }
-    const cimg_library::CImg<T>& getCImg(const unsigned int t=0) const {   if (t>=img.size())   return *img._data;		return img(t);   }
+    cimg_library::CImg<T>& getCImg(const unsigned int t=0) {
+        if (t>=img.size())   {
+            assert(img._data != NULL);
+            return *img._data;
+        }
+        return img(t);
+    }
+    const cimg_library::CImg<T>& getCImg(const unsigned int t=0) const {
+        if (t>=img.size())   {
+            assert(img._data != NULL);
+            return *img._data;
+        }
+        return img(t);
+    }
 
     inline bool isEmpty() const {return img.size()==0;}
 

@@ -61,7 +61,7 @@ public:
     typedef SReal Real;
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef TransformType::Coord Coord;
-    typedef helper::WriteAccessor<Data< TransformType > > waTransform;
+    typedef helper::WriteOnlyAccessor<Data< TransformType > > waTransform;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
 
     Data< TransformType > inputTransform;
@@ -105,7 +105,6 @@ protected:
     virtual void update()
     {
 		raTransform inT(this->inputTransform);
-		cleanDirty(); // cleanDirty is set here to avoid the multiple call of the engines, this issue is due to the readAccessor
         waTransform outT(this->outputTransform);
 
         Real s;
@@ -136,6 +135,8 @@ protected:
         outT->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
 
         outT->update(); // update internal data
+
+        cleanDirty();
     }
 
 };

@@ -211,13 +211,13 @@ public:
     typedef typename BaseImageShapeFunctionSpecialization<ImageTypes::label>::DistT DistT;
     typedef typename BaseImageShapeFunctionSpecialization<ImageTypes::label>::DistTypes DistTypes;
     typedef helper::ReadAccessor<Data< DistTypes > > raDist;
-    typedef helper::WriteAccessor<Data< DistTypes > > waDist;
+    typedef helper::WriteOnlyAccessor<Data< DistTypes > > waDist;
     Data< DistTypes > f_w;
 
     typedef typename BaseImageShapeFunctionSpecialization<ImageTypes::label>::IndT IndT;
     typedef typename BaseImageShapeFunctionSpecialization<ImageTypes::label>::IndTypes IndTypes;
     typedef helper::ReadAccessor<Data< IndTypes > > raInd;
-    typedef helper::WriteAccessor<Data< IndTypes > > waInd;
+    typedef helper::WriteOnlyAccessor<Data< IndTypes > > waInd;
     Data< IndTypes > f_index;
 
     // only used for branching image

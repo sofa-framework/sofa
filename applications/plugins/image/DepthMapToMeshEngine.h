@@ -87,20 +87,20 @@ public:
 
     typedef vector<Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
-    typedef helper::WriteAccessor<Data< SeqPositions > > waPositions;
+    typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > position;
 
     typedef fixed_array<Real,2> TexCoord;
     typedef vector<TexCoord> SeqTexCoords;
     typedef helper::ReadAccessor<Data< SeqTexCoords > > raTexCoords;
-    typedef helper::WriteAccessor<Data< SeqTexCoords > > waTexCoords;
+    typedef helper::WriteOnlyAccessor<Data< SeqTexCoords > > waTexCoords;
     Data< SeqTexCoords > texCoord;
     Data< TexCoord > texOffset;
 
     typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef helper::ReadAccessor<Data< SeqTriangles > > raTriangles;
-    typedef helper::WriteAccessor<Data< SeqTriangles > > waTriangles;
+    typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
     Data< SeqTriangles > triangles;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
@@ -162,12 +162,13 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         raImage in(this->image);
         raTransform inT(this->transform);
         raTexture inTex(this->texImage);
         const unsigned int dimx=in->getDimensions()[0],dimy=in->getDimensions()[1];
+
+
+        cleanDirty();
 
         waPositions pos(this->position);
         waTexCoords tc(this->texCoord);

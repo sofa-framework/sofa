@@ -10,21 +10,13 @@ import SofaPython.Tools
 from SofaPython.Tools import listToStr as concat
 from SofaPython import Quaternion
 
-def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, position=None, labelImage=None, labels=None, assemble=True, geometricStiffness=2):
+def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, position=None, cell='', assemble=True, geometricStiffness=2):
     """ insert the correct Linear(Multi)Mapping
     hopefully the template is deduced automatically by the component
     """
     if dofRigidNode is None and dofAffineNode is None:
         print "[Flexible.API.insertLinearMapping] ERROR: no dof given"
     else:
-        cell = ''
-        if not labelImage is None and not labels is None : # use labels to select specific voxels in branching image
-            node.createObject(
-                "BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell",
-                position ="@"+SofaPython.Tools.getObjectPath(position)+".position",
-                src="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage), labels=concat(labels))
-            cell = "@cell.cell"
-
         if dofRigidNode is None:
             return node.createObject(
                 "LinearMapping", cell=cell, shapeFunction = 'shapeFunction',
@@ -61,6 +53,23 @@ class Deformable:
         self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.meshLoader.name )
         self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs", src="@"+self.meshLoader.name)
 
+    def addFromDeformables(self, deformables=list()):
+        args=dict()
+        inputs=[]
+        i=1
+        for s in deformables:
+            s.node.addChild(self.node)
+            args["position"+str(i)]="@"+SofaPython.Tools.getObjectPath(s.topology)+".position"
+            args["triangles"+str(i)]="@"+SofaPython.Tools.getObjectPath(s.topology)+".triangles"
+            args["quads"+str(i)]="@"+SofaPython.Tools.getObjectPath(s.topology)+".quads"
+            inputs.append('@'+s.node.getPathName())
+            i+=1
+
+        self.meshLoader =  self.node.createObject('MergeMeshes', name='MergeMeshes', nbMeshes=len(inputs), **args )
+        self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.meshLoader.name )
+        self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs")
+        self.mapping = self.node.createObject("IdentityMultiMapping", template = "Vec3d,Vec3d",name='mapping',input=SofaPython.Tools.listToStr(inputs),output="@.")
+
     def addNormals(self, invert=False):
         self.normals = self.node.createObject("NormalsFromPoints", template='Vec3d', name="normalsFromPoints", position='@'+self.dofs.name+'.position', triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
 
@@ -68,7 +77,11 @@ class Deformable:
         self.mass = self.node.createObject('UniformMass', totalMass=totalMass)
 
     def addMapping(self, dofRigidNode=None, dofAffineNode=None, labelImage=None, labels=None, assemble=True):
-        self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, self.topology, labelImage, labels, assemble)
+        cell = ''
+        if not labelImage is None and not labels is None : # use labels to select specific voxels in branching image
+           offsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+SofaPython.Tools.getObjectPath(self.topology)+".position", src="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage), labels=concat(labels))
+           cell = "@"+SofaPython.Tools.getObjectPath(offsets)+".cell"
+        self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, self.topology, cell, assemble)
 
     def addVisual(self, color=[1,1,1,1]):
         self.visual = Deformable.VisualModel(self.node, color)
@@ -114,7 +127,7 @@ class AffineMass:
         dof = node.createObject('MechanicalObject', name='massPoints', template='Vec3d')
         insertLinearMapping(node, dofRigidNode, self.dofAffineNode, dof, assemble=False)
         densityImage.addBranchingToImage('0') # MassFromDensity on branching images does not exist yet
-        massFromDensity = node.createObject('MassFromDensity',  name="MassFromDensity",  template="Affine,ImageD", image="@"+SofaPython.Tools.getObjectPath(densityImage.converter)+".image", transform="@"+SofaPython.Tools.getObjectPath(densityImage.converter)+'.transform', lumping=lumping)
+        massFromDensity = node.createObject('MassFromDensity',  name="MassFromDensity",  template="Affine,ImageD", image="@"+SofaPython.Tools.getObjectPath(densityImage.image)+".image", transform="@"+SofaPython.Tools.getObjectPath(densityImage.image)+'.transform', lumping=lumping)
         self.mass = self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix="@"+SofaPython.Tools.getObjectPath(massFromDensity)+".massMatrix")
 
     def getFilename(self, filenamePrefix=None, directory=""):
@@ -255,6 +268,7 @@ class Behavior:
         self.sampler = None
         self.dofs = None
         self.mapping = None
+        self.cell = ''
 
     def addGaussPointSampler(self, shapeFunction, nbPoints, **kwargs):
         shapeFunctionPath = SofaPython.Tools.getObjectPath(shapeFunction.shapeFunction)
@@ -264,12 +278,19 @@ class Behavior:
             method="2", order=self.type[2:], targetNumber=nbPoints,
             mask="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage)+".branchingImage", maskLabels=concat(self.labels),
             **kwargs)
-        
+        celloffsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+SofaPython.Tools.getObjectPath(self.sampler)+".position", src="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage), labels=concat(self.labels))
+        self.cell = "@"+SofaPython.Tools.getObjectPath(celloffsets)+".cell"
+
+    def addTopologyGaussPointSampler(self, mesh, order="2", **kwargs):
+        meshPath = SofaPython.Tools.getObjectPath(mesh)
+        self.sampler = self.node.createObject("TopologyGaussPointSampler", name="sampler", method="0", inPosition="@"+meshPath+".position", order=order, **kwargs)
+        self.cell = "@"+SofaPython.Tools.getObjectPath(self.sampler)+".cell"
+
     def addMechanicalObject(self, dofRigidNode=None, dofAffineNode=None, assemble=True):
         if self.sampler is None:
             print "[Flexible.API.Behavior] ERROR: no sampler"
         self.dofs = self.node.createObject("MechanicalObject", template="F"+self.type, name="dofs")
-        self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, self.sampler, self.labelImage, self.labels, assemble)
+        self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, self.sampler, self.cell , assemble)
     
 
     def getFilename(self, filenamePrefix=None, directory=""):

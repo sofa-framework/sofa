@@ -349,7 +349,7 @@ void SubsetTopology<DataTypes>::findVertexOnBorder(const Tetra &t, unsigned int 
 template <class DataTypes>
 void SubsetTopology<DataTypes>::update()
 {
-    cleanDirty();
+
     unsigned int ROInum = 0;
     const helper::vector<Vec3>& cen = (centers.getValue());
     const helper::vector<Real>& rad = (radii.getValue());
@@ -378,27 +378,42 @@ void SubsetTopology<DataTypes>::update()
         ROInum = cen.size();
     }
 
-    // Write accessor for topological element indices in ROI
-    SetIndex& indices = *(f_indices.beginEdit());
-    SetIndex& edgeIndices = *(f_edgeIndices.beginEdit());
-    SetIndex& triangleIndices = *(f_triangleIndices.beginEdit());
-    SetIndex& tetrahedronIndices = *f_tetrahedronIndices.beginEdit();
-
 
     // Read accessor for input topology
     helper::ReadAccessor< Data<helper::vector<Edge> > > edges = f_edges;
     helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles = f_triangles;
     helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
 
+    const VecCoord* x0 = &f_X0.getValue();
+
+    d_tetrahedraInput.updateIfDirty();
+
+    // Why are they inputs? Are they used somewhere?
+    direction.updateIfDirty();
+    normal.updateIfDirty();
+    edgeAngle.updateIfDirty();
+    triAngle.updateIfDirty();
+
+
+    cleanDirty();
+
+
+    // Write accessor for topological element indices in ROI
+    SetIndex& indices = *(f_indices.beginWriteOnly());
+    SetIndex& edgeIndices = *(f_edgeIndices.beginWriteOnly());
+    SetIndex& triangleIndices = *(f_triangleIndices.beginWriteOnly());
+    SetIndex& tetrahedronIndices = *f_tetrahedronIndices.beginWriteOnly();
+
+
     // Write accessor for toplogical element in ROI
-    helper::WriteAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
-    helper::WriteAccessor< Data<VecCoord > > pointsOutROI = f_pointsOutROI;
-    helper::WriteAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
-    helper::WriteAccessor< Data<helper::vector<Edge> > > edgesOutROI = f_edgesOutROI;
-    helper::WriteAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
-    helper::WriteAccessor< Data<helper::vector<Triangle> > > trianglesOutROI = f_trianglesOutROI;
-    helper::WriteAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
-    helper::WriteAccessor< Data<helper::vector<Tetra> > > tetrahedraOutROI = f_tetrahedraOutROI;
+    helper::WriteOnlyAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
+    helper::WriteOnlyAccessor< Data<VecCoord > > pointsOutROI = f_pointsOutROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Edge> > > edgesOutROI = f_edgesOutROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Triangle> > > trianglesOutROI = f_trianglesOutROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Tetra> > > tetrahedraOutROI = f_tetrahedraOutROI;
 
     // Clear lists
     indices.clear();
@@ -415,7 +430,6 @@ void SubsetTopology<DataTypes>::update()
     trianglesOutROI.clear();
     tetrahedraOutROI.clear();
 
-    const VecCoord* x0 = &f_X0.getValue();
 
     const bool local = p_localIndices.getValue();
     unsigned int cpt_in = 0, cpt_out = 0, cpt_border = 0;

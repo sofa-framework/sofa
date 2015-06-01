@@ -12,7 +12,7 @@ static inline Eigen::Matrix<U, 3, 2> ker(const Eigen::Matrix<U, 3, 1>& n) {
 	
 	vec3 u;
 	
-	U eps = std::numeric_limits<U>::epsilon();
+    static const U eps = std::numeric_limits<U>::epsilon();
 
 	if( std::abs(n(1)) > eps  ) u = vec3(0, -n(2), n(1) ).normalized();
 	else if( std::abs(n(2)) > eps  ) u =  vec3(n(2), 0, -n(0) ).normalized();

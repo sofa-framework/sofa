@@ -69,8 +69,8 @@ def run():
     ok &= EXPECT_FLOAT_EQ( 23.12, units.elasticity_from_SI( units.elasticity_to_SI( 23.12 ) ), "elasticity from_to SI global" ) # converting 23.12 Pa in g/(cm.min2) then in Pa
 
     # density
-    ok &= EXPECT_FLOAT_EQ( 1000/100.0/100.0/100.0, units.density_from_SI( 1 ), "density from SI global" ) # converting 1 kg/m3 in g/cm3
-    ok &= EXPECT_FLOAT_EQ( 23.12, units.density_from_SI( units.density_to_SI( 23.12 ) ), "density from_to SI global" ) # converting 23.12 kg/m3 in g/cm3 then in kg/m3
+    ok &= EXPECT_FLOAT_EQ( 1000/100.0/100.0/100.0, units.massDensity_from_SI( 1 ), "massDensity from SI global" ) # converting 1 kg/m3 in g/cm3
+    ok &= EXPECT_FLOAT_EQ( 23.12, units.massDensity_from_SI( units.massDensity_to_SI( 23.12 ) ), "massDensity from_to SI global" ) # converting 23.12 kg/m3 in g/cm3 then in kg/m3
 
 
     ### MECHANICS

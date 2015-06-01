@@ -25,6 +25,7 @@
 #include "QDataDescriptionWidget.h"
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 
 #ifdef SOFA_QT4
 #include <QHBoxLayout>
@@ -36,7 +37,6 @@
 #include <qlabel.h>
 #include <qgroupbox.h>
 #endif
-
 
 
 namespace sofa
@@ -69,6 +69,13 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
         {
             new QLabel(QString("Template"), box);
             (new QLabel(QString(object->getTemplateName().c_str()), box))->setMinimumWidth(20);
+        }
+
+        core::objectmodel::BaseNode* node = dynamic_cast<core::objectmodel::BaseNode*>(object); // Node
+        if (node && node->getParents().size()>1) // MultiNode
+        {
+            new QLabel(QString("Path"), box);
+            (new QLabel(QString(node->getPathName().c_str()), box))->setMinimumWidth(20); // the first direct path (where to find the multinode in the displayed tree)
         }
 
         tabLayout->addWidget( box );

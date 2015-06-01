@@ -349,7 +349,7 @@ bool exportVTU(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3,
 
 
 template <typename PFP>
-bool exportMSH(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const char* filename)
+bool exportMSH(typename PFP::MAP& map, const AttributeHandler<typename PFP::VEC3, VERTEX, typename PFP::MAP>& position, const char* filename)
 {
 	typedef typename PFP::MAP MAP;
 	typedef typename PFP::VEC3 VEC3;

@@ -93,6 +93,8 @@ protected:
 public:
     virtual void init();
 
+    virtual void reinit();
+
     virtual void reset();
 
     virtual void handleEvent(sofa::core::objectmodel::Event* event);

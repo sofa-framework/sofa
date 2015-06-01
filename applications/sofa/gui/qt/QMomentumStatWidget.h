@@ -27,7 +27,7 @@
 
 #include "QGraphStatWidget.h"
 
-#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/simulation/common/MechanicalGetMomentumVisitor.h>
 
 namespace sofa
 {
@@ -41,6 +41,9 @@ class QMomentumStatWidget : public QGraphStatWidget
 
     Q_OBJECT
 
+
+    simulation::MechanicalGetMomentumVisitor *m_momentumVisitor;
+
 public:
 
     QMomentumStatWidget( QWidget* parent, simulation::Node* node ) : QGraphStatWidget( parent, node, "Momenta", 6 )
@@ -51,20 +54,20 @@ public:
         setCurve( 3, "Angular X", Qt::cyan );
         setCurve( 4, "Angular Y", Qt::magenta );
         setCurve( 5, "Angular Z", Qt::yellow );
+
+        m_momentumVisitor = new simulation::MechanicalGetMomentumVisitor(core::MechanicalParams::defaultInstance());
     }
 
     virtual void step()
     {
         QGraphStatWidget::step(); // time history
 
+        m_momentumVisitor->execute( _node->getContext() );
+
+        const defaulttype::Vector6& momenta = m_momentumVisitor->getMomentum();
+
         // Add Momentum
-        if( _node->mass )
-        {
-            defaulttype::Vector6 momenta = _node->mass->getMomentum();
-            for( unsigned i=0 ; i<6 ; ++i ) _YHistory[i].push_back( momenta[i] );
-        }
-        else
-            for( unsigned i=0 ; i<6 ; ++i ) _YHistory[i].push_back(0);
+        for( unsigned i=0 ; i<6 ; ++i ) _YHistory[i].push_back( momenta[i] );
     }
 
 };

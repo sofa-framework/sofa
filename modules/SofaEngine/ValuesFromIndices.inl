@@ -71,10 +71,12 @@ void ValuesFromIndices<T>::reinit()
 template <class T>
 void ValuesFromIndices<T>::update()
 {
-    cleanDirty();
     helper::ReadAccessor<Data<VecValue> > in = f_in;
     helper::ReadAccessor<Data<VecIndex> > indices = f_indices;
-    helper::WriteAccessor<Data<VecValue> > out = f_out;
+
+    cleanDirty();
+
+    helper::WriteOnlyAccessor<Data<VecValue> > out = f_out;
 
     out.clear();
     out.reserve(indices.size());

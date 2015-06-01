@@ -82,7 +82,7 @@ public:
     typedef Vec<spatial_dimensions,Real> Coord;   // TODO: put as a template to handle the 2D case (currently the conversion 3D-> 2D is done in the deformation mapping) ?
     typedef vector<Coord> SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
-    typedef helper::WriteAccessor<Data< SeqPositions > > waPositions;
+    typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > f_position; ///< Samples position
     //@}
 
@@ -99,7 +99,7 @@ public:
     Data< unsigned int > f_order; ///< Order of quadrature method
     typedef vector<Real> volumeIntegralType;
     Data< vector<volumeIntegralType> > f_volume; ///< Weighted volumes associated to samples
-    typedef helper::WriteAccessor< Data< vector<volumeIntegralType> > > waVolume;
+    typedef helper::WriteOnlyAccessor< Data< vector<volumeIntegralType> > > waVolume;
     //@}
 
     /** @name visu data */

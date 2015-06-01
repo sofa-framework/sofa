@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "PythonScriptController.h"
 #include "PythonMacros.h"
+#include "PythonScriptController.h"
 #include <sofa/core/ObjectFactory.h>
 
 #include "Binding_Base.h"
@@ -53,8 +53,6 @@ PythonScriptController::PythonScriptController()
     , m_filename(initData(&m_filename, "filename","Python script filename"))
     , m_classname(initData(&m_classname, "classname","Python class implemented in the script to instanciate for the controller"))
     , m_variables( initData( &m_variables, "variables", "Array of string variables (equivalent to a c-like argv)" ) )
-    , m_Script(0)
-    , m_ScriptDict(0)
     , m_ScriptControllerClass(0)
     , m_ScriptControllerInstance(0)
 {
@@ -63,31 +61,16 @@ PythonScriptController::PythonScriptController()
 
 void PythonScriptController::loadScript()
 {
-    if (m_Script)
-    {
-        std::cout << getName() << " load ignored: script already loaded." << std::endl;
-    }
-    m_Script = sofa::simulation::PythonEnvironment::importScript(m_filename.getFullPath().c_str());
-    if (!m_Script)
+    if(!sofa::simulation::PythonEnvironment::runFile(m_filename.getFullPath().c_str()))
     {
         // LOAD ERROR
         SP_MESSAGE_ERROR( getName() << " object - "<<m_filename.getFullPath().c_str()<<" script load error." )
         return;
     }
 
-    // binder les différents points d'entrée du script
-
-    // pDict is a borrowed reference; no need to release it
-    m_ScriptDict = PyModule_GetDict(m_Script);
-    if (!m_ScriptDict)
-    {
-        // LOAD ERROR
-        SP_MESSAGE_ERROR( getName() << " load error (dictionnary not found)." )
-        return;
-    }
-
     // classe
-    m_ScriptControllerClass = PyDict_GetItemString(m_ScriptDict,m_classname.getValueString().c_str());
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
+    m_ScriptControllerClass = PyDict_GetItemString(pDict,m_classname.getValueString().c_str());
     if (!m_ScriptControllerClass)
     {
         // LOAD ERROR
@@ -106,8 +89,6 @@ void PythonScriptController::loadScript()
         SP_MESSAGE_ERROR( getName() << " load error (class \""<<m_classname.getValueString()<<"\" does not inherit from \"Sofa.PythonScriptController\")." )
         return;
     }
-
-
 
     // créer l'instance de la classe
 
