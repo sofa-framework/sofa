@@ -21,6 +21,10 @@ void main()
 	// first transform the normal into eye space and normalize the result
 	normal = normalize(gl_NormalMatrix * gl_Normal);
 
+#ifdef FLIP_NORMAL
+	normal *= -1.0;
+#endif
+
 	// now normalize the light's direction. Note that according to the
 	//OpenGL specification, the light is stored in eye space.
 	ecPos = gl_ModelViewMatrix * gl_Vertex;
