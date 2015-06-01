@@ -39,11 +39,11 @@ namespace engine
 template <class DataTypes>
 void MeshClosingEngine<DataTypes>::update()
 {
-    this->cleanDirty();
-
     helper::ReadAccessor<Data< SeqPositions > > pos(this->inputPosition);
     helper::ReadAccessor<Data< SeqTriangles > > tri(this->inputTriangles);
     helper::ReadAccessor<Data< SeqQuads > > qd(this->inputQuads);
+
+    cleanDirty();
 
     helper::WriteOnlyAccessor<Data< SeqPositions > > opos(this->position);
     helper::WriteOnlyAccessor<Data< SeqTriangles > >  otri(this->triangles);

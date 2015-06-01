@@ -162,6 +162,9 @@ public:
     Data<bool> setRestShape;
     Data<bool> applyMappings;
     Data<bool> alignOmniWithCamera;
+	Data<bool> stateButton1;
+	Data<bool> stateButton2;
+
 
 
     sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> *DOFs;

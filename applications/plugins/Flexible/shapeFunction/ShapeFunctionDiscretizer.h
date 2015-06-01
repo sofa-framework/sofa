@@ -129,8 +129,6 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         if( !_shapeFunction ) return;
 
         // read input image and transform
@@ -138,6 +136,8 @@ protected:
         raTransform inT(this->f_transform);
         if(in->isEmpty())  { serr<<"Image not found"<<sendl; return; }
         const CImg<T>& inimg = in->getCImg(0);  // suppose time=0
+
+        cleanDirty();
 
         // init indices and weights images
         const unsigned int nbref=_shapeFunction->f_nbRef.getValue();
@@ -168,7 +168,6 @@ protected:
                             weights(x,y,z,i)=w[i];
                         }
                     }
-
     }
 
 };

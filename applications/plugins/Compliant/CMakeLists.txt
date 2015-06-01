@@ -76,7 +76,9 @@ set(HEADER_FILES
     odesolver/CompliantImplicitSolver.h
     odesolver/ConstantCompliantImplicitSolver.h
     odesolver/CompliantNLImplicitSolver.h
+    odesolver/CompliantPseudoStaticSolver.h
     odesolver/CompliantPostStabilizationAnimationLoop.h
+	odesolver/CompliantStaticSolver.h
 
     compliance/UniformCompliance.h
     compliance/UniformCompliance.inl
@@ -190,8 +192,11 @@ set(SOURCE_FILES
     odesolver/CompliantImplicitSolver.cpp
     odesolver/ConstantCompliantImplicitSolver.cpp
     odesolver/CompliantNLImplicitSolver.cpp
+    odesolver/CompliantPseudoStaticSolver.cpp
     odesolver/CompliantPostStabilizationAnimationLoop.cpp
+	odesolver/CompliantStaticSolver.cpp
 
+	constraint/Constraint.cpp
     constraint/CoulombConstraint.cpp
     constraint/UnilateralConstraint.cpp
     constraint/ResistanceConstraint.cpp

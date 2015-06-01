@@ -1,6 +1,6 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
-if(SOFA-PLUGIN_SOFAQTQUICKGUI)
+if(SOFA-PLUGIN_SOFAQTQUICKGUI OR SOFA-DEVPLUGIN_SOFAQTQUICKGUI)
 
 set(SOURCE_FILES
                 ImagePlaneModel.cpp

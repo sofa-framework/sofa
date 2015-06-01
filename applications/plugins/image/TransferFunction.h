@@ -115,20 +115,18 @@ public:
     typedef _InImageTypes InImageTypes;
     typedef typename InImageTypes::T Ti;
     typedef typename InImageTypes::imCoord imCoord;
-    typedef helper::WriteAccessor<Data< InImageTypes > > waImagei;
     typedef helper::ReadAccessor<Data< InImageTypes > > raImagei;
 
     typedef _OutImageTypes OutImageTypes;
     typedef typename OutImageTypes::T To;
-    typedef helper::WriteAccessor<Data< OutImageTypes > > waImageo;
-    typedef helper::ReadAccessor<Data< OutImageTypes > > raImageo;
+    typedef helper::WriteOnlyAccessor<Data< OutImageTypes > > waImageo;
 
     typedef std::map<Ti,To> iomap;
     typedef typename iomap::const_iterator iomapit;
 
 
     typedef vector<double> ParamTypes;
-    typedef helper::WriteAccessor<Data< ParamTypes > > waParam;
+    typedef helper::WriteOnlyAccessor<Data< ParamTypes > > waParam;
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 
     Data<helper::OptionsGroup> filter;
@@ -170,9 +168,8 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         TransferFunctionSpecialization<InImageTypes::label>::update( *this );
+        cleanDirty();
     }
 
 

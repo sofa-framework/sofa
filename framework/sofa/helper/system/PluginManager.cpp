@@ -64,6 +64,9 @@ const char* Plugin::GetModuleLicense::symbol          = "getModuleLicense";
 const char* Plugin::GetModuleName::symbol             = "getModuleName";
 const char* Plugin::GetModuleVersion::symbol          = "getModuleVersion";
 
+std::string PluginManager::s_gui_postfix = "gui";
+
+
 PluginManager & PluginManager::getInstance()
 {
     static PluginManager instance;
@@ -164,6 +167,25 @@ bool PluginManager::loadPlugin(std::string& pluginPath, std::ostream* errlog)
     m_pluginMap[pluginPath] = p;
 
     return true;
+}
+
+
+void PluginManager::loadPluginWithGui(const std::string& path, std::ostream* log, const std::string& guipostfix )
+{
+    std::string pluginPath = path;
+
+    if( loadPlugin(pluginPath) ) // pluginPath is modified here
+    {
+        if(log) *log << "Loaded " << pluginPath;
+        sofa::helper::system::PluginManager::getInstance().init();
+
+        std::string pluginGuiPath = path + "_" + guipostfix;
+        if( loadPlugin(pluginGuiPath,NULL) )
+        {
+            if(log) *log << " (+ _" << guipostfix << ")";
+            sofa::helper::system::PluginManager::getInstance().init();
+        }
+    }
 }
 
 bool PluginManager::unloadPlugin(std::string &pluginPath, std::ostream *errlog)

@@ -9,4 +9,5 @@ set(PYTHON_FILES
         python/Compliant/Vec.py
         python/Compliant/StructuralAPI.py
         python/Compliant/sml.py
+        python/Compliant/future.py
         )

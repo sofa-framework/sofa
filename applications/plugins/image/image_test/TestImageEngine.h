@@ -41,6 +41,7 @@ namespace component
 namespace engine
 {
 
+
 /**
  * This class is only used to test engine with image data.
  * Given a input image the ouput image will have the same dimension as input image and all pixels will be 0.
@@ -60,7 +61,7 @@ public:
     typedef typename TransformType::Coord Coord;
     typedef typename ImageTypes::imCoord imCoord;
     typedef typename ImageTypes::T T;
-    typedef helper::WriteAccessor<Data< ImageTypes > > waImage;
+    typedef helper::WriteOnlyAccessor<Data< ImageTypes > > waImage;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
 
     Data< ImageTypes > inputImage;  ///< input image
@@ -89,23 +90,21 @@ public:
 
     void update()
     {
-        std::cout << "Call update method of TestImageEngine.h" << std::endl;
-        cleanDirty();
-
         waImage out(this->outputImage);
         raImage in(this->inputImage);
 
         // Get the dimensions of input image
-        const cimg_library::CImg<T>& img = in->getCImg(this->getContext()->getTime());
         imCoord dim = in->getDimensions();
 
         // Set the dimensions of outputImage
         out->setDimensions(dim);
 
-        //  Fill all pixel values of ouputImage with 0
-        cimg_library::CImg<T>& outImg=out->getCImg(0);
-        outImg.fill(0);
+        //  Copy input on output
+        cimg_library::CImg<T>& outImg = out->getCImg(0);
 
+        out->getCImg(0) = in->getCImg(0);
+//        std::cerr << "TestImageEngine input shared: " << in->getCImg(0).is_shared() << std::endl;
+        cleanDirty();
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)

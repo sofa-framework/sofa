@@ -57,7 +57,7 @@ int main()
     std::vector<ObjectFactory::ClassEntry::SPtr> entries;
     ObjectFactory::getInstance()->getAllEntries(entries);
     print("/**");
-    print("   \\page component_list Component List");
+    print("   \\page sofa_modules_component_list Component List");
     print("  <ul>");
     for (size_t i = 0 ; i != entries.size() ; i++)
         if (!entries[i]->creatorMap.empty()) {

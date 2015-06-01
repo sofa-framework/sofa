@@ -25,20 +25,11 @@
 #ifndef SOFA_COMPONENT_ENGINE_MESHSAMPLER_H
 #define SOFA_COMPONENT_ENGINE_MESHSAMPLER_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
+#include <sofa/component/component.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/VecId.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.inl>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/component/component.h>
 
@@ -58,6 +49,7 @@ using namespace core::objectmodel;
 /**
  * Select uniformly distributed points on a mesh based on Euclidean or Geodesic distance measure
  * The method uses farthest point sampling followed by Lloyd (k-means) relaxation
+ * @author benjamin gilles
  */
 
 template <class DataTypes>
@@ -86,7 +78,8 @@ public:
 
     virtual ~MeshSampler() {}
 
-    void init();
+    virtual void reinit()    { update();  }
+    virtual void init();
     void update();
 
     void draw(const core::visual::VisualParams* vparams);

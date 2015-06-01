@@ -92,23 +92,20 @@ public:
     typedef _InImageTypes InImageTypes;
     typedef typename InImageTypes::T Ti;
     typedef typename InImageTypes::imCoord imCoordi;
-    typedef helper::WriteAccessor<Data< InImageTypes > > waImagei;
     typedef helper::ReadAccessor<Data< InImageTypes > > raImagei;
 
     typedef _OutImageTypes OutImageTypes;
     typedef typename OutImageTypes::T To;
     typedef typename OutImageTypes::imCoord imCoordo;
-    typedef helper::WriteAccessor<Data< OutImageTypes > > waImageo;
-    typedef helper::ReadAccessor<Data< OutImageTypes > > raImageo;
+    typedef helper::WriteOnlyAccessor<Data< OutImageTypes > > waImageo;
 
     typedef SReal Real;
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef typename TransformType::Coord Coord;
-    typedef helper::WriteAccessor<Data< TransformType > > waTransform;
+    typedef helper::WriteOnlyAccessor<Data< TransformType > > waTransform;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
 
     typedef vector<double> ParamTypes;
-	typedef helper::WriteAccessor<Data< ParamTypes > > waParam;
 	typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 
     Data<helper::OptionsGroup> filter;
@@ -191,10 +188,10 @@ protected:
         if(!updateImage && !updateTransform) {updateImage=true; updateTransform=true;}  // change of parameters -> update all
 
         raParam p(this->param);
-        raImagei in(this->inputImage);
         raTransform inT(this->inputTransform);
+        raImagei in(this->inputImage);
 
-		cleanDirty();	 // cleanDirty must be here to avoid the multiple call of the update method
+        cleanDirty();
 
         waImageo out(this->outputImage);
         waTransform outT(this->outputTransform);
@@ -656,6 +653,7 @@ protected:
         }
 
 		if (updateTransform) outT->update(); // update internal data
+
     }
 
 };

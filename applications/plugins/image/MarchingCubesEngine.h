@@ -85,13 +85,13 @@ public:
 
     typedef vector<Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
-    typedef helper::WriteAccessor<Data< SeqPositions > > waPositions;
+    typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > position;
 
     typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef helper::ReadAccessor<Data< SeqTriangles > > raTriangles;
-    typedef helper::WriteAccessor<Data< SeqTriangles > > waTriangles;
+    typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
     Data< SeqTriangles > triangles;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
@@ -133,8 +133,6 @@ protected:
         raImage in(this->image);
 		raTransform inT(this->transform);
 
-		cleanDirty();	 // cleanDirty must be here to avoid the multiple call of the update method
-
         // get image at time t
         const CImg<T>& img = in->getCImg(this->time);
         CImg<T> img1=img;
@@ -162,6 +160,8 @@ protected:
             cimglist_for(faces,l) tri[l]=Triangle(faces(l,2),faces(l,1),faces(l,0));
         else
             cimglist_for(faces,l) tri[l]=Triangle(faces(l,0),faces(l,1),faces(l,2));
+
+        cleanDirty();
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)

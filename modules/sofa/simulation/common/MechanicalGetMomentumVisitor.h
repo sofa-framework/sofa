@@ -22,87 +22,65 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_TestEngine_INL
-#define SOFA_COMPONENT_ENGINE_TestEngine_INL
+//
+// C++ Interface: MechanicalGetMomentumVisitor
+//
+// Description:
+//
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
+#ifndef SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
+#define SOFA_SIMULATION_MECHANICALGETMOMENTUMVISITOR_H
 
-#include "TestEngine.h"
-
+#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/core/MechanicalParams.h>
 namespace sofa
 {
 
-namespace component
+namespace simulation
 {
 
-namespace engine
+/// Compute the linear and angular momenta
+///
+/// @author Matthieu Nesme, 2015
+///
+class SOFA_SIMULATION_COMMON_API MechanicalGetMomentumVisitor : public sofa::simulation::MechanicalVisitor
 {
+    defaulttype::Vector6 m_momenta;
 
-int TestEngine::instance = 0;
-std::list<int> TestEngine::updateCallList;
+public:
+    MechanicalGetMomentumVisitor(const core::MechanicalParams* mparams)
+        : sofa::simulation::MechanicalVisitor(mparams)
+    {}
 
-using namespace core::behavior;
-using namespace core::objectmodel;
+    const defaulttype::Vector6& getMomentum() const { return m_momenta; }
 
-TestEngine::TestEngine()
-    : f_numberToMultiply( initData (&f_numberToMultiply, "number", "number that will be multiplied by the factor") )
-    , f_factor(initData (&f_factor,"factor", "multiplication factor") )
-    , f_result( initData (&f_result, "result", "result of the multiplication of numberToMultiply by factor") )
-{
-    counter = 0;
-    instance++;
-    this->identifier =  instance;
+    /// Process the BaseMass
+    virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass)
+    {
+        m_momenta += mass->getMomentum();
+        return RESULT_CONTINUE;
+    }
+
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalGetMomentumVisitor"; }
+
+    virtual void execute( sofa::core::objectmodel::BaseContext* c, bool precomputedTraversalOrder=false )
+    {
+        m_momenta.clear();
+        sofa::simulation::MechanicalVisitor::execute( c, precomputedTraversalOrder );
+    }
+
+
+};
+
 }
 
-void TestEngine::init()
-{
-    addInput(&f_factor);
-    addInput(&f_numberToMultiply);
-    addOutput(&f_result);
-    setDirtyValue();
 }
-
-void TestEngine::reinit()
-{
-    update();
-}
-
-void TestEngine::update()
-{
-    // Count how many times the update method is called
-    counter ++;
-
-    cleanDirty();
-
-    // Get number to multiply
-    SReal number = f_numberToMultiply.getValue(); 
-    
-    // Get factor
-    SReal factor = f_factor.getValue();
-
-    // Set result
-    f_result.setValue(number*factor);
-   
-    // Update call list
-    updateCallList.push_back(this->identifier);
-}
-
-int TestEngine::getCounterUpdate()
-{
-    return this->counter;
-}
-
-void TestEngine::printUpdateCallList()
-{
-
-    for (std::list<int>::iterator it=updateCallList.begin(); it != updateCallList.end(); ++it)
-        std::cout << " Call engine " <<  *it <<std::endl;
-   
-}
-
-
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
 
 #endif

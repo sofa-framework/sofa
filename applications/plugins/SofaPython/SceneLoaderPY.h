@@ -33,12 +33,15 @@
 #include <string>
 #include <map>
 
+extern "C" {
+    struct PyMethodDef;
+}
+
 namespace sofa
 {
 
 namespace simulation
 {
-
 
 // The scene loader/exporter for python scene files
 class SOFA_SOFAPYTHON_API SceneLoaderPY : public SceneLoader
@@ -62,6 +65,13 @@ public:
 
     /// get the list of file extensions
     virtual void getExtensionList(ExtensionList* list);
+
+    /// add a header that will be injected before the loading of the scene
+    static void setHeader(const std::string& header);
+
+private:
+    static std::string                          OurHeader;
+
 };
 
 ///////////

@@ -91,13 +91,14 @@ void TextureInterpolation<DataTypes>::reinit()
 template <class DataTypes>
 void TextureInterpolation<DataTypes>::update()
 {
-    cleanDirty();
-
     if (!_inputField.isSet())
         return;
 
     const sofa::helper::vector <Coord>& realInputs = _inputField.getValue();
-    ResizableExtVector2D& outputs = *(_outputCoord.beginEdit());
+
+    cleanDirty();
+
+    ResizableExtVector2D& outputs = *(_outputCoord.beginWriteOnly());
     outputs.resize (realInputs.size());
 
     if (realInputs.size() == 0)

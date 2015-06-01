@@ -79,8 +79,6 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::reinit()
 template <class DataTypes>
 void ExtrudeEdgesAndGenerateQuads<DataTypes>::update()
 {
-    cleanDirty();
-
     const helper::vector<sofa::core::topology::BaseMeshTopology::Edge>& curveEdges = f_curveEdges.getValue();
     const VecCoord& curveVertices = f_curveVertices.getValue();
 
@@ -90,11 +88,13 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::update()
         return;
     }
 
-    VecCoord* extrudedVertices = f_extrudedVertices.beginEdit();
+    cleanDirty();
+
+    VecCoord* extrudedVertices = f_extrudedVertices.beginWriteOnly();
     extrudedVertices->clear();
-    helper::vector<sofa::core::topology::BaseMeshTopology::Edge>* extrudedEdges = f_extrudedEdges.beginEdit();
+    helper::vector<sofa::core::topology::BaseMeshTopology::Edge>* extrudedEdges = f_extrudedEdges.beginWriteOnly();
     extrudedEdges->clear();
-    helper::vector<sofa::core::topology::BaseMeshTopology::Quad>* extrudedQuads = f_extrudedQuads.beginEdit();
+    helper::vector<sofa::core::topology::BaseMeshTopology::Quad>* extrudedQuads = f_extrudedQuads.beginWriteOnly();
     extrudedQuads->clear();
 
     int nSlices = f_numberOfSections.getValue();

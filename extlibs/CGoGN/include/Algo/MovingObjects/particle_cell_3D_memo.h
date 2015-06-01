@@ -31,9 +31,12 @@ class ParticleCell3DMemo : public Algo::Volume::MovingObjects::ParticleCell3D<PF
 public :
     typedef typename PFP::MAP MAP;
     typedef typename PFP::VEC3 VEC3;
-    typedef VertexAttribute<VEC3, MAP> TAB_POS;
-    typedef FaceAttribute<VEC3,MAP> TAB_FACE;
-    typedef VolumeAttribute<VEC3,MAP> TAB_VOL;
+    typedef typename AttributeHandler_Traits< VEC3, VERTEX, MAP>::Handler TAB_POS;
+    typedef typename AttributeHandler_Traits< VEC3, FACE, MAP>::Handler TAB_FACE;
+    typedef typename AttributeHandler_Traits< VEC3, VOLUME, MAP>::Handler TAB_VOL;
+//    typedef VertexAttribute<VEC3, MAP> TAB_POS;
+//    typedef FaceAttribute<VEC3,MAP> TAB_FACE;
+//    typedef VolumeAttribute<VEC3,MAP> TAB_VOL;
 
     ParticleCell3DMemo(MAP& map, Dart belonging_cell, VEC3 pos, const TAB_POS& tabPos,const TAB_FACE * fa_center = NULL,
                        const TAB_VOL * vol_center = NULL) :

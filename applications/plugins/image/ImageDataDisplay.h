@@ -60,14 +60,12 @@ public:
     typedef _InImageTypes InImageTypes;
     typedef typename InImageTypes::T Ti;
     typedef typename InImageTypes::imCoord imCoordi;
-    typedef helper::WriteAccessor<Data< InImageTypes > > waImagei;
     typedef helper::ReadAccessor<Data< InImageTypes > > raImagei;
 
     typedef _OutImageTypes OutImageTypes;
     typedef typename OutImageTypes::T To;
     typedef typename OutImageTypes::imCoord imCoordo;
-    typedef helper::WriteAccessor<Data< OutImageTypes > > waImageo;
-    typedef helper::ReadAccessor<Data< OutImageTypes > > raImageo;
+    typedef helper::WriteOnlyAccessor<Data< OutImageTypes > > waImageo;
 
     Data< InImageTypes > inputImage;
     Data< OutImageTypes > outputImage;
@@ -101,12 +99,12 @@ protected:
 
     virtual void update()
     {
+        const SVector<SVector<To> >& dat = this->VoxelData.getValue();
+        raImagei in(this->inputImage);
+
         cleanDirty();
 
-        const SVector<SVector<To> >& dat = this->VoxelData.getValue();
-
         waImageo out(this->outputImage);
-        raImagei in(this->inputImage);
         imCoordi dim = in->getDimensions();
         dim[InImageTypes::DIMENSION_T] = 1;
         dim[InImageTypes::DIMENSION_S] = dat.size()?dat[0].size():1;

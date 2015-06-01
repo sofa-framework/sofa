@@ -478,14 +478,14 @@ public:
     typedef typename ImageGaussPointSamplerSpec::IndT IndT;
     typedef typename ImageGaussPointSamplerSpec::IndTypes IndTypes;
     typedef helper::ReadAccessor<Data< IndTypes > > raInd;
-    typedef helper::WriteAccessor<Data< IndTypes > > waInd;
+    typedef helper::WriteOnlyAccessor<Data< IndTypes > > waInd;
     Data< IndTypes > f_index;
 
     typedef ImageTypes_ DistTypes;
     typedef typename DistTypes::T DistT;
     typedef typename DistTypes::imCoord imCoord;
     typedef helper::ReadAccessor<Data< DistTypes > > raDist;
-    typedef helper::WriteAccessor<Data< DistTypes > > waDist;
+    typedef helper::WriteOnlyAccessor<Data< DistTypes > > waDist;
     Data< DistTypes > f_w;
 
     typedef MaskTypes_ MaskTypes;
@@ -526,13 +526,11 @@ public:
     {
         Inherit::init();
 
-// somehow, setting inputs now leads to several parallel initializations and a seg-fault
-// TODO: fix this (related to data flow issues?)
-//        addInput(&f_index);
-//        addInput(&f_w);
-//        addInput(&f_transform);
-//        addInput(&f_mask);
-//        addInput(&f_maskLabels);
+        addInput(&f_index);
+        addInput(&f_w);
+        addInput(&f_transform);
+        addInput(&f_mask);
+        addInput(&f_maskLabels);
         addOutput(&f_region);
         addOutput(&f_error);
         setDirtyValue();
@@ -566,6 +564,7 @@ protected:
 
     virtual ~ImageGaussPointSampler()
     {
+        // what is that?
         f_index.setReadOnly(true);
         f_w.setReadOnly(true);
         f_mask.setReadOnly(true);
@@ -591,6 +590,8 @@ protected:
 
     virtual void update()
     {
+        updateAllInputsIfDirty(); // the easy way...
+
         cleanDirty();
 
         ImageGaussPointSamplerSpec::init(this);

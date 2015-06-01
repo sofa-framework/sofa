@@ -85,7 +85,7 @@ void ParticleCell3D<PFP>::resetParticuleSubdiv(){
     reset_positionVolume();
     CGoGN::Algo::MovingObjects::ParticleBase<PFP>::move(m_positionVolume);
 
-#ifdef DEBUG
+#ifdef DEBUG_PART
     CGoGNout<<"part moved to centroid ,d : "<< this->getPosition()<<" || "<<this->getCell()<<CGoGNendl;
 
 #endif
@@ -106,7 +106,7 @@ inline Geom::Orientation3D ParticleCell3D<PFP>::whichSideOfFace(const VEC3& c, D
 {
         Dart da2 = m.phi1(da);
         Geom::Plane3D<typename PFP::REAL> plan(position[da],position[da2],this->m_positionFace);
-#ifdef DEBUG
+#ifdef DEBUG_PART
     std::cout << "Test side of Face (obj,d,position[d], test)" <<c<<" || "<<da<<" || "<<position[da]<<" ||" <<plan.orient(c)<< std::endl;
 #endif
 //    return Algo::Surface::Geometry::facePlane<PFP>(m,da,position).orient(c);
@@ -116,7 +116,7 @@ inline Geom::Orientation3D ParticleCell3D<PFP>::whichSideOfFace(const VEC3& c, D
 template <typename PFP>
 Geom::Orientation3D ParticleCell3D<PFP>::orientationPlan(const VEC3& c,const VEC3& p1, const VEC3& p2, const VEC3& p3)
 {
-#ifdef DEBUG
+#ifdef DEBUG_PART
     std::cout << "Test orientation plan (obj,p1,p2,p3, test)" <<c<<" || "<<p1<<" || "<<p2<<" ||"<<p3<<" ||" <<Geom::Plane3D<typename PFP::REAL>(p3, p1, p2).orient(c)<< std::endl;
 #endif
      return Geom::Plane3D<typename PFP::REAL>(p3, p1, p2).orient(c);
@@ -128,7 +128,7 @@ Geom::Orientation3D ParticleCell3D<PFP>::orientationPlan(const VEC3& c,const VEC
 //{
 //    const VEC3 v2(position[da] -base);
 //    const VEC3 np(normal ^ v2);
-//#ifdef DEBUG
+//#ifdef DEBUG_PART
 //    std::cout << "Test plan Face (obj,d,position[d], positionFace, test)" <<c<<" || "<<da<<" || "<<position[da]<<" || "<<base<<" || "<<Geom::Plane3D<typename PFP::REAL>(np,base).orient(c)<< std::endl;
 //#endif
 //    return Geom::Plane3D<typename PFP::REAL>(np,base).orient(c);
@@ -193,7 +193,7 @@ Geom::Orientation3D ParticleCell3D<PFP>::whichSideOfEdge(const VEC3& c, Dart d) 
     const VEC3& p3 = m_positionFace;
     const VEC3& norm = Geom::Plane3D<typename PFP::REAL>(p1,p2,p3).normal();
     const VEC3& n2 = norm.cross(p1-p2);
-#ifdef DEBUG
+#ifdef DEBUG_PART
     std::cout << "Test side of edge (obj,d,position[d], position(phi1), test)" <<c<<" || "<<d<<" || "<<position[d]<<" || "<<position[m.phi1(d)]<<" || "<<Geom::Plane3D<typename PFP::REAL>(n2,p1).orient(c)<< std::endl;
 #endif
     return Geom::Plane3D<typename PFP::REAL>(n2,p1).orient(c);
@@ -209,7 +209,7 @@ bool ParticleCell3D<PFP>::isOnHalfEdge(const VEC3& c, Dart d) // booleen : vrai 
     norm.normalize();
 
     const Geom::Plane3D<typename PFP::REAL>& pl = Geom::Plane3D<typename PFP::REAL>(norm,p1);
-#ifdef DEBUG
+#ifdef DEBUG_PART
     std::cout << "is on half efge (obj , d, p1, p2, orient,points equal)"<< c <<  d <<  " || " << p1 <<  " || " << p2 <<  " || " << pl.orient(c) <<  " || " << Geom::arePointsEquals(c,p1) << std::endl;
 
 #endif
@@ -222,7 +222,7 @@ bool ParticleCell3D<PFP>::isOnHalfEdge(const VEC3& c, Dart d) // booleen : vrai 
 template <typename PFP>
 void ParticleCell3D<PFP>::vertexState(const VEC3& current)
 {
-#ifdef DEBUG
+#ifdef DEBUG_PART
     std::cout << "vertexState" << d <<  " " <<position[d] <<  " " << this->m_position<<  " " << this->m_positionFace<< std::endl;
 #endif
 
@@ -231,7 +231,7 @@ void ParticleCell3D<PFP>::vertexState(const VEC3& current)
     const VEC3& som = position[d];
 
     if(Geom::arePointsEquals(current, som)) { // si on est sur le sommet on s'arrete
-#ifdef DEBUG
+#ifdef DEBUG_PART
         std::cout << "points equal vrai :" << current << " || "<<this->m_position<<" || "<<d<<" || "<<position[d]<< std::endl;
 #endif
         this->m_position = som;
@@ -366,7 +366,7 @@ void ParticleCell3D<PFP>::vertexState(const VEC3& current)
 template <typename PFP>
 void ParticleCell3D<PFP>::edgeState(const VEC3& current)
 {
-#ifdef DEBUG
+#ifdef DEBUG_PART
     std::cout << "edgeState" <<  d <<  " " << this->m_position<<  " " << this->m_positionFace << std::endl;
 
 #endif
@@ -440,7 +440,7 @@ void ParticleCell3D<PFP>::edgeState(const VEC3& current)
 template <typename PFP>
 void ParticleCell3D<PFP>::faceState(const VEC3& current, Geom::Orientation3D wsof)
 {
-#ifdef DEBUG
+#ifdef DEBUG_PART
     std::cout << "faceState" <<  d <<  " " << this->m_position<<  " " << this->m_positionFace<< std::endl;
 #endif
     reset_positionFace();
@@ -584,7 +584,7 @@ void ParticleCell3D<PFP>::placeOnRightFaceAndRightEdge(const VEC3& current,bool 
 template <typename PFP>
 void ParticleCell3D<PFP>::volumeState(const VEC3& current)
 {
-#ifdef DEBUG
+#ifdef DEBUG_PART
     std::cout << "volumeState " <<  d <<  " " << this->m_position<<  " " << this->m_positionFace<< std::endl;
 #endif
     if(m.isBoundaryMarkedCurrent(d))

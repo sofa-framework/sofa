@@ -1,5 +1,6 @@
-#include "PythonVisitor.h"
 #include "PythonMacros.h"
+#include "PythonVisitor.h"
+
 
 
 namespace sofa

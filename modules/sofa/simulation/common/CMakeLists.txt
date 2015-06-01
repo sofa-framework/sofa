@@ -28,6 +28,7 @@ set(HEADER_FILES
 	IntegrateEndEvent.h
 	LocalStorage.h
 	MechanicalComputeEnergyVisitor.h
+    MechanicalGetMomentumVisitor.h
 	MechanicalMatrixVisitor.h
 	MechanicalOperations.h
 	MechanicalVPrintVisitor.h
@@ -94,7 +95,7 @@ set(SOURCE_FILES
 	ExportGnuplotVisitor.cpp
 	ExportOBJVisitor.cpp
 	InitVisitor.cpp   
-	MechanicalComputeEnergyVisitor.cpp
+    MechanicalComputeEnergyVisitor.cpp
 	MechanicalOperations.cpp
 	MechanicalMatrixVisitor.cpp
 	MechanicalVPrintVisitor.cpp

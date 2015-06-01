@@ -62,8 +62,21 @@ class Model:
                 self.group[g.attrib["id"]] = Model.Mesh.Group()
                 self.group[g.attrib["id"]].index = Tools.strToListInt(g.find("index").text)
                 for d in g.iter("data"):
-                    self.group[g.attrib["id"]].data[d.attrib["name"]]=parseData(d)                    
-    
+                    self.group[g.attrib["id"]].data[d.attrib["name"]]=parseData(d)
+
+    class MeshAttributes:
+        def __init__(self,objXml=None):
+            self.collision=True
+            self.simulation=True
+            if not objXml is None:
+                self.parseXml(objXml)
+
+        def parseXml(self, objXml):
+            if "collision" in objXml.attrib:
+                self.collision = False if objXml.attrib["collision"] in {'False','0','false'} else True
+            if "simulation" in objXml.attrib:
+                self.simulation = False if objXml.attrib["simulation"] in {'False','0','false'} else True
+
     class Solid:
         def __init__(self, solidXml=None):
             self.id = None
@@ -71,12 +84,20 @@ class Model:
             self.tags = set()
             self.position = None
             self.mesh = list() # list of meshes
+            self.meshAttributes = dict() # attributes associated with each mesh
             self.mass = None
             self.com = None # x,y,z
             self.inertia = None # Ixx, Ixy, Ixz, Iyy, Iyz, Izz
             self.skinnings=list()
             if not solidXml is None:
                 self.parseXml(solidXml)
+
+        def addMesh(self, mesh, attr=None):
+            self.mesh.append(mesh)
+            if not attr is None:
+                self.meshAttributes[mesh.id]=attr
+            else:
+                self.meshAttributes[mesh.id]= Model.MeshAttributes()
 
         def parseXml(self, objXml):
             parseIdName(self, objXml)
@@ -90,8 +111,14 @@ class Model:
                 self.inertia = Tools.strToListFloat(objXml.find("inertia").text)
 
     class Offset:
-        def __init__(self, offsetXml):
+        def __init__(self, offsetXml=None):
             self.name = "offset"
+            self.value = [0., 0., 0., 0., 0., 0., 1.] # x y z qx qy qz qw
+            self.type = "absolute"
+            if not offsetXml is None:
+                self.parseXml(offsetXml)
+
+        def parseXml(self, offsetXml):
             self.value = Tools.strToListFloat(offsetXml.text)
             self.type = offsetXml.attrib["type"]
             
@@ -321,8 +348,9 @@ class Model:
         meshes=objXml.findall("mesh")
         for i,m in enumerate(meshes):
             meshId = m.attrib["id"]
+            attr = Model.MeshAttributes(m)
             if meshId in self.meshes:
-                obj.mesh.append(self.meshes[meshId])
+                obj.addMesh(self.meshes[meshId], attr)
             else:
                 print "ERROR: sml.Model: solid {0} references undefined mesh {1}".format(obj.name, meshId)
 
@@ -378,10 +406,11 @@ def setupUnits(myUnits):
 def getSolidRigidMassInfo(solid, density):
     massInfo = mass.RigidMassInfo()
     for mesh in solid.mesh:
-        # mesh mass info
-        mmi = mass.RigidMassInfo()
-        mmi.setFromMesh(mesh.source, density=density)
-        massInfo += mmi
+        if solid.meshAttributes[mesh.id].simulation is True:
+            # mesh mass info
+            mmi = mass.RigidMassInfo()
+            mmi.setFromMesh(mesh.source, density=density)
+            massInfo += mmi
     return massInfo
 
 class BaseScene:

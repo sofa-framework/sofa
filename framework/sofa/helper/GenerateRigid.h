@@ -70,6 +70,7 @@ void SOFA_HELPER_API generateRigid( GenerateRigidInfo& res
                                   , std::string const& meshName
                                   , SReal density
                                   , const defaulttype::Vector3& scale = defaulttype::Vector3(1,1,1)
+                                  , const defaulttype::Vector3& rotation /*Euler angles*/ = defaulttype::Vector3(0,0,0)
                                   );
 
 /// user friendly function to compute rigid info from a mesh file, a density, a scale
@@ -77,6 +78,7 @@ bool SOFA_HELPER_API generateRigid( GenerateRigidInfo& res
                                   , const std::string& meshFilename
                                   , SReal density
                                   , const defaulttype::Vector3& scale = defaulttype::Vector3(1,1,1)
+                                  , const defaulttype::Vector3& rotation /*Euler angles*/ = defaulttype::Vector3(0,0,0)
                                   );
 }
 

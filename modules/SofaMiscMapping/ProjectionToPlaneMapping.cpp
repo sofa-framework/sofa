@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_MESHSAMPLER_CPP
-#include <sofa/component/engine/MeshSampler.inl>
+#define SOFA_COMPONENT_MAPPING_ProjectionToPlaneMapping_CPP
+
+#include "ProjectionToPlaneMapping.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
 
 namespace sofa
 {
@@ -33,30 +33,40 @@ namespace sofa
 namespace component
 {
 
-namespace engine
+namespace mapping
 {
 
-SOFA_DECL_CLASS(MeshSampler)
+SOFA_DECL_CLASS(ProjectionToTargetPlaneMapping)
 
-int MeshSamplerClass = core::RegisterObject("Select uniformly distributed points on a mesh based on Euclidean or Geodesic distance measure")
+using namespace defaulttype;
+
+// Register in the Factory
+int ProjectionToTargetPlaneMappingClass = core::RegisterObject("Compute distance between a moving point and fixed line")
 #ifndef SOFA_FLOAT
-        .add< MeshSampler<Vec3dTypes> >(true)
-#endif //SOFA_FLOAT
+        .add< ProjectionToTargetPlaneMapping< Vec3dTypes, Vec3dTypes > >()
+        .add< ProjectionToTargetPlaneMapping< Rigid3dTypes, Vec3dTypes > >()
+#endif
 #ifndef SOFA_DOUBLE
-        .add< MeshSampler<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< ProjectionToTargetPlaneMapping< Vec3fTypes, Vec3fTypes > >()
+        .add< ProjectionToTargetPlaneMapping< Rigid3fTypes, Vec3fTypes > >()
+#endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API MeshSampler<Vec3dTypes>;
-#endif //SOFA_FLOAT
+template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< Rigid3dTypes, Vec3dTypes >;
+#endif
+
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API MeshSampler<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< Vec3fTypes, Vec3fTypes >;
+template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< Rigid3fTypes, Vec3fTypes >;
+#endif
 
 
 
-} //
+
+} // namespace mapping
+
 } // namespace component
 
 } // namespace sofa

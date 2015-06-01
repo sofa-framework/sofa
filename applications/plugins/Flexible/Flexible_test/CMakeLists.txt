@@ -21,11 +21,12 @@ set(SOURCE_FILES
     TetrahedraMaterial_test.cpp
     TetrahedronVolumeMapping_test.cpp
 
-    CorotationalStrainMapping_test.cpp
-    CauchyStrainMapping_test.cpp
-    GreenStrainMapping_test.cpp
-    InvariantMapping_test.cpp
-    PrincipalStretchesMapping_test.cpp)
+   CorotationalStrainMapping_test.cpp
+   CauchyStrainMapping_test.cpp
+   GreenStrainMapping_test.cpp
+   InvariantMapping_test.cpp
+   PrincipalStretchesMapping_test.cpp
+   Engine_test.cpp)
 
 if(WIN32)
     list(APPEND HEADER_FILES "stdafx.h")

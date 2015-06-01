@@ -120,8 +120,6 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         if(!deformationMapping) { serr<<SOFA_CLASS_METHOD<<"can't compute the mass : no mapping found"<<sendl; return; }
         if(!dofs) { serr<<SOFA_CLASS_METHOD<<"can't compute the mass : no MechanicalObject<Vec3> found"<<sendl; return; }
 
@@ -130,6 +128,10 @@ protected:
         raTransform inT(this->transform);
         if(in->isEmpty()) return;
         const cimg_library::CImg<T>& img = in->getCImg(this->time);
+
+        f_lumping.updateIfDirty();
+
+        cleanDirty();
 
         // count non zero voxels
         unsigned int nb=0;

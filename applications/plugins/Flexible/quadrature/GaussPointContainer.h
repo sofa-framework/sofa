@@ -66,7 +66,6 @@ public:
         Inherited::init();
         addInput(&f_inputVolume);
         setDirtyValue();
-        update();
     }
 
     virtual void reinit() { update(); }
@@ -85,12 +84,13 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         helper::ReadAccessor< Data< vector<Real> > > invol(f_inputVolume);
         if(!invol.size()) serr<<"no volume provided -> use unit default volume"<<sendl;
         waVolume vol(this->f_volume);
         unsigned int dim = this->f_volumeDim.getValue();
+
+        cleanDirty();
+
         helper::WriteOnlyAccessor<Data< VTransform > > transforms(this->f_transforms);
 
         vol.resize(this->f_position.getValue().size());
@@ -106,7 +106,6 @@ protected:
             }
             transforms[i].identity();
         }
-
     }
 
 };

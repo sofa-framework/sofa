@@ -23,9 +23,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_GROUPFILTERYOUNGMODULUS_CPP
-#include <SofaEngine/GroupFilterYoungModulus.inl>
+#include "GroupFilterYoungModulus.inl"
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -48,14 +49,14 @@ int GroupFilterYoungModulusClass = core::RegisterObject("This class gives a vect
         .add< GroupFilterYoungModulus<Vec3fTypes> >()
 #endif //SOFA_DOUBLE
         ;
-/*
+
 #ifndef SOFA_FLOAT
 template class SOFA_ENGINE_API GroupFilterYoungModulus<Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 template class SOFA_ENGINE_API GroupFilterYoungModulus<Vec3fTypes>;
 #endif //SOFA_DOUBLE
-*/
+
 
 } // namespace engine
 

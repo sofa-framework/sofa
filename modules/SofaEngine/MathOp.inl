@@ -471,9 +471,15 @@ void MathOp<VecT>::reinit()
 template <class VecT>
 void MathOp<VecT>::update()
 {
-    cleanDirty();
-    createInputs();
+//    createInputs();
     std::string op = f_op.getValue().getSelectedItem();
+
+    // ensure all inputs are up-to-date before cleaning engine
+    for (unsigned int i=0, iend=vf_inputs.size(); i<iend; ++i)
+        vf_inputs[i]->updateIfDirty();
+
+    cleanDirty();
+
     bool result = MathOpApply< typename MathOpTraits<Value>::Ops >::apply(
         op, &f_output, vf_inputs);
     if (!result)

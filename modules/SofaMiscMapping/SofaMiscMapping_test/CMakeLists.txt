@@ -4,6 +4,7 @@ project(SofaMiscMapping_test)
 
 set(SOURCE_FILES
     ProjectionToTargetLineMapping_test.cpp
+    ProjectionToTargetPlaneMapping_test.cpp
     SubsetMultiMapping_test.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

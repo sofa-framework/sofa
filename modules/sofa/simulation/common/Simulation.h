@@ -113,7 +113,7 @@ public:
     /// Dump the current state in the given stream
     virtual void dumpState( Node* root, std::ofstream& out );
 
-    /// Load a scene from a file.
+    /// Load a scene from a file
     virtual Node::SPtr load(const char* /* filename */);
 
     /// Unload a scene from a Node.

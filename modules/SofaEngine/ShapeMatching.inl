@@ -118,13 +118,11 @@ void ShapeMatching<DataTypes>::update()
 {
     bool clusterdirty = this->cluster.isDirty();
 
-    cleanDirty();
-
     const VecCoord& restPositions = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     helper::ReadAccessor< Data< VecCoord > > fixedPositions0 = this->fixedPosition0;
     helper::ReadAccessor< Data< VecCoord > > fixedPositions = this->fixedPosition;
     helper::ReadAccessor<Data< VecCoord > > currentPositions = position;
-    helper::WriteAccessor<Data< VecCoord > > targetPos = targetPosition;
+    helper::WriteOnlyAccessor<Data< VecCoord > > targetPos = targetPosition;
     helper::ReadAccessor<Data< VVI > > clust = cluster;
 
     //this->mstate->resize(restPositions.size());
@@ -222,6 +220,7 @@ void ShapeMatching<DataTypes>::update()
             else targetPos[i]=currentPositions[i];
     }
 
+    cleanDirty();
 }
 
 // Specialization for rigids

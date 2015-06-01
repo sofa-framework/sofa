@@ -76,7 +76,7 @@ public:
     typedef SReal Real;
 
     Data< vector<Real> > voxelSize; // should be a Vec<3,Real>, but it is easier to be backward-compatible that way
-    typedef helper::WriteAccessor<Data< vector<Real> > > waVecReal;
+    typedef helper::WriteOnlyAccessor<Data< vector<Real> > > waVecReal;
     Data< Vec<3,unsigned> > nbVoxels;
     Data< bool > rotateImage;
     Data< unsigned int > padSize;
@@ -86,30 +86,30 @@ public:
     typedef typename ImageTypes::T T;
     typedef typename ImageTypes::imCoord imCoord;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
-    typedef helper::WriteAccessor<Data< ImageTypes > > waImage;
+    typedef helper::WriteOnlyAccessor<Data< ImageTypes > > waImage;
     Data< ImageTypes > image;
 
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef typename TransformType::Coord Coord;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
-    typedef helper::WriteAccessor<Data< TransformType > > waTransform;
+    typedef helper::WriteOnlyAccessor<Data< TransformType > > waTransform;
     Data< TransformType > transform;
 
     typedef vector<Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
-    typedef helper::WriteAccessor<Data< SeqPositions > > waPositions;
+    typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     helper::vector< Data< SeqPositions > *> vf_positions;
 
     typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef helper::ReadAccessor<Data< SeqTriangles > > raTriangles;
-    typedef helper::WriteAccessor<Data< SeqTriangles > > waTriangles;
+    typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
     helper::vector< Data< SeqTriangles >*> vf_triangles;
 
     typedef typename core::topology::BaseMeshTopology::Edge Edge;
     typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef helper::ReadAccessor<Data< SeqEdges > > raEdges;
-    typedef helper::WriteAccessor<Data< SeqEdges > > waEdges;
+    typedef helper::WriteOnlyAccessor<Data< SeqEdges > > waEdges;
     helper::vector< Data< SeqEdges >*> vf_edges;
 
     typedef double ValueType;
@@ -208,8 +208,6 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         createInputMeshesData();
 
         // to be backward-compatible, if less than 3 values, fill with the last one

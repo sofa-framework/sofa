@@ -173,10 +173,10 @@ void TOBBModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int in
     n.clear();
     points.clear();
 
-    points.push_back(p[0]);
     points.push_back(p[1]);
-    points.push_back(p[4]);
+    points.push_back(p[0]);
     points.push_back(p[5]);
+    points.push_back(p[4]);
 
     n.push_back(-axis(index,2));
     n.push_back(n.back());

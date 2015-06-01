@@ -196,7 +196,11 @@ protected:
     SingleLink<TData<T>,TData<T>, BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> parentData;
 };
 
-template <class T, bool COW>
+
+/// To handle the Data link:
+/// - CopyOnWrite==false: an independent copy (duplicated memory)
+/// - CopyOnWrite==true: shared memory while the Data is not modified (in that case the memory is duplicated to get an independent copy)
+template <class T, bool CopyOnWrite>
 class DataValue;
 
 template <class T>
@@ -222,7 +226,7 @@ public:
 
     DataValue& operator=(const DataValue& dc )
     {
-        data = dc.getValue();
+        data = dc.getValue(); // copy
         return *this;
     }
 
@@ -257,7 +261,7 @@ public:
     }
 
     DataValue(const DataValue& dc)
-        : ptr(dc.ptr)
+        : ptr(dc.ptr) // start with shared memory
     {
     }
 
@@ -280,7 +284,7 @@ public:
     {
         if(!ptr.unique())
         {
-            ptr.reset(new T(*ptr));
+            ptr.reset(new T(*ptr)); // a priori the Data will be modified -> copy
         }
         return ptr.get();
     }
@@ -298,7 +302,7 @@ public:
     {
         if(!ptr.unique())
         {
-            ptr.reset(new T(value));
+            ptr.reset(new T(value)); // the Data is modified -> copy
         }
         else
         {
@@ -703,3 +707,4 @@ using core::objectmodel::Data;
 } // namespace sofa
 
 #endif
+

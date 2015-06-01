@@ -92,12 +92,13 @@ inline void MapIndices<unsigned int>::apply(Value& v, const MapIndex& m)
 template <class T>
 void MapIndices<T>::update()
 {
-    cleanDirty();
     helper::ReadAccessor<Data<VecValue> > in = f_in;
     helper::ReadAccessor<Data<VecIndex> > indices = f_indices;
     const bool transpose = f_transpose.getValue();
 
-    helper::WriteAccessor<Data<VecValue> > out = f_out;
+    cleanDirty();
+
+    helper::WriteOnlyAccessor<Data<VecValue> > out = f_out;
 
     out.clear();
     out.reserve(in.size());

@@ -1,5 +1,7 @@
 #define FLEXIBLE_COMPUTEDUALQUATENGINE_CPP
 
+#include "../initFlexible.h"
+
 #include "ComputeDualQuatEngine.inl"
 
 #include <sofa/core/ObjectFactory.h>
@@ -25,6 +27,8 @@ int ComputeDualQuatEngineClass = core::RegisterObject("Converts a vector of Affi
 ;
 
 
+template class SOFA_Flexible_API ComputeDualQuatEngine<Rigid3Types>;
+template class SOFA_Flexible_API ComputeDualQuatEngine<Affine3Types>;
 
 
 } // namespace engine

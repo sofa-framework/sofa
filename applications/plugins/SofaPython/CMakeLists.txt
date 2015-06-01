@@ -128,7 +128,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SofaPython.h.in
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaPython/SofaPython.h
          DESTINATION "${SOFAPYTHON_INSTALL_INCLUDE_DIR}/SofaPython")
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral ${PYTHON_LIBRARIES})
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     # dlopen() is used on Linux for a workaround (see PythonEnvironnement.cpp)

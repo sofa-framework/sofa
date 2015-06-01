@@ -3,7 +3,9 @@ cmake_minimum_required(VERSION 2.8)
 project(image_test)
 
 set(SOURCE_FILES
-    DataImage_test.cpp)
+    TestImageEngine.cpp
+    DataImage_test.cpp
+    ImageEngine_test.cpp)
 
 add_definitions("-DIMAGE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 

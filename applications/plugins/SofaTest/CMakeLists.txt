@@ -18,7 +18,8 @@ set(HEADER_FILES
     Elasticity_test.inl
     ForceField_test.h
     BroadPhase_test.h
-    PrimitiveCreation.h)
+    PrimitiveCreation.h
+    DataEngine_test.h)
 
 set(SOURCE_FILES
 

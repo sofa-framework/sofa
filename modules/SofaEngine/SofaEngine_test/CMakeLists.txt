@@ -2,7 +2,15 @@ cmake_minimum_required(VERSION 2.8)
 
 project(SofaEngine_test)
 
+
+set(HEADER_FILES
+
+    TestEngine.h
+        )
+
 set(SOURCE_FILES
+
+    TestEngine.cpp
 	Engine_test.cpp
 	TransformEngine_test.cpp)
 

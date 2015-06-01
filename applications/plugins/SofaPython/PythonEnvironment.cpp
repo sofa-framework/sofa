@@ -22,9 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "PythonEnvironment.h"
-
 #include "PythonMacros.h"
+#include "PythonEnvironment.h"
 #include "PythonScriptController.h"
 
 #include <sofa/helper/system/FileRepository.h>
@@ -48,6 +47,16 @@ namespace sofa
 
 namespace simulation
 {
+
+PyMODINIT_FUNC initModulesHelper(const std::string& name, PyMethodDef* methodDef)
+{
+    Py_InitModule(name.c_str(), methodDef);
+}
+
+void PythonEnvironment::addModule(const std::string& name, PyMethodDef* methodDef)
+{
+    initModulesHelper(name, methodDef);
+}
 
 void PythonEnvironment::Init()
 {
@@ -82,13 +91,13 @@ void PythonEnvironment::Init()
 
     // Workaround: try to import numpy and to launch numpy.finfo to cache data;
     // this prevents a deadlock when calling numpy.finfo from a worker thread.
+    // ocarre: may crash on some configurations, we have to find a fix
     PyRun_SimpleString("\
 try:\n\
     import numpy\n\
     numpy.finfo(float)\n\
 except:\n\
     pass");
-
 
     // Fill sys.path with the paths to the python modules defined in plugins.
 
@@ -188,31 +197,56 @@ sofa::simulation::tree::GNode::SPtr PythonEnvironment::initGraphFromScript( cons
 }
 */
 
-
-
-  // some basic RAII stuff to handle init/termination cleanly
+// some basic RAII stuff to handle init/termination cleanly
   namespace {
 	
-  	struct raii {
-  	  raii() {
-  		PythonEnvironment::Init();
-  	  }
+    struct raii {
+      raii() {
+        PythonEnvironment::Init();
+      }
 
-  	  ~raii() {
-  		PythonEnvironment::Release();
-  	  }
+      ~raii() {
+        PythonEnvironment::Release();
+      }
 	  
-  	};
+    };
 
-  	static raii singleton;
+    static raii singleton;
   }
-  
 
 // basic script functions
-PyObject* PythonEnvironment::importScript( const char *filename, const std::vector<std::string>& arguments )
+std::string PythonEnvironment::getError()
 {
-  // Init(); // MUST be called at least once; so let's call it each time we load a python script
+    std::string error;
 
+    PyObject *ptype, *pvalue /* error msg */, *ptraceback /*stack snapshot and many other informations (see python traceback structure)*/;
+    PyErr_Fetch(&ptype, &pvalue, &ptraceback);
+    if(pvalue)
+        error = PyString_AsString(pvalue);
+
+    return error;
+}
+
+bool PythonEnvironment::runString(const std::string& script)
+{
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
+    PyObject* result = PyRun_String(script.data(), Py_file_input, pDict, pDict);
+
+    if(0 == result)
+    {
+        SP_MESSAGE_ERROR("Script (string) import error")
+        PyErr_Print();
+
+        return false;
+    }
+
+    Py_DECREF(result);
+
+    return true;
+}
+
+bool PythonEnvironment::runFile( const char *filename, const std::vector<std::string>& arguments)
+{
 //    SP_MESSAGE_INFO( "Loading python script \""<<filename<<"\"" )
     std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename);
     std::string bareFilename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename);
@@ -226,7 +260,7 @@ PyObject* PythonEnvironment::importScript( const char *filename, const std::vect
 
 //    SP_MESSAGE_INFO( commandString.c_str() )
 
-    if( !arguments.empty() )
+    if(!arguments.empty())
     {
         char**argv = new char*[arguments.size()+1];
         argv[0] = new char[bareFilename.size()+1];
@@ -248,39 +282,48 @@ PyObject* PythonEnvironment::importScript( const char *filename, const std::vect
         delete [] argv;
     }
 
-    PyObject *pModule = 0;
-
     //  Py_BEGIN_ALLOW_THREADS
-
-    PyObject *pSysModuleDict = PyImport_GetModuleDict();
-
-    assert(pSysModuleDict != 0 && PyMapping_Check(pSysModuleDict));
-
-    bool previously_loaded = (PyMapping_HasKey(pSysModuleDict,PyString_FromString(bareFilename.c_str())) == 1);
-    /// if true, a module with similar name has been loaded. We need to reload the module.
 
     PyRun_SimpleString("import sys");
     PyRun_SimpleString(commandString.c_str());
 
-    // Load the module object
-    pModule = PyImport_Import(PyString_FromString(bareFilename.c_str()));
+    // Load the scene script
+	char* pythonFilename = strdup(filename);
+    PyObject* scriptPyFile = PyFile_FromString(pythonFilename, (char*)("r"));
+	free(pythonFilename);
+
+    if( !scriptPyFile )
+    {
+        SP_MESSAGE_ERROR("cannot open file:" << filename)
+        PyErr_Print();
+        return false;
+    }
+
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
+
+	std::string backupFileName;
+    PyObject* backupFileObject = PyDict_GetItemString(pDict, "__file__");
+	if(backupFileObject)
+		backupFileName = PyString_AsString(backupFileObject);
+
+    PyObject* newFileObject = PyString_FromString(filename);
+    PyDict_SetItemString(pDict, "__file__", newFileObject);
+
+    int error = PyRun_SimpleFileEx(PyFile_AsFile(scriptPyFile), filename, 1);
+
+    backupFileObject = PyString_FromString(backupFileName.c_str());
+    PyDict_SetItemString(pDict, "__file__", backupFileObject);
 
     //  Py_END_ALLOW_THREADS
 
-    if (!pModule)
+    if(0 != error)
     {
-        SP_MESSAGE_ERROR( "Script \""<<bareFilename<<"\" import error" )
+        SP_MESSAGE_ERROR("Script (file:" << bareFilename << ") import error")
         PyErr_Print();
-        return 0;
+        return false;
     }
 
-    if (previously_loaded){
-        //SP_MESSAGE_INFO( "Script \""<<bareFilename<<"\" reloaded" )
-        pModule = PyImport_ReloadModule(pModule);
-    }
-
-
-    return pModule;
+    return true;
 }
 
 /*

@@ -45,12 +45,12 @@ namespace mapping
 
 
 
-/** Maps point positions to distances from a fixed target line.
+/** Maps point positions to their projections on a fixed target line.
     Only a subset of the parent points is mapped. This can be used to constrain the trajectories of one or several particles.
 
     In: parent point positions
 
-    Out: distance from each point to a target line, minus a rest distance.
+    Out: orthogonal projection of each point on a target line
 
     @author Matthieu Nesme
   */
@@ -116,7 +116,7 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_ProjectionToLineMapping_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_ProjectionToPlaneMapping_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_MAPPING_API ProjectionToTargetLineMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
 extern template class SOFA_MISC_MAPPING_API ProjectionToTargetLineMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes >;

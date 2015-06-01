@@ -72,15 +72,16 @@ void MergePoints<DataTypes>::reinit()
 template <class DataTypes>
 void MergePoints<DataTypes>::update()
 {
-    cleanDirty();
 
     const VecCoord& x1 = f_X1.getValue();
     const VecCoord& x2 = f_X2.getValue();
 
-    SetIndex& indices1 = *(f_indices1.beginEdit());
-    SetIndex& indices2 = *(f_indices2.beginEdit());
+    cleanDirty();
 
-    VecCoord& points = *(f_points.beginEdit());
+    SetIndex& indices1 = *(f_indices1.beginWriteOnly());
+    SetIndex& indices2 = *(f_indices2.beginWriteOnly());
+
+    VecCoord& points = *(f_points.beginWriteOnly());
 
     indices1.clear();
     indices2.clear();
