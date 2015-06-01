@@ -22,53 +22,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef INITSOFAHAPI_H
+#define INITSOFAHAPI_H
 
-#include "initSofaHAPI.h"
+
 #include <sofa/helper/system/config.h>
 
-namespace SofaHAPI
+#ifdef SOFA_BUILD_SOFAHAPI
+#define SOFA_SOFAHAPI_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#define SOFA_SOFAHAPI_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+namespace sofa
 {
 
-/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
-SOFA_LINK_CLASS(SofaHAPIHapticsDevice);
-
-//Here are just several convenient functions to help user to know what contains the plugin
-
-void initExternalModule()
+namespace component
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+
+extern "C" {
+    SOFA_SOFAHAPI_API void initExternalModule();
+    SOFA_SOFAHAPI_API const char* getModuleName();
+    SOFA_SOFAHAPI_API const char* getModuleVersion();
+    SOFA_SOFAHAPI_API const char* getModuleLicense();
+    SOFA_SOFAHAPI_API const char* getModuleDescription();
+    SOFA_SOFAHAPI_API const char* getModuleComponentList();
 }
 
-const char* getModuleName()
-{
-    return "SofaHAPI";
 }
 
-const char* getModuleVersion()
-{
-    return "0.1";
 }
 
-const char* getModuleLicense()
-{
-    return "GPL";
-}
+/** \mainpage
+  This is a the starting page of the plugin documentation, defined in file initSofaHAPI.h
+  */
 
-
-const char* getModuleDescription()
-{
-    return "Provide haptics support through HAPI (http://www.h3dapi.org)";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    return "SofaHAPIHapticsDevice";
-}
-
-
-}
+#endif // INITEmptyPlugin_H
