@@ -22,6 +22,7 @@ set(HEADER_FILES
     mapping/AffineMultiMapping.h
 	mapping/PythonMultiMapping.h
     mapping/GearMapping.h
+	mapping/PairingMultiMapping.h
 
     numericalsolver/KKTSolver.h
     numericalsolver/EigenSparseSolver.h
@@ -143,6 +144,7 @@ set(SOURCE_FILES
     mapping/AffineMultiMapping.cpp
 	mapping/PythonMultiMapping.cpp
     mapping/GearMapping.cpp
+	mapping/PairingMultiMapping.cpp
 
     numericalsolver/EigenSparseSolver.cpp
     numericalsolver/EigenSparseResponse.cpp
