@@ -348,14 +348,14 @@ Intersection intersectionLineTriangle2D(const VEC3& P, const VEC3& Dir, const VE
 template <typename VEC3>
 Intersection intersectionSegmentTriangle(const VEC3& PA, const VEC3& PB, const VEC3& Ta, const VEC3& Tb, const VEC3& Tc, VEC3& Inter)
 {
-	typedef typename VEC3::DATA_TYPE T ;
-	const T precision = 0.0001;//std::numeric_limits<T>::min();
+        typedef double T ;
+        const T precision = std::numeric_limits<T>::min();
 
 	VEC3 u = Tb - Ta ;
 	VEC3 v = Tc - Ta ;
 	VEC3 Dir = PB - PA ;
 
-	VEC3 n = u ^ v ;
+        VEC3 n = u.cross(v) ;
 
 	VEC3 w0 = PA - Ta ;
     float a = -(n * w0) ;
