@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<Node 	 name="root"  dt="0.005"  >
+	<VisualStyle name="displayFlags"  displayFlags="hideBehaviorModels hideForceFields hideCollisionModels hideMappings" />
+	<Gravity name="G"  gravity="10 0 0" />
+	<DefaultPipeline name="pipeline"  verbose="0"  depth="6" />
+	<BruteForceDetection name="detection" />
+	<DefaultContactManager name="response"  response="FrictionContact" />
+	<RequiredPlugin name="Sensable"  printLog="1"  pluginName="Sensable" />
+	<LocalMinDistance name="proximity"  alarmDistance="0.15"  contactDistance="0.05"  angleCone="0" />
+	<FreeMotionAnimationLoop name="freeMotionAnimationLoop1" />
+	<LCPConstraintSolver name="lCPConstraintSolver1"  group="0" />
+	<OglSceneFrame name="oglSceneFrame0"  style="Cylinders"  alignment="BottomRight" />
+	<CarvingManager name="carvingManager0"  listening="1" />
+	<Node 	 name="Cube"  >
+		<EulerImplicitSolver name="eulerImplicitSolver3" />
+		<CGLinearSolver template="GraphScattered" name="cGLinearSolver4"  tolerance="1e-009"  threshold="1e-009" />
+		<Node 	 name="VisualModel"  >
+			<OglModel template="ExtVec3f" name="CubeVisualModel"  fileMesh="c:/users/sofa_gpu/downloads/sofa/sofa/share/mesh/cube.obj"  rotation="0 0 0"  material="Default Diffuse 1 1 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+		</Node>
+		<Node 	 name="CollisionModel"  >
+			<MeshObjLoader name="Curvedloader"  filename="c:/users/sofa_gpu/downloads/sofa/sofa/share/mesh/cube.obj" />
+			<MechanicalObject template="Vec3d" name="CubeState"  tags="CarvingSurface"  position="@Curvedloader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1"  translation="@Curvedloader.position"  rotation="@Curvedloader.rotation"  scale3d="@Curvedloader.scale3d" />
+			<TTriangleModel template="Vec3d" name="Cube"  moving="0"  simulated="0"  contactStiffness="100" />
+			<TLineModel template="Vec3d" name="Cube"  moving="0"  simulated="0"  contactStiffness="100" />
+			<TPointModel template="Vec3d" name="Cube"  moving="0"  simulated="0"  contactStiffness="100" />
+			<TetrahedronSetTopologyContainer name="Container"  fileTopology="@Curvedloader.filename"  tetrahedra="@Curvedloader.tetrahedra" />
+			<TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetrahedronSetGeometryAlgorithms2"  drawTetrahedra="1"  drawColorTetrahedra="0 1 0" />
+		</Node>
+	</Node>
+	<Node 	 name="Omni"  >
+		<OmniDriver name="omniDriver1"  listening="1"  scale="50"  positionBase="0 1.28 0"  orientationBase="0 0 0 0"  orientationTool="0 0 0 0" positionTool="0 0 0" omniVisu="1" />
+		<MechanicalObject template="Rigid3d" name="DOFs"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  restScale="1" />
+		<MechanicalStateController template="Rigid3d" name="mechanicalStateController1"  listening="1"  handleEventTriggersUpdate="1"  mainDirection="-1 0 0" />
+		<UniformMass template="Rigid3d" name="uniformMass6" />
+		<Node 	 name="RefModel"  >
+			<MeshObjLoader name="loader"  filename="c:/users/sofa_gpu/downloads/sofa/sofa/share/mesh/dental_instrument_centered.obj" />
+			<MeshTopology name="meshTopology1"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
+			<MechanicalObject template="Vec3d" name="instrumentCollisionState"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1"  translation="-0.3 0 3.5"  rotation="0 -180 -90" />
+			<RigidMapping template="Rigid3d,Vec3d" name="rigidMap2"  input="@../"  output="@./" />
+		</Node>
+	</Node>
+	<Node 	 name="Instrument"  >
+		<EulerImplicitSolver name="ODE solver"  rayleighStiffness="0.05"  rayleighMass="1" />
+		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-005"  threshold="1e-005" />
+		<MechanicalObject template="Rigid3d" name="instrumentState"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  restScale="1" />
+		<UniformMass template="Rigid3d" name="mass"  totalmass="0.05" />
+		<LCPForceFeedback template="Rigid3d" name="lCPForceFeedback1"  tags="omni"  listening="1"  activate="1"  forceCoef="0.001" />
+		<UncoupledConstraintCorrection template="Rigid3d" name="uncoupledConstraintCorrection1" />
+		<RigidRigidMapping template="Rigid3d,Rigid3d" name="Omni-&gt;Instrument mapping"  input="@Omni/DOFs"  output="@Instrument/instrumentState" />
+		<Node 	 name="VisualModel"  >
+			<OglModel template="ExtVec3f" name="InstrumentVisualModel"  fileMesh="c:/users/sofa_gpu/downloads/sofa/sofa/share/mesh/dental_instrument_centered.obj"  translation="-0.3 0 3.5"  rotation="0 -180 -90"  material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<RigidMapping template="Rigid3d,ExtVec3f" name="MM-&gt;VM mapping"  input="@instrumentState"  output="@InstrumentVisualModel" />
+		</Node>
+		<Node 	 name="CollisionModel"  >
+			<MeshObjLoader name="loader"  filename="c:/users/sofa_gpu/downloads/sofa/sofa/share/mesh/dental_instrument_centered.obj" />
+			<MeshTopology name="InstrumentCollisionModel"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
+			<MechanicalObject template="Vec3d" name="instrumentCollisionState"  tags="CarvingTool"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1"  translation="-0.3 0 3.5"  rotation="0 -180 -90" />
+			<TLineModel template="Vec3d" name="instrument"  contactStiffness="10" />
+			<TPointModel template="Vec3d" name="instrument"  contactStiffness="10" />
+			<RigidMapping template="Rigid3d,Vec3d" name="MM-&gt;CM mapping"  input="@instrumentState"  output="@instrumentCollisionState" />
+		</Node>
+	</Node>
+</Node>

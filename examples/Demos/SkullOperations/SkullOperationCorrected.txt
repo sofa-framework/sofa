@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<Node 	 name="Root"  dt="0.02"  >
+	<VisualStyle name="visualStyle1"  displayFlags="showAll" />
+	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
+	<BruteForceDetection name="Detection" />
+	<MinProximityIntersection name="Proximity"  alarmDistance="0.3"  contactDistance="0.2" />
+	<DefaultContactManager name="Response"  response="default" />
+	<DefaultCollisionGroupManager name="Group" />
+	<RequiredPlugin name="Sensable"  printLog="1"  pluginName="Sensable" />
+	<CGLinearSolver template="GraphScattered" name="cGLinearSolver6"  iterations="25"  tolerance="1e-005"  threshold="1e-005" />
+	<GenericConstraintCorrection name="GenericConstraintCorrection"  solverName="Skull/SparseLDLSolver1 Instrument/SparseLDLSolver2" /> 
+ 	<Node 	 name="Skull"  >
+		<EulerImplicitSolver name="eulerImplicitSolver1" />
+		<SparseLDLSolver template="CompressedRowSparseMatrix3f" name="SparseLDLSolver1" />
+		<SparseGridTopology name="sparseGridTopology5"  fileTopology="c:/users/sofa_gpu/downloads/sofa/sofa/share/mesh/canapcm.obj"  n="7 6 5" />
+		<MechanicalObject template="Vec3d" name="mObject3"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1" />
+		<UniformMass template="Vec3d" name="uniformMass4" />
+		<HexahedronFEMForceField template="Vec3d" name="hexahedronFEMFF6"  poissonRatio="0.45"  youngModulus="5000"  gatherPt=" "  gatherBsize=" " />
+		<Node 	 name="VisualSkull"  >
+			<OglModel template="ExtVec3f" name="VisualSkull"  fileMesh="c:/users/sofa_gpu/downloads/sofa/sofa/share/mesh/canapcm.obj"  texturename="c:/users/sofa_gpu/downloads/sofa/sofa/share/textures/ice_chess.bmp"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<BarycentricMapping template="Vec3d,ExtVec3f" name="barycentricMap8"  input="@../"  output="@./" />
+		</Node>
+	</Node> -->
+ 	<Node 	 name="Omni"  >
+		<MechanicalObject template="Rigid3d" name="DOFs"  position="1.2 1.6 -3.55 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  restScale="1" />
+	</Node>
+	 
+	<Node 	 name="Instrument"  >
+		<EulerImplicitSolver name="eulerImplicitSolver2" />
+		<SparseLDLSolver template="CompressedRowSparseMatrix3f" name="SparseLDLSolver2" /> 
+		<MechanicalObject template="Rigid3d" name="InstrumentMechanicalState"  tags="omni"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  restScale="1" />
+		<UniformMass template="Rigid3d" name="uniformMass2" />
+		<LCPForceFeedback template="Rigid3d" name="lCPForceFeedback23"  tags="omni"  listening="1" />
+		<LCPConstraintSolver name="lCPConstraintSolver5"  tolerance="0.001"  maxIt="1000"  group="0" />
+		<OmniDriver name="omniDriver0"  tags="omni"  listening="1" />
+		<SparseLUSolver template="CompressedRowSparseMatrixd" name="sparseLUSolver0" />
+		<Node 	 name="VisualInstrument"  >
+			<OglModel template="ExtVec3f" name="Drill"  fileMesh="c:/users/sofa_gpu/downloads/sofa/sofa/share/mesh/dental_instrument.obj"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+		</Node>
+	</Node>
+</Node>
