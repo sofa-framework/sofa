@@ -27,9 +27,6 @@
 
 #include "QGraphStatWidget.h"
 
-#include <sofa/core/behavior/BaseForceField.h>
-#include <sofa/core/behavior/BaseMass.h>
-
 #include <sofa/simulation/common/MechanicalComputeEnergyVisitor.h>
 
 namespace sofa
