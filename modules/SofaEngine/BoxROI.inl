@@ -235,8 +235,6 @@ void BoxROI<DataTypes>::init()
 template <class DataTypes>
 void BoxROI<DataTypes>::reinit()
 {
-    serr<<"reinit"<<sendl;
-
     helper::vector<Vec6>& vb = *(boxes.beginEdit());
     if (!vb.empty())
     {
