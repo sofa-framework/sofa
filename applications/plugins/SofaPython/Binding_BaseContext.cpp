@@ -223,13 +223,14 @@ extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
     PyObject *pyList = PyList_New(0);
     for (size_t i=0; i<list.size(); i++)
     {
-        PyList_SetItem(pyList, (Py_ssize_t)i, sofa::PythonFactory::toPython(list[i].get()));
         BaseObject* o = list[i].get();
         if ( type_name_str == "" || o->getClassName() == class_entry.className || class_entry.creatorMap.find(o->getClassName()) != class_entry.creatorMap.end()) 
         {
             if ( name_str == "" || name_str == o->getName())
             {
-                PyList_SetItem(pyList,i,sofa::PythonFactory::toPython(o));
+                PyObject* obj=sofa::PythonFactory::toPython(o); // ref 1
+                PyList_Append(pyList,obj); // ref 2
+                Py_DECREF(obj); // ref 1 (now owned by list)
             }
         }
     }
