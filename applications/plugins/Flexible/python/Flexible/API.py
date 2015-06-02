@@ -83,7 +83,7 @@ class Deformable:
 
     def visualFromDeformable(self, deformable, color=[1,1,1,1]):
         deformable.node.addChild(self.node)
-        self.visual = self.node.createObject("VisualModel", name="model", color=concat(color))
+        self.visual = self.node.createObject("VisualModel", name="model", filename="@"+SofaPython.Tools.getObjectPath(deformable.meshLoader)+".filename", color=concat(color))
         self.mapping = self.node.createObject("IdentityMapping", name="mapping", input='@'+deformable.node.getPathName(),output="@.")
         self.normals = self.meshLoader
 

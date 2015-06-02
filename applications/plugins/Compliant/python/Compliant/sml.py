@@ -70,8 +70,11 @@ def insertRigid(parentNode, rigidModel, density, param=None):
     for mesh in rigidModel.mesh :
         if rigidModel.meshAttributes[mesh.id].collision is True:
             rigid.collisions[mesh.id] = rigid.addCollisionMesh(mesh.source,name_suffix='_'+mesh.name)
-            rigid.visuals[mesh.id] = rigid.collisions[mesh.id].addVisualModel()
-       
+            if rigidModel.meshAttributes[mesh.id].visual is True:
+                rigid.visuals[mesh.id] = rigid.collisions[mesh.id].addVisualModel()
+        elif rigidModel.meshAttributes[mesh.id].visual is True:
+            rigid.visuals[mesh.id] = rigid.addVisualModel(mesh.source,name_suffix='_'+mesh.name)
+
     return rigid
 
 def insertJoint(jointModel, rigids, param=None):
