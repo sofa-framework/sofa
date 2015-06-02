@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_DistanceToLineMapping_H
 #define SOFA_COMPONENT_MAPPING_DistanceToLineMapping_H
 
+#include <sofa/SofaMisc.h>
 #include <sofa/core/Mapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 //#include <SofaBaseTopology/PointSetTopologyContainer.h>

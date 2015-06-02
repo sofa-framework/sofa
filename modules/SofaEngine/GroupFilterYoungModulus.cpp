@@ -26,7 +26,6 @@
 #include "GroupFilterYoungModulus.inl"
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {
