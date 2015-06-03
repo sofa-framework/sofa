@@ -100,8 +100,8 @@ public:
 
 
     // no geometric stiffness
-    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ){}
-    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ){}
+    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentForce*/, core::ConstMultiVecDerivId  /*childForce*/ ){}
+    virtual void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForce*/ ){}
     virtual const defaulttype::BaseMatrix* getK(){ return NULL; }
 
 
