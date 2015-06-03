@@ -98,12 +98,12 @@ struct Simulation_test: public Sofa_test<double>
        simulation::Simulation* simulation;
        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
        root = simulation::getSimulation()->createNewGraph("root");
-       root->addObject(core::objectmodel::New<InstrumentedObject<MechanicalObject3>>());
-       root->addObject(core::objectmodel::New<InstrumentedObject<UniformMass3>>());
+       root->addObject(core::objectmodel::New<InstrumentedObject<MechanicalObject3> >());
+       root->addObject(core::objectmodel::New<InstrumentedObject<UniformMass3> >());
        simulation::Node::SPtr child  = simulation::getSimulation()->createNewNode("child");
        root->addChild(child);
-       child->addObject(core::objectmodel::New<InstrumentedObject<MechanicalObject3>>());
-       child->addObject(core::objectmodel::New<InstrumentedObject<UniformMass3>>());
+       child->addObject(core::objectmodel::New<InstrumentedObject<MechanicalObject3> >());
+       child->addObject(core::objectmodel::New<InstrumentedObject<UniformMass3> >());
 
        //
        root = simulation::getSimulation()->createNewGraph("root2");
