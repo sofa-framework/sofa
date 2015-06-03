@@ -790,7 +790,7 @@ public:
             }
         }
         */
-        Index rowId = i * rowIndex.size() / nBlocRow;
+        Index rowId = i * (Index)rowIndex.size() / nBlocRow;
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
@@ -851,7 +851,7 @@ public:
             // Here we assume the matrix is symmetric
             Index bi=0; split_row_index(i, bi);
             compress();
-            Index rowId = i * rowIndex.size() / nBlocRow;
+            Index rowId = i * (Index)rowIndex.size() / nBlocRow;
             if (sortedFind(rowIndex, i, rowId))
             {
                 Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);

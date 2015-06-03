@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/State.inl>
 
 namespace sofa
 {

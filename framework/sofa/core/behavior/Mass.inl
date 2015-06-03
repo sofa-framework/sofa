@@ -29,6 +29,7 @@
 #include <sofa/core/behavior/BaseConstraint.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 
+#include <sofa/core/behavior/ForceField.inl>
 
 namespace sofa
 {
