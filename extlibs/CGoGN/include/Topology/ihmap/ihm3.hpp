@@ -84,14 +84,7 @@ inline void ImplicitHierarchicalMap3::update_topo_shortcuts()
  *     		 	    MAP TRAVERSAL         		   *
  ***************************************************/
 
-inline Dart ImplicitHierarchicalMap3::newDart()
-{
-    Dart d = Map3::newDart() ;
-    m_dartLevel[d] = m_curLevel ;
-    if(m_curLevel > m_maxLevel)			// update max level
-        m_maxLevel = m_curLevel ;		// if needed
-    return d ;
-}
+
 
 inline Dart ImplicitHierarchicalMap3::phi1(Dart d) const
 {
@@ -206,26 +199,6 @@ inline Dart ImplicitHierarchicalMap3::alpha_2(Dart d) const
     return phi2(phi3(d));
 }
 
-inline Dart ImplicitHierarchicalMap3::begin() const
-{
-    Dart d = Parent::begin() ;
-    while(m_dartLevel[d] > m_curLevel)
-        Parent::next(d) ;
-    return d ;
-}
-
-inline Dart ImplicitHierarchicalMap3::end() const
-{
-    return Parent::end() ;
-}
-
-inline void ImplicitHierarchicalMap3::next(Dart& d) const
-{
-    do
-    {
-        Parent::next(d) ;
-    } while(d != Map3::end() && m_dartLevel[d] > m_curLevel) ;
-}
 
 template <unsigned int ORBIT, typename FUNC>
 void ImplicitHierarchicalMap3::foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f) const
@@ -636,25 +609,48 @@ inline unsigned int ImplicitHierarchicalMap3::edgeLevel(Dart d)
 	return r;
 }
 
-/*
-template <unsigned int ORBIT>
-inline unsigned int ImplicitHierarchicalMap3::getEmbedding(Cell<ORBIT> c) const
+template< unsigned int ORBIT>
+inline unsigned int ImplicitHierarchicalMap3::getEmbedding(Cell< ORBIT > c) const
 {
-	unsigned int nbSteps = m_curLevel - vertexInsertionLevel(c.dart);
-	unsigned int index = EmbeddedMap3::getEmbedding(c);
-
-    unsigned int step = 0;
-    while(step < nbSteps)
+    if (ORBIT == VERTEX)
     {
-        step++;
-        unsigned int next = m_nextLevelCell[ORBIT]->operator[](index);
-        //index = next;
-        if(next != EMBNULL) index = next;
-        else break;
+        const unsigned int nbSteps = m_curLevel - vertexInsertionLevel(c.dart);
+        unsigned int index = Parent::getEmbedding(c);
+        //        std::cerr << __FILE__ << ":" << __LINE__ << " nbsteps = " << nbSteps << std::endl ;
+        unsigned int step = 0u;
+        while(step < nbSteps)
+        {
+            const unsigned int next = m_nextLevelCell->operator[](index);
+            if (next != EMBNULL)
+            {
+                index = next;
+            } else
+            {
+                break;
+            }
+            ++step;
+        }
+
+        return index;
     }
 
-    return index;
-}*/
+    if (ORBIT == EDGE)
+    {
+        return m_embeddings[EDGE]->operator [](this->dartIndex(this->edgeNewestDart(c)));
+    }
+
+    if (ORBIT == FACE)
+    {
+        return m_embeddings[FACE]->operator [](this->dartIndex(this->faceNewestDart(c)));
+    }
+    if (ORBIT == VOLUME)
+    {
+        return m_embeddings[VOLUME]->operator [](this->dartIndex(this->volumeNewestDart(c)));
+    }
+
+    return Parent::getEmbedding(c);
+}
+
 
 inline bool ImplicitHierarchicalMap3::isWellEmbedded()
 {

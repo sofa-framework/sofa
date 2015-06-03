@@ -43,11 +43,12 @@ namespace IHM
 ImplicitHierarchicalMap3::ImplicitHierarchicalMap3() : m_curLevel(0), m_maxLevel(0), m_edgeIdCount(0), m_faceIdCount(0)
 {
     m_dartLevel = this->addAttribute<unsigned int, DART, MAP, HandlerAccessorPolicy >("dartLevel") ;
-    IMPL::m_dartLevel = m_dartLevel.getDataVector();
+    this->setDartLvlAttribute(m_dartLevel.getDataVector());
     m_edgeId = this->addAttribute<unsigned int, DART, MAP, HandlerAccessorPolicy >("edgeId") ;
     m_faceId = this->addAttribute<unsigned int, DART, MAP, HandlerAccessorPolicy >("faceId") ;
-	for(unsigned int i = 0; i < NB_ORBITS; ++i)
-		m_nextLevelCell[i] = NULL ;
+    m_nextLevelCell = m_attribs[VERTEX].addAttribute<unsigned int>("nextLevelCell") ;
+    for(unsigned int i = m_attribs[VERTEX].begin(); i < m_attribs[VERTEX].end(); m_attribs[VERTEX].next(i))
+        m_nextLevelCell->operator[](i) = EMBNULL ;
 }
 
 ImplicitHierarchicalMap3::~ImplicitHierarchicalMap3()
@@ -66,8 +67,9 @@ void ImplicitHierarchicalMap3::clear(bool removeAttrib)
         m_edgeId = this->addAttribute<unsigned int, DART, MAP, HandlerAccessorPolicy >("edgeId") ;
         m_faceId = this->addAttribute<unsigned int, DART, MAP, HandlerAccessorPolicy >("faceId") ;
 
-		for(unsigned int i = 0; i < NB_ORBITS; ++i)
-			m_nextLevelCell[i] = NULL ;
+        m_nextLevelCell = m_attribs[VERTEX].addAttribute<unsigned int>("nextLevelCell") ;
+        for(unsigned int i = m_attribs[VERTEX].begin(); i < m_attribs[VERTEX].end(); m_attribs[VERTEX].next(i))
+            m_nextLevelCell->operator[](i) = EMBNULL ;
 	}
 }
 
@@ -76,21 +78,18 @@ void ImplicitHierarchicalMap3::initImplicitProperties()
 	initEdgeId() ;
 	initFaceId();
 
-//	for(Dart d = Map3::begin(); d != Map3::end(); Map3::next(d))
+//	for(Dart d = this->beginMaxLvl(); d != this->endMaxLvl(); this->nextMaxLvl(d))
 //	{
 //		m_edgeId[d] = 0;
 //		m_faceId[d] = 0;
 //	}
 
-	for(unsigned int orbit = 0; orbit < NB_ORBITS; ++orbit)
-	{
-		if(m_nextLevelCell[orbit] != NULL)
-		{
-			AttributeContainer& cellCont = m_attribs[orbit] ;
-			for(unsigned int i = cellCont.begin(); i < cellCont.end(); cellCont.next(i))
-				m_nextLevelCell[orbit]->operator[](i) = EMBNULL ;
-		}
-	}
+    if(m_nextLevelCell != NULL)
+    {
+        AttributeContainer& cellCont = m_attribs[VERTEX] ;
+        for(unsigned int i = cellCont.begin(); i < cellCont.end(); cellCont.next(i))
+            m_nextLevelCell->operator[](i) = EMBNULL ;
+    }
 }
 
 
@@ -278,7 +277,7 @@ void ImplicitHierarchicalMap3::deleteVertexSubdividedFace(Dart d)
 void ImplicitHierarchicalMap3::initEdgeId()
 {
 	DartMarkerStore<Map3> edgeMark(*this) ;
-	for(Dart d = Map3::begin(); d != Map3::end(); Map3::next(d))
+    for(Dart d = this->beginMaxLvl(); d != this->endMaxLvl(); this->nextMaxLvl(d))
 	{
 		if(!edgeMark.isMarked(d))
 		{
@@ -302,7 +301,7 @@ void ImplicitHierarchicalMap3::initEdgeId()
 void ImplicitHierarchicalMap3::initFaceId()
 {
 	DartMarkerStore<Map3> faceMark(*this) ;
-	for(Dart d = Map3::begin(); d != Map3::end(); Map3::next(d))
+    for(Dart d = this->beginMaxLvl(); d != this->endMaxLvl(); this->nextMaxLvl(d))
 	{
 		if(!faceMark.isMarked(d))
 		{
@@ -430,7 +429,49 @@ unsigned int ImplicitHierarchicalMap3::volumeLevel(Dart d)
     return vLevel;
 }
 
-Dart ImplicitHierarchicalMap3::faceOldestDart(Dart d)
+Dart ImplicitHierarchicalMap3::edgeNewestDart(Dart d) const
+{
+    assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
+
+    unsigned int l_new = getDartLevel(d);
+    if (l_new == getCurrentLevel())
+    {
+        return d;
+    }
+
+    const Dart phi2d = phi2(d);
+    const unsigned int l2 = getDartLevel(phi2(d));
+    if (l2 == getCurrentLevel())
+    {
+        return phi2d;
+    }
+
+    if (l2 > l_new)
+    {
+        d = phi2d;
+        l_new = l2;
+    }
+
+
+    Dart newest = d;
+    Dart dit = alpha2(d);
+    do
+    {
+        const unsigned l = m_dartLevel[dit];
+        if (l == this->getCurrentLevel())
+            return dit ;
+
+        if (l > l_new )
+        {
+            l_new = l;
+            newest = dit;
+        }
+        dit = alpha2(dit);
+    } while(dit != d);
+    return newest;
+}
+
+Dart ImplicitHierarchicalMap3::faceOldestDart(Dart d) const
 {
 	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
 	Dart it = d ;
@@ -452,6 +493,26 @@ Dart ImplicitHierarchicalMap3::faceOldestDart(Dart d)
 	return oldest ;
 }
 
+Dart ImplicitHierarchicalMap3::faceNewestDart(Dart d) const {
+    assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
+    Dart it = d ;
+    Dart newest = it ;
+    unsigned int l_new = m_dartLevel[newest] ;
+    do
+    {
+        const unsigned int l = m_dartLevel[it] ;
+        if(l == this->getCurrentLevel())
+            return it ;
+        if(l > l_new)
+        {
+            newest = it ;
+            l_new = l ;
+        }
+        it = phi1(it) ;
+    } while(it != d) ;
+    return newest;
+}
+
 Dart ImplicitHierarchicalMap3::volumeOldestDart(Dart d)
 {
 	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
@@ -471,7 +532,33 @@ Dart ImplicitHierarchicalMap3::volumeOldestDart(Dart d)
 		}
 	}
 
-	return oldest;
+    return oldest;
+}
+
+Dart ImplicitHierarchicalMap3::volumeNewestDart(Dart d) const
+{
+    assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
+
+    Dart newest = d;
+    unsigned int l_new = m_dartLevel[newest];
+
+    Traversor3WF<ImplicitHierarchicalMap3> trav3WF(*this, newest);
+    for(Dart dit = trav3WF.begin(), end = trav3WF.end() ; dit != end; dit = trav3WF.next())
+    {
+        Dart old = faceOldestDart(dit);
+        const unsigned int l = m_dartLevel[old];
+
+        if(l == this->getCurrentLevel())
+            return dit ;
+
+        if(l > l_new)
+        {
+            newest = old;
+            l_new = l;
+        }
+    }
+
+    return newest;
 }
 
 bool ImplicitHierarchicalMap3::edgeIsSubdivided(Dart d)
@@ -759,6 +846,64 @@ void ImplicitHierarchicalMap3::sewVolumes(Dart d, Dart e, bool withBoundary)
     {
         Algo::Topo::setOrbitEmbedding<FACE>(*this, e, getEmbedding<FACE>(d)) ;
     }
+}
+
+void ImplicitHierarchicalMap3::splitVolume(std::vector<Dart> &vd)
+{
+    //        std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
+    Map3::splitVolume(vd);
+
+    // follow the edge path a second time to embed the vertex, edge and volume orbits
+    for(std::vector<Dart>::iterator it = vd.begin() ; it != vd.end() ; ++it)
+    {
+        Dart dit = *it;
+        Dart dit23 = phi3(phi2(dit));
+
+        // embed the vertex embedded from the origin volume to the new darts
+        if(isOrbitEmbedded<VERTEX>())
+        {
+            copyDartEmbedding<VERTEX>(dit23, dit);
+            copyDartEmbedding<VERTEX>(phi2(dit), phi1(dit));
+        }
+
+        // embed the edge embedded from the origin volume to the new darts
+        if(isOrbitEmbedded<EDGE2>())
+        {
+            Algo::Topo::setOrbitEmbeddingOnNewCell<EDGE2>(*this, dit23) ;
+            copyCell<EDGE2>(getEmbedding<EDGE2>(dit23), getEmbedding<EDGE2>(dit)) ;
+
+            copyDartEmbedding<EDGE2>(phi2(dit), dit);
+        }
+
+        // embed the edge embedded from the origin volume to the new darts
+        if(isOrbitEmbedded<EDGE>())
+        {
+            unsigned int eEmb = getEmbedding<EDGE>(dit) ;
+            setDartEmbedding<EDGE>(dit23, eEmb);
+            setDartEmbedding<EDGE>(phi2(dit), eEmb);
+        }
+
+        // embed the volume embedded from the origin volume to the new darts
+        if(isOrbitEmbedded<VOLUME>())
+        {
+            copyDartEmbedding<VOLUME>(phi2(dit), dit);
+        }
+    }
+
+    if (isOrbitEmbedded<FACE>()) {
+        Algo::Topo::initOrbitEmbeddingOnNewCell<FACE>(*this, phi2(vd.front())) ;
+    }
+
+
+    if(isOrbitEmbedded<VOLUME>())
+    {
+        Dart v = vd.front() ;
+        Dart v23 = phi3(phi2(v));
+        Algo::Topo::setOrbitEmbeddingOnNewCell<VOLUME>(*this, v23) ;
+        Algo::Topo::copyCellAttributes<VOLUME>(*this, v23, v);
+//        Algo::Topo::setOrbitEmbedding<VOLUME>(*this,v, this->getEmbedding<VOLUME>(v));
+    }
+    //    assert(this->template checkEmbeddings<VOLUME>());
 }
 
 void ImplicitHierarchicalMap3::splitFace(Dart d, Dart e)

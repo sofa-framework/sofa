@@ -41,6 +41,7 @@ std::vector<Dart> ParticleCell3DMemo<PFP>::move(const VEC3& newCurrent)
 {
     this->crossCell = NO_CROSS ;
     this->newVol=false;
+    std::vector<Dart> res;
 //	if(!Geom::arePointsEquals(newCurrent, this->getPosition()))
 	{
         CellMarkerMemo<MAP, VOLUME> memo_cross(this->m);
@@ -50,12 +51,13 @@ std::vector<Dart> ParticleCell3DMemo<PFP>::move(const VEC3& newCurrent)
 		case FACE : 	faceState(newCurrent,memo_cross);   break;
 		case VOLUME : volumeState(newCurrent,memo_cross);   break;
 		}
-		return memo_cross.get_markedCells();
+        res = memo_cross.get_markedCells();
+        return res;
 	}
 //	else
 //        this->Algo::MovingObjects::ParticleBase<PFP>::move(newCurrent) ;
 
-	std::vector<Dart> res;
+
 	res.push_back(this->d);
 	return res;
 }
@@ -91,7 +93,7 @@ std::vector<Dart> ParticleCell3DMemo<PFP>::move(const VEC3& newCurrent, CellMark
 template <typename PFP>
 void ParticleCell3DMemo<PFP>::vertexState(const VEC3& current, CellMarkerMemo<MAP, VOLUME>& memo_cross)
 {
-    #ifdef DEBUG
+    #ifdef DEBUG_PART
     std::cout << "vertexStateMemo" << this->d <<  std::endl;
     #endif
     if(!memo_cross.isMarked(this->d)) memo_cross.mark(this->d);
@@ -100,7 +102,7 @@ void ParticleCell3DMemo<PFP>::vertexState(const VEC3& current, CellMarkerMemo<MA
     VEC3 som = this->position[this->d];
 
     if(Geom::arePointsEquals(current, som)) {
-#ifdef DEBUG
+#ifdef DEBUG_PART
         std::cout << "points equal vrai :" << current << " || "<<this->m_position<<" || "<<this->d<<" || "<<this->position[this->d]<< std::endl;
 #endif
         this->m_position = som;
@@ -240,7 +242,7 @@ template <typename PFP>
 void ParticleCell3DMemo<PFP>::edgeState(const VEC3& current, CellMarkerMemo<MAP, VOLUME>& memo_cross)
 {
      if(!memo_cross.isMarked(this->d)) memo_cross.mark(this->d);
-#ifdef DEBUG
+#ifdef DEBUG_PART
     std::cout << "edgeStateMemo" <<  this->d <<  " " << this->m_position<<  " " << this->m_positionFace << std::endl;
 
 #endif
@@ -318,7 +320,7 @@ void ParticleCell3DMemo<PFP>::edgeState(const VEC3& current, CellMarkerMemo<MAP,
  template <typename PFP>
  void ParticleCell3DMemo<PFP>::faceState(const VEC3& current, CellMarkerMemo<MAP, VOLUME>& memo_cross, Geom::Orientation3D wsof)
 {
-	#ifdef DEBUG
+    #ifdef DEBUG_PART
     std::cout << "faceStateMemo" <<  this->d <<  " " << this->m_position<<  " " << this->m_positionFace<< std::endl;
 	#endif
      if(!memo_cross.isMarked(this->d)) memo_cross.mark(this->d);
@@ -412,7 +414,7 @@ void ParticleCell3DMemo<PFP>::edgeState(const VEC3& current, CellMarkerMemo<MAP,
 template <typename PFP>
 void ParticleCell3DMemo<PFP>::volumeState(const VEC3& current, CellMarkerMemo<MAP, VOLUME>& memo_cross)
 {
-	#ifdef DEBUG
+    #ifdef DEBUG_PART
     std::cout << "volumeStateMemo " <<  this->d <<  " " << this->m_position<<  " " << this->m_positionFace<< std::endl;
 	#endif
     if(this->m.isBoundaryMarkedCurrent(this->d))

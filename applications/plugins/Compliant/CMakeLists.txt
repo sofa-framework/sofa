@@ -22,6 +22,7 @@ set(HEADER_FILES
     mapping/AffineMultiMapping.h
 	mapping/PythonMultiMapping.h
     mapping/GearMapping.h
+	mapping/PairingMultiMapping.h
 
     numericalsolver/KKTSolver.h
     numericalsolver/EigenSparseSolver.h
@@ -63,6 +64,8 @@ set(HEADER_FILES
     odesolver/CompliantPostStabilizationAnimationLoop.h
 	odesolver/CompliantStaticSolver.h
 
+	forcefield/PotentialEnergy.h
+	
     compliance/UniformCompliance.h
     compliance/UniformCompliance.inl
     compliance/DiagonalCompliance.h
@@ -131,6 +134,8 @@ set(SOURCE_FILES
     compliance/DiagonalCompliance.cpp
     compliance/DampingCompliance.cpp
 
+	forcefield/PotentialEnergy.cpp
+	
     mapping/RigidJointMapping.cpp
     mapping/RigidJointMultiMapping.cpp
     mapping/AssembledRigidRigidMapping.cpp
@@ -143,6 +148,7 @@ set(SOURCE_FILES
     mapping/AffineMultiMapping.cpp
 	mapping/PythonMultiMapping.cpp
     mapping/GearMapping.cpp
+	mapping/PairingMultiMapping.cpp
 
     numericalsolver/EigenSparseSolver.cpp
     numericalsolver/EigenSparseResponse.cpp
