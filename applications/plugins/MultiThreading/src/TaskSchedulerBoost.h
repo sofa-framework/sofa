@@ -129,10 +129,10 @@ public:
 
 private:
 
-    bool start(TaskScheduler* const& taskScheduler);
+    bool start();
 
 
-    boost::shared_ptr<boost::thread> create_and_attach( TaskScheduler* const& taskScheduler);
+    boost::shared_ptr<boost::thread> create_and_attach();
 
     bool release();
 

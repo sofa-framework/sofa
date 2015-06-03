@@ -123,8 +123,8 @@ bool TaskScheduler::start(const unsigned int NbThread )
         {
             //mThread[iThread] = boost::shared_ptr<WorkerThread>(new WorkerThread(this) );
             mThread[iThread] = new WorkerThread(this, iThread);
-            mThread[iThread]->create_and_attach( this );
-            mThread[iThread]->start( this );
+            mThread[iThread]->create_and_attach();
+            mThread[iThread]->start();
         }
 
         mWorkerCount = mThreadCount;
@@ -245,10 +245,8 @@ bool WorkerThread::attachToThisThread(TaskScheduler* pScheduler)
 
 
 
-bool WorkerThread::start(TaskScheduler* const& taskScheduler)
+bool WorkerThread::start()
 {
-    assert(taskScheduler);
-    mTaskScheduler = taskScheduler;
     mCurrentStatus = NULL;
 
     return  mThread != 0;
@@ -257,14 +255,9 @@ bool WorkerThread::start(TaskScheduler* const& taskScheduler)
 
 
 
-boost::shared_ptr<boost::thread> WorkerThread::create_and_attach( TaskScheduler* const & taskScheduler)
+boost::shared_ptr<boost::thread> WorkerThread::create_and_attach()
 {
-
-    //boost::shared_ptr<WorkerThread> worker( new WorkerThread(taskScheduler) );
-    //if(worker)
-    //{
     mThread = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&WorkerThread::run, this)));
-    //}
     return mThread;
 }
 
