@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_HELPER_ADVANCEDTIMER_CPP
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
