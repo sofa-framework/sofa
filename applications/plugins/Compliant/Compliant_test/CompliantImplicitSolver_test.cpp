@@ -179,7 +179,7 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
         ASSERT_TRUE( (v2-v0).lpNorm<Eigen::Infinity>() < precision );
     }
 
-    /// One stiffness spring, initially extendes
+    /// One stiffness spring, initially extended
     void testLinearOneFixedOneStiffnessSpringX200( bool debug )
     {
         SReal dt=0.1;   // currently, this must be set in the root node AND passed to the animate function
@@ -258,7 +258,7 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
 
     }
 
-    /// One compliant spring, initially extendes
+    /// One compliant spring, initially extended
     void testLinearOneFixedOneComplianceSpringX200( bool debug )
     {
         SReal dt=1;
