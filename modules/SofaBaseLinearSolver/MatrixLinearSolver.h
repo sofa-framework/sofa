@@ -308,8 +308,10 @@ public :
 
     int getNbGroups() const
     {
-        if (isMultiGroup()) return this->groups.size();
-        else return 1;
+        if (isMultiGroup())
+            return (int)this->groups.size();
+        else
+            return 1;
     }
 
     void setGroup(int i)

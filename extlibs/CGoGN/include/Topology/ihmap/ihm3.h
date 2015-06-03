@@ -61,7 +61,7 @@ public:
             if(index == EMBNULL)
             {
                 index = Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(*map, d) ;
-                map->m_nextLevelCell[VERTEX]->operator[](index) = EMBNULL ;
+                map->m_nextLevelCell->operator[](index) = EMBNULL ;
             }
 
             AttributeContainer& cont = map->getAttributeContainer<VERTEX>() ;
@@ -69,13 +69,13 @@ public:
             while(step < nbSteps)
             {
                 step++ ;
-                unsigned int nextIdx = map->m_nextLevelCell[VERTEX]->operator[](index) ;
+                unsigned int nextIdx = map->m_nextLevelCell->operator[](index) ;
                 if (nextIdx == EMBNULL)
                 {
                     nextIdx = map->newCell<VERTEX>() ;
                     map->copyCell<VERTEX>(nextIdx, index) ;
-                    map->m_nextLevelCell[VERTEX]->operator[](index) = nextIdx ;
-                    map->m_nextLevelCell[VERTEX]->operator[](nextIdx) = EMBNULL ;
+                    map->m_nextLevelCell->operator[](index) = nextIdx ;
+                    map->m_nextLevelCell->operator[](nextIdx) = EMBNULL ;
                     cont.refLine(index) ;
                 }
                 index = nextIdx ;
@@ -93,7 +93,7 @@ public:
             while(step < nbSteps)
             {
                 step++ ;
-                unsigned int nextIdx = map->m_nextLevelCell[VERTEX]->operator[](index) ;
+                unsigned int nextIdx = map->m_nextLevelCell->operator[](index) ;
                 if(nextIdx != EMBNULL) index = nextIdx ;
                 else break ;
             }
@@ -117,15 +117,21 @@ public:
     BOOST_STATIC_ASSERT(ORBIT != VERTEX);
         static inline T& at( MAP* map, AttributeMultiVector<T>* attrib, Cell<ORBIT> c)
         {
-            //TODO
-            std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
-            return attrib->operator[](0u) ;
+            unsigned int a = map->getEmbedding(c) ;
+            assert( a!= EMBNULL);
+            if (a == EMBNULL)
+            {
+                // setOrbitEmbeddingOnNewCell adapted to CPHMap
+//                a = Algo::Topo::setOrbitEmbeddingOnNewCell<ORBIT,MAP>(*map, c) ;
+                a = map->template newCell<ORBIT>();
+                map->template foreach_dart_of_orbit<ORBIT>(c, (boost::lambda::if_then( bl::bind(&MAP::getDartLevel, boost::cref(*map), c.dart) == map->getCurrentLevel(), bl::bind(&MAP::template setDartEmbedding<ORBIT>, boost::ref(*map), bl::_1, boost::cref(a) )))) ;
+            }
+
+            return attrib->operator[](a);
         }
         static inline const T& at(const MAP* map, const AttributeMultiVector<T>* attrib, Cell<ORBIT> c)
         {
-            //TODO
-            std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
-            return attrib->operator[](0u) ;
+            return attrib->operator[](map->getEmbedding(c)) ;
         }
 
         static inline T& at(AttributeMultiVector<T>* attrib, unsigned int a)
@@ -158,8 +164,9 @@ public:
     AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >  m_dartLevel ;
     AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >  m_edgeId ;
     AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >  m_faceId ;
+private:
     typedef AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >::HandlerAccessorPolicy HandlerAccessorPolicy;
-    AttributeMultiVector<unsigned int>* m_nextLevelCell[NB_ORBITS] ;
+    AttributeMultiVector<unsigned int>* m_nextLevelCell;
 
 //    std::vector<Algo::MR::Filter*> synthesisFilters ;
 //    std::vector<Algo::MR::Filter*> analysisFilters ;
@@ -214,9 +221,30 @@ public:
      *************************************************************************/
 
     //@{
-    virtual Dart newDart() ;
+    virtual Dart newDart() {
+        const Dart d = IMPL::newDart();
+        m_dartLevel[d] = m_curLevel ;
+        m_maxLevel = std::max(m_curLevel, m_maxLevel);
+        return d ;
+    }
 
+    Dart begin() const
+    {
+        Dart d = Dart::create(m_attribs[DART].begin()) ;
+        while(m_dartLevel[d] > m_curLevel)
+        {
+            m_attribs[DART].next(d.index) ;
+        }
+        return d ;
+    }
 
+    void next(Dart &d) const
+    {
+        do
+        {
+            m_attribs[DART].next(d.index) ;
+        } while(d != this->end() && m_dartLevel[d] > m_curLevel) ;
+    }
 
 private:
     inline Dart phi1MaxLvl(Dart d) const
@@ -250,6 +278,19 @@ private:
     inline  Dart alpha_2MaxLvl(Dart d) const
     {
         return Parent::alpha_2(d);
+    }
+
+    inline Dart beginMaxLvl() const
+    {
+        return Dart::create(m_attribs[DART].begin()) ;
+    }
+    inline Dart endMaxLvl() const
+    {
+        return this->end();
+    }
+    inline void nextMaxLvl(Dart& d) const
+    {
+        m_attribs[DART].next(d.index) ;
     }
 
     Dart phi2bis(Dart d) const;
@@ -431,15 +472,19 @@ public:
 	 */
     unsigned int volumeLevel(Dart d);
 
+
+    Dart edgeNewestDart(Dart d) const;
 	//! Return the oldest dart of the face of d in the current level map
 	/*!
 	 */
-	Dart faceOldestDart(Dart d);
+    Dart faceOldestDart(Dart d) const;
+    Dart faceNewestDart(Dart d) const;
 
 	//! Return the oldest dart of the volume of d in the current level map
 	/*!
 	 */
-	Dart volumeOldestDart(Dart d);
+    Dart volumeOldestDart(Dart d);
+    Dart volumeNewestDart(Dart d) const;
 
 	//! Return true if the edge of d in the current level map
 	//! has already been subdivided to the next level
@@ -498,13 +543,8 @@ public:
 	 *************************************************************************/
 
 	//@{
-    Dart begin() const;
-
-    Dart end() const;
-
-    void next(Dart& d) const ;
-
     virtual void sewVolumes(Dart d, Dart e, bool withBoundary = true);
+    virtual void splitVolume(std::vector<Dart>& vd);
     virtual void splitFace(Dart d, Dart e);
     virtual Dart cutEdge(Dart d);
 
@@ -550,8 +590,8 @@ public:
     void foreach_dart_of_cc(Dart d, const FUNC& f) const ;
 	//@}
 
-//    template <unsigned int ORBIT>
-//	unsigned int getEmbedding(Cell<ORBIT> c) const;
+    template <unsigned int ORBIT>
+    unsigned int getEmbedding(Cell<ORBIT> c) const;
 } ;
 } // namespace IHM
 } // namespace Volume

@@ -281,7 +281,7 @@ sofa::helper::vector<TetrahedronBezierIndex> BezierTetrahedronSetTopologyContain
 	// triangle index
 	if (deg>2) {;
 		for (i=0;i<4;++i) {
-			for (j=1;j<(deg-1);++j) {
+			for (j=1;j<(size_t)(deg-1);++j) {
 				for (k=1;k<(deg-j);++k) {
 					TetrahedronBezierIndex bti(0,0,0,0);
 					bti[trianglesInTetrahedronArray[i][0]]=j;
@@ -294,8 +294,8 @@ sofa::helper::vector<TetrahedronBezierIndex> BezierTetrahedronSetTopologyContain
 	}
 	// tetrahedron index
 	if (deg>3) {
-		for (i=1;i<(deg-2);++i) {
-			for (j=1;j<(deg-1);++j) {
+		for (i=1;i<(size_t)(deg-2);++i) {
+			for (j=1;j<(size_t)(deg-1);++j) {
 				for (k=1;k<(deg-j-i);++k) {
 					TetrahedronBezierIndex bti(0,0,0,0);
 					bti[0]=i;bti[1]=j;bti[2]=k;
@@ -306,7 +306,7 @@ sofa::helper::vector<TetrahedronBezierIndex> BezierTetrahedronSetTopologyContain
 	}
 	return(tbiArray);
 }
-sofa::helper::vector<LocalTetrahedronIndex> BezierTetrahedronSetTopologyContainer::getMapOfTetrahedronBezierIndexArrayFromInferiorDegree() const 
+sofa::helper::vector<LocalTetrahedronIndex> BezierTetrahedronSetTopologyContainer::getMapOfTetrahedronBezierIndexArrayFromInferiorDegree() const
 {
 	BezierDegreeType degree=d_degree.getValue();
 	sofa::helper::vector<TetrahedronBezierIndex> tbiDerivArray=getTetrahedronBezierIndexArrayOfGivenDegree(degree-1);

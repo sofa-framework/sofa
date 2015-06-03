@@ -238,7 +238,7 @@ inline std::istream & operator>>(std::istream & stream, Polynomial_LD<FReal,FN> 
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_HELPER)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_POLYNOMIAL_LD_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_HELPER_API Polynomial_LD<double,1>;

@@ -70,8 +70,11 @@ def insertRigid(parentNode, rigidModel, density, param=None):
     for mesh in rigidModel.mesh :
         if rigidModel.meshAttributes[mesh.id].collision is True:
             rigid.collisions[mesh.id] = rigid.addCollisionMesh(mesh.source,name_suffix='_'+mesh.name)
-            rigid.visuals[mesh.id] = rigid.collisions[mesh.id].addVisualModel()
-       
+            if rigidModel.meshAttributes[mesh.id].visual is True:
+                rigid.visuals[mesh.id] = rigid.collisions[mesh.id].addVisualModel()
+        elif rigidModel.meshAttributes[mesh.id].visual is True:
+            rigid.visuals[mesh.id] = rigid.addVisualModel(mesh.source,name_suffix='_'+mesh.name)
+
     return rigid
 
 def insertJoint(jointModel, rigids, param=None):
@@ -91,13 +94,19 @@ def insertJoint(jointModel, rigids, param=None):
         else:
             frames.append(rigid)
     mask = [1]*6
-    limits=[]
+    limits=[] # mask for limited dofs
+    isLimited = True # does the joint have valid limits?
     for d in jointModel.dofs:
-        limits.append(d.min)
-        limits.append(d.max)
+        if isLimited:
+            if d.min==None or d.max==None:
+                isLimited = False # as soon as a limit is not defined, the limits cannot work
+            else:
+                limits.append(d.min)
+                limits.append(d.max)
         mask[d.index] = 0
-    joint = StructuralAPI.GenericRigidJoint(jointModel.name, frames[0].node, frames[1].node, mask)    
-    joint.addLimits(limits)
+    joint = StructuralAPI.GenericRigidJoint(jointModel.name, frames[0].node, frames[1].node, mask)
+    if isLimited:
+        joint.addLimits(limits)
     return joint
 
 class SceneArticulatedRigid(SofaPython.sml.BaseScene):

@@ -88,7 +88,6 @@ void MapCPH::restore_topo_shortcuts()
 }
 
 
-
 Dart MapCPH::newDart()
 {
     const Dart d = GenericMap::newDart() ;
@@ -99,10 +98,7 @@ Dart MapCPH::newDart()
         (*m_permutation_inv[i])[d.index] = d ;
     for (unsigned int i = 0; i < m_involution.size(); ++i)
         (*m_involution[i])[d.index] = d ;
-//    (*m_dartLevel)[d.index] = m_curLevel ;
-//    if(m_curLevel > m_maxLevel)			// update max level
-//        m_maxLevel = m_curLevel ;		// if needed
-    return d ;
+    return d;
 }
 
 

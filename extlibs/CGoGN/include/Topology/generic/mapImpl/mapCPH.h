@@ -92,12 +92,27 @@ protected:
          *           DARTS TRAVERSALS           *
          ****************************************/
 public:
-    inline Dart begin() const;
-    inline Dart end() const;
-    inline void next(Dart& d) const;
+//    inline Dart begin() const;
+//    inline Dart end() const;
+//    inline void next(Dart& d) const;
 
-    template<unsigned ORBIT>
-    inline void next(Cell<ORBIT>& c) const;
+    inline Dart begin() const
+    {
+        return Dart::create(m_attribs[DART].begin()) ;
+    }
+
+    inline Dart end() const
+    {
+        return Dart::create(m_attribs[DART].end()) ;
+    }
+
+    inline void next(Dart& d) const
+    {
+        m_attribs[DART].next(d.index) ;
+    }
+
+//    template<unsigned ORBIT>
+//    inline void next(Cell<ORBIT>& c) const;
 
     /**
     * Apply a functor on each dart of the map
@@ -126,6 +141,10 @@ public:
     inline unsigned int getDartLevel(Dart d) ;
     inline void setDartLevel(Dart d, unsigned int i) ;
     inline void setMaxLevel(unsigned int l);
+    inline void setDartLvlAttribute(AttributeMultiVector<unsigned int>* att)
+    {
+        m_dartLevel = att;
+    }
 
 
 
@@ -146,12 +165,6 @@ void MapCPH::foreach_dart(const FUNC& f)
         f(d);
 }
 
-
-template<unsigned ORBIT>
-void MapCPH::next(Cell<ORBIT> &c) const
-{
-    m_attribs[DART].next(c.dart.index);
-}
 
 template <int I>
 void MapCPH::permutationUnsew(Dart d)
@@ -253,20 +266,8 @@ AttributeMultiVector<Dart> *MapCPH::getPermutationInvAttribute(unsigned int i)
     return m_permutation_inv[i];
 }
 
-Dart MapCPH::begin() const
-{
-    return Dart::create(m_attribs[DART].begin()) ;
-}
 
-Dart MapCPH::end() const
-{
-    return Dart::create(m_attribs[DART].end()) ;
-}
 
-void MapCPH::next(Dart &d) const
-{
-    m_attribs[DART].next(d.index) ;
-}
 
 unsigned int MapCPH::getCurrentLevel()
 {

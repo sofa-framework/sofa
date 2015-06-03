@@ -92,7 +92,7 @@ void MapCommon<MAP_IMPL>::setDartEmbedding(Dart d, unsigned int emb)
 	assert(this->template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
 
 	unsigned int old = getEmbedding<ORBIT>(d);
-
+//    std::cerr << "get embedding of " << d << " (orbit " << ORBIT << ") = " << old << std::endl;
 	if (old == emb)	// if same emb
 		return;		// nothing to do
 
@@ -103,7 +103,7 @@ void MapCommon<MAP_IMPL>::setDartEmbedding(Dart d, unsigned int emb)
 
 	if (emb != EMBNULL)
 		this->m_attribs[ORBIT].refLine(emb);	// ref the new emb
-
+    assert(this->m_embeddings[ORBIT] != NULL);
 	(*this->m_embeddings[ORBIT])[this->dartIndex(d)] = emb ; // finally affect the embedding to the dart
 }
 
