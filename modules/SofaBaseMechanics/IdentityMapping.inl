@@ -48,7 +48,7 @@ void IdentityMapping<TIn, TOut>::init()
     if ((stateTo = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModel.get())))
         maskTo = &stateTo->forceMask;
 
-    stateTo->resize( stateFrom->getSize() );
+    this->toModel->resize( this->fromModel->getSize() );
 
     Inherit::init();
 }
