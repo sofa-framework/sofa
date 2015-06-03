@@ -151,7 +151,7 @@ namespace mapping
 	template <class TIn, class TOut>
 	bool BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask::run( simulation::WorkerThread* )
 	{
-		for (size_t i = _firstPoint; i < _lastPoint; ++i )
+		for(int i = _firstPoint; i < _lastPoint; ++i )	
 		{
 
 			// out = Jt in

@@ -213,10 +213,10 @@ unsigned TaskScheduler::size()	const volatile
 
 WorkerThread::WorkerThread(TaskScheduler* const& pScheduler, int index)
 :mTaskScheduler(pScheduler)
-,mThreadIndex(index)
 ,mStealableTaskCount(0)
 ,mSpecificTaskCount(0)
 ,mCurrentStatus(NULL)
+,mThreadIndex(index)
 ,mTaskLogEnabled(false)
 ,mFinished(false)
 {
