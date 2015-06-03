@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_CORE_BEHAVIOR_CONSTRAINTCORRECTION_CPP
 #include <sofa/core/behavior/ConstraintCorrection.inl>
 
 namespace sofa

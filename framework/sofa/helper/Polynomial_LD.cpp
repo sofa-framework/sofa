@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_HELPER_POLYNOMIAL_LD_CPP
 #include "Polynomial_LD.inl"
 
 namespace sofa
