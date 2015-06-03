@@ -633,7 +633,7 @@ public:
 /// Read/Write Accessor.
 /// The Data is updated before being accessible.
 /// This means an expensive chain of Data link and Engine updates can be called
-/// For a pure write only Accessor, prefer WriteOnlyAccessor
+/// For a pure write only Accessor, prefer WriteOnlyAccessor< core::objectmodel::Data<T> >
 /// @warning the Data is updated (if needed) only by the Accessor constructor
 template<class T>
 class WriteAccessor< core::objectmodel::Data<T> > : public WriteAccessor<T>
