@@ -616,12 +616,44 @@ void DiagonalMass<DataTypes, MassType>::reinit()
             m_totalMass.setValue(total_mass);
             f_mass.endEdit();
         }
-        /*
-          else if (_topology->getNbHexahedra()>0) {
 
-          // TODO : Hexahedra
-          topologyType=TOPOLOGY_HEXAHEDRONSET;
-          }
+        else if (_topology->getNbHexahedra()>0)
+        {
+
+            MassVector& masses = *f_mass.beginEdit();
+            topologyType=TOPOLOGY_HEXAHEDRONSET;
+
+            masses.resize(this->mstate->getSize());
+            for(unsigned int i=0; i<masses.size(); ++i)
+              masses[i]=(Real)0;
+
+            Real md=m_massDensity.getValue();
+            Real mass=(Real)0;
+            Real total_mass=(Real)0;
+
+            for (int i=0; i<_topology->getNbHexahedra(); ++i)
+            {
+                const Hexahedron &h=_topology->getHexahedron(i);
+                if (hexaGeo)
+                {
+                    if (m_computeMassOnRest.getValue())
+                        mass=(md*hexaGeo->computeRestHexahedronVolume(i))/(Real)8.0;
+                    else
+                        mass=(md*hexaGeo->computeHexahedronVolume(i))/(Real)8.0;
+
+                    for (unsigned int j = 0 ; j < h.size(); j++)
+                    {
+                        masses[h[j]] += mass;
+                        total_mass += mass;
+                    }
+                }
+            }
+
+            m_totalMass.setValue(total_mass);
+            f_mass.endEdit();
+
+        }
+        /*
           else if (_topology->getNbQuads()>0) {
 
           // TODO : Quads
