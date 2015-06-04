@@ -37,6 +37,14 @@ public:
 	typedef AssembledMultiMapping<TIn, TOut> base;
 	typedef PairingMultiMapping self;
 
+    Data<SReal> sign;
+
+
+    PairingMultiMapping() :
+        sign(initData(&sign, 1.0, "sign", "scalar factor")) {
+        
+    }
+    
 protected:
 
 	void apply(typename self::out_pos_type& out,
@@ -56,6 +64,8 @@ protected:
             res += in[0][i] * in[1][i];
         }
 
+        res *= sign.getValue();
+
 	}
 
 
@@ -68,6 +78,8 @@ protected:
         // out force
         const out_real& mu = out_force[0][0];
 
+        const SReal value = sign.getValue() * mu;
+        
         // matrix sizes
         const unsigned size_x = this->from(0)->getMatrixSize();
         const unsigned size_y = this->from(1)->getMatrixSize();
@@ -82,12 +94,12 @@ protected:
 
         for(unsigned i = 0; i < size_x; ++i) {
             dJ.startVec(i);
-            dJ.insertBack(i, size_x + i) = mu;
+            dJ.insertBack(i, size_x + i) = value;
         }
 
         for(unsigned i = 0; i < size_y; ++i) {
             dJ.startVec(size_x + i);
-            dJ.insertBack(size_x + i, i) = mu;
+            dJ.insertBack(size_x + i, i) = value;
         }
 
         dJ.finalize();
@@ -104,14 +116,17 @@ protected:
             J.resize( 1, self::Nin * in[i].size() );
 			J.setZero();
 
+            const SReal& s = sign.getValue();
+            
             const unsigned other = 1 - i;
+
             // fill
             J.startVec(0);
             for(unsigned j = 0, m = in[i].size(); j < m; ++j) {
                 
                 for(unsigned k = 0; k < self::Nin; ++k) {
                     const unsigned col = j * self::Nin + k;
-                    J.insertBack(0, col) = in[other][j][k];
+                    J.insertBack(0, col) = s * in[other][j][k];
                 }
             }
             J.finalize();
