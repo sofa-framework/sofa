@@ -1,5 +1,5 @@
-#ifndef CONE_H
-#define CONE_H
+#ifndef UTILS_CONE_H
+#define UTILS_CONE_H
 
 #include <Eigen/Core>
 #include "nan.h"
@@ -78,8 +78,18 @@ Eigen::Matrix<U, 3, 1> cone_horizontal(const Eigen::Matrix<U, 3, 1>& f,
 	
 	// projection
 	if( !inside_cone ) {
-		if( theta_n <= 0 ) return vec3::Zero();
-		
+
+        // negative half plane
+		if( theta_n <= 0 ) {
+            return vec3::Zero();
+        }
+
+        // along normal
+        if( theta_t == 0 ) {
+            return f_n;
+        }
+
+        // general case
 		return f_n + f_t * (mu * theta_n / theta_t);
 	} else {
 		return f;
