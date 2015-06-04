@@ -172,11 +172,13 @@ class AffineMass:
 
     def read(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
-        data = dict()
-        with open(filename,'r') as f:
-            data.update(json.load(f))
-        self.mass = self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix=data['massMatrix'])
-        print 'Imported Affine Mass from '+filename
+
+        if os.path.isfile(filename):
+            data = dict()
+            with open(filename,'r') as f:
+                data.update(json.load(f))
+            self.mass = self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix=data['massMatrix'])
+            print 'Imported Affine Mass from '+filename
 
     def write(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
@@ -217,11 +219,12 @@ class AffineDof:
 
     def read(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
-        data = dict()
-        with open(filename,'r') as f:
-            data.update(json.load(f))
-        self.dof = self.node.createObject("MechanicalObject", template="Affine", name="dofs", position=data['position'], rest_position=data['rest_position'])
-        print 'Imported Affine Dof from '+filename
+        if os.path.isfile(filename):
+            data = dict()
+            with open(filename,'r') as f:
+                data.update(json.load(f))
+            self.dof = self.node.createObject("MechanicalObject", template="Affine", name="dofs", position=data['position'], rest_position=data['rest_position'])
+            print 'Imported Affine Dof from '+filename
 
     def write(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
