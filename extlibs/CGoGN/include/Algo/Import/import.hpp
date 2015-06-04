@@ -48,8 +48,9 @@ template <typename PFP>
 bool importMesh(typename PFP::MAP& map, MeshTablesSurface<PFP>& mts)
 {
     typedef typename PFP::MAP MAP;
-    VertexAutoAttribute< NoTypeNameAttribute< std::vector<Dart> >, MAP> vecDartsPerVertex(map, "incidents");
-
+//    typedef
+//    VertexAutoAttribute< NoTypeNameAttribute< std::vector<Dart> >, MAP> vecDartsPerVertex(map, "incidents");
+    typename PFP::template VertexAutoAttribute< NoTypeNameAttribute< std::vector<Dart> > >::type vecDartsPerVertex(map, "incidents");
     unsigned nbf = mts.getNbFaces();
     int index = 0;
     // buffer for tempo faces (used to remove degenerated edges)
@@ -580,7 +581,8 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
     typedef typename PFP::MAP MAP;
     typedef typename PFP::VEC3 VEC3;
     // store incident darts to a Vertex for every incident volume to this vertex
-    VertexAutoAttribute< NoTypeNameAttribute< std::vector<Dart> >, typename PFP::MAP > vecDartsPerVertex(map, "incidents");
+//    VertexAutoAttribute< NoTypeNameAttribute< std::vector<Dart> >, typename PFP::MAP > vecDartsPerVertex(map, "incidents");
+    typename PFP::template VertexAutoAttribute< NoTypeNameAttribute< std::vector<Dart> > >::type vecDartsPerVertex(map, "incidents");
 
     const unsigned int nbv = mtv.getNbVolumes();
     unsigned int index = 0u;

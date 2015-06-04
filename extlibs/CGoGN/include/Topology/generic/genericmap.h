@@ -98,7 +98,7 @@ class GenericMap
 {
     template<typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy> friend class AttributeHandler ;
 	template<typename T, typename MAP> friend class DartAutoAttribute ;
-	template<typename T, typename MAP> friend class VertexAutoAttribute ;
+    template<typename T, typename MAP, class AttributeAccessorPolicy > friend class VertexAutoAttribute ;
 	template<typename T, typename MAP> friend class EdgeAutoAttribute ;
 	template<typename T, typename MAP> friend class FaceAutoAttribute ;
 	template<typename T, typename MAP> friend class VolumeAutoAttribute ;

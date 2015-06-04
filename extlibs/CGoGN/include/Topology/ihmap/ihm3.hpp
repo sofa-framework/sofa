@@ -85,6 +85,27 @@ inline void ImplicitHierarchicalMap3::update_topo_shortcuts()
  ***************************************************/
 
 
+template <int N>
+inline Dart ImplicitHierarchicalMap3::phi(Dart d) const{
+    assert( (N >0) || !"negative parameters not allowed in template multi-phi");
+    if (N<10)
+    {
+        switch(N)
+        {
+            case 1 : return this->phi1(d) ;
+            case 2 : return this->phi2(d) ;
+            case 3 : return phi3(d) ;
+            default : assert(!"Wrong multi-phi relation value") ; return d ;
+        }
+    }
+    switch(N%10)
+    {
+        case 1 : return this->phi1(phi<N/10>(d)) ;
+        case 2 : return this->phi2(phi<N/10>(d)) ;
+        case 3 : return phi3(phi<N/10>(d)) ;
+        default : assert(!"Wrong multi-phi relation value") ; return d ;
+    }
+}
 
 inline Dart ImplicitHierarchicalMap3::phi1(Dart d) const
 {
@@ -125,12 +146,14 @@ inline Dart ImplicitHierarchicalMap3::phi_1(Dart d) const
             finished = true ;
         else
         {
-            it = this->phi_1MaxLvl(d) ;
+            it = this->phi_1MaxLvl(it) ;
             while(m_edgeId[it] != edgeId)
+            {
                 it = this->phi_1MaxLvl(phi2bis(it));
+            }
         }
     } while(!finished) ;
-
+//    std::cerr << "ImplicitHierarchicalMap3::phi_1(" << d << ") = " << it << std::endl;
     return it ;
 }
 
@@ -201,7 +224,7 @@ inline Dart ImplicitHierarchicalMap3::alpha_2(Dart d) const
 
 
 template <unsigned int ORBIT, typename FUNC>
-void ImplicitHierarchicalMap3::foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f) const
+void ImplicitHierarchicalMap3::foreach_dart_of_orbit(Cell<ORBIT> c, const FUNC& f) const
 {
 	switch(ORBIT)
 	{
@@ -612,11 +635,30 @@ inline unsigned int ImplicitHierarchicalMap3::edgeLevel(Dart d)
 template< unsigned int ORBIT>
 inline unsigned int ImplicitHierarchicalMap3::getEmbedding(Cell< ORBIT > c) const
 {
+    if (ORBIT == DART)
+    {
+        return this->dartIndex(c.dart);
+    }
+
     if (ORBIT == VERTEX)
     {
+//        const_cast<MAP*>(this)->compactOrbitContainer(VERTEX);
         const unsigned int nbSteps = m_curLevel - vertexInsertionLevel(c.dart);
         unsigned int index = Parent::getEmbedding(c);
-        //        std::cerr << __FILE__ << ":" << __LINE__ << " nbsteps = " << nbSteps << std::endl ;
+//        std::cerr << "Parent::getEmbedding(" << c <<  ") =  " << index << std::endl;
+        if (index == EMBNULL)
+        {
+            return EMBNULL;
+        }
+
+//        if(index == EMBNULL)
+//        {
+//            index = Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(*const_cast<MAP*>(this), c.dart) ;
+//            const_cast<MAP*>(this)->m_nextLevelCell->operator[](index) = EMBNULL ;
+//        }
+
+
+//        AttributeContainer& cont = const_cast<MAP*>(this)->getAttributeContainer<VERTEX>() ;
         unsigned int step = 0u;
         while(step < nbSteps)
         {
@@ -626,11 +668,22 @@ inline unsigned int ImplicitHierarchicalMap3::getEmbedding(Cell< ORBIT > c) cons
                 index = next;
             } else
             {
+//                assert(false);
                 break;
             }
             ++step;
+//            unsigned int nextIdx = this->m_nextLevelCell->operator[](index) ;
+//            if (nextIdx == EMBNULL)
+//            {
+//                nextIdx = const_cast<MAP*>(this)->newCell<VERTEX>() ;
+//                const_cast<MAP*>(this)->copyCell<VERTEX>(nextIdx, index) ;
+//                const_cast<MAP*>(this)->m_nextLevelCell->operator[](index) = nextIdx ;
+////                std::cerr << "m_nextLevelCell[" << index << "] = " << nextIdx << std::endl;
+//                const_cast<MAP*>(this)->m_nextLevelCell->operator[](nextIdx) = EMBNULL ;
+//                cont.refLine(index) ;
+//            }
+//            index = nextIdx ;
         }
-
         return index;
     }
 
