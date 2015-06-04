@@ -75,11 +75,43 @@ void ModulusSolver::factor(const system_type& sys) {
     
     // change diagonal compliance 
     const real omega = this->omega.getValue();
+
+    // homogenize tangent diagonal values
+    unsigned off = 0;
+    
+    for(unsigned i = 0, n = sys.constraints.size(); i < n; ++i) {
+        const unsigned dim = sys.compliant[i]->getMatrixSize();
+
+        for(unsigned j = off, je = off + dim; j < je; ++j) {
+            diagonal(j) = sys.J.row(j).dot( Hdiag_inv.asDiagonal() * sys.J.row(j).transpose());
+        }
+
+        typedef linearsolver::CoulombConstraint proj_type;
+        proj_type* proj = dynamic_cast<proj_type*>(sys.constraints[i].projector.get());
+
+        if( proj ) {
+            assert( dim % 3 == 0 );
+            for(unsigned j = 0, je = dim / 3; j < je; ++j) {
+                // set both tangent values to max tangent value
+                const unsigned t1 = off + 3 * j + 1;
+                const unsigned t2 = off + 3 * j + 2;
+                
+                const SReal value = std::max(diagonal(t1),
+                                             diagonal(t2));
+
+                diagonal(t1) = value;
+                diagonal(t2) = value;
+            }
+                    
+        }
+        
+        off += dim;
+    }
+    assert( off == view.size() );
+
+    // update system matrix with diagonal
     for(unsigned i = 0; i < sys.n; ++i) {
 
-        diagonal(i) = sys.J.row(i).dot( Hdiag_inv.asDiagonal() * sys.J.row(i).transpose());
-        // diagonal(i) = 1;
-        
         sub.matrix.coeffRef(sub.primal.cols() + i,
                             sub.primal.cols() + i) = -omega * diagonal(i);
     }
@@ -95,7 +127,7 @@ void ModulusSolver::project(vec::SegmentReturnType view, const system_type& sys,
     for(unsigned i = 0, n = sys.constraints.size(); i < n; ++i) {
         const unsigned dim = sys.compliant[i]->getMatrixSize();
         
-        const linearsolver::Constraint::SPtr proj = sys.constraints[i].projector;
+        const linearsolver::Constraint* proj = sys.constraints[i].projector.get();
         if( proj ) {
             proj->project(&view[off], dim, 0, correct);
         }
