@@ -112,7 +112,7 @@ void ModulusSolver::factor(const system_type& sys) {
         
         off += dim;
     }
-    assert( off == view.size() );
+    assert( off == sys.n );
 
     // update system matrix with diagonal
     for(unsigned i = 0; i < sys.n; ++i) {
