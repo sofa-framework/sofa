@@ -23,6 +23,7 @@ set(HEADER_FILES
 	mapping/PythonMultiMapping.h
     mapping/GearMapping.h
 	mapping/PairingMultiMapping.h
+	mapping/QuadraticMapping.h
 
     numericalsolver/KKTSolver.h
     numericalsolver/EigenSparseSolver.h
@@ -149,6 +150,7 @@ set(SOURCE_FILES
 	mapping/PythonMultiMapping.cpp
     mapping/GearMapping.cpp
 	mapping/PairingMultiMapping.cpp
+	mapping/QuadraticMapping.cpp
 
     numericalsolver/EigenSparseSolver.cpp
     numericalsolver/EigenSparseResponse.cpp
