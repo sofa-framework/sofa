@@ -202,8 +202,8 @@ extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
 
     char* type_name= NULL;
     char* name= NULL;
-
-    if ( !PyArg_ParseTuple ( args, "s|s", &type_name, &name ) ) {
+    if ( !PyArg_ParseTuple ( args, "|ss", &type_name, &name ) ) {
+        SP_MESSAGE_WARNING( "BaseContext_getObjects: wrong arguments! Expected format: getObjects ( OPTIONAL STRING typeName, OPTIONAL STRING name )" )
         Py_RETURN_NONE;
     }
 
@@ -213,9 +213,8 @@ extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
         Py_RETURN_NONE;
     }
 
-    std::string type_name_str ( type_name ? type_name : "" );
     std::string name_str ( name ? name : "" );
-    ObjectFactory::ClassEntry& class_entry = ObjectFactory::getInstance()->getEntry(type_name);
+    ObjectFactory::ClassEntry* class_entry = type_name ? &ObjectFactory::getInstance()->getEntry(type_name) : NULL;
 
     sofa::helper::vector< boost::intrusive_ptr<BaseObject> > list;
     context->get<BaseObject>(&list,sofa::core::objectmodel::BaseContext::Local);
@@ -224,9 +223,9 @@ extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
     for (size_t i=0; i<list.size(); i++)
     {
         BaseObject* o = list[i].get();
-        if ( type_name_str == "" || o->getClassName() == class_entry.className || class_entry.creatorMap.find(o->getClassName()) != class_entry.creatorMap.end()) 
+        if ( !class_entry || o->getClassName() == class_entry->className || class_entry->creatorMap.find(o->getClassName()) != class_entry->creatorMap.end())
         {
-            if ( name_str == "" || name_str == o->getName())
+            if ( !name || name_str == o->getName())
             {
                 PyObject* obj=sofa::PythonFactory::toPython(o); // ref 1
                 PyList_Append(pyList,obj); // ref 2
