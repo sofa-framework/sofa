@@ -51,15 +51,18 @@ public:
     typedef Parent ParentMap;
     typedef ImplicitHierarchicalMap3 MAP;
     typedef MAP TOPO_MAP;
+    typedef MapCPH IMPL;
     template <typename T>
     struct VertexAttributeAccessorCPHMap {
         static inline T& at(MAP* map, AttributeMultiVector<T>* attrib, Cell<VERTEX> c)
         {
             const Dart d = c.dart;
             const unsigned int nbSteps = map->m_curLevel - map->vertexInsertionLevel(d) ;
-            unsigned int index = map->template getEmbedding<VERTEX>(d) ;
+            unsigned int index = map->Parent::template getEmbedding<VERTEX>(d) ;
+//            std::cerr << "VertexAttributeAccessorCPHMap : nbSteps = " << nbSteps << std::endl;
             if(index == EMBNULL)
             {
+//                assert(false); // this should stop the program.
                 index = Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(*map, d) ;
                 map->m_nextLevelCell->operator[](index) = EMBNULL ;
             }
@@ -75,6 +78,7 @@ public:
                     nextIdx = map->newCell<VERTEX>() ;
                     map->copyCell<VERTEX>(nextIdx, index) ;
                     map->m_nextLevelCell->operator[](index) = nextIdx ;
+                    std::cerr << "m_nextLevelCell[" << index << "] = " << nextIdx << std::endl;
                     map->m_nextLevelCell->operator[](nextIdx) = EMBNULL ;
                     cont.refLine(index) ;
                 }
@@ -83,21 +87,34 @@ public:
             return attrib->operator[](index);
         }
 
-        static inline const T& at(const MAP* map, const AttributeMultiVector<T>* attrib, Cell<VERTEX> c)
+        static inline const T& at(MAP* map, const AttributeMultiVector<T>* attrib, Cell<VERTEX> c)
         {
             const Dart d = c.dart;
             const unsigned int nbSteps = map->m_curLevel - map->vertexInsertionLevel(d) ;
-            unsigned int index = map->template/*EmbeddedMap3::*/getEmbedding<VERTEX>(d) ;
+            unsigned int index = map->Parent::template getEmbedding<VERTEX>(d) ;
+            std::cerr << "(const) VertexAttributeAccessorCPHMap : nbSteps = " << nbSteps << std::endl;
+            if(index == EMBNULL)
+            {
+                assert(false); // this should stop the program.
+                index = Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(*map, d) ;
+                map->m_nextLevelCell->operator[](index) = EMBNULL ;
+            }
+
 
             unsigned int step = 0 ;
             while(step < nbSteps)
             {
                 step++ ;
-                unsigned int nextIdx = map->m_nextLevelCell->operator[](index) ;
-                if(nextIdx != EMBNULL) index = nextIdx ;
-                else break ;
+                const unsigned int nextIdx = map->m_nextLevelCell->operator[](index) ;
+                if(nextIdx != EMBNULL)
+                {
+                    index = nextIdx ;
+                } else
+                {
+//                    break;
+                    assert(false);
+                }
             }
-
             return attrib->operator[](index);
         }
 
@@ -122,9 +139,7 @@ public:
             if (a == EMBNULL)
             {
                 // setOrbitEmbeddingOnNewCell adapted to CPHMap
-//                a = Algo::Topo::setOrbitEmbeddingOnNewCell<ORBIT,MAP>(*map, c) ;
-                a = map->template newCell<ORBIT>();
-                map->template foreach_dart_of_orbit<ORBIT>(c, (boost::lambda::if_then( bl::bind(&MAP::getDartLevel, boost::cref(*map), c.dart) == map->getCurrentLevel(), bl::bind(&MAP::template setDartEmbedding<ORBIT>, boost::ref(*map), bl::_1, boost::cref(a) )))) ;
+                a = Algo::Topo::setOrbitEmbeddingOnNewCell<ORBIT,MAP>(*map, c) ;
             }
 
             return attrib->operator[](a);
@@ -225,6 +240,7 @@ public:
         const Dart d = IMPL::newDart();
         m_dartLevel[d] = m_curLevel ;
         m_maxLevel = std::max(m_curLevel, m_maxLevel);
+        m_nextLevelCell->operator [](this->dartIndex(d)) = EMBNULL;
         return d ;
     }
 
@@ -296,6 +312,9 @@ private:
     Dart phi2bis(Dart d) const;
 
 public:
+    template <int N>
+    Dart phi(Dart d) const;
+
     Dart phi1(Dart d) const;
     Dart phi_1(Dart d) const;
     Dart phi2(Dart d) const;
@@ -549,7 +568,7 @@ public:
     virtual Dart cutEdge(Dart d);
 
 	template <unsigned int ORBIT, typename FUNC>
-	void foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f) const ;
+    void foreach_dart_of_orbit(Cell<ORBIT> c, const FUNC& f) const ;
 //	template <unsigned int ORBIT, typename FUNC>
 //	void foreach_dart_of_orbit(Cell<ORBIT> c, FUNC& f) const ;
 
@@ -591,7 +610,25 @@ public:
 	//@}
 
     template <unsigned int ORBIT>
-    unsigned int getEmbedding(Cell<ORBIT> c) const;
+    unsigned int getEmbedding(Cell<ORBIT> c) const ;
+
+    template<unsigned int ORB>
+    void printEmbedding() {
+        const unsigned int oldLvl = this->getCurrentLevel();
+        for (unsigned lvl = 0u ; lvl <= this->getMaxLevel() ; ++lvl)
+        {
+            this->setCurrentLevel(lvl);
+            std::cerr << "***** LEVEL " << lvl <<  " *****" << std::endl;
+            std::cerr << "***** printing "<< ORB << " embeddings ***** " << std::endl;
+            TraversorCell<MAP, ORB, FORCE_DART_MARKING> trav(*this);
+            unsigned i = 0u ;
+            for (Dart d = trav.begin() ; d != trav.end() ; ++i, d = trav.next()) {
+                std::cerr << "embedding number " << i << " of dart " << d  <<  " : " << getEmbedding<ORB>(d) << std::endl;
+            }
+            std::cerr << "**** end embedding *****" << std::endl;
+        }
+        this->setCurrentLevel(oldLvl);
+    }
 } ;
 } // namespace IHM
 } // namespace Volume
@@ -611,11 +648,85 @@ template<class T>
 class AttributeHandler_Traits< T, VERTEX, Algo::Volume::IHM::ImplicitHierarchicalMap3 > {
 public:
     typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 Map;
-    typedef AttributeHandler< T, VERTEX, Map, AttributeAccessorDefault< T, VERTEX, Map > >  HandlerFinestResolution;
+//    typedef AttributeHandler< T, VERTEX, Map, AttributeAccessorDefault< T, VERTEX, Map > >  HandlerFinestResolution;
     typedef AttributeHandler< T, VERTEX, Map, Map::VertexAttributeAccessorCPHMap< T > >          Handler;
+    typedef Handler  HandlerFinestResolution;
 };
 
+namespace Algo {
+namespace Topo {
+template < unsigned int ORBIT >
+inline void setOrbitEmbedding(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> c, unsigned int em)
+{
+    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
+    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+    if (ORBIT == VERTEX)
+    {
+        m.template foreach_dart_of_orbit<ORBIT>(c, (bl::bind(&MAP::template setDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) ))) ;
+    }
+    else
+    {
+        const unsigned int LVL = m.getDartLevel(c);
+        m.template foreach_dart_of_orbit<ORBIT>(c, (boost::lambda::if_then( bl::bind(&MAP::getDartLevel, boost::cref(m), bl::_1) == LVL, bl::bind(&MAP::template setDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) )))) ;
+    }
+    //    std::cerr << "IHM3::setOrbitEmbedding called on the  " << ORBIT << "-cell " << c << ". em = " << em << std::endl;
+    //    std::cerr << std::endl << "IHM3::EndsetOrbitEmbedding" << std::endl;
+}
 
+template < unsigned int ORBIT >
+inline void initOrbitEmbedding(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> c, unsigned int em)
+{
+    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
+    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+    if (ORBIT == VERTEX)
+    {
+        m.template foreach_dart_of_orbit<ORBIT>(c, (bl::bind(&MAP::template initDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) ))) ;
+    }
+    else
+    {
+        const unsigned int LVL = m.getDartLevel(c);
+        m.template foreach_dart_of_orbit<ORBIT>(c, (boost::lambda::if_then( bl::bind(&MAP::getDartLevel, boost::cref(m), bl::_1) == LVL, bl::bind(&MAP::template initDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) )))) ;
+    }
+}
+
+template < unsigned int ORBIT >
+inline void unsetOrbitEmbedding(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> c)
+{
+    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
+    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+    if (ORBIT == VERTEX)
+    {
+        m.template foreach_dart_of_orbit<ORBIT>(c, (bl::bind(&MAP::template unsetDartEmbedding<ORBIT>, boost::ref(m), bl::_1 ))) ;
+    }
+    else
+    {
+        const unsigned int LVL = m.getDartLevel(c);
+        m.template foreach_dart_of_orbit<ORBIT>(c, (boost::lambda::if_then( bl::bind(&MAP::getDartLevel, boost::cref(m), bl::_1) == LVL, bl::bind(&MAP::template unsetDartEmbedding<ORBIT>, boost::ref(m), bl::_1 )))) ;
+    }
+}
+
+template < unsigned int ORBIT >
+inline unsigned int setOrbitEmbeddingOnNewCell(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> c)
+{
+    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
+    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+    unsigned int em = m.template newCell<ORBIT>();
+    setOrbitEmbedding<ORBIT, MAP>(m, c, em);
+    return em;
+}
+
+template < unsigned int ORBIT >
+inline unsigned int initOrbitEmbeddingOnNewCell(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> d)
+{
+    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
+    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+    unsigned int em = m.template newCell<ORBIT>();
+    initOrbitEmbedding<ORBIT>(m, d, em);
+    return em;
+}
+
+} // namespace Topo
+} // namespace Algo
 
 //template <typename T, unsigned int ORBIT>
 //class AttributeHandler< T, ORBIT, Algo::Volume::IHM::ImplicitHierarchicalMap3 > : public AttributeHandlerGen
