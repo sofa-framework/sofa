@@ -10,8 +10,10 @@ namespace linearsolver {
 struct SOFA_Compliant_API UnilateralConstraint : Constraint {
 	
     SOFA_CLASS(UnilateralConstraint, Constraint);
-	
-    virtual void project(SReal* out, unsigned n, unsigned index, bool correctionPass=false) const;
+
+    // WARNING: index is not used (see Constraint.h)
+    virtual void project(SReal* out, unsigned n, unsigned /*index*/,
+                         bool correctionPass=false) const;
 	
 };
 
