@@ -25,9 +25,14 @@ def createScene(node):
                             neglecting_compliance_forces_in_geometric_stiffness = False)
     
     num = node.createObject('ModulusSolver',
-                            iterations = 10,
+                            iterations = 15,
                             precision = 1e-6,
                             anderson = 4)
+
+    # num = node.createObject('SequentialSolver',
+    #                         iterations = 10,
+    #                         precision = 1e-6,
+    #                         anderson = 4)
     
 
 def ball(node, **kwargs):
