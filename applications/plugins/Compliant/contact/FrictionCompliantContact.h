@@ -47,8 +47,11 @@ protected:
 
     FrictionCompliantContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
         : Inherit(model1, model2, intersectionMethod)
-        , mu( initData(&mu, SReal(0.0), "mu", "friction coefficient (0 for frictionless contacts)") )
-    {}
+        , mu( initData(&mu, SReal(0.7), "mu", "friction coefficient (0 for frictionless contacts)") )
+        , horizontalConeProjection(initData(&horizontalConeProjection, true, "horizontal", "horizontal cone projection, else orthogonal"))
+    {
+        
+    }
 
 
     typename node_type::SPtr create_node()
