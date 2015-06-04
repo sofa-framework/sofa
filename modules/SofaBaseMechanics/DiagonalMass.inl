@@ -541,7 +541,6 @@ void DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index, defau
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::reinit()
 {
-    std::cerr << __FUNCTION__ << " " << __LINE__ << std::endl;
     if (_topology && (m_massDensity.getValue() > 0 || f_mass.getValue().size() == 0))
     {
         if (_topology->getNbTetrahedra()>0 && tetraGeo)
