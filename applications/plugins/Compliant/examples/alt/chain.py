@@ -54,21 +54,31 @@ def chain(node, **kwargs):
                          isCompliance= True)
     else:
         lagrange = sub.createChild("lagrange")
-        dofs = lagrange.createObject("MechanicalObject", template = "Vec1d", name = 'dofs')
+        dofs = lagrange.createObject("MechanicalObject",
+                                     template = "Vec1d",
+                                     name = 'dofs')
         dofs.position = ' '.join( ['0'] * (resolution - 1) )
 
-        if compliance > 0:
-            lagrange.createObject("UniformCompliance",
-                                  template = "Vec1d",
-                                  compliance = 1/compliance)
 
+        if compliance > 0:
+            energy = lagrange.createChild('energy')
+            
+            energy.createObject("MechanicalObject",
+                                template = "Vec1d")
+            energy.createObject("QuadraticMapping",
+                                template = "Vec1d,Vec1d",
+                                stiffness = compliance)
+            energy.createObject("PotentialEnergy", sign="-1");
+            
         constraint = sub.createChild('constraint')
         constraint.createObject('MechanicalObject', name = 'dofs', template = 'Vec1d')
-        constraint.createObject('PairingMultiMapping', template = 'Vec1d,Vec1d',
+        constraint.createObject('PairingMultiMapping',
+                                template = 'Vec1d,Vec1d',
                                 input = '@../lagrange/dofs @../dofs',
-                                output = '@dofs')
+                                output = '@dofs',
+                                sign = "1")
 
-        constraint.createObject('PotentialEnergy', sign="1")
+        constraint.createObject('PotentialEnergy')
     
     return res
 
@@ -89,14 +99,25 @@ def createScene(node):
     
     n = 10
 
-    for x in [False]:
+    for x in [True, False]:
         color = "1 0 0 1" if x else "0 1 0 1"
         c = chain(node, name = 'chain-{}'.format(x),
                   n = n,
-                  compliance = 0,
+                  compliance = 1e-14,
                   use_compliance = x,
                   color = color)
 
-        ode = c.createObject('CompliantImplicitSolver', stabilization = 0)
-        num = c.createObject('MinresSolver', iterations = 100, precision = 1e-14)
+        # ode = c.createObject('CompliantStaticSolver',
+        #                      ls_iterations = 20,
+        #                      ls_precision = 1e-14,
+        #                      line_search = 1)
+        
+        ode = c.createObject('CompliantImplicitSolver',
+                             stabilization = 0)
+
+        # num = c.createObject('MinresSolver', iterations = 100, precision = 1e-14)        
+        num = c.createObject('LDLTSolver', schur = False, regularization = 0)
+        # ode.debug = 2
+        
+        
         
