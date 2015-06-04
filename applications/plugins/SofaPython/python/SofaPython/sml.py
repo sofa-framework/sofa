@@ -433,12 +433,23 @@ class BaseScene:
             n=self.model.name
         self.node=parentNode.createChild(self.model.name)
 
-    def createChild(self, parent, name):
+    def createChild(self, parent, childName):
         """Creates a child node and store it in the Scene nodes dictionary"""
-        node = parent.createChild(name)
-        self.nodes[name] = node
-        return node
-    
+        """ if parent is a list of Nodes, the child is created in the fist valid parent """
+        """ and then added to every other valid parents """
+        childNode = None
+        if isinstance(parent, list): # we have a list of parent nodes
+            for p in parent:
+                if not p is None: # p is valid
+                    if childNode is None: # childNode is not yet created
+                        childNode = p.createChild( childName )
+                    else:
+                        p.addChild( childNode )
+        else: # only one parent
+            childNode = parent.createChild(childName)
+        self.nodes[childName] = childNode
+        return childNode
+        
     def setMaterial(self, solid, material):
         """ assign material to solid
         """
