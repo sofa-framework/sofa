@@ -23,6 +23,11 @@ struct sub_kkt::traits< Eigen::SimplicialLDLT<Matrix, Eigen::Upper> > {
     static void factor(solver_type& solver, const rmat& matrix) {
         // ldlt expects a cmat so we transpose to ease the conversion
         solver.compute(matrix.triangularView<Eigen::Lower>().transpose());
+        if( solver.info() != Eigen::Success ) {
+            std::cerr << "error during LDLT factorization !" << std::endl;
+
+            std::cerr << matrix << std::endl;
+        }
     }
 
     static void solve(const solver_type& solver, vec& res, const vec& rhs) {
