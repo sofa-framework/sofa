@@ -18,7 +18,10 @@ struct SOFA_Compliant_API CoulombConstraint : Constraint {
 
     CoulombConstraint( SReal mu = 1.0 );
 
-    virtual void project( SReal* out, unsigned n, unsigned index, bool correctionPass=false ) const;
+    // WARNING index is not used (see Constraint.h)
+    // FIXME only the first contact is handled
+    virtual void project( SReal* out, unsigned n, unsigned /*index*/,
+                          bool correctionPass=false ) const;
 
 
     bool horizontalProjection; ///< should the projection be horizontal (default)? Otherwise an orthogonal cone projection is performed.
