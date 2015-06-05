@@ -2,6 +2,9 @@
 
 import scene
 
+import os
+localdir = os.path.dirname(__file__)
+
 
 def createScene(node):
     node.gravity = '0 -10 0'
@@ -36,7 +39,7 @@ def createScene(node):
     
 
 def ball(node, **kwargs):
-    root = scene.xml_load('ball.xml')
+    root = scene.xml_load( os.path.join(localdir, 'ball.xml') )
 
     name = kwargs.get('name', 'ball')
     res = scene.xml_insert(node, root)
@@ -47,7 +50,7 @@ def ball(node, **kwargs):
 
 def cloth(node, **kwargs):
 
-    root = scene.xml_load('cloth.xml')
+    root = scene.xml_load( os.path.join(localdir, 'cloth.xml') )
 
     name = kwargs.get('name', 'cloth')
 
