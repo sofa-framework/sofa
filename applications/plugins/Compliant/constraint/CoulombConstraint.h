@@ -8,18 +8,20 @@ namespace component {
 namespace linearsolver {
 
 
-/// A Coulomb Cone Friction constraint
-struct SOFA_Compliant_API CoulombConstraint : Constraint {
-	
-    SOFA_CLASS(CoulombConstraint, Constraint);
+struct SOFA_Compliant_API CoulombConstraintBase : Constraint { };
 
+/// A Coulomb Cone Friction constraint
+template<class DataTypes>
+struct SOFA_Compliant_API CoulombConstraint : CoulombConstraintBase {
+	
+    SOFA_CLASS(SOFA_TEMPLATE(CoulombConstraint, DataTypes), Constraint);
+    
 	// friction coefficient f_T <= mu. f_N
 	SReal mu;
 
     CoulombConstraint( SReal mu = 1.0 );
 
     // WARNING index is not used (see Constraint.h)
-    // FIXME only the first contact is handled
     virtual void project( SReal* out, unsigned n, unsigned /*index*/,
                           bool correctionPass=false ) const;
 

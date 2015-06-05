@@ -91,11 +91,11 @@ void ModulusSolver::factor(const system_type& sys) {
             diagonal(j) = sys.J.row(j).dot( Hdiag_inv.asDiagonal() * sys.J.row(j).transpose());
         }
 
-        typedef linearsolver::CoulombConstraint proj_type;
+        typedef linearsolver::CoulombConstraintBase proj_type;
         proj_type* proj = dynamic_cast<proj_type*>(sys.constraints[i].projector.get());
 
         if( proj ) {
-            assert( dim % 3 == 0 );
+            assert( dim % 3 == 0 && "non vec3 dofs not handled");
             for(unsigned j = 0, je = dim / 3; j < je; ++j) {
                 // set both tangent values to max tangent value
                 const unsigned t1 = off + 3 * j + 1;

@@ -75,6 +75,7 @@ set(HEADER_FILES
 
     constraint/Constraint.h
     constraint/CoulombConstraint.h
+	constraint/CoulombConstraint.inl
     constraint/UnilateralConstraint.h
     constraint/ResistanceConstraint.h
     constraint/ClosureConstraint.h

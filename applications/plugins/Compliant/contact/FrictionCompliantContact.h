@@ -70,6 +70,7 @@ protected:
         // ensure all graph context parameters (e.g. dt are well copied)
         contact_node->updateSimulationContext();
 
+        // TODO change this
         typedef defaulttype::Vec3Types contact_type;
 
         typedef container::MechanicalObject<contact_type> contact_dofs_type;
@@ -117,7 +118,7 @@ protected:
         const vector<bool>* cvmask = this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
 
         // projector
-        typedef linearsolver::CoulombConstraint proj_type;
+        typedef linearsolver::CoulombConstraint<contact_type> proj_type;
         proj_type::SPtr projector = sofa::core::objectmodel::New<proj_type>( frictionCoefficient );
         projector->horizontalProjection = horizontalConeProjection.getValue();
         contact_node->addObject( projector.get() );
