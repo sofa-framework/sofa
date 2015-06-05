@@ -22,7 +22,7 @@ class Image:
 
     def __init__(self, parentNode, name, imageType="ImageUC"):
         self.imageType = imageType
-        self.node = parentNode.createChild(name)
+        self.node = parentNode if name=='' else parentNode.createChild(name)
         self.name = name
         self.meshes = dict()
         self.meshSeq = list() # to keep track of the mesh sequence, order does matter
@@ -112,8 +112,8 @@ class Image:
         _filename = os.path.join(directory, _filename)
         return _filename
 
-    def addContainer(self, filename=None, directory=""):
-        self.image = self.node.createObject('ImageContainer', template=self.imageType, name="image", filename=self.getFilename(filename, directory))
+    def addContainer(self, filename=None, directory="", name=''):
+        self.image = self.node.createObject('ImageContainer', template=self.imageType, name='image' if name=='' else name, filename=self.getFilename(filename, directory))
 
     def addExporter(self, filename=None, directory=""):
         if self.image is None:
