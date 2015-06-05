@@ -199,11 +199,11 @@ extern "C" PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject 
 extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
 {
     BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
-
+    char* search_direction= NULL;
     char* type_name= NULL;
     char* name= NULL;
-    if ( !PyArg_ParseTuple ( args, "|ss", &type_name, &name ) ) {
-        SP_MESSAGE_WARNING( "BaseContext_getObjects: wrong arguments! Expected format: getObjects ( OPTIONAL STRING typeName, OPTIONAL STRING name )" )
+    if ( !PyArg_ParseTuple ( args, "|sss", &search_direction, &type_name, &name ) ) {
+        SP_MESSAGE_WARNING( "BaseContext_getObjects: wrong arguments! Expected format: getObjects ( OPTIONAL STRING searchDirection, OPTIONAL STRING typeName, OPTIONAL STRING name )" )
         Py_RETURN_NONE;
     }
 
@@ -215,9 +215,39 @@ extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
 
     std::string name_str ( name ? name : "" );
     ObjectFactory::ClassEntry* class_entry = type_name ? &ObjectFactory::getInstance()->getEntry(type_name) : NULL;
+    
+    sofa::core::objectmodel::BaseContext::SearchDirection search_direction_enum= sofa::core::objectmodel::BaseContext::Local;
+    if ( search_direction ) 
+    {
+        std::string search_direction_str ( search_direction );
+        if ( search_direction_str == "SearchUp" )
+        {
+            search_direction_enum= sofa::core::objectmodel::BaseContext::SearchUp;
+        }
+        else if ( search_direction_str == "Local" )
+        {
+            search_direction_enum= sofa::core::objectmodel::BaseContext::Local;
+        }
+        else if ( search_direction_str == "SearchDown" )
+        {
+            search_direction_enum= sofa::core::objectmodel::BaseContext::SearchDown;
+        }
+        else if ( search_direction_str == "SearchRoot" )
+        {
+            search_direction_enum= sofa::core::objectmodel::BaseContext::SearchRoot;
+        }
+        else if ( search_direction_str == "SearchParents" )
+        {
+            search_direction_enum= sofa::core::objectmodel::BaseContext::SearchParents;
+        }
+        else 
+        {
+            SP_MESSAGE_WARNING( "BaseContext_getObjects: Invalid search direction, using 'Local'. Expected: 'SearchUp', 'Local', 'SearchDown', 'SearchRoot', or 'SearchParents'." )
+        }
+    }
 
     sofa::helper::vector< boost::intrusive_ptr<BaseObject> > list;
-    context->get<BaseObject>(&list,sofa::core::objectmodel::BaseContext::Local);
+    context->get<BaseObject>(&list,search_direction_enum);
 
     PyObject *pyList = PyList_New(0);
     for (size_t i=0; i<list.size(); i++)
