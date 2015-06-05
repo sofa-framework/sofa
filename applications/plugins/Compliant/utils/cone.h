@@ -64,11 +64,19 @@ Eigen::Matrix<U, 3, 1> cone_horizontal(const Eigen::Matrix<U, 3, 1>& f,
 	
 	assert( std::abs(normal.norm() - 1) < std::numeric_limits<U>::epsilon() );
 	
-	// normal norm
+	// normal coordinate
 	const U theta_n = f.dot(normal); 
 
+    // negative half-plane
+    if( theta_n < 0 ) return vec3::Zero();
+    
 	// normal / tangent forces
 	const vec3 f_n = normal * theta_n;
+
+    // degenerate cone
+    if( mu == 0 ) return f_n;
+
+    // non-degenerate cone
 	const vec3 f_t = f - f_n;
 
 	// tangent norm
