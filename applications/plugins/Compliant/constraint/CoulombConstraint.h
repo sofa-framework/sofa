@@ -8,16 +8,17 @@ namespace component {
 namespace linearsolver {
 
 
-struct SOFA_Compliant_API CoulombConstraintBase : Constraint { };
+struct SOFA_Compliant_API CoulombConstraintBase : Constraint
+{
+    // friction coefficient f_T <= mu. f_N
+    SReal mu;
+};
 
 /// A Coulomb Cone Friction constraint
 template<class DataTypes>
 struct SOFA_Compliant_API CoulombConstraint : CoulombConstraintBase {
 	
     SOFA_CLASS(SOFA_TEMPLATE(CoulombConstraint, DataTypes), Constraint);
-    
-	// friction coefficient f_T <= mu. f_N
-	SReal mu;
 
     CoulombConstraint( SReal mu = 1.0 );
 

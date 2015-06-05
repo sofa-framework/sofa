@@ -7,9 +7,9 @@ namespace linearsolver {
 
 template<class DataTypes>
 CoulombConstraint<DataTypes>::CoulombConstraint(SReal mu)
-    : mu(mu)
-    , horizontalProjection( true )
+    : horizontalProjection( true )
 {
+    this->mu = mu;
 	assert(mu >= 0); 
 }
 
