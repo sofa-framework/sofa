@@ -732,6 +732,20 @@ void DiagonalMass<DataTypes, MassType>::init()
     this->getContext()->get(tetraGeo);
     this->getContext()->get(hexaGeo);
 
+    if (_topology)
+    {
+        if (_topology->getNbTetrahedra() > 0 && !tetraGeo)
+            serr << "Tetrahedron topology but no geometry algorithms found. Add the component TetrahedronSetGeometryAlgorithms." << sendl;
+        else if (_topology->getNbTriangles() > 0 && !triangleGeo)
+            serr << "Triangle topology but no geometry algorithms found. Add the component TriangleSetGeometryAlgorithms." << sendl;
+        else if (_topology->getNbHexahedra() > 0 && !hexaGeo)
+            serr << "Hexahedron topology but no geometry algorithms found. Add the component HexahedronSetGeometryAlgorithms." << sendl;
+//        else if (_topology->getNbQuads() > 0 && !quadGeo)
+//            serr << "Quad topology but no geometry algorithms found. Add the component QuadSetGeometryAlgorithms." << sendl;
+        else if (_topology->getNbEdges() > 0 && !edgeGeo)
+            serr << "Edge topology but no geometry algorithms found. Add the component EdgeSetGeometryAlgorithms." << sendl;
+    }
+
     Inherited::init();
     initTopologyHandlers();
 
