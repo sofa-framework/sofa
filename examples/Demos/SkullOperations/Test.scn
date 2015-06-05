@@ -7,40 +7,54 @@
 	<DefaultContactManager name="response"  response="FrictionContact" />
 	<LocalMinDistance name="proximity"  alarmDistance="0.15"  contactDistance="0.05"  angleCone="0" />
 	<RequiredPlugin name="Image"  printLog="1"  pluginName="Image" />
-	<!--<RequiredPlugin name="Sensable"  printLog="1"  pluginName="Sensable" />-->
-	<!--<RequiredPlugin name="SofaPython"  printLog="1"  pluginName="SofaPython" />-->
+	<RequiredPlugin name="Sensable"  printLog="1"  pluginName="Sensable" />
+	<RequiredPlugin name="SofaPython"  printLog="1"  pluginName="SofaPython" />
 	<!--<RequiredPlugin name="Carving" pluginName="SofaCarving" />-->
 	<!--<RequiredPlugin name="OptiTrackNatNet"  printLog="1"  pluginName="OptiTrackNatNet" />-->
 	<FreeMotionAnimationLoop name="freeMotionAnimationLoop1" />
-	<LCPConstraintSolver name="lCPConstraintSolver1"  group="0"  tolerance="0.001"  maxIt="1000"/>
-	<OglSceneFrame name="oglSceneFrame0"  style="Cylinders"  alignment="BottomRight" />
+	<LCPConstraintSolver name="lCPConstraintSolver1"  group="0" />
+	<OglSceneFrame name="oglSceneFrame0"  style="Cylinders"  alignment="BottomRight" />  
 	<VisualTransform name="visualTransform0"  transform="0 0 0 0 0 0 0" />
 	<!--<CarvingManager active="true"/>-->
 	<!--<OptiTrackNatNetClient name="optiTrackNatNetClient1"  listening="1"  serverName="169.254.165.78"  scale="1000"  drawTrackedMarkersSize="0"  drawOtherMarkersSize="2" />-->
-	<Node 	 name="cube"  >
-		<MeshObjLoader name="Cubemesh"  filename="mesh/cube.obj"  triangulate="1" />
-		<Node name="testvisioncube">
-			<OglModel template="ExtVec3f" name="cubeVisualModel"  fileMesh="mesh/cube.obj"  translation="0 0 0"  rotation="0 0 0"  material="Default Diffuse 1 1 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
-		</Node>
-		<MeshToImageEngine template="ImageB" name="rasterizer"  voxelSize="0.5"  rotateImage="1"  padSize="1"  position="@Cubemesh.position"  edges="@Cubemesh.edges"  triangles="@Cubemesh.triangles"  value="1" />
-		<ImageContainer template="ImageB" name="image"  listening="1"  image="@rasterizer.image"  transform="@rasterizer.transform"  drawBB="0" />
+	<Node 	 name="cube"  >	
+		<EulerImplicitSolver name="eulerImplicitSolver3" />
+		<CGLinearSolver template="GraphScattered" name="cGLinearSolver4"  tolerance="1e-009"  threshold="1e-009" />
+		
+		<MeshObjLoader name="Cubemesh"  filename="mesh/cube.obj"  triangulate="1" scale3d="0.09 1 1"/>
+		<MeshToImageEngine template="ImageUC" name="rasterizer"  voxelSize="0.1"  rotateImage="0"  padSize="1"  position="@Cubemesh.position"  edges="@Cubemesh.edges"  triangles="@Cubemesh.triangles"  value="1" />
+		<ImageContainer template="ImageUC" name="image"  listening="1"  image="@rasterizer.image"  transform="@rasterizer.transform"  drawBB="0" />
+		<ImageViewer template="ImageUC" name="viewer"  image="@image.image"  transform="@image.transform"  display="0" />
+		<ImageSampler template="ImageUC" name="sampler"  printLog="1"  listening="1"  image="@image.image"  transform="@image.transform"  method="0 - Regular sampling (at voxel center(0) or corners (1)) "  param="1"  showEdges="1" />
+		<!--<ImageExporter template="ImageUC" filename="mesh/cube.obj"  name="imageExporter0"  listening="1" exportAtBegin="1"/>-->
+		<!--
+		<ImageContainer template="ImageB" name="image"  listening="1"  filename="mesh/cube.obj"  drawBB="0" />
 		<ImageViewer template="ImageB" name="viewer"  image="@image.image"  transform="@image.transform"  display="0" />
-		<ImageSampler template="ImageB" name="sampler"  printLog="1"  listening="1"  image="@image.image"  transform="@image.transform"  method="0 - Regular sampling (at voxel center(0) or corners (1)) "  param="1"  showEdges="1" />
-		<Tetra2TriangleTopologicalMapping />
+		<ImageUCilter filter="1"  param="5"  name="gaussianFilter" src="@image" />
+		<MarchingCubesEngine name="engine" image="@gaussianFilter.outputImage" transform="@gaussianFilter.outputTransform"  isoValue="50" subdiv="50 50 50" showMesh="true"/>
+		-->
+		<!--<OptiTrackNatNetDevice name="cubeDevice"  printLog="1"  listening="1"  trackableName="head"  trackableID="1"  isGlobalFrame="1"  inMarkersMeshFile="./meshs/markers-Grab.obj"  simMarkersMeshFile="./meshs/markers-Head.obj"  drawAxisSize="50 10 50"  drawMarkersSize="2"  drawMarkersColor="0 1 0 1" />-->
+		<!--
+		<Node 	 name="VisualModel"  >
+			<OglModel template="ExtVec3f" name="cubeVisualModel"  fileMesh="mesh/cube.obj"  translation="0 0 0"  rotation="0 0 0"  material="Default Diffuse 1 1 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<BarycentricMapping template="Vec3d,ExtVec3f" name="barycentricMap6"  input="@../CubeState"  output="@./cubeVisualModel" />
+		</Node>
+		-->
 		<Node 	 name="CollisionModel"  >
-			<EulerImplicitSolver name="eulerImplicitSolver3" />
-			<CGLinearSolver template="GraphScattered" name="cGLinearSolver4"  iterations="25"  tolerance="1e-009"  threshold="1e-009" />
-			
-			<MeshTopology name="cubeVisualModel"  position="@../sampler.position"  edges="@../sampler.edges"  triangles="@../sampler.triangles"  quads="@../sampler.quads"  tetrahedra="@../sampler.tetras"  hexahedra="@../sampler.hexas" />
-			<MechanicalObject template="Vec3d" name="cubeCollisionState"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1" />
-			<UniformMass name="CubeMass" mass="1" />
+			<MeshObjLoader name="Curvedloader"  filename="mesh/cube.obj" />
+			<MechanicalObject template="Vec3d" name="cubeCollisionState"  tags="CarvingSurface"  position="@Curvedloader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1"  translation="@Curvedloader.position"  rotation="@Curvedloader.rotation"  scale3d="@Curvedloader.scale3d" />
+			<MeshTopology name="cubeVisualModel"  position="@Curvedloader.position"  edges="@Curvedloader.edges"  triangles="@Curvedloader.triangles"  quads="@Curvedloader.quads"  tetrahedra="@Curvedloader.tetras"  hexahedra="@Curvedloader.hexas" />
+			<!--
+			<TetrahedronSetTopologyContainer name="TSTC"  fileTopology="mesh/cube.obj" tetrahedra="@Curvedloader.tetrahedra" />
+			<TetrahedronSetTopologyAlgorithms name="TSTA" />
+			<TetrahedronSetTopologyModifier name="TSTM"  removeIsolated="1"/>
+			<TetrahedronSetGeometryAlgorithms name="TSGA"/> 
+			<TetrahedronFEMForceField name="CFEM" youngModulus="360" poissonRatio="0.3" method="large" />
+			-->
 			<TTriangleModel template="Vec3d" name="CTM"  moving="0"  simulated="0"  contactStiffness="100" />
 			<TLineModel template="Vec3d" name="CLM"  moving="0"  simulated="0"  contactStiffness="100" />
 			<TPointModel template="Vec3d" name="CPM"  moving="0"  simulated="0"  contactStiffness="100" />
-			<Node 	 name="VisualModel"  >
-				<OglModel template="ExtVec3f" name="cubeVisualModel"  fileMesh="mesh/cube.obj"  translation="0 0 0"  rotation="0 0 0"  material="Default Diffuse 1 1 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
-				<BarycentricMapping template="Vec3d,ExtVec3f" name="barycentricMap6"  input="@../cubeCollisionState"  output="@./cubeVisualModel" />
-			</Node>
+			<IdentityMapping template="Vec3d,Vec3d" name="barycentricMap6"  input="@../CubeState"  output="@./cubeCollisionState" />
 		</Node>
 	</Node>
 	<Node 	 name="Omni"  >
