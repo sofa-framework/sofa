@@ -7,4 +7,5 @@ list(APPEND PYTHON_FILES
     python/SofaPython/sml.py
     python/SofaPython/mass.py
     python/SofaPython/script.py
+    python/SofaPython/DAGValidation.py
 )
