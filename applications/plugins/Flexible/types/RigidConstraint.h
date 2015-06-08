@@ -66,20 +66,18 @@ public:
 
     typedef linearsolver::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
     typedef linearsolver::EigenSparseMatrix<DataTypes,DataTypes> SparseMatrix;
-    typedef typename SparseMatrix::Block Block;                                       ///< projection matrix of a particle displacement to the plane
+    typedef typename SparseMatrix::Block Block;                                       ///< projection matrix
     enum {bsize=SparseMatrix::Nin};                                                   ///< size of a block
 
     Data<Indices> f_index;   ///< Indices of the constrained frames
     Data<double> _drawSize;
 
     VecCoord oldPos;
-    Block bIdentity; // precomputed identity block for unconstrained dofs
 
     // -- Constraint interface
     virtual void init()
     {
         Inherit1::init();
-        for(unsigned i=0; i<bsize; i++) for(unsigned j=0; j<bsize; j++) bIdentity[i][j]=(i==j)?1.:0;
         reinit();
     }
 
@@ -165,7 +163,7 @@ public:
         {
             jacobian.beginBlockRow(i);
             if( j!=indices.size() && i==indices[j] )  { jacobian.createBlock(i,getBlock(j)); j++; }  // constrained particle
-            else jacobian.createBlock(i,bIdentity);         // unconstrained particle: set diagonal to identity block
+            else jacobian.createBlock(i,Block::s_identity);         // unconstrained particle: set diagonal to identity block
             jacobian.endBlockRow();   // only one block to create
             i++;
         }
