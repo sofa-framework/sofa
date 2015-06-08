@@ -121,7 +121,7 @@ bool FileSystem::exists(const std::string& path)
 #if defined(WIN32)
     bool pathExists = PathFileExists(Utils::widenString(path).c_str()) != 0;
     DWORD errorCode = ::GetLastError();
-    if (errorCode != 0) {
+    if (!pathExists && errorCode != 0) {
         std::cerr << "FileSystem::exists(\"" << path << "\"): "
                   << Utils::GetLastError() << std::endl;
     }
