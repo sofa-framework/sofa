@@ -197,8 +197,11 @@ template <typename MAP_IMPL>
 template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy>
 inline AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy > MapCommon<MAP_IMPL>::addAttribute(const std::string& nameAttr)
 {
-	if(!this->template isOrbitEmbedded<ORBIT>())
-		this->template addEmbedding<ORBIT>() ;
+
+    if(!this->template isOrbitEmbedded<ORBIT>())
+    {
+        this->template addEmbedding<ORBIT>() ;
+    }
 	AttributeMultiVector<T>* amv = this->m_attribs[ORBIT].template addAttribute<T>(nameAttr) ;
     return AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy>(static_cast<MAP*>(this), amv) ;
 }
@@ -234,10 +237,11 @@ template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorP
 inline AttributeHandler< T, ORBIT, MAP, AttributeAccessorPolicy> MapCommon<MAP_IMPL>::checkAttribute(const std::string& nameAttr)
 {
     AttributeHandler<T, ORBIT, MAP> att = this->getAttribute<T,ORBIT, MAP, AttributeAccessorPolicy>(nameAttr);
-    std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
 	if (!att.isValid())
+    {
         att = this->addAttribute<T, ORBIT, MAP, AttributeAccessorPolicy>(nameAttr);
-    std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
+    }
+
 	return att;
 
 }
