@@ -9,6 +9,7 @@ import Tools
 from Tools import listToStr as concat
 import units
 import mass
+import DAGValidation
 
 def parseIdName(obj,objXml):
     """ set id and name of obj
@@ -423,6 +424,7 @@ class BaseScene:
         pass
 
     def __init__(self,parentNode,model,name=None):
+        self.root = parentNode
         self.model = model
         self.param = BaseScene.Param()
         self.material = Tools.Material() # a default material set
@@ -469,6 +471,13 @@ class BaseScene:
             return self.solidMaterial[solid]
         else :
             return "default"
+
+    def dagValidation(self):
+        err = DAGValidation.test( self.root, True )
+        if not len(err) is 0:
+            print "ERROR (SofaPython.BaseScene) your DAG scene is not valid"
+            for e in err:
+                print e
 
 class SceneDisplay(BaseScene):
     """ Creates a scene to display solid meshes
