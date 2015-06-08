@@ -918,7 +918,7 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
     //        map.check();
     if (nbBoundaryFaces > 0) {
         unsigned int nbH =  map.closeMap();
-        CGoGNout << "Map closed (" << nbBoundaryFaces << " boundary faces / " << nbH << " holes)" << CGoGNendl;
+//        std::cerr << "Map closed (" << nbBoundaryFaces << " boundary faces / " << nbH << " holes)" << std::endl;
     }
 
     return true;

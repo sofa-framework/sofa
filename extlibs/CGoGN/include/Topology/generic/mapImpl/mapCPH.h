@@ -24,14 +24,18 @@ class MapCPH : public GenericMap
 
 public:
 
-    MapCPH()
-    {}
+    MapCPH();
+
+    virtual ~MapCPH();
 
     virtual void clear(bool removeAttrib);
+    void initImplicitProperties() ;
 
 protected:
     MapCPH(const MapCPH& m): GenericMap(m){}
 
+    virtual void initEdgeId() = 0;
+    virtual void initFaceId() = 0;
     std::vector<AttributeMultiVector<Dart>*> m_involution;
     std::vector<AttributeMultiVector<Dart>*> m_permutation;
     std::vector<AttributeMultiVector<Dart>*> m_permutation_inv;
@@ -92,23 +96,27 @@ protected:
          *           DARTS TRAVERSALS           *
          ****************************************/
 public:
-//    inline Dart begin() const;
-//    inline Dart end() const;
-//    inline void next(Dart& d) const;
-
-    inline Dart begin() const
+    Dart begin() const
     {
-        return Dart::create(m_attribs[DART].begin()) ;
+        Dart d = Dart::create(m_attribs[DART].begin()) ;
+        while(getDartLevel(d) > getCurrentLevel())
+        {
+            m_attribs[DART].next(d.index) ;
+        }
+        return d ;
+    }
+
+    void next(Dart &d) const
+    {
+        do
+        {
+            m_attribs[DART].next(d.index) ;
+        } while(d != this->end() && (getDartLevel(d) > getCurrentLevel())) ;
     }
 
     inline Dart end() const
     {
         return Dart::create(m_attribs[DART].end()) ;
-    }
-
-    inline void next(Dart& d) const
-    {
-        m_attribs[DART].next(d.index) ;
     }
 
 //    template<unsigned ORBIT>
@@ -133,28 +141,80 @@ public:
      *              LEVELS MANAGEMENT                  *
      ***************************************************/
 
-    inline unsigned int getCurrentLevel();
-    inline void setCurrentLevel(unsigned int l) ;
-    inline void incCurrentLevel();
-    inline void decCurrentLevel();
-    inline unsigned int getMaxLevel() ;
-    inline unsigned int getDartLevel(Dart d) ;
+    inline unsigned int getCurrentLevel() const;
+    inline void setCurrentLevel(unsigned int l);
+    inline unsigned int getMaxLevel() const ;
+    inline unsigned int getDartLevel(Dart d) const;
     inline void setDartLevel(Dart d, unsigned int i) ;
     inline void setMaxLevel(unsigned int l);
-    inline void setDartLvlAttribute(AttributeMultiVector<unsigned int>* att)
+    inline void setNextLevelCell(Dart d, unsigned int emb);
+
+    inline void incCurrentLevel()
     {
-        m_dartLevel = att;
+        if(getCurrentLevel() < getMaxLevel())
+        {
+            setCurrentLevel(getCurrentLevel() + 1u);
+        }
+
     }
 
+    inline void decCurrentLevel()
+    {
+        if (getCurrentLevel() > 0u)
+        {
+            setCurrentLevel(getCurrentLevel() -1u);
+        }
+    }
 
+    inline unsigned int getNewEdgeId() {
+        return m_edgeIdCount++ ;
+    }
+
+    inline unsigned int getEdgeId(Dart d) const {
+        return m_edgeId->operator [](this->dartIndex(d)) ;
+    }
+
+    inline unsigned int getNewFaceId()
+    {
+        return m_faceIdCount++;
+    }
+
+    inline unsigned int getFaceId(Dart d) const
+    {
+        return m_faceId->operator [](this->dartIndex(d));
+    }
+
+    inline void setFaceId(Dart d, unsigned int fid)
+    {
+        this->m_faceId->operator [](this->dartIndex(d)) = fid;
+    }
+    void setEdgeId(Dart d, unsigned int eid)
+    {
+        this->m_edgeId->operator [](this->dartIndex(d)) = eid;
+    }
+
+    inline Dart beginMaxLvl() const
+    {
+        return Dart::create(m_attribs[DART].begin()) ;
+    }
+    inline Dart endMaxLvl() const
+    {
+        return this->end();
+    }
+    inline void nextMaxLvl(Dart& d) const
+    {
+        m_attribs[DART].next(d.index) ;
+    }
 
 protected:
-    unsigned int m_curLevel ;
-    unsigned int m_maxLevel ;
-    unsigned int m_idCount ;
-    AttributeMultiVector<unsigned int>* m_nextLevelCell[NB_ORBITS] ;
+    unsigned int m_curLevel;
+    unsigned int m_maxLevel;
+    unsigned int m_edgeIdCount;
+    unsigned int m_faceIdCount;
+    AttributeMultiVector<unsigned int>* m_nextLevelCell ;
     AttributeMultiVector<unsigned int>* m_dartLevel ;
-
+    AttributeMultiVector<unsigned int>* m_edgeId;
+    AttributeMultiVector<unsigned int>* m_faceId;
 };
 
 
@@ -269,7 +329,7 @@ AttributeMultiVector<Dart> *MapCPH::getPermutationInvAttribute(unsigned int i)
 
 
 
-unsigned int MapCPH::getCurrentLevel()
+unsigned int MapCPH::getCurrentLevel() const
 {
     return m_curLevel ;
 }
@@ -279,40 +339,24 @@ void MapCPH::setCurrentLevel(unsigned int l)
     m_curLevel = l ;
 }
 
-void MapCPH::incCurrentLevel()
-{
-    if(m_curLevel < m_maxLevel)
-        ++m_curLevel ;
-    else
-        CGoGNout << "incCurrentLevel : already at maximum resolution level" << CGoGNendl ;
-}
-
-void MapCPH::decCurrentLevel()
-{
-    if(m_curLevel > 0)
-        --m_curLevel ;
-    else
-        CGoGNout << "decCurrentLevel : already at minimum resolution level" << CGoGNendl ;
-}
-
-unsigned int MapCPH::getMaxLevel()
+unsigned int MapCPH::getMaxLevel() const
 {
     return m_maxLevel ;
 }
 
-unsigned int MapCPH::getDartLevel(Dart d)
+unsigned int MapCPH::getDartLevel(Dart d) const
 {
-    return (*m_dartLevel)[d.index] ;
+    return m_dartLevel->operator [](this->dartIndex(d)) ;
 }
 
 void MapCPH::setDartLevel(Dart d, unsigned int i)
 {
-    (*m_dartLevel)[d.index] = i ;
+    m_dartLevel->operator [](this->dartIndex(d)) = i;
 }
 
 void MapCPH::setMaxLevel(unsigned int l)
 {
-    m_maxLevel = l;
+    m_maxLevel = std::max(m_maxLevel, l);
 }
 
 

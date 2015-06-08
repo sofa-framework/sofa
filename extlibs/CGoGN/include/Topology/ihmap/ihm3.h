@@ -171,17 +171,17 @@ public:
 	FunctorType* faceVertexFunctor ;
 	FunctorType* volumeVertexFunctor ;
 
-    unsigned int m_curLevel ;
-    unsigned int m_maxLevel ;
-    unsigned int m_edgeIdCount ;
-    unsigned int m_faceIdCount;
+//    unsigned int m_curLevel ;
+//    unsigned int m_maxLevel ;
+//    unsigned int m_edgeIdCount ;
+//    unsigned int m_faceIdCount;
 
-    AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >  m_dartLevel ;
-    AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >  m_edgeId ;
-    AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >  m_faceId ;
-private:
-    typedef AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >::HandlerAccessorPolicy HandlerAccessorPolicy;
-    AttributeMultiVector<unsigned int>* m_nextLevelCell;
+//    AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >  m_dartLevel ;
+//    AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >  m_edgeId ;
+//    AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >  m_faceId ;
+//private:
+//    typedef AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >::HandlerAccessorPolicy HandlerAccessorPolicy;
+//    AttributeMultiVector<unsigned int>* m_nextLevelCell;
 
 //    std::vector<Algo::MR::Filter*> synthesisFilters ;
 //    std::vector<Algo::MR::Filter*> analysisFilters ;
@@ -197,13 +197,12 @@ public:
     /*!
      *
      */
-    void update_topo_shortcuts();
+//    void update_topo_shortcuts();
 
     //!
     /*!
      *
      */
-    void initImplicitProperties() ;
 
     /**
      * clear the map
@@ -236,31 +235,8 @@ public:
      *************************************************************************/
 
     //@{
-    virtual Dart newDart() {
-        const Dart d = IMPL::newDart();
-        m_dartLevel[d] = m_curLevel ;
-        m_maxLevel = std::max(m_curLevel, m_maxLevel);
-        m_nextLevelCell->operator [](this->dartIndex(d)) = EMBNULL;
-        return d ;
-    }
 
-    Dart begin() const
-    {
-        Dart d = Dart::create(m_attribs[DART].begin()) ;
-        while(m_dartLevel[d] > m_curLevel)
-        {
-            m_attribs[DART].next(d.index) ;
-        }
-        return d ;
-    }
 
-    void next(Dart &d) const
-    {
-        do
-        {
-            m_attribs[DART].next(d.index) ;
-        } while(d != this->end() && m_dartLevel[d] > m_curLevel) ;
-    }
 
 private:
     inline Dart phi1MaxLvl(Dart d) const
@@ -296,33 +272,22 @@ private:
         return Parent::alpha_2(d);
     }
 
-    inline Dart beginMaxLvl() const
-    {
-        return Dart::create(m_attribs[DART].begin()) ;
-    }
-    inline Dart endMaxLvl() const
-    {
-        return this->end();
-    }
-    inline void nextMaxLvl(Dart& d) const
-    {
-        m_attribs[DART].next(d.index) ;
-    }
+
 
     Dart phi2bis(Dart d) const;
 
 public:
     template <int N>
-    Dart phi(Dart d) const;
+    inline Dart phi(Dart d) const;
 
-    Dart phi1(Dart d) const;
-    Dart phi_1(Dart d) const;
-    Dart phi2(Dart d) const;
-    Dart phi3(Dart d) const;
-    Dart alpha0(Dart d) const;
-    Dart alpha1(Dart d) const;
-    Dart alpha2(Dart d) const;
-    Dart alpha_2(Dart d) const;
+    inline Dart phi1(Dart d) const;
+    inline Dart phi_1(Dart d) const;
+    inline Dart phi2(Dart d) const;
+    inline Dart phi3(Dart d) const;
+    inline Dart alpha0(Dart d) const;
+    inline Dart alpha1(Dart d) const;
+    inline Dart alpha2(Dart d) const;
+    inline Dart alpha_2(Dart d) const;
     //@}
 
 	/*! @name Topological Operators with Cells id management
@@ -381,83 +346,19 @@ public:
 	 *  Operations to manage the levels of an Implicit Hierarchical 3-map
 	 *************************************************************************/
 
-    void incCurrentLevel();
-
-    void decCurrentLevel();
-
-
-    //@{
-    //!
-    /*!
-     *
-     */
-    unsigned int getCurrentLevel() const ;
-
-    //!
-    /*!
-     *
-     */
-    void setCurrentLevel(unsigned int l) ;
-
-    //!
-    /*!
-     *
-     */
-    unsigned int getMaxLevel() const ;
-
-    //!
-    /*!
-     *
-     */
-    unsigned int getDartLevel(Dart d) const ;
-
-    //!
-    /*!
-     *
-     */
-    void setDartLevel(Dart d, unsigned int i) ;
-	//@}
-
-	/*! @name Id Management
-	 * Operations to manage the ids of edges and faces
-	 *************************************************************************/
-
-	//@{
-    //! Give a new unique id to all the edges of the map
-    /*!
-     */
-    void initEdgeId() ;
-
-    //! Return the next available edge id
-    /*!
-     */
-    unsigned int getNewEdgeId() ;
-
-    //! Return the id of the edge of d
-    /*!
-     */
-    unsigned int getEdgeId(Dart d) ;
 
     //! Set an edge id to all darts from an orbit of d
     /*!
      */
     void setEdgeId(Dart d, unsigned int i, unsigned int orbit); //TODO a virer
-    void setEdgeId(Dart d, unsigned int i);
+
 
     //! Give a new unique id to all the faces of the map
     /*!
      */
-    void initFaceId() ;
+    virtual void initFaceId() ;
+    virtual void initEdgeId() ;
 
-    //! Return the next available face id
-    /*!
-     */
-    unsigned int getNewFaceId() ;
-
-    //! Return the id of the face of d
-    /*!
-     */
-    unsigned int getFaceId(Dart d) ;
 
     //! Set a face id to all darts from an orbit of d
     /*!
@@ -641,6 +542,7 @@ class AttributeHandler_Traits< T, ORBIT, Algo::Volume::IHM::ImplicitHierarchical
 public:
     typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 Map;
     typedef AttributeHandler< T, ORBIT, Map, AttributeAccessorDefault< T, ORBIT, Map > >  HandlerFinestResolution;
+//    typedef HandlerFinestResolution Handler;
     typedef AttributeHandler< T, ORBIT, Map, Map::NonVertexAttributeAccessorCPHMap< T, ORBIT > >          Handler;
 };
 
@@ -648,9 +550,10 @@ template<class T>
 class AttributeHandler_Traits< T, VERTEX, Algo::Volume::IHM::ImplicitHierarchicalMap3 > {
 public:
     typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 Map;
-//    typedef AttributeHandler< T, VERTEX, Map, AttributeAccessorDefault< T, VERTEX, Map > >  HandlerFinestResolution;
+    typedef AttributeHandler< T, VERTEX, Map, AttributeAccessorDefault< T, VERTEX, Map > >      HandlerFinestResolution;
+//    typedef HandlerFinestResolution Handler;
     typedef AttributeHandler< T, VERTEX, Map, Map::VertexAttributeAccessorCPHMap< T > >          Handler;
-    typedef Handler  HandlerFinestResolution;
+//    typedef Handler  HandlerFinestResolution;
 };
 
 namespace Algo {
