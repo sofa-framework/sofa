@@ -316,8 +316,16 @@ public:
             helper::Decompose<Real>::polarDecomposition( c.getAffine(), Q, S );
             helper::Decompose<Real>::polarDecompositionGradient_G(Q,S,invG);
             helper::Decompose<Real>::polarDecompositionGradient_dQ(invG,Q,this->getAffine(),dQ);
-            this->getVQuadratic().clear();
-            this->getAffine() = dQ;
+
+            Frame& q = getVQuadratic();
+            for(unsigned i=0; i<spatial_dimensions; i++)
+                for(unsigned j=0; j<spatial_dimensions; j++)
+                    q[i][j] = dQ[i][j];
+
+            // the rest is null
+            for(unsigned i=0; i<spatial_dimensions; i++)
+                for(unsigned j=spatial_dimensions; j<num_quadratic_terms; j++)
+                    q[i][j] = 0.;
         }
 
 
