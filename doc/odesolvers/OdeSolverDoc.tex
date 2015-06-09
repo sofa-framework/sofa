@@ -2,17 +2,21 @@
 \usepackage{setspace}
 \usepackage{amsmath}
 \usepackage{titling}
-
+\usepackage{mathtools}
+\usepackage{nomencl}
+\usepackage{algorithmicx}
+\usepackage{algorithm,algpseudocode}
+\makenomenclature
 \setlength{\droptitle}{-10em}   % This is your set screw
 \title{ODE solvers recursive equations}
 \author{Aurelie Degletagne}
-
 
 \begin{document}
 \begin{doublespace}
 
 \maketitle
 \tableofcontents
+\renewcommand{\nomname}{Notations}
 
 \section{Notations}
 In each following equation h is the time step, $x_{k}$,$v_{k}$,$a_{k}$   the position, velocity and acceleration at the time step k, K the stiffness, M the mass, $r_{m}$ the rayleigh mass, $r_{k}$ the rayleigh stiffness and $F_{ext}$ the external forces.
@@ -56,9 +60,41 @@ $ v_{k+1} = \frac{2(Fext_{k}+p_{k}-hr_{m}v_{k}M)}{M} $
 
 \subsection{VariationalSymplecticImplicit solver}
 The current implementation for implicit integration assume $alpha=0.5$ (quadratic accuracy) and uses several Newton steps to estimate velocity.
-\\$ v_{k+1} = \frac{2(hFext_{k}+2p_{k})}{4M+h^2K+4h(r_{m}M+r_{k}K)} $
+\nomenclature{$newtonSteps$}{maximum number of newton steps}%
+\nomenclature{$newtonError$}{error tolerance for newton iterations}%
+\nomenclature{$i$}{current newton iteration}%
+\nomenclature{$err$}{current newton error}%
+\nomenclature{$q(k,i)$}{estimate of the mid point position at iteration k and newton step i}%
+\nomenclature{$res$}{position increment}%
+
+\begin{algorithmic}
+\State $ i = 0 $,  $ err = 0 $
+\While{$ i < newtonSteps $ \&\& $ err > newtonError $) $\parallel (i == 0 )$} \State{
+\fbox { \begin{minipage}{0.95\textwidth}
+   \textit{The position increment res is searched such that q(k,i+1)=q(k,i)+res
+\\ res must minimize the Lilyan, and is solution of a linearized system around previous estimate 
+Equation is : matrix * res =  b 
+\\with} $\left\{
+\begin{array}{r c l}
+b &=& f(q(k,i-1)) -K(q(k,i-1)) res(i-1) +(2/h)p^(k)\\
+matrix &=& -K+4/h^(2)M
+\end{array}
+\right.$
+\end{minipage} }
+\\ $res (i) = matrix^{-1} * b$
+\\ $q(k,i)=res(i)+ q(k,0)$
+\\ $resi=q(k,i)-q(k,i-1)$  save the residual as a stopping criterion
+\\ $q(k,i)=q(k,i-1)$ 
+\\ $err = resi.norm()/(q(k,0)).norm()$  this should decrease
+\\ \textit{i++}
+} 
+\EndWhile
+\end{algorithmic}
+$ v_{k+1} = \frac{2res(i)}{h} $
 \\$ p_{k+1} = (M+\frac{h^2}{4})v_{k+1}+\frac{h}{2}Fext_{k} $
 \\$ x_{k+1} = x_{k}+hv_{k+1} $
+
+\printnomenclature
 
 \section{RungeKutta}
 It is a popular explicit time integration method, much more precise than euler explicit solver.
