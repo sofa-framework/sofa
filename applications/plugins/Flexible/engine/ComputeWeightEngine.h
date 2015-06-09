@@ -24,7 +24,7 @@ namespace engine
  * We can not point directly to the visual model vertices as the
  * method VisualModelImpl::getVertices is not bound to a data.
  */
-class ComputeWeightEngine : public sofa::core::DataEngine
+class SOFA_Flexible_API ComputeWeightEngine : public sofa::core::DataEngine
 {
 public:
     SOFA_CLASS( ComputeWeightEngine , sofa::core::DataEngine );
