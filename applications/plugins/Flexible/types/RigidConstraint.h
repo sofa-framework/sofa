@@ -70,6 +70,8 @@ public:
     enum {bsize=SparseMatrix::Nin};                                                   ///< size of a block
 
     Data<Indices> f_index;   ///< Indices of the constrained frames
+    Data<unsigned> d_method;
+
     Data<double> _drawSize;
 
     VecCoord oldPos;
@@ -99,7 +101,8 @@ public:
     void projectResponseT( VecDerivType& res)
     {
         const helper::vector<unsigned> & indices = f_index.getValue();
-        for(unsigned ind=0; ind<indices.size(); ind++) res[indices[ind]].setRigid( oldPos[ind]);
+        unsigned method = d_method.getValue();
+        for(unsigned ind=0; ind<indices.size(); ind++) res[indices[ind]].setRigid( oldPos[ind], method );
     }
 
     virtual void projectResponse(const core::MechanicalParams* /*mparams*/, DataVecDeriv& resData)
@@ -119,7 +122,8 @@ public:
         helper::WriteAccessor<DataVecCoord> res = xData;
         const helper::vector<unsigned> & indices = f_index.getValue();
         oldPos.resize(indices.size());
-        for(unsigned i=0; i<indices.size(); i++)      { oldPos[i]=res[indices[i]];  res[indices[i]].setRigid(); }
+        unsigned method = d_method.getValue();
+        for(unsigned i=0; i<indices.size(); i++)      { oldPos[i]=res[indices[i]];  res[indices[i]].setRigid( method ); }
     }
 
     virtual void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/, DataMatrixDeriv& cData)
@@ -139,15 +143,6 @@ public:
     virtual void applyConstraint(defaulttype::BaseMatrix *, unsigned int /*offset*/) {}
     virtual void applyConstraint(defaulttype::BaseVector *, unsigned int /*offset*/) {}
 
-    Block getBlock(unsigned int ind_index)
-    {
-        Block J;
-        helper::ReadAccessor< Data< VecDeriv > > vel(*this->getMState()->read(core::ConstVecDerivId::velocity()));
-        unsigned int i=f_index.getValue()[ind_index];
-        vel[i].getJRigid(oldPos[ind_index],J);
-        return J;
-    }
-
     void projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
     {
         // resize the jacobian
@@ -156,13 +151,21 @@ public:
         unsigned blockSize = DataTypes::deriv_total_size;
         jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
 
+
+        Block block; // temp
+        unsigned method = d_method.getValue();
+
         // fill jacobian
         const helper::vector<unsigned> & indices = f_index.getValue();
         unsigned i = 0, j = 0;
         while( i < numBlocks )
         {
             jacobian.beginBlockRow(i);
-            if( j!=indices.size() && i==indices[j] )  { jacobian.createBlock(i,getBlock(j)); j++; }  // constrained particle
+            if( j!=indices.size() && i==indices[j] )   // constrained particle
+            {
+                Deriv::getJRigid(oldPos[j],block,method);
+                jacobian.createBlock(i,block); j++;
+            }
             else jacobian.createBlock(i,Block::s_identity);         // unconstrained particle: set diagonal to identity block
             jacobian.endBlockRow();   // only one block to create
             i++;
@@ -181,6 +184,7 @@ protected:
     RigidConstraint()
         : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
         , f_index( initData(&f_index,"indices","Indices of the constrained frames") )
+        , d_method(initData(&d_method, 0u, "method", "0: polar, 1: svd, 2: approximation" ))
         , _drawSize( initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     {
 
