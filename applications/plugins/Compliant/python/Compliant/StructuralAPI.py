@@ -572,7 +572,7 @@ class FixedRigidJoint(GenericRigidJoint):
         self.mapping = self.node.createObject('RigidJointMultiMapping', name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2),
                                               geometricStiffness = geometric_stiffness)
         self.compliance = self.node.createObject('UniformCompliance', name='compliance', compliance=compliance)
-
+        node2.addChild( self.node )
 
 class DistanceRigidJoint:
     ## keep Distance between two rigid frames
