@@ -141,10 +141,9 @@ public:
 
 
    virtual void updateMesh();
-private:
-    void updateElements();
-    void updatePoints();
-    void updateNormals();
+   virtual void updateElements();
+   virtual void updatePoints();
+   virtual void updateNormals();
 
 protected:
 
