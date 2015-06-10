@@ -564,7 +564,14 @@ class FixedRigidJoint(GenericRigidJoint):
     ## Fixed joint
 
     def __init__(self, name, node1, node2, compliance=0, index1=0, index2=0 ):
-        GenericRigidJoint.__init__(self, name, node1, node2, [1]*6, compliance, index1, index2)
+        self.node = node1.createChild( name )
+        self.dofs = self.node.createObject('MechanicalObject', template = 'Vec6'+template_suffix, name = 'dofs', position = '0 0 0 0 0 0' )
+        input = [] # @internal
+        input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
+        input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
+        self.mapping = self.node.createObject('RigidJointMultiMapping', name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2),
+                                              geometricStiffness = geometric_stiffness)
+        self.compliance = self.node.createObject('UniformCompliance', name='compliance', compliance=compliance)
 
 
 class DistanceRigidJoint:
