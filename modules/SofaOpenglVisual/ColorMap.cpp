@@ -119,6 +119,9 @@ ColorMap::ColorMap()
 : f_paletteSize(initData(&f_paletteSize, (unsigned int)256, "paletteSize", "How many colors to use"))
 , f_colorScheme(initData(&f_colorScheme, "colorScheme", "Color scheme to use"))
 , f_showLegend(initData(&f_showLegend, false, "showLegend", "Activate rendering of color scale legend on the side"))
+, f_legendOffset(initData(&f_legendOffset, defaulttype::Vec2f(0.0f,0.0f),"legendOffset", "Draw the legend on screen with an x,y offset"))
+, d_min(initData(&d_min,0.0f,"min","min value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the min"))
+, d_max(initData(&d_max,0.0f,"max","max value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the max"))
 , texture(0)
 {
    f_colorScheme.beginEdit()->setNames(19,
@@ -180,6 +183,9 @@ void ColorMap::init()
 void ColorMap::reinit()
 {
     entries.clear();
+
+    min=d_min.getValue();
+    max=d_max.getValue();
 
     unsigned int nColors = f_paletteSize.getValue();
     if (nColors < 2) {
@@ -515,16 +521,16 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
     glBegin(GL_QUADS);
 
     glTexCoord1f(1.0);
-    glVertex3f(20, 30, 0.0);
+    glVertex3f(20+f_legendOffset.getValue().x(), 30+f_legendOffset.getValue().y(), 0.0);
 
     glTexCoord1f(1.0);
-    glVertex3f(30, 30, 0.0);
+    glVertex3f(30+f_legendOffset.getValue().x(), 30+f_legendOffset.getValue().y(), 0.0);
 
     glTexCoord1f(0.0);
-    glVertex3f(30, 130, 0.0);
+    glVertex3f(30+f_legendOffset.getValue().x(), 130+f_legendOffset.getValue().y(), 0.0);
 
     glTexCoord1f(0.0);
-    glVertex3f(20, 130, 0.0);
+    glVertex3f(20+f_legendOffset.getValue().x(), 130+f_legendOffset.getValue().y(), 0.0);
 
     glEnd();
 
@@ -562,12 +568,12 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
 		textcolor = Color (0.0f, 0.0f, 0.0f, 0.0f);
 
     vparams->drawTool()->writeOverlayText(
-        10, 10, 14,  // x, y, size
+        10+f_legendOffset.getValue().x(), 10+f_legendOffset.getValue().y(), 14,  // x, y, size
         textcolor,
         smax.str().c_str());
 
     vparams->drawTool()->writeOverlayText(
-        10, 135, 14,  // x, y, size
+        10+f_legendOffset.getValue().x(), 135+f_legendOffset.getValue().y(), 14,  // x, y, size
         textcolor,
         smin.str().c_str());
 
