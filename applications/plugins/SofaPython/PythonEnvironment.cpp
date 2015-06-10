@@ -116,13 +116,22 @@ except:\n\
     // exist: SOFAPYTHON_PLUGINS_PATH is a colon-separated list of paths to
     // directories that contain Sofa plugins.
 
-    const std::string pluginsDir = std::string(SOFA_SRC_DIR) + "/applications/plugins";
+    static const std::string pluginsDir = std::string(SOFA_SRC_DIR) + "/applications/plugins";
     if (FileSystem::exists(pluginsDir))
         addPythonModulePathsForPlugins(pluginsDir);
 
-    const std::string devPluginsDir = std::string(SOFA_SRC_DIR) + "/applications-dev/plugins";
+    static const std::string devPluginsDir = std::string(SOFA_SRC_DIR) + "/applications-dev/plugins";
     if (FileSystem::exists(devPluginsDir))
         addPythonModulePathsForPlugins(devPluginsDir);
+
+    static const std::string projectsDir = std::string(SOFA_SRC_DIR) + "/applications/projects";
+    if (FileSystem::exists(projectsDir))
+        addPythonModulePathsForPlugins(projectsDir);
+
+    static const std::string devProjectsDir = std::string(SOFA_SRC_DIR) + "/applications-dev/projects";
+    if (FileSystem::exists(devProjectsDir))
+        addPythonModulePathsForPlugins(devProjectsDir);
+
 
     char * pathVar = getenv("SOFAPYTHON_PLUGINS_PATH");
     if (pathVar != NULL)
