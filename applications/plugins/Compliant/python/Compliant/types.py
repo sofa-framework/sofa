@@ -110,6 +110,7 @@ class Quaternion(np.ndarray):
     def exp(x):
         '''quaternion exponential (doubled)'''
 
+        x = np.array( x )
         theta = np.linalg.norm(x)
 
         res = Quaternion()

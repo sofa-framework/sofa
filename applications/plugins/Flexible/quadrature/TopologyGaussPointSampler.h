@@ -126,22 +126,26 @@ protected:
 
     virtual void update()
     {
-        if(!this->parentTopology) return;
+        raPositions parent(f_inPosition);
+        f_fineVolumes.updateIfDirty();
+        cleanDirty();
 
-        raPositions parent(this->f_inPosition);
+        if( !parentTopology ) return;
+
         if(!parent.size()) return;
 
-        const Topo::SeqTetrahedra& tetrahedra = this->parentTopology->getTetrahedra();
-        const Topo::SeqHexahedra& cubes = this->parentTopology->getHexahedra();
-        const Topo::SeqTriangles& triangles = this->parentTopology->getTriangles();
-        const Topo::SeqQuads& quads = this->parentTopology->getQuads();
-        const Topo::SeqEdges& edges = this->parentTopology->getEdges();
+
+        const Topo::SeqTetrahedra& tetrahedra = parentTopology->getTetrahedra();
+        const Topo::SeqHexahedra& cubes = parentTopology->getHexahedra();
+        const Topo::SeqTriangles& triangles = parentTopology->getTriangles();
+        const Topo::SeqQuads& quads = parentTopology->getQuads();
+        const Topo::SeqEdges& edges = parentTopology->getEdges();
 
         waPositions pos(this->f_position);
         waVolume vol(this->f_volume);
         helper::WriteOnlyAccessor<Data< VTransform > > transforms(this->f_transforms);
 
-        helper::WriteOnlyAccessor<Data< vector<unsigned int> > > cel(this->f_cell);
+        helper::WriteOnlyAccessor<Data< vector<unsigned int> > > cel(f_cell);
 
         if ( tetrahedra.empty() && cubes.empty() )
         {
@@ -379,7 +383,7 @@ protected:
         }
 
         if(this->f_printLog.getValue()) if(pos.size())    std::cout<<"TopologyGaussPointSampler: "<< pos.size() <<" generated samples"<<std::endl;
-        cleanDirty();
+
     }
 
 

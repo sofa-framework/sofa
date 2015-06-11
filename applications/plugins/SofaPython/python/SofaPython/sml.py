@@ -9,6 +9,7 @@ import Tools
 from Tools import listToStr as concat
 import units
 import mass
+import DAGValidation
 
 def parseIdName(obj,objXml):
     """ set id and name of obj
@@ -68,6 +69,7 @@ class Model:
         def __init__(self,objXml=None):
             self.collision=True
             self.simulation=True
+            self.visual=True
             if not objXml is None:
                 self.parseXml(objXml)
 
@@ -76,6 +78,8 @@ class Model:
                 self.collision = False if objXml.attrib["collision"] in {'False','0','false'} else True
             if "simulation" in objXml.attrib:
                 self.simulation = False if objXml.attrib["simulation"] in {'False','0','false'} else True
+            if "visual" in objXml.attrib:
+                self.visual = False if objXml.attrib["visual"] in {'False','0','false'} else True
 
     class Solid:
         def __init__(self, solidXml=None):
@@ -420,6 +424,7 @@ class BaseScene:
         pass
 
     def __init__(self,parentNode,model,name=None):
+        self.root = parentNode
         self.model = model
         self.param = BaseScene.Param()
         self.material = Tools.Material() # a default material set
@@ -430,12 +435,23 @@ class BaseScene:
             n=self.model.name
         self.node=parentNode.createChild(self.model.name)
 
-    def createChild(self, parent, name):
+    def createChild(self, parent, childName):
         """Creates a child node and store it in the Scene nodes dictionary"""
-        node = parent.createChild(name)
-        self.nodes[name] = node
-        return node
-    
+        """ if parent is a list of Nodes, the child is created in the fist valid parent """
+        """ and then added to every other valid parents """
+        childNode = None
+        if isinstance(parent, list): # we have a list of parent nodes
+            for p in parent:
+                if not p is None: # p is valid
+                    if childNode is None: # childNode is not yet created
+                        childNode = p.createChild( childName )
+                    else:
+                        p.addChild( childNode )
+        else: # only one parent
+            childNode = parent.createChild(childName)
+        self.nodes[childName] = childNode
+        return childNode
+        
     def setMaterial(self, solid, material):
         """ assign material to solid
         """
@@ -455,6 +471,13 @@ class BaseScene:
             return self.solidMaterial[solid]
         else :
             return "default"
+
+    def dagValidation(self):
+        err = DAGValidation.test( self.root, True )
+        if not len(err) is 0:
+            print "ERROR (SofaPython.BaseScene) your DAG scene is not valid"
+            for e in err:
+                print e
 
 class SceneDisplay(BaseScene):
     """ Creates a scene to display solid meshes

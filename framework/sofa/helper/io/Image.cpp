@@ -22,8 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
+#define SOFA_HELPER_IO_IMAGE_CPP
 #include <sofa/helper/io/Image.h>
+#include <sofa/helper/system/config.h>
 #include <sofa/helper/Factory.inl>
 #include <stdio.h>
 #include <string.h>

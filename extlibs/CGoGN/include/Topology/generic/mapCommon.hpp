@@ -21,7 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
-
+#include "mapCommon.h"
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/bind.hpp>
 #include "traversor/traversorFactory.h"
@@ -92,7 +92,7 @@ void MapCommon<MAP_IMPL>::setDartEmbedding(Dart d, unsigned int emb)
 	assert(this->template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
 
 	unsigned int old = getEmbedding<ORBIT>(d);
-
+//    std::cerr << "get embedding of " << d << " (orbit " << ORBIT << ") = " << old << std::endl;
 	if (old == emb)	// if same emb
 		return;		// nothing to do
 
@@ -103,7 +103,7 @@ void MapCommon<MAP_IMPL>::setDartEmbedding(Dart d, unsigned int emb)
 
 	if (emb != EMBNULL)
 		this->m_attribs[ORBIT].refLine(emb);	// ref the new emb
-
+    assert(this->m_embeddings[ORBIT] != NULL);
 	(*this->m_embeddings[ORBIT])[this->dartIndex(d)] = emb ; // finally affect the embedding to the dart
 }
 
@@ -194,18 +194,21 @@ void MapCommon<MAP_IMPL>::boundaryUnmarkAll()
  ****************************************/
 
 template <typename MAP_IMPL>
-template <typename T, unsigned int ORBIT, typename MAP>
-inline AttributeHandler<T, ORBIT, MAP> MapCommon<MAP_IMPL>::addAttribute(const std::string& nameAttr)
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy>
+inline AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy > MapCommon<MAP_IMPL>::addAttribute(const std::string& nameAttr)
 {
-	if(!this->template isOrbitEmbedded<ORBIT>())
-		this->template addEmbedding<ORBIT>() ;
+
+    if(!this->template isOrbitEmbedded<ORBIT>())
+    {
+        this->template addEmbedding<ORBIT>() ;
+    }
 	AttributeMultiVector<T>* amv = this->m_attribs[ORBIT].template addAttribute<T>(nameAttr) ;
-	return AttributeHandler<T, ORBIT, MAP>(static_cast<MAP*>(this), amv) ;
+    return AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy>(static_cast<MAP*>(this), amv) ;
 }
 
 template <typename MAP_IMPL>
-template <typename T, unsigned int ORBIT, typename MAP>
-inline bool MapCommon<MAP_IMPL>::removeAttribute(AttributeHandler<T, ORBIT, MAP>& attr)
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline bool MapCommon<MAP_IMPL>::removeAttribute(AttributeHandler< T, ORBIT, MAP, AttributeAccessorPolicy> &attr)
 {
 	assert(attr.isValid() || !"Invalid attribute handler") ;
 	if(this->m_attribs[attr.getOrbit()].template removeAttribute<T>(attr.getIndex()))
@@ -222,21 +225,25 @@ inline bool MapCommon<MAP_IMPL>::removeAttribute(AttributeHandler<T, ORBIT, MAP>
 }
 
 template <typename MAP_IMPL>
-template <typename T, unsigned int ORBIT, typename MAP>
-inline AttributeHandler<T ,ORBIT, MAP> MapCommon<MAP_IMPL>::getAttribute(const std::string& nameAttr)
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline AttributeHandler<T ,ORBIT, MAP, AttributeAccessorPolicy> MapCommon<MAP_IMPL>::getAttribute(const std::string& nameAttr)
 {
 	AttributeMultiVector<T>* amv = this->m_attribs[ORBIT].template getDataVector<T>(nameAttr) ;
-	return AttributeHandler<T, ORBIT, MAP>(static_cast<MAP*>(this), amv) ;
+    return AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >(static_cast<MAP*>(this), amv) ;
 }
 
 template <typename MAP_IMPL>
-template <typename T, unsigned int ORBIT, typename MAP>
-inline AttributeHandler<T ,ORBIT, MAP> MapCommon<MAP_IMPL>::checkAttribute(const std::string& nameAttr)
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline AttributeHandler< T, ORBIT, MAP, AttributeAccessorPolicy> MapCommon<MAP_IMPL>::checkAttribute(const std::string& nameAttr)
 {
-    AttributeHandler<T, ORBIT, MAP> att = this->getAttribute<T,ORBIT, MAP>(nameAttr);
+    AttributeHandler<T, ORBIT, MAP> att = this->getAttribute<T,ORBIT, MAP, AttributeAccessorPolicy>(nameAttr);
 	if (!att.isValid())
-        att = this->addAttribute<T, ORBIT, MAP>(nameAttr);
+    {
+        att = this->addAttribute<T, ORBIT, MAP, AttributeAccessorPolicy>(nameAttr);
+    }
+
 	return att;
+
 }
 
 template <typename MAP_IMPL>

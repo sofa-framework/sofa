@@ -26,6 +26,7 @@
 #define __MR_LERP_MASK__
 
 #include <cmath>
+#include "Topology/generic/attributeHandler.h"
 //#include "Algo/Decimation/decimation.h"
 
 namespace CGoGN
@@ -48,10 +49,11 @@ class LerpVertexVertexFunctor : public FunctorType
 {
 protected:
 	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& m_position ;
+    typedef AttributeHandler< typename PFP::VEC3, VERTEX, typename PFP::MAP > PositionAttribute;
+    PositionAttribute& m_position ;
 
 public:
-	LerpVertexVertexFunctor(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& p) : m_map(m), m_position(p)
+    LerpVertexVertexFunctor(typename PFP::MAP& m, PositionAttribute& p) : m_map(m), m_position(p)
 	{}
 
 	bool operator() (Dart d)
@@ -74,10 +76,11 @@ class LerpEdgeVertexFunctor : public FunctorType
 {
 protected:
 	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& m_position ;
+    typedef AttributeHandler< typename PFP::VEC3, VERTEX, typename PFP::MAP > PositionAttribute;
+    PositionAttribute& m_position ;
 
 public:
-	LerpEdgeVertexFunctor(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& p) : m_map(m), m_position(p)
+    LerpEdgeVertexFunctor(typename PFP::MAP& m, PositionAttribute& p) : m_map(m), m_position(p)
 	{}
 
 	bool operator() (Dart d)
@@ -100,10 +103,11 @@ class LerpFaceVertexFunctor : public FunctorType
 {
 protected:
 	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& m_position ;
+    typedef AttributeHandler< typename PFP::VEC3, VERTEX, typename PFP::MAP > PositionAttribute;
+    PositionAttribute& m_position ;
 
 public:
-	LerpFaceVertexFunctor(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& p) : m_map(m), m_position(p)
+    LerpFaceVertexFunctor(typename PFP::MAP& m, PositionAttribute& p) : m_map(m), m_position(p)
 	{}
 
 	bool operator() (Dart d)

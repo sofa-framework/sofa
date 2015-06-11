@@ -379,7 +379,7 @@ protected:
         /// colors definition
         T FillColor = (T)getValue(meshId,0);
         T InsideColor = (T)this->vf_InsideValues[meshId]->getValue();
-//        T OutsideColor = (T)this->backgroundValue.getValue();
+        //        T OutsideColor = (T)this->backgroundValue.getValue();
 
         /// draw surface
         CImg<bool> mask;
@@ -389,6 +389,7 @@ protected:
         // draw edges
         if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing edges (mesh "<<meshId<<")..."<<std::endl;
 
+        std::map<unsigned int,T> edgToValue; // we record special roi values and rasterize them after to prevent from overwriting
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
@@ -401,15 +402,28 @@ protected:
             {
                 bool isRoi = true;
                 for(size_t j=0; j<2; j++)  if(std::find(roiIndices[r].begin(), roiIndices[r].end(), edg[i][j])==roiIndices[r].end()) { isRoi=false; break; }
-                if (isRoi) currentColor = (T)getROIValue(meshId,r);
+                if (isRoi) { currentColor = (T)getROIValue(meshId,r); edgToValue[i]=currentColor; }
             }
-            if (nbval>1 && currentColor == FillColor)  draw_line(im,mask,pts[0],pts[1],getValue(meshId,edg[i][0]),getValue(meshId,edg[i][1]),this->subdiv.getValue()); // edge rasterization with interpolated values (if not in roi)
-            else draw_line(im,mask,pts[0],pts[1],currentColor,this->subdiv.getValue());
+            if(currentColor == FillColor)
+            {
+                if (nbval>1)  draw_line(im,mask,pts[0],pts[1],getValue(meshId,edg[i][0]),getValue(meshId,edg[i][1]),this->subdiv.getValue()); // edge rasterization with interpolated values (if not in roi)
+                else draw_line(im,mask,pts[0],pts[1],currentColor,this->subdiv.getValue());
+            }
+        }
+
+        // roi rasterization
+        for(typename std::map<unsigned int,T>::iterator it=edgToValue.begin(); it!=edgToValue.end(); ++it)
+        {
+            Coord pts[2];
+            for(size_t j=0; j<2; j++) pts[j] = (tr->toImage(Coord(pos[edg[it->first][j]])));
+            T currentColor = it->second;
+            draw_line(im,mask,pts[0],pts[1],currentColor,this->subdiv.getValue());
         }
 
         //  draw filled faces
         if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing triangles (mesh "<<meshId<<")..."<<std::endl;
 
+        std::map<unsigned int,T> triToValue; // we record special roi values and rasterize them after to prevent from overwriting
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
@@ -422,24 +436,36 @@ protected:
             {
                 bool isRoi = true;
                 for(size_t j=0; j<3; j++) if(std::find(roiIndices[r].begin(), roiIndices[r].end(), tri[i][j])==roiIndices[r].end()) { isRoi=false; break; }
-                if (isRoi) currentColor = (T)getROIValue(meshId,r);
+                if (isRoi) { currentColor = (T)getROIValue(meshId,r); triToValue[i]=currentColor; }
             }
-            if (nbval>1 && currentColor == FillColor)  // triangle rasterization with interpolated values (if not in roi)
+            if(currentColor == FillColor)
             {
-                draw_triangle(im,mask,pts[0],pts[1],pts[2],getValue(meshId,tri[i][0]),getValue(meshId,tri[i][1]),getValue(meshId,tri[i][2]),this->subdiv.getValue());
-                draw_triangle(im,mask,pts[1],pts[2],pts[0],getValue(meshId,tri[i][1]),getValue(meshId,tri[i][2]),getValue(meshId,tri[i][0]),this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
-            }
-            else
-            {
-                draw_triangle(im,mask,pts[0],pts[1],pts[2],currentColor,this->subdiv.getValue());
-                draw_triangle(im,mask,pts[1],pts[2],pts[0],currentColor,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
+                if (nbval>1)  // triangle rasterization with interpolated values (if not in roi)
+                {
+                    draw_triangle(im,mask,pts[0],pts[1],pts[2],getValue(meshId,tri[i][0]),getValue(meshId,tri[i][1]),getValue(meshId,tri[i][2]),this->subdiv.getValue());
+                    draw_triangle(im,mask,pts[1],pts[2],pts[0],getValue(meshId,tri[i][1]),getValue(meshId,tri[i][2]),getValue(meshId,tri[i][0]),this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
+                }
+                else
+                {
+                    draw_triangle(im,mask,pts[0],pts[1],pts[2],currentColor,this->subdiv.getValue());
+                    draw_triangle(im,mask,pts[1],pts[2],pts[0],currentColor,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
+                }
             }
         }
 
+        // roi rasterization
+        for(typename std::map<unsigned int,T>::iterator it=triToValue.begin(); it!=triToValue.end(); ++it)
+        {
+            Coord pts[3];
+            for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(pos[tri[it->first][j]])));
+            T currentColor = it->second;
+            draw_triangle(im,mask,pts[0],pts[1],pts[2],currentColor,this->subdiv.getValue());
+            draw_triangle(im,mask,pts[1],pts[2],pts[0],currentColor,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
+        }
 
         /// fill inside
         if(!isClosed(tri.ref())) sout<<"mesh["<<meshId<<"] might be open, let's try to fill it anyway"<<sendl;
-//        else
+        //        else
         {
             // flood fill from the exterior point (0,0,0) with the color outsideColor
             if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Filling object (mesh "<<meshId<<")..."<<std::endl;

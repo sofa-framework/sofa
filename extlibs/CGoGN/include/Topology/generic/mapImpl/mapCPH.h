@@ -16,21 +16,26 @@ class CGoGN_test ;
 namespace CGoGN
 {
 
-class MapIH2 : public GenericMap
+class MapCPH : public GenericMap
 {
     friend class ::sofa::cgogn_plugin::test::CGoGN_test;
     template<typename MAP> friend class DartMarkerTmpl ;
     template<typename MAP> friend class DartMarkerStore ;
 
 public:
-    MapIH2()
-    {}
+
+    MapCPH();
+
+    virtual ~MapCPH();
 
     virtual void clear(bool removeAttrib);
+    void initImplicitProperties() ;
 
 protected:
-    MapIH2(const MapIH2& m): GenericMap(m){}
+    MapCPH(const MapCPH& m): GenericMap(m){}
 
+    virtual void initEdgeId() = 0;
+    virtual void initFaceId() = 0;
     std::vector<AttributeMultiVector<Dart>*> m_involution;
     std::vector<AttributeMultiVector<Dart>*> m_permutation;
     std::vector<AttributeMultiVector<Dart>*> m_permutation_inv;
@@ -91,12 +96,31 @@ protected:
          *           DARTS TRAVERSALS           *
          ****************************************/
 public:
-    inline Dart begin() const;
-    inline Dart end() const;
-    inline void next(Dart& d) const;
+    Dart begin() const
+    {
+        Dart d = Dart::create(m_attribs[DART].begin()) ;
+        while(getDartLevel(d) > getCurrentLevel())
+        {
+            m_attribs[DART].next(d.index) ;
+        }
+        return d ;
+    }
 
-    template<unsigned ORBIT>
-    inline void next(Cell<ORBIT>& c) const;
+    void next(Dart &d) const
+    {
+        do
+        {
+            m_attribs[DART].next(d.index) ;
+        } while(d != this->end() && (getDartLevel(d) > getCurrentLevel())) ;
+    }
+
+    inline Dart end() const
+    {
+        return Dart::create(m_attribs[DART].end()) ;
+    }
+
+//    template<unsigned ORBIT>
+//    inline void next(Cell<ORBIT>& c) const;
 
     /**
     * Apply a functor on each dart of the map
@@ -117,43 +141,93 @@ public:
      *              LEVELS MANAGEMENT                  *
      ***************************************************/
 
-    inline unsigned int getCurrentLevel();
-    inline void setCurrentLevel(unsigned int l) ;
-    inline void incCurrentLevel();
-    inline void decCurrentLevel();
-    inline unsigned int getMaxLevel() ;
-    inline unsigned int getDartLevel(Dart d) ;
+    inline unsigned int getCurrentLevel() const;
+    inline void setCurrentLevel(unsigned int l);
+    inline unsigned int getMaxLevel() const ;
+    inline unsigned int getDartLevel(Dart d) const;
     inline void setDartLevel(Dart d, unsigned int i) ;
     inline void setMaxLevel(unsigned int l);
+    inline void setNextLevelCell(Dart d, unsigned int emb);
 
+    inline void incCurrentLevel()
+    {
+        if(getCurrentLevel() < getMaxLevel())
+        {
+            setCurrentLevel(getCurrentLevel() + 1u);
+        }
 
+    }
+
+    inline void decCurrentLevel()
+    {
+        if (getCurrentLevel() > 0u)
+        {
+            setCurrentLevel(getCurrentLevel() -1u);
+        }
+    }
+
+    inline unsigned int getNewEdgeId() {
+        return m_edgeIdCount++ ;
+    }
+
+    inline unsigned int getEdgeId(Dart d) const {
+        return m_edgeId->operator [](this->dartIndex(d)) ;
+    }
+
+    inline unsigned int getNewFaceId()
+    {
+        return m_faceIdCount++;
+    }
+
+    inline unsigned int getFaceId(Dart d) const
+    {
+        return m_faceId->operator [](this->dartIndex(d));
+    }
+
+    inline void setFaceId(Dart d, unsigned int fid)
+    {
+        this->m_faceId->operator [](this->dartIndex(d)) = fid;
+    }
+    void setEdgeId(Dart d, unsigned int eid)
+    {
+        this->m_edgeId->operator [](this->dartIndex(d)) = eid;
+    }
+
+    inline Dart beginMaxLvl() const
+    {
+        return Dart::create(m_attribs[DART].begin()) ;
+    }
+    inline Dart endMaxLvl() const
+    {
+        return this->end();
+    }
+    inline void nextMaxLvl(Dart& d) const
+    {
+        m_attribs[DART].next(d.index) ;
+    }
 
 protected:
-    unsigned int m_curLevel ;
-    unsigned int m_maxLevel ;
-    unsigned int m_idCount ;
-    AttributeMultiVector<unsigned int>* m_nextLevelCell[NB_ORBITS] ;
+    unsigned int m_curLevel;
+    unsigned int m_maxLevel;
+    unsigned int m_edgeIdCount;
+    unsigned int m_faceIdCount;
+    AttributeMultiVector<unsigned int>* m_nextLevelCell ;
     AttributeMultiVector<unsigned int>* m_dartLevel ;
-
+    AttributeMultiVector<unsigned int>* m_edgeId;
+    AttributeMultiVector<unsigned int>* m_faceId;
 };
 
 
 template <typename FUNC>
-void MapIH2::foreach_dart(const FUNC& f)
+void MapCPH::foreach_dart(const FUNC& f)
 {
     for (Dart d = begin(); d != end(); next(d))
         f(d);
 }
 
 
-template<unsigned ORBIT>
-void MapIH2::next(Cell<ORBIT> &c) const
-{
-    m_attribs[DART].next(c.dart.index);
-}
-
 template <int I>
-void MapIH2::permutationUnsew(Dart d)
+void MapCPH::permutationUnsew(Dart d)
 {
     const Dart e = (*m_permutation[I])[d.index] ;
     const Dart f = (*m_permutation[I])[e.index] ;
@@ -164,7 +238,7 @@ void MapIH2::permutationUnsew(Dart d)
 }
 
 template <int I>
-void MapIH2::permutationSew(Dart d, Dart e)
+void MapCPH::permutationSew(Dart d, Dart e)
 {
     const Dart f = (*m_permutation[I])[d.index] ;
     const Dart g = (*m_permutation[I])[e.index] ;
@@ -175,7 +249,7 @@ void MapIH2::permutationSew(Dart d, Dart e)
 }
 
 template <int I>
-void MapIH2::involutionUnsew(Dart d)
+void MapCPH::involutionUnsew(Dart d)
 {
     const Dart e = (*m_involution[I])[d.index] ;
     (*m_involution[I])[d.index] = d ;
@@ -183,7 +257,7 @@ void MapIH2::involutionUnsew(Dart d)
 }
 
 template <int I>
-void MapIH2::involutionSew(Dart d, Dart e)
+void MapCPH::involutionSew(Dart d, Dart e)
 {
     assert((*m_involution[I])[d.index] == d) ;
     assert((*m_involution[I])[e.index] == e) ;
@@ -192,127 +266,97 @@ void MapIH2::involutionSew(Dart d, Dart e)
 }
 
 template <int I>
-Dart MapIH2::getPermutationInv(Dart d) const
+Dart MapCPH::getPermutationInv(Dart d) const
 {
     return (*m_permutation_inv[I])[d.index];
 }
 
 template <int I>
-Dart MapIH2::getPermutation(Dart d) const
+Dart MapCPH::getPermutation(Dart d) const
 {
     return (*m_permutation[I])[d.index];
 }
 
 template <int I>
-Dart MapIH2::getInvolution(Dart d) const
+Dart MapCPH::getInvolution(Dart d) const
 {
     return (*m_involution[I])[d.index];
 }
 
-void MapIH2::deleteDart(Dart d)
+void MapCPH::deleteDart(Dart d)
 {
     deleteDartLine(d.index) ;
 }
 
-unsigned int MapIH2::dartIndex(Dart d) const
+unsigned int MapCPH::dartIndex(Dart d) const
 {
     return d.index;
 }
 
-Dart MapIH2::indexDart(unsigned int index) const
+Dart MapCPH::indexDart(unsigned int index) const
 {
     return Dart(index);
 }
 
-unsigned int MapIH2::getNbDarts() const
+unsigned int MapCPH::getNbDarts() const
 {
     return m_attribs[DART].size() ;
 }
 
-AttributeContainer &MapIH2::getDartContainer()
+AttributeContainer &MapCPH::getDartContainer()
 {
     return m_attribs[DART];
 }
 
-AttributeMultiVector<Dart> *MapIH2::getInvolutionAttribute(unsigned int i)
+AttributeMultiVector<Dart> *MapCPH::getInvolutionAttribute(unsigned int i)
 {
     assert(i < m_involution.size());
     return m_involution[i];
 }
 
-AttributeMultiVector<Dart> *MapIH2::getPermutationAttribute(unsigned int i)
+AttributeMultiVector<Dart> *MapCPH::getPermutationAttribute(unsigned int i)
 {
     assert(i < m_permutation.size());
     return m_permutation[i];
 }
 
-AttributeMultiVector<Dart> *MapIH2::getPermutationInvAttribute(unsigned int i)
+AttributeMultiVector<Dart> *MapCPH::getPermutationInvAttribute(unsigned int i)
 {
     assert(i < m_permutation_inv.size());
     return m_permutation_inv[i];
 }
 
-Dart MapIH2::begin() const
-{
-    return Dart::create(m_attribs[DART].begin()) ;
-}
 
-Dart MapIH2::end() const
-{
-    return Dart::create(m_attribs[DART].end()) ;
-}
 
-void MapIH2::next(Dart &d) const
-{
-    m_attribs[DART].next(d.index) ;
-    if((*m_dartLevel)[d.index] > m_curLevel)
-        d = this->end() ;
-}
 
-unsigned int MapIH2::getCurrentLevel()
+unsigned int MapCPH::getCurrentLevel() const
 {
     return m_curLevel ;
 }
 
-void MapIH2::setCurrentLevel(unsigned int l)
+void MapCPH::setCurrentLevel(unsigned int l)
 {
     m_curLevel = l ;
 }
 
-void MapIH2::incCurrentLevel()
-{
-    if(m_curLevel < m_maxLevel)
-        ++m_curLevel ;
-    else
-        CGoGNout << "incCurrentLevel : already at maximum resolution level" << CGoGNendl ;
-}
-
-void MapIH2::decCurrentLevel()
-{
-    if(m_curLevel > 0)
-        --m_curLevel ;
-    else
-        CGoGNout << "decCurrentLevel : already at minimum resolution level" << CGoGNendl ;
-}
-
-unsigned int MapIH2::getMaxLevel()
+unsigned int MapCPH::getMaxLevel() const
 {
     return m_maxLevel ;
 }
 
-unsigned int MapIH2::getDartLevel(Dart d)
+unsigned int MapCPH::getDartLevel(Dart d) const
 {
-    return (*m_dartLevel)[d.index] ;
+    return m_dartLevel->operator [](this->dartIndex(d)) ;
 }
 
-void MapIH2::setDartLevel(Dart d, unsigned int i)
+void MapCPH::setDartLevel(Dart d, unsigned int i)
 {
-    (*m_dartLevel)[d.index] = i ;
+    m_dartLevel->operator [](this->dartIndex(d)) = i;
 }
 
-void MapIH2::setMaxLevel(unsigned int l)
+void MapCPH::setMaxLevel(unsigned int l)
 {
-    m_maxLevel = l;
+    m_maxLevel = std::max(m_maxLevel, l);
 }
 
 
@@ -321,7 +365,7 @@ void MapIH2::setMaxLevel(unsigned int l)
 
 } //namespace CGoGN
 
-#include "Topology/generic/mapImpl/mapIH2.hpp"
+#include "Topology/generic/mapImpl/mapCPH.hpp"
 
 #endif // MAPIH2_H
 

@@ -185,12 +185,18 @@ public:
 
 
         /// project to a rigid motion
-        void setRigid()
+        /// method: 0=polar (default), 1=SVD
+        void setRigid( unsigned method=0 )
         {
             Frame& q = getQuadratic();
             // first matrix is pure rotation
             Affine rotation;
-            helper::Decompose<Real>::polarDecomposition(getAffine(), rotation);
+
+            if( method==1 ) // SVD
+                helper::Decompose<Real>::polarDecomposition_stable(getAffine(), rotation);
+            else // polar
+                helper::Decompose<Real>::polarDecomposition(getAffine(), rotation);
+
             for(unsigned i=0; i<spatial_dimensions; i++)
                 for(unsigned j=0; j<spatial_dimensions; j++)
                     q[i][j] = rotation[i][j];
@@ -285,15 +291,32 @@ public:
         }
 
         /// get jacobian of the projection dQ/dM
-        void getJRigid(const Coord& c, Mat<VSize,VSize,Real>& J) const
+        /// method: 0=polar (default), 1=SVD
+        static void getJRigid(const Coord& c, Mat<VSize,VSize,Real>& J, unsigned method=0)
         {
-            Affine Q,S,invG;
-            helper::Decompose<Real>::polarDecomposition( c.getAffine(), Q, S );
-            helper::Decompose<Real>::polarDecompositionGradient_G(Q,S,invG);
-
             static const unsigned MSize = spatial_dimensions * spatial_dimensions;
             Mat<MSize,MSize,Real> dQOverdM;
-            helper::Decompose<Real>::polarDecompositionGradient_dQOverdM(Q,invG,dQOverdM);
+
+            switch( method )
+            {
+                case 1: // SVD
+                {
+                    Affine U, V;
+                    Vec<spatial_dimensions,Real> diag;
+                    helper::Decompose<Real>::SVD_stable( c.getAffine(), U, diag, V ); // TODO this was already computed in setRigid...
+                    helper::Decompose<Real>::polarDecomposition_stable_Gradient_dQOverdM( U, diag, V, dQOverdM );
+                    break;
+                }
+
+                case 0: // polar
+                default:
+                {
+                    Affine Q,S,invG;
+                    helper::Decompose<Real>::polarDecomposition( c.getAffine(), Q, S ); // TODO this was already computed in setRigid...
+                    helper::Decompose<Real>::polarDecompositionGradient_G(Q,S,invG); // TODO this was already computed in setRigid...
+                    helper::Decompose<Real>::polarDecompositionGradient_dQOverdM(Q,invG,dQOverdM);
+                }
+            }
 
             // set all to 0 (quadratic terms are fully constrained)
             J.clear();
@@ -310,52 +333,88 @@ public:
         }
 
         /// project to a rigid motion
-        void setRigid(const Coord& c)
+        /// method: 0=polar (default), 1=SVD, 2=approximation
+        void setRigid(const Coord& c, unsigned method = 0 )
         {
-            Affine Q,S,invG,dQ;
-            helper::Decompose<Real>::polarDecomposition( c.getAffine(), Q, S );
-            helper::Decompose<Real>::polarDecompositionGradient_G(Q,S,invG);
-            helper::Decompose<Real>::polarDecompositionGradient_dQ(invG,Q,this->getAffine(),dQ);
-            this->getVQuadratic().clear();
-            this->getAffine() = dQ;
-        }
-
-
-        // good approximation of the solution with no inversion of a 6x6 matrix
-        // based on : dR ~ 0.5*(dA.A^-1 - A^-T dA^T) R
-        // the projection matrix is however non symmetric..
-        void setRigid_approx(const Coord& c)
-        {
-            // Compute velocity tensor W = Adot.Ainv
-            Affine Ainv;  invertMatrix(Ainv,c.getAffine());
-            Affine W = getAffine() * Ainv;
-
-            // make it skew-symmetric
-            for(unsigned i=0; i<spatial_dimensions; i++) W[i][i] = 0.0;
-            for(unsigned i=0; i<spatial_dimensions; i++)
+            switch( method )
             {
-                for(unsigned j=i+1; j<spatial_dimensions; j++)
+                case 1: // SVD
                 {
-                    W[i][j] = (W[i][j] - W[j][i]) *(Real)0.5;
-                    W[j][i] = - W[i][j];
+                    Affine U, V, dQ;
+                    Vec<spatial_dimensions,Real> diag;
+                    helper::Decompose<Real>::SVD_stable( c.getAffine(), U, diag, V );
+                    helper::Decompose<Real>::polarDecomposition_stable_Gradient_dQ( U, diag, V, this->getAffine(), dQ );
+
+                    Frame& q = getVQuadratic();
+                    for(unsigned i=0; i<spatial_dimensions; i++)
+                        for(unsigned j=0; j<spatial_dimensions; j++)
+                            q[i][j] = dQ[i][j];
+
+                    // the rest is null
+                    for(unsigned i=0; i<spatial_dimensions; i++)
+                        for(unsigned j=spatial_dimensions; j<num_quadratic_terms; j++)
+                            q[i][j] = 0.;
+
+                    break;
+                }
+                case 2: // approximation
+                {
+                    // good approximation of the solution with no inversion of a 6x6 matrix
+                    // based on : dR ~ 0.5*(dA.A^-1 - A^-T dA^T) R
+                    // the projection matrix is however non symmetric..
+
+                    // Compute velocity tensor W = Adot.Ainv
+                    Affine Ainv;  invertMatrix(Ainv,c.getAffine());
+                    Affine W = getAffine() * Ainv;
+
+                    // make it skew-symmetric
+                    for(unsigned i=0; i<spatial_dimensions; i++) W[i][i] = 0.0;
+                    for(unsigned i=0; i<spatial_dimensions; i++)
+                    {
+                        for(unsigned j=i+1; j<spatial_dimensions; j++)
+                        {
+                            W[i][j] = (W[i][j] - W[j][i]) *(Real)0.5;
+                            W[j][i] = - W[i][j];
+                        }
+                    }
+
+                    // retrieve global velocity : Rdot = W.R
+                    Affine R;
+                    helper::Decompose<Real>::polarDecomposition( c.getAffine() , R );
+                    Affine Rdot = W*R;
+
+                    // assign rigid velocity
+                    Frame& q = getVQuadratic();
+                    for(unsigned i=0; i<spatial_dimensions; i++)
+                        for(unsigned j=0; j<spatial_dimensions; j++)
+                            q[i][j] = Rdot[i][j];
+
+                    // the rest is null
+                    for(unsigned i=0; i<spatial_dimensions; i++)
+                        for(unsigned j=spatial_dimensions; j<num_quadratic_terms; j++)
+                            q[i][j] = 0.;
+                }
+
+
+                case 0: // polar
+                default:
+                {
+                    Affine Q,S,invG,dQ;
+                    helper::Decompose<Real>::polarDecomposition( c.getAffine(), Q, S );
+                    helper::Decompose<Real>::polarDecompositionGradient_G(Q,S,invG);
+                    helper::Decompose<Real>::polarDecompositionGradient_dQ(invG,Q,this->getAffine(),dQ);
+
+                    Frame& q = getVQuadratic();
+                    for(unsigned i=0; i<spatial_dimensions; i++)
+                        for(unsigned j=0; j<spatial_dimensions; j++)
+                            q[i][j] = dQ[i][j];
+
+                    // the rest is null
+                    for(unsigned i=0; i<spatial_dimensions; i++)
+                        for(unsigned j=spatial_dimensions; j<num_quadratic_terms; j++)
+                            q[i][j] = 0.;
                 }
             }
-
-            // retrieve global velocity : Rdot = W.R
-            Affine R;
-            helper::Decompose<Real>::polarDecomposition( c.getAffine() , R );
-            Affine Rdot = W*R;
-
-            // assign rigid velocity
-            Frame& q = getVQuadratic();
-            for(unsigned i=0; i<spatial_dimensions; i++)
-                for(unsigned j=0; j<spatial_dimensions; j++)
-                    q[i][j] = Rdot[i][j];
-
-            // the rest is null
-            for(unsigned i=0; i<spatial_dimensions; i++)
-                for(unsigned j=spatial_dimensions; j<num_quadratic_terms; j++)
-                    q[i][j] = 0.;
         }
 
 

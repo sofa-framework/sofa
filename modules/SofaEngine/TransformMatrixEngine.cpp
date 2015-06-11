@@ -62,7 +62,7 @@ int RotateTransformMatrixEngineClass = core::RegisterObject("Compose the input t
  */
 
 AbstractTransformMatrixEngine::AbstractTransformMatrixEngine()
-    : d_inT ( initData (&d_inT, Matrix4::Identity(), "inT", "input transformation if any") )
+    : d_inT ( initData (&d_inT, Matrix4::s_identity, "inT", "input transformation if any") )
     , d_outT( initData (&d_outT, "outT", "output transformation") )
 {}
 
@@ -113,7 +113,8 @@ void TranslateTransformMatrixEngine::update()
     helper::ReadAccessor< Data<Vector3> > translation = d_translation;
     helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
 
-    Matrix4 myT = Matrix4::Identity();
+    Matrix4 myT;
+    myT.identity();
     myT.setsub(0,3,(*translation));
 
     (*outT) = (*inT) * myT;
@@ -142,7 +143,8 @@ void RotateTransformMatrixEngine::update()
     helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
 
 
-    Matrix4 myT = Matrix4::Identity();
+    Matrix4 myT;
+    myT.identity();
     Matrix3 R;
     Quaternion q = Quaternion::createQuaterFromEuler((*rotation) * M_PI / 180.0);
     q.toMatrix(R);
@@ -173,7 +175,8 @@ void ScaleTransformMatrixEngine::update()
     helper::ReadAccessor< Data<Vector3> > scale = d_scale;
     helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
 
-    Matrix4 myT = Matrix4::Identity();
+    Matrix4 myT;
+    myT.identity();
     myT(0,0) = (*scale)(0);
     myT(1,1) = (*scale)(1);
     myT(2,2) = (*scale)(2);

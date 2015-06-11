@@ -364,20 +364,52 @@ void HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElementsInRestPos(
 }
 
 template< class DataTypes>
-typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeHexahedronVolume( const HexaID /*h*/) const
+typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeHexahedronVolume( const HexaID h) const
 {
-    //const Hexahedron &t = this->m_topology->getHexahedron(h);
-    //const VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
-    Real volume=(Real)(0.0); /// @todo : implementation of computeHexahedronVolume
+    const Hexahedron &hexa = this->m_topology->getHexahedron(h);
+    const VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
+    Real volume=(Real)(0.0);
+
+    //split hexa in 6 tetras
+    BaseMeshTopology::Tetrahedron tetras[6];
+    tetras[0] = BaseMeshTopology::Tetrahedron(hexa[0],hexa[5],hexa[1],hexa[6]);
+    tetras[1] = BaseMeshTopology::Tetrahedron(hexa[0],hexa[1],hexa[3],hexa[6]);
+    tetras[2] = BaseMeshTopology::Tetrahedron(hexa[1],hexa[3],hexa[6],hexa[2]);
+    tetras[3] = BaseMeshTopology::Tetrahedron(hexa[6],hexa[3],hexa[0],hexa[7]);
+    tetras[4] = BaseMeshTopology::Tetrahedron(hexa[6],hexa[7],hexa[0],hexa[5]);
+    tetras[5] = BaseMeshTopology::Tetrahedron(hexa[7],hexa[5],hexa[4],hexa[0]);
+
+    for (unsigned int i = 0 ; i < 6; ++i)
+    {
+        BaseMeshTopology::Tetrahedron t = tetras[i];
+        volume += (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
+    }
+
     return volume;
 }
 
 template< class DataTypes>
-typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeRestHexahedronVolume( const HexaID /*h*/) const
+typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeRestHexahedronVolume( const HexaID h) const
 {
-    //const Hexahedron &t = this->m_topology->getHexahedron(h);
-    //const VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
-    Real volume=(Real)(0.0); /// @todo : implementation of computeRestHexahedronVolume
+    const Hexahedron &hexa = this->m_topology->getHexahedron(h);
+    const VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
+    Real volume=(Real)(0.0);
+
+    //split hexa in 6 tetras
+    BaseMeshTopology::Tetrahedron tetras[6];
+    tetras[0] = BaseMeshTopology::Tetrahedron(hexa[0],hexa[5],hexa[1],hexa[6]);
+    tetras[1] = BaseMeshTopology::Tetrahedron(hexa[0],hexa[1],hexa[3],hexa[6]);
+    tetras[2] = BaseMeshTopology::Tetrahedron(hexa[1],hexa[3],hexa[6],hexa[2]);
+    tetras[3] = BaseMeshTopology::Tetrahedron(hexa[6],hexa[3],hexa[0],hexa[7]);
+    tetras[4] = BaseMeshTopology::Tetrahedron(hexa[6],hexa[7],hexa[0],hexa[5]);
+    tetras[5] = BaseMeshTopology::Tetrahedron(hexa[7],hexa[5],hexa[4],hexa[0]);
+
+    for (unsigned int i = 0 ; i < 6; ++i)
+    {
+        BaseMeshTopology::Tetrahedron t = tetras[i];
+        volume += (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
+    }
+
     return volume;
 }
 

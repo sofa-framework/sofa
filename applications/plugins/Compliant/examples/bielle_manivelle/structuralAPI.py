@@ -8,10 +8,10 @@ scale = 1
 
 # parts of the mechanism
 parts = [ 
-    ["Corps","Corps.msh","1.36 0 0.0268 0 0 0 1",[0, 0, 0, 0, 0, 0, 1],"22.8 751 737", "2.1e+11","0.28","7.8e+3",1291.453/scale,"TetrahedronFEMForceField","Rigid","Vec3d","TLineModel","TPointModel","ExtVec3f","0.obj","Actor_Sensor_NA",],
-    ["Roue","Roue.msh","0 -0.00604 0.354 0 0 0 1",[0, 0, -0.148, 0, 0, 0, 1],"105 106 205", "2.1e+11","0.28","7.8e+3",780.336/scale,"TetrahedronFEMForceField","Rigid","Vec3d","TLineModel","TPointModel","ExtVec3f","3.obj","Actor_Sensor_NA"],
-    ["Came","Came.msh","0 0 -0.00768 0 0 0 1",[1.085, -0.072, 0.33, 0, 0, 0, 1],"40.5 40.6 0.331", "2.1e+11","0.28","7.8e+3",161.416/scale,"TetrahedronFEMForceField","Rigid","Vec3d","TLineModel","TPointModel","ExtVec3f","2.obj","Actor_Sensor_NA"],
-    ["Piston","Piston.msh","0 0 0.424 0 0 0 1",[2.05, 0, 0.33, 0, 0, 0, 1],"0.356 14.6 14.7", "2.1e+11","0.28","7.8e+3",132.759/scale,"TetrahedronFEMForceField","Rigid","Vec3d","TLineModel","TPointModel","ExtVec3f","1.obj","Actor_Sensor_NA"]
+    ["Corps",[0, 0, 0, 0, 0, 0, 1],"7.8e+3","0.obj"],
+    ["Roue",[0, 0, -0.148, 0, 0, 0, 1],"7.8e+3","3.obj"],
+    ["Came",[1.085, -0.072, 0.33, 0, 0, 0, 1],"7.8e+3","2.obj"],
+    ["Piston",[2.05, 0, 0.33, 0, 0, 0, 1],"7.8e+3","1.obj"]
 ]
 
 
@@ -64,9 +64,8 @@ def createScene(node):
     compliance = 0
     
     node.createObject('CompliantImplicitSolver', name='odesolver',stabilization=1)
-    node.createObject('MinresSolver', name='numsolver', iterations='250', precision='1e-14');
-    #node.createObject('LDLTSolver', name='numsolver'); compliance = 1e-10 #need to relax the system a bit
-        
+    #node.createObject('MinresSolver', name='numsolver', iterations='500', precision='1e-14');
+    node.createObject('LDLTSolver', name='numsolver', schur=0)
         
         
     # scene    
@@ -85,14 +84,15 @@ def createScene(node):
       
         r = StructuralAPI.RigidBody( scene, p[0] )
         
-        mesh = mesh_path + '/' + p[15]
-        density = float(p[7])
-        offset = p[3]
+        mesh = mesh_path + '/' + p[3]
+        density = float(p[2])
+        offset = p[1]
         
         r.setFromMesh( mesh, density, offset )
         
-        r.addCollisionMesh( mesh )
-        r.addVisualModel( mesh )
+        cm = r.addCollisionMesh( mesh )
+        cm.addVisualModel() # visual model similar to collision model
+        #r.addVisualModel( mesh ) # if the visual model was different from the collision model
         
         r.dofs.showObject=True
         r.dofs.showObjectScale=0.5
