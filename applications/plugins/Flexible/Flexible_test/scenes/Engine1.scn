@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Node name="Root" >
+    
+    <RequiredPlugin pluginName="Flexible"/>
+    <RequiredPlugin pluginName="image"/>
+    
+    <Mesh name="mesh" position="0 0 0  1 0 0  0 1 0  0 0 1" tetrahedra="0 1 2 3" triangles="0 1 2  0 1 3  0 2 3  1 2 3" />
+    
+    <MeshToImageEngine template="ImageUC" name="r" src="@mesh" voxelSize=".3" padSize="1" rotateImage="false" insideValue="0" />      
+    <ImageContainer template="ImageUC" name="image" image="@r.image" transform="@r.transform" />
+
+
+    <MechanicalObject template="Vec3d" name="parent" />
+
+    
+    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" method="0" nbRef="4" />
+
+<!--     <BarycentricShapeFunction  name="SF"  /> -->
+
+    <Node 	name="child"   >
+        
+        <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
+        <MechanicalObject  template="F331" name="F" />
+        <LinearMapping template="Vec3d,F331"  />
+
+    </Node>
+
+</Node>
+

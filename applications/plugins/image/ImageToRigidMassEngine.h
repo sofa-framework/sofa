@@ -171,7 +171,7 @@ protected:
 
             pos->getCenter()/=rigidMass->mass;
             C-=dyad(pos->getCenter(),pos->getCenter())*rigidMass->mass; // recenter covariance matrix around mean
-            rigidMass->inertiaMatrix = Mat3x3::Identity()*trace(C) - C;   // covariance matrix to inertia matrix
+            rigidMass->inertiaMatrix = Mat3x3::s_identity*trace(C) - C;   // covariance matrix to inertia matrix
 
             typename RigidMass::Mat3x3 R;
             helper::Decompose<Real>::eigenDecomposition(rigidMass->inertiaMatrix, R, inertia.wref());

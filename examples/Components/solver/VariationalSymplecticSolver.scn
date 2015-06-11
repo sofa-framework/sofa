@@ -1,0 +1,15 @@
+<Node name="root" dt="0.02">
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <Node name="Single">
+	<VariationalSymplecticSolver name="default0"  tags="meca" rayleighStiffness="0" rayleighMass="0" newtonError="1e-12" steps="4" verbose="0" file="energy.txt" saveEnergyInFile ="true"/>
+        <CGLinearSolver template="GraphScattered" name="cGLinearSolver1" iterations="300"  tolerance="1e-09"  threshold="1e-9"/>
+        <Node name="M1">
+            <MechanicalObject />
+            <UniformMass mass="1" />
+            <RegularGrid nx="4" ny="4" nz="28" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="27" />
+            <BoxConstraint box="-9.1 -0.1 -0.1 -5.9 3.1 0.1" />
+            <!--<BoxConstraint box="-9.1 -0.1 26.9 -5.9 3.1 27.1" />-->
+            <TetrahedronFEMForceField name="FEM" youngModulus="100000" poissonRatio="0.3" />
+        </Node>
+    </Node>
+</Node>

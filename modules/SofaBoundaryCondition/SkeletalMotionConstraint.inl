@@ -74,11 +74,9 @@ void SkeletalMotionConstraint<DataTypes>::reset()
 }
 
 template <class DataTypes>
-void SkeletalMotionConstraint<DataTypes>::findKeyTimes()
+void SkeletalMotionConstraint<DataTypes>::findKeyTimes(Real cT)
 {
     //Note: works only if the times are sorted
-
-    Real cT = (Real) this->getContext()->getTime() * animationSpeed.getValue();
     
     finished = false;
 
@@ -165,7 +163,7 @@ void SkeletalMotionConstraint<DataTypes>::projectVelocity(const core::Mechanical
 
     if(0.0 != cT)
     {
-        findKeyTimes();
+        findKeyTimes(cT+dt);
         if(finished)
         {
             // compute the position of the bones at cT + dt
@@ -193,7 +191,7 @@ void SkeletalMotionConstraint<DataTypes>::projectPosition(const core::Mechanical
 
     if(0.0 != cT)
     {
-        findKeyTimes();
+        findKeyTimes(cT);
 
         // if we found 2 keyTimes, we have to interpolate a velocity (linear interpolation)
         interpolatePosition<Coord>(cT, x.wref());

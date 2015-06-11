@@ -1525,7 +1525,7 @@ bool MeshTablesSurface<PFP>::mergeCloseVertices()
     for (unsigned int i=0; i<NBV*NBV*NBV; ++i)
         grid[i] = NULL;
 
-    VertexAttribute<VEC3, MAP> positions = m_map.template getAttribute<VEC3, VERTEX, MAP>("position");
+    AttributeHandler<VEC3, VERTEX, MAP> positions = m_map.template getAttribute<VEC3, VERTEX, MAP, typename AttributeHandler<VEC3, VERTEX, MAP>::HandlerAccessorPolicy >("position");
 
     // compute BB
     Geom::BoundingBox<typename PFP::VEC3> bb(positions[ positions.begin() ]) ;

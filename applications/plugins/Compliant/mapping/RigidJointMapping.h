@@ -188,9 +188,7 @@ protected:
 				out[i][2] = 0;
 			}
 			
-		}
-		 
-		pairs.endEdit();
+        }
 	}
 public:
 	void output(typename TOut::Coord out) const {

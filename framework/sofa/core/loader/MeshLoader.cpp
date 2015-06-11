@@ -62,7 +62,7 @@ MeshLoader::MeshLoader() : BaseLoader()
     , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
     , scale(initData(&scale, Vector3(1.0,1.0,1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
-    , d_transformation(initData(&d_transformation, Matrix4::Identity(), "transformation", "4x4 Homogeneous matrix to transform the DOFs (when present replace any)"))
+    , d_transformation(initData(&d_transformation, Matrix4::s_identity, "transformation", "4x4 Homogeneous matrix to transform the DOFs (when present replace any)"))
 {
     addAlias(&tetrahedra,"tetras");
     addAlias(&hexahedra,"hexas");
@@ -116,7 +116,7 @@ void MeshLoader::init()
 
 void MeshLoader::reinit()
 {
-    if (d_transformation.getValue() != Matrix4::Identity()) {
+    if (d_transformation.getValue() != Matrix4::s_identity) {
         this->applyTransformation(d_transformation.getValue());
         if (scale.getValue() != Vector3(1.0,1.0,1.0) || rotation.getValue() != Vector3(0.0,0.0,0.0) || translation.getValue() != Vector3(0.0,0.0,0.0))
             sout<< "Parameters scale, rotation, translation ignored in favor of transformation matrix" << sendl;

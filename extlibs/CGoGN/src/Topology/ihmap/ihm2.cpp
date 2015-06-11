@@ -30,8 +30,8 @@ namespace CGoGN
 
 ImplicitHierarchicalMap2::ImplicitHierarchicalMap2() : m_curLevel(0), m_maxLevel(0), m_idCount(0)
 {
-    m_dartLevel = Map2::addAttribute<unsigned int, DART, ImplicitHierarchicalMap2>("dartLevel") ;
-    m_edgeId = Map2::addAttribute<unsigned int, DART, ImplicitHierarchicalMap2>("edgeId") ;
+    m_dartLevel = Map2::addAttribute<unsigned int, DART, ImplicitHierarchicalMap2, HandlerAccessorPolicy >("dartLevel") ;
+    m_edgeId = Map2::addAttribute<unsigned int, DART, ImplicitHierarchicalMap2, HandlerAccessorPolicy >("edgeId") ;
 //    for(unsigned int i = 0; i < NB_ORBITS; ++i)
 //        m_nextLevelCell[i] = NULL ;
     //    this->initImplicitProperties();
@@ -48,8 +48,8 @@ void ImplicitHierarchicalMap2::clear(bool removeAttrib)
     Map2::clear(removeAttrib) ;
     if (removeAttrib)
     {
-        m_dartLevel = Map2::addAttribute<unsigned int, DART, ImplicitHierarchicalMap2>("dartLevel") ;
-        m_edgeId = Map2::addAttribute<unsigned int, DART, ImplicitHierarchicalMap2>("edgeId") ;
+        m_dartLevel = Map2::addAttribute<unsigned int, DART, ImplicitHierarchicalMap2, HandlerAccessorPolicy >("dartLevel") ;
+        m_edgeId = Map2::addAttribute<unsigned int, DART, ImplicitHierarchicalMap2, HandlerAccessorPolicy >("edgeId") ;
 
 //        for(unsigned int i = 0; i < NB_ORBITS; ++i)
 //            m_nextLevelCell[i] = NULL ;

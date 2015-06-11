@@ -74,11 +74,11 @@ public:
 
 //    void addapply_multiplication( OutCoord& result, const InCoord& data, const InCoord& offset)
 //    {
-//        StrainMat plasticStrainMat = StrainVoigtToMat( offset.getStrain() ) + StrainMat::Identity();
+//        StrainMat plasticStrainMat = StrainVoigtToMat( offset.getStrain() ) + StrainMat::s_identity;
 //        StrainMat plasticStrainMatInverse; plasticStrainMatInverse.invert( plasticStrainMat );
 
-//        StrainMat elasticStrainMat = ( StrainVoigtToMat( data.getStrain() ) + StrainMat::Identity() ) * plasticStrainMatInverse;
-//        StrainVec elasticStrainVec = StrainMatToVoigt( elasticStrainMat - StrainMat::Identity() );
+//        StrainMat elasticStrainMat = ( StrainVoigtToMat( data.getStrain() ) + StrainMat::s_identity ) * plasticStrainMatInverse;
+//        StrainVec elasticStrainVec = StrainMatToVoigt( elasticStrainMat - StrainMat::s_identity );
 
 //        result.getStrain() += elasticStrainVec;
 //    }
@@ -110,7 +110,7 @@ public:
 
     MatBlock getJ()
     {
-        return MatBlock::Identity()*multfactor;
+        return MatBlock::s_identity*multfactor;
     }
 
     KBlock getK(const OutDeriv& /*childForce*/, bool=false)
