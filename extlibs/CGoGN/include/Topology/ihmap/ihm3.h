@@ -31,7 +31,6 @@
 #include "Algo/Multiresolution/filter.h"
 
 
-
 namespace CGoGN
 {
 
@@ -78,7 +77,7 @@ public:
                     nextIdx = map->newCell<VERTEX>() ;
                     map->copyCell<VERTEX>(nextIdx, index) ;
                     map->m_nextLevelCell->operator[](index) = nextIdx ;
-                    std::cerr << "m_nextLevelCell[" << index << "] = " << nextIdx << std::endl;
+//                    std::cerr << "m_nextLevelCell[" << index << "] = " << nextIdx << std::endl;
                     map->m_nextLevelCell->operator[](nextIdx) = EMBNULL ;
                     cont.refLine(index) ;
                 }
@@ -159,6 +158,7 @@ public:
             return attrib->operator[](a) ;
         }
     };
+
 
 
 //    typedef AttributeHandler< T, ORBIT, MAP , AttributeAccessorDefault< T, ORBIT, MAP  > >    HandlerFinestResolution;
@@ -276,7 +276,23 @@ private:
 
     Dart phi2bis(Dart d) const;
 
+
+    AttributeHandler< unsigned, VOLUME, MAP, NonVertexAttributeAccessorCPHMap< unsigned, VOLUME > > a_volumeLevel;
+    AttributeHandler< unsigned, FACE, MAP, NonVertexAttributeAccessorCPHMap< unsigned, FACE > > a_faceLevel;
+
 public:
+//    void clear(bool removeAttrib);
+    inline void setFaceLevel(FaceCell f, unsigned int lvl)
+    {
+        a_faceLevel[f] = lvl;
+    }
+
+    inline void setVolumeLevel(VolumeCell w, unsigned int lvl)
+    {
+        a_volumeLevel[w] = lvl;
+    }
+
+
     template <int N>
     inline Dart phi(Dart d) const;
 
