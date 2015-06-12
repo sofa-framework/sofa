@@ -40,15 +40,11 @@ namespace Volume
 namespace IHM
 {
 
-ImplicitHierarchicalMap3::ImplicitHierarchicalMap3() : ParentMap()
+ImplicitHierarchicalMap3::ImplicitHierarchicalMap3() :
+    ParentMap()
 {
-//    m_dartLevel = this->addAttribute<unsigned int, DART, MAP, HandlerAccessorPolicy >("dartLevel") ;
-//    this->setDartLvlAttribute(m_dartLevel.getDataVector());
-//    m_edgeId = this->addAttribute<unsigned int, DART, MAP, HandlerAccessorPolicy >("edgeId") ;
-//    m_faceId = this->addAttribute<unsigned int, DART, MAP, HandlerAccessorPolicy >("faceId") ;
-//    m_nextLevelCell = m_attribs[VERTEX].addAttribute<unsigned int>("nextLevelCell") ;
-//    for(unsigned int i = m_attribs[VERTEX].begin(); i < m_attribs[VERTEX].end(); m_attribs[VERTEX].next(i))
-//        m_nextLevelCell->operator[](i) = EMBNULL ;
+    a_volumeLevel = this->template addAttribute< unsigned, VOLUME, MAP, NonVertexAttributeAccessorCPHMap< unsigned, VOLUME > >("volumeLvl");
+    a_faceLevel = this->template addAttribute< unsigned, FACE, MAP, NonVertexAttributeAccessorCPHMap< unsigned, FACE > >("faceLvl");
 }
 
 ImplicitHierarchicalMap3::~ImplicitHierarchicalMap3()
@@ -58,9 +54,18 @@ ImplicitHierarchicalMap3::~ImplicitHierarchicalMap3()
 
 void ImplicitHierarchicalMap3::clear(bool removeAttrib)
 {
-    Parent::clear(removeAttrib) ;
-	if (removeAttrib)
+    if (removeAttrib)
     {
+        m_attribs[FACE].removeAttribute< unsigned >("faceLvl");
+        m_attribs[VOLUME].removeAttribute< unsigned >("volumeLvl");
+    }
+
+    Parent::clear(removeAttrib) ;
+
+    if (removeAttrib)
+    {
+        a_volumeLevel = this->template addAttribute< unsigned, VOLUME, MAP, NonVertexAttributeAccessorCPHMap< unsigned, VOLUME > >("volumeLvl");
+        a_faceLevel = this->template addAttribute< unsigned, FACE, MAP, NonVertexAttributeAccessorCPHMap< unsigned, FACE > >("faceLvl");
         for(unsigned int i = m_attribs[DART].begin(); i < m_attribs[DART].end(); m_attribs[DART].next(i))
             m_nextLevelCell->operator[](i) = EMBNULL ;
     }
@@ -299,108 +304,16 @@ void ImplicitHierarchicalMap3::initFaceId()
 
 unsigned int ImplicitHierarchicalMap3::faceLevel(Dart d)
 {
-    assert(getDartLevel(d) <= getCurrentLevel() || !"Access to a dart introduced after current level") ;
-
-    if(getCurrentLevel() == 0)
-        return 0 ;
-
-    Dart it = d ;
-    Dart old = it ;
-    unsigned int l_old = getDartLevel(old) ;
-    unsigned int fLevel = edgeLevel(it) ;
-    do
-    {
-        it = phi1(it) ;
-        unsigned int dl = getDartLevel(it) ;
-        if(dl < l_old)							// compute the oldest dart of the face
-        {										// in the same time
-            old = it ;
-            l_old = dl ;
-        }										// in a first time, the level of a face
-        unsigned int l = edgeLevel(it) ;		// is the minimum of the levels
-        fLevel = l < fLevel ? l : fLevel ;		// of its edges
-    } while(it != d) ;
-
-    unsigned int cur = getCurrentLevel() ;
-    setCurrentLevel(fLevel);
-
-    unsigned int nbSubd = 0 ;
-    it = old ;
-    unsigned int eId = getEdgeId(old);			// the particular case of a face
-    do											// with all neighboring faces regularly subdivided
-    {											// but not the face itself
-        ++nbSubd ;								// is treated here
-        it = phi1(it) ;
-    } while(getEdgeId(it) == eId && (getDartLevel(it) != l_old)) ;
-
-    while(nbSubd > 1)
-    {
-        nbSubd /= 2 ;
-        --fLevel ;
-    }
-
-    setCurrentLevel(cur);
-    return fLevel ;
+    assert(getDartLevel(d) <= m_curLevel || !"Access to a dart introduced after current level") ;
+    return a_faceLevel[FaceCell(d)];
 }
 
 unsigned int ImplicitHierarchicalMap3::volumeLevel(Dart d)
 {
     assert(getDartLevel(d) <= getCurrentLevel() || !"Access to a dart introduced after current level") ;
-
-    if(getCurrentLevel() == 0)
-        return 0 ;
-
-    Dart oldest = d ;
-    unsigned int l_oldest=getDartLevel(d);
-    unsigned int vLevel = std::numeric_limits<unsigned int>::max(); //hook sioux
-//	//First : the level of a volume is the minimum of the levels of its faces
-    Traversor3WF<ImplicitHierarchicalMap3> travF(*this, d);
-    for (Dart dit = travF.begin(); dit != travF.end(); dit = travF.next())
-    {
-        // in a first time, the level of a face
-        //the level of the volume is the minimum of the
-        //levels of its faces
-        unsigned int fLevel = faceLevel(dit);
-        vLevel = fLevel < vLevel ? fLevel : vLevel ;
-        Dart old =faceOldestDart(dit);
-        unsigned int l_old=getDartLevel(old);
-        if(l_old < l_oldest)
-        {
-            l_oldest=l_old;
-            oldest = old ;
-        }
-    }
-
-    //Second : the case of all faces regularly subdivided but not the volume itself
-    unsigned int cur = getCurrentLevel() ;
-    setCurrentLevel(vLevel) ;
-
-    unsigned int nbSubd = 0 ;
-    Dart it = oldest ;
-    unsigned int eId = getEdgeId(oldest) ;
-    unsigned int fId = getFaceId(oldest);
-
-    do
-    {
-        ++nbSubd ;
-        it = phi1(it) ;
-        while(getEdgeId(it)!=eId && getFaceId(it) == fId  && getDartLevel(it) != l_oldest)
-        {
-            it=phi1(phi2(it));
-        }
-    } while(getFaceId(it) == fId  && getDartLevel(it) != l_oldest) ;
-
-
-    while(nbSubd > 1)
-    {
-        nbSubd /= 2 ;
-        --vLevel ;
-    }
-
-    setCurrentLevel(cur) ;
-
-    return vLevel;
+    return a_volumeLevel[VolumeCell(d)];
 }
+
 
 Dart ImplicitHierarchicalMap3::edgeNewestDart(Dart d) const
 {
