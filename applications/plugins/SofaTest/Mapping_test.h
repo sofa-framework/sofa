@@ -118,7 +118,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     static const unsigned char TEST_getJs = 1; ///< testing getJs used in assembly API
     static const unsigned char TEST_getK = 2; ///< testing getK used in assembly API
     static const unsigned char TEST_applyJT_matrix = 3; ///< testing applyJT on matrices
-    static const unsigned char TEST_ASSEMBLY_API = TEST_getJs | TEST_getK; ///< testing functions used in assembly API getJS getKS
+    static const unsigned char TEST_ASSEMBLY_API = TEST_getJs | TEST_getK; ///< testing functions used in assembly API getJS getK
     unsigned char flags; ///< testing options. (all by default). To be used with precaution. Please implement the missing API in the mapping rather than not testing it.
 
 

@@ -98,7 +98,6 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
-
     // no geometric stiffness
     virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentForce*/, core::ConstMultiVecDerivId  /*childForce*/ ){}
     virtual void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForce*/ ){}
