@@ -582,7 +582,7 @@ void  StandardTetrahedralFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttyp
 {
 	unsigned int nbEdges=_topology->getNbEdges();
 	const vector< Edge> &edgeArray=_topology->getEdges() ;
-	helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+    edgeInformationVector& edgeInf = *(edgeInfo.beginEdit());
 	EdgeInformation *einfo;
 	unsigned int i,j,N0, N1, l;
 	Index noeud0, noeud1;
