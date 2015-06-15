@@ -17,6 +17,8 @@ set(HEADER_FILES
     DilateEngine.inl
     GenerateCylinder.h
     GenerateCylinder.inl
+    GenerateGrid.h
+    GenerateGrid.inl
     ExtrudeSurface.h
     ExtrudeSurface.inl
     ExtrudeQuadsAndGenerateHexas.h
@@ -108,6 +110,7 @@ set(SOURCE_FILES
     SphereROI.cpp
     DilateEngine.cpp
     GenerateCylinder.cpp
+	GenerateGrid.cpp
     ExtrudeSurface.cpp
     ExtrudeQuadsAndGenerateHexas.cpp
     ExtrudeEdgesAndGenerateQuads.cpp
