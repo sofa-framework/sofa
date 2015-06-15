@@ -101,9 +101,9 @@ void GenerateGrid<DataTypes>::update()
 	size_t i,j,k,index;
 	Coord pos;
 
-	for(index=0,i=0;i<=freqL;i++) {
+	for(index=0,k=0;k<=freqH;++k) {
 		for(j=0;j<=freqW;++j) {
-			for(k=0;k<=freqH;++k) {
+			for(i=0;i<=freqL;i++) {
 				pos=Coord(i*length,j*width,k*height);
 				pos+=origin;
 				out[index++]=pos;
@@ -131,12 +131,12 @@ void GenerateGrid<DataTypes>::update()
 				hexahedron[7]=(PointID)(i+(j+1)*(freqL+1)+(k+1)*(freqL+1)*(freqW+1));
 				hexas[index]=hexahedron;
 				/// decompose hexahedron into 6 tetra
-				tetras[6*index]=Tetrahedron(hexahedron[0],hexahedron[5],hexahedron[4],hexahedron[7]);
-				tetras[6*index+1]=Tetrahedron(hexahedron[0],hexahedron[1],hexahedron[5],hexahedron[3]);
-				tetras[6*index+2]=Tetrahedron(hexahedron[5],hexahedron[0],hexahedron[3],hexahedron[7]);
-				tetras[6*index+3]=Tetrahedron(hexahedron[0],hexahedron[3],hexahedron[7],hexahedron[2]);
-				tetras[6*index+4]=Tetrahedron(hexahedron[7],hexahedron[0],hexahedron[2],hexahedron[4]);
-				tetras[6*index+5]=Tetrahedron(hexahedron[6],hexahedron[7],hexahedron[2],hexahedron[4]);
+				tetras[6*index]=Tetrahedron(hexahedron[0],hexahedron[5],hexahedron[1],hexahedron[6]);
+				tetras[6*index+1]=Tetrahedron(hexahedron[0],hexahedron[1],hexahedron[3],hexahedron[6]);
+				tetras[6*index+2]=Tetrahedron(hexahedron[1],hexahedron[3],hexahedron[6],hexahedron[2]);
+				tetras[6*index+3]=Tetrahedron(hexahedron[6],hexahedron[3],hexahedron[0],hexahedron[7]);
+				tetras[6*index+4]=Tetrahedron(hexahedron[6],hexahedron[7],hexahedron[0],hexahedron[5]);
+				tetras[6*index+5]=Tetrahedron(hexahedron[7],hexahedron[5],hexahedron[4],hexahedron[0]);
 				index++;
 			}
 		}
