@@ -151,13 +151,12 @@ class Deformable:
 
 
 class AffineMass:
-    def __init__(self, node, dofAffineNode):
-        self.node = node # a children node of all nodes and shape function
+    def __init__(self, dofAffineNode):
         self.dofAffineNode = dofAffineNode # where the mechanical state is located
         self.mass = None
 
-    def massFromDensityImage(self, dofRigidNode, densityImage, lumping='0'):
-        node = self.node.createChild('Mass')
+    def massFromDensityImage(self, dofNode, dofRigidNode, densityImage, lumping='0'):
+        node = dofNode.createChild('Mass')
         dof = node.createObject('MechanicalObject', name='massPoints', template='Vec3d')
         insertLinearMapping(node, dofRigidNode, self.dofAffineNode, dof, assemble=False)
         densityImage.addBranchingToImage('0') # MassFromDensity on branching images does not exist yet
@@ -242,17 +241,17 @@ class ShapeFunction:
         self.node = node
         self.shapeFunction=None
    
-    def addVoronoi(self, image, position=None, cells=''):
-        """ Add a Voronoi shape function using position from position component and BranchingImage image
+    def addVoronoi(self, image, position='', cells='', nbRef=8):
+        """ Add a Voronoi shape function using path to position  and possibly cells
         """
-        if position is None:
+        if position =='':
             print "[Flexible.API.ShapeFunction] ERROR: no position"
         imagePath = SofaPython.Tools.getObjectPath(image.branchingImage)
         self.shapeFunction = self.node.createObject(
             "VoronoiShapeFunction", template="ShapeFunctiond,"+"Branching"+image.imageType, 
             name="shapeFunction", cells=cells,
-            position="@"+SofaPython.Tools.getObjectPath(position)+".position",
-            src="@"+imagePath, method=0, nbRef=8, bias=True)
+            position=position,
+            src="@"+imagePath, method=0, nbRef=nbRef, bias=True)
    
     def getFilenameIndices(self, filenamePrefix=None, directory=""):
         _filename=filenamePrefix if not filenamePrefix is None else "SF"
