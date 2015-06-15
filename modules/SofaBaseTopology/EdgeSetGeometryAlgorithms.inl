@@ -811,7 +811,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
 {
     const VecCoord& pos =(this->object->read(core::ConstVecCoordId::position())->getValue()); // point positions
 
-    sofa::helper::vector<Vector3> edgeVec;                  // 3D edges
+    sofa::helper::vector<defaulttype::Vector3> edgeVec;                  // 3D edges
 
     numEdges.clear();
     vertexEdges.clear();
@@ -853,10 +853,10 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
         {
             size_t n = weights.size();     // start index for this vertex
             weights.resize( n + ve.size() ); // concatenate all the W of the nodes
-            Vector3 a,u;
+            defaulttype::Vector3 a,u;
 
             // axis x
-            a=Vector3(1,0,0);
+            a=defaulttype::Vector3(1,0,0);
             cholBksb(u,L,a); // solve EEt.u=x using the Cholesky decomposition
             //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, ux = " << u << endl;
             for(size_t i=0; i<ve.size(); i++ )
@@ -866,7 +866,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             }
 
             // axis y
-            a=Vector3(0,1,0);
+            a=defaulttype::Vector3(0,1,0);
             cholBksb(u,L,a); // solve EEt.u=y using the Cholesky decomposition
             //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uy = " << u << endl;
             for(size_t i=0; i<ve.size(); i++ )
@@ -876,7 +876,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             }
 
             // axis z
-            a=Vector3(0,0,1);
+            a=defaulttype::Vector3(0,0,1);
             cholBksb(u,L,a); // solve EEt.u=z using the Cholesky decomposition
             //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uz = " << u << endl;
             for(size_t i=0; i<ve.size(); i++ )
@@ -890,7 +890,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
 #ifdef SOFA_HAVE_EIGEN2   // use the SVD decomposition of Eigen
             size_t n = weights.size();     // start index for this vertex
             weights.resize( n + ve.size() ); // concatenate all the W of the nodes
-            Vector3 a,u;
+            defaulttype::Vector3 a,u;
 
             typedef Eigen::Matrix<SReal,3,3> EigenM33;
             EigenM33 emat = eigenMat(EEt);
@@ -899,7 +899,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             Eigen::Matrix<SReal,3,1> solution;
 
             // axis x
-            a=Vector3(1,0,0);
+            a=defaulttype::Vector3(1,0,0);
             solution = jacobi.solve( eigenVec(a) );
             // least-squares solve EEt.u=x
             for(int i=0; i<3; i++)
@@ -912,7 +912,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             }
 
             // axis y
-            a=Vector3(0,1,0);
+            a=defaulttype::Vector3(0,1,0);
             solution = jacobi.solve( eigenVec(a) );
             // least-squares solve EEt.u=y
             for(int i=0; i<3; i++)
@@ -925,7 +925,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             }
 
             // axis z
-            a=Vector3(0,0,1);
+            a=defaulttype::Vector3(0,0,1);
             solution = jacobi.solve( eigenVec(a) );
             // least-squares solve EEt.u=z
             for(int i=0; i<3; i++)
