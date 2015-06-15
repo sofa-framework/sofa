@@ -65,7 +65,7 @@ void HexahedronSetGeometryAlgorithms< DataTypes >::defineHexahedronCubaturePoint
 	Real w;
 
 
-	NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1> &nide=getEdgeNumericalIntegrationDescriptor();
+	NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1> &nide=this->getEdgeNumericalIntegrationDescriptor();
 
 	/// create gauss points as tensor product of Gauss Legendre points in 1D
 	/// create integration method up to order 8 (could go up to 12 if needed) where the number of gauss points is the cube of the number of 1D Gauss points
