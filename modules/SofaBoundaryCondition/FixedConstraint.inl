@@ -162,7 +162,7 @@ void  FixedConstraint<DataTypes>::reinit()
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
 {
-    unsigned blockSize = DataTypes::deriv_total_size;
+    static const unsigned blockSize = DataTypes::deriv_total_size;
 
     if( f_fixAll.getValue()==true )
     {
