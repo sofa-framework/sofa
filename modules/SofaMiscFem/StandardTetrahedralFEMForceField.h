@@ -83,6 +83,7 @@ class StandardTetrahedralFEMForceField: public core::behavior::ForceField<DataTy
 
     typedef core::topology::BaseMeshTopology::index_type Index;
     typedef core::topology::BaseMeshTopology::Tetra Element;
+	typedef core::topology::BaseMeshTopology::Edge Edge;
     typedef core::topology::BaseMeshTopology::SeqTetrahedra VecElement;
 
 
