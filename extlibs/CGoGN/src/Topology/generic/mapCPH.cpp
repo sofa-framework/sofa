@@ -142,6 +142,7 @@ Dart MapCPH::newDart()
         (*m_involution[i])[d.index] = d ;
 
     setDartLevel(d, this->getCurrentLevel());
+    setMaxLevel(getCurrentLevel());
     setNextLevelCell(d, EMBNULL);
     return d;
 }

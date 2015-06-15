@@ -342,6 +342,9 @@ class Behavior:
         with open(filename,'r') as f:
             data.update(json.load(f))
         self.sampler = self.node.createObject('GaussPointContainer',name='GPContainer', volumeDim=data['volumeDim'], inputVolume=data['inputVolume'], position=data['position'])
+        if not self.labelImage is None and not self.labels is None:
+            celloffsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+SofaPython.Tools.getObjectPath(self.sampler)+".position", src="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage), labels=concat(self.labels))
+            self.cell = "@"+SofaPython.Tools.getObjectPath(celloffsets)+".cell"
         print 'Imported Gauss Points from '+filename
 
     def write(self, filenamePrefix=None, directory=""):
