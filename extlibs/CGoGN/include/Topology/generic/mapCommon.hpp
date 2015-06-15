@@ -202,6 +202,7 @@ inline AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy > MapCommon<MAP_I
     {
         this->template addEmbedding<ORBIT>() ;
     }
+    std::cerr << "added attribute " << nameAttr << "on orbit " << orbitName(ORBIT) << std::endl;
 	AttributeMultiVector<T>* amv = this->m_attribs[ORBIT].template addAttribute<T>(nameAttr) ;
     return AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy>(static_cast<MAP*>(this), amv) ;
 }
@@ -211,6 +212,7 @@ template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorP
 inline bool MapCommon<MAP_IMPL>::removeAttribute(AttributeHandler< T, ORBIT, MAP, AttributeAccessorPolicy> &attr)
 {
 	assert(attr.isValid() || !"Invalid attribute handler") ;
+    std::cerr << "removed attribute " << attr.name() << "on orbit " << orbitName(ORBIT) << std::endl;
 	if(this->m_attribs[attr.getOrbit()].template removeAttribute<T>(attr.getIndex()))
 	{
 		AttributeMultiVectorGen* amv = attr.getDataVector();
