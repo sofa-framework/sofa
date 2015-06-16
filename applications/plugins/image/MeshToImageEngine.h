@@ -41,6 +41,7 @@
 #include <sofa/defaulttype/Quat.h>
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>
+#include <sofa/helper/vectorData.h>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -99,31 +100,31 @@ public:
     typedef vector<Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
-    helper::vector< Data< SeqPositions > *> vf_positions;
+    helper::vectorData< SeqPositions > vf_positions;
 
     typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef helper::ReadAccessor<Data< SeqTriangles > > raTriangles;
     typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
-    helper::vector< Data< SeqTriangles >*> vf_triangles;
+    helper::vectorData< SeqTriangles > vf_triangles;
 
     typedef typename core::topology::BaseMeshTopology::Edge Edge;
     typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef helper::ReadAccessor<Data< SeqEdges > > raEdges;
     typedef helper::WriteOnlyAccessor<Data< SeqEdges > > waEdges;
-    helper::vector< Data< SeqEdges >*> vf_edges;
+    helper::vectorData< SeqEdges > vf_edges;
 
     typedef double ValueType;
     typedef helper::vector<ValueType> SeqValues;
     typedef helper::ReadAccessor<Data< SeqValues > > raValues;
-    helper::vector< Data< SeqValues >*> vf_values;
+    helper::vectorData< SeqValues > vf_values;
 
-    helper::vector< Data< ValueType >*> vf_InsideValues;
+    helper::vectorData< ValueType > vf_InsideValues;
 
     typedef helper::SVector<typename core::topology::BaseMeshTopology::PointID> SeqIndex; ///< one roi defined as an index list
     typedef helper::vector<SeqIndex> VecSeqIndex;  ///< vector of rois
-    helper::vector< Data<VecSeqIndex> *> vf_roiIndices;  ///< vector of rois for each mesh
-    helper::vector< Data<SeqValues> *> vf_roiValue;   ///< values for each roi
+    helper::vectorData<VecSeqIndex> vf_roiIndices;  ///< vector of rois for each mesh
+    helper::vectorData<SeqValues> vf_roiValue;   ///< values for each roi
     typedef helper::ReadAccessor<Data< VecSeqIndex > > raIndex;
 
     Data< ValueType > backgroundValue;
@@ -146,30 +147,44 @@ public:
       , subdiv(initData(&subdiv,(unsigned int)(4),"subdiv","number of subdivisions for face rasterization (if needed, increase to avoid holes)"))
       , image(initData(&image,ImageTypes(),"image",""))
       , transform(initData(&transform,TransformType(),"transform",""))
+      , vf_positions(this, "position", "input positions for mesh ")
+      , vf_edges(this,"edges", "input edges for mesh ")
+      , vf_triangles(this,"triangles", "input triangles for mesh ")
+      , vf_values(this,"value", "pixel value on mesh surface ", true, SeqValues((size_t)1,(ValueType)1.0))
+      , vf_InsideValues(this,"insideValue", "pixel value inside the mesh", true, (ValueType)1.0)
+      , vf_roiIndices(this,"roiIndices", "List of Regions Of Interest, vertex indices ")
+      , vf_roiValue(this,"roiValue", "pixel value for ROIs, list of values ")
       , backgroundValue(initData(&backgroundValue,0.,"backgroundValue","pixel value at background"))
       , f_nbMeshes( initData (&f_nbMeshes, (unsigned)1, "nbMeshes", "number of meshes to voxelize (Note that the last one write on the previous ones)") )
       , gridSnap(initData(&gridSnap,true,"gridSnap","align voxel centers on voxelSize multiples for perfect image merging (nbVoxels and rotateImage should be off)"))
       , worldGridAligned(initData(&worldGridAligned, false, "worldGridAligned", "perform rasterization on a world aligned grid using nbVoxels and voxelSize"))
     {
-        createInputMeshesData();
+        vf_positions.resize(f_nbMeshes.getValue());
+        vf_edges.resize(f_nbMeshes.getValue());
+        vf_triangles.resize(f_nbMeshes.getValue());
+        vf_values.resize(f_nbMeshes.getValue());
+        vf_InsideValues.resize(f_nbMeshes.getValue());
+        vf_roiIndices.resize(f_nbMeshes.getValue());
+        vf_roiValue.resize(f_nbMeshes.getValue());
+
+        this->addAlias(vf_positions[0], "position");
+        this->addAlias(vf_edges[0], "edges");
+        this->addAlias(vf_triangles[0], "triangles");
+        this->addAlias(vf_values[0], "value");
+        this->addAlias(vf_InsideValues[0], "insideValue");
+        this->addAlias(vf_roiIndices[0], "roiIndices");
+        this->addAlias(vf_roiValue[0], "roiValue");
     }
 
     virtual ~MeshToImageEngine()
     {
-        deleteInputDataVector(vf_positions);
-        deleteInputDataVector(vf_edges);
-        deleteInputDataVector(vf_triangles);
-        deleteInputDataVector(vf_values);
-        deleteInputDataVector(vf_InsideValues);
-        deleteInputDataVector(vf_roiIndices);
-        deleteInputDataVector(vf_roiValue);
     }
 
     virtual void init()
     {
-        // backward compatibility (is InsideValue is not set: use first value)
+        // backward compatibility (if InsideValue is not set: use first value)
         for( size_t meshId=0; meshId<vf_InsideValues.size() ; ++meshId )
-            if(!this->vf_InsideValues[meshId]->isSet())
+            if(!this->vf_InsideValues[meshId]->isSet() && this->vf_values[meshId]->isSet())
             {
                 this->vf_InsideValues[meshId]->setValue(this->vf_values[meshId]->getValue()[0]);
                 serr<<"InsideValue["<<meshId<<"] is not set -> used Value["<<meshId<<"]="<<this->vf_values[meshId]->getValue()[0]<<" instead"<<sendl;
@@ -178,19 +193,13 @@ public:
 
         addInput(&f_nbMeshes);
 
-        createInputMeshesData();
-
-        // HACK to enforce copying linked data so the first read is not done in update(). Because the first read enforces the copy, then tag the data as modified and all update() again.
-        for( size_t meshId=0; meshId<f_nbMeshes.getValue() ; ++meshId )
-        {
-            this->vf_positions[meshId]->getValue();
-            this->vf_edges[meshId]->getValue();
-            this->vf_triangles[meshId]->getValue();
-            this->vf_values[meshId]->getValue();
-            this->vf_InsideValues[meshId]->getValue();
-            this->vf_roiIndices[meshId]->getValue();
-            this->vf_roiValue[meshId]->getValue();
-        }
+        vf_positions.resize(f_nbMeshes.getValue());
+        vf_edges.resize(f_nbMeshes.getValue());
+        vf_triangles.resize(f_nbMeshes.getValue());
+        vf_values.resize(f_nbMeshes.getValue());
+        vf_InsideValues.resize(f_nbMeshes.getValue());
+        vf_roiIndices.resize(f_nbMeshes.getValue());
+        vf_roiValue.resize(f_nbMeshes.getValue());
 
         addOutput(&image);
         addOutput(&transform);
@@ -203,13 +212,50 @@ public:
         im.fill((T)0);
     }
 
-    virtual void reinit() { update(); }
+    virtual void reinit()
+    {
+        vf_positions.resize(f_nbMeshes.getValue());
+        vf_edges.resize(f_nbMeshes.getValue());
+        vf_triangles.resize(f_nbMeshes.getValue());
+        vf_values.resize(f_nbMeshes.getValue());
+        vf_InsideValues.resize(f_nbMeshes.getValue());
+        vf_roiIndices.resize(f_nbMeshes.getValue());
+        vf_roiValue.resize(f_nbMeshes.getValue());
+        update();
+    }
+
+    /// Parse the given description to assign values to this object's fields and potentially other parameters
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    {
+        vf_positions.parseSizeData(arg, f_nbMeshes);
+        vf_edges.parseSizeData(arg, f_nbMeshes);
+        vf_triangles.parseSizeData(arg, f_nbMeshes);
+        vf_values.parseSizeData(arg, f_nbMeshes);
+        vf_InsideValues.parseSizeData(arg, f_nbMeshes);
+        vf_roiIndices.parseSizeData(arg, f_nbMeshes);
+        vf_roiValue.parseSizeData(arg, f_nbMeshes);
+        Inherit1::parse(arg);
+    }
+
+    /// Assign the field values stored in the given map of name -> value pairs
+    void parseFields ( const std::map<std::string,std::string*>& str )
+    {
+        vf_positions.parseFieldsSizeData(str, f_nbMeshes);
+        vf_edges.parseFieldsSizeData(str, f_nbMeshes);
+        vf_triangles.parseFieldsSizeData(str, f_nbMeshes);
+        vf_values.parseFieldsSizeData(str, f_nbMeshes);
+        vf_InsideValues.parseFieldsSizeData(str, f_nbMeshes);
+        vf_roiIndices.parseFieldsSizeData(str, f_nbMeshes);
+        vf_roiValue.parseFieldsSizeData(str, f_nbMeshes);
+        Inherit1::parseFields(str);
+    }
 
 protected:
 
     virtual void update()
     {
-        createInputMeshesData();
+        updateAllInputsIfDirty();
+        cleanDirty();
 
         // to be backward-compatible, if less than 3 values, fill with the last one
         waVecReal vs( voxelSize ); unsigned vs_lastid=vs.size()-1;
@@ -352,20 +398,12 @@ protected:
 
         if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<": Voxelization done"<<std::endl;
 
-        cleanDirty();
     }
 
 
     // regular rasterization like first implementation, with inside filled by the unique value
     void rasterizeAndFill( const unsigned int &meshId, CImg<T>& im, const waTransform& tr )
     {
-        //        vf_positions[meshId]->cleanDirty();
-        //        vf_triangles[meshId]->cleanDirty();
-        //        vf_edges[meshId]->cleanDirty();
-        //        TODO - need this ?
-        //        vf_roi[meshId]->cleanDirty();
-        //        vf_roiValues[meshId]->cleanDirty();
-
         raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
         raTriangles tri(*this->vf_triangles[meshId]);       unsigned int nbtri = tri.size();
         raEdges edg(*this->vf_edges[meshId]);               unsigned int nbedg = edg.size();
@@ -374,7 +412,7 @@ protected:
 
         raIndex roiIndices(*this->vf_roiIndices[meshId]);
         if(roiIndices.size() && !this->vf_roiValue[meshId]->getValue().size()) serr<<"at least one roiValue for mesh "<<meshId<<" needs to be specified"<<sendl;
-        if(this->f_printLog.getValue())  for(size_t r=0;r<roiIndices.size();++r) std::cout<<"MeshToImageEngine: "<<this->getName()<<"mesh "<<meshId<<"\t ROI "<<r<<"\t number of vertices= " << roiIndices[r].size() << "\t value= "<<getROIValue(meshId,r)<<std::endl;
+        if(this->f_printLog.getValue())  for(size_t r=0;r<roiIndices.size();++r) std::cout<<"MeshToImageEngine: "<<this->getName()<<": mesh "<<meshId<<"\t ROI "<<r<<"\t number of vertices= " << roiIndices[r].size() << "\t value= "<<getROIValue(meshId,r)<<std::endl;
 
         /// colors definition
         T FillColor = (T)getValue(meshId,0);
@@ -614,97 +652,6 @@ protected:
             this->draw_line(im,mask,P,p2,color,color2,subdiv);
             P+=dP;
         }
-    }
-
-
-public:
-    void createInputMeshesData()
-    {
-        unsigned int n = f_nbMeshes.getValue();
-
-        createInputDataVector(n, vf_positions, "position", "input positions for mesh ", SeqPositions(), true);
-        createInputDataVector(n, vf_edges, "edges", "input edges for mesh ", SeqEdges(), true);
-        createInputDataVector(n, vf_triangles, "triangles", "input triangles for mesh ", SeqTriangles(), true);
-
-        ValueType defaultValue = (ValueType)1.0;
-        SeqValues defaultValues; defaultValues.push_back(defaultValue);
-        createInputDataVector(n, vf_values, "value", "pixel value on mesh surface ", defaultValues, false);
-
-        createInputDataVector(n, vf_InsideValues, "insideValue", "pixel value inside the mesh", defaultValue, false);
-
-        createInputDataVector(n, vf_roiIndices, "roiIndices", "List of Regions Of Interest, vertex indices ", VecSeqIndex(), false);
-        createInputDataVector(n, vf_roiValue, "roiValue", "pixel value for ROIs, list of values ", SeqValues(), false);
-    }
-
-protected:
-    template<class U>
-    void createInputDataVector(unsigned int nb, helper::vector< Data<U>* >& vf, std::string name, std::string help, const U&defaultValue, bool readOnly=false)
-    {
-        vf.reserve(nb);
-        for (unsigned int i=vf.size(); i<nb; ++i)
-        {
-            std::ostringstream oname, ohelp;
-            oname << name;
-            ohelp << help;
-
-            if( i>0 ) // to keep backward-compatible with the previous definition voxelizing only one input mesh
-            {
-                oname << (i+1);
-                ohelp << (i+1);
-            }
-
-            std::string name_i = oname.str();
-            std::string help_i = ohelp.str();
-            Data<U>* d = new Data<U>(help_i.c_str(), true, false);
-            d->setName(name_i);
-            d->setReadOnly(readOnly);
-            d->setValue(defaultValue);
-            d->unset();
-            vf.push_back(d);
-            this->addData(d);
-            this->addInput(d);
-        }
-    }
-
-    template<class U>
-    void deleteInputDataVector(helper::vector< Data<U>* >& vf)
-    {
-        for (unsigned int i=0; i<vf.size(); ++i)
-        {
-            this->delInput(vf[i]);
-            delete vf[i];
-        }
-        vf.clear();
-    }
-
-public:
-
-    /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
-    {
-        const char* p = arg->getAttribute(f_nbMeshes.getName().c_str());
-        if (p)
-        {
-            std::string nbStr = p;
-            sout << "parse: setting nbMeshes="<<nbStr<<sendl;
-            f_nbMeshes.read(nbStr);
-            createInputMeshesData();
-        }
-        Inherit1::parse(arg);
-    }
-
-    /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str )
-    {
-        std::map<std::string,std::string*>::const_iterator it = str.find(f_nbMeshes.getName());
-        if (it != str.end() && it->second)
-        {
-            std::string nbStr = *it->second;
-            sout << "parseFields: setting nbMeshes="<<nbStr<<sendl;
-            f_nbMeshes.read(nbStr);
-            createInputMeshesData();
-        }
-        Inherit1::parseFields(str);
     }
 
 };
