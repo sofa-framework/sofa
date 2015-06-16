@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaEngine/initEngine.h>
-
+#define SOFA_COMPONENT_ENGINE_MeshSplittingEngine_CPP
+#include <SofaEngine/MeshSplittingEngine.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -32,57 +32,33 @@ namespace sofa
 namespace component
 {
 
-
-void initEngine()
+namespace engine
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-SOFA_LINK_CLASS(AverageCoord)
-SOFA_LINK_CLASS(BoxROI)
-SOFA_LINK_CLASS(PlaneROI)
-SOFA_LINK_CLASS(SphereROI)
-SOFA_LINK_CLASS(DilateEngine)
-SOFA_LINK_CLASS(ExtrudeSurface)
-SOFA_LINK_CLASS(ExtrudeQuadsAndGenerateHexas)
-SOFA_LINK_CLASS(GenerateRigidMass)
-SOFA_LINK_CLASS(GenerateCylinder)
-SOFA_LINK_CLASS(GroupFilterYoungModulus)
-SOFA_LINK_CLASS(MergeMeshes)
-SOFA_LINK_CLASS(MergePoints)
-SOFA_LINK_CLASS(MergeSets)
-SOFA_LINK_CLASS(MergeROIs)
-SOFA_LINK_CLASS(MeshBarycentricMapperEngine)
-SOFA_LINK_CLASS(TransformPosition)
-SOFA_LINK_CLASS(TransformEngine)
-SOFA_LINK_CLASS(PointsFromIndices)
-SOFA_LINK_CLASS(ValuesFromIndices)
-SOFA_LINK_CLASS(IndicesFromValues)
-SOFA_LINK_CLASS(IndexValueMapper)
-SOFA_LINK_CLASS(ROIValueMapper)
-SOFA_LINK_CLASS(JoinPoints)
-SOFA_LINK_CLASS(MapIndices)
-SOFA_LINK_CLASS(RandomPointDistributionInSurface)
-SOFA_LINK_CLASS(Spiral)
-SOFA_LINK_CLASS(Vertex2Frame)
-SOFA_LINK_CLASS(TextureInterpolation)
-SOFA_LINK_CLASS(SubsetTopology)
-SOFA_LINK_CLASS(RigidToQuatEngine)
-SOFA_LINK_CLASS(QuatToRigidEngine)
-SOFA_LINK_CLASS(ValuesFromPositions)
-SOFA_LINK_CLASS(NormalsFromPoints)
-SOFA_LINK_CLASS(ClusteringEngine)
-SOFA_LINK_CLASS(ShapeMatching)
-SOFA_LINK_CLASS(ProximityROI)
-SOFA_LINK_CLASS(MeshClosingEngine)
-SOFA_LINK_CLASS(MeshSubsetEngine)
-SOFA_LINK_CLASS(MeshSampler)
-SOFA_LINK_CLASS(MeshSplittingEngine)
+SOFA_DECL_CLASS(MeshSplittingEngine)
+
+int MeshSplittingEngineClass = core::RegisterObject("This class breaks a mesh in multiple parts, based on selected vertices or cells.")
+#ifdef SOFA_FLOAT
+        .add< MeshSplittingEngine<defaulttype::Vec3fTypes> >(true) // default template
+#else
+        .add< MeshSplittingEngine<defaulttype::Vec3dTypes> >(true) // default template
+#ifndef SOFA_DOUBLE
+        .add< MeshSplittingEngine<defaulttype::Vec3fTypes> >()
+#endif
+#endif
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_ENGINE_API MeshSplittingEngine<defaulttype::Vec3dTypes>;
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SOFA_ENGINE_API MeshSplittingEngine<defaulttype::Vec3fTypes>;
+#endif //SOFA_DOUBLE
+
+
+} // namespace constraint
 
 } // namespace component
 
 } // namespace sofa
+
