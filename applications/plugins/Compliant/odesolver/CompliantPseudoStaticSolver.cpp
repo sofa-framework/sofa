@@ -80,13 +80,18 @@ void CompliantPseudoStaticSolver::solve(const core::ExecParams* params,
         // stop if it does not move enough from previous iteration
         if( !x_current.size() ) // scalar vectors can only be allocated after assembly
         {
-            x_current.resize( sys.size() );
-            x_prev.resize( sys.size() );
+            x_current.resize( sys.m );
+            x_prev.resize( sys.m );
         }
         sys.copyFromMultiVec( x_current, posId ); // get current position
         x_prev -= x_current; // position variation during iteration
 
         if( x_prev.dot( x_prev ) < threshold*threshold ) break;
+
+        if( f_printLog.getValue() )
+        {
+            serr<<"position variation: "<<sqrt(x_prev.dot( x_prev ))<<sendl;
+        }
 
         x_prev = x_current; // store previous position
     }
