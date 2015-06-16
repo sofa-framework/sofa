@@ -168,6 +168,12 @@ public:
 
             getAffine() = rotation;
         }
+
+
+        template< int N, class Real2 > // N <= VSize
+        void operator+=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] += (Real)p[i]; }
+        template< int N, class Real2 > // N <= VSize
+        void operator=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
     };
 
     typedef vector<Coord> VecCoord;
