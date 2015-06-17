@@ -144,6 +144,8 @@ Dart MapCPH::newDart()
     setDartLevel(d, this->getCurrentLevel());
     setMaxLevel(getCurrentLevel());
     setNextLevelCell(d, EMBNULL);
+
+//    std::cerr << "added a new dart " << d << " of lvl " << getDartLevel(d) << std::endl;
     return d;
 }
 
