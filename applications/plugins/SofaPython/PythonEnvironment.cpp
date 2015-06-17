@@ -62,7 +62,10 @@ void PythonEnvironment::addModule(const std::string& name, PyMethodDef* methodDe
 void PythonEnvironment::Init()
 {
     std::string pythonVersion = Py_GetVersion();
-    SP_MESSAGE_INFO("Python version: " + pythonVersion);
+
+#ifndef NDEBUG
+    SP_MESSAGE_INFO("Python version: " + pythonVersion)
+#endif
 
     // WARNING: workaround to be able to import python libraries on linux (like
     // numpy), at least on Ubuntu (see http://bugs.python.org/issue4434). It is
@@ -73,8 +76,8 @@ void PythonEnvironment::Init()
 #endif
 
     // Prevent the python terminal from being buffered, not to miss or mix up traces.
-    if (putenv((char*)"PYTHONUNBUFFERED=1"))
-        SP_MESSAGE_WARNING("failed to set environment variable PYTHONUNBUFFERED");
+    if( putenv( (char*)"PYTHONUNBUFFERED=1" ) )
+        SP_MESSAGE_WARNING("failed to set environment variable PYTHONUNBUFFERED")
 
     // Initialize the Python Interpreter.
     Py_Initialize();
