@@ -134,7 +134,6 @@ public:
         static inline T& at( MAP* map, AttributeMultiVector<T>* attrib, Cell<ORBIT> c)
         {
             unsigned int a = map->getEmbedding(c) ;
-            assert( a!= EMBNULL);
             if (a == EMBNULL)
             {
                 // setOrbitEmbeddingOnNewCell adapted to CPHMap
@@ -257,19 +256,19 @@ private:
     }
     inline Dart alpha0MaxLvl(Dart d) const
     {
-        return Parent::alpha0(d);
+        return phi3MaxLvl(d) ;
     }
     inline Dart alpha1MaxLvl(Dart d) const
     {
-        return Parent::alpha1(d);
+        return phi3MaxLvl(this->phi_1MaxLvl(d)) ;
     }
     inline Dart alpha2MaxLvl(Dart d) const
     {
-        return Parent::alpha2(d);
+        return phi3MaxLvl(this->phi2MaxLvl(d));
     }
     inline  Dart alpha_2MaxLvl(Dart d) const
     {
-        return Parent::alpha_2(d);
+        return this->phi2MaxLvl(phi3MaxLvl(d));
     }
 
 
@@ -284,11 +283,13 @@ public:
 //    void clear(bool removeAttrib);
     inline void setFaceLevel(FaceCell f, unsigned int lvl)
     {
+        assert(lvl <= this->getCurrentLevel());
         a_faceLevel[f] = lvl;
     }
 
     inline void setVolumeLevel(VolumeCell w, unsigned int lvl)
     {
+        assert(lvl <= this->getCurrentLevel());
         a_volumeLevel[w] = lvl;
     }
 
@@ -546,6 +547,140 @@ public:
         }
         this->setCurrentLevel(oldLvl);
     }
+
+
+    template <unsigned int ORBIT>
+    void setDartEmbedding(Dart d, unsigned int emb)
+    {
+        assert(this->template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+        if (getDartLevel(d) != getCurrentLevel())
+        {
+            return;
+        }
+        const unsigned int old = ParentMap::template getEmbedding<ORBIT>(d);
+    //    std::cerr << "get embedding of " << d << " (orbit " << ORBIT << ") = " << old << std::endl;
+
+        if (old == emb)	// if same emb
+            return;		// nothing to do
+
+        if (old != EMBNULL)	// if different
+        {
+            this->m_attribs[ORBIT].unrefLine(old);	// then unref the old emb
+        }
+
+        if (emb != EMBNULL)
+            this->m_attribs[ORBIT].refLine(emb);	// ref the new emb
+        (*this->m_embeddings[ORBIT])[this->dartIndex(d)] = emb ; // finally affect the embedding to the dart
+    }
+
+    template <unsigned int ORBIT>
+    void unsetDartEmbedding(Dart d)
+    {
+        assert(this->template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+        if (getDartLevel(d) != getCurrentLevel())
+        {
+            return;
+        }
+        const unsigned int old = ParentMap::template getEmbedding<ORBIT>(d);
+        if (old != EMBNULL) {
+            (*this->m_embeddings[ORBIT])[this->dartIndex(d)] = EMBNULL;
+            this->m_attribs[ORBIT].unrefLine(old);
+        }
+    }
+
+    template <unsigned int ORBIT>
+    void initDartEmbedding(Dart d, unsigned int emb)
+    {
+        assert(this->template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+        assert(ParentMap::template getEmbedding<ORBIT>(d) == EMBNULL || !"initDartEmbedding called on already embedded dart");
+        if (getDartLevel(d) != getCurrentLevel())
+        {
+            return;
+        }
+        if(emb != EMBNULL)
+            this->m_attribs[ORBIT].refLine(emb);	// ref the new emb
+        (*this->m_embeddings[ORBIT])[this->dartIndex(d)] = emb ; // affect the embedding to the dart
+    }
+
+    template <unsigned int ORBIT>
+    inline void copyDartEmbedding(Dart dest, Dart src)
+    {
+        assert(this->template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+
+        setDartEmbedding<ORBIT>(dest, ParentMap::template getEmbedding<ORBIT>(src));
+    }
+
+
+
+    inline void checkEdgeAndFaceIDAttributes()
+    {
+        const unsigned int curr = this->getCurrentLevel();
+
+        {
+            std::set< unsigned > edgesIDs;
+            std::set< unsigned > faceIDs;
+            this->setCurrentLevel(0u);
+            CGoGN::TraversorCell< MAP, EDGE, FORCE_DART_MARKING > traE(*this, true);
+            for (Edge e = traE.begin() ; e != traE.end() ; e = traE.next())
+            {
+                const unsigned eid = this->getEdgeId(e);
+                if (edgesIDs.find(eid) != edgesIDs.end())
+                {
+                    std::cerr << "the edges " << e << " has an already used ID : " << eid << std::endl;
+                    assert(!"Two edges with the same ID !");
+                }
+                TraversorDartsOfOrbit< MAP, EDGE> traDoo(*this, e);
+                for (Dart dit = traDoo.begin() ; dit != traDoo.end() ; dit = traDoo.next())
+                {
+                    assert(this->getEdgeId(dit) == eid);
+                }
+                edgesIDs.insert(this->getEdgeId(e));
+            }
+
+            CGoGN::TraversorCell< MAP, FACE, FORCE_DART_MARKING > traF(*this, true);
+            for (Face f = traF.begin() ; f != traF.end() ; f = traF.next())
+            {
+                const unsigned fid = this->getFaceId(f);
+                if (faceIDs.find(fid) != faceIDs.end())
+                {
+                    assert(!"Two faces with the same ID !");
+                }
+                TraversorDartsOfOrbit< MAP, FACE> traDoo(*this, f);
+                for (Dart dit = traDoo.begin() ; dit != traDoo.end() ; dit = traDoo.next())
+                {
+                    assert((this->getFaceId(dit) == fid) || !"Some darts of the face have not the correct ID.");
+                }
+                faceIDs.insert(this->getFaceId(f));
+            }
+        }
+
+            this->setCurrentLevel(this->getMaxLevel());
+            CGoGN::TraversorCell< MAP, EDGE, FORCE_DART_MARKING > traE(*this, true);
+            for (Edge e = traE.begin() ; e != traE.end() ; e = traE.next())
+            {
+
+                const unsigned eid = this->getEdgeId(e);
+                TraversorDartsOfOrbit< MAP, EDGE> traDoo(*this, e);
+                for (Dart dit = traDoo.begin() ; dit != traDoo.end() ; dit = traDoo.next())
+                {
+                    assert(this->getEdgeId(dit) == eid);
+                }
+
+            }
+            CGoGN::TraversorCell< MAP, FACE, FORCE_DART_MARKING > traF(*this, true);
+            for (Face f = traF.begin() ; f != traF.end() ; f = traF.next())
+            {
+
+                const unsigned fid = this->getFaceId(f);
+                TraversorDartsOfOrbit< MAP, FACE> traDoo(*this, f);
+                for (Dart dit = traDoo.begin() ; dit != traDoo.end() ; dit = traDoo.next())
+                {
+                    assert((this->getFaceId(dit) == fid) || !"Some darts of the face have not the correct ID.");
+                }
+            }
+
+        this->setCurrentLevel(curr);
+    }
 } ;
 } // namespace IHM
 } // namespace Volume
@@ -572,80 +707,92 @@ public:
 //    typedef Handler  HandlerFinestResolution;
 };
 
-namespace Algo {
-namespace Topo {
-template < unsigned int ORBIT >
-inline void setOrbitEmbedding(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> c, unsigned int em)
-{
-    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
-    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
-    if (ORBIT == VERTEX)
-    {
-        m.template foreach_dart_of_orbit<ORBIT>(c, (bl::bind(&MAP::template setDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) ))) ;
-    }
-    else
-    {
-        const unsigned int LVL = m.getDartLevel(c);
-        m.template foreach_dart_of_orbit<ORBIT>(c, (boost::lambda::if_then( bl::bind(&MAP::getDartLevel, boost::cref(m), bl::_1) == LVL, bl::bind(&MAP::template setDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) )))) ;
-    }
-    //    std::cerr << "IHM3::setOrbitEmbedding called on the  " << ORBIT << "-cell " << c << ". em = " << em << std::endl;
-    //    std::cerr << std::endl << "IHM3::EndsetOrbitEmbedding" << std::endl;
-}
+//namespace Algo {
+//namespace Topo {
+//template < unsigned int ORBIT >
+//inline void setOrbitEmbedding(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> c, unsigned int em)
+//{
+//    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
+//    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+//    const unsigned int LVL = m.getCurrentLevel();
+//    if (ORBIT == VERTEX)
+//    {
+//        m.template foreach_dart_of_orbit<ORBIT>(c, (bl::bind(&MAP::template setDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) ))) ;
+//    }
+//    else
+//    {
+//        if (ORBIT == VOLUME && LVL == 0)
+//        {
+//            std::cerr << "m.template foreach_dart_of_orbit<" << orbitName(ORBIT) << ">of " << c << " which is lvl" << LVL << std::endl;
+//        }
+////        std::cerr << "m.template foreach_dart_of_orbit<" << orbitName(ORBIT) << ">of " << c << " which is lvl" << LVL << std::endl;
+//        m.template foreach_dart_of_orbit<ORBIT>(c, (boost::lambda::if_then( bl::bind(&MAP::getDartLevel, boost::cref(m), bl::_1) == LVL, (bl::bind(&MAP::template setDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) )/*, std::cerr << bl::_1 << " (lvl " << bl::bind(&MAP::getDartLevel, boost::cref(m), bl::_1) <<") "*/  )  ))) ;
+//        std::cerr << std::endl;
+//    }
 
-template < unsigned int ORBIT >
-inline void initOrbitEmbedding(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> c, unsigned int em)
-{
-    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
-    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
-    if (ORBIT == VERTEX)
-    {
-        m.template foreach_dart_of_orbit<ORBIT>(c, (bl::bind(&MAP::template initDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) ))) ;
-    }
-    else
-    {
-        const unsigned int LVL = m.getDartLevel(c);
-        m.template foreach_dart_of_orbit<ORBIT>(c, (boost::lambda::if_then( bl::bind(&MAP::getDartLevel, boost::cref(m), bl::_1) == LVL, bl::bind(&MAP::template initDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) )))) ;
-    }
-}
+////        std::cerr << "IHM3::setOrbitEmbedding called on the  " << ORBIT << "-cell " << c << ". em = " << em << std::endl;
+//    if (ORBIT == VOLUME && LVL == 0)
+//    {
+//        std::cerr << "IHM3::EndsetOrbitEmbedding" << std::endl;
+//    }
+//}
 
-template < unsigned int ORBIT >
-inline void unsetOrbitEmbedding(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> c)
-{
-    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
-    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
-    if (ORBIT == VERTEX)
-    {
-        m.template foreach_dart_of_orbit<ORBIT>(c, (bl::bind(&MAP::template unsetDartEmbedding<ORBIT>, boost::ref(m), bl::_1 ))) ;
-    }
-    else
-    {
-        const unsigned int LVL = m.getDartLevel(c);
-        m.template foreach_dart_of_orbit<ORBIT>(c, (boost::lambda::if_then( bl::bind(&MAP::getDartLevel, boost::cref(m), bl::_1) == LVL, bl::bind(&MAP::template unsetDartEmbedding<ORBIT>, boost::ref(m), bl::_1 )))) ;
-    }
-}
+//template < unsigned int ORBIT >
+//inline void initOrbitEmbedding(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> c, unsigned int em)
+//{
+//    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
+//    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+//    const unsigned int LVL = m.getCurrentLevel();
+//    if (ORBIT == VERTEX)
+//    {
+//        m.template foreach_dart_of_orbit<ORBIT>(c, (bl::bind(&MAP::template initDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) ))) ;
+//    }
+//    else
+//    {
+////        const unsigned int LVL = m.getDartLevel(c);
+//        m.template foreach_dart_of_orbit<ORBIT>(c, (boost::lambda::if_then( bl::bind(&MAP::getDartLevel, boost::cref(m), bl::_1) == LVL, bl::bind(&MAP::template initDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) )))) ;
+//    }
+//}
 
-template < unsigned int ORBIT >
-inline unsigned int setOrbitEmbeddingOnNewCell(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> c)
-{
-    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
-    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
-    unsigned int em = m.template newCell<ORBIT>();
-    setOrbitEmbedding<ORBIT, MAP>(m, c, em);
-    return em;
-}
+//template < unsigned int ORBIT >
+//inline void unsetOrbitEmbedding(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> c)
+//{
+//    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
+//    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+//    const unsigned int LVL = m.getCurrentLevel();
+//    if (ORBIT == VERTEX)
+//    {
+//        m.template foreach_dart_of_orbit<ORBIT>(c, (bl::bind(&MAP::template unsetDartEmbedding<ORBIT>, boost::ref(m), bl::_1 ))) ;
+//    }
+//    else
+//    {
+////        const unsigned int LVL = m.getDartLevel(c);
+//        m.template foreach_dart_of_orbit<ORBIT>(c, (boost::lambda::if_then( bl::bind(&MAP::getDartLevel, boost::cref(m), bl::_1) == LVL, bl::bind(&MAP::template unsetDartEmbedding<ORBIT>, boost::ref(m), bl::_1 )))) ;
+//    }
+//}
 
-template < unsigned int ORBIT >
-inline unsigned int initOrbitEmbeddingOnNewCell(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> d)
-{
-    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
-    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
-    unsigned int em = m.template newCell<ORBIT>();
-    initOrbitEmbedding<ORBIT>(m, d, em);
-    return em;
-}
+//template < unsigned int ORBIT >
+//inline unsigned int setOrbitEmbeddingOnNewCell<ORBIT, Algo::Volume::IHM::ImplicitHierarchicalMap3>(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> c)
+//{
+//    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
+//    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+//    unsigned int em = m.template newCell<ORBIT>();
+//    setOrbitEmbedding<ORBIT, MAP>(m, c, em);
+//    return em;
+//}
 
-} // namespace Topo
-} // namespace Algo
+//template < unsigned int ORBIT >
+//inline unsigned int initOrbitEmbeddingOnNewCell(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> d)
+//{
+//    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
+//    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+//    unsigned int em = m.template newCell<ORBIT>();
+//    initOrbitEmbedding<ORBIT>(m, d, em);
+//    return em;
+//}
+
+//} // namespace Topo
+//} // namespace Algo
 
 //template <typename T, unsigned int ORBIT>
 //class AttributeHandler< T, ORBIT, Algo::Volume::IHM::ImplicitHierarchicalMap3 > : public AttributeHandlerGen

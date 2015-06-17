@@ -90,9 +90,7 @@ template <unsigned int ORBIT>
 void MapCommon<MAP_IMPL>::setDartEmbedding(Dart d, unsigned int emb)
 {
 	assert(this->template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
-
 	unsigned int old = getEmbedding<ORBIT>(d);
-//    std::cerr << "get embedding of " << d << " (orbit " << ORBIT << ") = " << old << std::endl;
 	if (old == emb)	// if same emb
 		return;		// nothing to do
 

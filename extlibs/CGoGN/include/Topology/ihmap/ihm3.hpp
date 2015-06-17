@@ -461,7 +461,9 @@ inline void ImplicitHierarchicalMap3::setFaceId(unsigned int orbit, Dart d)
             Parent::setFaceId(phi1MaxLvl(e), getFaceId(e));
             e = alpha2MaxLvl(e);
         } while(e != d);
-
+    } else
+    {
+        std::exit(1);
     }
 }
 inline void ImplicitHierarchicalMap3::setFaceId(Dart d, unsigned int i, unsigned int orbit)
@@ -471,12 +473,10 @@ inline void ImplicitHierarchicalMap3::setFaceId(Dart d, unsigned int i, unsigned
 	if(orbit == FACE)
 	{
 		Dart e = d;
-
 		do
 		{
             Parent::setFaceId(e, i);
-
-            Dart e3 = this->phi3MaxLvl(e);
+            const Dart e3 = this->phi3MaxLvl(e);
 			if(e3 != e)
             {
                 Parent::setFaceId(e3, i);
@@ -487,9 +487,10 @@ inline void ImplicitHierarchicalMap3::setFaceId(Dart d, unsigned int i, unsigned
 	else if(orbit == DART)
 	{
         Parent::setFaceId(d, i);
-        if(this->phi3MaxLvl(d) != d)
+        const Dart e3 = this->phi3MaxLvl(d);
+        if(e3 != d)
         {
-            Parent::setFaceId(phi3MaxLvl(d), i);
+            Parent::setFaceId(e3, i);
         }
 	}
 }
@@ -539,7 +540,7 @@ inline unsigned int ImplicitHierarchicalMap3::getEmbedding(Cell< ORBIT > c) cons
     {
 //        std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
 //        const_cast<MAP*>(this)->compactOrbitContainer(VERTEX);
-        const unsigned int nbSteps = m_curLevel - vertexInsertionLevel(c.dart);
+        const unsigned int nbSteps = getCurrentLevel() - vertexInsertionLevel(c.dart);
 //        std::cerr << "nbsteps = " << nbSteps;
         unsigned int index = Parent::getEmbedding(c);
 //        std::cerr << " emb = " << index << std::endl;
@@ -596,6 +597,20 @@ inline unsigned int ImplicitHierarchicalMap3::getEmbedding(Cell< ORBIT > c) cons
     }
     if (ORBIT == VOLUME)
     {
+//        const Dart vnd = this->volumeNewestDart(c);
+//        TraversorDartsOfOrbit< MAP, VOLUME > traDoo(*this, VolumeCell(c.dart));
+//        std::cerr << "volume orbit of " << c << std::endl;
+//        for(Dart dit = traDoo.begin(); dit != traDoo.end() ; dit = traDoo.next())
+//        {
+//            std::cerr << dit << " (lvl " << getDartLevel(dit) /*<< ") " */;
+//            std::cerr << " ; emb " << ParentMap::getEmbedding<VOLUME>(dit) << ") ";
+//        }
+//        std::cerr << std::endl;
+//        const unsigned vndLvl = getDartLevel(vnd);
+//        const unsigned curr = getCurrentLevel();
+//        assert(vndLvl == curr);
+//        std::cerr << "volumeNewestDart(" << c << ") = " << vnd << " ( dartlvl(" << c << ") = " << this->getDartLevel(c) << " )." << std::endl;
+//        std::cerr << "getCurrentLevel() : " << getCurrentLevel() <<  " dartlvl(vnd) = " << getDartLevel(vnd) << std::endl;
         return m_embeddings[VOLUME]->operator [](this->dartIndex(this->volumeNewestDart(c)));
     }
 
@@ -605,7 +620,6 @@ inline unsigned int ImplicitHierarchicalMap3::getEmbedding(Cell< ORBIT > c) cons
 
 inline bool ImplicitHierarchicalMap3::isWellEmbedded()
 {
-	//std::cout << "yeahhh ? " << std::endl;
 	TraversorV<ImplicitHierarchicalMap3> tv(*this);
 
 	for(Vertex dv = tv.begin() ; dv.dart != tv.end() ; dv = tv.next())
