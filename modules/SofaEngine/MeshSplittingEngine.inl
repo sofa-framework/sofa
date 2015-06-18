@@ -68,7 +68,7 @@ void MeshSplittingEngine<DataTypes>::update()
     for(size_t i=0;i<i_pos.size();++i) indPairs[2*i]=nb; // assign to remaining sub mesh
 
     // get parent of each child
-    for(size_t i=0;i<nb;++i)
+    for(int i=nb-1;i>=0;--i) // use reverse order to prioritize the first ROIs
     {
         parseIndices(indPairs.wref(), indices[i]->getValue(), i);
         parseIndices(indPairs.wref(), edgeIndices[i]->getValue(), inputEdges.getValue(), i);
