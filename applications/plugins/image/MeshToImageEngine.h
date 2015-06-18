@@ -119,6 +119,7 @@ public:
     typedef helper::ReadAccessor<Data< SeqValues > > raValues;
     helper::vectorData< SeqValues > vf_values;
 
+    helper::vectorData< bool > vf_FillInside;
     helper::vectorData< ValueType > vf_InsideValues;
 
     typedef helper::SVector<typename core::topology::BaseMeshTopology::PointID> SeqIndex; ///< one roi defined as an index list
@@ -151,6 +152,7 @@ public:
       , vf_edges(this,"edges", "input edges for mesh ")
       , vf_triangles(this,"triangles", "input triangles for mesh ")
       , vf_values(this,"value", "pixel value on mesh surface ", true, SeqValues((size_t)1,(ValueType)1.0))
+      , vf_FillInside(this,"fillInside", "fill the mesh using insideValue?", true, true)
       , vf_InsideValues(this,"insideValue", "pixel value inside the mesh", true, (ValueType)1.0)
       , vf_roiIndices(this,"roiIndices", "List of Regions Of Interest, vertex indices ")
       , vf_roiValue(this,"roiValue", "pixel value for ROIs, list of values ")
@@ -163,6 +165,7 @@ public:
         vf_edges.resize(f_nbMeshes.getValue());
         vf_triangles.resize(f_nbMeshes.getValue());
         vf_values.resize(f_nbMeshes.getValue());
+        vf_FillInside.resize(f_nbMeshes.getValue());
         vf_InsideValues.resize(f_nbMeshes.getValue());
         vf_roiIndices.resize(f_nbMeshes.getValue());
         vf_roiValue.resize(f_nbMeshes.getValue());
@@ -171,6 +174,7 @@ public:
         this->addAlias(vf_edges[0], "edges");
         this->addAlias(vf_triangles[0], "triangles");
         this->addAlias(vf_values[0], "value");
+        this->addAlias(vf_FillInside[0], "fillInside");
         this->addAlias(vf_InsideValues[0], "insideValue");
         this->addAlias(vf_roiIndices[0], "roiIndices");
         this->addAlias(vf_roiValue[0], "roiValue");
@@ -185,10 +189,11 @@ public:
         // backward compatibility (if InsideValue is not set: use first value)
         for( size_t meshId=0; meshId<vf_InsideValues.size() ; ++meshId )
             if(!this->vf_InsideValues[meshId]->isSet() && this->vf_values[meshId]->isSet())
-            {
-                this->vf_InsideValues[meshId]->setValue(this->vf_values[meshId]->getValue()[0]);
-                serr<<"InsideValue["<<meshId<<"] is not set -> used Value["<<meshId<<"]="<<this->vf_values[meshId]->getValue()[0]<<" instead"<<sendl;
-            }
+                if(meshId>=this->vf_FillInside.size() || this->vf_FillInside[meshId]->getValue())
+                {
+                    this->vf_InsideValues[meshId]->setValue(this->vf_values[meshId]->getValue()[0]);
+                    serr<<"InsideValue["<<meshId<<"] is not set -> used Value["<<meshId<<"]="<<this->vf_values[meshId]->getValue()[0]<<" instead"<<sendl;
+                }
 
 
         addInput(&f_nbMeshes);
@@ -197,6 +202,7 @@ public:
         vf_edges.resize(f_nbMeshes.getValue());
         vf_triangles.resize(f_nbMeshes.getValue());
         vf_values.resize(f_nbMeshes.getValue());
+        vf_FillInside.resize(f_nbMeshes.getValue());
         vf_InsideValues.resize(f_nbMeshes.getValue());
         vf_roiIndices.resize(f_nbMeshes.getValue());
         vf_roiValue.resize(f_nbMeshes.getValue());
@@ -218,6 +224,7 @@ public:
         vf_edges.resize(f_nbMeshes.getValue());
         vf_triangles.resize(f_nbMeshes.getValue());
         vf_values.resize(f_nbMeshes.getValue());
+        vf_FillInside.resize(f_nbMeshes.getValue());
         vf_InsideValues.resize(f_nbMeshes.getValue());
         vf_roiIndices.resize(f_nbMeshes.getValue());
         vf_roiValue.resize(f_nbMeshes.getValue());
@@ -231,6 +238,7 @@ public:
         vf_edges.parseSizeData(arg, f_nbMeshes);
         vf_triangles.parseSizeData(arg, f_nbMeshes);
         vf_values.parseSizeData(arg, f_nbMeshes);
+        vf_FillInside.parseSizeData(arg, f_nbMeshes);
         vf_InsideValues.parseSizeData(arg, f_nbMeshes);
         vf_roiIndices.parseSizeData(arg, f_nbMeshes);
         vf_roiValue.parseSizeData(arg, f_nbMeshes);
@@ -244,6 +252,7 @@ public:
         vf_edges.parseFieldsSizeData(str, f_nbMeshes);
         vf_triangles.parseFieldsSizeData(str, f_nbMeshes);
         vf_values.parseFieldsSizeData(str, f_nbMeshes);
+        vf_FillInside.parseFieldsSizeData(str, f_nbMeshes);
         vf_InsideValues.parseFieldsSizeData(str, f_nbMeshes);
         vf_roiIndices.parseFieldsSizeData(str, f_nbMeshes);
         vf_roiValue.parseFieldsSizeData(str, f_nbMeshes);
@@ -502,9 +511,9 @@ protected:
         }
 
         /// fill inside
-        if(!isClosed(tri.ref())) sout<<"mesh["<<meshId<<"] might be open, let's try to fill it anyway"<<sendl;
-        //        else
+        if(this->vf_FillInside[meshId]->getValue())
         {
+            if(!isClosed(tri.ref())) sout<<"mesh["<<meshId<<"] might be open, let's try to fill it anyway"<<sendl;
             // flood fill from the exterior point (0,0,0) with the color outsideColor
             if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Filling object (mesh "<<meshId<<")..."<<std::endl;
             bool colorTrue=true;
