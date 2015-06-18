@@ -707,7 +707,7 @@ protected:
                 }
             vparams->drawTool()->drawLines(points,2.0,defaulttype::Vec4f(1,1,0.5,1));
         }
-		bool showCube=true;
+
 		if(this->showFaces.getValue())
 		{
 			//Tableau des points du cube
@@ -715,14 +715,14 @@ protected:
 			points.resize(36);
 			
 			//Tableau des normales de ces faces
-			std::vector<Vector3> normales;
+            std::vector<defaulttype::Vector3> normales;
 
 			//Tableau des couleurs des faces
-			std::vector<Vector4> couleurs;
+            std::vector<defaulttype::Vector4> couleurs;
 
 			int tmp[] = {0,1,2, 0,2,3, 0,1,5, 0,5,4, 1,2,6, 1,6,5, 3,2,6, 3,6,7, 0,3,7, 0,7,4, 7,4,5, 7,5,6};
 			int ns1, ns2, ns3;
-			Vector3 s1, s2, s3;
+            defaulttype::Vector3 s1, s2, s3;
 			for(int iH=0;iH<this->hexahedra.getValue().size(); iH++)
 			{
 				sofa::core::topology::Topology::Hexahedron currentCube = hexahedra.getValue().at(iH);
@@ -747,9 +747,9 @@ protected:
 					points.push_back(s3);
 
 					//Calcul de la normale de la surface
-					Vector3 ab = s2 - s1;
-					Vector3 ac = s3 - s1;
-					Vector3 normal = ab.cross(ac);
+                    defaulttype::Vector3 ab = s2 - s1;
+                    defaulttype::Vector3 ac = s3 - s1;
+                    defaulttype::Vector3 normal = ab.cross(ac);
 					normal.normalize();
 					normales.push_back(normal);		
 
