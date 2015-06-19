@@ -1,6 +1,8 @@
 #ifndef __HELPER_SYSTEM_console_H_
 #define __HELPER_SYSTEM_console_H_
 
+
+#include <sofa/helper/helper.h>
 #include <string.h>
 #include <iostream>
 #include <sofa/helper/system/config.h>
@@ -11,7 +13,7 @@ namespace helper {
 
 
 
-class Console
+class SOFA_HELPER_API Console
 {
 
     Console() {} // private constructor
