@@ -14,37 +14,38 @@ namespace helper {
 class Console
 {
 
-    Console(); // private constructor for singleton
+    Console() {} // private constructor
 
-    static Console& getInstance(); // private singleton
 
 #ifdef WIN32
 
+    /// this color type can be used with stream operator on windows
     typedef unsigned ColorType;
 
-    static const HANDLE s_console;
-    static const ColorType s_defaultColor;
+    /// windows console HANDLE
+    static HANDLE s_console;
 
-    std::ostream& coloredMessageImpl( std::ostream& stream, const std::string& msg, ColorType color )
+    /// @internal windows needs to get HANDLES
+    static void init()
     {
-        SetConsoleTextAttribute( s_console, color );
-        stream << prefix;
-        SetConsoleTextAttribute( s_console, s_defaultColor );
+        if( s_console == INVALID_HANDLE_VALUE )
+        {
+            s_console = GetStdHandle(STD_OUTPUT_HANDLE);
+            CONSOLE_SCREEN_BUFFER_INFO currentInfo
+            GetConsoleScreenBufferInfo(s_console, &currentInfo);
+            DEFAULT_COLOR = currentInfo.wAttributes;
+        }
     }
-
 
 #else
 
+    /// this color type can be used with stream operator on POSIX
     typedef std::string ColorType;
-
-    inline std::ostream& coloredMessageImpl( std::ostream& stream, const std::string& msg, ColorType color )
-    {
-        return ( stream << color << msg << BLACK );
-    }
 
 #endif
 
-
+    /// to use stream operator with a color on any system
+    friend std::ostream& operator<<(std::ostream &stream, ColorType color);
 
 public:
 
@@ -56,19 +57,14 @@ public:
     static const ColorType YELLOW;
     static const ColorType WHITE;
     static const ColorType BLACK;
+    static ColorType DEFAULT_COLOR;
 
-
-    static std::ostream& coloredMessage( std::ostream& stream, const std::string& msg, ColorType color )
-    {
-        return getInstance().coloredMessageImpl( stream, msg, color );
-    }
-
-    static std::ostream& infoPrefix() { return coloredMessage( std::cout, "[INFO]", GREEN ); }
-    static std::ostream& warningPrefix() { return coloredMessage( std::cout, "[WARN]", RED ); }
-
+    /// standard [INFO] prefix
+    static std::ostream& infoPrefix() { return ( std::cout << GREEN << "[INFO]" << DEFAULT_COLOR ); }
+    /// standard [WARN] prefix
+    static std::ostream& warningPrefix() { return ( std::cerr << RED << "[WARN]" << DEFAULT_COLOR );  }
 
 };
-
 
 
 
