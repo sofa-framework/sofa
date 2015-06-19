@@ -55,65 +55,64 @@ public:
     struct VertexAttributeAccessorCPHMap {
         static inline T& at(MAP* map, AttributeMultiVector<T>* attrib, Cell<VERTEX> c)
         {
-            const Dart d = c.dart;
-            const unsigned int nbSteps = map->m_curLevel - map->vertexInsertionLevel(d) ;
-            unsigned int index = map->Parent::template getEmbedding<VERTEX>(d) ;
+//            const Dart d = c.dart;
+//            const unsigned int nbSteps = map->m_curLevel - map->vertexInsertionLevel(d) ;
+            unsigned int index = map->Parent::template getEmbedding<VERTEX>(c.dart) ;
 //            std::cerr << "VertexAttributeAccessorCPHMap : nbSteps = " << nbSteps << std::endl;
-            if(index == EMBNULL)
-            {
-//                assert(false); // this should stop the program.
-                index = Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(*map, d) ;
-                map->m_nextLevelCell->operator[](index) = EMBNULL ;
-            }
+//            if(index == EMBNULL)
+//            {
+//                index = Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(*map, d) ;
+//                map->m_nextLevelCell->operator[](index) = EMBNULL ;
+//            }
 
-            AttributeContainer& cont = map->getAttributeContainer<VERTEX>() ;
-            unsigned int step = 0 ;
-            while(step < nbSteps)
-            {
-                step++ ;
-                unsigned int nextIdx = map->m_nextLevelCell->operator[](index) ;
-                if (nextIdx == EMBNULL)
-                {
-                    nextIdx = map->newCell<VERTEX>() ;
-                    map->copyCell<VERTEX>(nextIdx, index) ;
-                    map->m_nextLevelCell->operator[](index) = nextIdx ;
-//                    std::cerr << "m_nextLevelCell[" << index << "] = " << nextIdx << std::endl;
-                    map->m_nextLevelCell->operator[](nextIdx) = EMBNULL ;
-                    cont.refLine(index) ;
-                }
-                index = nextIdx ;
-            }
+//            AttributeContainer& cont = map->getAttributeContainer<VERTEX>() ;
+//            unsigned int step = 0 ;
+//            while(step < nbSteps)
+//            {
+//                step++ ;
+//                unsigned int nextIdx = map->m_nextLevelCell->operator[](index) ;
+//                if (nextIdx == EMBNULL)
+//                {
+//                    nextIdx = map->newCell<VERTEX>() ;
+//                    map->copyCell<VERTEX>(nextIdx, index) ;
+//                    map->m_nextLevelCell->operator[](index) = nextIdx ;
+////                    std::cerr << "m_nextLevelCell[" << index << "] = " << nextIdx << std::endl;
+//                    map->m_nextLevelCell->operator[](nextIdx) = EMBNULL ;
+//                    cont.refLine(index) ;
+//                }
+//                index = nextIdx ;
+//            }
             return attrib->operator[](index);
         }
 
         static inline const T& at(MAP* map, const AttributeMultiVector<T>* attrib, Cell<VERTEX> c)
         {
             const Dart d = c.dart;
-            const unsigned int nbSteps = map->m_curLevel - map->vertexInsertionLevel(d) ;
+//            const unsigned int nbSteps = map->m_curLevel - map->vertexInsertionLevel(d) ;
             unsigned int index = map->Parent::template getEmbedding<VERTEX>(d) ;
-            std::cerr << "(const) VertexAttributeAccessorCPHMap : nbSteps = " << nbSteps << std::endl;
-            if(index == EMBNULL)
-            {
-                assert(false); // this should stop the program.
-                index = Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(*map, d) ;
-                map->m_nextLevelCell->operator[](index) = EMBNULL ;
-            }
+//            std::cerr << "(const) VertexAttributeAccessorCPHMap : nbSteps = " << nbSteps << std::endl;
+//            if(index == EMBNULL)
+//            {
+//                assert(false); // this should stop the program.
+//                index = Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(*map, d) ;
+//                map->m_nextLevelCell->operator[](index) = EMBNULL ;
+//            }
 
 
-            unsigned int step = 0 ;
-            while(step < nbSteps)
-            {
-                step++ ;
-                const unsigned int nextIdx = map->m_nextLevelCell->operator[](index) ;
-                if(nextIdx != EMBNULL)
-                {
-                    index = nextIdx ;
-                } else
-                {
-//                    break;
-                    assert(false);
-                }
-            }
+//            unsigned int step = 0 ;
+//            while(step < nbSteps)
+//            {
+//                step++ ;
+//                const unsigned int nextIdx = map->m_nextLevelCell->operator[](index) ;
+//                if(nextIdx != EMBNULL)
+//                {
+//                    index = nextIdx ;
+//                } else
+//                {
+////                    break;
+//                    assert(false);
+//                }
+//            }
             return attrib->operator[](index);
         }
 
@@ -654,7 +653,9 @@ public:
             }
         }
 
-            this->setCurrentLevel(this->getMaxLevel());
+        for (unsigned int lvl = 1u; lvl <= getMaxLevel(); ++lvl)
+        {
+            this->setCurrentLevel(lvl);
             CGoGN::TraversorCell< MAP, EDGE, FORCE_DART_MARKING > traE(*this, true);
             for (Edge e = traE.begin() ; e != traE.end() ; e = traE.next())
             {
@@ -678,7 +679,7 @@ public:
                     assert((this->getFaceId(dit) == fid) || !"Some darts of the face have not the correct ID.");
                 }
             }
-
+        }
         this->setCurrentLevel(curr);
     }
 } ;
