@@ -20,7 +20,7 @@ namespace helper {
 
     HANDLE Console::s_console;
 
-    std::ostream& operator<<( std::ostream& stream, Console::ColorType color )
+    SOFA_HELPER_API std::ostream& operator<<( std::ostream& stream, Console::ColorType color )
     {
         Console::init();
 
