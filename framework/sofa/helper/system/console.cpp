@@ -22,9 +22,9 @@ namespace helper {
 
     std::ostream& operator<<( std::ostream& stream, Console::ColorType color )
     {
-        init();
+        Console::init();
 
-        SetConsoleTextAttribute( s_console, color );
+        SetConsoleTextAttribute( Console::s_console, color );
         return stream;
     }
 
