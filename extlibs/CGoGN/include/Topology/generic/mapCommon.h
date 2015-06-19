@@ -124,6 +124,20 @@ public:
 
 	inline bool isBoundaryMarked(unsigned int dim, Dart d) const ;
 
+    inline unsigned int getNbBoundaryDarts()
+    {
+//        AttributeContainer& dartContainer = this->getDartContainer();
+        unsigned int dartCounter = 0u;
+        for (Dart dit = this->begin() ; dit != this->end() ; this->next(dit))
+        {
+            if (this->isBoundaryMarkedCurrent(dit))
+            {
+                ++dartCounter;
+            }
+        }
+        return dartCounter;
+    }
+
 	/****************************************
 	 *        ATTRIBUTES MANAGEMENT         *
 	 ****************************************/
