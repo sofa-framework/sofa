@@ -19,8 +19,7 @@ class Console
 
 #ifdef WIN32
 
-    /// this color type can be used with stream operator on windows
-    typedef unsigned ColorType;
+    typedef unsigned SystemColorType;
 
     /// windows console HANDLE
     static HANDLE s_console;
@@ -31,7 +30,7 @@ class Console
         if( s_console == INVALID_HANDLE_VALUE )
         {
             s_console = GetStdHandle(STD_OUTPUT_HANDLE);
-            CONSOLE_SCREEN_BUFFER_INFO currentInfo
+            CONSOLE_SCREEN_BUFFER_INFO currentInfo;
             GetConsoleScreenBufferInfo(s_console, &currentInfo);
             DEFAULT_COLOR = currentInfo.wAttributes;
         }
@@ -39,10 +38,22 @@ class Console
 
 #else
 
-    /// this color type can be used with stream operator on POSIX
-    typedef std::string ColorType;
+    typedef std::string SystemColorType;
 
 #endif
+
+
+    /// this color type can be used with stream operator on any system
+    struct ColorType
+    {
+        Console::SystemColorType value;
+        ColorType( const ColorType& c ) : value(c.value) {}
+        ColorType( const Console::SystemColorType& v ) : value(v) {}
+        void operator= ( const ColorType& c ) { value=c.value; }
+        void operator= ( const Console::SystemColorType& v ) { value=v; }
+    };
+
+
 
     /// to use stream operator with a color on any system
     friend std::ostream& operator<<(std::ostream &stream, ColorType color);
