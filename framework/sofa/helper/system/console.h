@@ -58,7 +58,7 @@ class SOFA_HELPER_API Console
 
 
     /// to use stream operator with a color on any system
-    friend std::ostream& operator<<(std::ostream &stream, ColorType color);
+    SOFA_HELPER_API friend std::ostream& operator<<(std::ostream &stream, ColorType color);
 
 public:
 
