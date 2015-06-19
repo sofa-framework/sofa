@@ -550,7 +550,7 @@ public:
         , drawMode(initData(&drawMode,0,"drawMode","0: points, 1: spheres"))
         , showEdges(initData(&showEdges,false,"showEdges","show edges"))
         , showGraph(initData(&showGraph,false,"showGraph","show graph"))
-		, showFaces(initData(&showFaces,true,"showFaces","show the faces of cubes"))
+        , showFaces(initData(&showFaces,false,"showFaces","show the faces of cubes"))
         , time((unsigned int)0)
     {
         image.setReadOnly(true);
