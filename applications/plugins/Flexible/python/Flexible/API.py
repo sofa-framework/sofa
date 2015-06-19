@@ -249,7 +249,7 @@ class ShapeFunction:
         imagePath = SofaPython.Tools.getObjectPath(image.branchingImage)
         self.shapeFunction = self.node.createObject(
             "VoronoiShapeFunction", template="ShapeFunctiond,"+"Branching"+image.imageType, 
-            name="shapeFunction", cells=cells,
+            name="shapeFunction", cell=cells,
             position=position,
             src="@"+imagePath, method=0, nbRef=nbRef, bias=True)
    
