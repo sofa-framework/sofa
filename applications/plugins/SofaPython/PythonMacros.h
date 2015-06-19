@@ -332,13 +332,12 @@ static PyTypeObject DummyChild_PyTypeObject = {
 // =============================================================================
 // ERROR / WARNING MESSAGES
 // =============================================================================
-
-
-#define SP_MESSAGE_CONSOLE( msg ) "<SofaPython> "<<msg<<std::endl;
+#define SP_PREFIX_CONSOLE sofa::helper::Console::YELLOW << "<SofaPython> " << sofa::helper::Console::DEFAULT_COLOR
+#define SP_MESSAGE_CONSOLE( msg ) SP_PREFIX_CONSOLE << msg << std::endl;
 #define SP_MESSAGE_INFO( msg ) { sofa::helper::Console::infoPrefix() << SP_MESSAGE_CONSOLE( msg ) }
 #define SP_MESSAGE_WARNING( msg ) { sofa::helper::Console::warningPrefix() << SP_MESSAGE_CONSOLE( msg ) }
-#define SP_MESSAGE_ERROR( msg ) { sofa::helper::Console::coloredMessage( std::cerr, "[ERROR]", sofa::helper::Console::RED ) << SP_MESSAGE_CONSOLE( msg ) }
-#define SP_MESSAGE_EXCEPTION( msg ) { sofa::helper::Console::coloredMessage( std::cerr, "[EXCEPTION]", sofa::helper::Console::PURPLE ) << SP_MESSAGE_CONSOLE( msg ) }
+#define SP_MESSAGE_ERROR( msg ) { std::cerr << sofa::helper::Console::RED << "[ERROR]" << SP_MESSAGE_CONSOLE( msg ) }
+#define SP_MESSAGE_EXCEPTION( msg ) { std::cerr << sofa::helper::Console::PURPLE << "[EXCEPTION]" << SP_MESSAGE_CONSOLE( msg ) }
 
 
 

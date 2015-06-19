@@ -8,8 +8,6 @@ namespace helper {
 
 #ifdef WIN32
 
-    typedef unsigned ColorType;
-
     const Console::ColorType Console::BLUE = 9;
     const Console::ColorType Console::GREEN = 10;
     const Console::ColorType Console::CYAN = 11;
@@ -18,10 +16,20 @@ namespace helper {
     const Console::ColorType Console::YELLOW = 14;
     const Console::ColorType Console::WHITE = 15;
     const Console::ColorType Console::BLACK = 0;
+    Console::ColorType Console::DEFAULT_COLOR = Console::BLACK;
+
+    HANDLE Console::s_console;
+
+    std::ostream& operator<<( std::ostream& stream, Console::ColorType color )
+    {
+        init();
+
+        SetConsoleTextAttribute( s_console, color );
+        return stream;
+    }
+
 
 #else
-
-    typedef std::string ColorType;
 
     const Console::ColorType Console::BLUE = "\033[1;34m ";
     const Console::ColorType Console::GREEN = "\033[1;32m ";
@@ -31,25 +39,18 @@ namespace helper {
     const Console::ColorType Console::YELLOW = "\033[1;33m ";
     const Console::ColorType Console::WHITE = "\033[1;37m ";
     const Console::ColorType Console::BLACK = " \033[0m";
+    Console::ColorType Console::DEFAULT_COLOR = Console::BLACK;
+
+
+    std::ostream& operator<<( std::ostream& stream, Console::ColorType color )
+    {
+        return ( stream << color );
+    }
 
 #endif
 
 
-    Console::Console()
-    {
-#ifdef WIN32
-        s_console = GetStdHandle(STD_OUTPUT_HANDLE);
-        CONSOLE_SCREEN_BUFFER_INFO currentInfo
-        GetConsoleScreenBufferInfo(s_console, &currentInfo);
-        s_defaultColor = currentInfo.wAttributes;
-#endif
-    }
 
-    Console& Console::getInstance()
-    {
-        static Console instance;
-        return instance;
-    }
 
 
 
