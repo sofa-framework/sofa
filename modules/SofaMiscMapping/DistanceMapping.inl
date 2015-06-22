@@ -124,8 +124,11 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
         else
         {
             invlengths[i] = 0;
-            gap = Direction();
-            gap[0]=1.0;  // arbitrary unit vector
+
+            // arbritary vector mapping all directions
+            Real p = 1.0/std::sqrt((Real)Nin);
+            for( unsigned i=0;i<Nin;++i)
+                gap[i]=p;
         }
 
         // insert in increasing row and column order
@@ -503,8 +506,11 @@ void DistanceMultiMapping<TIn, TOut>::apply(const helper::vector<OutVecCoord*>& 
         else
         {
             invlengths[i] = 0;
-            gap = Direction();
-            gap[0]=1.0;  // arbitrary unit vector
+
+            // arbritary vector mapping all directions
+            Real p = 1.0/std::sqrt((Real)Nin);
+            for( unsigned i=0;i<Nin;++i)
+                gap[i]=p;
         }
 
         for(unsigned j=0; j<Nout; j++)
