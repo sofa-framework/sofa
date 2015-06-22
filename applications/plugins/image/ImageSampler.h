@@ -627,10 +627,10 @@ protected:
 
         if(this->f_printLog.getValue())
         {
-            if(this->position.getValue().size())    std::cout<<"ImageSampler: "<< this->position.getValue().size() <<" generated samples"<<std::endl;
-            if(this->edges.getValue().size())       std::cout<<"ImageSampler: "<< this->edges.getValue().size() <<" generated edges"<<std::endl;
-            if(this->hexahedra.getValue().size())   std::cout<<"ImageSampler: "<< this->hexahedra.getValue().size() <<" generated hexahedra"<<std::endl;
-            if(this->graphEdges.getValue().size())       std::cout<<"ImageSampler: "<< this->graphEdges.getValue().size() <<" generated dependencies"<<std::endl;
+            if(this->position.getValue().size())    sout<< this->position.getValue().size() <<" generated samples"<<sendl;
+            if(this->edges.getValue().size())       sout<< this->edges.getValue().size() <<" generated edges"<<sendl;
+            if(this->hexahedra.getValue().size())   sout<< this->hexahedra.getValue().size() <<" generated hexahedra"<<sendl;
+            if(this->graphEdges.getValue().size())  sout<< this->graphEdges.getValue().size() <<" generated dependencies"<<sendl;
         }
     }
 

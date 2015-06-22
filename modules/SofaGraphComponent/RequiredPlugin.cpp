@@ -61,7 +61,7 @@ void RequiredPlugin::loadPlugin()
 
     const std::string& pluginPath = pluginName.getValue();
 
-    sout << "Loading " << pluginPath << sendl;
+//    sout << "Loading " << pluginPath << sendl;
     sofa::helper::system::PluginManager::getInstance().loadPluginWithGui(pluginPath,&sout);
     if( sout.tellp() ) sout << sendl;
 }
