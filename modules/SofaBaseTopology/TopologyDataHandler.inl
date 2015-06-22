@@ -56,11 +56,11 @@ void TopologyDataHandler <TopologyElementType, VecT>::add(const sofa::helper::ve
         const sofa::helper::vector<sofa::helper::vector<double> > &coefs,
         const sofa::helper::vector< AncestorElem >& ancestorElems)
 {
-    unsigned int nbElements = index.size();
+    unsigned int nbElements = (unsigned)index.size();
     if (nbElements == 0) return;
     // Using default values
     container_type& data = *(m_topologyData->beginEdit());
-    unsigned int i0 = data.size();
+    unsigned int i0 = (unsigned)data.size();
     if (i0 != index[0])
     {
         this->m_topologyData->getOwner()->serr << "TopologyDataHandler SIZE MISMATCH in Data "
@@ -110,7 +110,7 @@ void TopologyDataHandler <TopologyElementType, VecT>::remove( const sofa::helper
 		
 	container_type& data = *(m_topologyData->beginEdit());
 	if (data.size()>0) {
-		unsigned int last = data.size() -1;
+		unsigned int last = (unsigned)data.size() -1;
 
 		for (unsigned int i = 0; i < index.size(); ++i)
 		{
