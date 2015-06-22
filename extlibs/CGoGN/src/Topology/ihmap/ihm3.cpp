@@ -670,7 +670,6 @@ void ImplicitHierarchicalMap3::sewVolumes(Dart d, Dart e, bool withBoundary)
 {
     if (!withBoundary)
     {
-        assert(false);
         Map3::sewVolumes(d, e, false) ;
         return ;
     }
