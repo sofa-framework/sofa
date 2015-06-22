@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_CORE_BEHAVIOR_MASS_CPP
 #include <sofa/core/behavior/Mass.inl>
 
 namespace sofa
