@@ -57,10 +57,13 @@ public:
     static const ColorType BRIGHT_BLACK;
     static const ColorType DEFAULT_COLOR;
 
+    static bool colorsAllowedForInfo();
+    static bool colorsAllowedForWarning();
+
     /// standard [INFO] prefix
-    static std::ostream& infoPrefix() { return ( std::cout << GREEN << "[INFO]" << DEFAULT_COLOR ); }
+    static std::ostream& infoPrefix();
     /// standard [WARN] prefix
-    static std::ostream& warningPrefix() { return ( std::cerr << RED << "[WARN]" << DEFAULT_COLOR );  }
+    static std::ostream& warningPrefix();
 
 };
 

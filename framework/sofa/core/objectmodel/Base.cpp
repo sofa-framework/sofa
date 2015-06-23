@@ -249,14 +249,18 @@ void Base::setName(const std::string& n, int counter)
 
 void Base::processStream(std::ostream& out)
 {
+    const std::string name = getName() + " (" + getClassName() + ")";
+
     if (&out == &serr)
     {
         serr << "\n";
         std::string str = serr.str();
 
         helper::Console::warningPrefix();
-        std::cerr << helper::Console::YELLOW << "[" << getName() << " (" << getClassName() << ")]: " << helper::Console::DEFAULT_COLOR;
-        std::cerr << str;
+        if (helper::Console::colorsAllowedForWarning())
+            std::cerr << helper::Console::YELLOW << "[" << name << "]" << helper::Console::DEFAULT_COLOR << ": " << str;
+        else
+            std::cerr << "[" << name << "]: " << str;
 
         if (warnings.size()+str.size() >= MAXLOGSIZE)
         {
@@ -273,8 +277,11 @@ void Base::processStream(std::ostream& out)
         std::string str = sout.str();
         if (f_printLog.getValue())
         {
-            helper::Console::infoPrefix();            
-            std::cout << helper::Console::YELLOW << "[" << getName() << " (" << getClassName() << ")]: " << helper::Console::DEFAULT_COLOR;
+            helper::Console::infoPrefix();
+            if (helper::Console::colorsAllowedForInfo())
+                std::cout << helper::Console::YELLOW << "[" << name << "]" << helper::Console::DEFAULT_COLOR << ": ";
+            else
+                std::cout << "[" << name << "]: ";
             std::cout << str << std::flush;
         }
         if (outputs.size()+str.size() >= MAXLOGSIZE)
