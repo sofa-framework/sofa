@@ -389,8 +389,8 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
     }
 
 
-    const size_t lastMappingId = mappingList.size() - 1;
-    for(size_t id=lastMappingId; id>=0; --id)
+    const int lastMappingId = (int)mappingList.size() - 1;
+    for(int id=lastMappingId; id>=0; --id)
     {
         sofa::core::BaseMapping* m_mapping = mappingList[id];
         const BaseMechanicalState* instate  = const_cast<const BaseMechanicalState*>(m_mapping->getMechFrom()[0]);
