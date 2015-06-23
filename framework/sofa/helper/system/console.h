@@ -18,32 +18,13 @@ class SOFA_HELPER_API Console
 
     Console() {} // private constructor
 
+public:
 
 #ifdef WIN32
-
     typedef unsigned SystemColorType;
-
-    /// windows console HANDLE
-    static HANDLE s_console;
-
-    /// @internal windows needs to get HANDLES
-    static void init()
-    {
-        if( s_console == INVALID_HANDLE_VALUE )
-        {
-            s_console = GetStdHandle(STD_OUTPUT_HANDLE);
-            CONSOLE_SCREEN_BUFFER_INFO currentInfo;
-            GetConsoleScreenBufferInfo(s_console, &currentInfo);
-            DEFAULT_COLOR = currentInfo.wAttributes;
-        }
-    }
-
 #else
-
     typedef std::string SystemColorType;
-
 #endif
-
 
     /// this color type can be used with stream operator on any system
     struct ColorType
@@ -55,12 +36,8 @@ class SOFA_HELPER_API Console
         void operator= ( const Console::SystemColorType& v ) { value=v; }
     };
 
-
-
     /// to use stream operator with a color on any system
     SOFA_HELPER_API friend std::ostream& operator<<(std::ostream &stream, ColorType color);
-
-public:
 
     static const ColorType BLUE;
     static const ColorType GREEN;
@@ -70,7 +47,15 @@ public:
     static const ColorType YELLOW;
     static const ColorType WHITE;
     static const ColorType BLACK;
-    static ColorType DEFAULT_COLOR;
+    static const ColorType BRIGHT_BLUE;
+    static const ColorType BRIGHT_GREEN;
+    static const ColorType BRIGHT_CYAN;
+    static const ColorType BRIGHT_RED;
+    static const ColorType BRIGHT_PURPLE;
+    static const ColorType BRIGHT_YELLOW;
+    static const ColorType BRIGHT_WHITE;
+    static const ColorType BRIGHT_BLACK;
+    static const ColorType DEFAULT_COLOR;
 
     /// standard [INFO] prefix
     static std::ostream& infoPrefix() { return ( std::cout << GREEN << "[INFO]" << DEFAULT_COLOR ); }
