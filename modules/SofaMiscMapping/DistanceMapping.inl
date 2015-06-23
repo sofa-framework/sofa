@@ -28,6 +28,7 @@
 #include "DistanceMapping.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
+#include <sofa/simulation/common/Node.h>
 
 namespace sofa
 {
@@ -37,6 +38,10 @@ namespace component
 
 namespace mapping
 {
+
+
+static const SReal s_null_distance_epsilon = 1e-8;
+
 
 template <class TIn, class TOut>
 DistanceMapping<TIn, TOut>::DistanceMapping()
@@ -65,6 +70,9 @@ void DistanceMapping<TIn, TOut>::init()
 
     this->getToModel()->resize( links.size() );
 
+    // only used for warning message
+    bool compliance = ((simulation::Node*)(this->getContext()))->forceField.size() && ((simulation::Node*)(this->getContext()))->forceField[0]->isCompliance.getValue();
+
     // compute the rest lengths if they are not known
     if( f_restLengths.getValue().size() != links.size() )
     {
@@ -72,12 +80,28 @@ void DistanceMapping<TIn, TOut>::init()
         typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
         restLengths.resize( links.size() );
         if(!(f_computeDistance.getValue()))
+        {
             for(unsigned i=0; i<links.size(); i++ )
+            {
                 restLengths[i] = (pos[links[i][0]] - pos[links[i][1]]).norm();
+
+                if( restLengths[i]<=s_null_distance_epsilon && compliance ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
+            }
+        }
         else
+        {
+            if( compliance ) serr<<"Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance"<<sendl;
             for(unsigned i=0; i<links.size(); i++ )
                 restLengths[i] = (Real)0.;
+        }
     }
+    else // manually set
+        if( compliance ) // for warning message
+        {
+            helper::ReadAccessor< Data<vector<Real> > > restLengths(f_restLengths);
+            for(unsigned i=0; i<links.size(); i++ )
+                if( restLengths[i]<=s_null_distance_epsilon ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
+        }
 
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
@@ -116,7 +140,7 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
         out[i] = gapNorm - restLengths[i];  // output
 
         // normalize
-        if( gapNorm>1.e-10 )
+        if( gapNorm>s_null_distance_epsilon )
         {
             invlengths[i] = 1/gapNorm;
             gap *= invlengths[i];
@@ -425,12 +449,16 @@ void DistanceMultiMapping<TIn, TOut>::init()
 
     const vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
 
+    // only used for warning message
+    bool compliance = ((simulation::Node*)(this->getContext()))->forceField.size() && ((simulation::Node*)(this->getContext()))->forceField[0]->isCompliance.getValue();
+
     // compute the rest lengths if they are not known
     if( f_restLengths.getValue().size() != links.size() )
     {
         helper::WriteAccessor< Data<vector<Real> > > restLengths(f_restLengths);
         restLengths.resize( links.size() );
         if(!(f_computeDistance.getValue()))
+        {
             for(unsigned i=0; i<links.size(); i++ )
             {
                 const defaulttype::Vec2f& pair0 = pairs[ links[i][0] ];
@@ -440,11 +468,24 @@ void DistanceMultiMapping<TIn, TOut>::init()
                 const InCoord& pos1 = this->getFromModels()[pair1[0]]->readPositions()[pair1[1]];
 
                 restLengths[i] = (pos0 - pos1).norm();
+
+                if( restLengths[i]==0 && compliance ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
             }
+        }
         else
+        {
+            if( compliance ) serr<<"Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance"<<sendl;
             for(unsigned i=0; i<links.size(); i++ )
                 restLengths[i] = (Real)0.;
+        }
     }
+    else // manually set
+        if( compliance ) // for warning message
+        {
+            helper::ReadAccessor< Data<vector<Real> > > restLengths(f_restLengths);
+            for(unsigned i=0; i<links.size(); i++ )
+                if( restLengths[i]<=s_null_distance_epsilon ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
+        }
 
     alloc();
 
@@ -498,7 +539,7 @@ void DistanceMultiMapping<TIn, TOut>::apply(const helper::vector<OutVecCoord*>& 
         out[i] = gapNorm - restLengths[i];  // output
 
         // normalize
-        if( gapNorm>1.e-10 )
+        if( gapNorm>s_null_distance_epsilon )
         {
             invlengths[i] = 1/gapNorm;
             gap *= invlengths[i];
