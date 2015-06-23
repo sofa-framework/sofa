@@ -425,8 +425,13 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
                     // polak-ribiere
                     beta = (current - op.dot(vel, op.f) ) / previous;
 
+<<<<<<< HEAD
                     // dai-yuan
                     // beta = current / (op.dot(dir, vel) - op.dot(dir, op.f) );
+=======
+                    // direction reset
+                    beta = std::max((SReal)0.0, beta);
+>>>>>>> fix windows compilation
                 }
 
                 // direction reset
