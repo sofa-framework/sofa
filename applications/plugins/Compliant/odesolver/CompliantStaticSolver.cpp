@@ -8,10 +8,10 @@ namespace component {
 namespace odesolver {
 
 CompliantStaticSolver::CompliantStaticSolver()
-    : epsilon(initData(&epsilon, 1e-14, "epsilon", "division by zero threshold")),
+    : epsilon(initData(&epsilon, (SReal)1e-14, "epsilon", "division by zero threshold")),
       line_search(initData(&line_search, true, "line_search", "perform line search")),
       conjugate(initData(&conjugate, true, "conjugate", "conjugate descent directions")),
-      ls_precision(initData(&ls_precision, 1e-7, "ls_precision", "line search precision")),
+      ls_precision(initData(&ls_precision, (SReal)1e-7, "ls_precision", "line search precision")),
       ls_iterations(initData(&ls_iterations, unsigned(10), "ls_iterations", "line search iterations"))
 {
     
@@ -164,7 +164,7 @@ static int CompliantStaticSolverClass = core::RegisterObject("Static solver")
                     beta = (current - op.dot(vel, op.f) ) / previous;
 
                     // direction reset
-                    beta = std::max(0.0, beta);
+                    beta = std::max((SReal)0.0, beta);
                 }
             }
             
