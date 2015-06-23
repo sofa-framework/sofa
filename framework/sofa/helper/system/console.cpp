@@ -1,6 +1,9 @@
 #include "console.h"
 #include "sofa/helper/Utils.h"
 
+#ifndef WIN32
+#  include <unistd.h>           // for isatty()
+#endif
 
 
 namespace sofa {
@@ -86,8 +89,39 @@ namespace helper {
 #endif
 
 
+    bool Console::colorsAllowedForInfo()
+    {
+#ifdef WIN32
+        return true;
+#else
+        return isatty(STDOUT_FILENO) != 0;
+#endif
+    }
 
+    bool Console::colorsAllowedForWarning()
+    {
+#ifdef WIN32
+        return true;
+#else
+        return isatty(STDERR_FILENO) != 0;
+#endif
+    }
 
+    std::ostream& Console::infoPrefix()
+    {
+    if (colorsAllowedForInfo())
+            return ( std::cout << BRIGHT_GREEN << "[INFO]" << DEFAULT_COLOR );
+        else
+            return ( std::cout << "[INFO]" );
+    }
+
+    std::ostream& Console::warningPrefix()
+    {
+    if (colorsAllowedForWarning())
+            return ( std::cerr << BRIGHT_RED << "[WARN]" << DEFAULT_COLOR );
+        else
+            return ( std::cerr << "[WARN]" );
+    }
 
 
 }
