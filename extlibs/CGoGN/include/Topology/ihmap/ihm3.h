@@ -293,6 +293,29 @@ public:
     }
 
 
+    template< unsigned int ORBIT >
+    inline unsigned int getCellLevel(Cell< ORBIT > c) const
+    {
+        if (ORBIT == DART || ORBIT == VERTEX)
+        {
+            return this->getDartLevel(c.dart);
+        }
+        if (ORBIT == EDGE)
+        {
+            return this->edgeLevel(c.dart);
+        }
+        if (ORBIT == FACE)
+        {
+            return this->faceLevel(c.dart);
+        }
+        if (ORBIT == VOLUME)
+        {
+            return this->volumeLevel(c.dart);
+        }
+
+        return std::numeric_limits<unsigned int>::max();
+    }
+
     template <int N>
     inline Dart phi(Dart d) const;
 
@@ -396,17 +419,17 @@ public:
 	//! Return the level of the edge of d in the current level map
 	/*!
 	 */
-	unsigned int edgeLevel(Dart d) ;
+    unsigned int edgeLevel(Dart d) const ;
 
 	//! Return the level of the face of d in the current level map
 	/*!
 	 */
-	unsigned int faceLevel(Dart d);
+    unsigned int faceLevel(Dart d) const;
 
 	//! Return the level of the volume of d in the current level map
 	/*!
 	 */
-    unsigned int volumeLevel(Dart d);
+    unsigned int volumeLevel(Dart d) const;
 
 
     Dart edgeNewestDart(Dart d) const;

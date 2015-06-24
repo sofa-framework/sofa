@@ -304,13 +304,13 @@ void ImplicitHierarchicalMap3::initFaceId()
 	}
 }
 
-unsigned int ImplicitHierarchicalMap3::faceLevel(Dart d)
+unsigned int ImplicitHierarchicalMap3::faceLevel(Dart d) const
 {
     assert(getDartLevel(d) <= m_curLevel || !"Access to a dart introduced after current level") ;
     return a_faceLevel[FaceCell(d)];
 }
 
-unsigned int ImplicitHierarchicalMap3::volumeLevel(Dart d)
+unsigned int ImplicitHierarchicalMap3::volumeLevel(Dart d) const
 {
     assert(getDartLevel(d) <= getCurrentLevel() || !"Access to a dart introduced after current level") ;
     return a_volumeLevel[VolumeCell(d)];
