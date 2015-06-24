@@ -330,7 +330,7 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(const core::MechanicalPa
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
 {
-    unsigned blockSize = DataTypes::deriv_total_size;
+    static const unsigned blockSize = DataTypes::deriv_total_size;
 
     const VecBool& blockedDirection = fixedDirections.getValue();
 

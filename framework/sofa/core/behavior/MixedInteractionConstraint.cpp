@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_CPP
 #include "MixedInteractionConstraint.inl"
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>

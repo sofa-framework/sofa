@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_CORE_STATE_CPP
 #include <sofa/core/State.inl>
 
 namespace sofa

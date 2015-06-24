@@ -35,6 +35,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <limits>
+#include <sofa/core/topology/BaseTopology.h>
 
 namespace sofa
 {
@@ -144,13 +145,18 @@ void BoxROI<DataTypes>::init()
     }
     if (!f_edges.isSet() || !f_triangles.isSet() || !f_tetrahedra.isSet() || !f_hexahedra.isSet() || !f_quad.isSet() )
     {
+
+        sofa::core::topology::TopologyContainer* topologyContainer;
+        this->getContext()->get(topologyContainer,sofa::core::objectmodel::BaseContext::Local);
+
         sofa::core::topology::BaseMeshTopology* topology;
         this->getContext()->get(topology,sofa::core::objectmodel::BaseContext::Local);
-        if (topology)
+
+        if (topologyContainer || topology)
         {
             if (!f_edges.isSet() && f_computeEdges.getValue())
             {
-                sofa::core::objectmodel::BaseData* eparent = topology->findData("edges");
+                sofa::core::objectmodel::BaseData* eparent = topologyContainer?topologyContainer->findData("edges"):topology->findData("edges");
                 if (eparent)
                 {
                     f_edges.setParent(eparent);
@@ -159,7 +165,7 @@ void BoxROI<DataTypes>::init()
             }
             if (!f_triangles.isSet() && f_computeTriangles.getValue())
             {
-                sofa::core::objectmodel::BaseData* tparent = topology->findData("triangles");
+                sofa::core::objectmodel::BaseData* tparent = topologyContainer?topologyContainer->findData("triangles"):topology->findData("triangles");
                 if (tparent)
                 {
                     f_triangles.setParent(tparent);
@@ -168,7 +174,7 @@ void BoxROI<DataTypes>::init()
             }
             if (!f_tetrahedra.isSet() && f_computeTetrahedra.getValue())
             {
-                sofa::core::objectmodel::BaseData* tparent = topology->findData("tetrahedra");
+                sofa::core::objectmodel::BaseData* tparent = topologyContainer?topologyContainer->findData("tetrahedra"):topology->findData("tetrahedra");
                 if (tparent)
                 {
                     f_tetrahedra.setParent(tparent);
@@ -177,7 +183,7 @@ void BoxROI<DataTypes>::init()
             }
             if (!f_hexahedra.isSet() && f_computeHexahedra.getValue())
             {
-                sofa::core::objectmodel::BaseData* tparent = topology->findData("hexahedra");
+                sofa::core::objectmodel::BaseData* tparent = topologyContainer?topologyContainer->findData("hexahedra"):topology->findData("hexahedra");
                 if (tparent)
                 {
                     f_hexahedra.setParent(tparent);
@@ -186,7 +192,7 @@ void BoxROI<DataTypes>::init()
             }
             if (!f_quad.isSet() && f_computeQuad.getValue())
             {
-                sofa::core::objectmodel::BaseData* tparent = topology->findData("quads");
+                sofa::core::objectmodel::BaseData* tparent = topologyContainer?topologyContainer->findData("quads"):topology->findData("quads");
                 if (tparent)
                 {
                     f_quad.setParent(tparent);
@@ -222,11 +228,25 @@ void BoxROI<DataTypes>::init()
     //cerr<<"BoxROI<DataTypes>::init() -> f_X0 = "<<f_X0<<endl;
     //cerr<<"BoxROI<DataTypes>::init() -> boxes = "<<boxes<<endl;
     //cerr<<"BoxROI<DataTypes>::init() -> f_indices = "<<f_indices<<endl;
+
+    reinit();
 }
 
 template <class DataTypes>
 void BoxROI<DataTypes>::reinit()
 {
+    helper::vector<Vec6>& vb = *(boxes.beginEdit());
+    if (!vb.empty())
+    {
+        for (unsigned int bi=0; bi<vb.size(); ++bi)
+        {
+            if (vb[bi][0] > vb[bi][3]) std::swap(vb[bi][0],vb[bi][3]);
+            if (vb[bi][1] > vb[bi][4]) std::swap(vb[bi][1],vb[bi][4]);
+            if (vb[bi][2] > vb[bi][5]) std::swap(vb[bi][2],vb[bi][5]);
+        }
+    }
+    boxes.endEdit();
+
     update();
 }
 
@@ -239,8 +259,8 @@ bool BoxROI<DataTypes>::isPointInBox(const typename DataTypes::CPos& p, const Ve
 template <class DataTypes>
 bool BoxROI<DataTypes>::isPointInBox(const PointID& pid, const Vec6& b)
 {
-    const VecCoord* x0 = &f_X0.getValue();
-    CPos p =  DataTypes::getCPos((*x0)[pid]);
+    const VecCoord& x0 = f_X0.getValue();
+    CPos p =  DataTypes::getCPos(x0[pid]);
 //    cerr<<"BoxROI<DataTypes>::isPointInBox, p= "<<p<<endl;
 //    cerr<<"BoxROI<DataTypes>::isPointInBox, box= "<<b<<endl;
 //    if(isPointInBox(p,b)) cerr<<"BoxROI<DataTypes>::isPointInBox, point is in box"<< endl;
@@ -250,9 +270,9 @@ bool BoxROI<DataTypes>::isPointInBox(const PointID& pid, const Vec6& b)
 template <class DataTypes>
 bool BoxROI<DataTypes>::isEdgeInBox(const Edge& e, const Vec6& b)
 {
-    const VecCoord* x0 = &f_X0.getValue();
-    CPos p0 =  DataTypes::getCPos((*x0)[e[0]]);
-    CPos p1 =  DataTypes::getCPos((*x0)[e[1]]);
+    const VecCoord& x0 = f_X0.getValue();
+    CPos p0 =  DataTypes::getCPos(x0[e[0]]);
+    CPos p1 =  DataTypes::getCPos(x0[e[1]]);
     CPos c = (p1+p0)*0.5;
 
     return isPointInBox(c,b);
@@ -261,10 +281,10 @@ bool BoxROI<DataTypes>::isEdgeInBox(const Edge& e, const Vec6& b)
 template <class DataTypes>
 bool BoxROI<DataTypes>::isTriangleInBox(const Triangle& t, const Vec6& b)
 {
-    const VecCoord* x0 = &f_X0.getValue();
-    CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
-    CPos p1 =  DataTypes::getCPos((*x0)[t[1]]);
-    CPos p2 =  DataTypes::getCPos((*x0)[t[2]]);
+    const VecCoord& x0 = f_X0.getValue();
+    CPos p0 =  DataTypes::getCPos(x0[t[0]]);
+    CPos p1 =  DataTypes::getCPos(x0[t[1]]);
+    CPos p2 =  DataTypes::getCPos(x0[t[2]]);
     CPos c = (p2+p1+p0)/3.0;
 
     return (isPointInBox(c,b));
@@ -273,11 +293,11 @@ bool BoxROI<DataTypes>::isTriangleInBox(const Triangle& t, const Vec6& b)
 template <class DataTypes>
 bool BoxROI<DataTypes>::isTetrahedronInBox(const Tetra &t, const Vec6 &b)
 {
-    const VecCoord* x0 = &f_X0.getValue();
-    CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
-    CPos p1 =  DataTypes::getCPos((*x0)[t[1]]);
-    CPos p2 =  DataTypes::getCPos((*x0)[t[2]]);
-    CPos p3 =  DataTypes::getCPos((*x0)[t[3]]);
+    const VecCoord& x0 = f_X0.getValue();
+    CPos p0 =  DataTypes::getCPos(x0[t[0]]);
+    CPos p1 =  DataTypes::getCPos(x0[t[1]]);
+    CPos p2 =  DataTypes::getCPos(x0[t[2]]);
+    CPos p3 =  DataTypes::getCPos(x0[t[3]]);
     CPos c = (p3+p2+p1+p0)/4.0;
 
     return (isPointInBox(c,b));
@@ -286,15 +306,15 @@ bool BoxROI<DataTypes>::isTetrahedronInBox(const Tetra &t, const Vec6 &b)
 template <class DataTypes>
 bool BoxROI<DataTypes>::isHexahedronInBox(const Hexa &t, const Vec6 &b)
 {
-    const VecCoord* x0 = &f_X0.getValue();
-    CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
-    CPos p1 =  DataTypes::getCPos((*x0)[t[1]]);
-    CPos p2 =  DataTypes::getCPos((*x0)[t[2]]);
-    CPos p3 =  DataTypes::getCPos((*x0)[t[3]]);
-    CPos p4 =  DataTypes::getCPos((*x0)[t[4]]);
-    CPos p5 =  DataTypes::getCPos((*x0)[t[5]]);
-    CPos p6 =  DataTypes::getCPos((*x0)[t[6]]);
-    CPos p7 =  DataTypes::getCPos((*x0)[t[7]]);
+    const VecCoord& x0 = f_X0.getValue();
+    CPos p0 =  DataTypes::getCPos(x0[t[0]]);
+    CPos p1 =  DataTypes::getCPos(x0[t[1]]);
+    CPos p2 =  DataTypes::getCPos(x0[t[2]]);
+    CPos p3 =  DataTypes::getCPos(x0[t[3]]);
+    CPos p4 =  DataTypes::getCPos(x0[t[4]]);
+    CPos p5 =  DataTypes::getCPos(x0[t[5]]);
+    CPos p6 =  DataTypes::getCPos(x0[t[6]]);
+    CPos p7 =  DataTypes::getCPos(x0[t[7]]);
     CPos c = (p7+p6+p5+p4+p3+p2+p1+p0)/8.0;
 
     return (isPointInBox(c,b));
@@ -304,11 +324,11 @@ bool BoxROI<DataTypes>::isHexahedronInBox(const Hexa &t, const Vec6 &b)
 template <class DataTypes>
 bool BoxROI<DataTypes>::isQuadInBox(const Quad& q, const Vec6& b)
 {
-    const VecCoord* x0 = &f_X0.getValue();
-    CPos p0 =  DataTypes::getCPos((*x0)[q[0]]);
-    CPos p1 =  DataTypes::getCPos((*x0)[q[1]]);
-    CPos p2 =  DataTypes::getCPos((*x0)[q[2]]);
-    CPos p3 =  DataTypes::getCPos((*x0)[q[3]]);
+    const VecCoord& x0 = f_X0.getValue();
+    CPos p0 =  DataTypes::getCPos(x0[q[0]]);
+    CPos p1 =  DataTypes::getCPos(x0[q[1]]);
+    CPos p2 =  DataTypes::getCPos(x0[q[2]]);
+    CPos p3 =  DataTypes::getCPos(x0[q[3]]);
     CPos c = (p3+p2+p1+p0)/4.0;
 
     return (isPointInBox(c,b));
@@ -318,22 +338,9 @@ bool BoxROI<DataTypes>::isQuadInBox(const Quad& q, const Vec6& b)
 template <class DataTypes>
 void BoxROI<DataTypes>::update()
 {
-    helper::vector<Vec6>& vb = *(boxes.beginEdit());
+    const helper::vector<Vec6>& vb = boxes.getValue();
 
-    if (vb.empty())
-    {
-        boxes.endEdit();
-        return;
-    }
-
-    for (unsigned int bi=0; bi<vb.size(); ++bi)
-    {
-        if (vb[bi][0] > vb[bi][3]) std::swap(vb[bi][0],vb[bi][3]);
-        if (vb[bi][1] > vb[bi][4]) std::swap(vb[bi][1],vb[bi][4]);
-        if (vb[bi][2] > vb[bi][5]) std::swap(vb[bi][2],vb[bi][5]);
-    }
-
-    boxes.endEdit();
+    if (vb.empty()) { cleanDirty(); return; }
 
     // Read accessor for input topology
     helper::ReadAccessor< Data<helper::vector<Edge> > > edges = f_edges;
@@ -342,7 +349,7 @@ void BoxROI<DataTypes>::update()
     helper::ReadAccessor< Data<helper::vector<Hexa> > > hexahedra = f_hexahedra;
     helper::ReadAccessor< Data<helper::vector<Quad> > > quad = f_quad;
 
-    const VecCoord* x0 = &f_X0.getValue();
+    const VecCoord& x0 = f_X0.getValue();
 
 
     cleanDirty();
@@ -383,15 +390,14 @@ void BoxROI<DataTypes>::update()
 
 
     //Points
-    for( unsigned i=0; i<x0->size(); ++i )
+    for( unsigned i=0; i<x0.size(); ++i )
     {
         for (unsigned int bi=0; bi<vb.size(); ++bi)
         {
             if (isPointInBox(i, vb[bi]))
             {
                 indices.push_back(i);
-                pointsInROI.push_back((*x0)[i]);
-                //sout<<"\nBoxROI<DataTypes>::update, add index "<< i << sendl;
+                pointsInROI.push_back(x0[i]);
                 break;
             }
         }
@@ -506,7 +512,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels() && !this->_drawSize.getValue())
         return;
 
-    const VecCoord* x0 = &f_X0.getValue();
+    const VecCoord& x0 = f_X0.getValue();
     sofa::defaulttype::Vec4f color = sofa::defaulttype::Vec4f(1.0f, 0.4f, 0.4f, 1.0f);
 
 
@@ -586,7 +592,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             Edge e = edgesInROI[i];
             for (unsigned int j=0 ; j<2 ; j++)
             {
-                CPos p = DataTypes::getCPos((*x0)[e[j]]);
+                CPos p = DataTypes::getCPos(x0[e[j]]);
                 sofa::defaulttype::Vector3 pv;
                 for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                     pv[j] = p[j];
@@ -607,7 +613,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             Triangle t = trianglesInROI[i];
             for (unsigned int j=0 ; j<3 ; j++)
             {
-                CPos p = DataTypes::getCPos((*x0)[t[j]]);
+                CPos p = DataTypes::getCPos(x0[t[j]]);
                 sofa::defaulttype::Vector3 pv;
                 for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                     pv[j] = p[j];
@@ -629,32 +635,32 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             Tetra t = tetrahedraInROI[i];
             for (unsigned int j=0 ; j<4 ; j++)
             {
-                CPos p = DataTypes::getCPos((*x0)[t[j]]);
+                CPos p = DataTypes::getCPos(x0[t[j]]);
                 sofa::defaulttype::Vector3 pv;
                 for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
                     pv[k] = p[k];
                 vertices.push_back( pv );
 
-                p = DataTypes::getCPos((*x0)[t[(j+1)%4]]);
+                p = DataTypes::getCPos(x0[t[(j+1)%4]]);
                 for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
                     pv[k] = p[k];
                 vertices.push_back( pv );
             }
 
-            CPos p = DataTypes::getCPos((*x0)[t[0]]);
+            CPos p = DataTypes::getCPos(x0[t[0]]);
             sofa::defaulttype::Vector3 pv;
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos((*x0)[t[2]]);
+            p = DataTypes::getCPos(x0[t[2]]);
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos((*x0)[t[1]]);
+            p = DataTypes::getCPos(x0[t[1]]);
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos((*x0)[t[3]]);
+            p = DataTypes::getCPos(x0[t[3]]);
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
@@ -674,48 +680,48 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             Hexa t = hexahedraInROI[i];
             for (unsigned int j=0 ; j<8 ; j++)
             {
-                CPos p = DataTypes::getCPos((*x0)[t[j]]);
+                CPos p = DataTypes::getCPos(x0[t[j]]);
                 sofa::defaulttype::Vector3 pv;
                 for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
                     pv[k] = p[k];
                 vertices.push_back( pv );
 
-                p = DataTypes::getCPos((*x0)[t[(j+1)%4]]);
+                p = DataTypes::getCPos(x0[t[(j+1)%4]]);
                 for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
                     pv[k] = p[k];
                 vertices.push_back( pv );
             }
 
-            CPos p = DataTypes::getCPos((*x0)[t[0]]);
+            CPos p = DataTypes::getCPos(x0[t[0]]);
             sofa::defaulttype::Vector3 pv;
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos((*x0)[t[2]]);
+            p = DataTypes::getCPos(x0[t[2]]);
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos((*x0)[t[1]]);
+            p = DataTypes::getCPos(x0[t[1]]);
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos((*x0)[t[3]]);
+            p = DataTypes::getCPos(x0[t[3]]);
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos((*x0)[t[4]]);
+            p = DataTypes::getCPos(x0[t[4]]);
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos((*x0)[t[5]]);
+            p = DataTypes::getCPos(x0[t[5]]);
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos((*x0)[t[6]]);
+            p = DataTypes::getCPos(x0[t[6]]);
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
-            p = DataTypes::getCPos((*x0)[t[7]]);
+            p = DataTypes::getCPos(x0[t[7]]);
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
@@ -735,7 +741,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             Quad q = quadsInROI[i];
             for (unsigned j=0; j<4; j++)
             {
-                CPos p = DataTypes::getCPos((*x0)[q[j]]);
+                CPos p = DataTypes::getCPos(x0[q[j]]);
                 sofa::defaulttype::Vector3 pv;
                 for (unsigned k=0; k<max_spatial_dimensions; k++)
                     pv[k] = p[k];
@@ -743,7 +749,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             }
             for (unsigned j=0; j<4; j++)
             {
-                CPos p = DataTypes::getCPos((*x0)[q[(j+1)%4]]);
+                CPos p = DataTypes::getCPos(x0[q[(j+1)%4]]);
                 sofa::defaulttype::Vector3 pv;
                 for (unsigned k=0; k<max_spatial_dimensions; k++)
                     pv[k] = p[k];

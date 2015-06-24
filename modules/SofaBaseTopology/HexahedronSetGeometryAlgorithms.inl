@@ -39,6 +39,354 @@ namespace component
 
 namespace topology
 {
+	
+const unsigned int verticesInHexahedronArray[2][2][2]=  {{{0,4},{3,7}},{{1,5},{2,6}}};
+
+
+template< class DataTypes>
+NumericalIntegrationDescriptor<typename HexahedronSetGeometryAlgorithms< DataTypes >::Real,3> &HexahedronSetGeometryAlgorithms< DataTypes >::getHexahedronNumericalIntegrationDescriptor()
+{
+	// initialize the cubature table only if needed.
+	if (initializedHexahedronCubatureTables==false) {
+		initializedHexahedronCubatureTables=true;
+		defineHexahedronCubaturePoints();
+	}
+	return hexahedronNumericalIntegration;
+}
+
+template< class DataTypes>
+void HexahedronSetGeometryAlgorithms< DataTypes >::defineHexahedronCubaturePoints() {
+	typedef typename NumericalIntegrationDescriptor<typename HexahedronSetGeometryAlgorithms< DataTypes >::Real,3>::QuadraturePoint QuadraturePoint;
+	typedef typename NumericalIntegrationDescriptor<typename HexahedronSetGeometryAlgorithms< DataTypes >::Real,3>::BarycentricCoordinatesType BarycentricCoordinatesType;
+	// Gauss method
+	typename NumericalIntegrationDescriptor<typename HexahedronSetGeometryAlgorithms< DataTypes >::Real,3>::QuadratureMethod m=NumericalIntegrationDescriptor<typename HexahedronSetGeometryAlgorithms< DataTypes >::Real,3>::GAUSS_LEGENDRE_METHOD;
+	typename NumericalIntegrationDescriptor<typename HexahedronSetGeometryAlgorithms< DataTypes >::Real,3>::QuadraturePointArray qpa;
+	typename NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1>::QuadraturePointArray qpa1D;
+
+	BarycentricCoordinatesType v;
+	Real w;
+
+
+	NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1> &nide=this->getEdgeNumericalIntegrationDescriptor();
+
+	/// create gauss points as tensor product of Gauss Legendre points in 1D
+	/// create integration method up to order 8 (could go up to 12 if needed) where the number of gauss points is the cube of the number of 1D Gauss points
+	size_t o,i,j,k;
+	for (o=1;o<8;++o) {
+		qpa.clear();
+		qpa1D=nide.getQuadratureMethod(NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1>::GAUSS_LEGENDRE_METHOD,o);
+		for (i=0;i<qpa1D.size();++i) {
+			for (j=0;j<qpa1D.size();++j) {
+				for (k=0;k<qpa1D.size();++k) {
+					v=BarycentricCoordinatesType(qpa1D[i].first[0],qpa1D[j].first[0],qpa1D[k].first[0]);
+					w=qpa1D[i].second*qpa1D[j].second*qpa1D[k].second;
+					qpa.push_back(QuadraturePoint(v,(Real)w));
+				}
+			}
+		}
+		hexahedronNumericalIntegration.addQuadratureMethod(m,o,qpa);
+	}
+	/*
+	/// consider non tensor product rules : taken from getfem++ file Hexahedron_5.im
+	 m=NumericalIntegrationDescriptor<typename HexahedronSetGeometryAlgorithms< DataTypes >::Real,3>::GAUSS_CUBE_METHOD;
+	/// integration with  accuracy of order 5 with 14 gauss points.
+	Real a=0.8979112128771107316322744102380675;
+	Real b=0.5;
+	w=0.1108033240997229916897506925207755;
+	for (i=0;i<3;++i) {
+		v=BarycentricCoordinatesType(b,b,b);
+		v[i]=a;
+		qpa.push_back(QuadraturePoint(v,w));
+		v[i]=1-a;
+		qpa.push_back(QuadraturePoint(v,w));
+	}
+	a=0.8793934553196640731345171390561335;
+	w=0.0418975069252077562326869806094182;
+	for (i=0;i<2;++i) {
+		for (j=0;j<2;++j) {
+			for (k=0;k<2;++k) {
+				/// barycentric coordinates are either a or 1-a
+				v=BarycentricCoordinatesType(a+i*(1-2*a),a+j*(1-2*a),a+k*(1-2*a));
+				qpa.push_back(QuadraturePoint(v,w));
+			}
+		}
+	}
+	hexahedronNumericalIntegration.addQuadratureMethod(m,5,qpa);
+
+
+	/// consider non tensor product rules : taken from getfem++ file Hexahedron_9.im
+	/// integration with  accuracy of order 9 with 58 gauss points.
+
+	/// 6 points
+	a=.8068407347958544969174424448702780;
+	b=0.5;
+	w=.0541593744687068178762288491492902;
+	for (i=0;i<3;++i) {
+		v=BarycentricCoordinatesType(b,b,b);
+		v[i]=a;
+		qpa.push_back(QuadraturePoint(v,w));
+		v[i]=1-a;
+		qpa.push_back(QuadraturePoint(v,w));
+	}
+	// 12 points
+	a=0.9388435616288391432433878794971660;
+	b=0.5;
+	w=0.0114737257670222052714055736149557;
+	for (i=0;i<3;++i) {
+		v=BarycentricCoordinatesType(b,b,b);
+		for (j=0;j<2;++j) {
+			v[(i+1)%3]=a+j*(1-2*a);
+			for (k=0;k<2;++k) {
+				v[(i+2)%3]=a+k*(1-2*a);
+				qpa.push_back(QuadraturePoint(v,w));
+			}
+		}
+	}
+	/// 8 points
+	a=0.7820554035100150271333094993315360;
+	w=0.0248574797680029375401085898232011;
+	for (i=0;i<2;++i) {
+		for (j=0;j<2;++j) {
+			for (k=0;k<2;++k) {
+				/// barycentric coordinates are either a or 1-a
+				v=BarycentricCoordinatesType(a+i*(1-2*a),a+j*(1-2*a),a+k*(1-2*a));
+				qpa.push_back(QuadraturePoint(v,w));
+			}
+		}
+	}
+	/// 8 points
+	a=0.9350498923309879588075319044319620;
+	w=0.0062685994124186287334314359655827;
+	for (i=0;i<2;++i) {
+		for (j=0;j<2;++j) {
+			for (k=0;k<2;++k) {
+				/// barycentric coordinates are either a or 1-a
+				v=BarycentricCoordinatesType(a+i*(1-2*a),a+j*(1-2*a),a+k*(1-2*a));
+				qpa.push_back(QuadraturePoint(v,w));
+			}
+		}
+	}
+	/// 24 points 
+	a=0.7161339513154310822080124307584715;
+	b=0.9692652109323358726644884348015390;
+	w=0.0120146004391716708040599923089382;
+	for (i=0;i<3;++i) {
+		v=BarycentricCoordinatesType(b,b,b);
+		for (j=0;j<2;++j) {
+			v[(i+1)%3]=a+j*(1-2*a);
+			for (k=0;k<2;++k) {
+				v[i]=b;
+				v[(i+2)%3]=a+k*(1-2*a);
+				qpa.push_back(QuadraturePoint(v,w));
+				v[i]=1-b;
+				qpa.push_back(QuadraturePoint(v,w));
+			}
+		}
+	}
+	hexahedronNumericalIntegration.addQuadratureMethod(m,9,qpa);
+	
+	
+	/// consider non tensor product rules : taken from getfem++ file Hexahedron_11.im
+	/// integration with  accuracy of order 11 with 90 gauss points.
+
+	/// 6 points
+	a=.9063071670498132481961877986898720;
+	b=0.5;
+	w=.0253096342016000238231671413708773;
+	for (i=0;i<3;++i) {
+		v=BarycentricCoordinatesType(b,b,b);
+		v[i]=a;
+		qpa.push_back(QuadraturePoint(v,w));
+		v[i]=1-a;
+		qpa.push_back(QuadraturePoint(v,w));
+	}
+	// 12 points
+	a=.8673341434985040086731923849337745;
+	b=0.5;
+	w=0.0181499182325144622865632250992823;
+	for (i=0;i<3;++i) {
+		v=BarycentricCoordinatesType(b,b,b);
+		for (j=0;j<2;++j) {
+			v[(i+1)%3]=a+j*(1-2*a);
+			for (k=0;k<2;++k) {
+				v[(i+2)%3]=a+k*(1-2*a);
+				qpa.push_back(QuadraturePoint(v,w));
+			}
+		}
+	}
+	/// 8 points
+	a=.6566967022580273605228866152789755;
+	w=.0269990056568711411641833332980551;
+	for (i=0;i<2;++i) {
+		for (j=0;j<2;++j) {
+			for (k=0;k<2;++k) {
+				/// barycentric coordinates are either a or 1-a
+				v=BarycentricCoordinatesType(a+i*(1-2*a),a+j*(1-2*a),a+k*(1-2*a));
+				qpa.push_back(QuadraturePoint(v,w));
+			}
+		}
+	}
+	/// 8 points
+	a=.8008376320991313508172065028926585;
+	w= .0146922934945570350487414755013352;
+	for (i=0;i<2;++i) {
+		for (j=0;j<2;++j) {
+			for (k=0;k<2;++k) {
+				/// barycentric coordinates are either a or 1-a
+				v=BarycentricCoordinatesType(a+i*(1-2*a),a+j*(1-2*a),a+k*(1-2*a));
+				qpa.push_back(QuadraturePoint(v,w));
+			}
+		}
+	}
+		/// 8 points
+	a=.9277278805088799923375457353451730;
+	w= .0055804890098536552051251442852662;
+	for (i=0;i<2;++i) {
+		for (j=0;j<2;++j) {
+			for (k=0;k<2;++k) {
+				/// barycentric coordinates are either a or 1-a
+				v=BarycentricCoordinatesType(a+i*(1-2*a),a+j*(1-2*a),a+k*(1-2*a));
+				qpa.push_back(QuadraturePoint(v,w));
+			}
+		}
+	}
+	/// 24 points 
+	a=.9706224286053016319555750788155670;
+	b=.6769514072983150674551564354064455;
+	w=.0028267870173527355278995288336230;
+	for (i=0;i<3;++i) {
+		v=BarycentricCoordinatesType(b,b,b);
+		for (j=0;j<2;++j) {
+			v[(i+1)%3]=a+j*(1-2*a);
+			for (k=0;k<2;++k) {
+				v[i]=b;
+				v[(i+2)%3]=a+k*(1-2*a);
+				qpa.push_back(QuadraturePoint(v,w));
+				v[i]=1-b;
+				qpa.push_back(QuadraturePoint(v,w));
+			}
+		}
+	}
+	/// 24 points 
+	a=.7253999675572547151889421728651345;
+	b=.9825498327563551314651409115626720;
+	w=.0076802492622294169003437555791307;
+	for (i=0;i<3;++i) {
+		v=BarycentricCoordinatesType(b,b,b);
+		for (j=0;j<2;++j) {
+			v[(i+1)%3]=a+j*(1-2*a);
+			for (k=0;k<2;++k) {
+				v[i]=b;
+				v[(i+2)%3]=a+k*(1-2*a);
+				qpa.push_back(QuadraturePoint(v,w));
+				v[i]=1-b;
+				qpa.push_back(QuadraturePoint(v,w));
+			}
+		}
+	}
+	hexahedronNumericalIntegration.addQuadratureMethod(m,11,qpa);
+	*/
+	
+}
+template< class DataTypes>
+bool HexahedronSetGeometryAlgorithms< DataTypes >::isHexahedronAffine(const HexaID hx, const VecCoord& p, const Real tolerance) const
+{
+	/// check that the hexahedron is a parallelepiped returns true if it is the case and false otherwise.
+	/// given 4 points of binary coordinates 000 010 100 001 checks that the 4 other points are translated versions
+	const Hexahedron &h = this->m_topology->getHexahedron(hx);
+	Coord dpos;
+	dpos=(p[h[verticesInHexahedronArray[1][0][1]]]-p[h[verticesInHexahedronArray[1][0][0]]])-(p[h[verticesInHexahedronArray[0][0][1]]]-p[h[verticesInHexahedronArray[0][0][0]]]);
+	if (dpos.norm()>tolerance)
+		return false;
+	else {
+		dpos=(p[h[verticesInHexahedronArray[1][1][0]]]-p[h[verticesInHexahedronArray[1][0][0]]])-(p[h[verticesInHexahedronArray[0][1][0]]]-p[h[verticesInHexahedronArray[0][0][0]]]);
+		if (dpos.norm()>tolerance)
+			return false;
+		else {
+			dpos=(p[h[verticesInHexahedronArray[1][0][1]]]-p[h[verticesInHexahedronArray[0][0][1]]])-(p[h[verticesInHexahedronArray[0][0][1]]]-p[h[verticesInHexahedronArray[0][0][0]]]);
+			if (dpos.norm()>tolerance)
+				return false;
+			else {
+				dpos=(p[h[verticesInHexahedronArray[1][1][1]]]-p[h[verticesInHexahedronArray[0][1][1]]])-(p[h[verticesInHexahedronArray[1][0][1]]]-p[h[verticesInHexahedronArray[0][0][1]]]);
+				if (dpos.norm()>tolerance)
+					return false;
+				else
+					return true;
+			}
+		}
+	}
+}
+template< class DataTypes>
+typename  DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeShapeFunction(const LocalCoord nc,const HexahedronBinaryIndex bi) const 
+{
+	return((bi[0] ? nc[0] : 1-nc[0])*(bi[1] ? nc[1] : 1-nc[1])*(bi[2] ? nc[2] : 1-nc[2]));
+}
+template< class DataTypes>
+typename DataTypes::Coord HexahedronSetGeometryAlgorithms< DataTypes >::computeNodalValue(const HexaID hx,const LocalCoord nc,const VecCoord& p) const
+{
+	 const Hexahedron &h = this->m_topology->getHexahedron(hx);
+	 size_t i,j,k;
+	 Coord pos[8];
+	 for (i=0;i<8;++i) 
+		 pos[i]=p[h[i]];
+	 Coord res;
+
+	 for (i=0;i<2;++i) {
+		 for (j=0;j<2;++j) {
+			 for (k=0;k<2;++k) {
+				 res+= (i ? nc[0] : 1-nc[0])*(j ? nc[1] : 1-nc[1])*(k ? nc[2] : 1-nc[2])*pos[h[verticesInHexahedronArray[i][j][k]]];
+			 }
+		 }
+	 }
+/*
+    const Coord pos = p[0] * ((1-fx) * (1-fy) * (1-fz))
+            + p[1] * ((  fx) * (1-fy) * (1-fz))
+            + p[3] * ((1-fx) * (  fy) * (1-fz))
+            + p[2] * ((  fx) * (  fy) * (1-fz))
+            + p[4] * ((1-fx) * (1-fy) * (  fz))
+            + p[5] * ((  fx) * (1-fy) * (  fz))
+            + p[7] * ((1-fx) * (  fy) * (  fz))
+            + p[6] * ((  fx) * (  fy) * (  fz)); */
+
+    return res;
+}
+
+template< class DataTypes>
+void HexahedronSetGeometryAlgorithms< DataTypes >::computePositionDerivative(const HexaID hx,const LocalCoord nc,const VecCoord& p,  Coord dpos[3]) const
+{
+	 const Hexahedron &h = this->m_topology->getHexahedron(hx);
+	 size_t i,j,k;
+	 size_t ind[3];
+
+	 Coord pos[8];
+	 for (i=0;i<8;++i) 
+		 pos[i]=p[h[i]];
+	 Coord res;
+
+	 for (i=0;i<3;++i) {
+		 Coord pos0,pos1;
+		 for (j=0;j<2;++j) {
+			 for (k=0;k<2;++k) {
+				 ind[i]=1;
+				 ind[(i+1)%3]=j;
+				 ind[(i+2)%3]=k;
+				 pos1+= (j ? nc[(i+1)%3] : 1-nc[(i+1)%3])*(k ? nc[(i+2)%3] : 1-nc[(i+2)%3])*p[h[verticesInHexahedronArray[ind[0]][ind[1]][ind[2]]]];
+				 ind[i]=0;
+				 pos0+= (j ? nc[(i+1)%3] : 1-nc[(i+1)%3])*(k ? nc[(i+2)%3] : 1-nc[(i+2)%3])*p[h[verticesInHexahedronArray[ind[0]][ind[1]][ind[2]]]];
+			 }
+		 }
+		 dpos[i]=pos1-pos0;
+	 }
+
+}
+
+template< class DataTypes>
+typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeJacobian(const HexaID hx,const LocalCoord nc,const VecCoord& p) const
+{
+	Coord dpos[3];
+	this->computePositionDerivative(hx,nc,p,dpos);
+	return (tripleProduct(dpos[0],dpos[1],dpos[2]));
+}
 
 template< class DataTypes>
 void HexahedronSetGeometryAlgorithms< DataTypes >::computeHexahedronAABB(const HexaID h, Coord& minCoord, Coord& maxCoord) const
@@ -366,20 +714,68 @@ void HexahedronSetGeometryAlgorithms< DataTypes >::findNearestElementsInRestPos(
 }
 
 template< class DataTypes>
-typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeHexahedronVolume( const HexaID /*h*/) const
+typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeHexahedronVolume( const HexaID hexa) const
 {
-    //const Hexahedron &t = this->m_topology->getHexahedron(h);
-    //const VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
-    Real volume=(Real)(0.0); /// @todo : implementation of computeHexahedronVolume
+ const Hexahedron &h = this->m_topology->getHexahedron(hexa);
+    const VecCoord& p = (this->object->read(core::ConstVecCoordId::position())->getValue());
+	Coord dp[3];
+	unsigned char i,j,k,ind[3];
+	Real volume;
+	for (i=0;i<3;++i) {
+		dp[i]=Coord();
+		for (j=0;j<2;++j) {
+			for (k=0;k<2;++k) {
+				ind[i]=1;
+				ind[(i+1)%3]=j;
+				ind[(i+2)%3]=k;
+				dp[i]+=p[h[verticesInHexahedronArray[ind[0]][ind[1]][ind[2]]]];
+				ind[i]=0;
+				dp[i]-=p[h[verticesInHexahedronArray[ind[0]][ind[1]][ind[2]]]];
+			}
+		}
+	}
+	volume=tripleProduct(dp[0],dp[1],dp[2])/48.0f;
+	dp[0]=p[h[verticesInHexahedronArray[0][1][1]]]-p[h[verticesInHexahedronArray[0][0][0]]];
+	dp[1]=p[h[verticesInHexahedronArray[1][0][1]]]-p[h[verticesInHexahedronArray[0][0][0]]];
+	dp[2]=p[h[verticesInHexahedronArray[1][1][0]]]-p[h[verticesInHexahedronArray[0][0][0]]];
+	volume-=tripleProduct(dp[0],dp[1],dp[2])/12.0f;
+	dp[0]=p[h[verticesInHexahedronArray[1][0][0]]]-p[h[verticesInHexahedronArray[1][1][1]]];
+	dp[1]=p[h[verticesInHexahedronArray[0][1][0]]]-p[h[verticesInHexahedronArray[1][1][1]]];
+	dp[2]=p[h[verticesInHexahedronArray[0][0][1]]]-p[h[verticesInHexahedronArray[1][1][1]]];
+	volume+=tripleProduct(dp[0],dp[1],dp[2])/12.0f;
     return volume;
 }
 
 template< class DataTypes>
-typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeRestHexahedronVolume( const HexaID /*h*/) const
+typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeRestHexahedronVolume( const HexaID hexa) const
 {
-    //const Hexahedron &t = this->m_topology->getHexahedron(h);
-    //const VecCoord& p = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
-    Real volume=(Real)(0.0); /// @todo : implementation of computeRestHexahedronVolume
+    const Hexahedron &h = this->m_topology->getHexahedron(hexa);
+    const VecCoord& p =  (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
+	Coord dp[3];
+	size_t i,j,k,ind[3];
+	Real volume;
+	for (i=0;i<3;++i) {
+		dp[i]=Coord();
+		for (j=0;j<2;++j) {
+			for (k=0;k<2;++k) {
+				ind[i]=1;
+				ind[(i+1)%3]=j;
+				ind[(i+2)%3]=k;
+				dp[i]+=p[h[verticesInHexahedronArray[ind[0]][ind[1]][ind[2]]]];
+				ind[i]=0;
+				dp[i]-=p[h[verticesInHexahedronArray[ind[0]][ind[1]][ind[2]]]];
+			}
+		}
+	}
+	volume=tripleProduct(dp[0],dp[1],dp[2])/48.0f;
+	dp[0]=p[h[verticesInHexahedronArray[0][1][1]]]-p[h[verticesInHexahedronArray[0][0][0]]];
+	dp[1]=p[h[verticesInHexahedronArray[1][0][1]]]-p[h[verticesInHexahedronArray[0][0][0]]];
+	dp[2]=p[h[verticesInHexahedronArray[1][1][0]]]-p[h[verticesInHexahedronArray[0][0][0]]];
+	volume-=tripleProduct(dp[0],dp[1],dp[2])/12.0f;
+	dp[0]=p[h[verticesInHexahedronArray[1][0][0]]]-p[h[verticesInHexahedronArray[1][1][1]]];
+	dp[1]=p[h[verticesInHexahedronArray[0][1][0]]]-p[h[verticesInHexahedronArray[1][1][1]]];
+	dp[2]=p[h[verticesInHexahedronArray[0][0][1]]]-p[h[verticesInHexahedronArray[1][1][1]]];
+	volume+=tripleProduct(dp[0],dp[1],dp[2])/12.0f;
     return volume;
 }
 

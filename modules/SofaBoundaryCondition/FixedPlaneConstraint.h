@@ -102,6 +102,11 @@ public:
     virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ );
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
 
+	// Implement applyConstraint for direct solvers
+    virtual void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    virtual void applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+
+
     virtual void init();
 
     void setDirection (Coord dir);

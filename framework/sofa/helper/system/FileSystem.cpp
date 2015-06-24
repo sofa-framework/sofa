@@ -118,15 +118,17 @@ bool FileSystem::exists(const std::string& path)
 {
 #if defined(WIN32)
 	::SetLastError(0);
-    bool pathExists = PathFileExists(Utils::widenString(path).c_str()) != 0;
-    DWORD errorCode = ::GetLastError();
-	if (errorCode != 0
-		&& errorCode != ERROR_FILE_NOT_FOUND
-		&& errorCode != ERROR_PATH_NOT_FOUND) {
-        std::cerr << "FileSystem::exists(\"" << path << "\"): "
-                  << Utils::GetLastError() << std::endl;
+    if (PathFileExists(Utils::widenString(path).c_str()) != 0)
+        return true;
+    else
+    {
+        DWORD errorCode = ::GetLastError();
+        if (errorCode != 2) // not No such file error
+            std::cerr << "FileSystem::exists(\"" << path << "\"): "
+                << Utils::GetLastError() << std::endl;
+         return false;
     }
-    return  pathExists;
+
 #elif defined (_XBOX)
 	DWORD fileAttrib = GetFileAttributes(path.c_str());
     return fileAttrib != -1;

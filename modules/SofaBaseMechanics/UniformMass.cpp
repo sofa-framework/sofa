@@ -376,10 +376,10 @@ void UniformMass<Vec6dTypes, double>::draw(const core::visual::VisualParams* vpa
 template <> SOFA_BASE_MECHANICS_API
 void UniformMass<Vec3dTypes, double>::addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv* dx, SReal mFact, unsigned int& offset)
 {
-    unsigned int derivDim = Deriv::size();
+    unsigned int derivDim = (unsigned)Deriv::size();
     double m = mass.getValue();
 
-    unsigned int vecDim = mstate->read(core::ConstVecCoordId::position())->getValue().size();
+    unsigned int vecDim = (unsigned)mstate->read(core::ConstVecCoordId::position())->getValue().size();
 
     const double* g = this->getContext()->getGravity().ptr();
 
@@ -400,7 +400,7 @@ Vector6 UniformMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalPar
     helper::ReadAccessor<DataVecCoord> x = vx;
 
     unsigned int ibegin = 0;
-    unsigned int iend = v.size();
+    unsigned int iend = (unsigned)v.size();
 
     if ( localRange.getValue() [0] >= 0 )
         ibegin = localRange.getValue() [0];
@@ -431,7 +431,7 @@ Vector6 UniformMass<Rigid3dTypes,Rigid3dMass>::getMomentum ( const core::Mechani
     helper::ReadAccessor<DataVecCoord> x = vx;
 
     unsigned int ibegin = 0;
-    unsigned int iend = v.size();
+    unsigned int iend = (unsigned)v.size();
 
     if ( localRange.getValue() [0] >= 0 )
         ibegin = localRange.getValue() [0];
@@ -739,10 +739,10 @@ void UniformMass<Vec6fTypes, float>::draw(const core::visual::VisualParams* vpar
 template <> SOFA_BASE_MECHANICS_API
 void UniformMass<Vec3fTypes, float>::addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv* dx, SReal mFact, unsigned int& offset)
 {
-    unsigned int derivDim = Deriv::size();
+    unsigned int derivDim = (unsigned)Deriv::size();
     float m = mass.getValue();
 
-    unsigned int vecDim = mstate->read(core::ConstVecCoordId::position())->getValue().size();
+    unsigned int vecDim = (unsigned)mstate->read(core::ConstVecCoordId::position())->getValue().size();
 
     const SReal* g = this->getContext()->getGravity().ptr();
 
@@ -764,7 +764,7 @@ Vector6 UniformMass<Vec3fTypes, float>::getMomentum ( const core::MechanicalPara
     helper::ReadAccessor<DataVecCoord> x = vx;
 
     unsigned int ibegin = 0;
-    unsigned int iend = v.size();
+    unsigned int iend = (unsigned)v.size();
 
     if ( localRange.getValue() [0] >= 0 )
         ibegin = localRange.getValue() [0];
@@ -795,7 +795,7 @@ Vector6 UniformMass<Rigid3fTypes,Rigid3fMass>::getMomentum ( const core::Mechani
     helper::ReadAccessor<DataVecCoord> x = vx;
 
     unsigned int ibegin = 0;
-    unsigned int iend = v.size();
+    unsigned int iend = (unsigned)v.size();
 
     if ( localRange.getValue() [0] >= 0 )
         ibegin = localRange.getValue() [0];

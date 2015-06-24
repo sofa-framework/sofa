@@ -37,6 +37,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/MechanicalParams.h>
+
 namespace sofa
 {
 
@@ -47,7 +48,7 @@ namespace simulation
 ///
 /// @author Matthieu Nesme, 2015
 ///
-class SOFA_SIMULATION_COMMON_API MechanicalGetMomentumVisitor : public sofa::simulation::MechanicalVisitor
+class MechanicalGetMomentumVisitor : public sofa::simulation::MechanicalVisitor
 {
     defaulttype::Vector6 m_momenta;
 

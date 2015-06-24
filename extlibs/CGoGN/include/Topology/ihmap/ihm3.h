@@ -31,7 +31,6 @@
 #include "Algo/Multiresolution/filter.h"
 
 
-
 namespace CGoGN
 {
 
@@ -51,53 +50,69 @@ public:
     typedef Parent ParentMap;
     typedef ImplicitHierarchicalMap3 MAP;
     typedef MAP TOPO_MAP;
+    typedef MapCPH IMPL;
     template <typename T>
     struct VertexAttributeAccessorCPHMap {
         static inline T& at(MAP* map, AttributeMultiVector<T>* attrib, Cell<VERTEX> c)
         {
-            const Dart d = c.dart;
-            const unsigned int nbSteps = map->m_curLevel - map->vertexInsertionLevel(d) ;
-            unsigned int index = map->template getEmbedding<VERTEX>(d) ;
-            if(index == EMBNULL)
-            {
-                index = Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(*map, d) ;
-                map->m_nextLevelCell->operator[](index) = EMBNULL ;
-            }
+//            const Dart d = c.dart;
+//            const unsigned int nbSteps = map->m_curLevel - map->vertexInsertionLevel(d) ;
+            unsigned int index = map->Parent::template getEmbedding<VERTEX>(c.dart) ;
+//            std::cerr << "VertexAttributeAccessorCPHMap : nbSteps = " << nbSteps << std::endl;
+//            if(index == EMBNULL)
+//            {
+//                index = Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(*map, d) ;
+//                map->m_nextLevelCell->operator[](index) = EMBNULL ;
+//            }
 
-            AttributeContainer& cont = map->getAttributeContainer<VERTEX>() ;
-            unsigned int step = 0 ;
-            while(step < nbSteps)
-            {
-                step++ ;
-                unsigned int nextIdx = map->m_nextLevelCell->operator[](index) ;
-                if (nextIdx == EMBNULL)
-                {
-                    nextIdx = map->newCell<VERTEX>() ;
-                    map->copyCell<VERTEX>(nextIdx, index) ;
-                    map->m_nextLevelCell->operator[](index) = nextIdx ;
-                    map->m_nextLevelCell->operator[](nextIdx) = EMBNULL ;
-                    cont.refLine(index) ;
-                }
-                index = nextIdx ;
-            }
+//            AttributeContainer& cont = map->getAttributeContainer<VERTEX>() ;
+//            unsigned int step = 0 ;
+//            while(step < nbSteps)
+//            {
+//                step++ ;
+//                unsigned int nextIdx = map->m_nextLevelCell->operator[](index) ;
+//                if (nextIdx == EMBNULL)
+//                {
+//                    nextIdx = map->newCell<VERTEX>() ;
+//                    map->copyCell<VERTEX>(nextIdx, index) ;
+//                    map->m_nextLevelCell->operator[](index) = nextIdx ;
+////                    std::cerr << "m_nextLevelCell[" << index << "] = " << nextIdx << std::endl;
+//                    map->m_nextLevelCell->operator[](nextIdx) = EMBNULL ;
+//                    cont.refLine(index) ;
+//                }
+//                index = nextIdx ;
+//            }
             return attrib->operator[](index);
         }
 
-        static inline const T& at(const MAP* map, const AttributeMultiVector<T>* attrib, Cell<VERTEX> c)
+        static inline const T& at(MAP* map, const AttributeMultiVector<T>* attrib, Cell<VERTEX> c)
         {
             const Dart d = c.dart;
-            const unsigned int nbSteps = map->m_curLevel - map->vertexInsertionLevel(d) ;
-            unsigned int index = map->template/*EmbeddedMap3::*/getEmbedding<VERTEX>(d) ;
+//            const unsigned int nbSteps = map->m_curLevel - map->vertexInsertionLevel(d) ;
+            unsigned int index = map->Parent::template getEmbedding<VERTEX>(d) ;
+//            std::cerr << "(const) VertexAttributeAccessorCPHMap : nbSteps = " << nbSteps << std::endl;
+//            if(index == EMBNULL)
+//            {
+//                assert(false); // this should stop the program.
+//                index = Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(*map, d) ;
+//                map->m_nextLevelCell->operator[](index) = EMBNULL ;
+//            }
 
-            unsigned int step = 0 ;
-            while(step < nbSteps)
-            {
-                step++ ;
-                unsigned int nextIdx = map->m_nextLevelCell->operator[](index) ;
-                if(nextIdx != EMBNULL) index = nextIdx ;
-                else break ;
-            }
 
+//            unsigned int step = 0 ;
+//            while(step < nbSteps)
+//            {
+//                step++ ;
+//                const unsigned int nextIdx = map->m_nextLevelCell->operator[](index) ;
+//                if(nextIdx != EMBNULL)
+//                {
+//                    index = nextIdx ;
+//                } else
+//                {
+////                    break;
+//                    assert(false);
+//                }
+//            }
             return attrib->operator[](index);
         }
 
@@ -118,13 +133,10 @@ public:
         static inline T& at( MAP* map, AttributeMultiVector<T>* attrib, Cell<ORBIT> c)
         {
             unsigned int a = map->getEmbedding(c) ;
-            assert( a!= EMBNULL);
             if (a == EMBNULL)
             {
                 // setOrbitEmbeddingOnNewCell adapted to CPHMap
-//                a = Algo::Topo::setOrbitEmbeddingOnNewCell<ORBIT,MAP>(*map, c) ;
-                a = map->template newCell<ORBIT>();
-                map->template foreach_dart_of_orbit<ORBIT>(c, (boost::lambda::if_then( bl::bind(&MAP::getDartLevel, boost::cref(*map), c.dart) == map->getCurrentLevel(), bl::bind(&MAP::template setDartEmbedding<ORBIT>, boost::ref(*map), bl::_1, boost::cref(a) )))) ;
+                a = Algo::Topo::setOrbitEmbeddingOnNewCell<ORBIT,MAP>(*map, c) ;
             }
 
             return attrib->operator[](a);
@@ -146,6 +158,7 @@ public:
     };
 
 
+
 //    typedef AttributeHandler< T, ORBIT, MAP , AttributeAccessorDefault< T, ORBIT, MAP  > >    HandlerFinestResolution;
 //    typedef AttributeHandler< T, ORBIT, MAP , NonVertexAttributeAccessorCPHMap< T, ORBIT> >  Handler;
 
@@ -156,17 +169,17 @@ public:
 	FunctorType* faceVertexFunctor ;
 	FunctorType* volumeVertexFunctor ;
 
-    unsigned int m_curLevel ;
-    unsigned int m_maxLevel ;
-    unsigned int m_edgeIdCount ;
-    unsigned int m_faceIdCount;
+//    unsigned int m_curLevel ;
+//    unsigned int m_maxLevel ;
+//    unsigned int m_edgeIdCount ;
+//    unsigned int m_faceIdCount;
 
-    AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >  m_dartLevel ;
-    AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >  m_edgeId ;
-    AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >  m_faceId ;
-private:
-    typedef AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >::HandlerAccessorPolicy HandlerAccessorPolicy;
-    AttributeMultiVector<unsigned int>* m_nextLevelCell;
+//    AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >  m_dartLevel ;
+//    AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >  m_edgeId ;
+//    AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >  m_faceId ;
+//private:
+//    typedef AttributeHandler< unsigned, DART, MAP , AttributeAccessorDefault< unsigned, DART, MAP  > >::HandlerAccessorPolicy HandlerAccessorPolicy;
+//    AttributeMultiVector<unsigned int>* m_nextLevelCell;
 
 //    std::vector<Algo::MR::Filter*> synthesisFilters ;
 //    std::vector<Algo::MR::Filter*> analysisFilters ;
@@ -182,13 +195,12 @@ public:
     /*!
      *
      */
-    void update_topo_shortcuts();
+//    void update_topo_shortcuts();
 
     //!
     /*!
      *
      */
-    void initImplicitProperties() ;
 
     /**
      * clear the map
@@ -221,30 +233,8 @@ public:
      *************************************************************************/
 
     //@{
-    virtual Dart newDart() {
-        const Dart d = IMPL::newDart();
-        m_dartLevel[d] = m_curLevel ;
-        m_maxLevel = std::max(m_curLevel, m_maxLevel);
-        return d ;
-    }
 
-    Dart begin() const
-    {
-        Dart d = Dart::create(m_attribs[DART].begin()) ;
-        while(m_dartLevel[d] > m_curLevel)
-        {
-            m_attribs[DART].next(d.index) ;
-        }
-        return d ;
-    }
 
-    void next(Dart &d) const
-    {
-        do
-        {
-            m_attribs[DART].next(d.index) ;
-        } while(d != this->end() && m_dartLevel[d] > m_curLevel) ;
-    }
 
 private:
     inline Dart phi1MaxLvl(Dart d) const
@@ -265,45 +255,78 @@ private:
     }
     inline Dart alpha0MaxLvl(Dart d) const
     {
-        return Parent::alpha0(d);
+        return phi3MaxLvl(d) ;
     }
     inline Dart alpha1MaxLvl(Dart d) const
     {
-        return Parent::alpha1(d);
+        return phi3MaxLvl(this->phi_1MaxLvl(d)) ;
     }
     inline Dart alpha2MaxLvl(Dart d) const
     {
-        return Parent::alpha2(d);
+        return phi3MaxLvl(this->phi2MaxLvl(d));
     }
     inline  Dart alpha_2MaxLvl(Dart d) const
     {
-        return Parent::alpha_2(d);
+        return this->phi2MaxLvl(phi3MaxLvl(d));
     }
 
-    inline Dart beginMaxLvl() const
-    {
-        return Dart::create(m_attribs[DART].begin()) ;
-    }
-    inline Dart endMaxLvl() const
-    {
-        return this->end();
-    }
-    inline void nextMaxLvl(Dart& d) const
-    {
-        m_attribs[DART].next(d.index) ;
-    }
+
 
     Dart phi2bis(Dart d) const;
 
+
+    AttributeHandler< unsigned, VOLUME, MAP, NonVertexAttributeAccessorCPHMap< unsigned, VOLUME > > a_volumeLevel;
+    AttributeHandler< unsigned, FACE, MAP, NonVertexAttributeAccessorCPHMap< unsigned, FACE > > a_faceLevel;
+
 public:
-    Dart phi1(Dart d) const;
-    Dart phi_1(Dart d) const;
-    Dart phi2(Dart d) const;
-    Dart phi3(Dart d) const;
-    Dart alpha0(Dart d) const;
-    Dart alpha1(Dart d) const;
-    Dart alpha2(Dart d) const;
-    Dart alpha_2(Dart d) const;
+//    void clear(bool removeAttrib);
+    inline void setFaceLevel(FaceCell f, unsigned int lvl)
+    {
+        assert(lvl <= this->getCurrentLevel());
+        a_faceLevel[f] = lvl;
+    }
+
+    inline void setVolumeLevel(VolumeCell w, unsigned int lvl)
+    {
+        assert(lvl <= this->getCurrentLevel());
+        a_volumeLevel[w] = lvl;
+    }
+
+
+    template< unsigned int ORBIT >
+    inline unsigned int getCellLevel(Cell< ORBIT > c) const
+    {
+        if (ORBIT == DART || ORBIT == VERTEX)
+        {
+            return this->getDartLevel(c.dart);
+        }
+        if (ORBIT == EDGE)
+        {
+            return this->edgeLevel(c.dart);
+        }
+        if (ORBIT == FACE)
+        {
+            return this->faceLevel(c.dart);
+        }
+        if (ORBIT == VOLUME)
+        {
+            return this->volumeLevel(c.dart);
+        }
+
+        return std::numeric_limits<unsigned int>::max();
+    }
+
+    template <int N>
+    inline Dart phi(Dart d) const;
+
+    inline Dart phi1(Dart d) const;
+    inline Dart phi_1(Dart d) const;
+    inline Dart phi2(Dart d) const;
+    inline Dart phi3(Dart d) const;
+    inline Dart alpha0(Dart d) const;
+    inline Dart alpha1(Dart d) const;
+    inline Dart alpha2(Dart d) const;
+    inline Dart alpha_2(Dart d) const;
     //@}
 
 	/*! @name Topological Operators with Cells id management
@@ -362,83 +385,19 @@ public:
 	 *  Operations to manage the levels of an Implicit Hierarchical 3-map
 	 *************************************************************************/
 
-    void incCurrentLevel();
-
-    void decCurrentLevel();
-
-
-    //@{
-    //!
-    /*!
-     *
-     */
-    unsigned int getCurrentLevel() const ;
-
-    //!
-    /*!
-     *
-     */
-    void setCurrentLevel(unsigned int l) ;
-
-    //!
-    /*!
-     *
-     */
-    unsigned int getMaxLevel() const ;
-
-    //!
-    /*!
-     *
-     */
-    unsigned int getDartLevel(Dart d) const ;
-
-    //!
-    /*!
-     *
-     */
-    void setDartLevel(Dart d, unsigned int i) ;
-	//@}
-
-	/*! @name Id Management
-	 * Operations to manage the ids of edges and faces
-	 *************************************************************************/
-
-	//@{
-    //! Give a new unique id to all the edges of the map
-    /*!
-     */
-    void initEdgeId() ;
-
-    //! Return the next available edge id
-    /*!
-     */
-    unsigned int getNewEdgeId() ;
-
-    //! Return the id of the edge of d
-    /*!
-     */
-    unsigned int getEdgeId(Dart d) ;
 
     //! Set an edge id to all darts from an orbit of d
     /*!
      */
     void setEdgeId(Dart d, unsigned int i, unsigned int orbit); //TODO a virer
-    void setEdgeId(Dart d, unsigned int i);
+
 
     //! Give a new unique id to all the faces of the map
     /*!
      */
-    void initFaceId() ;
+    virtual void initFaceId() ;
+    virtual void initEdgeId() ;
 
-    //! Return the next available face id
-    /*!
-     */
-    unsigned int getNewFaceId() ;
-
-    //! Return the id of the face of d
-    /*!
-     */
-    unsigned int getFaceId(Dart d) ;
 
     //! Set a face id to all darts from an orbit of d
     /*!
@@ -460,17 +419,17 @@ public:
 	//! Return the level of the edge of d in the current level map
 	/*!
 	 */
-	unsigned int edgeLevel(Dart d) ;
+    unsigned int edgeLevel(Dart d) const ;
 
 	//! Return the level of the face of d in the current level map
 	/*!
 	 */
-	unsigned int faceLevel(Dart d);
+    unsigned int faceLevel(Dart d) const;
 
 	//! Return the level of the volume of d in the current level map
 	/*!
 	 */
-    unsigned int volumeLevel(Dart d);
+    unsigned int volumeLevel(Dart d) const;
 
 
     Dart edgeNewestDart(Dart d) const;
@@ -549,7 +508,7 @@ public:
     virtual Dart cutEdge(Dart d);
 
 	template <unsigned int ORBIT, typename FUNC>
-	void foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f) const ;
+    void foreach_dart_of_orbit(Cell<ORBIT> c, const FUNC& f) const ;
 //	template <unsigned int ORBIT, typename FUNC>
 //	void foreach_dart_of_orbit(Cell<ORBIT> c, FUNC& f) const ;
 
@@ -591,7 +550,161 @@ public:
 	//@}
 
     template <unsigned int ORBIT>
-    unsigned int getEmbedding(Cell<ORBIT> c) const;
+    unsigned int getEmbedding(Cell<ORBIT> c) const ;
+
+    template<unsigned int ORB>
+    void printEmbedding() {
+        const unsigned int oldLvl = this->getCurrentLevel();
+        for (unsigned lvl = 0u ; lvl <= this->getMaxLevel() ; ++lvl)
+        {
+            this->setCurrentLevel(lvl);
+            std::cerr << "***** LEVEL " << lvl <<  " *****" << std::endl;
+            std::cerr << "***** printing "<< ORB << " embeddings ***** " << std::endl;
+            TraversorCell<MAP, ORB, FORCE_DART_MARKING> trav(*this);
+            unsigned i = 0u ;
+            for (Dart d = trav.begin() ; d != trav.end() ; ++i, d = trav.next()) {
+                std::cerr << "embedding number " << i << " of dart " << d  <<  " : " << getEmbedding<ORB>(d) << std::endl;
+            }
+            std::cerr << "**** end embedding *****" << std::endl;
+        }
+        this->setCurrentLevel(oldLvl);
+    }
+
+
+    template <unsigned int ORBIT>
+    void setDartEmbedding(Dart d, unsigned int emb)
+    {
+        assert(this->template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+        if (getDartLevel(d) != getCurrentLevel())
+        {
+            return;
+        }
+        const unsigned int old = ParentMap::template getEmbedding<ORBIT>(d);
+    //    std::cerr << "get embedding of " << d << " (orbit " << ORBIT << ") = " << old << std::endl;
+
+        if (old == emb)	// if same emb
+            return;		// nothing to do
+
+        if (old != EMBNULL)	// if different
+        {
+            this->m_attribs[ORBIT].unrefLine(old);	// then unref the old emb
+        }
+
+        if (emb != EMBNULL)
+            this->m_attribs[ORBIT].refLine(emb);	// ref the new emb
+        (*this->m_embeddings[ORBIT])[this->dartIndex(d)] = emb ; // finally affect the embedding to the dart
+    }
+
+    template <unsigned int ORBIT>
+    void unsetDartEmbedding(Dart d)
+    {
+        assert(this->template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+        if (getDartLevel(d) != getCurrentLevel())
+        {
+            return;
+        }
+        const unsigned int old = ParentMap::template getEmbedding<ORBIT>(d);
+        if (old != EMBNULL) {
+            (*this->m_embeddings[ORBIT])[this->dartIndex(d)] = EMBNULL;
+            this->m_attribs[ORBIT].unrefLine(old);
+        }
+    }
+
+    template <unsigned int ORBIT>
+    void initDartEmbedding(Dart d, unsigned int emb)
+    {
+        assert(this->template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+        assert(ParentMap::template getEmbedding<ORBIT>(d) == EMBNULL || !"initDartEmbedding called on already embedded dart");
+        if (getDartLevel(d) != getCurrentLevel())
+        {
+            return;
+        }
+        if(emb != EMBNULL)
+            this->m_attribs[ORBIT].refLine(emb);	// ref the new emb
+        (*this->m_embeddings[ORBIT])[this->dartIndex(d)] = emb ; // affect the embedding to the dart
+    }
+
+    template <unsigned int ORBIT>
+    inline void copyDartEmbedding(Dart dest, Dart src)
+    {
+        assert(this->template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+
+        setDartEmbedding<ORBIT>(dest, ParentMap::template getEmbedding<ORBIT>(src));
+    }
+
+
+
+    inline void checkEdgeAndFaceIDAttributes()
+    {
+        const unsigned int curr = this->getCurrentLevel();
+
+        {
+            std::set< unsigned > edgesIDs;
+            std::set< unsigned > faceIDs;
+            this->setCurrentLevel(0u);
+            CGoGN::TraversorCell< MAP, EDGE, FORCE_DART_MARKING > traE(*this, true);
+            for (Edge e = traE.begin() ; e != traE.end() ; e = traE.next())
+            {
+                const unsigned eid = this->getEdgeId(e);
+                if (edgesIDs.find(eid) != edgesIDs.end())
+                {
+                    std::cerr << "the edges " << e << " has an already used ID : " << eid << std::endl;
+                    assert(!"Two edges with the same ID !");
+                }
+                TraversorDartsOfOrbit< MAP, EDGE> traDoo(*this, e);
+                for (Dart dit = traDoo.begin() ; dit != traDoo.end() ; dit = traDoo.next())
+                {
+                    assert(this->getEdgeId(dit) == eid);
+                }
+                edgesIDs.insert(this->getEdgeId(e));
+            }
+
+            CGoGN::TraversorCell< MAP, FACE, FORCE_DART_MARKING > traF(*this, true);
+            for (Face f = traF.begin() ; f != traF.end() ; f = traF.next())
+            {
+                const unsigned fid = this->getFaceId(f);
+                if (faceIDs.find(fid) != faceIDs.end())
+                {
+                    assert(!"Two faces with the same ID !");
+                }
+                TraversorDartsOfOrbit< MAP, FACE> traDoo(*this, f);
+                for (Dart dit = traDoo.begin() ; dit != traDoo.end() ; dit = traDoo.next())
+                {
+                    assert((this->getFaceId(dit) == fid) || !"Some darts of the face have not the correct ID.");
+                }
+                faceIDs.insert(this->getFaceId(f));
+            }
+        }
+
+        for (unsigned int lvl = 1u; lvl <= getMaxLevel(); ++lvl)
+        {
+            this->setCurrentLevel(lvl);
+            CGoGN::TraversorCell< MAP, EDGE, FORCE_DART_MARKING > traE(*this, true);
+            for (Edge e = traE.begin() ; e != traE.end() ; e = traE.next())
+            {
+
+                const unsigned eid = this->getEdgeId(e);
+                TraversorDartsOfOrbit< MAP, EDGE> traDoo(*this, e);
+                for (Dart dit = traDoo.begin() ; dit != traDoo.end() ; dit = traDoo.next())
+                {
+                    assert(this->getEdgeId(dit) == eid);
+                }
+
+            }
+            CGoGN::TraversorCell< MAP, FACE, FORCE_DART_MARKING > traF(*this, true);
+            for (Face f = traF.begin() ; f != traF.end() ; f = traF.next())
+            {
+
+                const unsigned fid = this->getFaceId(f);
+                TraversorDartsOfOrbit< MAP, FACE> traDoo(*this, f);
+                for (Dart dit = traDoo.begin() ; dit != traDoo.end() ; dit = traDoo.next())
+                {
+                    assert((this->getFaceId(dit) == fid) || !"Some darts of the face have not the correct ID.");
+                }
+            }
+        }
+        this->setCurrentLevel(curr);
+    }
 } ;
 } // namespace IHM
 } // namespace Volume
@@ -604,6 +717,7 @@ class AttributeHandler_Traits< T, ORBIT, Algo::Volume::IHM::ImplicitHierarchical
 public:
     typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 Map;
     typedef AttributeHandler< T, ORBIT, Map, AttributeAccessorDefault< T, ORBIT, Map > >  HandlerFinestResolution;
+//    typedef HandlerFinestResolution Handler;
     typedef AttributeHandler< T, ORBIT, Map, Map::NonVertexAttributeAccessorCPHMap< T, ORBIT > >          Handler;
 };
 
@@ -611,11 +725,98 @@ template<class T>
 class AttributeHandler_Traits< T, VERTEX, Algo::Volume::IHM::ImplicitHierarchicalMap3 > {
 public:
     typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 Map;
-    typedef AttributeHandler< T, VERTEX, Map, AttributeAccessorDefault< T, VERTEX, Map > >  HandlerFinestResolution;
+    typedef AttributeHandler< T, VERTEX, Map, AttributeAccessorDefault< T, VERTEX, Map > >      HandlerFinestResolution;
+//    typedef HandlerFinestResolution Handler;
     typedef AttributeHandler< T, VERTEX, Map, Map::VertexAttributeAccessorCPHMap< T > >          Handler;
+//    typedef Handler  HandlerFinestResolution;
 };
 
+//namespace Algo {
+//namespace Topo {
+//template < unsigned int ORBIT >
+//inline void setOrbitEmbedding(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> c, unsigned int em)
+//{
+//    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
+//    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+//    const unsigned int LVL = m.getCurrentLevel();
+//    if (ORBIT == VERTEX)
+//    {
+//        m.template foreach_dart_of_orbit<ORBIT>(c, (bl::bind(&MAP::template setDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) ))) ;
+//    }
+//    else
+//    {
+//        if (ORBIT == VOLUME && LVL == 0)
+//        {
+//            std::cerr << "m.template foreach_dart_of_orbit<" << orbitName(ORBIT) << ">of " << c << " which is lvl" << LVL << std::endl;
+//        }
+////        std::cerr << "m.template foreach_dart_of_orbit<" << orbitName(ORBIT) << ">of " << c << " which is lvl" << LVL << std::endl;
+//        m.template foreach_dart_of_orbit<ORBIT>(c, (boost::lambda::if_then( bl::bind(&MAP::getDartLevel, boost::cref(m), bl::_1) == LVL, (bl::bind(&MAP::template setDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) )/*, std::cerr << bl::_1 << " (lvl " << bl::bind(&MAP::getDartLevel, boost::cref(m), bl::_1) <<") "*/  )  ))) ;
+//        std::cerr << std::endl;
+//    }
 
+////        std::cerr << "IHM3::setOrbitEmbedding called on the  " << ORBIT << "-cell " << c << ". em = " << em << std::endl;
+//    if (ORBIT == VOLUME && LVL == 0)
+//    {
+//        std::cerr << "IHM3::EndsetOrbitEmbedding" << std::endl;
+//    }
+//}
+
+//template < unsigned int ORBIT >
+//inline void initOrbitEmbedding(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> c, unsigned int em)
+//{
+//    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
+//    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+//    const unsigned int LVL = m.getCurrentLevel();
+//    if (ORBIT == VERTEX)
+//    {
+//        m.template foreach_dart_of_orbit<ORBIT>(c, (bl::bind(&MAP::template initDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) ))) ;
+//    }
+//    else
+//    {
+////        const unsigned int LVL = m.getDartLevel(c);
+//        m.template foreach_dart_of_orbit<ORBIT>(c, (boost::lambda::if_then( bl::bind(&MAP::getDartLevel, boost::cref(m), bl::_1) == LVL, bl::bind(&MAP::template initDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) )))) ;
+//    }
+//}
+
+//template < unsigned int ORBIT >
+//inline void unsetOrbitEmbedding(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> c)
+//{
+//    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
+//    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+//    const unsigned int LVL = m.getCurrentLevel();
+//    if (ORBIT == VERTEX)
+//    {
+//        m.template foreach_dart_of_orbit<ORBIT>(c, (bl::bind(&MAP::template unsetDartEmbedding<ORBIT>, boost::ref(m), bl::_1 ))) ;
+//    }
+//    else
+//    {
+////        const unsigned int LVL = m.getDartLevel(c);
+//        m.template foreach_dart_of_orbit<ORBIT>(c, (boost::lambda::if_then( bl::bind(&MAP::getDartLevel, boost::cref(m), bl::_1) == LVL, bl::bind(&MAP::template unsetDartEmbedding<ORBIT>, boost::ref(m), bl::_1 )))) ;
+//    }
+//}
+
+//template < unsigned int ORBIT >
+//inline unsigned int setOrbitEmbeddingOnNewCell<ORBIT, Algo::Volume::IHM::ImplicitHierarchicalMap3>(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> c)
+//{
+//    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
+//    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+//    unsigned int em = m.template newCell<ORBIT>();
+//    setOrbitEmbedding<ORBIT, MAP>(m, c, em);
+//    return em;
+//}
+
+//template < unsigned int ORBIT >
+//inline unsigned int initOrbitEmbeddingOnNewCell(Algo::Volume::IHM::ImplicitHierarchicalMap3& m, Cell<ORBIT> d)
+//{
+//    typedef Algo::Volume::IHM::ImplicitHierarchicalMap3 MAP;
+//    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+//    unsigned int em = m.template newCell<ORBIT>();
+//    initOrbitEmbedding<ORBIT>(m, d, em);
+//    return em;
+//}
+
+//} // namespace Topo
+//} // namespace Algo
 
 //template <typename T, unsigned int ORBIT>
 //class AttributeHandler< T, ORBIT, Algo::Volume::IHM::ImplicitHierarchicalMap3 > : public AttributeHandlerGen

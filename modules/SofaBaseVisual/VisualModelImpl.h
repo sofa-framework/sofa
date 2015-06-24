@@ -114,7 +114,7 @@ public:
         normals.resize(vsize);
     }
 
-    virtual int getSize() const { return m_positions.getValue().size(); }
+    virtual int getSize() const { return (int)m_positions.getValue().size(); }
 
     //State API
     virtual       Data<VecCoord>* write(     core::VecCoordId  v )

@@ -148,35 +148,6 @@ protected:
         cleanDirty();
     }
 
-    template<class t>
-    void createInputDataVector(unsigned int nb, helper::vector< Data<t>* >& vf, std::string name, std::string help)
-    {
-        vf.reserve(nb);
-        for (unsigned int i=vf.size(); i<nb; i++)
-        {
-            std::ostringstream oname; oname << name << (1+i); std::string name_i = oname.str();
-
-            Data<t>* d = new Data<t>();
-            d->setName(name_i);
-            d->setHelp(help.c_str());
-            d->setReadOnly(true);
-
-            vf.push_back(d);
-            this->addData(d);
-            this->addInput(d);
-        }
-    }
-    template<class t>
-    void deleteInputDataVector(helper::vector< Data<t>* >& vf)
-    {
-        for (unsigned int i=0; i<vf.size(); ++i)
-        {
-            this->delInput(vf[i]);
-            delete vf[i];
-        }
-        vf.clear();
-    }
-
 };
 
 

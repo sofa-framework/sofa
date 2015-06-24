@@ -87,7 +87,7 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 
         if( !notempty((*js)[i]) )
         {
-            std::cerr<<"ERROR: AssemblyVisitor: empty mapping block for " + mapping_name(node) + " (is mapping matrix assembled?)"<<std::endl;
+            std::cerr<<"ERROR: AssemblyVisitor: empty mapping block for " + mapping_name(node) + " (is mapping matrix "<<i<<" assembled?)"<<std::endl;
             continue;
         }
 
@@ -327,9 +327,13 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 	c.H = odeMatrix( node );
 //    cerr << "AssemblyVisitor::fill_prefix, c.H = " << endl << dmat(c.H) << endl;
 
-	if( !zero(c.H) ) {
-		c.mechanical = true;
-	}
+    if( node->forceField.size() || node->interactionForceField.size() || node->mass.size() ) {
+        c.mechanical = true;
+    }
+    
+	// if( !zero(c.H) ) {
+	// 	c.mechanical = true;
+	// }
 
 
     // if the visitor is excecuted from a mapped node, do not look at its mapping

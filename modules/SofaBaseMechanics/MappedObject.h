@@ -86,7 +86,7 @@ public:
 
     int getSize() const
     {
-        return f_X.getValue().size();
+        return (int)f_X.getValue().size();
     }
 
     Data< VecCoord >* write(core::VecCoordId v)

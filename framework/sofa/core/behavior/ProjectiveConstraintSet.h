@@ -186,7 +186,7 @@ protected:
     SingleLink<ProjectiveConstraintSet<DataTypes>,MechanicalState<DataTypes>,BaseLink::FLAG_STRONGLINK> mstate;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CORE)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_PROJECTIVECONSTRAINTSET_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec3dTypes >;
 extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec2dTypes >;

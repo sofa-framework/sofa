@@ -32,9 +32,10 @@ set(SOURCE_FILES
     ImageAccumulator.cpp
     DepthMapToMeshEngine.cpp
     MeshToImageEngine.cpp
-    MarchingCubesEngine.cpp
-    ImageSampler.cpp
-    ImageExporter.cpp
+    MarchingCubesEngine.cpp 
+    CollisionToCarvingEngine.cpp
+    ImageSampler.cpp 
+    ImageExporter.cpp 
     ImageDataDisplay.cpp
     VoronoiToMeshEngine.cpp
     ImageToRigidMassEngine.cpp)
@@ -54,6 +55,7 @@ set(HEADER_FILES
     DepthMapToMeshEngine.h
     MeshToImageEngine.h
     MarchingCubesEngine.h
+    CollisionToCarvingEngine.h
     ImageSampler.h
     ImageExporter.h
     VectorVis.h

@@ -525,6 +525,8 @@ public:
     Data< int > drawMode;
     Data< bool > showEdges;
     Data< bool > showGraph;
+	Data< bool > showFaces;
+
     /**@}*/
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
@@ -547,6 +549,7 @@ public:
         , drawMode(initData(&drawMode,0,"drawMode","0: points, 1: spheres"))
         , showEdges(initData(&showEdges,false,"showEdges","show edges"))
         , showGraph(initData(&showGraph,false,"showGraph","show graph"))
+        , showFaces(initData(&showFaces,false,"showFaces","show the faces of cubes"))
         , time((unsigned int)0)
     {
         image.setReadOnly(true);
@@ -623,10 +626,10 @@ protected:
 
         if(this->f_printLog.getValue())
         {
-            if(this->position.getValue().size())    std::cout<<"ImageSampler: "<< this->position.getValue().size() <<" generated samples"<<std::endl;
-            if(this->edges.getValue().size())       std::cout<<"ImageSampler: "<< this->edges.getValue().size() <<" generated edges"<<std::endl;
-            if(this->hexahedra.getValue().size())   std::cout<<"ImageSampler: "<< this->hexahedra.getValue().size() <<" generated hexahedra"<<std::endl;
-            if(this->graphEdges.getValue().size())       std::cout<<"ImageSampler: "<< this->graphEdges.getValue().size() <<" generated dependencies"<<std::endl;
+            if(this->position.getValue().size())    sout<< this->position.getValue().size() <<" generated samples"<<sendl;
+            if(this->edges.getValue().size())       sout<< this->edges.getValue().size() <<" generated edges"<<sendl;
+            if(this->hexahedra.getValue().size())   sout<< this->hexahedra.getValue().size() <<" generated hexahedra"<<sendl;
+            if(this->graphEdges.getValue().size())  sout<< this->graphEdges.getValue().size() <<" generated dependencies"<<sendl;
         }
     }
 
@@ -677,7 +680,7 @@ protected:
             }
         }
 
-
+		
         if (this->showEdges.getValue())
         {
             std::vector<defaulttype::Vector3> points;
@@ -687,7 +690,8 @@ protected:
                 points[2*i][0]=pos[e[i][0]][0];            points[2*i][1]=pos[e[i][0]][1];            points[2*i][2]=pos[e[i][0]][2];
                 points[2*i+1][0]=pos[e[i][1]][0];          points[2*i+1][1]=pos[e[i][1]][1];          points[2*i+1][2]=pos[e[i][1]][2];
             }
-            vparams->drawTool()->drawLines(points,2.0,defaulttype::Vec4f(0.7,1,0.7,1));
+            vparams->drawTool()->drawLines(points,2.0,defaulttype::Vec4f(0.7,0,0.7,1));
+			//vparams->drawTool()->drawTriangles(points, defaulttype::Vec4f(0.7,0,0.7,1));
         }
         if (this->showGraph.getValue())
         {
@@ -702,6 +706,61 @@ protected:
                 }
             vparams->drawTool()->drawLines(points,2.0,defaulttype::Vec4f(1,1,0.5,1));
         }
+
+		if(this->showFaces.getValue())
+		{
+			//Tableau des points du cube
+			std::vector<defaulttype::Vector3> points;
+			points.resize(36);
+			
+			//Tableau des normales de ces faces
+            std::vector<defaulttype::Vector3> normales;
+
+			//Tableau des couleurs des faces
+            std::vector<defaulttype::Vector4> couleurs;
+
+			int tmp[] = {0,1,2, 0,2,3, 0,1,5, 0,5,4, 1,2,6, 1,6,5, 3,2,6, 3,6,7, 0,3,7, 0,7,4, 7,4,5, 7,5,6};
+			int ns1, ns2, ns3;
+            defaulttype::Vector3 s1, s2, s3;
+			for(int iH=0;iH<this->hexahedra.getValue().size(); iH++)
+			{
+				sofa::core::topology::Topology::Hexahedron currentCube = hexahedra.getValue().at(iH);
+
+				for(int i=0;i<12; i++)
+				{
+					//Numéro du sommet 1
+					ns1 = currentCube.at(tmp[i*3+0]);
+					//Numéro du sommet 2
+					ns2 = currentCube.at(tmp[i*3+1]);
+					//Numéro du sommet 3
+					ns3 = currentCube.at(tmp[i*3+2]);
+
+
+					s1 = pos[ns1];
+					s2 = pos[ns2];
+					s3 = pos[ns3];
+
+					//Construction des points du cube
+					points.push_back(s1);
+					points.push_back(s2);
+					points.push_back(s3);
+
+					//Calcul de la normale de la surface
+                    defaulttype::Vector3 ab = s2 - s1;
+                    defaulttype::Vector3 ac = s3 - s1;
+                    defaulttype::Vector3 normal = ab.cross(ac);
+					normal.normalize();
+					normales.push_back(normal);		
+
+					//Calcul de la couleur de la face
+					couleurs.push_back(defaulttype::Vec4f(0.7,0,0.7,1));
+
+
+				}
+				
+			}
+			vparams->drawTool()->drawTriangles(points,defaulttype::Vec4f(1,1,1,1));
+		}
 
 #endif /* SOFA_NO_OPENGL */
     }

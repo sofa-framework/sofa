@@ -108,6 +108,8 @@ protected:
           matrixJ(),
           updateJ(false)
     {
+        js.resize( 1 );
+        js[0] = &eigen;
     }
 
     virtual ~IdentityMapping()
@@ -138,7 +140,7 @@ protected:
     std::auto_ptr<MatrixType> matrixJ;
     bool updateJ;
 
-#ifdef SOFA_HAVE_EIGEN2
+
 protected:
     typedef linearsolver::EigenSparseMatrix<TIn, TOut> eigen_type;
     eigen_type eigen;
@@ -148,8 +150,6 @@ protected:
 
 public:
     const js_type* getJs();
-
-#endif
 
 };
 

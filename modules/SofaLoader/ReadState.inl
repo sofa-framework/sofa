@@ -178,7 +178,7 @@ bool ReadState::readNext(double time, std::vector<std::string>& validLines)
             buf[0] = '\0';
             while (gzgets(gzfile,buf,sizeof(buf))!=NULL && buf[0])
             {
-                int l = strlen(buf);
+                size_t l = strlen(buf);
                 if (buf[l-1] == '\n')
                 {
                     buf[l-1] = '\0';

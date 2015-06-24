@@ -170,7 +170,7 @@ protected:
     BaseMechanicalState         *simulatedObject2;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CORE)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_LMCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3dTypes,defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API LMConstraint<defaulttype::Vec3dTypes,defaulttype::Vec2dTypes>;

@@ -115,7 +115,7 @@ public:
     virtual GLfloat* getProjectionMatrix() { return NULL ;}
     virtual GLfloat* getModelviewMatrix() { return NULL ;}
     virtual const sofa::defaulttype::Vector3 getPosition() { return sofa::defaulttype::Vector3(0.0,0.0,0.0); }
-    virtual const unsigned short getShadowTextureUnit() { return d_textureUnit.getValue(); }
+    virtual unsigned short getShadowTextureUnit() { return d_textureUnit.getValue(); }
     virtual void setShadowTextureUnit(const unsigned short unit) { d_textureUnit.setValue(unit); }
 
 protected:

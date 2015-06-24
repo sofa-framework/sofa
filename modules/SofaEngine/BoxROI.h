@@ -174,12 +174,12 @@ public:
 #ifndef SOFA_FLOAT
 extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec3dTypes>;
 extern template class SOFA_ENGINE_API BoxROI<defaulttype::Rigid3dTypes>;
-extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec6dTypes>; //Phuoc
+extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec6dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec3fTypes>;
 extern template class SOFA_ENGINE_API BoxROI<defaulttype::Rigid3fTypes>;
-extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec6fTypes>; //Phuoc
+extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec6fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

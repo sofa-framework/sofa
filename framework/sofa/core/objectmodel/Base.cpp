@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
+#include <sofa/helper/system/console.h>
 #include <map>
 #include <typeinfo>
 
@@ -248,48 +249,15 @@ void Base::setName(const std::string& n, int counter)
 
 void Base::processStream(std::ostream& out)
 {
-#ifdef WIN32
-
-#define BLUE 9
-#define GREEN 10
-#define CYAN 11
-#define RED 12
-#define PURPLE 13
-#define YELLOW 14
-#define WHITE 15
-
-    HANDLE console;
-    console = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_SCREEN_BUFFER_INFO _currentInfo;
-    GetConsoleScreenBufferInfo(console, &_currentInfo);
-#else
-
-#define BLUE "\033[1;34m "
-#define GREEN "\033[1;32m "
-#define CYAN "\033[1;36m "
-#define RED "\033[1;31m "
-#define PURPLE "\033[1;35m "
-#define YELLOW "\033[1;33m "
-#define WHITE "\033[1;37m "
-#define ENDL " \033[0m"
-
-#endif
-
     if (&out == &serr)
     {
         serr << "\n";
         std::string str = serr.str();
-        //if (f_printLog.getValue())
-#ifdef WIN32
-        SetConsoleTextAttribute(console, RED);
-        std::cerr<< " [WARN] ";
-        SetConsoleTextAttribute(console, _currentInfo.wAttributes);
-#else
-        std::cerr<< RED <<"[WARN]" << ENDL;
-#endif
-        std::cerr<< "[" << getName() << "(" << getClassName() << ")]: ";
-//        SetConsoleTextAttribute(console, _currentInfo.wAttributes);
+
+        helper::Console::warningPrefix();
+        std::cerr << helper::Console::YELLOW << "[" << getName() << "(" << getClassName() << ")]: " << helper::Console::DEFAULT_COLOR;
         std::cerr << str;
+
         if (warnings.size()+str.size() >= MAXLOGSIZE)
         {
             std::cerr<< "LOG OVERFLOW[" << getName() << "(" << getClassName() << ")]: resetting serr buffer." << std::endl;
@@ -301,19 +269,13 @@ void Base::processStream(std::ostream& out)
     }
     else if (&out == &sout)
     {
-
         sout << "\n";
         std::string str = sout.str();
         if (f_printLog.getValue())
         {
-#ifdef WIN32
-            SetConsoleTextAttribute(console, GREEN);
-            std::cout<<" [INFO] ";
-            SetConsoleTextAttribute(console, _currentInfo.wAttributes);
-#else
-            std::cout<<GREEN<<"[INFO]"<< ENDL;
-#endif
-            std::cout<< "[" << getName() << "(" << getClassName() << ")]: "<< str << std::flush;
+            helper::Console::infoPrefix();            
+            std::cout << helper::Console::YELLOW << "[" << getName() << "(" << getClassName() << ")]: " << helper::Console::DEFAULT_COLOR;
+            std::cout << str << std::flush;
         }
         if (outputs.size()+str.size() >= MAXLOGSIZE)
         {

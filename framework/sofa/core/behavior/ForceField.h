@@ -229,7 +229,7 @@ protected:
     SingleLink<ForceField<DataTypes>,MechanicalState<DataTypes>,BaseLink::FLAG_STRONGLINK> mstate;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CORE)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_FORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API ForceField<defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API ForceField<defaulttype::Vec2dTypes>;

@@ -23,12 +23,16 @@ struct sub_kkt::traits< Eigen::SimplicialLDLT<Matrix, Eigen::Upper> > {
     static void factor(solver_type& solver, const rmat& matrix) {
         // ldlt expects a cmat so we transpose to ease the conversion
         solver.compute(matrix.triangularView<Eigen::Lower>().transpose());
+        if( solver.info() != Eigen::Success ) {
+            std::cerr << "error during LDLT factorization !" << std::endl;
+
+            std::cerr << matrix << std::endl;
+        }
     }
 
     static void solve(const solver_type& solver, vec& res, const vec& rhs) {
         res = solver.solve(rhs);
     }
-    
 
 };
 
@@ -67,26 +71,6 @@ void ModulusSolver::factor(const system_type& sys) {
     // build unilateral mask
     unilateral = vec::Zero(sys.n);
     
-    unsigned off = 0;
-    for(unsigned i = 0, n = sys.constraints.size(); i < n; ++i) {
-        const unsigned dim = sys.compliant[i]->getMatrixSize();
-
-        linearsolver::Constraint* projector = sys.constraints[i].projector.get();
-
-        if( projector ) {
-
-            const std::type_info& type = typeid(*projector);
-            
-            if( type == typeid(CoulombConstraint) ) {
-                unilateral( off ) = 1;
-            } else if ( type == typeid(UnilateralConstraint) ) {
-                unilateral.segment(off, dim).setOnes();
-            } 
-        }
-        
-        off += dim;
-    }
-
     // build system TODO hardcoded regularization
     sub.projected_kkt(sys, 1e-14, true);
     
@@ -94,28 +78,69 @@ void ModulusSolver::factor(const system_type& sys) {
 
     diagonal = vec::Zero(sys.n);
     
-    // change diagonal compliance for unilateral constraints
+    // change diagonal compliance 
     const real omega = this->omega.getValue();
+
+    // homogenize tangent diagonal values
+    unsigned off = 0;
+    
+    for(unsigned i = 0, n = sys.constraints.size(); i < n; ++i) {
+        const unsigned dim = sys.compliant[i]->getMatrixSize();
+
+        for(unsigned j = off, je = off + dim; j < je; ++j) {
+            diagonal(j) = sys.J.row(j).dot( Hdiag_inv.asDiagonal() * sys.J.row(j).transpose());
+        }
+
+        typedef linearsolver::CoulombConstraintBase proj_type;
+        proj_type* proj = dynamic_cast<proj_type*>(sys.constraints[i].projector.get());
+
+        if( proj ) {
+            assert( dim % 3 == 0 && "non vec3 dofs not handled");
+            for(unsigned j = 0, je = dim / 3; j < je; ++j) {
+                // set both tangent values to max tangent value
+                const unsigned t1 = off + 3 * j + 1;
+                const unsigned t2 = off + 3 * j + 2;
+                
+                const SReal value = std::max(diagonal(t1),
+                                             diagonal(t2));
+
+                diagonal(t1) = value;
+                diagonal(t2) = value;
+            }
+                    
+        }
+        
+        off += dim;
+    }
+    assert( off == sys.n );
+
+    // update system matrix with diagonal
     for(unsigned i = 0; i < sys.n; ++i) {
 
-        if( unilateral(i) ) {
-
-            diagonal(i) = sys.J.row(i).dot( Hdiag_inv.asDiagonal() * sys.J.row(i).transpose());
-            // diagonal(i) = 1;
-
-            sub.matrix.coeffRef(sub.primal.cols() + i,
-                                sub.primal.cols() + i) = -omega * diagonal(i);
-        }
+        sub.matrix.coeffRef(sub.primal.cols() + i,
+                            sub.primal.cols() + i) = -omega * diagonal(i);
     }
-
-    // std::cout << unilateral.transpose() << std::endl;
-    // std::cout << "Hinv " << Hdiag_inv.transpose() << std::endl;
-    // std::cout << "diagonal " << diagonal.transpose() << std::endl;
 
     // factor the modified kkt
     sub.factor( solver );
 }
 
+ 
+void ModulusSolver::project(vec::SegmentReturnType view, const system_type& sys, bool correct) const {
+    unsigned off = 0;
+    
+    for(unsigned i = 0, n = sys.constraints.size(); i < n; ++i) {
+        const unsigned dim = sys.compliant[i]->getMatrixSize();
+        
+        const linearsolver::Constraint* proj = sys.constraints[i].projector.get();
+        if( proj ) {
+            proj->project(&view[off], dim, 0, correct);
+        }
+        
+        off += dim;
+    }
+    assert( off == view.size() );
+}
 
 // good luck with that :p
 void ModulusSolver::solve(vec& res,
@@ -123,7 +148,7 @@ void ModulusSolver::solve(vec& res,
                           const vec& rhs) const {
 
     vec constant = rhs;
-    if( sys.n ) constant.tail(sys.n) = -constant.tail(sys.n);
+    if( sys.n ) constant.tail(sys.n) = - constant.tail(sys.n);
 
     vec tmp;
     sub.solve(solver, tmp, constant);
@@ -140,6 +165,9 @@ void ModulusSolver::solve(vec& res,
     vec zabs;
     vec old;
     real error;
+
+    // TODO
+    const bool correct = false;
     
     const real omega = this->omega.getValue();
     const real precision = this->precision.getValue();
@@ -152,17 +180,15 @@ void ModulusSolver::solve(vec& res,
         
         // tmp = (x, |z|)
         tmp = y;
-        
-        for( unsigned i = 0, imax = sys.n; i < imax; ++i) {
-            if( unilateral(i) ) {
-                tmp(sys.m + i) = std::abs(tmp(sys.m + i));
-            }
-        }
 
-        // store |z|
-        zabs = unilateral.cwiseProduct(tmp.tail(sys.n));
-        
-        // prod is wrong, we need to add back 2 diag * omega |z|
+        // |z| = 2 * P(z) - z
+        project( tmp.tail(sys.n), sys, correct );
+        tmp.tail(sys.n) = 2 * tmp.tail(sys.n) - y.tail(sys.n);
+
+        zabs = tmp.tail(sys.n);
+
+        // TODO fix this mess
+        // after this, prod is wrong, we need to add back 2 diag * omega |z|
         {
             scoped::timer step("subkkt prod");
             sub.prod(tmp, tmp, true);
@@ -181,7 +207,7 @@ void ModulusSolver::solve(vec& res,
         old = y.tail(sys.n);
         
         y.head(sys.m).array() -= tmp.head(sys.m).array();
-        y.tail(sys.n).array() -= tmp.tail(sys.n).array() + unilateral.array() * y.tail(sys.n).array();
+        y.tail(sys.n).array() -= tmp.tail(sys.n).array() + y.tail(sys.n).array();
 
         if( anderson.getValue() ) {
 
@@ -192,7 +218,7 @@ void ModulusSolver::solve(vec& res,
 
         }
         
-        error = unilateral.cwiseProduct(old - y.tail(sys.n)).norm();
+        error = (old - y.tail(sys.n)).norm();
         if( error <= precision ) break;
     }
 
@@ -201,9 +227,10 @@ void ModulusSolver::solve(vec& res,
     // and that should be it ?
     res = y;
 
-    // add |z| to dual to get lambda
-    res.tail(sys.n).array() += unilateral.array() * y.tail(sys.n).array().abs();
-
+    // we need to project 2 z to get lambdas
+    res.tail(sys.n) *= 2.0;
+    project( res.tail(sys.n), sys, correct );
+    
     // TODO we should recompute x based on actual, non sticky lambdas
     
 }
