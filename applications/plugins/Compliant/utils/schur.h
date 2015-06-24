@@ -58,10 +58,10 @@ struct schur {
 		result.noalias() = JP * tmp1;
 
 		if( prec ) {
-            result.noalias() += sys.C * tmp3;
+			result.noalias() = result + sys.C * tmp3;
 			result = prec->array() * result.array();
 		} else {
-            result.noalias() += sys.C * x;
+			result.noalias() = result + sys.C * x;
 		}		
 		
 		if( damping ) result += damping * x;
