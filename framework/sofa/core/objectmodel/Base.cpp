@@ -255,12 +255,12 @@ void Base::processStream(std::ostream& out)
         std::string str = serr.str();
 
         helper::Console::warningPrefix();
-        std::cerr << helper::Console::YELLOW << "[" << getName() << "(" << getClassName() << ")]: " << helper::Console::DEFAULT_COLOR;
+        std::cerr << helper::Console::YELLOW << "[" << getName() << " (" << getClassName() << ")]: " << helper::Console::DEFAULT_COLOR;
         std::cerr << str;
 
         if (warnings.size()+str.size() >= MAXLOGSIZE)
         {
-            std::cerr<< "LOG OVERFLOW[" << getName() << "(" << getClassName() << ")]: resetting serr buffer." << std::endl;
+            std::cerr<< "LOG OVERFLOW[" << getName() << " (" << getClassName() << ")]: resetting serr buffer." << std::endl;
             warnings.clear();
             warnings = "LOG EVERFLOW: resetting serr buffer\n";
         }
@@ -274,12 +274,12 @@ void Base::processStream(std::ostream& out)
         if (f_printLog.getValue())
         {
             helper::Console::infoPrefix();            
-            std::cout << helper::Console::YELLOW << "[" << getName() << "(" << getClassName() << ")]: " << helper::Console::DEFAULT_COLOR;
+            std::cout << helper::Console::YELLOW << "[" << getName() << " (" << getClassName() << ")]: " << helper::Console::DEFAULT_COLOR;
             std::cout << str << std::flush;
         }
         if (outputs.size()+str.size() >= MAXLOGSIZE)
         {
-            std::cerr<< "LOG OVERFLOW[" << getName() << "(" << getClassName() << ")]: resetting sout buffer." << std::endl;
+            std::cerr<< "LOG OVERFLOW[" << getName() << " (" << getClassName() << ")]: resetting sout buffer." << std::endl;
             outputs.clear();
             outputs = "LOG EVERFLOW: resetting sout buffer\n";
         }
