@@ -438,7 +438,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::addForce(cons
         if(this->useAnisotropicStiffness.getValue())
         {
             if(nrm2) this->dfdx[i] = defaulttype::dyad(u,u)/u.norm2();
-            else this->dfdx[i].Identity(); // use to stabilize points with no force
+            else this->dfdx[i].identity(); // use to stabilize points with no force
         }
         m_potentialEnergy += nrm2 * k * 0.5;
         if(kd && nrm2) f[i]-=kd*u*dot(u,v[i])/u.norm2();

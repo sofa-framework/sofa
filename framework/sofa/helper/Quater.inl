@@ -480,17 +480,19 @@ Quater<Real> Quater<Real>::axisToQuat(defaulttype::Vec<3,Real> a, Real phi)
 template<class Real>
 void Quater<Real>::quatToAxis(defaulttype::Vec<3,Real> & axis, Real &angle)
 {
-    double  sine  = sin( acos(_q[3]) );
-    if(sine == 0) {
-        sine = sqrt(_q[0]*_q[0]+_q[1]*_q[1]+_q[2]*_q[2]);
-        angle = 2.0*asin(sine);
+    double sine = sin(acos(_q[3]));
+    if(sine == 0)
+    {
+        sine = sqrt(_q[0] * _q[0] + _q[1] * _q[1] + _q[2] * _q[2]);
+        angle = (Real)(2.0 * asin(sine));
     }
-    else angle = 2.0*acos(_q[3]);
-
-    if (sine==0)
-        axis = defaulttype::Vec<3,Real>(0.0,1.0,0.0);
     else
-        axis = defaulttype::Vec<3,Real>(_q[0],_q[1],_q[2])/ sine;
+        angle = (Real)(2.0 * acos(_q[3]));
+
+    if (sine == 0)
+        axis = defaulttype::Vec<3,Real>(0.0, 1.0, 0.0);
+    else
+        axis = defaulttype::Vec<3,Real>(_q[0], _q[1], _q[2]) / sine;
 }
 
 

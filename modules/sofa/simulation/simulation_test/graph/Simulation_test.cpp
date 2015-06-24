@@ -25,10 +25,28 @@
 #include <SofaTest/Sofa_test.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
+#include <SofaBaseMechanics/UniformMass.h>
 
 
 namespace sofa {
 using namespace modeling;
+
+static int objectCounter = 0;
+
+template <class DataType>
+class InstrumentedObject : public DataType
+{
+public:
+    InstrumentedObject()
+    {
+        objectCounter++;
+    }
+
+    ~InstrumentedObject()
+    {
+        objectCounter--;
+    }
+};
 
 /** Test the Simulation class
 */
@@ -36,6 +54,7 @@ struct Simulation_test: public Sofa_test<double>
 {
     // root
    simulation::Node::SPtr root;
+   typedef component::mass::UniformMass<defaulttype::Vec3Types, SReal> UniformMass3;
 
    /// Test Simulation::computeBBox
    void computeBBox()
@@ -73,14 +92,38 @@ struct Simulation_test: public Sofa_test<double>
 
    }
         
+   void objectSuppression()
+   {
+       // Init Sofa
+       simulation::Simulation* simulation;
+       sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+       root = simulation::getSimulation()->createNewGraph("root");
+       root->addObject(core::objectmodel::New<InstrumentedObject<MechanicalObject3> >());
+       root->addObject(core::objectmodel::New<InstrumentedObject<UniformMass3> >());
+       simulation::Node::SPtr child  = simulation::getSimulation()->createNewNode("child");
+       root->addChild(child);
+       child->addObject(core::objectmodel::New<InstrumentedObject<MechanicalObject3> >());
+       child->addObject(core::objectmodel::New<InstrumentedObject<UniformMass3> >());
 
+       //
+       root = simulation::getSimulation()->createNewGraph("root2");
+   }
 };
 
 TEST_F( Simulation_test,SimulationTest)
 {
      this->computeBBox();
+     
 }
 
+
+TEST_F( Simulation_test,objectSuppression)
+{
+    this->objectSuppression();
+    if(objectCounter>0)
+        ADD_FAILURE() << "missing delete: "<<objectCounter<<endl;
+    
+}
 }// namespace sofa
 
 

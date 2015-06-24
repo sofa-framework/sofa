@@ -44,9 +44,6 @@
 #include "VectorVis.h"
 #include <sofa/helper/rmath.h>
 
-#if defined(WIN32)
-#define finite(x) (_finite(x))
-#endif
 
 
 namespace sofa
@@ -235,7 +232,6 @@ public:
                 long double val=vect.magnitude();
                 long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
                 if(v<0) v=0;
-                else if(!finite(v)) v=0;
                 else if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
                 ++res((int)(v),0,0,0);
             }
@@ -251,7 +247,6 @@ public:
                 const T val = img(l)(x,y,z,c);
                 long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
                 if(v<0) v=0;
-                else if(!finite(v)) v=0;
                 else if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
                 ++res((int)(v),0,0,c);
             }

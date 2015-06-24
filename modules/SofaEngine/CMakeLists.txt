@@ -18,6 +18,8 @@ set(HEADER_FILES
     DilateEngine.inl
     GenerateCylinder.h
     GenerateCylinder.inl
+    GenerateGrid.h
+    GenerateGrid.inl
     ExtrudeSurface.h
     ExtrudeSurface.inl
     ExtrudeQuadsAndGenerateHexas.h
@@ -97,6 +99,8 @@ set(HEADER_FILES
     MeshSubsetEngine.inl
     MeshSampler.h
     MeshSampler.inl
+    MeshSplittingEngine.h
+    MeshSplittingEngine.inl
     )
 
 set(SOURCE_FILES
@@ -109,6 +113,7 @@ set(SOURCE_FILES
     SphereROI.cpp
     DilateEngine.cpp
     GenerateCylinder.cpp
+	GenerateGrid.cpp
     ExtrudeSurface.cpp
     ExtrudeQuadsAndGenerateHexas.cpp
     ExtrudeEdgesAndGenerateQuads.cpp
@@ -150,6 +155,7 @@ set(SOURCE_FILES
     MeshClosingEngine.cpp
     MeshSubsetEngine.cpp
     MeshSampler.cpp
+    MeshSplittingEngine.cpp
     )
 
 set(GROUP_BASE_DIR "..")

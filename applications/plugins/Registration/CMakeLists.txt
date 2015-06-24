@@ -80,8 +80,6 @@ if(SofaTest_FOUND)
     add_subdirectory(Registration_test)
 endif()
 
-add_subdirectory(Registration_run)
-
 install(TARGETS ${PROJECT_NAME}
         COMPONENT Registration_libraries
         EXPORT RegistrationTargets

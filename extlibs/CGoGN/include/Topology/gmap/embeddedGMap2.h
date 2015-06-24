@@ -46,6 +46,12 @@ public:
 
 	EmbeddedGMap2() {}
 
+
+    template< unsigned int ORBIT >
+    inline unsigned int getCellLevel(Cell< ORBIT > ) const
+    {
+        return 0u;
+    }
 	/**
 	 *	create a new face with managed embeddings
 	 */

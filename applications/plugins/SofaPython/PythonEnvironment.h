@@ -50,6 +50,7 @@ public:
     static void addPythonModulePath(const std::string& path);
 
     /// Add all the directories matching <pluginsDirectory>/*/python to sys.path
+    /// NB: can also be used for projects <projectDirectory>/*/python
     static void addPythonModulePathsForPlugins(const std::string& pluginsDirectory);
 
     // helper functions

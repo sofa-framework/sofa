@@ -243,7 +243,7 @@ public:
         - \f$ E = [grad(R^T u)+grad(R^T u)^T ]/2 = [R^T F + F^T R ]/2 - I = D - I \f$
         - \f$ E_k = [R^T F_k + F_k^T R ]/2  \f$
     where:
-        - _R/D are the rotational/skew symmetric parts of F=RD
+        - R/D are the rotational/skew symmetric parts of F=RD
         - _k denotes derivative with respect to spatial dimension k
     Jacobian:
         - \f$  dE = [R^T dF + dF^T R ]/2 \f$

@@ -50,6 +50,14 @@ public:
 	typedef MapMulti IMPL;
 	typedef Map2<MapMulti> TOPO_MAP;
 
+
+    template< unsigned int ORBIT >
+    inline unsigned int getCellLevel(Cell< ORBIT > ) const
+    {
+        // TODO
+        std::cerr << __FILE__ << ":" << __LINE__ << "function not implemented ! " << std::endl;
+        return std::numeric_limits<unsigned int>::max();
+    }
 	static const unsigned int DIMENSION = TOPO_MAP::DIMENSION ;
 
 	/*

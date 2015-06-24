@@ -79,8 +79,23 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
     }
 
     template<class ImageContainer>
+    static void parse( ImageContainer* container, sofa::core::objectmodel::BaseObjectDescription */*arg*/=NULL )
+    {
+        if( container->image.isSet() ) return; // image is set from data link
+
+        // otherwise try to load it from a file
+        typename ImageContainer::waImage wimage(container->image);
+        if( wimage->isEmpty() )
+            if( !container->load() )
+                container->loadCamera();
+    }
+
+    template<class ImageContainer>
     static void init( ImageContainer* container )
     {
+        // if the image is not set from data link
+        // and was not loaded from a file during parsing
+        // try to load it now (maybe the loading was data-dependant, like the filename)
         typedef typename ImageContainer::T T;
 
         typename ImageContainer::waImage wimage(container->image);
@@ -255,7 +270,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         if(wimage->isEmpty() wimage->getCImgList().push_back(CImg<T>().load_camera());
                 else wimage->getCImgList()[0].load_camera();
                 if(!wimage->isEmpty())  return true;  else return false;
-        #else
+#else
         return false;
 #endif
     }
@@ -385,7 +400,7 @@ public:
       , image(initData(&image,ImageTypes(),"image","image"))
       , transform(initData(&transform, "transform" , "12-param vector for trans, rot, scale, ..."))
       , m_filename(initData(&m_filename,"filename","Image file"))
-      , drawBB(initData(&drawBB,true,"drawBB","draw bounding box"))
+      , drawBB(initData(&drawBB,false,"drawBB","draw bounding box"))
       , sequence(initData(&sequence, false, "sequence", "load a sequence of images"))
       , nFrames (initData(&nFrames, "numberOfFrames", "The number of frames of the sequence to be loaded. Default is the entire sequence."))
       , transformIsSet (false)
@@ -410,8 +425,10 @@ public:
 
     bool transformIsSet;
 
-    virtual void init()
+    virtual void parse(sofa::core::objectmodel::BaseObjectDescription *arg)
     {
+        Inherited::parse(arg);
+
         this->transformIsSet = false;
         if (this->transform.isSet()) this->transformIsSet = true;
         if (!this->transformIsSet) this->transform.unset();
@@ -421,10 +438,14 @@ public:
         else
             sout << "Transform is NOT set" << sendl;
 
+        ImageContainerSpecialization<ImageTypes::label>::parse( this, arg );
+    }
 
+    virtual void init()
+    {
         ImageContainerSpecialization<ImageTypes::label>::init( this );
 
-        waImage wimage(this->image);
+        raImage wimage(this->image);
         waTransform wtransform(this->transform);
         wtransform->setCamPos((Real)(wimage->getDimensions()[0]-1)/2.0,(Real)(wimage->getDimensions()[1]-1)/2.0); // for perspective transforms
         wtransform->update(); // update of internal data

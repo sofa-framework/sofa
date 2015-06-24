@@ -56,8 +56,8 @@ void CompliantPseudoStaticSolver::solve(const core::ExecParams* params,
     SolverOperations sop( params, this->getContext(), alpha.getValue(), beta.getValue(), dt, posId, velId, true );
 
     // store previous position (for stop criterion)
-    MultiVecCoord x_prev( &sop.vop );
-    sop.vop.v_eq( x_prev, posId );
+    vec x_prev, x_current;
+
 
     const SReal& threshold = d_threshold.getValue();
     const SReal& velocityFactor = d_velocityFactor.getValue();
@@ -78,10 +78,22 @@ void CompliantPseudoStaticSolver::solve(const core::ExecParams* params,
         }
 
         // stop if it does not move enough from previous iteration
-        sop.vop.v_peq( x_prev, posId, -1 );
-        sop.vop.v_dot( x_prev, x_prev );
-        if( std::sqrt( sop.vop.finish() ) < threshold ) break;
-        sop.vop.v_eq( x_prev, posId );
+        if( !x_current.size() ) // scalar vectors can only be allocated after assembly
+        {
+            x_current.resize( sys.m );
+            x_prev.resize( sys.m );
+        }
+        sys.copyFromMultiVec( x_current, posId ); // get current position
+        x_prev -= x_current; // position variation during iteration
+
+        if( x_prev.dot( x_prev ) < threshold*threshold ) break;
+
+        if( f_printLog.getValue() )
+        {
+            serr<<"position variation: "<<sqrt(x_prev.dot( x_prev ))<<sendl;
+        }
+
+        x_prev = x_current; // store previous position
     }
 
     if( f_printLog.getValue() ) serr<<i<<" iterations"<<sendl;

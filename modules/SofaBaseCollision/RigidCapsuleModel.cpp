@@ -1,3 +1,4 @@
+#define SOFA_COMPONENT_COLLISION_RIGIDCAPSULEMODEL_CPP
 #include "RigidCapsuleModel.inl"
 
 namespace sofa
