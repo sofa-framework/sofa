@@ -22,18 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: MechanicalStateControllerOmni
-//
-// Description:
-//
-//
 // Author: Pierre-Jean Bensoussan, Digital Trainers (2008)
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-
 #ifndef SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLEROMNI_H
 #define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLEROMNI_H
 
@@ -182,7 +171,7 @@ protected:
     sofa::defaulttype::Quat orientation;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_USER_INTERACTION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLEROMNI_CPP)
 #ifndef SOFA_FLOAT
 //extern template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<defaulttype::Vec3dTypes>;
 //extern template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<defaulttype::Vec2dTypes>;

@@ -1,3 +1,4 @@
+#define SOFA_COMPONENT_COLLISION_INTRCAPSULEOBB_CPP
 #include <SofaBaseCollision/IntrCapsuleOBB.inl>
 
 namespace sofa{

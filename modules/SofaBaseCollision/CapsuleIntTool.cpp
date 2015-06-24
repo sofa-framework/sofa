@@ -1,3 +1,4 @@
+#define SOFA_COMPONENT_COLLISION_CAPSULEINTTOOL_CPP
 #include <SofaBaseCollision/CapsuleIntTool.inl>
 
 namespace sofa

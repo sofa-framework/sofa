@@ -22,17 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Implementation : MechanicalStateControllerOmni
-//
-// Description:
-//
-//
 // Author: Pierre-Jean Bensoussan, Digital Trainers (2008)
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLEROMNI_CPP
 #include <SofaUserInteraction/MechanicalStateControllerOmni.inl>
 
