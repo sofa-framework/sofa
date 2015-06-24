@@ -324,12 +324,13 @@ Dart ImplicitHierarchicalMap3::edgeNewestDart(Dart d) const
 
     Dart newest = d ;
     unsigned int l_new = getDartLevel(newest) ;
-
+    if (l_new == getCurrentLevel())
+    {
+        return d;
+    }
 
     const Dart phi2d = phi2(d);
-
-    const unsigned int l = getDartLevel(phi2d);
-    if(l > l_new  || (l == l_new && ParentMap::getEmbedding<EDGE>(phi2d) != EMBNULL) )
+    if (getDartLevel(phi2d) > l_new)
     {
         newest = phi2d;
     }
@@ -364,13 +365,24 @@ Dart ImplicitHierarchicalMap3::faceNewestDart(Dart d) const {
     Dart it = d ;
     Dart newest = it ;
     unsigned int l_new = getDartLevel(newest) ;
+    if (l_new == getCurrentLevel())
+    {
+        return d;
+    }
+
     do
     {
         const unsigned int l = getDartLevel(it) ;
-        if(l > l_new  || (l == l_new && ParentMap::getEmbedding<FACE>(it) != EMBNULL) )
+        if (l == getCurrentLevel())
         {
-            newest = it ;
-            l_new = l ;
+            return it;
+        } else
+        {
+            if(l > l_new  /*|| (l == l_new && ParentMap::getEmbedding<FACE>(it) != EMBNULL) */)
+            {
+                newest = it ;
+                l_new = l ;
+            }
         }
         it = phi1(it) ;
     } while(it != d) ;
@@ -405,17 +417,26 @@ Dart ImplicitHierarchicalMap3::volumeNewestDart(Dart d) const
 
     Dart newest = d;
     unsigned int l_new = getDartLevel(newest);
+    if (l_new == getCurrentLevel())
+    {
+        return d;
+    }
 
     Traversor3WF<ImplicitHierarchicalMap3> trav3WF(*this, newest);
     for(Dart dit = trav3WF.begin(), end = trav3WF.end() ; (dit != end) && (l_new < getCurrentLevel()); dit = trav3WF.next())
     {
         const Dart newDart = faceNewestDart(dit);
         const unsigned int l = getDartLevel(newDart);
-
-        if( (l > l_new) || (l == l_new && ParentMap::getEmbedding<VOLUME>(newDart) != EMBNULL) )
+        if (l == getCurrentLevel())
         {
-            newest = newDart;
-            l_new = l;
+            return newDart;
+        } else
+        {
+            if( (l > l_new) /*|| (l == l_new && ParentMap::getEmbedding<VOLUME>(newDart) != EMBNULL)*/ )
+            {
+                newest = newDart;
+                l_new = l;
+            }
         }
     }
 
@@ -924,7 +945,7 @@ Dart ImplicitHierarchicalMap3::cutEdge(Dart d)
 
     if(isOrbitEmbedded<FACE2>())
     {
-        std::exit(1);
+        std::exit(-1);
 //        Dart f = d;
 //        do
 //        {
