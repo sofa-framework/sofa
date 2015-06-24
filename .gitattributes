@@ -1,0 +1,26 @@
+
+# Explicitly declare text files we want to always be normalized and converted
+# to native line endings on checkout.
+
+## C/C++/Cuda code
+*.h text
+*.c text
+*.cpp text
+*.inl text
+*.hpp text
+
+## Cuda
+*.cu text
+
+## Shaders
+*.frag text
+*.vert text
+*.glsl text
+
+## Scenes
+*.scn text
+*.xml text
+
+## Scripts
+*.sh text
+*.awk text

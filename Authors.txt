@@ -1,0 +1,77 @@
+/**************************************************************************
+*      SOFA, Simulation Open-Framework Architecture, version 1.0 RC1      *
+*              (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                  *
+*                                                                         *
+*                              CONTRIBUTORS                               *
+*                                                                         *
+**************************************************************************/
+
+:: SOFA Framework ::
+
+    The following authors contributed to the design and implementation
+    of the core SOFA APIs, as well as base features and applications :
+
+        Michael Adam
+        Jeremie Allard
+        Barbara Andre
+        Pierre-Jean Bensoussan
+        Guillaume Bousquet
+        Frederic Chateau
+        Hadrien Courtecuisse
+        Olivier Comas
+        Stephane Cotin
+        Jeremie Dequidt
+        Marie Durand
+        Christian Duriez
+        Herve Delingette
+        Florent Falipou
+        Francois Faure
+        Sylvere Fonteneau
+        Christophe Guebert
+        Laure Heigeas
+        Tobias Heimann
+        Everton Hermann
+        Jeremy Jaussaud
+        Lenka Jerabkova
+        Francois Jourdes
+        Hoeryong Jung
+        Vincent Majorczyk
+        Stephanie Marchesseau
+        Cesar Mendoza
+        Matthieu Nesme
+        Paul Neumann
+        Chi-Thanh Nguyen
+        Marek Olsak
+        Erik Pernod
+        Igor Peterlik
+        Juan Pablo de la Plata Alcalde
+        Francois Poyer
+        Frederick Roy
+        Hugo Talbot
+        Moreno Trlin
+
+:: SOFA Modules ::
+
+    In addition to classes created by the SOFA Team mentioned above,
+    the following authors are to be credited for their contributions :
+
+    + Co-rotational FEM
+        Matthieu Nesme and Francois Faure
+
+    + Dynamic Topologies
+        Barbara Andre, Herve Delingette, Erik Pernod
+
+    + Tetrahedral volume rendering
+        Sebastien Barbier and George-Pierre Bonneau
+
+    + Articulated Rigid Bodies based on Penalities
+        Michael Adam, Francois Faure
+
+    + Articulated Rigid Bodies based on Reduced Coordinates
+        Juan Pablo de la Plata Alcalde, Christian Duriez
+
+    + GPU support using CUDA
+        Jeremie Allard, Hadrien Courtecuisse
+
+    + GPU support using OpenCL
+        Jeremie Allard, Vincent Majorczyk
