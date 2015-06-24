@@ -506,7 +506,7 @@ inline unsigned int ImplicitHierarchicalMap3::vertexInsertionLevel(Dart d) const
     return getDartLevel(d) ;
 }
 
-inline unsigned int ImplicitHierarchicalMap3::edgeLevel(Dart d)
+inline unsigned int ImplicitHierarchicalMap3::edgeLevel(Dart d) const
 {
     assert(getDartLevel(d) <= m_curLevel || !"Access to a dart introduced after current level") ;
 

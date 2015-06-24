@@ -142,7 +142,7 @@ public:
      ***************************************************/
 
     inline unsigned int getCurrentLevel() const;
-    inline void setCurrentLevel(unsigned int l);
+    inline void setCurrentLevel(unsigned int l) const;
     inline unsigned int getMaxLevel() const ;
     inline unsigned int getDartLevel(Dart d) const;
     inline void setDartLevel(Dart d, unsigned int i) ;
@@ -207,7 +207,7 @@ public:
     }
 
 protected:
-    unsigned int m_curLevel;
+    mutable unsigned int m_curLevel;
     unsigned int m_maxLevel;
     unsigned int m_edgeIdCount;
     unsigned int m_faceIdCount;
@@ -334,7 +334,7 @@ unsigned int MapCPH::getCurrentLevel() const
     return m_curLevel ;
 }
 
-void MapCPH::setCurrentLevel(unsigned int l)
+void MapCPH::setCurrentLevel(unsigned int l) const
 {
     m_curLevel = l ;
 }

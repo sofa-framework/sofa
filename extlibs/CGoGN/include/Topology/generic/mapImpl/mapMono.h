@@ -81,11 +81,11 @@ public:
 
     // EXPERIMENTAL : COMPATIBILITY INTERFACE FOR MR
 
-    inline unsigned int getCurrentLevel() { return 0u; }
-    inline void setCurrentLevel(unsigned int ) {}
-    inline void incCurrentLevel() {}
-    inline void decCurrentLevel() {}
-    inline unsigned int getMaxLevel() { return 0u; }
+    inline unsigned int getCurrentLevel() const { return 0u; }
+    inline void setCurrentLevel(unsigned int ) const {}
+    inline void incCurrentLevel() const {}
+    inline void decCurrentLevel() const {}
+    inline unsigned int getMaxLevel() const { return 0u; }
     inline unsigned int getDartLevel(Dart) const { return 0u; }
 	/****************************************
 	 *        RELATIONS MANAGEMENT          *
