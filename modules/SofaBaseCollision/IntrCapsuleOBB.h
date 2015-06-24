@@ -2,8 +2,8 @@
 // http://www.geometrictools.com/
 
 
-#ifndef WM5INTRSEGMENT3BOX3_H
-#define WM5INTRSEGMENT3BOX3_H
+#ifndef SOFA_COMPONENT_COLLISION_INTRCAPSULEOBB_H
+#define SOFA_COMPONENT_COLLISION_INTRCAPSULEOBB_H
 
 #include <SofaBaseCollision/Intersector.h>
 #include <SofaBaseCollision/CapsuleModel.h>
@@ -46,7 +46,7 @@ private:
 
 typedef TIntrCapsuleOBB<sofa::defaulttype::Vec3Types, sofa::defaulttype::Rigid3Types> IntrCapsuleOBB;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_INTRCAPSULEOBB_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Rigid3dTypes>;
 extern template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3dTypes>;

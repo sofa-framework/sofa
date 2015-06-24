@@ -1,5 +1,6 @@
-#ifndef INTRSPHEREOBB_H
-#define INTRSPHEREOBB_H
+#ifndef SOFA_COMPONENT_COLLISION_INTRSPHEREOBB_H
+#define SOFA_COMPONENT_COLLISION_INTRSPHEREOBB_H
+
 #include <SofaBaseCollision/OBBModel.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaBaseCollision/IntrUtility3.h>
@@ -46,7 +47,7 @@ private:
 
 typedef TIntrSphereOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types> IntrSphereOBB;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_INTRSPHEREOBB_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_COLLISION_API TIntrSphereOBB<defaulttype::Vec3dTypes,defaulttype::Rigid3dTypes>;
 extern template class SOFA_BASE_COLLISION_API TIntrSphereOBB<defaulttype::Rigid3dTypes,defaulttype::Rigid3dTypes>;
@@ -60,4 +61,4 @@ extern template class SOFA_BASE_COLLISION_API TIntrSphereOBB<defaulttype::Rigid3
 }
 }
 }
-#endif // INTRSPHEREOBB_H
+#endif // SOFA_COMPONENT_COLLISION_INTRSPHEREOBB_H

@@ -23,9 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 // Author: Rosalie Plantefeve, INRIA, (C) 2013
-//
-// Copyright: See COPYING file that comes with this distribution
-#define SOFA_COMPONENT_FORCEFIELD_AdaptativeSpringForceField_CPP
+#define SOFA_COMPONENT_FORCEFIELD_ADAPTATIVESPRINGFORCEFIELD_CPP
 #include <sofa/component/interactionforcefield/AdaptativeSpringForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
