@@ -1,6 +1,8 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(SOURCE_FILES
+    Node_test.h
+    tree/GNode_test.cpp
     graph/DAG_test.cpp
     graph/Node_test.cpp
     graph/Simulation_test.cpp
