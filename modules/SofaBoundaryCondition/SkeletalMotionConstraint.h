@@ -81,7 +81,7 @@ public:
 	float getAnimationSpeed() const			{return animationSpeed.getValue();}
 	void setAnimationSpeed(float speed)		{animationSpeed.setValue(speed);}
 
-    void findKeyTimes();
+    void findKeyTimes(Real ct);
 
     void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
     void projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& vData);

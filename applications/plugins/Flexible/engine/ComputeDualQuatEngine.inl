@@ -63,12 +63,16 @@ void ComputeDualQuatEngine< DataTypes >::update()
 {
     typedef sofa::helper::DualQuatCoord3<Real> DualQuat;
 
+
+    const VecCoord& x = d_x.getValue();
+    const VecCoord& x0 = d_x0.getValue();
+
+    cleanDirty();
+
     // Clean the output
     helper::vector< defaulttype::Vec4f >& dualQuats = *d_dualQuats.beginWriteOnly();
     dualQuats.clear();
 
-    const VecCoord& x = d_x.getValue();
-    const VecCoord& x0 = d_x0.getValue();
     const size_t size = x.size();
     const size_t size0 = x0.size();
 
@@ -104,7 +108,6 @@ void ComputeDualQuatEngine< DataTypes >::update()
     }
 
     d_dualQuats.endEdit();
-    cleanDirty();
 }
 
 } // namespace engine

@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_SIMULATION_COMMON_XML_BASEELEMENT_CPP
 #include "BaseElement.h"
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/system/SetDirectory.h>

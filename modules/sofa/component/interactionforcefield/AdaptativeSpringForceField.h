@@ -25,8 +25,8 @@
 // Author: Rosalie Plantefeve, INRIA, (C) 2013
 //
 // Copyright: See COPYING file that comes with this distribution
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_AdaptativeSpringForceField_H
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_AdaptativeSpringForceField_H
+#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_ADAPTATIVESPRINGFORCEFIELD_H
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_ADAPTATIVESPRINGFORCEFIELD_H
 
 #include <SofaDeformable/SpringForceField.h>
 #include <sofa/defaulttype/Mat.h>
@@ -112,7 +112,7 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_DEFORMABLE)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_ADAPTATIVESPRINGFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_DEFORMABLE_API AdaptativeSpringForceField<defaulttype::Vec3dTypes>;
 extern template class SOFA_DEFORMABLE_API AdaptativeSpringForceField<defaulttype::Vec2dTypes>;

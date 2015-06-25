@@ -93,7 +93,7 @@ struct sub_kkt::helper {
         }
         
         const unsigned primal_sub = primal.cols();
-        const unsigned primal_full = primal.cols();        
+        const unsigned primal_full = primal.rows();        
 
         for(unsigned i = 0; i < primal_full; ++i) {
             

@@ -162,7 +162,7 @@ public:
 protected:
     topology::RegularGridTopology* topology;
 };
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_DEFORMABLE)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec3dTypes>;
 extern template class SOFA_DEFORMABLE_API RegularGridSpringForceField<defaulttype::Vec2dTypes>;

@@ -136,6 +136,11 @@ protected:
         if(in->isEmpty()) return;
         const CImg<T>& img = in->getCImg(this->time);
 
+        d_density.updateIfDirty();
+        d_mult.updateIfDirty();
+
+        cleanDirty();
+
         helper::WriteOnlyAccessor<Data< RigidCoord > > pos(this->d_position);
         helper::WriteOnlyAccessor<Data< RigidMass > > rigidMass(this->d_rigidMass);
         helper::WriteOnlyAccessor<Data< Coord > > inertia(this->d_inertia);
@@ -166,7 +171,7 @@ protected:
 
             pos->getCenter()/=rigidMass->mass;
             C-=dyad(pos->getCenter(),pos->getCenter())*rigidMass->mass; // recenter covariance matrix around mean
-            rigidMass->inertiaMatrix = Mat3x3::Identity()*trace(C) - C;   // covariance matrix to inertia matrix
+            rigidMass->inertiaMatrix = Mat3x3::s_identity*trace(C) - C;   // covariance matrix to inertia matrix
 
             typename RigidMass::Mat3x3 R;
             helper::Decompose<Real>::eigenDecomposition(rigidMass->inertiaMatrix, R, inertia.wref());
@@ -178,7 +183,6 @@ protected:
             rigidMass->recalc();
         }
 
-        cleanDirty();
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)

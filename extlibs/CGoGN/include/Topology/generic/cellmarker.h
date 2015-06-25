@@ -158,11 +158,10 @@ public:
 	inline bool isMarked(Cell<CELL> c) const
 	{
 		assert(m_markVector != NULL);
-//        std::cerr << "dart index of c" << c.index() << std::endl ;
 		unsigned int a = m_map.getEmbedding(c) ;
+
 		if (a == EMBNULL)
 			return false ;
-
 		return m_markVector->operator[](a);
 	}
 

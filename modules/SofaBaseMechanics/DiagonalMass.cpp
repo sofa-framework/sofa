@@ -151,8 +151,8 @@ void DiagonalMass<Rigid3dTypes, Rigid3dMass>::init()
     if (this->mstate && f_mass.getValue().size() > 0 && f_mass.getValue().size() < (unsigned)this->mstate->getSize())
     {
         MassVector &masses= *f_mass.beginEdit();
-        unsigned int i = masses.size()-1;
-        unsigned int n = (unsigned)this->mstate->getSize();
+        size_t i = masses.size()-1;
+        size_t n = (size_t)this->mstate->getSize();
         while (masses.size() < n)
             masses.push_back(masses[i]);
         f_mass.endEdit();
@@ -170,8 +170,8 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::init()
     if (this->mstate && f_mass.getValue().size() > 0 && f_mass.getValue().size() < (unsigned)this->mstate->getSize())
     {
         MassVector &masses= *f_mass.beginEdit();
-        unsigned int i = masses.size()-1;
-        unsigned int n = (unsigned)this->mstate->getSize();
+        size_t i = masses.size()-1;
+        size_t n = (size_t)this->mstate->getSize();
         while (masses.size() < n)
             masses.push_back(masses[i]);
         f_mass.endEdit();

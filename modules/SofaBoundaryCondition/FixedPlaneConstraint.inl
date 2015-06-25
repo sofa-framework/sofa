@@ -75,6 +75,62 @@ bool FixedPlaneConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(un
     }
 }
 
+// Matrix Integration interface
+template <class DataTypes>
+void FixedPlaneConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+{
+    core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get(mparams));
+    if(r)
+    {
+        //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
+        //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
+        const unsigned int N = Deriv::size();
+        const SetIndexArray & ind = indices.getValue();
+
+        // IMplement plane constraint only when the direction is along the coordinates directions
+		// TODO : generalize projection to any direction
+		 Coord dir=direction.getValue();
+
+        for (SetIndexArray::const_iterator it = ind.begin(); it != ind.end(); ++it)
+        {
+            // Reset Fixed Row and Col
+            for (unsigned int c=0; c<N; ++c)
+				if (dir[c]!=0.0)
+                r.matrix->clearRowCol(r.offset + N * (*it) + c);
+            // Set Fixed Vertex
+            for (unsigned int c=0; c<N; ++c)
+				if (dir[c]!=0.0)
+                r.matrix->set(r.offset + N * (*it) + c, r.offset + N * (*it) + c, 1.0);
+        }
+    }
+}
+
+template <class DataTypes>
+void FixedPlaneConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+{
+    int o = matrix->getGlobalOffset(this->mstate.get(mparams));
+    if (o >= 0)
+    {
+        unsigned int offset = (unsigned int)o;
+		// IMplement plane constraint only when the direction is along the coordinates directions
+		// TODO : generalize projection to any direction
+		Coord dir=direction.getValue();
+
+        const unsigned int N = Deriv::size();
+
+      
+
+
+        const SetIndexArray & ind = indices.getValue();
+        for (SetIndexArray::const_iterator it = ind.begin(); it != ind.end(); ++it)
+        {
+            for (unsigned int c=0; c<N; ++c)
+				if (dir[c]!=0.0)
+                vect->clear(offset + N * (*it) + c);
+        }
+    }
+}
+
 // Define RemovalFunction
 template< class DataTypes>
 void FixedPlaneConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)

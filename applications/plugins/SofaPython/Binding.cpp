@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "PythonCommon.h"
-
+//#include "PythonCommon.h"
+#include "PythonMacros.h"
 #include "Binding.h"
 #include "Binding_SofaModule.h"
 

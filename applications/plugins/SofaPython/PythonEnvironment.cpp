@@ -22,9 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "PythonEnvironment.h"
-
 #include "PythonMacros.h"
+#include "PythonEnvironment.h"
 #include "PythonScriptController.h"
 
 #include <sofa/config.h>
@@ -63,7 +62,10 @@ void PythonEnvironment::addModule(const std::string& name, PyMethodDef* methodDe
 void PythonEnvironment::Init()
 {
     std::string pythonVersion = Py_GetVersion();
-    SP_MESSAGE_INFO("Python version: " + pythonVersion);
+
+#ifndef NDEBUG
+    SP_MESSAGE_INFO("Python version: " + pythonVersion)
+#endif
 
     // WARNING: workaround to be able to import python libraries on linux (like
     // numpy), at least on Ubuntu (see http://bugs.python.org/issue4434). It is
@@ -74,8 +76,8 @@ void PythonEnvironment::Init()
 #endif
 
     // Prevent the python terminal from being buffered, not to miss or mix up traces.
-    if (putenv((char*)"PYTHONUNBUFFERED=1"))
-        SP_MESSAGE_WARNING("failed to set environment variable PYTHONUNBUFFERED");
+    if( putenv( (char*)"PYTHONUNBUFFERED=1" ) )
+        SP_MESSAGE_WARNING("failed to set environment variable PYTHONUNBUFFERED")
 
     // Initialize the Python Interpreter.
     Py_Initialize();
@@ -117,13 +119,22 @@ except:\n\
     // exist: SOFAPYTHON_PLUGINS_PATH is a colon-separated list of paths to
     // directories that contain Sofa plugins.
 
-    const std::string pluginsDir = std::string(SOFA_SRC_DIR) + "/applications/plugins";
+    static const std::string pluginsDir = std::string(SOFA_SRC_DIR) + "/applications/plugins";
     if (FileSystem::exists(pluginsDir))
         addPythonModulePathsForPlugins(pluginsDir);
 
-    const std::string devPluginsDir = std::string(SOFA_SRC_DIR) + "/applications-dev/plugins";
+    static const std::string devPluginsDir = std::string(SOFA_SRC_DIR) + "/applications-dev/plugins";
     if (FileSystem::exists(devPluginsDir))
         addPythonModulePathsForPlugins(devPluginsDir);
+
+    static const std::string projectsDir = std::string(SOFA_SRC_DIR) + "/applications/projects";
+    if (FileSystem::exists(projectsDir))
+        addPythonModulePathsForPlugins(projectsDir);
+
+    static const std::string devProjectsDir = std::string(SOFA_SRC_DIR) + "/applications-dev/projects";
+    if (FileSystem::exists(devProjectsDir))
+        addPythonModulePathsForPlugins(devProjectsDir);
+
 
     char * pathVar = getenv("SOFAPYTHON_PLUGINS_PATH");
     if (pathVar != NULL)

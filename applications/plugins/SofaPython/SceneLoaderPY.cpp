@@ -22,10 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "PythonMacros.h"
 #include "PythonEnvironment.h"
 #include "SceneLoaderPY.h"
 #include "ScriptEnvironment.h"
-#include "PythonMacros.h"
+
 
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/xml/NodeElement.h>
@@ -95,7 +96,10 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
 
     PythonEnvironment::runString(std::string("__file__=\"") + filename + "\"");
 
-    if(!PythonEnvironment::runFile(filename, arguments))
+    // We go the the current file's directory so that all relative path are correct
+    helper::system::SetDirectory chdir ( filename );
+
+    if(!PythonEnvironment::runFile(helper::system::SetDirectory::GetFileName(filename).c_str(), arguments))
     {
         // LOAD ERROR
         SP_MESSAGE_ERROR( "scene script load error." )

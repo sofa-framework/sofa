@@ -40,6 +40,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 
 
+#include <sofa/helper/system/console.h>
 
 #include "initSofaPython.h"
 
@@ -331,10 +332,13 @@ static PyTypeObject DummyChild_PyTypeObject = {
 // =============================================================================
 // ERROR / WARNING MESSAGES
 // =============================================================================
-#define SP_MESSAGE_INFO( msg ) std::cerr << "<SofaPython> " << msg << std::endl;
-#define SP_MESSAGE_WARNING( msg ) std::cerr << "<SofaPython> WARNING " << msg << std::endl;
-#define SP_MESSAGE_ERROR( msg ) std::cerr << "<SofaPython> ERROR " << msg << std::endl;
-#define SP_MESSAGE_EXCEPTION( msg ) std::cerr << "<SofaPython> EXCEPTION " << msg << std::endl;
+#define SP_PREFIX_CONSOLE sofa::helper::Console::YELLOW << "<SofaPython> " << sofa::helper::Console::DEFAULT_COLOR
+#define SP_MESSAGE_CONSOLE( msg ) SP_PREFIX_CONSOLE << msg << std::endl;
+#define SP_MESSAGE_INFO( msg ) { sofa::helper::Console::infoPrefix() << SP_MESSAGE_CONSOLE( msg ) }
+#define SP_MESSAGE_WARNING( msg ) { sofa::helper::Console::warningPrefix() << SP_MESSAGE_CONSOLE( msg ) }
+#define SP_MESSAGE_ERROR( msg ) { std::cerr << sofa::helper::Console::RED << "[ERROR]" << SP_MESSAGE_CONSOLE( msg ) }
+#define SP_MESSAGE_EXCEPTION( msg ) { std::cerr << sofa::helper::Console::PURPLE << "[EXCEPTION]" << SP_MESSAGE_CONSOLE( msg ) }
+
 
 
 // get python exceptions and print their error message

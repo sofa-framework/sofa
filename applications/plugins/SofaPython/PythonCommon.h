@@ -17,7 +17,9 @@
 #if defined(_MSC_VER) && defined(_DEBUG)
 // if you use Python on windows in debug build, be sure to provide a compiled version because
 // installation package doesn't come with debug libs.
+#undef _DEBUG /* remove debug before including Python.h and restore it afterwards. */
 #    include <Python.h> 
+#define _DEBUG
 //#elif defined(__APPLE__) && defined(__MACH__)
 //#    include <Python/Python.h>
 #else

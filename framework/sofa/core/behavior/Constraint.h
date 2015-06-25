@@ -136,7 +136,7 @@ protected:
     MechanicalState<DataTypes> *mstate;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CORE)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_CONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API Constraint<defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API Constraint<defaulttype::Vec2dTypes>;

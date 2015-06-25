@@ -2332,7 +2332,7 @@ public:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_SIMULATION_COMMON)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_SIMULATION_MECHANICALVISITOR_CPP)
 extern template class MechanicalVAvailVisitor<sofa::core::V_COORD>;
 extern template class MechanicalVAvailVisitor<sofa::core::V_DERIV>;
 extern template class MechanicalVAllocVisitor<sofa::core::V_COORD>;

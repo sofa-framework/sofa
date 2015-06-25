@@ -23,8 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef OBBMODEL_H
-#define OBBMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_OBBMODEL_H
+#define SOFA_COMPONENT_COLLISION_OBBMODEL_H
 
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -289,7 +289,7 @@ inline TOBB<DataTypes>::TOBB(const core::CollisionElementIterator& i)
 typedef TOBBModel<sofa::defaulttype::Rigid3Types> OBBModel;
 typedef TOBB<sofa::defaulttype::Rigid3Types> OBB;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_OBBMODEL_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_COLLISION_API TOBB<defaulttype::Rigid3dTypes>;
 extern template class SOFA_BASE_COLLISION_API TOBBModel<defaulttype::Rigid3dTypes>;
@@ -306,4 +306,4 @@ extern template class SOFA_BASE_COLLISION_API TOBBModel<defaulttype::Rigid3fType
 
 } // namespace sofa
 
-#endif // OBB_H
+#endif // SOFA_COMPONENT_COLLISION_OBBMODEL_H

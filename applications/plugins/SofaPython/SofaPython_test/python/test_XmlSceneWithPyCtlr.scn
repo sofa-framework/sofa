@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<Node   name="Root" gravity="0 0 0" time="0" animate="0"   >
+    <RequiredPlugin name="SofaPython" pluginName="SofaPython" />
+    <PythonScriptController filename="testController.py" classname="controller"/>
+</Node>

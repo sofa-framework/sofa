@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Node name="" gravity="0 -1 0" dt="0.02">
+<Node name="" gravity="0 -1 0" dt="1">
     <RequiredPlugin name="Flexible" pluginName="Flexible" />
     <RequiredPlugin pluginName="Compliant"/>
 
@@ -35,7 +35,7 @@
                 <Node   name="Strain"   >
                     <MechanicalObject  template="E331" name="E"  />
                     <CorotationalStrainMapping template="F331,E331" assemble="true" method="large" name="corotstrainmap"/>
-                    <HookeForceField  template="E331" name="ff" youngModulus="10000" poissonRatio="0.3" viscosity="0" assemble="true" />
+                    <HookeForceField  template="E331" name="ff" youngModulus="300" poissonRatio="0.3" viscosity="0" assemble="true" />
                 </Node>
             </Node>
         </Node>
@@ -81,7 +81,7 @@
                 <Node 	name="Strain"   >
                     <MechanicalObject  template="E331" name="E"  />
                     <CorotationalStrainMapping template="F331,E331" assemble="true" method="large" name="corotstrainmap"/>
-                    <HookeForceField  template="E331" name="ff" youngModulus="10000" poissonRatio="0.3" viscosity="0" assemble="true" />
+                    <HookeForceField  template="E331" name="ff" youngModulus="300" poissonRatio="0.3" viscosity="0" assemble="true" />
                 </Node>
             </Node>
         </Node>
