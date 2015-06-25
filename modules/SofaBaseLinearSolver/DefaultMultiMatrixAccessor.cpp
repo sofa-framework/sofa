@@ -389,7 +389,7 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
     }
 
 
-    const int lastMappingId = mappingList.size() - 1;
+    const int lastMappingId = (int)mappingList.size() - 1;
     for(int id=lastMappingId; id>=0; --id)
     {
         sofa::core::BaseMapping* m_mapping = mappingList[id];
@@ -489,8 +489,8 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
         }
 
 
-        const unsigned nbInteraction = interactionList.size();
-        for(unsigned i=0; i< nbInteraction; i++)
+        const size_t nbInteraction = interactionList.size();
+        for(size_t i=0; i< nbInteraction; i++)
         {
 
             if( MULTIMATRIX_VERBOSE)/////////////////////////////////////////////////////////

@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_CORE_BEHAVIOR_PROJECTIVECONSTRAINTSET_CPP
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>

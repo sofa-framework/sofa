@@ -2,17 +2,21 @@
 \usepackage{setspace}
 \usepackage{amsmath}
 \usepackage{titling}
-
+\usepackage{mathtools}
+\usepackage{nomencl}
+\usepackage{algorithmicx}
+\usepackage{algorithm,algpseudocode}
+\makenomenclature
 \setlength{\droptitle}{-10em}   % This is your set screw
 \title{ODE solvers recursive equations}
 \author{Aurelie Degletagne}
-
 
 \begin{document}
 \begin{doublespace}
 
 \maketitle
 \tableofcontents
+\renewcommand{\nomname}{Notations}
 
 \section{Notations}
 In each following equation h is the time step, $x_{k}$,$v_{k}$,$a_{k}$   the position, velocity and acceleration at the time step k, K the stiffness, M the mass, $r_{m}$ the rayleigh mass, $r_{k}$ the rayleigh stiffness and $F_{ext}$ the external forces.
@@ -55,11 +59,34 @@ $ v_{k+1} = \frac{2(Fext_{k}+p_{k}-hr_{m}v_{k}M)}{M} $
 \\$ x_{k+1} = x_{k}+hv_{k+1} $
 
 \subsection{VariationalSymplecticImplicit solver}
-The current implementation for implicit integration assume $alpha=0.5$ (quadratic accuracy) and uses several Newton steps to estimate velocity.
-\\$ v_{k+1} = \frac{2(hFext_{k}+2p_{k})}{4M+h^2K+4h(r_{m}M+r_{k}K)} $
-\\$ p_{k+1} = (M+\frac{h^2}{4})v_{k+1}+\frac{h}{2}Fext_{k} $
-\\$ x_{k+1} = x_{k}+hv_{k+1} $
-
+The current implementation for implicit integration assume $alpha=0.5$ (quadratic accuracy) and uses several Newton steps to estimate velocity. We have 3 state variables: position $q_{t}$, the velocity $v_{t}$ and the momentum $p_{t}$ initialized such that $p_{0}=Mv_{0}$.
+\\2 steps are required for this solver:
+\\ \underline{Step 1:} \textbf{Find the new velocity $v_{k+1}$ by minimizing Lylian energy.}
+\\ The Lilyan L energy is the sum of kinetic energy, elastic energy and damping:
+$L(v_{k+1})=\frac{h}{2}v_{k+1}^{T}Mv_{k+1} + hW(q_{k}+\frac{h}{2}v_{k+1}) - hp_{k}v_{k+1}$
+\\To minimize this energy we solve the non-linear system of equations:
+\\$\partial L(v_{k+1}) = 0 = hMv_{k+1} - \frac{h^{2}}{2}F(q_{k}+\frac{h}{2}v_{k+1})-hp_{k}$ \\where F() is the force associated with the potential energy (opposite gradient)
+\\ Finding the roots of the non-linear equations can be done performing several newton steps by linearizing the force around $q_{k}+\frac{h}{2}v_{k+1}=q^{*}$
+\\ This is an iterative process:
+\begin{itemize}
+\item Define $ q_{i}^{*}$ as the current estimate of $q^{*}$. The objective is to find $q^{*}$ such that:
+$2*M(q^{*}-q_{k})-\frac{h^2}{2}F(q^{*})-hp_{k}=0$
+\item Search for $\partial q_{i} = q_{i+1}^{*}-q_{k}$ by linearizing the force around $q_{i}^{*}$ 
+At the end we have: $(\frac{4}{h^{2}}M-K) \partial q_{i} = F(q_{i}^{*}) - K()\partial q_{i-1} + \frac{2}{h}p_{k}$
+\end{itemize}
+This iterative process stops when the maximal number of newton iterations is reached or when the required accuracy of the estimated position $q^{*}$ is reached.
+\\ At the end we obtain the velocity for the next time step:
+$v_{k+1}=\frac{2(q_{i+1}^{*}-q_{k})}{h}$
+\\ \\ \\ \underline{Step 2:} \textbf{Update the new position q and the new momentum p}
+\\$q_{k+1} = q_{k} + hv_{k+1}$
+\\$ p_{k+1} = Mv{k+1}+\frac{h}{2}q_{i+1}^{*}$
+\\ \\ \textbf{Energy conservation:}
+\\This solver enables to conserve the Hamiltonian energy. 
+\\$E_{Hamiltonian} = \frac{p_{k+1}^{t}Mp_{k+1}}{2} + E_{potential}$
+\\Some tests in modules/SofaImplicitOdeSolver/SofaImplicitOdeSolver\_test show the energy conservation for a mass spring-system but also for a planet-sun system.
+\\For example you can have a look at the example scene:
+\\examples/Components/solver/VariationalSymplecticSolver.scn 
+\\It is an embedded beam with FEM force field. This scene uses the implicit variational solver and as you can see on the generated file energy.txt the Hamiltonian energy is constant.
 \section{RungeKutta}
 It is a popular explicit time integration method, much more precise than euler explicit solver.
 

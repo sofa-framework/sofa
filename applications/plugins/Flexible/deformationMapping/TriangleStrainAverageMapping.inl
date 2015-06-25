@@ -103,7 +103,7 @@ void TriangleStrainAverageMapping<TIn, TOut>::init()
         jacobian.beginBlockRow(i);
         for( unsigned j=startIndex; j<endIndices[i]; j++)
         {
-            jacobian.createBlock( triangleIndices[j], Block::Identity() * weights[j] * diagMat[i] );
+            jacobian.createBlock( triangleIndices[j], Block::s_identity * weights[j] * diagMat[i] );
         }
         jacobian.endBlockRow();
 

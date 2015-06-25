@@ -42,12 +42,12 @@ namespace collision
 using namespace defaulttype;
 
 #ifndef SOFA_DOUBLE
-template class SOFA_BASE_COLLISION_API BaseContactMapper< defaulttype::Vec3fTypes>;
-template class SOFA_BASE_COLLISION_API BaseContactMapper< defaulttype::Rigid3fTypes >;
+template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Vec3fTypes>;
+template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Rigid3fTypes>;
 #endif
 #ifndef SOFA_FLOAT
-template class SOFA_BASE_COLLISION_API BaseContactMapper< defaulttype::Vec3dTypes>;
-template class SOFA_BASE_COLLISION_API BaseContactMapper< defaulttype::Rigid3dTypes >;
+template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Vec3dTypes>;
+template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Rigid3dTypes>;
 #endif
 
 } // namespace collision

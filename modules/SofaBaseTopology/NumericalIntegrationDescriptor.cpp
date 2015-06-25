@@ -36,10 +36,16 @@ using namespace sofa::defaulttype;
 
 
 #ifndef SOFA_FLOAT
-template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double, 4>;
+template class  SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double,4>;
+template class  SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double,3>;
+template class  SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double,1>;
+
 #endif
+
 #ifndef SOFA_DOUBLE
-template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<float, 4>;
+template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<float,4>;
+template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<float,3>;
+template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<float,1>;
 #endif
 
 } // namespace topology

@@ -314,6 +314,9 @@ public:
             this->elems[i][i]=1;
     }
 
+    /// precomputed identity matrix of size (L,L)
+    static Mat<L,L,real> s_identity;
+
     /// Returns the identity matrix
     static Mat<L,L,real> Identity()
     {
@@ -684,6 +687,11 @@ public:
     }
 
 };
+
+
+
+template <int L, int C, typename real> Mat<L,L,real> Mat<L,C,real>::s_identity = Mat<L,L,real>::Identity();
+
 
 /// Same as Mat except the values are not initialized by default
 template <int L, int C, typename real=float>

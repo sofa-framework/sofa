@@ -317,7 +317,7 @@ struct SE3 {
 		real theta2 = x.squaredNorm();
 
 		if( theta2 > epsilon() ) {
-			res.noalias() = res + (R.transpose() - mat33::Identity() + xhat) * xhat / theta2;
+            res.noalias() += (R.transpose() - mat33::Identity() + xhat) * xhat / theta2;
 		}
 		
 		return res;

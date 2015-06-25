@@ -511,7 +511,10 @@ void AttributeContainer::removeLine(unsigned int index)
             m_tableBlocksEmpty.push_back(bi);
     }
     else
+    {
         std::cerr << "Error removing non existing index " << index << std::endl;
+    }
+
 }
 
 /**************************************

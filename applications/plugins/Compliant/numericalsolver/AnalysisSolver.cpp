@@ -59,12 +59,12 @@ void AnalysisSolver::factor(const system_type& system) {
         real min = eigen.tail<1>()(0);
         real max = eigen(0);
 
-        if( min < std::numeric_limits<real>::epsilon() ) std::cout << "AnalysisSolver: singular system"<<std::endl;
+        if( min < std::numeric_limits<real>::epsilon() ) std::cout << "AnalysisSolver: singular KKT system"<<std::endl;
         else
         {
             const real cond = max/min;
-            std::cout << "condition number: " << cond << "("<<max<<"/"<<min<<")"<<std::endl;
-            std::cout << "required precision:  "<<log(cond)<<" bits"<<std::endl;
+            std::cout << "condition number (KKT system): " << cond << " ("<<max<<"/"<<min<<")"<<std::endl;
+            std::cout << "required precision (KKT system):  "<<ceil(log(cond))<<" bits"<<std::endl;
         }
 
 
@@ -77,8 +77,8 @@ void AnalysisSolver::factor(const system_type& system) {
         else
         {
             const real cond = max/min;
-            std::cout << "condition number implicit system: " << cond << "("<<max<<"/"<<min<<")"<<std::endl;
-            std::cout << "required precision implicit system:  "<<log(cond)<<" bits"<<std::endl;
+            std::cout << "condition number (implicit system): " << cond << " ("<<max<<"/"<<min<<")"<<std::endl;
+            std::cout << "required precision (implicit system):  "<<ceil(log(cond))<<" bits"<<std::endl;
         }
     }
 

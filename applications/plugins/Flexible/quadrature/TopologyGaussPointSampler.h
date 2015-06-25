@@ -60,6 +60,7 @@ public:
     typedef Inherited::waPositions waPositions;
     typedef Inherited::VTransform VTransform;
     typedef Inherited::Transform Transform;
+    typedef Inherited::volumeIntegralType volumeIntegralType;
     //@}
 
     /** @name  topology */
@@ -68,6 +69,7 @@ public:
     typedef sofa::core::topology::BaseMeshTopology Topo;
     Topo* parentTopology;
     Data< vector<unsigned int> > f_cell;
+    Data< vector<unsigned int> > f_indices;
 
     typedef topology::TetrahedronSetGeometryAlgorithms<defaulttype::StdVectorTypes<Coord,Coord,Real> > TetraGeoAlg;
     TetraGeoAlg* tetraGeoAlgo;
@@ -101,6 +103,7 @@ public:
 
         addInput(&f_inPosition);
         addInput(&f_fineVolumes);
+        addInput(&f_indices);
         addOutput(&f_cell);
         setDirtyValue();
     }
@@ -112,6 +115,7 @@ protected:
       , f_inPosition(initData(&f_inPosition,SeqPositions(),"inPosition","input node positions"))
       , parentTopology( 0 )
       , f_cell(initData(&f_cell,"cell","cell index associated with each sample"))
+      , f_indices(initData(&f_indices,"indices","list of cells where sampling is performed (all by default)"))
       , tetraGeoAlgo( 0 )
       , f_orientation(initData(&f_orientation,"orientation","input orientation (Euler angles) inside each cell"))
       , f_useLocalOrientation(initData(&f_useLocalOrientation,true,"useLocalOrientation","tells if orientations are defined in the local basis on each cell"))
@@ -124,24 +128,40 @@ protected:
 
     }
 
+    inline bool isInIndices(const std::set<unsigned int>& indices,const unsigned int& index)
+    {
+        if(!indices.size()) return true;
+        if(indices.find(index)!=indices.end()) return true; else return false;
+    }
+
     virtual void update()
     {
-        if(!this->parentTopology) return;
+        raPositions parent(f_inPosition);
+        f_fineVolumes.updateIfDirty();
+        f_indices.updateIfDirty();
+        cleanDirty();
 
-        raPositions parent(this->f_inPosition);
+        if( !parentTopology ) return;
+
         if(!parent.size()) return;
 
-        const Topo::SeqTetrahedra& tetrahedra = this->parentTopology->getTetrahedra();
-        const Topo::SeqHexahedra& cubes = this->parentTopology->getHexahedra();
-        const Topo::SeqTriangles& triangles = this->parentTopology->getTriangles();
-        const Topo::SeqQuads& quads = this->parentTopology->getQuads();
-        const Topo::SeqEdges& edges = this->parentTopology->getEdges();
+        // convert to set to speed up search
+        std::set<unsigned int> indices; for(size_t i=0;i<f_indices.getValue().size();i++) indices.insert(f_indices.getValue()[i]);
+
+        const Topo::SeqTetrahedra& tetrahedra = parentTopology->getTetrahedra();
+        const Topo::SeqHexahedra& cubes = parentTopology->getHexahedra();
+        const Topo::SeqTriangles& triangles = parentTopology->getTriangles();
+        const Topo::SeqQuads& quads = parentTopology->getQuads();
+        const Topo::SeqEdges& edges = parentTopology->getEdges();
 
         waPositions pos(this->f_position);
         waVolume vol(this->f_volume);
         helper::WriteOnlyAccessor<Data< VTransform > > transforms(this->f_transforms);
-
-        helper::WriteOnlyAccessor<Data< vector<unsigned int> > > cel(this->f_cell);
+        helper::WriteOnlyAccessor<Data< vector<unsigned int> > > cel(f_cell);
+        pos.clear();
+        vol.clear();
+        transforms.clear();
+        cel.clear();
 
         if ( tetrahedra.empty() && cubes.empty() )
         {
@@ -152,17 +172,13 @@ protected:
 
                 if(this->f_method.getValue().getSelectedId() == ELASTON || this->f_order.getValue()==1) // one point at center
                 {
-                    pos.resize ( edges.size() );
-                    vol.resize ( pos.size() );
-                    transforms.resize ( pos.size() );
-                    cel.resize ( pos.size() );
-                    for (unsigned int i=0; i<edges.size(); i++ )
+                    for (unsigned int i=0; i<edges.size(); i++ ) if(isInIndices(indices,i))
                     {
                         const Coord& p1=parent[edges[i][0]],p2=parent[edges[i][1]];
-                        pos[i] = (p1+p2)*0.5;
-                        vol[i].resize(1);  if(f_fineVolumes.getValue().size()>i) vol[i][0]=f_fineVolumes.getValue()[i]; else  vol[i][0]=(p1-p2).norm();
-                        cel[i] = i;
-                        transforms[i] = getLocalFrame1D(p1,p2);
+                        pos.push_back( (p1+p2)*0.5 );
+                        vol.push_back(volumeIntegralType(1,(f_fineVolumes.getValue().size()>i)?f_fineVolumes.getValue()[i]:(p1-p2).norm()));
+                        cel.push_back(i);
+                        transforms.push_back(getLocalFrame1D(p1,p2));
                         // to do : volume integrals for elastons
                     }
                 }
@@ -173,49 +189,35 @@ protected:
                 // no 3D elements -> map on 2D elements
                 if(this->f_method.getValue().getSelectedId() == ELASTON || this->f_order.getValue()==1) // one point at center
                 {
-                    pos.resize ( triangles.size() +quads.size() );
-                    vol.resize ( pos.size() );
-                    transforms.resize ( pos.size() );
-                    cel.resize ( pos.size() );
-                    for ( unsigned int i = 0; i < triangles.size(); i++ )
+                    for ( unsigned int i = 0; i < triangles.size(); i++ ) if(isInIndices(indices,i))
                     {
                         const Coord& p1=parent[triangles[i][0]],p2=parent[triangles[i][1]],p3=parent[triangles[i][2]];
-                        pos[i] = (p1+p2+p3)/(Real)3.;
-                        vol[i].resize(1);  if(f_fineVolumes.getValue().size()>i) vol[i][0]=f_fineVolumes.getValue()[i]; else  vol[i][0] = cross(p2-p1,p3-p1).norm()*0.5;
-                        cel[i] = i;
+                        pos.push_back( (p1+p2+p3)/(Real)3. );
+                        vol.push_back(volumeIntegralType(1,(f_fineVolumes.getValue().size()>i)?f_fineVolumes.getValue()[i]:cross(p2-p1,p3-p1).norm()*0.5));
+                        cel.push_back( i );
                         // to do : volume integrals for elastons
                         // compute local orientation given user input and local element frame
-                        Transform U=this->getUserOrientation(i),R;
-                        R = getLocalFrame2D(p1,p2,p3);
-                        if(this->f_useLocalOrientation.getValue()) transforms[i] = reorientGlobalOrientation(R*U,R);
-                        else transforms[i] = reorientGlobalOrientation(U,R);
+                        Transform U=this->getUserOrientation(i),R= getLocalFrame2D(p1,p2,p3);
+                        transforms.push_back( this->f_useLocalOrientation.getValue()? reorientGlobalOrientation(R*U,R) : reorientGlobalOrientation(U,R) );
                     }
                     int c0 = triangles.size();
-                    for ( unsigned int i = 0; i < quads.size(); i++ )
+                    for ( unsigned int i = 0; i < quads.size(); i++ ) if(isInIndices(indices,i))
                     {
                         const Coord& p1=parent[quads[i][0]],p2=parent[quads[i][1]],p3=parent[quads[i][2]],p4=parent[quads[i][3]];
-                        pos[i+c0] = (p1+p2+p3+p4)*0.25;
-                        vol[i+c0].resize(1);  if(f_fineVolumes.getValue().size()>i+c0) vol[i+c0][0]=f_fineVolumes.getValue()[i+c0]; else  vol[i+c0][0] = cross(p2-p1,p3-p1).norm();
-                        cel[i+c0] = i+c0;
+                        pos.push_back( (p1+p2+p3+p4)*0.25 );
+                        vol.push_back(volumeIntegralType(1,(f_fineVolumes.getValue().size()>i+c0)?f_fineVolumes.getValue()[i+c0]:cross(p2-p1,p3-p1).norm()));
+                        cel.push_back( i+c0 );
                         // to do : volume integrals for elastons
                         // compute local orientation given user input and local element frame
-                        Transform U=this->getUserOrientation(i+c0),R;
-                        R = getLocalFrame2D(p1,p2,p4);
-                        if(this->f_useLocalOrientation.getValue()) transforms[i+c0] = reorientGlobalOrientation(R*U,R);
-                        else transforms[i+c0] = reorientGlobalOrientation(U,R);
+                        Transform U=this->getUserOrientation(i+c0),R= getLocalFrame2D(p1,p2,p4);
+                        transforms.push_back( this->f_useLocalOrientation.getValue() ? reorientGlobalOrientation(R*U,R) : reorientGlobalOrientation(U,R) );
                     }
                 }
                 else if(this->f_method.getValue().getSelectedId() == GAUSSLEGENDRE || this->f_order.getValue()==2)
                 {
-                    pos.resize ( 4*quads.size() );
-                    vol.resize ( pos.size() );
-                    transforms.resize ( pos.size() );
-                    cel.resize ( pos.size() );
-
                     // 4 points per quad at [ +-1/sqrt(3), +-1/sqrt(3)], weight = volume/4
                     const Real offset = 0.5/sqrt(3.0);
-                    unsigned int count=0;
-                    for ( unsigned int i = 0; i < quads.size(); i++ )
+                    for ( unsigned int i = 0; i < quads.size(); i++ ) if(isInIndices(indices,i))
                     {
                         const Coord& p1=parent[quads[i][0]],p2=parent[quads[i][1]],p3=parent[quads[i][2]],p4=parent[quads[i][3]];
                         Coord u=(p2-p1),v=(p4-p1);
@@ -224,20 +226,17 @@ protected:
                         u*=offset; v*=offset;
                         const Coord c = (p1+p2+p3+p4)*0.25;
                         // compute local orientation given user input and local element frame
-                        Transform U=this->getUserOrientation(i),R,M;
-                        R = getLocalFrame2D(p1,p2,p4);
-                        if(this->f_useLocalOrientation.getValue()) M = reorientGlobalOrientation(R*U,R);
-                        else M = reorientGlobalOrientation(U,R);
+                        Transform U=this->getUserOrientation(i),R= getLocalFrame2D(p1,p2,p4);
+                        Transform M = this->f_useLocalOrientation.getValue() ? reorientGlobalOrientation(R*U,R) : reorientGlobalOrientation(U,R);
 
                         for (int gx2=-1; gx2<=1; gx2+=2)
                             for (int gx3=-1; gx3<=1; gx3+=2)
                             {
-                                pos[count] = c + u*gx3 + v*gx2;
-                                vol[count].resize(1); vol[count][0] = V;
-                                cel[count] = i;
+                                pos.push_back( c + u*gx3 + v*gx2 );
+                                vol.push_back(volumeIntegralType(1,V));
+                                cel.push_back( i );
                                 //getCubeVolumes(vol[i+c0],p1,p2,p3,p4,this->f_order.getValue());
-                                transforms[count] = M;
-                                count++;
+                                transforms.push_back( M );
                             }
                     }
                 }
@@ -249,35 +248,30 @@ protected:
             // map on 3D elements
             if(this->f_method.getValue().getSelectedId() == ELASTON || this->f_order.getValue()==1) // one point at center
             {
-                pos.resize ( tetrahedra.size() +cubes.size() );
-                vol.resize ( pos.size() );
-                transforms.resize ( pos.size() );
-                cel.resize ( pos.size() );
-                for ( unsigned int i = 0; i < tetrahedra.size(); i++ )
+                for ( unsigned int i = 0; i < tetrahedra.size(); i++ ) if(isInIndices(indices,i))
                 {
                     const Coord& p1=parent[tetrahedra[i][0]],p2=parent[tetrahedra[i][1]],p3=parent[tetrahedra[i][2]],p4=parent[tetrahedra[i][3]];
-                    pos[i] = (p1+p2+p3+p4)*0.25;
-                    vol[i].resize(1); if(f_fineVolumes.getValue().size()>i) vol[i][0]=f_fineVolumes.getValue()[i]; else  vol[i][0] = fabs(dot(cross(p4-p1,p3-p1),p2-p1))/(Real)6.;
-                    cel[i] = i;
+                    pos.push_back( (p1+p2+p3+p4)*0.25 );
+                    vol.push_back(volumeIntegralType(1,(f_fineVolumes.getValue().size()>i)?f_fineVolumes.getValue()[i]:fabs(dot(cross(p4-p1,p3-p1),p2-p1))/(Real)6.));
+                    cel.push_back( i );
                     // to do : volume integrals for elastons
                     // compute local orientation given user input and local element frame
                     Transform U=this->getUserOrientation(i);
-                    if(this->f_useLocalOrientation.getValue()) transforms[i] = getLocalFrame2D(p1,p2,p3) * U;
-                    else transforms[i]=U;
+                    transforms.push_back(this->f_useLocalOrientation.getValue() ? getLocalFrame2D(p1,p2,p3) * U : U);
                 }
                 int c0 = tetrahedra.size();
-                for ( unsigned int i = 0; i < cubes.size(); i++ )
+                for ( unsigned int i = 0; i < cubes.size(); i++ ) if(isInIndices(indices,i))
                 {
                     const Coord& p1=parent[cubes[i][0]],p2=parent[cubes[i][1]],p3=parent[cubes[i][2]],p4=parent[cubes[i][3]],p5=parent[cubes[i][4]],p6=parent[cubes[i][5]],p7=parent[cubes[i][6]],p8=parent[cubes[i][7]];
-                    pos[i+c0] = (p1+p2+p3+p4+p5+p6+p7+p8)*0.125;
-                    cel[i+c0] = i+c0;
-                    getCubeVolumes(vol[i+c0],p1,p2,p3,p4,this->f_order.getValue());
-                    if(f_fineVolumes.getValue().size()>i+c0) { Real fact=f_fineVolumes.getValue()[i+c0]/vol[i+c0][0];   for (unsigned int j=0; j<vol[i+c0].size(); j++) vol[i+c0][j]*=fact; }
-                    //vol[i+c0].resize(1); if(f_fineVolumes.getValue().size()>i+c0) vol[i+c0][0]=f_fineVolumes.getValue()[i+c0]; else  vol[i+c0][0] = fabs(dot(cross(p4-p1,p3-p1),p2-p1));
+                    pos.push_back( (p1+p2+p3+p4+p5+p6+p7+p8)*0.125 );
+                    cel.push_back( i+c0 );
+                    volumeIntegralType v; getCubeVolumes(v,p1,p2,p3,p4,this->f_order.getValue());
+                    if(f_fineVolumes.getValue().size()>i+c0) { Real fact=f_fineVolumes.getValue()[i+c0]/v[0];   for (unsigned int j=0; j<v.size(); j++) v[j]*=fact; }
+                    vol.push_back(v);
+                    //vol.push_back(volumeIntegralType(1,(f_fineVolumes.getValue().size()>i+c0)?f_fineVolumes.getValue()[i+c0]:fabs(dot(cross(p4-p1,p3-p1),p2-p1))));
                     // compute local orientation given user input and local element frame
                     Transform U=this->getUserOrientation(i+c0);
-                    if(this->f_useLocalOrientation.getValue()) transforms[i+c0] = getLocalFrame2D(p1,p2,p5) * U;
-                    else transforms[i+c0]=U;
+                    transforms.push_back(this->f_useLocalOrientation.getValue() ? getLocalFrame2D(p1,p2,p5) * U : U);
                 }
             }
             else if(this->f_method.getValue().getSelectedId() == GAUSSLEGENDRE)
@@ -285,91 +279,82 @@ protected:
                 if(tetraGeoAlgo)  // retrieve gauss points from geometry algorithm
                 {
                     typedef topology::NumericalIntegrationDescriptor<Real,4> IntegrationDescriptor;
-                    IntegrationDescriptor::QuadraturePointArray qpa=tetraGeoAlgo->getTetrahedronNumericalIntegrationDescriptor().getQuadratureMethod( (IntegrationDescriptor::QuadratureMethod)0,this->f_order.getValue());
-                    pos.resize ( qpa.size()*tetrahedra.size());
-                    vol.resize ( pos.size() );
-                    transforms.resize ( pos.size() );
-                    cel.resize ( pos.size() );
-                    unsigned int count=0;
-                    for ( unsigned int i = 0; i < tetrahedra.size(); i++ )
+                    IntegrationDescriptor::QuadraturePointArray qpa=tetraGeoAlgo->getTetrahedronNumericalIntegrationDescriptor().getQuadratureMethod( (IntegrationDescriptor::QuadratureMethod)3,this->f_order.getValue());
+                    for ( unsigned int i = 0; i < tetrahedra.size(); i++ ) if(isInIndices(indices,i))
                     {
                         const Coord p[4]={parent[tetrahedra[i][0]],parent[tetrahedra[i][1]],parent[tetrahedra[i][2]],parent[tetrahedra[i][3]]};
                         Real V; if(f_fineVolumes.getValue().size()>i) V=f_fineVolumes.getValue()[i]; else  V = fabs(dot(cross(p[3]-p[0],p[2]-p[0]),p[1]-p[0]))/(Real)6.;
                         // compute local orientation given user input and local element frame
-                        Transform U=this->getUserOrientation(i),M;
-                        if(this->f_useLocalOrientation.getValue()) M= getLocalFrame2D(p[0],p[1],p[2]) * U;
-                        else M=U;
+                        Transform U=this->getUserOrientation(i);
+                        Transform M=this->f_useLocalOrientation.getValue() ? getLocalFrame2D(p[0],p[1],p[2]) * U : U;
                         for ( unsigned int j = 0; j < qpa.size(); j++ )
                         {
-                            pos[count]=Coord(); for ( unsigned int k = 0; k < qpa[j].first.size(); k++ ) pos[count]+=p[k]*qpa[j].first[k];
-                            vol[count].resize(1); vol[count][0] = V*qpa[j].second*(Real)6.0;        // todo: change weight in TetrahedronGeoAlgo to correspond to tet volume weighting (not 6xtet volume weighting)
-                            cel[count] = i;
-                            transforms[count]=M;
-                            count++;
+                            Coord P; for ( unsigned int k = 0; k < qpa[j].first.size(); k++ ) P+=p[k]*qpa[j].first[k];
+                            pos.push_back(P);
+                            vol.push_back(volumeIntegralType(1,V*qpa[j].second*(Real)6.0)); // todo: change weight in TetrahedronGeoAlgo to correspond to tet volume weighting (not 6xtet volume weighting)
+                            cel.push_back( i );
+                            transforms.push_back( M );
                         }
                     }
                 }
                 else   if(this->f_order.getValue()==2)  // else use built in gauss points sampling
                 {
-                    pos.resize ( 4*tetrahedra.size() + 8*cubes.size() );
-                    vol.resize ( pos.size() );
-                    transforms.resize ( pos.size() );
-                    cel.resize ( pos.size() );
-                    unsigned int count=0;
-
                     // 4 points per tet at [ (5+3sqrt(5))/20, (5-sqrt(5))/20, (5-sqrt(5))/20, (5-sqrt(5))/20 ], weight = volume/4
                     if(tetrahedra.size())
                     {
                         const Real offsetB = (5.0-sqrt(5.0))/20.0;
                         const Real offsetA = 1.0-4.0*offsetB;
-                        for ( unsigned int i = 0; i < tetrahedra.size(); i++ )
+                        for ( unsigned int i = 0; i < tetrahedra.size(); i++ ) if(isInIndices(indices,i))
                         {
                             const Coord p[4]={parent[tetrahedra[i][0]],parent[tetrahedra[i][1]],parent[tetrahedra[i][2]],parent[tetrahedra[i][3]]};
                             Real V; if(f_fineVolumes.getValue().size()>i) V=f_fineVolumes.getValue()[i]/4.0; else  V = fabs(dot(cross(p[3]-p[0],p[2]-p[0]),p[1]-p[0]))/(Real)24.;
                             // compute local orientation given user input and local element frame
-                            Transform U=this->getUserOrientation(i),M;
-                            if(this->f_useLocalOrientation.getValue()) M = getLocalFrame2D(p[0],p[1],p[2]) * U;
-                            else M=U;
+                            Transform U=this->getUserOrientation(i);
+                            Transform M = this->f_useLocalOrientation.getValue()? getLocalFrame2D(p[0],p[1],p[2]) * U : U;
                             for ( unsigned int j = 0; j < 4; j++ )
                             {
-                                pos[count] = (p[0]+p[1]+p[2]+p[3])*offsetB + p[j]*offsetA;
-                                vol[count].resize(1); vol[count][0] = V;
-                                cel[count] = i;
+                                pos.push_back( (p[0]+p[1]+p[2]+p[3])*offsetB + p[j]*offsetA );
+                                vol.push_back(volumeIntegralType(1,V));
+                                cel.push_back( i );
                                 // to do : volume integrals for elastons
-                                transforms[count]=M;
-                                count++;
+                                transforms.push_back( M );
                             }
                         }
                     }
+                }
+                else serr<<"Requested quadrature order not implemented here: use GeometryAlgorithms"<<sendl;
+
+                int c0 = tetrahedra.size();
+                if(this->f_order.getValue()==2)  // else use built in gauss points sampling
+                {
 
                     // 8 points per cube at [ +-1/sqrt(3), +-1/sqrt(3), +-1/sqrt(3) ], weight = volume/8
                     if(cubes.size())
                     {
                         const Real offset = 0.5/sqrt(3.0);
-                        for ( unsigned int i = 0; i < cubes.size(); i++ )
+                        for ( unsigned int i = 0; i < cubes.size(); i++ ) if(isInIndices(indices,i))
                         {
                             const Coord& p1=parent[cubes[i][0]],p2=parent[cubes[i][1]],p3=parent[cubes[i][2]],p4=parent[cubes[i][3]],p5=parent[cubes[i][4]],p6=parent[cubes[i][5]],p7=parent[cubes[i][6]],p8=parent[cubes[i][7]];
                             Coord u=(p2-p1),v=(p5-p1),w=(p4-p1);
                             Real V;
-                            if(f_fineVolumes.getValue().size()>i) V=f_fineVolumes.getValue()[i]/(Real)8; else  V=u.norm()*v.norm()*w.norm()/(Real)8.;
+                            if(f_fineVolumes.getValue().size()>i+c0) V=f_fineVolumes.getValue()[i+c0]/(Real)8; else  V=u.norm()*v.norm()*w.norm()/(Real)8.;
                             // compute local orientation given user input and local element frame
-                            Transform U=this->getUserOrientation(i+tetrahedra.size()),M;
-                            if(this->f_useLocalOrientation.getValue()) M = getLocalFrame2D(p1,p2,p5) * U;
-                            else M=U;
+                            Transform U=this->getUserOrientation(i+c0);
+                            Transform M = this->f_useLocalOrientation.getValue() ? getLocalFrame2D(p1,p2,p5) * U : U;
                             u*=offset; v*=offset; w*=offset;
                             const Coord c = (p1+p2+p3+p4+p5+p6+p7+p8)*0.125;
                             for (int gx1=-1; gx1<=1; gx1+=2)
                                 for (int gx2=-1; gx2<=1; gx2+=2)
                                     for (int gx3=-1; gx3<=1; gx3+=2)
                                     {
-                                        pos[count] = c + u*gx3 + v*gx2 + w*gx1;
-                                        vol[count].resize(1); vol[count][0] = V;
-                                        cel[count] = i;
+                                        pos.push_back( c + u*gx3 + v*gx2 + w*gx1 );
+                                        vol.push_back(volumeIntegralType(1,V));
+                                        cel.push_back( i+c0 );
                                         //getCubeVolumes(vol[i+c0],p1,p2,p3,p4,this->f_order.getValue());
-                                        transforms[count]=M;
-                                        count++;
+                                        transforms.push_back( M) ;
                                     }
                         }
+
                     }
                 }
                 else serr<<"Requested quadrature order not implemented here: use GeometryAlgorithms"<<sendl;
@@ -379,12 +364,12 @@ protected:
         }
 
         if(this->f_printLog.getValue()) if(pos.size())    std::cout<<"TopologyGaussPointSampler: "<< pos.size() <<" generated samples"<<std::endl;
-        cleanDirty();
+
     }
 
 
     // returns integrated volumes and moments across an element
-    inline void getCubeVolumes(vector<Real> &V, const Coord& p1,const Coord& p2,const Coord& p3,const Coord& p4, const unsigned int order)
+    inline void getCubeVolumes(volumeIntegralType &V, const Coord& p1,const Coord& p2,const Coord& p3,const Coord& p4, const unsigned int order)
     {
         Coord u=p2-p1,v=p3-p1,w=p4-p1;
         Vec<3,Real> l;  for(unsigned int i=0; i<3; i++) l[i]=helper::rmax(helper::rmax(helper::rabs(u[i]),helper::rabs(v[i])),helper::rabs(w[i]));

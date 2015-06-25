@@ -382,7 +382,7 @@ using namespace core::behavior;
                     vec v_constraint( total_dim );
                     dofs->copyToBuffer( &v_constraint(0), velId.getId(dofs), total_dim );
 
-                    res.segment(off,total_dim).noalias() = res.segment(off,total_dim) - (1 - beta.getValue()) * v_constraint;
+                    res.segment(off,total_dim).noalias() -= (1 - beta.getValue()) * v_constraint;
                     res.segment(off,total_dim) /= beta.getValue();
                 }
                 break;
@@ -394,7 +394,7 @@ using namespace core::behavior;
                 vec v_constraint( total_dim );
                 dofs->copyToBuffer( &v_constraint(0), velId.getId(dofs), total_dim );
 
-                res.segment(off,total_dim).noalias() = res.segment(off,total_dim) - v_constraint;
+                res.segment(off,total_dim).noalias() -= v_constraint;
 
                 if( beta.getValue() != 1 ) res.segment(off,total_dim) /= beta.getValue();
 
@@ -407,7 +407,7 @@ using namespace core::behavior;
                 vec v_constraint( total_dim );
                 dofs->copyToBuffer( &v_constraint(0), velId.getId(dofs), total_dim );
 
-                res.segment(off,total_dim).noalias() = res.segment(off,total_dim) - v_constraint;
+                res.segment(off,total_dim).noalias() -= v_constraint;
 
                 res.segment(off,total_dim) /= ( beta.getValue() * sys.dt );
 
@@ -427,7 +427,7 @@ using namespace core::behavior;
 //        if( beta.getValue() != 1 ) {
 //            // TODO dofs->copyToBuffer(v_compliant, core::VecDerivId::vel(), dim); rather than sys.J * v, v_compliant is already mapped
 //            // TODO use v_compliant to implement constraint damping
-//            res.tail( sys.n ).noalias() = res.tail( sys.n ) - (1 - beta.getValue()) * (sys.J * v);
+//            res.tail( sys.n ).noalias() -= (1 - beta.getValue()) * (sys.J * v);
 //            res.tail( sys.n ) /= beta.getValue();
 //        }
     }

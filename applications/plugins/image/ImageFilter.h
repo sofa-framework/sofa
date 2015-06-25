@@ -190,8 +190,10 @@ protected:
         if(!updateImage && !updateTransform) {updateImage=true; updateTransform=true;}  // change of parameters -> update all
 
         raParam p(this->param);
-        raImagei in(this->inputImage);
         raTransform inT(this->inputTransform);
+        raImagei in(this->inputImage);
+
+        cleanDirty();
 
         waImageo out(this->outputImage);
         waTransform outT(this->outputTransform);
@@ -654,7 +656,6 @@ protected:
 
 		if (updateTransform) outT->update(); // update internal data
 
-        cleanDirty();
     }
 
 };

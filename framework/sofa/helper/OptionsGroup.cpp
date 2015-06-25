@@ -47,6 +47,7 @@ OptionsGroup::OptionsGroup(int nbofRadioButton,...)
     for(unsigned int i=0; i<textItems.size(); i++)
     {
         const char * tempochar=va_arg(vl,char *);
+        assert( tempochar != "" );
         std::string  tempostring(tempochar);
         textItems[i]=tempostring;
     }

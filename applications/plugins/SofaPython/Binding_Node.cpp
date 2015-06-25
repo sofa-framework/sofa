@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "PythonCommon.h"
+#include "PythonMacros.h"
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
@@ -322,6 +322,31 @@ extern "C" PyObject * Node_sendKeyreleasedEvent(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
+extern "C" PyObject * Node_getMechanicalState(PyObject * self, PyObject * /*args*/)
+{
+    Node* node = dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+
+    const behavior::BaseMechanicalState* state = node->mechanicalState.get();
+
+    if( state ) return SP_BUILD_PYSPTR((Base*)state);
+
+    Py_RETURN_NONE;
+}
+
+extern "C" PyObject * Node_getMechanicalMapping(PyObject * self, PyObject * /*args*/)
+{
+    Node* node = dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+
+    const sofa::core::BaseMapping* mapping = node->mechanicalMapping.get();
+
+    if( mapping ) return SP_BUILD_PYSPTR((Base*)mapping);
+
+    Py_RETURN_NONE;
+}
+
+
+
+
 SP_CLASS_METHODS_BEGIN(Node)
 SP_CLASS_METHOD(Node,executeVisitor)
 SP_CLASS_METHOD(Node,getRoot)
@@ -342,6 +367,8 @@ SP_CLASS_METHOD(Node,detachFromGraph)
 SP_CLASS_METHOD(Node,sendScriptEvent)
 SP_CLASS_METHOD(Node,sendKeypressedEvent)
 SP_CLASS_METHOD(Node,sendKeyreleasedEvent)
+SP_CLASS_METHOD(Node,getMechanicalState)
+SP_CLASS_METHOD(Node,getMechanicalMapping)
 SP_CLASS_METHODS_END
 
 SP_CLASS_TYPE_SPTR(Node,Node,Context)

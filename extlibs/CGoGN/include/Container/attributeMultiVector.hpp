@@ -129,12 +129,8 @@ inline AttributeMultiVectorGen* AttributeMultiVector<T>::new_obj()
 template <typename T>
 inline void AttributeMultiVector<T>::addBlock()
 {
-	T* ptr = new T[_BLOCKSIZE_];
+    T* ptr = new T[_BLOCKSIZE_]();
 	m_tableData.push_back(ptr);
-	// init
-//	T* endPtr = ptr + _BLOCKSIZE_;
-//	while (ptr != endPtr)
-//		*ptr++ = T(0);
 }
 
 template <typename T>

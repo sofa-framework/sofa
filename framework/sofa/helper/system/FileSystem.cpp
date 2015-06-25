@@ -119,13 +119,17 @@ bool FileSystem::listDirectory(const std::string& directoryPath,
 bool FileSystem::exists(const std::string& path)
 {
 #if defined(WIN32)
-    bool pathExists = PathFileExists(Utils::widenString(path).c_str()) != 0;
-    DWORD errorCode = ::GetLastError();
-    if (errorCode != 0) {
-        std::cerr << "FileSystem::exists(\"" << path << "\"): "
-                  << Utils::GetLastError() << std::endl;
+    if (PathFileExists(Utils::widenString(path).c_str()) != 0)
+        return true;
+    else
+    {
+        DWORD errorCode = ::GetLastError();
+        if (errorCode != 2) // not No such file error
+            std::cerr << "FileSystem::exists(\"" << path << "\"): "
+                << Utils::GetLastError() << std::endl;
+         return false;
     }
-    return  pathExists;
+
 #elif defined (_XBOX)
 	DWORD fileAttrib = GetFileAttributes(path.c_str());
     return fileAttrib != -1;

@@ -23,6 +23,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "PythonMacros.h"
 #include "PythonScriptEvent.h"
 
 namespace sofa

@@ -1,3 +1,4 @@
+#define SOFA_COMPONENT_COLLISION_INTROBBOBB_CPP
 #include <SofaBaseCollision/IntrOBBOBB.inl>
 
 namespace sofa{

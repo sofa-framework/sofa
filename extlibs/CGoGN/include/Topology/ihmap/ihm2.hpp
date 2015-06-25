@@ -21,7 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
-
+#include "ihm2.h"
 namespace CGoGN
 {
 
@@ -60,9 +60,10 @@ namespace CGoGN
 
 inline void ImplicitHierarchicalMap2::update_topo_shortcuts()
 {
+
     //	TOPO_MAP::update_topo_shortcuts();
-    m_dartLevel = TOPO_MAP::getAttribute<unsigned int, DART, ImplicitHierarchicalMap2>("dartLevel") ;
-    m_edgeId = TOPO_MAP::getAttribute<unsigned int, DART, ImplicitHierarchicalMap2>("edgeId") ;
+    m_dartLevel = TOPO_MAP::getAttribute<unsigned int, DART, ImplicitHierarchicalMap2, HandlerAccessorPolicy >("dartLevel") ;
+    m_edgeId = TOPO_MAP::getAttribute<unsigned int, DART, ImplicitHierarchicalMap2, HandlerAccessorPolicy >("edgeId") ;
 
     //AttributeContainer& cont = m_attribs[DART] ;
     //m_nextLevelCell = cont.getDataVector<unsigned int>(cont.getAttributeIndex("nextLevelCell")) ;
@@ -320,19 +321,18 @@ inline unsigned int ImplicitHierarchicalMap2::getCurrentLevel() const
     return m_curLevel ;
 }
 
-inline void ImplicitHierarchicalMap2::setCurrentLevel(unsigned int l)
+inline void ImplicitHierarchicalMap2::setCurrentLevel(unsigned int l) const
 {
     assert(l <= m_maxLevel || "setCurrentLevel : desired level is > to  maximum resolution level");
-    assert(l >= 0 || "setCurrentLevel : desired level is < 0");
     m_curLevel = l ;
 }
 
-inline void ImplicitHierarchicalMap2::incCurrentLevel()
+inline void ImplicitHierarchicalMap2::incCurrentLevel() const
 {
     this->setCurrentLevel(getCurrentLevel()+1u);
 }
 
-inline void ImplicitHierarchicalMap2::decCurrentLevel()
+inline void ImplicitHierarchicalMap2::decCurrentLevel() const
 {
     this->setCurrentLevel(getCurrentLevel() - 1u);
 }

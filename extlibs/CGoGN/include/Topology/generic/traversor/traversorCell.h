@@ -147,7 +147,7 @@ template <typename MAP, TraversalOptim OPT = AUTO>
 class TraversorV : public TraversorCell<MAP, VERTEX, OPT>
 {
 public:
-	TraversorV(const MAP& m) : TraversorCell<MAP, VERTEX>(m, false)
+    TraversorV(const MAP& m) : TraversorCell<MAP, VERTEX>(m, false)
 	{}
 };
 

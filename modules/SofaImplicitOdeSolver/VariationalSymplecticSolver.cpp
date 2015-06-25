@@ -124,7 +124,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 
 		if (f_saveEnergyInFile.getValue()) {
 			// header of csv file
-			energies << "time,kinetic energy,potential energy"<<std::endl;
+            energies << "time,kinetic energy,potential energy, hamiltonian energy"<<std::endl;
 		}
     }
 
@@ -325,7 +325,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 
                 // Write energy in file
                 if (f_saveEnergyInFile.getValue())
-                    energies << this->getContext()->getTime()<<","<<hamiltonianKineticEnergy<<","<<m_incrementalPotentialEnergy<<std::endl;
+                    energies << this->getContext()->getTime()<<","<<hamiltonianKineticEnergy<<","<<m_incrementalPotentialEnergy<<","<<hamiltonianKineticEnergy + m_incrementalPotentialEnergy <<std::endl;
 
             }
 
@@ -342,7 +342,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 
                 // Write energy in file
                 if (f_saveEnergyInFile.getValue())
-                    energies << this->getContext()->getTime()<<","<<hamiltonianKineticEnergy<<","<<potentialEnergy<<std::endl;
+                    energies << this->getContext()->getTime()<<","<<hamiltonianKineticEnergy<<","<<potentialEnergy<<","<<hamiltonianKineticEnergy+potentialEnergy<<std::endl;
             }
 
 
