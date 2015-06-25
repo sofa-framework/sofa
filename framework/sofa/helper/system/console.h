@@ -57,18 +57,25 @@ public:
     static const ColorType BRIGHT_BLACK;
     static const ColorType DEFAULT_COLOR;
 
-    static bool colorsAllowedForInfo();
-    static bool colorsAllowedForWarning();
+    enum ColorsStatus {ColorsEnabled, ColorsDisabled, ColorsAuto};
+    /// Enable or disable colors in stdout / stderr.
+    ///
+    /// This controls whether using ColorType values in streams will actually do
+    /// anything.  Passing ColorsAuto means that colors will be used for stdout
+    /// only if it hasn't been redirected (on Unix only). Same thing for stderr.
+    /// By default, colors are disabled.
+    static void setColorsStatus(ColorsStatus status);
+    static ColorsStatus getColorsStatus();
 
-    /// standard [INFO] prefix
-    static std::ostream& infoPrefix();
-    /// standard [WARN] prefix
-    static std::ostream& warningPrefix();
+    /// Blah.
+    enum LogPrefix {InfoPrefix, WarningPrefix};
+    SOFA_HELPER_API friend std::ostream& operator<<(std::ostream &stream, LogPrefix prefix);
 
+private:
+    static ColorsStatus s_colorsStatus;
+    /// Internal helper function that determines whether colors should be used.
+    static bool shouldUseColors(std::ostream& stream);
 };
-
-
-
 
 }
 }
