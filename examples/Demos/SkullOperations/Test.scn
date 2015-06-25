@@ -15,17 +15,28 @@
 	<LCPConstraintSolver name="lCPConstraintSolver1"  group="0" />
 	<OglSceneFrame name="oglSceneFrame0"  style="Cylinders"  alignment="BottomRight" />  
 	<VisualTransform name="visualTransform0"  transform="0 0 0 0 0 0 0" />
+	<!--<PythonScriptController name="pythonScriptController0"  listening="1"  filename="C:\Users\SOFA_GPU\Downloads\sofa\sofa\examples\Demos\SkullOperations\getPoints.py"  classname="CollisionPoints" />-->
 	<!--<CarvingManager active="true"/>-->
 	<!--<OptiTrackNatNetClient name="optiTrackNatNetClient1"  listening="1"  serverName="169.254.165.78"  scale="1000"  drawTrackedMarkersSize="0"  drawOtherMarkersSize="2" />-->
 	<Node 	 name="cube"  >	
-		<EulerImplicitSolver name="eulerImplicitSolver3" />
-		<CGLinearSolver template="GraphScattered" name="cGLinearSolver4"  tolerance="1e-009"  threshold="1e-009" />
-		
+
+<!--
 		<MeshObjLoader name="Cubemesh"  filename="mesh/cube.obj"  triangulate="1" scale3d="0.09 1 1"/>
 		<MeshToImageEngine template="ImageUC" name="rasterizer"  voxelSize="0.1"  rotateImage="0"  padSize="1"  position="@Cubemesh.position"  edges="@Cubemesh.edges"  triangles="@Cubemesh.triangles"  value="1" />
 		<ImageContainer template="ImageUC" name="image"  listening="1"  image="@rasterizer.image"  transform="@rasterizer.transform"  drawBB="0" />
 		<ImageViewer template="ImageUC" name="viewer"  image="@image.image"  transform="@image.transform"  display="0" />
 		<ImageSampler template="ImageUC" name="sampler"  printLog="1"  listening="1"  image="@image.image"  transform="@image.transform"  method="0 - Regular sampling (at voxel center(0) or corners (1)) "  param="1"  showEdges="1" />
+-->
+		<ImageContainer template="ImageD" name="image" filename="C:\Users\SOFA_GPU\Desktop\CraneSegmentation\crane_bis2.mhd"/>
+		<!--<ImageContainer template="ImageD" name="image" filename="C:\Users\SOFA_GPU\Downloads\sofa\sofa\applications\plugins\image\examples\data\pelvis_f.mhd"/>-->
+		<!--<ImageViewer template="ImageD" name="viewer"  src="@image" plane="50 50 20"/>-->
+		
+		<ImageFilter template="ImageD,ImageD" filter="1"  param="5"  name="gaussianFilter" src="@image" />
+		<ImageViewer template="ImageD" name="viewer"  src="@gaussianFilter" plane="50 50 20"/>
+		<CollisionToCarvingEngine  name="ctc"  template="ImageD,ImageD"  inputImage="@gaussianFilter.outputImage"  inputTransform="@gaussianFilter.outputTransform"  listening="1" trackedPosition="1 1 1"/>  
+		<ImageViewer template="ImageD" name="viewer"  src="@ctc" plane="1 1 1"/>
+		<MarchingCubesEngine template="ImageD" name="engine" image="@ctc.outputImage" transform="@ctc.outputTransform"  isoValue="0.3" subdiv="50 50 50" showMesh="true"/>
+
 		<!--<ImageExporter template="ImageUC" filename="mesh/cube.obj"  name="imageExporter0"  listening="1" exportAtBegin="1"/>-->
 		<!--
 		<ImageContainer template="ImageB" name="image"  listening="1"  filename="mesh/cube.obj"  drawBB="0" />
@@ -41,6 +52,9 @@
 		</Node>
 		-->
 		<Node 	 name="CollisionModel"  >
+			<EulerImplicitSolver name="eulerImplicitSolver3" />
+			<CGLinearSolver template="GraphScattered" name="cGLinearSolver4"  tolerance="1e-009"  threshold="1e-009" />
+
 			<MeshObjLoader name="Curvedloader"  filename="mesh/cube.obj" />
 			<MechanicalObject template="Vec3d" name="cubeCollisionState"  tags="CarvingSurface"  position="@Curvedloader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1"  translation="@Curvedloader.position"  rotation="@Curvedloader.rotation"  scale3d="@Curvedloader.scale3d" />
 			<MeshTopology name="cubeVisualModel"  position="@Curvedloader.position"  edges="@Curvedloader.edges"  triangles="@Curvedloader.triangles"  quads="@Curvedloader.quads"  tetrahedra="@Curvedloader.tetras"  hexahedra="@Curvedloader.hexas" />
