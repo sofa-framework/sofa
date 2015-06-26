@@ -79,10 +79,12 @@ void subdivideFace(typename PFP::MAP& map, Dart d, typename AttributeHandler_Tra
     assert(map.getDartLevel(d) <= map.getCurrentLevel() || !"Access to a dart introduced after current level") ;
     assert(!map.faceIsSubdivided(d) || !"Trying to subdivide an already subdivided face") ;
     assert(!map.isBoundaryMarked(3,d) || !"Trying to subdivide a dart marked boundary");
-
+    typedef typename PFP::MAP MAP;
     const unsigned int fLevel = map.faceLevel(d) ;
+    const unsigned int oldEmb = map.MAP::ParentMap::template getEmbedding<FACE>(d);
     Dart old = map.faceOldestDart(d) ;
     const unsigned int cur = map.getCurrentLevel() ;
+    std::cerr << "currLvl is " << cur << ", subdividing a face of lvl " << fLevel << std::endl;
     map.setCurrentLevel(fLevel) ;		// go to the level of the face to subdivide its edges
 
 
@@ -97,14 +99,20 @@ void subdivideFace(typename PFP::MAP& map, Dart d, typename AttributeHandler_Tra
         {
             IHM::subdivideEdge<PFP>(map, it, position) ;// first cut the edges (if they are not already)
             // and compute the degree of the face
+        } else
+        {
         }
     }
     p /= typename PFP::REAL(degree) ;
 
-    map.checkEdgeAndFaceIDAttributes();
+//    map.checkEdgeAndFaceIDAttributes();
     map.setCurrentLevel(fLevel + 1) ;			// go to the next level to perform face subdivision
 
-//    map.setFaceLevel(old, fLevel+1);
+    // update the MR-attribute
+    const unsigned lvl1Face = Algo::Topo::setOrbitEmbeddingOnNewCell<FACE>(map, old);
+    map.template getAttributeContainer<FACE>().copyLine(lvl1Face, oldEmb);
+
+    map.setFaceLevel(old, fLevel+1);
 
     if(degree == 3 && sType == IHM::S_TRI)	//subdiviser une face triangulaire
     {
@@ -124,6 +132,8 @@ void subdivideFace(typename PFP::MAP& map, Dart d, typename AttributeHandler_Tra
     {
         Dart dd = map.phi1(old) ;
         map.splitFace(dd, map.phi1(map.phi1(dd))) ;
+//        std::cerr << "faceLevel(dd) " << map.faceLevel(dd) << std::endl;
+//        std::cerr << "faceLevel(map.phi1(map.phi1(dd)) " << map.faceLevel(map.phi1(map.phi1(dd))) << std::endl;
 
         const Dart ne = map.phi2(map.phi_1(dd));
         Dart ne2 = map.phi2(ne);
@@ -139,6 +149,8 @@ void subdivideFace(typename PFP::MAP& map, Dart d, typename AttributeHandler_Tra
         {
             const Dart next = map.phi1(map.phi1(dd)) ;
             map.splitFace(map.phi1(ne), dd) ;
+//            std::cerr << "faceLevel(map.phi1(ne)) " << map.faceLevel(map.phi1(ne)) << std::endl;
+//            std::cerr << "faceLevel(dd) " << map.faceLevel(dd) << std::endl;
             dd = next ;
         }
 
@@ -150,12 +162,14 @@ void subdivideFace(typename PFP::MAP& map, Dart d, typename AttributeHandler_Tra
 template <typename PFP>
 Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHandler_Traits< typename PFP::VEC3, VERTEX, typename PFP::MAP >::Handler& position, bool OneLevelDifference)
 {
+    typedef typename PFP::MAP MAP;
     assert(map.getDartLevel(d) <= map.getCurrentLevel() || !"Access to a dart introduced after current level") ;
-//    assert(!map.volumeIsSubdivided(d) || !"Trying to subdivide an already subdivided volume") ;
+    assert(!map.volumeIsSubdivided(d) || !"Trying to subdivide an already subdivided volume") ;
     assert(!map.isBoundaryMarked(3,d) || !"Trying to subdivide a dart marked boundary");
 
     std::cerr << "subdivideVolumeClassic called at lvl " << map.getCurrentLevel() << std::endl;
     const unsigned int vLevel = map.volumeLevel(d);
+    std::cerr << "level of the volume is " << vLevel << std::endl;
     const Dart old = map.volumeOldestDart(d);
 
     const unsigned int cur = map.getCurrentLevel();
@@ -233,13 +247,12 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
         {
             IHM::subdivideFace<PFP>(map, d, position, IHM::S_QUAD);
         }
-//        std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
-//        map.checkEdgeAndFaceIDAttributes();
+        map.checkEdgeAndFaceIDAttributes();
 
         //save a dart from the subdivided face
-        unsigned int cur = map.getCurrentLevel() ;
+        const unsigned int cur = map.getCurrentLevel() ;
 
-        unsigned int fLevel = map.faceLevel(d) + 1; //puisque dans tous les cas, la face est subdivisee
+        const unsigned int fLevel = map.faceLevel(d) + 1; //puisque dans tous les cas, la face est subdivisee
         map.setCurrentLevel(fLevel) ;
 
         //le brin est forcement du niveau cur
@@ -259,52 +272,22 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
     std::vector<Dart> newEdges;	//save darts from inner edges
     newEdges.reserve(50);
 
-
     int next_edge = 0;
     Dart centralDart = NIL;
+
+    //must be done at vLevel+1
+    const unsigned int oldVolEmb = map.MAP::ParentMap::template getEmbedding<VOLUME>(oldEdges.front());
+    const unsigned lvl1Vol = Algo::Topo::setOrbitEmbeddingOnNewCell<VOLUME>(map, oldEdges.front());
+    map.template getAttributeContainer<VOLUME>().copyLine(lvl1Vol, oldVolEmb);
+    map.setVolumeLevel(oldEdges.front(), vLevel+1);
+
     //Second step : deconnect each corner, close each hole, subdivide each new face into 3
     for (std::vector<Dart>::iterator edge = oldEdges.begin(); edge != oldEdges.end(); ++edge)
     {
+        map.setCurrentLevel(vLevel + 1) ;
         next_edge++;
-        /*
-        Dart e = *edge;
-
-        std::vector<Dart> v ;
-//		unsigned int cur = map.getCurrentLevel();
-//		map.setCurrentLevel(map.getMaxLevel());
-
-        do
-        {
-            if(map.faceLevel(map.phi1(e)) > map.getCurrentLevel())
-            {
-                std::cout << "plop" << std::endl;
-                return NIL;
-            }
-            else
-            {
-                v.push_back(map.phi1(e));
-                v.push_back(map.phi1(map.phi1(e)));
-            }
-
-//			Dart dit = map.phi1(e);
-//			do
-//			{
-//				v.push_back(dit);
-//				dit = map.phi1(dit);
-//			}while(dit != map.phi_1(e));
-
-//            v.push_back(map.phi1(e));
-//            v.push_back(map.phi1(map.phi1(e)));
-            std::cout << "v size = " << v.size() << std::endl;
-            e = map.phi2(map.phi_1(e));
-        }
-        while(e != *edge);
-*/
-
         Dart dit = *edge;
-
         std::vector<Dart> v ;
-        //boucle sur le sommet du coin
         do
         {
 
@@ -314,13 +297,12 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
             map.setCurrentLevel(map.getMaxLevel());
 
             unsigned int edgeId = map.getEdgeId(de) ;
-            unsigned int eLevel = map.getDartLevel(de);
+            const unsigned int eLevel = map.getDartLevel(de);
 
             bool finished = false;
             Dart it = de;
             do
             {
-
                 v.push_back(it);
 
                 it = map.phi1(it);
@@ -336,24 +318,26 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
                 edgeId = map.getEdgeId(it);
 
             } while(!finished);
-            map.setCurrentLevel(vLevel+1);
 
+            map.setCurrentLevel(vLevel+1);
             dit = map.phi2(map.phi_1(dit));
         }
         while(dit != *edge);
 
         map.setCurrentLevel(map.getMaxLevel());
+        map.setVolumeLevel(v.front(), vLevel + 1u);
         map.splitVolume(v) ;
+
+        map.setFaceLevel(map.phi2(v.front()), vLevel+1);
         map.setCurrentLevel(vLevel+1);
 
-
-        Dart old = map.phi2(map.phi1(*edge));
+        const Dart old = map.phi2(map.phi1(*edge));
         Dart dd = map.phi1(map.phi1(old)) ;
+        map.setFaceLevel(old, map.getCurrentLevel());
         map.splitFace(old,dd) ;
 
         unsigned int idface = map.getNewFaceId();
         map.setFaceId(dd,idface, FACE);
-
 
         Dart ne = map.phi1(map.phi1(old)) ;
 
@@ -366,7 +350,7 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
         unsigned int id = map.getNewEdgeId() ;
         map.setEdgeId(ne, id, EDGE) ;
 
-        Dart stop = map.phi2(map.phi1(ne));
+        const Dart stop = map.phi2(map.phi1(ne));
         ne = map.phi2(ne);
         do
         {
@@ -389,10 +373,10 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
     //Third step : 3-sew internal faces
     for (std::vector<std::pair<Dart,Dart> >::iterator it = subdividedfaces.begin(); it != subdividedfaces.end(); ++it)
     {
-        Dart f1 = (*it).first;
-        Dart f2 = (*it).second;
+        const Dart f1 = it->first;
+        const Dart f2 = it->second;
 
-        Dart f1_2 = map.phi2(f1);
+        const Dart f1_2 = map.phi2(f1);
 
 
         if(map.isBoundaryFace(f1_2) && map.isBoundaryFace(map.phi2(f2)))
@@ -2340,7 +2324,9 @@ Dart subdivideVolume(typename PFP::MAP& map, Dart d, VertexAttribute<typename PF
 
         //if needed subdivide face
         if(!map.faceIsSubdivided(d))
+        {
             IHM::subdivideFace<PFP>(map, d, position);
+        }
 
 
         //save a dart from the subdivided face
