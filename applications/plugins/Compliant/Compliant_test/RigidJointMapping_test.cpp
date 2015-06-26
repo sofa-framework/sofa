@@ -88,7 +88,7 @@ struct RigidJointMappingTest : public Mapping_test<Mapping>
 using testing::Types;
 typedef Types<
     component::mapping::RigidJointMapping<defaulttype::Rigid3Types,
-                                                   defaulttype::Vec6dTypes>
+                                                   defaulttype::Vec6Types>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
