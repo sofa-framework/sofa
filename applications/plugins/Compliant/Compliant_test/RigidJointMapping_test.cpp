@@ -75,7 +75,7 @@ struct RigidJointMappingTest : public Mapping_test<Mapping>
         pairs[0][1] = 1;
 
         mapping->pairs.setValue(pairs);
-        flags = base::TEST_getJs;
+        this->flags = base::TEST_getJs;
         
         return this->runTest(xin, expected);
     }
