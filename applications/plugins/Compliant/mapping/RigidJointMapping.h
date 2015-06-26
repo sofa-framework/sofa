@@ -41,7 +41,7 @@ public:
 	
 	typedef defaulttype::Vec<2, unsigned> index_pair;
 	typedef vector< index_pair > pairs_type;
-    typename typedef TIn::Real Real;
+    typedef typename TIn::Real Real;
 	
 	Data< pairs_type > pairs;
 	Data< bool > rotation, translation;
