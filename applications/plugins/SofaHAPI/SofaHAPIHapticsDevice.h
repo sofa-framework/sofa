@@ -25,7 +25,7 @@
 #ifndef SOFAHAPI_SOFAHAPIHAPTICSDEVICE_H
 #define SOFAHAPI_SOFAHAPIHAPTICSDEVICE_H
 
-#include "SofaHAPI.h"
+//#include "SofaHAPI.h"
 
 #include <cstddef>
 //HAPI include
