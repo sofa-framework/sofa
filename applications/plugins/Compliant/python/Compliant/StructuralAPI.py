@@ -249,8 +249,10 @@ class GenericRigidJoint:
             ## (following the order txmin,txmax,tymin,tymax,tzmin,tzmax,rxmin,rxmax,rymin,rymax,rzmin,rzmax)
             l = 0
             limitMasks=[]
+            hasLimits = False
             for m in xrange(6):
                 if self.mask[m] == 0 and limits[l] is not None and limits[l+1] is not None: # unconstrained direction with limits
+                    hasLimits = True
                     limits[l+1] *= -1.0 # inverted upper bound
                     l += 2
                     limitMaskL = [0]*6
@@ -261,7 +263,10 @@ class GenericRigidJoint:
                     # upper bound
                     limitMaskU[m] = -1  # inverted upper bound
                     limitMasks.append( limitMaskU )
-            return GenericRigidJoint.Limits( self.node, limitMasks, limits, compliance )
+            if hasLimits:
+                return GenericRigidJoint.Limits( self.node, limitMasks, limits, compliance )
+            else:
+                return None
 
     def addDamper( self, damping ):
         return self.node.createObject( 'UniformVelocityDampingForceField', dampingCoefficient=damping )
