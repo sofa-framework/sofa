@@ -158,7 +158,7 @@ protected:
 		if(inT->getRotation() == Vector3(0,0,0))
 		{
 			cout<< "L'absence de rotation n'est pas encore prise en compte" <<endl;
-			img(0)(valueinimage.x, valueinimage.y, valueinimage.z) = 1;
+			//img(0)(valueinimage.x, valueinimage.y, valueinimage.z) = 1;
 		}
 		else{
 			cout<< "La collision dans une image rotationné n'est pas encore prise en compte" <<endl;
