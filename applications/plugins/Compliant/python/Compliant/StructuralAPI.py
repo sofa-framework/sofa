@@ -21,8 +21,11 @@ import SofaPython.Tools
 import SofaPython.mass
 import math
 
-# to specify the floating point encoding (double by default)
-template_suffix="d"
+# to specify the floating point encoding:
+# "d" to force double
+# "f" to force float
+# "" to let the template aliases mechanism chose according sofa compilation option (USE_FLOAT and USE_DOUBLE)
+template_suffix=""
 
 # global variable to give a different name to each visual model
 idxVisualModel = 0
