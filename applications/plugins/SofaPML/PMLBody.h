@@ -58,8 +58,6 @@
 #include <sofa/simulation/tree/GNode.h>
 #include "initSofaPML.h"
 
-//#include "sofa/component/StiffSpringForceField.h"
-
 #include <map>
 
 

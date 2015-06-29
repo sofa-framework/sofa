@@ -3,7 +3,6 @@
 #ifndef LABELPOINTSBYSECTIONIMAGETOOLBOX_H
 #define LABELPOINTSBYSECTIONIMAGETOOLBOX_H
 
-#include <sofa/component/component.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>

@@ -23,7 +23,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaGraphComponent/Gravity.h>
-#include <sofa/component/contextobject/CoordinateSystem.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <sofa/component/typedef/Sofa_typedef.h>
