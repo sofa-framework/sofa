@@ -64,7 +64,7 @@ namespace helper {
     {
         // On Windows, colors are not handled with control characters, so we can
         // probably always use them unless explicitely disabled.
-        return !ColorsDisabled:
+        return !ColorsDisabled;
     }
 
     SOFA_HELPER_API std::ostream& operator<<( std::ostream& stream, Console::ColorType color )
