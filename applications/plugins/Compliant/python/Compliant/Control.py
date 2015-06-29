@@ -36,11 +36,11 @@ class PID:
 
         self.dofs = node.createObject('MechanicalObject', 
                                       name = 'dofs',
-                                      template = 'Vec1d',
+                                      template = 'Vec1',
                                       position = '0')
 
         node.createObject('ConstantForceField',
-                          template = 'Vec1d',
+                          template = 'Vec1',
                           forces = '0')
         
         self.map = node.createObject('ProjectionMapping',
@@ -132,14 +132,14 @@ class ImplicitPID:
 
         self.dofs = node.createObject('MechanicalObject', 
                                       name = 'dofs',
-                                      template = 'Vec1d',
+                                      template = 'Vec1',
                                       position = '0')
         
         self.map = node.createObject('ProjectionMapping',
                                      set = '0 ' + Tools.cat(self.basis) )
         
         self.ff = node.createObject('UniformCompliance',
-                                    template = 'Vec1d',
+                                    template = 'Vec1',
                                     compliance = '0' )
         
         self.node = node

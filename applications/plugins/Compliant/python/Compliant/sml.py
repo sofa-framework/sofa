@@ -135,8 +135,8 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
                 indexPairs += str(len(rigidsId)) + " 0 "
                 rigidsId.append(solid.id)
         if input:
-            mergeNode.createObject("MechanicalObject", template = "Rigid3d", name="dofs")
-            mergeNode.createObject('SubsetMultiMapping', template = "Rigid3d,Rigid3d", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
+            mergeNode.createObject("MechanicalObject", template = "Rigid3", name="dofs")
+            mergeNode.createObject('SubsetMultiMapping', template = "Rigid3,Rigid3", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
         return rigidsId
 
     def createScene(self):
