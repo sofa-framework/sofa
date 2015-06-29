@@ -6,6 +6,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(SOURCE_FILES
     initImage.cpp
+    ImageTypes.cpp
     ImageContainer.cpp
     ImageFilter.cpp
     ImageOperation.cpp
