@@ -26,7 +26,6 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/Node.h>
 #include <SofaGraphComponent/Gravity.h>
-#include <sofa/component/contextobject/CoordinateSystem.h>
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/objectmodel/Context.h>

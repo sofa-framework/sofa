@@ -25,7 +25,6 @@
 #ifndef SOFA_COMPONENT_MATERIAL_MATERIAL_H
 #define SOFA_COMPONENT_MATERIAL_MATERIAL_H
 
-#include <sofa/component/component.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>

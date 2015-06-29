@@ -38,7 +38,6 @@
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <SofaBoundaryCondition/FixedConstraint.h>
 #include <SofaBoundaryCondition/SkeletalMotionConstraint.inl>
-//#include <sofa/component/typedef/Particles_float.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <stack>
