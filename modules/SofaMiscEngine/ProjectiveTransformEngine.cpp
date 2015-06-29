@@ -42,10 +42,11 @@ namespace engine
         .add< ProjectiveTransformEngine<defaulttype::Vec3fTypes> >(true) // default template
 #else
         .add< ProjectiveTransformEngine<defaulttype::Vec3dTypes> >(true) // default template
-#endif
 #ifndef SOFA_DOUBLE
         .add< ProjectiveTransformEngine<defaulttype::Vec3fTypes> >()
 #endif
+#endif
+
         .add< ProjectiveTransformEngine<defaulttype::ExtVec3fTypes> >()
         ;
 
