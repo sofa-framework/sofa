@@ -25,7 +25,7 @@
 #ifndef SOFAHAPI_SOFAHAPIFORCEFEEDBACKEFFECT_H
 #define SOFAHAPI_SOFAHAPIFORCEFEEDBACKEFFECT_H
 
-//#include "SofaHAPI.h"
+#include "initSofaHAPI.h"
 
 //HAPI include
 #include <HAPI/HAPIForceEffect.h>
@@ -86,7 +86,7 @@ namespace sofa
 		};
 
 		/// Encapsulate ForceFeedbackEffect within a Sofa graph component
-		class SofaHAPIForceFeedbackEffect : public sofa::core::objectmodel::BaseObject
+		class SOFA_SOFAHAPI_API SofaHAPIForceFeedbackEffect : public sofa::core::objectmodel::BaseObject
 		{
 		public:
 
@@ -109,6 +109,6 @@ namespace sofa
 		public:
 		};
 
-	} // namespace SofaHAPI
-}
+	} // namespace component
+}// namespace sofa
 #endif // SOFAHAPI_SOFAHAPIFORCEFEEDBACKEFFECT_H

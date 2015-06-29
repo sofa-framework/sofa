@@ -25,7 +25,7 @@
 #ifndef SOFAHAPI_SOFAHAPIHAPTICSDEVICE_H
 #define SOFAHAPI_SOFAHAPIHAPTICSDEVICE_H
 
-//#include "SofaHAPI.h"
+#include "initSofaHAPI.h"
 
 #include <cstddef>
 //HAPI include
@@ -65,7 +65,7 @@ namespace sofa
 		/**
 		* HAPI Haptics Device
 		*/
-		class SofaHAPIHapticsDevice : public Controller
+		class SOFA_SOFAHAPI_API SofaHAPIHapticsDevice : public Controller
 		{
 		public:
 			SOFA_CLASS(SofaHAPIHapticsDevice, Controller);
