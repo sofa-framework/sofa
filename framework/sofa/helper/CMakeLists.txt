@@ -95,6 +95,7 @@ set(HEADER_FILES
     GenerateRigid.h
     Utils.h
 	IndexOpenMP.h
+	Logger.h
 	)
 
 set(SOURCE_FILES
@@ -150,6 +151,7 @@ set(SOURCE_FILES
     GenerateRigid.cpp
     kdTree.cpp
     Utils.cpp
+	Logger.cpp
 	)
 
 if(SOFA-EXTERNAL_BOOST)
