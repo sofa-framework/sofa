@@ -249,7 +249,7 @@ void Base::setName(const std::string& n, int counter)
 void Base::processStream(std::ostream& out)
 {
     using sofa::helper::Logger;
-    const std::string name = getClassName() + " (" + getName() + ")";
+    const std::string name = getClassName() + " \"" + getName() + "\"";
 
     if (&out == &serr)
     {
