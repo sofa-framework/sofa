@@ -258,7 +258,6 @@ class Model:
                         solid.skinnings.append(skinning)
 
                 self.solids[solid.id]=solid
-            self.updateTag()
 
             # joints
             self.parseJointGenerics(modelXml)
@@ -288,6 +287,8 @@ class Model:
 #                            if s.attrib["image"] in self.images:
 #                               reg.surfaces[i].image = self.images[s.attrib["image"]]
                 self.surfaceLinks[surfaceLink.id]=surfaceLink
+
+            self.updateTag()
 
     def parseUnits(self, modelXml):
         xmlUnits = modelXml.find("units")
