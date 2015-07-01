@@ -127,6 +127,7 @@ public:
     Data < similarityTypes > similarity;
 	
     // mask for values outside images
+    Data < bool > maskOutside;
     cimg_library::CImg<bool> refMask;
     cimg_library::CImg<bool> mask;
     cimg_library::CImg<bool> similarityMask;
