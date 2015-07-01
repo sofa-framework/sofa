@@ -138,7 +138,7 @@ bool PluginManager::loadPlugin(const std::string& pluginPath, std::ostream* errl
     {
         if(! getPluginEntry(p.initExternalModule,d))
         {
-            const std::string msg = "Plugin loading failed (" pluginPath + "): function initExternalModule() not found";
+            const std::string msg = "Plugin loading failed (" + pluginPath + "): function initExternalModule() not found";
             Logger::getMainLogger().log(Logger::Error, msg, "PluginManager::load()");
             if (errlog) (*errlog) << msg << std::endl;
             return false;
