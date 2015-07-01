@@ -35,7 +35,7 @@ namespace helper
 
 Logger::SPtr Logger::s_mainLogger = Logger::SPtr(new TTYLogger());
 
-Logger::Logger()
+Logger::Logger(): m_currentLevel(Logger::All)
 {
 }
 
