@@ -70,6 +70,7 @@ IntensityProfileRegistrationForceField<DataTypes, ImageTypes>::IntensityProfileR
     , refProfiles(initData(&refProfiles,ImageTypes(),"refProfiles","reference intensity profiles"))
     , profiles(initData(&profiles,ImageTypes(),"profiles","computed intensity profiles"))
     , similarity(initData(&similarity,similarityTypes(),"similarity","similarity image"))
+    , maskOutside(initData(&maskOutside,false,"maskOutside","discard profiles outside images"))
     , edgeIntensityThreshold(initData(&edgeIntensityThreshold,(Real)0.0,"edgeIntensityThreshold", "The threshold value between two edges."))
     , useAnisotropicStiffness(initData(&useAnisotropicStiffness,false,"useAnisotropicStiffness", "use more accurate but non constant stiffness matrix."))
     , highToLowSignal(initData(&highToLowSignal,true,"highToLowSignal", ""))
@@ -312,7 +313,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
                     for(unsigned int x=0;x<ipdepth;x++)
                         if(!similarityMask(j,i))
                         {
-                            if(refMask (x,i,0,k) || mask (x+j,i,0,k)) similarityMask(j,i)=1;
+                            if(maskOutside.getValue() && (refMask (x,i,0,k) || mask (x+j,i,0,k))) similarityMask(j,i)=1;
                             else
                             {
                                 T vref= profref (x,i,0,k) , v = prof (x+j,i,0,k);
@@ -338,7 +339,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
                     for(unsigned int x=0;x<ipdepth;x++)
                         if(!similarityMask(j,i))
                         {
-                            if(refMask (x,i,0,k) || mask (x+j,i,0,k)) similarityMask(j,i)=1;
+                            if(maskOutside.getValue() && (refMask (x,i,0,k) || mask (x+j,i,0,k)))  similarityMask(j,i)=1;
                             else
                             {
                                 T vref= profref (x,i,0,k) , v = prof (x+j,i,0,k);
