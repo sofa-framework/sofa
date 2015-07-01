@@ -172,7 +172,7 @@ public:
     virtual ~ImageFilter() {}
 
     virtual void init()
-    {
+	{
         addInput(&inputImage);
         addInput(&inputTransform);
         addOutput(&outputImage);
@@ -188,7 +188,7 @@ protected:
     {
         bool updateImage = this->inputImage.isDirty();	// change of input image -> update output image
         bool updateTransform = this->inputTransform.isDirty();	// change of input transform -> update output transform
-        if(!updateImage && !updateTransform) {updateImage=true; updateTransform=true;}  // change of parameters -> update all
+        //if(!updateImage && !updateTransform) {updateImage=true; updateTransform=true;}  // change of parameters -> update all
 
         raParam p(this->param);
         raTransform inT(this->inputTransform);
@@ -199,13 +199,12 @@ protected:
         waImageo out(this->outputImage);
         waTransform outT(this->outputTransform);
 
-        if(in->isEmpty()) return;
+		if(in->isEmpty()) return;
 
         const CImgList<Ti>& inimg = in->getCImgList();
         CImgList<To>& img = out->getCImgList();
         if(updateImage) img.assign(inimg);	// copy
         if(updateTransform) outT->operator=(inT);	// copy
-
         switch(this->filter.getValue().getSelectedId())
         {
         case BLURDERICHE:
