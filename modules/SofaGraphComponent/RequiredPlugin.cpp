@@ -69,7 +69,7 @@ void RequiredPlugin::loadPlugin()
         {
             if (PluginManager::getInstance().loadPlugin(path))
             {
-                const std::string guiPath = pluginManager.findPlugin(pluginName.getValue() + "_gui");
+                const std::string guiPath = pluginManager.findPlugin(pluginName.getValue() + "_" + PluginManager::s_gui_postfix);
                 if (guiPath != "")
                 {
                     PluginManager::getInstance().loadPlugin(guiPath);
