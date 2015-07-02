@@ -104,12 +104,8 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typename ImageSampler::waHexa h(sampler->hexahedra);             h.clear();
 
         // convert to single channel boolean image
-        CImg<bool> img(inimg.width(),inimg.height(),inimg.depth(),1,false);
-        if(atcorners)
-        {
-            CImg_2x2x2(I,bool);
-            cimg_for2x2x2(inimg,x,y,z,0,I,bool) if(Iccc || Iccn || Icnc || Incc || Innc || Incn || Icnn || Innn) img(x,y,z)=true;
-        }
+        CImg<bool> img(inimg.width()+1,inimg.height()+1,inimg.depth()+1,1,false);
+        if(atcorners) {  cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) { img(x,y,z)=img(x+1,y,z)=img(x,y+1,z)=img(x+1,y+1,z)=img(x,y,z+1)=img(x+1,y,z+1)=img(x,y+1,z+1)=img(x+1,y+1,z+1)=true; } }
         else cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) img(x,y,z)=true;
 
         // count non empty voxels
@@ -117,8 +113,8 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         cimg_foroff(img,off) if(img[off]) nb++;
         pos.resize(nb);
         // record indices of previous y line and z plane for connectivity
-        CImg<unsigned int> pLine(inimg.width()),nLine(inimg.width());
-        CImg<unsigned int> pPlane(inimg.width(),inimg.height()),nPlane(inimg.width(),inimg.height());
+        CImg<unsigned int> pLine(img.width()),nLine(img.width());
+        CImg<unsigned int> pPlane(img.width(),img.height()),nPlane(img.width(),img.height());
         // fill pos and edges
         nb=0;
         cimg_forZ(img,z)
@@ -130,7 +126,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
                     if(img(x,y,z))
                     {
                         // pos
-                        if(atcorners) pos[nb]=Coord(x+0.5,y+0.5,z+0.5);
+                        if(atcorners) pos[nb]=Coord(x-0.5,y-0.5,z-0.5);
                         else pos[nb]=Coord(x,y,z);
                         // edges
                         if(x) if(img(x-1,y,z)) e.push_back(Edge(nb-1,nb));
@@ -728,11 +724,11 @@ protected:
 
 				for(int i=0;i<12; i++)
 				{
-					//Numéro du sommet 1
+					//Numero du sommet 1
 					ns1 = currentCube.at(tmp[i*3+0]);
-					//Numéro du sommet 2
+					//Numero du sommet 2
 					ns2 = currentCube.at(tmp[i*3+1]);
-					//Numéro du sommet 3
+					//Numero du sommet 3
 					ns3 = currentCube.at(tmp[i*3+2]);
 
 

@@ -22,62 +22,72 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_HELPER_LOGGER_H
+#define SOFA_HELPER_LOGGER_H
 
-#include <sofa/core/DataEngine.h>
+#include <sofa/SofaFramework.h>
+#include <sofa/helper/system/console.h>
+#include <string>
+#include <iostream>
+#include <boost/shared_ptr.hpp>
+
 
 namespace sofa
 {
 
-namespace core
+namespace helper
 {
 
-DataEngine::DataEngine()
-{
-    addLink(&(this->core::objectmodel::DDGNode::inputs));
-    addLink(&(this->core::objectmodel::DDGNode::outputs));
-}
 
-DataEngine::~DataEngine()
+/// Logger class, that provides a centralized way to process messages.
+class SOFA_HELPER_API Logger
 {
-}
+public:
+    typedef boost::shared_ptr<Logger> SPtr;
+    enum Level {All, Debug, Info, Warning, Error, Off, LevelCount};
 
-void DataEngine::updateAllInputsIfDirty()
+    Logger();
+    virtual ~Logger();
+
+    /// @brief Log a message if its level is higher than getLevel().
+    ///
+    /// @param location An indication of where the message comes from, if relevant. (Component, function...)
+    virtual void log(Level level, const std::string& message, const std::string& location = "") = 0;
+
+    /// @brief Set the minimal level of logging.
+    void setLevel(Level level);
+    /// @brief Get the level above which message will be logged.
+    Level getLevel();
+
+protected:
+    Level m_currentLevel;
+
+public:
+    /// @brief Get the logger used <b>internally</b> to log messages in the Sofa libraries.
+    ///
+    static Logger& getMainLogger();
+    /// @brief Change the logger used internally to log messages in the Sofa libraries.
+    static void setMainLogger(boost::shared_ptr<Logger> logger);
+
+private:
+    static Logger::SPtr s_mainLogger;
+};
+
+
+/// Simple Logger that outputs to stdout and stderr.
+class SOFA_HELPER_API TTYLogger: public Logger
 {
-    const DDGLinkContainer& inputs = DDGNode::getInputs();
-    for(size_t i=0, iend=inputs.size() ; i<iend ; ++i )
-    {
-        static_cast<core::objectmodel::BaseData*>(inputs[i])->updateIfDirty();
-    }
-}
+public:
+    TTYLogger();
+    virtual void log(Level level, const std::string& message, const std::string& location = "");
+protected:
+    std::string m_prefixes[Logger::LevelCount];
+    Console::ColorType m_colors[Logger::LevelCount];
+};
 
-/// Add a new input to this engine
-void DataEngine::addInput(objectmodel::BaseData* n)
-{
-    if (n->getOwner() == this && (!n->getGroup() || !n->getGroup()[0]))
-        n->setGroup("Inputs"); // set the group of input Datas if not yet set
-    core::objectmodel::DDGNode::addInput(n);
-}
 
-/// Remove an input from this engine
-void DataEngine::delInput(objectmodel::BaseData* n)
-{
-    core::objectmodel::DDGNode::delInput(n);
-}
-
-/// Add a new output to this engine
-void DataEngine::addOutput(objectmodel::BaseData* n)
-{
-    if (n->getOwner() == this && (!n->getGroup() || !n->getGroup()[0]))
-        n->setGroup("Outputs"); // set the group of output Datas if not yet set
-    core::objectmodel::DDGNode::addOutput(n);
-}
-
-/// Remove an output from this engine
-void DataEngine::delOutput(objectmodel::BaseData* n)
-{
-    core::objectmodel::DDGNode::delOutput(n);
-}
-
-} // namespace core
+} // namespace helper
 
 } // namespace sofa
+
+#endif

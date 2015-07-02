@@ -31,7 +31,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/SVector.h>
 #include <sofa/helper/accessor.h>
-#include <sofa/component/component.h>
 
 #include <sofa/core/objectmodel/DataFileName.h>
 #include "initFrame.h"

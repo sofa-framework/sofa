@@ -30,7 +30,6 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
 
-#include <sofa/component/component.h>
 #include <sofa/helper/OptionsGroup.h>
 
 #include "ImageContainer.h"

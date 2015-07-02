@@ -92,6 +92,9 @@ public:
     /// System-specific file extension for a dynamic library (e.g. "so").
     static const std::string extension;
 
+    /// System-specific file prefix for a dynamic library (e.g. "lib").
+    static const std::string prefix;
+
 private:
     static std::string m_lastError;
     static void fetchLastError();

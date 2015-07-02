@@ -88,6 +88,7 @@ set(SOFAHELPER_HEADERS
     GenerateRigid.h
     Utils.h
 	IndexOpenMP.h
+	Logger.h
 	)
 
 set(SOFAHELPER_SOURCES
@@ -141,6 +142,7 @@ set(SOFAHELPER_SOURCES
     GenerateRigid.cpp
     kdTree.cpp
     Utils.cpp
+	Logger.cpp
 	)
 
 if(SOFA_HAVE_PNG)
