@@ -22,62 +22,75 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "Logger.h"
 
-#include <sofa/core/DataEngine.h>
+#include <sofa/helper/system/console.h>
+
 
 namespace sofa
 {
 
-namespace core
+namespace helper
 {
 
-DataEngine::DataEngine()
-{
-    addLink(&(this->core::objectmodel::DDGNode::inputs));
-    addLink(&(this->core::objectmodel::DDGNode::outputs));
-}
+Logger::SPtr Logger::s_mainLogger = Logger::SPtr(new TTYLogger());
 
-DataEngine::~DataEngine()
+Logger::Logger(): m_currentLevel(Logger::All)
 {
 }
 
-void DataEngine::updateAllInputsIfDirty()
+Logger::~Logger()
 {
-    const DDGLinkContainer& inputs = DDGNode::getInputs();
-    for(size_t i=0, iend=inputs.size() ; i<iend ; ++i )
-    {
-        static_cast<core::objectmodel::BaseData*>(inputs[i])->updateIfDirty();
-    }
 }
 
-/// Add a new input to this engine
-void DataEngine::addInput(objectmodel::BaseData* n)
+void Logger::setLevel(Level level)
 {
-    if (n->getOwner() == this && (!n->getGroup() || !n->getGroup()[0]))
-        n->setGroup("Inputs"); // set the group of input Datas if not yet set
-    core::objectmodel::DDGNode::addInput(n);
+    m_currentLevel = level;
 }
 
-/// Remove an input from this engine
-void DataEngine::delInput(objectmodel::BaseData* n)
+Logger::Level Logger::getLevel()
 {
-    core::objectmodel::DDGNode::delInput(n);
+    return m_currentLevel;
 }
 
-/// Add a new output to this engine
-void DataEngine::addOutput(objectmodel::BaseData* n)
+Logger& Logger::getMainLogger()
 {
-    if (n->getOwner() == this && (!n->getGroup() || !n->getGroup()[0]))
-        n->setGroup("Outputs"); // set the group of output Datas if not yet set
-    core::objectmodel::DDGNode::addOutput(n);
+    return *s_mainLogger.get();
 }
 
-/// Remove an output from this engine
-void DataEngine::delOutput(objectmodel::BaseData* n)
+void Logger::setMainLogger(boost::shared_ptr<Logger> logger)
 {
-    core::objectmodel::DDGNode::delOutput(n);
+    s_mainLogger = logger;
 }
 
-} // namespace core
+
+TTYLogger::TTYLogger()
+{
+    m_prefixes[Logger::Debug] = "[Debug] ";
+    m_prefixes[Logger::Info] = "[Info] ";
+    m_prefixes[Logger::Warning] = "[Warning] ";
+    m_prefixes[Logger::Error] = "[Error] ";
+    m_colors[Logger::Debug] = Console::DEFAULT_COLOR;
+    m_colors[Logger::Info] = Console::BRIGHT_GREEN;
+    m_colors[Logger::Warning] = Console::RED;
+    m_colors[Logger::Error] = Console::BRIGHT_RED;
+}
+
+void TTYLogger::log(Level level, const std::string& message, const std::string& location)
+{
+    if (level < getLevel())
+        return;
+
+    std::ostream& output = (level >= Warning? std::cerr: std::cout);
+
+    if (m_prefixes[level].size() > 0)
+        output << m_colors[level] << m_prefixes[level] << Console::DEFAULT_COLOR;
+    if (location.size() > 0)
+        output << Console::YELLOW << "[" << location << "] " << Console::DEFAULT_COLOR;
+    output << message << std::endl;
+}
+
+
+} // namespace helper
 
 } // namespace sofa

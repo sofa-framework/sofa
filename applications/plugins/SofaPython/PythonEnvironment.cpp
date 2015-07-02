@@ -31,7 +31,6 @@
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/component/contextobject/CoordinateSystem.h>
 
 #if __linux__
 #  include <dlfcn.h>            // for dlopen(), see workaround in Init()

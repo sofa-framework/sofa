@@ -24,8 +24,10 @@
 ******************************************************************************/
 #include "ObjectFactory.h"
 
+#include <sofa/helper/Logger.h>
 #include <sofa/defaulttype/TemplatesAliases.h>
 
+using sofa::helper::Logger;
 
 namespace sofa
 {
@@ -81,7 +83,7 @@ bool ObjectFactory::addAlias(std::string name, std::string result, bool force,
     ClassEntryMap::iterator it = registry.find(result);
     if (it == registry.end())
     {
-        std::cerr << "ERROR: ObjectFactory: cannot create alias " << name << " to unknown class " << result << ".\n";
+        Logger::getMainLogger().log(Logger::Error, "Target class for alias '" + result + "'not found: " + name, "ObjectFactory::addAlias()");
         return false;
     }
 
@@ -91,7 +93,7 @@ bool ObjectFactory::addAlias(std::string name, std::string result, bool force,
     // Check that the alias does not already exist, unless 'force' is true
     if (aliasEntry.get()!=NULL && !force)
     {
-        std::cerr << "ERROR: ObjectFactory: cannot create alias " << name << " because a class with this name already exists.\n";
+        Logger::getMainLogger().log(Logger::Error, "Name already exists: " + name, "ObjectFactory::addAlias()");
         return false;
     }
 
@@ -126,7 +128,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
 		// If no template has been given or if the template does not exist, first try with the default one
         if(templatename.empty() || entry->creatorMap.find(templatename) == entry->creatorMap.end())
 			templatename = entry->defaultTemplate;
-		
+
         CreatorMap::iterator it2 = entry->creatorMap.find(templatename);
         if (it2 != entry->creatorMap.end())
         {
@@ -340,7 +342,6 @@ RegisterObject::RegisterObject(const std::string& description)
 {
     if (!description.empty())
     {
-        //std::cerr<<"description.size() = "<<description.size()<<", value = "<<description<<std::endl;
         addDescription(description);
     }
 }
@@ -353,7 +354,6 @@ RegisterObject& RegisterObject::addAlias(std::string val)
 
 RegisterObject& RegisterObject::addDescription(std::string val)
 {
-    //std::cout << "ObjectFactory: add description "<<val<<std::endl;
     val += '\n';
     entry.description += val;
     return *this;
@@ -361,7 +361,6 @@ RegisterObject& RegisterObject::addDescription(std::string val)
 
 RegisterObject& RegisterObject::addAuthor(std::string val)
 {
-    //std::cout << "ObjectFactory: add author "<<val<<std::endl;
     val += ' ';
     entry.authors += val;
     return *this;
@@ -369,23 +368,22 @@ RegisterObject& RegisterObject::addAuthor(std::string val)
 
 RegisterObject& RegisterObject::addLicense(std::string val)
 {
-    //std::cout << "ObjectFactory: add license "<<val<<std::endl;
     entry.license += val;
     return *this;
 }
 
 RegisterObject& RegisterObject::addCreator(std::string classname,
-					   std::string templatename,
-					   ObjectFactory::Creator::SPtr creator)
+                                           std::string templatename,
+                                           ObjectFactory::Creator::SPtr creator)
 {
 
     if (!entry.className.empty() && entry.className != classname)
     {
-        std::cerr << "ERROR: ObjectFactory: all templated class should have the same base classname ("<<entry.className<<"!="<<classname<<")\n";
+        Logger::getMainLogger().log(Logger::Error, "Template already instanciated with a different classname: " + entry.className + " != " + classname, "ObjectFactory");
     }
     else if (entry.creatorMap.find(templatename) != entry.creatorMap.end())
     {
-        std::cerr << "ERROR: ObjectFactory: class "<<classname<<"<"<<templatename<<"> already registered\n";
+        Logger::getMainLogger().log(Logger::Error, "Component already registered: " + classname + "<" + templatename + ">", "ObjectFactory");
     }
     else
     {
@@ -403,7 +401,6 @@ RegisterObject::operator int()
     }
     else
     {
-        //std::cout << "ObjectFactory: commit"<<std::endl;
         ObjectFactory::ClassEntry& reg = ObjectFactory::getInstance()->getEntry(entry.className);
         reg.description += entry.description;
         reg.authors += entry.authors;
@@ -412,7 +409,7 @@ RegisterObject::operator int()
         {
             if (!reg.defaultTemplate.empty())
             {
-                std::cerr << "ERROR: ObjectFactory: default template for class "<<entry.className<<" already registered <"<<reg.defaultTemplate<<">, do not register <"<<entry.defaultTemplate<<"> as default.\n";
+                Logger::getMainLogger().log(Logger::Error, "Default template for class " + entry.className + " already registered (" + reg.defaultTemplate + "), do not register " + entry.defaultTemplate + " as the default", "ObjectFactory");
             }
             else
             {
@@ -423,7 +420,7 @@ RegisterObject::operator int()
         {
             if (reg.creatorMap.find(itc->first) != reg.creatorMap.end())
             {
-                std::cerr << "ERROR: ObjectFactory: class "<<entry.className<<"<"<<itc->first<<"> already registered\n";
+                Logger::getMainLogger().log(Logger::Error, "Class already registered: " + itc->first, "ObjectFactory");
             }
             else
             {

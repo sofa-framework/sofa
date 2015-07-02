@@ -22,11 +22,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+
+#include "../Node_test.h"
 #include <SofaTest/Sofa_test.h>
 #include <SceneCreator/SceneCreator.h>
 #include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/graph/DAGNode.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
+
+using sofa::simulation::graph::DAGNode;
 
 namespace sofa {
 
@@ -258,10 +263,25 @@ TEST_F( DAG_test, traverse )
     traverse_morecomplex();
 }
 
-}// namespace sofa
+TEST(DAGNodeTest, objectDestruction_singleObject)
+{
+    Node_test_objectDestruction_singleObject<DAGNode>();
+}
 
+TEST(DAGNodeTest, objectDestruction_multipleObjects)
+{
+    Node_test_objectDestruction_multipleObjects<DAGNode>();
+}
 
+TEST(DAGNodeTest, objectDestruction_childNode_singleObject)
+{
+    Node_test_objectDestruction_childNode_singleObject<DAGNode>();
+}
 
+TEST(DAGNodeTest, objectDestruction_childNode_complexChild)
+{
+    Node_test_objectDestruction_childNode_complexChild<DAGNode>();
+}
 
 
 

@@ -30,6 +30,7 @@ public:
     struct ColorType
     {
         Console::SystemColorType value;
+        ColorType() : value(DEFAULT_COLOR.value) {}
         ColorType( const ColorType& c ) : value(c.value) {}
         ColorType( const Console::SystemColorType& v ) : value(v) {}
         void operator= ( const ColorType& c ) { value=c.value; }

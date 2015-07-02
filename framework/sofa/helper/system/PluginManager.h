@@ -25,10 +25,11 @@
 #ifndef SOFA_HELPER_SYSTEM_PLUGINMANAGER_H
 #define SOFA_HELPER_SYSTEM_PLUGINMANAGER_H
 
+#include <sofa/SofaFramework.h>
 #include <sofa/helper/system/DynamicLibrary.h>
 #include <boost/shared_ptr.hpp>
+#include <vector>
 #include <map>
-#include <sofa/SofaFramework.h>
 
 namespace sofa
 {
@@ -138,13 +139,14 @@ public:
     typedef PluginMap::iterator PluginIterator;
 
     static PluginManager& getInstance();
-    bool loadPlugin(std::string& path, std::ostream* errlog=&std::cerr);
-    void loadPluginWithGui(const std::string& path, std::ostream* log=&std::cout, const std::string& guipostfix=s_gui_postfix ); ///< try to load a plugin and its associated gui plugin
-    bool unloadPlugin(std::string& path, std::ostream* errlog=&std::cerr);
-
+    bool loadPlugin(const std::string& path, std::ostream* errlog=&std::cerr);
+    bool unloadPlugin(const std::string& path, std::ostream* errlog=&std::cerr);
 
     void init();
-	void init(const std::string& pluginName);
+	void init(const std::string& pluginPath);
+
+    std::string findPlugin(const std::string& pluginName);
+    bool pluginIsLoaded(const std::string& pluginPath);
 
     inline friend std::ostream& operator<< ( std::ostream& os, const PluginManager& pluginManager )
     {
@@ -154,8 +156,9 @@ public:
     {
         return pluginManager.readFromStream( in );
     }
-    PluginMap& getPluginMap()  { return m_pluginMap; }
 
+    PluginMap& getPluginMap()  { return m_pluginMap; }
+    std::vector<std::string>& getSearchPaths() { return m_searchPaths; }
 
     void readFromIniFile(const std::string& path);
     void writeToIniFile(const std::string& path);
@@ -163,7 +166,7 @@ public:
     static std::string s_gui_postfix; ///< the postfix to gui plugin, default="gui" (e.g. myplugin_gui.so)
 
 private:
-    PluginManager() {}
+    PluginManager();
     ~PluginManager();
     PluginManager(const PluginManager& );
     DynamicLibrary* loadLibrary(const std::string& path,  std::ostream* errlog=&std::cerr);
@@ -171,6 +174,7 @@ private:
     std::istream& readFromStream( std::istream& );
 private:
     PluginMap m_pluginMap;
+    std::vector<std::string> m_searchPaths;
 };
 
 

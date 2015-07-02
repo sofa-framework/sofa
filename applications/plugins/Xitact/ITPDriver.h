@@ -41,7 +41,6 @@
 //#include <sofa/gui/PickHandler.h>
 //#include <sofa/gui/qt/SofaMouseManager.h>
 #include <SofaUserInteraction/RayModel.h>
-//#include <sofa/component/collision/HeartSimulationManager.h>
 #include "initXitact.h"
 
 namespace sofa

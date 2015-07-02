@@ -70,9 +70,8 @@ IntensityProfileRegistrationForceField<DataTypes, ImageTypes>::IntensityProfileR
     , refProfiles(initData(&refProfiles,ImageTypes(),"refProfiles","reference intensity profiles"))
     , profiles(initData(&profiles,ImageTypes(),"profiles","computed intensity profiles"))
     , similarity(initData(&similarity,similarityTypes(),"similarity","similarity image"))
-    , edgeIntensityThreshold(initData(&edgeIntensityThreshold,(Real)0.0,"edgeIntensityThreshold", "The threshold value between two edges."))
+    , maskOutside(initData(&maskOutside,false,"maskOutside","discard profiles outside images"))
     , useAnisotropicStiffness(initData(&useAnisotropicStiffness,false,"useAnisotropicStiffness", "use more accurate but non constant stiffness matrix."))
-    , highToLowSignal(initData(&highToLowSignal,true,"highToLowSignal", ""))
     , Sizes(initData(&Sizes,Vec<2,unsigned int>(5,5),"sizes","Inwards/outwards profile size."))
     , Step(initData(&Step,(Real)1E-2,"step","Spacing of the profile discretization."))
     , Interpolation( initData ( &Interpolation,"interpolation","Interpolation method." ) )
@@ -136,21 +135,9 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::init()
 
     // check inputs
     raImage im(this->image);    if( im->isEmpty() ) serr<<"IntensityProfileRegistrationForceField: Target data not found"<< endl;
+    raImage rim(this->refImage),rp(this->refProfiles);    if( rim->isEmpty() && rp->isEmpty() ) serr<<"IntensityProfileRegistrationForceField: Reference data not found"<< endl;
 
-    usingThresholdFinding = false;
-    if(edgeIntensityThreshold.getValue())
-    {
-        usingThresholdFinding = true;
-    }
-
-    if(!usingThresholdFinding)
-    {
-        raImage rim(this->refImage),rp(this->refProfiles);    if( rim->isEmpty() && rp->isEmpty() ) serr<<"IntensityProfileRegistrationForceField: Reference data not found"<< endl;
-    }
     this->udpateProfiles(true);
-
-    
-
 }
 
 
@@ -176,8 +163,8 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
     // get current data
     const CImg<T>& img = in->getCImg(t);
     const VecCoord& pos = (ref?
-                           this->mstate->read(core::ConstVecCoordId::restPosition())->getValue():
-                           this->mstate->read(core::ConstVecCoordId::position())->getValue());
+                               this->mstate->read(core::ConstVecCoordId::restPosition())->getValue():
+                               this->mstate->read(core::ConstVecCoordId::position())->getValue());
     const RDataRefVecCoord dir(ref?this->refDirections:this->directions);
     if(dir.size() != pos.size()) return;
 
@@ -206,7 +193,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
+        for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
         {
             Coord dp=dir[i]*this->Step.getValue();
             Coord p=pos[i]-dp*(Real)sizes[0];
@@ -224,7 +211,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
+        for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
         {
             Coord dp=dir[i]*this->Step.getValue();
             Coord p=pos[i]-dp*(Real)sizes[0];
@@ -242,7 +229,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
+        for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
         {
             Coord dp=dir[i]*this->Step.getValue();
             Coord p=pos[i]-dp*(Real)sizes[0];
@@ -302,7 +289,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
+        for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
         {
             for(unsigned int j=0;j<dims[0];j++)
             {
@@ -312,7 +299,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
                     for(unsigned int x=0;x<ipdepth;x++)
                         if(!similarityMask(j,i))
                         {
-                            if(refMask (x,i,0,k) || mask (x+j,i,0,k)) similarityMask(j,i)=1;
+                            if(maskOutside.getValue() && (refMask (x,i,0,k) || mask (x+j,i,0,k))) similarityMask(j,i)=1;
                             else
                             {
                                 T vref= profref (x,i,0,k) , v = prof (x+j,i,0,k);
@@ -327,7 +314,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
+        for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
         {
             for(unsigned int j=0;j<dims[0];j++)
             {
@@ -338,7 +325,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
                     for(unsigned int x=0;x<ipdepth;x++)
                         if(!similarityMask(j,i))
                         {
-                            if(refMask (x,i,0,k) || mask (x+j,i,0,k)) similarityMask(j,i)=1;
+                            if(maskOutside.getValue() && (refMask (x,i,0,k) || mask (x+j,i,0,k)))  similarityMask(j,i)=1;
                             else
                             {
                                 T vref= profref (x,i,0,k) , v = prof (x+j,i,0,k);
@@ -390,45 +377,32 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::addForce(cons
     Real k = this->ks.getValue(),kd=this->kd.getValue();
 
     udpateProfiles();
-    if(usingThresholdFinding)
-    {
-        updateThresholdInfo();
-    }
-    else
-    {
-        udpateSimilarity();
-    }
+    udpateSimilarity();
 
     m_potentialEnergy = 0;
     //serr<<"addForce()"<<sendl;
     for (unsigned int i=0; i<nb; i++)
     {
-        if(usingThresholdFinding)
-        {
-            targetPos[i]=x[i]+dirs[i]*(Real)closestThreshold[i]*Step.getValue();
-        }
-        else
-        {
-            raSimilarity out(this->similarity);
-            if( out->isEmpty())  return;
-            const CImg<Ts> &simi = out->getCImg(0);
 
-            int L=(int)searchRange.getValue();
+        raSimilarity out(this->similarity);
+        if( out->isEmpty())  return;
+        const CImg<Ts> &simi = out->getCImg(0);
 
-            const Ts* ptr=simi.data(0,i);
-            Ts minimum=(Ts)threshold.getValue();
-            int lmin=0;
-            for (int l=-L; l<=L; l++)
+        int L=(int)searchRange.getValue();
+
+        const Ts* ptr=simi.data(0,i);
+        Ts minimum=(Ts)threshold.getValue();
+        int lmin=0;
+        for (int l=-L; l<=L; l++)
+        {
+            if(*ptr<minimum)
             {
-                if(*ptr<minimum)
-                {
-                    minimum=*ptr;
-                    lmin=l;
-                }
-                ptr++;
+                minimum=*ptr;
+                lmin=l;
             }
-            targetPos[i]=x[i]+dirs[i]*(Real)lmin*Step.getValue();
+            ptr++;
         }
+        targetPos[i]=x[i]+dirs[i]*(Real)lmin*Step.getValue();
 
         // add rest spring force
         //serr<<"addForce() between "<<i<<" and "<<closestPos[i]<<sendl;
@@ -444,153 +418,6 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::addForce(cons
         if(kd && nrm2) f[i]-=kd*u*dot(u,v[i])/u.norm2();
     }
     _f.endEdit();
-}
-
-/*
-    Finds the closest change in signal for each point
-*/
-template<class DataTypes,class ImageTypes>
-void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::updateThresholdInfo()
-{
-    raImage in(this->image);
-    raImage IP(this->profiles);
-    raTransform inT(this->transform);
-
-    // get current time modulo dimt
-    const unsigned int dimt=in->getDimensions()[4];
-    Real t=inT->toImage(this->getContext()->getTime()) ;
-    t-=(Real)((int)((int)t/dimt)*dimt);
-    t=(t-floor(t)>0.5)?ceil(t):floor(t); // nearest
-    if(t<0) t=0.0; else if(t>=(Real)dimt) t=(Real)dimt-1.0; // clamp
-
-    // get current data
-    const CImg<T>& prof = IP->getCImg(0);
-    CImg<bool> &msk= this->mask;
-
-    Vec<2,unsigned int> sizes(this->Sizes.getValue()[0]+ searchRange.getValue() ,this->Sizes.getValue()[1]+ searchRange.getValue());
-    unsigned int pointIndex = sizes[0];
-
-
-    if(!originalLocation)
-    {
-        closestThreshold = CImg<int>(prof.height());
-        closestThreshold.fill(0);
-    }
-
-    originalLocation = CImg<int>(prof.height());
-
-    Real lowerThreshold = 0;
-    Real upperThreshold = 0;
-    if(highToLowSignal.getValue())
-    {
-        lowerThreshold = edgeIntensityThreshold.getValue();
-        upperThreshold = (Real)cimg::type<T>::max();
-    }
-    else
-    {
-        lowerThreshold = (Real)cimg::type<T>::min();
-        upperThreshold = edgeIntensityThreshold.getValue();
-    }
-
-    //For each point
-    //Save the initial location at the point, so we know if we want to move it towards a high signal or a low signal
-    for(int i=0; i<prof.height(); i++)
-    {
-        T value = prof(pointIndex,i);
-
-        if(msk(pointIndex,i))
-            originalLocation(i) = IN_MASK;
-        else if(value >= lowerThreshold && value <= upperThreshold)
-            originalLocation(i) = IN_OBJECT;
-        else
-            originalLocation(i) = IN_BACKGROUND;
-    }
-
-
-    //  find the first signal change ('edge')
-    for(int i=0; i<prof.height(); i++)
-    {
-        //Starting at the point going opposite the normal (inner direction)
-        int closestInnerIndex=sizes[0]+1;
-        for(unsigned int j=0; j<sizes[0]+1; j++)
-        {
-            int valueLocation = getSignalLocation(pointIndex - j, i);
-            if(originalLocation(i) == IN_OBJECT && valueLocation == IN_BACKGROUND)
-            {
-                closestInnerIndex = j;
-                break;
-            }
-        }
-
-        //Starting at the point going with the normal (outer direction)
-        int closestOuterIndex=sizes[1]+1;
-        for(unsigned int j=0; j<sizes[1]+1; j++)
-        {
-            int valueLocation = getSignalLocation(pointIndex + j, i);
-            if(originalLocation(i) == IN_BACKGROUND && valueLocation == IN_OBJECT)
-            {
-                closestOuterIndex = j;
-                //std::cerr << "Point: " << i << "edge at index: " << j << std::endl;
-                break;
-            }
-        }
-
-        //Find in which direction the signal change is closer
-        //If there was no signal change found in the search range,
-        // we keep the point where it is.
-        if(closestOuterIndex < closestInnerIndex && closestOuterIndex <= (int)sizes[1])
-        {
-            closestThreshold[i] = closestOuterIndex;
-        }
-        else if(closestInnerIndex <= (int)sizes[0])
-        {
-            closestThreshold[i] = -closestInnerIndex;
-        }
-        else
-        {
-            closestThreshold[i] = 0;
-        }
-    }
-
-
-
-}
-
-/*
-    Determines whether a point's signal at a given location is within the threshold range
-    @param signal the index of the location in the signal that we're interested in
-    @param point the index of the point we are considering
-    @return IN_OBJECT if the signal is within the threshold, IN_BACKGROUND if it is not
-*/
-template<class DataTypes,class ImageTypes>
-bool IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::getSignalLocation(int signal, int point)
-{
-    raImage IP(this->profiles);
-    const CImg<T>& prof = IP->getCImg(0);
-    CImg<bool> &msk= this->mask;
-
-    Real lowerThreshold = 0;
-    Real upperThreshold = 0;
-    if(highToLowSignal.getValue())
-    {
-        lowerThreshold = edgeIntensityThreshold.getValue();
-        upperThreshold = (Real)cimg::type<T>::max();
-    }
-    else
-    {
-        lowerThreshold = (Real)cimg::type<T>::min();
-        upperThreshold = edgeIntensityThreshold.getValue();
-    }
-
-    T value = prof(signal, point);
-
-    if(msk(signal, point))
-        return IN_BACKGROUND;
-
-    if(value >= lowerThreshold && value <= upperThreshold)
-        return IN_OBJECT;
-    else
-        return IN_BACKGROUND;
 }
 
 
@@ -652,12 +479,12 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::draw(const co
     {
         std::vector< Vector3 > points;
         for (unsigned int i=0; i<nb; i++)
-            {
-                Vector3 point1 = DataTypes::getCPos(x[i]);
-                Vector3 point2 = DataTypes::getCPos(this->targetPos[i]);
-                points.push_back(point1);
-                points.push_back(point2);
-            }
+        {
+            Vector3 point1 = DataTypes::getCPos(x[i]);
+            Vector3 point2 = DataTypes::getCPos(this->targetPos[i]);
+            points.push_back(point1);
+            points.push_back(point2);
+        }
 
         const Vec<4,float> c(0,1,0.5,1);
         if (showArrowSize.getValue()==0 || drawMode.getValue() == 0)	vparams->drawTool()->drawLines(points, 1, c);

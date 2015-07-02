@@ -49,7 +49,6 @@
 #include <SofaMeshCollision/IncrSAP.h>
 #include <sofa/core/CollisionModel.h>
 #include <stdlib.h>
-//#include <sofa/component/collision/TeschnerSpatialHashing.h>
 
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;

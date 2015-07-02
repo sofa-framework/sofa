@@ -25,9 +25,9 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/system/console.h>
+#include <sofa/helper/Logger.h>
 #include <map>
 #include <typeinfo>
-
 #include <string.h>
 #include <sstream>
 
@@ -41,7 +41,6 @@ namespace objectmodel
 {
 
 using std::string;
-
 static const std::string unnamed_label=std::string("unnamed");
 
 Base::Base()
@@ -249,23 +248,20 @@ void Base::setName(const std::string& n, int counter)
 
 void Base::processStream(std::ostream& out)
 {
-    const std::string name = getName() + " (" + getClassName() + ")";
+    using sofa::helper::Logger;
+    const std::string name = getClassName() + " \"" + getName() + "\"";
 
     if (&out == &serr)
     {
-        serr << "\n";
         std::string str = serr.str();
+        serr << "\n";
 
-        std::cerr << helper::Console::WarningPrefix
-                  << helper::Console::YELLOW << "[" << name << "]" << helper::Console::DEFAULT_COLOR << " "
-                  << str << std::flush;
+        getComponentLogger().log(Logger::Warning, str, name);
 
         if (warnings.size()+str.size() >= MAXLOGSIZE)
         {
             const std::string msg = "Log overflow! Resetting serr buffer.";
-            std::cerr << helper::Console::WarningPrefix
-                      << helper::Console::YELLOW << "[" << name << "]" << helper::Console::DEFAULT_COLOR << " "
-                      << msg << std::endl;
+            getComponentLogger().log(Logger::Warning, msg, name);
             warnings.clear();
             warnings = msg;
         }
@@ -274,26 +270,34 @@ void Base::processStream(std::ostream& out)
     }
     else if (&out == &sout)
     {
-        sout << "\n";
         std::string str = sout.str();
+        sout << "\n";
         if (f_printLog.getValue())
         {
-            std::cout << helper::Console::InfoPrefix
-                      << helper::Console::YELLOW << "[" << name << "]" << helper::Console::DEFAULT_COLOR << " "
-                      << str << std::endl;
+            getComponentLogger().log(Logger::Info, str, name);
         }
         if (outputs.size()+str.size() >= MAXLOGSIZE)
         {
             const std::string msg = "Log overflow! Resetting sout buffer.";
-            std::cerr << helper::Console::WarningPrefix
-                      << helper::Console::YELLOW << "[" << name << "]" << helper::Console::DEFAULT_COLOR << " "
-                      << msg << std::flush;
+            getComponentLogger().log(Logger::Warning, msg, name);
             outputs.clear();
             outputs = msg;
         }
         outputs += str;
         sout.str("");
     }
+}
+
+helper::Logger::SPtr Base::s_componentLogger = helper::Logger::SPtr(new helper::TTYLogger());
+
+helper::Logger& Base::getComponentLogger()
+{
+    return *s_componentLogger.get();
+}
+
+void Base::setComponentLogger(helper::Logger::SPtr logger)
+{
+    s_componentLogger = logger;
 }
 
 const std::string& Base::getWarnings() const
@@ -622,6 +626,7 @@ void  Base::writeDatas (std::ostream& out, const std::string& separator)
         }
     }
 }
+
 
 } // namespace objectmodel
 
