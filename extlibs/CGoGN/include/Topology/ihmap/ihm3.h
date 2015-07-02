@@ -132,9 +132,11 @@ public:
     BOOST_STATIC_ASSERT(ORBIT != VERTEX);
         static inline T& at( MAP* map, AttributeMultiVector<T>* attrib, Cell<ORBIT> c)
         {
+            assert(!c.isNil());
             unsigned int a = map->getEmbedding(c) ;
             if (a == EMBNULL)
             {
+                assert(a!= EMBNULL);
                 // setOrbitEmbeddingOnNewCell adapted to CPHMap
                 a = Algo::Topo::setOrbitEmbeddingOnNewCell<ORBIT,MAP>(*map, c) ;
             }
@@ -282,13 +284,13 @@ public:
 //    void clear(bool removeAttrib);
     inline void setFaceLevel(FaceCell f, unsigned int lvl)
     {
-        assert(lvl <= this->getCurrentLevel());
+//        assert(lvl <= this->getCurrentLevel());
         a_faceLevel[f] = lvl;
     }
 
     inline void setVolumeLevel(VolumeCell w, unsigned int lvl)
     {
-        assert(lvl <= this->getCurrentLevel());
+//        assert(lvl <= this->getCurrentLevel());
         a_volumeLevel[w] = lvl;
     }
 
@@ -569,7 +571,6 @@ public:
         }
         this->setCurrentLevel(oldLvl);
     }
-
 
     template <unsigned int ORBIT>
     void setDartEmbedding(Dart d, unsigned int emb)

@@ -405,9 +405,14 @@ Dart ImplicitHierarchicalMap3::volumeOldestDart(Dart d)
 		{
 			oldest = old;
 			l_old = l;
+            if (l== 0u)
+            {
+                break;
+            }
 		}
 	}
 
+    assert(!oldest.isNil());
     return oldest;
 }
 
@@ -688,14 +693,13 @@ bool ImplicitHierarchicalMap3::coarsenNeighborhoodLevelDiffersMoreThanOne(Dart d
 
 void ImplicitHierarchicalMap3::sewVolumes(Dart d, Dart e, bool withBoundary)
 {
+    const unsigned curr = getCurrentLevel();
     if (!withBoundary)
     {
         Map3::sewVolumes(d, e, false) ;
         return ;
     }
 
-    const unsigned int lvl = getDartLevel(d);
-    assert(lvl == getDartLevel(e));
     Map3::sewVolumes(d, e, withBoundary);
 
     setFaceId(d, getFaceId(d), FACE);
@@ -717,7 +721,9 @@ void ImplicitHierarchicalMap3::sewVolumes(Dart d, Dart e, bool withBoundary)
         do
         {
             assert(ParentMap::getEmbedding<VERTEX>(it) != EMBNULL);
+            this->setCurrentLevel(getDartLevel(it));
             Algo::Topo::setOrbitEmbedding<VERTEX>(*this, it, ParentMap::getEmbedding<VERTEX>(it)) ;
+            this->setCurrentLevel(curr);
             it = phi1(it) ;
         } while(it != d) ;
     }
@@ -730,7 +736,9 @@ void ImplicitHierarchicalMap3::sewVolumes(Dart d, Dart e, bool withBoundary)
         do
         {
             assert(ParentMap::getEmbedding<EDGE>(it) != EMBNULL);
+            this->setCurrentLevel(getDartLevel(it));
             Algo::Topo::setOrbitEmbedding<EDGE>(*this, it, ParentMap::getEmbedding<EDGE>(it)) ;
+            this->setCurrentLevel(curr);
             it = phi1(it) ;
         } while(it != d) ;
     }
@@ -739,19 +747,43 @@ void ImplicitHierarchicalMap3::sewVolumes(Dart d, Dart e, bool withBoundary)
     if (isOrbitEmbedded<FACE>())
     {
         assert(ParentMap::getEmbedding<FACE>(d) != EMBNULL);
-        Algo::Topo::setOrbitEmbedding<FACE>(*this, e, ParentMap::getEmbedding<FACE>(d)) ;
+//        Algo::Topo::setOrbitEmbedding<FACE>(*this, e, ParentMap::getEmbedding<FACE>(d)) ;
+
+        this->setCurrentLevel(getMaxLevel());
+        {
+            TraversorDartsOfOrbit< MAP, FACE > traDoF(*this, e);
+            for(Dart fit = traDoF.begin() ; fit != traDoF.end() ; fit = traDoF.next())
+            {
+                this->setCurrentLevel(getDartLevel(fit));
+                setDartEmbedding<FACE>(fit,  ParentMap::getEmbedding<FACE>(d));
+                this->setCurrentLevel(getMaxLevel());
+            }
+        }
+
     }
+
+    this->setCurrentLevel(curr);
 }
 
 void ImplicitHierarchicalMap3::splitVolume(std::vector<Dart> &vd)
 {
-    //        std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
-    const unsigned int oldVolEmb = ParentMap::getEmbedding<VOLUME>(vd.front());
+//    std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
+//    std::cerr << "splitVolume Called. Current volume Level is : " << this->volumeLevel(vd.front()) << std::endl;
+//    const unsigned int oldVolEmb = ParentMap::getEmbedding<VOLUME>(vd.front());
+//    assert(oldVolEmb != EMBNULL);
     const unsigned curr = getCurrentLevel();
-    assert(oldVolEmb != EMBNULL);
+
 
     const unsigned int volLvl = this->volumeLevel(vd.front());
+
 //    assert(volLvl +1u == getCurrentLevel());
+
+    std::vector<Dart> phi2vd = vd;
+    for(std::vector<Dart>::iterator it = phi2vd.begin() ; it != phi2vd.end() ; ++it)
+    {
+        *it = phi2MaxLvl(*it);
+    }
+
     Map3::splitVolume(vd);
 
     const unsigned fid = this->getNewFaceId();
@@ -759,42 +791,38 @@ void ImplicitHierarchicalMap3::splitVolume(std::vector<Dart> &vd)
 //    const unsigned lvl = getDartLevel(vd.front());
 //    assert(lvl == getCurrentLevel()); // not good
     // follow the edge path a second time to embed the vertex, edge and volume orbits
-
-    for(std::vector<Dart>::iterator it = vd.begin() ; it != vd.end() ; ++it)
+    this->setCurrentLevel(getMaxLevel());
+//    for(std::vector<Dart>::iterator it = vd.begin() ; it != vd.end() ; ++it)
+    std::cerr << "splitVolume called at lvl " << curr << " added darts " ;
+    for (unsigned i = 0u; i < vd.size(); ++i)
     {
-        const Dart dit = *it;
-        const Dart dit2 = phi2(dit);
-        const Dart dit23 = phi3(dit2);
-        setDartLevel(dit2, getDartLevel(dit));
-        setDartLevel(dit23, getDartLevel(dit));
+        const Dart ditvd = vd[i];
+        const Dart ditphi2vd = phi2vd[i];
+//        const Dart dit2 = phi2MaxLvl(dit);
+//        const Dart dit23 = phi3MaxLvl(dit2);
+        setDartLevel(phi2MaxLvl(ditvd), getDartLevel(ditphi2vd));
+        setDartLevel(phi2MaxLvl(ditphi2vd), getDartLevel(ditvd));
+        std::cerr << phi2MaxLvl(ditvd) << " " << phi2MaxLvl(ditphi2vd) << " ";
+//        setDartLevel(dit23, getDartLevel(dit));
+        setEdgeId(ditvd, getEdgeId(ditvd), EDGE);
     }
+    std::cerr << std::endl;
 
     for(std::vector<Dart>::iterator it = vd.begin() ; it != vd.end() ; ++it)
     {
         const Dart dit = *it;
-        const Dart dit1 = phi1(dit);
-        const Dart dit2 = phi2(dit);
-        const Dart dit23 = phi3(dit2);
-//        std::cerr << "getDartLevel(dit) : " << getDartLevel(dit) << std::endl;
-//        std::cerr << "getDartLevel(dit2) : " << getDartLevel(dit2) << std::endl;
-//        std::cerr << "getDartLevel(dit23) : " << getDartLevel(dit23) << std::endl;
-//        setEdgeId(dit, getEdgeId(dit), EDGE);
+        const Dart dit1 = phi1MaxLvl(dit);
+        const Dart dit2 = phi2MaxLvl(dit);
+        const Dart dit23 = phi3MaxLvl(dit2);
+        setCurrentLevel(getDartLevel(dit));
 
         // embed the vertex embedded from the origin volume to the new darts
         if(isOrbitEmbedded<VERTEX>())
         {
+            setCurrentLevel(getDartLevel(dit23));
             copyDartEmbedding<VERTEX>(dit23, dit);
+            setCurrentLevel(getDartLevel(dit2));
             copyDartEmbedding<VERTEX>(dit2, dit1);
-        }
-
-        // embed the edge embedded from the origin volume to the new darts
-        if(isOrbitEmbedded<EDGE2>())
-        {
-            std::exit(1);
-//            Algo::Topo::setOrbitEmbeddingOnNewCell<EDGE2>(*this, dit23) ;
-//            copyCell<EDGE2>(getEmbedding<EDGE2>(dit23), getEmbedding<EDGE2>(dit)) ;
-
-//            copyDartEmbedding<EDGE2>(phi2(dit), dit);
         }
 
         // embed the edge embedded from the origin volume to the new darts
@@ -802,57 +830,132 @@ void ImplicitHierarchicalMap3::splitVolume(std::vector<Dart> &vd)
         {
             const unsigned int eEmb = ParentMap::getEmbedding<EDGE>(dit) ;
             assert(eEmb != EMBNULL);
+            setCurrentLevel(getDartLevel(dit23));
             setDartEmbedding<EDGE>(dit23, eEmb);
+            setCurrentLevel(getDartLevel(dit2));
             setDartEmbedding<EDGE>(dit2, eEmb);
         }
 
         // embed the volume embedded from the origin volume to the new darts
         if(isOrbitEmbedded<VOLUME>())
         {
+            setCurrentLevel(getDartLevel(dit2));
             copyDartEmbedding<VOLUME>(dit2, dit);
         }
     }
-    const Dart fOldestDart = faceOldestDart(phi2(vd.front()));
-    this->setCurrentLevel(std::max( getDartLevel(fOldestDart), volLvl));
+
     if (isOrbitEmbedded<FACE>()) {
-        Algo::Topo::initOrbitEmbeddingOnNewCell<FACE>(*this, fOldestDart) ;
+        this->setCurrentLevel(getDartLevel(phi2(vd.front())));
+        const unsigned int newFaceEmb = Algo::Topo::initOrbitEmbeddingOnNewCell<FACE>(*this, phi2(vd.front())) ;
+        this->setCurrentLevel(getMaxLevel());
+        {
+            TraversorDartsOfOrbit< MAP, FACE > traDoF(*this, phi2(vd.front()));
+            for(Dart fit = traDoF.begin() ; fit != traDoF.end() ; fit = traDoF.next())
+            {
+                this->setCurrentLevel(getDartLevel(fit));
+                setDartEmbedding<FACE>(fit, newFaceEmb);
+                this->setCurrentLevel(getMaxLevel());
+            }
+        }
     }
 
-    this->setCurrentLevel(curr);
+    this->setCurrentLevel(getMaxLevel());
     const Dart v = vd.front() ;
     const Dart v23 = phi3(phi2(v));
     if(isOrbitEmbedded<VOLUME>())
     {
-        setCurrentLevel(curr);
-        const Dart woldestDart = volumeOldestDart(v23);
-        this->setCurrentLevel(std::max(getDartLevel(woldestDart),volLvl));
-        Algo::Topo::setOrbitEmbeddingOnNewCell<VOLUME>(*this, woldestDart) ;
+        this->setCurrentLevel(getMaxLevel());
+
+        const unsigned newVolEmb = Algo::Topo::setOrbitEmbeddingOnNewCell<VOLUME>(*this, v23) ;
+        {
+            TraversorDartsOfOrbit< MAP, VOLUME > traDoW(*this, v23);
+            for(Dart wit = traDoW.begin() ; wit != traDoW.end() ; wit = traDoW.next())
+            {
+                const unsigned dl = getDartLevel(wit);
+                if (dl >= volLvl)
+                {
+                    this->setCurrentLevel(dl);
+                    setDartEmbedding<VOLUME>(wit, newVolEmb);
+                    this->setCurrentLevel(getMaxLevel());
+                }
+            }
+        }
 //        const unsigned lvl1Vol = Algo::Topo::setOrbitEmbeddingOnNewCell<VOLUME>(*this, phi2(v));
 //        this->template getAttributeContainer<VOLUME>().copyLine(lvl1Vol, oldVolEmb);
-        Algo::Topo::copyCellAttributes<VOLUME>(*this, woldestDart, v);
+//        this->template getAttributeContainer<VOLUME>().copyLine(newVolEmb, getEmbedding<VOLUME>(v));
+        Algo::Topo::copyCellAttributes<VOLUME>(*this, v23, v);
+        setVolumeLevel(v23, volLvl );
+//        setCurrentLevel(volLvl);
+//        std::cerr << "volLvl = " << volumeLevel(v) << std::endl;
+//        std::cerr << "vol lvl of the new volume is " << volumeLevel(v23) << std::endl;
     }
+    this->setCurrentLevel(getMaxLevel());
+    setFaceLevel(phi2(vd.front()), volLvl );
+
+//    {
+//        setCurrentLevel(getMaxLevel());
+//        TraversorDartsOfOrbit< MAP, VOLUME > traDoW(*this, v);
+//        std::cerr << "VOLUMES EMBEDDINGS " << std::endl;
+//        for (Dart wit = traDoW.begin(); wit != traDoW.end() ; wit = traDoW.next())
+//        {
+//            std::cerr  << ParentMap::template getEmbedding<VOLUME>(wit)  << " (lvl " << getDartLevel(wit) << ")"  << std::endl;
+
+//            //                if ( dl > vLevel)
+//            //                {
+//            //                    map.setCurrentLevel(dl);
+//            //                    map.template setDartEmbedding<VOLUME>(wit, lvl1Vol);
+//            //                    map.setCurrentLevel(map.getMaxLevel());
+//            //                }
+//            //                std::cerr << "2wit=" << wit << " (lvl " << dl << ")" << " embedding " << map.MAP::ParentMap::template getEmbedding<VOLUME>(wit)  << std::endl;
+//        }
+//        {
+//            Traversor3WF< MAP > traF(*this, v, true);
+//            std::cerr << "FACES EMBEDDINGS " << std::endl;
+//            for (FaceCell fit = traF.begin() ; fit != traF.end() ; fit = traF.next())
+//            {
+//                std::cerr << "****************************" << std::endl;
+//                std::cerr  << ParentMap::template getEmbedding<FACE>(fit)  << " (lvl " << getDartLevel(fit) << ")" <<  std::endl;
+//                TraversorDartsOfOrbit< MAP, FACE > traDoF(*this, fit);
+//                for (Dart it = traDoF.begin() ; it != traDoF.end() ; it = traDoF.next())
+//                {
+//                    std::cerr  << ParentMap::template getEmbedding<FACE>(it)  << " (lvl " << getDartLevel(it) << ")" << " faceID " << getFaceId(it) << std::endl;
+//                }
+//            }
+
+//             Traversor3WE< MAP > traE(*this, v, true);
+//             std::cerr << "EDGES EMBEDDINGS " << std::endl;
+//             for (EdgeCell eit = traE.begin() ; eit != traE.end() ; eit = traE.next())
+//             {
+//                 std::cerr << "****************************" << std::endl;
+//                 std::cerr  << ParentMap::template getEmbedding<EDGE>(eit)  << " (lvl " << getDartLevel(eit) << ")" <<  std::endl;
+//                 TraversorDartsOfOrbit< MAP, EDGE > traDoE(*this, eit);
+//                 for (Dart it = traDoE.begin() ; it != traDoE.end() ; it = traDoE.next())
+//                 {
+//                     std::cerr  << ParentMap::template getEmbedding<EDGE>(it)  << " (lvl " << getDartLevel(it) << ")" << " EDGEID " << getEdgeId(it) << std::endl;
+//                 }
+//             }
+//        }
+//    }
 
     setCurrentLevel(curr);
-
-//    setFaceLevel(vd.front(), getCurrentLevel());
-//    setVolumeLevel(v, getCurrentLevel());
-//    setVolumeLevel(v23, getCurrentLevel());
-    //    assert(this->template checkEmbeddings<VOLUME>());
 }
 
 void ImplicitHierarchicalMap3::splitFace(Dart d, Dart e)
 {
-    assert((getDartLevel(d) == getDartLevel(e)) && getDartLevel(d) == getCurrentLevel());
+//    assert((getDartLevel(d) == getDartLevel(e)) && getDartLevel(d) == getCurrentLevel());
     const Dart dd = phi1(phi3(d));
     const Dart ee = phi1(phi3(e));
-
     const Dart old = this->faceOldestDart(d) ;
+
+    const unsigned int volEmb = ParentMap::getEmbedding<VOLUME>(old) ;
+    const unsigned int neighVolEmb = getEmbedding<VOLUME>(this->volumeOldestDart(dd)) ;
 //    const unsigned int oldFaceEmb = ParentMap::getEmbedding<FACE>(d);
+    const unsigned fLVL = faceLevel(d);
 
     Map3::splitFace(d, e);
 
 
-    unsigned int id = this->getNewEdgeId() ;
+    const unsigned int id = this->getNewEdgeId() ;
     this->setEdgeId(this->phi_1MaxLvl(d), id, EDGE) ;		// set the edge id of the inserted edge to the next available id
 
     unsigned int idface = this->getFaceId(old);
@@ -874,19 +977,21 @@ void ImplicitHierarchicalMap3::splitFace(Dart d, Dart e)
 
     if(isOrbitEmbedded<EDGE>())
     {
-        Algo::Topo::initOrbitEmbeddingOnNewCell<EDGE>(*this, phi_1MaxLvl(d)) ;
-    }
-
-    if(isOrbitEmbedded<FACE2>())
-    {
-        std::exit(1);
-//        copyDartEmbedding<FACE2>(phi_1(d), d) ;
-//        Algo::Topo::setOrbitEmbeddingOnNewCell<FACE2>(*this, e) ;
-//        Algo::Topo::copyCellAttributes<FACE2>(*this, e, d) ;
-
-//        copyDartEmbedding<FACE2>(phi_1(dd), dd) ;
-//        Algo::Topo::setOrbitEmbeddingOnNewCell<FACE2>(*this, ee) ;
-//        Algo::Topo::copyCellAttributes<FACE2>(*this, ee, dd) ;
+        const unsigned int lvl1Edge = Algo::Topo::initOrbitEmbeddingOnNewCell<EDGE>(*this, phi_1(d)) ;
+        const unsigned currLVL = this->getCurrentLevel();
+        {
+            setCurrentLevel(getMaxLevel());
+            TraversorDartsOfOrbit< MAP, EDGE > traDoE(*this, phi_1MaxLvl(d));
+            for (Dart eit = traDoE.begin(); eit != traDoE.end() ; eit = traDoE.next())
+            {
+                assert(ParentMap::getEmbedding<EDGE>(eit) == lvl1Edge);
+//                const unsigned int dl = getDartLevel(eit);
+//                setCurrentLevel(dl);
+//                this->template setDartEmbedding<EDGE>(eit, lvl1Edge);
+//                setCurrentLevel(getMaxLevel());
+            }
+        }
+        this->setCurrentLevel(currLVL);
     }
 
     if(isOrbitEmbedded<FACE>())
@@ -895,34 +1000,43 @@ void ImplicitHierarchicalMap3::splitFace(Dart d, Dart e)
         assert (fEmb != EMBNULL);
         setDartEmbedding<FACE>(phi_1(d), fEmb) ;
         setDartEmbedding<FACE>(phi_1(ee), fEmb) ;
-//        if (faceLevel(d) < getCurrentLevel())
-//        {
-//          Algo::Topo::setOrbitEmbeddingOnNewCell<FACE>(*this, d);
-//        }
-        Algo::Topo::setOrbitEmbeddingOnNewCell<FACE>(*this, e);
+
+        const unsigned int newFace = Algo::Topo::setOrbitEmbeddingOnNewCell<FACE>(*this, e);
+        const unsigned currLVL = this->getCurrentLevel();
+        {
+            setCurrentLevel(getMaxLevel());
+            TraversorDartsOfOrbit< MAP, FACE > traDoF(*this, e);
+            for (Dart fit = traDoF.begin(); fit != traDoF.end() ; fit = traDoF.next())
+            {
+                const unsigned int dl = getDartLevel(fit);
+                if (dl >= fLVL)
+                {
+                    setCurrentLevel(dl);
+                    this->template setDartEmbedding<FACE>(fit, newFace);
+                    setCurrentLevel(getMaxLevel());
+                }
+            }
+        }
+        this->setCurrentLevel(currLVL);
         Algo::Topo::copyCellAttributes<FACE>(*this, e, d);
     }
 
     if(isOrbitEmbedded<VOLUME>())
     {
-        const unsigned int wEmb1 = ParentMap::getEmbedding<VOLUME>(d) ;
-        const unsigned int wEmb2 = ParentMap::getEmbedding<VOLUME>(dd) ;
-//        assert(wEmb1 != EMBNULL);
-//        assert(wEmb2 != EMBNULL);
-        setDartEmbedding<VOLUME>(phi_1(d),  wEmb1);
-        setDartEmbedding<VOLUME>(phi_1(e),  wEmb1);
-        setDartEmbedding<VOLUME>(phi_1(dd),  wEmb2);
-        setDartEmbedding<VOLUME>(phi_1(ee),  wEmb2);
+        assert(getDartLevel(phi_1(d)) == getDartLevel(phi_1(e)) && getDartLevel(phi_1(d)) == getDartLevel(phi_1(dd)) &&getDartLevel(phi_1(d)) == getDartLevel(phi_1(ee)) && getDartLevel(phi_1(d)) == getCurrentLevel());
+        setDartEmbedding<VOLUME>(phi_1(d),  volEmb);
+        setDartEmbedding<VOLUME>(phi_1(e),  volEmb);
+        setDartEmbedding<VOLUME>(phi_1(dd),  neighVolEmb);
+        setDartEmbedding<VOLUME>(phi_1(ee),  neighVolEmb);
+       // std::cerr << "splitFace changing dart embedding of darts " << phi_1(d) << " ("<< volEmb << ") "<< phi_1(e) << " ("<< volEmb << ") "<< phi_1(dd) << " ("<< neighVolEmb << ") "<< phi_1(ee) << " ("<< neighVolEmb << ") "<< std::endl;
     }
-
-//    this->setFaceLevel(d, /*fLevel+1*/this->getCurrentLevel());
-//    this->setFaceLevel(e, /*fLevel+1*/this->getCurrentLevel());
 }
 
 Dart ImplicitHierarchicalMap3::cutEdge(Dart d)
 {
 //    const bool subdivideOlderElements = (this->getCurrentLevel() > std::max(getDartLevel(d), getDartLevel(phi2MaxLvl(d))));
     const Dart dd = this->phi2(d) ;
+
 
     const Dart nd = Map3::cutEdge(d);
 
@@ -949,33 +1063,35 @@ Dart ImplicitHierarchicalMap3::cutEdge(Dart d)
 
 
         const Dart phi1dd = phi1MaxLvl(dd);
-        if (getDartLevel(d) != getDartLevel(nd))
+        if (getDartLevel(d) < getDartLevel(phi1dd))
         {
-            Algo::Topo::setOrbitEmbeddingOnNewCell<EDGE>(*this, phi1dd) ;
-            //            Algo::Topo::copyCellAttributes<EDGE>(*this, phi1dd, d) ;
+            const unsigned int oldEdgeEmb = ParentMap::template getEmbedding<EDGE>(d);
+            const unsigned lvl1EdgeEmb = Algo::Topo::setOrbitEmbeddingOnNewCell<EDGE>(*this, d) ;
+            assert(oldEdgeEmb != lvl1EdgeEmb);
+            this->template getAttributeContainer<EDGE>().copyLine(lvl1EdgeEmb,oldEdgeEmb);
         } else
         {
-            Algo::Topo::setOrbitEmbedding<EDGE>(*this, d, getEmbedding<EDGE>(d)) ;
+            Algo::Topo::setOrbitEmbedding<EDGE>(*this, d, ParentMap::template getEmbedding<EDGE>(d)) ;
         }
 
-        Algo::Topo::setOrbitEmbeddingOnNewCell<EDGE>(*this, nd) ;
-        //        Algo::Topo::copyCellAttributes<EDGE>(*this, nd, d) ;
+
+        {
+            const unsigned currLVL = getCurrentLevel();
+            const unsigned newEdgeEmb = Algo::Topo::setOrbitEmbeddingOnNewCell<EDGE>(*this, dd) ;
+            setCurrentLevel(getMaxLevel());
+            TraversorDartsOfOrbit< MAP, EDGE > traDoE(*this, nd);
+            for (Dart eit = traDoE.begin(); eit != traDoE.end() ; eit = traDoE.next())
+            {
+//                const unsigned int dl = getDartLevel(eit);
+//                std::cerr << "9eit=" << eit << " (lvl " << dl << ")" << " embedding " << ParentMap::template getEmbedding<EDGE>(eit)  << std::endl;
+                assert (ParentMap::template getEmbedding<EDGE>(eit) == newEdgeEmb || (getDartLevel(eit) < currLVL));
+            }
+            setCurrentLevel(currLVL);
+
+        }
+        Algo::Topo::copyCellAttributes<EDGE>(*this, dd, d) ;
     }
 
-    if(isOrbitEmbedded<FACE2>())
-    {
-        std::exit(-1);
-//        Dart f = d;
-//        do
-//        {
-//            Dart f1 = phi1(f) ;
-
-//            copyDartEmbedding<FACE2>(f1, f);
-//            Dart e = phi3(f1);
-//            copyDartEmbedding<FACE2>(phi1(e), e);
-//            f = alpha2(f);
-//        } while(f != d);
-    }
 
     if(isOrbitEmbedded<FACE>())
     {
@@ -991,13 +1107,14 @@ Dart ImplicitHierarchicalMap3::cutEdge(Dart d)
 
     if(isOrbitEmbedded<VOLUME>())
     {
-        Dart f = d;
+        setDartEmbedding<VOLUME>(phi1(d), ParentMap::getEmbedding<VOLUME>(d));
+        setDartEmbedding<VOLUME>(phi2(d), ParentMap::getEmbedding<VOLUME>(d));
+        Dart f = alpha2(d);
         do
         {
-            const unsigned int vEmb = ParentMap::getEmbedding<VOLUME>(f) ;
-
-            setDartEmbedding<VOLUME>(phi1(f), vEmb);
-            setDartEmbedding<VOLUME>(phi2(f), vEmb);
+            const Dart woldest = volumeOldestDart(f);
+            setDartEmbedding<VOLUME>(phi1(f), ParentMap::getEmbedding<VOLUME>(woldest));
+            setDartEmbedding<VOLUME>(phi2(f), ParentMap::getEmbedding<VOLUME>(woldest));
             f = alpha2(f);
         } while(f != d);
     }

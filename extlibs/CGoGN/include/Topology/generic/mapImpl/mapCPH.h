@@ -96,7 +96,7 @@ protected:
          *           DARTS TRAVERSALS           *
          ****************************************/
 public:
-    Dart begin() const
+    inline Dart begin() const
     {
         Dart d = Dart::create(m_attribs[DART].begin()) ;
         while(getDartLevel(d) > getCurrentLevel())
@@ -106,7 +106,7 @@ public:
         return d ;
     }
 
-    void next(Dart &d) const
+    inline void next(Dart &d) const
     {
         do
         {
