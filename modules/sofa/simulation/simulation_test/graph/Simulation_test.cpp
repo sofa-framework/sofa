@@ -92,7 +92,8 @@ struct Simulation_test: public Sofa_test<double>
 
    }
         
-   void objectSuppression()
+   /// create and unload a scene and check if all the objects have been destroyed.
+   void objectSuppressionUnload()
    {
        // Init Sofa
        simulation::Simulation* simulation;
@@ -103,27 +104,78 @@ struct Simulation_test: public Sofa_test<double>
        simulation::Node::SPtr child  = simulation::getSimulation()->createNewNode("child");
        root->addChild(child);
        child->addObject(core::objectmodel::New<InstrumentedObject<MechanicalObject3> >());
-       child->addObject(core::objectmodel::New<InstrumentedObject<UniformMass3> >());
+       simulation->unload(root);
+       if(objectCounter>0)
+            ADD_FAILURE() << "missing delete: "<<objectCounter<<endl;
+       objectCounter = 0;
+       
+   }
 
-       //
+   /// create and replace a scene and check if all the objects have been destroyed.
+   void objectSuppressionCreatenewgraph()
+   {
+       // Init Sofa
+       simulation::Simulation* simulation;
+       sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+       root = simulation::getSimulation()->createNewGraph("root");
+       root->addObject(core::objectmodel::New<InstrumentedObject<MechanicalObject3> >());
+       root->addObject(core::objectmodel::New<InstrumentedObject<UniformMass3> >());
+       simulation::Node::SPtr child  = simulation::getSimulation()->createNewNode("child");
+       root->addChild(child);
+       child->addObject(core::objectmodel::New<InstrumentedObject<MechanicalObject3> >());
        root = simulation::getSimulation()->createNewGraph("root2");
+       if(objectCounter>0)
+           ADD_FAILURE() << "missing delete: "<<objectCounter<<endl;
+       objectCounter = 0;
+
+   }
+
+   /// create a new scene and let the destructor destroy it
+   void objectSuppressionNoDelete()
+   {
+       // Init Sofa
+       simulation::Simulation* simulation;
+       sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+       root = simulation::getSimulation()->createNewGraph("root");
+       root->addObject(core::objectmodel::New<InstrumentedObject<MechanicalObject3> >());
+       root->addObject(core::objectmodel::New<InstrumentedObject<UniformMass3> >());
+       simulation::Node::SPtr child  = simulation::getSimulation()->createNewNode("child");
+       root->addChild(child);
+       child->addObject(core::objectmodel::New<InstrumentedObject<MechanicalObject3> >());
+
    }
 };
 
-TEST_F( Simulation_test,SimulationTest)
+TEST_F( Simulation_test,computeBBox)
 {
      this->computeBBox();
      
 }
 
 
-TEST_F( Simulation_test,objectSuppression)
+TEST_F( Simulation_test,objectSuppressionUnload)
 {
-    this->objectSuppression();
-    if(objectCounter>0)
-        ADD_FAILURE() << "missing delete: "<<objectCounter<<endl;
+    this->objectSuppressionUnload();
+    
     
 }
+
+TEST_F( Simulation_test,objectSuppressionCreatenewgraph)
+{
+
+    this->objectSuppressionCreatenewgraph();
+}
+
+
+TEST_F( Simulation_test,objectSuppressionNoDelete)
+{
+
+    this->objectSuppressionNoDelete();
+    if(objectCounter>0)
+        ADD_FAILURE() << "missing delete: "<<objectCounter<<endl;
+    objectCounter = 0;
+}
+
 }// namespace sofa
 
 
