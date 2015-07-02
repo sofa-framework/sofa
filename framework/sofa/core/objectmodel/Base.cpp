@@ -249,20 +249,25 @@ void Base::setName(const std::string& n, int counter)
 
 void Base::processStream(std::ostream& out)
 {
+    const std::string name = getName() + " (" + getClassName() + ")";
+
     if (&out == &serr)
     {
         serr << "\n";
         std::string str = serr.str();
 
-        helper::Console::warningPrefix();
-        std::cerr << helper::Console::YELLOW << "[" << getName() << "(" << getClassName() << ")]: " << helper::Console::DEFAULT_COLOR;
-        std::cerr << str;
+        std::cerr << helper::Console::WarningPrefix
+                  << helper::Console::YELLOW << "[" << name << "]" << helper::Console::DEFAULT_COLOR << " "
+                  << str << std::flush;
 
         if (warnings.size()+str.size() >= MAXLOGSIZE)
         {
-            std::cerr<< "LOG OVERFLOW[" << getName() << "(" << getClassName() << ")]: resetting serr buffer." << std::endl;
+            const std::string msg = "Log overflow! Resetting serr buffer.";
+            std::cerr << helper::Console::WarningPrefix
+                      << helper::Console::YELLOW << "[" << name << "]" << helper::Console::DEFAULT_COLOR << " "
+                      << msg << std::endl;
             warnings.clear();
-            warnings = "LOG EVERFLOW: resetting serr buffer\n";
+            warnings = msg;
         }
         warnings += str;
         serr.str("");
@@ -273,15 +278,18 @@ void Base::processStream(std::ostream& out)
         std::string str = sout.str();
         if (f_printLog.getValue())
         {
-            helper::Console::infoPrefix();            
-            std::cout << helper::Console::YELLOW << "[" << getName() << "(" << getClassName() << ")]: " << helper::Console::DEFAULT_COLOR;
-            std::cout << str << std::flush;
+            std::cout << helper::Console::InfoPrefix
+                      << helper::Console::YELLOW << "[" << name << "]" << helper::Console::DEFAULT_COLOR << " "
+                      << str << std::endl;
         }
         if (outputs.size()+str.size() >= MAXLOGSIZE)
         {
-            std::cerr<< "LOG OVERFLOW[" << getName() << "(" << getClassName() << ")]: resetting sout buffer." << std::endl;
+            const std::string msg = "Log overflow! Resetting sout buffer.";
+            std::cerr << helper::Console::WarningPrefix
+                      << helper::Console::YELLOW << "[" << name << "]" << helper::Console::DEFAULT_COLOR << " "
+                      << msg << std::flush;
             outputs.clear();
-            outputs = "LOG EVERFLOW: resetting sout buffer\n";
+            outputs = msg;
         }
         outputs += str;
         sout.str("");

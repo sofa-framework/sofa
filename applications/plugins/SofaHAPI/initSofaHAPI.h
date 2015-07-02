@@ -30,6 +30,21 @@
 namespace SofaHAPI
 {
 
+	namespace component
+	{
+
+		extern "C" {
+			SOFA_SOFAHAPI_API void initExternalModule();
+			SOFA_SOFAHAPI_API const char* getModuleName();
+			SOFA_SOFAHAPI_API const char* getModuleVersion();
+			SOFA_SOFAHAPI_API const char* getModuleLicense();
+			SOFA_SOFAHAPI_API const char* getModuleDescription();
+			SOFA_SOFAHAPI_API const char* getModuleComponentList();
+		}
+
+	}
+
+}
 
 /** \mainpage
   This is a the starting page of the plugin documentation, defined in file SofaHAPI.h

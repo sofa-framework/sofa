@@ -1,3 +1,4 @@
+#define SOFA_COMPONENT_COLLISION_CYLINDERMODEL_CPP
 #include "CylinderModel.inl"
 
 namespace sofa

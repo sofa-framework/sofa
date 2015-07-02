@@ -138,7 +138,7 @@ public:
     void draw(const core::visual::VisualParams* vparams);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_OBJECT_INTERACTION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<defaulttype::Vec3dTypes>;
 #endif

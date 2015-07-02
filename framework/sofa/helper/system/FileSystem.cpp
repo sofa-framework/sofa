@@ -16,6 +16,7 @@
 # include <sys/types.h>
 # include <errno.h>
 # include <string.h>            // for strerror()
+# include <unistd.h>
 #endif
 
 namespace sofa
@@ -111,6 +112,49 @@ bool FileSystem::listDirectory(const std::string& directoryPath,
     closedir(dp);
     return false;
 #endif
+}
+
+bool FileSystem::createDirectory(const std::string& path)
+{
+#ifdef WIN32
+    if (CreateDirectory(Utils::widenString(path).c_str(), NULL) == 0)
+    {
+        DWORD errorCode = ::GetLastError();
+        std::cerr << "FileSystem::createdirectory(\"" << path << "\"): "
+                  << Utils::GetLastError() << std::endl;
+         return true;
+    }
+#else
+    if (mkdir(path.c_str(), 0755))
+    {
+        std::cerr << "FileSystem::createDirectory(\"" << path << "\"): "
+                  << strerror(errno) << std::endl;
+        return true;
+    }
+#endif
+    return false;
+}
+
+
+bool FileSystem::removeDirectory(const std::string& path)
+{
+#ifdef WIN32
+    if (RemoveDirectory(Utils::widenString(path).c_str()) == 0)
+    {
+        DWORD errorCode = ::GetLastError();
+        std::cerr << "FileSystem::removeDirectory(\"" << path << "\"): "
+                  << Utils::GetLastError() << std::endl;
+         return true;
+    }
+#else
+    if (rmdir(path.c_str()))
+    {
+        std::cerr << "FileSystem::removeDirectory(\"" << path << "\"): "
+                  << strerror(errno) << std::endl;
+        return true;
+    }
+#endif
+    return false;
 }
 
 

@@ -1,3 +1,4 @@
+#define SOFA_COMPONENT_COLLISION_INTRTRIANGLEOBB_CPP
 #include <SofaMeshCollision/IntrTriangleOBB.inl>
 
 namespace sofa{

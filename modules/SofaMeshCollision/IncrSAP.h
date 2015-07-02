@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INCRSAP_H
-#define INCRSAP_H
+#ifndef SOFA_COMPONENT_COLLISION_INCRSAP_H
+#define SOFA_COMPONENT_COLLISION_INCRSAP_H
 
 #include <sofa/core/collision/BroadPhaseDetection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
@@ -292,7 +292,7 @@ public:
 
 typedef TIncrSAP<std::vector,std::allocator> IncrSAP;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_INCRSAP_CPP)
 extern template class SOFA_MESH_COLLISION_API TIncrSAP<helper::vector,helper::CPUMemoryManager>;
 extern template class SOFA_MESH_COLLISION_API TIncrSAP<std::vector,std::allocator>;
 #endif
@@ -303,4 +303,4 @@ extern template class SOFA_MESH_COLLISION_API TIncrSAP<std::vector,std::allocato
 
 } // namespace sofa
 
-#endif // INCRSAP_H
+#endif // SOFA_COMPONENT_COLLISION_INCRSAP_H

@@ -327,8 +327,8 @@ static PyTypeObject DummyChild_PyTypeObject = {
 // =============================================================================
 #define SP_PREFIX_CONSOLE sofa::helper::Console::YELLOW << "<SofaPython> " << sofa::helper::Console::DEFAULT_COLOR
 #define SP_MESSAGE_CONSOLE( msg ) SP_PREFIX_CONSOLE << msg << std::endl;
-#define SP_MESSAGE_INFO( msg ) { sofa::helper::Console::infoPrefix() << SP_MESSAGE_CONSOLE( msg ) }
-#define SP_MESSAGE_WARNING( msg ) { sofa::helper::Console::warningPrefix() << SP_MESSAGE_CONSOLE( msg ) }
+#define SP_MESSAGE_INFO( msg ) { std::cout << sofa::helper::Console::InfoPrefix << SP_MESSAGE_CONSOLE( msg ) }
+#define SP_MESSAGE_WARNING( msg ) { std::cerr << sofa::helper::Console::WarningPrefix << SP_MESSAGE_CONSOLE( msg ) }
 #define SP_MESSAGE_ERROR( msg ) { std::cerr << sofa::helper::Console::RED << "[ERROR]" << SP_MESSAGE_CONSOLE( msg ) }
 #define SP_MESSAGE_EXCEPTION( msg ) { std::cerr << sofa::helper::Console::PURPLE << "[EXCEPTION]" << SP_MESSAGE_CONSOLE( msg ) }
 

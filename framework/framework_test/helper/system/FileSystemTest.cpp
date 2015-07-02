@@ -70,6 +70,36 @@ TEST(FileSystemTest, listDirectory_withExtension_noMatch)
     EXPECT_TRUE(fileList.empty());
 }
 
+TEST(FileSystemTest, createDirectory)
+{
+    EXPECT_FALSE(FileSystem::createDirectory("createDirectoryTestDir"));
+    EXPECT_TRUE(FileSystem::exists("createDirectoryTestDir"));
+    EXPECT_TRUE(FileSystem::isDirectory("createDirectoryTestDir"));
+    // Cleanup
+    FileSystem::removeDirectory("createDirectoryTestDir");
+}
+
+TEST(FileSystemTest, createDirectory_alreadyExists)
+{
+    FileSystem::createDirectory("createDirectoryTestDir");
+    EXPECT_TRUE(FileSystem::createDirectory("createDirectoryTestDir"));
+    // Cleanup
+    FileSystem::removeDirectory("createDirectoryTestDir");
+}
+
+TEST(FileSystemTest, removeDirectory)
+{
+    FileSystem::createDirectory("removeDirectoryTestDir");
+    EXPECT_FALSE(FileSystem::removeDirectory("removeDirectoryTestDir"));
+    EXPECT_FALSE(FileSystem::exists("removeDirectoryTestDir"));
+}
+
+TEST(FileSystemTest, removeDirectory_doesNotExists)
+{
+    EXPECT_TRUE(FileSystem::removeDirectory("removeDirectoryTestDir"));
+    EXPECT_FALSE(FileSystem::exists("removeDirectoryTestDir"));
+}
+
 TEST(FileSystemTest, exists_yes)
 {
     EXPECT_TRUE(FileSystem::exists(getPath("non-empty-directory/fileA.txt")));

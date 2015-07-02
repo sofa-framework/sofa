@@ -91,7 +91,7 @@ protected:
     Data<bool> inverse;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_ENGINE)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_ENGINE_API TransformEngine<defaulttype::Vec1dTypes>;

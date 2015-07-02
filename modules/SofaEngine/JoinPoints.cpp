@@ -22,8 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_JOINPOINTS_CPP_
-
+#define SOFA_COMPONENT_ENGINE_JOINPOINTS_CPP
 #include "JoinPoints.inl"
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>

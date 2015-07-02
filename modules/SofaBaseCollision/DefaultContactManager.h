@@ -51,7 +51,6 @@ protected:
     typedef sofa::helper::map_ptr_stable_compare<std::pair<core::CollisionModel*,core::CollisionModel*>,core::collision::Contact::SPtr> ContactMap;
     ContactMap contactMap;
 
-    void cleanup();
 public:
     Data<sofa::helper::OptionsGroup> response;
     Data<std::string> responseParams;
@@ -87,6 +86,8 @@ public:
 
         return obj;
     }
+
+    void cleanup();
 
     virtual std::string getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2);
 

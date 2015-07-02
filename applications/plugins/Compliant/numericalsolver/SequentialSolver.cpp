@@ -205,8 +205,8 @@ SReal BaseSequentialSolver::step(vec& lambda,
 
             // update rhs TODO track and remove possible allocs
             error_chunk.noalias() = rhs.segment(b.offset, b.size);
-            error_chunk.noalias() = error_chunk	- JP.middleRows(b.offset, b.size) * net;
-            error_chunk.noalias() = error_chunk - sys.C.middleRows(b.offset, b.size) * lambda;
+            error_chunk.noalias() -= JP.middleRows(b.offset, b.size) * net;
+            error_chunk.noalias() -= sys.C.middleRows(b.offset, b.size) * lambda;
 
             // error estimate update, we sum current chunk errors
             // estimate += error_chunk.squaredNorm();
@@ -242,7 +242,7 @@ SReal BaseSequentialSolver::step(vec& lambda,
 
 		// incrementally update net forces, we only do fresh
 		// computation after the loop to keep perfs decent
-        net.noalias() = net + mapping_response.middleCols(b.offset, b.size) * delta_chunk;
+        net.noalias() += mapping_response.middleCols(b.offset, b.size) * delta_chunk;
 		// net.noalias() = mapping_response * lambda;
 
         // fix net to avoid error accumulations ?

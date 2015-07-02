@@ -74,7 +74,7 @@ LightManager::LightManager()
 
 LightManager::~LightManager()
 {
-    restoreDefaultLight();
+    //restoreDefaultLight();
 }
 
 void LightManager::init()
@@ -445,12 +445,12 @@ bool LightManager::drawScene(VisualParams* /*vp*/)
     return false;
 }
 
-void LightManager::postDrawScene(VisualParams* /*vp*/)
+void LightManager::postDrawScene(VisualParams* vp)
 {
-    restoreDefaultLight();
+    restoreDefaultLight(vp);
 }
 
-void LightManager::restoreDefaultLight()
+void LightManager::restoreDefaultLight(VisualParams* vp)
 {
     //restore default light
     GLfloat	ambientLight[4];
@@ -479,13 +479,18 @@ void LightManager::restoreDefaultLight()
     specular[3] = 1.0f;
 
     // Setup 'light 0'
-    glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
-    glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 180);
+    // It crashes here in batch mode on Mac... probably the lack of GL context ?
 
-    glEnable(GL_LIGHT0);
+    if (vp->isSupported(core::visual::API_OpenGL))
+    {
+        glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+        glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+        glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+        glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 180);
+
+        glEnable(GL_LIGHT0);
+    }
 }
 
 void LightManager::handleEvent(sofa::core::objectmodel::Event* event)

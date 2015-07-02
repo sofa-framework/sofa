@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_COLLISION_TETRAHEDRONMODEL_CPP
 #include <SofaMiscCollision/TetrahedronModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CubeModel.h>

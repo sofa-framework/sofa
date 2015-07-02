@@ -197,7 +197,15 @@ protected:
         STEREO_NONE,
         NB_STEREO_MODES
     };
+    enum StereoStrategy
+    {
+        PARALLEL,
+        TOEDIN
+
+    };
+
     StereoMode _stereoMode;
+    StereoStrategy _stereoStrategy;
     double _stereoShift;
 
     std::string _screenshotDirectory;
