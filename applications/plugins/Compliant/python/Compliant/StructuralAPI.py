@@ -323,7 +323,6 @@ class GenericRigidJoint:
             for i,v in enumerate(m):
                 if v==1:
                     t.append(self.dofs.position[0][i])
-        print "addGenericPositionController: target:", t
         return GenericRigidJoint.PositionController(self.node, m, t, compliance)
 
     class ForceController:
