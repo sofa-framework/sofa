@@ -6,11 +6,13 @@ set(HEADER_FILES
     Compliant_test.h)
 
 set(SOURCE_FILES
+
     Assembly_test.cpp
     CompliantImplicitSolver_test.cpp
     CompliantNLImplicitSolver_test.cpp
     DampedOscillator_test.cpp
-	AssembledRigidRigidMapping_test.cpp)
+	AssembledRigidRigidMapping_test.cpp
+    RigidJointMapping_test.cpp)
 
 find_package(SofaPython QUIET)
 

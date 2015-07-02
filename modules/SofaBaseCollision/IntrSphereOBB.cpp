@@ -1,3 +1,4 @@
+#define SOFA_COMPONENT_COLLISION_INTRSPHEREOBB_CPP
 #include <SofaBaseCollision/IntrSphereOBB.inl>
 
 

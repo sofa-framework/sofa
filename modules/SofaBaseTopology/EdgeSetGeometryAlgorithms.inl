@@ -78,10 +78,10 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
 	edgeNumericalIntegration.addQuadratureMethod(m,1,qpa);
 	/// integration with quadratic accuracy.
 	qpa.clear();
-	Real a=0.5+1/(2*sqrt(3));
+	Real a=0.5+1/(2*sqrt(3.));
 	v=BarycentricCoordinatesType(a);
 	qpa.push_back(QuadraturePoint(v,(Real)0.5));
-	Real b=0.5-1/(2*sqrt(3));
+	Real b=0.5-1/(2*sqrt(3.));
 	v=BarycentricCoordinatesType(b);
 	qpa.push_back(QuadraturePoint(v,(Real)0.5));
 	edgeNumericalIntegration.addQuadratureMethod(m,2,qpa);

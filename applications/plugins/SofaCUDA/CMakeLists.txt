@@ -193,7 +193,7 @@ set(SOFACUDA_COMPILE_DEFINITIONS "-DSOFA_BUILD_GPU_CUDA")
 # Make these compiler definitions available to nvcc
 if(WIN32)
     set(SOFACUDA_COMPILE_DEFINITIONS "${SOFACUDA_COMPILE_DEFINITIONS} -DWIN32")
-    set(WINDOWS_OPTIONS "-MD")
+    set(WINDOWS_OPTIONS "/MD")
 endif()
 
 option(SOFACUDA_VERBOSE_PTXAS "???" OFF)

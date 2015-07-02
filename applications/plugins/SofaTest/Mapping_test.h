@@ -119,12 +119,14 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
     static const unsigned char TEST_getJs = 1; ///< testing getJs used in assembly API
     static const unsigned char TEST_getK = 2; ///< testing getK used in assembly API
-    static const unsigned char TEST_applyJT_matrix = 3; ///< testing applyJT on matrices
-    static const unsigned char TEST_ASSEMBLY_API = TEST_getJs | TEST_getK; ///< testing functions used in assembly API getJS getK
+    static const unsigned char TEST_applyJT_matrix = 4; ///< testing applyJT on matrices
+    static const unsigned char TEST_applyDJT = 8; ///< testing applyDJT 
+    static const unsigned char TEST_ASSEMBLY_API = TEST_getJs | TEST_getK; ///< testing functions used in assembly API getJS getKS
+    static const unsigned char TEST_GEOMETRIC_STIFFNESS = TEST_applyDJT | TEST_getK; ///< testing functions used in assembly API getJS getKS
     unsigned char flags; ///< testing options. (all by default). To be used with precaution. Please implement the missing API in the mapping rather than not testing it.
 
 
-    Mapping_test():deltaRange(1,1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API)
+    Mapping_test():deltaRange(1,1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
@@ -139,7 +141,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         mapping->setModels(inDofs.get(),outDofs.get());
     }
 
-    Mapping_test(std::string fileName):deltaRange(1,1000),errorMax(100),errorFactorDJ(1),flags(TEST_ASSEMBLY_API)
+    Mapping_test(std::string fileName):deltaRange(1,1000),errorMax(100),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
@@ -202,6 +204,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         if( !(flags & TEST_getJs) ) std::cerr<<"WARNING: MappingTest is not testing getJs\n";
         if( !(flags & TEST_getK) ) std::cerr<<"WARNING: MappingTest is not testing getK\n";
         if( !(flags & TEST_applyJT_matrix) ) std::cerr<<"WARNING: MappingTest is not testing applyJT on matrices\n";
+        if( !(flags & TEST_applyDJT) ) std::cerr<<"WARNING: MappingTest is not testing applyDJT\n";
 
 
         const Real errorThreshold = this->epsilon()*errorMax;
@@ -394,11 +397,14 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
 
         // ================ test applyDJT()
-        if( this->vectorMaxDiff(dfp,fp12)>errorThreshold*errorFactorDJ ){
-            succeed = false;
-            ADD_FAILURE() << "applyDJT test failed" << endl
-                          << "dfp    = " << dfp << endl
-                          << "fp2-fp = " << fp12 << endl;
+        if( flags & TEST_applyDJT )
+        {
+            if( this->vectorMaxDiff(dfp,fp12)>errorThreshold*errorFactorDJ ){
+                succeed = false;
+                ADD_FAILURE() << "applyDJT test failed" << endl
+                    << "dfp    = " << dfp << endl
+                    << "fp2-fp = " << fp12 << endl;
+            }
         }
 
 

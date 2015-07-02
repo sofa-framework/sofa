@@ -185,7 +185,7 @@ public:
 
     Data<VecReal > & writeRadii();
 protected:
-    core::behavior::MechanicalState<DataTypes>* _mstate;    
+    core::behavior::MechanicalState<DataTypes>* _mstate;
 };
 
 template<class DataTypes>
@@ -203,7 +203,7 @@ inline TCapsule<DataTypes>::TCapsule(const core::CollisionElementIterator& i)
 typedef TCapsuleModel<sofa::defaulttype::Vec3Types> CapsuleModel;
 typedef TCapsule<sofa::defaulttype::Vec3Types> Capsule;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_CAPSULEMODEL_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_COLLISION_API TCapsule<defaulttype::Vec3dTypes>;
 extern template class SOFA_BASE_COLLISION_API TCapsuleModel<defaulttype::Vec3dTypes>;

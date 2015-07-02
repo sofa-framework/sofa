@@ -63,7 +63,7 @@ set(SOFAHELPER_HEADERS
     system/FileSystem.h
     system/DynamicLibrary.h
     system/PluginManager.h
-    system/console.h
+	system/console.h
     TagFactory.h
     accessor.h
     vector.h
@@ -127,7 +127,7 @@ set(SOFAHELPER_SOURCES
     system/FileSystem.cpp
     system/DynamicLibrary.cpp
     system/PluginManager.cpp
-    system/console.cpp
+	system/console.cpp
     TagFactory.cpp
     polygon_cube_intersection/polygon_cube_intersection.cpp
     polygon_cube_intersection/fast_polygon_cube_intersection.cpp

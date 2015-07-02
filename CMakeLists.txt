@@ -86,9 +86,9 @@ endif()
 ## Necessary ones
 add_subdirectory(extlibs/SuiteSparse)
 add_subdirectory(extlibs/csparse)
-set(EIGEN_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/eigen-3.2.1"
+set(EIGEN_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/eigen-3.2.5"
     CACHE PATH "Directory search by find_package(Eigen3)")
-add_subdirectory(extlibs/eigen-3.2.1)
+add_subdirectory(extlibs/eigen-3.2.5)
 add_subdirectory(extlibs/miniFlowVR)
 add_subdirectory(extlibs/newmat)
 add_subdirectory(extlibs/tinyxml)

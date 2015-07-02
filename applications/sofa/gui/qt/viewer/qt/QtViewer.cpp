@@ -781,6 +781,7 @@ void QtViewer::drawScene(void)
     bool stereo = _stereoEnabled;
     bool twopass = stereo;
     StereoMode smode = _stereoMode;
+    StereoStrategy sStrat = _stereoStrategy;
     bool stencil = false;
     bool viewport = false;
     sofa::core::visual::VisualParams::Viewport vpleft, vpright;
@@ -892,11 +893,20 @@ void QtViewer::drawScene(void)
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glLoadIdentity();
-        double distance = currentCamera ? currentCamera->getDistance() : 10*_stereoShift;
-        double angle = atan2(_stereoShift,distance)*180.0/M_PI;
-        glTranslated(0,0,-distance);
-        glRotated(-angle,0,1,0);
-        glTranslated(0,0,distance);
+        if(sStrat == PARALLEL)
+        {
+            glTranslated(_stereoShift/2,0,0);
+        }
+        else if(sStrat == TOEDIN)
+        {
+            double distance = currentCamera ? currentCamera->getDistance() : 10*_stereoShift;
+            double angle = atan2(_stereoShift,distance)*180.0/M_PI;
+            glTranslated(0,0,-distance);
+            glRotated(-angle,0,1,0);
+            glTranslated(0,0,distance);
+        }
+
+
         glMultMatrixd(mat);
     }
 
@@ -927,11 +937,22 @@ void QtViewer::drawScene(void)
             glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
         }
 
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
+
+        if(sStrat == PARALLEL) {glTranslated(-_stereoShift/2,0,0);}
+
+        glMultMatrixd(mat);
         if (_renderingMode == GL_RENDER)
         {
             DisplayOBJs();
         }
-
+        if (stereo)
+        {
+            glMatrixMode(GL_MODELVIEW);
+            glPopMatrix();
+        }
         if (viewport)
         {
             vparams->viewport() = sofa::helper::make_array(0,0,_W,_H);

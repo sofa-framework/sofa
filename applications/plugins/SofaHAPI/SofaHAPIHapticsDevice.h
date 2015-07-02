@@ -42,91 +42,94 @@
 #include <SofaUserInteraction/Controller.h>
 #include <SofaHaptics/ForceFeedback.h>
 
-namespace SofaHAPI
+namespace sofa
 {
 
-using sofa::helper::vector;
-using sofa::defaulttype::Vec3d;
-using sofa::defaulttype::Quat;
-using sofa::defaulttype::Rigid3dTypes;
-typedef sofa::defaulttype::SolidTypes<double>::Transform Transform;
-using sofa::core::objectmodel::Data;
-using sofa::core::objectmodel::BaseLink;
-using sofa::core::objectmodel::MultiLink;
-using sofa::core::objectmodel::KeypressedEvent;
-using sofa::core::objectmodel::KeyreleasedEvent;
-using sofa::core::behavior::MechanicalState;
-using sofa::component::controller::Controller;
-using sofa::component::controller::ForceFeedback;
+	namespace component
+	{
 
-/**
-* HAPI Haptics Device
-*/
-class SofaHAPIHapticsDevice : public Controller
-{
-public:
-    SOFA_CLASS(SofaHAPIHapticsDevice, Controller);
-    Data<double> scale;
-    Data<double> forceScale;
-    Data<Vec3d> positionBase;
-    Data<Quat> orientationBase;
-    Data<Vec3d> positionTool;
-    Data<Quat> orientationTool;
-    Data<bool> permanent;
-    Data<bool> toolSelector;
-    Data<int> toolCount;
-    Data<int> toolIndex;
-    Data<double> toolTransitionSpringStiffness;
-    Data<std::string> driverName;
-    Data<bool> drawDevice;
-    Data<float> drawHandleSize;
-    Data<float> drawForceScale;
+		using sofa::helper::vector;
+		using sofa::defaulttype::Vec3d;
+		using sofa::defaulttype::Quat;
+		using sofa::defaulttype::Rigid3dTypes;
+		typedef sofa::defaulttype::SolidTypes<double>::Transform Transform;
+		using sofa::core::objectmodel::Data;
+		using sofa::core::objectmodel::BaseLink;
+		using sofa::core::objectmodel::MultiLink;
+		using sofa::core::objectmodel::KeypressedEvent;
+		using sofa::core::objectmodel::KeyreleasedEvent;
+		using sofa::core::behavior::MechanicalState;
+		using sofa::component::controller::Controller;
+		using sofa::component::controller::ForceFeedback;
 
-    //SofaHAPIHapticsDeviceData data;
-    ForceFeedbackTransform data;
+		/**
+		* HAPI Haptics Device
+		*/
+		class SOFA_SOFAHAPI_API SofaHAPIHapticsDevice : public Controller
+		{
+		public:
+			SOFA_CLASS(SofaHAPIHapticsDevice, Controller);
+			Data<double> scale;
+			Data<double> forceScale;
+			Data<Vec3d> positionBase;
+			Data<Quat> orientationBase;
+			Data<Vec3d> positionTool;
+			Data<Quat> orientationTool;
+			Data<bool> permanent;
+			Data<bool> toolSelector;
+			Data<int> toolCount;
+			Data<int> toolIndex;
+			Data<double> toolTransitionSpringStiffness;
+			Data<std::string> driverName;
+			Data<bool> drawDevice;
+			Data<float> drawHandleSize;
+			Data<float> drawForceScale;
 
-    SofaHAPIHapticsDevice();
-    virtual ~SofaHAPIHapticsDevice();
+			//SofaHAPIHapticsDeviceData data;
+			ForceFeedbackTransform data;
 
-    virtual void init();
-    virtual void bwdInit();
-    virtual void reset();
-    void reinit();
+			SofaHAPIHapticsDevice();
+			virtual ~SofaHAPIHapticsDevice();
 
-    bool initDevice();
-    void releaseDevice();
+			virtual void init();
+			virtual void bwdInit();
+			virtual void reset();
+			void reinit();
 
-    void cleanup();
-    virtual void draw(const sofa::core::visual::VisualParams* vparams);
+			bool initDevice();
+			void releaseDevice();
 
-    void setForceFeedbacks(vector<ForceFeedback*> ffs);
+			void cleanup();
+			virtual void draw(const sofa::core::visual::VisualParams* vparams);
 
-    void onKeyPressedEvent(KeypressedEvent *);
-    void onKeyReleasedEvent(KeyreleasedEvent *);
-    void onBeginAnimationStep(const double /*dt*/);
-    void onEndAnimationStep(const double /*dt*/);
+			void setForceFeedbacks(vector<ForceFeedback*> ffs);
 
-    void setDataValue();
+			void onKeyPressedEvent(KeypressedEvent *);
+			void onKeyReleasedEvent(KeyreleasedEvent *);
+			void onBeginAnimationStep(const double /*dt*/);
+			void onEndAnimationStep(const double /*dt*/);
 
-protected:
+			void setDataValue();
 
-    std::auto_ptr<HAPI::HAPIHapticsDevice> device;
-    MultiLink<SofaHAPIHapticsDevice, SofaHAPIForceFeedbackEffect, BaseLink::FLAG_STRONGLINK> feedbackEffects;
-    H3DUtil::AutoRef<HAPI::HapticSpring> transitionEffect;
+		protected:
 
-    sofa::core::behavior::MechanicalState<sofa::defaulttype::Rigid3dTypes> *mState; ///< Controlled MechanicalState.
+			std::auto_ptr<HAPI::HAPIHapticsDevice> device;
+			MultiLink<SofaHAPIHapticsDevice, SofaHAPIForceFeedbackEffect, BaseLink::FLAG_STRONGLINK> feedbackEffects;
+			H3DUtil::AutoRef<HAPI::HapticSpring> transitionEffect;
 
-    bool isToolControlled;
+			sofa::core::behavior::MechanicalState<sofa::defaulttype::Rigid3dTypes> *mState; ///< Controlled MechanicalState.
 
-    int fakeButtonState;
-    int lastButtonState;
-    Transform lastToolPosition;
+			bool isToolControlled;
 
-    void setToolFeedback(int indice, bool enable = true, bool transfer = true);
+			int fakeButtonState;
+			int lastButtonState;
+			Transform lastToolPosition;
 
-    void sendHapticDeviceEvent();
-};
+			void setToolFeedback(int indice, bool enable = true, bool transfer = true);
 
-} // namespace SofaHAPI
+			void sendHapticDeviceEvent();
+		};
 
+	} // namespace SofaHAPI
+}
 #endif // SOFAHAPI_SOFAHAPIHAPTICSDEVICE_H

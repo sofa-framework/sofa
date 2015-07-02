@@ -41,8 +41,8 @@ namespace system
 /// @brief Contains functions to interact with the file system.
 ///
 /// Those functions are here only to avoid depending on an external library, and
-/// they provide only basic functionality. In particular, they were only written
-/// to work with absolute paths.
+/// they provide only basic functionality. In particular, most of them were only
+/// written to work with absolute paths.
 ///
 /// This set of functions is not meant to be complete, but it can be completed
 /// if need be.
@@ -66,6 +66,18 @@ static bool listDirectory(const std::string& directoryPath,
 static bool listDirectory(const std::string& directoryPath,
                           std::vector<std::string>& outputFilenames,
                           const std::string& extension);
+
+/// @brief Create a directory. (This function accepts relative paths)
+///
+/// On Unix platform, the directory is created with permissions 0755. On
+/// Windows, it is created with no special attributes.
+/// @return true on error
+static bool createDirectory(const std::string& path);
+
+/// @brief Remove an empty directory. (This function accepts relative paths)
+///
+/// @return true on error
+static bool removeDirectory(const std::string& path);
 
 /// @brief Return true if and only if the given file exists.
 static bool exists(const std::string& path);
