@@ -13,9 +13,25 @@ set(SofaFramework_ACTUAL_SOURCE_DIR ${SofaFramework_SOURCE_DIR}/../framework)
 ##
 ## SofaFramework options
 ##
-option(SOFA_DETECTIONOUTPUT_FREEMOTION "Compile the SofaCore library with DETECTIONOUTPUT_FREEMOTION preprocessor definition" OFF)
-option(SOFA_DETECTIONOUTPUT_BARYCENTRICINFO "Compile the SofaCore library with DETECTIONOUTPUT_BARYCENTRICINFO preprocessor definition" OFF)
-option(SOFA_NO_OPENGL "Compile SofaFramework libraries without OpenGL dependencies" OFF)
+option(SOFA_DETECTIONOUTPUT_FREEMOTION
+"Compile Sofa with the DETECTIONOUTPUT_FREEMOTION macro defined." OFF)
+
+option(SOFA_DETECTIONOUTPUT_BARYCENTRICINFO
+"Compile Sofa with the DETECTIONOUTPUT_BARYCENTRICINFO macro defined." OFF)
+
+option(SOFA_NO_OPENGL
+"Compile Sofa with no OpenGL support. (This will define the
+SOFA_NO_OPENGL macro.)" OFF)
+
+option(SOFA_NO_EXTERN_TEMPLATE
+"Compile Sofa without using the extern templates mechanism. (This will
+prevent the SOFA_EXTERN_TEMPLATE macro from being defined.)" OFF)
+
+option(SOFA_NO_UPDATE_BBOX
+"Compile Sofa with the SOFA_NO_UPDATE_BBOX macro defined." OFF)
+
+option(SOFA_DUMP_VISITOR_INFO
+"Compile Sofa with the SOFA_DUMP_VISITOR_INFO macro defined." OFF)
 
 set(SOFA_FLOATING_POINT_TYPE double CACHE STRING
 "Type used for floating point values in SOFA. It actually determines:

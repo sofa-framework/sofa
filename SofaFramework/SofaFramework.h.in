@@ -52,7 +52,11 @@
 
 #cmakedefine SOFA_HAVE_EIGEN2
 
+#cmakedefine SOFA_DUMP_VISITOR_INFO
+
 #cmakedefine SOFA_NO_OPENGL
+
+#cmakedefine SOFA_NO_UPDATE_BBOX
 
 #cmakedefine DETECTIONOUTPUT_FREEMOTION
 
@@ -68,13 +72,19 @@ typedef float SReal;
 typedef double SReal;
 #endif
 
-// Use of "extern template" is activated by the following macro
-// It must be used for DLLs on windows, and is now also activated
-// on other platforms (unless SOFA_NO_EXTERN_TEMPLATE is set), as
-// it can fix RTTI issues (typeid / dynamic_cast) on Mac and can
-// significantly speed-up compilation and link
+// The SOFA_EXTERN_TEMPLATE macro controls the use of extern templates in Sofa.
+// That is, every extern template declaration in Sofa is inside a block
+// protected by
+//
+//   #if defined(SOFA_EXTERN_TEMPLATE)
+//
+// Not only are extern template declarations necessary for DLLs on windows, but
+// they can also fix some RTTI issues on OS X (typeid, dynamic_cast), and they
+// hugely speed up the build process on every platform, so they are enabled by
+// default. (Even though they were not part of C++ until C++11, they are
+// supported by all majors compilers.)
 #ifndef SOFA_NO_EXTERN_TEMPLATE
-#define SOFA_EXTERN_TEMPLATE
+#  define SOFA_EXTERN_TEMPLATE
 #endif
 
 #ifndef WIN32
