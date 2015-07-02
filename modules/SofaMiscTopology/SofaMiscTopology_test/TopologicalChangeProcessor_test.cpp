@@ -15,13 +15,15 @@ struct TopologicalChangeProcessor_test: public Sofa_test<double>
 {
     // root
    simulation::Node::SPtr root;
+   /// Simulation
+   simulation::Simulation* simulation;
 
    void SetUp()
    {
        // Init Sofa
        sofa::component::init();
-       simulation::Simulation* simulation;
        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+       root = simulation::getSimulation()->createNewGraph("root");
 
        // Load the scene from the xml file
        std::string fileName = std::string(SOFAMISCTOPOLOGY_TEST_SCENES_DIR) + "/" + "IncisionTrianglesProcess.scn";
@@ -47,13 +49,20 @@ struct TopologicalChangeProcessor_test: public Sofa_test<double>
 
    bool TestInciseProcess()
    {
-       // Animate during 3 s
-       for(int i=0;i<30;i++)
+       // Animate during 1.2 s
+       for(int i=0;i<120;i++)
        {
-          sofa::simulation::getSimulation()->animate(root.get(),0.1);
+          sofa::simulation::getSimulation()->animate(root.get(),0.01);
        }
 
        return true;
+   }
+
+   /// Unload the scene
+   void TearDown()
+   {
+       if (root!=NULL)
+           sofa::simulation::getSimulation()->unload(root);
    }
 
 };
