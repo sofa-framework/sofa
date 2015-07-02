@@ -163,6 +163,8 @@ public:
     void readFromIniFile(const std::string& path);
     void writeToIniFile(const std::string& path);
 
+    static std::string s_gui_postfix; ///< the postfix to gui plugin, default="gui" (e.g. myplugin_gui.so)
+
 private:
     PluginManager();
     ~PluginManager();
