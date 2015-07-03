@@ -26,7 +26,6 @@
 #include "PythonEnvironment.h"
 #include "PythonScriptController.h"
 
-#include <sofa/config.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/system/SetDirectory.h>

@@ -27,7 +27,7 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include "ImageTypes.h"
+#include <image/ImageTypes.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 
