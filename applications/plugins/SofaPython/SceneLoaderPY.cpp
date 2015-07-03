@@ -56,7 +56,7 @@ bool SceneLoaderPY::canLoadFileExtension(const char *extension)
 {
     std::string ext = extension;
     std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-    return (ext=="py");
+    return (ext=="py" || ext=="pyscn");
 }
 
 bool SceneLoaderPY::canWriteFileExtension(const char *extension)
@@ -74,12 +74,14 @@ std::string SceneLoaderPY::getFileTypeDesc()
 void SceneLoaderPY::getExtensionList(ExtensionList* list)
 {
     list->clear();
-   // list->push_back("pyscn");
+    list->push_back("pyscn");
     list->push_back("py");
 }
 
 sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
 {
+    SP_MESSAGE_INFO("Loading file...");
+    SP_MESSAGE_INFO(filename);
     return loadSceneWithArguments(filename);
 }
 
