@@ -136,7 +136,7 @@ public:
             unsigned int a = map->getEmbedding(c) ;
             if (a == EMBNULL)
             {
-                assert(a!= EMBNULL);
+                std::cerr << __FILE__ << ":" << __LINE__ << " should not happen !" << std::endl;
                 // setOrbitEmbeddingOnNewCell adapted to CPHMap
                 a = Algo::Topo::setOrbitEmbeddingOnNewCell<ORBIT,MAP>(*map, c) ;
             }
