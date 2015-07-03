@@ -29,7 +29,6 @@
 #pragma once
 #endif
 
-#include <sofa/component/component.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>

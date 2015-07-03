@@ -94,7 +94,7 @@ struct DataImageLink_test : public Sofa_test<>
     {
         ImageContainer::SPtr ic = sofa::core::objectmodel::New<ImageContainer>();
         // Set path to image for imageContainer
-        std::string fileName = std::string(IMAGETEST_SCENES_DIR) + "/" + "beam.raw";
+        std::string fileName = std::string(IMAGE_TEST_SCENES_DIR) + "/" + "beam.raw";
         ic->m_filename.setValue(fileName);
 
         // Init image container
