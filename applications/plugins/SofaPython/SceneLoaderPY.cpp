@@ -80,8 +80,6 @@ void SceneLoaderPY::getExtensionList(ExtensionList* list)
 
 sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
 {
-    SP_MESSAGE_INFO("Loading file...");
-    SP_MESSAGE_INFO(filename);
     return loadSceneWithArguments(filename);
 }
 
