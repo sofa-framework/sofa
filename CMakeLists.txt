@@ -145,8 +145,8 @@ add_subdirectory("${SOFA_MISC_DIR}")
 add_subdirectory("${SOFA_GUI_DIR}")
 
 # SofaTest depends on SofaPython, so we add it first.
-option(SOFA-PLUGIN_SOFAPYTHON "Build the SofaPython plugin." OFF)
-if(SOFA-PLUGIN_SOFAPYTHON)
+option(SOFAPLUGINS_SOFAPYTHON "Build the SofaPython plugin." OFF)
+if(SOFAPLUGINS_SOFAPYTHON)
     add_subdirectory(applications/plugins/SofaPython ${CMAKE_CURRENT_BINARY_DIR}/SofaPlugins/SofaPython)
     set_target_properties(SofaPython PROPERTIES FOLDER "SofaPlugins") # IDE folder
 endif()

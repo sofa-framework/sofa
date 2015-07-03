@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 macro(add_plugin plugin)
-    string(TOUPPER SOFA-PLUGIN_${plugin} plugin_option)
+    string(TOUPPER SOFAPLUGINS_${plugin} plugin_option)
     option(${plugin_option} "Build the ${plugin} plugin." OFF)
     if(${plugin_option})
         add_subdirectory(../applications/plugins/${plugin} ${CMAKE_CURRENT_BINARY_DIR}/${plugin})
