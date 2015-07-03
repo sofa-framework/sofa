@@ -63,6 +63,7 @@
 #define LARGESTCONNECTEDCOMPONENT 26
 #define MIRROR 27
 #define SHARPEN 28
+#define EXPAND 29
 
 
 namespace sofa
@@ -107,7 +108,7 @@ public:
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
 
     typedef vector<double> ParamTypes;
-	typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
+    typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 
     Data<helper::OptionsGroup> filter;
     Data< ParamTypes > param;
@@ -133,7 +134,7 @@ public:
         inputTransform.setReadOnly(true);
         outputImage.setReadOnly(true);
         outputTransform.setReadOnly(true);
-        helper::OptionsGroup filterOptions(29	,"0 - None"
+        helper::OptionsGroup filterOptions(30	,"0 - None"
                                            ,"1 - Blur ( sigma )"
                                            ,"2 - Blur Median ( n )"
                                            ,"3 - Blur Bilateral ( sigma_s, sigma_r)"
@@ -161,7 +162,8 @@ public:
                                            ,"25 - Label connected components (tolerance=0)"
                                            ,"26 - Largest connected component (tolerance=0)"
                                            ,"27 - Mirror (axis=0)"
-										   ,"28 - Sharpen (sigma)"
+                                           ,"28 - Sharpen (sigma)"
+                                           ,"29 - Expand ( size )"
                                            );
         filterOptions.setSelectedItem(NONE);
         filter.setValue(filterOptions);
@@ -183,7 +185,7 @@ public:
 protected:
 
     virtual void update()
-	{
+    {
         bool updateImage = this->inputImage.isDirty();	// change of input image -> update output image
         bool updateTransform = this->inputTransform.isDirty();	// change of input transform -> update output transform
         if(!updateImage && !updateTransform) {updateImage=true; updateTransform=true;}  // change of parameters -> update all
@@ -234,7 +236,7 @@ protected:
                 float amplitude=0; if(p.size()) amplitude=(float)p[0];
                 cimglist_for(img,l) img(l)=inimg(l).get_blur_anisotropic (amplitude);
             }
-			break;	
+            break;
         case DERICHE:
             if(updateImage)
             {
@@ -257,6 +259,19 @@ protected:
                 if(updateTransform)
                 {
                     outT->getTranslation()=outT->fromImage( Coord((Real)xmin,(Real)ymin,(Real)zmin) );
+                    outT->setCamPos((Real)(out->getDimensions()[0]-1)/2.0,(Real)(out->getDimensions()[1]-1)/2.0);
+                }
+            }
+            break;
+        case EXPAND:
+            if(updateImage || updateTransform)
+            {
+                unsigned int size=0; if(p.size())   size=(unsigned int)p[0];
+                unsigned int dim[3]= {in->getDimensions()[0],in->getDimensions()[1],in->getDimensions()[2]};
+                if(updateImage) cimglist_for(img,l) img(l)=inimg(l).get_resize(dim[0]+2*size,dim[1]+2*size,dim[2]+2*size,-100,0,0,0.5,0.5,0.5,0);
+                if(updateTransform)
+                {
+                    outT->getTranslation()-=outT->getScale()*size;
                     outT->setCamPos((Real)(out->getDimensions()[0]-1)/2.0,(Real)(out->getDimensions()[1]-1)/2.0);
                 }
             }
@@ -547,8 +562,8 @@ protected:
                                         for(int zz=z-1;zz<=z+1;++zz)
                                         {
                                             if( xx >= 0 && xx<mask.width() &&
-                                                yy >= 0 && yy<mask.height() &&
-                                                zz >= 0 && zz<mask.depth() )
+                                                    yy >= 0 && yy<mask.height() &&
+                                                    zz >= 0 && zz<mask.depth() )
                                             {
                                                 ++nb;
                                                 mean+=(SReal)img(l)(xx,yy,zz);
@@ -639,21 +654,21 @@ protected:
                 else if(axis==0) cimglist_for(img,l) img(l)=inimg(l).get_mirror ('y');
                 else cimglist_for(img,l) img(l)=inimg(l).get_mirror ('z');
             }
-			break;	 
+            break;
 
-		case SHARPEN:
-			if(updateImage)
-			{
-				float sigma=0; if(p.size()) sigma=(float)p[0];
-				cimglist_for(img,l) img(l)=inimg(l).get_sharpen(sigma);
-			}
-			break;
+        case SHARPEN:
+            if(updateImage)
+            {
+                float sigma=0; if(p.size()) sigma=(float)p[0];
+                cimglist_for(img,l) img(l)=inimg(l).get_sharpen(sigma);
+            }
+            break;
 
         default:
             break;
         }
 
-		if (updateTransform) outT->update(); // update internal data
+        if (updateTransform) outT->update(); // update internal data
 
     }
 
