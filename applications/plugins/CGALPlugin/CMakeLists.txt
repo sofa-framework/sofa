@@ -81,7 +81,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 target_link_libraries(${PROJECT_NAME} SofaCore ${Boost_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${CGAL_LIBRARY})
 
 if(image_FOUND)
-    target_link_libraries(${PROJECT_NAME} image)
+    target_link_libraries(${PROJECT_NAME} ${CGAL_ImageIO_LIBRARY} image)
 endif()
 
 
