@@ -321,18 +321,18 @@ inline unsigned int ImplicitHierarchicalMap2::getCurrentLevel() const
     return m_curLevel ;
 }
 
-inline void ImplicitHierarchicalMap2::setCurrentLevel(unsigned int l)
+inline void ImplicitHierarchicalMap2::setCurrentLevel(unsigned int l) const
 {
     assert(l <= m_maxLevel || "setCurrentLevel : desired level is > to  maximum resolution level");
     m_curLevel = l ;
 }
 
-inline void ImplicitHierarchicalMap2::incCurrentLevel()
+inline void ImplicitHierarchicalMap2::incCurrentLevel() const
 {
     this->setCurrentLevel(getCurrentLevel()+1u);
 }
 
-inline void ImplicitHierarchicalMap2::decCurrentLevel()
+inline void ImplicitHierarchicalMap2::decCurrentLevel() const
 {
     this->setCurrentLevel(getCurrentLevel() - 1u);
 }

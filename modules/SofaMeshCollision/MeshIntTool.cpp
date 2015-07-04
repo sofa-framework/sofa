@@ -1,3 +1,4 @@
+#define SOFA_COMPONENT_COLLISION_MESHINTTOOL_CPP
 #include <SofaMeshCollision/MeshIntTool.inl>
 
 namespace sofa

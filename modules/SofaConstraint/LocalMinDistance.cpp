@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_CPP
 #include <SofaConstraint/LocalMinDistance.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/proximity.h>

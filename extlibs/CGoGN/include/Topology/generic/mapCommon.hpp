@@ -90,9 +90,7 @@ template <unsigned int ORBIT>
 void MapCommon<MAP_IMPL>::setDartEmbedding(Dart d, unsigned int emb)
 {
 	assert(this->template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
-
 	unsigned int old = getEmbedding<ORBIT>(d);
-//    std::cerr << "get embedding of " << d << " (orbit " << ORBIT << ") = " << old << std::endl;
 	if (old == emb)	// if same emb
 		return;		// nothing to do
 
@@ -197,8 +195,12 @@ template <typename MAP_IMPL>
 template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy>
 inline AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy > MapCommon<MAP_IMPL>::addAttribute(const std::string& nameAttr)
 {
-	if(!this->template isOrbitEmbedded<ORBIT>())
-		this->template addEmbedding<ORBIT>() ;
+
+    if(!this->template isOrbitEmbedded<ORBIT>())
+    {
+        this->template addEmbedding<ORBIT>() ;
+    }
+    std::cerr << "added attribute " << nameAttr << "on orbit " << orbitName(ORBIT) << std::endl;
 	AttributeMultiVector<T>* amv = this->m_attribs[ORBIT].template addAttribute<T>(nameAttr) ;
     return AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy>(static_cast<MAP*>(this), amv) ;
 }
@@ -208,6 +210,7 @@ template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorP
 inline bool MapCommon<MAP_IMPL>::removeAttribute(AttributeHandler< T, ORBIT, MAP, AttributeAccessorPolicy> &attr)
 {
 	assert(attr.isValid() || !"Invalid attribute handler") ;
+    std::cerr << "removed attribute " << attr.name() << "on orbit " << orbitName(ORBIT) << std::endl;
 	if(this->m_attribs[attr.getOrbit()].template removeAttribute<T>(attr.getIndex()))
 	{
 		AttributeMultiVectorGen* amv = attr.getDataVector();
@@ -234,10 +237,11 @@ template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorP
 inline AttributeHandler< T, ORBIT, MAP, AttributeAccessorPolicy> MapCommon<MAP_IMPL>::checkAttribute(const std::string& nameAttr)
 {
     AttributeHandler<T, ORBIT, MAP> att = this->getAttribute<T,ORBIT, MAP, AttributeAccessorPolicy>(nameAttr);
-    std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
 	if (!att.isValid())
+    {
         att = this->addAttribute<T, ORBIT, MAP, AttributeAccessorPolicy>(nameAttr);
-    std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
+    }
+
 	return att;
 
 }

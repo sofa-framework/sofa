@@ -84,7 +84,7 @@ protected:
     /**
      * current level in multiresolution map
      */
-    unsigned int m_mrCurrentLevel ;
+    mutable unsigned int m_mrCurrentLevel ;
 
     /**
      * stack for current level temporary storage
@@ -210,12 +210,12 @@ public:
     /**
      * get the current resolution level
      */
-    unsigned int getCurrentLevel() ;
+    unsigned int getCurrentLevel() const ;
 
     /**
      * set the current resolution level
      */
-    void setCurrentLevel(unsigned int l) ;
+    void setCurrentLevel(unsigned int l) const;
 
     /**
      * increment the current resolution level
@@ -240,7 +240,7 @@ public:
     /**
      * get the maximum resolution level
      */
-    unsigned int getMaxLevel() ;
+    unsigned int getMaxLevel() const;
 
     /**
      * add a resolution level in the back of the level table

@@ -87,14 +87,6 @@ public:
     virtual unsigned int getGlobIndex(unsigned int ind);
     virtual unsigned int getFromIndex(unsigned int ind);
 
-    template<class T>
-    static bool canCreate ( T*& /*obj*/, core::objectmodel::BaseContext* /*context*/, core::objectmodel::BaseObjectDescription* /*arg*/ )
-    {
-        return true;
-    }
-
-
-
 };
 
 } // namespace topology

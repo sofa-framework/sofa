@@ -111,6 +111,8 @@ void EigenSparseSolver<LinearSolver,symmetric>::factor(const AssembledSystem& sy
 
         pimpl->sub.factor( *pimpl );
 
+        if( debug.getValue() )
+            serr<<"H: "<<pimpl->sub.A<<sendl;
     }
 }
 

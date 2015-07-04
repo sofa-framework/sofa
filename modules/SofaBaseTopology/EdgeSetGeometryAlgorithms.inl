@@ -30,6 +30,7 @@
 #include <sofa/helper/MatEigen.h>
 #include <sofa/defaulttype/Mat_solve_Cholesky.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
+#include <SofaBaseTopology/PointSetGeometryAlgorithms.inl>
 
 namespace sofa
 {
@@ -46,7 +47,215 @@ namespace topology
        P
     }
 */
+template< class DataTypes>
+NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1> &EdgeSetGeometryAlgorithms< DataTypes >::getEdgeNumericalIntegrationDescriptor()
+{
+	// initialize the cubature table only if needed.
+	if (initializedEdgeCubatureTables==false) {
+		initializedEdgeCubatureTables=true;
+		defineEdgeCubaturePoints();
+	}
+	return edgeNumericalIntegration;
+}
 
+template< class DataTypes>
+void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
+	typedef typename NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1>::QuadraturePoint QuadraturePoint;
+	typedef typename NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1>::BarycentricCoordinatesType BarycentricCoordinatesType;
+
+	// Gauss Legendre method : low  number of integration points for a given order
+	// for order > 5 no closed form expression exists and therefore use values from http://www.holoborodko.com/pavel/numerical-methods/numerical-integration/#gauss_quadrature_abscissas_table
+
+	typename NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1>::QuadratureMethod m=NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1>::GAUSS_LEGENDRE_METHOD;
+	typename NumericalIntegrationDescriptor<typename EdgeSetGeometryAlgorithms< DataTypes >::Real,1>::QuadraturePointArray qpa;
+	BarycentricCoordinatesType v;
+
+	/// integration with linear accuracy.
+	v=BarycentricCoordinatesType(0.5);
+	qpa.push_back(QuadraturePoint(v,(Real)1.0));
+	edgeNumericalIntegration.addQuadratureMethod(m,1,qpa);
+	/// integration with quadratic accuracy.
+	qpa.clear();
+	Real a=0.5+1/(2*sqrt(3.));
+	v=BarycentricCoordinatesType(a);
+	qpa.push_back(QuadraturePoint(v,(Real)0.5));
+	Real b=0.5-1/(2*sqrt(3.));
+	v=BarycentricCoordinatesType(b);
+	qpa.push_back(QuadraturePoint(v,(Real)0.5));
+	edgeNumericalIntegration.addQuadratureMethod(m,2,qpa);
+	/// integration with cubic accuracy.
+	qpa.clear();
+	a=0.5*(1-sqrt((Real)3/5.0));
+	v=BarycentricCoordinatesType(a);
+	qpa.push_back(QuadraturePoint(v,(Real)5.0/18.0));
+	b=0.5*(1+sqrt((Real)3/5.0));
+	v=BarycentricCoordinatesType(b);
+	qpa.push_back(QuadraturePoint(v,(Real)5.0/18.0));
+	v=BarycentricCoordinatesType(0.5);
+	qpa.push_back(QuadraturePoint(v,(Real)8.0/18.0));
+	edgeNumericalIntegration.addQuadratureMethod(m,3,qpa);
+	/// integration with quartic accuracy.
+	qpa.clear();
+	a=0.5*(1-sqrt((Real)(3+2*sqrt(6.0/5.0))/7));
+	v=BarycentricCoordinatesType(a);
+	Real a2=0.25-sqrt(5.0/6.0)/12;
+	qpa.push_back(QuadraturePoint(v,a2));
+	a=0.5*(1+sqrt((Real)(3+2*sqrt(6.0/5.0))/7));
+	v=BarycentricCoordinatesType(a);
+	qpa.push_back(QuadraturePoint(v,a2));
+	a=0.5*(1-sqrt((Real)(3-2*sqrt(6.0/5.0))/7));
+	a2=0.25+sqrt(5.0/6.0)/12;
+	v=BarycentricCoordinatesType(a);
+	qpa.push_back(QuadraturePoint(v,a2));
+	a=0.5*(1+sqrt((Real)(3-2*sqrt(6.0/5.0))/7));
+	v=BarycentricCoordinatesType(a);
+	qpa.push_back(QuadraturePoint(v,a2));
+	edgeNumericalIntegration.addQuadratureMethod(m,4,qpa);
+	/// integration with quintic accuracy.
+	qpa.clear();
+	a=0.5*(1-sqrt((Real)(5+2*sqrt(10.0/7.0)))/3);
+	v=BarycentricCoordinatesType(a);
+	a2=(322-13*sqrt(70.0))/900;
+	qpa.push_back(QuadraturePoint(v,a2/2));
+	a=0.5*(1+sqrt((Real)(5+2*sqrt(10.0/7.0)))/3);
+	v=BarycentricCoordinatesType(a);
+	qpa.push_back(QuadraturePoint(v,a2/2));
+
+	a=0.5*(1-sqrt((Real)(5-2*sqrt(10.0/7.0)))/3);
+	v=BarycentricCoordinatesType(a);
+	a2=(322+13*sqrt(70.0))/900;
+	qpa.push_back(QuadraturePoint(v,a2/2));
+	a=0.5*(1+sqrt((Real)(5-2*sqrt(10.0/7.0)))/3);
+	v=BarycentricCoordinatesType(a);
+	qpa.push_back(QuadraturePoint(v,a2/2));
+
+	v=BarycentricCoordinatesType(0.5);
+	qpa.push_back(QuadraturePoint(v,(Real)512/1800.0));
+	edgeNumericalIntegration.addQuadratureMethod(m,5,qpa);
+
+	/// integration with  accuracy of order 6.
+	/// no closed form expression
+	// copy values for integration in [-1;1] and translate it for integration in [0;1]
+	double varray[6];
+	double warray[6],warray0;
+	size_t nbIPs=3;
+	size_t order=6;
+	size_t i;
+
+	qpa.clear();
+	varray[0]=0.2386191860831969086305017; warray[0]=0.4679139345726910473898703;
+	varray[1]=0.6612093864662645136613996;	warray[1]=0.3607615730481386075698335;
+	varray[2]=0.9324695142031520278123016; warray[2]=0.1713244923791703450402961;
+
+	for (i=0;i<nbIPs;++i) {
+		v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+		v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+	}
+	edgeNumericalIntegration.addQuadratureMethod(m,6,qpa);
+	/// integration with  accuracy of order 7.
+	qpa.clear();
+	warray0=0.4179591836734693877551020;
+	varray[0]=0.4058451513773971669066064;	warray[0]=0.3818300505051189449503698;
+	varray[1]=0.7415311855993944398638648;	warray[1]=0.2797053914892766679014678;
+	varray[2]=0.9491079123427585245261897;	warray[2]=0.1294849661688696932706114;
+
+	for (i=0;i<nbIPs;++i) {
+		v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+		v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+	}
+	v=BarycentricCoordinatesType(0.5);
+	qpa.push_back(QuadraturePoint(v,(Real)warray0/2));
+	edgeNumericalIntegration.addQuadratureMethod(m,7,qpa);
+	/// integration with  accuracy of order 8.
+	qpa.clear();
+	varray[0]=0.1834346424956498049394761; warray[0]=	0.3626837833783619829651504;
+	varray[1]=0.5255324099163289858177390; warray[1]=	0.3137066458778872873379622;
+	varray[2]=0.7966664774136267395915539; warray[2]=	0.2223810344533744705443560;
+	varray[3]=0.9602898564975362316835609; warray[3]=	0.1012285362903762591525314;
+	nbIPs=4;
+
+
+	for (i=0;i<nbIPs;++i) {
+		v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+		v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+	}
+	edgeNumericalIntegration.addQuadratureMethod(m,8,qpa);
+	/// integration with  accuracy of order 9
+	qpa.clear();
+	warray0=	0.3302393550012597631645251;
+	varray[0]=0.3242534234038089290385380;	warray[0]=0.3123470770400028400686304;
+	varray[1]=0.6133714327005903973087020;	warray[1]=	0.2606106964029354623187429;
+	varray[2]=0.8360311073266357942994298;	warray[2]=0.1806481606948574040584720;
+	varray[3]=0.9681602395076260898355762;	warray[3]=	0.0812743883615744119718922;
+
+
+	for (i=0;i<nbIPs;++i) {
+		v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+		v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+	}
+	v=BarycentricCoordinatesType(0.5);
+	qpa.push_back(QuadraturePoint(v,(Real)warray0/2));
+	edgeNumericalIntegration.addQuadratureMethod(m,9,qpa);
+
+	/// integration with accuracy of order 10.
+	qpa.clear();
+	varray[0]=0.1488743389816312108848260; warray[0]=	0.2955242247147528701738930;
+	varray[1]=0.4333953941292471907992659; warray[1]=	0.2692667193099963550912269;
+	varray[2]=0.6794095682990244062343274; warray[2]=	0.2190863625159820439955349;
+	varray[3]=0.8650633666889845107320967; warray[3]=	0.1494513491505805931457763;
+	varray[4]=0.9739065285171717200779640; warray[4]=	0.0666713443086881375935688;
+	nbIPs=5;
+
+	for (i=0;i<nbIPs;++i) {
+		v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+		v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+	}
+	edgeNumericalIntegration.addQuadratureMethod(m,10,qpa);
+	/// integration with accuracy of order 11.
+	qpa.clear();
+	warray0=0.2729250867779006307144835;
+	varray[0]=0.2695431559523449723315320;	warray[0]=	0.2628045445102466621806889;
+	varray[1]=0.5190961292068118159257257;	warray[1]=0.2331937645919904799185237;
+	varray[2]=0.7301520055740493240934163;	warray[2]=	0.1862902109277342514260976;
+	varray[3]=0.8870625997680952990751578;	warray[3]=	0.1255803694649046246346943;
+	varray[4]=0.9782286581460569928039380;	warray[4]=	0.0556685671161736664827537;
+
+	for (i=0;i<nbIPs;++i) {
+		v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+		v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+	}
+	v=BarycentricCoordinatesType(0.5);
+	qpa.push_back(QuadraturePoint(v,(Real)warray0/2));
+	edgeNumericalIntegration.addQuadratureMethod(m,11,qpa);
+	/// integration with accuracy of order 12.
+	varray[0]=0.1252334085114689154724414;	warray[0]=	0.2491470458134027850005624;
+	varray[1]=0.3678314989981801937526915;	warray[1]=	0.2334925365383548087608499;
+	varray[2]=0.5873179542866174472967024;	warray[2]=	0.2031674267230659217490645;
+	varray[3]=0.7699026741943046870368938;	warray[3]=	0.1600783285433462263346525;
+	varray[4]=0.9041172563704748566784659;	warray[4]=	0.1069393259953184309602547;
+	varray[5]=0.9815606342467192506905491;	warray[5]=	0.0471753363865118271946160;
+	nbIPs=6;
+
+	for (i=0;i<nbIPs;++i) {
+		v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+		v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
+	}
+	edgeNumericalIntegration.addQuadratureMethod(m,10,qpa);	
+}
 template< class DataTypes>
 typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeEdgeLength( const EdgeID i) const
 {
@@ -602,7 +811,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
 {
     const VecCoord& pos =(this->object->read(core::ConstVecCoordId::position())->getValue()); // point positions
 
-    sofa::helper::vector<Vector3> edgeVec;                  // 3D edges
+    sofa::helper::vector<defaulttype::Vector3> edgeVec;                  // 3D edges
 
     numEdges.clear();
     vertexEdges.clear();
@@ -644,10 +853,10 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
         {
             size_t n = weights.size();     // start index for this vertex
             weights.resize( n + ve.size() ); // concatenate all the W of the nodes
-            Vector3 a,u;
+            defaulttype::Vector3 a,u;
 
             // axis x
-            a=Vector3(1,0,0);
+            a=defaulttype::Vector3(1,0,0);
             cholBksb(u,L,a); // solve EEt.u=x using the Cholesky decomposition
             //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, ux = " << u << endl;
             for(size_t i=0; i<ve.size(); i++ )
@@ -657,7 +866,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             }
 
             // axis y
-            a=Vector3(0,1,0);
+            a=defaulttype::Vector3(0,1,0);
             cholBksb(u,L,a); // solve EEt.u=y using the Cholesky decomposition
             //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uy = " << u << endl;
             for(size_t i=0; i<ve.size(); i++ )
@@ -667,7 +876,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             }
 
             // axis z
-            a=Vector3(0,0,1);
+            a=defaulttype::Vector3(0,0,1);
             cholBksb(u,L,a); // solve EEt.u=z using the Cholesky decomposition
             //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uz = " << u << endl;
             for(size_t i=0; i<ve.size(); i++ )
@@ -681,7 +890,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
 #ifdef SOFA_HAVE_EIGEN2   // use the SVD decomposition of Eigen
             size_t n = weights.size();     // start index for this vertex
             weights.resize( n + ve.size() ); // concatenate all the W of the nodes
-            Vector3 a,u;
+            defaulttype::Vector3 a,u;
 
             typedef Eigen::Matrix<SReal,3,3> EigenM33;
             EigenM33 emat = eigenMat(EEt);
@@ -690,7 +899,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             Eigen::Matrix<SReal,3,1> solution;
 
             // axis x
-            a=Vector3(1,0,0);
+            a=defaulttype::Vector3(1,0,0);
             solution = jacobi.solve( eigenVec(a) );
             // least-squares solve EEt.u=x
             for(int i=0; i<3; i++)
@@ -703,7 +912,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             }
 
             // axis y
-            a=Vector3(0,1,0);
+            a=defaulttype::Vector3(0,1,0);
             solution = jacobi.solve( eigenVec(a) );
             // least-squares solve EEt.u=y
             for(int i=0; i<3; i++)
@@ -716,7 +925,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             }
 
             // axis z
-            a=Vector3(0,0,1);
+            a=defaulttype::Vector3(0,0,1);
             solution = jacobi.solve( eigenVec(a) );
             // least-squares solve EEt.u=z
             for(int i=0; i<3; i++)

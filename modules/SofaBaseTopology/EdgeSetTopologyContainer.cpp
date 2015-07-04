@@ -297,7 +297,7 @@ unsigned int EdgeSetTopologyContainer::getNumberOfConnectedComponent()
     while (elemAll.size() < nbr)
     {
         std::sort(elemAll.begin(), elemAll.end());
-        EdgeID other_edgeID = (EdgeID)elemAll.size();
+        EdgeID other_edgeID = elemAll.size();
 
         for (EdgeID i = 0; i<(EdgeID)elemAll.size(); ++i)
             if (elemAll[i] != i)
@@ -564,8 +564,8 @@ void EdgeSetTopologyContainer::clear()
 {
     clearEdges();
     clearEdgesAroundVertex();
-
-    PointSetTopologyContainer::clear();
+	// Do not set to 0 the number of points as it prevents the  creation of topological items (edgeArray in tetrahedra for instance)
+//    PointSetTopologyContainer::clear();
 }
 
 

@@ -23,6 +23,7 @@ set(HEADER_FILES
 	mapping/PythonMultiMapping.h
     mapping/GearMapping.h
 	mapping/PairingMultiMapping.h
+	mapping/QuadraticMapping.h
 
     numericalsolver/KKTSolver.h
     numericalsolver/EigenSparseSolver.h
@@ -74,6 +75,7 @@ set(HEADER_FILES
 
     constraint/Constraint.h
     constraint/CoulombConstraint.h
+	constraint/CoulombConstraint.inl
     constraint/UnilateralConstraint.h
     constraint/ResistanceConstraint.h
     constraint/ClosureConstraint.h
@@ -149,6 +151,7 @@ set(SOURCE_FILES
 	mapping/PythonMultiMapping.cpp
     mapping/GearMapping.cpp
 	mapping/PairingMultiMapping.cpp
+	mapping/QuadraticMapping.cpp
 
     numericalsolver/EigenSparseSolver.cpp
     numericalsolver/EigenSparseResponse.cpp

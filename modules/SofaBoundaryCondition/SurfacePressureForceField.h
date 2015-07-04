@@ -89,6 +89,7 @@ protected:
     Data< Real >	m_pressureLowerBound;		///< In pulseMode, the pressure increases(or decreases) from m_pressureLowerBound to m_pressure cyclicly.
     Data< Real >	m_pressureSpeed;			///< Pressure variation in Pascal by second.
     Data< bool >	m_volumeConservationMode;	///< In this mode, pressure variation is related to the object volume variation.
+    Data< bool >	m_useTangentStiffness;	    ///< The tangent stiffness matrix is not symmetric and could create issues with some linear solvers. Set to false to not use it.
     Data< Real >	m_defaultVolume;			///< Default Volume.
     Data< Deriv >	m_mainDirection;			///< Main axis for pressure application.
 

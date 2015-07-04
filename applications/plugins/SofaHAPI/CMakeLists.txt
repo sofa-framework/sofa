@@ -3,7 +3,7 @@ project("SofaHAPI")
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES 
-    SofaHAPI.h
+    initSofaHAPI.h
     SofaHAPIHapticsDevice.h
     SofaHAPIForceFeedbackEffect.h
     )

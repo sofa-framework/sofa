@@ -335,6 +335,9 @@ protected:
     {
 		_poissonRatio.setRequired(true);
 		_youngModulus.setRequired(true);
+		_youngModulus.beginEdit()->push_back((Real)5000.);
+		_youngModulus.endEdit();
+		_youngModulus.unset();
 
         data.initPtrData(this);
         this->addAlias(&_assembling, "assembling");

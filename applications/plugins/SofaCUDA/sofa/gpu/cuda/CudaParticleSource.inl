@@ -26,7 +26,6 @@
 #define SOFA_GPU_CUDA_CUDAPARTICLESOURCE_INL
 
 #include "CudaParticleSource.h"
-//#include <sofa/component/misc/ParticleSource.inl>
 #include <sofa/gpu/cuda/mycuda.h>
 
 namespace sofa

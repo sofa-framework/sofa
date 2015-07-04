@@ -46,8 +46,11 @@ const unsigned int edgesInHexahedronArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5}
 ///convention quads in hexa (orientation interior)
 const unsigned int quadsInHexahedronArray[6][4]= {{0,1,2,3}, {4,7,6,5}, {1,0,4,5},{1,5,6,2},  {2,6,7,3}, {0,3,7,4}};
 
+const unsigned int verticesInHexahedronArray[2][2][2]=  {{{0,4},{3,7}},{{1,5},{2,6}}};
+
 HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
     : QuadSetTopologyContainer()
+	, d_createQuadArray(initData(&d_createQuadArray, bool(false),"createQuadArray", "Force the creation of a set of quads associated with the hexahedra"))
     , d_hexahedron(initData(&d_hexahedron, "hexahedra", "List of hexahedron indices"))
 {
     addAlias(&d_hexahedron, "hexas");
@@ -72,6 +75,9 @@ void HexahedronSetTopologyContainer::init()
 {
     QuadSetTopologyContainer::init();
     d_hexahedron.updateIfDirty(); // make sure m_hexahedron is up to date
+	// eventually force the creation of quads
+	if (d_createQuadArray.getValue())
+		createQuadSetArray();
 }
 
 
@@ -580,7 +586,21 @@ Quad HexahedronSetTopologyContainer::getLocalQuadsInHexahedron (const QuadID i) 
             quadsInHexahedronArray[i][3]);
 }
 
-
+ unsigned int HexahedronSetTopologyContainer::getLocalIndexFromBinaryIndex(const HexahedronBinaryIndex bi) const 
+ {
+	 return(verticesInHexahedronArray[bi[0]][bi[1]][bi[2]]);
+ }
+ HexahedronSetTopologyContainer::HexahedronBinaryIndex HexahedronSetTopologyContainer::getBinaryIndexFromLocalIndex(const unsigned int li) const 
+ {
+	 HexahedronBinaryIndex bi;
+	 if (li==0)
+		 bi[0]=0;
+	 else
+		 bi[0]=1-(((li-1)&2)/2);
+	 bi[1]=(li&2)/2;
+	 bi[2]=(li&4)/4;
+	return bi;
+ }
 QuadID HexahedronSetTopologyContainer::getNextAdjacentQuad(const HexaID _hexaID, const QuadID _quadID, const EdgeID _edgeID)
 {
     assert(_hexaID < d_hexahedron.getValue().size());

@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_SparseLDLSolver_H
-#define SOFA_COMPONENT_LINEARSOLVER_SparseLDLSolver_H
+#ifndef SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_H
+#define SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_H
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
@@ -78,7 +78,7 @@ protected :
 //    helper::vector<Real> line,res;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_SPARSE_SOLVER)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_CPP)
 extern template class SOFA_SPARSE_SOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< double>,FullVector<double> >;
 extern template class SOFA_SPARSE_SOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,double> >,FullVector<double> >;
 extern template class SOFA_SPARSE_SOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< float>,FullVector<float> >;

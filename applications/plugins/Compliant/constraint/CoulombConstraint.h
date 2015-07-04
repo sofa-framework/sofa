@@ -8,17 +8,23 @@ namespace component {
 namespace linearsolver {
 
 
-/// A Coulomb Cone Friction constraint
-struct SOFA_Compliant_API CoulombConstraint : Constraint {
-	
-    SOFA_CLASS(CoulombConstraint, Constraint);
+struct SOFA_Compliant_API CoulombConstraintBase : Constraint
+{
+    // friction coefficient f_T <= mu. f_N
+    SReal mu;
+};
 
-	// friction coefficient f_T <= mu. f_N
-	SReal mu;
+/// A Coulomb Cone Friction constraint
+template<class DataTypes>
+struct SOFA_Compliant_API CoulombConstraint : CoulombConstraintBase {
+	
+    SOFA_CLASS(SOFA_TEMPLATE(CoulombConstraint, DataTypes), Constraint);
 
     CoulombConstraint( SReal mu = 1.0 );
 
-    virtual void project( SReal* out, unsigned n, unsigned index, bool correctionPass=false ) const;
+    // WARNING index is not used (see Constraint.h)
+    virtual void project( SReal* out, unsigned n, unsigned /*index*/,
+                          bool correctionPass=false ) const;
 
 
     bool horizontalProjection; ///< should the projection be horizontal (default)? Otherwise an orthogonal cone projection is performed.

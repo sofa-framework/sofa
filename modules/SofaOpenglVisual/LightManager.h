@@ -118,7 +118,7 @@ public:
     ///Remove all lights of the LightManager
     void clear();
 
-    void restoreDefaultLight();
+    void restoreDefaultLight(core::visual::VisualParams* vparams);
 
     void handleEvent(sofa::core::objectmodel::Event* event);
 
