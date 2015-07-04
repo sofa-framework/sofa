@@ -1,3 +1,4 @@
+#define SOFA_COMPONENT_COLLISION_OBBMODEL_CPP
 #include <SofaBaseCollision/OBBModel.inl>
 #include <sofa/core/ObjectFactory.h>
 

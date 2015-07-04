@@ -1,4 +1,3 @@
-
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
 *                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
@@ -23,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_COLLISION_DIRECTSAP_CPP
 #include <SofaMeshCollision/DirectSAP.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CapsuleModel.h>

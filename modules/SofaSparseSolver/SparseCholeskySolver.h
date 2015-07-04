@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_SparseCholeskySolver_H
-#define SOFA_COMPONENT_LINEARSOLVER_SparseCholeskySolver_H
+#ifndef SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_H
+#define SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_H
 
 #include <sofa/component/component.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -75,7 +75,7 @@ public :
     void solveT(float * z, float * r);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_SPARSE_SOLVER)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_CPP)
 extern template class SOFA_SPARSE_SOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
 extern template class SOFA_SPARSE_SOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<float>,FullVector<float> >;
 #endif

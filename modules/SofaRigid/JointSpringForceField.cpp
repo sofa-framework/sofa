@@ -23,8 +23,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 // Author: François Faure, INRIA-UJF, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
 #define SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP
 #include <SofaRigid/JointSpringForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>

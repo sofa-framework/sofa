@@ -58,8 +58,8 @@ public:
 /**
  *  shortcut class for Vertex AutoAttribute (Handler)
  */
-template <typename T, typename MAP>
-class VertexAutoAttribute : public VertexAttribute<T, MAP>
+template <typename T, typename MAP, class AttributeAccessorPolicy = AttributeAccessorDefault<T,VERTEX,MAP> >
+class VertexAutoAttribute : public AttributeHandler<T, VERTEX, MAP, AttributeAccessorPolicy >
 {
 public:
 	VertexAutoAttribute(MAP& m, const std::string& nameAttr = "")

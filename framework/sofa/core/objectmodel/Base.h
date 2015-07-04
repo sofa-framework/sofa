@@ -39,12 +39,18 @@
 #include <sofa/core/objectmodel/Tag.h>
 
 #include <boost/intrusive_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include <string>
 #include <map>
 
 namespace sofa
 {
+
+namespace helper
+{
+class Logger;
+}
 
 namespace core
 {
@@ -277,6 +283,13 @@ public:
     void clearOutputs();
 
     void processStream(std::ostream& out);
+
+    /// @brief Get the logger used to process the messages sent to the sout and serr streams of components.
+    static helper::Logger& getComponentLogger();
+    /// @brief Change the logger used to process the messages sent to the sout and serr streams of components.
+    static void setComponentLogger(boost::shared_ptr<helper::Logger> logger);
+private:
+    static boost::shared_ptr<helper::Logger> s_componentLogger;
 
     /// @}
 

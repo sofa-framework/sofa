@@ -125,10 +125,12 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         self.param.showOffset=False
         self.param.showOffsetScale=0.1 # SI unit (m)    
 
-    def insertMergeRigid(self, mergeNode, tag="rigid"):
+    def insertMergeRigid(self, mergeNodeName="dofRigid", tag="rigid" ):
         """ Merge all the rigids in a single MechanicalObject using a SubsetMultiMapping
         optionnaly give a tag to select the rigids which are merged
-        return the list of merged rigids id"""
+        return the created node"""
+
+        mergeNode = None
 
         rigidsId = list() # keep track of merged rigids, rigid index and rigid id
         input=""
@@ -139,14 +141,17 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
                     print "[Compliant.sml.SceneArticulatedRigid.insertMergeRigid] WARNING: "+solid.name+" is not a rigid"
                     continue
                 rigid = self.rigids[solid.id]
-                rigid.node.addChild(mergeNode)
+                if mergeNode is None:
+                    mergeNode = rigid.node.createChild(mergeNodeName)
+                else:
+                    rigid.node.addChild(mergeNode)
                 input += '@'+rigid.node.getPathName()+" "
                 indexPairs += str(len(rigidsId)) + " 0 "
                 rigidsId.append(solid.id)
         if input:
             mergeNode.createObject("MechanicalObject", template = "Rigid3d", name="dofs")
             mergeNode.createObject('SubsetMultiMapping', template = "Rigid3d,Rigid3d", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
-        return rigidsId
+        return mergeNode
 
     def createScene(self):
         self.node.createObject('RequiredPlugin', name = 'Flexible' )
@@ -163,21 +168,23 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         for jointModel in self.model.genericJoints.values():
             self.joints[jointModel.id] = insertJoint(jointModel, self.rigids, self.param)
 
-class SceneSkinning(SceneArticulatedRigid) :
+
+# broken, needs to be updated later
+#class SceneSkinning(SceneArticulatedRigid) :
     
-    def __init__(self, parentNode, model):
-        SceneArticulatedRigid.__init__(self, parentNode, model)
-        self.deformables = dict()
+    #def __init__(self, parentNode, model):
+        #SceneArticulatedRigid.__init__(self, parentNode, model)
+        #self.deformables = dict()
         
-    def createScene(self):
-        SceneArticulatedRigid.createScene(self)
+    #def createScene(self):
+        #SceneArticulatedRigid.createScene(self)
         
-        # all rigids (bones) must be gathered in a single node
-        self.createChild(self.node, "armature")
-        bonesId = self.insertMergeRigid(self.nodes["armature"], "armature")
-        #deformable
-        for solidModel in self.model.solids.values():
-            if len(solidModel.skinnings)>0:
-                self.deformables[solidModel.id]=Flexible.sml.insertDeformableWithSkinning(self.node, solidModel, self.nodes["armature"].getPathName(), bonesId)
+        ## all rigids (bones) must be gathered in a single node
+        #self.createChild(self.node, "armature")
+        #bonesId = self.insertMergeRigid(self.nodes["armature"], "armature")
+        ##deformable
+        #for solidModel in self.model.solids.values():
+            #if len(solidModel.skinnings)>0:
+                #self.deformables[solidModel.id]=Flexible.sml.insertDeformableWithSkinning(self.node, solidModel, self.nodes["armature"].getPathName(), bonesId)
         
         

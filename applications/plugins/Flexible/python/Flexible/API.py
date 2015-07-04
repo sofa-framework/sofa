@@ -151,13 +151,12 @@ class Deformable:
 
 
 class AffineMass:
-    def __init__(self, node, dofAffineNode):
-        self.node = node # a children node of all nodes and shape function
+    def __init__(self, dofAffineNode):
         self.dofAffineNode = dofAffineNode # where the mechanical state is located
         self.mass = None
 
-    def massFromDensityImage(self, dofRigidNode, densityImage, lumping='0'):
-        node = self.node.createChild('Mass')
+    def massFromDensityImage(self, dofNode, dofRigidNode, densityImage, lumping='0'):
+        node = dofNode.createChild('Mass')
         dof = node.createObject('MechanicalObject', name='massPoints', template='Vec3d')
         insertLinearMapping(node, dofRigidNode, self.dofAffineNode, dof, assemble=False)
         densityImage.addBranchingToImage('0') # MassFromDensity on branching images does not exist yet
@@ -172,11 +171,13 @@ class AffineMass:
 
     def read(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
-        data = dict()
-        with open(filename,'r') as f:
-            data.update(json.load(f))
-        self.mass = self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix=data['massMatrix'])
-        print 'Imported Affine Mass from '+filename
+
+        if os.path.isfile(filename):
+            data = dict()
+            with open(filename,'r') as f:
+                data.update(json.load(f))
+            self.mass = self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix=data['massMatrix'])
+            print 'Imported Affine Mass from '+filename
 
     def write(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
@@ -217,11 +218,12 @@ class AffineDof:
 
     def read(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
-        data = dict()
-        with open(filename,'r') as f:
-            data.update(json.load(f))
-        self.dof = self.node.createObject("MechanicalObject", template="Affine", name="dofs", position=data['position'], rest_position=data['rest_position'])
-        print 'Imported Affine Dof from '+filename
+        if os.path.isfile(filename):
+            data = dict()
+            with open(filename,'r') as f:
+                data.update(json.load(f))
+            self.dof = self.node.createObject("MechanicalObject", template="Affine", name="dofs", position=data['position'], rest_position=data['rest_position'])
+            print 'Imported Affine Dof from '+filename
 
     def write(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
@@ -239,17 +241,17 @@ class ShapeFunction:
         self.node = node
         self.shapeFunction=None
    
-    def addVoronoi(self, image, position=None, cells=''):
-        """ Add a Voronoi shape function using position from position component and BranchingImage image
+    def addVoronoi(self, image, position='', cells='', nbRef=8):
+        """ Add a Voronoi shape function using path to position  and possibly cells
         """
-        if position is None:
+        if position =='':
             print "[Flexible.API.ShapeFunction] ERROR: no position"
         imagePath = SofaPython.Tools.getObjectPath(image.branchingImage)
         self.shapeFunction = self.node.createObject(
             "VoronoiShapeFunction", template="ShapeFunctiond,"+"Branching"+image.imageType, 
-            name="shapeFunction", cells=cells,
-            position="@"+SofaPython.Tools.getObjectPath(position)+".position",
-            src="@"+imagePath, method=0, nbRef=8, bias=True)
+            name="shapeFunction", cell=cells,
+            position=position,
+            src="@"+imagePath, method=0, nbRef=nbRef, bias=True)
    
     def getFilenameIndices(self, filenamePrefix=None, directory=""):
         _filename=filenamePrefix if not filenamePrefix is None else "SF"
@@ -339,6 +341,9 @@ class Behavior:
         with open(filename,'r') as f:
             data.update(json.load(f))
         self.sampler = self.node.createObject('GaussPointContainer',name='GPContainer', volumeDim=data['volumeDim'], inputVolume=data['inputVolume'], position=data['position'])
+        if not self.labelImage is None and not self.labels is None:
+            celloffsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+SofaPython.Tools.getObjectPath(self.sampler)+".position", src="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage), labels=concat(self.labels))
+            self.cell = "@"+SofaPython.Tools.getObjectPath(celloffsets)+".cell"
         print 'Imported Gauss Points from '+filename
 
     def write(self, filenamePrefix=None, directory=""):

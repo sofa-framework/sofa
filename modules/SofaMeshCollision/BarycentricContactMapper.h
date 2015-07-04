@@ -223,7 +223,7 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_CPP)
 //extern template class SOFA_MESH_COLLISION_API ContactMapper<SphereModel>;
 //extern template class SOFA_MESH_COLLISION_API ContactMapper<PointModel>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<LineModel>;

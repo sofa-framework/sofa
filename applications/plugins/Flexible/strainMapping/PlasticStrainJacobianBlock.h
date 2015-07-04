@@ -86,12 +86,12 @@ public:
         // eventually remove a part of the strain to simulate plasticity
 
         // could be optimized by storing the computation of the previous time step
-        StrainMat plasticStrainMat = StrainVoigtToMat( _plasticStrain.getStrain() ) + StrainMat::Identity();
+        StrainMat plasticStrainMat = StrainVoigtToMat( _plasticStrain.getStrain() ) + StrainMat::s_identity;
         StrainMat plasticStrainMatInverse; plasticStrainMatInverse.invert( plasticStrainMat );
 
         // elasticStrain = totalStrain * plasticStrain^-1
-        StrainMat elasticStrainMat = ( StrainVoigtToMat( data.getStrain() ) + StrainMat::Identity() ) * plasticStrainMatInverse;
-        StrainVec elasticStrainVec = StrainMatToVoigt( elasticStrainMat - StrainMat::Identity() );
+        StrainMat elasticStrainMat = ( StrainVoigtToMat( data.getStrain() ) + StrainMat::s_identity ) * plasticStrainMatInverse;
+        StrainVec elasticStrainVec = StrainMatToVoigt( elasticStrainMat - StrainMat::s_identity );
 
         // if( ||elasticStrain||  > c_yield ) plasticStrain += dt * c_creep * dt * elasticStrain
         if( elasticStrainVec.norm2() > squaredYield )
@@ -102,12 +102,12 @@ public:
         if( plasticStrainNorm2 > max*max )
             _plasticStrain.getStrain() *= max / helper::rsqrt( plasticStrainNorm2 );
 
-        plasticStrainMat = StrainVoigtToMat( _plasticStrain.getStrain() ) + StrainMat::Identity();
+        plasticStrainMat = StrainVoigtToMat( _plasticStrain.getStrain() ) + StrainMat::s_identity;
 
         // remaining elasticStrain = totalStrain * plasticStrain^-1
         plasticStrainMatInverse.invert( plasticStrainMat );
-        elasticStrainMat = ( StrainVoigtToMat( data.getStrain() ) + StrainMat::Identity() ) * plasticStrainMatInverse;
-        elasticStrainVec = StrainMatToVoigt( elasticStrainMat - StrainMat::Identity() );
+        elasticStrainMat = ( StrainVoigtToMat( data.getStrain() ) + StrainMat::s_identity ) * plasticStrainMatInverse;
+        elasticStrainVec = StrainMatToVoigt( elasticStrainMat - StrainMat::s_identity );
 
         result.getStrain() += elasticStrainVec;
     }
@@ -146,7 +146,7 @@ public:
 
     MatBlock getJ()
     {
-        return MatBlock::Identity();
+        return MatBlock::s_identity;
     }
 
     KBlock getK(const OutDeriv& /*childForce*/, bool=false)
@@ -217,12 +217,12 @@ public:
 //        // eventually remove a part of the strain to simulate plasticity
 
 //        // could be optimized by storing the computation of the previous time step
-//        StrainMat plasticStrainMat = PrincipalStretchesToMat( _plasticStrain.getStrain() ) + StrainMat::Identity();
+//        StrainMat plasticStrainMat = PrincipalStretchesToMat( _plasticStrain.getStrain() ) + StrainMat::s_identity;
 //        StrainMat plasticStrainMatInverse; plasticStrainMatInverse.invert( plasticStrainMat );
 
 //        // elasticStrain = totalStrain * plasticStrain^-1
-//        StrainMat elasticStrainMat = ( PrincipalStretchesToMat( data.getStrain() ) + StrainMat::Identity() ) * plasticStrainMatInverse;
-//        StrainVec elasticStrainVec = MatToPrincipalStretches( elasticStrainMat - StrainMat::Identity() );
+//        StrainMat elasticStrainMat = ( PrincipalStretchesToMat( data.getStrain() ) + StrainMat::s_identity ) * plasticStrainMatInverse;
+//        StrainVec elasticStrainVec = MatToPrincipalStretches( elasticStrainMat - StrainMat::s_identity );
 
 //        // if( ||elasticStrain||  > c_yield ) plasticStrain += dt * c_creep * dt * elasticStrain
 //        if( elasticStrainVec.norm2() > squaredYield )
@@ -233,12 +233,12 @@ public:
 //        if( plasticStrainNorm2 > max*max )
 //            _plasticStrain.getStrain() *= max / helper::rsqrt( plasticStrainNorm2 );
 
-//        plasticStrainMat = PrincipalStretchesToMat( _plasticStrain.getStrain() ) + StrainMat::Identity();
+//        plasticStrainMat = PrincipalStretchesToMat( _plasticStrain.getStrain() ) + StrainMat::s_identity;
 
 //        // remaining elasticStrain = totalStrain * plasticStrain^-1
 //        plasticStrainMatInverse.invert( plasticStrainMat );
-//        elasticStrainMat = ( PrincipalStretchesToMat( data.getStrain() ) + StrainMat::Identity() ) * plasticStrainMatInverse;
-//        elasticStrainVec = MatToPrincipalStretches( elasticStrainMat - StrainMat::Identity() );
+//        elasticStrainMat = ( PrincipalStretchesToMat( data.getStrain() ) + StrainMat::s_identity ) * plasticStrainMatInverse;
+//        elasticStrainVec = MatToPrincipalStretches( elasticStrainMat - StrainMat::s_identity );
 
 //        result.getStrain() += elasticStrainVec;
 //    }

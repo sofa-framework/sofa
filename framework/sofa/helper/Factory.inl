@@ -29,9 +29,7 @@
 #include <iostream>
 #include <typeinfo>
 
-// added by Sylvere F.
-// this inclusion must be done but not in this part of code. For the moment, I don't know where ;)
-#include <string>
+#include <sofa/helper/Logger.h>
 #include <sofa/helper/vector.h>
 
 namespace sofa
@@ -124,14 +122,13 @@ bool Factory<TKey, TObject, TArgument, TPtr>::duplicateEntry( Key existing, Key 
 {
     if( !hasKey(existing) )
     {
-        std::cerr << "ERROR: entry " << existing << " unknown in factory." << std::endl;
+        Logger::getMainLogger().log(Logger::Error, std::string("Key not found: ") + existing, "Factory::duplicateEntry()");
         return false;
     }
 
     if( hasKey(duplicate) )
     {
-        std::cerr << "ERROR: Cannot duplicate "<< duplicate << ", it already exists." << std::endl;
-        std::cerr << "ERROR: must call resetEntry(" << duplicate << "," << existing << ") first." << std::endl;
+        Logger::getMainLogger().log(Logger::Error, std::string("Key already exists: ") + duplicate + ", you must call resetEntry(" + duplicate + "," + existing + ") first.", "Factory::duplicateEntry()");
         return false;
     }
 
@@ -157,7 +154,7 @@ bool Factory<TKey, TObject, TArgument, TPtr>::resetEntry( Key existingKey)
 {
     if( !hasKey(existingKey) )
     {
-        std::cerr << "ERROR: Cannot reset entry " << existingKey << ", it does not exist." << std::endl;
+        Logger::getMainLogger().log(Logger::Error, std::string("Key not found: ") + existingKey, "Factory::resetEntry()");
         return false;
     }
 

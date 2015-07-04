@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_SIMULATION_MECHANICALVISITOR_CPP
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/Node.h>
 #include <iostream>

@@ -86,6 +86,7 @@ Node::SPtr Simulation::sRoot = NULL;
 using namespace sofa::defaulttype;
 Simulation::Simulation()
 {
+    name.setValue("Simulation");
 }
 
 
@@ -153,7 +154,7 @@ void Simulation::exportGraph ( Node* root, const char* filename )
     else
     {
         // unable to write the file
-        std::cerr << "Simulation::exportGraph : Error : extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled for export" << std::endl;
+        serr << "exportGraph : Error : extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled for export" << sendl;
     }
 }
 
@@ -449,7 +450,7 @@ Node::SPtr Simulation::load ( const char *filename )
     }
 
     // unable to load file
-    std::cerr << "Simulation : Error : extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled" << std::endl;
+    serr << "Error : extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled" << sendl;
     return NULL;
 }
 

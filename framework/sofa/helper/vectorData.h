@@ -40,7 +40,7 @@ namespace helper
 
 /** A helper class which implements a vector of a variable number of data
  *
- * @todo when the component is a DataEngine, the data are added as automatically inputs
+ * @todo when the component is a DataEngine, the data are automatically added as  inputs or outputs
  *
  * @author Thomas Lemaire @date 2014
  */
@@ -50,11 +50,14 @@ class vectorData : public vector< core::objectmodel::Data<T>* > {
 public:
     typedef vector< core::objectmodel::Data<T>* > Inherit;
 
-    vectorData(core::objectmodel::Base* component, std::string const& name, std::string const& help)
+    vectorData(core::objectmodel::Base* component, std::string const& name, std::string const& help, const bool isInput=true, const T& defaultValue=T())
         : m_component(component)
         , m_name(name)
         , m_help(help)
+        , m_isInput(isInput)
+        , m_defaultValue(defaultValue)
     { }
+
 
     ~vectorData()
     {
@@ -62,7 +65,10 @@ public:
         for (unsigned int i=0; i<this->size(); ++i)
         {
             if (componentAsDataEngine!=NULL)
-                componentAsDataEngine->delInput((*this)[i]);
+            {
+                if(m_isInput) componentAsDataEngine->delInput((*this)[i]);
+                else componentAsDataEngine->delOutput((*this)[i]);
+            }
             delete (*this)[i];
         }
         this->clear();
@@ -73,7 +79,7 @@ public:
         const char* p = arg->getAttribute(size.getName().c_str());
         if (p) {
             std::string nbStr = p;
-//            sout << "parse: setting " << size.getName() << "="<<nbStr<<sendl;
+            //            sout << "parse: setting " << size.getName() << "="<<nbStr<<sendl;
             size.read(nbStr);
             resize(size.getValue());
         }
@@ -86,20 +92,23 @@ public:
         if (it != str.end() && it->second)
         {
             std::string nbStr = *it->second;
-//            sout << "parseFields: setting "<< size.getName() << "=" <<nbStr<<sendl;
+            //            sout << "parseFields: setting "<< size.getName() << "=" <<nbStr<<sendl;
             size.read(nbStr);
             resize(size.getValue());
         }
     }
 
-    void resize(unsigned int size)
+    void resize(const unsigned int size)
     {
         core::DataEngine* componentAsDataEngine = dynamic_cast<core::DataEngine*>(m_component);
         if (size < this->size()) {
             // some data if size is inferior than current size
             for (unsigned int i=size; i<this->size(); ++i) {
                 if (componentAsDataEngine!=NULL)
-                    componentAsDataEngine->delInput((*this)[i]);
+                {
+                    if(m_isInput) componentAsDataEngine->delInput((*this)[i]);
+                    else componentAsDataEngine->delOutput((*this)[i]);
+                }
                 delete (*this)[i];
             }
             Inherit::resize(size);
@@ -108,20 +117,25 @@ public:
             std::ostringstream oname, ohelp;
             oname << m_name << (i+1);
             ohelp << m_help << "(" << (i+1) << ")";
-            Data< T >* d = new Data< T >(ohelp.str().c_str(), true, false);
+            Data< T >* d = new Data< T >(m_defaultValue, ohelp.str().c_str(), true, false);
             d->setName(oname.str());
             this->push_back(d);
             if (m_component!=NULL)
                 m_component->addData(d);
             if (componentAsDataEngine!=NULL)
-                componentAsDataEngine->addInput(d);
+            {
+                if(m_isInput)  componentAsDataEngine->addInput(d);
+                else  componentAsDataEngine->addOutput(d);
+            }
+
         }
     }
 
 protected:
     core::objectmodel::Base* m_component;
     std::string m_name, m_help;
-
+    bool m_isInput;
+    T m_defaultValue;
 };
 
 } // namespace helper
