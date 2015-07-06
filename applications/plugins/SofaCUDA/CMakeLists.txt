@@ -248,8 +248,8 @@ if(SOFACUDA_CUDPP)
 endif()
 
 # Note: THRUST is included in CUDA SDK 4.0+, it is recommended to use it if available
-option(SOFACUDA_THRUST "Activate THRUST (for RadixSort)" ON)
-if(SOFACUDA_USE_THRUST)
+option(SOFACUDA_THRUST "Activate THRUST (for RadixSort)." ON)
+if(SOFACUDA_THRUST)
     set(SOFACUDA_COMPILE_DEFINITIONS "${SOFACUDA_COMPILE_DEFINITIONS} -DSOFA_GPU_THRUST")
     target_link_libraries(${PROJECT_NAME} thrust)
 endif()
