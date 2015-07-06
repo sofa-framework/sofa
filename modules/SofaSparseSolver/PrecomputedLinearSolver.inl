@@ -89,7 +89,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& , TVector& z, TVe
 }
 
 template<class TMatrix,class TVector>
-void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
+void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& /*M*/)
 {
     systemSize = this->currentGroup->systemMatrix->rowSize();
     internalData.Minv.resize(systemSize,systemSize);

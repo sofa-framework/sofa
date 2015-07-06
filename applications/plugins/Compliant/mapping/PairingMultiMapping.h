@@ -70,7 +70,7 @@ protected:
 
 
 
-    void assemble_geometric(const vector<typename self::const_in_coord_type>& in_pos,
+    void assemble_geometric(const vector<typename self::const_in_coord_type>& /*in_pos*/,
                             const typename self::const_out_deriv_type& out_force) {
         typedef typename self::geometric_type::CompressedMatrix matrix_type;
         matrix_type& dJ = this->geometric.compressedMatrix;

@@ -88,8 +88,8 @@ public:
     Data<SeqTetrahedra> f_tetrahedron; ///< output tetrahedra
     Data<SeqHexahedra> f_hexahedron; ///< output hexahedron
     Data<Real > f_length; /// length of each cube 
-	Data<Real > f_width; /// width of each cube
-	Data<Real > f_height; /// height of each cube
+    Data<Real > f_height; /// height of each cube
+    Data<Real > f_width; /// width of each cube
     Data<Coord> f_origin; /// origin
     Data<size_t> f_resolutionLength; /// number of cubes in the length direction
     Data<size_t> f_resolutionWidth; /// number of cubes in the width direction
