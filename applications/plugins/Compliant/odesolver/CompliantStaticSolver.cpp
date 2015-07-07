@@ -326,7 +326,7 @@ public:
 
     core::MultiVecId id;
     
-    Result mstate(simulation::Node* node,
+    Result mstate(simulation::Node* /*node*/,
                   core::behavior::BaseMechanicalState* mm) {
 
         // add force to external force

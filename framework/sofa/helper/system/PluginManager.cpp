@@ -63,6 +63,7 @@ const char* Plugin::GetModuleLicense::symbol          = "getModuleLicense";
 const char* Plugin::GetModuleName::symbol             = "getModuleName";
 const char* Plugin::GetModuleVersion::symbol          = "getModuleVersion";
 
+std::string PluginManager::s_gui_postfix = "gui";
 
 PluginManager & PluginManager::getInstance()
 {

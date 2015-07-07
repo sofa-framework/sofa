@@ -44,7 +44,7 @@ class SOFA_HELPER_API Logger
 {
 public:
     typedef boost::shared_ptr<Logger> SPtr;
-    enum Level {All, Debug, Info, Warning, Error, Off, LevelCount};
+    enum Level {All, Debug, Info, Warning, Error, Exception, Off, LevelCount};
 
     Logger();
     virtual ~Logger();

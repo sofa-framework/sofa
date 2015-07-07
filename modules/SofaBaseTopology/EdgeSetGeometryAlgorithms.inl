@@ -141,7 +141,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
 	double varray[6];
 	double warray[6],warray0;
 	size_t nbIPs=3;
-	size_t order=6;
+//	size_t order=6;
 	size_t i;
 
 	qpa.clear();
