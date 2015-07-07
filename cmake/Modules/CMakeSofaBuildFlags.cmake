@@ -23,7 +23,7 @@ elseif(CMAKE_BUILD_TYPE MATCHES "Release")
         set(CMAKE_CXX_FLAGS_RELEASE
             "${CXX_OPTIMIZATION_FLAGS} ${CXX_WARNING_FLAGS} ${CXX_ARCH_FLAGS} ${CXX_STACKPROTECTOR_FLAGS} ${CXX_FORTIFYSOURCE_FLAGS}"
             CACHE STRING "Flags used by the compiler in Release builds" FORCE)
-        # disable partial inlining under gcc 4.6
+        # disable partial inlining under gcc 4.6 (Why?)
         if("${GCXX_VERSION}" VERSION_EQUAL 4.6)
             set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-partial-inlining")
         endif()
