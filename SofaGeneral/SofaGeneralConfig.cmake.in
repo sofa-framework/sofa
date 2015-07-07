@@ -9,6 +9,8 @@ set(SOFAGENERAL_INCLUDE_DIR "@PACKAGE_SOFAGENERAL_INCLUDE_DIR@")
 
 # Transitive dependencies
 find_package(SofaCommon REQUIRED)
+find_package(Newmat)
+find_package(CSparse)
 
 set(SOFA_HAVE_NEWMAT @SOFA_HAVE_NEWMAT@)
 set(SofaGeneral_TARGETS @SOFAGENERAL_TARGETS@)

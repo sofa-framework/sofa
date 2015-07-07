@@ -29,7 +29,10 @@ set(SOFAGUI_INSTALL_CMAKE_DIR ${SOFAGUI_INSTALL_LIB_DIR}/cmake/SofaGui)
 ## SofaGui dependencies
 ##
 find_package(SofaGeneral REQUIRED)
-set(SOFAGUI_DEPENDENCY_DIR ${SofaGeneral_INCLUDE_DIRS})
+find_package(SofaMisc REQUIRED)
+find_package(SofaAdvanced REQUIRED)
+find_package(QGLViewer REQUIRED)
+set(SOFAGUI_DEPENDENCY_DIR ${SofaGeneral_INCLUDE_DIRS} ${SofaMisc_INCLUDE_DIRS} ${SofaAdvanced_INCLUDE_DIRS})
 
 set(QT_USE_IMPORTED_TARGETS 1)
 set(QT4_NO_LINK_QTMAIN 1)

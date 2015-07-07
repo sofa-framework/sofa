@@ -10,6 +10,7 @@ set(SofaGUI_TARGETS @SOFAGUI_TARGETS@)
 
 # Transitive dependencies
 find_package(SofaGeneral REQUIRED)
+find_package(QGLViewer REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(SofaAdvanced REQUIRED)
 
