@@ -70,10 +70,12 @@ configure_file(etc/sofa.ini.in ${CMAKE_BINARY_DIR}/etc/sofa.ini)
 set(SHARE_DIR ../share/sofa)
 set(EXAMPLES_DIR ../share/sofa/examples)
 configure_file(etc/sofa.ini.in ${CMAKE_BINARY_DIR}/etc/installedSofa.ini)
-
 install(FILES ${CMAKE_BINARY_DIR}/etc/installedSofa.ini
         DESTINATION etc
         RENAME sofa.ini)
+
+# Temporary (todo: think about this typedef thing)
+install(DIRECTORY "modules/sofa/component/typedef/" DESTINATION include/sofa/component/typedef)
 
 ### Extlibs
 
