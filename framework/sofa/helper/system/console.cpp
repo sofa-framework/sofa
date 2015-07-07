@@ -131,19 +131,5 @@ namespace helper {
         return s_colorsStatus;
     }
 
-
-    SOFA_HELPER_API std::ostream& operator<<(std::ostream& stream, Console::LogPrefix prefix)
-    {
-        switch (prefix)
-        {
-            case Console::InfoPrefix:
-                return stream << Console::BRIGHT_GREEN << "[INFO]" << Console::DEFAULT_COLOR << " ";
-            case Console::WarningPrefix:
-                return stream << Console::BRIGHT_RED << "[WARN]" << Console::DEFAULT_COLOR << " ";
-            default:
-                return stream;
-        }
-    }
-
 }
 }
