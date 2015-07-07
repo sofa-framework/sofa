@@ -3,7 +3,6 @@
 #ifndef LABELBOXIMAGETOOLBOX_H
 #define LABELBOXIMAGETOOLBOX_H
 
-#include <sofa/component/component.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>

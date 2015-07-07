@@ -181,23 +181,15 @@ class Model:
             self.group=None
             self.image=None
 
-    class ContactSliding:
-        def __init__(self,xml):
-            parseIdName(self,xml)
+    class SurfaceLink:
+        def __init__(self,objXml):
+            self.tags = set()
+            parseIdName(self,objXml)
+            parseTag(self,objXml)
             self.surfaces = [None,None]
             self.distance=None
-            if xml.find("distance"):
-                self.distance=float(xml.findText("distance"))
-    
-    class ContactAttached:
-        def __init__(self,xml):
-            parseIdName(self,xml)
-            self.surfaces = [None,None]
-
-    class Registration:
-        def __init__(self,xml):
-            parseIdName(self,xml)
-            self.surfaces = [None,None]
+            if objXml.find("distance"):
+                self.distance=float(objXml.findText("distance"))
 
     dofIndex={"x":0,"y":1,"z":2,"rx":3,"ry":4,"rz":5}
     
@@ -208,10 +200,9 @@ class Model:
         self.meshes=dict()
         self.solids=dict()
         self.solidsByTag=dict()
+        self.surfaceLinksByTag=dict()
         self.genericJoints=dict()
-        self.slidingContacts=dict()
-        self.attachedContacts=dict()
-        self.registrations=dict()
+        self.surfaceLinks=dict()
 
         if not filename is None:
             self.open(filename)
@@ -267,80 +258,37 @@ class Model:
                         solid.skinnings.append(skinning)
 
                 self.solids[solid.id]=solid
-            self.updateTag()
 
             # joints
             self.parseJointGenerics(modelXml)
                 
             # contacts
-            for c in modelXml.iter("contactSliding"):
-                if c.attrib["id"] in self.slidingContacts:
-                    print "ERROR: sml.Model: contactSliding defined twice, id:", c.attrib["id"]
+            for c in modelXml.iter("surfaceLink"):
+                if c.attrib["id"] in self.surfaceLinks:
+                    print "ERROR: sml.Model: surfaceLink defined twice, id:", c.attrib["id"]
                     continue
-                contact = Model.ContactSliding(c)
+                surfaceLink = Model.SurfaceLink(c)
                 surfaces=c.findall("surface")
                 for i,s in enumerate(surfaces):
-                    contact.surfaces[i] = Model.Surface()
+                    surfaceLink.surfaces[i] = Model.Surface()
                     if s.attrib["solid"] in self.solids:
-                        contact.surfaces[i].solid = self.solids[s.attrib["solid"]]
+                        surfaceLink.surfaces[i].solid = self.solids[s.attrib["solid"]]
                     else:
-                        print "ERROR: sml.Model: in contact {0}, unknown solid {1} referenced".format(contact.name, s.attrib["solid"])
+                        print "ERROR: sml.Model: in contact {0}, unknown solid {1} referenced".format(surfaceLink.name, s.attrib["solid"])
                     if s.attrib["mesh"] in self.meshes:
-                        contact.surfaces[i].mesh = self.meshes[s.attrib["mesh"]]
+                        surfaceLink.surfaces[i].mesh = self.meshes[s.attrib["mesh"]]
                     else:
-                        print "ERROR: sml.Model: in contact {0}, unknown mesh {1} referenced".format(contact.name, s.attrib["mesh"])
+                        print "ERROR: sml.Model: in contact {0}, unknown mesh {1} referenced".format(surfaceLink.name, s.attrib["mesh"])
                     if "group" in s.attrib: # optional
                         if len(s.attrib["group"]): # discard empty string
-                            contact.surfaces[i].group = s.attrib["group"]
-                self.slidingContacts[contact.id]=contact
-
-            for c in modelXml.iter("contactAttached"):
-                if c.attrib["id"] in self.attachedContacts:
-                    print "ERROR: sml.Model: contactAttached defined twice, id:", c.attrib["id"]
-                    continue
-                contact = Model.ContactAttached(c)
-                surfaces=c.findall("surface")
-                for i,s in enumerate(surfaces):
-                    contact.surfaces[i] = Model.Surface()
-                    if s.attrib["solid"] in self.solids:
-                        contact.surfaces[i].solid = self.solids[s.attrib["solid"]]
-                    else:
-                        print "ERROR: sml.Model: in contact {0}, unknown object {1} referenced".format(contact.name, s.attrib["solid"])
-                    if s.attrib["mesh"] in self.meshes:
-                        contact.surfaces[i].mesh = self.meshes[s.attrib["mesh"]]
-                    else:
-                        print "ERROR: sml.Model: in contact {0}, unknown mesh {1} referenced".format(contact.name, s.attrib["mesh"])
-                    if "group" in s.attrib: # optional
-                        if len(s.attrib["group"]): # discard empty string
-                            contact.surfaces[i].group = s.attrib["group"]
-                self.attachedContacts[contact.id]=contact
-
-            # registrations
-            for c in modelXml.iter("registration"):
-                if c.attrib["id"] in self.registrations:
-                    print "ERROR: sml.Model: registration defined twice, id:", c.attrib["id"]
-                    continue
-                reg = Model.Registration(c)
-                surfaces=c.findall("surface")
-                for i,s in enumerate(surfaces):
-                    reg.surfaces[i] = Model.Surface()
-                    if s.attrib["solid"] in self.solids:
-                        reg.surfaces[i].solid = self.solids[s.attrib["solid"]]
-                    else:
-                        print "ERROR: sml.Model: in registration {0}, unknown solid {1} referenced".format(reg.name, s.attrib["solid"])
-                    if s.attrib["mesh"] in self.meshes:
-                        reg.surfaces[i].mesh = self.meshes[s.attrib["mesh"]]
-                    else:
-                        print "ERROR: sml.Model: in registration {0}, unknown mesh {1} referenced".format(reg.name, s.attrib["mesh"])
-                    if "group" in s.attrib: # optional
-                        if len(s.attrib["group"]): # discard empty string
-                            reg.surfaces[i].group = s.attrib["group"]
+                            surfaceLink.surfaces[i].group = s.attrib["group"]
 #                    if "image" in s.attrib: # optional
 #                        if len(s.attrib["image"]): # discard empty string
 #                            if s.attrib["image"] in self.images:
 #                               reg.surfaces[i].image = self.images[s.attrib["image"]]
-                self.registrations[reg.id]=reg
+                self.surfaceLinks[surfaceLink.id]=surfaceLink
 
+            self.updateTag()
 
     def parseUnits(self, modelXml):
         xmlUnits = modelXml.find("units")
@@ -382,15 +330,19 @@ class Model:
                 solid.tags.add(newTag)
         self.updateTag()
 
+    def _updateTag(self, objects, objectsByTag):
+        objectsByTag.clear()
+        for obj in objects.values():
+            for tag in obj.tags:
+                if not tag in objectsByTag:
+                    objectsByTag[tag]=list()
+                objectsByTag[tag].append(obj)
+
     def updateTag(self):
         """ Update internal Model tag structures
-        Call this method after you changed solids tag """
-        self.solidsByTag.clear()
-        for solid in self.solids.values():
-            for tag in solid.tags:
-                if not tag in self.solidsByTag:
-                    self.solidsByTag[tag]=list()
-                self.solidsByTag[tag].append(solid)
+        Call this method after you changed solids or surfaceLinks tag """
+        self._updateTag(self.solids, self.solidsByTag)
+        self._updateTag(self.surfaceLinks, self.surfaceLinksByTag)
 
 def insertVisual(parentNode, solid, color):
     node = parentNode.createChild("node_"+solid.name)

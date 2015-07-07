@@ -44,14 +44,14 @@ public:
 
     Data<SReal> sign;
 
-    virtual SReal getPotentialEnergy( const core::MechanicalParams* mparams,
+    virtual SReal getPotentialEnergy( const core::MechanicalParams* /*mparams*/,
                                       const DataVecCoord& x ) const {
         return sign.getValue() * x.getValue()[0][0];
     }
     
     virtual void addForce(const core::MechanicalParams *,
                           DataVecDeriv &f,
-                          const DataVecCoord &x,
+                          const DataVecCoord &/*x*/,
                           const DataVecDeriv &) {
         (*edit(f, false))[0][0] -= sign.getValue();
     }
@@ -62,8 +62,8 @@ public:
         // nothing lol
     }
 
-    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix,
-                               SReal kFact, unsigned int &offset ) {
+    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * /*matrix*/,
+                               SReal /*kFact*/, unsigned int &offset ) {
         // nothing lol
         ++offset;
     }

@@ -193,7 +193,7 @@ cuda_include_directories(${SOFA_INC_DIR})
 #Make these compiler definition available to nvcc
 if(WIN32)
 	add_definitions("-DWIN32")
-    set(WINDOWSOPTIONS "-MD")
+    set(WINDOWSOPTIONS "/MD")
 endif()
 
 add_definitions("-DSOFA_BUILD_GPU_CUDA")

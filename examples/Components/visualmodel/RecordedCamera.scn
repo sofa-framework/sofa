@@ -7,7 +7,7 @@
     <DefaultContactManager name="Response" response="default" />
     <TreeCollisionGroupManager name="Group" />
     <!-- <InteractiveCamera name="cam" position="0 0 0" lookAt="0 -1 1"/> -->
-    <RecordedCamera name="cam" position="0 10 0" rotationLookAt="0 30 0" rotationStartPoint="0 100 100" rotationCenter="0 100 0" listening="true" endTime="1000" drawRotation="1" />
+    <RecordedCamera name="cam" position="0 10 0" rotationLookAt="0 30 0" rotationStartPoint="0 100 100" rotationCenter="0 100 0" listening="true" endTime="1000" drawRotation="1" rotationMode="1" />
     <Node name="Model 3D">
         <OglModel name="VisualModel" texturename="textures/RustySteel.bmp" scaleTex="1 1" scale="10" translation="10 15 0" fileMesh="mesh/liver-smoothUV.obj" />
     </Node>

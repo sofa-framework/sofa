@@ -25,8 +25,6 @@
 
 #include "stdafx.h"
 #include "Mapping_test.h"
-//#include <sofa/component/init.h>
-//#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <Flexible/deformationMapping/TetrahedronVolumeMapping.h>
 #include <SofaBaseTopology/MeshTopology.h>

@@ -1,0 +1,37 @@
+<!-- Automatic incision example: incision path is define in: ./IncisionTrianglesProcess.txt -->
+<Node name="root" gravity="0 0 -50" dt="0.01">
+    <VisualStyle displayFlags="showVisual showWireframe" />
+    <DefaultPipeline name="default0" verbose="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager name="default1" response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <TreeCollisionGroupManager name="default2" />
+    <Node name="SquareGravity" gravity="0 0 0">
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="100" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true"/>
+        <MechanicalObject src="@loader" template="Vec3d" name="default4" scale3d="10 10 10" restScale="1" />
+        <TriangleSetTopologyContainer src="@loader" name="Triangle_topo" />
+        <TriangleSetTopologyModifier name="Modifier" />
+        <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+        <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+        <DiagonalMass template="Vec3d" name="default5" massDensity="1.5" />
+  	<BoxROI template="Vec3d" name="box_roi1" box="0 9.5 -0.5 10 10.5 0.5"/>
+        <FixedConstraint template="Vec3d" name="fixedConstraint1" indices="@box_roi1.indices"/>
+        <BoxROI template="Vec3d" name="box_roi2" box="0 -0.5 -0.5 10 0.5 0.5"/>
+        <FixedConstraint template="Vec3d" name="fixedConstraint1" indices="@box_roi2.indices"/>
+        <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.45" youngModulus="30000" />
+        <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="10000" damping="1" />
+        <TriangleModel name="default7" selfCollision="true" />
+        <Node name="edges">
+            <EdgeSetTopologyContainer name="Edge_topo" />
+            <EdgeSetTopologyModifier name="Modifier" />
+            <EdgeSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+            <EdgeSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawEdges="1" />
+            <Triangle2EdgeTopologicalMapping name="Mapping" input="@../Triangle_topo" output="@Edge_topo" />
+        </Node>
+        <VisualModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
+        <IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@." output="@Visual" />
+        <TopologicalChangeProcessor listening="1" filename="IncisionTrianglesProcess.txt" saveIndicesAtInit="true" printLog="false" draw="true" epsilonSnapPath="0.1" epsilonSnapBorder="0.5" />
+    </Node>
+</Node>

@@ -67,7 +67,7 @@ template <class DataTypes>
 ClosestPointRegistrationForceField<DataTypes>::ClosestPointRegistrationForceField(core::behavior::MechanicalState<DataTypes> *mm )
     : Inherit(mm)
     , ks(initData(&ks,(Real)100.0,"stiffness","uniform stiffness for the all springs."))
-    , kd(initData(&kd,(Real)5.0,"damping","uniform damping for the all springs."))
+    , kd(initData(&kd,(Real)0.0,"damping","uniform damping for the all springs."))
     , cacheSize(initData(&cacheSize,(unsigned int)5,"cacheSize","number of closest points used in the cache to speed up closest point computation."))
     , blendingFactor(initData(&blendingFactor,(Real)0,"blendingFactor","blending between projection (=0) and attraction (=1) forces."))
     , outlierThreshold(initData(&outlierThreshold,(Real)0,"outlierThreshold","suppress outliers when distance > (meandistance + threshold*stddev)."))
@@ -150,7 +150,7 @@ void ClosestPointRegistrationForceField<DataTypes>::initSource()
 {
     // build k-d tree
     const VecCoord&  p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    sourceKdTree.build(p);
+    if(p.size()) sourceKdTree.build(p);
 
     // detect border
     if(sourceBorder.size()!=p.size()) { sourceBorder.resize(p.size()); detectBorder(sourceBorder,sourceTriangles.getValue()); }
@@ -161,7 +161,7 @@ void ClosestPointRegistrationForceField<DataTypes>::initTarget()
 {
     // build k-d tree
     const VecCoord&  p = targetPositions.getValue();
-    targetKdTree.build(p);
+    if(p.size()) targetKdTree.build(p);
 
     // updatebbox
     for(unsigned int i=0;i<p.size();++i)    targetBbox.include(p[i]);
@@ -184,10 +184,10 @@ void ClosestPointRegistrationForceField<DataTypes>::updateClosestPoints()
     if(nbs!=closestSource.size()) {initSource();  closestSource.resize(nbs);	closestSource.fill(emptyset); cacheThresh_max.resize(nbs); cacheThresh_min.resize(nbs); previousX.assign(x.begin(),x.end());}
     if(nbt!=closestTarget.size()) {initTarget();  closestTarget.resize(nbt);	closestTarget.fill(emptyset);}
 
-    if(nbs==0 || nbt==0) return;
-
     this->sourceIgnored.resize(nbs); sourceIgnored.fill(false);
     this->targetIgnored.resize(nbt); targetIgnored.fill(false);
+
+    if(nbs==0 || nbt==0) return;
 
     // closest target points from source points
     if(blendingFactor.getValue()<1) {
@@ -334,7 +334,7 @@ void ClosestPointRegistrationForceField<DataTypes>::addForce(const core::Mechani
         }
         f[i]+=k*u;
         m_potentialEnergy += nrm2 * k * 0.5;
-        if(this->kd.getValue() && nrm2) f[i]-=this->kd.getValue()*u*dot(u,v[i])/u.norm2();
+        if(this->kd.getValue() && nrm2) f[i]-=this->kd.getValue()*u*dot(u,v[i])/nrm2;
     }
     _f.endEdit();
 

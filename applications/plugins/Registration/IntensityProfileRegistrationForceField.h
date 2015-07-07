@@ -127,22 +127,13 @@ public:
     Data < similarityTypes > similarity;
 	
     // mask for values outside images
+    Data < bool > maskOutside;
     cimg_library::CImg<bool> refMask;
     cimg_library::CImg<bool> mask;
     cimg_library::CImg<bool> similarityMask;
 
-    /*
-        The threshold for the signal between two 'edges'
-    */
-    Data<Real> edgeIntensityThreshold;
-
+    // use an anisotropic stiffness to cancel tangential stiffness
     Data<bool> useAnisotropicStiffness;
-
-    /*
-        True if the point should look for a change from high to low 
-        signal value in the direction of its normal.
-    */
-    Data<bool> highToLowSignal;
 
 	
 public:
@@ -187,31 +178,6 @@ protected :
     /// compute silarity image by convoluing current and reference profiles
     /// the width of the resulting image is 2*searchRange
     void udpateSimilarity();
-/*
-    Finds the closest change in signal for each point
-*/
-    void updateThresholdInfo();
-/*
-    Determines whether a point's signal at a given location is within the threshold range
-    @param signal the index of the location in the signal that we're interested in
-    @param point the index of the point we are considering
-    @return IN_OBJECT if the signal is within the threshold, IN_BACKGROUND if it is not
-*/
-    bool getSignalLocation(int signal, int point);
-
-    /*
-        Keeps the original location of each point at the start of each time step.
-    */
-    cimg_library::CImg<int> originalLocation;
-    /*
-        Holds the closest threshold change for each point
-    */
-    cimg_library::CImg<int> closestThreshold;
-    /*
-        True if the Threshold Registration algorithm is being used instead of 
-        the traditional Intensity Profile Registration.
-    */
-    bool usingThresholdFinding;
 
     Data< Vec<2,unsigned int> > Sizes;
     Data< Real > Step;

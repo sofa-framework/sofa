@@ -34,7 +34,6 @@
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/vectorData.h>
 
-#include <sofa/component/component.h>
 
 #ifdef _OPENMP
     #include <omp.h>

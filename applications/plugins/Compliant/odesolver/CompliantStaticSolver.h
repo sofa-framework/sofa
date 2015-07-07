@@ -92,18 +92,18 @@ class SOFA_Compliant_API CompliantStaticSolver : public sofa::core::behavior::Od
 
     Data<SReal> epsilon;
 
-    Data<bool> conjugate;
-    
-    Data<SReal> ls_precision;
-    Data<unsigned> ls_iterations;
-    Data<SReal> ls_step;
-
     Data<unsigned> line_search;
     enum {
         LS_NONE = 0,
         LS_BRENT,
         LS_SECANT
     };
+
+    Data<bool> conjugate;
+    
+    Data<SReal> ls_precision;
+    Data<unsigned> ls_iterations;
+    Data<SReal> ls_step;
 
     SReal augmented;
     

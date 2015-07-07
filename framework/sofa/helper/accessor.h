@@ -37,7 +37,7 @@ namespace helper
 
 /** A ReadAccessor is a proxy class, holding a reference to a given container
  *  and providing access to its data, using an unified interface (similar to
- *  std::vector), hiding API differences within some containers.
+ *  std::vector), hiding API differences within containers.
  *
  *  Other advantadges of using a ReadAccessor are :
  *
@@ -52,6 +52,7 @@ namespace helper
  *  The default implementation provides only minimal set of methods and
  *  operators, sufficient for scalar types but which should be overloaded for
  *  more complex types.
+ *  Various template specializations are typically used, especially for core::objectmodel::Data<T>
  */
 template<class T>
 class ReadAccessor
@@ -97,6 +98,7 @@ public:
  *  The default implementation provides only minimal set of methods and
  *  operators, sufficient for scalar types but which should be overloaded for
  *  more complex types.
+ *  Various template specializations are typically used, especially for core::objectmodel::Data<T>
  */
 template<class T>
 class WriteAccessor
@@ -144,7 +146,8 @@ public:
 };
 
 
-/// identical to WriteAccessor for default implementation
+/** Identical to WriteAccessor for default implementation, but different for some template specializations such as  core::objectmodel::Data<T>
+*/
 template<class T>
 class WriteOnlyAccessor : public WriteAccessor<T>
 {

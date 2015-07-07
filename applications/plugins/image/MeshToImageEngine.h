@@ -30,7 +30,6 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/IndexOpenMP.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/component/component.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -102,17 +101,17 @@ public:
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     helper::vectorData< SeqPositions > vf_positions;
 
-    typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
-    typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
-    typedef helper::ReadAccessor<Data< SeqTriangles > > raTriangles;
-    typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
-    helper::vectorData< SeqTriangles > vf_triangles;
-
     typedef typename core::topology::BaseMeshTopology::Edge Edge;
     typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef helper::ReadAccessor<Data< SeqEdges > > raEdges;
     typedef helper::WriteOnlyAccessor<Data< SeqEdges > > waEdges;
     helper::vectorData< SeqEdges > vf_edges;
+
+    typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
+    typedef helper::ReadAccessor<Data< SeqTriangles > > raTriangles;
+    typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
+    helper::vectorData< SeqTriangles > vf_triangles;
 
     typedef double ValueType;
     typedef helper::vector<ValueType> SeqValues;

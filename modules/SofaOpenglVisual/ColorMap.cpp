@@ -173,14 +173,6 @@ void ColorMap::initOld(const std::string &data)
 
 void ColorMap::init()
 {
-    // Prepare texture for legend
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_1D, texture);
-    //glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
     reinit();
 }
 
@@ -458,16 +450,33 @@ void ColorMap::prepareLegend()
         data[i*3+2] = (unsigned char)(c[2]*255);
     }
 
-    glBindTexture(GL_TEXTURE_1D, texture);
+    if (texture)
+    {
+        glBindTexture(GL_TEXTURE_1D, texture);
 
-    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB, width, 0, GL_RGB, GL_UNSIGNED_BYTE,
-        data);
+        glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB, width, 0, GL_RGB, GL_UNSIGNED_BYTE,
+            data);
+    }
 
     delete[] data;
 }
 
 void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
 {
+    // Prepare texture for legend
+    // crashes on mac in batch mode (no GL context)
+    if (vparams->isSupported(core::visual::API_OpenGL)
+        && !texture)
+    {
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_1D, texture);
+        //glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    }
+
+
     if (!f_showLegend.getValue()) return;
 
     //

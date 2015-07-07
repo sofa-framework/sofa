@@ -1,7 +1,6 @@
 #ifndef MESHDATAIMAGETOOLBOX_H
 #define MESHDATAIMAGETOOLBOX_H
 
-#include <sofa/component/component.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>
