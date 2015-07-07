@@ -9,6 +9,7 @@
 namespace sofa {
 namespace helper {
 
+    Console::ColorsStatus Console::s_colorsStatus = Console::ColorsDisabled;
 
 #ifdef WIN32
 
@@ -54,9 +55,22 @@ namespace helper {
     const Console::ColorType Console::BRIGHT_WHITE  = Console::ColorType(15);
     const Console::ColorType Console::DEFAULT_COLOR = initConsoleAndGetDefaultColor();
 
+    void Console::setColorsStatus(ColorsStatus status)
+    {
+        s_colorsStatus = status;
+    }
+
+    bool Console::shouldUseColors(std::ostream& stream)
+    {
+        // On Windows, colors are not handled with control characters, so we can
+        // probably always use them unless explicitely disabled.
+        return getColorsStatus() != ColorsDisabled;
+    }
+
     SOFA_HELPER_API std::ostream& operator<<( std::ostream& stream, Console::ColorType color )
     {
-        SetConsoleTextAttribute(s_console, color.value);
+        if (Console::shouldUseColors(stream))
+            SetConsoleTextAttribute(s_console, color.value);
         return stream;
     }
 
@@ -80,49 +94,42 @@ namespace helper {
     const Console::ColorType Console::BRIGHT_WHITE  = Console::ColorType("\033[1;37m");
     const Console::ColorType Console::DEFAULT_COLOR = Console::ColorType("\033[0m");
 
+    static bool s_stdoutIsRedirected = false;
+    static bool s_stderrIsRedirected = false;
+
+    void Console::setColorsStatus(ColorsStatus status)
+    {
+        s_colorsStatus = status;
+        // Check for redirections and save the result.  (This assumes that
+        // stdout and stderr won't be redirected in the middle of the execution
+        // of the program, which seems reasonable to me.)
+        s_stdoutIsRedirected = isatty(STDOUT_FILENO) == 0;
+        s_stderrIsRedirected = isatty(STDERR_FILENO) == 0;
+    }
+
+    bool Console::shouldUseColors(std::ostream& stream)
+    {
+        if (s_colorsStatus == Console::ColorsAuto)
+            return (stream == std::cout && !s_stdoutIsRedirected)
+                || (stream == std::cerr && !s_stderrIsRedirected);
+        else
+            return s_colorsStatus == Console::ColorsEnabled;
+    }
 
     std::ostream& operator<<( std::ostream& stream, Console::ColorType color )
     {
-        return ( stream << color.value );
-    }
-
-#endif
-
-
-    bool Console::colorsAllowedForInfo()
-    {
-#ifdef WIN32
-        return true;
-#else
-        return isatty(STDOUT_FILENO) != 0;
-#endif
-    }
-
-    bool Console::colorsAllowedForWarning()
-    {
-#ifdef WIN32
-        return true;
-#else
-        return isatty(STDERR_FILENO) != 0;
-#endif
-    }
-
-    std::ostream& Console::infoPrefix()
-    {
-    if (colorsAllowedForInfo())
-            return ( std::cout << BRIGHT_GREEN << "[INFO]" << DEFAULT_COLOR );
+        if (Console::shouldUseColors(stream))
+            return stream << color.value;
         else
-            return ( std::cout << "[INFO]" );
+            return stream;
     }
 
-    std::ostream& Console::warningPrefix()
+#endif
+
+    Console::ColorsStatus Console::getColorsStatus()
     {
-    if (colorsAllowedForWarning())
-            return ( std::cerr << BRIGHT_RED << "[WARN]" << DEFAULT_COLOR );
-        else
-            return ( std::cerr << "[WARN]" );
+        return s_colorsStatus;
     }
-
 
 }
 }

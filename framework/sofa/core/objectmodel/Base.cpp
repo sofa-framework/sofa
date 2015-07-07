@@ -24,10 +24,9 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/helper/system/console.h>
+#include <sofa/helper/Logger.h>
 #include <map>
 #include <typeinfo>
-
 #include <string.h>
 #include <sstream>
 
@@ -41,7 +40,6 @@ namespace objectmodel
 {
 
 using std::string;
-
 static const std::string unnamed_label=std::string("unnamed");
 
 Base::Base()
@@ -249,50 +247,56 @@ void Base::setName(const std::string& n, int counter)
 
 void Base::processStream(std::ostream& out)
 {
-    const std::string name = getName() + " (" + getClassName() + ")";
+    using sofa::helper::Logger;
+    const std::string name = getClassName() + " \"" + getName() + "\"";
 
     if (&out == &serr)
     {
-        serr << "\n";
         std::string str = serr.str();
+        serr << "\n";
 
-        helper::Console::warningPrefix();
-        if (helper::Console::colorsAllowedForWarning())
-            std::cerr << helper::Console::YELLOW << "[" << name << "]" << helper::Console::DEFAULT_COLOR << ": " << str;
-        else
-            std::cerr << "[" << name << "]: " << str;
+        getComponentLogger().log(Logger::Warning, str, name);
 
         if (warnings.size()+str.size() >= MAXLOGSIZE)
         {
-            std::cerr<< "LOG OVERFLOW[" << getName() << " (" << getClassName() << ")]: resetting serr buffer." << std::endl;
+            const std::string msg = "Log overflow! Resetting serr buffer.";
+            getComponentLogger().log(Logger::Warning, msg, name);
             warnings.clear();
-            warnings = "LOG EVERFLOW: resetting serr buffer\n";
+            warnings = msg;
         }
         warnings += str;
         serr.str("");
     }
     else if (&out == &sout)
     {
-        sout << "\n";
         std::string str = sout.str();
+        sout << "\n";
         if (f_printLog.getValue())
         {
-            helper::Console::infoPrefix();
-            if (helper::Console::colorsAllowedForInfo())
-                std::cout << helper::Console::YELLOW << "[" << name << "]" << helper::Console::DEFAULT_COLOR << ": ";
-            else
-                std::cout << "[" << name << "]: ";
-            std::cout << str << std::flush;
+            getComponentLogger().log(Logger::Info, str, name);
         }
         if (outputs.size()+str.size() >= MAXLOGSIZE)
         {
-            std::cerr<< "LOG OVERFLOW[" << getName() << " (" << getClassName() << ")]: resetting sout buffer." << std::endl;
+            const std::string msg = "Log overflow! Resetting sout buffer.";
+            getComponentLogger().log(Logger::Warning, msg, name);
             outputs.clear();
-            outputs = "LOG EVERFLOW: resetting sout buffer\n";
+            outputs = msg;
         }
         outputs += str;
         sout.str("");
     }
+}
+
+helper::Logger::SPtr Base::s_componentLogger = helper::Logger::SPtr(new helper::TTYLogger());
+
+helper::Logger& Base::getComponentLogger()
+{
+    return *s_componentLogger.get();
+}
+
+void Base::setComponentLogger(helper::Logger::SPtr logger)
+{
+    s_componentLogger = logger;
 }
 
 const std::string& Base::getWarnings() const
@@ -621,6 +625,7 @@ void  Base::writeDatas (std::ostream& out, const std::string& separator)
         }
     }
 }
+
 
 } // namespace objectmodel
 

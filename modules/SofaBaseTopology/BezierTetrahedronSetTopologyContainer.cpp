@@ -446,7 +446,7 @@ bool BezierTetrahedronSetTopologyContainer::checkBezierPointTopology()
 	size_t nTetras,elem;
 	BezierDegreeType degree=d_degree.getValue();
 	// check the total number of vertices.
-	assert(getNbPoints()==(getNumberOfTetrahedralPoints()+getNumberOfEdges()*(degree-1)+getNumberOfTriangles()*(degree-1)*(degree-2)/2+getNumberOfTetrahedra()*(degree-1)*(degree-2)*(degree-3)/6));
+    assert((size_t)getNbPoints()==(getNumberOfTetrahedralPoints()+getNumberOfEdges()*(degree-1)+getNumberOfTriangles()*(degree-1)*(degree-2)/2+getNumberOfTetrahedra()*(degree-1)*(degree-2)*(degree-3)/6));
 	sofa::helper::vector<TetrahedronBezierIndex> tbiArray=getTetrahedronBezierIndexArray();
 	VecPointID indexArray;
 	BezierTetrahedronPointLocation location; 
@@ -455,7 +455,7 @@ bool BezierTetrahedronSetTopologyContainer::checkBezierPointTopology()
 		indexArray.clear();
 		getGlobalIndexArrayOfBezierPointsInTetrahedron(nTetras,indexArray);
 		// check the number of control points per tetrahedron is correct
-		assert(indexArray.size()==(4+6*(degree-1)+2*(degree-1)*(degree-2)+(degree-1)*(degree-2)*(degree-3)/6));
+        assert(indexArray.size()==(size_t)((4+6*(degree-1)+2*(degree-1)*(degree-2)+(degree-1)*(degree-2)*(degree-3)/6)));
 		for(elem=0;elem<indexArray.size();++elem) {
 			size_t globalIndex=getGlobalIndexOfBezierPoint(nTetras,tbiArray[elem]);
 			// check that getGlobalIndexOfBezierPoint and getGlobalIndexArrayOfBezierPointsInTetrahedron give the same answer

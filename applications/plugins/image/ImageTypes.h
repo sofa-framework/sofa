@@ -244,11 +244,14 @@ public:
             cimglist_for(img,l)
                     cimg_forXYZC(img(l),x,y,z,c)
             {
-                const T val = img(l)(x,y,z,c);
-                long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
-                if(v<0) v=0;
-                else if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
-                ++res((int)(v),0,0,c);
+				if((long double)value_max-(long double)value_min !=0)
+				{
+					const T val = img(l)(x,y,z,c);
+					long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
+					if(v<0) v=0;
+					else if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
+					++res((int)(v),0,0,c);
+				}
             }
         }
         return res;

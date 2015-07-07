@@ -1,0 +1,116 @@
+# Same scene as keyboardControl.scn, with two additions:
+# - scene written directly in Python
+# - same script for the scene and the ScriptController, allowing exchange of components between them
+import Sofa
+
+DOFs = None # this global var will point to the 'DOFs' MechanicalObject
+
+class KeyboardControl(Sofa.PythonScriptController):
+	 
+	# key and mouse events; use this to add some user interaction to your scripts 
+	def onKeyPressed(self,k):
+		
+		# free_position is a scalar array : [tx,ty,tz,rx,ry,rz,rw]
+		global DOFs
+		free_position=DOFs.free_position
+
+		# translation speed
+		speed = 1 
+
+		# UP key : front
+		if ord(k)==19:
+			free_position[0][2]-=speed
+		# DOWN key : rear
+		if ord(k)==21:
+			free_position[0][2]+=speed
+		# LEFT key : left
+		if ord(k)==18:
+			free_position[0][1]-=speed
+		# RIGHT key : right
+		if ord(k)==20:
+			free_position[0][1]+=speed
+		# PAGEUP key : up
+		if ord(k)==22:
+			free_position[0][0]-=speed
+		# PAGEDN key : down
+		if ord(k)==23:
+			free_position[0][0]+=speed
+			
+		DOFs.free_position=free_position
+		return 0 
+
+
+# scene creation method
+def createScene(rootNode):
+	# scene global stuff
+	rootNode.createObject('VisualStyle', displayFlags='hideBehaviorModels hideCollisionModels hideMappings hideForceFields')
+	rootNode.createObject('CollisionPipeline', verbose=0, depth=6, draw=0)
+	rootNode.createObject('BruteForceDetection', name='detection')
+	rootNode.createObject('LocalMinDistance', alarmDistance="0.15", contactDistance="0.05", angleCone="0.0")
+	rootNode.createObject('CollisionResponse', name='response', response='FrictionContact')
+	rootNode.dt=0.005
+	rootNode.createObject('FreeMotionAnimationLoop')
+	rootNode.createObject('LCPConstraintSolver')
+	rootNode.createObject('Gravity', name='G', gravity='10 0 0')
+
+	# raptor node
+	Raptor = rootNode.createChild('Raptor')
+	Raptor.createObject('EulerImplicit',name='ODE solver')
+	Raptor.createObject('CGLinearSolver',name='linear solver',tolerance="1.0e-9",threshold="1.0e-9" )
+	Raptor.createObject('SparseGrid',fileTopology="mesh/raptor_8kp.obj",n="5 5 10" )
+	Raptor.createObject('MechanicalObject',name='mecaRaptor',rotation="0 0 90")
+	Raptor.createObject('PrecomputedConstraintCorrection',recompute="true")
+	Raptor.createObject('DiagonalMass',massDensity="1",name="computed using mass density")
+	Raptor.createObject('HexahedronFEMForceField', name="FEM", youngModulus="1000000", poissonRatio="0.45", method="large")
+	Raptor.createObject('FixedConstraint', name="FixedConstraint", indices="0 1 2 18 19 20 59 58 57 96 97 98 135 136 137")
+	RaptorVisualModel = Raptor.createChild('VisualModel')
+	RaptorVisualModel.createObject('OglModel', name="RaptorVisualModel", fileMesh="mesh/raptor_35kp.obj", color="white")
+	RaptorVisualModel.createObject('BarycentricMapping', name="tongueMapping", input="@../mecaRaptor", output="@RaptorVisualModel" )
+
+	RaptorCollisionModel = Raptor.createChild('CollisionModel')
+	RaptorCollisionModel.createObject('MeshObjLoader', filename="mesh/raptor_8kp.obj",  name="loader")
+	RaptorCollisionModel.createObject('Mesh', src="@loader", name="raptorVisualModel")
+	RaptorCollisionModel.createObject('MechanicalObject', src="@loader", name="raptorState")		
+	RaptorCollisionModel.createObject('Triangle', name="raptor", contactStiffness="100")
+	RaptorCollisionModel.createObject('Line', name="raptor", contactStiffness="100")	
+	RaptorCollisionModel.createObject('Point',name="raptor", contactStiffness="100")	
+	RaptorCollisionModel.createObject('BarycentricMapping', name="tongueMapping",input="@../mecaRaptor", output="@raptorState", mapForces="false")
+
+	# input node
+	Input = rootNode.createChild('Input')
+	# The PythonScriptController gathers events from input devices and populates the Mechanical state 
+	Input.createObject('PythonScriptController', filename="PythonScene2.py",classname="KeyboardControl")
+	global DOFs
+	DOFs = Input.createObject('MechanicalObject',template="Rigid", name="DOFs", position="0 0 0  0  0  0  1.0")
+	InputVisuAvatar = Input.createChild('VisuAvatar')
+	InputVisuAvatar.createObject('OglModel',name="Visual", fileMesh="mesh/sphere.obj", color="gray", scale="0.1")
+	InputVisuAvatar.createObject('RigidMapping', input="@..", output="@Visual" ,index="0")
+	InputRefModel = Input.createChild('RefModel')
+	InputRefModel.createObject('MeshObjLoader', filename="dental_instrument_centerline.obj",  name="loader")
+	InputRefModel.createObject('Mesh', src="@loader")
+	InputRefModel.createObject('MechanicalObject', src="@loader", name="instrumentCollisionState", ry="-180", rz="-90", dz="3.5", dx="-0.3")
+	InputRefModel.createObject('RigidMapping')
+
+	#instrument node
+	Instrument = rootNode.createChild('Instrument')
+	Instrument.createObject('EulerImplicit',name='ODE solver',rayleighStiffness="0.05",rayleighMass="1.0")
+	Instrument.createObject('CGLinearSolver',name='linear solver',iterations="25",tolerance="1e-10",threshold="10e-10" )
+	Instrument.createObject('MechanicalObject', name="instrumentState", template="Rigid")
+	Instrument.createObject('UniformMass', name="mass", totalmass="0.05" )
+	Instrument.createObject('LCPForceFeedback', activate="true", forceCoef="0.001")
+	Instrument.createObject('UncoupledConstraintCorrection')
+	InstrumentVisualModel = Instrument.createChild('VisualModel')
+	InstrumentVisualModel.createObject('OglModel', name="InstrumentVisualModel", fileMesh="dental_instrument.obj", color="1.0 0.2 0.2 1.0", ry="-180", rz="-90", dz="3.5", dx="-0.3")
+	InstrumentVisualModel.createObject('RigidMapping', name="MM->VM mapping", input="@instrumentState", output="@InstrumentVisualModel" )
+	InstrumentCollisionModel = Instrument.createChild('CollisionModel')
+	InstrumentCollisionModel.createObject('MeshObjLoader', filename="dental_instrument_centerline.obj", name="loader")
+	InstrumentCollisionModel.createObject('Mesh', src="@loader", name="InstrumentCollisionModel" )
+	InstrumentCollisionModel.createObject('MechanicalObject', src="@loader", name="instrumentCollisionState",  ry="-180", rz="-90", dz="3.5", dx="-0.3" )
+	InstrumentCollisionModel.createObject('Line', name="instrument", contactStiffness="10")
+	InstrumentCollisionModel.createObject('Point', name="instrument", contactStiffness="10" )
+	InstrumentCollisionModel.createObject('RigidMapping', name="MM->CM mapping", input="@instrumentState", output="@instrumentCollisionState")
+	Instrument.createObject('VectorSpringForceField', object1="@Input/RefModel/instrumentCollisionState", object2="@Instrument/CollisionModel/instrumentCollisionState", stiffness="10", viscosity="0" )
+
+	return rootNode
+
+

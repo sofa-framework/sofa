@@ -11,7 +11,7 @@ static int UnilateralConstraintClass = core::RegisterObject("basic constraint")
 
 Constraint::Constraint() : mask( NULL ) {}
 
-void Constraint::project(SReal* out, unsigned n, unsigned index, bool correctionPass) const {
+void Constraint::project(SReal* /*out*/, unsigned /*n*/, unsigned /*index*/, bool /*correctionPass*/) const {
     // nothing lol
 }
 

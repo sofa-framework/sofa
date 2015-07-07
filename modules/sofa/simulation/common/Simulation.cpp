@@ -92,7 +92,9 @@ Simulation::Simulation()
 
 Simulation::~Simulation()
 {
+    unload(sRoot);
 }
+
 /// The (unique) simulation which controls the scene
 Simulation::SPtr Simulation::theSimulation;
 

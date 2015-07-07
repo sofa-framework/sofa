@@ -169,6 +169,12 @@ const std::string DynamicLibrary::extension = "";
 const std::string DynamicLibrary::extension = "so";
 #endif
 
+#if defined(WIN32)
+const std::string DynamicLibrary::prefix = "";
+#else
+const std::string DynamicLibrary::prefix = "lib";
+#endif
+
 
 std::string DynamicLibrary::m_lastError = std::string("");
 

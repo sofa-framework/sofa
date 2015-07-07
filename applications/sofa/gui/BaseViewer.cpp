@@ -49,6 +49,7 @@ BaseViewer::BaseViewer()
     , pick(NULL)
     , _stereoEnabled(false)
     , _stereoMode(STEREO_AUTO)
+    , _stereoStrategy(PARALLEL)
     , _stereoShift(1.0)
     , _screenshotDirectory(".")
 {

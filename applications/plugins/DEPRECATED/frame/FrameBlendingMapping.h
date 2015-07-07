@@ -30,7 +30,6 @@
 #include "NewMaterial.h"
 #include "GridMaterial.h"
 #include <sofa/core/Mapping.h>
-#include <sofa/component/component.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/core/loader/PrimitiveGroup.h>
 
