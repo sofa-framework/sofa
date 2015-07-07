@@ -1,16 +1,8 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(oneParticleWithSofaTypedefs)
 
-set(SOURCE_FILES
+find_package(SofaGui)
 
-    oneParticleWithSofaTypedefs.cpp
-
-    )
-
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-
-set_source_files_properties(${SOURCE_FILES} PROPERTIES OBJECT_DEPENDS SofaTypedefs)
-
-AddLinkerDependencies(SofaSimulationTree SofaComponentMain SofaGuiMain)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+add_executable(${PROJECT_NAME} oneParticleWithSofaTypedefs.cpp)
+target_link_libraries(${PROJECT_NAME} SofaGuiMain)
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaTutorials") # IDE folder

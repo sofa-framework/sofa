@@ -1,14 +1,9 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(chainHybrid)
 
-set(SOURCE_FILES
+find_package(SofaGui)
+find_package(SceneCreator)
 
-    chainHybrid.cpp
-
-    )
-
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-
-AddLinkerDependencies(SofaSimulationTree SofaComponentMain SofaGuiMain SceneCreator)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+add_executable(${PROJECT_NAME} chainHybrid.cpp)
+target_link_libraries(${PROJECT_NAME} SofaGuiMain SceneCreator)
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaTutorials") # IDE folder

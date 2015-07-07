@@ -1,11 +1,12 @@
+cmake_minimum_required(VERSION 2.8)
 
-#RegisterProjects("ObjectCreator" PATH "${CMAKE_CURRENT_SOURCE_DIR}/objectCreator")
-
-RegisterProjects("ChainHybrid" OPTION "SOFA-TUTORIAL_CHAIN_HYBRID" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/chainHybrid")
-RegisterProjects("CompositeObject" OPTION "SOFA-TUTORIAL_COMPOSITE_OBJECT" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/compositeObject")
-RegisterProjects("HouseOfCards" OPTION "SOFA-TUTORIAL_HOUSE_OF_CARDS" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/houseOfCards")
-RegisterProjects("MixedPendulum" OPTION "SOFA-TUTORIAL_MIXED_PENDULUM" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/mixedPendulum")
-RegisterProjects("OneParticle" OPTION "SOFA-TUTORIAL_ONE_PARTICLE" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/oneParticle")
-#RegisterProjects("OneParticleWithSofaTypedefs" OPTION "SOFA-TUTORIAL_ONE_PARTICLE_WITH_SOFA_TYPEDEFS" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/oneParticleWithSofaTypedefs")
-RegisterProjects("OneTetrahedron" OPTION "SOFA-TUTORIAL_ONE_TETRAHEDRON" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/oneTetrahedron")
-#RegisterProjects("AnatomyModelling" OPTION "SOFA-TUTORIAL_ANATOMY_MODELLING" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/anatomyModelling") # currently there is no CMakeLists.txt
+# No CMakeLists.txt
+# add_subdirectory(anatomyModelling)
+add_subdirectory(chainHybrid)
+add_subdirectory(compositeObject)
+add_subdirectory(houseOfCards)
+add_subdirectory(mixedPendulum)
+add_subdirectory(oneParticle)
+# Needs SofaTypedefs
+# add_subdirectory(oneParticleWithSofaTypedefs)
+add_subdirectory(oneTetrahedron)

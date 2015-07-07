@@ -164,3 +164,9 @@ endif()
 
 # plugins
 add_subdirectory("${SOFA_PLUGINS_DIR}")
+
+# Tutorials
+option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
+if(SOFA_BUILD_TUTORIALS)
+    add_subdirectory(applications/tutorials)
+endif()
