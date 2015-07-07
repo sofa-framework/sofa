@@ -24,7 +24,6 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/helper/system/console.h>
 #include <sofa/helper/Logger.h>
 #include <map>
 #include <typeinfo>
