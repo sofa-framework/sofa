@@ -28,7 +28,6 @@
 #include <SofaUserInteraction/RayDiscreteIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-//#include <sofa/component/collision/ProximityIntersection.h>
 #include <sofa/helper/proximity.h>
 #include <iostream>
 #include <algorithm>

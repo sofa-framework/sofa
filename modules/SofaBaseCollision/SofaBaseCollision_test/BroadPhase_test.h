@@ -55,7 +55,6 @@
 #include <SofaMeshCollision/IncrSAP.h>
 #include <sofa/core/CollisionModel.h>
 #include <stdlib.h>
-//#include <sofa/component/collision/TeschnerSpatialHashing.h>
 
 using sofa::core::objectmodel::New;
 using sofa::core::objectmodel::Data;

@@ -64,7 +64,7 @@ namespace helper {
     {
         // On Windows, colors are not handled with control characters, so we can
         // probably always use them unless explicitely disabled.
-        return !ColorsDisabled;
+        return getColorsStatus() != ColorsDisabled;
     }
 
     SOFA_HELPER_API std::ostream& operator<<( std::ostream& stream, Console::ColorType color )
@@ -126,17 +126,9 @@ namespace helper {
 
 #endif
 
-    SOFA_HELPER_API std::ostream& operator<<(std::ostream& stream, Console::LogPrefix prefix)
+    Console::ColorsStatus Console::getColorsStatus()
     {
-        switch (prefix)
-        {
-            case Console::InfoPrefix:
-                return stream << Console::BRIGHT_GREEN << "[INFO]" << Console::DEFAULT_COLOR << " ";
-            case Console::WarningPrefix:
-                return stream << Console::BRIGHT_RED << "[WARN]" << Console::DEFAULT_COLOR << " ";
-            default:
-                return stream;
-        }
+        return s_colorsStatus;
     }
 
 }

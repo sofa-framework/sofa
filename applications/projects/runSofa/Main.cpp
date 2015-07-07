@@ -55,7 +55,7 @@
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
-#include <sofa/helper/system/console.h>
+#include <sofa/helper/Logger.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/system/atomic.h>
@@ -231,7 +231,7 @@ int main(int argc, char** argv)
     else
     {
         Console::setColorsStatus(Console::ColorsAuto);
-        std::cerr << Console::WarningPrefix << "Invalid argument ‘" << colorsStatus << "‘ for ‘--colors‘" << std::endl;
+        sofa::helper::Logger::getMainLogger().log( sofa::helper::Logger::Warning, std::string( "Invalid argument ‘") + colorsStatus + std::string("‘ for ‘--colors‘" ) );
     }
     sofa::simulation::xml::initXml();
 

@@ -30,10 +30,6 @@
 
 #include <sofa/helper/decompose.h>
 
-#ifdef SOFA_IP_TRACES
-#include <sofa/component/mapping/_IP_MapTraceMacros.h>
-#endif
-
 namespace sofa
 {
 
@@ -95,10 +91,6 @@ int BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::addPointOrientationInT
 template<class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
-#ifdef SOFA_IP_TRACES
-    IPTR_BARCPP_INIT("BarycentricMapperTetrahedronSetTopology::init BEGIN " << endl);
-    IPTR_BARCPP_INIT("out size = " << out.size() << endl);
-#endif
 
     _fromContainer->getContext()->get ( _fromGeomAlgo );
 
@@ -160,18 +152,12 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::init(const typename O
         addPointInTetra ( index, coefs.ptr() );
         addPointOrientationInTetra(index, orientationMatrixBary);
     }
-#ifdef SOFA_IP_TRACES
-    IPTR_BARCPP_INIT("BarycentricMapperTetrahedronSetTopology::init END" << endl);
-#endif
 }
 
 
 template<class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-#ifdef SOFA_IP_TRACES
-    IPTR_BARCPP_APPLY( "BarycentricMapperTetrahedronSetTopology<SPEC>::apply BEGIN" << endl);
-#endif
 
     actualTetraPosition=in;
     //get number of point being mapped
@@ -244,11 +230,6 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In:
 
     // TODO: use mapOrient
     //const sofa::helper::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();
-#ifdef SOFA_IP_TRACES
-    IPTR_BARCPP_APPLYJT( "BarycentricMapperTetrahedronSetTopology::applyJT BEGIN " << endl);
-    //unsigned int nbTetra = this->fromTopology->getTetrahedra().size();
-    //IPTR_BARCPP_APPLYJT( "  number of tetrahedra = " << nbTetra );
-#endif
 
     actualPos.clear();
     actualPos.resize(map.size());
@@ -287,10 +268,6 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In:
             }
 
 
-#ifdef SOFA_IP_TRACES
-            //IPTR_BARCPP_APPLYJT("torque = " << torque  << endl); //  " |"<<torqueMagnitude<<"| "<< endl); // in point = " << glPointPositions[i] << endl);
-            //IPTR_BARCPP_APPLYJT("   change of force due to the torque = " << cross(actualTetraPosition[tetra[0]],torque) << endl);*/
-#endif
         }
     }
     else
@@ -339,10 +316,6 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In:
 template<class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-#ifdef SOFA_IP_TRACES
-    IPTR_BARCPP_APPLYJ( "BarycentricMapperTetrahedronSetTopology::applyJ BEGIN " << endl);
-    IPTR_BARCPP_APPLYJ( "Velocities: " << in << endl);
-#endif
     const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
     const sofa::helper::vector<MappingData >& map = this->map.getValue();
     // TODO: use mapOrient
@@ -407,9 +380,6 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJ( typename Out:
             Out::setDRot(out[i], actualDRot);
         }
     }
-#ifdef SOFA_IP_TRACES
-    IPTR_BARCPP_APPLYJ( "BarycentricMapperTetrahedronSetTopology::applyJ END " << endl);
-#endif
 } //applyJ
 
 

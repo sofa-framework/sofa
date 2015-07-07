@@ -465,6 +465,7 @@ s:#include *[<"]sofa/component/misc/Monitor.inl[>"]:#include <SofaValidation/Mon
 s:#include *[<"]sofa/component/misc/Monitor.h[>"]:#include <SofaValidation/Monitor.h>:
 s:#include *[<"]sofa/component/misc/ExtraMonitor.inl[>"]:#include <SofaValidation/ExtraMonitor.inl>:
 s:#include *[<"]sofa/component/misc/ExtraMonitor.h[>"]:#include <SofaValidation/ExtraMonitor.h>:
+s:#include *[<"]sofa/component/misc/DevMonitor.h[>"]:#include <SofaValidation/DevMonitor.h>:
 s:#include *[<"]sofa/component/misc/DevMonitorManager.h[>"]:#include <SofaValidation/DevMonitorManager.h>:
 s:#include *[<"]sofa/component/misc/DevTensionMonitor.inl[>"]:#include <SofaValidation/DevTensionMonitor.inl>:
 s:#include *[<"]sofa/component/misc/DevTensionMonitor.h[>"]:#include <SofaValidation/DevTensionMonitor.h>:

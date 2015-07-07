@@ -22,79 +22,44 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "Logger.h"
 
-#include <sofa/helper/system/console.h>
-
-
-namespace sofa
-{
-
-namespace helper
-{
-
-Logger::SPtr Logger::s_mainLogger = Logger::SPtr(new TTYLogger());
-
-Logger::Logger(): m_currentLevel(Logger::All)
-{
-}
-
-Logger::~Logger()
-{
-}
-
-void Logger::setLevel(Level level)
-{
-    m_currentLevel = level;
-}
-
-Logger::Level Logger::getLevel()
-{
-    return m_currentLevel;
-}
-
-Logger& Logger::getMainLogger()
-{
-    return *s_mainLogger.get();
-}
-
-void Logger::setMainLogger(boost::shared_ptr<Logger> logger)
-{
-    s_mainLogger = logger;
-}
+// This file is used to generate the starting page of the doxygen documentation of this SOFA module.
+// It should not be included by any external code.
+#error doc.h is not meant to be included, it should be read only by doxygen.
 
 
-TTYLogger::TTYLogger()
-{
-    m_prefixes[Logger::Debug] = "[DEBUG] ";
-    m_prefixes[Logger::Info] = "[INFO] ";
-    m_prefixes[Logger::Warning] = "[WARNING] ";
-    m_prefixes[Logger::Error] = "[ERROR] ";
-    m_prefixes[Logger::Exception] = "[EXCEPTION] ";
-    m_colors[Logger::Debug] = Console::DEFAULT_COLOR;
-    m_colors[Logger::Info] = Console::BRIGHT_GREEN;
-    m_colors[Logger::Warning] = Console::BRIGHT_YELLOW;
-    m_colors[Logger::Error] = Console::BRIGHT_RED;
-    m_colors[Logger::Exception] = Console::BRIGHT_PURPLE;
-}
+/** \mainpage
+This is the test suite of Sofa. It contains base classes to ease the development of tests, such as sofa::Sofa_test , sofa::Mapping_test, etc.
+The actual tests are implemented in sub-directories of the modules and plugins. For instance, SofaRigid/SofaRigid_test/RigidMapping_test.cpp.
+
+The tests are optional. They are activated using the SOFA-MISC_TESTS flag of the cmake configuration.
+This generates a set of executables, each of them running the test suite of the module. For instance, from the debug build directory, run:
+ \code{.sh} bin/SofaConstraint_testd \endcode
+To run all the tests, run command \code{.sh} ctest --verbose \endcode
+
+Motivation and detail about activation is given in http://wiki.sofa-framework.org/wiki/UnitTesting
+
+The tests are based on the googletest framework http://code.google.com/p/googletest/wiki/Documentation
 
 
 
-void TTYLogger::log(Level level, const std::string& message, const std::string& location)
-{
-    if (level < getLevel())
-        return;
+<h3> Data files</h3>
+Some tests require to open data files. These are typically located in the same directory as the test code.
+The path to the current directory can be defined in the CMakeLists.txt, and passed by the compiler as a predefined symbol.
+For instance, if you set the following line in CMakeLists.txt:
 
-    std::ostream& output = (level >= Warning? std::cerr: std::cout);
+AddCompilerDefinitions("THIS_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\\"")
 
-    if (m_prefixes[level].size() > 0)
-        output << m_colors[level] << m_prefixes[level] << Console::DEFAULT_COLOR;
-    if (location.size() > 0)
-        output << Console::BLUE << "[" << location << "] " << Console::DEFAULT_COLOR;
+then the following instruction creates a complete, absolute path to fileName:
 
-    output << message << std::endl;
-}
+std::string fileName = std::string(THIS_DIR) + "/" + fileName;
 
-} // namespace helper
+See e.g. SofaTest_test/CMakeLists.txt and SofaTest_test/LoadScene_test.cpp
 
-} // namespace sofa
+
+@author François Faure, Aurélie Dégletagne, and hopefully lots of others !
+@date Started in 2013
+
+This is a the starting page of the plugin documentation, defined in file doc.h in the plugin directory.
+  */
+
