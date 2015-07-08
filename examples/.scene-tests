@@ -38,5 +38,4 @@ ignore "Tutorials/Mappings/TutorialMappingOctopusArticulated.scn"
 # uses the SofaCUDA plugin.
 ignore "Benchmark/Accuracy/cylinder_TLEDTetraSolution.scn"
 
-# This scene crashes because of a memory management error, ignore it until the problem is solved
-ignore "Components/topology/TopologicalModifiers/IncisionTrianglesProcess.scn"
+
