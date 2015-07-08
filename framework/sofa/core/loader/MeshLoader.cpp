@@ -66,7 +66,7 @@ MeshLoader::MeshLoader() : BaseLoader()
 {
     addAlias(&tetrahedra,"tetras");
     addAlias(&hexahedra,"hexas");
-    addAlias(&hexahedra,"pentas");
+    addAlias(&pentahedra,"pentas");
 
     flipNormals.setAutoLink(false);
     triangulate.setAutoLink(false);
