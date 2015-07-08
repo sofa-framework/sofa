@@ -295,12 +295,12 @@ class Behavior:
         _filename=os.path.join(directory, _filename)
         return _filename
 
-    def read(self, filenamePrefix=None, directory=""):
+    def read(self, filenamePrefix=None, directory="", **kwargs):
         filename = self.getFilename(filenamePrefix,directory)
         data = dict()
         with open(filename,'r') as f:
             data.update(json.load(f))
-        self.sampler = self.node.createObject('GaussPointContainer',name='GPContainer', volumeDim=data['volumeDim'], inputVolume=data['inputVolume'], position=data['position'])
+        self.sampler = self.node.createObject('GaussPointContainer',name='GPContainer', volumeDim=data['volumeDim'], inputVolume=data['inputVolume'], position=data['position'], **kwargs)
         print 'Imported Gauss Points from '+filename
 
     def write(self, filenamePrefix=None, directory=""):
