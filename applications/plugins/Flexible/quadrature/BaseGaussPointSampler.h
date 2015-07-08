@@ -105,6 +105,7 @@ public:
 
     /** @name visu data */
     //@{
+    Data< bool > showSamples;
     Data< float > showSamplesScale; ///< Samples scale
     Data< int > drawMode; ///< Drawing mode
                           ///< 0. Green points
@@ -120,7 +121,8 @@ public:
         , f_transforms(initData(&f_transforms,VTransform(),"transforms","output sample orientations"))
         , f_order(initData(&f_order,(unsigned int)1,"order","order of quadrature method"))
         , f_volume(initData(&f_volume,vector<volumeIntegralType>(),"volume","output weighted volume"))
-        , showSamplesScale(initData(&showSamplesScale,0.0f,"showSamplesScale","show samples"))
+        , showSamples(initData(&showSamples,false,"showSamples","show samples"))
+        , showSamplesScale(initData(&showSamplesScale,0.0f,"showSamplesScale","show samples scale"))
         , drawMode(initData(&drawMode,0,"drawMode",""))
     {
         helper::OptionsGroup methodOptions(3,"0 - Gauss-Legendre"
@@ -156,7 +158,7 @@ protected:
 #ifndef SOFA_NO_OPENGL
         if (!vparams->displayFlags().getShowVisualModels()) return;
         raPositions pos(this->f_position);
-        if (this->showSamplesScale.getValue())
+        if (this->showSamples.getValue())
         {
             switch( drawMode.getValue() )
             {
