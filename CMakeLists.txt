@@ -24,8 +24,23 @@ set(SOFA_CMAKE_DIR "${Sofa_SOURCE_DIR}/cmake" )
 list(APPEND CMAKE_MODULE_PATH "${SOFA_CMAKE_DIR}/Modules")
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 
+
 include(CMakeSofaBuildFlags)
 
+# C++11 Support
+#
+# Note for the future: CMake 3.1 has a CMAKE_CXX_STANDARD variable
+# that handles versions of the C++ standard...
+if(NOT WIN32)
+    option(SOFA_C++11
+"Compile as C++11. Even though Sofa is written in C++98, it is compatible with
+C++11. Targetting this standard allows you to benefit from a more optimized
+STL."  OFF)
+    if(SOFA_C++11)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11"
+            CACHE STRING "Flags used by the compiler during all build types." FORCE)
+    endif()
+endif()
 
 
 # Sofa libraries
