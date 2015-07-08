@@ -153,6 +153,7 @@ bool PluginManager::loadPlugin(const std::string& pluginPath, std::ostream* errl
 
     p.dynamicLibrary = d;
     m_pluginMap[pluginPath] = p;
+    p.initExternalModule();
 
     Logger::getMainLogger().log(Logger::Info, "Loaded plugin: " + pluginPath, "PluginManager");
     return true;
