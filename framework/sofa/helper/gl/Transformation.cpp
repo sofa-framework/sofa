@@ -40,7 +40,7 @@ namespace gl
 // --------------------------------------------------------------------------------------
 Transformation::Transformation()
 {
-    register int	i, j;
+    /*register*/ int	i, j;
 
     for (i = 0; i < 3; i++)
     {
@@ -73,7 +73,7 @@ Transformation::~Transformation()
 // --------------------------------------------------------------------------------------
 Transformation& Transformation::operator=(const Transformation& transform)
 {
-    register int i, j;
+    /*register*/ int i, j;
 
     for (i = 0; i < 3; i++)
     {
@@ -171,7 +171,7 @@ void Transformation::InvertTransRotMatrix(SReal matrix[4][4])
 void Transformation::InvertTransRotMatrix(SReal sMatrix[4][4],
         SReal dMatrix[4][4])
 {
-    register int	i, j;
+    /*register*/ int	i, j;
 
     for (i = 0; i < 4; i++)
     {
