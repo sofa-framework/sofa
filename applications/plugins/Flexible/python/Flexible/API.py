@@ -333,12 +333,12 @@ class Behavior:
         _filename=os.path.join(directory, _filename)
         return _filename
 
-    def read(self, filenamePrefix=None, directory=""):
+    def read(self, filenamePrefix=None, directory="", **kwargs):
         filename = self.getFilename(filenamePrefix,directory)
         data = dict()
         with open(filename,'r') as f:
             data.update(json.load(f))
-        self.sampler = self.node.createObject('GaussPointContainer',name='GPContainer', volumeDim=data['volumeDim'], inputVolume=data['inputVolume'], position=data['position'])
+        self.sampler = self.node.createObject('GaussPointContainer',name='GPContainer', volumeDim=data['volumeDim'], inputVolume=data['inputVolume'], position=data['position'], **kwargs)
         if not self.labelImage is None and not self.labels is None:
             celloffsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+SofaPython.Tools.getObjectPath(self.sampler)+".position", src="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage), labels=concat(self.labels))
             self.cell = "@"+SofaPython.Tools.getObjectPath(celloffsets)+".cell"
