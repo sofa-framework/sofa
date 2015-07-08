@@ -159,7 +159,7 @@ void IdentityMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparam
 template <class TIn, class TOut>
 void IdentityMapping<TIn, TOut>::handleTopologyChange()
 {
-    if ( stateTo && stateFrom && stateTo->getSize() != stateFrom->getSize()) this->init();
+    if ( this->toModel && this->fromModel && this->toModel->getSize() != this->fromModel->getSize()) this->init();
 }
 
 template <class TIn, class TOut>
