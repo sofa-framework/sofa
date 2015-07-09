@@ -108,12 +108,12 @@ void PluginManager::writeToIniFile(const std::string& path)
     outstream.close();
 }
 
-bool PluginManager::loadPlugin(const std::string& pluginPath, std::ostream* errlog)
+bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream* errlog)
 {
     if (pluginIsLoaded(pluginPath))
     {
         const std::string msg = "Plugin already loaded: " + pluginPath;
-        Logger::getMainLogger().log(Logger::Warning, msg, "PluginManager::load()");
+        Logger::getMainLogger().log(Logger::Warning, msg, "PluginManager");
         if (errlog) (*errlog) << msg << std::endl;
         return false;
     }
@@ -121,7 +121,7 @@ bool PluginManager::loadPlugin(const std::string& pluginPath, std::ostream* errl
     if (!FileSystem::exists(pluginPath))
     {
         const std::string msg = "File not found: " + pluginPath;
-        Logger::getMainLogger().log(Logger::Error, msg, "PluginManager::load()");
+        Logger::getMainLogger().log(Logger::Error, msg, "PluginManager");
         if (errlog) (*errlog) << msg << std::endl;
         return false;
     }
@@ -131,7 +131,7 @@ bool PluginManager::loadPlugin(const std::string& pluginPath, std::ostream* errl
     if( ! d.isValid() )
     {
         const std::string msg = "Plugin loading failed (" + pluginPath + "): " + DynamicLibrary::getLastError();
-        Logger::getMainLogger().log(Logger::Error, msg, "PluginManager::load()");
+        Logger::getMainLogger().log(Logger::Error, msg, "PluginManager");
         if (errlog) (*errlog) << msg << std::endl;
         return false;
     }
@@ -140,7 +140,7 @@ bool PluginManager::loadPlugin(const std::string& pluginPath, std::ostream* errl
         if(! getPluginEntry(p.initExternalModule,d))
         {
             const std::string msg = "Plugin loading failed (" + pluginPath + "): function initExternalModule() not found";
-            Logger::getMainLogger().log(Logger::Error, msg, "PluginManager::load()");
+            Logger::getMainLogger().log(Logger::Error, msg, "PluginManager");
             if (errlog) (*errlog) << msg << std::endl;
             return false;
         }
@@ -157,6 +157,24 @@ bool PluginManager::loadPlugin(const std::string& pluginPath, std::ostream* errl
 
     Logger::getMainLogger().log(Logger::Info, "Loaded plugin: " + pluginPath, "PluginManager");
     return true;
+}
+
+bool PluginManager::loadPlugin(const std::string& plugin, std::ostream* errlog)
+{
+    // Is 'plugin' the name of the plugin, or the path?
+    std::string pluginPath = FileSystem::exists(plugin)? plugin : findPlugin(plugin);
+
+    if (pluginPath != "")
+    {
+        return loadPluginByPath(pluginPath, errlog);
+    }
+    else
+    {
+        const std::string msg = "Plugin not found: \"" + pluginPath + "\"";
+        Logger::getMainLogger().log(Logger::Error, msg, "PluginManager");
+        if (errlog) (*errlog) << msg << std::endl;
+        return false;
+    }
 }
 
 bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* errlog)
