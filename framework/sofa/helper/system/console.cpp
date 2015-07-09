@@ -110,8 +110,8 @@ namespace helper {
     bool Console::shouldUseColors(std::ostream& stream)
     {
         if (s_colorsStatus == Console::ColorsAuto)
-            return (stream == std::cout && !s_stdoutIsRedirected)
-                || (stream == std::cerr && !s_stderrIsRedirected);
+            return (&stream == &std::cout && !s_stdoutIsRedirected)
+                || (&stream == &std::cerr && !s_stderrIsRedirected);
         else
             return s_colorsStatus == Console::ColorsEnabled;
     }
