@@ -49,7 +49,7 @@
 #include <sofa/helper/accessor.h>
 #include <sstream>
 #include <map>
-#include <memory>
+#include <boost/scoped_ptr.hpp>
 
 namespace sofa
 {
@@ -501,7 +501,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         if (sofa::helper::system::DataRepository.findFile(meshFilename))
         {
             //name = filename;
-            std::auto_ptr<Mesh> objLoader;
+            boost::scoped_ptr<Mesh> objLoader;
             if (loader.empty())
             {
                 objLoader.reset(Mesh::Create(filename));

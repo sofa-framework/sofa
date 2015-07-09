@@ -534,7 +534,8 @@ using namespace core::behavior;
     void CompliantImplicitSolver::perform_assembly( const core::MechanicalParams *mparams, system_type& sys )
     {
         scoped::timer step("perform_assembly");
-        // max: il ya des auto_ptr pour ca.
+
+        // max: il ya des smart ptr pour ca.
         if( assemblyVisitor ) delete assemblyVisitor;
         assemblyVisitor = new simulation::AssemblyVisitor(mparams);
 
