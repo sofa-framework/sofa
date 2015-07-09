@@ -30,7 +30,6 @@
 #include <SofaLoader/ReadTopology.h>
 #include <SofaExporter/WriteTopology.h>
 #include <SofaValidation/CompareTopology.h>
-#include <SofaComponentMain/init.h>
 #include <sofa/helper/system/thread/TimeoutWatchdog.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -84,7 +83,6 @@ bool loadPlugin(const char* filename)
 void apply(const std::string& /*directory*/, std::vector<std::string>& files, bool /*reinit*/)
 {
 
-    sofa::component::init(); // ensures all components are initialized, also introduce a dependency to all libraries, avoiding problems with -Wl,--as-needed flag
 
     sofa::simulation::Simulation* simulation = sofa::simulation::getSimulation();
 
