@@ -105,6 +105,12 @@ case $CI_JOB in
 
         append "-DSOFA-MISC_TESTS=ON"
 
+        if [[ ( $(uname) = Darwin || $(uname) = Linux ) ]]; then
+            append "-DSOFA-MISC_C++11=ON"
+        else
+            append "-DSOFA-MISC_C++11=OFF"
+        fi
+
         if [[ -n "$CI_QT_PATH" ]]; then
             append "-DSOFA-EXTERNAL_QT_PATH=$CI_QT_PATH"
         fi
