@@ -156,7 +156,7 @@ void Simulation::exportGraph ( Node* root, const char* filename )
     else
     {
         // unable to write the file
-        serr << "exportGraph : Error : extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled for export" << sendl;
+        serr << "exportGraph: extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled for export" << sendl;
     }
 }
 
@@ -443,6 +443,10 @@ void Simulation::dumpState ( Node* root, std::ofstream& out )
 /// Load a scene from a file
 Node::SPtr Simulation::load ( const char *filename )
 {
+    if( sofa::helper::system::SetDirectory::GetFileName(filename).empty() || // no filename
+            sofa::helper::system::SetDirectory::GetExtension(filename).empty() ) // filename with no extension
+        return NULL;
+
     SceneLoader *loader = SceneLoaderFactory::getInstance()->getEntryFileName(filename);
 
     if (loader)
@@ -452,7 +456,7 @@ Node::SPtr Simulation::load ( const char *filename )
     }
 
     // unable to load file
-    serr << "Error : extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled" << sendl;
+    serr << "extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled" << sendl;
     return NULL;
 }
 
