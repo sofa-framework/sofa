@@ -360,8 +360,8 @@ class Behavior:
         eNode = self.node.createChild("E")
         eNode.createObject('MechanicalObject',  template="E"+self.type, name="E")
         eNode.createObject(strainMeasure+'StrainMapping', template="F"+self.type+",E"+self.type, assemble=assemble)
-        eNode.createObject('HookeForceField',  template="E"+self.type, youngModulus= youngModulus, poissonRatio=poissonRatio, viscosity=viscosity, assemble=assemble, isCompliance=False)
+        eNode.createObject('HookeForceField', name="ff", template="E"+self.type, youngModulus= youngModulus, poissonRatio=poissonRatio, viscosity=viscosity, assemble=assemble, isCompliance=False)
 
     def addProjective(self, youngModulus=0, viscosity=0, assemble=True):
-        self.node.createObject('ProjectiveForceField', template="F"+self.type,  youngModulus=youngModulus, viscosity=viscosity,assemble=assemble)
+        self.node.createObject('ProjectiveForceField', name="ff", template="F"+self.type,  youngModulus=youngModulus, viscosity=viscosity,assemble=assemble)
 
