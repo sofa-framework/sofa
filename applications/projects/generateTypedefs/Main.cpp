@@ -37,7 +37,6 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <SofaComponentMain/init.h>
 #include <algorithm>
 #include <functional>
 using sofa::core::SofaLibrary;
@@ -592,7 +591,6 @@ int main(int , char** )
 #endif
     //bannedComponents.insert(std::make_pair("ProjectiveConstraintSet","PartialLinearMovementConstraint"));
 
-    sofa::component::init();
     SofaLibrary library; library.build();
     const SofaLibrary::VecCategory &categories = library.getCategories();
 

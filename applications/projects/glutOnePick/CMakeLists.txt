@@ -1,16 +1,7 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(glutOnePick)
 
-set(SOURCE_FILES
+find_package(SofaSimpleGUI)
 
-    glutOnePick.cpp
-)
-
-set(HEADER_FILES
-    oneTetra.h
-)
-
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-
-AddLinkerDependencies(SofaSimpleGUI)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+add_executable(${PROJECT_NAME} glutOnePick.cpp oneTetra.h)
+target_link_libraries(${PROJECT_NAME} SofaSimpleGUI)

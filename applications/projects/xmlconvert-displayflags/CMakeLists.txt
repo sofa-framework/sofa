@@ -1,21 +1,7 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(xmlconvert-displayflags)
 
-set(HEADER_FILES
+find_package(TinyXML REQUIRED)
 
-    xmlvisitor.h
-
-    )
-
-set(SOURCE_FILES
-
-    main.cpp
-    xmlvisitor.cpp
-
-    )
-
-add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
-
-AddLinkerDependencies( tinyxml )
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+add_executable(${PROJECT_NAME} xmlvisitor.h xmlvisitor.cpp main.cpp)
+target_link_libraries(${PROJECT_NAME} TinyXML)

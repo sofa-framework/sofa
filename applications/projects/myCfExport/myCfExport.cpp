@@ -29,7 +29,6 @@
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/helper/system/PluginManager.h>
 
-#include <SofaComponentMain/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
 
 #include <sofa/helper/system/FileRepository.h>
@@ -145,7 +144,6 @@ int main(int argc, char** argv)
 
     // --- Init components ---
     sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-    sofa::component::init();
     sofa::simulation::xml::initXml();
 
 
