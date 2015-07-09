@@ -160,7 +160,7 @@ protected:
 			//img(0)(valueinimage.x, valueinimage.y, valueinimage.z) = 1;
 		}
 		else{
-			cout<< "La collision dans une image rotationné n'est pas encore prise en compte" <<endl;
+            cout<< "La collision dans une image tournee n'est pas encore prise en compte" <<endl;
 		}
     }
 
