@@ -141,12 +141,13 @@ public:
     static PluginManager& getInstance();
     bool loadPlugin(const std::string& plugin, std::ostream* errlog=&std::cerr);
     bool loadPluginByPath(const std::string& path, std::ostream* errlog=&std::cerr);
+    bool loadPluginByName(const std::string& pluginName, std::ostream* errlog=&std::cerr);
     bool unloadPlugin(const std::string& path, std::ostream* errlog=&std::cerr);
 
     void init();
 	void init(const std::string& pluginPath);
 
-    std::string findPlugin(const std::string& pluginName);
+    std::string findPlugin(const std::string& pluginName, bool ignoreCase = true);
     bool pluginIsLoaded(const std::string& pluginPath);
 
     inline friend std::ostream& operator<< ( std::ostream& os, const PluginManager& pluginManager )
