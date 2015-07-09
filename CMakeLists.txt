@@ -114,11 +114,8 @@ add_subdirectory(extlibs/tinyxml)
 add_subdirectory(extlibs/CImg)
 add_subdirectory(extlibs/libQGLViewer-2.4.0/QGLViewer)
 
-option(SOFA_USE_MINIBOOST
-"Use the (header-only) subset of Boost distributed in the extlibs/ directory
-(a.k.a. miniBoost).  This subset is sufficient to compile the framework and the
-default components, but some plugins need other components of Boost." ON)
-if(SOFA_USE_MINIBOOST)
+find_package(Boost QUIET)
+if(NOT Boost_FOUND)
     add_subdirectory(extlibs/miniBoost ${CMAKE_CURRENT_BINARY_DIR}/miniBoost)
 endif()
 
