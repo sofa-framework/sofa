@@ -54,6 +54,9 @@ public:
     /// @param location An indication of where the message comes from, if relevant. (Component, function...)
     virtual void log(Level level, const std::string& message, const std::string& location = "") = 0;
 
+    /// Log a message with the Main Logger
+    static void mainlog(Level level, const std::string& message, const std::string& location = "");
+
     /// @brief Set the minimal level of logging.
     void setLevel(Level level);
     /// @brief Get the level above which message will be logged.
