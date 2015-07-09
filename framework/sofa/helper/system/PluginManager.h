@@ -139,7 +139,8 @@ public:
     typedef PluginMap::iterator PluginIterator;
 
     static PluginManager& getInstance();
-    bool loadPlugin(const std::string& path, std::ostream* errlog=&std::cerr);
+    bool loadPlugin(const std::string& plugin, std::ostream* errlog=&std::cerr);
+    bool loadPluginByPath(const std::string& path, std::ostream* errlog=&std::cerr);
     bool unloadPlugin(const std::string& path, std::ostream* errlog=&std::cerr);
 
     void init();
