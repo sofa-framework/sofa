@@ -102,7 +102,7 @@ case $CI_JOB in
         append "-DSOFA-PLUGIN_SOFATEST=ON"
         append "-DSOFA-PLUGIN_SOFAPYTHON=ON"
         append "-DSOFA-PLUGIN_SCENECREATOR=ON"
-
+        ;;
     # Build with as many options enabled
     *options*)
 
