@@ -70,6 +70,7 @@ set(HEADER_FILES
     system/FileSystem.h
     system/DynamicLibrary.h
     system/PluginManager.h
+	system/console.h
     TagFactory.h
     accessor.h
     vector.h
@@ -94,6 +95,7 @@ set(HEADER_FILES
     GenerateRigid.h
     Utils.h
 	IndexOpenMP.h
+	Logger.h
 	)
 
 set(SOURCE_FILES
@@ -135,6 +137,7 @@ set(SOURCE_FILES
     system/FileSystem.cpp
     system/DynamicLibrary.cpp
     system/PluginManager.cpp
+	system/console.cpp
     TagFactory.cpp
     polygon_cube_intersection/polygon_cube_intersection.cpp
     polygon_cube_intersection/fast_polygon_cube_intersection.cpp
@@ -148,6 +151,7 @@ set(SOURCE_FILES
     GenerateRigid.cpp
     kdTree.cpp
     Utils.cpp
+	Logger.cpp
 	)
 
 if(SOFA-EXTERNAL_BOOST)

@@ -432,19 +432,19 @@ void DiagonalMass<DataTypes, MassType>::addMDx(const core::MechanicalParams* /*m
     helper::WriteAccessor< DataVecDeriv > _res = res;
     helper::ReadAccessor< DataVecDeriv > _dx = dx;
 
-    unsigned int n = masses.size();
+    size_t n = masses.size();
     if (_dx.size() < n) n = _dx.size();
     if (_res.size() < n) n = _res.size();
     if (factor == 1.0)
     {
-        for (unsigned int i=0; i<n; i++)
+        for (size_t i=0; i<n; i++)
         {
             _res[i] += _dx[i] * masses[i];
         }
     }
     else
     {
-        for (unsigned int i=0; i<n; i++)
+        for (size_t i=0; i<n; i++)
         {
             _res[i] += (_dx[i] * masses[i]) * (Real)factor;
         }
@@ -541,7 +541,6 @@ void DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index, defau
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::reinit()
 {
-    std::cerr << __FUNCTION__ << " " << __LINE__ << std::endl;
     if (_topology && (m_massDensity.getValue() > 0 || f_mass.getValue().size() == 0))
     {
         if (_topology->getNbTetrahedra()>0 && tetraGeo)
@@ -616,12 +615,44 @@ void DiagonalMass<DataTypes, MassType>::reinit()
             m_totalMass.setValue(total_mass);
             f_mass.endEdit();
         }
-        /*
-          else if (_topology->getNbHexahedra()>0) {
 
-          // TODO : Hexahedra
-          topologyType=TOPOLOGY_HEXAHEDRONSET;
-          }
+        else if (_topology->getNbHexahedra()>0)
+        {
+
+            MassVector& masses = *f_mass.beginEdit();
+            topologyType=TOPOLOGY_HEXAHEDRONSET;
+
+            masses.resize(this->mstate->getSize());
+            for(unsigned int i=0; i<masses.size(); ++i)
+              masses[i]=(Real)0;
+
+            Real md=m_massDensity.getValue();
+            Real mass=(Real)0;
+            Real total_mass=(Real)0;
+
+            for (int i=0; i<_topology->getNbHexahedra(); ++i)
+            {
+                const Hexahedron &h=_topology->getHexahedron(i);
+                if (hexaGeo)
+                {
+                    if (m_computeMassOnRest.getValue())
+                        mass=(md*hexaGeo->computeRestHexahedronVolume(i))/(Real)8.0;
+                    else
+                        mass=(md*hexaGeo->computeHexahedronVolume(i))/(Real)8.0;
+
+                    for (unsigned int j = 0 ; j < h.size(); j++)
+                    {
+                        masses[h[j]] += mass;
+                        total_mass += mass;
+                    }
+                }
+            }
+
+            m_totalMass.setValue(total_mass);
+            f_mass.endEdit();
+
+        }
+        /*
           else if (_topology->getNbQuads()>0) {
 
           // TODO : Quads
@@ -700,14 +731,28 @@ void DiagonalMass<DataTypes, MassType>::init()
     this->getContext()->get(tetraGeo);
     this->getContext()->get(hexaGeo);
 
+    if (_topology)
+    {
+        if (_topology->getNbTetrahedra() > 0 && !tetraGeo)
+            serr << "Tetrahedron topology but no geometry algorithms found. Add the component TetrahedronSetGeometryAlgorithms." << sendl;
+        else if (_topology->getNbTriangles() > 0 && !triangleGeo)
+            serr << "Triangle topology but no geometry algorithms found. Add the component TriangleSetGeometryAlgorithms." << sendl;
+        else if (_topology->getNbHexahedra() > 0 && !hexaGeo)
+            serr << "Hexahedron topology but no geometry algorithms found. Add the component HexahedronSetGeometryAlgorithms." << sendl;
+//        else if (_topology->getNbQuads() > 0 && !quadGeo)
+//            serr << "Quad topology but no geometry algorithms found. Add the component QuadSetGeometryAlgorithms." << sendl;
+        else if (_topology->getNbEdges() > 0 && !edgeGeo)
+            serr << "Edge topology but no geometry algorithms found. Add the component EdgeSetGeometryAlgorithms." << sendl;
+    }
+
     Inherited::init();
     initTopologyHandlers();
 
     if (this->mstate && f_mass.getValue().size() > 0 && f_mass.getValue().size() < (unsigned)this->mstate->getSize())
     {
         MassVector &masses= *f_mass.beginEdit();
-        unsigned int i = masses.size()-1;
-        unsigned int n = (unsigned)this->mstate->getSize();
+        size_t i = masses.size()-1;
+        size_t n = (size_t)this->mstate->getSize();
         masses.reserve(n);
         while (masses.size() < n)
             masses.push_back(masses[i]);

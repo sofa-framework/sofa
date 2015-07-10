@@ -46,7 +46,7 @@ template <unsigned int ORBIT, typename MAP>
 inline void setOrbitEmbedding(MAP& m, Cell<ORBIT> c, unsigned int em)
 {
 	assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
-    assert(em != EMBNULL);
+//    assert(em != EMBNULL);
 //    std::cerr << "setOrbitEmbedding called on a " << ORBIT << "-cell." << " em = " << em << std::endl;
 //	m.foreach_dart_of_orbit(c, [&] (Dart d) { m.template setDartEmbedding<ORBIT>(d, em); });
     m. template foreach_dart_of_orbit<ORBIT>(c, (bl::bind(&MAP::template setDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) ))) ;
@@ -96,7 +96,6 @@ template <unsigned int ORBIT, typename MAP>
 inline unsigned int initOrbitEmbeddingOnNewCell(MAP& m, Cell<ORBIT> d)
 {
 	assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
-
 	unsigned int em = m.template newCell<ORBIT>();
 	initOrbitEmbedding<ORBIT>(m, d, em);
 	return em;

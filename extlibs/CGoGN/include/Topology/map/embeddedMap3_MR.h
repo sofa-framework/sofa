@@ -54,7 +54,13 @@ public:
 
     EmbeddedMap3_MR() {}
 
-
+    template< unsigned int ORBIT >
+    inline unsigned int getCellLevel(Cell< ORBIT > ) const
+    {
+        // TODO
+        std::cerr << __FILE__ << ":" << __LINE__ << " function not implemented ! " << std::endl;
+        return std::numeric_limits<unsigned int>::max();
+    }
     //!
     /*!
      *

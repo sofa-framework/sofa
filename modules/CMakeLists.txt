@@ -101,7 +101,7 @@ RegisterProjects("SofaMiscSolver" OPTION "SOFA-LIB_COMPONENT_MISC_SOLVER" PATH "
 RegisterProjects("SofaMiscSolver_test" OPTION "SOFA-LIB_COMPONENT_MISC_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMiscSolver/SofaMiscSolver_test")
 
 RegisterProjects("SofaMiscTopology" OPTION "SOFA-LIB_COMPONENT_MISC_TOPOLOGY" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMiscTopology")
-#RegisterProjects("SofaMiscTopology_test" OPTION "SOFA-LIB_COMPONENT_MISC_TOPOLOGY" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMiscTopology/SofaMiscTopology_test")
+RegisterProjects("SofaMiscTopology_test" OPTION "SOFA-LIB_COMPONENT_MISC_TOPOLOGY" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMiscTopology/SofaMiscTopology_test")
 
 RegisterProjects("SofaNonUniformFem" OPTION "SOFA-LIB_COMPONENT_NON_UNIFORM_FEM" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaNonUniformFem")
 #RegisterProjects("SofaNonUniformFem_test" OPTION "SOFA-LIB_COMPONENT_NON_UNIFORM_FEM" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaNonUniformFem/SofaNonUniformFem_test")

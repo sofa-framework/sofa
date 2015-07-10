@@ -113,7 +113,7 @@ public:
 
         file.close();
         return true;
-    };
+    }
 
 
     void setFilename(std::string f)

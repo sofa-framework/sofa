@@ -1,5 +1,6 @@
-#ifndef INTROBBTRIANGLE_H
-#define INTROBBTRIANGLE_H
+#ifndef SOFA_COMPONENT_COLLISION_INTRTRIANGLEOBB_H
+#define SOFA_COMPONENT_COLLISION_INTRTRIANGLEOBB_H
+
 #include <sofa/core/collision/Intersection.h>
 #include <SofaBaseCollision/OBBModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
@@ -42,7 +43,7 @@ private:
 
 typedef TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types> IntrTriangleOBB;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_INTRTRIANGLEOBB_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MESH_COLLISION_API TIntrTriangleOBB<defaulttype::Vec3dTypes,defaulttype::Rigid3dTypes>;
 #endif
@@ -55,4 +56,4 @@ extern template class SOFA_MESH_COLLISION_API TIntrTriangleOBB<defaulttype::Vec3
 }
 }
 
-#endif // INTROBBTRIANGLE_H
+#endif // SOFA_COMPONENT_COLLISION_INTRTRIANGLEOBB_H

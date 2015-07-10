@@ -136,7 +136,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     const bool firstOrder = f_firstOrder.getValue();
 
     sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
-
+	mop->setImplicit(true); // this solver is implicit
     // compute the net forces at the beginning of the time step
     mop.computeForce(f);
     if( verbose )

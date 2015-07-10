@@ -127,10 +127,8 @@ public:
 	 */
 	inline void mark(Cell<CELL> c)
 	{
-		assert(m_markVector != NULL);
-
-		unsigned int a = m_map.getEmbedding(c) ;
-
+        assert(m_markVector != NULL);
+        unsigned int a = m_map.getEmbedding(c) ;
 		if (a == EMBNULL)
             a = Algo::Topo::template setOrbitEmbeddingOnNewCell<CELL, MAP>(m_map, c) ;
 
@@ -143,8 +141,9 @@ public:
 	inline void unmark(Cell<CELL> c)
 	{
 		assert(m_markVector != NULL);
-
+//        std::cerr << "unmarking dart " << c << " currLvl " << m_map.getCurrentLevel() << std::endl;
 		unsigned int a = m_map.getEmbedding(c) ;
+//        std::cerr << "a =  " << a << std::endl;
 
 		if (a == EMBNULL)
 			a = Algo::Topo::setOrbitEmbeddingOnNewCell(m_map, c) ;
@@ -158,11 +157,10 @@ public:
 	inline bool isMarked(Cell<CELL> c) const
 	{
 		assert(m_markVector != NULL);
-//        std::cerr << "dart index of c" << c.index() << std::endl ;
 		unsigned int a = m_map.getEmbedding(c) ;
+
 		if (a == EMBNULL)
 			return false ;
-
 		return m_markVector->operator[](a);
 	}
 
@@ -368,19 +366,19 @@ template <typename MAP, unsigned int CELL>
 class CellMarkerMemo: public CellMarkerBase<MAP, CELL>
 {
 protected:
-	std::vector<Dart> m_markedDarts ;
+    std::vector<Dart> m_markedDarts ;
 
 public:
 	CellMarkerMemo(MAP& map) :
 		CellMarkerBase<MAP, CELL>(map)
 	{
-		m_markedDarts.reserve(128);
+        m_markedDarts.reserve(128);
 	}
 
 	CellMarkerMemo(const MAP& map) :
 		CellMarkerBase<MAP, CELL>(map)
 	{
-		m_markedDarts.reserve(128);
+        m_markedDarts.reserve(128);
 	}
 
 	virtual ~CellMarkerMemo()
@@ -400,8 +398,9 @@ public:
 	{
 		if(!this->isMarked(c))
 		{
+//            std::cerr << "marking dart " << c << " currLvl " << m_map.getCurrentLevel() << std::endl;
 			CellMarkerBase<MAP, CELL>::mark(c) ;
-			m_markedDarts.push_back(c.dart) ;
+            m_markedDarts.push_back(c.dart) ;
 		}
 	}
 
@@ -425,7 +424,7 @@ public:
 		assert(this->m_markVector != NULL);
 		for (std::vector<Dart>::iterator it = m_markedDarts.begin(); it != m_markedDarts.end(); ++it)
 		{
-			this->unmark(*it) ;
+            this->CellMarkerBase<MAP, CELL>::unmark(*it) ;
 		}
 		m_markedDarts.clear();
 

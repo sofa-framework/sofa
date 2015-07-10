@@ -27,6 +27,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
 
+using sofa::helper::system::PluginManager;
 
 namespace sofa
 {
@@ -59,11 +60,27 @@ void RequiredPlugin::loadPlugin()
 {
     if(pluginName.getValue().empty()) pluginName.setValue( name.getValue() );
 
-    const std::string& pluginPath = pluginName.getValue();
+    PluginManager& pluginManager = PluginManager::getInstance();
 
-    sout << "Loading " << pluginPath << sendl;
-    sofa::helper::system::PluginManager::getInstance().loadPluginWithGui(pluginPath,&sout);
-    if( sout.tellp() ) sout << sendl;
+    const std::string path = pluginManager.findPlugin(pluginName.getValue());
+    if (path != "")
+    {
+        if (!PluginManager::getInstance().pluginIsLoaded(path))
+        {
+            if (PluginManager::getInstance().loadPlugin(path))
+            {
+                const std::string guiPath = pluginManager.findPlugin(pluginName.getValue() + "_" + PluginManager::s_gui_postfix);
+                if (guiPath != "")
+                {
+                    PluginManager::getInstance().loadPlugin(guiPath);
+                }
+            }
+        }
+    }
+    else
+    {
+        serr << "Plugin not found: " << pluginName.getValue() << sendl;
+    }
 }
 
 }

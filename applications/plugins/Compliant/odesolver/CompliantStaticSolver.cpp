@@ -255,7 +255,7 @@ void CompliantStaticSolver::ls_brent(helper& op,
         const int bits = 32;
         {
             using namespace boost;
-            unsigned long iter = info.iterations;
+            boost::uintmax_t iter = info.iterations;
             tie(res.x, res.f) = math::tools::brent_find_minima(f,
                                                                a.x, c.x,
                                                                bits,
@@ -326,7 +326,7 @@ public:
 
     core::MultiVecId id;
     
-    Result mstate(simulation::Node* node,
+    Result mstate(simulation::Node* /*node*/,
                   core::behavior::BaseMechanicalState* mm) {
 
         // add force to external force

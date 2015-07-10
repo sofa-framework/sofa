@@ -403,7 +403,7 @@ struct Assembly_test : public CompliantSolver_test
         MechanicalObject3::SPtr outOfScopeDOF = addNew<MechanicalObject3>(outOfScope,"outOfScopeDOF");
         outOfScopeDOF->resize(1);
         MechanicalObject3::WriteVecCoord x = outOfScopeDOF->writePositions();
-        x[0] = Vec3(0,0,0);
+        x[0] = Vec3(-1,0,0);
 
 
         // ======== object controlled by the solver
@@ -412,6 +412,8 @@ struct Assembly_test : public CompliantSolver_test
         // The solver
         complianceSolver = addNew<OdeSolver>(solverObject);
         complianceSolver->storeDynamicsSolution(true);
+        complianceSolver->f_printLog.setValue(true);
+        complianceSolver->debug.setValue(true);
         linearSolver = addNew<LinearSolver>(solverObject);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
@@ -457,7 +459,7 @@ struct Assembly_test : public CompliantSolver_test
 
         UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
         extension_node->addObject(compliance);
-        compliance->compliance.setName("connectionCompliance");
+        compliance->setName("connectionCompliance");
         compliance->compliance.setValue(0);
 
 
@@ -475,11 +477,15 @@ struct Assembly_test : public CompliantSolver_test
             expected.J(i,3*(i+1) ) =  1;
             expected.lambda(i) = -g*(n-1-i);
         }
-        expected.J(n-1,0      ) = -1;   // the constrained endpoint
-        expected.lambda(n-1) = g*n;
-        //        cerr<<"expected J = " << endl << DenseMatrix(expected.J) << endl;
-        //        cerr<<"expected dv = " << expected.dv.transpose() << endl;
-        //        cerr<<"expected lambda = " << expected.lambda.transpose() << endl;
+
+        // the constrained endpoint
+        expected.J( n-1, 0 ) = 1;
+
+
+        expected.lambda(n-1) = -g*n;
+//                cerr<<"expected J = " << endl << DenseMatrix(expected.J) << endl;
+//                cerr<<"expected dv = " << expected.dv.transpose() << endl;
+//                cerr<<"expected lambda = " << expected.lambda.transpose() << endl;
 
 
         //  ================= Run
@@ -491,13 +497,13 @@ struct Assembly_test : public CompliantSolver_test
 
         // actual results
         //        cerr<<"M = " << endl << DenseMatrix(assembled.M) << endl;
-        //        cerr<<"result, J = " << endl << DenseMatrix(complianceSolver->J()) << endl;
+//                cerr<<"result, J = " << endl << DenseMatrix(complianceSolver->J()) << endl;
         //        cerr<<"result, C = " << endl << DenseMatrix(complianceSolver->C()) << endl;
         //        cerr<<"P = " << endl << DenseMatrix(complianceSolver->P()) << endl;
         //        cerr<<"f = " << complianceSolver->getF().transpose() << endl;
         //        cerr<<"phi = " << complianceSolver->getPhi().transpose() << endl;
-        //        cerr<<"dv = " << complianceSolver->getDv().transpose() << endl;
-        //        cerr<<"lambda = " << complianceSolver->getLambda().transpose() << endl;
+//                cerr<<"dv = " << complianceSolver->getDv().transpose() << endl;
+//                cerr<<"lambda = " << complianceSolver->getLambda().transpose() << endl;
         //        cerr<<"lambda - expected.lambda = " << (complianceSolver->getLambda()-expected.lambda).transpose() << endl;
 
     }

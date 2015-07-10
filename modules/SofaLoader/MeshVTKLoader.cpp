@@ -302,7 +302,7 @@ bool MeshVTKLoader::setInputsMesh()
 
             if (cellData == NULL) return false;
 
-            cellData->resize(numSubPolyLines.size());
+            cellData->resize((int)numSubPolyLines.size());
 
             for (size_t ii = 0;  ii < numSubPolyLines.size(); ii++)
                 cellData->data[ii] = numSubPolyLines[ii];

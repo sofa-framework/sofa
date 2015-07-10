@@ -34,7 +34,6 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/collision/Intersection.inl>
-//#include <sofa/component/collision/RayPickInteractor.h>
 #include <iostream>
 #include <algorithm>
 #include <sofa/helper/gl/template.h>

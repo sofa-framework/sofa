@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_CORE_BEHAVIOR_PAIRINTERACTIONFORCEFIELD_CPP
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 
 namespace sofa

@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_CORE_MAPPING_CPP
 #include "Mapping.inl"
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -56,6 +57,7 @@ template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec2dTypes, sofa::defau
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::ExtVec3dTypes >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::ExtVec3fTypes >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Rigid3dTypes >;
+template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec6dTypes >;
 #endif
 
 #ifndef SOFA_DOUBLE
@@ -76,6 +78,7 @@ template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid2fTypes, sofa::def
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Rigid2fTypes >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::ExtVec3fTypes >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Rigid3fTypes >;
+template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec6fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT

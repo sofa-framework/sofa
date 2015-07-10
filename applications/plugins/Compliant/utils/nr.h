@@ -1,6 +1,11 @@
 #ifndef COMPLIANT_UTILS_NR_H
 #define COMPLIANT_UTILS_NR_H
 
+#if defined(WIN32) and (_MSC_VER<1800)  // before visual studio 12 (2013) 
+    #define copysign _copysign
+#endif
+
+
 #include <cmath>
 
 namespace utils {
@@ -62,7 +67,7 @@ namespace nr {
 //         SHFT(*fa,*fb,*fc,fu);
 //     }
 // }
-
+    
 template<class U>
 struct optimization {
 

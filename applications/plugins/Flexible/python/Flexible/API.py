@@ -32,98 +32,131 @@ def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, position=No
 
 class Deformable:
     """ This class reprents a deformable object build from a mesh.
-    @todo: make it multi mesh
+        Various cases are handled:
+        - collision model :
+            x static (loaded from file or subset of another static model)
+            x linearly mapped from dofs
+            x identity mapped from several collision models
+            x subset mapped from another collision model
+        - visual model :
+            x static (loaded from file or subset of another static model)
+            x linearly mapped from dof
+            x identity mapped from a collision model
+            x subset mapped from a collision model
     """
     
-    def __init__(self, node, name):
-        self.node=node.createChild(name)
+    def __init__(self, node, name = None):
+        if not name is None :
+            self.node=node.createChild(name)
+        else:
+            self.node=node
         self.name=name
-        self.dofs=None
         self.meshLoader=None
         self.topology=None
-        self.mass=None
+        self.dofs=None
         self.visual=None
         self.mapping=None
         self.normals=None
-        self.subset=None
+        self.mass=None
 
-    def addMesh(self, meshPath, offset = [0,0,0,0,0,0,1], scale=[1,1,1], triangulate=False):
+
+    def loadMesh(self, meshPath, offset = [0,0,0,0,0,0,1], scale=[1,1,1], triangulate=False):
         r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
         self.meshLoader = SofaPython.Tools.meshLoader(self.node, meshPath, translation=concat(offset[:3]) , rotation=concat(r), scale3d=concat(scale), triangulate=triangulate)
         self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.meshLoader.name )
-        self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs", src="@"+self.meshLoader.name)
 
-    def addFromDeformables(self, deformables=list()):
+    def loadVisual(self, meshPath, offset = [0,0,0,0,0,0,1], scale=[1,1,1], color=[1,1,1,1]):
+        r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
+        self.visual =  self.node.createObject("VisualModel", name="model", filename=meshPath, translation=concat(offset[:3]) , rotation=concat(r), scale3d=concat(scale), color=concat(color))
+        self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.visual.name )
+        self.normals = self.visual
+
+
+    def addVisual(self, color=[1,1,1,1]):
+        if self.dofs is None: # use static (triangulated) mesh from topology
+            self.visual = self.node.createObject("VisualModel", name="model", color=concat(color), src="@"+self.topology.name)
+            self.normals = self.visual
+        else:   # create a new deformable
+            d = Deformable(self.node,"Visual")
+            d.visualFromDeformable(self,color)
+            return d
+
+    def visualFromDeformable(self, deformable, color=[1,1,1,1]):
+        deformable.node.addChild(self.node)
+        self.visual = self.node.createObject("VisualModel", name="model", filename="@"+SofaPython.Tools.getObjectPath(deformable.meshLoader)+".filename", color=concat(color))
+        self.mapping = self.node.createObject("IdentityMapping", name="mapping", input='@'+deformable.node.getPathName(),output="@.")
+        self.normals = self.meshLoader
+
+    def subsetFromDeformable(self, deformable, indices ):
+        if not deformable.topology is None:
+            topo = SofaPython.Tools.getObjectPath(deformable.topology)
+            self.meshLoader = self.node.createObject("MeshSubsetEngine", template = "Vec3d", name='MeshSubsetEngine', inputPosition='@'+topo+'.position', inputTriangles='@'+topo+'.triangles', inputQuads='@'+topo+'.quads', indices=concat(indices))
+            self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.meshLoader.name)
+        if not deformable.dofs is None:
+            deformable.node.addChild(self.node)
+            self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs")
+            self.mapping = self.node.createObject("SubsetMapping", name='mapping', indices=concat(indices), input='@'+deformable.node.getPathName(),output="@.")
+
+    def fromDeformables(self, deformables=list()):
         args=dict()
         inputs=[]
         i=1
+        map = True
         for s in deformables:
             s.node.addChild(self.node)
             args["position"+str(i)]="@"+SofaPython.Tools.getObjectPath(s.topology)+".position"
             args["triangles"+str(i)]="@"+SofaPython.Tools.getObjectPath(s.topology)+".triangles"
             args["quads"+str(i)]="@"+SofaPython.Tools.getObjectPath(s.topology)+".quads"
             inputs.append('@'+s.node.getPathName())
+            if s.dofs is None:
+                map=False
             i+=1
-
         self.meshLoader =  self.node.createObject('MergeMeshes', name='MergeMeshes', nbMeshes=len(inputs), **args )
         self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.meshLoader.name )
-        self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs")
-        self.mapping = self.node.createObject("IdentityMultiMapping", template = "Vec3d,Vec3d",name='mapping',input=SofaPython.Tools.listToStr(inputs),output="@.")
+        if map is True:
+            self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs")
+            self.mapping = self.node.createObject("IdentityMultiMapping", name='mapping',input=SofaPython.Tools.listToStr(inputs),output="@.")
+
+    def addMechanicalObject(self):
+        if self.meshLoader is None:
+            print "[Flexible.Deformable] ERROR: no loaded mesh for ", name
+            return
+        self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs", src="@"+self.meshLoader.name)
 
     def addNormals(self, invert=False):
-        self.normals = self.node.createObject("NormalsFromPoints", template='Vec3d', name="normalsFromPoints", position='@'+self.dofs.name+'.position', triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
+        if self.topology is None:
+            print "[Flexible.Deformable] ERROR: no topology for ", name
+            return
+        pos = '@'+self.topology.name+'.position' if self.dofs is None else  '@'+self.dofs.name+'.position'
+        self.normals = self.node.createObject("NormalsFromPoints", template='Vec3d', name="normalsFromPoints", position=pos, triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
 
     def addMass(self,totalMass):
+        if self.dofs is None:
+            print "[Flexible.Deformable] ERROR: no dofs for ", name
+            return
         self.mass = self.node.createObject('UniformMass', totalMass=totalMass)
 
-    def addMapping(self, dofRigidNode=None, dofAffineNode=None, labelImage=None, labels=None, assemble=True):
+    def addMapping(self, dofRigidNode=None, dofAffineNode=None, labelImage=None, labels=None, useGlobalIndices=False, assemble=True):
         cell = ''
         if not labelImage is None and not labels is None : # use labels to select specific voxels in branching image
-           offsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+SofaPython.Tools.getObjectPath(self.topology)+".position", src="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage), labels=concat(labels))
+           offsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+self.topology.name+".position", src="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage), labels=concat(labels), useGlobalIndices=useGlobalIndices)
            cell = "@"+SofaPython.Tools.getObjectPath(offsets)+".cell"
         self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, self.topology, cell, assemble)
 
-    def addVisual(self, color=[1,1,1,1]):
-        self.visual = Deformable.VisualModel(self.node, color)
-
-    class VisualModel:
-        def __init__(self, node, color=[1,1,1,1] ):
-            self.node = node.createChild("visual")
-            self.model = self.node.createObject("VisualModel", name="model", color=concat(color))
-            self.mapping = self.node.createObject("IdentityMapping", name="mapping")
-
-    def addSubset(self, indices ):
-        self.subset = Deformable.SubsetModel(self.node, indices, self.topology)
-
-    class SubsetModel:
-        def __init__(self, node, indices, topology=None):
-            self.node = node.createChild("subset")
-            self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs")
-            self.mapping = self.node.createObject("SubsetMapping", template = "Vec3d,Vec3d", indices=concat(indices))
-            if topology:
-                self.subsetEngine = self.node.createObject("MeshSubsetEngine", template = "Vec3d", inputPosition='@../'+topology.name+'.position', inputTriangles='@../'+topology.name+'.triangles', inputQuads='@../'+topology.name+'.quads', indices=concat(indices))
-                self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.subsetEngine.name )
-        def addNormals(self, invert=False):
-            self.normals = self.node.createObject("NormalsFromPoints", template='Vec3d', name="normalsFromPoints", position='@'+self.dofs.name+'.position', triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
-        def addVisual(self, color=[1,1,1,1]):
-            self.visual = Deformable.VisualModel(self.node, color)
-
-
-
-# TODO: refactor this
+    # @todo: update this:
     def addSkinning(self, bonesPath, indices, weights, assemble=True):
-        self.mapping = self.node.createObject(
-            "LinearMapping", template="Rigid3d,Vec3d", name="skinning",
-            input="@"+bonesPath, indices=concat(indices), weights=concat(weights), assemble=assemble)
+        self.mapping = self.node.createObject("LinearMapping", template="Rigid3d,Vec3d", name="mapping", input="@"+bonesPath, indices=concat(indices), weights=concat(weights), assemble=assemble)
+
+
+
 
 class AffineMass:
-    def __init__(self, node, dofAffineNode):
-        self.node = node # a children node of all nodes and shape function
+    def __init__(self, dofAffineNode):
         self.dofAffineNode = dofAffineNode # where the mechanical state is located
         self.mass = None
 
-    def massFromDensityImage(self, dofRigidNode, densityImage, lumping='0'):
-        node = self.node.createChild('Mass')
+    def massFromDensityImage(self, dofNode, dofRigidNode, densityImage, lumping='0'):
+        node = dofNode.createChild('Mass')
         dof = node.createObject('MechanicalObject', name='massPoints', template='Vec3d')
         insertLinearMapping(node, dofRigidNode, self.dofAffineNode, dof, assemble=False)
         densityImage.addBranchingToImage('0') # MassFromDensity on branching images does not exist yet
@@ -138,11 +171,13 @@ class AffineMass:
 
     def read(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
-        data = dict()
-        with open(filename,'r') as f:
-            data.update(json.load(f))
-        self.mass = self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix=data['massMatrix'])
-        print 'Imported Affine Mass from '+filename
+
+        if os.path.isfile(filename):
+            data = dict()
+            with open(filename,'r') as f:
+                data.update(json.load(f))
+            self.mass = self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix=data['massMatrix'])
+            print 'Imported Affine Mass from '+filename
 
     def write(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
@@ -183,11 +218,12 @@ class AffineDof:
 
     def read(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
-        data = dict()
-        with open(filename,'r') as f:
-            data.update(json.load(f))
-        self.dof = self.node.createObject("MechanicalObject", template="Affine", name="dofs", position=data['position'], rest_position=data['rest_position'])
-        print 'Imported Affine Dof from '+filename
+        if os.path.isfile(filename):
+            data = dict()
+            with open(filename,'r') as f:
+                data.update(json.load(f))
+            self.dof = self.node.createObject("MechanicalObject", template="Affine", name="dofs", position=data['position'], rest_position=data['rest_position'])
+            print 'Imported Affine Dof from '+filename
 
     def write(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
@@ -205,17 +241,17 @@ class ShapeFunction:
         self.node = node
         self.shapeFunction=None
    
-    def addVoronoi(self, image, position=None, cells=''):
-        """ Add a Voronoi shape function using position from position component and BranchingImage image
+    def addVoronoi(self, image, position='', cells='', nbRef=8):
+        """ Add a Voronoi shape function using path to position  and possibly cells
         """
-        if position is None:
+        if position =='':
             print "[Flexible.API.ShapeFunction] ERROR: no position"
         imagePath = SofaPython.Tools.getObjectPath(image.branchingImage)
         self.shapeFunction = self.node.createObject(
             "VoronoiShapeFunction", template="ShapeFunctiond,"+"Branching"+image.imageType, 
-            name="shapeFunction", cells=cells,
-            position="@"+SofaPython.Tools.getObjectPath(position)+".position",
-            src="@"+imagePath, method=0, nbRef=8, bias=True)
+            name="shapeFunction", cell=cells,
+            position=position,
+            src="@"+imagePath, method=0, nbRef=nbRef, bias=True)
    
     def getFilenameIndices(self, filenamePrefix=None, directory=""):
         _filename=filenamePrefix if not filenamePrefix is None else "SF"
@@ -305,6 +341,9 @@ class Behavior:
         with open(filename,'r') as f:
             data.update(json.load(f))
         self.sampler = self.node.createObject('GaussPointContainer',name='GPContainer', volumeDim=data['volumeDim'], inputVolume=data['inputVolume'], position=data['position'])
+        if not self.labelImage is None and not self.labels is None:
+            celloffsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+SofaPython.Tools.getObjectPath(self.sampler)+".position", src="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage), labels=concat(self.labels))
+            self.cell = "@"+SofaPython.Tools.getObjectPath(celloffsets)+".cell"
         print 'Imported Gauss Points from '+filename
 
     def write(self, filenamePrefix=None, directory=""):
@@ -321,8 +360,8 @@ class Behavior:
         eNode = self.node.createChild("E")
         eNode.createObject('MechanicalObject',  template="E"+self.type, name="E")
         eNode.createObject(strainMeasure+'StrainMapping', template="F"+self.type+",E"+self.type, assemble=assemble)
-        eNode.createObject('HookeForceField',  template="E"+self.type, youngModulus= youngModulus, poissonRatio=poissonRatio, viscosity=viscosity, assemble=assemble, isCompliance=False)
+        eNode.createObject('HookeForceField', name="ff", template="E"+self.type, youngModulus= youngModulus, poissonRatio=poissonRatio, viscosity=viscosity, assemble=assemble, isCompliance=False)
 
     def addProjective(self, youngModulus=0, viscosity=0, assemble=True):
-        self.node.createObject('ProjectiveForceField', template="F"+self.type,  youngModulus=youngModulus, viscosity=viscosity,assemble=assemble)
+        self.node.createObject('ProjectiveForceField', name="ff", template="F"+self.type,  youngModulus=youngModulus, viscosity=viscosity,assemble=assemble)
 

@@ -1,7 +1,6 @@
 #ifndef LABELPOINTIMAGETOOLBOX_H
 #define LABELPOINTIMAGETOOLBOX_H
 
-#include <sofa/component/component.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 

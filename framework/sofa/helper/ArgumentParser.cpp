@@ -27,6 +27,7 @@
 // Francois Faure, iMAGIS-GRAVIR, May 2001
 //========================================================
 #include "ArgumentParser.h"
+#include <sofa/helper/Logger.h>
 
 namespace sofa
 {
@@ -145,10 +146,11 @@ void ArgumentParser::operator () ( std::list<std::string> str )
             if( longName.find(a) != longName.end() )
             {
                 if( !(longName[ a ]->read( str )))
-                    std::cerr<< "\ncould not read value for option " << name << std::endl << std::endl;
+                    Logger::getMainLogger().log(Logger::Warning, std::string("Could not read value for option: ") + name);
                 else parameter_set[longName[ a ]] = true;
             }
-            else std::cerr << "\nUnknown option " << name << std::endl << std::endl;
+            else
+                Logger::getMainLogger().log(Logger::Warning, std::string("Unknown option: ") + name);
         }
 
         // short names (possibly concatenated)
@@ -160,15 +162,18 @@ void ArgumentParser::operator () ( std::list<std::string> str )
                 if( shortName.find(a) != shortName.end() )
                 {
                     if( !(shortName[ a ]->read( str )))
-                        std::cerr<< "\ncould not read value for option " << name << std::endl << std::endl;
+                        Logger::getMainLogger().log(Logger::Warning, std::string("Could not read value for option: ") + name);
+
                     else parameter_set[shortName[ a ]] = true;
                 }
-                else std::cerr << "\nUnknown option " << name[i] << std::endl << std::endl;
+                else
+                    Logger::getMainLogger().log(Logger::Warning, std::string("Unknown option: ") + name[i]);
             }
         }
 
-        //
-        else std::cerr << "Unknown option " << name << std::endl;
+        else
+            Logger::getMainLogger().log(Logger::Warning, std::string("Unknown option: ") + name);
+
     }
 
     // Unset mandatory arguments ?

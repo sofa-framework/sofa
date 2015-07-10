@@ -675,7 +675,7 @@ public:
     /// If the norm is too small, the vector becomes the failsafe.
     void normalize(Vec<N,real> failsafe, real threshold=std::numeric_limits<real>::epsilon())
     {
-        if( !normalize() ) *this=failsafe;
+        if( !normalize(threshold) ) *this=failsafe;
     }
 
     /// Return the normalized the vector.

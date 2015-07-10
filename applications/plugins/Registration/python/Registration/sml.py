@@ -47,8 +47,7 @@ class SceneRegisterArticulatedRigid(Compliant.sml.SceneArticulatedRigid):
         self.node.createObject('RequiredPlugin', name='Registration')
 
         # Merge rigids in one node
-        self.createChild(self.node, "dofRigid")
-        self.insertMergeRigid(self.nodes["dofRigid"], "bone")
+        self.nodes["dofRigid"] = self.insertMergeRigid("dofRigid", "bone")
 
         # Target node
         if "target" in self.model.solidsByTag.keys():

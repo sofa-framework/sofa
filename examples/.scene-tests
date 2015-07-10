@@ -1,5 +1,5 @@
 # This runs very slowly, so compute only a few iterations
-iterations "Components/solver/NewmarkImplicitSolver.scn" "10"
+iterations "Components/solver/NewmarkImplicitSolver.scn" "5"
 timeout "Components/solver/NewmarkImplicitSolver.scn" "60"
 
 # Idem
@@ -37,3 +37,5 @@ ignore "Tutorials/Mappings/TutorialMappingOctopusArticulated.scn"
 # We can't use CUDA on the build slaves, so let's just ignore this scene that
 # uses the SofaCUDA plugin.
 ignore "Benchmark/Accuracy/cylinder_TLEDTetraSolution.scn"
+
+

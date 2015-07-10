@@ -1024,8 +1024,9 @@ void VisualModelImpl::computeTangents()
 void VisualModelImpl::computeBBox(sofa::core::ExecParams* params, bool)
 {
     const VecCoord& x = getVertices(); //m_vertices.getValue(params);
-    SReal minBBox[3] = {1e10,1e10,1e10};
-    SReal maxBBox[3] = {-1e10,-1e10,-1e10};
+
+    SReal minBBox[3] = {std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max()};
+    SReal maxBBox[3] = {-std::numeric_limits<Real>::max(),-std::numeric_limits<Real>::max(),-std::numeric_limits<Real>::max()};
     for (unsigned int i = 0; i < x.size(); i++)
     {
         const Coord& p = x[i];

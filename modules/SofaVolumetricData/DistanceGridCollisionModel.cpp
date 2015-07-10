@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_CPP
 #include <SofaVolumetricData/DistanceGridCollisionModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
