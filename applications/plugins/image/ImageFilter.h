@@ -188,7 +188,7 @@ protected:
     {
         bool updateImage = this->inputImage.isDirty();	// change of input image -> update output image
         bool updateTransform = this->inputTransform.isDirty();	// change of input transform -> update output transform
-        //if(!updateImage && !updateTransform) {updateImage=true; updateTransform=true;}  // change of parameters -> update all
+        if(!updateImage && !updateTransform) {updateImage=true; updateTransform=true;}  // change of parameters -> update all
 
         raParam p(this->param);
         raTransform inT(this->inputTransform);
@@ -205,6 +205,7 @@ protected:
         CImgList<To>& img = out->getCImgList();
         if(updateImage) img.assign(inimg);	// copy
         if(updateTransform) outT->operator=(inT);	// copy
+
         switch(this->filter.getValue().getSelectedId())
         {
         case BLURDERICHE:
