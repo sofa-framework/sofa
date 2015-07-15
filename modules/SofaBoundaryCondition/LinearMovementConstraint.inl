@@ -340,6 +340,21 @@ void LinearMovementConstraint<DataTypes>::findKeyTimes()
     }
 }
 
+
+template <class DataTypes>
+void LinearMovementConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+{
+    static const unsigned blockSize = DataTypes::deriv_total_size;
+
+    // clears the rows and columns associated with fixed particles
+    for(SetIndexArray::const_iterator it= m_indices.getValue().begin(), iend=m_indices.getValue().end(); it!=iend; it++ )
+    {
+        M->clearRowsCols( offset + (*it) * blockSize, offset + (*it+1) * (blockSize) );
+    }
+    
+}
+
+
 // Matrix Integration interface
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
