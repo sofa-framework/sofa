@@ -64,6 +64,12 @@ static std::wstring widenString(const std::string& s);
 /// @return The converted string on success, or a empty string on failure.
 static std::string narrowString(const std::wstring& ws);
 
+/// @brief Convert a string to lower case.
+static std::string downcaseString(const std::string& s);
+
+/// @brief Convert a string to upper case.
+static std::string upcaseString(const std::string& s);
+
 #if defined WIN32 || defined _XBOX
 
 /// @brief Simple wrapper around the Windows function GetLastError().
