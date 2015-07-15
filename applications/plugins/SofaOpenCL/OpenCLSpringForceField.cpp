@@ -44,6 +44,21 @@
 namespace sofa
 {
 
+namespace core
+{
+
+namespace behavior
+{
+
+template class PairInteractionForceField<sofa::gpu::opencl::OpenCLVec3fTypes>;
+template class PairInteractionForceField<sofa::gpu::opencl::OpenCLVec3f1Types>;
+template class PairInteractionForceField<sofa::gpu::opencl::OpenCLVec3dTypes>;
+template class PairInteractionForceField<sofa::gpu::opencl::OpenCLVec3d1Types>;
+
+} // namespace behavior
+
+} // namespace core
+
 namespace component
 {
 
