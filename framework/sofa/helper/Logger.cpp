@@ -43,6 +43,11 @@ Logger::~Logger()
 {
 }
 
+void Logger::mainlog(Level level, const std::string& message, const std::string& location)
+{
+    getMainLogger().log( level, message, location );
+}
+
 void Logger::setLevel(Level level)
 {
     m_currentLevel = level;

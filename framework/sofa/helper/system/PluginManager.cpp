@@ -26,8 +26,11 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/Utils.h>
 #include <sofa/helper/Logger.h>
 #include <fstream>
+
+using sofa::helper::Utils;
 
 namespace sofa
 {
@@ -159,10 +162,9 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
     return true;
 }
 
-bool PluginManager::loadPlugin(const std::string& plugin, std::ostream* errlog)
+bool PluginManager::loadPluginByName(const std::string& pluginName, std::ostream* errlog)
 {
-    // Is 'plugin' the name of the plugin, or the path?
-    std::string pluginPath = FileSystem::exists(plugin)? plugin : findPlugin(plugin);
+    std::string pluginPath = findPlugin(pluginName);
 
     if (pluginPath != "")
     {
@@ -170,11 +172,21 @@ bool PluginManager::loadPlugin(const std::string& plugin, std::ostream* errlog)
     }
     else
     {
-        const std::string msg = "Plugin not found: \"" + pluginPath + "\"";
+        const std::string msg = "Plugin not found: \"" + pluginName + "\"";
         Logger::getMainLogger().log(Logger::Error, msg, "PluginManager");
         if (errlog) (*errlog) << msg << std::endl;
         return false;
     }
+}
+
+bool PluginManager::loadPlugin(const std::string& plugin, std::ostream* errlog)
+{
+    // If 'plugin' ends with ".so", ".dll" or ".dylib", this is a path
+    const std::string dotExt = "." + DynamicLibrary::extension;
+    if (std::equal(dotExt.rbegin(), dotExt.rend(), plugin.rbegin()))
+        return loadPluginByPath(plugin, errlog);
+    else
+        return loadPluginByName(plugin, errlog);
 }
 
 bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* errlog)
@@ -234,7 +246,9 @@ void PluginManager::init(const std::string& pluginPath)
 	}
 }
 
-std::string PluginManager::findPlugin(const std::string& pluginName)
+
+
+std::string PluginManager::findPlugin(const std::string& pluginName, bool ignoreCase)
 {
     std::string name(pluginName);
 #ifdef SOFA_LIBSUFFIX
@@ -242,11 +256,31 @@ std::string PluginManager::findPlugin(const std::string& pluginName)
 #endif
     const std::string libName = DynamicLibrary::prefix + name + "." + DynamicLibrary::extension;
 
-    for(std::vector<std::string>::iterator i = m_searchPaths.begin(); i!=m_searchPaths.end(); i++)
+    // First try: case sensitive
+    for (std::vector<std::string>::iterator i = m_searchPaths.begin(); i!=m_searchPaths.end(); i++)
     {
         const std::string path = *i + "/" + libName;
         if (FileSystem::exists(path))
             return path;
+    }
+    // Second try: case insensitive
+    if (ignoreCase)
+    {
+        for (std::vector<std::string>::iterator i = m_searchPaths.begin(); i!=m_searchPaths.end(); i++)
+        {
+            const std::string& dir = *i;
+            const std::string path = dir + "/" + libName;
+            const std::string downcaseLibName = Utils::downcaseString(libName);
+            std::vector<std::string> files;
+            FileSystem::listDirectory(dir, files);
+            for(std::vector<std::string>::iterator j = files.begin(); j != files.end(); j++)
+            {
+                const std::string& filename = *j;
+                const std::string downcaseFilename = Utils::downcaseString(filename);
+                if (downcaseFilename == downcaseLibName)
+                    return dir + "/" + filename;
+            }
+        }
     }
     return "";
 }

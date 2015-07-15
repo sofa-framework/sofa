@@ -9,7 +9,7 @@
 namespace sofa {
 namespace helper {
 
-    Console::ColorsStatus Console::s_colorsStatus = Console::ColorsDisabled;
+    Console::ColorsStatus Console::s_colorsStatus = Console::ColorsAuto;
 
 #ifdef WIN32
 
