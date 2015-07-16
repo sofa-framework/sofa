@@ -96,6 +96,7 @@ set(HEADER_FILES
     Utils.h
 	IndexOpenMP.h
 	Logger.h
+    messaging/Messaging.h
     messaging/Message.h
     messaging/MessageDispatcher.h
     messaging/MessageHandler.h
