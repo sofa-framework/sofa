@@ -33,7 +33,7 @@
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <iostream>
 #include <algorithm>
-#include <memory>
+#include <boost/scoped_ptr.hpp>
 
 
 namespace sofa
@@ -138,7 +138,7 @@ public:
     virtual ~ExtVectorAllocator() {}
     virtual void resize(value_type*& data, size_type size, size_type& maxsize, size_type& cursize)=0;
     virtual void close(value_type*& data)=0;
-    virtual std::auto_ptr<ExtVectorAllocator> clone() = 0;
+    virtual void cloneTo( boost::scoped_ptr<ExtVectorAllocator>& clone ) = 0; ///< clone "this" into given "clone"
 };
 
 /// Custom vector class.
@@ -159,7 +159,7 @@ protected:
     value_type* data;
     size_type   maxsize;
     size_type   cursize;
-    std::auto_ptr<ExtVectorAllocator<T> > allocator;
+    boost::scoped_ptr<ExtVectorAllocator<T> > allocator;
 
 public:
     explicit ExtVector(ExtVectorAllocator<T>* alloc = NULL) : data(NULL),  maxsize(0), cursize(0), allocator(alloc) {}
@@ -245,7 +245,7 @@ public:
         {
             allocator->close(data);
         }
-        allocator = ev.allocator->clone();
+        ev.allocator->cloneTo( allocator );
         if(allocator.get())
         {
             allocator->resize(data, ev.cursize, maxsize, cursize);
@@ -258,8 +258,9 @@ public:
     }
 
     ExtVector(const ExtVector& ev)
-        : data(0), maxsize(0), cursize(0), allocator(ev.allocator->clone())
+        : data(0), maxsize(0), cursize(0)
     {
+        ev.allocator->cloneTo( allocator );
         allocator->resize(data, ev.cursize, maxsize, cursize);
         if(data != 0)
         {
@@ -320,9 +321,9 @@ public:
         }
         cursize = size;
     }
-    virtual std::auto_ptr<ExtVectorAllocator<T> > clone()
+   virtual void cloneTo( boost::scoped_ptr< ExtVectorAllocator<T> >& clone )
     {
-        return std::auto_ptr<ExtVectorAllocator<T> >(new DefaultAllocator<T>);
+        clone.reset( new DefaultAllocator<T> );
     }
 };
 

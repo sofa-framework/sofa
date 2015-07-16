@@ -116,7 +116,7 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
     if (pluginIsLoaded(pluginPath))
     {
         const std::string msg = "Plugin already loaded: " + pluginPath;
-        Logger::getMainLogger().log(Logger::Warning, msg, "PluginManager");
+//        Logger::getMainLogger().log(Logger::Warning, msg, "PluginManager");
         if (errlog) (*errlog) << msg << std::endl;
         return false;
     }
