@@ -96,7 +96,13 @@ set(HEADER_FILES
     Utils.h
 	IndexOpenMP.h
 	Logger.h
-	)
+    messaging/Message.h
+    messaging/MessageDispatcher.h
+    messaging/MessageHandler.h
+    messaging/MessageFormatter.h
+    messaging/ClangStyleMessageFormatter.h
+    messaging/DefaultStyleMessageFormatter.h
+ 	)
 
 set(SOURCE_FILES
 
@@ -152,7 +158,11 @@ set(SOURCE_FILES
     kdTree.cpp
     Utils.cpp
 	Logger.cpp
-	)
+    messaging/Message.cpp
+    messaging/MessageDispatcher.cpp
+    messaging/ClangStyleMessageFormatter.cpp
+    messaging/DefaultStyleMessageFormatter.cpp
+ 	)
 
 if(SOFA-EXTERNAL_BOOST)
 	list(APPEND HEADER_FILES "system/thread/TimeoutWatchdog.h")

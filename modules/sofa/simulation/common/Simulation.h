@@ -134,9 +134,13 @@ public:
     /// Can the simulation handle a directed acyclic graph?
     virtual bool isDirectedAcyclicGraph() = 0;
 
+    /// Text message system
+//    sofa::helper::TextMessageDispatcher::SPtr getTextMessageDispatcher();
+
 protected:
     /// The only one top root Node of the Sofa scene
     static Node::SPtr sRoot;
+//    sofa::helper::TextMessageDispatcher::SPtr m_TextMessageDispatcher;
 };
 
 /// Set the (unique) simulation which controls the scene
