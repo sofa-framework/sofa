@@ -31,8 +31,8 @@
 #ifndef CLANGSTYLEMESSAGEFORMATTER_H
 #define CLANGSTYLEMESSAGEFORMATTER_H
 #include <sstream>
-#include <string>
 #include "MessageFormatter.h"
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
@@ -44,7 +44,7 @@ namespace messaging
 {
 
 
-class ClangStyleMessageFormatter : public MessageFormatter
+class SOFA_HELPER_API ClangStyleMessageFormatter : public MessageFormatter
 {
 public:
     static MessageFormatter* getInstance();

@@ -29,7 +29,9 @@
 * in the messaging.h file.
 ******************************************************************************/
 
-#include <sstream>
+#include "ClangStyleMessageFormatter.h"
+#include "Message.h"
+
 using std::ostringstream ;
 
 #include <iostream>
@@ -37,7 +39,6 @@ using std::endl ;
 using std::cout ;
 using std::cerr ;
 
-#include "ClangStyleMessageFormatter.h"
 
 
 namespace sofa

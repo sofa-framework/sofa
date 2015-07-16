@@ -33,6 +33,7 @@
 #include <sstream>
 #include <string>
 #include "MessageFormatter.h"
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
@@ -43,7 +44,7 @@ namespace helper
 namespace messaging
 {
 
-class DefaultStyleMessageFormatter : public MessageFormatter
+class SOFA_HELPER_API DefaultStyleMessageFormatter : public MessageFormatter
 {
 public:
     static MessageFormatter* getInstance();

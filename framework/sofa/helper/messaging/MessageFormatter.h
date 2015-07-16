@@ -32,8 +32,7 @@
 #define MESSAGEFORMATTER_H
 
 #include <sstream>
-
-#include "Message.h"
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
@@ -44,7 +43,9 @@ namespace helper
 namespace messaging
 {
 
-class MessageFormatter
+class Message;
+
+class SOFA_HELPER_API MessageFormatter
 {
 public:
     virtual void formatMessage(const Message& m,std::ostream& out) = 0 ;

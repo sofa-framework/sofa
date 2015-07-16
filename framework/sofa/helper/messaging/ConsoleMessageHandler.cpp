@@ -20,7 +20,7 @@
 *                                                                             *
 * This component is open-source                                               *
 *                                                                             *
-* Authors: Bruno Carrez                                                       *
+* Authors: Damien Marchal                                                     *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -33,12 +33,11 @@
 using std::ostringstream ;
 
 #include <iostream>
-using std::endl ;
-using std::cout ;
-using std::cerr ;
 
-#include "DefaultStyleMessageFormatter.h"
 #include "Message.h"
+#include "MessageFormatter.h"
+#include "ConsoleMessageHandler.h"
+#include "DefaultStyleMessageFormatter.h"
 
 
 namespace sofa
@@ -50,70 +49,19 @@ namespace helper
 namespace messaging
 {
 
-static DefaultStyleMessageFormatter s_DefaultStyleMessageFormatter;
-
-#define BLUE "\033[1;34m "
-#define GREEN "\033[1;32m "
-#define CYAN "\033[1;36m "
-#define RED "\033[1;31m "
-#define PURPLE "\033[1;35m "
-#define YELLOW "\033[1;33m "
-#define WHITE "\033[1;37m "
-#define ENDL " \033[0m"
-
-MessageFormatter* DefaultStyleMessageFormatter::getInstance()
+ConsoleMessageHandler::ConsoleMessageHandler(MessageFormatter* formatter)
 {
-    return &s_DefaultStyleMessageFormatter;
+    m_formatter = (formatter==0?DefaultStyleMessageFormatter::getInstance():formatter);
 }
 
-
-void reformat(unsigned int begin, const std::string& input, std::ostream& out)
-{
-    unsigned int linebreak = 120 ;
-    unsigned int idx=begin ;
-    unsigned int curr=0 ;
-    while(curr < input.size()){
-        if(idx==linebreak){
-            out << endl ;
-            for(unsigned int i=0;i<begin;i++)
-                out << ' ' ;
-            idx=begin ;
-
-            if(input[curr]==' ')curr ++ ;
-        }
-        if(curr >= input.size()) break;
-        out << input[curr++] ;
-        idx++;
-    }
-}
-
-void DefaultStyleMessageFormatter::formatMessage(const Message& m,std::ostream& out)
-{
-    std::ostringstream tmpStr;
-    if(m.type() == "info"){
-        tmpStr << GREEN << "[INFO]" << ENDL ;
-    }else if(m.type() == "warn"){
-        tmpStr << CYAN << "[WARN]" << ENDL ;
-    }else if(m.type() == "error"){
-        tmpStr << RED << "[ERROR]" << ENDL ;
-    }else if(m.type() == "fatal"){
-        tmpStr << RED << "[FATAL]" << ENDL ;
-    }
-
-    tmpStr << "[" << m.sendername() << "]: ";
-
-    //todo(damien): this is ugly !! the -11 is to remove the color codes from the string !
-    // fix this by making a function that count the size of a string ignoring the escapes...
-    // or adding the color code when the formatting is already finished.
-    unsigned int numspaces = tmpStr.str().size() - 10 ;
-    if(numspaces >= tmpStr.str().size() ){
-        numspaces = tmpStr.str().size() ;
-    }
-    reformat(numspaces+2, m.message(), tmpStr) ;
-    out << tmpStr.str();
+void ConsoleMessageHandler::process(Message &m) {
+    ostringstream out;
+    m_formatter->formatMessage(m, out) ;
+    std::cout << out.str() << std::endl ;
 }
 
 
 } // messaging
 } // helper
 } // sofa
+
