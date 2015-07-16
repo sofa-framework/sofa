@@ -22,19 +22,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "Sofa_test.h"
-
-#include <SofaComponentMain/init.h>
-
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/common/Node.h>
-
 #include <SofaBaseMechanics/DiagonalMass.h>
+
+#include <SofaBaseMechanics/initBaseMechanics.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 
+#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+
+#include <gtest/gtest.h>
 
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
@@ -54,7 +55,7 @@ public:
 
     virtual void SetUp()
     {
-        component::init();
+        component::initBaseMechanics();
         simulation::setSimulation(simulation = new simulation::graph::DAGSimulation());
         root = simulation::getSimulation()->createNewGraph("root");
     }
@@ -132,7 +133,7 @@ TYPED_TEST(DiagonalMass_test, singleHexahedron)
     EXPECT_FLOAT_EQ(0.125, mass->f_mass.getValue()[7]);
 
     // Check the total mass.
-    EXPECT_FLOAT_EQ(mass->m_totalMass.getValue(), 1.0);
+    EXPECT_FLOAT_EQ(1.0f, mass->m_totalMass.getValue());
 }
 
 } // namespace sofa
