@@ -33,6 +33,7 @@
 #define MESSAGE_H
 #include <iostream>
 #include <string>
+#include <sofa/helper/helper.h>
 
 namespace sofa {
 namespace core {
@@ -56,7 +57,7 @@ using sofa::core::objectmodel::Base ;
 using std::ostream ;
 using std::string ;
 
-class Message
+class SOFA_HELPER_API Message
 {
 public:
     // todo(damien): I don't like the two version one with the base an other with a sendername...

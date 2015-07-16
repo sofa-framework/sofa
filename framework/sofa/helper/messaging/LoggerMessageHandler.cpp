@@ -20,7 +20,7 @@
 *                                                                             *
 * This component is open-source                                               *
 *                                                                             *
-* Authors: Bruno Carrez                                                       *
+* Authors: Damien Marchal                                                     *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -28,17 +28,22 @@
 * User of this library should read the documentation
 * in the messaging.h file.
 ******************************************************************************/
-
 #include <sstream>
 using std::ostringstream ;
 
 #include <iostream>
 using std::endl ;
-using std::cout ;
 using std::cerr ;
 
-#include "DefaultStyleMessageFormatter.h"
+#include <map>
+using std::map ;
+
+//#include <string>
+//using std::string ;
+
 #include "Message.h"
+#include "LoggerMessageHandler.h"
+
 
 
 namespace sofa
@@ -50,70 +55,33 @@ namespace helper
 namespace messaging
 {
 
-static DefaultStyleMessageFormatter s_DefaultStyleMessageFormatter;
+// todo(damien) this should something we can change dynamically :)
+const unsigned int messagequeuesize = 10000;
+map<int, Message> s_m_messages ;
 
-#define BLUE "\033[1;34m "
-#define GREEN "\033[1;32m "
-#define CYAN "\033[1;36m "
-#define RED "\033[1;31m "
-#define PURPLE "\033[1;35m "
-#define YELLOW "\033[1;33m "
-#define WHITE "\033[1;37m "
-#define ENDL " \033[0m"
-
-MessageFormatter* DefaultStyleMessageFormatter::getInstance()
+const Message& LoggerMessageHandler::getMessageAt(int index)
 {
-    return &s_DefaultStyleMessageFormatter;
+    if(s_m_messages.find(index) == s_m_messages.end()){
+        return Message::empty ;
+    }
+
+    return s_m_messages.find(index)->second ;
 }
 
-
-void reformat(unsigned int begin, const std::string& input, std::ostream& out)
+// todo(damien): implement a real way to control the size of the log.
+void LoggerMessageHandler::process(Message& m)
 {
-    unsigned int linebreak = 120 ;
-    unsigned int idx=begin ;
-    unsigned int curr=0 ;
-    while(curr < input.size()){
-        if(idx==linebreak){
-            out << endl ;
-            for(unsigned int i=0;i<begin;i++)
-                out << ' ' ;
-            idx=begin ;
+    s_m_messages[m.id()] = m ;
 
-            if(input[curr]==' ')curr ++ ;
-        }
-        if(curr >= input.size()) break;
-        out << input[curr++] ;
-        idx++;
+    if(s_m_messages.size() >= messagequeuesize){
+        cerr << "There is too much messages in the message queue. To remove this error you need to "
+                     "1) send me an email explaining that you reach the 10K limit and that I "
+                     "have no excuse to delay the proper implementation of the LoggerMessageHandler" << endl;
     }
-}
-
-void DefaultStyleMessageFormatter::formatMessage(const Message& m,std::ostream& out)
-{
-    std::ostringstream tmpStr;
-    if(m.type() == "info"){
-        tmpStr << GREEN << "[INFO]" << ENDL ;
-    }else if(m.type() == "warn"){
-        tmpStr << CYAN << "[WARN]" << ENDL ;
-    }else if(m.type() == "error"){
-        tmpStr << RED << "[ERROR]" << ENDL ;
-    }else if(m.type() == "fatal"){
-        tmpStr << RED << "[FATAL]" << ENDL ;
-    }
-
-    tmpStr << "[" << m.sendername() << "]: ";
-
-    //todo(damien): this is ugly !! the -11 is to remove the color codes from the string !
-    // fix this by making a function that count the size of a string ignoring the escapes...
-    // or adding the color code when the formatting is already finished.
-    unsigned int numspaces = tmpStr.str().size() - 10 ;
-    if(numspaces >= tmpStr.str().size() ){
-        numspaces = tmpStr.str().size() ;
-    }
-    reformat(numspaces+2, m.message(), tmpStr) ;
-    out << tmpStr.str();
 }
 
 
 } // messaging
 } // helper
 } // sofa
+
