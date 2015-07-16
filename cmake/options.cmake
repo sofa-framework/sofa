@@ -201,8 +201,10 @@ if( NOT WIN32 ) # TODO detect visual studio versions? some are c++11 compatible
 #        add_definitions(-std=c++11) # is also adding the flag to the C compiler...
 
         if(CMAKE_COMPILER_IS_GNUCXX)
-            execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
-            if (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
+
+            EXEC_PROGRAM(${CMAKE_CXX_COMPILER} ARGS ${CMAKE_CXX_COMPILER_ARG1} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+
+            if(GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
                 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
             elseif(GCC_VERSION VERSION_GREATER 4.3 OR GCC_VERSION VERSION_EQUAL 4.3)
                 message(WARNING "c++0x activated. g++ compiler with a version >= 4.7 is needed to fully support c++11.")
