@@ -145,6 +145,20 @@ struct SOFA_TestPlugin_API Sofa_test : public BaseSofa_test
         return maxdiff;
     }
 
+    /// Return the maximum absolute value of a container
+    template<class Container>
+    Real vectorMaxAbs( const Container& c )
+    {
+        Real maxc = 0.;
+        for(unsigned i=0; i<(unsigned)c.size(); i++ )
+        {
+            Real n = norm(c[i]);
+            if( n>maxc )
+                maxc = n;
+        }
+        return maxc;
+    }
+
     ///@}
 
     /** @name Matrices

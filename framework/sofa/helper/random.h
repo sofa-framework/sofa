@@ -51,7 +51,7 @@ inline int irand()
 // Random double between 0 and 1 [0.0,1.0]
 inline double drand()
 {
-   return std::rand() / RAND_MAX;
+   return double(std::rand()) / RAND_MAX;
 }
 
 // Random double between 0 and max [0.0,max]
@@ -59,7 +59,6 @@ inline double drand()
 inline double drandpos(double max)
 {
    assert( max >= 0 );
-
    return drand() * max;
 }
 

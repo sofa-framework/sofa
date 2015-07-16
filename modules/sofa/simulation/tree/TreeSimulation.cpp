@@ -50,7 +50,7 @@ Simulation* getSimulation()
     return simulation::getSimulation();
 }
 
-TreeSimulation::TreeSimulation()//: visualNode(NULL)
+TreeSimulation::TreeSimulation()
 {
     sofa::simulation::xml::BaseElement::NodeFactory::DuplicateEntry("GNodeMultiMapping","MultiMappingObject");
 }
