@@ -424,7 +424,6 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     for (unsigned int i = 0; i < facetsImport.size(); i++)
     {
         const vector<vector <int> >& vertNormTexIndex = facetsImport[i];
-        if (vertNormTexIndex[0].size() < 3) continue; // ignore lines
         const vector<int>& verts = vertNormTexIndex[0];
         const vector<int>& texs = vertNormTexIndex[1];
         const vector<int>& norms = vertNormTexIndex[2];
@@ -469,8 +468,6 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 bool VisualModelImpl::load(const std::string& filename, const std::string& loader, const std::string& textureName)
 {
     using sofa::helper::io::Mesh;
-    using sofa::helper::io::MeshSTL;
-    using sofa::helper::io::MeshOBJ;
     
     //      bool tex = !textureName.empty() || putOnlyTexCoords.getValue();
     if (!textureName.empty())
