@@ -412,8 +412,8 @@ struct Assembly_test : public CompliantSolver_test
         // The solver
         complianceSolver = addNew<OdeSolver>(solverObject);
         complianceSolver->storeDynamicsSolution(true);
-        complianceSolver->f_printLog.setValue(true);
-        complianceSolver->debug.setValue(true);
+//        complianceSolver->f_printLog.setValue(true);
+//        complianceSolver->debug.setValue(true);
         linearSolver = addNew<LinearSolver>(solverObject);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
