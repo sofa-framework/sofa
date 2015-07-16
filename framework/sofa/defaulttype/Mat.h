@@ -683,7 +683,7 @@ public:
         BOOST_STATIC_ASSERT( C == L );
         for(int l=0; l<L; l++)
             for(int c=l+1; c<C; c++)
-                this->elems[l][c] = this->elems[c][l] = ( this->elems[l][c] + this->elems[c][l] ) * 0.5;
+                this->elems[l][c] = this->elems[c][l] = ( this->elems[l][c] + this->elems[c][l] ) * 0.5f;
     }
 
 };
