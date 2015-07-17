@@ -82,14 +82,14 @@ public:
     static Message empty ;
 
 private:
-    Base*   m_sender     {nullptr} ;
-    string  m_sendername {"unknow"} ;
-    string  m_source     {"none"} ;
-    int     m_lineno     {0} ;
-    string  m_message    {"no message"} ;
-    string  m_class      {"DEV"} ;
-    string  m_type       {"INFO"} ;
-    int     m_id         {-1} ;
+    Base*   m_sender;
+    string  m_sendername;
+    string  m_source;
+    int     m_lineno;
+    string  m_message;
+    string  m_class;
+    string  m_type;
+    int     m_id;
 };
 
 ostream& operator<< (ostream&, const Message&) ;

@@ -53,7 +53,18 @@ namespace helper
 namespace messaging
 {
 
-Message::Message(){}
+Message::Message():
+    m_sender(0),
+    m_sendername("none"),
+    m_source("none"),
+    m_lineno(0),
+    m_message("none"),
+    m_class("DEV"),
+    m_type("INFO"),
+    m_id(-1)
+{
+
+}
 Message::Message(string mclass, string type,  Base* sender, string source, int lineno){
     m_sender = sender ;
     m_source = source ;
