@@ -29,7 +29,7 @@
  
 
 		<!--<OptiTrackNatNetDevice name="cubeDevice"  printLog="1"  listening="1"  trackableName="head"  trackableID="1"  isGlobalFrame="1"  inMarkersMeshFile="./meshs/markers-Grab.obj"  simMarkersMeshFile="./meshs/markers-Head.obj"  drawAxisSize="50 10 50"  drawMarkersSize="2"  drawMarkersColor="0 1 0 1" />-->
-<!--
+
 		<Node 	 name="CollisionModel"  >
 			<EulerImplicitSolver name="eulerImplicitSolver3" />
 			<CGLinearSolver template="GraphScattered" name="cGLinearSolver4"  tolerance="1e-009"  threshold="1e-009" />
@@ -42,7 +42,7 @@
 			<TPointModel template="Vec3d" name="CPM"  moving="0"  simulated="0"  contactStiffness="100" />
 			<IdentityMapping template="Vec3d,Vec3d" name="barycentricMap6"  input="@../CubeState"  output="@./cubeCollisionState" />
 		</Node>
-	-->
+	
 	</Node>
 
 	<Node 	 name="Omni"  >
