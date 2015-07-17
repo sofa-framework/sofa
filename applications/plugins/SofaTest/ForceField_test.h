@@ -141,7 +141,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
      */
     void run_test( const VecCoord& x, const VecDeriv& v, const VecDeriv& ef )
     {
-        if( deltaRange.second / errorMax <= s_minDeltaErrorRatio )
+        if( deltaRange.second / errorMax <= g_minDeltaErrorRatio )
             ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
 
         ASSERT_TRUE(x.size()==v.size());

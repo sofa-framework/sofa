@@ -182,7 +182,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         }
 
         OutVecDeriv c(a.size());
-        for (int i=0; i<a.size() ; ++i)
+        for (size_t i=0; i<a.size() ; ++i)
         {
             c[i] = a[i]-b[i];
         }
@@ -214,7 +214,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                           const InVecCoord parentNew,
                           const OutVecCoord expectedChildNew)
     {
-        if( deltaRange.second / errorMax <= s_minDeltaErrorRatio )
+        if( deltaRange.second / errorMax <= g_minDeltaErrorRatio )
             ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
 
         if( !(flags & TEST_getJs) )          Logger::mainlog( Logger::Warning, "getJs is not tested", "MappingTest" );

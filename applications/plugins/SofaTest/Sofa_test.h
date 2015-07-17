@@ -46,7 +46,7 @@ using std::endl;
 namespace sofa {
 
 /// acceptable ratio between finite difference delta and error threshold
-static SReal s_minDeltaErrorRatio = .1; // TODO is it already too small?
+const SReal g_minDeltaErrorRatio = .1; // TODO is it already too small?
 
 /** @brief Base class for Sofa test fixtures.
   */
