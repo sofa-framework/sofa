@@ -181,11 +181,29 @@ protected:
 		if((*outT)->getRotation() == Vector3(0,0,0))
 		{
 			//cout<< "The absence of rotation is not supported yet" <<endl;
-			
-			if((*out)->isInside(valueinimage.x()/scale.x(), valueinimage.y()/scale.y(), valueinimage.z()/scale.z()))
+			// transformation from world coordinates to image coordinates
+			int x = (int) (valueinimage.x()/scale.x());
+			int y = (int)(valueinimage.y()/scale.y());
+			int z = (int)(valueinimage.z()/scale.z());
+			if((*out)->isInside(x, y, z))
 			{
-				img(0)(valueinimage.x()/scale.x(), valueinimage.y()/scale.y(), valueinimage.z()/scale.z()) = 1;
+				cout << (int) (valueinimage.x()/scale.x()) << "," << (int) (valueinimage.y()/scale.y()) << "," << (int) (valueinimage.z()/scale.z()) << endl;
 			}
+			for(int i=-2; i<=2; i++)
+			{
+				for(int j=-2; j<=2; j++)
+				{
+					for(int k=-2; k<=2; k++)
+					{
+						if((*out)->isInside(x+i, y+j, z+k))
+						{
+							img(0)(x+i, y+j, z+k) = 0;
+						}
+					}
+				}
+			}
+
+
 		}
 		else{
 			cout<< "A rotated Image is not supported yet" <<endl;
