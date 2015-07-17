@@ -59,7 +59,7 @@ namespace mapping
 		for (size_t i = _firstPoint; i < _lastPoint; ++i )
 		{
 			Coord inpos = _mapping->points[i];
-			size_t in0 = helper::rfloor(inpos[0]);
+			int in0 = helper::rfloor(inpos[0]);
 			if (in0<0) 
 				in0 = 0; 
 			else if (in0 > (int)_in->size()-2) 
@@ -110,7 +110,7 @@ namespace mapping
 			//out[i] =  v - cross(rotatedPoints[i],omega);
 
             defaulttype::Vec<N, typename In::Real> inpos = _mapping->points[i];
-			size_t in0 = helper::rfloor(inpos[0]);
+			int in0 = helper::rfloor(inpos[0]);
 			if (in0<0) 
 				in0 = 0; 
 			else if (in0 > (int)_in->size()-2) 
@@ -164,7 +164,7 @@ namespace mapping
 			//omega += cross(rotatedPoints[i],f);
 
 			defaulttype::Vec<N, typename In::Real> inpos = _mapping->points[i];
-			size_t in0 = helper::rfloor(inpos[0]);
+			int in0 = helper::rfloor(inpos[0]);
 			if (in0<0) 
 				in0 = 0; 
 			else if (in0 > (int)_out->size()-2) 
