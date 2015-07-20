@@ -114,21 +114,21 @@ class Deformable:
         self.meshLoader =  self.node.createObject('MergeMeshes', name='MergeMeshes', nbMeshes=len(inputs), **args )
         self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.meshLoader.name )
         if map is True:
-            self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs")
+            self.dofs = self.node.createObject("MechanicalObject", template = "Vec3", name="dofs")
             self.mapping = self.node.createObject("IdentityMultiMapping", name='mapping',input=SofaPython.Tools.listToStr(inputs),output="@.")
 
     def addMechanicalObject(self):
         if self.meshLoader is None:
             print "[Flexible.Deformable] ERROR: no loaded mesh for ", name
             return
-        self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs", src="@"+self.meshLoader.name)
+        self.dofs = self.node.createObject("MechanicalObject", template = "Vec3", name="dofs", src="@"+self.meshLoader.name)
 
     def addNormals(self, invert=False):
         if self.topology is None:
             print "[Flexible.Deformable] ERROR: no topology for ", name
             return
         pos = '@'+self.topology.name+'.position' if self.dofs is None else  '@'+self.dofs.name+'.position'
-        self.normals = self.node.createObject("NormalsFromPoints", template='Vec3d', name="normalsFromPoints", position=pos, triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
+        self.normals = self.node.createObject("NormalsFromPoints", template='Vec3', name="normalsFromPoints", position=pos, triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
 
     def addMass(self,totalMass):
         if self.dofs is None:
@@ -145,9 +145,7 @@ class Deformable:
 
     # @todo: update this:
     def addSkinning(self, bonesPath, indices, weights, assemble=True):
-        self.mapping = self.node.createObject("LinearMapping", template="Rigid3d,Vec3d", name="mapping", input="@"+bonesPath, indices=concat(indices), weights=concat(weights), assemble=assemble)
-
-
+        self.mapping = self.node.createObject("LinearMapping", template="Rigid3,Vec3", name="mapping", input="@"+bonesPath, indices=concat(indices), weights=concat(weights), assemble=assemble)
 
 
 class AffineMass:
@@ -157,10 +155,10 @@ class AffineMass:
 
     def massFromDensityImage(self, dofNode, dofRigidNode, densityImage, lumping='0'):
         node = dofNode.createChild('Mass')
-        dof = node.createObject('MechanicalObject', name='massPoints', template='Vec3d')
+        dof = node.createObject('MechanicalObject', name='massPoints', template='Vec3')
         insertLinearMapping(node, dofRigidNode, self.dofAffineNode, dof, assemble=False)
         densityImage.addBranchingToImage('0') # MassFromDensity on branching images does not exist yet
-        massFromDensity = node.createObject('MassFromDensity',  name="MassFromDensity",  template="Affine,ImageD", image="@"+SofaPython.Tools.getObjectPath(densityImage.image)+".image", transform="@"+SofaPython.Tools.getObjectPath(densityImage.image)+'.transform', lumping=lumping)
+        massFromDensity = node.createObject('MassFromDensity',  name="MassFromDensity",  template="Affine,ImageR", image="@"+SofaPython.Tools.getObjectPath(densityImage.image)+".image", transform="@"+SofaPython.Tools.getObjectPath(densityImage.image)+'.transform', lumping=lumping)
         self.mass = self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix="@"+SofaPython.Tools.getObjectPath(massFromDensity)+".massMatrix")
 
     def getFilename(self, filenamePrefix=None, directory=""):
@@ -248,7 +246,7 @@ class ShapeFunction:
             print "[Flexible.API.ShapeFunction] ERROR: no position"
         imagePath = SofaPython.Tools.getObjectPath(image.branchingImage)
         self.shapeFunction = self.node.createObject(
-            "VoronoiShapeFunction", template="ShapeFunctiond,"+"Branching"+image.imageType, 
+            "VoronoiShapeFunction", template="ShapeFunction,"+"Branching"+image.imageType, 
             name="shapeFunction", cell=cells,
             position=position,
             src="@"+imagePath, method=0, nbRef=nbRef, bias=True)
@@ -275,7 +273,7 @@ class ShapeFunction:
             filename=self.getFilenameIndices(filenamePrefix, directory),
             exportAtBegin=True, printLog=True)
         self.node.createObject(
-            "ImageExporter", template="BranchingImageD", name="exporterWeights", 
+            "ImageExporter", template="BranchingImageR", name="exporterWeights",
             image="@"+sfPath+".weights", transform="@"+sfPath+".transform",
             filename=self.getFilenameWeights(filenamePrefix, directory), exportAtBegin=True, printLog=True)
        
@@ -284,10 +282,10 @@ class ShapeFunction:
             "ImageContainer", template="BranchingImageUI", name="containerIndices", 
             filename=self.getFilenameIndices(filenamePrefix, directory), drawBB=False)
         self.node.createObject(
-            "ImageContainer", template="BranchingImageD", name="containerWeights", 
+            "ImageContainer", template="BranchingImageR", name="containerWeights",
             filename=self.getFilenameWeights(filenamePrefix, directory), drawBB=False)
         self.shapeFunction = self.node.createObject(
-            "ImageShapeFunctionContainer", template="ShapeFunctiond,BranchingImageUC", name="shapeFunction",
+            "ImageShapeFunctionContainer", template="ShapeFunction,BranchingImageUC", name="shapeFunction",
             position='0 0 0', # dummy value to avoid a warning from baseShapeFunction
             transform="@containerWeights.transform",
             weights="@containerWeights.image", indices="@containerIndices.image")
@@ -309,7 +307,7 @@ class Behavior:
     def addGaussPointSampler(self, shapeFunction, nbPoints, **kwargs):
         shapeFunctionPath = SofaPython.Tools.getObjectPath(shapeFunction.shapeFunction)
         self.sampler = self.node.createObject(
-            "ImageGaussPointSampler", template="BranchingImageD,BranchingImageUC", name="sampler",
+            "ImageGaussPointSampler", template="BranchingImageR,BranchingImageUC", name="sampler",
             indices="@"+shapeFunctionPath+".indices", weights="@"+shapeFunctionPath+".weights", transform="@"+shapeFunctionPath+".transform", 
             method="2", order=self.type[2:], targetNumber=nbPoints,
             mask="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage)+".branchingImage", maskLabels=concat(self.labels),
@@ -335,12 +333,12 @@ class Behavior:
         _filename=os.path.join(directory, _filename)
         return _filename
 
-    def read(self, filenamePrefix=None, directory=""):
+    def read(self, filenamePrefix=None, directory="", **kwargs):
         filename = self.getFilename(filenamePrefix,directory)
         data = dict()
         with open(filename,'r') as f:
             data.update(json.load(f))
-        self.sampler = self.node.createObject('GaussPointContainer',name='GPContainer', volumeDim=data['volumeDim'], inputVolume=data['inputVolume'], position=data['position'])
+        self.sampler = self.node.createObject('GaussPointContainer',name='GPContainer', volumeDim=data['volumeDim'], inputVolume=data['inputVolume'], position=data['position'], **kwargs)
         if not self.labelImage is None and not self.labels is None:
             celloffsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+SofaPython.Tools.getObjectPath(self.sampler)+".position", src="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage), labels=concat(self.labels))
             self.cell = "@"+SofaPython.Tools.getObjectPath(celloffsets)+".cell"
