@@ -139,7 +139,7 @@ TEST_F(DiagonalMass3_test, singleEdge)
     EdgeSetTopologyContainer::SPtr topologyContainer = New<EdgeSetTopologyContainer>();
     topologyContainer->addEdge(0, 1);
 
-    typename EdgeSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
+    EdgeSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<EdgeSetGeometryAlgorithms<Vec3Types> >();
 
     const MassType expectedTotalMass = 1.0f;
@@ -162,7 +162,7 @@ TEST_F(DiagonalMass3_test, singleTriangle)
     TriangleSetTopologyContainer::SPtr topologyContainer = New<TriangleSetTopologyContainer>();
     topologyContainer->addTriangle(0, 1, 2);
 
-    typename TriangleSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
+    TriangleSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<TriangleSetGeometryAlgorithms<Vec3Types> >();
 
     const MassType expectedTotalMass = 0.5f;
@@ -186,7 +186,7 @@ TEST_F(DiagonalMass3_test, singleQuad)
     QuadSetTopologyContainer::SPtr topologyContainer = New<QuadSetTopologyContainer>();
     topologyContainer->addQuad(0, 1, 2, 3);
 
-    typename QuadSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
+    QuadSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<QuadSetGeometryAlgorithms<Vec3Types> >();
 
     const MassType expectedTotalMass = 1.0f;
@@ -210,7 +210,7 @@ TEST_F(DiagonalMass3_test, singleTetrahedron)
     TetrahedronSetTopologyContainer::SPtr topologyContainer = New<TetrahedronSetTopologyContainer>();
     topologyContainer->addTetra(0, 1, 2, 3);
 
-    typename TetrahedronSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
+    TetrahedronSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<TetrahedronSetGeometryAlgorithms<Vec3Types> >();
 
     const MassType expectedTotalMass = 1.0f/6.0f;
@@ -238,7 +238,7 @@ TEST_F(DiagonalMass3_test, singleHexahedron)
     HexahedronSetTopologyContainer::SPtr topologyContainer = New<HexahedronSetTopologyContainer>();
     topologyContainer->addHexa(0, 1, 2, 3, 4, 5, 6, 7);
 
-    typename HexahedronSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
+    HexahedronSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<HexahedronSetGeometryAlgorithms<Vec3Types> >();
 
     const MassType expectedTotalMass = 1.0f;
