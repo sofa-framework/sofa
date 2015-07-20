@@ -66,7 +66,7 @@ MeshLoader::MeshLoader() : BaseLoader()
 {
     addAlias(&tetrahedra,"tetras");
     addAlias(&hexahedra,"hexas");
-    addAlias(&hexahedra,"pentas");
+    addAlias(&pentahedra,"pentas");
 
     flipNormals.setAutoLink(false);
     triangulate.setAutoLink(false);
@@ -215,71 +215,104 @@ void MeshLoader::updateElements()
     if (pentahedra.getValue().size() > 0 && createSubelements.getValue())
     {
         helper::ReadAccessor<Data<helper::vector< Pentahedron > > > pentahedra = this->pentahedra;
-        helper::WriteAccessor<Data<helper::vector< Pyramid > > > pyramids = this->pyramids;
-        helper::WriteAccessor<Data<helper::vector< Tetrahedron > > > tetrahedra = this->tetrahedra;
+        helper::WriteAccessor<Data<helper::vector< Quad > > > quads = this->quads;
+        helper::WriteAccessor<Data<helper::vector< Triangle > > > triangles = this->triangles;
 
-        std::set<Pyramid > ePyramidSet;
-        std::set<Tetrahedron > eTetraSet;
+        std::set<Quad > eSetQuad;
+        for (size_t i = 0; i < quads.size(); ++i)
+            eSetQuad.insert(uniqueOrder(quads[i]));
+        int nbnewQuad = 0;
 
-        for (size_t i = 0; i < pyramids.size(); ++i)
-            ePyramidSet.insert(uniqueOrder(pyramids[i]));
-
-        for (size_t i = 0; i < tetrahedra.size(); ++i)
-            eTetraSet.insert(uniqueOrder(tetrahedra[i]));
-
-        int nbnewPyra = 0;
-        int nbnewTet = 0;
+        std::set<Triangle > eSetTri;
+        for (size_t i = 0; i < triangles.size(); ++i)
+            eSetTri.insert(uniqueOrder(triangles[i]));
+        int nbnewTri = 0;
+  
         for (size_t i = 0; i < pentahedra.size(); ++i)
         {
             Pentahedron p = pentahedra[i];
-            Pyramid pyra(p[0],p[1],p[4],p[3],p[2]); //vtk ordering http://www.vtk.org/wp-content/uploads/2015/04/file-formats.pdf
-            Tetrahedron tet(p[2],p[4],p[3],p[5]);
-            
-            if (ePyramidSet.insert(uniqueOrder(pyra)).second) // the element was inserted
-            {
-                pyramids.push_back(pyra);
-                ++nbnewPyra;
+            //vtk ordering http://www.vtk.org/wp-content/uploads/2015/04/file-formats.pdf
+            Quad quad1 = Quad(p[0],p[3],p[4],p[1]);
+            Quad quad2 = Quad(p[0],p[2],p[5],p[3]);
+            Quad quad3 = Quad(p[1],p[4],p[5],p[2]);
+            Triangle tri1(p[0],p[1],p[2]);
+            Triangle tri2(p[4],p[3],p[5]);
+
+            if (eSetQuad.insert(uniqueOrder(quad1)).second){ // the element was inserted
+                quads.push_back(quad1);
+                ++nbnewQuad;
             }
-            if (eTetraSet.insert(uniqueOrder(tet)).second) // the element was inserted
-            {
-                tetrahedra.push_back(tet);
-                ++nbnewTet;
+            if (eSetQuad.insert(uniqueOrder(quad2)).second){ // the element was inserted
+                quads.push_back(quad2);
+                ++nbnewQuad;
             }
+            if (eSetQuad.insert(uniqueOrder(quad3)).second){ // the element was inserted     
+                quads.push_back(quad3);
+                ++nbnewQuad;
+            }
+            if (eSetTri.insert(uniqueOrder(tri1)).second){
+                triangles.push_back(tri1);
+                ++nbnewTri;
+            }
+            if (eSetTri.insert(uniqueOrder(tri2)).second){
+                triangles.push_back(tri2);
+                ++nbnewTri;
+            }
+           
         }
-        if (nbnewPyra > 0 || nbnewTet>0 )
-            sout << nbnewPyra << " pyramids, "<<nbnewTet<<" tetrahedra were missing in the pentahedra" << sendl;
+        if (nbnewQuad > 0 || nbnewTri>0 )
+            sout << nbnewQuad << " quads, "<<nbnewTri<<" triangles were missing around the pentahedra" << sendl;
     }
     if (pyramids.getValue().size() > 0 && createSubelements.getValue())
     {
         helper::ReadAccessor<Data<helper::vector< Pyramid > > > pyramids = this->pyramids;
-        helper::WriteAccessor<Data<helper::vector< Tetrahedron > > > tetrahedra = this->tetrahedra;
+        
+        helper::WriteAccessor<Data<helper::vector< Quad > > > quads = this->quads;
+        helper::WriteAccessor<Data<helper::vector< Triangle > > > triangles = this->triangles;
 
-       std::set<Tetrahedron > eTetraSet;
-        for (size_t i = 0; i < tetrahedra.size(); ++i)
-            eTetraSet.insert(uniqueOrder(tetrahedra[i]));
+        std::set<Quad > eSetQuad;
+        for (size_t i = 0; i < quads.size(); ++i)
+            eSetQuad.insert(uniqueOrder(quads[i]));
+        int nbnewQuad = 0;
 
-        int nbnew = 0;
+        std::set<Triangle > eSetTri;
+        for (size_t i = 0; i < triangles.size(); ++i)
+            eSetTri.insert(uniqueOrder(triangles[i]));
+        int nbnewTri = 0;
+        
         for (size_t i = 0; i < pyramids.size(); ++i)
         {
             Pyramid p = pyramids[i];
-           
-            Tetrahedron tet1(p[0],p[1],p[3],p[4]);
-            Tetrahedron tet2(p[1],p[2],p[3],p[4]);
-            
-            if (eTetraSet.insert(uniqueOrder(tet1)).second) // the element was inserted
-            {
-                tetrahedra.push_back(tet1);
-                ++nbnew;
+            Quad quad = Quad(p[0],p[3],p[2],p[1]);
+            Triangle tri1(p[0],p[1],p[4]);
+            Triangle tri2(p[1],p[2],p[4]);
+            Triangle tri3(p[3],p[4],p[2]);
+            Triangle tri4(p[0],p[4],p[3]);
+
+            if (eSetQuad.insert(uniqueOrder(quad)).second){ // the element was inserted
+                quads.push_back(quad);
+                ++nbnewQuad;
             }
-            if (eTetraSet.insert(uniqueOrder(tet2)).second) // the element was inserted
-            {
-                tetrahedra.push_back(tet2);
-                ++nbnew;
+            if (eSetTri.insert(uniqueOrder(tri1)).second){
+                triangles.push_back(tri1);
+                ++nbnewTri;
+            }
+            if (eSetTri.insert(uniqueOrder(tri2)).second){
+                triangles.push_back(tri2);
+                ++nbnewTri;
+            }
+            if (eSetTri.insert(uniqueOrder(tri3)).second){
+                triangles.push_back(tri3);
+                ++nbnewTri;
+            }
+            if (eSetTri.insert(uniqueOrder(tri4)).second){
+                triangles.push_back(tri4);
+                ++nbnewTri;
             }
 
         }
-        if (nbnew > 0)
-            sout << nbnew << " tetrahedra were missing in the pyramids" << sendl;
+        if (nbnewTri > 0 || nbnewQuad > 0)
+            sout << nbnewTri << " triangles and "<<nbnewQuad<<" quads were missing around the pyramids" << sendl;
     }
     if (tetrahedra.getValue().size() > 0 && createSubelements.getValue())
     {
@@ -292,14 +325,25 @@ void MeshLoader::updateElements()
         for (size_t i = 0; i < tetrahedra.size(); ++i)
         {
             Tetrahedron t = tetrahedra[i];
-            for (size_t j = 0; j < t.size(); ++j)
-            {
-                Triangle e(t[(j+1)%t.size()],t[(j+2)%t.size()],t[(j+3)%t.size()]);
-                if (eSet.insert(uniqueOrder(e)).second) // the element was inserted
-                {
-                    triangles.push_back(e);
-                    ++nbnew;
-                }
+            Triangle e1(t[0],t[2],t[1]);
+            Triangle e2(t[0],t[1],t[3]);
+            Triangle e3(t[0],t[3],t[2]); 
+            Triangle e4(t[1],t[2],t[3]);  //vtk ordering http://www.vtk.org/wp-content/uploads/2015/04/file-formats.pdf
+            if (eSet.insert(uniqueOrder(e1)).second){ // the element was inserted
+                triangles.push_back(e1);
+                ++nbnew;
+            }
+            if (eSet.insert(uniqueOrder(e2)).second){
+                triangles.push_back(e2);
+                ++nbnew;
+            }
+            if (eSet.insert(uniqueOrder(e3)).second){
+                triangles.push_back(e3);
+                ++nbnew;
+            }
+            if (eSet.insert(uniqueOrder(e4)).second){
+                triangles.push_back(e4);
+                ++nbnew;
             }
         }
         if (nbnew > 0)

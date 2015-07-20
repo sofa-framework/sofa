@@ -20,7 +20,11 @@ int UniformComplianceClass = core::RegisterObject("Uniform compliance")
         .add< UniformCompliance< Vec6dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
+#ifdef SOFA_FLOAT
+        .add< UniformCompliance< Vec1fTypes > >(true)
+#else
         .add< UniformCompliance< Vec1fTypes > >()
+#endif
         .add< UniformCompliance< Vec2fTypes > >()
         .add< UniformCompliance< Vec3fTypes > >()
         .add< UniformCompliance< Vec6fTypes > >()
