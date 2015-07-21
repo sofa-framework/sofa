@@ -10,6 +10,7 @@ set(HEADER_FILES
     DevTensionMonitor.h
     DevTensionMonitor.inl
     DevMonitorManager.h
+    DevMonitor.h
     ExtraMonitor.h
     ExtraMonitor.inl
     Monitor.h

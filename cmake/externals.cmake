@@ -1,4 +1,3 @@
-cmake_policy(SET CMP0015 OLD)
 
 # lib dir
 link_directories("${SOFA_LIB_DIR}")

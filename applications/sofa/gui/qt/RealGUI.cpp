@@ -827,11 +827,12 @@ void RealGUI::fileOpen()
             filter+=(*itExt);
 
             allKnownFilters+="*."+(*itExt);
-            if (*it!=loaders->back()) allKnownFilters += " ";
+            if (*it!=loaders->back() || itExt!=extensions.end()-1) allKnownFilters += " ";
         }
         filter+=")";
     }
     allKnownFilters+=")";
+
 #ifdef SOFA_PML
 //            "Scenes (*.scn *.xml);;Simulation (*.simu);;Php Scenes (*.pscn);;Pml Lml (*.pml *.lml);;All (*)",
     filter += ";;Simulation (*.simu);;Pml Lml (*.pml *.lml)";

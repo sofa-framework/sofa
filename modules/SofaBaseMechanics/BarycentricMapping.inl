@@ -521,7 +521,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
                 {
                     ++outside;
                 }
-                if ( index < c0 )
+                if ( index < (int)c0 )
                     addPointInTriangle ( index, coefs.ptr() );
                 else
                     addPointInQuad ( index-c0, coefs.ptr() );
@@ -1537,7 +1537,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
                 const Real fx = map2d[i].baryCoords[0];
                 const Real fy = map2d[i].baryCoords[1];
                 int index = map2d[i].in_index;
-                if ( index<c0 )
+                if ( index < (int)c0 )
                 {
                     const sofa::core::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
                     Out::setDPos(out[i+i0] , in[triangle[0]] * ( 1-fx-fy )
@@ -1564,7 +1564,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
                 const Real fy = map3d[i].baryCoords[1];
                 const Real fz = map3d[i].baryCoords[2];
                 int index = map3d[i].in_index;
-                if ( index<c0 )
+                if ( index < (int)c0 )
                 {
                     const sofa::core::topology::BaseMeshTopology::Tetra& tetra = tetrahedra[index];
                     Out::setDPos(out[i+i0] , in[tetra[0]] * ( 1-fx-fy-fz )

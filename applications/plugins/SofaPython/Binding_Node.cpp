@@ -27,6 +27,7 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
 #include "ScriptEnvironment.h"
 using namespace sofa::simulation;
 #include <sofa/core/ExecParams.h>
@@ -344,6 +345,14 @@ extern "C" PyObject * Node_getMechanicalMapping(PyObject * self, PyObject * /*ar
     Py_RETURN_NONE;
 }
 
+extern "C" PyObject * Node_propagatePositionAndVelocity(PyObject * self, PyObject * /*args*/)
+{
+    Node* node = dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+
+    node->execute<MechanicalPropagatePositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance());
+
+    Py_RETURN_NONE;
+}
 
 
 
@@ -369,6 +378,7 @@ SP_CLASS_METHOD(Node,sendKeypressedEvent)
 SP_CLASS_METHOD(Node,sendKeyreleasedEvent)
 SP_CLASS_METHOD(Node,getMechanicalState)
 SP_CLASS_METHOD(Node,getMechanicalMapping)
+SP_CLASS_METHOD(Node,propagatePositionAndVelocity)
 SP_CLASS_METHODS_END
 
 SP_CLASS_TYPE_SPTR(Node,Node,Context)

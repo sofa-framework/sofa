@@ -31,10 +31,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 
-#ifdef SOFA_IP_TRACES
-#include <sofa/component/mapping/_IP_MapTraceMacros.h>
-#endif
-
 namespace sofa
 {
 

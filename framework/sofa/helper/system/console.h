@@ -68,10 +68,6 @@ public:
     static void setColorsStatus(ColorsStatus status);
     static ColorsStatus getColorsStatus();
 
-    /// Blah.
-    enum LogPrefix {InfoPrefix, WarningPrefix};
-    SOFA_HELPER_API friend std::ostream& operator<<(std::ostream &stream, LogPrefix prefix);
-
 private:
     static ColorsStatus s_colorsStatus;
     /// Internal helper function that determines whether colors should be used.

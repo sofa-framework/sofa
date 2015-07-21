@@ -50,7 +50,7 @@ Simulation* getSimulation()
     return simulation::getSimulation();
 }
 
-DAGSimulation::DAGSimulation()// : visualNode(NULL)
+DAGSimulation::DAGSimulation()
 {
     // I have no idea what this 'DuplicateEntry()' call is for, but it causes an error when we
     // create several DAGSimulation, so I added the preceding 'if' (Marc Legendre, nov. 2013)

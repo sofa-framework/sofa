@@ -25,6 +25,9 @@
 #define FLEXIBLE_BaseShapeFunction_CPP
 
 #include "../initFlexible.h"
+
+#include <sofa/defaulttype/TemplatesAliases.h>
+
 #include "../shapeFunction/BaseShapeFunction.h"
 
 
@@ -47,4 +50,16 @@ template class SOFA_Flexible_API BaseShapeFunction<ShapeFunction2f>;
 
 }
 }
+
+namespace defaulttype {
+#ifndef SOFA_FLOAT
+RegisterTemplateAlias ShapeFunctionAlias("ShapeFunction", "ShapeFunctiond");
+RegisterTemplateAlias ShapeFunctionAlias2("ShapeFunction2", "ShapeFunction2d");
+#else
+RegisterTemplateAlias ShapeFunctionAlias("ShapeFunction", "ShapeFunctionf");
+RegisterTemplateAlias ShapeFunctionAlias2("ShapeFunction2", "ShapeFunction2f");
+#endif
+
+}
+
 }

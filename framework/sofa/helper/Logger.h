@@ -44,7 +44,7 @@ class SOFA_HELPER_API Logger
 {
 public:
     typedef boost::shared_ptr<Logger> SPtr;
-    enum Level {All, Debug, Info, Warning, Error, Off, LevelCount};
+    enum Level {All, Debug, Info, Warning, Error, Exception, Off, LevelCount};
 
     Logger();
     virtual ~Logger();
@@ -53,6 +53,9 @@ public:
     ///
     /// @param location An indication of where the message comes from, if relevant. (Component, function...)
     virtual void log(Level level, const std::string& message, const std::string& location = "") = 0;
+
+    /// Log a message with the Main Logger
+    static void mainlog(Level level, const std::string& message, const std::string& location = "");
 
     /// @brief Set the minimal level of logging.
     void setLevel(Level level);
