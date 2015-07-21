@@ -17,12 +17,188 @@
 \date{2014}
 \author{Herv\'e Delingette\\ {\small INRIA M\'editerran\'ee, Sophia Antipolis, France}}
 
-
-
-
+\newcommand{\vertices}{{\mathcal V}}
+\newcommand{\edges}{{\mathcal E}}
+\newcommand{\vect}[1]{\boldsymbol{#1}} % Uncomment for BOLD vectors.
+\newcommand{\Bezier}{{B{\'e}zier }}
+\newcommand{\tensorp}{\otimes}
+\newcommand{\elem}{{\mathcal T}}
+\newcommand{\tetrahedra}{{\mathcal T}}
+\newcommand{\triangles}{{\mathcal TR}}
+\newcommand{\etal}{{\em et al.}}
+\newcommand{\tbiset}{{\mathcal I}}
+\newcommand{\tbdiset}{{\mathcal J}}
+\newcommand{\mesh}{{\mathcal M}}
+\newcommand{\tbi}{{\mathbf p}}
+\newcommand{\tbip}{{\mathbf p}}
+\newcommand{\tbiq}{{\mathbf q}}
+\newcommand{\tbimu}{{\bm \mu}}
+\newcommand{\elemref}{{\mathcal T}_{\mathrm ref}}
+\newcommand{\elemrest}{{\mathcal T}_{\mathbf P}}
+\newcommand{\pos}{{\mathbf x}}
+\newcommand{\speed}{{\mathbf v}}
+\newcommand{\mass}{{\mathbf M}}
+\newcommand{\disp}{{\mathbf u}}
+\newcommand{\rot}{{\mathbf R}}
+\newcommand{\strain}{{\mathbf E}}
+\newcommand{\stress}{{\mathbf \sigma}}
+\newcommand{\paramt}{\bm  \tau}
+\newcommand{\paramti}{\tau}
+\newcommand{\param}{ \psi}
+\newcommand{\sv}{{\mathbf D}}
+\newcommand{\identity}{{\mathbb I}}
+%\newcommand{\param}{\bm \psi}
+\newcommand{\point}{{\mathbf P}}
+\newcommand{\pointp}{{\mathbf P}}
+\newcommand{\tetrap}{{\cal T}_P}
+\newcommand{\controls}{{\mathcal C}}
+\newcommand{\nvertices}{{ V}}
+\newcommand{\nedges}{{ E}}
+\newcommand{\ntriangles}{{ TR}}
+\newcommand{\ntetrahedra}{{ TE}}
+\newcommand{\ncontrols}{{C}}
+\newcommand{\control}{{\mathbf C}}
+\newcommand{\degree}{{d}}
+%\newcommand{\euc}{{\rm I\!R}}
+\newcommand{\euc}{\mathbb R}
+\newcommand{\naturalSet}{{\mathbb N}}
+\newcommand{\vol}{{\mathcal V}_P}
+\newcommand{\stiffness}{{\mathbf K}}
+\newcommand{\stiff}{{\mathbf K}}
+\newcommand{\force}{{\mathbf f}}
+\DeclareMathOperator{\trace}{Tr}
+\newcommand{\thicktilde}[1]{\mathbf{\tilde{\text{$#1$}}}}
 
 \begin{document} 
 \maketitle
+
+\section{High Order Triangular Meshes}
+
+\subsection{Introduction}
+
+We define high order triangular  elements in their Bernstein / Bezier form rather than Hermite or Lagrange forms. 
+A high order triangular mesh is defined by :
+
+\begin{itemize}
+	\item An underlying triangular mesh $\mesh$ consisting of a set of {\em "underlying triangle vertices"} $\vertices$, edges $\edges$ and triangles $\triangles$. We write $\nvertices$, the number of "triangles vertices", $\nedges$ the number of edges, $\ntriangles$ the number of triangles. 
+	\item A set of control points $\controls$ defined on each triangle which is used to defined the \Bezier triangle. 
+	\item A set of trivariate Bernstein polynomials  allowing to describe the value of a node anywhere on the mesh $\mesh$ 
+\end{itemize}
+%\input{sofa-graph}
+
+In the remainder, the word {\em vertex} refers to a vertex of the underlying triangulation whereas the word {\em point} or {\em control points} refer to a control point of the \Bezier triangle. A vertex is also a control point.
+
+In terms of topology, a high order triangular mesh has more control points than triangle vertices.
+Below are examples of high order tetrahedral elements of various degree.
+\begin{figure}[!htbp]
+	\centering
+    \includegraphics[width=0.80\textwidth]{bezierTrian}
+	\caption{Linear ($\degree=1$), Quadratic ($\degree=2$) and Cubic ($\degree=3$) Triangular Bezier triangles and notation of control points using Triangle Bezier indices}
+	\label{fig:LinearQuadraticAndCubicTriangularElements}
+\end{figure}
+
+
+\subsubsection{Number of Control Points}
+
+If $\degree>0$ is the degree (or order) of a triangular \Bezier  element, then there are :
+
+\begin{itemize}
+	\item $\nvertices$ controls points that coincide with the {\em "underlying triangle vertices"}.
+	\item $(\degree-1) \nedges$ if $\degree>1$ control points that are lying on edges. 
+	\item $\frac{(\degree-1) (\degree-2) \ntriangles}{2}$ if $\degree>2$ control points that are lying inside triangles. 
+\end{itemize}
+
+Thus the total number of control points are :
+\[
+\ncontrols=\nvertices+(\degree-1) \nedges+\frac{(\degree-1) (\degree-2) \ntriangles}{2};
+\]
+\subsubsection{Triangle Bezier Indices}
+
+We use specific notations of control points inside a \Bezier triangle which we call {\em Triangle Bezier Indices} (TRBI).
+A TRBI $p\in \naturalSet^{+}\times\naturalSet^{+}\times\naturalSet^{+}$ is a triplet of positive natural numbers that indicate their relative position in the \Bezier triangle. 
+
+Thus for an element of degree $\degree$, ${\mathbf p}=(i,j,k)$ is such that $|{\mathbf p}|=i+j+k=\degree$.  The three TRBI $(\degree,0,0)$, $(0,\degree,0)$, $(0,0,\degree)$ coincides with the 3 triangle vertices while $(0,i,j), i>0, j>0$ is lying on the edge opposite to the first vertex and   $(i,j,k), i>0, j>0, k>0$ is lying inside the triangle. We write $\control_{\mathbf p}$ the control point associated with indices $(i,j,k)$.
+
+\subsubsection{Trivariate Bernstein Polynomial}
+
+The control points are used to define a parametric surface in space. The parameters are the barycentric coordinates $(r,s,t$ such that $r+s+t=1$ and $0\leq r,s,t\leq 1$. The shape functions are the trivariate Bernstein polynomials $B^d_{i,j,k}(r,s,t)$ of degree $d$ that are themselves parameterized by 3 indices $(i,j,k)$ such that $i+j+k=d$ with the following expression:
+\[
+B^\degree_{i,j,k}(r,s,t)=\frac{\degree!}{i! j! k! } r^i s^j t^k 
+\]
+
+For given degree $d$ there are $N_d=3+3*(\degree-1)+(\degree-1)*(\degree-2)/2$ such polynomials. To simplify notations, we use the same Triangle Bezier Indices for the Bernstein polynomial as for the control points. Therefore $B^d_{\mathbf p}(r,s,t)=B^d_{i,j,k}(r,s,t)$.
+
+With this notation, the position of a point parameterized by $(r,s,t)$ on a Bezier Triangle is given by :
+\[
+\control(r,s,t)=\sum_{\|\mathbf p\|=\degree}  B^d_{\mathbf p}(r,s,t) \control_{\mathbf p}
+\]
+
+\subsection{SOFA Implementation of \Bezier triangles}
+
+\subsection{Layout of Degrees of Freedom in SOFA}
+
+In SOFA, the degrees of Freedom (DOF) are stored into a set of arrays inside objects called MechanicalState.
+We have chosen to store the $\controls$ DOFs of a Bezier Triangle mesh inside a single MechanicalState. Therefore a specific layout  of the DOFs in a MechanicalState has been defined. 
+Figure \ref{fig:LayoutBezierTriangle} shows this ordering of control points. First of all, the control points associated with the underlying triangle vertices are stored, then those associated with edges, and triangles.
+
+\begin{figure}[!htbp]
+	\centering
+    \includegraphics[width=0.70\textwidth]{DofLayoutBezierTriangle}
+	\caption{Layout of Degrees of Freedom of Bezier Triangle meshes inside a MechanicalState object}
+	\label{fig:LayoutBezierTriangle}
+\end{figure}
+
+There are however some issues. In a triangle mesh, edges are not oriented ({\em e.g.} an edge is common to 2 triangles and is ordered differently among each triangle ) and therefore the order in the DoF array may not reflect the order in each triangle. It is the role of the BezierTriangleSetTopologyContainer class to provide a proper ordering.
+
+Second, since there are several control points for a given edge, and triangle, it is important to specify the ordering inside each element. Figure\ref{fig:DofBezierTriangleTesselation} show in a simplified way how the control points are numbered for an edge, and triangle. In a nutshell, the element are stored in increasing lexicographic order of its barycentric coordinates. Thus on a quartic \Bezier triangle (order 4), the points of barycentric coordinates $(1/4, 3/4), (1/2,1/2), (3/4, 1/4)$ are stored in this order.
+
+\begin{figure}[!htbp]
+	\centering
+    \includegraphics[width=0.60\textwidth]{DofBezierTriangleTesselation}
+	\caption{Layout of Degrees of Freedom of Bezier Triangle meshes inside a MechanicalState object}
+	\label{fig:DofBezierTriangleTesselation}
+\end{figure}
+
+\subsection{BezierTriangleSetTopologyContainer Class}
+
+This class provides an interface to the array of DoFs store in the MechanicalState object. More precisely, a control point can specified in 3 different ways :
+
+\begin{itemize}
+	\item A {\em global index} which is its rank in the array of size $\ncontrols$.
+	\item A triangle index and a Triangle  Bezier Index (like $(2,0,2)$ on a triangle of order 4).
+	\item A triangle index and its {\em local index}. The local index is an integer between 0 and $N_\degree$ which gives the rank of the control points in this local (tetrahedron specific) list of control points. For a quadratic triangle $N_d=6$ and $N_d=3+6+1=10$ for a cubic triangle.
+ \end{itemize}
+
+The class thus provides functions to move from one indexing representation of a control point to another.
+
+The function {\it void getGlobalIndexArrayOfBezierPointsInTriangle(const size\_t triangleIndex, VecPointID \& indexArray) } is particularly useful as it outputs an array of $N_\degree$ global indices of the control points located inside a given triangle. The triangle  Bezier indices of those control points are always the same for a given degree $\degree$ and is given by the array returned by the function {\it sofa::helper::vector<TriangleBezierIndex> getTriangleBezierIndexArray() const;}.
+
+Obviously the class can return the degree of  Bezier triangles  (they are all of the same degree). Note that it provides both the total number $\ncontrols$ of control points $getNbPoint()$ and the number $V$ of triangle points as {\it getNumberOfTriangularPoints() }.
+
+Given a global index of a control point, it is possible to know in which triangle it is associated and where it is located within the triangle. 
+The function {\it void getLocationFromGlobalIndex(const size\_t globalIndex, BezierTrianglePointLocation \&location, 
+		size\_t \&elementIndex, size\_t \&elementOffset) ;} returns the location (point, edge or triangle) of a control point, the index of the triangle (elementIndex) and the rank within its location.
+		
+		
+Efficient internal data structures are built to move from one representation to another.
+
+
+\subsection{BezierTriangleSetGeometryAlgorithms Class}
+
+This class provides basic geometric functions :
+
+\begin{itemize}
+	\item {\it Coord computeNodalValue(const size\_t triangleIndex,const Vec3 barycentricCoordinate); } which computes the position / value of a node given the index of a triangle and its barycentric coordinate.
+	\item {\it Real computeBernsteinPolynomial(const TriangleBezierIndex tbi, const Vec3 barycentricCoordinate);} which computes $B^d_{\mathbf p}(r,s,t)$.
+\end{itemize}
+
+The Bernstein coefficients of a given degree are precomputed and basic visualization of control points are provided if {\it drawControlPointsEdges} is set to true.  
+
+\subsection{Mesh2BezierTopologicalMapping Class}
+
+This class provide a way to create a Bezier triangle mesh of any order given a (linear) triangle mesh. The control points are simply linearly interpolated from the triangle vertices : a control point of index ${\mathbf p}=(i,j,k)$ is computed with the barycentric coordinates $(\frac{i}{\degree},\frac{j}{\degree},\frac{k}{\degree})$. The mapping automatically sets the degree and the number of tetrahedral vertices in the object BezierTriangleSetTopologyContainer.
+
+Note that the position of the mapping in the scene has to be after BezierTriangleSetTopologyContainer (see the example in BezierTriangleTopologicalMapping.scn) 
 \section{High Order Tetrahedral Meshes}
 
 \subsection{Introduction}
@@ -93,20 +269,20 @@ Figure \ref{fig:LayoutBezierTetrahedron} shows this ordering of control points. 
 
 \begin{figure}[!htbp]
 	\centering
-    \includegraphics[width=0.80\textwidth]{DofLayoutBezierTetrahedron}
+    \includegraphics[width=0.60\textwidth]{DofLayoutBezierTetrahedron}
 	\caption{Layout of Degrees of Freedom of Bezier Tetrahedral meshes inside a MechanicalState object}
 	\label{fig:LayoutBezierTetrahedron}
 \end{figure}
 
 There are however some issues. In a tetrahedral mesh, edges and triangles are not oriented ({\em e.g.} a triangle is common to 2 tetrahedra and is ordered differently among each tetrahedron) and therefore the order in the DoF array may not reflect the order in each tetrahedron. It is the role of the BezierTetrahedronSetTopologyContainer class to provide a proper ordering.
 
-Second, since there are several control points for a given edge, triangle and tetrahedron, it is important to specify the ordering inside each element. Figure\ref{DofBezierTetrahedronTesselation} show in a simplified way how the control points are numbered for an edge, triangle and tetrahedron. In a nutshell, the element are stored in increasing lexicographic order of its barycentric coordinates. Thus on a quartic Tetrahedron element, the points of barycentric coordinates $(1/4, 3/4), (1/2,1/2), (3/4, 1/4)$ are stored in this order. However, this order may not the one suitable for a given Bezier tetrahedron as the edge is shared by several tetrahedra.
+Second, since there are several control points for a given edge, triangle and tetrahedron, it is important to specify the ordering inside each element. Figure\ref{fig:DofBezierTetrahedronTesselation} show in a simplified way how the control points are numbered for an edge, triangle and tetrahedron. In a nutshell, the element are stored in increasing lexicographic order of its barycentric coordinates. Thus on a quartic Tetrahedron element, the points of barycentric coordinates $(1/4, 3/4), (1/2,1/2), (3/4, 1/4)$ are stored in this order. However, this order may not the one suitable for a given Bezier tetrahedron as the edge is shared by several tetrahedra.
 
 \begin{figure}[!htbp]
 	\centering
-    \includegraphics[width=0.80\textwidth]{DofBezierTetrahedronTesselation}
+    \includegraphics[width=0.60\textwidth]{DofBezierTetrahedronTesselation}
 	\caption{Layout of Degrees of Freedom of Bezier Tetrahedral meshes inside a MechanicalState object}
-	\label{fig:LayoutBezierTetrahedron}
+	\label{fig:DofBezierTetrahedronTesselation}
 \end{figure}
 
 \subsection{BezierTetrahedronSetTopologyContainer Class}
