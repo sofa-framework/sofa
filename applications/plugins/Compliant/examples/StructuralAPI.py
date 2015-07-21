@@ -78,8 +78,7 @@ def createScene(root):
     ballandsocket_body1 = createFixedRigidBody(ballandsocketNode, "ballandsocket_body1", -10 )
     ballandsocket_body2 = createRigidBody(ballandsocketNode, "ballandsocket_body2", -10 )
     ballandsocket = StructuralAPI.BallAndSocketRigidJoint( "joint", ballandsocket_body1.node, ballandsocket_body2.node )
-    ballandsocket.addLimits( -1,1,-0.5,0.5,-0.75,0.75 )
-    ballandsocket.addSpring( 100,100,100 )
+    ballandsocket.addSpring( 100 )
     
     
     # PLANAR
@@ -92,12 +91,12 @@ def createScene(root):
     
             
     # GIMBAL
-    gimbalNode = root.createChild('gimbal')
-    gimbal_body1 = createFixedRigidBody(gimbalNode, "gimbal_body1", 0 )
-    gimbal_body2 = createRigidBody(gimbalNode, "gimbal_body2", 0 )
-    gimbal = StructuralAPI.GimbalRigidJoint( 2, "joint", gimbal_body1.node, gimbal_body2.node )
-    gimbal.addLimits(-0.5,1,-3,3)
-    gimbal.addSpring( 100,100 )
+    # gimbalNode = root.createChild('gimbal')
+    # gimbal_body1 = createFixedRigidBody(gimbalNode, "gimbal_body1", 0 )
+    # gimbal_body2 = createRigidBody(gimbalNode, "gimbal_body2", 0 )
+    # gimbal = StructuralAPI.GimbalRigidJoint( 2, "joint", gimbal_body1.node, gimbal_body2.node )
+    # gimbal.addLimits(-0.5,1,-3,3)
+    # gimbal.addSpring( 100,100 )
     
     # FIXED
     fixedNode = root.createChild('fixed')
