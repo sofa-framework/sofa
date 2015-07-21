@@ -74,6 +74,7 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
 {
 
     typedef _StiffSpringForceField ForceType;
+    typedef ForceField_test<_StiffSpringForceField> Inherit;
     typedef typename ForceType::DataTypes DataTypes;
 
     typedef typename ForceType::VecCoord VecCoord;
@@ -243,6 +244,11 @@ TYPED_TEST( StiffSpringForceField_test , extension )
 // velocity, no extension
 TYPED_TEST( StiffSpringForceField_test , viscosity )
 {
+    // initial velocities with viscosity create dissipative forces
+    // that would break the potential energy (that is only valid for conservative forces)
+    // so remove getPotentialEnery API test here
+    this->flags &= ~TestFixture::TEST_POTENTIAL_ENERGY;
+
     this->debug = false;
 
     SReal
