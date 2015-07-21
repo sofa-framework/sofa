@@ -54,7 +54,11 @@ SparseGridRamificationTopology::SparseGridRamificationTopology(bool isVirtual)
 }
 
 SparseGridRamificationTopology::~SparseGridRamificationTopology()
-{}
+{
+    for( unsigned i=0; i<_connexions.size(); ++i)
+        for( unsigned j=0; j<_connexions[i].size(); ++j)
+            delete _connexions[i][j];
+}
 
 
 void SparseGridRamificationTopology::init()

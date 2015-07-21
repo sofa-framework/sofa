@@ -51,7 +51,14 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
     nodeBBox->invalidate();
     for ( object = objectList.begin(); object != objectList.end(); ++object)
     {
-        (*object)->computeBBox(params, false);
+        // warning the second parameter should NOT be false
+        // otherwise every object will participate to the bounding box
+        // when it makes no sense for some of them
+        // e.g. some loaders have different scale that the states displayed and used for the simu
+        // sometimes their values do not even have a spatial meaning (such as MechanicalObject representing constraint value)
+        // if some objects does not participate to the bounding box where they should,
+        // you should overload their computeBBox function to correct that
+        (*object)->computeBBox(params, true);
 //        cerr<<"UpdateBoundingBoxVisitor::processNodeTopDown object " << (*object)->getName() << " = "<< (*object)->f_bbox.getValue(params) << endl;
         nodeBBox->include((*object)->f_bbox.getValue(params));
 //        cerr << "   new bbox = " << *nodeBBox << endl;

@@ -43,6 +43,11 @@ Logger::~Logger()
 {
 }
 
+void Logger::mainlog(Level level, const std::string& message, const std::string& location)
+{
+    getMainLogger().log( level, message, location );
+}
+
 void Logger::setLevel(Level level)
 {
     m_currentLevel = level;
@@ -66,15 +71,19 @@ void Logger::setMainLogger(boost::shared_ptr<Logger> logger)
 
 TTYLogger::TTYLogger()
 {
-    m_prefixes[Logger::Debug] = "[Debug] ";
-    m_prefixes[Logger::Info] = "[Info] ";
-    m_prefixes[Logger::Warning] = "[Warning] ";
-    m_prefixes[Logger::Error] = "[Error] ";
+    m_prefixes[Logger::Debug] = "[DEBUG] ";
+    m_prefixes[Logger::Info] = "[INFO] ";
+    m_prefixes[Logger::Warning] = "[WARNING] ";
+    m_prefixes[Logger::Error] = "[ERROR] ";
+    m_prefixes[Logger::Exception] = "[EXCEPTION] ";
     m_colors[Logger::Debug] = Console::DEFAULT_COLOR;
     m_colors[Logger::Info] = Console::BRIGHT_GREEN;
-    m_colors[Logger::Warning] = Console::RED;
+    m_colors[Logger::Warning] = Console::BRIGHT_YELLOW;
     m_colors[Logger::Error] = Console::BRIGHT_RED;
+    m_colors[Logger::Exception] = Console::BRIGHT_PURPLE;
 }
+
+
 
 void TTYLogger::log(Level level, const std::string& message, const std::string& location)
 {
@@ -86,10 +95,10 @@ void TTYLogger::log(Level level, const std::string& message, const std::string& 
     if (m_prefixes[level].size() > 0)
         output << m_colors[level] << m_prefixes[level] << Console::DEFAULT_COLOR;
     if (location.size() > 0)
-        output << Console::YELLOW << "[" << location << "] " << Console::DEFAULT_COLOR;
+        output << Console::BLUE << "[" << location << "] " << Console::DEFAULT_COLOR;
+
     output << message << std::endl;
 }
-
 
 } // namespace helper
 

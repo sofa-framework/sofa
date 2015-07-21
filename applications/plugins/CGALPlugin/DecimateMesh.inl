@@ -102,12 +102,28 @@ void DecimateMesh<DataTypes>::update()
     if (m_edgesTarget != 0)
     {
         SMS::Count_stop_predicate<Surface> stop(m_edgesTarget.getValue());
-        SMS::edge_collapse(surface, stop, CGAL::vertex_index_map( boost::get(CGAL::vertex_external_index,surface)).edge_index_map( boost::get(CGAL::edge_external_index,surface  )));
+#if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(4,5,0)
+        SMS::edge_collapse(surface
+                           ,stop
+                           ,CGAL::vertex_index_map( get(CGAL::vertex_external_index,surface))
+                           .halfedge_index_map( get(CGAL::halfedge_external_index,surface  )));
+#else
+       SMS::edge_collapse(surface, stop, CGAL::vertex_index_map( boost::get(CGAL::vertex_external_index,surface)).edge_index_map( boost::get(CGAL::edge_external_index,surface  )));
+#endif
+
     }
     else if (m_edgesRatio != 0)
     {
         SMS::Count_ratio_stop_predicate<Surface> stop(m_edgesRatio.getValue());
+#if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(4,5,0)
+        SMS::edge_collapse(surface
+                           ,stop
+                           ,CGAL::vertex_index_map( get(CGAL::vertex_external_index,surface))
+                           .halfedge_index_map( get(CGAL::halfedge_external_index,surface  )));
+#else
         SMS::edge_collapse(surface, stop, CGAL::vertex_index_map( boost::get(CGAL::vertex_external_index,surface)).edge_index_map( boost::get(CGAL::edge_external_index,surface  )));
+#endif
+
     }
     else
     {

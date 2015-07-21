@@ -97,13 +97,22 @@ append() {
 case $CI_JOB in
     # Build with default options
     *default*)
-        # Only change from default configuration: Enable tests
+        # Only change from the default configuration: Enable tests
         append "-DSOFA-MISC_TESTS=ON"
+        append "-DSOFA-PLUGIN_SOFATEST=ON"
+        append "-DSOFA-PLUGIN_SOFAPYTHON=ON"
+        append "-DSOFA-PLUGIN_SCENECREATOR=ON"
         ;;
     # Build with as many options enabled
     *options*)
 
         append "-DSOFA-MISC_TESTS=ON"
+
+        if [[ ( $(uname) = Darwin || $(uname) = Linux ) ]]; then
+            append "-DSOFA-MISC_C++11=ON"
+        else
+            append "-DSOFA-MISC_C++11=OFF"
+        fi
 
         if [[ -n "$CI_QT_PATH" ]]; then
             append "-DSOFA-EXTERNAL_QT_PATH=$CI_QT_PATH"
@@ -223,11 +232,6 @@ case $CI_JOB in
         fi
         # Not sure if worth maintaining
         append "-DSOFA-PLUGIN_SOFAPML=OFF"
-        if [[ -n "$CI_HAVE_LIBPYTHON" ]]; then
-            append "-DSOFA-PLUGIN_SOFAPYTHON=ON"
-        else
-            append "-DSOFA-PLUGIN_SOFAPYTHON=OFF"
-        fi
         append "-DSOFA-PLUGIN_SOFASIMPLEGUI=ON"
         append "-DSOFA-PLUGIN_SOFATEST=ON"
         if [[ -n "$CI_HAVE_BOOST" ]]; then

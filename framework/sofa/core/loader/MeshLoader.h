@@ -139,12 +139,11 @@ public:
     Data< Vector3 > scale;
     Data< sofa::defaulttype::Matrix4 > d_transformation;
 
-protected:
-    void updateMesh();
-private:
-    void updateElements();
-    void updatePoints();
-    void updateNormals();
+
+   virtual void updateMesh();
+   virtual void updateElements();
+   virtual void updatePoints();
+   virtual void updateNormals();
 
 protected:
 

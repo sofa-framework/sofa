@@ -25,7 +25,7 @@ void EigenSparseResponse<LinearSolver,symmetric>::reinit()
 }
 
 template<class LinearSolver,bool symmetric>
-void EigenSparseResponse<LinearSolver,symmetric>::factor(const rmat& H, bool semidefinite ) {
+void EigenSparseResponse<LinearSolver,symmetric>::factor(const rmat& H) {
 
 #ifndef NDEBUG
     if( !H.rows() ) serr<<"factor - null matrix"<<sendl;
@@ -41,22 +41,13 @@ void EigenSparseResponse<LinearSolver,symmetric>::factor(const rmat& H, bool sem
     if( symmetric ) tmp = H.triangularView< Eigen::Lower >(); // only copy the triangular part (default to Lower)
     else tmp = H; // TODO there IS a temporary here, from rmat to cmat. Explicit copy is needed for iterative solvers
 
-    if( d_regularize.getValue() && semidefinite )
-    {
-		// add a tiny diagonal matrix to make H psd.
-        // TODO add epsilon only on the empty diagonal entries? NO it would not work for linearly dependent constraints
-        cmat identity(H.rows(),H.cols());
-        identity.setIdentity();
-
-        tmp += identity * d_regularize.getValue();
-    }
 
     response.compute( tmp );
 	
     if( response.info() != Eigen::Success )
     {
-        // try to enforce regularization anyway
-        if( d_regularize.getValue() && !semidefinite )
+        // try to regularize
+        if( d_regularize.getValue() )
         {
             cmat identity(H.rows(),H.cols());
             identity.setIdentity();

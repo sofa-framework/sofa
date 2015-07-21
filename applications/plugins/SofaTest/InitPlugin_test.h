@@ -165,7 +165,18 @@ std::string fileName = std::string(THIS_DIR) + "/" + fileName;
 See e.g. SofaTest_test/CMakeLists.txt and SofaTest_test/LoadScene_test.cpp
 
 
-@author François Faure, Aurélie Dégletagne, and hopefully lots of others !
+
+
+<h3> Regression Tests</h3>
+
+They are high-level tests checking that the result of a simulation is always giving the same results.
+The states (position/velocity) of the indendent dofs are compared to a reference.
+Have a look to SofaTest_test/Regression_test documentation for more details (how to add scene files to be tested).
+
+
+
+
+@author François Faure, Aurélie Dégletagne, Matthieu Nesme and hopefully lots of others!
 @date Started in 2013
 
 This is a the starting page of the plugin documentation, defined in file InitPlugin_test.h

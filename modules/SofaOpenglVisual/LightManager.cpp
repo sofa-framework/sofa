@@ -116,7 +116,7 @@ void LightManager::initVisual()
 
     GLint maxTextureUnits;
     glGetIntegerv(GL_MAX_TEXTURE_UNITS, &maxTextureUnits);
-    std::vector<unsigned short> availableUnitTextures;
+    std::vector<bool> availableUnitTextures;
     availableUnitTextures.resize(maxTextureUnits);
     std::fill(availableUnitTextures.begin(), availableUnitTextures.end(), true);
     for(unsigned int i=0 ; i<sceneTextures.size() ; i++)

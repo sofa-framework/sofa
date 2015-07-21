@@ -191,14 +191,34 @@ if(SOFA-MISC_DUMP_VISITOR_INFO)
 endif()
 
 
-if( NOT WIN32 )
+if( NOT WIN32 ) # TODO detect visual studio versions? some are c++11 compatible
+
     # Even if SOFA code should remain C++98 compatible (so it can be compiled with most compilers),
     # it can be interesting to compile it with a C++11 STL.
     sofa_option(SOFA-MISC_C++11 BOOL OFF "Compile as C++11 (more optimized STL)")
     if(SOFA-MISC_C++11)
+
 #        add_definitions(-std=c++11) # is also adding the flag to the C compiler...
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
+        if(CMAKE_COMPILER_IS_GNUCXX)
+
+            EXEC_PROGRAM(${CMAKE_CXX_COMPILER} ARGS ${CMAKE_CXX_COMPILER_ARG1} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+
+            if(GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
+                SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+            elseif(GCC_VERSION VERSION_GREATER 4.3 OR GCC_VERSION VERSION_EQUAL 4.3)
+                message(WARNING "c++0x activated. g++ compiler with a version >= 4.7 is needed to fully support c++11.")
+                SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+            else ()
+                message("Warning: a g++ compiler with a version >= 4.3 is needed to support c++11.")
+            endif()
+
+        else() # not gcc -> clang?
+            # TODO detect clang versions ?
+            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+        endif()
     endif()
+
 endif()
 
 

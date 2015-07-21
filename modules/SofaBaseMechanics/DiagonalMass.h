@@ -103,6 +103,7 @@ public:
 
     typedef sofa::component::topology::Point Point;
     typedef sofa::component::topology::Edge Edge;
+    typedef sofa::component::topology::Quad Quad;
     typedef sofa::component::topology::Triangle Triangle;
     typedef sofa::component::topology::Tetrahedron Tetrahedron;
     typedef sofa::component::topology::Hexahedron Hexahedron;

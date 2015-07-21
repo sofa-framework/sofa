@@ -38,8 +38,11 @@ void UniformCompliance<DataTypes>::reinit()
 {
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
-
+#ifndef SOFA_FLOAT
     static const Real EPSILON = std::numeric_limits<Real>::epsilon();
+#else // hack to be able to specify low complinace value even when sofa is compiled with USE_FLOAT
+    static const Real EPSILON = 1e-11;
+#endif
 
     if( this->isCompliance.getValue() )
     {

@@ -49,11 +49,10 @@ struct TopologicalChangeProcessor_test: public Sofa_test<double>
 
    bool TestInciseProcess()
    {
-       // Animate during 20 ms (Incise not test now)
        // To test incise animates the scene at least 1.2s
-       for(int i=0;i<20;i++)
+       for(int i=0;i<50;i++)
        {
-          sofa::simulation::getSimulation()->animate(root.get(),0.01);
+          sofa::simulation::getSimulation()->animate(root.get(),0.1);
        }
 
        return true;

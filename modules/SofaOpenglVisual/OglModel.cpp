@@ -284,7 +284,7 @@ void OglModel::drawGroup(int ig, bool transparent)
             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
         else
 #endif
-            indices = edges.getData();
+        indices = edges.getData();
 
         GLenum prim = GL_LINES;
         switch (primitiveType.getValue().getSelectedId())
@@ -304,16 +304,8 @@ void OglModel::drawGroup(int ig, bool transparent)
         default:
             break;
         }
-		if(indices+g.edge0 == 0)
-		{
-#ifdef DEBUG_DRAW
-			serr << "OglModel::drawGroup : Preventing draw of a null element. It is known that a NewOmniDriver cause this kind of issue" << sendl;
-#endif
-		}
-		else
-		{
-			glDrawElements(prim, g.nbe * 2, GL_UNSIGNED_INT, indices + g.edge0);
-		}
+
+        glDrawElements(prim, g.nbe * 2, GL_UNSIGNED_INT, indices + g.edge0);
 
 #ifdef SOFA_HAVE_GLEW
         if (useBufferObjects)

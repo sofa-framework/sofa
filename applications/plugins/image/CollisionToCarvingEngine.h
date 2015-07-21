@@ -35,6 +35,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
@@ -65,6 +66,7 @@ template <class _InImageTypes,class _OutImageTypes>
 class CollisionToCarvingEngine : public core::DataEngine
 {
 public:
+	// ------------ Typedefs ------------------------------------------------- 
 	typedef core::DataEngine Inherited;
     SOFA_CLASS(SOFA_TEMPLATE2(CollisionToCarvingEngine,_InImageTypes,_OutImageTypes),Inherited);
 
@@ -87,7 +89,7 @@ public:
     typedef vector<double> ParamTypes;
 	typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 	typedef sofa::defaulttype::Vec<3,SReal> Vector3;
-
+	// -------- Datas ----------------------------
 	Data< InImageTypes > inputImage;
     Data< TransformType > inputTransform;
 
@@ -96,6 +98,11 @@ public:
 
 	Data< Vector3 > trackedPosition;
 
+	// ------ Parameters ---------------------
+	raImagei* in;
+	raTransform* inT;
+	waImageo* out;
+	waTransform* outT;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const CollisionToCarvingEngine<InImageTypes,OutImageTypes>* = NULL) { return InImageTypes::Name()+std::string(",")+OutImageTypes::Name(); }
@@ -111,15 +118,28 @@ public:
         inputTransform.setReadOnly(true);
         outputImage.setReadOnly(true);
         outputTransform.setReadOnly(true);
+		in=NULL;
+		inT=NULL;
+		out=NULL;
+		outT=NULL;
     }
 
     virtual ~CollisionToCarvingEngine()
     {
+		delete in;
+		delete inT;
+		delete out;
+		delete outT;
     }
 
     virtual void init()
     {
-		update();
+		//cout<<"init"<<endl;
+		addInput(&inputImage);
+        addInput(&inputTransform);
+        addOutput(&outputImage);
+        addOutput(&outputTransform);
+		setDirtyValue();
     }
 
     virtual void reinit() { update(); }
@@ -128,40 +148,49 @@ protected:
 	
     virtual void update()
     {
-
+		
 		bool updateImage = this->inputImage.isDirty();	// change of input image -> update output image
         bool updateTransform = this->inputTransform.isDirty();	// change of input transform -> update output transform
-        if(!updateImage && !updateTransform) {updateImage=true; updateTransform=true;}  // change of parameters -> update all
+		
+		if(in==NULL){in = new raImagei(this->inputImage);}
+		if(inT==NULL){inT = new raTransform(this->inputTransform);}
+		if(out==NULL){out = new waImageo(this->outputImage);}
+		if(outT==NULL){outT = new waTransform(this->outputTransform);}
 
-        raTransform inT(this->inputTransform);
-        raImagei in(this->inputImage);
+		cleanDirty();
+	
+		if((*in)->isEmpty()) return;
 
-        cleanDirty();
-
-        waImageo out(this->outputImage);
-        waTransform outT(this->outputTransform);
-
-        if(in->isEmpty()) return;
-
-        const CImgList<Ti>& inimg = in->getCImgList();
-        CImgList<To>& img = out->getCImgList();
-        if(updateImage||true) img.assign(inimg);	// copy
-        if(updateTransform||true) outT->operator=(inT);	// copy
-        cimglist_for(img,l)
-            cimg_forXYZ(img(l),x,y,z)
-			{
-				img(l)(x,y,z)=(To)0.5;
-			}
-		img(0)(0,0,0) = 0;
-		Vector3 valueinimage = trackedPosition.getValue() - inT->getTranslation();
-		if(inT->getRotation() == Vector3(0,0,0))
+		const CImgList<Ti>& inimg = (*in)->getCImgList();
+        CImgList<To>& img = (*out)->getCImgList();
+        if(updateImage) img.assign(inimg);	// copy
+        if(updateTransform) (*outT)->operator=(*inT);	// copy
+		
+		//cout << this->inputImage <<endl;
+		if(updateImage || updateTransform)
 		{
-			cout<< "L'absence de rotation n'est pas encore prise en compte" <<endl;
-			//img(0)(valueinimage.x, valueinimage.y, valueinimage.z) = 1;
+			cimglist_for(img,l)
+				cimg_forXYZ(img(l),x,y,z)
+				{
+					img(l)(x,y,z)=inimg(l)(x,y,z);
+				}
+			img(0)(0,0,0) = 0;
+		}
+		Vector3 valueinimage = trackedPosition.getValue() - (*inT)->getTranslation();
+		Vector3 scale = (*outT)->getScale();
+		if((*outT)->getRotation() == Vector3(0,0,0))
+		{
+			//cout<< "L'absence de rotation n'est pas encore prise en compte" <<endl;
+			
+			if((*out)->isInside(valueinimage.x()/scale.x(), valueinimage.y()/scale.y(), valueinimage.z()/scale.z()))
+			{
+				img(0)(valueinimage.x()/scale.x(), valueinimage.y()/scale.y(), valueinimage.z()/scale.z()) = 1;
+			}
 		}
 		else{
-			cout<< "La collision dans une image rotationné n'est pas encore prise en compte" <<endl;
+			//cout<< "La collision dans une image rotationné n'est pas encore prise en compte" <<endl;
 		}
+		if (updateTransform) (*outT)->update(); // update internal data
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)
@@ -169,16 +198,12 @@ protected:
 		
         if ( dynamic_cast<simulation::AnimateBeginEvent*>(event))
         { 
-			cout<<"test"<<endl;
+			//cout<<"test"<<endl;
 			update();
 		}
-		else if( dynamic_cast<sofa::core::objectmodel::MouseEvent*>(event))
-		{
-			cout<<"mouse"<<endl;
-		}		
     }
 
-    virtual void draw(const core::visual::VisualParams* /*vparams*/)
+    virtual void draw(const core::visual::VisualParams* vparams)
     {
 
     }

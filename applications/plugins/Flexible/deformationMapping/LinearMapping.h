@@ -163,7 +163,7 @@ public :
         bool ddw = !this->f_ddw.getValue().empty();
         bool F0  = !this->f_F0.getValue().empty();
 
-        MaterialToSpatial FI; identity(FI);
+        static const MaterialToSpatial FI = identity<MaterialToSpatial>();
         this->jacobian.resize(size);
         for(unsigned int i=0; i<size; i++ )
         {
