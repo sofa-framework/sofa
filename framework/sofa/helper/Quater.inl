@@ -27,9 +27,9 @@
 
 #include "Quater.h"
 #include <limits>
-#include <math.h>
+#include <cmath>
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 
 
 namespace sofa
