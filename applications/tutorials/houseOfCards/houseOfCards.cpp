@@ -27,6 +27,7 @@
 
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/core/ExecParams.h>
+#include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
@@ -196,6 +197,8 @@ int main(int argc, char** argv)
 
     glutInit(&argc,argv);
 
+    sofa::simulation::tree::init();
+    sofa::component::init();
     sofa::gui::initMain();
 
     unsigned int sizeHouseOfCards=4;

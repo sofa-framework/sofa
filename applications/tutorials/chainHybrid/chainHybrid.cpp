@@ -26,6 +26,7 @@
 #include <plugins/SceneCreator/SceneCreator.h>
 
 #include <sofa/helper/ArgumentParser.h>
+#include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/common/Node.h>
 
@@ -225,11 +226,13 @@ int main(int argc, char** argv)
     sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
     (argc,argv);
 
+    sofa::simulation::tree::init();
+    sofa::component::init();
+    sofa::gui::initMain();
+    sofa::gui::GUIManager::Init(argv[0]);
 
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
-    sofa::gui::initMain();
-    sofa::gui::GUIManager::Init(argv[0]);
 
     // The graph root node
     Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();

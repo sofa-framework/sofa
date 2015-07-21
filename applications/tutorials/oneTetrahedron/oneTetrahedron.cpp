@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <SofaComponentMain/init.h>
 #include <SofaGraphComponent/Gravity.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
@@ -39,6 +40,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/glut.h>
 
+#include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
@@ -66,6 +68,8 @@ int main(int argc, char** argv)
     sofa::helper::parse("This is a SOFA application.")
     (argc,argv);
 
+    sofa::simulation::tree::init();
+    sofa::component::init();
     sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
 

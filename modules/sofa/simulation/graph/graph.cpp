@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,34 +16,37 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: Framework                              *
+*                               SOFA :: Modules                               *
 *                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_HELPER_H
-#define SOFA_HELPER_HELPER_H
+#include "graph.h"
 
-#include <sofa/helper/system/config.h>
-
-#ifdef SOFA_BUILD_HELPER
-#	define SOFA_HELPER_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_HELPER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/simulation/common/common.h>
 
 namespace sofa
 {
 
-namespace helper
+namespace simulation
 {
 
-/// @brief Initialize the SofaHelper library.
-void SOFA_HELPER_API init();
+namespace graph
+{
 
-} // namespace helper
+void init()
+{
+    static bool first = true;
+    if (first)
+    {
+        sofa::simulation::common::init();
+        first = false;
+    }
+}
+
+} // namespace graph
+
+} // namespace simulation
 
 } // namespace sofa
-
-#endif

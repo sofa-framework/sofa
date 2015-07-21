@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,44 +16,31 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: The SOFA Team (see Authors.txt)                                    *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/simulation/common/xml/initXml.h>
-
+#include "defaulttype.h"
+#include <sofa/defaulttype/defaulttype.h>
 
 namespace sofa
 {
 
-namespace simulation
+namespace core
 {
 
-namespace xml
-{
-
-
-void initXml()
+void init()
 {
     static bool first = true;
     if (first)
     {
+        sofa::defaulttype::init();
         first = false;
     }
 }
 
-} // namespace xml
-
-} // namespace simulation
+} // namespace core
 
 } // namespace sofa
-
-
-SOFA_LINK_CLASS(Attribute)
-SOFA_LINK_CLASS(Data)
-SOFA_LINK_CLASS(NodeElement)
-SOFA_LINK_CLASS(Object)
-

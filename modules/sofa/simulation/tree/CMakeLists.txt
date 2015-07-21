@@ -12,6 +12,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
+	tree.cpp
 	ExportDotVisitor.cpp
 	GNode.cpp
 	GNodeVisitor.cpp

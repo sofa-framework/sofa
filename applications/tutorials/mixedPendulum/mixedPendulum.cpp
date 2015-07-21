@@ -26,7 +26,9 @@
 // scene data structure
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
+#include <SofaComponentMain/init.h>
 #include <SofaGraphComponent/Gravity.h>
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SofaImplicitOdeSolver/StaticSolver.h>
@@ -50,6 +52,8 @@ using sofa::core::VecId;
 
 int main(int, char** argv)
 {
+    sofa::simulation::tree::init();
+    sofa::component::init();
     sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
     //=========================== Build the scene

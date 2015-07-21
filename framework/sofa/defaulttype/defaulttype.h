@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_H
-#define SOFA_DEFAULTTYPE_H
+#ifndef SOFA_DEFAULTTYPE_DEFAULTTYPE_H
+#define SOFA_DEFAULTTYPE_DEFAULTTYPE_H
 
 #include <sofa/helper/system/config.h>
 
@@ -32,5 +32,19 @@
 #else
 #	define SOFA_DEFAULTTYPE_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
+
+namespace sofa
+{
+
+namespace defaulttype
+{
+
+/// @brief Initialize the SofaDefaultType library, as well as it dependency:
+/// SofaHelper.
+void SOFA_DEFAULTTYPE_API init();
+
+} // namespace defaulttype
+
+} // namespace sofa
 
 #endif

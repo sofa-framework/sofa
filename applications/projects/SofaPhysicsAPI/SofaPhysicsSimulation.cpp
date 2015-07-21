@@ -6,7 +6,6 @@
 #include <sofa/helper/io/ImageBMP.h>
 #include <sofa/helper/gl/RAII.h>
 
-#include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -201,7 +200,6 @@ useGUI(useGUI_), GUIFramerate(GUIFramerate_)
     sofa::simulation::setSimulation(m_Simulation);
 
     sofa::component::init();
-    sofa::simulation::xml::initXml();
 
     sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
             &classVisualModel);
