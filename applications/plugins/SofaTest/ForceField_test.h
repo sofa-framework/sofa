@@ -86,7 +86,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
     /// @name Tested API
     /// {
     static const unsigned char TEST_POTENTIAL_ENERGY = 1; ///< testing getPotentialEnergy function. The tests will only work with conservative forces (if dissipative forces such as viscosity or damping are computed, the test is wrong)
-    static const unsigned char TEST_ALL = std::numeric_limits<unsigned char>::max(); ///< testing everything
+    static const unsigned char TEST_ALL = UCHAR_MAX; ///< testing everything
     unsigned char flags; ///< testing options. (all by default). To be used with precaution.
     /// }
 
