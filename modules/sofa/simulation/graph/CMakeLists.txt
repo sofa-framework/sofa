@@ -10,6 +10,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
+	graph.cpp
 	DAGNode.cpp 
 	DAGNodeMultiMappingElement.cpp 
 	DAGSimulation.cpp 

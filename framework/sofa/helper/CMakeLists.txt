@@ -100,6 +100,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
+	helper.cpp
 	ArgumentParser.cpp
     BackTrace.cpp
     DualQuat.cpp

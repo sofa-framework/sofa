@@ -24,14 +24,14 @@
 ******************************************************************************/
 #include "generateDoc.h"
 #include <SofaComponentMain/init.h>
-#include <sofa/simulation/common/xml/initXml.h>
+#include <sofa/simulation/tree/tree.h>
 #include <iostream>
 #include <fstream>
 
 int main(int /*argc*/, char** /*argv*/)
 {
+    sofa::simulation::tree::init();
     sofa::component::init();
-    sofa::simulation::xml::initXml();
     std::cout << "Generating sofa-classes.html" << std::endl;
     projects::generateFactoryHTMLDoc("sofa-classes.html");
     std::cout << "Generating _classes.php" << std::endl;
