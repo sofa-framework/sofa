@@ -70,14 +70,43 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3dTypes>::initNeighbourh
 #endif
 
 
-int StandardTetrahedralFEMForceField_nbMaxTetraPerNode;
-int StandardTetrahedralFEMForceField_nbMaxTetraPerEdge;
-sofa::gpu::cuda::CudaVector<int> StandardTetrahedralFEMForceField_neighbourhoodPoints;
-sofa::gpu::cuda::CudaVector<float> StandardTetrahedralFEMForceField_contribTetra;
-sofa::gpu::cuda::CudaVector<int> StandardTetrahedralFEMForceField_neighbourhoodEdges;
-sofa::gpu::cuda::CudaVector<float> StandardTetrahedralFEMForceField_contribDfDx;
+inline int& StandardTetrahedralFEMForceField_nbMaxTetraPerNode()
+{
+	static int nbMaxTetraPerNode = 0;
+	return nbMaxTetraPerNode;
+}
 
+inline int& StandardTetrahedralFEMForceField_nbMaxTetraPerEdge()
+{
+	static int nbMaxTetraPerEdge = 0;
+	return nbMaxTetraPerEdge;
+}
 
+// WARNING: we do the following because we cannot instantiate a CudaVector (calls cuda functions) during the load of the dynamic library on Windows (its a bug leading to a stale)
+
+inline sofa::gpu::cuda::CudaVector<int>& StandardTetrahedralFEMForceField_neighbourhoodPoints()
+{
+	static sofa::gpu::cuda::CudaVector<int> neighbourhoodPoints;
+	return neighbourhoodPoints;
+}
+
+inline sofa::gpu::cuda::CudaVector<float>& StandardTetrahedralFEMForceField_contribTetra()
+{
+	static sofa::gpu::cuda::CudaVector<float> contribTetra;
+	return contribTetra;
+}
+
+inline sofa::gpu::cuda::CudaVector<int>& StandardTetrahedralFEMForceField_neighbourhoodEdges()
+{
+	static sofa::gpu::cuda::CudaVector<int> neighbourhoodEdges;
+	return neighbourhoodEdges;
+}
+
+inline sofa::gpu::cuda::CudaVector<float>& StandardTetrahedralFEMForceField_contribDfDx()
+{
+	static sofa::gpu::cuda::CudaVector<float> contribDfDx;
+	return contribDfDx;
+}
 
 } // namespace forcefield
 

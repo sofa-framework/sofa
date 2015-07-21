@@ -3,7 +3,9 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 find_package(CUDA REQUIRED)
 
 # quick and dirty fix for nvcc compatibility with -fno-partial-inlining flag
-set(CUDA_PROPAGATE_HOST_FLAGS OFF)
+if(NOT WIN32)
+	set(CUDA_PROPAGATE_HOST_FLAGS OFF)
+endif()
 
 set(HEADER_FILES
     sofa/gpu/cuda/mycuda.h
@@ -181,7 +183,7 @@ set(README_FILES SofaCUDA.txt)
 
 if(SOFA-EXTERNAL_HAVE_THRUST)
     AddCompilerDefinitions("SOFA_GPU_THRUST")
-    AddLinkerDependencies(thrusT)
+    AddLinkerDependencies(thrust)
 endif()
 
 #Give current directory to nvcc compiler
@@ -191,11 +193,6 @@ cuda_include_directories(${SOFA_EXTLIBS_DIR})
 cuda_include_directories(${SOFA_INC_DIR})
 
 #Make these compiler definition available to nvcc
-if(WIN32)
-	add_definitions("-DWIN32")
-    set(WINDOWSOPTIONS "/MD")
-endif()
-
 add_definitions("-DSOFA_BUILD_GPU_CUDA")
 if(SOFA-EXTERNAL_GLEW)
 	add_definitions("-DSOFA_HAVE_GLEW")
