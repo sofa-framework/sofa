@@ -48,7 +48,7 @@ class SOFA_HELPER_API DefaultStyleMessageFormatter : public MessageFormatter
 {
 public:
     static MessageFormatter* getInstance();
-    virtual void formatMessage(const Message& m,std::ostream& out) override;
+    virtual void formatMessage(const Message& m,std::ostream& out);
 };
 
 } // messaging

@@ -48,7 +48,7 @@ class Message;
 class LoggerMessageHandler : public MessageHandler
 {
 public:
-    virtual void process(Message& m) override ;
+    virtual void process(Message& m) ;
     static const Message& getMessageAt(int index) ;
 };
 
