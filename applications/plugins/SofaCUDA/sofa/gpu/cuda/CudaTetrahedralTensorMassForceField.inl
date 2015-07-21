@@ -51,7 +51,14 @@ namespace component
 
 namespace forcefield
 {
+/*
+	// TODO: warning - we should have a TetrahedralTensorMassForceFieldData<DataType> because
+		- TetrahedralTensorMassForceField_nbMaxEdgesPerNode
+		- TetrahedralTensorMassForceField_neighbourhoodPoints
+		- TetrahedralTensorMassForceField_contribEdge
+	are shared between TetrahedralTensorMassForceField<CudaVecTypes> and i guess, should not
 
+*/
 using namespace gpu::cuda;
 
     template <>
@@ -67,8 +74,8 @@ using namespace gpu::cuda;
 
         edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
 
-        TetrahedralTensorMassForceField_contribEdge.resize(6*nbEdges);
-        TetrahedralTensorMassForceFieldCuda3f_addForce(nbPoints, TetrahedralTensorMassForceField_nbMaxEdgesPerNode, TetrahedralTensorMassForceField_neighbourhoodPoints.deviceRead(), TetrahedralTensorMassForceField_contribEdge.deviceWrite(), nbEdges,  f.deviceWrite(), x.deviceRead(), _initialPoints.deviceRead(), edgeInf.deviceRead());
+        TetrahedralTensorMassForceField_contribEdge().resize(6*nbEdges);
+        TetrahedralTensorMassForceFieldCuda3f_addForce(nbPoints, TetrahedralTensorMassForceField_nbMaxEdgesPerNode(), TetrahedralTensorMassForceField_neighbourhoodPoints().deviceRead(), TetrahedralTensorMassForceField_contribEdge().deviceWrite(), nbEdges,  f.deviceWrite(), x.deviceRead(), _initialPoints.deviceRead(), edgeInf.deviceRead());
 
         edgeInfo.endEdit();
         d_f.endEdit();
@@ -88,8 +95,8 @@ using namespace gpu::cuda;
         int nbPoints=_topology->getNbPoints();
         edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
 
-        TetrahedralTensorMassForceField_contribEdge.resize(6*nbEdges);
-        TetrahedralTensorMassForceFieldCuda3f_addDForce(nbPoints, TetrahedralTensorMassForceField_nbMaxEdgesPerNode, TetrahedralTensorMassForceField_neighbourhoodPoints.deviceRead(), TetrahedralTensorMassForceField_contribEdge.deviceWrite(), nbEdges,  df.deviceWrite(), dx.deviceRead(), edgeInf.deviceRead(), (float)kFactor);
+        TetrahedralTensorMassForceField_contribEdge().resize(6*nbEdges);
+        TetrahedralTensorMassForceFieldCuda3f_addDForce(nbPoints, TetrahedralTensorMassForceField_nbMaxEdgesPerNode(), TetrahedralTensorMassForceField_neighbourhoodPoints().deviceRead(), TetrahedralTensorMassForceField_contribEdge().deviceWrite(), nbEdges,  df.deviceWrite(), dx.deviceRead(), edgeInf.deviceRead(), (float)kFactor);
 
         edgeInfo.endEdit();
         d_df.endEdit();
@@ -104,33 +111,33 @@ using namespace gpu::cuda;
         std::cout<<"(TetrahedralTensorMassForceField) GPU-GEMS activated"<<std::endl;
 
         /// Initialize the number max of edges per node
-        TetrahedralTensorMassForceField_nbMaxEdgesPerNode = 0;
+        TetrahedralTensorMassForceField_nbMaxEdgesPerNode() = 0;
 
         /// Compute it
         for(int i=0;i<_topology->getNbPoints();++i)
         {
-            if((int)_topology->getEdgesAroundVertex(i).size()>TetrahedralTensorMassForceField_nbMaxEdgesPerNode)
-                TetrahedralTensorMassForceField_nbMaxEdgesPerNode = _topology->getEdgesAroundVertex(i).size();
+            if((int)_topology->getEdgesAroundVertex(i).size()>TetrahedralTensorMassForceField_nbMaxEdgesPerNode())
+                TetrahedralTensorMassForceField_nbMaxEdgesPerNode() = _topology->getEdgesAroundVertex(i).size();
         }
 
         /// Initialize the vector neighbourhoodPoints
-        TetrahedralTensorMassForceField_neighbourhoodPoints.resize((_topology->getNbPoints())*TetrahedralTensorMassForceField_nbMaxEdgesPerNode);
+        TetrahedralTensorMassForceField_neighbourhoodPoints().resize((_topology->getNbPoints())*TetrahedralTensorMassForceField_nbMaxEdgesPerNode());
 
         unsigned int edgeID;
 
         for (int i=0;i<_topology->getNbPoints();++i)
         {
-            for(int j=0;j<TetrahedralTensorMassForceField_nbMaxEdgesPerNode;++j)
+            for(int j=0;j<TetrahedralTensorMassForceField_nbMaxEdgesPerNode();++j)
             {
                 if(j>(int)_topology->getEdgesAroundVertex(i).size()-1)
-                    TetrahedralTensorMassForceField_neighbourhoodPoints[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode+j] = -1;
+                    TetrahedralTensorMassForceField_neighbourhoodPoints()[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode()+j] = -1;
                 else
                 {
                     edgeID = _topology->getEdgesAroundVertex(i)[j];
                     if(i == (int)_topology->getEdge(edgeID)[0])
-                        TetrahedralTensorMassForceField_neighbourhoodPoints[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode+j] = 2*edgeID;   //v0
+                        TetrahedralTensorMassForceField_neighbourhoodPoints()[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode()+j] = 2*edgeID;   //v0
                     else
-                        TetrahedralTensorMassForceField_neighbourhoodPoints[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode+j] = 2*edgeID+1; //v1
+                        TetrahedralTensorMassForceField_neighbourhoodPoints()[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode()+j] = 2*edgeID+1; //v1
                 }
             }
         }
@@ -151,8 +158,8 @@ using namespace gpu::cuda;
 
         edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
 
-        TetrahedralTensorMassForceField_contribEdge.resize(6*nbEdges);
-        TetrahedralTensorMassForceFieldCuda3d_addForce(nbPoints, TetrahedralTensorMassForceField_nbMaxEdgesPerNode, TetrahedralTensorMassForceField_neighbourhoodPoints.deviceRead(), TetrahedralTensorMassForceField_contribEdge.deviceWrite(), nbEdges,  f.deviceWrite(), x.deviceRead(), _initialPoints.deviceRead(), edgeInf.deviceRead());
+        TetrahedralTensorMassForceField_contribEdge().resize(6*nbEdges);
+        TetrahedralTensorMassForceFieldCuda3d_addForce(nbPoints, TetrahedralTensorMassForceField_nbMaxEdgesPerNode(), TetrahedralTensorMassForceField_neighbourhoodPoints().deviceRead(), TetrahedralTensorMassForceField_contribEdge().deviceWrite(), nbEdges,  f.deviceWrite(), x.deviceRead(), _initialPoints.deviceRead(), edgeInf.deviceRead());
 
         edgeInfo.endEdit();
         d_f.endEdit();
@@ -171,8 +178,8 @@ using namespace gpu::cuda;
         int nbPoints=_topology->getNbPoints();
         edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
 
-        TetrahedralTensorMassForceField_contribEdge.resize(6*nbEdges);
-        TetrahedralTensorMassForceFieldCuda3d_addDForce(nbPoints, TetrahedralTensorMassForceField_nbMaxEdgesPerNode, TetrahedralTensorMassForceField_neighbourhoodPoints.deviceRead(), TetrahedralTensorMassForceField_contribEdge.deviceWrite(), nbEdges,  df.deviceWrite(), dx.deviceRead(), edgeInf.deviceRead(), kFactor);
+        TetrahedralTensorMassForceField_contribEdge().resize(6*nbEdges);
+        TetrahedralTensorMassForceFieldCuda3d_addDForce(nbPoints, TetrahedralTensorMassForceField_nbMaxEdgesPerNode(), TetrahedralTensorMassForceField_neighbourhoodPoints().deviceRead(), TetrahedralTensorMassForceField_contribEdge().deviceWrite(), nbEdges,  df.deviceWrite(), dx.deviceRead(), edgeInf.deviceRead(), kFactor);
 
         edgeInfo.endEdit();
         d_df.endEdit();
@@ -184,33 +191,33 @@ using namespace gpu::cuda;
 		std::cout<<"(TetrahedralTensorMassForceField) GPU-GEMS activated"<<std::endl;
 
 		/// Initialize the number max of edges per node
-		TetrahedralTensorMassForceField_nbMaxEdgesPerNode = 0;
+		TetrahedralTensorMassForceField_nbMaxEdgesPerNode() = 0;
 
 		/// Compute it
 		for(int i=0;i<_topology->getNbPoints();++i)
 		{
-			if((int)_topology->getEdgesAroundVertex(i).size()>TetrahedralTensorMassForceField_nbMaxEdgesPerNode)
-				TetrahedralTensorMassForceField_nbMaxEdgesPerNode = _topology->getEdgesAroundVertex(i).size();
+			if((int)_topology->getEdgesAroundVertex(i).size()>TetrahedralTensorMassForceField_nbMaxEdgesPerNode())
+				TetrahedralTensorMassForceField_nbMaxEdgesPerNode() = _topology->getEdgesAroundVertex(i).size();
 		}
 
 		/// Initialize the vector neighbourhoodPoints
-		TetrahedralTensorMassForceField_neighbourhoodPoints.resize((_topology->getNbPoints())*TetrahedralTensorMassForceField_nbMaxEdgesPerNode);
+		TetrahedralTensorMassForceField_neighbourhoodPoints().resize((_topology->getNbPoints())*TetrahedralTensorMassForceField_nbMaxEdgesPerNode());
 
 		unsigned int edgeID;
 
         for (int i=0;i<_topology->getNbPoints();++i)
 		{
-			for(int j=0;j<TetrahedralTensorMassForceField_nbMaxEdgesPerNode;++j)
+			for(int j=0;j<TetrahedralTensorMassForceField_nbMaxEdgesPerNode();++j)
 			{
 				if(j>(int)_topology->getEdgesAroundVertex(i).size()-1)
-					TetrahedralTensorMassForceField_neighbourhoodPoints[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode+j] = -1;
+					TetrahedralTensorMassForceField_neighbourhoodPoints()[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode()+j] = -1;
 				else
 				{
 					edgeID = _topology->getEdgesAroundVertex(i)[j];
                     if((unsigned) i == _topology->getEdge(edgeID)[0])
-						TetrahedralTensorMassForceField_neighbourhoodPoints[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode+j] = 2*edgeID;   //v0
+						TetrahedralTensorMassForceField_neighbourhoodPoints()[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode()+j] = 2*edgeID;   //v0
 					else
-						TetrahedralTensorMassForceField_neighbourhoodPoints[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode+j] = 2*edgeID+1; //v1
+						TetrahedralTensorMassForceField_neighbourhoodPoints()[i*TetrahedralTensorMassForceField_nbMaxEdgesPerNode()+j] = 2*edgeID+1; //v1
 				}
 			}
 		}
