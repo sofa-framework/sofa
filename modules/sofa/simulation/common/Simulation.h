@@ -34,6 +34,8 @@
 
 #include <sofa/simulation/common/DefaultAnimationLoop.h>
 #include <sofa/simulation/common/DefaultVisualManagerLoop.h>
+#include <sofa/helper/messaging/MessageDispatcher.h>
+#include <sofa/helper/messaging/Messaging.h>
 
 namespace sofa
 {
@@ -135,12 +137,12 @@ public:
     virtual bool isDirectedAcyclicGraph() = 0;
 
     /// Text message system
-//    sofa::helper::TextMessageDispatcher::SPtr getTextMessageDispatcher();
+    sofa::helper::messaging::MessageDispatcher& getMessageDispatcher();
 
 protected:
     /// The only one top root Node of the Sofa scene
     static Node::SPtr sRoot;
-//    sofa::helper::TextMessageDispatcher::SPtr m_TextMessageDispatcher;
+    sofa::helper::messaging::MessageDispatcher m_TextMessageDispatcher;
 };
 
 /// Set the (unique) simulation which controls the scene
@@ -154,5 +156,16 @@ SOFA_SIMULATION_COMMON_API Simulation* getSimulation();
 } // namespace simulation
 
 } // namespace sofa
+
+// very ugly, temporary !
+#define dmsg_info(emitter)    dmsg_info_dispatcher(sofa::simulation::Simulation::theSimulation->getMessageDispatcher(),emitter)
+#define dmsg_warning(emitter) dmsg_warning_dispatcher(sofa::simulation::Simulation::theSimulation->getMessageDispatcher(),emitter)
+#define dmsg_error(emitter)   dmsg_error_dispatcher(sofa::simulation::Simulation::theSimulation->getMessageDispatcher(),emitter)
+#define dmsg_fatal(emitter)   dmsg_fatal_dispatcher(sofa::simulation::Simulation::theSimulation->getMessageDispatcher(),emitter)
+
+#define msg_info(emitter)    msg_info_dispatcher(sofa::simulation::Simulation::theSimulation->getMessageDispatcher(),emitter)
+#define msg_warning(emitter) msg_warning_dispatcher(sofa::simulation::Simulation::theSimulation->getMessageDispatcher(),emitter)
+#define msg_error(emitter)   msg_error_dispatcher(sofa::simulation::Simulation::theSimulation->getMessageDispatcher(),emitter)
+#define msg_fatal(emitter)   msg_fatal_dispatcher(sofa::simulation::Simulation::theSimulation->getMessageDispatcher(),emitter)
 
 #endif

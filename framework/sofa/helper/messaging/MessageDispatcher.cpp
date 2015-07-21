@@ -69,7 +69,7 @@ int s_m_lastErrorId = -1 ;     // keep count of the last error message received.
 int s_m_lastWarningId = -1 ;
 int s_m_lastInfoId = -1 ;
 
-sofa::helper::messaging::Message& operator<<=(MessageDispatcher, sofa::helper::messaging::Message& m){
+sofa::helper::messaging::Message& operator<<=(MessageDispatcher &d, sofa::helper::messaging::Message& m){
     s_m_lastAllocatedID++ ;
 
     m.setId(s_m_lastAllocatedID) ;
@@ -81,7 +81,7 @@ sofa::helper::messaging::Message& operator<<=(MessageDispatcher, sofa::helper::m
     else if(m.type()=="info")
         s_m_lastInfoId = s_m_lastAllocatedID ;
 
-    MessageDispatcher::process(m);
+    d.process(m);
     return m;
 }
 
