@@ -51,7 +51,7 @@ class SOFA_HELPER_API ConsoleMessageHandler : public MessageHandler
 {
 public:
     ConsoleMessageHandler(MessageFormatter* formatter = 0); // by default, uses the DefaultStyleMessageFormatter
-    virtual void process(Message &m) override ;
+    virtual void process(Message &m) ;
 
 private:
     MessageFormatter    *m_formatter;
