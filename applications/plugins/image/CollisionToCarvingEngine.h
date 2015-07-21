@@ -97,6 +97,9 @@ public:
     Data< TransformType > outputTransform;
 
 	Data< Vector3 > trackedPosition;
+	Data< bool> on;
+	Data< Real> value;
+	Data< Vector3> size;
 
 	// ------ Parameters ---------------------
 	raImagei* in;
@@ -112,7 +115,10 @@ public:
 		, inputTransform(initData(&inputTransform,TransformType(),"inputTransform",""))
 		, outputImage(initData(&outputImage,OutImageTypes(),"outputImage",""))
 		, outputTransform(initData(&outputTransform,TransformType(),"outputTransform",""))
-		, trackedPosition(initData(&trackedPosition, Vector3(),"trackedPosition","Position de test pour la collision"))
+		, trackedPosition(initData(&trackedPosition, Vector3(),"trackedPosition","Position where to change values. Modify it with python"))
+		, on(initData(&on, false,"On","Switch On/Off; Modify it with python"))
+		, value(initData(&value, 0, "value", "Value written into image"))
+		, size(initData(&size, Vector3(),"size","The size within the image will be modified; Will be transformed in ?*2+1"))
     {
 		inputImage.setReadOnly(true);
         inputTransform.setReadOnly(true);
@@ -134,7 +140,6 @@ public:
 
     virtual void init()
     {
-		//cout<<"init"<<endl;
 		addInput(&inputImage);
         addInput(&inputTransform);
         addOutput(&outputImage);
@@ -165,8 +170,7 @@ protected:
         CImgList<To>& img = (*out)->getCImgList();
         if(updateImage) img.assign(inimg);	// copy
         if(updateTransform) (*outT)->operator=(*inT);	// copy
-		
-		//cout << this->inputImage <<endl;
+
 		if(updateImage || updateTransform)
 		{
 			cimglist_for(img,l)
@@ -174,7 +178,7 @@ protected:
 				{
 					img(l)(x,y,z)=inimg(l)(x,y,z);
 				}
-			img(0)(0,0,0) = 0;
+			//img(0)(0,0,0) = 0;
 		}
 		Vector3 valueinimage = trackedPosition.getValue() - (*inT)->getTranslation();
 		Vector3 scale = (*outT)->getScale();

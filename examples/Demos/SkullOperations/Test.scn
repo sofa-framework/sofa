@@ -25,24 +25,24 @@
 
 		<CollisionToCarvingEngine  name="ctc"  template="ImageD,ImageD"  inputImage="@gaussianFilter.outputImage"  inputTransform="@gaussianFilter.outputTransform"  listening="1" trackedPosition="1 1 1"/>  
 		<ImageViewer template="ImageD" name="viewer"  src="@ctc" plane="1 1 1"/>
-		<MarchingCubesEngine template="ImageD" name="engine" image="@ctc.outputImage" transform="@ctc.outputTransform"  isoValue="0.3" subdiv="50 50 50" showMesh="true"/>
+		<MarchingCubesEngine template="ImageD" name="MCengine" image="@ctc.outputImage" transform="@ctc.outputTransform"  isoValue="0.3" subdiv="50 50 50" showMesh="true"/>
  
 
 		<!--<OptiTrackNatNetDevice name="cubeDevice"  printLog="1"  listening="1"  trackableName="head"  trackableID="1"  isGlobalFrame="1"  inMarkersMeshFile="./meshs/markers-Grab.obj"  simMarkersMeshFile="./meshs/markers-Head.obj"  drawAxisSize="50 10 50"  drawMarkersSize="2"  drawMarkersColor="0 1 0 1" />-->
-
+<!--
 		<Node 	 name="CollisionModel"  >
 			<EulerImplicitSolver name="eulerImplicitSolver3" />
 			<CGLinearSolver template="GraphScattered" name="cGLinearSolver4"  tolerance="1e-009"  threshold="1e-009" />
 
 			<MeshObjLoader name="Curvedloader"  filename="mesh/cube.obj" />
-			<MechanicalObject template="Vec3d" name="cubeCollisionState"  tags="CarvingSurface"  position="@Curvedloader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1"  translation="@Curvedloader.position"  rotation="@Curvedloader.rotation"  scale3d="@Curvedloader.scale3d" />
-			<MeshTopology name="cubeVisualModel"  position="@Curvedloader.position"  edges="@Curvedloader.edges"  triangles="@Curvedloader.triangles"  quads="@Curvedloader.quads"  tetrahedra="@Curvedloader.tetras"  hexahedra="@Curvedloader.hexas" />
+			<MechanicalObject template="Vec3d" name="cubeCollisionState"  tags="CarvingSurface"  position="@MCengine.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1"  translation="@MCengine.position" />
+			<MeshTopology name="MCTopology"  position="@MCengine.position"  triangles="@MCengine.triangles" drawEdges="0"  drawTriangles="1"  drawQuads="0"  drawTetrahedra="0"  drawHexahedra="0"/>
 			<TTriangleModel template="Vec3d" name="CTM"  moving="0"  simulated="0"  contactStiffness="100" />
 			<TLineModel template="Vec3d" name="CLM"  moving="0"  simulated="0"  contactStiffness="100" />
 			<TPointModel template="Vec3d" name="CPM"  moving="0"  simulated="0"  contactStiffness="100" />
 			<IdentityMapping template="Vec3d,Vec3d" name="barycentricMap6"  input="@../CubeState"  output="@./cubeCollisionState" />
 		</Node>
-	
+-->	
 	</Node>
 
 	<Node 	 name="Omni"  >
