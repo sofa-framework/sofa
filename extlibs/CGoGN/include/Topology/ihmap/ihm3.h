@@ -236,9 +236,6 @@ public:
 
     //@{
 
-
-
-private:
     inline Dart phi1MaxLvl(Dart d) const
     {
         return Parent::phi1(d);
@@ -272,7 +269,7 @@ private:
         return this->phi2MaxLvl(phi3MaxLvl(d));
     }
 
-
+private:
 
     Dart phi2bis(Dart d) const;
 
@@ -550,6 +547,24 @@ public:
 	template <typename FUNC>
     void foreach_dart_of_cc(Dart d, const FUNC& f) const ;
 	//@}
+
+
+    template <unsigned int ORBIT>
+    void checkEmbedding(Cell<ORBIT> c) {
+        std::map< unsigned, unsigned > cellEmbeddings;
+        TraversorDartsOfOrbit< MAP, ORBIT > traDoC(*this, c);
+        for (Dart it = traDoC.begin(); it != traDoC.end() ;it = traDoC.next())
+        {
+            const unsigned int dartLevel = getDartLevel(it);
+            std::map< unsigned, unsigned >::const_iterator embeddingIT = cellEmbeddings.find(dartLevel);
+            if (embeddingIT == cellEmbeddings.end())
+            {
+                cellEmbeddings[dartLevel] = this->ParentMap::template getEmbedding< ORBIT >(it) ;
+            } else {
+                assert(this->ParentMap::template getEmbedding< ORBIT >(it) == embeddingIT->second );
+            }
+        }
+    }
 
     template <unsigned int ORBIT>
     unsigned int getEmbedding(Cell<ORBIT> c) const ;
