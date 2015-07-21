@@ -390,7 +390,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         if( this->vectorMaxAbs(difference(dxc,vc))>errorThreshold ){
             succeed = false;
-            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << errorThreshold << endl
+            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) "<<this->vectorMaxAbs(difference(dxc,vc))<<" should be less than  " << errorThreshold << endl
                           << "position change = " << dxc << endl
                           << "velocity        = " << vc << endl;
         }

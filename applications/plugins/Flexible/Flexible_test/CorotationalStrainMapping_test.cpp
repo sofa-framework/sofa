@@ -25,7 +25,7 @@ namespace sofa {
         bool runTest( unsigned method )
         {
             this->deltaRange = std::make_pair( 100, 10000 );
-            this->errorMax = this->deltaRange.second;
+            this->errorMax = this->deltaRange.second*2;
             this->errorFactorDJ = 10;
 
             static_cast<_Mapping*>(this->mapping)->f_geometricStiffness.setValue(1);
@@ -52,7 +52,7 @@ namespace sofa {
 //              cerr<<"voigt strain = " << defo << endl;
 
                 helper::Quater<Real>::fromEuler( 0.1, -.2, .3 ).toMatrix(rotation); // random rotation to combine to strain
-//                helper::Quater<Real>::fromEuler( 0,0,0 ).toMatrix(rotation); // random rotation to combine to strain
+//                helper::Quater<Real>::fromEuler( 0,0,0 ).toMatrix(rotation); // debug with no rotation
 
                 return Inherited::runTest( rotation, symGradDef, expectedChildCoords );
 
@@ -70,10 +70,13 @@ namespace sofa {
 
     // Test suite for all the instanciations
     TYPED_TEST_CASE(CorotationalStrainMappingTest, CorotationalDataTypes);
-    // first test case
-    TYPED_TEST( CorotationalStrainMappingTest , test_auto )
+    // test cases
+    TYPED_TEST( CorotationalStrainMappingTest , polar )
     {
         ASSERT_TRUE( this->runTest( 0 ) ); // polar
+    }
+    TYPED_TEST( CorotationalStrainMappingTest , svd )
+    {
         ASSERT_TRUE( this->runTest( 3 ) ); // svd
     }
 
