@@ -487,15 +487,9 @@ protected:
             if(currentColor == FillColor)
             {
                 if (nbval>1)  // triangle rasterization with interpolated values (if not in roi)
-                {
                     draw_triangle(im,mask,pts[0],pts[1],pts[2],getValue(meshId,tri[i][0]),getValue(meshId,tri[i][1]),getValue(meshId,tri[i][2]),this->subdiv.getValue());
-                    draw_triangle(im,mask,pts[1],pts[2],pts[0],getValue(meshId,tri[i][1]),getValue(meshId,tri[i][2]),getValue(meshId,tri[i][0]),this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
-                }
                 else
-                {
                     draw_triangle(im,mask,pts[0],pts[1],pts[2],currentColor,this->subdiv.getValue());
-                    draw_triangle(im,mask,pts[1],pts[2],pts[0],currentColor,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
-                }
             }
         }
 
@@ -506,7 +500,6 @@ protected:
             for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(pos[tri[it->first][j]])));
             T currentColor = it->second;
             draw_triangle(im,mask,pts[0],pts[1],pts[2],currentColor,this->subdiv.getValue());
-            draw_triangle(im,mask,pts[1],pts[2],pts[0],currentColor,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
         }
 
         /// fill inside
@@ -626,6 +619,13 @@ protected:
 
     template<class PixelT>
     void draw_triangle(CImg<PixelT>& im,CImg<bool>& mask,const Coord& p0,const Coord& p1,const Coord& p2,const PixelT& color,const unsigned int subdiv)
+    {
+        _draw_triangle(im, mask, p0, p1, p2, color, subdiv);
+        _draw_triangle(im, mask, p1, p2, p0, color, subdiv); // fill along two directions to be sure that there is no hole
+    }
+
+    template<class PixelT>
+    void _draw_triangle(CImg<PixelT>& im,CImg<bool>& mask,const Coord& p0,const Coord& p1,const Coord& p2,const PixelT& color,const unsigned int subdiv)
     // double bresenham
     {
         Coord P0(p0),P1(p1);
@@ -644,6 +644,13 @@ protected:
 
     template<class PixelT>
     void draw_triangle(CImg<PixelT>& im,CImg<bool>& mask,const Coord& p0,const Coord& p1,const Coord& p2,const Real& color0,const Real& color1,const Real& color2,const unsigned int subdiv)
+    {
+        _draw_triangle(im, mask, p0, p1, p2, color0, color1, color2, subdiv);
+        _draw_triangle(im, mask, p1, p2, p0, color0, color1, color2, subdiv); // fill along two directions to be sure that there is no hole
+    }
+
+    template<class PixelT>
+    void _draw_triangle(CImg<PixelT>& im,CImg<bool>& mask,const Coord& p0,const Coord& p1,const Coord& p2,const Real& color0,const Real& color1,const Real& color2,const unsigned int subdiv)
     // double bresenham
     {
         Coord P0(p0),P1(p1);
