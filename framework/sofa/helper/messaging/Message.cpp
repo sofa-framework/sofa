@@ -74,7 +74,7 @@ Message::Message(string mclass, string type,  Base* sender, string source, int l
     m_type    = type ;
     m_id      = -1 ;
 
-    if(sender!=nullptr){
+    if(sender!=0){
         ostringstream s;
         s << "[" << sender->getName() << "(" << sender->getClassName() <<   ")]: ";
         m_sendername = s.str();
@@ -84,7 +84,7 @@ Message::Message(string mclass, string type,  Base* sender, string source, int l
 }
 
 Message::Message(string mclass, string type,  const string& sendername, string source, int lineno){
-    m_sender = nullptr ;
+    m_sender = 0 ;
     m_sendername = sendername ;
     m_source = source ;
     m_lineno = lineno ;
