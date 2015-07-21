@@ -617,11 +617,40 @@ protected:
         }
     }
 
+    // structure for internal use
+    class _Triangle {
+    public:
+
+        const Coord *m_p0, *m_p1, *m_p2;
+        Real firstEdgeLength;
+
+        _Triangle(Coord const& _p0, Coord const& _p1, Coord const& _p2)
+            : m_p0(&_p0), m_p1(&_p1), m_p2(&_p2)
+        {
+            firstEdgeLength = (p0()-p1()).norm();
+        }
+
+        Coord const& p0() const {return *m_p0;}
+        Coord const& p1() const {return *m_p1;}
+        Coord const& p2() const {return *m_p2;}
+
+        inline bool operator< (const _Triangle& rhs) const { return this->firstEdgeLength < rhs.firstEdgeLength; }
+    };
+
     template<class PixelT>
     void draw_triangle(CImg<PixelT>& im,CImg<bool>& mask,const Coord& p0,const Coord& p1,const Coord& p2,const PixelT& color,const unsigned int subdiv)
     {
-        _draw_triangle(im, mask, p0, p1, p2, color, subdiv);
-        _draw_triangle(im, mask, p1, p2, p0, color, subdiv); // fill along two directions to be sure that there is no hole
+        // fill along two directions to be sure that there is no hole,
+        // let's choose the two smaller edges
+
+        std::vector<_Triangle> triangles;
+        triangles.push_back(_Triangle(p0,p1,p2));
+        triangles.push_back(_Triangle(p1,p2,p0));
+        triangles.push_back(_Triangle(p2,p0,p1));
+        std::sort(triangles.begin(), triangles.end());
+
+        _draw_triangle(im, mask, triangles[0].p0(), triangles[0].p1(), triangles[0].p2(), color, subdiv);
+        _draw_triangle(im, mask, triangles[1].p0(), triangles[1].p1(), triangles[1].p2(), color, subdiv);
     }
 
     template<class PixelT>
@@ -645,8 +674,17 @@ protected:
     template<class PixelT>
     void draw_triangle(CImg<PixelT>& im,CImg<bool>& mask,const Coord& p0,const Coord& p1,const Coord& p2,const Real& color0,const Real& color1,const Real& color2,const unsigned int subdiv)
     {
-        _draw_triangle(im, mask, p0, p1, p2, color0, color1, color2, subdiv);
-        _draw_triangle(im, mask, p1, p2, p0, color0, color1, color2, subdiv); // fill along two directions to be sure that there is no hole
+        // fill along two directions to be sure that there is no hole,
+        // let's choose the two smaller edges
+
+        std::vector<_Triangle> triangles;
+        triangles.push_back(_Triangle(p0,p1,p2));
+        triangles.push_back(_Triangle(p1,p2,p0));
+        triangles.push_back(_Triangle(p2,p0,p1));
+        std::sort(triangles.begin(), triangles.end());
+
+        _draw_triangle(im, mask, triangles[0].p0(), triangles[0].p1(), triangles[0].p2(), color0, color1, color2, subdiv);
+        _draw_triangle(im, mask, triangles[1].p0(), triangles[1].p1(), triangles[1].p2(), color0, color1, color2, subdiv);
     }
 
     template<class PixelT>
