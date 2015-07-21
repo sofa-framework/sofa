@@ -49,22 +49,25 @@ class MessageHandler ;
 class SOFA_HELPER_API MessageDispatcher
 {
 public:
-    static int addHandler(MessageHandler* o) ;
-    static int rmHandler(MessageHandler* o) ;
-    static void clearHandlers(bool deleteExistingOnes=true) ;
+    // handlers stuff is not static
+    int addHandler(MessageHandler* o) ;
+    int rmHandler(MessageHandler* o) ;
+    void clearHandlers(bool deleteExistingOnes=true) ;
+
+    // message IDs can stay static, they won't interfere if several dispatchers coexist
     static int getLastMessageId() ;
     static int getLastErrorId() ;
     static int getLastWarningId() ;
     static int getLastInfoId() ;
 
 private:
-    static void process(sofa::helper::messaging::Message &m);
+    void process(sofa::helper::messaging::Message &m);
 
-    friend Message& operator<<=(MessageDispatcher, Message& m) ;
+    friend Message& operator<<=(MessageDispatcher& d, Message& m) ;
 };
 
-Message& operator+=(MessageDispatcher, Message& m) ;
-Message& operator<<=(MessageDispatcher, Message& m) ;
+Message& operator+=(MessageDispatcher& d, Message& m) ;
+Message& operator<<=(MessageDispatcher& d, Message& m) ;
 
 
 class Nop

@@ -84,20 +84,20 @@
 //todo(bruno&damien): the first quick&dirty version should be improved to preserve the semantic between
 // the version compiled with WITH_SOFA_DEVTOOLS enabled and the other.
 #ifdef WITH_SOFA_DEVTOOLS
-#define dmsg_info(emitter)     sofa::helper::messaging::MessageDispatcher() <<= sofa::helper::messaging::Message("dev", "info", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
-#define dmsg_warning(emitter)  sofa::helper::messaging::MessageDispatcher() <<= sofa::helper::messaging::Message("dev", "warn", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
-#define dmsg_error(emitter)    sofa::helper::messaging::MessageDispatcher() <<= sofa::helper::messaging::Message("dev", "error", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
-#define dmsg_fatal(emitter)    sofa::helper::messaging::MessageDispatcher() <<= sofa::helper::messaging::Message("dev", "fatal", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
+#define dmsg_info_dispatcher(dispatcher,emitter)     dispatcher <<= sofa::helper::messaging::Message("dev", "info", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
+#define dmsg_warning_dispatcher(dispatcher,emitter)  dispatcher <<= sofa::helper::messaging::Message("dev", "warn", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
+#define dmsg_error_dispatcher(dispatcher,emitter)    dispatcher <<= sofa::helper::messaging::Message("dev", "error", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
+#define dmsg_fatal_dispatcher(dispatcher,emitter)    dispatcher <<= sofa::helper::messaging::Message("dev", "fatal", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
 #else
-#define dmsg_info(emitter)     sofa::helper::messaging::Nop::getAnInstance()
-#define dmsg_warning(emitter)  sofa::helper::messaging::Nop::getAnInstance()
-#define dmsg_error(emitter)    sofa::helper::messaging::Nop::getAnInstance()
-#define dmsg_fatal(emitter)    sofa::helper::messaging::Nop::getAnInstance()
+#define dmsg_info_dispatcher(dispatcher,emitter)     sofa::helper::messaging::Nop::getAnInstance()
+#define dmsg_warning_dispatcher(dispatcher,emitter)  sofa::helper::messaging::Nop::getAnInstance()
+#define dmsg_error_dispatcher(dispatcher,emitter)    sofa::helper::messaging::Nop::getAnInstance()
+#define dmsg_fatal_dispatcher(dispatcher,emitter)    sofa::helper::messaging::Nop::getAnInstance()
 #endif // NDEBUG
 
-#define msg_info(emitter)    sofa::helper::messaging::MessageDispatcher() <<= sofa::helper::messaging::Message("runtime", "info", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
-#define msg_warning(emitter) sofa::helper::messaging::MessageDispatcher() <<= sofa::helper::messaging::Message("runtime", "warn", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
-#define msg_error(emitter)   sofa::helper::messaging::MessageDispatcher() <<= sofa::helper::messaging::Message("runtime", "error", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
-#define msg_fatal(emitter)   sofa::helper::messaging::MessageDispatcher() <<= sofa::helper::messaging::Message("runtime", "fatal", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
+#define msg_info_dispatcher(dispatcher,emitter)    dispatcher <<= sofa::helper::messaging::Message("runtime", "info", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
+#define msg_warning_dispatcher(dispatcher,emitter) dispatcher <<= sofa::helper::messaging::Message("runtime", "warn", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
+#define msg_error_dispatcher(dispatcher,emitter)   dispatcher <<= sofa::helper::messaging::Message("runtime", "error", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
+#define msg_fatal_dispatcher(dispatcher,emitter)   dispatcher <<= sofa::helper::messaging::Message("runtime", "fatal", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
 
 #endif // MESSAGING_H

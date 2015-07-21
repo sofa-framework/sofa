@@ -50,8 +50,8 @@ FileMessageHandler::FileMessageHandler(const char* filename,MessageFormatter *fo
 {
     m_formatter = (formatter==0?DefaultStyleMessageFormatter::getInstance():formatter);
     m_outFile.open(filename,std::ios_base::out | std::ios_base::trunc);
-    if (!m_outFile.is_open())
-        msg_error("FileMessageHandler") << "Could not open outpout log file: " << filename;
+//    if (!m_outFile.is_open())
+//        msg_error("FileMessageHandler") << "Could not open outpout log file: " << filename;
 }
 
 FileMessageHandler::~FileMessageHandler()
