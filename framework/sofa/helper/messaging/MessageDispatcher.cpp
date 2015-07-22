@@ -127,4 +127,8 @@ void MessageDispatcher::process(sofa::helper::messaging::Message& m){
 } // helper
 } // sofa
 
+// THE main MessageDipatcher...
+sofa::helper::messaging::MessageDispatcher gMessageDispatcher;
+
+
 
