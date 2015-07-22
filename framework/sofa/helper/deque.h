@@ -30,7 +30,7 @@
 #include <algorithm>
 #include <cassert>
 #include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
 
 #include <sofa/helper/helper.h>
 

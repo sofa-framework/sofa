@@ -40,7 +40,7 @@
 # include <linux/limits.h>      // for PATH_MAX
 #endif
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <vector>
 #include <iostream>
 #include <fstream>

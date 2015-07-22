@@ -32,7 +32,7 @@
 #include <cstddef> // for NULL and std::size_t
 #include <iostream>
 #include <vector>
-#include <assert.h>
+#include <cassert>
 #include <limits.h>
 
 namespace sofa
