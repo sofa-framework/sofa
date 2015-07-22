@@ -46,7 +46,7 @@ set(compilerDefines ${GLOBAL_COMPILER_DEFINES})
 # windows specific
 if(WIN32)
     list(APPEND compilerDefines "UNICODE")
-	
+	 list(APPEND compilerDefines "_USE_MATH_DEFINES") # just to access M_PI with cmath
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
 
