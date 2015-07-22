@@ -85,8 +85,6 @@ void apply(const std::string& directory, std::vector<std::string>& files,
         unsigned int iterations, bool reinit, bool useTopology)
 {
 
-    sofa::component::init(); // ensures all components are initialized, also introduce a dependency to all libraries, avoiding problems with -Wl,--as-needed flag
-
     sofa::simulation::Simulation* simulation = sofa::simulation::getSimulation();
 
     //Launch the comparison for each scenes
@@ -235,6 +233,8 @@ void apply(const std::string& directory, std::vector<std::string>& files,
 
 int main(int argc, char** argv)
 {
+    sofa::simulation::tree::init();
+    sofa::component::init();
     sofa::helper::BackTrace::autodump();
 
     std::string refdir;

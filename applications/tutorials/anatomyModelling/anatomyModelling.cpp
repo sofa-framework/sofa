@@ -657,6 +657,7 @@ simulation::Node::SPtr createScene()
 
 int main(int argc, char** argv)
 {
+    sofa::simulation::graph::init();
     sofa::helper::BackTrace::autodump();
     sofa::core::ExecParams::defaultInstance()->setAspectID(0);
 
@@ -667,7 +668,6 @@ int main(int argc, char** argv)
 
     glutInit(&argc,argv);
 
-    sofa::simulation::graph::init();
     sofa::component::init();
     sofa::gui::initMain();
 

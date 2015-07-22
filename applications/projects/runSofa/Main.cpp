@@ -91,7 +91,10 @@ void loadVerificationData(std::string& directory, std::string& filename, sofa::s
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    sofa::simulation::common::init();
+    sofa::simulation::tree::init();
+#ifdef SOFA_HAVE_DAG
+    sofa::simulation::graph::init();
+#endif
     sofa::component::init();
     //std::cout << "Using " << sofa::helper::system::atomic<int>::getImplName()<<" atomics." << std::endl;
 

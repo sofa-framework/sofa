@@ -71,7 +71,6 @@ using sofa::helper::WriteAccessor;*/
 int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
-
     sofa::simulation::tree::init();
     sofa::component::init();
     sofa::gui::initMain();
