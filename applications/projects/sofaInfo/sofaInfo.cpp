@@ -32,7 +32,8 @@
 // ---------------------------------------------------------------------
 int main(int /*argc*/, char** argv)
 {
-
+    sofa::simulation::tree::init();
+    sofa::component::init();
     if (argv[1] == NULL)
     {
         std::cout << "Usage: sofaInfo FILE" << std::endl;

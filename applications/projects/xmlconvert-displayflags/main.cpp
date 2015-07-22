@@ -51,6 +51,7 @@ using namespace sofa::xml;
 
 int main(int argc, char** argv)
 {
+    sofa::core::init();
     if( argc <  2 ) return -1;
     TiXmlDocument* doc = loadFromFile(argv[1]);
     if(doc )
