@@ -189,14 +189,7 @@ Node::SPtr createHouseOfCards(Node::SPtr root,  unsigned int size, SReal distanc
 
 int main(int argc, char** argv)
 {
-#ifndef WIN32
-    // Reset local settings to make sure that floating-point values are interpreted correctly
-    setlocale(LC_ALL,"C");
-    setlocale(LC_NUMERIC,"C");
-#endif
-
     glutInit(&argc,argv);
-
     sofa::simulation::tree::init();
     sofa::component::init();
     sofa::gui::initMain();
