@@ -97,6 +97,7 @@ protected:
     virtual ~LightManager();
 public:
     void init();
+    void bwdInit();
     void reinit();
     void initVisual();
 
