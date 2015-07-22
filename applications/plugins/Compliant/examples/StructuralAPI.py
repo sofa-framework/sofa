@@ -79,12 +79,17 @@ def createScene(root):
     ballandsocket_body2 = createRigidBody(ballandsocketNode, "ballandsocket_body2", -10 )
     ballandsocket = StructuralAPI.BallAndSocketRigidJoint( "joint", ballandsocket_body1.node, ballandsocket_body2.node )
     ballandsocket.addSpring( 100 )
+
+    ballandsocketNode = root.createChild('simpleballandsocket')
+    ballandsocket_body1 = createFixedRigidBody(ballandsocketNode, "simpleballandsocket_body1", -5 )
+    ballandsocket_body2 = createRigidBody(ballandsocketNode, "simpleballandsocket_body2", -5 )
+    simpleballandsocket = StructuralAPI.SimpleBallAndSocketRigidJoint( "joint", ballandsocket_body1.node, ballandsocket_body2.node )
     
     
     # PLANAR
     planarNode = root.createChild('planar')
-    planar_body1 = createFixedRigidBody(planarNode, "planar_body1", -5 )
-    planar_body2 = createRigidBody(planarNode, "planar_body2", -5 )
+    planar_body1 = createFixedRigidBody(planarNode, "planar_body1", 0 )
+    planar_body2 = createRigidBody(planarNode, "planar_body2", 0 )
     planar = StructuralAPI.PlanarRigidJoint( 2, "joint", planar_body1.node, planar_body2.node )
     planar.addLimits(-0.5,1,-3,3)
     planar.addSpring( 100,100 )

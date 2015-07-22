@@ -488,9 +488,40 @@ class CylindricalRigidJoint(GenericRigidJoint):
         mask = [0]*6; mask[self.axis]=1.0/translation_stiffness; mask[3+self.axis]=1.0/rotation_stiffness;
         return self.node.createObject('DiagonalCompliance', isCompliance="0", compliance=concat(mask))
 
+
 class BallAndSocketRigidJoint(GenericRigidJoint):
-    ## Ball and Socket / Spherical joint
-    ## TODO add controller API
+    ## complete Ball and Socket / Spherical joint
+    ## not the most efficient, but allowing rotation controllers
+
+    def __init__(self, name, node1, node2, compliance=0, index1=0, index2=0 ):
+        GenericRigidJoint.__init__(self, name, node1, node2, [1,1,1,0,0,0], compliance, index1, index2)
+
+    # def addLimits( self, rotationX_lower, rotationX_upper, rotationY_lower, rotationY_upper, rotationZ_lower, rotationZ_upper, compliance=0 ):
+        ## such limits make no sense for ball and socket. You could simulate it by mapping a point on one object and adding constraints/collisions on it
+        # mask_x_l = [0]*6; mask_x_l[3]=1;
+        # mask_x_u = [0]*6; mask_x_u[3]=-1;
+        # mask_y_l = [0]*6; mask_y_l[4]=1;
+        # mask_y_u = [0]*6; mask_y_u[4]=-1;
+        # mask_z_l = [0]*6; mask_z_l[5]=1;
+        # mask_z_u = [0]*6; mask_z_u[5]=-1;
+        # return GenericRigidJoint.Limits( self.node, [mask_x_l,mask_x_u,mask_y_l,mask_y_u,mask_z_l,mask_z_u], [rotationX_lower,-rotationX_upper,rotationY_lower,-rotationY_upper,rotationZ_lower,-rotationZ_upper], compliance )
+
+    def addSpring( self, stiffness ):
+        ## only isotropic stiffness makes sense
+        mask = [0, 0, 0, 1.0/stiffness, 1.0/stiffness, 1.0/stiffness ]
+        return self.node.createObject('DiagonalCompliance', isCompliance="0", compliance=concat(mask))
+
+    def addPositionController( self, axis, target, compliance=0 ):
+        """ control rotation around axis (0->x, 1->y, 2->z)
+        """
+        mask = [0]*6
+        mask[3+axis]=1
+        return GenericRigidJoint.PositionController( self.node, mask, [target], compliance )
+
+
+class SimpleBallAndSocketRigidJoint(GenericRigidJoint):
+    ## Ball and Socket / Spherical joint, much efficient than BallAndSocketRigidJoint
+    ## but that cannot offer rotation controllers, neither spring and damping (would require a identitymapping level not to mix stiffness and constraint)
 
     def __init__(self, name, node1, node2, compliance=0, index1=0, index2=0 ):
         # GenericRigidJoint.__init__(self, name, node1, node2, [1,1,1,0,0,0], compliance, index1, index2) # GenericRigidJoint can work but is way overkill
@@ -502,23 +533,6 @@ class BallAndSocketRigidJoint(GenericRigidJoint):
         self.mapping = self.node.createObject('DifferenceMultiMapping', name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2))
         self.compliance = self.node.createObject('UniformCompliance', name='compliance', compliance=compliance)
         node2.addChild( self.node )
-
-#    def addLimits( self, rotationX_lower, rotationX_upper, rotationY_lower, rotationY_upper, rotationZ_lower, rotationZ_upper, compliance=0 ):
-    ## such limits make no sense for ball and socket. You could simulate it by mapping a point on one object and adding constraints/collisions on it
-#        mask_x_l = [0]*6; mask_x_l[3]=1;
-#        mask_x_u = [0]*6; mask_x_u[3]=-1;
-#        mask_y_l = [0]*6; mask_y_l[4]=1;
-#        mask_y_u = [0]*6; mask_y_u[4]=-1;
-#        mask_z_l = [0]*6; mask_z_l[5]=1;
-#        mask_z_u = [0]*6; mask_z_u[5]=-1;
-#        return GenericRigidJoint.Limits( self.node, [mask_x_l,mask_x_u,mask_y_l,mask_y_u,mask_z_l,mask_z_u], [rotationX_lower,-rotationX_upper,rotationY_lower,-rotationY_upper,rotationZ_lower,-rotationZ_upper], compliance )
-
-    def addSpring( self, stiffness ):
-        ## only isotropic stiffness makes sense
-        return self.node.createObject('UniformCompliance', isCompliance="0", compliance=1.0/stiffness)
-
-    def addDamper( self, damping ):
-        return self.node.createObject( 'UniformVelocityDampingForceField', dampingCoefficient=damping )
 
 
 
