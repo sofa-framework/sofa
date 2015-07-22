@@ -113,11 +113,6 @@ sofa::simulation::Node::SPtr Simulation::GetRoot()
     return sRoot;
 }
 
-sofa::helper::messaging::MessageDispatcher& Simulation::getMessageDispatcher()
-{
-    return m_TextMessageDispatcher;
-}
-
 /// Print all object in the graph
 void Simulation::print ( Node* root )
 {
