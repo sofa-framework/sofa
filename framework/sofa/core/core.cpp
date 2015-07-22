@@ -22,7 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "defaulttype.h"
+
+#include "core.h"
 #include <sofa/defaulttype/defaulttype.h>
 
 namespace sofa
