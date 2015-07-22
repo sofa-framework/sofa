@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/helper/gl/Color.h>
 #include <sofa/helper/system/gl.h>
-#include <math.h>
+#include <cmath>
 
 namespace sofa
 {

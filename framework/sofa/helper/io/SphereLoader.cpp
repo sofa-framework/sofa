@@ -25,10 +25,10 @@
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <stdio.h>
+#include <cstdio>
 #include <iostream>
 #include <cstdio>
-#include <string.h>
+#include <string>
 #include <sstream>
 
 namespace sofa

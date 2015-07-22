@@ -72,7 +72,7 @@
  */
 
 #include <sofa/helper/gl/Trackball.h>
-#include <math.h>
+#include <cmath>
 
 namespace sofa
 {

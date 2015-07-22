@@ -1,7 +1,7 @@
 #define __DIFFUSIONSOLVER_CPP
 
 #include "DiffusionSolver.h"
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <vector>
 #ifdef WIN32
