@@ -28,18 +28,18 @@ endif()
 
 if(WIN32)
 	if(CMAKE_CL_64)
-		link_directories("assimp/lib/x64")
+		link_directories("${SOFA_SRC_DIR}/applications/plugins/ColladaSceneLoader/assimp/lib/x64")
 	else()
-		link_directories("assimp/lib/x86")
+		link_directories("${SOFA_SRC_DIR}/applications/plugins/ColladaSceneLoader/assimp/lib/x86")
 	endif()
 	
 	set(ASSIMP_LIBRARY assimp)
 	
 	## assimp dll
 	if(CMAKE_CL_64)
-		file(GLOB sharedObjects "assimp/lib/x64/*.dll")
+		file(GLOB sharedObjects "${SOFA_SRC_DIR}/applications/plugins/ColladaSceneLoader/assimp/lib/x64/*.dll")
 	else()
-		file(GLOB sharedObjects "assimp/lib/x86/*.dll")
+		file(GLOB sharedObjects "${SOFA_SRC_DIR}/applications/plugins/ColladaSceneLoader/assimp/lib/x86/*.dll")
 	endif()
 	foreach(sharedObject ${sharedObjects})
 		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
