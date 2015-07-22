@@ -522,7 +522,7 @@ inline unsigned int ImplicitHierarchicalMap3::edgeLevel(Dart d) const
         r = std::max(r,
                      std::max(getDartLevel(e), getDartLevel(phi2(e))) );
 		e = alpha2(e);
-	} while(e != d);
+    } while(e != d && (r != getCurrentLevel()));
 
 	return r;
 }

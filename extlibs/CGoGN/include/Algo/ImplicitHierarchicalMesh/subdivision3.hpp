@@ -250,6 +250,8 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
         } while(e != visitedFaces[i]) ;
     }
 
+    assert(visitedFaces.size() == 6);
+
     volCenter /= typename PFP::REAL(count) ;
 
     /*
@@ -402,12 +404,6 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
             map.setFaceId(f1_2,idface, FACE);
             map.setCurrentLevel(vLevel+1);
         }
-        //FAIS a la couture !!!!!!!
-        //id pour toutes les aretes exterieurs des faces quadrangulees
-        unsigned int idedge = map.getEdgeId(f1);
-//        map.setCurrentLevel(map.getMaxLevel());
-        map.setEdgeId(f1, idedge, EDGE);
-//        map.setCurrentLevel(vLevel+1);
     }
 
     map.setCurrentLevel(vLevel+1);
@@ -507,18 +503,8 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
             std::cerr << std::endl;
         }
     }
-    //LA copie de L'id est a gerer avec le sewVolumes normalement !!!!!!
-    //id pour les aretes interieurs : (i.e. 6 pour un hexa)
-    DartMarkerStore<typename PFP::MAP> mne(map);
-    for(unsigned int i = 0; i < newEdges.size(); ++i)
-    {
-        if(!mne.isMarked(newEdges[i]))
-        {
-            unsigned int idedge = map.getNewEdgeId();
-            map.setEdgeId(newEdges[i], idedge, EDGE);
-            mne.markOrbit(Edge(newEdges[i]));
-        }
-    }
+
+
     map.checkEdgeAndFaceIDAttributes();
     map.setCurrentLevel(cur) ;
     return centralDart;
