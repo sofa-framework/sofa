@@ -36,7 +36,7 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(BezierTetrahedronSetGeometryAlgorithms)
-int BezierTetrahedronSetGeometryAlgorithmsClass = core::RegisterObject("Tetrahedron set geometry algorithms")
+int BezierTetrahedronSetGeometryAlgorithmsClass = core::RegisterObject("Bezier Tetrahedron set geometry algorithms")
 #ifdef SOFA_FLOAT
         .add< BezierTetrahedronSetGeometryAlgorithms<Vec3fTypes> >(true) // default template
 #else
