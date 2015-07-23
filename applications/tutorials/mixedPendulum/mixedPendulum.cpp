@@ -147,10 +147,13 @@ int main(int, char** argv)
     // mapping from the rigid body DOF to the skin DOF, to rigidly attach the skin to the body
     RigidMappingRigid3_to_3::SPtr rigidMapping = sofa::core::objectmodel::New<RigidMappingRigid3_to_3>();
     rigidMapping->setModels(rigidDOF.get(),rigidParticleDOF.get());
-    std::string pathobject1("@"+rigidBody->getName()+"/"+rigidDOF->getName());
-    std::string pathobject2("@"+rigidParticles->getName()+"/"+rigidParticleDOF->getName());
-    rigidMapping->setPathInputObject(pathobject1);
-    rigidMapping->setPathOutputObject(pathobject2);
+
+    // Setting paths is redundant with previous line 
+    // std::string pathobject1("@"+rigidBody->getName()+"/"+rigidDOF->getName());
+    // std::string pathobject2("@"+rigidParticles->getName()+"/"+rigidParticleDOF->getName());
+    // rigidMapping->setPathInputObject(pathobject1);
+    // rigidMapping->setPathOutputObject(pathobject2);
+    
     rigidParticles->addObject( rigidMapping );
     rigidMapping->setName("Map23");
 
