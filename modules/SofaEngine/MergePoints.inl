@@ -49,6 +49,7 @@ MergePoints<DataTypes>::MergePoints()
     , f_indices1( initData(&f_indices1,"indices1","Indices of the points of the first object") )
     , f_indices2( initData(&f_indices2,"indices2","Indices of the points of the second object") )
     , f_points( initData (&f_points, "points", "position coordinates of the merge") )
+    , f_noUpdate( initData (&f_noUpdate, false, "noUpdate", "do not update the output at eacth time step (false)") )
 {
 }
 
@@ -72,6 +73,8 @@ void MergePoints<DataTypes>::reinit()
 template <class DataTypes>
 void MergePoints<DataTypes>::update()
 {
+    if (f_noUpdate.getValue() && initDone)
+        return;
 
     const VecCoord& x1 = f_X1.getValue();
     const VecCoord& x2 = f_X2.getValue();
@@ -104,6 +107,8 @@ void MergePoints<DataTypes>::update()
     f_indices1.endEdit();
     f_indices2.endEdit();
     f_points.endEdit();
+
+    initDone=true;
 }
 
 } // namespace engine
