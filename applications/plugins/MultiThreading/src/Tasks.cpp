@@ -58,7 +58,7 @@ namespace sofa
 				// yield while waiting  
 				boost::this_thread::yield();
 			}  
-			return NULL;  
+			return false;
 		}  
 
 	

@@ -61,7 +61,7 @@
 #include <stdexcept>
 #include <iterator>
 #include <algorithm>
-#include <math.h>
+#include <cmath>
 #include <cassert>
 
 

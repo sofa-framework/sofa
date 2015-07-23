@@ -22,176 +22,234 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define MY_PARAM_TYPE(name, DType, MType) \
-    struct name { \
-        typedef DType DataType; \
-        typedef MType MassType; \
-    }; \
-
-#include "Sofa_test.h"
-
-#include <SofaComponentMain/init.h>
-
-//Including Simulation
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/common/Node.h>
-#include <SceneCreator/SceneCreator.h>
-
 #include <SofaBaseMechanics/DiagonalMass.h>
+
+#include <SofaBaseMechanics/initBaseMechanics.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/QuadSetTopologyContainer.h>
+#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 
-//TODO : Perform smart tests :) Infrastructure for multi templated tests is ok.
+#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+
+#include <gtest/gtest.h>
+
+using namespace sofa::defaulttype;
+using namespace sofa::component::topology;
+
+using sofa::core::objectmodel::New;
+using sofa::core::objectmodel::BaseObject;
+using sofa::component::mass::DiagonalMass;
+using sofa::component::container::MechanicalObject;
+
 
 namespace sofa {
 
-template <class T>
+// Define a test for DiagonalMass that is somewhat generic.
+//
+// It creates a single-Node scene graph with a MechanicalObject, a DiagonalMass,
+// and a GeometryAlgorithms as well as a TopologyContainer (both needed by
+// DiagonalMass).
+//
+// Given the positions and the topology, it then checks the expected values for
+// the mass.
+template <class TDataTypes, class TMassType>
 class DiagonalMass_test : public ::testing::Test
 {
-public :
+public:
+    typedef TDataTypes DataTypes;
+    typedef TMassType MassType;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename helper::vector<MassType> VecMass;
 
-    typedef typename T::DataType dt;
-    typedef typename T::MassType mt;
-    typedef typename dt::Coord       Coord;
-    typedef typename dt::VecCoord    VecCoord;
-    typedef sofa::component::mass::DiagonalMass<dt,mt> DiagonalMassType;
-    typename DiagonalMassType::SPtr m;
+    simulation::Simulation* simulation;
+    simulation::Node::SPtr root;
+    simulation::Node::SPtr node;
+    typename MechanicalObject<DataTypes>::SPtr mstate;
+    typename DiagonalMass<DataTypes, MassType>::SPtr mass;
 
-    /// Root of the scene graph
-    sofa::simulation::Node::SPtr root;
-    /// Simulation
-    sofa::simulation::Simulation* simulation;
-
-    /**
-     * Constructor call for each test
-     */
     virtual void SetUp()
     {
-        // Init simulation
-        sofa::component::init();
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-
+        component::initBaseMechanics();
+        simulation::setSimulation(simulation = new simulation::graph::DAGSimulation());
         root = simulation::getSimulation()->createNewGraph("root");
-    }
-
-    void createSceneHexa()
-    {
-        simulation::Node::SPtr oneHexa = root->createChild("oneHexa");
-
-        sofa::component::topology::HexahedronSetTopologyContainer::SPtr container = sofa::modeling::addNew<sofa::component::topology::HexahedronSetTopologyContainer>(oneHexa, "container");
-        container->addHexa(0,1,2,3,4,5,6,7);
-        typename sofa::component::topology::HexahedronSetGeometryAlgorithms<dt>::SPtr algo = sofa::modeling::addNew<sofa::component::topology::HexahedronSetGeometryAlgorithms<dt> >(oneHexa);
-        typename sofa::component::container::MechanicalObject<dt>::SPtr meca= sofa::modeling::addNew<sofa::component::container::MechanicalObject<dt> >(oneHexa);
-        VecCoord pos;
-        pos.push_back(Coord(0.0, 0.0, 0.0));
-        pos.push_back(Coord(1.0, 0.0, 0.0));
-        pos.push_back(Coord(1.0, 1.0, 0.0));
-        pos.push_back(Coord(0.0, 1.0, 0.0));
-        pos.push_back(Coord(0.0, 0.0, 1.0));
-        pos.push_back(Coord(1.0, 0.0, 1.0));
-        pos.push_back(Coord(1.0, 1.0, 1.0));
-        pos.push_back(Coord(0.0, 1.0, 1.0));
-        meca->x = pos;
-
-        typename sofa::component::mass::DiagonalMass<dt,mt>::SPtr mass = sofa::modeling::addNew<sofa::component::mass::DiagonalMass<dt,mt> >(oneHexa);
-    }
-
-
-    bool testHexaMass()
-    {
-        //initialize the simulation
-        sofa::simulation::getSimulation()->init(root.get());
-
-        //get the node called "oneHexa"
-        simulation::Node *node = root->getChild("oneHexa");
-
-        //the node is supposed to be found
-        if (!node)
-        {
-            ADD_FAILURE() << "Cannot find first node" << std::endl;
-            return false;
-        }
-
-        //get the mass
-        sofa::component::mass::DiagonalMass<dt,mt> *mass = node->get<sofa::component::mass::DiagonalMass<dt,mt> >(node->SearchDown);
-        if (!mass)
-        {
-            ADD_FAILURE() << "Cannot find mass" << std::endl;
-            return false;
-        }
-
-        //get the mechanical object
-        typename sofa::component::container::MechanicalObject<dt> *meca = node->get<sofa::component::container::MechanicalObject<dt> >(node->SearchDown);
-        if (!meca)
-        {
-            ADD_FAILURE() << "Cannot find mechanical object" << std::endl;
-            return false;
-        }
-
-        //test the number of mass points
-        if (meca->x.getValue().size() != mass->f_mass.getValue().size())
-        {
-            ADD_FAILURE() << "Mass vector has not the same size as the number of points (" << mass->f_mass.getValue().size() << "!="<< meca->x.getValue().size() << ")" << std::endl;
-            return false;
-        }
-
-        //check if the total mass is correct
-        if ( fabs(1.0 - mass->m_totalMass.getValue()) > 1e-6)
-        {
-            ADD_FAILURE() << "Not the expected total mass: " << mass->m_totalMass << " and should be 1" << std::endl;
-            return false;
-        }
-
-        return true;
     }
 
     void TearDown()
     {
         if (root!=NULL)
-            sofa::simulation::getSimulation()->unload(root);
+            simulation::getSimulation()->unload(root);
+    }
+
+    void createSceneGraph(VecCoord positions, BaseObject::SPtr topologyContainer, BaseObject::SPtr geometryAlgorithms)
+    {
+        node = root->createChild("node");
+        mstate = New<MechanicalObject<DataTypes> >();
+        mstate->x = positions;
+        node->addObject(mstate);
+        node->addObject(topologyContainer);
+        node->addObject(geometryAlgorithms);
+        mass = New<DiagonalMass<DataTypes, MassType> >();
+        node->addObject(mass);
+    }
+
+    void check(MassType expectedTotalMass, const VecMass& expectedMass)
+    {
+        // Check that the mass vector has the right size.
+        ASSERT_EQ(mstate->x.getValue().size(), mass->f_mass.getValue().size());
+        // Safety check...
+        ASSERT_EQ(mstate->x.getValue().size(), expectedMass.size());
+
+        // Check the total mass.
+        EXPECT_FLOAT_EQ(expectedTotalMass, mass->m_totalMass.getValue());
+
+        // Check the mass at each index.
+        for (size_t i = 0 ; i < mstate->x.getValue().size() ; i++)
+            EXPECT_FLOAT_EQ(expectedMass[i], mass->f_mass.getValue()[i]);
+    }
+
+    void runTest(VecCoord positions, BaseObject::SPtr topologyContainer, BaseObject::SPtr geometryAlgorithms,
+                 MassType expectedTotalMass, const VecMass& expectedMass)
+    {
+        createSceneGraph(positions, topologyContainer, geometryAlgorithms);
+        simulation::getSimulation()->init(root.get());
+        check(expectedTotalMass, expectedMass);
     }
 };
 
 
-TYPED_TEST_CASE_P(DiagonalMass_test);
+typedef DiagonalMass_test<Vec3Types, Vec3Types::Real> DiagonalMass3_test;
 
-
-TYPED_TEST_P(DiagonalMass_test, testHexahedra)
+TEST_F(DiagonalMass3_test, singleEdge)
 {
-    this->createSceneHexa();
-    ASSERT_TRUE(this->testHexaMass());
+    VecCoord positions;
+    positions.push_back(Coord(0.0f, 0.0f, 0.0f));
+    positions.push_back(Coord(0.0f, 1.0f, 0.0f));
+
+    EdgeSetTopologyContainer::SPtr topologyContainer = New<EdgeSetTopologyContainer>();
+    topologyContainer->addEdge(0, 1);
+
+    EdgeSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
+        = New<EdgeSetGeometryAlgorithms<Vec3Types> >();
+
+    const MassType expectedTotalMass = 1.0f;
+    const VecMass expectedMass(2, (MassType)(expectedTotalMass/2));
+
+    runTest(positions,
+            topologyContainer,
+            geometryAlgorithms,
+            expectedTotalMass,
+            expectedMass);
 }
 
-REGISTER_TYPED_TEST_CASE_P(DiagonalMass_test, testHexahedra);
+TEST_F(DiagonalMass3_test, singleTriangle)
+{
+    VecCoord positions;
+    positions.push_back(Coord(0.0f, 0.0f, 0.0f));
+    positions.push_back(Coord(1.0f, 0.0f, 0.0f));
+    positions.push_back(Coord(0.0f, 1.0f, 0.0f));
 
-#ifndef SOFA_FLOAT
+    TriangleSetTopologyContainer::SPtr topologyContainer = New<TriangleSetTopologyContainer>();
+    topologyContainer->addTriangle(0, 1, 2);
 
-MY_PARAM_TYPE(Vec3dd, sofa::defaulttype::Vec3dTypes, double)
-MY_PARAM_TYPE(Vec2dd, sofa::defaulttype::Vec2dTypes, double)
-MY_PARAM_TYPE(Vec1dd, sofa::defaulttype::Vec1dTypes, double)
+    TriangleSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
+        = New<TriangleSetGeometryAlgorithms<Vec3Types> >();
 
-INSTANTIATE_TYPED_TEST_CASE_P(DiagonalMass_hexa_test_case3d, DiagonalMass_test, Vec3dd);
+    const MassType expectedTotalMass = 0.5f;
+    const VecMass expectedMass(3, (MassType)(expectedTotalMass/3));
 
-//INSTANTIATE_TYPED_TEST_CASE_P(DiagonalMass_test_case1d, DiagonalMass_test, Vec3dd);
-//INSTANTIATE_TYPED_TEST_CASE_P(DiagonalMass_test_case2d, DiagonalMass_test, Vec2dd);
-//INSTANTIATE_TYPED_TEST_CASE_P(DiagonalMass_test_case3d, DiagonalMass_test, Vec1dd);
+    runTest(positions,
+            topologyContainer,
+            geometryAlgorithms,
+            expectedTotalMass,
+            expectedMass);
+}
 
-#endif
+TEST_F(DiagonalMass3_test, singleQuad)
+{
+    VecCoord positions;
+    positions.push_back(Coord(0.0f, 0.0f, 0.0f));
+    positions.push_back(Coord(0.0f, 1.0f, 0.0f));
+    positions.push_back(Coord(1.0f, 1.0f, 0.0f));
+    positions.push_back(Coord(1.0f, 0.0f, 0.0f));
 
-#ifndef SOFA_DOUBLE
+    QuadSetTopologyContainer::SPtr topologyContainer = New<QuadSetTopologyContainer>();
+    topologyContainer->addQuad(0, 1, 2, 3);
 
-MY_PARAM_TYPE(Vec3ff, sofa::defaulttype::Vec3fTypes, float)
-MY_PARAM_TYPE(Vec2ff, sofa::defaulttype::Vec2fTypes, float)
-MY_PARAM_TYPE(Vec1ff, sofa::defaulttype::Vec1fTypes, float)
+    QuadSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
+        = New<QuadSetGeometryAlgorithms<Vec3Types> >();
 
-INSTANTIATE_TYPED_TEST_CASE_P(DiagonalMass_hexa_test_case3f, DiagonalMass_test, Vec3ff);
+    const MassType expectedTotalMass = 1.0f;
+    const VecMass expectedMass(4, (MassType)(expectedTotalMass/4));
 
-//INSTANTIATE_TYPED_TEST_CASE_P(DiagonalMass_test_case1f, DiagonalMass_test, Vec3ff);
-//INSTANTIATE_TYPED_TEST_CASE_P(DiagonalMass_test_case2f, DiagonalMass_test, Vec2ff);
-//INSTANTIATE_TYPED_TEST_CASE_P(DiagonalMass_test_case3f, DiagonalMass_test, Vec1ff);
+    runTest(positions,
+            topologyContainer,
+            geometryAlgorithms,
+            expectedTotalMass,
+            expectedMass);
+}
 
-#endif
+TEST_F(DiagonalMass3_test, singleTetrahedron)
+{
+    VecCoord positions;
+    positions.push_back(Coord(0.0f, 0.0f, 0.0f));
+    positions.push_back(Coord(0.0f, 1.0f, 0.0f));
+    positions.push_back(Coord(1.0f, 0.0f, 0.0f));
+    positions.push_back(Coord(0.0f, 0.0f, 1.0f));
+
+    TetrahedronSetTopologyContainer::SPtr topologyContainer = New<TetrahedronSetTopologyContainer>();
+    topologyContainer->addTetra(0, 1, 2, 3);
+
+    TetrahedronSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
+        = New<TetrahedronSetGeometryAlgorithms<Vec3Types> >();
+
+    const MassType expectedTotalMass = 1.0f/6.0f;
+    const VecMass expectedMass(4, (MassType)(expectedTotalMass/4));
+
+    runTest(positions,
+            topologyContainer,
+            geometryAlgorithms,
+            expectedTotalMass,
+            expectedMass);
+}
+
+TEST_F(DiagonalMass3_test, singleHexahedron)
+{
+    VecCoord positions;
+    positions.push_back(Coord(0.0f, 0.0f, 0.0f));
+    positions.push_back(Coord(1.0f, 0.0f, 0.0f));
+    positions.push_back(Coord(1.0f, 1.0f, 0.0f));
+    positions.push_back(Coord(0.0f, 1.0f, 0.0f));
+    positions.push_back(Coord(0.0f, 0.0f, 1.0f));
+    positions.push_back(Coord(1.0f, 0.0f, 1.0f));
+    positions.push_back(Coord(1.0f, 1.0f, 1.0f));
+    positions.push_back(Coord(0.0f, 1.0f, 1.0f));
+
+    HexahedronSetTopologyContainer::SPtr topologyContainer = New<HexahedronSetTopologyContainer>();
+    topologyContainer->addHexa(0, 1, 2, 3, 4, 5, 6, 7);
+
+    HexahedronSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
+        = New<HexahedronSetGeometryAlgorithms<Vec3Types> >();
+
+    const MassType expectedTotalMass = 1.0f;
+    const VecMass expectedMass(8, (MassType)(expectedTotalMass/8));
+
+    runTest(positions,
+            topologyContainer,
+            geometryAlgorithms,
+            expectedTotalMass,
+            expectedMass);
+}
+
 
 } // namespace sofa

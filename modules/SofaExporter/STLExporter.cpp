@@ -27,8 +27,8 @@
 
 #include <sstream>
 #include <string>
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
 
 #include <sofa/core/ObjectFactory.h>
 

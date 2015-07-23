@@ -52,7 +52,6 @@ void main()
 #if ENABLE_SHADOW == 1 
 			if (lightFlag[i] == 2)
 			{
-				//shadowTexCoord[i] = shadowMatrix[i] * gl_ModelViewMatrix * gl_Vertex;
 				shadowTexCoord[i] = gl_TextureMatrix[shadowTextureUnit[i]] * gl_ModelViewMatrix * gl_Vertex;
 			}
 #endif // ENABLE_SHADOW == 1 

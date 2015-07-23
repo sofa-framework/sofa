@@ -31,7 +31,7 @@
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/Cylinder.h>
 #include <sofa/helper/gl/template.h>
-#include <math.h>
+#include <cmath>
 
 namespace sofa
 {

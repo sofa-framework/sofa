@@ -45,10 +45,6 @@ public:
 /// This function uses mbsrtowcs(3) internally, and thus depends on on the
 /// LC_CTYPE category of the current locale.
 ///
-/// If you are getting errors from this function, check that your program calls
-/// setlocale(LC_CTYPE, "") at the beginning to set the locale according to the
-/// environnement variables, and check that those are set to appropriate values.
-///
 /// @return The converted string on success, or a empty string on failure.
 static std::wstring widenString(const std::string& s);
 
@@ -56,10 +52,6 @@ static std::wstring widenString(const std::string& s);
 ///
 /// This function uses wcstombs(3) internally, and thus depends on
 /// on the LC_CTYPE category of the current locale.
-///
-/// If you are getting errors from this function, check that your program calls
-/// setlocale(LC_CTYPE, "") at the beginning to set the locale according to the
-/// environnement variables, and check that those are set to appropriate values.
 ///
 /// @return The converted string on success, or a empty string on failure.
 static std::string narrowString(const std::wstring& ws);

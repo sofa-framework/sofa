@@ -32,15 +32,9 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/PluginManager.h>
 
-//#include <sofa/simulation/tree/TreeSimulation.h>
-#ifdef SOFA_HAVE_DAG
+#include <sofa/simulation/graph/graph.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#endif
-#ifdef SOFA_HAVE_BGL
-#include <sofa/simulation/bgl/BglSimulation.h>
-#endif
 #include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/xml/initXml.h>
 
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
@@ -663,7 +657,7 @@ simulation::Node::SPtr createScene()
 
 int main(int argc, char** argv)
 {
-
+    sofa::simulation::graph::init();
     sofa::helper::BackTrace::autodump();
     sofa::core::ExecParams::defaultInstance()->setAspectID(0);
 
@@ -674,14 +668,14 @@ int main(int argc, char** argv)
 
     glutInit(&argc,argv);
 
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-
     sofa::component::init();
-
     sofa::gui::initMain();
+
     if (int err = sofa::gui::GUIManager::Init(argv[0],"")) return err;
     if (int err=sofa::gui::GUIManager::createGUI(NULL)) return err;
     sofa::gui::GUIManager::SetDimension(800,600);
+
+    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
     //=================================================
 	sofa::simulation::Node::SPtr groot = createScene();

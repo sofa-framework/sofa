@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/helper/io/MeshTrian.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <iostream>
 #include <string>
 

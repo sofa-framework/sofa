@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/helper/gl/Cylinder.h>
 
-#include <assert.h>
+#include <cassert>
 #include <algorithm>
 #include <iostream>
 

@@ -98,6 +98,17 @@ inline static void invert(defaulttype::Mat<2,3,Real> &Minv, const defaulttype::M
     for(size_t i=0; i<2; i++) for(size_t j=0; j<3; j++) Minv[i][j]=Mcinv[i][0];
 }
 
+
+
+template <typename Mat>
+inline static Mat identity()
+{
+    Mat F;
+    if(Mat::nbLines>=Mat::nbCols) for(size_t i=0; i<Mat::nbCols; i++) F[i][i]=1.0;
+    else for(size_t i=0; i<Mat::nbLines; i++) F[i][i]=1.0;
+    return F;
+}
+
 template <int C,int L,typename Real>
 inline static void identity(defaulttype::Mat<C,L,Real> &F)
 {
