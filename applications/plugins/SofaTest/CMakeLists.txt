@@ -53,7 +53,7 @@ if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaPython)
 endif()
 
-target_link_libraries(${PROJECT_NAME} SceneCreator SofaComponentMisc)
+target_link_libraries(${PROJECT_NAME} SceneCreator SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
 target_link_libraries(${PROJECT_NAME} gtest)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")

@@ -22,13 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <SofaBaseMechanics/MechanicalObject.inl>
 
 #include <gtest/gtest.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaBaseMechanics/MechanicalObject.inl>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <limits>
+
 
 namespace sofa
 {
@@ -77,7 +74,7 @@ struct CheckPositionImpl<Vec<N, REAL>, 2>
     void operator () (const Vec<N, REAL>& vec)
     {
         CheckPositionImpl<Vec<N, REAL>, 1>()(vec);
-        EXPECT_NEAR(REAL(), vec.y(), std::numeric_limits<REAL>::epsilon() );
+        EXPECT_NEAR(REAL(), vec.y(), std::numeric_limits<REAL>::epsilon());
     }
 };
 

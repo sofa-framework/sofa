@@ -22,8 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <SofaBaseMechanics/UniformMass.h>
 
-#include "SofaBaseMechanics/UniformMass.h"
+#include <gtest/gtest.h>
 
 namespace sofa {
 

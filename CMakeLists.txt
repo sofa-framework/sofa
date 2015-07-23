@@ -2,6 +2,16 @@ cmake_minimum_required(VERSION 2.8.12)
 
 project(Sofa)
 
+## Set some policies to avoid warnings from CMake.
+cmake_policy(SET CMP0015 OLD)   # CMake 3.0.2 warns if this is not set.
+if(CMAKE_VERSION GREATER 3.0)
+    cmake_policy(SET CMP0039 OLD)   # CMake 3.0.2 warns if this is not set.
+    cmake_policy(SET CMP0043 OLD)   # CMake 3.2.3 warns if this is not set.
+endif()
+if(CMAKE_VERSION GREATER 3.1)
+    cmake_policy(SET CMP0054 OLD)   # CMake 3.2.3 warns if this is not set.
+endif()
+
 # Enable the organisation in folders for generators that support
 # it. (E.g. some versions of Visual Studio have 'solution folders')
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -157,6 +167,10 @@ add_subdirectory("${SOFA_MISC_DIR}")
 
 # gui
 add_subdirectory("${SOFA_GUI_DIR}")
+
+if(SOFA_TESTS)
+    add_subdirectory(tools/SofaGTestMain)
+endif()
 
 # SofaTest depends on SofaPython, so we add it first.
 option(SOFAPLUGINS_SOFAPYTHON "Build the SofaPython plugin." OFF)

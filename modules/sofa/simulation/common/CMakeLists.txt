@@ -64,7 +64,6 @@ set(HEADER_FILES
 	xml/ElementNameHelper.h
 	xml/Element.h
 	xml/Element.inl
-	xml/initXml.h
 	xml/NodeElement.h
 	xml/ObjectElement.h
 	xml/BaseMultiMappingElement.h
@@ -78,6 +77,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
+	common.cpp
 	Node.cpp
 	AnimateBeginEvent.cpp
 	AnimateEndEvent.cpp
@@ -128,7 +128,6 @@ set(SOURCE_FILES
 	XMLPrintVisitor.cpp
 	xml/BaseElement.cpp
 	xml/ElementNameHelper.cpp
-	xml/initXml.cpp
 	xml/NodeElement.cpp
 	xml/ObjectElement.cpp
 	xml/BaseMultiMappingElement.cpp

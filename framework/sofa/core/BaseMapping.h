@@ -25,7 +25,7 @@
 #ifndef SOFA_CORE_BASEMAPPING_H
 #define SOFA_CORE_BASEMAPPING_H
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
 #include <iostream>
 

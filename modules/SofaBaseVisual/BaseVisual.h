@@ -36,4 +36,23 @@
 
 SOFA_DECL_PLUGIN(BaseVisualPlugin);
 
+namespace sofa
+{
+
+namespace simulation
+{
+
+namespace common
+{
+
+/// @brief Initialize the SofaSimulationCommon library, as well as its
+/// dependencies: SofaCore, SofaDefaultType, SofaHelper.
+void SOFA_SIMULATION_COMMON_API init();
+
+} // namespace common
+
+} // namespace simulation
+
+} // namespace sofa
+
 #endif

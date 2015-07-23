@@ -34,6 +34,9 @@
 #include <qtooltip.h>
 #endif
 
+#include <sofa/helper/Logger.h>
+using sofa::helper::Logger;
+
 #define SIZE_TEXT     60
 namespace sofa
 {
@@ -107,20 +110,23 @@ DataWidget::updateDataValue()
                 }
                 else
                 {
-                    if (ownerAsObject->getContext())
-                    {
-                        std::cout << __FUNCTION__ << ": " << ownerAsObject->getContext()->getName() << std::endl; 
-                    }
-                    else
-                    {
-                        std::cerr << __FUNCTION__ << ": NULL context for data " << baseData->getName() << std::endl;  
-                    }
                     path = objectPath + "." + baseData->getName();
+
+                    // this can happen when a DataWidget (gui associated with the data) is created while the object owner of the Data is being built by the factory and not yet attached to the graph
+                    // it cannot be considered as a problem
+//                    if (ownerAsObject->getContext())
+//                    {
+//                        Logger::mainlog( Logger::Warning, std::string("updateDataValue: ") + path + std::string(" has a context that is not a BaseNode ") + ownerAsObject->getContext()->getName(), "DataWidget" );
+//                    }
+//                    else
+//                    {
+//                        Logger::mainlog( Logger::Warning, std::string("updateDataValue: NULL context for data ") + path, "DataWidget" );
+//                    }
                 }
             }
             else
             {
-                std::cerr << __FUNCTION__ << " " << __LINE__ << " something went awfully wrong..." << std::endl;
+                Logger::mainlog( Logger::Error, std::string("updateDataValue: ") + baseData->getName() + std::string(" has an owner that is neither a Node nor an Object. Something went wrong..."), "DataWidget" );
             }
 
             const QString dataString = (path + " = " + baseData->getValueString()).c_str();

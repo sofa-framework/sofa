@@ -37,6 +37,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <string>
 
+
 namespace sofa
 {
 
@@ -54,7 +55,7 @@ public:
     typedef defaulttype::Vec3f Color3;  // Color tripplet
     typedef defaulttype::Vec4f Color;   // ... with alpha value
     typedef sofa::helper::vector<Color> VecColor;
-
+    
 protected:
     ColorMap();
     virtual ~ColorMap();
@@ -90,6 +91,8 @@ public:
     Data<sofa::helper::OptionsGroup> f_colorScheme;
 
     Data<bool> f_showLegend;
+    Data<defaulttype::Vec2f> f_legendOffset;
+    Data<float> d_min, d_max;
 
     VecColor entries;
     GLuint texture;

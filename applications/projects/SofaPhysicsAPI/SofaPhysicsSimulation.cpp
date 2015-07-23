@@ -6,14 +6,13 @@
 #include <sofa/helper/io/ImageBMP.h>
 #include <sofa/helper/gl/RAII.h>
 
-#include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/core/ObjectFactory.h>
-
+#include <SofaComponentGeneral/initComponentGeneral.h>
 #include <sofa/core/objectmodel/GUIEvent.h>
 
 #include <sofa/gui/GUIManager.h>
@@ -23,8 +22,6 @@
 #include <sofa/gui/BaseGUI.h>
 
 #include "fakegui.h"
-
-#include <SofaComponentGeneral/initComponentGeneral.h>
 
 #include <math.h>
 #include <iostream>
@@ -204,7 +201,6 @@ useGUI(useGUI_), GUIFramerate(GUIFramerate_)
     sofa::simulation::setSimulation(m_Simulation);
 
     sofa::component::initComponentGeneral();
-    sofa::simulation::xml::initXml();
 
     sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
             &classVisualModel);

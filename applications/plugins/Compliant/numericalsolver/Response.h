@@ -19,9 +19,8 @@ public:
     SOFA_ABSTRACT_CLASS(Response, core::objectmodel::BaseObject);
 
 	typedef AssembledSystem system_type;
-    
-    /// @param semidefinite indicates if the matrix is semi-definite
-    virtual void factor(const rmat&, bool semidefinite=false ) = 0;
+
+    virtual void factor(const rmat&) = 0;
 	
 	virtual void solve(cmat&, const cmat& ) const = 0;
 	virtual void solve(vec&, const vec& ) const = 0;

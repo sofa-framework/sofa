@@ -30,8 +30,8 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/map.h>
 
-#include <math.h>
-#include <stdlib.h>
+#include <cmath>
+#include <cstdlib>
 #include <stack>
 
 #define DEFAULT_INTERVAL 100

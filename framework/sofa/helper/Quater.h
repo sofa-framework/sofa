@@ -27,8 +27,8 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <math.h>
-#include <assert.h>
+#include <cmath>
+#include <cassert>
 #include <iostream>
 
 #include <sofa/SofaFramework.h>
@@ -205,7 +205,7 @@ public:
     // the given vector) and an angle about which to rotate.  The angle is
     // expressed in radians.
     Quater axisToQuat(defaulttype::Vec<3,Real> a, Real phi);
-    void quatToAxis(defaulttype::Vec<3,Real> & a, Real &phi);
+    void quatToAxis(defaulttype::Vec<3,Real> & a, Real &phi) const;
 
 
     static Quater createQuaterFromFrame(const defaulttype::Vec<3, Real> &lox, const defaulttype::Vec<3, Real> &loy,const defaulttype::Vec<3, Real> &loz);
@@ -301,14 +301,14 @@ public:
     bool operator==(const Quater& q) const
     {
         for (int i=0; i<4; i++)
-            if ( fabs( _q[i] - q._q[i] ) > EQUALITY_THRESHOLD ) return false;
+            if ( std::abs( _q[i] - q._q[i] ) > EQUALITY_THRESHOLD ) return false;
         return true;
     }
 
     bool operator!=(const Quater& q) const
     {
         for (int i=0; i<4; i++)
-            if ( fabs( _q[i] - q._q[i] ) > EQUALITY_THRESHOLD ) return true;
+            if ( std::abs( _q[i] - q._q[i] ) > EQUALITY_THRESHOLD ) return true;
         return false;
     }
 

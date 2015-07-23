@@ -33,7 +33,7 @@
 #include <sofa/SofaFramework.h>
 
 #include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <sstream>
 #include <fstream>
 #include <string>

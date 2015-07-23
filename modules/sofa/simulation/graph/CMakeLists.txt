@@ -9,6 +9,7 @@ set(SOFASIMULATION_HEADERS
 
 set(SOFASIMULATION_SOURCES
 
+	graph.cpp
 	DAGNode.cpp 
 	DAGNodeMultiMappingElement.cpp 
 	DAGSimulation.cpp 

@@ -28,7 +28,7 @@
 
 #include <sofa/helper/io/Image.h>
 #include <string>
-#include <assert.h>
+#include <cassert>
 
 #include <sofa/helper/system/config.h>
 #include <sofa/SofaFramework.h>

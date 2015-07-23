@@ -3,6 +3,7 @@ project(SofaCore)
 
 
 set(SOFACORE_HEADERS
+	core.h
 	VecId.h
 #	Plugin.h
 #	PluginManager.h
@@ -63,7 +64,6 @@ set(SOFACORE_HEADERS
 	behavior/ProjectiveConstraintSet.h
 	behavior/ProjectiveConstraintSet.inl
 	behavior/OdeSolver.h
-	behavior/RotationFinder.h
 	collision/BroadPhaseDetection.h
 	collision/CollisionAlgorithm.h
 	collision/CollisionGroupManager.h
@@ -140,6 +140,7 @@ set(SOFACORE_HEADERS
 	)
 
 set(SOFACORE_SOURCES
+	core.cpp
 	objectmodel/AspectPool.cpp
 	objectmodel/Base.cpp
 	objectmodel/BaseClass.cpp

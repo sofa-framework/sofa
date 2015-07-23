@@ -26,7 +26,7 @@
 #define SOFA_HELPER_RMATH_H
 
 #include <sofa/SofaFramework.h>
-#include <math.h>
+#include <cmath>
 #include <limits>
 
 namespace sofa

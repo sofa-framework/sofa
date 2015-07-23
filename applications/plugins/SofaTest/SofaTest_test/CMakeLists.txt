@@ -12,8 +12,7 @@ set(SOURCE_FILES
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
 
 
-AddLinkerDependencies(SofaTest SofaPython)
-target_link_libraries(${PROJECT_NAME})
+AddLinkerDependencies(SofaTest SofaPython SofaGTestMain)
 
 AddCompilerDefinitions("SOFA_SRC_DIR=\"${SOFA_SRC_DIR}\"")
 

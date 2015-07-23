@@ -14,7 +14,6 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 #endif
 #include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/xml/initXml.h>
 
 #include <sofa/helper/system/FileRepository.h>
 

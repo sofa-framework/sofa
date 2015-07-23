@@ -27,10 +27,12 @@
 #include <fstream>
 
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/common/xml/initXml.h>
+#include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/simulation/tree/tree.h>
 #ifdef SOFA_HAVE_DAG
+#include <sofa/simulation/tree/graph.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #endif
 #ifdef SOFA_SMP
@@ -98,6 +100,15 @@ void loadVerificationData(std::string& directory, std::string& filename, sofa::s
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
+    sofa::simulation::tree::init();
+#ifdef SOFA_HAVE_DAG
+    sofa::simulation::graph::init();
+#endif
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
     //std::cout << "Using " << sofa::helper::system::atomic<int>::getImplName()<<" atomics." << std::endl;
 
     sofa::helper::BackTrace::autodump();
@@ -233,7 +244,6 @@ int main(int argc, char** argv)
         Console::setColorsStatus(Console::ColorsAuto);
         sofa::helper::Logger::getMainLogger().log( sofa::helper::Logger::Warning, std::string( "Invalid argument ‘") + colorsStatus + std::string("‘ for ‘--colors‘" ) );
     }
-    sofa::simulation::xml::initXml();
 
     // Add the plugin directory to PluginRepository
 #ifdef WIN32

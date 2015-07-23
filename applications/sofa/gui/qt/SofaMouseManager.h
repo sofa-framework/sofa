@@ -29,7 +29,7 @@
 
 #include <sofa/gui/PickHandler.h>
 #include <QDialog>
-#include <memory>
+#include <boost/scoped_ptr.hpp>
 
 class Ui_MouseManager;
 
@@ -44,7 +44,7 @@ namespace qt
 class SofaMouseManager : public QDialog
 {
     Q_OBJECT
-    std::auto_ptr<Ui_MouseManager> gui;
+    boost::scoped_ptr<Ui_MouseManager> gui;
 public:
 
     SofaMouseManager();

@@ -30,6 +30,11 @@
 #include <SofaLoader/ReadTopology.h>
 #include <SofaExporter/WriteTopology.h>
 #include <SofaValidation/CompareTopology.h>
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
 #include <sofa/helper/system/thread/TimeoutWatchdog.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -83,7 +88,6 @@ bool loadPlugin(const char* filename)
 void apply(const std::string& directory, std::vector<std::string>& files,
         unsigned int iterations, bool reinit, bool useTopology)
 {
-
 
     sofa::simulation::Simulation* simulation = sofa::simulation::getSimulation();
 
@@ -233,6 +237,12 @@ void apply(const std::string& directory, std::vector<std::string>& files,
 
 int main(int argc, char** argv)
 {
+    sofa::simulation::tree::init();
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
     sofa::helper::BackTrace::autodump();
 
     std::string refdir;

@@ -154,10 +154,10 @@ public:
     template<> inline void StiffSpringForceField< T >::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2); \
     template<> inline void StiffSpringForceField< T >::addDForce(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2 );
 
-//OpenCLSpringForceField_DeclMethods(gpu::opencl::OpenCLVec3fTypes);
-OpenCLSpringForceField_DeclMethods(gpu::opencl::OpenCLVec3f1Types);
-OpenCLSpringForceField_DeclMethods(gpu::opencl::OpenCLVec3dTypes);
-OpenCLSpringForceField_DeclMethods(gpu::opencl::OpenCLVec3d1Types);
+//OpenCLSpringForceField_DeclMethods(gpu::opencl::OpenCLVec3fTypes)
+OpenCLSpringForceField_DeclMethods(gpu::opencl::OpenCLVec3f1Types)
+OpenCLSpringForceField_DeclMethods(gpu::opencl::OpenCLVec3dTypes)
+OpenCLSpringForceField_DeclMethods(gpu::opencl::OpenCLVec3d1Types)
 
 #undef OpenCLSpringForceField_DeclMethods
 

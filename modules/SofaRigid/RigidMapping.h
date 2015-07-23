@@ -40,6 +40,8 @@
 #include <vector>
 #include <memory>
 
+#include <boost/scoped_ptr.hpp>
+
 namespace sofa
 {
 
@@ -166,7 +168,7 @@ protected:
     const VecCoord& getPoints();
     void setJMatrixBlock(unsigned outIdx, unsigned inIdx);
 
-    std::auto_ptr<MatrixType> matrixJ;
+    boost::scoped_ptr<MatrixType> matrixJ;
     bool updateJ;
 
 #ifdef SOFA_HAVE_EIGEN2

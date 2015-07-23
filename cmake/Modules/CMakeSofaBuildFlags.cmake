@@ -37,6 +37,7 @@ set(compilerDefines)
 
 if(WIN32)
     add_definitions("-DUNICODE")
+    add_definitions("-D_USE_MATH_DEFINES") # just to access M_PI with cmath
     add_definitions("-wd4250 -wd4251 -wd4275 -wd4675 -wd4996 /bigobj")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()

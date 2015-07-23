@@ -11,6 +11,7 @@ set(SOFASIMULATIONTREE_HEADERS
 
 set(SOFASIMULATIONTREE_SOURCES
 
+	tree.cpp
 	ExportDotVisitor.cpp
 	GNode.cpp
 	GNodeVisitor.cpp

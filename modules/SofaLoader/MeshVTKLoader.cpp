@@ -28,7 +28,7 @@
 
 #include <iostream>
 //#include <fstream> // we can't use iostream because the windows implementation gets confused by the mix of text and binary
-#include <stdio.h>
+#include <cstdio>
 #include <sstream>
 
 namespace sofa

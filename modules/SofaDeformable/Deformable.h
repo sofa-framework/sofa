@@ -33,4 +33,23 @@
 #  define SOFA_DEFORMABLE_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
+namespace sofa
+{
+
+namespace simulation
+{
+
+namespace graph
+{
+
+/// @brief Initialize the SofaSimulationGraph library, as well as its
+/// dependencies: SofaSimulationCommon, SofaCore, SofaDefaultType, SofaHelper.
+void SOFA_SIMULATION_GRAPH_API init();
+
+} // namespace graph
+
+} // namespace simulation
+
+} // namespace sofa
+
 #endif

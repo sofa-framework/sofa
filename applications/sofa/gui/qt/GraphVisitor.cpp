@@ -61,7 +61,7 @@ bool GraphVisitor::load(std::string &file)
     TiXmlHandle hDoc(&doc);
     TiXmlNode* pElem;
     //Getting the root of the file
-    pElem=hDoc.FirstChildElement().Element();
+    pElem=hDoc.FirstChildElement().ToElement();
 
     // should always have a valid root but handle gracefully if it does
     if (!pElem) return false;

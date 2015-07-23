@@ -150,7 +150,7 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
             invlengths[i] = 0;
 
             // arbritary vector mapping all directions
-            Real p = 1.0/std::sqrt((Real)Nin);
+            Real p = 1.0f/std::sqrt((Real)Nin);
             for( unsigned i=0;i<Nin;++i)
                 gap[i]=p;
         }
@@ -224,7 +224,7 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
 
     if( K.compressedMatrix.nonZeros() )
     {
-        K.addMult( parentForce.wref(), parentDisplacement.ref(), kfactor );
+        K.addMult( parentForce.wref(), parentDisplacement.ref(), (typename In::Real)kfactor );
     }
     else
     {
@@ -549,7 +549,7 @@ void DistanceMultiMapping<TIn, TOut>::apply(const helper::vector<OutVecCoord*>& 
             invlengths[i] = 0;
 
             // arbritary vector mapping all directions
-            Real p = 1.0/std::sqrt((Real)Nin);
+            Real p = 1.0f/std::sqrt((Real)Nin);
             for( unsigned i=0;i<Nin;++i)
                 gap[i]=p;
         }
@@ -695,7 +695,7 @@ const vector<sofa::defaulttype::BaseMatrix*>* DistanceMultiMapping<TIn, TOut>::g
 }
 
 template <class TIn, class TOut>
-void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams */*mparams*/, core::ConstMultiVecDerivId childForceId )
+void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId childForceId )
 {
     const unsigned& geometricStiffness = d_geometricStiffness.getValue();
     if( !geometricStiffness ) { K.resize(0,0); return; }

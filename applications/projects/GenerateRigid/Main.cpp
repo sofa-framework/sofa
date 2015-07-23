@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "GenerateRigid.h"
 #include <SofaComponentMain/init.h>
-#include <sofa/simulation/common/xml/initXml.h>
+#include <sofa/simulation/common/common.h>
 #include <iostream>
 #include <fstream>
 
@@ -38,9 +38,8 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    sofa::simulation::common::init();
     sofa::component::init();
-    sofa::simulation::xml::initXml();
-
 
 //////// SCALE //////
     Vector3 scale(1, 1, 1);

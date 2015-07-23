@@ -60,9 +60,6 @@ public:
 
     /// Can the simulation handle a directed acyclic graph?
     virtual bool isDirectedAcyclicGraph() { return true; }
-
-//protected:
-//	std::auto_ptr<Node> visualNode;
 };
 
 /** Get the (unique) simulation which controls the scene.
