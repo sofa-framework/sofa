@@ -32,6 +32,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
+	defaulttype.cpp
 	BaseMatrix.cpp
 	BoundingBox.cpp
 	Frame.cpp

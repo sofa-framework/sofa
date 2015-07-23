@@ -501,18 +501,24 @@ void SpotLight::draw(const core::visual::VisualParams* vparams)
 
 void SpotLight::preDrawShadow(core::visual::VisualParams* vp)
 {
+    double zNear=1e10, zFar=-1e10;
+
     Light::preDrawShadow(vp);
     const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
     const Vector3 &pos = position.getValue();
     Vector3 dir = direction.getValue();
     if (lookat.getValue()) dir -= position.getValue();
 
-
     Vector3 xAxis, yAxis;
 
     yAxis=Vector3(0.0,1.0,0.0);
-    if( 1.0 - dot(yAxis, dir)  < 0.0001)
-        yAxis = Vector3(0.0,0.0,1.0);
+
+    if( 1.0 - std::abs(dot(yAxis, dir.normalized()))  < 0.0001)
+    {
+        dir += Vector3(0.0000001,0.0,0.0) * dot(yAxis, dir.normalized());
+        dir.normalize();
+
+    }
     xAxis = yAxis.cross(dir);
     xAxis.normalize();
     yAxis = dir.cross(xAxis);
@@ -521,7 +527,6 @@ void SpotLight::preDrawShadow(core::visual::VisualParams* vp)
     defaulttype::Quat q;
     q = q.createQuaterFromFrame(xAxis, yAxis, dir);
 
-    double zNear=1e10, zFar=-1e10;
     if (!p_zNear.isSet() || !p_zFar.isSet())
     {
         //compute zNear, zFar from light point of view

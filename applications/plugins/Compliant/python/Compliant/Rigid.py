@@ -215,13 +215,13 @@ class Body:
                         
 			model = collision.createObject('TriangleModel', 
                                                name = 'model',
-                                               template = 'Vec3d',
+                                               template = 'Vec3',
                                                contactFriction = self.mu)
                         if self.group != None:
                                 model.group = self.group                        
                         
 			collision.createObject('RigidMapping',
-                                               template = 'Rigid,Vec3d',
+                                               template = 'Rigid3,Vec3',
                                                input = '@../',
                                                output = '@./')
 
@@ -294,13 +294,13 @@ class Joint:
    
                 
                 dofs = self.node.createObject('MechanicalObject', 
-                                         template = 'Vec6d', 
+                                         template = 'Vec6',
                                          name = 'dofs', 
                                          position = '0 0 0 0 0 0' )
 
                 map = self.node.createObject('RigidJointMultiMapping',
                                         name = 'mapping', 
-                                        template = 'Rigid,Vec6d', 
+                                        template = 'Rigid3,Vec6',
                                         input = concat(input),
                                         output = '@dofs',
                                         pairs = "0 0")
@@ -308,21 +308,21 @@ class Joint:
 		sub = self.node.createChild("constraints")
 
 		sub.createObject('MechanicalObject', 
-				 template = 'Vec1d', 
+                 template = 'Vec1',
 				 name = 'dofs')
 		
 		mask = [ (1 - d) for d in self.dofs ]
 		
 		map = sub.createObject('MaskMapping', 
 				       name = 'mapping',
-				       template = 'Vec6d,Vec1d',
+                       template = 'Vec6,Vec1',
 				       input = '@../',
 				       output = '@dofs',
 				       dofs = concat(mask) )
 		
                 compliance = sub.createObject('UniformCompliance',
 					      name = 'compliance',
-					      template = 'Vec1d',
+                          template = 'Vec1',
 					      compliance = self.compliance)
 
                 stab = sub.createObject('Stabilization')
@@ -342,13 +342,13 @@ class Joint:
                     maskedTargetPose.append(targetPose[i])
             print "maskedTargetPose", maskedTargetPose
 
-            target.createObject('MechanicalObject', template = 'Vec1d', name = 'dofs')
-            target.createObject('MaskMapping', name = 'mapping', template = 'Vec6d,Vec1d', input = '@../', output = '@dofs', dofs = "0 0 0 1 1 1" )
+            target.createObject('MechanicalObject', template = 'Vec1', name = 'dofs')
+            target.createObject('MaskMapping', name = 'mapping', template = 'Vec6,Vec1', input = '@../', output = '@dofs', dofs = "0 0 0 1 1 1" )
             
             target_constraint = target.createChild("target_constraint")
-            target_constraint.createObject('MechanicalObject', template = 'Vec1d', name = 'dofs')
-            target_constraint.createObject('DifferenceFromTargetMapping', name = 'mapping', template = 'Vec1d,Vec1d', input = '@../', output = '@dofs', targets = concat(maskedTargetPose) )
-            target_constraint.createObject('UniformCompliance', name = 'compliance', template = 'Vec1d', compliance = compliance, damping=damping)
+            target_constraint.createObject('MechanicalObject', template = 'Vec1', name = 'dofs')
+            target_constraint.createObject('DifferenceFromTargetMapping', name = 'mapping', template = 'Vec1,Vec1', input = '@../', output = '@dofs', targets = concat(maskedTargetPose) )
+            target_constraint.createObject('UniformCompliance', name = 'compliance', template = 'Vec1', compliance = compliance, damping=damping)
 
 # and now for more specific joints:
 
@@ -385,10 +385,10 @@ class RevoluteJoint(Joint):
                 
                 limit = res.createChild('limit')
 
-                dofs = limit.createObject('MechanicalObject', template = 'Vec1d')
-                map = limit.createObject('ProjectionMapping', template = 'Vec6d,Vec1d' )
+                dofs = limit.createObject('MechanicalObject', template = 'Vec1')
+                map = limit.createObject('ProjectionMapping', template = 'Vec6,Vec1' )
 
-                limit.createObject('UniformCompliance', template = 'Vec1d', compliance = '0' )
+                limit.createObject('UniformCompliance', template = 'Vec1', compliance = '0' )
                 limit.createObject('UnilateralConstraint');
 
                 # don't stabilize as we need to detect violated

@@ -102,7 +102,7 @@ class Image:
                 args["roiIndices"+str(i)]=mesh.roiIndices
                 args["roiValue"+str(i)]=SofaPython.Tools.listToStr(mesh.roiValue)
             i+=1
-        self.image = self.node.createObject('MeshToImageEngine', template=self.imageType, name="image", voxelSize=voxelSize, padSize="1", subdiv=8, rotateImage="false", nbMeshes=len(self.meshes), **args)
+        self.image = self.node.createObject('MeshToImageEngine', template=self.imageType, name="image", voxelSize=voxelSize, padSize=1, subdiv=8, rotateImage=False, nbMeshes=len(self.meshes), **args)
 
     def addViewer(self):
         if self.image is None:

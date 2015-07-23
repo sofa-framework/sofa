@@ -7,6 +7,7 @@
 #include <iostream>
 #ifdef WIN32
 # include <windows.h>
+# include <winerror.h>
 # include <strsafe.h>
 # include "Shlwapi.h"           // for PathFileExists()
 #elif defined(_XBOX)
@@ -20,7 +21,7 @@
 # include <unistd.h>
 #endif
 
-#include <assert.h>
+#include <cassert>
 
 namespace sofa
 {
@@ -166,8 +167,8 @@ bool FileSystem::exists(const std::string& path)
     else
     {
         DWORD errorCode = ::GetLastError();
-        if (errorCode != 2) // not No such file error
-        Logger::getMainLogger().log(Logger::Error, path + ": " + Utils::GetLastError(), "FileSystem::exists()");
+        if (errorCode != ERROR_FILE_NOT_FOUND && errorCode != ERROR_PATH_NOT_FOUND) // not No such file error
+            Logger::getMainLogger().log(Logger::Error, path + ": " + Utils::GetLastError(), "FileSystem::exists()");
         return false;
     }
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,32 +16,31 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: The SOFA Team (see Authors.txt)                                    *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_COMMON_XML_INIT_H
-#define SOFA_SIMULATION_COMMON_XML_INIT_H
-
-#include <sofa/simulation/common/common.h>
+#include "defaulttype.h"
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
 
-namespace simulation
+namespace defaulttype
 {
 
-namespace xml
+void init()
 {
+    static bool first = true;
+    if (first)
+    {
+        sofa::helper::init();
+        first = false;
+    }
+}
 
-SOFA_SIMULATION_COMMON_API void initXml();
-
-} // namespace xml
-
-} // namespace simulation
+} // namespace defaulttype
 
 } // namespace sofa
-
-#endif // SOFA_SIMULATION_COMMON_XML_INIT_H

@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_IO_IMAGE_H
 #define SOFA_HELPER_IO_IMAGE_H
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <sofa/helper/Factory.h>
 
 #include <sofa/helper/helper.h>

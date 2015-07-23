@@ -26,11 +26,11 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/defaulttype/Vec.h>
 
-#include <stdio.h>
+#include <cstdio>
 #include <iostream>
 #include <vector>
 #include <sstream>
-#include <string.h>
+#include <string>
 
 namespace sofa
 {

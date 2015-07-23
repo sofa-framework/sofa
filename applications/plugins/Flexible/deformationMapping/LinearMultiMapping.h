@@ -69,7 +69,9 @@ public:
     typedef typename Inherit::MaterialToSpatial MaterialToSpatial;
     typedef typename Inherit::VRef VRef;
     typedef typename Inherit::VReal VReal;
+    typedef typename Inherit::Gradient Gradient;
     typedef typename Inherit::VGradient VGradient;
+    typedef typename Inherit::Hessian Hessian;
     typedef typename Inherit::VHessian VHessian;
 
     typedef defaulttype::StdVectorTypes<defaulttype::Vec<Inherit::spatial_dimensions,Real>,defaulttype::Vec<Inherit::spatial_dimensions,Real>,Real> VecSpatialDimensionType;
@@ -165,6 +167,11 @@ protected:
 
         size_t size=this->f_pos0.getValue().size();
 
+        bool dw  = !this->f_dw.getValue().empty();
+        bool ddw = !this->f_ddw.getValue().empty();
+        bool F0  = !this->f_F0.getValue().empty();
+        static const MaterialToSpatial FI = identity<MaterialToSpatial>();
+
         this->jacobian1.resize(size);
         this->jacobian2.resize(size);
         size_t size1=this->getFromSize1();
@@ -180,13 +187,25 @@ protected:
                 if(index<size1)
                 {
                     BlockType1 b;
-                    b.init( in1[index],out[i],this->f_pos0.getValue()[i],this->f_F0.getValue()[i],this->f_w.getValue()[i][j],this->f_dw.getValue()[i][j],this->f_ddw.getValue()[i][j]);
+                    b.init( in1[index],
+                            out[i],
+                            this->f_pos0.getValue()[i],
+                            F0 ? this->f_F0.getValue()[i] : FI,
+                            this->f_w.getValue()[i][j],
+                            dw ? this->f_dw.getValue()[i][j] : Gradient(),
+                            ddw ? this->f_ddw.getValue()[i][j] : Hessian() );
                     this->jacobian1[i].push_back(b);
                 }
                 else
                 {
                     BlockType2 b;
-                    b.init( in2[index-size1],out[i],this->f_pos0.getValue()[i],this->f_F0.getValue()[i],this->f_w.getValue()[i][j],this->f_dw.getValue()[i][j],this->f_ddw.getValue()[i][j]);
+                    b.init( in2[index-size1],
+                            out[i],
+                            this->f_pos0.getValue()[i],
+                            F0 ? this->f_F0.getValue()[i] : FI,
+                            this->f_w.getValue()[i][j],
+                            dw ? this->f_dw.getValue()[i][j] : Gradient(),
+                            ddw ? this->f_ddw.getValue()[i][j] : Hessian() );
                     this->jacobian2[i].push_back(b);
                 }
             }

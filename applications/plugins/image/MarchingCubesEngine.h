@@ -135,8 +135,6 @@ protected:
 
         // get image at time t
         const CImg<T>& img = in->getCImg(this->time);
-        CImg<T> img1=img;
-        if(img.spectrum()!=1) img1.resize(img1.width(),img1.height(),img1.depth(),1,0);
 
         // get subdivision
         Vec<3,int> r((int)this->subdiv.getValue()[0],(int)this->subdiv.getValue()[1],(int)this->subdiv.getValue()[2]);
@@ -147,7 +145,7 @@ protected:
 
         // marching cubes using cimg
         CImgList<unsigned int> faces;
-        CImg<float> points = img1.get_isosurface3d (faces, val,r[0],r[1],r[2]);
+        CImg<float> points = img.get_shared_channel(0).get_isosurface3d (faces, val,r[0],r[1],r[2]);
 
         // update points and faces
         waPositions pos(this->position);

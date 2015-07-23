@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_H
-#define SOFA_HELPER_H
+#ifndef SOFA_HELPER_HELPER_H
+#define SOFA_HELPER_HELPER_H
 
 #include <sofa/helper/system/config.h>
 
@@ -32,5 +32,18 @@
 #else
 #	define SOFA_HELPER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
+
+namespace sofa
+{
+
+namespace helper
+{
+
+/// @brief Initialize the SofaHelper library.
+void SOFA_HELPER_API init();
+
+} // namespace helper
+
+} // namespace sofa
 
 #endif

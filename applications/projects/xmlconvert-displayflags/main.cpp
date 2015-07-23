@@ -28,13 +28,6 @@
 
 TiXmlDocument* loadFromFile(const char *filename)
 {
-
-#ifndef WIN32
-    // Reset local settings to make sure that floating-point values are interpreted correctly
-    setlocale(LC_ALL,"C");
-    setlocale(LC_NUMERIC,"C");
-#endif
-    //
     // this initialize the library and check potential ABI mismatches
     // between the version it was compiled for and the actual shared
     // library used.
@@ -58,6 +51,7 @@ using namespace sofa::xml;
 
 int main(int argc, char** argv)
 {
+    sofa::core::init();
     if( argc <  2 ) return -1;
     TiXmlDocument* doc = loadFromFile(argv[1]);
     if(doc )

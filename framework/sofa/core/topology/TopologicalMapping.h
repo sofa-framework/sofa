@@ -25,7 +25,7 @@
 #ifndef SOFA_CORE_TOPOLOGY_TOPOLOGICALMAPPING_H
 #define SOFA_CORE_TOPOLOGY_TOPOLOGICALMAPPING_H
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <vector>
 #include <string>
 #include <iostream>
