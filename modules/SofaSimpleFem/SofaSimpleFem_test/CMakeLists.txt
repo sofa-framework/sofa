@@ -16,6 +16,7 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${RC_FILES} ${PYT
 AddCompilerDefinitions("SOFASIMPLEFEM_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 
 AddLinkerDependencies(
+    SofaGTestMain
     SofaTest
 )
 

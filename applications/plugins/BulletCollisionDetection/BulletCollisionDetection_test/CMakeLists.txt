@@ -16,7 +16,7 @@ link_directories(${BULLET_LIBRARY_DIRS})
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
-AddLinkerDependencies(BulletCollisionDetection SofaTest)
+AddLinkerDependencies(BulletCollisionDetection SofaTest SofaGTestMain)
 AddLinkerDependencies(LinearMath BulletCollision BulletDynamics HACD)
 
 # needed by python tests
