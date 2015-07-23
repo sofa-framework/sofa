@@ -18,6 +18,7 @@ set(HEADER_FILES
     SimpleTesselatedHexaTopologicalMapping.h
     SimpleTesselatedTetraTopologicalMapping.h
     Tetra2TriangleTopologicalMapping.h
+	BezierTetra2BezierTriangleTopologicalMapping.h
     Triangle2EdgeTopologicalMapping.h
     IdentityTopologicalMapping.h
     SubsetTopologicalMapping.h
@@ -39,6 +40,7 @@ set(SOURCE_FILES
     SimpleTesselatedHexaTopologicalMapping.cpp
     SimpleTesselatedTetraTopologicalMapping.cpp
     Tetra2TriangleTopologicalMapping.cpp
+	BezierTetra2BezierTriangleTopologicalMapping.cpp
     Triangle2EdgeTopologicalMapping.cpp
     IdentityTopologicalMapping.cpp
     SubsetTopologicalMapping.cpp

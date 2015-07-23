@@ -31,12 +31,13 @@
 #include <SofaBaseTopology/QuadSetTopologyModifier.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
 #include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
+#include <SofaBaseTopology/BezierTriangleSetTopologyContainer.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
 #include <SofaBaseTopology/SparseGridTopology.h>
-
+#include <SofaBaseTopology/CommonAlgorithms.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/gl/RAII.h>
 #include <sofa/helper/vector.h>
@@ -122,12 +123,16 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , m_updateTangents  (initData   (&m_updateTangents, true, "updateTangents", "True if tangents should be updated at each iteration"))
     , m_handleDynamicTopology (initData   (&m_handleDynamicTopology, true, "handleDynamicTopology", "True if topological changes should be handled"))
     , m_fixMergedUVSeams (initData   (&m_fixMergedUVSeams, true, "fixMergedUVSeams", "True if UV seams should be handled even when duplicate UVs are merged"))
+	, m_useBezierPatch (initData   (&m_useBezierPatch, false, "useBezierPatch", "True if the triangles are in fact Bezier triangles"))
+	, m_useBezierNormals (initData   (&m_useBezierNormals, true, "useBezierNormals", "True if the normals as computed from each Bezier patches"))
+	, m_bezierTesselation (initData   (&m_bezierTesselation, (unsigned int)3, "bezierTesselation", "the level of tesselation of each Bezier triangle"))
     , m_vertices2       (initData   (&m_vertices2, "vertices", "vertices of the model (only if vertices have multiple normals/texcoords, otherwise positions are used)"))
     , m_vtexcoords      (initData   (&m_vtexcoords, "texcoords", "coordinates of the texture"))
     , m_vtangents       (initData   (&m_vtangents, "tangents", "tangents for normal mapping"))
     , m_vbitangents     (initData   (&m_vbitangents, "bitangents", "tangents for normal mapping"))
     , m_edges           (initData   (&m_edges, "edges", "edges of the model"))
     , m_triangles       (initData   (&m_triangles, "triangles", "triangles of the model"))
+    , m_bezierTriangles (initData   (&m_bezierTriangles, "bezierTriangles", "Bezier triangles of the model"))
     , m_quads           (initData   (&m_quads, "quads", "quads of the model"))
     , m_vertPosIdx      (initData   (&m_vertPosIdx, "vertPosIdx", "If vertices have multiple normals/texcoords stores vertices position indices"))
     , m_vertNormIdx     (initData   (&m_vertNormIdx, "vertNormIdx", "If vertices have multiple normals/texcoords stores vertices normal indices"))
@@ -1272,11 +1277,24 @@ void VisualModelImpl::computePositions()
         m_vertices2.endEdit();
     }
 }
-
+double multinomial(const size_t n,const sofa::component::topology::TriangleBezierIndex tbiIn)
+{
+	size_t i,ival;
+	sofa::component::topology::TriangleBezierIndex tbi=tbiIn;
+	// divide n! with the largest of the multinomial coefficient
+	std::sort(tbi.begin(),tbi.end());
+	ival=1;
+	for (i=n;i>tbi[2];--i){
+		ival*=i;
+	}
+	return(((double)ival)/(sofa::helper::factorial(tbi[0])*sofa::helper::factorial(tbi[1])));
+}
 void VisualModelImpl::computeMesh()
 {
     using sofa::component::topology::SparseGridTopology;
     using sofa::core::behavior::BaseMechanicalState;
+
+	sofa::helper::vector<Coord> bezierControlPointsArray;
 
     if ((m_positions.getValue()).empty() && (m_vertices2.getValue()).empty())
     {
@@ -1297,15 +1315,26 @@ void VisualModelImpl::computeMesh()
 
             if (this->f_printLog.getValue())
                 sout << "VisualModel: copying " << m_topology->getNbPoints() << " points from topology." << sendl;
+			if (m_useBezierPatch.getValue()==false)
+			{
+				vertices.resize(m_topology->getNbPoints());
 
-            vertices.resize(m_topology->getNbPoints());
-
-            for (unsigned int i=0; i<vertices.size(); i++)
-            {
-                vertices[i][0] = (Real)m_topology->getPX(i);
-                vertices[i][1] = (Real)m_topology->getPY(i);
-                vertices[i][2] = (Real)m_topology->getPZ(i);
-            }
+				for (unsigned int i=0; i<vertices.size(); i++)
+				{
+					vertices[i][0] = (Real)m_topology->getPX(i);
+					vertices[i][1] = (Real)m_topology->getPY(i);
+					vertices[i][2] = (Real)m_topology->getPZ(i);
+				}
+			} else {
+				/// if Bezier Patch then stored positions in a  temporary array
+				bezierControlPointsArray.resize(m_topology->getNbPoints());
+				for (unsigned int i=0; i<bezierControlPointsArray.size(); i++)
+				{
+					bezierControlPointsArray[i][0] = (Real)m_topology->getPX(i);
+					bezierControlPointsArray[i][1] = (Real)m_topology->getPY(i);
+					bezierControlPointsArray[i][2] = (Real)m_topology->getPZ(i);
+				}
+			}
         }
         else
         {
@@ -1333,17 +1362,350 @@ void VisualModelImpl::computeMesh()
 
     const vector< Triangle >& inputTriangles = m_topology->getTriangles();
 
-    if (this->f_printLog.getValue())
-        sout << "VisualModel: copying " << inputTriangles.size() << " triangles from topology." << sendl;
+	if (m_useBezierPatch.getValue()==false)
+	{
+		if (this->f_printLog.getValue())
+			sout << "VisualModel: copying " << inputTriangles.size() << " triangles from topology." << sendl;
 
-    ResizableExtVector< Triangle >& triangles = *(m_triangles.beginEdit());
-    triangles.resize(inputTriangles.size());
+		ResizableExtVector< Triangle >& triangles = *(m_triangles.beginEdit());
+		triangles.resize(inputTriangles.size());
 
-    for (unsigned int i=0; i<triangles.size(); ++i)
-    {
-        triangles[i] = inputTriangles[i];
-    }
-    m_triangles.endEdit();
+		for (unsigned int i=0; i<triangles.size(); ++i)
+		{
+			triangles[i] = inputTriangles[i];
+		}
+		m_triangles.endEdit();
+	} else if (inputTriangles.size()>0) 
+	{
+		// bezier triangles.
+		// first the pointer to the topology
+		sofa::component::topology::BezierTriangleSetTopologyContainer *btstc=dynamic_cast<sofa::component::topology::BezierTriangleSetTopologyContainer *>(m_topology);
+		bezierDegree=btstc->getDegree();
+		size_t bezierTesselation=m_bezierTesselation.getValue();
+		
+		// then create the array of points and of triangles.
+		 VecCoord& vertices = *(m_positions.beginEdit());
+		 ResizableExtVector< Triangle >& triangles = *(m_triangles.beginEdit());
+
+		 size_t nbPoints=btstc->getNumberOfTriangularPoints()+btstc->getNumberOfEdges()*(bezierTesselation-1)+
+			 btstc->getNumberOfTriangles()*(bezierTesselation-1)*(bezierTesselation-2)/2;
+		 vertices.resize(nbPoints);
+
+		  ResizableExtVector<Deriv>& normals = *(m_vnormals.beginEdit());
+		  normals.resize(nbPoints);
+		  // reset the array of normals
+		   std::fill(normals.begin(),normals.end(),Deriv());
+
+		 size_t nbTriangles=btstc->getNumberOfTriangles()*(bezierTesselation*bezierTesselation);
+		 triangles.resize(nbTriangles);
+
+		 // this is used to store the global indices of tesselated bezier triangles
+		 globalIndexTesselatedBezierTriangleArray.resize(btstc->getNumberOfTriangles());
+
+		 size_t i;
+
+		 // store the vertices of the macro triangles since the set of positions may be a large overset of the positions of the triangular bezier triangles (if a Tetra2Trian mapping is used)
+		 std::set<size_t> triangleVertexSet;
+
+		  for (i=0;i<inputTriangles.size();++i)  {
+			  Triangle t=inputTriangles[i];
+			  triangleVertexSet.insert(t[0]);triangleVertexSet.insert(t[1]);triangleVertexSet.insert(t[2]);
+		  }
+		  assert(btstc->getNumberOfTriangularPoints()==triangleVertexSet.size());
+		  local2GlobalBezierVertexArray.clear();
+
+		  std::set<size_t>::iterator itvs;
+		  for (itvs=triangleVertexSet.begin();itvs!=triangleVertexSet.end();++itvs) {
+			  local2GlobalBezierVertexArray.push_back(*itvs);
+		  }
+		
+		 // copy the points of underlying triangulation
+		 for (i=0;i<btstc->getNumberOfTriangularPoints();++i) {
+			 vertices[i]=bezierControlPointsArray[local2GlobalBezierVertexArray[i]];
+		 }
+		
+		 if (precomputedLinearBernsteinCoefficientArray.size()!=(bezierTesselation-1)) {
+			 // (re)compute the interpolation factor associated with a given tesselation level and bezier order
+			 precomputedLinearBernsteinCoefficientArray.resize(bezierTesselation-1);
+			 Real u,v;
+			 size_t j;
+			 for (i=1;i<bezierTesselation;++i) {
+				 sofa::helper::vector<Real> weightArray(bezierDegree+1);
+			  // linear barycentric coordinates of the point
+				 u=(Real)i/(Real)bezierTesselation;
+				 v=(Real)(1.0f-u);
+				 for(j=0;j<=bezierDegree;++j){
+					 weightArray[j]=(Real)(pow(u,j)*pow(v,bezierDegree-j)*sofa::component::topology::binomial<Real>(bezierDegree-j,j));
+				 }
+				 precomputedLinearBernsteinCoefficientArray[i-1]=weightArray;
+			 }
+			
+		 }
+		 
+
+		 if (precomputedTriangularBernsteinCoefficientArray.size()!= ((bezierTesselation-1)*(bezierTesselation-2)/2)) {
+			 // for each point inside the tesselated triangle, store the weights of each control points (bivariate Bernstein polynomials)
+			 // there are (bezierTesselation-1)*(bezierTesselation-2)/2 points inside each triangle and (bezierDegree+1)*(bezierDegree+2)/2 control points 
+			 // (re)compute the interpolation factor associated with a given tesselation level and bezier order
+			 precomputedTriangularBernsteinCoefficientArray.resize( ((bezierTesselation-1)*(bezierTesselation-2)/2));
+			 Real u,v,w;
+			 size_t j,k,ind;
+			 sofa::helper::vector<sofa::component::topology::TriangleBezierIndex> tbia=btstc->getTriangleBezierIndexArray();
+			 for (ind=0,i=1;i<(bezierTesselation-1);++i) {
+				 for (j=1;j<(bezierTesselation-i);++j,++ind) {
+					 
+					 sofa::helper::vector<Real> weightArray(tbia.size());
+					 // linear barycentric coordinates of the point
+					 u=(Real)i/(Real)bezierTesselation;
+					 v=(Real)j/(Real)bezierTesselation;
+					 w=(Real)(1.0f-u-v);
+					 for(k=0;k<tbia.size();++k){
+						 weightArray[k]=(Real)(pow(u,tbia[k][0])*pow(v,tbia[k][1])*pow(w,tbia[k][2])*multinomial(bezierDegree,tbia[k]));
+					 }
+					 precomputedTriangularBernsteinCoefficientArray[ind]=weightArray;
+				 }
+			 }
+
+		 }
+		 // get the local indices of the points in the macro triangle
+		 if (tesselatedTriangleIndices.size()!=(bezierTesselation+1)*(bezierTesselation+2)/2 ) {
+			 tesselatedTriangleIndices=btstc->getTriangleBezierIndexArrayOfGivenDegree(bezierTesselation);
+		 }
+		 if (precomputedDerivUTriangularBernsteinCoefficientArray.size()!=((bezierTesselation+1)*(bezierTesselation+2)/2)) {
+			 precomputedDerivUTriangularBernsteinCoefficientArray.resize( ((bezierTesselation+1)*(bezierTesselation+2)/2));
+			 precomputedDerivVTriangularBernsteinCoefficientArray.resize( ((bezierTesselation+1)*(bezierTesselation+2)/2));
+
+			 size_t j,k,l;
+			 Real val;
+			 Coord barycentricCoordinate;
+			 sofa::helper::vector<sofa::component::topology::TriangleBezierIndex> tbia=btstc->getTriangleBezierIndexArray();
+			
+
+			 for (j=0;j<tesselatedTriangleIndices.size();++j) {
+				 for (k=0;k<3;++k) 
+					 barycentricCoordinate[k]=(Real)tesselatedTriangleIndices[j][k]/(Real)bezierTesselation;
+
+
+				 sofa::helper::vector<Real> weightArrayDU(tbia.size());
+				 sofa::helper::vector<Real> weightArrayDV(tbia.size());
+				 for(k=0;k<tbia.size();++k){
+					 val=(Real)(pow( barycentricCoordinate[0],tbia[k][0])*pow( barycentricCoordinate[1],tbia[k][1])*pow( barycentricCoordinate[2],tbia[k][2])*multinomial(bezierDegree,tbia[k]));
+					 Coord dval;
+					 for (l=0;l<3;++l) {
+						 if(tbia[k][l] && barycentricCoordinate[l]){
+							 dval[l]=(Real)tbia[k][l]*val/barycentricCoordinate[l];
+						 } else if ((barycentricCoordinate[l]==0.0f)&&(tbia[k][l]==1)) {
+							 dval[l]=multinomial(bezierDegree,tbia[k]);
+							 for (i=1;i<=2;++i)
+								 dval[l]*=(Real)(pow( barycentricCoordinate[(l+i)%3],tbia[k][(l+i)%3]));
+						 }
+					 }
+					 weightArrayDU[k]=dval[0]-dval[2];
+					 weightArrayDV[k]=dval[1]-dval[2];
+				 }
+				 precomputedDerivUTriangularBernsteinCoefficientArray[j]=weightArrayDU;
+				 precomputedDerivVTriangularBernsteinCoefficientArray[j]=weightArrayDV;
+			 }
+
+		 }
+		 
+		 size_t rank=btstc->getNumberOfTriangularPoints()+btstc->getNumberOfEdges()*(bezierTesselation-1);
+		 // copy the points on the edges 
+		 /* 
+		 if (bezierTesselation>1) {
+			 Coord p;
+			 size_t j,k;
+			sofa::helper::vector<Coord> edgeControlPoints;
+			
+			  for (i=0;i<btstc->getNumberOfEdges();++i) {
+				  // first store the Bezier points along the edge
+				  sofa::component::topology::Edge e=btstc->getEdge(i);
+				  edgeControlPoints.clear();
+				  edgeControlPoints.push_back(bezierControlPointsArray[e[0]]);
+				  for(j=0;j<bezierDegree-1;++j) {
+					   edgeControlPoints.push_back(bezierControlPointsArray[btstc->getNumberOfTriangularPoints()+j+i*(bezierDegree-1)]);
+				  }
+				  edgeControlPoints.push_back(bezierControlPointsArray[e[1]]);
+				  // then interpolate position
+				  for (j=1;j<bezierTesselation;++j) {
+
+					   p=Coord();
+					    sofa::helper::vector<Real> weightArray=precomputedLinearBernsteinCoefficientArray[j-1];
+					  for (k=0;k<=bezierDegree;++k) {
+						  /// univariate Bernstein polynomial
+						  p+=edgeControlPoints[k]*weightArray[k];
+					  }
+					  // store the edge point on the surface
+					  vertices[rank++]=p;
+				  }
+			  }
+		 }*/
+		  // copy the points on the triangles 
+		 if (bezierTesselation>1) {
+			 Coord p;
+			 size_t j,k,l,ind;
+			 sofa::helper::vector<Coord> triangleControlPoints;
+			 sofa::component::topology::VecPointID indexArray;
+			 sofa::helper::vector<Coord> edgeControlPoints;
+		    sofa::component::topology::TriangleBezierIndex trbi;
+			 for (i=0;i<btstc->getNumberOfTriangles();++i) {
+				 // first get  the Bezier control points in the triangle 
+				 btstc->getGlobalIndexArrayOfBezierPointsInTriangle(i, indexArray);
+
+				const  sofa::component::topology::EdgesInTriangle &eit=  btstc->getEdgesInTriangle(i); 
+				 // interpolate position on edges
+				 const sofa::component::topology::Triangle tr= btstc->getTriangle(i);
+				 for(j=0;j<3;++j) {
+					   // avoid that 2 adjacent triangles computes twice the edge position
+					 const sofa::component::topology::TrianglesAroundEdge &tae=  btstc->getTrianglesAroundEdge(eit[j]);
+					 if (tae[0]==i) {
+						  const sofa::component::topology::Edge &e= btstc->getEdge(eit[j]);
+						  // find the equivalence between the triangle index and tetrahedron index
+						  for(k=0;tr[k]==e[0]||tr[k]==e[1];++k);
+						  assert(tr[(k+1)%3]==e[0]);
+
+						  // get control points along edges
+						  edgeControlPoints.clear();
+						  edgeControlPoints.push_back(bezierControlPointsArray[e[0]]);
+						  for(l=1;l<=(bezierDegree-1);++l) {
+							
+							  trbi[k]=0;
+							  trbi[(k+1)%3]=bezierDegree-j;
+							  trbi[(k+2)%3]=j;
+
+							  edgeControlPoints.push_back(bezierControlPointsArray[indexArray[  btstc->getLocalIndexFromTriangleBezierIndex(trbi)] ] );
+							 
+						  }
+						  edgeControlPoints.push_back(bezierControlPointsArray[e[1]]);
+						 // then interpolate position
+						 size_t  edgeRank=btstc->getNumberOfTriangularPoints()+eit[j]*(bezierTesselation-1);
+						 for (l=1;l<bezierTesselation;++j) {
+
+							 p=Coord();
+							 sofa::helper::vector<Real> weightArray=precomputedLinearBernsteinCoefficientArray[j-1];
+							 for (k=0;k<=bezierDegree;++k) {
+								 /// univariate Bernstein polynomial
+								 p+=edgeControlPoints[k]*weightArray[k];
+							 }
+							 // store the edge point on the surface
+							 
+							 vertices[edgeRank++]=p;
+						 }
+					 }
+				 }
+				 if (bezierTesselation>2) {
+					 // then interpolate point inside triangle
+					 for (ind=0,j=1;j<(bezierTesselation-1);++j) {
+						 for (k=1;k<(bezierTesselation-j);++k,++ind) {
+							 p=Coord();
+							 sofa::helper::vector<Real> &weigthArray=precomputedTriangularBernsteinCoefficientArray[ind];
+							 for (l=0;l<indexArray.size();++l) {
+								 /// univariate Bernstein polynomial
+								 p+=bezierControlPointsArray[indexArray[l]]*weigthArray[l];
+							 }
+							 // store the triangle point on the surface
+							 vertices[rank++]=p;
+						 }
+					 }
+				 }
+
+			 }
+		 }
+		 assert(rank==nbPoints);
+
+		 // defines the subtriangles
+
+		  sofa::helper::vector< sofa::component::topology::LocalTriangleIndex> sta=btstc->getLocalIndexSubtriangleArrayOfGivenDegree(bezierTesselation);
+	//	  std::cerr<< sta<<std::endl;
+
+		  size_t j,k,offset;
+		  size_t baseEdgeOffset=btstc->getNumberOfTriangularPoints();
+		  size_t baseTriangleOffset=baseEdgeOffset+btstc->getNumberOfEdges()*(bezierTesselation-1);
+		  size_t pointsPerTriangle=(bezierTesselation-1)*(bezierTesselation-2)/2;
+		   sofa::component::topology::Triangle subtriangle;
+
+		  for (rank=0,i=0;i<btstc->getNumberOfTriangles();++i) {
+			  // there are (bezierTesselation)*(bezierTesselation) subtriangles
+			  // first store the indices of all the macro triangles into an array
+			 sofa::component::topology::Triangle tr=btstc->getTriangle(i);
+			sofa::helper::vector<size_t> macroTriangleIndexArray;
+			// store the 3 vertices
+			for (j=0;j<3;++j)
+				macroTriangleIndexArray.push_back(global2LocalBezierVertexArray[tr[j]]);
+	//		for(j=0;j<tesselatedTriangleIndices.size();++j)
+		//		std::cerr<< (sofa::defaulttype::Vec<3,size_t >)(tesselatedTriangleIndices[j])<<std::endl;
+
+			// store the edge point
+			if (bezierTesselation>1) {
+				sofa::component::topology::EdgesInTriangle eit=btstc->getEdgesInTriangle(i);
+				for (j=0;j<3;++j) {
+					sofa::component::topology::Edge e=btstc->getEdge(eit[j]);
+					offset=baseEdgeOffset+eit[j]*(bezierTesselation-1);
+					if (e[0]==tr[(j+1)%3] ) {
+						for (k=0;k<(size_t)(bezierTesselation-1);++k) {
+							macroTriangleIndexArray.push_back(offset+k);
+						}
+					} else {
+						for (k=bezierTesselation-1;k>0;--k) {
+							macroTriangleIndexArray.push_back(offset+k-1);
+						}
+					}
+
+				}
+			}
+			// store the triangle point
+			if (bezierTesselation>2) {
+				offset=baseTriangleOffset+i*pointsPerTriangle;
+				for (j=0;j<pointsPerTriangle;++j) {
+					macroTriangleIndexArray.push_back(offset+j);
+				}
+			}
+			// save the global indices of each tesselated triangle for the computation of normals
+			globalIndexTesselatedBezierTriangleArray[i]=macroTriangleIndexArray;
+
+//			std::cerr<< macroTriangleIndexArray<<std::endl;
+			// now add subtriangles to the list
+			for (j=0;j<sta.size();++j){
+				for(k=0;k<3;++k){
+					subtriangle[k]=macroTriangleIndexArray[sta[j][k]];
+				}
+				triangles[rank++]=subtriangle;
+			}
+		  }
+
+		  // then compute normals if necessary
+		  if (m_useBezierNormals.getValue()) {
+			  m_updateNormals.setValue(false);
+	
+			  sofa::component::topology::VecPointID indexArray;
+
+			  for (i=0;i<btstc->getNumberOfTriangles();++i) {
+				  // first get  the Bezier control points in the triangle 
+				  btstc->getGlobalIndexArrayOfBezierPointsInTriangle(i, indexArray);
+
+				  for (j=0;j<tesselatedTriangleIndices.size();++j) {
+					  Deriv du,dv,normal;
+					  // for each point in the tesselated triangle compute dpos/du and dpos/dv as a weighted combination of the control points
+					  sofa::helper::vector<Real> &weigthArrayDU=precomputedDerivUTriangularBernsteinCoefficientArray[j];
+					  sofa::helper::vector<Real> &weigthArrayDV=precomputedDerivVTriangularBernsteinCoefficientArray[j];
+					  for (k=0;k<indexArray.size();++k) {
+						  du+=bezierControlPointsArray[indexArray[k]]*weigthArrayDU[k];
+						  dv+=bezierControlPointsArray[indexArray[k]]*weigthArrayDV[k];
+					  }
+					  normal=cross(du,dv);
+					  normals[globalIndexTesselatedBezierTriangleArray[i][j]]+=normal;
+				  }
+			  }
+			  // renormalize all normals. Normals at vertex or along edges are averaged
+			  for (i = 0; i < normals.size(); i++)
+				  normals[i].normalize();
+		  }
+		  
+		  m_positions.endEdit();
+		  m_triangles.endEdit();
+		  m_vnormals.endEdit();
+	
+	}
 
     const vector< BaseMeshTopology::Quad >& inputQuads = m_topology->getQuads();
 

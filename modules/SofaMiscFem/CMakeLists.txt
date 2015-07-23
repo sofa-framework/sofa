@@ -17,7 +17,7 @@ set(HEADER_FILES
 	PlasticMaterial.h
 	STVenantKirchhoff.h
 	VerondaWestman.h
-
+	Ogden.h
     )
 
 set(SOURCE_FILES
