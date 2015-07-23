@@ -176,9 +176,9 @@ class Model:
 
     class Surface:
         def __init__(self):
-            self.object=None
-            self.mesh=None
-            self.group=None
+            self.solid=None # a Model.Solid object
+            self.mesh=None # a Model.Mesh object
+            self.group=None # the id of the group
             self.image=None
 
     class SurfaceLink:
