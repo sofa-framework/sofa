@@ -300,6 +300,7 @@ sofa::helper::vector<TetrahedronBezierIndex> BezierTetrahedronSetTopologyContain
 					TetrahedronBezierIndex bti(0,0,0,0);
 					bti[0]=i;bti[1]=j;bti[2]=k;
 					bti[3]=deg-i-j-k;
+					tbiArray.push_back(bti);
 				}
 			}
 		}
