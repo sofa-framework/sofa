@@ -42,10 +42,13 @@ set(HEADER_FILES
     TetrahedronSetGeometryAlgorithms.inl
     BezierTetrahedronSetGeometryAlgorithms.h
     BezierTetrahedronSetGeometryAlgorithms.inl
+    BezierTriangleSetGeometryAlgorithms.h
+    BezierTriangleSetGeometryAlgorithms.inl
     TetrahedronSetTopologyAlgorithms.h
     TetrahedronSetTopologyAlgorithms.inl
     TetrahedronSetTopologyContainer.h
     BezierTetrahedronSetTopologyContainer.h
+    BezierTriangleSetTopologyContainer.h
     TetrahedronSetTopologyModifier.h
     TriangleSetGeometryAlgorithms.h
     TriangleSetGeometryAlgorithms.inl
@@ -99,9 +102,11 @@ set(SOURCE_FILES
     SparseGridTopology.cpp
     TetrahedronSetGeometryAlgorithms.cpp
     BezierTetrahedronSetGeometryAlgorithms.cpp
+	BezierTriangleSetGeometryAlgorithms.cpp
     TetrahedronSetTopologyAlgorithms.cpp
     TetrahedronSetTopologyContainer.cpp
     BezierTetrahedronSetTopologyContainer.cpp
+	BezierTriangleSetTopologyContainer.cpp
     TetrahedronSetTopologyModifier.cpp
     TriangleSetGeometryAlgorithms.cpp
     TriangleSetTopologyAlgorithms.cpp
