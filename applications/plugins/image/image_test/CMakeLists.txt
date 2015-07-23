@@ -27,6 +27,6 @@ endif()
 # absolute paths are perfectly OK for test resources.
 AddCompilerDefinitions("IMAGETEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 
-AddLinkerDependencies(SofaTest image)
+AddLinkerDependencies(SofaTest image SofaGTestMain)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

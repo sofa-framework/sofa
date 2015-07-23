@@ -8,6 +8,7 @@ set(SOURCE_FILES
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 AddLinkerDependencies(
+    SofaGTestMain
     SofaTest
     SofaLoader
 )

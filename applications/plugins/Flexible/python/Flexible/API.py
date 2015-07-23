@@ -90,11 +90,11 @@ class Deformable:
     def subsetFromDeformable(self, deformable, indices ):
         if not deformable.topology is None:
             topo = SofaPython.Tools.getObjectPath(deformable.topology)
-            self.meshLoader = self.node.createObject("MeshSubsetEngine", template = "Vec3d", name='MeshSubsetEngine', inputPosition='@'+topo+'.position', inputTriangles='@'+topo+'.triangles', inputQuads='@'+topo+'.quads', indices=concat(indices))
+            self.meshLoader = self.node.createObject("MeshSubsetEngine", template = "Vec3", name='MeshSubsetEngine', inputPosition='@'+topo+'.position', inputTriangles='@'+topo+'.triangles', inputQuads='@'+topo+'.quads', indices=concat(indices))
             self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.meshLoader.name)
         if not deformable.dofs is None:
             deformable.node.addChild(self.node)
-            self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs")
+            self.dofs = self.node.createObject("MechanicalObject", template = "Vec3", name="dofs")
             self.mapping = self.node.createObject("SubsetMapping", name='mapping', indices=concat(indices), input='@'+deformable.node.getPathName(),output="@.")
 
     def fromDeformables(self, deformables=list()):

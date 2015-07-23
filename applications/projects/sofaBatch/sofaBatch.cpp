@@ -30,10 +30,10 @@
 #include <sofa/helper/system/PluginManager.h>
 
 #include <SofaComponentMain/init.h>
-#include <sofa/simulation/common/xml/initXml.h>
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
 
@@ -128,6 +128,9 @@ void apply(std::string &input, unsigned int nbsteps, std::string &output)
 
 int main(int argc, char** argv)
 {
+    sofa::simulation::tree::init();
+    sofa::component::init();
+
     // --- Parameter initialisation ---
     std::vector<std::string> files;
     std::string fileName ;
@@ -154,9 +157,6 @@ int main(int argc, char** argv)
 
     // --- Init component ---
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
-
-    sofa::component::init();
-    sofa::simulation::xml::initXml();
 
 
     // --- plugins ---

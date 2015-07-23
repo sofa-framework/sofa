@@ -26,7 +26,7 @@
 // Author: Pierre-Jean Bensoussan, Digtal Trainers, (C) 2008
 
 #include <sofa/core/objectmodel/JoystickEvent.h>
-#include <assert.h>
+#include <cassert>
 #include <cstring> // for NULL
 
 namespace sofa

@@ -1776,11 +1776,11 @@ bool loadPlugin(const char* filename)
 
 int main(int argc, char** argv)
 {
-    std::cout << "Using " << sofa::helper::system::atomic<int>::getImplName()<<" atomics." << std::endl;
-
+    sofa::simulation::tree::init();
     sofa::helper::BackTrace::autodump();
+    sofa::component::init();
 
-
+    std::cout << "Using " << sofa::helper::system::atomic<int>::getImplName()<<" atomics." << std::endl;
 
     sofa::gui::SofaGUI::SetProgramName(argv[0]);
     std::string fileName ;
@@ -1813,8 +1813,6 @@ int main(int argc, char** argv)
     if(gui!="batch") glutInit(&argc,argv);
 
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
-    sofa::component::init();
-    sofa::simulation::xml::initXml();
 
 
     sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;

@@ -137,6 +137,7 @@ set(HEADER_FILES
 	)
 
 set(SOURCE_FILES
+	core.cpp
 	objectmodel/AspectPool.cpp
 	objectmodel/Base.cpp
 	objectmodel/BaseClass.cpp

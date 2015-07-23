@@ -19,13 +19,9 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 #endif
 #include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/xml/initXml.h>
 
-#include <sofa/gui/GUIManager.h>
-#include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <SofaComponentMain/init.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>

@@ -1010,7 +1010,7 @@ void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
         if (maxStep == 0) return;
 
         stepCounter++;
-        if(stepCounter > maxStep)
+        if(stepCounter >= maxStep)
         {
             stepCounter = 0;
             if(fileFormat.getValue())

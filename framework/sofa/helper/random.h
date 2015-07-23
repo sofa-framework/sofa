@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_RANDOM_H
 #define SOFA_HELPER_RANDOM_H
 
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace sofa
 {

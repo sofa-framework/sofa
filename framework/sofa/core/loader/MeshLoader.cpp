@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/loader/MeshLoader.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace sofa
 {

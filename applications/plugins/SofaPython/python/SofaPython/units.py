@@ -54,8 +54,13 @@ local_time = time_s
 local_length = length_m
 local_mass = mass_kg
 
-
-
+def setLocalUnits(time="s", length="m", mass="kg"):
+    """ set the local units from their string representation
+    """
+    global local_time, local_length, local_mass
+    local_time = eval("time_"+time)
+    local_length = eval("length_"+length)
+    local_mass = eval("mass_"+mass)
 
 ### conversion methods
 

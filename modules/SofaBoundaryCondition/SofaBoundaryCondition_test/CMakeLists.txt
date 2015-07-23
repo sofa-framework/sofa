@@ -22,6 +22,7 @@ AddCompilerDefinitions("SOFABOUNDARYCONDITION_TEST_SCENES_DIR=\"${CMAKE_CURRENT_
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 AddLinkerDependencies(
+    SofaGTestMain
     SofaTest
     SofaBoundaryCondition
 )

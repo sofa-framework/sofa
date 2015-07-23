@@ -37,8 +37,6 @@ if(SOFA-PLUGIN_SOFAPYTHON)
     include(./python/python.cmake)
 endif()
 
-
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 
 AddLinkerDependencies(SofaSimulationGraph)

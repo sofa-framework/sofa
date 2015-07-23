@@ -15,6 +15,16 @@ namespace component
 namespace mapping
 {
 
+
+/**
+ Maps two dofs to their spatial position difference:
+
+ (p1, p2) -> p2.t - p1.t
+ (with .t the translation obtained by DataTypes::getCPos)
+
+ This is used to obtain relative dofs
+ on which a stiffness/compliance may be applied
+*/
 template <class TIn, class TOut >
 class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 {
@@ -56,7 +66,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
         for( unsigned j = 0, m = p.size(); j < m; ++j)
         {
-			out[j] = in[p[j][1]] - in[p[j][0]];
+            out[j] = TIn::getCPos( in[p[j][1]] ) - TIn::getCPos( in[p[j][0]] );
         }
 	}
 
@@ -138,15 +148,13 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
 
 /**
- Multi-maps two vec dofs to their difference:
+ Multi-maps two vec dofs to their spatial position difference:
 
- (p1, p2) -> p2 - p1
+ (p1, p2) -> p2.t - p1.t
+ (with .t the translation obtained by DataTypes::getCPos)
 
- This is used in compliant contacts to obtain relative
- distance dofs, on which a contact compliance may be applied
- (= seamless penalty/constraint force transition)
-
- @author: maxime.tournier@inria.fr
+ This is used to obtain relative dofs
+ on which a stiffness/compliance may be applied
 */
 
     template <class TIn, class TOut >
@@ -195,7 +203,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
             assert( !p.empty() );
 
             for( unsigned j = 0, m = p.size(); j < m; ++j) {
-                out[j] = in[1] [p[j][1]] - in[0] [p[j][0]];
+                out[j] = TIn::getCPos( in[1] [p[j][1]] ) - TIn::getCPos( in[0] [p[j][0]] );
             }
 
         }

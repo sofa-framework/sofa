@@ -26,7 +26,7 @@
 #include "GUIManager.h"
 #include "BaseGUI.h"
 #include <SofaComponentMain/init.h>
-#include <sofa/simulation/common/xml/initXml.h>
+#include <sofa/simulation/common/common.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
 
@@ -180,8 +180,8 @@ GUIManager::GUICreator* GUIManager::GetGUICreator(const char* name)
 int GUIManager::Init(const char* argv0, const char* name)
 {
     BaseGUI::SetProgramName(argv0);
+    sofa::simulation::common::init();
     sofa::component::init();
-    sofa::simulation::xml::initXml();
 
     // Read the paths to the share/ and examples/ directories from etc/sofa.ini,
     const std::string etcDir = Utils::getSofaPathPrefix() + "/etc";
