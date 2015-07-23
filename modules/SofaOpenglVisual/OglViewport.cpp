@@ -422,6 +422,7 @@ void OglViewport::renderFBOToScreen(core::visual::VisualParams* vp)
 
     glBegin(GL_QUADS);
     {
+        glColor3f(1,1,1);
         glTexCoord3f(txmin,tymax,0.0); glVertex3f(vxmin,vymax,0.0);
         glTexCoord3f(txmax,tymax,0.0); glVertex3f(vxmax,vymax,0.0);
         glTexCoord3f(txmax,tymin,0.0); glVertex3f(vxmax,vymin,0.0);
