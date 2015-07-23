@@ -182,12 +182,18 @@ class Model:
             self.image=None
 
     class SurfaceLink:
-        def __init__(self,objXml):
+        def __init__(self,objXml=None):
+            self.id = None
+            self.name = None
             self.tags = set()
-            parseIdName(self,objXml)
-            parseTag(self,objXml)
             self.surfaces = [None,None]
             self.distance=None
+            if not objXml is None:
+                self.parseXml(objXml)
+
+        def parseXml(self, objXml):
+            parseIdName(self,objXml)
+            parseTag(self,objXml)
             if objXml.find("distance"):
                 self.distance=float(objXml.findText("distance"))
 
