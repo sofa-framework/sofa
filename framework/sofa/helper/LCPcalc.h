@@ -25,9 +25,9 @@
 #ifndef SOFA_HELPER_LCPCALC_H
 #define SOFA_HELPER_LCPCALC_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cmath>
 #include <sofa/helper/system/thread/CTime.h>
 #include <vector>
 

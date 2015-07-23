@@ -26,7 +26,7 @@ const std::string CONFIG_FILE = "required_plugins_debug.ini";
 int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
-	
+
 	// Data
 	std::string fileName;
 	std::vector<std::string> plugins;

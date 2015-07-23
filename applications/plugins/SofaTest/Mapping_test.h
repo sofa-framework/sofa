@@ -29,11 +29,17 @@
 
 #include "Sofa_test.h"
 
-#include <SceneCreator/SceneCreator.h>
-
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/VectorOperations.h>
+
+#include <SceneCreator/SceneCreator.h>
+
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
 
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
@@ -128,6 +134,11 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
     Mapping_test():deltaRange(1,1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
+        sofa::component::initComponentBase();
+        sofa::component::initComponentCommon();
+        sofa::component::initComponentGeneral();
+        sofa::component::initComponentAdvanced();
+        sofa::component::initComponentMisc();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Parent node
@@ -143,6 +154,11 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
     Mapping_test(std::string fileName):deltaRange(1,1000),errorMax(100),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
+        sofa::component::initComponentBase();
+        sofa::component::initComponentCommon();
+        sofa::component::initComponentGeneral();
+        sofa::component::initComponentAdvanced();
+        sofa::component::initComponentMisc();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Load the scene
@@ -166,11 +182,25 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     }
 
 
-    /** Returns OutCoord substraction a-b (should return a OutDeriv, but???)
-      */
+    /** Returns OutCoord substraction a-b */
     virtual OutDeriv difference( const OutCoord& a, const OutCoord& b )
     {
         return Out::coordDifference(a,b);
+    }
+
+    virtual OutVecDeriv difference( const OutVecDeriv& a, const OutVecDeriv& b )
+    {
+        if( a.size()!=b.size() ){
+            ADD_FAILURE() << "OutVecDeriv have different sizes";
+            return OutVecDeriv();
+        }
+
+        OutVecDeriv c(a.size());
+        for (size_t i=0; i<a.size() ; ++i)
+        {
+            c[i] = a[i]-b[i];
+        }
+        return c;
     }
 
     /** Possible child force pre-treatment, does nothing by default
@@ -198,13 +228,13 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                           const InVecCoord parentNew,
                           const OutVecCoord expectedChildNew)
     {
-        if( deltaRange.second / errorMax <= s_minDeltaErrorRatio )
+        if( deltaRange.second / errorMax <= g_minDeltaErrorRatio )
             ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
 
-        if( !(flags & TEST_getJs) ) std::cerr<<"WARNING: MappingTest is not testing getJs\n";
-        if( !(flags & TEST_getK) ) std::cerr<<"WARNING: MappingTest is not testing getK\n";
-        if( !(flags & TEST_applyJT_matrix) ) std::cerr<<"WARNING: MappingTest is not testing applyJT on matrices\n";
-        if( !(flags & TEST_applyDJT) ) std::cerr<<"WARNING: MappingTest is not testing applyDJT\n";
+        if( !(flags & TEST_getJs) )          helper::Logger::mainlog( helper::Logger::Warning, "getJs is not tested", "MappingTest" );
+        if( !(flags & TEST_getK) )           helper::Logger::mainlog( helper::Logger::Warning, "getK is not tested", "MappingTest" );
+        if( !(flags & TEST_applyJT_matrix) ) helper::Logger::mainlog( helper::Logger::Warning, "applyJT on matrices is not tested", "MappingTest" );
+        if( !(flags & TEST_applyDJT) )       helper::Logger::mainlog( helper::Logger::Warning, "applyDJT is not tested", "MappingTest" );
 
 
         const Real errorThreshold = this->epsilon()*errorMax;
@@ -372,9 +402,9 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             dxc[i] = difference( xc1[i], xc[i] );
         }
 
-        if( this->vectorMaxDiff(dxc,vc)>errorThreshold ){
+        if( this->vectorMaxAbs(difference(dxc,vc))>errorThreshold ){
             succeed = false;
-            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << errorThreshold << endl
+            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) "<<this->vectorMaxAbs(difference(dxc,vc))<<" should be less than  " << errorThreshold << endl
                           << "position change = " << dxc << endl
                           << "velocity        = " << vc << endl;
         }

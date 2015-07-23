@@ -21,6 +21,7 @@ set(IMAGE_INSTALL_CMAKE_DIR ${IMAGE_INSTALL_LIB_DIR}/cmake/image)
 
 set(SOURCE_FILES
     initImage.cpp
+    ImageTypes.cpp
     ImageContainer.cpp
     ImageFilter.cpp
     ImageOperation.cpp

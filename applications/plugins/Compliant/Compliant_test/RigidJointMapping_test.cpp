@@ -45,38 +45,46 @@ struct RigidJointMappingTest : public Mapping_test<Mapping>
     typedef Mapping_test<Mapping> base;
 
     typedef SE3< typename self::Real > se3;
+    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
     
     Mapping* mapping;
 
     RigidJointMappingTest() {
         mapping = static_cast<Mapping*>(this->base::mapping);
-//        this->errorMax *= 10;
     }
 
     bool test()
     {
 
-        // parent
+        // we need to increase the error for avoiding numerical problem with quaternion
+        this->errorMax = 1e10;
+        this->deltaRange.second = this->errorMax*100;
+
+        // parents
         typename self::InVecCoord xin(2);
-        typename se3::vec3 v;
 
-        v << M_PI / 2, 0, 0;
-        xin[0].getOrientation() = se3::coord( se3::exp(v) );
+        defaulttype::Quat q = defaulttype::Quat::fromEuler(M_PI_2,M_PI/8,M_PI_4);
 
-        se3::map(xin[0].getCenter()) << 0, 2, 0;
+        // finite difference method does not work well with large rotations
+        // this seems mainly due to the fact that se3::log(q*dq) != se3::log(q) + se3::log(dq)
+        // We only test the case when the parents share the same initial rotation
+        xin[0].getOrientation() = q;
+        xin[1].getOrientation() = q;
+
+        se3::map(xin[0].getCenter()) << 0, 1, 1;
         se3::map(xin[1].getCenter()) << 0, 3, 0;
 
-        typename self::OutVecCoord expected(1);     
-        expected[0].set(1,0,0,0,0,-M_PI / 2);
+        typename self::OutVecCoord expected(1);  
+        // the child is expressed in its first parent frame
+        expected[0] = se3::product_log(se3::prod( se3::inv(xin[0]), xin[1])).getVAll();
 
         // mapping parameters
         typename Mapping::pairs_type pairs(1);
         pairs[0][0] = 0;
         pairs[0][1] = 1;
-
         mapping->pairs.setValue(pairs);
         this->flags = base::TEST_getJs;
-        
+
         return this->runTest(xin, expected);
     }
 

@@ -54,7 +54,6 @@
 #include <SofaRigid/RigidMapping.h>
 
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <SofaLoader/ReadState.h>

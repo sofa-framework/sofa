@@ -32,6 +32,7 @@ set(SOFADEFAULTTYPE_HEADERS
 
 set(SOFADEFAULTTYPE_SOURCES
 
+	defaulttype.cpp
 	BaseMatrix.cpp
 	BoundingBox.cpp
 	Frame.cpp

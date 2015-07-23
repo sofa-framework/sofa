@@ -29,10 +29,15 @@
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/helper/system/PluginManager.h>
 
-#include <sofa/simulation/common/xml/initXml.h>
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/simulation/graph/graph.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
 #include <sofa/helper/Factory.h>
@@ -120,6 +125,13 @@ void apply(std::string &input)
 
 int main(int argc, char** argv)
 {
+    sofa::simulation::graph::init();
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
+
     // --- Parameter initialisation ---
     std::vector<std::string> files; // filename
     std::string fileName ;
@@ -144,8 +156,6 @@ int main(int argc, char** argv)
 
     // --- Init components ---
     sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-    sofa::simulation::xml::initXml();
-
 
     // --- plugins ---
     for (unsigned int i=0; i<plugins.size(); i++)

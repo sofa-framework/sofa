@@ -22,8 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/common/xml/initXml.h>
+#include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
 #include <sofa/core/ObjectFactory.h>
 
 // ---------------------------------------------------------------------
@@ -31,6 +36,13 @@
 // ---------------------------------------------------------------------
 int main(int /*argc*/, char** argv)
 {
+    sofa::simulation::tree::init();
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
+
     if (argv[1] == NULL)
     {
         std::cout << "Usage: sofaInfo FILE" << std::endl;
@@ -38,8 +50,6 @@ int main(int /*argc*/, char** argv)
     }
 
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
-
-    sofa::simulation::xml::initXml();
 
     sofa::simulation::Node::SPtr groot = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(argv[1]));
 

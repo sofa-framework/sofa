@@ -36,6 +36,7 @@
 #include <sofa/gui/BaseViewer.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/helper/GenerateRigid.h>
+#include <sofa/simulation/common/Simulation.h>
 
 
 using namespace sofa::core;
@@ -334,6 +335,21 @@ extern "C" PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args)
 }
 
 
+/// save a sofa scene from python
+extern "C" PyObject * Sofa_exportGraph(PyObject * /*self*/, PyObject * args)
+{
+    char* filename;
+    if (!PyArg_ParseTuple(args, "s",&filename))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    getSimulation()->exportGraph( Simulation::GetRoot().get(), filename );
+
+    return Py_BuildValue("i",0);
+}
+
 // Méthodes du module
 SP_MODULE_METHODS_BEGIN(Sofa)
 SP_MODULE_METHOD(Sofa,getSofaPythonVersion) 
@@ -347,6 +363,7 @@ SP_MODULE_METHOD(Sofa,setViewerBackgroundColor)
 SP_MODULE_METHOD(Sofa,setViewerCamera)
 SP_MODULE_METHOD(Sofa,getViewerCamera)
 SP_MODULE_METHOD(Sofa,generateRigid)
+SP_MODULE_METHOD(Sofa,exportGraph)
 SP_MODULE_METHODS_END
 
 

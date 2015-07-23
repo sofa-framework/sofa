@@ -50,11 +50,13 @@ struct AssembledRigidRigidMappingTest : public Mapping_test<Mapping>
 
     AssembledRigidRigidMappingTest() {
         mapping = static_cast<Mapping*>(this->base::mapping);
-//        this->errorMax *= 10;
+        this->errorMax *= 1.5;
     }
 
     bool test()
     {
+
+        
 
         // parent
         typename self::InVecCoord xin(1);

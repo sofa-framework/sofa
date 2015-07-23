@@ -32,7 +32,7 @@
 #include <sofa/helper/fixed_array.h>
 #include <iostream>
 #include <sofa/helper/vector.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
 
 

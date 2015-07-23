@@ -26,6 +26,7 @@
 #include <SceneCreator/SceneCreator.h>
 
 #include <sofa/helper/ArgumentParser.h>
+#include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/common/Node.h>
 
@@ -35,9 +36,11 @@
 
 #include <sofa/component/typedef/Sofa_typedef.h>
 
+#include <SofaComponentMain/init.h>
 #include <SofaLoader/MeshGmshLoader.h>
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
+
 
 // ---------------------------------------------------------------------
 // ---
@@ -219,17 +222,15 @@ Node *createChainHybrid(Node *root)
 int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
-
-    std::vector<std::string> files;
-
+    sofa::simulation::tree::init();
     sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
     (argc,argv);
-
+    sofa::component::init();
+    sofa::gui::initMain();
+    sofa::gui::GUIManager::Init(argv[0]);
 
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
-    sofa::gui::initMain();
-    sofa::gui::GUIManager::Init(argv[0]);
 
     // The graph root node
     Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();

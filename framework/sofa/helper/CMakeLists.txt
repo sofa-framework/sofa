@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaHelper)
 
 set(SOFAHELPER_HEADERS
+    helper.h
     ArgumentParser.h
     BackTrace.h
 	deque.h
@@ -64,6 +65,7 @@ set(SOFAHELPER_HEADERS
     system/DynamicLibrary.h
     system/PluginManager.h
 	system/console.h
+	system/Locale.h
     TagFactory.h
     accessor.h
     vector.h
@@ -92,6 +94,8 @@ set(SOFAHELPER_HEADERS
 	)
 
 set(SOFAHELPER_SOURCES
+
+	helper.cpp
 	ArgumentParser.cpp
     BackTrace.cpp
     DualQuat.cpp
@@ -129,6 +133,7 @@ set(SOFAHELPER_SOURCES
     system/DynamicLibrary.cpp
     system/PluginManager.cpp
 	system/console.cpp
+	system/Locale.cpp
     TagFactory.cpp
     polygon_cube_intersection/polygon_cube_intersection.cpp
     polygon_cube_intersection/fast_polygon_cube_intersection.cpp

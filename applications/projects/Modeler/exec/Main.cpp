@@ -22,20 +22,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <iostream>
-#include <fstream>
-
-#include <QtGui/QApplication>
-#include <sofa/simulation/tree/TreeSimulation.h>
-
 #include "../lib/SofaModeler.h"
+
 #include <sofa/helper/system/glut.h>
-
-
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
+
+#include <sofa/simulation/tree/tree.h>
+#include <sofa/simulation/tree/TreeSimulation.h>
+
+
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
+
+#include <QtGui/QApplication>
+
+#include <iostream>
+#include <fstream>
 
 using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
@@ -47,6 +55,13 @@ using sofa::helper::Utils;
 int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
+    sofa::simulation::tree::init();
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
+
 
     QApplication* application = new QApplication(argc, argv);
     (void)application;

@@ -166,9 +166,9 @@ void BaseSequentialSolver::init() {
 	if( !response ) {
         response = new LDLTResponse();
         this->getContext()->addObject( response );
-        std::cout << "BaseSequentialSolver: fallback response class: "
+        serr << "fallback Response: "
                   << response->getClassName()
-                  << " added to the scene" << std::endl;
+                  << " added to the scene" << sendl;
 	}
 
 }
@@ -523,7 +523,7 @@ void SequentialSolver::LocalSubKKT::fromLocal( vec& global, const vec& local ) c
 
 
 SequentialSolver::SequentialSolver()
-    : d_iterateOnBilaterals(initData(&d_iterateOnBilaterals, false, "iterateOnBilaterals", "Should the bilateral constraint must be solved iteratively or factorized with the dynamics?"))
+    : d_iterateOnBilaterals(initData(&d_iterateOnBilaterals, true, "iterateOnBilaterals", "Should the bilateral constraint must be solved iteratively or factorized with the dynamics?"))
     , d_regularization(initData(&d_regularization, std::numeric_limits<SReal>::epsilon(), "regularization", "Optional diagonal Tikhonov regularization on bilateral constraints"))
 {}
 

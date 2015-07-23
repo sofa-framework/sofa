@@ -49,7 +49,7 @@
 #include <sofa/helper/accessor.h>
 #include <sstream>
 #include <map>
-#include <memory>
+#include <boost/scoped_ptr.hpp>
 
 namespace sofa
 {
@@ -424,7 +424,6 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     for (unsigned int i = 0; i < facetsImport.size(); i++)
     {
         const vector<vector <int> >& vertNormTexIndex = facetsImport[i];
-        if (vertNormTexIndex[0].size() < 3) continue; // ignore lines
         const vector<int>& verts = vertNormTexIndex[0];
         const vector<int>& texs = vertNormTexIndex[1];
         const vector<int>& norms = vertNormTexIndex[2];
@@ -469,8 +468,6 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 bool VisualModelImpl::load(const std::string& filename, const std::string& loader, const std::string& textureName)
 {
     using sofa::helper::io::Mesh;
-    using sofa::helper::io::MeshSTL;
-    using sofa::helper::io::MeshOBJ;
     
     //      bool tex = !textureName.empty() || putOnlyTexCoords.getValue();
     if (!textureName.empty())
@@ -501,7 +498,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         if (sofa::helper::system::DataRepository.findFile(meshFilename))
         {
             //name = filename;
-            std::auto_ptr<Mesh> objLoader;
+            boost::scoped_ptr<Mesh> objLoader;
             if (loader.empty())
             {
                 objLoader.reset(Mesh::Create(filename));
@@ -1024,8 +1021,9 @@ void VisualModelImpl::computeTangents()
 void VisualModelImpl::computeBBox(sofa::core::ExecParams* params, bool)
 {
     const VecCoord& x = getVertices(); //m_vertices.getValue(params);
-    SReal minBBox[3] = {1e10,1e10,1e10};
-    SReal maxBBox[3] = {-1e10,-1e10,-1e10};
+
+    SReal minBBox[3] = {std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max()};
+    SReal maxBBox[3] = {-std::numeric_limits<Real>::max(),-std::numeric_limits<Real>::max(),-std::numeric_limits<Real>::max()};
     for (unsigned int i = 0; i < x.size(); i++)
     {
         const Coord& p = x[i];

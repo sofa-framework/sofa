@@ -653,13 +653,40 @@ void DiagonalMass<DataTypes, MassType>::reinit()
             f_mass.endEdit();
 
         }
-        /*
-          else if (_topology->getNbQuads()>0) {
+        else if (_topology->getNbQuads()>0 && quadGeo) {
+            MassVector& masses = *f_mass.beginEdit();
+            topologyType=TOPOLOGY_QUADSET;
 
-          // TODO : Quads
-          topologyType=TOPOLOGY_QUADSET;
-          }
-        */
+            // resize array
+            clear();
+            masses.resize(this->mstate->getSize());
+
+            for(unsigned int i=0; i<masses.size(); ++i)
+                masses[i]=(Real)0;
+
+            Real md=m_massDensity.getValue();
+            Real mass=(Real)0;
+            Real total_mass=(Real)0;
+
+            for (int i=0; i<_topology->getNbQuads(); ++i)
+            {
+                const Quad &t=_topology->getQuad(i);
+                if(quadGeo)
+                {
+                    if (m_computeMassOnRest.getValue())
+                        mass=(md*quadGeo->computeRestQuadArea(i))/(Real)4.0;
+                    else
+                        mass=(md*quadGeo->computeQuadArea(i))/(Real)4.0;
+                }
+                for (unsigned int j = 0 ; j < t.size(); j++)
+                {
+                    masses[t[j]] += mass;
+                    total_mass += mass;
+                }
+            }
+            m_totalMass.setValue(total_mass);
+            f_mass.endEdit();
+        }
         else if (_topology->getNbEdges()>0 && edgeGeo)
         {
 
@@ -740,8 +767,8 @@ void DiagonalMass<DataTypes, MassType>::init()
             serr << "Triangle topology but no geometry algorithms found. Add the component TriangleSetGeometryAlgorithms." << sendl;
         else if (_topology->getNbHexahedra() > 0 && !hexaGeo)
             serr << "Hexahedron topology but no geometry algorithms found. Add the component HexahedronSetGeometryAlgorithms." << sendl;
-//        else if (_topology->getNbQuads() > 0 && !quadGeo)
-//            serr << "Quad topology but no geometry algorithms found. Add the component QuadSetGeometryAlgorithms." << sendl;
+       else if (_topology->getNbQuads() > 0 && !quadGeo)
+           serr << "Quad topology but no geometry algorithms found. Add the component QuadSetGeometryAlgorithms." << sendl;
         else if (_topology->getNbEdges() > 0 && !edgeGeo)
             serr << "Edge topology but no geometry algorithms found. Add the component EdgeSetGeometryAlgorithms." << sendl;
     }

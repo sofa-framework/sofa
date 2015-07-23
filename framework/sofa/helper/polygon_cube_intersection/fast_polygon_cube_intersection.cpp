@@ -73,7 +73,7 @@ namespace polygon_cube_intersection
 
 #define TEST_AGAINST_PARALLEL_PLANES(posbit, negbit, value, limit)	\
 	if (mask & (posbit|negbit)) {					\
-		register real temp = value;				\
+        /*register*/ real temp = value;				\
 		if ((mask & posbit) && temp > limit)			\
 			outcode |= posbit;				\
 		else if ((mask & negbit) && temp < -limit)		\
@@ -89,7 +89,7 @@ namespace polygon_cube_intersection
 static inline  unsigned long
 face_plane(const real p[3], unsigned long mask)
 {
-    register unsigned long outcode = 0L;
+    /*register*/ unsigned long outcode = 0L;
 
     TEST_AGAINST_PARALLEL_PLANES(0x001, 0x002, p[0], 0.5)
     TEST_AGAINST_PARALLEL_PLANES(0x004, 0x008, p[1], 0.5)
@@ -108,7 +108,7 @@ face_plane(const real p[3], unsigned long mask)
 static inline unsigned long
 bevel_2d(const real p[3], unsigned long mask)
 {
-    register unsigned long outcode = 0L;
+    /*register*/ unsigned long outcode = 0L;
 
     TEST_AGAINST_PARALLEL_PLANES(0x001, 0x002, p[0] + p[1], 1.0)
     TEST_AGAINST_PARALLEL_PLANES(0x004, 0x008, p[0] - p[1], 1.0)
@@ -130,7 +130,7 @@ bevel_2d(const real p[3], unsigned long mask)
 static inline unsigned long
 bevel_3d(const real p[3], unsigned long mask)
 {
-    register unsigned long outcode = 0L;
+    /*register*/ unsigned long outcode = 0L;
 
     TEST_AGAINST_PARALLEL_PLANES(0x001, 0x002, p[0] + p[1] + p[2], 1.5)
     TEST_AGAINST_PARALLEL_PLANES(0x004, 0x008, p[0] + p[1] - p[2], 1.5)
@@ -152,8 +152,8 @@ extern int
 trivial_vertex_tests(int nverts, const real verts[][3],
         int already_know_verts_are_outside_cube)
 {
-    register unsigned long cum_and;  /* cumulative logical ANDs */
-    register int i;
+    /*register*/ unsigned long cum_and;  /* cumulative logical ANDs */
+    /*register*/ int i;
 
     /*
      * Compare the vertices with all six face-planes.

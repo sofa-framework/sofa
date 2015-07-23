@@ -14,6 +14,6 @@ endif()
 add_definitions("-DFLEXIBLE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 
 # add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-# target_link_libraries(${PROJECT_NAME} Registration SofaTest gtest_main)
+# target_link_libraries(${PROJECT_NAME} Registration SofaTest SofaGTestMain)
 
 # add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

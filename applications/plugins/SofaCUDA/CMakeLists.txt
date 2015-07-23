@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 2.8)
 project(SofaCUDA)
 
-set(SOFACUDA_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFACUDA_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFACUDA_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
+find_package(CUDA REQUIRED)
+
+# quick and dirty fix for nvcc compatibility with -fno-partial-inlining flag
+if(NOT WIN32)
+	set(CUDA_PROPAGATE_HOST_FLAGS OFF)
+endif()
 
 set(HEADER_FILES
     sofa/gpu/cuda/mycuda.h
@@ -189,12 +192,6 @@ find_package(SofaMisc REQUIRED)
 find_package(CUDA REQUIRED)
 
 set(SOFACUDA_COMPILE_DEFINITIONS "-DSOFA_BUILD_GPU_CUDA")
-
-# Make these compiler definitions available to nvcc
-if(WIN32)
-    set(SOFACUDA_COMPILE_DEFINITIONS "${SOFACUDA_COMPILE_DEFINITIONS} -DWIN32")
-    set(WINDOWS_OPTIONS "/MD")
-endif()
 
 option(SOFACUDA_VERBOSE_PTXAS "???" OFF)
 if(SOFACUDA_VERBOSE_PTXAS)

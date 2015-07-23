@@ -16,7 +16,7 @@ AddCompilerDefinitions("SOFASIMULATION_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_
 
 
 AddLinkerDependencies(
-    SofaTest
+    SofaTest SofaGTestMain
 )
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

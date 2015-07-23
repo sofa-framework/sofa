@@ -478,7 +478,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
     {
             const Data<InVecDeriv>& inDx = *mparams->readDx(this->fromModel);
                   Data<InVecDeriv>& InF  = *parentForceChangeId[this->fromModel.get(mparams)].write();
-            geometricStiffnessMatrix.addMult( InF, inDx, mparams->kFactor() );
+                  geometricStiffnessMatrix.addMult( InF, inDx, (InReal)mparams->kFactor() );
     }
     else
     {
@@ -488,7 +488,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
             updateK( mparams, childForceId );
             const Data<InVecDeriv>& inDx = *mparams->readDx(this->fromModel);
                   Data<InVecDeriv>& InF  = *parentForceChangeId[this->fromModel.get(mparams)].write();
-            geometricStiffnessMatrix.addMult( InF, inDx, mparams->kFactor() );
+            geometricStiffnessMatrix.addMult( InF, inDx, (InReal)mparams->kFactor() );
             geometricStiffnessMatrix.resize(0,0); // forgot about this matrix
         }
         else
@@ -762,7 +762,7 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
             for(unsigned k = 0; k < rotation_dimension; ++k) {
                 const unsigned col = TIn::deriv_total_size * rigidIdx + TIn::spatial_dimensions + k;
 
-                if( block(j, k) ) dJ.insertBack(row, col) += block[j][k];
+                if( block(j, k) ) dJ.insertBack(row, col) += (InReal)block[j][k];
             }
         }
     }

@@ -32,7 +32,9 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/PluginManager.h>
 
+#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #ifdef SOFA_HAVE_DAG
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -44,6 +46,11 @@
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
@@ -242,7 +249,8 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
 
 int main(int argc, char** argv)
 {
-
+    glutInit(&argc,argv);
+    sofa::simulation::tree::init();
     sofa::helper::BackTrace::autodump();
     sofa::core::ExecParams::defaultInstance()->setAspectID(0);
 
@@ -251,18 +259,18 @@ int main(int argc, char** argv)
     .option(&verbose,'v',"verbose","print debug info")
     (argc,argv);
 
-    glutInit(&argc,argv);
-
-#if defined(SOFA_HAVE_DAG)
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-#else
-    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
-#endif
-
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
     sofa::gui::initMain();
+
     if (int err = sofa::gui::GUIManager::Init(argv[0],"")) return err;
     if (int err=sofa::gui::GUIManager::createGUI(NULL)) return err;
     sofa::gui::GUIManager::SetDimension(800,600);
+
+    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
     //=================================================
     sofa::simulation::Node::SPtr groot = createGridScene(Vec3(0,0,0), Vec3(5,1,1), 6,2,2, 1.0 );

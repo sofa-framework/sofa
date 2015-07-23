@@ -26,7 +26,7 @@
 
 #include <sofa/helper/system/gl.h>
 
-#include <assert.h>
+#include <cassert>
 #include <algorithm>
 #include <iostream>
 

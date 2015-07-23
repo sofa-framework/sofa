@@ -24,6 +24,22 @@ TEST(UtilsTest, widestring_to_string_to_widestring)
     EXPECT_EQ(ws, Utils::widenString(Utils::narrowString(ws)));
 }
 
+TEST(UtilsTest, downcaseString)
+{
+    EXPECT_EQ("abcdef", Utils::downcaseString("abcdef"));
+    EXPECT_EQ("abcdef", Utils::downcaseString("ABCDEF"));
+    EXPECT_EQ("abcdef", Utils::downcaseString("AbCdEf"));
+    EXPECT_EQ("abcdef", Utils::downcaseString("ABCDEF"));
+}
+
+TEST(UtilsTest, upcaseString)
+{
+    EXPECT_EQ("ABCDEF", Utils::upcaseString("abcdef"));
+    EXPECT_EQ("ABCDEF", Utils::upcaseString("ABCDEF"));
+    EXPECT_EQ("ABCDEF", Utils::upcaseString("AbCdEf"));
+    EXPECT_EQ("ABCDEF", Utils::upcaseString("ABCDEF"));
+}
+
 TEST(UtilsTest, getExecutablePath)
 {
     const std::string path = Utils::getExecutablePath();

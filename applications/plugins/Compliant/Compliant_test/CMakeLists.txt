@@ -23,7 +23,7 @@ if(SofaPython_FOUND)
 endif()
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} Compliant SofaTest gtest_main)
+target_link_libraries(${PROJECT_NAME} Compliant SofaTest SofaGTestMain)
 
 if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaPython)

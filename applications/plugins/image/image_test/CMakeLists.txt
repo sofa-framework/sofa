@@ -10,7 +10,7 @@ set(SOURCE_FILES
 add_definitions("-DIMAGE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} image SofaTest gtest_main)
+target_link_libraries(${PROJECT_NAME} image SofaTest SofaGTestMain)
 
 # ???
 if(WIN32 AND NOT CMAKE_CL_64)

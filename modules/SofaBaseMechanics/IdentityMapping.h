@@ -31,7 +31,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <vector>
-#include <memory>
+
+#include <boost/scoped_ptr.hpp>
 
 #ifdef SOFA_HAVE_EIGEN2
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
@@ -137,7 +138,7 @@ public:
     virtual void handleTopologyChange();
 
 protected:
-    std::auto_ptr<MatrixType> matrixJ;
+    boost::scoped_ptr<MatrixType> matrixJ;
     bool updateJ;
 
 

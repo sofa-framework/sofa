@@ -29,7 +29,7 @@
 
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/glu.h>
-#include <math.h>
+#include <cmath>
 
 namespace sofa
 {

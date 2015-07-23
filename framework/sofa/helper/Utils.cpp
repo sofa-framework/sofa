@@ -42,7 +42,7 @@
 # include <string.h>            // for strerror()
 #endif
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -111,6 +111,23 @@ std::string Utils::narrowString(const std::wstring& ws)
     delete[] buffer;
     return result;
 }
+
+
+std::string Utils::downcaseString(const std::string& s)
+{
+    std::string result = s;
+    std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    return result;
+}
+
+
+std::string Utils::upcaseString(const std::string& s)
+{
+    std::string result = s;
+    std::transform(result.begin(), result.end(), result.begin(), ::toupper);
+    return result;
+}
+
 
 #if defined WIN32 || defined _XBOX
 # ifdef WIN32
