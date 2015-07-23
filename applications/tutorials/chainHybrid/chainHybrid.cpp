@@ -36,9 +36,11 @@
 
 #include <sofa/component/typedef/Sofa_typedef.h>
 
+#include <SofaComponentMain/init.h>
 #include <SofaLoader/MeshGmshLoader.h>
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
+
 
 // ---------------------------------------------------------------------
 // ---
