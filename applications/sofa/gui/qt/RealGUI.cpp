@@ -2580,8 +2580,8 @@ void RealGUI::appendToDataLogFile(QString dataModifiedString)
             ofs << std::endl << "--- NEW SESSION: " << getFormattedLocalTime() << " ---" << std::endl;
             m_modifiedLogFiles.insert(filename);
         }
-
-        ofs << dataModifiedString.toStdString();
+		std::string tmpString = dataModifiedString.toLocal8Bit().constData();
+        ofs << tmpString;
     }
 
     ofs.close();
