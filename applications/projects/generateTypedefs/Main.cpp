@@ -592,6 +592,7 @@ int main(int , char** )
 #endif
     //bannedComponents.insert(std::make_pair("ProjectiveConstraintSet","PartialLinearMovementConstraint"));
 
+    sofa::core::init();
     sofa::component::init();
     SofaLibrary library; library.build();
     const SofaLibrary::VecCategory &categories = library.getCategories();

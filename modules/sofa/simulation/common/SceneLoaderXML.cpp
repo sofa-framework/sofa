@@ -24,6 +24,8 @@
 ******************************************************************************/
 #include "SceneLoaderXML.h"
 
+#include <sofa/helper/system/Locale.h>
+
 #include <sofa/simulation/common/xml/NodeElement.h>
 #include <sofa/simulation/common/FindByTypeVisitor.h>
 
@@ -103,13 +105,11 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
     // We go the the current file's directory so that all relative path are correct
     helper::system::SetDirectory chdir ( filename );
 
-#if !defined(WIN32) && !defined(PS3)
-    // Reset local settings to make sure that floating-point values are interpreted correctly
-    setlocale(LC_ALL,"C");
-    setlocale(LC_NUMERIC,"C");
-#endif
+    // Temporarily set the numeric formatting locale to ensure that
+    // floating-point values are interpreted correctly (i.e. the decimal
+    // separator is a dot '.').
+    helper::system::Locale setLocale(LC_NUMERIC, "C");
 
-    // 				std::cout << "Initializing objects"<<std::endl;
     sofa::simulation::xml::NodeElement* nodeElt = dynamic_cast<sofa::simulation::xml::NodeElement *>(xml);
     if( nodeElt==NULL )
     {
@@ -130,8 +130,6 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
         loadSucceed = false;
         return NULL;
     }
-
-    // 				std::cout << "Initializing simulation "<<sRoot->getName() <<std::endl;
 
     // Find the Simulation component in the scene
     FindByTypeVisitor<Simulation> findSimu(params);

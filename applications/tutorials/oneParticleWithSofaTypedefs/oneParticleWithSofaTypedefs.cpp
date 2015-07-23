@@ -26,8 +26,9 @@
 // launch sofaTypedefs.exe to generate sofa.h
 #include <sofa/sofa.h>
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/tree/TreeSimulation.h>
+#include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 
@@ -70,10 +71,13 @@ using sofa::helper::WriteAccessor;*/
 int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
-    sofa::helper::parse("This is a SOFA application.")
-    (argc,argv);
+    sofa::simulation::tree::init();
+    sofa::component::init();
     sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
+
+    sofa::helper::parse("This is a SOFA application.")
+    (argc,argv);
 
     // The graph root node
     GNode::SPtr groot = New<GNode>();

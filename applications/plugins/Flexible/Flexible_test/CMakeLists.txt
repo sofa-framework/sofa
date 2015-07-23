@@ -54,7 +54,7 @@ if(WIN32 AND NOT CMAKE_CL_64)
     AddCompilerDefinitions("EIGEN_DONT_ALIGN")
 endif()
 
-AddLinkerDependencies(Flexible SofaTest image Compliant)
+AddLinkerDependencies(Flexible SofaTest image Compliant SofaGTestMain)
 target_link_libraries(${PROJECT_NAME} DiffusionSolver)
 
 #Needed by python test

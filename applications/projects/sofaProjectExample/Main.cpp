@@ -116,9 +116,10 @@ using sofa::component::projectiveconstraintset::FixedConstraint;
 int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
+    sofa::simulation::tree::init();
     sofa::helper::parse("This is a SOFA application.")
     (argc,argv);
-
+    sofa::component::init();
     sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
 

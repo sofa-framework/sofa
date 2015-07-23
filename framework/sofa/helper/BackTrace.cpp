@@ -34,9 +34,9 @@
 #if defined(__GNUC__) && !defined(PS3)
 #include <cxxabi.h>
 #endif
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 namespace sofa
 {

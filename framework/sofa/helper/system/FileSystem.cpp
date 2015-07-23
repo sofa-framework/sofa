@@ -21,7 +21,7 @@
 # include <unistd.h>
 #endif
 
-#include <assert.h>
+#include <cassert>
 
 namespace sofa
 {

@@ -35,7 +35,7 @@ endif()
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${RC_FILES} ${PYTHON_FILES})
 
-AddLinkerDependencies(Compliant SofaTest)
+AddLinkerDependencies(Compliant SofaTest SofaGTestMain)
 
 
 

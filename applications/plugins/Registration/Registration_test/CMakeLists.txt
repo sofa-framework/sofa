@@ -21,7 +21,7 @@ include_directories("${SOFA_APPLICATIONS_PROJECTS_DIR}/Standard_test")
 #add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${RC_FILES} ${PYTHON_FILES})
 
 AddCompilerDefinitions("FLEXIBLE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
-AddLinkerDependencies(SofaTest Registration)
+AddLinkerDependencies(SofaTest Registration SofaGTestMain)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

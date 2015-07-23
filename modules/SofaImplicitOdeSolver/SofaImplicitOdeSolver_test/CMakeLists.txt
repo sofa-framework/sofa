@@ -18,6 +18,7 @@ AddCompilerDefinitions("SOFAIMPLICITODESOLVER_TEST_SCENES_DIR=\"${CMAKE_CURRENT_
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${RC_FILES} ${PYTHON_FILES})
 
 AddLinkerDependencies(
+    SofaGTestMain
     SofaTest
 )
 

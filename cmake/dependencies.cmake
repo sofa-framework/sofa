@@ -51,7 +51,7 @@ endif()
 #RegisterProjects("LinearMath" "BulletCollisions" "BulletDynamics" PATH "${SOFA_EXTERNAL_BULLET_PATH}")
 
 ## google test
-if(SOFA-MISC_BUILD_GTEST)
+if(SOFA-MISC_TESTS)
 	if(NOT gtest_inited)
 		set(gtest_inited ON CACHE INTERNAL "" FORCE)
 		set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -69,6 +69,7 @@ if(SOFA-MISC_BUILD_GTEST)
     endif()
 endif()
 
+RegisterProjects("SofaGTestMain" OPTION "SOFA-MISC_TESTS" PATH "${SOFA_SRC_DIR}/tools/SofaGTestMain")
 RegisterProjects("framework_test" OPTION "SOFA-MISC_TESTS" PATH "${SOFA_FRAMEWORK_DIR}/framework_test")
 RegisterProjects("simulation_test" OPTION "SOFA-MISC_TESTS" PATH "${SOFA_MODULES_DIR}/sofa/simulation/simulation_test")
 

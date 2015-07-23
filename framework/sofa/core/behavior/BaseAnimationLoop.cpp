@@ -24,8 +24,8 @@
 ******************************************************************************/
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 
 namespace sofa
 {

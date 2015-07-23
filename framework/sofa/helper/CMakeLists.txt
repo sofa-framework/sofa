@@ -71,6 +71,7 @@ set(HEADER_FILES
     system/DynamicLibrary.h
     system/PluginManager.h
 	system/console.h
+	system/Locale.h
     TagFactory.h
     accessor.h
     vector.h
@@ -112,6 +113,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
+	helper.cpp
 	ArgumentParser.cpp
     BackTrace.cpp
     DualQuat.cpp
@@ -150,6 +152,7 @@ set(SOURCE_FILES
     system/DynamicLibrary.cpp
     system/PluginManager.cpp
 	system/console.cpp
+	system/Locale.cpp
     TagFactory.cpp
     polygon_cube_intersection/polygon_cube_intersection.cpp
     polygon_cube_intersection/fast_polygon_cube_intersection.cpp
