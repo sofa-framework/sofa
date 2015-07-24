@@ -3,6 +3,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
 	core.h
+	init.h
 	VecId.h
 	ConstraintParams.h
 	ExecParams.h
@@ -137,7 +138,7 @@ set(HEADER_FILES
 	)
 
 set(SOURCE_FILES
-	core.cpp
+	init.cpp
 	objectmodel/AspectPool.cpp
 	objectmodel/Base.cpp
 	objectmodel/BaseClass.cpp

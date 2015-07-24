@@ -3,6 +3,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
 	graph.h 
+	init.h 
 	DAGNode.h 
 	DAGNodeMultiMappingElement.h 
 	DAGSimulation.h 
@@ -10,7 +11,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
-	graph.cpp
+	init.cpp
 	DAGNode.cpp 
 	DAGNodeMultiMappingElement.cpp 
 	DAGSimulation.cpp 

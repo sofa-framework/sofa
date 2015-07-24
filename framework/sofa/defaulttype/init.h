@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,21 +16,44 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: The SOFA Team (see Authors.txt)                                    *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_TREE_H
-#define SOFA_SIMULATION_TREE_TREE_H
+#ifndef SOFA_DEFAULTTYPE_INIT_H
+#define SOFA_DEFAULTTYPE_INIT_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/defaulttype/defaulttype.h>
 
-#ifdef SOFA_BUILD_SIMULATION_TREE
-#	define SOFA_SIMULATION_TREE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_SIMULATION_TREE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofa
+{
+
+namespace defaulttype
+{
+
+/// @brief Initialize the SofaDefaultType library, as well as it dependency:
+/// SofaHelper.
+void SOFA_DEFAULTTYPE_API init();
+
+/// @brief Return true if and only if the SofaDefaultType library has been
+/// initialized.
+bool SOFA_DEFAULTTYPE_API isInitialized();
+
+/// @brief Clean up the resources used by the SofaDefaultType library, as well
+/// as its dependency: SofaHelper.
+void SOFA_DEFAULTTYPE_API cleanup();
+
+/// @brief Return true if and only if the SofaDefaultType library has been cleaned
+/// up.
+bool SOFA_DEFAULTTYPE_API isCleanedUp();
+
+/// @brief Print a warning if the SofaDefaultType library is not initialized.
+void SOFA_DEFAULTTYPE_API checkIfInitialized();
+
+} // namespace defaulttype
+
+} // namespace sofa
 
 #endif

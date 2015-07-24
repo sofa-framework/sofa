@@ -22,15 +22,62 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_TREE_H
-#define SOFA_SIMULATION_TREE_TREE_H
+#include "init.h"
 
-#include <sofa/helper/system/config.h>
+#include <sofa/core/init.h>
 
-#ifdef SOFA_BUILD_SIMULATION_TREE
-#	define SOFA_SIMULATION_TREE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_SIMULATION_TREE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <iostream>
 
-#endif
+namespace sofa
+{
+
+namespace simulation
+{
+
+namespace common
+{
+
+static bool s_initialized = false;
+static bool s_cleanedUp = false;
+
+void init()
+{
+    if (!s_initialized)
+    {
+        sofa::core::init();
+        s_initialized = true;
+    }
+}
+
+bool isInitialized()
+{
+    return s_initialized;
+}
+
+void cleanup()
+{
+    if (!s_cleanedUp)
+    {
+        sofa::core::cleanup();
+        s_cleanedUp = true;
+    }
+}
+
+bool isCleanedUp()
+{
+    return s_cleanedUp;
+}
+
+void checkIfInitialized()
+{
+    if (!isInitialized())
+    {
+        std::cerr << "Warning: SofaSimulationCommon is not initialized (sofa::helper::init() has never been called).  An application should call the init() function of the higher level Sofa library it uses." << std::endl;
+    }
+}
+
+} // namespace common
+
+} // namespace simulation
+
+} // namespace sofa

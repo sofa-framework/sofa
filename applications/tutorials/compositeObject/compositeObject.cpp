@@ -34,7 +34,7 @@
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/tree/tree.h>
+#include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
 #include <sofa/gui/GUIManager.h>

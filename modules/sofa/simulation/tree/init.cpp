@@ -22,9 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "graph.h"
+#include "tree.h"
 
-#include <sofa/simulation/common/common.h>
+#include <sofa/simulation/common/init.h>
+
+#include <iostream>
 
 namespace sofa
 {
@@ -32,20 +34,49 @@ namespace sofa
 namespace simulation
 {
 
-namespace graph
+namespace tree
 {
+
+static bool s_initialized = false;
+static bool s_cleanedUp = false;
 
 void init()
 {
-    static bool first = true;
-    if (first)
+    if (!s_initialized)
     {
         sofa::simulation::common::init();
-        first = false;
+        s_initialized = true;
     }
 }
 
-} // namespace graph
+bool isInitialized()
+{
+    return s_initialized;
+}
+
+void cleanup()
+{
+    if (!s_cleanedUp)
+    {
+        sofa::simulation::common::cleanup();
+        s_cleanedUp = true;
+    }
+}
+
+bool isCleanedUp()
+{
+    return s_cleanedUp;
+}
+
+void checkIfInitialized()
+{
+    if (!isInitialized())
+    {
+        std::cerr << "Warning: SofaSimulationTree is not initialized (sofa::helper::init() has never been called).  An application should call the init() function of the higher level Sofa library it uses." << std::endl;
+    }
+}
+
+} // namespace tree
 
 } // namespace simulation
 

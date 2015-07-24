@@ -22,9 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "tree.h"
+#ifndef SOFA_SIMULATION_GRAPH_INIT_H
+#define SOFA_SIMULATION_GRAPH_INIT_H
 
-#include <sofa/simulation/common/common.h>
+#include <sofa/simulation/graph/graph.h>
 
 namespace sofa
 {
@@ -32,21 +33,34 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
+namespace graph
 {
 
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::simulation::common::init();
-        first = false;
-    }
-}
+/// @brief Initialize the SofaSimulationGraph library, as well as its
+/// dependencies: SofaSimulationCommon, SofaCore, SofaDefaultType, SofaHelper.
+void SOFA_SIMULATION_GRAPH_API init();
 
-} // namespace tree
+/// @brief Return true if and only if the SofaSimulationGraph library has been
+/// initialized.
+bool SOFA_SIMULATION_GRAPH_API isInitialized();
+
+/// @brief Clean up the resources used by the SofaSimulationGraph library, as
+/// well as its dependencies: SofaSimulationCommon, SofaCore, SofaDefaultType,
+/// SofaHelper.
+void SOFA_SIMULATION_GRAPH_API cleanup();
+
+/// @brief Return true if and only if the SofaSimulationGraph library has been
+/// cleaned up.
+bool SOFA_SIMULATION_GRAPH_API isCleanedUp();
+
+/// @brief Print a warning if the SofaSimulationGraph library is not
+/// initialized.
+void SOFA_SIMULATION_GRAPH_API checkIfInitialized();
+
+} // namespace graph
 
 } // namespace simulation
 
 } // namespace sofa
+
+#endif

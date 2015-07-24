@@ -22,9 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_CORE_INIT_H
+#define SOFA_CORE_INIT_H
 
-#include "core.h"
-#include <sofa/defaulttype/defaulttype.h>
+#include <sofa/core/core.h>
 
 namespace sofa
 {
@@ -32,16 +33,26 @@ namespace sofa
 namespace core
 {
 
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::defaulttype::init();
-        first = false;
-    }
-}
+/// @brief Initialize the SofaCore library, as well as its dependencies:
+/// SofaDefaultType, SofaHelper.
+void SOFA_CORE_API init();
+
+/// @brief Return true if and only if the SofaCore library has been initialized.
+bool SOFA_CORE_API isInitialized();
+
+/// @brief Clean up the resources used by the SofaCore library, as well as its
+/// dependencies: SofaDefaultType, SofaHelper.
+void SOFA_CORE_API cleanup();
+
+/// @brief Return true if and only if the SofaCore library has been cleaned
+/// up.
+bool SOFA_CORE_API isCleanedUp();
+
+/// @brief Print a warning if the SofaCore library is not initialized.
+void SOFA_CORE_API checkIfInitialized();
 
 } // namespace core
 
 } // namespace sofa
+
+#endif
