@@ -32,7 +32,7 @@ namespace CGoGN
 template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
 inline void AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::registerInMap()
 {
-    boost::mutex::scoped_lock lockAH(m_map->attributeHandlersMutex);
+    boost::lock_guard<boost::mutex> lockAH(m_map->attributeHandlersMutex);
     m_map->attributeHandlers.insert(std::pair<AttributeMultiVectorGen*, AttributeHandlerGen*>(m_attrib, this)) ;
 //    std::cerr << "Attribute registered : " << reinterpret_cast<unsigned int *>(m_attrib) << " " << reinterpret_cast<unsigned int *>(this) << std::endl;
 }
@@ -42,7 +42,8 @@ inline void AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::unregiste
 {
 	typedef std::multimap<AttributeMultiVectorGen*, AttributeHandlerGen*>::iterator IT ;
 //    std::cerr << "Attribute unregistering : " << reinterpret_cast<unsigned int *>(m_attrib) << " " << reinterpret_cast<unsigned int *>(this) << std::endl;
-    boost::mutex::scoped_lock lockAH(m_map->attributeHandlersMutex);
+
+    boost::lock_guard<boost::mutex> lockAH(m_map->attributeHandlersMutex);
     std::pair<IT, IT> bounds = m_map->attributeHandlers.equal_range(m_attrib) ;
 	for(IT i = bounds.first; i != bounds.second; ++i)
 	{
