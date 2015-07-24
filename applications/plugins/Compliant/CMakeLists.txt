@@ -65,7 +65,8 @@ set(HEADER_FILES
     odesolver/CompliantPostStabilizationAnimationLoop.h
 	odesolver/CompliantStaticSolver.h
 
-	forcefield/PotentialEnergy.h
+    forcefield/PotentialEnergy.h
+    forcefield/UniformLinearPotentialEnergy.h
 	
     compliance/UniformCompliance.h
     compliance/UniformCompliance.inl
@@ -136,7 +137,8 @@ set(SOURCE_FILES
     compliance/DiagonalCompliance.cpp
     compliance/DampingCompliance.cpp
 
-	forcefield/PotentialEnergy.cpp
+    forcefield/PotentialEnergy.cpp
+    forcefield/UniformLinearPotentialEnergy.cpp
 	
     mapping/RigidJointMapping.cpp
     mapping/RigidJointMultiMapping.cpp
