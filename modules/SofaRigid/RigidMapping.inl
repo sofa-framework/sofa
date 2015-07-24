@@ -196,7 +196,7 @@ void RigidMapping<TIn, TOut>::reinit()
 {
     if (this->points.getValue().empty() && this->toModel != NULL && !useX0.getValue())
     {
-        //        cerr<<"RigidMapping<TIn, TOut>::init(), from " << this->fromModel->getName() << " to " << this->toModel->getName() << endl;
+//        serr<<"reinit(), from " << this->fromModel->getName() << " to " << this->toModel->getName() << sendl;
         const VecCoord& xTo =this->toModel->read(core::ConstVecCoordId::position())->getValue();
         helper::WriteOnlyAccessor<Data<VecCoord> > points = this->points;
         points.resize(xTo.size());
