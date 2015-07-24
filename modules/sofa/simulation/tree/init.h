@@ -22,15 +22,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_TREE_H
-#define SOFA_SIMULATION_TREE_TREE_H
+#ifndef SOFA_SIMULATION_TREE_INIT_H
+#define SOFA_SIMULATION_TREE_INIT_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/simulation/tree/tree.h>
 
-#ifdef SOFA_BUILD_SIMULATION_TREE
-#	define SOFA_SIMULATION_TREE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_SIMULATION_TREE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofa
+{
+
+namespace simulation
+{
+
+namespace tree
+{
+
+/// @brief Initialize the SofaSimulationTree library, as well as its
+/// dependencies: SofaSimulationCommon, SofaCore, SofaDefaultType, SofaHelper.
+void SOFA_SIMULATION_TREE_API init();
+
+/// @brief Return true if and only if the SofaSimulationTree library has been
+/// initialized.
+bool SOFA_SIMULATION_TREE_API isInitialized();
+
+/// @brief Clean up the resources used by the SofaSimulationTree library, as
+/// well as its dependencies: SofaSimulationCommon, SofaCore, SofaDefaultType,
+/// SofaHelper.
+void SOFA_SIMULATION_TREE_API cleanup();
+
+/// @brief Return true if and only if the SofaSimulationTree library has been
+/// cleaned up.
+bool SOFA_SIMULATION_TREE_API isCleanedUp();
+
+/// @brief Print a warning if the SofaSimulationTree library is not
+/// initialized.
+void SOFA_SIMULATION_TREE_API checkIfInitialized();
+
+} // namespace tree
+
+} // namespace simulation
+
+} // namespace sofa
 
 #endif

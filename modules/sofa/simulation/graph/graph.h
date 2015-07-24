@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_GRAPH_H
-#define SOFA_SIMULATION_GRAPH_H
+#ifndef SOFA_SIMULATION_GRAPH_GRAPH_H
+#define SOFA_SIMULATION_GRAPH_GRAPH_H
 
 #include <sofa/helper/system/config.h>
 
@@ -32,24 +32,5 @@
 #else
 #	define SOFA_SIMULATION_GRAPH_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
-
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace graph
-{
-
-/// @brief Initialize the SofaSimulationGraph library, as well as its
-/// dependencies: SofaSimulationCommon, SofaCore, SofaDefaultType, SofaHelper.
-void SOFA_SIMULATION_GRAPH_API init();
-
-} // namespace graph
-
-} // namespace simulation
-
-} // namespace sofa
 
 #endif

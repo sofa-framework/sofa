@@ -3,6 +3,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
 	helper.h
+	init.h
     ArgumentParser.h
     BackTrace.h
 	deque.h
@@ -101,7 +102,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
-	helper.cpp
+	init.cpp
 	ArgumentParser.cpp
     BackTrace.cpp
     DualQuat.cpp

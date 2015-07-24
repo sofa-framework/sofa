@@ -22,15 +22,44 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_TREE_H
-#define SOFA_SIMULATION_TREE_TREE_H
+#ifndef SOFA_SIMULATION_COMMON_INIT_H
+#define SOFA_SIMULATION_COMMON_INIT_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/simulation/common/common.h>
 
-#ifdef SOFA_BUILD_SIMULATION_TREE
-#	define SOFA_SIMULATION_TREE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_SIMULATION_TREE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofa
+{
+
+namespace simulation
+{
+
+namespace common
+{
+
+/// @brief Initialize the SofaSimulationCommon library, as well as its
+/// dependencies: SofaCore, SofaDefaultType, SofaHelper.
+void SOFA_SIMULATION_COMMON_API init();
+
+/// @brief Return true if and only if the SofaSimulationCommon library has been
+/// initialized.
+bool SOFA_SIMULATION_COMMON_API isInitialized();
+
+/// @brief Clean up the resources used by the SofaSimulationCommon library, as
+/// well as its dependencies: SofaCore, SofaDefaultType, SofaHelper.
+void SOFA_SIMULATION_COMMON_API cleanup();
+
+/// @brief Return true if and only if the SofaSimulationCommon library has been
+/// cleaned up.
+bool SOFA_SIMULATION_COMMON_API isCleanedUp();
+
+/// @brief Print a warning if the SofaSimulationCommon library is not
+/// initialized.
+void SOFA_SIMULATION_COMMON_API checkIfInitialized();
+
+} // namespace common
+
+} // namespace simulation
+
+} // namespace sofa
 
 #endif
