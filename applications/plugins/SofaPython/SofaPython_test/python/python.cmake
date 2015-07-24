@@ -5,4 +5,5 @@ set(PYTHON_FILES
     python/test_mass.py
     python/test_PySceneWithPyCtlr.py
     python/testController.py
+    python/dataVecResize.py
 )

@@ -1,5 +1,4 @@
- 
-#include "Sofa_test.h"
+#include <SofaTest/Sofa_test.h>
 
 namespace sofa {
 
