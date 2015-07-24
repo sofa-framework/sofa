@@ -126,7 +126,7 @@ struct DataTypeInfo
     {
     }
 
-    static void setSize(DataType& /*data*/, size_t /*size*/) {  }
+    static bool setSize(DataType& /*data*/, size_t /*size*/) { return false; }
 
     template<typename T>
     static void setValue(DataType& /*data*/, size_t /*index*/, const T& /*value*/)
@@ -259,7 +259,9 @@ public:
     /// - nothing happens for vectors containing resizable values (i.e. when
     ///   BaseType()::FixedSize() is false), because of the "single index"
     ///   abstraction;
-    virtual void setSize(void* data, size_t size) const = 0;
+    ///
+    /// Returns true iff the data was resizable
+    virtual bool setSize(void* data, size_t size) const = 0;
 
     /// Get the value at \a index of \a data as an integer.
     /// Relevant only if this type can be casted to `long long`.
@@ -335,9 +337,9 @@ public:
     {
         return Info::size(*(const DataType*)data);
     }
-    virtual void setSize(void* data, size_t size) const
+    virtual bool setSize(void* data, size_t size) const
     {
-        Info::setSize(*(DataType*)data, size);
+        return Info::setSize(*(DataType*)data, size);
     }
 
     virtual long long getIntegerValue(const void* data, size_t index) const
@@ -418,7 +420,7 @@ struct IntegerTypeInfo
 
     static size_t size(const DataType& /*data*/) { return 1; }
 
-    static void setSize(DataType& /*data*/, size_t /*size*/) {  }
+    static bool setSize(DataType& /*data*/, size_t /*size*/) { return false; }
 
     template <typename T>
     static void getValue(const DataType &data, size_t index, T& value)
@@ -483,7 +485,7 @@ struct BoolTypeInfo
 
     static size_t size(const DataType& /*data*/) { return 1; }
 
-    static void setSize(DataType& /*data*/, size_t /*size*/) {  }
+    static bool setSize(DataType& /*data*/, size_t /*size*/) { return false; }
 
     template <typename T>
     static void getValue(const DataType &data, size_t index, T& value)
@@ -564,7 +566,7 @@ struct ScalarTypeInfo
 
     static size_t size(const DataType& /*data*/) { return 1; }
 
-    static void setSize(DataType& /*data*/, size_t /*size*/) {  }
+    static bool setSize(DataType& /*data*/, size_t /*size*/) { return false; }
 
     template <typename T>
     static void getValue(const DataType &data, size_t index, T& value)
@@ -630,7 +632,7 @@ struct TextTypeInfo
 
     static size_t size(const DataType& /*data*/) { return 1; }
 
-    static void setSize(DataType& /*data*/, size_t /*size*/) {  }
+    static bool setSize(DataType& /*data*/, size_t /*size*/) { return false; }
 
     template <typename T>
     static void getValue(const DataType &data, size_t index, T& value)
@@ -714,14 +716,16 @@ struct FixedArrayTypeInfo
         }
     }
 
-    static void setSize(DataType& data, size_t size)
+    static bool setSize(DataType& data, size_t size)
     {
         if (!FixedSize)
         {
             size /= DataType::size();
             for (size_t i=0; i<DataType::size(); ++i)
-                BaseTypeInfo::setSize(data[(size_type)i], size);
+                if( !BaseTypeInfo::setSize(data[(size_type)i], size) ) return false;
+            return true;
         }
+        return false;
     }
 
     template <typename T>
@@ -887,10 +891,14 @@ struct VectorTypeInfo
         }
     }
 
-    static void setSize(DataType& data, size_t size)
+    static bool setSize(DataType& data, size_t size)
     {
         if (BaseTypeInfo::FixedSize)
+        {
             data.resize(size/BaseTypeInfo::size());
+            return true;
+        }
+        return false;
     }
 
     template <typename T>
@@ -1055,9 +1063,10 @@ struct SetTypeInfo
         }
     }
 
-    static void setSize(DataType& data, size_t /*size*/)
+    static bool setSize(DataType& data, size_t /*size*/)
     {
         data.clear(); // we can't "resize" a set, so the only meaningfull operation is to clear it, as values will be added dynamically in setValue
+        return true;
     }
 
     template <typename T>
