@@ -35,10 +35,11 @@
 		<Node  	 name="CollisionModel"  >
 			<EulerImplicitSolver name="eulerImplicitSolver3" />
 			<CGLinearSolver template="GraphScattered" name="cGLinearSolver4"  tolerance="1e-009"  threshold="1e-009" />
-			<MeshVTKLoader name="loader"  filename="C:\Users\SOFA_GPU\Downloads\sofa\sofa\examples\Demos\SkullOperations\meshs\tetemesh.vtk" />
+			<!--<MeshVTKLoader name="loader"  filename="C:\Users\SOFA_GPU\Downloads\sofa\sofa\examples\Demos\SkullOperations\meshs\tetemesh.vtk" />-->
 			<!--<MeshGmshLoader name="loader"  filename="C:\Users\SOFA_GPU\Downloads\sofa\sofa\examples\Demos\SkullOperations\meshs\tetemesh.gmsh" />-->
-			<MechanicalObject template="Vec3d" name="craneCollisionState"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1" showObject="1" showIndices="0"/>
-			<MeshTopology name="MCTopology"  position="@loader.position" edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetrahedra"  hexahedra="@loader.hexahedra"  drawEdges="0"  drawTriangles="1"  drawQuads="0"  drawTetrahedra="0"  drawHexahedra="0" />
+			<MeshObjLoader name="loader"  filename="C:\Users\SOFA_GPU\Downloads\sofa\sofa\examples\Demos\SkullOperations\meshs\Dskull012.obj"/>
+			<MechanicalObject template="Vec3d" name="craneCollisionState"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1" showObject="1" showIndices="0" rotation="90 0 0"/>
+			<MeshTopology name="MCTopology"  position="@loader.position" edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetrahedra"  hexahedra="@loader.hexahedra"  drawEdges="0"  drawTriangles="0"  drawQuads="0"  drawTetrahedra="0"  drawHexahedra="0" />
 			<TTriangleModel template="Vec3d" name="CTM"  moving="0"  simulated="0"  contactStiffness="100" />
 			<TLineModel template="Vec3d" name="CLM"  moving="0"  simulated="0"  contactStiffness="100" />
 			<TPointModel template="Vec3d" name="CPM"  moving="0"  simulated="0"  contactStiffness="100" />			
@@ -61,11 +62,9 @@
 		<MechanicalObject template="Rigid3d" name="DOFs"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  restScale="1" />
 		<MechanicalStateControllerOmni template="Rigid3d" name="MSCO"  listening="1"  handleEventTriggersUpdate="1" />
 		<Node 	 name="RefModel"  >
-			<MeshObjLoader name="loader"  filename="mesh/stylus.obj"  materials="initialShadingGroup.002 Diffuse 1 0.4096 0.4096 0.4096 1 Ambient 1 0 0 0 1 Specular 1 0.5 0.5 0.5 1 Emissive 0 0 0 0 0 Shininess 1 90.1961 " />
+			<MeshObjLoader name="loader"  filename="C:\Users\SOFA_GPU\Downloads\sofa\sofa\examples\Demos\SkullOperations\meshs/stylus.obj"  materials="initialShadingGroup.002 Diffuse 1 0.4096 0.4096 0.4096 1 Ambient 1 0 0 0 1 Specular 1 0.5 0.5 0.5 1 Emissive 0 0 0 0 0 Shininess 1 90.1961 " />
 			<MeshTopology name="meshTopology1"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
-
-			<MechanicalObject template="Vec3d" name="instrumentCollisionState"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1"  translation="-0.3 0 3.5"  rotation="0 -180 -90" />
-			
+			<MechanicalObject template="Vec3d" name="OmniCollisionState"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1"  translation="0 0 0"  rotation="0 0 0" />
 			<RigidMapping template="Rigid3d,Vec3d" name="rigidMap2"  input="@../"  output="@./" />
 		</Node>
 	</Node>
@@ -82,13 +81,13 @@
 			<RigidMapping template="Rigid3d,ExtVec3f" name="MM-&gt;VM mapping"  input="@../../Omni/DOFs"  output="@InstrumentVisualModel" />
 		</Node>
 		<Node 	 name="CollisionModel"  >
-			<MeshObjLoader name="loader"  filename="mesh/stylus.obj"  materials="initialShadingGroup.002 Diffuse 1 0.4096 0.4096 0.4096 1 Ambient 1 0 0 0 1 Specular 1 0.5 0.5 0.5 1 Emissive 0 0 0 0 0 Shininess 1 90.1961 " />
+			<MeshObjLoader name="loader"  filename="C:\Users\SOFA_GPU\Downloads\sofa\sofa\examples\Demos\SkullOperations\meshs/stylus.obj"  materials="initialShadingGroup.002 Diffuse 1 0.4096 0.4096 0.4096 1 Ambient 1 0 0 0 1 Specular 1 0.5 0.5 0.5 1 Emissive 0 0 0 0 0 Shininess 1 90.1961 " />
 			<MeshTopology name="InstrumentCollisionModel"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
-			<MechanicalObject template="Vec3d" name="instrumentCollisionState"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1"  translation="-0.3 0 3.5"  rotation="0 -180 -90" />
+			<MechanicalObject template="Vec3d" name="instrumentCollisionState"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1"  translation=" 0 0 0"  rotation="0 0 0" />
 			<TLineModel template="Vec3d" name="TLI"  tags="CarvingTool"  contactStiffness="10" />
 			<TPointModel template="Vec3d" name="TPI"  tags="CarvingTool"  contactStiffness="10" />
 			<RigidMapping template="Rigid3d,Vec3d" name="MM-&gt;CM mapping"  input="@instrumentState"  output="@instrumentCollisionState" />
 		</Node>
-		<VectorSpringForceField template="Vec3d" name="vectorSpringFF1"  stiffness="10"  viscosity="0"  object1="@Omni/RefModel/instrumentCollisionState"  object2="@Instrument/CollisionModel/instrumentCollisionState" />
+		<VectorSpringForceField template="Vec3d" name="vectorSpringFF1"  stiffness="10"  viscosity="0"  object1="@Omni/RefModel/OmniCollisionState"  object2="@Instrument/CollisionModel/instrumentCollisionState" />
 	</Node>
 </Node>
