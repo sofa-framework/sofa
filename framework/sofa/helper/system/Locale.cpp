@@ -34,8 +34,15 @@ std::string Locale::getCategoryName(int category)
         return "LC_COLLATE";
     case LC_CTYPE:
         return "LC_CTYPE";
+#if WIN32 
+#if (_MSC_VER < 1800)	// visual studio >= 2013 does not recognize LC_MESSAGES
     case LC_MESSAGES:
         return "LC_MESSAGES";
+#endif
+#else
+	case LC_MESSAGES:
+		return "LC_MESSAGES";
+#endif
     case LC_MONETARY:
         return "LC_MONETARY";
     case LC_NUMERIC:
