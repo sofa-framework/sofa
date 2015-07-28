@@ -327,14 +327,27 @@ class Model:
                     print "ERROR: sml.Model: in joint {0}, unknown solid {1} referenced".format(joint.name, o.attrib["id"])
             self.genericJoints[joint.id]=joint
 
+    def _setTagFromTag(self, tag, newTag, objects, objectsByTag):
+
+        if tag in objectsByTag:
+            for obj in objectsByTag[tag]:
+                obj.tags.add(newTag)
+        self._updateTag(objects, objectsByTag)
 
     def setTagFromTag(self, tag, newTag):
+        """ @deprecated use setSolidTagFromTag() instead
+        """
+        self.setSolidTagFromTag(tag, newTag)
+
+    def setSolidTagFromTag(self, tag, newTag):
         """ assign newTag to all solids with tag
         """
-        if tag in self.solidsByTag:
-            for solid in self.solidsByTag[tag]:
-                solid.tags.add(newTag)
-        self.updateTag()
+        self._setTagFromTag(tag, newTag, self.solids, self.solidsByTag)
+
+    def setSurfaceLinkTagFromTag(self, tag, newTag):
+        """ assign newTag to all surfaceLinks with tag
+        """
+        self._setTagFromTag(tag, newTag, self.surfaceLinks, self.surfaceLinksByTag)
 
     def _updateTag(self, objects, objectsByTag):
         objectsByTag.clear()
