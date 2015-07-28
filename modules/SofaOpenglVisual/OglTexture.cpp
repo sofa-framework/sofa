@@ -66,7 +66,7 @@ OglTexture::OglTexture()
     ,cubemapFilenameNegZ(initData(&cubemapFilenameNegZ, (std::string) "", "cubemapFilenameNegZ", "Texture filename of negative-Z cubemap face"))
     ,img(0)
 {
-
+    this->addAlias(&textureFilename, "filename");
 }
 
 OglTexture::~OglTexture()
@@ -100,7 +100,7 @@ void OglTexture::init()
             {
                 //Init texture
                 img = new helper::io::Image();
-                img->init(height, width, nbb);
+                img->init(width, height, nbb);
 
                 //Make texture
                 unsigned char* data = img->getPixels();
@@ -176,8 +176,31 @@ void OglTexture::init()
         }
     }
     else
-        // Ordinary texture.
-        img = helper::io::Image::Create(textureFilename.getFullPath().c_str());
+    {
+        std::string filename = textureFilename.getFullPath();
+        if(sofa::helper::system::DataRepository.findFile(filename))
+        {
+            // Ordinary texture.
+            img = helper::io::Image::Create(textureFilename.getFullPath().c_str());
+        }
+        else
+        {
+            serr << "OglTexture file " << textureFilename.getFullPath() << " not found." << sendl;
+            //create dummy texture
+            img = new helper::io::Image();
+            unsigned int dummyWidth = 128;
+            unsigned int dummyHeight = 128;
+            unsigned int dummyNbb = 8;
+
+            img->init(dummyWidth, dummyHeight, dummyNbb);
+
+            //Make texture
+            unsigned char* data = img->getPixels();
+
+            for(std::size_t i=0 ; i < dummyHeight*dummyWidth*(dummyNbb/8); i++)
+                data[i] = (unsigned char)128;
+        }
+    }
 
     OglShaderElement::init();
 }
@@ -193,12 +216,11 @@ void OglTexture::initVisual()
         serr << "Unit Texture too high ; set it at the unit texture n°1" << sendl;
         textureUnit.setValue(1);
     }
-
-    if (!img)
-    {
-        serr << "OglTexture: Error : OglTexture file " << textureFilename.getFullPath() << " not found." << sendl;
-        return;
-    }
+//    if (!img)
+//    {
+//        serr << "OglTexture: Error : OglTexture file " << textureFilename.getFullPath() << " not found." << sendl;
+//        return;
+//    }
 
     texture = new helper::gl::Texture(img, repeat.getValue(), linearInterpolation.getValue(),
             generateMipmaps.getValue(), srgbColorspace.getValue(),
