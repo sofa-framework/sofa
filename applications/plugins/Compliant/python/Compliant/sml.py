@@ -111,7 +111,7 @@ def insertJoint(jointModel, rigids, param=None):
 
 class SceneArticulatedRigid(SofaPython.sml.BaseScene):
     """ Builds a (sub)scene from a model using compliant formulation
-    [tag]rigid are simulated as RigidBody
+    [tag] rigid are simulated as RigidBody
     Compliant joints are setup between the rigids """
     
     def __init__(self, parentNode, model):
@@ -119,20 +119,18 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         
         self.rigids = dict()
         self.joints = dict()
-        
+
         self.param.showRigid=False
         self.param.showRigidScale=0.5 # SI unit (m)
         self.param.showOffset=False
         self.param.showOffsetScale=0.1 # SI unit (m)    
 
-    def insertMergeRigid(self, mergeNodeName="dofRigid", tag="rigid" ):
+    def insertMergeRigid(self, mergeNodeName="dofRigid", tag="rigid", rigidIndexById=None ):
         """ Merge all the rigids in a single MechanicalObject using a SubsetMultiMapping
         optionnaly give a tag to select the rigids which are merged
         return the created node"""
-
         mergeNode = None
-
-        rigidsId = list() # keep track of merged rigids, rigid index and rigid id
+        currentRigidIndex=0
         input=""
         indexPairs=""
         if tag in self.model.solidsByTag:
@@ -146,8 +144,10 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
                 else:
                     rigid.node.addChild(mergeNode)
                 input += '@'+rigid.node.getPathName()+" "
-                indexPairs += str(len(rigidsId)) + " 0 "
-                rigidsId.append(solid.id)
+                indexPairs += str(currentRigidIndex) + " 0 "
+                if not rigidIndexById is None:
+                    rigidIndexById[solid.id]=currentRigidIndex
+                currentRigidIndex+=1
         if input:
             mergeNode.createObject("MechanicalObject", template = "Rigid3", name="dofs")
             mergeNode.createObject('SubsetMultiMapping', template = "Rigid3,Rigid3", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
