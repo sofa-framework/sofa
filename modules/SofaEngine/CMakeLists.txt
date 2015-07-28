@@ -100,6 +100,8 @@ set(HEADER_FILES
     MeshSampler.inl
     MeshSplittingEngine.h
     MeshSplittingEngine.inl
+    Indices2ValuesMapper.h
+    Indices2ValuesMapper.inl
     )
 
 set(SOURCE_FILES
@@ -155,6 +157,7 @@ set(SOURCE_FILES
     MeshSubsetEngine.cpp
     MeshSampler.cpp
     MeshSplittingEngine.cpp
+    Indices2ValuesMapper.cpp
     )
 
 set(GROUP_BASE_DIR "..")
