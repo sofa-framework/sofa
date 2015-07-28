@@ -266,8 +266,8 @@ class Model:
                     if not (s.attrib["group"] in skinning.mesh.group and s.attrib["weight"] in skinning.mesh.group[s.attrib["group"]].data):
                         print "ERROR: sml.Model: skinning for solid {0}: mesh {1} - group {2} - weight {3} is not defined".format(name, s.attrib["mesh"], s.attrib["group"], s.attrib["weight"])
                         continue
-                    skinning.index = mesh.group[s.attrib["group"]].index
-                    skinning.weight = mesh.group[s.attrib["group"]].data[s.attrib["weight"]]
+                    skinning.index = skinning.mesh.group[s.attrib["group"]].index
+                    skinning.weight = skinning.mesh.group[s.attrib["group"]].data[s.attrib["weight"]]
                     solid.skinnings.append(skinning)
 
                 self.solids[solid.id]=solid
