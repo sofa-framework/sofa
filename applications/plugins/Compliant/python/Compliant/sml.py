@@ -169,22 +169,52 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
             self.joints[jointModel.id] = insertJoint(jointModel, self.rigids, self.param)
 
 
-# broken, needs to be updated later
-#class SceneSkinning(SceneArticulatedRigid) :
+class SceneSkinning(SceneArticulatedRigid) :
+    """ Build a (sub-)scene based on SceneArticulatedRigid, add solids with skinning using the defined armature
+    [tag] armature are simulated as RigidBody and used as bones for skinning
+    """
     
-    #def __init__(self, parentNode, model):
-        #SceneArticulatedRigid.__init__(self, parentNode, model)
-        #self.deformables = dict()
+    def __init__(self, parentNode, model):
+        SceneArticulatedRigid.__init__(self, parentNode, model)
+        self.deformables = dict()
+        self.skinningArmatureBoneIndexById = dict() # keep track of bone armature index in the armature merge node
+
+    def createScene(self):
+
+        self.model.setTagFromTag("armature", "rigid")
+
+        SceneArticulatedRigid.createScene(self)
         
-    #def createScene(self):
-        #SceneArticulatedRigid.createScene(self)
-        
-        ## all rigids (bones) must be gathered in a single node
-        #self.createChild(self.node, "armature")
-        #bonesId = self.insertMergeRigid(self.nodes["armature"], "armature")
-        ##deformable
-        #for solidModel in self.model.solids.values():
-            #if len(solidModel.skinnings)>0:
-                #self.deformables[solidModel.id]=Flexible.sml.insertDeformableWithSkinning(self.node, solidModel, self.nodes["armature"].getPathName(), bonesId)
+        if "armature" in self.model.solidsByTag:
+            # insert node containing all bones of the armature
+            self.nodes["armature"] = self.insertMergeRigid(mergeNodeName="armature", tag="armature", rigidIndexById=self.skinningArmatureBoneIndexById)
+            for solidModel in self.model.solids.values():
+                print solidModel.name, len(solidModel.skinnings)
+                if len(solidModel.skinnings)>0: # ignore solid if it has no skinning
+                    # for each mesh create a Flexible.API.Deformable
+                    for mesh in solidModel.mesh:
+                        # take care only of visual meshes with skinning
+                        if solidModel.meshAttributes[mesh.id].visual:
+                            deformable = Flexible.API.Deformable(self.nodes["armature"], solidModel.name+"_"+mesh.name)
+                            deformable.loadMesh(mesh.source)
+                            deformable.addMechanicalObject()
+                            # build the sofa indices and weights
+                            indices = dict()
+                            weights = dict()
+                            for skinning in solidModel.skinnings:
+                                currentBoneIndex = self.skinningArmatureBoneIndexById[skinning.solid.id]
+                                for index,weight in zip(skinning.index, skinning.weight):
+                                    if not index in indices:
+                                        indices[index]=list()
+                                        weights[index]=list()
+                                    indices[index].append(currentBoneIndex)
+                                    weights[index].append(weight)
+                            #TODO fill potential holes in indices/weights ?
+                            deformable.addSkinning(self.nodes["armature"], indices.values(), weights.values())
+                            deformable.addVisual()
+                            self.deformables[mesh.id] = deformable
+
+#                        self.deformables[solidModel.id]=Flexible.API.Deformable(self.nodes["armature"], solidModel.name)
+#                    self.deformables[solidModel.id]=Flexible.sml.insertDeformableWithSkinning(self.node, solidModel, self.nodes["armature"].getPathName(), bonesId)
         
         
