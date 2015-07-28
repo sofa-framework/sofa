@@ -106,9 +106,9 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
     helper::system::SetDirectory chdir ( filename );
 
     // Temporarily set the numeric formatting locale to ensure that
-    // floating-point values are interpreted correctly (i.e. the decimal
-    // separator is a dot '.').
-    helper::system::Locale setLocale(LC_NUMERIC, "C");
+    // floating-point values are interpreted correctly by tinyXML. (I.e. the
+    // decimal separator is a dot '.').
+    helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
 
     sofa::simulation::xml::NodeElement* nodeElt = dynamic_cast<sofa::simulation::xml::NodeElement *>(xml);
     if( nodeElt==NULL )

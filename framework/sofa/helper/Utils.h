@@ -42,16 +42,10 @@ public:
 
 /// @brief Convert a string to a wstring.
 ///
-/// This function uses mbsrtowcs(3) internally, and thus depends on on the
-/// LC_CTYPE category of the current locale.
-///
 /// @return The converted string on success, or a empty string on failure.
 static std::wstring widenString(const std::string& s);
 
 /// @brief Convert a wstring to a string.
-///
-/// This function uses wcstombs(3) internally, and thus depends on
-/// on the LC_CTYPE category of the current locale.
 ///
 /// @return The converted string on success, or a empty string on failure.
 static std::string narrowString(const std::wstring& ws);

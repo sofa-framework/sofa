@@ -42,14 +42,6 @@ void init()
 {
     if (!s_initialized)
     {
-        // Set LC_CTYPE according to the environnement variable, rather than
-        // defaulting to "C".  This allows us not to limit ourselves to the
-        // 7-bit ASCII character set.  (E.g. see string conversions in
-        // helper::Utils).
-        char *locale = setlocale(LC_CTYPE, "");
-        if (locale == NULL)
-            Logger::getMainLogger().log(Logger::Error, "Failed to set LC_CTYPE according to the corresponding environnement variable");
-
         s_initialized = true;
     }
 }
