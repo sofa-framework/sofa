@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(SofaSimulationTree)
 
 set(SOFASIMULATIONTREE_HEADERS
+	init.h
 	ExportDotVisitor.h
 	GNode.h
 	GNodeVisitor.h
@@ -11,7 +12,7 @@ set(SOFASIMULATIONTREE_HEADERS
 
 set(SOFASIMULATIONTREE_SOURCES
 
-	tree.cpp
+	init.cpp
 	ExportDotVisitor.cpp
 	GNode.cpp
 	GNodeVisitor.cpp

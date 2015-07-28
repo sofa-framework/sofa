@@ -33,16 +33,25 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>25</y>
+     <y>23</y>
      <width>800</width>
-     <height>575</height>
+     <height>577</height>
     </rect>
    </property>
    <layout class="QVBoxLayout">
+    <property name="margin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="QSplitter" name="splitter2">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="opaqueResize">
+       <bool>false</bool>
+      </property>
+      <property name="handleWidth">
+       <number>1</number>
       </property>
       <widget class="QWidget" name="optionTabs" native="true">
        <layout class="QVBoxLayout">
@@ -366,9 +375,6 @@
               <property name="spacing">
                <number>0</number>
               </property>
-              <property name="margin">
-               <number>0</number>
-              </property>
               <item>
                <spacer name="spacer5_3_2">
                 <property name="orientation">
@@ -486,7 +492,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">

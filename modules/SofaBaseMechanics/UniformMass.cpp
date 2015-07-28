@@ -32,6 +32,7 @@
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/Locale.h>
 #include <sstream>
 
 namespace sofa
@@ -101,6 +102,9 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit()
 template<> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
 {
+    // Make sure that fscanf() uses a dot '.' as the decimal separator.
+    helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
+
 //  this->totalMass.setDisplayed(false);
 
     if (!filename.empty())

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,36 +16,43 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: The SOFA Team (see Authors.txt)                                    *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "common.h"
+#ifndef SOFA_CORE_INIT_H
+#define SOFA_CORE_INIT_H
+
 #include <sofa/core/core.h>
 
 namespace sofa
 {
 
-namespace simulation
+namespace core
 {
 
-namespace common
-{
+/// @brief Initialize the SofaCore library, as well as its dependencies:
+/// SofaDefaultType, SofaHelper.
+void SOFA_CORE_API init();
 
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::core::init();
-        first = false;
-    }
-}
+/// @brief Return true if and only if the SofaCore library has been initialized.
+bool SOFA_CORE_API isInitialized();
 
-} // namespace common
+/// @brief Clean up the resources used by the SofaCore library, as well as its
+/// dependencies: SofaDefaultType, SofaHelper.
+void SOFA_CORE_API cleanup();
 
-} // namespace simulation
+/// @brief Return true if and only if the SofaCore library has been cleaned
+/// up.
+bool SOFA_CORE_API isCleanedUp();
+
+/// @brief Print a warning if the SofaCore library is not initialized.
+void SOFA_CORE_API checkIfInitialized();
+
+} // namespace core
 
 } // namespace sofa
+
+#endif

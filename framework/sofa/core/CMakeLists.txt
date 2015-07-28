@@ -3,7 +3,7 @@ project(SofaCore)
 
 
 set(SOFACORE_HEADERS
-	core.h
+	init.h
 	VecId.h
 #	Plugin.h
 #	PluginManager.h
@@ -140,7 +140,7 @@ set(SOFACORE_HEADERS
 	)
 
 set(SOFACORE_SOURCES
-	core.cpp
+	init.cpp
 	objectmodel/AspectPool.cpp
 	objectmodel/Base.cpp
 	objectmodel/BaseClass.cpp

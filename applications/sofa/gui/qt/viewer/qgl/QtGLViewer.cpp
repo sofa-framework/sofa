@@ -584,6 +584,8 @@ void QtGLViewer::DrawLogo()
     {
         h = texLogo->getImage()->getHeight();
         w = texLogo->getImage()->getWidth();
+//        h = _H;
+//        w = _W;
     }
     else return;
 

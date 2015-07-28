@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_COMMON_H
-#define SOFA_SIMULATION_COMMON_H
+#ifndef SOFA_SIMULATION_COMMON_COMMON_H
+#define SOFA_SIMULATION_COMMON_COMMON_H
 
 #include <sofa/SofaSimulation.h>
 
@@ -31,24 +31,5 @@
 #if !defined(SOFA_XML_PARSER_LIBXML) && !defined(SOFA_XML_PARSER_TINYXML)
 #define SOFA_XML_PARSER_TINYXML
 #endif
-
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace common
-{
-
-/// @brief Initialize the SofaSimulationCommon library, as well as its
-/// dependencies: SofaCore, SofaDefaultType, SofaHelper.
-void SOFA_SIMULATION_COMMON_API init();
-
-} // namespace common
-
-} // namespace simulation
-
-} // namespace sofa
 
 #endif

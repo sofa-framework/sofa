@@ -238,6 +238,7 @@ public:
 
 
     QString helpString();
+//    void setCameraMode(core::visual::VisualParams::CameraType mode);
 
 private:
 

@@ -27,18 +27,4 @@
 
 #include <sofa/SofaFramework.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-/// @brief Initialize the SofaCore library, as well as its dependencies:
-/// SofaDefaultType, SofaHelper.
-void SOFA_CORE_API init();
-
-} // namespace core
-
-} // namespace sofa
-
 #endif

@@ -30,14 +30,14 @@
 #include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/PluginManager.h>
-#include <sofa/simulation/tree/tree.h>
 #ifdef SOFA_HAVE_DAG
-#include <sofa/simulation/tree/graph.h>
+#include <sofa/simulation/graph/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #endif
 #ifdef SOFA_SMP
 #include <sofa/simulation/tree/SMPSimulation.h>
 #endif
+#include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
 

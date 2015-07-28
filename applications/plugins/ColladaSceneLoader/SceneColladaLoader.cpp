@@ -32,12 +32,12 @@
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/PointModel.h>
-#include <SofaRigid/RigidMapping.inl>
-#include <SofaRigid/SkinningMapping.inl>
+#include <SofaRigid/RigidMapping.h>
+#include <SofaRigid/SkinningMapping.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <SofaBoundaryCondition/FixedConstraint.h>
-#include <SofaBoundaryCondition/SkeletalMotionConstraint.inl>
+#include <SofaBoundaryCondition/SkeletalMotionConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <stack>

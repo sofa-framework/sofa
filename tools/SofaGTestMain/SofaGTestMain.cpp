@@ -1,6 +1,6 @@
-#include <sofa/simulation/tree/tree.h>
+#include <sofa/simulation/tree/init.h>
 #ifdef SOFA_HAVE_DAG
-#  include <sofa/simulation/graph/graph.h>
+#  include <sofa/simulation/graph/init.h>
 #endif
 
 #include <gtest/gtest.h>
@@ -11,5 +11,10 @@ int main(int argc, char **argv) {
 #ifdef SOFA_HAVE_DAG
     sofa::simulation::graph::init();
 #endif
-    return RUN_ALL_TESTS();
+    int ret =  RUN_ALL_TESTS();
+#ifdef SOFA_HAVE_DAG
+    sofa::simulation::graph::cleanup();
+#endif
+    sofa::simulation::tree::cleanup();
+    return ret;
 }

@@ -13,17 +13,22 @@ namespace helper {
 namespace system {
 
 
-/// RAII class to modify the locale temporarily.
 class SOFA_HELPER_API Locale
+{
+public:
+    static std::string getCategoryName(int category);
+};
+
+
+/// RAII class to modify the locale temporarily.
+class SOFA_HELPER_API TemporaryLocale
 {
 private:
     int m_category;
     std::string m_oldValue;
 public:
-    Locale(int category, std::string locale);
-    ~Locale();
-
-    static std::string getCategoryName(int category);
+    TemporaryLocale(int category, std::string locale);
+    ~TemporaryLocale();
 };
 
 

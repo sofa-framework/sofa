@@ -80,10 +80,7 @@ void Base::release()
         //serr << "DELETE" << sendl;
         // Deletion of objects can be temporarily disabled by commenting the next line, until smart-pointers usage is corrected
 
-// This delete can cause a crash on Windows with sofa cuda build with msvc
-#if !(defined(_MSC_VER) && defined(SOFA_GPU_CUDA))
         delete this;
-#endif
     }
 }
 

@@ -143,9 +143,10 @@ class Deformable:
            cell = "@"+SofaPython.Tools.getObjectPath(offsets)+".cell"
         self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, self.topology, cell, assemble)
 
-    # @todo: update this:
-    def addSkinning(self, bonesPath, indices, weights, assemble=True):
-        self.mapping = self.node.createObject("LinearMapping", template="Rigid3,Vec3", name="mapping", input="@"+bonesPath, indices=concat(indices), weights=concat(weights), assemble=assemble)
+    def addSkinning(self, armatureNode, indices, weights, assemble=True):
+        """ Add skinning (linear) mapping based on the armature (Rigid3) in armatureNode using
+        """
+        self.mapping = self.node.createObject("LinearMapping", template="Rigid3,Vec3", name="mapping", input="@"+armatureNode.getPathName(), indices=concat(indices), weights=concat(weights), assemble=assemble)
 
 
 class AffineMass:
