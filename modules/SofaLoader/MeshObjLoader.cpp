@@ -26,6 +26,7 @@
 #include <SofaLoader/MeshObjLoader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/system/Locale.h>
 
 namespace sofa
 {
@@ -476,6 +477,9 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 // -----------------------------------------------------
 bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& materials)
 {
+    // Make sure that fscanf() uses a dot '.' as the decimal separator.
+    helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
+
     sout << "MeshObjLoader::readMTL" << sendl;
 
     FILE* file;

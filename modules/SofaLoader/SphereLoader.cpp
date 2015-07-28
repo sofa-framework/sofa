@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <SofaLoader/SphereLoader.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/Locale.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sstream>
 
@@ -54,6 +55,9 @@ SphereLoader::SphereLoader()
 
 bool SphereLoader::load()
 {
+    // Make sure that fscanf() uses a dot '.' as the decimal separator.
+    helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
+
     const char* filename = m_filename.getFullPath().c_str();
     std::string fname = std::string(filename);
 

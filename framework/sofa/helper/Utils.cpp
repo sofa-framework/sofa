@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/system/Locale.h>
 #include <sofa/helper/Logger.h>
 
 #ifdef WIN32
@@ -55,6 +56,9 @@ namespace helper
 
 std::wstring Utils::widenString(const std::string& s)
 {
+    // Set LC_CTYPE according to the environnement variable, for mbsrtowcs().
+    system::TemporaryLocale locale(LC_CTYPE, "");
+
     const char * src = s.c_str();
     // Call mbsrtowcs() once to find out the length of the converted string.
     size_t length = mbsrtowcs(NULL, &src, 0, NULL);
@@ -88,6 +92,9 @@ std::wstring Utils::widenString(const std::string& s)
 
 std::string Utils::narrowString(const std::wstring& ws)
 {
+    // Set LC_CTYPE according to the environnement variable, for wcstombs().
+    system::TemporaryLocale locale(LC_CTYPE, "");
+
     const wchar_t * src = ws.c_str();
     // Call wcstombs() once to find out the length of the converted string.
     size_t length = wcstombs(NULL, src, 0);
