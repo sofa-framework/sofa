@@ -27,17 +27,4 @@
 
 #include <sofa/SofaFramework.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-/// @brief Initialize the SofaHelper library.
-void SOFA_HELPER_API init();
-
-} // namespace helper
-
-} // namespace sofa
-
 #endif

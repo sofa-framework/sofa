@@ -198,7 +198,7 @@ def axisToQuat(axis, phi):
 def quatToAxis(q):
     """ Return rotation vector corresponding to unit quaternion q in the form of [axis, angle]
     """
-    sine  = math.sin( math.acos(q[3]) );
+    sine  = math.sin( math.acos(q[3]) )
 
     if (math.fabs(sine) < sys.float_info.epsilon) :
         axis = [0.0,1.0,0.0]
@@ -210,20 +210,23 @@ def quatToAxis(q):
 def quatToRotVec(q):
     """ Return rotation vector corresponding to unit quaternion q
     """
-    [axis, phi] = quatToAxis(q)
-    return numpy.asarray(axis) * phi
+    [axis, angle] = quatToAxis(q)
+    return numpy.asarray(axis) * angle
+
+def rotVecToQuat(v):
+    """ return the quaternion corresponding to the given rotation vector
+    """
+    angle = numpy.linalg.norm(numpy.asarray(v))
+    if angle < sys.float_info.epsilon:
+        return [0.0,0.0,0.0,1.0]
+    else:
+        axis = numpy.asarray(v) / angle
+        return axisToQuat(axis,angle)
 
 def quatToRodrigues(q):
-    """ Return rotation vector corresponding to unit quaternion q in the form of [axis, angle]
+    """ Return rotation vector corresponding to unit quaternion q in the form of angle*axis
     """
-    sine  = math.sin( math.acos(q[3]) );
-
-    if (math.fabs(sine) < sys.float_info.epsilon) :
-        axis = [0.0,1.0,0.0]
-    else :
-        axis = q[0:3]/sine
-    phi =  math.acos(q[3]) * 2.0
-    return axis * phi
+    return quatToRotVec(q)
 
 
 #def from_euler_xyz( a ):

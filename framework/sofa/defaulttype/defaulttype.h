@@ -27,18 +27,4 @@
 
 #include <sofa/SofaFramework.h>
 
-namespace sofa
-{
-
-namespace defaulttype
-{
-
-/// @brief Initialize the SofaDefaultType library, as well as it dependency:
-/// SofaHelper.
-void SOFA_DEFAULTTYPE_API init();
-
-} // namespace defaulttype
-
-} // namespace sofa
-
 #endif

@@ -22,26 +22,57 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "init.h"
 
-#include "core.h"
-#include <sofa/defaulttype/defaulttype.h>
+#include <sofa/helper/init.h>
+
+#include <iostream>
 
 namespace sofa
 {
 
-namespace core
+namespace defaulttype
 {
+
+static bool s_initialized = false;
+static bool s_cleanedUp = false;
 
 void init()
 {
-    static bool first = true;
-    if (first)
+    if (!s_initialized)
     {
-        sofa::defaulttype::init();
-        first = false;
+        sofa::helper::init();
+        s_initialized = true;
     }
 }
 
-} // namespace core
+bool isInitialized()
+{
+    return s_initialized;
+}
+
+void cleanup()
+{
+    if (!s_cleanedUp)
+    {
+        sofa::helper::cleanup();
+        s_cleanedUp = true;
+    }
+}
+
+bool isCleanedUp()
+{
+    return s_cleanedUp;
+}
+
+void checkIfInitialized()
+{
+    if (!isInitialized())
+    {
+        std::cerr << "Warning: SofaHelper is not initialized (sofa::helper::init() has never been called).  An application should call the init() function of the higher level Sofa library it uses." << std::endl;
+    }
+}
+
+} // namespace defaulttype
 
 } // namespace sofa

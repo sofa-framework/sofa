@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaHelper)
 
 set(SOFAHELPER_HEADERS
-    helper.h
+	init.h
     ArgumentParser.h
     BackTrace.h
 	deque.h
@@ -95,7 +95,7 @@ set(SOFAHELPER_HEADERS
 
 set(SOFAHELPER_SOURCES
 
-	helper.cpp
+	init.cpp
 	ArgumentParser.cpp
     BackTrace.cpp
     DualQuat.cpp

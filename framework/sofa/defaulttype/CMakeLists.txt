@@ -3,6 +3,7 @@ project(SofaDefaultType)
 
 
 set(SOFADEFAULTTYPE_HEADERS
+	init.h
 	BaseMatrix.h	
 	BaseVector.h	
 	BoundingBox.h	
@@ -32,7 +33,7 @@ set(SOFADEFAULTTYPE_HEADERS
 
 set(SOFADEFAULTTYPE_SOURCES
 
-	defaulttype.cpp
+	init.cpp
 	BaseMatrix.cpp
 	BoundingBox.cpp
 	Frame.cpp

@@ -142,7 +142,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , previousProcessorColor(false)
     #endif
     , material			(initData	(&material, "material", "Material")) // tex(NULL)
-    , putOnlyTexCoords	(initData	(&putOnlyTexCoords, (bool) false, "putOnlyTexCoords", "Give Texture Coordinates without the texture binding"))
+    , putOnlyTexCoords	(initData	(&putOnlyTexCoords, (bool) true, "putOnlyTexCoords", "Give Texture Coordinates without the texture binding"))
     , srgbTexturing		(initData	(&srgbTexturing, (bool) false, "srgbTexturing", "When sRGB rendering is enabled, is the texture in sRGB colorspace?"))
     , materials			(initData	(&materials, "materials", "List of materials"))
     , groups			(initData	(&groups, "groups", "Groups of triangles and quads using a given material"))
@@ -220,6 +220,12 @@ bool VisualModelImpl::hasOpaque()
 
 void VisualModelImpl::drawVisual(const core::visual::VisualParams* vparams)
 {
+    //Update external buffers (like VBO) if the mesh change AFTER doing the updateVisual() process
+    if(m_vertices2.isDirty())
+    {
+        updateBuffers();
+    }
+
     if (hasOpaque())
         internalDraw(vparams,false);
 }

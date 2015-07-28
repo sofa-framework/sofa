@@ -237,6 +237,7 @@ bool AttributeContainer::hasMarkerAttribute() const
 
 void AttributeContainer::compact(std::vector<unsigned int>& mapOldNew)
 {
+    printFreeIndices();
 	mapOldNew.clear();
 	mapOldNew.resize(realEnd(),0xffffffff);
 

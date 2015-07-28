@@ -120,6 +120,8 @@ public:
     virtual void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
             const Vector3 &normal1, const Vector3 &normal2, const Vector3 &normal3, const Vector3 &normal4,
             const Vec4f &c1, const Vec4f &c2, const Vec4f &c3, const Vec4f &c4);
+    virtual void drawQuads(const std::vector<Vector3> &points, const Vec4f colour) ;
+
 
     virtual void drawSphere( const Vector3 &p, float radius);
 

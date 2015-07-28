@@ -386,7 +386,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
         // check list emptyness
         if (PyList_Size(args)==0)
         {
-            // empty list: ignored
+            data->read("");
             return true;
         }
 
@@ -397,23 +397,39 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
         {
             // two-dimension array!
 
-            // right number if rows ?
-            if (PyList_Size(args)!=nbRows)
+            void* editVoidPtr = data->beginEditVoidPtr();
+
+            // same number of rows?
             {
-                // only a warning; do not raise an exception...
-                SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (incorrect rows count)" )
-                if (PyList_Size(args)<nbRows)
-                    nbRows = PyList_Size(args);
+            int newNbRows = PyList_Size(args);
+            if (newNbRows!=nbRows)
+            {
+                // try to resize (of course, it is not possible with every containers, the resize policy is defined in DataTypeInfo)
+                typeinfo->setSize( editVoidPtr, newNbRows*rowWidth );
+
+                if( typeinfo->size(editVoidPtr) != newNbRows*rowWidth )
+                {
+                    // resizing was not possible
+                    // only a warning; do not raise an exception...
+                    SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (incorrect rows count)" )
+                    if (newNbRows<nbRows)
+                        nbRows = newNbRows;
+                }
+                else
+                {
+                    // resized
+                    nbRows = newNbRows;
+                }
+            }
             }
 
-            void* editVoidPtr = data->beginEditVoidPtr();
 
             // let's fill our rows!
             for (int i=0; i<nbRows; i++)
             {
                 PyObject *row = PyList_GetItem(args,i);
 
-                // right number if list members ?
+                // right number of list members ?
                 int size = rowWidth;
                 if (PyList_Size(row)!=size)
                 {
@@ -494,17 +510,33 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
         else
         {
             // it is a one-dimension only array
-            // right number if list members ?
-            int size = rowWidth*nbRows;
-            if (PyList_Size(args)!=size)
-            {
-                // only a warning; do not raise an exception...
-                SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (src="<<(int)PyList_Size(args)<<" dst="<<size<<")" )
-                if (PyList_Size(args)<size)
-                    size = PyList_Size(args);
-            }
 
             void* editVoidPtr = data->beginEditVoidPtr();
+
+            // same number of list members?
+            int size = rowWidth*nbRows; // start with oldsize
+            {
+            int newSize = PyList_Size(args);
+            if (newSize!=size)
+            {
+                // try to resize (of course, it is not possible with every containers, the resize policy is defined in DataTypeInfo)
+                typeinfo->setSize( editVoidPtr, newSize );
+
+                if( typeinfo->size(editVoidPtr) != newSize )
+                {
+                    // resizing was not possible
+                    // only a warning; do not raise an exception...
+                    SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (incorrect rows count)" )
+                    if (newSize<size)
+                        size = newSize;
+                }
+                else
+                {
+                    // resized
+                    size = newSize;
+                }
+            }
+            }
 
             // okay, let's set our list...
             for (int i=0; i<size; i++)
@@ -706,6 +738,17 @@ extern "C" PyObject * Data_setSize(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
+
+extern "C" PyObject * Data_unset(PyObject *self, PyObject * /*args*/)
+{
+    BaseData* data=((PyPtr<BaseData>*)self)->object;
+
+    data->unset();
+
+    Py_RETURN_NONE;
+}
+
+
 SP_CLASS_METHODS_BEGIN(Data)
 SP_CLASS_METHOD(Data,getValueTypeString)
 SP_CLASS_METHOD(Data,getValueString)
@@ -713,6 +756,7 @@ SP_CLASS_METHOD(Data,setValue)
 SP_CLASS_METHOD(Data,getValue)
 SP_CLASS_METHOD(Data,getSize)
 SP_CLASS_METHOD(Data,setSize)
+SP_CLASS_METHOD(Data,unset)
 SP_CLASS_METHODS_END
 
 

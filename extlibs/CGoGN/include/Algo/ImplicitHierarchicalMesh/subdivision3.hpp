@@ -458,53 +458,6 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
         }
     }
 
-
-    {
-        Traversor3VW< MAP > traW(map, centralDart, true);
-        unsigned counter = 1u;
-        for (VolumeCell it = traW.begin() ; it != traW.end() ; it = traW.next())
-        {
-            map.checkEmbedding(it);
-            TraversorDartsOfOrbit< MAP, VOLUME > traDoW(map,it);
-            std::cerr << "VOLUME" << counter << " EMBEDDINGS " << std::endl;
-            for (Dart wit = traDoW.begin(); wit != traDoW.end() ; wit = traDoW.next())
-            {
-                assert(map.volumeLevel(wit) == vLevel +1);
-                std::cerr << "dart " << wit << " emb "   << map.MAP::ParentMap::template getEmbedding<VOLUME>(wit)  << " (lvl " << map.getDartLevel(wit) << ")" <<  std::endl;
-            }
-            std::cerr << std::endl;
-            ++counter;
-        }
-    }
-
-
-    {
-        Traversor3VW< MAP > traW(map, centralDart, true);
-        DartMarker< MAP > markerF(map);
-        unsigned counter = 1u;
-        for (VolumeCell it = traW.begin() ; it != traW.end() ; it = traW.next())
-        {
-            Traversor3WF< MAP > traF(map, it, true);
-            for (FaceCell f = traF.begin() ; f != traF.end() ; f = traF.next())
-            {
-                if (!markerF.isMarked(f))
-                {
-                    markerF.template markOrbit< FACE >(f);
-                    map.checkEmbedding(f);
-                    TraversorDartsOfOrbit< MAP, FACE > traDoF(map,f);
-                    std::cerr << "FACE" << counter++ << " EMBEDDINGS " << std::endl;
-                    for (Dart fit = traDoF.begin(); fit != traDoF.end() ; fit = traDoF.next())
-                    {
-                        std::cerr << "dart " << fit << " emb "   << map.MAP::ParentMap::template getEmbedding<FACE>(fit)  << " (lvl " << map.getDartLevel(fit) << ")" <<  std::endl;
-                    }
-
-                }
-            }
-            std::cerr << std::endl;
-        }
-    }
-
-
     map.checkEdgeAndFaceIDAttributes();
     map.setCurrentLevel(cur) ;
     return centralDart;

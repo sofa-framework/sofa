@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(SofaSimulationCommon)
 
 set(HEADER_FILES
+	init.h
 	Node.h
 	AnimateBeginEvent.h
 	AnimateEndEvent.h
@@ -77,7 +78,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
-	common.cpp
+	init.cpp
 	Node.cpp
 	AnimateBeginEvent.cpp
 	AnimateEndEvent.cpp

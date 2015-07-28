@@ -721,7 +721,12 @@ void ImplicitHierarchicalMap3::sewVolumes(Dart d, Dart e, bool withBoundary)
         do
         {
             this->setCurrentLevel(getDartLevel(it));
-            this->setDartEmbedding<VERTEX>(it, ParentMap::getEmbedding<VERTEX>(phi1MaxLvl(phi3MaxLvl(it)))) ;
+            const unsigned emb = ParentMap::getEmbedding<VERTEX>(it);
+            TraversorDartsOfOrbit< MAP, VERTEX> traDoO(*this, VertexCell(it));
+            for (Dart doo = traDoO.begin() ; doo != traDoO.end() ; doo = traDoO.next())
+            {
+                this->setDartEmbedding<VERTEX>(doo, emb) ;
+            }
             this->setCurrentLevel(curr);
             it = phi1(it) ;
         } while(it != d) ;

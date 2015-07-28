@@ -3,6 +3,10 @@
 
 namespace sofa {
 
+/////////////////////////
+//// PURE PYTHON TESTS
+/////////////////////////
+
 
 // static build of the test list
 static struct Tests : public Python_test_list
@@ -27,6 +31,40 @@ INSTANTIATE_TEST_CASE_P(Batch,
                         ::testing::ValuesIn(tests.list));
 
 TEST_P(Python_test, sofa_python_test)
+{
+    run(GetParam());
+}
+
+
+///////////////
+
+
+/////////////////////////
+//// PYTHON SCENE TESTS
+/////////////////////////
+
+// static build of the test list
+static struct SceneTests : public Python_test_list
+{
+    SceneTests()
+    {
+        static const std::string scenePath = std::string(SOFAPYTHON_TEST_PYTHON_DIR);
+
+        // TODO create more test with several (random?) arguments
+
+        addTest( "dataVecResize.py", scenePath );
+
+        // add python scene tests here
+    }
+} sceneTests;
+
+
+// run test list
+INSTANTIATE_TEST_CASE_P(Batch,
+                        Python_scene_test,
+                        ::testing::ValuesIn(sceneTests.list));
+
+TEST_P(Python_scene_test, sofa_python_scene_tests)
 {
     run(GetParam());
 }

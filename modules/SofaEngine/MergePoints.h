@@ -75,11 +75,14 @@ public:
         return DataTypes::Name();
     }
 
+    bool           initDone;
+
     Data<VecCoord> f_X1;
     Data<VecCoord> f_X2;
     Data<SetIndex> f_indices1;
     Data<SetIndex> f_indices2;
     Data<VecCoord> f_points;
+    Data<bool>     f_noUpdate;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MERGEPOINTS_CPP)
