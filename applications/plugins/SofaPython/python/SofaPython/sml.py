@@ -247,7 +247,11 @@ class Model:
                     continue
                 solid=Model.Solid(objXml)
                 self.parseMeshes(solid, objXml)
+                self.solids[solid.id]=solid
 
+            # skinning
+            for objXml in modelXml.iter("solid"):
+                solid=self.solids[objXml.attrib["id"]]
                 # TODO: support multiple meshes for skinning (currently only the first mesh is skinned)
                 for s in objXml.iter("skinning"):
                     if not s.attrib["solid"] in self.solids:
@@ -270,7 +274,7 @@ class Model:
                     skinning.weight = skinning.mesh.group[s.attrib["group"]].data[s.attrib["weight"]]
                     solid.skinnings.append(skinning)
 
-                self.solids[solid.id]=solid
+
 
             # joints
             self.parseJointGenerics(modelXml)
