@@ -251,15 +251,15 @@ class Model:
                 # TODO: support multiple meshes for skinning (currently only the first mesh is skinned)
                 for s in objXml.iter("skinning"):
                     if not s.attrib["solid"] in self.solids:
-                        print "ERROR: sml.Model: skinning for solid {0}: solid {1} is not defined".format(name, s.attrib["solid"])
+                        print "ERROR: sml.Model: skinning for solid {0}: solid {1} is not defined".format(solid.name, s.attrib["solid"])
                         continue
                     skinning = Model.Skinning()
                     if not s.attrib["solid"] in self.solids :
-                        print "ERROR: sml.Model: skinning for solid {0}: bone (solid) {1} not defined".format(name, s.attrib["solid"])
+                        print "ERROR: sml.Model: skinning for solid {0}: bone (solid) {1} not defined".format(solid.name, s.attrib["solid"])
                         continue
                     skinning.solid = self.solids[s.attrib["solid"]]
                     if not s.attrib["mesh"] in self.meshes :
-                        print "ERROR: sml.Model: skinning for solid {0}: mesh {1} not defined".format(name, s.attrib["mesh"])
+                        print "ERROR: sml.Model: skinning for solid {0}: mesh {1} not defined".format(solid.name, s.attrib["mesh"])
                         continue
                     skinning.mesh = self.meshes[s.attrib["mesh"]]
                     #TODO: check that this mesh is also part of the solid
