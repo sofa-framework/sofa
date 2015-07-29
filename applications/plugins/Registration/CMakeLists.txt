@@ -44,12 +44,14 @@ set(README_FILES README.txt)
 include(./python/python.cmake)
 
 find_package(SofaGui REQUIRED)
-find_package(image)
+find_package(image QUIET)
 
 if(image_FOUND)
     list(APPEND HEADER_FILES "IntensityProfileRegistrationForceField.h")
     list(APPEND HEADER_FILES "IntensityProfileRegistrationForceField.inl")
     list(APPEND SOURCE_FILES "IntensityProfileRegistrationForceField.cpp")
+else()
+    message(STATUS "Registration: could not find image")
 endif()
 
 
@@ -58,7 +60,7 @@ set(REGISTRATION_DEPENDENCY_INCLUDE_DIR ${SofaBase_INCLUDE_DIRS} ${Newmat_INCLUD
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Registration.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/Registration/Registration.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Registration/Registration.h
-         DESTINATION "${REGISTRATION_INSTALL_INCLUDE_DIR}/Registration")
+        DESTINATION "${REGISTRATION_INSTALL_INCLUDE_DIR}/Registration")
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})

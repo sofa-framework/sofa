@@ -52,6 +52,8 @@ link_directories(${BULLET_LIBRARY_DIRS})
 
 if(Compliant_FOUND)
     list(APPEND SOURCE_FILES BulletConvexHullCompliantContacts.cpp)
+else()
+    message(STATUS "BulletCollisionDetection: could not find Compliant, won't build CompliantContacts")
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})

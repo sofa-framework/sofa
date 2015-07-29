@@ -13,7 +13,7 @@ find_package(SofaFramework REQUIRED)
 find_package(CGAL REQUIRED)
 find_package(MPFR REQUIRED)
 find_package(GMP REQUIRED)
-find_package(Boost REQUIRED COMPONENTS system thread)
+find_package(Boost QUIET REQUIRED COMPONENTS system thread)
 
 if(NOT TARGET CGALPlugin)
 	include("${CMAKE_CURRENT_LIST_DIR}/CGALPluginTargets.cmake")

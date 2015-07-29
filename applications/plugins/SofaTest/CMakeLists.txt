@@ -45,6 +45,8 @@ if(SofaPython_FOUND)
     list(APPEND HEADER_FILES "Python_test.h")
     list(APPEND SOURCE_FILES "Python_test.cpp")
     include(./python/python.cmake) # Defines PYTHON_FILES
+else()
+    message(STATUS "SofaTest: could not find SofaPython")
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})

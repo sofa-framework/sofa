@@ -10,7 +10,7 @@ set(CGALPLUGIN_VERSION ${CGALPLUGIN_MAJOR_VERSION}.${CGALPLUGIN_MINOR_VERSION}.$
 set(CGALPLUGIN_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
 set(CGALPLUGIN_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(CGALPLUGIN_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(CGALPLUGIN_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/image)
+set(CGALPLUGIN_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/CGALPlugin)
 
 set(CGALPLUGIN_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
 set(CGALPLUGIN_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
@@ -42,13 +42,15 @@ find_package(CGAL REQUIRED)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 find_package(MPFR REQUIRED)
 find_package(GMP REQUIRED)
-find_package(Boost REQUIRED COMPONENTS system thread)
+find_package(Boost QUIET REQUIRED COMPONENTS system thread)
 
-find_package(image)
+find_package(image QUIET)
 if(image_FOUND)
     list(APPEND HEADER_FILES MeshGenerationFromImage.h)
     list(APPEND HEADER_FILES MeshGenerationFromImage.inl)
     list(APPEND SOURCE_FILES MeshGenerationFromImage.cpp)
+else()
+    message(STATUS "CGALPlugin: could not find image, won't build MeshGenerationFromImage")
 endif()
 
 set(CGALPLUGIN_DEPENDENCY_INCLUDE_DIR ${SofaFramework_INCLUDE_DIRS}

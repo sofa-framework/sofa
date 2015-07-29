@@ -19,7 +19,7 @@ set(README_FILES
 	PluginSensableEmulation.txt)
 
 find_package(SofaGeneral REQUIRED)
-find_package(Boost COMPONENTS thread REQUIRED)
+find_package(Boost QUIET COMPONENTS thread REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})

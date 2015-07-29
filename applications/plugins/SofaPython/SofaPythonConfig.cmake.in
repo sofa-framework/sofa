@@ -9,7 +9,10 @@ set_and_check(SOFAPYTHON_INCLUDE_DIR "@PACKAGE_SOFAPYTHON_INCLUDE_DIR@")
 
 check_required_components(SofaPython)
 
+find_package(PythonLibs 2.7 REQUIRED)
 find_package(SofaGui REQUIRED)
+find_package(SofaGeneral REQUIRED)
+find_package(SofaMisc REQUIRED)
 
 set(SOFA_HAVE_PYTHON "@SOFA_HAVE_PYTHON@")
 

@@ -43,7 +43,7 @@ set(UI_FILES
  	VRenderInterface.ui)
 
 find_package(OpenGL REQUIRED)
-find_package(Qt4 REQUIRED QtCore QtOpenGL QtXml QtGui)
+find_package(Qt4 QUIET REQUIRED QtCore QtOpenGL QtXml QtGui)
 include(${QT_USE_FILE})
 
 qt4_wrap_cpp(MOC_FILES ${HEADER_FILES})
