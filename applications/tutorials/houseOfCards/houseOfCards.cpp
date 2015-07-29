@@ -29,7 +29,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/CollisionModel.h>
-#include <sofa/simulation/tree/tree.h>
+#include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
