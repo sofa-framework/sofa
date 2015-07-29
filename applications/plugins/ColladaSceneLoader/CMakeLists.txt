@@ -23,19 +23,27 @@ find_package(Flexible QUIET)
 find_package(image QUIET)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_COLLADASCENELOADER")
 target_link_libraries(${PROJECT_NAME} SofaLoader SofaSimulationCommon SofaBaseMechanics SofaRigid SofaBoundaryCondition SofaBaseTopology SofaBaseVisual SofaOpenglVisual SofaDeformable SofaMeshCollision)
+set(COLLADASCENELOADER_COMPILE_FLAGS "-DSOFA_BUILD_COLLADASCENELOADER")
 
 include_directories(${ASSIMP_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${ASSIMP_LIBRARIES})
 
 if(Flexible_FOUND)
     target_link_libraries(${PROJECT_NAME} Flexible)
+    set(COLLADASCENELOADER_COMPILE_FLAGS "${COLLADASCENELOADER_COMPILE_FLAGS} -DSOFA_HAVE_PLUGIN_FLEXIBLE")
+else()
+    message(STATUS "ColladaSceneLoader: could not find Flexible")
 endif()
 
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} image)
+    set(COLLADASCENELOADER_COMPILE_FLAGS "${COLLADASCENELOADER_COMPILE_FLAGS} -DSOFA_HAVE_PLUGIN_IMAGE")
+else()
+    message(STATUS "ColladaSceneLoader: could not find image")
 endif()
+
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${COLLADASCENELOADER_COMPILE_FLAGS}")
 
 install(TARGETS ${PROJECT_NAME}
     COMPONENT ColladaSceneLoader_libraries
