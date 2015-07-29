@@ -197,8 +197,11 @@ public:
             const defaulttype::BaseMatrix* J; ///< mapping jacobian
 		};
 
-		// this is to remove f*cking mouse dofs
-		bool mechanical; ///< is it a mechanical dof i.e. influenced by a mass or stiffness or compliance
+        /// flagged as a mechanical dof
+        /// i.e. influenced by a mass or damping or stiffness or compliance
+        /// Note it includes having a mechanical child
+        /// or a child mapped with a mapping generating geometric stiffness
+        bool mechanical;
 		
 		bool master() const { return mechanical && map.empty(); }
         bool compliant() const { return mechanical && notempty(C); }
