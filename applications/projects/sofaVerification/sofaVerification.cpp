@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/tree/init.h>
 #include <SofaLoader/ReadState.h>
 #include <SofaExporter/WriteState.h>
 #include <SofaValidation/CompareState.h>
