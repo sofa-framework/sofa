@@ -6,6 +6,11 @@ macro(add_plugin plugin)
     if(${plugin_option})
         add_subdirectory(../applications/plugins/${plugin} ${CMAKE_CURRENT_BINARY_DIR}/${plugin})
         set_target_properties(${plugin} PROPERTIES FOLDER "SofaPlugins") # IDE folder
+    else()
+        # Workaroung: if we uncheck a plugin in cmake-gui, we remove the
+        # (possibly not existing) cmake package configuration file, to ensure
+        # that searching for this plugin with find_package() will fail.
+        file(REMOVE ${CMAKE_BINARY_DIR}/${plugin}/${plugin}Config.cmake)
     endif()
 endmacro()
 
