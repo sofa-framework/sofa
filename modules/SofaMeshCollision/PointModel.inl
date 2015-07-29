@@ -94,7 +94,7 @@ void TPointModel<DataTypes>::init()
         m_lmdFilter = node->getNodeObject< PointLocalMinDistanceFilter >();
     }
 
-    const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
+    const int npoints = mstate->getSize();
     resize(npoints);
     if (computeNormals.getValue()) updateNormals();
 
@@ -166,7 +166,7 @@ void TPointModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
             vparams->drawTool()->setPolygonMode(0,true);
 
         // Check topological modifications
-        const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
+        const int npoints = mstate->getSize();
         if (npoints != size)
         {
             resize(npoints);
@@ -271,7 +271,7 @@ template<class DataTypes>
 void TPointModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
+    const int npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -307,7 +307,7 @@ template<class DataTypes>
 void TPointModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
+    const int npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -456,7 +456,7 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
     defaulttype::Vector3 pt = p();
 
     sofa::core::topology::BaseMeshTopology* mesh = this->model->getMeshTopology();
-    helper::vector<defaulttype::Vector3> x = (*this->model->mstate->read(sofa::core::ConstVecCoordId::position())->getValue());
+    const typename DataTypes::VecCoord& x = (*this->model->mstate->read(sofa::core::ConstVecCoordId::position())->getValue());
 
     const helper::vector <unsigned int>& trianglesAroundVertex = mesh->getTrianglesAroundVertex(this->index);
     const helper::vector <unsigned int>& edgesAroundVertex = mesh->getEdgesAroundVertex(this->index);
@@ -517,6 +517,32 @@ template<class DataTypes>
 void TPointModel<DataTypes>::setFilter(PointLocalMinDistanceFilter *lmdFilter)
 {
     m_lmdFilter = lmdFilter;
+}
+
+
+template<class DataTypes>
+void TPointModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+{
+    if( !onlyVisible ) return;
+
+    static const Real max_real = std::numeric_limits<Real>::max();
+    static const Real min_real = std::numeric_limits<Real>::min();
+    Real maxBBox[3] = {min_real,min_real,min_real};
+    Real minBBox[3] = {max_real,max_real,max_real};
+
+    for (int i=0; i<size; i++)
+    {
+        Element e(this,i);
+        const defaulttype::Vector3& p = e.p();
+
+        for (int c=0; c<3; c++)
+        {
+            if (p[c] > maxBBox[c]) maxBBox[c] = (Real)p[c];
+            else if (p[c] < minBBox[c]) minBBox[c] = (Real)p[c];
+        }
+    }
+
+    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 
