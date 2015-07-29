@@ -47,6 +47,7 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/tree/DeleteVisitor.h>
+#include <sofa/simulation/tree/init.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaBaseCollision/MinProximityIntersection.h>
