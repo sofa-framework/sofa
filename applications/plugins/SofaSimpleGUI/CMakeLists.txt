@@ -60,7 +60,7 @@ configure_package_config_file(SofaSimpleGUIConfig.cmake.in
 install(EXPORT SofaSimpleGUITargets
         DESTINATION ${SOFASIMPLEGUI_INSTALL_CMAKE_DIR})
 
-install(FILES ${SOFASIMPLEGUI_BUILD_CMAKE_DIR}/SofaSimpleGUIConfigInstall.cmake
+install(FILES ${CMAKE_BINARY_DIR}/SofaSimpleGUI/SofaSimpleGUIConfigInstall.cmake
         DESTINATION ${SOFASIMPLEGUI_INSTALL_CMAKE_DIR}
         RENAME SofaSimpleGUIConfig.cmake)
 
