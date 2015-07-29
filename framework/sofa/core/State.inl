@@ -68,12 +68,12 @@ void State<DataTypes>::computeBBox(const core::ExecParams* params, bool)
     if (xSize <= 0)
         return;
 
-    const Real max_real = std::numeric_limits<Real>::max();
-    Real p[3] = {0,0,0};
-    Real maxBBox[3] = {-max_real,-max_real,-max_real};
-    Real minBBox[3] = {max_real,max_real,max_real};
+    Real p[3];
+    DataTypes::get(p[0], p[1], p[2], x[0]);
+    Real maxBBox[3] = {p[0], p[1], p[2]};
+    Real minBBox[3] = {p[0], p[1], p[2]};
 
-    for (size_t i = 0; i < xSize; i++)
+    for (size_t i = 1; i < xSize; i++)
     {
         DataTypes::get(p[0], p[1], p[2], x[i]);
         for (int c = 0; c < 3; c++)
@@ -81,7 +81,7 @@ void State<DataTypes>::computeBBox(const core::ExecParams* params, bool)
             if (p[c] > maxBBox[c])
                 maxBBox[c] = p[c];
 
-            if (p[c] < minBBox[c])
+            else if (p[c] < minBBox[c])
                 minBBox[c] = p[c];
         }
     }

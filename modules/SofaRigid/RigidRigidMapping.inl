@@ -801,7 +801,7 @@ void RigidRigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cpar
             {
                 // Commented by PJ. Bug??
                 // o.addCol(out.size() - 1 - index.getValue(), result);
-                const unsigned int numDofs = this->getFromModel()->read(core::ConstVecCoordId::position())->getValue().size();
+                const unsigned int numDofs = this->getFromModel()->getSize();
                 o.addCol(numDofs - 1 - index.getValue(), result);
             }
         }
@@ -810,7 +810,7 @@ void RigidRigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cpar
     }
     case 1:
     {
-        const unsigned int numDofs = this->getFromModel()->read(core::ConstVecCoordId::position())->getValue().size();
+        const unsigned int numDofs = this->getFromModel()->getSize();
         const unsigned int val = repartition.getValue()[0];
 
         typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
@@ -855,7 +855,7 @@ void RigidRigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cpar
     }
     default:
     {
-        const unsigned int numDofs = this->getFromModel()->read(core::ConstVecCoordId::position())->getValue().size();
+        const unsigned int numDofs = this->getFromModel()->getSize();
 
         typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 

@@ -91,7 +91,7 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
     int ldim = (1<<lscale);
     int nleaf = Grid::GRIDDIM/ldim;
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
+    const int npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
