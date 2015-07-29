@@ -59,7 +59,7 @@ void TOBBModel<DataTypes>::init()
         return;
     }
 
-    const int npoints = _mstate->read(core::ConstVecCoordId::position())->getValue().size();
+    const int npoints = _mstate->getSize();
     resize(npoints);
 }
 
@@ -87,7 +87,7 @@ void TOBBModel<DataTypes>::resize(int size){
 template<class DataTypes>
 void TOBBModel<DataTypes>::computeBoundingTree(int maxDepth){
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = _mstate->read(core::ConstVecCoordId::position())->getValue().size();
+    const int npoints = _mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {

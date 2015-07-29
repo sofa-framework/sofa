@@ -92,19 +92,19 @@ void UniformMass<DataTypes, MassType>::reinit()
     {
         MassType* m = this->mass.beginEdit();
 
-        if(localRange.getValue() [0] >= 0  && localRange.getValue() [1] > 0 && ( unsigned int ) localRange.getValue() [1]+1 < this->mstate->read(core::ConstVecCoordId::position())->getValue().size() )
+        if(localRange.getValue() [0] >= 0  && localRange.getValue() [1] > 0 && ( unsigned int ) localRange.getValue() [1]+1 < this->mstate->getSize() )
         {
             *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / (localRange.getValue()[1]-localRange.getValue()[0]) );
         }
         else
         {
-            *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->read(core::ConstVecCoordId::position())->getValue().size() );
+            *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->getSize() );
         }
         this->mass.endEdit();
     }
     else
     {
-        this->totalMass.setValue ( this->mstate->read(core::ConstVecCoordId::position())->getValue().size() * (Real)this->mass.getValue() );
+        this->totalMass.setValue ( this->mstate->getSize() * (Real)this->mass.getValue() );
     }
 }
 
@@ -141,7 +141,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
                 if ( m_handleTopoChange.getValue() )
                 {
                     MassType* m = this->mass.beginEdit();
-                    *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->read(core::ConstVecCoordId::position())->getValue().size() );
+                    *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->getSize() );
                     this->mass.endEdit();
                 }
                 break;
@@ -149,7 +149,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
             case core::topology::POINTSREMOVED:
                 if ( m_handleTopoChange.getValue() )
                 {
-                    this->totalMass.setValue (this->mstate->read(core::ConstVecCoordId::position())->getValue().size() * (Real)this->mass.getValue() );
+                    this->totalMass.setValue (this->mstate->getSize() * (Real)this->mass.getValue() );
                 }
                 break;
 

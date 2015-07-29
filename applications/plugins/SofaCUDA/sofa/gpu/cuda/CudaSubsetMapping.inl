@@ -78,7 +78,7 @@ void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::postIn
     const IndexArray& map = this->f_indices.getValue();
     if (!map.empty())
     {
-        this->data.init(this->fromModel->read(core::ConstVecCoordId::position())->getValue().size(), map);
+        this->data.init(this->fromModel->getSize(), map);
     }
 }
 
@@ -128,7 +128,7 @@ void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::post
     const IndexArray& map = this->f_indices.getValue();
     if (!map.empty())
     {
-        this->data.init(this->fromModel->read(core::ConstVecCoordId::position())->getValue().size(), map);
+        this->data.init(this->fromModel->getSize(), map);
     }
 }
 
@@ -176,7 +176,7 @@ void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3fTypes>::postI
     const IndexArray& map = this->f_indices.getValue();
     if (!map.empty())
     {
-        this->data.init(this->fromModel->read(core::ConstVecCoordId::position())->getValue().size(), map);
+        this->data.init(this->fromModel->getSize(), map);
     }
 }
 
@@ -224,7 +224,7 @@ void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3f1Types>::postI
     const IndexArray& map = this->f_indices.getValue();
     if (!map.empty())
     {
-        this->data.init(this->fromModel->read(core::ConstVecCoordId::position())->getValue().size(), map);
+        this->data.init(this->fromModel->getSize(), map);
     }
 }
 
