@@ -245,6 +245,8 @@ public:
     {
         return DataTypes::Name();
     }
+
+    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false);
 };
 
 template<class DataTypes>
