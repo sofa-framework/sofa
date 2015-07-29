@@ -17,7 +17,7 @@ set(SOURCE_FILES
 	src/DataExchange.cpp)
 
 find_package(SofaMisc REQUIRED)
-find_package(Boost COMPONENTS thread)
+find_package(Boost QUIET COMPONENTS thread)
 
 if(Boost_FOUND)
 	list(APPEND HEADER_FILES "src/TaskSchedulerBoost.h")

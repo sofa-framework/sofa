@@ -43,11 +43,13 @@ endif()
 
 add_definitions("-DFLEXIBLE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 
-find_package(image)
+find_package(image QUIET)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} Flexible SofaTest SofaGTestMain)
-target_link_libraries(${PROJECT_NAME} image)
+if(image_FOUND)
+    target_link_libraries(${PROJECT_NAME} image)
+endif()
 
 # ???
 if(WIN32 AND NOT CMAKE_CL_64)

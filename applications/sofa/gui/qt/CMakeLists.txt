@@ -147,7 +147,7 @@ endif()
 
 set(QT_USE_IMPORTED_TARGETS 1)
 set(QT4_NO_LINK_QTMAIN 1)
-find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qt3support qtxml REQUIRED)
+find_package(Qt4 QUIET COMPONENTS qtcore qtgui qtopengl qt3support qtxml REQUIRED)
 
 list(APPEND SOFAGUIQT_LINK_LIBRARIES
      ${QT_QTCORE_LIBRARY}

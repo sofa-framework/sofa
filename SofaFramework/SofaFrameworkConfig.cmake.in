@@ -52,7 +52,7 @@ if(SOFA_HAVE_GLUT)
 endif()
 
 if(SOFA_HAVE_BOOST)
-    find_package(Boost REQUIRED COMPONENTS thread system date_time chrono QUIET)
+    find_package(Boost QUIET REQUIRED COMPONENTS thread system date_time chrono)
     sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
     sofa_create_target(BoostThread SofaFramework "${Boost_THREAD_LIBRARY}" "${Boost_INCLUDE_DIRS}")
     sofa_create_target(BoostDateTime SofaFramework "${Boost_DATE_TIME_LIBRARY}" "${Boost_INCLUDE_DIRS}")

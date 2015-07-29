@@ -16,7 +16,7 @@ set(SOURCE_FILES
     THMPGHashTable.cpp)
 
 find_package(SofaCommon REQUIRED)
-find_package(Boost COMPONENTS system REQUIRED)
+find_package(Boost QUIET COMPONENTS system REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_THMPGSPATIALHASHING")

@@ -16,7 +16,7 @@ set(SOURCE_FILES
 
 find_package(SofaGeneral REQUIRED)
 find_package(Compliant REQUIRED)
-find_package(Flexible)
+find_package(Flexible QUIET)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaEigen2Solver)
@@ -26,6 +26,8 @@ set(PREASSEMBLEDMASS_COMPILER_FLAGS "-DSOFA_BUILD_PreassembledMass")
 if(Flexible_FOUND)
     target_link_libraries(${PROJECT_NAME} Flexible)
     set(PREASSEMBLEDMASS_COMPILER_FLAGS "${PREASSEMBLEDMASS_COMPILER_FLAGS} -DSOFA_HAVE_FLEXIBLE")
+else()
+    message(STATUS "PreassembledMass: could not find Flexible")
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS ${PREASSEMBLEDMASS_COMPILER_FLAGS})

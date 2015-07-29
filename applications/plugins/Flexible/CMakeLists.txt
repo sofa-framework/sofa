@@ -199,6 +199,8 @@ if(image_FOUND)
     list(APPEND HEADER_FILES "mass/MassFromDensity.cpp")
    	list(APPEND SOURCE_FILES "mass/ImageDensityMass.cpp")
     list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.cpp")
+else()
+    message(STATUS "Flexible: could not find image")
 endif()
 
 
