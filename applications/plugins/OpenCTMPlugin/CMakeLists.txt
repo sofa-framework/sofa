@@ -3,11 +3,13 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
     initOpenCTMPlugin.h
     OpenCTMLoader.h
+    OpenCTMExporter.h
 	)
 
 set(SOURCE_FILES
     initOpenCTMPlugin.cpp
     OpenCTMLoader.cpp
+    OpenCTMExporter.cpp
 	)
 
 set(README_FILES
