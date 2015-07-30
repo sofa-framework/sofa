@@ -22,9 +22,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include <sofa/helper/helper.h>
-
 #include <sofa/helper/gl/Capture.h>
 #include <sofa/helper/io/ImageBMP.h>
 #ifdef SOFA_HAVE_PNG

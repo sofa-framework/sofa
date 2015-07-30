@@ -28,7 +28,6 @@
 #ifndef SOFA_NO_OPENGL
 
 #include <sofa/helper/system/gl.h>
-
 #include <sofa/helper/helper.h>
 #include <sofa/helper/io/Image.h>
 

@@ -284,5 +284,4 @@ TEST(DAGNodeTest, objectDestruction_childNode_complexChild)
 }
 
 
-
-
+}// namespace sofa
