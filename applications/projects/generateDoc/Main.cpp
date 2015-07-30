@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "generateDoc.h"
 #include <SofaComponentMain/init.h>
-#include <sofa/simulation/tree/tree.h>
+#include <sofa/simulation/tree/init.h>
 #include <iostream>
 #include <fstream>
 

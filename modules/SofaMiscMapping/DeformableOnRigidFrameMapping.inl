@@ -515,7 +515,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ma
                     // Commented by PJ. Bug??
                     // oRoot.addCol(out.size() - 1 - index.getValue(), result);
 
-                    const unsigned int numDofs = m_fromModel->read(core::ConstVecCoordId::position())->getValue().size();
+                    const unsigned int numDofs = m_fromModel->getSize();
                     oRoot.addCol(numDofs - 1 - index.getValue(), result);
                 }
             }

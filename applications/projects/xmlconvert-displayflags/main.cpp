@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <tinyxml.h>
 #include "xmlvisitor.h"
+#include <sofa/core/init.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
 TiXmlDocument* loadFromFile(const char *filename)

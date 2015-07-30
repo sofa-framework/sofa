@@ -10,6 +10,7 @@ from SofaPython import Quaternion
 from SofaPython.Tools import listToStr as concat
 import SofaPython.mass
 import SofaPython.sml
+import Flexible.API
 import Flexible.sml
 
 def insertRigid(parentNode, rigidModel, density, param=None):
@@ -198,18 +199,7 @@ class SceneSkinning(SceneArticulatedRigid) :
                             deformable = Flexible.API.Deformable(self.nodes["armature"], solidModel.name+"_"+mesh.name)
                             deformable.loadMesh(mesh.source)
                             deformable.addMechanicalObject()
-                            # build the sofa indices and weights
-                            indices = dict()
-                            weights = dict()
-                            for skinning in solidModel.skinnings:
-                                currentBoneIndex = self.skinningArmatureBoneIndexById[skinning.solid.id]
-                                for index,weight in zip(skinning.index, skinning.weight):
-                                    if not index in indices:
-                                        indices[index]=list()
-                                        weights[index]=list()
-                                    indices[index].append(currentBoneIndex)
-                                    weights[index].append(weight)
-                            #TODO fill potential holes in indices/weights ?
+                            (indices, weights) = Flexible.sml.getSolidSkinningIndicesAndWeights(solidModel, self.skinningArmatureBoneIndexById)
                             deformable.addSkinning(self.nodes["armature"], indices.values(), weights.values())
                             deformable.addVisual()
                             self.deformables[mesh.id] = deformable

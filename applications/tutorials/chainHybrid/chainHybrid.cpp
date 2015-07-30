@@ -26,7 +26,7 @@
 #include <SceneCreator/SceneCreator.h>
 
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/tree/tree.h>
+#include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/common/Node.h>
 

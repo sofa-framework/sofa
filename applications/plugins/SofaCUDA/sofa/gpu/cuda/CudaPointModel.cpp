@@ -69,7 +69,7 @@ void CudaPointModel::init()
         return;
     }
 
-    const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
+    const int npoints = mstate->getSize();
     int gsize = groupSize.getValue();
     int nelems = (npoints + gsize-1)/gsize;
     resize(nelems);
@@ -121,7 +121,7 @@ using sofa::component::collision::CubeModel;
 void CudaPointModel::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
+    const int npoints = mstate->getSize();
     const int gsize = groupSize.getValue();
     const int nelems = (npoints + gsize-1)/gsize;
     bool updated = false;

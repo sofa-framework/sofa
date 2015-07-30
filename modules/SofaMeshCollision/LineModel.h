@@ -203,6 +203,8 @@ public:
         return DataTypes::Name();
     }
 
+    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible);
+
 
 protected:
 
