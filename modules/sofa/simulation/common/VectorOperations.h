@@ -26,7 +26,7 @@
 #define SOFA_SIMULATION_COMMON_VECTOROPERATIONS_H
 
 #include <sofa/core/behavior/BaseVectorOperations.h>
-#include <sofa/SofaSimulation.h>
+#include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/VisitorExecuteFunc.h>
 
 namespace sofa

@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_IO_SPHERELOADER_H
 #define SOFA_HELPER_IO_SPHERELOADER_H
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 namespace sofa
 {
 

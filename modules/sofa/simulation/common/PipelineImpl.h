@@ -26,7 +26,7 @@
 #define SOFA_SIMULATION_PIPELINEIMPL_H
 
 #include <sofa/core/collision/Pipeline.h>
-#include <sofa/SofaSimulation.h>
+#include <sofa/simulation/common/common.h>
 
 #include <vector>
 

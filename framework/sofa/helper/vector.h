@@ -34,7 +34,7 @@
 #include <typeinfo>
 #include <cstdio>
 
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 #include <sofa/helper/MemoryManager.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 

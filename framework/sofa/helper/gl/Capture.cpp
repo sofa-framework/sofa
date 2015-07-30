@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 
 #include <sofa/helper/gl/Capture.h>
 #include <sofa/helper/io/ImageBMP.h>

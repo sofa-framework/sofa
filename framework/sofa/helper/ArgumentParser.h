@@ -30,7 +30,7 @@
 #ifndef SOFA_HELPER_ARGUMENTPARSER_H
 #define SOFA_HELPER_ARGUMENTPARSER_H
 
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 
 #include <iostream>
 #include <cstdlib>

@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_GL_GLSLSHADER_H
 #define SOFA_HELPER_GL_GLSLSHADER_H
 
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 
 #ifndef SOFA_HAVE_GLEW
 #error GL Shader support requires GLEW. Please define SOFA_HAVE_GLEW to use shaders.
@@ -39,7 +39,7 @@
 #include <string>
 #include <string.h>
 
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 #include <vector>
 #include <map>
 #include <iostream>

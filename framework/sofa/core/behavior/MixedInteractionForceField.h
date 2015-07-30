@@ -25,7 +25,7 @@
 #ifndef SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONFORCEFIELD_H
 #define SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONFORCEFIELD_H
 
-#include <sofa/SofaFramework.h>
+#include <sofa/core/core.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/Vec.h>

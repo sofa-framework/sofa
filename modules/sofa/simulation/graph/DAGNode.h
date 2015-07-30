@@ -25,7 +25,7 @@
 #ifndef SOFA_SIMULATION_GRAPH_DAGNODE_H
 #define SOFA_SIMULATION_GRAPH_DAGNODE_H
 
-#include <sofa/SofaSimulation.h>
+#include <sofa/simulation/graph/graph.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/simulation/common/Visitor.h>

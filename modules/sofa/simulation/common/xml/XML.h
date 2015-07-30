@@ -25,7 +25,7 @@
 #ifndef SOFA_SIMULATION_COMMON_XML_XML_H
 #define SOFA_SIMULATION_COMMON_XML_XML_H
 
-#include <sofa/SofaSimulation.h>
+#include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/xml/Element.h>
 
 #ifdef SOFA_XML_PARSER_TINYXML

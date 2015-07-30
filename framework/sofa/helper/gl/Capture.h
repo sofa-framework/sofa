@@ -29,7 +29,7 @@
 
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/io/Image.h>
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {

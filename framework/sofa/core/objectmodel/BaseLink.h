@@ -30,7 +30,7 @@
 #endif
 
 #include <sofa/helper/fixed_array.h>
-#include <sofa/SofaFramework.h>
+#include <sofa/core/core.h>
 #include <sofa/core/ExecParams.h>
 #include <string>
 

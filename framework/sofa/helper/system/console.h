@@ -2,7 +2,7 @@
 #define __HELPER_SYSTEM_console_H_
 
 
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 #include <string.h>
 #include <iostream>
 #include <sofa/helper/system/config.h>

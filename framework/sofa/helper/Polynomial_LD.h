@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_POLYNOMIAL_LD_H
 #define SOFA_HELPER_POLYNOMIAL_LD_H
 
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>

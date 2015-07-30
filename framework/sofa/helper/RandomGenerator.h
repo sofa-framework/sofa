@@ -32,7 +32,7 @@
 #ifndef RANDOMGENERATOR_H_
 #define RANDOMGENERATOR_H_
 
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 #include <sofa/helper/system/config.h>
 #include <cstdlib>
 

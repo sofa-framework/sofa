@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 #include "CircularQueue.h"
 
 #ifdef SOFA_HAVE_BOOST

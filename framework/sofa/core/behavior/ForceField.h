@@ -25,7 +25,7 @@
 #ifndef SOFA_CORE_BEHAVIOR_FORCEFIELD_H
 #define SOFA_CORE_BEHAVIOR_FORCEFIELD_H
 
-#include <sofa/SofaFramework.h>
+#include <sofa/core/core.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>

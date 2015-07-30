@@ -29,7 +29,7 @@
 #pragma once
 #endif
 
-#include <sofa/SofaFramework.h>
+#include <sofa/core/core.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/vector.h>
