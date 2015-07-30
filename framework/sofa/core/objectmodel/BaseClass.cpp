@@ -278,7 +278,7 @@ std::string BaseClass::decodeTemplateName(const std::type_info& t)
         name[dest++] = realname[start++];
     }
     name.resize(dest);
-    return name.substr(0, name.length()-1);
+    return name;
     /*
         std::string name = BaseClass::decodeTypeName(t);
         // Find template

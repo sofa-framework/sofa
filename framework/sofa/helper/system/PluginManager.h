@@ -171,7 +171,6 @@ private:
     PluginManager();
     ~PluginManager();
     PluginManager(const PluginManager& );
-    DynamicLibrary* loadLibrary(const std::string& path,  std::ostream* errlog=&std::cerr);
     std::ostream& writeToStream( std::ostream& ) const;
     std::istream& readFromStream( std::istream& );
 private:

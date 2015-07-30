@@ -30,7 +30,6 @@
 #include <cmath>
 #include <cassert>
 #include <iostream>
-
 #include <sofa/helper/helper.h>
 
 namespace sofa

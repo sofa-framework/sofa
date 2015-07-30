@@ -31,6 +31,7 @@
 #include <sofa/core/objectmodel/ContextObject.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {

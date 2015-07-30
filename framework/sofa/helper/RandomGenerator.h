@@ -32,10 +32,8 @@
 #ifndef RANDOMGENERATOR_H_
 #define RANDOMGENERATOR_H_
 
-#include <sofa/helper/helper.h>
-#include <sofa/helper/system/config.h>
 #include <cstdlib>
-
+#include <sofa/helper/helper.h>
 #include <limits>
 
 #define RAND48_SEED_0   (0x330e)

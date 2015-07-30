@@ -22,11 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/helper.h>
 #include <sofa/helper/gl/Texture.h>
 #include <cassert>
 #include <cstdio>
-#include <sofa/helper/system/glu.h>
 
 namespace sofa
 {

@@ -66,12 +66,10 @@ ExecParams::ExecParamsThreadStorage* ExecParams::threadStorage()
 bool ExecParams::checkValidStorage() const
 {
     ExecParams::ExecParamsThreadStorage* ts = threadStorage();
-    if (this == NULL)
-    {
-        std::cerr << "[THREAD " << ts->threadID << "]: ERROR NULL ExecParams" << std::endl;
-        return false;
-    }
-    if (storage == ts) return true;
+
+    if (storage == ts)
+        return true;
+
     std::cerr << "[THREAD " << ts->threadID << "]: ERROR invalid ExecParams used, belonging to thread " << storage->threadID << std::endl;
     const_cast<ExecParams*>(this)->storage = ts;
     return false;
