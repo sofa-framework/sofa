@@ -19,35 +19,21 @@
 	<!--<OptiTrackNatNetClient name="optiTrackNatNetClient1"  listening="1"  serverName="169.254.165.78"  scale="1000"  drawTrackedMarkersSize="0"  drawOtherMarkersSize="2" />-->
 	
 	<Node 	 name="Crane"  >	
-		<ImageContainer template="ImageD" name="image" filename="C:\Users\SOFA_GPU\Desktop\CraneSegmentation\crane_bis2.mhd"  transform="0 0 0 0 0 0 0.005 0.005 0.005 0 1 0"/>
-		<ImageFilter template="ImageD,ImageD" filter="1"  param="5"  name="gaussianFilter" src="@image" />
-
-
-		<CollisionToCarvingEngine  name="ctc"  template="ImageD,ImageD"  inputImage="@gaussianFilter.outputImage"  inputTransform="@gaussianFilter.outputTransform"  listening="1" trackedPosition="0 0 0"  value="0"  on="true"  size="5 5 5"/>
-		<ImageViewer template="ImageD" name="viewer"  src="@ctc" plane="1 1 1"/>
-		<MarchingCubesEngine template="ImageD" name="MCengine" image="@ctc.outputImage" transform="@ctc.outputTransform"  isoValue="0.3" subdiv="50 50 50" showMesh="true"/>
-		
-		<!--<OglModel template="ExtVec3f" name="InstrumentVisualModel"  position="@MCengine.position"  triangles="@MCengine.triangles"  scale3d="0.03 0.03 0.03" translation="0 0 0"  rotation="0 0 0"  material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />-->
-
+		<ImageContainer template="ImageD" name="image"  filename="C:\Users\SOFA_GPU\Desktop\CraneSegmentation\crane_smooth_hole4.mhd"  transform="0 0 0 0 0 0 0.005 0.005 0.005 0 1 0"/>
+		<ImageFilter template="ImageD,ImageD" filter="1"  param="1"  name="craneGaussianFilter" src="@image" />
+		<ImageViewer template="ImageD" name="viewer"  src="@craneGaussianFilter" plane="1 1 1"/>
+		<MarchingCubesEngine template="ImageD" name="MCengine" image="@craneGaussianFilter.outputImage" transform="@craneGaussianFilter.outputTransform"  isoValue="0.3" subdiv="50 50 50" showMesh="true"/>
 		<!--<OptiTrackNatNetDevice name="cubeDevice"  printLog="1"  listening="1"  trackableName="head"  trackableID="1"  isGlobalFrame="1"  inMarkersMeshFile="./meshs/markers-Grab.obj"  simMarkersMeshFile="./meshs/markers-Head.obj"  drawAxisSize="50 10 50"  drawMarkersSize="2"  drawMarkersColor="0 1 0 1" />-->
-
-		
 		<Node  	 name="CollisionModel"  >
 			<EulerImplicitSolver name="eulerImplicitSolver3" />
 			<CGLinearSolver template="GraphScattered" name="cGLinearSolver4"  tolerance="1e-009"  threshold="1e-009" />
-			<!--<MeshVTKLoader name="loader"  filename="C:\Users\SOFA_GPU\Downloads\sofa\sofa\examples\Demos\SkullOperations\meshs\tetemesh.vtk" />-->
-			<!--<MeshGmshLoader name="loader"  filename="C:\Users\SOFA_GPU\Downloads\sofa\sofa\examples\Demos\SkullOperations\meshs\tetemesh.gmsh" />-->
-			<MeshObjLoader name="loader"  filename="C:\Users\SOFA_GPU\Downloads\sofa\sofa\examples\Demos\SkullOperations\meshs\Dskull012.obj"/>
-			<MechanicalObject template="Vec3d" name="craneCollisionState"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1" showObject="1" showIndices="0" rotation="90 0 0"/>
+			<MeshObjLoader name="loader"  filename="C:\Users\SOFA_GPU\Downloads\sofa\sofa\examples\Demos\SkullOperations\meshs\Dskull012.obj" flipNormals="1"/>
+			<MechanicalObject template="Vec3d" name="craneCollisionState"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1" showObject="1" showIndices="0" rotation="90 0 0" /><!--scale3d="200 200 200" -->
 			<MeshTopology name="MCTopology"  position="@loader.position" edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetrahedra"  hexahedra="@loader.hexahedra"  drawEdges="0"  drawTriangles="0"  drawQuads="0"  drawTetrahedra="0"  drawHexahedra="0" />
-			<TTriangleModel template="Vec3d" name="CTM"  moving="0"  simulated="0"  contactStiffness="100" />
-			<TLineModel template="Vec3d" name="CLM"  moving="0"  simulated="0"  contactStiffness="100" />
-			<TPointModel template="Vec3d" name="CPM"  moving="0"  simulated="0"  contactStiffness="100" />			
+			<TTriangleModel template="Vec3d" name="CTM"  moving="0"  simulated="0"  contactStiffness="10" />
+			<TLineModel template="Vec3d" name="CLM"  moving="0"  simulated="0"  contactStiffness="10" />
+			<TPointModel template="Vec3d" name="CPM"  moving="0"  simulated="0"  contactStiffness="10" />			
 		</Node>
-		
-					<!--
-
-			-->
 		<!--
 		<Node name="Exporter">
 			<MechanicalObject template="Vec3d" position="@MCengine.position"  name="cubeCollisionState"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  restScale="1" />
@@ -56,6 +42,14 @@
 		</Node>
 		-->
 	</Node>
+	<Node name="Opening">
+		<ImageContainer template="ImageD" name="opening" filename="C:\Users\SOFA_GPU\Desktop\CraneSegmentation\boutdecrane.mhd"   transform="0 0 0 0 0 0 0.005 0.005 0.005 0 1 0"/>
+		<ImageFilter template="ImageD,ImageD" filter="1"  param="2"  name="openingGaussianFilter" src="@opening" />
+		<CollisionToCarvingEngine  name="ctc"  template="ImageD,ImageD"  inputImage="@./openingGaussianFilter.outputImage"  inputTransform="@./openingGaussianFilter.outputTransform"  listening="1" trackedPosition="0 0 0"  value="0"  on="true"  size="5 5 5"/>
+		<ImageViewer template="ImageD" name="viewer"  src="@ctc" plane="1 1 1"/>
+		<MarchingCubesEngine template="ImageD" name="MCengine" image="@ctc.outputImage" transform="@ctc.outputTransform"  isoValue="0.3" subdiv="100 100 100" showMesh="true"/>
+	</Node>
+
 
 	<Node 	 name="Omni"  >
 		<NewOmniDriver name="omniDriver1"  listening="1"  scale="50"  positionBase="0 0 0"  orientationBase="0.707 0 0 0.707"  omniVisu="0" />
@@ -76,9 +70,8 @@
 		<LCPForceFeedback template="Rigid3d" name="lCPForceFeedback1"  tags="omni"  listening="1"  activate="1"  forceCoef="0.001" />
 		<UncoupledConstraintCorrection template="Rigid3d" name="uncoupledConstraintCorrection1" />
 		<Node 	 name="VisualModel"  >
-			<!--<OglModel template="ExtVec3f" name="InstrumentVisualModel"  fileMesh="mesh/sphere.obj" scale3d="0.03 0.03 0.03" translation="-0.3 0 3.5"  rotation="0 -180 -90"  material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />-->
-			<OglModel template="ExtVec3f" name="InstrumentVisualModel"  fileMesh="mesh/stylus.obj" scale3d="" translation="0 0 0"  rotation="0 0 0"  material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
-			<RigidMapping template="Rigid3d,ExtVec3f" name="MM-&gt;VM mapping"  input="@../../Omni/DOFs"  output="@InstrumentVisualModel" />
+			<OglModel template="ExtVec3f" name="InstrumentVisualModel"  fileMesh="C:\Users\SOFA_GPU\Downloads\sofa\sofa\examples\Demos\SkullOperations\meshs/stylus.obj" scale3d="" translation="0 0 0"  rotation="0 0 0"  material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+			<RigidMapping template="Rigid3d,ExtVec3f" name="MM-&gt;VM mapping"  input="@../instrumentState"  output="@InstrumentVisualModel" />
 		</Node>
 		<Node 	 name="CollisionModel"  >
 			<MeshObjLoader name="loader"  filename="C:\Users\SOFA_GPU\Downloads\sofa\sofa\examples\Demos\SkullOperations\meshs/stylus.obj"  materials="initialShadingGroup.002 Diffuse 1 0.4096 0.4096 0.4096 1 Ambient 1 0 0 0 1 Specular 1 0.5 0.5 0.5 1 Emissive 0 0 0 0 0 Shininess 1 90.1961 " />
@@ -88,6 +81,8 @@
 			<TPointModel template="Vec3d" name="TPI"  tags="CarvingTool"  contactStiffness="10" />
 			<RigidMapping template="Rigid3d,Vec3d" name="MM-&gt;CM mapping"  input="@instrumentState"  output="@instrumentCollisionState" />
 		</Node>
-		<VectorSpringForceField template="Vec3d" name="vectorSpringFF1"  stiffness="10"  viscosity="0"  object1="@Omni/RefModel/OmniCollisionState"  object2="@Instrument/CollisionModel/instrumentCollisionState" />
+		<VectorSpringForceField template="Vec3d" name="vectorSpringFF1"  stiffness="1e7"  viscosity="0"  object1="@Omni/RefModel/OmniCollisionState"  object2="@Instrument/CollisionModel/instrumentCollisionState" />
 	</Node>
+
+	<!--restshapespringforcefield-->
 </Node>

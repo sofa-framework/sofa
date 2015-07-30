@@ -116,8 +116,8 @@ public:
 		, outputImage(initData(&outputImage,OutImageTypes(),"outputImage",""))
 		, outputTransform(initData(&outputTransform,TransformType(),"outputTransform",""))
 		, trackedPosition(initData(&trackedPosition, Vector3(),"trackedPosition","Position where to change values. Modify it with python"))
-		, on(initData(&on, false,"On","Switch On/Off; Modify it with python"))
-		, value(initData(&value, 0, "value", "Value written into image"))
+		, on(initData(&on, false,"on","Switch On/Off; Modify it with python"))
+		, value(initData(&value, Real(), "value", "Value written into image"))
 		, size(initData(&size, Vector3(),"size","The size within the image will be modified; Will be transformed in ?*2+1"))
     {
 		inputImage.setReadOnly(true);
@@ -176,43 +176,53 @@ protected:
 			cimglist_for(img,l)
 				cimg_forXYZ(img(l),x,y,z)
 				{
-					img(l)(x,y,z)=inimg(l)(x,y,z);
+					if(inimg(l)(x,y,z)<0.0001) //Artificial fix for a special scene. If a blur is occuring, we replace very weak values for 0
+						img(l)(x,y,z)=0;
+					else
+						img(l)(x,y,z)=inimg(l)(x,y,z);
 				}
-			//img(0)(0,0,0) = 0;
 		}
-		Vector3 valueinimage = trackedPosition.getValue() - (*inT)->getTranslation();
-		Vector3 scale = (*outT)->getScale();
-		if((*outT)->getRotation() == Vector3(0,0,0))
+		if(on.getValue())
 		{
-			//cout<< "The absence of rotation is not supported yet" <<endl;
-			// transformation from world coordinates to image coordinates
-			int x = (int) (valueinimage.x()/scale.x());
-			int y = (int)(valueinimage.y()/scale.y());
-			int z = (int)(valueinimage.z()/scale.z());
-			if((*out)->isInside(x, y, z))
+			Vector3 valueinimage = trackedPosition.getValue() - (*inT)->getTranslation();
+			Vector3 scale = (*outT)->getScale();
+			if((*outT)->getRotation() == Vector3(0,0,0))
 			{
-				cout << (int) (valueinimage.x()/scale.x()) << "," << (int) (valueinimage.y()/scale.y()) << "," << (int) (valueinimage.z()/scale.z()) << endl;
-			}
-			for(int i=-2; i<=2; i++)
-			{
-				for(int j=-2; j<=2; j++)
+				//cout<< "The absence of rotation is not supported yet" <<endl;
+				// transformation from world coordinates to image coordinates
+				int x = (int) (valueinimage.x()/scale.x());
+				int y = (int)(valueinimage.y()/scale.y());
+				int z = (int)(valueinimage.z()/scale.z());
+				
+				if((*out)->isInside(x, y, z))
 				{
-					for(int k=-2; k<=2; k++)
+					bool dirtyness = false;
+					for(int i=(-1)*size.getValue().x(); i<=size.getValue().x(); i++)
 					{
-						if((*out)->isInside(x+i, y+j, z+k))
+						for(int j=(-1)*size.getValue().y(); j<=size.getValue().y(); j++)
 						{
-							img(0)(x+i, y+j, z+k) = 0;
+							for(int k=(-1)*size.getValue().z(); k<=size.getValue().z(); k++)
+							{
+								if((*out)->isInside(x+i, y+j, z+k))
+								{
+									if(img(0)(x+i, y+j, z+k) != value.getValue())
+									{ dirtyness = true;}
+									img(0)(x+i, y+j, z+k) = value.getValue();
+								}
+							}
 						}
 					}
+					if(dirtyness) this->setDirtyOutputs();
+					cout << (int) (valueinimage.x()/scale.x()) << "," << (int) (valueinimage.y()/scale.y()) << "," << (int) (valueinimage.z()/scale.z()) << endl;
 				}
+
 			}
-
-
-		}
-		else{
-			cout<< "A rotated Image is not supported yet" <<endl;
+			else{
+				cout<< "A rotated Image is not supported yet" <<endl;
+			}
 		}
 		if (updateTransform) (*outT)->update(); // update internal data
+
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)
