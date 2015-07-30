@@ -1,7 +1,7 @@
 import Sofa
 
 
-from Compliant import Rigid
+from Compliant import Rigid, Frame
 
 def createScene(root):
     
@@ -43,6 +43,7 @@ def createScene(root):
         # insert the object into the scene node, saves the created
         # node in body_node
         body.node = body.insert( scene )
+        body.node.getObject("dofs").showObject=True
         
     # joints creation
     for i in xrange( n-1 ):
@@ -50,10 +51,10 @@ def createScene(root):
         j = Rigid.SphericalJoint()
         
         # joint offset definitions
-        up = Rigid.Frame()
+        up = Rigid.Frame.Frame()
         up.translation = [0, length /2 , 0]
         
-        down = Rigid.Frame()
+        down = Rigid.Frame.Frame()
         down.translation = [0, -length /2 , 0]
         
         # append node/offset to the joint
