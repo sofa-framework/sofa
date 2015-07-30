@@ -27,7 +27,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
-
+#include <sofa/component/component.h>
 
 namespace sofa
 {
