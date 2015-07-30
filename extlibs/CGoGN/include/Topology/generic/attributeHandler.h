@@ -159,6 +159,8 @@ public:
     template<class OtherAttributeAccessorPolicy>
     AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& operator=(const AttributeHandler<T, ORBIT, MAP, OtherAttributeAccessorPolicy >& ta) ;
 
+    AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& operator=(const AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& ta) ;
+
 	/**
 	 * transmuted affectation operator
 	 * @param ta the table attribute to affect to this
