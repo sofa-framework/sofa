@@ -107,11 +107,12 @@ bool OpenCTMLoader::readOpenCTM(const char *filename)
     triangles.endEdit();
 
     // Checking if mesh containes normals, otherwise fill empty buffer (NB seems mendatory for mecaObj)
-    helper::vector<sofa::defaulttype::Vec<3,SReal> >& my_normals   = *(normals.beginEdit());
-    my_normals.fastResize(vertCount);
     if (ctm.GetInteger(CTM_HAS_NORMALS) == CTM_TRUE)
     {
-        // Access the mesh normals
+        helper::vector<sofa::defaulttype::Vec<3,SReal> >& my_normals   = *(normals.beginEdit());
+        my_normals.fastResize(vertCount);
+
+        // Access the mesh normals        
         const CTMfloat * ctmNormals = ctm.GetFloatArray(CTM_NORMALS);
         for (unsigned int i=0; i<vertCount; ++i)
         {
@@ -119,9 +120,8 @@ bool OpenCTMLoader::readOpenCTM(const char *filename)
             my_normals[i][1] = ctmNormals[i*3 + 1];
             my_normals[i][2] = ctmNormals[i*3 + 2];
         }
+        normals.endEdit();
     }
-    normals.endEdit();
-
 
     // Checking if mesh containes texture coordinates. Only one set of UV is handled in SOFA
     if(ctm.GetInteger(CTM_UV_MAP_COUNT) > 0)

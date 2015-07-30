@@ -72,7 +72,7 @@ const char* getModuleDescription()
 
 const char* getModuleComponentList()
 {
-    return "OpenCTMLoader";
+    return "OpenCTMLoader, OpenCTMExporter";
 }
 
 }
@@ -80,3 +80,4 @@ const char* getModuleComponentList()
 }
 
 SOFA_LINK_CLASS(OpenCTMLoader)
+SOFA_LINK_CLASS(OpenCTMExporter)
