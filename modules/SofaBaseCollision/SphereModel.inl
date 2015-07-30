@@ -105,7 +105,7 @@ void TSphereModel<DataTypes>::init()
         return;
     }
 
-    const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
+    const int npoints = mstate->getSize();
     resize(npoints);
 }
 
@@ -165,7 +165,7 @@ template <class DataTypes>
 void TSphereModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
+    const int npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -202,7 +202,7 @@ void TSphereModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDep
     using namespace sofa::defaulttype;
 
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
+    const int npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -271,7 +271,7 @@ void TSphereModel<DataTypes>::computeBBox(const core::ExecParams* params, bool o
         for (int c=0; c<3; c++)
         {
             if (p[c]+r > maxBBox[c]) maxBBox[c] = (Real)p[c]+r;
-            if (p[c]-r < minBBox[c]) minBBox[c] = (Real)p[c]-r;
+            else if (p[c]-r < minBBox[c]) minBBox[c] = (Real)p[c]-r;
         }
     }
 

@@ -199,7 +199,7 @@ public:
                 << " radius = " << f_radius.getValue() << " delay = " << f_delay.getValue()
                 << " start = " << f_start.getValue() << " stop = " << f_stop.getValue() << sendl;
         /*
-                int i0 = mstate->read(core::ConstVecCoordId::position())->getValue().size();
+                int i0 = mstate->getSize();
 
                 if (!f_canHaveEmptyVector.getValue())
         		{
@@ -247,12 +247,12 @@ public:
         {
             if (time > f_stop.getValue() && time-this->getContext()->getDt() <= f_stop.getValue())
             {
-                sout << "Source stopped, current number of particles : " << this->mstate->read(core::ConstVecCoordId::position())->getValue().size() << sendl;
+                sout << "Source stopped, current number of particles : " << this->mstate->getSize() << sendl;
             }
             return;
         }
 
-        int i0 = this->mstate->read(core::ConstVecCoordId::position())->getValue().size();
+        int i0 = this->mstate->getSize();
 
         if (!f_canHaveEmptyVector.getValue())
         {
@@ -318,7 +318,7 @@ public:
             // Particles creation.
             if (pointMod != NULL)
             {
-                int n = i0 + nbParticlesToCreate - this->mstate->read(core::ConstVecCoordId::position())->getValue().size();
+                int n = i0 + nbParticlesToCreate - this->mstate->getSize();
 
                 pointMod->addPointsWarning(n);
                 pointMod->addPointsProcess(n);

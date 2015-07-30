@@ -7,7 +7,7 @@
   <DefaultVisualManagerLoop />
 
   <EulerImplicitSolver />
-  <CGLinearSolver iterations="100"/>
+  <CGLinearSolver iterations="100" tolerance="1.0e-9" threshold="1.0e-9"/>
   <!--   <EulerExplicitSolver/> -->
 
 

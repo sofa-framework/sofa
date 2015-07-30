@@ -373,7 +373,7 @@ void TLineModel<DataTypes>::updateFromTopology()
 
         needsUpdate = true;
 
-        const unsigned int nbPoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
+        const unsigned int nbPoints = mstate->getSize();
         const unsigned int nbLines = bmt->getNbEdges();
 
         resize( nbLines );
@@ -700,6 +700,34 @@ void TLineModel<DataTypes>::setFilter(LineLocalMinDistanceFilter *lmdFilter)
     m_lmdFilter = lmdFilter;
 }
 
+template<class DataTypes>
+void TLineModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+{
+    if( !onlyVisible ) return;
+
+    static const Real max_real = std::numeric_limits<Real>::max();
+    static const Real min_real = std::numeric_limits<Real>::min();
+    Real maxBBox[3] = {min_real,min_real,min_real};
+    Real minBBox[3] = {max_real,max_real,max_real};
+
+    for (int i=0; i<size; i++)
+    {
+        Element e(this,i);
+        const defaulttype::Vector3& pt1 = e.p1();
+        const defaulttype::Vector3& pt2 = e.p2();
+
+        for (int c=0; c<3; c++)
+        {
+            if (pt1[c] > maxBBox[c]) maxBBox[c] = (Real)pt1[c];
+            else if (pt1[c] < minBBox[c]) minBBox[c] = (Real)pt1[c];
+
+            if (pt2[c] > maxBBox[c]) maxBBox[c] = (Real)pt2[c];
+            else if (pt2[c] < minBBox[c]) minBBox[c] = (Real)pt2[c];
+        }
+    }
+
+    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+}
 
 } // namespace collision
 

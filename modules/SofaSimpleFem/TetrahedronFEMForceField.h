@@ -194,7 +194,7 @@ public:
 
     void getRotations(VecReal& vecR)
     {
-        unsigned int nbdof = this->mstate->read(core::ConstVecCoordId::position())->getValue().size();
+        unsigned int nbdof = this->mstate->getSize();
         for (unsigned int i=0; i<nbdof; ++i)
         {
 
@@ -204,7 +204,7 @@ public:
 
     void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0)
     {
-        unsigned int nbdof = this->mstate->read(core::ConstVecCoordId::position())->getValue().size();
+        unsigned int nbdof = this->mstate->getSize();
 
         if (component::linearsolver::RotationMatrix<float> * diag = dynamic_cast<component::linearsolver::RotationMatrix<float> *>(rotations))
         {

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "GenerateRigid.h"
 #include <SofaComponentMain/init.h>
-#include <sofa/simulation/common/common.h>
+#include <sofa/simulation/common/init.h>
 #include <iostream>
 #include <fstream>
 

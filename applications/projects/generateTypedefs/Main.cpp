@@ -26,7 +26,8 @@
 
 #include <iostream>
 
-#include <sofa/core/core.h>
+
+#include <sofa/core/init.h>
 #include <sofa/core/SofaLibrary.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/Base.h>

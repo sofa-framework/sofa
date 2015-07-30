@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/tree/tree.h>
+#include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <SofaComponentBase/initComponentBase.h>
 #include <SofaComponentCommon/initComponentCommon.h>
