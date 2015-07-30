@@ -35,21 +35,18 @@ namespace core
 
 /// @brief Initialize the SofaCore library, as well as its dependencies:
 /// SofaDefaultType, SofaHelper.
-void SOFA_CORE_API init();
+SOFA_CORE_API void init();
 
 /// @brief Return true if and only if the SofaCore library has been initialized.
-bool SOFA_CORE_API isInitialized();
+SOFA_CORE_API bool isInitialized();
 
 /// @brief Clean up the resources used by the SofaCore library, as well as its
 /// dependencies: SofaDefaultType, SofaHelper.
-void SOFA_CORE_API cleanup();
+SOFA_CORE_API void cleanup();
 
 /// @brief Return true if and only if the SofaCore library has been cleaned
 /// up.
-bool SOFA_CORE_API isCleanedUp();
-
-/// @brief Print a warning if the SofaCore library is not initialized.
-void SOFA_CORE_API checkIfInitialized();
+SOFA_CORE_API bool isCleanedUp();
 
 } // namespace core
 

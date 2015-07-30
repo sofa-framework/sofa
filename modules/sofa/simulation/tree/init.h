@@ -38,24 +38,20 @@ namespace tree
 
 /// @brief Initialize the SofaSimulationTree library, as well as its
 /// dependencies: SofaSimulationCommon, SofaCore, SofaDefaultType, SofaHelper.
-void SOFA_SIMULATION_TREE_API init();
+SOFA_SIMULATION_TREE_API void init();
 
 /// @brief Return true if and only if the SofaSimulationTree library has been
 /// initialized.
-bool SOFA_SIMULATION_TREE_API isInitialized();
+SOFA_SIMULATION_TREE_API bool isInitialized();
 
 /// @brief Clean up the resources used by the SofaSimulationTree library, as
 /// well as its dependencies: SofaSimulationCommon, SofaCore, SofaDefaultType,
 /// SofaHelper.
-void SOFA_SIMULATION_TREE_API cleanup();
+SOFA_SIMULATION_TREE_API void cleanup();
 
 /// @brief Return true if and only if the SofaSimulationTree library has been
 /// cleaned up.
-bool SOFA_SIMULATION_TREE_API isCleanedUp();
-
-/// @brief Print a warning if the SofaSimulationTree library is not
-/// initialized.
-void SOFA_SIMULATION_TREE_API checkIfInitialized();
+SOFA_SIMULATION_TREE_API bool isCleanedUp();
 
 } // namespace tree
 
