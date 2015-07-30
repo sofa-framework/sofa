@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_MEMORYMANAGER_H
 #define SOFA_HELPER_MEMORYMANAGER_H
 
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 #include <cstring>
 
 namespace sofa

@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 #include <sofa/helper/gl/Texture.h>
 #include <cassert>
 #include <cstdio>

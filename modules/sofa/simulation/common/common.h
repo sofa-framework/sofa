@@ -27,9 +27,4 @@
 
 #include <sofa/SofaSimulation.h>
 
-// tinyxml is currently the default XML parser
-#if !defined(SOFA_XML_PARSER_LIBXML) && !defined(SOFA_XML_PARSER_TINYXML)
-#define SOFA_XML_PARSER_TINYXML
-#endif
-
 #endif

@@ -30,7 +30,7 @@
 #include <list>
 #include <map>
 
-#include <sofa/SofaFramework.h>
+#include <sofa/core/core.h>
 
 namespace sofa
 {

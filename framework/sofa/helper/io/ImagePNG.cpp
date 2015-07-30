@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 #include <sofa/helper/io/ImagePNG.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <iostream>

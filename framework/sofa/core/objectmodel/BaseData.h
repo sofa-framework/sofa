@@ -32,7 +32,7 @@
 #include <list>
 #include <iostream>
 #include <typeinfo>
-#include <sofa/SofaFramework.h>
+#include <sofa/core/core.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/BaseLink.h>

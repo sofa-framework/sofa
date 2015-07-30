@@ -66,7 +66,7 @@
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/objectmodel/Event.h>
 
-#include <sofa/SofaSimulation.h>
+#include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/MutationListener.h>
 #include <sofa/simulation/common/VisitorScheduler.h>
 #include <sofa/simulation/common/xml/Element.h>

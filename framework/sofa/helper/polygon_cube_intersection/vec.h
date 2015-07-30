@@ -141,7 +141,7 @@
 #ifndef VEC_H
 #define VEC_H 4
 #include <cmath>	/* for definition of floor() */
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {

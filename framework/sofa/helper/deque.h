@@ -32,7 +32,7 @@
 #include <iostream>
 #include <cstdlib>
 
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {

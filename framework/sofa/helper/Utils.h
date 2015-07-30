@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_UTILS_H
 #define SOFA_HELPER_UTILS_H
 
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 
 #include <string>
 #include <map>

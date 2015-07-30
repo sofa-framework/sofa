@@ -25,7 +25,7 @@
 #ifndef SOFA_SIMULATION_VISITOR_H
 #define SOFA_SIMULATION_VISITOR_H
 
-#include <sofa/SofaSimulation.h>
+#include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/LocalStorage.h>
 

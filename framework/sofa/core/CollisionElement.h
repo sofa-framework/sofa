@@ -27,7 +27,7 @@
 
 #include <vector>
 #include <cstddef>              // For NULL
-#include <sofa/SofaFramework.h>
+#include <sofa/core/core.h>
 
 namespace sofa
 {

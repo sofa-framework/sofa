@@ -25,7 +25,7 @@
 #ifndef SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_H
 #define SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_H
 
-#include <sofa/SofaFramework.h>
+#include <sofa/core/core.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/behavior/BaseInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>

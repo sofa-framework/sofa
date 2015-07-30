@@ -25,7 +25,7 @@
 #ifndef SOFA_CORE_BEHAVIOR_CONSTRAINT_H
 #define SOFA_CORE_BEHAVIOR_CONSTRAINT_H
 
-#include <sofa/SofaFramework.h>
+#include <sofa/core/core.h>
 #include <sofa/core/behavior/BaseConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/Vec3Types.h>

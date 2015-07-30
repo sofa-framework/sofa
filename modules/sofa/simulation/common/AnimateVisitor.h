@@ -25,7 +25,7 @@
 #ifndef SOFA_SIMULATION_ANIMATEACTION_H
 #define SOFA_SIMULATION_ANIMATEACTION_H
 
-#include <sofa/SofaSimulation.h>
+#include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/MultiVecId.h>

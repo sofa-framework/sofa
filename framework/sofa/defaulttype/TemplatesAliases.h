@@ -1,4 +1,4 @@
-#include <sofa/SofaFramework.h>
+#include <sofa/defaulttype/defaulttype.h>
 
 #include <string>
 

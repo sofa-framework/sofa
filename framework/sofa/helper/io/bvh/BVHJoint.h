@@ -34,7 +34,7 @@
 #include <cstdio>		// fopen and friends
 #endif
 #include <string.h>
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {

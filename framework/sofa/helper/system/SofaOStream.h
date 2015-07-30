@@ -25,7 +25,7 @@
 #ifndef SOFAOSTREAM_H_
 #define SOFAOSTREAM_H_
 
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 #include <sstream>
 #include <iostream>
 

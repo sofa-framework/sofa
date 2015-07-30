@@ -24,14 +24,14 @@
 ******************************************************************************/
 #ifndef SOFA_HELPER_IO_IMAGEPNG_H
 #define SOFA_HELPER_IO_IMAGEPNG_H
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 
 #include <sofa/helper/io/Image.h>
 #include <string>
 #include <cassert>
 
 #include <sofa/helper/system/config.h>
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {

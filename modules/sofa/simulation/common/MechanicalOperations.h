@@ -25,7 +25,7 @@
 #ifndef SOFA_SIMULATION_COMMON_MECHANICALOPERATIONS_H
 #define SOFA_SIMULATION_COMMON_MECHANICALOPERATIONS_H
 
-#include <sofa/SofaSimulation.h>
+#include <sofa/simulation/common/common.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/MechanicalParams.h>

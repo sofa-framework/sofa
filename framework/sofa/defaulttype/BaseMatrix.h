@@ -26,7 +26,7 @@
 #define SOFA_DEFAULTTYPE_BASEMATRIX_H
 
 #include <sofa/helper/system/config.h>
-#include <sofa/SofaFramework.h>
+#include <sofa/defaulttype/defaulttype.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <utility> // for std::pair
 #include <cstddef> // for NULL and std::size_t

@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_LCPSOLVER_H
 #define SOFA_HELPER_LCPSOLVER_H
 
-#include <sofa/SofaFramework.h>
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
