@@ -170,5 +170,6 @@ int main(int argc, char** argv)
     }
     if (groot!=NULL) getSimulation()->unload(groot);
 
+    sofa::simulation::tree::cleanup();
     return 0;
 }

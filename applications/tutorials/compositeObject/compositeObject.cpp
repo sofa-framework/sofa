@@ -276,6 +276,7 @@ int main(int argc, char** argv)
     sofa::simulation::getSimulation()->unload(groot);
     sofa::gui::GUIManager::closeGUI();
 
+    sofa::simulation::tree::cleanup();
     return 0;
 }
 
