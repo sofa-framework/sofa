@@ -25,7 +25,7 @@
 #ifndef PLUGINS_PIM_GUI_QT_QMOUSEOPERATIONS_H
 #define PLUGINS_PIM_GUI_QT_QMOUSEOPERATIONS_H
 
-#include <plugins/PhysicsBasedInteractiveModeler/gui/MouseOperations.h>
+#include <PhysicsBasedInteractiveModeler/gui/MouseOperations.h>
 //#include <sofa/gui/qt/SofaMouseManager.h>
 #include <sofa/gui/PickHandler.h>
 #ifdef SOFA_QT4

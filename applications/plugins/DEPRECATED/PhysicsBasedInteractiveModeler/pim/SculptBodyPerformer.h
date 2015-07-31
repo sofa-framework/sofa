@@ -33,7 +33,7 @@
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaBaseMechanics/DiagonalMass.h>
-#include <plugins/CGALPlugin/MeshGenerationFromPolyhedron.h>
+#include <CGALPlugin/MeshGenerationFromPolyhedron.h>
 #include <sofa/gui/PickHandler.h>
 #include <set>
 #include <sofa/simulation/tree/GNode.h>

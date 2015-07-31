@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "stdafx.h"
-#include <plugins/SofaTest/Sofa_test.h>
+#include <SofaTest/Sofa_test.h>
 #include<sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/Quater.h>

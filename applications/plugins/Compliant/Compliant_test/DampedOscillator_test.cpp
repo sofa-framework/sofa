@@ -4,7 +4,7 @@
 
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <SofaExplicitOdeSolver/EulerSolver.h>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneCreator.h>
 
 #include <SofaBaseMechanics/IdentityMapping.h>
 
