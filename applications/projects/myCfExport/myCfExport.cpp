@@ -166,5 +166,6 @@ int main(int argc, char** argv)
     }
     fileList.close();
 
+    sofa::simulation::graph::cleanup();
     return 0;
 }

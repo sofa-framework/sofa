@@ -745,4 +745,5 @@ int main(int , char** )
                 sofaFloat   << "\n#endif\n";
 
                 return 0;
+                sofa::core::cleanup();
             }
