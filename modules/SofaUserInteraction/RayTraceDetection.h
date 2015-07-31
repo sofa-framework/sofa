@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_OCTREEDETECTION_H
 #define SOFA_COMPONENT_COLLISION_OCTREEDETECTION_H
+#include "config.h"
 
 #include <sofa/SofaGeneral.h>
 #include <sofa/core/collision/BroadPhaseDetection.h>

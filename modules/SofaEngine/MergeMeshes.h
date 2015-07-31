@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ENGINE_MERGEMESHS_H
 #define SOFA_COMPONENT_ENGINE_MERGEMESHS_H
+#include "config.h"
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -31,7 +32,6 @@
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/SofaGeneral.h>
 
 namespace sofa
 {

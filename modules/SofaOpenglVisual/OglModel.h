@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_VISUALMODEL_OGLMODEL_H
 #define SOFA_COMPONENT_VISUALMODEL_OGLMODEL_H
+#include "config.h"
 
 #include <vector>
 #include <string>
@@ -31,7 +32,6 @@
 #include <sofa/helper/gl/Texture.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/SofaGeneral.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <SofaBaseVisual/VisualModelImpl.h>

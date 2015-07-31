@@ -3,6 +3,7 @@ project(SofaMiscCollision)
 
 set(HEADER_FILES
 
+    config.h
     initMiscCollision.h
     TriangleModelInRegularGrid.h
     RuleBasedContactManager.h

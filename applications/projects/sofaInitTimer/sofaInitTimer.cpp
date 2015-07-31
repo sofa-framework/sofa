@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/tree/init.h>
 #include <SofaLoader/ReadState.h>
 #include <SofaExporter/WriteState.h>
 #include <SofaValidation/CompareState.h>
@@ -113,6 +114,7 @@ void apply(const std::string& /*directory*/, std::vector<std::string>& files, bo
 
 int main(int argc, char** argv)
 {
+    sofa::simulation::tree::init();
     sofa::helper::BackTrace::autodump();
 
     std::string refdir;
@@ -193,5 +195,6 @@ int main(int argc, char** argv)
 
     apply(refdir, sceneFiles, reinit);
 
+    sofa::simulation::tree::cleanup();
     return 0;
 }

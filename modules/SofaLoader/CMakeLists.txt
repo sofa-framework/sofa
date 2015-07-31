@@ -3,6 +3,7 @@ project(SofaLoader)
 
 set(HEADER_FILES
 
+    config.h
     initLoader.h
     GridMeshCreator.h
     StringMeshCreator.h

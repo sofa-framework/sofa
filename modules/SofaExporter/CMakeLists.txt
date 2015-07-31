@@ -3,6 +3,7 @@ project(SofaExporter)
 
 set(HEADER_FILES
 
+    config.h
     initExporter.h
     WriteState.h
     WriteState.inl

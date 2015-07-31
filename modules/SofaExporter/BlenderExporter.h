@@ -22,11 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-
-
 #ifndef SOFA_COMPONENT_MISC_WRITESTATE_H
 #define SOFA_COMPONENT_MISC_WRITESTATE_H
+#include "config.h"
 
 #include <sofa/core/State.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -35,7 +33,6 @@
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/SofaGeneral.h>
 
 #ifdef SOFA_HAVE_ZLIB
 #include <zlib.h>

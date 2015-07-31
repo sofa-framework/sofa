@@ -36,6 +36,7 @@
 
 #ifndef SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_H
 #define SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_H
+#include "config.h"
 
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -43,7 +44,6 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/rmath.h>
-#include <sofa/SofaAdvanced.h>
 #include <list>
 
 

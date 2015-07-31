@@ -24,10 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_ADDFRAMEBUTTON_H
 #define SOFA_COMPONENT_CONFIGURATIONSETTING_ADDFRAMEBUTTON_H
+#include "config.h"
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <SofaGraphComponent/MouseButtonSetting.h>
-#include <sofa/SofaGeneral.h>
 
 namespace sofa
 {

@@ -27,28 +27,64 @@
 
 #include <sofa/helper/helper.h>
 
+#include <string>
+
 namespace sofa
 {
 
 namespace helper
 {
 
+// Initializing and cleaning up Sofa
+//
+// The Sofa framework is split into multiple libraries.  In order to initialize
+// all the Sofa libraries it uses, an application only needs to call the init()
+// function of the "higher level" libraries it links against, which will call
+// the init() function of their dependencies, like so:
+//
+//       "Higher level"
+//     ------------------>
+//
+//     sofa::helper::init()                             // SofaHelper
+//     └──sofa::defaulttype::init()                     // SofaDefaultType
+//        └──sofa::core::init()                         // SofaCore
+//           └──sofa::simulation::common::init()        // SofaSimulationCommon
+//              ├──sofa::simulation::tree::init()       // SofaSimulationTree
+//              └──sofa::simulation::graph::init()      // SofaSimulationGraph
+//
+// For example:
+//
+// - If an application links against SofaSimulationTree, it only needs to call
+//   sofa::simulation::tree::init().
+//
+// - If it links against SofaCore, it only needs to call sofa::core::init().
+//
+// - If it links against both SofaSimulationTree and SofaSimulationGraph, it
+//   needs to call both sofa::simulation::tree::init() and
+//   sofa::simulation::graph::init().
+//
+//
+// Symmetrically, before exiting, an application needs to call the cleanup()
+// function of the libraries it init()'ed.
+
 /// @brief Initialize the SofaHelper library.
-void SOFA_HELPER_API init();
+SOFA_HELPER_API void init();
 
 /// @brief Return true if and only if the SofaHelper library has been
 /// initialized.
-bool SOFA_HELPER_API isInitialized();
+SOFA_HELPER_API bool isInitialized();
 
 /// @brief Clean up the resources used by the SofaHelper library.
-void SOFA_HELPER_API cleanup();
+SOFA_HELPER_API void cleanup();
 
 /// @brief Return true if and only if the SofaHelper library has been cleaned
 /// up.
-bool SOFA_HELPER_API isCleanedUp();
+SOFA_HELPER_API bool isCleanedUp();
 
-/// @brief Print a warning if the SofaHelper library is not initialized.
-void SOFA_HELPER_API checkIfInitialized();
+/// @brief Print a warning about a library not being initialized (meant for
+/// internal use).
+SOFA_HELPER_API void printUninitializedLibraryWarning(const std::string& library,
+                                                      const std::string& initFunction);
 
 } // namespace helper
 

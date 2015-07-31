@@ -22,16 +22,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <ManifoldTopologies/ManifoldTopologies.h>
+#include <ManifoldTopologies/config.h>
+
 #include "ManifoldTopologyObject_double.h"
 #include "ManifoldTopologyObject_float.h"
-
 
 namespace sofa
 {
 
 namespace component
 {
+
+//Here are just several convenient functions to help user to know what contains the plugin
 
 extern "C" {
     SOFA_MANIFOLD_TOPOLOGIES_API void initExternalModule();

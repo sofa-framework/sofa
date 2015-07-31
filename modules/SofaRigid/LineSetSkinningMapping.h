@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #ifndef SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_H
 #define SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_H
+#include "config.h"
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -32,7 +32,6 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
-#include <sofa/SofaCommon.h>
 
 #include <vector>
 

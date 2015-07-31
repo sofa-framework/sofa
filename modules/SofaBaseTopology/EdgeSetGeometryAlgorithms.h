@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_H
+#include "config.h"
 
 #include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/NumericalIntegrationDescriptor.h>

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_CUBE_H
 #define SOFA_COMPONENT_COLLISION_CUBE_H
+#include "config.h"
 
 #include <SofaBaseCollision/CubeModel.h>
 

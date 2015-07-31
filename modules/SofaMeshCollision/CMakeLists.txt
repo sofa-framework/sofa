@@ -3,6 +3,7 @@ project(SofaMeshCollision)
 
 set(HEADER_FILES
 
+    config.h
     initMeshCollision.h
     MeshNewProximityIntersection.h
     MeshNewProximityIntersection.inl

@@ -24,8 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_FORCEFIELD_INIT_H
 #define SOFA_COMPONENT_MISC_FORCEFIELD_INIT_H
-
-#include <sofa/SofaMisc.h>
+#include "config.h"
 
 namespace sofa
 {

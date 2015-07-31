@@ -22,11 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #ifndef REQUIREDPLUGIN_H_
 #define REQUIREDPLUGIN_H_
+#include "config.h"
 
-#include <sofa/SofaGeneral.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 

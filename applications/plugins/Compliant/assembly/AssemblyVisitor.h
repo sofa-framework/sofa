@@ -31,12 +31,6 @@ namespace simulation {
 // chunks/global, in case the scene really has a large number of
 // mstates
 
-// TODO shift matrices may also be improved using eigen magic
-// instead of actual sparse matrices (causing allocs)
-// USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX try another implementation
-// building assembled matrces from sequentialy generated triplets
-// but it is not proven that is more efficient
-
 
 
 /// res += constraint forces (== lambda/dt), only for mechanical object linked to a compliance

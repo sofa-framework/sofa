@@ -3,6 +3,7 @@ project(SofaMiscForceField)
 
 set(HEADER_FILES
 
+    config.h
     initMiscForcefield.h
     MatrixMass.h
     MatrixMass.inl

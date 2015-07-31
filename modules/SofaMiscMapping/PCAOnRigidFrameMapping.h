@@ -24,11 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_PCAONRIGIDFRAME_H
 #define SOFA_COMPONENT_MAPPING_PCAONRIGIDFRAME_H
+#include "config.h"
 
 #include <sofa/core/Multi2Mapping.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-
-#include <sofa/SofaMisc.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 

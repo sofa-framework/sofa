@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_INPUTEVENTREADER_H
 #define SOFA_COMPONENT_MISC_INPUTEVENTREADER_H
+#include "config.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>

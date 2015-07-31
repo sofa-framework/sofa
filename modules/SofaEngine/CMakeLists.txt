@@ -3,6 +3,7 @@ project(SofaEngine)
 
 set(HEADER_FILES
 
+    config.h
     initEngine.h
     AverageCoord.h
     AverageCoord.inl

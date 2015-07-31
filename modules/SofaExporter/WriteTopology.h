@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_WRITETOPOLOGY_H
 #define SOFA_COMPONENT_MISC_WRITETOPOLOGY_H
+#include "config.h"
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -34,7 +35,6 @@
 
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/SofaGeneral.h>
 
 #ifdef SOFA_HAVE_ZLIB
 #include <zlib.h>

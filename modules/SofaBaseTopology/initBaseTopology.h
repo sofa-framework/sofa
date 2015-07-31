@@ -24,8 +24,8 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_BASE_TOPOLOGY_INIT_H
 #define SOFA_COMPONENT_BASE_TOPOLOGY_INIT_H
+#include "config.h"
 
-#include <sofa/SofaBase.h>
 namespace sofa
 {
 

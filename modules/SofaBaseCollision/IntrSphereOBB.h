@@ -1,5 +1,6 @@
 #ifndef SOFA_COMPONENT_COLLISION_INTRSPHEREOBB_H
 #define SOFA_COMPONENT_COLLISION_INTRSPHEREOBB_H
+#include "config.h"
 
 #include <SofaBaseCollision/OBBModel.h>
 #include <SofaBaseCollision/SphereModel.h>

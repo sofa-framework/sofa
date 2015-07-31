@@ -3,6 +3,7 @@ project(SofaSparseSolver)
 
 
 set(HEADER_FILES
+    config.h
     initSparseSolver.h
     PrecomputedLinearSolver.h
     PrecomputedLinearSolver.inl

@@ -24,11 +24,11 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_VISUALMODEL_POINTSPLATMODEL_H
 #define SOFA_COMPONENT_VISUALMODEL_POINTSPLATMODEL_H
+#include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/TopologyData.h>
-#include <sofa/SofaGeneral.h>
 
 namespace sofa
 {

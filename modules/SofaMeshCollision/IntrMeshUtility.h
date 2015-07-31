@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_INTRMESHUTIL_H
 #define SOFA_COMPONENT_COLLISION_INTRMESHUTIL_H
+#include "config.h"
 
-#include <sofa/SofaCommon.h>
 #include <SofaBaseCollision/IntrUtility3.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/defaulttype/Vec3Types.h>

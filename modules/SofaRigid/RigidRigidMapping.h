@@ -24,8 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_H
 #define SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_H
-
-#include <sofa/SofaCommon.h>
+#include "config.h"
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/objectmodel/DataFileName.h>

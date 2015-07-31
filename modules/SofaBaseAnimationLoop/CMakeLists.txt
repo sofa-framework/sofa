@@ -3,6 +3,7 @@ project(SofaBaseAnimationLoop)
 
 set(HEADER_FILES
 
+    config.h
 	initBaseAnimationLoop.h
     MultiStepAnimationLoop.h
     MultiTagAnimationLoop.h

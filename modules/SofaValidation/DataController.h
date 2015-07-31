@@ -24,9 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_DATACONTROLLER_H
 #define SOFA_COMPONENT_MISC_DATACONTROLLER_H
+#include "config.h"
 
 #include <sofa/core/BaseState.h>
-#include <sofa/SofaGeneral.h>
 
 namespace sofa
 {

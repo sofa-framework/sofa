@@ -23,14 +23,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/Data.h>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneCreator.h>
 //Including Simulation
 #include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <plugins/SofaTest/Sofa_test.h>
-#include <plugins/SofaTest/DataEngine_test.h>
-#include <plugins/image/ImageContainer.h>
-#include <plugins/image/ImageViewer.h>
+#include <SofaTest/Sofa_test.h>
+#include <SofaTest/DataEngine_test.h>
+#include <image/ImageContainer.h>
+#include <image/ImageViewer.h>
 #include "TestImageEngine.h"
 
 namespace sofa {

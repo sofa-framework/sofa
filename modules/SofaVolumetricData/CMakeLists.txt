@@ -3,6 +3,7 @@ project(SofaVolumetricData)
 
 set(HEADER_FILES
 
+    config.h
     initVolumetricData.h
     ImplicitSurfaceContainer.h
     InterpolatedImplicitSurface.h

@@ -3,6 +3,7 @@ project(SofaEigen2Solver)
 
 set(HEADER_FILES
 
+    config.h
 	initEigen2Solver.h
 	EigenMatrixManipulator.h
 	EigenBaseSparseMatrix.h

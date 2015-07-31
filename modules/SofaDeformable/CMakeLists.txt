@@ -3,6 +3,7 @@ project(SofaDeformable)
 
 set(HEADER_FILES
 
+    config.h
     initDeformable.h
     FastTriangularBendingSprings.h
     FastTriangularBendingSprings.inl

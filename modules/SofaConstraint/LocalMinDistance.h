@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_H
 #define SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_H
+#include "config.h"
 
 #include <SofaBaseCollision/BaseProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>

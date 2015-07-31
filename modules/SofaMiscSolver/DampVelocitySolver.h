@@ -24,9 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ODESOLVER_DampVelocitySolver_H
 #define SOFA_COMPONENT_ODESOLVER_DampVelocitySolver_H
+#include "config.h"
 
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/SofaMisc.h>
 
 namespace sofa
 {

@@ -330,5 +330,6 @@ int main(int argc, char** argv)
 
     apply(refdir, sceneFiles, iterations, reinit, topology);
 
+    sofa::simulation::tree::cleanup();
     return 0;
 }

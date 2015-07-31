@@ -24,8 +24,8 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_H
+#include "config.h"
 
-#include <sofa/SofaGeneral.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologySparseData.h>
 

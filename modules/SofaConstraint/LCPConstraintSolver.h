@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_LCPCONSTRAINTSOLVER_H
 #define SOFA_COMPONENT_CONSTRAINTSET_LCPCONSTRAINTSOLVER_H
+#include "config.h"
 
 #include <sofa/SofaGeneral.h>
 

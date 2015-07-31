@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_CORE_COLLISION_GENERICCONTACTCORRECTION_H
 #define SOFA_CORE_COLLISION_GENERICCONTACTCORRECTION_H
+#include "config.h"
 
 #include <sofa/SofaGeneral.h>
 

@@ -3,6 +3,7 @@ project(SofaMiscSolver)
 
 set(HEADER_FILES
 
+    config.h
     initMiscSolver.h
     DampVelocitySolver.h
     NewmarkImplicitSolver.h

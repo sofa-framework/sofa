@@ -3,6 +3,7 @@ project(SofaMiscMapping)
 
 set(HEADER_FILES
 
+    config.h
     initMiscMapping.h
     BeamLinearMapping.h
     BeamLinearMapping.inl

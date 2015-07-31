@@ -3,6 +3,7 @@ project(SofaComponentAdvanced)
 
 set(HEADER_FILES
 
+    config.h
     initComponentAdvanced.h
 
     )

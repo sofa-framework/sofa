@@ -24,9 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ODESOLVER_EULERSOLVER_H
 #define SOFA_COMPONENT_ODESOLVER_EULERSOLVER_H
+#include "config.h"
 
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/SofaCommon.h>
 
 namespace sofa
 {

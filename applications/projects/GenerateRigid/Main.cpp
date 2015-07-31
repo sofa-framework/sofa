@@ -91,5 +91,6 @@ int main(int argc, char** argv)
     if (out != &std::cout)
         delete out;
 
+    sofa::simulation::common::cleanup();
     return 0;
 }

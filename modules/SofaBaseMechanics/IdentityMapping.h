@@ -24,10 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_H
 #define SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_H
+#include "config.h"
 
 #include <sofa/core/Mapping.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-#include <sofa/SofaBase.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <vector>

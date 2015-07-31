@@ -4,6 +4,7 @@ project(SofaOpenglVisual)
 
 set(HEADER_FILES
 
+    config.h
     initOpenGLVisual.h
     OglModel.h
     OglViewport.h

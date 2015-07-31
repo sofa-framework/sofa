@@ -27,9 +27,9 @@
 // Copyright: See COPYING file that comes with this distribution
 #ifndef SOFA_COMPONENT_ODESOLVER_STATICSOLVER_H
 #define SOFA_COMPONENT_ODESOLVER_STATICSOLVER_H
+#include "config.h"
 
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/SofaCommon.h>
 
 
 namespace sofa

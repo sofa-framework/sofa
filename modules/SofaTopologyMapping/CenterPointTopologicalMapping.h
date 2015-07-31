@@ -24,11 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_CENTERPOINTTOPOLOGICALMAPPING_H
 #define SOFA_COMPONENT_TOPOLOGY_CENTERPOINTTOPOLOGICALMAPPING_H
+#include "config.h"
 
-#include <sofa/SofaGeneral.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/topology/TopologicalMapping.h>
-#include <sofa/SofaGeneral.h>
 
 namespace sofa
 {

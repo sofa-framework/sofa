@@ -24,8 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_USER_INTERACTION_INIT_H
 #define SOFA_COMPONENT_USER_INTERACTION_INIT_H
-
-#include <sofa/SofaGeneral.h>
+#include "config.h"
 
 namespace sofa
 {

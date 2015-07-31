@@ -24,9 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LOADER_MESHOBJLOADER_H
 #define SOFA_COMPONENT_LOADER_MESHOBJLOADER_H
+#include "config.h"
 
 #include <sofa/core/loader/MeshLoader.h>
-#include <sofa/SofaCommon.h>
 #include <sofa/helper/SVector.h>
 namespace sofa
 {

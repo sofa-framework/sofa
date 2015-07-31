@@ -3,6 +3,7 @@ project(SofaEulerianFluid)
 
 set(HEADER_FILES
 
+    config.h
     initEulerianFluid.h
     Fluid2D.h
     Fluid3D.h

@@ -3,6 +3,7 @@ project(SofaBaseCollision)
 
 set(HEADER_FILES
 
+    config.h
     initBaseCollision.h
     BaseContactMapper.h
     DefaultPipeline.h

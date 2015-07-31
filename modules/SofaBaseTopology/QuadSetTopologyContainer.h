@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_QUADSETTOPOLOGYCONTAINER_H
 #define SOFA_COMPONENT_TOPOLOGY_QUADSETTOPOLOGYCONTAINER_H
+#include "config.h"
 
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_LINEMODEL_H
 #define SOFA_COMPONENT_COLLISION_LINEMODEL_H
+#include "config.h"
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>

@@ -24,12 +24,12 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONTAINER_ARTICULATEDHIERARCHYCONTAINER_H
 #define SOFA_COMPONENT_CONTAINER_ARTICULATEDHIERARCHYCONTAINER_H
+#include "config.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/io/bvh/BVHLoader.h>
-#include <sofa/SofaCommon.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/core/objectmodel/DataFileName.h>

@@ -24,13 +24,13 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LIGHT
 #define SOFA_COMPONENT_LIGHT
+#include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/SofaGeneral.h>
 
 #ifdef SOFA_HAVE_GLEW
 #include <sofa/helper/gl/FrameBufferObject.h>

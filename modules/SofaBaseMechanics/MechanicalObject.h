@@ -24,8 +24,7 @@
  ******************************************************************************/
 #ifndef SOFA_COMPONENT_MECHANICALOBJECT_H
 #define SOFA_COMPONENT_MECHANICALOBJECT_H
-
-#include <sofa/SofaBase.h>
+#include "config.h"
 
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/DataFileName.h>

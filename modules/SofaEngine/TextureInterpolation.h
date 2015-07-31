@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_H
 #define SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_H
+#include "config.h"
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -33,7 +34,6 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/SofaGeneral.h>
 #include <sofa/helper/map.h>
 
 namespace sofa

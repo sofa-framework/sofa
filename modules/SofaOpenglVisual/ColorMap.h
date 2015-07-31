@@ -24,11 +24,11 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_VISUALMODEL_COLORMAP_H
 #define SOFA_COMPONENT_VISUALMODEL_COLORMAP_H
+#include "config.h"
 
 #ifndef SOFA_NO_OPENGL
 
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/SofaGeneral.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/vector.h>

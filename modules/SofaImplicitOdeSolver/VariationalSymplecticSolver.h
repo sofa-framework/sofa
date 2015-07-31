@@ -1,6 +1,7 @@
 #ifndef VariationalSymplecticSolver_H
 #define VariationalSymplecticSolver_H
-#include <SofaImplicitOdeSolver/ImplicitOdeSolver.h>
+#include "config.h"
+
 #include <sofa/core/behavior/OdeSolver.h>
 
 namespace sofa

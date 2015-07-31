@@ -22,15 +22,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_MISC_MISC_H
-#define SOFA_MISC_MISC_H
+#ifndef SOFA_COMPONENT_INIT_H
+#define SOFA_COMPONENT_INIT_H
+#include "config.h"
 
-#include <sofa/helper/system/config.h>
+namespace sofa
+{
 
-#ifdef SOFA_BUILD_MISC
-#  define SOFA_MISC_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_MISC_API SOFA_IMPORT_DYNAMIC_LIBRARY
+namespace component
+{
+
+void SOFA_COMPONENT_API init();
+
+} // namespace component
+
+} // namespace sofa
+
 #endif
 
-#endif

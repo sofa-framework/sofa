@@ -3,6 +3,7 @@ project(SofaObjectInteraction)
 
 set(HEADER_FILES
 
+    config.h
     initObjectInteraction.h
     AttachConstraint.h
     AttachConstraint.inl

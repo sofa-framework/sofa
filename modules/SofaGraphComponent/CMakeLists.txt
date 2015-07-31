@@ -3,6 +3,7 @@ project(SofaGraphComponent)
 
 set(HEADER_FILES
 
+    config.h
     initGraphComponent.h
     AddFrameButtonSetting.h
     AddRecordedCameraButtonSetting.h

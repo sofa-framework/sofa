@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYENGINE_H
 #define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYENGINE_H
+#include "config.h"
 
 #include <sofa/core/topology/BaseTopologyEngine.h>
 #include <sofa/core/topology/TopologyHandler.h>
@@ -34,6 +34,7 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/list.h>
+
 
 namespace sofa
 {

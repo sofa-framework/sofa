@@ -4,6 +4,8 @@
 
 #ifndef WM5INTRUTILITY3_H
 #define WM5INTRUTILITY3_H
+#include "config.h"
+
 #include <sofa/defaulttype/Vec.h>
 #include <SofaBaseCollision/OBBModel.h>
 

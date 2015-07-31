@@ -3,6 +3,7 @@ project(SofaMiscEngine)
 
 set(HEADER_FILES
 
+    config.h
     initMiscEngine.h
     Distances.h
     Distances.inl

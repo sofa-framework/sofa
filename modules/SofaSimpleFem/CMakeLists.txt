@@ -3,6 +3,7 @@ project(SofaSimpleFem)
 
 set(HEADER_FILES
 
+    config.h
     initSimpleFEM.h
     BeamFEMForceField.h
     BeamFEMForceField.inl
