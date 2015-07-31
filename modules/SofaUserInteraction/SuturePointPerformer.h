@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_SUTUREPOINTPERFORMER_H
 #define SOFA_COMPONENT_COLLISION_SUTUREPOINTPERFORMER_H
+#include "config.h"
 
 #include <SofaUserInteraction/InteractionPerformer.h>
 #include <SofaDeformable/StiffSpringForceField.h>

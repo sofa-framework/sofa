@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef INDECES2VALUESMAPPER_H_
 #define INDECES2VALUESMAPPER_H_
+#include "config.h"
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once

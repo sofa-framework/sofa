@@ -25,12 +25,12 @@
 
 #ifndef SOFA_COMPONENT_COLLISION_OBBMODEL_H
 #define SOFA_COMPONENT_COLLISION_OBBMODEL_H
+#include "config.h"
 
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/component/component.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/core/visual/DrawToolGL.h>

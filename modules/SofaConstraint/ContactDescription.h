@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_CONTACTDESCRIPTION_H
 #define SOFA_COMPONENT_CONSTRAINTSET_CONTACTDESCRIPTION_H
+#include "config.h"
 
 #include <sofa/core/behavior/BaseLMConstraint.h>
 #include <sofa/helper/vector.h>

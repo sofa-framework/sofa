@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_MATRIXEXPR_H
 #define SOFA_COMPONENT_LINEARSOLVER_MATRIXEXPR_H
+#include "config.h"
 
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sstream>

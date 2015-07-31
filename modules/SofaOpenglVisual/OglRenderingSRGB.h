@@ -36,8 +36,8 @@
 
 #ifndef SOFA_OGLRENDERING_SRGB_H
 #define SOFA_OGLRENDERING_SRGB_H
+#include "config.h"
 
-#include <sofa/component/component.h>
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/core/visual/VisualParams.h>
 

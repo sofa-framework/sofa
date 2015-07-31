@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef STIFFNESSCONTAINER_H_
 #define STIFFNESSCONTAINER_H_
+#include "config.h"
 
 namespace sofa
 {

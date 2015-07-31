@@ -2,6 +2,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
+    config.h
     initLoader.h
     GridMeshCreator.h
     StringMeshCreator.h

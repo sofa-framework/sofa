@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_SPHERE_H
 #define SOFA_COMPONENT_COLLISION_SPHERE_H
+#include "config.h"
 
 #include <SofaBaseCollision/SphereModel.h>
 

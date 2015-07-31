@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_H
 #define SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_H
+#include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>

@@ -24,9 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LOADER_MESHTRIANLOADER_H
 #define SOFA_COMPONENT_LOADER_MESHTRIANLOADER_H
+#include "config.h"
 
 #include <sofa/core/loader/MeshLoader.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {

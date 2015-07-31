@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ENGINE_SPHEREROI_H
 #define SOFA_COMPONENT_ENGINE_SPHEREROI_H
+#include "config.h"
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -36,7 +37,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/helper/gl/BasicShapes.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {

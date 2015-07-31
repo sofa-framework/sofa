@@ -1,5 +1,6 @@
 #ifndef SOFA_COMPONENT_COLLISION_BASEPROXIMITYINTERSECTION_H
 #define SOFA_COMPONENT_COLLISION_BASEPROXIMITYINTERSECTION_H
+#include "config.h"
 
 #include <SofaBaseCollision/DiscreteIntersection.h>
 #include <SofaBaseCollision/BaseIntTool.h>

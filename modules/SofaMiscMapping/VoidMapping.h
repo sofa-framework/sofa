@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_VOIDMAPPING_H
 #define SOFA_COMPONENT_MAPPING_VOIDMAPPING_H
+#include "config.h"
 
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/BaseMapping.h>

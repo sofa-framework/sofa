@@ -24,8 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_SPARSE_SOLVER_INIT_H
 #define SOFA_COMPONENT_SPARSE_SOLVER_INIT_H
-
-#include <sofa/component/component.h>
+#include "config.h"
 
 namespace sofa
 {

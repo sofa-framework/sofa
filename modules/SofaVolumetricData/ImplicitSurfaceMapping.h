@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_H
 #define SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_H
+#include "config.h"
 
 #include <sofa/core/Mapping.h>
 #include <SofaBaseTopology/MeshTopology.h>

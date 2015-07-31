@@ -24,14 +24,12 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTIMAPPING_H
 #define SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTIMAPPING_H
-
+#include "config.h"
 
 #include <sofa/core/MultiMapping.h>
 #include <sofa/core/behavior/BaseMass.h>
 
 #include <sofa/defaulttype/Vec3Types.h>
-
-#include <sofa/component/component.h>
 
 namespace sofa
 {

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_POINTMODEL_H
 #define SOFA_COMPONENT_COLLISION_POINTMODEL_H
+#include "config.h"
 
 #include <sofa/core/CollisionModel.h>
 #include <SofaMeshCollision/LocalMinDistanceFilter.h>

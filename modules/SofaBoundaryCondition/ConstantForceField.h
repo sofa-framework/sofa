@@ -24,10 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_H
+#include "config.h"
 
 #include <sofa/core/behavior/ForceField.h>
 
-#include <sofa/component/component.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
 
 

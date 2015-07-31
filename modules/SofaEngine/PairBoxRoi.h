@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ENGINE_PAIRBOXROI_H
 #define SOFA_COMPONENT_ENGINE_PAIRBOXROI_H
+#include "config.h"
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -36,7 +37,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/loader/MeshLoader.h>
-#include <sofa/component/component.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/visual/VisualParams.h>
 
