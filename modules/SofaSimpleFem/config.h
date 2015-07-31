@@ -25,12 +25,6 @@
 #ifndef SOFASIMPLEFEM_CONFIG_H
 #define SOFASIMPLEFEM_CONFIG_H
 
-#include <sofa/helper/system/config.h>
-
-#ifdef SOFA_BUILD_SIMPLE_FEM
-#  define SOFA_SIMPLE_FEM_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SIMPLE_FEM_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/SofaCommon.h>
 
 #endif

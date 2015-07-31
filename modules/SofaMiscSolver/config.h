@@ -25,12 +25,6 @@
 #ifndef SOFAMISCSOLVER_CONFIG_H
 #define SOFAMISCSOLVER_CONFIG_H
 
-#include <sofa/helper/system/config.h>
-
-#ifdef SOFA_BUILD_MISC_SOLVER
-#  define SOFA_MISC_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_MISC_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/SofaMisc.h>
 
 #endif
