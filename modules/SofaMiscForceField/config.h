@@ -25,12 +25,6 @@
 #ifndef SOFAMISCFORCEFIELD_CONFIG_H
 #define SOFAMISCFORCEFIELD_CONFIG_H
 
-#include <sofa/helper/system/config.h>
-
-#ifdef SOFA_BUILD_MISC_FORCEFIELD
-#  define SOFA_MISC_FORCEFIELD_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_MISC_FORCEFIELD_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/SofaMisc.h>
 
 #endif

@@ -25,12 +25,6 @@
 #ifndef SOFAEXPORTER_CONFIG_H
 #define SOFAEXPORTER_CONFIG_H
 
-#include <sofa/helper/system/config.h>
-
-#ifdef SOFA_BUILD_EXPORTER
-#  define SOFA_EXPORTER_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_EXPORTER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/SofaGeneral.h>
 
 #endif

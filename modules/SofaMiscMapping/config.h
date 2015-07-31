@@ -25,12 +25,6 @@
 #ifndef SOFAMISCMAPPING_CONFIG_H
 #define SOFAMISCMAPPING_CONFIG_H
 
-#include <sofa/helper/system/config.h>
-
-#ifdef SOFA_BUILD_MISC_MAPPING
-#  define SOFA_MISC_MAPPING_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_MISC_MAPPING_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/SofaMisc.h>
 
 #endif

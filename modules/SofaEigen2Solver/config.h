@@ -25,12 +25,6 @@
 #ifndef SOFAEIGEN2SOLVER_CONFIG_H
 #define SOFAEIGEN2SOLVER_CONFIG_H
 
-#include <sofa/helper/system/config.h>
-
-#ifdef SOFA_BUILD_EIGEN2_SOLVER
-#  define SOFA_EIGEN2_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_EIGEN2_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/SofaGeneral.h>
 
 #endif
