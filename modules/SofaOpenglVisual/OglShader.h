@@ -35,6 +35,7 @@
 //
 #ifndef SOFA_COMPONENT_OGLSHADER
 #define SOFA_COMPONENT_OGLSHADER
+#include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -42,7 +43,6 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/GLSLShader.h>
-#include <sofa/component/component.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa

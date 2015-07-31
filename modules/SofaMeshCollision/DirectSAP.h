@@ -24,12 +24,12 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_DIRECTSAP_H
 #define SOFA_COMPONENT_COLLISION_DIRECTSAP_H
+#include "config.h"
 
 #include <sofa/core/collision/BroadPhaseDetection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/CollisionModel.h>
-#include <sofa/component/component.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaMeshCollision/EndPoint.h>
 #include <sofa/defaulttype/Vec.h>

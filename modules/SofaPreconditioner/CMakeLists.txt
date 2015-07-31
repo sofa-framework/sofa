@@ -2,6 +2,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
+    config.h
     initPreconditioner.h
     ShewchukPCGLinearSolver.h
     JacobiPreconditioner.h

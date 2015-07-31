@@ -28,7 +28,6 @@
 #include "ComplementaryROI.inl"
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {

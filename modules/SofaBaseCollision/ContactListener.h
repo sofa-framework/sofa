@@ -24,9 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_CONTACT_LISTENER_H
 #define SOFA_CONTACT_LISTENER_H
+#include "config.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/component/component.h>
 #include <sofa/core/collision/Contact.h>
 //#include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/helper/vector.h>

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_CORE_COLLISION_LINEARSOLVERCONTACTCORRECTION_H
 #define SOFA_CORE_COLLISION_LINEARSOLVERCONTACTCORRECTION_H
+#include "config.h"
 
 #include <sofa/core/behavior/ConstraintCorrection.h>
 

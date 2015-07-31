@@ -24,11 +24,11 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_H
 #define SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_H
+#include "config.h"
 
 #include <sofa/core/MultiMapping.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
 namespace sofa

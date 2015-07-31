@@ -24,10 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FEM_BASEMATERIAL_H
 #define SOFA_COMPONENT_FEM_BASEMATERIAL_H
+#include "config.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {

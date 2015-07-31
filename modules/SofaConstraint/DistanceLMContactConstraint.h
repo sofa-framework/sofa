@@ -24,7 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONSTRAINT_DistanceLMContactConstraint_H
 #define SOFA_COMPONENT_CONSTRAINT_DistanceLMContactConstraint_H
-
+#include "config.h"
 
 #include <sofa/core/VecId.h>
 #include <sofa/core/ConstraintParams.h>

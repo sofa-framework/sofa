@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_VISUALMODEL_DATADISPLAY_H
 #define SOFA_COMPONENT_VISUALMODEL_DATADISPLAY_H
+#include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/VisualParams.h>

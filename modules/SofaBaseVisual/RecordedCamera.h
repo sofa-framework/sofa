@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef RECORDEDCAMERA_H
 #define RECORDEDCAMERA_H
+#include "config.h"
 
 #include <SofaBaseVisual/BaseCamera.h>
 

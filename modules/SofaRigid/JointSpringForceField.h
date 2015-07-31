@@ -24,12 +24,12 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_JOINTSPRINGFORCEFIELD_H
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_JOINTSPRINGFORCEFIELD_H
+#include "config.h"
 
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/component.h>
 #include <vector>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/objectmodel/DataFileName.h>

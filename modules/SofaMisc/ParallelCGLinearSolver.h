@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_PARALLELCGLINEARSOLVER_H
 #define SOFA_COMPONENT_LINEARSOLVER_PARALLELCGLINEARSOLVER_H
+#include "config.h"
 
 #ifdef SOFA_SMP
 #include <sofa/core/behavior/ParallelMultiVec.h>

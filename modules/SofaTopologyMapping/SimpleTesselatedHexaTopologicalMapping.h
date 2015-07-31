@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_SIMPLETESSELATEDHEXATOPOLOGICALMAPPING_H
 #define SOFA_COMPONENT_TOPOLOGY_SIMPLETESSELATEDHEXATOPOLOGICALMAPPING_H
+#include "config.h"
 
 #include <sofa/core/topology/TopologicalMapping.h>
 

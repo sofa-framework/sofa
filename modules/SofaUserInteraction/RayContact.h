@@ -24,9 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_RAYCONTACT_H
 #define SOFA_COMPONENT_COLLISION_RAYCONTACT_H
+#include "config.h"
 
 #include <sofa/core/collision/Contact.h>
-#include <sofa/component/component.h>
 #include <sofa/helper/Factory.h>
 
 namespace sofa

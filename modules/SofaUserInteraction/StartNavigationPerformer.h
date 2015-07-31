@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_STARTNAVIGATIONPERFORMER_H
 #define SOFA_COMPONENT_COLLISION_STARTNAVIGATIONPERFORMER_H
+#include "config.h"
 
 #include <SofaUserInteraction/MouseInteractor.h>
 #include <SofaUserInteraction/InteractionPerformer.h>
