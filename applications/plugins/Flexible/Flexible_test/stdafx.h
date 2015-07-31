@@ -12,7 +12,7 @@
 
 #include <Mapping_test.h>
 
-#include <plugins/SofaTest/Sofa_test.h>
+#include <SofaTest/Sofa_test.h>
 #include<sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/Quater.h>
@@ -29,7 +29,7 @@
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
-#include <plugins/SofaTest/Sofa_test.h>
+#include <SofaTest/Sofa_test.h>
 #include<sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/Quater.h>
@@ -58,7 +58,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 
 #include "Elasticity_test.h"
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneCreator.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
@@ -71,7 +71,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 
 
-#include <plugins/SofaTest/Sofa_test.h>
+#include <SofaTest/Sofa_test.h>
 #include<sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <SofaComponentMain/init.h>
