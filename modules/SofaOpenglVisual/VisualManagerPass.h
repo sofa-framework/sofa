@@ -31,8 +31,8 @@
 
 #ifndef SOFA_COMPONENT_VISUALMANAGERPASS_H
 #define SOFA_COMPONENT_VISUALMANAGERPASS_H
-
-#include <sofa/SofaGeneral.h>
+#include "config.h"
+                                                    \
 #include <SofaOpenglVisual/CompositingVisualLoop.h>
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/core/visual/VisualParams.h>

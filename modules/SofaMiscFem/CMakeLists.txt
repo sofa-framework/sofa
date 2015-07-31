@@ -3,6 +3,7 @@ project(SofaMiscFem)
 
 set(HEADER_FILES
 
+    config.h
     initMiscFEM.h
     FastTetrahedralCorotationalForceField.h
     FastTetrahedralCorotationalForceField.inl

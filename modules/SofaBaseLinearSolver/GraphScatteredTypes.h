@@ -24,11 +24,11 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_GRAPHSCATTEREDTYPES_H
 #define SOFA_COMPONENT_LINEARSOLVER_GRAPHSCATTEREDTYPES_H
+#include "config.h"
 
 #include <sofa/simulation/common/MechanicalOperations.h>
 #include <sofa/core/behavior/MultiVec.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/SofaBase.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #ifdef SOFA_SMP

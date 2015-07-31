@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_TRIANGLE2EDGETOPOLOGICALMAPPING_H
 #define SOFA_COMPONENT_TOPOLOGY_TRIANGLE2EDGETOPOLOGICALMAPPING_H
+#include "config.h"
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
@@ -31,7 +32,6 @@
 #include <map>
 
 #include <sofa/core/BaseMapping.h>
-#include <sofa/SofaGeneral.h>
 
 namespace sofa
 {

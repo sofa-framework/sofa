@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_OGLSCENEFRAME_H
 #define SOFA_OGLSCENEFRAME_H
+#include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/VisualParams.h>

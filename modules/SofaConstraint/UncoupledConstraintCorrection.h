@@ -24,10 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_H
 #define SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_H
+#include "config.h"
 
 #include <sofa/core/behavior/ConstraintCorrection.h>
 
-#include <sofa/SofaGeneral.h>
 
 namespace sofa
 {

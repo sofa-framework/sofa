@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef OGLSHADERMACRO_H_
 #define OGLSHADERMACRO_H_
+#include "config.h"
 
 #include <SofaOpenglVisual/OglShader.h>
 

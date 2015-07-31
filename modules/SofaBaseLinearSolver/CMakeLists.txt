@@ -3,6 +3,7 @@ project(SofaBaseLinearSolver)
 
 set(HEADER_FILES
 
+    config.h
     initBaseLinearSolver.h
     CGLinearSolver.h
     CGLinearSolver.inl

@@ -1,5 +1,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_CAPSULEINTTOOL_H
 #define SOFA_COMPONENT_COLLISION_CAPSULEINTTOOL_H
+#include "config.h"
+
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <SofaBaseCollision/CapsuleModel.h>

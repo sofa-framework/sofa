@@ -24,15 +24,14 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_HEXA2QUADTOPOLOGICALMAPPING_H
 #define SOFA_COMPONENT_TOPOLOGY_HEXA2QUADTOPOLOGICALMAPPING_H
+#include "config.h"
 
-#include <sofa/SofaGeneral.h>
 #include <sofa/core/topology/TopologicalMapping.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>
 
 #include <sofa/core/BaseMapping.h>
-#include <sofa/SofaGeneral.h>
 
 namespace sofa
 {

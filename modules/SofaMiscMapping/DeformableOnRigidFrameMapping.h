@@ -24,10 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_H
 #define SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_H
+#include "config.h"
 
 #include <sofa/core/Multi2Mapping.h>
-
-#include <sofa/SofaMisc.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/Topology.h>

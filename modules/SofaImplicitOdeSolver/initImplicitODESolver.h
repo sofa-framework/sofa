@@ -24,8 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_IMPLICIT_ODE_SOLVER_INIT_H
 #define SOFA_COMPONENT_IMPLICIT_ODE_SOLVER_INIT_H
-
-#include <sofa/SofaCommon.h>
+#include "config.h"
 
 namespace sofa
 {

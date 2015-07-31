@@ -24,10 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LOADER_MESHSTLLOADER_H
 #define SOFA_COMPONENT_LOADER_MESHSTLLOADER_H
+#include "config.h"
 
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/SofaCommon.h>
 
 namespace sofa
 {

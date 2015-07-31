@@ -22,11 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #ifndef SOFA_COMPONENT_COLLISION_SOLVERMERGER_H
 #define SOFA_COMPONENT_COLLISION_SOLVERMERGER_H
+#include "config.h"
 
-#include <sofa/SofaMisc.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/ConstraintSolver.h>

@@ -24,11 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_TAITSURFACEPRESSUREFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_TAITSURFACEPRESSUREFORCEFIELD_H
-
+#include "config.h"
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/SofaGeneral.h>
 
 namespace sofa
 {

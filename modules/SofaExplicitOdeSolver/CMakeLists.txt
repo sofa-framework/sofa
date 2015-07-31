@@ -3,6 +3,7 @@ project(SofaExplicitOdeSolver)
 
 set(HEADER_FILES
 
+    config.h
     initExplicitODESolver.h
     CentralDifferenceSolver.h
     EulerSolver.h

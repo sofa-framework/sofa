@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_H
+#include "config.h"
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/objectmodel/Data.h>
@@ -33,7 +34,6 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #endif
 
-#include <sofa/SofaCommon.h>
 
 namespace sofa
 {

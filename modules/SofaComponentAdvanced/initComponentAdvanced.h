@@ -24,8 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ADVANCED_INIT_H
 #define SOFA_COMPONENT_ADVANCED_INIT_H
-
-#include <sofa/SofaAdvanced.h>
+#include "config.h"
 
 namespace sofa
 {

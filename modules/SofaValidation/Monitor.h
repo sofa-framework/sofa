@@ -24,8 +24,8 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_MONITOR_H
 #define SOFA_COMPONENT_MISC_MONITOR_H
+#include "config.h"
 
-#include <sofa/SofaGeneral.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/Vec.h>

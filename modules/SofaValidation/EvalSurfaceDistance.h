@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_EVALSURFACEDISTANCE_H
 #define SOFA_COMPONENT_MISC_EVALSURFACEDISTANCE_H
+#include "config.h"
 
 #include "EvalPointsDistance.h"
 

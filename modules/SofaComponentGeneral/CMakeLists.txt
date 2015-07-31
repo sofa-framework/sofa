@@ -3,6 +3,7 @@ project(SofaComponentGeneral)
 
 set(HEADER_FILES
 
+    config.h
     initComponentGeneral.h
     )
 

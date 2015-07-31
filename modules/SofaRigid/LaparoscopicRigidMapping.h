@@ -24,10 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_H
 #define SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_H
+#include "config.h"
 
 #include <sofa/core/Mapping.h>
 
-#include <sofa/SofaCommon.h>
 
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/defaulttype/Quat.h>

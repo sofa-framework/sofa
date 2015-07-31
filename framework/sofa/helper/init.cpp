@@ -27,7 +27,6 @@
 #include <sofa/helper/Logger.h>
 
 #include <iostream>
-#include <clocale>
 
 namespace sofa
 {
@@ -38,7 +37,7 @@ namespace helper
 static bool s_initialized = false;
 static bool s_cleanedUp = false;
 
-void init()
+SOFA_HELPER_API void init()
 {
     if (!s_initialized)
     {
@@ -46,12 +45,12 @@ void init()
     }
 }
 
-bool isInitialized()
+SOFA_HELPER_API bool isInitialized()
 {
     return s_initialized;
 }
 
-void cleanup()
+SOFA_HELPER_API void cleanup()
 {
     if (!s_cleanedUp)
     {
@@ -59,17 +58,16 @@ void cleanup()
     }
 }
 
-bool isCleanedUp()
+SOFA_HELPER_API bool isCleanedUp()
 {
     return s_cleanedUp;
 }
 
-void checkIfInitialized()
+SOFA_HELPER_API void printUninitializedLibraryWarning(const std::string& library,
+                                                      const std::string& initFunction)
 {
-    if (!isInitialized())
-    {
-        std::cerr << "Warning: SofaHelper is not initialized (sofa::helper::init() has never been called).  An application should call the init() function of the higher level Sofa library it uses." << std::endl;
-    }
+    std::cerr << "Warning: the " << library << " library has not been initialized ("
+              << initFunction << " has never been called, see sofa/helper/init.h)" << std::endl;
 }
 
 } // namespace helper

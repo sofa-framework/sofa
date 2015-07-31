@@ -28,7 +28,6 @@
 #define SOFA_STANDARDTEST_Mapping_test_H
 
 #include "Sofa_test.h"
-
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/VectorOperations.h>
@@ -44,11 +43,15 @@
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SceneCreator/SceneCreator.h>
+#include <sofa/helper/Logger.h>
 
 namespace sofa {
 
 using std::cout;
 using std::endl;
+using helper::Logger;
 
 
 /** @brief Base class for the Mapping tests, with helpers to automatically test applyJ, applyJT, applyDJT and getJs using finite differences.
@@ -231,10 +234,10 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         if( deltaRange.second / errorMax <= g_minDeltaErrorRatio )
             ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
 
-        if( !(flags & TEST_getJs) )          helper::Logger::mainlog( helper::Logger::Warning, "getJs is not tested", "MappingTest" );
-        if( !(flags & TEST_getK) )           helper::Logger::mainlog( helper::Logger::Warning, "getK is not tested", "MappingTest" );
-        if( !(flags & TEST_applyJT_matrix) ) helper::Logger::mainlog( helper::Logger::Warning, "applyJT on matrices is not tested", "MappingTest" );
-        if( !(flags & TEST_applyDJT) )       helper::Logger::mainlog( helper::Logger::Warning, "applyDJT is not tested", "MappingTest" );
+        if( !(flags & TEST_getJs) )          Logger::mainlog( Logger::Warning, "getJs is not tested", "MappingTest" );
+        if( !(flags & TEST_getK) )           Logger::mainlog( Logger::Warning, "getK is not tested", "MappingTest" );
+        if( !(flags & TEST_applyJT_matrix) ) Logger::mainlog( Logger::Warning, "applyJT on matrices is not tested", "MappingTest" );
+        if( !(flags & TEST_applyDJT) )       Logger::mainlog( Logger::Warning, "applyDJT is not tested", "MappingTest" );
 
 
         const Real errorThreshold = this->epsilon()*errorMax;

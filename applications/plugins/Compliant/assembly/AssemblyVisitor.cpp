@@ -562,7 +562,6 @@ enum {
     METHOD_NOMULT
 };
 
-
 template<int Method = METHOD_NOMULT> struct add_shifted;
 
 typedef AssembledSystem::rmat rmat;
@@ -840,10 +839,6 @@ void AssemblyVisitor::assemble(system_type& res) const {
     assert( off_m == _processed->size_m );
     assert( off_c == _processed->size_c );
 
-    /// \warning project the ODE matrices
-	// max: no we don't
-    // res.H = res.P.transpose() * res.H * res.P;
-
 }
 
 // TODO redo
@@ -866,7 +861,6 @@ bool AssemblyVisitor::chunk::check() const {
 
 	}
 
-	
 	return true;
 }
 

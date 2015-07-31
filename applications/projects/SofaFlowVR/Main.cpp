@@ -1886,5 +1886,7 @@ int main(int argc, char** argv)
 
 
     if (groot!=NULL) sofa::simulation::tree::getSimulation()->unload(groot);
+
+    sofa::simulation::tree::cleanup();
     return 0;
 }

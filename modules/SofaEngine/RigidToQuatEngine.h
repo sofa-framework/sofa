@@ -24,13 +24,13 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ENGINE_RIGIDTOQUATENGINE_H
 #define SOFA_COMPONENT_ENGINE_RIGIDTOQUATENGINE_H
+#include "config.h"
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/Quater.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/SofaGeneral.h>
 
 
 namespace sofa

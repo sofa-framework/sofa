@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_COMMONALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_COMMONALGORITHMS_H
+#include "config.h"
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>

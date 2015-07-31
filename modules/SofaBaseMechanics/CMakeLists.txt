@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.8.11)
 project(SofaBaseMechanics)
 
 set(HEADER_FILES
+
+    config.h
     initBaseMechanics.h
     MappedObject.h
     MappedObject.inl
@@ -18,9 +20,11 @@ set(HEADER_FILES
     IdentityMapping.inl
     SubsetMapping.h
     SubsetMapping.inl
+
     )
 
 set(SOURCE_FILES
+
     initBaseMechanics.cpp
     MappedObject.cpp
     MechanicalObject.cpp
@@ -29,12 +33,15 @@ set(SOURCE_FILES
     BarycentricMapping.cpp
     IdentityMapping.cpp
     SubsetMapping.cpp
+
     )
 
 
 if(SOFA-MISC_SMP)
     list(APPEND HEADER_FILES "MechanicalObjectTasks.inl")
 endif()
+
+set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaBaseTopology)

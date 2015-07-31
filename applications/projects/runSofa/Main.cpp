@@ -358,5 +358,9 @@ int main(int argc, char** argv)
 
     sofa::gui::GUIManager::closeGUI();
 
+    sofa::simulation::tree::cleanup();
+#ifdef SOFA_HAVE_DAG
+    sofa::simulation::graph::cleanup();
+#endif
     return 0;
 }

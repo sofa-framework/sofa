@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectDirectionConstraint_H
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectDirectionConstraint_H
+#include "config.h"
 
 #include <sofa/SofaGeneral.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>

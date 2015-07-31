@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_TRIANGLEMODELINREGULARGRID_H
 #define SOFA_COMPONENT_COLLISION_TRIANGLEMODELINREGULARGRID_H
+#include "config.h"
 
 #include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

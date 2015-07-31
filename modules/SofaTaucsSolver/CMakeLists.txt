@@ -4,6 +4,7 @@ project(SofaTaucsSolver)
 
 set(HEADER_FILES
 
+    config.h
     initTaucsSolver.h
     SparseTAUCSSolver.h
     IncompleteTAUCSSolver.h

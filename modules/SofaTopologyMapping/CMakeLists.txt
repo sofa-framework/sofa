@@ -3,6 +3,7 @@ project(SofaTopologyMapping)
 
 set(HEADER_FILES
 
+    config.h
     initTopologyMapping.h
     Mesh2PointMechanicalMapping.h
     Mesh2PointMechanicalMapping.inl

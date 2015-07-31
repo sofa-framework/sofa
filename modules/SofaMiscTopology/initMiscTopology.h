@@ -24,8 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_TOPOLOGY_INIT_H
 #define SOFA_COMPONENT_MISC_TOPOLOGY_INIT_H
-
-#include <sofa/SofaMisc.h>
+#include "config.h"
 
 namespace sofa
 {

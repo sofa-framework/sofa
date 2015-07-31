@@ -283,5 +283,7 @@ int main(int argc, char** argv)
 
 
     if (ggroot!=NULL) sofa::simulation::getSimulation()->unload(groot);
+
+    sofa::simulation::tree::cleanup();
     return 0;
 }

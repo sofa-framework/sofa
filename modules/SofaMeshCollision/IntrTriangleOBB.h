@@ -1,5 +1,6 @@
 #ifndef SOFA_COMPONENT_COLLISION_INTRTRIANGLEOBB_H
 #define SOFA_COMPONENT_COLLISION_INTRTRIANGLEOBB_H
+#include "config.h"
 
 #include <sofa/core/collision/Intersection.h>
 #include <SofaBaseCollision/OBBModel.h>

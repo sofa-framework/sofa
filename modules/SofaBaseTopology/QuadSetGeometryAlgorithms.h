@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_H
+#include "config.h"
 
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
 #include <sofa/defaulttype/Vec.h>

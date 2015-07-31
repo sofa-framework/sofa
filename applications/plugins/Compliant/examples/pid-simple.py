@@ -1,7 +1,7 @@
 import Sofa
 import math
 
-from Compliant import Rigid
+from Compliant import Rigid, Frame
 
 # global structure for passing data to controller
 class ControlData:
@@ -63,13 +63,13 @@ def createScene(node):
      
      # joints
      joint1 = Rigid.RevoluteJoint(2)
-     joint1.append(base.node, Rigid.Frame().read('0 0 0 0 0 0 1') )
-     joint1.append(link1.node, Rigid.Frame().read('0 0 0 0 0 0 1') )
+     joint1.append(base.node, Rigid.Frame.Frame().read('0 0 0 0 0 0 1') )
+     joint1.append(link1.node, Rigid.Frame.Frame().read('0 0 0 0 0 0 1') )
      joint1.node = joint1.insert(scene)
 
      joint2 = Rigid.RevoluteJoint(2)
-     joint2.append(link1.node, Rigid.Frame().read('0 10 0 0 0 0 1') )
-     joint2.append(link2.node, Rigid.Frame().read('0 0 0 0 0 0 1') )
+     joint2.append(link1.node, Rigid.Frame.Frame().read('0 10 0 0 0 0 1') )
+     joint2.append(link2.node, Rigid.Frame.Frame().read('0 0 0 0 0 0 1') )
      joint2.node = joint2.insert(scene)
 
      # control

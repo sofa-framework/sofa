@@ -24,10 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LOADER_MeshVTKLoader_H
 #define SOFA_COMPONENT_LOADER_MeshVTKLoader_H
+#include "config.h"
 
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/SofaCommon.h>
 
 #include <tinyxml.h>
 

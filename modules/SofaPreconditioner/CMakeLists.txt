@@ -3,6 +3,7 @@ project(SofaPreconditioner)
 
 set(HEADER_FILES
 
+    config.h
     initPreconditioner.h
     ShewchukPCGLinearSolver.h
     JacobiPreconditioner.h

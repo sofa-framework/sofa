@@ -24,11 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_H
-
+#include "config.h"
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/SofaGeneral.h>
 
 namespace sofa { namespace core { namespace topology { class BaseMeshTopology; } } }
 

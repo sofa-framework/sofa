@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8.11)
 project(SofaNonUniformFem)
 set(HEADER_FILES
 
+    config.h
     initNonUniformFEM.h
     NonUniformHexahedralFEMForceFieldAndMass.h
     NonUniformHexahedralFEMForceFieldAndMass.inl

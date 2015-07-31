@@ -24,12 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ANIMATIONLOOP_FREEMOTIONANIMATIONLOOP_H
 #define SOFA_COMPONENT_ANIMATIONLOOP_FREEMOTIONANIMATIONLOOP_H
-
-#include <sofa/SofaGeneral.h>
+#include "config.h"
 
 #include <sofa/simulation/common/CollisionAnimationLoop.h>
 #include <SofaConstraint/LCPConstraintSolver.h>
-#include <sofa/SofaGeneral.h>
 
 namespace sofa
 {

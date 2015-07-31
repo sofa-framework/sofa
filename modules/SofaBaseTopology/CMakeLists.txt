@@ -4,6 +4,7 @@ project(SofaBaseTopology)
 
 set(HEADER_FILES
 
+    config.h
     initBaseTopology.h
     CommonAlgorithms.h
     CubeTopology.h

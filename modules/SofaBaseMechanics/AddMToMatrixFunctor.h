@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MASS_ADDMTOMATRIXFUNCTOR_H
 #define SOFA_COMPONENT_MASS_ADDMTOMATRIXFUNCTOR_H
+#include "config.h"
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>

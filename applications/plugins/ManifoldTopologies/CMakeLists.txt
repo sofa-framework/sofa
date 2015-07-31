@@ -10,6 +10,7 @@ set(MANIFOLDTOPOLOGIES_INSTALL_BIN_DIR bin CACHE PATH "Installation directory fo
 set(MANIFOLDTOPOLOGIES_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
+    config.h
     ManifoldEdgeSetGeometryAlgorithms.h
     ManifoldEdgeSetGeometryAlgorithms.inl
     ManifoldEdgeSetTopologyAlgorithms.h

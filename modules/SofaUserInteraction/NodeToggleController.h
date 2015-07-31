@@ -36,12 +36,12 @@
 
 #ifndef SOFA_COMPONENT_CONTROLLER_NODETOGGLECONTROLLER_H
 #define SOFA_COMPONENT_CONTROLLER_NODETOGGLECONTROLLER_H
+#include "config.h"
 
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/SofaGeneral.h>
 #include <sofa/core/objectmodel/HapticDeviceEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 

@@ -3,6 +3,7 @@ project(SofaRigid)
 
 set(HEADER_FILES
 
+    config.h
     initRigid.h
     ArticulatedHierarchyContainer.h
     ArticulatedHierarchyContainer.inl

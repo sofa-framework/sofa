@@ -24,8 +24,8 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_EDGE2QUADTOPOLOGICALMAPPING_H
 #define SOFA_COMPONENT_TOPOLOGY_EDGE2QUADTOPOLOGICALMAPPING_H
+#include "config.h"
 
-#include <sofa/SofaGeneral.h>
 #include <sofa/core/topology/TopologicalMapping.h>
 
 #include <sofa/defaulttype/Vec.h>
@@ -34,7 +34,6 @@
 
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/SofaGeneral.h>
 
 #include <SofaSimpleFem/RadiusContainer.h>
 

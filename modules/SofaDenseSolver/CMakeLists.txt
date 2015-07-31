@@ -3,6 +3,7 @@ project(SofaDenseSolver)
 
 set(HEADER_FILES
 
+    config.h
     initDenseSolver.h
     LULinearSolver.h
     NewMatVector.h

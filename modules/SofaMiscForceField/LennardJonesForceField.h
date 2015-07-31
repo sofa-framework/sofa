@@ -24,12 +24,12 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_H
+#include "config.h"
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <vector>
 
-#include <sofa/SofaMisc.h>
 
 namespace sofa
 {

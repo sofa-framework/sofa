@@ -3,6 +3,7 @@ project(SofaMiscTopology)
 
 set(HEADER_FILES
 
+    config.h
     initMiscTopology.h
     TopologicalChangeProcessor.h
     )

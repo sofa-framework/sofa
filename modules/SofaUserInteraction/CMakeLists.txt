@@ -3,6 +3,7 @@ project(SofaUserInteraction)
 
 set(HEADER_FILES
 
+    config.h
     initUserInteraction.h
     RayTraceDetection.h
     RayContact.h

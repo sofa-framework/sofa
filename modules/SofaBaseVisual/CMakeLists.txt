@@ -3,7 +3,8 @@ project(SofaBaseVisual)
 
 set(HEADER_FILES
 
-#    BaseVisual.h
+    config.h
+    initBaseVisual.h
     BaseCamera.h
     InteractiveCamera.h
     RecordedCamera.h
@@ -15,7 +16,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
-#    BaseVisual.cpp
+    initBaseVisual.cpp
     BaseCamera.cpp
     InteractiveCamera.cpp
     RecordedCamera.cpp

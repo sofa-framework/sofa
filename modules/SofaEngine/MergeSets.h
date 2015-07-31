@@ -24,10 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ENGINE_MERGESETS_H
 #define SOFA_COMPONENT_ENGINE_MERGESETS_H
+#include "config.h"
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/SofaGeneral.h>
 
 #include <set>
 

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_EigenSparseMatrix_H
 #define SOFA_COMPONENT_LINEARSOLVER_EigenSparseMatrix_H
+#include "config.h"
 
 #include "EigenBaseSparseMatrix.h"
 #include <sofa/defaulttype/Mat.h>

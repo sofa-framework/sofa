@@ -3,6 +3,7 @@ project(SofaHaptics)
 
 set(HEADER_FILES
 
+    config.h
     initHaptics.h
     ForceFeedback.h
     NullForceFeedbackT.h

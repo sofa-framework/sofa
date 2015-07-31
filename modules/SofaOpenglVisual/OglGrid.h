@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_OGLGRID_H
 #define SOFA_OGLGRID_H
+#include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
 

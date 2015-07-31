@@ -23,8 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_CONSTRAINTSET_DistanceLMContactConstraint_CPP
-#include <sofa/SofaGeneral.h>
 #include <SofaConstraint/DistanceLMContactConstraint.inl>
+
 #include <sofa/core/behavior/LMConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>

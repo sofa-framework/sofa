@@ -6,6 +6,7 @@
 
 #ifndef EIGENBASESPARSEMATRIX_MT_H
 #define EIGENBASESPARSEMATRIX_MT_H
+#include "config.h"
 
 namespace sofa
 {

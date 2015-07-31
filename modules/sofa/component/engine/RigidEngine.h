@@ -34,7 +34,6 @@
 #include <sofa/helper/Quater.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/component/component.h>
 
 
 namespace sofa

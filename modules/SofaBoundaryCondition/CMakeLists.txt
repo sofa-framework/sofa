@@ -3,6 +3,7 @@ project(SofaBoundaryCondition)
 
 set(HEADER_FILES
 
+    config.h
     initBoundaryCondition.h
     BuoyantForceField.h
     BuoyantForceField.inl

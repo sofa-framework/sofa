@@ -3,6 +3,7 @@ project(SofaSphFluid)
 
 set(HEADER_FILES
 
+    config.h
     initSPHFluid.h
     SpatialGridContainer.h
     SpatialGridContainer.inl

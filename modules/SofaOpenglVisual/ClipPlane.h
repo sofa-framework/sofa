@@ -24,9 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CLIPPLANE_H
 #define SOFA_COMPONENT_CLIPPLANE_H
+#include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/SofaGeneral.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
 

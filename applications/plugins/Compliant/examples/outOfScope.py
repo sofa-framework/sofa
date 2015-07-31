@@ -23,11 +23,11 @@ def createScene(root):
     ode = inside.createObject('CompliantImplicitSolver')
     ode.stabilization = "pre-stabilization"
     num = inside.createObject('LDLTSolver')
-    insidedof = inside.createObject('MechanicalObject',name='insidedof', position="1 0 0")
+    insidedof = inside.createObject('MechanicalObject',name='insidedof', position="1 0 0", showObject="1", showObjectScale=5)
     inside.createObject('UniformMass',name='mass',totalmass='1')
     
     
-    outsidedof = outside.createObject('MechanicalObject',name='outsidedof', position="0 0 0")
+    outsidedof = outside.createObject('MechanicalObject',name='outsidedof', position="0 0 0", showObject="1", showObjectScale=5)
     outside.createObject('UniformMass',name='mass',totalmass='1')
     
     commondof = common.createObject('MechanicalObject',name='commondof')    

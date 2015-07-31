@@ -3,6 +3,7 @@ project(SofaConstraint)
 
 set(HEADER_FILES
 
+    config.h
     initConstraint.h
     LocalMinDistance.h
     LocalMinDistance.inl

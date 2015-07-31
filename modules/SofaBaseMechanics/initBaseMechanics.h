@@ -24,8 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_BASE_MECHANICS_INIT_H
 #define SOFA_COMPONENT_BASE_MECHANICS_INIT_H
-
-#include <sofa/SofaBase.h>
+#include "config.h"
 
 namespace sofa
 {

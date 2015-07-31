@@ -3,6 +3,7 @@ project(SofaImplicitOdeSolver)
 
 set(HEADER_FILES
 
+    config.h
     initImplicitODESolver.h
     EulerImplicitSolver.h
     StaticSolver.h

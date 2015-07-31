@@ -3,6 +3,7 @@ project(SofaValidation)
 
 set(HEADER_FILES
 
+    config.h
     initValidation.h
     CompareState.h
     CompareTopology.h
