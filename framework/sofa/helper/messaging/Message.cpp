@@ -38,9 +38,6 @@ using std::endl ;
 #include <string>
 using std::string ;
 
-#include <sofa/core/objectmodel/Base.h>
-using sofa::core::objectmodel::Base ;
-
 //#include "Messagehandler.h"
 #include "Message.h"
 
@@ -53,74 +50,27 @@ namespace helper
 namespace messaging
 {
 
-Message::Message():
-    m_sender(0),
-    m_sendername("none"),
-    m_source("none"),
-    m_lineno(0),
-    m_message("none"),
-    m_class("DEV"),
-    m_type("INFO"),
+Message::Message(const string& mclass, const string& type, const string& message,
+                 const string& sender, const FileInfo& fileInfo):
+    m_sender(sender),
+    m_fileInfo(fileInfo),
+    m_message(message),
+    m_class(mclass),
+    m_type(type),
     m_id(-1)
 {
-
-}
-Message::Message(string mclass, string type,  Base* sender, string source, int lineno){
-    m_sender = sender ;
-    m_source = source ;
-    m_lineno = lineno ;
-    m_message = "undefined" ;
-    m_class   = mclass;
-    m_type    = type ;
-    m_id      = -1 ;
-
-    if(sender!=0){
-        ostringstream s;
-        s << "[" << sender->getName() << "(" << sender->getClassName() <<   ")]: ";
-        m_sendername = s.str();
-    }else{
-        m_sendername = "undefined" ;
-    }
 }
 
-Message::Message(string mclass, string type,  const string& sendername, string source, int lineno){
-    m_sender = 0 ;
-    m_sendername = sendername ;
-    m_source = source ;
-    m_lineno = lineno ;
-    m_message = "undefined" ;
-    m_class   = mclass;
-    m_type    = type ;
-    m_id      = -1 ;
-}
-
-Message& Message::operator<=(const std::ostream& s)
-{
-    ostringstream tmp ;
-    tmp << s.rdbuf() ;
-
-    m_message = tmp.str() ;
-    return *this ;
-}
-
-const string& Message::source() const {
-    return m_source;
-}
-
-int Message::lineno() const  {
-    return m_lineno;
+const FileInfo& Message::fileInfo() const {
+    return m_fileInfo;
 }
 
 const string& Message::message() const  {
     return m_message;
 }
 
-Base*  Message::sender() const  {
+const std::string&  Message::sender() const  {
     return m_sender;
-}
-
-const std::string&  Message::sendername() const  {
-    return m_sendername;
 }
 
 const string& Message::context() const  {
@@ -140,15 +90,13 @@ void Message::setId(int id){
 }
 
 std::ostream& operator<< (std::ostream& s, const Message& m){
-    s << "[" << m.sendername() << "]: " << endl ;
+    s << "[" << m.sender() << "]: " << endl ;
     s << "         Message id: " << m.id() << endl ;
     s << "       Message type: " << m.type() << endl ;
     s << "    Message content: " << m.message() << endl ;
-    s << "    source code loc: " << m.source() << ":" << m.lineno() << endl ;
+    s << "    source code loc: " << m.fileInfo().filename << ":" << m.fileInfo().line << endl ;
     return s;
 }
-
-Message Message::empty = Message() ;
 
 } // messaging
 } // helper

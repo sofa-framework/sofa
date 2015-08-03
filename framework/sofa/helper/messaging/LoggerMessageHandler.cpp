@@ -62,7 +62,9 @@ map<int, Message> s_m_messages ;
 const Message& LoggerMessageHandler::getMessageAt(int index)
 {
     if(s_m_messages.find(index) == s_m_messages.end()){
-        return Message::empty ;
+        // Nope
+        // return Message::empty ;
+        std::cerr << "WHARRGARBL" << std::endl;
     }
 
     return s_m_messages.find(index)->second ;

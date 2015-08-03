@@ -59,7 +59,7 @@ MessageFormatter* ClangStyleMessageFormatter::getInstance()
 
 void ClangStyleMessageFormatter::formatMessage(const Message& m,std::ostream& out)
 {
-    out << m.source() << ":" << m.lineno() << ":1: " << m.type() << ": " << m.message() << std::endl ;
+    out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << m.type() << ": " << m.message() << std::endl ;
     out << " message id: " << m.id() << std::endl ;
 }
 
