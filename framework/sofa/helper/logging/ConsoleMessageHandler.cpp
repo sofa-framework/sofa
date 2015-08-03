@@ -46,7 +46,7 @@ namespace sofa
 namespace helper
 {
 
-namespace messaging
+namespace logging
 {
 
 ConsoleMessageHandler::ConsoleMessageHandler(MessageFormatter* formatter)
@@ -61,7 +61,7 @@ void ConsoleMessageHandler::process(Message &m) {
 }
 
 
-} // messaging
+} // logging
 } // helper
 } // sofa
 

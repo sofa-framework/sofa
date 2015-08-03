@@ -40,7 +40,7 @@ namespace sofa
 namespace helper
 {
 
-namespace messaging
+namespace logging
 {
 
 class Message;
@@ -52,7 +52,7 @@ public:
     static const Message& getMessageAt(int index) ;
 };
 
-} // messaging
+} // logging
 } // helper
 } // sofa
 

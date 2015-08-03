@@ -43,7 +43,7 @@ namespace sofa
 namespace helper
 {
 
-namespace messaging
+namespace logging
 {
 
 FileMessageHandler::FileMessageHandler(const char* filename,MessageFormatter *formatter)
@@ -77,7 +77,7 @@ bool FileMessageHandler::isValid()
 }
 
 
-} // messaging
+} // logging
 } // helper
 } // sofa
 

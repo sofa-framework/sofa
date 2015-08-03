@@ -54,7 +54,7 @@ namespace sofa
 namespace helper
 {
 
-namespace messaging
+namespace logging
 {
 
 // todo(damien): beurk une constante.
@@ -69,7 +69,7 @@ int s_m_lastErrorId = -1 ;     // keep count of the last error message received.
 int s_m_lastWarningId = -1 ;
 int s_m_lastInfoId = -1 ;
 
-sofa::helper::messaging::Message& operator<<=(MessageDispatcher &d, sofa::helper::messaging::Message& m){
+sofa::helper::logging::Message& operator<<=(MessageDispatcher &d, sofa::helper::logging::Message& m){
     s_m_lastAllocatedID++ ;
 
     m.setId(s_m_lastAllocatedID) ;
@@ -118,17 +118,17 @@ void MessageDispatcher::clearHandlers(bool del){
     s_m_handlers.clear() ;
 }
 
-void MessageDispatcher::process(sofa::helper::messaging::Message& m){
+void MessageDispatcher::process(sofa::helper::logging::Message& m){
     for(unsigned int i=0;i<s_m_handlers.size();i++)
         s_m_handlers[i]->process(m) ;
 }
 
-} // messaging
+} // logging
 } // helper
 } // sofa
 
 // THE main MessageDipatcher...
-sofa::helper::messaging::MessageDispatcher gMessageDispatcher;
+sofa::helper::logging::MessageDispatcher gMessageDispatcher;
 
 
 

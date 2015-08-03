@@ -39,7 +39,7 @@ namespace sofa
 namespace helper
 {
 
-namespace messaging
+namespace logging
 {
 
 void SilentMessageHandler::process(Message& m) {
@@ -47,7 +47,7 @@ void SilentMessageHandler::process(Message& m) {
 }
 
 
-} // messaging
+} // logging
 } // helper
 } // sofa
 

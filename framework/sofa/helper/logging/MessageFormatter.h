@@ -40,7 +40,7 @@ namespace sofa
 namespace helper
 {
 
-namespace messaging
+namespace logging
 {
 
 class Message;
@@ -52,7 +52,7 @@ public:
 private:
 };
 
-} // messaging
+} // logging
 } // helper
 } // sofa
 

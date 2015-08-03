@@ -52,7 +52,7 @@ namespace sofa
 namespace helper
 {
 
-namespace messaging
+namespace logging
 {
 
 // todo(damien) this should something we can change dynamically :)
@@ -83,7 +83,7 @@ void LoggerMessageHandler::process(Message& m)
 }
 
 
-} // messaging
+} // logging
 } // helper
 } // sofa
 

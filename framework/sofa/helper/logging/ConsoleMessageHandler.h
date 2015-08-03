@@ -41,7 +41,7 @@ namespace sofa
 namespace helper
 {
 
-namespace messaging
+namespace logging
 {
 
 class MessageFormatter;
@@ -59,7 +59,7 @@ private:
 };
 
 
-} // messaging
+} // logging
 } // helper
 } // sofa
 
