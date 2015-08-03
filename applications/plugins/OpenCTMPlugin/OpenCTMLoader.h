@@ -44,7 +44,7 @@ namespace loader
  *  Created on: July 25th 2015
  *      Author: epernod
  */
-class SOFA_LOADER_API OpenCTMLoader : public sofa::core::loader::MeshLoader
+class SOFA_OPENCTMPLUGIN_API OpenCTMLoader : public sofa::core::loader::MeshLoader
 {
 public:
     SOFA_CLASS(OpenCTMLoader,sofa::core::loader::MeshLoader);
