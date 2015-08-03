@@ -97,18 +97,18 @@ set(HEADER_FILES
     Utils.h
 	IndexOpenMP.h
 	Logger.h
-    messaging/Messaging.h
-    messaging/Message.h
-    messaging/MessageDispatcher.h
-    messaging/MessageHandler.h
-    messaging/ConsoleMessageHandler.h
-    messaging/SilentMessageHandler.h
-    messaging/FileMessageHandler.h
-    messaging/LoggerMessageHandler.h
-    messaging/MessageHandler.h
-    messaging/MessageFormatter.h
-    messaging/ClangStyleMessageFormatter.h
-    messaging/DefaultStyleMessageFormatter.h
+    # messaging/Messaging.h
+    # messaging/Message.h
+    # messaging/MessageDispatcher.h
+    # messaging/MessageHandler.h
+    # messaging/ConsoleMessageHandler.h
+    # messaging/SilentMessageHandler.h
+    # messaging/FileMessageHandler.h
+    # messaging/LoggerMessageHandler.h
+    # messaging/MessageHandler.h
+    # messaging/MessageFormatter.h
+    # messaging/ClangStyleMessageFormatter.h
+    # messaging/DefaultStyleMessageFormatter.h
     )
 
 set(SOURCE_FILES
@@ -167,14 +167,14 @@ set(SOURCE_FILES
     kdTree.cpp
     Utils.cpp
 	Logger.cpp
-    messaging/Message.cpp
-    messaging/MessageDispatcher.cpp
-    messaging/ClangStyleMessageFormatter.cpp
-    messaging/DefaultStyleMessageFormatter.cpp
-    messaging/ConsoleMessageHandler.cpp
-    messaging/SilentMessageHandler.cpp
-    messaging/FileMessageHandler.cpp
-    messaging/LoggerMessageHandler.cpp
+    # messaging/Message.cpp
+    # messaging/MessageDispatcher.cpp
+    # messaging/ClangStyleMessageFormatter.cpp
+    # messaging/DefaultStyleMessageFormatter.cpp
+    # messaging/ConsoleMessageHandler.cpp
+    # messaging/SilentMessageHandler.cpp
+    # messaging/FileMessageHandler.cpp
+    # messaging/LoggerMessageHandler.cpp
     )
 
 if(SOFA-EXTERNAL_BOOST)
