@@ -140,11 +140,27 @@ typename DataTypes::Coord BezierTetrahedronSetGeometryAlgorithms< DataTypes >::c
 	VecPointID indexArray;
 	TetrahedronBezierIndex tbi;
 	container->getGlobalIndexArrayOfBezierPointsInTetrahedron(tetrahedronIndex, indexArray);
-	for(size_t i=0; i<tbiArray.size(); ++i)
-	{
-		tbi=tbiArray[i];
-		nodalValue+=p[indexArray[i]]*bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2])*pow(barycentricCoordinate[3],tbi[3]);
+	bool isRational=container->isRationalSpline(tetrahedronIndex);
+	if (isRational) {
+		const BezierTetrahedronSetTopologyContainer::SeqWeights &wa=container->getWeightArray();
+		Real weight=(Real)0.0f;
+		Real bernsteinPolynonial;
+		for(size_t i=0; i<tbiArray.size(); ++i)
+		{
+			tbi=tbiArray[i];
+			bernsteinPolynonial=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2])*pow(barycentricCoordinate[3],tbi[3]);
+			nodalValue+=wa[indexArray[i]]*p[indexArray[i]]*bernsteinPolynonial;
+			weight+=wa[indexArray[i]]*bernsteinPolynonial;
+		}
+		nodalValue/=weight;
+	} else {
+		for(size_t i=0; i<tbiArray.size(); ++i)
+		{
+			tbi=tbiArray[i];
+			nodalValue+=p[indexArray[i]]*bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2])*pow(barycentricCoordinate[3],tbi[3]);
+		}
 	}
+
 	return(nodalValue);
 }
 template< class DataTypes>
@@ -177,20 +193,58 @@ typename DataTypes::Real BezierTetrahedronSetGeometryAlgorithms<DataTypes>::comp
 	size_t j;
 	Real val;
 	container->getGlobalIndexArrayOfBezierPointsInTetrahedron(tetrahedronIndex, indexArray);
-	for(size_t i=0; i<tbiArray.size(); ++i)
-	{
-		tbi=tbiArray[i];
-		val=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2])*pow(barycentricCoordinate[3],tbi[3]);
-		Vec4 dval(0,0,0,0);
-		for (j=0;j<4;++j) {
-			if(tbi[j] && barycentricCoordinate[j]){
-				 dval[j]=(Real)tbi[j]*val/barycentricCoordinate[j];
+	bool isRational=container->isRationalSpline(tetrahedronIndex);
+	if (isRational) {
+		const BezierTetrahedronSetTopologyContainer::SeqWeights &wa=container->getWeightArray();
+		Real weight=(Real)0.0f;
+		Real dweight[3];
+		Coord pos;
+		for(size_t i=0; i<tbiArray.size(); ++i)
+		{
+			tbi=tbiArray[i];
+			val=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2])*pow(barycentricCoordinate[3],tbi[3]);
+			Vec4 dval(0,0,0,0);
+			pos+=wa[indexArray[i]]*val*p[indexArray[i]];
+			weight+=wa[indexArray[i]]*val;
+			for (j=0;j<4;++j) {
+				if(tbi[j] && barycentricCoordinate[j]){
+					dval[j]=(Real)tbi[j]*val/barycentricCoordinate[j];
+				} else if ((barycentricCoordinate[j]==0.0f)&&(tbi[j]==1)) {
+					dval[j]=bernsteinCoefficientArray[i];
+					for (size_t k=1;k<=3;++k)
+						dval[j]*=(Real)(pow( barycentricCoordinate[(j+k)%4],tbi[(j+k)%4]));
+				}
+			}
+			for (j=0;j<3;++j) {
+				dpos[j]+=(dval[j]-dval[3])*p[indexArray[i]];
+				dweight[j]+=(dval[j]-dval[3])*wa[indexArray[i]];
+			}
+			// computes the derivatives of the ratio of the 2 polynomial terms
+			for (j=0;j<3;++j) {
+				dpos[j]=dpos[j]/weight-(dweight[j]/(weight*weight))*pos;
+			}
+		} 
+	}else {
+		for(size_t i=0; i<tbiArray.size(); ++i)
+		{
+			tbi=tbiArray[i];
+			val=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2])*pow(barycentricCoordinate[3],tbi[3]);
+			Vec4 dval(0,0,0,0);
+			for (j=0;j<4;++j) {
+				if(tbi[j] && barycentricCoordinate[j]){
+					dval[j]=(Real)tbi[j]*val/barycentricCoordinate[j];
+				} else if ((barycentricCoordinate[j]==0.0f)&&(tbi[j]==1)) {
+					dval[j]=bernsteinCoefficientArray[i];
+					for (size_t k=1;k<=3;++k)
+						dval[j]*=(Real)(pow( barycentricCoordinate[(j+k)%4],tbi[(j+k)%4]));
+				}
+			}
+			for (j=0;j<3;++j) {
+				dpos[j]+=(dval[j]-dval[3])*p[indexArray[i]];
 			}
 		}
-		for (j=0;j<3;++j) {
-			dpos[j]+=(dval[j]-dval[3])*p[indexArray[i]];
-		}
 	}
+
 	
 	return(tripleProduct(dpos[0],dpos[1],dpos[2]));
  }
@@ -214,19 +268,57 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::computeDeCasteljeauPoint
 	// initialize dpos
 	for (j=0;j<4;++j) 
 		dpos[j]=Coord();
-	for(size_t i=0; i<tbiArray.size(); ++i)
-	{
-		tbi=tbiArray[i];
-		val=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2])*pow(barycentricCoordinate[3],tbi[3]);
-		Vec4 dval(0,0,0,0);
-		for (j=0;j<4;++j) {
-			if(tbi[j] && barycentricCoordinate[j]){
-				 dval[j]=(Real)tbi[j]*val/barycentricCoordinate[j];
-				 dpos[j]+=dval[j]*p[indexArray[i]];
+	bool isRational=container->isRationalSpline(tetrahedronIndex);
+	if (isRational) {
+		const BezierTetrahedronSetTopologyContainer::SeqWeights &wa=container->getWeightArray();
+		Real weight=(Real)0.0f;
+		Real dweight[2];
+		Coord pos;
+		for(size_t i=0; i<tbiArray.size(); ++i)
+		{
+			tbi=tbiArray[i];
+			val=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2])*pow(barycentricCoordinate[3],tbi[3]);
+			pos+=val*p[indexArray[i]];
+			weight+=val*wa[indexArray[i]];
+			Vec4 dval(0,0,0,0);
+			for (j=0;j<4;++j) {
+				if(tbi[j] && barycentricCoordinate[j]){
+					dval[j]=(Real)tbi[j]*val/barycentricCoordinate[j];
+
+				} else if ((barycentricCoordinate[j]==0.0f)&&(tbi[j]==1)) {
+					dval[j]=bernsteinCoefficientArray[i];
+					for (size_t k=1;k<=3;++k)
+						dval[j]*=(Real)(pow( barycentricCoordinate[(j+k)%4],tbi[(j+k)%4]));
+				}
+				dpos[j]+=dval[j]*p[indexArray[i]];
+				dweight[j]+=dval[j]*wa[indexArray[i]];
 			}
 		}
+		for (j=0;j<4;++j) {
+			dpos[j]=dpos[j]/weight-(dweight[j]/(weight*weight))*pos;
+		}
+	} else {
+		for(size_t i=0; i<tbiArray.size(); ++i)
+		{
+			tbi=tbiArray[i];
+			val=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2])*pow(barycentricCoordinate[3],tbi[3]);
+			Vec4 dval(0,0,0,0);
+			for (j=0;j<4;++j) {
+				if(tbi[j] && barycentricCoordinate[j]){
+					dval[j]=(Real)tbi[j]*val/barycentricCoordinate[j];
+
+				} else if ((barycentricCoordinate[j]==0.0f)&&(tbi[j]==1)) {
+					dval[j]=bernsteinCoefficientArray[i];
+					for (size_t k=1;k<=3;++k)
+						dval[j]*=(Real)(pow( barycentricCoordinate[(j+k)%4],tbi[(j+k)%4]));
+				}
+				dpos[j]+=dval[j]*p[indexArray[i]];
+			}
+		}
+
 	}
-	
+
+
 }
 
 template<class DataTypes>

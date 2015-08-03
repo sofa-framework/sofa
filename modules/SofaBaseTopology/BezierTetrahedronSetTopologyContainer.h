@@ -40,40 +40,44 @@ class BezierTetrahedronSetTopologyModifier;
 
 using core::topology::BaseMeshTopology;
 
-typedef BaseMeshTopology::PointID			         PointID;
-typedef BaseMeshTopology::EdgeID			            EdgeID;
-typedef BaseMeshTopology::TriangleID		         TriangleID;
-typedef BaseMeshTopology::TetraID			         TetraID;
-typedef BaseMeshTopology::Edge				         Edge;
-typedef BaseMeshTopology::Triangle			         Triangle;
-typedef BaseMeshTopology::Tetra				         Tetra;
-typedef BaseMeshTopology::SeqTetrahedra			   SeqTetrahedra;
-
-
-typedef Tetra			Tetrahedron;
-typedef EdgesInTetrahedron		EdgesInTetrahedron;
-typedef TrianglesInTetrahedron	TrianglesInTetrahedron;
-typedef sofa::helper::vector<PointID>         VecPointID;
-typedef sofa::helper::vector<TetraID>         VecTetraID;
 typedef unsigned char BezierDegreeType;
 typedef sofa::defaulttype::Vec<4,BezierDegreeType> TetrahedronBezierIndex;
-typedef sofa::defaulttype::Vec<4,int> ElementTetrahedronIndex;
-typedef sofa::defaulttype::Vec<4,size_t> LocalTetrahedronIndex;
 
 /** a class that stores a set of Bezier tetrahedra and provides access with adjacent triangles, edges and vertices 
 A Bezier Tetrahedron has exactly the same topology as a Tetrahedron but with additional (control) points on its edges, triangles and inside 
 We use a Vec4D to number the control points inside  a Bezier tetrahedron */
 class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetTopologyContainer : public TetrahedronSetTopologyContainer
 {
-    friend class BezierTetrahedronSetTopologyModifier;
-	friend class Mesh2BezierTopologicalMapping;
 
-public:
+public: 
     SOFA_CLASS(BezierTetrahedronSetTopologyContainer,TetrahedronSetTopologyContainer);
 
-    typedef Tetra			Tetrahedron;
-    typedef EdgesInTetrahedron		EdgesInTetrahedron;
-    typedef TrianglesInTetrahedron	TrianglesInTetrahedron;
+	typedef BaseMeshTopology::PointID			         PointID;
+	typedef BaseMeshTopology::EdgeID			            EdgeID;
+	typedef BaseMeshTopology::TriangleID		         TriangleID;
+	typedef BaseMeshTopology::TetraID			         TetraID;
+	typedef BaseMeshTopology::Edge				         Edge;
+	typedef BaseMeshTopology::Triangle			         Triangle;
+	typedef BaseMeshTopology::Tetra				         Tetra;
+	typedef BaseMeshTopology::SeqTetrahedra			   SeqTetrahedra;
+
+
+
+	typedef Tetra			Tetrahedron;
+	typedef EdgesInTetrahedron		EdgesInTetrahedron;
+	typedef TrianglesInTetrahedron	TrianglesInTetrahedron;
+	typedef sofa::helper::vector<PointID>         VecPointID;
+	typedef sofa::helper::vector<TetraID>         VecTetraID;
+	typedef sofa::helper::vector<SReal> SeqWeights;
+	typedef sofa::helper::vector<bool> SeqBools;
+	
+	typedef sofa::defaulttype::Vec<4,int> ElementTetrahedronIndex;
+	typedef sofa::defaulttype::Vec<4,size_t> LocalTetrahedronIndex;
+
+	friend class BezierTetrahedronSetTopologyModifier;
+	friend class Mesh2BezierTopologicalMapping;
+
+
 protected:
     BezierTetrahedronSetTopologyContainer();
 
@@ -90,6 +94,10 @@ protected :
 	Data <BezierDegreeType> d_degree;
 	/// the number of control points corresponding to the vertices of the tetrahedra (different from the total number of points)
     Data<size_t> d_numberOfTetrahedralPoints;
+	/// whether the Bezier tetrahedron are integral (false = classical Bezier splines) or rational splines (true)
+	Data <SeqBools> d_isRationalSpline;
+	/// the array of weights for rational splines
+	Data <SeqWeights > d_weightArray;
 public :
 	// specifies where a Bezier Point can lies with respect to the underlying tetrahedral mesh
 	enum BezierTetrahedronPointLocation
@@ -123,6 +131,12 @@ public :
 		size_t &elementIndex, size_t &elementOffset) ;
 	/// check the Bezier Point Topology
 	bool checkBezierPointTopology();
+	/** \brief Returns the weight coordinate of the ith DOF. */
+	virtual SReal getWeight(int i) const;
+	/// returns the array of weights
+	const SeqWeights & getWeightArray() const;
+	// if the Bezier tetrahedron is rational or integral
+	bool isRationalSpline(int i) const;
 	 /// @}
 
     inline friend std::ostream& operator<< (std::ostream& out, const BezierTetrahedronSetTopologyContainer& t)

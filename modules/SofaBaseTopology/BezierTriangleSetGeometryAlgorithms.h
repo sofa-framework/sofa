@@ -58,7 +58,7 @@ public:
 	typedef BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
 	typedef BaseMeshTopology::TrianglesAroundEdge TrianglesAroundEdge;
 	typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
-
+	typedef BezierTriangleSetTopologyContainer::VecPointID VecPointID;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;

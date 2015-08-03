@@ -39,36 +39,43 @@ class BezierTriangleSetTopologyModifier;
 
 using core::topology::BaseMeshTopology;
 
-typedef BaseMeshTopology::PointID		            	PointID;
-typedef BaseMeshTopology::EdgeID		               	EdgeID;
-typedef BaseMeshTopology::TriangleID	               TriangleID;
-typedef BaseMeshTopology::Edge		        	         Edge;
-typedef BaseMeshTopology::Triangle	        	         Triangle;
-typedef BaseMeshTopology::SeqTriangles	        	      SeqTriangles;
-typedef BaseMeshTopology::EdgesInTriangle	         	EdgesInTriangle;
-typedef BaseMeshTopology::TrianglesAroundVertex    	TrianglesAroundVertex;
-typedef BaseMeshTopology::TrianglesAroundEdge        	TrianglesAroundEdge;
-typedef sofa::helper::vector<TriangleID>                  VecTriangleID;
-typedef sofa::helper::vector<PointID>					  VecPointID;
+
 
 typedef unsigned char BezierDegreeType;
 typedef sofa::defaulttype::Vec<3,BezierDegreeType> TriangleBezierIndex;
-typedef sofa::defaulttype::Vec<3,int> ElementTriangleIndex;
-typedef sofa::defaulttype::Vec<3,size_t> LocalTriangleIndex;
+
 
 /** a class that stores a set of Bezier tetrahedra and provides access with adjacent triangles, edges and vertices 
 A Bezier Tetrahedron has exactly the same topology as a Tetrahedron but with additional (control) points on its edges, triangles and inside 
 We use a Vec4D to number the control points inside  a Bezier tetrahedron */
 class SOFA_BASE_TOPOLOGY_API BezierTriangleSetTopologyContainer : public TriangleSetTopologyContainer
 {
+public:
+	 SOFA_CLASS(BezierTriangleSetTopologyContainer,TriangleSetTopologyContainer);
+
+	typedef BaseMeshTopology::PointID		            	PointID;
+	typedef BaseMeshTopology::EdgeID		               	EdgeID;
+	typedef BaseMeshTopology::TriangleID	               TriangleID;
+	typedef BaseMeshTopology::Edge		        	         Edge;
+	typedef BaseMeshTopology::Triangle	        	         Triangle;
+	typedef BaseMeshTopology::SeqTriangles	        	      SeqTriangles;
+	typedef BaseMeshTopology::EdgesInTriangle	         	EdgesInTriangle;
+	typedef BaseMeshTopology::TrianglesAroundVertex    	TrianglesAroundVertex;
+	typedef BaseMeshTopology::TrianglesAroundEdge        	TrianglesAroundEdge;
+	typedef sofa::helper::vector<TriangleID>                  VecTriangleID;
+	typedef sofa::helper::vector<PointID>					  VecPointID;
+
+	typedef sofa::defaulttype::Vec<3,int> ElementTriangleIndex;
+	typedef sofa::defaulttype::Vec<3,size_t> LocalTriangleIndex;
+	typedef std::pair<size_t,TriangleBezierIndex> ControlPointLocation;
+	typedef sofa::helper::vector<SReal> SeqWeights;
+
+
     friend class BezierTriangleSetTopologyModifier;
 	friend class Mesh2BezierTopologicalMapping;
 	friend class BezierTetra2BezierTriangleTopologicalMapping;
-	typedef std::pair<size_t,TriangleBezierIndex> ControlPointLocation;
-	
 
-public:
-    SOFA_CLASS(BezierTriangleSetTopologyContainer,TriangleSetTopologyContainer);
+
 
 protected:
     BezierTriangleSetTopologyContainer();
@@ -83,9 +90,13 @@ public:
     /// @{
 protected :
 	/// the degree of the Bezier Tetrahedron 1=linear, 2=quadratic...
-	Data <BezierDegreeType> d_degree;
+	Data <size_t> d_degree;
 	/// the number of control points corresponding to the vertices of the triangle mesh (different from the total number of points)
     Data<size_t> d_numberOfTriangularPoints;
+	/// whether the Bezier triangles are integral (false = classical Bezier splines) or rational splines (true)
+	Data <bool> d_isRationalSpline;
+	/// the array of weights for rational splines
+	Data <SeqWeights > d_weightArray;
 public :
 	// specifies where a Bezier Point can lies with respect to the underlying tetrahedral mesh
 	enum BezierTrianglePointLocation
@@ -123,8 +134,12 @@ public :
 	/// check the Bezier Point Topology
 	bool checkBezierPointTopology();
 	 /// @}
-
-  
+	/** \brief Returns the weight coordinate of the ith DOF. */
+	virtual SReal getWeight(int i) const;
+	/// returns the array of weights
+	const SeqWeights & getWeightArray() const;
+	// if the Bezier triangles are rational or integral
+	bool isRationalSpline() const;
 
 protected:
 	/** Map which provides the global index of a control point knowing its location (i.e. triangle index and its TriangleBezierIndex).
@@ -143,7 +158,7 @@ protected:
 	/// Map which provides the offset in the DOF vector for a control point lying on a triangle 
 	std::map<TriangleBezierIndex,size_t> triangleOffsetMap;
 
-	/// Map which provides the rank in a control point from the array outputed by getGlobalIndexArrayOfBezierPointsInTriangle (consistent with bezierIndexArray) 
+	/// Map which provides the rank in a control point from the array outputted by getGlobalIndexArrayOfBezierPointsInTriangle (consistent with bezierIndexArray) 
 	std::map<TriangleBezierIndex,size_t> localIndexMap;
 	/// array of the Triangle Bezier index outputed by the function getGlobalIndexArrayOfBezierPointsInTriangle()
 	sofa::helper::vector<TriangleBezierIndex> bezierIndexArray;
