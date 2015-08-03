@@ -26,7 +26,7 @@
 #define OPENCTM_PLUGIN_OPENCTMLOADER_H
 
 #include <sofa/core/loader/MeshLoader.h>
-#include <sofa/component/component.h>
+#include "initOpenCTMPlugin.h"
 
 namespace sofa
 {
