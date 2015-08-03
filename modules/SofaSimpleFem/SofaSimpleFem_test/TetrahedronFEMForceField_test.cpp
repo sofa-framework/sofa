@@ -74,8 +74,8 @@ struct TetrahedronFEMForceField_test : public ForceField_test<_TetrahedronFEMFor
 
         //Force e*E*S*1/3  = 1*40*sqrt(3)/4*1/3
         f.resize(4);
-        Vec3 fup(0,0,std::sqrt(3)*10.0/3.0);
-        Vec3 fdown(0,0,std::sqrt(3)*10.0/9.0);
+        Vec3 fup(0,0,std::sqrt(3.f)*10.0/3.0);
+        Vec3 fdown(0,0,std::sqrt(3.f)*10.0/9.0);
         DataTypes::set( f[0],  fdown[0], fdown[1], (Real)fdown[2]);
         DataTypes::set( f[1],  fdown[0], fdown[1], (Real)fdown[2]);
         DataTypes::set( f[2],  fdown[0], fdown[1], (Real)fdown[2]);
