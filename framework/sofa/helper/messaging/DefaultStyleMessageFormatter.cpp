@@ -100,7 +100,8 @@ void DefaultStyleMessageFormatter::formatMessage(const Message& m,std::ostream& 
         tmpStr << RED << "[FATAL]" << ENDL ;
     }
 
-    tmpStr << "[" << m.sendername() << "]: ";
+    if (m.sender().size() != 0)
+        tmpStr << "[" << m.sender() << "]: ";
 
     //todo(damien): this is ugly !! the -11 is to remove the color codes from the string !
     // fix this by making a function that count the size of a string ignoring the escapes...

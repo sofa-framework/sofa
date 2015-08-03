@@ -35,14 +35,6 @@
 #include <string>
 #include <sofa/helper/helper.h>
 
-namespace sofa {
-namespace core {
-namespace objectmodel{
-class Base ;
-}
-}
-}
-
 namespace sofa
 {
 
@@ -53,39 +45,39 @@ namespace messaging
 {
 
 
-using sofa::core::objectmodel::Base ;
+static const char * s_unknownFile = "unknown-file";
+
+struct FileInfo
+{
+    const char *filename;
+    int line;
+    FileInfo(const char *f, int l): filename(f), line(l) {}
+    FileInfo(): filename(s_unknownFile), line(0) {}
+};
+
+#define SOFA_FILE_INFO sofa::helper::messaging::FileInfo(__FILE__, __LINE__)
+
 using std::ostream ;
 using std::string ;
 
 class SOFA_HELPER_API Message
 {
 public:
-    // todo(damien): I don't like the two version one with the base an other with a sendername...
-    // this is weird to me. But I see no other approach than using a templated class
-    // to capture the nature of the sender and a BaseMessage...
-    Message(string mclass, string type,  const std::string& sender, string source, int lineno) ;
-    Message(string mclass, string type,  Base* sender, string source, int lineno) ;
-    Message() ;
+    Message() {};
+    Message(const string& mclass, const string& type, const string& message,
+            const string& sender = "", const FileInfo& fileInfo = FileInfo());
 
-    Message& operator<=(const std::ostream& s) ;
-
-    const string& source() const ;
-    int           lineno() const ;
+    const FileInfo& fileInfo() const ;
     const string& message() const ;
-    Base*         sender() const ;
     const string& context() const ;
     const string& type() const ;
-    const string& sendername() const ;
+    const string& sender() const ;
     int           id() const ;
     void          setId(int id) ;
 
-    static Message empty ;
-
 private:
-    Base*   m_sender;
-    string  m_sendername;
-    string  m_source;
-    int     m_lineno;
+    string  m_sender;
+    FileInfo m_fileInfo;
     string  m_message;
     string  m_class;
     string  m_type;

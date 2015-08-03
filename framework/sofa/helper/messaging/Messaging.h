@@ -97,9 +97,9 @@ extern sofa::helper::messaging::MessageDispatcher gMessageDispatcher;
 #define dmsg_fatal(emitter)    sofa::helper::messaging::Nop::getAnInstance()
 #endif // NDEBUG
 
-#define msg_info(emitter)    gMessageDispatcher <<= sofa::helper::messaging::Message("runtime", "info", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
-#define msg_warning(emitter) gMessageDispatcher <<= sofa::helper::messaging::Message("runtime", "warn", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
-#define msg_error(emitter)   gMessageDispatcher <<= sofa::helper::messaging::Message("runtime", "error", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
-#define msg_fatal(emitter)   gMessageDispatcher <<= sofa::helper::messaging::Message("runtime", "fatal", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
+#define msg_info(emitter)    gMessageDispatcher.info("runtime", emitter, SOFA_FILE_INFO)
+#define msg_warning(emitter) gMessageDispatcher.warning("runtime", emitter, SOFA_FILE_INFO)
+#define msg_error(emitter)   gMessageDispatcher.error("runtime", emitter, SOFA_FILE_INFO)
+#define msg_fatal(emitter)   gMessageDispatcher.fatal("runtime", emitter, SOFA_FILE_INFO)
 
 #endif // MESSAGING_H
