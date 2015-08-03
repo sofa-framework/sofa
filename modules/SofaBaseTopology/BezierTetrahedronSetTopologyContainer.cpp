@@ -51,8 +51,8 @@ const unsigned int trianglesInTetrahedronArray[4][3]= {{1,2,3}, {0,3,2}, {1,3,0}
 
 
 
-typedef std::pair<TetrahedronBezierIndex,ElementTetrahedronIndex> ElementMapType;
-typedef std::map<TetrahedronBezierIndex,ElementTetrahedronIndex>::iterator ElementMapIterator;
+typedef std::pair<TetrahedronBezierIndex,BezierTetrahedronSetTopologyContainer::ElementTetrahedronIndex> ElementMapType;
+typedef std::map<TetrahedronBezierIndex,BezierTetrahedronSetTopologyContainer::ElementTetrahedronIndex>::iterator ElementMapIterator;
 
 typedef std::pair<TetrahedronBezierIndex,size_t> OffsetMapType;
 typedef std::map<TetrahedronBezierIndex,size_t>::iterator OffsetMapIterator;
@@ -62,6 +62,8 @@ BezierTetrahedronSetTopologyContainer::BezierTetrahedronSetTopologyContainer()
     : TetrahedronSetTopologyContainer()
     , d_degree(initData(&d_degree, (BezierDegreeType)0,"degree", "Degree of Bezier Tetrahedra"))
     , d_numberOfTetrahedralPoints(initData(&d_numberOfTetrahedralPoints, (size_t) 0,"NbTetrahedralVertices", "Number of Tetrahedral Vertices"))
+	, d_isRationalSpline(initData(&d_isRationalSpline, SeqBools(),"isRational", "If a bezier tetrahedron is rational or integral"))
+	, d_weightArray(initData(&d_weightArray, SeqWeights(),"weights", "Array of weights for rational bezier tetrahedra"))
 {
     addAlias(&d_degree, "order");
 }
@@ -71,6 +73,7 @@ BezierTetrahedronSetTopologyContainer::BezierTetrahedronSetTopologyContainer()
 void BezierTetrahedronSetTopologyContainer::init()
 {
      d_degree.updateIfDirty(); // make sure m_tetrahedron is up to date
+	 d_numberOfTetrahedralPoints.updateIfDirty();
 	TetrahedronSetTopologyContainer::init(); // initialize the tetrahedron array
 	reinit();
 }
@@ -144,11 +147,36 @@ void BezierTetrahedronSetTopologyContainer::reinit()
 				}
 			}
 		}
+		// initialize the array of weights if necessary
+
+		if (d_weightArray.getValue().empty()){
+
+			SeqWeights &wa=*(d_weightArray.beginEdit());
+			wa.resize(this->getNbPoints());
+			std::fill(wa.begin(),wa.end(),(SReal)1);
+			d_weightArray.endEdit();
+		}
+
 		// manually creates the edge and triangle structures.
 		createTriangleSetArray();
 		createEdgeSetArray();
 		createEdgesInTetrahedronArray();
 		createTrianglesInTetrahedronArray();
+	}
+	if ((d_numberOfTetrahedralPoints.getValue()==0) && (getNumberOfTetrahedra()>0)){
+		// compute the number of tetrahedral point if it is not provided
+		std::set<size_t> vertexSet;
+		size_t i;
+		// count the number of vertices involved in the list of tetrahedra
+		const sofa::helper::vector<Tetrahedron> &tra=getTetrahedronArray();
+		for (i=0;i<tra.size();++i) {
+			vertexSet.insert(tra[i][0]);
+			vertexSet.insert(tra[i][1]);
+			vertexSet.insert(tra[i][2]);
+			vertexSet.insert(tra[i][3]);
+		}
+		d_numberOfTetrahedralPoints.setValue(vertexSet.size());
+
 	}
 }
 BezierDegreeType BezierTetrahedronSetTopologyContainer::getDegree() const{
@@ -156,6 +184,15 @@ BezierDegreeType BezierTetrahedronSetTopologyContainer::getDegree() const{
 }
  size_t BezierTetrahedronSetTopologyContainer::getNumberOfTetrahedralPoints() const{
 	 return d_numberOfTetrahedralPoints.getValue();
+ }
+ SReal BezierTetrahedronSetTopologyContainer::getWeight(int i) const {
+		 return(d_weightArray.getValue()[i]);
+ }
+ bool BezierTetrahedronSetTopologyContainer::isRationalSpline(int i) const {
+	 return(d_isRationalSpline.getValue()[i]);
+ }
+ const BezierTetrahedronSetTopologyContainer::SeqWeights & BezierTetrahedronSetTopologyContainer::getWeightArray() const {
+	 return(d_weightArray.getValue());
  }
 size_t BezierTetrahedronSetTopologyContainer::getGlobalIndexOfBezierPoint(const TetraID tetrahedronIndex,
 	const TetrahedronBezierIndex id) {
@@ -307,7 +344,7 @@ sofa::helper::vector<TetrahedronBezierIndex> BezierTetrahedronSetTopologyContain
 	}
 	return(tbiArray);
 }
-sofa::helper::vector<LocalTetrahedronIndex> BezierTetrahedronSetTopologyContainer::getMapOfTetrahedronBezierIndexArrayFromInferiorDegree() const
+sofa::helper::vector<BezierTetrahedronSetTopologyContainer::LocalTetrahedronIndex> BezierTetrahedronSetTopologyContainer::getMapOfTetrahedronBezierIndexArrayFromInferiorDegree() const
 {
 	BezierDegreeType degree=d_degree.getValue();
 	sofa::helper::vector<TetrahedronBezierIndex> tbiDerivArray=getTetrahedronBezierIndexArrayOfGivenDegree(degree-1);

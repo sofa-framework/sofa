@@ -46,8 +46,8 @@ int BezierTriangleSetTopologyContainerClass = core::RegisterObject("Bezier Trian
         ;
 
 
-typedef std::pair<TriangleBezierIndex,ElementTriangleIndex> ElementMapType;
-typedef std::map<TriangleBezierIndex,ElementTriangleIndex>::iterator ElementMapIterator;
+typedef std::pair<TriangleBezierIndex,BezierTriangleSetTopologyContainer::ElementTriangleIndex> ElementMapType;
+typedef std::map<TriangleBezierIndex,BezierTriangleSetTopologyContainer::ElementTriangleIndex>::iterator ElementMapIterator;
 
 typedef std::pair<TriangleBezierIndex,size_t> OffsetMapType;
 typedef std::map<TriangleBezierIndex,size_t>::iterator OffsetMapIterator;
@@ -55,8 +55,10 @@ typedef std::map<TriangleBezierIndex,size_t>::const_iterator OffsetMapConstItera
 
 BezierTriangleSetTopologyContainer::BezierTriangleSetTopologyContainer()
     : TriangleSetTopologyContainer()
-    , d_degree(initData(&d_degree, (BezierDegreeType)0,"degree", "Degree of Bezier Tetrahedra"))
+    , d_degree(initData(&d_degree, (size_t)0,"degree", "Degree of Bezier Tetrahedra"))
     , d_numberOfTriangularPoints(initData(&d_numberOfTriangularPoints, (size_t) 0,"NbTriangularVertices", "Number of Triangular Vertices"))
+	    , d_isRationalSpline(initData(&d_isRationalSpline, false,"isRational", "If the bezier triangles are rational or regular"))
+	 , d_weightArray(initData(&d_weightArray, SeqWeights(),"weights", "Array of weights for rational bezier triangles"))
 {
     addAlias(&d_degree, "order");
 }
@@ -66,12 +68,13 @@ BezierTriangleSetTopologyContainer::BezierTriangleSetTopologyContainer()
 void BezierTriangleSetTopologyContainer::init()
 {
      d_degree.updateIfDirty(); // make sure m_Triangle is up to date
+	 d_numberOfTriangularPoints.updateIfDirty();
 	TriangleSetTopologyContainer::init(); // initialize the Triangle array
 	reinit();
 }
 void BezierTriangleSetTopologyContainer::reinit()
 {
-	if (d_degree.getValue()>0) {
+ 	if (d_degree.getValue()>0) {
 		// clear previous entries if it exists
 		elementMap.clear();
 		localIndexMap.clear();
@@ -126,14 +129,51 @@ void BezierTriangleSetTopologyContainer::reinit()
 				}
 
 			}
+
 		}
+		// initialize the array of weights if necessary
+		if (d_isRationalSpline.getValue()) {
+			if (d_weightArray.getValue().empty()){
 
+				SeqWeights &wa=*(d_weightArray.beginEdit());
+				wa.resize(this->getNbPoints());
+				std::fill(wa.begin(),wa.end(),(SReal)1);
+				d_weightArray.endEdit();
+			}
+		}
 		// manually creates the edge and triangle structures.
-
 		createEdgeSetArray();
 		createEdgesInTriangleArray();
 	}
+	if ((d_numberOfTriangularPoints.getValue()==0) && (getNumberOfTriangles()>0)){
+		// compute the number of triangular point if it is not provided
+		std::set<size_t> vertexSet;
+		size_t i;
+		// count the number of vertices involved in the list of triangles
+		const sofa::helper::vector<Triangle> &tra=getTriangleArray();
+		for (i=0;i<tra.size();++i) {
+			vertexSet.insert(tra[i][0]);
+			vertexSet.insert(tra[i][1]);
+			vertexSet.insert(tra[i][2]);
+		}
+		d_numberOfTriangularPoints.setValue(vertexSet.size());
+
+	}
 }
+SReal BezierTriangleSetTopologyContainer::getWeight(int i) const {
+	if (d_isRationalSpline.getValue()) {
+		return(d_weightArray.getValue()[i]);
+	} else {
+		return((SReal)1.0f);
+	}
+}
+bool BezierTriangleSetTopologyContainer::isRationalSpline() const {
+	return(d_isRationalSpline.getValue());
+}
+const BezierTriangleSetTopologyContainer::SeqWeights & BezierTriangleSetTopologyContainer::getWeightArray() const {
+	return(d_weightArray.getValue());
+}
+
 BezierDegreeType BezierTriangleSetTopologyContainer::getDegree() const{
 	return d_degree.getValue();
 }
@@ -266,7 +306,7 @@ sofa::helper::vector<TriangleBezierIndex> BezierTriangleSetTopologyContainer::ge
 
 	return(tbiArray);
 }
-sofa::helper::vector<LocalTriangleIndex> BezierTriangleSetTopologyContainer::getMapOfTriangleBezierIndexArrayFromInferiorDegree() const
+sofa::helper::vector<BezierTriangleSetTopologyContainer::LocalTriangleIndex> BezierTriangleSetTopologyContainer::getMapOfTriangleBezierIndexArrayFromInferiorDegree() const
 {
 	BezierDegreeType degree=d_degree.getValue();
 	sofa::helper::vector<TriangleBezierIndex> tbiDerivArray=getTriangleBezierIndexArrayOfGivenDegree(degree-1);
@@ -413,7 +453,7 @@ void BezierTriangleSetTopologyContainer::getLocationFromGlobalIndex(const size_t
 		}
 	}
 }
-sofa::helper::vector<LocalTriangleIndex> BezierTriangleSetTopologyContainer::getLocalIndexSubtriangleArray() const {
+sofa::helper::vector<BezierTriangleSetTopologyContainer::LocalTriangleIndex> BezierTriangleSetTopologyContainer::getLocalIndexSubtriangleArray() const {
 	sofa::helper::vector<LocalTriangleIndex> subtriangleArray;
 	BezierDegreeType degree=d_degree.getValue();
 	TriangleBezierIndex tbi1,tbi2,tbi3;
@@ -440,7 +480,7 @@ sofa::helper::vector<LocalTriangleIndex> BezierTriangleSetTopologyContainer::get
 	return(subtriangleArray);
 
 }
-sofa::helper::vector<LocalTriangleIndex> BezierTriangleSetTopologyContainer::getLocalIndexSubtriangleArrayOfGivenDegree(const BezierDegreeType deg)  const {
+sofa::helper::vector<BezierTriangleSetTopologyContainer::LocalTriangleIndex> BezierTriangleSetTopologyContainer::getLocalIndexSubtriangleArrayOfGivenDegree(const BezierDegreeType deg)  const {
 
 	sofa::helper::vector<TriangleBezierIndex> tbia=getTriangleBezierIndexArrayOfGivenDegree(deg);
 	// create a local map for indexing

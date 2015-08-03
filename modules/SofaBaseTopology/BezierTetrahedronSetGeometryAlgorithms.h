@@ -39,19 +39,7 @@ namespace component
 namespace topology
 {
 using core::topology::BaseMeshTopology;
-typedef BaseMeshTopology::TetraID TetraID;
-typedef BaseMeshTopology::Tetra Tetra;
-typedef BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
-typedef BaseMeshTopology::SeqEdges SeqEdges;
-typedef BaseMeshTopology::TetrahedraAroundVertex TetrahedraAroundVertex;
-typedef BaseMeshTopology::TetrahedraAroundEdge TetrahedraAroundEdge;
-typedef BaseMeshTopology::TetrahedraAroundTriangle TetrahedraAroundTriangle;
-typedef BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
-typedef BaseMeshTopology::TrianglesInTetrahedron TrianglesInTetrahedron;
 
-typedef Tetra Tetrahedron;
-typedef EdgesInTetrahedron EdgesInTetrahedron;
-typedef TrianglesInTetrahedron TrianglesInTetrahedron;
 
 /**
 * A class that provides geometry information on an TetrahedronSet.
@@ -66,6 +54,21 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef sofa::defaulttype::Vec<4,Real> Vec4;
     typedef sofa::defaulttype::Mat<4,4,Real> Mat44;
+
+	typedef BaseMeshTopology::TetraID TetraID;
+	typedef BaseMeshTopology::Tetra Tetra;
+	typedef BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
+	typedef BaseMeshTopology::SeqEdges SeqEdges;
+	typedef BaseMeshTopology::TetrahedraAroundVertex TetrahedraAroundVertex;
+	typedef BaseMeshTopology::TetrahedraAroundEdge TetrahedraAroundEdge;
+	typedef BaseMeshTopology::TetrahedraAroundTriangle TetrahedraAroundTriangle;
+	typedef BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
+	typedef BaseMeshTopology::TrianglesInTetrahedron TrianglesInTetrahedron;
+	typedef BezierTetrahedronSetTopologyContainer::VecPointID VecPointID;
+
+	typedef Tetra Tetrahedron;
+	typedef EdgesInTetrahedron EdgesInTetrahedron;
+	typedef TrianglesInTetrahedron TrianglesInTetrahedron;
 protected:
    
 	/// container	
