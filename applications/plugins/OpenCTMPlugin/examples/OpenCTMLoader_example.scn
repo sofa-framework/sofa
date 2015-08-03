@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<!-- For more details see: https://wiki.sofa-framework.org/tdev/wiki/Notes/NewLoaderArchitecture -->
+<Node name="Root" gravity="0 0 0" dt="0.05">
+    <VisualStyle displayFlags="showVisual" />
+    <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
+    <BruteForceDetection name="Detection" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
+    <DefaultContactManager name="Response" response="default" />
+    <TreeCollisionGroupManager name="Group" />
+    <Node name="OpenCTM file">
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <OpenCTMLoader name="loader" filename="./data/bunny.ctm"/>                
+        <MechanicalObject name="dofs"/>
+        <RegularGrid nx="14" ny="12" nz="20" xmax="0.07" xmin="-0.1" ymax="0.06" ymin="-0.07" zmax="0.2" zmin="0.03" />
+        <UniformMass totalMass="1.0" />
+        <HexahedronFEMForceField name="FEM" youngModulus="30000.0" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" />
+
+        <Node name="Visu">			                    
+			<include href="Objects/TriangleSetTopology.xml" src="@../loader" />
+			<MechanicalObject name="CollisModel" />
+			<BarycentricMapping input="@.." output="@CollisModel" />
+	        <Node>
+				<OglModel name="VisualModel" color="white" />
+				<IdentityMapping name="mapping" input="@.." output="@VisualModel" />
+			</Node>
+
+        </Node>              
+        
+    </Node>
+</Node>

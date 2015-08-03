@@ -24,9 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_DATAMONITOR_H
 #define SOFA_COMPONENT_MISC_DATAMONITOR_H
+#include "config.h"
 
 #include <sofa/core/BaseState.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {

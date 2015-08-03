@@ -125,7 +125,11 @@ public:
     virtual bool read( const std::string& s )
     {
         if (s.empty())
-            return false;
+        {
+            bool resized = getValueTypeInfo()->setSize( virtualBeginEdit(), 0 );
+            virtualEndEdit();
+            return resized;
+        }
         //serr<<"Field::read "<<s.c_str()<<sendl;
         std::istringstream istr( s.c_str() );
         istr >> *virtualBeginEdit();

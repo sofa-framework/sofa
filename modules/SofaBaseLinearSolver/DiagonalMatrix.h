@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_DIAGONALMATRIX_H
 #define SOFA_COMPONENT_LINEARSOLVER_DIAGONALMATRIX_H
+#include "config.h"
 
 #include "MatrixExpr.h"
 //#include "NewMatMatrix.h"

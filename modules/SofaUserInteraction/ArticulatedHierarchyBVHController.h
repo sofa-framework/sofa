@@ -35,6 +35,7 @@
 //
 #ifndef SOFA_COMPONENT_CONTROLLER_ARTICULATEDHIERARCHYBVHCONTROLLER_H
 #define SOFA_COMPONENT_CONTROLLER_ARTICULATEDHIERARCHYBVHCONTROLLER_H
+#include "config.h"
 
 #include <SofaUserInteraction/ArticulatedHierarchyController.h>
 #include <sofa/helper/io/bvh/BVHLoader.h>

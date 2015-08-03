@@ -3,6 +3,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
 	common.h
+	init.h
 	Node.h
 	AnimateBeginEvent.h
 	AnimateEndEvent.h
@@ -78,7 +79,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
-	common.cpp
+	init.cpp
 	Node.cpp
 	AnimateBeginEvent.cpp
 	AnimateEndEvent.cpp

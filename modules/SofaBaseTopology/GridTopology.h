@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_GRIDTOPOLOGY_H
 #define SOFA_COMPONENT_TOPOLOGY_GRIDTOPOLOGY_H
+#include "config.h"
 
 #include <SofaBaseTopology/MeshTopology.h>
 #include <sofa/core/DataEngine.h>

@@ -35,7 +35,7 @@ class Controller(Sofa.PythonScriptController):
         # print
         print '{0}:{1}: {2}'.format(os.path.abspath(info.filename),
                                             info.lineno, 'Failure')
-        print 'Reason:', msg
+        print '$$$$$ Reason:', msg
         # print #lines[ info.lineno - 1 ]
         self.node.sendScriptEvent('failure', 0)
         self.root.findData('animate').value = 0
@@ -49,4 +49,9 @@ class Controller(Sofa.PythonScriptController):
         else:
             self.sendFailure( msg )
             
-
+    ## Send a failure event if value is false.
+    #  @param value A value used to set which failure/success event is sent.
+    #  @param msg A meesage to print out.
+    def ASSERT(self, value, msg = 'unknown'):
+        if not value:
+            self.sendFailure( msg )

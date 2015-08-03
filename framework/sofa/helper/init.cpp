@@ -22,25 +22,54 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "defaulttype.h"
-#include <sofa/helper/helper.h>
+#include "init.h"
+
+#include <sofa/helper/Logger.h>
+
+#include <iostream>
 
 namespace sofa
 {
 
-namespace defaulttype
+namespace helper
 {
 
-void init()
+static bool s_initialized = false;
+static bool s_cleanedUp = false;
+
+SOFA_HELPER_API void init()
 {
-    static bool first = true;
-    if (first)
+    if (!s_initialized)
     {
-        sofa::helper::init();
-        first = false;
+        s_initialized = true;
     }
 }
 
-} // namespace defaulttype
+SOFA_HELPER_API bool isInitialized()
+{
+    return s_initialized;
+}
+
+SOFA_HELPER_API void cleanup()
+{
+    if (!s_cleanedUp)
+    {
+        s_cleanedUp = true;
+    }
+}
+
+SOFA_HELPER_API bool isCleanedUp()
+{
+    return s_cleanedUp;
+}
+
+SOFA_HELPER_API void printUninitializedLibraryWarning(const std::string& library,
+                                                      const std::string& initFunction)
+{
+    std::cerr << "Warning: the " << library << " library has not been initialized ("
+              << initFunction << " has never been called, see sofa/helper/init.h)" << std::endl;
+}
+
+} // namespace helper
 
 } // namespace sofa

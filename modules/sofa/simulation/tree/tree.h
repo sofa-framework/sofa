@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_H
-#define SOFA_SIMULATION_TREE_H
+#ifndef SOFA_SIMULATION_TREE_TREE_H
+#define SOFA_SIMULATION_TREE_TREE_H
 
 #include <sofa/helper/system/config.h>
 
@@ -32,24 +32,5 @@
 #else
 #	define SOFA_SIMULATION_TREE_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
-
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace tree
-{
-
-/// @brief Initialize the SofaSimulationTree library, as well as its
-/// dependencies: SofaSimulationCommon, SofaCore, SofaDefaultType, SofaHelper.
-void SOFA_SIMULATION_TREE_API init();
-
-} // namespace tree
-
-} // namespace simulation
-
-} // namespace sofa
 
 #endif

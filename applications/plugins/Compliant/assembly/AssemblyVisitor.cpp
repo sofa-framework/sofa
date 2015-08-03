@@ -327,14 +327,9 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 	c.H = odeMatrix( node );
 //    cerr << "AssemblyVisitor::fill_prefix, c.H = " << endl << dmat(c.H) << endl;
 
-    if( node->forceField.size() || node->interactionForceField.size() || node->mass.size() ) {
+     if( !zero(c.H) ) {
         c.mechanical = true;
-    }
-    
-	// if( !zero(c.H) ) {
-	// 	c.mechanical = true;
-	// }
-
+     }
 
     // if the visitor is excecuted from a mapped node, do not look at its mapping
     if( node != start_node ) c.map = mapping( node );
@@ -435,7 +430,8 @@ struct AssemblyVisitor::propagation_helper {
 		chunk* c = g[v].data;
 
         // if the current child is a mechanical dof
-        if( c->mechanical ) {
+        // or if the current mapping is bringing geometric stiffness
+        if( c->mechanical || notempty(c->Ktilde) ) {
 
             // have a look to all its parents
 			for(graph_type::out_edge_range e = boost::out_edges(v, g);
@@ -565,7 +561,6 @@ enum {
     METHOD_DENSEMATRIX,
     METHOD_NOMULT
 };
-
 
 template<int Method = METHOD_NOMULT> struct add_shifted;
 
@@ -844,10 +839,6 @@ void AssemblyVisitor::assemble(system_type& res) const {
     assert( off_m == _processed->size_m );
     assert( off_c == _processed->size_c );
 
-    /// \warning project the ODE matrices
-	// max: no we don't
-    // res.H = res.P.transpose() * res.H * res.P;
-
 }
 
 // TODO redo
@@ -870,7 +861,6 @@ bool AssemblyVisitor::chunk::check() const {
 
 	}
 
-	
 	return true;
 }
 

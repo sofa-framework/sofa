@@ -27,7 +27,7 @@
 
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vectorData.h>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneCreator.h>
 
 #include "Sofa_test.h"
 

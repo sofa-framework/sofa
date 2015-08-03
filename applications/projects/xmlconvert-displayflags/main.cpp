@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <tinyxml.h>
 #include "xmlvisitor.h"
+#include <sofa/core/init.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
 TiXmlDocument* loadFromFile(const char *filename)
@@ -51,9 +52,12 @@ using namespace sofa::xml;
 
 int main(int argc, char** argv)
 {
-    sofa::core::init();
     if( argc <  2 ) return -1;
     TiXmlDocument* doc = loadFromFile(argv[1]);
+
+    sofa::core::init();
+    int retValue = 0;
+
     if(doc )
     {
         DiscoverNodes v_nodes;
@@ -112,14 +116,14 @@ int main(int argc, char** argv)
         doc->Print();
         std::cout.flush();
         delete doc;
-        return 0;
     }
     else
     {
         return -1;
     }
 
-
+    sofa::core::cleanup();
+    return retValue;
 }
 
 

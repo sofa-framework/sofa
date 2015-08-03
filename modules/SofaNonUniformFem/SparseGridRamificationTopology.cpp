@@ -96,13 +96,28 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
     for( unsigned i=0; i<_connexions.size(); ++i)
         _connexions[i].push_back( new Connexion() ); // at the finest level, each hexa corresponds exatly to one connexion
 
-    helper::io::Mesh* mesh = helper::io::Mesh::Create(this->fileTopology.getValue().c_str());
-    if (mesh == NULL && _finestConnectivity.getValue())
+    helper::io::Mesh* mesh = NULL;
+
+    // Finest level is asked
+    if (_finestConnectivity.getValue())
     {
-        if (vertices.getValue().empty())
+        std::string filename = this->fileTopology.getValue();
+        if (!filename.empty()) // file given, try to load it.
+        {
+            mesh = helper::io::Mesh::Create(filename.c_str());
+            if (!mesh)
+            {
+                serr<<"Warning: SparseGridRamificationTopology::findConnexionsAtFinestLevel Can't create mesh from file=\""<< fileTopology.getValue()<<"\" is valid)"<<sendl;
+                return;
+            }
+        }
+        if(filename.empty() && vertices.getValue().empty()) // No vertices buffer set, nor mesh file => impossible to create mesh
+        {
             serr<<"Warning: SparseGridRamificationTopology::findConnexionsAtFinestLevel -- mesh is NULL (check if fileTopology=\""<< fileTopology.getValue()<<"\" is valid)"<<sendl;
-        else
-        { // We can rebuild it
+            return;
+        }
+        else if(filename.empty() && !vertices.getValue().empty()) // no file given but vertex buffer. We can rebuild the mesh
+        {
             mesh = new helper::io::Mesh();
             for (unsigned int i = 0; i<vertices.getValue().size(); ++i)
                 mesh->getVertices().push_back(vertices.getValue()[i]);
@@ -130,8 +145,8 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
                 mesh->getFacets()[i0 + i][0][3] = quads[i][3];
             }
         }
-    }
 
+    }
 
     // loop on every cubes
     for(int z=0; z<getNz()-1; ++z)

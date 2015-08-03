@@ -196,7 +196,7 @@ void RigidMapping<TIn, TOut>::reinit()
 {
     if (this->points.getValue().empty() && this->toModel != NULL && !useX0.getValue())
     {
-        //        cerr<<"RigidMapping<TIn, TOut>::init(), from " << this->fromModel->getName() << " to " << this->toModel->getName() << endl;
+//        serr<<"reinit(), from " << this->fromModel->getName() << " to " << this->toModel->getName() << sendl;
         const VecCoord& xTo =this->toModel->read(core::ConstVecCoordId::position())->getValue();
         helper::WriteOnlyAccessor<Data<VecCoord> > points = this->points;
         points.resize(xTo.size());
@@ -289,7 +289,7 @@ void RigidMapping<TIn, TOut>::setRepartition(unsigned int value)
 
     helper::vector<unsigned int>& rigidIndexPerPoint = *this->rigidIndexPerPoint.beginWriteOnly();
 
-    size_t size = this->toModel->read(core::ConstVecCoordId::position())->getValue().size();
+    size_t size = this->toModel->getSize();
 
     rigidIndexPerPoint.resize( size );
 
@@ -312,7 +312,7 @@ void RigidMapping<TIn, TOut>::setRepartition(sofa::helper::vector<
 
     helper::vector<unsigned int>& rigidIndexPerPoint = *this->rigidIndexPerPoint.beginWriteOnly();
 
-    size_t size = this->toModel->read(core::ConstVecCoordId::position())->getValue().size();
+    size_t size = this->toModel->getSize();
 
     rigidIndexPerPoint.resize( size );
 
@@ -559,7 +559,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
         sout << "J on input  DOFs == " << out << sendl;
     }
 
-    const unsigned int numDofs = this->getFromModel()->read(core::ConstVecCoordId::position())->getValue().size();
+    const unsigned int numDofs = this->getFromModel()->getSize();
 
 
     // TODO the implementation on the new data structure could maybe be optimized

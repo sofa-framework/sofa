@@ -24,10 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONTROLLER_MECHANICALSTATEFORCEFEEDBACK_H
 #define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATEFORCEFEEDBACK_H
+#include "config.h"
 
 #include <SofaHaptics/ForceFeedback.h>
 
-#include <sofa/component/component.h>
 
 
 namespace sofa

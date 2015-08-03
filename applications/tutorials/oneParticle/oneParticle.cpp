@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/graph/graph.h>
+#include <sofa/simulation/graph/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/Node.h>
 #include <SofaComponentMain/init.h>
@@ -127,5 +127,6 @@ int main(int argc, char** argv)
     // Run the main loop
     sofa::gui::GUIManager::MainLoop(groot);
 
+    sofa::simulation::graph::cleanup();
     return 0;
 }

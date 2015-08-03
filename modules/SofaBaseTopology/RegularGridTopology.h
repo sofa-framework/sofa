@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_REGULARGRIDTOPOLOGY_H
 #define SOFA_COMPONENT_TOPOLOGY_REGULARGRIDTOPOLOGY_H
+#include "config.h"
 
 #include <SofaBaseTopology/GridTopology.h>
 #include <sofa/defaulttype/Vec.h>

@@ -40,7 +40,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/glut.h>
 
-#include <sofa/simulation/tree/tree.h>
+#include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
@@ -171,5 +171,6 @@ int main(int argc, char** argv)
     // Run the main loop
     sofa::gui::GUIManager::MainLoop(groot);
 
+    sofa::simulation::tree::cleanup();
     return 0;
 }

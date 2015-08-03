@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_EXTRAMONITOR_H
 #define SOFA_COMPONENT_MISC_EXTRAMONITOR_H
+#include "config.h"
 
 #include <SofaValidation/Monitor.h>
 

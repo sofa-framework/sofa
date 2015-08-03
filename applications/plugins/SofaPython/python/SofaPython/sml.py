@@ -170,24 +170,31 @@ class Model:
         """ Skinning definition, vertices index influenced by bone with weight
         """
         def __init__(self):
-            self.object=None
-            self.index=list()
-            self.weight=list()
+            self.solid=None    # id of the parent bone
+            self.mesh=None     # the target mesh
+            self.index=list()  # indices of target mesh
+            self.weight=list() # weights for these vertices with respect with this bone
 
     class Surface:
         def __init__(self):
-            self.object=None
-            self.mesh=None
-            self.group=None
+            self.solid=None # a Model.Solid object
+            self.mesh=None # a Model.Mesh object
+            self.group=None # the id of the group
             self.image=None
 
     class SurfaceLink:
-        def __init__(self,objXml):
+        def __init__(self,objXml=None):
+            self.id = None
+            self.name = None
             self.tags = set()
-            parseIdName(self,objXml)
-            parseTag(self,objXml)
             self.surfaces = [None,None]
             self.distance=None
+            if not objXml is None:
+                self.parseXml(objXml)
+
+        def parseXml(self, objXml):
+            parseIdName(self,objXml)
+            parseTag(self,objXml)
             if objXml.find("distance"):
                 self.distance=float(objXml.findText("distance"))
 
@@ -240,24 +247,34 @@ class Model:
                     continue
                 solid=Model.Solid(objXml)
                 self.parseMeshes(solid, objXml)
-
-                # TODO: support multiple meshes for skinning (currently only the first mesh is skinned)
-                if len(solid.mesh)!=0:
-                    mesh=solid.mesh[0] # shortcut
-                    for s in objXml.iter("skinning"):
-                        if not s.attrib["solid"] in self.solids:
-                            print "ERROR: sml.Model: skinning for solid {0}: solid {1} is not defined".format(name, s.attrib["solid"])
-                            continue
-                        skinning = Model.Skinning()
-                        skinning.solid = self.solids[s.attrib["solid"]]
-                        if not (s.attrib["group"] in mesh.group and s.attrib["weight"] in mesh.group[s.attrib["group"]].data):
-                            print "ERROR: sml.Model: skinning for solid {0}: group {1} - weight {2} is not defined".format(name, s.attrib["group"], s.attrib["weight"])
-                            continue
-                        skinning.index = mesh.group[s.attrib["group"]].index
-                        skinning.weight = mesh.group[s.attrib["group"]].data[s.attrib["weight"]]
-                        solid.skinnings.append(skinning)
-
                 self.solids[solid.id]=solid
+
+            # skinning
+            for objXml in modelXml.iter("solid"):
+                solid=self.solids[objXml.attrib["id"]]
+                # TODO: support multiple meshes for skinning (currently only the first mesh is skinned)
+                for s in objXml.iter("skinning"):
+                    if not s.attrib["solid"] in self.solids:
+                        print "ERROR: sml.Model: skinning for solid {0}: solid {1} is not defined".format(solid.name, s.attrib["solid"])
+                        continue
+                    skinning = Model.Skinning()
+                    if not s.attrib["solid"] in self.solids :
+                        print "ERROR: sml.Model: skinning for solid {0}: bone (solid) {1} not defined".format(solid.name, s.attrib["solid"])
+                        continue
+                    skinning.solid = self.solids[s.attrib["solid"]]
+                    if not s.attrib["mesh"] in self.meshes :
+                        print "ERROR: sml.Model: skinning for solid {0}: mesh {1} not defined".format(solid.name, s.attrib["mesh"])
+                        continue
+                    skinning.mesh = self.meshes[s.attrib["mesh"]]
+                    #TODO: check that this mesh is also part of the solid
+                    if not (s.attrib["group"] in skinning.mesh.group and s.attrib["weight"] in skinning.mesh.group[s.attrib["group"]].data):
+                        print "ERROR: sml.Model: skinning for solid {0}: mesh {1} - group {2} - weight {3} is not defined".format(name, s.attrib["mesh"], s.attrib["group"], s.attrib["weight"])
+                        continue
+                    skinning.index = skinning.mesh.group[s.attrib["group"]].index
+                    skinning.weight = skinning.mesh.group[s.attrib["group"]].data[s.attrib["weight"]]
+                    solid.skinnings.append(skinning)
+
+
 
             # joints
             self.parseJointGenerics(modelXml)
@@ -321,14 +338,27 @@ class Model:
                     print "ERROR: sml.Model: in joint {0}, unknown solid {1} referenced".format(joint.name, o.attrib["id"])
             self.genericJoints[joint.id]=joint
 
+    def _setTagFromTag(self, tag, newTag, objects, objectsByTag):
+
+        if tag in objectsByTag:
+            for obj in objectsByTag[tag]:
+                obj.tags.add(newTag)
+        self._updateTag(objects, objectsByTag)
 
     def setTagFromTag(self, tag, newTag):
+        """ @deprecated use setSolidTagFromTag() instead
+        """
+        self.setSolidTagFromTag(tag, newTag)
+
+    def setSolidTagFromTag(self, tag, newTag):
         """ assign newTag to all solids with tag
         """
-        if tag in self.solidsByTag:
-            for solid in self.solidsByTag[tag]:
-                solid.tags.add(newTag)
-        self.updateTag()
+        self._setTagFromTag(tag, newTag, self.solids, self.solidsByTag)
+
+    def setSurfaceLinkTagFromTag(self, tag, newTag):
+        """ assign newTag to all surfaceLinks with tag
+        """
+        self._setTagFromTag(tag, newTag, self.surfaceLinks, self.surfaceLinksByTag)
 
     def _updateTag(self, objects, objectsByTag):
         objectsByTag.clear()

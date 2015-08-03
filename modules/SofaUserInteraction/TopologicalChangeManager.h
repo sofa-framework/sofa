@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #ifndef SOFA_COMPONENT_COLLISION_TOPOLOGICALCHANGEMANAGER_H
 #define SOFA_COMPONENT_COLLISION_TOPOLOGICALCHANGEMANAGER_H
+#include "config.h"
 
 #include <sofa/core/CollisionElement.h>
 

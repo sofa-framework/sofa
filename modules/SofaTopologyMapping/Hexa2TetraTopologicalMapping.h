@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_HEXA2TETRATOPOLOGICALMAPPING_H
 #define SOFA_COMPONENT_TOPOLOGY_HEXA2TETRATOPOLOGICALMAPPING_H
+#include "config.h"
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
@@ -32,7 +33,6 @@
 
 #include <sofa/core/BaseMapping.h>
 
-#include <sofa/component/component.h>
 
 namespace sofa
 {

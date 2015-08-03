@@ -33,17 +33,4 @@
 #	define SOFA_HELPER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-namespace sofa
-{
-
-namespace helper
-{
-
-/// @brief Initialize the SofaHelper library.
-void SOFA_HELPER_API init();
-
-} // namespace helper
-
-} // namespace sofa
-
 #endif

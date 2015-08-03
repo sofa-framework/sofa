@@ -5,13 +5,11 @@
     <units mass="kg" length="m" time="s" />
     
     <solid id="bone01">
-        <tag>rigid</tag>
         <tag>armature</tag>
         <position>0 0 0 0 0 0 1</position>
     </solid>
     
     <solid id="bone02">
-        <tag>rigid</tag>
         <tag>armature</tag>
         <position>1 0 0 0 0 0 1</position>
     </solid>

@@ -36,6 +36,7 @@
 
 #ifndef SOFA_COMPONENT_CONTROLLER_EDGESETCONTROLLER_H
 #define SOFA_COMPONENT_CONTROLLER_EDGESETCONTROLLER_H
+#include "config.h"
 
 #include <SofaUserInteraction/MechanicalStateController.h>
 #include <SofaBaseTopology/EdgeSetTopologyModifier.h>

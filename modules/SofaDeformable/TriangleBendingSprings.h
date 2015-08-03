@@ -35,6 +35,7 @@
 //
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_TRIANGLEBENDINGSPRINGS_H
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_TRIANGLEBENDINGSPRINGS_H
+#include "config.h"
 
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <map>

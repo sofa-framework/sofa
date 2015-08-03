@@ -1,5 +1,6 @@
 #ifndef INTERSECTOR_H
 #define INTERSECTOR_H
+#include "config.h"
 
 #include <sofa/defaulttype/Vec.h>
 

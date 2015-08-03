@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_MESH2POINTMAPPING_H
 #define SOFA_COMPONENT_MAPPING_MESH2POINTMAPPING_H
+#include "config.h"
 
 #include <sofa/core/Mapping.h>
 

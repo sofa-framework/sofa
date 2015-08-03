@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_READTOPOLOGY_H
 #define SOFA_COMPONENT_MISC_READTOPOLOGY_H
+#include "config.h"
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -31,7 +32,6 @@
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/component/component.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #ifdef SOFA_HAVE_ZLIB
