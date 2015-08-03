@@ -41,7 +41,7 @@ namespace sofa
 namespace helper
 {
 
-namespace messaging
+namespace logging
 {
 
 class SOFA_HELPER_API DefaultStyleMessageFormatter : public MessageFormatter
@@ -51,7 +51,7 @@ public:
     virtual void formatMessage(const Message& m,std::ostream& out);
 };
 
-} // messaging
+} // logging
 } // helper
 } // sofa
 

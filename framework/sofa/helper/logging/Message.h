@@ -41,7 +41,7 @@ namespace sofa
 namespace helper
 {
 
-namespace messaging
+namespace logging
 {
 
 
@@ -55,7 +55,7 @@ struct FileInfo
     FileInfo(): filename(s_unknownFile), line(0) {}
 };
 
-#define SOFA_FILE_INFO sofa::helper::messaging::FileInfo(__FILE__, __LINE__)
+#define SOFA_FILE_INFO sofa::helper::logging::FileInfo(__FILE__, __LINE__)
 
 using std::ostream ;
 using std::string ;
@@ -86,7 +86,7 @@ private:
 
 ostream& operator<< (ostream&, const Message&) ;
 
-} // messaging
+} // logging
 } // helper
 } // sofa
 

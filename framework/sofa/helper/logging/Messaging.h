@@ -81,20 +81,20 @@
 #include "MessageDispatcher.h"
 #include "Message.h"
 
-extern sofa::helper::messaging::MessageDispatcher gMessageDispatcher;
+extern sofa::helper::logging::MessageDispatcher gMessageDispatcher;
 
 //todo(bruno&damien): the first quick&dirty version should be improved to preserve the semantic between
 // the version compiled with WITH_SOFA_DEVTOOLS enabled and the other.
 #ifdef WITH_SOFA_DEVTOOLS
-#define dmsg_info(emitter)     gMessageDispatcher <<= sofa::helper::messaging::Message("dev", "info", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
-#define dmsg_warning(emitter)  gMessageDispatcher <<= sofa::helper::messaging::Message("dev", "warn", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
-#define dmsg_error(emitter)    gMessageDispatcher <<= sofa::helper::messaging::Message("dev", "error", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
-#define dmsg_fatal(emitter)    gMessageDispatcher <<= sofa::helper::messaging::Message("dev", "fatal", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
+#define dmsg_info(emitter)     gMessageDispatcher <<= sofa::helper::logging::Message("dev", "info", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
+#define dmsg_warning(emitter)  gMessageDispatcher <<= sofa::helper::logging::Message("dev", "warn", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
+#define dmsg_error(emitter)    gMessageDispatcher <<= sofa::helper::logging::Message("dev", "error", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
+#define dmsg_fatal(emitter)    gMessageDispatcher <<= sofa::helper::logging::Message("dev", "fatal", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
 #else
-#define dmsg_info(emitter)     sofa::helper::messaging::Nop::getAnInstance()
-#define dmsg_warning(emitter)  sofa::helper::messaging::Nop::getAnInstance()
-#define dmsg_error(emitter)    sofa::helper::messaging::Nop::getAnInstance()
-#define dmsg_fatal(emitter)    sofa::helper::messaging::Nop::getAnInstance()
+#define dmsg_info(emitter)     sofa::helper::logging::Nop::getAnInstance()
+#define dmsg_warning(emitter)  sofa::helper::logging::Nop::getAnInstance()
+#define dmsg_error(emitter)    sofa::helper::logging::Nop::getAnInstance()
+#define dmsg_fatal(emitter)    sofa::helper::logging::Nop::getAnInstance()
 #endif // NDEBUG
 
 #define msg_info(emitter)    gMessageDispatcher.info("runtime", emitter, SOFA_FILE_INFO)

@@ -45,7 +45,7 @@ namespace sofa
 namespace helper
 {
 
-namespace messaging
+namespace logging
 {
 
 class MessageHandler ;
@@ -137,7 +137,7 @@ public:
     static int getLastInfoId() ;
 
 private:
-    void process(sofa::helper::messaging::Message &m);
+    void process(sofa::helper::logging::Message &m);
 
     friend Message& operator<<=(MessageDispatcher& d, Message& m) ;
 };
@@ -158,7 +158,7 @@ public:
 };
 
 
-} // messaging
+} // logging
 } // helper
 } // sofa
 

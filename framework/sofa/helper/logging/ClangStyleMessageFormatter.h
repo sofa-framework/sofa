@@ -40,7 +40,7 @@ namespace sofa
 namespace helper
 {
 
-namespace messaging
+namespace logging
 {
 
 
@@ -51,7 +51,7 @@ public:
     virtual void formatMessage(const Message& m,std::ostream& out);
 };
 
-} // messaging
+} // logging
 } // helper
 } // sofa
 

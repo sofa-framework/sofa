@@ -47,7 +47,7 @@ namespace sofa
 namespace helper
 {
 
-namespace messaging
+namespace logging
 {
 
 static ClangStyleMessageFormatter s_ClangStyleMessageFormatter;
@@ -64,6 +64,6 @@ void ClangStyleMessageFormatter::formatMessage(const Message& m,std::ostream& ou
 }
 
 
-} // messaging
+} // logging
 } // helper
 } // sofa

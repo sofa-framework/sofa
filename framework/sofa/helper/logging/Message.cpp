@@ -47,7 +47,7 @@ namespace sofa
 namespace helper
 {
 
-namespace messaging
+namespace logging
 {
 
 Message::Message(const string& mclass, const string& type, const string& message,
@@ -98,6 +98,6 @@ std::ostream& operator<< (std::ostream& s, const Message& m){
     return s;
 }
 
-} // messaging
+} // logging
 } // helper
 } // sofa
