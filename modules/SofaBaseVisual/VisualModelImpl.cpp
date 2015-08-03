@@ -1328,11 +1328,13 @@ void VisualModelImpl::computeMesh()
 			} else {
 				/// if Bezier Patch then stored positions in a  temporary array
 				bezierControlPointsArray.resize(m_topology->getNbPoints());
+			
 				for (unsigned int i=0; i<bezierControlPointsArray.size(); i++)
 				{
 					bezierControlPointsArray[i][0] = (Real)m_topology->getPX(i);
 					bezierControlPointsArray[i][1] = (Real)m_topology->getPY(i);
 					bezierControlPointsArray[i][2] = (Real)m_topology->getPZ(i);
+				
 				}
 			}
         }
@@ -1341,19 +1343,30 @@ void VisualModelImpl::computeMesh()
             BaseMechanicalState* mstate = dynamic_cast< BaseMechanicalState* >(m_topology->getContext()->getMechanicalState());
 
             if (mstate)
-            {
-                if (this->f_printLog.getValue())
-                    sout << "VisualModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
+			{
+				if (this->f_printLog.getValue())
+					sout << "VisualModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
+				if (m_useBezierPatch.getValue()==false)
+				{
+					vertices.resize(mstate->getSize());
 
-                vertices.resize(mstate->getSize());
-
-                for (unsigned int i=0; i<vertices.size(); i++)
-                {
-                    vertices[i][0] = (Real)mstate->getPX(i);
-                    vertices[i][1] = (Real)mstate->getPY(i);
-                    vertices[i][2] = (Real)mstate->getPZ(i);
-                }
-            }
+					for (unsigned int i=0; i<vertices.size(); i++)
+					{
+						vertices[i][0] = (Real)mstate->getPX(i);
+						vertices[i][1] = (Real)mstate->getPY(i);
+						vertices[i][2] = (Real)mstate->getPZ(i);
+					}
+				} else {
+					/// if Bezier Patch then stored positions in a  temporary array
+					bezierControlPointsArray.resize(m_topology->getNbPoints());
+					for (unsigned int i=0; i<bezierControlPointsArray.size(); i++)
+					{
+						bezierControlPointsArray[i][0] = (Real)mstate->getPX(i);
+						bezierControlPointsArray[i][1] = (Real)mstate->getPY(i);
+						bezierControlPointsArray[i][2] = (Real)mstate->getPZ(i);
+					}
+				}
+			}
         }
         m_positions.endEdit();
     }
@@ -1382,14 +1395,33 @@ void VisualModelImpl::computeMesh()
 		sofa::component::topology::BezierTriangleSetTopologyContainer *btstc=dynamic_cast<sofa::component::topology::BezierTriangleSetTopologyContainer *>(m_topology);
 		bezierDegree=btstc->getDegree();
 		size_t bezierTesselation=m_bezierTesselation.getValue();
-		
-		// then create the array of points and of triangles.
-		 VecCoord& vertices = *(m_positions.beginEdit());
-		 ResizableExtVector< Triangle >& triangles = *(m_triangles.beginEdit());
 
-		 size_t nbPoints=btstc->getNumberOfTriangularPoints()+btstc->getNumberOfEdges()*(bezierTesselation-1)+
-			 btstc->getNumberOfTriangles()*(bezierTesselation-1)*(bezierTesselation-2)/2;
-		 vertices.resize(nbPoints);
+
+
+
+		// then create the array of points and of triangles.
+		VecCoord& vertices = *(m_positions.beginEdit());
+		ResizableExtVector< Triangle >& triangles = *(m_triangles.beginEdit());
+
+		size_t nbPoints=btstc->getNumberOfTriangularPoints()+btstc->getNumberOfEdges()*(bezierTesselation-1)+
+			btstc->getNumberOfTriangles()*(bezierTesselation-1)*(bezierTesselation-2)/2;
+		vertices.resize(nbPoints);
+		// handle Bezier weights
+		bool isRational=false;
+		size_t i;
+		if (btstc->isRationalSpline()){
+			isRational=true;
+			// this array get the weight of the original points
+			bezierWeightArray.resize(btstc->getNbPoints());
+			// this one stores the weights of the tesselated points
+			bezierTesselationWeightArray.resize(nbPoints);
+			std::fill(bezierTesselationWeightArray.begin(),bezierTesselationWeightArray.end(),(Real)1.0f);
+			for (i=0;i<bezierWeightArray.size();++i) {
+				bezierWeightArray[i]= (Real)btstc->getWeight(i);
+			}
+
+		}
+
 
 		  ResizableExtVector<Deriv>& normals = *(m_vnormals.beginEdit());
 		  normals.resize(nbPoints);
@@ -1399,10 +1431,10 @@ void VisualModelImpl::computeMesh()
 		 size_t nbTriangles=btstc->getNumberOfTriangles()*(bezierTesselation*bezierTesselation);
 		 triangles.resize(nbTriangles);
 
-		 // this is used to store the global indices of tesselated bezier triangles
+		 // this is used to store the global indices of tessellated Bezier triangles
 		 globalIndexTesselatedBezierTriangleArray.resize(btstc->getNumberOfTriangles());
 
-		 size_t i;
+	
 
 		 // store the vertices of the macro triangles since the set of positions may be a large overset of the positions of the triangular bezier triangles (if a Tetra2Trian mapping is used)
 		 std::set<size_t> triangleVertexSet;
@@ -1412,11 +1444,17 @@ void VisualModelImpl::computeMesh()
 			  triangleVertexSet.insert(t[0]);triangleVertexSet.insert(t[1]);triangleVertexSet.insert(t[2]);
 		  }
 		  assert(btstc->getNumberOfTriangularPoints()==triangleVertexSet.size());
+
+		  // set the 2 array mapping global indexing of vertices and local indexing
 		  local2GlobalBezierVertexArray.clear();
 
+		  global2LocalBezierVertexArray.resize(bezierControlPointsArray.size());
+		  std::fill(global2LocalBezierVertexArray.begin(),global2LocalBezierVertexArray.end(),-1);
+
 		  std::set<size_t>::iterator itvs;
-		  for (itvs=triangleVertexSet.begin();itvs!=triangleVertexSet.end();++itvs) {
+		  for (i=0,itvs=triangleVertexSet.begin();itvs!=triangleVertexSet.end();++itvs,++i) {
 			  local2GlobalBezierVertexArray.push_back(*itvs);
+			  global2LocalBezierVertexArray[*itvs]=i;
 		  }
 		
 		 // copy the points of underlying triangulation
@@ -1510,43 +1548,16 @@ void VisualModelImpl::computeMesh()
 		 }
 		 
 		 size_t rank=btstc->getNumberOfTriangularPoints()+btstc->getNumberOfEdges()*(bezierTesselation-1);
-		 // copy the points on the edges 
-		 /* 
-		 if (bezierTesselation>1) {
-			 Coord p;
-			 size_t j,k;
-			sofa::helper::vector<Coord> edgeControlPoints;
-			
-			  for (i=0;i<btstc->getNumberOfEdges();++i) {
-				  // first store the Bezier points along the edge
-				  sofa::component::topology::Edge e=btstc->getEdge(i);
-				  edgeControlPoints.clear();
-				  edgeControlPoints.push_back(bezierControlPointsArray[e[0]]);
-				  for(j=0;j<bezierDegree-1;++j) {
-					   edgeControlPoints.push_back(bezierControlPointsArray[btstc->getNumberOfTriangularPoints()+j+i*(bezierDegree-1)]);
-				  }
-				  edgeControlPoints.push_back(bezierControlPointsArray[e[1]]);
-				  // then interpolate position
-				  for (j=1;j<bezierTesselation;++j) {
 
-					   p=Coord();
-					    sofa::helper::vector<Real> weightArray=precomputedLinearBernsteinCoefficientArray[j-1];
-					  for (k=0;k<=bezierDegree;++k) {
-						  /// univariate Bernstein polynomial
-						  p+=edgeControlPoints[k]*weightArray[k];
-					  }
-					  // store the edge point on the surface
-					  vertices[rank++]=p;
-				  }
-			  }
-		 }*/
-		  // copy the points on the triangles 
+		  // copy the points on the triangles  and the edges
 		 if (bezierTesselation>1) {
 			 Coord p;
 			 size_t j,k,l,ind;
 			 sofa::helper::vector<Coord> triangleControlPoints;
-			 sofa::component::topology::VecPointID indexArray;
+			 sofa::component::topology::BezierTriangleSetTopologyContainer::VecPointID indexArray;
 			 sofa::helper::vector<Coord> edgeControlPoints;
+		 	 sofa::helper::vector<Real> edgeControlPointWeights;
+			  Real weight;
 		    sofa::component::topology::TriangleBezierIndex trbi;
 			 for (i=0;i<btstc->getNumberOfTriangles();++i) {
 				 // first get  the Bezier control points in the triangle 
@@ -1566,44 +1577,91 @@ void VisualModelImpl::computeMesh()
 
 						  // get control points along edges
 						  edgeControlPoints.clear();
+						  edgeControlPointWeights.clear();
 						  edgeControlPoints.push_back(bezierControlPointsArray[e[0]]);
+						  if (isRational)
+							  edgeControlPointWeights.push_back(bezierWeightArray[e[0]]);
+
 						  for(l=1;l<=(bezierDegree-1);++l) {
 							
 							  trbi[k]=0;
-							  trbi[(k+1)%3]=bezierDegree-j;
-							  trbi[(k+2)%3]=j;
+							  trbi[(k+1)%3]=bezierDegree-l;
+							  trbi[(k+2)%3]=l;
 
 							  edgeControlPoints.push_back(bezierControlPointsArray[indexArray[  btstc->getLocalIndexFromTriangleBezierIndex(trbi)] ] );
-							 
+							  if (isRational)
+								  edgeControlPointWeights.push_back(bezierWeightArray[indexArray[  btstc->getLocalIndexFromTriangleBezierIndex(trbi)] ]);
 						  }
 						  edgeControlPoints.push_back(bezierControlPointsArray[e[1]]);
+						  if (isRational)
+							  edgeControlPointWeights.push_back(bezierWeightArray[e[1]]);
 						 // then interpolate position
 						 size_t  edgeRank=btstc->getNumberOfTriangularPoints()+eit[j]*(bezierTesselation-1);
-						 for (l=1;l<bezierTesselation;++j) {
+						 for (l=1;l<bezierTesselation;++l) {
 
 							 p=Coord();
-							 sofa::helper::vector<Real> weightArray=precomputedLinearBernsteinCoefficientArray[j-1];
-							 for (k=0;k<=bezierDegree;++k) {
-								 /// univariate Bernstein polynomial
-								 p+=edgeControlPoints[k]*weightArray[k];
+							 sofa::helper::vector<Real> weightArray=precomputedLinearBernsteinCoefficientArray[l-1];
+							 if (isRational) {
+								weight=0;
+								 for (k=0;k<=bezierDegree;++k) {
+									 /// univariate Bernstein polynomial
+									 p+=edgeControlPoints[k]*weightArray[k]*edgeControlPointWeights[k];
+									 weight+=edgeControlPointWeights[k]*weightArray[k];
+								 }
+							 } else{
+								 for (k=0;k<=bezierDegree;++k) {
+									 /// univariate Bernstein polynomial
+									 p+=edgeControlPoints[k]*weightArray[k];
+								 }
 							 }
-							 // store the edge point on the surface
-							 
+							  if (isRational) {
+								  p/=weight;
+								  bezierTesselationWeightArray[edgeRank]=weight;
+							  }
+	 
 							 vertices[edgeRank++]=p;
 						 }
 					 }
 				 }
 				 if (bezierTesselation>2) {
 					 // then interpolate point inside triangle
+/*					 std::cerr << "Macro triangle "<<i<<std::endl;
+					 std::cerr << "Three corners "<<std::endl;
+					 for(j=0;j<3;++j){
+						 std::cerr << "v[ "<< indexArray[j]<< "]= "<< bezierControlPointsArray[indexArray[j]] << " weight= "<<bezierWeightArray[indexArray[j]]<<std::endl;
+					 }
+					 for(j=0;j<3;++j){
+						 std::cerr << "Edge "<< j <<std::endl;
+						 for(k=0;k<2;++k){
+							 std::cerr << "v[ "<< indexArray[j*2+3+k]<< "]= "<< bezierControlPointsArray[indexArray[j*2+3+k]] << " weight= "<<bezierWeightArray[indexArray[j*2+3+k]]<<std::endl;
+						 }
+					 }
+					  std::cerr << "Center point "<<std::endl;
+					  std::cerr << "v[ "<< indexArray[9]<< "]= "<< bezierControlPointsArray[indexArray[9]] << " weight= "<<bezierWeightArray[indexArray[9]]<<std::endl;
+
+					*/
 					 for (ind=0,j=1;j<(bezierTesselation-1);++j) {
 						 for (k=1;k<(bezierTesselation-j);++k,++ind) {
 							 p=Coord();
 							 sofa::helper::vector<Real> &weigthArray=precomputedTriangularBernsteinCoefficientArray[ind];
-							 for (l=0;l<indexArray.size();++l) {
-								 /// univariate Bernstein polynomial
-								 p+=bezierControlPointsArray[indexArray[l]]*weigthArray[l];
-							 }
+							  if (isRational) {
+								   weight=0;
+								  for (l=0;l<indexArray.size();++l) {
+									  p+=bezierControlPointsArray[indexArray[l]]*bezierWeightArray[indexArray[l]]*weigthArray[l];
+									  weight+=bezierWeightArray[indexArray[l]]*weigthArray[l];
+								  }
+							  } else {
+								  for (l=0;l<indexArray.size();++l) {
+									  /// univariate Bernstein polynomial
+									 p+=bezierControlPointsArray[indexArray[l]]*weigthArray[l];
+								  }
+							  }
+							  if (isRational) {
+								  p/=weight;
+								  bezierTesselationWeightArray[rank]=weight;
+							  }
 							 // store the triangle point on the surface
+
 							 vertices[rank++]=p;
 						 }
 					 }
@@ -1615,7 +1673,7 @@ void VisualModelImpl::computeMesh()
 
 		 // defines the subtriangles
 
-		  sofa::helper::vector< sofa::component::topology::LocalTriangleIndex> sta=btstc->getLocalIndexSubtriangleArrayOfGivenDegree(bezierTesselation);
+		  sofa::helper::vector< sofa::component::topology::BezierTriangleSetTopologyContainer::LocalTriangleIndex> sta=btstc->getLocalIndexSubtriangleArrayOfGivenDegree(bezierTesselation);
 	//	  std::cerr<< sta<<std::endl;
 
 		  size_t j,k,offset;
@@ -1630,8 +1688,14 @@ void VisualModelImpl::computeMesh()
 			 sofa::component::topology::Triangle tr=btstc->getTriangle(i);
 			sofa::helper::vector<size_t> macroTriangleIndexArray;
 			// store the 3 vertices
-			for (j=0;j<3;++j)
+		
+			
+		
+			for (j=0;j<3;++j) {
 				macroTriangleIndexArray.push_back(global2LocalBezierVertexArray[tr[j]]);
+				
+			}
+			std::cerr << std::endl;
 	//		for(j=0;j<tesselatedTriangleIndices.size();++j)
 		//		std::cerr<< (sofa::defaulttype::Vec<3,size_t >)(tesselatedTriangleIndices[j])<<std::endl;
 
@@ -1660,9 +1724,9 @@ void VisualModelImpl::computeMesh()
 					macroTriangleIndexArray.push_back(offset+j);
 				}
 			}
-			// save the global indices of each tesselated triangle for the computation of normals
+			// save the global indices of each tessellated triangle for the computation of normals
 			globalIndexTesselatedBezierTriangleArray[i]=macroTriangleIndexArray;
-
+	
 //			std::cerr<< macroTriangleIndexArray<<std::endl;
 			// now add subtriangles to the list
 			for (j=0;j<sta.size();++j){
@@ -1677,22 +1741,38 @@ void VisualModelImpl::computeMesh()
 		  if (m_useBezierNormals.getValue()) {
 			  m_updateNormals.setValue(false);
 	
-			  sofa::component::topology::VecPointID indexArray;
+			  sofa::component::topology::BezierTriangleSetTopologyContainer::VecPointID indexArray;
 
 			  for (i=0;i<btstc->getNumberOfTriangles();++i) {
 				  // first get  the Bezier control points in the triangle 
 				  btstc->getGlobalIndexArrayOfBezierPointsInTriangle(i, indexArray);
 
 				  for (j=0;j<tesselatedTriangleIndices.size();++j) {
-					  Deriv du,dv,normal;
+					  Deriv du,dv,normal,pos;
+					  Real dweightu,dweightv,weight;
+					  dweightu=dweightv=0.0f;
 					  // for each point in the tesselated triangle compute dpos/du and dpos/dv as a weighted combination of the control points
 					  sofa::helper::vector<Real> &weigthArrayDU=precomputedDerivUTriangularBernsteinCoefficientArray[j];
 					  sofa::helper::vector<Real> &weigthArrayDV=precomputedDerivVTriangularBernsteinCoefficientArray[j];
-					  for (k=0;k<indexArray.size();++k) {
-						  du+=bezierControlPointsArray[indexArray[k]]*weigthArrayDU[k];
-						  dv+=bezierControlPointsArray[indexArray[k]]*weigthArrayDV[k];
+					  if (isRational){
+						  for (k=0;k<indexArray.size();++k) {
+							  du+=bezierControlPointsArray[indexArray[k]]*bezierWeightArray[indexArray[k]]*weigthArrayDU[k];
+							  dv+=bezierControlPointsArray[indexArray[k]]*bezierWeightArray[indexArray[k]]*weigthArrayDV[k];
+							  dweightu+=bezierWeightArray[indexArray[k]]*weigthArrayDU[k];
+							  dweightv+=bezierWeightArray[indexArray[k]]*weigthArrayDV[k];
+						  }
+					  } else {
+						  for (k=0;k<indexArray.size();++k) {
+							  du+=bezierControlPointsArray[indexArray[k]]*weigthArrayDU[k];
+							  dv+=bezierControlPointsArray[indexArray[k]]*weigthArrayDV[k];
+						  }
+					  }
+					  if (isRational){
+						  du=(du-dweightu*vertices[globalIndexTesselatedBezierTriangleArray[i][j]])/bezierTesselationWeightArray[globalIndexTesselatedBezierTriangleArray[i][j]];
+						  dv=(dv-dweightv*vertices[globalIndexTesselatedBezierTriangleArray[i][j]])/bezierTesselationWeightArray[globalIndexTesselatedBezierTriangleArray[i][j]];
 					  }
 					  normal=cross(du,dv);
+
 					  normals[globalIndexTesselatedBezierTriangleArray[i][j]]+=normal;
 				  }
 			  }
