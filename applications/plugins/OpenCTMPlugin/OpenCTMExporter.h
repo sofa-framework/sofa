@@ -52,7 +52,7 @@ namespace misc
  *  Created on: July 27th 2015
  *      Author: epernod
  */
-class SOFA_EXPORTER_API OpenCTMExporter : public core::objectmodel::BaseObject
+class SOFA_OPENCTMPLUGIN_API OpenCTMExporter : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(OpenCTMExporter, core::objectmodel::BaseObject);
