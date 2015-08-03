@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_MESHDISCRETEINTERSECTION_H
 #define SOFA_COMPONENT_COLLISION_MESHDISCRETEINTERSECTION_H
+#include "config.h"
 
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/FnDispatcher.h>

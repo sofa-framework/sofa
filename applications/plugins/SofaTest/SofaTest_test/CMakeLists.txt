@@ -9,6 +9,13 @@ set(SOURCE_FILES
         )
 
 
+if(SOFA-PLUGIN_SOFAPYTHON)
+    AddCompilerDefinitions("SOFATEST_PYTHONTESTS_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python_tests\"")
+    AddCompilerDefinitions("SOFATEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
+    list(APPEND SOURCE_FILES "python_test_list.cpp")
+    AddLinkerDependencies(SofaPython)
+endif()
+
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
 
 

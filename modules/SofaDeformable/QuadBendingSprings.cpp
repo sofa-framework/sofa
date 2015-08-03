@@ -24,8 +24,8 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_QUADBENDINGSPRINGS_CPP
 #include <SofaDeformable/QuadBendingSprings.inl>
+
 #include <SofaDeformable/StiffSpringForceField.inl>
-#include <sofa/component/component.h>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>

@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #ifndef SOFA_COMPONENT_MISC_COMPARESTATE_H
 #define SOFA_COMPONENT_MISC_COMPARESTATE_H
+#include "config.h"
 
 #include <SofaLoader/ReadState.h>
 #include <sofa/simulation/common/Visitor.h>

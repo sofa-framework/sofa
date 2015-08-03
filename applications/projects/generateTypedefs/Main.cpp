@@ -27,6 +27,7 @@
 #include <iostream>
 
 
+#include <sofa/core/init.h>
 #include <sofa/core/SofaLibrary.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/Base.h>
@@ -744,4 +745,5 @@ int main(int , char** )
                 sofaFloat   << "\n#endif\n";
 
                 return 0;
+                sofa::core::cleanup();
             }

@@ -24,8 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_EULERIAN_FLUID_INIT_H
 #define SOFA_COMPONENT_EULERIAN_FLUID_INIT_H
-
-#include <sofa/component/component.h>
+#include "config.h"
 
 namespace sofa
 {

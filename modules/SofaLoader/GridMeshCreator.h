@@ -24,9 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LOADER_GridMeshCreator_H
 #define SOFA_COMPONENT_LOADER_GridMeshCreator_H
+#include "config.h"
 
 #include <sofa/core/loader/MeshLoader.h>
-#include <sofa/component/component.h>
 #include <sofa/helper/SVector.h>
 namespace sofa
 {

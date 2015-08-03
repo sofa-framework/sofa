@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #ifndef SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_H
 #define SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_H
+#include "config.h"
 
 #include <sofa/core/Multi2Mapping.h>
 

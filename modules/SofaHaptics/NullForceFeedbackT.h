@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONTROLLER_NULLFORCEFEEDBACKT_H
 #define SOFA_COMPONENT_CONTROLLER_NULLFORCEFEEDBACKT_H
+#include "config.h"
 
 #include <SofaHaptics/MechanicalStateForceFeedback.h>
 

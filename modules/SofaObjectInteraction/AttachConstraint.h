@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_H
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ATTACHCONSTRAINT_H
+#include "config.h"
 
 #include <sofa/core/behavior/PairInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>

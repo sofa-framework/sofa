@@ -25,12 +25,12 @@
 // Author: Pierre-Jean Bensoussan, Digital Trainers (2008)
 #ifndef SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLEROMNI_H
 #define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLEROMNI_H
+#include "config.h"
 
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/component.h>
 #include <sofa/core/objectmodel/HapticDeviceEvent.h>
 
 namespace sofa

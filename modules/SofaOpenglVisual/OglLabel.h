@@ -24,9 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_VISUALMODEL_LABEL_H
 #define SOFA_COMPONENT_VISUALMODEL_LABEL_H
+#include "config.h"
 
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/component/component.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/vector.h>

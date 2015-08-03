@@ -248,6 +248,11 @@ protected:
     SofaPluginManager* pluginManager_dialog;
     QMenuFilesRecentlyOpened recentlyOpenedFilesManager;
 
+#ifdef SOFA_QT4
+    Q3DockWindow* m_dockTools;
+#else
+    QDockWindow* m_dockTools;
+#endif
     std::string simulation_name;
     std::string gnuplot_directory;
     std::string pathDumpVisitor;

@@ -91,12 +91,20 @@ void UniformMass<DataTypes, MassType>::reinit()
     if ( this->totalMass.getValue() >0 && this->mstate!=NULL )
     {
         MassType* m = this->mass.beginEdit();
-        *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->read(core::ConstVecCoordId::position())->getValue().size() );
+
+        if(localRange.getValue() [0] >= 0  && localRange.getValue() [1] > 0 && ( unsigned int ) localRange.getValue() [1]+1 < this->mstate->getSize() )
+        {
+            *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / (localRange.getValue()[1]-localRange.getValue()[0]) );
+        }
+        else
+        {
+            *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->getSize() );
+        }
         this->mass.endEdit();
     }
     else
     {
-        this->totalMass.setValue ( this->mstate->read(core::ConstVecCoordId::position())->getValue().size() * (Real)this->mass.getValue() );
+        this->totalMass.setValue ( this->mstate->getSize() * (Real)this->mass.getValue() );
     }
 }
 
@@ -133,7 +141,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
                 if ( m_handleTopoChange.getValue() )
                 {
                     MassType* m = this->mass.beginEdit();
-                    *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->read(core::ConstVecCoordId::position())->getValue().size() );
+                    *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->getSize() );
                     this->mass.endEdit();
                 }
                 break;
@@ -141,7 +149,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
             case core::topology::POINTSREMOVED:
                 if ( m_handleTopoChange.getValue() )
                 {
-                    this->totalMass.setValue (this->mstate->read(core::ConstVecCoordId::position())->getValue().size() * (Real)this->mass.getValue() );
+                    this->totalMass.setValue (this->mstate->getSize() * (Real)this->mass.getValue() );
                 }
                 break;
 
@@ -407,7 +415,16 @@ void UniformMass<DataTypes, MassType>::addMToMatrix (const core::MechanicalParam
     AddMToMatrixFunctor<Deriv,MassType> calc;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     Real mFactor = (Real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
-    for ( unsigned int i=0; i<size; i++ )
+    unsigned int ibegin = 0;
+    unsigned int iend = size;
+
+    if ( localRange.getValue() [0] >= 0 )
+        ibegin = localRange.getValue() [0];
+
+    if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
+        iend = localRange.getValue() [1]+1;
+
+    for (unsigned int i=ibegin; i<iend; i++ )
         calc ( r.matrix, m, r.offset + N*i, mFactor);
 }
 

@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-#include <plugins/PhysicsBasedInteractiveModeler/gui/qt/QMouseOperations.h>
+#include <PhysicsBasedInteractiveModeler/gui/qt/QMouseOperations.h>
 #include <sofa/gui/OperationFactory.h>
 #include <sofa/gui/qt/SofaMouseManager.h>
 

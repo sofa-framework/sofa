@@ -29,6 +29,7 @@
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/Locale.h>
 #include <sstream>
 
 namespace sofa
@@ -83,12 +84,12 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit()
     if (this->totalMass.getValue()>0 && this->mstate!=NULL)
     {
         MassType* m = this->mass.beginEdit();
-        *m = ((Real)this->totalMass.getValue() / mstate->read(core::ConstVecCoordId::position())->getValue().size());
+        *m = ((Real)this->totalMass.getValue() / mstate->getSize());
         this->mass.endEdit();
     }
     else
     {
-        this->totalMass.setValue(  this->mstate->read(core::ConstVecCoordId::position())->getValue().size()*this->mass.getValue());
+        this->totalMass.setValue(  this->mstate->getSize()*this->mass.getValue());
     }
 
     this->mass.beginEdit()->recalc();
@@ -98,6 +99,9 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit()
 template<> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
 {
+    // Make sure that fscanf() uses a dot '.' as the decimal separator.
+    helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
+
 //  this->totalMass.setDisplayed(false);
 
     if (!filename.empty())
@@ -217,7 +221,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
         }
         this->setMass(m);
     }
-    else if (this->totalMass.getValue()>0 && this->mstate!=NULL) this->mass.setValue((Real)this->totalMass.getValue() / mstate->read(core::ConstVecCoordId::position())->getValue().size());
+    else if (this->totalMass.getValue()>0 && this->mstate!=NULL) this->mass.setValue((Real)this->totalMass.getValue() / mstate->getSize());
 
 }
 
@@ -376,7 +380,7 @@ void UniformMass<Vec3dTypes, double>::addMDxToVector(defaulttype::BaseVector *re
     unsigned int derivDim = (unsigned)Deriv::size();
     double m = mass.getValue();
 
-    unsigned int vecDim = (unsigned)mstate->read(core::ConstVecCoordId::position())->getValue().size();
+    unsigned int vecDim = (unsigned)mstate->getSize();
 
     const double* g = this->getContext()->getGravity().ptr();
 
@@ -462,12 +466,12 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::reinit()
     if (this->totalMass.getValue()>0 && this->mstate!=NULL)
     {
         MassType* m = this->mass.beginEdit();
-        *m = ((Real)this->totalMass.getValue() / mstate->read(core::ConstVecCoordId::position())->getValue().size());
+        *m = ((Real)this->totalMass.getValue() / mstate->getSize());
         this->mass.endEdit();
     }
     else
     {
-        this->totalMass.setValue(  this->mstate->read(core::ConstVecCoordId::position())->getValue().size()*this->mass.getValue());
+        this->totalMass.setValue(  this->mstate->getSize()*this->mass.getValue());
     }
 
     this->mass.beginEdit()->recalc();
@@ -739,7 +743,7 @@ void UniformMass<Vec3fTypes, float>::addMDxToVector(defaulttype::BaseVector *res
     unsigned int derivDim = (unsigned)Deriv::size();
     float m = mass.getValue();
 
-    unsigned int vecDim = (unsigned)mstate->read(core::ConstVecCoordId::position())->getValue().size();
+    unsigned int vecDim = (unsigned)mstate->getSize();
 
     const SReal* g = this->getContext()->getGravity().ptr();
 

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/helper/io/MeshTrian.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/Locale.h>
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -64,6 +65,9 @@ void MeshTrian::init (std::string filename)
 
 void MeshTrian::readTrian (FILE* file)
 {
+    // Make sure that fscanf() uses a dot '.' as the decimal separator.
+    helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
+
     int nbp=0;
 
     if (fscanf(file, "%d\n", &nbp) == EOF)

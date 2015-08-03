@@ -996,12 +996,7 @@ void QtViewer::calcProjection(int width, int height)
 {
     if (!width) width = _W;
     if (!height) height = _H;
-    double xNear, yNear/*, xOrtho, yOrtho*/;
     double xFactor = 1.0, yFactor = 1.0;
-    double offset;
-    double xForeground, yForeground, zForeground, xBackground, yBackground,
-           zBackground;
-    Vector3 center;
 
     /// Camera part
     if (!currentCamera)
@@ -1016,17 +1011,6 @@ void QtViewer::calcProjection(int width, int height)
 
     vparams->zNear() = currentCamera->getZNear();
     vparams->zFar() = currentCamera->getZFar();
-    ///
-
-
-    xNear = 0.35 * vparams->zNear();
-    yNear = 0.35 * vparams->zNear();
-    offset = 0.001 * vparams->zNear(); // for foreground and background planes
-
-//    xOrtho = fabs(vparams->sceneTransform().translation[2]) * xNear
-//            / vparams->zNear();
-//    yOrtho = fabs(vparams->sceneTransform().translation[2]) * yNear
-//            / vparams->zNear();
 
     if ((height != 0) && (width != 0))
     {
@@ -1041,6 +1025,13 @@ void QtViewer::calcProjection(int width, int height)
             yFactor = 1.0;
         }
     }
+
+    double orthoCoef = tan( (float)(M_PI/180.0) * currentCamera->getFieldOfView()/2.0);
+    double zDist = orthoCoef * fabs(currentCamera->worldToCameraCoordinates(currentCamera->getLookAt())[2]);
+
+    double halfWidth  = zDist * xFactor;
+    double halfHeight = zDist * yFactor;
+
     vparams->viewport() = sofa::helper::make_array(0,0,width,height);
 
     glViewport(0, 0, width, height);
@@ -1049,39 +1040,12 @@ void QtViewer::calcProjection(int width, int height)
 
     if(!currentCamera->d_computeProjectionMatrix.getValue())
     {
-        xFactor *= 0.01;
-        yFactor *= 0.01;
-
-        //std::cout << xNear << " " << yNear << std::endl;
-
-        zForeground = -vparams->zNear() - offset;
-        zBackground = -vparams->zFar() + offset;
-
         if (currentCamera->getCameraType() == core::visual::VisualParams::PERSPECTIVE_TYPE)
             gluPerspective(currentCamera->getFieldOfView(), (double) width / (double) height, vparams->zNear(), vparams->zFar());
         else
         {
-            float ratio = vparams->zFar() / (vparams->zNear() * 20);
-            Vector3 tcenter = vparams->sceneTransform() * center;
-            if (tcenter[2] < 0.0)
-            {
-                ratio = -300 * (tcenter.norm2()) / tcenter[2];
-            }
-            glOrtho((-xNear * xFactor) * ratio, (xNear * xFactor) * ratio, (-yNear
-                    * yFactor) * ratio, (yNear * yFactor) * ratio,
-                    vparams->zNear(), vparams->zFar());
+            glOrtho( -halfWidth, halfWidth, -halfHeight, halfHeight, vparams->zNear(), vparams->zFar());
         }
-
-        xForeground = -zForeground * xNear / vparams->zNear();
-        yForeground = -zForeground * yNear / vparams->zNear();
-        xBackground = -zBackground * xNear / vparams->zNear();
-        yBackground = -zBackground * yNear / vparams->zNear();
-
-        xForeground *= xFactor;
-        yForeground *= yFactor;
-        xBackground *= xFactor;
-        yBackground *= yFactor;
-
     }
     else
     {
@@ -1670,6 +1634,21 @@ void QtViewer::setSizeH(int size)
     resizeGL(_W, size);
     updateGL();
 }
+
+//void QtViewer::setCameraMode(core::visual::VisualParams::CameraType mode)
+//{
+//    SofaViewer::setCameraMode(mode);
+
+//    switch (mode)
+//    {
+//    case core::visual::VisualParams::ORTHOGRAPHIC_TYPE:
+//        camera()->setType( qglviewer::Camera::ORTHOGRAPHIC );
+//        break;
+//    case core::visual::VisualParams::PERSPECTIVE_TYPE:
+//        camera()->setType( qglviewer::Camera::PERSPECTIVE  );
+//        break;
+//    }
+//}
 
 QString QtViewer::helpString()
 {

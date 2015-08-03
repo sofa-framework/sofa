@@ -31,11 +31,13 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/PluginManager.h>
 #ifdef SOFA_HAVE_DAG
+#include <sofa/simulation/graph/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #endif
 #ifdef SOFA_SMP
 #include <sofa/simulation/tree/SMPSimulation.h>
 #endif
+#include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <SofaComponentMain/init.h>
 #include <SofaLoader/ReadState.h>
@@ -339,5 +341,9 @@ int main(int argc, char** argv)
 
     sofa::gui::GUIManager::closeGUI();
 
+    sofa::simulation::tree::cleanup();
+#ifdef SOFA_HAVE_DAG
+    sofa::simulation::graph::cleanup();
+#endif
     return 0;
 }

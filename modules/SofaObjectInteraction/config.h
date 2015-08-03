@@ -22,31 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "tree.h"
+#ifndef SOFAOBJECTINTERACTION_CONFIG_H
+#define SOFAOBJECTINTERACTION_CONFIG_H
 
-#include <sofa/simulation/common/common.h>
+#include <sofa/helper/system/config.h>
 
-namespace sofa
-{
+#ifdef SOFA_BUILD_OBJECT_INTERACTION
+#  define SOFA_OBJECT_INTERACTION_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_OBJECT_INTERACTION_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-namespace simulation
-{
-
-namespace tree
-{
-
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::simulation::common::init();
-        first = false;
-    }
-}
-
-} // namespace tree
-
-} // namespace simulation
-
-} // namespace sofa
+#endif

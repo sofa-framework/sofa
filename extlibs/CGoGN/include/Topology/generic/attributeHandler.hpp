@@ -32,17 +32,16 @@ namespace CGoGN
 template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
 inline void AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::registerInMap()
 {
-    boost::mutex::scoped_lock lockAH(m_map->attributeHandlersMutex);
+    boost::lock_guard<boost::mutex> lockAH(m_map->attributeHandlersMutex);
     m_map->attributeHandlers.insert(std::pair<AttributeMultiVectorGen*, AttributeHandlerGen*>(m_attrib, this)) ;
-//    std::cerr << "Attribute registered : " << reinterpret_cast<unsigned int *>(m_attrib) << " " << reinterpret_cast<unsigned int *>(this) << std::endl;
 }
 
 template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
 inline void AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::unregisterFromMap()
 {
 	typedef std::multimap<AttributeMultiVectorGen*, AttributeHandlerGen*>::iterator IT ;
-//    std::cerr << "Attribute unregistering : " << reinterpret_cast<unsigned int *>(m_attrib) << " " << reinterpret_cast<unsigned int *>(this) << std::endl;
-    boost::mutex::scoped_lock lockAH(m_map->attributeHandlersMutex);
+
+    boost::lock_guard<boost::mutex> lockAH(m_map->attributeHandlersMutex/*, boost::adopt_lock*/);
     std::pair<IT, IT> bounds = m_map->attributeHandlers.equal_range(m_attrib) ;
 	for(IT i = bounds.first; i != bounds.second; ++i)
 	{
@@ -52,7 +51,7 @@ inline void AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::unregiste
 			return ;
 		}
 	}
-//	assert(false || !"Should not get here") ;
+    assert(false || !"Should not get here") ;
 }
 
 // =================================================================
@@ -87,8 +86,10 @@ AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::AttributeHandler(cons
     m_map(ta.map()),
     m_attrib(ta.getDataVector())
 {
-	if(valid)
-		registerInMap() ;
+    if(isValid())
+    {
+        registerInMap() ;
+    }
 }
 
 //template <typename T, unsigned int ORBIT>
@@ -112,14 +113,32 @@ template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorP
 template<class OtherAttributeAccessorPolicy>
 inline AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::operator=(const AttributeHandler<T, ORBIT, MAP, OtherAttributeAccessorPolicy >& ta)
 {
-	if(valid)
+    if(isValid())
 		unregisterFromMap() ;
     m_map = ta.map() ;
     m_attrib = ta.getDataVector() ;
     valid = ta.isValid() ;
 	if(valid)
-		registerInMap() ;
+    {
+        registerInMap() ;
+    }
 	return *this ;
+}
+
+
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::operator=(const AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& ta)
+{
+    if(isValid())
+        unregisterFromMap() ;
+    m_map = ta.map() ;
+    m_attrib = ta.getDataVector() ;
+    valid = ta.isValid() ;
+    if(valid)
+    {
+        registerInMap() ;
+    }
+    return *this ;
 }
 
 //template <typename T, unsigned int ORBIT>
@@ -139,8 +158,10 @@ inline AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& AttributeHandl
 template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
 AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::~AttributeHandler()
 {
-	if(valid)
-		unregisterFromMap() ;
+    if(this->isValid())
+    {
+        unregisterFromMap() ;
+    }
 }
 
 template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >

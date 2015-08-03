@@ -55,9 +55,9 @@ public:
     struct VertexAttributeAccessorCPHMap {
         static inline T& at(MAP* map, AttributeMultiVector<T>* attrib, Cell<VERTEX> c)
         {
-//            const Dart d = c.dart;
-//            const unsigned int nbSteps = map->m_curLevel - map->vertexInsertionLevel(d) ;
-            unsigned int index = map->Parent::template getEmbedding<VERTEX>(c.dart) ;
+            const Dart d = c.dart;
+            const unsigned int nbSteps = map->m_curLevel - map->vertexInsertionLevel(d) ;
+            unsigned int index = map->Parent::template getEmbedding<VERTEX>(d) ;
 //            std::cerr << "VertexAttributeAccessorCPHMap : nbSteps = " << nbSteps << std::endl;
 //            if(index == EMBNULL)
 //            {
@@ -88,31 +88,31 @@ public:
         static inline const T& at(MAP* map, const AttributeMultiVector<T>* attrib, Cell<VERTEX> c)
         {
             const Dart d = c.dart;
-//            const unsigned int nbSteps = map->m_curLevel - map->vertexInsertionLevel(d) ;
+            const unsigned int nbSteps = map->m_curLevel - map->vertexInsertionLevel(d) ;
             unsigned int index = map->Parent::template getEmbedding<VERTEX>(d) ;
 //            std::cerr << "(const) VertexAttributeAccessorCPHMap : nbSteps = " << nbSteps << std::endl;
-//            if(index == EMBNULL)
-//            {
-//                assert(false); // this should stop the program.
+            if(index == EMBNULL)
+            {
+                assert(false);
 //                index = Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(*map, d) ;
 //                map->m_nextLevelCell->operator[](index) = EMBNULL ;
-//            }
+            }
 
 
-//            unsigned int step = 0 ;
-//            while(step < nbSteps)
-//            {
-//                step++ ;
-//                const unsigned int nextIdx = map->m_nextLevelCell->operator[](index) ;
-//                if(nextIdx != EMBNULL)
-//                {
-//                    index = nextIdx ;
-//                } else
-//                {
-////                    break;
-//                    assert(false);
-//                }
-//            }
+            unsigned int step = 0 ;
+            while(step < nbSteps)
+            {
+                step++ ;
+                const unsigned int nextIdx = map->m_nextLevelCell->operator[](index) ;
+                if(nextIdx != EMBNULL)
+                {
+                    index = nextIdx ;
+                } else
+                {
+//                    break;
+                    assert(false);
+                }
+            }
             return attrib->operator[](index);
         }
 

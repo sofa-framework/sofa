@@ -317,9 +317,9 @@ BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int
 BaseElement* loadFromFile(const char *filename)
 {
     // Temporarily set the numeric formatting locale to ensure that
-    // floating-point values are interpreted correctly (i.e. the decimal
-    // separator is a dot '.').
-    helper::system::Locale setLocale(LC_NUMERIC, "C");
+    // floating-point values are interpreted correctly by tinyXML. (I.e. the
+    // decimal separator is a dot '.').
+    helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
 
     // this initialize the library and check potential ABI mismatches
     // between the version it was compiled for and the actual shared

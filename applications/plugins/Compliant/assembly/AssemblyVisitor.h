@@ -31,12 +31,6 @@ namespace simulation {
 // chunks/global, in case the scene really has a large number of
 // mstates
 
-// TODO shift matrices may also be improved using eigen magic
-// instead of actual sparse matrices (causing allocs)
-// USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX try another implementation
-// building assembled matrces from sequentialy generated triplets
-// but it is not proven that is more efficient
-
 
 
 /// res += constraint forces (== lambda/dt), only for mechanical object linked to a compliance
@@ -197,8 +191,11 @@ public:
             const defaulttype::BaseMatrix* J; ///< mapping jacobian
 		};
 
-		// this is to remove f*cking mouse dofs
-		bool mechanical; ///< is it a mechanical dof i.e. influenced by a mass or stiffness or compliance
+        /// flagged as a mechanical dof
+        /// i.e. influenced by a mass or damping or stiffness or compliance
+        /// Note it includes having a mechanical child
+        /// or a child mapped with a mapping generating geometric stiffness
+        bool mechanical;
 		
 		bool master() const { return mechanical && map.empty(); }
         bool compliant() const { return mechanical && notempty(C); }

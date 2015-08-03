@@ -24,9 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_BACKGROUND_H
 #define SOFA_COMPONENT_CONFIGURATIONSETTING_BACKGROUND_H
+#include "config.h"
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/component/component.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/defaulttype/Vec.h>
 

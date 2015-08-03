@@ -25,6 +25,7 @@
 
 #ifndef _OGL_ATTRIBUTE_H_
 #define _OGL_ATTRIBUTE_H_
+#include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/VecTypes.h>

@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 #include "QMouseOperations.h"
-#include <plugins/PhysicsBasedInteractiveModeler/pim/SculptBodyPerformer.h>
+#include <PhysicsBasedInteractiveModeler/pim/SculptBodyPerformer.h>
 #ifdef SOFA_QT4
 #include <QVBoxLayout>
 #include <QHBoxLayout>

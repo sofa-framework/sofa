@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_RAY_H
 #define SOFA_COMPONENT_COLLISION_RAY_H
+#include "config.h"
 
 #include <SofaUserInteraction/RayModel.h>
 

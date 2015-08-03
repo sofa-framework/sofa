@@ -61,10 +61,10 @@ inline Dart ImplicitHierarchicalMap3::phi(Dart d) const{
 inline Dart ImplicitHierarchicalMap3::phi1(Dart d) const
 {
     assert(getDartLevel(d) <= m_curLevel || !"Access to a dart introduced after current level") ;
-//    if (getCurrentLevel() == getMaxLevel())
-//    {
-//        return phi1MaxLvl(d);
-//    }
+    if (getCurrentLevel() == getMaxLevel())
+    {
+        return phi1MaxLvl(d);
+    }
 
     bool finished = false ;
     unsigned int edgeId = getEdgeId(d) ;
@@ -92,10 +92,10 @@ inline Dart ImplicitHierarchicalMap3::phi_1(Dart d) const
 {
     assert(getDartLevel(d) <= m_curLevel || !"Access to a dart introduced after current level") ;
 
-//    if (getCurrentLevel() == getMaxLevel())
-//    {
-//        return phi_1MaxLvl(d);
-//    }
+    if (getCurrentLevel() == getMaxLevel())
+    {
+        return phi_1MaxLvl(d);
+    }
 
     bool finished = false ;
 

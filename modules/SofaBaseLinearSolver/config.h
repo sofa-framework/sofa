@@ -22,31 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "graph.h"
+#ifndef SOFABASELINEARSOLVER_CONFIG_H
+#define SOFABASELINEARSOLVER_CONFIG_H
 
-#include <sofa/simulation/common/common.h>
+#include <sofa/helper/system/config.h>
 
-namespace sofa
-{
+#ifdef SOFA_BUILD_BASE_LINEAR_SOLVER
+#  define SOFA_BASE_LINEAR_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_BASE_LINEAR_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-namespace simulation
-{
-
-namespace graph
-{
-
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::simulation::common::init();
-        first = false;
-    }
-}
-
-} // namespace graph
-
-} // namespace simulation
-
-} // namespace sofa
+#endif

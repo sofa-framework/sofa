@@ -3,6 +3,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
 	tree.h
+	init.h
 	ExportDotVisitor.h
 	GNode.h
 	GNodeVisitor.h
@@ -12,7 +13,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
-	tree.cpp
+	init.cpp
 	ExportDotVisitor.cpp
 	GNode.cpp
 	GNodeVisitor.cpp

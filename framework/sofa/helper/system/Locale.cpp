@@ -11,15 +11,15 @@ namespace helper {
 namespace system {
 
 
-Locale::Locale(int category, std::string locale):
+TemporaryLocale::TemporaryLocale(int category, std::string locale):
     m_category(category), m_oldValue(std::string(setlocale(category, NULL)))
 {
     char *value = setlocale(category, locale.c_str());
     if (value == NULL)
-        Logger::getMainLogger().log(Logger::Error, "Failed to set " + getCategoryName(category) + " to " + locale);
+        Logger::getMainLogger().log(Logger::Error, "Failed to set " + Locale::getCategoryName(category) + " to " + locale);
 }
 
-Locale::~Locale()
+TemporaryLocale::~TemporaryLocale()
 {
     setlocale(m_category, m_oldValue.c_str());
 }
@@ -34,8 +34,15 @@ std::string Locale::getCategoryName(int category)
         return "LC_COLLATE";
     case LC_CTYPE:
         return "LC_CTYPE";
+#if WIN32
+#if (_MSC_VER < 1800)	// visual studio >= 2013 does not recognize LC_MESSAGES
     case LC_MESSAGES:
         return "LC_MESSAGES";
+#endif
+#else
+	case LC_MESSAGES:
+		return "LC_MESSAGES";
+#endif
     case LC_MONETARY:
         return "LC_MONETARY";
     case LC_NUMERIC:

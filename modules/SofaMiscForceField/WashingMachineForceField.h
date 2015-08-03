@@ -35,6 +35,7 @@
 //
 #ifndef SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_H
+#include "config.h"
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/visual/VisualModel.h>

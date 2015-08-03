@@ -24,13 +24,13 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MASS_UNIFORMMASS_H
 #define SOFA_COMPONENT_MASS_UNIFORMMASS_H
+#include "config.h"
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {

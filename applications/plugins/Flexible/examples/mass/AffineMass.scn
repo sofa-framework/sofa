@@ -5,7 +5,7 @@
 <RequiredPlugin pluginName="image"/>
   
 <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 
-<CGSolver tolerance="1.0e-9" threshold="1.0e-9" />
+<CGSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
 
     <VisualStyle displayFlags="showVisualModels showBehaviorModels" />
 

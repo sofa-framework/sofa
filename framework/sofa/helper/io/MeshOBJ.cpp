@@ -25,6 +25,7 @@
 #include <sofa/helper/io/MeshOBJ.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/system/Locale.h>
 #include <sstream>
 
 namespace sofa
@@ -234,6 +235,9 @@ void MeshOBJ::readOBJ (std::ifstream &file, const std::string &filename)
 // -----------------------------------------------------
 void MeshOBJ::readMTL(const char* filename)
 {
+    // Make sure that fscanf() uses a dot '.' as the decimal separator.
+    helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
+
     FILE* file;
 
     char buf[128];

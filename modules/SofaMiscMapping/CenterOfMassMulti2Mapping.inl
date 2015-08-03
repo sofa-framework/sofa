@@ -62,7 +62,7 @@ public :
     static inline double computeTotalMass( const Model* model, const sofa::core::behavior::BaseMass* mass )
     {
         double result = 0.0;
-        for ( unsigned int i = 0; i < model->read(core::ConstVecCoordId::position())->getValue().size(); i++)
+        for ( unsigned int i = 0; i < model->getSize(); i++)
         {
             result += mass->getElementMass(i);
         }

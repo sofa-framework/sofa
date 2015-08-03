@@ -1591,7 +1591,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         vME.resize(_indexedElements->size());
 
         helper::WriteAccessor<Data<helper::vector<Real> > > vMN =  _vonMisesPerNode;
-        vMN.resize(this->mstate->read(core::ConstVecCoordId::position())->getValue().size());
+        vMN.resize(this->mstate->getSize());
 
 
 #ifndef SOFA_NO_OPENGL

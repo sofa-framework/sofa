@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef OGLTEXTURE_H_
 #define OGLTEXTURE_H_
+#include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>

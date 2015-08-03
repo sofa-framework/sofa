@@ -98,7 +98,7 @@ void SubsetMapping<TIn, TOut>::init()
 {
     const bool ignoreNotFound = f_ignoreNotFound.getValue();
     int numnotfound = 0;
-    unsigned int inSize = this->fromModel->read(core::ConstVecCoordId::position())->getValue().size();
+    unsigned int inSize = this->fromModel->getSize();
     if (f_indices.getValue().empty() && f_first.getValue() != -1)
     {
         IndexArray& indices = *f_indices.beginEdit();

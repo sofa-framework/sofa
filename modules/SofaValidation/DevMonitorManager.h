@@ -31,6 +31,7 @@
 
 #ifndef DEVMONITORMANAGER_H_
 #define DEVMONITORMANAGER_H_
+#include "config.h"
 
 #include <SofaValidation/DevMonitor.h>
 #include <sofa/defaulttype/VecTypes.h>

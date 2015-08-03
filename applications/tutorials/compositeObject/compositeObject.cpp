@@ -34,7 +34,7 @@
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/tree/tree.h>
+#include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
 #include <sofa/gui/GUIManager.h>
@@ -276,6 +276,7 @@ int main(int argc, char** argv)
     sofa::simulation::getSimulation()->unload(groot);
     sofa::gui::GUIManager::closeGUI();
 
+    sofa::simulation::tree::cleanup();
     return 0;
 }
 

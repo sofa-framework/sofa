@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_H
 #define SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_H
+#include "config.h"
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/Factory.h>

@@ -104,17 +104,17 @@ public:
     template<class Mat33>
     void toMatrix(Mat33 &m) const
     {
-        m[0][0] = (typename Mat33::Real) (1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2]));
-        m[0][1] = (typename Mat33::Real) (2.0f * (_q[0] * _q[1] - _q[2] * _q[3]));
-        m[0][2] = (typename Mat33::Real) (2.0f * (_q[2] * _q[0] + _q[1] * _q[3]));
+        m[0][0] = (typename Mat33::Real) (1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
+        m[0][1] = (typename Mat33::Real) (2 * (_q[0] * _q[1] - _q[2] * _q[3]));
+        m[0][2] = (typename Mat33::Real) (2 * (_q[2] * _q[0] + _q[1] * _q[3]));
 
-        m[1][0] = (typename Mat33::Real) (2.0f * (_q[0] * _q[1] + _q[2] * _q[3]));
-        m[1][1] = (typename Mat33::Real) (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0]));
-        m[1][2] = (typename Mat33::Real) (2.0f * (_q[1] * _q[2] - _q[0] * _q[3]));
+        m[1][0] = (typename Mat33::Real) (2 * (_q[0] * _q[1] + _q[2] * _q[3]));
+        m[1][1] = (typename Mat33::Real) (1 - 2 * (_q[2] * _q[2] + _q[0] * _q[0]));
+        m[1][2] = (typename Mat33::Real) (2 * (_q[1] * _q[2] - _q[0] * _q[3]));
 
-        m[2][0] = (typename Mat33::Real) (2.0f * (_q[2] * _q[0] - _q[1] * _q[3]));
-        m[2][1] = (typename Mat33::Real) (2.0f * (_q[1] * _q[2] + _q[0] * _q[3]));
-        m[2][2] = (typename Mat33::Real) (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0]));
+        m[2][0] = (typename Mat33::Real) (2 * (_q[2] * _q[0] - _q[1] * _q[3]));
+        m[2][1] = (typename Mat33::Real) (2 * (_q[1] * _q[2] + _q[0] * _q[3]));
+        m[2][2] = (typename Mat33::Real) (1 - 2 * (_q[1] * _q[1] + _q[0] * _q[0]));
     }
 
     /// Apply the rotation to a given vector

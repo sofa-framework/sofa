@@ -22,30 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "common.h"
-#include <sofa/core/core.h>
+#ifndef SOFAOPENGLVISUAL_CONFIG_H
+#define SOFAOPENGLVISUAL_CONFIG_H
 
-namespace sofa
-{
+#include <sofa/helper/system/config.h>
 
-namespace simulation
-{
+#ifdef SOFA_BUILD_OPENGL_VISUAL
+#  define SOFA_OPENGL_VISUAL_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_OPENGL_VISUAL_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-namespace common
-{
-
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::core::init();
-        first = false;
-    }
-}
-
-} // namespace common
-
-} // namespace simulation
-
-} // namespace sofa
+#endif

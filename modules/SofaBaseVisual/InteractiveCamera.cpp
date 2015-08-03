@@ -46,7 +46,7 @@ int InteractiveCameraClass = core::RegisterObject("InteractiveCamera")
 InteractiveCamera::InteractiveCamera()
     :p_zoomSpeed(initData(&p_zoomSpeed, (double) 250.0 , "zoomSpeed", "Zoom Speed"))
     ,p_panSpeed(initData(&p_panSpeed, (double) 0.1 , "panSpeed", "Pan Speed"))
-    ,p_pivot(initData(&p_pivot, 0 , "pivot", "Pivot (0 => Camera lookAt, 1 => Camera position, 2 => Scene center, 3 => World center"))
+    ,p_pivot(initData(&p_pivot, 2 , "pivot", "Pivot (0 => Camera lookAt, 1 => Camera position, 2 => Scene center, 3 => World center"))
 	,currentMode(InteractiveCamera::NONE_MODE)
     ,isMoving(false)
 	{

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "GenerateRigid.h"
 #include <SofaComponentMain/init.h>
-#include <sofa/simulation/common/common.h>
+#include <sofa/simulation/common/init.h>
 #include <iostream>
 #include <fstream>
 
@@ -91,5 +91,6 @@ int main(int argc, char** argv)
     if (out != &std::cout)
         delete out;
 
+    sofa::simulation::common::cleanup();
     return 0;
 }

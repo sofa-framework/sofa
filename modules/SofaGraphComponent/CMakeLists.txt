@@ -2,6 +2,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
+    config.h
     initGraphComponent.h
     AddFrameButtonSetting.h
     AddRecordedCameraButtonSetting.h

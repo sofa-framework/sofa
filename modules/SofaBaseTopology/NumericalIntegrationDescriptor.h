@@ -24,12 +24,12 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_H
 #define SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_H
+#include "config.h"
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/set.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {

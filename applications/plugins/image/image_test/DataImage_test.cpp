@@ -23,11 +23,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/Data.h>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneCreator.h>
 
-#include <plugins/SofaTest/Sofa_test.h>
-#include <plugins/image/ImageContainer.h>
-#include <plugins/image/ImageViewer.h>
+#include <SofaTest/Sofa_test.h>
+#include <image/ImageContainer.h>
+#include <image/ImageViewer.h>
 
 namespace sofa {
 

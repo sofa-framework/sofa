@@ -1,5 +1,6 @@
 #ifndef SOFA_STANDARDTEST_BroadPhase_test_H
 #define SOFA_STANDARDTEST_BroadPhase_test_H
+#include "config.h"
 
 #include <SofaMeshCollision/DirectSAP.h>
 #include <gtest/gtest.h>
