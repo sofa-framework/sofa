@@ -157,7 +157,13 @@ Cell<ORBIT> TraversorCell<MAP, ORBIT, OPT>::begin()
         qCurrent = cont->begin() ;
         current.dart = (*quickTraversal)[qCurrent] ;
 
-        bool stopLoop = m.getDartLevel(current.dart) == curr;
+        const unsigned int dl = m.getDartLevel(current.dart);
+        bool stopLoop =  dl <= curr;
+        if (stopLoop && dl < curr)
+        {
+            stopLoop = ( dl == m.getCellLevel(Cell<ORBIT>(m.phi1(current))) ); // we chose the stored dart so its level is equal to the cell level
+        }
+
         while (!stopLoop)
         {
             cont->next(qCurrent) ;
@@ -168,9 +174,8 @@ Cell<ORBIT> TraversorCell<MAP, ORBIT, OPT>::begin()
                 current.dart = NIL;
                 break;
             }
-            const bool cond1 = ( m.getDartLevel(current.dart) <= curr );
-            const bool cond2 = (cond1 ? ((m.getCellLevel(current) != curr) && qCurrent != cont->end()) : true);
-            stopLoop = !cond2;
+            const unsigned int dl = m.getDartLevel(current.dart);
+            stopLoop = !(dl <= curr ? ((m.getCellLevel(Cell<ORBIT>(m.phi1(current))) > dl)) : true);
         }
     }
         break;
@@ -181,8 +186,13 @@ Cell<ORBIT> TraversorCell<MAP, ORBIT, OPT>::begin()
             const unsigned curr = m.getCurrentLevel();
             qCurrent = cont->begin() ;
             current.dart = (*quickTraversal)[qCurrent] ;
+            const unsigned int dl = m.getDartLevel(current.dart);
+            bool stopLoop =  dl <= curr;
+            if (stopLoop && dl < curr)
+            {
+                stopLoop = ( dl == m.getCellLevel(Cell<ORBIT>(m.phi1(current))) ); // we chose the stored dart so its level is equal to the cell level
+            }
 
-            bool stopLoop = m.getDartLevel(current.dart) == curr;
             while (!stopLoop)
             {
                 cont->next(qCurrent) ;
@@ -193,9 +203,8 @@ Cell<ORBIT> TraversorCell<MAP, ORBIT, OPT>::begin()
                     current.dart = NIL;
                     break;
                 }
-                const bool cond1 = ( m.getDartLevel(current.dart) <= curr );
-                const bool cond2 = (cond1 ? ((m.getCellLevel(current) != curr) && qCurrent != cont->end()) : true);
-                stopLoop = !cond2;
+                const unsigned int dl = m.getDartLevel(current.dart);
+                stopLoop = !(dl <= curr ? ((m.getCellLevel(Cell<ORBIT>(m.phi1(current))) > dl)) : true);
             }
         }
         else
@@ -289,7 +298,8 @@ Cell<ORBIT> TraversorCell<MAP, ORBIT, OPT>::next()
                 break;
             }
 
-            if ( m.getDartLevel(current.dart) == curr )
+            const unsigned int dl = m.getDartLevel(current.dart);
+            if ( dl <= curr  && (m.getCellLevel(Cell<ORBIT>(m.phi1(current))) == dl))
             {
                     break;
             }
@@ -311,8 +321,8 @@ Cell<ORBIT> TraversorCell<MAP, ORBIT, OPT>::next()
                     current.dart = NIL;
                     break;
                 }
-
-                if ( m.getDartLevel(current.dart) == curr )
+                const unsigned int dl = m.getDartLevel(current.dart);
+                if ( dl <= curr  && (m.getCellLevel(Cell<ORBIT>(m.phi1(current))) == dl))
                 {
                         break;
                 }
