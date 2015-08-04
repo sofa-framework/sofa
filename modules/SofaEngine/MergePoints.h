@@ -79,6 +79,7 @@ public:
 
     Data<VecCoord> f_X1;
     Data<VecCoord> f_X2;
+    Data<SetIndex> f_X2_mapping;
     Data<SetIndex> f_indices1;
     Data<SetIndex> f_indices2;
     Data<VecCoord> f_points;
