@@ -33,6 +33,7 @@
 #define MESSAGEDISPATCHER_H
 
 #include <sofa/helper/helper.h>
+#include <sofa/core/objectmodel/Base.h>
 #include "Message.h"
 
 #include <boost/shared_ptr.hpp>
@@ -83,6 +84,16 @@ public:
         {
         }
 
+        LoggerStream(MessageDispatcher& dispatcher, const std::string& mclass, const std::string& type,
+                     const sofa::core::objectmodel::Base* sender, FileInfo fileInfo):
+            m_fileInfo(fileInfo),
+            m_class(mclass),
+            m_type(type),
+            m_sender(sender->getName()), // temporary, until Base object reference kept in the message itself
+            m_dispatcher(dispatcher)
+        {
+        }
+
         ~LoggerStream()
         {
             const std::string message(m_stream.str());
@@ -114,7 +125,16 @@ public:
         return LoggerStream(*this, mclass, type, sender, fileInfo);
     }
 
+    LoggerStream log(const std::string& mclass, const std::string& type,
+                     const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
+        return LoggerStream(*this, mclass, type, sender, fileInfo);
+    }
+
     LoggerStream info(const std::string& mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) {
+        return log(mclass, "info", sender, fileInfo);
+    }
+
+    LoggerStream info(const std::string& mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
         return log(mclass, "info", sender, fileInfo);
     }
 
@@ -122,11 +142,23 @@ public:
         return log(mclass, "warn", sender, fileInfo);
     }
 
+    LoggerStream warning(const std::string& mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
+        return log(mclass, "warn", sender, fileInfo);
+    }
+
     LoggerStream error(const std::string& mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) {
         return log(mclass, "error", sender, fileInfo);
     }
 
+    LoggerStream error(const std::string& mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
+        return log(mclass, "error", sender, fileInfo);
+    }
+
     LoggerStream fatal(const std::string& mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) {
+        return log(mclass, "fatal", sender, fileInfo);
+    }
+
+    LoggerStream fatal(const std::string& mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
         return log(mclass, "fatal", sender, fileInfo);
     }
 

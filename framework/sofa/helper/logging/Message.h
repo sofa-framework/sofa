@@ -35,6 +35,14 @@
 #include <string>
 #include <sofa/helper/helper.h>
 
+namespace sofa {
+namespace core {
+namespace objectmodel{
+class Base ;
+}
+}
+}
+
 namespace sofa
 {
 
