@@ -36,6 +36,7 @@
 #include <sofa/defaulttype/BoundingBox.h>
 #include <limits>
 #include <sofa/core/topology/BaseTopology.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
 
 namespace sofa
 {
@@ -81,6 +82,7 @@ BoxROI<DataTypes>::BoxROI()
     , p_drawHexahedra( initData(&p_drawHexahedra,false,"drawHexahedra","Draw Tetrahedra") )
     , p_drawQuads( initData(&p_drawQuads,false,"drawQuads","Draw Quads") )
     , _drawSize( initData(&_drawSize,0.0,"drawSize","rendering size for box and topological elements") )
+    , p_doUpdate( initData(&p_doUpdate,(bool) false,"doUpdate","Boolean for updating the Box") )
 {
     //Adding alias to handle old BoxROI input/output
     addAlias(&f_pointsInROI,"pointsInBox");
@@ -230,6 +232,9 @@ void BoxROI<DataTypes>::init()
     //cerr<<"BoxROI<DataTypes>::init() -> f_indices = "<<f_indices<<endl;
 
     reinit();
+
+    if(p_doUpdate.getValue())
+        this->f_listening.setValue(true);
 }
 
 template <class DataTypes>
@@ -784,6 +789,18 @@ void BoxROI<DataTypes>::computeBBox(const core::ExecParams*  params , bool /*onl
     }
     this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
+
+
+template<class DataTypes>
+void BoxROI<DataTypes>::handleEvent(core::objectmodel::Event *event)
+{
+    if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
+    {
+        setDirtyValue();
+        update();
+    }
+}
+
 
 } // namespace engine
 
