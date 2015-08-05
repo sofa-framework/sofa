@@ -15,7 +15,7 @@
 			<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 			<SparseGridRamification vertices="@../subset_head.pointsInROI" n="10 10 10" nbVirtualFinerLevels="0" finestConnectivity="0" />			
 			<MechanicalObject template="Vec3d" name="mecaObj2"  />
-			<BoxConstraint box="-2 4 4 2 8 4.5" drawBoxes="1"/>
+			<BoxConstraint box="-2 4 4 2 8 4.5" drawBoxes="0"/>
 			<UniformMass totalMass="50.0" />
             <HexahedronFEMForceField name="FEM" youngModulus="4000.0" poissonRatio="0.30" method="large" updateStiffnessMatrix="false" printLog="0" 
             drawing="1"/>            
@@ -28,7 +28,7 @@
 					 />
 				<QuadSetTopologyModifier   name="Modifier" />
 				<QuadSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
-				<QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" drawEdges="1" />		                    
+				<QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" drawEdges="0" />		                    
 				<MechanicalObject name="CollisModel" />
 				<BarycentricMapping input="@.." output="@CollisModel" />
 			</Node>  
@@ -38,6 +38,7 @@
 			position2="@simu_head/Visu/CollisModel.position" mappingX2="@subset_head.indices"/>
 
        
-        <OglModel name="Visual" color="red" position="@merge_subsets.points" quads="@meshLoader.quads" listening="1"/>
+        <OglModel name="Visual" position="@merge_subsets.points" 
+			src="@meshLoader" useVBO="0" texturename="textures/snakeskin.png" scaleTex="20 20"/>
     </Node>
 </Node>
