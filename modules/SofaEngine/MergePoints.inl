@@ -102,7 +102,7 @@ void MergePoints<DataTypes>::update()
         // fill buffer1 to full X1
         points = x1;
 
-        for(int i=0; i<mapping.size(); ++i)
+        for(unsigned int i=0; i<mapping.size(); ++i)
         {
             unsigned int posX = mapping[i];
             if (posX < points.size()) // new point to insert
@@ -114,7 +114,7 @@ void MergePoints<DataTypes>::update()
         // fill indice1 & indice2 buffers
         std::sort(mapping.begin(), mapping.end());
         int j=0;
-        for(int i=0; i<points.size(); ++i)
+        for(unsigned int i=0; i<points.size(); ++i)
         {
             unsigned int posX = mapping[j];
             if(i == posX)
