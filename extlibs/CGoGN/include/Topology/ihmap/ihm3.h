@@ -368,6 +368,8 @@ public:
 	Dart quadranguleFace(Dart d);
 
 	void deleteVertexSubdividedFace(Dart d);
+
+        Dart deleteVertex(Dart d);
 	//@}
 
 	void setVertexVertexFunctor(FunctorType* f) { vertexVertexFunctor = f ; }
@@ -551,6 +553,7 @@ public:
 
     template <unsigned int ORBIT>
     void checkEmbedding(Cell<ORBIT> c) {
+#ifndef DNDEBUG
         std::map< unsigned, unsigned > cellEmbeddings;
         TraversorDartsOfOrbit< MAP, ORBIT > traDoC(*this, c);
         for (Dart it = traDoC.begin(); it != traDoC.end() ;it = traDoC.next())
@@ -564,6 +567,7 @@ public:
                 assert(this->ParentMap::template getEmbedding< ORBIT >(it) == embeddingIT->second );
             }
         }
+#endif
     }
 
     template <unsigned int ORBIT>
@@ -580,7 +584,13 @@ public:
             TraversorCell<MAP, ORB, FORCE_DART_MARKING> trav(*this);
             unsigned i = 0u ;
             for (Dart d = trav.begin() ; d != trav.end() ; ++i, d = trav.next()) {
-                std::cerr << "embedding number " << i << " of dart " << d  <<  " : " << getEmbedding<ORB>(d) << std::endl;
+                std::cerr << "embeddings of dart " << d  <<  std::endl;
+                TraversorDartsOfOrbit< MAP, ORB > traDoO(*this, Cell<ORB>(d));
+                for (Dart dit = traDoO.begin() ; dit != traDoO.end() ; dit = traDoO.next())
+                {
+                    std::cerr << this->ParentMap::template getEmbedding< ORB >(dit) << " ";
+                }
+                std::cerr << std::endl;
             }
             std::cerr << "**** end embedding *****" << std::endl;
         }
