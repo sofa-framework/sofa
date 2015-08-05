@@ -90,12 +90,15 @@ protected:
     inline void permutationUnsew(Dart d);
 
 
-    void compactTopo();
+
 
     /****************************************
          *           DARTS TRAVERSALS           *
          ****************************************/
 public:
+
+    void compactTopo();
+
     inline Dart begin() const
     {
         Dart d = Dart::create(m_attribs[DART].begin()) ;
