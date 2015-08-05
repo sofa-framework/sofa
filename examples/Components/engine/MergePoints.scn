@@ -6,6 +6,11 @@
     <CollisionResponse response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <CollisionGroup />
+    
+    <LightManager />
+    <SpotLight name="light1" color="1 1 1" position="0 80 25" direction="0 -1 -0.8" cutoff="30" exponent="1" />
+    <SpotLight name="light2" color="1 1 1" position="0 40 100" direction="0 0 -1" cutoff="30" exponent="1" />
+    
     <Node name="mesh">
 		<MeshObjLoader name="meshLoader" filename="mesh/raptor_35kp.obj"/>  
 		<SubsetTopology template="Vec3d" name="subset_head" box="-2 4 4 2 8 8" drawROI="1" src="@meshLoader" rest_position="@meshLoader.position" localIndices="1"/>

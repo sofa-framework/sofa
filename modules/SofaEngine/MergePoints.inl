@@ -78,11 +78,9 @@ void MergePoints<DataTypes>::update()
     if (f_noUpdate.getValue() && initDone)
         return;
 
-    f_X2.setDirtyValue();
     const VecCoord& x1 = f_X1.getValue();
     const VecCoord& x2 = f_X2.getValue();
 
-    cleanDirty();
 
     // get access to output buffers
     SetIndex& indices1 = *(f_indices1.beginWriteOnly());
@@ -142,6 +140,8 @@ void MergePoints<DataTypes>::update()
             indices2.push_back(index+i);
         }
     }
+
+    cleanDirty();
 
     f_indices1.endEdit();
     f_indices2.endEdit();
