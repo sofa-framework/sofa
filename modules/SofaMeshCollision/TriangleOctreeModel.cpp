@@ -22,7 +22,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/SofaFramework.h>
 
 #include <SofaMeshCollision/TriangleModel.inl>
 #include <SofaMeshCollision/TriangleOctreeModel.h>

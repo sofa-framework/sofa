@@ -26,7 +26,6 @@
 #ifndef SOFA_COMPONENT_COLLISION_POINTMODEL_INL
 #define SOFA_COMPONENT_COLLISION_POINTMODEL_INL
 
-#include <sofa/SofaFramework.h>
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/proximity.h>

@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_COLLISION_TOPOLOGICALCHANGEMANAGER_H
 #include "config.h"
 
-#include <sofa/SofaGeneral.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Vec3Types.h>

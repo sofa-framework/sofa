@@ -30,7 +30,6 @@
 #pragma once
 #endif
 
-#include <sofa/SofaMisc.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>

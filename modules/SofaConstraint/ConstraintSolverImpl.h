@@ -26,9 +26,7 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_CONSTRAINTSOLVERIMPL_H
 #include "config.h"
 
-#include <sofa/SofaGeneral.h>
 
-#include <sofa/SofaGeneral.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>

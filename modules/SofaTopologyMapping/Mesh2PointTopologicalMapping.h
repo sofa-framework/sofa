@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_TOPOLOGY_MESH2POINTTOPOLOGICALMAPPING_H
 #include "config.h"
 
-#include <sofa/SofaGeneral.h>
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
 

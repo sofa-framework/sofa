@@ -28,7 +28,6 @@
 
 
 #include <SofaNonUniformFem/NonUniformHexahedronFEMForceFieldAndMass.h>
-#include <sofa/SofaAdvanced.h>
 
 
 // for memory :

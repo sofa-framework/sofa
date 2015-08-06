@@ -33,7 +33,6 @@
 #include <sofa/core/DataEngine.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/vector.h>
-#include <sofa/SofaGeneral.h>
 
 namespace sofa
 {

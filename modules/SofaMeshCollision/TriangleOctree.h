@@ -28,7 +28,6 @@
 
 //#include <SofaMeshCollision/TriangleOctreeModel.h>
 
-#include <sofa/SofaCommon.h>
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
