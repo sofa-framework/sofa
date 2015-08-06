@@ -29,11 +29,8 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <SofaUserInteraction/MouseInteractor.h>
 
-#ifdef SOFA_QT4
-#   include <QStatusBar>
-#else
-#   include <qstatusbar.h>
-#endif
+#include <QStatusBar>
+
 namespace sofa
 {
 namespace gui
@@ -57,18 +54,22 @@ void InformationOnPickCallBack::execute(const sofa::component::collision::BodyPi
     core::objectmodel::BaseObject *objectPicked=NULL;
     if (body.body)
     {
-        Q3ListViewItem* item=gui->simulationGraph->getListener()->items[body.body];
-        gui->simulationGraph->ensureItemVisible(item);
+        QTreeWidgetItem* item=gui->simulationGraph->getListener()->items[body.body];
+//        gui->simulationGraph->ensureItemVisible(item);
+        gui->simulationGraph->scrollToItem(item);
         gui->simulationGraph->clearSelection();
-        gui->simulationGraph->setSelected(item,true);
+//        gui->simulationGraph->setSelected(item,true);
+        gui->simulationGraph->setCurrentItem(item);
         objectPicked=body.body;
     }
     else if (body.mstate)
     {
-        Q3ListViewItem* item=gui->simulationGraph->getListener()->items[body.mstate];
-        gui->simulationGraph->ensureItemVisible(item);
+        QTreeWidgetItem* item=gui->simulationGraph->getListener()->items[body.mstate];
+//        gui->simulationGraph->ensureItemVisible(item);
+        gui->simulationGraph->scrollToItem(item);
         gui->simulationGraph->clearSelection();
-        gui->simulationGraph->setSelected(item,true);
+//        gui->simulationGraph->setSelected(item,true);
+        gui->simulationGraph->setCurrentItem(item);
         objectPicked=body.mstate;
     }
     else
@@ -85,7 +86,7 @@ void InformationOnPickCallBack::execute(const sofa::component::collision::BodyPi
                 + QString(" : ") + QString(objectPicked->getClassName().c_str());
         if (!objectPicked->getTemplateName().empty())
             messagePicking += QString("<") + QString(objectPicked->getTemplateName().c_str()) + QString(">");
-        gui->statusBar()->message(messagePicking,3000); //display message during 3 seconds
+        gui->statusBar()->showMessage(messagePicking,3000); //display message during 3 seconds
     }
 }
 

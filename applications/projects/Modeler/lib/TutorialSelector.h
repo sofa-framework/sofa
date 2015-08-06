@@ -25,8 +25,8 @@
 #ifndef SOFA_TUTORIALSELECTOR_H
 #define SOFA_TUTORIALSELECTOR_H
 
-#include <Q3ListView>
-#include <Q3ListViewItem>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
 #include <QKeyEvent>
 
 #include <sofa/helper/system/FileRepository.h>
@@ -47,7 +47,7 @@ namespace qt
 
 
 
-class TutorialSelector : public Q3ListView
+class TutorialSelector : public QTreeWidget
 {
 
 
@@ -95,7 +95,7 @@ public:
 public  slots:
     void openCategory(const QString&);
 
-    void changeRequested( Q3ListViewItem * );
+    void changeRequested( QTreeWidgetItem * );
 signals:
     void openCategory(const std::string &name);
     void openTutorial(const std::string &filename);
@@ -107,11 +107,11 @@ protected:
     void openTutorial(const Tutorial&);
 
     void loadTutorials(const std::string &fileTutorials);
-    void openNode(TiXmlNode* node, Q3ListViewItem *parent=NULL, bool isRoot=false);
-    void openAttribute(TiXmlElement* element,  Q3ListViewItem *item);
+    void openNode(TiXmlNode* node, QTreeWidgetItem *parent=NULL, bool isRoot=false);
+    void openAttribute(TiXmlElement* element,  QTreeWidgetItem *item);
 
-    std::map< Q3ListViewItem *, Category> itemToCategory;
-    std::map< Q3ListViewItem *, Tutorial> itemToTutorial;
+    std::map< QTreeWidgetItem *, Category> itemToCategory;
+    std::map< QTreeWidgetItem *, Tutorial> itemToTutorial;
     std::multimap<Category, Tutorial> listTutoFromFile;
 
     Category currentCategory;

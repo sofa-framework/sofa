@@ -28,11 +28,7 @@
 #include "ModifyObject.h"
 #include <sofa/helper/Factory.inl>
 
-#ifdef SOFA_QT4
 #include <QToolTip>
-#else
-#include <qtooltip.h>
-#endif
 
 #include <sofa/helper/Logger.h>
 using sofa::helper::Logger;
@@ -53,8 +49,9 @@ namespace qt
 using namespace core::objectmodel;
 
 DataWidget::DataWidget(QWidget* parent,const char* name, MyData* d) 
-:QWidget(parent,name), baseData(d), dirty(false), counter(-1)
+:QWidget(parent /*,name */), baseData(d), dirty(false), counter(-1)
 {
+    this->setObjectName(name);
 }
 
 DataWidget::~DataWidget()
@@ -71,7 +68,7 @@ DataWidget::setData( MyData* d)
 void
 DataWidget::updateVisibility()
 {
-    parentWidget()->setShown(baseData->isDisplayed());
+    parentWidget()->setVisible(baseData->isDisplayed());
 }
 
 void
@@ -170,7 +167,7 @@ DataWidget::setWidgetDirty(bool b)
 QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::string& helper,
         core::objectmodel::BaseData* d, bool modifiable, const ModifyObjectFlags& modifyObjectFlags):QWidget(parent), data(d), numLines_(1)
 {
-	setMinimumHeight(25);
+    setMinimumHeight(25);
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setContentsMargins(0,0,0,0);
@@ -188,7 +185,9 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
         helper_button->setAutoDefault(false);
         layout->addWidget(helper_button, 0, Qt::AlignLeft);
         connect(helper_button, SIGNAL( clicked() ), this, SLOT( linkModification()));
-        if (!ownerClass.empty()) QToolTip::add(helper_button, ("Data from "+ownerClass).c_str());
+        if (!ownerClass.empty())
+            helper_button->setToolTip( ("Data from "+ownerClass).c_str());
+            //QToolTip::add(helper_button, ("Data from "+ownerClass).c_str());
     }
     else
     {
@@ -218,11 +217,11 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
         linkpath_edit->setText(QString(data->getLinkPath().c_str()));
         linkpath_edit->setReadOnly(!modifiable);
         layout->addWidget(linkpath_edit);
-        linkpath_edit->setShown(!data->getLinkPath().empty());
+        linkpath_edit->setVisible(!data->getLinkPath().empty());
 		if(modifyObjectFlags.PROPERTY_WIDGET_FLAG)
 			connect(linkpath_edit, SIGNAL( textChanged(const QString&)), this, SIGNAL( WidgetDirty()));
 		else
-			connect(linkpath_edit, SIGNAL( lostFocus()), this, SLOT( linkEdited()));
+            connect(linkpath_edit, SIGNAL( editingFinished()), this, SLOT( linkEdited()));
     }
     else
     {
@@ -232,18 +231,18 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
 
 void QDisplayDataInfoWidget::linkModification()
 {
-    if (linkpath_edit->isShown() && linkpath_edit->text().isEmpty())
-        linkpath_edit->setShown(false);
+    if (linkpath_edit->isVisible() && linkpath_edit->text().isEmpty())
+        linkpath_edit->setVisible(false);
     else
     {
-        linkpath_edit->setShown(true);
+        linkpath_edit->setVisible(true);
         //Open a dialog window to let the user select the data he wants to link
     }
 }
 void QDisplayDataInfoWidget::linkEdited()
 {
-    std::cerr << "linkEdited " << linkpath_edit->text().ascii() << std::endl;
-    data->setParent(linkpath_edit->text().ascii() );
+    std::cerr << "linkEdited " << linkpath_edit->text().toStdString() << std::endl;
+    data->setParent(linkpath_edit->text().toStdString() );
 }
 
 void QDisplayDataInfoWidget::formatHelperString(const std::string& helper, std::string& final_text)

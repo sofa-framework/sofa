@@ -41,15 +41,11 @@
 #include <sofa/helper/system/FileRepository.h>
 
 #include "RealGUI.h"
-#ifdef SOFA_QT4
+
 #include <QToolTip>
 #include <QInputDialog>
 #include <QHBoxLayout>
-#else
-#include <qtooltip.h>
-#include <qinputdialog.h>
-#include <qlayout.h>
-#endif
+
 
 using namespace sofa::simulation;
 using namespace sofa::component::misc;
@@ -64,7 +60,9 @@ namespace qt
 
 QSofaRecorder::QSofaRecorder(QWidget* parent):QWidget(parent)
 {
-    QHBoxLayout* layout = new QHBoxLayout(this,0,0);
+    QHBoxLayout* layout = new QHBoxLayout(this);
+    layout->setMargin(0);
+    layout->setSpacing(0);
     timerStep = new QTimer(parent);
 
     fpsLabel = new QLabel ( "9999.9 FPS", this );
@@ -80,20 +78,20 @@ QSofaRecorder::QSofaRecorder(QWidget* parent):QWidget(parent)
     initialTime = new QLabel( "Init:", this);
     initialTime->setMinimumSize( initialTime->sizeHint() );
     layout->addWidget(initialTime);
-    record                 = new QPushButton( this, "Record");
-    record->setToggleButton(true);
-    record->setOn(false);
+    record                 = new QPushButton( "Record", this);
+    record->setCheckable(true);
+    record->setChecked(false);
     layout->addWidget(record);
-    backward               = new QPushButton( this, "Backward");
+    backward               = new QPushButton( "Backward", this);
     layout->addWidget(backward);
-    stepbackward           = new QPushButton( this, "Step Backward");
+    stepbackward           = new QPushButton( "Step Backward", this );
     layout->addWidget(stepbackward);
-    playforward            = new QPushButton( this, "Play Forward");
-    playforward->setToggleButton(true);
+    playforward            = new QPushButton( "Play Forward", this);
+    playforward->setCheckable(true);
     layout->addWidget(playforward);
-    stepforward            = new QPushButton( this, "Step Forward");
+    stepforward            = new QPushButton( "Step Forward", this);
     layout->addWidget(stepforward);
-    forward                = new QPushButton( this, "Forward");
+    forward                = new QPushButton( "Forward", this);
     layout->addWidget(forward);
 
     timeRecord = new QLabel("T=",this);
@@ -101,23 +99,29 @@ QSofaRecorder::QSofaRecorder(QWidget* parent):QWidget(parent)
     loadRecordTime = new QLineEdit(this);
     loadRecordTime->setMaximumSize(QSize(75, 100));
     layout->addWidget(loadRecordTime);
-    timeSlider = new QSlider( Qt::Horizontal, this, "Time Slider");
-    timeSlider->setTickmarks(QSlider::Both);
-    timeSlider->setMinValue(0);
-    timeSlider->setMaxValue(0);
+    timeSlider = new QSlider( Qt::Horizontal,this);
+    timeSlider->setWindowTitle("Time Slider");
+    timeSlider->setTickPosition(QSlider::TicksBothSides);
+    timeSlider->setMinimum(0);
+    timeSlider->setMaximum(0);
     layout->addWidget(timeSlider);
 
     finalTime = new QLabel( "End:", this );
     finalTime->setMinimumSize ( finalTime->sizeHint() );
     layout->addWidget(finalTime);
 
-    QToolTip::add(record               , tr( "Record" ) );
-    QToolTip::add(backward      , tr( "Load Initial Time" ) );
-    QToolTip::add(stepbackward  , tr( "Make one step backward" ) );
-    QToolTip::add(playforward   , tr( "Continuous play forward" ) );
-    QToolTip::add(stepforward   , tr( "Make one step forward" ) );
-    QToolTip::add(forward       , tr( "Load Final Time" ) );
-
+//    QToolTip::add(record        , tr( "Record" ) );
+//    QToolTip::add(backward      , tr( "Load Initial Time" ) );
+//    QToolTip::add(stepbackward  , tr( "Make one step backward" ) );
+//    QToolTip::add(playforward   , tr( "Continuous play forward" ) );
+//    QToolTip::add(stepforward   , tr( "Make one step forward" ) );
+//    QToolTip::add(forward       , tr( "Load Final Time" ) );
+    record->setToolTip(tr( "Record" ) );
+    backward->setToolTip(tr( "Load Final Time" ) );
+    stepbackward->setToolTip(tr( "Make one step backward" ) );
+    playforward->setToolTip(tr( "Continuous play forward" ) );
+    stepforward->setToolTip(tr( "Make one step forward" ) );
+    forward->setToolTip(tr( "Load Final Time" ) );
 
     RealGUI::SetPixmap("textures/media-record.png", record);
     RealGUI::SetPixmap("textures/media-seek-backward.png", backward);
@@ -179,7 +183,7 @@ void QSofaRecorder::SetSimulation(simulation::Node* root, const std::string& ini
 
     loadRecordTime->setText( QString(initT.c_str()) );
 
-    timeSlider->setMaxValue( (int)((atof(endT.c_str())-atof(initT.c_str()))/(dt)+0.5));
+    timeSlider->setMaximum((int)((atof(endT.c_str())-atof(initT.c_str()))/(dt)+0.5));
 
     addReadState(writeName,true);
 
@@ -193,7 +197,7 @@ void QSofaRecorder::UpdateTime(simulation::Node* root)
     char buf[100];
     sprintf ( buf, "Time: %.3g s", time );
     timeLabel->setText ( buf );
-    if (record->isOn())
+    if (record->isChecked())
     {
         setCurrentTime(time);
         double final_time = getFinalTime();
@@ -201,8 +205,8 @@ void QSofaRecorder::UpdateTime(simulation::Node* root)
         if ((int)(1000*final_time) < (int)(1000*time))
         {
             setFinalTime(time);
-            timeSlider->setMaxValue(timeSlider->maxValue()+1);
-            timeSlider->setValue(timeSlider->maxValue());
+            timeSlider->setMaximum(timeSlider->maximum()+1);
+            timeSlider->setValue(timeSlider->maximum());
         }
         else
         {
@@ -217,8 +221,8 @@ void QSofaRecorder::Clear(simulation::Node* root)
     assert(root);
     float initial_time = root->getTime();
     timeSlider->setValue(0);
-    timeSlider->setMinValue(0);
-    timeSlider->setMaxValue(0);
+    timeSlider->setMinimum(0);
+    timeSlider->setMaximum(0);
     setInitialTime(initial_time);
     setFinalTime(initial_time);
     setCurrentTime(initial_time);
@@ -282,7 +286,7 @@ void QSofaRecorder::slot_recordSimulation(bool value)
         }
         else
         {
-            record->setOn ( false );
+            record->setCheckable( false );
             return;
         }
 
@@ -292,13 +296,13 @@ void QSofaRecorder::slot_recordSimulation(bool value)
         //Halt the simulation.
         emit RecordSimulation(false);
         //Save simulation file
-        std::string FileName(((RealGUI*)(qApp->mainWidget()))->windowFilePath().ascii());
+        std::string FileName(((RealGUI*)(QApplication::topLevelWidgets()[0]))->windowFilePath().toStdString());
         std::string simulationFileName = simulationBaseName_ + ".simu";
         std::ofstream out(simulationFileName.c_str());
 
         if (!out.fail())
         {
-            out << sofa::helper::system::DataRepository.getFile ( FileName ) << " " << initialTime->text().ascii() << " " << finalTime->text().ascii() << " " << root->getDt() << " baseName: "<<writeSceneName_;
+            out << sofa::helper::system::DataRepository.getFile ( FileName ) << " " << initialTime->text().toStdString() << " " << finalTime->text().toStdString() << " " << root->getDt() << " baseName: "<<writeSceneName_;
             out.close();
         }
         std::cout << "Simulation parameters saved in "<<simulationFileName<<std::endl;
@@ -313,17 +317,17 @@ void QSofaRecorder::slot_recordSimulation(bool value)
 }
 void QSofaRecorder::slot_backward()
 {
-    if (timeSlider->value() != timeSlider->minValue())
+    if (timeSlider->value() != timeSlider->minimum())
     {
         setCurrentTime(getInitialTime());
-        slot_sliderValue(timeSlider->minValue());
+        slot_sliderValue(timeSlider->minimum());
         loadSimulation();
     }
 }
 void QSofaRecorder::slot_stepbackward()
 {
     assert(root);
-    playforward->setOn(false);
+    playforward->setCheckable(false);
     double init_time  = getInitialTime();
     double time = getCurrentTime() - root->getDt();
     if (time < init_time) time = init_time;
@@ -333,11 +337,11 @@ void QSofaRecorder::slot_stepbackward()
 }
 void QSofaRecorder::slot_playforward()
 {
-    if (playforward->isOn() )
+    if (playforward->isChecked() )
     {
-        if (timeSlider->value() == timeSlider->maxValue())
+        if (timeSlider->value() == timeSlider->maximum())
         {
-            playforward->setOn(false);
+            playforward->setChecked(false);
         }
         else
         {
@@ -356,7 +360,7 @@ void QSofaRecorder::slot_playforward()
 void QSofaRecorder::slot_stepforward()
 {
     assert(root);
-    if (timeSlider->value() != timeSlider->maxValue())
+    if (timeSlider->value() != timeSlider->maximum())
     {
         setCurrentTime(getCurrentTime() + root->getDt());
         slot_loadrecord_timevalue(false);
@@ -364,10 +368,10 @@ void QSofaRecorder::slot_stepforward()
 }
 void QSofaRecorder::slot_forward()
 {
-    if (timeSlider->value() != timeSlider->maxValue())
+    if (timeSlider->value() != timeSlider->maximum())
     {
         setCurrentTime(getFinalTime());
-        slot_sliderValue(timeSlider->maxValue());
+        slot_sliderValue(timeSlider->maximum());
         loadSimulation();
     }
 
@@ -379,21 +383,21 @@ void QSofaRecorder::slot_loadrecord_timevalue(bool updateTime)
     double final_time = getFinalTime();
     double current_time = getCurrentTime();
 
-    int value = (int)((current_time-init_time)/((float)(final_time-init_time))*timeSlider->maxValue());
+    int value = (int)((current_time-init_time)/((float)(final_time-init_time))*timeSlider->maximum());
 
-    if (value > timeSlider->minValue())
+    if (value > timeSlider->minimum())
         slot_sliderValue(value, updateTime);
-    else if ( value < timeSlider->maxValue())
+    else if ( value < timeSlider->maximum())
         slot_sliderValue(value, updateTime);
-    else if (!updateTime && value == timeSlider->maxValue())
+    else if (!updateTime && value == timeSlider->maximum())
         slot_sliderValue(value, updateTime);
-    else if (value <= timeSlider->minValue())
-        slot_sliderValue(timeSlider->minValue());
+    else if (value <= timeSlider->minimum())
+        slot_sliderValue(timeSlider->minimum());
 
     if (current_time >= final_time)
     {
-        playforward->setOn(false);
-        slot_sliderValue(timeSlider->maxValue());
+        playforward->setChecked(false);
+        slot_sliderValue(timeSlider->maximum());
         setCurrentTime(final_time);
         slot_playforward();
     }
@@ -401,9 +405,9 @@ void QSofaRecorder::slot_loadrecord_timevalue(bool updateTime)
 void QSofaRecorder::loadSimulation(bool one_step )
 {
     assert(root);
-    if (timeSlider->maxValue() == 0)
+    if (timeSlider->maximum() == 0)
     {
-        playforward->setOn(false);
+        playforward->setChecked(false);
         return;
     }
 
@@ -437,14 +441,14 @@ void QSofaRecorder::slot_sliderValue(int value, bool updateTime)
     double final_time  = getFinalTime();
     if (updateTime)
     {
-        double time = init_time + value/((float)timeSlider->maxValue())*(final_time-init_time);
+        double time = init_time + value/((float)timeSlider->maximum())*(final_time-init_time);
         setCurrentTime(time);
     }
     if (timeSlider->value() != value)
     {
         timeSlider->setValue(value);
         timeSlider->update();
-        if(! this->record->isOn())
+        if(! this->record->isChecked())
             loadSimulation();
     }
 }
@@ -476,17 +480,17 @@ bool QSofaRecorder::querySimulationName()
 
     std::string dir;
     bool ok;
-    std::string filename(((RealGUI*)(qApp->mainWidget()))->windowFilePath().ascii());
+    std::string filename(((RealGUI*)(QApplication::topLevelWidgets()[0]))->windowFilePath().toStdString());
     const std::string &parentDir=sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
     if (parentDir.empty()) dir = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + "/";
     else dir = parentDir + "/";
 
-    QString text = QInputDialog::getText("Record Simulation", "Enter the name of your simulation:", QLineEdit::Normal,
-            QString::null, &ok, this );
+    QString text = QInputDialog::getText(this, "Record Simulation", "Enter the name of your simulation:", QLineEdit::Normal,
+            QString::null, &ok);
     if (ok && !text.isEmpty() )
     {
-        simulationBaseName_ = dir +  text.ascii();
-        writeSceneName_ = record_directory + text.ascii();
+        simulationBaseName_ = dir +  text.toStdString();
+        writeSceneName_ = record_directory + text.toStdString();
         return true;
     }
     else

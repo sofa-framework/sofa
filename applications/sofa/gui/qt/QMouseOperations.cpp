@@ -29,22 +29,11 @@
 #include <SofaGraphComponent/AttachBodyButtonSetting.h>
 #include <SofaGraphComponent/AddRecordedCameraButtonSetting.h>
 
-#ifdef SOFA_QT4
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QLabel>
 
-/*#include <QRadioButton>
-#include <QPushButton>*/
-#else
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qgroupbox.h>
-#include <qcombobox.h>
-/*#include <qradiobutton.h>
-#include <qpushbutton.h>*/
-#endif
 
 namespace sofa
 {
@@ -218,7 +207,10 @@ QInciseOperation::QInciseOperation()
     QHBoxLayout *slider1=new QHBoxLayout();
     QLabel *label1=new QLabel(QString("Distance to snap from border (in %)"), this);
     snapingBorderSlider=new QSlider(Qt::Horizontal, this);
-    snapingBorderValue=new QSpinBox(0,100,1,this);
+    snapingBorderValue=new QSpinBox(this);
+    snapingBorderValue->setMinimum(0);
+    snapingBorderValue->setMaximum(100);
+    snapingBorderValue->setSingleStep(1);
     snapingBorderValue->setEnabled(true);
 
     slider1->addWidget (label1);
@@ -230,7 +222,10 @@ QInciseOperation::QInciseOperation()
     QHBoxLayout *slider2=new QHBoxLayout();
     QLabel *label2=new QLabel(QString("Distance to snap along path (in %)"), this);
     snapingSlider=new QSlider(Qt::Horizontal, this);
-    snapingValue=new QSpinBox(0,100,1,this);
+    snapingValue=new QSpinBox(this);
+    snapingBorderValue->setMinimum(0);
+    snapingBorderValue->setMaximum(100);
+    snapingBorderValue->setSingleStep(1);
     snapingValue->setEnabled(true);
     snapingBorderValue->setValue(0);
 
@@ -263,7 +258,7 @@ QInciseOperation::QInciseOperation()
 
 void QInciseOperation::setEnableBox(bool i)
 {
-    advancedOptions->setShown(i);
+    advancedOptions->setVisible(i);
 }
 
 void QInciseOperation::setFinishIncision(bool i)
@@ -311,8 +306,8 @@ QTopologyOperation::QTopologyOperation()
     QHBoxLayout *HLayout1 = new QHBoxLayout();
     QLabel *label1=new QLabel(QString("Topological operation: "), this);
     operationChoice = new QComboBox(this);
-    operationChoice->insertItem("Remove one element");
-    operationChoice->insertItem("Remove a zone of elements");
+    operationChoice->addItem("Remove one element");
+    operationChoice->addItem("Remove a zone of elements");
 
     HLayout1->addWidget (label1);
     HLayout1->addWidget (operationChoice);
@@ -340,7 +335,10 @@ QTopologyOperation::QTopologyOperation()
 
     QLabel *label3=new QLabel(QString("Selector scale: "), this);
     scaleSlider = new QSlider (Qt::Horizontal, this);
-    scaleValue = new QSpinBox(0,100,1,this);
+    scaleValue = new QSpinBox(this);
+    scaleValue->setMinimum(0);
+    scaleValue->setMaximum(100);
+    scaleValue->setSingleStep(1);
     scaleValue->setEnabled(true);
 
     HLayout3->addWidget (label3);
@@ -370,11 +368,7 @@ double QTopologyOperation::getScale() const
 
 int QTopologyOperation::getTopologicalOperation() const
 {
-#ifdef SOFA_QT4
     return operationChoice->currentIndex();
-#else
-    return operationChoice->currentItem();
-#endif
 }
 
 bool QTopologyOperation::getVolumicMesh() const
@@ -427,12 +421,14 @@ QAddSutureOperation::QAddSutureOperation()
 
 double QAddSutureOperation::getStiffness() const
 {
-    return atof(stiffness->displayText().ascii());
+    return stiffness->displayText().toDouble();
+    //return atof(stiffness->displayText().toStdString().c_str());
 }
 
 double QAddSutureOperation::getDamping() const
 {
-    return atof(damping->displayText().ascii());
+    return damping->displayText().toDouble();
+    //return atof(damping->displayText().toStdString());
 }
 
 //*******************************************************************************************

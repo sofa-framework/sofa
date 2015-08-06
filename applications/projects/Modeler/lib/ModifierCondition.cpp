@@ -47,7 +47,7 @@ QNamingModifierCondition::QNamingModifierCondition(QWidget *parent):QWidget(pare
     activated = new QCheckBox(QString("Data name is "),this);
     criteriaSelector = new QComboBox(this);
     criteriaList << QString("Equal") << QString("Different");
-    criteriaSelector->insertStringList (criteriaList);
+    criteriaSelector->addItems(criteriaList);
     entryName = new QLineEdit(this);
 
 
@@ -61,7 +61,7 @@ bool QNamingModifierCondition::verify(core::objectmodel::Base* c, core::objectmo
     if (!isActive()) return true;
 
     const std::string componentName=c->getName();
-    const std::string criteria=criteriaSelector->currentText().ascii();
+    const std::string criteria=criteriaSelector->currentText().toStdString();
     if (criteria == std::string("Equal"))
         return (componentName == getValue());
     else
@@ -78,7 +78,7 @@ QValueModifierCondition::QValueModifierCondition(QWidget *parent):QWidget(parent
     activated = new QCheckBox(QString("Value is "),this);
     criteriaSelector = new QComboBox(this);
     criteriaList << QString("!=") << QString(">") << QString(">=") << QString("<") << QString("<=");
-    criteriaSelector->insertStringList (criteriaList);
+    criteriaSelector->addItems(criteriaList);
 
     value = new QLineEdit(this);
 
@@ -93,7 +93,7 @@ bool QValueModifierCondition::verify(core::objectmodel::Base* /*c*/, core::objec
     if (!isActive()) return true;
 
     const std::string dataValue=d->getValueString();
-    const std::string criteria=criteriaSelector->currentText().ascii();
+    const std::string criteria=criteriaSelector->currentText().toStdString();
 
     if (criteria == std::string("!="))
         return (dataValue != getValue());

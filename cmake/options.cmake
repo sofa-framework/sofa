@@ -54,7 +54,19 @@ endif()
 ### the ENV{QTDIR} MUST BE DEFINED in order to find Qt (giving a path in find_package does not work)
 sofa_option(SOFA-EXTERNAL_QT_PATH PATH "${QTDIR}" "Qt dir path")
 sofa_option(SOFA-EXTERNAL_QT5_PATH PATH "${QTDIR}" "Qt5 dir path")
-list(APPEND compilerDefines SOFA_QT4)
+
+#Test if QT5 is present
+find_package(Qt5 OPTIONAL_COMPONENTS Core QUIET HINTS ${SOFA-EXTERNAL_QT5_PATH})
+if(Qt5Core_FOUND)
+        message("Detected : Qt-${Qt5Core_VERSION_STRING}")
+else()
+        find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml qtnetwork QUIET ${SOFA-EXTERNAL_QT_PATH})
+        if(Qt4_FOUND)
+            message("Detected : Qt-${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
+        else()
+            message("No supported version of Qt has been found.")
+        endif()     
+endif()
 
 ## boost
 set(MINIBOOST_PATH "${SOFA_EXTLIBS_DIR}/miniBoost")

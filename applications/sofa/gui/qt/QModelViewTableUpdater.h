@@ -47,17 +47,10 @@ class QTableViewUpdater : public QTableView
     Q_OBJECT
 
 public:
-    QTableViewUpdater (QWidget * parent = 0):
-        QTableView(parent)
-    {
-        setAutoFillBackground(true);
-    };
+    QTableViewUpdater (QWidget * parent = 0);
 
 public slots:
-    void setDisplayed(bool b)
-    {
-        this->setShown(b);
-    }
+    void setDisplayed(bool b);
 
 };
 
@@ -66,57 +59,12 @@ class QTableModelUpdater : public QStandardItemModel
     Q_OBJECT
 
 public:
-    QTableModelUpdater ( int numRows, int numCols, QWidget * parent = 0, const char * /*name*/ = 0 ):
-        QStandardItemModel(numRows, numCols, parent)
-    {};
-public slots:
-    void resizeTableV( int number )
-    {
-        QSpinBox *spinBox = (QSpinBox *) sender();
-        QString header;
-        if( spinBox == NULL)
-        {
-            return;
-        }
-        if (number != rowCount())
-        {
-            int previousRows=rowCount();
-            setRowCount(number);
-            if (number > previousRows)
-            {
-                for (int i=previousRows; i<number; ++i)
-                {
-                    QStandardItem* header=verticalHeaderItem(i);
-                    if (!header) setVerticalHeaderItem(i, new QStandardItem(QString::number(i)));
-                    else header->setText(QString::number(i));
-                }
-            }
-        }
-    }
+    QTableModelUpdater ( int numRows, int numCols, QWidget * parent = 0, const char * /*name*/ = 0 );
 
-    void resizeTableH( int number )
-    {
-        QSpinBox *spinBox = (QSpinBox *) sender();
-        QString header;
-        if( spinBox == NULL)
-        {
-            return;
-        }
-        if (number != columnCount())
-        {
-            int previousColumns=columnCount();
-            setColumnCount(number);
-            if (number > previousColumns)
-            {
-                for (int i=previousColumns; i<number; ++i)
-                {
-                    QStandardItem* header=horizontalHeaderItem(i);
-                    if (!header) setHorizontalHeaderItem(i, new QStandardItem(QString::number(i)));
-                    else header->setText(QString::number(i));
-                }
-            }
-        }
-    }
+public slots:
+    void resizeTableV( int number );
+
+    void resizeTableH( int number );
 };
 
 }

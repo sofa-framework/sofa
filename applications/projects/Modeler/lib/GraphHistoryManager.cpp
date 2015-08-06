@@ -132,7 +132,7 @@ void GraphHistoryManager::undoOperation(Operation &o)
         const std::string &modifDone=setComponentState(o.sofaComponent.get(), o.info);
         QString name=QString(o.sofaComponent->getClassName().c_str()) + QString(" ") + QString(o.sofaComponent->getName().c_str());
         graph->graphListener->items[o.sofaComponent.get()]->setText(0, name);
-        graph->setSelected(graph->graphListener->items[o.sofaComponent.get()],true);
+        graph->setItemSelected(graph->graphListener->items[o.sofaComponent.get()],true);
         message=std::string("Undo Modifications on OBJECT ") + " (" + o.sofaComponent->getClassName() + ") " + o.sofaComponent->getName() + " | " + modifDone;
         emit displayMessage(message);
         o.info=previousState;
@@ -144,7 +144,7 @@ void GraphHistoryManager::undoOperation(Operation &o)
         const std::string &modifDone=setComponentState(o.sofaComponent.get(), o.info);
         QString name=QString(o.sofaComponent->getName().c_str());
         graph->graphListener->items[o.sofaComponent.get()]->setText(0, name);
-        graph->setSelected(graph->graphListener->items[o.sofaComponent.get()],true);
+        graph->setItemSelected(graph->graphListener->items[o.sofaComponent.get()],true);
         message=std::string("Undo Modifications on NODE ") + o.sofaComponent->getName() + " | " + modifDone;
         emit displayMessage(message);
         o.info=previousState;

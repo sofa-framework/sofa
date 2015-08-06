@@ -35,8 +35,9 @@ namespace gui
 
 namespace qt
 {
-QComponentTreeLibrary::QComponentTreeLibrary(QWidget *parent, QTreeWidgetItem* category, const std::string &componentN, const std::string &categoryN, ClassEntry::SPtr e, const std::vector< std::string > &exampleFiles): QWidget(parent, componentN.c_str()), ComponentLibrary(componentN,categoryN,e, exampleFiles)
+QComponentTreeLibrary::QComponentTreeLibrary(QWidget *parent, QTreeWidgetItem* category, const std::string &componentN, const std::string &categoryN, ClassEntry::SPtr e, const std::vector< std::string > &exampleFiles): QWidget(parent), ComponentLibrary(componentN,categoryN,e, exampleFiles)
 {
+    setObjectName(componentN.c_str());
     //Create Tree component
     tree=(QTreeWidget*) parent;
     componentTree = new QTreeWidgetItem( category, QTreeWidgetItem::UserType );
@@ -50,7 +51,7 @@ QComponentTreeLibrary::QComponentTreeLibrary(QWidget *parent, QTreeWidgetItem* c
 
     //Add Documentation tool tip
     std::string tooltipText = entry->description.substr(0, entry->description.size()-1);
-    QToolTip::add(label, tooltipText.c_str());
+    label->setToolTip(QString(tooltipText.c_str()));
 }
 
 QComponentTreeLibrary::~QComponentTreeLibrary()
@@ -71,7 +72,7 @@ void QComponentTreeLibrary::endConstruction()
     tree->setItemWidget(componentTree,1,templates);
     for (unsigned int i=0; i<templateName.size(); ++i)
     {
-        templates->insertItem(QString(templateName[i].c_str()));
+        templates->addItem(QString(templateName[i].c_str()));
     }
 }
 
@@ -86,7 +87,7 @@ void QComponentTreeLibrary::setDisplayed(bool b)
 void QComponentTreeLibrary::componentPressed()
 {
     std::string tName;
-    if (!templateName.empty()) tName = templates->currentText().ascii();
+    if (!templateName.empty()) tName = templates->currentText().toStdString();
 
     emit( componentDragged( description, tName, entry));
     label->setDown(false);

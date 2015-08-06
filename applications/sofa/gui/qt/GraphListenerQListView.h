@@ -23,22 +23,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef GRAPHLISTENERQLISTVIEW_H
-#define GRAPHLISTENERQLISTVIEW_H
+#ifndef GRAPHLISTENERQTreeWidget_H
+#define GRAPHLISTENERQTreeWidget_H
 
 
 #include "SofaGUIQt.h"
 
-#ifdef SOFA_QT4
-#include <Q3ListViewItem>
-#include <Q3ListView>
-#include <QWidget>
-#else
-#include <qlistview.h>
-#include <qimage.h>
-typedef QListViewItem Q3ListViewItem;
-typedef QListView Q3ListView;
-#endif
+#include <QAbstractItemView>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
@@ -63,20 +57,21 @@ QPixmap* getPixmap(core::objectmodel::Base* obj);
 class SOFA_SOFAGUIQT_API GraphListenerQListView : public MutationListener
 {
 public:
-    Q3ListView* widget;
+    //Q3ListView* widget;
+    QTreeWidget* widget;
     bool frozen;
-    std::map<core::objectmodel::Base*, Q3ListViewItem* > items;
-    std::map<core::objectmodel::BaseData*, Q3ListViewItem* > datas;
-    std::multimap<Q3ListViewItem *, Q3ListViewItem*> nodeWithMultipleParents;
+    std::map<core::objectmodel::Base*, QTreeWidgetItem* > items;
+    std::map<core::objectmodel::BaseData*, QTreeWidgetItem* > datas;
+    std::multimap<QTreeWidgetItem *, QTreeWidgetItem*> nodeWithMultipleParents;
 
-    GraphListenerQListView(Q3ListView* w)
+    GraphListenerQListView(QTreeWidget* w)
         : widget(w), frozen(false)
     {
     }
 
 
     /*****************************************************************************************************************/
-    Q3ListViewItem* createItem(Q3ListViewItem* parent);
+    QTreeWidgetItem* createItem(QTreeWidgetItem* parent);
 
     virtual void addChild(Node* parent, Node* child);
     virtual void removeChild(Node* parent, Node* child);
@@ -92,8 +87,8 @@ public:
     virtual void removeDatas(core::objectmodel::BaseObject* parent);
     virtual void freeze(Node* groot);
     virtual void unfreeze(Node* groot);
-    core::objectmodel::Base* findObject(const Q3ListViewItem* item);
-    core::objectmodel::BaseData* findData(const Q3ListViewItem* item);
+    core::objectmodel::Base* findObject(const QTreeWidgetItem* item);
+    core::objectmodel::BaseData* findData(const QTreeWidgetItem* item);
 
 };
 

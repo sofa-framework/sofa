@@ -41,14 +41,16 @@ namespace gui
 namespace qt
 {
 
-SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):QMainWindow(parent, name), tutorialList(0)
+SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name)
+    :QMainWindow(parent), tutorialList(0)
 {
+    this->setObjectName(name);
 
     QWidget *mainWidget = new QWidget(this);
     QGridLayout *mainLayout = new QGridLayout(mainWidget);
     this->setCentralWidget(mainWidget);
-    this->setAcceptDrops(TRUE);
-    this->setCaption(QString("Sofa Tutorials"));
+    this->setAcceptDrops(true);
+    this->setWindowTitle(QString("Sofa Tutorials"));
 
     //Add list of tutorials
     tutorialList = new QComboBox(mainWidget);
@@ -99,16 +101,18 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):QMai
     const std::list<std::string> &listTuto=selector->getCategories();
     for (std::list<std::string>::const_reverse_iterator it=listTuto.rbegin(); it!=listTuto.rend(); ++it)
     {
-        tutorialList->insertItem(QString(it->c_str()));
+        tutorialList->addItem(QString(it->c_str()));
     }
     connect(tutorialList, SIGNAL(activated(const QString&)), selector, SLOT(openCategory(const QString &)));
 
     //Select All Sofa Tutorials as selected set
-    tutorialList->setCurrentItem(tutorialList->count()-1);
+    tutorialList->setCurrentIndex(tutorialList->count()-1);
 
 
     this->resize(1000,600);
-    this->setPaletteBackgroundColor(QColor(255,180,120));
+    QPalette p ;
+    p.setColor(QPalette::Base, QColor(255,180,120));
+    this->setPalette(p);
     QString pathIcon=(sofa::helper::system::DataRepository.getFirstPath() + std::string( "/icons/SOFATUTORIALS.png" )).c_str();
     this->setWindowIcon(QIcon(pathIcon));
 }
@@ -176,7 +180,7 @@ void SofaTutorialManager::openCategory(const std::string& filename)
 
 void SofaTutorialManager::dynamicChangeOfScene( const QUrl& u)
 {
-    std::string path=u.path().ascii();
+    std::string path=u.path().toStdString();
 #ifdef WIN32
     path = path.substr(1);
 #endif
@@ -196,7 +200,7 @@ void SofaTutorialManager::dynamicChangeOfScene( const QUrl& u)
 void SofaTutorialManager::keyPressEvent ( QKeyEvent * e )
 {
 
-    if (e->state() == Qt::ControlButton )
+    if (e->modifiers() == Qt::ControlModifier )
     {
         switch(e->key())
         {

@@ -50,7 +50,8 @@ namespace qt
 
 GlobalModification::GlobalModification(const InternalStorage &c, GraphHistoryManager* h): components(c), historyManager(h)
 {
-    setCaption(QString("Global Modifications"));
+    this->setWindowTitle(QString("Global Modifications"));
+    //setCaption(QString("Global Modifications"));
 
 
     helper::set< std::string > allNames;
@@ -95,7 +96,7 @@ GlobalModification::GlobalModification(const InternalStorage &c, GraphHistoryMan
     dataNameSelector->setEditable(true);
     dataNameSelector->setAutoCompletion(true);
 
-    dataNameSelector->insertStringList(listDataName);
+    dataNameSelector->addItems(listDataName);
     dataNameSelector->setCompleter(new QCompleter(listDataName,dataNameSelector));
 
     nameLayout->addWidget(new QLabel(QString("Select the Data to modify"),dataNameWidget));
@@ -192,16 +193,16 @@ void GlobalModification::applyGlobalModification()
 
 
     QString name=dataNameSelector->currentText();
-    if (list->find(name) == list->end())
+    if (!list->contains(name))
     {
-        const std::string message="Data " + std::string(name.ascii()) + " does not exist!";
+        const std::string message="Data " + std::string(name.toStdString()) + " does not exist!";
         emit displayMessage(message);
         close();
         return;
     }
 
-    std::string n=name.ascii();
-    std::string v=valueModifier->text().ascii();
+    std::string n=name.toStdString();
+    std::string v=valueModifier->text().toStdString();
 
     for (InternalStorage::const_iterator it=components.begin(); it!=components.end(); ++it)
     {
@@ -241,9 +242,10 @@ void GlobalModification::useAliases(bool b)
 
     if (dataNameSelector->completer()) delete dataNameSelector->completer();
     dataNameSelector->setCompleter(new QCompleter(*list,dataNameSelector));
-    dataNameSelector->insertStringList(*list);
+    dataNameSelector->addItems(*list);
 
-    dataNameSelector->setCurrentText(currentText);
+    int index = dataNameSelector->findText(currentText);
+    dataNameSelector->setCurrentIndex(index);
 }
 
 }

@@ -367,7 +367,7 @@ bool SofaViewer::mouseEvent(QMouseEvent *e)
     mousepos.x      = e->x();
     mousepos.y      = e->y();
 
-    if (e->state() & Qt::ShiftButton)
+    if (e->modifiers() & Qt::ShiftModifier)
     {
 
         getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());

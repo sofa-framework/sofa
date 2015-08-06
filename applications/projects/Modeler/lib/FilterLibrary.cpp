@@ -50,7 +50,7 @@ bool FilterQuery::isValid( const ComponentLibrary* component) const
         const QString componentName(component->getName().c_str());
         for (unsigned int i=0; i<components.size(); ++i)
         {
-            if (!componentName.contains(components[i],false)) return false;
+            if (!componentName.contains(components[i],Qt::CaseInsensitive)) return false;
         }
     }
 
@@ -64,7 +64,7 @@ bool FilterQuery::isValid( const ComponentLibrary* component) const
             const QString currentTemplate(componentTemplates[t].c_str());
             for (unsigned int i=0; i<templates.size(); ++i)
             {
-                if (currentTemplate.contains(templates[i],false)) { templateFound=true; break;}
+                if (currentTemplate.contains(templates[i],Qt::CaseInsensitive)) { templateFound=true; break;}
             }
         }
         if (!templateFound) return false;
@@ -76,7 +76,7 @@ bool FilterQuery::isValid( const ComponentLibrary* component) const
         const QString componentLicense(component->getEntry()->license.c_str());
         for (unsigned int i=0; i<licenses.size(); ++i)
         {
-            if (!componentLicense.contains(licenses[i],false)) return false;
+            if (!componentLicense.contains(licenses[i],Qt::CaseInsensitive)) return false;
         }
     }
 
@@ -86,7 +86,7 @@ bool FilterQuery::isValid( const ComponentLibrary* component) const
         const QString componentAuthor(component->getEntry()->authors.c_str());
         for (unsigned int i=0; i<authors.size(); ++i)
         {
-            if (!componentAuthor.contains(authors[i],false)) return false;
+            if (!componentAuthor.contains(authors[i],Qt::CaseInsensitive)) return false;
         }
     }
 
@@ -136,12 +136,12 @@ To Use the filter: \n\
 \t* for the authors, enter \"author:\" before\n\
 Between two filters, put a 'space'");
 
-    QToolTip::add( this, help.c_str());
+    this->setToolTip(QString(help.c_str()));
 }
 
 void FilterLibrary::searchText(const QString &text)
 {
-    const std::string textString(text.ascii());
+    const std::string textString(text.toStdString());
     FilterQuery query(textString);
     emit( filterList(query) );
 }

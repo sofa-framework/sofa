@@ -28,23 +28,12 @@
 #include <sofa/gui/qt/SofaGUIQt.h>
 #include <sofa/helper/vector.h>
 
-#ifdef SOFA_QT4
 #include <QLabel>
 #include <QWidget>
-#include <Q3ListView>
-#include <Q3ListViewItem>
-#include <Q3Header>
-#else
-#include <qlabel.h>
-#include <qwidget.h>
-#include <qlistview.h>
-#include <qheader.h>
-#endif
-
-#ifndef SOFA_QT4
-typedef QListView Q3ListView;
-typedef QListViewItem Q3ListViewItem;
-#endif
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+#include <QHeaderView>
+#include <QListView>
 
 namespace sofa
 {
@@ -74,10 +63,10 @@ public:
     void CreateStats(sofa::simulation::Node* root);
 protected:
     QLabel* statsLabel;
-    Q3ListView* statsCounter;
+    QTreeWidget* statsCounter;
     void addSummary();
     void addCollisionModelsStat(const sofa::helper::vector< sofa::core::CollisionModel* >& v);
-    std::vector<std::pair<core::objectmodel::Base*, Q3ListViewItem*> > items_stats;
+    std::vector<std::pair<core::objectmodel::Base*, QTreeWidgetItem*> > items_stats;
 
 };
 } //qt

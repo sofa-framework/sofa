@@ -27,21 +27,14 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef SOFA_QT4
+
 #include <QWidget>
 #include <QPushButton>
 #include <QSlider>
 #include <QLineEdit>
 #include <QLabel>
 #include <QTimer>
-#else
-#include <qwidget.h>
-#include <qpushbutton.h>
-#include <qslider.h>
-#include <qlineedit.h>
-#include <qlabel.h>
-#include <qtimer.h>
-#endif
+
 
 namespace sofa
 {
@@ -73,19 +66,19 @@ public:
 
     inline double getInitialTime() const
     {
-        std::string init_time = initialTime->text().ascii();
+        std::string init_time = initialTime->text().toStdString();
         init_time.resize(init_time.size()-2);
         return fabs(atof((init_time.substr(6)).c_str()));
     }
     inline double getFinalTime() const
     {
-        std::string final_time = finalTime->text().ascii();
+        std::string final_time = finalTime->text().toStdString();
         final_time.resize(final_time.size()-2);
         return fabs(atof((final_time.substr(5)).c_str()));
     }
     inline double getCurrentTime() const
     {
-        return fabs(atof(loadRecordTime->text().ascii()));
+        return fabs(loadRecordTime->text().toDouble());
     }
 
     QLabel *getTimeLabel() {return timeLabel;};

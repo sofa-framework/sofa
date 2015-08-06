@@ -28,12 +28,8 @@
 #include "SofaGUIQt.h"
 #include <vector>
 
-#ifdef SOFA_QT4
-#include <Q3FileDialog>
 #include <QFileDialog>
-#else
-#include <qfiledialog.h>
-#endif
+
 
 namespace sofa
 {
@@ -44,10 +40,6 @@ namespace gui
 namespace qt
 {
 
-
-#ifndef SOFA_QT4
-typedef QFileDialog Q3FileDialog;
-#endif
 
 QString SOFA_SOFAGUIQT_API getExistingDirectory ( QWidget* parent, const QString & dir = QString(), const char * name = 0, const QString & caption = QString() );
 

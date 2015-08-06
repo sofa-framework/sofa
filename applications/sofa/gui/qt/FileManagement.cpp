@@ -33,49 +33,30 @@ namespace gui
 namespace qt
 {
 
-
-#ifndef SOFA_QT4
-typedef QFileDialog Q3FileDialog;
-#include <qdir.h>
-#include <qfileinfo.h>
-#else
 #include <QDir>
-#endif
 
 QString getExistingDirectory ( QWidget* parent, const QString & dir, const char * name, const QString & caption)
 {
-#ifdef SOFA_QT4
     QFileDialog::Options options = QFileDialog::ShowDirsOnly;
     //	options |= QFileDialog::DontUseNativeDialog;
     options |= QFileDialog::DontUseSheet;
     return QFileDialog::getExistingDirectory ( parent, name?QString(name):caption, dir, options );
-#else
-    return Q3FileDialog::getExistingDirectory( dir, parent, name, caption );
-#endif
 }
 
 QString getOpenFileName ( QWidget* parent, const QString & startWith, const QString & filter, const char * name, const QString & caption, QString * selectedFilter )
 {
-#ifdef SOFA_QT4
     QFileDialog::Options options = 0;
     //	options |= QFileDialog::DontUseNativeDialog;
     options |= QFileDialog::DontUseSheet;
     return QFileDialog::getOpenFileName ( parent, name?QString(name):caption, startWith, filter, selectedFilter, options );
-#else
-    return Q3FileDialog::getOpenFileName ( startWith, filter, parent, name, caption, selectedFilter );
-#endif
 }
 
 QString getSaveFileName ( QWidget* parent, const QString & startWith, const QString & filter, const char * name, const QString & caption, QString * selectedFilter )
 {
-#ifdef SOFA_QT4
     QFileDialog::Options options = 0;
     //	options |= QFileDialog::DontUseNativeDialog;
     options |= QFileDialog::DontUseSheet;
     return QFileDialog::getSaveFileName ( parent, name?QString(name):caption, startWith, filter, selectedFilter, options );
-#else
-    return Q3FileDialog::getSaveFileName ( startWith, filter, parent, name, caption, selectedFilter );
-#endif
 }
 
 void getFilesInDirectory( const QString &p, std::vector< QString > &files, bool recursive, const std::vector< QString > &filter )
@@ -83,12 +64,12 @@ void getFilesInDirectory( const QString &p, std::vector< QString > &files, bool 
     QString path=p;
     if (path.endsWith("/"))
     {
-        int slash=path.find('/',-1);
+        int slash=path.indexOf('/',-1);
         path.truncate(slash);
     }
     else if (path.endsWith("\\"))
     {
-        int slash=path.find('\\',-1);
+        int slash=path.indexOf('\\',-1);
         path.truncate(slash);
     }
 
@@ -98,9 +79,7 @@ void getFilesInDirectory( const QString &p, std::vector< QString > &files, bool 
 
     std::vector< QString > subDir;
 
-    const QFileInfoList &listDirectories =
-#ifdef SOFA_QT4
-        d.entryInfoList();
+    const QFileInfoList &listDirectories = d.entryInfoList();
     QStringList filters;
     for (unsigned int i=0; i<filter.size(); ++i)
         filters << filter[i];
@@ -109,44 +88,20 @@ void getFilesInDirectory( const QString &p, std::vector< QString > &files, bool 
     for (int j = 0; j < listDirectories.size(); ++j)
     {
         QFileInfo fileInfo=listDirectories.at(j);
-#else
-        *(d.entryInfoList());
-    QString filters;
-    for (unsigned int i=0; i<filter.size(); ++i)
-        filters+=  filter[i] + QString(" ");
-
-    d.setNameFilter(filters);
-    QFileInfoListIterator itDir( listDirectories );
-    while ( (itDir.current()) != 0 )
-    {
-
-        QFileInfo fileInfo=*(itDir.current());
-#endif
         subDir.push_back(fileInfo.fileName());
-#ifndef SOFA_QT4
-        ++itDir;
-#endif
+
     }
 
     d.setFilter( QDir::Files | QDir::Hidden | QDir::NoSymLinks );
 
     const QFileInfoList &listFiles =
-#ifdef SOFA_QT4
         d.entryInfoList();
     for (int j = 0; j < listFiles.size(); ++j)
     {
         QFileInfo fileInfo=listFiles.at(j);
-#else
-        *(d.entryInfoList());
-    QFileInfoListIterator itFile( listFiles );
-    while ( (itFile.current()) != 0 )
-    {
-        QFileInfo fileInfo=*(itFile.current());
-#endif
+
         files.push_back(path+QString("/")+fileInfo.fileName());
-#ifndef SOFA_QT4
-        ++itFile;
-#endif
+
     }
 
     if (recursive)

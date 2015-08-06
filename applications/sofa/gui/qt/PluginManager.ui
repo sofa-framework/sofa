@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>PluginManager</class>
  <widget class="QDialog" name="PluginManager">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -24,7 +27,7 @@
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
-       <widget class="Q3ListView" name="listPlugins">
+       <widget class="QTreeWidget" name="listPlugins">
         <property name="minimumSize">
          <size>
           <width>416</width>
@@ -37,54 +40,15 @@
         <property name="allColumnsShowFocus">
          <bool>true</bool>
         </property>
-        <property name="showSortIndicator">
+        <property name="showSortIndicator" stdset="0">
          <bool>true</bool>
         </property>
-        <property name="itemMargin">
+        <property name="itemMargin" stdset="0">
          <number>4</number>
         </property>
         <column>
          <property name="text">
-          <string>Name</string>
-         </property>
-         <property name="clickable">
-          <bool>true</bool>
-         </property>
-         <property name="resizable">
-          <bool>true</bool>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>License</string>
-         </property>
-         <property name="clickable">
-          <bool>true</bool>
-         </property>
-         <property name="resizable">
-          <bool>true</bool>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Version</string>
-         </property>
-         <property name="clickable">
-          <bool>true</bool>
-         </property>
-         <property name="resizable">
-          <bool>true</bool>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Location</string>
-         </property>
-         <property name="clickable">
-          <bool>true</bool>
-         </property>
-         <property name="resizable">
-          <bool>true</bool>
+          <string notr="true">1</string>
          </property>
         </column>
        </widget>
@@ -103,34 +67,28 @@
             </widget>
            </item>
            <item>
-            <widget class="Q3TextEdit" name="description">
+            <widget class="QTextEdit" name="description">
              <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="readOnly">
               <bool>true</bool>
              </property>
              <property name="undoRedoEnabled">
               <bool>false</bool>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
           </layout>
          </item>
          <item>
-          <widget class="Q3ListView" name="listComponents">
+          <widget class="QTreeWidget" name="listComponents">
            <property name="enabled">
             <bool>true</bool>
            </property>
            <column>
             <property name="text">
-             <string>Component list</string>
-            </property>
-            <property name="clickable">
-             <bool>true</bool>
-            </property>
-            <property name="resizable">
-             <bool>true</bool>
+             <string notr="true">1</string>
             </property>
            </column>
           </widget>
@@ -207,24 +165,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ListView</class>
-   <extends>Q3Frame</extends>
-   <header>q3listview.h</header>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextEdit</class>
-   <extends>Q3Frame</extends>
-   <header>q3textedit.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>

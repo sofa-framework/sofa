@@ -33,23 +33,14 @@
 #include <sofa/helper/Factory.h>
 
 
-
-#ifdef SOFA_QT4
 #include <QDialog>
 #include <QLineEdit>
-#include <Q3Table>
+#include <QTableWidget>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QRadioButton>
 #include <QButtonGroup>
-#else
-#include <qspinbox.h>
-#include <qdialog.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
-#include <qradiobutton.h>
-#include <qbuttongroup.h>
-#endif // SOFA_QT4
+
 
 
 namespace sofa
@@ -148,7 +139,7 @@ public:
     typedef core::objectmodel::BaseLink MyLink;
 
     LinkWidget(QWidget* parent,const char* name, MyLink* l) :
-        QWidget(parent,name), baseLink(l), dirty(false), counter(-1)
+        QWidget(parent /*,name */), baseLink(l), dirty(false), counter(-1)
     {
     }
     virtual ~LinkWidget() {}

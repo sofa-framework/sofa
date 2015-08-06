@@ -40,15 +40,11 @@
 #include <sofa/helper/OptionsGroup.h>
 
 #include <functional>
-#ifdef SOFA_QT4
+
 #include <QLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QComboBox>
-#else
-#include <qlayout.h>
-#include <qcombobox.h>
-#endif
 
 #if !defined(INFINITY)
 #define INFINITY 9.0e10
@@ -81,12 +77,12 @@ public:
     {
         std::ostringstream o;
         o << d;
-        if (o.str() != w->text().ascii())
+        if (o.str() != w->text().toStdString())
             w->setText(QString(o.str().c_str()));
     }
     static void writeToData(Widget* w, data_type& d)
     {
-        std::string s = w->text().ascii();
+        std::string s = w->text().toStdString();
         std::istringstream i(s);
         i >> d;
     }
@@ -122,13 +118,15 @@ public:
     {
         if(parent->layout() != NULL) return false;
         container_layout = new QHBoxLayout(parent);
+        //parent->setLayout(container_layout);
         return true;
     }
 
     bool createLayout(QLayout* layout)
     {
         if(container_layout) return false;
-        container_layout = new QHBoxLayout(layout);
+        container_layout = new QHBoxLayout();
+        layout->addItem(container_layout);
         return true;
     }
 
@@ -160,7 +158,7 @@ public:
     void insertWidgets()
     {
         assert(w);
-        container_layout->add(w);
+        container_layout->addWidget(w);
     }
 };
 
@@ -233,12 +231,12 @@ public:
     }
     static void readFromData(Widget* w, const data_type& d)
     {
-        if (w->text().ascii() != d)
+        if (w->text().toStdString() != d)
             w->setText(QString(d.c_str()));
     }
     static void writeToData(Widget* w, data_type& d)
     {
-        d = w->text().ascii();
+        d = w->text().toStdString();
     }
     static void setReadOnly(Widget* w, bool readOnly)
     {
@@ -272,7 +270,7 @@ public:
     }
     static void writeToData(Widget* w, data_type& d)
     {
-        d = (data_type) w->isOn();
+        d = (data_type) (w->isChecked());
     }
     static void setReadOnly(Widget* w, bool readOnly)
     {
@@ -297,7 +295,8 @@ public:
     static Widget* create(QWidget* parent, const data_type& /*d*/)
     {
         Widget* w = new Widget(parent, "real");
-		w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
         w->setMinValue( (data_type)-INFINITY );
         w->setMaxValue( (data_type)INFINITY );
         w->setMinimumWidth(20);
@@ -342,7 +341,11 @@ public:
     typedef QSpinBox Widget;
     static Widget* create(QWidget* parent, const data_type& /*d*/)
     {
-        Widget* w = new Widget(vmin, vmax, 1, parent);
+        Widget* w = new Widget(parent);
+        w->setMinimum(vmin);
+        w->setMaximum(vmax);
+        w->setSingleStep(1);
+
 		w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
         return w;
     }
@@ -446,7 +449,8 @@ public:
     bool createLayout(QLayout* layout)
     {
         if(container_layout) return false;
-        container_layout = new QHBoxLayout(layout);
+        container_layout = new QHBoxLayout();
+        layout->addItem(container_layout);
         return true;
     }
 
@@ -484,7 +488,7 @@ public:
         for (int i=0; i<N; ++i)
         {
             assert(w[i].w != NULL);
-            container_layout->add(w[i].w);
+            container_layout->addWidget(w[i].w);
         }
     }
 };
@@ -509,13 +513,14 @@ public:
     bool createLayout(QWidget* parent)
     {
         if( parent->layout() != NULL ) return false;
-        container_layout = new Layout(parent,L,C);
+        container_layout = new Layout(parent /*,L,C */);
         return true;
     }
     bool createLayout(QLayout* layout)
     {
         if(container_layout != NULL ) return false;
-        container_layout = new Layout(layout,L,C);
+        container_layout = new Layout( /*,L,C */);
+        layout->addItem(container_layout);
         return true;
     }
 
@@ -801,7 +806,7 @@ public:
     static void readFromData(Widget* w, const data_type& d)
     {
         int length = (int) d.getString().length();
-        if (w->text().ascii() != d.getString())
+        if (w->text().toStdString() != d.getString())
         {
             w->setMaxLength(length+2); w->setReadOnly(true);
             w->setText(QString(d.getString().c_str()));
@@ -843,14 +848,14 @@ public:
     static void readFromData(Widget* w, const data_type& d)
     {
         std::ostringstream _outref; _outref<<d;
-        if (w->text().ascii() != _outref.str())
+        if (w->text().toStdString() != _outref.str())
             w->setText(QString(_outref.str().c_str()));
     }
     static void writeToData(Widget* w, data_type& d)
     {
-        bool canwrite = d.setPath ( w->text().ascii() );
+        bool canwrite = d.setPath ( w->text().toStdString() );
         if(!canwrite)
-            std::cerr<<"canot set Path "<<w->text().ascii()<<std::endl;
+            std::cerr<<"canot set Path "<<w->text().toStdString()<<std::endl;
     }
     static void setReadOnly(Widget* w, bool readOnly)
     {

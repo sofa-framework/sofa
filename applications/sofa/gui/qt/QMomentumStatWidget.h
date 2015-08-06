@@ -46,30 +46,11 @@ class QMomentumStatWidget : public QGraphStatWidget
 
 public:
 
-    QMomentumStatWidget( QWidget* parent, simulation::Node* node ) : QGraphStatWidget( parent, node, "Momenta", 6 )
-    {
-        setCurve( 0, "Linear X", Qt::red );
-        setCurve( 1, "Linear Y", Qt::green );
-        setCurve( 2, "Linear Z", Qt::blue );
-        setCurve( 3, "Angular X", Qt::cyan );
-        setCurve( 4, "Angular Y", Qt::magenta );
-        setCurve( 5, "Angular Z", Qt::yellow );
+    QMomentumStatWidget( QWidget* parent, simulation::Node* node );
 
-        m_momentumVisitor = new simulation::MechanicalGetMomentumVisitor(core::MechanicalParams::defaultInstance());
-    }
+    virtual ~QMomentumStatWidget();
 
-    virtual void step()
-    {
-        QGraphStatWidget::step(); // time history
-
-        m_momentumVisitor->execute( _node->getContext() );
-
-        const defaulttype::Vector6& momenta = m_momentumVisitor->getMomentum();
-
-        // Add Momentum
-        for( unsigned i=0 ; i<6 ; ++i ) _YHistory[i].push_back( momenta[i] );
-    }
-
+    virtual void step();
 };
 
 

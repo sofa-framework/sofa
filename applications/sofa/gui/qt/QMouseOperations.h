@@ -29,7 +29,6 @@
 #include <sofa/gui/MouseOperations.h>
 #include "SofaMouseManager.h"
 
-#ifdef SOFA_QT4
 #include <QWidget>
 #include <QLineEdit>
 #include <QRadioButton>
@@ -39,15 +38,7 @@
 #include <QCheckBox>
 #include <QGroupBox>
 #include <QComboBox>
-#else
-#include <qwidget.h>
-#include <qlineedit.h>
-#include <qradiobutton.h>
-#include <qspinbox.h>
-#include <qslider.h>
-#include <qpushbutton.h>
-#include <qcheckbox.h>
-#endif
+
 #include <iostream>
 
 namespace sofa

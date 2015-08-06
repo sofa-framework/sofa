@@ -30,24 +30,15 @@
 #include <iostream>
 #include <sstream>
 
-#ifdef SOFA_QT4
-#include <Q3FileDialog>
+#include <QFileDialog>
 #include <QLineEdit>
 #include <QLabel>
 #include <QRadioButton>
 #include <QPushButton>
-#include <Q3ButtonGroup>
+#include <QButtonGroup>
 #include <QGridLayout>
 #include <qevent.h>
-#else
-#include <qfiledialog.h>
-#include <qlineedit.h>
-#include <qlabel.h>
-#include <qradiobutton.h>
-#include <qpushbutton.h>
-#include <qbuttongroup.h>
-#include <qlayout.h>
-#endif
+
 
 namespace sofa
 {
@@ -58,14 +49,7 @@ namespace gui
 namespace qt
 {
 
-
-#ifndef SOFA_QT4
-typedef QFileDialog  Q3FileDialog;
-typedef QButtonGroup Q3ButtonGroup;
-#endif
-
-
-  AddObject::AddObject( std::vector< std::string > *list_object_, QWidget* parent, bool , Qt::WFlags ): list_object(list_object_)
+  AddObject::AddObject( std::vector< std::string > *list_object_, QWidget* parent, bool , Qt::WindowFlags ): list_object(list_object_)
 {
     setupUi(this);
     //At the creation of the dialog window, we enable the custom object
@@ -88,14 +72,11 @@ typedef QButtonGroup Q3ButtonGroup;
             {
                 current_name = current_name.substr(pos+1, current_name.size()-pos-5);
             }
-            button = new QRadioButton( buttonGroup, QString(current_name.c_str()) );
+            button = new QRadioButton( QString(current_name.c_str()), buttonGroup  );
             button->setText(current_name.c_str());
 
-#ifdef SOFA_QT4
             gridLayout1->addWidget( button, i+1, 0 );
-#else
-            buttonGroupLayout->addWidget( button, i+1, 0 );
-#endif
+
         }
     }
     positionX->setText("0");
@@ -116,7 +97,7 @@ typedef QButtonGroup Q3ButtonGroup;
     //Make the connection between this widget and the parent
     connect( this, SIGNAL(loadObject(std::string, double, double, double, double, double, double,double)), parent, SLOT(loadObject(std::string, double, double, double,double, double, double, double)));
     //For tje Modifications of the state of the radio buttons
-    connect( buttonGroup, SIGNAL( clicked(int) ), this, SLOT (buttonUpdate(int)));
+    connect( buttonGroup, SIGNAL( clicked(bool) ), this, SLOT (buttonUpdate(bool)));
 }
 
 //**************************************************************************************
@@ -126,7 +107,7 @@ void AddObject::accept()
     std::string position[3];
     std::string rotation[3];
     std::string scale;
-#ifdef SOFA_QT4
+
     std::string object_fileName(openFilePath->text().toStdString());
     position[0] = positionX->text().toStdString();
     position[1] = positionY->text().toStdString();
@@ -137,18 +118,7 @@ void AddObject::accept()
     rotation[2] = rotationZ->text().toStdString();
 
     scale       = scaleValue->text().toStdString();
-#else
-    std::string object_fileName(openFilePath->text().latin1());
-    position[0] = positionX->text().latin1();
-    position[1] = positionY->text().latin1();
-    position[2] = positionZ->text().latin1();
 
-    rotation[0] = rotationX->text().latin1();
-    rotation[1] = rotationY->text().latin1();
-    rotation[2] = rotationZ->text().latin1();
-
-    scale       = scaleValue->text().latin1();
-#endif
     emit( loadObject(object_fileName, atof(position[0].c_str()),atof(position[1].c_str()),atof(position[2].c_str()),
             atof(rotation[0].c_str()),atof(rotation[1].c_str()),atof(rotation[2].c_str()),
             atof(scale.c_str())));
@@ -171,11 +141,8 @@ void AddObject::fileOpen()
     QString s  = getOpenFileName(this, QString(fileName.c_str()), "Scenes (*.xml *.scn);;All (*)", "open file dialog",  "Choose a file to open" );
 
     if (s.isNull() ) return;
-#ifdef SOFA_QT4
+
     std::string object_fileName(s.toStdString());
-#else
-    std::string object_fileName(s.latin1());
-#endif
 
     openFilePath->setText(QString(object_fileName.c_str()));
 }
@@ -183,10 +150,13 @@ void AddObject::fileOpen()
 //**************************************************************************************
 //The state of the radio buttons has been modified
 //we update the content of the dialog window
-void AddObject::buttonUpdate(int Id)
+void AddObject::buttonUpdate(bool optionSet)
 {
+    //TODOQT5
+    //this->buttonGroup->wi
+    int Id=1;
     //Id = 0 : custom radio button clicked: we need to show the selector of the file
-    if (Id == 0)
+    if (optionSet)
     {
         openFilePath->setText(fileName.c_str());
         openFileText->show();

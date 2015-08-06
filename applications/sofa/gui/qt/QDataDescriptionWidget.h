@@ -27,20 +27,12 @@
 
 #include <sofa/core/objectmodel/Base.h>
 
-#ifdef SOFA_QT4
 #include <QWidget>
 #include <QTextEdit>
-#include <Q3GroupBox>
-#else
-#include <qwidget.h>
-#include <qtextedit.h>
-#include <qgroupbox.h>
-#endif
+#include <QGroupBox>
+#include <QGridLayout>
 
-#ifndef SOFA_QT4
-typedef QGroupBox Q3GroupBox;
-typedef QTextEdit   Q3TextEdit;
-#endif
+
 
 namespace sofa
 {
@@ -56,6 +48,8 @@ class QDataDescriptionWidget : public QWidget
 public:
     QDataDescriptionWidget(QWidget* parent, core::objectmodel::Base* object);
 
+    void addRow(QGridLayout* grid, const std::string& title,
+                const std::string& value, unsigned int row, unsigned int minimumWidth =0);
 };
 
 

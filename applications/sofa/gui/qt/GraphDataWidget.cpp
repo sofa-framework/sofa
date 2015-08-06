@@ -80,15 +80,14 @@ GraphOptionWidget::GraphOptionWidget(const std::string &dataName, GraphSetting *
     gnuplotDirectory += dataName;
     fileGNUPLOTLineEdit->setText(QString(gnuplotDirectory.c_str()));
 
-    gnuplotLayout->add(exportGNUPLOTButton);
-    gnuplotLayout->add(fileGNUPLOTLineEdit);
-    gnuplotLayout->add(findGNUPLOTFile);
-    generalLayout->add(gnuplotExport);
+    gnuplotLayout->addWidget(exportGNUPLOTButton);
+    gnuplotLayout->addWidget(fileGNUPLOTLineEdit);
+    gnuplotLayout->addWidget(findGNUPLOTFile);
+    generalLayout->addWidget(gnuplotExport);
 
     connect(exportGNUPLOTButton, SIGNAL(clicked()), this, SLOT(exportGNUPlot()));
     connect(findGNUPLOTFile, SIGNAL(clicked()), this, SLOT(openFindFileDialog()));
 
-#ifdef SOFA_QT4
     QWidget *imageExport=new QWidget(this);
     QHBoxLayout* imageLayout = new QHBoxLayout(imageExport);
 
@@ -105,16 +104,16 @@ GraphOptionWidget::GraphOptionWidget(const std::string &dataName, GraphSetting *
     imageDirectory += dataName;
     fileImageLineEdit->setText(QString(imageDirectory.c_str()));
 
-    imageLayout->add(exportImageButton);
-    imageLayout->add(fileImageLineEdit);
-    imageLayout->add(findImageFile);
-    generalLayout->add(imageExport);
+    imageLayout->addWidget(exportImageButton);
+    imageLayout->addWidget(fileImageLineEdit);
+    imageLayout->addWidget(findImageFile);
+    generalLayout->addWidget(imageExport);
 
     connect(exportImageButton, SIGNAL(clicked()), this, SLOT(exportImage()));
     connect(findImageFile, SIGNAL(clicked()), this, SLOT(openFindFileDialog()));
 
-    generalLayout->add(checkBox);
-#endif
+    generalLayout->addWidget(checkBox);
+
     idfile = 0;
 }
 
@@ -123,24 +122,24 @@ void GraphOptionWidget::openFindFileDialog()
     QLineEdit *fileLineEdit=0;
     QPushButton *button=(QPushButton*)sender();
     if (button == findGNUPLOTFile)    fileLineEdit = fileGNUPLOTLineEdit;
-#ifdef SOFA_QT4
+
     else if (button == findImageFile) fileLineEdit = fileImageLineEdit;
-#endif
+
     std::string filename(sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()));
     std::string directory;
     QString s = getExistingDirectory ( this, filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
     if (s.length() > 0)
     {
-        directory = s.ascii();
+        directory = s.toStdString();
         if (directory.at(directory.size()-1) != '/') directory+="/";
         fileLineEdit->setText(directory.c_str());
     }
 }
 void GraphOptionWidget::exportGNUPlot()
 {
-    graph->exportGNUPlot(fileGNUPLOTLineEdit->text().ascii());
+    graph->exportGNUPlot(fileGNUPLOTLineEdit->text().toStdString());
 }
-#ifdef SOFA_QT4
+
 void GraphOptionWidget::exportImage()
 {
     const unsigned nbpad=5;
@@ -153,13 +152,13 @@ void GraphOptionWidget::exportImage()
     idfile++;
     if (idfile>99999) idfile = 0;
 
-    std::string filename = fileImageLineEdit->text().ascii();
+    std::string filename = fileImageLineEdit->text().toStdString();
     filename.append("_");
     filename.append(pad);
     filename.append(idstring);
     graph->exportImage(filename);
 }
-#endif
+
 } // namespace qt
 
 } // namespace gui
