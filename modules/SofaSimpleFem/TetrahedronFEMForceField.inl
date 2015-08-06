@@ -2436,6 +2436,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 
     helper::ReadAccessor<Data<VecCoord> > X0 =  _initialPoints;
 
+    _showStressColorMapReal->entries.clear();
 
     VecCoord U;
     U.resize(X.size());
