@@ -521,9 +521,6 @@ public:
         }
         else
         {
-            // empty multilink before reading (otherwise links can be added several times)
-            TraitsContainer::clear(m_value[core::ExecParams::currentAspect()]);
-
             std::istringstream istr( str.c_str() );
             std::string path;
 
