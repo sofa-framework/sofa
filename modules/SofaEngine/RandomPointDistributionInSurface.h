@@ -30,7 +30,6 @@
 #pragma once
 #endif
 
-#include <sofa/SofaGeneral.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>

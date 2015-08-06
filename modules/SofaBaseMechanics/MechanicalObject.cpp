@@ -23,7 +23,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/SofaFramework.h>
 
 #ifdef SOFA_SMP
 #include <SofaBaseMechanics/MechanicalObjectTasks.inl>

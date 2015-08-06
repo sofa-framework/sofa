@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_COLLISION_RAYMODEL_H
 #include "config.h"
 
-#include <sofa/SofaGeneral.h>
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/Vec3Types.h>

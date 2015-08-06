@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_ENGINE_TRANSFORMMATRIXENGINE_H
 #include "config.h"
 
-#include <sofa/SofaGeneral.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 

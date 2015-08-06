@@ -23,7 +23,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/SofaFramework.h>
 
 #include <iostream>
 #include <SofaBaseTopology/MeshTopology.h>

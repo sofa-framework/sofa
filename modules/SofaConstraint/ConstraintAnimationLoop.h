@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_ANIMATIONLOOP_CONSTRAINTANIMATIONLOOP_H
 #include "config.h"
 
-#include <sofa/SofaGeneral.h>
 
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MultiVecId.h>

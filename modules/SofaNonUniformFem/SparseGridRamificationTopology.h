@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_TOPOLOGY_SparseGridRamificationTopology_H
 #include "config.h"
 
-#include <sofa/SofaAdvanced.h>
 #include <SofaBaseTopology/SparseGridTopology.h>
 
 namespace sofa

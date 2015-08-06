@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPINGRIGID_H
 #include "config.h"
 
-#include <sofa/SofaMisc.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
 #include <sofa/defaulttype/RigidTypes.h>
 

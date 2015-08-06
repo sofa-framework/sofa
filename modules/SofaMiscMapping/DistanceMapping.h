@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_MAPPING_DistanceMapping_H
 #include "config.h"
 
-#include <sofa/SofaMisc.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/core/MultiMapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>

@@ -24,7 +24,6 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_DIAGONALMASS_CPP
 
-#include <sofa/SofaFramework.h>
 
 #include <SofaBaseMechanics/DiagonalMass.inl>
 #include <sofa/core/behavior/Mass.inl>

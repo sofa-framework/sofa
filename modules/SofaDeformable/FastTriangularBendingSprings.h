@@ -41,7 +41,6 @@
 #pragma once
 #endif
 
-#include <sofa/SofaCommon.h>
 #include <map>
 
 #include <sofa/core/behavior/ForceField.h>
