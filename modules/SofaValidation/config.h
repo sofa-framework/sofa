@@ -25,6 +25,6 @@
 #ifndef SOFAVALIDATION_CONFIG_H
 #define SOFAVALIDATION_CONFIG_H
 
-#include <sofa/SofaGeneral.h>
+#include <SofaGeneral/SofaGeneralConfig.h>
 
 #endif

@@ -25,6 +25,6 @@
 #ifndef SOFADEFORMABLE_CONFIG_H
 #define SOFADEFORMABLE_CONFIG_H
 
-#include <sofa/SofaCommon.h>
+#include <SofaCommon/SofaCommonConfig.h>
 
 #endif

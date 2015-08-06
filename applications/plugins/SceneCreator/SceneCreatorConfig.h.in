@@ -26,7 +26,7 @@
 #ifndef _SceneCreator_H_
 #define _SceneCreator_H_
 
-#include <sofa/SofaFramework.h>
+#include <sofa/config.h>
 
 #define SCENECREATOR_MAJOR_VERSION ${SCENECREATOR_MAJOR_VERSION}
 #define SCENECREATOR_MINOR_VERSION ${SCENECREATOR_MINOR_VERSION}

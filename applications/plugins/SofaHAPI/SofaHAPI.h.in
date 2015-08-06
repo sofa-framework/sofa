@@ -26,7 +26,7 @@
 #ifndef _SOFA_HAPI_H_
 #define _SOFA_HAPI_H_
 
-#include <sofa/SofaGeneral.h>
+#include <SofaGeneral/SofaGeneralConfig.h>
 
 #define SOFAHAPI_MAJOR_VERSION ${SOFAHAPI_MAJOR_VERSION}
 #define SOFAHAPI_MINOR_VERSION ${SOFAHAPI_MINOR_VERSION}

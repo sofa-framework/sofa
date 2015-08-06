@@ -24,11 +24,11 @@ find_package(SofaFramework REQUIRED)
 list(APPEND SOFASIMULATION_DEPENDENCY_INCLUDE_DIRS ${SofaFramework_INCLUDE_DIRS})
 #include_directories(${SofaFramework_INCLUDE_DIRS})
 
-configure_file(${SofaSimulation_SOURCE_DIR}/SofaSimulation.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaSimulation.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaSimulation.h
-         DESTINATION "${SOFASIMULATION_INSTALL_INCLUDE_DIR}/sofa")
-# make sure everyone in the build tree can see <sofa/SofaSimulation.h>
+configure_file(config.h.in
+               ${SOFASIMULATION_BUILD_INCLUDE_DIR}/sofa/simulation/config.h)
+install(FILES ${SOFASIMULATION_BUILD_INCLUDE_DIR}/sofa/simulation/config.h
+        DESTINATION ${SOFASIMULATION_INSTALL_INCLUDE_DIR}/sofa/simulation)
+# make sure everyone in the build tree can see <SofaSimulation/config.h>
 #include_directories(${CMAKE_CURRENT_BINARY_DIR})
 #include_directories(${SofaSimulation_ACTUAL_SOURCE_DIR}/../../)
 

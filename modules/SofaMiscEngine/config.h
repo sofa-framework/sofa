@@ -25,6 +25,6 @@
 #ifndef SOFAMISCENGINE_CONFIG_H
 #define SOFAMISCENGINE_CONFIG_H
 
-#include <sofa/SofaMisc.h>
+#include <SofaMisc/SofaMiscConfig.h>
 
 #endif

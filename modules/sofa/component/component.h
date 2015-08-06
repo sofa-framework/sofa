@@ -55,7 +55,7 @@
 #include <SofaImplicitOdeSolver/config.h>
 #include <SofaLoader/config.h>
 #include <SofaMeshCollision/config.h>
-#include <SofaMisc/config.h>
+#include <SofaMisc/SofaMiscConfig.h>
 #include <SofaMiscCollision/config.h>
 #include <SofaMiscEngine/config.h>
 #include <SofaMiscFem/config.h>

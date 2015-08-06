@@ -30,11 +30,11 @@ set(SOFACOMMON_INSTALL_CMAKE_DIR ${SOFACOMMON_INSTALL_LIB_DIR}/cmake/SofaCommon)
 find_package(SofaBase REQUIRED)
 set(SOFACOMMON_DEPENDENCY_INCLUDE_DIR ${SofaBase_INCLUDE_DIRS})
 
-configure_file(${SofaCommon_SOURCE_DIR}/SofaCommon.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaCommon.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaCommon.h
-         DESTINATION "${SOFACOMMON_INSTALL_INCLUDE_DIR}/sofa")
-# make sure everyone in the build tree can see <sofa/SofaCommon.h>
+configure_file(SofaCommonConfig.h.in
+               ${SOFACOMMON_BUILD_INCLUDE_DIR}/SofaCommon/SofaCommonConfig.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaCommon/SofaCommonConfig.h
+         DESTINATION "${SOFACOMMON_INSTALL_INCLUDE_DIR}/SofaCommon")
+# make sure everyone in the build tree can see <SofaCommon/SofaCommonConfig.h>
 #include_directories(${CMAKE_CURRENT_BINARY_DIR})
 #include_directories(${SofaCommon_ACTUAL_SOURCE_DIR})
 

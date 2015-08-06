@@ -26,7 +26,7 @@
 #ifndef _SOFA_PYTHON_H_
 #define _SOFA_PYTHON_H_
 
-#include <sofa/SofaGui.h>
+#include <SofaGui/SofaGuiConfig.h>
 
 #define SOFAPYTHON_MAJOR_VERSION ${SOFAPYTHON_MAJOR_VERSION}
 #define SOFAPYTHON_MINOR_VERSION ${SOFAPYTHON_MINOR_VERSION}

@@ -22,9 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#ifndef _SOFA_FRAMEWORK_H_
-#define _SOFA_FRAMEWORK_H_
+#ifndef SOFA_CONFIG_H
+#define SOFA_CONFIG_H
 
 #cmakedefine SOFA_HAVE_ZLIB
 
@@ -116,4 +115,4 @@ typedef double SReal;
 #	define SOFA_CORE_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // _SOFA_FRAMEWORK_H_
+#endif

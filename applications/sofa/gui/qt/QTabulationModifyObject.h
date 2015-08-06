@@ -28,7 +28,7 @@
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/SofaGui.h>
+#include <SofaGui/SofaGuiConfig.h>
 
 #ifdef SOFA_QT4
 #include <QWidget>

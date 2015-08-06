@@ -25,7 +25,7 @@
 #ifndef _COMPLIANT_COMPLIANT_H_
 #define _COMPLIANT_COMPLIANT_H_
 
-#include <sofa/SofaMisc.h>
+#include <SofaMisc/SofaMiscConfig.h>
 
 #define COMPLIANT_MAJOR_VERSION ${COMPLIANT_MAJOR_VERSION}
 #define COMPLIANT_MINOR_VERSION ${COMPLIANT_MINOR_VERSION}

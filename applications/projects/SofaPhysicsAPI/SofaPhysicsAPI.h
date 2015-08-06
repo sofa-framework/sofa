@@ -1,7 +1,7 @@
 #ifndef SOFAPHYSICSAPI_H
 #define SOFAPHYSICSAPI_H
 
-#include <sofa/SofaGeneral.h>
+#include <SofaGeneral/SofaGeneralConfig.h>
 
 #ifdef SOFA_BUILD_SOFAPHYSICSAPI
 #  define SOFA_SOFAPHYSICSAPI_API SOFA_EXPORT_DYNAMIC_LIBRARY

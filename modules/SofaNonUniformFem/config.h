@@ -25,6 +25,6 @@
 #ifndef SOFANONUNIFORMFEM_CONFIG_H
 #define SOFANONUNIFORMFEM_CONFIG_H
 
-#include <sofa/SofaAdvanced.h>
+#include <SofaAdvanced/SofaAdvancedConfig.h>
 
 #endif

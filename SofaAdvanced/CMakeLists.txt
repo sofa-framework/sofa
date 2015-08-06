@@ -36,11 +36,11 @@ set(SOFAADVANCED_DEPENDENCY_DIR ${SofaGeneral_INCLUDE_DIRS} ${MiniFlowVR_INCLUDE
 set(SOFAADVANCED_DEPENDENCY_LINK ${MiniFlowVR_LIBRARIES})
 
 
-configure_file(${SofaAdvanced_SOURCE_DIR}/SofaAdvanced.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaAdvanced.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaAdvanced.h
-         DESTINATION "${SOFAADVANCED_INSTALL_INCLUDE_DIR}/sofa")
-# make sure everyone in the build tree can see <sofa/SofaAdvanced.h>
+configure_file(SofaAdvancedConfig.h.in
+               ${SOFAADVANCED_BUILD_INCLUDE_DIR}/SofaAdvanced/SofaAdvancedConfig.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaAdvanced/SofaAdvancedConfig.h
+         DESTINATION "${SOFAADVANCED_INSTALL_INCLUDE_DIR}/SofaAdvanced")
+# make sure everyone in the build tree can see <SofaAdvanced/SofaAdvancedConfig.h>
 #include_directories(${CMAKE_CURRENT_BINARY_DIR})
 #include_directories(${SofaAdvanced_ACTUAL_SOURCE_DIR}/../../)
 

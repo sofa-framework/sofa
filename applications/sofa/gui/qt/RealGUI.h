@@ -25,7 +25,7 @@
 #ifndef SOFA_GUI_VIEWER_REALGUI_H
 #define SOFA_GUI_VIEWER_REALGUI_H
 
-#include <sofa/SofaGui.h>
+#include <SofaGui/SofaGuiConfig.h>
 #include <ui_GUI.h>
 #include <sofa/gui/qt/SofaGUIQt.h>
 #include "GraphListenerQListView.h"

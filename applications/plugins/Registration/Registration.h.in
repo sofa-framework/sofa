@@ -26,7 +26,7 @@
 #ifndef _Registration_H_
 #define _Registration_H_
 
-#include <sofa/SofaGui.h>
+#include <SofaGui/SofaGuiConfig.h>
 
 #define REGISTRATION_MAJOR_VERSION ${REGISTRATION_MAJOR_VERSION}
 #define REGISTRATION_MINOR_VERSION ${REGISTRATION_MINOR_VERSION}
