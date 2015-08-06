@@ -100,8 +100,10 @@ QGLFormat QtGLViewer::setupGLFormat(const unsigned int nbMSAASamples)
 }
 
 QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbMSAASamples)
-    : QGLViewer(setupGLFormat(nbMSAASamples), parent, name)
+    : QGLViewer(setupGLFormat(nbMSAASamples), parent)
 {
+    this->setObjectName(name);
+
     groot = NULL;
     initTexturesDone = false;
 
@@ -993,7 +995,7 @@ void QtGLViewer::mouseMoveEvent ( QMouseEvent * e )
 
 bool QtGLViewer::mouseEvent(QMouseEvent * e)
 {
-    if(e->state()&Qt::ShiftButton)
+    if(e->modifiers()&Qt::ShiftModifier)
     {
         SofaViewer::mouseEvent(e);
         return true;

@@ -25,10 +25,6 @@
 #include "MaterialDataWidget.h"
 #include <limits>
 
-#ifndef SOFA_QT4
-#include <qcombobox.h>
-#endif
-
 namespace sofa
 {
 namespace gui
@@ -51,15 +47,15 @@ RGBAColorPicker::RGBAColorPicker(QWidget* parent):QWidget(parent)
     _a->setValidator(new QIntValidator(0,255,this));
     _colorButton = new QPushButton(this);
     QHBoxLayout* layout = new QHBoxLayout(this);
-    layout->add(_colorButton);
-    layout->add(new QLabel("r",this));
-    layout->add(_r);
-    layout->add(new QLabel("g",this));
-    layout->add(_g);
-    layout->add(new QLabel("b",this));
-    layout->add(_b);
-    layout->add(new QLabel("a",this));
-    layout->add(_a);
+    layout->addWidget(_colorButton);
+    layout->addWidget(new QLabel("r",this));
+    layout->addWidget(_r);
+    layout->addWidget(new QLabel("g",this));
+    layout->addWidget(_g);
+    layout->addWidget(new QLabel("b",this));
+    layout->addWidget(_b);
+    layout->addWidget(new QLabel("a",this));
+    layout->addWidget(_a);
     connect( _r , SIGNAL( textChanged(const QString & ) ) ,this , SIGNAL( hasChanged() ) );
     connect( _g , SIGNAL( textChanged(const QString & ) ) ,this , SIGNAL( hasChanged() ) );
     connect( _b , SIGNAL( textChanged(const QString & ) ) ,this , SIGNAL( hasChanged() ) );
@@ -68,10 +64,10 @@ RGBAColorPicker::RGBAColorPicker(QWidget* parent):QWidget(parent)
     connect( _g , SIGNAL( returnPressed() ) ,this , SLOT( updateRGBAColor() ) );
     connect( _b , SIGNAL( returnPressed() ) ,this , SLOT( updateRGBAColor() ) );
     connect( _a , SIGNAL( returnPressed() ) ,this , SLOT( updateRGBAColor() ) );
-    connect( _r , SIGNAL( lostFocus() ) ,this , SLOT( updateRGBAColor() ) );
-    connect( _g , SIGNAL( lostFocus() ) ,this , SLOT( updateRGBAColor() ) );
-    connect( _b , SIGNAL( lostFocus() ) ,this , SLOT( updateRGBAColor() ) );
-    connect( _a , SIGNAL( lostFocus() ) ,this , SLOT( updateRGBAColor() ) );
+    connect( _r , SIGNAL( editingFinished() ) ,this , SLOT( updateRGBAColor() ) );
+    connect( _g , SIGNAL( editingFinished() ) ,this , SLOT( updateRGBAColor() ) );
+    connect( _b , SIGNAL( editingFinished() ) ,this , SLOT( updateRGBAColor() ) );
+    connect( _a , SIGNAL( editingFinished() ) ,this , SLOT( updateRGBAColor() ) );
     connect( _colorButton, SIGNAL( clicked() ), this, SLOT( raiseQColorDialog() ) );
 
 }
@@ -142,7 +138,7 @@ void RGBAColorPicker::redrawColorButton()
 
     QPixmap *pix=new QPixmap(25,20);
     pix->fill(QColor(qRed(_rgba), qGreen(_rgba), qBlue(_rgba)));
-    _colorButton->setPixmap(*pix);
+    _colorButton->setIcon(QIcon(*pix));
 
     _colorButton->resize(w,h);
 }
@@ -188,11 +184,12 @@ bool MaterialDataWidget::createWidgets()
     _shininessCheckBox = new QCheckBox(this);
     QVBoxLayout* layout = new QVBoxLayout(this);
 
-    QGridLayout* grid = new QGridLayout(5,3);
+    //QGridLayout* grid = new QGridLayout(5,3);
+    QGridLayout* grid = new QGridLayout();
     grid->setSpacing(1);
     QHBoxLayout* hlayout = new QHBoxLayout();
-    hlayout->add(new QLabel("Name",this));
-    hlayout->add(_nameEdit);
+    hlayout->addWidget(new QLabel("Name",this));
+    hlayout->addWidget(_nameEdit);
 
     grid->addWidget(_ambientCheckBox,0,0,Qt::AlignHCenter);
     grid->addWidget(new QLabel("Ambient",this),0,1,Qt::AlignHCenter);
@@ -290,7 +287,7 @@ void MaterialDataWidget::writeToData()
     using namespace sofa::core::loader;
     Material* material = getData()->virtualBeginEdit();
 
-    material->name      = _nameEdit->text().ascii();
+    material->name      = _nameEdit->text().toStdString();
     material->ambient   = _ambientPicker->getColor();
     material->diffuse   = _diffusePicker->getColor();
     material->emissive  = _emissivePicker->getColor();
@@ -315,11 +312,11 @@ bool VectorMaterialDataWidget::createWidgets()
         return false;
     }
     _comboBox = new QComboBox(this);
-    _materialDataWidget = new MaterialDataWidget(this,this->name(),&_currentMaterial);
+    _materialDataWidget = new MaterialDataWidget(this,this->objectName().toStdString().c_str(),&_currentMaterial);
     _materialDataWidget->createWidgets();
     QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->add(_comboBox);
-    layout->add(_materialDataWidget);
+    layout->addWidget(_comboBox);
+    layout->addWidget(_materialDataWidget);
 
     connect( _comboBox, SIGNAL(activated(int)  ), this, SLOT( changeMaterial( int) ) );
     connect( _materialDataWidget, SIGNAL( WidgetDirty(bool) ) ,this, SLOT( setWidgetDirty(bool) ) );
@@ -348,10 +345,10 @@ void VectorMaterialDataWidget::readFromData()
     std::copy(vecMaterial.begin(), vecMaterial.end(), std::back_inserter(_vectorEditedMaterial) );
     for( iter = _vectorEditedMaterial.begin(); iter != _vectorEditedMaterial.end(); ++iter )
     {
-        _comboBox->insertItem ( QString( (*iter).name.c_str() ) );
+        _comboBox->addItem( QString( (*iter).name.c_str() ) );
     }
     _currentMaterialPos = 0;
-    _comboBox->setCurrentItem(_currentMaterialPos);
+    _comboBox->setCurrentIndex(_currentMaterialPos);
     _currentMaterial.setValue(_vectorEditedMaterial[_currentMaterialPos]);
     _materialDataWidget->setData(&_currentMaterial);
     _materialDataWidget->updateWidgetValue();

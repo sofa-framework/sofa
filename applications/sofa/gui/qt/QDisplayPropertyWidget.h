@@ -41,19 +41,18 @@
 #include <QTreeWidget>
 #include <QDialog>
 #include <QWidget>
-#include <Q3ListViewItem>
-#include <Q3ListView>
-#include <Q3Table>
-#include <Q3GroupBox>
-#include <Q3Grid>
-#include <Q3TextEdit>
+#include <QTreeWidgetItem>
+#include <QTreeWidget>
+#include <QTableWidget>
+#include <QGroupBox>
+#include <QGridLayout>
+#include <QTextEdit>
 #include <QPushButton>
 #include <QTabWidget>
 #include <QLabel>
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QSpinBox>
-#include <Q3CheckListItem>
 #include <QVBoxLayout>
 
 namespace sofa
@@ -96,7 +95,7 @@ public:
     ~QDisplayPropertyWidget();
 
     // add a component in the tree in order to show / change its data and compare them with other component data
-    void addComponent(const QString& component, core::objectmodel::Base* base, Q3ListViewItem* listItem, bool clear = true);
+    void addComponent(const QString& component, core::objectmodel::Base* base, QTreeWidgetItem* listItem, bool clear = true);
 
     // add a data / link group
     void addGroup(const QString& component, const QString& group);
@@ -156,7 +155,7 @@ protected:
 private:
 
     // remember the Base Object and its item in the scene graph list view for each component registered in this property view
-    std::map<QTreeWidgetItem*, std::pair<core::objectmodel::Base*, Q3ListViewItem*> >		objects;
+    std::map<QTreeWidgetItem*, std::pair<core::objectmodel::Base*, QTreeWidgetItem*> >		objects;
     QIcon																					pinIcon;
 	ModifyObjectFlags																		modifyObjectFlags;
 

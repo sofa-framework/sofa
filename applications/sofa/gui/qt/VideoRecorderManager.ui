@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout">
    <item>
-    <widget class="Q3ButtonGroup" name="RecordingTypeButtonGroup">
+    <widget class="QGroupBox" name="RecordingTypeButtonGroup">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
        <horstretch>0</horstretch>
@@ -63,7 +63,7 @@
     </widget>
    </item>
    <item>
-    <widget class="Q3GroupBox" name="VideoRecorderOptionGroupBox">
+    <widget class="QGroupBox" name="VideoRecorderOptionGroupBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
        <horstretch>0</horstretch>
@@ -129,20 +129,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ButtonGroup</class>
-   <extends>Q3GroupBox</extends>
-   <header>Qt3Support/Q3ButtonGroup</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>
@@ -163,7 +149,7 @@
   </connection>
   <connection>
    <sender>RecordingTypeButtonGroup</sender>
-   <signal>clicked(int)</signal>
+   <signal>clicked(bool)</signal>
    <receiver>VideoRecorderManager</receiver>
    <slot>onChangeRecordingType()</slot>
    <hints>

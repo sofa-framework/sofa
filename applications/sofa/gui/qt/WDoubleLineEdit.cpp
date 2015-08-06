@@ -29,8 +29,10 @@
 using std::cerr; using std::endl;
 /* -------------------------------------------------------- */
 
-WDoubleLineEdit::WDoubleLineEdit(QWidget *parent,const char *name) : QLineEdit(parent,name)
+WDoubleLineEdit::WDoubleLineEdit(QWidget *parent,const char *name) : QLineEdit(parent /*,name */)
 {
+    setObjectName(name);
+
     m_iPercent=-1;
     m_fMinValue=0.0;
     m_fMaxValue=1.0;
@@ -43,7 +45,10 @@ WDoubleLineEdit::WDoubleLineEdit(QWidget *parent,const char *name) : QLineEdit(p
             this,SLOT  (slotReturnPressed()));
 
     m_bInternal=false;
-    validateAndSet(QString("%1").arg(m_fValue),0,0,0);
+    //validateAndSet(QString("%1").arg(m_fValue),0,0,0);
+    this->setText(QString("%1").arg(m_fValue));
+    this->setCursorPosition(0);
+    this->setSelection(0, 0);
 }
 /* -------------------------------------------------------- */
 void WDoubleLineEdit::slotReturnPressed()
@@ -79,7 +84,10 @@ void WDoubleLineEdit::slotCalcValue(double f)
         }
         update();
     }
-    validateAndSet(QString("%1").arg(m_fValue),0,0,0);
+//    validateAndSet(QString("%1").arg(m_fValue),0,0,0);
+    this->setText(QString("%1").arg(m_fValue));
+    this->setCursorPosition(0);
+    this->setSelection(0, 0);
 }
 /* -------------------------------------------------------- */
 void WDoubleLineEdit::slotCalcValue(const QString& s)
@@ -114,7 +122,12 @@ int WDoubleLineEdit::valuePercent()
 void WDoubleLineEdit::keyPressEvent(QKeyEvent *e)
 {
     if (e->key() == Qt::Key_Escape)
-        validateAndSet(QString("%1").arg(m_fValue),0,0,0);
+    {
+//        validateAndSet(QString("%1").arg(m_fValue),0,0,0);
+        this->setText(QString("%1").arg(m_fValue));
+        this->setCursorPosition(0);
+        this->setSelection(0, 0);
+    }
     else
         QLineEdit::keyPressEvent(e);
 }

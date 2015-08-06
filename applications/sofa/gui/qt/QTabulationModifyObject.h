@@ -30,25 +30,12 @@
 #include <sofa/simulation/common/Node.h>
 
 
-#ifdef SOFA_QT4
 #include <QWidget>
 #include <QTextEdit>
-#include <Q3GroupBox>
-#include <Q3ListViewItem>
-#include <Q3ListView>
-#else
-#include <qwidget.h>
-#include <qtextedit.h>
-#include <qgroupbox.h>
-#include <qlistview.h>
-#endif
+#include <QGroupBox>
+#include <QTreeWidgetItem>
+#include <QTreeWidget>
 
-#ifndef SOFA_QT4
-typedef QGroupBox Q3GroupBox;
-typedef QTextEdit   Q3TextEdit;
-typedef QListView   Q3ListView;
-typedef QListViewItem Q3ListViewItem;
-#endif
 
 namespace sofa
 {
@@ -65,7 +52,7 @@ class QTabulationModifyObject : public QWidget
     Q_OBJECT
 public:
     QTabulationModifyObject(QWidget* parent,
-            core::objectmodel::Base *object, Q3ListViewItem* item,
+            core::objectmodel::Base *object, QTreeWidgetItem* item,
             unsigned int idx=1);
 
     void externalWidgetAddition(int num) {size+=num;}
@@ -98,7 +85,7 @@ signals:
 
 protected:
     core::objectmodel::Base *object;
-    Q3ListViewItem* item;
+    QTreeWidgetItem* item;
 
 
     const unsigned int index;

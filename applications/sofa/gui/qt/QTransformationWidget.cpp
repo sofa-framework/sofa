@@ -25,16 +25,10 @@
 #include "QTransformationWidget.h"
 #include <sofa/simulation/common/TransformationVisitor.h>
 
-#ifdef SOFA_QT4
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <Q3GroupBox>
+#include <QGroupBox>
 #include <QLabel>
-#else
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qgroupbox.h>
-#endif
 
 #if !defined(INFINITY)
 #define INFINITY 9.0e10
@@ -48,11 +42,11 @@ namespace gui
 {
 namespace qt
 {
-QTransformationWidget::QTransformationWidget(QWidget* parent, QString name):Q3GroupBox(parent), numWidgets_(2)
+QTransformationWidget::QTransformationWidget(QWidget* parent, QString name):QGroupBox(parent), numWidgets_(2)
 
 {
+    //this->setColumns(4);
 
-    this->setColumns(4);
     this->setTitle(name);
     //********************************************************************************
     //Translation

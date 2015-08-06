@@ -167,18 +167,10 @@ bool RadioDataWidget::createWidgets()
 
             QRadioButton * m_radiobutton=new QRadioButton(QString(m_itemstring.c_str()), this);
             if (i==m_radiotrick.getSelectedId()) m_radiobutton->setChecked(true);
-            layout->add(m_radiobutton);
-#ifdef SOFA_QT4
+            layout->addWidget(m_radiobutton);
             buttonList->addButton(m_radiobutton,i);
-#else
-            buttonList->insert(m_radiobutton,i);
-#endif
         }
-#ifdef SOFA_QT4
         connect(buttonList, SIGNAL(buttonClicked(int)), this, SLOT(setWidgetDirty())) ;
-#else
-        connect(buttonList, SIGNAL(clicked(int)), this, SLOT(setWidgetDirty())) ;
-#endif
     }
     else
     {
@@ -189,9 +181,9 @@ bool RadioDataWidget::createWidgets()
         QStringList list;
         for(unsigned int i=0; i<m_radiotrick.size(); i++) list << m_radiotrick[i].c_str();
 
-        comboList->insertStringList(list);
+        comboList->insertItems(0, list);
 
-        comboList->setCurrentItem(m_radiotrick.getSelectedId());
+        comboList->setCurrentIndex(m_radiotrick.getSelectedId());
 
         connect(comboList, SIGNAL(activated(int)), this, SLOT(setWidgetDirty()));
         layout->addWidget(comboList);
@@ -222,15 +214,11 @@ void RadioDataWidget::readFromData()
 
     if (buttonMode)
     {
-#ifdef SOFA_QT4
         buttonList->button(m_radiotrick.getSelectedId())->setChecked(true);
-#else
-        buttonList->find(m_radiotrick.getSelectedId())->setDown(true);
-#endif
     }
     else
     {
-        comboList->setCurrentItem(m_radiotrick.getSelectedId());
+        comboList->setCurrentIndex(m_radiotrick.getSelectedId());
     }
 }
 void RadioDataWidget::writeToData()
@@ -238,15 +226,11 @@ void RadioDataWidget::writeToData()
     sofa::helper::OptionsGroup m_radiotrick = getData()->virtualGetValue();
     if (buttonMode)
     {
-#ifdef SOFA_QT4
         m_radiotrick.setSelectedItem((unsigned int)buttonList->checkedId ());
-#else
-        m_radiotrick.setSelectedItem((unsigned int)buttonList->selectedId ());
-#endif
     }
     else
     {
-        m_radiotrick.setSelectedItem((unsigned int)comboList->currentItem());
+        m_radiotrick.setSelectedItem((unsigned int)comboList->currentIndex());
     }
 
     this->getData()->virtualSetValue(m_radiotrick);

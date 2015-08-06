@@ -35,7 +35,7 @@
 
 #include <SofaComponentMain/init.h>
 
-#include <QtGui/QApplication>
+#include <QApplication>
 
 #include <iostream>
 #include <fstream>
@@ -88,7 +88,7 @@ int main(int argc, char** argv)
 	Q_INIT_RESOURCE(icons);
     sofa::gui::qt::SofaModeler* sofaModeler = new sofa::gui::qt::SofaModeler();
 
-    application->setMainWidget(sofaModeler);
+    //application->setMainWidget(sofaModeler);
     sofaModeler->show();
 
     std::string binaryName=argv[0];

@@ -44,8 +44,8 @@ list(APPEND SOURCE_FILES "QSofaTreeLibrary.cpp")
 list(APPEND SOURCE_FILES "QCategoryTreeLibrary.cpp")
 list(APPEND SOURCE_FILES "QComponentTreeLibrary.cpp")
 
-SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
-SOFA_QT4_WRAP_UI(FORM_FILES ${UI_FILES})
+SOFA_QT_WRAP_CPP(MOC_FILES ${HEADER_FILES})
+SOFA_QT_WRAP_UI(FORM_FILES ${UI_FILES})
 
 # make mocced header / form files path from absolute to relative
 ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")

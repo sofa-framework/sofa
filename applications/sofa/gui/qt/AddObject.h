@@ -45,14 +45,14 @@ class AddObject : public QDialog, public Ui_DialogAddObject
     Q_OBJECT
 public:
 
-    AddObject( std::vector<std::string> *list_object_, QWidget* parent, bool  modal= FALSE, Qt::WFlags f= 0 );
+    AddObject( std::vector<std::string> *list_object_, QWidget* parent, bool  modal= false, Qt::WindowFlags f= 0 );
 
 
     void setPath(const std::string path);
 
 public slots:
     void fileOpen();
-    void buttonUpdate(int);
+    void buttonUpdate(bool optionSet);
     void accept();
 
 signals:

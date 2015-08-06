@@ -44,11 +44,16 @@ namespace qt
 {
 
 QTabulationModifyObject::QTabulationModifyObject(QWidget* parent,
-        core::objectmodel::Base *o, Q3ListViewItem* i,
+        core::objectmodel::Base *o, QTreeWidgetItem* i,
         unsigned int idx):
     QWidget(parent), object(o), item(i), index(idx), size(0), dirty(false), pixelSize(0), pixelMaxSize(600)
 {
-    new QVBoxLayout( this, 0, 1, "tabVisualizationLayout");
+    QVBoxLayout* vbox = new QVBoxLayout();
+    vbox->setObjectName("tabVisualizationLayout");
+    vbox->setMargin(0);
+    vbox->setSpacing(0);
+
+    this->setLayout(vbox);
 
     //find correct maxPixelSize according to the current screen resolution
     const int screenHeight = QApplication::desktop()->height();
@@ -74,10 +79,11 @@ void QTabulationModifyObject::addData(sofa::core::objectmodel::BaseData *data, c
 
     const std::string name=data->getName();
     QDisplayDataWidget* displaydatawidget = new QDisplayDataWidget(this,data,flags);
-    this->layout()->add(displaydatawidget);
+    this->layout()->addWidget(displaydatawidget);
 
     size += displaydatawidget->getNumWidgets();
     pixelSize += displaydatawidget->sizeHint().height();
+    displaydatawidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
 
     connect(displaydatawidget, SIGNAL( WidgetDirty(bool) ), this, SLOT( setTabDirty(bool) ) );
@@ -99,7 +105,7 @@ void QTabulationModifyObject::addLink(sofa::core::objectmodel::BaseLink *link, c
 
     const std::string name=link->getName();
     QDisplayLinkWidget* displaylinkwidget = new QDisplayLinkWidget(this,link,flags);
-    this->layout()->add(displaylinkwidget);
+    this->layout()->addWidget(displaylinkwidget);
 
     size += displaylinkwidget->getNumWidgets();
     pixelSize += displaylinkwidget->sizeHint().height();
@@ -126,7 +132,7 @@ void QTabulationModifyObject::updateListViewItem()
     {
         QString currentName = item->text(0);
 
-        std::string name=item->text(0).ascii();
+        std::string name=item->text(0).toStdString();
         std::string::size_type pos = name.find(' ');
         if (pos != std::string::npos)
             name = name.substr(0,pos);

@@ -135,8 +135,10 @@ QGLFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
 // --- Constructor
 // ---------------------------------------------------------
 QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAASamples)
-    : QGLWidget(setupGLFormat(nbMSAASamples), parent, name)
+    : QGLWidget(setupGLFormat(nbMSAASamples), parent)
 {
+    this->setObjectName(name);
+
 #if defined(QT_VERSION) && QT_VERSION >= 0x040700
     std::cout << "QtViewer: OpenGL " << format().majorVersion() << "." << format().minorVersion() << " context created." << std::endl;
 #endif
@@ -1374,16 +1376,16 @@ bool QtViewer::mouseEvent(QMouseEvent * e)
 
         ApplyMouseInteractorTransformation(eventX, eventY);
     }
-    else if (e->state() & Qt::ShiftButton)
+    else if (e->modifiers() & Qt::ShiftModifier)
     {
         isInteractive = true;
         SofaViewer::mouseEvent(e);
     }
-    else if (e->state() & Qt::ControlButton)
+    else if (e->modifiers() & Qt::ControlModifier)
     {
         isInteractive = true;
     }
-    else if (e->state() & Qt::AltButton)
+    else if (e->modifiers() & Qt::AltModifier)
     {
         isInteractive = true;
         switch (e->type())

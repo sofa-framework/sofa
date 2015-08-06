@@ -31,16 +31,16 @@
 #endif
 
 #ifndef SOFA_GUI_QT_NO_RECORDER
-#   include "sofa/gui/qt/QSofaRecorder.h"
+#include "sofa/gui/qt/QSofaRecorder.h"
 #endif
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-#   include "WindowVisitor.h"
-#   include "GraphVisitor.h"
+#include "WindowVisitor.h"
+#include "GraphVisitor.h"
 #endif
 
 #ifdef SOFA_PML
-#   include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/common/Node.h>
 #endif
 
 #include "QSofaListView.h"
@@ -64,67 +64,30 @@
 #include <sofa/simulation/common/SceneLoaderFactory.h>
 #include <sofa/simulation/common/ExportGnuplotVisitor.h>
 
-#ifdef SOFA_QT4
-#   include <QApplication>
-#   include <Q3TextDrag>
-#   include <QTimer>
-#   include <QTextBrowser>
-#   include <QWidget>
-#   include <QStackedWidget>
-#   include <Q3ListView>
-#   include <QSplitter>
-#   include <Q3TextEdit>
-#   include <QAction>
-#   include <QMessageBox>
-#   include <Q3DockWindow>
-#   include <QDesktopWidget>
-#   include <QStatusBar>
-#   include <Q3DockArea>
-#   include <QSettings>
-//#   include <QSlider>
-//#   include <QLibrary>
-//#   include <QDockWidget>
-//#   include <QLayout>
-//#   include <Q3ListViewItem>
-//#   include <QCheckBox>
-//#   include <QTabWidget>
-//#   include <QToolTip>
-//#   include <QButtonGroup>
-//#   include <QRadioButton>
-//#   include <QInputDialog>
+#include <QApplication>
+#include <QTimer>
+#include <QTextBrowser>
+#include <QWidget>
+#include <QStackedWidget>
+#include <QTreeWidget>
+#include <QSplitter>
+#include <QTextEdit>
+#include <QAction>
+#include <QMessageBox>
+#include <QDockWidget>
+#include <QDesktopWidget>
+#include <QStatusBar>
+#include <QDockWidget>
+#include <QSettings>
+#include <QMimeData>
+
 #   ifdef SOFA_GUI_INTERACTION
-#       include <QCursor>
+#    include <QCursor>
 #   endif
-#else
-#   include <qapplication.h>
-#   include <qtextbrowser.h>
-#   include <qwidget.h>
-#   include <qwidgetstack.h>
-#   include <qsplitter.h>
-#   include <qaction.h>
-#   include <qmessagebox.h>
-#   include <qlistview.h>
-#   include <qimage.h>
-#   include <qtextedit.h>
-#   include <qdockwindow.h>
-#   include <qdesktopwidget.h>
-#   include <qstatusbar.h>
-#   include <qdockarea.h>
-#   include <qsettings.h>
-//#   include <qmime.h>
-//#   include <qslider.h>
-//#   include <qlibrary.h>
-//#   include <qlayout.h>
-//#   include <qtabwidget.h>
-//#   include <qtooltip.h>
-//#   include <qbuttongroup.h>
-//#   include <qradiobutton.h>
-//#   include <qinputdialog.h>
-//#   include <qheader.h>
+
 #   ifdef SOFA_GUI_INTERACTION
-#       include <qcursor.h>
+#    include <qcursor.h>
 #   endif
-#endif
 
 #include <algorithm>
 #include <iomanip>
@@ -147,19 +110,11 @@ namespace qt
 SOFA_LINK_CLASS(ImageQt);
 
 
-#ifdef SOFA_QT4
-typedef Q3ListView QListView;
-typedef Q3DockWindow QDockWindow;
-typedef QStackedWidget QWidgetStack;
-typedef Q3TextEdit QTextEdit;
-#endif
-
 using sofa::core::objectmodel::BaseObject;
 using namespace sofa::helper::system::thread;
 using namespace sofa::simulation;
 using namespace sofa::core::visual;
 
-#ifdef SOFA_QT4
 /// Custom QApplication class handling FileOpen events for MacOS
 class QSOFAApplication : public QApplication
 {
@@ -175,9 +130,17 @@ protected:
         {
         case QEvent::FileOpen:
         {
-            std::string filename = static_cast<QFileOpenEvent *>(event)->file().ascii();
-            if (filename != std::string(static_cast<RealGUI*>(mainWidget())->windowFilePath().ascii()))
-                static_cast<RealGUI*>(mainWidget())->fileOpen(static_cast<QFileOpenEvent *>(event)->file().ascii());
+            std::string filename = static_cast<QFileOpenEvent *>(event)->file().toStdString();
+            if(this->topLevelWidgets().count() < 1)
+                return false;
+            RealGUI* mainGui = static_cast<RealGUI*>(this->topLevelWidgets()[0]);
+            //mainGui->fileOpen(filename);
+
+//            if (filename != std::string(static_cast<RealGUI*>(QApplication::topLevelWidgets()[0])->windowFilePath().toStdString()))
+//            {
+//                static_cast<RealGUI*>(QApplication::topLevelWidgets()[0])->fileOpen(static_cast<QFileOpenEvent *>(event)->file().toStdString());
+//            }
+
             return true;
         }
         default:
@@ -185,9 +148,6 @@ protected:
         }
     }
 };
-#else
-typedef QApplication QSOFAApplication;
-#endif
 
 RealGUI* gui = NULL;
 QApplication* application = NULL;
@@ -227,11 +187,7 @@ void RealGUI::SetPixmap(std::string pixmap_filename, QPushButton* b)
     if ( sofa::helper::system::DataRepository.findFile ( pixmap_filename ) )
         pixmap_filename = sofa::helper::system::DataRepository.getFile ( pixmap_filename );
 
-#ifdef SOFA_QT4
-    b->setPixmap(QPixmap(QPixmap::fromImage(QImage(pixmap_filename.c_str()))));
-#else
-    b->setPixmap(QPixmap(QImage(pixmap_filename.c_str())));
-#endif
+    b->setIcon(QIcon(QPixmap(QPixmap::fromImage(QImage(pixmap_filename.c_str())))));
 }
 
 //------------------------------------
@@ -250,14 +206,12 @@ void RealGUI::CreateApplication(int /*_argc*/, char** /*_argv*/)
 
 void RealGUI::InitApplication( RealGUI* _gui)
 {
-    application->setMainWidget ( _gui );
+    //application->setMainWidget ( _gui );
 
     QString pathIcon=(sofa::helper::system::DataRepository.getFirstPath() + std::string( "/icons/SOFA.png" )).c_str();
-#ifdef SOFA_QT4
+
     application->setWindowIcon(QIcon(pathIcon));
-#else
-    gui->setIcon(QPixmap(pathIcon));
-#endif
+
 
     // show the gui
     _gui->show();
@@ -346,18 +300,23 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     connect ( dumpStateCheckBox, SIGNAL ( toggled ( bool ) ), this, SLOT ( dumpState ( bool ) ) );
     connect ( displayComputationTimeCheckBox, SIGNAL ( toggled ( bool ) ), this, SLOT ( displayComputationTime ( bool ) ) );
     connect ( exportGnuplotFilesCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportGnuplot ( bool ) ) );
-    connect ( tabs, SIGNAL ( currentChanged ( QWidget* ) ), this, SLOT ( currentTabChanged ( QWidget* ) ) );
+    connect ( tabs, SIGNAL ( currentChanged ( int ) ), this, SLOT ( currentTabChanged ( int ) ) );
 
-    m_dockTools=new QDockWindow(this);
-    m_dockTools->setResizeEnabled(true);
-    m_dockTools->setFixedExtentWidth(300);
-    this->moveDockWindow( m_dockTools, Qt::DockLeft);
-    this->topDock() ->setAcceptDockWindow(m_dockTools,false);
-    this->bottomDock()->setAcceptDockWindow(m_dockTools,false);
+    this->setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowTabbedDocks);
+    m_dockTools=new QDockWidget(tr(""), this);
+    //m_dockTools->setResizeEnabled(true);
+    m_dockTools->setFixedWidth(300);
+    m_dockTools->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    m_dockTools->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
+    addDockWidget(Qt::LeftDockWidgetArea, m_dockTools);
+
+    //this->moveDockWindow( m_dockTools, Qt::DockLeft);
+    //this->topDock() ->setAcceptDockWindow(m_dockTools,false);
+    //this->bottomDock()->setAcceptDockWindow(m_dockTools,false);
 
     m_dockTools->setWidget(optionTabs);
 
-    connect(m_dockTools, SIGNAL(placeChanged(Q3DockWindow::Place)), this, SLOT(toolsDockMoved(Q3DockWindow::Place)));
+    connect(m_dockTools, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), this, SLOT(toolsDockMoved()));
 
 	/*moveDockWindow(dockWidget, Qt::DockLeft);
 	dockWidget->setFixedExtentWidth(400);
@@ -365,7 +324,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 
     // create a Dock Window to receive the Sofa Recorder
 #ifndef SOFA_GUI_QT_NO_RECORDER
-    QDockWindow *dockRecorder=new QDockWindow(this);
+    QDockWidget *dockRecorder=new QDockWidget(this);
     dockRecorder->setResizeEnabled(true);
     this->moveDockWindow( dockRecorder, Qt::DockBottom);
     this->leftDock() ->setAcceptDockWindow(dockRecorder,false);
@@ -388,7 +347,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 #endif
 
     statWidget = new QSofaStatWidget(TabStats);
-    TabStats->layout()->add(statWidget);
+    TabStats->layout()->addWidget(statWidget);
 
     createSimulationGraph();
 
@@ -397,13 +356,13 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 
     //viewer
     informationOnPickCallBack = InformationOnPickCallBack(this);
-    left_stack = new QWidgetStack ( splitter2 );
+    left_stack = new QStackedWidget ( splitter2 );
 
     viewerMap.clear();
     if (mCreateViewersOpt)
         createViewer(viewername, true);
 
-    currentTabChanged ( tabs->currentPage() );
+    currentTabChanged ( tabs->currentIndex() );
 
     createBackgroundGUIInfos(); // add GUI for Background Informations
 
@@ -438,13 +397,11 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 	const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
 	this->move(  ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
 
-#ifdef SOFA_QT4
     tabs->removeTab(tabs->indexOf(TabVisualGraph));
-#endif
 
 #ifndef SOFA_GUI_QT_NO_RECORDER
     if (recorder)
-        connect( recorder, SIGNAL( RecordSimulation(bool) ), startButton, SLOT( setOn(bool) ) );
+        connect( recorder, SIGNAL( RecordSimulation(bool) ), startButton, SLOT( setChecked(bool) ) );
     if (recorder && getQtViewer())
         connect( recorder, SIGNAL( NewTime() ), getQtViewer()->getQWidget(), SLOT( update() ) );
 #endif
@@ -516,18 +473,13 @@ void RealGUI::setTraceVisitors(bool b)
 
 //------------------------------------
 
-#ifdef SOFA_QT4
 void RealGUI::changeHtmlPage( const QUrl& u)
 {
-    std::string path=u.path().ascii();
+    std::string path=u.path().toStdString();
 #ifdef WIN32
     path = path.substr(1);
-#endif
-#else
-void RealGUI::changeHtmlPage( const QString& u)
-{
-    std::string path=u.ascii();
-#endif
+#endif // WIN32
+
     path  = sofa::helper::system::DataRepository.getFile(path);
     std::string extension=sofa::helper::system::SetDirectory::GetExtension(path.c_str());
     if (extension == "xml" || extension == "scn") fileOpen(path);
@@ -729,7 +681,7 @@ int RealGUI::mainLoop()
     }
     else
     {
-        const std::string &filename=windowFilePath().ascii();
+        const std::string &filename=windowFilePath().toStdString();
         const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
         if (extension == "simu") fileOpenSimu(filename);
         retcode = application->exec();
@@ -775,7 +727,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
         return fileOpenSimu(filename);
     }
 
-    startButton->setOn(false);
+    startButton->setChecked(false);
     descriptionScene->hide();
     htmlPage->clear();
     startDumpVisitor();
@@ -811,7 +763,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
 
 void RealGUI::fileOpen()
 {
-    std::string filename(this->windowFilePath().ascii());
+    std::string filename(this->windowFilePath().toStdString());
 
     // build the filter with the SceneLoaderFactory
     std::string filter, allKnownFilters = "All known (";
@@ -863,9 +815,9 @@ void RealGUI::fileOpen()
         else
 #endif
             if (s.endsWith( ".simu") )
-                fileOpenSimu(s.ascii());
+                fileOpenSimu(s.toStdString());
             else
-                fileOpen (s.ascii());
+                fileOpen (s.toStdString());
     }
 }
 
@@ -923,7 +875,7 @@ void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFi
         eventNewTime();
 
         //simulation::getSimulation()->updateVisualContext ( root );
-        startButton->setOn ( root->getContext()->getAnimate() );
+        startButton->setChecked(root->getContext()->getAnimate() );
         dtEdit->setText ( QString::number ( root->getDt() ) );
         simulationGraph->Clear(root.get());
         statWidget->CreateStats(root.get());
@@ -975,7 +927,7 @@ void RealGUI::setTitle ( std::string windowTitle )
 #ifdef WIN32
     setWindowTitle ( str.c_str() );
 #else
-    setCaption ( str.c_str() );
+    this->setWindowTitle(QString(str.c_str()) );
 #endif
     setWindowFilePath( windowTitle.c_str() );
 }
@@ -993,7 +945,7 @@ void RealGUI::fileNew()
 
 void RealGUI::fileSave()
 {
-    std::string filename(this->windowFilePath().ascii());
+    std::string filename(this->windowFilePath().toStdString());
     std::string message="You are about to overwrite your current scene: "  + filename + "\nAre you sure you want to do that ?";
 
     if ( QMessageBox::warning ( this, "Saving the Scene",message.c_str(), QMessageBox::Yes | QMessageBox::Default, QMessageBox::No ) != QMessageBox::Yes )
@@ -1013,7 +965,7 @@ void RealGUI::fileSaveAs ( Node *node, const char* filename )
 
 void RealGUI::fileReload()
 {
-    std::string filename(this->windowFilePath().ascii());
+    std::string filename(this->windowFilePath().toStdString());
     QString s = filename.c_str();
 
     if ( filename.empty() )
@@ -1036,9 +988,9 @@ void RealGUI::fileReload()
     }
 #else
     if (s.endsWith( ".simu") )
-        fileOpenSimu(s.ascii());
+        fileOpenSimu(s.toStdString());
     else
-        fileOpen ( s.ascii(),saveReloadFile );
+        fileOpen ( s.toStdString(),saveReloadFile );
 #endif
 }
 
@@ -1048,7 +1000,7 @@ void RealGUI::fileExit()
 {
     //Hide all opened ModifyObject windows
     emit ( newScene() );
-    startButton->setOn ( false);
+    startButton->setChecked ( false);
     this->close();
 }
 
@@ -1063,12 +1015,12 @@ void RealGUI::fileExit()
 
 void RealGUI::editRecordDirectory()
 {
-    std::string filename(this->windowFilePath().ascii());
+    std::string filename(this->windowFilePath().toStdString());
     std::string record_directory;
     QString s = getExistingDirectory ( this, filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
     if (s.length() > 0)
     {
-        record_directory = s.ascii();
+        record_directory = s.toStdString();
         if (record_directory.at(record_directory.size()-1) != '/')
             record_directory+="/";
 #ifndef SOFA_GUI_QT_NO_RECORDER
@@ -1082,11 +1034,11 @@ void RealGUI::editRecordDirectory()
 
 void RealGUI::editGnuplotDirectory()
 {
-    std::string filename(this->windowFilePath().ascii());
+    std::string filename(this->windowFilePath().toStdString());
     QString s = getExistingDirectory ( this, filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
     if (s.length() > 0)
     {
-        gnuplot_directory = s.ascii();
+        gnuplot_directory = s.toStdString();
         if (gnuplot_directory.at(gnuplot_directory.size()-1) != '/')
             gnuplot_directory+="/";
         setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
@@ -1124,20 +1076,14 @@ void RealGUI::setViewerResolution ( int w, int h )
         QSize winSize = size();
         QSize viewSize = ( getViewer() ) ? getQtViewer()->getQWidget()->size() : QSize(0,0);
 
-#ifdef SOFA_QT4
         QList<int> list;
-#else
-        QValueList<int> list;
-#endif
 
         list.push_back ( 250 );
         list.push_back ( w );
         QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
         splitter_ptr->setSizes ( list );
 
-#ifdef SOFA_QT4
         layout()->update();
-#endif
 
         const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
         QSize newWinSize(winSize.width() - viewSize.width() + w, winSize.height() - viewSize.height() + h);
@@ -1165,13 +1111,8 @@ void RealGUI::setFullScreen (bool enable)
     {
         QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
 
-#ifdef SOFA_QT4
         QList<int> list;
         static QList<int> savedsizes;
-#else
-        QValueList<int> list;
-        static QValueList<int> savedsizes;
-#endif
 
         if (enable)
         {
@@ -1192,7 +1133,8 @@ void RealGUI::setFullScreen (bool enable)
             showFullScreen();
             m_fullScreen = true;
 
-            m_dockTools->undock();
+            m_dockTools->setFloating(true);
+            //m_dockTools->undock();
             m_dockTools->setVisible(false);
         }
         else
@@ -1201,7 +1143,7 @@ void RealGUI::setFullScreen (bool enable)
             showNormal();
             m_fullScreen = false;
             m_dockTools->setVisible(true);
-            m_dockTools->dock();
+            m_dockTools->setFloating(false);
         }
 
         if (enable)
@@ -1327,10 +1269,11 @@ void RealGUI::createViewer(const char* _viewerName, bool _updateViewerList/*=fal
             removeViewer();
             ViewerQtArgument viewerArg = ViewerQtArgument("viewer", left_stack, m_viewerMSAANbSampling);
             registerViewer( helper::SofaViewerFactory::CreateObject(iter_map->first, viewerArg) );
-            iter_map->second->setOn(true);
+            //see to put on checkable
+            iter_map->second->setChecked(true);
         }
         else
-            iter_map->second->setOn(false);
+            iter_map->second->setChecked(false);
     }
 
     mGuiName = _viewerName;
@@ -1400,8 +1343,10 @@ void RealGUI::dragEnterEvent( QDragEnterEvent* event)
 void RealGUI::dropEvent(QDropEvent* event)
 {
     QString text;
-    Q3TextDrag::decode(event, text);
-    std::string filename(text.ascii());
+    //Q3TextDrag::decode(event, text);
+    if (event->mimeData()->hasText())
+        text = event->mimeData()->text();
+    std::string filename(text.toStdString());
 
 #ifdef WIN32
     filename = filename.substr(8); //removing file:///
@@ -1459,7 +1404,7 @@ void RealGUI::createDisplayFlags(Node::SPtr root)
             connect( displayFlag, SIGNAL( WidgetDirty(bool) ), this, SLOT(showhideElements() ));
             displayFlag->setMinimumSize(50,100);
             gridLayout1->addWidget(displayFlag,0,0);
-            connect(tabs,SIGNAL(currentChanged(QWidget*)),displayFlag, SLOT( updateWidgetValue() ));
+            connect(tabs,SIGNAL(currentChanged(int)),displayFlag, SLOT( updateWidgetValue() ));
         }
     }
 }
@@ -1478,12 +1423,9 @@ void RealGUI::loadHtmlDescription(const char* filename)
         htmlFile = "file:///"+htmlFile;
 #endif
         descriptionScene->show();
-#ifdef SOFA_QT4
+
         htmlPage->setSource(QUrl(QString(htmlFile.c_str())));
-#else
-        htmlPage->mimeSourceFactory()->setFilePath(QString(htmlFile.c_str()));
-        htmlPage->setSource(QString(htmlFile.c_str()));
-#endif
+
     }
 }
 
@@ -1578,11 +1520,7 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
     }
 #endif
 
-#ifdef SOFA_QT4
     if (e->modifiers()) return;
-#else
-    if (e->state() & (Qt::KeyButtonMask)) return;
-#endif
 
     // ignore if there are modifiers (i.e. CTRL of SHIFT)
     switch ( e->key() )
@@ -1603,7 +1541,7 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
     }
     case Qt::Key_Space:
     {
-        playpauseGUI(!startButton->isOn());
+        playpauseGUI(!startButton->isChecked());
         break;
     }
     case Qt::Key_Backspace:
@@ -1686,23 +1624,17 @@ void RealGUI::initViewer(BaseViewer* _viewer)
         isEmbeddedViewer(true);
         left_stack->addWidget( qtViewer->getQWidget() );
 
-#ifdef SOFA_QT4
         left_stack->setCurrentWidget ( qtViewer->getQWidget() );
         qtViewer->getQWidget()->setFocusPolicy ( Qt::StrongFocus );
-#else
-        int id_viewer = left_stack->addWidget ( qtViewer->getQWidget() );
-        left_stack->raiseWidget ( id_viewer );
-        qtViewer->getQWidget()->setFocusPolicy ( QWidget::StrongFocus );
-        qtViewer->getQWidget()->setCursor ( QCursor ( 2 ) );
-#endif
 
-        qtViewer->getQWidget()->setSizePolicy ( QSizePolicy ( ( QSizePolicy::SizeType ) 7,
-                ( QSizePolicy::SizeType ) 7,
-                100, 1,
-                qtViewer->getQWidget()->sizePolicy().hasHeightForWidth() )
-                                              );
+        qtViewer->getQWidget()->setSizePolicy ( QSizePolicy ( ( QSizePolicy::Policy ) 7,
+                ( QSizePolicy::Policy ) 7
+                //, 100, 1,
+                //qtViewer->getQWidget()->sizePolicy().hasHeightForWidth() )
+                                              ));
+
         qtViewer->getQWidget()->setMinimumSize ( QSize ( 0, 0 ) );
-        qtViewer->getQWidget()->setMouseTracking ( TRUE );
+        qtViewer->getQWidget()->setMouseTracking ( false );
         qtViewer->configureViewerTab(tabs);
 
         connect ( qtViewer->getQWidget(), SIGNAL ( resizeW ( int ) ), sizeW, SLOT ( setValue ( int ) ) );
@@ -1720,14 +1652,10 @@ void RealGUI::initViewer(BaseViewer* _viewer)
         splitter_ptr->addWidget( left_stack );
         splitter_ptr->setOpaqueResize ( false );
 
-#ifdef SOFA_QT4
         // rescale factor for the space occuped by the widget index
         splitter_ptr->setStretchFactor( 0, 2); // OptionTab
         splitter_ptr->setStretchFactor( 1, 10); // Viewer -> you won't an embedded viewer : set to (1,0)
         QList<int> list;
-#else
-        QValueList<int> list;
-#endif
 
         list.push_back ( 250 ); // OptionTab
         list.push_back ( 640 ); // Viewer -> you won't an embedded viewer : set to 0
@@ -1789,13 +1717,15 @@ void RealGUI::createPluginManager()
 
 void RealGUI::createRecentFilesMenu()
 {
-#ifdef SOFA_QT4
     fileMenu->removeAction(Action);
-#endif
-    const int indexRecentlyOpened=fileMenu->count()-2;
+
+    //const int indexRecentlyOpened=fileMenu->count()-2;
+    const int indexRecentlyOpened=fileMenu->actions().count();
+
     QMenu *recentMenu = recentlyOpenedFilesManager.createWidget(this);
-    fileMenu->insertItem(QPixmap(),recentMenu,indexRecentlyOpened,indexRecentlyOpened);
-    connect(recentMenu, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
+    fileMenu->insertMenu(fileMenu->actions().at(indexRecentlyOpened-1),
+                           recentMenu);
+    connect(recentMenu, SIGNAL(triggered(QAction *)), this, SLOT(fileRecentlyOpened(QAction *)));
 }
 
 //------------------------------------
@@ -1823,7 +1753,9 @@ void RealGUI::createBackgroundGUIInfos()
     QHBoxLayout *imageLayout = new QHBoxLayout(image);
     imageLayout->addWidget(new QLabel(QString("Image "),image));
 
-    backgroundImage = new QLineEdit(image,"backgroundImage");
+    backgroundImage = new QLineEdit(image);
+    backgroundImage->setText("backgroundImage");
+
     if ( getViewer() )
         backgroundImage->setText( QString(getViewer()->getBackgroundImage().c_str()) );
     else
@@ -1864,17 +1796,22 @@ void RealGUI::createPropertyWidget()
 
     propertyWidget = new QDisplayPropertyWidget(modifyObjectFlags);
 
-	QDockWindow *dockProperty=new QDockWindow(this);
-	dockProperty->setResizeEnabled(true);
-	dockProperty->setFixedExtentWidth(300);
-	dockProperty->setFixedExtentHeight(300);
-	this->moveDockWindow( dockProperty, Qt::DockLeft);
-	this->topDock()->setAcceptDockWindow(dockProperty, false);
-	this->bottomDock()->setAcceptDockWindow(dockProperty, false);
+    QDockWidget *dockProperty=new QDockWidget(this);
+
+    dockProperty->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
+    dockProperty->setMaximumSize(QSize(300,300));
+    //dockProperty->setFeatures();
+
+//	dockProperty->setResizeEnabled(true);
+//	dockProperty->setFixedExtentWidth(300);
+//	dockProperty->setFixedExtentHeight(300);
+//	this->moveDockWindow( dockProperty, Qt::DockLeft);
+//	this->topDock()->setAcceptDockWindow(dockProperty, false);
+//	this->bottomDock()->setAcceptDockWindow(dockProperty, false);
 
     dockProperty->setWidget(propertyWidget);
 
-    connect(dockProperty, SIGNAL(placeChanged(Q3DockWindow::Place)), this, SLOT(propertyDockMoved(Q3DockWindow::Place)));
+    connect(dockProperty, SIGNAL(dockLocationChanged(QDockWidget::DockWidgetArea)), this, SLOT(propertyDockMoved(QDockWidget::DockWidgetArea)));
 
     simulationGraph->setPropertyWidget(propertyWidget);
 }
@@ -1907,13 +1844,8 @@ void RealGUI::createSceneDescription()
     QVBoxLayout *descriptionLayout = new QVBoxLayout(descriptionScene);
     htmlPage = new QTextBrowser(descriptionScene);
     descriptionLayout->addWidget(htmlPage);
-#ifdef SOFA_QT4
+
     connect(htmlPage, SIGNAL(sourceChanged(const QUrl&)), this, SLOT(changeHtmlPage(const QUrl&)));
-#else
-    // QMimeSourceFactory::defaultFactory()->setExtensionType("html", "text/utf8");
-    htmlPage->mimeSourceFactory()->setExtensionType("html", "text/utf8");;
-    connect(htmlPage, SIGNAL(sourceChanged(const QString&)), this, SLOT(changeHtmlPage(const QString&)));
-#endif
 }
 //======================= METHODS ========================= }
 
@@ -1922,7 +1854,7 @@ void RealGUI::createSceneDescription()
 //======================= SIGNALS-SLOTS ========================= {
 void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)
 {
-    std::string filename(this->windowFilePath().ascii());
+    std::string filename(this->windowFilePath().toStdString());
     std::string message="You are about to changed the root node of the scene : "  + filename +
             "to the root node of the scene : " + std::string(path) +
             "\nThis imply that the simulation singleton have to changed its root node.\nAre you sure you want to do that ?";
@@ -1994,7 +1926,7 @@ void RealGUI::setSleepingNode(sofa::simulation::Node* node, bool sleeping)
 void RealGUI::fileSaveAs(Node *node)
 {
     if (node == NULL) node = currentSimulation();
-    std::string filename(this->windowFilePath().ascii());
+    std::string filename(this->windowFilePath().toStdString());
 
 
     QString filter( "Scenes (");
@@ -2033,7 +1965,7 @@ void RealGUI::fileSaveAs(Node *node)
             pmlreader->saveAsPML ( s );
         else
 #endif
-            fileSaveAs ( node,s );
+            fileSaveAs ( node,s.toStdString().c_str() );
 
 }
 
@@ -2043,7 +1975,7 @@ void RealGUI::LockAnimation(bool value)
 {
     if(value)
     {
-        animationState = startButton->isOn();
+        animationState = startButton->isChecked();
         playpauseGUI(false);
     }
     else
@@ -2054,16 +1986,17 @@ void RealGUI::LockAnimation(bool value)
 
 //------------------------------------
 
-void RealGUI::fileRecentlyOpened(int id)
+void RealGUI::fileRecentlyOpened(QAction *action)
 {
-    fileOpen(recentlyOpenedFilesManager.getFilename((unsigned int)id));
+    //fileOpen(recentlyOpenedFilesManager.getFilename((unsigned int)id));
+    fileOpen(action->text().toStdString());
 }
 
 //------------------------------------
 
 void RealGUI::playpauseGUI ( bool value )
 {
-    startButton->setOn ( value );
+    startButton->setChecked ( value );
     if ( currentSimulation() )
         currentSimulation()->getContext()->setAnimate ( value );
     if(value)
@@ -2081,7 +2014,7 @@ void RealGUI::playpauseGUI ( bool value )
 #ifdef SOFA_GUI_INTERACTION
 void RealGUI::interactionGUI ( bool value )
 {
-    interactionButton->setOn ( value );
+    interactionButton->setChecked ( value );
     m_interactionActived = value;
     getQtViewer()->getQWidget()->setMouseTracking ( ! value);
     if (value==true)
@@ -2135,7 +2068,7 @@ void RealGUI::step()
 
     // If dt is zero, the actual value of dt will be taken from the graph.
     double dt = 0.0;
-    if (realTimeCheckBox->isChecked() && startButton->isOn())
+    if (realTimeCheckBox->isChecked() && startButton->isChecked())
     {
         const clock_t currentClock = clock();
         // If animation has already started
@@ -2176,7 +2109,7 @@ void RealGUI::step()
     stopDumpVisitor();
     emit newStep();
     if ( !currentSimulation()->getContext()->getAnimate() )
-        startButton->setOn ( false );
+        startButton->setChecked ( false );
 }
 
 //------------------------------------
@@ -2240,18 +2173,15 @@ void RealGUI::screenshot()
     if ( filename != "" )
     {
         std::ostringstream ofilename;
-        const char* begin = filename;
+        const char* begin = filename.toStdString().c_str();
         const char* end = strrchr ( begin,'_' );
         if ( !end )
             end = begin + filename.length();
         ofilename << std::string ( begin, end );
         ofilename << "_";
         getViewer()->setPrefix ( ofilename.str() );
-#ifdef SOFA_QT4
+
         getViewer()->screenshot ( filename.toStdString() );
-#else
-        getViewer()->screenshot ( filename );
-#endif
     }
 }
 
@@ -2288,7 +2218,7 @@ void RealGUI::updateBackgroundColour()
 void RealGUI::updateBackgroundImage()
 {
     if(getViewer())
-        getViewer()->setBackgroundImage( backgroundImage->text().ascii() );
+        getViewer()->setBackgroundImage( backgroundImage->text().toStdString() );
     if(isEmbeddedViewer())
         getQtViewer()->getQWidget()->update();;
 }
@@ -2318,7 +2248,7 @@ void RealGUI::exportOBJ (simulation::Node* root,  bool exportMTL )
 {
     if ( !root ) return;
 
-    std::string sceneFileName(this->windowFilePath ().ascii());
+    std::string sceneFileName(this->windowFilePath ().toStdString());
     std::ostringstream ofilename;
     if ( !sceneFileName.empty() )
     {
@@ -2412,8 +2342,10 @@ void RealGUI::setExportVisitor ( bool )
 
 //------------------------------------
 
-void RealGUI::currentTabChanged ( QWidget* widget )
+void RealGUI::currentTabChanged ( int index )
 {
+    QWidget* widget = tabs->widget(index);
+
     if ( widget == currentTab ) return;
 
     if ( currentTab == NULL )
@@ -2437,7 +2369,7 @@ void RealGUI::changeViewer()
     if( !obj) return;
 
     QAction* action = static_cast<QAction*>(obj);
-    action->setOn(true);
+    action->setChecked(true);
 
     std::map< helper::SofaViewerFactory::Key, QAction*  >::const_iterator iter_map;
     for ( iter_map = viewerMap.begin(); iter_map != viewerMap.end() ; ++iter_map )
@@ -2450,12 +2382,12 @@ void RealGUI::changeViewer()
         }
         else
         {
-            (*iter_map).second->setOn(false);
+            (*iter_map).second->setChecked(false);
         }
     }
 
     // Reload the scene
-    std::string filename(this->windowFilePath().ascii());
+    std::string filename(this->windowFilePath().toStdString());
     fileOpen ( filename.c_str() ); // keep the current display flags
 }
 
@@ -2491,25 +2423,33 @@ void RealGUI::updateViewerList()
         std::map< helper::SofaViewerFactory::Key, QAction* >::iterator itViewerMap;
         if( (itViewerMap = viewerMap.find(*it)) != viewerMap.end() )
         {
-            if( (*itViewerMap).second->isOn() )
+            if( (*itViewerMap).second->isChecked() )
             {
                 this->unloadScene();
                 removeViewer();
                 viewerRemoved = true;
             }
-            (*itViewerMap).second->removeFrom(View);
+            //(*itViewerMap).second->disconnect(View);
+            View->removeAction( (*itViewerMap).second);
             viewerMap.erase(itViewerMap);
         }
         else // add new
         {
             QAction* action = new QAction(this);
             action->setText( helper::SofaViewerFactory::getInstance()->getViewerName(*it) );
-            action->setMenuText(  helper::SofaViewerFactory::getInstance()->getAcceleratedViewerName(*it) );
-            action->setToggleAction(true);
-            action->addTo(View);
+            //action->setMenuText(  helper::SofaViewerFactory::getInstance()->getAcceleratedViewerName(*it) );
+            action->setToolTip(  helper::SofaViewerFactory::getInstance()->getAcceleratedViewerName(*it) );
+
+            //action->setToggleAction(true);
+            action->setCheckable(true);
+
+
+            //action->addTo(View);
+            View->addAction(action);
+
             viewerMap[*it] = action;
             action->setEnabled(true);
-            connect(action, SIGNAL( activated() ), this, SLOT( changeViewer() ) );
+            connect(action, SIGNAL( triggered() ), this, SLOT( changeViewer() ) );
         }
     }
 
@@ -2517,27 +2457,27 @@ void RealGUI::updateViewerList()
     if( viewerRemoved && !viewerMap.empty() )
     {
         createViewer(viewerMap.begin()->first.c_str());
-        viewerMap.begin()->second->setOn(true);
+        viewerMap.begin()->second->setChecked(true);
     }
 }
 
-void RealGUI::toolsDockMoved(Q3DockWindow::Place p)
+void RealGUI::toolsDockMoved()
 {
-	Q3DockWindow* dockWindow = qobject_cast<Q3DockWindow*>(sender());
+    QDockWidget* dockWindow = qobject_cast<QDockWidget*>(sender());
 	if(!dockWindow)
 		return;
 
-	if(Q3DockWindow::OutsideDock == p)
+    if(dockWindow->isFloating())
 		dockWindow->resize(500, 700);
 }
 
-void RealGUI::propertyDockMoved(Q3DockWindow::Place p)
+void RealGUI::propertyDockMoved(Qt::DockWidgetArea a)
 {
-	Q3DockWindow* dockWindow = qobject_cast<Q3DockWindow*>(sender());
+    QDockWidget* dockWindow = qobject_cast<QDockWidget*>(sender());
 	if(!dockWindow)
 		return;
 
-	if(Q3DockWindow::OutsideDock == p)
+    if(dockWindow->isFloating())
 		dockWindow->resize(500, 700);
 }
 
@@ -2568,7 +2508,7 @@ std::string getFormattedLocalTime()
 //------------------------------------
 void RealGUI::appendToDataLogFile(QString dataModifiedString)
 {
-    const std::string filename = std::string(this->windowFilePath()) + std::string(".log");
+    const std::string filename = this->windowFilePath().toStdString() + std::string(".log");
 
     std::ofstream ofs( filename.c_str(), std::ofstream::out | std::ofstream::app );
 

@@ -27,12 +27,9 @@
 
 #include <sofa/gui/FilesRecentlyOpenedManager.h>
 #include "SofaGUIQt.h"
-#ifdef SOFA_QT4
+
 #include <QMenu>
-#else
-#include <qpopupmenu.h>
-typedef QPopupMenu QMenu;
-#endif
+
 namespace sofa
 {
 namespace gui

@@ -27,16 +27,10 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
-#ifdef SOFA_QT4
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <Q3GroupBox>
 #include <QLabel>
-#else
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qgroupbox.h>
-#endif
+
 
 
 namespace sofa
@@ -46,37 +40,58 @@ namespace gui
 {
 namespace qt
 {
-QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmodel::Base* object):QWidget(parent)
+void QDataDescriptionWidget::addRow(QGridLayout* grid, const std::string& title,
+                                    const std::string& value, unsigned int row,
+                                    unsigned int minimumWidth)
+{
+    QLabel* tmplabel;
+    grid->addWidget(new QLabel(QString(title.c_str())), row, 0);
+    tmplabel = (new QLabel(QString(value.c_str())));
+    tmplabel->setMinimumWidth(20);
+    grid->addWidget(tmplabel, row, 1);
+}
+
+QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmodel::Base* object)
+    :QWidget(parent)
 {
 
-    QVBoxLayout* tabLayout = new QVBoxLayout( this, 0, 1, QString("tabInfoLayout"));
+    QVBoxLayout* tabLayout = new QVBoxLayout(this);
+    tabLayout->setMargin(0);
+    tabLayout->setSpacing(1);
+    tabLayout->setObjectName("tabInfoLayout");
+
     //Instance
     {
-        Q3GroupBox *box = new Q3GroupBox(this, QString("Instance"));
-        box->setColumns(2);
+        QGroupBox *box = new QGroupBox(this);
+        tabLayout->addWidget(box);
+        QGridLayout* boxLayout = new QGridLayout();
+        box->setLayout(boxLayout);
+
         box->setTitle(QString("Instance"));
-        new QLabel(QString("Name"), box);
-        new QLabel(QString(object->getName().c_str()), box);
-        new QLabel(QString("Class"), box);
-        new QLabel(QString(object->getClassName().c_str()), box);
+
+        addRow(boxLayout, "Name", object->getName(), 0);
+        addRow(boxLayout, "Class", object->getClassName(), 1);
+
         std::string namespacename = core::objectmodel::BaseClass::decodeNamespaceName(typeid(*object));
+
+        int nextRow = 2;
         if (!namespacename.empty())
         {
-            new QLabel(QString("Namespace"), box);
-            (new QLabel(QString(namespacename.c_str()), box))->setMinimumWidth(20);
+            addRow(boxLayout, "Namespace", namespacename, nextRow, 20);
+            nextRow++;
         }
         if (!object->getTemplateName().empty())
         {
-            new QLabel(QString("Template"), box);
-            (new QLabel(QString(object->getTemplateName().c_str()), box))->setMinimumWidth(20);
+            addRow(boxLayout, "Template", object->getTemplateName(), nextRow, 20);
+            nextRow++;
         }
 
         core::objectmodel::BaseNode* node = dynamic_cast<core::objectmodel::BaseNode*>(object); // Node
         if (node && node->getParents().size()>1) // MultiNode
         {
-            new QLabel(QString("Path"), box);
-            (new QLabel(QString(node->getPathName().c_str()), box))->setMinimumWidth(20); // the first direct path (where to find the multinode in the displayed tree)
-        }
+            addRow(boxLayout, "Path", node->getPathName(), nextRow, 20);
+            nextRow++;
+         }
 
         tabLayout->addWidget( box );
     }
@@ -86,36 +101,41 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
     core::ObjectFactory::ClassEntry entry = core::ObjectFactory::getInstance()->getEntry(object->getClassName());
     if (! entry.creatorMap.empty())
     {
-        Q3GroupBox *box = new Q3GroupBox(this, QString("Class"));
-        box->setColumns(2);
+        QGroupBox *box = new QGroupBox(this);
+        tabLayout->addWidget(box);
+        QGridLayout* boxLayout = new QGridLayout();
+        box->setLayout(boxLayout);
         box->setTitle(QString("Class"));
+
+        int nextRow = 0;
         if (!entry.description.empty() && entry.description != std::string("TODO"))
         {
-            new QLabel(QString("Description"), box);
-            (new QLabel(QString(entry.description.c_str()), box))->setMinimumWidth(20);
+            addRow(boxLayout, "Description", entry.description, nextRow, 20);
+            nextRow++;
         }
         core::ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(object->getTemplateName());
         if (it != entry.creatorMap.end() && *it->second->getTarget())
         {
-            new QLabel(QString("Provided by"), box);
-            (new QLabel(QString(it->second->getTarget()), box))->setMinimumWidth(20);
+            addRow(boxLayout, "Provided by",it->second->getTarget(), nextRow, 20);
+            nextRow++;
         }
 
         if (!entry.authors.empty() && entry.authors != std::string("TODO"))
         {
-            new QLabel(QString("Authors"), box);
-            (new QLabel(QString(entry.authors.c_str()), box))->setMinimumWidth(20);
+            addRow(boxLayout, "Authors", entry.authors, nextRow, 20);
+            nextRow++;
         }
         if (!entry.license.empty() && entry.license != std::string("TODO"))
         {
-            new QLabel(QString("License"), box);
-            (new QLabel(QString(entry.license.c_str()), box))->setMinimumWidth(20);
+            addRow(boxLayout, "License", entry.license, nextRow, 20);
+            nextRow++;
         }
         tabLayout->addWidget( box );
     }
 
     tabLayout->addStretch();
 }
+
 
 
 

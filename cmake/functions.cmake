@@ -100,6 +100,95 @@ macro(GatherProjectFiles files directories filter) # group)
     endforeach()
 endmacro()
 
+#QT 5 replacement
+MACRO (QT4_GET_MOC_FLAGS _moc_flags)
+  SET(${_moc_flags})
+  GET_DIRECTORY_PROPERTY(_inc_DIRS INCLUDE_DIRECTORIES)
+
+  FOREACH(_current ${_inc_DIRS})
+    IF("${_current}" MATCHES "\\.framework/?$")
+      STRING(REGEX REPLACE "/[^/]+\\.framework" "" framework_path "${_current}")
+      SET(${_moc_flags} ${${_moc_flags}} "-F${framework_path}")
+    ELSE("${_current}" MATCHES "\\.framework/?$")
+      SET(${_moc_flags} ${${_moc_flags}} "-I${_current}")
+    ENDIF("${_current}" MATCHES "\\.framework/?$")
+  ENDFOREACH(_current ${_inc_DIRS})
+
+  GET_DIRECTORY_PROPERTY(_defines COMPILE_DEFINITIONS)
+  FOREACH(_current ${_defines})
+    SET(${_moc_flags} ${${_moc_flags}} "-D${_current}")
+  ENDFOREACH(_current ${_defines})
+
+  IF(Q_WS_WIN)
+    SET(${_moc_flags} ${${_moc_flags}} -DWIN32)
+  ENDIF(Q_WS_WIN)
+
+ENDMACRO(QT4_GET_MOC_FLAGS)
+
+macro (QT4_MAKE_OUTPUT_FILE infile prefix ext outfile )
+  string(LENGTH ${CMAKE_CURRENT_BINARY_DIR} _binlength)
+  string(LENGTH ${infile} _infileLength)
+  set(_checkinfile ${CMAKE_CURRENT_SOURCE_DIR})
+  if(_infileLength GREATER _binlength)
+    string(SUBSTRING "${infile}" 0 ${_binlength} _checkinfile)
+    if(_checkinfile STREQUAL "${CMAKE_CURRENT_BINARY_DIR}")
+      file(RELATIVE_PATH rel ${CMAKE_CURRENT_BINARY_DIR} ${infile})
+    else()
+      file(RELATIVE_PATH rel ${CMAKE_CURRENT_SOURCE_DIR} ${infile})
+    endif()
+  else()
+    file(RELATIVE_PATH rel ${CMAKE_CURRENT_SOURCE_DIR} ${infile})
+  endif()
+  if(WIN32 AND rel MATCHES "^[a-zA-Z]:") # absolute path
+    string(REGEX REPLACE "^([a-zA-Z]):(.*)$" "\\1_\\2" rel "${rel}")
+  endif()
+  set(_outfile "${CMAKE_CURRENT_BINARY_DIR}/${rel}")
+  string(REPLACE ".." "__" _outfile ${_outfile})
+  get_filename_component(outpath ${_outfile} PATH)
+  get_filename_component(_outfile ${_outfile} NAME_WE)
+  file(MAKE_DIRECTORY ${outpath})
+  set(${outfile} ${outpath}/${prefix}${_outfile}.${ext})
+endmacro ()
+
+# helper macro to set up a moc rule
+MACRO (QT4_CREATE_MOC_COMMAND infile outfile moc_flags moc_options)
+
+    # IF(NOT QT_MOC_EXECUTABLE)
+    #   FIND_PROGRAM(QT_MOC_EXECUTABLE NAMES moc moc5 moc-qt5 PATHS ${QT_BINARY_DIR}
+    #                NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
+    # ENDIF(NOT QT_MOC_EXECUTABLE)
+
+  # For Windows, create a parameters file to work around command line length limit
+  IF (WIN32)
+    # Pass the parameters in a file.  Set the working directory to
+    # be that containing the parameters file and reference it by
+    # just the file name.  This is necessary because the moc tool on
+    # MinGW builds does not seem to handle spaces in the path to the
+    # file given with the @ syntax.
+
+    GET_FILENAME_COMPONENT(_moc_outfile_name "${outfile}" NAME)
+    GET_FILENAME_COMPONENT(_moc_outfile_dir "${outfile}" PATH)
+    IF(_moc_outfile_dir)
+      SET(_moc_working_dir WORKING_DIRECTORY ${_moc_outfile_dir})
+    ENDIF(_moc_outfile_dir)
+    SET (_moc_parameters_file ${outfile}_parameters)
+    SET (_moc_parameters ${moc_flags} ${moc_options} -o "${outfile}" "${infile}")
+    STRING (REPLACE ";" "\n" _moc_parameters "${_moc_parameters}")
+    FILE (WRITE ${_moc_parameters_file} "${_moc_parameters}")
+    ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
+                       COMMAND ${QT_MOC_EXECUTABLE} @${_moc_outfile_name}_parameters
+                       DEPENDS ${infile}
+                       ${_moc_working_dir}
+                       VERBATIM)
+  ELSE (WIN32)
+    # message("${QT_MOC_EXECUTABLE} ARGS ${moc_flags} ${moc_options} -o ${outfile} ${infile}")
+    ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
+                       COMMAND ${QT_MOC_EXECUTABLE}
+                       ARGS ${moc_flags} ${moc_options} -o ${outfile} ${infile}
+                       DEPENDS ${infile} VERBATIM)
+  ENDIF (WIN32)
+ENDMACRO (QT4_CREATE_MOC_COMMAND)
+
 # generate mocced headers from Qt4 moccable headers
 macro(SOFA_QT4_WRAP_CPP outfiles )
     # get include dirs
@@ -113,8 +202,8 @@ macro(SOFA_QT4_WRAP_CPP outfiles )
 
     foreach(it ${ARGN})
         get_filename_component(it ${it} ABSOLUTE)
-        QT4_MAKE_OUTPUT_FILE(${it} moc_ cpp outfile)
-        QT4_CREATE_MOC_COMMAND(${it} ${outfile} "${moc_flags}" "${defines}" "${moc_options}")
+        #QT4_MAKE_OUTPUT_FILE(${it} moc_ cpp outfile)
+        #QT4_CREATE_MOC_COMMAND(${it} ${outfile} "${moc_flags}" "${defines}" "${moc_options}")
         set(${outfiles} ${${outfiles}} ${outfile})
     endforeach()
 endmacro()
@@ -132,26 +221,121 @@ macro(SOFA_QT4_WRAP_UI outfiles)
     endforeach()
 endmacro()
 
-function(UseQt)
-    set(ENV{QTDIR} "${SOFA-EXTERNAL_QT_PATH}")
-    set(ENV{CONFIG} "qt;uic")
-    find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qt3support qtxml qtnetwork REQUIRED)
-    set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} CACHE INTERNAL "QMake executable path")
+####### generate mocced headers from Qt4 or Qt5 moccable headers
+macro(SOFA_QT_WRAP_CPP)
+    if(SOFA_USE_QT5)
+        qt5_wrap_cpp(${ARGN})
+    else()
+        QT4_WRAP_CPP(${ARGN})
+    endif()
+endmacro()
 
-    include(${QT_USE_FILE})
-    include_directories(${QT_INCLUDE_DIR})
-    include_directories(${CMAKE_CURRENT_BINARY_DIR})
+macro(SOFA_QT_WRAP_UI)
+    if(SOFA_USE_QT5)
+        qt5_wrap_ui(${ARGN})
+    else()
+        SOFA_QT4_WRAP_UI(${ARGN})
+    endif()
+endmacro()
 
-    file(GLOB QT_INCLUDE_SUBDIRS "${QT_INCLUDE_DIR}/Qt*")
-    foreach(QT_INCLUDE_SUBDIR ${QT_INCLUDE_SUBDIRS})
-        if(IS_DIRECTORY ${QT_INCLUDE_SUBDIR})
-            include_directories(${QT_INCLUDE_SUBDIR})
-        endif()
-    endforeach()
+macro(SOFA_QT_ADD_RESOURCES)
+    if(SOFA_USE_QT5)
+        QT5_ADD_RESOURCES(${ARGN})
+    else()
+        QT4_ADD_RESOURCES(${ARGN})
+    endif()
+endmacro()
+
+macro(UseQt5)
+    find_package(Qt5 COMPONENTS Core Concurrent Gui Xml OpenGL PrintSupport Quick Qml REQUIRED )
+
+    include_directories(${Qt5Core_INCLUDE_DIRS})
+    include_directories(${Qt5Widgets_INCLUDE_DIRS})
+    include_directories(${Qt5OpenGL_INCLUDE_DIRS})
+    include_directories(${Qt5Concurrent_INCLUDE_DIRS})
+    include_directories(${Qt5PrintSupport_INCLUDE_DIRS})
+    include_directories(${Qt5Qml_INCLUDE_DIRS})
+    include_directories(${Qt5Quick_INCLUDE_DIRS})
+
+
+    set(ADDITIONAL_LINKER_DEPENDENCIES ${ADDITIONAL_LINKER_DEPENDENCIES} ${Qt5Core_LIBRARIES})
+    set(ADDITIONAL_LINKER_DEPENDENCIES ${ADDITIONAL_LINKER_DEPENDENCIES} ${Qt5Widgets_LIBRARIES})
+    set(ADDITIONAL_LINKER_DEPENDENCIES ${ADDITIONAL_LINKER_DEPENDENCIES} ${Qt5OpenGL_LIBRARIES})
+    set(ADDITIONAL_LINKER_DEPENDENCIES ${ADDITIONAL_LINKER_DEPENDENCIES} ${Qt5Concurrent_LIBRARIES})
+    set(ADDITIONAL_LINKER_DEPENDENCIES ${ADDITIONAL_LINKER_DEPENDENCIES} ${Qt5PrintSupport_LIBRARIES})
+
+    add_definitions(${Qt5Core_DEFINITIONS})
+    add_definitions(${Qt5Gui_DEFINITIONS})
+    add_definitions(${Qt5Widgets_DEFINITIONS})
+    add_definitions(${Qt5Qml_DEFINITIONS})
+    add_definitions(${Qt5Quick_DEFINITIONS})
 
     set(ADDITIONAL_COMPILER_DEFINES ${ADDITIONAL_COMPILER_DEFINES} ${QT_DEFINITIONS} PARENT_SCOPE)
     set(ADDITIONAL_LINKER_DEPENDENCIES ${ADDITIONAL_LINKER_DEPENDENCIES} ${QT_LIBRARIES} PARENT_SCOPE)
-endfunction()
+
+endmacro()
+
+macro(UseQt)
+    #Test if QT5 is present
+
+    find_package(Qt5 COMPONENTS Core QUIET HINTS ${SOFA-EXTERNAL_QT5_PATH})
+
+    if(Qt5Core_FOUND)
+        #message("USING QT5")
+        set(SOFA_USE_QT5 TRUE)
+
+        find_package(Qt5 COMPONENTS Concurrent Gui Xml OpenGL PrintSupport Quick Qml REQUIRED)
+        include_directories(${Qt5Core_INCLUDE_DIRS})
+        include_directories(${Qt5Widgets_INCLUDE_DIRS})
+        include_directories(${Qt5OpenGL_INCLUDE_DIRS})
+        include_directories(${Qt5Concurrent_INCLUDE_DIRS})
+        include_directories(${Qt5PrintSupport_INCLUDE_DIRS})
+        include_directories(${Qt5Qml_INCLUDE_DIRS})
+        include_directories(${Qt5Quick_INCLUDE_DIRS})
+        include_directories(${Qt5Xml_INCLUDE_DIRS})
+
+
+        set(ADDITIONAL_LINKER_DEPENDENCIES ${ADDITIONAL_LINKER_DEPENDENCIES} ${Qt5Core_LIBRARIES})
+        set(ADDITIONAL_LINKER_DEPENDENCIES ${ADDITIONAL_LINKER_DEPENDENCIES} ${Qt5Widgets_LIBRARIES})
+        set(ADDITIONAL_LINKER_DEPENDENCIES ${ADDITIONAL_LINKER_DEPENDENCIES} ${Qt5OpenGL_LIBRARIES})
+        set(ADDITIONAL_LINKER_DEPENDENCIES ${ADDITIONAL_LINKER_DEPENDENCIES} ${Qt5Concurrent_LIBRARIES})
+        set(ADDITIONAL_LINKER_DEPENDENCIES ${ADDITIONAL_LINKER_DEPENDENCIES} ${Qt5Xml_LIBRARIES})
+        set(ADDITIONAL_LINKER_DEPENDENCIES ${ADDITIONAL_LINKER_DEPENDENCIES} ${Qt5PrintSupport_LIBRARIES})
+
+        add_definitions(${Qt5Core_DEFINITIONS})
+        add_definitions(${Qt5Gui_DEFINITIONS})
+        add_definitions(${Qt5Widgets_DEFINITIONS})
+        add_definitions(${Qt5Xml_DEFINITIONS})
+        add_definitions(${Qt5Qml_DEFINITIONS})
+        add_definitions(${Qt5Quick_DEFINITIONS})
+
+        set(ADDITIONAL_COMPILER_DEFINES ${ADDITIONAL_COMPILER_DEFINES} ${QT_DEFINITIONS} PARENT_SCOPE)
+        set(ADDITIONAL_LINKER_DEPENDENCIES ${ADDITIONAL_LINKER_DEPENDENCIES} ${QT_LIBRARIES} PARENT_SCOPE)
+    else()
+        #message("USING QT4")
+
+        set(ENV{QTDIR} "${SOFA-EXTERNAL_QT_PATH}")
+        set(ENV{CONFIG} "qt;uic")
+        find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml qtnetwork REQUIRED)
+        set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} CACHE INTERNAL "QMake executable path")
+
+        include(${QT_USE_FILE})
+        include_directories(${QT_INCLUDE_DIR})
+        include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+        file(GLOB QT_INCLUDE_SUBDIRS "${QT_INCLUDE_DIR}/Qt*")
+        foreach(QT_INCLUDE_SUBDIR ${QT_INCLUDE_SUBDIRS})
+            if(IS_DIRECTORY ${QT_INCLUDE_SUBDIR})
+                include_directories(${QT_INCLUDE_SUBDIR})
+            endif()
+        endforeach()
+
+        set(ADDITIONAL_COMPILER_DEFINES ${ADDITIONAL_COMPILER_DEFINES} ${QT_DEFINITIONS} )
+        set(ADDITIONAL_LINKER_DEPENDENCIES ${ADDITIONAL_LINKER_DEPENDENCIES} ${QT_LIBRARIES})
+    endif()
+endmacro()
+
+##########
 
 # RegisterProjects(<lib0> [lib1 [lib2 ...]] [OPTION <optionName>] [COMPILE_DEFINITIONS <compileDefinition0> [compileDefinition1 [compileDefinition2 ...]] [PATH <path>])
 # register a dependency in the dependency tree, used to be retrieved at the end of the project configuration

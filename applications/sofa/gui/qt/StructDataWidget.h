@@ -34,13 +34,9 @@
 /* #include <../../../projects/vulcain/lib/DiscreteElementModel.h> */
 #include <sofa/helper/io/Mesh.h>
 
-#ifdef SOFA_QT4
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLayout>
-#else
-#include <qlayout.h>
-#endif
 
 namespace sofa
 {
@@ -120,7 +116,8 @@ public:
 
     bool createLayout( QLayout* layout)
     {
-        container_layout = new QHBoxLayout(layout);
+        container_layout = new QHBoxLayout();
+        layout->addItem(container_layout);
         return true;
     }
 
@@ -131,11 +128,11 @@ public:
 
         if(check)
         {
-            container_layout->add(check);
+            container_layout->addWidget(check);
         }
         if(label)
         {
-            container_layout->add(label);
+            container_layout->addWidget(label);
         }
         w.createLayout(container_layout); // create the layout for the rest of the widgets
         w.insertWidgets(); // insert them accordingly
@@ -189,14 +186,14 @@ public:
     void setReadOnly(bool readOnly)
     {
         p.setReadOnly(readOnly);
-        w.setReadOnly(readOnly || vhelper::readOnly() || (check && !check->isOn()));
+        w.setReadOnly(readOnly || vhelper::readOnly() || (check && !(check->checkState() == Qt::Checked)));
     }
     void readFromData(const data_type& d)
     {
         p.readFromData(d);
         if (check)
         {
-            bool wasChecked = check->isOn();
+            bool wasChecked = (check->checkState() == Qt::Checked);
             bool isChecked = vhelper::isChecked(d);
             if (isChecked != wasChecked)
             {
@@ -224,7 +221,7 @@ public:
         p.writeToData(d);
         if (check)
         {
-            bool isChecked = check->isOn();
+            bool isChecked = (check->checkState() == Qt::Checked);
             vhelper::setChecked(isChecked, d);
         }
         value_type v = *vhelper::get(d);

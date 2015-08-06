@@ -31,22 +31,16 @@
 #include <sofa/gui/qt/SofaGUIQt.h>
 #include <sofa/gui/qt/SofaVideoRecorderManager.h>
 
-#include <qstring.h>
-#include <qwidget.h>
+#include <QString>
+#include <QWidget>
 
-#ifdef SOFA_QT4
 #include <QEvent>
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QTabWidget>
 #include <QTimer>
-#else
-#include <qevent.h>
-#include <qtabwidget.h>
-#include <qtimer.h>
-#endif
 
-#include <qcursor.h>
+//#include <qcursor.h>
 
 namespace sofa
 {

@@ -41,11 +41,11 @@
 #include <sofa/simulation/common/xml/XML.h>
 #include <sofa/simulation/common/XMLPrintVisitor.h>
 
-
-
-#include <Q3PopupMenu>
+#include <QMenu>
 #include <QMessageBox>
-#include <Q3PtrList>
+#include <QHeaderView>
+#include <QDrag>
+#include <QMimeData>
 
 using sofa::core::ComponentLibrary;
 
@@ -63,13 +63,17 @@ int numNode= 0;
 int numComponent= 0;
 }
 
-GraphModeler::GraphModeler( QWidget* parent, const char* name, Qt::WFlags f): Q3ListView(parent, name, f), graphListener(NULL), propertyWidget(NULL)
+GraphModeler::GraphModeler(QWidget* parent, const char* name, Qt::WindowFlags f): QTreeWidget(parent), graphListener(NULL), propertyWidget(NULL)
 {
+    this->setObjectName(name);
+    setWindowFlags(f);
+
     graphListener = new GraphListenerQListView(this);
-    addColumn("Graph");
+    //addColumn("Graph");
     header()->hide();
-    setSorting ( -1 );
-    setSelectionMode(Q3ListView::Extended);
+    setSortingEnabled(false);
+    setSelectionMode(QAbstractItemView::ExtendedSelection);
+    this->setItemsExpandable(true);
 
     historyManager=new GraphHistoryManager(this);
     //Make the connections
@@ -81,9 +85,12 @@ GraphModeler::GraphModeler( QWidget* parent, const char* name, Qt::WFlags f): Q3
     connect(historyManager, SIGNAL(graphModified(bool)), this, SIGNAL(graphModified(bool)));
     connect(historyManager, SIGNAL(displayMessage(const std::string&)), this, SIGNAL(displayMessage(const std::string&)));
 
-    connect(this, SIGNAL(doubleClicked ( Q3ListViewItem *)), this, SLOT( doubleClick(Q3ListViewItem *)));
-    connect(this, SIGNAL(selectionChanged()),  this, SLOT( addInPropertyWidget()));
-    connect(this, SIGNAL(rightButtonClicked ( Q3ListViewItem *, const QPoint &, int )),  this, SLOT( rightClick(Q3ListViewItem *, const QPoint &, int )));
+    connect(this, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT( doubleClick(QTreeWidgetItem *, int)));
+    connect(this, SIGNAL(itemSelectionChanged()),  this, SLOT( addInPropertyWidget()));
+    //connect(this, SIGNAL(itemClicked(QTreeWidgetItem*,int)),  this, SLOT( rightClick(QTreeWidgetItem *, int )));
+    this->setContextMenuPolicy(Qt::CustomContextMenu);
+
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint&) ),  this, SLOT( rightClick(const QPoint& )));
     DialogAdd=NULL;
 }
 
@@ -97,6 +104,20 @@ GraphModeler::~GraphModeler()
     if (DialogAdd) delete DialogAdd;
 }
 
+/*
+void GraphModeler::mouseReleaseEvent(QMouseEvent* event)
+{
+    if (event->button() == Qt::RightButton)
+    {
+        QTreeWidgetItem* item;
+        item = dynamic_cast<QTreeWidgetItem *>(this->childAt(event->pos()));
+
+        if(item)
+            rightClick(item, 0 );
+    }
+}
+
+*/
 
 Node::SPtr GraphModeler::addNode(Node::SPtr parent, Node::SPtr child, bool saveHistory)
 {
@@ -125,14 +146,13 @@ Node::SPtr GraphModeler::addNode(Node::SPtr parent, Node::SPtr child, bool saveH
     {
         graphListener->addChild(NULL, child.get());
         //Set up the root
-        firstChild()->setExpandable(true);
-        firstChild()->setOpen(true);
+        this->topLevelItem(0)->setExpanded(true);
 
         if (saveHistory) historyManager->graphClean();
         graphRoot = child;
     }
 
-    if (!parent && childCount()>1)
+    if (!parent && this->children().size() > 1)
     {
         deleteComponent(graphListener->items[lastRoot.get()], saveHistory);
     }
@@ -228,11 +248,13 @@ BaseObject::SPtr GraphModeler::addComponent(Node::SPtr parent, const ClassEntry:
 void GraphModeler::dropEvent(QDropEvent* event)
 {
     QString text;
-    Q3TextDrag::decode(event, text);
+
+    if (event->mimeData()->hasText())
+        text = event->mimeData()->text();
 
     if (!text.isEmpty())
     {
-        std::string filename(text.ascii());
+        std::string filename(text.toStdString());
         std::string test = filename; test.resize(4);
 
         if (test == "file")
@@ -259,11 +281,11 @@ void GraphModeler::dropEvent(QDropEvent* event)
         BaseObject::SPtr newComponent = addComponent(getNode(event->pos()), lastSelectedComponent.second, lastSelectedComponent.first );
         if (newComponent)
         {
-            Q3ListViewItem *after = graphListener->items[newComponent.get()];
+            QTreeWidgetItem *after = graphListener->items[newComponent.get()];
             std::ostringstream oss;
             oss << newComponent->getClassName() << " " << newComponent->getName();
             after->setText(0, QString(oss.str().c_str()));
-            Q3ListViewItem *item = itemAt(event->pos());
+            QTreeWidgetItem *item = itemAt(event->pos());
             if (getObject(item)) initItem(after, item);
         }
     }
@@ -278,8 +300,8 @@ void GraphModeler::dropEvent(QDropEvent* event)
                 Node::SPtr newNode=addNode(node);
                 if (newNode)
                 {
-                    Q3ListViewItem *after = graphListener->items[newNode.get()];
-                    Q3ListViewItem *item = itemAt(event->pos());
+                    QTreeWidgetItem *after = graphListener->items[newNode.get()];
+                    QTreeWidgetItem *item = itemAt(event->pos());
                     if (getObject(item)) initItem(after,item);
                 }
             }
@@ -288,10 +310,10 @@ void GraphModeler::dropEvent(QDropEvent* event)
 }
 
 
-Base* GraphModeler::getComponent(Q3ListViewItem *item) const
+Base* GraphModeler::getComponent(QTreeWidgetItem *item) const
 {
     if (!item) return NULL;
-    std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it;
+    std::map<core::objectmodel::Base*, QTreeWidgetItem* >::iterator it;
     for (it = graphListener->items.begin(); it != graphListener->items.end(); ++it)
     {
         if (it->second == item)
@@ -302,7 +324,7 @@ Base* GraphModeler::getComponent(Q3ListViewItem *item) const
     return NULL;
 }
 
-BaseObject *GraphModeler::getObject(Q3ListViewItem *item) const
+BaseObject *GraphModeler::getObject(QTreeWidgetItem *item) const
 {
     Base* component=getComponent(item);
     return dynamic_cast<BaseObject*>(component);
@@ -311,19 +333,19 @@ BaseObject *GraphModeler::getObject(Q3ListViewItem *item) const
 
 Node *GraphModeler::getNode(const QPoint &pos) const
 {
-    Q3ListViewItem *item = itemAt(pos);
+    QTreeWidgetItem *item = itemAt(pos);
     if (!item) return NULL;
     return getNode(item);
 }
 
 
 
-Node *GraphModeler::getNode(Q3ListViewItem *item) const
+Node *GraphModeler::getNode(QTreeWidgetItem *item) const
 {
     if (!item) return NULL;
     sofa::core::objectmodel::Base *component=getComponent(item);
 
-    std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it;
+    std::map<core::objectmodel::Base*, QTreeWidgetItem* >::iterator it;
 
     if (Node *node=dynamic_cast<Node*>(component)) return node;
     else
@@ -335,10 +357,10 @@ Node *GraphModeler::getNode(Q3ListViewItem *item) const
     }
 }
 
-Q3ListViewItem *GraphModeler::getItem(Base *component) const
+QTreeWidgetItem *GraphModeler::getItem(Base *component) const
 {
     if (!component) return NULL;
-    std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it;
+    std::map<core::objectmodel::Base*, QTreeWidgetItem* >::iterator it;
     for (it = graphListener->items.begin(); it != graphListener->items.end(); ++it)
     {
         if (it->first == component)
@@ -351,13 +373,13 @@ Q3ListViewItem *GraphModeler::getItem(Base *component) const
 
 void GraphModeler::openModifyObject()
 {
-    helper::vector<Q3ListViewItem*> selection;
+    helper::vector<QTreeWidgetItem*> selection;
     getSelectedItems(selection);
     for (unsigned int i=0; i<selection.size(); ++i)
         openModifyObject(selection[i]);
 }
 
-void GraphModeler::openModifyObject(Q3ListViewItem *item)
+void GraphModeler::openModifyObject(QTreeWidgetItem *item)
 {
     if (!item) return;
 
@@ -399,7 +421,7 @@ void GraphModeler::openModifyObject(Q3ListViewItem *item)
     }
 
 
-    ModifyObject *dialogModify = new ModifyObject( current_Id_modifyDialog,item,this,dialogFlags,item->text(0));
+    ModifyObject *dialogModify = new ModifyObject( current_Id_modifyDialog,item,this,dialogFlags,item->text(0).toStdString().c_str());
 
     connect(dialogModify, SIGNAL(beginObjectModification(sofa::core::objectmodel::Base*)), historyManager, SLOT(beginModification(sofa::core::objectmodel::Base*)));
     connect(dialogModify, SIGNAL(endObjectModification(sofa::core::objectmodel::Base*)),   historyManager, SLOT(endModification(sofa::core::objectmodel::Base*)));
@@ -427,7 +449,7 @@ void GraphModeler::openModifyObject(Q3ListViewItem *item)
 
 void GraphModeler::addInPropertyWidget()
 {
-    helper::vector<Q3ListViewItem*> selection;
+    helper::vector<QTreeWidgetItem*> selection;
     getSelectedItems(selection);
 
     bool clear = true;
@@ -438,7 +460,7 @@ void GraphModeler::addInPropertyWidget()
     }
 }
 
-void GraphModeler::addInPropertyWidget(Q3ListViewItem *item, bool clear)
+void GraphModeler::addInPropertyWidget(QTreeWidgetItem *item, bool clear)
 {
     if(!item)
         return;
@@ -451,26 +473,29 @@ void GraphModeler::addInPropertyWidget(Q3ListViewItem *item, bool clear)
 		propertyWidget->addComponent(object->getName().c_str(), object, item, clear);
 }
 
-void GraphModeler::doubleClick(Q3ListViewItem *item)
+void GraphModeler::doubleClick(QTreeWidgetItem *item, int /* column */)
 {
     if (!item) return;
-    item->setOpen ( !item->isOpen() );
+    item->setExpanded(!item->isExpanded());
     openModifyObject(item);
 
 }
 
-void GraphModeler::leftClick(Q3ListViewItem *item, const QPoint & /*point*/, int /*index*/)
+void GraphModeler::leftClick(QTreeWidgetItem *item, const QPoint & /*point*/, int /*index*/)
 {
     if (!item) return;
-    item->setOpen ( !item->isOpen() );
+    item->setExpanded(!item->isExpanded() );
     addInPropertyWidget(item);
 }
 
-void GraphModeler::rightClick(Q3ListViewItem *item, const QPoint &point, int index)
+void GraphModeler::rightClick(const QPoint& p /*, int  index */)
 {
+    QTreeWidgetItem* item = this->itemAt(p);
+    std::cout << p.x() << " " << p.y()  << std::endl;
     if (!item) return;
+
     bool isNode=true;
-    helper::vector<Q3ListViewItem*> selection; getSelectedItems(selection);
+    helper::vector<QTreeWidgetItem*> selection; getSelectedItems(selection);
     bool isSingleSelection= (selection.size() == 1);
     for (unsigned int i=0; i<selection.size(); ++i)
     {
@@ -485,90 +510,76 @@ void GraphModeler::rightClick(Q3ListViewItem *item, const QPoint &point, int ind
     if (dynamic_cast<sofa::core::loader::BaseLoader*>(getComponent(item)) != NULL)
         isLoader = true;
 
-    Q3PopupMenu *contextMenu = new Q3PopupMenu ( this, "ContextMenu" );
+    QMenu *contextMenu = new QMenu ( this );
+    contextMenu->setObjectName("ContextMenu");
+
     if (isNode)
     {
-        contextMenu->insertItem("Collapse", this, SLOT( collapseNode()));
-        contextMenu->insertItem("Expand"  , this, SLOT( expandNode()));
+        contextMenu->addAction("Collapse", this, SLOT( collapseNode()));
+        contextMenu->addAction("Expand"  , this, SLOT( expandNode()));
         if (isSingleSelection)
         {
-            contextMenu->insertSeparator ();
-            contextMenu->insertItem("Load"  , this, SLOT( loadNode()));
-            contextMenu->insertItem(QIconSet(), tr( "Preset"), preset);
+            contextMenu->addSeparator();
+            contextMenu->addAction("Load"  , this, SLOT( loadNode()));
+            preset->setTitle(QString(tr( "Preset")));
+            contextMenu->addMenu(preset);
         }
     }
-    contextMenu->insertItem("Save"  , this, SLOT( saveComponents()));
+    contextMenu->addAction("Save"  , this, SLOT( saveComponents()));
 
-    /*int index_menu = */contextMenu->insertItem("Delete"  , this, SLOT( deleteComponent()));
+    contextMenu->addAction("Delete"  , this, SLOT( deleteComponent()));
 
-    //If the node/component is not erasable, clicking on Delete won't do anything.
-//        if (isNode)
-//        {
-//          if ( !isNodeErasable ( getNode(item) ) )
-//            contextMenu->setItemEnabled ( index_menu,false );
-//        }
-//        else
-//        {
-//          if ( !isObjectErasable ( getObject(item) ))
-//            contextMenu->setItemEnabled ( index_menu,false );
-//        }
-
-    contextMenu->insertItem("Modify"  , this, SLOT( openModifyObject()));
-    contextMenu->insertItem("GlobalModification"  , this, SLOT( globalModification()));
+    contextMenu->addAction("Modify"  , this, SLOT( openModifyObject()));
+    contextMenu->addAction("GlobalModification"  , this, SLOT( globalModification()));
 
     if (!isNode && !isLoader)
-        contextMenu->insertItem("Link"  , this, SLOT( linkComponent()));
+        contextMenu->addAction("Link"  , this, SLOT( linkComponent()));
 
-    contextMenu->popup ( point, index );
+    contextMenu->exec(this->mapToGlobal(p));
 
 }
 
 
 void GraphModeler::collapseNode()
 {
-    helper::vector<Q3ListViewItem*> selection;
+    helper::vector<QTreeWidgetItem*> selection;
     getSelectedItems(selection);
     for (unsigned int i=0; i<selection.size(); ++i)
         collapseNode(selection[i]);
 }
 
-void GraphModeler::collapseNode(Q3ListViewItem* item)
+void GraphModeler::collapseNode(QTreeWidgetItem* item)
 {
     if (!item) return;
 
-    Q3ListViewItem* child;
-    child = item->firstChild();
-    while ( child != NULL )
+    for(unsigned int i=0; i<item->childCount();i++)
     {
-        child->setOpen ( false );
-        child = child->nextSibling();
+        QTreeWidgetItem* child = item->child(i);
+        child->setExpanded( false );
     }
-    item->setOpen ( true );
+    item->setExpanded( true );
 }
 
 void GraphModeler::expandNode()
 {
-    helper::vector<Q3ListViewItem*> selection;
+    helper::vector<QTreeWidgetItem*> selection;
     getSelectedItems(selection);
     for (unsigned int i=0; i<selection.size(); ++i)
         expandNode(selection[i]);
 }
 
-void GraphModeler::expandNode(Q3ListViewItem* item)
+void GraphModeler::expandNode(QTreeWidgetItem* item)
 {
     if (!item) return;
 
-    item->setOpen ( true );
+    item->setExpanded( true );
     if ( item != NULL )
     {
-        Q3ListViewItem* child;
-        child = item->firstChild();
-        while ( child != NULL )
+        for(unsigned int i=0; i<item->childCount();i++)
         {
-            item = child;
-            child->setOpen ( true );
+            QTreeWidgetItem* child = item->child(i);
+            child->setExpanded( true );
             expandNode(item);
-            child = child->nextSibling();
         }
     }
 }
@@ -578,7 +589,7 @@ Node::SPtr GraphModeler::loadNode()
     return loadNode(currentItem());
 }
 
-Node::SPtr GraphModeler::loadNode(Q3ListViewItem* item, std::string filename, bool saveHistory)
+Node::SPtr GraphModeler::loadNode(QTreeWidgetItem* item, std::string filename, bool saveHistory)
 {
     Node::SPtr node;
     if (!item) node=NULL;
@@ -589,7 +600,7 @@ Node::SPtr GraphModeler::loadNode(Q3ListViewItem* item, std::string filename, bo
         QString s = getOpenFileName ( this, NULL,"Scenes (*.scn *.xml *.simu *.pscn)", "open file dialog",  "Choose a file to open" );
         if (s.length() >0)
         {
-            filename = s.ascii();
+            filename = s.toStdString();
         }
         else return NULL;
     }
@@ -600,10 +611,10 @@ Node::SPtr GraphModeler::loadNode(Q3ListViewItem* item, std::string filename, bo
 void GraphModeler::globalModification()
 {
     //Get all the components which can be modified
-    helper::vector< Q3ListViewItem* > selection;
+    helper::vector< QTreeWidgetItem* > selection;
     getSelectedItems(selection);
 
-    helper::vector< Q3ListViewItem* > hierarchySelection;
+    helper::vector< QTreeWidgetItem* > hierarchySelection;
     for (unsigned int i=0; i<selection.size(); ++i) getComponentHierarchy(selection[i], hierarchySelection);
 
     helper::vector< Base* > allComponentsSelected;
@@ -619,14 +630,14 @@ void GraphModeler::globalModification()
 void GraphModeler::linkComponent()
 {
     // get the selected component
-    helper::vector< Q3ListViewItem* > selection;
+    helper::vector< QTreeWidgetItem* > selection;
     getSelectedItems(selection);
 
     // a component must be selected
     if(selection.empty())
         return;
 
-    Q3ListViewItem *fromItem = *selection.begin();
+    QTreeWidgetItem *fromItem = *selection.begin();
     BaseObject *fromObject = getObject(fromItem);
 
     // the object must exist
@@ -638,8 +649,8 @@ void GraphModeler::linkComponent()
         return;
 
     // store the partial component hierarchy i.e we store the parent Nodes only
-    std::vector<Q3ListViewItem*> items;
-    for(Q3ListViewItem *item = fromItem->parent(); item != NULL; item = item->parent())
+    std::vector<QTreeWidgetItem*> items;
+    for(QTreeWidgetItem *item = fromItem->parent(); item != NULL; item = item->parent())
         items.push_back(item);
 
     // create and show the LinkComponent dialog box
@@ -705,9 +716,9 @@ Node::SPtr GraphModeler::buildNodeFromBaseElement(Node::SPtr node,xml::BaseEleme
             BaseObject::SPtr newComponent=addComponent(newNode, info, templatename, saveHistory,displayWarning);
             if (!newComponent) continue;
             configureElement(newComponent.get(), it);
-            Q3ListViewItem* itemGraph = graphListener->items[newComponent.get()];
+            QTreeWidgetItem* itemGraph = graphListener->items[newComponent.get()];
 
-            std::string name=itemGraph->text(0).ascii();
+            std::string name=itemGraph->text(0).toStdString();
             std::string::size_type pos = name.find(' ');
             if (pos != std::string::npos)  name.resize(pos);
             name += "  ";
@@ -887,9 +898,9 @@ bool GraphModeler::getSaveFilename(std::string &filename)
     QString s = sofa::gui::qt::getSaveFileName ( this, NULL, "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
     if ( s.length() >0 )
     {
-        std::string extension=sofa::helper::system::SetDirectory::GetExtension(s.ascii());
+        std::string extension=sofa::helper::system::SetDirectory::GetExtension(s.toStdString().c_str());
         if (extension.empty()) s+=QString(".scn");
-        filename = s.ascii();
+        filename = s.toStdString();
         return true;
     }
     return false;
@@ -897,14 +908,14 @@ bool GraphModeler::getSaveFilename(std::string &filename)
 
 void GraphModeler::save(const std::string &filename)
 {
-    Node *node = getNode(this->firstChild());
+    Node *node = getNode(this->topLevelItem(0));
     simulation::getSimulation()->exportXML(node, filename.c_str());
     emit graphClean();
 }
 
 void GraphModeler::saveComponents()
 {
-    helper::vector<Q3ListViewItem*> selection;
+    helper::vector<QTreeWidgetItem*> selection;
     getSelectedItems(selection);
     if (selection.empty()) return;
     std::string filename;
@@ -912,7 +923,7 @@ void GraphModeler::saveComponents()
 
 }
 
-void GraphModeler::saveComponents(helper::vector<Q3ListViewItem*> items, const std::string &file)
+void GraphModeler::saveComponents(helper::vector<QTreeWidgetItem*> items, const std::string &file)
 {
     std::ofstream out(file.c_str());
     simulation::XMLPrintVisitor print(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, out);
@@ -930,10 +941,10 @@ void GraphModeler::saveComponents(helper::vector<Q3ListViewItem*> items, const s
 
 void GraphModeler::clearGraph(bool saveHistory)
 {
-    deleteComponent(firstChild(), saveHistory);
+    deleteComponent(this->topLevelItem(0), saveHistory);
 }
 
-void GraphModeler::deleteComponent(Q3ListViewItem* item, bool saveHistory)
+void GraphModeler::deleteComponent(QTreeWidgetItem* item, bool saveHistory)
 {
     if (!item) return;
 
@@ -971,7 +982,7 @@ void GraphModeler::deleteComponent(Q3ListViewItem* item, bool saveHistory)
             graphListener->removeChild(parent, node);
         else
             parent->removeChild((Node*)node);
-        if (!parent && childCount() == 0) addNode(NULL);
+        if (!parent && this->children().size() == 0) addNode(NULL);
     }
 
 }
@@ -992,10 +1003,10 @@ void GraphModeler::changeComponentDataValue(const std::string &name, const std::
 }
 
 
-Base *GraphModeler::getComponentAbove(Q3ListViewItem *item)
+Base *GraphModeler::getComponentAbove(QTreeWidgetItem *item)
 {
     if (!item) return NULL;
-    Q3ListViewItem* itemAbove=item->itemAbove();
+    QTreeWidgetItem* itemAbove = this->itemAbove(item);
     while (itemAbove && itemAbove->parent() != item->parent() )
     {
         itemAbove = itemAbove->parent();
@@ -1007,7 +1018,7 @@ Base *GraphModeler::getComponentAbove(Q3ListViewItem *item)
 
 void GraphModeler::deleteComponent()
 {
-    helper::vector<Q3ListViewItem*> selection;
+    helper::vector<QTreeWidgetItem*> selection;
     getSelectedItems(selection);
     for (unsigned int i=0; i<selection.size(); ++i)
         deleteComponent(selection[i]);
@@ -1037,7 +1048,7 @@ void GraphModeler::keyPressEvent ( QKeyEvent * e )
     }
     default:
     {
-        Q3ListView::keyPressEvent(e);
+        QTreeWidget::keyPressEvent(e);
         break;
     }
     }
@@ -1046,36 +1057,37 @@ void GraphModeler::keyPressEvent ( QKeyEvent * e )
 // Test if a node can be erased in the graph : the condition is that none of its children has a menu modify opened
 bool GraphModeler::isNodeErasable ( BaseNode* node)
 {
-    Q3ListViewItem* item = graphListener->items[node];
+    QTreeWidgetItem* item = graphListener->items[node];
     if(item == NULL)
     {
         return false;
     }
     // check if there is already a dialog opened for that item in the graph
-    std::map< void*, Q3ListViewItem*>::iterator it;
+    std::map< void*, QTreeWidgetItem*>::iterator it;
     for (it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); ++it)
     {
         if (it->second == item) return false;
     }
 
     //check the item childs
-    Q3ListViewItem *child = item->firstChild();
-    while (child != NULL)
+
+    for(unsigned int i=0 ; i<item->childCount() ; i++)
     {
+         QTreeWidgetItem *child = item->child(i);
         for( it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); ++it)
         {
             if( it->second == child) return false;
         }
-        child = child->nextSibling();
     }
+
     return true;
 
 }
 
 bool GraphModeler::isObjectErasable ( core::objectmodel::Base* element )
 {
-    Q3ListViewItem* item = graphListener->items[element];
-    std::map< void*, Q3ListViewItem*>::iterator it;
+    QTreeWidgetItem* item = graphListener->items[element];
+    std::map< void*, QTreeWidgetItem*>::iterator it;
     for (it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); ++it)
     {
         if (it->second == item) return false;
@@ -1084,19 +1096,23 @@ bool GraphModeler::isObjectErasable ( core::objectmodel::Base* element )
     return true;
 }
 
-void GraphModeler::initItem(Q3ListViewItem *item, Q3ListViewItem *above)
+void GraphModeler::initItem(QTreeWidgetItem *item, QTreeWidgetItem *above)
 {
     moveItem(item, above);
     moveItem(above,item);
 }
 
-void GraphModeler::moveItem(Q3ListViewItem *item, Q3ListViewItem *above)
+void GraphModeler::moveItem(QTreeWidgetItem *item, QTreeWidgetItem *above)
 {
     if (item)
     {
         if (above)
         {
-            item->moveItem(above);
+            //item->moveItem(above);
+            item->parent()->removeChild(item);
+            QTreeWidgetItem *parent = above->parent();
+            parent->insertChild(parent->indexOfChild(above), item );
+
 
             //Move the object in the Sofa Node.
             if (above && getObject(item))
@@ -1134,15 +1150,15 @@ void GraphModeler::moveItem(Q3ListViewItem *item, Q3ListViewItem *above)
             //Object
             if (getObject(item))
             {
-                Q3ListViewItem *nodeQt = graphListener->items[getNode(item)];
-                Q3ListViewItem *firstComp=nodeQt->firstChild();
+                QTreeWidgetItem *nodeQt = graphListener->items[getNode(item)];
+                QTreeWidgetItem *firstComp=nodeQt->child(0);
                 if (firstComp != item) initItem(item, firstComp);
             }
             //Node
             else
             {
-                Q3ListViewItem *nodeQt = graphListener->items[getNode(item->parent())];
-                Q3ListViewItem *firstComp=nodeQt->firstChild();
+                QTreeWidgetItem *nodeQt = graphListener->items[getNode(item->parent())];
+                QTreeWidgetItem *firstComp=nodeQt->child(0);
                 if (firstComp != item) initItem(item, firstComp);
             }
         }
@@ -1160,10 +1176,13 @@ void GraphModeler::dragEnterEvent( QDragEnterEvent* event)
 void GraphModeler::dragMoveEvent( QDragMoveEvent* event)
 {
     QString text;
-    Q3TextDrag::decode(event, text);
+
+    if (event->mimeData()->hasText())
+        text = event->mimeData()->text();
+
     if (!text.isEmpty())
     {
-        std::string filename(text.ascii());
+        std::string filename(text.toStdString());
         std::string test = filename; test.resize(4);
         if (test == "file") {event->accept(event->answerRect());}
     }
@@ -1204,7 +1223,7 @@ bool GraphModeler::cut(std::string path)
 
 bool GraphModeler::copy(std::string path)
 {
-    helper::vector< Q3ListViewItem*> items; getSelectedItems(items);
+    helper::vector< QTreeWidgetItem*> items; getSelectedItems(items);
 
     if (!items.empty())
     {
@@ -1216,26 +1235,28 @@ bool GraphModeler::copy(std::string path)
 
 bool GraphModeler::paste(std::string path)
 {
-    helper::vector< Q3ListViewItem*> items; getSelectedItems(items);
+    helper::vector< QTreeWidgetItem*> items;
+    getSelectedItems(items);
     if (!items.empty())
     {
         //Get the last item of the node: the new items will be inserted AFTER this last item.
-        Q3ListViewItem *last=items.front();
-        while(last->nextSibling()) last=last->nextSibling();
-
+        QTreeWidgetItem *last=items.front();
+        //while(last->nextSibling()) last=last->nextSibling();
+        last = last->child(last->childCount()-1);
 
         Node *node = getNode(items.front());
         //Load the paste buffer
         loadNode(node, path);
-        Q3ListViewItem *pasteItem=items.front();
+        QTreeWidgetItem *pasteItem=items.front();
 
         //Find all the QListViewItem inserted
-        helper::vector< Q3ListViewItem* > insertedItems;
-        Q3ListViewItem *insertedItem=last;
-        while(insertedItem->nextSibling())
+        helper::vector< QTreeWidgetItem* > insertedItems;
+        QTreeWidgetItem *insertedItem=last;
+        for(unsigned int i=0 ; i<last->parent()->childCount() ; i++)
         {
-            insertedItem=insertedItem->nextSibling();
-            insertedItems.push_back(insertedItem);
+            QTreeWidgetItem *insertedItem = last->parent()->child(i);
+            if(insertedItem != last)
+                insertedItems.push_back(insertedItem);
         }
 
         //Initialize their position in the node

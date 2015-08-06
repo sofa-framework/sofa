@@ -2,7 +2,7 @@
 <ui version="4.0">
  <exportmacro>SOFA_SOFAGUIQT_API</exportmacro>
  <class>GUI</class>
- <widget class="Q3MainWindow" name="GUI">
+ <widget class="QMainWindow" name="GUI">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -30,13 +30,11 @@
    <string>Sofa</string>
   </property>
   <widget class="QWidget" name="widget">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>23</y>
-     <width>800</width>
-     <height>577</height>
-    </rect>
+   <property name="minimumSize">
+    <size>
+     <width>200</width>
+     <height>0</height>
+    </size>
    </property>
    <layout class="QVBoxLayout">
     <property name="margin">
@@ -440,7 +438,10 @@
              </layout>
             </item>
             <item>
-             <widget class="Q3TextEdit" name="textEdit1">
+             <widget class="QTextBrowser" name="textEdit1"/>
+            </item>
+            <item>
+             <widget class="QFrame" name="textEdit2">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -459,16 +460,10 @@
                 <height>32767</height>
                </size>
               </property>
-              <property name="resizePolicy">
-               <enum>Q3ScrollView::Manual</enum>
-              </property>
-              <property name="text">
+              <property name="text" stdset="0">
                <string/>
               </property>
-              <property name="wordWrap">
-               <enum>Q3TextEdit::WidgetWidth</enum>
-              </property>
-              <property name="readOnly">
+              <property name="readOnly" stdset="0">
                <bool>true</bool>
               </property>
              </widget>
@@ -772,25 +767,6 @@
   </action>
  </widget>
  <layoutdefault spacing="2" margin="5"/>
- <customwidgets>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3MainWindow</class>
-   <extends>QWidget</extends>
-   <header>q3mainwindow.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextEdit</class>
-   <extends>Q3Frame</extends>
-   <header>q3textedit.h</header>
-  </customwidget>
- </customwidgets>
  <includes>
   <include location="local">SofaGUIQt.h</include>
  </includes>
@@ -798,7 +774,7 @@
  <connections>
   <connection>
    <sender>fileNewAction</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>GUI</receiver>
    <slot>fileNew()</slot>
    <hints>
@@ -814,7 +790,7 @@
   </connection>
   <connection>
    <sender>fileOpenAction</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>GUI</receiver>
    <slot>fileOpen()</slot>
    <hints>
@@ -830,7 +806,7 @@
   </connection>
   <connection>
    <sender>fileReloadAction</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>GUI</receiver>
    <slot>fileReload()</slot>
    <hints>
@@ -846,7 +822,7 @@
   </connection>
   <connection>
    <sender>fileSaveAction</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>GUI</receiver>
    <slot>fileSave()</slot>
    <hints>
@@ -862,7 +838,7 @@
   </connection>
   <connection>
    <sender>fileSaveAsAction</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>GUI</receiver>
    <slot>fileSaveAs()</slot>
    <hints>
@@ -878,7 +854,7 @@
   </connection>
   <connection>
    <sender>fileExitAction</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>GUI</receiver>
    <slot>fileExit()</slot>
    <hints>
@@ -894,7 +870,7 @@
   </connection>
   <connection>
    <sender>helpIndexAction</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>GUI</receiver>
    <slot>helpIndex()</slot>
    <hints>
@@ -910,7 +886,7 @@
   </connection>
   <connection>
    <sender>helpContentsAction</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>GUI</receiver>
    <slot>helpContents()</slot>
    <hints>
@@ -926,7 +902,7 @@
   </connection>
   <connection>
    <sender>helpAboutAction</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>GUI</receiver>
    <slot>helpAbout()</slot>
    <hints>
@@ -942,7 +918,7 @@
   </connection>
   <connection>
    <sender>editRecordDirectoryAction</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>GUI</receiver>
    <slot>editRecordDirectory()</slot>
    <hints>
@@ -958,7 +934,7 @@
   </connection>
   <connection>
    <sender>PluginManagerAction</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>GUI</receiver>
    <slot>showPluginManager()</slot>
    <hints>
@@ -974,7 +950,7 @@
   </connection>
   <connection>
    <sender>MouseManagerAction</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>GUI</receiver>
    <slot>showMouseManager()</slot>
    <hints>
@@ -990,7 +966,7 @@
   </connection>
   <connection>
    <sender>editGnuplotDirectoryAction</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>GUI</receiver>
    <slot>editGnuplotDirectory()</slot>
    <hints>
@@ -1006,7 +982,7 @@
   </connection>
   <connection>
    <sender>VideoRecorderManagerAction</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>GUI</receiver>
    <slot>showVideoRecorderManager()</slot>
    <hints>

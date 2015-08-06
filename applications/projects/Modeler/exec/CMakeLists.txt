@@ -4,8 +4,7 @@ set(SOURCE_FILES
 
     Main.cpp
     )
-    
-UseQt()
+
 if(APPLE)
 
     set(RC_FILES "../Modeler.icns")
@@ -18,7 +17,7 @@ endif()
 
 UseQt()
 
-QT4_ADD_RESOURCES(RESOURCE_FILES "${SOFA_SHARE_DIR}/textures/modeler/icons.qrc")
+SOFA_QT_ADD_RESOURCES(RESOURCE_FILES "${SOFA_SHARE_DIR}/textures/modeler/icons.qrc")
 
 # make resource files path from absolute to relative
 ToRelativePath(RESOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${RESOURCE_FILES}")

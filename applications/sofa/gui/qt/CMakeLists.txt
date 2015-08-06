@@ -1,3 +1,5 @@
+# cmake_minimum_required(VERSION 3.0.2)
+
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
@@ -31,6 +33,7 @@ set(HEADER_FILES
 	QSofaRecorder.h
 	QSofaStatWidget.h
 	QModelViewTableUpdater.h
+
 	)
 
 set(SOURCE_FILES
@@ -68,6 +71,10 @@ set(SOURCE_FILES
 	QSofaStatWidget.cpp
 	QMenuFilesRecentlyOpened.cpp
 	ImageQt.cpp 
+	QEnergyStatWidget.cpp              
+	QMomentumStatWidget.cpp
+	QGraphStatWidget.cpp
+	QModelViewTableUpdater.cpp
 	)
 	
 set(UI_FILES
@@ -117,11 +124,14 @@ if(SOFA-LIB_GUI_QGLVIEWER)
 	AddLinkerDependencies(QGLViewer)
 endif()
 
+#UseQt5()
+
 UseQt()
 
+SOFA_QT_WRAP_CPP(MOC_FILES ${HEADER_FILES})
+SOFA_QT_WRAP_UI(FORM_FILES ${UI_FILES})
 
-SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
-SOFA_QT4_WRAP_UI(FORM_FILES ${UI_FILES})
+#SOFA_QT4_WRAP_UI(FORM_FILES ${UI_FILES})
 
 # make mocced header / form files path from absolute to relative
 ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
@@ -147,10 +157,10 @@ if(SOFA-MISC_DUMP_VISITOR_INFO)
     list(APPEND HEADER_FILES  GraphVisitor.h  )
 endif()
 
-set(MOC_FILES_GROUP "Generated")
-set(FORM_FILES_GROUP "Generated")
+#set(MOC_FILES_GROUP "Generated")
+#set(FORM_FILES_GROUP "Generated")
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED  ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_SOFAGUIQT")
 AddLinkerDependencies(SofaGuiCommon Qwt SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)

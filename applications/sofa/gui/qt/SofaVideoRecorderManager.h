@@ -31,17 +31,11 @@
 
 #include <vector>
 
-#ifdef SOFA_QT4
 #include <QComboBox>
 #include <QSpinBox>
 #include <QLabel>
 #include <QCheckBox>
-#else
-#include <qcombobox.h>
-#include <qspinbox.h>
-#include <qlabel.h>
-#include <qcheckbox.h>
-#endif
+
 namespace sofa
 {
 namespace gui

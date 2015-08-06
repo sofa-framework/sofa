@@ -28,23 +28,12 @@
 #include <sofa/gui/qt/DataWidget.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
-#ifdef SOFA_QT4
-#include <Q3ListView>
-#include <Q3CheckListItem>
-#include <Q3ListViewItem>
-#include <Q3Header>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+#include <QHeaderView>
 #include <QMouseEvent>
-#include <Q3Frame>
-#include <Q3GroupBox>
-#else
-#include <qlistview.h>
-#include <qheader.h>
-#include <qgroupbox.h>
-typedef QListView Q3ListView;
-typedef QCheckListItem Q3CheckListItem;
-typedef QListViewItem Q3ListViewItem;
-typedef QGroupBox Q3GroupBox;
-#endif
+#include <QFrame>
+#include <QGroupBox>
 
 namespace sofa
 {
@@ -54,7 +43,7 @@ namespace qt
 {
 
 
-class SOFA_SOFAGUIQT_API DisplayFlagWidget : public Q3ListView
+class SOFA_SOFAGUIQT_API DisplayFlagWidget : public QTreeWidget
 {
     Q_OBJECT;
 public:
@@ -78,10 +67,13 @@ public:
     };
 
 
-    DisplayFlagWidget(QWidget* parent, const char* name= 0, Qt::WFlags f= 0 );
+    DisplayFlagWidget(QWidget* parent, const char* name= 0, Qt::WindowFlags f= 0 );
 
-    bool getFlag(int idx) {return itemShowFlag[idx]->isOn();}
-    void setFlag(int idx, bool value) {itemShowFlag[idx]->setOn(value);}
+    bool getFlag(int idx) {return itemShowFlag[idx]->checkState(0) == Qt::Checked;}
+    void setFlag(int idx, bool value)
+    {
+        itemShowFlag[idx]->setCheckState(0, (value) ? Qt::Checked : Qt::Unchecked)   ;
+    }
 
 Q_SIGNALS:
     void change(int,bool);
@@ -89,13 +81,16 @@ Q_SIGNALS:
 
 
 protected:
-    virtual void contentsMousePressEvent ( QMouseEvent * e );
+    void setTreeWidgetNodeCheckable(QTreeWidgetItem* w, const char* name);
+    void setTreeWidgetCheckable(QTreeWidgetItem* w, const char* name);
 
-    void findChildren(Q3CheckListItem *, std::vector<Q3CheckListItem* > &children);
+    virtual void mouseReleaseEvent ( QMouseEvent * e );
+
+    void findChildren(QTreeWidgetItem *, std::vector<QTreeWidgetItem* > &children);
 
 
-    Q3CheckListItem* itemShowFlag[ALLFLAGS];
-    std::map<  Q3CheckListItem*, int > mapFlag;
+    QTreeWidgetItem* itemShowFlag[ALLFLAGS];
+    std::map<  QTreeWidgetItem*, int > mapFlag;
 };
 
 

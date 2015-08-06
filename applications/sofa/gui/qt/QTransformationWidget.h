@@ -28,20 +28,9 @@
 #include <sofa/simulation/common/Node.h>
 #include "WDoubleLineEdit.h"
 
-#ifdef SOFA_QT4
 #include <QWidget>
 #include <QTextEdit>
-#include <Q3GroupBox>
-#else
-#include <qwidget.h>
-#include <qtextedit.h>
-#include <qgroupbox.h>
-#endif
-
-#ifndef SOFA_QT4
-typedef QGroupBox Q3GroupBox;
-typedef QTextEdit   Q3TextEdit;
-#endif
+#include <QGroupBox>
 
 namespace sofa
 {
@@ -51,7 +40,7 @@ namespace qt
 {
 
 struct ModifyObjectFlags;
-class QTransformationWidget : public Q3GroupBox
+class QTransformationWidget : public QGroupBox
 {
     Q_OBJECT
 public:

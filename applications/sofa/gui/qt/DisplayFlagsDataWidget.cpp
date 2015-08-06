@@ -23,13 +23,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gui/qt/DisplayFlagsDataWidget.h>
-#ifdef SOFA_QT4
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLayout>
-#else
-#include <qlayout.h>
-#endif
 
 namespace sofa
 {
@@ -43,107 +40,133 @@ using namespace sofa::core::visual;
 helper::Creator<DataWidgetFactory, DisplayFlagsDataWidget > DWClass_DisplayFlags("widget_displayFlags",true);
 
 
-DisplayFlagWidget::DisplayFlagWidget(QWidget* parent, const char* name,  Qt::WFlags f ):
-    Q3ListView(parent,name,f)
+
+DisplayFlagWidget::DisplayFlagWidget(QWidget* parent, const char* name,  Qt::WindowFlags f ):
+    QTreeWidget(parent /*,name ,f*/)
 {
-    addColumn(QString::null);
-    setRootIsDecorated( TRUE );
-    setTreeStepSize( 12 );
+    this->setWindowFlags(f);
+    this->setObjectName(name);
+
+    //addColumn(QString::null);
+    setRootIsDecorated( true );
+    //setTreeStepSize( 12 );
     header()->hide();
     clear();
 
+
     setMouseTracking(false);
 
-#ifdef SOFA_QT4
-    setFocusPolicy(Qt::NoFocus);
-#else
-    setFocusPolicy(QWidget::NoFocus);
-#endif
+    //setFocusPolicy(Qt::NoFocus);
 
     setFrameShadow(QFrame::Plain);
     setFrameShape(QFrame::NoFrame );
 
-    setSortColumn(-1);
-    Q3CheckListItem* itemShowAll = new Q3CheckListItem(this, "All", Q3CheckListItem::CheckBoxController);
-    itemShowAll->setOpen(true);
-    Q3CheckListItem* itemShowVisual    = new Q3CheckListItem(itemShowAll, "Visual", Q3CheckListItem::CheckBoxController);
-    itemShowVisual->setOpen(true);
-    itemShowFlag[VISUALMODELS]   = new Q3CheckListItem(itemShowVisual, "Visual Models", Q3CheckListItem::CheckBox);
-    Q3CheckListItem* itemShowBehavior  = new Q3CheckListItem(itemShowAll, itemShowVisual, "Behavior", Q3CheckListItem::CheckBoxController);
-    itemShowBehavior->setOpen(true);
-    itemShowFlag[BEHAVIORMODELS]   = new Q3CheckListItem(itemShowBehavior,  "Behavior Models", Q3CheckListItem::CheckBox);
-    itemShowFlag[FORCEFIELDS]   = new Q3CheckListItem(itemShowBehavior, itemShowFlag[BEHAVIORMODELS], "Force Fields", Q3CheckListItem::CheckBox);
-    itemShowFlag[INTERACTIONFORCEFIELDS]   = new Q3CheckListItem(itemShowBehavior, itemShowFlag[FORCEFIELDS],  "Interactions", Q3CheckListItem::CheckBox);
-    Q3CheckListItem* itemShowCollision = new Q3CheckListItem(itemShowAll, itemShowBehavior, "Collision", Q3CheckListItem::CheckBoxController);
-    itemShowCollision->setOpen(true);
-    itemShowFlag[COLLISIONMODELS]   = new Q3CheckListItem(itemShowCollision,  "Collision Models", Q3CheckListItem::CheckBox);
-    itemShowFlag[BOUNDINGCOLLISIONMODELS]   = new Q3CheckListItem(itemShowCollision, itemShowFlag[COLLISIONMODELS], "Bounding Trees", Q3CheckListItem::CheckBox);
-    Q3CheckListItem* itemShowMapping   = new Q3CheckListItem(itemShowAll, itemShowCollision, "Mapping", Q3CheckListItem::CheckBoxController);
-    itemShowMapping->setOpen(true);
-    itemShowFlag[MAPPINGS]   = new Q3CheckListItem(itemShowMapping,  "Visual Mappings", Q3CheckListItem::CheckBox);
-    itemShowFlag[MECHANICALMAPPINGS]   = new Q3CheckListItem(itemShowMapping, itemShowFlag[MAPPINGS],  "Mechanical Mappings", Q3CheckListItem::CheckBox);
-    Q3ListViewItem*  itemShowOptions   = new Q3ListViewItem(this, itemShowAll, "Options");
-    itemShowOptions->setOpen(true);
-    itemShowFlag[RENDERING]   = new Q3CheckListItem(itemShowOptions, "Advanced Rendering", Q3CheckListItem::CheckBox);
-    itemShowFlag[WIREFRAME]   = new Q3CheckListItem(itemShowOptions, "Wire Frame", Q3CheckListItem::CheckBox);
-    itemShowFlag[NORMALS]   = new Q3CheckListItem(itemShowOptions, itemShowFlag[WIREFRAME], "Normals", Q3CheckListItem::CheckBox);
+    this->setSortingEnabled(false);
+    //setSortColumn(-1);
+    QTreeWidgetItem* itemShowAll = new QTreeWidgetItem(this);
+    this->setTreeWidgetNodeCheckable(itemShowAll, "All");
+
+    QTreeWidgetItem* itemShowVisual    = new QTreeWidgetItem(itemShowAll);
+    this->setTreeWidgetNodeCheckable(itemShowVisual, "Visual");
+
+    itemShowFlag[VISUALMODELS]   = new QTreeWidgetItem(itemShowVisual);
+    this->setTreeWidgetCheckable(itemShowFlag[VISUALMODELS], "Visual Models");
+
+    QTreeWidgetItem* itemShowBehavior  = new QTreeWidgetItem(itemShowAll);
+    this->setTreeWidgetNodeCheckable(itemShowBehavior, "Behavior");
+
+    itemShowFlag[BEHAVIORMODELS]   = new QTreeWidgetItem(itemShowBehavior);
+    this->setTreeWidgetCheckable(itemShowFlag[BEHAVIORMODELS], "Behavior Model");
+    itemShowFlag[FORCEFIELDS]   = new QTreeWidgetItem(itemShowBehavior, itemShowFlag[BEHAVIORMODELS]);
+    this->setTreeWidgetCheckable(itemShowFlag[FORCEFIELDS], "Force Fields");
+    itemShowFlag[INTERACTIONFORCEFIELDS]   = new QTreeWidgetItem(itemShowBehavior, itemShowFlag[FORCEFIELDS]);
+    this->setTreeWidgetCheckable(itemShowFlag[INTERACTIONFORCEFIELDS], "Interactions");
+
+    QTreeWidgetItem* itemShowCollision = new QTreeWidgetItem(itemShowAll, itemShowBehavior);
+    this->setTreeWidgetNodeCheckable(itemShowCollision, "Collision");
+    itemShowFlag[COLLISIONMODELS]   = new QTreeWidgetItem(itemShowCollision);
+    this->setTreeWidgetCheckable(itemShowFlag[COLLISIONMODELS], "Collision Models");
+    itemShowFlag[BOUNDINGCOLLISIONMODELS]   = new QTreeWidgetItem(itemShowCollision, itemShowFlag[COLLISIONMODELS]);
+    this->setTreeWidgetCheckable(itemShowFlag[BOUNDINGCOLLISIONMODELS], "Bounding Trees");
+    QTreeWidgetItem* itemShowMapping   = new QTreeWidgetItem(itemShowAll, itemShowCollision);
+    this->setTreeWidgetNodeCheckable(itemShowMapping, "Mapping");
+    itemShowFlag[MAPPINGS]   = new QTreeWidgetItem(itemShowMapping);
+    this->setTreeWidgetCheckable(itemShowFlag[MAPPINGS], "Visual Mappings");
+    itemShowFlag[MECHANICALMAPPINGS]   = new QTreeWidgetItem(itemShowMapping, itemShowFlag[MAPPINGS]);
+    this->setTreeWidgetCheckable(itemShowFlag[MECHANICALMAPPINGS], "Mechanical Mappings");
+    QTreeWidgetItem*  itemShowOptions   = new QTreeWidgetItem(this, itemShowAll);
+    this->setTreeWidgetNodeCheckable(itemShowOptions, "Options");
+    itemShowFlag[RENDERING]   = new QTreeWidgetItem(itemShowOptions);
+    this->setTreeWidgetCheckable(itemShowFlag[RENDERING], "Advanced Rendering");
+    itemShowFlag[WIREFRAME]   = new QTreeWidgetItem(itemShowOptions);
+    this->setTreeWidgetCheckable(itemShowFlag[WIREFRAME], "Wire Frame");
+    itemShowFlag[NORMALS]   = new QTreeWidgetItem(itemShowOptions, itemShowFlag[WIREFRAME]);
+    this->setTreeWidgetCheckable(itemShowFlag[NORMALS], "Normals");
 
 #ifdef SOFA_SMP
-    itemShowFlag[PROCESSORCOLOR]   = new Q3CheckListItem(itemShowOptions, itemShowFlag[NORMALS], "Processor Color", Q3CheckListItem::CheckBox);
+    itemShowFlag[PROCESSORCOLOR]   = new QTreeWidgetItem(itemShowOptions, itemShowFlag[NORMALS]);
+    this->setTreeWidgetCheckable(itemShowFlag[PROCESSORCOLOR], "Processor Color");
 #endif
-    insertItem(itemShowAll);
-    itemShowAll->insertItem(itemShowVisual); itemShowAll->setOpen(true);
-    itemShowVisual->insertItem(itemShowFlag[VISUALMODELS]);
-    itemShowAll->insertItem(itemShowBehavior);
-    itemShowBehavior->insertItem(itemShowFlag[BEHAVIORMODELS]);
-    itemShowBehavior->insertItem(itemShowFlag[FORCEFIELDS]);
-    itemShowBehavior->insertItem(itemShowFlag[INTERACTIONFORCEFIELDS]);
-    itemShowAll->insertItem(itemShowCollision);
-    itemShowCollision->insertItem(itemShowFlag[COLLISIONMODELS]);
-    itemShowCollision->insertItem(itemShowFlag[BOUNDINGCOLLISIONMODELS]);
-    itemShowAll->insertItem(itemShowMapping);
-    itemShowMapping->insertItem(itemShowFlag[MAPPINGS]);
-    itemShowMapping->insertItem(itemShowFlag[MECHANICALMAPPINGS]);
+    this->addTopLevelItem(itemShowAll);
+    itemShowAll->addChild(itemShowVisual); itemShowAll->setExpanded(true);
+    itemShowVisual->addChild(itemShowFlag[VISUALMODELS]);
+    itemShowAll->addChild(itemShowBehavior);
+    itemShowBehavior->addChild(itemShowFlag[BEHAVIORMODELS]);
+    itemShowBehavior->addChild(itemShowFlag[FORCEFIELDS]);
+    itemShowBehavior->addChild(itemShowFlag[INTERACTIONFORCEFIELDS]);
+    itemShowAll->addChild(itemShowCollision);
+    itemShowCollision->addChild(itemShowFlag[COLLISIONMODELS]);
+    itemShowCollision->addChild(itemShowFlag[BOUNDINGCOLLISIONMODELS]);
+    itemShowAll->addChild(itemShowMapping);
+    itemShowMapping->addChild(itemShowFlag[MAPPINGS]);
+    itemShowMapping->addChild(itemShowFlag[MECHANICALMAPPINGS]);
 
-    insertItem(itemShowOptions); itemShowOptions->setOpen(true);
-    itemShowOptions->insertItem(itemShowFlag[RENDERING]);
-    itemShowOptions->insertItem(itemShowFlag[WIREFRAME]);
-    itemShowOptions->insertItem(itemShowFlag[NORMALS]);
+    this->addTopLevelItem(itemShowOptions); itemShowOptions->setExpanded(true);
+    itemShowOptions->addChild(itemShowFlag[RENDERING]);
+    itemShowOptions->addChild(itemShowFlag[WIREFRAME]);
+    itemShowOptions->addChild(itemShowFlag[NORMALS]);
 #ifdef SOFA_SMP
-    itemShowOptions->insertItem(itemShowFlag[PROCESSORCOLOR]);
+    itemShowOptions->addChild(itemShowFlag[PROCESSORCOLOR]);
 #endif
     for (int i=0; i<ALLFLAGS; ++i)  mapFlag.insert(std::make_pair(itemShowFlag[i],i));
 }
 
-
-
-void DisplayFlagWidget::findChildren(Q3CheckListItem *item, std::vector<Q3CheckListItem* > &children)
+void DisplayFlagWidget::setTreeWidgetCheckable(QTreeWidgetItem* w, const char* name)
 {
-    Q3CheckListItem * child = (Q3CheckListItem * )item->firstChild();
-    while(child)
+    w->setText(0, name);
+    w->setExpanded(true);
+    w->setFlags(w->flags() | Qt::ItemIsUserCheckable);
+
+}
+
+void DisplayFlagWidget::setTreeWidgetNodeCheckable(QTreeWidgetItem* w, const char* name)
+{
+    w->setText(0, name);
+    w->setExpanded(true);
+    w->setFlags(w->flags() | Qt::ItemIsUserCheckable | Qt::ItemIsTristate);
+
+}
+
+void DisplayFlagWidget::findChildren(QTreeWidgetItem *item, std::vector<QTreeWidgetItem *> &children)
+{   
+    for(unsigned int i=0; i<item->childCount() ; i++)
     {
+        QTreeWidgetItem * child = (QTreeWidgetItem * )item->child(i);
         children.push_back(child);
         findChildren(child,children);
-        child = (Q3CheckListItem * )child->nextSibling();
     }
 }
 
-void DisplayFlagWidget::contentsMousePressEvent ( QMouseEvent * e )
+void DisplayFlagWidget::mouseReleaseEvent ( QMouseEvent * e )
 {
+    //if ( QTreeWidgetItem *item = dynamic_cast<QTreeWidgetItem *>(itemAt(contentsToViewport(e->pos()))) )
+    QTreeWidgetItem *item = this->itemAt(e->pos());
 
-    if ( Q3CheckListItem *item = dynamic_cast<Q3CheckListItem *>(itemAt(contentsToViewport(e->pos()))) )
+    if ( e->button() == Qt::LeftButton && item )
     {
-        std::vector< Q3CheckListItem *> childDepending;
-        findChildren(item, childDepending);
+        bool value = !(item->checkState(0) == Qt::Checked);
+        item->setCheckState(0, ( (value) ? Qt::Checked : Qt::Unchecked) );
 
-        bool value=!item->isOn();
-        item->setOn(value);
-
-        if (mapFlag.find(item) != mapFlag.end()) emit change(mapFlag[item],value);
-        for (unsigned int idxChild=0; idxChild<childDepending.size(); ++idxChild)
-        {
-            if (mapFlag.find(childDepending[idxChild]) != mapFlag.end()) emit change(mapFlag[childDepending[idxChild]],value);
-        }
         emit clicked();
     }
 }
@@ -152,11 +175,12 @@ bool DisplayFlagsDataWidget::createWidgets()
 {
     flags = new DisplayFlagWidget(this);
     QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->add(flags);
+    layout->addWidget(flags);
     connect(flags, SIGNAL(clicked()), this, SLOT(setWidgetDirty()));
     //flags->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
     //flags->setMinimumSize(QSize(50,400));
     setMinimumSize(QSize(50,400));
+    layout->setContentsMargins(2,2,4,4);
     //setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
     return true;
 }

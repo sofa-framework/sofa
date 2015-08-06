@@ -28,13 +28,8 @@
 #include "ui_BaseGenGraphForm.h"
 #include <sofa/simulation/common/Node.h>
 
-#ifdef SOFA_QT4
 #include "QProcess"
 #include "QStringList"
-#else
-#include "qprocess.h"
-#include "qstringlist.h"
-#endif
 
 #include <list>
 #include <map>
