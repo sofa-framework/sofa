@@ -22,4 +22,8 @@ if(SOFA-EXTERNAL_CSPARSE)
     AddLinkerDependencies(SofaSparseSolver)
 endif()
 
+if(SOFA-LIB_COMPONENT_PARDISO_SOLVER)
+    AddLinkerDependencies(SofaPardisoSolver)
+endif()
+
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
