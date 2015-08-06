@@ -25,6 +25,6 @@
 #ifndef SOFAGRAPHCOMPONENT_CONFIG_H
 #define SOFAGRAPHCOMPONENT_CONFIG_H
 
-#include <sofa/SofaGeneral.h>
+#include <SofaGeneral/SofaGeneralConfig.h>
 
 #endif

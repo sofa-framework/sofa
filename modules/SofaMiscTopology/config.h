@@ -25,6 +25,6 @@
 #ifndef SOFAMISCTOPOLOGY_CONFIG_H
 #define SOFAMISCTOPOLOGY_CONFIG_H
 
-#include <sofa/SofaMisc.h>
+#include <SofaMisc/SofaMiscConfig.h>
 
 #endif

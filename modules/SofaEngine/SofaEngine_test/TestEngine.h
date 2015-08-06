@@ -24,7 +24,6 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ENGINE_TestEngine_H
 #define SOFA_COMPONENT_ENGINE_TestEngine_H
-#include "config.h"
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>

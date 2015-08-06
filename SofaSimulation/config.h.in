@@ -22,11 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_SIMULATION_CONFIG_H
+#define SOFA_SIMULATION_CONFIG_H
 
-#ifndef _SOFA_SIMULATION_H_
-#define _SOFA_SIMULATION_H_
-
-#include <sofa/SofaFramework.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_SIMULATION_COMMON
 #   define SOFA_TARGET SofaSimulationCommon
@@ -55,4 +54,4 @@
 #   define SOFA_XML_PARSER_TINYXML
 #endif
 
-#endif // _SOFA_SIMULATION_H_
+#endif

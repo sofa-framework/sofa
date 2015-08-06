@@ -25,6 +25,6 @@
 #ifndef SOFA_CORE_CORE_H
 #define SOFA_CORE_CORE_H
 
-#include <sofa/SofaFramework.h>
+#include <sofa/config.h>
 
 #endif

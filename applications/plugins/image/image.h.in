@@ -26,7 +26,7 @@
 #ifndef _IMAGE_H_
 #define _IMAGE_H_
 
-#include <sofa/SofaFramework.h>
+#include <sofa/config.h>
 
 #define IMAGE_MAJOR_VERSION ${IMAGE_MAJOR_VERSION}
 #define IMAGE_MINOR_VERSION ${IMAGE_MINOR_VERSION}

@@ -37,10 +37,10 @@ set(SOFA_HAVE_CSPARSE ${CSparse_FOUND})
 set(SOFAGENERAL_DEPENDENCY_INCLUDE_DIR ${SofaCommon_INCLUDE_DIRS})
 
 
-configure_file(${SofaGeneral_SOURCE_DIR}/SofaGeneral.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaGeneral.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaGeneral.h
-         DESTINATION "${SOFAGENERAL_INSTALL_INCLUDE_DIR}/sofa")
+configure_file(SofaGeneralConfig.h.in
+               ${SOFAGENERAL_BUILD_INCLUDE_DIR}/SofaGeneral/SofaGeneralConfig.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaGeneral/SofaGeneralConfig.h
+         DESTINATION "${SOFAGENERAL_INSTALL_INCLUDE_DIR}/SofaGeneral")
 
 set(SOFAGENERAL_TARGETS SofaBoundaryCondition SofaComponentGeneral
     SofaConstraint SofaEngine SofaExporter SofaGraphComponent SofaHaptics

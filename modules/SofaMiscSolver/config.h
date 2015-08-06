@@ -25,6 +25,6 @@
 #ifndef SOFAMISCSOLVER_CONFIG_H
 #define SOFAMISCSOLVER_CONFIG_H
 
-#include <sofa/SofaMisc.h>
+#include <SofaMisc/SofaMiscConfig.h>
 
 #endif

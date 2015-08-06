@@ -25,6 +25,6 @@
 #ifndef SOFASPHFLUID_CONFIG_H
 #define SOFASPHFLUID_CONFIG_H
 
-#include <sofa/SofaAdvanced.h>
+#include <SofaAdvanced/SofaAdvancedConfig.h>
 
 #endif

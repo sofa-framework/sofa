@@ -16,57 +16,68 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: SofaAvanced                            *
+*                              SOFA :: SofaBase                               *
 *                                                                             *
 * Authors: The SOFA Team (see Authors.txt)                                    *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFABASE_SOFABASECONFIG_H
+#define SOFABASE_SOFABASECONFIG_H
 
-#ifndef _SOFA_ADVANCED_H_
-#define _SOFA_ADVANCED_H_
+#include <sofa/simulation/config.h>
 
-#include <sofa/SofaCommon.h>
+#define SOFABASE_MAJOR_VERSION ${SOFABASE_MAJOR_VERSION}
+#define SOFABASE_MINOR_VERSION ${SOFABASE_MINOR_VERSION}
+#define SOFABASE_BUILD_VERSION ${SOFABASE_BUILD_VERSION}
 
-#define SOFAADVANCED_MAJOR_VERSION ${SOFAADVANCED_MAJOR_VERSION}
-#define SOFAADVANCED_MINOR_VERSION ${SOFAADVANCED_MINOR_VERSION}
-#define SOFAADVANCED_BUILD_VERSION ${SOFAADVANCED_BUILD_VERSION}
-
-#cmakedefine SOFA_HAVE_FLOWVR
-
-#ifdef SOFA_BUILD_EULERIAN_FLUID
-#  define SOFA_TARGET SofaEulerianFluid
-#  define SOFA_EULERIAN_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_BASE_TOPOLOGY
+#  define SOFA_TARGET SofaBaseTopology
+#  define SOFA_BASE_TOPOLOGY_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_EULERIAN_FLUID_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_BASE_TOPOLOGY_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#ifdef SOFA_BUILD_SPH_FLUID
-#  define SOFA_TARGET SofaSphFluid
-#  define SOFA_SPH_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_BASE_LINEAR_SOLVER
+#  define SOFA_TARGET SofaBaseLinearSolver
+#  define SOFA_BASE_LINEAR_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_SPH_FLUID_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_BASE_LINEAR_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#ifdef SOFA_BUILD_VOLUMETRIC_DATA
-#  define SOFA_TARGET SofaVolumetricData
-#  define SOFA_VOLUMETRIC_DATA_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_BASE_MECHANICS
+#  define SOFA_TARGET SofaBaseMechanics
+#  define SOFA_BASE_MECHANICS_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_VOLUMETRIC_DATA_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_BASE_MECHANICS_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#ifdef SOFA_BUILD_NON_UNIFORM_FEM
-#  define SOFA_TARGET SofaNonUniformFem
-#  define SOFA_NON_UNIFORM_FEM_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_BASE_COLLISION
+#  define SOFA_TARGET SofaBaseCollision
+#  define SOFA_BASE_COLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_NON_UNIFORM_FEM_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_BASE_COLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#ifdef SOFA_BUILD_COMPONENT_ADVANCED
-#  define SOFA_TARGET SofaComponentAdvanced
-#  define SOFA_COMPONENT_ADVANCED_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_BASE_ANIMATION_LOOP
+#  define SOFA_TARGET SofaBaseAnimationLoop
+#  define SOFA_BASE_ANIMATION_LOOP_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_COMPONENT_ADVANCED_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_BASE_ANIMATION_LOOP_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // _SOFA_ADVANCED_H_
+#ifdef SOFA_BUILD_BASE_VISUAL
+#  define SOFA_TARGET SofaBaseVisual
+#  define SOFA_BASE_VISUAL_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_BASE_VISUAL_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#ifdef SOFA_BUILD_COMPONENT_BASE
+#  define SOFA_TARGET SofaComponentBase
+#  define SOFA_COMPONENT_BASE_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_COMPONENT_BASE_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#endif

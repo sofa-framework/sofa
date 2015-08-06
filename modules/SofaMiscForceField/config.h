@@ -25,6 +25,6 @@
 #ifndef SOFAMISCFORCEFIELD_CONFIG_H
 #define SOFAMISCFORCEFIELD_CONFIG_H
 
-#include <sofa/SofaMisc.h>
+#include <SofaMisc/SofaMiscConfig.h>
 
 #endif

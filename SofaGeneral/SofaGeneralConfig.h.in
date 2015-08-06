@@ -22,11 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFAGENERAL_SOFAGENERALCONFIG_H
+#define SOFAGENERAL_SOFAGENERALCONFIG_H
 
-#ifndef _SOFA_GENERAL_H_
-#define _SOFA_GENERAL_H_
-
-#include <sofa/SofaCommon.h>
+#include <SofaCommon/SofaCommonConfig.h>
 
 #define SOFAGENERAL_MAJOR_VERSION ${SOFAGENERAL_MAJOR_VERSION}
 #define SOFAGENERAL_MINOR_VERSION ${SOFAGENERAL_MINOR_VERSION}
@@ -118,7 +117,7 @@
 #  else
 #    define SOFA_DENSE_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #  endif
-#endif 
+#endif
 
 //#ifndef SOFA-MISC_NO_OPENGL
 #  ifdef SOFA_BUILD_OPENGL_VISUAL
@@ -152,6 +151,6 @@
 #else
 #  define SOFA_EIGEN2_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
-#endif 
+#endif
 
-#endif // _SOFA_GENERAL_H_
+#endif

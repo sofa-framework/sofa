@@ -26,7 +26,7 @@
 #ifndef _CGALPLUGIN_H_
 #define _CGALPLUGIN_H_
 
-#include <sofa/SofaFramework.h>
+#include <sofa/config.h>
 
 #define CGALPLUGIN_MAJOR_VERSION ${CGALPLUGIN_MAJOR_VERSION}
 #define CGALPLUGIN_MINOR_VERSION ${CGALPLUGIN_MINOR_VERSION}

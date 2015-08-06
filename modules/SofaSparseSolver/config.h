@@ -25,6 +25,6 @@
 #ifndef SOFASPARSESOLVER_CONFIG_H
 #define SOFASPARSESOLVER_CONFIG_H
 
-#include <sofa/SofaGeneral.h>
+#include <SofaGeneral/SofaGeneralConfig.h>
 
 #endif

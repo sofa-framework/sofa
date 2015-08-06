@@ -22,11 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFAMISC_SOFAMISCCONFIG_H
+#define SOFAMISC_SOFAMISCCONFIG_H
 
-#ifndef _SOFA_MISC_H_
-#define _SOFA_MISC_H_
-
-#include <sofa/SofaGeneral.h>
+#include <SofaGeneral/SofaGeneralConfig.h>
 
 #define SOFAMISC_MAJOR_VERSION ${SOFAMISC_MAJOR_VERSION}
 #define SOFAMISC_MINOR_VERSION ${SOFAMISC_MINOR_VERSION}
@@ -95,4 +94,4 @@
 #  define SOFA_COMPONENT_MISC_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // _SOFA_MISC_H_
+#endif

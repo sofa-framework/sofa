@@ -22,11 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFAGUI_SOFAGUICONFIG_H
+#define SOFAGUI_SOFAGUICONFIG_H
 
-#ifndef _SOFA_GUI_H_
-#define _SOFA_GUI_H_
-
-#include <sofa/SofaFramework.h>
+#include <sofa/config.h>
 
 #cmakedefine SOFA_GUI_GLUT
 #cmakedefine SOFA_GUI_QT
@@ -37,4 +36,4 @@
 #define SOFAGUI_MINOR_VERSION ${SOFAGUI_MINOR_VERSION}
 #define SOFAGUI_BUILD_VERSION ${SOFAGUI_BUILD_VERSION}
 
-#endif // _SOFA_GUI_H_
+#endif

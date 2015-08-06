@@ -87,11 +87,10 @@ foreach(TARGET ${SOFAGUI_TARGETS})
     set_target_properties(${TARGET} PROPERTIES FOLDER "SofaGui") # IDE folder
 endforeach()
 
-configure_file(${SofaGui_SOURCE_DIR}/SofaGui.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaGui.h)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaGui.h
-         DESTINATION "${SOFAGUI_INSTALL_INCLUDE_DIR}/sofa")
+configure_file(SofaGuiConfig.h.in
+               ${CMAKE_CURRENT_BINARY_DIR}/SofaGui/SofaGuiConfig.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaGui/SofaGuiConfig.h
+        DESTINATION "${SOFAGUI_INSTALL_INCLUDE_DIR}/SofaGui")
 
 include(CMakePackageConfigHelpers)
 

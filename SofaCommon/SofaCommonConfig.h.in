@@ -22,11 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFACOMMON_SOFACOMMONCONFIG_H
+#define SOFACOMMON_SOFACOMMONCONFIG_H
 
-#ifndef _SOFA_COMMON_H_
-#define _SOFA_COMMON_H_
-
-#include <sofa/SofaBase.h>
+#include <SofaBase/SofaBaseConfig.h>
 
 #define SOFACOMMON_MAJOR_VERSION ${SOFACOMMON_MAJOR_VERSION}
 #define SOFACOMMON_MINOR_VERSION ${SOFACOMMON_MINOR_VERSION}
@@ -96,4 +95,4 @@
 #endif
 
 
-#endif // _SOFA_COMMON_H_
+#endif

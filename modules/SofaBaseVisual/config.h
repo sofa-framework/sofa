@@ -25,6 +25,6 @@
 #ifndef SOFABASEVISUAL_CONFIG_H
 #define SOFABASEVISUAL_CONFIG_H
 
-#include <sofa/SofaBase.h>
+#include <SofaBase/SofaBaseConfig.h>
 
 #endif

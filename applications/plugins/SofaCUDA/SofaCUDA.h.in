@@ -26,7 +26,7 @@
 #ifndef _SOFACUDA_H_
 #define _SOFACUDA_H_
 
-#include <sofa/SofaBase.h>
+#include <SofaBase/SofaBaseConfig.h>
 
 #define SOFACUDA_MAJOR_VERSION ${SOFACUDA_MAJOR_VERSION}
 #define SOFACUDA_MINOR_VERSION ${SOFACUDA_MINOR_VERSION}

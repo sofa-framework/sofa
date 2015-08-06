@@ -175,11 +175,11 @@ set(SOFA_HAVE_EIGEN2 1)
 ##
 ##
 
-configure_file(${SofaFramework_SOURCE_DIR}/SofaFramework.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaFramework.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaFramework.h
+configure_file(config.h.in
+               ${SOFAFRAMEWORK_BUILD_INCLUDE_DIR}/sofa/config.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/config.h
          DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}/sofa")
-# make sure everyone in the build tree can see <sofa/SofaFramework.h>
+# make sure everyone in the build tree can see <sofa/config.h>
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
 
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)

@@ -25,6 +25,6 @@
 #ifndef SOFABASECOLLISION_CONFIG_H
 #define SOFABASECOLLISION_CONFIG_H
 
-#include <sofa/SofaBase.h>
+#include <SofaBase/SofaBaseConfig.h>
 
 #endif
