@@ -59,7 +59,7 @@ const char* getModuleName()
 
 const char* getModuleVersion()
 {
-    return "0.2";
+    return SOFAPYTHON_VERSION_STR;
 }
 
 const char* getModuleLicense()
