@@ -34,8 +34,4 @@
 #define SOFA_SOFACARVING_API  SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-/** \mainpage
-  Contains components for carving in Sofa
-  */
-
 #endif // INITSOFACARVING_H
