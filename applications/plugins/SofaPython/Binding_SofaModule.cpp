@@ -52,7 +52,7 @@ using namespace sofa::simulation;
 // set the viewer resolution
 extern "C" PyObject * Sofa_getSofaPythonVersion(PyObject * /*self*/, PyObject *)
 {
-    return Py_BuildValue("s", getModuleVersion());
+    return Py_BuildValue("s", SOFAPYTHON_VERSION_STR);
 }
 
 

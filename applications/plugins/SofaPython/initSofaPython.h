@@ -25,6 +25,7 @@
 #ifndef INITSOFAPYTHON_H
 #define INITSOFAPYTHON_H
 
+#define SOFAPYTHON_VERSION_STR "0.0"
 
 #include <sofa/helper/system/config.h>
 
