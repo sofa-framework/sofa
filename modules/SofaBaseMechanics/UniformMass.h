@@ -76,6 +76,8 @@ public:
 
     Data< bool > m_handleTopoChange;
 
+    Data< bool > d_preserveTotalMass;
+
 protected:
     UniformMass();
 
