@@ -8,7 +8,8 @@
 # It it based on the following assumptions, that are more or less conventions in
 # the repository: if Foo is a templated component, it is written in three files:
 # Foo.h, Foo.inl and Foo.cpp; the extern template declarations are in Foo.h, and
-# the explicit template instanciations are in Foo.cpp.
+# the explicit template instanciations are in Foo.cpp.  Also, each declaration
+# and each instanciation is on a single line.
 
 
 usage() {
@@ -20,11 +21,11 @@ filter-commented-lines() {
 }
 
 filter-extern-template() {
-    grep 'extern[[:blank:]]\+template[[:blank:]]\+class' $* | filter-commented-lines -v
+    grep '^[[:blank:]]*extern[[:blank:]]\+template[[:blank:]]\+class' $* | filter-commented-lines -v
 }
 
 filter-template-instanciations() {
-    grep 'template[[:blank:]]\+class' $* | filter-commented-lines -v
+    grep '^[[:blank:]]*template[[:blank:]]\+class' $* | filter-commented-lines -v
 }
 
 delete-spaces() {

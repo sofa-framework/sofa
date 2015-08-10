@@ -24,8 +24,6 @@
 ******************************************************************************/
 #ifndef SOFA_HELPER_DECOMPOSE_H
 #define SOFA_HELPER_DECOMPOSE_H
-
-
 #include <sofa/helper/helper.h>
 
 #include <sofa/defaulttype/Mat.h>
@@ -79,7 +77,31 @@ public:
       * Note that dR is also easy to compute.
       */
     template<int spatial_dimension, int material_dimension>
-    static void QRDecompositionGradient_dQ( const defaulttype::Mat<spatial_dimension,material_dimension,Real>&Q, const defaulttype::Mat<material_dimension,material_dimension,Real>&invR, const defaulttype::Mat<spatial_dimension,material_dimension,Real>& dM, defaulttype::Mat<spatial_dimension,material_dimension,Real>& dQ );
+    static void QRDecompositionGradient_dQ( const defaulttype::Mat<spatial_dimension,material_dimension,Real>&Q,
+                                            const defaulttype::Mat<material_dimension,material_dimension,Real>&invR,
+                                            const defaulttype::Mat<spatial_dimension,material_dimension,Real>& dM,
+                                            defaulttype::Mat<spatial_dimension,material_dimension,Real>& dQ )
+    {
+        // dQ = Q ( lower(QT*dM*R−1) − lower(QT*dM*R−1)^T )
+        // dR =   ( upper(QT*dM*R−1) + lower(QT*dM*R−1)^T ) R
+        // lower -> strictly lower
+
+        // tmp = QT*dM*R^−1
+        defaulttype::Mat<material_dimension,material_dimension,Real> tmp = Q.multTranspose(dM * invR);
+
+        // L = lower(tmp) - (lower(tmp))^T
+        defaulttype::Mat<material_dimension,material_dimension,Real> L;
+
+        for(int i = 0; i < material_dimension; ++i)
+        {
+            for(int j = 0; j < i; ++j) // strictly lower
+                L[i][j] = tmp[i][j];
+            for(int j = i + 1; j < material_dimension; ++j) // strictly lower transposed
+                L[i][j] = -tmp[j][i];
+        }
+
+        dQ = Q * L;
+    }
 
 
 
@@ -136,14 +158,16 @@ public:
      */
     static void polarDecompositionGradient_dQ( const defaulttype::Mat<3,3,Real>& invG, const defaulttype::Mat<3,3,Real>& Q, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dQ );
     static void polarDecompositionGradient_dQOverdM(const defaulttype::Mat<3,3,Real> &Q, const defaulttype::Mat<3,3,Real> &invG,  defaulttype::Mat<9,9,Real>& J);
-    static void polarDecompositionGradient_dQOverdM(const defaulttype::Mat<3,3,Real> &Q, const defaulttype::Mat<3,3,Real> &Sinv, const defaulttype::Mat<9,9,Real>& dSOverdM, defaulttype::Mat<9,9,Real>& J);   // another method based on the relation : M=QS -> dQ = (dM - Q dS)S^-1  ->  dQ = (dM - dSOverdM.dM)S^-1  -> dQ = JdM
+    // another method based on the relation : M=QS -> dQ = (dM - Q dS)S^-1  ->  dQ = (dM - dSOverdM.dM)S^-1  -> dQ = JdM
+    static void polarDecompositionGradient_dQOverdM(const defaulttype::Mat<3,3,Real> &Q, const defaulttype::Mat<3,3,Real> &Sinv, const defaulttype::Mat<9,9,Real>& dSOverdM, defaulttype::Mat<9,9,Real>& J);
 
     /** Polar decomposition rotation gradient, computes the strain gradient dS of a given polar decomposition
      *  qQ needs to be computed with function polarDecompositionGradient_dQ
      */
     static void polarDecompositionGradient_dS( const defaulttype::Mat<3,3,Real>& Q, const defaulttype::Mat<3,3,Real>& S, const defaulttype::Mat<3,3,Real>& dQ, const defaulttype::Mat<3,3,Real>& dM, defaulttype::Mat<3,3,Real>& dS );
     static void polarDecompositionGradient_dSOverdM(const defaulttype::Mat<3,3,Real> &Q, const defaulttype::Mat<3,3,Real> &M, const  defaulttype::Mat<3,3,Real>& invG,  defaulttype::Mat<9,9,Real>& J);
-    static void polarDecompositionGradient_dSOverdM(const defaulttype::Mat<3,3,Real> &M, const defaulttype::Mat<3,3,Real> &S,  defaulttype::Mat<9,9,Real>& J);     // another method based on the relation :  M^TM = S.S -> M^TdM +dM^TM = dS.S + S.dS  -> J1.dM = J2.dS  -> J.dM = dS;  Requires the inversion of a 6x6 matrix..
+    // another method based on the relation :  M^TM = S.S -> M^TdM +dM^TM = dS.S + S.dS  -> J1.dM = J2.dS  -> J.dM = dS;  Requires the inversion of a 6x6 matrix..
+    static void polarDecompositionGradient_dSOverdM(const defaulttype::Mat<3,3,Real> &M, const defaulttype::Mat<3,3,Real> &S,  defaulttype::Mat<9,9,Real>& J);
 
     /** Polar decomposition rotation gradient, computes the strain gradient dS of a given polar decomposition computed by a SVD such as M = U*Sdiag*V
       * Christopher Twigg, Zoran Kacic-Alesic, "Point Cloud Glue: Constraining simulations using the Procrustes transform", SCA'10
@@ -355,6 +379,23 @@ private:
     static void QLAlgorithm( defaulttype::Vec<iSize,Real> &diag, defaulttype::Vec<iSize,Real> &subDiag, defaulttype::Mat<iSize,iSize,Real> &V );
 
 }; // class Decompose
+
+template<>
+inline float Decompose<float>::zeroTolerance()
+{
+    return 1e-6f;
+}
+
+template<>
+inline double Decompose<double>::zeroTolerance()
+{
+    return 1e-8;
+}
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_DECOMPOSE_CPP)
+extern template class SOFA_HELPER_API Decompose<double>;
+extern template class SOFA_HELPER_API Decompose<float>;
+#endif
 
 } // namespace helper
 
