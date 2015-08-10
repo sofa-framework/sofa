@@ -51,8 +51,8 @@ struct Operation
     typedef typename Model::VecDeriv VecDeriv;
 
 public :
-    static inline const VecCoord* getVecCoord( const Model* m, const sofa::core::VecId id) { return m->getVecCoord(id.index); };
-    static inline VecDeriv* getVecDeriv( Model* m, const sofa::core::VecId id) { return m->getVecDeriv(id.index);};
+    static inline const VecCoord* getVecCoord( const Model* m, const sofa::core::VecId id) { return m->getVecCoord(id.index); }
+    static inline VecDeriv* getVecDeriv( Model* m, const sofa::core::VecId id) { return m->getVecDeriv(id.index);}
 
     static inline const sofa::core::behavior::BaseMass* fetchMass  ( const Model* m)
     {
@@ -62,7 +62,8 @@ public :
     static inline double computeTotalMass( const Model* model, const sofa::core::behavior::BaseMass* mass )
     {
         double result = 0.0;
-        for ( unsigned int i = 0; i < model->getSize(); i++)
+        const unsigned int modelSize = static_cast<unsigned int>(model->getSize());
+        for (unsigned int i = 0; i < modelSize; i++)
         {
             result += mass->getElementMass(i);
         }

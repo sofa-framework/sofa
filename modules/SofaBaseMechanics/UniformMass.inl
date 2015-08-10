@@ -91,9 +91,11 @@ void UniformMass<DataTypes, MassType>::reinit()
 {
     if ( this->totalMass.getValue() >0 && this->mstate!=NULL )
     {
-        MassType* m = this->mass.beginEdit();
+        MassType *m = this->mass.beginEdit();
 
-        if(localRange.getValue() [0] >= 0  && localRange.getValue() [1] > 0 && ( unsigned int ) localRange.getValue() [1]+1 < this->mstate->getSize() )
+        if (localRange.getValue()[0] >= 0
+            && localRange.getValue()[1] > 0
+            && localRange.getValue()[1] + 1 < this->mstate->getSize())
         {
             *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / (localRange.getValue()[1]-localRange.getValue()[0]) );
         }
