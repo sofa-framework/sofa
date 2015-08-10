@@ -170,7 +170,7 @@ void PythonEnvironment::addPythonModulePathsForPlugins(const std::string& plugin
     for (std::vector<std::string>::iterator i = files.begin(); i != files.end(); ++i)
     {
         const std::string pluginPath = pluginsDirectory + "/" + *i;
-        if (FileSystem::isDirectory(pluginPath))
+        if (FileSystem::exists(pluginPath) && FileSystem::isDirectory(pluginPath))
         {
             const std::string pythonDir = pluginPath + "/python";
             if (FileSystem::exists(pythonDir) && FileSystem::isDirectory(pythonDir))
