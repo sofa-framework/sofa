@@ -225,12 +225,9 @@ public:
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_CPP)
-//extern template class SOFA_MESH_COLLISION_API ContactMapper<SphereModel>;
-//extern template class SOFA_MESH_COLLISION_API ContactMapper<PointModel>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<LineModel>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<TriangleModel>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<CapsuleModel>;
-//extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidDistanceGridCollisionModel>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<LineModel, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<TriangleModel, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<CapsuleModel, sofa::defaulttype::Vec3Types>;
 #endif
 
 } // namespace collision

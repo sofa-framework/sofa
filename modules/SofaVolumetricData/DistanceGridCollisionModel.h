@@ -631,7 +631,7 @@ public:
 //extern template class SOFA_VOLUMETRIC_DATA_API RigidContactMapper<RigidDistanceGridCollisionModel,Vec3dTypes>;
 //#endif
 
-extern template class SOFA_VOLUMETRIC_DATA_API ContactMapper<RigidDistanceGridCollisionModel>;
+extern template class SOFA_VOLUMETRIC_DATA_API ContactMapper<RigidDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
 
 #endif
 
