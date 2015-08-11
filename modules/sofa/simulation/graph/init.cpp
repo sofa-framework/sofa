@@ -25,6 +25,7 @@
 #include "graph.h"
 
 #include <sofa/simulation/common/init.h>
+#include <sofa/helper/init.h>
 
 namespace sofa
 {
@@ -65,6 +66,16 @@ SOFA_SIMULATION_GRAPH_API bool isCleanedUp()
 {
     return s_cleanedUp;
 }
+
+// Detect missing cleanup() call.
+struct CleanupCheck
+{
+    ~CleanupCheck()
+    {
+        if (simulation::graph::isInitialized() and !simulation::graph::isCleanedUp())
+            helper::printLibraryNotCleanedUpWarning("SofaSimulationGraph", "sofa::simulation::graph::cleanup()");
+    }
+} check;
 
 } // namespace graph
 

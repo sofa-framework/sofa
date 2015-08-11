@@ -70,6 +70,23 @@ SOFA_HELPER_API void printUninitializedLibraryWarning(const std::string& library
               << initFunction << " has never been called, see sofa/helper/init.h)" << std::endl;
 }
 
+SOFA_HELPER_API void printLibraryNotCleanedUpWarning(const std::string& library,
+                                                     const std::string& cleanupFunction)
+{
+    std::cerr << "Warning: the " << library << " library has not been cleaned up ("
+              << cleanupFunction << " has never been called, see sofa/helper/init.h)" << std::endl;
+}
+
+// Detect missing cleanup() call.
+struct CleanupCheck
+{
+    ~CleanupCheck()
+    {
+        if (helper::isInitialized() and !helper::isCleanedUp())
+            helper::printLibraryNotCleanedUpWarning("SofaHelper", "sofa::helper::cleanup()");
+    }
+} check;
+
 } // namespace helper
 
 } // namespace sofa

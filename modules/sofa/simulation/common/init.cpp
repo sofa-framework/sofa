@@ -25,6 +25,7 @@
 #include "init.h"
 
 #include <sofa/core/init.h>
+#include <sofa/helper/init.h>
 
 namespace sofa
 {
@@ -65,6 +66,16 @@ SOFA_SIMULATION_COMMON_API bool isCleanedUp()
 {
     return s_cleanedUp;
 }
+
+// Detect missing cleanup() call.
+struct CleanupCheck
+{
+    ~CleanupCheck()
+    {
+        if (simulation::common::isInitialized() and !simulation::common::isCleanedUp())
+            helper::printLibraryNotCleanedUpWarning("SofaSimulationCommon", "sofa::simulation::common::cleanup()");
+    }
+} check;
 
 } // namespace common
 
