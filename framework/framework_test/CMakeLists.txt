@@ -8,6 +8,7 @@ set(SOURCE_FILES
     helper/system/FileSystem_test.cpp
     helper/Utils_test.cpp
     core/objectmodel/AspectPool_test.cpp
+    core/objectmodel/Data_test.cpp
     core/loader/MeshLoader_test.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
