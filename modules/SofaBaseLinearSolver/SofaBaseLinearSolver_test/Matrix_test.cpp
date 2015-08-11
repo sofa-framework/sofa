@@ -22,24 +22,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+
 /** Sparse matrix test suite.
-  The same suite is instanciated using different parameters: entry types (float/double) and BlockMN size in CompressedRowSparse.
-  */
+ *
+ * The same suite is instanciated using different parameters: entry types
+ * (float/double) and BlockMN size in CompressedRowSparse.
+*/
 
-#include "stdafx.h"
-#include <gtest/gtest.h>
-#include "Sofa_test.h"
+#include <SofaTest/Sofa_test.h>
 
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/FullVector.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/FullVector.h>
+
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <gtest/gtest.h>
+
+
 #define BENCHMARK_MATRIX_PRODUCT 0
+
 
 #if BENCHMARK_MATRIX_PRODUCT
 #include <ctime>
@@ -52,10 +58,6 @@ double get_time() {
 
 
 namespace sofa {
-using std::cout;
-using std::cerr;
-using std::endl;
-
 
 
 /** Sparse matrix test suite.
@@ -516,11 +518,4 @@ typedef TestSparseMatrices<float,4,8,2,2> Ts4822f;
 
 #endif
 
-
-
-
-
-
-
 }// namespace sofa
-
