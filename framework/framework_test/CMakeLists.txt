@@ -4,9 +4,10 @@ set(SOURCE_FILES
     main.cpp
     defaulttype/VecTypes_test.cpp
     defaulttype/MatTypes_test.cpp
-    helper/system/atomic_test.cpp
-    helper/system/FileSystem_test.cpp
+    helper/KdTree_test.cpp
     helper/Utils_test.cpp
+    helper/system/FileSystem_test.cpp
+    helper/system/atomic_test.cpp
     core/objectmodel/AspectPool_test.cpp
     core/objectmodel/Data_test.cpp
     core/loader/MeshLoader_test.cpp)
