@@ -25,6 +25,7 @@
 #include "init.h"
 
 #include <sofa/defaulttype/init.h>
+#include <sofa/helper/init.h>
 
 namespace sofa
 {
@@ -62,6 +63,16 @@ SOFA_CORE_API bool isCleanedUp()
 {
     return s_cleanedUp;
 }
+
+// Detect missing cleanup() call.
+struct CleanupCheck
+{
+    ~CleanupCheck()
+    {
+        if (core::isInitialized() and !core::isCleanedUp())
+            helper::printLibraryNotCleanedUpWarning("SofaCore", "sofa::core::cleanup()");
+    }
+} check;
 
 } // namespace core
 
