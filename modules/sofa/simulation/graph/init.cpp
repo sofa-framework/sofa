@@ -72,7 +72,7 @@ struct CleanupCheck
 {
     ~CleanupCheck()
     {
-        if (simulation::graph::isInitialized() and !simulation::graph::isCleanedUp())
+        if (simulation::graph::isInitialized() && !simulation::graph::isCleanedUp())
             helper::printLibraryNotCleanedUpWarning("SofaSimulationGraph", "sofa::simulation::graph::cleanup()");
     }
 } check;

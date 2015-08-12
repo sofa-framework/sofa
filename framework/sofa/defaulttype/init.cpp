@@ -68,7 +68,7 @@ struct CleanupCheck
 {
     ~CleanupCheck()
     {
-        if (defaulttype::isInitialized() and !defaulttype::isCleanedUp())
+        if (defaulttype::isInitialized() && !defaulttype::isCleanedUp())
             helper::printLibraryNotCleanedUpWarning("SofaDefaultType", "sofa::defaulttype::cleanup()");
     }
 } check;
