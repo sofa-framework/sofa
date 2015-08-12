@@ -70,9 +70,9 @@ public slots:
     void updateComponentList(QListViewItem*);
     void updateDescription(QListViewItem*);
 #endif
-private :
+public:
     void updatePluginsListView();
-    void initPluginListView();
+private:
     void savePluginsToIniFile();
     void loadPluginsFromIniFile();
 };
