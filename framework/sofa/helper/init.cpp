@@ -82,7 +82,7 @@ struct CleanupCheck
 {
     ~CleanupCheck()
     {
-        if (helper::isInitialized() and !helper::isCleanedUp())
+        if (helper::isInitialized() && !helper::isCleanedUp())
             helper::printLibraryNotCleanedUpWarning("SofaHelper", "sofa::helper::cleanup()");
     }
 } check;

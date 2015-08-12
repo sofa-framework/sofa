@@ -69,7 +69,7 @@ struct CleanupCheck
 {
     ~CleanupCheck()
     {
-        if (core::isInitialized() and !core::isCleanedUp())
+        if (core::isInitialized() && !core::isCleanedUp())
             helper::printLibraryNotCleanedUpWarning("SofaCore", "sofa::core::cleanup()");
     }
 } check;
