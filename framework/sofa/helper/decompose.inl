@@ -2911,8 +2911,17 @@ void Decompose<Real>::NSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 
     }
 }
 
+template<>
+float Decompose<float>::zeroTolerance()
+{
+    return 1e-6f;
+}
 
-
+template<>
+double Decompose<double>::zeroTolerance()
+{
+    return 1e-8;
+}
 
 
 } // namespace helper

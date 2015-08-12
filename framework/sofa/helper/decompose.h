@@ -380,17 +380,6 @@ private:
 
 }; // class Decompose
 
-template<>
-inline float Decompose<float>::zeroTolerance()
-{
-    return 1e-6f;
-}
-
-template<>
-inline double Decompose<double>::zeroTolerance()
-{
-    return 1e-8;
-}
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_DECOMPOSE_CPP)
 extern template class SOFA_HELPER_API Decompose<double>;
