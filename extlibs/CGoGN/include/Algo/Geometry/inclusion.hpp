@@ -49,7 +49,7 @@ bool isConvex(typename PFP::MAP& map, Vol v, const VertexAttribute<typename PFP:
     //get all the dart of the volume
     std::vector<Dart> vStore;
     //	map.foreach_dart_of_orbit(v, [&] (Dart d) { vStore.push_back(d); }, thread);
-    map.foreach_dart_of_orbit(v, boost::bind(&std::vector<Dart>::push_back, boost::lambda::_1));
+    map.foreach_dart_of_orbit(v, boost::bind(static_cast<void (std::vector<Dart>::*)(const Dart&)>(&std::vector<Dart>::push_back), boost::lambda::_1));
     bool convex = true;
 
     DartMarkerStore<typename PFP::MAP> m(map, thread);
