@@ -51,9 +51,7 @@
 #include "Binding_SubsetMultiMapping.h"
 #include "Binding_VisualModel.h"
 
-
-using namespace sofa::core::objectmodel;
-
+using sofa::core::objectmodel::Base;
 
 // crée un objet Python à partir d'un objet Cpp héritant de Base,
 // retournant automatiquement le type Python de plus haut niveau possible
@@ -63,9 +61,9 @@ PyObject* SP_BUILD_PYSPTR(Base* obj)
 {
     if (dynamic_cast<sofa::simulation::Node*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Node));
-    if (dynamic_cast<Context*>(obj))
+    if (dynamic_cast<sofa::core::objectmodel::Context*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Context));
-    if (dynamic_cast<BaseContext*>(obj))
+    if (dynamic_cast<sofa::core::objectmodel::BaseContext*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseContext));
 
     if (dynamic_cast<sofa::core::loader::MeshLoader*>(obj))
@@ -86,7 +84,7 @@ PyObject* SP_BUILD_PYSPTR(Base* obj)
 
     if (dynamic_cast<sofa::component::visualmodel::VisualModelImpl*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(VisualModel));
-    if (dynamic_cast<MechanicalObject3*>(obj))
+    if (dynamic_cast<sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(MechanicalObject));
     if (dynamic_cast<sofa::core::behavior::BaseMechanicalState*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseMechanicalState));
@@ -101,7 +99,7 @@ PyObject* SP_BUILD_PYSPTR(Base* obj)
     if (dynamic_cast<sofa::core::BaseMapping*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseMapping));
 
-    if (dynamic_cast<BaseObject*>(obj))
+    if (dynamic_cast<sofa::core::objectmodel::BaseObject*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseObject));
 
     // par défaut...

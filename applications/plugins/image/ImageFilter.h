@@ -33,7 +33,6 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/OptionsGroup.h>
 
-
 #define NONE 0
 #define BLURDERICHE 1
 #define BLURMEDIAN 2

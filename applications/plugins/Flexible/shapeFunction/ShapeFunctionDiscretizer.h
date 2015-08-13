@@ -36,7 +36,6 @@
 #include <sofa/helper/rmath.h>
 
 
-
 namespace sofa
 {
 namespace component

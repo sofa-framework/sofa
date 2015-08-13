@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "stdafx.h"
 #include <SofaTest/Sofa_test.h>
-#include<sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
