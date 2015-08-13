@@ -2,7 +2,8 @@
 
 # This script tries to detect issues with extern templates in Sofa components.
 # Namely, it looks for extern template declarations with no corresponding
-# explicit instanciations, and vice versa.
+# explicit instanciations, and vice versa.  Also, it looks for extern template
+# declarations not protected by a !defined(FOO_BAR_CPP) preprocessor thing.
 #
 #
 # It it based on the following assumptions, that are more or less conventions in
@@ -53,9 +54,11 @@ member() {
 
 # For each extern template declaration, check there is a corresponding
 # template instanciation, and vice-versa.
-detect-missing-stuff-in-component() {
-    local header=$1
-    local cpp=$2
+detect-issues-in-component() {
+    local header=$1.h
+    local cpp=$1.cpp
+    local component=$(echo $header | sed 's:.*/\([^/]*\).h$:\1:')
+    local COMPONENT=$(echo $component | tr '[:lower:]' '[:upper:]')
     local extern_declarations=$(filter-extern-template $header | extract-class-name)
     local instanciations=$(filter-template-instanciations $cpp | extract-class-name)
 
@@ -70,6 +73,14 @@ detect-missing-stuff-in-component() {
             echo "$basename.cpp:0: warning: missing template instanciation: $e"
         fi
     done
+
+    if ! grep -iq ${COMPONENT}_CPP $header; then
+        echo "$header:0: warning: found no references to a ${COMPONENT}_CPP macro"
+    fi
+
+    if ! grep -iq ${COMPONENT}_CPP $cpp; then
+        echo "$cpp:0: warning: found no references to a ${COMPONENT}_CPP macro"
+    fi
 }
 
 process-directory() {
@@ -77,12 +88,12 @@ process-directory() {
         echo "No such directory: $0 <directory>"
         exit 1
     fi
-    find $1 -name '*inl' | while read file; do
+
+    # For each file containing  extern templace declarations
+    git grep -l '^[[:blank:]]*extern[[:blank:]]\+template' $1 | while read file; do
         local dir=$(dirname $file)
-        local basename=$dir/$(basename $file .inl)
-        if [[ -e $basename.h && -e $basename.cpp ]]; then
-            detect-missing-stuff-in-component $basename.h $basename.cpp
-        fi
+        local basename=$dir/$(basename $file .h)
+        detect-issues-in-component $basename
     done
 }
 
