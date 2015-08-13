@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define INDEXVALUEMAPPER_CPP_
+#define SOFA_COMPONENT_ENGINE_INDICES2VALUESMAPPER_CPP
 
 #include "Indices2ValuesMapper.inl"
 #include <sofa/core/objectmodel/BaseObject.h>
