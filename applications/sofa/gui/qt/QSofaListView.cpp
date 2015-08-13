@@ -103,9 +103,9 @@ QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
     connect(this,SIGNAL(doubleClicked(Q3ListViewItem*) ), this, SLOT(RunSofaDoubleClicked(Q3ListViewItem*)) );
     connect(this,SIGNAL(clicked(Q3ListViewItem*) ), this, SLOT(updateMatchingObjectmodel(Q3ListViewItem*)) );
 #else
-    connect(this,SIGNAL(rightButtonClicked(QListViewItem*,const QPoint&, int)) ,this,SLOT(RunSofaRightClicked(QListViewItem*,const QPoint&, int)) );
-    connect(this,SIGNAL(doubleClicked(QListViewItem*) ), this, SLOT(RunSofaDoubleClicked(QListViewItem*)) );
-    connect(this,SIGNAL(clicked(QListViewItem*) ), this, SLOT(updateMatchingObjectmodel(QListViewItem*)) );
+    connect(this,SIGNAL(rightButtonClicked(Q3ListViewItem*,const QPoint&, int)) ,this,SLOT(RunSofaRightClicked(Q3ListViewItem*,const QPoint&, int)) );
+    connect(this,SIGNAL(doubleClicked(Q3ListViewItem*) ), this, SLOT(RunSofaDoubleClicked(Q3ListViewItem*)) );
+    connect(this,SIGNAL(clicked(Q3ListViewItem*) ), this, SLOT(updateMatchingObjectmodel(Q3ListViewItem*)) );
 
 #endif
 }
