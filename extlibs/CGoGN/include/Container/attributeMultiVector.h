@@ -31,8 +31,6 @@
 #include <fstream>
 #include <cstring>
 
-#include <typeinfo>
-
 #include "Container/sizeblock.h"
 
 namespace CGoGN

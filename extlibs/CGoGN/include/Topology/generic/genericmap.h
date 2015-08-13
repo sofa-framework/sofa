@@ -105,6 +105,8 @@ class GenericMap
 //	friend class DartMarkerGen ;
 //	friend class CellMarkerGen ;
 //	template<typename MAP, unsigned int CELL> friend class CellMarkerBase ;
+public:
+    typedef std::multimap<AttributeMultiVectorGen*, AttributeHandlerGen*> AttributeHandlersMap;
 
 protected:
 	// protected copy constructor to prevent the copy of map
@@ -176,7 +178,7 @@ protected:
 	/**
 	 * Store links to created AttributeHandlers
 	 */
-	std::multimap<AttributeMultiVectorGen*, AttributeHandlerGen*> attributeHandlers ;
+    AttributeHandlersMap attributeHandlers ;
     boost::mutex attributeHandlersMutex;
 
 public:
@@ -347,6 +349,10 @@ public:
 
 	const AttributeContainer& getAttributeContainer(unsigned int orbit) const;
 
+    inline const AttributeHandlersMap& getAttributeHandlersMap() const
+    {
+        return attributeHandlers;
+    }
 	/**
 	 * @brief get a generic pointer to an existing attribute multi vector
 	 * @param orbit the concerned orbit
