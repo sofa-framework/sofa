@@ -301,44 +301,31 @@ Dart Map3<MAP_IMPL>::splitVertex(std::vector<Dart>& vd)
 template <typename MAP_IMPL>
 Dart Map3<MAP_IMPL>::deleteVertex(Dart d)
 {
-    if(isBoundaryVertex(d))
-        return NIL ;
-
-	// Save the darts around the vertex
-	// (one dart per face should be enough)
-//	std::vector<Dart> fstoretmp;
-//	fstoretmp.reserve(128);
-
 	std::vector<Dart>* fstoretmp = this->askDartBuffer();
 	
-//	this->template foreach_dart_of_orbit<VERTEX>(d, [&] (Dart it) { fstoretmp.push_back(it); });
     this->template foreach_dart_of_orbit<VERTEX>(d, bl::bind(static_cast<void(std::vector<Dart>::*)(const Dart&)>(&std::vector<Dart>::push_back), boost::ref(*fstoretmp), bl::_1));
 
-	 // just one dart per face
-//	std::vector<Dart> fstore;
-//	fstore.reserve(128);
 	std::vector<Dart>* fstore = this->askDartBuffer();
 
-	DartMarkerStore<Map3<MAP_IMPL> > mf(*this);
-	for(unsigned int i = 0; i < fstoretmp->size(); ++i)
-	{
-		if(!mf.isMarked((*fstoretmp)[i]))
-		{
-			mf.template markOrbit<FACE>((*fstoretmp)[i]);
-			fstore->push_back((*fstoretmp)[i]);
-		}
-	}
+    DartMarkerStore<Map3<MAP_IMPL> > mf(*this);
+    for(unsigned int i = 0; i < fstoretmp->size(); ++i)
+    {
+        if(!mf.isMarked((*fstoretmp)[i]))
+        {
+            mf.template markOrbit<FACE>((*fstoretmp)[i]);
+            fstore->push_back((*fstoretmp)[i]);
+        }
+    }
 
 	this->releaseDartBuffer(fstoretmp);
 
-	std::cout << "nb faces " << fstore->size() << std::endl;
 
-	Dart res = NIL ;
-	for(std::vector<Dart>::iterator it = fstore->begin() ; it != fstore->end() ; ++it)
-	{
-		Dart fit = *it ;
-		Dart end = this->phi_1(fit) ;
-		fit = this->phi1(fit) ;
+    Dart res = NIL ;
+    for(std::vector<Dart>::iterator it = fstore->begin() ; it != fstore->end() ; ++it)
+    {
+        Dart fit = *it ;
+        Dart end = this->phi_1(fit) ;
+        fit = this->phi1(fit) ;
 
 		if(fit == end)
 		{
@@ -346,28 +333,27 @@ Dart Map3<MAP_IMPL>::deleteVertex(Dart d)
 		}
 		else
 		{
-			while(fit != end)
-			{
-				Dart d2 = this->phi2(fit) ;
-				Dart d3 = phi3(fit) ;
-				Dart d32 = this->phi2(d3) ;
+            while(fit != end)
+            {
+                Dart d2 = this->phi2(fit) ;
+                Dart d3 = phi3(fit) ;
+                Dart d32 = this->phi2(d3) ;
 
-				if(res == NIL)
-					res = d2 ;
+                if(res == NIL)
+                    res = d2 ;
 
-				this->phi2unsew(d2) ;
-				this->phi2unsew(d32) ;
-				this->phi2sew(d2, d32) ;
-				this->phi2sew(fit, d3) ;
+                this->phi2unsew(d2) ;
+                this->phi2unsew(d32) ;
+                this->phi2sew(d2, d32) ;
+                this->phi2sew(fit, d3) ;
 
-				fit = this->phi1(fit) ;
-			}
+                fit = this->phi1(fit) ;
+            }
 		}
 	}
+
 	this->releaseDartBuffer(fstore);
-
 	ParentMap::deleteCC(d) ;
-
 	return res ;
 }
 

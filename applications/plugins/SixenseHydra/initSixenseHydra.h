@@ -33,8 +33,4 @@
 #define SOFA_SIXENSE_HYDRA_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-/** \mainpage
-  This is the razer hydra driver.
-  */
-
 #endif // INITSIXENSE_HYDRA_H

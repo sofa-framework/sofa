@@ -29,9 +29,10 @@
 
 #include <sofa/defaulttype/Quat.h>
 
-#include <gtest/gtest.h>
+/// Beuaark
+#include "../../../applications/plugins/SofaTest/Sofa_test.h"
 
-#include <SofaTest/Sofa_test.h>
+#include <gtest/gtest.h>
 
 using namespace sofa;
 using namespace sofa::helper;

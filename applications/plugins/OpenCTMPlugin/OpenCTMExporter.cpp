@@ -114,7 +114,7 @@ void OpenCTMExporter::writeOpenCTM()
             return;
 
         // Getting data access
-        typedef sofa::component::visualmodel::VisualModelImpl::TexCoord TexCoord;
+        //typedef sofa::component::visualmodel::VisualModelImpl::TexCoord TexCoord;
         typedef sofa::component::visualmodel::VisualModelImpl::Coord Coord;
 
         const sofa::defaulttype::ResizableExtVector<Coord>& vertices = m_pVisual->getVertices();

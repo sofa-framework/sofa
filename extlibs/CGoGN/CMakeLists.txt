@@ -208,6 +208,8 @@ ELSE(WIN32)
         ENDIF (CGoGN_ONELIB)
 ENDIF(WIN32)
 
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
+
 AddLinkerDependencies(${CGoGN_EXT_LIBS} SofaDefaultType ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES}  ${QT_LIBRARIES})
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

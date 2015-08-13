@@ -56,12 +56,11 @@ SofaPluginManager::SofaPluginManager()
     this->connect(listPlugins, SIGNAL(selectionChanged(Q3ListViewItem*) ), this, SLOT(updateComponentList(Q3ListViewItem*) ));
     this->connect(listPlugins, SIGNAL(selectionChanged(Q3ListViewItem*) ), this, SLOT(updateDescription(Q3ListViewItem*) ));
     loadPluginsFromIniFile();
-    initPluginListView();
+    updatePluginsListView();
 }
 
 
-
-void SofaPluginManager::initPluginListView()
+void SofaPluginManager::updatePluginsListView()
 {
     typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
     PluginMap& map = sofa::helper::system::PluginManager::getInstance().getPluginMap();

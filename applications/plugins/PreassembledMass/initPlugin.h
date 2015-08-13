@@ -33,11 +33,4 @@
 #define SOFA_PreassembledMass_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-/** \mainpage
-  * Preassembling mapped masses at the desired level (generally at the independent dof level) and deleting mapped masses.
-  * @warning all independent dofs must be in independent graph branches (ie the XML technique for multimappings is not applicable)
-  *
-  * @author Matthieu Nesme
-  */
-    
 #endif // PREASSEMBLEDMASS_INITPLUGIN_H

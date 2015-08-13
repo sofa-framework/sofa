@@ -881,12 +881,12 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpara
 
 ContactMapperCreator< ContactMapper<FFDDistanceGridCollisionModel> > FFDDistanceGridContactMapperClass("default", true);
 
-template class SOFA_VOLUMETRIC_DATA_API ContactMapper<FFDDistanceGridCollisionModel>;
+template class SOFA_VOLUMETRIC_DATA_API ContactMapper<FFDDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
 
 
 ContactMapperCreator< ContactMapper<RigidDistanceGridCollisionModel> > DistanceGridContactMapperClass("default", true);
 
-template class SOFA_VOLUMETRIC_DATA_API ContactMapper<RigidDistanceGridCollisionModel>;
+template class SOFA_VOLUMETRIC_DATA_API ContactMapper<RigidDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
 
 } // namespace collision
 

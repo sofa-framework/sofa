@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 #include <SofaPardisoSolver/initPardisoSolver.h>
-
+#include <stdio.h>
 
 namespace sofa
 {

@@ -143,14 +143,14 @@ inline Dart ImplicitHierarchicalMap3::phi2bis(Dart d) const
 
 inline Dart ImplicitHierarchicalMap3::phi2(Dart d) const
 {
-    return /*(getCurrentLevel() == getMaxLevel())? phi2MaxLvl(d) :*/ (phi2MaxLvl(this->phi_1MaxLvl(phi1(d))));
+    return (getCurrentLevel() == getMaxLevel())? phi2MaxLvl(d) : (phi2MaxLvl(this->phi_1MaxLvl(phi1(d))));
 }
 
 inline Dart ImplicitHierarchicalMap3::phi3(Dart d) const
 {
 //    assert(getDartLevel(d) <= m_curLevel || !"Access to a dart introduced after current level") ;
-//    return /*(getCurrentLevel() == getMaxLevel())? phi3MaxLvl(d) :*/ (phi3MaxLvl(this->phi_1MaxLvl(phi1(d))));
-    return (phi3MaxLvl(d) == d) ? d : (phi3MaxLvl(this->phi_1MaxLvl(phi1(d))));
+    return (getCurrentLevel() == getMaxLevel())? phi3MaxLvl(d) : (phi3MaxLvl(this->phi_1MaxLvl(phi1(d))));
+//    return (phi3MaxLvl(d) == d) ? d : (phi3MaxLvl(this->phi_1MaxLvl(phi1(d))));
 }
 
 inline Dart ImplicitHierarchicalMap3::alpha0(Dart d) const

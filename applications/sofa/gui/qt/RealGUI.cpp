@@ -1097,6 +1097,7 @@ void RealGUI::editGnuplotDirectory()
 
 void RealGUI::showPluginManager()
 {
+    pluginManager_dialog->updatePluginsListView();
     pluginManager_dialog->show();
 }
 
