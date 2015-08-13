@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "gl.h"
 
-
+#ifndef SOFA_NO_OPENGL
 
 SOFA_HELPER_API const char* GetGlExtensionsList()
 {
@@ -39,3 +39,5 @@ SOFA_HELPER_API bool CanUseGlExtension(const std::string& ext)
         return true;
     return false;
 }
+
+#endif
