@@ -33,6 +33,8 @@
 #include "Container/fakeAttribute.h"
 #include "Topology/generic/cells.h"
 
+#include <boost/function.hpp>
+
 namespace CGoGN
 {
 
@@ -63,6 +65,7 @@ public:
 	virtual const std::string& typeName() const = 0;
 
 	virtual AttributeMultiVectorGen* getDataVectorGen() const = 0;
+    virtual void computeAttributeOnNewCell(Dart d) = 0;
 
 protected:
 	void setInvalid()
@@ -274,6 +277,22 @@ public:
 	 * @param iter iterator to
 	 */
 	void next(unsigned int& iter) const;
+
+    boost::function< void ( Cell<ORBIT> ) > m_onNewCellCallBack;
+    boost::function< void ( Cell<ORBIT> ) > m_onCellBeingRemovedCallBack;
+
+    virtual void computeAttributeOnNewCell(Dart d)
+    {
+        if (m_onNewCellCallBack)
+        {
+            m_onNewCellCallBack(Cell<ORBIT>(d));
+        }
+    }
+
+    inline void setNewCellCallback(const boost::function<void (Cell<ORBIT>)>& fun)
+    {
+        m_onNewCellCallBack = fun;
+    }
 } ;
 
 template<class T, unsigned int ORBIT, class MAP >
