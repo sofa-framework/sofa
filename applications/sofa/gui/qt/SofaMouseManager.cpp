@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SofaMouseManager.h"
-#include "ui_MouseManager.h"
+#include <ui_MouseManager.h>
 #include "QMouseOperations.h"
 
 #include <sofa/gui/MouseOperations.h>

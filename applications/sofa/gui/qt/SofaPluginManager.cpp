@@ -29,26 +29,13 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/DynamicLibrary.h>
-#ifdef SOFA_QT4
 
 #include <QMessageBox>
 #include <QTextEdit>
 #include <QPushButton>
-#else
-#include <qmessagebox.h>
-#include <qtextedit.h>
-#include <qpushbutton.h>
-#endif
 
 #include <iostream>
 #include <sstream>
-
-
-
-#ifndef SOFA_QT4
-typedef QListViewItem Q3ListViewItem;
-#endif
-
 
 
 namespace sofa
@@ -66,13 +53,8 @@ SofaPluginManager::SofaPluginManager()
     // SIGNAL / SLOTS CONNECTIONS
     this->connect(buttonAdd, SIGNAL(clicked() ),  this, SLOT( addLibrary() ));
     this->connect(buttonRemove, SIGNAL(clicked() ),  this, SLOT( removeLibrary() ));
-#ifdef SOFA_QT4
     this->connect(listPlugins, SIGNAL(selectionChanged(Q3ListViewItem*) ), this, SLOT(updateComponentList(Q3ListViewItem*) ));
     this->connect(listPlugins, SIGNAL(selectionChanged(Q3ListViewItem*) ), this, SLOT(updateDescription(Q3ListViewItem*) ));
-#else
-    this->connect(listPlugins, SIGNAL(selectionChanged(QListViewItem*) ), this, SLOT(updateComponentList(QListViewItem*) ));
-    this->connect(listPlugins, SIGNAL(selectionChanged(QListViewItem*) ), this, SLOT(updateDescription(QListViewItem*) ));
-#endif
     loadPluginsFromIniFile();
     updatePluginsListView();
 }
@@ -169,11 +151,9 @@ void SofaPluginManager::removeLibrary()
     Q3ListViewItem * curItem = listPlugins->selectedItem();
     std::stringstream sstream;
     if (!curItem) return;
-#ifdef SOFA_QT4
+
     std::string location( curItem->text(LOCATION_COLUMN).toAscii() ); //get the location value
-#else
-    std::string location( curItem->text(LOCATION_COLUMN).ascii() ); //get the location value
-#endif
+
     if( sofa::helper::system::PluginManager::getInstance().unloadPlugin(location,&sstream) )
     {
         listPlugins->removeItem(curItem);
@@ -199,11 +179,9 @@ void SofaPluginManager::updateComponentList(Q3ListViewItem* curItem)
     if(curItem == NULL ) return;
     //update the component list when an item is selected
     listComponents->clear();
-#ifdef SOFA_QT4
+
     std::string location( curItem->text(LOCATION_COLUMN).toAscii() ); //get the location value
-#else
-    std::string location( curItem->text(LOCATION_COLUMN).ascii() ); //get the location value
-#endif
+
     typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
     typedef sofa::helper::system::Plugin    Plugin;
     PluginMap& map = sofa::helper::system::PluginManager::getInstance().getPluginMap();
@@ -230,11 +208,7 @@ void SofaPluginManager::updateDescription(Q3ListViewItem* curItem)
     if(curItem == NULL ) return;
     //update the component list when an item is selected
     description->clear();
-#ifdef SOFA_QT4
     std::string location( curItem->text(LOCATION_COLUMN).toAscii() ); //get the location value
-#else
-    std::string location( curItem->text(LOCATION_COLUMN).ascii() ); //get the location value
-#endif
     typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
     typedef sofa::helper::system::Plugin    Plugin;
     PluginMap& map = sofa::helper::system::PluginManager::getInstance().getPluginMap();

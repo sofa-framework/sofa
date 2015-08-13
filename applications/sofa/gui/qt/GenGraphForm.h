@@ -25,7 +25,7 @@
 #ifndef SOFA_GUI_QGLVIEWER_GENGRAPHFORM_H
 #define SOFA_GUI_QGLVIEWER_GENGRAPHFORM_H
 
-#include "ui_BaseGenGraphForm.h"
+#include <ui_BaseGenGraphForm.h>
 #include <sofa/simulation/common/Node.h>
 
 #ifdef SOFA_QT4
