@@ -219,38 +219,90 @@ Dart ImplicitHierarchicalMap3::quadranguleFace(Dart d)
 
 void ImplicitHierarchicalMap3::deleteVertexSubdividedFace(Dart d)
 {
-    assert(this->volumeOldestDart(d) == d);
+    const Dart old =phi1(phi1(d));
+    assert(getDartLevel(old) == getCurrentLevel() -1u);
+    Dart d3 = phi1(phi3(d));
+    Dart res = NIL;
+    Dart vit = d ;
+    do
+    {
+        if(res == NIL && phi1(phi1(d)) != d)
+            res = phi1(d) ;
 
-	Dart centralV = phi1(phi1(d));
-	Dart res = NIL;
-	Dart vit = centralV ;
-	do
-	{
-		if(res == NIL && phi1(phi1(centralV)) != centralV)
-			res = phi1(centralV) ;
+        Dart f = phi_1(phi2(vit)) ;
+        phi1sew(vit, f) ;
 
-		Dart f = phi_1(phi2(vit)) ;
-		phi1sew(vit, f) ;
+        vit = phi2(phi_1(vit)) ;
+    } while(vit != d) ;
+    Map1::deleteCycle(d) ;
 
-		vit = phi2(phi_1(vit)) ;
-	} while(vit != centralV) ;
-	Map1::deleteCycle(centralV) ;
+    res = NIL;
+    vit = d3 ;
+    do
+    {
+        if(res == NIL && phi1(phi1(d3)) != d3)
+            res = phi1(d3) ;
 
-	Dart d3 = phi1(phi3(centralV));
-	res = NIL;
-	vit = d3 ;
-	do
-	{
-		if(res == NIL && phi1(phi1(d3)) != d3)
-			res = phi1(d3) ;
+        Dart f = phi_1(phi2(vit)) ;
+        phi1sew(vit, f) ;
 
-		Dart f = phi_1(phi2(vit)) ;
-		phi1sew(vit, f) ;
+        vit = phi2(phi_1(vit)) ;
+    } while(vit != d3) ;
+    Map1::deleteCycle(d3) ;
 
-		vit = phi2(phi_1(vit)) ;
-	} while(vit != d3) ;
-	Map1::deleteCycle(d3) ;
+    {
+        const unsigned int currLVL = getCurrentLevel();
+        unsigned goodEmb = ParentMap::getEmbedding< FACE >(old);
 
+        setCurrentLevel(getMaxLevel());
+        TraversorDartsOfOrbit< MAP, FACE> traDoO(*this, old);
+        for (Dart doo = traDoO.begin() ; doo != traDoO.end() ; doo = traDoO.next())
+        {
+            const unsigned dl = getDartLevel(doo);
+            if ( dl > currLVL -1u)
+            {
+                setCurrentLevel(dl);
+                this->setDartEmbedding<FACE>(doo, goodEmb) ;
+                setCurrentLevel(getMaxLevel());
+            }
+        }
+        setCurrentLevel(currLVL);
+    }
+}
+
+Dart ImplicitHierarchicalMap3::deleteVertex(Dart d)
+{
+    const VolumeCell res = VolumeCell(Map3::deleteVertex(d)); // the new volume of lvl currLVL -1
+    if (res != NIL)
+    {
+        const unsigned int currLVL = getCurrentLevel();
+        setCurrentLevel(getMaxLevel());
+        unsigned goodEmb = std::numeric_limits<unsigned >::max();
+        TraversorDartsOfOrbit< MAP, VOLUME> traDoO(*this, res);
+
+        for (Dart doo = traDoO.begin() ; doo != traDoO.end() ; doo = traDoO.next())
+        {
+            if (getDartLevel(doo) == currLVL -1u)
+            {
+                goodEmb = ParentMap::getEmbedding< VOLUME >(doo);
+                break;
+            }
+        }
+
+        for (Dart doo = traDoO.begin() ; doo != traDoO.end() ; doo = traDoO.next())
+        {
+            const unsigned dl = getDartLevel(doo);
+            if ( dl > currLVL -1u)
+            {
+                setCurrentLevel(dl);
+                this->setDartEmbedding<VOLUME>(doo, goodEmb) ;
+                setCurrentLevel(getMaxLevel());
+            }
+        }
+
+        setCurrentLevel(currLVL);
+    }
+    return res;
 }
 
 void ImplicitHierarchicalMap3::initEdgeId()
@@ -498,9 +550,11 @@ bool ImplicitHierarchicalMap3::faceIsSubdivided(Dart d)
 
 	bool subd = false ;
     setCurrentLevel(getCurrentLevel() + 1);
-//	if(m_dartLevel[phi1(d)] == m_curLevel && m_edgeId[phi1(d)] != m_edgeId[d])
-    if (fLevel < faceLevel(d))
-		subd = true ;
+    //    if (fLevel < faceLevel(d))
+    if( getDartLevel(phi1(d)) == getCurrentLevel() && getEdgeId(phi1(d)) != getEdgeId(d) )
+    {
+        subd = true ;
+    }
     setCurrentLevel(getCurrentLevel() - 1);
 	return subd ;
 }
@@ -516,24 +570,36 @@ bool ImplicitHierarchicalMap3::faceCanBeCoarsened(Dart d)
 	if(faceIsSubdivided(d))
 	{
 		subd = true;
-		Dart d3 = phi3(d);
+        const Dart d3 = phi3(d);
 
 		//tester si le volume voisin est subdivise
-		if(d3 != d && volumeIsSubdivided(d3))
-			subdNeighborhood = true;
+        if(!isBoundaryMarkedCurrent(d3) )
+        {
+            if (volumeIsSubdivided(d3))
+            {
+                return false;
+                //            subdNeighborhood = true;
+            }
+        }
+
 
         setCurrentLevel(getCurrentLevel() + 1);
 		//tester si la face subdivise a des faces subdivise
-		Dart cf = phi1(d);
+        const Dart phi1d = phi1(d);
+        Dart cf = phi1d;
 
 		do
 		{
 			if(faceIsSubdivided(cf))
-				subdOnce = false;
+            {
+                setCurrentLevel(getCurrentLevel() - 1);
+                return false;
+//                subdOnce = false;
+            }
 
 			cf = phi2(phi1(cf));
 		}
-		while(subdOnce && cf != phi1(d));
+        while(subdOnce && cf != phi1d);
 
         setCurrentLevel(getCurrentLevel() - 1);
 	}

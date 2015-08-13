@@ -35,7 +35,8 @@
 #include <gtest/gtest.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/random.h>
 #include <time.h>
 #include <iostream>

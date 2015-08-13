@@ -25,6 +25,7 @@
 #include "tree.h"
 
 #include <sofa/simulation/common/init.h>
+#include <sofa/helper/init.h>
 
 namespace sofa
 {
@@ -65,6 +66,16 @@ SOFA_SIMULATION_TREE_API bool isCleanedUp()
 {
     return s_cleanedUp;
 }
+
+// Detect missing cleanup() call.
+struct CleanupCheck
+{
+    ~CleanupCheck()
+    {
+        if (simulation::tree::isInitialized() && !simulation::tree::isCleanedUp())
+            helper::printLibraryNotCleanedUpWarning("SofaSimulationTree", "sofa::simulation::tree::cleanup()");
+    }
+} check;
 
 } // namespace tree
 

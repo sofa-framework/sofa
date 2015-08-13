@@ -9,6 +9,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
 
     SparsePARDISOSolver.cpp
+    initPardisoSolver.cpp
 
     )
 

@@ -63,6 +63,16 @@ SOFA_DEFAULTTYPE_API bool isCleanedUp()
     return s_cleanedUp;
 }
 
+// Detect missing cleanup() call.
+struct CleanupCheck
+{
+    ~CleanupCheck()
+    {
+        if (defaulttype::isInitialized() && !defaulttype::isCleanedUp())
+            helper::printLibraryNotCleanedUpWarning("SofaDefaultType", "sofa::defaulttype::cleanup()");
+    }
+} check;
+
 } // namespace defaulttype
 
 } // namespace sofa

@@ -86,6 +86,8 @@ public:
 
     virtual void computeBBox(const core::ExecParams*  params, bool onlyVisible=false );
 
+    virtual void handleEvent(core::objectmodel::Event *event);
+
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -168,6 +170,7 @@ public:
     Data<bool> p_drawHexahedra;
     Data<bool> p_drawQuads;
     Data<double> _drawSize;
+    Data<bool> p_doUpdate;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)

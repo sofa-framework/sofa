@@ -39,7 +39,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/objectmodel/BaseNode.h>
-#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/DeactivatedNodeVisitor.h>
 
 
@@ -61,72 +60,152 @@ int NodeToggleControllerClass = core::RegisterObject("Provides a way to switch a
         .add<NodeToggleController>()
         ;
 
+
+NodeToggleController::NodeToggleController()
+    : d_key( initData(&d_key,(char)'*',"key", "Key chosen for toggling the node(s)") )
+    , d_nameNode( initData(&d_nameNode,(std::string) "","nameNode", "Name of a specific node to toggle") )
+    , d_initStatus( initData(&d_initStatus,(bool) true,"initStatus", "If one node is chosen, this gives the initial status of the node") )
+    , d_firstFrame( initData(&d_firstFrame,(bool) true,"firstFrame", "Toggle the node at first step") )
+{
+    nodeFound = false;
+}
+
+
 void NodeToggleController::init()
 {
-    // register all subnodes, de-activate them and toggle the first one
-    std::cout<<"NodeToggleController::init()"<<std::endl;
+    if(f_printLog.getValue())
+    {
+        Node* context = dynamic_cast<Node*>(getContext());
+        std::cout<<"context name = "<<context->name<<std::endl;
 
-    m_FirstFrame = true;
+        if(d_key.getValue()=='*')
+            std::cout<<"key for toggle = A (default)"<<std::endl;
+        else
+            std::cout<<"key for toggle = "<<d_key.getValue()<<std::endl;
 
 
+        if(d_nameNode.getValue()!="")
+            std::cout<<"name of specific node = "<<d_nameNode.getValue()<<std::endl;
+    }
+
+    if(d_nameNode.getValue()!="")
+    {
+        Node* context = dynamic_cast<Node*>(getContext());
+        Node::Children children = context->getChildren();
+        if (children.size()==0) return; // no subnode, return directly
+        for (int i=0; i<(int)children.size(); i++)
+        {
+            Node* n = dynamic_cast<Node*>(children[i]);
+            if(n->getName() == d_nameNode.getValue())
+            {
+                specificNode = dynamic_cast<Node*>(children[i]);
+                nodeFound = true;
+
+                if(f_printLog.getValue())
+                    std::cout<<"specific node found"<<std::endl;
+                break;
+            }
+        }
+    }
 }
 
 void NodeToggleController::toggle()
 {
-    // de-activate the current node, and activate the following one
-    Node* context = dynamic_cast<Node*>(getContext());
-    //std::cout<<"context name = "<<context->name<<std::endl;
-    Node::Children children = context->getChildren();
-    if (children.size()==0) return; // no subnode, return directly
-    int prevNodeIndex = -1;
-//    int newNodeIndex = -1;
-    for (int i=0; i<(int)children.size() && prevNodeIndex==-1; i++)
+    if(d_nameNode.getValue()=="")
     {
-        Node* n = dynamic_cast<Node*>(children[i]);
-        if (n->isActive()) prevNodeIndex = i;
-    }
-    if (prevNodeIndex==-1)
-    {
-        int newNodeIndex=0;
+        Node* context = dynamic_cast<Node*>(getContext());
+        Node::Children children = context->getChildren();
 
-        dynamic_cast<Node*>(children[newNodeIndex])->is_activated.setValue(true);
-        dynamic_cast<Node*>(children[newNodeIndex])->setActive(true);
-        sofa::simulation::DeactivationVisitor visitorON(sofa::core::ExecParams::defaultInstance(), true);
-        dynamic_cast<Node*>(children[newNodeIndex])->executeVisitor(&visitorON);
-        std::cout<<"Activate"<<std::endl;
+        if (children.size()==0) return; // no subnode, return directly
+
+        for (int i=0; i<(int)children.size(); i++)
+        {
+            Node* n = dynamic_cast<Node*>(children[i]);
+
+            if (!n->isActive())
+            {
+                dynamic_cast<Node*>(children[i])->is_activated.setValue(true);
+                dynamic_cast<Node*>(children[i])->setActive(true);
+                sofa::simulation::DeactivationVisitor visitorON(sofa::core::ExecParams::defaultInstance(), true);
+                dynamic_cast<Node*>(children[i])->executeVisitor(&visitorON);
+
+                if(f_printLog.getValue())
+                    std::cout<<"Activate"<<std::endl;
+            }
+            else
+            {
+                dynamic_cast<Node*>(children[i])->is_activated.setValue(true);
+                sofa::simulation::DeactivationVisitor visitorOFF(sofa::core::ExecParams::defaultInstance(), false);
+                dynamic_cast<Node*>(children[i])->executeVisitor(&visitorOFF);
+                dynamic_cast<Node*>(children[i])->setActive(false);
+
+                if(f_printLog.getValue())
+                    std::cout<<"Desactivate"<<std::endl;
+            }
+        }
     }
-    else
+    else // Case: a specific node is given
     {
-        //newNodeIndex = (prevNodeIndex+1)%children.size();
-        dynamic_cast<Node*>(children[prevNodeIndex])->is_activated.setValue(true);
-        sofa::simulation::DeactivationVisitor visitorOFF(sofa::core::ExecParams::defaultInstance(), false);
-        dynamic_cast<Node*>(children[prevNodeIndex])->executeVisitor(&visitorOFF);
-        dynamic_cast<Node*>(children[prevNodeIndex])->setActive(false);
-        std::cout<<"Desactivate"<<std::endl;
+        if(dynamic_cast<Node*>(getContext())->getChildren().size()==0) return;
+
+        if(d_firstFrame.getValue() && nodeFound)
+        {
+            // init is active
+            if(d_initStatus.getValue())
+            {
+                specificNode->is_activated.setValue(true);
+                specificNode->setActive(true);
+                sofa::simulation::DeactivationVisitor visitorON(sofa::core::ExecParams::defaultInstance(), true);
+                specificNode->executeVisitor(&visitorON);
+
+                if(f_printLog.getValue())
+                    std::cout<<"Activate"<<std::endl;
+            }
+            // init is in-active
+            else
+            {
+                specificNode->is_activated.setValue(true);
+                sofa::simulation::DeactivationVisitor visitorOFF(sofa::core::ExecParams::defaultInstance(), false);
+                specificNode->executeVisitor(&visitorOFF);
+                specificNode->setActive(false);
+
+                if(f_printLog.getValue())
+                    std::cout<<"Desactivate"<<std::endl;
+            }
+        }
+        else if(nodeFound)
+        {
+            if(specificNode->isActive())
+            {
+                specificNode->is_activated.setValue(true);
+                sofa::simulation::DeactivationVisitor visitorOFF(sofa::core::ExecParams::defaultInstance(), false);
+                specificNode->executeVisitor(&visitorOFF);
+                specificNode->setActive(false);
+
+                if(f_printLog.getValue())
+                    std::cout<<"Desactivate"<<std::endl;
+            }
+            else
+            {
+                specificNode->is_activated.setValue(true);
+                specificNode->setActive(true);
+                sofa::simulation::DeactivationVisitor visitorON(sofa::core::ExecParams::defaultInstance(), true);
+                specificNode->executeVisitor(&visitorON);
+
+                if(f_printLog.getValue())
+                    std::cout<<"Activate"<<std::endl;
+            }
+        }
     }
 }
 
 
 void NodeToggleController::onBeginAnimationStep(const double /*dt*/)
 {
-    // deactivate all but first sub-nodes
-    if (m_FirstFrame)
+    if(d_firstFrame.getValue() && d_initStatus.isSet() && nodeFound)
     {
-        m_FirstFrame = false;
-
-        Node* context = dynamic_cast<Node*>(getContext());
-        std::cout<<"context name = "<<context->name<<std::endl;
-        Node::Children children = context->getChildren();
-//        for (unsigned int i=0; i<children.size(); i++)
-//        {
-//            Node* n = dynamic_cast<Node*>(children[i]);
-//            std::cout<<"child = "<<n->name<<std::endl;
-//            n->setActive(false);
-//            sofa::simulation::DeactivationVisitor v(sofa::core::ExecParams::defaultInstance(), false);
-//            n->executeVisitor(&v);
-//        }
-
         toggle();
+        d_firstFrame.setValue(false);
     }
 }
 
@@ -143,17 +222,30 @@ void NodeToggleController::onHapticDeviceEvent(core::objectmodel::HapticDeviceEv
 
 void NodeToggleController::onKeyPressedEvent(core::objectmodel::KeypressedEvent *oev)
 {
-    switch(oev->getKey())
+    if(d_key.getValue()=='*')
     {
-    case 'A':
-    case 'a':
-    {
-        std::cout << "NodeToggleController: switching active node" << std::endl;
-        toggle();
-        break;
+        switch(oev->getKey())
+        {
+        case 'A':
+        case 'a':
+        {
+            if(f_printLog.getValue())
+                std::cout << "NodeToggleController: switching active node" << std::endl;
+            toggle();
+            break;
+        }
+        default:
+            break;
+        }
     }
-    default:
-        break;
+    else
+    {
+        if(d_key.getValue()==oev->getKey())
+        {
+            if(f_printLog.getValue())
+                std::cout << "NodeToggleController: switching active node" << std::endl;
+            toggle();
+        }
     }
 }
 

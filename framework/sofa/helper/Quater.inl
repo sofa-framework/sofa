@@ -250,10 +250,10 @@ Quater<Real> Quater<Real>::inverse() const
 template<class Real>
 void Quater<Real>::normalize()
 {
-    Real	mag = (_q[0] * _q[0] + _q[1] * _q[1] + _q[2] * _q[2] + _q[3] * _q[3]);
+    Real mag = (_q[0] * _q[0] + _q[1] * _q[1] + _q[2] * _q[2] + _q[3] * _q[3]);
     if( mag != 0)
     {
-        Real sqr =  1.0/sqrt(mag);
+        Real sqr = static_cast<Real>(1.0 / sqrt(mag));
         for (int i = 0; i < 4; i++)
         {
             _q[i] *= sqr;

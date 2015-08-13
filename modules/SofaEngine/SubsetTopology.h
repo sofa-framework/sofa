@@ -65,7 +65,9 @@ public:
     typedef unsigned int PointID;
     typedef core::topology::BaseMeshTopology::Edge Edge;
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef core::topology::BaseMeshTopology::Quad Quad;
     typedef core::topology::BaseMeshTopology::Tetra Tetra;
+    typedef core::topology::BaseMeshTopology::Hexa Hexa;
 
 protected:
 
@@ -120,7 +122,9 @@ protected:
     bool isPointInROI(const PointID& pid, unsigned int idROI);
     bool isEdgeInROI(const Edge& e, unsigned int idROI);
     bool isTriangleInROI(const Triangle& t, unsigned int idROI);
+    bool isQuadInROI(const Quad& t, unsigned int idROI);
     bool isTetrahedronInROI(const Tetra& t, unsigned int idROI);
+    bool isHexahedronInROI(const Hexa& t, unsigned int idROI);
 
     void findVertexOnBorder(const Triangle& t, unsigned int idROI);
     void findVertexOnBorder(const Tetra& t, unsigned int idROI);
@@ -151,22 +155,30 @@ public:
     Data<VecCoord> f_X0;
     Data<helper::vector<Edge> > f_edges;
     Data<helper::vector<Triangle> > f_triangles;
+    Data<helper::vector<Quad> > f_quads;
     Data<helper::vector<Tetra> > f_tetrahedra;
+    Data<helper::vector<Hexa> > f_hexahedra;
     Data<SetIndex> d_tetrahedraInput;
 
     //Output
     Data<SetIndex> f_indices;
     Data<SetIndex> f_edgeIndices;
     Data<SetIndex> f_triangleIndices;
+    Data<SetIndex> f_quadIndices;
     Data<SetIndex> f_tetrahedronIndices;
+    Data<SetIndex> f_hexahedronIndices;
     Data<VecCoord > f_pointsInROI;
     Data<VecCoord > f_pointsOutROI;
     Data<helper::vector<Edge> > f_edgesInROI;
     Data<helper::vector<Edge> > f_edgesOutROI;
     Data<helper::vector<Triangle> > f_trianglesInROI;
     Data<helper::vector<Triangle> > f_trianglesOutROI;
+    Data<helper::vector<Quad> > f_quadsInROI;
+    Data<helper::vector<Quad> > f_quadsOutROI;
     Data<helper::vector<Tetra> > f_tetrahedraInROI;
     Data<helper::vector<Tetra> > f_tetrahedraOutROI;
+    Data<helper::vector<Hexa> > f_hexahedraInROI;
+    Data<helper::vector<Hexa> > f_hexahedraOutROI;
     Data<unsigned int> f_nbrborder;
 
     //Parameter

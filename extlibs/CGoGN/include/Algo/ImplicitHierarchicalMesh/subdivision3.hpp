@@ -1727,14 +1727,22 @@ void coarsenVolume(typename PFP::MAP& map, Dart d, VertexAttribute<typename PFP:
     map.setCurrentLevel(cur) ;
 
     /*
-     * simplifier les faces
+     * simplify faces
      */
-//    Traversor3WF<typename PFP::MAP> trav3WF(map, d, true);
-//    for(Dart dit = trav3WF.begin() ; dit != trav3WF.end() ; dit = trav3WF.next())
-    for(Dart dit : facesIncidentToVolume3(map,d))
+    Traversor3WF<typename PFP::MAP> trav3WF(map, d, true);
+    std::vector< FaceCell > faces;
+    faces.reserve(6);
+    for(FaceCell dit = trav3WF.begin() ; dit != trav3WF.end() ; dit = trav3WF.next())
     {
-        if(map.faceCanBeCoarsened(dit))
-            IHM::coarsenFace<PFP>(map, dit, position, IHM::S_QUAD);
+        if (map.faceCanBeCoarsened(dit))
+        {
+            faces.push_back(dit);
+        }
+    }
+
+    for(std::vector< FaceCell >::const_iterator fit = faces.begin(), end = faces.end() ; fit != end ; ++fit)
+    {
+        IHM::coarsenFace<PFP>(map, *fit, position, IHM::S_QUAD);
     }
 }
 
