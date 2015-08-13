@@ -78,9 +78,13 @@ public:
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double, 4>;
+extern template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double, 3>;
+extern template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double, 1>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<float, 4>;
+extern template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<float, 3>;
+extern template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<float, 1>;
 #endif
 #endif
 
