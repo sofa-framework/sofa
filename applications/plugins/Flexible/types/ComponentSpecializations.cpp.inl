@@ -64,7 +64,7 @@ namespace core
 
 #ifndef SOFA_FLOAT
     template class SOFA_Flexible_API State< defaulttype::TYPEABSTRACTNAME3dTypes >;
-	template class SOFA_Flexible_API Mapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes >;
+    template class SOFA_Flexible_API Mapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes >;
     template class SOFA_Flexible_API MultiMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
@@ -545,7 +545,7 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::vi
             glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-			defaulttype::Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
+            defaulttype::Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
             temp = modelviewM.transform ( temp );
 
             //glLoadMatrixf(modelview);
@@ -634,7 +634,7 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3fTypes>::draw(const core::vi
             glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-			defaulttype::Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
+            defaulttype::Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
             temp = modelviewM.transform ( temp );
 
             //glLoadMatrixf(modelview);

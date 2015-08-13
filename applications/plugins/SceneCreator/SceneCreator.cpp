@@ -82,6 +82,7 @@ using namespace component::container;
 using namespace component::topology;
 using namespace component::collision;
 using namespace component::visualmodel;
+using namespace component::mapping;
 
 typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 typedef component::mapping::BarycentricMapping<defaulttype::Vec3Types, defaulttype::Vec3Types > BarycentricMapping3_to_3;

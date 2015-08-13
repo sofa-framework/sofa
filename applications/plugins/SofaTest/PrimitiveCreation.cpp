@@ -6,6 +6,7 @@ typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Type
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
 
 using sofa::core::objectmodel::New;
+using sofa::component::container::MechanicalObject;
 using namespace sofa::defaulttype;
 
 namespace sofa{
@@ -82,7 +83,7 @@ sofa::component::collision::OBBModel::SPtr makeOBB(const Vec3 & p,const double *
     obb->addObject(obbDOF);
 
     //creating an OBBModel and attaching it to the same node than obbDOF
-    sofa::component::collision::OBBModel::SPtr obbCollisionModel = New<sofa::component::collision::OBBModel >();
+    sofa::component::collision::OBBModel::SPtr obbCollisionModel = New<sofa::component::collision::OBBModel>();
     obb->addObject(obbCollisionModel);
 
     //editting the OBBModel
@@ -138,7 +139,7 @@ sofa::component::collision::TriangleModel::SPtr makeTri(const Vec3 & p0,const Ve
     tri->addObject(bmt);
 
     //creating an OBBModel and attaching it to the same node than obbDOF
-    sofa::component::collision::TriangleModel::SPtr triCollisionModel = New<sofa::component::collision::TriangleModel >();
+    sofa::component::collision::TriangleModel::SPtr triCollisionModel = New<sofa::component::collision::TriangleModel>();
     tri->addObject(triCollisionModel);
 
 
@@ -184,7 +185,7 @@ sofa::component::collision::CapsuleModel::SPtr makeCap(const Vec3 & p0,const Vec
     cap->addObject(bmt);
 
     //creating an OBBModel and attaching it to the same node than obbDOF
-    sofa::component::collision::CapsuleModel::SPtr capCollisionModel = New<sofa::component::collision::CapsuleModel >();
+    sofa::component::collision::CapsuleModel::SPtr capCollisionModel = New<sofa::component::collision::CapsuleModel>();
     cap->addObject(capCollisionModel);
 
 
@@ -247,7 +248,7 @@ sofa::component::collision::RigidSphereModel::SPtr makeRigidSphere(const Vec3 & 
     sphere->addObject(sphereDOF);
 
     //creating an RigidSphereModel and attaching it to the same node than obbDOF
-    sofa::component::collision::RigidSphereModel::SPtr sphereCollisionModel = New<sofa::component::collision::RigidSphereModel >();
+    sofa::component::collision::RigidSphereModel::SPtr sphereCollisionModel = New<sofa::component::collision::RigidSphereModel>();
     sphere->addObject(sphereCollisionModel);
 
     //editing the RigidSphereModel
@@ -290,7 +291,7 @@ sofa::component::collision::SphereModel::SPtr makeSphere(const Vec3 & p,SReal ra
     sphere->addObject(sphereDOF);
 
     //creating an RigidSphereModel and attaching it to the same node than obbDOF
-    sofa::component::collision::SphereModel::SPtr sphereCollisionModel = New<sofa::component::collision::SphereModel >();
+    sofa::component::collision::SphereModel::SPtr sphereCollisionModel = New<sofa::component::collision::SphereModel>();
     sphere->addObject(sphereCollisionModel);
 
     //editting the RigidSphereModel

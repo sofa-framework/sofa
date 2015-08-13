@@ -23,10 +23,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "Binding_Data.h"
+#include "Binding_LinearSpring.h"
+
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/objectmodel/Data.h>
-#include "Binding_LinearSpring.h"
+
+#include <SofaDeformable/SpringForceField.h>
 
 using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;

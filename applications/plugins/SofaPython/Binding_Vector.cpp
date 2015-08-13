@@ -24,6 +24,8 @@
 ******************************************************************************/
 
 #include "Binding_Vector.h"
+#include <sofa/defaulttype/Vec.h>
+using namespace sofa::defaulttype;
 
 
 using namespace sofa::defaulttype;
