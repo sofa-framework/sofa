@@ -26,8 +26,10 @@
 #define SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_H
 #include "config.h"
 
+
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologySparseData.h>
+
 
 
 namespace sofa
@@ -38,6 +40,8 @@ namespace component
 
 namespace forcefield
 {
+
+
 
 template<class DataTypes>
 class OscillatingTorsionPressureForceField : public core::behavior::ForceField<DataTypes>

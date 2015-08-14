@@ -34,6 +34,7 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/OptionsGroup.h>
 
+
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 

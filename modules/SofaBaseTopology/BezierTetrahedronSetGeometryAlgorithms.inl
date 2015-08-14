@@ -25,7 +25,6 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_BEZIERTETRAHEDRONSETGEOMETRYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_BEZIERTETRAHEDRONSETGEOMETRYALGORITHMS_INL
 
-
 #include <SofaBaseTopology/BezierTetrahedronSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>

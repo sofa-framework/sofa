@@ -25,7 +25,6 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_INL
 
-
 #include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>

@@ -26,7 +26,6 @@
 #ifndef SOFA_COMPONENT_COLLISION_LINEMODEL_INL
 #define SOFA_COMPONENT_COLLISION_LINEMODEL_INL
 
-
 #include <SofaMeshCollision/LineModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaMeshCollision/LineLocalMinDistanceFilter.h>

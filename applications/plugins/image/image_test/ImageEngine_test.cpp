@@ -74,7 +74,7 @@ struct ImageEngine_test : public Sofa_test<>
 
 
         // Set data1
-        Image::CImgT img( (std::string(IMAGE_TEST_SCENES_DIR) + "/lena.jpg").c_str() );
+        Image::CImgT img( (std::string(IMAGETEST_SCENES_DIR) + "/lena.jpg").c_str() );
 
 #ifdef __DISPLAY__
         img.display("loaded image");
@@ -142,7 +142,7 @@ struct ImageEngine_test : public Sofa_test<>
 
 //        std::cerr<<&data1.getValue()<<" "<<&data2.getValue()<<" "<<(data1.getValue()==data2.getValue())<<std::endl;
 
-//        w1->getCImg(0).load((std::string(IMAGE_TEST_SCENES_DIR) + "/lena.jpg").c_str());
+//        w1->getCImg(0).load((std::string(IMAGETEST_SCENES_DIR) + "/lena.jpg").c_str());
 
 //        std::cerr<<&data1.getValue()<<" "<<&data2.getValue()<<" "<<(data1.getValue()==data2.getValue())<<std::endl;
 
@@ -184,7 +184,7 @@ struct ImageEngine_test : public Sofa_test<>
         imageContainer = sofa::modeling::addNew<ImageContainer>(root);
 
         // Set path to image for imageContainer
-        std::string fileName = std::string(IMAGE_TEST_SCENES_DIR) + "/" + "beam.raw";
+        std::string fileName = std::string(IMAGETEST_SCENES_DIR) + "/" + "beam.raw";
         imageContainer->m_filename.setValue(fileName);
 
         // ImageEngine
@@ -256,7 +256,7 @@ struct ImageEngine_test : public Sofa_test<>
         imageContainer = sofa::modeling::addNew<ImageContainer>(root);
 
         // Set path to image for imageContainer
-        std::string fileName = std::string(IMAGE_TEST_SCENES_DIR) + "/" + "beam.raw";
+        std::string fileName = std::string(IMAGETEST_SCENES_DIR) + "/" + "beam.raw";
         imageContainer->m_filename.setValue(fileName);
 
         // ImageEngine

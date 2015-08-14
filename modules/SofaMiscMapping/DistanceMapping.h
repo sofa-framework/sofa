@@ -33,6 +33,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 
+
 namespace sofa
 {
 using helper::vector;

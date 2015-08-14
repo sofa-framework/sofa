@@ -30,6 +30,7 @@
 #include <SofaNonUniformFem/NonUniformHexahedronFEMForceFieldAndMass.h>
 
 
+
 // for memory :
 // SOFA_NEW_HEXA :
 //

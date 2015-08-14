@@ -29,6 +29,7 @@
 #include <SofaBaseMechanics/BarycentricMapping.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
+
 namespace sofa
 {
 

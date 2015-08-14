@@ -57,9 +57,9 @@ PyObject* SP_BUILD_PYSPTR(Base* obj)
 {
     if (dynamic_cast<sofa::simulation::Node*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Node));
-    if (dynamic_cast<Context*>(obj))
+    if (dynamic_cast<sofa::core::objectmodel::Context*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Context));
-    if (dynamic_cast<BaseContext*>(obj))
+    if (dynamic_cast<sofa::core::objectmodel::BaseContext*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseContext));
 
     if (dynamic_cast<sofa::core::loader::MeshLoader*>(obj))

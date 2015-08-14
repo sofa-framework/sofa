@@ -32,6 +32,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <set>
 
+
 namespace sofa
 {
 

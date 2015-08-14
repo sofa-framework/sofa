@@ -25,7 +25,6 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL
 
-
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/MatEigen.h>
