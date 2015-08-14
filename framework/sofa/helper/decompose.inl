@@ -2912,13 +2912,13 @@ void Decompose<Real>::NSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 
 }
 
 template<>
-float Decompose<float>::zeroTolerance()
+SOFA_HELPER_API float Decompose<float>::zeroTolerance()
 {
     return 1e-6f;
 }
 
 template<>
-double Decompose<double>::zeroTolerance()
+SOFA_HELPER_API double Decompose<double>::zeroTolerance()
 {
     return 1e-8;
 }
