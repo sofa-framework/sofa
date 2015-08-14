@@ -76,16 +76,6 @@ void MeshSubsetEngine<DataTypes>::update()
 }
 
 
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MeshSubsetEngine_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_ENGINE_API MeshSubsetEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_ENGINE_API MeshSubsetEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
-#endif
-
 } // namespace engine
 
 } // namespace component

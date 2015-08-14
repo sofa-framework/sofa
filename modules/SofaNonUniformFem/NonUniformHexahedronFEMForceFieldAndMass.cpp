@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELD_CPP
+#define SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDANDMASS_CPP
 
 #include "NonUniformHexahedronFEMForceFieldAndMass.inl"
 #include <sofa/defaulttype/VecTypes.h>

@@ -31,7 +31,6 @@
 
 #include <SofaDeformable/SpringForceField.h>
 
-using namespace sofa::component::interactionforcefield;
 using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
 using namespace sofa::component::interactionforcefield;

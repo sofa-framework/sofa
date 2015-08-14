@@ -154,7 +154,7 @@ bool AttributeContainer::removeAttribute(const std::string& attribName)
 
 	if (index == UNKNOWN)
 	{
-		std::cerr << "removeAttribute by name: attribute not found (" << attribName << ")"<< std::endl ;
+//		std::cerr << "removeAttribute by name: attribute not found (" << attribName << ")"<< std::endl ;
 		return false ;
 	}
 

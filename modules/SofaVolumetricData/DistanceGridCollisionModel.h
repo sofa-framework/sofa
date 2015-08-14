@@ -529,12 +529,6 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_CPP)
-
-extern template class SOFA_VOLUMETRIC_DATA_API ContactMapper<FFDDistanceGridCollisionModel>;
-
-#endif
-
 
 /// Mapper for RigidDistanceGridCollisionModel
 template <class DataTypes>
@@ -631,6 +625,7 @@ public:
 //extern template class SOFA_VOLUMETRIC_DATA_API RigidContactMapper<RigidDistanceGridCollisionModel,Vec3dTypes>;
 //#endif
 
+extern template class SOFA_VOLUMETRIC_DATA_API ContactMapper<FFDDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
 extern template class SOFA_VOLUMETRIC_DATA_API ContactMapper<RigidDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
 
 #endif

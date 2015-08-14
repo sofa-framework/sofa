@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_PCAONRIGIDFRAME_H
-#define SOFA_COMPONENT_MAPPING_PCAONRIGIDFRAME_H
+#ifndef SOFA_COMPONENT_MAPPING_PCAONRIGIDFRAMEMAPPING_H
+#define SOFA_COMPONENT_MAPPING_PCAONRIGIDFRAMEMAPPING_H
 #include "config.h"
 
 #include <sofa/core/Multi2Mapping.h>
@@ -291,7 +291,7 @@ protected:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_PCAONRIGIDFRAME_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_PCAONRIGIDFRAMEMAPPING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_MAPPING_API PCAOnRigidFrameMapping< Vec1dTypes, Rigid3dTypes, Vec3dTypes >;
 //extern template class SOFA_MISC_MAPPING_API PCAOnRigidFrameMapping< Vec1dTypes, Rigid3dTypes, ExtVec3fTypes >;
