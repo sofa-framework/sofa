@@ -17,7 +17,6 @@ endif()
 include_directories("${SOFA_APPLICATIONS_PROJECTS_DIR}/Standard_test")
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${RC_FILES} ${PYTHON_FILES})
-AddCompilerDefinitions("IMAGE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 
 if(WIN32 AND NOT CMAKE_CL_64)
     AddCompilerDefinitions("EIGEN_DONT_ALIGN")
