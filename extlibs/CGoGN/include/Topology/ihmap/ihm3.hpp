@@ -541,15 +541,15 @@ inline unsigned int ImplicitHierarchicalMap3::getEmbedding(Cell< ORBIT > c) cons
     {
 //        std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
 //        const_cast<MAP*>(this)->compactOrbitContainer(VERTEX);
-        const unsigned int nbSteps = getCurrentLevel() - vertexInsertionLevel(c.dart);
+//        const unsigned int nbSteps = getCurrentLevel() - vertexInsertionLevel(c.dart);
 //        std::cerr << "nbsteps = " << nbSteps;
-        unsigned int index = Parent::getEmbedding(c);
+//        unsigned int index = Parent::getEmbedding(c);
 //        std::cerr << " emb = " << index << std::endl;
 //        std::cerr << "Parent::getEmbedding(" << c <<  ") =  " << index << std::endl;
-        if (index == EMBNULL)
-        {
-            return EMBNULL;
-        }
+//        if (index == EMBNULL)
+//        {
+//            return EMBNULL;
+//        }
 
 //        if(index == EMBNULL)
 //        {
@@ -559,32 +559,32 @@ inline unsigned int ImplicitHierarchicalMap3::getEmbedding(Cell< ORBIT > c) cons
 
 
 //        AttributeContainer& cont = const_cast<MAP*>(this)->getAttributeContainer<VERTEX>() ;
-        unsigned int step = 0u;
-        while(step < nbSteps)
-        {
-            const unsigned int next = m_nextLevelCell->operator[](index);
-            if (next != EMBNULL)
-            {
-                index = next;
-            } else
-            {
-//                assert(false);
-                break;
-            }
-            ++step;
-//            unsigned int nextIdx = this->m_nextLevelCell->operator[](index) ;
-//            if (nextIdx == EMBNULL)
+//        unsigned int step = 0u;
+//        while(step < nbSteps)
+//        {
+//            const unsigned int next = m_nextLevelCell->operator[](index);
+//            if (next != EMBNULL)
 //            {
-//                nextIdx = const_cast<MAP*>(this)->newCell<VERTEX>() ;
-//                const_cast<MAP*>(this)->copyCell<VERTEX>(nextIdx, index) ;
-//                const_cast<MAP*>(this)->m_nextLevelCell->operator[](index) = nextIdx ;
-////                std::cerr << "m_nextLevelCell[" << index << "] = " << nextIdx << std::endl;
-//                const_cast<MAP*>(this)->m_nextLevelCell->operator[](nextIdx) = EMBNULL ;
-//                cont.refLine(index) ;
+//                index = next;
+//            } else
+//            {
+////                assert(false);
+//                break;
 //            }
-//            index = nextIdx ;
-        }
-        return index;
+//            ++step;
+////            unsigned int nextIdx = this->m_nextLevelCell->operator[](index) ;
+////            if (nextIdx == EMBNULL)
+////            {
+////                nextIdx = const_cast<MAP*>(this)->newCell<VERTEX>() ;
+////                const_cast<MAP*>(this)->copyCell<VERTEX>(nextIdx, index) ;
+////                const_cast<MAP*>(this)->m_nextLevelCell->operator[](index) = nextIdx ;
+//////                std::cerr << "m_nextLevelCell[" << index << "] = " << nextIdx << std::endl;
+////                const_cast<MAP*>(this)->m_nextLevelCell->operator[](nextIdx) = EMBNULL ;
+////                cont.refLine(index) ;
+////            }
+////            index = nextIdx ;
+//        }
+        return Parent::getEmbedding(c);
     }
 
     if (ORBIT == EDGE)
@@ -594,7 +594,7 @@ inline unsigned int ImplicitHierarchicalMap3::getEmbedding(Cell< ORBIT > c) cons
 
     if (ORBIT == FACE)
     {
-        return m_embeddings[FACE]->operator [](this->dartIndex(this->faceNewestDart(c)));
+        return m_embeddings[FACE]->operator [](this->dartIndex(this->faceNewestDart(FaceCell(c.dart))));
     }
     if (ORBIT == VOLUME)
     {
@@ -612,7 +612,7 @@ inline unsigned int ImplicitHierarchicalMap3::getEmbedding(Cell< ORBIT > c) cons
 //        assert(vndLvl == curr);
 //        std::cerr << "volumeNewestDart(" << c << ") = " << vnd << " ( dartlvl(" << c << ") = " << this->getDartLevel(c) << " )." << std::endl;
 //        std::cerr << "getCurrentLevel() : " << getCurrentLevel() <<  " dartlvl(vnd) = " << getDartLevel(vnd) << std::endl;
-        return m_embeddings[VOLUME]->operator [](this->dartIndex(this->volumeNewestDart(c)));
+        return m_embeddings[VOLUME]->operator [](this->dartIndex(this->volumeNewestDart(VolumeCell(c.dart))));
     }
 
     return Parent::getEmbedding(c);

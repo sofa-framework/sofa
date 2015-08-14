@@ -161,7 +161,7 @@ Cell<ORBIT> TraversorCell<MAP, ORBIT, OPT>::begin()
         bool stopLoop =  dl <= curr;
         if (stopLoop && dl < curr)
         {
-            stopLoop = ( dl == m.getCellLevel(Cell<ORBIT>(m.phi1(current))) ); // we chose the stored dart so its level is equal to the cell level
+            stopLoop = ( dl == m.getMaxCellLevel(Cell<ORBIT>(current)) ); // we chose the stored dart so its level is equal to the cell level
         }
 
         while (!stopLoop)
@@ -175,7 +175,7 @@ Cell<ORBIT> TraversorCell<MAP, ORBIT, OPT>::begin()
                 break;
             }
             const unsigned int dl = m.getDartLevel(current.dart);
-            stopLoop = !(dl <= curr ? ((m.getCellLevel(Cell<ORBIT>(m.phi1(current))) > dl)) : true);
+            stopLoop = !(dl <= curr ? ((m.getMaxCellLevel(Cell<ORBIT>(current)) != dl)) : true);
         }
     }
         break;
@@ -190,7 +190,7 @@ Cell<ORBIT> TraversorCell<MAP, ORBIT, OPT>::begin()
             bool stopLoop =  dl <= curr;
             if (stopLoop && dl < curr)
             {
-                stopLoop = ( dl == m.getCellLevel(Cell<ORBIT>(m.phi1(current))) ); // we chose the stored dart so its level is equal to the cell level
+                stopLoop = ( dl == m.getMaxCellLevel(Cell<ORBIT>(current)) ); // we chose the stored dart so its level is equal to the cell level
             }
 
             while (!stopLoop)
@@ -204,7 +204,7 @@ Cell<ORBIT> TraversorCell<MAP, ORBIT, OPT>::begin()
                     break;
                 }
                 const unsigned int dl = m.getDartLevel(current.dart);
-                stopLoop = !(dl <= curr ? ((m.getCellLevel(Cell<ORBIT>(m.phi1(current))) > dl)) : true);
+                stopLoop = !(dl <= curr ? ((m.getMaxCellLevel(Cell<ORBIT>(current)) != dl)) : true);
             }
         }
         else
@@ -299,7 +299,7 @@ Cell<ORBIT> TraversorCell<MAP, ORBIT, OPT>::next()
             }
 
             const unsigned int dl = m.getDartLevel(current.dart);
-            if ( dl <= curr  && (m.getCellLevel(Cell<ORBIT>(m.phi1(current))) == dl))
+            if ( dl <= curr  && (m.getMaxCellLevel(Cell<ORBIT>(current)) == dl))
             {
                     break;
             }
@@ -322,7 +322,7 @@ Cell<ORBIT> TraversorCell<MAP, ORBIT, OPT>::next()
                     break;
                 }
                 const unsigned int dl = m.getDartLevel(current.dart);
-                if ( dl <= curr  && (m.getCellLevel(Cell<ORBIT>(m.phi1(current))) == dl))
+                if ( dl <= curr  && (m.getMaxCellLevel(Cell<ORBIT>(current)) == dl))
                 {
                         break;
                 }

@@ -36,6 +36,7 @@ protected:
 
     virtual void initEdgeId() = 0;
     virtual void initFaceId() = 0;
+    virtual void initMaxCellLevel() = 0;
     std::vector<AttributeMultiVector<Dart>*> m_involution;
     std::vector<AttributeMultiVector<Dart>*> m_permutation;
     std::vector<AttributeMultiVector<Dart>*> m_permutation_inv;
