@@ -164,6 +164,7 @@ void subdivideFace(typename PFP::MAP& map, Dart d, typename AttributeHandler_Tra
             TraversorDartsOfOrbit< MAP, FACE > traDoF(map, f);
             for (Dart fit = traDoF.begin(); fit != traDoF.end() ; fit = traDoF.next())
             {
+                map.setMaxFaceLevel(fit, fLevel + 1u);
                 const unsigned int dl = map.getDartLevel(fit);
                 if ( dl > fLevel)
                 {
@@ -419,6 +420,7 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
                     TraversorDartsOfOrbit< MAP, FACE > traDoF(map, f);
                     for (Dart fit = traDoF.begin(); fit != traDoF.end() ; fit = traDoF.next())
                     {
+                        map.setMaxFaceLevel(fit, vLevel + 1u);
                         const unsigned int dl = map.getDartLevel(fit);
                         map.setCurrentLevel(dl);
                         map.template setDartEmbedding<FACE>(fit, lvl1Face);
@@ -440,6 +442,7 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
             unsigned oldEmb = EMBNULL;
             for(Dart wit = traDoW.begin() ; wit != traDoW.end() ; wit = traDoW.next())
             {
+                map.setMaxVolumeLevel(wit, vLevel + 1u);
                 const unsigned dl = map.getDartLevel(wit);
                 if (dl > vLevel)
                 {
