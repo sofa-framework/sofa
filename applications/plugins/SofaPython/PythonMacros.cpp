@@ -57,9 +57,9 @@ PyObject* SP_BUILD_PYSPTR(Base* obj)
 {
     if (dynamic_cast<sofa::simulation::Node*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Node));
-    if (dynamic_cast<sofa::core::objectmodel::Context*>(obj))
+    if (dynamic_cast<Context*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Context));
-    if (dynamic_cast<sofa::core::objectmodel::BaseContext*>(obj))
+    if (dynamic_cast<BaseContext*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseContext));
 
     if (dynamic_cast<sofa::core::loader::MeshLoader*>(obj))
@@ -80,7 +80,7 @@ PyObject* SP_BUILD_PYSPTR(Base* obj)
 
     if (dynamic_cast<sofa::component::visualmodel::VisualModelImpl*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(VisualModel));
-    if (dynamic_cast<MechanicalObject3*>(obj))
+    if (dynamic_cast<sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(MechanicalObject));
     if (dynamic_cast<sofa::core::behavior::BaseMechanicalState*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseMechanicalState));

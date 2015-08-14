@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INDECES2VALUESMAPPER_H_
-#define INDECES2VALUESMAPPER_H_
+#ifndef SOFA_COMPONENT_ENGINE_INDICES2VALUESMAPPER_H
+#define SOFA_COMPONENT_ENGINE_INDICES2VALUESMAPPER_H
 #include "config.h"
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
@@ -88,7 +88,7 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(INDECES2VALUESMAPPER_CPP_)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_INDICES2VALUESMAPPER_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_ENGINE_API Indices2ValuesMapper<sofa::defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT
@@ -104,4 +104,4 @@ extern template class SOFA_ENGINE_API Indices2ValuesMapper<sofa::defaulttype::Ve
 
 } // namespace sofa
 
-#endif /* INDEXVALUEMAPPER_H_ */
+#endif

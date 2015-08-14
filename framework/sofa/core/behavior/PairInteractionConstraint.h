@@ -176,7 +176,7 @@ protected:
     SingleLink<PairInteractionConstraint<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONFORCEFIELD_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Vec2dTypes>;

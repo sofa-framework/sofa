@@ -123,6 +123,27 @@ inline void copyCellAttributes(MAP& m, Cell<ORBIT> d, Cell<ORBIT> e)
 	}
 }
 
+template <unsigned int ORBIT, typename MAP>
+inline void initCellAttribute(MAP& m, Cell<ORBIT> c)
+{
+    typedef typename MAP::AttributeHandlersMap AttributeHandlersMap;
+    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+    const AttributeHandlersMap& map = m.getAttributeHandlersMap();
+    typename AttributeHandlersMap::value_type::first_type* previousElement= NULL;
+    for (typename AttributeHandlersMap::const_iterator ait = map.begin(), end = map.end() ; ait != end ; ++ait)
+    {
+        if (previousElement != &(ait->first) && (ait->first->getOrbit() == ORBIT)) // we just need to call it once per attribute of ORBIT-cell
+        {
+            previousElement = &(ait->first);
+            ait->second->computeAttributeOnNewCell(c.dart);
+
+        } else {
+            continue;
+        }
+    }
+}
+
+
 template <unsigned int DIM, unsigned int ORBIT, typename MAP>
 void boundaryMarkOrbit(MAP& m, Cell<ORBIT> c)
 {

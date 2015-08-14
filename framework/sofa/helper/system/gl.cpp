@@ -40,5 +40,4 @@ SOFA_HELPER_API bool CanUseGlExtension(const std::string& ext)
     return false;
 }
 
-#endif 
-
+#endif
