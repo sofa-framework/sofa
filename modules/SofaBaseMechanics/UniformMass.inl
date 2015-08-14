@@ -25,7 +25,6 @@
 #ifndef SOFA_COMPONENT_MASS_UNIFORMMASS_INL
 #define SOFA_COMPONENT_MASS_UNIFORMMASS_INL
 
-
 #include <SofaBaseMechanics/UniformMass.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/Topology.h>

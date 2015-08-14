@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_LCPCONSTRAINTSOLVER_H
 #include "config.h"
 
-
 #include <SofaConstraint/ConstraintSolverImpl.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 

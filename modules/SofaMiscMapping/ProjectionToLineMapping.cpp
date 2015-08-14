@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_ProjectionToLineMapping_CPP
+
 #include "ProjectionToLineMapping.inl"
 #include <sofa/core/ObjectFactory.h>
 
