@@ -226,7 +226,7 @@ Dart ImplicitHierarchicalMap3::quadranguleFace(Dart d)
 void ImplicitHierarchicalMap3::deleteVertexSubdividedFace(Dart d)
 {
     const Dart old =phi1(phi1(d));
-    assert(getDartLevel(old) == getCurrentLevel() -1u);
+    assert(getDartLevel(old) <= getCurrentLevel() -1u);
     Dart d3 = phi1(phi3(d));
     Dart res = NIL;
     Dart vit = d ;
@@ -254,6 +254,7 @@ void ImplicitHierarchicalMap3::deleteVertexSubdividedFace(Dart d)
 
         vit = phi2(phi_1(vit)) ;
     } while(vit != d3) ;
+
     Map1::deleteCycle(d3) ;
 
     {
@@ -350,6 +351,7 @@ void ImplicitHierarchicalMap3::updateMaxLevelVolume(VolumeCell w)
     const unsigned currLVL = getCurrentLevel();
     setCurrentLevel(getMaxLevel());
     const unsigned maxVolumeLevel = volumeLevel(w);
+    setCurrentLevel(currLVL);
     TraversorDartsOfOrbit< MAP, VOLUME > traDoW(*this, w);
     for (Dart doo = traDoW.begin(), end = traDoW.end(); doo != end ; doo = traDoW.next())
     {
@@ -363,6 +365,7 @@ void ImplicitHierarchicalMap3::updateMaxLevelFace(FaceCell f)
     const unsigned currLVL = getCurrentLevel();
     setCurrentLevel(getMaxLevel());
     const unsigned maxFaceLevel = faceLevel(f);
+    setCurrentLevel(currLVL);
     TraversorDartsOfOrbit< MAP, FACE > traDoF(*this, f);
     for (Dart doo = traDoF.begin(), end = traDoF.end(); doo != end ; doo = traDoF.next())
     {
@@ -471,7 +474,7 @@ Dart ImplicitHierarchicalMap3::faceNewestDart(Dart d) const {
             return it;
         } else
         {
-            if(l > l_new  /*|| (l == l_new && ParentMap::getEmbedding<FACE>(it) != EMBNULL) */)
+            if (l > l_new)
             {
                 newest = it ;
                 l_new = l ;
@@ -488,7 +491,7 @@ Dart ImplicitHierarchicalMap3::dartOfMaxFaceLevel(FaceCell d) const {
     Dart it = d ;
     Dart newest = it ;
     unsigned int l_new = getDartLevel(newest) ;
-    if (l_new == getCurrentLevel() || l_new >= maxFaceLvl)
+    if (l_new >= maxFaceLvl)
     {
         return d;
     }
@@ -496,12 +499,12 @@ Dart ImplicitHierarchicalMap3::dartOfMaxFaceLevel(FaceCell d) const {
     do
     {
         const unsigned int l = getDartLevel(it) ;
-        if (l == getCurrentLevel() || l >= maxFaceLvl)
+        if (l >= maxFaceLvl)
         {
             return it;
         } else
         {
-            if(l > l_new  /*|| (l == l_new && ParentMap::getEmbedding<FACE>(it) != EMBNULL) */)
+            if(l > l_new )
             {
                 newest = it ;
                 l_new = l ;
@@ -584,29 +587,27 @@ Dart ImplicitHierarchicalMap3::dartOfMaxVolumeLevel(VolumeCell d) const
     const unsigned int maxVolumeLvl = a_maxVolumeLevel->operator [](dartIndex(d));
     Dart newest = d;
     unsigned int l_new = getDartLevel(newest);
-    if (l_new == getCurrentLevel() || l_new >= maxVolumeLvl)
+    if (l_new >= maxVolumeLvl)
     {
         return d;
     }
 
-    Traversor3WF<ImplicitHierarchicalMap3> trav3WF(*this, newest, true);
-    for(Dart dit = trav3WF.begin(), end = trav3WF.end() ; (dit != end) && (l_new < getCurrentLevel()); dit = trav3WF.next())
+    TraversorDartsOfOrbit< ImplicitHierarchicalMap3, VOLUME > traDoW(*this, d);
+    for (Dart dit = traDoW.begin(), end = traDoW.end() ; dit != end; dit = traDoW.next())
     {
-        const Dart newDart = faceNewestDart(dit);
-        const unsigned int l = getDartLevel(newDart);
-        if (l == getCurrentLevel() || l >= maxVolumeLvl)
-        {
-            return newDart;
-        } else
-        {
-            if( (l > l_new) /*|| (l == l_new && ParentMap::getEmbedding<VOLUME>(newDart) != EMBNULL)*/ )
-            {
-                newest = newDart;
-                l_new = l;
-            }
-        }
+       const unsigned int dl = getDartLevel(dit);
+       if (dl >= maxVolumeLvl)
+       {
+           return dit;
+       } else
+       {
+           if( (dl > l_new) )
+           {
+               newest = dit;
+               l_new = dl;
+           }
+       }
     }
-
     return newest;
 }
 
@@ -710,7 +711,9 @@ bool ImplicitHierarchicalMap3::faceCanBeCoarsened(Dart d)
         while(subdOnce && cf != phi1d);
 
         setCurrentLevel(getCurrentLevel() - 1);
-	}
+    } else {
+//        std::cerr << "face not subdivided : " << d << std::endl;
+    }
 
 	return subd && !subdNeighborhood && subdOnce;
 }
@@ -952,6 +955,7 @@ void ImplicitHierarchicalMap3::splitVolume(std::vector<Dart> &vd)
 
 
 //    std::transform(phi2vd.begin(), phi2vd.end(), phi2vd.begin(), bl::bind(&ImplicitHierarchicalMap3::phi2MaxLvl,this, bl::_1));
+    const unsigned oldVolLvl = volumeLevel(vd.front());
 
     Map3::splitVolume(vd);
 
@@ -968,6 +972,8 @@ void ImplicitHierarchicalMap3::splitVolume(std::vector<Dart> &vd)
         setDartLevel(phi2MaxLvl(ditvd), getDartLevel(ditphi2vd));
         setDartLevel(phi2MaxLvl(ditphi2vd), getDartLevel(ditvd));
         setEdgeId(ditvd, getEdgeId(ditvd), EDGE);
+        setMaxVolumeLevel(phi2MaxLvl(ditvd), oldVolLvl);
+        setMaxVolumeLevel(phi2MaxLvl(ditphi2vd), oldVolLvl);
     }
 
     for(std::vector<Dart>::iterator it = vd.begin() ; it != vd.end() ; ++it)

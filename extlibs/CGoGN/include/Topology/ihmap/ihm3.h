@@ -141,11 +141,12 @@ public:
             }
             if (ORBIT == FACE)
             {
-                a = map->ParentMap::template getEmbedding<FACE>(map->dartOfMaxFaceLevel(FaceCell(c.dart)));
+                a = map->ParentMap::template getEmbedding<FACE>(map->dartOfMaxFaceLevel(FaceCell(c.dart))/*map->faceNewestDart(c.dart)*/);
             }
             if (ORBIT == VOLUME)
             {
-                a = map->ParentMap::template getEmbedding<VOLUME>(map->dartOfMaxVolumeLevel(VolumeCell(c.dart)));
+//                std::cerr << "dartOfMaxVolumeLevel lvl " << map->getDartLevel(map->dartOfMaxVolumeLevel(VolumeCell(c.dart))) << std::endl;
+                a = map->ParentMap::template getEmbedding<VOLUME>(map->dartOfMaxVolumeLevel(VolumeCell(c.dart)) /*map->volumeNewestDart(c.dart)*/);
             }
 
             if (a == EMBNULL)
