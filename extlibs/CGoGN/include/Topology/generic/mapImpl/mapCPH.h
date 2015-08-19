@@ -46,7 +46,8 @@ protected:
          ****************************************/
 
     Dart newDart();
-    inline void deleteDart(Dart d);
+    virtual void deleteDart(Dart d);
+    void updateMaxLevel();
 public:
     inline unsigned int dartIndex(Dart d) const;
     inline Dart indexDart(unsigned int index) const;
@@ -287,10 +288,7 @@ Dart MapCPH::getInvolution(Dart d) const
     return (*m_involution[I])[d.index];
 }
 
-void MapCPH::deleteDart(Dart d)
-{
-    deleteDartLine(d.index) ;
-}
+
 
 unsigned int MapCPH::dartIndex(Dart d) const
 {

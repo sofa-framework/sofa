@@ -510,21 +510,7 @@ inline unsigned int ImplicitHierarchicalMap3::vertexInsertionLevel(Dart d) const
 inline unsigned int ImplicitHierarchicalMap3::edgeLevel(Dart d) const
 {
     assert(getDartLevel(d) <= m_curLevel || !"Access to a dart introduced after current level") ;
-
-	// the level of an edge is the maximum of the
-	// insertion levels of its darts
-
-	unsigned int r = 0;
-
-	Dart e = d;
-	do
-    {
-        r = std::max(r,
-                     std::max(getDartLevel(e), getDartLevel(phi2(e))) );
-		e = alpha2(e);
-    } while(e != d && (r != getCurrentLevel()));
-
-	return r;
+    return std::max(getDartLevel(d), getDartLevel(phi2(d)));
 }
 
 template< unsigned int ORBIT>
