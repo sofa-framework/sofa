@@ -28,7 +28,7 @@
 
 #include <iostream>
 //#include <fstream> // we can't use iostream because the windows implementation gets confused by the mix of text and binary
-#include <stdio.h>
+#include <cstdio>
 #include <sstream>
 
 namespace sofa
@@ -302,7 +302,7 @@ bool MeshVTKLoader::setInputsMesh()
 
             if (cellData == NULL) return false;
 
-            cellData->resize(numSubPolyLines.size());
+            cellData->resize((int)numSubPolyLines.size());
 
             for (size_t ii = 0;  ii < numSubPolyLines.size(); ii++)
                 cellData->data[ii] = numSubPolyLines[ii];
@@ -343,7 +343,6 @@ bool MeshVTKLoader::setInputsData()
     for (size_t i=0 ; i<reader->inputCellDataVector.size() ; i++)
     {
         const char* dataname = reader->inputCellDataVector[i]->name.c_str();
-
         core::objectmodel::BaseData* basedata = reader->inputCellDataVector[i]->createSofaData();
         this->addData(basedata, dataname);
     }
@@ -519,7 +518,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
                 std::string dataStructure;
                 lnData >> dataStructure;
 
-                if (dataStructure == "Topology") {
+//                if (dataStructure == "Topology") {
                     int perCell, cells;
                     lnData >> perCell >> cells;
                     sout << "Reading topology for lines: "<< perCell << " " << cells << sendl;
@@ -533,7 +532,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
                         return false;
 
                     inputCellDataVector[sz]->name = "Topology";
-                }
+//                }
             }
             else  /// TODO
                 std::cerr << "WARNING: reading vector data not implemented" << std::endl;
@@ -675,6 +674,8 @@ MeshVTKLoader::BaseVTKReader::BaseVTKDataIO* MeshVTKLoader::XMLVTKReader::loadDa
     //Format
     const char* formatStrTemp = dataArrayElement->Attribute("format");
 
+    if (formatStrTemp==NULL) formatStrTemp = dataArrayElement->Attribute("Format");
+
     checkErrorPtr(formatStrTemp);
 
     int binary = 0;
@@ -707,6 +708,8 @@ MeshVTKLoader::BaseVTKReader::BaseVTKDataIO* MeshVTKLoader::XMLVTKReader::loadDa
     else
         state = (d->read(std::string(listValuesStrTemp), binary));
     checkErrorPtr(state);
+
+
 
     return d;
 }
@@ -802,7 +805,6 @@ bool MeshVTKLoader::XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormat
                     dataArrayElement = dataArrayNode->ToElement();
                     checkError(dataArrayElement);
                     std::string currentDataArrayName = std::string(dataArrayElement->Attribute("Name"));
-
                     BaseVTKDataIO* celldata = loadDataArray(dataArrayElement, numberOfCells);
                     checkError(celldata);
                     celldata->name = currentDataArrayName;

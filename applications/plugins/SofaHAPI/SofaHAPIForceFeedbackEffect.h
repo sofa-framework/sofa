@@ -25,7 +25,7 @@
 #ifndef SOFAHAPI_SOFAHAPIFORCEFEEDBACKEFFECT_H
 #define SOFAHAPI_SOFAHAPIFORCEFEEDBACKEFFECT_H
 
-#include "SofaHAPI.h"
+#include "initSofaHAPI.h"
 
 //HAPI include
 #include <HAPI/HAPIForceEffect.h>
@@ -34,78 +34,81 @@
 #include <sofa/defaulttype/SolidTypes.h>
 #include <SofaHaptics/ForceFeedback.h>
 
-namespace SofaHAPI
+namespace sofa
 {
 
-using sofa::helper::vector;
-using sofa::defaulttype::Vec3d;
-using sofa::defaulttype::Quat;
-typedef sofa::defaulttype::SolidTypes<double>::Transform Transform;
-using sofa::core::objectmodel::Data;
-using sofa::core::objectmodel::BaseLink;
-using sofa::core::objectmodel::SingleLink;
-using sofa::core::behavior::MechanicalState;
-using sofa::component::controller::ForceFeedback;
+	namespace component
+	{
 
-/// Data necessary to transform positions and forces between simulation and device space
-class ForceFeedbackTransform
-{
-public:
-    Transform endDevice_H_virtualTool;
-    Transform world_H_baseDevice;
-    double forceScale;
-    double scale;
-    ForceFeedbackTransform()
-        : forceScale(1.0), scale(1.0)
-    {
-        endDevice_H_virtualTool.identity();
-        world_H_baseDevice.identity();
-    }
-};
+		using sofa::helper::vector;
+		using sofa::defaulttype::Vec3d;
+		using sofa::defaulttype::Quat;
+		typedef sofa::defaulttype::SolidTypes<double>::Transform Transform;
+		using sofa::core::objectmodel::Data;
+		using sofa::core::objectmodel::BaseLink;
+		using sofa::core::objectmodel::SingleLink;
+		using sofa::core::behavior::MechanicalState;
+		using sofa::component::controller::ForceFeedback;
 
-/// Implement HAPIForceEffect using a Sofa ForceFeedback component
-class ForceFeedbackEffect : public HAPI::HAPIForceEffect
-{
-public:
-    ForceFeedbackEffect(ForceFeedback* forceFeedback);
-    ~ForceFeedbackEffect();
+		/// Data necessary to transform positions and forces between simulation and device space
+		class ForceFeedbackTransform
+		{
+		public:
+			Transform endDevice_H_virtualTool;
+			Transform world_H_baseDevice;
+			double forceScale;
+			double scale;
+			ForceFeedbackTransform()
+				: forceScale(1.0), scale(1.0)
+			{
+				endDevice_H_virtualTool.identity();
+				world_H_baseDevice.identity();
+			}
+		};
 
-    virtual EffectOutput calculateForces( const EffectInput &input );
+		/// Implement HAPIForceEffect using a Sofa ForceFeedback component
+		class ForceFeedbackEffect : public HAPI::HAPIForceEffect
+		{
+		public:
+			ForceFeedbackEffect(ForceFeedback* forceFeedback);
+			~ForceFeedbackEffect();
 
-    void setTransform(const ForceFeedbackTransform& xf)
-    {
-        data = xf;
-    }
+			virtual EffectOutput calculateForces( const EffectInput &input );
 
-    ForceFeedback* forceFeedback;
-    ForceFeedbackTransform data;
-    bool permanent_feedback;
-};
+			void setTransform(const ForceFeedbackTransform& xf)
+			{
+				data = xf;
+			}
 
-/// Encapsulate ForceFeedbackEffect within a Sofa graph component
-class SofaHAPIForceFeedbackEffect : public sofa::core::objectmodel::BaseObject
-{
-public:
+			ForceFeedback* forceFeedback;
+			ForceFeedbackTransform data;
+			bool permanent_feedback;
+		};
 
-    SOFA_CLASS(SofaHAPIForceFeedbackEffect, sofa::core::objectmodel::BaseObject);
+		/// Encapsulate ForceFeedbackEffect within a Sofa graph component
+		class SOFA_SOFAHAPI_API SofaHAPIForceFeedbackEffect : public sofa::core::objectmodel::BaseObject
+		{
+		public:
 
-    void setForceFeedback(ForceFeedback* ffb);
-    ForceFeedback* getForceFeedback();
-    int getIndice();
+			SOFA_CLASS(SofaHAPIForceFeedbackEffect, sofa::core::objectmodel::BaseObject);
 
-    ForceFeedbackEffect* getEffect();
+			void setForceFeedback(ForceFeedback* ffb);
+			ForceFeedback* getForceFeedback();
+			int getIndice();
 
-    SingleLink<SofaHAPIForceFeedbackEffect,ForceFeedback,BaseLink::FLAG_STRONGLINK> forceFeedback;
+			ForceFeedbackEffect* getEffect();
 
-protected:
-    SofaHAPIForceFeedbackEffect();
-    virtual ~SofaHAPIForceFeedbackEffect();
+			SingleLink<SofaHAPIForceFeedbackEffect,ForceFeedback,BaseLink::FLAG_STRONGLINK> forceFeedback;
 
-    H3DUtil::AutoRef<ForceFeedbackEffect> data;
+		protected:
+			SofaHAPIForceFeedbackEffect();
+			virtual ~SofaHAPIForceFeedbackEffect();
 
-public:
-};
+			H3DUtil::AutoRef<ForceFeedbackEffect> data;
 
-} // namespace SofaHAPI
+		public:
+		};
 
+	} // namespace component
+}// namespace sofa
 #endif // SOFAHAPI_SOFAHAPIFORCEFEEDBACKEFFECT_H

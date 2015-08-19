@@ -251,7 +251,7 @@ public:
 
 namespace helper
 {
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_SIMULATION_COMMON)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_SIMULATION_COMMON_XML_BASEELEMENT_CPP)
 extern template class SOFA_SIMULATION_COMMON_API Factory< std::string, sofa::simulation::xml::BaseElement, std::pair<std::string, std::string> >;
 #endif
 } // namespace helper

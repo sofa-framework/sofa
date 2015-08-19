@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_SPARSEGRIDMULTIPLETOPOLOGY_H
 #define SOFA_COMPONENT_TOPOLOGY_SPARSEGRIDMULTIPLETOPOLOGY_H
+#include "config.h"
 
 #include <string>
 

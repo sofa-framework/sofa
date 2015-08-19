@@ -32,13 +32,12 @@
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/PointModel.h>
-#include <SofaRigid/RigidMapping.inl>
-#include <SofaRigid/SkinningMapping.inl>
+#include <SofaRigid/RigidMapping.h>
+#include <SofaRigid/SkinningMapping.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <SofaBoundaryCondition/FixedConstraint.h>
-#include <SofaBoundaryCondition/SkeletalMotionConstraint.inl>
-//#include <sofa/component/typedef/Particles_float.h>
+#include <SofaBoundaryCondition/SkeletalMotionConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <stack>
@@ -632,7 +631,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             M2I->padSize.setValue(2);
                             M2I->rotateImage.setValue(false);
                             M2I->f_nbMeshes.setValue(1);
-                            M2I->createInputMeshesData();
+//                            M2I->createInputMeshesData();
                             M2I->backgroundValue.setValue(0);
                             engine::MeshToImageEngine<defaulttype::ImageB>::SeqValues values(1,1);
                             (*M2I->vf_values[0]).setValue(values);
@@ -667,7 +666,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                                 M2I->padSize.setValue(2);
                                 M2I->rotateImage.setValue(false);
                                 M2I->f_nbMeshes.setValue(1);
-                                M2I->createInputMeshesData();
+//                                M2I->createInputMeshesData();
 
                                 std::stringstream nameStream(meshName);
                                 if(meshName.empty())

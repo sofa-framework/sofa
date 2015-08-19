@@ -32,7 +32,6 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/BaseMapping.h>
 
-#include <sofa/component/component.h>
 
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
@@ -131,6 +130,10 @@ protected:
         if(in->isEmpty()) return;
         const cimg_library::CImg<T>& img = in->getCImg(this->time);
 
+        f_lumping.updateIfDirty();
+
+        cleanDirty();
+
         // count non zero voxels
         unsigned int nb=0;
         cimg_forXYZ(img,x,y,z) if(img(x,y,z)) nb++;
@@ -213,7 +216,6 @@ protected:
         // clean
         dofs->resize(0);
         deformationMapping->init();
-        cleanDirty();
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_H
+#include "config.h"
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -39,7 +40,6 @@
 #include <string>
 #include <map>
 
-#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -83,6 +83,7 @@ class StandardTetrahedralFEMForceField: public core::behavior::ForceField<DataTy
 
     typedef core::topology::BaseMeshTopology::index_type Index;
     typedef core::topology::BaseMeshTopology::Tetra Element;
+	typedef core::topology::BaseMeshTopology::Edge Edge;
     typedef core::topology::BaseMeshTopology::SeqTetrahedra VecElement;
 
 
@@ -112,11 +113,11 @@ public :
 	 
 	  /// derivatives of J
 	  Coord dJ[4];
-	  MatrixSym SPKTensorGeneral;
+//	  MatrixSym SPKTensorGeneral;
 	  /// deformation gradient = gradPhi
-	  Matrix3 deformationGradient;
+	//  Matrix3 deformationGradient;
 	  /// right Cauchy-Green deformation tensor C (gradPhi^T gradPhi) 
-	  Matrix63 matB[4];
+	  //Matrix63 matB[4];
 	  Real strainEnergy;
 
       //Tetrahedron Points Indicies for CUDA
@@ -186,7 +187,7 @@ public:
     //Used for CUDA implementation
     void initNeighbourhoodPoints();
     void initNeighbourhoodEdges();
-    
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset);
     virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
     virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
     virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
@@ -197,7 +198,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
 
-    defaulttype::Mat<3,3,double> getPhi( int );
+  //  defaulttype::Mat<3,3,double> getPhi( int );
 
     class GHTetrahedronHandler : public topology::TopologyDataHandler<topology::Tetrahedron, tetrahedronRestInfoVector >
         {

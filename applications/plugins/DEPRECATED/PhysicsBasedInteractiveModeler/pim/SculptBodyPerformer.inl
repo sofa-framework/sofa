@@ -29,7 +29,6 @@
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <SofaBaseMechanics/SubsetMapping.h>
 #include <SofaEngine/MergePoints.h>
-#include <sofa/component/container/MeshLoader.h>
 
 namespace plugins
 {

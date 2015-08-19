@@ -24,10 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_VISUALMODEL_BASECAMERA_H
 #define SOFA_COMPONENT_VISUALMODEL_BASECAMERA_H
-
+#include "config.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/Quater.h>

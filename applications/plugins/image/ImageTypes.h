@@ -44,9 +44,6 @@
 #include "VectorVis.h"
 #include <sofa/helper/rmath.h>
 
-#if defined(WIN32)
-#define finite(x) (_finite(x))
-#endif
 
 
 namespace sofa
@@ -60,15 +57,25 @@ namespace defaulttype
 static const int IMAGELABEL_IMAGE = 0;
 static const int IMAGELABEL_BRANCHINGIMAGE = 1;
 
+
+
+/// a virtual, non templated Image class that can be allocated without knowing its exact type
+struct BaseImage
+{
+    typedef Vec<5,unsigned int> imCoord; // [x,y,z,s,t]
+    virtual void setDimensions(const imCoord& dim) = 0;
+    virtual ~BaseImage() {}
+};
+
 //-----------------------------------------------------------------------------------------------//
-// 5d-image structure on top of a shared memory CImgList
+/// 5d-image structure on top of a shared memory CImgList
 //-----------------------------------------------------------------------------------------------//
 
+
 template<typename _T>
-struct Image
+struct Image : public BaseImage
 {
     typedef _T T;
-    typedef Vec<5,unsigned int> imCoord; // [x,y,z,s,t]
     typedef cimg_library::CImg<T> CImgT;
 
     static const int label = IMAGELABEL_IMAGE; // type identifier, must be unique
@@ -225,7 +232,6 @@ public:
                 long double val=vect.magnitude();
                 long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
                 if(v<0) v=0;
-                else if(!finite(v)) v=0;
                 else if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
                 ++res((int)(v),0,0,0);
             }
@@ -238,12 +244,14 @@ public:
             cimglist_for(img,l)
                     cimg_forXYZC(img(l),x,y,z,c)
             {
-                const T val = img(l)(x,y,z,c);
-                long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
-                if(v<0) v=0;
-                else if(!finite(v)) v=0;
-                else if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
-                ++res((int)(v),0,0,c);
+				if((long double)value_max-(long double)value_min !=0)
+				{
+					const T val = img(l)(x,y,z,c);
+					long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
+					if(v<0) v=0;
+					else if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
+					++res((int)(v),0,0,c);
+				}
             }
         }
         return res;
@@ -927,7 +935,7 @@ struct ImageTypeInfo
 
     static size_t size(const DataType& /*data*/) { return 1; }
 
-    static void setSize(DataType& /*data*/, size_t /*size*/) {  }
+    static bool setSize(DataType& /*data*/, size_t /*size*/) { return false; }
 
     template <typename T>
     static void getValue(const DataType &/*data*/, size_t /*index*/, T& /*value*/)

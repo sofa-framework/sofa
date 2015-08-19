@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_DATAFIELD_H
-#define SOFA_CORE_OBJECTMODEL_DATAFIELD_H
+#ifndef SOFA_CORE_OBJECTMODEL_DATA_H
+#define SOFA_CORE_OBJECTMODEL_DATA_H
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -34,7 +34,7 @@
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/vector.h>
 #include <boost/shared_ptr.hpp>
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
 #include <sstream>
 #include <fstream>
@@ -125,7 +125,11 @@ public:
     virtual bool read( const std::string& s )
     {
         if (s.empty())
-            return false;
+        {
+            bool resized = getValueTypeInfo()->setSize( virtualBeginEdit(), 0 );
+            virtualEndEdit();
+            return resized;
+        }
         //serr<<"Field::read "<<s.c_str()<<sendl;
         std::istringstream istr( s.c_str() );
         istr >> *virtualBeginEdit();
@@ -591,7 +595,7 @@ std::string TData<T>::getValueTypeString() const
 }
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CORE)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
 
 extern template class SOFA_CORE_API TData< std::string >;
 extern template class SOFA_CORE_API Data< std::string >;
@@ -633,7 +637,7 @@ public:
 /// Read/Write Accessor.
 /// The Data is updated before being accessible.
 /// This means an expensive chain of Data link and Engine updates can be called
-/// For a pure write only Accessor, prefer WriteOnlyAccessor
+/// For a pure write only Accessor, prefer WriteOnlyAccessor< core::objectmodel::Data<T> >
 /// @warning the Data is updated (if needed) only by the Accessor constructor
 template<class T>
 class WriteAccessor< core::objectmodel::Data<T> > : public WriteAccessor<T>

@@ -56,6 +56,15 @@ public:
 
     EmbeddedMap3() {}
 
+    template< unsigned int ORBIT >
+    inline unsigned int getCellLevel(Cell< ORBIT > ) const {
+        return 0u;
+    }
+
+    template< unsigned int ORBIT >
+    inline unsigned int getMaxCellLevel(Cell< ORBIT > ) const {
+        return 0u;
+    }
 
     //!
     /*!

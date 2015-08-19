@@ -124,9 +124,8 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
 
         /// Init
         sofa::simulation::getSimulation()->init(root.get());
-        simulation->animate(root.get(),0.5);
-        projection->findKeyTimes();
-        //simulation->animate(root.get(),0.5);
+        simulation->animate(root.get(),0.25);
+        simulation->animate(root.get(),0.25);
 
     }
 

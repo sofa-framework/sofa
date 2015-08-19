@@ -24,13 +24,13 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_H
+#include "config.h"
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/component.h>
 #include <sofa/core/behavior/BaseRotationFinder.h>
 #include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/helper/OptionsGroup.h>
@@ -186,7 +186,7 @@ public:
 
     void getRotations(VecReal& vecR)
     {
-        unsigned int nbdof = this->mstate->read(core::ConstVecCoordId::position())->getValue().size();
+        unsigned int nbdof = this->mstate->getSize();
         for (unsigned int i=0; i<nbdof; ++i)
         {
 
@@ -196,7 +196,7 @@ public:
 
     void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0)
     {
-        unsigned int nbdof = this->mstate->read(core::ConstVecCoordId::position())->getValue().size();
+        unsigned int nbdof = this->mstate->getSize();
 
         if (component::linearsolver::RotationMatrix<float> * diag = dynamic_cast<component::linearsolver::RotationMatrix<float> *>(rotations))
         {
@@ -335,6 +335,9 @@ protected:
     {
 		_poissonRatio.setRequired(true);
 		_youngModulus.setRequired(true);
+		_youngModulus.beginEdit()->push_back((Real)5000.);
+		_youngModulus.endEdit();
+		_youngModulus.unset();
 
         data.initPtrData(this);
         this->addAlias(&_assembling, "assembling");

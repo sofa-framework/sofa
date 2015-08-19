@@ -24,9 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATA_H
 #define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATA_H
+#include "config.h"
 
 #include <sofa/helper/vector.h>
-#include <sofa/component/component.h>
 
 #include <sofa/core/topology/BaseTopologyData.h>
 #include <SofaBaseTopology/TopologyEngine.h>

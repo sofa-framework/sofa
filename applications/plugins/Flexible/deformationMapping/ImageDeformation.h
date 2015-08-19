@@ -34,7 +34,6 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/OptionsGroup.h>
 
-#include <sofa/component/component.h>
 
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
@@ -146,6 +145,7 @@ public:
         setDirtyValue();
 
         this->getContext()->get( deformationMapping, core::objectmodel::BaseContext::Local);
+        if( !deformationMapping ) serr<<"No deformation mapping found"<<sendl;
     }
 
     virtual void reinit() { update(); }

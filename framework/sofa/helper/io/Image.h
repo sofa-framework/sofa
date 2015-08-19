@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_IO_IMAGE_H
 #define SOFA_HELPER_IO_IMAGE_H
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <sofa/helper/Factory.h>
 
 #include <sofa/helper/helper.h>
@@ -154,7 +154,7 @@ private:
 
 } // namespace io
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_HELPER)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_IO_IMAGE_CPP)
 extern template class SOFA_HELPER_API Factory<std::string, io::Image, std::string>;
 #endif
 

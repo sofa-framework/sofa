@@ -44,8 +44,15 @@ public:
 	
 };
 
+// TODO do we ever want readWrite ?
 template<class T>
-editor<T> edit( sofa::core::objectmodel::Data<T>& data) { return editor<T>::readWrite(data); }
+editor<T> edit( sofa::core::objectmodel::Data<T>& data, bool read = true) {
+    if( read ) {
+        return editor<T>::readWrite(data);
+    } else {
+        return editor<T>::writeOnly(data);
+    }
+}
 
 template<class T>
 editor<T> editOnly( sofa::core::objectmodel::Data<T>& data) { return editor<T>::writeOnly(data); }

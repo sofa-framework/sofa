@@ -36,9 +36,9 @@
 
 #ifndef SOFA_COMPONENT_LIGHTMANAGER_H
 #define SOFA_COMPONENT_LIGHTMANAGER_H
+#include "config.h"
 
 #include <sofa/defaulttype/SolidTypes.h>
-#include <sofa/component/component.h>
 #include <SofaOpenglVisual/Light.h>
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/core/objectmodel/Event.h>
@@ -97,6 +97,7 @@ protected:
     virtual ~LightManager();
 public:
     void init();
+    void bwdInit();
     void reinit();
     void initVisual();
 
@@ -118,7 +119,7 @@ public:
     ///Remove all lights of the LightManager
     void clear();
 
-    void restoreDefaultLight();
+    void restoreDefaultLight(core::visual::VisualParams* vparams);
 
     void handleEvent(sofa::core::objectmodel::Event* event);
 

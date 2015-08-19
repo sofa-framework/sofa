@@ -26,12 +26,9 @@
 
 #include <sofa/helper/system/gl.h>
 
-#include <assert.h>
+#include <cassert>
 #include <algorithm>
 #include <iostream>
-using std::cout;
-using std::cerr;
-using std::endl;
 
 
 namespace sofa

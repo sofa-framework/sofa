@@ -61,6 +61,7 @@ class HexahedronSetTopologyModifier;
 using core::topology::BaseMeshTopology;
 
 typedef BaseMeshTopology::PointID			         PointID;
+typedef BaseMeshTopology::PointID			         LocalPointID;
 typedef BaseMeshTopology::EdgeID			            EdgeID;
 typedef BaseMeshTopology::TriangleID	         	QuadID;
 typedef BaseMeshTopology::HexaID			            HexaID;
@@ -90,6 +91,7 @@ public:
     typedef Hexa		Hexahedron;
     typedef EdgesInHexahedron	EdgesInHexahedron;
     typedef QuadsInHexahedron	QuadsInHexahedron;
+	typedef sofa::defaulttype::Vec<3,unsigned char> HexahedronBinaryIndex;
 protected:
     HexahedronSetTopologyContainer();
 
@@ -124,6 +126,19 @@ public:
      */
     virtual const Hexahedron getHexahedron(HexaID i);
 
+	 /** \brief Get the local hexahedron index (0<i<8) from its 3 binary indices.
+     *
+     * @param bi array of 3 binary indices (0 or 1 for each component)
+     * @return The corresponding local index between 0 and 7.
+     */
+	virtual unsigned int getLocalIndexFromBinaryIndex(const HexahedronBinaryIndex bi) const;
+
+	 /** \brief Get the binary index (array of 3 binary values) from its local index (0<li<8)
+     *
+     * @param li local index between 0 and 7 
+     * @return its binary index
+     */
+	virtual HexahedronBinaryIndex getBinaryIndexFromLocalIndex(const unsigned int li) const;
 
     /** \brief Get the index of a hexahedron from the indices of its vertices.
      *
@@ -420,9 +435,12 @@ protected:
     void cleanHexahedronTopologyFromDirty() {m_hexahedronTopologyDirty = false;}
     const bool& isHexahedronTopologyDirty() {return m_hexahedronTopologyDirty;}
 
-protected:
+public:
+	/// force the creation of quads
+	Data<bool>  d_createQuadArray;
 
-    /// provides the set of hexahedra.
+protected:
+	/// provides the set of hexahedra.
     Data< sofa::helper::vector<Hexahedron> > d_hexahedron;
 
     /// provides the set of edges for each hexahedron.

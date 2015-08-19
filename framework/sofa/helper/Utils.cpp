@@ -24,6 +24,8 @@
 ******************************************************************************/
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/system/Locale.h>
+#include <sofa/helper/Logger.h>
 
 #ifdef WIN32
 # include <Windows.h>
@@ -39,7 +41,7 @@
 # include <linux/limits.h>      // for PATH_MAX
 #endif
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -54,12 +56,15 @@ namespace helper
 
 std::wstring Utils::widenString(const std::string& s)
 {
+    // Set LC_CTYPE according to the environnement variable, for mbsrtowcs().
+    system::TemporaryLocale locale(LC_CTYPE, "");
+
     const char * src = s.c_str();
     // Call mbsrtowcs() once to find out the length of the converted string.
     size_t length = mbsrtowcs(NULL, &src, 0, NULL);
     if (length == size_t(-1)) {
         int error = errno;
-        std::cerr << "Error: Utils::widenString(): " << strerror(error) << std::endl;
+        Logger::getMainLogger().log(Logger::Warning, strerror(error), "Utils::widenString()");
         return L"";
     }
 
@@ -68,13 +73,13 @@ std::wstring Utils::widenString(const std::string& s)
     length = mbsrtowcs(buffer, &src, length + 1, NULL);
     if (length == size_t(-1)) {
         int error = errno;
-        std::cerr << "Error: Utils::widenString(): " << strerror(error) << std::endl;
+        Logger::getMainLogger().log(Logger::Warning, strerror(error), "Utils::widenString()");
         delete[] buffer;
         return L"";
     }
 
     if (src != NULL) {
-        std::cerr << "Error: Utils::widenString(): conversion failed." << std::endl;
+        Logger::getMainLogger().log(Logger::Warning, "Conversion failed (\"" + s + "\")", "Utils::widenString()");
         delete[] buffer;
         return L"";
     }
@@ -87,11 +92,14 @@ std::wstring Utils::widenString(const std::string& s)
 
 std::string Utils::narrowString(const std::wstring& ws)
 {
+    // Set LC_CTYPE according to the environnement variable, for wcstombs().
+    system::TemporaryLocale locale(LC_CTYPE, "");
+
     const wchar_t * src = ws.c_str();
     // Call wcstombs() once to find out the length of the converted string.
     size_t length = wcstombs(NULL, src, 0);
     if (length == size_t(-1)) {
-        std::cerr << "Error: Utils::narrowString(): conversion failed." << std::endl;
+        Logger::getMainLogger().log(Logger::Warning, "Conversion failed", "Utils::narrowString()");
         return "";
     }
 
@@ -99,7 +107,7 @@ std::string Utils::narrowString(const std::wstring& ws)
     char * buffer = new char[length + 1];
     length = wcstombs(buffer, src, length + 1);
     if (length == size_t(-1)) {
-        std::cerr << "Error: Utils::narrowString(): conversion failed." << std::endl;
+        Logger::getMainLogger().log(Logger::Warning, "Conversion failed", "Utils::narrowString()");
         delete[] buffer;
         return "";
     }
@@ -108,6 +116,23 @@ std::string Utils::narrowString(const std::wstring& ws)
     delete[] buffer;
     return result;
 }
+
+
+std::string Utils::downcaseString(const std::string& s)
+{
+    std::string result = s;
+    std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    return result;
+}
+
+
+std::string Utils::upcaseString(const std::string& s)
+{
+    std::string result = s;
+    std::transform(result.begin(), result.end(), result.begin(), ::toupper);
+    return result;
+}
+
 
 #if defined WIN32 || defined _XBOX
 # ifdef WIN32
@@ -155,7 +180,7 @@ static std::string computeExecutablePath()
     std::string path = "";
 
 #if defined(_XBOX) || defined(PS3)
-    std::cerr << "Error: Utils::getExecutablePath() is not implemented." << std::endl;
+    Logger::getMainLogger().log(Logger::Error, "Utils::getExecutablePath() is not implemented on this platform.");
 
 #elif defined(WIN32)
     std::vector<TCHAR> lpFilename(MAX_PATH);
@@ -163,7 +188,7 @@ static std::string computeExecutablePath()
         &lpFilename[0],
         MAX_PATH);
     if (ret == 0 || ret == MAX_PATH) {
-        std::cerr << "Utils::getExecutablePath(): " << GetLastError() << std::endl;
+        Logger::getMainLogger().log(Logger::Error, Utils::GetLastError(), "Utils::getExecutablePath()");
     } else {
         path = Utils::narrowString(std::wstring(&lpFilename[0]));
     }
@@ -173,10 +198,10 @@ static std::string computeExecutablePath()
     std::vector<char> real_path(PATH_MAX);
     uint32_t size = buffer.size();
     if (_NSGetExecutablePath(&buffer[0], &size) != 0) {
-        std::cerr << "Utils::getExecutablePath(): _NSGetExecutablePath() failed" << std::endl;
+        Logger::getMainLogger().log(Logger::Error, "_NSGetExecutablePath() failed", "Utils::getExecutablePath()");
     }
     if (realpath(&buffer[0], &real_path[0]) == 0) {
-        std::cerr << "Utils::getExecutablePath(): realpath() failed" << std::endl;
+        Logger::getMainLogger().log(Logger::Error, "realpath() failed", "Utils::getExecutablePath()");
     }
     path = std::string(&real_path[0]);
 
@@ -184,7 +209,7 @@ static std::string computeExecutablePath()
     std::vector<char> buffer(PATH_MAX);
     if (readlink("/proc/self/exe", &buffer[0], buffer.size()) == -1) {
         int error = errno;
-        std::cerr << "Utils::getExecutablePath(): " << strerror(error) << std::endl;
+        Logger::getMainLogger().log(Logger::Error, strerror(error), "Utils::getExecutablePath()");
     } else {
         path = std::string(&buffer[0]);
     }
@@ -210,8 +235,7 @@ static std::string computeSofaPathPrefix()
     const std::string exePath = Utils::getExecutablePath();
     std::size_t pos = exePath.rfind("/bin/");
     if (pos == std::string::npos) {
-        std::cerr << "Utils::getSofaPathPrefix(): failed to deduce the root path of Sofa from the application path: \""
-                  << exePath << "\""<< std::endl;
+        Logger::getMainLogger().log(Logger::Error, "failed to deduce the root path of Sofa from the application path: (" + exePath + ")", "Utils::getSofaPathPrefix()");
         // Safest thing to return in this case, I guess.
         return Utils::getExecutableDirectory();
     }
@@ -232,7 +256,7 @@ std::map<std::string, std::string> Utils::readBasicIniFile(const std::string& pa
     std::ifstream iniFile(path.c_str());
     if (!iniFile.good())
     {
-        std::cerr << "Utils::loadSofaIniFile(): error while trying to read file '" << path << "'" << std::endl;
+        Logger::getMainLogger().log(Logger::Error, "Error while trying to read file (" + path + ")", "Utils::readBasicIniFile()");
     }
 
     std::string line;

@@ -166,9 +166,9 @@ void BaseSequentialSolver::init() {
 	if( !response ) {
         response = new LDLTResponse();
         this->getContext()->addObject( response );
-        std::cout << "BaseSequentialSolver: fallback response class: "
+        serr << "fallback Response: "
                   << response->getClassName()
-                  << " added to the scene" << std::endl;
+                  << " added to the scene" << sendl;
 	}
 
 }
@@ -205,8 +205,8 @@ SReal BaseSequentialSolver::step(vec& lambda,
 
             // update rhs TODO track and remove possible allocs
             error_chunk.noalias() = rhs.segment(b.offset, b.size);
-            error_chunk.noalias() = error_chunk	- JP.middleRows(b.offset, b.size) * net;
-            error_chunk.noalias() = error_chunk - sys.C.middleRows(b.offset, b.size) * lambda;
+            error_chunk.noalias() -= JP.middleRows(b.offset, b.size) * net;
+            error_chunk.noalias() -= sys.C.middleRows(b.offset, b.size) * lambda;
 
             // error estimate update, we sum current chunk errors
             // estimate += error_chunk.squaredNorm();
@@ -242,7 +242,7 @@ SReal BaseSequentialSolver::step(vec& lambda,
 
 		// incrementally update net forces, we only do fresh
 		// computation after the loop to keep perfs decent
-        net.noalias() = net + mapping_response.middleCols(b.offset, b.size) * delta_chunk;
+        net.noalias() += mapping_response.middleCols(b.offset, b.size) * delta_chunk;
 		// net.noalias() = mapping_response * lambda;
 
         // fix net to avoid error accumulations ?
@@ -523,7 +523,7 @@ void SequentialSolver::LocalSubKKT::fromLocal( vec& global, const vec& local ) c
 
 
 SequentialSolver::SequentialSolver()
-    : d_iterateOnBilaterals(initData(&d_iterateOnBilaterals, false, "iterateOnBilaterals", "Should the bilateral constraint must be solved iteratively or factorized with the dynamics?"))
+    : d_iterateOnBilaterals(initData(&d_iterateOnBilaterals, true, "iterateOnBilaterals", "Should the bilateral constraint must be solved iteratively or factorized with the dynamics?"))
     , d_regularization(initData(&d_regularization, std::numeric_limits<SReal>::epsilon(), "regularization", "Optional diagonal Tikhonov regularization on bilateral constraints"))
 {}
 

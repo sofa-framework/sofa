@@ -1,6 +1,8 @@
 #include "../strainMapping/PrincipalStretchesMapping.h"
 
 #include "StrainMapping_test.h"
+#include <sofa/helper/Logger.h>
+using sofa::helper::Logger;
 
 
 namespace sofa {
@@ -28,14 +30,22 @@ namespace sofa {
 
             for( int i=0 ; i<material_dimensions ; ++i )
             {
-                Real min = 999999999999999;
+                Real min = std::numeric_limits<Real>::max();
                 for( int j=0 ; j<material_dimensions ; ++j )
+                {
+                    if( tmp.getStrain()[j] == min && min != std::numeric_limits<Real>::max() )
+                    {
+                        Logger::mainlog( Logger::Warning, "Several strain components are identical, the test cannot find the comparison order, try with another data set.", "PrincipalStretchesJacobianBlockTester" );
+                        std::cerr<<tmp.getStrain()<<std::endl;
+                    }
+
                     if( tmp.getStrain()[j] < min )
                     {
                         _order[i] = j;
                         min = tmp.getStrain()[j];
                     }
-                    tmp.getStrain()[_order[i]] = 999999999999999999;
+                    tmp.getStrain()[j] = std::numeric_limits<Real>::max();
+                }
             }
         }
 
@@ -90,14 +100,11 @@ namespace sofa {
         typedef typename Inherited::OutDeriv OutDeriv;
         typedef typename Inherited::OutVecDeriv OutVecDeriv;
 
-
-        OutCoord sort( const OutCoord& a )
+        template<class V>
+        V sort( const V& a )
         {
-            OutCoord aa;
-            std::vector<Real> v;
-            v.assign( &a[0], &a[0] + OutCoord::total_size );
-            std::sort( v.begin(), v.end() );
-            for( unsigned i=0 ; i<OutCoord::total_size ; ++i ) aa[i] = v[i];
+            V aa( a );
+            std::sort( &aa[0], &aa[0]+V::total_size );
             return aa;
         }
 
@@ -106,6 +113,22 @@ namespace sofa {
         virtual OutDeriv difference( const OutCoord& a, const OutCoord& b )
         {
             return (OutDeriv)(sort(a)-sort(b));
+        }
+
+        /// since principal stretches are oder-independent, sort them before comparison
+        virtual OutVecDeriv difference( const OutVecDeriv& a, const OutVecDeriv& b )
+        {
+            if( a.size()!=b.size() ){
+                ADD_FAILURE() << "OutVecDeriv have different sizes";
+                return OutVecDeriv();
+            }
+
+            OutVecDeriv c(a.size());
+            for (int i=0; i<a.size() ; ++i)
+            {
+                c[i] = sort(a[i])-sort(b[i]);
+            }
+            return c;
         }
 
 

@@ -37,6 +37,7 @@
 #include <sofa/gui/GUIManager.h>
 #include <sofa/config.h>
 #include <sofa/helper/GenerateRigid.h>
+#include <sofa/simulation/common/Simulation.h>
 
 
 using namespace sofa::core;
@@ -51,7 +52,7 @@ using namespace sofa::simulation;
 // set the viewer resolution
 extern "C" PyObject * Sofa_getSofaPythonVersion(PyObject * /*self*/, PyObject *)
 {
-    return Py_BuildValue("s", getModuleVersion());
+    return Py_BuildValue("s", SOFAPYTHON_VERSION_STR);
 }
 
 
@@ -235,7 +236,7 @@ extern "C" PyObject * Sofa_setViewerResolution(PyObject * /*self*/, PyObject * a
 extern "C" PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObject * args)
 {
 	float r = 0.0f, g = 0.0f, b = 0.0f;
-	Vector3 color;
+	sofa::defaulttype::Vector3 color;
     if (!PyArg_ParseTuple(args, "fff", &r, &g, &b))
     {
         PyErr_BadArgument();
@@ -286,7 +287,7 @@ extern "C" PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
         SP_MESSAGE_ERROR( "setViewerCamera: no Viewer!" )
         return Py_BuildValue("i",-1);
     }
-    viewer->setView(Vector3(px,py,pz),Quat(qx,qy,qz,qw));
+    viewer->setView(sofa::defaulttype::Vector3(px,py,pz),sofa::defaulttype::Quat(qx,qy,qz,qw));
 
     return Py_BuildValue("i",0);
 }
@@ -294,8 +295,8 @@ extern "C" PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
 
 extern "C" PyObject * Sofa_getViewerCamera(PyObject * /*self*/, PyObject *)
 {
-    Vec3d pos;
-    Quat orient;
+    sofa::defaulttype::Vector3 pos;
+    sofa::defaulttype::Quat orient;
 
 
     BaseGUI *gui = GUIManager::getGUI();
@@ -343,6 +344,21 @@ extern "C" PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args)
 }
 
 
+/// save a sofa scene from python
+extern "C" PyObject * Sofa_exportGraph(PyObject * /*self*/, PyObject * args)
+{
+    char* filename;
+    if (!PyArg_ParseTuple(args, "s",&filename))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    getSimulation()->exportGraph( Simulation::GetRoot().get(), filename );
+
+    return Py_BuildValue("i",0);
+}
+
 // Méthodes du module
 SP_MODULE_METHODS_BEGIN(Sofa)
 SP_MODULE_METHOD(Sofa,getSofaPythonVersion) 
@@ -358,6 +374,7 @@ SP_MODULE_METHOD(Sofa,setViewerBackgroundColor)
 SP_MODULE_METHOD(Sofa,setViewerCamera)
 SP_MODULE_METHOD(Sofa,getViewerCamera)
 SP_MODULE_METHOD(Sofa,generateRigid)
+SP_MODULE_METHOD(Sofa,exportGraph)
 SP_MODULE_METHODS_END
 
 

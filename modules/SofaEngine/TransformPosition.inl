@@ -382,12 +382,10 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
 template <class DataTypes>
 void TransformPosition<DataTypes>::update()
 {
-    cleanDirty();
-
     selectTransformationMethod();
 
     helper::ReadAccessor< Data<VecCoord> > in = f_inputX;
-    helper::WriteAccessor< Data<VecCoord> > out = f_outputX;
+
     helper::ReadAccessor< Data<Coord> > normal = f_normal;
     helper::ReadAccessor< Data<Coord> > origin = f_origin;
     helper::ReadAccessor< Data<Coord> > translation = f_translation;
@@ -396,6 +394,10 @@ void TransformPosition<DataTypes>::update()
     helper::ReadAccessor< Data<Real> > maxDisplacement = f_maxRandomDisplacement;
     helper::ReadAccessor< Data<long> > seed = f_seed;
     helper::ReadAccessor< Data<SetIndex> > fixedIndices = f_fixedIndices;
+
+    cleanDirty();
+
+    helper::WriteOnlyAccessor< Data<VecCoord> > out = f_outputX;
 
     out.resize(in.size());
     unsigned int i;
@@ -485,7 +487,7 @@ void TransformPosition<DataTypes>::draw(const core::visual::VisualParams* vparam
         std::vector<sofa::defaulttype::Vector3> points;
         for (unsigned int i=0; i < in.size(); i++)
             points.push_back(in[i]);
-        vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), sofa::defaulttype::Vec4f(0.8, 0.2, 0.2, 1.0));
+        vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), sofa::defaulttype::Vec4f(0.8f, 0.2f, 0.2f, 1.0f));
     }
 
     if (f_drawOutput.getValue())
@@ -494,7 +496,7 @@ void TransformPosition<DataTypes>::draw(const core::visual::VisualParams* vparam
         std::vector<sofa::defaulttype::Vector3> points;
         for (unsigned int i=0; i < out.size(); i++)
             points.push_back(out[i]);
-        vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), sofa::defaulttype::Vec4f(0.2, 0.8, 0.2, 1.0));
+        vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), sofa::defaulttype::Vec4f(0.2f, 0.8f, 0.2f, 1.0f));
     }
 }
 

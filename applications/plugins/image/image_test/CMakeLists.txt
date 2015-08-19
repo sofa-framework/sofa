@@ -1,9 +1,11 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
+    TestImageEngine.h
 )
 
 set(SOURCE_FILES
+    TestImageEngine.cpp
     DataImage_test.cpp
     ImageEngine_test.cpp
         )
@@ -15,7 +17,6 @@ endif()
 include_directories("${SOFA_APPLICATIONS_PROJECTS_DIR}/Standard_test")
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${RC_FILES} ${PYTHON_FILES})
-AddCompilerDefinitions("IMAGE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 
 if(WIN32 AND NOT CMAKE_CL_64)
     AddCompilerDefinitions("EIGEN_DONT_ALIGN")
@@ -25,6 +26,6 @@ endif()
 # absolute paths are perfectly OK for test resources.
 AddCompilerDefinitions("IMAGETEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 
-AddLinkerDependencies(SofaTest image)
+AddLinkerDependencies(SofaTest image SofaGTestMain)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

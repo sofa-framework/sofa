@@ -24,14 +24,15 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_H
 #define SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_H
+#include "config.h"
 
 #include <sofa/core/Mapping.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-#include <sofa/component/component.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <vector>
-#include <memory>
+
+#include <boost/scoped_ptr.hpp>
 
 #ifdef SOFA_HAVE_EIGEN2
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
@@ -108,6 +109,8 @@ protected:
           matrixJ(),
           updateJ(false)
     {
+        js.resize( 1 );
+        js[0] = &eigen;
     }
 
     virtual ~IdentityMapping()
@@ -135,10 +138,10 @@ public:
     virtual void handleTopologyChange();
 
 protected:
-    std::auto_ptr<MatrixType> matrixJ;
+    boost::scoped_ptr<MatrixType> matrixJ;
     bool updateJ;
 
-#ifdef SOFA_HAVE_EIGEN2
+
 protected:
     typedef linearsolver::EigenSparseMatrix<TIn, TOut> eigen_type;
     eigen_type eigen;
@@ -148,8 +151,6 @@ protected:
 
 public:
     const js_type* getJs();
-
-#endif
 
 };
 

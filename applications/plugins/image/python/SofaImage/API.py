@@ -15,14 +15,14 @@ class Image:
             self.mesh=None
             self.visual=None
             self.value=value
-            self.insideValue = value if insideValue is None else insideValue
+            self.insideValue = insideValue
             self.roiValue=list() # a list of values corresponding to each roi
             self.roiIndices=None # a string pointing to indices
             self.mergeROIs=None
 
     def __init__(self, parentNode, name, imageType="ImageUC"):
         self.imageType = imageType
-        self.node = parentNode.createChild(name)
+        self.node = parentNode if name=='' else parentNode.createChild(name)
         self.name = name
         self.meshes = dict()
         self.meshSeq = list() # to keep track of the mesh sequence, order does matter
@@ -91,13 +91,16 @@ class Image:
             if mesh.mesh is None:
                 print "[ImageAPI.Image] ERROR: no mesh for", name
             meshPath = SofaPython.Tools.getObjectPath(mesh.mesh)
-            args["position"+(str(i) if i>1 else "")]="@"+meshPath+".position"
-            args["triangles"+(str(i) if i>1 else "")]="@"+meshPath+".triangles"
-            args["value"+(str(i) if i>1 else "")]=mesh.value
-            args["insideValue"+(str(i) if i>1 else "")]=mesh.insideValue
+            args["position"+str(i)]="@"+meshPath+".position"
+            args["triangles"+str(i)]="@"+meshPath+".triangles"
+            args["value"+str(i)]=mesh.value
+            if mesh.insideValue is None:
+                args["fillInside"+str(i)]=False
+            else:
+                args["insideValue"+str(i)]=mesh.insideValue
             if not mesh.roiIndices is None and len(mesh.roiValue)!=0 :
-                args["roiIndices"+(str(i) if i>1 else "")]=mesh.roiIndices
-                args["roiValue"+(str(i) if i>1 else "")]=SofaPython.Tools.listToStr(mesh.roiValue)
+                args["roiIndices"+str(i)]=mesh.roiIndices
+                args["roiValue"+str(i)]=SofaPython.Tools.listToStr(mesh.roiValue)
             i+=1
         self.image = self.node.createObject('MeshToImageEngine', template=self.imageType, name="image", voxelSize=voxelSize, padSize=1, subdiv=8, rotateImage=False, nbMeshes=len(self.meshes), **args)
 
@@ -112,8 +115,8 @@ class Image:
         _filename = os.path.join(directory, _filename)
         return _filename
 
-    def addContainer(self, filename=None, directory=""):
-        self.image = self.node.createObject('ImageContainer', template=self.imageType, name="image", filename=self.getFilename(filename, directory))
+    def addContainer(self, filename=None, directory="", name=''):
+        self.image = self.node.createObject('ImageContainer', template=self.imageType, name='image' if name=='' else name, filename=self.getFilename(filename, directory))
 
     def addExporter(self, filename=None, directory=""):
         if self.image is None:
@@ -129,12 +132,35 @@ class Sampler:
         self.node = parentNode if name=='' else parentNode.createChild(name)
         self.name = name
         self.sampler=None
-        self.dof=None
+        self.mesh=None
+        self.dofs=None
+        self.mass=None
 
     def _addImageSampler(self, template, nbSamples, src, fixedPosition, **kwargs):
         self.sampler = self.node.createObject("ImageSampler", template=template, name="sampler", image=src+".image", transform=src+".transform", method="1", param=str(nbSamples)+" 1", fixedPosition=SofaPython.Tools.listListToStr(fixedPosition), **kwargs)
         return self.sampler
 
-    #def addImageSampler(self, image, nbSamples, fixedPosition=list(), **kwargs):
-        #return self._addImageSampler(nbSamples, fixedPosition, template=image.imageType, src=SofaPython.Tools.getObjectPath(image.image), **kwargs)
+    def _addImageRegularSampler(self, template, src, **kwargs):
+        self.sampler = self.node.createObject("ImageSampler", template=template, name="sampler", image=src+".image", transform=src+".transform", method="0", param="1", **kwargs)
+        return self.sampler
 
+    def addImageSampler(self, image, nbSamples, fixedPosition=list(), **kwargs):
+        return self._addImageSampler(image.imageType, nbSamples, "@"+SofaPython.Tools.getObjectPath(image.image), fixedPosition, **kwargs)
+
+    def addImageRegularSampler(self, image, **kwargs):
+        return self._addImageRegularSampler(image.imageType, "@"+SofaPython.Tools.getObjectPath(image.image), **kwargs)
+
+    def addMesh(self):
+        if self.sampler is None:
+            print "[SofaImage.API.Sampler] ERROR: no sampler"
+            return None
+        self.mesh = self.node.createObject('Mesh', name="mesh" ,src="@"+SofaPython.Tools.getObjectPath(self.sampler))
+        return self.mesh
+
+    def addMechanicalObject(self):
+        self.dofs = self.node.createObject("MechanicalObject", template="Vec3d", name="dofs")
+        return self.dofs
+
+    def addUniformMass(self,totalMass):
+        self.mass = self.node.createObject("UniformMass", template="Vec3d", name="mass", totalMass=totalMass)
+        return self.mass

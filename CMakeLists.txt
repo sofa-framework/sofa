@@ -3,6 +3,16 @@ cmake_minimum_required(VERSION 2.8.8)
 set(SOLUTION_NAME "Sofa")
 project(${SOLUTION_NAME})
 
+## Set some policies to avoid warnings from CMake.
+cmake_policy(SET CMP0015 OLD)   # CMake 3.0.2 warns if this is not set.
+if(CMAKE_VERSION GREATER 3.0)
+    cmake_policy(SET CMP0039 OLD)   # CMake 3.0.2 warns if this is not set.
+    cmake_policy(SET CMP0043 OLD)   # CMake 3.2.3 warns if this is not set.
+endif()
+if(CMAKE_VERSION GREATER 3.1)
+    cmake_policy(SET CMP0054 OLD)   # CMake 3.2.3 warns if this is not set.
+endif()
+
 # Enable the organisation in folders for generators that support
 # it. (E.g. some versions of Visual Studio have 'solution folders')
 set_property(GLOBAL

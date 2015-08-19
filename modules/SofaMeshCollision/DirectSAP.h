@@ -22,15 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#ifndef DIRECTSAP_H
-#define DIRECTSAP_H
+#ifndef SOFA_COMPONENT_COLLISION_DIRECTSAP_H
+#define SOFA_COMPONENT_COLLISION_DIRECTSAP_H
+#include "config.h"
 
 #include <sofa/core/collision/BroadPhaseDetection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/CollisionModel.h>
-#include <sofa/component/component.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaMeshCollision/EndPoint.h>
 #include <sofa/defaulttype/Vec.h>
@@ -148,7 +147,7 @@ public:
     void init();
     void reinit();
 
-    void addCollisionModel (core::CollisionModel *cm);    
+    void addCollisionModel (core::CollisionModel *cm);
 
     /**
       *Unuseful methods because all is done in addCollisionModel
@@ -168,7 +167,7 @@ public:
 
 typedef TDirectSAP<std::vector,std::allocator> DirectSAP;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_DIRECTSAP_CPP)
 extern template class SOFA_MESH_COLLISION_API TDirectSAP<helper::vector,helper::CPUMemoryManager>;
 extern template class SOFA_MESH_COLLISION_API TDirectSAP<std::vector,std::allocator>;
 #endif
@@ -179,4 +178,4 @@ extern template class SOFA_MESH_COLLISION_API TDirectSAP<std::vector,std::alloca
 
 } // namespace sofa
 
-#endif // BRUTESAP_H
+#endif // SOFA_COMPONENT_COLLISION_DIRECTSAP_H

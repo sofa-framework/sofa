@@ -92,10 +92,12 @@ bool PointsFromIndices<DataTypes>::contains(VecCoord& v, Coord c)
 template <class DataTypes>
 void PointsFromIndices<DataTypes>::update()
 {
-    cleanDirty();
-    VecCoord& indices_position = *(f_indices_position.beginEdit());
     const SetIndex& indices = f_indices.getValue();
     const VecCoord& x = f_X.getValue();
+
+    cleanDirty();
+
+    VecCoord& indices_position = *(f_indices_position.beginWriteOnly());
 
     if(!x.empty())
     {

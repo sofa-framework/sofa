@@ -80,8 +80,6 @@ void Vertex2Frame<DataTypes>::update()
 {
     using namespace sofa::defaulttype;
 
-    cleanDirty();
-
     const helper::vector<Vector3>& fVertices = vertices.getValue();
     const helper::vector<Vector3>& fNormals = normals.getValue();
     unsigned int nbVertices = fVertices.size();
@@ -91,6 +89,12 @@ void Vertex2Frame<DataTypes>::update()
         serr << "Vertex2Frame : no vertices or normals found..." << sendl;
         return ;
     }
+
+    texCoords.updateIfDirty();
+    rotation.updateIfDirty();
+    rotationAngle.updateIfDirty();
+
+    cleanDirty();
 
     VecCoord& fFrames = *(frames.beginEdit());
     fFrames.resize(nbVertices);

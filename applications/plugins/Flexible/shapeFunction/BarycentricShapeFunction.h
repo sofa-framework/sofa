@@ -338,8 +338,8 @@ protected:
                 for ( unsigned int i = 0; i < cubes.size(); i++ )
                     if(cell==-1 || cell==(int)(i+c0))
                     {
-                        //Coord v = B->bases[c0+i] * ( childPosition - parent[cubes[i][0]] );  // for cuboid hexahedra
-                        Coord v; Coord ph[8];  for ( unsigned int j = 0; j < 8; j++ ) ph[j]=parent[cubes[i][j]]; computeHexaTrilinearWeights(v,ph,childPosition,1E-10); // for arbitrary hexahedra
+                        Coord v = B->bases[c0+i] * ( childPosition - parent[cubes[i][0]] );  // for cuboid hexahedra
+//                        Coord v; Coord ph[8];  for ( unsigned int j = 0; j < 8; j++ ) ph[j]=parent[cubes[i][j]]; computeHexaTrilinearWeights(v,ph,childPosition,1E-10); // for arbitrary hexahedra
                         double d = getDistanceHexa( v );
                         if ( d<=distance ) { coefs = v; distance = d; index = c0+i; }
                     }

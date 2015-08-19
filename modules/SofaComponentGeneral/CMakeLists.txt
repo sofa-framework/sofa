@@ -2,6 +2,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
+    config.h
     initComponentGeneral.h
     )
 
@@ -19,6 +20,10 @@ AddLinkerDependencies(SofaValidation SofaExporter SofaEngine SofaGraphComponent 
 
 if(SOFA-EXTERNAL_CSPARSE)
     AddLinkerDependencies(SofaSparseSolver)
+endif()
+
+if(SOFA-LIB_COMPONENT_PARDISO_SOLVER)
+    AddLinkerDependencies(SofaPardisoSolver)
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

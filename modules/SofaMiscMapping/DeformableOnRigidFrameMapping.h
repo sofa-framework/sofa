@@ -22,12 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_H
-#define SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_H
+#ifndef SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAMEMAPPING_H
+#define SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAMEMAPPING_H
+#include "config.h"
 
 #include <sofa/core/Multi2Mapping.h>
-
-#include <sofa/component/component.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/Topology.h>
@@ -261,7 +260,7 @@ protected:
     InRootCoord rootX;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_CPP)  //// ATTENTION PB COMPIL WIN3Z
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAMEMAPPING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3dTypes >;
 #endif

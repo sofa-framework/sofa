@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_RIGIDCONTACTMAPPER_H
 #define SOFA_COMPONENT_COLLISION_RIGIDCONTACTMAPPER_H
+#include "config.h"
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/Factory.h>
@@ -109,7 +110,7 @@ public:
     int addPoint(const Coord& P, int index, Real&)
     {
         int i = nbp++;
-        if ((int)outmodel->read(core::ConstVecCoordId::position())->getValue().size() <= i)
+        if ((int)outmodel->getSize() <= i)
             outmodel->resize(i+1);
         if (mapping)
         {
@@ -197,7 +198,7 @@ class ContactMapper<CylinderModel,TVec3Types > : public RigidContactMapper<Cylin
         }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_RIGIDCONTACTMAPPER_CPP)
 extern template class SOFA_MESH_COLLISION_API ContactMapper<CylinderModel, defaulttype::Vec3Types>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidCapsuleModel, defaulttype::Vec3Types>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidSphereModel, defaulttype::Vec3Types>;

@@ -27,10 +27,12 @@
 #include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/behavior/ForceField.inl>
 
+#include <SofaBaseTopology/PointSetGeometryAlgorithms.inl>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.inl>
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.inl>
 #include <SofaBaseTopology/QuadSetGeometryAlgorithms.inl>
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
+#include <SofaBaseTopology/BezierTetrahedronSetGeometryAlgorithms.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>

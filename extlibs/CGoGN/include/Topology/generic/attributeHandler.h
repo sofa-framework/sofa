@@ -33,6 +33,8 @@
 #include "Container/fakeAttribute.h"
 #include "Topology/generic/cells.h"
 
+#include <boost/function.hpp>
+
 namespace CGoGN
 {
 
@@ -63,6 +65,7 @@ public:
 	virtual const std::string& typeName() const = 0;
 
 	virtual AttributeMultiVectorGen* getDataVectorGen() const = 0;
+    virtual void computeAttributeOnNewCell(Dart d) = 0;
 
 protected:
 	void setInvalid()
@@ -71,6 +74,32 @@ protected:
 	}
 } ;
 
+template <typename T, unsigned int ORBIT, typename MAP>
+struct AttributeAccessorDefault {
+    static inline T& at(MAP* map, AttributeMultiVector<T>* attrib, Cell<ORBIT> c)
+    {
+        unsigned int a = map->getEmbedding(c) ;
+        if (a == EMBNULL)
+            a = Algo::Topo::template setOrbitEmbeddingOnNewCell<ORBIT,MAP>(*map, c) ;
+        return attrib->operator[](a) ;
+    }
+
+    static inline const T& at(const MAP* map, const AttributeMultiVector<T>* attrib, Cell<ORBIT> c)
+    {
+        return attrib->operator[](map->getEmbedding(c)) ;
+    }
+
+    static inline T& at(AttributeMultiVector<T>* attrib, unsigned int a)
+    {
+        return attrib->operator[](a) ;
+    }
+
+    static inline const T& at(const AttributeMultiVector<T>* attrib, unsigned int a)
+    {
+        return attrib->operator[](a) ;
+    }
+};
+
 /**
  * Class that create an access-table to an existing attribute
  * Main available operations are:
@@ -78,26 +107,26 @@ protected:
  * - [ dart ]
  * - begin / end / next to manage indexing
  */
-template <typename T, unsigned int ORBIT, typename MAP>
-class AttributeHandler : public AttributeHandlerGen
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy = AttributeAccessorDefault<T,ORBIT,MAP> >
+class AttributeHandler : public AttributeHandlerGen, public AttributeAccessorPolicy
 {
 protected:
 	// the map that contains the linked attribute
-	MAP* m_map;
-	// the multi-vector that contains attribute data
-	AttributeMultiVector<T>* m_attrib;
+    MAP* m_map;
+    // the multi-vector that contains attribute data
+    AttributeMultiVector<T>* m_attrib;
 
 	void registerInMap() ;
 	void unregisterFromMap() ;
 private:
-	template <unsigned int ORBIT2>
-	AttributeHandler(const AttributeHandler<T, ORBIT2, MAP>& h) ;
-	template <unsigned int ORBIT2>
-	AttributeHandler<T, ORBIT, MAP>& operator=(const AttributeHandler<T, ORBIT2, MAP>& ta) ;
+    template <unsigned int ORBIT2, class OtherAttributeAccessorPolicy>
+    AttributeHandler(const AttributeHandler<T, ORBIT2, MAP, OtherAttributeAccessorPolicy>& h) ;
+    template <unsigned int ORBIT2, class OtherAttributeAccessorPolicy>
+    AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy>& operator=(const AttributeHandler<T, ORBIT2, MAP, OtherAttributeAccessorPolicy>& ta) ;
 
 public:
 	typedef T DATA_TYPE ;
-
+    typedef AttributeAccessorPolicy HandlerAccessorPolicy;
 	/**
 	 * Default constructor
 	 * Constructs a non-valid AttributeHandler (i.e. not linked to any attribute)
@@ -115,7 +144,8 @@ public:
 	 * Copy constructor
 	 * @param ta the table attribute
 	 */
-	AttributeHandler(const AttributeHandler<T, ORBIT, MAP>& ta) ;
+    template<class OtherAttributeAccessorPolicy>
+    AttributeHandler(const AttributeHandler<T, ORBIT, MAP, OtherAttributeAccessorPolicy >& ta) ;
 
 	/**
 	 * Transmute Constructor
@@ -129,7 +159,10 @@ public:
 	 * affectation operator
 	 * @param ta the table attribute to affect to this
 	 */
-	AttributeHandler<T, ORBIT, MAP>& operator=(const AttributeHandler<T, ORBIT, MAP>& ta) ;
+    template<class OtherAttributeAccessorPolicy>
+    AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& operator=(const AttributeHandler<T, ORBIT, MAP, OtherAttributeAccessorPolicy >& ta) ;
+
+    AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& operator=(const AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& ta) ;
 
 	/**
 	 * transmuted affectation operator
@@ -149,7 +182,7 @@ public:
 	 */
 	MAP* map() const
 	{
-		return m_map ;
+        return m_map ;
 	}
 
 	/**
@@ -244,7 +277,30 @@ public:
 	 * @param iter iterator to
 	 */
 	void next(unsigned int& iter) const;
+
+    boost::function< void ( Cell<ORBIT> ) > m_onNewCellCallBack;
+    boost::function< void ( Cell<ORBIT> ) > m_onCellBeingRemovedCallBack;
+
+    virtual void computeAttributeOnNewCell(Dart d)
+    {
+        if (m_onNewCellCallBack)
+        {
+            m_onNewCellCallBack(Cell<ORBIT>(d));
+        }
+    }
+
+    inline void setNewCellCallback(const boost::function<void (Cell<ORBIT>)>& fun)
+    {
+        m_onNewCellCallBack = fun;
+    }
 } ;
+
+template<class T, unsigned int ORBIT, class MAP >
+class AttributeHandler_Traits {
+public :
+    typedef CGoGN::AttributeHandler< T, ORBIT, MAP, AttributeAccessorDefault< T, ORBIT, MAP> > HandlerFinestResolution;
+    typedef CGoGN::AttributeHandler< T, ORBIT, MAP, AttributeAccessorDefault< T, ORBIT, MAP> > Handler;
+};
 
 /**
  *  shortcut class for Dart Attribute (Handler)

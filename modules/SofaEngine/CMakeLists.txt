@@ -2,6 +2,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
+    config.h
     initEngine.h
     AverageCoord.h
     AverageCoord.inl
@@ -17,6 +18,8 @@ set(HEADER_FILES
     DilateEngine.inl
     GenerateCylinder.h
     GenerateCylinder.inl
+    GenerateGrid.h
+    GenerateGrid.inl
     ExtrudeSurface.h
     ExtrudeSurface.inl
     ExtrudeQuadsAndGenerateHexas.h
@@ -96,6 +99,10 @@ set(HEADER_FILES
     MeshSubsetEngine.inl
     MeshSampler.h
     MeshSampler.inl
+    MeshSplittingEngine.h
+    MeshSplittingEngine.inl
+    Indices2ValuesMapper.h
+    Indices2ValuesMapper.inl
     )
 
 set(SOURCE_FILES
@@ -108,6 +115,7 @@ set(SOURCE_FILES
     SphereROI.cpp
     DilateEngine.cpp
     GenerateCylinder.cpp
+	GenerateGrid.cpp
     ExtrudeSurface.cpp
     ExtrudeQuadsAndGenerateHexas.cpp
     ExtrudeEdgesAndGenerateQuads.cpp
@@ -149,6 +157,8 @@ set(SOURCE_FILES
     MeshClosingEngine.cpp
     MeshSubsetEngine.cpp
     MeshSampler.cpp
+    MeshSplittingEngine.cpp
+    Indices2ValuesMapper.cpp
     )
 
 set(GROUP_BASE_DIR "..")

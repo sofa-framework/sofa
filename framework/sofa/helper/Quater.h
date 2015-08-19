@@ -27,10 +27,9 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <math.h>
-#include <assert.h>
+#include <cmath>
+#include <cassert>
 #include <iostream>
-
 #include <sofa/helper/helper.h>
 
 namespace sofa
@@ -105,17 +104,17 @@ public:
     template<class Mat33>
     void toMatrix(Mat33 &m) const
     {
-        m[0][0] = (typename Mat33::Real) (1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2]));
-        m[0][1] = (typename Mat33::Real) (2.0f * (_q[0] * _q[1] - _q[2] * _q[3]));
-        m[0][2] = (typename Mat33::Real) (2.0f * (_q[2] * _q[0] + _q[1] * _q[3]));
+        m[0][0] = (typename Mat33::Real) (1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
+        m[0][1] = (typename Mat33::Real) (2 * (_q[0] * _q[1] - _q[2] * _q[3]));
+        m[0][2] = (typename Mat33::Real) (2 * (_q[2] * _q[0] + _q[1] * _q[3]));
 
-        m[1][0] = (typename Mat33::Real) (2.0f * (_q[0] * _q[1] + _q[2] * _q[3]));
-        m[1][1] = (typename Mat33::Real) (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0]));
-        m[1][2] = (typename Mat33::Real) (2.0f * (_q[1] * _q[2] - _q[0] * _q[3]));
+        m[1][0] = (typename Mat33::Real) (2 * (_q[0] * _q[1] + _q[2] * _q[3]));
+        m[1][1] = (typename Mat33::Real) (1 - 2 * (_q[2] * _q[2] + _q[0] * _q[0]));
+        m[1][2] = (typename Mat33::Real) (2 * (_q[1] * _q[2] - _q[0] * _q[3]));
 
-        m[2][0] = (typename Mat33::Real) (2.0f * (_q[2] * _q[0] - _q[1] * _q[3]));
-        m[2][1] = (typename Mat33::Real) (2.0f * (_q[1] * _q[2] + _q[0] * _q[3]));
-        m[2][2] = (typename Mat33::Real) (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0]));
+        m[2][0] = (typename Mat33::Real) (2 * (_q[2] * _q[0] - _q[1] * _q[3]));
+        m[2][1] = (typename Mat33::Real) (2 * (_q[1] * _q[2] + _q[0] * _q[3]));
+        m[2][2] = (typename Mat33::Real) (1 - 2 * (_q[1] * _q[1] + _q[0] * _q[0]));
     }
 
     /// Apply the rotation to a given vector
@@ -205,7 +204,7 @@ public:
     // the given vector) and an angle about which to rotate.  The angle is
     // expressed in radians.
     Quater axisToQuat(defaulttype::Vec<3,Real> a, Real phi);
-    void quatToAxis(defaulttype::Vec<3,Real> & a, Real &phi);
+    void quatToAxis(defaulttype::Vec<3,Real> & a, Real &phi) const;
 
 
     static Quater createQuaterFromFrame(const defaulttype::Vec<3, Real> &lox, const defaulttype::Vec<3, Real> &loy,const defaulttype::Vec<3, Real> &loz);
@@ -301,14 +300,14 @@ public:
     bool operator==(const Quater& q) const
     {
         for (int i=0; i<4; i++)
-            if ( fabs( _q[i] - q._q[i] ) > EQUALITY_THRESHOLD ) return false;
+            if ( std::abs( _q[i] - q._q[i] ) > EQUALITY_THRESHOLD ) return false;
         return true;
     }
 
     bool operator!=(const Quater& q) const
     {
         for (int i=0; i<4; i++)
-            if ( fabs( _q[i] - q._q[i] ) > EQUALITY_THRESHOLD ) return true;
+            if ( std::abs( _q[i] - q._q[i] ) > EQUALITY_THRESHOLD ) return true;
         return false;
     }
 
@@ -337,6 +336,11 @@ public:
 //typedef Quater<double> Quat; ///< alias
 //typedef Quater<float> Quatf; ///< alias
 //typedef Quater<double> Quaternion; ///< alias
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_QUATER_CPP)
+extern template class SOFA_HELPER_API Quater<double>;
+extern template class SOFA_HELPER_API Quater<float>;
+#endif
 
 } // namespace helper
 

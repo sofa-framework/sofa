@@ -763,7 +763,7 @@ static int udp_init(unsigned short port){
 	name.sin_port = htons(port);
 	name.sin_addr.s_addr = htonl(INADDR_ANY);
 
-	if(bind(sock, (struct sockaddr *) &name, sizeof(name)) < 0){
+    if(::bind(sock, (struct sockaddr *) &name, sizeof(name)) < 0){
 		udp_exit(sock);
 		return -3;
 	}

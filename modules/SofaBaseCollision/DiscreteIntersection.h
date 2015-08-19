@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_H
 #define SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_H
+#include "config.h"
 
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/IntersectorFactory.h>
@@ -65,7 +66,7 @@ public:
     }
 
     template <class Elem1,class Elem2>
-    int testIntersection(Elem1& e1,Elem2& e2){
+    bool testIntersection(Elem1& e1,Elem2& e2){
         return BaseIntTool::testIntersection(e1,e2,this->getAlarmDistance());
     }
 };
@@ -78,7 +79,7 @@ namespace core
 {
 namespace collision
 {
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_CPP)
 extern template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::DiscreteIntersection>;
 #endif
 }

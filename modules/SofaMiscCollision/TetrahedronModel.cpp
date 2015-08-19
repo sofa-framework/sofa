@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_COLLISION_TETRAHEDRONMODEL_CPP
 #include <SofaMiscCollision/TetrahedronModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CubeModel.h>
@@ -272,7 +273,7 @@ void TetrahedronModel::computeBoundingTree(int maxDepth)
 
 ContactMapperCreator< ContactMapper<TetrahedronModel> > TetrahedronContactMapperClass("default",true);
 
-template class SOFA_MISC_COLLISION_API ContactMapper<TetrahedronModel>;
+template class SOFA_MISC_COLLISION_API ContactMapper<TetrahedronModel, sofa::defaulttype::Vec3Types>;
 
 } // namespace collision
 

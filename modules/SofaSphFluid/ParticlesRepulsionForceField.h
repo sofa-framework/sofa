@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_H
+#include "config.h"
 
 #include <sofa/helper/system/config.h>
 #include <sofa/core/behavior/ForceField.h>
@@ -32,8 +33,6 @@
 #include <sofa/helper/rmath.h>
 #include <vector>
 #include <math.h>
-
-#include <sofa/component/component.h>
 
 
 namespace sofa

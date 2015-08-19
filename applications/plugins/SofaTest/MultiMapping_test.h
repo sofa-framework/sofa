@@ -37,7 +37,7 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneCreator.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/MultiMapping.h>
 
@@ -158,7 +158,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
     bool runTest( const vector<InVecCoord>& parentCoords,
                   const OutVecCoord& expectedChildCoords)
     {
-        if( deltaRange.second / errorMax <= s_minDeltaErrorRatio )
+        if( deltaRange.second / errorMax <= g_minDeltaErrorRatio )
             ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
 
         typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;

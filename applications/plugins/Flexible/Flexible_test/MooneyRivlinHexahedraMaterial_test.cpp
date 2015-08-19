@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "stdafx.h"
-#include "Elasticity_test.h"
+#include <SofaTest/Elasticity_test.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation

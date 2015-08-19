@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_SKELETALMOTIONCONSTRAINT_H
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_SKELETALMOTIONCONSTRAINT_H
+#include "config.h"
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -81,7 +82,7 @@ public:
 	float getAnimationSpeed() const			{return animationSpeed.getValue();}
 	void setAnimationSpeed(float speed)		{animationSpeed.setValue(speed);}
 
-    void findKeyTimes();
+    void findKeyTimes(Real ct);
 
     void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
     void projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& vData);

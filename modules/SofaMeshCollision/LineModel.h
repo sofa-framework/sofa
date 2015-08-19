@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_LINEMODEL_H
 #define SOFA_COMPONENT_COLLISION_LINEMODEL_H
+#include "config.h"
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -203,6 +204,8 @@ public:
         return DataTypes::Name();
     }
 
+    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible);
+
 
 protected:
 
@@ -348,7 +351,7 @@ inline bool TLine<DataTypes>::activated(core::CollisionModel *cm) const
 typedef TLineModel<sofa::defaulttype::Vec3Types> LineModel;
 typedef TLine<sofa::defaulttype::Vec3Types> Line;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_LINEMODEL_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MESH_COLLISION_API TLineModel<defaulttype::Vec3dTypes>;
 #endif

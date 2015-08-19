@@ -24,9 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPEDOBJECT_H
 #define SOFA_COMPONENT_MAPPEDOBJECT_H
+#include "config.h"
 
 #include <sofa/core/State.h>
-#include <sofa/component/component.h>
 #include <vector>
 #include <assert.h>
 #include <fstream>
@@ -86,7 +86,7 @@ public:
 
     int getSize() const
     {
-        return f_X.getValue().size();
+        return (int)f_X.getValue().size();
     }
 
     Data< VecCoord >* write(core::VecCoordId v)

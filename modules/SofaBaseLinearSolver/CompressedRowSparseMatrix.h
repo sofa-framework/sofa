@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIX_H
 #define SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIX_H
+#include "config.h"
 
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <SofaBaseLinearSolver/MatrixExpr.h>
@@ -628,7 +629,7 @@ public:
     const Bloc& bloc(Index i, Index j) const
     {
         static Bloc empty;
-        Index rowId = i * rowIndex.size() / nBlocRow;
+        Index rowId = i * (Index)rowIndex.size() / nBlocRow;
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
@@ -643,7 +644,7 @@ public:
 
     Bloc* wbloc(Index i, Index j, bool create = false)
     {
-        Index rowId = i * rowIndex.size() / nBlocRow;
+        Index rowId = i * (Index)rowIndex.size() / nBlocRow;
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
@@ -790,7 +791,7 @@ public:
             }
         }
         */
-        Index rowId = i * rowIndex.size() / nBlocRow;
+        Index rowId = i * (Index)rowIndex.size() / nBlocRow;
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
@@ -851,7 +852,7 @@ public:
             // Here we assume the matrix is symmetric
             Index bi=0; split_row_index(i, bi);
             compress();
-            Index rowId = i * rowIndex.size() / nBlocRow;
+            Index rowId = i * (Index)rowIndex.size() / nBlocRow;
             if (sortedFind(rowIndex, i, rowId))
             {
                 Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
@@ -1015,7 +1016,7 @@ public:
     {
         ((Matrix*)this)->compress();
 
-        Index rowId = i * rowIndex.size() / nBlocRow;
+        Index rowId = i * (Index)rowIndex.size() / nBlocRow;
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
@@ -1033,7 +1034,7 @@ public:
     {
         ((Matrix*)this)->compress();
 
-        Index rowId = i * rowIndex.size() / nBlocRow;
+        Index rowId = i * (Index)rowIndex.size() / nBlocRow;
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
@@ -1049,7 +1050,7 @@ public:
     /// Get write access to a bloc, possibly creating it
     virtual BlockAccessor blocCreate(Index i, Index j)
     {
-        Index rowId = i * rowIndex.size() / nBlocRow;
+        Index rowId = i * (Index)rowIndex.size() / nBlocRow;
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
@@ -1117,7 +1118,7 @@ public:
     virtual ColBlockConstIterator bRowBegin(Index ib) const
     {
         ((Matrix*)this)->compress();
-        Index rowId = ib * rowIndex.size() / nBlocRow;
+        Index rowId = ib * (Index)rowIndex.size() / nBlocRow;
         Index index = 0;
         if (sortedFind(rowIndex, ib, rowId))
         {
@@ -1130,7 +1131,7 @@ public:
     virtual ColBlockConstIterator bRowEnd(Index ib) const
     {
         ((Matrix*)this)->compress();
-        Index rowId = ib * rowIndex.size() / nBlocRow;
+        Index rowId = ib * (Index)rowIndex.size() / nBlocRow;
         Index index2 = 0;
         if (sortedFind(rowIndex, ib, rowId))
         {
@@ -1143,7 +1144,7 @@ public:
     virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> bRowRange(Index ib) const
     {
         ((Matrix*)this)->compress();
-        Index rowId = ib * rowIndex.size() / nBlocRow;
+        Index rowId = ib * (Index)rowIndex.size() / nBlocRow;
         Index index = 0, index2 = 0;
         if (sortedFind(rowIndex, ib, rowId))
         {
@@ -1224,7 +1225,7 @@ public:
     virtual RowBlockConstIterator bRowsEnd() const
     {
         ((Matrix*)this)->compress();
-        return createRowBlockConstIterator(rowIndex.size(), 0);
+        return createRowBlockConstIterator((Index)rowIndex.size(), 0);
     }
 
     /// Get the iterators corresponding to the beginning and end of the given row of blocks
@@ -1232,7 +1233,7 @@ public:
     {
         ((Matrix*)this)->compress();
         return std::make_pair(createRowBlockConstIterator(0, 0),
-                createRowBlockConstIterator(rowIndex.size(), 0));
+                createRowBlockConstIterator((Index)rowIndex.size(), 0));
     }
 
     /// @}

@@ -27,9 +27,9 @@
 
 #include "Quater.h"
 #include <limits>
-#include <math.h>
+#include <cmath>
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 
 
 namespace sofa
@@ -250,14 +250,13 @@ Quater<Real> Quater<Real>::inverse() const
 template<class Real>
 void Quater<Real>::normalize()
 {
-    Real	mag;
-
-    mag = (_q[0] * _q[0] + _q[1] * _q[1] + _q[2] * _q[2] + _q[3] * _q[3]);
+    Real mag = (_q[0] * _q[0] + _q[1] * _q[1] + _q[2] * _q[2] + _q[3] * _q[3]);
     if( mag != 0)
     {
+        Real sqr = static_cast<Real>(1.0 / sqrt(mag));
         for (int i = 0; i < 4; i++)
         {
-            _q[i] /= sqrt(mag);
+            _q[i] *= sqr;
         }
     }
 }
@@ -354,17 +353,17 @@ void Quater<Real>::fromMatrix(const defaulttype::Matrix3 &m)
 template<class Real>
 void Quater<Real>::buildRotationMatrix(Real m[4][4]) const
 {
-    m[0][0] = (1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2]));
-    m[0][1] = (2.0f * (_q[0] * _q[1] - _q[2] * _q[3]));
-    m[0][2] = (2.0f * (_q[2] * _q[0] + _q[1] * _q[3]));
+    m[0][0] = (1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
+    m[0][1] = (2 * (_q[0] * _q[1] - _q[2] * _q[3]));
+    m[0][2] = (2 * (_q[2] * _q[0] + _q[1] * _q[3]));
     m[0][3] = 0;
 
-    m[1][0] = (2.0f * (_q[0] * _q[1] + _q[2] * _q[3]));
-    m[1][1] = (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0]));
-    m[1][2] = (2.0f * (_q[1] * _q[2] - _q[0] * _q[3]));
+    m[1][0] = (2 * (_q[0] * _q[1] + _q[2] * _q[3]));
+    m[1][1] = (1 - 2 * (_q[2] * _q[2] + _q[0] * _q[0]));
+    m[1][2] = (2 * (_q[1] * _q[2] - _q[0] * _q[3]));
     m[1][3] = 0;
 
-    m[2][0] = (2.0f * (_q[2] * _q[0] - _q[1] * _q[3]));
+    m[2][0] = (2 * (_q[2] * _q[0] - _q[1] * _q[3]));
     m[2][1] = (2.0f * (_q[1] * _q[2] + _q[0] * _q[3]));
     m[2][2] = (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0]));
     m[2][3] = 0;
@@ -403,25 +402,25 @@ void Quater<Real>::writeOpenGlMatrix(double *m) const
 template<class Real>
 void Quater<Real>::writeOpenGlMatrix(double *m) const
 {
-    m[0*4+0] = (1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2]));
-    m[1*4+0] = (2.0f * (_q[0] * _q[1] - _q[2] * _q[3]));
-    m[2*4+0] = (2.0f * (_q[2] * _q[0] + _q[1] * _q[3]));
-    m[3*4+0] = 0.0f;
+    m[0*4+0] = (1.0 - 2.0 * (_q[1] * _q[1] + _q[2] * _q[2]));
+    m[1*4+0] = (2.0 * (_q[0] * _q[1] - _q[2] * _q[3]));
+    m[2*4+0] = (2.0 * (_q[2] * _q[0] + _q[1] * _q[3]));
+    m[3*4+0] = 0.0;
 
-    m[0*4+1] = (2.0f * (_q[0] * _q[1] + _q[2] * _q[3]));
-    m[1*4+1] = (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0]));
-    m[2*4+1] = (float) (2.0f * (_q[1] * _q[2] - _q[0] * _q[3]));
-    m[3*4+1] = 0.0f;
+    m[0*4+1] = (2.0 * (_q[0] * _q[1] + _q[2] * _q[3]));
+    m[1*4+1] = (1.0 - 2.0 * (_q[2] * _q[2] + _q[0] * _q[0]));
+    m[2*4+1] = (double) (2.0 * (_q[1] * _q[2] - _q[0] * _q[3]));
+    m[3*4+1] = 0.0;
 
-    m[0*4+2] = (float) (2.0f * (_q[2] * _q[0] - _q[1] * _q[3]));
-    m[1*4+2] = (float) (2.0f * (_q[1] * _q[2] + _q[0] * _q[3]));
-    m[2*4+2] = (float) (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0]));
-    m[3*4+2] = 0.0f;
+    m[0*4+2] = (double) (2.0 * (_q[2] * _q[0] - _q[1] * _q[3]));
+    m[1*4+2] = (double) (2.0 * (_q[1] * _q[2] + _q[0] * _q[3]));
+    m[2*4+2] = (double) (1.0 - 2.0 * (_q[1] * _q[1] + _q[0] * _q[0]));
+    m[3*4+2] = 0.0;
 
-    m[0*4+3] = 0.0f;
-    m[1*4+3] = 0.0f;
-    m[2*4+3] = 0.0f;
-    m[3*4+3] = 1.0f;
+    m[0*4+3] = 0.0;
+    m[1*4+3] = 0.0;
+    m[2*4+3] = 0.0;
+    m[3*4+3] = 1.0;
 }
 
 /// Write an OpenGL rotation matrix
@@ -478,19 +477,32 @@ Quater<Real> Quater<Real>::axisToQuat(defaulttype::Vec<3,Real> a, Real phi)
 
 /// Given a quaternion, compute an axis and angle
 template<class Real>
-void Quater<Real>::quatToAxis(defaulttype::Vec<3,Real> & axis, Real &angle)
+void Quater<Real>::quatToAxis(defaulttype::Vec<3,Real> & axis, Real &angle) const
 {
-    double  sine  = sin( acos(_q[3]) );
-    if(sine == 0) {
-        sine = sqrt(_q[0]*_q[0]+_q[1]*_q[1]+_q[2]*_q[2]);
-        angle = 2.0*asin(sine);
-    }
-    else angle = 2.0*acos(_q[3]);
+    Quater<Real> q = *this;
+    if(q[3]<0)
+        q*=-1; // we only work with theta in [0, PI]
 
-    if (sine==0)
-        axis = defaulttype::Vec<3,Real>(0.0,1.0,0.0);
+    Real sin_half_theta; // note that sin(theta/2) == norm of the imaginary part for unit quaternion
+
+    // to avoid numerical instabilities of acos for theta < 5°
+    if(q[3]>0.999) // theta < 5° -> q[3] = cos(theta/2) > 0.999
+    {
+        sin_half_theta = sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2]);
+        angle = (Real)(2.0 * asin(sin_half_theta));
+    }
     else
-        axis = defaulttype::Vec<3,Real>(_q[0],_q[1],_q[2])/ sine;
+    {
+        Real half_theta = acos(q[3]);
+        sin_half_theta = sin(half_theta);
+        angle = 2*half_theta;
+    }
+
+    assert(sin_half_theta>=0);
+    if (sin_half_theta < std::numeric_limits<Real>::epsilon())
+        axis = defaulttype::Vec<3,Real>(0.0, 1.0, 0.0);
+    else
+        axis = defaulttype::Vec<3,Real>(q[0], q[1], q[2])/sin_half_theta;
 }
 
 
@@ -528,7 +540,7 @@ void Quater<Real>::slerp(const Quater& a, const Quater& b, Real t, bool allowFli
 
     Real c1, c2;
     // Linear interpolation for close orientations
-    if ((1.0 - fabs(cosAngle)) < 0.01)
+    if ((1.0 - std::abs(cosAngle)) < 0.01)
     {
         c1 = 1.0f - t;
         c2 = t;
@@ -536,7 +548,7 @@ void Quater<Real>::slerp(const Quater& a, const Quater& b, Real t, bool allowFli
     else
     {
         // Spherical interpolation
-        Real angle    = (Real)acos((Real)fabs((Real)cosAngle));
+        Real angle    = (Real)acos((Real)std::abs((Real)cosAngle));
         Real sinAngle = (Real)sin((Real)angle);
         c1 = (Real)sin(angle * (1.0f - t)) / sinAngle;
         c2 = (Real)sin(angle * t) / sinAngle;
@@ -595,7 +607,7 @@ Quater<Real> Quater<Real>::slerp2(Quater<Real> &q1, Real t)
     // Calculate angle between them.
     double cosHalfTheta = _q[3] * q1[3] + _q[0] * q1[0] + _q[1] * q1[1] + _q[2] * q1[2];
     // if qa=qb or qa=-qb then theta = 0 and we can return qa
-    if (fabs(cosHalfTheta) >= 1.0)
+    if (std::abs(cosHalfTheta) >= 1.0)
     {
         qm[3] = _q[3]; qm[0] = _q[0]; qm[1] = _q[1]; qm[2] = _q[2];
         return qm;
@@ -605,7 +617,7 @@ Quater<Real> Quater<Real>::slerp2(Quater<Real> &q1, Real t)
     double sinHalfTheta = sqrt(1.0 - cosHalfTheta*cosHalfTheta);
     // if theta = 180 degrees then result is not fully defined
     // we could rotate around any axis normal to qa or qb
-    if (fabs(sinHalfTheta) < 0.001)  // fabs is floating point absolute
+    if (std::abs(sinHalfTheta) < 0.001) 
     {
         qm[3] = (Real)(_q[3] * 0.5 + q1[3] * 0.5);
         qm[0] = (Real)(_q[0] * 0.5 + q1[0] * 0.5);

@@ -85,8 +85,6 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::update()
 {
     using sofa::core::topology::BaseMeshTopology;
 
-    cleanDirty();
-
     const helper::vector<BaseMeshTopology::Quad>& surfaceQuads = f_surfaceQuads.getValue();
     const VecCoord& surfaceVertices = f_surfaceVertices.getValue();
 
@@ -96,13 +94,15 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::update()
         return;
     }
 
-    VecCoord* extrudedVertices = f_extrudedVertices.beginEdit();
+    cleanDirty();
+
+    VecCoord* extrudedVertices = f_extrudedVertices.beginWriteOnly();
     extrudedVertices->clear();
-    helper::vector<BaseMeshTopology::Quad>* extrudedSurfaceQuads = f_extrudedSurfaceQuads.beginEdit();
+    helper::vector<BaseMeshTopology::Quad>* extrudedSurfaceQuads = f_extrudedSurfaceQuads.beginWriteOnly();
     extrudedSurfaceQuads->clear();
-    helper::vector<BaseMeshTopology::Quad>* extrudedQuads = f_extrudedQuads.beginEdit();
+    helper::vector<BaseMeshTopology::Quad>* extrudedQuads = f_extrudedQuads.beginWriteOnly();
     extrudedQuads->clear();
-    helper::vector<BaseMeshTopology::Hexa>* extrudedHexas = f_extrudedHexas.beginEdit();
+    helper::vector<BaseMeshTopology::Hexa>* extrudedHexas = f_extrudedHexas.beginWriteOnly();
     extrudedHexas->clear();
 
     std::map<int, std::pair<Vec3, unsigned int> > normals;

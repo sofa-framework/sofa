@@ -34,8 +34,4 @@
 #define SOFA_EmptyCmakePlugin_API  SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-/** \mainpage
-  This is a the starting page of the plugin documentation, defined in file initEmptyPlugin.h
-  */
-
 #endif // INITEmptyPlugin_H

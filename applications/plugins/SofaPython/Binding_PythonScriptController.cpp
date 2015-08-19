@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "PythonMacros.h"
 #include "PythonScriptController.h"
 using namespace sofa::component::controller;
 

@@ -31,7 +31,7 @@ IF (CGOGN_WITH_QT)
 	SET(QT_USE_QTOPENGL TRUE)
 	SET(QT_USE_QTSVG TRUE)
 	SET(QT_USE_QTXML TRUE )
-        find_package(Qt REQUIRED)
+        find_package(Qt4 REQUIRED)
 	INCLUDE(${QT_USE_FILE})
         LIST (APPEND CGoGN_EXT_INCLUDES ${QT_INCLUDE_DIR} )
         LIST (APPEND CGoGN_EXT_LIBS ${QT_LIBRARIES} )
@@ -207,6 +207,8 @@ ELSE(WIN32)
             add_dependencies(${PROJECT_NAME}_utils shader_target )
         ENDIF (CGoGN_ONELIB)
 ENDIF(WIN32)
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 
 AddLinkerDependencies(${CGoGN_EXT_LIBS} SofaDefaultType ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES}  ${QT_LIBRARIES})
 

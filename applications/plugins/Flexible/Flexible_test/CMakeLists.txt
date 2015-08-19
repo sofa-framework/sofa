@@ -20,12 +20,13 @@ set(SOURCE_FILES
    TetrahedraMaterial_test.cpp
    TetrahedronVolumeMapping_test.cpp
 
-
    CorotationalStrainMapping_test.cpp
    CauchyStrainMapping_test.cpp
    GreenStrainMapping_test.cpp
    InvariantMapping_test.cpp
    PrincipalStretchesMapping_test.cpp
+
+   Engine_test.cpp
         )
 
 if(WIN32)
@@ -53,7 +54,7 @@ if(WIN32 AND NOT CMAKE_CL_64)
     AddCompilerDefinitions("EIGEN_DONT_ALIGN")
 endif()
 
-AddLinkerDependencies(Flexible SofaTest image Compliant)
+AddLinkerDependencies(Flexible SofaTest image Compliant SofaGTestMain)
 target_link_libraries(${PROJECT_NAME} DiffusionSolver)
 
 #Needed by python test

@@ -74,7 +74,7 @@ LightManager::LightManager()
 
 LightManager::~LightManager()
 {
-    restoreDefaultLight();
+    //restoreDefaultLight();
 }
 
 void LightManager::init()
@@ -100,6 +100,16 @@ void LightManager::init()
 
 }
 
+void LightManager::bwdInit()
+{
+#ifdef SOFA_HAVE_GLEW
+    for(unsigned int i=0 ; i<shadowShaders.size() ; ++i)
+    {
+        shadowShaders[i]->setCurrentIndex(shadowsEnabled.getValue() ? 1 : 0);
+    }
+#endif
+}
+
 
 void LightManager::initVisual()
 {
@@ -116,7 +126,7 @@ void LightManager::initVisual()
 
     GLint maxTextureUnits;
     glGetIntegerv(GL_MAX_TEXTURE_UNITS, &maxTextureUnits);
-    std::vector<unsigned short> availableUnitTextures;
+    std::vector<bool> availableUnitTextures;
     availableUnitTextures.resize(maxTextureUnits);
     std::fill(availableUnitTextures.begin(), availableUnitTextures.end(), true);
     for(unsigned int i=0 ; i<sceneTextures.size() ; i++)
@@ -203,46 +213,10 @@ void LightManager::makeShadowMatrix(unsigned int i)
         lightModelViewMatrix[i] = lmv;
         lightProjectionMatrix[i] = lp;
     }
-    //std::cout << "lightModelViewMatrix[i] "<<i << " -> " << lightModelViewMatrix[i] << std::endl;
-    //std::cout << "lightProjectionMatrix[i] "<<i << " -> " << lightProjectionMatrix[i] << std::endl;
+//    std::cout << "lightModelViewMatrix[i] "<<i << " -> " << lightModelViewMatrix[i] << std::endl;
+//    std::cout << "lightProjectionMatrix[i] "<<i << " -> " << lightProjectionMatrix[i] << std::endl;
 
     glMatrixMode(GL_MODELVIEW);
-
-
-    /*
-      sofa::defaulttype::Mat4x4f m;
-      m.identity();
-      m[0][3] = 0.5f;
-      m[1][3] = 0.5f;
-      m[2][3] = 0.5f +( -0.006f);
-      m[0][0] = 0.5f;
-      m[1][1] = 0.5f;
-      m[2][2] = 0.5f;
-
-      sofa::defaulttype::Mat4x4f lightProj(lp); //lightProj.transpose();
-      sofa::defaulttype::Mat4x4f lightModelView(lmv);// lightModelView.transpose();
-
-      sofa::defaulttype::Mat4x4f model;
-      glGetFloatv(GL_MODELVIEW_MATRIX,model.ptr());
-      //model.transpose();
-      sofa::defaulttype::Mat4x4f modelInv;
-      modelInv.invert(model);
-
-      m = m * lightProj * lightModelView * modelInv;
-      //m.transpose();
-      //std::cout << "Computed " << modelInv << std::endl;
-
-
-      if (lightModelViewMatrix.size() > 0)
-      {
-      lightModelViewMatrix[i] = m;
-      }
-      else
-      {
-      lightModelViewMatrix.resize(lights.size());
-      lightModelViewMatrix[i] = m;
-      }
-    */
 }
 
 void LightManager::fwdDraw(core::visual::VisualParams* vp)
@@ -315,6 +289,7 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
 
             for(unsigned int i=0 ; i<shadowShaders.size() ; ++i)
             {
+
                 shadowShaders[i]->setIntVector(shadowShaders[i]->getCurrentIndex() , "lightFlag" , MAX_NUMBER_OF_LIGHTS, lightFlag);
                 shadowShaders[i]->setIntVector(shadowShaders[i]->getCurrentIndex() , "shadowTexture" , MAX_NUMBER_OF_LIGHTS, shadowTextureID);
                 shadowShaders[i]->setIntVector(shadowShaders[i]->getCurrentIndex() , "shadowTextureUnit" , MAX_NUMBER_OF_LIGHTS, shadowTextureID);
@@ -445,12 +420,12 @@ bool LightManager::drawScene(VisualParams* /*vp*/)
     return false;
 }
 
-void LightManager::postDrawScene(VisualParams* /*vp*/)
+void LightManager::postDrawScene(VisualParams* vp)
 {
-    restoreDefaultLight();
+    restoreDefaultLight(vp);
 }
 
-void LightManager::restoreDefaultLight()
+void LightManager::restoreDefaultLight(VisualParams* vp)
 {
     //restore default light
     GLfloat	ambientLight[4];
@@ -479,13 +454,18 @@ void LightManager::restoreDefaultLight()
     specular[3] = 1.0f;
 
     // Setup 'light 0'
-    glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
-    glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 180);
+    // It crashes here in batch mode on Mac... probably the lack of GL context ?
 
-    glEnable(GL_LIGHT0);
+    if (vp->isSupported(core::visual::API_OpenGL))
+    {
+        glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+        glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+        glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+        glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 180);
+
+        glEnable(GL_LIGHT0);
+    }
 }
 
 void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
@@ -505,10 +485,18 @@ void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
                 if (!shadowShaders.empty())
                 {
                     for (unsigned int i=0 ; i < shadowShaders.size() ; ++i)
+                    {
                         shadowShaders[i]->setCurrentIndex(shadowsEnabled.getValue() ? 1 : 0);
+                        shadowShaders[i]->updateVisual();
+                    }
+                    for (std::vector<Light::SPtr>::iterator itl = lights.begin(); itl != lights.end() ; ++itl)
+                    {
+                        (*itl)->updateVisual();
+                    }
+                    this->updateVisual();
                 }
 
-                std::cout << "Shadows : "<<(shadowsEnabled.getValue()?"ENABLED":"DISABLED")<<std::endl;
+                sout << "Shadows : "<<(shadowsEnabled.getValue()?"ENABLED":"DISABLED")<<sendl;
             }
 #endif
             break;

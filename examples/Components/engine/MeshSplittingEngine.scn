@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<!-- MeshSplittingEngine Example -->
+
+<Node name="root" dt="0.1">
+    <VisualStyle displayFlags="showBehavior showVisual" />
+    <BackgroundSetting color="1 1 1"/>
+    
+    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+    <Mesh name="mesh" src="@loader" />
+    <BoxROI template="Vec3d" box="0 -2 0 5 2 5" src="@mesh" name="roi" drawBoxes="true"/>
+
+    <MeshSplittingEngine name="split" src="@loader" nbInputs="1" tetrahedronIndices1="@roi.tetrahedronIndices" printLog="true"/>
+
+        <Node name="rigid">
+            <EulerImplicit />
+            <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" verbose="0" />
+            
+            <MechanicalObject name="rigidframe" template="Rigid" position="1 0 1 0 0 0 1" />
+            <UniformMass  />
+            <FixedConstraint indices="0"/>
+            
+            <Node name="rigidmapped points">
+                    <MechanicalObject position="@/split.position1"/>
+                    <RigidMapping globalToLocalCoords="1"/>
+
+                    <Node name="free points">
+                        <MechanicalObject position="@/split.position2" showObject="true"/>
+                        <UniformMass totalMass=1 />
+    
+                        <Node name="multimapped full object">
+                            <Mesh name="mesh" src="@/mesh" />
+                            <MechanicalObject src="@mesh" />
+                            <SubsetMultiMapping template = "Vec3d,Vec3d" input="@../../ @../" output="@./" indexPairs="@/split.indexPairs"/>
+                            <TetrahedronFEMForceField youngModulus="100" poissonRatio="0.3"/>
+                            
+                            <Node name="Visu">
+                                <VisualModel name="Visual" fileMesh="mesh/torus.obj" color="5E-1 5E-1 5E-1 5E-1" />
+                                <BarycentricMapping  />
+                            </Node>
+                        </Node>
+                        
+                    </Node>
+
+            </Node>
+        </Node>
+
+</Node>

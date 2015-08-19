@@ -32,7 +32,6 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/SVector.h>
 
-#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -101,9 +100,11 @@ protected:
     virtual void update()
     {
         const SVector<SVector<To> >& dat = this->VoxelData.getValue();
+        raImagei in(this->inputImage);
+
+        cleanDirty();
 
         waImageo out(this->outputImage);
-        raImagei in(this->inputImage);
         imCoordi dim = in->getDimensions();
         dim[InImageTypes::DIMENSION_T] = 1;
         dim[InImageTypes::DIMENSION_S] = dat.size()?dat[0].size():1;
@@ -121,7 +122,6 @@ protected:
             cimg_forC(outImg,c) outImg(x,y,z,c)=dat[count][c];
             count++;
         }
-        cleanDirty();
     }
 
 };

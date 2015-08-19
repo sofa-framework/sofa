@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_FULLMATRIX_H
 #define SOFA_COMPONENT_LINEARSOLVER_FULLMATRIX_H
+#include "config.h"
 
 #include <sofa/defaulttype/BaseMatrix.h>
 #include "FullVector.h"

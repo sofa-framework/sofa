@@ -96,7 +96,6 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
     using sofa::defaulttype::Mat3x3d;
     using sofa::defaulttype::Vec3d;
 
-    cleanDirty();
     const std::string path = InputMeshName.getValue();
 
 
@@ -127,10 +126,11 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
     const VecCoord* out = &MappedPointPositions.getValue();
 
 
+    cleanDirty();
 
 
-    baryPos =  BarycentricPositions.beginEdit();
-    tableElts= TableElements.beginEdit();
+    baryPos =  BarycentricPositions.beginWriteOnly();
+    tableElts= TableElements.beginWriteOnly();
     baryPos->resize(out->size());
     tableElts->resize(out->size());
 

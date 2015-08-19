@@ -36,14 +36,15 @@
 
 #ifndef SOFA_COMPONENT_CONTROLLER_NODETOGGLECONTROLLER_H
 #define SOFA_COMPONENT_CONTROLLER_NODETOGGLECONTROLLER_H
+#include "config.h"
 
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/component.h>
 #include <sofa/core/objectmodel/HapticDeviceEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/simulation/common/Node.h>
 
 namespace sofa
 {
@@ -68,7 +69,7 @@ protected:
     /**
      * @brief Default Constructor.
      */
-    NodeToggleController() {}
+    NodeToggleController();
 
     /**
      * @brief Default Destructor.
@@ -126,9 +127,14 @@ public:
 
     //@}
 
-protected:
-    bool m_FirstFrame;
+    Data<bool> d_initStatus;
+    Data<char> d_key;
+    Data<std::string> d_nameNode;
+    Data<bool> d_firstFrame;
 
+protected:
+    sofa::simulation::Node * specificNode;
+    bool nodeFound;
 };
 
 } // namespace controller

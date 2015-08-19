@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_H
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_H
+#include "config.h"
 
 #include <SofaBaseTopology/TopologyData.h>
 #include <SofaBaseTopology/RegularGridTopology.h>

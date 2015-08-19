@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ENGINE_DISTANCES_H
 #define SOFA_COMPONENT_ENGINE_DISTANCES_H
+#include "config.h"
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -241,7 +242,7 @@ private:
     inline void addContribution ( double& valueWrite, int& nbTest, double*** valueRead, const int& x, const int& y, const int& z, const int coeff, const bool& useStiffnessMap );
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MISC_ENGINE)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_DISTANCES_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Vec3dTypes>;
 //extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Rigid3dTypes>;

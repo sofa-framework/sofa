@@ -83,6 +83,14 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
     bool debug;           ///< Print debug messages. Default is false.
     /// }
 
+    /// @name Tested API
+    /// {
+    static const unsigned char TEST_POTENTIAL_ENERGY = 1; ///< testing getPotentialEnergy function. The tests will only work with conservative forces (if dissipative forces such as viscosity or damping are computed, the test is wrong)
+    static const unsigned char TEST_ALL = UCHAR_MAX; ///< testing everything
+    unsigned char flags; ///< testing options. (all by default). To be used with precaution.
+    /// }
+
+
     /** Create a scene with a node, a state and a forcefield.;
      *
      */
@@ -91,6 +99,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         , deltaRange( 1, 1000 )
         , checkStiffness( true )
         , debug( false )
+        , flags( TEST_ALL )
     {
         using modeling::addNew;
         simulation::Simulation* simu;
@@ -111,6 +120,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         , deltaRange( 1, 1000 )
         , checkStiffness( true )
         , debug( false )
+        , flags( TEST_ALL )
     {
         using modeling::addNew;
         simulation::Simulation* simu;
@@ -141,7 +151,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
      */
     void run_test( const VecCoord& x, const VecDeriv& v, const VecDeriv& ef )
     {
-        if( deltaRange.second / errorMax <= s_minDeltaErrorRatio )
+        if( deltaRange.second / errorMax <= g_minDeltaErrorRatio )
             ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
 
         ASSERT_TRUE(x.size()==v.size());
@@ -182,6 +192,8 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         VecDeriv curF;
         copyFromData( curF, dof->readForces() );
 
+
+
         // Get potential Energy before applying a displacement to dofs
         double potentialEnergyBeforeDisplacement = ((const core::behavior::BaseForceField*)force.get())->getPotentialEnergy(&mparams);
 
@@ -202,27 +214,31 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
             changeOfForce[i] = newF[i] - curF[i];
         }
 
-        // Get potential energy after displacement of dofs
-        double potentialEnergyAfterDisplacement = ((const core::behavior::BaseForceField*)force.get())->getPotentialEnergy(&mparams);
+        if( flags & TEST_POTENTIAL_ENERGY )
+        {
+            // Get potential energy after displacement of dofs
+            double potentialEnergyAfterDisplacement = ((const core::behavior::BaseForceField*)force.get())->getPotentialEnergy(&mparams);
 
-        // Check getPotentialEnergy() we should have dE = -dX.F
+            // Check getPotentialEnergy() we should have dE = -dX.F
 
-        // Compute dE = E(x+dx)-E(x)
-        double differencePotentialEnergy = potentialEnergyAfterDisplacement-potentialEnergyBeforeDisplacement;
+            // Compute dE = E(x+dx)-E(x)
+            double differencePotentialEnergy = potentialEnergyAfterDisplacement-potentialEnergyBeforeDisplacement;
 
-        // Compute the expected difference of potential energy: -dX.F (dot product between applied displacement and Force)
-        double expectedDifferencePotentialEnergy = 0;
-        for( unsigned i=0; i<n; ++i){
-            expectedDifferencePotentialEnergy = expectedDifferencePotentialEnergy - dot(dX[i],curF[i]);
+            // Compute the expected difference of potential energy: -dX.F (dot product between applied displacement and Force)
+            double expectedDifferencePotentialEnergy = 0;
+            for( unsigned i=0; i<n; ++i){
+                expectedDifferencePotentialEnergy = expectedDifferencePotentialEnergy - dot(dX[i],curF[i]);
+            }
+
+            double absoluteErrorPotentialEnergy = std::abs(differencePotentialEnergy - expectedDifferencePotentialEnergy);
+            if( absoluteErrorPotentialEnergy> errorMax*this->epsilon() ){
+                ADD_FAILURE()<<"dPotentialEnergy differs from -dX.F (threshold=" << errorMax*this->epsilon() << ")" << endl
+                            << "dPotentialEnergy is " << differencePotentialEnergy << endl
+                            << "-dX.F is " << expectedDifferencePotentialEnergy << endl
+                            << "Failed seed number = " << BaseSofa_test::seed << endl;
+            }
         }
 
-        double absoluteErrorPotentialEnergy = std::abs(differencePotentialEnergy - expectedDifferencePotentialEnergy);
-        if( absoluteErrorPotentialEnergy> errorMax*this->epsilon() ){
-            ADD_FAILURE()<<"dPotentialEnergy differs from -dX.F" << endl
-                        << "dPotentialEnergy is " << differencePotentialEnergy << endl
-                        << "-dX.F is" << expectedDifferencePotentialEnergy << endl
-                        << "Failed seed number = " << BaseSofa_test::seed << endl;
-        }
 
         // check computeDf: compare its result to actual change
         node->execute(resetForce);

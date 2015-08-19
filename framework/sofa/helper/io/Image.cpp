@@ -22,11 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
+#define SOFA_HELPER_IO_IMAGE_CPP
 #include <sofa/helper/io/Image.h>
+#include <sofa/helper/system/config.h>
 #include <sofa/helper/Factory.inl>
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 
 namespace sofa
 {
@@ -40,7 +41,9 @@ namespace io
 {
 
 SOFA_LINK_CLASS(ImageBMP)
+#ifdef SOFA_HAVE_PNG
 SOFA_LINK_CLASS(ImagePNG)
+#endif
 
 const char *Image::strFromDataType[COUNT_OF_DATA_TYPES+1] =
 {

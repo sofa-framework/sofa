@@ -22,7 +22,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include <sofa/core/loader/MeshLoader.h>
 
 #include <gtest/gtest.h>

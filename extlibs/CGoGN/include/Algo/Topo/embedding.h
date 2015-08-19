@@ -46,7 +46,7 @@ template <unsigned int ORBIT, typename MAP>
 inline void setOrbitEmbedding(MAP& m, Cell<ORBIT> c, unsigned int em)
 {
 	assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
-    assert(em != EMBNULL);
+//    assert(em != EMBNULL);
 //    std::cerr << "setOrbitEmbedding called on a " << ORBIT << "-cell." << " em = " << em << std::endl;
 //	m.foreach_dart_of_orbit(c, [&] (Dart d) { m.template setDartEmbedding<ORBIT>(d, em); });
     m. template foreach_dart_of_orbit<ORBIT>(c, (bl::bind(&MAP::template setDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) ))) ;
@@ -96,7 +96,6 @@ template <unsigned int ORBIT, typename MAP>
 inline unsigned int initOrbitEmbeddingOnNewCell(MAP& m, Cell<ORBIT> d)
 {
 	assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
-
 	unsigned int em = m.template newCell<ORBIT>();
 	initOrbitEmbedding<ORBIT>(m, d, em);
 	return em;
@@ -123,6 +122,27 @@ inline void copyCellAttributes(MAP& m, Cell<ORBIT> d, Cell<ORBIT> e)
 		cont.copyLine(dE, eE) ;	// copy the data
 	}
 }
+
+template <unsigned int ORBIT, typename MAP>
+inline void initCellAttribute(MAP& m, Cell<ORBIT> c)
+{
+    typedef typename MAP::AttributeHandlersMap AttributeHandlersMap;
+    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+    const AttributeHandlersMap& map = m.getAttributeHandlersMap();
+    typename AttributeHandlersMap::value_type::first_type* previousElement= NULL;
+    for (typename AttributeHandlersMap::const_iterator ait = map.begin(), end = map.end() ; ait != end ; ++ait)
+    {
+        if (previousElement != &(ait->first) && (ait->first->getOrbit() == ORBIT)) // we just need to call it once per attribute of ORBIT-cell
+        {
+            previousElement = &(ait->first);
+            ait->second->computeAttributeOnNewCell(c.dart);
+
+        } else {
+            continue;
+        }
+    }
+}
+
 
 template <unsigned int DIM, unsigned int ORBIT, typename MAP>
 void boundaryMarkOrbit(MAP& m, Cell<ORBIT> c)

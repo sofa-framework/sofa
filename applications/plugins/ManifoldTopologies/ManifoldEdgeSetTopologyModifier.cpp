@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "ManifoldEdgeSetTopologyModifier.h"
+
 #include <sofa/core/visual/VisualParams.h>
 #include "ManifoldEdgeSetTopologyContainer.h"
 #include <algorithm>

@@ -209,7 +209,7 @@ void SPHFluidForceField<DataTypes>::init()
     this->getContext()->get(grid); //new Grid(particleRadius.getValue());
     if (grid==NULL)
         serr<<"SpatialGridContainer not found by SPHFluidForceField, slow O(n2) method will be used !!!" << sendl;
-    const unsigned n = this->mstate->read(core::ConstVecCoordId::position())->getValue().size();
+    const unsigned n = this->mstate->getSize();
     particles.resize(n);
     for (unsigned i=0u; i<n; i++)
     {

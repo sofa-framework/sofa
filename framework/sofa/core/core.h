@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_H
-#define SOFA_CORE_H
+#ifndef SOFA_CORE_CORE_H
+#define SOFA_CORE_CORE_H
 
 #include <sofa/helper/system/config.h>
 

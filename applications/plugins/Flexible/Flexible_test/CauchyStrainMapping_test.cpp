@@ -38,7 +38,7 @@ namespace sofa {
                 defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> defo( strain );
 
                 //Green Lagrange Tensor E = (strain.transpose()+strain)/2 - Identity
-                defo = (strain + strain.transposed())*0.5 -strain.Identity();
+                defo = (strain + strain.transposed())*0.5 - strain.s_identity;
 
                 // expected mapped values
                 OutVecCoord expectedChildCoords(1);

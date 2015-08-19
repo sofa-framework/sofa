@@ -25,7 +25,7 @@
 #ifndef SOFA_WINDOWVISITOR_H
 #define SOFA_WINDOWVISITOR_H
 
-#include "ui_VisitorGUI.h"
+#include <ui_VisitorGUI.h>
 #include "PieWidget.h"
 #include "QVisitorControlPanel.h"
 

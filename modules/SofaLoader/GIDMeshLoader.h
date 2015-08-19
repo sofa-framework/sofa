@@ -1,5 +1,6 @@
 #ifndef GIDMESHLOADER_H
 #define GIDMESHLOADER_H
+#include "config.h"
 
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/core/topology/Topology.h>

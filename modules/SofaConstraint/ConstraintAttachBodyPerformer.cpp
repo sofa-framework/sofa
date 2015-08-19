@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_CONTRAINTATTACHBODYPERFORMER_CPP
+#define SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_CPP
 
 #include <SofaConstraint/ConstraintAttachBodyPerformer.inl>
 #include <sofa/defaulttype/Vec3Types.h>

@@ -15,7 +15,7 @@
 	<include href="Objects/HexahedronSetTopology.xml" src="@grid" />
 	<HexahedralFEMForceField name="FEM" youngModulus="100" poissonRatio="0.1" method="large" />
         <UniformMass template="Vec3d" name="default25" mass="0.25" />
-        <BoxROI template="Vec3d" name="box_roi" box="-11 11 -11 11 9 11" indices="0" drawSize="0" />
+        <BoxROI template="Vec3d" name="box_roi" box="-11 11 -11 11 9 11" indices="0" drawSize="0" drawBoxes="1" drawPoints="1" drawEdges="1"  />
         <FixedConstraint template="Vec3d" name="default27" indices="@box_roi.indices" drawSize="0" />
 
 	<TopologicalChangeProcessor listening="1" filename="RemovingHexaProcess.txt" />

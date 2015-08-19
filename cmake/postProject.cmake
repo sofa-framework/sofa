@@ -16,20 +16,14 @@ if(TARGET ${PROJECT_NAME})
         endif()
     endforeach()
 
-    # if this project is a test, add the necessary include and lib
+    # if this project is a test, add the necessary include
     if(PROJECT_NAME MATCHES ".*_test.*")
-        if(SOFA-MISC_BUILD_GTEST OR WIN32)
-            include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
-        endif()
-
+        include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
         link_directories("${SOFA_EXTLIBS_DIR}/gtest/lib")
-
         if(WIN32)
             # MSVC2012 has some troubles with the way gtest use the STL, this preprocessor macro fix this issue
             AddCompilerDefinitions("_VARIADIC_MAX=10")
         endif()
-
-        AddLinkerDependencies(gtest gtest_main)
     endif()
 
     # include directories

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_H
 #define SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_H
+#include "config.h"
 
 #include <sofa/core/CollisionModel.h>
 #include <SofaMeshCollision/LocalMinDistanceFilter.h>
@@ -245,6 +246,8 @@ public:
     {
         return DataTypes::Name();
     }
+
+    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false);
 };
 
 template<class DataTypes>
@@ -317,7 +320,7 @@ inline typename DataTypes::Deriv TTriangleModel<DataTypes>::velocity(int index) 
 typedef TTriangleModel<sofa::defaulttype::Vec3Types> TriangleModel;
 typedef TTriangle<sofa::defaulttype::Vec3Types> Triangle;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MESH_COLLISION_API TTriangleModel<defaulttype::Vec3dTypes>;
 #endif

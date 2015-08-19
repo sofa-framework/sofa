@@ -14,6 +14,8 @@ SofaPython.units.local_length = SofaPython.units.length_mm
 SofaPython.units.local_mass = SofaPython.units.mass_g
 SofaPython.units.local_time = SofaPython.units.time_ms
 
+SofaPython.units.setLocalUnits(time="ms", length="mm", mass="g")
+
 # get the proper values to setup the scene
 SofaPython.units.length_from_SI(voxelSize)
 SofaPython.units.acceleration_from_SI(g)

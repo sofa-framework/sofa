@@ -22,9 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "PythonEnvironment.h"
-
 #include "PythonMacros.h"
+#include "PythonEnvironment.h"
 #include "PythonScriptController.h"
 
 #include <sofa/config.h>
@@ -32,7 +31,6 @@
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/component/contextobject/CoordinateSystem.h>
 
 #if __linux__
 #  include <dlfcn.h>            // for dlopen(), see workaround in Init()
@@ -63,7 +61,10 @@ void PythonEnvironment::addModule(const std::string& name, PyMethodDef* methodDe
 void PythonEnvironment::Init()
 {
     std::string pythonVersion = Py_GetVersion();
-    SP_MESSAGE_INFO("Python version: " + pythonVersion);
+
+#ifndef NDEBUG
+    SP_MESSAGE_INFO("Python version: " + pythonVersion)
+#endif
 
     // WARNING: workaround to be able to import python libraries on linux (like
     // numpy), at least on Ubuntu (see http://bugs.python.org/issue4434). It is
@@ -74,8 +75,8 @@ void PythonEnvironment::Init()
 #endif
 
     // Prevent the python terminal from being buffered, not to miss or mix up traces.
-    if (putenv((char*)"PYTHONUNBUFFERED=1"))
-        SP_MESSAGE_WARNING("failed to set environment variable PYTHONUNBUFFERED");
+    if( putenv( (char*)"PYTHONUNBUFFERED=1" ) )
+        SP_MESSAGE_WARNING("failed to set environment variable PYTHONUNBUFFERED")
 
     // Initialize the Python Interpreter.
     Py_Initialize();
@@ -117,13 +118,22 @@ except:\n\
     // exist: SOFAPYTHON_PLUGINS_PATH is a colon-separated list of paths to
     // directories that contain Sofa plugins.
 
-    const std::string pluginsDir = std::string(SOFA_SRC_DIR) + "/applications/plugins";
+    static const std::string pluginsDir = std::string(SOFA_SRC_DIR) + "/applications/plugins";
     if (FileSystem::exists(pluginsDir))
         addPythonModulePathsForPlugins(pluginsDir);
 
-    const std::string devPluginsDir = std::string(SOFA_SRC_DIR) + "/applications-dev/plugins";
+    static const std::string devPluginsDir = std::string(SOFA_SRC_DIR) + "/applications-dev/plugins";
     if (FileSystem::exists(devPluginsDir))
         addPythonModulePathsForPlugins(devPluginsDir);
+
+    static const std::string projectsDir = std::string(SOFA_SRC_DIR) + "/applications/projects";
+    if (FileSystem::exists(projectsDir))
+        addPythonModulePathsForPlugins(projectsDir);
+
+    static const std::string devProjectsDir = std::string(SOFA_SRC_DIR) + "/applications-dev/projects";
+    if (FileSystem::exists(devProjectsDir))
+        addPythonModulePathsForPlugins(devProjectsDir);
+
 
     char * pathVar = getenv("SOFAPYTHON_PLUGINS_PATH");
     if (pathVar != NULL)
@@ -160,7 +170,7 @@ void PythonEnvironment::addPythonModulePathsForPlugins(const std::string& plugin
     for (std::vector<std::string>::iterator i = files.begin(); i != files.end(); ++i)
     {
         const std::string pluginPath = pluginsDirectory + "/" + *i;
-        if (FileSystem::isDirectory(pluginPath))
+        if (FileSystem::exists(pluginPath) && FileSystem::isDirectory(pluginPath))
         {
             const std::string pythonDir = pluginPath + "/python";
             if (FileSystem::exists(pythonDir) && FileSystem::isDirectory(pythonDir))
@@ -288,7 +298,7 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
 
     // Load the scene script
 	char* pythonFilename = strdup(filename);
-    PyObject* scriptPyFile = PyFile_FromString(pythonFilename, "r");
+    PyObject* scriptPyFile = PyFile_FromString(pythonFilename, (char*)("r"));
 	free(pythonFilename);
 
     if( !scriptPyFile )
@@ -300,8 +310,10 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
 
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
+	std::string backupFileName;
     PyObject* backupFileObject = PyDict_GetItemString(pDict, "__file__");
-    std::string backupFileName = PyString_AsString(backupFileObject);
+	if(backupFileObject)
+		backupFileName = PyString_AsString(backupFileObject);
 
     PyObject* newFileObject = PyString_FromString(filename);
     PyDict_SetItemString(pDict, "__file__", newFileObject);

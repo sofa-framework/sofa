@@ -65,21 +65,24 @@ run-single-test() {
     local test=$1
     local output_file="$output_dir/$test/report.xml"
     local test_cmd="$build_dir/bin/$test --gtest_output=xml:$output_file 2>&1"
-    local timeout=900
+    # local timeout=900
 
     echo "$test_cmd" > "$output_dir/$test/command.txt"
-    echo "Running $test with a timeout of $timeout seconds"
+    # echo "Running $test with a timeout of $timeout seconds"
+    echo "Running $test"
     rm -f report.xml
-    "$src_dir/scripts/ci/timeout.sh" test "$test_cmd" $timeout | tee $output_dir/$test/output.txt
+    # "$src_dir/scripts/ci/timeout.sh" test "$test_cmd" $timeout | tee $output_dir/$test/output.txt
+    bash -c "$test_cmd" | tee $output_dir/$test/output.txt
+    echo "${PIPESTATUS[0]}" > "$output_dir/$test/status.txt"
+    # if [[ -e test.timeout ]]; then
+    #     echo 'Timeout!'
+    #     echo timeout > "$output_dir/$test/status.txt"
+    #     rm -f test.timeout
+    # else
+    #     cat test.exit_code > "$output_dir/$test/status.txt"
+    # fi
+    # rm -f test.exit_code
 
-    if [[ -e test.timeout ]]; then
-        echo 'Timeout!'
-        echo timeout > "$output_dir/$test/status.txt"
-        rm -f test.timeout
-    else
-        cat test.exit_code > "$output_dir/$test/status.txt"
-    fi
-    rm -f test.exit_code
     if [ -f "$output_file" ]; then
         fix-test-report "$output_file"
         cp "$output_file" "$output_dir/reports/$test.xml"

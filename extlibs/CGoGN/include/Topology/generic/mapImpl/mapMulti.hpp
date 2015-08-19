@@ -363,12 +363,12 @@ inline AttributeMultiVector<unsigned int>* MapMulti::getMRLevelAttributeVector()
  *     RESOLUTION LEVELS MANAGEMENT     *
  ****************************************/
 
-inline unsigned int MapMulti::getCurrentLevel()
+inline unsigned int MapMulti::getCurrentLevel() const
 {
 	return m_mrCurrentLevel ;
 }
 
-inline void MapMulti::setCurrentLevel(unsigned int l)
+inline void MapMulti::setCurrentLevel(unsigned int l) const
 {
 	if(l < m_mrDarts.size())
 		m_mrCurrentLevel = l ;
@@ -403,7 +403,7 @@ inline void MapMulti::popLevel()
 	m_mrLevelStack.pop_back() ;
 }
 
-inline unsigned int MapMulti::getMaxLevel()
+inline unsigned int MapMulti::getMaxLevel() const
 {
 	return m_mrDarts.size() - 1 ;
 }

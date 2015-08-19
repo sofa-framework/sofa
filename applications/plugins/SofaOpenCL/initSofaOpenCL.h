@@ -34,27 +34,4 @@
 #  define SOFAOPENCL_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-namespace sofa
-{
-
-namespace component
-{
-
-extern "C" {
-    SOFAOPENCL_API void initExternalModule();
-    SOFAOPENCL_API const char* getModuleName();
-    SOFAOPENCL_API const char* getModuleVersion();
-    SOFAOPENCL_API const char* getModuleLicense();
-    SOFAOPENCL_API const char* getModuleDescription();
-    SOFAOPENCL_API const char* getModuleComponentList();
-}
-
-}
-
-}
-
-/** \mainpage
-  This is a the starting page of the plugin documentation, defined in file initEmptyPlugin.h
-  */
-
 #endif // INITEmptyPlugin_H

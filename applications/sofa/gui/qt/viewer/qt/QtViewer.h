@@ -36,7 +36,7 @@
 #include <fstream>
 
 
-#include <viewer/SofaViewer.h>
+#include <sofa/gui/qt/viewer/SofaViewer.h>
 
 #include "../../../ViewerFactory.h"
 
@@ -238,6 +238,7 @@ public:
 
 
     QString helpString();
+//    void setCameraMode(core::visual::VisualParams::CameraType mode);
 
 private:
 

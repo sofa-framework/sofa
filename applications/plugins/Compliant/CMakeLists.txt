@@ -22,6 +22,8 @@ set(HEADER_FILES
     mapping/AffineMultiMapping.h
 	mapping/PythonMultiMapping.h
     mapping/GearMapping.h
+	mapping/PairingMultiMapping.h
+	mapping/QuadraticMapping.h
 
     numericalsolver/KKTSolver.h
     numericalsolver/EigenSparseSolver.h
@@ -63,6 +65,9 @@ set(HEADER_FILES
     odesolver/CompliantPostStabilizationAnimationLoop.h
 	odesolver/CompliantStaticSolver.h
 
+    forcefield/PotentialEnergy.h
+    forcefield/UniformLinearPotentialEnergy.h
+	
     compliance/UniformCompliance.h
     compliance/UniformCompliance.inl
     compliance/DiagonalCompliance.h
@@ -71,6 +76,7 @@ set(HEADER_FILES
 
     constraint/Constraint.h
     constraint/CoulombConstraint.h
+	constraint/CoulombConstraint.inl
     constraint/UnilateralConstraint.h
     constraint/ResistanceConstraint.h
     constraint/ClosureConstraint.h
@@ -131,6 +137,9 @@ set(SOURCE_FILES
     compliance/DiagonalCompliance.cpp
     compliance/DampingCompliance.cpp
 
+    forcefield/PotentialEnergy.cpp
+    forcefield/UniformLinearPotentialEnergy.cpp
+	
     mapping/RigidJointMapping.cpp
     mapping/RigidJointMultiMapping.cpp
     mapping/AssembledRigidRigidMapping.cpp
@@ -143,6 +152,8 @@ set(SOURCE_FILES
     mapping/AffineMultiMapping.cpp
 	mapping/PythonMultiMapping.cpp
     mapping/GearMapping.cpp
+	mapping/PairingMultiMapping.cpp
+	mapping/QuadraticMapping.cpp
 
     numericalsolver/EigenSparseSolver.cpp
     numericalsolver/EigenSparseResponse.cpp
@@ -176,7 +187,8 @@ set(SOURCE_FILES
     odesolver/CompliantPseudoStaticSolver.cpp
     odesolver/CompliantPostStabilizationAnimationLoop.cpp
 	odesolver/CompliantStaticSolver.cpp
-	
+
+	constraint/Constraint.cpp
     constraint/CoulombConstraint.cpp
     constraint/UnilateralConstraint.cpp
     constraint/ResistanceConstraint.cpp

@@ -36,9 +36,9 @@
 
 #ifndef SOFA_COMPONENT_CONTROLLER_CONTROLLER_H
 #define SOFA_COMPONENT_CONTROLLER_CONTROLLER_H
+#include "config.h"
 
 #include <sofa/core/behavior/BaseController.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {

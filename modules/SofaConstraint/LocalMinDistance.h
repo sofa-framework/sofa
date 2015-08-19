@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_H
 #define SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_H
+#include "config.h"
 
 #include <SofaBaseCollision/BaseProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
@@ -121,7 +122,7 @@ namespace core
 {
 namespace collision
 {
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CONSTRAINT)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_CPP)
 extern template class SOFA_CONSTRAINT_API IntersectorFactory<component::collision::LocalMinDistance>;
 #endif
 }

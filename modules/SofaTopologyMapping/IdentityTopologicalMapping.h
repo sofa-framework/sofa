@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_IDENTITYTOPOLOGICALMAPPING_H
 #define SOFA_COMPONENT_TOPOLOGY_IDENTITYTOPOLOGICALMAPPING_H
+#include "config.h"
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
@@ -31,7 +32,6 @@
 #include <map>
 
 #include <sofa/core/BaseMapping.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -67,12 +67,6 @@ public:
     virtual void updateTopologicalMappingTopDown();
 
     virtual unsigned int getFromIndex(unsigned int ind);
-
-    template<class T>
-    static bool canCreate ( T*& /*obj*/, core::objectmodel::BaseContext* /*context*/, core::objectmodel::BaseObjectDescription* /*arg*/ )
-    {
-        return true;
-    }
 
 };
 

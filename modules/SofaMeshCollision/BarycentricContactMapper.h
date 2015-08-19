@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_H
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_H
+#include "config.h"
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/Factory.h>
@@ -223,13 +224,10 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
-//extern template class SOFA_MESH_COLLISION_API ContactMapper<SphereModel>;
-//extern template class SOFA_MESH_COLLISION_API ContactMapper<PointModel>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<LineModel>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<TriangleModel>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<CapsuleModel>;
-//extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidDistanceGridCollisionModel>;
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_CPP)
+extern template class SOFA_MESH_COLLISION_API ContactMapper<LineModel, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<TriangleModel, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<CapsuleModel, sofa::defaulttype::Vec3Types>;
 #endif
 
 } // namespace collision

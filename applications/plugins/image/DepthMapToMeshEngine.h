@@ -28,7 +28,6 @@
 #include "initImage.h"
 #include "ImageTypes.h"
 #include <sofa/core/DataEngine.h>
-#include <sofa/component/component.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -168,6 +167,9 @@ protected:
         raTexture inTex(this->texImage);
         const unsigned int dimx=in->getDimensions()[0],dimy=in->getDimensions()[1];
 
+
+        cleanDirty();
+
         waPositions pos(this->position);
         waTexCoords tc(this->texCoord);
         waTriangles tri(this->triangles);
@@ -226,7 +228,6 @@ protected:
                 p1=x+1+y*dimx; p2=x+1+(y+1)*dimx; p3=x+(y+1)*dimx;
                 if(isValid[p1] && isValid[p2] && isValid[p3] && diff1<diffT && diff2<diffT && diff3<diffT) tri.push_back(Triangle(p1,p2,p3));
             }
-        cleanDirty();
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)

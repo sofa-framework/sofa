@@ -10,7 +10,7 @@
 
 
   <EulerImplicitSolver />
-  <CGLinearSolver  />
+  <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
   <!--    <EulerExplicitSolver /> -->
 
   <Node 	name="FEM tetra NOT lumped"   >

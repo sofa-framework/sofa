@@ -26,23 +26,16 @@ void DiagonalResponse::reinit()
 }
 
 
-void DiagonalResponse::factor( const rmat& H, bool semidefinite ) {
+void DiagonalResponse::factor(const rmat& H) {
 	
-    if( constant.getValue() && factorized ) return;
-
-    factorized = true;
-
-    if( semidefinite )
+    if( constant.getValue() )
     {
-        diag = H.diagonal();
-        for( rmat::Index i=0 ; i<H.rows() ; ++i )
-            diag.coeffRef(i) = std::abs(diag.coeff(i)) < std::numeric_limits<real>::epsilon() ? real(0) : real(1) / diag.coeff(i);
+        if( factorized ) return;
+        else factorized = true;
     }
-    else
-    {
-        diag = H.diagonal().cwiseInverse();
-    }
-	
+
+    diag = H.diagonal().cwiseInverse();
+
 	assert( !has_nan(diag) );
 }
 

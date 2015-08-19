@@ -35,7 +35,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
 
-#include <SofaComponentMain/init.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaBoundaryCondition/ConstantForceField.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
@@ -55,7 +54,6 @@
 #include <SofaRigid/RigidMapping.h>
 
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <SofaLoader/ReadState.h>
@@ -74,6 +72,9 @@
 #include <Eigen/Dense>
 using std::cout;
 
+using sofa::component::container::MechanicalObject;
+using sofa::component::mass::UniformMass;
+
 using namespace sofa;
 using namespace sofa::component;
 using namespace modeling;
@@ -84,6 +85,7 @@ namespace sofa
     using core::objectmodel::New;
 
     typedef component::container::MechanicalObject<defaulttype::Vec1Types> MechanicalObject1;
+    typedef component::container::MechanicalObject<defaulttype::Vec3Types> MechanicalObject3;
     typedef component::mapping::RigidMapping<defaulttype::Rigid3Types, defaulttype::Vec3Types> RigidMappingRigid3_to_3;
     typedef component::mapping::SubsetMultiMapping<defaulttype::Vec3Types, defaulttype::Vec3Types> SubsetMultiMapping3_to_3;
     typedef component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> UniformMassRigid3;

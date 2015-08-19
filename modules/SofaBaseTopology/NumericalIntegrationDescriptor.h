@@ -24,12 +24,12 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_H
 #define SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_H
+#include "config.h"
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/set.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -42,18 +42,20 @@ namespace topology
 
 /// Cross product for 3-elements vectors.
 template< typename Real, int N>
-class NumericalIntegrationDescriptor
-{
+class NumericalIntegrationDescriptor {
  
 public:
     typedef sofa::defaulttype::Vec<N, Real> BarycentricCoordinatesType;
 	typedef std::pair<BarycentricCoordinatesType,Real> QuadraturePoint;
 	typedef sofa::helper::vector<QuadraturePoint> QuadraturePointArray;
 	
-    typedef enum
-    {
-		GAUSS_METHOD =0,
-		GAUSS_LOBATO_METHOD=1
+	typedef enum {
+		GAUSS_LEGENDRE_METHOD =0,
+		GAUSS_LOBATO_METHOD=1,
+		NEWTON_COTES_METHOD=2,
+		GAUSS_SIMPLEX_METHOD=3,
+		GAUSS_QUAD_METHOD=4,
+		GAUSS_CUBE_METHOD=5
 	} QuadratureMethod; 
 	typedef size_t IntegrationOrder;
 	typedef std::pair<QuadratureMethod,IntegrationOrder> QuadratureMethodKey;
@@ -76,9 +78,13 @@ public:
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double, 4>;
+extern template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double, 3>;
+extern template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<double, 1>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<float, 4>;
+extern template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<float, 3>;
+extern template class SOFA_BASE_TOPOLOGY_API NumericalIntegrationDescriptor<float, 1>;
 #endif
 #endif
 

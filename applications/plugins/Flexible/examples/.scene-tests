@@ -2,8 +2,8 @@
 ignore "forcefield/FlexibleTetrahedronFEMForceField.scn"
 
 # This runs very slowly, so compute only a few iterations
-iterations "beam/generateRefBeam_flex.scn" "10"
-timeout "beam/generateRefBeam_flex.scn" "50"
+iterations "beam/generateRefBeam_flex.scn" "5"
+timeout "beam/generateRefBeam_flex.scn" "60"
 
 # This runs very slowly, so compute only a few iterations
 iterations "beam/linearAffine_flex332.scn" "10"

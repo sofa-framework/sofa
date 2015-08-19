@@ -2,6 +2,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
+    config.h
 	initBaseAnimationLoop.h
     MultiStepAnimationLoop.h
     MultiTagAnimationLoop.h

@@ -284,7 +284,7 @@ void OglModel::drawGroup(int ig, bool transparent)
             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
         else
 #endif
-            indices = edges.getData();
+        indices = edges.getData();
 
         GLenum prim = GL_LINES;
         switch (primitiveType.getValue().getSelectedId())
@@ -436,7 +436,6 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 {
 //    m_vtexcoords.updateIfDirty();
 //    serr<<" OglModel::internalDraw()"<<sendl;
-
     if (!vparams->displayFlags().getShowVisualModels()) return;
 
     if (vparams->displayFlags().getShowWireFrame())
@@ -854,6 +853,9 @@ void OglModel::initVisual()
 #endif
 
     updateBuffers();
+    computeNormals();
+    if (m_updateTangents.getValue())
+        computeTangents();
 
     if ( alphaBlend.getValue() )
     {

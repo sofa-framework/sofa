@@ -39,7 +39,7 @@
 
 #include "RandomGenerator.h"
 
-#include <math.h>
+#include <cmath>
 
 
 namespace sofa

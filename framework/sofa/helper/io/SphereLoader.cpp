@@ -24,11 +24,12 @@
 ******************************************************************************/
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/Locale.h>
 
-#include <stdio.h>
+#include <cstdio>
 #include <iostream>
 #include <cstdio>
-#include <string.h>
+#include <string>
 #include <sstream>
 
 namespace sofa
@@ -48,6 +49,9 @@ static void skipToEOL(FILE* f)
 
 bool SphereLoader::load(const char *filename)
 {
+    // Make sure that fscanf() uses a dot '.' as the decimal separator.
+    helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
+
     std::string fname = filename;
     if (!sofa::helper::system::DataRepository.findFile(fname)) return false;
 

@@ -47,6 +47,9 @@ void IdentityMapping<TIn, TOut>::init()
         maskFrom = &stateFrom->forceMask;
     if ((stateTo = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModel.get())))
         maskTo = &stateTo->forceMask;
+
+    this->toModel->resize( this->fromModel->getSize() );
+
     Inherit::init();
 }
 
@@ -56,7 +59,7 @@ void IdentityMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
     helper::WriteOnlyAccessor< Data<VecCoord> > out = dOut;
     helper::ReadAccessor< Data<InVecCoord> > in = dIn;
 
-    out.resize(in.size());
+//    out.resize(in.size());
 
     for(unsigned int i=0; i<out.size(); i++)
     {
@@ -70,7 +73,7 @@ void IdentityMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams
     helper::WriteOnlyAccessor< Data<VecDeriv> > out = dOut;
     helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
 
-    out.resize(in.size());
+//    out.resize(in.size());
 
     if ( !(maskTo->isInUse()) )
     {
@@ -156,14 +159,14 @@ void IdentityMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparam
 template <class TIn, class TOut>
 void IdentityMapping<TIn, TOut>::handleTopologyChange()
 {
-    if ( stateTo && stateFrom && stateTo->getSize() != stateFrom->getSize()) this->init();
+    if ( this->toModel && this->fromModel && this->toModel->getSize() != this->fromModel->getSize()) this->init();
 }
 
 template <class TIn, class TOut>
 const sofa::defaulttype::BaseMatrix* IdentityMapping<TIn, TOut>::getJ()
 {
-    const unsigned int outStateSize = this->toModel->read(core::ConstVecCoordId::position())->getValue().size();
-    const unsigned int  inStateSize = this->fromModel->read(core::ConstVecCoordId::position())->getValue().size();
+    const unsigned int outStateSize = this->toModel->getSize();
+    const unsigned int  inStateSize = this->fromModel->getSize();
     assert(outStateSize == inStateSize);
 
     if (matrixJ.get() == 0 || updateJ)
@@ -219,8 +222,6 @@ struct IdentityMappingMatrixHelper
 };
 
 
-#ifdef SOFA_HAVE_EIGEN2
-
 template <class TIn, class TOut>
 const typename IdentityMapping<TIn, TOut>::js_type* IdentityMapping<TIn, TOut>::getJs()
 {
@@ -258,13 +259,10 @@ const typename IdentityMapping<TIn, TOut>::js_type* IdentityMapping<TIn, TOut>::
     }
 
 	// std::cout << eigen.compressedMatrix << std::endl;
-	
-	js.resize( 1 );
-	js[0] = &eigen;
+
 	return &js;
 }
 
-#endif
 
 } // namespace mapping
 

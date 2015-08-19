@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/tree/init.h>
 #include <SofaLoader/ReadState.h>
 #include <SofaExporter/WriteState.h>
 #include <SofaValidation/CompareState.h>
@@ -84,8 +85,6 @@ bool loadPlugin(const char* filename)
 void apply(const std::string& directory, std::vector<std::string>& files,
         unsigned int iterations, bool reinit, bool useTopology)
 {
-
-    sofa::component::init(); // ensures all components are initialized, also introduce a dependency to all libraries, avoiding problems with -Wl,--as-needed flag
 
     sofa::simulation::Simulation* simulation = sofa::simulation::getSimulation();
 
@@ -235,6 +234,8 @@ void apply(const std::string& directory, std::vector<std::string>& files,
 
 int main(int argc, char** argv)
 {
+    sofa::simulation::tree::init();
+    sofa::component::init();
     sofa::helper::BackTrace::autodump();
 
     std::string refdir;
@@ -321,5 +322,6 @@ int main(int argc, char** argv)
 
     apply(refdir, sceneFiles, iterations, reinit, topology);
 
+    sofa::simulation::tree::cleanup();
     return 0;
 }

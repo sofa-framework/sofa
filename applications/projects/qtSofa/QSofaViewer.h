@@ -3,9 +3,9 @@
 #include <GL/glew.h>
 #include <QApplication>
 #include <QGLWidget>
-#include <plugins/SofaSimpleGUI/SofaScene.h>
-#include <plugins/SofaSimpleGUI/SofaGL.h>
-#include <plugins/SofaSimpleGUI/Camera.h>
+#include <SofaSimpleGUI/SofaScene.h>
+#include <SofaSimpleGUI/SofaGL.h>
+#include <SofaSimpleGUI/Camera.h>
 #include "QSofaScene.h"
 
 using sofa::simplegui::SofaScene;
