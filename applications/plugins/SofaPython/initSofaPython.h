@@ -25,6 +25,7 @@
 #ifndef INITSOFAPYTHON_H
 #define INITSOFAPYTHON_H
 
+#define SOFAPYTHON_VERSION_STR "0.0"
 
 #include <sofa/helper/system/config.h>
 
@@ -33,28 +34,5 @@
 #else
 #define SOFA_SOFAPYTHON_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
-
-namespace sofa
-{
-
-namespace component
-{
-
-extern "C" {
-    SOFA_SOFAPYTHON_API void initExternalModule();
-    SOFA_SOFAPYTHON_API const char* getModuleName();
-    SOFA_SOFAPYTHON_API const char* getModuleVersion();
-    SOFA_SOFAPYTHON_API const char* getModuleLicense();
-    SOFA_SOFAPYTHON_API const char* getModuleDescription();
-    SOFA_SOFAPYTHON_API const char* getModuleComponentList();
-}
-
-}
-
-}
-
-/** \mainpage
-  This is a the starting page of the plugin documentation, defined in file initSofaPython.h
-  */
 
 #endif // INITEmptyPlugin_H

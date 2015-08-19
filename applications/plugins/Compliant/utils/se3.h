@@ -248,22 +248,33 @@ struct SE3 {
 		quat q = qq;
 		q.normalize();
 
-		// // flip if needed
-		if( q.w() < 0 ) q.coeffs() = -q.coeffs();
+		// flip if needed
+		if( q.w() < 0 ) q.coeffs() = -q.coeffs(); // needed to get theta between 0 and PI
 
-        const real w = std::min<real>(1.0, q.w());
-        
-		// (half) rotation angle
-		const real half_theta = std::acos( w ); // in (0, pi / 2)
-		const real theta = 2 * half_theta;      // in (0, pi)
-		
-		if( std::abs(theta) < epsilon() ) {
-			return q.vec();
-		} else {
-			// TODO q.vec() / sinc(theta) instead ?
-            // return 2 * q.vec() / SE3::sinc(half_theta);
-			return theta * q.vec().normalized();
-		}
+        const real w = std::min<real>(1.0, q.w()); // is it really necessary to use the min on a normalized quat?
+
+        real sin_half_theta; // note that sin(theta/2) == norm of the imaginary part for unit quaternion
+        real theta;
+
+        // to avoid numerical instabilities of acos for theta < 5°
+        if(w>0.999) // theta < 5° -> _q[3] = cos(theta/2) > 0.999
+        {
+            sin_half_theta = q.vec().norm();
+            theta = (real)(2.0 * asin(sin_half_theta)); // in (0, pi)
+        }
+        else
+        {
+            real half_theta = acos(w); // in (0, pi / 2)
+            sin_half_theta = sin(half_theta);
+            theta = 2*half_theta; // in (0, pi)
+        }
+
+        assert(sin_half_theta>=0);
+        if( sin_half_theta < epsilon() ) {
+            return q.vec();
+        } else {
+            return theta * (q.vec()/sin_half_theta); 
+        }
 
 	}
 
@@ -317,7 +328,7 @@ struct SE3 {
 		real theta2 = x.squaredNorm();
 
 		if( theta2 > epsilon() ) {
-			res.noalias() = res + (R.transpose() - mat33::Identity() + xhat) * xhat / theta2;
+            res.noalias() += (R.transpose() - mat33::Identity() + xhat) * xhat / theta2;
 		}
 		
 		return res;

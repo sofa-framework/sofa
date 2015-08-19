@@ -19,12 +19,12 @@ set(SOURCE_FILES
     DepthMapToMeshEngine.cpp
     MeshToImageEngine.cpp
     MarchingCubesEngine.cpp 
+	CollisionToCarvingEngine.cpp
     ImageSampler.cpp 
     ImageExporter.cpp 
     ImageDataDisplay.cpp
     VoronoiToMeshEngine.cpp
     ImageToRigidMassEngine.cpp
-    TestImageEngine.cpp
 )
 
 set(HEADER_FILES
@@ -42,6 +42,7 @@ set(HEADER_FILES
     DepthMapToMeshEngine.h
     MeshToImageEngine.h
     MarchingCubesEngine.h
+	CollisionToCarvingEngine.h
     ImageSampler.h
     ImageExporter.h
     VectorVis.h 
@@ -50,7 +51,6 @@ set(HEADER_FILES
     ImageDataDisplay.h
     VoronoiToMeshEngine.h
     ImageToRigidMassEngine.h
-    TestImageEngine.h
 )
 
 set(README_FILES image.txt)

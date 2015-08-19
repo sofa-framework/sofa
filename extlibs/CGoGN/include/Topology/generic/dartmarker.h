@@ -287,7 +287,7 @@ public:
         //		}) ;
         this->m_map.foreach_dart_of_orbit(c, (
                                               bl::bind(&DartMarkerTmpl<MAP>::mark,this, bl::_1)
-                                              ,bl::bind(&std::vector<Dart>::push_back, boost::ref(*m_markedDarts), bl::_1)
+                                              ,bl::bind(static_cast<void (std::vector<Dart>::*)(const Dart&)>(&std::vector<Dart>::push_back), boost::ref(*m_markedDarts), boost::cref(bl::_1))
                                               ));
     }
 

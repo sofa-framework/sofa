@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_CORE_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_CPP
 #include "PairInteractionConstraint.inl"
 
 namespace sofa

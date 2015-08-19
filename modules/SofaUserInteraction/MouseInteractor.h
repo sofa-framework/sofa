@@ -24,7 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_H
 #define SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_H
-
+#include "config.h"
 
 #include <SofaUserInteraction/InteractionPerformer.h>
 #include <SofaUserInteraction/RayModel.h>

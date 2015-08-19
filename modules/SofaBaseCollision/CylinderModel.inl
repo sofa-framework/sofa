@@ -104,7 +104,7 @@ void TCylinderModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::init()
         return;
     }
 
-    resize(_mstate->read(core::ConstVecCoordId::position())->getValue().size());
+    resize(_mstate->getSize());
 }
 
 
@@ -113,7 +113,7 @@ void TCylinderModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::computeBoundin
 {
     using namespace sofa::defaulttype;
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int ncyl = _mstate->read(core::ConstVecCoordId::position())->getValue().size();
+    const int ncyl = _mstate->getSize();
 
     bool updated = false;
     if (ncyl != size)

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SparseTAUCSSolver_H
 #define SOFA_COMPONENT_LINEARSOLVER_SparseTAUCSSolver_H
+#include "config.h"
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>

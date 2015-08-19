@@ -22,16 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_GEARSPRINGFORCEFIELD_H
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_GEARSPRINGFORCEFIELD_H
+#include "config.h"
 
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/component/component.h>
 #include <vector>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -329,7 +328,7 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MISC_FORCEFIELD)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_GEARSPRINGFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3dTypes>;
 extern template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3dTypes>;

@@ -1,11 +1,13 @@
+#include <sofa/core/init.h>
+
+#include <gtest/gtest.h>
+
 #include <iostream>
-#include "gtest/gtest.h"
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
-
-    // Set LC_CTYPE according to the environnement variable.
-    setlocale(LC_CTYPE, "");
-
-    return RUN_ALL_TESTS();
+    sofa::core::init();
+    int ret = RUN_ALL_TESTS();
+    sofa::core::cleanup();
+    return ret;
 }

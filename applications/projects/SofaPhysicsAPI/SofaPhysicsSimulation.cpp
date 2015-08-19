@@ -6,7 +6,6 @@
 #include <sofa/helper/io/ImageBMP.h>
 #include <sofa/helper/gl/RAII.h>
 
-#include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -201,7 +200,6 @@ useGUI(useGUI_), GUIFramerate(GUIFramerate_)
     sofa::simulation::setSimulation(m_Simulation);
 
     sofa::component::init();
-    sofa::simulation::xml::initXml();
 
     sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
             &classVisualModel);
@@ -450,8 +448,8 @@ void SofaPhysicsSimulation::Impl::updateOutputMeshes()
     sofaOutputMeshes.clear();
     sofaOutputMeshTetrahedrons.clear();
 
-    groot->get<SofaOutputMesh>(&sofaOutputMeshes, BaseContext::SearchDown);
-    groot->get<SofaOutputMeshTetrahedron>(&sofaOutputMeshTetrahedrons, BaseContext::SearchDown);
+    groot->get<SofaOutputMesh>(&sofaOutputMeshes, sofa::core::objectmodel::BaseContext::SearchDown);
+    groot->get<SofaOutputMeshTetrahedron>(&sofaOutputMeshTetrahedrons, sofa::core::objectmodel::BaseContext::SearchDown);
    
     
     outputMeshes.resize(sofaOutputMeshes.size());
@@ -519,7 +517,7 @@ SofaPhysicsDataMonitor** SofaPhysicsSimulation::Impl::getDataMonitors()
         {
             return NULL;
         }
-        groot->get<SofaDataMonitor>(&sofaDataMonitors, BaseContext::SearchDown);
+        groot->get<SofaDataMonitor>(&sofaDataMonitors, sofa::core::objectmodel::BaseContext::SearchDown);
         dataMonitors.resize(sofaDataMonitors.size());
         for (unsigned int i=0; i<sofaDataMonitors.size(); ++i)
         {
@@ -546,7 +544,7 @@ SofaPhysicsDataController** SofaPhysicsSimulation::Impl::getDataControllers()
         {
             return NULL;
         }
-        groot->get<SofaDataController>(&sofaDataControllers, BaseContext::SearchDown);
+        groot->get<SofaDataController>(&sofaDataControllers, sofa::core::objectmodel::BaseContext::SearchDown);
         dataControllers.resize(sofaDataControllers.size());
         for (unsigned int i=0; i<sofaDataControllers.size(); ++i)
         {

@@ -29,9 +29,9 @@
 
 #include <SofaOpenCL/myopencl.h>
 
-#include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/tree/init.h>
 #include <SofaComponentMain/init.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
@@ -54,9 +54,9 @@ using namespace sofa::gpu::opencl;
 
 int main(int argc, char** argv)
 {
-
+    sofa::simulation::tree::init();
     sofa::helper::BackTrace::autodump();
-
+    sofa::component::init();
     sofa::gui::initMain();
 
     /*sofa::gui::SofaGUI::SetProgramName(argv[0]);
@@ -85,8 +85,6 @@ int main(int argc, char** argv)
     myopenclInit();
 
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
-    sofa::component::init();
-    sofa::simulation::xml::initXml();
 
     if (!nbIter)
     {
@@ -172,5 +170,6 @@ int main(int argc, char** argv)
     }
     if (groot!=NULL) getSimulation()->unload(groot);
 
+    sofa::simulation::tree::cleanup();
     return 0;
 }

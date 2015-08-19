@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ENGINE_GROUPFILTERYOUNGMODULUS_H
 #define SOFA_COMPONENT_ENGINE_GROUPFILTERYOUNGMODULUS_H
+#include "config.h"
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -51,7 +52,7 @@ template <class DataTypes>
 class GroupFilterYoungModulus : public core::DataEngine
 {
 public:
-    SOFA_CLASS(GroupFilterYoungModulus,core::DataEngine);
+    SOFA_CLASS( SOFA_TEMPLATE(GroupFilterYoungModulus,DataTypes),core::DataEngine);
 
     typedef typename DataTypes::Real Real;
 

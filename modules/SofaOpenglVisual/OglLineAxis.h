@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_OGLLINEAXIS_H
 #define SOFA_OGLLINEAXIS_H
+#include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

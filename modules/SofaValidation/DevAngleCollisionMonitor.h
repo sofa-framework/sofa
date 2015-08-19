@@ -24,11 +24,12 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_DEVANGLECOLLISIONMONITOR_H
 #define SOFA_COMPONENT_MISC_DEVANGLECOLLISIONMONITOR_H
+#include "config.h"
 
 #include <sofa/helper/vector.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/component/misc/DevMonitor.h>
+#include <SofaValidation/DevMonitor.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <SofaMeshCollision/PointModel.h>

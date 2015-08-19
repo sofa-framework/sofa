@@ -33,8 +33,6 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/OptionsGroup.h>
 
-#include <sofa/component/component.h>
-
 #define ADDITION 0
 #define SUBTRACTION 1
 #define MULTIPLICATION 2
@@ -122,6 +120,9 @@ protected:
     {
         raImage in1(this->inputImage1);
         raImage in2(this->inputImage2);
+
+        cleanDirty();
+
         waImage out(this->outputImage);
 
         if(in1->isEmpty() || in2->isEmpty()) return;
@@ -170,8 +171,6 @@ protected:
             break;
         default:            break;
         }
-
-        cleanDirty();
     }
 
 };

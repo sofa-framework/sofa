@@ -1,8 +1,9 @@
 // File modified from GeometricTools
 // http://www.geometrictools.com/
 
-#ifndef WM5INTRBOX3BOX3_H
-#define WM5INTRBOX3BOX3_H
+#ifndef SOFA_COMPONENT_COLLISION_INTROBBOBB_H
+#define SOFA_COMPONENT_COLLISION_INTROBBOBB_H
+#include "config.h"
 
 #include <SofaBaseCollision/Intersector.h>
 #include <SofaBaseCollision/OBBModel.h>
@@ -68,7 +69,7 @@ private:
 
 typedef TIntrOBBOBB<sofa::defaulttype::RigidTypes> IntrOBBOBB;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_INTROBBOBB_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_COLLISION_API TIntrOBBOBB<defaulttype::Rigid3dTypes>;
 #endif

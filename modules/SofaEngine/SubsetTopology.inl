@@ -57,20 +57,28 @@ SubsetTopology<DataTypes>::SubsetTopology()
     , f_X0( initData (&f_X0, "rest_position", "Rest position coordinates of the degrees of freedom") )
     , f_edges(initData (&f_edges, "edges", "Edge Topology") )
     , f_triangles(initData (&f_triangles, "triangles", "Triangle Topology") )
+    , f_quads(initData (&f_quads, "quads", "Quad Topology") )
     , f_tetrahedra(initData (&f_tetrahedra, "tetrahedra", "Tetrahedron Topology") )
+    , f_hexahedra(initData (&f_hexahedra, "hexahedra", "Hexahedron Topology") )
     , d_tetrahedraInput( initData(&d_tetrahedraInput,"tetrahedraInput","Indices of the tetrahedra to keep") )
     , f_indices( initData(&f_indices,"indices","Indices of the points contained in the ROI") )
     , f_edgeIndices( initData(&f_edgeIndices,"edgeIndices","Indices of the edges contained in the ROI") )
     , f_triangleIndices( initData(&f_triangleIndices,"triangleIndices","Indices of the triangles contained in the ROI") )
+    , f_quadIndices( initData(&f_quadIndices,"quadIndices","Indices of the quads contained in the ROI") )
     , f_tetrahedronIndices( initData(&f_tetrahedronIndices,"tetrahedronIndices","Indices of the tetrahedra contained in the ROI") )
+    , f_hexahedronIndices( initData(&f_hexahedronIndices,"hexahedronIndices","Indices of the hexahedra contained in the ROI") )
     , f_pointsInROI( initData(&f_pointsInROI,"pointsInROI","Points contained in the ROI") )
     , f_pointsOutROI( initData(&f_pointsOutROI,"pointsOutROI","Points out of the ROI") )
     , f_edgesInROI( initData(&f_edgesInROI,"edgesInROI","Edges contained in the ROI") )
     , f_edgesOutROI( initData(&f_edgesOutROI,"edgesOutROI","Edges out of the ROI") )
     , f_trianglesInROI( initData(&f_trianglesInROI,"trianglesInROI","Triangles contained in the ROI") )
     , f_trianglesOutROI( initData(&f_trianglesOutROI,"trianglesOutROI","Triangles out of the ROI") )
+    , f_quadsInROI( initData(&f_quadsInROI,"quadsInROI","Quads contained in the ROI") )
+    , f_quadsOutROI( initData(&f_quadsOutROI,"quadsOutROI","Quads out of the ROI") )
     , f_tetrahedraInROI( initData(&f_tetrahedraInROI,"tetrahedraInROI","Tetrahedra contained in the ROI") )
     , f_tetrahedraOutROI( initData(&f_tetrahedraOutROI,"tetrahedraOutROI","Tetrahedra out of the ROI") )
+    , f_hexahedraInROI( initData(&f_hexahedraInROI,"hexahedraInROI","Hexahedra contained in the ROI") )
+    , f_hexahedraOutROI( initData(&f_hexahedraOutROI,"hexahedraOutROI","Hexahedra out of the ROI") )
     , f_nbrborder( initData(&f_nbrborder,(unsigned int)0,"nbrborder","If localIndices option is activated, will give the number of vertices on the border of the ROI (being the n first points of each output Topology). ") )
     , p_localIndices( initData(&p_localIndices,false,"localIndices","If true, will compute local dof indices in topological elements") )
     , p_drawROI( initData(&p_drawROI,false,"drawROI","Draw ROI") )
@@ -173,20 +181,28 @@ void SubsetTopology<DataTypes>::init()
     addInput(&f_X0);
     addInput(&f_edges);
     addInput(&f_triangles);
+    addInput(&f_quads);
     addInput(&f_tetrahedra);
+    addInput(&f_hexahedra);
 
     addOutput(&f_indices);
     addOutput(&f_edgeIndices);
     addOutput(&f_triangleIndices);
+    addOutput(&f_quadIndices);
     addOutput(&f_tetrahedronIndices);
+    addOutput(&f_hexahedronIndices);
     addOutput(&f_pointsInROI);
     addOutput(&f_pointsOutROI);
     addOutput(&f_edgesInROI);
     addOutput(&f_edgesOutROI);
     addOutput(&f_trianglesInROI);
     addOutput(&f_trianglesOutROI);
+    addOutput(&f_quadsInROI);
+    addOutput(&f_quadsOutROI);
     addOutput(&f_tetrahedraInROI);
     addOutput(&f_tetrahedraOutROI);
+    addOutput(&f_hexahedraInROI);
+    addOutput(&f_hexahedraOutROI);
     setDirtyValue();
 }
 
@@ -251,10 +267,36 @@ bool SubsetTopology<DataTypes>::isTriangleInROI(const Triangle &t, unsigned int 
 }
 
 template <class DataTypes>
+bool SubsetTopology<DataTypes>::isQuadInROI(const Quad &t, unsigned int idROI)
+{
+    const VecCoord* x0 = &f_X0.getValue();
+    for (unsigned int i=0; i<4; ++i)
+    {
+        CPos p =  DataTypes::getCPos((*x0)[t[i]]);
+        if (!isPointInROI(p, idROI))
+            return false;
+    }
+    return true;
+}
+
+template <class DataTypes>
 bool SubsetTopology<DataTypes>::isTetrahedronInROI(const Tetra &t, unsigned int idROI)
 {
     const VecCoord* x0 = &f_X0.getValue();
     for (unsigned int i=0; i<4; ++i)
+    {
+        CPos p =  DataTypes::getCPos((*x0)[t[i]]);
+        if (!isPointInROI(p, idROI))
+            return false;
+    }
+    return true;
+}
+
+template <class DataTypes>
+bool SubsetTopology<DataTypes>::isHexahedronInROI(const Hexa &t, unsigned int idROI)
+{
+    const VecCoord* x0 = &f_X0.getValue();
+    for (unsigned int i=0; i<8; ++i)
     {
         CPos p =  DataTypes::getCPos((*x0)[t[i]]);
         if (!isPointInROI(p, idROI))
@@ -349,7 +391,7 @@ void SubsetTopology<DataTypes>::findVertexOnBorder(const Tetra &t, unsigned int 
 template <class DataTypes>
 void SubsetTopology<DataTypes>::update()
 {
-    cleanDirty();
+
     unsigned int ROInum = 0;
     const helper::vector<Vec3>& cen = (centers.getValue());
     const helper::vector<Real>& rad = (radii.getValue());
@@ -378,27 +420,52 @@ void SubsetTopology<DataTypes>::update()
         ROInum = cen.size();
     }
 
-    // Write accessor for topological element indices in ROI
-    SetIndex& indices = *(f_indices.beginEdit());
-    SetIndex& edgeIndices = *(f_edgeIndices.beginEdit());
-    SetIndex& triangleIndices = *(f_triangleIndices.beginEdit());
-    SetIndex& tetrahedronIndices = *f_tetrahedronIndices.beginEdit();
-
 
     // Read accessor for input topology
     helper::ReadAccessor< Data<helper::vector<Edge> > > edges = f_edges;
     helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles = f_triangles;
+    helper::ReadAccessor< Data<helper::vector<Quad> > > quads = f_quads;
     helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
+    helper::ReadAccessor< Data<helper::vector<Hexa> > > hexahedra = f_hexahedra;
+
+    const VecCoord* x0 = &f_X0.getValue();
+
+    d_tetrahedraInput.updateIfDirty();
+
+    // Why are they inputs? Are they used somewhere?
+    direction.updateIfDirty();
+    normal.updateIfDirty();
+    edgeAngle.updateIfDirty();
+    triAngle.updateIfDirty();
+
+
+    cleanDirty();
+
+
+    // Write accessor for topological element indices in ROI
+    SetIndex& indices = *(f_indices.beginWriteOnly());
+    SetIndex& edgeIndices = *(f_edgeIndices.beginWriteOnly());
+    SetIndex& triangleIndices = *(f_triangleIndices.beginWriteOnly());
+    SetIndex& quadIndices = *(f_quadIndices.beginWriteOnly());
+    SetIndex& tetrahedronIndices = *f_tetrahedronIndices.beginWriteOnly();
+    SetIndex& hexahedronIndices = *f_hexahedronIndices.beginWriteOnly();
+
 
     // Write accessor for toplogical element in ROI
-    helper::WriteAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
-    helper::WriteAccessor< Data<VecCoord > > pointsOutROI = f_pointsOutROI;
-    helper::WriteAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
-    helper::WriteAccessor< Data<helper::vector<Edge> > > edgesOutROI = f_edgesOutROI;
-    helper::WriteAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
-    helper::WriteAccessor< Data<helper::vector<Triangle> > > trianglesOutROI = f_trianglesOutROI;
-    helper::WriteAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
-    helper::WriteAccessor< Data<helper::vector<Tetra> > > tetrahedraOutROI = f_tetrahedraOutROI;
+    helper::WriteOnlyAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
+    helper::WriteOnlyAccessor< Data<VecCoord > > pointsOutROI = f_pointsOutROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Edge> > > edgesOutROI = f_edgesOutROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Triangle> > > trianglesOutROI = f_trianglesOutROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Quad> > > quadsInROI = f_quadsInROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Quad> > > quadsOutROI = f_quadsOutROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Tetra> > > tetrahedraOutROI = f_tetrahedraOutROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Hexa> > > hexahedraInROI = f_hexahedraInROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Hexa> > > hexahedraOutROI = f_hexahedraOutROI;
+
+
 
     // Clear lists
     indices.clear();
@@ -409,13 +476,16 @@ void SubsetTopology<DataTypes>::update()
     pointsInROI.clear();
     edgesInROI.clear();
     trianglesInROI.clear();
+    quadsInROI.clear();
     tetrahedraInROI.clear();
+    hexahedraInROI.clear();
     pointsOutROI.clear();
     edgesOutROI.clear();
     trianglesOutROI.clear();
+    quadsOutROI.clear();
     tetrahedraOutROI.clear();
+    hexahedraOutROI.clear();
 
-    const VecCoord* x0 = &f_X0.getValue();
 
     const bool local = p_localIndices.getValue();
     unsigned int cpt_in = 0, cpt_out = 0, cpt_border = 0;
@@ -560,6 +630,40 @@ void SubsetTopology<DataTypes>::update()
         }
     }
 
+    //Quads
+    for(unsigned int i=0 ; i<quads.size() ; i++)
+    {
+        bool inside = false;
+        Quad t = quads[i];
+        for (unsigned int bi=0; bi<ROInum; ++bi)
+        {
+            if (isQuadInROI(t, bi))
+            {
+                if (local) {
+                    t[0] = localIndices[t[0]];
+                    t[1] = localIndices[t[1]];
+                    t[2] = localIndices[t[2]];
+                    t[3] = localIndices[t[3]];
+                }
+                quadIndices.push_back(i);
+                quadsInROI.push_back(t);
+                inside = true;
+                break;
+            }
+        }
+
+        if (!inside)
+        {
+            if (local) {
+                t[0] = localIndices[t[0]];
+                t[1] = localIndices[t[1]];
+                t[2] = localIndices[t[2]];
+                t[3] = localIndices[t[3]];
+            }
+            quadsOutROI.push_back(t);
+        }
+    }
+
     //Tetrahedra
 	if (!d_tetrahedraInput.isSet())
 	{
@@ -651,10 +755,44 @@ void SubsetTopology<DataTypes>::update()
 		}
 	}
 
+
+    //Hexahedra
+    for(unsigned int i=0 ; i<hexahedra.size() ; i++)
+    {
+        bool inside = false;
+        Hexa t = hexahedra[i];
+        for (unsigned int bi=0; bi<ROInum; ++bi)
+        {
+            if (isHexahedronInROI(t, bi))
+            {
+                if (local) {
+                    for(int j=0; j<8; ++j)
+                        t[j] = localIndices[t[j]];
+                }
+                hexahedronIndices.push_back(i);
+                hexahedraInROI.push_back(t);
+                inside = true;
+                break;
+            }
+        }
+
+        if (!inside)
+        {
+            if (local) {
+                for(int j=0; j<8; ++j)
+                    t[j] = localIndices[t[j]];
+            }
+            hexahedraOutROI.push_back(t);
+        }
+    }
+
+
     f_indices.endEdit();
     f_edgeIndices.endEdit();
     f_triangleIndices.endEdit();
+    f_quadIndices.endEdit();
     f_tetrahedronIndices.endEdit();
+    f_hexahedronIndices.endEdit();
     f_nbrborder.endEdit();
 }
 

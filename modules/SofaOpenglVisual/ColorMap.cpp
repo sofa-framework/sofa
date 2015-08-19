@@ -176,14 +176,6 @@ void ColorMap::initOld(const std::string &data)
 
 void ColorMap::init()
 {
-    // Prepare texture for legend
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_1D, texture);
-    //glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
     reinit();
 }
 
@@ -197,7 +189,7 @@ void ColorMap::reinit()
 
     unsigned int nColors = f_paletteSize.getValue();
     if (nColors < 2) {
-        serr << "Pallette size has to be equal or greater than 2.";
+        serr << "Palette size must be greater than or equal to 2.";
         *f_paletteSize.beginEdit() = 2;
         f_paletteSize.endEdit();
         nColors = 2;
@@ -211,216 +203,137 @@ void ColorMap::reinit()
         float step = (2.0f/3.0f)/(nColors-1);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(
-                    hsv2rgb(Color3(i*step, 1.0, 1.0)),
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(hsv2rgb(Color3(i*step, 1.0f, 1.0f)), 1.0f));
         }
-
-     } else if (scheme == "Blue to Red") {
+    } else if (scheme == "Blue to Red") {
         // List the colors
         float step = (2.0f/3.0f)/(nColors-1);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(
-                    hsv2rgb(Color3(2.0f/3.0f - i*step, 1.0, 1.0)),
-                    1.0 // alpha
-                    ));
-		 } 
-		} else if (scheme == "Yellow to Cyan") {
+            entries.push_back(Color(hsv2rgb(Color3(2.0f/3.0f - i*step, 1.0f, 1.0f)), 1.0f));
+        }
+    } else if (scheme == "Yellow to Cyan") {
         // List the colors
         float step = (0.5f - 1.0f/6.0f)/(nColors-1);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(
-                    hsv2rgb(Color3(1.0f/6.0f + i*step, 1.0, 1.0)),
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(hsv2rgb(Color3(1.0f/6.0f + i*step, 1.0f, 1.0f)), 1.0f));
         }
-		} else if (scheme == "Cyan to Yellow") {
+    } else if (scheme == "Cyan to Yellow") {
         // List the colors
         float step = (0.5f - 1.0f/6.0f)/(nColors-1);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(
-                    hsv2rgb(Color3(0.5f-i*step, 1.0, 1.0)),
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(hsv2rgb(Color3(0.5f-i*step, 1.0f, 1.0f)), 1.0f));
         }
-		}else if (scheme == "Red to Yellow") {
+    } else if (scheme == "Red to Yellow") {
 		float step = 1.0f/(nColors);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(
-                    1.0, i*step, 0.0,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(1.0f, i*step, 0.0f, 1.0f));
         }
-		}else if (scheme == "Yellow to Red") {
+    } else if (scheme == "Yellow to Red") {
 		float step = 1.0f/(nColors);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(
-                    1.0, 1.0-i*step, 0.0,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(1.0f, 1.0f-i*step, 0.0f, 1.0f));
         }
-		}else if (scheme == "Yellow to Green") {
+    } else if (scheme == "Yellow to Green") {
 		float step = 1.0f/(nColors);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(
-                    1.0-i*step, 1.0, 0.0,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(1.0f-i*step, 1.0f, 0.0f, 1.0f));
         }
-		}else if (scheme == "Green to Yellow") {
-		float step = 1.0f/(nColors);
+    } else if (scheme == "Green to Yellow") {
+        float step = 1.0f/(nColors);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(
-                    i*step, 1.0, 0.0,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(i*step, 1.0f, 0.0f, 1.0f));
         }
-		}else if (scheme == "Green to Cyan") {
-		float step = 1.0f/(nColors);
+    } else if (scheme == "Green to Cyan") {
+        float step = 1.0f/(nColors);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(
-                    0.0, 1.0, i*step,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(0.0f, 1.0f, i*step, 1.0f));
         }
-		}else if (scheme == "Cyan to Green") {
-		float step = 1.0f/(nColors);
+    } else if (scheme == "Cyan to Green") {
+        float step = 1.0f/(nColors);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(
-                    0.0, 1.0, 1.0-i*step,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(0.0f, 1.0f, 1.0f-i*step, 1.0f));
         }
-		}else if (scheme == "Cyan to Blue") {
-		float step = 1.0f/(nColors);
+    } else if (scheme == "Cyan to Blue") {
+        float step = 1.0f/(nColors);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(
-                    0.0, 1.0-i*step, 1.0,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(0.0f, 1.0f-i*step, 1.0f, 1.0f));
         }
-		}else if (scheme == "Blue to Cyan") {
-		float step = 1.0f/(nColors);
+    } else if (scheme == "Blue to Cyan") {
+        float step = 1.0f/(nColors);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(
-                    0.0, i*step, 1.0,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(0.0f, i*step, 1.0f, 1.0f));
         }
     } else if (scheme == "Red") {
         float step = 1.4f/(nColors);
         for (unsigned int i=0; i<nColors/2; i++)
         {
-            entries.push_back(Color(
-                    0.3f + i*step, 0.0, 0.0,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(0.3f + i*step, 0.0f, 0.0f, 1.0f));
         }
         for (unsigned int i=0; i<(nColors - nColors/2); i++)
         {
-            entries.push_back(Color(
-                    1.0, i*step, i*step,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(1.0f, i*step, i*step, 1.0f));
         }
-
-		} else if (scheme == "RedInv") {
+    } else if (scheme == "RedInv") {
         float step = 1.4f/(nColors);
-		for (unsigned int i=0; i<(nColors - nColors/2); i++)
+        for (unsigned int i=0; i<(nColors - nColors/2); i++)
         {
-            entries.push_back(Color(
-                    1.0, 0.7f-i*step, 0.7f-i*step,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(1.0f, 0.7f-i*step, 0.7f-i*step, 1.0f));
         }
         for (unsigned int i=0; i<nColors/2; i++)
         {
-            entries.push_back(Color(
-                    1.0-i*step, 0.0, 0.0,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(1.0f-i*step, 0.0f, 0.0f, 1.0f));
         }
-
     } else if (scheme == "Green") {
         float step = 1.4f/(nColors);
         for (unsigned int i=0; i<nColors/2; i++)
         {
-            entries.push_back(Color(
-                    0.0, 0.3f + i*step, 0.0,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(0.0f, 0.3f + i*step, 0.0f, 1.0f));
         }
         for (unsigned int i=0; i<(nColors - nColors/2); i++)
         {
-            entries.push_back(Color(
-                    i*step, 1.0, i*step,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(i*step, 1.0f, i*step, 1.0f));
         }
-} else if (scheme == "GreenInv") {
+    } else if (scheme == "GreenInv") {
         float step = 1.4f/(nColors);
-		for (unsigned int i=0; i<(nColors - nColors/2); i++)
+        for (unsigned int i=0; i<(nColors - nColors/2); i++)
         {
-            entries.push_back(Color(
-                    0.7f-i*step, 1.0, 0.7f-i*step,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(0.7f-i*step, 1.0f, 0.7f-i*step, 1.0f));
         }
         for (unsigned int i=0; i<nColors/2; i++)
         {
-            entries.push_back(Color(
-                    0.0, 1.0 - i*step, 0.0,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(0.0f, 1.0f - i*step, 0.0f, 1.0f));
         }
-      
-
     } else if (scheme == "Blue") {
         float step = 1.4f/(nColors);
         for (unsigned int i=0; i<nColors/2; i++)
         {
-            entries.push_back(Color(
-                    0.0, 0.0, 0.3f + i*step,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(0.0f, 0.0f, 0.3f + i*step, 1.0f));
         }
         for (unsigned int i=0; i<(nColors - nColors/2); i++)
         {
-            entries.push_back(Color(
-                    i*step, i*step, 1.0,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(i*step, i*step, 1.0f, 1.0f));
         }
-
-		 } else if (scheme == "BlueInv") {
+    } else if (scheme == "BlueInv") {
         float step = 1.4f/(nColors);
-		 for (unsigned int i=0; i<(nColors - nColors/2); i++)
+        for (unsigned int i=0; i<(nColors - nColors/2); i++)
         {
-            entries.push_back(Color(
-                    0.7f-i*step, 0.7f-i*step, 1.0,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(0.7f-i*step, 0.7f-i*step, 1.0f, 1.0f));
         }
         for (unsigned int i=0; i<nColors/2; i++)
         {
-            entries.push_back(Color(
-                    0.0, 0.0, 1.0 - i*step,
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(0.0f, 0.0f, 1.0f - i*step, 1.0f));
         }
-       
     } else {
         // HSV is the default
         if (scheme != "HSV") {
@@ -431,10 +344,7 @@ void ColorMap::reinit()
         float step = 1.0f/(nColors-1);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(
-                    hsv2rgb(Color3(i*step,1,1)),
-                    1.0 // alpha
-                    ));
+            entries.push_back(Color(hsv2rgb(Color3(i*step,1,1)), 1.0f));
         }
     }
 
@@ -464,16 +374,33 @@ void ColorMap::prepareLegend()
         data[i*3+2] = (unsigned char)(c[2]*255);
     }
 
-    glBindTexture(GL_TEXTURE_1D, texture);
+    if (texture)
+    {
+        glBindTexture(GL_TEXTURE_1D, texture);
 
-    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB, width, 0, GL_RGB, GL_UNSIGNED_BYTE,
-        data);
+        glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB, width, 0, GL_RGB, GL_UNSIGNED_BYTE,
+            data);
+    }
 
     delete[] data;
 }
 
 void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
 {
+    // Prepare texture for legend
+    // crashes on mac in batch mode (no GL context)
+    if (vparams->isSupported(core::visual::API_OpenGL)
+        && !texture)
+    {
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_1D, texture);
+        //glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    }
+
+
     if (!f_showLegend.getValue()) return;
 
     //
@@ -512,16 +439,16 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
     glBegin(GL_QUADS);
 
     glTexCoord1f(1.0);
-    glVertex3f(20+f_legendOffset.getValue().x(), 30+f_legendOffset.getValue().y(), 0.0);
+    glVertex3f(20.0f+f_legendOffset.getValue().x(), 30.0f+f_legendOffset.getValue().y(), 0.0f);
 
     glTexCoord1f(1.0);
-    glVertex3f(30+f_legendOffset.getValue().x(), 30+f_legendOffset.getValue().y(), 0.0);
+    glVertex3f(30.0f+f_legendOffset.getValue().x(), 30.0f+f_legendOffset.getValue().y(), 0.0f);
 
     glTexCoord1f(0.0);
-    glVertex3f(30+f_legendOffset.getValue().x(), 130+f_legendOffset.getValue().y(), 0.0);
+    glVertex3f(30.0f+f_legendOffset.getValue().x(), 130.0f+f_legendOffset.getValue().y(), 0.0f);
 
     glTexCoord1f(0.0);
-    glVertex3f(20+f_legendOffset.getValue().x(), 130+f_legendOffset.getValue().y(), 0.0);
+    glVertex3f(20.0f+f_legendOffset.getValue().x(), 130.0f+f_legendOffset.getValue().y(), 0.0f);
 
     glEnd();
 
@@ -554,7 +481,7 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
 	// else we use black text
 	GLfloat bgcol[4];
 	glGetFloatv(GL_COLOR_CLEAR_VALUE,bgcol);
-	float maxdarkcolor = 0.2f; 
+	float maxdarkcolor = 0.2f;
 	if(bgcol[0] > maxdarkcolor || bgcol[1] > maxdarkcolor || bgcol[2] > maxdarkcolor)
 		textcolor = Color (0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -581,7 +508,7 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
 // Ref: Alvy Ray Smith, Color Gamut Transform Pairs, SIGGRAPH '78
 ColorMap::Color3 ColorMap::hsv2rgb(const Color3 &hsv)
 {
-    Color3 rgb(0.0, 0.0, 0.0);
+    Color3 rgb(0.0f, 0.0f, 0.0f);
 
     float i, f;
     f = modff(hsv[0] * 6.0f, &i);

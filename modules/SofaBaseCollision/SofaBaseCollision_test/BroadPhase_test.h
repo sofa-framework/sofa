@@ -1,5 +1,6 @@
 #ifndef SOFA_STANDARDTEST_BroadPhase_test_H
 #define SOFA_STANDARDTEST_BroadPhase_test_H
+#include "config.h"
 
 #include <SofaMeshCollision/DirectSAP.h>
 #include <gtest/gtest.h>
@@ -19,13 +20,9 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 #endif
 #include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/xml/initXml.h>
 
-#include <sofa/gui/GUIManager.h>
-#include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <SofaComponentMain/init.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
@@ -56,7 +53,6 @@
 #include <SofaMeshCollision/IncrSAP.h>
 #include <sofa/core/CollisionModel.h>
 #include <stdlib.h>
-//#include <sofa/component/collision/TeschnerSpatialHashing.h>
 
 using sofa::core::objectmodel::New;
 using sofa::core::objectmodel::Data;

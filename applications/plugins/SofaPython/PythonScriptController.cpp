@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "PythonScriptController.h"
 #include "PythonMacros.h"
+#include "PythonScriptController.h"
 #include <sofa/core/ObjectFactory.h>
 
 #include "Binding_Base.h"
@@ -82,7 +82,6 @@ void PythonScriptController::loadScript()
 
     // verify that the class is a subclass of PythonScriptController
 
-    //    TODO: PyObject_IsSubclass
     if (1!=PyObject_IsSubclass(m_ScriptControllerClass,(PyObject*)&SP_SOFAPYTYPEOBJECT(PythonScriptController)))
     {
         // LOAD ERROR
@@ -264,7 +263,6 @@ void PythonScriptController::script_onScriptEvent(core::objectmodel::ScriptEvent
         SP_CALL_OBJECTFUNC(const_cast<char*>("onScriptEvent"),const_cast<char*>("(OsO)"),SP_BUILD_PYSPTR(pyEvent->getSender().get()),const_cast<char*>(pyEvent->getEventName().c_str()),pyEvent->getUserData())
     }
 
-    //TODO
 }
 
 void PythonScriptController::script_draw(const core::visual::VisualParams*)

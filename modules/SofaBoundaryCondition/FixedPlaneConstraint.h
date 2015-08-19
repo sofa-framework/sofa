@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_H
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_H
+#include "config.h"
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -101,6 +102,11 @@ public:
     // Implement projectMatrix for assembled solver of compliant
     virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ );
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
+
+	// Implement applyConstraint for direct solvers
+    virtual void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    virtual void applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+
 
     virtual void init();
 

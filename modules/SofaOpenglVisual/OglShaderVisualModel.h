@@ -31,6 +31,7 @@
 
 #ifndef OGLSHADERVISUALMODEL_H_
 #define OGLSHADERVISUALMODEL_H_
+#include "config.h"
 
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaOpenglVisual/OglShader.h>

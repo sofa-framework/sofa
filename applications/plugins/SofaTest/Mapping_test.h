@@ -35,12 +35,14 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneCreator.h>
+#include <sofa/helper/Logger.h>
 
 namespace sofa {
 
 using std::cout;
 using std::endl;
+using helper::Logger;
 
 
 /** @brief Base class for the Mapping tests, with helpers to automatically test applyJ, applyJT, applyDJT and getJs using finite differences.
@@ -117,12 +119,14 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
     static const unsigned char TEST_getJs = 1; ///< testing getJs used in assembly API
     static const unsigned char TEST_getK = 2; ///< testing getK used in assembly API
-    static const unsigned char TEST_applyJT_matrix = 3; ///< testing applyJT on matrices
+    static const unsigned char TEST_applyJT_matrix = 4; ///< testing applyJT on matrices
+    static const unsigned char TEST_applyDJT = 8; ///< testing applyDJT 
     static const unsigned char TEST_ASSEMBLY_API = TEST_getJs | TEST_getK; ///< testing functions used in assembly API getJS getKS
+    static const unsigned char TEST_GEOMETRIC_STIFFNESS = TEST_applyDJT | TEST_getK; ///< testing functions used in assembly API getJS getKS
     unsigned char flags; ///< testing options. (all by default). To be used with precaution. Please implement the missing API in the mapping rather than not testing it.
 
 
-    Mapping_test():deltaRange(1,1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API)
+    Mapping_test():deltaRange(1,1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
         sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -138,7 +142,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         mapping->setModels(inDofs.get(),outDofs.get());
     }
 
-    Mapping_test(std::string fileName):deltaRange(1,1000),errorMax(100),errorFactorDJ(1),flags(TEST_ASSEMBLY_API)
+    Mapping_test(std::string fileName):deltaRange(1,1000),errorMax(100),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
         sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -164,11 +168,25 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     }
 
 
-    /** Returns OutCoord substraction a-b (should return a OutDeriv, but???)
-      */
+    /** Returns OutCoord substraction a-b */
     virtual OutDeriv difference( const OutCoord& a, const OutCoord& b )
     {
         return Out::coordDifference(a,b);
+    }
+
+    virtual OutVecDeriv difference( const OutVecDeriv& a, const OutVecDeriv& b )
+    {
+        if( a.size()!=b.size() ){
+            ADD_FAILURE() << "OutVecDeriv have different sizes";
+            return OutVecDeriv();
+        }
+
+        OutVecDeriv c(a.size());
+        for (size_t i=0; i<a.size() ; ++i)
+        {
+            c[i] = a[i]-b[i];
+        }
+        return c;
     }
 
     /** Possible child force pre-treatment, does nothing by default
@@ -196,12 +214,13 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                           const InVecCoord parentNew,
                           const OutVecCoord expectedChildNew)
     {
-        if( deltaRange.second / errorMax <= s_minDeltaErrorRatio )
+        if( deltaRange.second / errorMax <= g_minDeltaErrorRatio )
             ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
 
-        if( !(flags & TEST_getJs) ) std::cerr<<"WARNING: MappingTest is not testing getJs\n";
-        if( !(flags & TEST_getK) ) std::cerr<<"WARNING: MappingTest is not testing getK\n";
-        if( !(flags & TEST_applyJT_matrix) ) std::cerr<<"WARNING: MappingTest is not testing applyJT on matrices\n";
+        if( !(flags & TEST_getJs) )          Logger::mainlog( Logger::Warning, "getJs is not tested", "MappingTest" );
+        if( !(flags & TEST_getK) )           Logger::mainlog( Logger::Warning, "getK is not tested", "MappingTest" );
+        if( !(flags & TEST_applyJT_matrix) ) Logger::mainlog( Logger::Warning, "applyJT on matrices is not tested", "MappingTest" );
+        if( !(flags & TEST_applyDJT) )       Logger::mainlog( Logger::Warning, "applyDJT is not tested", "MappingTest" );
 
 
         const Real errorThreshold = this->epsilon()*errorMax;
@@ -369,9 +388,9 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             dxc[i] = difference( xc1[i], xc[i] );
         }
 
-        if( this->vectorMaxDiff(dxc,vc)>errorThreshold ){
+        if( this->vectorMaxAbs(difference(dxc,vc))>errorThreshold ){
             succeed = false;
-            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << errorThreshold << endl
+            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) "<<this->vectorMaxAbs(difference(dxc,vc))<<" should be less than  " << errorThreshold << endl
                           << "position change = " << dxc << endl
                           << "velocity        = " << vc << endl;
         }
@@ -394,11 +413,14 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
 
         // ================ test applyDJT()
-        if( this->vectorMaxDiff(dfp,fp12)>errorThreshold*errorFactorDJ ){
-            succeed = false;
-            ADD_FAILURE() << "applyDJT test failed" << endl
-                          << "dfp    = " << dfp << endl
-                          << "fp2-fp = " << fp12 << endl;
+        if( flags & TEST_applyDJT )
+        {
+            if( this->vectorMaxDiff(dfp,fp12)>errorThreshold*errorFactorDJ ){
+                succeed = false;
+                ADD_FAILURE() << "applyDJT test failed" << endl
+                    << "dfp    = " << dfp << endl
+                    << "fp2-fp = " << fp12 << endl;
+            }
         }
 
 

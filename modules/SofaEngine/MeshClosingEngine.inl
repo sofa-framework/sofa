@@ -39,11 +39,11 @@ namespace engine
 template <class DataTypes>
 void MeshClosingEngine<DataTypes>::update()
 {
-    this->cleanDirty();
-
     helper::ReadAccessor<Data< SeqPositions > > pos(this->inputPosition);
     helper::ReadAccessor<Data< SeqTriangles > > tri(this->inputTriangles);
     helper::ReadAccessor<Data< SeqQuads > > qd(this->inputQuads);
+
+    cleanDirty();
 
     helper::WriteOnlyAccessor<Data< SeqPositions > > opos(this->position);
     helper::WriteOnlyAccessor<Data< SeqTriangles > >  otri(this->triangles);
@@ -135,16 +135,6 @@ void MeshClosingEngine<DataTypes>::update()
         }
 }
 
-
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MeshClosingEngine_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_ENGINE_API MeshClosingEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_ENGINE_API MeshClosingEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
-#endif
 
 } // namespace engine
 

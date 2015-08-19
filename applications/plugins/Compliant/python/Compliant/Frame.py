@@ -1,4 +1,3 @@
-import Vec as vec
 import SofaPython.Quaternion as quat
 import Tools
 from Tools import cat as concat
@@ -17,6 +16,7 @@ class Frame:
                         self.rotation = [0, 0, 0, 1]
 
         def insert(self, parent, template='Rigid', **args):
+                self.node = parent
                 return parent.createObject('MechanicalObject',
                                            template = template,
                                            position = str(self),
@@ -45,19 +45,15 @@ class Frame:
 
         def __mul__(self, other):
             res = Frame()
-            res.translation = vec.sum(self.translation,
-                          quat.rotate(self.rotation,
-                                  other.translation))
-            res.rotation = quat.prod( self.rotation,
-                          other.rotation)
+            res.translation = self.translation + quat.rotate(self.rotation, other.translation)
+            res.rotation = quat.prod( self.rotation, other.rotation)
 
             return res
 
         def inv(self):
             res = Frame()
             res.rotation = quat.conj( self.rotation )
-            res.translation = vec.minus( quat.rotate(res.rotation,
-                                 self.translation) )
+            res.translation = - quat.rotate(res.rotation, self.translation)
             return res
 
         def set(self, **kwargs):

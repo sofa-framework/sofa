@@ -22,11 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_INTERACTIONPERFOMER_CPP
-
+#define SOFA_COMPONENT_COLLISION_INTERACTIONPERFORMER_CPP
 #include <SofaUserInteraction/InteractionPerformer.h>
+
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/component.h>
 #include <sofa/helper/Factory.inl>
 
 namespace sofa

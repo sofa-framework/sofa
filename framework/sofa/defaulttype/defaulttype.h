@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_H
-#define SOFA_DEFAULTTYPE_H
+#ifndef SOFA_DEFAULTTYPE_DEFAULTTYPE_H
+#define SOFA_DEFAULTTYPE_DEFAULTTYPE_H
 
 #include <sofa/helper/system/config.h>
 

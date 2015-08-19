@@ -52,6 +52,7 @@
 #include <algorithm>
 #include <iterator>
 #include <sofa/helper/AdvancedTimer.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 namespace sofa
 {
@@ -284,7 +285,7 @@ template <class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::initNeighbourhoodEdges(){}
 
 template <class DataTypes> 
-void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
+void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::MechanicalParams*  mparams , DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
 {
     sofa::helper::AdvancedTimer::stepBegin("addForceStandardTetraFEM");
 
@@ -295,16 +296,26 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
 	unsigned int nbTetrahedra=_topology->getNbTetrahedra();
 
 	tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
-
-
+	helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+	unsigned int nbEdges=_topology->getNbEdges();
+	const vector< topology::Edge> &edgeArray=_topology->getEdges() ;
 	TetrahedronRestInformation *tetInfo;
+	EdgeInformation *einfo;
 
-	assert(this->mstate);
+
 	myposition=x;
 
 	Coord dp[3],x0,sv;
 
 
+	if (mparams->implicit()) {
+		// if implicit solver recompute the stiffness matrix stored at each edge
+		// starts by reseting each matrix to 0
+		for(l=0; l<nbEdges; l++ )edgeInf[l].DfDx.clear();
+	}
+	Matrix3 deformationGradient;
+	Matrix63 matB[4];
+	MatrixSym SPK;
 	for(i=0; i<nbTetrahedra; i++ )
 	{
 		tetInfo=&tetrahedronInf[i];
@@ -319,7 +330,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
 		sv=tetInfo->shapeVector[1];
 		for (k=0;k<3;++k) {
 			for (l=0;l<3;++l) {
-				tetInfo->deformationGradient[k][l]=dp[0][k]*sv[l];
+				deformationGradient[k][l]=dp[0][k]*sv[l];
 			}
 		}
 		for (j=1;j<3;++j) {
@@ -327,40 +338,40 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
 			sv=tetInfo->shapeVector[j+1];
 			for (k=0;k<3;++k) {
 				for (l=0;l<3;++l) {
-					tetInfo->deformationGradient[k][l]+=dp[j][k]*sv[l];
+					deformationGradient[k][l]+=dp[j][k]*sv[l];
 				}
 			}
 		}
-
+		
 		//Compute the matrix strain displacement B 6*3
 		for (int alpha=0; alpha<4; ++alpha){
 			Coord sva=tetInfo->shapeVector[alpha];
 			Matrix63 matBa;
-			matBa[0][0]=tetInfo->deformationGradient[0][0]*sva[0];
-			matBa[0][1]=tetInfo->deformationGradient[1][0]*sva[0];
-			matBa[0][2]=tetInfo->deformationGradient[2][0]*sva[0];
+			matBa[0][0]=deformationGradient[0][0]*sva[0];
+			matBa[0][1]=deformationGradient[1][0]*sva[0];
+			matBa[0][2]=deformationGradient[2][0]*sva[0];
 
-			matBa[2][0]=tetInfo->deformationGradient[0][1]*sva[1];
-			matBa[2][1]=tetInfo->deformationGradient[1][1]*sva[1];
-			matBa[2][2]=tetInfo->deformationGradient[2][1]*sva[1];
+			matBa[2][0]=deformationGradient[0][1]*sva[1];
+			matBa[2][1]=deformationGradient[1][1]*sva[1];
+			matBa[2][2]=deformationGradient[2][1]*sva[1];
 
-			matBa[5][0]=tetInfo->deformationGradient[0][2]*sva[2];
-			matBa[5][1]=tetInfo->deformationGradient[1][2]*sva[2];
-			matBa[5][2]=tetInfo->deformationGradient[2][2]*sva[2];
+			matBa[5][0]=deformationGradient[0][2]*sva[2];
+			matBa[5][1]=deformationGradient[1][2]*sva[2];
+			matBa[5][2]=deformationGradient[2][2]*sva[2];
 
-			matBa[1][0]=(tetInfo->deformationGradient[0][0]*sva[1]+tetInfo->deformationGradient[0][1]*sva[0]);
-			matBa[1][1]=(tetInfo->deformationGradient[1][0]*sva[1]+tetInfo->deformationGradient[1][1]*sva[0]);
-			matBa[1][2]=(tetInfo->deformationGradient[2][0]*sva[1]+tetInfo->deformationGradient[2][1]*sva[0]);
+			matBa[1][0]=(deformationGradient[0][0]*sva[1]+deformationGradient[0][1]*sva[0]);
+			matBa[1][1]=(deformationGradient[1][0]*sva[1]+deformationGradient[1][1]*sva[0]);
+			matBa[1][2]=(deformationGradient[2][0]*sva[1]+deformationGradient[2][1]*sva[0]);
 
-			matBa[3][0]=(tetInfo->deformationGradient[0][2]*sva[0]+tetInfo->deformationGradient[0][0]*sva[2]);
-			matBa[3][1]=(tetInfo->deformationGradient[1][2]*sva[0]+tetInfo->deformationGradient[1][0]*sva[2]);
-			matBa[3][2]=(tetInfo->deformationGradient[2][2]*sva[0]+tetInfo->deformationGradient[2][0]*sva[2]);
+			matBa[3][0]=(deformationGradient[0][2]*sva[0]+deformationGradient[0][0]*sva[2]);
+			matBa[3][1]=(deformationGradient[1][2]*sva[0]+deformationGradient[1][0]*sva[2]);
+			matBa[3][2]=(deformationGradient[2][2]*sva[0]+deformationGradient[2][0]*sva[2]);
 
-			matBa[4][0]=(tetInfo->deformationGradient[0][1]*sva[2]+tetInfo->deformationGradient[0][2]*sva[1]);
-			matBa[4][1]=(tetInfo->deformationGradient[1][1]*sva[2]+tetInfo->deformationGradient[1][2]*sva[1]);
-			matBa[4][2]=(tetInfo->deformationGradient[2][1]*sva[2]+tetInfo->deformationGradient[2][2]*sva[1]);
+			matBa[4][0]=(deformationGradient[0][1]*sva[2]+deformationGradient[0][2]*sva[1]);
+			matBa[4][1]=(deformationGradient[1][1]*sva[2]+deformationGradient[1][2]*sva[1]);
+			matBa[4][2]=(deformationGradient[2][1]*sva[2]+deformationGradient[2][2]*sva[1]);
 
-			tetInfo->matB[alpha]=matBa;
+			matB[alpha]=matBa;
 		}
 
 
@@ -368,9 +379,9 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
 		for (k=0;k<3;++k) {
 			for (l=k;l<3;++l) {
 				//	if (l>=k) {
-				tetInfo->deformationTensor(k,l)=(tetInfo->deformationGradient(0,k)*tetInfo->deformationGradient(0,l)+
-					tetInfo->deformationGradient(1,k)*tetInfo->deformationGradient(1,l)+
-					tetInfo->deformationGradient(2,k)*tetInfo->deformationGradient(2,l));
+				tetInfo->deformationTensor(k,l)=(deformationGradient(0,k)*deformationGradient(0,l)+
+					deformationGradient(1,k)*deformationGradient(1,l)+
+					deformationGradient(2,k)*deformationGradient(2,l));
 				//	}
 				//	else 
 				//		tetInfo->deformationTensor[k][l]=tetInfo->deformationTensor[l][k];
@@ -391,12 +402,57 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
 		tetInfo->J = dot( areaVec, dp[0] ) * tetInfo->volScale;
 		tetInfo->trC = (Real)( tetInfo->deformationTensor(0,0) + tetInfo->deformationTensor(1,1) + tetInfo->deformationTensor(2,2));
 		//tetInfo->strainEnergy=myMaterial->getStrainEnergy(tetInfo,globalParameters); // to uncomment for test derivatives
-		tetInfo->SPKTensorGeneral.clear();
-		MatrixSym SPK;
+	//	tetInfo->SPKTensorGeneral.clear();
+		SPK.clear();
 		myMaterial->deriveSPKTensor(tetInfo,globalParameters,SPK); // calculate the SPK tensor of the chosen material
-		tetInfo->SPKTensorGeneral=SPK;
+		//tetInfo->SPKTensorGeneral=SPK;
 		for(l=0;l<4;++l){
-			f[ta[l]]-=tetInfo->matB[l].transposed()*SPK*tetInfo->restVolume;
+			f[ta[l]]-=matB[l].transposed()*SPK*tetInfo->restVolume;
+		}
+		if (mparams->implicit()) {
+			// if implicit solver then computes the stifffness on each edge
+			 core::topology::BaseMeshTopology::EdgesInTetrahedron te=_topology->getEdgesInTetrahedron(i);
+
+			/// describe the jth edge index of tetrahedron i no i 
+			for(j=0;j<6;j++) {
+				einfo= &edgeInf[te[j]];
+				topology::Edge e=_topology->getLocalEdgesInTetrahedron(j);
+
+				k=e[0];
+				l=e[1];
+				if (edgeArray[te[j]][0]!=ta[k]) {
+					k=e[1];
+					l=e[0];
+				}
+				Matrix3 &edgeDfDx = einfo->DfDx;
+
+
+				Coord svl=tetInfo->shapeVector[l];
+				Coord svk=tetInfo->shapeVector[k];
+
+				Matrix3  M, N;
+				Matrix6 outputTensor;
+				N.clear();
+
+				// Calculates the dS/dC tensor 6*6
+				myMaterial->ElasticityTensor(tetInfo,globalParameters,outputTensor);
+				Matrix63 mBl=matB[l];
+				mBl[1][0]/=2;mBl[1][1]/=2;mBl[1][2]/=2;mBl[3][0]/=2;mBl[3][1]/=2;mBl[3][2]/=2;mBl[4][0]/=2;mBl[4][1]/=2;mBl[4][2]/=2;
+
+				N=(matB[k].transposed()*outputTensor*mBl);
+
+				//Now M
+				Real productSD=0;
+
+				Coord vectSD=SPK*svk;
+				productSD=dot(vectSD,svl);
+				M[0][1]=M[0][2]=M[1][0]=M[1][2]=M[2][0]=M[2][1]=0;
+				M[0][0]=M[1][1]=M[2][2]=(Real)productSD;
+
+				edgeDfDx += (M+N.transposed())*tetInfo->restVolume;
+
+
+			}// end of for j				
 		}
 	}
 
@@ -404,7 +460,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
 	/// indicates that the next call to addDForce will need to update the stiffness matrix
 	updateMatrix=true;
 	tetrahedronInfo.endEdit();
-
+	edgeInfo.endEdit();
 	d_f.endEdit();
 
     sofa::helper::AdvancedTimer::stepEnd("addForceStandardTetraFEM");
@@ -425,11 +481,11 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 	const vector< topology::Edge> &edgeArray=_topology->getEdges() ;
 
 	helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
-	tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+//	tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
 	EdgeInformation *einfo;
 
-
+	/*
 	/// if the  matrix needs to be updated
 	if (updateMatrix) {
 
@@ -493,7 +549,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 		updateMatrix=false;
 	}// end of if
 
-
+	*/
 	/// performs matrix vector computation
 	Deriv deltax;	Deriv dv0,dv1;
 
@@ -515,13 +571,67 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 
 	}
 	edgeInfo.endEdit();
-	tetrahedronInfo.endEdit();
+//	tetrahedronInfo.endEdit();
 	d_df.beginEdit();
 
     sofa::helper::AdvancedTimer::stepEnd("addDForceStandardTetraFEM");
 }
 
+template<class DataTypes>
+void  StandardTetrahedralFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal kFact, unsigned int &offset)
+{
+	unsigned int nbEdges=_topology->getNbEdges();
+	const vector< Edge> &edgeArray=_topology->getEdges() ;
+    edgeInformationVector& edgeInf = *(edgeInfo.beginEdit());
+	EdgeInformation *einfo;
+	unsigned int i,j,N0, N1, l;
+	Index noeud0, noeud1;
+	if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,Real> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,Real> > * >(mat))
+	{
+		int offd3 = offset/3;
+			
+		for(l=0; l<nbEdges; l++ )
+		{
+			einfo=&edgeInf[l];
+			noeud0=edgeArray[l][0];
+			noeud1=edgeArray[l][1];
+			N0 = offd3+noeud0;
+			N1 = offd3+noeud1;
+			Matrix3 stiff= einfo->DfDx*kFact;
+			Matrix3 stiffTransposed= einfo->DfDx.transposed()*kFact;
 
+			*crsmat->wbloc(N0,N0,true) += stiffTransposed;
+			*crsmat->wbloc(N1,N1,true) += stiff;
+			*crsmat->wbloc(N0,N1,true) -= stiffTransposed;
+			*crsmat->wbloc(N1,N0,true) -= stiff;
+		}
+	} else {
+		for(l=0; l<nbEdges; l++ )
+		{
+
+			einfo=&edgeInf[l];
+			noeud0=edgeArray[l][0];
+			noeud1=edgeArray[l][1];
+			N0 = offset+3*noeud0;
+			N1 = offset+3*noeud1;
+
+			for (i=0; i<3; i++)
+			{
+				for(j=0; j<3; j++)
+				{
+
+					mat->add(N0+i, N0+j,  einfo->DfDx[j][i]*kFact);
+					mat->add(N0+i, N1+j, - einfo->DfDx[j][i]*kFact);
+					mat->add(N1+i, N0+j, - einfo->DfDx[i][j]*kFact);
+					mat->add(N1+i, N1+j, + einfo->DfDx[i][j]*kFact);
+
+				}
+			}
+
+		}
+	}
+	edgeInfo.endEdit();
+}
 
 template<class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
@@ -540,7 +650,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::draw(const core::visual::Visua
 #endif /* SOFA_NO_OPENGL */
 }
 
-
+/*
 template<class DataTypes>
 defaulttype::Mat<3,3,double> StandardTetrahedralFEMForceField<DataTypes>::getPhi(int TetrahedronIndex)
 {
@@ -550,7 +660,7 @@ defaulttype::Mat<3,3,double> StandardTetrahedralFEMForceField<DataTypes>::getPhi
 	return tetInfo->deformationGradient;
 
 }
-
+*/
 template<class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
 {

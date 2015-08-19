@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 // Author: Hadrien Courtecuisse
-
+#define SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_CPP
 #include <SofaSparseSolver/SparseLDLSolver.inl>
 #include <sofa/core/ObjectFactory.h>
 

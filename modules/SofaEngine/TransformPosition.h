@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_H
 #define SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_H
+#include "config.h"
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -33,7 +34,6 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -156,7 +156,7 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_ENGINE)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_ENGINE_API TransformPosition<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_SUBSETCONTACTMAPPER_H
 #define SOFA_COMPONENT_COLLISION_SUBSETCONTACTMAPPER_H
+#include "config.h"
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/Factory.h>
@@ -102,7 +103,7 @@ public:
     int addPoint(const Coord& P, int index, Real&)
     {
         int i = nbp++;
-        if ((int)outmodel->read(core::ConstVecCoordId::position())->getValue().size() <= i)
+        if ((int)outmodel->getSize() <= i)
             outmodel->resize(i+1);
         if (mapping)
         {

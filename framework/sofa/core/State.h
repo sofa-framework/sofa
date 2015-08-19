@@ -158,7 +158,7 @@ public:
     virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CORE)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_STATE_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API State<defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API State<defaulttype::Vec2dTypes>;

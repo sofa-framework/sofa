@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDTRIANGLESETTOPOLOGYALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_MANIFOLDTRIANGLESETTOPOLOGYALGORITHMS_H
+#include <ManifoldTopologies/config.h>
 
 #include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>
 

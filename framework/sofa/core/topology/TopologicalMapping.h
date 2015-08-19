@@ -25,7 +25,7 @@
 #ifndef SOFA_CORE_TOPOLOGY_TOPOLOGICALMAPPING_H
 #define SOFA_CORE_TOPOLOGY_TOPOLOGICALMAPPING_H
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <vector>
 #include <string>
 #include <iostream>
@@ -134,9 +134,8 @@ public:
 
     /// Pre-construction check method called by ObjectFactory.
     ///
-    /// This implementation read the object1 and object2 attributes and check
-    /// if they are compatible with the input and output topology types of this
-    /// mapping.
+    /// This implementation reads the "input" and "output" attributes and checks
+    /// that the corresponding objects exist, and are not the same object.
     template<class T>
     static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
@@ -161,13 +160,13 @@ public:
 
         if (stin == NULL)
         {
-            //context->serr << "Cannot create "<<className(obj)<<" as input model is missing or invalid." << context->sendl;
+            context->serr << "Cannot create " << className(obj) << " as input model is missing or invalid." << context->sendl;
             return false;
         }
 
         if (stout == NULL)
         {
-            //context->serr << "Cannot create "<<className(obj)<<" as output model is missing or invalid." << context->sendl;
+            context->serr << "Cannot create " << className(obj) <<" as output model is missing or invalid." << context->sendl;
             return false;
         }
 

@@ -24,9 +24,10 @@
 ******************************************************************************/
 #include <sofa/helper/io/TriangleLoader.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/Locale.h>
 
-#include <assert.h>
-#include <stdlib.h>
+#include <cassert>
+#include <cstdlib>
 #include <iostream>
 #include <vector>
 #include <sofa/defaulttype/Vec.h>
@@ -76,6 +77,9 @@ bool TriangleLoader::load(const char *filename)
 
 void TriangleLoader::loadTriangles(FILE *file)
 {
+    // Make sure that fscanf() uses a dot '.' as the decimal separator.
+    helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
+
     assert (file != NULL);
 
     char buf[128];

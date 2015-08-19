@@ -24,9 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_ATTACHBODYBUTTON_H
 #define SOFA_COMPONENT_CONFIGURATIONSETTING_ATTACHBODYBUTTON_H
+#include "config.h"
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/component/component.h>
 #include <SofaGraphComponent/MouseButtonSetting.h>
 
 namespace sofa

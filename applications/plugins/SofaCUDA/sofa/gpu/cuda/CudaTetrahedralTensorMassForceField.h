@@ -62,9 +62,25 @@ template <>
 void TetrahedralTensorMassForceField<gpu::cuda::CudaVec3dTypes>::initNeighbourhoodPoints();
 #endif
 
-int TetrahedralTensorMassForceField_nbMaxEdgesPerNode;
-sofa::gpu::cuda::CudaVector<int> TetrahedralTensorMassForceField_neighbourhoodPoints;
-sofa::gpu::cuda::CudaVector<float> TetrahedralTensorMassForceField_contribEdge;
+inline int& TetrahedralTensorMassForceField_nbMaxEdgesPerNode()
+{
+	static int nbMaxEdgesPerNode = 0;
+	return nbMaxEdgesPerNode;
+}
+
+// WARNING: we do the following because we cannot instantiate a CudaVector (calls cuda functions) during the load of the dynamic library on Windows (its a bug leading to a stale)
+
+inline sofa::gpu::cuda::CudaVector<int>& TetrahedralTensorMassForceField_neighbourhoodPoints()
+{
+	static sofa::gpu::cuda::CudaVector<int> neighbourhoodPoints;
+	return neighbourhoodPoints;
+}
+
+inline sofa::gpu::cuda::CudaVector<float>& TetrahedralTensorMassForceField_contribEdge()
+{
+	static sofa::gpu::cuda::CudaVector<float> contribEdge;
+	return contribEdge;
+}
 
 } // namespace forcefield
 } // namespace component

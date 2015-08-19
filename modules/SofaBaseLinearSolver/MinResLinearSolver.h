@@ -22,8 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_MinResLinearSolver_H
-#define SOFA_COMPONENT_LINEARSOLVER_MinResLinearSolver_H
+#ifndef SOFA_COMPONENT_LINEARSOLVER_MINRESLINEARSOLVER_H
+#define SOFA_COMPONENT_LINEARSOLVER_MINRESLINEARSOLVER_H
+#include "config.h"
 
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 
@@ -76,7 +77,7 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_LINEAR_SOLVER)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_LINEARSOLVER_MINRESLINEARSOLVER_CPP)
 
 extern template class SOFA_BASE_LINEAR_SOLVER_API MinResLinearSolver< GraphScatteredMatrix, GraphScatteredVector >;
 extern template class SOFA_BASE_LINEAR_SOLVER_API MinResLinearSolver< FullMatrix<double>, FullVector<double> >;

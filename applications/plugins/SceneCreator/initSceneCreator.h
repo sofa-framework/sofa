@@ -34,8 +34,4 @@
 #define SOFA_SceneCreator_API  SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-/** \mainpage
-  This is a the starting page of the plugin documentation, defined in file initSceneCreator.h
-  */
-
 #endif // INITSceneCreator_H

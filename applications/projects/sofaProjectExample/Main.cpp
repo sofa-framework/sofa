@@ -25,14 +25,12 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <SofaGraphComponent/Gravity.h>
-#include <sofa/component/contextobject/CoordinateSystem.h>
-#include <sofa/core/loader/MeshLoader.h>
+#include <SofaLoader/MeshGmshLoader.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaBoundaryCondition/ConstantForceField.h>
 #include <SofaSimpleFem/HexahedronFEMForceField.h>
 #include <SofaDeformable/QuadBendingSprings.h>
-#include <sofa/component/container/MeshLoader.h>
 #include <SofaBoundaryCondition/FixedConstraint.h>
 
 // solvers
@@ -44,13 +42,16 @@
 #include <SofaBaseCollision/BruteForceDetection.h>
 #include <SofaBaseCollision/NewProximityIntersection.h>
 #include <SofaBaseCollision/DefaultContactManager.h>
-#include <sofa/component/collision/TreeCollisionGroupManager.h>
+#include <SofaMiscCollision/DefaultCollisionGroupManager.h>
+#include <SofaMeshCollision/TriangleModel.h>
 
 //#include <sofa/component/typedef/Sofa_typedef.h>
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
+#include <SofaComponentMain/init.h>
 
 #include <sofa/core/objectmodel/Context.h>
+
 
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
@@ -59,6 +60,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/glut.h>
 
+#include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
@@ -81,7 +83,7 @@ using sofa::component::collision::DefaultPipeline;
 using sofa::component::collision::BruteForceDetection;
 using sofa::component::collision::NewProximityIntersection;
 using sofa::component::collision::DefaultContactManager;
-using sofa::component::collision::TreeCollisionGroupManager;
+using sofa::component::collision::DefaultCollisionGroupManager;
 using sofa::component::collision::TriangleModel;
 
 // solvers
@@ -103,9 +105,12 @@ using sofa::component::forcefield::HexahedronFEMForceField;
 // visual
 using sofa::component::visualmodel::OglModel;
 using sofa::component::mapping::BarycentricMapping;
+using sofa::component::loader::MeshGmshLoader;
+
 using sofa::core::Mapping;
 using sofa::core::behavior::MechanicalState;
 using sofa::core::State;
+using sofa::core::objectmodel::New;
 using sofa::defaulttype::ExtVectorTypes;
 
 using sofa::component::topology::MeshTopology;
@@ -114,46 +119,47 @@ using sofa::component::projectiveconstraintset::FixedConstraint;
 int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
+    sofa::simulation::tree::init();
     sofa::helper::parse("This is a SOFA application.")
     (argc,argv);
-
+    sofa::component::init();
     sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
 
     // The graph root node : gravity already exists in a GNode by default
-    GNode* groot = new GNode;
+    GNode::SPtr groot = New<GNode>();
     groot->setName( "root" );
-    groot->setGravityInWorld( Vec3dTypes::Coord(0,0,0) );
+    groot->setGravity( Vec3dTypes::Coord(0,0,0) );
     groot->setDt(0.02);
 
     /*
      * collision pipeline: instead of calling ObjectCreator
      */
     // collision pipeline
-    DefaultPipeline* collisionPipeline = new DefaultPipeline;
+    DefaultPipeline::SPtr collisionPipeline = New<DefaultPipeline>();
     collisionPipeline->setName("Collision Pipeline");
     groot->addObject(collisionPipeline);
 
     // collision detection system
-    BruteForceDetection* collisionDetection = new BruteForceDetection;
+    BruteForceDetection::SPtr collisionDetection = New<BruteForceDetection>();
     collisionDetection->setName("Collision Detection");
     groot->addObject(collisionDetection);
 
     // component to detection intersection
-    NewProximityIntersection* detectionProximity = new NewProximityIntersection;
+    NewProximityIntersection::SPtr detectionProximity = New<NewProximityIntersection>();
     detectionProximity->setName("Detection Proximity");
     detectionProximity->setAlarmDistance(0.3);
     detectionProximity->setContactDistance(0.2);
     groot->addObject(detectionProximity);
 
     // contact manager
-    DefaultContactManager* contactManager = new DefaultContactManager;
+    DefaultContactManager::SPtr contactManager = New<DefaultContactManager>();
     contactManager->setName("Contact Manager");
     contactManager->setDefaultResponseType("default");
     groot->addObject(contactManager);
 
-    // tree collision group
-    TreeCollisionGroupManager* collisionGroupManager = new TreeCollisionGroupManager;
+    // collision group
+    DefaultCollisionGroupManager::SPtr collisionGroupManager = New<DefaultCollisionGroupManager>();
     collisionGroupManager->setName("Collision Group Manager");
     groot->addObject(collisionGroupManager);
 
@@ -162,18 +168,18 @@ int main(int argc, char** argv)
     /*
      * Sub nodes: DRE
      */
-    GNode* dreNode = new GNode;
+    GNode::SPtr dreNode = New<GNode>();
     dreNode->setName("DRE");
 
 
-    GNode* cylNode = new GNode;
+    GNode::SPtr cylNode = New<GNode>();
     cylNode->setName("Cylinder");
 
 
     // solvers
     typedef CGLinearSolver<GraphScatteredMatrix, GraphScatteredVector> CGLinearSolverGraph;
-    EulerImplicitSolver* implicitSolver = new EulerImplicitSolver;
-    CGLinearSolverGraph* cgLinearSolver = new CGLinearSolverGraph;
+    EulerImplicitSolver::SPtr implicitSolver = New<EulerImplicitSolver>();
+    CGLinearSolverGraph::SPtr cgLinearSolver = New<CGLinearSolverGraph>();
 
     implicitSolver->setName("eulerImplicitSolver");
     implicitSolver->f_rayleighStiffness.setValue(0.01);
@@ -188,7 +194,7 @@ int main(int argc, char** argv)
 
 
     // sparse grid topology
-    sofa::component::topology::SparseGridTopology* sparseGridTopology = new sofa::component::topology::SparseGridTopology;
+    sofa::component::topology::SparseGridTopology::SPtr sparseGridTopology = New<sofa::component::topology::SparseGridTopology>();
     sparseGridTopology->setName("SparseGrid Topology");
     std::string topologyFilename = "mesh/truthcylinder1.obj";
     sparseGridTopology->load(topologyFilename.c_str());
@@ -197,7 +203,7 @@ int main(int argc, char** argv)
 
     // mechanical object
     typedef MechanicalObject< Vec3dTypes > MechanicalObject3d;
-    MechanicalObject3d* mechanicalObject = new MechanicalObject3d;
+    MechanicalObject3d::SPtr mechanicalObject = New<MechanicalObject3d>();
     mechanicalObject->setTranslation(0,0,0);
     mechanicalObject->setRotation(0,0,0);
     mechanicalObject->setScale(1,1,1);
@@ -205,13 +211,13 @@ int main(int argc, char** argv)
 
     // mass
     typedef UniformMass< Vec3dTypes,double > UniformMass3d;
-    UniformMass3d* uniformMass = new UniformMass3d;
+    UniformMass3d::SPtr uniformMass = New<UniformMass3d>();
     uniformMass->setTotalMass(5);
 
 
     // hexahedron fem forcefield
     typedef HexahedronFEMForceField< Vec3dTypes > HexahedronFEMForceField3d;
-    HexahedronFEMForceField3d* hexaFEMFF = new HexahedronFEMForceField3d;
+    HexahedronFEMForceField3d::SPtr hexaFEMFF = New<HexahedronFEMForceField3d>();
     hexaFEMFF->setName("HexahedronFEM Forcefield");
     hexaFEMFF->setMethod(HexahedronFEMForceField3d::POLAR);
     hexaFEMFF->setPoissonRatio(0.3);
@@ -220,16 +226,15 @@ int main(int argc, char** argv)
 
     // quad bending springs
     typedef sofa::component::interactionforcefield::QuadBendingSprings< Vec3dTypes > QuadBendingSprings3d;
-    QuadBendingSprings3d* quadBendingSprings = new QuadBendingSprings3d;
+    QuadBendingSprings3d::SPtr quadBendingSprings = New<QuadBendingSprings3d>();
     quadBendingSprings->setName("QuadBending springs");
     quadBendingSprings->setStiffness(1000);
     quadBendingSprings->setDamping(1);
-    quadBendingSprings->setObject1(mechanicalObject);
-
+    quadBendingSprings->setObject1(mechanicalObject.get());
 
     // fixed constraint
     typedef FixedConstraint< StdVectorTypes<Vec<3,double>,Vec<3,double>,double> > FixedConstraint3d;
-    FixedConstraint3d* fixedConstraints = new FixedConstraint3d;
+    FixedConstraint3d::SPtr fixedConstraints = New<FixedConstraint3d>();
     fixedConstraints->setName("Box Constraints");
     fixedConstraints->addConstraint(0);
     fixedConstraints->addConstraint(1); fixedConstraints->addConstraint(2); fixedConstraints->addConstraint(6); fixedConstraints->addConstraint(12); fixedConstraints->addConstraint(17); fixedConstraints->addConstraint(21); fixedConstraints->addConstraint(22);
@@ -243,10 +248,10 @@ int main(int argc, char** argv)
 
 
     // visual node
-    GNode* cylVisualNode = new GNode;
+    GNode::SPtr cylVisualNode = New<GNode>();
     cylVisualNode->setName("Cylinder Visual");
 
-    OglModel* cylOglModel = new OglModel;
+    OglModel::SPtr cylOglModel = New<OglModel>();
     cylOglModel->setName("Visual");
     std::string visualFilename = "mesh/truthcylinder1.obj";
     cylOglModel->setFilename(DataRepository.getFile(visualFilename).c_str());
@@ -254,7 +259,7 @@ int main(int argc, char** argv)
 
 
     typedef BarycentricMapping< Vec3dTypes, ExtVec3fTypes > BarycentricMapping3d_to_Ext3f;
-    BarycentricMapping3d_to_Ext3f* barycentricMapping = new BarycentricMapping3d_to_Ext3f(mechanicalObject, cylOglModel);
+    BarycentricMapping3d_to_Ext3f::SPtr barycentricMapping = New<BarycentricMapping3d_to_Ext3f>(mechanicalObject.get(), cylOglModel.get());
     barycentricMapping->setName("Barycentric");
     //barycentricMapping->setPathInputObject("../..");
     //barycentricMapping->setPathOutputObject("Visual");
@@ -263,22 +268,22 @@ int main(int argc, char** argv)
 
 
     // collision node
-    GNode* cylCollisionNode = new GNode;
+    GNode::SPtr cylCollisionNode = New<GNode>();
     cylCollisionNode->setName("Cylinder Collision");
 
-    sofa::component::container::MeshLoader* cylSurfMeshLoader = new sofa::component::container::MeshLoader;
+    MeshGmshLoader::SPtr cylSurfMeshLoader = New<MeshGmshLoader>();
     std::string collisionFilename = "mesh/truthcylinder1.msh";
     cylSurfMeshLoader->setFilename(DataRepository.getFile(collisionFilename).c_str());
 
-    MeshTopology* cylSurfaceTopology = new MeshTopology;
+    MeshTopology::SPtr cylSurfaceTopology = New<MeshTopology>();
 
 
-    MechanicalObject3d* cylSurfMechanicalObject = new MechanicalObject3d;
+    MechanicalObject3d::SPtr cylSurfMechanicalObject = New<MechanicalObject3d>();
 
-    TriangleModel* triangleModel = new TriangleModel;
+    TriangleModel::SPtr triangleModel = New<TriangleModel>();
 
     typedef BarycentricMapping< Vec3dTypes, Vec3dTypes > BarycentricMechanicalMapping3d_to_3d;
-    BarycentricMechanicalMapping3d_to_3d* cylSurfBarycentricMapping = new BarycentricMechanicalMapping3d_to_3d(mechanicalObject, cylSurfMechanicalObject);
+    BarycentricMechanicalMapping3d_to_3d::SPtr cylSurfBarycentricMapping = New<BarycentricMechanicalMapping3d_to_3d>(mechanicalObject.get(), cylSurfMechanicalObject.get());
     //cylSurfBarycentricMapping->setPathInputObject("../..");
     //cylSurfBarycentricMapping->setPathOutputObject("..");
 
@@ -291,8 +296,7 @@ int main(int argc, char** argv)
     cylCollisionNode->addObject(cylSurfMechanicalObject);
     cylCollisionNode->addObject(triangleModel);
     cylCollisionNode->addObject(cylSurfBarycentricMapping);
-    quadBendingSprings->setObject2(cylSurfMechanicalObject);
-
+    quadBendingSprings->setObject2(cylSurfMechanicalObject.get());
 
     cylNode->addObject(implicitSolver);
     cylNode->addObject(cgLinearSolver);
@@ -314,17 +318,18 @@ int main(int argc, char** argv)
 
 
     // Init the scene
-    sofa::simulation::tree::getSimulation()->init(groot);
+    sofa::simulation::tree::getSimulation()->init(groot.get());
     groot->setAnimate(false);
-    groot->setShowNormals(false);
-    groot->setShowInteractionForceFields(false);
-    groot->setShowMechanicalMappings(false);
-    groot->setShowCollisionModels(false);
-    groot->setShowBoundingCollisionModels(false);
-    groot->setShowMappings(false);
-    groot->setShowForceFields(true);
-    groot->setShowWireFrame(true);
-    groot->setShowVisualModels(true);
+
+    // groot->setShowNormals(false);
+    // groot->setShowInteractionForceFields(false);
+    // groot->setShowMechanicalMappings(false);
+    // groot->setShowCollisionModels(false);
+    // groot->setShowBoundingCollisionModels(false);
+    // groot->setShowMappings(false);
+    // groot->setShowForceFields(true);
+    // groot->setShowWireFrame(true);
+    // groot->setShowVisualModels(true);
 
 
 
@@ -332,6 +337,6 @@ int main(int argc, char** argv)
     // Run the main loop
     sofa::gui::GUIManager::MainLoop(groot);
 
+    sofa::simulation::tree::cleanup();
     return 0;
-
 }

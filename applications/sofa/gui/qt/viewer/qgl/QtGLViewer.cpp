@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "viewer/qgl/QtGLViewer.h"
+#include "QtGLViewer.h"
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/thread/CTime.h>
@@ -44,7 +44,7 @@
 #include <sofa/helper/system/glut.h>
 #include <sofa/gui/BaseGUI.h>
 #include <qevent.h>
-#include "GenGraphForm.h"
+#include <sofa/gui/qt/GenGraphForm.h>
 
 #include <sofa/helper/gl/glfont.h>
 #include <sofa/helper/gl/RAII.h>
@@ -469,7 +469,7 @@ void QtGLViewer::DrawBox(Real* minBBox, Real* maxBBox, Real r)
 void QtGLViewer::DrawXYPlane(double zo, double xmin, double xmax, double ymin,
         double ymax, double step)
 {
-    register double x, y;
+    /*register*/ double x, y;
 
     Enable<GL_DEPTH_TEST> depth;
 
@@ -498,7 +498,7 @@ void QtGLViewer::DrawXYPlane(double zo, double xmin, double xmax, double ymin,
 void QtGLViewer::DrawYZPlane(double xo, double ymin, double ymax, double zmin,
         double zmax, double step)
 {
-    register double y, z;
+    /*register*/ double y, z;
     Enable<GL_DEPTH_TEST> depth;
 
     glBegin(GL_LINES);
@@ -527,7 +527,7 @@ void QtGLViewer::DrawYZPlane(double xo, double ymin, double ymax, double zmin,
 void QtGLViewer::DrawXZPlane(double yo, double xmin, double xmax, double zmin,
         double zmax, double step)
 {
-    register double x, z;
+    /*register*/ double x, z;
     Enable<GL_DEPTH_TEST> depth;
 
     glBegin(GL_LINES);
@@ -584,6 +584,8 @@ void QtGLViewer::DrawLogo()
     {
         h = texLogo->getImage()->getHeight();
         w = texLogo->getImage()->getWidth();
+//        h = _H;
+//        w = _W;
     }
     else return;
 

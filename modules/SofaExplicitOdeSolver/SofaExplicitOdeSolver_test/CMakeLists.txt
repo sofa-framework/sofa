@@ -12,6 +12,7 @@ set(SOURCE_FILES
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${RC_FILES} ${PYTHON_FILES})
 
 AddLinkerDependencies(
+    SofaGTestMain
     SofaTest
 )
 

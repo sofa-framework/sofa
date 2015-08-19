@@ -24,13 +24,13 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_H
 #define SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_H
+#include "config.h"
 
 #include <SofaHaptics/MechanicalStateForceFeedback.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
 #include <sofa/helper/system/thread/CTime.h>
 
-#include <sofa/component/component.h>
 
 namespace sofa
 {

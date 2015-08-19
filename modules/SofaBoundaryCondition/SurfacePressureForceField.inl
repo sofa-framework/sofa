@@ -55,6 +55,7 @@ SurfacePressureForceField<DataTypes>::SurfacePressureForceField():
     m_pressureLowerBound(initData(&m_pressureLowerBound, (Real)0.0, "pressureLowerBound", "Pressure lower bound force per unit area (active in pulse mode)")),
     m_pressureSpeed(initData(&m_pressureSpeed, (Real)0.0, "pressureSpeed", "Continuous pressure application in Pascal per second. Only active in pulse mode")),
     m_volumeConservationMode(initData(&m_volumeConservationMode, false, "volumeConservationMode", "Pressure variation follow the inverse of the volume variation")),
+	m_useTangentStiffness(initData(&m_useTangentStiffness, true, "useTangentStiffness", "Whether (non-symmetric) stiffness matrix should be used")),
     m_defaultVolume(initData(&m_defaultVolume, (Real)-1.0, "defaultVolume", "Default Volume")),
     m_mainDirection(initData(&m_mainDirection, Deriv(), "mainDirection", "Main direction for pressure application")),
     m_drawForceScale(initData(&m_drawForceScale, (Real)0, "drawForceScale", "DEBUG: scale used to render force vectors"))
@@ -157,7 +158,7 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
                 p *= m_defaultVolume.getValue() / computeMeshVolume(f,x);
             }
         }
-
+		bool useStiffness=m_useTangentStiffness.getValue();
         // Triangles
 
         derivTriNormalValues.clear();
@@ -175,7 +176,7 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
         {
             for (unsigned int i = 0; i < m_triangleIndices.getValue().size(); i++)
             {
-                addTriangleSurfacePressure(m_triangleIndices.getValue()[i], m_f,x,v,p, true);
+                addTriangleSurfacePressure(m_triangleIndices.getValue()[i], m_f,x,v,p, useStiffness);
             }
         }
         else if (m_topology->getNbTriangles() > 0)
@@ -185,7 +186,7 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
                 Triangle t = m_topology->getTriangle(i);
                 if ( isInPressuredBox(x[t[0]]) && isInPressuredBox(x[t[1]]) && isInPressuredBox(x[t[2]]) )
                 {
-                    addTriangleSurfacePressure(i, m_f,x,v,p, true);
+                    addTriangleSurfacePressure(i, m_f,x,v,p, useStiffness);
                 }
             }
 
@@ -245,50 +246,28 @@ void SurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParam
 {
 
 
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
-    VecDeriv& df       = *(d_df.beginEdit());
-    const VecDeriv& dx =   d_dx.getValue()  ;
+	//    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+	Real kFactor = mparams->kFactor();
+	if (m_useTangentStiffness.getValue()) {
+		VecDeriv& df       = *(d_df.beginEdit());
+		const VecDeriv& dx =   d_dx.getValue()  ;
 
-//    std::cout<<" addDForce computed on SurfacePressureForceField Size ="<<derivTriNormalIndices.size()<<std::endl;
+		for (unsigned int i=0; i<derivTriNormalIndices.size(); i++)
+		{
 
+			for (unsigned int j=0; j<derivTriNormalIndices[i].size(); j++)
+			{
+				unsigned int v = derivTriNormalIndices[i][j];
+				df[i] += (derivTriNormalValues[i][j] * dx[v])*kFactor;
 
-    /*
-    for (unsigned int i=0; i<derivTriNormalIndices.size(); i++)
-    {
-        Deriv DFtri;
-        DFtri.clear();
+			}
 
-        for (unsigned int j=0; j<derivTriNormalIndices[i].size(); j++)
-        {
-            unsigned int v = derivTriNormalIndices[i][j];
-            DFtri += derivTriNormalValues[i][j] * dx[v];
-        }
-
-        DFtri*= kFactor;
-
-        for (unsigned int j=0; j<derivTriNormalIndices[i].size(); j++)
-        {
-            unsigned int v = derivTriNormalIndices[i][j];
-            df[v] += DFtri;
-        }
-
-
-    }
-    */
-
-    for (unsigned int i=0; i<derivTriNormalIndices.size(); i++)
-    {
-
-        for (unsigned int j=0; j<derivTriNormalIndices[i].size(); j++)
-        {
-            unsigned int v = derivTriNormalIndices[i][j];
-            df[i] += (derivTriNormalValues[i][j] * dx[v])*kFactor;
-
-        }
-
-    }
-
-    d_df.endEdit();
+		} 
+		//			for (unsigned int i=0;i<df.size();++i) {
+		//			std::cerr<<"df["<<i<<"]= "<<df[i]<<std::endl;
+		//		}
+		d_df.endEdit();
+	}
 
 
 }
@@ -306,27 +285,28 @@ void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalPa
     return;
 
     const int N = Coord::total_size;
+	if (m_useTangentStiffness.getValue()) {
+		for (unsigned int i=0; i<derivTriNormalIndices.size(); i++)
+		{
 
-    for (unsigned int i=0; i<derivTriNormalIndices.size(); i++)
-    {
+			for (unsigned int j=0; j<derivTriNormalIndices[i].size(); j++)
+			{
+				unsigned int v = derivTriNormalIndices[i][j];
 
-        for (unsigned int j=0; j<derivTriNormalIndices[i].size(); j++)
-        {
-            unsigned int v = derivTriNormalIndices[i][j];
+				Mat33 Kiv = derivTriNormalValues[i][j];
 
-            Mat33 Kiv = derivTriNormalValues[i][j];
-
-            for (unsigned int l=0; l<3; l++)
-            {
-                for (unsigned int c=0; c<3; c++)
-                {
-                    mat->add(offset + N * i + l, offset + N * v + c, kFact * Kiv[l][c]);
+				for (unsigned int l=0; l<3; l++)
+				{
+					for (unsigned int c=0; c<3; c++)
+					{
+						mat->add(offset + N * i + l, offset + N * v + c, kFact * Kiv[l][c]);
 
 
-                }
-            }
-        }
-    }
+					}
+				}
+			}
+		}
+	}
 }
 
 template <class DataTypes>

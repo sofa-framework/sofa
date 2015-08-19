@@ -5,6 +5,7 @@ uniform int lightFlag[MAX_NUMBER_OF_LIGHTS];
 varying vec3 normal;
 varying vec4 ambientGlobal;
 varying vec3 lightDir[MAX_NUMBER_OF_LIGHTS];
+uniform int shadowTextureUnit[MAX_NUMBER_OF_LIGHTS];
 //varying float dist[MAX_NUMBER_OF_LIGHTS];
 //varying float spotOff[MAX_NUMBER_OF_LIGHTS];
 
@@ -51,13 +52,8 @@ void main()
 #if ENABLE_SHADOW == 1 
 			if (lightFlag[i] == 2)
             {
-				//shadowTexCoord[i] = shadowMatrix[i] * shadowPos;
-                float NormalOffsetScale = -1.0; //0.2 /* * max(1.0, 1.0 - 0.5*dot(normal,normalize(aux))) */ * pow(abs(dot(gl_LightSource[i].spotDirection,-aux)),0.5);
-                vec3 ShadowOffset = normal * NormalOffsetScale;
-                shadowTexCoord[i] = gl_TextureMatrix[i] * (ecPos + vec4(ShadowOffset, 0.0));
-                //shadowTexCoord[i] = gl_TextureMatrix[i] * ecPos;
-                //shadowTexCoord[i].x += dot(gl_TextureMatrix[i][0].xyz, ShadowOffset);
-                //shadowTexCoord[i].y += dot(gl_TextureMatrix[i][1].xyz, ShadowOffset);
+                shadowTexCoord[i] = gl_TextureMatrix[shadowTextureUnit[i]] * gl_ModelViewMatrix * gl_Vertex;
+
             }
 #endif // ENABLE_SHADOW == 1 
 		}

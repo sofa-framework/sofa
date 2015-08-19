@@ -10,8 +10,4 @@
 #define SOFA_MeshSTEPLoader_API  SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-/** \mainpage
-  This is the MeshSTEPLoader plugin.
-  */
-
 #endif

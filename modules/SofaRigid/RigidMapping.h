@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_RIGIDMAPPING_H
 #define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_H
+#include "config.h"
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -32,13 +33,14 @@
 #ifdef SOFA_HAVE_EIGEN2
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #endif
-#include <sofa/component/component.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 #include <vector>
 #include <memory>
+
+#include <boost/scoped_ptr.hpp>
 
 namespace sofa
 {
@@ -166,7 +168,7 @@ protected:
     const VecCoord& getPoints();
     void setJMatrixBlock(unsigned outIdx, unsigned inIdx);
 
-    std::auto_ptr<MatrixType> matrixJ;
+    boost::scoped_ptr<MatrixType> matrixJ;
     bool updateJ;
 
 #ifdef SOFA_HAVE_EIGEN2

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_H
+#include "config.h"
 
 
 #include <sofa/core/behavior/ForceField.h>

@@ -24,10 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
 #define SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
+#include "config.h"
 
 #include <sofa/core/collision/CollisionGroupManager.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/component/component.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/simulation/common/CleanupVisitor.h>
 

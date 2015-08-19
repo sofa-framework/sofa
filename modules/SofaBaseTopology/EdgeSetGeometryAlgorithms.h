@@ -24,8 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_H
+#include "config.h"
 
 #include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/NumericalIntegrationDescriptor.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
@@ -49,6 +51,7 @@ public:
 
 };
 
+
 /**
  * A class that provides geometry information on an EdgeSet.
  */
@@ -57,15 +60,12 @@ class EdgeSetGeometryAlgorithms : public PointSetGeometryAlgorithms<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(EdgeSetGeometryAlgorithms,DataTypes),SOFA_TEMPLATE(PointSetGeometryAlgorithms,DataTypes));
-
-    typedef sofa::core::topology::BaseMeshTopology::EdgeID EdgeID;
+	typedef sofa::core::topology::BaseMeshTopology::EdgeID EdgeID;
     typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
     typedef sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef sofa::core::topology::BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
 
     typedef sofa::defaulttype::Vec3d Vec3d;
-    typedef sofa::defaulttype::Vector3 Vector3;
-
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Real Real;
@@ -75,8 +75,10 @@ public:
     enum { NC = CPos::static_size };
 
 protected:
+	bool initializedEdgeCubatureTables;
     EdgeSetGeometryAlgorithms()
         : PointSetGeometryAlgorithms<DataTypes>()
+		,initializedEdgeCubatureTables(false)
         , showEdgeIndices(core::objectmodel::Base::initData(&showEdgeIndices, (bool) false, "showEdgeIndices", "Debug : view Edge indices."))
         , _draw(core::objectmodel::Base::initData(&_draw, false, "drawEdges","if true, draw the edges in the topology."))
         , _drawColor(initData(&_drawColor, sofa::defaulttype::Vec3f(0.4f,1.0f,0.3f), "drawColorEdges", "RGB code color used to draw edges."))
@@ -84,6 +86,7 @@ protected:
     }
     virtual ~EdgeSetGeometryAlgorithms() {}
 
+	void defineEdgeCubaturePoints();
 public:
     //virtual void reinit();
 
@@ -151,17 +154,22 @@ public:
       \param edges attached to the vertices
       \param weights associated with the edges. Each Vec3d represents the contribution of the associated edge to x,y and z of the deformed basis.
       */
-    void computeLocalFrameEdgeWeights( helper::vector<unsigned>& numEdges, helper::vector<Edge>& edges, helper::vector<Vec3d>& weights ) const;
+   void computeLocalFrameEdgeWeights( helper::vector<unsigned>& numEdges, helper::vector<Edge>& edges, helper::vector<Vec3d>& weights ) const;
 
     /** \brief Process the added point initialization according to the topology and local coordinates.
     */
     virtual void initPointAdded(unsigned int indice, const core::topology::PointAncestorElem &ancestorElem
         , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs);
 
+	/** return a pointer to the container of cubature points */
+	NumericalIntegrationDescriptor<Real,1> &getEdgeNumericalIntegrationDescriptor();
+
 protected:
     Data<bool> showEdgeIndices;
     Data<bool> _draw;
     Data<sofa::defaulttype::Vec3f> _drawColor;
+	/// include cubature points
+	NumericalIntegrationDescriptor<Real,1> edgeNumericalIntegration;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP)

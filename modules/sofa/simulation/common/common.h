@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_COMMON_H
-#define SOFA_SIMULATION_COMMON_H
+#ifndef SOFA_SIMULATION_COMMON_COMMON_H
+#define SOFA_SIMULATION_COMMON_COMMON_H
 
 #include <sofa/helper/system/config.h>
 

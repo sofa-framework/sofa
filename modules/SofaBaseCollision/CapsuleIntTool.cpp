@@ -1,3 +1,4 @@
+#define SOFA_COMPONENT_COLLISION_CAPSULEINTTOOL_CPP
 #include <SofaBaseCollision/CapsuleIntTool.inl>
 
 namespace sofa
@@ -19,7 +20,7 @@ template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(TCapsul
 template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<RigidTypes> & cap, OBB& obb,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<Vec3Types> & cap, OBB& obb,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
-class SOFA_BASE_VISUAL_API CapsuleIntTool;
+class SOFA_BASE_COLLISION_API CapsuleIntTool;
 }
 }
 }

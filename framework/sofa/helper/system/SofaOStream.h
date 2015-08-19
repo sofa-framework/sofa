@@ -52,7 +52,7 @@ protected:
     Container* parent;
 public:
 
-    friend inline std::ostream &operator << (std::ostream& out, SofaOStream<Container> & s)
+    friend inline std::ostream &operator << (std::ostream& out, const SofaOStream<Container> & s)
     {
         if (s.parent)
             s.parent->processStream(out);

@@ -23,12 +23,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "ManifoldTriangleSetTopologyModifier.h"
+
 #include <sofa/core/visual/VisualParams.h>
-//#include <sofa/component/topology/TriangleSetTopologyChange.h>
 #include "ManifoldTriangleSetTopologyContainer.h"
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <algorithm>
-//#include <functional>
 #include <iostream>
 #include <sofa/core/ObjectFactory.h>
 

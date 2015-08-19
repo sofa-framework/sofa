@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/io/bvh/BVHLoader.h>
+#include <sofa/helper/system/Locale.h>
 #include <iostream>
 #include <sstream>
 
@@ -40,6 +41,9 @@ namespace bvh
 
 BVHJoint *BVHLoader::load(const char *filename)
 {
+    // Make sure that fscanf() uses a dot '.' as the decimal separator.
+    helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
+
     FILE *file = fopen(filename, "r");
 
     if (file)

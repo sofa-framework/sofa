@@ -66,7 +66,7 @@ unsigned int vertexLevel(typename PFP::MAP& map, Vertex v)
     unsigned int ldit;
     map.foreach_dart_of_orbit(v, (
                                   bl::var(ldit) = map.getDartLevel(bl::_1),
-                                  bl::if_(bl::var(ldit) < bl::var(level))[bl::var(level) = bl::var(ldit)]
+                                  bl::if_(bl::var(ldit) < bl::var(level))[bl::var(level) = ldit]
                                 )
             );
 

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_H
+#include "config.h"
 
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/NumericalIntegrationDescriptor.h>

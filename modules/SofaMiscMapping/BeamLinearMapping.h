@@ -24,17 +24,17 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_H
 #define SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_H
+#include "config.h"
 
 #include <sofa/core/Mapping.h>
-
-#include <sofa/component/component.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 #include <vector>
-#include <memory>
+
+#include <boost/scoped_ptr.hpp>
 
 
 namespace sofa
@@ -82,7 +82,7 @@ protected:
     sofa::helper::vector<Coord> rotatedPoints0;
     sofa::helper::vector<Coord> rotatedPoints1;
 
-    std::auto_ptr<MatrixType> matrixJ;
+    boost::scoped_ptr<MatrixType> matrixJ;
     bool updateJ;
 
     BeamLinearMapping()

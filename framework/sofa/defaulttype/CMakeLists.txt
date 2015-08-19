@@ -3,6 +3,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
 	defaulttype.h	
+	init.h
 	BaseMatrix.h	
 	BaseVector.h	
 	BoundingBox.h	
@@ -32,6 +33,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
+	init.cpp
 	BaseMatrix.cpp
 	BoundingBox.cpp
 	Frame.cpp

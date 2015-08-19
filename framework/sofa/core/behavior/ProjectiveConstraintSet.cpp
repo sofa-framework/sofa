@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_CORE_BEHAVIOR_PROJECTIVECONSTRAINTSET_CPP
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -37,6 +38,7 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 #ifndef SOFA_FLOAT
+template class SOFA_CORE_API ProjectiveConstraintSet<Vec6dTypes>;
 template class SOFA_CORE_API ProjectiveConstraintSet<Vec3dTypes>;
 template class SOFA_CORE_API ProjectiveConstraintSet<Vec2dTypes>;
 template class SOFA_CORE_API ProjectiveConstraintSet<Vec1dTypes>;
@@ -44,6 +46,7 @@ template class SOFA_CORE_API ProjectiveConstraintSet<Rigid3dTypes>;
 template class SOFA_CORE_API ProjectiveConstraintSet<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
+template class SOFA_CORE_API ProjectiveConstraintSet<Vec6fTypes>;
 template class SOFA_CORE_API ProjectiveConstraintSet<Vec3fTypes>;
 template class SOFA_CORE_API ProjectiveConstraintSet<Vec2fTypes>;
 template class SOFA_CORE_API ProjectiveConstraintSet<Vec1fTypes>;

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_TOPOLOGICALCHANGEPROCESSOR_H
 #define SOFA_COMPONENT_MISC_TOPOLOGICALCHANGEPROCESSOR_H
+#include "config.h"
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/BaseTopology.h>
@@ -35,7 +36,6 @@
 
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/component/component.h>
 
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/defaulttype/Vec.h>

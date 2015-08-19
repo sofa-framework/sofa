@@ -386,16 +386,16 @@ public:
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     virtual void setReadWriteVectors() {}
-    virtual void addReadVector(ConstMultiVecId id) {  readVector.push_back(id);  }
-    virtual void addWriteVector(MultiVecId id) {  writeVector.push_back(id);  }
-    virtual void addReadWriteVector(MultiVecId id) {  readVector.push_back(ConstMultiVecId(id)); writeVector.push_back(id);  }
+    virtual void addReadVector(core::ConstMultiVecId id) {  readVector.push_back(id);  }
+    virtual void addWriteVector(core::MultiVecId id) {  writeVector.push_back(id);  }
+    virtual void addReadWriteVector(core::MultiVecId id) {  readVector.push_back(core::ConstMultiVecId(id)); writeVector.push_back(id);  }
     void printReadVectors(core::behavior::BaseMechanicalState* mm);
     void printReadVectors(simulation::Node* node, core::objectmodel::BaseObject* obj);
     void printWriteVectors(core::behavior::BaseMechanicalState* mm);
     void printWriteVectors(simulation::Node* node, core::objectmodel::BaseObject* obj);
 protected:
-    sofa::helper::vector< ConstMultiVecId > readVector;
-    sofa::helper::vector< MultiVecId > writeVector;
+    sofa::helper::vector< core::ConstMultiVecId > readVector;
+    sofa::helper::vector< core::MultiVecId > writeVector;
 #endif
 };
 
@@ -1712,7 +1712,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addWriteVector(res);
+//        addWriteVector(res);
     }
 #endif
 };
@@ -2332,7 +2332,7 @@ public:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_SIMULATION_COMMON)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_SIMULATION_MECHANICALVISITOR_CPP)
 extern template class MechanicalVAvailVisitor<sofa::core::V_COORD>;
 extern template class MechanicalVAvailVisitor<sofa::core::V_DERIV>;
 extern template class MechanicalVAllocVisitor<sofa::core::V_COORD>;

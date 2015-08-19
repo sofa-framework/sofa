@@ -31,7 +31,7 @@
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/Cylinder.h>
 #include <sofa/helper/gl/template.h>
-#include <math.h>
+#include <cmath>
 
 namespace sofa
 {
@@ -614,6 +614,25 @@ void DrawToolGL::drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
     glVertexNv<3>(p2.ptr());
     glVertexNv<3>(p3.ptr());
     glVertexNv<3>(p4.ptr());
+}
+
+void DrawToolGL::drawQuads(const std::vector<Vector3> &points, const Vec4f colour)
+{
+    setMaterial(colour);
+    glBegin(GL_QUADS);
+    {
+        for (unsigned int i=0; i<points.size()/4; ++i)
+        {
+            const Vector3& a = points[ 4*i+0 ];
+            const Vector3& b = points[ 4*i+1 ];
+            const Vector3& c = points[ 4*i+2 ];
+            const Vector3& d = points[ 4*i+3 ];
+            Vector3 n = cross((b-a),(c-a));
+            n.normalize();
+            drawQuad(a,b,c,d,n,colour);
+        }
+    } glEnd();
+    resetMaterial(colour);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

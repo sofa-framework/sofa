@@ -9,8 +9,9 @@ set(SOURCE_FILES
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 AddLinkerDependencies(
-    SofaTest
+    SofaGTestMain
     SofaBaseMechanics
+    SofaSimulationGraph
 )
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

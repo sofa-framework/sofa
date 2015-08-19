@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_GROUPFILTERYOUNGMODULUS_CPP
-#include <SofaEngine/GroupFilterYoungModulus.h>
+#include "GroupFilterYoungModulus.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -66,8 +66,6 @@ void GroupFilterYoungModulus<DataTypes>::reinit()
 template <class DataTypes>
 void GroupFilterYoungModulus<DataTypes>::update()
 {
-    cleanDirty();
-
     //Input
     const std::string& strMap = p_mapGroupModulus.getValue();
     const helper::vector<unsigned int>& primitives = f_primitives.getValue();
@@ -75,8 +73,11 @@ void GroupFilterYoungModulus<DataTypes>::update()
     const helper::vector<int >& elementsGroup = f_elementsGroup.getValue();
 
     const Real& defaultModulus =  p_defaultModulus.getValue();
+
+    cleanDirty();
+
     //Output
-    helper::vector<Real>& youngModulusVector = *f_youngModulus.beginEdit();
+    helper::vector<Real>& youngModulusVector = *f_youngModulus.beginWriteOnly();
 
     //1st method : with Group definition
     if (!groups.empty())

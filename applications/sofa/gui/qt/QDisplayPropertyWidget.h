@@ -56,6 +56,11 @@
 #include <Q3CheckListItem>
 #include <QVBoxLayout>
 
+
+#include <QTextEdit>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+
 namespace sofa
 {
 

@@ -24,14 +24,12 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ENGINE_MESHSAMPLER_H
 #define SOFA_COMPONENT_ENGINE_MESHSAMPLER_H
+#include "config.h"
 
-#include <sofa/component/component.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-
-#include <sofa/component/component.h>
 
 namespace sofa
 {

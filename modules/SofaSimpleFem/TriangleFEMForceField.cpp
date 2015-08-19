@@ -23,11 +23,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_CPP
-
 #include "TriangleFEMForceField.inl"
+
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/component.h>
 
 // #define DEBUG_TRIANGLEFEM
 

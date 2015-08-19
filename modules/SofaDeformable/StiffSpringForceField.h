@@ -27,6 +27,7 @@
 // Copyright: See COPYING file that comes with this distribution
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_STIFFSPRINGFORCEFIELD_H
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_STIFFSPRINGFORCEFIELD_H
+#include "config.h"
 
 #include <SofaDeformable/SpringForceField.h>
 #include <sofa/defaulttype/Mat.h>
@@ -107,7 +108,7 @@ public:
     virtual void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_DEFORMABLE)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_STIFFSPRINGFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec3dTypes>;
 extern template class SOFA_DEFORMABLE_API StiffSpringForceField<defaulttype::Vec2dTypes>;

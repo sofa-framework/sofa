@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_H
-#define SOFA_SIMULATION_TREE_H
+#ifndef SOFA_SIMULATION_TREE_TREE_H
+#define SOFA_SIMULATION_TREE_TREE_H
 
 #include <sofa/helper/system/config.h>
 

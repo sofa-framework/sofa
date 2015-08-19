@@ -24,7 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONTAINER_INTERPOLATEDIMPLICITSURFACE_H
 #define SOFA_COMPONENT_CONTAINER_INTERPOLATEDIMPLICITSURFACE_H
-
+#include "config.h"
 
 #include "ImplicitSurfaceContainer.h"
 #include <sofa/core/objectmodel/DataFileName.h>

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_TRIANGLEOCTREE_H
 #define SOFA_COMPONENT_COLLISION_TRIANGLEOCTREE_H
+#include "config.h"
 
 //#include <SofaMeshCollision/TriangleOctreeModel.h>
 

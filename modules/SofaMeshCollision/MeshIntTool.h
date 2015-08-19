@@ -1,5 +1,7 @@
-#ifndef MESHINTTOOL_H
-#define MESHINTTOOL_H
+#ifndef SOFA_COMPONENT_COLLISION_MESHINTTOOL_H
+#define SOFA_COMPONENT_COLLISION_MESHINTTOOL_H
+#include "config.h"
+
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <SofaBaseCollision/OBBModel.h>
@@ -209,7 +211,7 @@ int MeshIntTool::computeIntersection(Triangle& tri, TSphere<DataTypes>& sph,type
 }
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_MESHINTTOOL_CPP)
 extern template SOFA_MESH_COLLISION_API int MeshIntTool::computeIntersection(TCapsule<sofa::defaulttype::Vec3Types>& cap, Point& pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 extern template SOFA_MESH_COLLISION_API int MeshIntTool::doCapPointInt(TCapsule<sofa::defaulttype::Vec3Types>& cap, const sofa::defaulttype::Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 extern template SOFA_MESH_COLLISION_API int MeshIntTool::computeIntersection(TCapsule<sofa::defaulttype::Vec3Types>& cap, Line& lin,SReal alarmDist,SReal contactDist,OutputVector* contacts);

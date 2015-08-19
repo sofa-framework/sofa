@@ -24,13 +24,13 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_H
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_H
+#include "config.h"
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaVolumetricData/DistanceGrid.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_EigenSparseMatrix_H
 #define SOFA_COMPONENT_LINEARSOLVER_EigenSparseMatrix_H
+#include "config.h"
 
 #include "EigenBaseSparseMatrix.h"
 #include <sofa/defaulttype/Mat.h>
@@ -341,7 +342,7 @@ protected:
             else
             {
                 typename map_traits<OutType>::map_type r = map(result);
-                r.noalias() = r +  linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, this->map(data).template cast<Real>() * fact ).template cast<OutReal>();
+                r.noalias() += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, this->map(data).template cast<Real>() * fact ).template cast<OutReal>();
             }
 #else
 			// TODO multiply only the smallest dimension by fact 
@@ -349,7 +350,7 @@ protected:
                 map(result) += (this->compressedMatrix * (map(data).template cast<Real>() * fact)).template cast<OutReal>();
             } else {
                 typename map_traits<OutType>::map_type r = map(result);
-                r.noalias() = r + (this->compressedMatrix * (map(data).template cast<Real>() * fact)).template cast<OutReal>();
+                r.noalias() += (this->compressedMatrix * (map(data).template cast<Real>() * fact)).template cast<OutReal>();
             }
 #endif
 			
@@ -390,7 +391,7 @@ protected:
                 map(result) += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), this->map(data).template cast<Real>() * fact ).template cast<InReal>();
             else {
                 typename map_traits<InType>::map_type r = map(result);
-                r.noalias() = r + linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), this->map(data).template cast<Real>() * fact ).template cast<InReal>();
+                r.noalias() += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), this->map(data).template cast<Real>() * fact ).template cast<InReal>();
             }
 #else
             // TODO multiply only the smallest dimension by fact
@@ -398,7 +399,7 @@ protected:
                 map(result) += (this->compressedMatrix.transpose() * (map(data).template cast<Real>() * fact)).template cast<InReal>();
             } else {
                 typename map_traits<InType>::map_type r = map(result);
-                r.noalias() = r + (this->compressedMatrix.transpose() * (map(data).template cast<Real>() * fact)).template cast<InReal>();
+                r.noalias() += (this->compressedMatrix.transpose() * (map(data).template cast<Real>() * fact)).template cast<InReal>();
             }
 #endif
 			

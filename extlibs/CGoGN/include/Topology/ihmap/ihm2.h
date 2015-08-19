@@ -40,19 +40,45 @@ public:
 	typedef EmbeddedMap2::TOPO_MAP TOPO_MAP;
 
 private:
-	unsigned int m_curLevel ;
+    mutable unsigned int m_curLevel ;
 	unsigned int m_maxLevel ;
 	unsigned int m_idCount ;
 
-	DartAttribute<unsigned int, ImplicitHierarchicalMap2> m_dartLevel ;
-	DartAttribute<unsigned int, ImplicitHierarchicalMap2> m_edgeId ;
-
+    AttributeHandler<unsigned int, DART, ImplicitHierarchicalMap2> m_dartLevel ;
+    AttributeHandler<unsigned int, DART, ImplicitHierarchicalMap2> m_edgeId ;
+    typedef AttributeHandler<unsigned int, DART, ImplicitHierarchicalMap2>::HandlerAccessorPolicy  HandlerAccessorPolicy;
 //	AttributeMultiVector<unsigned int>* m_nextLevelCell[NB_ORBITS] ;
 
 public:
 	ImplicitHierarchicalMap2() ;
 
 	~ImplicitHierarchicalMap2() ;
+
+
+    template< unsigned int ORBIT >
+    inline unsigned int getCellLevel(Cell< ORBIT > c) const {
+        if (ORBIT == DART || ORBIT == VERTEX)
+        {
+            return this->getDartLevel(c.dart);
+        }
+        //TODO !!!
+//        if (ORBIT == EDGE)
+//        {
+//            return this->edgeLevel(c.dart);
+//        }
+//        if (ORBIT == FACE)
+//        {
+//            return this->faceLevel(c.dart);
+//        }
+
+        return std::numeric_limits<unsigned int>::max();
+    }
+
+    template< unsigned int ORBIT >
+    inline unsigned int getMaxCellLevel(Cell< ORBIT > c) const {
+        //TODO !!!
+        return std::numeric_limits<unsigned int>::max();
+    }
 
 	//!
 	/*!
@@ -152,11 +178,11 @@ public:
 
     inline unsigned int getCurrentLevel() const;
 
-    inline void setCurrentLevel(unsigned int l) ;
+    inline void setCurrentLevel(unsigned int l) const ;
 
-    inline void incCurrentLevel();
+    inline void incCurrentLevel() const ;
 
-    inline void decCurrentLevel();
+    inline void decCurrentLevel() const;
 
     inline unsigned int getMaxLevel() const;
 

@@ -8,7 +8,7 @@ RegisterProjects("SofaBaseCollision" OPTION "SOFA-LIB_COMPONENT_BASE_COLLISION" 
 RegisterProjects("SofaBaseCollision_test" OPTION "SOFA-LIB_COMPONENT_BASE_COLLISION" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseCollision/SofaBaseCollision_test")
 
 RegisterProjects("SofaBaseLinearSolver" OPTION "SOFA-LIB_COMPONENT_BASE_LINEAR_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseLinearSolver")
-#RegisterProjects("SofaBaseLinearSolver_test" OPTION "SOFA-LIB_COMPONENT_BASE_LINEAR_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseLinearSolver/SofaBaseLinearSolver_test")
+RegisterProjects("SofaBaseLinearSolver_test" OPTION "SOFA-LIB_COMPONENT_BASE_LINEAR_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseLinearSolver/SofaBaseLinearSolver_test")
 
 RegisterProjects("SofaBaseMechanics" OPTION "SOFA-LIB_COMPONENT_BASE_MECHANICS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseMechanics")
 RegisterProjects("SofaBaseMechanics_test" OPTION "SOFA-LIB_COMPONENT_BASE_MECHANICS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseMechanics/SofaBaseMechanics_test")
@@ -101,7 +101,7 @@ RegisterProjects("SofaMiscSolver" OPTION "SOFA-LIB_COMPONENT_MISC_SOLVER" PATH "
 RegisterProjects("SofaMiscSolver_test" OPTION "SOFA-LIB_COMPONENT_MISC_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMiscSolver/SofaMiscSolver_test")
 
 RegisterProjects("SofaMiscTopology" OPTION "SOFA-LIB_COMPONENT_MISC_TOPOLOGY" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMiscTopology")
-#RegisterProjects("SofaMiscTopology_test" OPTION "SOFA-LIB_COMPONENT_MISC_TOPOLOGY" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMiscTopology/SofaMiscTopology_test")
+RegisterProjects("SofaMiscTopology_test" OPTION "SOFA-LIB_COMPONENT_MISC_TOPOLOGY" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMiscTopology/SofaMiscTopology_test")
 
 RegisterProjects("SofaNonUniformFem" OPTION "SOFA-LIB_COMPONENT_NON_UNIFORM_FEM" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaNonUniformFem")
 #RegisterProjects("SofaNonUniformFem_test" OPTION "SOFA-LIB_COMPONENT_NON_UNIFORM_FEM" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaNonUniformFem/SofaNonUniformFem_test")

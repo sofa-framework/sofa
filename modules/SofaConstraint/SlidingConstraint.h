@@ -24,8 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_H
-
-#include <sofa/component/component.h>
+#include "config.h"
 
 #include <sofa/core/behavior/PairInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>

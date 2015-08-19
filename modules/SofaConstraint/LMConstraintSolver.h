@@ -24,13 +24,13 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_LMCONSTRAINTSOLVER_H
 #define SOFA_COMPONENT_CONSTRAINTSET_LMCONSTRAINTSOLVER_H
+#include "config.h"
 
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/BaseLMConstraint.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/component/component.h>
 
 
 #include <SofaEigen2Solver/EigenMatrixManipulator.h>

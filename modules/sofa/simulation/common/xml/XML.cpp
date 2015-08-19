@@ -27,10 +27,12 @@
 #include <stdlib.h>
 #include <sofa/simulation/common/xml/XML.h>
 #include <sofa/simulation/common/xml/ElementNameHelper.h>
+#include <sofa/helper/system/Locale.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/core/ObjectFactory.h>
 #include <string.h>
+
 
 /* For loading the scene */
 
@@ -294,18 +296,11 @@ BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc)
         return NULL;
     }
 
-    //print the graph scene
-//#ifndef NDEBUG
-//  dumpNode(graph);
-//#endif
-
     return graph;
 }
 
 BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int /*size*/ )
 {
-
-
     TiXmlDocument doc; // the resulting document tree
 
     //xmlSubstituteEntitiesDefault(1);
@@ -321,18 +316,14 @@ BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int
 
 BaseElement* loadFromFile(const char *filename)
 {
+    // Temporarily set the numeric formatting locale to ensure that
+    // floating-point values are interpreted correctly by tinyXML. (I.e. the
+    // decimal separator is a dot '.').
+    helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
 
-#if !defined(WIN32) && !defined(PS3)
-    // Reset local settings to make sure that floating-point values are interpreted correctly
-    setlocale(LC_ALL,"C");
-    setlocale(LC_NUMERIC,"C");
-#endif
-    //
     // this initialize the library and check potential ABI mismatches
     // between the version it was compiled for and the actual shared
     // library used.
-    //
-
     TiXmlDocument* doc = new TiXmlDocument; // the resulting document tree
 
     // xmlSubstituteEntitiesDefault(1);
@@ -344,10 +335,6 @@ BaseElement* loadFromFile(const char *filename)
         return NULL;
     }
 
-
-//#ifndef NDEBUG
-//    doc->Print();
-//#endif
     BaseElement* r = processXMLLoading(filename, *doc);
     //std::cerr << "clear doc"<<std::endl;
     doc->Clear();

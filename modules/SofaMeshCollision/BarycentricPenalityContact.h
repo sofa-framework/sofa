@@ -24,15 +24,12 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_BARYCENTRICPENALITYCONTACT_H
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICPENALITYCONTACT_H
+#include "config.h"
 
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
-//#ifdef SOFA_TEST_FRICTION
-//#include <sofa/component/forcefield/PenalityContactFrictionForceField.h>
-//#else
 #include <SofaObjectInteraction/PenalityContactForceField.h>
-//#endif
 #include <sofa/helper/Factory.h>
 
 #include <SofaMeshCollision/BarycentricContactMapper.h>

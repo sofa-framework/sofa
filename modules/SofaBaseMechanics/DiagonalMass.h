@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MASS_DIAGONALMASS_H
 #define SOFA_COMPONENT_MASS_DIAGONALMASS_H
+#include "config.h"
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -103,6 +104,7 @@ public:
 
     typedef sofa::component::topology::Point Point;
     typedef sofa::component::topology::Edge Edge;
+    typedef sofa::component::topology::Quad Quad;
     typedef sofa::component::topology::Triangle Triangle;
     typedef sofa::component::topology::Tetrahedron Tetrahedron;
     typedef sofa::component::topology::Hexahedron Hexahedron;

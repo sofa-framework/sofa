@@ -22,7 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_HELPER_DUALQUAT_CPP
 #include "DualQuat.inl"
+
 #include "Quater.inl"
 
 namespace sofa
@@ -32,8 +34,8 @@ namespace helper
 {
 
 // instanciate the classes
-template class DualQuatCoord3<double>;
-template class DualQuatCoord3<float>;
+template class SOFA_HELPER_API DualQuatCoord3<double>;
+template class SOFA_HELPER_API DualQuatCoord3<float>;
 
 } // namespace helper
 

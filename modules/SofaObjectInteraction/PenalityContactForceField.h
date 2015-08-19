@@ -24,12 +24,12 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_H
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_H
+#include "config.h"
 
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/component.h>
 #include <vector>
 #include <sofa/core/MechanicalParams.h>
 
@@ -138,7 +138,7 @@ public:
     void draw(const core::visual::VisualParams* vparams);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_OBJECT_INTERACTION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_OBJECT_INTERACTION_API PenalityContactForceField<defaulttype::Vec3dTypes>;
 #endif

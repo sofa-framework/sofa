@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_RAYTRIANGLEINTERSECTION_H
 #define SOFA_COMPONENT_RAYTRIANGLEINTERSECTION_H
+#include "config.h"
 
 #include <SofaMeshCollision/Triangle.h>
 

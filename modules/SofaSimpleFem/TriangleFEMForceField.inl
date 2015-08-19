@@ -34,7 +34,7 @@
 #include <iostream> //for debugging
 #include <vector>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/component.h>
+#include "config.h"
 
 // #define DEBUG_TRIANGLEFEM
 

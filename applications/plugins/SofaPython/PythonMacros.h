@@ -40,6 +40,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 
 
+#include <sofa/helper/Logger.h>
 
 #include "initSofaPython.h"
 
@@ -338,10 +339,12 @@ static PyTypeObject DummyChild_PyTypeObject = {
 // =============================================================================
 // ERROR / WARNING MESSAGES
 // =============================================================================
-#define SP_MESSAGE_INFO( msg ) std::cerr << "<SofaPython> " << msg << std::endl;
-#define SP_MESSAGE_WARNING( msg ) std::cerr << "<SofaPython> WARNING " << msg << std::endl;
-#define SP_MESSAGE_ERROR( msg ) std::cerr << "<SofaPython> ERROR " << msg << std::endl;
-#define SP_MESSAGE_EXCEPTION( msg ) std::cerr << "<SofaPython> EXCEPTION " << msg << std::endl;
+
+#define SP_MESSAGE_BASE( level, msg ) { std::stringstream ss; ss<<msg; sofa::helper::Logger::getMainLogger().log( sofa::helper::Logger::level, ss.str(), "SofaPython" ); }
+#define SP_MESSAGE_INFO( msg ) { SP_MESSAGE_BASE( Info, msg ) }
+#define SP_MESSAGE_WARNING( msg ) { SP_MESSAGE_BASE( Warning, msg ) }
+#define SP_MESSAGE_ERROR( msg ) { SP_MESSAGE_BASE( Error, msg ) }
+#define SP_MESSAGE_EXCEPTION( msg ) { SP_MESSAGE_BASE( Exception, msg )  }
 
 
 // get python exceptions and print their error message

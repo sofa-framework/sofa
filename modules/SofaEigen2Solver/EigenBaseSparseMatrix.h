@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_EigenBaseSparseMatrix_H
 #define SOFA_COMPONENT_LINEARSOLVER_EigenBaseSparseMatrix_H
+#include "config.h"
 
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/Mat.h>
@@ -207,15 +208,13 @@ public:
     }
 
 
-    /// Set all the entries of a row to 0, except the diagonal set to an extremely small number.
+    /// Set all the entries of a row to 0
     void clearRow(Index i)
     {
         compress();
         for (typename CompressedMatrix::InnerIterator it(compressedMatrix,i); it; ++it)
         {
-            if(it.index()==i) // diagonal entry
-                it.valueRef()=(Real)1.0e-100;
-            else it.valueRef() = 0;
+            it.valueRef() = 0;
         }
     }
 
@@ -230,7 +229,7 @@ public:
             }
     }
 
-    ///< Set all the entries of a column to 0, except the diagonal set to an extremely small number.. Not efficient !
+    ///< Set all the entries of a column to 0. Not efficient !
     void clearCol(Index col)
     {
         compress();
@@ -239,10 +238,7 @@ public:
             {
                 if( it.col()==col)
                 {
-                    if(it.index()==i) // diagonal entry
-                        it.valueRef()=(Real)1.0e-100;
-                    else it.valueRef() = 0;
-
+                    it.valueRef() = 0;
                 }
             }
     }

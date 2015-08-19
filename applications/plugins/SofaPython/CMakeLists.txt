@@ -1,9 +1,8 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 ## plugin external dependencies
-    find_package(PythonLibs 2.7 REQUIRED)
-#    Message(STATUS PYTHON_LIBRARIES=${PYTHON_LIBRARIES})
-#    Message(STATUS PYTHON_INCLUDE_DIRS=${PYTHON_INCLUDE_DIRS})
+find_package(PythonLibs 2.7 REQUIRED)
+
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 set(HEADER_FILES

@@ -274,7 +274,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         //Energy Widget
         if (simulation::Node* real_node = dynamic_cast< simulation::Node* >(node))
         {
-            if (dialogFlags_.REINIT_FLAG /*&& (!real_node->mass.empty() || !real_node->forceField.empty() )*/ )
+            if (dialogFlags_.REINIT_FLAG )
             {
                 energy = new QEnergyStatWidget(dialogTab, real_node);
                 dialogTab->addTab(energy,QString("Energy Stats"));
@@ -284,7 +284,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         //Momentum Widget
         if (simulation::Node* real_node = dynamic_cast< simulation::Node* >(node))
         {
-            if (dialogFlags_.REINIT_FLAG && (!real_node->mass.empty() ) )
+            if (dialogFlags_.REINIT_FLAG )
             {
                 momentum = new QMomentumStatWidget(dialogTab, real_node);
                 dialogTab->addTab(momentum,QString("Momentum Stats"));

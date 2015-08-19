@@ -237,6 +237,7 @@ bool AttributeContainer::hasMarkerAttribute() const
 
 void AttributeContainer::compact(std::vector<unsigned int>& mapOldNew)
 {
+//    printFreeIndices();
 	mapOldNew.clear();
 	mapOldNew.resize(realEnd(),0xffffffff);
 
@@ -511,7 +512,10 @@ void AttributeContainer::removeLine(unsigned int index)
             m_tableBlocksEmpty.push_back(bi);
     }
     else
+    {
         std::cerr << "Error removing non existing index " << index << std::endl;
+    }
+
 }
 
 /**************************************

@@ -23,10 +23,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/ArgumentParser.h>
+#include <sofa/simulation/graph/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/Node.h>
+#include <SofaComponentMain/init.h>
 #include <SofaGraphComponent/Gravity.h>
-#include <sofa/component/contextobject/CoordinateSystem.h>
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/objectmodel/Context.h>
@@ -56,6 +57,10 @@ using sofa::core::objectmodel::New;
 int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
+    sofa::simulation::graph::init();
+    sofa::component::init();
+    sofa::gui::initMain();
+
     sofa::helper::parse("This is a SOFA application.")
     (argc,argv);
 
@@ -112,7 +117,6 @@ int main(int argc, char** argv)
 
     //======================================
     // Set up the GUI
-    sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
     sofa::gui::GUIManager::createGUI(groot);
     sofa::gui::GUIManager::SetDimension(800,700);
@@ -123,5 +127,6 @@ int main(int argc, char** argv)
     // Run the main loop
     sofa::gui::GUIManager::MainLoop(groot);
 
+    sofa::simulation::graph::cleanup();
     return 0;
 }

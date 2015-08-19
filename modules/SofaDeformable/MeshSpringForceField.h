@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_MESHSPRINGFORCEFIELD_H
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_MESHSPRINGFORCEFIELD_H
+#include "config.h"
 
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <set>
@@ -172,7 +173,7 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_DEFORMABLE)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_MESHSPRINGFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_DEFORMABLE_API MeshSpringForceField<defaulttype::Vec3dTypes>;
 extern template class SOFA_DEFORMABLE_API MeshSpringForceField<defaulttype::Vec2dTypes>;

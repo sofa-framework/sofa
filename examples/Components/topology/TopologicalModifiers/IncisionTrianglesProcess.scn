@@ -16,8 +16,10 @@
         <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
         <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <DiagonalMass template="Vec3d" name="default5" massDensity="1.5" />
-        <BoxConstraint box="0 9.5 -0.5 10 10.5 0.5" drawBoxes="true" />
-        <BoxConstraint box="0 -0.5 -0.5 10 0.5 0.5" drawBoxes="true" />
+        <BoxROI template="Vec3d" name="box_roi1" box="0 9.5 -0.5 10 10.5 0.5"/>
+        <FixedConstraint template="Vec3d" name="fixedConstraint1" indices="@box_roi1.indices"/>
+        <BoxROI template="Vec3d" name="box_roi2" box="0 -0.5 -0.5 10 0.5 0.5"/>
+        <FixedConstraint template="Vec3d" name="fixedConstraint1" indices="@box_roi2.indices"/>
         <TriangularFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.45" youngModulus="30000" />
         <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="10000" damping="1" />
         <TriangleModel name="default7" selfCollision="true" />

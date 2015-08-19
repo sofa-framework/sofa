@@ -24,7 +24,6 @@
 ******************************************************************************/
 #ifndef SOFA_HELPER_DECOMPOSE_INL
 #define SOFA_HELPER_DECOMPOSE_INL
-
 #include "decompose.h"
 
 #include <limits>
@@ -432,31 +431,6 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<2,2,Real> &
     }
 
     return degenerated;
-}
-
-
-//dQ = Q ( lower(QT*dM*R−1) − lower(QT*dM*R−1)^T )
-//dR =   ( upper(QT*dM*R−1) + lower(QT*dM*R−1)^T ) R
-// lower -> strictly lower
-template<class Real>
-template<int spatial_dimension, int material_dimension>
-void Decompose<Real>::QRDecompositionGradient_dQ( const defaulttype::Mat<spatial_dimension,material_dimension,Real>&Q, const defaulttype::Mat<material_dimension,material_dimension,Real>&invR, const defaulttype::Mat<spatial_dimension,material_dimension,Real>& dM, defaulttype::Mat<spatial_dimension,material_dimension,Real>& dQ )
-{
-    // tmp = QT*dM*R^−1
-    defaulttype::Mat<material_dimension,material_dimension,Real> tmp = Q.multTranspose( dM * invR );
-
-    // L = lower(tmp) - (lower(tmp))^T
-    defaulttype::Mat<material_dimension,material_dimension,Real> L;
-
-    for( int i=0 ; i<material_dimension ; ++i )
-    {
-        for( int j=0 ; j<i ; ++j ) // strictly lower
-            L[i][j] = tmp[i][j];
-        for( int j=i+1 ; j<material_dimension ; ++j ) // strictly lower transposed
-            L[i][j] = -tmp[j][i];
-    }
-
-    dQ = Q * L;
 }
 
 
@@ -1124,27 +1098,6 @@ bool Decompose<Real>::polarDecompositionGradient_dQOverdM( const defaulttype::Ma
 
 
 ///////////////////////////////
-
-
-
-
-template<class Real>
-inline Real Decompose<Real>::zeroTolerance()
-{
-    return (Real)1e-6;
-}
-
-template<>
-inline float Decompose<float>::zeroTolerance()
-{
-    return 1e-6f;
-}
-
-template<>
-inline double Decompose<double>::zeroTolerance()
-{
-    return 1e-8;
-}
 
 
 template <typename Real>
@@ -2958,13 +2911,8 @@ void Decompose<Real>::NSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 
     }
 }
 
-
-
-
-
 } // namespace helper
 
 } // namespace sofa
 
 #endif // SOFA_HELPER_DECOMPOSE_INL
-

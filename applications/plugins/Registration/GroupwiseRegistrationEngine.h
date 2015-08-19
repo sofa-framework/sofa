@@ -30,8 +30,8 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/decompose.h>
-
 #include <sofa/defaulttype/Quat.h>
+#include <sofa/helper/vectorData.h>
 
 namespace sofa
 {
@@ -67,8 +67,8 @@ public:
     typedef defaulttype::Mat<sizeT,sizeT,Real> affine;
 
     Data<unsigned int> f_nbInputs;
-    helper::vector<Data<VecCoord>*> vf_inputs;
-    helper::vector<Data<VecCoord>*> vf_outputs;
+    helper::vectorData<VecCoord> vf_inputs;
+    helper::vectorData<VecCoord> vf_outputs;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const GroupwiseRegistrationEngine<T>* = NULL) { return T::Name();   }
@@ -76,13 +76,15 @@ public:
     virtual void init()
     {
         addInput(&f_nbInputs);
-        createDataVectors();
+        vf_inputs.resize(f_nbInputs.getValue());
+        vf_outputs.resize(f_nbInputs.getValue());
         setDirtyValue();
     }
 
     virtual void reinit()
     {
-        createDataVectors();
+        vf_inputs.resize(f_nbInputs.getValue());
+        vf_outputs.resize(f_nbInputs.getValue());
         update();
     }
 
@@ -90,18 +92,22 @@ protected:
 
     GroupwiseRegistrationEngine()    :   Inherited()
       , f_nbInputs (initData(&f_nbInputs, (unsigned)2, "nbInputs", "Number of input vectors"))
+      , vf_inputs(this, "input", "input vector ")
+      , vf_outputs(this, "output", "output vector",false)
     {
-        createDataVectors();
+        vf_inputs.resize(f_nbInputs.getValue());
+        vf_outputs.resize(f_nbInputs.getValue());
     }
+
 
     virtual ~GroupwiseRegistrationEngine()
     {
-        deleteDataVectors();
     }
 
     virtual void update()
     {
-        createDataVectors();
+        updateAllInputsIfDirty();
+        cleanDirty();
 
         const unsigned int M = vf_inputs.size();
         if(!M) return;
@@ -127,7 +133,6 @@ protected:
             outPos.resize(N);
             for(unsigned int j=0; j<N; ++j) outPos[j] = R*pos[j] + t;
         }
-        cleanDirty();
     }
 
 
@@ -153,98 +158,21 @@ protected:
     }
 
 
-    void createDataVectors(int nb=-1)
-    {
-        unsigned int n = (nb < 0) ? f_nbInputs.getValue() : (unsigned int)nb;
-        for (unsigned int i=vf_inputs.size(); i<n; ++i)
-        {
-            std::ostringstream oname, ohelp;
-            oname << "input" << (i+1);
-            ohelp << "input vector " << (i+1);
-            std::string name_i = oname.str();
-            std::string help_i = ohelp.str();
-            Data<VecCoord>* d = new Data<VecCoord>(help_i.c_str(), true, false);
-            d->setName(name_i);
-            vf_inputs.push_back(d);
-            this->addData(d);
-            this->addInput(d);
-        }
-        for (unsigned int i = n; i < vf_inputs.size(); ++i)
-        {
-            this->delInput(vf_inputs[i]);
-            delete vf_inputs[i];
-        }
-        vf_inputs.resize(n);
-        if (n != f_nbInputs.getValue())
-            f_nbInputs.setValue(n);
-
-
-
-        for (unsigned int i=vf_outputs.size(); i<n; ++i)
-        {
-            std::ostringstream oname, ohelp;
-            oname << "output" << (i+1);
-            ohelp << "output vector " << (i+1);
-            std::string name_i = oname.str();
-            std::string help_i = ohelp.str();
-            Data<VecCoord>* d = new Data<VecCoord>(help_i.c_str(), true, false);
-            d->setName(name_i);
-            vf_outputs.push_back(d);
-            this->addData(d);
-            this->addOutput(d);
-        }
-        for (unsigned int i = n; i < vf_outputs.size(); ++i)
-        {
-            this->delOutput(vf_outputs[i]);
-            delete vf_outputs[i];
-        }
-        vf_outputs.resize(n);
-    }
-
-    void deleteDataVectors()
-    {
-        for (unsigned int i=0; i<vf_inputs.size(); ++i)
-        {
-            this->delInput(vf_inputs[i]);
-            delete vf_inputs[i];
-        }
-        vf_inputs.clear();
-
-        for (unsigned int i=0; i<vf_outputs.size(); ++i)
-        {
-            this->delOutput(vf_outputs[i]);
-            delete vf_outputs[i];
-        }
-        vf_outputs.clear();
-    }
-
 public:
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
     void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
     {
-        const char* p = arg->getAttribute(f_nbInputs.getName().c_str());
-        if (p)
-        {
-            std::string nbStr = p;
-            sout << "parse: setting nbInputs="<<nbStr<<sendl;
-            f_nbInputs.read(nbStr);
-            createDataVectors();
-        }
+        vf_inputs.parseSizeData(arg, f_nbInputs);
+        vf_outputs.parseSizeData(arg, f_nbInputs);
         Inherit1::parse(arg);
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
     void parseFields ( const std::map<std::string,std::string*>& str )
     {
-        std::map<std::string,std::string*>::const_iterator it = str.find(f_nbInputs.getName());
-        if (it != str.end() && it->second)
-        {
-            std::string nbStr = *it->second;
-            sout << "parseFields: setting nbInputs="<<nbStr<<sendl;
-            f_nbInputs.read(nbStr);
-            createDataVectors();
-        }
+        vf_inputs.parseFieldsSizeData(str, f_nbInputs);
+        vf_outputs.parseFieldsSizeData(str, f_nbInputs);
         Inherit1::parseFields(str);
     }
 

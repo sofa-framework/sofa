@@ -27,7 +27,7 @@
 
 
 #include "Sofa_test.h"
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneCreator.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation

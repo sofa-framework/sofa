@@ -32,8 +32,11 @@
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/helper/stable_vector.h>
-#include <string>
+
 #include <sstream>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace sofa
 {
@@ -521,12 +524,17 @@ public:
         }
         else
         {
-            std::istringstream istr( str.c_str() );
+            Container& container = m_value[core::ExecParams::currentAspect()];
+            std::istringstream istr(str.c_str());
             std::string path;
 
+            // Find the target of each path, and store those targets in
+            // a temporary vector of (pointer, path) pairs
+            typedef std::vector< std::pair<DestPtr, std::string> > PairVector;
+            PairVector newList;
             while (istr >> path)
             {
-                DestType* ptr = NULL;
+                DestType *ptr = NULL;
                 if (m_owner && !TraitsFindDest::findLinkDest(m_owner, ptr, path, this))
                 {
                     // This is not an error, as the destination can be added later in the graph
@@ -537,7 +545,34 @@ public:
                 {
                     ok = false;
                 }
-                add(ptr, path);
+                newList.push_back(std::make_pair(ptr, path));
+            }
+
+            // Add the objects that are not already present to the container of this Link
+            for (typename PairVector::iterator i = newList.begin(); i != newList.end(); i++)
+            {
+                const DestPtr ptr = i->first;
+                const std::string& path = i->second;
+
+                if (TraitsContainer::find(container, ptr) == container.size()) // Not found
+                    add(ptr, path);
+            }
+
+            // Remove the objects from the container that are not in the new list
+            for (size_t i = 0; i != container.size(); i++)
+            {
+                DestPtr dest(container[i]);
+                bool destFound = false;
+                typename PairVector::iterator j = newList.begin();
+                while (j != newList.end() && !destFound)
+                {
+                    if (j->first == dest)
+                        destFound = true;
+                    j++;
+                }
+
+                if (!destFound)
+                    remove(dest);
             }
         }
 

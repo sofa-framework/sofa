@@ -3,6 +3,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
 	common.h
+	init.h
 	Node.h
 	AnimateBeginEvent.h
 	AnimateEndEvent.h
@@ -29,6 +30,7 @@ set(HEADER_FILES
 	IntegrateEndEvent.h
 	LocalStorage.h
 	MechanicalComputeEnergyVisitor.h
+    MechanicalGetMomentumVisitor.h
 	MechanicalMatrixVisitor.h
 	 MechanicalOperations.h
 	MechanicalVPrintVisitor.h
@@ -64,7 +66,6 @@ set(HEADER_FILES
 	xml/ElementNameHelper.h
 	xml/Element.h
 	xml/Element.inl
-	xml/initXml.h
 	xml/NodeElement.h
 	xml/ObjectElement.h
 	xml/BaseMultiMappingElement.h
@@ -78,6 +79,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
+	init.cpp
 	Node.cpp
 	AnimateBeginEvent.cpp
 	AnimateEndEvent.cpp
@@ -95,7 +97,7 @@ set(SOURCE_FILES
 	ExportGnuplotVisitor.cpp
 	ExportOBJVisitor.cpp
 	InitVisitor.cpp   
-	MechanicalComputeEnergyVisitor.cpp
+    MechanicalComputeEnergyVisitor.cpp
 	MechanicalOperations.cpp
 	MechanicalMatrixVisitor.cpp
 	MechanicalVPrintVisitor.cpp
@@ -128,7 +130,6 @@ set(SOURCE_FILES
 	XMLPrintVisitor.cpp
 	xml/BaseElement.cpp
 	xml/ElementNameHelper.cpp
-	xml/initXml.cpp
 	xml/NodeElement.cpp
 	xml/ObjectElement.cpp
 	xml/BaseMultiMappingElement.cpp

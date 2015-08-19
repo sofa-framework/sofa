@@ -24,8 +24,8 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDGEOMETRYALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDGEOMETRYALGORITHMS_H
+#include "config.h"
 
-#include <sofa/component/component.h>
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 #include <SofaNonUniformFem/DynamicSparseGridTopologyContainer.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -89,7 +89,7 @@ template <>
 int SOFA_NON_UNIFORM_FEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec1fTypes>::findNearestElementInRestPos(const Coord& pos, sofa::defaulttype::Vector3& baryC, Real& distance) const;
 #endif
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_NON_UNIFORM_FEM)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDGEOMETRYALGORITHMS_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec3dTypes>;
 extern template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec2dTypes>;

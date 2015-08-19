@@ -23,24 +23,25 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneCreator.h>
 
 #include <sofa/helper/ArgumentParser.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/ExecParams.h>
+#include <sofa/core/CollisionModel.h>
+#include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
 
-
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
-#include <sofa/helper/system/FileRepository.h>
 
+#include <SofaComponentMain/init.h>
 #include <SofaBaseCollision/MinProximityIntersection.h>
 #include <SofaConstraint/LMConstraintSolver.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <sofa/core/CollisionModel.h>
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
@@ -188,14 +189,9 @@ Node::SPtr createHouseOfCards(Node::SPtr root,  unsigned int size, SReal distanc
 
 int main(int argc, char** argv)
 {
-#ifndef WIN32
-    // Reset local settings to make sure that floating-point values are interpreted correctly
-    setlocale(LC_ALL,"C");
-    setlocale(LC_NUMERIC,"C");
-#endif
-
     glutInit(&argc,argv);
-
+    sofa::simulation::tree::init();
+    sofa::component::init();
     sofa::gui::initMain();
 
     unsigned int sizeHouseOfCards=4;
@@ -287,5 +283,7 @@ int main(int argc, char** argv)
 
 
     if (ggroot!=NULL) sofa::simulation::getSimulation()->unload(groot);
+
+    sofa::simulation::tree::cleanup();
     return 0;
 }

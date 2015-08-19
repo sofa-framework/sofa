@@ -23,8 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/gl/Texture.h>
-#include <assert.h>
-#include <stdio.h>
+#include <cassert>
+#include <cstdio>
 
 namespace sofa
 {
@@ -564,7 +564,7 @@ io::Image* Texture::getImage(void)
 
 Texture::~Texture(void)
 {
-    glDeleteTextures(1, &id);
+    if (id) glDeleteTextures(1, &id);
     delete image;
 }
 } // namespace gl

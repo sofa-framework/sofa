@@ -1,5 +1,7 @@
-#ifndef CAPSULEINTTOOL_H
-#define CAPSULEINTTOOL_H
+#ifndef SOFA_COMPONENT_COLLISION_CAPSULEINTTOOL_H
+#define SOFA_COMPONENT_COLLISION_CAPSULEINTTOOL_H
+#include "config.h"
+
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <SofaBaseCollision/CapsuleModel.h>
@@ -132,7 +134,7 @@ int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & cap, TSphere<Data
 }
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_CAPSULEINTTOOL_CPP)
 extern template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<sofa::defaulttype::Vec3Types>&, TCapsule<sofa::defaulttype::Vec3Types>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 extern template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<sofa::defaulttype::Vec3Types>&, TCapsule<sofa::defaulttype::RigidTypes>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 extern template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<sofa::defaulttype::RigidTypes>&, TCapsule<sofa::defaulttype::RigidTypes>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
@@ -143,4 +145,4 @@ extern template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(
 }
 }
 }
-#endif // CAPSULEINTTOOL_H
+#endif // SOFA_COMPONENT_COLLISION_CAPSULEINTTOOL_H

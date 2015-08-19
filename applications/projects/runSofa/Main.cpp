@@ -27,15 +27,17 @@
 #include <fstream>
 
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/common/xml/initXml.h>
+#include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/PluginManager.h>
 #ifdef SOFA_HAVE_DAG
+#include <sofa/simulation/graph/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #endif
 #ifdef SOFA_SMP
 #include <sofa/simulation/tree/SMPSimulation.h>
 #endif
+#include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <SofaComponentMain/init.h>
 #include <SofaLoader/ReadState.h>
@@ -48,6 +50,7 @@
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
+#include <sofa/helper/Logger.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/system/atomic.h>
@@ -61,6 +64,7 @@
 using std::cerr;
 using std::endl;
 using sofa::helper::Utils;
+using sofa::helper::Console;
 
 void loadVerificationData(std::string& directory, std::string& filename, sofa::simulation::Node* node)
 {
@@ -89,6 +93,11 @@ void loadVerificationData(std::string& directory, std::string& filename, sofa::s
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
+    sofa::simulation::tree::init();
+#ifdef SOFA_HAVE_DAG
+    sofa::simulation::graph::init();
+#endif
+    sofa::component::init();
     //std::cout << "Using " << sofa::helper::system::atomic<int>::getImplName()<<" atomics." << std::endl;
 
     sofa::helper::BackTrace::autodump();
@@ -142,6 +151,7 @@ int main(int argc, char** argv)
     bool        disableStealing = false;
     bool        affinity = false;
 #endif
+    std::string colorsStatus = "auto";
 
     std::string gui_help = "choose the UI (";
     gui_help += sofa::gui::GUIManager::ListSupportedGUI('|');
@@ -153,6 +163,7 @@ int main(int argc, char** argv)
     .option(&computationTimeSampling,'c',"computationTimeSampling","Frequency of display of the computation time statistics, in number of animation steps. 0 means never.")
     .option(&gui,'g',"gui",gui_help.c_str())
     .option(&plugins,'l',"load","load given plugins")
+    .option(&nbMSSASamples, 'm', "msaa", "number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled")
     .option(&nbIterations,'n',"nb_iterations","(only batch) Number of iterations of the simulation")
     .option(&printFactory,'p',"factory","print factory logs")
     .option(&loadRecent,'r',"recent","load most recently opened file")
@@ -160,7 +171,7 @@ int main(int argc, char** argv)
     .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
     .option(&testMode,'x',"test","select test mode with xml output after N iteration")
     .option(&verif,'v',"verification","load verification data for the scene")
-    .option(&nbMSSASamples, 'm', "msaa", "number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled")
+    .option(&colorsStatus,'z',"colors","use colors on stdout and stderr (yes, no, auto)")
 #ifdef SOFA_SMP
     .option(&disableStealing,'w',"disableStealing","Disable Work Stealing")
     .option(&nProcs,'c',"nprocs","Number of processor")
@@ -205,8 +216,17 @@ int main(int argc, char** argv)
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 #endif
 
-    sofa::component::init();
-    sofa::simulation::xml::initXml();
+    if (colorsStatus == "auto")
+        Console::setColorsStatus(Console::ColorsAuto);
+    else if (colorsStatus == "yes")
+        Console::setColorsStatus(Console::ColorsEnabled);
+    else if (colorsStatus == "no")
+        Console::setColorsStatus(Console::ColorsDisabled);
+    else
+    {
+        Console::setColorsStatus(Console::ColorsAuto);
+        sofa::helper::Logger::getMainLogger().log( sofa::helper::Logger::Warning, std::string( "Invalid argument ‘") + colorsStatus + std::string("‘ for ‘--colors‘" ) );
+    }
 
     // Add the plugin directory to PluginRepository
 #ifdef WIN32
@@ -321,5 +341,9 @@ int main(int argc, char** argv)
 
     sofa::gui::GUIManager::closeGUI();
 
+    sofa::simulation::tree::cleanup();
+#ifdef SOFA_HAVE_DAG
+    sofa::simulation::graph::cleanup();
+#endif
     return 0;
 }

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_H
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_H
+#include "config.h"
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -126,6 +127,8 @@ public:
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData);
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
+
+    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ );
 
     void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);

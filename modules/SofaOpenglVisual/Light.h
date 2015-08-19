@@ -24,13 +24,13 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LIGHT
 #define SOFA_COMPONENT_LIGHT
+#include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/component/component.h>
 
 #ifdef SOFA_HAVE_GLEW
 #include <sofa/helper/gl/FrameBufferObject.h>
@@ -115,7 +115,7 @@ public:
     virtual GLfloat* getProjectionMatrix() { return NULL ;}
     virtual GLfloat* getModelviewMatrix() { return NULL ;}
     virtual const sofa::defaulttype::Vector3 getPosition() { return sofa::defaulttype::Vector3(0.0,0.0,0.0); }
-    virtual const unsigned short getShadowTextureUnit() { return d_textureUnit.getValue(); }
+    virtual unsigned short getShadowTextureUnit() { return d_textureUnit.getValue(); }
     virtual void setShadowTextureUnit(const unsigned short unit) { d_textureUnit.setValue(unit); }
 
 protected:

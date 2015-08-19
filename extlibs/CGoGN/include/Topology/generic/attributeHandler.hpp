@@ -21,54 +21,68 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
-
+#include "attributeHandler.h"
 #include <boost/thread/thread.hpp>
 #include <boost/thread/barrier.hpp>
 #include <vector>
 #include <Algo/Topo/embedding.h>
+
+#include <boost/lambda/lambda.hpp>
+
 namespace CGoGN
 {
 
-template <typename T, unsigned int ORBIT, typename MAP>
-inline void AttributeHandler<T, ORBIT, MAP>::registerInMap()
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline void AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::registerInMap()
 {
-    boost::mutex::scoped_lock lockAH(m_map->attributeHandlersMutex);
-	m_map->attributeHandlers.insert(std::pair<AttributeMultiVectorGen*, AttributeHandlerGen*>(m_attrib, this)) ;
+    boost::lock_guard<boost::mutex> lockAH(m_map->attributeHandlersMutex);
+    m_map->attributeHandlers.insert(std::pair<AttributeMultiVectorGen*, AttributeHandlerGen*>(m_attrib, this)) ;
 }
 
-template <typename T, unsigned int ORBIT, typename MAP>
-inline void AttributeHandler<T, ORBIT, MAP>::unregisterFromMap()
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline void AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::unregisterFromMap()
 {
 	typedef std::multimap<AttributeMultiVectorGen*, AttributeHandlerGen*>::iterator IT ;
 
-    boost::mutex::scoped_lock lockAH(m_map->attributeHandlersMutex);
+    boost::lock_guard<boost::mutex> lockAH(m_map->attributeHandlersMutex/*, boost::adopt_lock*/);
     std::pair<IT, IT> bounds = m_map->attributeHandlers.equal_range(m_attrib) ;
 	for(IT i = bounds.first; i != bounds.second; ++i)
 	{
 		if((*i).second == this)
 		{
-			m_map->attributeHandlers.erase(i) ;
+            m_map->attributeHandlers.erase(i) ;
 			return ;
 		}
 	}
-	assert(false || !"Should not get here") ;
+    assert(false || !"Should not get here") ;
 }
 
 // =================================================================
 
-template <typename T, unsigned int ORBIT, typename MAP>
-AttributeHandler<T, ORBIT, MAP>::AttributeHandler() :
-	AttributeHandlerGen(false),
-	m_map(NULL),
-	m_attrib(NULL)
-{}
-
-template <typename T, unsigned int ORBIT, typename MAP>
-AttributeHandler<T, ORBIT, MAP>::AttributeHandler(MAP* m, AttributeMultiVector<T>* amv) :
-	AttributeHandlerGen(false),
-	m_map(m),
-	m_attrib(amv)
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::AttributeHandler() :
+    AttributeHandlerGen(false)
+    ,m_map(NULL)
+    ,m_attrib(NULL)
 {
+    using boost::lambda::constant;
+    using boost::lambda::_1;
+    using boost::lambda::var;
+    setNewCellCallback( std::cerr << constant("new cell on orbit ") << constant(ORBIT) << constant(" : ") << _1 << constant("( attribute ") << var(this->name()) << constant('\n')) ;
+    m_onCellBeingRemovedCallBack = std::cerr << constant("cell being removed on orbit ") << constant(ORBIT) << constant(" : ")<< _1 << constant('\n');
+}
+
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::AttributeHandler(MAP* m, AttributeMultiVector<T>* amv) :
+    AttributeHandlerGen(false)
+    ,m_map(m)
+    ,m_attrib(amv)
+{
+    using boost::lambda::constant;
+    using boost::lambda::_1;
+    using boost::lambda::var;
+    setNewCellCallback( std::cerr << constant("new cell on orbit ") << constant(ORBIT) << constant(" : ") << _1 << constant("( attribute ") << var(this->name()) << constant('\n')) ;
+    m_onCellBeingRemovedCallBack = std::cerr << constant("cell being removed on orbit ") << constant(ORBIT) << constant(" : ")<< _1 << constant('\n');
 	if(m != NULL && amv != NULL && amv->getIndex() != AttributeContainer::UNKNOWN)
 	{
 		assert(ORBIT == amv->getOrbit() || !"AttributeHandler: orbit incompatibility") ;
@@ -79,14 +93,19 @@ AttributeHandler<T, ORBIT, MAP>::AttributeHandler(MAP* m, AttributeMultiVector<T
 		valid = false ;
 }
 
-template <typename T, unsigned int ORBIT, typename MAP>
-AttributeHandler<T, ORBIT, MAP>::AttributeHandler(const AttributeHandler<T, ORBIT, MAP>& ta) :
-	AttributeHandlerGen(ta.valid),
-	m_map(ta.m_map),
-	m_attrib(ta.m_attrib)
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+template<class OtherAttributeAccessorPolicy>
+AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::AttributeHandler(const AttributeHandler<T, ORBIT, MAP, OtherAttributeAccessorPolicy >& ta) :
+    AttributeHandlerGen(ta.isValid())
+    ,m_map(ta.map())
+    ,m_attrib(ta.getDataVector())
+    ,m_onNewCellCallBack(ta.m_onNewCellCallBack)
+   ,m_onCellBeingRemovedCallBack(ta.m_onCellBeingRemovedCallBack)
 {
-	if(valid)
-		registerInMap() ;
+    if(isValid())
+    {
+        registerInMap() ;
+    }
 }
 
 //template <typename T, unsigned int ORBIT>
@@ -106,17 +125,40 @@ AttributeHandler<T, ORBIT, MAP>::AttributeHandler(const AttributeHandler<T, ORBI
 //		valid = false;
 //}
 
-template <typename T, unsigned int ORBIT, typename MAP>
-inline AttributeHandler<T, ORBIT, MAP>& AttributeHandler<T, ORBIT, MAP>::operator=(const AttributeHandler<T, ORBIT, MAP>& ta)
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+template<class OtherAttributeAccessorPolicy>
+inline AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::operator=(const AttributeHandler<T, ORBIT, MAP, OtherAttributeAccessorPolicy >& ta)
 {
-	if(valid)
+    m_onNewCellCallBack = ta.m_onNewCellCallBack;
+    m_onCellBeingRemovedCallBack = ta.m_onCellBeingRemovedCallBack;
+    if(isValid())
 		unregisterFromMap() ;
-	m_map = ta.m_map ;
-	m_attrib = ta.m_attrib ;
-	valid = ta.valid ;
+    m_map = ta.map() ;
+    m_attrib = ta.getDataVector() ;
+    valid = ta.isValid() ;
 	if(valid)
-		registerInMap() ;
+    {
+        registerInMap() ;
+    }
 	return *this ;
+}
+
+
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::operator=(const AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& ta)
+{
+    m_onNewCellCallBack = ta.m_onNewCellCallBack;
+    m_onCellBeingRemovedCallBack = ta.m_onCellBeingRemovedCallBack;
+    if(isValid())
+        unregisterFromMap() ;
+    m_map = ta.map() ;
+    m_attrib = ta.getDataVector() ;
+    valid = ta.isValid() ;
+    if(valid)
+    {
+        registerInMap() ;
+    }
+    return *this ;
 }
 
 //template <typename T, unsigned int ORBIT>
@@ -133,138 +175,131 @@ inline AttributeHandler<T, ORBIT, MAP>& AttributeHandler<T, ORBIT, MAP>::operato
 //	return *this ;
 //}
 
-template <typename T, unsigned int ORBIT, typename MAP>
-AttributeHandler<T, ORBIT, MAP>::~AttributeHandler()
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::~AttributeHandler()
 {
-	if(valid)
-		unregisterFromMap() ;
+    if(this->isValid())
+    {
+        unregisterFromMap() ;
+    }
 }
 
-template <typename T, unsigned int ORBIT, typename MAP>
-inline AttributeMultiVector<T>* AttributeHandler<T, ORBIT, MAP>::getDataVector() const
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline AttributeMultiVector<T>* AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::getDataVector() const
 {
-	return m_attrib ;
+    return m_attrib ;
 }
 
-template <typename T, unsigned int ORBIT, typename MAP>
-AttributeMultiVectorGen* AttributeHandler<T, ORBIT, MAP>::getDataVectorGen() const
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+AttributeMultiVectorGen* AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::getDataVectorGen() const
 {
-	return m_attrib ;
+    return m_attrib ;
 }
 
-template <typename T, unsigned int ORBIT, typename MAP>
-inline int AttributeHandler<T, ORBIT, MAP>::getSizeOfType() const
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline int AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::getSizeOfType() const
 {
 	return sizeof(T) ;
 }
 
-template <typename T, unsigned int ORBIT, typename MAP>
-unsigned int AttributeHandler<T, ORBIT, MAP>::getOrbit() const
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+unsigned int AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::getOrbit() const
 {
 	return ORBIT ;
 }
 
-template <typename T, unsigned int ORBIT, typename MAP>
-inline unsigned int AttributeHandler<T, ORBIT, MAP>::getIndex() const
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline unsigned int AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::getIndex() const
 {
-	return m_attrib->getIndex() ;
+    return m_attrib->getIndex() ;
 }
 
-template <typename T, unsigned int ORBIT, typename MAP>
-const std::string& AttributeHandler<T, ORBIT, MAP>::name() const
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+const std::string& AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::name() const
 {
-	return m_attrib->getName() ;
+    return m_attrib->getName() ;
 }
 
-template <typename T, unsigned int ORBIT, typename MAP>
-inline const std::string& AttributeHandler<T, ORBIT, MAP>::typeName() const
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline const std::string& AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::typeName() const
 {
-	return m_attrib->getTypeName();
+    return m_attrib->getTypeName();
 }
 
 
-template <typename T, unsigned int ORBIT, typename MAP>
-inline unsigned int AttributeHandler<T, ORBIT, MAP>::nbElements() const
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline unsigned int AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::nbElements() const
 {
-	return m_map->template getAttributeContainer<ORBIT>().size() ;
+    return m_map->template getAttributeContainer<ORBIT>().size() ;
 }
 
-template <typename T, unsigned int ORBIT, typename MAP>
-inline T& AttributeHandler<T, ORBIT, MAP>::operator[](Cell<ORBIT> c)
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline T& AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::operator[](Cell<ORBIT> c)
+{
+    return AttributeAccessorPolicy::at(m_map, m_attrib, c);
+}
+
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline const T& AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::operator[](Cell<ORBIT> c) const
+{
+    return AttributeAccessorPolicy::at(m_map, m_attrib, c);
+}
+
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline T& AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::operator[](unsigned int a)
+{
+    return AttributeAccessorPolicy::at(m_attrib, a);
+}
+
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline const T& AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::operator[](unsigned int a) const
+{
+    return AttributeAccessorPolicy::at(m_attrib, a);
+}
+
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline unsigned int AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::insert(const T& elt)
 {
 	assert(valid || !"Invalid AttributeHandler") ;
-	unsigned int a = m_map->getEmbedding(c) ;
-
-	if (a == EMBNULL)
-        a = Algo::Topo::template setOrbitEmbeddingOnNewCell<ORBIT,MAP>(*m_map, c) ;
-	return m_attrib->operator[](a) ;
-}
-
-template <typename T, unsigned int ORBIT, typename MAP>
-inline const T& AttributeHandler<T, ORBIT, MAP>::operator[](Cell<ORBIT> c) const
-{
-	assert(valid || !"Invalid AttributeHandler") ;
-	unsigned int a = m_map->getEmbedding(c) ;
-	return m_attrib->operator[](a) ;
-}
-
-template <typename T, unsigned int ORBIT, typename MAP>
-inline T& AttributeHandler<T, ORBIT, MAP>::operator[](unsigned int a)
-{
-	assert(valid || !"Invalid AttributeHandler") ;
-	return m_attrib->operator[](a) ;
-}
-
-template <typename T, unsigned int ORBIT, typename MAP>
-inline const T& AttributeHandler<T, ORBIT, MAP>::operator[](unsigned int a) const
-{
-	assert(valid || !"Invalid AttributeHandler") ;
-	return m_attrib->operator[](a) ;
-}
-
-template <typename T, unsigned int ORBIT, typename MAP>
-inline unsigned int AttributeHandler<T, ORBIT, MAP>::insert(const T& elt)
-{
-	assert(valid || !"Invalid AttributeHandler") ;
-	unsigned int idx = m_map->template getAttributeContainer<ORBIT>().insertLine() ;
-	m_attrib->operator[](idx) = elt ;
+    unsigned int idx = m_map->template getAttributeContainer<ORBIT>().insertLine() ;
+    m_attrib->operator[](idx) = elt ;
 	return idx ;
 }
 
-template <typename T, unsigned int ORBIT, typename MAP>
-inline unsigned int AttributeHandler<T, ORBIT, MAP>::newElt()
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline unsigned int AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::newElt()
 {
 	assert(valid || !"Invalid AttributeHandler") ;
-	unsigned int idx = m_map->template getAttributeContainer<ORBIT>().insertLine() ;
+    unsigned int idx = m_map->template getAttributeContainer<ORBIT>().insertLine() ;
 	return idx ;
 }
 
-template <typename T, unsigned int ORBIT, typename MAP>
-inline void AttributeHandler<T, ORBIT, MAP>::setAllValues(const T& v)
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline void AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::setAllValues(const T& v)
 {
 	for(unsigned int i = begin(); i != end(); next(i))
-		m_attrib->operator[](i) = v ;
+        m_attrib->operator[](i) = v ;
 }
 
-template <typename T, unsigned int ORBIT, typename MAP>
-inline unsigned int AttributeHandler<T, ORBIT, MAP>::begin() const
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline unsigned int AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::begin() const
 {
 	assert(valid || !"Invalid AttributeHandler") ;
-	return m_map->template getAttributeContainer<ORBIT>().begin() ;
+    return m_map->template getAttributeContainer<ORBIT>().begin() ;
 }
 
-template <typename T, unsigned int ORBIT, typename MAP>
-inline unsigned int AttributeHandler<T, ORBIT, MAP>::end() const
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline unsigned int AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::end() const
 {
 	assert(valid || !"Invalid AttributeHandler") ;
-	return m_map->template getAttributeContainer<ORBIT>().end() ;
+    return m_map->template getAttributeContainer<ORBIT>().end() ;
 }
 
-template <typename T, unsigned int ORBIT, typename MAP>
-inline void AttributeHandler<T, ORBIT, MAP>::next(unsigned int& iter) const
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline void AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::next(unsigned int& iter) const
 {
 	assert(valid || !"Invalid AttributeHandler") ;
-	m_map->template getAttributeContainer<ORBIT>().next(iter) ;
+    m_map->template getAttributeContainer<ORBIT>().next(iter) ;
 }
 
 

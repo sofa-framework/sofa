@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_H
-#define SOFA_HELPER_H
+#ifndef SOFA_HELPER_HELPER_H
+#define SOFA_HELPER_HELPER_H
 
 #include <sofa/helper/system/config.h>
 

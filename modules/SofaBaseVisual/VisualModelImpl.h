@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_VISUALMODEL_VISUALMODELIMPL_H
 #define SOFA_COMPONENT_VISUALMODEL_VISUALMODELIMPL_H
+#include "config.h"
 
 #include <sofa/core/State.h>
 #include <sofa/core/visual/VisualModel.h>
@@ -34,8 +35,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
 #include <SofaBaseTopology/TopologyData.inl>
-
-#include <sofa/component/component.h>
 
 #include <map>
 #include <string>
@@ -114,7 +113,7 @@ public:
         normals.resize(vsize);
     }
 
-    virtual int getSize() const { return m_positions.getValue().size(); }
+    virtual int getSize() const { return (int)m_positions.getValue().size(); }
 
     //State API
     virtual       Data<VecCoord>* write(     core::VecCoordId  v )

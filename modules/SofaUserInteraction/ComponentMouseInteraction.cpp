@@ -22,17 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP
 #define SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP
-
-
-#include <SofaUserInteraction/ComponentMouseInteraction.h>
 #include <SofaUserInteraction/ComponentMouseInteraction.inl>
+
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/component/component.h>
 #include <sofa/helper/Factory.inl>
 
 
@@ -121,4 +117,3 @@ namespace helper
 template class SOFA_USER_INTERACTION_API Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
 }
 }
-#endif // SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP

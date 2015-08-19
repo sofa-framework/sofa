@@ -24,13 +24,14 @@
 ******************************************************************************/
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/Locale.h>
 #include <sofa/defaulttype/Vec.h>
 
-#include <stdio.h>
+#include <cstdio>
 #include <iostream>
 #include <vector>
 #include <sstream>
-#include <string.h>
+#include <string>
 
 namespace sofa
 {
@@ -51,6 +52,9 @@ static void skipToEOL(FILE* f)
 
 bool MassSpringLoader::load(const char *filename)
 {
+    // Make sure that fscanf() uses a dot '.' as the decimal separator.
+    helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
+
     std::string fname = filename;
     if (!sofa::helper::system::DataRepository.findFile(fname)) return false;
 

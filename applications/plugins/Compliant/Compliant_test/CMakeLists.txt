@@ -13,6 +13,7 @@ set(SOURCE_FILES
     CompliantNLImplicitSolver_test.cpp
     DampedOscillator_test.cpp
 	AssembledRigidRigidMapping_test.cpp
+    RigidJointMapping_test.cpp
 
 	)
 
@@ -34,7 +35,7 @@ endif()
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${RC_FILES} ${PYTHON_FILES})
 
-AddLinkerDependencies(Compliant SofaTest)
+AddLinkerDependencies(Compliant SofaTest SofaGTestMain)
 
 
 

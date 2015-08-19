@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_VISUALMODEL_OGLVIEWPORT_H_
 #define SOFA_COMPONENT_VISUALMODEL_OGLVIEWPORT_H_
+#include "config.h"
 
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/defaulttype/Vec.h>

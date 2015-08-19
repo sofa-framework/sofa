@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_MESHNEWPROXIMITYINTERSECTION_H
 #define SOFA_COMPONENT_COLLISION_MESHNEWPROXIMITYINTERSECTION_H
+#include "config.h"
 
 #include <SofaBaseCollision/NewProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
