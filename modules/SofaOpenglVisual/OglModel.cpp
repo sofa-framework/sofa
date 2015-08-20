@@ -86,7 +86,7 @@ OglModel::OglModel()
     , tex(NULL)
     , vbo(0), iboEdges(0), iboTriangles(0), iboQuads(0)
     , canUseVBO(false), VBOGenDone(false), initDone(false), useEdges(false), useTriangles(false), useQuads(false), canUsePatches(false)
-    , oldEdgesSize(0), oldTrianglesSize(0), oldQuadsSize(0)
+    , oldVerticesSize(0), oldNormalsSize(0), oldEdgesSize(0), oldTrianglesSize(0), oldQuadsSize(0)
 {
 
     textures.clear();
@@ -152,6 +152,8 @@ OglModel::~OglModel()
 
 void OglModel::drawGroup(int ig, bool transparent)
 {
+    glEnable(GL_NORMALIZE);
+
     const ResizableExtVector<Edge>& edges = this->getEdges();
     const ResizableExtVector<Triangle>& triangles = this->getTriangles();
     const ResizableExtVector<Quad>& quads = this->getQuads();
@@ -1083,6 +1085,7 @@ void OglModel::updateBuffers()
     const ResizableExtVector<Triangle>& triangles = this->getTriangles();
     const ResizableExtVector<Quad>& quads = this->getQuads();
     const VecCoord& vertices = this->getVertices();
+    const VecDeriv& normals = this->getVnormals();
 
     if (initDone)
     {
@@ -1106,7 +1109,7 @@ void OglModel::updateBuffers()
             //Update VBO & IBO
             else
             {
-                if(oldVerticesSize != vertices.size())
+                if(oldVerticesSize != vertices.size() || oldNormalsSize != normals.size())
                     initVertexBuffer();
                 else
                     updateVertexBuffer();
@@ -1139,6 +1142,7 @@ void OglModel::updateBuffers()
                     createQuadsIndicesBuffer();
             }
             oldVerticesSize = vertices.size();
+            oldNormalsSize = normals.size();
             oldEdgesSize = edges.size();
             oldTrianglesSize = triangles.size();
             oldQuadsSize = quads.size();
