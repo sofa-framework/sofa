@@ -24,7 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_H
-
+#include "config.h"
 
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologySparseData.h>

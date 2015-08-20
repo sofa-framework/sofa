@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FixedRotationConstraint_H
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FixedRotationConstraint_H
+#include "config.h"
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/defaulttype/Quat.h>

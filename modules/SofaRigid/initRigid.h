@@ -24,8 +24,8 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_RIGID_INIT_H
 #define SOFA_COMPONENT_RIGID_INIT_H
+#include "config.h"
 
-#include <sofa/component/component.h>
 
 namespace sofa
 {

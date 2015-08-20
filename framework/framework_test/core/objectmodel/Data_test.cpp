@@ -22,14 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include "stdafx.h"
-
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vectorData.h>
-#include <plugins/SceneCreator/SceneCreator.h>
 
-#include "Sofa_test.h"
+#include <gtest/gtest.h>
 
 namespace sofa {
 
@@ -37,17 +33,16 @@ namespace sofa {
 Create two datas and a link between them.
 Set the value of data1 and check if the boolean is dirty of data2 is true and that the value of data2 is right.
   */
-struct DataLink_test : public Sofa_test<>
+struct DataLink_test: public ::testing::Test
 {
     core::objectmodel::Data<int> data1;
     core::objectmodel::Data<int> data2;
 
     /// Create a link between the two datas
     void SetUp()
-    { 
-       // Link
-       sofa::modeling::setDataLink(&data1,&data2);
-
+    {
+        // Link
+        data2.setParent(&data1);
     }
 
     // Test if the output is updated only if necessary
@@ -79,7 +74,7 @@ TEST_F(DataLink_test , testDataLink )
  *
  * @author Thomas Lemaire @date 2014
  */
-struct vectorData_test : public Sofa_test<>
+struct vectorData_test: public ::testing::Test
 {
     core::objectmodel::Data<int> data1;
     helper::vectorData<int> vDataInt;
@@ -104,7 +99,7 @@ struct vectorData_test : public Sofa_test<>
     void test_link()
     {
         vDataInt.resize(5);
-        sofa::modeling::setDataLink(&data1,vDataInt[3]);
+        vDataInt[3]->setParent(&data1);
         data1.setValue(1);
         ASSERT_EQ(vDataInt[3]->getValue(),1);
     }

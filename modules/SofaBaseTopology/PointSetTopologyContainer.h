@@ -24,11 +24,11 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYCONTAINER_H
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYCONTAINER_H
+#include "config.h"
 
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseTopology.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {

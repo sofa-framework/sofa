@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_H
 #define SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_H
+#include "config.h"
 
 #include <SofaUserInteraction/InteractionPerformer.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
@@ -121,7 +122,7 @@ protected:
 #endif*/
 
 
-// #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_CONTRAINTATTACHBODYPERFORMER_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_CPP)
 // #ifndef SOFA_DOUBLE
 // extern template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3fTypes>;
 // extern template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Rigid3fTypes>;
@@ -130,9 +131,10 @@ protected:
 // extern template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3dTypes>;
 // extern template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Rigid3dTypes>;
 // #endif
-// #endif
 
 extern template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
+#endif
+
 
 
 }

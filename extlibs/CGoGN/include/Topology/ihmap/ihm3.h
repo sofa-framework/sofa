@@ -55,9 +55,9 @@ public:
     struct VertexAttributeAccessorCPHMap {
         static inline T& at(MAP* map, AttributeMultiVector<T>* attrib, Cell<VERTEX> c)
         {
-            const Dart d = c.dart;
-            const unsigned int nbSteps = map->m_curLevel - map->vertexInsertionLevel(d) ;
-            unsigned int index = map->Parent::template getEmbedding<VERTEX>(d) ;
+//            const Dart d = c.dart;
+//            const unsigned int nbSteps = map->m_curLevel - map->vertexInsertionLevel(d) ;
+//            const unsigned int index = map->Parent::template getEmbedding<VERTEX>(c.dart) ;
 //            std::cerr << "VertexAttributeAccessorCPHMap : nbSteps = " << nbSteps << std::endl;
 //            if(index == EMBNULL)
 //            {
@@ -82,38 +82,39 @@ public:
 //                }
 //                index = nextIdx ;
 //            }
-            return attrib->operator[](index);
+            return attrib->operator[](map->Parent::template getEmbedding<VERTEX>(c.dart));
         }
 
         static inline const T& at(MAP* map, const AttributeMultiVector<T>* attrib, Cell<VERTEX> c)
         {
-            const Dart d = c.dart;
-            const unsigned int nbSteps = map->m_curLevel - map->vertexInsertionLevel(d) ;
-            unsigned int index = map->Parent::template getEmbedding<VERTEX>(d) ;
-//            std::cerr << "(const) VertexAttributeAccessorCPHMap : nbSteps = " << nbSteps << std::endl;
-            if(index == EMBNULL)
-            {
-                assert(false);
-//                index = Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(*map, d) ;
-//                map->m_nextLevelCell->operator[](index) = EMBNULL ;
-            }
+//            const Dart d = c.dart;
+//            const unsigned int nbSteps = map->m_curLevel - map->vertexInsertionLevel(d) ;
+//            unsigned int index = map->Parent::template getEmbedding<VERTEX>(d) ;
+////            std::cerr << "(const) VertexAttributeAccessorCPHMap : nbSteps = " << nbSteps << std::endl;
+//            if(index == EMBNULL)
+//            {
+//                assert(false);
+////                index = Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(*map, d) ;
+////                map->m_nextLevelCell->operator[](index) = EMBNULL ;
+//            }
 
 
-            unsigned int step = 0 ;
-            while(step < nbSteps)
-            {
-                step++ ;
-                const unsigned int nextIdx = map->m_nextLevelCell->operator[](index) ;
-                if(nextIdx != EMBNULL)
-                {
-                    index = nextIdx ;
-                } else
-                {
-//                    break;
-                    assert(false);
-                }
-            }
-            return attrib->operator[](index);
+//            unsigned int step = 0 ;
+//            while(step < nbSteps)
+//            {
+//                step++ ;
+//                const unsigned int nextIdx = map->m_nextLevelCell->operator[](index) ;
+//                if(nextIdx != EMBNULL)
+//                {
+//                    index = nextIdx ;
+//                } else
+//                {
+////                    break;
+//                    assert(false);
+//                }
+//            }
+//            return attrib->operator[](index);
+            return attrib->operator[](map->Parent::template getEmbedding<VERTEX>(c.dart));
         }
 
         static inline T& at(AttributeMultiVector<T>* attrib, unsigned int a)
@@ -133,7 +134,20 @@ public:
         static inline T& at( MAP* map, AttributeMultiVector<T>* attrib, Cell<ORBIT> c)
         {
             assert(!c.isNil());
-            unsigned int a = map->getEmbedding(c) ;
+            unsigned int a;
+            if (ORBIT != FACE && ORBIT != VOLUME)
+            {
+                a = map->getEmbedding(c) ;
+            }
+            if (ORBIT == FACE)
+            {
+                a = map->ParentMap::template getEmbedding<FACE>(map->dartOfMaxFaceLevel(FaceCell(c.dart)));
+            }
+            if (ORBIT == VOLUME)
+            {
+                a = map->ParentMap::template getEmbedding<VOLUME>(map->dartOfMaxVolumeLevel(VolumeCell(c.dart)));
+            }
+
             if (a == EMBNULL)
             {
                 std::cerr << __FILE__ << ":" << __LINE__ << " should not happen !" << std::endl;
@@ -145,7 +159,18 @@ public:
         }
         static inline const T& at(const MAP* map, const AttributeMultiVector<T>* attrib, Cell<ORBIT> c)
         {
-            return attrib->operator[](map->getEmbedding(c)) ;
+            if (ORBIT != FACE && ORBIT != VOLUME)
+            {
+                return attrib->operator[](map->getEmbedding(c)) ;
+            }
+            if (ORBIT == FACE)
+            {
+                return attrib->operator [](map->dartIndex(map->dartOfMaxFaceLevel(FaceCell(c.dart))));
+            }
+            if (ORBIT == VOLUME)
+            {
+                return attrib->operator [](map->dartIndex(map->dartOfMaxVolumeLevel(VolumeCell(c.dart))));
+            }
         }
 
         static inline T& at(AttributeMultiVector<T>* attrib, unsigned int a)
@@ -269,6 +294,26 @@ public:
         return this->phi2MaxLvl(phi3MaxLvl(d));
     }
 
+    inline unsigned int getMaxFaceLevel(Dart d) const
+    {
+        return a_maxFaceLevel->operator [](dartIndex(d));
+    }
+
+    inline unsigned int getMaxVolumeLevel(Dart d) const
+    {
+        return a_maxVolumeLevel->operator [](dartIndex(d));
+    }
+
+    inline void setMaxFaceLevel(Dart d, unsigned l)
+    {
+        a_maxFaceLevel->operator [](dartIndex(d)) = l;
+    }
+
+    inline void setMaxVolumeLevel(Dart d, unsigned l)
+    {
+        a_maxVolumeLevel->operator [](dartIndex(d)) = l;
+    }
+
 private:
 
     Dart phi2bis(Dart d) const;
@@ -276,6 +321,9 @@ private:
 
     AttributeHandler< unsigned, VOLUME, MAP, NonVertexAttributeAccessorCPHMap< unsigned, VOLUME > > a_volumeLevel;
     AttributeHandler< unsigned, FACE, MAP, NonVertexAttributeAccessorCPHMap< unsigned, FACE > > a_faceLevel;
+
+    AttributeMultiVector<unsigned int>* a_maxVolumeLevel;
+    AttributeMultiVector<unsigned int>* a_maxFaceLevel;
 
 public:
 //    void clear(bool removeAttrib);
@@ -310,6 +358,36 @@ public:
         if (ORBIT == VOLUME)
         {
             return this->volumeLevel(c.dart);
+        }
+
+        return std::numeric_limits<unsigned int>::max();
+    }
+
+    template< unsigned int ORBIT >
+    inline unsigned int getMaxCellLevel(Cell< ORBIT > c) const
+    {
+        if (ORBIT == DART || ORBIT == VERTEX)
+        {
+            return this->getDartLevel(c.dart);
+        }
+
+        if (ORBIT == EDGE)
+        {
+            const unsigned curr = getCurrentLevel();
+            setCurrentLevel(getMaxLevel());
+            const unsigned res = this->edgeLevel(c.dart);
+            setCurrentLevel(curr);
+            return res;
+        }
+
+        if (ORBIT == FACE)
+        {
+            return a_maxFaceLevel->operator [](dartIndex(c.dart));
+        }
+
+        if (ORBIT == VOLUME)
+        {
+            return a_maxVolumeLevel->operator [](dartIndex(c.dart));
         }
 
         return std::numeric_limits<unsigned int>::max();
@@ -368,6 +446,8 @@ public:
 	Dart quadranguleFace(Dart d);
 
 	void deleteVertexSubdividedFace(Dart d);
+
+        Dart deleteVertex(Dart d);
 	//@}
 
 	void setVertexVertexFunctor(FunctorType* f) { vertexVertexFunctor = f ; }
@@ -396,7 +476,10 @@ public:
      */
     virtual void initFaceId() ;
     virtual void initEdgeId() ;
+    virtual void initMaxCellLevel();
 
+    void updateMaxLevelVolume(VolumeCell w);
+    void updateMaxLevelFace(FaceCell f);
 
     //! Set a face id to all darts from an orbit of d
     /*!
@@ -444,6 +527,20 @@ public:
     Dart volumeOldestDart(Dart d);
     Dart volumeNewestDart(Dart d) const;
 
+
+    /**
+     * @brief dartOfMaxVolumeLevel
+     * @param w
+     * @return a dart d which satisfies dartLevel(d) == volumeLevel(w) when being at currentLevel, thus avoiding iterating over a lot of darts when looking for the newestDart
+     */
+    Dart dartOfMaxVolumeLevel(VolumeCell w) const;
+
+    /**
+     * @brief dartOfMaxFaceLevel
+     * @param f
+     * @return a dart d which satisfies dartLevel(d) == faceLevel(f) when being at currentLevel, thus avoiding iterating over a lot of darts when looking for the newestDart
+     */
+    Dart dartOfMaxFaceLevel(FaceCell f) const;
 	//! Return true if the edge of d in the current level map
 	//! has already been subdivided to the next level
 	/*!
@@ -551,6 +648,7 @@ public:
 
     template <unsigned int ORBIT>
     void checkEmbedding(Cell<ORBIT> c) {
+#ifndef DNDEBUG
         std::map< unsigned, unsigned > cellEmbeddings;
         TraversorDartsOfOrbit< MAP, ORBIT > traDoC(*this, c);
         for (Dart it = traDoC.begin(); it != traDoC.end() ;it = traDoC.next())
@@ -564,6 +662,7 @@ public:
                 assert(this->ParentMap::template getEmbedding< ORBIT >(it) == embeddingIT->second );
             }
         }
+#endif
     }
 
     template <unsigned int ORBIT>
@@ -580,7 +679,13 @@ public:
             TraversorCell<MAP, ORB, FORCE_DART_MARKING> trav(*this);
             unsigned i = 0u ;
             for (Dart d = trav.begin() ; d != trav.end() ; ++i, d = trav.next()) {
-                std::cerr << "embedding number " << i << " of dart " << d  <<  " : " << getEmbedding<ORB>(d) << std::endl;
+                std::cerr << "embeddings of dart " << d  <<  std::endl;
+                TraversorDartsOfOrbit< MAP, ORB > traDoO(*this, Cell<ORB>(d));
+                for (Dart dit = traDoO.begin() ; dit != traDoO.end() ; dit = traDoO.next())
+                {
+                    std::cerr << this->ParentMap::template getEmbedding< ORB >(dit) << " ";
+                }
+                std::cerr << std::endl;
             }
             std::cerr << "**** end embedding *****" << std::endl;
         }

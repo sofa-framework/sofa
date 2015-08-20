@@ -768,7 +768,7 @@
  </widget>
  <layoutdefault spacing="2" margin="5"/>
  <includes>
-  <include location="local">SofaGUIQt.h</include>
+  <include>sofa/gui/qt/SofaGUIQt.h</include>
  </includes>
  <resources/>
  <connections>

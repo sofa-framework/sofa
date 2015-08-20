@@ -33,7 +33,7 @@
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/simulation/graph/graph.h>
+#include <sofa/simulation/graph/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
 #include <sofa/helper/Factory.h>
@@ -56,7 +56,7 @@ class MyCfExportVisitor : public sofa::simulation::Visitor
 {
 public:
 	// type def
-	typedef helper::vector<BaseData*> VecData;
+	typedef helper::vector<sofa::core::objectmodel::BaseData*> VecData;
 
     MyCfExportVisitor(const sofa::core::ExecParams* params)
         : Visitor(params)
@@ -166,5 +166,6 @@ int main(int argc, char** argv)
     }
     fileList.close();
 
+    sofa::simulation::graph::cleanup();
     return 0;
 }

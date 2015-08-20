@@ -24,13 +24,13 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ENGINE_HAUSDORFFDISTANCE_H
 #define SOFA_COMPONENT_ENGINE_HAUSDORFFDISTANCE_H
+#include "config.h"
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/component/component.h>
 
 namespace sofa
 {

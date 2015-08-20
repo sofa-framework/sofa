@@ -1,5 +1,6 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_SLEEPCONTROLLER_H
 #define SOFA_COMPONENT_CONTROLLER_SLEEPCONTROLLER_H
+#include "config.h"
 
 #include <SofaUserInteraction/initUserInteraction.h>
 #include <sofa/core/objectmodel/BaseObject.h>

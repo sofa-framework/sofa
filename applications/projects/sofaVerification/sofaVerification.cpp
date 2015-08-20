@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/tree/init.h>
 #include <SofaLoader/ReadState.h>
 #include <SofaExporter/WriteState.h>
 #include <SofaValidation/CompareState.h>
@@ -321,5 +322,6 @@ int main(int argc, char** argv)
 
     apply(refdir, sceneFiles, iterations, reinit, topology);
 
+    sofa::simulation::tree::cleanup();
     return 0;
 }

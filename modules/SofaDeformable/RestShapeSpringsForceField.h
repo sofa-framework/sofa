@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_H
+#include "config.h"
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/objectmodel/Data.h>
@@ -33,7 +34,6 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #endif
 
-#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -143,7 +143,7 @@ private :
     bool useRestMState; /// An external MechanicalState is used as rest reference.
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGSFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec3dTypes>;
@@ -162,7 +162,7 @@ extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defau
 //extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Rigid2fTypes>;
 #endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_CPP)
+#endif
 
 } // namespace forcefield
 

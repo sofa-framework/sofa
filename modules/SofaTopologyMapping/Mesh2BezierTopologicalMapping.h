@@ -24,7 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_MESH2BEZIERTOPOLOGICALMAPPING_H
 #define SOFA_COMPONENT_TOPOLOGY_MESH2BEZIERTOPOLOGICALMAPPING_H
-
+#include "config.h"
 
 #include <SofaTopologyMapping/Mesh2PointTopologicalMapping.h>
 

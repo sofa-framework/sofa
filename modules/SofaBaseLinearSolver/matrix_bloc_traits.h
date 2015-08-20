@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_MATRIXBLOCTRAITS_H
 #define SOFA_COMPONENT_LINEARSOLVER_MATRIXBLOCTRAITS_H
+#include "config.h"
 
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/BaseMatrix.h>

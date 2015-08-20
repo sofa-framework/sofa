@@ -1,7 +1,7 @@
-#ifndef SOFA_COMPONENT_COLLISION_INTRMESHUTIL_H
-#define SOFA_COMPONENT_COLLISION_INTRMESHUTIL_H
+#ifndef SOFA_COMPONENT_COLLISION_INTRMESHUTILITY_H
+#define SOFA_COMPONENT_COLLISION_INTRMESHUTILITY_H
+#include "config.h"
 
-#include <sofa/component/component.h>
 #include <SofaBaseCollision/IntrUtility3.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -79,7 +79,7 @@ public:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_INTRMESHUTIL_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_INTRMESHUTILITY_CPP)
 #ifndef SOFA_FLOAT
 extern template struct SOFA_MESH_COLLISION_API IntrUtil<TTriangle<defaulttype::Vec3dTypes> >;
 extern template class SOFA_MESH_COLLISION_API FindContactSet<TTriangle<defaulttype::Vec3dTypes>,TOBB<defaulttype::Rigid3dTypes> >;
@@ -97,4 +97,4 @@ extern template struct SOFA_MESH_COLLISION_API IntrConfigManager<TTriangle<defau
 }
 }
 }
-#endif // SOFA_COMPONENT_COLLISION_INTRMESHUTIL_H
+#endif

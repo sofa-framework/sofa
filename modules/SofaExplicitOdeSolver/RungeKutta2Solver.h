@@ -24,9 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ODESOLVER_RUNGEKUTTA2SOLVER_H
 #define SOFA_COMPONENT_ODESOLVER_RUNGEKUTTA2SOLVER_H
+#include "config.h"
 
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {

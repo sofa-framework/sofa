@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_H
 #define SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_H
+#include "config.h"
 
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/IntersectorFactory.h>

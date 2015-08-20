@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -1 0" time="0" animate="0"  dt="0.01" >
-	<VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
+	<VisualStyle displayFlags="hideVisualModels showBehaviorModels showMechanicalMappings showForceFields" />
 
   <RequiredPlugin name="Compliant" pluginName="Compliant" />
   <RequiredPlugin name="Flexible" pluginName="Flexible" />
@@ -9,7 +9,7 @@
 	<Node name="scene" >
 		
 		<CompliantImplicitSolver />
-		<MinresSolver verbose="0" iterations="20" precision="1e-3" relative="false" schur="true"/>
+		<MinresSolver verbose="0" iterations="20" precision="1e-3" relative="false"/>
 		<DiagonalResponse />
 
 		<Node name="cloth" >

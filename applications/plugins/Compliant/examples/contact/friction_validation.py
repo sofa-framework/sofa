@@ -2,7 +2,7 @@ import Sofa
 
 import math
 
-from Compliant import Rigid, Vec, Quaternion, Tools, Control
+from Compliant import Rigid, Vec, Quaternion, Tools, Control, Frame
 
 class Shared:
     pass
@@ -41,7 +41,9 @@ def createScene(node):
                             name = 'num',
                             iterations = 100,
                             precision = 1e-14)
-    
+    node.createObject('LDLTResponse')
+
+
     proximity = node.getObject('proximity')
 
     proximity.alarmDistance = 0.5
@@ -62,7 +64,7 @@ def createScene(node):
                              indices = '0')
 
     # ground-plane joint
-    frame = Rigid.Frame()
+    frame = Rigid.Frame.Frame()
     frame.translation = [8, 0, 0]
 
     joint = Rigid.RevoluteJoint(2)
@@ -117,12 +119,12 @@ class Controller(Sofa.PythonScriptController):
         shared.pid.pre_step( dt )
 
         # info display
-        relative = Rigid.Frame( shared.plane.position[0] ).inv() * Rigid.Frame( shared.box.position[0] )
+        relative = Rigid.Frame.Frame( shared.plane.position[0] ).inv() * Rigid.Frame.Frame( shared.box.position[0] )
         tangent = [relative.translation[0], relative.translation[2]]
 
         relative_speed = Vec.diff(shared.box.velocity[0][:3], shared.plane.velocity[0][:3])
 
-        local = Quaternion.rotate(Quaternion.conj( Rigid.Frame( shared.plane.position[0] ).rotation ),
+        local = Quaternion.rotate(Quaternion.conj( Rigid.Frame.Frame( shared.plane.position[0] ).rotation ),
                                   relative_speed)
         
         tangent_speed = [local[0], local[2]]

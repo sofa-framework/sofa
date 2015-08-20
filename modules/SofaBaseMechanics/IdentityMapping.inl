@@ -165,8 +165,8 @@ void IdentityMapping<TIn, TOut>::handleTopologyChange()
 template <class TIn, class TOut>
 const sofa::defaulttype::BaseMatrix* IdentityMapping<TIn, TOut>::getJ()
 {
-    const unsigned int outStateSize = this->toModel->read(core::ConstVecCoordId::position())->getValue().size();
-    const unsigned int  inStateSize = this->fromModel->read(core::ConstVecCoordId::position())->getValue().size();
+    const unsigned int outStateSize = this->toModel->getSize();
+    const unsigned int  inStateSize = this->fromModel->getSize();
     assert(outStateSize == inStateSize);
 
     if (matrixJ.get() == 0 || updateJ)

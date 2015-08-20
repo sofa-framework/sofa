@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define RIGIDTOQUATENGINE_CPP
+#define SOFA_COMPONENT_ENGINE_RIGIDENGINE_CPP
 
 #include <SofaEngine/RigidToQuatEngine.inl>
 

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_MESHTOPOLOGY_H
 #define SOFA_COMPONENT_TOPOLOGY_MESHTOPOLOGY_H
+#include "config.h"
 
 #include <stdlib.h>
 #include <vector>
@@ -33,7 +34,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {

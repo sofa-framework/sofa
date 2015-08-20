@@ -24,8 +24,8 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_GRID2D_H
 #define SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_GRID2D_H
+#include "config.h"
 
-#include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/rmath.h>

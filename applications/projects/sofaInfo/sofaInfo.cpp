@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/tree/tree.h>
+#include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <SofaComponentMain/init.h>
 #include <sofa/core/ObjectFactory.h>
@@ -39,9 +39,6 @@ int main(int /*argc*/, char** argv)
         std::cout << "Usage: sofaInfo FILE" << std::endl;
         return -1;
     }
-
-    sofa::simulation::tree::init();
-    sofa::component::init();
 
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
@@ -95,5 +92,6 @@ int main(int /*argc*/, char** argv)
     if (groot!=NULL)
         sofa::simulation::getSimulation()->unload(groot);
 
+    sofa::simulation::tree::cleanup();
     return 0;
 }

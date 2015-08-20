@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_H
 #define SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_H
+#include "config.h"
 
 #include <sofa/core/CollisionModel.h>
 #include <SofaMeshCollision/LocalMinDistanceFilter.h>
@@ -245,6 +246,8 @@ public:
     {
         return DataTypes::Name();
     }
+
+    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false);
 };
 
 template<class DataTypes>

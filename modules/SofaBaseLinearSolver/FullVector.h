@@ -24,8 +24,8 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_FULLVECTOR_H
 #define SOFA_COMPONENT_LINEARSOLVER_FULLVECTOR_H
+#include "config.h"
 
-#include <sofa/component/component.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/vector.h>

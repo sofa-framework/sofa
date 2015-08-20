@@ -270,6 +270,11 @@ public:
 typedef DualQuatCoord3<double> DualQuatCoordd; ///< alias
 typedef DualQuatCoord3<float> DualQuatCoordf; ///< alias
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_DUALQUAT_CPP)
+extern template class SOFA_HELPER_API DualQuatCoord3<double>;
+extern template class SOFA_HELPER_API DualQuatCoord3<float>;
+#endif
+
 } // namespace helper
 
 } // namespace sofa

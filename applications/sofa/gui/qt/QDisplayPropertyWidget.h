@@ -55,6 +55,11 @@
 #include <QSpinBox>
 #include <QVBoxLayout>
 
+
+#include <QTextEdit>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+
 namespace sofa
 {
 

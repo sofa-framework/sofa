@@ -34,23 +34,4 @@
 #  define SOFA_BUILD_FILEMANAGER_PML_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-namespace sofa
-{
-
-namespace component
-{
-
-extern "C" {
-    SOFA_BUILD_FILEMANAGER_PML_API void initExternalModule();
-    SOFA_BUILD_FILEMANAGER_PML_API const char* getModuleName();
-    SOFA_BUILD_FILEMANAGER_PML_API const char* getModuleVersion();
-    SOFA_BUILD_FILEMANAGER_PML_API const char* getModuleLicense();
-    SOFA_BUILD_FILEMANAGER_PML_API const char* getModuleDescription();
-    SOFA_BUILD_FILEMANAGER_PML_API const char* getModuleComponentList();
-}
-
-}
-
-}
-
 #endif

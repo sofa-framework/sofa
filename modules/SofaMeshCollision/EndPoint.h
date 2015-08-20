@@ -24,6 +24,8 @@
 ******************************************************************************/
 #ifndef ENDPOINT_H
 #define ENDPOINT_H
+#include "config.h"
+
 #include <iostream>
 #include <stdio.h>
 #include <limits>

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "generateDoc.h"
 #include <SofaComponentMain/init.h>
-#include <sofa/simulation/tree/tree.h>
+#include <sofa/simulation/tree/init.h>
 #include <iostream>
 #include <fstream>
 
@@ -36,5 +36,6 @@ int main(int /*argc*/, char** /*argv*/)
     projects::generateFactoryHTMLDoc("sofa-classes.html");
     std::cout << "Generating _classes.php" << std::endl;
     projects::generateFactoryPHPDoc("_classes.php","classes");
+    sofa::simulation::tree::cleanup();
     return 0;
 }

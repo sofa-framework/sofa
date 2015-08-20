@@ -3,6 +3,7 @@
 
 #ifndef SOFA_COMPONENT_COLLISION_INTROBBOBB_H
 #define SOFA_COMPONENT_COLLISION_INTROBBOBB_H
+#include "config.h"
 
 #include <SofaBaseCollision/Intersector.h>
 #include <SofaBaseCollision/OBBModel.h>

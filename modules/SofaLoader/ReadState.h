@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_READSTATE_H
 #define SOFA_COMPONENT_MISC_READSTATE_H
+#include "config.h"
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -32,7 +33,6 @@
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/component/component.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/ExecParams.h>
 

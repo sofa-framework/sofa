@@ -35,6 +35,7 @@
 //
 #ifndef SOFA_COMPONENT_MAPPING_CURVEMAPPING_H
 #define SOFA_COMPONENT_MAPPING_CURVEMAPPING_H
+#include "config.h"
 
 #include <sofa/core/Mapping.h>
 
@@ -42,7 +43,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/component/component.h>
 
 
 namespace sofa

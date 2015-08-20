@@ -152,10 +152,11 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
     {
         helper::ReadAccessor< Data<VecCoord> > in(input_position);
 
-        float color[]= {1.0,0.76078431372,0.,0.}, specular[]= {0.,0.,0.,0.};
-        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
-        glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,specular);
-        glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0.0);
+        const float color[] = {1.0f, 0.76078431372f, 0.0f, 0.0f};
+        const float specular[] = {0.0f, 0.0f ,0.0f ,0.0f};
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.0f);
 
         if(!wireframe) glBegin(GL_TRIANGLES);
         for (unsigned int i=0; i<tri.size(); ++i)
@@ -180,10 +181,11 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
     {
         helper::ReadAccessor< Data<VecCoord> > out(output_position);
 
-        float color[]= {0.,0.6,0.8,0.}, specular[]= {0.,0.,0.,0.};
-        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
-        glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,specular);
-        glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0.0);
+        const float color[] = {0.0f, 0.6f, 0.8f, 0.0f};
+        const float specular[] = {0.0f, 0.0f, 0.0f, 0.0f};
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.0f);
 
         if(!wireframe) glBegin(GL_TRIANGLES);
         for (unsigned int i=0; i<tri.size(); ++i)

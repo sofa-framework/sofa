@@ -1,5 +1,7 @@
 #ifndef OBBINTTOOL_H
 #define OBBINTTOOL_H
+#include "config.h"
+
 #include <SofaBaseCollision/OBBModel.h>
 #include <SofaBaseCollision/IntrOBBOBB.h>
 #include <sofa/core/collision/DetectionOutput.h>

@@ -25,8 +25,7 @@
 #include "init.h"
 
 #include <sofa/core/init.h>
-
-#include <iostream>
+#include <sofa/helper/init.h>
 
 namespace sofa
 {
@@ -40,7 +39,7 @@ namespace common
 static bool s_initialized = false;
 static bool s_cleanedUp = false;
 
-void init()
+SOFA_SIMULATION_COMMON_API void init()
 {
     if (!s_initialized)
     {
@@ -49,12 +48,12 @@ void init()
     }
 }
 
-bool isInitialized()
+SOFA_SIMULATION_COMMON_API bool isInitialized()
 {
     return s_initialized;
 }
 
-void cleanup()
+SOFA_SIMULATION_COMMON_API void cleanup()
 {
     if (!s_cleanedUp)
     {
@@ -63,18 +62,20 @@ void cleanup()
     }
 }
 
-bool isCleanedUp()
+SOFA_SIMULATION_COMMON_API bool isCleanedUp()
 {
     return s_cleanedUp;
 }
 
-void checkIfInitialized()
+// Detect missing cleanup() call.
+struct CleanupCheck
 {
-    if (!isInitialized())
+    ~CleanupCheck()
     {
-        std::cerr << "Warning: SofaSimulationCommon is not initialized (sofa::helper::init() has never been called).  An application should call the init() function of the higher level Sofa library it uses." << std::endl;
+        if (simulation::common::isInitialized() && !simulation::common::isCleanedUp())
+            helper::printLibraryNotCleanedUpWarning("SofaSimulationCommon", "sofa::simulation::common::cleanup()");
     }
-}
+} check;
 
 } // namespace common
 

@@ -59,10 +59,9 @@ public slots:
 
     void updateComponentList();
     void updateDescription();
-
-private :
+public:
     void updatePluginsListView();
-    void initPluginListView();
+private:
     void savePluginsToIniFile();
     void loadPluginsFromIniFile();
 };

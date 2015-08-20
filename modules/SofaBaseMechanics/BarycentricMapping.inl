@@ -1486,7 +1486,7 @@ void BarycentricMapping<TIn, TOut>::applyJ (const core::MechanicalParams * /*mpa
     {
 #endif
         typename Out::VecDeriv* out = _out.beginEdit();
-        out->resize(this->toModel->read(core::ConstVecCoordId::position())->getValue().size());
+        out->resize(this->toModel->getSize());
         if (mapper != NULL)
         {
             mapper->applyJ(*out, in.getValue());
@@ -2766,8 +2766,8 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapping<TIn, TOut>::getJ()
 #endif
         mapper!=NULL )
     {
-        const size_t outStateSize = this->toModel->read(core::ConstVecCoordId::position())->getValue().size();
-        const size_t inStateSize = this->fromModel->read(core::ConstVecCoordId::position())->getValue().size();
+        const size_t outStateSize = this->toModel->getSize();
+        const size_t inStateSize = this->fromModel->getSize();
         const sofa::defaulttype::BaseMatrix* matJ = mapper->getJ((int)outStateSize, (int)inStateSize);
 
         return matJ;

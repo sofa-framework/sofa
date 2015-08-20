@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_H
 #define SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_H
+#include "config.h"
 
 #include <SofaUserInteraction/InteractionPerformer.h>
 #include <SofaBaseCollision/BaseContactMapper.h>

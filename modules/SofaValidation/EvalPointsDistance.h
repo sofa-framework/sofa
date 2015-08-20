@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #ifndef SOFA_COMPONENT_MISC_EVALPOINTSDISTANCE_H
 #define SOFA_COMPONENT_MISC_EVALPOINTSDISTANCE_H
+#include "config.h"
 
 #include <sofa/core/behavior/MechanicalState.h>
 

@@ -26,6 +26,9 @@
 #include <boost/thread/barrier.hpp>
 #include <vector>
 #include <Algo/Topo/embedding.h>
+
+#include <boost/lambda/lambda.hpp>
+
 namespace CGoGN
 {
 
@@ -34,16 +37,14 @@ inline void AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::registerI
 {
     boost::lock_guard<boost::mutex> lockAH(m_map->attributeHandlersMutex);
     m_map->attributeHandlers.insert(std::pair<AttributeMultiVectorGen*, AttributeHandlerGen*>(m_attrib, this)) ;
-//    std::cerr << "Attribute registered : " << reinterpret_cast<unsigned int *>(m_attrib) << " " << reinterpret_cast<unsigned int *>(this) << std::endl;
 }
 
 template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
 inline void AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::unregisterFromMap()
 {
 	typedef std::multimap<AttributeMultiVectorGen*, AttributeHandlerGen*>::iterator IT ;
-//    std::cerr << "Attribute unregistering : " << reinterpret_cast<unsigned int *>(m_attrib) << " " << reinterpret_cast<unsigned int *>(this) << std::endl;
 
-    boost::lock_guard<boost::mutex> lockAH(m_map->attributeHandlersMutex);
+    boost::lock_guard<boost::mutex> lockAH(m_map->attributeHandlersMutex/*, boost::adopt_lock*/);
     std::pair<IT, IT> bounds = m_map->attributeHandlers.equal_range(m_attrib) ;
 	for(IT i = bounds.first; i != bounds.second; ++i)
 	{
@@ -53,24 +54,35 @@ inline void AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::unregiste
 			return ;
 		}
 	}
-//	assert(false || !"Should not get here") ;
+    assert(false || !"Should not get here") ;
 }
 
 // =================================================================
 
 template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
 AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::AttributeHandler() :
-	AttributeHandlerGen(false),
-    m_map(NULL),
-    m_attrib(NULL)
-{}
+    AttributeHandlerGen(false)
+    ,m_map(NULL)
+    ,m_attrib(NULL)
+{
+    using boost::lambda::constant;
+    using boost::lambda::_1;
+    using boost::lambda::var;
+    setNewCellCallback( std::cerr << constant("new cell on orbit ") << constant(ORBIT) << constant(" : ") << _1 << constant("( attribute ") << var(this->name()) << constant('\n')) ;
+    m_onCellBeingRemovedCallBack = std::cerr << constant("cell being removed on orbit ") << constant(ORBIT) << constant(" : ")<< _1 << constant('\n');
+}
 
 template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
 AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::AttributeHandler(MAP* m, AttributeMultiVector<T>* amv) :
-	AttributeHandlerGen(false),
-    m_map(m),
-    m_attrib(amv)
+    AttributeHandlerGen(false)
+    ,m_map(m)
+    ,m_attrib(amv)
 {
+    using boost::lambda::constant;
+    using boost::lambda::_1;
+    using boost::lambda::var;
+    setNewCellCallback( std::cerr << constant("new cell on orbit ") << constant(ORBIT) << constant(" : ") << _1 << constant("( attribute ") << var(this->name()) << constant('\n')) ;
+    m_onCellBeingRemovedCallBack = std::cerr << constant("cell being removed on orbit ") << constant(ORBIT) << constant(" : ")<< _1 << constant('\n');
 	if(m != NULL && amv != NULL && amv->getIndex() != AttributeContainer::UNKNOWN)
 	{
 		assert(ORBIT == amv->getOrbit() || !"AttributeHandler: orbit incompatibility") ;
@@ -84,12 +96,16 @@ AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::AttributeHandler(MAP*
 template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
 template<class OtherAttributeAccessorPolicy>
 AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::AttributeHandler(const AttributeHandler<T, ORBIT, MAP, OtherAttributeAccessorPolicy >& ta) :
-    AttributeHandlerGen(ta.isValid()),
-    m_map(ta.map()),
-    m_attrib(ta.getDataVector())
+    AttributeHandlerGen(ta.isValid())
+    ,m_map(ta.map())
+    ,m_attrib(ta.getDataVector())
+    ,m_onNewCellCallBack(ta.m_onNewCellCallBack)
+   ,m_onCellBeingRemovedCallBack(ta.m_onCellBeingRemovedCallBack)
 {
-	if(valid)
-		registerInMap() ;
+    if(isValid())
+    {
+        registerInMap() ;
+    }
 }
 
 //template <typename T, unsigned int ORBIT>
@@ -113,14 +129,36 @@ template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorP
 template<class OtherAttributeAccessorPolicy>
 inline AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::operator=(const AttributeHandler<T, ORBIT, MAP, OtherAttributeAccessorPolicy >& ta)
 {
-	if(valid)
+    m_onNewCellCallBack = ta.m_onNewCellCallBack;
+    m_onCellBeingRemovedCallBack = ta.m_onCellBeingRemovedCallBack;
+    if(isValid())
 		unregisterFromMap() ;
     m_map = ta.map() ;
     m_attrib = ta.getDataVector() ;
     valid = ta.isValid() ;
 	if(valid)
-		registerInMap() ;
+    {
+        registerInMap() ;
+    }
 	return *this ;
+}
+
+
+template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
+inline AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::operator=(const AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& ta)
+{
+    m_onNewCellCallBack = ta.m_onNewCellCallBack;
+    m_onCellBeingRemovedCallBack = ta.m_onCellBeingRemovedCallBack;
+    if(isValid())
+        unregisterFromMap() ;
+    m_map = ta.map() ;
+    m_attrib = ta.getDataVector() ;
+    valid = ta.isValid() ;
+    if(valid)
+    {
+        registerInMap() ;
+    }
+    return *this ;
 }
 
 //template <typename T, unsigned int ORBIT>
@@ -140,8 +178,10 @@ inline AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& AttributeHandl
 template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >
 AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >::~AttributeHandler()
 {
-	if(valid)
-		unregisterFromMap() ;
+    if(this->isValid())
+    {
+        unregisterFromMap() ;
+    }
 }
 
 template <typename T, unsigned int ORBIT, typename MAP, class AttributeAccessorPolicy >

@@ -33,7 +33,7 @@
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/simulation/tree/tree.h>
+#include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
 
@@ -186,5 +186,6 @@ int main(int argc, char** argv)
     sofa::helper::system::DataRepository.findFile(strfilename);
     apply(strfilename, atoi(argv[2]), stroutput);
 
+    sofa::simulation::tree::cleanup();
     return 0;
 }

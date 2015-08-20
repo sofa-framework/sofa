@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ENGINE_BOXROI_H
 #define SOFA_COMPONENT_ENGINE_BOXROI_H
+#include "config.h"
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -35,7 +36,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/loader/MeshLoader.h>
-#include <sofa/component/component.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/visual/VisualParams.h>
 
@@ -85,6 +85,8 @@ public:
     void draw(const core::visual::VisualParams*);
 
     virtual void computeBBox(const core::ExecParams*  params, bool onlyVisible=false );
+
+    virtual void handleEvent(core::objectmodel::Event *event);
 
 
     /// Pre-construction check method called by ObjectFactory.
@@ -168,6 +170,7 @@ public:
     Data<bool> p_drawHexahedra;
     Data<bool> p_drawQuads;
     Data<double> _drawSize;
+    Data<bool> p_doUpdate;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)

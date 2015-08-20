@@ -90,7 +90,7 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::init()
         return;
     }
 
-    resize(_mstate->read(core::ConstVecCoordId::position())->getValue().size());
+    resize(_mstate->getSize());
 }
 
 template <class MyReal>
@@ -103,7 +103,7 @@ template <class MyReal>
 void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int ncap = _mstate->read(core::ConstVecCoordId::position())->getValue().size();
+    const int ncap = _mstate->getSize();
 
     bool updated = false;
     if (ncap != size)

@@ -48,8 +48,10 @@
 //#include <sofa/component/typedef/Sofa_typedef.h>
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
+#include <SofaComponentMain/init.h>
 
 #include <sofa/core/objectmodel/Context.h>
+
 
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
@@ -58,6 +60,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/glut.h>
 
+#include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
@@ -334,6 +337,6 @@ int main(int argc, char** argv)
     // Run the main loop
     sofa::gui::GUIManager::MainLoop(groot);
 
+    sofa::simulation::tree::cleanup();
     return 0;
-
 }

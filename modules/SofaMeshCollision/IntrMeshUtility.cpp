@@ -1,4 +1,4 @@
-#define SOFA_COMPONENT_COLLISION_INTRMESHUTIL_CPP
+#define SOFA_COMPONENT_COLLISION_INTRMESHUTILITY_CPP
 #include <SofaMeshCollision/IntrMeshUtility.inl>
 
 namespace sofa{

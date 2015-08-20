@@ -4,6 +4,7 @@
 
 #ifndef SOFA_COMPONENT_COLLISION_INTRCAPSULEOBB_H
 #define SOFA_COMPONENT_COLLISION_INTRCAPSULEOBB_H
+#include "config.h"
 
 #include <SofaBaseCollision/Intersector.h>
 #include <SofaBaseCollision/CapsuleModel.h>

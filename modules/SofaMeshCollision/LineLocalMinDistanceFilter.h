@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_LINELOCALMINDISTANCEFILTER_H
 #define SOFA_COMPONENT_COLLISION_LINELOCALMINDISTANCEFILTER_H
+#include "config.h"
 
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/LocalMinDistanceFilter.h>

@@ -31,6 +31,7 @@
 
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/tree/init.h>
 #include <SofaComponentMain/init.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
@@ -169,5 +170,6 @@ int main(int argc, char** argv)
     }
     if (groot!=NULL) getSimulation()->unload(groot);
 
+    sofa::simulation::tree::cleanup();
     return 0;
 }

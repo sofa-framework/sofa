@@ -294,7 +294,7 @@ template <class TIn, class TOut>
 const sofa::defaulttype::BaseMatrix* BeamLinearMapping<TIn, TOut>::getJ()
 {
 
-    const unsigned int  inStateSize = this->fromModel->read(core::ConstVecCoordId::position())->getValue().size();
+    const unsigned int  inStateSize = this->fromModel->getSize();
     const unsigned int outStateSize = points.size();
 
     if (matrixJ.get() == 0 || updateJ)
