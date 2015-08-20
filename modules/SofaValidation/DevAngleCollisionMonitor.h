@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_DEVANGLECOLLISIONMONITOR_H
 #define SOFA_COMPONENT_MISC_DEVANGLECOLLISIONMONITOR_H
+#include "config.h"
 
 #include <sofa/helper/vector.h>
 #include <sofa/core/objectmodel/Event.h>

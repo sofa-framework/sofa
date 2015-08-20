@@ -24,8 +24,8 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_INTERACTIONPERFORMER_H
 #define SOFA_COMPONENT_COLLISION_INTERACTIONPERFORMER_H
+#include "config.h"
 
-#include <sofa/component/component.h>
 #include <SofaGraphComponent/MouseButtonSetting.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/objectmodel/Event.h>
@@ -92,7 +92,7 @@ public:
 } // namespace collision
 } // namespace component
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_INTERACTIONPERFOMER_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_INTERACTIONPERFORMER_CPP)
 namespace helper
 {
 //delay load of the specialized Factory class. unique definition reside in the cpp file.

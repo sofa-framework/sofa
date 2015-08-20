@@ -61,12 +61,12 @@ SofaPluginManager::SofaPluginManager()
     listComponents->setHeaderLabels(QStringList() << "Component list");
 
     loadPluginsFromIniFile();
-    initPluginListView();
+    updatePluginsListView();
 }
 
 
 
-void SofaPluginManager::initPluginListView()
+void SofaPluginManager::updatePluginsListView()
 {
     typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
     PluginMap& map = sofa::helper::system::PluginManager::getInstance().getPluginMap();

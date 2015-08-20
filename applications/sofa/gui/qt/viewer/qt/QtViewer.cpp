@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "viewer/qt/QtViewer.h"
+#include <sofa/gui/qt/viewer/qt/QtViewer.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/common/Simulation.h>
@@ -42,7 +42,7 @@
 #include <OpenGL/OpenGL.h>
 #endif
 
-#include "GenGraphForm.h"
+#include <sofa/gui/qt/GenGraphForm.h>
 
 
 #include <sofa/helper/system/glut.h>
@@ -700,7 +700,25 @@ void QtViewer::DisplayOBJs()
 
         if (_axis)
         {
-            DrawAxis(0.0, 0.0, 0.0, 10.0);
+            SReal* minBBox = vparams->sceneBBox().minBBoxPtr();
+            SReal* maxBBox = vparams->sceneBBox().maxBBoxPtr();
+
+
+            SReal minDistance = std::numeric_limits<SReal>::max();
+
+            minDistance = maxBBox[0] - minBBox[0];
+
+            for (int i=1;i<3;i++)
+            {
+                if(minDistance > (maxBBox[i] - minBBox[i]))
+                    minDistance = (maxBBox[i] - minBBox[i]);
+            }
+
+            if(minDistance == 0 )
+                minDistance = 1.0;
+
+            // Arrows of axis are defined as 1/4 of the min BBOX
+            DrawAxis(0.0, 0.0, 0.0,(minDistance/4.0));
             if (vparams->sceneBBox().minBBox().x() < vparams->sceneBBox().maxBBox().x())
                 DrawBox(vparams->sceneBBox().minBBoxPtr(),
                         vparams->sceneBBox().maxBBoxPtr());

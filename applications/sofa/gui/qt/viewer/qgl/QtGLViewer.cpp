@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "viewer/qgl/QtGLViewer.h"
+#include "QtGLViewer.h"
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/thread/CTime.h>
@@ -44,7 +44,7 @@
 #include <sofa/helper/system/glut.h>
 #include <sofa/gui/BaseGUI.h>
 #include <qevent.h>
-#include "GenGraphForm.h"
+#include <sofa/gui/qt/GenGraphForm.h>
 
 #include <sofa/helper/gl/glfont.h>
 #include <sofa/helper/gl/RAII.h>

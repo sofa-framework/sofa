@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATAHANDLER_H
 #define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYDATAHANDLER_H
+#include "config.h"
 
 #include <sofa/core/topology/TopologyElementHandler.h>
 #include <sofa/core/topology/BaseTopologyData.h>

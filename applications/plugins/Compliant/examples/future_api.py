@@ -1,6 +1,7 @@
 
 from SofaPython import script
 from Compliant import future
+from SofaPtyhon import Quaternion
 
 import numpy as np
 import math
@@ -23,7 +24,7 @@ def createScene( node ):
 
     # we can do all kinds of fancy stuff with it
     x = math.pi / 3.0 * np.array([0, 1, 0])
-    pos[0].orient = future.Quaternion.exp(x)
+    pos[0].orient = SofaPtyhon.Quaternion.exp(x)
 
     # still need this to commit changes, as everything is done through
     # Data get/set value

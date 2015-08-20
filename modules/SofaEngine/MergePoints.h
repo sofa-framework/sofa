@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ENGINE_MERGEPOINTS_H
 #define SOFA_COMPONENT_ENGINE_MERGEPOINTS_H
+#include "config.h"
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -31,7 +32,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -79,6 +79,7 @@ public:
 
     Data<VecCoord> f_X1;
     Data<VecCoord> f_X2;
+    Data<SetIndex> f_X2_mapping;
     Data<SetIndex> f_indices1;
     Data<SetIndex> f_indices2;
     Data<VecCoord> f_points;

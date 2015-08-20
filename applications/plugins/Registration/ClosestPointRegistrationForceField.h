@@ -34,7 +34,7 @@
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <sofa/helper/kdTree.inl>
+#include <sofa/helper/kdTree.h>
 
 #include <set>
 #include "initRegistration.h"
@@ -65,7 +65,7 @@ public:
 
 
 template<class DataTypes>
-class ClosestPointRegistrationForceField : public core::behavior::ForceField<DataTypes>
+class SOFA_REGISTRATION_API ClosestPointRegistrationForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ClosestPointRegistrationForceField,DataTypes),SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));

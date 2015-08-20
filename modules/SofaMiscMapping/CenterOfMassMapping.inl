@@ -58,7 +58,7 @@ void CenterOfMassMapping<TIn, TOut>::init()
     totalMass = 0.0;
 
     //compute the total mass of the object
-    for (unsigned int i=0, size = this->fromModel->read(core::ConstVecCoordId::position())->getValue().size() ; i< size; i++)
+    for (unsigned int i=0, size = this->fromModel->getSize() ; i< size; i++)
         totalMass += masses->getElementMass(i);
 }
 

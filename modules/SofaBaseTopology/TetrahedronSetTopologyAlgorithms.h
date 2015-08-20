@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_H
 #define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_H
+#include "config.h"
 
 #include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>
 #include <sofa/core/behavior/MechanicalState.h>

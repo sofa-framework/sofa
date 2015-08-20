@@ -32,8 +32,7 @@
 #include "../types/DeformationGradientTypes.h"
 #include "../types/StrainTypes.h"
 
-#include <sofa/helper/decompose.inl>
-
+#include <sofa/helper/decompose.h>
 #include <sofa/helper/MatEigen.h>
 
 

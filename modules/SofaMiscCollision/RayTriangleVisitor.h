@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_SIMULATION_RayTriangleVisitor_H
 #define SOFA_SIMULATION_RayTriangleVisitor_H
+#include "config.h"
 
 #include <sofa/simulation/common/Visitor.h>
 #include <SofaMeshCollision/TriangleModel.h>

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_MESHTETRASTUFFING_H
 #define SOFA_COMPONENT_MISC_MESHTETRASTUFFING_H
+#include "config.h"
 
 #include <string>
 #include <sofa/helper/fixed_array.h>
@@ -32,7 +33,6 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/component.h>
 
 #include <sofa/helper/map.h>
 

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #define SOFA_HELPER_ADVANCEDTIMER_CPP
 #include <sofa/helper/AdvancedTimer.h>
+
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
 #include <sofa/helper/system/atomic.h>
@@ -48,93 +49,6 @@ char* getenv(const char* varname) { return NULL; } // NOT IMPLEMENTED
 
 typedef sofa::helper::system::thread::ctime_t ctime_t;
 typedef sofa::helper::system::thread::CTime CTime;
-
-template<class Base>
-class SOFA_HELPER_API IdFactory : public Base
-{
-protected:
-
-    /// the list of the id names. the Ids are the indices in the vector
-    std::vector<std::string> idsList;
-
-    IdFactory()
-    {
-        idsList.push_back(std::string("0")); // ID 0 == "0" or empty string
-    }
-
-public:
-
-    /**
-       @return : the Id corresponding to the name of the id given in parameter
-       If the name isn't found in the list, it is added to it and return the new id.
-    */
-    static unsigned int getID(const std::string& name)
-    {
-        if (name.empty()) return 0;
-        IdFactory<Base> * idfac = getInstance();
-        std::vector<std::string>::iterator it = idfac->idsList.begin();
-        unsigned int i=0;
-
-        while(it != idfac->idsList.end() && (*it)!= name)
-        {
-            ++it;
-            i++;
-        }
-
-        if (it!=idfac->idsList.end())
-            return i;
-        else
-        {
-            //std::cout << "IdFactory: creating new id "<<i<<": "<<name<<std::endl;
-            idfac->idsList.push_back(name);
-            return i;
-        }
-    }
-
-    static unsigned int getLastID()
-    {
-        return getInstance()->idsList.size()-1;
-    }
-
-    /// return the name corresponding to the id in parameter
-    static std::string getName(unsigned int id)
-    {
-        if( id < getInstance()->idsList.size() )
-            return getInstance()->idsList[id];
-        else
-            return "";
-    }
-
-    /// return the instance of the factory. Creates it if doesn't exist yet.
-    static IdFactory<Base>* getInstance()
-    {
-        static IdFactory<Base> instance;
-        return &instance;
-    }
-};
-
-template<class Base>
-AdvancedTimer::Id<Base>::Id(const std::string& s)
-    : id(0)
-{
-    if (!s.empty())
-        id = IdFactory<Base>::getID(s);
-}
-
-template<class Base>
-AdvancedTimer::Id<Base>::Id(const char* s)
-    : id(0)
-{
-    if (s && *s)
-        id = IdFactory<Base>::getID(std::string(s));
-}
-
-template<class Base>
-AdvancedTimer::Id<Base>::operator std::string() const
-{
-    if (id == 0) return std::string("0");
-    else return IdFactory<Base>::getName(id);
-}
 
 template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Timer>;
 template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Step>;

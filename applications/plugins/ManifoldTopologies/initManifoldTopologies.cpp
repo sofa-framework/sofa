@@ -22,23 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
+#include <ManifoldTopologies/config.h>
+
 #include "ManifoldTopologyObject_double.h"
 #include "ManifoldTopologyObject_float.h"
-
-#ifndef WIN32
-#define SOFA_EXPORT_DYNAMIC_LIBRARY
-#define SOFA_IMPORT_DYNAMIC_LIBRARY
-#define SOFA_PLUGIN_API
-#else
-#ifdef SOFA_BUILD_MANIFOLDTOPOLOGIES
-#define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
-#define SOFA_PLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
-#define SOFA_PLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-#endif
 
 namespace sofa
 {
@@ -49,12 +36,12 @@ namespace component
 //Here are just several convenient functions to help user to know what contains the plugin
 
 extern "C" {
-    SOFA_PLUGIN_API void initExternalModule();
-    SOFA_PLUGIN_API const char* getModuleName();
-    SOFA_PLUGIN_API const char* getModuleVersion();
-    SOFA_PLUGIN_API const char* getModuleLicense();
-    SOFA_PLUGIN_API const char* getModuleDescription();
-    SOFA_PLUGIN_API const char* getModuleComponentList();
+    SOFA_MANIFOLD_TOPOLOGIES_API void initExternalModule();
+    SOFA_MANIFOLD_TOPOLOGIES_API const char* getModuleName();
+    SOFA_MANIFOLD_TOPOLOGIES_API const char* getModuleVersion();
+    SOFA_MANIFOLD_TOPOLOGIES_API const char* getModuleLicense();
+    SOFA_MANIFOLD_TOPOLOGIES_API const char* getModuleDescription();
+    SOFA_MANIFOLD_TOPOLOGIES_API const char* getModuleComponentList();
 }
 
 void initExternalModule()

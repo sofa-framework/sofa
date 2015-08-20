@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_INTERPOLATIONCONTROLLER_H
 #define SOFA_COMPONENT_FORCEFIELD_INTERPOLATIONCONTROLLER_H
+#include "config.h"
 
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/core/State.h>

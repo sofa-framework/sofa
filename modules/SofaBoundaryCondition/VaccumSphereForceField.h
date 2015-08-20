@@ -24,13 +24,13 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_H
+#include "config.h"
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Event.h>
 
-#include <sofa/component/component.h>
 
 namespace sofa
 {

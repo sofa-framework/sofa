@@ -1,0 +1,71 @@
+/** @mainpage
+
+The Flexible plugin provides a unified approach to the simulation of deformable
+solids. It uses a three-level kinematic structure: control nodes, deformation
+gradients, strain measures, and new mappings between these.
+
+@image html threeLevels.png
+
+This approach maximizes the modularity of the implementation.
+
+@section section1 The Flexible plugin provides:
+
+- <b> The control nodes</b> carry the independent degrees of freedom of the
+  object in two state vectors one for positions and one for velocities.  The
+  control nodes are:
+  - finite elements nodes
+  - moving frames (@link sofa#defaulttype#DeformableFrameMass
+  DeformableFrameMass@endlink)
+  - deformation modes.
+
+- <b>The shape functions</b> represent how the material space of the object is
+  mapped to the world space, based on the DOF.  The shape functions are:
+  - shepard (@link sofa#component#shapefunction#ShepardShapeFunction
+  ShepardShapeFunction@endlink)
+  - barycentric(@link sofa#component#shapefunction#BarycentricShapeFunction
+  BarycentricShapeFunction@endlink)
+  - natural neighbors(@link sofa#component#shapefunction#VoronoiShapeFunction
+  VoronoiShapeFunction@endlink).
+
+- <b>The deformation gradients</b> represent the local state of the
+  continuum. Their basis vectors are orthonormal in the undeformed
+  configuration, while departure from unity corresponds to compression or
+  extension, and departure from orthogonality corresponds to shear.@n The
+  deformation gradient F are defined with the notation: "Type(F)
+  SpatialDimension MaterialDimension Order" in most cases F331 or F332
+  (elaston).
+
+- <b> The strain measures</b> correspond to one deformation gradient at the
+  upper level.  The strain mapping are:
+  - Green-Lagrangian strain (@link sofa#component#mapping#GreenStrainMapping
+  GreenStrainMapping@endlink),
+  - Corotational Strain (@link sofa#component#mapping#CorotationalStrainMapping
+  CorotationalStrainMapping@endlink)
+  - Principal stretches (@link sofa#component#mapping#PrincipalStretchesMapping
+  PrincipalStretchesMapping@endlink)
+  - Plastic Strain (@link sofa#component#mapping#PlasticStrainMapping
+  PlasticStrainMapping@endlink)
+  - Invariants of deformation tensor (@link
+  sofa#component#mapping#InvariantMapping InvariantMapping@endlink)
+
+- <b>The constitutive law</b> of the object material computes stress based on
+  strain.  The different constitutive laws are:
+  - Hooke force field(@link sofa#component#forcefield#HookeForceField
+  HookeForceField@endlink)
+  - Mooney Rivlin force field(@link
+  sofa#component#forcefield#MooneyRivlinForceField MooneyRivlinForceField
+ @endlink)
+  - Volume preservation force field (@link
+  sofa#component#forcefield#VolumePreservationForceField
+  VolumePreservationForceField@endlink).
+
+@section section2 Flexible plugin contains a test suite FlexibleTest.
+
+- This tests are tests for flexible components like strain mapping (@link
+  sofa#StrainMappingTest StrainMappingTest@endlink) or higher level tests like
+  patch test (@link sofa#AffinePatch_test AffinePatch_test@endlink and @link
+  sofa#Patch_test Patch_test@endlink))
+
+@authors Benjamin Gilles, Francois Faure, Matthieu Nesme
+
+*/

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_H
 #define SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_H
+#include "config.h"
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -37,7 +38,6 @@
 #include <map>
 #include <set>
 
-#include <sofa/component/component.h>
 
 namespace sofa
 {

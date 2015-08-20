@@ -24,12 +24,12 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_H
 #define SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_H
+#include "config.h"
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {

@@ -34,38 +34,5 @@
 #define SOFA_SOFASIMPLEGUI_API  SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-namespace sofa {
-namespace simplegui {
-
-/** \mainpage SimpleGUI - a simplified GUI for Sofa
- * This plugin proposes a simple API for including Sofa in a graphics interface:
- * - class SofaScene provides a callback-level API: init, draw, animate
- * - class SofaGL allows drawing and picking in OpenGL viewers
- * - a choice of Interactor objects allow the user to manipulate the simulation.
- *
- * The main differences with the standard Sofa GUI are:
- * - The main loop is controled by the user application
- * - No viewer nor camera are provided, but helpers are available in SofaGL
- * - Picking simply returns basic information about the particle under the cursor: PickedPoint. Based on this, it is the application's job to create, manage and delete Interactor objects.
- *
- * Examples:
- * - glutOnePick: A Sofa simulation within a basic Glut interface. The user can click and drag one point at a time to interact with the simulaton
- * - qtSofa: A Sofa simulation within a basic Qt interface. The user can click and drag multiple points.
- * - qtSofa/qtSofa.pro: Project file for the same application, built as an application which is not a sub-project of Sofa. See comments inside.
- * - qtQuickSofa: A Sofa simulation within a QtQuick interface. Not yet mature, may be temporarily disabled
- *
- * Dependencies:
- * - Qt > 5.0 is necessary for qtQuickSofa
- *
- * Issues:
- * - Currently there is no way to create interactors in plugins. They are created by the user application.
- * - The application built using qtSofa/qtSofa.pro crashes at scene creation time, while the same code running as a Sofa sub-project works fine.
- *
-  This is a the starting page of the plugin documentation, defined in file initSimpleGUI.h
-  */
-
-}
-}
-
 
 #endif // INITSimpleGUI_H

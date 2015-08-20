@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_H
 #define SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_H
+#include "config.h"
 
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/behavior/LinearSolver.h>

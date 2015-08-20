@@ -24,10 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINTSET_UNILATERALINTERACTIONCONSTRAINT_H
+#include "config.h"
 
 #include <sofa/core/behavior/PairInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/component.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <iostream>
 #include <map>

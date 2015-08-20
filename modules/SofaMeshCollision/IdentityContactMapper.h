@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_H
 #define SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_H
+#include "config.h"
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/Factory.h>
@@ -199,8 +200,8 @@ public:
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_CPP)
-extern template class SOFA_MESH_COLLISION_API ContactMapper<SphereModel>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<PointModel>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<SphereModel, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<PointModel, sofa::defaulttype::Vec3Types>;
 #endif
 
 } // namespace collision

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_SPATIALGRIDPOINTMODEL_H
 #define SOFA_COMPONENT_COLLISION_SPATIALGRIDPOINTMODEL_H
+#include "config.h"
 
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaSphFluid/SpatialGridContainer.h>

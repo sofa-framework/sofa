@@ -24,10 +24,11 @@
 ******************************************************************************/
 #ifndef SOFA_HELPER_ADVANCEDTIMER_H
 #define SOFA_HELPER_ADVANCEDTIMER_H
-
 #include <sofa/helper/helper.h>
-#include <string>
+
 #include <iostream>
+#include <string>
+#include <vector>
 
 namespace sofa
 {
@@ -128,13 +129,85 @@ public:
     class Id : public Base
     {
     public:
+        /** Internal class used to generate IDs. */
+        class SOFA_HELPER_API IdFactory : public Base
+        {
+        protected:
+
+            /// the list of the id names. the Ids are the indices in the vector
+            std::vector<std::string> idsList;
+
+            IdFactory()
+            {
+                idsList.push_back(std::string("0")); // ID 0 == "0" or empty string
+            }
+
+        public:
+
+            /**
+               @return the Id corresponding to the name of the id given in parameter
+               If the name isn't found in the list, it is added to it and return the new id.
+            */
+            static unsigned int getID(const std::string& name)
+            {
+                if (name.empty())
+                    return 0;
+                IdFactory& idfac = getInstance();
+                std::vector<std::string>::iterator it = idfac.idsList.begin();
+                unsigned int i = 0;
+
+                while (it != idfac.idsList.end() && (*it) != name)
+                {
+                    ++it;
+                    i++;
+                }
+
+                if (it!=idfac.idsList.end())
+                    return i;
+                else
+                {
+                    idfac.idsList.push_back(name);
+                    return i;
+                }
+            }
+
+            static unsigned int getLastID()
+            {
+                return getInstance().idsList.size()-1;
+            }
+
+            /// return the name corresponding to the id in parameter
+            static std::string getName(unsigned int id)
+            {
+                if (id < getInstance().idsList.size())
+                    return getInstance().idsList[id];
+                else
+                    return "";
+            }
+
+            /// return the instance of the factory. Creates it if doesn't exist yet.
+            static IdFactory& getInstance()
+            {
+                static IdFactory instance;
+                return instance;
+            }
+        };
+
         Id() : id(0) {}
 
         /// An Id is constructed from a string and appears like one after, without actually storing a string
-        Id(const std::string& s);
+		Id(const std::string& s): id(0)
+        {
+            if (!s.empty())
+                id = IdFactory::getID(s);
+        }
 
         /// An Id is constructed from a string and appears like one after, without actually storing a string
-        Id(const char* s);
+		Id(const char* s): id(0)
+        {
+            if (s && *s)
+                id = IdFactory::getID(std::string(s));
+        }
 
         /// This constructor should be used only if really necessary
         Id(unsigned int id) : id(id) {}
@@ -143,7 +216,11 @@ public:
         operator unsigned int() const { return id; }
 
         /// Any operation requiring a string can be used on an id using this conversion
-        operator std::string() const;
+        operator std::string() const
+        {
+            if (id == 0) return std::string("0");
+            else return IdFactory::getName(id);
+        }
 
         bool operator==(const Id<Base>& t) const { return id == t.id; }
         bool operator!=(const Id<Base>& t) const { return id != t.id; }
@@ -319,8 +396,6 @@ extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Step>;
 extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Obj>;
 extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Val>;
 #endif
-
-
 
 
 /// Scoped (RAII) AdvancedTimer to simplify a basic usage

@@ -24,10 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYMODIFIER_H
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGYMODIFIER_H
+#include "config.h"
 
 #include <sofa/helper/vector.h>
 #include <sofa/core/topology/BaseTopology.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {

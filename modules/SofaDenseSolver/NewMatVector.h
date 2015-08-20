@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_NEWMATVECTOR_H
 #define SOFA_COMPONENT_LINEARSOLVER_NEWMATVECTOR_H
+#include "config.h"
 
 #include <newmat/newmat.h>
 #define WANT_STREAM

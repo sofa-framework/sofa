@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_H
+#include "config.h"
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -297,7 +298,7 @@ public:
 
     void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0)
     {
-        unsigned int nbdof = this->mstate->read(core::ConstVecCoordId::position())->getValue().size();
+        unsigned int nbdof = this->mstate->getSize();
 
         if (component::linearsolver::RotationMatrix<float> * diag = dynamic_cast<component::linearsolver::RotationMatrix<float> *>(rotations))
         {

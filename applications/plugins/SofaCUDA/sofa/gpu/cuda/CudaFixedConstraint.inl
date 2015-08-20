@@ -39,6 +39,8 @@ namespace cuda
 
 extern "C"
 {
+    void FixedConstraintCuda1f_projectResponseContiguous(unsigned int size, void* dx);
+    void FixedConstraintCuda1f_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
     void FixedConstraintCuda3f_projectResponseContiguous(unsigned int size, void* dx);
     void FixedConstraintCuda3f_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
     void FixedConstraintCuda3f1_projectResponseContiguous(unsigned int size, void* dx);
@@ -329,6 +331,19 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeCo
 
 
 template <>
+void FixedConstraintInternalData<gpu::cuda::CudaVec1fTypes>::projectResponse(Main* m, VecDeriv& dx)
+{
+    Data& data = *m->data;
+    if (m->f_fixAll.getValue())
+        FixedConstraintCuda1f_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));
+    else if (data.minIndex >= 0)
+        FixedConstraintCuda1f_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((float*)dx.deviceWrite())+data.minIndex);
+    else
+        FixedConstraintCuda1f_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
+}
+
+
+template <>
 void FixedConstraintInternalData<gpu::cuda::CudaVec3fTypes>::projectResponse(Main* m, VecDeriv& dx)
 {
     Data& data = *m->data;
@@ -339,6 +354,7 @@ void FixedConstraintInternalData<gpu::cuda::CudaVec3fTypes>::projectResponse(Mai
     else
         FixedConstraintCuda3f_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
+
 
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaVec3f1Types>::projectResponse(Main* m, VecDeriv& dx)

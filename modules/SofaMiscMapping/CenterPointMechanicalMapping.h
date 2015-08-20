@@ -24,10 +24,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_CENTERPOINTMAPPING_H
 #define SOFA_COMPONENT_MAPPING_CENTERPOINTMAPPING_H
+#include "config.h"
 
 #include <sofa/core/Mapping.h>
-
-#include <sofa/component/component.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 

@@ -197,5 +197,8 @@ int main(int, char** argv)
     //=========================== Run the main loop
 
     sofa::gui::GUIManager::MainLoop(groot);
+
+    sofa::simulation::tree::cleanup();
+    return 0;
 }
 

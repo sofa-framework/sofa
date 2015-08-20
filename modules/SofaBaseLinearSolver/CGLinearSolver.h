@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_H
 #define SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_H
+#include "config.h"
 
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 

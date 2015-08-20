@@ -24,8 +24,8 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_H
 #define SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_H
+#include "config.h"
 
-#include <sofa/component/component.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>

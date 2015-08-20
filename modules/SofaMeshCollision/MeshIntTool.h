@@ -1,5 +1,6 @@
 #ifndef SOFA_COMPONENT_COLLISION_MESHINTTOOL_H
 #define SOFA_COMPONENT_COLLISION_MESHINTTOOL_H
+#include "config.h"
 
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/FnDispatcher.h>

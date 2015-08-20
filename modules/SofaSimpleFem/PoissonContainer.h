@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef POISSONCONTAINER_
 #define POISSONCONTAINER_
+#include "config.h"
 
 namespace sofa
 {

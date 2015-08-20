@@ -26,8 +26,6 @@
 
 #include <sofa/helper/init.h>
 
-#include <iostream>
-
 namespace sofa
 {
 
@@ -37,7 +35,7 @@ namespace defaulttype
 static bool s_initialized = false;
 static bool s_cleanedUp = false;
 
-void init()
+SOFA_DEFAULTTYPE_API void init()
 {
     if (!s_initialized)
     {
@@ -46,12 +44,12 @@ void init()
     }
 }
 
-bool isInitialized()
+SOFA_DEFAULTTYPE_API bool isInitialized()
 {
     return s_initialized;
 }
 
-void cleanup()
+SOFA_DEFAULTTYPE_API void cleanup()
 {
     if (!s_cleanedUp)
     {
@@ -60,18 +58,20 @@ void cleanup()
     }
 }
 
-bool isCleanedUp()
+SOFA_DEFAULTTYPE_API bool isCleanedUp()
 {
     return s_cleanedUp;
 }
 
-void checkIfInitialized()
+// Detect missing cleanup() call.
+struct CleanupCheck
 {
-    if (!isInitialized())
+    ~CleanupCheck()
     {
-        std::cerr << "Warning: SofaHelper is not initialized (sofa::helper::init() has never been called).  An application should call the init() function of the higher level Sofa library it uses." << std::endl;
+        if (defaulttype::isInitialized() && !defaulttype::isCleanedUp())
+            helper::printLibraryNotCleanedUpWarning("SofaDefaultType", "sofa::defaulttype::cleanup()");
     }
-}
+} check;
 
 } // namespace defaulttype
 

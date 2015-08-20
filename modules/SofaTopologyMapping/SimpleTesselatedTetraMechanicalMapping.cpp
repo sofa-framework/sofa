@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMAPPING_CPP
+#define SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMECHANICALMAPPING_CPP
 
 #include "SimpleTesselatedTetraMechanicalMapping.inl"
 #include <sofa/core/Mapping.inl>

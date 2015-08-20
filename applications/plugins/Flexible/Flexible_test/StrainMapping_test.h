@@ -10,7 +10,7 @@
 #include "../types/StrainTypes.h"
 
 
-#include <Mapping_test.h>
+#include <SofaTest/Mapping_test.h>
 
 
 namespace sofa {

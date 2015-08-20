@@ -22,8 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMAPPING_H
-#define SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMAPPING_H
+#ifndef SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMECHANICALMAPPING_H
+#define SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMECHANICALMAPPING_H
+#include "config.h"
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -94,7 +95,7 @@ protected:
     core::topology::BaseMeshTopology* outputTopo;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMAPPING_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMECHANICALMAPPING_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_TOPOLOGY_MAPPING_API SimpleTesselatedTetraMechanicalMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;

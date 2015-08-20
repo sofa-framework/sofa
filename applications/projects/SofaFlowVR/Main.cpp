@@ -47,6 +47,7 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/tree/DeleteVisitor.h>
+#include <sofa/simulation/tree/init.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaBaseCollision/MinProximityIntersection.h>
@@ -1885,5 +1886,7 @@ int main(int argc, char** argv)
 
 
     if (groot!=NULL) sofa::simulation::tree::getSimulation()->unload(groot);
+
+    sofa::simulation::tree::cleanup();
     return 0;
 }

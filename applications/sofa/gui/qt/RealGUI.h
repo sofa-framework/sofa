@@ -25,8 +25,8 @@
 #ifndef SOFA_GUI_VIEWER_REALGUI_H
 #define SOFA_GUI_VIEWER_REALGUI_H
 
-#include "ui_GUI.h"
-#include "SofaGUIQt.h"
+#include <ui_GUI.h>
+#include <sofa/gui/qt/SofaGUIQt.h>
 #include "GraphListenerQListView.h"
 #include "QMenuFilesRecentlyOpened.h"
 #include "PickHandlerCallBacks.h"

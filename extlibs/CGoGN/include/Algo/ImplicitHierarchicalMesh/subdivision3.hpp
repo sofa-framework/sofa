@@ -164,6 +164,7 @@ void subdivideFace(typename PFP::MAP& map, Dart d, typename AttributeHandler_Tra
             TraversorDartsOfOrbit< MAP, FACE > traDoF(map, f);
             for (Dart fit = traDoF.begin(); fit != traDoF.end() ; fit = traDoF.next())
             {
+                map.setMaxFaceLevel(fit, fLevel + 1u);
                 const unsigned int dl = map.getDartLevel(fit);
                 if ( dl > fLevel)
                 {
@@ -419,6 +420,7 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
                     TraversorDartsOfOrbit< MAP, FACE > traDoF(map, f);
                     for (Dart fit = traDoF.begin(); fit != traDoF.end() ; fit = traDoF.next())
                     {
+                        map.setMaxFaceLevel(fit, vLevel + 1u);
                         const unsigned int dl = map.getDartLevel(fit);
                         map.setCurrentLevel(dl);
                         map.template setDartEmbedding<FACE>(fit, lvl1Face);
@@ -440,6 +442,7 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
             unsigned oldEmb = EMBNULL;
             for(Dart wit = traDoW.begin() ; wit != traDoW.end() ; wit = traDoW.next())
             {
+                map.setMaxVolumeLevel(wit, vLevel + 1u);
                 const unsigned dl = map.getDartLevel(wit);
                 if (dl > vLevel)
                 {
@@ -1727,14 +1730,22 @@ void coarsenVolume(typename PFP::MAP& map, Dart d, VertexAttribute<typename PFP:
     map.setCurrentLevel(cur) ;
 
     /*
-     * simplifier les faces
+     * simplify faces
      */
-//    Traversor3WF<typename PFP::MAP> trav3WF(map, d, true);
-//    for(Dart dit = trav3WF.begin() ; dit != trav3WF.end() ; dit = trav3WF.next())
-    for(Dart dit : facesIncidentToVolume3(map,d))
+    Traversor3WF<typename PFP::MAP> trav3WF(map, d, true);
+    std::vector< FaceCell > faces;
+    faces.reserve(6);
+    for(FaceCell dit = trav3WF.begin() ; dit != trav3WF.end() ; dit = trav3WF.next())
     {
-        if(map.faceCanBeCoarsened(dit))
-            IHM::coarsenFace<PFP>(map, dit, position, IHM::S_QUAD);
+        if (map.faceCanBeCoarsened(dit))
+        {
+            faces.push_back(dit);
+        }
+    }
+
+    for(std::vector< FaceCell >::const_iterator fit = faces.begin(), end = faces.end() ; fit != end ; ++fit)
+    {
+        IHM::coarsenFace<PFP>(map, *fit, position, IHM::S_QUAD);
     }
 }
 

@@ -23,11 +23,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/tree/TreeSimulation.h>
-#include <sofa/simulation/tree/GNode.h>
 
 #include <sofa/simulation/common/xml/BaseElement.h>
-#include <sofa/helper/Factory.h>
+#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/tree/init.h>
+
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/Factory.h>
+#include <sofa/helper/init.h>
 
 namespace sofa
 {
@@ -52,6 +55,10 @@ Simulation* getSimulation()
 
 TreeSimulation::TreeSimulation()
 {
+    // Safety check; it could be elsewhere, but here is a good place, I guess.
+    if (!sofa::simulation::tree::isInitialized())
+        sofa::helper::printUninitializedLibraryWarning("SofaSimulationTree", "sofa::simulation::tree::init()");
+
     sofa::simulation::xml::BaseElement::NodeFactory::DuplicateEntry("GNodeMultiMapping","MultiMappingObject");
 }
 

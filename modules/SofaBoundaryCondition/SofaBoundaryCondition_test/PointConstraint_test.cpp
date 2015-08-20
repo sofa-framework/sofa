@@ -105,7 +105,7 @@ struct PointConstraint_test : public Sofa_test<typename _DataTypes::Real>
         // Init simulation
         sofa::simulation::getSimulation()->init(root.get());
 
-        unsigned int dofsNbr = dofs->read(core::ConstVecCoordId::position())->getValue().size();
+        unsigned int dofsNbr = dofs->getSize();
         helper::vector<unsigned int> fixed_indices;
 
         for(unsigned i=0; i<dofsNbr; i++)
