@@ -7,6 +7,11 @@ set(SOURCE_FILES
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
+# This macro is needed for float on windows
+if(WIN32)
+    AddCompilerDefinitions("EIGEN_DONT_ALIGN")
+endif()
+
 AddLinkerDependencies(
     SofaTest
     SofaGTestMain
