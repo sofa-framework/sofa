@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<Node 	 name="Root"  dt="0.02"  >
+	<RequiredPlugin name="Image"  printLog="1"  pluginName="Image" />
+	<VisualStyle name="visualStyle1"  displayFlags="showAll" />
+	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
+	<BruteForceDetection name="Detection" />
+	<MinProximityIntersection name="Proximity"  alarmDistance="0.3"  contactDistance="0.2" />
+	<DefaultContactManager name="Response"  response="default" />
+	<DefaultCollisionGroupManager name="Group" />
+	<ImageContainer template="ImageD" name="image"  listening="1"  image="512 512 365 1 1"  transform="0 0 0 0 0 0 0.005 0.005 0.005 0 1 0"  filename="C:\Users\SOFA_GPU\Desktop\CraneSegmentation\crane_bis2.mhd" />
+	<ImageFilter template="ImageD,ImageD" name="gaussianFilter"  filter="1 - Blur ( sigma )"  param="5"  inputImage="@image.inputImage"  inputTransform="@image.inputTransform" />
+	<CollisionToCarvingEngine template="ImageD,ImageD" name="ctc"  listening="1"  inputImage="@gaussianFilter.outputImage"  inputTransform="@gaussianFilter.outputTransform"  trackedPosition="0 0 0"  on="1"  value="0"  size="5 5 5" />
+	<ImageViewer template="ImageD" name="viewer"  image="@ctc.outputImage"  transform="@ctc.outputTransform"  plane="1 1 1" />
+	<MarchingCubesEngine template="ImageD" name="MCengine"  listening="1"  isoValue="0.3"  subdiv="50 50 50"  showMesh="1"  image="@ctc.outputImage"  transform="@ctc.outputTransform" />
+	<MeshExporter name="meshExporter1"  filename="demos/skulloperations/tetemesh"  format="ALL"  position="@MCengine.position"  triangles="@MCengine.triangles" />
+	<BarycentricMapping template="Vec3d,ExtVec3f"/>
+</Node>
