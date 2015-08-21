@@ -52,7 +52,7 @@
 	<Node 	 name="Omni"  >
 		<NewOmniDriver name="omniDriver1"  listening="1"  scale="50"  positionBase="0 0 0"  orientationBase="0.707 0 0 0.707"  omniVisu="0" />
 		<MechanicalObject template="Rigid3d" name="DOFs"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  restScale="1" />
-		<!--<MechanicalStateControllerOmni template="Rigid3d" name="MSCO"  listening="1"  handleEventTriggersUpdate="1" />-->
+		<MechanicalStateControllerOmni template="Rigid3d" name="MSCO"  listening="1"  handleEventTriggersUpdate="1" />
 		<Node 	 name="RefModel"  >
 			<MeshObjLoader name="loader"  filename="C:\Users\SOFA_GPU\Downloads\sofa\sofa\examples\Demos\SkullOperations\meshs/stylus_collision.obj"  scale3d="0.2 0.2 0.2"  />
 			<MeshTopology name="meshTopology1"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
@@ -61,8 +61,8 @@
 		</Node>
 	</Node>
 	<Node 	 name="Instrument"  >
-		<!--<EulerImplicitSolver name="ODE solver"  rayleighStiffness="0.05"  rayleighMass="1" />-->
-		<!--<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-005"  threshold="1e-005" />-->
+		<EulerImplicitSolver name="ODE solver"  rayleighStiffness="0.05"  rayleighMass="1" />
+		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-005"  threshold="1e-005" />
 		<MechanicalObject template="Rigid3d" name="instrumentState"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  restScale="1" />
 		<UniformMass template="Rigid3d" name="mass"  totalmass="0.05" />
 		<LCPForceFeedback template="Rigid3d" name="lCPForceFeedback1"  tags="omni"  listening="1"  activate="1"  forceCoef="0.001" />
