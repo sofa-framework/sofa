@@ -11,7 +11,7 @@
 	<SpotLight name="light2"  color="1 1 1"  position="0 40 100"  direction="0 0 -1"  cutoff="30"  exponent="1" />
 	<VisualManagerPass name="visualManagerPass0"  tags="Visu"  listening="1" />
 	<DefaultContactManager name="Response"  response="FrictionContact" />
-	<VisualManagerSecondaryPass name="visualManagerSecondaryPass7"  listening="1"  renderToScreen="1"  input_tags="Visu"  fragFilename="/home/sofa-gpu/sofa/share/shaders/correctionAbberationChromatique.frag" />
+	<VisualManagerSecondaryPass name="visualManagerSecondaryPass7"  listening="1"  renderToScreen="1"  input_tags="Visu"  fragFilename="shaders/correctionabberationchromatique.frag" />
 	<CompositingVisualLoop name="compositingVisualLoop3" />
 	<OglShader name="oglShader0"  tags="Visu"  fileVertexShader="shaders/phong.vert"  fileFragmentShader="shaders/phong.frag" />
 	<Node 	 name="Snake"  >
