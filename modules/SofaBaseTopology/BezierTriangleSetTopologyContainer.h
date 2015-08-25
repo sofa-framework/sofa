@@ -69,7 +69,7 @@ public:
 	typedef sofa::defaulttype::Vec<3,size_t> LocalTriangleIndex;
 	typedef std::pair<size_t,TriangleBezierIndex> ControlPointLocation;
 	typedef sofa::helper::vector<SReal> SeqWeights;
-
+	typedef sofa::helper::vector<bool> SeqBools;
 
     friend class BezierTriangleSetTopologyModifier;
 	friend class Mesh2BezierTopologicalMapping;
@@ -94,7 +94,7 @@ protected :
 	/// the number of control points corresponding to the vertices of the triangle mesh (different from the total number of points)
     Data<size_t> d_numberOfTriangularPoints;
 	/// whether the Bezier triangles are integral (false = classical Bezier splines) or rational splines (true)
-	Data <bool> d_isRationalSpline;
+	Data <SeqBools> d_isRationalSpline;
 	/// the array of weights for rational splines
 	Data <SeqWeights > d_weightArray;
 public :
@@ -138,8 +138,8 @@ public :
 	virtual SReal getWeight(int i) const;
 	/// returns the array of weights
 	const SeqWeights & getWeightArray() const;
-	// if the Bezier triangles are rational or integral
-	bool isRationalSpline() const;
+	// if the Bezier triangle is rational or integral
+	bool isRationalSpline(int i) const;
 
 protected:
 	/** Map which provides the global index of a control point knowing its location (i.e. triangle index and its TriangleBezierIndex).
