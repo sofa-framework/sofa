@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+
 #ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_H
 #include "config.h"
@@ -29,8 +30,8 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologySparseData.h>
-
-
+#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
+#include <sofa/defaulttype/MatSym.h>
 
 namespace sofa
 {
@@ -52,11 +53,14 @@ public:
     typedef typename DataTypes::Coord    Coord   ;
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
+    typedef defaulttype::Mat<3,3,Real> Mat33;
+    typedef defaulttype::MatSym<3,Real> MatSym3;
 
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data<Deriv> pressure;
+    Data<Deriv> pressure; // pressure is a vector with specified direction
+  	Data<MatSym3> cauchyStress; // the Cauchy stress applied on triangles
 
     Data<sofa::helper::vector<unsigned int> > triangleList;
 
@@ -66,7 +70,9 @@ public:
     Data<Real> dmin; // coordinates min of the plane for the vertex selection
     Data<Real> dmax;// coordinates max of the plane for the vertex selection
     Data<bool> p_showForces;
+    Data<bool> p_useConstantForce;
 
+  
 protected:
 
     class TrianglePressureInformation
@@ -74,6 +80,7 @@ protected:
     public:
         Real area;
         Deriv force;
+		Mat33 DfDx[3];
 
         TrianglePressureInformation() {}
         TrianglePressureInformation(const TrianglePressureInformation &e)
@@ -96,17 +103,10 @@ protected:
     component::topology::TriangleSparseData<sofa::helper::vector<TrianglePressureInformation> > trianglePressureMap;
 
     sofa::core::topology::BaseMeshTopology* _topology;
+	sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo;
 
-    TrianglePressureForceField()
-        : pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
-        , triangleList(initData(&triangleList,"triangleList", "Indices of triangles separated with commas where a pressure is applied"))
-        , normal(initData(&normal,"normal", "Normal direction for the plane selection of triangles"))
-        , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
-        , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
-        , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw triangles which have a given pressure"))
-        , trianglePressureMap(initData(&trianglePressureMap, "trianglePressureMap", "map between edge indices and their pressure"))
-    {
-    }
+
+	TrianglePressureForceField();
 
     virtual ~TrianglePressureForceField();
 public:
@@ -121,7 +121,11 @@ public:
     /// Constant pressure has null variation
     virtual void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ){}
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const { return 0.0; }
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    {
+        serr << "Get potentialEnergy not implemented" << sendl;
+        return 0.0;
+    }
 
     void draw(const core::visual::VisualParams* vparams);
 
@@ -149,7 +153,7 @@ protected :
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TrianglePressureForceField_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_BOUNDARY_CONDITION_API TrianglePressureForceField<sofa::defaulttype::Vec3dTypes>;
@@ -158,7 +162,7 @@ extern template class SOFA_BOUNDARY_CONDITION_API TrianglePressureForceField<sof
 extern template class SOFA_BOUNDARY_CONDITION_API TrianglePressureForceField<sofa::defaulttype::Vec3fTypes>;
 #endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_CPP)
+#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TrianglePressureForceField_CPP)
 
 
 } // namespace forcefield
@@ -167,4 +171,4 @@ extern template class SOFA_BOUNDARY_CONDITION_API TrianglePressureForceField<sof
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_FORCEFIELD_TRIANGLEPRESSUREFORCEFIELD_H
+#endif // SOFA_COMPONENT_FORCEFIELD_TrianglePressureForceField_H
