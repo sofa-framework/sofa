@@ -57,7 +57,7 @@ BezierTriangleSetTopologyContainer::BezierTriangleSetTopologyContainer()
     : TriangleSetTopologyContainer()
     , d_degree(initData(&d_degree, (size_t)0,"degree", "Degree of Bezier Tetrahedra"))
     , d_numberOfTriangularPoints(initData(&d_numberOfTriangularPoints, (size_t) 0,"NbTriangularVertices", "Number of Triangular Vertices"))
-	    , d_isRationalSpline(initData(&d_isRationalSpline, false,"isRational", "If the bezier triangles are rational or regular"))
+   , d_isRationalSpline(initData(&d_isRationalSpline, SeqBools(),"isRational", "If a bezier triangle  is rational or integral"))
 	 , d_weightArray(initData(&d_weightArray, SeqWeights(),"weights", "Array of weights for rational bezier triangles"))
 {
     addAlias(&d_degree, "order");
@@ -132,14 +132,16 @@ void BezierTriangleSetTopologyContainer::reinit()
 
 		}
 		// initialize the array of weights if necessary
-		if (d_isRationalSpline.getValue()) {
-			if (d_weightArray.getValue().empty()){
-
-				SeqWeights &wa=*(d_weightArray.beginEdit());
+		if (d_weightArray.getValue().empty()){
+				helper::WriteOnlyAccessor<Data <SeqWeights> >  wa=d_weightArray;
 				wa.resize(this->getNbPoints());
 				std::fill(wa.begin(),wa.end(),(SReal)1);
-				d_weightArray.endEdit();
 			}
+		// initialize the array of weights if necessary
+		if (d_isRationalSpline.getValue().empty()){
+			helper::WriteOnlyAccessor<Data <SeqBools> >  isRationalSpline=d_isRationalSpline;
+			isRationalSpline.resize(this->getNbPoints());
+			std::fill(isRationalSpline.begin(),isRationalSpline.end(),false);
 		}
 		// manually creates the edge and triangle structures.
 		createEdgeSetArray();
@@ -161,15 +163,11 @@ void BezierTriangleSetTopologyContainer::reinit()
 	}
 }
 SReal BezierTriangleSetTopologyContainer::getWeight(int i) const {
-	if (d_isRationalSpline.getValue()) {
-		return(d_weightArray.getValue()[i]);
-	} else {
-		return((SReal)1.0f);
-	}
+	return(d_weightArray.getValue()[i]);
 }
-bool BezierTriangleSetTopologyContainer::isRationalSpline() const {
-	return(d_isRationalSpline.getValue());
-}
+bool BezierTriangleSetTopologyContainer::isRationalSpline(int i) const {
+	 return(d_isRationalSpline.getValue()[i]);
+ }
 const BezierTriangleSetTopologyContainer::SeqWeights & BezierTriangleSetTopologyContainer::getWeightArray() const {
 	return(d_weightArray.getValue());
 }
