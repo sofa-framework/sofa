@@ -156,7 +156,11 @@ void BezierTetrahedronSetTopologyContainer::reinit()
 			std::fill(wa.begin(),wa.end(),(SReal)1);
 			d_weightArray.endEdit();
 		}
-
+		if (d_isRationalSpline.getValue().empty()){
+			helper::WriteOnlyAccessor<Data <SeqBools> >  isRationalSpline=d_isRationalSpline;
+			isRationalSpline.resize(this->getNbPoints());
+			std::fill(isRationalSpline.begin(),isRationalSpline.end(),false);
+		}
 		// manually creates the edge and triangle structures.
 		createTriangleSetArray();
 		createEdgeSetArray();
