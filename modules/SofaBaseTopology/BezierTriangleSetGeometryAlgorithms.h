@@ -64,6 +64,10 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef sofa::defaulttype::Vec<3,Real> Vec3;
     typedef sofa::defaulttype::Mat<3,3,Real> Mat33;
+
+    Data<bool> drawControlPointsEdges;
+    Data<bool> drawSmoothEdges;
+	Data<bool> drawControlPoints;
 protected:
    
 	/// container	
@@ -77,7 +81,7 @@ protected:
 	// map used to store the Bernstein coefficient given a Triangle Bezier Index
 	std::map<TriangleBezierIndex,Real> bernsteinCoeffMap;
 	/// the list of edges of the Bezier Triangle used in the draw function
-	sofa::helper::set<Edge> bezierTriangleEdgeSet;
+	sofa::helper::set<std::pair<Edge,bool> > bezierTriangleEdgeSet;
 
 
 	/// constructor 
@@ -109,9 +113,7 @@ public:
 	void computeDeCasteljeauPoints(const size_t triangleIndex, const Vec3 barycentricCoordinate, const VecCoord& p,Coord point[3]);
 	/// test if the Bezier Triangle is a simple affine tesselation of a regular Triangle
 	bool isBezierTriangleAffine(const size_t triangleIndex,const VecCoord& p, const Real tolerance=(Real)1e-5) const; 
-protected:
-    Data<bool> drawControlPointsEdges;
-    Data<bool> drawVolumeEdges;
+
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_BEZIERTRIANGLESETGEOMETRYALGORITHMS_CPP)

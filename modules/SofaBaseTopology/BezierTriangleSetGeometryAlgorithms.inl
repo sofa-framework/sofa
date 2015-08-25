@@ -55,7 +55,9 @@ template< class DataTypes>
 TriangleSetGeometryAlgorithms<DataTypes>()
 		,degree(0)
         ,drawControlPointsEdges (core::objectmodel::Base::initData(&drawControlPointsEdges, (bool) false, "drawControlPointsEdges", "Debug : draw Control point edges "))
-        ,drawVolumeEdges (core::objectmodel::Base::initData(&drawVolumeEdges, (bool) false, "drawVolumeEdges", "Debug : draw edges on Bezier volume"))
+        ,drawSmoothEdges (core::objectmodel::Base::initData(&drawSmoothEdges, (bool) false, "drawSmoothEdges", "Debug : draw Bezier curves as edges of the  Bezier triangle"))
+        ,drawControlPoints (core::objectmodel::Base::initData(&drawControlPoints, (bool) false, "drawControlPoints", "Debug : draw Control points with a color depending on its status "))
+
     {
     }
 template< class DataTypes>
@@ -100,7 +102,7 @@ template< class DataTypes>
 		TriangleBezierIndex tbiNext;
 
 		for (i=0;i<=degree;++i) {
-			for (j=0;j<=(degree-i-1);++j) {
+			for (j=0;j<=(degree-i);++j) {
 				k=degree-i-j;
 				tbi=TriangleBezierIndex(i,j,k);
 				index1=container->getLocalIndexFromTriangleBezierIndex(tbi);
@@ -113,7 +115,11 @@ template< class DataTypes>
 								tbiNext[(m+n)%3]=tbi[(m+n)%3]-1;
 								index2=container->getLocalIndexFromTriangleBezierIndex(tbiNext);
 								Edge e((PointID)std::min(index1,index2),(PointID)std::max(index1,index2));
-								bezierTriangleEdgeSet.insert(e);
+								// test if both control points are on an edge
+								if (tbi[(m+3-n)%3]==0)
+									bezierTriangleEdgeSet.insert(std::pair<Edge,bool>(e,true));
+								else 
+									bezierTriangleEdgeSet.insert(std::pair<Edge,bool>(e,false));
 							}
 						}
 					}
@@ -137,7 +143,7 @@ typename DataTypes::Coord BezierTriangleSetGeometryAlgorithms< DataTypes >::comp
 	nodalValue.clear();
 	VecPointID indexArray;
 	TriangleBezierIndex tbi;
-	bool isRational=container->isRationalSpline();
+	bool isRational=container->isRationalSpline(triangleIndex);
 
 	container->getGlobalIndexArrayOfBezierPointsInTriangle(triangleIndex, indexArray);
 	if (isRational) {
@@ -188,7 +194,7 @@ typename DataTypes::Real BezierTriangleSetGeometryAlgorithms<DataTypes>::compute
 	/// the 2 derivatives
 	Deriv dpos[2];
 	VecPointID indexArray;
-	bool isRational=container->isRationalSpline();
+	bool isRational=container->isRationalSpline(triangleIndex);
 	TriangleBezierIndex tbi;
 	size_t j;
 	Real val;
@@ -261,7 +267,7 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::computeDeCasteljeauPoints(c
 	/// the 4 derivatives
 	VecPointID indexArray;
 	TriangleBezierIndex tbi;
-	bool isRational=container->isRationalSpline();
+	bool isRational=container->isRationalSpline(triangleIndex);
 	size_t j;
 	Real val;
 	container->getGlobalIndexArrayOfBezierPointsInTriangle(triangleIndex, indexArray);
@@ -376,13 +382,155 @@ bool BezierTriangleSetGeometryAlgorithms<DataTypes>::isBezierTriangleAffine(cons
 template<class DataTypes>
 void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+
 	
 	if ((degree>0) && (container) ){
 		TriangleSetGeometryAlgorithms<DataTypes>::draw(vparams);	
-		// Draw Tetra
-		if ((drawControlPointsEdges.getValue())||(drawVolumeEdges.getValue()))
+		if (drawControlPoints.getValue())
 		{
+			size_t nbPoints=container->getNbPoints();
+			size_t i,elementIndex,elementOffset;
+			const typename DataTypes::VecCoord& pos =(this->object->read(core::ConstVecCoordId::position())->getValue());
+			BezierTriangleSetTopologyContainer::BezierTrianglePointLocation location;
+
+			if (container->getNbTriangles()>0) {
+				// estimate the  mean radius of the spheres from the first Bezier triangle 
+				VecPointID indexArray;
+				container->getGlobalIndexArrayOfBezierPointsInTriangle(0, indexArray);
+				std::vector<Real> edgeLengthArray;
+				// compute median of the edge distance between control points	
+				sofa::helper::set<std::pair<Edge,bool> >::iterator ite=bezierTriangleEdgeSet.begin();
+				Real val=0;
+				Coord pp;
+				for (; ite!=bezierTriangleEdgeSet.end(); ite++)
+				{
+						pp = pos[indexArray[(*ite).first[0]]] -pos[indexArray[(*ite).first[1]]] ;
+						edgeLengthArray.push_back(pp.norm());
+				}
+				std::nth_element(edgeLengthArray.begin(), edgeLengthArray.begin() + edgeLengthArray.size()/2, edgeLengthArray.end());
+				Real radius=edgeLengthArray[edgeLengthArray.size()/2]/5;
+				std::vector<Vector3> pointsVertices,pointsEdges,pointsTriangles;
+				std::vector<float> radiusVertices,radiusEdges,radiusTriangles;
+				Vector3 p;
+
+
+				for (i=0;i<nbPoints;++i) {
+					container->getLocationFromGlobalIndex(i,location,elementIndex,elementOffset);
+					if (location==BezierTriangleSetTopologyContainer::BezierTrianglePointLocation::POINT) {
+						p=pos[i];
+						pointsVertices.push_back(p);
+
+						radiusVertices.push_back(radius*container->getWeight(i));
+
+					} else if (location==BezierTriangleSetTopologyContainer::BezierTrianglePointLocation::EDGE) {
+						p=pos[i];
+						pointsEdges.push_back(p);
+
+						radiusEdges.push_back(radius*container->getWeight(i));
+
+					} else {
+						p=pos[i];
+						pointsTriangles.push_back(p);
+
+						radiusTriangles.push_back(radius*container->getWeight(i));
+
+					}
+				}
+				vparams->drawTool()->setLightingEnabled(true); //Enable lightning
+				vparams->drawTool()->drawSpheres(pointsVertices, radiusVertices, Vec<4,float>(1.0f,0,0,1.0f));
+				vparams->drawTool()->drawSpheres(pointsEdges, radiusEdges, Vec<4,float>(0,1.0f,0,1.0f));
+				vparams->drawTool()->drawSpheres(pointsTriangles, radiusTriangles, Vec<4,float>(0,0,1.0f,1.0f));
+				vparams->drawTool()->setLightingEnabled(false); //Disable lightning
+			}
+		}
+		// Draw edges linking Bezier Triangle control points with a color code
+		if (drawSmoothEdges.getValue())
+		{
+			
+			const sofa::helper::vector<Triangle> &trianArray = this->m_topology->getTriangles();
+
+			if (!trianArray.empty())
+			{
+				// estimate the  mean radius of the spheres from the first Bezier triangle 
+				VecPointID indexArray;
+				size_t nbPoints=container->getNbPoints();
+				size_t i,elementIndex,elementOffset;
+				const typename DataTypes::VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
+				BezierTriangleSetTopologyContainer::BezierTrianglePointLocation location;
+				container->getGlobalIndexArrayOfBezierPointsInTriangle(0, indexArray);
+				std::vector<Real> edgeLengthArray;
+				// compute median of the edge distance between control points	
+				sofa::helper::set<std::pair<Edge,bool> >::iterator ite=bezierTriangleEdgeSet.begin();
+				Real val=0;
+				Coord pp;
+				for (; ite!=bezierTriangleEdgeSet.end(); ite++)
+				{
+					pp = coords[indexArray[(*ite).first[0]]] -coords[indexArray[(*ite).first[1]]] ;
+					edgeLengthArray.push_back(pp.norm());
+				}
+				std::nth_element(edgeLengthArray.begin(), edgeLengthArray.begin() + edgeLengthArray.size()/2, edgeLengthArray.end());
+				Real radius=edgeLengthArray[edgeLengthArray.size()/2]/5;
+				std::vector<Vector3> pointsVertices;
+				std::vector<float> radiusVertices;
+				Vector3 p1;
+
+
+				for (i=0;i<nbPoints;++i) {
+					container->getLocationFromGlobalIndex(i,location,elementIndex,elementOffset);
+					if (location==BezierTriangleSetTopologyContainer::BezierTrianglePointLocation::POINT) {
+						p1=coords[i];
+						pointsVertices.push_back(p1);
+
+						radiusVertices.push_back(radius*container->getWeight(i));
+
+					} 
+				}
+				vparams->drawTool()->setLightingEnabled(true); //Enable lightning
+				vparams->drawTool()->drawSpheres(pointsVertices, radiusVertices, Vec<4,float>(1.0f,0,0,1.0f));
+				vparams->drawTool()->setLightingEnabled(false); //Disable lightning
+
+				#ifndef SOFA_NO_OPENGL
+				glDisable(GL_LIGHTING);
+				
+				glColor3f(0.0f, 1.0f, 0.0f);
+				glLineWidth(3.0);
+				 glEnable(GL_DEPTH_TEST);
+				glEnable(GL_POLYGON_OFFSET_LINE);
+				glPolygonOffset(-1.0,100.0);
+				
+				
+				// how many points is used to discretize the edge
+				const size_t edgeTesselation=9;
+				sofa::defaulttype::Vec3f p; //,p2;
+				for ( i = 0; i<trianArray.size(); i++)
+				{
+					indexArray.clear();
+					container->getGlobalIndexArrayOfBezierPointsInTriangle(i, indexArray);
+					sofa::helper::vector <sofa::defaulttype::Vec3f> trianCoord;
+					// process each edge of the triangle
+					for (size_t j = 0; j<3; j++) {
+						Vec3 baryCoord;
+						baryCoord[j]=0;
+						glBegin(GL_LINE_STRIP);
+						for (size_t k=0;k<=edgeTesselation;++k) {
+							baryCoord[(j+1)%3]=(Real)k/(Real)edgeTesselation;
+							baryCoord[(j+2)%3]=(Real)(edgeTesselation-k)/(Real)edgeTesselation;
+							p=DataTypes::getCPos(computeNodalValue(i,baryCoord));
+							glVertex3f(p[0],p[1],p[2]);
+						}
+						glEnd();
+					}
+				}
+				glDisable(GL_POLYGON_OFFSET_LINE);
+				
+			}
+			#endif
+		}
+		
+		// Draw edges linking Bezier Triangle control points with a color code
+		if (drawControlPointsEdges.getValue())
+		{
+			#ifndef SOFA_NO_OPENGL
 			const sofa::helper::vector<Triangle> &trianArray = this->m_topology->getTriangles();
 
 			if (!trianArray.empty())
@@ -400,36 +548,32 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Vi
 					indexArray.clear();
 					container->getGlobalIndexArrayOfBezierPointsInTriangle(i, indexArray);
 					sofa::helper::vector <sofa::defaulttype::Vec3f> trianCoord;
-					if (drawControlPointsEdges.getValue()) {
-						for (unsigned int j = 0; j<indexArray.size(); j++)
-						{
-							p = DataTypes::getCPos(coords[indexArray[j]]);
-							trianCoord.push_back(p);
-						}
-					} else {
-						for (unsigned int j = 0; j<indexArray.size(); j++)
-						{
-							baryCoord=Vec3((double)tbiArray[j][0]/degree,(double)tbiArray[j][1]/degree,(double)tbiArray[j][2]/degree);
-							p=DataTypes::getCPos(computeNodalValue(i,baryCoord));
 
-						//	if ((p-p2).norm2()>1e-3) std::cerr<< "error in tetra"<< i << std::endl;
-						//	p = DataTypes::getCPos(coords[indexArray[j]]);
-							trianCoord.push_back(p);
-						}
+					for (unsigned int j = 0; j<indexArray.size(); j++)
+					{
+						p = DataTypes::getCPos(coords[indexArray[j]]);
+						trianCoord.push_back(p);
 					}
-					sofa::helper::set<Edge>::iterator ite=bezierTriangleEdgeSet.begin();
+					
+					sofa::helper::set<std::pair<Edge,bool> >::iterator ite=bezierTriangleEdgeSet.begin();
 					for (; ite!=bezierTriangleEdgeSet.end(); ite++)
 					{
-						glVertex3f(trianCoord[(*ite)[0]][0], trianCoord[(*ite)[0]][1], trianCoord[(*ite)[0]][2]);
-						glVertex3f(trianCoord[(*ite)[1]][0], trianCoord[(*ite)[1]][1], trianCoord[(*ite)[1]][2]);
+						if ((*ite).second) {
+							glColor3f(0.0f, 1.0f, 0.0f);
+						} else {
+							glColor3f(0.0f, 0.0f, 1.0f );
+						}
+						glVertex3f(trianCoord[(*ite).first[0]][0], trianCoord[(*ite).first[0]][1], trianCoord[(*ite).first[0]][2]);
+						glVertex3f(trianCoord[(*ite).first[1]][0], trianCoord[(*ite).first[1]][1], trianCoord[(*ite).first[1]][2]);
 					}
 				}
 				glEnd();
 			}
+			#endif
 		}
 	}
 	
-#endif
+
 }
 
 
