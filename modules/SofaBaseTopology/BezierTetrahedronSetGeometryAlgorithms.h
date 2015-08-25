@@ -82,7 +82,7 @@ protected:
 	// map used to store the Bernstein coefficient given a Tetrahedron Bezier Index
 	std::map<TetrahedronBezierIndex,Real> bernsteinCoeffMap;
 	/// the list of edges of the Bezier Tetrahedron used in the draw function
-	sofa::helper::set<Edge> bezierTetrahedronEdgeSet;
+    sofa::helper::set<std::pair<Edge,size_t> > bezierTetrahedronEdgeSet;
 
 
 	/// constructor 
@@ -116,7 +116,8 @@ public:
 	bool isBezierTetrahedronAffine(const size_t tetrahedronIndex,const VecCoord& p, const Real tolerance=(Real)1e-5) const; 
 protected:
     Data<bool> drawControlPointsEdges;
-    Data<bool> drawVolumeEdges;
+	Data<bool> drawSmoothEdges;
+	Data<bool> drawControlPoints;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_BEZIERTETRAHEDRONSETGEOMETRYALGORITHMS_CPP)
