@@ -62,6 +62,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
+	typedef typename DataTypes::Deriv Deriv;
     typedef sofa::defaulttype::Vec<3,Real> Vec3;
     typedef sofa::defaulttype::Mat<3,3,Real> Mat33;
 
