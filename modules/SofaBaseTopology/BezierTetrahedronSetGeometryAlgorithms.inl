@@ -429,19 +429,19 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 
 				for (i=0;i<nbPoints;++i) {
 					container->getLocationFromGlobalIndex(i,location,elementIndex,elementOffset);
-					if (location==BezierTetrahedronSetTopologyContainer::BezierTetrahedronPointLocation::POINT) {
+					if (location==BezierTetrahedronSetTopologyContainer::POINT) {
 						p=pos[i];
 						pointsVertices.push_back(p);
 
 						radiusVertices.push_back(radius*container->getWeight(i));
 
-					} else if (location==BezierTetrahedronSetTopologyContainer::BezierTetrahedronPointLocation::EDGE) {
+					} else if (location==BezierTetrahedronSetTopologyContainer::EDGE) {
 						p=pos[i];
 						pointsEdges.push_back(p);
 
 						radiusEdges.push_back(radius*container->getWeight(i));
 
-					} else if (location==BezierTetrahedronSetTopologyContainer::BezierTetrahedronPointLocation::TRIANGLE) {
+					} else if (location==BezierTetrahedronSetTopologyContainer::TRIANGLE) {
 						p=pos[i];
 						pointsTriangles.push_back(p);
 
@@ -455,10 +455,10 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 					}
 				}
 				vparams->drawTool()->setLightingEnabled(true); //Enable lightning
-				vparams->drawTool()->drawSpheres(pointsVertices, radiusVertices, Vec<4,float>(1.0f,0,0,1.0f));
-				vparams->drawTool()->drawSpheres(pointsEdges, radiusEdges, Vec<4,float>(0,1.0f,0,1.0f));
-				vparams->drawTool()->drawSpheres(pointsTriangles, radiusTriangles, Vec<4,float>(0,0,1.0f,1.0f));
-				vparams->drawTool()->drawSpheres(pointsTetrahedra, radiusTetrahedra, Vec<4,float>(1,0,1.0f,1.0f));
+				vparams->drawTool()->drawSpheres(pointsVertices, radiusVertices,  defaulttype::Vec<4,float>(1.0f,0,0,1.0f));
+				vparams->drawTool()->drawSpheres(pointsEdges, radiusEdges,  defaulttype::Vec<4,float>(0,1.0f,0,1.0f));
+				vparams->drawTool()->drawSpheres(pointsTriangles, radiusTriangles,  defaulttype::Vec<4,float>(0,0,1.0f,1.0f));
+				vparams->drawTool()->drawSpheres(pointsTetrahedra, radiusTetrahedra,  defaulttype::Vec<4,float>(1,0,1.0f,1.0f));
 				vparams->drawTool()->setLightingEnabled(false); //Disable lightning
 			}
 		}
@@ -489,7 +489,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 				}
 				std::nth_element(edgeLengthArray.begin(), edgeLengthArray.begin() + edgeLengthArray.size()/2, edgeLengthArray.end());
 				Real radius=edgeLengthArray[edgeLengthArray.size()/2]/5;
-				std::vector<Vsofa::defaulttype::ector3> pointsVertices;
+				std::vector<sofa::defaulttype::Vector3> pointsVertices;
 				std::vector<float> radiusVertices;
 				sofa::defaulttype::Vector3 p1;
 
@@ -505,7 +505,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 					} 
 				}
 				vparams->drawTool()->setLightingEnabled(true); //Enable lightning
-				vparams->drawTool()->drawSpheres(pointsVertices, radiusVertices, Vec<4,float>(1.0f,0,0,1.0f));
+				vparams->drawTool()->drawSpheres(pointsVertices, radiusVertices,  defaulttype::Vec<4,float>(1.0f,0,0,1.0f));
 				vparams->drawTool()->setLightingEnabled(false); //Disable lightning
 
 				#ifndef SOFA_NO_OPENGL
