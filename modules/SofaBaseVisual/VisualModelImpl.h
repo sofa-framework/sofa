@@ -205,9 +205,6 @@ public:
     Data<bool> m_updateTangents; ///< True if tangents should be updated at each iteration
     Data<bool> m_handleDynamicTopology; ///< True if topological changes should be handled
     Data<bool> m_fixMergedUVSeams; ///< True if UV seams should be handled even when duplicate UVs are merged
-	Data<bool> m_useBezierPatch; /// True if triangles are in fact Bezier triangles 
-	Data<bool> m_useBezierNormals; /// True if the Bezier patches should be rendered with normals computed from the Bezier patch (as opposed to regular triangular normals) 
-	Data<unsigned int> m_bezierTesselation; /// the number of tessellation of each Bezier triangles 
 
     Data< VecCoord > m_vertices2;
     topology::PointData< VecTexCoord > m_vtexcoords;
@@ -216,7 +213,7 @@ public:
     Data< sofa::defaulttype::ResizableExtVector< Edge > > m_edges;
     Data< sofa::defaulttype::ResizableExtVector< Triangle > > m_triangles;
     Data< sofa::defaulttype::ResizableExtVector< Quad > > m_quads;
-   Data< sofa::defaulttype::ResizableExtVector< Triangle > > m_bezierTriangles;
+  
 
     /// If vertices have multiple normals/texcoords, then we need to separate them
     /// This vector store which input position is used for each vertex
@@ -328,20 +325,7 @@ protected:
 
     /// Default destructor.
     ~VisualModelImpl();
-	/// the degree order of the Bezier patches
-	unsigned char bezierDegree;
-	/// precomputed coefficients to interpolate the positions of points.
-	sofa::helper::vector< sofa::helper::vector<Real> > precomputedLinearBernsteinCoefficientArray; 
-	sofa::helper::vector< sofa::helper::vector<Real> > precomputedTriangularBernsteinCoefficientArray; 
-	sofa::helper::vector< sofa::helper::vector<Real> > precomputedDerivUTriangularBernsteinCoefficientArray; 
-	sofa::helper::vector< sofa::helper::vector<Real> > precomputedDerivVTriangularBernsteinCoefficientArray; 
-	sofa::helper::vector< sofa::helper::vector<size_t> > globalIndexTesselatedBezierTriangleArray; 
-	sofa::helper::vector<size_t> local2GlobalBezierVertexArray;
-		sofa::helper::vector<int> global2LocalBezierVertexArray;
-	// local indexing of points inside tessellated triangles
-	sofa::helper::vector<sofa::defaulttype::Vec<3,unsigned char > > tesselatedTriangleIndices; 
-	sofa::helper::vector< Real > bezierWeightArray; 
-	sofa::helper::vector< Real > bezierTesselationWeightArray; 
+
 public:
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
