@@ -116,9 +116,9 @@ public:
     void setPrefix(const std::string& prefix);
     virtual void screenshot(const std::string& filename, int compression_level =-1);
 
-    virtual void getView(sofa::defaulttype::Vec3d& pos, sofa::defaulttype::Quat& ori) const;
-    virtual void setView(const sofa::defaulttype::Vec3d& pos, const sofa::defaulttype::Quat &ori);
-    virtual void moveView(const sofa::defaulttype::Vec3d& pos, const sofa::defaulttype::Quat &ori);
+    virtual void getView(sofa::defaulttype::Vector3& pos, sofa::defaulttype::Quat& ori) const;
+    virtual void setView(const sofa::defaulttype::Vector3& pos, const sofa::defaulttype::Quat &ori);
+    virtual void moveView(const sofa::defaulttype::Vector3& pos, const sofa::defaulttype::Quat &ori);
     virtual void newView();
     virtual void resetView();
 

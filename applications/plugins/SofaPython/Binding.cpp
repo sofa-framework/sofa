@@ -54,6 +54,7 @@
 //#include "Binding_MultiMapping.h"
 #include "Binding_SubsetMultiMapping.h"
 #include "Binding_VisualModel.h"
+#include "Binding_OBJExporter.h"
 
 PyObject *SofaPythonModule = 0;
 
@@ -64,42 +65,41 @@ void bindSofaPythonModule()
 {
     //PyImport_AppendInittab( (char*)"Sofa", &initSofa );
 
-    SofaPythonModule = SP_INIT_MODULE(Sofa)
-    SP_ADD_CLASS(SofaPythonModule,Data)
-        SP_ADD_CLASS(SofaPythonModule,DisplayFlagsData)
+	SofaPythonModule = SP_INIT_MODULE(Sofa)
+	SP_ADD_CLASS(SofaPythonModule,Data)
+	SP_ADD_CLASS(SofaPythonModule,DisplayFlagsData)
 
-    SP_ADD_CLASS(SofaPythonModule,Vector3)
+	SP_ADD_CLASS(SofaPythonModule,Vector3)
 
-    SP_ADD_CLASS(SofaPythonModule,LinearSpring)
+	SP_ADD_CLASS(SofaPythonModule,LinearSpring)
 
 
-        SP_ADD_CLASS(SofaPythonModule,Base)
-            SP_ADD_CLASS(SofaPythonModule,BaseContext)
-                SP_ADD_CLASS(SofaPythonModule,Context)
-                    SP_ADD_CLASS(SofaPythonModule,Node)
-            SP_ADD_CLASS(SofaPythonModule,BaseObject)
-                SP_ADD_CLASS(SofaPythonModule,BaseState)
-                    SP_ADD_CLASS(SofaPythonModule,BaseMechanicalState)
-                        SP_ADD_CLASS(SofaPythonModule,MechanicalObject)
-                    SP_ADD_CLASS(SofaPythonModule,VisualModel)
-                SP_ADD_CLASS(SofaPythonModule,BaseMapping)
-//                    SP_ADD_CLASS(SofaPythonModule,Mapping)
-//                        SP_ADD_CLASS(SofaPythonModule,RigidMapping)
-//                    SP_ADD_CLASS(SofaPythonModule,MultiMapping3_to_3)
-                        SP_ADD_CLASS(SofaPythonModule,SubsetMultiMapping3_to_3)
-            SP_ADD_CLASS(SofaPythonModule,BaseLoader)
-                SP_ADD_CLASS(SofaPythonModule,MeshLoader)
-            SP_ADD_CLASS(SofaPythonModule,Topology)
-                SP_ADD_CLASS(SofaPythonModule,BaseMeshTopology)
-                    SP_ADD_CLASS(SofaPythonModule,MeshTopology)
-                        SP_ADD_CLASS(SofaPythonModule,GridTopology)
-                            SP_ADD_CLASS(SofaPythonModule,RegularGridTopology)
-/*
-            SP_ADD_CLASS(SofaPythonModule,BaseController)
-                SP_ADD_CLASS(SofaPythonModule,Controller)
-                    SP_ADD_CLASS(SofaPythonModule,ScriptController)
-        */
-                        SP_ADD_CLASS(SofaPythonModule,PythonScriptController)
+	SP_ADD_CLASS(SofaPythonModule,Base)
+	SP_ADD_CLASS(SofaPythonModule,BaseContext)
+	SP_ADD_CLASS(SofaPythonModule,Context)
+	SP_ADD_CLASS(SofaPythonModule,Node)
+	SP_ADD_CLASS(SofaPythonModule,BaseObject)
+	SP_ADD_CLASS(SofaPythonModule,BaseState)
+	SP_ADD_CLASS(SofaPythonModule,BaseMechanicalState)
+	SP_ADD_CLASS(SofaPythonModule,MechanicalObject)
+	SP_ADD_CLASS(SofaPythonModule,VisualModel)
+	SP_ADD_CLASS(SofaPythonModule,BaseMapping)
+	//SP_ADD_CLASS(SofaPythonModule,Mapping)
+	//SP_ADD_CLASS(SofaPythonModule,RigidMapping)
+	//SP_ADD_CLASS(SofaPythonModule,MultiMapping3_to_3)
+	SP_ADD_CLASS(SofaPythonModule,SubsetMultiMapping3_to_3)
+	SP_ADD_CLASS(SofaPythonModule,BaseLoader)
+	SP_ADD_CLASS(SofaPythonModule,MeshLoader)
+	SP_ADD_CLASS(SofaPythonModule,Topology)
+	SP_ADD_CLASS(SofaPythonModule,BaseMeshTopology)
+	SP_ADD_CLASS(SofaPythonModule,MeshTopology)
+	SP_ADD_CLASS(SofaPythonModule,GridTopology)
+	SP_ADD_CLASS(SofaPythonModule,RegularGridTopology)
+	SP_ADD_CLASS(SofaPythonModule,OBJExporter)
+	//SP_ADD_CLASS(SofaPythonModule,BaseController)
+	//SP_ADD_CLASS(SofaPythonModule,Controller)
+	//SP_ADD_CLASS(SofaPythonModule,ScriptController)
+	SP_ADD_CLASS(SofaPythonModule,PythonScriptController)
 }
 
 

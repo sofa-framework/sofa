@@ -78,7 +78,7 @@ protected:
 
     UniformLinearPotentialEnergy( core::behavior::MechanicalState<DataTypes> *mm = 0)
         : Base(mm)
-        , d_factor(initData(&d_factor, 1.0, "factor", "scalar factor"))
+        , d_factor(initData(&d_factor, (SReal)1.0, "factor", "scalar factor"))
     {}
     
 };
