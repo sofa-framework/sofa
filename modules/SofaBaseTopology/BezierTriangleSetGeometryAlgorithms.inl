@@ -409,9 +409,9 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Vi
 				}
 				std::nth_element(edgeLengthArray.begin(), edgeLengthArray.begin() + edgeLengthArray.size()/2, edgeLengthArray.end());
 				Real radius=edgeLengthArray[edgeLengthArray.size()/2]/5;
-				std::vector<Vector3> pointsVertices,pointsEdges,pointsTriangles;
+				std::vector<sofa::defaulttype::Vector3> pointsVertices,pointsEdges,pointsTriangles;
 				std::vector<float> radiusVertices,radiusEdges,radiusTriangles;
-				Vector3 p;
+				sofa::defaulttype::Vector3 p;
 
 
 				for (i=0;i<nbPoints;++i) {
@@ -470,9 +470,9 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Vi
 				}
 				std::nth_element(edgeLengthArray.begin(), edgeLengthArray.begin() + edgeLengthArray.size()/2, edgeLengthArray.end());
 				Real radius=edgeLengthArray[edgeLengthArray.size()/2]/5;
-				std::vector<Vector3> pointsVertices;
+				std::vector<sofa::defaulttype::Vector3> pointsVertices;
 				std::vector<float> radiusVertices;
-				Vector3 p1;
+				sofa::defaulttype::Vector3 p1;
 
 
 				for (i=0;i<nbPoints;++i) {

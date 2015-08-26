@@ -422,9 +422,9 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 				}
 				std::nth_element(edgeLengthArray.begin(), edgeLengthArray.begin() + edgeLengthArray.size()/2, edgeLengthArray.end());
 				Real radius=edgeLengthArray[edgeLengthArray.size()/2]/5;
-				std::vector<Vector3> pointsVertices,pointsEdges,pointsTriangles,pointsTetrahedra;
+				std::vector<sofa::defaulttype::Vector3> pointsVertices,pointsEdges,pointsTriangles,pointsTetrahedra;
 				std::vector<float> radiusVertices,radiusEdges,radiusTriangles,radiusTetrahedra;
-				Vector3 p;
+				sofa::defaulttype::Vector3 p;
 
 
 				for (i=0;i<nbPoints;++i) {
@@ -489,9 +489,9 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 				}
 				std::nth_element(edgeLengthArray.begin(), edgeLengthArray.begin() + edgeLengthArray.size()/2, edgeLengthArray.end());
 				Real radius=edgeLengthArray[edgeLengthArray.size()/2]/5;
-				std::vector<Vector3> pointsVertices;
+				std::vector<Vsofa::defaulttype::ector3> pointsVertices;
 				std::vector<float> radiusVertices;
-				Vector3 p1;
+				sofa::defaulttype::Vector3 p1;
 
 
 				for (i=0;i<nbPoints;++i) {
