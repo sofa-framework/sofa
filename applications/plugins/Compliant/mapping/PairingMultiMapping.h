@@ -41,7 +41,7 @@ public:
 
 
     PairingMultiMapping() :
-        sign(initData(&sign, 1.0, "sign", "scalar factor")) {
+        sign(initData(&sign, (SReal)1.0, "sign", "scalar factor")) {
         
     }
     
