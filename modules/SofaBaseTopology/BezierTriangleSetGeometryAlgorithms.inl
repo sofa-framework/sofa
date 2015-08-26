@@ -416,13 +416,13 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Vi
 
 				for (i=0;i<nbPoints;++i) {
 					container->getLocationFromGlobalIndex(i,location,elementIndex,elementOffset);
-					if (location==BezierTriangleSetTopologyContainer::BezierTrianglePointLocation::POINT) {
+					if (location==BezierTriangleSetTopologyContainer::POINT) {
 						p=pos[i];
 						pointsVertices.push_back(p);
 
 						radiusVertices.push_back(radius*container->getWeight(i));
 
-					} else if (location==BezierTriangleSetTopologyContainer::BezierTrianglePointLocation::EDGE) {
+					} else if (location==BezierTriangleSetTopologyContainer::EDGE) {
 						p=pos[i];
 						pointsEdges.push_back(p);
 
@@ -477,7 +477,7 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Vi
 
 				for (i=0;i<nbPoints;++i) {
 					container->getLocationFromGlobalIndex(i,location,elementIndex,elementOffset);
-					if (location==BezierTriangleSetTopologyContainer::BezierTrianglePointLocation::POINT) {
+					if (location==BezierTriangleSetTopologyContainer::POINT) {
 						p1=coords[i];
 						pointsVertices.push_back(p1);
 
