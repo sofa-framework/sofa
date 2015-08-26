@@ -50,6 +50,7 @@
 //#include "Binding_MultiMapping.h"
 #include "Binding_SubsetMultiMapping.h"
 #include "Binding_VisualModel.h"
+#include "Binding_OBJExporter.h"
 
 using sofa::core::objectmodel::Base;
 
@@ -83,7 +84,9 @@ PyObject* SP_BUILD_PYSPTR(Base* obj)
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Topology));
 
     if (dynamic_cast<sofa::component::visualmodel::VisualModelImpl*>(obj))
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(VisualModel));
+		return BuildPySPtr<Base>(obj, &SP_SOFAPYTYPEOBJECT(VisualModel));
+	if (dynamic_cast<sofa::component::misc::OBJExporter*>(obj))
+		return BuildPySPtr<Base>(obj, &SP_SOFAPYTYPEOBJECT(OBJExporter));
     if (dynamic_cast<sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(MechanicalObject));
     if (dynamic_cast<sofa::core::behavior::BaseMechanicalState*>(obj))
