@@ -496,7 +496,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 
 				for (i=0;i<nbPoints;++i) {
 					container->getLocationFromGlobalIndex(i,location,elementIndex,elementOffset);
-					if (location==BezierTetrahedronSetTopologyContainer::BezierTetrahedronPointLocation::POINT) {
+					if (location==BezierTetrahedronSetTopologyContainer::POINT) {
 						p1=coords[i];
 						pointsVertices.push_back(p1);
 
