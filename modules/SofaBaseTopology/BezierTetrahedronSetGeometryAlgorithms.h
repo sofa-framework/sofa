@@ -67,7 +67,6 @@ public:
 	typedef BezierTetrahedronSetTopologyContainer::VecPointID VecPointID;
 
 	typedef Tetra Tetrahedron;
-	typedef EdgesInTetrahedron EdgesInTetrahedron;
 	typedef TrianglesInTetrahedron TrianglesInTetrahedron;
 protected:
    
