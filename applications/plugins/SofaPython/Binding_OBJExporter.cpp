@@ -16,73 +16,33 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                               SOFA :: Plugins                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * OBJExporter.h
- *
- *  Created on: 9 sept. 2009
- *      Author: froy
- */
 
-#ifndef OBJEXPORTER_H_
-#define OBJEXPORTER_H_
-#include "config.h"
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
+#include "Binding_OBJExporter.h"
+#include "Binding_BaseObject.h"
 
-#include <fstream>
+using namespace sofa::component::misc;
+using namespace sofa::core::objectmodel;
 
-namespace sofa
+extern "C" PyObject * OBJExporter_writeOBJ(PyObject *self, PyObject * args)
 {
-
-namespace component
-{
-
-namespace misc
-{
-
-class SOFA_EXPORTER_API OBJExporter : public core::objectmodel::BaseObject
-{
-public:
-	SOFA_CLASS(OBJExporter, core::objectmodel::BaseObject);
-
-private:
-    unsigned int stepCounter;
-    std::ofstream* outfile;
-    std::ofstream* mtlfile;
-    sofa::core::objectmodel::BaseContext* context;
-    unsigned int maxStep;
-
-public:
-    sofa::core::objectmodel::DataFileName objFilename;
-    Data<unsigned int> exportEveryNbSteps;
-    Data<bool> exportAtBegin;
-    Data<bool> exportAtEnd;
-    bool  activateExport;
-protected:
-    OBJExporter();
-    virtual ~OBJExporter();
-public:
-    void init();
-    void cleanup();
-    void bwdInit();
-	void handleEvent(sofa::core::objectmodel::Event *);
-	void writeOBJ(); 
-};
-
+	OBJExporter* obj = dynamic_cast<OBJExporter*>(((PySPtr<Base>*)self)->object.get());
+	obj->writeOBJ();
+    Py_RETURN_NONE;
 }
 
-}
 
-}
+SP_CLASS_METHODS_BEGIN(OBJExporter)
+SP_CLASS_METHOD(OBJExporter,writeOBJ)
+SP_CLASS_METHODS_END
 
-#endif /* OBJEXPORTER_H_ */
+
+SP_CLASS_TYPE_SPTR(OBJExporter,OBJExporter,BaseObject)
+
+
