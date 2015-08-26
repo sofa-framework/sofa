@@ -33,7 +33,7 @@ class SOFA_Compliant_API QuadraticMapping : public AssembledMapping<TIn, TOut>
     Data< SReal > stiffness;
     
     QuadraticMapping()
-        : stiffness( initData(&stiffness, 1.0, "stiffness", "scalar factor") ) {
+        : stiffness( initData(&stiffness, (SReal)1.0, "stiffness", "scalar factor") ) {
         assert( self::Nout == 1 );
     }
 
