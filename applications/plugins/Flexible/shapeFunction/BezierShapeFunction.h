@@ -102,7 +102,7 @@ public:
         if(this->cellIndex==-1) return;
         if(w.size()!=4) return;
 
-        topology::VecPointID indexArray;
+        BezierTopoContainer::VecPointID indexArray;
         container->getGlobalIndexArrayOfBezierPointsInTetrahedron(this->cellIndex, indexArray);
 
         size_t nbRef = tbiArray.size();
