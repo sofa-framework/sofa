@@ -85,7 +85,7 @@ protected:
 	// the associated topological map 
 	topology::Bezier2MeshTopologicalMapping* topoMap;
 	// the input bezier triangle geometry algorithm object
-	topology::BezierTriangleSetGeometryAlgorithms<typename TIn> *btsga;
+	topology::BezierTriangleSetGeometryAlgorithms<TIn> *btsga;
 	// the input bezier triangle geometry algorithm object
 	topology::BezierTriangleSetTopologyContainer *btstc;
 	// currently used bezier degree for the input Bezier triangulation or tetrahedral mesh
