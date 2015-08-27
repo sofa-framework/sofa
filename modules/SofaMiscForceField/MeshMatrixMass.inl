@@ -125,7 +125,7 @@ void MeshMatrixMass<DataTypes, MassType>::TetrahedronMassHandler::applyCreateFun
 		sofa::helper::vector<MassType> lumpedVertexMass;
 		lumpedVertexMass.resize(nbControlPoints);
 		size_t i,j,k,rank;
-		topology::BezierTetrahedronSetGeometryAlgorithms<DataTypes>::VecPointID indexArray;
+		typename topology::BezierTetrahedronSetGeometryAlgorithms<DataTypes>::VecPointID indexArray;
 		/// get the global index of each control point in the tetrahedron
 		MMM->bezierTetraGeo->getTopologyContainer()->getGlobalIndexArrayOfBezierPointsInTetrahedron(tetra,indexArray);
 		std::fill(lumpedVertexMass.begin(),lumpedVertexMass.end(),(MassType)0);
@@ -1274,7 +1274,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, 
 	} else if (bezierTetraGeo ){
 			topology::BezierDegreeType degree=bezierTetraGeo->getTopologyContainer()->getDegree();
 			size_t nbControlPoints=(degree+1)*(degree+2)*(degree+3)/6;
-			topology::BezierTetrahedronSetGeometryAlgorithms<DataTypes>::VecPointID indexArray;
+			typename topology::BezierTetrahedronSetGeometryAlgorithms<DataTypes>::VecPointID indexArray;
 			size_t nbTetras=_topology->getNbTetrahedra();
 #ifdef NDEBUG
 			assert(tetrahedronMassInfo.size()==(nbControlPoints*(nbControlPoints+1)/2));
@@ -1438,7 +1438,7 @@ SReal MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const core::Mechani
 	} else if (bezierTetraGeo ){
 			topology::BezierDegreeType degree=bezierTetraGeo->getTopologyContainer()->getDegree();
 			size_t nbControlPoints=(degree+1)*(degree+2)*(degree+3)/6;
-			topology::BezierTetrahedronSetGeometryAlgorithms<DataTypes>::VecPointID indexArray;
+			typename topology::BezierTetrahedronSetGeometryAlgorithms<DataTypes>::VecPointID indexArray;
 			size_t nbTetras=_topology->getNbTetrahedra();
 #ifdef NDEBUG
 			assert(tetrahedronMassInfo.size()==(nbControlPoints*(nbControlPoints+1)/2));
@@ -1593,7 +1593,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
 		} else if (bezierTetraGeo ){
 			topology::BezierDegreeType degree=bezierTetraGeo->getTopologyContainer()->getDegree();
 			size_t nbControlPoints=(degree+1)*(degree+2)*(degree+3)/6;
-			topology::BezierTetrahedronSetGeometryAlgorithms<DataTypes>::VecPointID indexArray;
+			typename topology::BezierTetrahedronSetGeometryAlgorithms<DataTypes>::VecPointID indexArray;
 			size_t nbTetras=_topology->getNbTetrahedra();
 #ifdef NDEBUG
 			assert(tetrahedronMassInfo.size()==(nbControlPoints*(nbControlPoints+1)/2));
