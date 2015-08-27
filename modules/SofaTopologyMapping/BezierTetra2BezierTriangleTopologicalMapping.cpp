@@ -141,7 +141,8 @@ void BezierTetra2BezierTriangleTopologicalMapping::init()
 					// add vertices in set
 					vertexSet.insert(t[0]);vertexSet.insert(t[1]);vertexSet.insert(t[2]);
 					//  if the adjacent tetrahedron is rational then the triangle is also rational
-					isRationalSpline.push_back(from_btstc->isRationalSpline(tat[0]));
+					bool irs=from_btstc->isRationalSpline(tat[0]);
+					isRationalSpline.push_back(irs);
 
 					Loc2GlobVec.push_back(i);
 					Glob2LocMap[i]=Loc2GlobVec.size()-1;
