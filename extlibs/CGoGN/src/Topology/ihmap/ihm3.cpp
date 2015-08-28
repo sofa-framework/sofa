@@ -47,11 +47,19 @@ ImplicitHierarchicalMap3::ImplicitHierarchicalMap3() :
     a_faceLevel = this->template addAttribute< unsigned, FACE, MAP, NonVertexAttributeAccessorCPHMap< unsigned, FACE > >("faceLvl");
     a_maxVolumeLevel = m_attribs[DART].addAttribute<unsigned int>("maxVolumeLevel") ;
     a_maxFaceLevel = m_attribs[DART].addAttribute<unsigned int>("maxFaceLevel") ;
+    m_faceAttributeBrowser = new FaceAttributeBrowser(this);
+    m_volumeAttributeBrowser = new VolumeAttributeBrowser(this);
+    m_vertexAttributeBrowser = new VertexAttributeBrowser(this);
+    m_attribs[VOLUME].setContainerBrowser(m_volumeAttributeBrowser);
+    m_attribs[FACE].setContainerBrowser(m_faceAttributeBrowser);
+    m_attribs[VERTEX].setContainerBrowser(m_vertexAttributeBrowser);
 }
 
 ImplicitHierarchicalMap3::~ImplicitHierarchicalMap3()
 {
-
+    delete m_volumeAttributeBrowser;
+    delete m_faceAttributeBrowser;
+    delete m_vertexAttributeBrowser;
 }
 
 void ImplicitHierarchicalMap3::clear(bool removeAttrib)
@@ -1205,6 +1213,40 @@ Dart ImplicitHierarchicalMap3::cutEdge(Dart d)
 
     return nd ;
 }
+
+bool ImplicitHierarchicalMap3::checkCounters()
+{
+    bool res = true;
+
+    if (this->isOrbitEmbedded<VERTEX>())
+    {
+        const unsigned int currLVL = this->getCurrentLevel();
+        setCurrentLevel(getMaxLevel());
+        CGoGN::TraversorCell<ImplicitHierarchicalMap3, VERTEX, FORCE_DART_MARKING> traV(*this, true);
+        AttributeContainer& cont = this->template getAttributeContainer<VERTEX>();
+        for (Cell<VERTEX> cit = traV.begin(), end = traV.end(); cit != end ; cit = traV.next())
+        {
+            const unsigned emb = this->template getEmbedding(cit);
+            TraversorDartsOfOrbit<ImplicitHierarchicalMap3, VERTEX > traDoo(*this, cit);
+            unsigned int nbDarts = 0u;
+            for (Dart dit = traDoo.begin(), dend = traDoo.end() ; dit != dend ; dit = traDoo.next())
+            {
+                ++nbDarts;
+            }
+            const unsigned nbRefs = cont.nbRefs(emb);
+            if (nbDarts + 1u != nbRefs)
+            {
+                res = false;
+                std::cerr << "checkCounters failed with nbdarts = " << nbDarts << " and nbrefs = " <<  nbRefs << " (cell "<<  cit << ")" << std::endl;
+                break;
+            }
+        }
+        setCurrentLevel(currLVL);
+    }
+    return res;
+}
+
+
 
 } // namespace IHM
 
