@@ -61,6 +61,14 @@ public:
         std::cerr << __FILE__ << ":" << __LINE__ << " function not implemented ! " << std::endl;
         return std::numeric_limits<unsigned int>::max();
     }
+
+    template< unsigned int ORBIT >
+    inline unsigned int getMaxCellLevel(Cell< ORBIT > ) const
+    {
+        // TODO
+        std::cerr << __FILE__ << ":" << __LINE__ << " function not implemented ! " << std::endl;
+        return std::numeric_limits<unsigned int>::max();
+    }
     //!
     /*!
      *

@@ -213,13 +213,14 @@ public:
     Data< sofa::defaulttype::ResizableExtVector< Edge > > m_edges;
     Data< sofa::defaulttype::ResizableExtVector< Triangle > > m_triangles;
     Data< sofa::defaulttype::ResizableExtVector< Quad > > m_quads;
+  
 
     /// If vertices have multiple normals/texcoords, then we need to separate them
-    /// This vector store which input position is used for each vertice
+    /// This vector store which input position is used for each vertex
     /// If it is empty then each vertex correspond to one position
     Data< sofa::defaulttype::ResizableExtVector<int> > m_vertPosIdx;
 
-    /// Similarly this vector store which input normal is used for each vertice
+    /// Similarly this vector store which input normal is used for each vertex
     /// If it is empty then each vertex correspond to one normal
     Data< sofa::defaulttype::ResizableExtVector<int> > m_vertNormIdx;
 
@@ -324,6 +325,7 @@ protected:
 
     /// Default destructor.
     ~VisualModelImpl();
+
 public:
     void parse(core::objectmodel::BaseObjectDescription* arg);
 

@@ -40,8 +40,8 @@ namespace topology
 /**
  * This class, called Mesh2BezierTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
  *
- * INPUT TOPOLOGY = any Tetrahedral MeshTopology
- * OUTPUT TOPOLOGY = A BezierTetrahedralPointSetTopology as a tesselated version of the input mesh 
+ * INPUT TOPOLOGY = any Tetrahedral or triangular MeshTopology
+ * OUTPUT TOPOLOGY = A BezierTetrahedronSetTopology or BezierTriangleSetTopology as a tesselated version of the input mesh 
  *
  * This Topological mapping is a specific implementation of the Mesh2PointTopologicalMapping with a small overhead
  *
@@ -71,6 +71,8 @@ public:
 
     /// Fills pointBaryCoords, edgeBaryCoords, triangleBaryCoords and tetraBaryCoords so as to create a Bezier Tetrahedron mesh of a given order
 	Data < unsigned int > bezierTetrahedronDegree;
+	/// Fills pointBaryCoords, edgeBaryCoords, triangleBaryCoords so as to create a Bezier Triangle mesh of a given order
+	Data < unsigned int > bezierTriangleDegree;
 };
 
 } // namespace topology

@@ -179,8 +179,8 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     eng->f_resolutionHeight=resolutionHeight;
     // TetrahedronSetTopologyContainer object
     typename sofa::component::topology::TetrahedronSetTopologyContainer::SPtr container1= sofa::modeling::addNew<sofa::component::topology::TetrahedronSetTopologyContainer>(root,"Container1");
-    sofa::modeling::setDataLink(&eng->f_tetrahedron,&container1->d_tetrahedron);
-    sofa::modeling::setDataLink(&eng->f_outputX,&container1->d_initPoints);
+    sofa::modeling::setDataLink(&eng->f_tetrahedra,&container1->d_tetrahedron);
+    sofa::modeling::setDataLink(&eng->f_outputTetrahedraPositions,&container1->d_initPoints);
     container1->d_createTriangleArray=true;
     // TetrahedronSetGeometryAlgorithms object
     typename sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>::SPtr geo1= sofa::modeling::addNew<sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes> >(root);
@@ -194,7 +194,7 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     typename component::odesolver::StaticSolver::SPtr solver = modeling::addNew<component::odesolver::StaticSolver>(root,"StaticSolver");
     // mechanicalObject object
     typename MechanicalObject::SPtr meca1= sofa::modeling::addNew<MechanicalObject>(root);
-    sofa::modeling::setDataLink(&eng->f_outputX,&meca1->x);
+    sofa::modeling::setDataLink(&eng->f_outputTetrahedraPositions,&meca1->x);
     tractionStruct.dofs=meca1;
     // MeshMatrixMass
     typename sofa::component::mass::MeshMatrixMass<DataTypes,Real>::SPtr mass= sofa::modeling::addNew<sofa::component::mass::MeshMatrixMass<DataTypes,Real> >(root,"BezierMass");

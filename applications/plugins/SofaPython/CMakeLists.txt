@@ -74,6 +74,7 @@ set(HEADER_FILES
     Binding_PythonScriptController.h
     Binding_LinearSpring.h
     Binding_VisualModel.h
+    Binding_OBJExporter.h
     SceneLoaderPY.h
     ScriptEnvironment.h)
 
@@ -118,6 +119,7 @@ set(SOURCE_FILES
     Binding_PythonScriptController.cpp
     Binding_LinearSpring.cpp
     Binding_VisualModel.cpp
+    Binding_OBJExporter.cpp
     SceneLoaderPY.cpp
     ScriptEnvironment.cpp)
 

@@ -149,6 +149,38 @@ Dart MapCPH::newDart()
     return d;
 }
 
+void MapCPH::deleteDart(Dart d)
+{
+    deleteDartLine(d.index) ;
+    updateMaxLevel();
+}
+
+void MapCPH::updateMaxLevel()
+{
+    bool again = false;
+    do {
+        const unsigned int maxLevel = getMaxLevel();
+        Dart dit = this->begin();
+        const Dart end = this->end();
+        for ( ; dit != end ; this->next(dit))
+        {
+            if (getDartLevel(dit) == maxLevel )
+            {
+                break;
+            }
+        }
+        again = false;
+        if (dit == end) {
+            again = true;
+            m_maxLevel--;
+            if (getCurrentLevel() > getMaxLevel())
+            {
+                setCurrentLevel(getMaxLevel());
+            }
+        }
+    } while (again);
+}
+
 
 
 

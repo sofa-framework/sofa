@@ -70,7 +70,7 @@ class VerondaWestman : public HyperelasticMaterial<DataTypes>{
 		Real c1=param.parameterArray[0];
 		Real c2=param.parameterArray[1];
 		Real k0=param.parameterArray[2];
-		return c1*(exp(c2*(pow(sinfo->J,(Real)(-2.0/3.0))*I1-3))-1)-c1*c2*(pow(sinfo->J,(Real)(-4.0/3.04))*I2-3)/2+k0*log(sinfo->J)*log(sinfo->J)/2;
+		return c1*(exp(c2*(pow(sinfo->J,(Real)(-2.0/3.0))*I1-3))-1)-c1*c2*(pow(sinfo->J,(Real)(-4.0/3.0))*I2-3)/2+k0*log(sinfo->J)*log(sinfo->J)/2;
 
 	}
 
