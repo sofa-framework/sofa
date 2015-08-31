@@ -2911,19 +2911,6 @@ void Decompose<Real>::NSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 
     }
 }
 
-template<>
-SOFA_HELPER_API float Decompose<float>::zeroTolerance()
-{
-    return 1e-6f;
-}
-
-template<>
-SOFA_HELPER_API double Decompose<double>::zeroTolerance()
-{
-    return 1e-8;
-}
-
-
 } // namespace helper
 
 } // namespace sofa

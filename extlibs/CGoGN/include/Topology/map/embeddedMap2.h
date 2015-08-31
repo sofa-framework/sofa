@@ -62,6 +62,12 @@ public:
         return 0u;
     }
 
+    template< unsigned int ORBIT >
+    inline unsigned int getMaxCellLevel(Cell< ORBIT > ) const
+    {
+        return 0u;
+    }
+
 	/*
 	 */
 	Dart newPolyLine(unsigned int nbEdges) ;

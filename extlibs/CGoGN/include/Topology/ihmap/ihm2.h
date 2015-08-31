@@ -74,6 +74,12 @@ public:
         return std::numeric_limits<unsigned int>::max();
     }
 
+    template< unsigned int ORBIT >
+    inline unsigned int getMaxCellLevel(Cell< ORBIT > c) const {
+        //TODO !!!
+        return std::numeric_limits<unsigned int>::max();
+    }
+
 	//!
 	/*!
 	 *
