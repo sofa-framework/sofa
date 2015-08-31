@@ -95,8 +95,18 @@ set(SOURCE_FILES
     initSofaPython.cpp
 )
 
-# include python files
-include(./python/python.cmake)
+set(PYTHON_FILES
+    python/SofaPython/DAGValidation.py
+    python/SofaPython/Quaternion.py
+    python/SofaPython/Tools.py
+    python/SofaPython/__init__.py
+    python/SofaPython/console.py
+    python/SofaPython/mass.py
+    python/SofaPython/script.py
+    python/SofaPython/sml.py
+    python/SofaPython/units.py
+
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 

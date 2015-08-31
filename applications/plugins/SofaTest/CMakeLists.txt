@@ -18,7 +18,6 @@ set(SOURCE_FILES
     InitPlugin_test.cpp
     PrimitiveCreation.cpp
     Sofa_test.cpp
-
 )
 
 AddCompilerDefinitions("SOFA_BUILD_TEST")
@@ -33,8 +32,11 @@ if(SOFA-PLUGIN_SOFAPYTHON)
 
     AddLinkerDependencies(SofaPython)
 
-    # include python files
-    include(./python/python.cmake)
+
+    set(PYTHON_FILES
+        python/SofaTest/Macro.py
+        python/SofaTest/__init__.py
+    )
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})

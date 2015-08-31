@@ -27,6 +27,7 @@ set(SOURCE_FILES
     TetrahedronVolumeMapping_test.cpp
 )
 
+
 if(WIN32)
     list(APPEND HEADER_FILES "stdafx.h")
     list(APPEND SOURCE_FILES "stdafx.cpp")
@@ -42,7 +43,9 @@ if(SOFA-PLUGIN_SOFAPYTHON)
     AddCompilerDefinitions("FLEXIBLE_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes/python\"")
     list(APPEND SOURCE_FILES "python_test_list.cpp")
     AddLinkerDependencies(SofaPython)
-    include(./scenes/python/python.cmake)
+    set(PYTHON_FILES
+        scenes/python/reInitMapping.py
+    )
 endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${RC_FILES} ${PYTHON_FILES})
