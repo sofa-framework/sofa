@@ -1,28 +1,23 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-
-    initCGALPlugin.h
-	MeshGenerationFromPolyhedron.h
+    DecimateMesh.h
+    DecimateMesh.inl
+    MeshGenerationFromPolyhedron.h
     MeshGenerationFromPolyhedron.inl
     TriangularConvexHull3D.h
     TriangularConvexHull3D.inl
-    DecimateMesh.h
-    DecimateMesh.inl
-	)
+    initCGALPlugin.h
+)
 
 set(SOURCE_FILES
-
-    initCGALPlugin.cpp
+    DecimateMesh.cpp
     MeshGenerationFromPolyhedron.cpp
     TriangularConvexHull3D.cpp
-    DecimateMesh.cpp
-	)
+    initCGALPlugin.cpp
+)
 
-set(README_FILES
-
-	CGALPlugin.txt
-	)
+set(README_FILES CGALPlugin.txt)
 
 if(WIN32)
 
@@ -30,7 +25,7 @@ if(WIN32)
     file(GLOB sharedObjects "${CGAL_DIR}/bin/*.dll")
     foreach(sharedObject ${sharedObjects})
         file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-    endforeach()    
+    endforeach()
 
 endif()
 

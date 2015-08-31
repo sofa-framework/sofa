@@ -2,17 +2,17 @@ project("SofaHAPI")
 
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
-set(HEADER_FILES 
-    initSofaHAPI.h
-    SofaHAPIHapticsDevice.h
+set(HEADER_FILES
     SofaHAPIForceFeedbackEffect.h
-    )
+    SofaHAPIHapticsDevice.h
+    initSofaHAPI.h
+)
 
 set(SOURCE_FILES
-    initSofaHAPI.cpp
-    SofaHAPIHapticsDevice.cpp
     SofaHAPIForceFeedbackEffect.cpp
-    )
+    SofaHAPIHapticsDevice.cpp
+    initSofaHAPI.cpp
+)
 
 
 find_package(HAPI REQUIRED)
@@ -51,10 +51,10 @@ AddLinkerDependencies(SofaComponentGeneral SofaHaptics ${HAPI_LIBRARIES} ${H3DUT
 
 
 IF( H3D_USE_DEPENDENCIES_ONLY )
-  # The variables set here must be set by the CMakeLists.txt that sets H3D_USE_DEPENDENCIES_ONLY to true.
-  INCLUDE_DIRECTORIES( ${EXTERNAL_INCLUDE_DIR} ) 
-  INCLUDE_DIRECTORIES( ${H3DUTIL_INCLUDE_DIR} ) 
-  INCLUDE_DIRECTORIES( ${HAPI_INCLUDE_DIR} ) 
+    # The variables set here must be set by the CMakeLists.txt that sets H3D_USE_DEPENDENCIES_ONLY to true.
+    INCLUDE_DIRECTORIES( ${EXTERNAL_INCLUDE_DIR} )
+    INCLUDE_DIRECTORIES( ${H3DUTIL_INCLUDE_DIR} )
+    INCLUDE_DIRECTORIES( ${HAPI_INCLUDE_DIR} )
 ENDIF( H3D_USE_DEPENDENCIES_ONLY )
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

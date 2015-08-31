@@ -1,104 +1,94 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-    initCompliant.h
-
-    misc/CompliantAttachButtonSetting.h
-    misc/RigidMass.h
-    misc/CompliantSolverMerger.h
-    misc/FailNode.h
-
-    mapping/RigidJointMapping.h
-	mapping/RigidJointMultiMapping.h
-    mapping/AssembledRigidRigidMapping.h
-    mapping/AssembledMapping.h
-    mapping/AssembledMultiMapping.h
-    mapping/DifferenceMapping.h
-    mapping/DifferenceFromTargetMapping.h
-    mapping/ContactMapping.h
-    mapping/MaskMapping.h
-    mapping/ProjectionMapping.h
-    mapping/RigidComMultiMapping.h
-    mapping/AffineMultiMapping.h
-	mapping/PythonMultiMapping.h
-    mapping/GearMapping.h
-	mapping/PairingMultiMapping.h
-	mapping/QuadraticMapping.h
-
-    numericalsolver/KKTSolver.h
-    numericalsolver/EigenSparseSolver.h
-    numericalsolver/EigenSparseSolver.inl
-    numericalsolver/EigenSparseResponse.h
-    numericalsolver/EigenSparseResponse.inl
-    numericalsolver/MinresSolver.h
-    numericalsolver/KrylovSolver.h
-    numericalsolver/CgSolver.h
-    numericalsolver/Response.h
-    numericalsolver/DiagonalResponse.h
-    numericalsolver/SequentialSolver.h
-    numericalsolver/IterativeSolver.h
-    numericalsolver/Benchmark.h
-    numericalsolver/BenchmarkSolver.h
-    numericalsolver/PreconditionedSolver.h
-    numericalsolver/PreconditionedCgSolver.h
-    numericalsolver/AnalysisSolver.h
-    numericalsolver/LumpedResponse.h
-    numericalsolver/BiCgStabSolver.h
-    numericalsolver/NNCGSolver.h
-	numericalsolver/SubKKT.h
-    numericalsolver/SubKKT.inl
-	numericalsolver/ModulusSolver.h
-
-    preconditioner/BasePreconditioner.h
-    preconditioner/CompliantLDLTPreconditioner.h
-    preconditioner/IncompleteCholeskyPreconditioner.h
-    preconditioner/CompliantJacobiPreconditioner.h
-
+    assembly/AssembledSystem.h
     assembly/AssemblyHelper.h
     assembly/AssemblyVisitor.h
-    assembly/AssembledSystem.h
-
-    odesolver/CompliantImplicitSolver.h
-    odesolver/ConstantCompliantImplicitSolver.h
-    odesolver/CompliantNLImplicitSolver.h
-    odesolver/CompliantPseudoStaticSolver.h
-    odesolver/CompliantPostStabilizationAnimationLoop.h
-	odesolver/CompliantStaticSolver.h
-
-    forcefield/PotentialEnergy.h
-    forcefield/UniformLinearPotentialEnergy.h
-	
-    compliance/UniformCompliance.h
-    compliance/UniformCompliance.inl
+    compliance/DampingCompliance.h
     compliance/DiagonalCompliance.h
     compliance/DiagonalCompliance.inl
-    compliance/DampingCompliance.h
-
-    constraint/Constraint.h
-    constraint/CoulombConstraint.h
-	constraint/CoulombConstraint.inl
-    constraint/UnilateralConstraint.h
-    constraint/ResistanceConstraint.h
-    constraint/ClosureConstraint.h
-
+    compliance/UniformCompliance.h
+    compliance/UniformCompliance.inl
     constraint/BaseConstraintValue.h
-    constraint/Stabilization.h
+    constraint/ClosureConstraint.h
+    constraint/Constraint.h
     constraint/ConstraintValue.h
-    constraint/Restitution.h
+    constraint/CoulombConstraint.h
+    constraint/CoulombConstraint.inl
     constraint/DampingValue.h
-    constraint/OffsettedConstraintValue.h
     constraint/HolonomicConstraintValue.h
+    constraint/OffsettedConstraintValue.h
+    constraint/ResistanceConstraint.h
+    constraint/Restitution.h
+    constraint/Stabilization.h
+    constraint/UnilateralConstraint.h
     constraint/VelocityConstraintValue.h
-
+    contact/BaseContact.h
     contact/CompliantContact.h
     contact/FrictionCompliantContact.h
-    contact/BaseContact.h
     contact/PenalityCompliantContact.h
-
     controller/CompliantSleepController.h
-    
+    forcefield/PotentialEnergy.h
+    forcefield/UniformLinearPotentialEnergy.h
+    initCompliant.h
+    mapping/AffineMultiMapping.h
+    mapping/AssembledMapping.h
+    mapping/AssembledMultiMapping.h
+    mapping/AssembledRigidRigidMapping.h
+    mapping/ContactMapping.h
+    mapping/DifferenceFromTargetMapping.h
+    mapping/DifferenceMapping.h
+    mapping/GearMapping.h
+    mapping/MaskMapping.h
+    mapping/PairingMultiMapping.h
+    mapping/ProjectionMapping.h
+    mapping/PythonMultiMapping.h
+    mapping/QuadraticMapping.h
+    mapping/RigidComMultiMapping.h
+    mapping/RigidJointMapping.h
+    mapping/RigidJointMultiMapping.h
+    misc/CompliantAttachButtonSetting.h
+    misc/CompliantSolverMerger.h
+    misc/FailNode.h
+    misc/RigidMass.h
+    numericalsolver/AnalysisSolver.h
+    numericalsolver/Benchmark.h
+    numericalsolver/BenchmarkSolver.h
+    numericalsolver/BiCgStabSolver.h
+    numericalsolver/CgSolver.h
+    numericalsolver/DiagonalResponse.h
+    numericalsolver/EigenSparseResponse.h
+    numericalsolver/EigenSparseResponse.inl
+    numericalsolver/EigenSparseSolver.h
+    numericalsolver/EigenSparseSolver.inl
+    numericalsolver/IterativeSolver.h
+    numericalsolver/KKTSolver.h
+    numericalsolver/KrylovSolver.h
+    numericalsolver/LumpedResponse.h
+    numericalsolver/MinresSolver.h
+    numericalsolver/ModulusSolver.h
+    numericalsolver/NNCGSolver.h
+    numericalsolver/PreconditionedCgSolver.h
+    numericalsolver/PreconditionedSolver.h
+    numericalsolver/Response.h
+    numericalsolver/SequentialSolver.h
+    numericalsolver/SubKKT.h
+    numericalsolver/SubKKT.inl
+    odesolver/CompliantImplicitSolver.h
+    odesolver/CompliantNLImplicitSolver.h
+    odesolver/CompliantPostStabilizationAnimationLoop.h
+    odesolver/CompliantPseudoStaticSolver.h
+    odesolver/CompliantStaticSolver.h
+    odesolver/ConstantCompliantImplicitSolver.h
+    preconditioner/BasePreconditioner.h
+    preconditioner/CompliantJacobiPreconditioner.h
+    preconditioner/CompliantLDLTPreconditioner.h
+    preconditioner/IncompleteCholeskyPreconditioner.h
+    utils/anderson.h
     utils/basis.h
+    utils/bicgstab.h
     utils/cast.h
+    utils/cg.h
     utils/cone.h
     utils/edit.h
     utils/find.h
@@ -107,116 +97,100 @@ set(HEADER_FILES
     utils/kkt.h
     utils/krylov.h
     utils/map.h
+    utils/minres.h
     utils/nan.h
     utils/pair.h
+    utils/preconditionedcg.h
     utils/schur.h
     utils/scoped.h
     utils/se3.h
     utils/sparse.h
+    utils/sub_kkt.h
+    utils/sub_kkt.inl
     utils/thread_variable.h
-	utils/anderson.h
-	utils/sub_kkt.h
-	utils/sub_kkt.inl
-	
-    utils/cg.h
-    utils/preconditionedcg.h
-    utils/minres.h
-    utils/bicgstab.h
 )
 
 set(SOURCE_FILES
-    initCompliant.cpp
-
-    misc/CompliantAttachButtonSetting.cpp
-    misc/CompliantSolverMerger.cpp
-    misc/RigidMass.cpp
-    misc/FailNode.cpp
-	misc/python.cpp
-
-    compliance/UniformCompliance.cpp
-    compliance/DiagonalCompliance.cpp
-    compliance/DampingCompliance.cpp
-
-    forcefield/PotentialEnergy.cpp
-    forcefield/UniformLinearPotentialEnergy.cpp
-	
-    mapping/RigidJointMapping.cpp
-    mapping/RigidJointMultiMapping.cpp
-    mapping/AssembledRigidRigidMapping.cpp
-    mapping/DifferenceMapping.cpp
-    mapping/DifferenceFromTargetMapping.cpp
-    mapping/ContactMapping.cpp
-    mapping/MaskMapping.cpp 
-    mapping/ProjectionMapping.cpp
-    mapping/RigidComMultiMapping.cpp
-    mapping/AffineMultiMapping.cpp
-	mapping/PythonMultiMapping.cpp
-    mapping/GearMapping.cpp
-	mapping/PairingMultiMapping.cpp
-	mapping/QuadraticMapping.cpp
-
-    numericalsolver/EigenSparseSolver.cpp
-    numericalsolver/EigenSparseResponse.cpp
-    numericalsolver/MinresSolver.cpp
-    numericalsolver/KrylovSolver.cpp
-    numericalsolver/CgSolver.cpp
-    numericalsolver/DiagonalResponse.cpp
-    numericalsolver/SequentialSolver.cpp
-    numericalsolver/IterativeSolver.cpp
-    numericalsolver/Benchmark.cpp
-    numericalsolver/BenchmarkSolver.cpp
-    numericalsolver/PreconditionedSolver.cpp
-    numericalsolver/PreconditionedCgSolver.cpp
-    numericalsolver/AnalysisSolver.cpp
-    numericalsolver/LumpedResponse.cpp
-    numericalsolver/BiCgStabSolver.cpp
-    numericalsolver/NNCGSolver.cpp
-	numericalsolver/SubKKT.cpp
-	numericalsolver/ModulusSolver.cpp
-
-    preconditioner/CompliantLDLTPreconditioner.cpp
-    preconditioner/IncompleteCholeskyPreconditioner.cpp
-    preconditioner/CompliantJacobiPreconditioner.cpp
-
-    assembly/AssemblyVisitor.cpp
     assembly/AssembledSystem.cpp
-
-    odesolver/CompliantImplicitSolver.cpp
-    odesolver/ConstantCompliantImplicitSolver.cpp
-    odesolver/CompliantNLImplicitSolver.cpp
-    odesolver/CompliantPseudoStaticSolver.cpp
-    odesolver/CompliantPostStabilizationAnimationLoop.cpp
-	odesolver/CompliantStaticSolver.cpp
-
-	constraint/Constraint.cpp
-    constraint/CoulombConstraint.cpp
-    constraint/UnilateralConstraint.cpp
-    constraint/ResistanceConstraint.cpp
+    assembly/AssemblyVisitor.cpp
+    compliance/DampingCompliance.cpp
+    compliance/DiagonalCompliance.cpp
+    compliance/UniformCompliance.cpp
     constraint/ClosureConstraint.cpp
-
+    constraint/Constraint.cpp
     constraint/ConstraintValue.cpp
-    constraint/Stabilization.cpp
-    constraint/Restitution.cpp
+    constraint/CoulombConstraint.cpp
     constraint/DampingValue.cpp
-    constraint/OffsettedConstraintValue.cpp
     constraint/HolonomicConstraintValue.cpp
+    constraint/OffsettedConstraintValue.cpp
+    constraint/ResistanceConstraint.cpp
+    constraint/Restitution.cpp
+    constraint/Stabilization.cpp
+    constraint/UnilateralConstraint.cpp
     constraint/VelocityConstraintValue.cpp
-
     contact/CompliantContact.cpp
     contact/FrictionCompliantContact.cpp
     contact/PenalityCompliantContact.cpp
-	
-	controller/CompliantSleepController.cpp
-
-   	utils/anderson.cpp
-   	utils/sub_kkt.cpp)
+    controller/CompliantSleepController.cpp
+    forcefield/PotentialEnergy.cpp
+    forcefield/UniformLinearPotentialEnergy.cpp
+    initCompliant.cpp
+    mapping/AffineMultiMapping.cpp
+    mapping/AssembledRigidRigidMapping.cpp
+    mapping/ContactMapping.cpp
+    mapping/DifferenceFromTargetMapping.cpp
+    mapping/DifferenceMapping.cpp
+    mapping/GearMapping.cpp
+    mapping/MaskMapping.cpp
+    mapping/PairingMultiMapping.cpp
+    mapping/ProjectionMapping.cpp
+    mapping/PythonMultiMapping.cpp
+    mapping/QuadraticMapping.cpp
+    mapping/RigidComMultiMapping.cpp
+    mapping/RigidJointMapping.cpp
+    mapping/RigidJointMultiMapping.cpp
+    misc/CompliantAttachButtonSetting.cpp
+    misc/CompliantSolverMerger.cpp
+    misc/FailNode.cpp
+    misc/RigidMass.cpp
+    misc/python.cpp
+    numericalsolver/AnalysisSolver.cpp
+    numericalsolver/Benchmark.cpp
+    numericalsolver/BenchmarkSolver.cpp
+    numericalsolver/BiCgStabSolver.cpp
+    numericalsolver/CgSolver.cpp
+    numericalsolver/DiagonalResponse.cpp
+    numericalsolver/EigenSparseResponse.cpp
+    numericalsolver/EigenSparseSolver.cpp
+    numericalsolver/IterativeSolver.cpp
+    numericalsolver/KrylovSolver.cpp
+    numericalsolver/LumpedResponse.cpp
+    numericalsolver/MinresSolver.cpp
+    numericalsolver/ModulusSolver.cpp
+    numericalsolver/NNCGSolver.cpp
+    numericalsolver/PreconditionedCgSolver.cpp
+    numericalsolver/PreconditionedSolver.cpp
+    numericalsolver/SequentialSolver.cpp
+    numericalsolver/SubKKT.cpp
+    odesolver/CompliantImplicitSolver.cpp
+    odesolver/CompliantNLImplicitSolver.cpp
+    odesolver/CompliantPostStabilizationAnimationLoop.cpp
+    odesolver/CompliantPseudoStaticSolver.cpp
+    odesolver/CompliantStaticSolver.cpp
+    odesolver/ConstantCompliantImplicitSolver.cpp
+    preconditioner/CompliantJacobiPreconditioner.cpp
+    preconditioner/CompliantLDLTPreconditioner.cpp
+    preconditioner/IncompleteCholeskyPreconditioner.cpp
+    utils/anderson.cpp
+    utils/sub_kkt.cpp
+)
 
 set(README_FILES Compliant.txt)
 
 # include python files
-include(./python/python.cmake)	
+include(./python/python.cmake)
 
-	
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_Compliant")
@@ -251,4 +225,3 @@ endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 include(custom.cmake OPTIONAL)
-

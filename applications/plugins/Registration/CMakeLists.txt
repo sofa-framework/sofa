@@ -2,25 +2,27 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 
 set(HEADER_FILES
-    initRegistration.h
+    ClosestPointRegistrationForceField.h
+    ClosestPointRegistrationForceField.inl
+    GroupwiseRegistrationEngine.h
+    InertiaAlign.h
     RegistrationContact.h
     RegistrationContact.inl
     RegistrationContactForceField.h
     RegistrationContactForceField.inl
-    ClosestPointRegistrationForceField.h
-    ClosestPointRegistrationForceField.inl
     RegistrationExporter.h
-    GroupwiseRegistrationEngine.h
-    InertiaAlign.h)
+    initRegistration.h
+)
 
 set(SOURCE_FILES
-    initRegistration.cpp
+    ClosestPointRegistrationForceField.cpp
+    GroupwiseRegistrationEngine.cpp
+    InertiaAlign.cpp
     RegistrationContact.cpp
     RegistrationContactForceField.cpp
-    ClosestPointRegistrationForceField.cpp
     RegistrationExporter.cpp
-    GroupwiseRegistrationEngine.cpp
-    InertiaAlign.cpp)
+    initRegistration.cpp
+)
 
 set(README_FILES README.txt)
 

@@ -1,14 +1,11 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
-set(HEADER_FILES
-    )
-
 set(SOURCE_FILES
     dummy.cpp
-    )
+)
 
 if(APPLE)
-#    set(RC_FILES "runSOFA.icns")
+    # set(RC_FILES "runSOFA.icns")
 endif()
 
 if(WIN32)

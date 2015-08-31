@@ -1,10 +1,12 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-    BCD_test.h)
+    BCD_test.h
+)
 
 set(SOURCE_FILES
-    BCD_test.cpp)
+    BCD_test.cpp
+)
 
 if(WIN32)
 	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")

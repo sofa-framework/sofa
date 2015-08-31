@@ -4,23 +4,26 @@ if(SOFA-LIB_GUI_QT)
 
 # these header files need MOCcing
 set(HEADER_MOC_FILES
-    ImagePlaneWidget.h
     HistogramWidget.h
+    ImagePlaneWidget.h
     # QImageMouseButtonsWidget.h
-    VectorVisualizationWidget.h)
+    VectorVisualizationWidget.h
+)
 
 # following files do not need MOCcing
 list(APPEND HEADER_FILES
+    ImageTransformWidget.h
     initImage_gui.h
-    ImageTransformWidget.h)
+)
 
 set(SOURCE_FILES
-    initImage_gui.cpp
+    HistogramWidget.cpp
     ImagePlaneWidget.cpp
     ImageTransformWidget.cpp
-    HistogramWidget.cpp
     # QImageMouseButtonsWidget.cpp
-    VectorVisualizationWidget.cpp)
+    VectorVisualizationWidget.cpp
+    initImage_gui.cpp
+)
 
 include(../imagetoolbox/imagetoolbox.cmake)
 

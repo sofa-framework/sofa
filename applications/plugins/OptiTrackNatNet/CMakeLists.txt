@@ -1,24 +1,16 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
-##plugin external dependencies
-#find_package( REQUIRED)
-#include_directories(${})
-
 set(HEADER_FILES
-
-    initOptiTrackNatNet.h 
-	OptiTrackNatNetClient.h 
-	OptiTrackNatNetDevice.h
-
-	)
+    OptiTrackNatNetClient.h
+    OptiTrackNatNetDevice.h
+    initOptiTrackNatNet.h
+)
 
 set(SOURCE_FILES
-
-    initOptiTrackNatNet.cpp 
-	OptiTrackNatNetClient.cpp 
-	OptiTrackNatNetDevice.cpp
-
-	)
+    OptiTrackNatNetClient.cpp
+    OptiTrackNatNetDevice.cpp
+    initOptiTrackNatNet.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
