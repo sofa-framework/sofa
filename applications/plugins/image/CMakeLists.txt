@@ -53,10 +53,14 @@ set(HEADER_FILES
     initImage.h
 )
 
-set(README_FILES image.txt)
+set(PYTHON_FILES
 
-# include python files
-include(./python/python.cmake)
+    python/SofaImage/API.py
+    python/SofaImage/__init__.py
+
+)
+
+set(README_FILES image.txt)
 
 if (NOT SOFA-MISC_NO_OPENGL)
     list(APPEND HEADER_FILES "ImageViewer.h")

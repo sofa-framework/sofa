@@ -160,6 +160,15 @@ set(SOURCE_FILES
     types/StrainTypes.cpp
 )
 
+set(PYTHON_FILES
+
+    python/Flexible/__init__.py
+    python/Flexible/IO.py
+    python/Flexible/StressVisu.py
+    python/Flexible/API.py
+    python/Flexible/sml.py
+)
+
 if(SOFA-PLUGIN_IMAGE)
 
     list(APPEND HEADER_FILES "deformationMapping/ImageDeformation.h")
@@ -187,10 +196,6 @@ if(SOFA-PLUGIN_IMAGE)
     AddLinkerDependencies(image)
 
 endif()
-
-
-# include python files
-include(./python/python.cmake)
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})

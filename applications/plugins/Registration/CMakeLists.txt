@@ -24,10 +24,14 @@ set(SOURCE_FILES
     initRegistration.cpp
 )
 
-set(README_FILES README.txt)
+set(PYTHON_FILES
 
-# include python files
-include(./python/python.cmake)
+    python/Registration/__init__.py
+    python/Registration/sml.py
+
+)
+
+set(README_FILES README.txt)
 
 if(SOFA-PLUGIN_IMAGE)
     list(APPEND HEADER_FILES "IntensityProfileRegistrationForceField.h")

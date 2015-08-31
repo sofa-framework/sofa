@@ -185,10 +185,23 @@ set(SOURCE_FILES
     utils/sub_kkt.cpp
 )
 
-set(README_FILES Compliant.txt)
+set(PYTHON_FILES
 
-# include python files
-include(./python/python.cmake)
+    python/Compliant/Control.py
+    python/Compliant/Frame.py
+    python/Compliant/Quaternion.py
+    python/Compliant/Rigid.py
+    python/Compliant/Script.py
+    python/Compliant/StructuralAPI.py
+    python/Compliant/Tools.py
+    python/Compliant/Vec.py
+    python/Compliant/__init__.py
+    python/Compliant/future.py
+    python/Compliant/sml.py
+
+)
+
+set(README_FILES Compliant.txt)
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})

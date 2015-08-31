@@ -17,8 +17,17 @@ if(SOFA-PLUGIN_SOFAPYTHON)
     list(APPEND SOURCE_FILES "python_test_list.cpp")
     list(APPEND SOURCE_FILES "PyScene.cpp")
     AddLinkerDependencies(SofaPython)
-    # include python files
-    include(./python/python.cmake)
+
+    set(PYTHON_FILES
+        python/dataVecResize.py
+        python/testController.py
+        python/test_PySceneWithPyCtlr.py
+        python/test_Quaternion.py
+        python/test_Tools.py
+        python/test_mass.py
+        python/test_units.py
+    )
+
 endif()
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${RC_FILES} ${PYTHON_FILES})
