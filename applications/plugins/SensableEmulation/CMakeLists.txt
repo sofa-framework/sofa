@@ -1,28 +1,22 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-
-    #NewOmniDriverEmu.h 
-	initSensableEmulation.h
+    # NewOmniDriverEmu.h
     OmniDriverEmu.h
-	pthread/pthread.h
-	)
+    initSensableEmulation.h
+    pthread/pthread.h
+)
 
 set(SOURCE_FILES
-
-    #NewOmniDriverEmu.cpp 
-    initSensableEmulation.cpp 
+    # NewOmniDriverEmu.cpp
     OmniDriverEmu.cpp
+    initSensableEmulation.cpp
+)
 
-	)
-
-set(README_FILES
-
-	PluginSensableEmulation.txt
-	)
+set(README_FILES PluginSensableEmulation.txt)
 
 #IF(WIN32)
-        #set(THREADS_USE_PTHREADS_WIN32 true)
+#set(THREADS_USE_PTHREADS_WIN32 true)
 #ENDIF()
 
 find_package(Boost COMPONENTS thread REQUIRED)

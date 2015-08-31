@@ -1,25 +1,25 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
+    THMPGHashTable.h
+    THMPGSpatialHashing.h
     initTHMPGSpatialHashingPlugin.h
-  THMPGSpatialHashing.h
-  THMPGHashTable.h
 )
 
 set(SOURCE_FILES
+    THMPGHashTable.cpp
+    THMPGSpatialHashing.cpp
     initTHMPGSpatialHashingPlugin.cpp
-  THMPGSpatialHashing.cpp
-  THMPGHashTable.cpp
 )
 
 #set(README_FILES Compliant.txt)
 
 
 #if(WIN32)
-#	include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")
-#	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
+# include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")
+# link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
 #else()
-#	include_directories("/usr/include/suitesparse/")
+# include_directories("/usr/include/suitesparse/")
 #endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
@@ -29,15 +29,15 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILE
 
 # is this really useful?
 #if(NOT APPLE)
-#	AddLinkerDependencies(amd lapack blas camd colamd cholmod)
+# AddLinkerDependencies(amd lapack blas camd colamd cholmod)
 #endif()
 
 # WIN32: copy the needed dlls from the lib dir to the Sofa bin dir
 #if(WIN32)
-#	file(GLOB sharedObjects "${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib/*.dll")
-#	foreach(sharedObject ${sharedObjects})
-#		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-#	endforeach()
+# file(GLOB sharedObjects "${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib/*.dll")
+# foreach(sharedObject ${sharedObjects})
+#  file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+# endforeach()
 #endif()
 
 AddCompilerDefinitions("SOFA_BUILD_THMPGSPATIALHASHING")
@@ -66,4 +66,3 @@ endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 include(custom.cmake OPTIONAL)
-

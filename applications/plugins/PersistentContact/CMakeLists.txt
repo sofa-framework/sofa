@@ -5,34 +5,28 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 #include_directories(${})
 
 set(HEADER_FILES
-
-    PersistentContact.h 
-	PersistentContactMapping.h 
-	PersistentFrictionContact.h 
-	PersistentFrictionContact.inl 
-	PersistentUnilateralInteractionConstraint.h 
-	PersistentUnilateralInteractionConstraint.inl 
-	PersistentContactBarycentricMapping.h 
-	PersistentContactBarycentricMapping.inl 
-	PersistentContactRigidMapping.h 
-	PersistentContactRigidMapping.inl
-
-	)
+    PersistentContact.h
+    PersistentContactBarycentricMapping.h
+    PersistentContactBarycentricMapping.inl
+    PersistentContactMapping.h
+    PersistentContactRigidMapping.h
+    PersistentContactRigidMapping.inl
+    PersistentFrictionContact.h
+    PersistentFrictionContact.inl
+    PersistentUnilateralInteractionConstraint.h
+    PersistentUnilateralInteractionConstraint.inl
+)
 
 set(SOURCE_FILES
-
-    PersistentContactMapping.cpp 
-	PersistentFrictionContact.cpp 
-	PersistentUnilateralInteractionConstraint.cpp 
-	PersistentContactBarycentricMapping.cpp 
-	PersistentContactRigidMapping.cpp 
+    PersistentContactBarycentricMapping.cpp
+    PersistentContactMapping.cpp
+    PersistentContactRigidMapping.cpp
+    PersistentFrictionContact.cpp
+    PersistentUnilateralInteractionConstraint.cpp
     initPersistentContact.cpp
+)
 
-	)
-
-set(README_FILES
-
-	PersistentContact.txt)
+set(README_FILES PersistentContact.txt)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 

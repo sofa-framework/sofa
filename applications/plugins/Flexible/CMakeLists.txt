@@ -1,190 +1,185 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-
-    initFlexible.h
-    BaseJacobian.h 
-    helper.h 
-    types/DeformationGradientTypes.h 
-    types/StrainTypes.h 
-    types/AffineTypes.h 
-    types/AffineComponents.h 
-    types/QuadraticTypes.h 
-    types/QuadraticComponents.h 
-    types/PolynomialBasis.h 
-    types/ComponentSpecializations.h.inl
-    types/ComponentSpecializations.cpp.inl
-    types/ComponentSpecializationsDefines.h
-    types/ComponentSpecializationsUndef.h
-    types/DeformableFrameMass.h
-    types/RigidConstraint.h
-    quadrature/BaseGaussPointSampler.h
-    quadrature/TopologyGaussPointSampler.h 
-    quadrature/GaussPointContainer.h
-    shapeFunction/BaseShapeFunction.h
-    shapeFunction/ImageShapeFunctionSelectNode.h
-    shapeFunction/ShepardShapeFunction.h 
-    shapeFunction/HatShapeFunction.h 
-    shapeFunction/BarycentricShapeFunction.h 
-    shapeFunction/BezierShapeFunction.h
-    deformationMapping/BaseDeformationImpl.inl 
+    BaseJacobian.h
+    deformationMapping/BaseDeformationImpl.inl
     deformationMapping/BaseDeformationMapping.h
-    deformationMapping/BaseDeformationMapping.inl 
-    deformationMapping/CustomJacobianBlock.h
-    deformationMapping/LinearMapping.h
-    deformationMapping/LinearJacobianBlock.h
-    deformationMapping/LinearJacobianBlock_point.inl 
-    deformationMapping/LinearJacobianBlock_affine.inl 
-    deformationMapping/LinearJacobianBlock_rigid.inl 
-    deformationMapping/LinearJacobianBlock_quadratic.inl 
+    deformationMapping/BaseDeformationMapping.inl
     deformationMapping/BaseDeformationMultiMapping.h
     deformationMapping/BaseDeformationMultiMapping.inl
-    deformationMapping/LinearMultiMapping.h
-    deformationMapping/MLSMapping.h
-    deformationMapping/MLSJacobianBlock.h 
-    deformationMapping/MLSJacobianBlock_point.inl 
-    deformationMapping/MLSJacobianBlock_affine.inl 
-    deformationMapping/MLSJacobianBlock_rigid.inl 
-    deformationMapping/MLSJacobianBlock_quadratic.inl 
-    deformationMapping/TriangleDeformationMapping.h 
-    deformationMapping/TriangleDeformationMapping.inl 
-    deformationMapping/TriangleStrainAverageMapping.h 
-    deformationMapping/TriangleStrainAverageMapping.inl 
-    deformationMapping/VolumeMapping.h
-    deformationMapping/TetrahedronVolumeMapping.h
     deformationMapping/CorotationalMeshMapping.h
+    deformationMapping/CustomJacobianBlock.h
+    deformationMapping/LinearJacobianBlock.h
+    deformationMapping/LinearJacobianBlock_affine.inl
+    deformationMapping/LinearJacobianBlock_point.inl
+    deformationMapping/LinearJacobianBlock_quadratic.inl
+    deformationMapping/LinearJacobianBlock_rigid.inl
+    deformationMapping/LinearMapping.h
+    deformationMapping/LinearMultiMapping.h
+    deformationMapping/MLSJacobianBlock.h
+    deformationMapping/MLSJacobianBlock_affine.inl
+    deformationMapping/MLSJacobianBlock_point.inl
+    deformationMapping/MLSJacobianBlock_quadratic.inl
+    deformationMapping/MLSJacobianBlock_rigid.inl
+    deformationMapping/MLSMapping.h
+    deformationMapping/TetrahedronVolumeMapping.h
+    deformationMapping/TriangleDeformationMapping.h
+    deformationMapping/TriangleDeformationMapping.inl
+    deformationMapping/TriangleStrainAverageMapping.h
+    deformationMapping/TriangleStrainAverageMapping.inl
+    deformationMapping/VolumeMapping.h
     engine/ComputeDualQuatEngine.h
     engine/ComputeDualQuatEngine.inl
     engine/ComputeWeightEngine.h
+    # forceField/FlexibleTetrahedronFEMForceField.h
+    helper.h
+    initFlexible.h
     mass/AffineMass.h
-    strainMapping/BaseStrainMapping.h
-    strainMapping/CauchyStrainMapping.h
-    strainMapping/CauchyStrainJacobianBlock.h
-    strainMapping/GreenStrainMapping.h
-    strainMapping/GreenStrainJacobianBlock.h
-    strainMapping/CorotationalStrainMapping.h
-    strainMapping/CorotationalStrainJacobianBlock.h 
-    strainMapping/CorotationalStrainJacobianBlock.inl 
-    strainMapping/PrincipalStretchesMapping.h 
-    strainMapping/PrincipalStretchesJacobianBlock.h 
-    strainMapping/InvariantMapping.h 
-    strainMapping/InvariantJacobianBlock.h 
-    strainMapping/InvariantJacobianBlock.inl 
-    strainMapping/PlasticStrainMapping.h 
-    strainMapping/PlasticStrainJacobianBlock.h 
-    strainMapping/RelativeStrainMapping.h 
-    strainMapping/RelativeStrainJacobianBlock.h 
-    material/BaseMaterial.h 
-    material/BaseMaterialForceField.h 
-    material/HookeForceField.h 
-    material/HookeMaterialBlock.h 
-    material/HookeMaterialBlock.inl 
-    material/StabilizedHookeForceField.h 
-    material/StabilizedHookeMaterialBlock.h 
-    material/NeoHookeanForceField.h 
-    material/NeoHookeanMaterialBlock.h 
-    material/StabilizedNeoHookeanForceField.h 
-    material/StabilizedNeoHookeanMaterialBlock.h 
-    material/MooneyRivlinForceField.h 
-    material/MooneyRivlinMaterialBlock.h 
-    material/OgdenForceField.h 
-    material/OgdenMaterialBlock.h 
-    material/VolumePreservationForceField.h 
-    material/VolumePreservationMaterialBlock.h 
-    material/VolumePreservationMaterialBlock.inl 
-    material/PolynomialMaterialForceField.h
-    material/PolynomialMaterialBlock.h
-    material/MuscleMaterialForceField.h
+    material/BaseMaterial.h
+    material/BaseMaterialForceField.h
+    material/HookeForceField.h
+    material/HookeMaterialBlock.h
+    material/HookeMaterialBlock.inl
+    material/MooneyRivlinForceField.h
+    material/MooneyRivlinMaterialBlock.h
     material/MuscleMaterialBlock.h
-    material/TendonMaterialForceField.h
-    material/TendonMaterialBlock.h
+    material/MuscleMaterialForceField.h
+    material/NeoHookeanForceField.h
+    material/NeoHookeanMaterialBlock.h
+    material/OgdenForceField.h
+    material/OgdenMaterialBlock.h
+    material/PolynomialMaterialBlock.h
+    material/PolynomialMaterialForceField.h
     material/ProjectiveForceField.h
     material/ProjectiveMaterialBlock.h
-    #forceField/FlexibleTetrahedronFEMForceField.h
-
-	)
+    material/StabilizedHookeForceField.h
+    material/StabilizedHookeMaterialBlock.h
+    material/StabilizedNeoHookeanForceField.h
+    material/StabilizedNeoHookeanMaterialBlock.h
+    material/TendonMaterialBlock.h
+    material/TendonMaterialForceField.h
+    material/VolumePreservationForceField.h
+    material/VolumePreservationMaterialBlock.h
+    material/VolumePreservationMaterialBlock.inl
+    quadrature/BaseGaussPointSampler.h
+    quadrature/GaussPointContainer.h
+    quadrature/TopologyGaussPointSampler.h
+    shapeFunction/BarycentricShapeFunction.h
+    shapeFunction/BaseShapeFunction.h
+    shapeFunction/BezierShapeFunction.h
+    shapeFunction/HatShapeFunction.h
+    shapeFunction/ImageShapeFunctionSelectNode.h
+    shapeFunction/ShepardShapeFunction.h
+    strainMapping/BaseStrainMapping.h
+    strainMapping/CauchyStrainJacobianBlock.h
+    strainMapping/CauchyStrainMapping.h
+    strainMapping/CorotationalStrainJacobianBlock.h
+    strainMapping/CorotationalStrainJacobianBlock.inl
+    strainMapping/CorotationalStrainMapping.h
+    strainMapping/GreenStrainJacobianBlock.h
+    strainMapping/GreenStrainMapping.h
+    strainMapping/InvariantJacobianBlock.h
+    strainMapping/InvariantJacobianBlock.inl
+    strainMapping/InvariantMapping.h
+    strainMapping/PlasticStrainJacobianBlock.h
+    strainMapping/PlasticStrainMapping.h
+    strainMapping/PrincipalStretchesJacobianBlock.h
+    strainMapping/PrincipalStretchesMapping.h
+    strainMapping/RelativeStrainJacobianBlock.h
+    strainMapping/RelativeStrainMapping.h
+    types/AffineComponents.h
+    types/AffineTypes.h
+    types/ComponentSpecializations.cpp.inl
+    types/ComponentSpecializations.h.inl
+    types/ComponentSpecializationsDefines.h
+    types/ComponentSpecializationsUndef.h
+    types/DeformableFrameMass.h
+    types/DeformationGradientTypes.h
+    types/PolynomialBasis.h
+    types/QuadraticComponents.h
+    types/QuadraticTypes.h
+    types/RigidConstraint.h
+    types/StrainTypes.h
+)
 
 set(SOURCE_FILES
-
-    initFlexible.cpp 
-    types/DeformationGradientTypes.cpp 
-    types/StrainTypes.cpp 
-    types/AffineComponents.cpp 
-    types/QuadraticComponents.cpp 
-    types/RigidConstraint.cpp
-    quadrature/BaseGaussPointSampler.cpp
-    quadrature/TopologyGaussPointSampler.cpp 
-    quadrature/GaussPointContainer.cpp
-    shapeFunction/BaseShapeFunction.cpp
-    shapeFunction/ImageShapeFunctionSelectNode.cpp
-    shapeFunction/ShepardShapeFunction.cpp 
-    shapeFunction/HatShapeFunction.cpp 
-    shapeFunction/BarycentricShapeFunction.cpp 
-    shapeFunction/BezierShapeFunction.cpp
     deformationMapping/BaseDeformationMapping.cpp
     deformationMapping/BaseDeformationMultiMapping.cpp
-    deformationMapping/LinearMapping_point.cpp
-    deformationMapping/LinearMapping_affine.cpp 
-    deformationMapping/LinearMapping_rigid.cpp 
-    deformationMapping/LinearMapping_quadratic.cpp 
-    deformationMapping/LinearMultiMapping_rigidaffine.cpp
-    deformationMapping/MLSMapping_point.cpp
-    deformationMapping/MLSMapping_affine.cpp 
-    deformationMapping/MLSMapping_rigid.cpp 
-    deformationMapping/MLSMapping_quadratic.cpp 
-    deformationMapping/TriangleDeformationMapping.cpp 
-    deformationMapping/TriangleStrainAverageMapping.cpp 
-    deformationMapping/VolumeMapping.cpp
-    deformationMapping/TetrahedronVolumeMapping.cpp
     deformationMapping/CorotationalMeshMapping.cpp
+    deformationMapping/LinearMapping_affine.cpp
+    deformationMapping/LinearMapping_point.cpp
+    deformationMapping/LinearMapping_quadratic.cpp
+    deformationMapping/LinearMapping_rigid.cpp
+    deformationMapping/LinearMultiMapping_rigidaffine.cpp
+    deformationMapping/MLSMapping_affine.cpp
+    deformationMapping/MLSMapping_point.cpp
+    deformationMapping/MLSMapping_quadratic.cpp
+    deformationMapping/MLSMapping_rigid.cpp
+    deformationMapping/TetrahedronVolumeMapping.cpp
+    deformationMapping/TriangleDeformationMapping.cpp
+    deformationMapping/TriangleStrainAverageMapping.cpp
+    deformationMapping/VolumeMapping.cpp
     engine/ComputeDualQuatEngine.cpp
     engine/ComputeWeightEngine.cpp
+    # forceField/FlexibleTetrahedronFEMForceField.cpp
+    initFlexible.cpp
     mass/AffineMass.cpp
+    material/BaseMaterialForceField.cpp
+    material/HookeForceField.cpp
+    material/MooneyRivlinForceField.cpp
+    material/MuscleMaterialForceField.cpp
+    material/NeoHookeanForceField.cpp
+    material/OgdenForceField.cpp
+    material/PolynomialMaterialForceField.cpp
+    material/ProjectiveForceField.cpp
+    material/StabilizedHookeForceField.cpp
+    material/StabilizedNeoHookeanForceField.cpp
+    material/TendonMaterialForceField.cpp
+    material/VolumePreservationForceField.cpp
+    quadrature/BaseGaussPointSampler.cpp
+    quadrature/GaussPointContainer.cpp
+    quadrature/TopologyGaussPointSampler.cpp
+    shapeFunction/BarycentricShapeFunction.cpp
+    shapeFunction/BaseShapeFunction.cpp
+    shapeFunction/BezierShapeFunction.cpp
+    shapeFunction/HatShapeFunction.cpp
+    shapeFunction/ImageShapeFunctionSelectNode.cpp
+    shapeFunction/ShepardShapeFunction.cpp
     strainMapping/BaseStrainMapping.cpp
     strainMapping/CauchyStrainMapping.cpp
+    strainMapping/CorotationalStrainMapping.cpp
     strainMapping/GreenStrainMapping.cpp
-    strainMapping/CorotationalStrainMapping.cpp 
-    strainMapping/PrincipalStretchesMapping.cpp 
-    strainMapping/InvariantMapping.cpp 
-    strainMapping/PlasticStrainMapping.cpp 
-    strainMapping/RelativeStrainMapping.cpp 
-    material/BaseMaterialForceField.cpp
-    material/HookeForceField.cpp 
-    material/StabilizedHookeForceField.cpp 
-    material/NeoHookeanForceField.cpp 
-    material/StabilizedNeoHookeanForceField.cpp 
-    material/MooneyRivlinForceField.cpp 
-    material/OgdenForceField.cpp 
-    material/VolumePreservationForceField.cpp 
-    material/PolynomialMaterialForceField.cpp
-    material/MuscleMaterialForceField.cpp
-    material/TendonMaterialForceField.cpp
-    material/ProjectiveForceField.cpp
-    #forceField/FlexibleTetrahedronFEMForceField.cpp
-
-	)
+    strainMapping/InvariantMapping.cpp
+    strainMapping/PlasticStrainMapping.cpp
+    strainMapping/PrincipalStretchesMapping.cpp
+    strainMapping/RelativeStrainMapping.cpp
+    types/AffineComponents.cpp
+    types/DeformationGradientTypes.cpp
+    types/QuadraticComponents.cpp
+    types/RigidConstraint.cpp
+    types/StrainTypes.cpp
+)
 
 if(SOFA-PLUGIN_IMAGE)
-    
-   	list(APPEND HEADER_FILES "quadrature/ImageGaussPointSampler.h")
-   	list(APPEND HEADER_FILES "shapeFunction/BaseImageShapeFunction.h")
-   	list(APPEND HEADER_FILES "shapeFunction/VoronoiShapeFunction.h")
-   	list(APPEND HEADER_FILES "shapeFunction/DiffusionShapeFunction.h")
-   	list(APPEND HEADER_FILES "shapeFunction/ShapeFunctionDiscretizer.h")
-   	list(APPEND HEADER_FILES "deformationMapping/ImageDeformation.h")
-        list(APPEND HEADER_FILES "mass/MassFromDensity.h")
-        list(APPEND HEADER_FILES "mass/ImageDensityMass.h")
-   	list(APPEND HEADER_FILES "mass/ImageDensityMass.inl")
-    list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.h")
 
-   	list(APPEND SOURCE_FILES "quadrature/ImageGaussPointSampler.cpp")
-   	list(APPEND SOURCE_FILES "shapeFunction/VoronoiShapeFunction.cpp")
-   	list(APPEND SOURCE_FILES "shapeFunction/DiffusionShapeFunction.cpp")
-   	list(APPEND SOURCE_FILES "shapeFunction/ShapeFunctionDiscretizer.cpp")
-   	list(APPEND SOURCE_FILES "deformationMapping/ImageDeformation.cpp")
-        list(APPEND HEADER_FILES "mass/MassFromDensity.cpp")
-        list(APPEND SOURCE_FILES "mass/ImageDensityMass.cpp")
+    list(APPEND HEADER_FILES "deformationMapping/ImageDeformation.h")
+    list(APPEND HEADER_FILES "mass/ImageDensityMass.h")
+    list(APPEND HEADER_FILES "mass/ImageDensityMass.inl")
+    list(APPEND HEADER_FILES "mass/MassFromDensity.cpp")
+    list(APPEND HEADER_FILES "mass/MassFromDensity.h")
+    list(APPEND HEADER_FILES "quadrature/ImageGaussPointSampler.h")
+    list(APPEND HEADER_FILES "shapeFunction/BaseImageShapeFunction.h")
+    list(APPEND HEADER_FILES "shapeFunction/DiffusionShapeFunction.h")
+    list(APPEND HEADER_FILES "shapeFunction/ShapeFunctionDiscretizer.h")
+    list(APPEND HEADER_FILES "shapeFunction/VoronoiShapeFunction.h")
+    list(APPEND SOURCE_FILES "deformationMapping/ImageDeformation.cpp")
+    list(APPEND SOURCE_FILES "mass/ImageDensityMass.cpp")
+    list(APPEND SOURCE_FILES "quadrature/ImageGaussPointSampler.cpp")
+    list(APPEND SOURCE_FILES "shapeFunction/DiffusionShapeFunction.cpp")
     list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.cpp")
+    list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.h")
+    list(APPEND SOURCE_FILES "shapeFunction/ShapeFunctionDiscretizer.cpp")
+    list(APPEND SOURCE_FILES "shapeFunction/VoronoiShapeFunction.cpp")
 
     AddCompilerDefinitions("SOFA_HAVE_IMAGE" )
 
@@ -205,11 +200,11 @@ AddCompilerDefinitions("SOFA_BUILD_Flexible")
 AddLinkerDependencies(SofaEigen2Solver SofaBaseVisual)
 
 if(WIN32)
-	include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")
+    include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")
 
-	AddCompilerDefinitions("EIGEN_DONT_ALIGN")
+    AddCompilerDefinitions("EIGEN_DONT_ALIGN")
 else()
-	include_directories("/usr/include/suitesparse/")
+    include_directories("/usr/include/suitesparse/")
 endif()
 
 if(UNIX)

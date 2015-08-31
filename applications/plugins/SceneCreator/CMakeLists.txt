@@ -1,20 +1,18 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-
-    initSceneCreator.h
-    SceneCreator.h
-    GetVectorVisitor.h
     GetAssembledSizeVisitor.h
-	)
+    GetVectorVisitor.h
+    SceneCreator.h
+    initSceneCreator.h
+)
 
 set(SOURCE_FILES
-
-    initSceneCreator.cpp
-    SceneCreator.cpp
-    GetVectorVisitor.cpp
     GetAssembledSizeVisitor.cpp
-	)
+    GetVectorVisitor.cpp
+    SceneCreator.cpp
+    initSceneCreator.cpp
+)
 
 AddCompilerDefinitions("SOFA_BUILD_SCENECREATOR")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

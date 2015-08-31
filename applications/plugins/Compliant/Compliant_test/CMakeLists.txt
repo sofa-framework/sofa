@@ -1,28 +1,24 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-
     Compliant_test.h
-
-        )
+)
 
 set(SOURCE_FILES
-
+    AssembledRigidRigidMapping_test.cpp
     Assembly_test.cpp
     CompliantImplicitSolver_test.cpp
     CompliantNLImplicitSolver_test.cpp
     DampedOscillator_test.cpp
-	AssembledRigidRigidMapping_test.cpp
     RigidJointMapping_test.cpp
-
-	)
+)
 
 if(APPLE)
-#    set(RC_FILES "runSOFA.icns")
+    # set(RC_FILES "runSOFA.icns")
 endif()
 
 if(WIN32)
-	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
+    link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
 endif()
 
 if(SOFA-PLUGIN_SOFAPYTHON)

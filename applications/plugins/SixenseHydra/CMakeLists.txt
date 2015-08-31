@@ -6,16 +6,15 @@ project("SixenseHydra")
 
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
-set(HEADER_FILES 
-    initSixenseHydra.h 
-    RazerHydraDriver.h 
-    )
+set(HEADER_FILES
+    RazerHydraDriver.h
+    initSixenseHydra.h
+)
 
 set(SOURCE_FILES
-    initSixenseHydra.cpp 
-    RazerHydraDriver.cpp 
-    )
-
+    RazerHydraDriver.cpp
+    initSixenseHydra.cpp
+)
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
