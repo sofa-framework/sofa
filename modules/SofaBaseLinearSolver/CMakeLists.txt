@@ -61,8 +61,8 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}
 install(TARGETS ${PROJECT_NAME}
         COMPONENT SofaBase_libraries
         EXPORT  SofaBaseTargets
-        RUNTIME DESTINATION "${SOFABASE_INSTALL_BIN_DIR}" COMPONENT SofaBase_libraries
-        LIBRARY DESTINATION "${SOFABASE_INSTALL_LIB_DIR}" COMPONENT SofaBase_libraries
-        ARCHIVE DESTINATION "${SOFABASE_INSTALL_LIB_DIR}" COMPONENT SofaBase_libraries
-        PUBLIC_HEADER DESTINATION "${SOFABASE_INSTALL_INCLUDE_DIR}/SofaBaseLinearSolver" COMPONENT SofaBase_headers
+        RUNTIME DESTINATION bin COMPONENT SofaBase_libraries
+        LIBRARY DESTINATION lib COMPONENT SofaBase_libraries
+        ARCHIVE DESTINATION lib COMPONENT SofaBase_libraries
+        PUBLIC_HEADER DESTINATION "include/SofaBaseLinearSolver" COMPONENT SofaBase_headers
         )

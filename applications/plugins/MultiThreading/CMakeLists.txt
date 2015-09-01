@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(MultiThreading)
 
-set(MULTITHREADING_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(MULTITHREADING_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(MULTITHREADING_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
     src/DataExchange.h
@@ -63,8 +60,8 @@ target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaMiscMapping)
 install(TARGETS ${PROJECT_NAME}
     COMPONENT MultiThreading_libraries
     EXPORT MultiThreadingTargets
-    RUNTIME DESTINATION "${MULTITHREADING_INSTALL_BIN_DIR}"
-    LIBRARY DESTINATION "${MULTITHREADING_INSTALL_LIB_DIR}"
-    ARCHIVE DESTINATION "${MULTITHREADING_INSTALL_LIB_DIR}")
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)
 
 install(DIRECTORY scenes/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

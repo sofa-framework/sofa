@@ -2,11 +2,6 @@ cmake_minimum_required(VERSION 2.8.12)
 
 project(newmat)
 
-# Offer the user the choice of overriding the installation directories
-set(NEWMAT_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(NEWMAT_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(NEWMAT_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(NEWMAT_INSTALL_CMAKE_DIR ${NEWMAT_INSTALL_LIB_DIR}/cmake/Newmat)
 
 set(HEADER_FILES
 
@@ -48,7 +43,7 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaExtlibs")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:${NEWMAT_INSTALL_INCLUDE_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_compile_definitions(${PROJECT_NAME} PRIVATE "use_namespace")
 
 # The code must be relocatable if we want to link a shared library against it
@@ -70,23 +65,23 @@ configure_package_config_file(NewmatConfig.cmake.in
                               PATH_VARS NEWMAT_INCLUDE_DIR)
 
 # NewmatConfig.cmake (installed)
-set(NEWMAT_INCLUDE_DIR "${NEWMAT_INSTALL_INCLUDE_DIR}")
+set(NEWMAT_INCLUDE_DIR include)
 configure_package_config_file(NewmatConfig.cmake.in
                               NewmatConfigInstall.cmake
-                              INSTALL_DESTINATION ${NEWMAT_INSTALL_CMAKE_DIR}
+                              INSTALL_DESTINATION lib/cmake/Newmat
                               PATH_VARS NEWMAT_INCLUDE_DIR)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/NewmatConfigInstall.cmake
-        DESTINATION ${NEWMAT_INSTALL_CMAKE_DIR}
+        DESTINATION lib/cmake/Newmat
         RENAME NewmatConfig.cmake)
 
 install(TARGETS ${PROJECT_NAME}
     EXPORT NewmatTargets
-    RUNTIME DESTINATION "${NEWMAT_INSTALL_BIN_DIR}" COMPONENT Newmat_libraries
-    LIBRARY DESTINATION "${NEWMAT_INSTALL_LIB_DIR}" COMPONENT Newmat_libraries
-    ARCHIVE DESTINATION "${NEWMAT_INSTALL_LIB_DIR}" COMPONENT Newmat_libraries
-    PUBLIC_HEADER DESTINATION "${NEWMAT_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}" COMPONENT Newmat_headers)
+    RUNTIME DESTINATION bin COMPONENT Newmat_libraries
+    LIBRARY DESTINATION lib COMPONENT Newmat_libraries
+    ARCHIVE DESTINATION lib COMPONENT Newmat_libraries
+    PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}" COMPONENT Newmat_headers)
 
 # NewmatTargets.cmake (installed)
 install(EXPORT NewmatTargets
-        DESTINATION ${NEWMAT_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/Newmat)

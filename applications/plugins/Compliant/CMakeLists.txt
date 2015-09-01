@@ -7,10 +7,6 @@ set(COMPLIANT_BUILD_VERSION 1)
 
 set(COMPLIANT_VERSION ${COMPLIANT_MAJOR_VERSION}.${COMPLIANT_MINOR_VERSION}.${COMPLIANT_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(COMPLIANT_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(COMPLIANT_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(COMPLIANT_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(COMPLIANT_INSTALL_CMAKE_DIR ${COMPLIANT_INSTALL_LIB_DIR}/cmake/Compliant)
 
 set(HEADER_FILES
     assembly/AssembledSystem.h
@@ -222,7 +218,7 @@ set(COMPLIANT_DEPENDENCY_INCLUDE_DIR ${SofaMisc_INCLUDE_DIRS})
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Compliant.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/Compliant/Compliant.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Compliant/Compliant.h
-         DESTINATION "${COMPLIANT_INSTALL_INCLUDE_DIR}/Compliant")
+         DESTINATION "include/Compliant")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaSimulationGraph)
@@ -238,15 +234,15 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_Com
 install(TARGETS ${PROJECT_NAME}
         COMPONENT Compliant_libraries
         EXPORT CompliantTargets
-        RUNTIME DESTINATION "${COMPLIANT_INSTALL_BIN_DIR}"
-        LIBRARY DESTINATION "${COMPLIANT_INSTALL_LIB_DIR}"
-        ARCHIVE DESTINATION "${COMPLIANT_INSTALL_LIB_DIR}")
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
 foreach(HEADER ${HEADER_FILES})
     string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
-    install(FILES ${HEADER} DESTINATION "${COMPLIANT_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}/${DIR}")
+    install(FILES ${HEADER} DESTINATION "include/${PROJECT_NAME}/${DIR}")
 endforeach(HEADER HEADERS)
 
 find_package(SofaTest QUIET)
@@ -261,7 +257,7 @@ write_basic_package_version_file(CompliantConfigVersion.cmake
                                  COMPATIBILITY AnyNewerVersion)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CompliantConfigVersion.cmake
-        DESTINATION ${COMPLIANT_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/Compliant)
 
 # CompliantConfig.cmake (build tree)
 set(COMPLIANT_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
@@ -271,16 +267,16 @@ configure_package_config_file(CompliantConfig.cmake.in
                               PATH_VARS COMPLIANT_INCLUDE_DIR)
 
 # CompliantConfig.cmake (installed)
-set(COMPLIANT_INCLUDE_DIR "${COMPLIANT_INSTALL_INCLUDE_DIR}")
+set(COMPLIANT_INCLUDE_DIR include)
 configure_package_config_file(CompliantConfig.cmake.in
                               CompliantConfigInstall.cmake
-                              INSTALL_DESTINATION ${COMPLIANT_INSTALL_CMAKE_DIR}
+                              INSTALL_DESTINATION lib/cmake/Compliant
                               PATH_VARS COMPLIANT_INCLUDE_DIR)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CompliantConfigInstall.cmake
-        DESTINATION ${COMPLIANT_INSTALL_CMAKE_DIR}
+        DESTINATION lib/cmake/Compliant
         RENAME CompliantConfig.cmake)
 
 # CompliantTargets.cmake (installed)
 install(EXPORT CompliantTargets
-        DESTINATION ${COMPLIANT_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/Compliant)

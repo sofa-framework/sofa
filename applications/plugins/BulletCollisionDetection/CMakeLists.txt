@@ -4,9 +4,6 @@ project(BulletCollisionDetection)
 #WARNING, when installing bullet write in the bullet CMakeLists.txt the line add_definitions(-DBULLET_TRIANGLE_COLLISION)
 # todo: is it possible to do a platform check for BULLET_TRIANGLE_COLLISION?
 
-set(BULLETCOLLISIONDETECTION_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(BULLETCOLLISIONDETECTION_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(BULLETCOLLISIONDETECTION_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
     BtDynamicMesh.h
@@ -75,8 +72,8 @@ endif()
 install(TARGETS ${PROJECT_NAME}
     COMPONENT BulletCollisionDetection_libraries
     EXPORT BulletCollisionDetectionTargets
-    RUNTIME DESTINATION "${BULLETCOLLISIONDETECTION_INSTALL_BIN_DIR}"
-    LIBRARY DESTINATION "${BULLETCOLLISIONDETECTION_INSTALL_LIB_DIR}"
-    ARCHIVE DESTINATION "${BULLETCOLLISIONDETECTION_INSTALL_LIB_DIR}")
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

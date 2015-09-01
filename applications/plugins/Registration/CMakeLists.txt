@@ -7,10 +7,6 @@ set(REGISTRATION_BUILD_VERSION 1)
 
 set(REGISTRATION_VERSION ${REGISTRATION_MAJOR_VERSION}.${REGISTRATION_MINOR_VERSION}.${REGISTRATION_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(REGISTRATION_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(REGISTRATION_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(REGISTRATION_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(REGISTRATION_INSTALL_CMAKE_DIR ${REGISTRATION_INSTALL_LIB_DIR}/cmake/Registration)
 
 set(HEADER_FILES
     ClosestPointRegistrationForceField.h
@@ -61,7 +57,7 @@ set(REGISTRATION_DEPENDENCY_INCLUDE_DIR ${SofaBase_INCLUDE_DIRS} ${Newmat_INCLUD
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Registration.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/Registration/Registration.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Registration/Registration.h
-        DESTINATION "${REGISTRATION_INSTALL_INCLUDE_DIR}/Registration")
+        DESTINATION "include/Registration")
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
@@ -86,10 +82,10 @@ endif()
 install(TARGETS ${PROJECT_NAME}
         COMPONENT Registration_libraries
         EXPORT RegistrationTargets
-        RUNTIME DESTINATION "${REGISTRATION_INSTALL_BIN_DIR}"
-        LIBRARY DESTINATION "${REGISTRATION_INSTALL_LIB_DIR}"
-        ARCHIVE DESTINATION "${REGISTRATION_INSTALL_LIB_DIR}"
-        PUBLIC_HEADER DESTINATION "${REGISTRATION_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}")
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
 
 
 include(CMakePackageConfigHelpers)
@@ -99,7 +95,7 @@ write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/RegistrationConfigV
                                  COMPATIBILITY AnyNewerVersion)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/RegistrationConfigVersion.cmake
-        DESTINATION ${REGISTRATION_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/Registration)
 
 
 # RegistrationConfig.cmake (build tree)
@@ -110,18 +106,18 @@ configure_package_config_file(RegistrationConfig.cmake.in
                               PATH_VARS REGISTRATION_INCLUDE_DIR)
 
 # RegistrationConfig.cmake (installed)
-set(REGISTRATION_INCLUDE_DIR "${REGISTRATION_INSTALL_INCLUDE_DIR}")
+set(REGISTRATION_INCLUDE_DIR include)
 configure_package_config_file(RegistrationConfig.cmake.in
                               ${CMAKE_CURRENT_BINARY_DIR}/RegistrationConfigInstall.cmake
-                              INSTALL_DESTINATION ${REGISTRATION_INSTALL_CMAKE_DIR}
+                              INSTALL_DESTINATION lib/cmake/Registration
                               PATH_VARS REGISTRATION_INCLUDE_DIR)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/RegistrationConfigInstall.cmake
-        DESTINATION ${REGISTRATION_INSTALL_CMAKE_DIR}
+        DESTINATION lib/cmake/Registration
         RENAME RegistrationConfig.cmake)
 
 # RegistrationTargets.cmake (installed)
 install(EXPORT RegistrationTargets
-        DESTINATION ${REGISTRATION_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/Registration)
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

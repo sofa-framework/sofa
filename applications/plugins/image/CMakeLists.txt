@@ -9,10 +9,6 @@ set(IMAGE_BUILD_VERSION 1)
 
 set(IMAGE_VERSION ${IMAGE_MAJOR_VERSION}.${IMAGE_MINOR_VERSION}.${IMAGE_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(IMAGE_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(IMAGE_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(IMAGE_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(IMAGE_INSTALL_CMAKE_DIR ${IMAGE_INSTALL_LIB_DIR}/cmake/image)
 
 set(SOURCE_FILES
     CollisionToCarvingEngine.cpp
@@ -81,7 +77,7 @@ set(IMAGE_DEPENDENCY_INCLUDE_DIR ${CImg_INCLUDE_DIRS} ${SofaBase_INCLUDE_DIRS} $
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/image.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/image/image.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/image/image.h
-         DESTINATION "${IMAGE_INSTALL_INCLUDE_DIR}/image")
+         DESTINATION "include/image")
 
 if (NOT SOFA-NO_OPENGL)
     list(APPEND HEADER_FILES "ImageViewer.h")
@@ -144,10 +140,10 @@ endif()
 install(TARGETS ${PROJECT_NAME}
         COMPONENT image_libraries
         EXPORT imageTargets
-        RUNTIME DESTINATION "${IMAGE_INSTALL_BIN_DIR}"
-        LIBRARY DESTINATION "${IMAGE_INSTALL_LIB_DIR}"
-        ARCHIVE DESTINATION "${IMAGE_INSTALL_LIB_DIR}"
-        PUBLIC_HEADER DESTINATION "${IMAGE_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}")
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
@@ -163,7 +159,7 @@ write_basic_package_version_file(imageConfigVersion.cmake
                                  COMPATIBILITY AnyNewerVersion)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/imageConfigVersion.cmake
-        DESTINATION ${IMAGE_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/image)
 
 
 # imageConfig.cmake (build tree)
@@ -174,16 +170,16 @@ configure_package_config_file(imageConfig.cmake.in
                               PATH_VARS IMAGE_INCLUDE_DIR)
 
 # imageConfig.cmake (installed)
-set(IMAGE_INCLUDE_DIR "${IMAGE_INSTALL_INCLUDE_DIR}")
+set(IMAGE_INCLUDE_DIR include)
 configure_package_config_file(imageConfig.cmake.in
                               imageConfigInstall.cmake
-                              INSTALL_DESTINATION ${IMAGE_INSTALL_CMAKE_DIR}
+                              INSTALL_DESTINATION lib/cmake/image
                               PATH_VARS IMAGE_INCLUDE_DIR)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/imageConfigInstall.cmake
-        DESTINATION ${IMAGE_INSTALL_CMAKE_DIR}
+        DESTINATION lib/cmake/image
         RENAME imageConfig.cmake)
 
 # imageTargets.cmake (installed)
 install(EXPORT imageTargets
-        DESTINATION ${IMAGE_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/image)

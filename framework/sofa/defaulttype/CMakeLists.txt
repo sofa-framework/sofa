@@ -54,11 +54,11 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFADEFAULTTYP
 install(TARGETS ${PROJECT_NAME}
         COMPONENT SofaFramework_libraries
         EXPORT SofaFrameworkTargets
-        RUNTIME DESTINATION "${SOFAFRAMEWORK_INSTALL_BIN_DIR}"
-        LIBRARY DESTINATION "${SOFAFRAMEWORK_INSTALL_LIB_DIR}"
-        ARCHIVE DESTINATION "${SOFAFRAMEWORK_INSTALL_LIB_DIR}")
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 
 install(DIRECTORY ${SofaDefaultType_SOURCE_DIR}/
-        DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}/sofa/defaulttype"
+        DESTINATION "include/sofa/defaulttype"
         COMPONENT SofaFramework_headers
         FILES_MATCHING PATTERN "*.h" PATTERN "*.inl")

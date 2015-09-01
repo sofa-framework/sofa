@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(MeshSTEPLoader)
 
-set(MESHSTEPLOADER_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(MESHSTEPLOADER_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(MESHSTEPLOADER_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
     MeshSTEPLoader.h
@@ -45,14 +42,14 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MES
 install(TARGETS ${PROJECT_NAME}
     COMPONENT MeshSTEPLoader_libraries
     EXPORT MeshSTEPLoaderTargets
-    RUNTIME DESTINATION "${MESHSTEPLOADER_INSTALL_BIN_DIR}"
-    LIBRARY DESTINATION "${MESHSTEPLOADER_INSTALL_LIB_DIR}"
-    ARCHIVE DESTINATION "${MESHSTEPLOADER_INSTALL_LIB_DIR}")
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)
 
 install(DIRECTORY example/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
 if(WIN32)
     # Copy OpenCascade DLLs
     file(COPY ${OPENCASCADE_DLLS} DESTINATION bin)
-    install(FILES ${OPENCASCADE_DLLS} DESTINATION ${MESHSTEPLOADER_INSTALL_BIN_DIR})
+    install(FILES ${OPENCASCADE_DLLS} DESTINATION bin)
 endif()

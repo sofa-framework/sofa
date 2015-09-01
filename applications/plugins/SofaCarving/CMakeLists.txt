@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(SofaCarving)
 
-set(SOFACARVING_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFACARVING_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFACARVING_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
     CarvingManager.h
@@ -26,8 +23,8 @@ target_link_libraries(${PROJECT_NAME} SofaComponentGeneral)
 install(TARGETS ${PROJECT_NAME}
     COMPONENT SofaCarving_libraries
     EXPORT SofaCarvingTargets
-    RUNTIME DESTINATION "${SOFACARVING_INSTALL_BIN_DIR}"
-    LIBRARY DESTINATION "${SOFACARVING_INSTALL_LIB_DIR}"
-    ARCHIVE DESTINATION "${SOFACARVING_INSTALL_LIB_DIR}")
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

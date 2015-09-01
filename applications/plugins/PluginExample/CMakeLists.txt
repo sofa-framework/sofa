@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(PluginExample)
 
-set(PLUGINEXAMPLE_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(PLUGINEXAMPLE_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(PLUGINEXAMPLE_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
     MyBehaviorModel.h
@@ -38,6 +35,6 @@ target_link_libraries(${PROJECT_NAME} SofaGuiQt)
 install(TARGETS ${PROJECT_NAME}
     COMPONENT PluginExample_libraries
     EXPORT PluginExampleTargets
-    RUNTIME DESTINATION "${PLUGINEXAMPLE_INSTALL_BIN_DIR}"
-    LIBRARY DESTINATION "${PLUGINEXAMPLE_INSTALL_LIB_DIR}"
-    ARCHIVE DESTINATION "${PLUGINEXAMPLE_INSTALL_LIB_DIR}")
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)

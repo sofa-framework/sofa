@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(THMPGSpatialHashing)
 
-set(THMPGSPATIALHASHING_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(THMPGSPATIALHASHING_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(THMPGSPATIALHASHING_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
     THMPGHashTable.h
@@ -37,6 +34,6 @@ endif()
 install(TARGETS ${PROJECT_NAME}
     COMPONENT THMPGSpatialHashing_libraries
     EXPORT THMPGSpatialHashingTargets
-    RUNTIME DESTINATION "${THMPGSPATIALHASHING_INSTALL_BIN_DIR}"
-    LIBRARY DESTINATION "${THMPGSPATIALHASHING_INSTALL_LIB_DIR}"
-    ARCHIVE DESTINATION "${THMPGSPATIALHASHING_INSTALL_LIB_DIR}")
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)

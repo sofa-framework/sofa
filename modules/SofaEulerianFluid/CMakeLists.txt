@@ -37,9 +37,9 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}
 
 install(TARGETS ${PROJECT_NAME}
         EXPORT  SofaAdvancedTargets
-        RUNTIME DESTINATION "${SOFAADVANCED_INSTALL_BIN_DIR}" COMPONENT SofaAdvanced_libraries
-        LIBRARY DESTINATION "${SOFAADVANCED_INSTALL_LIB_DIR}" COMPONENT SofaAdvanced_libraries
-        ARCHIVE DESTINATION "${SOFAADVANCED_INSTALL_LIB_DIR}" COMPONENT SofaAdvanced_libraries
-        PUBLIC_HEADER DESTINATION "${SOFAADVANCED_INSTALL_INCLUDE_DIR}/SofaEulerianFluid" COMPONENT SofaAdvanced_headers
+        RUNTIME DESTINATION bin COMPONENT SofaAdvanced_libraries
+        LIBRARY DESTINATION lib COMPONENT SofaAdvanced_libraries
+        ARCHIVE DESTINATION lib COMPONENT SofaAdvanced_libraries
+        PUBLIC_HEADER DESTINATION "include/SofaEulerianFluid" COMPONENT SofaAdvanced_headers
         )
 

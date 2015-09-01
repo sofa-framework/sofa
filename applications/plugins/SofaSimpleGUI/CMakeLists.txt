@@ -7,10 +7,6 @@ set(SOFASIMPLEGUI_BUILD_VERSION 1)
 
 set(SOFASIMPLEGUI_VERSION ${SOFASIMPLEGUI_MAJOR_VERSION}.${SOFASIMPLEGUI_MINOR_VERSION}.${SOFASIMPLEGUI_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(SOFASIMPLEGUI_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFASIMPLEGUI_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFASIMPLEGUI_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFASIMPLEGUI_INSTALL_CMAKE_DIR ${SOFASIMPLEGUI_INSTALL_LIB_DIR}/cmake/SofaSimpleGUI)
 
 set(HEADER_FILES
     Camera.h
@@ -55,23 +51,23 @@ configure_package_config_file(SofaSimpleGUIConfig.cmake.in
 set(SOFASIMPLEGUI_INCLUDE_DIR "include")
 configure_package_config_file(SofaSimpleGUIConfig.cmake.in
                               ${CMAKE_BINARY_DIR}/SofaSimpleGUI/SofaSimpleGUIConfigInstall.cmake
-                              INSTALL_DESTINATION ${SOFASIMPLEGUI_INSTALL_CMAKE_DIR}
+                              INSTALL_DESTINATION lib/cmake/SofaSimpleGUI
                               PATH_VARS SOFASIMPLEGUI_INCLUDE_DIR)
 
 # SofaSimpleGUITargets.cmake (installed)
 install(EXPORT SofaSimpleGUITargets
-        DESTINATION ${SOFASIMPLEGUI_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/SofaSimpleGUI)
 
 install(FILES ${CMAKE_BINARY_DIR}/SofaSimpleGUI/SofaSimpleGUIConfigInstall.cmake
-        DESTINATION ${SOFASIMPLEGUI_INSTALL_CMAKE_DIR}
+        DESTINATION lib/cmake/SofaSimpleGUI
         RENAME SofaSimpleGUIConfig.cmake)
 
 install(TARGETS ${PROJECT_NAME}
         COMPONENT SofaSimpleGUI_libraries
         EXPORT SofaSimpleGUITargets
-        RUNTIME DESTINATION "${SOFASIMPLEGUI_INSTALL_BIN_DIR}"
-        LIBRARY DESTINATION "${SOFASIMPLEGUI_INSTALL_LIB_DIR}"
-        ARCHIVE DESTINATION "${SOFASIMPLEGUI_INSTALL_LIB_DIR}"
-        PUBLIC_HEADER DESTINATION "${SOFASIMPLEGUI_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}")
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

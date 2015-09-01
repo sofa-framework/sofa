@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(ColladaSceneLoader)
 
-set(COLLADASCENELOADER_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(COLLADASCENELOADER_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(COLLADASCENELOADER_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
     SceneColladaLoader.h
@@ -49,14 +46,14 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${COLLADASCENELO
 install(TARGETS ${PROJECT_NAME}
     COMPONENT ColladaSceneLoader_libraries
     EXPORT ColladaSceneLoaderTargets
-    RUNTIME DESTINATION "${COLLADASCENELOADER_INSTALL_BIN_DIR}"
-    LIBRARY DESTINATION "${COLLADASCENELOADER_INSTALL_LIB_DIR}"
-    ARCHIVE DESTINATION "${COLLADASCENELOADER_INSTALL_LIB_DIR}")
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)
 
 install(DIRECTORY Demos/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
 if(WIN32)
     # Copy OpenCascade DLLs
     file(COPY ${ASSIMP_DLLS} DESTINATION bin)
-    install(FILES ${ASSIMP_DLLS} DESTINATION ${COLLADASCENELOADER_INSTALL_BIN_DIR})
+    install(FILES ${ASSIMP_DLLS} DESTINATION bin)
 endif()
