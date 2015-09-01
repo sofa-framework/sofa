@@ -4,20 +4,20 @@ macro(add_plugin plugin)
     string(TOUPPER PLUGIN_${plugin} plugin_option)
     option(${plugin_option} "Build the ${plugin} plugin." OFF)
     if(${plugin_option})
-        add_subdirectory(../applications/plugins/${plugin} ${CMAKE_BINARY_DIR}/plugins/${plugin})
+        add_subdirectory(${plugin})
         set_target_properties(${plugin} PROPERTIES FOLDER "Plugins") # IDE folder
     else()
-        # Workaroung: if we uncheck a plugin in cmake-gui, we remove the
+        # Workaround: if we uncheck a plugin in cmake-gui, we remove the
         # (possibly not existing) cmake package configuration file, to ensure
         # that searching for this plugin with find_package() will fail.
-        file(REMOVE ${CMAKE_BINARY_DIR}/${plugin}/${plugin}Config.cmake)
+        file(REMOVE ${CMAKE_BINARY_DIR}/applications/plugins/${plugin}/${plugin}Config.cmake)
     endif()
 endmacro()
 
 
-# Plugins that depend on other plugins: order matters!
+## Plugins that depend on other plugins: order matters!
 
-# add_plugin(SofaPython)          # Moved to ../CMakeLists.txt
+# add_plugin(SofaPython)          # Moved to ../../CMakeLists.txt
 add_plugin(SofaSimpleGUI)
 add_plugin(image)
 add_plugin(Compliant)
@@ -29,7 +29,7 @@ add_plugin(ColladaSceneLoader)       # Depends on Flexible and image
 add_plugin(PreassembledMass)         # Depends on Flexible and Compliant
 
 
-# Plugins that don't depend on other plugins
+## Plugins that don't depend on other plugins
 
 add_plugin(ARTrack)
 add_plugin(ExternalBehaviorModel)
