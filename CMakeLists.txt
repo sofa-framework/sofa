@@ -28,7 +28,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 
-
 # Environment
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
@@ -52,54 +51,41 @@ a more optimized STL."  OFF)
 endif()
 
 
-# Sofa libraries
-set(SOFA_EXTERNALS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/sofa-win-dependencies-21-11-2013")
-set(SOFA_FRAMEWORK_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaFramework")
-set(SOFA_SIMULATION_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaSimulation")
-set(SOFA_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaBase")
-set(SOFA_COMMON_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaCommon")
-set(SOFA_GENERAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaGeneral")
-set(SOFA_ADVANCED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaAdvanced")
-set(SOFA_MISC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaMisc")
-set(SOFA_GUI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaGui")
-set(SOFA_PLUGINS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaPlugins")
-set(SOFA_EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
-set(SOFA_SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
-
 # cmake functions specific to sofa that needs to be redistributed.
 install(FILES cmake/Modules/CMakeSofaBuildFlags.cmake DESTINATION share/cmake/Modules)
 
 # Dependency pack for Windows
 if(MSVC)
-    if(EXISTS ${SOFA_EXTERNALS_DIR} )
-        list(APPEND CMAKE_INCLUDE_PATH ${SOFA_EXTERNALS_DIR}/include)
+    set(DEPENDENCY_PACK_DIR "${CMAKE_CURRENT_SOURCE_DIR}/sofa-win-dependencies-21-11-2013")
+    if(EXISTS ${DEPENDENCY_PACK_DIR} )
+        list(APPEND CMAKE_INCLUDE_PATH ${DEPENDENCY_PACK_DIR}/include)
         if(CMAKE_CL_64)
-            list(APPEND CMAKE_LIBRARY_PATH ${SOFA_EXTERNALS_DIR}/lib/win64)
+            list(APPEND CMAKE_LIBRARY_PATH ${DEPENDENCY_PACK_DIR}/lib/win64)
         else()
-            list(APPEND CMAKE_LIBRARY_PATH ${SOFA_EXTERNALS_DIR}/lib/win32)
+            list(APPEND CMAKE_LIBRARY_PATH ${DEPENDENCY_PACK_DIR}/lib/win32)
         endif()
-        add_subdirectory("${SOFA_EXTERNALS_DIR}")
+        add_subdirectory("${DEPENDENCY_PACK_DIR}")
     endif()
 endif()
 
 # Install resource files
-install(DIRECTORY "${SOFA_SHARE_DIR}/" DESTINATION share/sofa)
-install(DIRECTORY "${SOFA_EXAMPLES_DIR}/" DESTINATION share/sofa/examples)
+install(DIRECTORY share DESTINATION share/sofa)
+install(DIRECTORY examples DESTINATION share/sofa/examples)
 # Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
 # build directory, it points to the source tree, whereas in the install
 # directory, it contains to relative paths to the installed resource directory.
-set(SHARE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/share)
-set(EXAMPLES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/examples)
-configure_file(etc/sofa.ini.in ${CMAKE_BINARY_DIR}/etc/sofa.ini)
-set(SHARE_DIR ../share/sofa)
-set(EXAMPLES_DIR ../share/sofa/examples)
-configure_file(etc/sofa.ini.in ${CMAKE_BINARY_DIR}/etc/installedSofa.ini)
-install(FILES ${CMAKE_BINARY_DIR}/etc/installedSofa.ini
+set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
+set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
+configure_file(etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
+set(SHARE_DIR "../share/sofa")
+set(EXAMPLES_DIR "../share/sofa/examples")
+configure_file(etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
+install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini"
         DESTINATION etc
         RENAME sofa.ini)
 
 # Temporary (todo: think about this typedef thing)
-install(DIRECTORY "modules/sofa/component/typedef/" DESTINATION include/sofa/component/typedef)
+install(DIRECTORY modules/sofa/component/typedef/ DESTINATION include/sofa/component/typedef)
 
 ### Extlibs
 
@@ -125,14 +111,14 @@ add_subdirectory(extlibs/libQGLViewer-2.4.0/QGLViewer)
 
 find_package(Boost QUIET)
 if(NOT Boost_FOUND)
-    add_subdirectory(extlibs/miniBoost ${CMAKE_CURRENT_BINARY_DIR}/miniBoost)
+    add_subdirectory(extlibs/miniBoost "${CMAKE_CURRENT_BINARY_DIR}/miniBoost")
 endif()
 
 option(SOFA_BUILD_ARTRACK
 "Build the ARTrack library distributed in the extlibs/ directory.  This library
 is used only by the ARTrack plugin."  OFF)
 if(SOFA_BUILD_ARTRACK)
-    add_subdirectory(extlibs/ARTrack ${CMAKE_CURRENT_BINARY_DIR}/ARTrackLib)
+    add_subdirectory(extlibs/ARTrack "${CMAKE_CURRENT_BINARY_DIR}/ARTrackLib")
 endif()
 
 option(SOFA_BUILD_METIS
@@ -140,41 +126,27 @@ option(SOFA_BUILD_METIS
 by the SparseLDLSolver component.  Note that this library is usually available
 on Linux distributions." OFF)
 if(SOFA_BUILD_METIS)
-    add_subdirectory(extlibs/metis-5.1.0 ${CMAKE_CURRENT_BINARY_DIR}/metis)
+    add_subdirectory(extlibs/metis-5.1.0 "${CMAKE_CURRENT_BINARY_DIR}/metis")
 endif()
 
-# framework
-add_subdirectory("${SOFA_FRAMEWORK_DIR}")
-
-# simulation
-add_subdirectory("${SOFA_SIMULATION_DIR}")
-
-# base
-add_subdirectory("${SOFA_BASE_DIR}")
-
-# common
-add_subdirectory("${SOFA_COMMON_DIR}")
-
-# general
-add_subdirectory("${SOFA_GENERAL_DIR}")
-
-# advanced
-add_subdirectory("${SOFA_ADVANCED_DIR}")
-
-# misc
-add_subdirectory("${SOFA_MISC_DIR}")
-
-# gui
-add_subdirectory("${SOFA_GUI_DIR}")
+add_subdirectory(SofaFramework)
+add_subdirectory(SofaSimulation)
+add_subdirectory(SofaBase)
+add_subdirectory(SofaCommon)
+add_subdirectory(SofaGeneral)
+add_subdirectory(SofaAdvanced)
+add_subdirectory(SofaMisc)
+add_subdirectory(SofaGui)
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(tools/SofaGTestMain)
 endif()
 
-# SofaTest depends on SofaPython, so we add it first.
+# SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
 option(PLUGIN_SOFAPYTHON "Build the SofaPython plugin." OFF)
 if(PLUGIN_SOFAPYTHON)
-    add_subdirectory(applications/plugins/SofaPython ${CMAKE_CURRENT_BINARY_DIR}/SofaPlugins/SofaPython)
+    add_subdirectory(applications/plugins/SofaPython
+                     "${CMAKE_CURRENT_BINARY_DIR}/SofaPlugins/SofaPython")
     set_target_properties(SofaPython PROPERTIES FOLDER "Plugins") # IDE folder
 endif()
 
@@ -187,8 +159,8 @@ if(SOFA_BUILD_TESTS)
     add_subdirectory(modules/tests)
 endif()
 
-# plugins
-add_subdirectory("${SOFA_PLUGINS_DIR}")
+# Plugins
+add_subdirectory(SofaPlugins)
 
 # Tutorials
 option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
