@@ -18,22 +18,23 @@ set(CGALPLUGIN_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory fo
 set(CGALPLUGIN_INSTALL_CMAKE_DIR ${CGALPLUGIN_INSTALL_LIB_DIR}/cmake/image)
 
 set(HEADER_FILES
-    initCGALPlugin.h
-	MeshGenerationFromPolyhedron.h
+    DecimateMesh.h
+    DecimateMesh.inl
+    MeshGenerationFromPolyhedron.h
     MeshGenerationFromPolyhedron.inl
     TriangularConvexHull3D.h
     TriangularConvexHull3D.inl
-    DecimateMesh.h
-    DecimateMesh.inl)
+    initCGALPlugin.h
+)
 
 set(SOURCE_FILES
-    initCGALPlugin.cpp
+    DecimateMesh.cpp
     MeshGenerationFromPolyhedron.cpp
     TriangularConvexHull3D.cpp
-    DecimateMesh.cpp)
+    initCGALPlugin.cpp
+)
 
-set(README_FILES
-    CGALPlugin.txt)
+set(README_FILES CGALPlugin.txt)
 
 find_package(SofaFramework REQUIRED)
 find_package(CGAL REQUIRED)

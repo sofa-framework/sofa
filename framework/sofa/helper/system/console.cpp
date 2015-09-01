@@ -13,28 +13,31 @@ namespace helper {
 
 #ifdef WIN32
 
-    static HANDLE s_console = NULL;
-
-    static Console::ColorType initConsoleAndGetDefaultColor()
+    static HANDLE getOutputHandle()
     {
-        s_console = GetStdHandle(STD_OUTPUT_HANDLE);
+        static bool first = true;
+        static s_console = NULL;
+        if (first)
+        {
+            s_console = GetStdHandle(STD_OUTPUT_HANDLE);
+            if (s_console == INVALID_HANDLE_VALUE)
+            {
+                std::cerr << "Console::getOutputHandle(): " << Utils::GetLastError() << std::endl;
+            }
+            if (s_console == NULL)
+            {
+                std::cerr << "Console::getOutputHandle(): no stdout handle!" << std::endl;
+            }
+            first = false;
+        }
+        return s_console;
+    }
 
-        if(s_console == INVALID_HANDLE_VALUE)
-        {
-            std::cerr << "Console::init(): " << Utils::GetLastError() << std::endl;
-            return Console::ColorType(7);
-        }
-        if(s_console == NULL)
-        {
-            std::cerr << "Console::init(): no stdout handle!" << std::endl;
-            return Console::ColorType(7);
-        }
-        else
-        {
-            CONSOLE_SCREEN_BUFFER_INFO currentInfo;
-            GetConsoleScreenBufferInfo(s_console, &currentInfo);
-            return currentInfo.wAttributes;
-        }
+    static Console::ColorType getDefaultColor()
+    {
+        CONSOLE_SCREEN_BUFFER_INFO currentInfo;
+        GetConsoleScreenBufferInfo(getOutputHandle(), &currentInfo);
+        return currentInfo.wAttributes;
     }
 
     const Console::ColorType Console::BLACK         = Console::ColorType(0);
@@ -53,7 +56,7 @@ namespace helper {
     const Console::ColorType Console::BRIGHT_PURPLE = Console::ColorType(13);
     const Console::ColorType Console::BRIGHT_YELLOW = Console::ColorType(14);
     const Console::ColorType Console::BRIGHT_WHITE  = Console::ColorType(15);
-    const Console::ColorType Console::DEFAULT_COLOR = initConsoleAndGetDefaultColor();
+    const Console::ColorType Console::DEFAULT_COLOR = getDefaultColor();
 
     void Console::setColorsStatus(ColorsStatus status)
     {
@@ -70,7 +73,7 @@ namespace helper {
     SOFA_HELPER_API std::ostream& operator<<( std::ostream& stream, Console::ColorType color )
     {
         if (Console::shouldUseColors(stream))
-            SetConsoleTextAttribute(s_console, color.value);
+            SetConsoleTextAttribute(getOutputHandle(), color.value);
         return stream;
     }
 

@@ -24,14 +24,16 @@ set(SOFAHAPI_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for 
 set(SOFAHAPI_INSTALL_CMAKE_DIR ${SOFAHAPI_INSTALL_LIB_DIR}/cmake/SofaHAPI)
 
 set(HEADER_FILES
-    initSofaHAPI.h
+    SofaHAPIForceFeedbackEffect.h
     SofaHAPIHapticsDevice.h
-    SofaHAPIForceFeedbackEffect.h)
+    initSofaHAPI.h
+)
 
 set(SOURCE_FILES
-    initSofaHAPI.cpp
+    SofaHAPIForceFeedbackEffect.cpp
     SofaHAPIHapticsDevice.cpp
-    SofaHAPIForceFeedbackEffect.cpp)
+    initSofaHAPI.cpp
+)
 
 find_package(SofaGeneral REQUIRED)
 

@@ -10,34 +10,35 @@ set(MANIFOLDTOPOLOGIES_INSTALL_BIN_DIR bin CACHE PATH "Installation directory fo
 set(MANIFOLDTOPOLOGIES_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
-    config.h
     ManifoldEdgeSetGeometryAlgorithms.h
     ManifoldEdgeSetGeometryAlgorithms.inl
     ManifoldEdgeSetTopologyAlgorithms.h
     ManifoldEdgeSetTopologyAlgorithms.inl
     ManifoldEdgeSetTopologyContainer.h
     ManifoldEdgeSetTopologyModifier.h
-    ManifoldTriangleSetTopologyContainer.h
-    ManifoldTriangleSetTopologyModifier.h
-    ManifoldTriangleSetTopologyAlgorithms.h
-    ManifoldTriangleSetTopologyAlgorithms.inl
     ManifoldTetrahedronSetTopologyContainer.h
     ManifoldTopologyObject_double.h
-    ManifoldTopologyObject_float.h)
+    ManifoldTopologyObject_float.h
+    ManifoldTriangleSetTopologyAlgorithms.h
+    ManifoldTriangleSetTopologyAlgorithms.inl
+    ManifoldTriangleSetTopologyContainer.h
+    ManifoldTriangleSetTopologyModifier.h
+    config.h
+)
 
 set(SOURCE_FILES
-    initManifoldTopologies.cpp
     ManifoldEdgeSetGeometryAlgorithms.cpp
     ManifoldEdgeSetTopologyAlgorithms.cpp
     ManifoldEdgeSetTopologyContainer.cpp
     ManifoldEdgeSetTopologyModifier.cpp
+    ManifoldTetrahedronSetTopologyContainer.cpp
+    ManifoldTriangleSetTopologyAlgorithms.cpp
     ManifoldTriangleSetTopologyContainer.cpp
     ManifoldTriangleSetTopologyModifier.cpp
-    ManifoldTriangleSetTopologyAlgorithms.cpp
-    ManifoldTetrahedronSetTopologyContainer.cpp)
+    initManifoldTopologies.cpp
+)
 
-set(README_FILES
-	ManifoldTopologies.txt)
+set(README_FILES ManifoldTopologies.txt)
 
 find_package(SofaBase REQUIRED)
 

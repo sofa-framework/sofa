@@ -20,56 +20,62 @@ set(IMAGE_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for hea
 set(IMAGE_INSTALL_CMAKE_DIR ${IMAGE_INSTALL_LIB_DIR}/cmake/image)
 
 set(SOURCE_FILES
-    initImage.cpp
-    ImageTypes.cpp
+    CollisionToCarvingEngine.cpp
+    DepthMapToMeshEngine.cpp
+    ImageAccumulator.cpp
     ImageContainer.cpp
+    ImageDataDisplay.cpp
+    ImageExporter.cpp
     ImageFilter.cpp
     ImageOperation.cpp
+    ImageSampler.cpp
+    ImageToRigidMassEngine.cpp
     ImageTransform.cpp
     ImageTransformEngine.cpp
-    TransferFunction.cpp
+    ImageTypes.cpp
     ImageValuesFromPositions.cpp
+    MarchingCubesEngine.cpp
     MergeImages.cpp
-    ImageAccumulator.cpp
-    DepthMapToMeshEngine.cpp
     MeshToImageEngine.cpp
-    MarchingCubesEngine.cpp 
-    CollisionToCarvingEngine.cpp
-    ImageSampler.cpp 
-    ImageExporter.cpp 
-    ImageDataDisplay.cpp
+    TransferFunction.cpp
     VoronoiToMeshEngine.cpp
-    ImageToRigidMassEngine.cpp)
+    initImage.cpp
+)
 
 set(HEADER_FILES
-    initImage.h
-    ImageTypes.h
+    CollisionToCarvingEngine.h
+    Containers.h
+    DepthMapToMeshEngine.h
+    ImageAccumulator.h
+    ImageAlgorithms.h
     ImageContainer.h
+    ImageDataDisplay.h
+    ImageExporter.h
     ImageFilter.h
     ImageOperation.h
+    ImageSampler.h
+    ImageToRigidMassEngine.h
     ImageTransform.h
     ImageTransformEngine.h
-    TransferFunction.h
+    ImageTypes.h
     ImageValuesFromPositions.h
-    MergeImages.h
-    ImageAccumulator.h
-    DepthMapToMeshEngine.h
-    MeshToImageEngine.h
     MarchingCubesEngine.h
-    CollisionToCarvingEngine.h
-    ImageSampler.h
-    ImageExporter.h
+    MergeImages.h
+    MeshToImageEngine.h
+    TransferFunction.h
     VectorVis.h
-    ImageAlgorithms.h
-    Containers.h
-    ImageDataDisplay.h
     VoronoiToMeshEngine.h
-    ImageToRigidMassEngine.h)
+    initImage.h
+)
+
+set(PYTHON_FILES
+
+    python/SofaImage/API.py
+    python/SofaImage/__init__.py
+
+)
 
 set(README_FILES image.txt)
-
-# include python files
-include(./python/python.cmake)
 
 find_package(SofaBase REQUIRED)
 find_package(Newmat REQUIRED)

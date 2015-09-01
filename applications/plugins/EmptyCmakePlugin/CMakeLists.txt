@@ -6,10 +6,12 @@ set(EMPTYCMAKEPLUGIN_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for 
 set(EMPTYCMAKEPLUGIN_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
-    initEmptyCmakePlugin.h)
+    initEmptyCmakePlugin.h
+)
 
 set(SOURCE_FILES
-    initEmptyCmakePlugin.cpp)
+    initEmptyCmakePlugin.cpp
+)
 
 find_package(SofaFramework REQUIRED)
 

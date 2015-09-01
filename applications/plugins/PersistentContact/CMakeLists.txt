@@ -7,23 +7,27 @@ set(PERSISTENTCONTACT_INSTALL_INCLUDE_DIR include CACHE PATH "Installation direc
 
 set(HEADER_FILES
     PersistentContact.h
-	PersistentContactMapping.h
-	PersistentFrictionContact.h
-	PersistentFrictionContact.inl
-	PersistentUnilateralInteractionConstraint.h
-	PersistentUnilateralInteractionConstraint.inl
-	PersistentContactBarycentricMapping.h
-	PersistentContactBarycentricMapping.inl
-	PersistentContactRigidMapping.h
-	PersistentContactRigidMapping.inl)
+    PersistentContactBarycentricMapping.h
+    PersistentContactBarycentricMapping.inl
+    PersistentContactMapping.h
+    PersistentContactRigidMapping.h
+    PersistentContactRigidMapping.inl
+    PersistentFrictionContact.h
+    PersistentFrictionContact.inl
+    PersistentUnilateralInteractionConstraint.h
+    PersistentUnilateralInteractionConstraint.inl
+)
 
 set(SOURCE_FILES
+    PersistentContactBarycentricMapping.cpp
     PersistentContactMapping.cpp
-	PersistentFrictionContact.cpp
-	PersistentUnilateralInteractionConstraint.cpp
-	PersistentContactBarycentricMapping.cpp
-	PersistentContactRigidMapping.cpp
-    initPersistentContact.cpp)
+    PersistentContactRigidMapping.cpp
+    PersistentFrictionContact.cpp
+    PersistentUnilateralInteractionConstraint.cpp
+    initPersistentContact.cpp
+)
+
+set(README_FILES PersistentContact.txt)
 
 set(README_FILES
 	PersistentContact.txt)

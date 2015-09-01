@@ -6,13 +6,15 @@ set(EXTERNALBEHAVIORMODEL_INSTALL_BIN_DIR     bin     CACHE PATH "Installation d
 set(EXTERNALBEHAVIORMODEL_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
-    initExternalBehaviorModel.h
     FEMGridBehaviorModel.h
-    FEMGridBehaviorModel.inl)
+    FEMGridBehaviorModel.inl
+    initExternalBehaviorModel.h
+)
 
 set(SOURCE_FILES
+    FEMGridBehaviorModel.cpp
     initExternalBehaviorModel.cpp
-    FEMGridBehaviorModel.cpp)
+)
 
 
 find_package(SofaGeneral REQUIRED)

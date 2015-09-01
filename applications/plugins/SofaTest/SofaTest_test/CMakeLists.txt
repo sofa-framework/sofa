@@ -5,8 +5,8 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-   Regression_test.cpp
-        )
+    Regression_test.cpp
+)
 
 
 if(SOFA-PLUGIN_SOFAPYTHON)

@@ -6,13 +6,15 @@ set(PREASSEMBLEDMASS_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for 
 set(PREASSEMBLEDMASS_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
-    initPlugin.h
     PreassembledMass.h
-    PreassembledMass.inl)
+    PreassembledMass.inl
+    initPlugin.h
+)
 
 set(SOURCE_FILES
+    PreassembledMass.cpp
     initPlugin.cpp
-    PreassembledMass.cpp)
+)
 
 find_package(SofaGeneral REQUIRED)
 find_package(Compliant REQUIRED)

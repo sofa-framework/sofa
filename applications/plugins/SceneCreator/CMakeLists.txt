@@ -18,16 +18,18 @@ set(SCENECREATOR_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory 
 set(SCENECREATOR_INSTALL_CMAKE_DIR ${SCENECREATOR_INSTALL_LIB_DIR}/cmake/SceneCreator)
 
 set(HEADER_FILES
-    initSceneCreator.h
-    SceneCreator.h
+    GetAssembledSizeVisitor.h
     GetVectorVisitor.h
-    GetAssembledSizeVisitor.h)
+    SceneCreator.h
+    initSceneCreator.h
+)
 
 set(SOURCE_FILES
-    initSceneCreator.cpp
-    SceneCreator.cpp
+    GetAssembledSizeVisitor.cpp
     GetVectorVisitor.cpp
-    GetAssembledSizeVisitor.cpp)
+    SceneCreator.cpp
+    initSceneCreator.cpp
+)
 
 find_package(SofaSimulation REQUIRED)
 find_package(SofaMisc REQUIRED)

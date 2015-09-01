@@ -6,16 +6,18 @@ set(ARTRACK_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executabl
 set(ARTRACK_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
+    ARTrackController.h
+    ARTrackController.inl
     ARTrackDriver.h
     ARTrackEvent.h
-    ARTrackController.h
-    ARTrackController.inl)
+)
 
 set(SOURCE_FILES
+    ARTrackController.cpp
     ARTrackDriver.cpp
-    initARTrack.cpp
     ARTrackEvent.cpp
-    ARTrackController.cpp)
+    initARTrack.cpp
+)
 
 find_package(ARTrackLib REQUIRED)
 find_package(SofaGeneral REQUIRED)

@@ -6,15 +6,17 @@ set(SENSABLE_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executab
 set(SENSABLE_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
+    EnslavementForceFeedback.h
     NewOmniDriver.h
     OmniDriver.h
-    EnslavementForceFeedback.h)
+)
 
 set(SOURCE_FILES
-    initSensable.cpp
+    EnslavementForceFeedback.cpp
     NewOmniDriver.cpp
     OmniDriver.cpp
-	EnslavementForceFeedback.cpp)
+    initSensable.cpp
+)
 
 set(README_FILES PluginSensable.txt)
 

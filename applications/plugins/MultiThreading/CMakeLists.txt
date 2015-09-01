@@ -6,41 +6,45 @@ set(MULTITHREADING_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for ex
 set(MULTITHREADING_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
-	#src/Observer.h
+    src/DataExchange.h
+    src/DataExchange.inl
+    # src/Observer.h
     src/initMultiThreading.h
-	src/DataExchange.h
-	src/DataExchange.inl)
+)
 
 set(SOURCE_FILES
-	#src/Observer.cpp
+    src/DataExchange.cpp
+    # src/Observer.cpp
     src/initMultiThreading.cpp
-	src/DataExchange.cpp)
+)
 
 find_package(SofaMisc REQUIRED)
 find_package(Boost QUIET COMPONENTS thread)
 
 if(Boost_FOUND)
-	list(APPEND HEADER_FILES "src/TaskSchedulerBoost.h")
-	list(APPEND SOURCE_FILES "src/TaskSchedulerBoost.cpp")
 
-	list(APPEND HEADER_FILES "src/Tasks.h")
-	list(APPEND HEADER_FILES "src/Tasks.inl")
-	list(APPEND SOURCE_FILES "src/Tasks.cpp")
+    list(APPEND HEADER_FILES "src/TaskSchedulerBoost.h")
+    list(APPEND SOURCE_FILES "src/TaskSchedulerBoost.cpp")
+
+    list(APPEND HEADER_FILES "src/Tasks.h")
+    list(APPEND HEADER_FILES "src/Tasks.inl")
+    list(APPEND SOURCE_FILES "src/Tasks.cpp")
 
 
     list(APPEND HEADER_FILES "src/AnimationLoopParallelScheduler.h")
-	list(APPEND SOURCE_FILES "src/AnimationLoopParallelScheduler.cpp")
+    list(APPEND SOURCE_FILES "src/AnimationLoopParallelScheduler.cpp")
 
     list(APPEND HEADER_FILES "src/AnimationLoopTasks.h")
-	list(APPEND SOURCE_FILES "src/AnimationLoopTasks.cpp")
+    list(APPEND SOURCE_FILES "src/AnimationLoopTasks.cpp")
 
     #list(APPEND HEADER_FILES "src/ParallelForTask.h")
     #list(APPEND SOURCE_FILES "src/ParallelForTask.cpp")
 
-	list(APPEND HEADER_FILES "src/BeamLinearMapping_mt.h")
-	list(APPEND HEADER_FILES "src/BeamLinearMapping_mt.inl")
-	list(APPEND SOURCE_FILES "src/BeamLinearMapping_mt.cpp")
-	list(APPEND HEADER_FILES "src/BeamLinearMapping_tasks.inl")
+    list(APPEND HEADER_FILES "src/BeamLinearMapping_mt.h")
+    list(APPEND HEADER_FILES "src/BeamLinearMapping_mt.inl")
+    list(APPEND SOURCE_FILES "src/BeamLinearMapping_mt.cpp")
+    list(APPEND HEADER_FILES "src/BeamLinearMapping_tasks.inl")
+
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
