@@ -49,28 +49,37 @@ install(FILES ${QT4_DLLS} DESTINATION ${SOFAGUI_INSTALL_BIN_DIR})
 set(SOFA_HAVE_QT ${Qt4_FOUND})
 set(SOFA_QT4 ${Qt4_FOUND})
 
-#set(SOFAGUI_TARGETS SofaGuiCommon SofaGuiQt SofaGuiQTViewer SofaGuiGlut SofaGuiMain)
-
 set(SOFAGUI_TARGETS SofaGuiCommon)
 
 add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/SofaGuiCommon ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiCommon)
 
-if(SOFA_HAVE_GLUT)
-    set(SOFA_GUI_GLUT 1)
+# Glut GUI
+option(SOFAGUI_GLUT "Compile the Glut GUI" ON)
+if(SOFAGUI_GLUT)
+    set(SOFA_GUI_GLUT 1)        # Macro in SofaGuiConfig.h
     list(APPEND SOFAGUI_TARGETS SofaGuiGlut)
     add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/glut ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiGlut)
 endif()
 
-if(Qt4_FOUND)
-    set(SOFA_GUI_QT 1)
-
+# Qt GUI
+option(SOFAGUI_QT "Compile the Qt GUI" ON)
+if(SOFAGUI_QT)
+    set(SOFA_GUI_QT 1)          # Macro in SofaGuiConfig.h
     list(APPEND SOFAGUI_TARGETS SofaGuiQt)
     add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/qt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
-    set(SOFA_GUI_QTVIEWER 1)
 
-    #add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/qt/viewer/qt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQTViewer)
-    #add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/qt/viewer/qgl ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQTQGLViewer)
-endif(Qt4_FOUND)
+    # QtViewer
+    option(SOFAGUI_QTVIEWER "Compile the QtViewer for the Qt GUI" ON)
+    if(SOFA_GUI_QTVIEWER)
+        set(SOFA_GUI_QTVIEWER 1) # Macro in SofaGuiConfig.h
+    endif()
+
+    # QglViewer
+    option(SOFAGUI_QGLVIEWER "Compile the QGLViewer for the Qt GUI" ON)
+    if(SOFA_GUI_QGLVIEWER)
+        set(SOFA_GUI_QGLVIEWER 1) # Macro in SofaGuiConfig.h
+    endif()
+endif()
 
 
 list(APPEND SOFAGUI_TARGETS SofaGuiMain)
