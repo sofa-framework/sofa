@@ -41,11 +41,11 @@ include(CMakeSofaBuildFlags)
 # Note for the future: CMake 3.1 has a CMAKE_CXX_STANDARD variable
 # that handles versions of the C++ standard...
 if(NOT WIN32)
-    option(SOFA_C++11
-"Compile as C++11. Even though Sofa is written in C++98, it is compatible with
-C++11. Targetting this standard allows you to benefit from a more optimized
-STL."  OFF)
-    if(SOFA_C++11)
+    option(SOFA_USE_C++11
+"Use C++11 as a target language. Even though Sofa is written in C++98, it is
+compatible with C++11. Targetting this standard allows you to benefit from
+a more optimized STL."  OFF)
+    if(SOFA_USE_C++11)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11"
             CACHE STRING "Flags used by the compiler during all build types." FORCE)
     endif()
@@ -103,8 +103,8 @@ install(DIRECTORY "modules/sofa/component/typedef/" DESTINATION include/sofa/com
 
 ### Extlibs
 
-option(SOFA_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
-if(SOFA_TESTS)
+option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
+if(SOFA_BUILD_TESTS)
     set(gtest_force_shared_crt ON CACHE BOOL "")
     add_subdirectory(extlibs/gtest)
 endif()
@@ -128,18 +128,18 @@ if(NOT Boost_FOUND)
     add_subdirectory(extlibs/miniBoost ${CMAKE_CURRENT_BINARY_DIR}/miniBoost)
 endif()
 
-option(SOFA_COMPILE_ARTRACK
+option(SOFA_BUILD_ARTRACK
 "Build the ARTrack library distributed in the extlibs/ directory.  This library
 is used only by the ARTrack plugin."  OFF)
-if(SOFA_COMPILE_ARTRACK)
+if(SOFA_BUILD_ARTRACK)
     add_subdirectory(extlibs/ARTrack ${CMAKE_CURRENT_BINARY_DIR}/ARTrackLib)
 endif()
 
-option(SOFA_COMPILE_METIS
+option(SOFA_BUILD_METIS
 "Build the metis library distributed in the extlibs/ directory.  It is used only
 by the SparseLDLSolver component.  Note that this library is usually available
 on Linux distributions." OFF)
-if(SOFA_COMPILE_METIS)
+if(SOFA_BUILD_METIS)
     add_subdirectory(extlibs/metis-5.1.0 ${CMAKE_CURRENT_BINARY_DIR}/metis)
 endif()
 
@@ -167,18 +167,18 @@ add_subdirectory("${SOFA_MISC_DIR}")
 # gui
 add_subdirectory("${SOFA_GUI_DIR}")
 
-if(SOFA_TESTS)
+if(SOFA_BUILD_TESTS)
     add_subdirectory(tools/SofaGTestMain)
 endif()
 
 # SofaTest depends on SofaPython, so we add it first.
-option(SOFAPLUGINS_SOFAPYTHON "Build the SofaPython plugin." OFF)
-if(SOFAPLUGINS_SOFAPYTHON)
+option(PLUGIN_SOFAPYTHON "Build the SofaPython plugin." OFF)
+if(PLUGIN_SOFAPYTHON)
     add_subdirectory(applications/plugins/SofaPython ${CMAKE_CURRENT_BINARY_DIR}/SofaPlugins/SofaPython)
-    set_target_properties(SofaPython PROPERTIES FOLDER "SofaPlugins") # IDE folder
+    set_target_properties(SofaPython PROPERTIES FOLDER "Plugins") # IDE folder
 endif()
 
-if(SOFA_TESTS)
+if(SOFA_BUILD_TESTS)
     # Library used by SofaTest.
     add_subdirectory(applications/plugins/SceneCreator)
     # Library used to write high level tests involving many components.
