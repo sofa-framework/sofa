@@ -2,12 +2,6 @@ cmake_minimum_required(VERSION 2.8.12)
 project(miniFlowVR)
 
 
-set(MINIFLOWVR_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(MINIFLOWVR_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
-set(MINIFLOWVR_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(MINIFLOWVR_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/MiniFlowVR/)
-
-
 # Offer the user the choice of overriding the installation directories
 set(MINIFLOWVR_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
 set(MINIFLOWVR_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
@@ -84,29 +78,29 @@ endforeach(HEADER HEADERS)
 include(CMakePackageConfigHelpers)
 
 # MiniFlowVRConfigVersion.cmake file (same for build tree and intall)
-# write_basic_package_version_file(${MINIFLOWVR_BUILD_CMAKE_DIR}/MiniFlowVRConfigVersion.cmake
+# write_basic_package_version_file(MiniFlowVRConfigVersion.cmake
                                  # VERSION ${MINIFLOWVR_VERSION}
                                  # COMPATIBILITY AnyNewerVersion)
 
-# install(FILES ${MINIFLOWVR_BUILD_CMAKE_DIR}/MiniFlowVRConfigVersion.cmake
+# install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MiniFlowVRConfigVersion.cmake
         # DESTINATION ${MINIFLOWVR_INSTALL_CMAKE_DIR})
 
 
 # MiniFlowVRConfig.cmake (build tree)
-set(MINIFLOWVR_INCLUDE_DIR "${MINIFLOWVR_BUILD_INCLUDE_DIR}")
+set(MINIFLOWVR_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 configure_package_config_file(MiniFlowVRConfig.cmake.in
-                              ${MINIFLOWVR_BUILD_CMAKE_DIR}/MiniFlowVRConfig.cmake
-                              INSTALL_DESTINATION ${MINIFLOWVR_BUILD_CMAKE_DIR}
+                              MiniFlowVRConfig.cmake
+                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
                               PATH_VARS MINIFLOWVR_INCLUDE_DIR)
 
 # MiniFlowVRConfig.cmake (installed)
 set(MINIFLOWVR_INCLUDE_DIR "${MINIFLOWVR_INSTALL_INCLUDE_DIR}")
 configure_package_config_file(MiniFlowVRConfig.cmake.in
-                              ${MINIFLOWVR_BUILD_CMAKE_DIR}/MiniFlowVRConfigInstall.cmake
+                              MiniFlowVRConfigInstall.cmake
                               INSTALL_DESTINATION ${MINIFLOWVR_INSTALL_CMAKE_DIR}
                               PATH_VARS MINIFLOWVR_INCLUDE_DIR)
 
-install(FILES ${MINIFLOWVR_BUILD_CMAKE_DIR}/MiniFlowVRConfigInstall.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MiniFlowVRConfigInstall.cmake
         DESTINATION ${MINIFLOWVR_INSTALL_CMAKE_DIR}
         RENAME MiniFlowVRConfig.cmake)
 

@@ -14,11 +14,6 @@ set(SOFAMISC_BUILD_VERSION 1)
 
 set(SOFAMISC_VERSION ${SOFAMISC_MAJOR_VERSION}.${SOFAMISC_MINOR_VERSION}.${SOFAMISC_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(SOFAMISC_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(SOFAMISC_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
-set(SOFAMISC_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(SOFAMISC_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/SofaMisc)
-
 # Offer the user the choice of overriding the installation directories
 set(SOFAMISC_INSTALL_LIB_DIR lib 					 CACHE PATH "Installation directory for libraries")
 set(SOFAMISC_INSTALL_BIN_DIR bin 					 CACHE PATH "Installation directory for executables")
@@ -31,7 +26,7 @@ find_package(SofaGeneral REQUIRED)
 set(SOFAMISC_DEPENDENCY_DIR ${SofaGeneral_INCLUDE_DIRS})
 
 configure_file(SofaMiscConfig.h.in
-               ${SOFAMISC_BUILD_INCLUDE_DIR}/SofaMisc/SofaMiscConfig.h)
+               SofaMisc/SofaMiscConfig.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaMisc/SofaMiscConfig.h
          DESTINATION "${SOFAMISC_INSTALL_INCLUDE_DIR}/SofaMisc")
 # make sure everyone in the build tree can see <SofaMisc/SofaMiscConfig.h>
@@ -49,27 +44,27 @@ endforeach()
 include(CMakePackageConfigHelpers)
 
 # SofaMiscConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(${SOFAMISC_BUILD_CMAKE_DIR}/SofaMiscConfigVersion.cmake
+write_basic_package_version_file(SofaMiscConfigVersion.cmake
                                  VERSION ${SOFAMISC_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
-install(FILES ${SOFAMISC_BUILD_CMAKE_DIR}/SofaMiscConfigVersion.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaMiscConfigVersion.cmake
         DESTINATION ${SOFAMISC_INSTALL_CMAKE_DIR})
 
 # SofaMiscConfig.cmake (build tree)
-set(SOFAMISC_INCLUDE_DIR "${SOFAMISC_BUILD_INCLUDE_DIR}")
+set(SOFAMISC_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 configure_package_config_file(SofaMiscConfig.cmake.in
-                              ${SOFAMISC_BUILD_CMAKE_DIR}/SofaMiscConfig.cmake
+                              SofaMiscConfig.cmake
                               INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
                               PATH_VARS SOFAMISC_INCLUDE_DIR)
 
 # SofaMiscConfig.cmake (installed)
 set(SOFAMISC_INCLUDE_DIR "${SOFAMISC_INSTALL_INCLUDE_DIR}")
 configure_package_config_file(SofaMiscConfig.cmake.in
-                              ${SOFAMISC_BUILD_CMAKE_DIR}/SofaMiscConfigInstall.cmake
+                              SofaMiscConfigInstall.cmake
                               INSTALL_DESTINATION ${SOFAMISC_INSTALL_CMAKE_DIR}
                               PATH_VARS SOFAMISC_INCLUDE_DIR)
 
-install(FILES ${SOFAMISC_BUILD_CMAKE_DIR}/SofaMiscConfigInstall.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaMiscConfigInstall.cmake
         DESTINATION ${SOFAMISC_INSTALL_CMAKE_DIR}
         RENAME SofaMiscConfig.cmake)
 

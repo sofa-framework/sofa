@@ -7,11 +7,6 @@ set(FLEXIBLE_BUILD_VERSION 1)
 
 set(FLEXIBLE_VERSION ${FLEXIBLE_MAJOR_VERSION}.${FLEXIBLE_MINOR_VERSION}.${FLEXIBLE_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(FLEXIBLE_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(FLEXIBLE_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
-set(FLEXIBLE_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(FLEXIBLE_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/Flexible)
-
 set(FLEXIBLE_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
 set(FLEXIBLE_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
 set(FLEXIBLE_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
@@ -292,29 +287,29 @@ endif()
 
 include(CMakePackageConfigHelpers)
 # FlexibleConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(${FLEXIBLE_BUILD_CMAKE_DIR}/FlexibleConfigVersion.cmake
+write_basic_package_version_file(FlexibleConfigVersion.cmake
                                  VERSION ${FLEXIBLE_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
 
-install(FILES ${FLEXIBLE_BUILD_CMAKE_DIR}/FlexibleConfigVersion.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/FlexibleConfigVersion.cmake
         DESTINATION ${FLEXIBLE_INSTALL_CMAKE_DIR})
 
 
 # FlexibleConfig.cmake (build tree)
-set(FLEXIBLE_INCLUDE_DIR "${FLEXIBLE_BUILD_INCLUDE_DIR}")
+set(FLEXIBLE_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 configure_package_config_file(FlexibleConfig.cmake.in
-                              ${FLEXIBLE_BUILD_CMAKE_DIR}/FlexibleConfig.cmake
-                              INSTALL_DESTINATION ${FLEXIBLE_BUILD_CMAKE_DIR}
+                              FlexibleConfig.cmake
+                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
                               PATH_VARS FLEXIBLE_INCLUDE_DIR)
 
 # FlexibleConfig.cmake (installed)
 set(FLEXIBLE_INCLUDE_DIR "${FLEXIBLE_INSTALL_INCLUDE_DIR}")
 configure_package_config_file(FlexibleConfig.cmake.in
-                              ${FLEXIBLE_BUILD_CMAKE_DIR}/FlexibleConfigInstall.cmake
+                              FlexibleConfigInstall.cmake
                               INSTALL_DESTINATION ${FLEXIBLE_INSTALL_CMAKE_DIR}
                               PATH_VARS FLEXIBLE_INCLUDE_DIR)
 
-install(FILES ${FLEXIBLE_BUILD_CMAKE_DIR}/FlexibleConfigInstall.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/FlexibleConfigInstall.cmake
         DESTINATION ${FLEXIBLE_INSTALL_CMAKE_DIR}
         RENAME FlexibleConfig.cmake)
 

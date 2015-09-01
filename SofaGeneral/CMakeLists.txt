@@ -15,11 +15,6 @@ set(SOFAGENERAL_BUILD_VERSION 1)
 
 set(SOFAGENERAL_VERSION ${SOFAGENERAL_MAJOR_VERSION}.${SOFAGENERAL_MINOR_VERSION}.${SOFAGENERAL_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(SOFAGENERAL_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(SOFAGENERAL_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
-set(SOFAGENERAL_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(SOFAGENERAL_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/SofaGeneral)
-
 # Offer the user the choice of overriding the installation directories
 set(SOFAGENERAL_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
 set(SOFAGENERAL_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
@@ -38,7 +33,7 @@ set(SOFAGENERAL_DEPENDENCY_INCLUDE_DIR ${SofaCommon_INCLUDE_DIRS})
 
 
 configure_file(SofaGeneralConfig.h.in
-               ${SOFAGENERAL_BUILD_INCLUDE_DIR}/SofaGeneral/SofaGeneralConfig.h)
+               SofaGeneral/SofaGeneralConfig.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaGeneral/SofaGeneralConfig.h
          DESTINATION "${SOFAGENERAL_INSTALL_INCLUDE_DIR}/SofaGeneral")
 
@@ -76,27 +71,27 @@ endforeach()
 include(CMakePackageConfigHelpers)
 
 # SofaGeneralConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(${SOFAGENERAL_BUILD_CMAKE_DIR}/SofaGeneralConfigVersion.cmake
+write_basic_package_version_file(SofaGeneralConfigVersion.cmake
                                  VERSION ${SOFAGENERAL_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
-install(FILES ${SOFAGENERAL_BUILD_CMAKE_DIR}/SofaGeneralConfigVersion.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaGeneralConfigVersion.cmake
         DESTINATION ${SOFAGENERAL_INSTALL_CMAKE_DIR})
 
 # SofaGeneralConfig.cmake (build tree)
-set(SOFAGENERAL_INCLUDE_DIR "${SOFAGENERAL_BUILD_INCLUDE_DIR}")
+set(SOFAGENERAL_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 configure_package_config_file(SofaGeneralConfig.cmake.in
-                              ${SOFAGENERAL_BUILD_CMAKE_DIR}/SofaGeneralConfig.cmake
+                              SofaGeneralConfig.cmake
                               INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
                               PATH_VARS SOFAGENERAL_INCLUDE_DIR)
 
 # SofaGeneralConfig.cmake (installed)
 set(SOFAGENERAL_INCLUDE_DIR "${SOFAGENERAL_INSTALL_INCLUDE_DIR}")
 configure_package_config_file(SofaGeneralConfig.cmake.in
-                              ${SOFAGENERAL_BUILD_CMAKE_DIR}/SofaGeneralConfigInstall.cmake
+                              SofaGeneralConfigInstall.cmake
                               INSTALL_DESTINATION ${SOFAGENERAL_INSTALL_CMAKE_DIR}
                               PATH_VARS SOFAGENERAL_INCLUDE_DIR)
 
-install(FILES ${SOFAGENERAL_BUILD_CMAKE_DIR}/SofaGeneralConfigInstall.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaGeneralConfigInstall.cmake
         DESTINATION ${SOFAGENERAL_INSTALL_CMAKE_DIR}
         RENAME SofaGeneralConfig.cmake)
 

@@ -7,11 +7,6 @@ set(SCENECREATOR_BUILD_VERSION 1)
 
 set(SCENECREATOR_VERSION ${SCENECREATOR_MAJOR_VERSION}.${SCENECREATOR_MINOR_VERSION}.${SCENECREATOR_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(SCENECREATOR_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(SCENECREATOR_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
-set(SCENECREATOR_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(SCENECREATOR_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/SceneCreator)
-
 set(SCENECREATOR_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
 set(SCENECREATOR_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
 set(SCENECREATOR_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
@@ -64,29 +59,29 @@ install(TARGETS ${PROJECT_NAME}
 
 include(CMakePackageConfigHelpers)
 # SceneCreatorConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(${SCENECREATOR_BUILD_CMAKE_DIR}/SceneCreatorConfigVersion.cmake
+write_basic_package_version_file(SceneCreatorConfigVersion.cmake
                                  VERSION ${SCENECREATOR_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
 
-install(FILES ${SCENECREATOR_BUILD_CMAKE_DIR}/SceneCreatorConfigVersion.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SceneCreatorConfigVersion.cmake
         DESTINATION ${SCENECREATOR_INSTALL_CMAKE_DIR})
 
 
 # SceneCreatorConfig.cmake (build tree)
-set(SCENECREATOR_INCLUDE_DIR "${SCENECREATOR_BUILD_INCLUDE_DIR}")
+set(SCENECREATOR_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 configure_package_config_file(SceneCreatorConfig.cmake.in
-                              ${SCENECREATOR_BUILD_CMAKE_DIR}/SceneCreatorConfig.cmake
-                              INSTALL_DESTINATION ${SCENECREATOR_BUILD_CMAKE_DIR}
+                              SceneCreatorConfig.cmake
+                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
                               PATH_VARS SCENECREATOR_INCLUDE_DIR)
 
 # SceneCreatorConfig.cmake (installed)
 set(SCENECREATOR_INCLUDE_DIR "${SCENECREATOR_INSTALL_INCLUDE_DIR}")
 configure_package_config_file(SceneCreatorConfig.cmake.in
-                              ${SCENECREATOR_BUILD_CMAKE_DIR}/SceneCreatorConfigInstall.cmake
+                              SceneCreatorConfigInstall.cmake
                               INSTALL_DESTINATION ${SCENECREATOR_INSTALL_CMAKE_DIR}
                               PATH_VARS SCENECREATOR_INCLUDE_DIR)
 
-install(FILES ${SCENECREATOR_BUILD_CMAKE_DIR}/SceneCreatorConfigInstall.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SceneCreatorConfigInstall.cmake
         DESTINATION ${SCENECREATOR_INSTALL_CMAKE_DIR}
         RENAME SceneCreatorConfig.cmake)
 

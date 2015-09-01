@@ -176,9 +176,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAGUI_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAGUIQT_COMPILER_FLAGS}")
 # set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES} {MOC_HEADER_FILES}")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAGUI_BUILD_INCLUDE_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/SofaGui>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
-#target_include_directories(${PROJECT_NAME} PUBLIC "${QT_INCLUDES}")
+target_include_directories(${PROJECT_NAME} PUBLIC "${QT_INCLUDES}")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAGUI_DEPENDENCY_DIR}>")
 
 install(TARGETS ${PROJECT_NAME}
