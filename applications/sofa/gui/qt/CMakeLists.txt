@@ -125,18 +125,20 @@ if(SOFA_HAVE_QWT)
 	list(APPEND SOFAGUIQT_LINK_LIBRARIES Qwt)
 endif()
 
-#if(SOFA-LIB_GUI_QTVIEWER)
+# QtViewer
+if(SOFAGUI_QTVIEWER)
 	list(APPEND MOC_HEADER_FILES viewer/qt/QtViewer.h)
 	list(APPEND SOURCE_FILES viewer/qt/QtViewer.cpp)
-#endif()
+endif()
 
-find_package(QGLViewer)
+# QGLViewer
+if(SOFAGUI_QGLVIEWER)
+    find_package(QGLViewer)
 
-# if(QGLViewer_FOUND)
 	list(APPEND MOC_HEADER_FILES viewer/qgl/QtGLViewer.h)
 	list(APPEND SOURCE_FILES viewer/qgl/QtGLViewer.cpp)
 	list(APPEND SOFAGUIQT_LINK_LIBRARIES QGLViewer)
-# endif()
+endif()
 
 # make mocced header / form files path from absolute to relative
 #ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
