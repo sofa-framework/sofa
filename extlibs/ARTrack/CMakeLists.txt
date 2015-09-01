@@ -31,18 +31,18 @@ include(CMakePackageConfigHelpers)
 # ARTrackLibConfig.cmake (build tree)
 set(ARTRACK_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 configure_package_config_file(ARTrackLibConfig.cmake.in
-                              ${CMAKE_BINARY_DIR}/ARTrackLib/ARTrackLibConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_BINARY_DIR}/ARTrackLib
+                              ARTrackLibConfig.cmake
+                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
                               PATH_VARS ARTRACK_INCLUDE_DIR)
 
 # ARTrackLibConfig.cmake (installed)
 set(ARTRACK_INCLUDE_DIR include)
 configure_package_config_file(ARTrackLibConfig.cmake.in
-                              ${CMAKE_BINARY_DIR}/ARTrackLib/ARTrackLibConfigInstall.cmake
+                              ARTrackLibConfigInstall.cmake
                               INSTALL_DESTINATION lib/cmake/ARTrackLib
                               PATH_VARS ARTRACK_INCLUDE_DIR)
 
-install(FILES ${CMAKE_BINARY_DIR}/ARTrackLib/ARTrackLibConfigInstall.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ARTrackLibConfigInstall.cmake
         DESTINATION lib/cmake/ARTrackLib
         RENAME ARTrackLibConfig.cmake)
 

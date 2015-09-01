@@ -56,17 +56,17 @@ install(EXPORT GTestTargets
 # GTestConfig.cmake (build tree)
 set(GTEST_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 configure_package_config_file(GTestConfig.cmake.in
-                              ${CMAKE_BINARY_DIR}/GTest/GTestConfig.cmake
-                              INSTALL_DESTINATION GTest
+                              GTestConfig.cmake
+                              INSTALL_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
                               PATH_VARS GTEST_INCLUDE_DIR)
 
 # GTestConfig.cmake (install directory)
 set(GTEST_INCLUDE_DIR include)
 configure_package_config_file(GTestConfig.cmake.in
-                              ${CMAKE_BINARY_DIR}/GTest/GTestConfigInstall.cmake
+                              GTestConfigInstall.cmake
                               INSTALL_DESTINATION lib/cmake/GTest
                               PATH_VARS GTEST_INCLUDE_DIR)
 
-install(FILES ${CMAKE_BINARY_DIR}/GTest/GTestConfigInstall.cmake
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/GTestConfigInstall.cmake"
         DESTINATION lib/cmake/GTest
         RENAME GTestConfig.cmake)

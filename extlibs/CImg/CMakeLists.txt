@@ -12,17 +12,17 @@ include(CMakePackageConfigHelpers)
 # CImgConfig.cmake (build tree)
 set(CIMG_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/..")
 configure_package_config_file(CImgConfig.cmake.in
-                              ${CMAKE_BINARY_DIR}/CImg/CImgConfig.cmake
+                              CImgConfig.cmake
                               INSTALL_DESTINATION ${CMAKE_BINARY_DIR}/CImg
                               PATH_VARS CIMG_INCLUDE_DIR)
 
 # CImgConfig.cmake (installed)
 set(CIMG_INCLUDE_DIR include)
 configure_package_config_file(CImgConfig.cmake.in
-                              ${CMAKE_BINARY_DIR}/CImg/CImgConfigInstall.cmake
+                              CImgConfigInstall.cmake
                               INSTALL_DESTINATION lib/cmake/CImg
                               PATH_VARS CIMG_INCLUDE_DIR)
 
-install(FILES ${CMAKE_BINARY_DIR}/CImg/CImgConfigInstall.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CImgConfigInstall.cmake
         DESTINATION lib/cmake/CImg
         RENAME CImgConfig.cmake)
