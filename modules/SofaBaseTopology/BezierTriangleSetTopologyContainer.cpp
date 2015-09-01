@@ -419,7 +419,7 @@ void BezierTriangleSetTopologyContainer::getLocationFromGlobalIndex(const size_t
 
 		}
 	} else {
-		std::map<size_t,ControlPointLocation>::const_iterator itcpl;
+		std::multimap<size_t,ControlPointLocation>::const_iterator itcpl;
 		itcpl=globalIndexToLocationMap.find(gi); 
 		if (itcpl!=globalIndexToLocationMap.end()) {
 			// get the local index and triangle index of that control point
