@@ -213,7 +213,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaFrameworkConfigVersion.cmake
 
 
 # SofaFrameworkConfig.cmake (build tree)
-set(SOFAFRAMEWORK_INCLUDE_DIRS include "${SofaFramework_ACTUAL_SOURCE_DIR}")
+set(SOFAFRAMEWORK_INCLUDE_DIRS include "${SofaFramework_ACTUAL_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}")
 configure_package_config_file(SofaFrameworkConfig.cmake.in
                               SofaFrameworkConfig.cmake
                               INSTALL_DESTINATION SofaFramework
