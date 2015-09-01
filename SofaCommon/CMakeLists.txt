@@ -14,11 +14,6 @@ set(SOFACOMMON_BUILD_VERSION 1)
 
 set(SOFACOMMON_VERSION ${SOFACOMMON_MAJOR_VERSION}.${SOFACOMMON_MINOR_VERSION}.${SOFACOMMON_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-# Offer the user the choice of overriding the installation directories
-set(SOFACOMMON_INSTALL_LIB_DIR lib 					 CACHE PATH "Installation directory for libraries")
-set(SOFACOMMON_INSTALL_BIN_DIR bin 					 CACHE PATH "Installation directory for executables")
-set(SOFACOMMON_INSTALL_INCLUDE_DIR include 					 CACHE PATH "Installation directory for header files")
-set(SOFACOMMON_INSTALL_CMAKE_DIR ${SOFACOMMON_INSTALL_LIB_DIR}/cmake/SofaCommon)
 
 ## SofaCommon dependencies
 ##
@@ -28,7 +23,7 @@ set(SOFACOMMON_DEPENDENCY_INCLUDE_DIR ${SofaBase_INCLUDE_DIRS})
 configure_file(SofaCommonConfig.h.in
                SofaCommon/SofaCommonConfig.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaCommon/SofaCommonConfig.h
-         DESTINATION "${SOFACOMMON_INSTALL_INCLUDE_DIR}/SofaCommon")
+         DESTINATION "include/SofaCommon")
 # make sure everyone in the build tree can see <SofaCommon/SofaCommonConfig.h>
 #include_directories(${CMAKE_CURRENT_BINARY_DIR})
 #include_directories(${SofaCommon_ACTUAL_SOURCE_DIR})
@@ -48,7 +43,7 @@ write_basic_package_version_file(SofaCommonConfigVersion.cmake
                                  VERSION ${SOFACOMMON_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaCommonConfigVersion.cmake
-        DESTINATION ${SOFACOMMON_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/SofaCommon)
 
 # SofaCommonConfig.cmake (build tree)
 set(SOFACOMMON_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
@@ -58,16 +53,16 @@ configure_package_config_file(SofaCommonConfig.cmake.in
                               PATH_VARS SOFACOMMON_INCLUDE_DIR)
 
 # SofaCommonConfig.cmake (installed)
-set(SOFACOMMON_INCLUDE_DIR "${SOFACOMMON_INSTALL_INCLUDE_DIR}")
+set(SOFACOMMON_INCLUDE_DIR include)
 configure_package_config_file(SofaCommonConfig.cmake.in
                               SofaCommonConfigInstall.cmake
-                              INSTALL_DESTINATION ${SOFACOMMON_INSTALL_CMAKE_DIR}
+                              INSTALL_DESTINATION lib/cmake/SofaCommon
                               PATH_VARS SOFACOMMON_INCLUDE_DIR)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaCommonConfigInstall.cmake
-        DESTINATION ${SOFACOMMON_INSTALL_CMAKE_DIR}
+        DESTINATION lib/cmake/SofaCommon
         RENAME SofaCommonConfig.cmake)
 
 # SofaCommonTargets.cmake (installed)
 install(EXPORT SofaCommonTargets
-        DESTINATION ${SOFACOMMON_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/SofaCommon)

@@ -41,12 +41,12 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFASIMULATIO
 install(TARGETS ${PROJECT_NAME}
         COMPONENT SofaSimulation_libraries
         EXPORT    SofaSimulationTargets
-        RUNTIME DESTINATION "${SOFASIMULATION_INSTALL_BIN_DIR}"
-        LIBRARY DESTINATION "${SOFASIMULATION_INSTALL_LIB_DIR}"
-        ARCHIVE DESTINATION "${SOFASIMULATION_INSTALL_LIB_DIR}"
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
 )
 
-install(DIRECTORY ${SofaSimulationTree_SOURCE_DIR}/ DESTINATION "${SOFASIMULATION_INSTALL_INCLUDE_DIR}/sofa/simulation/tree"
+install(DIRECTORY ${SofaSimulationTree_SOURCE_DIR}/ DESTINATION "include/sofa/simulation/tree"
         COMPONENT SofaSimulation_headers
         FILES_MATCHING 
             PATTERN "*.h"

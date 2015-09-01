@@ -14,11 +14,6 @@ set(SOFAADVANCED_BUILD_VERSION 1)
 
 set(SOFAADVANCED_VERSION ${SOFAADVANCED_MAJOR_VERSION}.${SOFAADVANCED_MINOR_VERSION}.${SOFAADVANCED_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-# Offer the user the choice of overriding the installation directories
-set(SOFAADVANCED_INSTALL_LIB_DIR lib 					 CACHE PATH "Installation directory for libraries")
-set(SOFAADVANCED_INSTALL_BIN_DIR bin 					 CACHE PATH "Installation directory for executables")
-set(SOFAADVANCED_INSTALL_INCLUDE_DIR include 					 CACHE PATH "Installation directory for header files")
-set(SOFAADVANCED_INSTALL_CMAKE_DIR ${SOFAADVANCED_INSTALL_LIB_DIR}/cmake/SofaAdvanced)
 
 ## SofaAdvanced dependencies
 ##
@@ -34,7 +29,7 @@ set(SOFAADVANCED_DEPENDENCY_LINK ${MiniFlowVR_LIBRARIES})
 configure_file(SofaAdvancedConfig.h.in
                SofaAdvanced/SofaAdvancedConfig.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaAdvanced/SofaAdvancedConfig.h
-         DESTINATION "${SOFAADVANCED_INSTALL_INCLUDE_DIR}/SofaAdvanced")
+         DESTINATION "include/SofaAdvanced")
 # make sure everyone in the build tree can see <SofaAdvanced/SofaAdvancedConfig.h>
 #include_directories(${CMAKE_CURRENT_BINARY_DIR})
 #include_directories(${SofaAdvanced_ACTUAL_SOURCE_DIR}/../../)
@@ -53,7 +48,7 @@ write_basic_package_version_file(SofaAdvancedConfigVersion.cmake
                                  VERSION ${SOFAADVANCED_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaAdvancedConfigVersion.cmake
-        DESTINATION ${SOFAADVANCED_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/SofaAdvanced)
 
 # SofaAdvancedConfig.cmake (build tree)
 set(SOFAADVANCED_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
@@ -63,16 +58,16 @@ configure_package_config_file(SofaAdvancedConfig.cmake.in
                               PATH_VARS SOFAADVANCED_INCLUDE_DIR)
 
 # SofaAdvancedConfig.cmake (installed)
-set(SOFAADVANCED_INCLUDE_DIR "${SOFAADVANCED_INSTALL_INCLUDE_DIR}")
+set(SOFAADVANCED_INCLUDE_DIR include)
 configure_package_config_file(SofaAdvancedConfig.cmake.in
                               SofaAdvancedConfigInstall.cmake
-                              INSTALL_DESTINATION ${SOFAADVANCED_INSTALL_CMAKE_DIR}
+                              INSTALL_DESTINATION lib/cmake/SofaAdvanced
                               PATH_VARS SOFAADVANCED_INCLUDE_DIR)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaAdvancedConfigInstall.cmake
-        DESTINATION ${SOFAADVANCED_INSTALL_CMAKE_DIR}
+        DESTINATION lib/cmake/SofaAdvanced
         RENAME SofaAdvancedConfig.cmake)
 
 # SofaAdvancedTargets.cmake (installed)
 install(EXPORT SofaAdvancedTargets
-        DESTINATION ${SOFAADVANCED_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/SofaAdvanced)

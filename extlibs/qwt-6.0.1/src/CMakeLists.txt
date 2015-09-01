@@ -7,11 +7,6 @@ set(QWT_MINOR_VERSION 0)
 set(QWT_PATCH_VERSION 1)
 set(QWT_VERSION ${QWT_MAJOR_VERSION}.${QWT_MINOR_VERSION}.${QWT_PATCH_VERSION})
 
-# Offer the user the choice of overriding the installation directories
-set(QWT_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
-set(QWT_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
-set(QWT_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files")
-set(QWT_INSTALL_CMAKE_DIR lib/cmake/Qwt CACHE PATH "Installation directory for CMake files")
 
 file(GLOB HEADER_FILES qwt_*.h)
 
@@ -71,10 +66,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 
 install(TARGETS ${PROJECT_NAME}
         EXPORT QwtTargets
-        RUNTIME DESTINATION "${QWT_INSTALL_BIN_DIR}"
-        LIBRARY DESTINATION "${QWT_INSTALL_LIB_DIR}"
-        ARCHIVE DESTINATION "${QWT_INSTALL_LIB_DIR}"
-        PUBLIC_HEADER DESTINATION "${QWT_INSTALL_INCLUDE_DIR}")
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        PUBLIC_HEADER DESTINATION include)
 
 include(CMakePackageConfigHelpers)
 
@@ -84,7 +79,7 @@ write_basic_package_version_file(QwtConfigVersion.cmake
                                  COMPATIBILITY AnyNewerVersion)
 
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/QwtConfigVersion.cmake
-        DESTINATION ${QWT_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/Qwt)
 
 
 # QwtConfig.cmake (build tree)
@@ -95,16 +90,16 @@ configure_package_config_file(QwtConfig.cmake.in
                               PATH_VARS QWT_INCLUDE_DIR)
 
 # QwtConfig.cmake (installed)
-set(QWT_INCLUDE_DIR "${QWT_INSTALL_INCLUDE_DIR}")
+set(QWT_INCLUDE_DIR include)
 configure_package_config_file(QwtConfig.cmake.in
                               QwtConfigInstall.cmake
-                              INSTALL_DESTINATION ${QWT_INSTALL_CMAKE_DIR}
+                              INSTALL_DESTINATION lib/cmake/Qwt
                               PATH_VARS QWT_INCLUDE_DIR)
 
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/QwtConfigInstall.cmake
-        DESTINATION ${QWT_INSTALL_CMAKE_DIR}
+        DESTINATION lib/cmake/Qwt
         RENAME QwtConfig.cmake)
 
 # QwtTargets.cmake (installed)
 install(EXPORT QwtTargets
-        DESTINATION ${QWT_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/Qwt)

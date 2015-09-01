@@ -15,11 +15,6 @@ set(SOFAGUI_BUILD_VERSION 1)
 
 set(SOFAGUI_VERSION ${SOFAGUI_MAJOR_VERSION}.${SOFAGUI_MINOR_VERSION}.${SOFAGUI_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-# Offer the user the choice of overriding the installation directories
-set(SOFAGUI_INSTALL_LIB_DIR lib 					 CACHE PATH "Installation directory for libraries")
-set(SOFAGUI_INSTALL_BIN_DIR bin 					 CACHE PATH "Installation directory for executables")
-set(SOFAGUI_INSTALL_INCLUDE_DIR include 					 CACHE PATH "Installation directory for header files")
-set(SOFAGUI_INSTALL_CMAKE_DIR ${SOFAGUI_INSTALL_LIB_DIR}/cmake/SofaGui)
 
 ## SofaGui dependencies
 ##
@@ -40,7 +35,7 @@ if(WIN32)
         file(COPY ${QT4_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
     endforeach()
 endif()
-install(FILES ${QT4_DLLS} DESTINATION ${SOFAGUI_INSTALL_BIN_DIR})
+install(FILES ${QT4_DLLS} DESTINATION bin)
 
 set(SOFA_HAVE_QT ${Qt4_FOUND})
 set(SOFA_QT4 ${Qt4_FOUND})
@@ -101,7 +96,7 @@ endforeach()
 configure_file(SofaGuiConfig.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/SofaGui/SofaGuiConfig.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaGui/SofaGuiConfig.h
-        DESTINATION "${SOFAGUI_INSTALL_INCLUDE_DIR}/SofaGui")
+        DESTINATION "include/SofaGui")
 
 include(CMakePackageConfigHelpers)
 
@@ -110,7 +105,7 @@ write_basic_package_version_file(SofaGuiConfigVersion.cmake
                                  VERSION ${SOFAGUI_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiConfigVersion.cmake
-        DESTINATION ${SOFAGUI_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/SofaGui)
 
 # SofaGuiConfig.cmake (build tree)
 set(SOFAGUI_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
@@ -120,16 +115,16 @@ configure_package_config_file(SofaGuiConfig.cmake.in
                               PATH_VARS SOFAGUI_INCLUDE_DIR)
 
 # SofaGuiConfig.cmake (installed)
-set(SOFAGUI_INCLUDE_DIR "${SOFAGUI_INSTALL_INCLUDE_DIR}")
+set(SOFAGUI_INCLUDE_DIR include)
 configure_package_config_file(SofaGuiConfig.cmake.in
                               SofaGuiConfigInstall.cmake
-                              INSTALL_DESTINATION ${SOFAGUI_INSTALL_CMAKE_DIR}
+                              INSTALL_DESTINATION lib/cmake/SofaGui
                               PATH_VARS SOFAGUI_INCLUDE_DIR)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiConfigInstall.cmake
-        DESTINATION ${SOFAGUI_INSTALL_CMAKE_DIR}
+        DESTINATION lib/cmake/SofaGui
         RENAME SofaGuiConfig.cmake)
 
 # SofaGuiTargets.cmake (installed)
 install(EXPORT SofaGuiTargets
-        DESTINATION ${SOFAGUI_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/SofaGui)

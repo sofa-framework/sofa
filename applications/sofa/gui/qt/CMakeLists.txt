@@ -183,12 +183,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAGUI_D
 
 install(TARGETS ${PROJECT_NAME}
         EXPORT SofaGuiTargets
-        RUNTIME DESTINATION "${SOFAGUI_INSTALL_BIN_DIR}" COMPONENT SofaGui_libraries
-        LIBRARY DESTINATION "${SOFAGUI_INSTALL_LIB_DIR}" COMPONENT SofaGui_libraries
-        ARCHIVE DESTINATION "${SOFAGUI_INSTALL_LIB_DIR}" COMPONENT SofaGui_libraries)
-# PUBLIC_HEADER DESTINATION "${SOFAGUI_INSTALL_LIB_DIR}/sofa/gui/qt" COMPONENT SofaGui_headers)
+        RUNTIME DESTINATION bin COMPONENT SofaGui_libraries
+        LIBRARY DESTINATION lib COMPONENT SofaGui_libraries
+        ARCHIVE DESTINATION lib COMPONENT SofaGui_libraries)
+# PUBLIC_HEADER DESTINATION "lib/sofa/gui/qt" COMPONENT SofaGui_headers)
 
-install(FILES ${HEADER_FILES} DESTINATION "${SOFAGUI_INSTALL_INCLUDE_DIR}/sofa/gui/qt"
+install(FILES ${HEADER_FILES} DESTINATION "include/sofa/gui/qt"
         COMPONENT SofaGui_headers)
-install(FILES ${MOC_HEADER_FILES} DESTINATION "${SOFAGUI_INSTALL_INCLUDE_DIR}/sofa/gui/qt"
+install(FILES ${MOC_HEADER_FILES} DESTINATION "include/sofa/gui/qt"
         COMPONENT SofaGui_headers)

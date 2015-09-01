@@ -7,10 +7,6 @@ set(CGALPLUGIN_BUILD_VERSION 1)
 
 set(CGALPLUGIN_VERSION ${CGALPLUGIN_MAJOR_VERSION}.${CGALPLUGIN_MINOR_VERSION}.${CGALPLUGIN_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(CGALPLUGIN_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(CGALPLUGIN_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(CGALPLUGIN_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(CGALPLUGIN_INSTALL_CMAKE_DIR ${CGALPLUGIN_INSTALL_LIB_DIR}/cmake/image)
 
 set(HEADER_FILES
     DecimateMesh.h
@@ -55,7 +51,7 @@ set(CGALPLUGIN_DEPENDENCY_INCLUDE_DIR ${SofaFramework_INCLUDE_DIRS}
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CGALPlugin.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/CGALPlugin/CGALPlugin.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CGALPlugin/CGALPlugin.h
-         DESTINATION "${CGALPLUGIN_INSTALL_INCLUDE_DIR}/CGALPlugin")
+         DESTINATION "include/CGALPlugin")
 
 if(WIN32)
     # copy required CGAL dlls
@@ -86,10 +82,10 @@ endif()
 install(TARGETS ${PROJECT_NAME}
     COMPONENT CGALPlugin_libraries
     EXPORT CGALPluginTargets
-    RUNTIME DESTINATION "${CGALPLUGIN_INSTALL_BIN_DIR}"
-    LIBRARY DESTINATION "${CGALPLUGIN_INSTALL_LIB_DIR}"
-    ARCHIVE DESTINATION "${CGALPLUGIN_INSTALL_LIB_DIR}"
-    PUBLIC_HEADER DESTINATION "${CGALPLUGIN_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}")
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
 
 install(DIRECTORY scenes/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
@@ -101,7 +97,7 @@ write_basic_package_version_file(CGALPluginConfigVersion.cmake
                                  COMPATIBILITY AnyNewerVersion)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CGALPluginConfigVersion.cmake
-        DESTINATION ${CGALPLUGIN_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/CGALPlugin)
 
 
 # CGALPluginConfig.cmake (build tree)
@@ -112,16 +108,16 @@ configure_package_config_file(CGALPluginConfig.cmake.in
                               PATH_VARS CGALPLUGIN_INCLUDE_DIR)
 
 # CGALPluginConfig.cmake (installed)
-set(CGALPLUGIN_INCLUDE_DIR "${CGALPLUGIN_INSTALL_INCLUDE_DIR}")
+set(CGALPLUGIN_INCLUDE_DIR include)
 configure_package_config_file(CGALPluginConfig.cmake.in
                               CGALPluginConfigInstall.cmake
-                              INSTALL_DESTINATION ${CGALPLUGIN_INSTALL_CMAKE_DIR}
+                              INSTALL_DESTINATION lib/cmake/CGALPlugin
                               PATH_VARS CGALPLUGIN_INCLUDE_DIR)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CGALPluginConfigInstall.cmake
-        DESTINATION ${CGALPLUGIN_INSTALL_CMAKE_DIR}
+        DESTINATION lib/cmake/CGALPlugin
         RENAME CGALPluginConfig.cmake)
 
 # CGALPluginTargets.cmake (installed)
 install(EXPORT CGALPluginTargets
-        DESTINATION ${CGALPLUGIN_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/CGALPlugin)

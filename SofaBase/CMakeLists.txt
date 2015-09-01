@@ -14,11 +14,6 @@ set(SOFABASE_BUILD_VERSION 1)
 
 set(SOFABASE_VERSION ${SOFABASE_MAJOR_VERSION}.${SOFABASE_MINOR_VERSION}.${SOFABASE_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-# Offer the user the choice of overriding the installation directories
-set(SOFABASE_INSTALL_LIB_DIR lib 					 CACHE PATH "Installation directory for libraries")
-set(SOFABASE_INSTALL_BIN_DIR bin 					 CACHE PATH "Installation directory for executables")
-set(SOFABASE_INSTALL_INCLUDE_DIR include 					 CACHE PATH "Installation directory for header files")
-set(SOFABASE_INSTALL_CMAKE_DIR ${SOFABASE_INSTALL_LIB_DIR}/cmake/SofaBase)
 
 set(SOFABASE_DEPENDENCY_INCLUDE_DIR)
 
@@ -30,7 +25,7 @@ list(APPEND SOFABASE_DEPENDENCY_INCLUDE_DIR ${SofaSimulation_INCLUDE_DIRS})
 configure_file(SofaBaseConfig.h.in
                SofaBase/SofaBaseConfig.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaBase/SofaBaseConfig.h
-         DESTINATION "${SOFABASE_INSTALL_INCLUDE_DIR}/SofaBase")
+         DESTINATION "include/SofaBase")
 # make sure everyone in the build tree can see <SofaBase/SofaBaseConfig.h>
 #include_directories(${CMAKE_CURRENT_BINARY_DIR})
 #include_directories(${SofaBase_ACTUAL_SOURCE_DIR}/../../)
@@ -50,7 +45,7 @@ write_basic_package_version_file(SofaBaseConfigVersion.cmake
                                  VERSION ${SOFABASE_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}SofaBaseConfigVersion.cmake
-        DESTINATION ${SOFABASE_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/SofaBase)
 
 # SofaBaseConfig.cmake (build tree)
 set(SOFABASE_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
@@ -60,16 +55,16 @@ configure_package_config_file(SofaBaseConfig.cmake.in
                               PATH_VARS SOFABASE_INCLUDE_DIR)
 
 # SofaBaseConfig.cmake (installed)
-set(SOFABASE_INCLUDE_DIR "${SOFABASE_INSTALL_INCLUDE_DIR}")
+set(SOFABASE_INCLUDE_DIR include)
 configure_package_config_file(SofaBaseConfig.cmake.in
                               SofaBaseConfigInstall.cmake
-                              INSTALL_DESTINATION ${SOFABASE_INSTALL_CMAKE_DIR}
+                              INSTALL_DESTINATION lib/cmake/SofaBase
                               PATH_VARS SOFABASE_INCLUDE_DIR)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}SofaBaseConfigInstall.cmake
-        DESTINATION ${SOFABASE_INSTALL_CMAKE_DIR}
+        DESTINATION lib/cmake/SofaBase
         RENAME SofaBaseConfig.cmake)
 
 # SofaBaseTargets.cmake (installed)
 install(EXPORT SofaBaseTargets
-        DESTINATION ${SOFABASE_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/SofaBase)

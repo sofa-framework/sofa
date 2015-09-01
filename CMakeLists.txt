@@ -30,8 +30,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 
 # Environment
-set(SOFA_CMAKE_DIR "${Sofa_SOURCE_DIR}/cmake" )
-list(APPEND CMAKE_MODULE_PATH "${SOFA_CMAKE_DIR}/Modules")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 
 
@@ -68,7 +67,7 @@ set(SOFA_EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
 set(SOFA_SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
 
 # cmake functions specific to sofa that needs to be redistributed.
-add_subdirectory( ${SOFA_CMAKE_DIR} )
+install(FILES cmake/Modules/CMakeSofaBuildFlags.cmake DESTINATION share/cmake/Modules)
 
 # Dependency pack for Windows
 if(MSVC)

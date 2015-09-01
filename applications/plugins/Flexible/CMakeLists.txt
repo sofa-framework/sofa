@@ -7,10 +7,6 @@ set(FLEXIBLE_BUILD_VERSION 1)
 
 set(FLEXIBLE_VERSION ${FLEXIBLE_MAJOR_VERSION}.${FLEXIBLE_MINOR_VERSION}.${FLEXIBLE_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(FLEXIBLE_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(FLEXIBLE_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(FLEXIBLE_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(FLEXIBLE_INSTALL_CMAKE_DIR ${FLEXIBLE_INSTALL_LIB_DIR}/cmake/Flexible)
 
 set(HEADER_FILES
     BaseJacobian.h
@@ -216,7 +212,7 @@ set(FLEXIBLE_DEPENDENCY_INCLUDE_DIR ${SofaMisc_INCLUDE_DIRS})
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Flexible.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/Flexible/Flexible.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Flexible/Flexible.h
-         DESTINATION "${FLEXIBLE_INSTALL_INCLUDE_DIR}/Flexible")
+         DESTINATION "include/Flexible")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaComponentMisc)
@@ -269,15 +265,15 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${FLEXIBLE_COMPI
 install(TARGETS ${PROJECT_NAME}
         COMPONENT Flexible_libraries
         EXPORT FlexibleTargets
-        RUNTIME DESTINATION "${FLEXIBLE_INSTALL_BIN_DIR}"
-        LIBRARY DESTINATION "${FLEXIBLE_INSTALL_LIB_DIR}"
-        ARCHIVE DESTINATION "${FLEXIBLE_INSTALL_LIB_DIR}")
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
 foreach(HEADER ${HEADER_FILES})
     string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
-    install(FILES ${HEADER} DESTINATION "${FLEXIBLE_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}/${DIR}")
+    install(FILES ${HEADER} DESTINATION "include/${PROJECT_NAME}/${DIR}")
 endforeach(HEADER HEADERS)
 
 find_package(SofaTest QUIET)
@@ -292,7 +288,7 @@ write_basic_package_version_file(FlexibleConfigVersion.cmake
                                  COMPATIBILITY AnyNewerVersion)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/FlexibleConfigVersion.cmake
-        DESTINATION ${FLEXIBLE_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/Flexible)
 
 
 # FlexibleConfig.cmake (build tree)
@@ -303,16 +299,16 @@ configure_package_config_file(FlexibleConfig.cmake.in
                               PATH_VARS FLEXIBLE_INCLUDE_DIR)
 
 # FlexibleConfig.cmake (installed)
-set(FLEXIBLE_INCLUDE_DIR "${FLEXIBLE_INSTALL_INCLUDE_DIR}")
+set(FLEXIBLE_INCLUDE_DIR include)
 configure_package_config_file(FlexibleConfig.cmake.in
                               FlexibleConfigInstall.cmake
-                              INSTALL_DESTINATION ${FLEXIBLE_INSTALL_CMAKE_DIR}
+                              INSTALL_DESTINATION lib/cmake/Flexible
                               PATH_VARS FLEXIBLE_INCLUDE_DIR)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/FlexibleConfigInstall.cmake
-        DESTINATION ${FLEXIBLE_INSTALL_CMAKE_DIR}
+        DESTINATION lib/cmake/Flexible
         RENAME FlexibleConfig.cmake)
 
 # FlexibleTargets.cmake (installed)
 install(EXPORT FlexibleTargets
-        DESTINATION ${FLEXIBLE_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/Flexible)

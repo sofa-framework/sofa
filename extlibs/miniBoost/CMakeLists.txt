@@ -4,7 +4,6 @@ project(Boost)
 
 set(BOOST_ROOT ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "Directory for Boost find_package")
 
-set(BOOST_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 file(GLOB_RECURSE BOOST_HEADERS
     *.hxx
@@ -12,7 +11,7 @@ file(GLOB_RECURSE BOOST_HEADERS
     *.hpp)
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
-        DESTINATION "${BOOST_INSTALL_INCLUDE_DIR}"
+        DESTINATION include
         COMPONENT Boost_headers
         FILES_MATCHING
             PATTERN "*.h"

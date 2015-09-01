@@ -10,11 +10,6 @@ set(SOFAPYTHON_BUILD_VERSION 1)
 
 set(SOFAPYTHON_VERSION ${SOFAPYTHON_MAJOR_VERSION}.${SOFAPYTHON_MINOR_VERSION}.${SOFAPYTHON_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-# Offer the user the choice of overriding the installation directories
-set(SOFAPYTHON_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFAPYTHON_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFAPYTHON_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFAPYTHON_INSTALL_CMAKE_DIR ${SOFAPYTHON_INSTALL_LIB_DIR}/cmake/SofaPython)
 
 
 find_package(PythonLibs 2.7 REQUIRED)
@@ -133,7 +128,7 @@ set(PYTHON_FILES
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SofaPython.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/SofaPython/SofaPython.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaPython/SofaPython.h
-         DESTINATION "${SOFAPYTHON_INSTALL_INCLUDE_DIR}/SofaPython")
+         DESTINATION "include/SofaPython")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral ${PYTHON_LIBRARIES})
@@ -166,7 +161,7 @@ write_basic_package_version_file(SofaPythonConfigVersion.cmake
                                  COMPATIBILITY AnyNewerVersion)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaPythonConfigVersion.cmake
-        DESTINATION ${SOFAPYTHON_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/SofaPython)
 
 
 # SofaPythonConfig.cmake (build tree)
@@ -177,27 +172,27 @@ configure_package_config_file(SofaPythonConfig.cmake.in
                               PATH_VARS SOFAPYTHON_INCLUDE_DIR)
 
 # SofaPythonConfig.cmake (installed)
-set(SOFAPYTHON_INCLUDE_DIR "${SOFAPYTHON_INSTALL_INCLUDE_DIR}")
+set(SOFAPYTHON_INCLUDE_DIR include)
 configure_package_config_file(SofaPythonConfig.cmake.in
                               SofaPythonConfigInstall.cmake
-                              INSTALL_DESTINATION ${SOFAPYTHON_INSTALL_CMAKE_DIR}
+                              INSTALL_DESTINATION lib/cmake/SofaPython
                               PATH_VARS SOFAPYTHON_INCLUDE_DIR)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaPythonConfigInstall.cmake
-        DESTINATION ${SOFAPYTHON_INSTALL_CMAKE_DIR}
+        DESTINATION lib/cmake/SofaPython
         RENAME SofaPythonConfig.cmake)
 
 
 install(TARGETS ${PROJECT_NAME}
     COMPONENT SofaPython_libraries
     EXPORT SofaPythonTargets
-    RUNTIME DESTINATION "${SOFAPYTHON_INSTALL_BIN_DIR}"
-    LIBRARY DESTINATION "${SOFAPYTHON_INSTALL_LIB_DIR}"
-    ARCHIVE DESTINATION "${SOFAPYTHON_INSTALL_LIB_DIR}"
-    PUBLIC_HEADER DESTINATION "${SOFAPYTHON_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}")
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
 # SofaPythonTargets.cmake (installed)
 install(EXPORT SofaPythonTargets
-        DESTINATION ${SOFAPYTHON_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/SofaPython)

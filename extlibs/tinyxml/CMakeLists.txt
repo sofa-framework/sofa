@@ -11,11 +11,6 @@ set(TINYXML_MINOR_VERSION 6)
 set(TINYXML_PATCH_VERSION 2)
 set(TINYXML_VERSION ${TINYXML_MAJOR_VERSION}.${TINYXML_MINOR_VERSION}.${TINYXML_PATCH_VERSION})
 
-# Offer the user the choice of overriding the installation directories
-set(TINYXML_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
-set(TINYXML_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
-set(TINYXML_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files")
-set(TINYXML_INSTALL_CMAKE_DIR lib/cmake/TinyXML CACHE PATH "Installation directory for CMake files")
 
 set(tinyxml_SRCS
     tinystr.cpp
@@ -39,10 +34,10 @@ set_target_properties(tinyxml PROPERTIES PUBLIC_HEADER "${tinyxml_HDRS}")
 
 install(TARGETS tinyxml
         EXPORT TinyXMLTargets
-        RUNTIME DESTINATION "${TINYXML_INSTALL_BIN_DIR}" COMPONENT TinyXML_libraries
-        LIBRARY DESTINATION "${TINYXML_INSTALL_LIB_DIR}" COMPONENT TinyXML_libraries
-        ARCHIVE DESTINATION "${TINYXML_INSTALL_LIB_DIR}" COMPONENT TinyXML_libraries
-        PUBLIC_HEADER DESTINATION "${TINYXML_INSTALL_INCLUDE_DIR}" COMPONENT TinyXML_headers)
+        RUNTIME DESTINATION bin COMPONENT TinyXML_libraries
+        LIBRARY DESTINATION lib COMPONENT TinyXML_libraries
+        ARCHIVE DESTINATION lib COMPONENT TinyXML_libraries
+        PUBLIC_HEADER DESTINATION include COMPONENT TinyXML_headers)
 
 include(CMakePackageConfigHelpers)
 
@@ -52,7 +47,7 @@ write_basic_package_version_file(TinyXMLConfigVersion.cmake
                                  COMPATIBILITY AnyNewerVersion)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/TinyXMLConfigVersion.cmake
-        DESTINATION ${TINYXML_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/TinyXML)
 
 
 # TinyXMLConfig.cmake (build tree)
@@ -63,16 +58,16 @@ configure_package_config_file(TinyXMLConfig.cmake.in
                               PATH_VARS TINYXML_INCLUDE_DIR)
 
 # TinyXMLConfig.cmake (installed)
-set(TINYXML_INCLUDE_DIR "${TINYXML_INSTALL_INCLUDE_DIR}")
+set(TINYXML_INCLUDE_DIR include)
 configure_package_config_file(TinyXMLConfig.cmake.in
                               TinyXMLConfigInstall.cmake
-                              INSTALL_DESTINATION ${TINYXML_INSTALL_CMAKE_DIR}
+                              INSTALL_DESTINATION lib/cmake/TinyXML
                               PATH_VARS TINYXML_INCLUDE_DIR)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/TinyXMLConfigInstall.cmake
-        DESTINATION ${TINYXML_INSTALL_CMAKE_DIR}
+        DESTINATION lib/cmake/TinyXML
         RENAME TinyXMLConfig.cmake)
 
 # TinyXMLTargets.cmake (installed)
 install(EXPORT TinyXMLTargets
-        DESTINATION ${TINYXML_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/TinyXML)

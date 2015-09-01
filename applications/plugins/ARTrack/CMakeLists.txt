@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(ARTrack)
 
-set(ARTRACK_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(ARTRACK_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(ARTRACK_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
     ARTrackController.h
@@ -38,6 +35,6 @@ endif()
 install(TARGETS ${PROJECT_NAME}
     COMPONENT ARTrack_libraries
     EXPORT ARTrackTargets
-    RUNTIME DESTINATION "${ARTRACK_INSTALL_BIN_DIR}"
-    LIBRARY DESTINATION "${ARTRACK_INSTALL_LIB_DIR}"
-    ARCHIVE DESTINATION "${ARTRACK_INSTALL_LIB_DIR}")
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)

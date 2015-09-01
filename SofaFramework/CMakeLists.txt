@@ -53,11 +53,6 @@ set(DETECTIONOUTPUT_BARYCENTRICINFO ${SOFA_DETECTIONOUTPUT_BARYCENTRICINFO})
 
 set(SOFAFRAMEWORK_EXTLIBS_DIR "${SofaFramework_ACTUAL_SOURCE_DIR}/../extlibs")
 
-# Offer the user the choice of overriding the installation directories
-set(SOFAFRAMEWORK_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFAFRAMEWORK_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFAFRAMEWORK_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFAFRAMEWORK_INSTALL_CMAKE_DIR ${SOFAFRAMEWORK_INSTALL_LIB_DIR}/cmake/SofaFramework)
 
 set(SOFAFRAMEWORK_DEPENDENCY_LINK)
 set(SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
@@ -170,7 +165,7 @@ set(SOFA_HAVE_EIGEN2 1)
 configure_file(config.h.in
                sofa/config.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/config.h
-         DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}/sofa")
+         DESTINATION "include/sofa")
 # make sure everyone in the build tree can see <sofa/config.h>
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -186,7 +181,7 @@ set(SOFAFRAMEWORK_VERSION "99.99.99")
 configure_file(${SofaFramework_ACTUAL_SOURCE_DIR}/sofa/version.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/sofa/version.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/version.h
-        DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}/sofa")
+        DESTINATION "include/sofa")
 
 
 add_subdirectory(${SofaFramework_ACTUAL_SOURCE_DIR}/sofa/helper ${CMAKE_CURRENT_BINARY_DIR}/SofaHelper)
@@ -209,7 +204,7 @@ write_basic_package_version_file(SofaFrameworkConfigVersion.cmake
                                  VERSION ${SOFAFRAMEWORK_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaFrameworkConfigVersion.cmake
-        DESTINATION ${SOFAFRAMEWORK_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/SofaFramework)
 
 
 # SofaFrameworkConfig.cmake (build tree)
@@ -220,14 +215,14 @@ configure_package_config_file(SofaFrameworkConfig.cmake.in
                               PATH_VARS SOFAFRAMEWORK_INCLUDE_DIRS)
 
 # SofaFrameworkConfig.cmake (installed)
-set(SOFAFRAMEWORK_INCLUDE_DIRS "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}")
+set(SOFAFRAMEWORK_INCLUDE_DIRS include)
 configure_package_config_file(SofaFrameworkConfig.cmake.in
                               SofaFrameworkConfigInstall.cmake
-                              INSTALL_DESTINATION ${SOFAFRAMEWORK_INSTALL_CMAKE_DIR}
+                              INSTALL_DESTINATION lib/cmake/SofaFramework
                               PATH_VARS SOFAFRAMEWORK_INCLUDE_DIRS)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaFrameworkConfigInstall.cmake
-        DESTINATION ${SOFAFRAMEWORK_INSTALL_CMAKE_DIR}
+        DESTINATION lib/cmake/SofaFramework
         RENAME SofaFrameworkConfig.cmake)
 
 # CMakeSofaCreateTarget (build)
@@ -236,7 +231,7 @@ configure_file(${SofaFramework_SOURCE_DIR}/CMakeSofaCreateTarget.cmake
 
 # CMakeSofaCreateTarget (installed)
 install(FILES ${SofaFramework_SOURCE_DIR}/CMakeSofaCreateTarget.cmake
-        DESTINATION ${SOFAFRAMEWORK_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/SofaFramework)
 
 # CMakeParseLibraryList (build)
 configure_file(${SofaFramework_SOURCE_DIR}/CMakeParseLibraryList.cmake
@@ -244,8 +239,8 @@ configure_file(${SofaFramework_SOURCE_DIR}/CMakeParseLibraryList.cmake
 
 # CMakeParseLibraryList (installed)
 install(FILES ${SofaFramework_SOURCE_DIR}/CMakeParseLibraryList.cmake
-        DESTINATION ${SOFAFRAMEWORK_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/SofaFramework)
 
 # SofaFrameworkTargets.cmake (installed)
 install(EXPORT SofaFrameworkTargets
-        DESTINATION ${SOFAFRAMEWORK_INSTALL_CMAKE_DIR})
+        DESTINATION lib/cmake/SofaFramework)
