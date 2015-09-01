@@ -64,6 +64,12 @@ if(SOFAGUI_QT)
     list(APPEND SOFAGUI_TARGETS SofaGuiQt)
     add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/qt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
 
+    # SOFA_GUI_INTERACTION
+    option(SOFAGUI_QT_INTERACTION "Enable interaction mode for the Qt GUI, whatever that means" ON)
+    if(SOFAGUI_QT_INTERACTION)
+        set(SOFA_GUI_INTERACTION 1) # Macro in SofaGuiConfig.h
+    endif()
+
     # QtViewer
     option(SOFAGUI_QTVIEWER "Compile the QtViewer for the Qt GUI" ON)
     if(SOFA_GUI_QTVIEWER)

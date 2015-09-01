@@ -27,10 +27,14 @@
 
 #include <sofa/config.h>
 
+// Glut GUI
 #cmakedefine SOFA_GUI_GLUT
+
+// Qt GUI
 #cmakedefine SOFA_GUI_QT
 #cmakedefine SOFA_GUI_QGLVIEWER
 #cmakedefine SOFA_GUI_QTVIEWER
+#cmakedefine SOFA_GUI_INTERACTION
 
 #define SOFAGUI_MAJOR_VERSION ${SOFAGUI_MAJOR_VERSION}
 #define SOFAGUI_MINOR_VERSION ${SOFAGUI_MINOR_VERSION}
