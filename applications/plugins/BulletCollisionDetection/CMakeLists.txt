@@ -9,39 +9,40 @@ set(BULLETCOLLISIONDETECTION_INSTALL_BIN_DIR bin CACHE PATH "Installation direct
 set(BULLETCOLLISIONDETECTION_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
-    BulletCylinderModel.h
-    BulletCylinderModel.inl
-	BulletTriangleModel.h
-    BulletTriangleModel.inl
-    BulletCollisionModel.h
-    BulletCollisionDetection.h
-    BtInterManager.h
     BtDynamicMesh.h
-    BulletSphereModel.h
-    BulletSphereModel.inl
-    BulletOBBModel.h
-    BulletOBBModel.inl
+    BtInterManager.h
     BulletCapsuleModel.h
     BulletCapsuleModel.inl
+    BulletCollisionDetection.h
+    BulletCollisionModel.h
+    BulletConvexHullContactMapper.h
     BulletConvexHullModel.h
     BulletConvexHullModel.inl
-    BulletConvexHullContactMapper.h
-    initBulletCollisionDetection.h)
+    BulletCylinderModel.h
+    BulletCylinderModel.inl
+    BulletOBBModel.h
+    BulletOBBModel.inl
+    BulletSphereModel.h
+    BulletSphereModel.inl
+    BulletTriangleModel.h
+    BulletTriangleModel.inl
+    initBulletCollisionDetection.h
+)
 
 set(SOURCE_FILES
-    BulletCylinderModel.cpp
-    BulletTriangleModel.cpp
-    BulletCollisionDetection.cpp
-    BulletSphereModel.cpp
-    BulletOBBModel.cpp
     BulletCapsuleModel.cpp
-    BulletConvexHullModel.cpp
+    BulletCollisionDetection.cpp
     BulletConvexHullContactMapper.cpp
     BulletConvexHullContacts.cpp
-    initBulletCollisionDetection.cpp)
+    BulletConvexHullModel.cpp
+    BulletCylinderModel.cpp
+    BulletOBBModel.cpp
+    BulletSphereModel.cpp
+    BulletTriangleModel.cpp
+    initBulletCollisionDetection.cpp
+)
 
-set(README_FILES
-    BulletCollisionDetection.txt)
+set(README_FILES BulletCollisionDetection.txt)
 
 find_package(SofaMisc REQUIRED)
 find_package(Compliant QUIET)

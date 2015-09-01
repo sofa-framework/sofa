@@ -6,17 +6,19 @@ set(SENSABLEEMULATION_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for
 set(SENSABLEEMULATION_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
-    #NewOmniDriverEmu.h
-	initSensableEmulation.h
-    OmniDriverEmu.h)
+    # NewOmniDriverEmu.h
+    OmniDriverEmu.h
+    initSensableEmulation.h
+    pthread/pthread.h
+)
 
 set(SOURCE_FILES
-    #NewOmniDriverEmu.cpp
+    # NewOmniDriverEmu.cpp
+    OmniDriverEmu.cpp
     initSensableEmulation.cpp
-    OmniDriverEmu.cpp)
+)
 
-set(README_FILES
-	PluginSensableEmulation.txt)
+set(README_FILES PluginSensableEmulation.txt)
 
 find_package(SofaGeneral REQUIRED)
 find_package(Boost QUIET COMPONENTS thread REQUIRED)

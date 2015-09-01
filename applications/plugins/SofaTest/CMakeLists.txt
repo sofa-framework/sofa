@@ -9,24 +9,24 @@ set(SOFATEST_BUILD_VERSION 1)
 set(SOFATEST_VERSION ${SOFATEST_MAJOR_VERSION}.${SOFATEST_MINOR_VERSION}.${SOFATEST_BUILD_VERSION} CACHE INTERNAL "SofaTest version")
 
 set(HEADER_FILES
-
-    InitPlugin_test.h
-    Sofa_test.h
-    Mapping_test.h
-    MultiMapping_test.h
+    BroadPhase_test.h
+    DataEngine_test.h
     Elasticity_test.h
     Elasticity_test.inl
     ForceField_test.h
-    BroadPhase_test.h
+    InitPlugin_test.h
+    Mapping_test.h
+    MultiMapping_test.h
     PrimitiveCreation.h
-    DataEngine_test.h)
+    Sofa_test.h
+)
 
 set(SOURCE_FILES
-
-    InitPlugin_test.cpp
-    Sofa_test.cpp
     Elasticity_test.cpp
-    PrimitiveCreation.cpp)
+    InitPlugin_test.cpp
+    PrimitiveCreation.cpp
+    Sofa_test.cpp
+)
 
 if(WIN32)
     # MSVC2012 has some troubles with the way gtest use the STL, this
@@ -44,7 +44,10 @@ find_package(SofaPython QUIET)
 if(SofaPython_FOUND)
     list(APPEND HEADER_FILES "Python_test.h")
     list(APPEND SOURCE_FILES "Python_test.cpp")
-    include(./python/python.cmake) # Defines PYTHON_FILES
+    set(PYTHON_FILES
+        python/SofaTest/Macro.py
+        python/SofaTest/__init__.py
+    )
 else()
     message(STATUS "SofaTest: could not find SofaPython")
 endif()

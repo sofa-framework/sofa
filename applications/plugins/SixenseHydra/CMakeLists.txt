@@ -6,12 +6,14 @@ set(SIXENSEHYDRA_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for exec
 set(SIXENSEHYDRA_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
+    RazerHydraDriver.h
     initSixenseHydra.h
-    RazerHydraDriver.h)
+)
 
 set(SOURCE_FILES
+    RazerHydraDriver.cpp
     initSixenseHydra.cpp
-    RazerHydraDriver.cpp)
+)
 
 find_package(SofaGeneral REQUIRED)
 

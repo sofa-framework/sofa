@@ -6,14 +6,16 @@ set(THMPGSPATIALHASHING_INSTALL_BIN_DIR bin CACHE PATH "Installation directory f
 set(THMPGSPATIALHASHING_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
-    initTHMPGSpatialHashingPlugin.h
+    THMPGHashTable.h
     THMPGSpatialHashing.h
-    THMPGHashTable.h)
+    initTHMPGSpatialHashingPlugin.h
+)
 
 set(SOURCE_FILES
-    initTHMPGSpatialHashingPlugin.cpp
+    THMPGHashTable.cpp
     THMPGSpatialHashing.cpp
-    THMPGHashTable.cpp)
+    initTHMPGSpatialHashingPlugin.cpp
+)
 
 find_package(SofaCommon REQUIRED)
 find_package(Boost QUIET COMPONENTS system REQUIRED)

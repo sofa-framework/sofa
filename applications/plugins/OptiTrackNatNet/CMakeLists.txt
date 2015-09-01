@@ -6,14 +6,16 @@ set(OPTITRACKNATNET_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for e
 set(OPTITRACKNATNET_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
+    OptiTrackNatNetClient.h
+    OptiTrackNatNetDevice.h
     initOptiTrackNatNet.h
-	OptiTrackNatNetClient.h
-	OptiTrackNatNetDevice.h)
+)
 
 set(SOURCE_FILES
+    OptiTrackNatNetClient.cpp
+    OptiTrackNatNetDevice.cpp
     initOptiTrackNatNet.cpp
-	OptiTrackNatNetClient.cpp
-	OptiTrackNatNetDevice.cpp)
+)
 
 find_package(SofaGeneral REQUIRED)
 find_package(Boost QUIET COMPONENTS system REQUIRED)

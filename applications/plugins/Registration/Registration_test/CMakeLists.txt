@@ -3,8 +3,9 @@ cmake_minimum_required(VERSION 2.8)
 project(Registration_test)
 
 # FF temporarily deactivated InertiaAlign_test, as well as add_executable since it does not accept 0 parameter
-# set(SOURCE_FILES
-#     InertiaAlign_test.cpp)
+set(SOURCE_FILES
+    # InertiaAlign_test.cpp
+)
 
 if(WIN32)
     list(APPEND HEADER_FILES "stdafx.h")

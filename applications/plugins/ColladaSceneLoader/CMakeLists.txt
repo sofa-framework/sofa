@@ -6,15 +6,16 @@ set(COLLADASCENELOADER_INSTALL_BIN_DIR bin CACHE PATH "Installation directory fo
 set(COLLADASCENELOADER_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
-	initPlugin.h
-    SceneColladaLoader.h)
+    SceneColladaLoader.h
+    initPlugin.h
+)
 
 set(SOURCE_FILES
-	initPlugin.cpp
-    SceneColladaLoader.cpp)
+    SceneColladaLoader.cpp
+    initPlugin.cpp
+)
 
-set(README_FILES
-	ColladaSceneLoader.txt)
+set(README_FILES ColladaSceneLoader.txt )
 
 find_package(SofaBase REQUIRED)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})

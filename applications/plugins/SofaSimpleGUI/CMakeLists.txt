@@ -13,23 +13,25 @@ set(SOFASIMPLEGUI_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory
 set(SOFASIMPLEGUI_INSTALL_CMAKE_DIR ${SOFASIMPLEGUI_INSTALL_LIB_DIR}/cmake/SofaSimpleGUI)
 
 set(HEADER_FILES
-    initSimpleGUI.h
     Camera.h
     Interactor.h
-    SpringInteractor.h
     PickedPoint.h
-    SofaScene.h
     SofaGL.h
-    VisualPickVisitor.h)
+    SofaScene.h
+    SpringInteractor.h
+    VisualPickVisitor.h
+    initSimpleGUI.h
+)
 
 set(SOURCE_FILES
-    initSimpleGUI.cpp
     Camera.cpp
     Interactor.cpp
-    SpringInteractor.cpp
-    SofaScene.cpp
     SofaGL.cpp
-    VisualPickVisitor.cpp)
+    SofaScene.cpp
+    SpringInteractor.cpp
+    VisualPickVisitor.cpp
+    initSimpleGUI.cpp
+)
 
 find_package(SofaMisc REQUIRED)
 

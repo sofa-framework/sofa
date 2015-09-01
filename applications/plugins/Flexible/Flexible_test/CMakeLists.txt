@@ -3,30 +3,31 @@ cmake_minimum_required(VERSION 2.8)
 project(Flexible_test)
 
 set(HEADER_FILES
-    StrainMapping_test.h)
+    StrainMapping_test.h
+)
 
 set(SOURCE_FILES
-    AffinePatch_test.cpp
     AffineDeformationMapping_test.cpp
+    AffinePatch_test.cpp
+    CauchyStrainMapping_test.cpp
+    CorotationalStrainMapping_test.cpp
+    Engine_test.cpp
     FramesBeamMaterial_test.cpp
+    GreenStrainMapping_test.cpp
     HexahedraMaterial_test.cpp
+    InvariantMapping_test.cpp
     Material_test.cpp
     MooneyRivlinHexahedraMaterial_test.cpp
     NeoHookeHexahedraMaterial_test.cpp
-    PointDeformationMapping_test.cpp
     Patch_test.cpp
+    PointDeformationMapping_test.cpp
+    PrincipalStretchesMapping_test.cpp
     RigidDeformationMapping_test.cpp
     ShapeFunction_test.cpp
     StabilizedNeoHookeHexahedraMaterial_test.cpp
     TetrahedraMaterial_test.cpp
     TetrahedronVolumeMapping_test.cpp
-
-   CorotationalStrainMapping_test.cpp
-   CauchyStrainMapping_test.cpp
-   GreenStrainMapping_test.cpp
-   InvariantMapping_test.cpp
-   PrincipalStretchesMapping_test.cpp
-   Engine_test.cpp)
+)
 
 if(WIN32)
     list(APPEND HEADER_FILES "stdafx.h")
@@ -38,7 +39,9 @@ find_package(SofaPython QUIET)
 if(SofaPython_FOUND)
     list(APPEND SOURCE_FILES python_test_list.cpp)
     add_definitions("-DFLEXIBLE_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes/python\"")
-    include(./scenes/python/python.cmake) # Defines PYTHON_FILES
+    set(PYTHON_FILES
+        scenes/python/reInitMapping.py
+    )
 endif()
 
 add_definitions("-DFLEXIBLE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")

@@ -7,15 +7,16 @@ set(INVERTIBLEFVM_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory
 
 set(HEADER_FILES
     InvertibleFVMForceField.h
-	InvertibleFVMForceField.inl
-	initPlugin.h)
+    InvertibleFVMForceField.inl
+    initPlugin.h
+)
 
 set(SOURCE_FILES
     InvertibleFVMForceField.cpp
-    initPlugin.cpp)
+    initPlugin.cpp
+)
 
-set(README_FILES
-	InvertibleFVM.txt)
+set(README_FILES InvertibleFVM.txt)
 
 find_package(SofaBase REQUIRED)
 

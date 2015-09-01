@@ -6,12 +6,12 @@ set(PLUGINEXAMPLE_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for exe
 set(PLUGINEXAMPLE_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
-	MyBehaviorModel.h
+    MyBehaviorModel.h
     MyMappingPendulumInPlane.h
     MyMappingPendulumInPlane.inl
     MyProjectiveConstraintSet.h
     MyProjectiveConstraintSet.inl
-	initPlugin.h)
+    initPlugin.h)
 
 set(HEADER_FILES_TO_MOC
     MyDataWidgetUnsigned.h)
@@ -19,12 +19,12 @@ set(HEADER_FILES_TO_MOC
 set(SOURCE_FILES
     MyBehaviorModel.cpp
     MyDataWidgetUnsigned.cpp
-    MyProjectiveConstraintSet.cpp
     MyMappingPendulumInPlane.cpp
-    initPlugin.cpp)
+    MyProjectiveConstraintSet.cpp
+    initPlugin.cpp
+)
 
-set(README_FILES
-	PluginExample.txt)
+set(README_FILES PluginExample.txt)
 
 find_package(SofaGui REQUIRED)
 find_package(Qt4 REQUIRED)

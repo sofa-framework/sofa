@@ -6,20 +6,21 @@ set(XITACT_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executable
 set(XITACT_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
+    IHPDriver.h
+    ITPDriver.h
+    PaceMaker.h
     XiTrocarInterface.h
     initXitact.h
-    PaceMaker.h
-    IHPDriver.h
-    ITPDriver.h)
+)
 
 set(SOURCE_FILES
-    initXitact.cpp
-    PaceMaker.cpp
     IHPDriver.cpp
-    ITPDriver.cpp)
+    ITPDriver.cpp
+    PaceMaker.cpp
+    initXitact.cpp
+)
 
-set(README_FILES
-	PluginXitact.txt)
+set(README_FILES PluginXitact.txt)
 
 find_package(SofaGui REQUIRED)
 

@@ -6,14 +6,18 @@ set(HAPTION_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executabl
 set(HAPTION_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
-    HaptionDriver.h)
+    HaptionDriver.h
+)
 
 set(SOURCE_FILES
+    initHaption.cpp 
+    HaptionDriver.cpp
     initHaption.cpp
-    HaptionDriver.cpp)
+)
 
 set(README_FILES
-	PluginHaption.txt)
+    PluginHaption.txt
+)
 
 find_package(SofaGeneral REQUIRED)
 

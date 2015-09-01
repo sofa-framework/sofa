@@ -6,13 +6,15 @@ set(MANUALMAPPING_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for exe
 set(MANUALMAPPING_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
-    initManualMapping.h
     ManualLinearMapping.h
-    ManualLinearMapping.inl)
+    ManualLinearMapping.inl
+    initManualMapping.h
+)
 
 set(SOURCE_FILES
+    ManualLinearMapping.cpp
     initManualMapping.cpp
-    ManualLinearMapping.cpp)
+)
 
 find_package(SofaBase REQUIRED)
 

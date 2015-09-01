@@ -6,15 +6,16 @@ set(SOFACARVING_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for execu
 set(SOFACARVING_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
-	CarvingManager.h
-	initSofaCarving.h)
+    CarvingManager.h
+    initSofaCarving.h
+)
 
 set(SOURCE_FILES
-	CarvingManager.cpp
-    initSofaCarving.cpp)
+    CarvingManager.cpp
+    initSofaCarving.cpp
+)
 
-set(README_FILES
-	SofaCarving.txt)
+set(README_FILES SofaCarving.txt)
 
 find_package(SofaGeneral REQUIRED)
 

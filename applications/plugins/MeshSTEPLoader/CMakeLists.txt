@@ -8,17 +8,19 @@ set(MESHSTEPLOADER_INSTALL_INCLUDE_DIR include CACHE PATH "Installation director
 set(HEADER_FILES
     MeshSTEPLoader.h
     ParametricTriangleTopologyContainer.h
-    SingleComponent.inl
-    SingleComponent.h
     STEPShapeMapping.h
-    initMeshSTEPLoader.h)
+    SingleComponent.h
+    SingleComponent.inl
+    initMeshSTEPLoader.h
+)
 
 set(SOURCE_FILES
     MeshSTEPLoader.cpp
     ParametricTriangleTopologyContainer.cpp
-    SingleComponent.cpp
     STEPShapeMapping.cpp
-    initMeshSTEPLoader.cpp)
+    SingleComponent.cpp
+    initMeshSTEPLoader.cpp
+)
 
 set(README_FILES PluginMeshSTEPLoader.txt)
 
