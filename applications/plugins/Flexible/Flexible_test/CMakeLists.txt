@@ -29,6 +29,10 @@ set(SOURCE_FILES
     TetrahedronVolumeMapping_test.cpp
 )
 
+set(PYTHON_FILES
+    scenes/python/reInitMapping.py
+)
+
 if(WIN32)
     list(APPEND HEADER_FILES "stdafx.h")
     list(APPEND SOURCE_FILES "stdafx.cpp")
@@ -39,9 +43,6 @@ find_package(SofaPython QUIET)
 if(SofaPython_FOUND)
     list(APPEND SOURCE_FILES python_test_list.cpp)
     add_definitions("-DFLEXIBLE_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes/python\"")
-    set(PYTHON_FILES
-        scenes/python/reInitMapping.py
-    )
 endif()
 
 add_definitions("-DFLEXIBLE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
