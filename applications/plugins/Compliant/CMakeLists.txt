@@ -7,11 +7,6 @@ set(COMPLIANT_BUILD_VERSION 1)
 
 set(COMPLIANT_VERSION ${COMPLIANT_MAJOR_VERSION}.${COMPLIANT_MINOR_VERSION}.${COMPLIANT_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(COMPLIANT_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(COMPLIANT_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
-set(COMPLIANT_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(COMPLIANT_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/Compliant)
-
 set(COMPLIANT_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
 set(COMPLIANT_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
 set(COMPLIANT_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
@@ -261,32 +256,28 @@ endif()
 
 include(CMakePackageConfigHelpers)
 # CompliantConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(${COMPLIANT_BUILD_CMAKE_DIR}/CompliantConfigVersion.cmake
+write_basic_package_version_file(CompliantConfigVersion.cmake
                                  VERSION ${COMPLIANT_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
 
-install(FILES ${COMPLIANT_BUILD_CMAKE_DIR}/CompliantConfigVersion.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CompliantConfigVersion.cmake
         DESTINATION ${COMPLIANT_INSTALL_CMAKE_DIR})
 
-# linking with boost-system is needed
-# that means an installed version of boost is mandatory (sadly)
-# I loved the header-only boost
-
 # CompliantConfig.cmake (build tree)
-set(COMPLIANT_INCLUDE_DIR "${COMPLIANT_BUILD_INCLUDE_DIR}")
+set(COMPLIANT_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 configure_package_config_file(CompliantConfig.cmake.in
-                              ${COMPLIANT_BUILD_CMAKE_DIR}/CompliantConfig.cmake
-                              INSTALL_DESTINATION ${COMPLIANT_BUILD_CMAKE_DIR}
+                              CompliantConfig.cmake
+                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
                               PATH_VARS COMPLIANT_INCLUDE_DIR)
 
 # CompliantConfig.cmake (installed)
 set(COMPLIANT_INCLUDE_DIR "${COMPLIANT_INSTALL_INCLUDE_DIR}")
 configure_package_config_file(CompliantConfig.cmake.in
-                              ${COMPLIANT_BUILD_CMAKE_DIR}/CompliantConfigInstall.cmake
+                              CompliantConfigInstall.cmake
                               INSTALL_DESTINATION ${COMPLIANT_INSTALL_CMAKE_DIR}
                               PATH_VARS COMPLIANT_INCLUDE_DIR)
 
-install(FILES ${COMPLIANT_BUILD_CMAKE_DIR}/CompliantConfigInstall.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CompliantConfigInstall.cmake
         DESTINATION ${COMPLIANT_INSTALL_CMAKE_DIR}
         RENAME CompliantConfig.cmake)
 

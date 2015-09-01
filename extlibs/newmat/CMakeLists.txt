@@ -2,11 +2,6 @@ cmake_minimum_required(VERSION 2.8.12)
 
 project(newmat)
 
-set(NEWMAT_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(NEWMAT_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
-set(NEWMAT_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(NEWMAT_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/Newmat)
-
 # Offer the user the choice of overriding the installation directories
 set(NEWMAT_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
 set(NEWMAT_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
@@ -68,20 +63,20 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 include(CMakePackageConfigHelpers)
 
 # NewmatConfig.cmake (build tree)
-set(NEWMAT_INCLUDE_DIR "${NEWMAT_BUILD_INCLUDE_DIR}")
+set(NEWMAT_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 configure_package_config_file(NewmatConfig.cmake.in
-                              ${NEWMAT_BUILD_CMAKE_DIR}/NewmatConfig.cmake
-                              INSTALL_DESTINATION ${NEWMAT_BUILD_CMAKE_DIR}
+                              NewmatConfig.cmake
+                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
                               PATH_VARS NEWMAT_INCLUDE_DIR)
 
 # NewmatConfig.cmake (installed)
 set(NEWMAT_INCLUDE_DIR "${NEWMAT_INSTALL_INCLUDE_DIR}")
 configure_package_config_file(NewmatConfig.cmake.in
-                              ${NEWMAT_BUILD_CMAKE_DIR}/NewmatConfigInstall.cmake
+                              NewmatConfigInstall.cmake
                               INSTALL_DESTINATION ${NEWMAT_INSTALL_CMAKE_DIR}
                               PATH_VARS NEWMAT_INCLUDE_DIR)
 
-install(FILES ${NEWMAT_BUILD_CMAKE_DIR}/NewmatConfigInstall.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/NewmatConfigInstall.cmake
         DESTINATION ${NEWMAT_INSTALL_CMAKE_DIR}
         RENAME NewmatConfig.cmake)
 

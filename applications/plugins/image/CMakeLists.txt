@@ -9,11 +9,6 @@ set(IMAGE_BUILD_VERSION 1)
 
 set(IMAGE_VERSION ${IMAGE_MAJOR_VERSION}.${IMAGE_MINOR_VERSION}.${IMAGE_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(IMAGE_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(IMAGE_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
-set(IMAGE_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(IMAGE_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/image)
-
 set(IMAGE_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
 set(IMAGE_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
 set(IMAGE_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
@@ -163,29 +158,29 @@ endif()
 
 include(CMakePackageConfigHelpers)
 # imageConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(${IMAGE_BUILD_CMAKE_DIR}/imageConfigVersion.cmake
+write_basic_package_version_file(imageConfigVersion.cmake
                                  VERSION ${IMAGE_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
 
-install(FILES ${IMAGE_BUILD_CMAKE_DIR}/imageConfigVersion.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/imageConfigVersion.cmake
         DESTINATION ${IMAGE_INSTALL_CMAKE_DIR})
 
 
 # imageConfig.cmake (build tree)
-set(IMAGE_INCLUDE_DIR "${IMAGE_BUILD_INCLUDE_DIR}")
+set(IMAGE_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 configure_package_config_file(imageConfig.cmake.in
-                              ${IMAGE_BUILD_CMAKE_DIR}/imageConfig.cmake
-                              INSTALL_DESTINATION ${IMAGE_BUILD_CMAKE_DIR}
+                              imageConfig.cmake
+                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
                               PATH_VARS IMAGE_INCLUDE_DIR)
 
 # imageConfig.cmake (installed)
 set(IMAGE_INCLUDE_DIR "${IMAGE_INSTALL_INCLUDE_DIR}")
 configure_package_config_file(imageConfig.cmake.in
-                              ${IMAGE_BUILD_CMAKE_DIR}/imageConfigInstall.cmake
+                              imageConfigInstall.cmake
                               INSTALL_DESTINATION ${IMAGE_INSTALL_CMAKE_DIR}
                               PATH_VARS IMAGE_INCLUDE_DIR)
 
-install(FILES ${IMAGE_BUILD_CMAKE_DIR}/imageConfigInstall.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/imageConfigInstall.cmake
         DESTINATION ${IMAGE_INSTALL_CMAKE_DIR}
         RENAME imageConfig.cmake)
 

@@ -7,11 +7,6 @@ set(CGALPLUGIN_BUILD_VERSION 1)
 
 set(CGALPLUGIN_VERSION ${CGALPLUGIN_MAJOR_VERSION}.${CGALPLUGIN_MINOR_VERSION}.${CGALPLUGIN_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(CGALPLUGIN_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(CGALPLUGIN_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
-set(CGALPLUGIN_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(CGALPLUGIN_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/CGALPlugin)
-
 set(CGALPLUGIN_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
 set(CGALPLUGIN_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
 set(CGALPLUGIN_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
@@ -101,29 +96,29 @@ install(DIRECTORY scenes/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
 include(CMakePackageConfigHelpers)
 # CGALPluginConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(${CGALPLUGIN_BUILD_CMAKE_DIR}/CGALPluginConfigVersion.cmake
+write_basic_package_version_file(CGALPluginConfigVersion.cmake
                                  VERSION ${CGALPLUGIN_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
 
-install(FILES ${CGALPLUGIN_BUILD_CMAKE_DIR}/CGALPluginConfigVersion.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CGALPluginConfigVersion.cmake
         DESTINATION ${CGALPLUGIN_INSTALL_CMAKE_DIR})
 
 
 # CGALPluginConfig.cmake (build tree)
-set(CGALPLUGIN_INCLUDE_DIR "${CGALPLUGIN_BUILD_INCLUDE_DIR}")
+set(CGALPLUGIN_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 configure_package_config_file(CGALPluginConfig.cmake.in
-                              ${CGALPLUGIN_BUILD_CMAKE_DIR}/CGALPluginConfig.cmake
-                              INSTALL_DESTINATION ${CGALPLUGIN_BUILD_CMAKE_DIR}
+                              CGALPluginConfig.cmake
+                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
                               PATH_VARS CGALPLUGIN_INCLUDE_DIR)
 
 # CGALPluginConfig.cmake (installed)
 set(CGALPLUGIN_INCLUDE_DIR "${CGALPLUGIN_INSTALL_INCLUDE_DIR}")
 configure_package_config_file(CGALPluginConfig.cmake.in
-                              ${CGALPLUGIN_BUILD_CMAKE_DIR}/CGALPluginConfigInstall.cmake
+                              CGALPluginConfigInstall.cmake
                               INSTALL_DESTINATION ${CGALPLUGIN_INSTALL_CMAKE_DIR}
                               PATH_VARS CGALPLUGIN_INCLUDE_DIR)
 
-install(FILES ${CGALPLUGIN_BUILD_CMAKE_DIR}/CGALPluginConfigInstall.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CGALPluginConfigInstall.cmake
         DESTINATION ${CGALPLUGIN_INSTALL_CMAKE_DIR}
         RENAME CGALPluginConfig.cmake)
 

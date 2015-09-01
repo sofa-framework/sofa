@@ -10,12 +10,6 @@ set(SOFAPYTHON_BUILD_VERSION 1)
 
 set(SOFAPYTHON_VERSION ${SOFAPYTHON_MAJOR_VERSION}.${SOFAPYTHON_MINOR_VERSION}.${SOFAPYTHON_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-
-set(SOFAPYTHON_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(SOFAPYTHON_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
-set(SOFAPYTHON_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(SOFAPYTHON_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/SofaPython)
-
 # Offer the user the choice of overriding the installation directories
 set(SOFAPYTHON_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
 set(SOFAPYTHON_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
@@ -167,29 +161,29 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 
 include(CMakePackageConfigHelpers)
 # SofaPythonConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(${SOFAPYTHON_BUILD_CMAKE_DIR}/SofaPythonConfigVersion.cmake
+write_basic_package_version_file(SofaPythonConfigVersion.cmake
                                  VERSION ${SOFAPYTHON_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
 
-install(FILES ${SOFAPYTHON_BUILD_CMAKE_DIR}/SofaPythonConfigVersion.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaPythonConfigVersion.cmake
         DESTINATION ${SOFAPYTHON_INSTALL_CMAKE_DIR})
 
 
 # SofaPythonConfig.cmake (build tree)
-set(SOFAPYTHON_INCLUDE_DIR "${SOFAPYTHON_BUILD_INCLUDE_DIR}")
+set(SOFAPYTHON_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 configure_package_config_file(SofaPythonConfig.cmake.in
-                              ${SOFAPYTHON_BUILD_CMAKE_DIR}/SofaPythonConfig.cmake
-                              INSTALL_DESTINATION ${SOFAPYTHON_BUILD_CMAKE_DIR}
+                              SofaPythonConfig.cmake
+                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
                               PATH_VARS SOFAPYTHON_INCLUDE_DIR)
 
 # SofaPythonConfig.cmake (installed)
 set(SOFAPYTHON_INCLUDE_DIR "${SOFAPYTHON_INSTALL_INCLUDE_DIR}")
 configure_package_config_file(SofaPythonConfig.cmake.in
-                              ${SOFAPYTHON_BUILD_CMAKE_DIR}/SofaPythonConfigInstall.cmake
+                              SofaPythonConfigInstall.cmake
                               INSTALL_DESTINATION ${SOFAPYTHON_INSTALL_CMAKE_DIR}
                               PATH_VARS SOFAPYTHON_INCLUDE_DIR)
 
-install(FILES ${SOFAPYTHON_BUILD_CMAKE_DIR}/SofaPythonConfigInstall.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaPythonConfigInstall.cmake
         DESTINATION ${SOFAPYTHON_INSTALL_CMAKE_DIR}
         RENAME SofaPythonConfig.cmake)
 

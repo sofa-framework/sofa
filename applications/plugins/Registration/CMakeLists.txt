@@ -7,11 +7,6 @@ set(REGISTRATION_BUILD_VERSION 1)
 
 set(REGISTRATION_VERSION ${REGISTRATION_MAJOR_VERSION}.${REGISTRATION_MINOR_VERSION}.${REGISTRATION_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(REGISTRATION_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(REGISTRATION_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
-set(REGISTRATION_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(REGISTRATION_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/Registration)
-
 set(REGISTRATION_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
 set(REGISTRATION_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
 set(REGISTRATION_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
@@ -99,29 +94,29 @@ install(TARGETS ${PROJECT_NAME}
 
 include(CMakePackageConfigHelpers)
 # RegistrationConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(${REGISTRATION_BUILD_CMAKE_DIR}/RegistrationConfigVersion.cmake
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/RegistrationConfigVersion.cmake
                                  VERSION ${REGISTRATION_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
 
-install(FILES ${REGISTRATION_BUILD_CMAKE_DIR}/RegistrationConfigVersion.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/RegistrationConfigVersion.cmake
         DESTINATION ${REGISTRATION_INSTALL_CMAKE_DIR})
 
 
 # RegistrationConfig.cmake (build tree)
-set(REGISTRATION_INCLUDE_DIR "${REGISTRATION_BUILD_INCLUDE_DIR}")
+set(REGISTRATION_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 configure_package_config_file(RegistrationConfig.cmake.in
-                              ${REGISTRATION_BUILD_CMAKE_DIR}/RegistrationConfig.cmake
-                              INSTALL_DESTINATION ${REGISTRATION_BUILD_CMAKE_DIR}
+                              ${CMAKE_CURRENT_BINARY_DIR}/RegistrationConfig.cmake
+                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
                               PATH_VARS REGISTRATION_INCLUDE_DIR)
 
 # RegistrationConfig.cmake (installed)
 set(REGISTRATION_INCLUDE_DIR "${REGISTRATION_INSTALL_INCLUDE_DIR}")
 configure_package_config_file(RegistrationConfig.cmake.in
-                              ${REGISTRATION_BUILD_CMAKE_DIR}/RegistrationConfigInstall.cmake
+                              ${CMAKE_CURRENT_BINARY_DIR}/RegistrationConfigInstall.cmake
                               INSTALL_DESTINATION ${REGISTRATION_INSTALL_CMAKE_DIR}
                               PATH_VARS REGISTRATION_INCLUDE_DIR)
 
-install(FILES ${REGISTRATION_BUILD_CMAKE_DIR}/RegistrationConfigInstall.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/RegistrationConfigInstall.cmake
         DESTINATION ${REGISTRATION_INSTALL_CMAKE_DIR}
         RENAME RegistrationConfig.cmake)
 
