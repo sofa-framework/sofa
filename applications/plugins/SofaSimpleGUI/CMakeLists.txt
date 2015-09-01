@@ -43,14 +43,14 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 # SofaSimpleGUIConfig.cmake (build tree)
 set(SOFASIMPLEGUI_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 configure_package_config_file(SofaSimpleGUIConfig.cmake.in
-                              ${CMAKE_BINARY_DIR}/SofaSimpleGUI/SofaSimpleGUIConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_BINARY_DIR}/SofaSimpleGUI
+                              SofaSimpleGUIConfig.cmake
+                              INSTALL_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
                               PATH_VARS SOFASIMPLEGUI_INCLUDE_DIR)
 
 # SofaSimpleGUIConfig.cmake (installed)
 set(SOFASIMPLEGUI_INCLUDE_DIR "include")
 configure_package_config_file(SofaSimpleGUIConfig.cmake.in
-                              ${CMAKE_BINARY_DIR}/SofaSimpleGUI/SofaSimpleGUIConfigInstall.cmake
+                              SofaSimpleGUIConfigInstall.cmake
                               INSTALL_DESTINATION lib/cmake/SofaSimpleGUI
                               PATH_VARS SOFASIMPLEGUI_INCLUDE_DIR)
 
@@ -58,7 +58,7 @@ configure_package_config_file(SofaSimpleGUIConfig.cmake.in
 install(EXPORT SofaSimpleGUITargets
         DESTINATION lib/cmake/SofaSimpleGUI)
 
-install(FILES ${CMAKE_BINARY_DIR}/SofaSimpleGUI/SofaSimpleGUIConfigInstall.cmake
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SofaSimpleGUIConfigInstall.cmake"
         DESTINATION lib/cmake/SofaSimpleGUI
         RENAME SofaSimpleGUIConfig.cmake)
 

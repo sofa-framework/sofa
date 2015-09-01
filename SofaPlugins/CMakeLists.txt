@@ -4,7 +4,7 @@ macro(add_plugin plugin)
     string(TOUPPER PLUGIN_${plugin} plugin_option)
     option(${plugin_option} "Build the ${plugin} plugin." OFF)
     if(${plugin_option})
-        add_subdirectory(../applications/plugins/${plugin} ${CMAKE_CURRENT_BINARY_DIR}/${plugin})
+        add_subdirectory(../applications/plugins/${plugin} ${CMAKE_BINARY_DIR}/plugins/${plugin})
         set_target_properties(${plugin} PROPERTIES FOLDER "Plugins") # IDE folder
     else()
         # Workaroung: if we uncheck a plugin in cmake-gui, we remove the

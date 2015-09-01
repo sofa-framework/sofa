@@ -100,29 +100,29 @@ install(TARGETS ${PROJECT_NAME}
 include(CMakePackageConfigHelpers)
 
 # QGLViewerConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(${CMAKE_BINARY_DIR}/QGLViewer/QGLViewerConfigVersion.cmake
+write_basic_package_version_file(QGLViewerConfigVersion.cmake
                                  VERSION ${QGLVIEWER_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
 
-install(FILES ${CMAKE_BINARY_DIR}/QGLViewer/QGLViewerConfigVersion.cmake
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/QGLViewerConfigVersion.cmake"
         DESTINATION lib/cmake/QGLViewer)
 
 
 # QGLViewerConfig.cmake (build tree)
 set(QGLVIEWER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 configure_package_config_file(QGLViewerConfig.cmake.in
-                              ${CMAKE_BINARY_DIR}/QGLViewer/QGLViewerConfig.cmake
+                              QGLViewerConfig.cmake
                               INSTALL_DESTINATION ${CMAKE_BINARY_DIR}/QGLViewer/
                               PATH_VARS QGLVIEWER_INCLUDE_DIR)
 
 # QGLViewerConfig.cmake (installed)
 set(QGLVIEWER_INCLUDE_DIR include)
 configure_package_config_file(QGLViewerConfig.cmake.in
-                              ${CMAKE_BINARY_DIR}/QGLViewer/QGLViewerConfigInstall.cmake
+                              QGLViewerConfigInstall.cmake
                               INSTALL_DESTINATION lib/cmake/QGLViewer
                               PATH_VARS QGLVIEWER_INCLUDE_DIR)
 
-install(FILES ${CMAKE_BINARY_DIR}/QGLViewer/QGLViewerConfigInstall.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/QGLViewerConfigInstall.cmake
         DESTINATION lib/cmake/QGLViewer
         RENAME QGLViewerConfig.cmake)
 

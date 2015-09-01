@@ -31,6 +31,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # Environment
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/extlibs)
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/plugins)
 
 
 include(CMakeSofaBuildFlags)
@@ -100,25 +102,25 @@ add_subdirectory(extlibs/SuiteSparse)
 add_subdirectory(extlibs/csparse)
 set(EIGEN_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/eigen-3.2.5"
     CACHE PATH "Directory search by find_package(Eigen3)")
-add_subdirectory(extlibs/eigen-3.2.5)
+add_subdirectory(extlibs/eigen-3.2.5 extlibs/eigen)
 add_subdirectory(extlibs/miniFlowVR)
 add_subdirectory(extlibs/newmat)
 add_subdirectory(extlibs/tinyxml)
 
 ## Optional ones
 add_subdirectory(extlibs/CImg)
-add_subdirectory(extlibs/libQGLViewer-2.4.0/QGLViewer)
+add_subdirectory(extlibs/libQGLViewer-2.4.0/QGLViewer extlibs/QGLViewer)
 
 find_package(Boost QUIET)
 if(NOT Boost_FOUND)
-    add_subdirectory(extlibs/miniBoost "${CMAKE_CURRENT_BINARY_DIR}/miniBoost")
+    add_subdirectory(extlibs/miniBoost)
 endif()
 
 option(SOFA_BUILD_ARTRACK
 "Build the ARTrack library distributed in the extlibs/ directory.  This library
 is used only by the ARTrack plugin."  OFF)
 if(SOFA_BUILD_ARTRACK)
-    add_subdirectory(extlibs/ARTrack "${CMAKE_CURRENT_BINARY_DIR}/ARTrackLib")
+    add_subdirectory(extlibs/ARTrack extlibs/ARTrackLib)
 endif()
 
 option(SOFA_BUILD_METIS
@@ -126,7 +128,7 @@ option(SOFA_BUILD_METIS
 by the SparseLDLSolver component.  Note that this library is usually available
 on Linux distributions." OFF)
 if(SOFA_BUILD_METIS)
-    add_subdirectory(extlibs/metis-5.1.0 "${CMAKE_CURRENT_BINARY_DIR}/metis")
+    add_subdirectory(extlibs/metis-5.1.0 "extlibs/metis")
 endif()
 
 add_subdirectory(SofaFramework)
@@ -145,16 +147,15 @@ endif()
 # SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
 option(PLUGIN_SOFAPYTHON "Build the SofaPython plugin." OFF)
 if(PLUGIN_SOFAPYTHON)
-    add_subdirectory(applications/plugins/SofaPython
-                     "${CMAKE_CURRENT_BINARY_DIR}/SofaPlugins/SofaPython")
+    add_subdirectory(applications/plugins/SofaPython plugins/SofaPython)
     set_target_properties(SofaPython PROPERTIES FOLDER "Plugins") # IDE folder
 endif()
 
 if(SOFA_BUILD_TESTS)
     # Library used by SofaTest.
-    add_subdirectory(applications/plugins/SceneCreator)
+    add_subdirectory(applications/plugins/SceneCreator SceneCreator)
     # Library used to write high level tests involving many components.
-    add_subdirectory(applications/plugins/SofaTest)
+    add_subdirectory(applications/plugins/SofaTest SofaTest)
     # Tests for all the modules, written using SofaTest.
     add_subdirectory(modules/tests)
 endif()
