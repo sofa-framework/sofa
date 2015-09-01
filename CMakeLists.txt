@@ -32,7 +32,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/extlibs)
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/plugins)
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/plugins)
 
 
 include(CMakeSofaBuildFlags)
@@ -147,7 +147,7 @@ endif()
 # SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
 option(PLUGIN_SOFAPYTHON "Build the SofaPython plugin." OFF)
 if(PLUGIN_SOFAPYTHON)
-    add_subdirectory(applications/plugins/SofaPython plugins/SofaPython)
+    add_subdirectory(applications/plugins/SofaPython)
     set_target_properties(SofaPython PROPERTIES FOLDER "Plugins") # IDE folder
 endif()
 
@@ -161,7 +161,7 @@ if(SOFA_BUILD_TESTS)
 endif()
 
 # Plugins
-add_subdirectory(SofaPlugins)
+add_subdirectory(applications/plugins)
 
 # Tutorials
 option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
