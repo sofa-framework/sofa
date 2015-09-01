@@ -98,7 +98,7 @@ case $CI_JOB in
     # Build with default options
     *default*)
         # Only change from the default configuration: Enable tests
-        append "-DSOFA-MISC_TESTS=ON"
+        append "-DSOFA_BUILD_TESTS=ON"
         append "-DSOFA-PLUGIN_SOFATEST=ON"
         append "-DSOFA-PLUGIN_SOFAPYTHON=ON"
         append "-DSOFA-PLUGIN_SCENECREATOR=ON"
@@ -106,7 +106,7 @@ case $CI_JOB in
     # Build with as many options enabled
     *options*)
 
-        append "-DSOFA_TESTS=ON"
+        append "-DSOFA_BUILD_TESTS=ON"
 
         append "-DSOFA_COMPILE_METIS=ON"
         append "-DSOFA_COMPILE_ARTRACK=ON"
