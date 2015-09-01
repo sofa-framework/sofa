@@ -17,18 +17,18 @@ set(SOURCE_FILES
 
 find_package(SofaPython QUIET)
 
+set(PYTHON_FILES
+    python/AffineMultiMapping.py
+    python/Example.py
+    python/GenerateRigid.py
+    python/LambdaPropagation.py
+    python/UniformCompliance.py
+    python/friction.py
+)
+
 if(SofaPython_FOUND)
     add_definitions("-DCOMPLIANT_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python\"")
     list(APPEND SOURCE_FILES python_test_list.cpp)
-
-    set(PYTHON_FILES
-        python/AffineMultiMapping.py
-        python/Example.py
-        python/GenerateRigid.py
-        python/LambdaPropagation.py
-        python/UniformCompliance.py
-        python/friction.py
-    )
 
 endif()
 
