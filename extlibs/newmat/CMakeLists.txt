@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 2.8.12)
-
 project(newmat)
 
+if(CMAKE_VERSION GREATER 3.1)
+    cmake_policy(SET CMP0054 NEW)   # CMake 3.2.3 warns if this is not set.
+endif()
 
 set(HEADER_FILES
 
