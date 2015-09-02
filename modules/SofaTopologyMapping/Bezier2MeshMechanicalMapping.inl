@@ -583,7 +583,7 @@ void Bezier2MeshMechanicalMapping<TIn, TOut>::applyJT(const core::MechanicalPara
 
 
 template <class TIn, class TOut>
-void Bezier2MeshMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/, Data<InMatrixDeriv>& dOut, const Data<OutMatrixDeriv>& dIn)
+void Bezier2MeshMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/, Data<InMatrixDeriv>& /*dOut*/, const Data<OutMatrixDeriv>& /*dIn*/)
 {
 
     if (!topoMap)
