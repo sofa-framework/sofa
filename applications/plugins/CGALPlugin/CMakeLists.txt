@@ -15,7 +15,6 @@ set(HEADER_FILES
     MeshGenerationFromPolyhedron.inl
     TriangularConvexHull3D.h
     TriangularConvexHull3D.inl
-    config.h
 )
 
 set(SOURCE_FILES
@@ -48,10 +47,8 @@ endif()
 set(CGALPLUGIN_DEPENDENCY_INCLUDE_DIR ${SofaFramework_INCLUDE_DIRS}
     ${GMP_INCLUDE_DIR} ${MPFR_INCLUDE_DIR} ${CGAL_DIR}/include)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CGALPlugin.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/CGALPlugin/CGALPlugin.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CGALPlugin/CGALPlugin.h
-         DESTINATION "include/CGALPlugin")
+configure_file(config.h.in CGALPlugin/config.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CGALPlugin/config.h DESTINATION "include/CGALPlugin")
 
 if(WIN32)
     # copy required CGAL dlls
@@ -63,6 +60,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CGALPLUGIN_DEPENDENCY_INCLUDE_DIR}>")

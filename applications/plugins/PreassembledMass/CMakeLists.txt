@@ -20,6 +20,7 @@ find_package(Flexible QUIET)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaEigen2Solver)
 target_link_libraries(${PROJECT_NAME} Compliant)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 set(PREASSEMBLEDMASS_COMPILER_FLAGS "-DSOFA_BUILD_PreassembledMass")
 
 if(Flexible_FOUND)

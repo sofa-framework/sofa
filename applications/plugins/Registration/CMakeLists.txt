@@ -18,7 +18,6 @@ set(HEADER_FILES
     RegistrationContactForceField.h
     RegistrationContactForceField.inl
     RegistrationExporter.h
-    config.h
 )
 
 set(SOURCE_FILES
@@ -54,10 +53,8 @@ endif()
 
 set(REGISTRATION_DEPENDENCY_INCLUDE_DIR ${SofaBase_INCLUDE_DIRS} ${Newmat_INCLUDE_DIRS})
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Registration.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/Registration/Registration.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Registration/Registration.h
-        DESTINATION "include/Registration")
+configure_file(config.h.in Registration/config.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Registration/config.h DESTINATION "include/Registration")
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})

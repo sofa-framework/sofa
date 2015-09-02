@@ -23,6 +23,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_ARTRACKPLUGIN")
 target_link_libraries(${PROJECT_NAME} SofaUserInteraction)
 target_link_libraries(${PROJECT_NAME} ARTrackLib)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 if(WIN32)
     target_link_libraries(${PROJECT_NAME} Ws2_32)

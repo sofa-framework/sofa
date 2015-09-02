@@ -47,6 +47,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 find_package(Bullet CONFIG REQUIRED)
 include_directories(${BULLET_INCLUDE_DIR})
 link_directories(${BULLET_LIBRARY_DIRS})
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 if(Compliant_FOUND)
     list(APPEND SOURCE_FILES BulletConvexHullCompliantContacts.cpp)
