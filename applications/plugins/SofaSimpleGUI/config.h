@@ -22,21 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_PLUGIN_PERSISTENTCONTACT_H
-#define SOFA_PLUGIN_PERSISTENTCONTACT_H
+#ifndef SOFASIMPLEGUI_CONFIG_H
+#define SOFASIMPLEGUI_CONFIG_H
 
-#ifndef WIN32
-#define SOFA_EXPORT_DYNAMIC_LIBRARY
-#define SOFA_IMPORT_DYNAMIC_LIBRARY
-#define SOFA_PERSISTENTCONTACT_API
+#include <sofa/helper/system/config.h>
+
+#ifdef SOFA_BUILD_SOFASIMPLEGUI
+#  define SOFA_SOFASIMPLEGUI_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#ifdef SOFA_BUILD_PERSISTENTCONTACT
-#define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
-#define SOFA_PERSISTENTCONTACT_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
-#define SOFA_PERSISTENTCONTACT_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#  define SOFA_SOFASIMPLEGUI_API  SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // SOFA_PLUGIN_PERSISTENTCONTACT_H
+#endif

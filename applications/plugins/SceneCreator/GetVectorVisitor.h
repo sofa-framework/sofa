@@ -40,7 +40,7 @@
 #pragma once
 #endif
 
-#include "initSceneCreator.h"
+#include <SceneCreator/config.h>
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/defaulttype/BaseVector.h>

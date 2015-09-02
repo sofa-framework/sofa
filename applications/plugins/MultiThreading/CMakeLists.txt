@@ -5,8 +5,8 @@ project(MultiThreading)
 set(HEADER_FILES
     src/DataExchange.h
     src/DataExchange.inl
+    config.h
     # src/Observer.h
-    src/initMultiThreading.h
 )
 
 set(SOURCE_FILES

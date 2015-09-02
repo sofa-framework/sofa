@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_LOADER_SceneColladaLoader_H
 #define SOFA_COMPONENT_LOADER_SceneColladaLoader_H
 
-#include "initPlugin.h"
+#include <ColladaSceneLoader/config.h>
 #include <sofa/core/loader/SceneLoader.h>
 #include <sofa/helper/SVector.h>
 #include <sofa/simulation/common/Node.h>

@@ -25,7 +25,7 @@
 #ifndef SOFA_GroupwiseRegistrationEngine_H
 #define SOFA_GroupwiseRegistrationEngine_H
 
-#include "initRegistration.h"
+#include <Registration/config.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/visual/VisualParams.h>

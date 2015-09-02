@@ -11,7 +11,7 @@
 
 #include "../labelimagetoolbox.h"
 
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 
 namespace sofa
 {

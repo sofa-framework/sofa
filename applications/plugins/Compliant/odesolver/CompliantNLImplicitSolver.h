@@ -1,7 +1,7 @@
 #ifndef COMPLIANT_CompliantNLImplicitSolver_H
 #define COMPLIANT_CompliantNLImplicitSolver_H
 
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 #include <Compliant/odesolver/CompliantImplicitSolver.h>
 #include <sofa/simulation/common/MechanicalOperations.h>
 

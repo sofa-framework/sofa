@@ -3,7 +3,7 @@ project(PersistentContact)
 
 
 set(HEADER_FILES
-    PersistentContact.h
+    config.h
     PersistentContactBarycentricMapping.h
     PersistentContactBarycentricMapping.inl
     PersistentContactMapping.h

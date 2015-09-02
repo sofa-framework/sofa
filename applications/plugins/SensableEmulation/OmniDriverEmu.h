@@ -38,7 +38,7 @@
 #  include <pthread.h>
 #endif
 
-#include "initSensableEmulation.h"
+#include <SensableEmulation/config.h>
 
 
 namespace sofa

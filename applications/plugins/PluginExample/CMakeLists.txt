@@ -8,10 +8,12 @@ set(HEADER_FILES
     MyMappingPendulumInPlane.inl
     MyProjectiveConstraintSet.h
     MyProjectiveConstraintSet.inl
-    initPlugin.h)
+    config.h
+)
 
 set(HEADER_FILES_TO_MOC
-    MyDataWidgetUnsigned.h)
+    MyDataWidgetUnsigned.h
+)
 
 set(SOURCE_FILES
     MyBehaviorModel.cpp

@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initMultiThreading.h"
+#include <MultiThreading/config.h>
 
 
 namespace sofa

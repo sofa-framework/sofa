@@ -4,7 +4,7 @@ project(SofaCarving)
 
 set(HEADER_FILES
     CarvingManager.h
-    initSofaCarving.h
+    config.h
 )
 
 set(SOURCE_FILES

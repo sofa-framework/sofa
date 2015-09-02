@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_GaussPointContainer_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../quadrature/GaussPointContainer.h"
 #include <sofa/core/ObjectFactory.h>
 

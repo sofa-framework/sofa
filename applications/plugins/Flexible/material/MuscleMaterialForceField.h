@@ -25,7 +25,7 @@
 #ifndef SOFA_MuscleMaterialFORCEFIELD_H
 #define SOFA_MuscleMaterialFORCEFIELD_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../material/BaseMaterialForceField.h"
 #include "../material/MuscleMaterialBlock.h"
 

@@ -30,7 +30,7 @@
 #include <vector>
 #include <memory>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-#include "initManualMapping.h"
+#include <ManualMapping/config.h>
 
 
 namespace sofa

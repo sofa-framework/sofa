@@ -26,7 +26,7 @@
 #ifndef SOFA_SIMPLEOBJECTCREATOR_H
 #define SOFA_SIMPLEOBJECTCREATOR_H
 
-#include <SceneCreator/SceneCreatorConfig.h>
+#include <SceneCreator/config.h>
 #include <string>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/Node.h>

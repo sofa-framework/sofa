@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define FLEXIBLE_BezierShapeFunction_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../shapeFunction/BezierShapeFunction.h"
 #include <sofa/core/ObjectFactory.h>
 

@@ -25,7 +25,7 @@
 #ifndef MultiThreadingTasks_h__
 #define MultiThreadingTasks_h__
 
-#include "initMultiThreading.h"
+#include <MultiThreading/config.h>
 
 #include <boost/detail/atomic_count.hpp>
 #include <boost/pool/singleton_pool.hpp>

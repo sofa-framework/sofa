@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_Flexible_MassFromDensity_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "MassFromDensity.h"
 #include <sofa/core/ObjectFactory.h>
 #include "../types/AffineTypes.h"

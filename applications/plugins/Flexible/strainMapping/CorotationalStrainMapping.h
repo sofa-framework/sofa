@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_CorotationalStrainMAPPING_H
 #define SOFA_COMPONENT_MAPPING_CorotationalStrainMAPPING_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../strainMapping/BaseStrainMapping.h"
 #include "../strainMapping/CorotationalStrainJacobianBlock.inl"
 

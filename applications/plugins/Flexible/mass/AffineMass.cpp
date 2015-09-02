@@ -25,7 +25,7 @@
 
 #define SOFA_COMPONENT_MASS_AffineMass_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "AffineMass.h"
 #include <sofa/core/ObjectFactory.h>
 #include "../types/AffineTypes.h"

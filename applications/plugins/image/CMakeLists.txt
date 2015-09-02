@@ -56,7 +56,7 @@ set(HEADER_FILES
     TransferFunction.h
     VectorVis.h
     VoronoiToMeshEngine.h
-    initImage.h
+    config.h
 )
 
 set(PYTHON_FILES

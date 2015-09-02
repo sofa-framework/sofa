@@ -22,16 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef REGISTRATION_INIT_H
-#define REGISTRATION_INIT_H
+#ifndef EMPTYCMAKEPLUGIN_CONFIG_H
+#define EMPTYCMAKEPLUGIN_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_REGISTRATION
-	#define SOFA_REGISTRATION_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_EMPTYCMAKEPLUGIN
+#  define SOFA_EmptyCmakePlugin_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-	#define SOFA_REGISTRATION_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_EmptyCmakePlugin_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif //REGISTRATION_INIT_H
-
+#endif

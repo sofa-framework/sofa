@@ -16,7 +16,7 @@ set(SOFAHAPI_VERSION
 set(HEADER_FILES
     SofaHAPIForceFeedbackEffect.h
     SofaHAPIHapticsDevice.h
-    initSofaHAPI.h
+    config.h
 )
 
 set(SOURCE_FILES

@@ -5,7 +5,7 @@ project(ManualMapping)
 set(HEADER_FILES
     ManualLinearMapping.h
     ManualLinearMapping.inl
-    initManualMapping.h
+    config.h
 )
 
 set(SOURCE_FILES

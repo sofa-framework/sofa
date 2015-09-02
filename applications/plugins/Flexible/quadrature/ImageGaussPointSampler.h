@@ -25,7 +25,7 @@
 #ifndef SOFA_ImageGaussPointSAMPLER_H
 #define SOFA_ImageGaussPointSAMPLER_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../quadrature/BaseGaussPointSampler.h"
 #include "../deformationMapping/BaseDeformationMapping.h"
 

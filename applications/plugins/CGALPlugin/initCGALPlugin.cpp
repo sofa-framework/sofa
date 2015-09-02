@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <initCGALPlugin.h>
+#include <CGALPlugin/config.h>
 
 #include <MeshGenerationFromPolyhedron.h>
 

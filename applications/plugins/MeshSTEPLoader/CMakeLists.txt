@@ -8,7 +8,7 @@ set(HEADER_FILES
     STEPShapeMapping.h
     SingleComponent.h
     SingleComponent.inl
-    initMeshSTEPLoader.h
+    config.h
 )
 
 set(SOURCE_FILES

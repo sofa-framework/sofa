@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,21 +16,21 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
+*                               SOFA :: Modules                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITSIXENSE_HYDRA_H
-#define INITSIXENSE_HYDRA_H
+#ifndef MULTITHREADING_CONFIG_H
+#define MULTITHREADING_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_SIXENSE_HYDRA
-#define SOFA_SIXENSE_HYDRA_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_MULTITHREADING_PLUGIN
+#  define SOFA_MULTITHREADING_PLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_SIXENSE_HYDRA_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_MULTITHREADING_PLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // INITSIXENSE_HYDRA_H
+#endif

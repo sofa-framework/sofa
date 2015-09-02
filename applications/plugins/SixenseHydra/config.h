@@ -22,16 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITManualMapping_H
-#define INITManualMapping_H
-
+#ifndef SIXENSEHYDRA_CONFIG_H
+#define SIXENSEHYDRA_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_ManualMapping
-#define SOFA_ManualMapping_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_SIXENSE_HYDRA
+#  define SOFA_SIXENSE_HYDRA_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_ManualMapping_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_SIXENSE_HYDRA_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // INITModalSubspace_H
+#endif

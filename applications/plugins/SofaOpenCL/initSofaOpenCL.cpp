@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initSofaOpenCL.h"
+#include <SofaOpenCL/config.h>
 
 namespace sofa
 {

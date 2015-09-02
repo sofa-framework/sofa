@@ -46,7 +46,7 @@
 #include <PhysicalModel.h>
 #include <StructuralComponent.h>
 #include "PMLBody.h"
-#include "initSofaPML.h"
+#include <SofaPML/config.h>
 
 #include <sofa/simulation/tree/GNode.h>
 

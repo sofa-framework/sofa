@@ -5,7 +5,7 @@ project(OptiTrackNatNet)
 set(HEADER_FILES
     OptiTrackNatNetClient.h
     OptiTrackNatNetDevice.h
-    initOptiTrackNatNet.h
+    config.h
 )
 
 set(SOURCE_FILES

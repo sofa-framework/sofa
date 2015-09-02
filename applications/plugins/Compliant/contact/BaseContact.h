@@ -6,7 +6,7 @@
 #include <sofa/core/collision/DetectionOutput.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
 
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 
 #include "../mapping/DifferenceMapping.h"
 

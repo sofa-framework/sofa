@@ -15,7 +15,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 
 // #include "debug.h"
 

@@ -1,7 +1,7 @@
 #ifndef COMPLIANT_RESPONSE_H
 #define COMPLIANT_RESPONSE_H
 
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 
 #include "../assembly/AssembledSystem.h"
 #include "../utils/eigen_types.h"

@@ -25,7 +25,7 @@
 #ifndef SCRIPTEVENT_H
 #define SCRIPTEVENT_H
 
-#include <SofaPython/SofaPython.h>
+#include <SofaPython/config.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <string>
 #include <sofa/simulation/common/Node.h>

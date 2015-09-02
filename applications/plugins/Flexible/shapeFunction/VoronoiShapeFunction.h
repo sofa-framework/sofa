@@ -25,7 +25,7 @@
 #ifndef FLEXIBLE_VoronoiShapeFunction_H
 #define FLEXIBLE_VoronoiShapeFunction_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../shapeFunction/BaseShapeFunction.h"
 #include "../shapeFunction/BaseImageShapeFunction.h"
 #include "../types/PolynomialBasis.h"

@@ -22,23 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITCompliantGUI_H
-#define INITCompliantGUI_H
-
+#ifndef COMPLIANT_CONFIG_H
+#define COMPLIANT_CONFIG_H
 
 #include <sofa/helper/system/config.h>
-#include <sofa/simulation/common/Node.h>
 
-#ifdef SOFA_BUILD_COMPLIANT_GUI
-#define SOFA_Compliant_gui_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_Compliant
+#  define SOFA_Compliant_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_Compliant_gui_API  SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_Compliant_API  SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-
-namespace sofa
-{
-
-}
-
-#endif // INITCompliantGUI_H
+#endif

@@ -22,48 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef PLUGIN_XITACT_INIT_H
-#define PLUGIN_XITACT_INIT_H
+#ifndef SOFAHAPI_CONFIG_H
+#define SOFAHAPI_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
-#ifndef WIN32
-#define SOFA_EXPORT_DYNAMIC_LIBRARY
-#define SOFA_IMPORT_DYNAMIC_LIBRARY
-#define SOFA_XITACTPLUGIN_API
+#ifdef SOFA_BUILD_SOFAHAPI
+#  define SOFA_SOFAHAPI_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#ifdef SOFA_BUILD_XITACTPLUGIN
-#define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
-#define SOFA_XITACTPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
-#define SOFA_XITACTPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#  define SOFA_SOFAHAPI_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-
-namespace sofa
-{
-namespace component
-{
-extern "C" {
-    SOFA_XITACTPLUGIN_API void initExternalModule();
-    SOFA_XITACTPLUGIN_API const char* getModuleName();
-    SOFA_XITACTPLUGIN_API const char* getModuleVersion();
-    SOFA_XITACTPLUGIN_API const char* getModuleDescription();
-    SOFA_XITACTPLUGIN_API const char* getModuleComponentList();
-    SOFA_XITACTPLUGIN_API const char* getModuleLicense();
-}
-
-namespace controller
-{
-extern "C" {
-    SOFA_XITACTPLUGIN_API void UpdateForceFeedBack(void* toolData);
-
-}
-}
-} //component
-} //sofa
-
-
-#endif /* PLUGIN_XITACT_INIT_H */
+#endif

@@ -25,7 +25,7 @@
 #ifndef FLEXIBLE_RigidConstraint_H
 #define FLEXIBLE_RigidConstraint_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "AffineTypes.h"
 #include "QuadraticTypes.h"
 
