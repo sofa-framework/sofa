@@ -26,7 +26,6 @@ set(tinyxml_HDRS
 add_library(tinyxml SHARED ${tinyxml_SRCS} ${tinyxml_HDRS})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaExtlibs")
 target_include_directories(tinyxml PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
-target_compile_options(tinyxml PUBLIC "-DTIXML_USE_STL" "-DTI")
 
 set_target_properties(tinyxml PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(tinyxml PROPERTIES VERSION ${TINYXML_VERSION})
