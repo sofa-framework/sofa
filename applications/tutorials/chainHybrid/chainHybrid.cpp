@@ -36,7 +36,12 @@
 
 #include <sofa/component/typedef/Sofa_typedef.h>
 
-#include <SofaComponentMain/init.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
+
 #include <SofaLoader/MeshGmshLoader.h>
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
@@ -225,7 +230,11 @@ int main(int argc, char** argv)
     sofa::simulation::tree::init();
     sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
     (argc,argv);
-    sofa::component::init();
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
     sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
 
