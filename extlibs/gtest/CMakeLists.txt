@@ -11,7 +11,7 @@ option(BUILD_SHARED_LIBS "Build shared libraries (DLLs)." OFF)
 
 # When other libraries are using a shared version of runtime libraries,
 # Google Test also has to use one.
-option(gtest_force_shared_crt "Use shared (DLL) run-time lib even when Google Test is built as static lib." OFF)
+option(gtest_force_shared_crt "Use shared (DLL) run-time lib even when Google Test is built as static lib." ON)
 mark_as_advanced(gtest_force_shared_crt)
 
 option(gtest_disable_pthreads "Disable uses of pthreads in gtest." OFF)

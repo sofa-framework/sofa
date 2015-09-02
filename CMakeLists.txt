@@ -93,7 +93,6 @@ install(DIRECTORY modules/sofa/component/typedef/ DESTINATION include/sofa/compo
 
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
 if(SOFA_BUILD_TESTS)
-    set(gtest_force_shared_crt ON CACHE BOOL "")
     add_subdirectory(extlibs/gtest)
 endif()
 
