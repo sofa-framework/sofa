@@ -16,7 +16,6 @@ set(SOFAHAPI_VERSION
 set(HEADER_FILES
     SofaHAPIForceFeedbackEffect.h
     SofaHAPIHapticsDevice.h
-    config.h
 )
 
 set(SOURCE_FILES
@@ -103,10 +102,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAHAPI_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAHAPI_COMPILER_FLAGS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SofaHAPI.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/SofaHAPI/SofaHAPI.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaHAPI/SofaHAPI.h
-         DESTINATION "include/SofaHAPI")
+configure_file(SofaHAPI.h.in SofaHAPI/config.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaHAPI/config.h DESTINATION "include/SofaHAPI")
 
 include(CMakePackageConfigHelpers)
 # SofaHAPIConfigVersion.cmake file (same for build tree and intall)

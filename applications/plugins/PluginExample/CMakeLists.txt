@@ -33,6 +33,7 @@ qt4_wrap_cpp(MOCCED_HEADER_FILES ${HEADER_FILES_TO_MOC})
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES_TO_MOC} ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_PLUGINEXAMPLE")
 target_link_libraries(${PROJECT_NAME} SofaGuiQt)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 install(TARGETS ${PROJECT_NAME}
     COMPONENT PluginExample_libraries

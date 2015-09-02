@@ -64,7 +64,6 @@ set(HEADER_FILES
     ScriptEnvironment.h
     ScriptEvent.h
     ScriptFunction.h
-    config.h
 )
 
 set(SOURCE_FILES
@@ -125,10 +124,8 @@ set(PYTHON_FILES
 
 )
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SofaPython.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/SofaPython/SofaPython.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaPython/SofaPython.h
-         DESTINATION "include/SofaPython")
+configure_file(config.h.in SofaPython/config.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaPython/config.h DESTINATION "include/SofaPython")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral ${PYTHON_LIBRARIES})
@@ -153,6 +150,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAPYTHON_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAPYTHON_COMPILER_FLAGS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 include(CMakePackageConfigHelpers)
 # SofaPythonConfigVersion.cmake file (same for build tree and intall)

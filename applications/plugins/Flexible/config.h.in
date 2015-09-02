@@ -22,17 +22,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAPYTHON_CONFIG_H
-#define SOFAPYTHON_CONFIG_H
+#ifndef FLEXIBLE_CONFIG_H
+#define FLEXIBLE_CONFIG_H
 
-#define SOFAPYTHON_VERSION_STR "0.0"
+#include <SofaBase/SofaBaseConfig.h>
 
-#include <sofa/helper/system/config.h>
+#define FLEXIBLE_MAJOR_VERSION ${FLEXIBLE_MAJOR_VERSION}
+#define FLEXIBLE_MINOR_VERSION ${FLEXIBLE_MINOR_VERSION}
+#define FLEXIBLE_BUILD_VERSION ${FLEXIBLE_BUILD_VERSION}
 
-#ifdef SOFA_BUILD_SOFAPYTHON
-#  define SOFA_SOFAPYTHON_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_FLEXIBLE
+#  define SOFA_TARGET Flexible
+#  define SOFA_Flexible_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_SOFAPYTHON_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_Flexible_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
 #endif

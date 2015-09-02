@@ -74,12 +74,10 @@ find_package(CImg REQUIRED)
 
 set(IMAGE_DEPENDENCY_INCLUDE_DIR ${CImg_INCLUDE_DIRS} ${SofaBase_INCLUDE_DIRS} ${Newmat_INCLUDE_DIRS})
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/image.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/image/image.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/image/image.h
-         DESTINATION "include/image")
+configure_file(config.h.in image/config.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/image/config.h DESTINATION "include/image")
 
-if (NOT SOFA-NO_OPENGL)
+if(NOT SOFA-NO_OPENGL)
     list(APPEND HEADER_FILES "ImageViewer.h")
     list(APPEND SOURCE_FILES "ImageViewer.cpp")
 endif()

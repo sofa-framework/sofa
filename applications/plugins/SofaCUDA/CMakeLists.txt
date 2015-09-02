@@ -185,10 +185,8 @@ set(CUDA_SOURCES
 set(README_FILES SofaCUDA.txt)
 
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SofaCUDA.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/SofaCUDA/SofaCUDA.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaCUDA/SofaCUDA.h
-        DESTINATION "include/SofaCUDA")
+configure_file(config.h.in SofaCUDA/config.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaCUDA/config.h DESTINATION "include/SofaCUDA")
 
 find_package(SofaAdvanced REQUIRED)
 find_package(SofaMisc REQUIRED)

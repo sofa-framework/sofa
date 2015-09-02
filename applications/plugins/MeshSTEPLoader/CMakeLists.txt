@@ -31,6 +31,7 @@ set(MESHSTEPLOADER_COMPILER_FLAGS "-DSOFA_BUILD_MESHSTEPLOADERPLUGIN")
 target_link_libraries(${PROJECT_NAME} SofaBaseTopology)
 target_link_libraries(${PROJECT_NAME} ${OPENCASCADE_LIBRARIES})
 include_directories(${OPENCASCADE_INCLUDE_DIR})
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 if(WIN32)
     # required for OpenCASCADE

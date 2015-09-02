@@ -31,7 +31,6 @@ set(HEADER_FILES
     constraint/Stabilization.h
     constraint/UnilateralConstraint.h
     constraint/VelocityConstraintValue.h
-    config.h
     contact/BaseContact.h
     contact/CompliantContact.h
     contact/FrictionCompliantContact.h
@@ -215,10 +214,8 @@ find_package(SofaMisc REQUIRED)
 
 set(COMPLIANT_DEPENDENCY_INCLUDE_DIR ${SofaMisc_INCLUDE_DIRS})
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Compliant.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/Compliant/Compliant.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Compliant/Compliant.h
-         DESTINATION "include/Compliant")
+configure_file(config.h.in Compliant/config.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Compliant/config.h DESTINATION "include/Compliant")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaSimulationGraph)

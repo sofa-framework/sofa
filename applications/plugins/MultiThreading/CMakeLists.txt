@@ -47,6 +47,7 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_MULTITHREADING_PLUGIN")
 target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaMiscMapping)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 ## uncomment this to use the intel threading building block library
 #set(SOFA_HAVE_TBB true)

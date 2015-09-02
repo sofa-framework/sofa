@@ -23,6 +23,7 @@ target_link_libraries(${PROJECT_NAME} SofaBaseLinearSolver SofaBaseTopology
     SofaMeshCollision SofaSimpleFem SofaConstraint SofaUserInteraction)
 include_directories(${SIXENSE_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SIXENSE_LIBRARY} ${SIXENSE_UTILS_LIBRARY})
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 install(TARGETS ${PROJECT_NAME}
     COMPONENT SixenseHydra_libraries

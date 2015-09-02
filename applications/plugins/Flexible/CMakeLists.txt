@@ -10,7 +10,6 @@ set(FLEXIBLE_VERSION ${FLEXIBLE_MAJOR_VERSION}.${FLEXIBLE_MINOR_VERSION}.${FLEXI
 
 set(HEADER_FILES
     BaseJacobian.h
-    config.h
     deformationMapping/BaseDeformationImpl.inl
     deformationMapping/BaseDeformationMapping.h
     deformationMapping/BaseDeformationMapping.inl
@@ -209,10 +208,8 @@ endif()
 
 set(FLEXIBLE_DEPENDENCY_INCLUDE_DIR ${SofaMisc_INCLUDE_DIRS})
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Flexible.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/Flexible/Flexible.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Flexible/Flexible.h
-         DESTINATION "include/Flexible")
+configure_file(config.h.in Flexible/config.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Flexible/config.h DESTINATION "include/Flexible")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaComponentMisc)
