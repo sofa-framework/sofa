@@ -406,7 +406,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                 // try to resize (of course, it is not possible with every containers, the resize policy is defined in DataTypeInfo)
                 typeinfo->setSize( editVoidPtr, newNbRows*rowWidth );
 
-                if( typeinfo->size(editVoidPtr) != newNbRows*rowWidth )
+                if( typeinfo->size(editVoidPtr) != (size_t)(newNbRows*rowWidth) )
                 {
                     // resizing was not possible
                     // only a warning; do not raise an exception...
@@ -521,7 +521,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                 // try to resize (of course, it is not possible with every containers, the resize policy is defined in DataTypeInfo)
                 typeinfo->setSize( editVoidPtr, newSize );
 
-                if( typeinfo->size(editVoidPtr) != newSize )
+                if( typeinfo->size(editVoidPtr) != (size_t)newSize )
                 {
                     // resizing was not possible
                     // only a warning; do not raise an exception...
