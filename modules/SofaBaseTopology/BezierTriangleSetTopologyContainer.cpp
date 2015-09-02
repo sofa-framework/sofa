@@ -167,7 +167,7 @@ SReal BezierTriangleSetTopologyContainer::getWeight(int i) const {
 }
 bool BezierTriangleSetTopologyContainer::isRationalSpline(int i) const {
 	 return(d_isRationalSpline.getValue()[i]);
- }
+}
 const BezierTriangleSetTopologyContainer::SeqWeights & BezierTriangleSetTopologyContainer::getWeightArray() const {
 	return(d_weightArray.getValue());
 }
@@ -175,66 +175,75 @@ const BezierTriangleSetTopologyContainer::SeqWeights & BezierTriangleSetTopology
 BezierDegreeType BezierTriangleSetTopologyContainer::getDegree() const{
 	return d_degree.getValue();
 }
- size_t BezierTriangleSetTopologyContainer::getNumberOfTriangularPoints() const{
-	 return d_numberOfTriangularPoints.getValue();
- }
- size_t BezierTriangleSetTopologyContainer::getGlobalIndexOfBezierPoint(const TetraID triangleIndex,
-	 const TriangleBezierIndex id) {
 
-		 if (locationToGlobalIndexMap.empty()) {
-			 Triangle tr=getTriangle(triangleIndex);
-			 BezierDegreeType degree=d_degree.getValue();
-			 ElementMapIterator emi=elementMap.find(id);
-			 if (emi!=elementMap.end()) {
-				 ElementTriangleIndex ei=(*emi).second;
-				 if (ei[0]!= -1) {
-					 // point is a vertex of the triangular mesh
-					 return (tr[ei[0]]);
-				 } else if (ei[1]!= -1) {
-					 // point is on an edge of the triangular mesh
-					 // the points on edges are stored after the Triangle vertices
-					 // there are (degree-1) points store on each edge
-					 // eit[ei[1]] = id of edge where the point is located
-					 // ei[1] = the local index (<3) of the edge where the point is located 
-					 EdgesInTriangle eit=getEdgesInTriangle(triangleIndex);
-					 Edge e=getEdge(eit[ei[1]]);
-					 // test if the edge is along the right direction
-					 OffsetMapIterator omi=edgeOffsetMap.find(id);
-					 if (e[0]==tr[(ei[1]+1)%3]) {
-						 return(getNumberOfTriangularPoints()+eit[ei[1]]*(degree-1)+(*omi).second);
-					 } else {
-						 // use the other direction
-						 return(getNumberOfTriangularPoints()+eit[ei[1]]*(degree-1)+degree-2-(*omi).second);
-					 }
+size_t BezierTriangleSetTopologyContainer::getNumberOfTriangularPoints() const{
+     return d_numberOfTriangularPoints.getValue();
+}
 
-				 } else if (ei[2]!= -1) {
-					 // the points on edges are stored after the tetrahedron vertices
-					 // there are (degree-1)*(degree-2)/2 points store on each edge
-					 // eit[ei[1]] = id of edge where the point is located
-					 // ei[1] = the local index (<6) of the edge where the point is located 
-					 OffsetMapIterator omi=triangleOffsetMap.find(id);
-					 return(getNumberOfTriangularPoints()+getNumberOfEdges()*(degree-1)+triangleIndex*(degree-1)*(degree-2)/2+(*omi).second);
-				 }
-			 } else {
+size_t BezierTriangleSetTopologyContainer::getGlobalIndexOfBezierPoint(const TetraID triangleIndex,
+     const TriangleBezierIndex id) {
+
+         if (locationToGlobalIndexMap.empty()) {
+             Triangle tr=getTriangle(triangleIndex);
+             BezierDegreeType degree=d_degree.getValue();
+             ElementMapIterator emi=elementMap.find(id);
+             if (emi!=elementMap.end()) {
+                 ElementTriangleIndex ei=(*emi).second;
+                 if (ei[0]!= -1) {
+                     // point is a vertex of the triangular mesh
+                     return (tr[ei[0]]);
+                 } else if (ei[1]!= -1) {
+                     // point is on an edge of the triangular mesh
+                     // the points on edges are stored after the Triangle vertices
+                     // there are (degree-1) points store on each edge
+                     // eit[ei[1]] = id of edge where the point is located
+                     // ei[1] = the local index (<3) of the edge where the point is located
+                     EdgesInTriangle eit=getEdgesInTriangle(triangleIndex);
+                     Edge e=getEdge(eit[ei[1]]);
+                     // test if the edge is along the right direction
+                     OffsetMapIterator omi=edgeOffsetMap.find(id);
+                     if (e[0]==tr[(ei[1]+1)%3]) {
+                         return(getNumberOfTriangularPoints()+eit[ei[1]]*(degree-1)+(*omi).second);
+                     } else {
+                         // use the other direction
+                         return(getNumberOfTriangularPoints()+eit[ei[1]]*(degree-1)+degree-2-(*omi).second);
+                     }
+
+                 } else if (ei[2]!= -1) {
+                     // the points on edges are stored after the tetrahedron vertices
+                     // there are (degree-1)*(degree-2)/2 points store on each edge
+                     // eit[ei[1]] = id of edge where the point is located
+                     // ei[1] = the local index (<6) of the edge where the point is located
+                     OffsetMapIterator omi=triangleOffsetMap.find(id);
+                     return(getNumberOfTriangularPoints()+getNumberOfEdges()*(degree-1)+triangleIndex*(degree-1)*(degree-2)/2+(*omi).second);
+                 }
+                 else
+                 {
 #ifndef NDEBUG
-				 sout << "Error. [BezierTriangleSetTopologyContainer::getGlobalIndexOfBezierPoint] Bezier Index "<< (sofa::defaulttype::Vec<3,int> )(id) <<" has not been recognized to be valid" << sendl;
+                    sout << "Unexpected error in [BezierTriangleSetTopologyContainer::getGlobalIndexOfBezierPoint]" << sendl;
 #endif
-				 return (0);
-			 } 
-		 } else {
-			 std::map<ControlPointLocation,size_t>::const_iterator itgi;
-
-			 itgi=locationToGlobalIndexMap.find(ControlPointLocation(triangleIndex,id));
-			 if (itgi!=locationToGlobalIndexMap.end()) {
-				 return(itgi->second);
-			 } else {
+                    return 0; //Warning fix but maybe the author of this code would want to print a more meaningful error message for this "ei[0] = ei[1] = ei[2] = -1" case ?
+                 }
+             } else {
 #ifndef NDEBUG
-				 sout << "Error. [BezierTriangleSetTopologyContainer::getGlobalIndexOfBezierPoint] Cannot find global index of control point with TRBI  "<< (sofa::defaulttype::Vec<3,int> )(id) <<" and triangle index " << triangleIndex <<sendl;
+                 sout << "Error. [BezierTriangleSetTopologyContainer::getGlobalIndexOfBezierPoint] Bezier Index "<< (sofa::defaulttype::Vec<3,int> )(id) <<" has not been recognized to be valid" << sendl;
 #endif
-				 return 0;
-			 }
+                 return 0;
+             }
+         } else {
+             std::map<ControlPointLocation,size_t>::const_iterator itgi;
 
-		 }
+             itgi=locationToGlobalIndexMap.find(ControlPointLocation(triangleIndex,id));
+             if (itgi!=locationToGlobalIndexMap.end()) {
+                 return(itgi->second);
+             } else {
+#ifndef NDEBUG
+                 sout << "Error. [BezierTriangleSetTopologyContainer::getGlobalIndexOfBezierPoint] Cannot find global index of control point with TRBI  "<< (sofa::defaulttype::Vec<3,int> )(id) <<" and triangle index " << triangleIndex <<sendl;
+#endif
+                 return 0;
+             }
+
+         }
  }
 
 
@@ -292,7 +301,7 @@ sofa::helper::vector<TriangleBezierIndex> BezierTriangleSetTopologyContainer::ge
 	// Triangle index
 	if (deg>2) {
 		size_t ind=0;
-		for (i=1;i<(deg-1);++i) {
+        for (i=1;i<(BezierDegreeType)(deg-1);++i) {
 			for (j=1;j<(deg-i);++j,++ind) {
 				TriangleBezierIndex bti(0,0,0);
 				bti[0]=i;bti[1]=j;
@@ -419,7 +428,7 @@ void BezierTriangleSetTopologyContainer::getLocationFromGlobalIndex(const size_t
 
 		}
 	} else {
-		std::map<size_t,ControlPointLocation>::const_iterator itcpl;
+		std::multimap<size_t,ControlPointLocation>::const_iterator itcpl;
 		itcpl=globalIndexToLocationMap.find(gi); 
 		if (itcpl!=globalIndexToLocationMap.end()) {
 			// get the local index and triangle index of that control point
@@ -432,7 +441,7 @@ void BezierTriangleSetTopologyContainer::getLocationFromGlobalIndex(const size_t
 			} else {
 				offset -= 3;
 				BezierDegreeType degree=d_degree.getValue();
-				if (offset<3*(degree-1)){
+                if (offset<3*(BezierDegreeType)(degree-1)){
 					location=EDGE;
 					// get the id of the edge on which it lies
 					elementIndex=getEdgesInTriangle(itcpl->second.first)[offset/(degree-1)];

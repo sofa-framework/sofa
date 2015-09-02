@@ -16,7 +16,7 @@ namespace helper {
     static HANDLE getOutputHandle()
     {
         static bool first = true;
-        static s_console = NULL;
+        static HANDLE s_console = NULL;
         if (first)
         {
             s_console = GetStdHandle(STD_OUTPUT_HANDLE);
