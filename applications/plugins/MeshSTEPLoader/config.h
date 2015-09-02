@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,24 +16,21 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                               SOFA :: Plugins                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef IMAGE_GUI_INIT_H
-#define IMAGE_GUI_INIT_H
+#ifndef MESHSTEPLOADER_CONFIG_H
+#define MESHSTEPLOADER_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
-#define BUILD_ALL_IMAGE_TYPES // comment to reduce compilation time
-
-#ifdef SOFA_BUILD_IMAGE_GUI
-#define SOFA_IMAGE_GUI_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_MeshSTEPLoader
+#  define SOFA_MeshSTEPLoader_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_IMAGE_GUI_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_MeshSTEPLoader_API  SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif //IMAGE_GUI_INIT_H
-
+#endif

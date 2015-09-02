@@ -22,17 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITInvertibleFVM_H
-#define INITInvertibleFVM_H
-
+#ifndef SENSABLEEMULATION_CONFIG_H
+#define SENSABLEEMULATION_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_INVERTIBLEFVM
-#define SOFA_InvertibleFVM_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_SENSABLEEMULATIONPLUGIN
+#  define SOFA_SENSABLEEMUPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_InvertibleFVM_API  SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_SENSABLEEMUPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-
-#endif // INITInvertibleFVM_H
+#endif

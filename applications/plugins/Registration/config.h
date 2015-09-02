@@ -22,16 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITOPTITRACKNATNET_H
-#define INITOPTITRACKNATNET_H
-
+#ifndef REGISTRATION_CONFIG_H
+#define REGISTRATION_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_OPTITRACKNATNET
-#define SOFA_OPTITRACKNATNET_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_REGISTRATION
+#  define SOFA_REGISTRATION_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_OPTITRACKNATNET_API  SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_REGISTRATION_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // INITOPTITRACKNATNET_H
+#endif

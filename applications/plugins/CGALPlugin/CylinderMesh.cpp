@@ -30,7 +30,7 @@
  */
 #define CGALPLUGIN_CYLINDERMESH_CPP
 
-#include <initCGALPlugin.h>
+#include <CGALPlugin/config.h>
 #include "CylinderMesh.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>

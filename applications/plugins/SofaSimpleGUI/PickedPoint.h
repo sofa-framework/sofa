@@ -1,7 +1,7 @@
 #ifndef GLPICKEDPOINT_H
 #define GLPICKEDPOINT_H
 
-#include "initSimpleGUI.h"
+#include <SofaSimpleGUI/config.h>
 #include <iostream>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 

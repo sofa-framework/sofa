@@ -22,16 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAPML_INITSOFAPML_H
-#define SOFAPML_INITSOFAPML_H
-
+#ifndef OPENCTMPLUGIN_CONFIG_H
+#define OPENCTMPLUGIN_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_FILEMANAGER_PML
-#  define SOFA_BUILD_FILEMANAGER_PML_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_OPENCTMPLUGIN
+#  define SOFA_OPENCTMPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_BUILD_FILEMANAGER_PML_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_OPENCTMPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
 #endif

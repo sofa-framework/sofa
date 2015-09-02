@@ -5,7 +5,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 #include_directories(${})
 
 set(HEADER_FILES
-    PersistentContact.h
+    config.h
     PersistentContactBarycentricMapping.h
     PersistentContactBarycentricMapping.inl
     PersistentContactMapping.h

@@ -44,7 +44,7 @@
 #define SOFAPML_PMLRIGIDBODY_H
 
 #include "PMLBody.h"
-#include "initSofaPML.h"
+#include <SofaPML/config.h>
 
 #include <StructuralComponent.h>
 

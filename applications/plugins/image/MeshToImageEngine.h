@@ -25,7 +25,7 @@
 #ifndef SOFA_IMAGE_MeshToImageEngine_H
 #define SOFA_IMAGE_MeshToImageEngine_H
 
-#include "initImage.h"
+#include <image/config.h>
 #include "ImageTypes.h"
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/IndexOpenMP.h>

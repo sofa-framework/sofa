@@ -22,16 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITSceneCreator_H
-#define INITSceneCreator_H
-
+#ifndef OPTITRACKNATNET_CONFIG_H
+#define OPTITRACKNATNET_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_SCENECREATOR
-#define SOFA_SceneCreator_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_OPTITRACKNATNET
+#  define SOFA_OPTITRACKNATNET_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_SceneCreator_API  SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_OPTITRACKNATNET_API  SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // INITSceneCreator_H
+#endif

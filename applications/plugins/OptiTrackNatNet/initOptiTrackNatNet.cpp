@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 
-#include "initOptiTrackNatNet.h"
+#include <OptiTrackNatNet/config.h>
 
 namespace sofa
 {

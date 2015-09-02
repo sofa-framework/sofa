@@ -5,7 +5,7 @@ set(HEADER_FILES
     ITPDriver.h
     PaceMaker.h
     XiTrocarInterface.h
-    initXitact.h
+    config.h
 )
 
 set(SOURCE_FILES

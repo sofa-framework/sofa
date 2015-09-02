@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initTHMPGSpatialHashingPlugin.h"
+#include <THMPGSpatialHashing/config.h>
 
 namespace sofa
 {

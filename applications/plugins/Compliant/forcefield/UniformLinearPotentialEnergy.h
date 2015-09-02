@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENT_COMPLIANCE_UniformLinearPotentialEnergy_H
 #define SOFA_COMPONENT_COMPLIANCE_UniformLinearPotentialEnergy_H
 
-#include "initCompliant.h"
+#include <Compliant/config.h>
 #include <sofa/core/behavior/ForceField.h>
 
 namespace sofa

@@ -28,7 +28,7 @@
 ******************************************************************************/
 
 
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 #include "ImageTypes.h"
 #include "VectorVis.h"
 

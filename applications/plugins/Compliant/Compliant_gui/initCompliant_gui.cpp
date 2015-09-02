@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initCompliant_gui.h"
+#include <Compliant/Compliant_gui/config.h>
 #include "QCompliantMouseOperations.h"
 #include <sofa/gui/OperationFactory.h>
 #include <sofa/gui/MouseOperations.h>

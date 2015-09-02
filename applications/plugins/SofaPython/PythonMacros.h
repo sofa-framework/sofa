@@ -42,7 +42,7 @@
 
 #include <sofa/helper/Logger.h>
 
-#include "initSofaPython.h"
+#include <SofaPython/config.h>
 
 
 

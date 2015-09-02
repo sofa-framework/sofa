@@ -26,7 +26,7 @@
 #ifndef SOFA_CORE_BEHAVIOR_BaseShapeFunction_H
 #define SOFA_CORE_BEHAVIOR_BaseShapeFunction_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>

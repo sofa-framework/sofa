@@ -28,7 +28,7 @@
 #include <SofaRigid/RigidMapping.h>
 
 #include "PersistentContactMapping.h"
-#include "PersistentContact.h"
+#include <PersistentContact/config.h>
 
 namespace sofa
 {

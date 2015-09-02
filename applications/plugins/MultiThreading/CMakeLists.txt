@@ -1,14 +1,12 @@
-cmake_minimum_required(VERSION 2.8)
-
-project("MultiThreading")
-
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
+
+cmake_minimum_required(VERSION 2.8)
 
 set(HEADER_FILES
     src/DataExchange.h
     src/DataExchange.inl
+    config.h
     # src/Observer.h
-    src/initMultiThreading.h
 )
 
 set(SOURCE_FILES

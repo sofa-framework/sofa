@@ -27,7 +27,7 @@
 
 #include <iostream>
 #include <sofa/helper/system/thread/CTime.h>
-#include "initXitact.h"
+#include <Xitact/config.h>
 namespace sofa
 {
 

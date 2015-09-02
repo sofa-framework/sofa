@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_GreenStrainMAPPING_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "GreenStrainMapping.h"
 #include <sofa/core/ObjectFactory.h>
 

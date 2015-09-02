@@ -13,7 +13,7 @@ set(HEADER_MOC_FILES
 # following files do not need MOCcing
 list(APPEND HEADER_FILES
     ImageTransformWidget.h
-    initImage_gui.h
+    config.h
 )
 
 set(SOURCE_FILES

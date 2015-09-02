@@ -2,7 +2,7 @@
 #define BASECONSTRAINTVALUE_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include "../initCompliant.h"
+#include <Compliant/config.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
 namespace sofa {

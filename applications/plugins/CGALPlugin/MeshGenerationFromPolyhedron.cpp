@@ -32,7 +32,7 @@
 
 #define CGAL_MESH_3_VERBOSE
 
-#include <initCGALPlugin.h>
+#include <CGALPlugin/config.h>
 #include "MeshGenerationFromPolyhedron.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>

@@ -2,7 +2,7 @@
 #define COMPLIANT_MAPPING_PAIRINGMULTIMAPPING_H
 
 #include "AssembledMultiMapping.h"
-#include "initCompliant.h"
+#include <Compliant/config.h>
 
 #include "utils/map.h"
 

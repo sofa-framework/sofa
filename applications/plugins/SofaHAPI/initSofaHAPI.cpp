@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "initSofaHAPI.h"
+#include <SofaHAPI/config.h>
 #include <sofa/helper/system/config.h>
 
 namespace sofa

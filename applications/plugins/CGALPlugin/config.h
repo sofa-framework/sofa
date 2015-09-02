@@ -22,15 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INIT_COLLADASCENELOADER_H
-#define INIT_COLLADASCENELOADER_H
+#ifndef CGALPLUGIN_CONFIG_H
+#define CGALPLUGIN_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_COLLADASCENELOADER
-#define SOFA_COLLADASCENELOADER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_CGALPLUGIN
+#define SOFA_CGALPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_COLLADASCENELOADER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#define SOFA_CGALPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // INIT_COLLADASCENELOADER_H
+#endif

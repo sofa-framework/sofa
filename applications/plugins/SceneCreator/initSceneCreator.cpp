@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initSceneCreator.h"
+#include <SceneCreator/config.h>
 
 namespace sofa
 {

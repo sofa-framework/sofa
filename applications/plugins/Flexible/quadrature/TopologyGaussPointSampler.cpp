@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_TopologyGaussPointSAMPLER_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../quadrature/TopologyGaussPointSampler.h"
 #include <sofa/core/ObjectFactory.h>
 

@@ -5,7 +5,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
     SofaHAPIForceFeedbackEffect.h
     SofaHAPIHapticsDevice.h
-    initSofaHAPI.h
+    config.h
 )
 
 set(SOURCE_FILES

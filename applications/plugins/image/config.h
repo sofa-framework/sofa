@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,21 +16,23 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
+*                               SOFA :: Modules                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITFlexible_H
-#define INITFlexible_H
+#ifndef IMAGE_CONFIG_H
+#define IMAGE_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_Flexible
-#define SOFA_Flexible_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#define BUILD_ALL_IMAGE_TYPES // comment to reduce compilation time
+
+#ifdef SOFA_BUILD_IMAGE
+#  define SOFA_IMAGE_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_Flexible_API  SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_IMAGE_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // INITFlexible_H
+#endif

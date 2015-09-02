@@ -2,7 +2,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
     SceneColladaLoader.h
-    initPlugin.h
+    config.h
 )
 
 set(SOURCE_FILES
