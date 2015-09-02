@@ -26,7 +26,6 @@
 #include <sofa/simulation/graph/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/Node.h>
-#include <SofaComponentMain/init.h>
 #include <SofaGraphComponent/Gravity.h>
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SofaBaseVisual/VisualStyle.h>
@@ -38,6 +37,12 @@
 
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/accessor.h>
+
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
 
 
 
@@ -58,7 +63,11 @@ int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
     sofa::simulation::graph::init();
-    sofa::component::init();
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
     sofa::gui::initMain();
 
     sofa::helper::parse("This is a SOFA application.")
