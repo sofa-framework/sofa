@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-#include "PersistentContact.h"
+#include <PersistentContact/config.h>
 
 
 namespace sofa

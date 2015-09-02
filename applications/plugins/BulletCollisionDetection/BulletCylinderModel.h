@@ -9,7 +9,7 @@
 #include <SofaBaseCollision/CylinderModel.h>
 #include <sofa/core/CollisionModel.h>
 #include <BulletDynamics/Dynamics/btRigidBody.h>
-#include "initBulletCollisionDetection.h"
+#include <BulletCollisionDetection/config.h>
 #include <stack>
 
 //WARNING : if you want to take account of intersections involving BulletCylinderModel,

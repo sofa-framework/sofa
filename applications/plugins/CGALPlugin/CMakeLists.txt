@@ -15,7 +15,7 @@ set(HEADER_FILES
     MeshGenerationFromPolyhedron.inl
     TriangularConvexHull3D.h
     TriangularConvexHull3D.inl
-    initCGALPlugin.h
+    config.h
 )
 
 set(SOURCE_FILES

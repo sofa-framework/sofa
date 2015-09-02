@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_LINEARMULTIMAPPING_H
 #define SOFA_COMPONENT_MAPPING_LINEARMULTIMAPPING_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "BaseDeformationMultiMapping.h"
 #include "BaseDeformationImpl.inl"
 #include "LinearJacobianBlock_point.inl"

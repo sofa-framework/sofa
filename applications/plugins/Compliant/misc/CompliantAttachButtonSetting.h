@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_CompliantAttachBUTTON_H
 #define SOFA_COMPONENT_CONFIGURATIONSETTING_CompliantAttachBUTTON_H
 
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <SofaGraphComponent/MouseButtonSetting.h>
 

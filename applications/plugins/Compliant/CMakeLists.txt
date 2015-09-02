@@ -31,6 +31,7 @@ set(HEADER_FILES
     constraint/Stabilization.h
     constraint/UnilateralConstraint.h
     constraint/VelocityConstraintValue.h
+    config.h
     contact/BaseContact.h
     contact/CompliantContact.h
     contact/FrictionCompliantContact.h
@@ -38,7 +39,6 @@ set(HEADER_FILES
     controller/CompliantSleepController.h
     forcefield/PotentialEnergy.h
     forcefield/UniformLinearPotentialEnergy.h
-    initCompliant.h
     mapping/AffineMultiMapping.h
     mapping/AssembledMapping.h
     mapping/AssembledMultiMapping.h

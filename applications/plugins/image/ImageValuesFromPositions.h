@@ -25,7 +25,7 @@
 #ifndef SOFA_IMAGE_ImageValuesFromPositions_H
 #define SOFA_IMAGE_ImageValuesFromPositions_H
 
-#include "initImage.h"
+#include <image/config.h>
 #include "ImageTypes.h"
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>

@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "PythonMacros.h"
-#include "initSofaPython.h"
+#include <SofaPython/config.h>
 
 #include "Binding_SofaModule.h"
 #include "Binding_BaseObject.h"

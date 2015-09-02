@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_Flexible_ImageDeformation_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "ImageDeformation.h"
 #include <sofa/core/ObjectFactory.h>
 

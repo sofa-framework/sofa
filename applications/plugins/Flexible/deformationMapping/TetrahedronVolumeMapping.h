@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_TetrahedronVolumeMapping_H
 #define SOFA_COMPONENT_MAPPING_TetrahedronVolumeMapping_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include <sofa/core/Mapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

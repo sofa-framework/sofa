@@ -5,7 +5,7 @@ project(ExternalBehaviorModel)
 set(HEADER_FILES
     FEMGridBehaviorModel.h
     FEMGridBehaviorModel.inl
-    initExternalBehaviorModel.h
+    config.h
 )
 
 set(SOURCE_FILES

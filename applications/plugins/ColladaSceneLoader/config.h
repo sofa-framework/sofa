@@ -22,9 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITFlexible_H
-#define INITFlexible_H
+#ifndef COLLADASCENELOADER_CONFIG_H
+#define COLLADASCENELOADER_CONFIG_H
 
-#include <Flexible/Flexible.h>
+#include <sofa/helper/system/config.h>
 
-#endif // INITFlexible_H
+#ifdef SOFA_BUILD_COLLADASCENELOADER
+#  define SOFA_COLLADASCENELOADER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_COLLADASCENELOADER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#endif

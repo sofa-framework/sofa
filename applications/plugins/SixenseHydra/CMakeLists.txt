@@ -4,7 +4,7 @@ project(SixenseHydra)
 
 set(HEADER_FILES
     RazerHydraDriver.h
-    initSixenseHydra.h
+    config.h
 )
 
 set(SOURCE_FILES

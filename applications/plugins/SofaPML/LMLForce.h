@@ -47,7 +47,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/visual/VisualModel.h>
-#include "initSofaPML.h"
+#include <SofaPML/config.h>
 
 #include <map>
 

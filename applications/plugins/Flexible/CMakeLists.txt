@@ -10,6 +10,7 @@ set(FLEXIBLE_VERSION ${FLEXIBLE_MAJOR_VERSION}.${FLEXIBLE_MINOR_VERSION}.${FLEXI
 
 set(HEADER_FILES
     BaseJacobian.h
+    config.h
     deformationMapping/BaseDeformationImpl.inl
     deformationMapping/BaseDeformationMapping.h
     deformationMapping/BaseDeformationMapping.inl
@@ -41,7 +42,6 @@ set(HEADER_FILES
     engine/ComputeWeightEngine.h
     # forceField/FlexibleTetrahedronFEMForceField.h
     helper.h
-    initFlexible.h
     mass/AffineMass.h
     material/BaseMaterial.h
     material/BaseMaterialForceField.h

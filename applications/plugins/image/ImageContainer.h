@@ -25,7 +25,7 @@
 #ifndef IMAGE_IMAGECONTAINER_H
 #define IMAGE_IMAGECONTAINER_H
 
-#include "initImage.h"
+#include <image/config.h>
 #include "ImageTypes.h"
 #include <limits.h>
 #include <sofa/defaulttype/Vec.h>

@@ -3,7 +3,7 @@ project(EmptyCmakePlugin)
 
 
 set(HEADER_FILES
-    initEmptyCmakePlugin.h
+    config.h
 )
 
 set(SOURCE_FILES

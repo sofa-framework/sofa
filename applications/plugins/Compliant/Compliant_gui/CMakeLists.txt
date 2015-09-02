@@ -14,7 +14,7 @@ ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
 
 # these header files do not need MOCcing
 list(APPEND HEADER_FILES
-    initCompliant_gui.h
+    config.h
     CompliantAttachPerformer.h
     CompliantAttachPerformer.inl
 )

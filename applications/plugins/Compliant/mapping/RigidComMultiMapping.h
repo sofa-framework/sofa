@@ -2,7 +2,7 @@
 #define COMMULTIMAPPING_H
 
 #include "AssembledMultiMapping.h"
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 
 #include "utils/map.h"
 

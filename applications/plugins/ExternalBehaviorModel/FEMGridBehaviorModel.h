@@ -27,7 +27,7 @@
 
 
 // plugin includes
-#include "initExternalBehaviorModel.h"
+#include <ExternalBehaviorModel/config.h>
 
 // SOFA includes
 #include <SofaGraphComponent/InteractingBehaviorModel.h>

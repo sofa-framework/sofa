@@ -1,7 +1,7 @@
 #ifndef COMPLIANT_PRECONDITIONEDSOLVER_H
 #define COMPLIANT_PRECONDITIONEDSOLVER_H
 
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 
 namespace sofa {
 namespace component {

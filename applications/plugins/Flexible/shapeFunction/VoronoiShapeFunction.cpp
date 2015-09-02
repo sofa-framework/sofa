@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define FLEXIBLE_VoronoiShapeFunction_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../shapeFunction/VoronoiShapeFunction.h"
 #include <sofa/core/ObjectFactory.h>
 

@@ -29,7 +29,7 @@ set(HEADER_FILES
     OpenCLTypes.h
     OpenCLUniformMass.h
     OpenCLUniformMass.inl
-    initSofaOpenCL.h
+    config.h
     myopencl.h
     oclRadixSort/CPUSortWithCuda.h
     oclRadixSort/CPUSortWithOpenCL.h

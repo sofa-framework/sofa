@@ -12,7 +12,7 @@ set(HEADER_FILES
     GetAssembledSizeVisitor.h
     GetVectorVisitor.h
     SceneCreator.h
-    initSceneCreator.h
+    config.h
 )
 
 set(SOURCE_FILES

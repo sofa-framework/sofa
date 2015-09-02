@@ -22,8 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initFlexible.h"
-#include <sofa/helper/system/config.h>
+#include <Flexible/config.h>
 
 namespace sofa
 {

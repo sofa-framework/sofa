@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_REGISTRATIONCONTACTFORCEFIELD_H
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_REGISTRATIONCONTACTFORCEFIELD_H
 
-#include "initRegistration.h"
+#include <Registration/config.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>

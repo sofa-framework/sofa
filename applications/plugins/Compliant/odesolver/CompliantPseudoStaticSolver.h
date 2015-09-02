@@ -1,7 +1,7 @@
 #ifndef COMPLIANT_CompliantPseudoStaticSolver_H
 #define COMPLIANT_CompliantPseudoStaticSolver_H
 
-#include "../initCompliant.h"
+#include <Compliant/config.h>
 #include <Compliant/odesolver/CompliantImplicitSolver.h>
 #include <sofa/simulation/common/MechanicalOperations.h>
 

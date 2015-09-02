@@ -46,7 +46,7 @@
 #include "sofa/core/behavior/Constraint.h"
 #include "sofa/core/behavior/MechanicalState.h"
 #include "sofa/core/visual/VisualModel.h"
-#include "initSofaPML.h"
+#include <SofaPML/config.h>
 
 #include <vector>
 #include <map>

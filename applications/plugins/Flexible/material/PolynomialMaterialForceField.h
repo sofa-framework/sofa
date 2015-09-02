@@ -25,7 +25,7 @@
 #ifndef SOFA_PolynomialMaterialFORCEFIELD_H
 #define SOFA_PolynomialMaterialFORCEFIELD_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../material/BaseMaterialForceField.h"
 #include "../material/PolynomialMaterialBlock.h"
 

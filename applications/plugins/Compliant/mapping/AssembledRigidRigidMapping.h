@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_AssembledRigidRigidMapping_H
 
 #include "AssembledMapping.h"
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 
 #include "utils/se3.h" 
 #include "utils/pair.h"

@@ -5,7 +5,7 @@ project(SensableEmulation)
 set(HEADER_FILES
     # NewOmniDriverEmu.h
     OmniDriverEmu.h
-    initSensableEmulation.h
+    config.h
     pthread/pthread.h
 )
 

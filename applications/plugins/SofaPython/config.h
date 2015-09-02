@@ -22,23 +22,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * initCGALPluginDev.h
- *
- *  Created on: 27 oct. 2009
- *      Author: froy
- */
+#ifndef SOFAPYTHON_CONFIG_H
+#define SOFAPYTHON_CONFIG_H
 
-#ifndef INITCGALPLUGIN_H
-#define INITCGALPLUGIN_H
+#define SOFAPYTHON_VERSION_STR "0.0"
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_CGALPLUGIN
-#define SOFA_CGALPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_SOFAPYTHON
+#  define SOFA_SOFAPYTHON_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_CGALPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_SOFAPYTHON_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif /* INITCGALPLUGIN_H */
-
+#endif

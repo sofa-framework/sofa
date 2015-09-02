@@ -2,7 +2,7 @@
 #define COMPLIANT_BENCHMARKSOLVER_H
 
 
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 
 #include "KKTSolver.h"
 

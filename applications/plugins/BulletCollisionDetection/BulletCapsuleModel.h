@@ -9,7 +9,7 @@
 #include <SofaBaseCollision/CapsuleModel.h>
 #include <SofaBaseCollision/RigidCapsuleModel.h>
 #include <BulletDynamics/Dynamics/btRigidBody.h>
-#include "initBulletCollisionDetection.h"
+#include <BulletCollisionDetection/config.h>
 #include <stack>
 
 namespace sofa

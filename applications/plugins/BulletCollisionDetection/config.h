@@ -16,22 +16,21 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
+*                               SOFA :: Modules                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITSOFACARVING_H
-#define INITSOFACARVING_H
-
+#ifndef BULLETCOLLISIONDETECTION_CONFIG_H
+#define BULLETCOLLISIONDETECTION_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_SOFACARVING
-#define SOFA_SOFACARVING_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_BULLETCOLLISIONDETECTION
+#  define SOFA_BULLETCOLLISIONDETECTION_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_SOFACARVING_API  SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_BULLETCOLLISIONDETECTION_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // INITSOFACARVING_H
+#endif

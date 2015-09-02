@@ -4,7 +4,7 @@ project(ColladaSceneLoader)
 
 set(HEADER_FILES
     SceneColladaLoader.h
-    initPlugin.h
+    config.h
 )
 
 set(SOURCE_FILES

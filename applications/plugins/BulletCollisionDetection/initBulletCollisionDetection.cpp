@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initBulletCollisionDetection.h"
+#include <BulletCollisionDetection/config.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

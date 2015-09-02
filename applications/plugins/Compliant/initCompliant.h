@@ -25,7 +25,7 @@
 #ifndef INITCompliant_H
 #define INITCompliant_H
 
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 
 namespace sofa
 {

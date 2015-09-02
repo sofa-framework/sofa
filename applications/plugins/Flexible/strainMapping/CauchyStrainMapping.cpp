@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_CauchyStrainMAPPING_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "CauchyStrainMapping.h"
 #include <sofa/core/ObjectFactory.h>
 

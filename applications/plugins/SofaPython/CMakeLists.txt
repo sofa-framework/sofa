@@ -64,7 +64,7 @@ set(HEADER_FILES
     ScriptEnvironment.h
     ScriptEvent.h
     ScriptFunction.h
-    initSofaPython.h
+    config.h
 )
 
 set(SOURCE_FILES

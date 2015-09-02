@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initPlugin.h"
+#include <PreassembledMass/config.h>
 
 namespace sofa
 {

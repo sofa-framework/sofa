@@ -22,15 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef PLUGINEXAMPLE_INITPLUGIN_H
-#define PLUGINEXAMPLE_INITPLUGIN_H
+#ifndef OPTITRACKNATNET_CONFIG_H
+#define OPTITRACKNATNET_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_PLUGINEXAMPLE
-#define SOFA_PLUGINEXAMPLE_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_OPTITRACKNATNET
+#  define SOFA_OPTITRACKNATNET_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_PLUGINEXAMPLE_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_OPTITRACKNATNET_API  SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // PLUGINEXAMPLE_INITPLUGIN_H
+#endif

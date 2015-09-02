@@ -1,5 +1,5 @@
 
-#include "initExternalBehaviorModel.h"
+#include <ExternalBehaviorModel/config.h>
 
 namespace sofa
 {

@@ -25,7 +25,7 @@
 #ifndef FLEXIBLE_BaseImageShapeFunction_H
 #define FLEXIBLE_BaseImageShapeFunction_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../shapeFunction/BaseShapeFunction.h"
 #include "../types/PolynomialBasis.h"
 

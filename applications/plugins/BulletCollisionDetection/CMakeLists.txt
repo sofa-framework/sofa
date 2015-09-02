@@ -23,7 +23,7 @@ set(HEADER_FILES
     BulletSphereModel.inl
     BulletTriangleModel.h
     BulletTriangleModel.inl
-    initBulletCollisionDetection.h
+    config.h
 )
 
 set(SOURCE_FILES

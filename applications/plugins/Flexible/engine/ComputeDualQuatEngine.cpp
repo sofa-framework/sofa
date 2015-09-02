@@ -1,6 +1,6 @@
 #define FLEXIBLE_COMPUTEDUALQUATENGINE_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 
 #include "ComputeDualQuatEngine.inl"
 

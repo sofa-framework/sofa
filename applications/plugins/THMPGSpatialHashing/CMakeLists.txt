@@ -5,7 +5,7 @@ project(THMPGSpatialHashing)
 set(HEADER_FILES
     THMPGHashTable.h
     THMPGSpatialHashing.h
-    initTHMPGSpatialHashingPlugin.h
+    config.h
 )
 
 set(SOURCE_FILES

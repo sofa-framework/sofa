@@ -2,7 +2,7 @@
 #define COMPLIANT_MAPPING_RIGIDJOINTMULTIMAPPING_H
 
 #include "AssembledMultiMapping.h"
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 
 #include "utils/se3.h"
 #include "utils/map.h"

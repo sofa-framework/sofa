@@ -2,7 +2,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 
 namespace sofa {
 

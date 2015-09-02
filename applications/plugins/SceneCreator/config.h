@@ -22,16 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITSOFAPYTHON_H
-#define INITSOFAPYTHON_H
-
+#ifndef SCENECREATOR_CONFIG_H
+#define SCENECREATOR_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_GPU_OPENCL
-#  define SOFAOPENCL_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_SCENECREATOR
+#  define SOFA_SceneCreator_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFAOPENCL_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_SceneCreator_API  SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // INITEmptyPlugin_H
+#endif

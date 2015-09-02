@@ -5,7 +5,7 @@ project(InvertibleFVM)
 set(HEADER_FILES
     InvertibleFVMForceField.h
     InvertibleFVMForceField.inl
-    initPlugin.h
+    config.h
 )
 
 set(SOURCE_FILES
