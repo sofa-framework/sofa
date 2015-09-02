@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_MuscleMaterialFORCEFIELD_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../material/MuscleMaterialForceField.h"
 #include "../types/StrainTypes.h"
 #include <sofa/core/ObjectFactory.h>

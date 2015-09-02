@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define FLEXIBLE_ShepardShapeFunction_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../shapeFunction/ShepardShapeFunction.h"
 #include <sofa/core/ObjectFactory.h>
 

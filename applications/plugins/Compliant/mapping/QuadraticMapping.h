@@ -2,7 +2,7 @@
 #define COMPLIANT_MAPPING_QUADRATICMAPPING_H
 
 
-#include "../initCompliant.h"
+#include <Compliant/config.h>
 #include "AssembledMapping.h"
 
 namespace sofa

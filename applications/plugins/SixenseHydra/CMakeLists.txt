@@ -8,7 +8,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
     RazerHydraDriver.h
-    initSixenseHydra.h
+    config.h
 )
 
 set(SOURCE_FILES

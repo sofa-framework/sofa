@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_CauchyStrainMAPPING_H
 #define SOFA_COMPONENT_MAPPING_CauchyStrainMAPPING_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../strainMapping/BaseStrainMapping.h"
 #include "../strainMapping/CauchyStrainJacobianBlock.h"
 

@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initXitact.h"
+#include <Xitact/config.h>
 
 #include "PaceMaker.h"
 #include "IHPDriver.h"

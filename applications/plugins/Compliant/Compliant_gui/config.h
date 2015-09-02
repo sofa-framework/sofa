@@ -22,18 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITTHMPGSpatialHashingPlugin_H
-#define INITTHMPGSpatialHashingPlugin_H
-
+#ifndef COMPLIANT_GUI_CONFIG_H
+#define COMPLIANT_GUI_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
-
-#ifdef SOFA_BUILD_THMPGSPATIALHASHING
-#  define SOFA_THMPGSPATIALHASHING_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_COMPLIANT_GUI
+#  define SOFA_Compliant_gui_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_THMPGSPATIALHASHING_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_Compliant_gui_API  SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // INITPlugin_Test_H
-
+#endif // INITCompliantGUI_H

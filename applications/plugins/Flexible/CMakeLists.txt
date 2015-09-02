@@ -2,6 +2,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
     BaseJacobian.h
+    config.h
     deformationMapping/BaseDeformationImpl.inl
     deformationMapping/BaseDeformationMapping.h
     deformationMapping/BaseDeformationMapping.inl
@@ -33,7 +34,6 @@ set(HEADER_FILES
     engine/ComputeWeightEngine.h
     # forceField/FlexibleTetrahedronFEMForceField.h
     helper.h
-    initFlexible.h
     mass/AffineMass.h
     material/BaseMaterial.h
     material/BaseMaterialForceField.h

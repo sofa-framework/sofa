@@ -26,7 +26,7 @@
 #define SOFA_IMAGE_IMAGEVIEWER_H
 
 
-#include "initImage.h"
+#include <image/config.h>
 #include "ImageTypes.h"
 #include "VectorVis.h"
 

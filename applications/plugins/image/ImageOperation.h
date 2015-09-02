@@ -25,7 +25,7 @@
 #ifndef SOFA_IMAGE_IMAGEOPERATION_H
 #define SOFA_IMAGE_IMAGEOPERATION_H
 
-#include "initImage.h"
+#include <image/config.h>
 #include "ImageTypes.h"
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>

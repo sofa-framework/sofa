@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initEmptyCmakePlugin.h"
+#include <EmptyCmakePlugin/config.h>
 
 namespace sofa
 {

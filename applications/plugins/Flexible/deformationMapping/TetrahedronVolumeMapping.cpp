@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_TetrahedronVolumeMapping_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "TetrahedronVolumeMapping.h"
 #include <sofa/core/ObjectFactory.h>
 

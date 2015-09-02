@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define FLEXIBLE_HatShapeFunction_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../shapeFunction/HatShapeFunction.h"
 #include <sofa/core/ObjectFactory.h>
 

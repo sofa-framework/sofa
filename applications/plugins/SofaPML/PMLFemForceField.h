@@ -50,7 +50,7 @@
 #include <SofaMeshCollision/TriangleModel.h>
 //#include <SofaMeshCollision/LineModel.h>
 //#include <SofaMeshCollision/PointModel.h>
-#include "initSofaPML.h"
+#include <SofaPML/config.h>
 
 
 

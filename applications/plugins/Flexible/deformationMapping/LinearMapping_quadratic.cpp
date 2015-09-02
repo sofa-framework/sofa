@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_LINEARMAPPING_quadratic_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "LinearMapping.h"
 #include <sofa/core/ObjectFactory.h>
 

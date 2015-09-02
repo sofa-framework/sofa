@@ -1,7 +1,7 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-    initEmptyCmakePlugin.h
+    config.h
 )
 
 set(SOURCE_FILES

@@ -22,21 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INIT_ASYNCHRO_HAPTICS_H
-#define INIT_ASYNCHRO_HAPTICS_H
+#ifndef COMPLIANT_CONFIG_H
+#define COMPLIANT_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
-#ifndef WIN32
-#define SOFA_EXPORT_DYNAMIC_LIBRARY
-#define SOFA_IMPORT_DYNAMIC_LIBRARY
-#define SOFA_SENSABLEEMUPLUGIN_API
+#ifdef SOFA_BUILD_Compliant
+#  define SOFA_Compliant_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#ifdef SOFA_BUILD_SENSABLEEMULATIONPLUGIN
-#define SOFA_SENSABLEEMUPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#define SOFA_SENSABLEEMUPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#  define SOFA_Compliant_API  SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // INIT_ASYNCHRO_HAPTICS_H
+#endif

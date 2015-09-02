@@ -3,7 +3,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
     InvertibleFVMForceField.h
     InvertibleFVMForceField.inl
-    initPlugin.h
+    config.h
 )
 
 set(SOURCE_FILES

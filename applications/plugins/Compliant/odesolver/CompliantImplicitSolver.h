@@ -2,7 +2,7 @@
 #define COMPLIANT_ASSEMBLEDSOLVER_H
 
 
-#include "initCompliant.h"
+#include <Compliant/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/MechanicalParams.h>

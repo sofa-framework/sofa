@@ -22,23 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * initOpenCTMPlugin.h
- *
- *  Created on: July 25th 2015
- *      Author: epernod
- */
-
-#ifndef INITOPENCTMPLUGIN_H
-#define INITOPENCTMPLUGIN_H
+#ifndef THMPGSPATIALHASHING_CONFIG_H
+#define THMPGSPATIALHASHING_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_OPENCTMPLUGIN
-#define SOFA_OPENCTMPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_THMPGSPATIALHASHING
+#  define SOFA_THMPGSPATIALHASHING_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_OPENCTMPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_THMPGSPATIALHASHING_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif /* INITOPENCTMPLUGIN_H */
-
+#endif

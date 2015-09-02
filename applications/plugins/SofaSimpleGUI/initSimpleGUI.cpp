@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initSimpleGUI.h"
+#include <SofaSimpleGUI/config.h>
 
 namespace sofa
 {

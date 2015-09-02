@@ -11,7 +11,7 @@ set(HEADER_FILES
     RegistrationContactForceField.h
     RegistrationContactForceField.inl
     RegistrationExporter.h
-    initRegistration.h
+    config.h
 )
 
 set(SOURCE_FILES

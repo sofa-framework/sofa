@@ -25,7 +25,7 @@
 #ifndef FLEXIBLE_BezierShapeFunction_H
 #define FLEXIBLE_BezierShapeFunction_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../shapeFunction/BarycentricShapeFunction.h"
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/BezierTetrahedronSetTopologyContainer.h>

@@ -3,7 +3,7 @@
 
 
 // #include "utils/debug.h"
-#include "../initCompliant.h"
+#include <Compliant/config.h>
 
 #include "IterativeSolver.h"
 #include "Response.h"

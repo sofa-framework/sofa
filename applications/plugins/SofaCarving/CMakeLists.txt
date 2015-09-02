@@ -2,7 +2,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
     CarvingManager.h
-    initSofaCarving.h
+    config.h
 )
 
 set(SOURCE_FILES

@@ -22,16 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITEmptyCmakePlugin_H
-#define INITEmptyCmakePlugin_H
-
+#ifndef EMPTYCMAKEPLUGIN_CONFIG_H
+#define EMPTYCMAKEPLUGIN_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_PLUGINEXAMPLE
-#define SOFA_EmptyCmakePlugin_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_EMPTYCMAKEPLUGIN
+#  define SOFA_EmptyCmakePlugin_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_EmptyCmakePlugin_API  SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_EmptyCmakePlugin_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // INITEmptyPlugin_H
+#endif

@@ -25,7 +25,7 @@
 ******************************************************************************/
 #define FLEXIBLE_ImageShapeFunctionSelectNode_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../shapeFunction/ImageShapeFunctionSelectNode.h"
 #include <sofa/core/ObjectFactory.h>
 

@@ -44,7 +44,7 @@
 #define SOFAPML_PMLSTIFFSPRINGFORCEFIELD_H
 
 #include "PMLBody.h"
-#include "initSofaPML.h"
+#include <SofaPML/config.h>
 
 #include <StructuralComponent.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

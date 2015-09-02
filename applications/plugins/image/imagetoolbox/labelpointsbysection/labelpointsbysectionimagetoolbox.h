@@ -14,7 +14,7 @@
 #include <cstring>
 
 
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 
 
 

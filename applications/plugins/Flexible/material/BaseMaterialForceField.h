@@ -25,7 +25,7 @@
 #ifndef SOFA_BaseMaterialFORCEFIELD_H
 #define SOFA_BaseMaterialFORCEFIELD_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/MechanicalState.h>

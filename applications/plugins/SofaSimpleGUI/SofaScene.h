@@ -1,7 +1,7 @@
 #ifndef SOFA_NEWGUI_SofaScene_H
 #define SOFA_NEWGUI_SofaScene_H
 
-#include "initSimpleGUI.h"
+#include <SofaSimpleGUI/config.h>
 #include <vector>
 #include <string>
 

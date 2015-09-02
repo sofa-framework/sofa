@@ -3,7 +3,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
     PreassembledMass.h
     PreassembledMass.inl
-    initPlugin.h
+    config.h
 )
 
 set(SOURCE_FILES
