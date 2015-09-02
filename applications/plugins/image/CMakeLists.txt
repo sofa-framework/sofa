@@ -83,12 +83,15 @@ if(NOT SOFA-NO_OPENGL)
 endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
-find_package(Freenect)
+find_package(Freenect QUIET)
 
 if(FREENECT_FOUND)
     list(APPEND IMAGE_DEPENDENCY_INCLUDE_DIR ${FREENECT_INCLUDE_DIR})
     list(APPEND HEADER_FILES "Kinect.h")
     list(APPEND SOURCE_FILES "Kinect.cpp")
+    message(STATUS "image: found the freenect library")
+else()
+    message(STATUS "image: could not find the freenect library, won't build the Kinect component")
 endif()
 
 # todo

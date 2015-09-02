@@ -53,8 +53,8 @@ install(TARGETS ${PROJECT_NAME}
 
 install(DIRECTORY Demos/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
+# Copy Assimp DLLs on Windows
 if(WIN32)
-    # Copy OpenCascade DLLs
     file(COPY ${ASSIMP_DLLS} DESTINATION bin)
     install(FILES ${ASSIMP_DLLS} DESTINATION bin)
 endif()
