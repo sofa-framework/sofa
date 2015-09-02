@@ -92,7 +92,7 @@ template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
 }
 
 template <class DataTypes>
-void TrianglePressureForceField<DataTypes>::addForce(const core::MechanicalParams*  mparams, DataVecDeriv& d_f, const DataVecCoord&  d_x , const DataVecDeriv& /* d_v */)
+void TrianglePressureForceField<DataTypes>::addForce(const core::MechanicalParams*  /*mparams*/, DataVecDeriv& d_f, const DataVecCoord&  d_x , const DataVecDeriv& /* d_v */)
 {
 
     VecDeriv& f = *d_f.beginEdit();
@@ -113,11 +113,11 @@ void TrianglePressureForceField<DataTypes>::addForce(const core::MechanicalParam
 
 		}
 	} else {
-	    sofa::helper::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
+        //sofa::helper::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
 		typedef sofa::component::topology::BaseMeshTopology::Triangle Triangle;
 		const sofa::helper::vector<Triangle> &ta = _topology->getTriangles();
 		const  VecDeriv p = d_x.getValue();
-		Real area;
+        //Real area;
 		MatSym3 cauchy=cauchyStress.getValue();
 		Deriv areaVector,force;
 
@@ -153,7 +153,7 @@ void TrianglePressureForceField<DataTypes>::addForce(const core::MechanicalParam
 
 		}*/
 
-		 trianglePressureMap.endEdit();
+         //trianglePressureMap.endEdit();
 	}
     d_f.endEdit();
 //    updateTriangleInformation();
@@ -161,7 +161,7 @@ void TrianglePressureForceField<DataTypes>::addForce(const core::MechanicalParam
 
 
 template<class DataTypes>
-void TrianglePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv&  d_df , const DataVecDeriv&  d_dx )
+void TrianglePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv&  /*d_df*/ , const DataVecDeriv&  /*d_dx*/ )
 {
   
 	
