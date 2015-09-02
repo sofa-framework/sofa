@@ -1164,7 +1164,7 @@ void RealGUI::setFullScreen (bool enable)
 
     if( isEmbeddedViewer() )
     {
-        QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
+        //QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
 
 #ifdef SOFA_QT4
         QList<int> list;
