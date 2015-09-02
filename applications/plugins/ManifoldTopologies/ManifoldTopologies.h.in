@@ -22,7 +22,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #ifndef _MANIFOLD_TOPOLOGIES_MANIFOLD_TOPOLOGIES_H_
 #define _MANIFOLD_TOPOLOGIES_MANIFOLD_TOPOLOGIES_H_
 
