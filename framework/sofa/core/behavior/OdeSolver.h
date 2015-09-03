@@ -68,6 +68,11 @@ protected:
     OdeSolver();
 
     virtual ~OdeSolver();
+	
+private:
+	OdeSolver(const OdeSolver& n) ;
+	OdeSolver& operator=(const OdeSolver& n) ;
+	
 public:
     /// Main computation method.
     ///

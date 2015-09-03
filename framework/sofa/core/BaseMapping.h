@@ -61,6 +61,11 @@ protected:
 
     /// Destructor
     virtual ~BaseMapping();
+	
+private:
+	BaseMapping(const BaseMapping& n) ;
+	BaseMapping& operator=(const BaseMapping& n) ;
+	
 public:
     Data<bool> f_mapForces;
     Data<bool> f_mapConstraints;

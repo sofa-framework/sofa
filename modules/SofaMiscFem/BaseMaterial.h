@@ -68,6 +68,13 @@ public:
     {
         serr<<"ERROR(BaseMaterial) this method handleTopologyChange() is not already implemented in base class"<<sendl;
     }
+	
+
+private:
+	BaseMaterial(const BaseMaterial& n) ;
+	BaseMaterial& operator=(const BaseMaterial& n) ;
+	
+	
 };
 
 

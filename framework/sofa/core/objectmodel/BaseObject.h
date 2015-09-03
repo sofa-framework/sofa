@@ -86,6 +86,7 @@ protected:
     BaseObject();
 
     virtual ~BaseObject();
+	
 public:
 
     /// @name control

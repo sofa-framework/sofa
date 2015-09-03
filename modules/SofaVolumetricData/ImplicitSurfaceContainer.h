@@ -51,6 +51,11 @@ public:
 protected:
     ImplicitSurface( ) { }
     virtual ~ImplicitSurface() { }
+	
+private:
+	ImplicitSurface(const ImplicitSurface& n) ;
+	ImplicitSurface& operator=(const ImplicitSurface& n) ;
+	
 public:
     virtual int getDomain(sofa::defaulttype::Vec3d& /*pos*/, int /*ref_domain*/) {return -1;}
 

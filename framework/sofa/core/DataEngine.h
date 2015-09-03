@@ -90,7 +90,10 @@ protected:
     /// with a lot input/output imbricated access
     void updateAllInputsIfDirty();
 
-
+private:
+	DataEngine(const DataEngine& n) ;
+	DataEngine& operator=(const DataEngine& n) ;
+	
 public:
     /// Add a new input to this engine
     void addInput(objectmodel::BaseData* n);
