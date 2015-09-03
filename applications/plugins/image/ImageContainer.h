@@ -79,7 +79,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
     }
 
     template<class ImageContainer>
-    static void parse( ImageContainer* container, sofa::core::objectmodel::BaseObjectDescription */*arg*/=NULL )
+    static void parse( ImageContainer* container, sofa::core::objectmodel::BaseObjectDescription* /* arg */ = NULL )
     {
         if( container->image.isSet() ) return; // image is set from data link
 
