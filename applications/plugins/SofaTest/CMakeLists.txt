@@ -49,7 +49,7 @@ if(SofaPython_FOUND)
         python/SofaTest/__init__.py
     )
 else()
-    message(STATUS "SofaTest: could not find SofaPython")
+    message(STATUS "SofaTest: could not find SofaPython, won't build Python_test")
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
