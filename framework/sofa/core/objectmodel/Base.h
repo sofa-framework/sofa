@@ -95,8 +95,8 @@ protected:
 
 private:
 	/// Copy constructor is not allowed
-    Base(const Base& b) = delete;
-	Base& operator=(const Base& b) = delete;
+    Base(const Base& b);
+    Base& operator=(const Base& b);
 
     sofa::helper::system::atomic<int> ref_counter;
     void addRef();
