@@ -108,6 +108,7 @@ add_subdirectory(extlibs/tinyxml)
 add_subdirectory(extlibs/CImg)
 add_subdirectory(extlibs/libQGLViewer-2.4.0/QGLViewer extlibs/QGLViewer)
 
+# Try to find an installed boost. If boost is not found, use miniBoost.
 find_package(Boost QUIET)
 if(NOT Boost_FOUND)
     add_subdirectory(extlibs/miniBoost)
