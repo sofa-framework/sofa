@@ -99,8 +99,6 @@ endif()
 ## Necessary ones
 add_subdirectory(extlibs/SuiteSparse)
 add_subdirectory(extlibs/csparse)
-set(EIGEN_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/eigen-3.2.5"
-    CACHE PATH "Directory search by find_package(Eigen3)")
 add_subdirectory(extlibs/eigen-3.2.5 extlibs/eigen)
 add_subdirectory(extlibs/miniFlowVR)
 add_subdirectory(extlibs/newmat)
@@ -129,6 +127,7 @@ on Linux distributions." OFF)
 if(SOFA_BUILD_METIS)
     add_subdirectory(extlibs/metis-5.1.0 "extlibs/metis")
 endif()
+
 
 add_subdirectory(SofaFramework)
 add_subdirectory(SofaSimulation)
