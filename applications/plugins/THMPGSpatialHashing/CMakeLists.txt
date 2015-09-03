@@ -18,7 +18,7 @@ find_package(SofaCommon REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_THMPGSPATIALHASHING")
-target_link_libraries(${PROJECT_NAME} SofaBaseCollition)
+target_link_libraries(${PROJECT_NAME} SofaBaseCollision SofaMeshCollision)
 
 find_package(SofaTest QUIET)
 if(SofaTest_FOUND)
