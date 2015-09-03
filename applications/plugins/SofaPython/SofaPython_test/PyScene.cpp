@@ -1,7 +1,7 @@
 #include <SofaTest/Sofa_test.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/Node.h>
-#include <PythonScriptController.h>
+#include <SofaPython/PythonScriptController.h>
 
 namespace sofa {
 

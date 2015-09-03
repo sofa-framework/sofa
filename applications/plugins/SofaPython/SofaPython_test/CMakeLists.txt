@@ -1,42 +1,25 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+
+project(SofaPython_test)
 
 set(SOURCE_FILES
+    PyScene.cpp
     dummy.cpp
+    python_test_list.cpp
 )
 
-if(APPLE)
-    # set(RC_FILES "runSOFA.icns")
-endif()
+set(PYTHON_FILES
+    python/dataVecResize.py
+    python/testController.py
+    python/test_PySceneWithPyCtlr.py
+    python/test_Quaternion.py
+    python/test_Tools.py
+    python/test_mass.py
+    python/test_units.py
+)
 
-if(WIN32)
-	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
-endif()
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${PYTHON_FILES})
+target_link_libraries(${PROJECT_NAME} SofaPython SofaGTestMain)
+add_definitions("-DSOFAPYTHON_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python\"")
 
-if(SOFA-PLUGIN_SOFAPYTHON)
-    AddCompilerDefinitions("SOFAPYTHON_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python\"")
-    list(APPEND SOURCE_FILES "python_test_list.cpp")
-    list(APPEND SOURCE_FILES "PyScene.cpp")
-    AddLinkerDependencies(SofaPython)
-
-    set(PYTHON_FILES
-        python/dataVecResize.py
-        python/testController.py
-        python/test_PySceneWithPyCtlr.py
-        python/test_Quaternion.py
-        python/test_Tools.py
-        python/test_mass.py
-        python/test_units.py
-    )
-
-endif()
-
-add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${RC_FILES} ${PYTHON_FILES})
-
-AddLinkerDependencies(SofaPython SofaTest SofaGTestMain)
-
-
-# needed by python tests
-AddCompilerDefinitions("SOFA_SRC_DIR=${SOFA_SRC_DIR}")
-
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

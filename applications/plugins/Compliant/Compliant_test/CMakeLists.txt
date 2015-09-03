@@ -15,8 +15,6 @@ set(SOURCE_FILES
     RigidJointMapping_test.cpp
 )
 
-find_package(SofaPython QUIET)
-
 set(PYTHON_FILES
     python/AffineMultiMapping.py
     python/Example.py
@@ -26,10 +24,11 @@ set(PYTHON_FILES
     python/friction.py
 )
 
+find_package(SofaPython QUIET)
+
 if(SofaPython_FOUND)
     add_definitions("-DCOMPLIANT_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python\"")
     list(APPEND SOURCE_FILES python_test_list.cpp)
-
 endif()
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
@@ -38,8 +37,5 @@ target_link_libraries(${PROJECT_NAME} Compliant SofaTest SofaGTestMain)
 if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaPython)
 endif()
-
-# # needed by python tests
-# AddCompilerDefinitions("SOFA_SRC_DIR=${SOFA_SRC_DIR}")
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
