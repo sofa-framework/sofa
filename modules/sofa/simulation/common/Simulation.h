@@ -55,6 +55,11 @@ public:
 // protected:
     Simulation();
     virtual ~Simulation();
+	
+private:
+	Simulation(const Simulation& n) ;
+	Simulation& operator=(const Simulation& n) ;
+	
 public:
     /// Print all object in the graph
     virtual void print(Node* root);

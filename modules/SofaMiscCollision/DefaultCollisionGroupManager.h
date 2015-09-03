@@ -53,6 +53,10 @@ protected:
     DefaultCollisionGroupManager();
 
     virtual ~DefaultCollisionGroupManager();
+	
+private:
+	DefaultCollisionGroupManager(const DefaultCollisionGroupManager& n) ;
+	DefaultCollisionGroupManager& operator=(const DefaultCollisionGroupManager& n) ;
 
 public:
 

@@ -52,6 +52,8 @@ public:
     SOFA_CLASS(DiscreteIntersection,sofa::core::collision::Intersection);
 protected:
     DiscreteIntersection();
+	virtual ~DiscreteIntersection() { }
+	
 public:
     /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
     /// @param swapModel output value set to true if the collision models must be swapped before calling the intersector.

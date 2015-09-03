@@ -65,6 +65,11 @@ protected:
     virtual ~BaseMass()
     {
     }
+	
+private:
+	BaseMass(const BaseMass& n) ;
+	BaseMass& operator=(const BaseMass& n) ;	
+	
 public:
     /// @name Vector operations
     /// @{
