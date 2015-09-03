@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <vector>
 #include <sofa/core/CollisionElement.h>
 #include <boost/unordered/detail/util.hpp>
@@ -11,7 +13,8 @@
 #define CHECK_IF_ELLEMENT_EXISTS
 namespace sofa{
 
-class THMPGCollisionSet{
+class SOFA_THMPGSPATIALHASHING_API THMPGCollisionSet
+{
 public:
     THMPGCollisionSet() : _timeStamp(SReal(-1.0)){}
 
@@ -80,7 +83,7 @@ private:
 
 #undef CHECK_IF_ELLEMENT_EXISTS
 
-class THMPGHashTable{
+class SOFA_THMPGSPATIALHASHING_API THMPGHashTable{
 protected:
 
 //    struct CollisionElementPair{
