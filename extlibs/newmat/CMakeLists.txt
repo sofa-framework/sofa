@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(newmat)
 
-if(CMAKE_VERSION GREATER 3.1)
-    cmake_policy(SET CMP0054 NEW)   # CMake 3.2.3 warns if this is not set.
-endif()
-
 set(HEADER_FILES
 
     newmat/include.h
@@ -49,8 +45,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 target_compile_definitions(${PROJECT_NAME} PRIVATE "use_namespace")
 
 # The code must be relocatable if we want to link a shared library against it
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"
-        OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xClang")
     target_compile_options(${PROJECT_NAME} PRIVATE "-fPIC")
 endif()
 
