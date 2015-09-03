@@ -53,7 +53,7 @@ protected:
     PythonMainScriptController( const char* filename );
 
     /// @name Script interface
-    ///   Function that need to be implemented for each script language
+    ///   Function that needs to be implemented for each script language
     /// Typically, all "script_*" functions call the corresponding "*" function of the script, if it exists
     /// @{
 
