@@ -163,9 +163,10 @@ void TrianglePressureForceField<DataTypes>::addForce(const core::MechanicalParam
 template<class DataTypes>
 void TrianglePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv&  /*d_df*/ , const DataVecDeriv&  /*d_dx*/ )
 {
-  
-	
-	Real kfactor = mparams->kFactor();
+    //Warning fix : behaviorally equivalent without unused kfactor variable warning
+	mparams->kFactor();
+    //Real kfactor = mparams->kFactor();
+
 	/*
 	if (pressureScalar.getValue()!=0.0f) {
 
