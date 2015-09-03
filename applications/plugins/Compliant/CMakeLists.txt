@@ -247,6 +247,8 @@ if(SofaTest_FOUND)
     add_subdirectory(Compliant_test)
 endif()
 
+add_subdirectory(Compliant_gui)
+
 include(CMakePackageConfigHelpers)
 # CompliantConfigVersion.cmake file (same for build tree and intall)
 write_basic_package_version_file(CompliantConfigVersion.cmake
