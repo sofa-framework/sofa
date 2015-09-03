@@ -152,6 +152,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAPYTHON_COM
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
+# if(SOFA_HAVE_GTEST)
+#     add_subdirectory(SofaPython_test)
+# endif()
+
 include(CMakePackageConfigHelpers)
 # SofaPythonConfigVersion.cmake file (same for build tree and intall)
 write_basic_package_version_file(SofaPythonConfigVersion.cmake
