@@ -12,8 +12,7 @@ set_target_properties(ARTrackLib PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 set(ARTRACK_COMPILER_FLAGS "-Duse_namespace")
 
 # The code must be relocatable if we want to link a shared library against it
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"
-        OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xClang")
     set(ARTRACK_COMPILER_FLAGS "${ARTRACK_COMPILER_FLAGS} -fPIC")
 endif()
 
