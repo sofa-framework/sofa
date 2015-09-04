@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.8)
 
 project(SofaPython_test)
 
+find_package(PythonLibs 2.7 REQUIRED)
+
 set(SOURCE_FILES
     PyScene.cpp
     dummy.cpp
