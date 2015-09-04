@@ -56,18 +56,40 @@ endif()
 # cmake functions specific to sofa that needs to be redistributed.
 install(FILES cmake/Modules/CMakeSofaBuildFlags.cmake DESTINATION share/cmake/Modules)
 
+
 # Dependency pack for Windows
 if(MSVC)
-    set(DEPENDENCY_PACK_DIR "${CMAKE_CURRENT_SOURCE_DIR}/sofa-win-dependencies-21-11-2013")
-    if(EXISTS ${DEPENDENCY_PACK_DIR} )
-        list(APPEND CMAKE_INCLUDE_PATH ${DEPENDENCY_PACK_DIR}/include)
-        if(CMAKE_CL_64)
-            list(APPEND CMAKE_LIBRARY_PATH ${DEPENDENCY_PACK_DIR}/lib/win64)
-        else()
-            list(APPEND CMAKE_LIBRARY_PATH ${DEPENDENCY_PACK_DIR}/lib/win32)
-        endif()
-        add_subdirectory("${DEPENDENCY_PACK_DIR}")
+
+    if(SOFA_DEPENDENCY_PACK_DIR)
+        set(DEPENDENCY_PACK_DIR "${SOFA_DEPENDENCY_PACK_DIR}")
+    else()
+        # Default
+        set(DEPENDENCY_PACK_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
     endif()
+
+    list(APPEND CMAKE_INCLUDE_PATH ${DEPENDENCY_PACK_DIR}/include)
+    if(CMAKE_CL_64)
+        list(APPEND CMAKE_LIBRARY_PATH ${DEPENDENCY_PACK_DIR}/lib/win64)
+    else()
+        list(APPEND CMAKE_LIBRARY_PATH ${DEPENDENCY_PACK_DIR}/lib/win32)
+    endif()
+
+    if(CMAKE_CL_64)
+        file(GLOB DLLS "${DEPENDENCY_PACK_DIR}/lib/win64/*.dll")
+        file(GLOB LIBS "${DEPENDENCY_PACK_DIR}/lib/win64/*.lib")
+    else()
+        file(GLOB DLLS "${DEPENDENCY_PACK_DIR}/lib/win32/*.dll")
+        file(GLOB LIBS "${DEPENDENCY_PACK_DIR}/lib/win32/*.lib")
+    endif()
+    # Copy DLLs to the build tree
+    foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+        file(COPY ${DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
+    endforeach()
+    # Install DLLs
+    install(FILES ${DLLS} DESTINATION bin)
+    install(FILES ${LIBS} DESTINATION lib)
+    install(DIRECTORY ${DEPENDENCY_PACK_DIR}/include/ DESTINATION include)
+
 endif()
 
 # Install resource files
