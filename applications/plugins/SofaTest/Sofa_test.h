@@ -27,10 +27,6 @@
 #ifndef SOFA_STANDARDTEST_Sofa_test_H
 #define SOFA_STANDARDTEST_Sofa_test_H
 
-#if (_MSC_VER == 1700) 
-#define _VARIADIC_MAX 10 
-#endif
-
 #include "InitPlugin_test.h"
 #include <gtest/gtest.h>
 #include <sofa/defaulttype/Vec.h>

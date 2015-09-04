@@ -28,12 +28,6 @@ set(SOURCE_FILES
     Sofa_test.cpp
 )
 
-if(WIN32)
-    # MSVC2012 has some troubles with the way gtest use the STL, this
-    # preprocessor macro fix this issue
-    add_definitions("-D_VARIADIC_MAX=10")
-endif()
-
 set(PYTHON_FILES "")
 
 find_package(SofaFramework REQUIRED)
