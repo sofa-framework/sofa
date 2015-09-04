@@ -6,6 +6,11 @@ if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" ST
     add_compile_options(-fPIC)
 endif()
 
+if(WIN32)
+    # MSVC2012 has some troubles with the way gtest use the STL, this preprocessor macro fix this issue
+    add_definitions("-D_VARIADIC_MAX=10")
+endif()
+
 # BUILD_SHARED_LIBS is a standard CMake variable, but we declare it here to
 # make it prominent in the GUI.
 option(BUILD_SHARED_LIBS "Build shared libraries (DLLs)." OFF)
