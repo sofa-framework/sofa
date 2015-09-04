@@ -42,7 +42,6 @@ set(HEADER_FILES
     PythonScriptEvent.h
     PythonScriptFunction.h
     PythonVisitor.h
-    Python_test.h
     SceneLoaderPY.h
     ScriptController.h
     ScriptEnvironment.h
@@ -88,7 +87,6 @@ set(SOURCE_FILES
     PythonScriptEvent.cpp
     PythonScriptFunction.cpp
     PythonVisitor.cpp
-    Python_test.cpp
     SceneLoaderPY.cpp
     ScriptController.cpp
     ScriptEnvironment.cpp
@@ -107,6 +105,7 @@ set(PYTHON_FILES
     python/SofaPython/script.py
     python/SofaPython/sml.py
     python/SofaPython/units.py
+
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
