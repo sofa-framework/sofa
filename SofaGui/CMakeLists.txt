@@ -67,13 +67,13 @@ if(SOFAGUI_QT)
 
     # QtViewer
     option(SOFAGUI_QTVIEWER "Compile the QtViewer for the Qt GUI" ON)
-    if(SOFA_GUI_QTVIEWER)
+    if(SOFAGUI_QTVIEWER)
         set(SOFA_GUI_QTVIEWER 1) # Macro in SofaGuiConfig.h
     endif()
 
     # QglViewer
     option(SOFAGUI_QGLVIEWER "Compile the QGLViewer for the Qt GUI" ON)
-    if(SOFA_GUI_QGLVIEWER)
+    if(SOFAGUI_QGLVIEWER)
         set(SOFA_GUI_QGLVIEWER 1) # Macro in SofaGuiConfig.h
     endif()
 endif()
