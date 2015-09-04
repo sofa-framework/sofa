@@ -59,7 +59,6 @@ set(HEADER_FILES
     PythonScriptEvent.h
     PythonScriptFunction.h
     PythonVisitor.h
-    Python_test.h
     SceneLoaderPY.h
     ScriptController.h
     ScriptEnvironment.h
@@ -104,7 +103,6 @@ set(SOURCE_FILES
     PythonScriptEvent.cpp
     PythonScriptFunction.cpp
     PythonVisitor.cpp
-    Python_test.cpp
     SceneLoaderPY.cpp
     ScriptController.cpp
     ScriptEnvironment.cpp
@@ -123,6 +121,7 @@ set(PYTHON_FILES
     python/SofaPython/script.py
     python/SofaPython/sml.py
     python/SofaPython/units.py
+
 )
 
 configure_file(config.h.in SofaPython/config.h)
@@ -153,9 +152,12 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAPYTHON_COM
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
-# if(SOFA_HAVE_GTEST)
-#     add_subdirectory(SofaPython_test)
-# endif()
+
+# We can't add SofaPython_test, because it needs SofaTest, which needs
+# SofaPython. Instead, SofaPython_test is added from the top-level
+# CMakeLists.txt
+
+# add_subdirectory(SofaPython_test)
 
 include(CMakePackageConfigHelpers)
 # SofaPythonConfigVersion.cmake file (same for build tree and intall)
