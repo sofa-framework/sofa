@@ -54,7 +54,7 @@
 // MSVC2012 has some troubles with the way gtest use the STL, this preprocessor
 // macro fix this issue.
 #ifdef MSVC
-#  define VARIADIC_MAX 10
+#  define _VARIADIC_MAX 10
 #endif
 
 #include <limits>
