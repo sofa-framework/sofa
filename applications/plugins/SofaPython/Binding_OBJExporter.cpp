@@ -30,7 +30,7 @@
 using namespace sofa::component::misc;
 using namespace sofa::core::objectmodel;
 
-extern "C" PyObject * OBJExporter_writeOBJ(PyObject *self, PyObject * args)
+extern "C" PyObject * OBJExporter_writeOBJ(PyObject *self, PyObject * /*args*/)
 {
 	OBJExporter* obj = dynamic_cast<OBJExporter*>(((PySPtr<Base>*)self)->object.get());
 	obj->writeOBJ();

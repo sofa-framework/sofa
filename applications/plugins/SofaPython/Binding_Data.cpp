@@ -49,14 +49,14 @@ SP_CLASS_ATTR_GET(Data,name)(PyObject *self, void*)
 SP_CLASS_ATTR_SET(Data,name)(PyObject *self, PyObject * args, void*)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
-    char *str = PyString_AsString(args); // pour les setters, un seul objet et pas un tuple....
+    char *str = PyString_AsString(args); // for setters, only one object and not a tuple....
     data->setName(str);
     return 0;
 }
 
 PyObject *GetDataValuePython(BaseData* data)
 {
-    // depending on the data type, we return the good python type (int, float, sting, array, ...)
+    // depending on the data type, we return the good python type (int, float, string, array, ...)
 
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
     const void* valueVoidPtr = data->getValueVoidPtr();
@@ -207,7 +207,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
         else
         {
             // values list
-            // is-it a double-dimension list ?
+            // is it a double-dimension list ?
             //PyObject *firstRow = PyList_GetItem(args,0);
 
             if (PyList_Check(PyList_GetItem(args,0)))
@@ -375,7 +375,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
     else if (isString)
     {
         // it's a string
-        char *str = PyString_AsString(args); // pour les setters, un seul objet et pas un tuple....
+        char *str = PyString_AsString(args); // for setters, only one object and not a tuple....
         data->read(str);
         return true;
     }
@@ -389,7 +389,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
             return true;
         }
 
-        // is-it a double-dimension list ?
+        // is it a double-dimension list ?
         //PyObject *firstRow = PyList_GetItem(args,0);
 
         if (PyList_Check(PyList_GetItem(args,0)))
@@ -403,10 +403,10 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
             int newNbRows = PyList_Size(args);
             if (newNbRows!=nbRows)
             {
-                // try to resize (of course, it is not possible with every containers, the resize policy is defined in DataTypeInfo)
+                // try to resize (of course, it is not possible with every container, the resize policy is defined in DataTypeInfo)
                 typeinfo->setSize( editVoidPtr, newNbRows*rowWidth );
 
-                if( typeinfo->size(editVoidPtr) != newNbRows*rowWidth )
+                if( typeinfo->size(editVoidPtr) != (size_t)(newNbRows*rowWidth) )
                 {
                     // resizing was not possible
                     // only a warning; do not raise an exception...
@@ -518,10 +518,10 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
             int newSize = PyList_Size(args);
             if (newSize!=size)
             {
-                // try to resize (of course, it is not possible with every containers, the resize policy is defined in DataTypeInfo)
+                // try to resize (of course, it is not possible with every container, the resize policy is defined in DataTypeInfo)
                 typeinfo->setSize( editVoidPtr, newSize );
 
-                if( typeinfo->size(editVoidPtr) != newSize )
+                if( typeinfo->size(editVoidPtr) != (size_t)newSize )
                 {
                     // resizing was not possible
                     // only a warning; do not raise an exception...

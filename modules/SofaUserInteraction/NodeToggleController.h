@@ -127,9 +127,9 @@ public:
 
     //@}
 
-    Data<bool> d_initStatus;
     Data<char> d_key;
     Data<std::string> d_nameNode;
+    Data<bool> d_initStatus;
     Data<bool> d_firstFrame;
 
 protected:

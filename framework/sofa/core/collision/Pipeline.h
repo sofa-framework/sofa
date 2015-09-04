@@ -80,6 +80,13 @@ protected:
     Pipeline();
 
     virtual ~Pipeline();
+	
+private:
+	Pipeline(const Pipeline& n) ;
+	Pipeline& operator=(const Pipeline& n) ;
+	
+	
+	
 public:
     virtual void reset()=0;
 

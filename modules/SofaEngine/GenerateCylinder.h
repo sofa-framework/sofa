@@ -92,9 +92,9 @@ public:
 	Data<SeqTriangles> f_triangles; ///< output triangles
 	Data<sofa::helper::vector<Real> > f_bezierTriangleWeight; ///  output weight for rational Bezier triangles
 	Data<sofa::helper::vector<bool> > f_isBezierTriangleRational; ///  for each Bezier triangle indicates if it is rational or integral
+    Data<size_t> f_bezierTriangleDegree; /// degree of Bezier triangles
 	Data<sofa::helper::vector<Real> > f_bezierTetrahedronWeight; ///  output weight for rational Bezier triangles
-	Data<sofa::helper::vector<bool> > f_isBezierTetrahedronRational; ///  for each Bezier tetrahedron indicates if it is rational
-	Data<size_t> f_bezierTriangleDegree; /// degree of Bezier triangles
+    Data<sofa::helper::vector<bool> > f_isBezierTetrahedronRational; ///  for each Bezier tetrahedron indicates if it is rational
 	Data<size_t> f_bezierTetrahedronDegree; /// degree of Bezier tetrahedron
     Data<Real > f_radius; /// radius of cylinder 
 	Data<Real > f_height; /// height of cylinder
