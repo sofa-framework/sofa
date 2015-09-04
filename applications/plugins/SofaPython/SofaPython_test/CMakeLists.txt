@@ -19,9 +19,7 @@ set(PYTHON_FILES
 )
 
 find_package(SofaTest)
-
-find_package(PythonLibs 2.7 REQUIRED)
-include_directories(${PYTHON_INCLUDE_DIRS})
+find_package(SofaPython)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaPython SofaTest SofaGTestMain)
