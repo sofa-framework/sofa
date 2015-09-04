@@ -1,34 +1,31 @@
 cmake_minimum_required(VERSION 2.8.11)
-set(SOLUTION_NAME "SofaGui")
-project(${SOLUTION_NAME})
 
-#temporary until we move the sub projects
+project(SofaGui)
+set(SOFAGUI_VERSION 0.0.1)
+
+## Temporary
 set(SofaGui_ACTUAL_SOURCE_DIR ${SofaGui_SOURCE_DIR}/../applications/sofa/gui)
 set(SofaProjects_ACTUAL_SOURCE_DIR ${SofaGui_SOURCE_DIR}/../applications/projects)
 
-##
-## SofaGui version
-##
-set(SOFAGUI_MAJOR_VERSION 0)
-set(SOFAGUI_MINOR_VERSION 0)
-set(SOFAGUI_BUILD_VERSION 1)
 
-set(SOFAGUI_VERSION ${SOFAGUI_MAJOR_VERSION}.${SOFAGUI_MINOR_VERSION}.${SOFAGUI_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
+### SofaGui dependencies
 
+# This variable is used in other CMakeLists.txt files (SofaGuiCommon, SofaGuiMain...)
+set(SOFAGUI_DEPENDENCY_DIR "")
 
-## SofaGui dependencies
-##
+## Sofa
 find_package(SofaGeneral REQUIRED)
+list(APPEND SOFAGUI_DEPENDENCY_DIR ${SofaGeneral_INCLUDE_DIRS})
 find_package(SofaMisc REQUIRED)
+list(APPEND SOFAGUI_DEPENDENCY_DIR ${SofaMisc_INCLUDE_DIRS})
 find_package(SofaAdvanced REQUIRED)
-find_package(QGLViewer REQUIRED)
-set(SOFAGUI_DEPENDENCY_DIR ${SofaGeneral_INCLUDE_DIRS} ${SofaMisc_INCLUDE_DIRS} ${SofaAdvanced_INCLUDE_DIRS})
+list(APPEND SOFAGUI_DEPENDENCY_DIR ${SofaAdvanced_INCLUDE_DIRS})
 
+## Qt4
 set(QT_USE_IMPORTED_TARGETS 1)
 set(QT4_NO_LINK_QTMAIN 1)
 find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml qt3support)
-set(SOFAGUI_DEPENDENCY_DIR ${SOFAGUI_DEPENDENCY_DIR} ${QT_INCLUDES})
-
+list(APPEND SOFAGUI_DEPENDENCY_DIR ${QT_INCLUDES})
 if(WIN32)
     file(GLOB QT4_DLLS "${QT_BINARY_DIR}/*.dll")
     foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
@@ -37,14 +34,19 @@ if(WIN32)
 endif()
 install(FILES ${QT4_DLLS} DESTINATION bin)
 
+## Thoses variables are used in SofaGuiConfig.cmake.in
 set(SOFA_HAVE_QT ${Qt4_FOUND})
 set(SOFA_QT4 ${Qt4_FOUND})
+set(SOFAGUI_TARGETS "")
 
-set(SOFAGUI_TARGETS SofaGuiCommon)
 
+### Sub-projects
+
+## SofaGuiCommon
 add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/SofaGuiCommon ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiCommon)
+list(APPEND SOFAGUI_TARGETS SofaGuiCommon)
 
-# Glut GUI
+## Glut GUI
 option(SOFAGUI_GLUT "Compile the Glut GUI" ON)
 if(SOFAGUI_GLUT)
     set(SOFA_GUI_GLUT 1)        # Macro in SofaGuiConfig.h
@@ -52,15 +54,18 @@ if(SOFAGUI_GLUT)
     add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/glut ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiGlut)
 endif()
 
-# Qt GUI
+## Qt GUI
 option(SOFAGUI_QT "Compile the Qt GUI" ON)
 if(SOFAGUI_QT)
     set(SOFA_GUI_QT 1)          # Macro in SofaGuiConfig.h
     list(APPEND SOFAGUI_TARGETS SofaGuiQt)
     add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/qt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
 
+    ## Qt GUI options, used in the relevant CMakeLists.txt
+
     # SOFA_GUI_INTERACTION
-    option(SOFAGUI_QT_INTERACTION "Enable interaction mode for the Qt GUI, whatever that means" ON)
+    option(SOFAGUI_QT_INTERACTION "Enable interaction mode for the Qt GUI, whatever that means
+(this will define the SOFA_GUI_INTERACTION macro)." ON)
     if(SOFAGUI_QT_INTERACTION)
         set(SOFA_GUI_INTERACTION 1) # Macro in SofaGuiConfig.h
     endif()
@@ -78,12 +83,11 @@ if(SOFAGUI_QT)
     endif()
 endif()
 
-
+## SofaGuiMain
 list(APPEND SOFAGUI_TARGETS SofaGuiMain)
 add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/SofaGuiMain ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiMain)
 
-
-# GUI Applications
+## GUI Applications
 option(SOFAGUI_RUNSOFA "Build the runSofa application" ON)
 if(SOFAGUI_RUNSOFA)
     add_subdirectory(${SofaProjects_ACTUAL_SOURCE_DIR}/runSofa ${CMAKE_CURRENT_BINARY_DIR}/runSofa)
@@ -96,42 +100,39 @@ if(SOFAGUI_MODELER)
 endif()
 
 
+## IDE folder
 foreach(TARGET ${SOFAGUI_TARGETS})
-    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaGui") # IDE folder
+    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaGui")
 endforeach()
 
-configure_file(SofaGuiConfig.h.in
-               ${CMAKE_CURRENT_BINARY_DIR}/SofaGui/SofaGuiConfig.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaGui/SofaGuiConfig.h
+
+## SofaGuiConfig.h
+configure_file(SofaGuiConfig.h.in SofaGui/SofaGuiConfig.h)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SofaGui/SofaGuiConfig.h"
         DESTINATION "include/SofaGui")
+
+
+### SofaGuiConfig.cmake
 
 include(CMakePackageConfigHelpers)
 
-# SofaGuiConfigVersion.cmake file (same for build tree and install)
-write_basic_package_version_file(SofaGuiConfigVersion.cmake
-                                 VERSION ${SOFAGUI_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiConfigVersion.cmake
-        DESTINATION lib/cmake/SofaGui)
+## SofaGuiConfigVersion.cmake
+write_basic_package_version_file(SofaGuiConfigVersion.cmake VERSION ${SOFAGUI_VERSION} COMPATIBILITY AnyNewerVersion)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SofaGuiConfigVersion.cmake" DESTINATION lib/cmake/SofaGui)
 
-# SofaGuiConfig.cmake (build tree)
+## SofaGuiConfig.cmake (build tree)
 set(SOFAGUI_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(SofaGuiConfig.cmake.in
-                              SofaGuiConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
+configure_package_config_file(SofaGuiConfig.cmake.in SofaGuiConfig.cmake
+                              INSTALL_DESTINATION none
                               PATH_VARS SOFAGUI_INCLUDE_DIR)
 
-# SofaGuiConfig.cmake (installed)
+## SofaGuiConfig.cmake (installed)
 set(SOFAGUI_INCLUDE_DIR include)
-configure_package_config_file(SofaGuiConfig.cmake.in
-                              SofaGuiConfigInstall.cmake
+configure_package_config_file(SofaGuiConfig.cmake.in SofaGuiConfigInstall.cmake
                               INSTALL_DESTINATION lib/cmake/SofaGui
                               PATH_VARS SOFAGUI_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiConfigInstall.cmake
+install(EXPORT SofaGuiTargets DESTINATION lib/cmake/SofaGui) # SofaGuiTargets.cmake
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SofaGuiConfigInstall.cmake"
         DESTINATION lib/cmake/SofaGui
         RENAME SofaGuiConfig.cmake)
 
-# SofaGuiTargets.cmake (installed)
-install(EXPORT SofaGuiTargets
-        DESTINATION lib/cmake/SofaGui)
