@@ -12,7 +12,7 @@ set(SOURCE_FILES
 
 # The code must be relocatable if we want to link a shared library against it.
 if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xClang")
-    add_definitions("-fPIC")
+    add_compile_options(-fPIC)
 endif()
 
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
