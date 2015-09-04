@@ -1,8 +1,8 @@
-#include <SofaTest/Sofa_test.h>
+#include <gtest/gtest.h>
 
 namespace sofa {
 
-struct Dummy_test : public Sofa_test<>
+struct Dummy_test : public ::testing::Test
 {
     Dummy_test()
     {
