@@ -1,8 +1,9 @@
 ########################################################################
 # CMake build script for Google Test.
 
-if(NOT WIN32)
-    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -fPIC)
+# The code must be relocatable if we want to link a shared library against it.
+if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xClang")
+    add_compile_options(-fPIC)
 endif()
 
 # BUILD_SHARED_LIBS is a standard CMake variable, but we declare it here to
