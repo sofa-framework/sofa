@@ -10,6 +10,11 @@ include(GKlib/GKlibSystem.cmake)
 
 file(GLOB metis_sources libmetis/*.c)
 
+# The code must be relocatable if we want to link a shared library against it.
+if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xClang")
+    add_compile_options(-fPIC)
+endif()
+
 add_library(${PROJECT_NAME} STATIC ${metis_sources} ${GKlib_sources})
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/GKlib>")
