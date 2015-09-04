@@ -82,12 +82,19 @@ endif()
 list(APPEND SOFAGUI_TARGETS SofaGuiMain)
 add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/SofaGuiMain ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiMain)
 
-# applications
-if(Qt4_FOUND)
-    add_subdirectory(${SofaProjects_ACTUAL_SOURCE_DIR}/Modeler ${CMAKE_CURRENT_BINARY_DIR}/Modeler)
+
+# GUI Applications
+option(SOFAGUI_RUNSOFA "Build the runSofa application" ON)
+if(SOFAGUI_RUNSOFA)
     add_subdirectory(${SofaProjects_ACTUAL_SOURCE_DIR}/runSofa ${CMAKE_CURRENT_BINARY_DIR}/runSofa)
-    list(APPEND SOFAGUI_TARGETS Modeler runSofa)
-endif(Qt4_FOUND)
+    list(APPEND SOFAGUI_TARGETS runSofa)
+endif()
+option(SOFAGUI_MODELER "Build the Modeler application" ON)
+if(SOFAGUI_MODELER)
+    add_subdirectory(${SofaProjects_ACTUAL_SOURCE_DIR}/Modeler ${CMAKE_CURRENT_BINARY_DIR}/Modeler)
+    list(APPEND SOFAGUI_TARGETS Modeler)
+endif()
+
 
 foreach(TARGET ${SOFAGUI_TARGETS})
     set_target_properties(${TARGET} PROPERTIES FOLDER "SofaGui") # IDE folder
