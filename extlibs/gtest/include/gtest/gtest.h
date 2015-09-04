@@ -51,12 +51,6 @@
 #ifndef GTEST_INCLUDE_GTEST_GTEST_H_
 #define GTEST_INCLUDE_GTEST_GTEST_H_
 
-// MSVC2012 has some troubles with the way gtest use the STL, this preprocessor
-// macro fix this issue.
-#ifdef MSVC
-#  define _VARIADIC_MAX 10
-#endif
-
 #include <limits>
 #include <ostream>
 #include <vector>

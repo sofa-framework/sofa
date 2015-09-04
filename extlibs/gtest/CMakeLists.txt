@@ -6,11 +6,6 @@ if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" ST
     add_compile_options(-fPIC)
 endif()
 
-if(WIN32)
-    # MSVC2012 has some troubles with the way gtest use the STL, this preprocessor macro fix this issue
-    add_definitions("-D_VARIADIC_MAX=10")
-endif()
-
 # BUILD_SHARED_LIBS is a standard CMake variable, but we declare it here to
 # make it prominent in the GUI.
 option(BUILD_SHARED_LIBS "Build shared libraries (DLLs)." OFF)
@@ -39,7 +34,12 @@ cxx_library(gtest "${cxx_strict}" src/gtest-all.cc)
 cxx_library(gtest_main "${cxx_strict}" src/gtest_main.cc)
 target_link_libraries(gtest_main gtest)
 
-
+# In Visual Studio 2012 (VC11) _VARIADIC_MAX is by default defined as
+# 5, which is not enough for gtest.
+if(MSVC)
+    target_compile_options(gtest PUBLIC "-D_VARIADIC_MAX=10")
+    target_compile_options(gtest_main PUBLIC "-D_VARIADIC_MAX=10")
+endif()
 
 include(CMakePackageConfigHelpers)
 
