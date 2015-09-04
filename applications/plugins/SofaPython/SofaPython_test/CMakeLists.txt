@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 2.8)
 
 project(SofaPython_test)
 
-find_package(PythonLibs 2.7 REQUIRED)
-
 set(SOURCE_FILES
     PyScene.cpp
     dummy.cpp
@@ -21,6 +19,10 @@ set(PYTHON_FILES
 )
 
 find_package(SofaTest)
+
+find_package(PythonLibs 2.7 REQUIRED)
+include_directories(${PYTHON_INCLUDE_DIRS})
+
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaPython SofaTest SofaGTestMain)
 add_definitions("-DSOFAPYTHON_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python\"")
