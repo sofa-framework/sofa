@@ -42,6 +42,8 @@ find_package(SceneCreator REQUIRED)
 
 find_package(SofaPython QUIET)
 if(SofaPython_FOUND)
+    list(APPEND HEADER_FILES "Python_test.h")
+    list(APPEND SOURCE_FILES "Python_test.cpp")
     set(PYTHON_FILES
         python/SofaTest/Macro.py
         python/SofaTest/__init__.py
