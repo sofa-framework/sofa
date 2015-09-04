@@ -109,9 +109,6 @@ set(PYTHON_FILES
     python/SofaPython/units.py
 )
 
-# For Python_test
-include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 
 # Python's implementation deliberately breaks strict-aliasing rules, so we
