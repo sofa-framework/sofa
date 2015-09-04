@@ -10,6 +10,7 @@ set(HEADER_FILES
     Mapping_test.h
     MultiMapping_test.h
     PrimitiveCreation.h
+    Python_test.h
     Sofa_test.h
 )
 
@@ -27,11 +28,7 @@ AddCompilerDefinitions("SOFA_SRC_DIR=\"${SOFA_SRC_DIR}\"")
 set(PYTHON_FILES "")
 
 if(SOFA-PLUGIN_SOFAPYTHON)
-    list(APPEND HEADER_FILES "Python_test.h")
-    list(APPEND SOURCE_FILES "Python_test.cpp")
-
     AddLinkerDependencies(SofaPython)
-
 
     set(PYTHON_FILES
         python/SofaTest/Macro.py

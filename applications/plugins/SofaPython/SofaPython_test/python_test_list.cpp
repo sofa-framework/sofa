@@ -1,5 +1,4 @@
-#include <SofaTest/Python_test.h>
-
+#include <SofaPython/Python_test.h>
 
 namespace sofa {
 

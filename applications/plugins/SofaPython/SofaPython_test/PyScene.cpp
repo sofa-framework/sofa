@@ -1,11 +1,13 @@
-#include <SofaTest/Sofa_test.h>
+#include <gtest/gtest.h>
+
+#include <PythonScriptController.h>
+
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/Node.h>
-#include <PythonScriptController.h>
 
 namespace sofa {
 
-struct PyScene_test : public Sofa_test<>
+struct PyScene_test : public ::testing::Test
 {
     PyScene_test()
     {
