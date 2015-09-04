@@ -96,6 +96,12 @@ if(SOFA_BUILD_TESTS)
     add_subdirectory(extlibs/gtest)
 endif()
 
+# Try to find an installed boost. If boost is not found, use miniBoost.
+find_package(Boost QUIET)
+if(NOT Boost_FOUND)
+    add_subdirectory(extlibs/miniBoost)
+endif()
+
 ## Necessary ones
 add_subdirectory(extlibs/SuiteSparse)
 add_subdirectory(extlibs/csparse)
@@ -107,12 +113,6 @@ add_subdirectory(extlibs/tinyxml)
 ## Optional ones
 add_subdirectory(extlibs/CImg)
 add_subdirectory(extlibs/libQGLViewer-2.4.0/QGLViewer extlibs/QGLViewer)
-
-# Try to find an installed boost. If boost is not found, use miniBoost.
-find_package(Boost QUIET)
-if(NOT Boost_FOUND)
-    add_subdirectory(extlibs/miniBoost)
-endif()
 
 option(SOFA_BUILD_ARTRACK
 "Build the ARTrack library distributed in the extlibs/ directory.  This library
@@ -157,6 +157,9 @@ if(SOFA_BUILD_TESTS)
     add_subdirectory(applications/plugins/SofaTest SofaTest)
     # Tests for all the modules, written using SofaTest.
     add_subdirectory(modules/tests)
+    # SofaPython_test is a special case, because it depends on
+    # SofaTest, which depends on SofaPython...
+    add_subdirectory(applications/plugins/SofaPython/SofaPython_test)
 endif()
 
 # Plugins
