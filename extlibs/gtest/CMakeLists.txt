@@ -15,7 +15,7 @@ mark_as_advanced(gtest_disable_pthreads)
 include(cmake/internal_utils.cmake)
 config_compiler_and_linker()  # Defined in internal_utils.cmake.
 
-include_directories(include)
+include_directories(include "${CMAKE_CURRENT_SOURCE_DIR}")
 
 # The code must be relocatable if we want to link a shared library against it.
 if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xClang")
