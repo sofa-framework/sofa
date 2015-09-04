@@ -12,6 +12,8 @@ if(WIN32)
 	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
 endif()
 
+include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
+
 if(SOFA-PLUGIN_SOFAPYTHON)
     AddCompilerDefinitions("SOFAPYTHON_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python\"")
     list(APPEND SOURCE_FILES "python_test_list.cpp")
