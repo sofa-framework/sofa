@@ -10,5 +10,7 @@ if(WIN32)
     add_definitions("-D_VARIADIC_MAX=10")
 endif()
 
+add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_SOURCE_DIR}\"")
+
 add_library(SofaGTestMain SofaGTestMain.cpp)
 target_link_libraries(SofaGTestMain gtest SofaSimulationTree SofaSimulationGraph)

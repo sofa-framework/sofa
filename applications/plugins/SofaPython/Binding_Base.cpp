@@ -57,7 +57,7 @@ extern "C" PyObject* Base_GetAttr(PyObject *o, PyObject *attr_name)
     char *dataName = PyString_AsString(attr_name);
 //    printf("Base_GetAttr type=%s name=%s attrName=%s\n",obj->getClassName().c_str(),obj->getName().c_str(),dataName);
 
-    // attribue does not exist: see if a Data field has this name...
+    // attribute does not exist: see if a Data field has this name...
     BaseData * data = obj->findData(dataName);
     if (!data)
     {
@@ -71,7 +71,7 @@ extern "C" PyObject* Base_GetAttr(PyObject *o, PyObject *attr_name)
 
 extern "C" int Base_SetAttr(PyObject *o, PyObject *attr_name, PyObject *v)
 {
-    // attribue does not exist: see if a Data field has this name...
+    // attribute does not exist: see if a Data field has this name...
     Base* obj=dynamic_cast<Base*>(((PySPtr<Base>*)o)->object.get());
     char *dataName = PyString_AsString(attr_name);
 //    printf("Base_SetAttr name=%s\n",dataName);

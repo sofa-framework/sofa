@@ -53,10 +53,10 @@ double multinomial(const size_t n,const TriangleBezierIndex tbiIn)
 template< class DataTypes>
  BezierTriangleSetGeometryAlgorithms< DataTypes >::BezierTriangleSetGeometryAlgorithms() : 
 TriangleSetGeometryAlgorithms<DataTypes>()
-		,degree(0)
         ,drawControlPointsEdges (core::objectmodel::Base::initData(&drawControlPointsEdges, (bool) false, "drawControlPointsEdges", "Debug : draw Control point edges "))
         ,drawSmoothEdges (core::objectmodel::Base::initData(&drawSmoothEdges, (bool) false, "drawSmoothEdges", "Debug : draw Bezier curves as edges of the  Bezier triangle"))
         ,drawControlPoints (core::objectmodel::Base::initData(&drawControlPoints, (bool) false, "drawControlPoints", "Debug : draw Control points with a color depending on its status "))
+        ,degree(0)
 
     {
     }
@@ -88,7 +88,7 @@ template< class DataTypes>
 			bernsteinCoeffMap.insert(std::pair<TriangleBezierIndex,Real>(tbi,(double) bernsteinCoefficientArray[i]));
 		}
 		/// insert coefficient for the inferior degree
-		BezierDegreeType i,j,k,l,m,n,index1,index2;
+        BezierDegreeType i,j,k,/*l,*/m,n,index1,index2;
 		for (i=0;i<=(degree-1);++i) {
 			for (j=0;j<=(degree-i-1);++j) {
 				k=degree-1-i-j;

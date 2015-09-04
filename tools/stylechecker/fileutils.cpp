@@ -7,11 +7,12 @@ bool copyFile(const std::string& sourcef, const std::string& destf)
     size_t size;
 
     FILE* source = fopen(sourcef.c_str(), "rb");
-    FILE* dest = fopen(destf.c_str(), "wb");
-
+    
     if(!source)
         return false;
-
+        
+    FILE* dest = fopen(destf.c_str(), "wb");
+    
     if(!dest){
         fclose(source);
         return false;

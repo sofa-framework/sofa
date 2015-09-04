@@ -68,8 +68,12 @@ public:
     SOFA_ABSTRACT_CLASS(BaseNode, Base);
 
 protected:
-    BaseNode();
+    BaseNode() ;
     virtual ~BaseNode();
+	
+private:
+	BaseNode(const BaseNode& n) ;
+	BaseNode& operator=(const BaseNode& n) ;
 public:
     /// @name Scene hierarchy
     /// @{

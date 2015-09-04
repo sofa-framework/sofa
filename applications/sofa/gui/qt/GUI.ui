@@ -349,7 +349,7 @@
                <string>Create gnuplot files for each named element of the simulation</string>
               </property>
               <property name="text">
-               <string>export state as gnuplot files</string>
+               <string>Export state as gnuplot files</string>
               </property>
              </widget>
             </item>

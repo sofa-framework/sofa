@@ -103,6 +103,11 @@ public:
 protected:
     BaseContext();
     virtual ~BaseContext();
+	
+private:	
+	BaseContext(const BaseContext&);
+    BaseContext& operator=(const BaseContext& );
+    
 public:
     /// Get the default Context object, that contains the default values for
     /// all parameters and can be used when no local context is defined.
