@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.12)
 
-set(EIGEN_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/eigen-3.2.5" CACHE PATH "Directory for find_package(Eigen3)")
+set(EIGEN_ROOT "${CMAKE_CURRENT_SOURCE_DIR}" CACHE PATH "Directory for find_package(Eigen3)")
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Eigen
         COMPONENT Eigen_headers
