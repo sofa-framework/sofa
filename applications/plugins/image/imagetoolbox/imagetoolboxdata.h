@@ -2,7 +2,7 @@
 #define IMAGETOOLBOXDATA_H
 
 #include "labelimagetoolbox.h"
-#include "ImageTypes.h"
+#include <image/ImageTypes.h>
 
 #include <image/image_gui/config.h>
 

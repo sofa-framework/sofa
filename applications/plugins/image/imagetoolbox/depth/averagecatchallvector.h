@@ -32,7 +32,7 @@
 
 #include <sofa/helper/OptionsGroup.h>
 
-#include "ImageContainer.h"
+#include <image/ImageContainer.h>
 
 namespace sofa
 {
