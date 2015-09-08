@@ -1,19 +1,12 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(sofaOPENCL)
 
-set(SOURCE_FILES
+find_package(SofaGui REQUIRED)
+find_package(SofaOpenCL REQUIRED)
 
-    Main.cpp
-    )
-    
-set(RC_FILES
+set(SOURCE_FILES Main.cpp)
+set(RC_FILES sofa.rc)
 
-    sofa.rc
-    )
-
+include_directories(../plugins)
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
-
-include_directories(${SOFA_APPLICATIONS_PLUGINS_DIR})
-AddLinkerDependencies(SofaGuiMain SofaOpenCL)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+target_link_libraries(${PROJECT_NAME} SofaGuiMain SofaOpenCL)
