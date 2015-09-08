@@ -27,7 +27,8 @@ set(MOC_HEADER_FILES
 	QSofaListView.h
 	QSofaRecorder.h
 	QSofaStatWidget.h
-	QModelViewTableUpdater.h)
+	QModelViewTableUpdater.h
+)
 
 # these header files do not need MOCcing
 set(HEADER_FILES
@@ -42,7 +43,8 @@ set(HEADER_FILES
 	PickHandlerCallBacks.h
 	QMenuFilesRecentlyOpened.h
 	ImageQt.h
-	QModelViewTableDataContainer.h)
+	QModelViewTableDataContainer.h
+)
 
 set(SOURCE_FILES
 
@@ -77,7 +79,8 @@ set(SOURCE_FILES
 	QSofaRecorder.cpp
 	QSofaStatWidget.cpp
 	QMenuFilesRecentlyOpened.cpp
-	ImageQt.cpp)
+	ImageQt.cpp
+)
 
 set(UI_FILES
 
@@ -86,7 +89,8 @@ set(UI_FILES
 	DialogAddObject.ui
 	PluginManager.ui
 	MouseManager.ui
-	VideoRecorderManager.ui)
+	VideoRecorderManager.ui
+)
 
 set(SOFAGUIQT_COMPILER_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
 set(SOFAGUIQT_LINK_LIBRARIES SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
@@ -140,10 +144,6 @@ if(SOFAGUI_QGLVIEWER)
 	list(APPEND SOFAGUIQT_LINK_LIBRARIES QGLViewer)
 endif()
 
-# make mocced header / form files path from absolute to relative
-#ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
-#ToRelativePath(FORM_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${FORM_FILES}")
-
 if(SOFA_DUMP_VISITOR_INFO)
 endif()
 
@@ -170,7 +170,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAGUIQT_LINK_LIBRARIES})
 target_compile_definitions(${PROJECT_NAME} PUBLIC "SOFA_QT4")
 #target_compile_definitions(${PROJECT_NAME} PUBLIC "${QT_DEFINITIONS}")
 target_compile_definitions(${PROJECT_NAME} PUBLIC "QT3_SUPPORT")
-#target_compile_options(${PROJECT_NAME} PUBLIC "-DSOFA_QT4")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAGUI_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAGUIQT_COMPILER_FLAGS}")
