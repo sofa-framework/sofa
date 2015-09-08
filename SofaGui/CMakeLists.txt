@@ -49,7 +49,7 @@ list(APPEND SOFAGUI_TARGETS SofaGuiCommon)
 ## Glut GUI
 option(SOFAGUI_GLUT "Compile the Glut GUI" ON)
 if(SOFAGUI_GLUT)
-    set(SOFA_GUI_GLUT 1)        # Macro in SofaGuiConfig.h
+    set(SOFA_GUI_GLUT 1) # Used in SofaGuiConfig.*
     list(APPEND SOFAGUI_TARGETS SofaGuiGlut)
     add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/glut ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiGlut)
 endif()
@@ -57,7 +57,7 @@ endif()
 ## Qt GUI
 option(SOFAGUI_QT "Compile the Qt GUI" ON)
 if(SOFAGUI_QT)
-    set(SOFA_GUI_QT 1)          # Macro in SofaGuiConfig.h
+    set(SOFA_GUI_QT 1) # Used in SofaGuiConfig.*
     list(APPEND SOFAGUI_TARGETS SofaGuiQt)
     add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/qt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
 
@@ -67,19 +67,19 @@ if(SOFAGUI_QT)
     option(SOFAGUI_QT_INTERACTION "Enable interaction mode for the Qt GUI, whatever that means
 (this will define the SOFA_GUI_INTERACTION macro)." ON)
     if(SOFAGUI_QT_INTERACTION)
-        set(SOFA_GUI_INTERACTION 1) # Macro in SofaGuiConfig.h
+        set(SOFA_GUI_INTERACTION 1) # Used in SofaGuiConfig.*
     endif()
 
     # QtViewer
     option(SOFAGUI_QTVIEWER "Compile the QtViewer for the Qt GUI" ON)
     if(SOFAGUI_QTVIEWER)
-        set(SOFA_GUI_QTVIEWER 1) # Macro in SofaGuiConfig.h
+        set(SOFA_GUI_QTVIEWER 1) # Used in SofaGuiConfig.*
     endif()
 
     # QglViewer
     option(SOFAGUI_QGLVIEWER "Compile the QGLViewer for the Qt GUI" ON)
     if(SOFAGUI_QGLVIEWER)
-        set(SOFA_GUI_QGLVIEWER 1) # Macro in SofaGuiConfig.h
+        set(SOFA_GUI_QGLVIEWER 1) # Used in SofaGuiConfig.*
     endif()
 endif()
 
