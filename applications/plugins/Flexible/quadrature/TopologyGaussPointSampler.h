@@ -118,7 +118,7 @@ protected:
       , f_indices(initData(&f_indices,"indices","list of cells where sampling is performed (all by default)"))
       , tetraGeoAlgo( 0 )
       , f_orientation(initData(&f_orientation,"orientation","input orientation (Euler angles) inside each cell"))
-      , f_useLocalOrientation(initData(&f_useLocalOrientation,true,"useLocalOrientation","tells if orientations are defined in the local basis on each cell"))
+      , f_useLocalOrientation(initData(&f_useLocalOrientation,false,"useLocalOrientation","tells if orientations are defined in the local basis on each cell"))
       , f_fineVolumes(initData(&f_fineVolumes,"fineVolumes","input cell volumes (typically computed from a fine model)"))
     {
     }
@@ -433,13 +433,23 @@ protected:
         R.transpose();
         return R;
     }
+
     // align user provided global orientation to 2D manifold
-    static Transform reorientGlobalOrientation( const Transform& Global, const Transform& Local)
+    static Transform reorientGlobalOrientation( const Transform& Global, const Transform& Local )
     {
         Transform R;
         R(2)=Local.transposed()(2); // third axis = face normal
-        R(0)=Global.transposed()(0) - R(2)*dot(R(2),Global.transposed()(0)); R(0).normalize();
-        R(1)= cross(R(2),R(0));
+
+        Transform GT = Global.transposed();
+
+        R(0)=GT(0) - R(2)*dot(R(2),GT(0));
+
+        Real norm = R(0).norm();
+
+        if(norm<std::numeric_limits<Real>::epsilon()) { R(0)=GT(1) - R(2)*dot(R(2),GT(1)); R(0).normalize(); }
+        else R(0).normalizeWithNorm( norm );
+
+        R(1) = cross(R(2),R(0));
         R.transpose();
         return R;
     }

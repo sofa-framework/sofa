@@ -66,7 +66,7 @@
         <BarycentricShapeFunction  />
 
         <Node 	name="behavior"   >
-	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" useLocalOrientation="0"/>
+	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1"/>
 	    <MechanicalObject  template="F331" name="F"   />
     	    <LinearMapping template="Vec3d,F331" assemble="0" showDeformationGradientScale="0"/>
 
