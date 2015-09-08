@@ -1,6 +1,5 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
-
-find_package(OpenCL REQUIRED)
+cmake_minimum_required(VERSION 2.8)
+project(SofaOpenCL)
 
 set(HEADER_FILES
     CPUSPHFluidForceField.h
@@ -80,11 +79,15 @@ set(OTHER_FILES
     kernels/oclRadixSort/Scan_b.cl
 )
 
+find_package(OpenCL REQUIRED)
+find_package(SofaGeneral REQUIRED)
+
 include_directories(${OPENCL_INCLUDE_DIRS})
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${OTHER_FILES})
 
-AddCompilerDefinitions("SOFA_BUILD_GPU_OPENCL")
-AddLinkerDependencies(${OPENCL_LIBRARIES} SofaHelper SofaEngine SofaSphFluid SofaUserInteraction csparse) # taucs taucs_mt system-taucs)
+message(WARNING "SofaOpenCL: TODO: don't use absolute path (SOFA_SRC_DIR)")
+add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/../../..\"")
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+add_definitions("-DSOFA_BUILD_GPU_OPENCL")
+target_link_libraries(${PROJECT_NAME} ${OPENCL_LIBRARIES} SofaHelper SofaEngine SofaSphFluid SofaUserInteraction csparse) # taucs taucs_mt system-taucs)
