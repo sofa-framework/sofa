@@ -1,6 +1,6 @@
 
 # these header files need MOCcing
-list(APPEND HEADER_MOC_FILES
+list(APPEND MOC_HEADER_FILES
 
         ../imagetoolbox/imagetoolboxbasicactionwidget.h
         ../imagetoolbox/imagetoolboxcentralwidget.h

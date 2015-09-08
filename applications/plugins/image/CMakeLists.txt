@@ -153,6 +153,11 @@ if(SofaTest_FOUND)
     add_subdirectory(image_test)
 endif()
 
+find_package(SofaGui QUIET)
+if(SofaGui_FOUND AND SOFA_GUI_QT)
+    add_subdirectory(image_gui)
+endif()
+
 include(CMakePackageConfigHelpers)
 # imageConfigVersion.cmake file (same for build tree and intall)
 write_basic_package_version_file(imageConfigVersion.cmake
