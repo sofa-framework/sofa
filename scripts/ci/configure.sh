@@ -88,7 +88,7 @@ call-cmake() {
 
 ## CMake options
 
-cmake_options="-DCMAKE_BUILD_TYPE=$CI_BUILD_TYPE"
+cmake_options="-DCMAKE_COLOR_MAKEFILE=OFF -DCMAKE_BUILD_TYPE=$CI_BUILD_TYPE"
 
 append() {
     cmake_options="$cmake_options $*"
