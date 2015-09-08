@@ -142,12 +142,6 @@ public:
         addOutput(&texCoord);
         addOutput(&triangles);
         setDirtyValue();
-
-#ifndef SOFA_NO_OPENGL
-        texture = new helper::gl::Texture(new helper::io::Image,false);
-        texture->getImage()->init(texture_res,texture_res,32);
-        texture->init();
-#endif /* SOFA_NO_OPENGL */
     }
 
     virtual void reinit() { update(); }
@@ -180,7 +174,7 @@ protected:
 
 #ifndef SOFA_NO_OPENGL
         // update texture
-        if(!inTex->isEmpty())
+        if(texture && !inTex->isEmpty())
         {
             const CImg<T>& tex = inTex->getCImg(this->time);
             CImg<unsigned char> plane=convertToUC( tex.get_resize(texture_res,texture_res,1,-100,1) );
@@ -252,6 +246,18 @@ protected:
     virtual void draw(const core::visual::VisualParams* vparams)
     {
 #ifndef SOFA_NO_OPENGL
+
+        // need a valid opengl context to initialize an opengl texture, a context is not always bound during the init phase so we init the texture here
+        if(!texture)
+        {
+            texture = new helper::gl::Texture(new helper::io::Image,false);
+            texture->getImage()->init(texture_res,texture_res,32);
+            texture->init();
+
+            // we need the texture to be updated
+            setDirtyValue();
+        }
+
         if (!vparams->displayFlags().getShowVisualModels()) return;
 
         raPositions pos(this->position);
