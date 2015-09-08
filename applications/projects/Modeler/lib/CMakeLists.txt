@@ -3,52 +3,46 @@ project(SofaModeler)
 
 set(HEADER_FILES
 
-    SofaModeler.h
-    GraphModeler.h
-    SofaTutorialManager.h
-    TutorialSelector.h
+    ../../../sofa/gui/qt/SofaPluginManager.h
     AddPreset.h
     FilterLibrary.h
     GlobalModification.h
-	LinkComponent.h
     GraphHistoryManager.h
+    GraphModeler.h
+    LinkComponent.h
     ModifierCondition.h
-    ../../../sofa/gui/qt/SofaPluginManager.h
+    QCategoryTreeLibrary.h
+    QComponentTreeLibrary.h
+    QSofaTreeLibrary.h
+    SofaModeler.h
+    SofaTutorialManager.h
+    TutorialSelector.h
 )
 
 set(SOURCE_FILES
 
-    SofaModeler.cpp
-    GraphModeler.cpp
-	LinkComponent.cpp
-    SofaTutorialManager.cpp
-    TutorialSelector.cpp
+    ../../../sofa/gui/qt/SofaPluginManager.cpp
     AddPreset.cpp
     FilterLibrary.cpp
     GlobalModification.cpp
     GraphHistoryManager.cpp
+    GraphModeler.cpp
+    LinkComponent.cpp
     ModifierCondition.cpp
-    ../../../sofa/gui/qt/SofaPluginManager.cpp
+    QCategoryTreeLibrary.cpp
+    QComponentTreeLibrary.cpp
+    QSofaTreeLibrary.cpp
+    SofaModeler.cpp
+    SofaTutorialManager.cpp
+    TutorialSelector.cpp
 )
 
 set(UI_FILES ../../../sofa/gui/qt/PluginManager.ui)
 
-list(APPEND HEADER_FILES "QSofaTreeLibrary.h")
-list(APPEND HEADER_FILES "QCategoryTreeLibrary.h")
-list(APPEND HEADER_FILES "QComponentTreeLibrary.h")
-
-list(APPEND SOURCE_FILES "QSofaTreeLibrary.cpp")
-list(APPEND SOURCE_FILES "QCategoryTreeLibrary.cpp")
-list(APPEND SOURCE_FILES "QComponentTreeLibrary.cpp")
-
 qt4_wrap_cpp(MOC_FILES ${HEADER_FILES})
-qt4_wrap_ui(FORM_FILES ${UI_FILES})
-
-# make mocced header / form files path from absolute to relative
-#ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
-#ToRelativePath(FORM_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${FORM_FILES}")
-
 set(MOC_FILES_GROUP "Generated")
+
+qt4_wrap_ui(FORM_FILES ${UI_FILES})
 set(FORM_FILES_GROUP "Generated")
 
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
