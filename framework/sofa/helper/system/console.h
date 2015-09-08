@@ -20,6 +20,12 @@ class SOFA_HELPER_API Console
 
 public:
 
+    /// @brief Initialize Console.
+    ///
+    /// Enable or disable colors based on the value of the SOFA_COLOR_TERMINAL
+    /// environnement variable (possible values: yes, no, auto).
+    static void init();
+
 #ifdef WIN32
     typedef unsigned SystemColorType;
 #else
