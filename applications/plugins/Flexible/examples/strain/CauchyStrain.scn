@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 -1 0 " dt="0.03"  >
+    <RequiredPlugin pluginName="Flexible"/>
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
+    
+
+	<EulerImplicitSolver /> <CGLinearSolver iterations="25" threshold="1e-5" tolerance="1e-5" />
+        <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+	<Mesh name="mesh" src="@loader" />
+	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
+
+        <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
+        <FixedConstraint indices="@FixedROI.indices" />
+        
+        <BarycentricShapeFunction  />
+
+        <Node name="behavior"   >
+            <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" useLocalOrientation="0"/> <!--WARNING useLocalOrientation=0 is mandatory for cauchy strain-->
+	    <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+    	    <LinearMapping template="Vec3d,F331" />
+
+	    <Node name="Strain"   >
+		<MechanicalObject  template="E331" name="E"  />
+	    	<CauchyStrainMapping template="F331,E331" />
+	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.4" viscosity="0.1"    />	    
+	    </Node>
+	    
+		
+        </Node>
+
+	<Node name="mass"   >
+	     <MechanicalObject position="@../mesh.position"  />
+	     <UniformMass totalMass="250" />
+	     <LinearMapping template="Vec3d,Vec3d"  />
+        </Node>
+
+	<Node name="collision"  >
+	     <MeshObjLoader name="loader" filename="mesh/torus.obj" />
+	     <Mesh src="@loader"/>
+ 	     <MechanicalObject useMask="true" />
+             <Triangle />
+             <LinearMapping template="Vec3d,Vec3d"/>
+	</Node>
+
+	<Node name="Visual"  >
+	     <VisualModel  fileMesh="mesh/torus.obj" color="1 .4 0.5 1" />
+             <LinearMapping template="Vec3d,ExtVec3f"/>
+	</Node>
+    
+
+</Node>
