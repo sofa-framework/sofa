@@ -505,7 +505,7 @@ void QtViewer::DrawBox(SReal* minBBox, SReal* maxBBox, SReal r)
 void QtViewer::DrawXYPlane(double zo, double xmin, double xmax, double ymin,
         double ymax, double step)
 {
-    register double x, y;
+    double x, y;
 
     Enable<GL_DEPTH_TEST> depth;
 
