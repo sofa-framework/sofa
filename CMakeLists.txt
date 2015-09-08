@@ -183,6 +183,9 @@ if(SOFA_BUILD_TESTS)
     # # SofaPython_test is a special case, because it depends on
     # # SofaTest, which depends on SofaPython...
     # add_subdirectory(applications/plugins/SofaPython/SofaPython_test)
+
+    # Not sure what is it
+    add_subdirectory(applications/plugins/SofaTest/SofaTest_test SofaTest/SofaTest_test)
 endif()
 
 # Plugins

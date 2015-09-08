@@ -1,4 +1,5 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(SofaTest_test)
 
 set(HEADER_FILES
     Regression_test.h
@@ -8,19 +9,19 @@ set(SOURCE_FILES
     Regression_test.cpp
 )
 
+find_package(SofaPython QUIET)
 
-if(SOFA-PLUGIN_SOFAPYTHON)
-    AddCompilerDefinitions("SOFATEST_PYTHONTESTS_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python_tests\"")
-    AddCompilerDefinitions("SOFATEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
+if(SofaPython_FOUND)
+    add_definitions("-DSOFATEST_PYTHONTESTS_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python_tests\"")
+    add_definitions("-DSOFATEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
     list(APPEND SOURCE_FILES "python_test_list.cpp")
-    AddLinkerDependencies(SofaPython)
+    target_link_libraries(SofaPython)
 endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
+add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/../../../..\"")
+target_link_libraries(${PROJECT_NAME} SofaTest SofaPython SofaGTestMain)
 
-
-AddLinkerDependencies(SofaTest SofaPython SofaGTestMain)
-
-AddCompilerDefinitions("SOFA_SRC_DIR=\"${SOFA_SRC_DIR}\"")
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+if(SofaPython_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaPython)
+endif()
