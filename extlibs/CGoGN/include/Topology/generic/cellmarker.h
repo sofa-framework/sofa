@@ -43,7 +43,6 @@ class CellMarkerGen
 	friend class GenericMap ;
 
 protected:
-	AttributeMultiVector<MarkerBool>* m_markVector ;
 	unsigned int m_cell ;
 
 public:
@@ -54,7 +53,7 @@ public:
 	virtual ~CellMarkerGen()
 	{}
 
-	unsigned int getCell() { return m_cell ; }
+    inline unsigned int getCell() { return m_cell ; }
 
 protected:
 	// protected copy constructor to forbid its usage
@@ -72,7 +71,7 @@ class CellMarkerBase : public CellMarkerGen
 {
 protected:
 	MAP& m_map ;
-
+    AttributeMultiVector<MarkerBool>* m_markVector ;
 public:
 	/**
 	 * constructor
@@ -98,6 +97,7 @@ public:
 
 	virtual ~CellMarkerBase()
 	{
+		this->m_markVector->allFalse();
 		if (GenericMap::alive(&m_map))
 			m_map.template releaseMarkVector<CELL>(m_markVector);
 	}
@@ -255,9 +255,7 @@ public:
 	{}
 
 	virtual ~CellMarker()
-	{
-		unmarkAll() ;
-	}
+	{}
 
 protected:
 	CellMarker(const CellMarker& cm) :
@@ -306,7 +304,7 @@ public:
 
 	virtual ~CellMarkerStore()
 	{
-		unmarkAll() ;
+//		unmarkAll() ;
 		this->m_map.releaseUIntBuffer(m_markedCells);
 //		assert(isAllUnmarked);
 //		CGoGN_ASSERT(this->isAllUnmarked())
@@ -383,7 +381,7 @@ public:
 
 	virtual ~CellMarkerMemo()
 	{
-		unmarkAll() ;
+//		unmarkAll() ;
 //		assert(isAllUnmarked);
 //		CGoGN_ASSERT(this->isAllUnmarked())
 	}

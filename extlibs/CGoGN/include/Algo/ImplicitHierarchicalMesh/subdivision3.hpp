@@ -158,7 +158,7 @@ void subdivideFace(typename PFP::MAP& map, Dart d, typename AttributeHandler_Tra
     for (std::vector< Dart >::iterator dit = newFaces.begin() ; dit != newFaces.end() ; ++dit)
     {
         const Dart f = (*dit);
-        const unsigned lvl1Face = Algo::Topo::setOrbitEmbeddingOnNewCell<FACE>(map, f);
+        const unsigned lvl1Face = map.template newCell<FACE>(); // the new emb for darts of lvl equals to flevel +1
         {
             map.setCurrentLevel(map.getMaxLevel());
             TraversorDartsOfOrbit< MAP, FACE > traDoF(map, f);
@@ -168,6 +168,7 @@ void subdivideFace(typename PFP::MAP& map, Dart d, typename AttributeHandler_Tra
                 const unsigned int dl = map.getDartLevel(fit);
                 if ( dl > fLevel)
                 {
+                    assert(dl == fLevel +1u);
                     map.setCurrentLevel(dl);
                     map.template setDartEmbedding<FACE>(fit, lvl1Face);
                     map.setCurrentLevel(map.getMaxLevel());
@@ -177,8 +178,11 @@ void subdivideFace(typename PFP::MAP& map, Dart d, typename AttributeHandler_Tra
         }
         map.template getAttributeContainer<FACE>().copyLine(lvl1Face, oldEmb);
         map.setFaceLevel(f, fLevel+1);
+        map.checkEmbedding(FaceCell(f));
     }
 
+    map.template checkAllEmbeddingsOfOrbit<FACE>();
+    map.template checkAllEmbeddingsOfOrbit<VOLUME>();
 
 //    map.checkEdgeAndFaceIDAttributes();
     map.setCurrentLevel(cur) ;
@@ -261,7 +265,7 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
 
     //Store the darts from quadrangulated faces
     std::vector<std::pair<Dart,Dart> > subdividedfaces;
-    subdividedfaces.reserve(25);
+    subdividedfaces.reserve(32);
 //    map.checkEdgeAndFaceIDAttributes();
     //First step : subdivide edges and faces
     //creates a i+1 edge level and i+1 face level
@@ -429,6 +433,7 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
                     map.setCurrentLevel(vLevel + 1) ;
                 }
                 map.setFaceLevel(f, vLevel+1);
+                map.checkEmbedding(f);
             }
         }
 
