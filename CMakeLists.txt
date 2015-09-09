@@ -42,9 +42,8 @@ else()
     include(cmake/dependencies.cmake)
 
     # Generate sofa/version.h
-    ## Not really pretty, just a number that satisfies SOFA_VERSION > LAST_RELEASED_VERSION
-    set(SOFA_VERSION "999999")
-    set(SOFA_VERSION_STR "\"devel\"")
+    set(SOFA_VERSION "150900")
+    set(SOFA_VERSION_STR "\"15.09\"")
     configure_file("${SOFA_FRAMEWORK_DIR}/sofa/version.h.in"
                    "${SOFA_BUILD_DIR}/misc/include/sofa/version.h")
 
