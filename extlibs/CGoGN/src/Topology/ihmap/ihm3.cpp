@@ -1106,14 +1106,13 @@ Dart ImplicitHierarchicalMap3::cutEdge(Dart d)
 {
     const Dart dd = this->phi2(d) ;
 
-    std::vector< Dart > facesNewestDarts, volumesNewestDart;
+    std::vector< Dart > volumesNewestDart;
     {
         Dart dit = d;
         do
         {
             if (!isBoundaryMarkedCurrent(dit))
             {
-                facesNewestDarts.push_back(faceNewestDart(dit));
                 volumesNewestDart.push_back(volumeNewestDart(dit));
             }
             dit = alpha2(dit);
@@ -1173,19 +1172,16 @@ Dart ImplicitHierarchicalMap3::cutEdge(Dart d)
 
     if(isOrbitEmbedded<FACE>())
     {
-        unsigned int index = 0u;
         Dart f = d;
         do
         {
             if (!isBoundaryMarkedCurrent(f))
             {
-                const unsigned int fEmb = ParentMap::getEmbedding<FACE>(facesNewestDarts[index]) ;
-                setDartEmbedding<FACE>(phi1(f), fEmb);
-                setDartEmbedding<FACE>(phi2(f), fEmb);
+                setDartEmbedding<FACE>(phi1(f),  ParentMap::getEmbedding<FACE>(f));
+                setDartEmbedding<FACE>(phi2(f),  ParentMap::getEmbedding<FACE>(phi2(phi1(f))));
 
                 setMaxFaceLevel(phi1(f), getMaxFaceLevel(f));
-                setMaxFaceLevel(phi2(f), getMaxFaceLevel(f));
-                ++index;
+                setMaxFaceLevel(phi2(f), getMaxFaceLevel(phi2(phi1(f))));
             }
             f = alpha2(f);
         } while(f != d);
