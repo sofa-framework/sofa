@@ -47,7 +47,7 @@
     </Node>
 
       <Node name="behavior">
-        <TopologyGaussPointSampler name="sampler" inPosition="@../hexahedra.position" showSamplesScale="0" method="0" order="2" />
+        <TopologyGaussPointSampler name="sampler" inPosition="@../hexahedra.position" showSamplesScale="0" method="0" order="2" useLocalOrientation="1"/>
         <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
         <LinearMapping template="Vec3d,F331" showDeformationGradientScale="0.05"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="2 - sqrt(det(F^T.F))-1"  />
 
