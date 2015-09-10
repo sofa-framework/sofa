@@ -288,36 +288,6 @@ install(TARGETS ${PROJECT_NAME}
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
-
-
-include(CMakePackageConfigHelpers)
-# SofaCUDAConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(SofaCUDAConfigVersion.cmake
-                                 VERSION ${SOFACUDA_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaCUDAConfigVersion.cmake
-        DESTINATION lib/cmake/SofaCUDA)
-
-
-# SofaCUDAConfig.cmake (build tree)
-set(SOFACUDA_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(SofaCUDAConfig.cmake.in
-                              SofaCUDAConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-                              PATH_VARS SOFACUDA_INCLUDE_DIR)
-
-# SofaCUDAConfig.cmake (installed)
-set(SOFACUDA_INCLUDE_DIR include)
-configure_package_config_file(SofaCUDAConfig.cmake.in
-                              SofaCUDAConfigInstall.cmake
-                              INSTALL_DESTINATION lib/cmake/SofaCUDA
-                              PATH_VARS SOFACUDA_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaCUDAConfigInstall.cmake
-        DESTINATION lib/cmake/SofaCUDA
-        RENAME SofaCUDAConfig.cmake)
-
-# SofaCUDATargets.cmake (installed)
-install(EXPORT SofaCUDATargets
-        DESTINATION lib/cmake/SofaCUDA)
+# CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(SofaCUDA ${SOFACUDA_VERSION})

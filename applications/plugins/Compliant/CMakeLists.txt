@@ -249,33 +249,6 @@ endif()
 
 add_subdirectory(Compliant_gui)
 
-include(CMakePackageConfigHelpers)
-# CompliantConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(CompliantConfigVersion.cmake
-                                 VERSION ${COMPLIANT_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CompliantConfigVersion.cmake
-        DESTINATION lib/cmake/Compliant)
-
-# CompliantConfig.cmake (build tree)
-set(COMPLIANT_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(CompliantConfig.cmake.in
-                              CompliantConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-                              PATH_VARS COMPLIANT_INCLUDE_DIR)
-
-# CompliantConfig.cmake (installed)
-set(COMPLIANT_INCLUDE_DIR include)
-configure_package_config_file(CompliantConfig.cmake.in
-                              CompliantConfigInstall.cmake
-                              INSTALL_DESTINATION lib/cmake/Compliant
-                              PATH_VARS COMPLIANT_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CompliantConfigInstall.cmake
-        DESTINATION lib/cmake/Compliant
-        RENAME CompliantConfig.cmake)
-
-# CompliantTargets.cmake (installed)
-install(EXPORT CompliantTargets
-        DESTINATION lib/cmake/Compliant)
+# CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(Compliant ${COMPLIANT_VERSION})

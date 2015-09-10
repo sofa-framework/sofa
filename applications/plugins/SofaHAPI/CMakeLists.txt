@@ -105,44 +105,16 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 configure_file(SofaHAPI.h.in SofaHAPI/config.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaHAPI/config.h DESTINATION "include/SofaHAPI")
 
-include(CMakePackageConfigHelpers)
-# SofaHAPIConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(SofaHAPIConfigVersion.cmake
-                                 VERSION ${SOFAHAPI_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaHAPIConfigVersion.cmake
-        DESTINATION lib/cmake/SofaHAPI)
-
-
-# SofaHAPIConfig.cmake (build tree)
-set(SOFAHAPI_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(SofaHAPIConfig.cmake.in
-                              SofaHAPIConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-                              PATH_VARS SOFAHAPI_INCLUDE_DIR)
-
-# SofaHAPIConfig.cmake (installed)
-set(SOFAHAPI_INCLUDE_DIR include)
-configure_package_config_file(SofaHAPIConfig.cmake.in
-                              SofaHAPIConfigInstall.cmake
-                              INSTALL_DESTINATION lib/cmake/SofaHAPI
-                              PATH_VARS SOFAHAPI_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaHAPIConfigInstall.cmake
-        DESTINATION lib/cmake/SofaHAPI
-        RENAME SofaHAPIConfig.cmake)
-
 install(TARGETS ${PROJECT_NAME}
-    COMPONENT SofaHAPI_libraries
-    EXPORT SofaHAPITargets
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
+        COMPONENT SofaHAPI_libraries
+        EXPORT SofaHAPITargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
-# SofaHAPITargets.cmake (installed)
-# install(EXPORT SofaHAPITargets
-        # DESTINATION lib/cmake/SofaHAPI)
+# CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(SofaHAPI ${SOFAHAPI_VERSION})

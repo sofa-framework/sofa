@@ -84,37 +84,6 @@ install(TARGETS ${PROJECT_NAME}
         ARCHIVE DESTINATION lib
         PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
 
-
-include(CMakePackageConfigHelpers)
-# RegistrationConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/RegistrationConfigVersion.cmake
-                                 VERSION ${REGISTRATION_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/RegistrationConfigVersion.cmake
-        DESTINATION lib/cmake/Registration)
-
-
-# RegistrationConfig.cmake (build tree)
-set(REGISTRATION_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(RegistrationConfig.cmake.in
-                              ${CMAKE_CURRENT_BINARY_DIR}/RegistrationConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-                              PATH_VARS REGISTRATION_INCLUDE_DIR)
-
-# RegistrationConfig.cmake (installed)
-set(REGISTRATION_INCLUDE_DIR include)
-configure_package_config_file(RegistrationConfig.cmake.in
-                              ${CMAKE_CURRENT_BINARY_DIR}/RegistrationConfigInstall.cmake
-                              INSTALL_DESTINATION lib/cmake/Registration
-                              PATH_VARS REGISTRATION_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/RegistrationConfigInstall.cmake
-        DESTINATION lib/cmake/Registration
-        RENAME RegistrationConfig.cmake)
-
-# RegistrationTargets.cmake (installed)
-install(EXPORT RegistrationTargets
-        DESTINATION lib/cmake/Registration)
-
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
+# CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(Registration ${REGISTRATION_VERSION})

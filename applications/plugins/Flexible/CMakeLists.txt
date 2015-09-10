@@ -278,34 +278,6 @@ if(SofaTest_FOUND)
     add_subdirectory(Flexible_test)
 endif()
 
-include(CMakePackageConfigHelpers)
-# FlexibleConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(FlexibleConfigVersion.cmake
-                                 VERSION ${FLEXIBLE_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/FlexibleConfigVersion.cmake
-        DESTINATION lib/cmake/Flexible)
-
-
-# FlexibleConfig.cmake (build tree)
-set(FLEXIBLE_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(FlexibleConfig.cmake.in
-                              FlexibleConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-                              PATH_VARS FLEXIBLE_INCLUDE_DIR)
-
-# FlexibleConfig.cmake (installed)
-set(FLEXIBLE_INCLUDE_DIR include)
-configure_package_config_file(FlexibleConfig.cmake.in
-                              FlexibleConfigInstall.cmake
-                              INSTALL_DESTINATION lib/cmake/Flexible
-                              PATH_VARS FLEXIBLE_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/FlexibleConfigInstall.cmake
-        DESTINATION lib/cmake/Flexible
-        RENAME FlexibleConfig.cmake)
-
-# FlexibleTargets.cmake (installed)
-install(EXPORT FlexibleTargets
-        DESTINATION lib/cmake/Flexible)
+# CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(Flexible ${FLEXIBLE_VERSION})

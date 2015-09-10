@@ -68,32 +68,6 @@ install(TARGETS ${PROJECT_NAME}
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 
-include(CMakePackageConfigHelpers)
-
-# SofaTestVersion.cmake
-write_basic_package_version_file(${CMAKE_BINARY_DIR}/SofaTest/SofaTestVersion.cmake
-                                 VERSION ${SOFATEST_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
-install(FILES ${CMAKE_BINARY_DIR}/SofaTest/SofaTestVersion.cmake
-        DESTINATION lib/cmake/SofaTest)
-
-# SofaTestTargets.cmake
-install(EXPORT SofaTestTargets
-        DESTINATION lib/cmake/SofaTest)
-
-# SofaTestConfig.cmake (build directory)
-set(SOFATEST_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(SofaTestConfig.cmake.in
-                              ${CMAKE_BINARY_DIR}/SofaTest/SofaTestConfig.cmake
-                              INSTALL_DESTINATION Nope
-                              PATH_VARS SOFATEST_INCLUDE_DIR)
-
-# SofaTestConfig.cmake (install directory)
-set(SOFATEST_INCLUDE_DIR include)
-configure_package_config_file(SofaTestConfig.cmake.in
-                              ${CMAKE_BINARY_DIR}/SofaTest/SofaTestConfigInstall.cmake
-                              INSTALL_DESTINATION lib/cmake/SofaTest
-                              PATH_VARS SOFATEST_INCLUDE_DIR)
-install(FILES ${CMAKE_BINARY_DIR}/SofaTest/SofaTestConfigInstall.cmake
-        DESTINATION lib/cmake/SofaTest
-        RENAME SofaTestConfig.cmake)
+# CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(SofaTest ${SOFATEST_VERSION})

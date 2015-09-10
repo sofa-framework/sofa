@@ -159,45 +159,17 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 # add_subdirectory(SofaPython_test)
 
-include(CMakePackageConfigHelpers)
-# SofaPythonConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(SofaPythonConfigVersion.cmake
-                                 VERSION ${SOFAPYTHON_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaPythonConfigVersion.cmake
-        DESTINATION lib/cmake/SofaPython)
-
-
-# SofaPythonConfig.cmake (build tree)
-set(SOFAPYTHON_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(SofaPythonConfig.cmake.in
-                              SofaPythonConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-                              PATH_VARS SOFAPYTHON_INCLUDE_DIR)
-
-# SofaPythonConfig.cmake (installed)
-set(SOFAPYTHON_INCLUDE_DIR include)
-configure_package_config_file(SofaPythonConfig.cmake.in
-                              SofaPythonConfigInstall.cmake
-                              INSTALL_DESTINATION lib/cmake/SofaPython
-                              PATH_VARS SOFAPYTHON_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaPythonConfigInstall.cmake
-        DESTINATION lib/cmake/SofaPython
-        RENAME SofaPythonConfig.cmake)
-
 
 install(TARGETS ${PROJECT_NAME}
-    COMPONENT SofaPython_libraries
-    EXPORT SofaPythonTargets
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
+        COMPONENT SofaPython_libraries
+        EXPORT SofaPythonTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
-# SofaPythonTargets.cmake (installed)
-install(EXPORT SofaPythonTargets
-        DESTINATION lib/cmake/SofaPython)
+# CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(SofaPython ${SOFAPYTHON_VERSION})
