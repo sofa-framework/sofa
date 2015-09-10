@@ -2,11 +2,11 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 # FF temporarily deactivated InertiaAlign_test, as well as add_executable since it does not accept 0 parameter
 set(SOURCE_FILES
-#   InertiaAlign_test.cpp
-        )
+    # InertiaAlign_test.cpp
+)
 
 if(APPLE)
-#    set(RC_FILES "runSOFA.icns")
+    # set(RC_FILES "runSOFA.icns")
 endif()
 
 include_directories("${SOFA_APPLICATIONS_PROJECTS_DIR}/Standard_test")

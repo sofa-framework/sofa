@@ -1,25 +1,21 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-
-    initPlugin.h 
     PreassembledMass.h
     PreassembledMass.inl
-
-	)
+    config.h
+)
 
 set(SOURCE_FILES
-
-    initPlugin.cpp 
     PreassembledMass.cpp
-
-	)
+    initPlugin.cpp
+)
 
 if(SOFA-PLUGIN_FLEXIBLE)
-    
-        AddLinkerDependencies(Flexible)
-        AddCompilerDefinitions("SOFA_HAVE_FLEXIBLE" )
-        
+
+    AddLinkerDependencies(Flexible)
+    AddCompilerDefinitions("SOFA_HAVE_FLEXIBLE" )
+
 endif()
 
 

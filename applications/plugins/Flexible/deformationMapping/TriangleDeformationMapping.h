@@ -30,7 +30,7 @@
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../types/DeformationGradientTypes.h"
 #include "../shapeFunction/BaseShapeFunction.h"
 

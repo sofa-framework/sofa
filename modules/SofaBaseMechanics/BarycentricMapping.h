@@ -171,6 +171,11 @@ public:
 protected:
     BarycentricMapper() {}
     virtual ~BarycentricMapper() {}
+	
+private:
+	BarycentricMapper(const BarycentricMapper& n) ;
+	BarycentricMapper& operator=(const BarycentricMapper& n) ;
+	
 public:
     virtual void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
     virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) = 0;

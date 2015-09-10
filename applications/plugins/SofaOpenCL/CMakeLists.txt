@@ -3,121 +3,82 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 find_package(OpenCL REQUIRED)
 
 set(HEADER_FILES
-
-    myopencl.h
-    initSofaOpenCL.h
-    OpenCLKernel.h
-    OpenCLProgram.h
-    OpenCLProgramParser.h
-    OpenCLTypes.h
-    OpenCLCommon.h
-
-    OpenCLSphereForceField.h
-    OpenCLSphereForceField.inl
-
-    OpenCLSPHFluidForceField.h
-    OpenCLSPHFluidForceField.inl
     CPUSPHFluidForceField.h
     CPUSPHFluidForceFieldWithOpenCL.h
-
-    OpenCLSpringForceField.h
-    OpenCLSpringForceField.inl
-
-    OpenCLUniformMass.h
-    OpenCLUniformMass.inl
-
+    OpenCLCommon.h
     OpenCLFixedConstraint.h
     OpenCLFixedConstraint.inl
-
     OpenCLIdentityMapping.h
     OpenCLIdentityMapping.inl
-
+    OpenCLKernel.h
     OpenCLMechanicalObject.h
     OpenCLMechanicalObject.inl
-
     OpenCLMemoryManager.h
-
     OpenCLPlaneForceField.h
     OpenCLPlaneForceField.inl
-
+    OpenCLProgram.h
+    OpenCLProgramParser.h
+    OpenCLSPHFluidForceField.h
+    OpenCLSPHFluidForceField.inl
     OpenCLSpatialGridContainer.h
     OpenCLSpatialGridContainer.inl
-
+    OpenCLSphereForceField.h
+    OpenCLSphereForceField.inl
+    OpenCLSpringForceField.h
+    OpenCLSpringForceField.inl
+    OpenCLTypes.h
+    OpenCLUniformMass.h
+    OpenCLUniformMass.inl
+    config.h
+    myopencl.h
+    oclRadixSort/CPUSortWithCuda.h
+    oclRadixSort/CPUSortWithOpenCL.h
     oclRadixSort/RadixSort.h
     oclRadixSort/Scan.h
-    oclRadixSort/CPUSortWithOpenCL.h
-    oclRadixSort/CPUSortWithCuda.h
-
-    tools/top.h
     tools/showvector.h
-    )
+    tools/top.h
+)
 
 set(SOURCE_FILES
-
-    myopencl.cpp
-    initSofaOpenCL.cpp
-    OpenCLCommon.cpp
-    OpenCLProgram.cpp
-    OpenCLMouseInteraction.cpp
-
-    OpenCLSphereForceField.cpp
-
-    OpenCLSPHFluidForceField.cpp
     CPUSPHFluidForceField.cpp
     CPUSPHFluidForceFieldWithOpenCL.cpp
-
-    OpenCLSpringForceField.cpp
-
-    OpenCLUniformMass.cpp
-
     OpenCLBoxROI.cpp
-
+    OpenCLCommon.cpp
     OpenCLFixedConstraint.cpp
-
     OpenCLIdentityMapping.cpp
-
     OpenCLMechanicalObject.cpp
-
     OpenCLMemoryManager.cpp
-
+    OpenCLMouseInteraction.cpp
     OpenCLPlaneForceField.cpp
-
+    OpenCLProgram.cpp
+    OpenCLSPHFluidForceField.cpp
     OpenCLSpatialGridContainer.cpp
-
+    OpenCLSphereForceField.cpp
+    OpenCLSpringForceField.cpp
+    OpenCLUniformMass.cpp
+    initSofaOpenCL.cpp
+    myopencl.cpp
     oclRadixSort/RadixSort.cpp
     oclRadixSort/Scan.cpp
-
-    tools/top.cpp
     tools/showvector.cpp
-    )
+    tools/top.cpp
+)
 
 set(OTHER_FILES
-
-    kernels/OpenCLGenericParticleForceField.cl
-
-    kernels/OpenCLSPHFluidForceField.cl
-
-    kernels/OpenCLSpringForceField.cl
-
-    kernels/OpenCLUniformMass.cl
-
     kernels/OpenCLFixedConstraint.cl
-
-    kernels/OpenCLMechanicalObject.cl
-
-    kernels/OpenCLMemoryManager.cl
-
+    kernels/OpenCLGenericParticleForceField.cl
     kernels/OpenCLGenericParticleForceField_Plane.macrocl
-
     kernels/OpenCLGenericParticleForceField_Sphere.macrocl
-
+    kernels/OpenCLMechanicalObject.cl
+    kernels/OpenCLMemoryManager.cl
+    kernels/OpenCLSPHFluidForceField.cl
     kernels/OpenCLSpatialGridContainer.cl
-
     kernels/OpenCLSpatialGridForce.cl
-
+    kernels/OpenCLSpringForceField.cl
+    kernels/OpenCLUniformMass.cl
     kernels/oclRadixSort/RadixSort.cl
     kernels/oclRadixSort/Scan_b.cl
-    )
+)
 
 include_directories(${OPENCL_INCLUDE_DIRS})
 

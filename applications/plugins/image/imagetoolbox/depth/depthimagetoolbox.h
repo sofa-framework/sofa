@@ -16,7 +16,7 @@
 #include "ImageTypes.h"
 #include "meshData.h"
 
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 
 
 

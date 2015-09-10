@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_PrincipalStretchesMAPPING_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "PrincipalStretchesMapping.h"
 #include <sofa/core/ObjectFactory.h>
 

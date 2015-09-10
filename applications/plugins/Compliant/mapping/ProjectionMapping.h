@@ -2,7 +2,7 @@
 #define PROJECTIONMAPPING_H
 
 #include "AssembledMapping.h"
-#include "initCompliant.h"
+#include <Compliant/config.h>
 
 #include "../utils/map.h"
 #include "../utils/pair.h"

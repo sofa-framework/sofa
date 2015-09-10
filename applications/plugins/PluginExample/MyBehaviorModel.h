@@ -25,7 +25,7 @@
 #ifndef PLUGINEXAMPLE_MYBEHAVIORMODEL_H
 #define PLUGINEXAMPLE_MYBEHAVIORMODEL_H
 
-#include "initPlugin.h"
+#include <PluginExample/config.h>
 #include <sofa/core/BehaviorModel.h>
 
 

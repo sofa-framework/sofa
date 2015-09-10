@@ -1,15 +1,17 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-    NewOmniDriver.h 
+    EnslavementForceFeedback.h
+    NewOmniDriver.h
     OmniDriver.h
-    EnslavementForceFeedback.h)
+)
 
 set(SOURCE_FILES
-    initSensable.cpp 
-    NewOmniDriver.cpp 
-    OmniDriver.cpp 
-	EnslavementForceFeedback.cpp)
+    EnslavementForceFeedback.cpp
+    NewOmniDriver.cpp
+    OmniDriver.cpp
+    initSensable.cpp
+)
 
 set(README_FILES PluginSensable.txt)
 

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_CorotationalMeshMapping_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "CorotationalMeshMapping.h"
 #include <sofa/core/ObjectFactory.h>
 

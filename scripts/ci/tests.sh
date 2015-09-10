@@ -6,6 +6,10 @@
 
 set -o errexit
 
+# Disable colored output to avoid dirtying the log
+export GTEST_COLOR=no
+export SOFA_COLOR_TERMINAL=no
+
 usage() {
     echo "Usage: tests.sh (run|print-summary) <build-dir> <src-dir>"
 }

@@ -1,23 +1,16 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-
-	CarvingManager.h
-	initSofaCarving.h
-
-	)
+    CarvingManager.h
+    config.h
+)
 
 set(SOURCE_FILES
-
-	CarvingManager.cpp
+    CarvingManager.cpp
     initSofaCarving.cpp
+)
 
-	)
-
-set(README_FILES
-
-	SofaCarving.txt
-	)
+set(README_FILES SofaCarving.txt)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
 

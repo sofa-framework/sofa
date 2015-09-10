@@ -2,7 +2,7 @@
 #define RIGIDJOINTMAPPING_H
 
 #include "AssembledMapping.h"
-#include "initCompliant.h"
+#include <Compliant/config.h>
 
 #include "utils/se3.h"
 #include <sofa/core/ObjectFactory.h>

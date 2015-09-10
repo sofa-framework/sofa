@@ -1,17 +1,15 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-
-    initExternalBehaviorModel.h 
-    FEMGridBehaviorModel.h 
-    FEMGridBehaviorModel.inl 
-	)
+    FEMGridBehaviorModel.h
+    FEMGridBehaviorModel.inl
+    config.h
+)
 
 set(SOURCE_FILES
-
-    initExternalBehaviorModel.cpp 
-    FEMGridBehaviorModel.cpp 
-        )
+    FEMGridBehaviorModel.cpp
+    initExternalBehaviorModel.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 

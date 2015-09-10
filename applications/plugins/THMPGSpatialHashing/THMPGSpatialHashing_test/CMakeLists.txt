@@ -1,12 +1,8 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
-set(HEADER_FILES
-
-	)
-
 set(SOURCE_FILES
-  THMPGSpatialHashingTest.cpp
-	)
+    THMPGSpatialHashingTest.cpp
+)
 
 include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
 link_directories("${SOFA_EXTLIBS_DIR}/gtest/lib")

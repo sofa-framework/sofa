@@ -84,7 +84,7 @@ template< class DataTypes>
 		for (size_t i=0;i<tbiArray.size();++i) {
 			tbi=tbiArray[i];
 			bernsteinCoefficientArray[i]=multinomial(degree,tbi); 
-			bernsteinCoeffMap.insert(std::pair<TetrahedronBezierIndex,Real>(tbi,(double) bernsteinCoefficientArray[i]));
+			bernsteinCoeffMap.insert(std::pair<TetrahedronBezierIndex,Real>(tbi,(Real)bernsteinCoefficientArray[i]));
 		}
 		/// insert coefficient for the inferior degree
 		BezierDegreeType i,j,k,l,m,n,index1,index2;
@@ -93,7 +93,7 @@ template< class DataTypes>
 				for (k=0;k<=(degree-j-i-1);++k) {
 					l=degree-1-i-j-k;
 					tbi=TetrahedronBezierIndex(i,j,k,l);
-					bernsteinCoeffMap.insert(std::pair<TetrahedronBezierIndex,Real>(tbi,(double) multinomial(degree-1,tbi)));
+					bernsteinCoeffMap.insert(std::pair<TetrahedronBezierIndex,Real>(tbi,(Real)multinomial(degree-1,tbi)));
 				}
 			}
 		}
@@ -413,7 +413,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 				std::vector<Real> edgeLengthArray;
 				// compute median of the edge distance between control points	
 				sofa::helper::set<std::pair<Edge,size_t> >::iterator ite=bezierTetrahedronEdgeSet.begin();
-				Real val=0;
+                //Real val=0;
 				Coord pp;
 				for (; ite!=bezierTetrahedronEdgeSet.end(); ite++)
 				{
@@ -480,7 +480,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 				std::vector<Real> edgeLengthArray;
 				// compute median of the edge distance between control points	
 				sofa::helper::set<std::pair<Edge,size_t> >::iterator ite=bezierTetrahedronEdgeSet.begin();
-				Real val=0;
+                //Real val=0;
 				Coord pp;
 				for (; ite!=bezierTetrahedronEdgeSet.end(); ite++)
 				{

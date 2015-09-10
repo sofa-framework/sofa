@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initSofaPML.h"
+#include <SofaPML/config.h>
 
 namespace sofa
 {

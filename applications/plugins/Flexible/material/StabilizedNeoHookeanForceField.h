@@ -25,7 +25,7 @@
 #ifndef SOFA_StabilizedNeoHookeanFORCEFIELD_H
 #define SOFA_StabilizedNeoHookeanFORCEFIELD_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../material/BaseMaterialForceField.h"
 #include "../material/StabilizedNeoHookeanMaterialBlock.h"
 

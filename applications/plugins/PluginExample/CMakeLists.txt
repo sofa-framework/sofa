@@ -1,26 +1,18 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-
-    MyDataWidgetUnsigned.h 
-
-	)
+    MyDataWidgetUnsigned.h
+)
 
 set(SOURCE_FILES
-
-    MyBehaviorModel.cpp 
-    MyDataWidgetUnsigned.cpp 
-    MyProjectiveConstraintSet.cpp 
-    MyMappingPendulumInPlane.cpp 
+    MyBehaviorModel.cpp
+    MyDataWidgetUnsigned.cpp
+    MyMappingPendulumInPlane.cpp
+    MyProjectiveConstraintSet.cpp
     initPlugin.cpp
+)
 
-	)
-
-set(README_FILES
-
-	PluginExample.txt
-
-	)
+set(README_FILES PluginExample.txt)
 
 UseQt()
 
@@ -31,15 +23,13 @@ ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
 
 # these header files do not need MOCcing
 list(APPEND HEADER_FILES
-
-	MyBehaviorModel.h 
-    MyMappingPendulumInPlane.h 
-    MyMappingPendulumInPlane.inl 
-    MyProjectiveConstraintSet.h 
-    MyProjectiveConstraintSet.inl 
-	initPlugin.h
-
-	)
+    MyBehaviorModel.h
+    MyMappingPendulumInPlane.h
+    MyMappingPendulumInPlane.inl
+    MyProjectiveConstraintSet.h
+    MyProjectiveConstraintSet.inl
+    config.h
+)
 
 set(MOC_FILES_GROUP "Generated")
 

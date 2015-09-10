@@ -47,7 +47,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/visual/VisualModel.h>
-#include "initSofaPML.h"
+#include <SofaPML/config.h>
 
 #include <map>
 
@@ -99,15 +99,15 @@ public :
     virtual void addDForce (VecDeriv& , const VecDeriv& ) {}
     virtual double getPotentialEnergy(const VecCoord& ) const {return 0;}
 
-    virtual void addForce(const MechanicalParams* mparams, DataVecDeriv& f , const DataVecCoord& x , const DataVecDeriv& v)
+    virtual void addForce(const MechanicalParams* /*mparams*/, DataVecDeriv& /*f*/ , const DataVecCoord& /*x*/ , const DataVecDeriv& /*v*/)
     {
         serr << "LMLForce::addForce() not implemented" << sendl;
     }
-    virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
+    virtual void addDForce(const MechanicalParams* /*mparams*/, DataVecDeriv& /*df*/, const DataVecDeriv& /*dx*/)
     {
         serr << "LMLForce::addDForce() not implemented" << sendl;
     }
-    virtual double getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord& x) const
+    virtual double getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/) const
     {
         serr << "LMLForce::getPotentialEnergy() not implemented" << sendl;
         return 0.;

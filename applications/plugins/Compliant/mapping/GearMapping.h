@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPLIANT_GEARMAPPING_H
 #define SOFA_COMPLIANT_GEARMAPPING_H
 
-#include "../initCompliant.h"
+#include <Compliant/config.h>
 
 #include "AssembledMultiMapping.h"
 

@@ -1,19 +1,15 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-
-    initManualMapping.h
     ManualLinearMapping.h
     ManualLinearMapping.inl
-
-	)
+    config.h
+)
 
 set(SOURCE_FILES
-
-    initManualMapping.cpp
     ManualLinearMapping.cpp
-
-	)
+    initManualMapping.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 

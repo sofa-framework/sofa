@@ -112,7 +112,7 @@ void Bezier2MeshMechanicalMapping<TIn, TOut>::init()
 			u=(Real)i/(Real)bezierTesselation;
 			v=(Real)(1.0f-u);
 			for(j=0;j<=bezierDegree;++j){
-				weightArray[j]=(Real)(pow(u,j)*pow(v,bezierDegree-j)*sofa::component::topology::binomial<Real>(bezierDegree-j,j));
+				weightArray[j]=(Real)(pow(u,(int)j)*pow(v,(int)(bezierDegree-j))*sofa::component::topology::binomial<Real>(bezierDegree-j,j));
 			}
 			precomputedLinearBernsteinCoefficientArray[i-1]=weightArray;
 		}
@@ -583,7 +583,7 @@ void Bezier2MeshMechanicalMapping<TIn, TOut>::applyJT(const core::MechanicalPara
 
 
 template <class TIn, class TOut>
-void Bezier2MeshMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/, Data<InMatrixDeriv>& dOut, const Data<OutMatrixDeriv>& dIn)
+void Bezier2MeshMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/, Data<InMatrixDeriv>& /*dOut*/, const Data<OutMatrixDeriv>& /*dIn*/)
 {
 
     if (!topoMap)

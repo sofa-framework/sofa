@@ -46,7 +46,7 @@
 #include "sofa/core/behavior/Constraint.h"
 #include "sofa/core/behavior/MechanicalState.h"
 #include "sofa/core/visual/VisualModel.h"
-#include "initSofaPML.h"
+#include <SofaPML/config.h>
 
 #include <vector>
 #include <map>
@@ -101,13 +101,13 @@ public :
     virtual void projectVelocity(VecDeriv& ) {} ///< project dx to constrained space (dx models a velocity)
     virtual void projectPosition(VecCoord& x); ///< project x to constrained space (x models a position)
 
-    virtual void getConstraintViolation(const core::ConstraintParams* cParams, defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v)
+    virtual void getConstraintViolation(const core::ConstraintParams* /*cParams*/, defaulttype::BaseVector* /*resV*/, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
     {
         serr << "LMLConstraint::getConstraintViolation() not implemented" << sendl;
     }
 
 
-    virtual void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv & c, unsigned int &cIndex, const DataVecCoord &x)
+    virtual void buildConstraintMatrix(const core::ConstraintParams* /*cParams*/, DataMatrixDeriv& /*c*/, unsigned& /*cIndex*/, const DataVecCoord& /*x*/)
     {
         serr << "LMLConstraint::buildConstraintMatrix() not implemented" << sendl;
     }

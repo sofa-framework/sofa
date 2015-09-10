@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_CauchyStrainMAPPING_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "CauchyStrainMapping.h"
 #include <sofa/core/ObjectFactory.h>
 
@@ -43,7 +43,7 @@ SOFA_DECL_CLASS(CauchyStrainMapping)
 using namespace defaulttype;
 
 // Register in the Factory
-int CauchyStrainMappingClass = core::RegisterObject("Map Deformation Gradients to Linear/Cauchy Strain (small deformations).")
+int CauchyStrainMappingClass = core::RegisterObject("Map Deformation Gradients to Linear/Cauchy Strain (small displacements)")
 
         .add< CauchyStrainMapping< F331Types, E331Types > >(true)
         .add< CauchyStrainMapping< F321Types, E321Types > >()

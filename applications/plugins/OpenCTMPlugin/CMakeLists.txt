@@ -1,20 +1,18 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-    initOpenCTMPlugin.h
-    OpenCTMLoader.h
     OpenCTMExporter.h
-	)
+    OpenCTMLoader.h
+    config.h
+)
 
 set(SOURCE_FILES
-    initOpenCTMPlugin.cpp
-    OpenCTMLoader.cpp
     OpenCTMExporter.cpp
-	)
+    OpenCTMLoader.cpp
+    initOpenCTMPlugin.cpp
+)
 
-set(README_FILES
-    OpenCTMPlugin.txt
-	)
+set(README_FILES OpenCTMPlugin.txt)
 
 find_package(OpenCTM REQUIRED)
 include_directories("${OPENCTM_INCLUDE_PATH}")

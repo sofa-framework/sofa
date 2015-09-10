@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define FLEXIBLE_DeformationGradientTYPES_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../types/DeformationGradientTypes.h"
 #include <sofa/core/ObjectFactory.h>
 

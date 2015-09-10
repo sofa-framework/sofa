@@ -5,29 +5,28 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-   AffinePatch_test.cpp
-   AffineDeformationMapping_test.cpp
-   FramesBeamMaterial_test.cpp
-   HexahedraMaterial_test.cpp
-   Material_test.cpp
-   MooneyRivlinHexahedraMaterial_test.cpp
-   NeoHookeHexahedraMaterial_test.cpp
-   PointDeformationMapping_test.cpp
-   Patch_test.cpp
-   RigidDeformationMapping_test.cpp
-   ShapeFunction_test.cpp
-   StabilizedNeoHookeHexahedraMaterial_test.cpp
-   TetrahedraMaterial_test.cpp
-   TetrahedronVolumeMapping_test.cpp
+    AffineDeformationMapping_test.cpp
+    AffinePatch_test.cpp
+    CauchyStrainMapping_test.cpp
+    CorotationalStrainMapping_test.cpp
+    Engine_test.cpp
+    FramesBeamMaterial_test.cpp
+    GreenStrainMapping_test.cpp
+    HexahedraMaterial_test.cpp
+    InvariantMapping_test.cpp
+    Material_test.cpp
+    MooneyRivlinHexahedraMaterial_test.cpp
+    NeoHookeHexahedraMaterial_test.cpp
+    Patch_test.cpp
+    PointDeformationMapping_test.cpp
+    PrincipalStretchesMapping_test.cpp
+    RigidDeformationMapping_test.cpp
+    ShapeFunction_test.cpp
+    StabilizedNeoHookeHexahedraMaterial_test.cpp
+    TetrahedraMaterial_test.cpp
+    TetrahedronVolumeMapping_test.cpp
+)
 
-   CorotationalStrainMapping_test.cpp
-   CauchyStrainMapping_test.cpp
-   GreenStrainMapping_test.cpp
-   InvariantMapping_test.cpp
-   PrincipalStretchesMapping_test.cpp
-
-   Engine_test.cpp
-        )
 
 if(WIN32)
     list(APPEND HEADER_FILES "stdafx.h")
@@ -35,7 +34,7 @@ if(WIN32)
 endif()
 
 if(APPLE)
-#    set(RC_FILES "runSOFA.icns")
+    #    set(RC_FILES "runSOFA.icns")
 endif()
 
 include_directories("${SOFA_APPLICATIONS_PROJECTS_DIR}/Standard_test")
@@ -44,7 +43,9 @@ if(SOFA-PLUGIN_SOFAPYTHON)
     AddCompilerDefinitions("FLEXIBLE_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes/python\"")
     list(APPEND SOURCE_FILES "python_test_list.cpp")
     AddLinkerDependencies(SofaPython)
-    include(./scenes/python/python.cmake)
+    set(PYTHON_FILES
+        scenes/python/reInitMapping.py
+    )
 endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${RC_FILES} ${PYTHON_FILES})

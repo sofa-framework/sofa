@@ -58,7 +58,10 @@ void GUIManager::AddGUIOption(const char* option)
     guiOptions.push_back(option);
 }
 
-const std::string &GUIManager::GetCurrentGUIName() {return currentGUI->GetGUIName();};
+const std::string &GUIManager::GetCurrentGUIName()
+{
+    return currentGUI->GetGUIName();
+}
 
 int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* init, int priority)
 {

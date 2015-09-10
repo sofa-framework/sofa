@@ -45,13 +45,13 @@ GenerateCylinder<DataTypes>::GenerateCylinder()
     : f_outputTetrahedraPositions ( initData (&f_outputTetrahedraPositions, "output_TetrahedraPosition", "output array of 3d points of tetrahedra mesh") )
 	, f_outputTrianglesPositions ( initData (&f_outputTrianglesPositions, "output_TrianglesPosition", "output array of 3d points of triangle mesh") )
     , f_tetrahedra( initData (&f_tetrahedra, "tetrahedra", "output mesh tetrahedra") )
-	, f_triangles( initData (&f_triangles, "triangles", "output triangular mesh") )
-	, f_bezierTriangleDegree( initData (&f_bezierTriangleDegree, "BezierTriangleDegree", "order of Bezier triangles") )
-	, f_bezierTriangleWeight( initData (&f_bezierTriangleWeight, "BezierTriangleWeights", "weights of rational Bezier triangles") )	
-	, f_bezierTetrahedronDegree( initData (&f_bezierTetrahedronDegree, "BezierTetrahedronDegree", "order of Bezier tetrahedra") )
+    , f_triangles( initData (&f_triangles, "triangles", "output triangular mesh") )
+    , f_bezierTriangleWeight( initData (&f_bezierTriangleWeight, "BezierTriangleWeights", "weights of rational Bezier triangles") )
+    , f_isBezierTriangleRational( initData (&f_isBezierTriangleRational, "isBezierTriangleRational", "booleans indicating if each Bezier triangle is rational or integral") )
+    , f_bezierTriangleDegree( initData (&f_bezierTriangleDegree, "BezierTriangleDegree", "order of Bezier triangles") )
 	, f_bezierTetrahedronWeight( initData (&f_bezierTetrahedronWeight, "BezierTetrahedronWeights", "weights of rational Bezier tetrahedra") )	
-	, f_isBezierTetrahedronRational( initData (&f_isBezierTetrahedronRational, "isBezierTetrahedronRational", "booleans indicating if each Bezier tetrahedron is rational or integral") )	
-	, f_isBezierTriangleRational( initData (&f_isBezierTriangleRational, "isBezierTriangleRational", "booleans indicating if each Bezier triangle is rational or integral") )	
+    , f_isBezierTetrahedronRational( initData (&f_isBezierTetrahedronRational, "isBezierTetrahedronRational", "booleans indicating if each Bezier tetrahedron is rational or integral") )
+    , f_bezierTetrahedronDegree( initData (&f_bezierTetrahedronDegree, "BezierTetrahedronDegree", "order of Bezier tetrahedra") )
     , f_radius( initData (&f_radius,(Real)0.2, "radius", "input cylinder radius") )
     , f_height( initData (&f_height,(Real)1.0, "height", "input cylinder height") )
 	, f_origin( initData (&f_origin,Coord(), "origin", "cylinder origin point") )
@@ -218,7 +218,7 @@ void GenerateCylinder<DataTypes>::update()
 		std::map<Edge,size_t> edgeMap;
 		std::map<Edge,size_t>::iterator item; 
 		SeqTetrahedra::iterator itt;
-		size_t pointOffset=freqTheta*freqZ;
+        //size_t pointOffset=freqTheta*freqZ;
 		Real ctheta=cos(M_PI/freqTheta);
 		Coord posTmp,posTmp2;
 		std::vector<Edge> edgeArray;

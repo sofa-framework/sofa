@@ -1,7 +1,7 @@
 #ifndef SOFA_SIMPLEGUI_CAMERA_H
 #define SOFA_SIMPLEGUI_CAMERA_H
 
-#include "initSimpleGUI.h"
+#include <SofaSimpleGUI/config.h>
 #include <Eigen/Geometry>
 
 namespace sofa{

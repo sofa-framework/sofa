@@ -58,17 +58,22 @@
 
 #ifndef HASH_NAMESPACE
 #  ifdef _MSC_VER
-#    if _MSC_VER >= 1300
-#      include <hash_map>
-//#      if _MSC_VER >= 1400
-#        define HASH_NAMESPACE stdext
-//#      else
-//#        define HASH_NAMESPACE std
-//#      endif
-#    else
-#      include <map>
-#      define HASH_NAMESPACE std
-#    endif
+#    if _MSC_VER >= 1900
+#      include <unordered_map>
+#	   define HASH_NAMESPACE std
+#	 else
+#     if _MSC_VER >= 1300
+#       include <hash_map>
+//#       if _MSC_VER >= 1400
+#         define HASH_NAMESPACE stdext
+//#       else
+//#         define HASH_NAMESPACE std
+//#       endif
+#     else
+#       include <map>
+#       define HASH_NAMESPACE std
+#     endif
+#	 endif
 #  else
 #  // TODO this test should not be about the compiler, but which stdc++ library to use
 #    if __GNUC__ > 4 || (__GNUC__ == 4 && (__GNUC_MINOR__ >= 3 )) || __llvm__ || __clang__ // I am not sure about clang version, but sofa compiles only from clang3.4 anyway
@@ -282,7 +287,11 @@ public:
     typedef HASH_NAMESPACE::hash_map<Key, Grid*, key_hash_fun> Map;
 #    endif
 #else
-    typedef HASH_NAMESPACE::hash_map<Key, Grid*, key_hash_fun> Map;
+#	if _MSC_VER >= 1900
+		typedef HASH_NAMESPACE::unordered_map<Key, Grid*, key_hash_fun> Map;
+#	else
+		typedef HASH_NAMESPACE::hash_map<Key, Grid*, key_hash_fun> Map;
+#   endif
 #endif
 
 

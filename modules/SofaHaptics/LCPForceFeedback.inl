@@ -199,6 +199,11 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
     const unsigned int stateSize = state.size();
     // Resize du vecteur force. Initialization � 0 ?
     forces.resize(stateSize);
+    // Init to 0
+    for(unsigned int i = 0; i < stateSize; ++i)
+    {
+        forces[i] = Deriv();
+    }
 
     sofa::helper::system::thread::ctime_t actualTime = _timer->getTime();
     ++timer_iterations;

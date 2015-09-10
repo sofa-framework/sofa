@@ -32,7 +32,7 @@
 
 #include "imagetoolboxbasicactionwidget.h"
 #include "imagetoolboxlabelactionwidget.h"
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 #include <typeinfo>
 
 namespace sofa
