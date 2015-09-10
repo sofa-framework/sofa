@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 2.8.11)
-
 project(SofaGui)
-set(SOFAGUI_VERSION 0.0.1)
 
 ## Temporary
 set(SofaGui_ACTUAL_SOURCE_DIR ${SofaGui_SOURCE_DIR}/../applications/sofa/gui)
@@ -113,4 +111,4 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SofaGui/SofaGuiConfig.h"
 
 # CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaGui ${SOFAGUI_VERSION})
+sofa_write_package_config_files(SofaGui ${SofaFramework_VERSION})

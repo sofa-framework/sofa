@@ -5,16 +5,6 @@ project(${SOLUTION_NAME})
 #temporary until we move the sub projects
 set(SofaAdvanced_ACTUAL_SOURCE_DIR ${SofaAdvanced_SOURCE_DIR}/../modules/)
 
-##
-## SofaAdvanced version
-##
-set(SOFAADVANCED_MAJOR_VERSION 0)
-set(SOFAADVANCED_MINOR_VERSION 0)
-set(SOFAADVANCED_BUILD_VERSION 1)
-
-set(SOFAADVANCED_VERSION ${SOFAADVANCED_MAJOR_VERSION}.${SOFAADVANCED_MINOR_VERSION}.${SOFAADVANCED_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
-
-
 ## SofaAdvanced dependencies
 ##
 find_package(SofaGeneral REQUIRED)
@@ -47,4 +37,4 @@ endforeach()
 
 # CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaAdvanced ${SOFAADVANCED_VERSION})
+sofa_write_package_config_files(SofaAdvanced ${SofaFramework_VERSION})

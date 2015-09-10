@@ -53,7 +53,6 @@ target_link_libraries(${PROJECT_NAME} SofaGuiMain SofaComponentBase SofaComponen
 # SofaGuiCommon Qwt SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField
 
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFABASE_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 install(TARGETS ${PROJECT_NAME}

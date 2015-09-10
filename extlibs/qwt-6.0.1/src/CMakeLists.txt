@@ -2,11 +2,7 @@ cmake_minimum_required(VERSION 2.8.12)
 project(qwt)
 
 
-set(QWT_MAJOR_VERSION 6)
-set(QWT_MINOR_VERSION 0)
-set(QWT_PATCH_VERSION 1)
-set(QWT_VERSION ${QWT_MAJOR_VERSION}.${QWT_MINOR_VERSION}.${QWT_PATCH_VERSION})
-
+set(QWT_VERSION 6.0.1)
 
 file(GLOB HEADER_FILES qwt_*.h)
 
