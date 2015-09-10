@@ -26,8 +26,8 @@ if(SofaTest_FOUND)
 endif()
 
 install(TARGETS ${PROJECT_NAME}
-    COMPONENT THMPGSpatialHashing_libraries
-    EXPORT THMPGSpatialHashingTargets
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
+        COMPONENT THMPGSpatialHashing_libraries
+        EXPORT THMPGSpatialHashingTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)

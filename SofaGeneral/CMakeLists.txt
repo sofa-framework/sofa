@@ -32,14 +32,24 @@ configure_file(SofaGeneralConfig.h.in
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaGeneral/SofaGeneralConfig.h
          DESTINATION "include/SofaGeneral")
 
-set(SOFAGENERAL_TARGETS SofaBoundaryCondition SofaComponentGeneral
-    SofaConstraint SofaEngine SofaExporter SofaGraphComponent SofaHaptics
-    SofaPreconditioner SofaSparseSolver SofaTopologyMapping SofaUserInteraction
-    SofaValidation)
+set(SOFAGENERAL_TARGETS
+    SofaBoundaryCondition
+    SofaComponentGeneral
+    SofaConstraint
+    SofaEngine
+    SofaExporter
+    SofaGraphComponent
+    SofaHaptics
+    SofaPreconditioner
+    SofaSparseSolver
+    SofaTopologyMapping
+    SofaUserInteraction
+    SofaValidation
+)
 
 if(SOFA_HAVE_NEWMAT)
-  list(APPEND SOFAGENERAL_DEPENDENCY_LINK newmat)
-  list(APPEND SOFAGENERAL_TARGETS SofaDenseSolver)
+    list(APPEND SOFAGENERAL_DEPENDENCY_LINK newmat)
+    list(APPEND SOFAGENERAL_TARGETS SofaDenseSolver)
 endif()
 
 if(SOFA_HAVE_CSPARSE)
@@ -47,15 +57,15 @@ if(SOFA_HAVE_CSPARSE)
 endif()
 
 if(NOT SOFA_NO_OPENGL)
-   list(APPEND SOFAGENERAL_TARGETS SofaOpenglVisual)
+    list(APPEND SOFAGENERAL_TARGETS SofaOpenglVisual)
 endif()
 
 if(SOFA_HAVE_TAUCS)
-   list(APPEND SOFAGENERAL_TARGETS SofaTaucsSolver)
+    list(APPEND SOFAGENERAL_TARGETS SofaTaucsSolver)
 endif()
 
 if(SOFA_HAVE_EIGEN2)
-   list(APPEND SOFAGENERAL_TARGETS SofaEigen2Solver)
+    list(APPEND SOFAGENERAL_TARGETS SofaEigen2Solver)
 endif()
 
 foreach(TARGET ${SOFAGENERAL_TARGETS})

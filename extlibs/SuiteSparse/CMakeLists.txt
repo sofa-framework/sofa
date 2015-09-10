@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SuiteSparse)
 
 if(MSVC)
-
     # # I think we don't need this, because nobody actually ever
     # # includes a cholmod file in SOFA
     # file(GLOB headers "${CMAKE_CURRENT_SOURCE_DIR}/cholmod/Include/*.h")

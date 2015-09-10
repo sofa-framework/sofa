@@ -280,11 +280,11 @@ target_link_libraries(${PROJECT_NAME} SofaOpenglVisual SofaEngine SofaSphFluid S
 add_definitions("${SOFACUDA_COMPILE_DEFINITIONS}")
 
 install(TARGETS ${PROJECT_NAME}
-    COMPONENT SofaCUDA_libraries
-    EXPORT SofaCUDATargets
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
+        COMPONENT SofaCUDA_libraries
+        EXPORT SofaCUDATargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 

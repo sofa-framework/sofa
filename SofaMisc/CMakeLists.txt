@@ -20,16 +20,23 @@ set(SOFAMISC_VERSION ${SOFAMISC_MAJOR_VERSION}.${SOFAMISC_MINOR_VERSION}.${SOFAM
 find_package(SofaGeneral REQUIRED)
 set(SOFAMISC_DEPENDENCY_DIR ${SofaGeneral_INCLUDE_DIRS})
 
-configure_file(SofaMiscConfig.h.in
-               SofaMisc/SofaMiscConfig.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaMisc/SofaMiscConfig.h
-         DESTINATION "include/SofaMisc")
+configure_file(SofaMiscConfig.h.in SofaMisc/SofaMiscConfig.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaMisc/SofaMiscConfig.h DESTINATION "include/SofaMisc")
 # make sure everyone in the build tree can see <SofaMisc/SofaMiscConfig.h>
 #include_directories(${CMAKE_CURRENT_BINARY_DIR})
 #include_directories(${SofaMisc_ACTUAL_SOURCE_DIR}/../../)
 
-set(SOFAMISC_TARGETS SofaMiscTopology SofaMiscMapping SofaMiscForceField SofaMiscFem SofaMiscEngine
-    SofaMiscCollision SofaMiscSolver SofaMisc SofaComponentMisc)
+set(SOFAMISC_TARGETS
+    SofaComponentMisc
+    SofaMisc
+    SofaMiscCollision
+    SofaMiscEngine
+    SofaMiscFem
+    SofaMiscForceField
+    SofaMiscMapping
+    SofaMiscSolver
+    SofaMiscTopology
+)
 
 foreach(TARGET ${SOFAMISC_TARGETS})
     add_subdirectory(${SofaMisc_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})

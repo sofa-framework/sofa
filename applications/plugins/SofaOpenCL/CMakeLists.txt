@@ -94,7 +94,6 @@ add_definitions("-DSOFA_BUILD_GPU_OPENCL")
 target_link_libraries(${PROJECT_NAME} ${OPENCL_LIBRARIES} SofaHelper SofaEngine SofaSphFluid SofaUserInteraction csparse) # taucs taucs_mt system-taucs)
 
 
-
 install(TARGETS ${PROJECT_NAME}
         COMPONENT SofaOpenCL_libraries
         EXPORT SofaOpenCLTargets
