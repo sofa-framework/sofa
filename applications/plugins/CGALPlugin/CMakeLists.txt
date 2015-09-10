@@ -78,44 +78,15 @@ endif()
 
 
 install(TARGETS ${PROJECT_NAME}
-    COMPONENT CGALPlugin_libraries
-    EXPORT CGALPluginTargets
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
+        COMPONENT CGALPlugin_libraries
+        EXPORT CGALPluginTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
 
 install(DIRECTORY scenes/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
-
-include(CMakePackageConfigHelpers)
-# CGALPluginConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(CGALPluginConfigVersion.cmake
-                                 VERSION ${CGALPLUGIN_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CGALPluginConfigVersion.cmake
-        DESTINATION lib/cmake/CGALPlugin)
-
-
-# CGALPluginConfig.cmake (build tree)
-set(CGALPLUGIN_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(CGALPluginConfig.cmake.in
-                              CGALPluginConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-                              PATH_VARS CGALPLUGIN_INCLUDE_DIR)
-
-# CGALPluginConfig.cmake (installed)
-set(CGALPLUGIN_INCLUDE_DIR include)
-configure_package_config_file(CGALPluginConfig.cmake.in
-                              CGALPluginConfigInstall.cmake
-                              INSTALL_DESTINATION lib/cmake/CGALPlugin
-                              PATH_VARS CGALPLUGIN_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CGALPluginConfigInstall.cmake
-        DESTINATION lib/cmake/CGALPlugin
-        RENAME CGALPluginConfig.cmake)
-
-# CGALPluginTargets.cmake (installed)
-install(EXPORT CGALPluginTargets
-        DESTINATION lib/cmake/CGALPlugin)
+# CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(CGALPlugin ${CGALPLUGIN_VERSION})

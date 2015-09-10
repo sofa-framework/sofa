@@ -157,34 +157,6 @@ if(SofaGui_FOUND AND SOFA_GUI_QT)
     add_subdirectory(image_gui)
 endif()
 
-include(CMakePackageConfigHelpers)
-# imageConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(imageConfigVersion.cmake
-                                 VERSION ${IMAGE_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/imageConfigVersion.cmake
-        DESTINATION lib/cmake/image)
-
-
-# imageConfig.cmake (build tree)
-set(IMAGE_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(imageConfig.cmake.in
-                              imageConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-                              PATH_VARS IMAGE_INCLUDE_DIR)
-
-# imageConfig.cmake (installed)
-set(IMAGE_INCLUDE_DIR include)
-configure_package_config_file(imageConfig.cmake.in
-                              imageConfigInstall.cmake
-                              INSTALL_DESTINATION lib/cmake/image
-                              PATH_VARS IMAGE_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/imageConfigInstall.cmake
-        DESTINATION lib/cmake/image
-        RENAME imageConfig.cmake)
-
-# imageTargets.cmake (installed)
-install(EXPORT imageTargets
-        DESTINATION lib/cmake/image)
+# CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(image ${IMAGE_VERSION})

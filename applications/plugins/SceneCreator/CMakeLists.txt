@@ -49,35 +49,6 @@ install(TARGETS ${PROJECT_NAME}
         ARCHIVE DESTINATION lib
         PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
 
-
-include(CMakePackageConfigHelpers)
-# SceneCreatorConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(SceneCreatorConfigVersion.cmake
-                                 VERSION ${SCENECREATOR_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SceneCreatorConfigVersion.cmake
-        DESTINATION lib/cmake/SceneCreator)
-
-
-# SceneCreatorConfig.cmake (build tree)
-set(SCENECREATOR_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(SceneCreatorConfig.cmake.in
-                              SceneCreatorConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-                              PATH_VARS SCENECREATOR_INCLUDE_DIR)
-
-# SceneCreatorConfig.cmake (installed)
-set(SCENECREATOR_INCLUDE_DIR include)
-configure_package_config_file(SceneCreatorConfig.cmake.in
-                              SceneCreatorConfigInstall.cmake
-                              INSTALL_DESTINATION lib/cmake/SceneCreator
-                              PATH_VARS SCENECREATOR_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SceneCreatorConfigInstall.cmake
-        DESTINATION lib/cmake/SceneCreator
-        RENAME SceneCreatorConfig.cmake)
-
-# SceneCreatorTargets.cmake (installed)
-install(EXPORT SceneCreatorTargets
-        DESTINATION lib/cmake/SceneCreator)
+# CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(SceneCreator ${SCENECREATOR_VERSION})

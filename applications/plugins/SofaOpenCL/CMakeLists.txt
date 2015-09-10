@@ -101,34 +101,6 @@ install(TARGETS ${PROJECT_NAME}
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 
-include(CMakePackageConfigHelpers)
-# SofaOpenCLConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(SofaOpenCLConfigVersion.cmake
-                                 VERSION ${SOFAOPENCL_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaOpenCLConfigVersion.cmake
-        DESTINATION lib/cmake/SofaOpenCL)
-
-
-# SofaOpenCLConfig.cmake (build tree)
-set(SOFAOPENCL_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(SofaOpenCLConfig.cmake.in
-                              SofaOpenCLConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-                              PATH_VARS SOFAOPENCL_INCLUDE_DIR)
-
-# SofaOpenCLConfig.cmake (installed)
-set(SOFAOPENCL_INCLUDE_DIR include)
-configure_package_config_file(SofaOpenCLConfig.cmake.in
-                              SofaOpenCLConfigInstall.cmake
-                              INSTALL_DESTINATION lib/cmake/SofaOpenCL
-                              PATH_VARS SOFAOPENCL_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaOpenCLConfigInstall.cmake
-        DESTINATION lib/cmake/SofaOpenCL
-        RENAME SofaOpenCLConfig.cmake)
-
-# SofaOpenCLTargets.cmake (installed)
-install(EXPORT SofaOpenCLTargets
-        DESTINATION lib/cmake/SofaOpenCL)
+# CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(SofaOpenCL ${SOFAOPENCL_VERSION})
