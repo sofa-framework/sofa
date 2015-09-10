@@ -44,7 +44,7 @@ include(CMakePackageConfigHelpers)
 write_basic_package_version_file(SofaBaseConfigVersion.cmake
                                  VERSION ${SOFABASE_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}SofaBaseConfigVersion.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaBaseConfigVersion.cmake
         DESTINATION lib/cmake/SofaBase)
 
 # SofaBaseConfig.cmake (build tree)
@@ -61,7 +61,7 @@ configure_package_config_file(SofaBaseConfig.cmake.in
                               INSTALL_DESTINATION lib/cmake/SofaBase
                               PATH_VARS SOFABASE_INCLUDE_DIR)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}SofaBaseConfigInstall.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaBaseConfigInstall.cmake
         DESTINATION lib/cmake/SofaBase
         RENAME SofaBaseConfig.cmake)
 
