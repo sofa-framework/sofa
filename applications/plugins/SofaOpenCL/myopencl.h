@@ -32,7 +32,7 @@
 #include <CL/cl.h>
 #endif
 
-#include "initSofaOpenCL.h"
+#include <SofaOpenCL/config.h>
 #include <string>
 
 
@@ -88,10 +88,10 @@ extern "C" {
     SOFAOPENCL_API extern void myopenclMemsetDevice(int d, _device_pointer dDestPointer, int value, size_t n);
     SOFAOPENCL_API extern void* myopencldevice(int device);
     SOFAOPENCL_API extern int myopenclNumDevices();
-    SOFAOPENCL_API extern int & myopenclError();
-    SOFAOPENCL_API extern std::string myopenclErrorMsg(cl_int err);
+    SOFAOPENCL_API extern int myopenclError();
+    SOFAOPENCL_API extern const char* myopenclErrorMsg(cl_int err);
     SOFAOPENCL_API extern void myopenclShowError(std::string file, int line);
-    SOFAOPENCL_API extern std::string myopenclPath();
+    SOFAOPENCL_API extern const char* myopenclPath();
 
 
     enum MyopenclVerboseLevel

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_VolumeMapping_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "VolumeMapping.h"
 #include <sofa/core/ObjectFactory.h>
 

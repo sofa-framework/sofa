@@ -2,18 +2,20 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
     MeshSTEPLoader.h
-    ParametricTriangleTopologyContainer.h 
+    ParametricTriangleTopologyContainer.h
+    STEPShapeMapping.h
+    SingleComponent.h
     SingleComponent.inl
-    SingleComponent.h 
-    STEPShapeMapping.h 
-    initMeshSTEPLoader.h)
+    config.h
+)
 
 set(SOURCE_FILES
-    MeshSTEPLoader.cpp 
-    ParametricTriangleTopologyContainer.cpp 
-    SingleComponent.cpp 
-    STEPShapeMapping.cpp 
-    initMeshSTEPLoader.cpp)
+    MeshSTEPLoader.cpp
+    ParametricTriangleTopologyContainer.cpp
+    STEPShapeMapping.cpp
+    SingleComponent.cpp
+    initMeshSTEPLoader.cpp
+)
 
 set(README_FILES PluginMeshSTEPLoader.txt)
 
@@ -67,13 +69,13 @@ if(WIN32)
     ## OpenCascade third party
     file(GLOB sharedObjects "${SOFA-EXTERNAL_OPENCASCADE_PATH}/3rdparty/tbb30_018oss/bin/ia32/vc9/*.dll")
     foreach(sharedObject ${sharedObjects})
-	file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+        file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
     endforeach()
 
     ## OpenCascade core
     file(GLOB sharedObjects "${SOFA-EXTERNAL_OPENCASCADE_PATH}/ros/win32/vc9/bin/*.dll")
     foreach(sharedObject ${sharedObjects})
-	file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+        file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
     endforeach()
 endif()
 

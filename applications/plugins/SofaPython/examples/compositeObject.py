@@ -132,19 +132,30 @@ def createGridScene(rootNode, startPoint, endPoint, numX, numY, numZ, totalMass,
     mappedIndex = 0
     print 'len(indices)='+str(len(indices))
 #    print 'indices='+str(indices)
-    for ind in indices:
+
+    rigidIndexPerPoint = [0]* len(xmapped)
+
+    r = 0
+    for ind in indices: # every rigids
         print 'len(ind)='+str(len(ind))
         pointsPerFrame.append(len(ind)) # Tell the mapping the number of points associated with this frame. One box per frame
+
         for i in ind:
             print 'i='+str(i)+'    mappedIndex='+str(mappedIndex)
             parentParticles[i] = [mappedParticles_dof,mappedIndex]
 #            print 'xgrid[i]'+str(xgrid[i])
             xmapped[mappedIndex] = xgrid[i]
+            rigidIndexPerPoint[mappedIndex] = r
             mappedIndex = mappedIndex+1
+        r+=1
+
     mappedParticles_dof.position = xmapped
-    print 'repartition='+str(mappedParticles_mapping.repartition)
-    mappedParticles_mapping.findData('repartition').setSize(len(pointsPerFrame))
-    mappedParticles_mapping.repartition = pointsPerFrame
+
+
+    print "rigidIndexPerPoint "
+    print rigidIndexPerPoint
+    mappedParticles_mapping.rigidIndexPerPoint = rigidIndexPerPoint
+    print mappedParticles_mapping.rigidIndexPerPoint
 
 #    // Declare all the particles to the multimapping
     for pp in parentParticles:

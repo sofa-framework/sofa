@@ -492,6 +492,7 @@ TEST_F(TsProductTimings, benchmark )
 #ifndef SOFA_DOUBLE
 ///////////////////
 // simple precision
+// The macro EIGEN_DONT_ALIGN is needed for float on windows
 ///////////////////
 // trivial blocs
 typedef TestSparseMatrices<float,4,8,4,8> Ts4848f;

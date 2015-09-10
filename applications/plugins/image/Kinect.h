@@ -25,7 +25,7 @@
 #ifndef IMAGE_KINECT_H
 #define IMAGE_KINECT_H
 
-#include "initImage.h"
+#include <image/config.h>
 #include "ImageTypes.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/objectmodel/BaseObject.h>

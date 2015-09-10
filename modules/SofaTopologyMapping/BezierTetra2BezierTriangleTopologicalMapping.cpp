@@ -227,7 +227,7 @@ void BezierTetra2BezierTriangleTopologicalMapping::updateTopologicalMappingTopDo
             std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
             std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
-            sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+            //sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
             while( itBegin != itEnd )
             {
@@ -305,7 +305,7 @@ void BezierTetra2BezierTriangleTopologicalMapping::updateTopologicalMappingTopDo
                 ++itBegin;
             }
             to_tstm->propagateTopologicalChanges();
-            Loc2GlobDataVec.endEdit();
+            //Loc2GlobDataVec.endEdit();
         }
     }
 

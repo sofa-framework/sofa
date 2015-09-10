@@ -1,27 +1,21 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-
-    XiTrocarInterface.h 
-    initXitact.h 
-    PaceMaker.h 
     IHPDriver.h
-    ITPDriver.h 
-	)
+    ITPDriver.h
+    PaceMaker.h
+    XiTrocarInterface.h
+    config.h
+)
 
 set(SOURCE_FILES
+    IHPDriver.cpp
+    ITPDriver.cpp
+    PaceMaker.cpp
+    initXitact.cpp
+)
 
-    initXitact.cpp 
-    PaceMaker.cpp  
-    IHPDriver.cpp 
-    ITPDriver.cpp 
-
-	)
-
-set(README_FILES
-
-	PluginXitact.txt
-	)
+set(README_FILES PluginXitact.txt)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 

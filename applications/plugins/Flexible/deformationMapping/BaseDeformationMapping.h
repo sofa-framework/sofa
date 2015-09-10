@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_BaseDeformationMAPPING_H
 #define SOFA_COMPONENT_MAPPING_BaseDeformationMAPPING_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>

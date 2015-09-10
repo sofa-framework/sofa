@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initCompliant.h"
+#include <Compliant/config.h>
 #include "misc/CompliantSolverMerger.h"
 #include <contact/CompliantContact.h>
 

@@ -2,30 +2,36 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 
 set(HEADER_FILES
-    initRegistration.h
+    ClosestPointRegistrationForceField.h
+    ClosestPointRegistrationForceField.inl
+    GroupwiseRegistrationEngine.h
+    InertiaAlign.h
     RegistrationContact.h
     RegistrationContact.inl
     RegistrationContactForceField.h
     RegistrationContactForceField.inl
-    ClosestPointRegistrationForceField.h
-    ClosestPointRegistrationForceField.inl
     RegistrationExporter.h
-    GroupwiseRegistrationEngine.h
-    InertiaAlign.h)
+    config.h
+)
 
 set(SOURCE_FILES
-    initRegistration.cpp
+    ClosestPointRegistrationForceField.cpp
+    GroupwiseRegistrationEngine.cpp
+    InertiaAlign.cpp
     RegistrationContact.cpp
     RegistrationContactForceField.cpp
-    ClosestPointRegistrationForceField.cpp
     RegistrationExporter.cpp
-    GroupwiseRegistrationEngine.cpp
-    InertiaAlign.cpp)
+    initRegistration.cpp
+)
+
+set(PYTHON_FILES
+
+    python/Registration/__init__.py
+    python/Registration/sml.py
+
+)
 
 set(README_FILES README.txt)
-
-# include python files
-include(./python/python.cmake)
 
 if(SOFA-PLUGIN_IMAGE)
     list(APPEND HEADER_FILES "IntensityProfileRegistrationForceField.h")

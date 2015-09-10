@@ -1,29 +1,25 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-
-initSimpleGUI.h
-Camera.h
-Interactor.h
-SpringInteractor.h
-PickedPoint.h
-SofaScene.h
-SofaGL.h
-VisualPickVisitor.h
-
-	)
+    Camera.h
+    Interactor.h
+    PickedPoint.h
+    SofaGL.h
+    SofaScene.h
+    SpringInteractor.h
+    VisualPickVisitor.h
+    config.h
+)
 
 set(SOURCE_FILES
-
-initSimpleGUI.cpp
-Camera.cpp
-Interactor.cpp
-SpringInteractor.cpp
-SofaScene.cpp
-SofaGL.cpp
-VisualPickVisitor.cpp
-
-	)
+    Camera.cpp
+    Interactor.cpp
+    SofaGL.cpp
+    SofaScene.cpp
+    SpringInteractor.cpp
+    VisualPickVisitor.cpp
+    initSimpleGUI.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES}  ${MOC_FILES} ${SOURCE_FILES})
 

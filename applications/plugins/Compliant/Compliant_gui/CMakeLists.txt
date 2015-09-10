@@ -3,10 +3,8 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 if (SOFA-LIB_GUI_QT)
 
 set(HEADER_FILES
-
-        QCompliantMouseOperations.h
-
-        )
+    QCompliantMouseOperations.h
+)
 
 UseQt()
 SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
@@ -16,21 +14,17 @@ ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
 
 # these header files do not need MOCcing
 list(APPEND HEADER_FILES
+    config.h
+    CompliantAttachPerformer.h
+    CompliantAttachPerformer.inl
+)
 
-        initCompliant_gui.h
-        CompliantAttachPerformer.h
-        CompliantAttachPerformer.inl
 
-        )
-	
-	
 set(SOURCE_FILES
-
-        initCompliant_gui.cpp
-        CompliantAttachPerformer.cpp
-        QCompliantMouseOperations.cpp
-
-	)
+    initCompliant_gui.cpp
+    CompliantAttachPerformer.cpp
+    QCompliantMouseOperations.cpp
+)
 
 
 

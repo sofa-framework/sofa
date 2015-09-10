@@ -30,8 +30,15 @@ GK_MKALLOC(rkv,  rkv_t)
 /*! Priority queues routines */
 /*************************************************************************/
 #define key_gt(a, b) ((a) > (b))
+#if defined(__GNUC__)
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wempty-body"
+#endif
 GK_MKPQUEUE(ipq, ipq_t, ikv_t, idx_t, idx_t, ikvmalloc, IDX_MAX, key_gt)
 GK_MKPQUEUE(rpq, rpq_t, rkv_t, real_t, idx_t, rkvmalloc, REAL_MAX, key_gt)
+#if defined(__GNUC__)
+#  pragma GCC diagnostic pop
+#endif
 #undef key_gt
 
 /*************************************************************************/

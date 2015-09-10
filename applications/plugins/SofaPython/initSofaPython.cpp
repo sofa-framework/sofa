@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SceneLoaderPY.h"
-#include "initSofaPython.h"
+#include <SofaPython/config.h>
 
 
 extern "C" {

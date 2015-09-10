@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_PlasticStrainMAPPING_H
 #define SOFA_COMPONENT_MAPPING_PlasticStrainMAPPING_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "BaseStrainMapping.h"
 #include "PlasticStrainJacobianBlock.h"
 #include "../types/StrainTypes.h"

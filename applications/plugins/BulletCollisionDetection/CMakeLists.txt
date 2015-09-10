@@ -8,24 +8,25 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 # add_definitions(-DBULLET_TRIANGLE_COLLISION)
 
 set(HEADER_FILES
-    BulletCylinderModel.h
-    BulletCylinderModel.inl
-    BulletTriangleModel.h
-    BulletTriangleModel.inl
-    BulletCollisionModel.h
-    BulletCollisionDetection.h
-    BtInterManager.h
     BtDynamicMesh.h
-    BulletSphereModel.h
-    BulletSphereModel.inl
-    BulletOBBModel.h
-    BulletOBBModel.inl
+    BtInterManager.h
     BulletCapsuleModel.h
     BulletCapsuleModel.inl
+    BulletCollisionDetection.h
+    BulletCollisionModel.h
+    BulletConvexHullContactMapper.h
     BulletConvexHullModel.h
     BulletConvexHullModel.inl
-    BulletConvexHullContactMapper.h
-    initBulletCollisionDetection.h)
+    BulletCylinderModel.h
+    BulletCylinderModel.inl
+    BulletOBBModel.h
+    BulletOBBModel.inl
+    BulletSphereModel.h
+    BulletSphereModel.inl
+    BulletTriangleModel.h
+    BulletTriangleModel.inl
+    config.h
+)
 
 set(SOURCE_FILES
     BulletCapsuleModel.cpp
@@ -37,7 +38,8 @@ set(SOURCE_FILES
     BulletOBBModel.cpp
     BulletSphereModel.cpp
     BulletTriangleModel.cpp
-    initBulletCollisionDetection.cpp)
+    initBulletCollisionDetection.cpp
+)
 
 if(SOFA-PLUGIN_COMPLIANT)
     list(APPEND SOURCE_FILES BulletConvexHullCompliantContacts.cpp)

@@ -8,7 +8,7 @@
 #include <BulletCollision/Gimpact/btGImpactShape.h>
 #include <sofa/simulation/common/CollisionBeginEvent.h>
 #include <BulletDynamics/Dynamics/btRigidBody.h>
-#include "initBulletCollisionDetection.h"
+#include <BulletCollisionDetection/config.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <stack>
 #include <sofa/core/topology/BaseMeshTopology.h>

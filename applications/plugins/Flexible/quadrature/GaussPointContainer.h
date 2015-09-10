@@ -25,7 +25,7 @@
 #ifndef SOFA_GaussPointContainer_H
 #define SOFA_GaussPointContainer_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../quadrature/BaseGaussPointSampler.h"
 
 

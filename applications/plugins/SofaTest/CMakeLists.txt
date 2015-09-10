@@ -1,26 +1,25 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-
-    InitPlugin_test.h
-    Sofa_test.h
-    Mapping_test.h
-    MultiMapping_test.h
+    BroadPhase_test.h
+    DataEngine_test.h
     Elasticity_test.h
     Elasticity_test.inl
     ForceField_test.h
-    BroadPhase_test.h
+    InitPlugin_test.h
+    Mapping_test.h
+    MultiMapping_test.h
     PrimitiveCreation.h
-    DataEngine_test.h
-	)
+    Sofa_test.h
+)
 
 set(SOURCE_FILES
-
-    InitPlugin_test.cpp
-    Sofa_test.cpp
     Elasticity_test.cpp
+    InitPlugin_test.cpp
     PrimitiveCreation.cpp
-	)
+    Sofa_test.cpp
+)
+
 AddCompilerDefinitions("SOFA_BUILD_TEST")
 AddCompilerDefinitions("GTEST_LINKED_AS_SHARED_LIBRARY")
 AddCompilerDefinitions("_VARIADIC_MAX=10")
@@ -33,8 +32,11 @@ if(SOFA-PLUGIN_SOFAPYTHON)
 
     AddLinkerDependencies(SofaPython)
 
-    # include python files
-    include(./python/python.cmake)
+
+    set(PYTHON_FILES
+        python/SofaTest/Macro.py
+        python/SofaTest/__init__.py
+    )
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})

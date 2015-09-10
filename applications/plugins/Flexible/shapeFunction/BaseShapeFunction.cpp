@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define FLEXIBLE_BaseShapeFunction_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 
 #include <sofa/defaulttype/TemplatesAliases.h>
 

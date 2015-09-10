@@ -88,7 +88,7 @@ call-cmake() {
 
 ## CMake options
 
-cmake_options="-DCMAKE_BUILD_TYPE=$CI_BUILD_TYPE"
+cmake_options="-DCMAKE_COLOR_MAKEFILE=OFF -DCMAKE_BUILD_TYPE=$CI_BUILD_TYPE"
 
 append() {
     cmake_options="$cmake_options $*"
@@ -234,16 +234,7 @@ case $CI_JOB in
         append "-DSOFA-PLUGIN_SOFAPML=OFF"
         append "-DSOFA-PLUGIN_SOFASIMPLEGUI=ON"
         append "-DSOFA-PLUGIN_SOFATEST=ON"
-        if [[ -n "$CI_HAVE_BOOST" ]]; then
-            if [[ $(uname) = Linux ]]; then
-                # Currently compiles only on Linux...
-                append "-DSOFA-PLUGIN_THMPGSPATIALHASHING=ON"
-            else
-                append "-DSOFA-PLUGIN_THMPGSPATIALHASHING=OFF"
-            fi
-        else
-            append "-DSOFA-PLUGIN_THMPGSPATIALHASHING=OFF"
-        fi
+        append "-DSOFA-PLUGIN_THMPGSPATIALHASHING=ON"
         # Requires XiRobot library.
         append "-DSOFA-PLUGIN_XITACT=OFF"
 

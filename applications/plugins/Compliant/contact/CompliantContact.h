@@ -3,7 +3,7 @@
 
 #include "BaseContact.h"
 
-#include "../initCompliant.h"
+#include <Compliant/config.h>
 
 
 #include "../constraint/UnilateralConstraint.h"

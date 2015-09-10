@@ -25,7 +25,7 @@
 #ifndef TaskSchedulerBoost_h__
 #define TaskSchedulerBoost_h__
 
-#include "initMultiThreading.h"
+#include <MultiThreading/config.h>
 
 #include "Tasks.h"
 

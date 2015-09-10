@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_ImageGaussPointSAMPLER_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../quadrature/ImageGaussPointSampler.h"
 #include <sofa/core/ObjectFactory.h>
 

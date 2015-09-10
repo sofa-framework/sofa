@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_InvertibleFVMForceField_H
 #define SOFA_COMPONENT_FORCEFIELD_InvertibleFVMForceField_H
 
-#include "initPlugin.h"
+#include <InvertibleFVM/config.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/vector.h>

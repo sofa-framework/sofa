@@ -25,7 +25,7 @@
 #ifndef BINDING_H
 #define BINDING_H
 
-#include "initSofaPython.h"
+#include <SofaPython/config.h>
 
 SOFA_SOFAPYTHON_API void bindSofaPythonModule();    // registers "Sofa" python module with sofa types & methods into python framework
 

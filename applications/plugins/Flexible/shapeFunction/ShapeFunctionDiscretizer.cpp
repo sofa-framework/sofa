@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define FLEXIBLE_ShapeFunctionDiscretizer_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../shapeFunction/ShapeFunctionDiscretizer.h"
 #include <sofa/core/ObjectFactory.h>
 

@@ -25,7 +25,7 @@
 #ifndef SOFA_IMAGE_HISTOGRAMWIDGET_H
 #define SOFA_IMAGE_HISTOGRAMWIDGET_H
 
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 #include <sofa/gui/qt/DataWidget.h>
 #include <sofa/gui/qt/SimpleDataWidget.h>
 

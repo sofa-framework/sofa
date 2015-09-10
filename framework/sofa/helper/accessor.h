@@ -237,7 +237,7 @@ public:
     void clear() { vref->clear(); }
     void resize(size_type s, bool /*init*/ = true) { vref->resize(s); }
     void reserve(size_type s) { vref->reserve(s); }
-    void push_back(const_reference v) { vref->push_back(v); }
+    void push_back(const value_type& v) { vref->push_back(v); }
 
     inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessorVector<T>& vec )
     {

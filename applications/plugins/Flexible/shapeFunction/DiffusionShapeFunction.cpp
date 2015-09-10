@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define FLEXIBLE_DiffusionShapeFunction_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../shapeFunction/DiffusionShapeFunction.h"
 #include <sofa/core/ObjectFactory.h>
 

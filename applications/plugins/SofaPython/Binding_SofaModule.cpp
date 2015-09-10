@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "PythonMacros.h"
-#include "initSofaPython.h"
+#include <SofaPython/config.h>
 
 #include "Binding_SofaModule.h"
 #include "Binding_BaseObject.h"
@@ -92,7 +92,7 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, Py
         Py_RETURN_NONE;
     }
 
-    // par défaut, ce sera toujours au minimum un BaseObject...
+    // by default, it will always be at least a BaseObject...
     return SP_BUILD_PYSPTR(obj.get());
 }
 
@@ -319,7 +319,7 @@ extern "C" PyObject * Sofa_getViewerCamera(PyObject * /*self*/, PyObject *)
 
 
 // from a mesh, a density and a 3d scale
-// computes a mass, a center of mass, a diagonal inertia matrix and a inertia rotation
+// computes a mass, a center of mass, a diagonal inertia matrix and an inertia rotation
 extern "C" PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args)
 {
     char* meshFilename;
@@ -359,7 +359,7 @@ extern "C" PyObject * Sofa_exportGraph(PyObject * /*self*/, PyObject * args)
     return Py_BuildValue("i",0);
 }
 
-// Méthodes du module
+// Methods of the module
 SP_MODULE_METHODS_BEGIN(Sofa)
 SP_MODULE_METHOD(Sofa,getSofaPythonVersion) 
 SP_MODULE_METHOD_KW(Sofa,createObject)

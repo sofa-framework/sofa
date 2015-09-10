@@ -25,7 +25,7 @@
 #ifndef FLEXIBLE_HatShapeFunction_H
 #define FLEXIBLE_HatShapeFunction_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "BaseShapeFunction.h"
 #include <sofa/helper/OptionsGroup.h>
 #include <limits>

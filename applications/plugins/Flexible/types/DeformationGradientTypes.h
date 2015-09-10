@@ -25,7 +25,7 @@
 #ifndef FLEXIBLE_DeformationGradientTYPES_H
 #define FLEXIBLE_DeformationGradientTYPES_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../types/PolynomialBasis.h"
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Vec.h>

@@ -37,7 +37,7 @@
 #include <sofa/helper/kdTree.h>
 
 #include <set>
-#include "initRegistration.h"
+#include <Registration/config.h>
 
 #ifdef WIN32
 #include <process.h>

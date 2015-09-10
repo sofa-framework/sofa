@@ -1,7 +1,7 @@
 #ifndef SOFA_NEWGUI_SofaGL_H
 #define SOFA_NEWGUI_SofaGL_H
 
-#include "initSimpleGUI.h"
+#include <SofaSimpleGUI/config.h>
 #include "SofaScene.h"
 #include <sofa/core/visual/DrawToolGL.h>
 #include <sofa/helper/system/gl.h>

@@ -626,12 +626,12 @@ extern void* myopencldevice(int device)
 
 //error public functions
 
-cl_int & myopenclError()
+cl_int myopenclError()
 {
     return _error;
 }
 
-std::string myopenclErrorMsg(cl_int err)
+const char* myopenclErrorMsg(cl_int err)
 {
     switch(err)
     {
@@ -686,9 +686,11 @@ std::string myopenclErrorMsg(cl_int err)
 #undef SOFA_CL_ERR
     default:
     {
+        static std::string error;
         std::ostringstream o;
         o << err;
-        return o.str();
+        error = o.str();
+        return error.c_str();
     }
     }
 }
@@ -703,9 +705,9 @@ void myopenclShowError(std::string file, int line)
     }
 }
 
-std::string myopenclPath()
+const char* myopenclPath()
 {
-    return _mainPath;
+    return _mainPath.c_str();
 }
 
 void myopenclBarrier(_device_pointer m, std::string file, int line)

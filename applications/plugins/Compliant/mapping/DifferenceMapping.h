@@ -1,7 +1,7 @@
 #ifndef DIFFERENCEMAPPING_H
 #define DIFFERENCEMAPPING_H
 
-#include "../initCompliant.h"
+#include <Compliant/config.h>
 
 #include "AssembledMapping.h"
 #include "AssembledMultiMapping.h"
