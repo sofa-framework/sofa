@@ -6,15 +6,6 @@ project(${SOLUTION_NAME})
 #temporary until we move the sub projects
 set(SofaGeneral_ACTUAL_SOURCE_DIR ${SofaGeneral_SOURCE_DIR}/../modules)
 
-##
-## SofaGeneral version
-##
-set(SOFAGENERAL_MAJOR_VERSION 0)
-set(SOFAGENERAL_MINOR_VERSION 0)
-set(SOFAGENERAL_BUILD_VERSION 1)
-
-set(SOFAGENERAL_VERSION ${SOFAGENERAL_MAJOR_VERSION}.${SOFAGENERAL_MINOR_VERSION}.${SOFAGENERAL_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
-
 
 ## SofaGeneral dependencies
 ##
@@ -75,4 +66,4 @@ endforeach()
 
 # CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaGeneral ${SOFAGENERAL_VERSION})
+sofa_write_package_config_files(SofaGeneral ${SofaFramework_VERSION})

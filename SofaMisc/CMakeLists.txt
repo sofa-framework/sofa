@@ -5,16 +5,6 @@ project(${SOLUTION_NAME})
 #temporary until we move the sub projects
 set(SofaMisc_ACTUAL_SOURCE_DIR ${SofaMisc_SOURCE_DIR}/../modules/)
 
-##
-## SofaMisc version
-##
-set(SOFAMISC_MAJOR_VERSION 0)
-set(SOFAMISC_MINOR_VERSION 0)
-set(SOFAMISC_BUILD_VERSION 1)
-
-set(SOFAMISC_VERSION ${SOFAMISC_MAJOR_VERSION}.${SOFAMISC_MINOR_VERSION}.${SOFAMISC_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
-
-
 ## SofaMisc dependencies
 ##
 find_package(SofaGeneral REQUIRED)
@@ -45,4 +35,4 @@ endforeach()
 
 # CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaMisc ${SOFAMISC_VERSION})
+sofa_write_package_config_files(SofaMisc ${SofaFramework_VERSION})
