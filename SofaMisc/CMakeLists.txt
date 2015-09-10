@@ -36,33 +36,6 @@ foreach(TARGET ${SOFAMISC_TARGETS})
     set_target_properties(${TARGET} PROPERTIES FOLDER "SofaMisc") # IDE folder
 endforeach()
 
-include(CMakePackageConfigHelpers)
-
-# SofaMiscConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(SofaMiscConfigVersion.cmake
-                                 VERSION ${SOFAMISC_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaMiscConfigVersion.cmake
-        DESTINATION lib/cmake/SofaMisc)
-
-# SofaMiscConfig.cmake (build tree)
-set(SOFAMISC_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(SofaMiscConfig.cmake.in
-                              SofaMiscConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-                              PATH_VARS SOFAMISC_INCLUDE_DIR)
-
-# SofaMiscConfig.cmake (installed)
-set(SOFAMISC_INCLUDE_DIR include)
-configure_package_config_file(SofaMiscConfig.cmake.in
-                              SofaMiscConfigInstall.cmake
-                              INSTALL_DESTINATION lib/cmake/SofaMisc
-                              PATH_VARS SOFAMISC_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaMiscConfigInstall.cmake
-        DESTINATION lib/cmake/SofaMisc
-        RENAME SofaMiscConfig.cmake)
-
-# SofaMiscTargets.cmake (installed)
-install(EXPORT SofaMiscTargets
-        DESTINATION lib/cmake/SofaMisc)
+# CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(SofaMisc ${SOFAMISC_VERSION})

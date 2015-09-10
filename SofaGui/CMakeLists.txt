@@ -111,28 +111,6 @@ configure_file(SofaGuiConfig.h.in SofaGui/SofaGuiConfig.h)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SofaGui/SofaGuiConfig.h"
         DESTINATION "include/SofaGui")
 
-
-### SofaGuiConfig.cmake
-
-include(CMakePackageConfigHelpers)
-
-## SofaGuiConfigVersion.cmake
-write_basic_package_version_file(SofaGuiConfigVersion.cmake VERSION ${SOFAGUI_VERSION} COMPATIBILITY AnyNewerVersion)
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SofaGuiConfigVersion.cmake" DESTINATION lib/cmake/SofaGui)
-
-## SofaGuiConfig.cmake (build tree)
-set(SOFAGUI_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(SofaGuiConfig.cmake.in SofaGuiConfig.cmake
-                              INSTALL_DESTINATION none
-                              PATH_VARS SOFAGUI_INCLUDE_DIR)
-
-## SofaGuiConfig.cmake (installed)
-set(SOFAGUI_INCLUDE_DIR include)
-configure_package_config_file(SofaGuiConfig.cmake.in SofaGuiConfigInstall.cmake
-                              INSTALL_DESTINATION lib/cmake/SofaGui
-                              PATH_VARS SOFAGUI_INCLUDE_DIR)
-install(EXPORT SofaGuiTargets DESTINATION lib/cmake/SofaGui) # SofaGuiTargets.cmake
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SofaGuiConfigInstall.cmake"
-        DESTINATION lib/cmake/SofaGui
-        RENAME SofaGuiConfig.cmake)
-
+# CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(SofaGui ${SOFAGUI_VERSION})

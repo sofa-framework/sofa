@@ -32,33 +32,6 @@ set_target_properties(SofaSimulationCommon PROPERTIES FOLDER "SofaSimulation")
 set_target_properties(SofaSimulationGraph PROPERTIES FOLDER "SofaSimulation")
 set_target_properties(SofaSimulationTree PROPERTIES FOLDER "SofaSimulation")
 
-include(CMakePackageConfigHelpers)
-
-# SofaSimulationConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(SofaSimulationConfigVersion.cmake
-                                 VERSION ${SofaFramework_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationConfigVersion.cmake
-        DESTINATION lib/cmake/SofaSimulation)
-
-# SofaSimulationConfig.cmake (build tree)
-set(SOFASIMULATION_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(SofaSimulationConfig.cmake.in
-                              SofaSimulationConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-                              PATH_VARS SOFASIMULATION_INCLUDE_DIR)
-
-# SofaSimulationConfig.cmake (installed)
-set(SOFASIMULATION_INCLUDE_DIR include)
-configure_package_config_file(SofaSimulationConfig.cmake.in
-                              SofaSimulationConfigInstall.cmake
-                              INSTALL_DESTINATION lib/cmake/SofaSimulation
-                              PATH_VARS SOFASIMULATION_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationConfigInstall.cmake
-        DESTINATION lib/cmake/SofaSimulation
-        RENAME SofaSimulationConfig.cmake)
-
-# SofaSimulationTargets.cmake (installed)
-install(EXPORT SofaSimulationTargets
-        DESTINATION lib/cmake/SofaSimulation)
+# CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(SofaSimulation ${SOFASIMULATION_VERSION})
