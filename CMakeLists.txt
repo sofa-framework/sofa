@@ -93,8 +93,8 @@ if(MSVC)
 endif()
 
 # Install resource files
-install(DIRECTORY share DESTINATION share/sofa)
-install(DIRECTORY examples DESTINATION share/sofa/examples)
+install(DIRECTORY share/ DESTINATION share/sofa)
+install(DIRECTORY examples/ DESTINATION share/sofa/examples)
 # Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
 # build directory, it points to the source tree, whereas in the install
 # directory, it contains to relative paths to the installed resource directory.
