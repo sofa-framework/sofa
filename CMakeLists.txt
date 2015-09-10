@@ -16,9 +16,9 @@ endif()
 # it. (E.g. some versions of Visual Studio have 'solution folders')
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-if( CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT )
-    set( CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "Install path prefix, prepended onto install directories." FORCE )
-endif (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT )
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
+endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 message("Install prefix: ${CMAKE_INSTALL_PREFIX}")
 

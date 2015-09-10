@@ -59,10 +59,10 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 # endif()
 
 install(TARGETS ${PROJECT_NAME}
-    COMPONENT MultiThreading_libraries
-    EXPORT MultiThreadingTargets
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
+        COMPONENT MultiThreading_libraries
+        EXPORT MultiThreadingTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 
 install(DIRECTORY scenes/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

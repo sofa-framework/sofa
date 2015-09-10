@@ -29,11 +29,11 @@ if(UNIX)
 endif()
 
 install(TARGETS ${PROJECT_NAME}
-    COMPONENT OptiTrackNatNet_libraries
-    EXPORT OptiTrackNatNetTargets
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
+        COMPONENT OptiTrackNatNet_libraries
+        EXPORT OptiTrackNatNetTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

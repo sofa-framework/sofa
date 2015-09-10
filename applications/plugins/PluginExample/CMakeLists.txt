@@ -36,8 +36,8 @@ target_link_libraries(${PROJECT_NAME} SofaGuiQt)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 install(TARGETS ${PROJECT_NAME}
-    COMPONENT PluginExample_libraries
-    EXPORT PluginExampleTargets
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
+        COMPONENT PluginExample_libraries
+        EXPORT PluginExampleTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)

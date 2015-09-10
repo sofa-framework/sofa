@@ -138,10 +138,10 @@ set(SOFA_HAVE_BOOST_CHRONO ${Boost_CHRONO_FOUND})
 
 list(APPEND Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
 
-if(SOFA_HAVE_BOOST_SYSTEM AND
-   SOFA_HAVE_BOOST_THREAD AND
-   SOFA_HAVE_BOOST_DATE_TIME AND
-   SOFA_HAVE_BOOST_CHRONO)
+if(SOFA_HAVE_BOOST_SYSTEM
+   AND SOFA_HAVE_BOOST_THREAD
+   AND SOFA_HAVE_BOOST_DATE_TIME
+   AND SOFA_HAVE_BOOST_CHRONO)
     set(SOFA_HAVE_BOOST 1)
 
     sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
@@ -162,10 +162,8 @@ find_package(Eigen3 REQUIRED)
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${EIGEN3_INCLUDE_DIR})
 set(SOFA_HAVE_EIGEN2 1)
 
-configure_file(config.h.in
-               sofa/config.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/config.h
-         DESTINATION "include/sofa")
+configure_file(config.h.in sofa/config.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/config.h DESTINATION "include/sofa")
 # make sure everyone in the build tree can see <sofa/config.h>
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -200,26 +198,20 @@ set_target_properties(SofaCore PROPERTIES FOLDER "SofaFramework")
 include(SofaPackageConfigHelpers)
 sofa_write_package_config_files(SofaFramework ${SOFAFRAMEWORK_VERSION})
 
-# CMakeSofaCreateTarget (build)
-configure_file(${SofaFramework_SOURCE_DIR}/CMakeSofaCreateTarget.cmake
-               CMakeSofaCreateTarget.cmake COPYONLY)
+## CMakeSofaCreateTarget.cmake
+# Build tree
+configure_file(CMakeSofaCreateTarget.cmake CMakeSofaCreateTarget.cmake COPYONLY)
+# Install tree
+install(FILES CMakeSofaCreateTarget.cmake DESTINATION lib/cmake/SofaFramework)
 
-# CMakeSofaCreateTarget (installed)
-install(FILES ${SofaFramework_SOURCE_DIR}/CMakeSofaCreateTarget.cmake
-        DESTINATION lib/cmake/SofaFramework)
+## SofaPackageConfigHelpers.cmake
+# Build tree
+configure_file(SofaPackageConfigHelpers.cmake SofaPackageConfigHelpers.cmake COPYONLY)
+# Install tree
+install(FILES SofaPackageConfigHelpers.cmake DESTINATION lib/cmake/SofaFramework)
 
-# SofaPackageConfigHelpers (build)
-configure_file(${SofaFramework_SOURCE_DIR}/SofaPackageConfigHelpers.cmake
-               SofaPackageConfigHelpers.cmake COPYONLY)
-
-# SofaPackageConfigHelpers (installed)
-install(FILES ${SofaFramework_SOURCE_DIR}/SofaPackageConfigHelpers.cmake
-        DESTINATION lib/cmake/SofaFramework)
-
-# CMakeParseLibraryList (build)
-configure_file(${SofaFramework_SOURCE_DIR}/CMakeParseLibraryList.cmake
-               CMakeParseLibraryList.cmake COPYONLY)
-
-# CMakeParseLibraryList (installed)
-install(FILES ${SofaFramework_SOURCE_DIR}/CMakeParseLibraryList.cmake
-        DESTINATION lib/cmake/SofaFramework)
+# CMakeParseLibraryList.cmake
+# Build tree
+configure_file(CMakeParseLibraryList.cmake CMakeParseLibraryList.cmake COPYONLY)
+# Install tree
+install(FILES CMakeParseLibraryList.cmake DESTINATION lib/cmake/SofaFramework)
