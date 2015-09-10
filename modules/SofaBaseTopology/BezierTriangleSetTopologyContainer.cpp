@@ -137,10 +137,10 @@ void BezierTriangleSetTopologyContainer::reinit()
 				wa.resize(this->getNbPoints());
 				std::fill(wa.begin(),wa.end(),(SReal)1);
 			}
-		// initialize the array of weights if necessary
-		if (d_isRationalSpline.getValue().empty()){
+		// initialize the array of boolean indicating if the nature of the Bezier triangle if necessary
+		if ((d_isRationalSpline.getValue().empty()) && (getNumberOfTriangles()>0)){
 			helper::WriteOnlyAccessor<Data <SeqBools> >  isRationalSpline=d_isRationalSpline;
-			isRationalSpline.resize(this->getNbPoints());
+			isRationalSpline.resize(this->getNumberOfTriangles());
 			std::fill(isRationalSpline.begin(),isRationalSpline.end(),false);
 		}
 		// manually creates the edge and triangle structures.
