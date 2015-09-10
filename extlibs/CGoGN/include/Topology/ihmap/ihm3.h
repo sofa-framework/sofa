@@ -700,23 +700,11 @@ public:
 
 
     template <unsigned int ORBIT>
-    void checkEmbedding(Cell<ORBIT> c) {
-#ifndef DNDEBUG
-        std::map< unsigned, unsigned > cellEmbeddings;
-        TraversorDartsOfOrbit< MAP, ORBIT > traDoC(*this, c);
-        for (Dart it = traDoC.begin(); it != traDoC.end() ;it = traDoC.next())
-        {
-            const unsigned int dartLevel = getDartLevel(it);
-            std::map< unsigned, unsigned >::const_iterator embeddingIT = cellEmbeddings.find(dartLevel);
-            if (embeddingIT == cellEmbeddings.end())
-            {
-                cellEmbeddings[dartLevel] = this->ParentMap::template getEmbedding< ORBIT >(it) ;
-            } else {
-                assert(this->ParentMap::template getEmbedding< ORBIT >(it) == embeddingIT->second );
-            }
-        }
-#endif
-    }
+    void checkEmbedding(Cell<ORBIT> c) ;
+
+    template <unsigned int ORBIT>
+    void checkAllEmbeddingsOfOrbit();
+
 
     template <unsigned int ORBIT>
     unsigned int getEmbedding(Cell<ORBIT> c) const ;
