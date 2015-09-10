@@ -38,33 +38,6 @@ foreach(TARGET ${SOFABASE_TARGETS})
     set_target_properties(${TARGET} PROPERTIES FOLDER "SofaBase") # IDE folder
 endforeach()
 
-include(CMakePackageConfigHelpers)
-
-# SofaBaseConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(SofaBaseConfigVersion.cmake
-                                 VERSION ${SOFABASE_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaBaseConfigVersion.cmake
-        DESTINATION lib/cmake/SofaBase)
-
-# SofaBaseConfig.cmake (build tree)
-set(SOFABASE_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(SofaBaseConfig.cmake.in
-                              SofaBaseConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-                              PATH_VARS SOFABASE_INCLUDE_DIR)
-
-# SofaBaseConfig.cmake (installed)
-set(SOFABASE_INCLUDE_DIR include)
-configure_package_config_file(SofaBaseConfig.cmake.in
-                              SofaBaseConfigInstall.cmake
-                              INSTALL_DESTINATION lib/cmake/SofaBase
-                              PATH_VARS SOFABASE_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaBaseConfigInstall.cmake
-        DESTINATION lib/cmake/SofaBase
-        RENAME SofaBaseConfig.cmake)
-
-# SofaBaseTargets.cmake (installed)
-install(EXPORT SofaBaseTargets
-        DESTINATION lib/cmake/SofaBase)
+# CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(SofaBase ${SOFABASE_VERSION})

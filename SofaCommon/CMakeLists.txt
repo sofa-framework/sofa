@@ -36,33 +36,6 @@ foreach(TARGET ${SOFACOMMON_TARGETS})
     set_target_properties(${TARGET} PROPERTIES FOLDER "SofaCommon") # IDE folder
 endforeach()
 
-include(CMakePackageConfigHelpers)
-
-# SofaCommonConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(SofaCommonConfigVersion.cmake
-                                 VERSION ${SOFACOMMON_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaCommonConfigVersion.cmake
-        DESTINATION lib/cmake/SofaCommon)
-
-# SofaCommonConfig.cmake (build tree)
-set(SOFACOMMON_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(SofaCommonConfig.cmake.in
-                              SofaCommonConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-                              PATH_VARS SOFACOMMON_INCLUDE_DIR)
-
-# SofaCommonConfig.cmake (installed)
-set(SOFACOMMON_INCLUDE_DIR include)
-configure_package_config_file(SofaCommonConfig.cmake.in
-                              SofaCommonConfigInstall.cmake
-                              INSTALL_DESTINATION lib/cmake/SofaCommon
-                              PATH_VARS SOFACOMMON_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaCommonConfigInstall.cmake
-        DESTINATION lib/cmake/SofaCommon
-        RENAME SofaCommonConfig.cmake)
-
-# SofaCommonTargets.cmake (installed)
-install(EXPORT SofaCommonTargets
-        DESTINATION lib/cmake/SofaCommon)
+# CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(SofaCommon ${SOFACOMMON_VERSION})

@@ -41,33 +41,6 @@ foreach(TARGET ${SOFAADVANCED_TARGETS})
     set_target_properties(${TARGET} PROPERTIES FOLDER "SofaAdvanced") # IDE folder
 endforeach()
 
-include(CMakePackageConfigHelpers)
-
-# SofaAdvancedConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(SofaAdvancedConfigVersion.cmake
-                                 VERSION ${SOFAADVANCED_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaAdvancedConfigVersion.cmake
-        DESTINATION lib/cmake/SofaAdvanced)
-
-# SofaAdvancedConfig.cmake (build tree)
-set(SOFAADVANCED_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(SofaAdvancedConfig.cmake.in
-                              SofaAdvancedConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-                              PATH_VARS SOFAADVANCED_INCLUDE_DIR)
-
-# SofaAdvancedConfig.cmake (installed)
-set(SOFAADVANCED_INCLUDE_DIR include)
-configure_package_config_file(SofaAdvancedConfig.cmake.in
-                              SofaAdvancedConfigInstall.cmake
-                              INSTALL_DESTINATION lib/cmake/SofaAdvanced
-                              PATH_VARS SOFAADVANCED_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaAdvancedConfigInstall.cmake
-        DESTINATION lib/cmake/SofaAdvanced
-        RENAME SofaAdvancedConfig.cmake)
-
-# SofaAdvancedTargets.cmake (installed)
-install(EXPORT SofaAdvancedTargets
-        DESTINATION lib/cmake/SofaAdvanced)
+# CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(SofaAdvanced ${SOFAADVANCED_VERSION})
