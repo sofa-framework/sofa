@@ -1,5 +1,8 @@
 #include "console.h"
-#include "sofa/helper/Utils.h"
+#include <sofa/helper/Utils.h>
+#include <sofa/helper/Logger.h>
+
+#include <stdlib.h>             // For getenv()
 
 #ifndef WIN32
 #  include <unistd.h>           // for isatty()
@@ -10,6 +13,24 @@ namespace sofa {
 namespace helper {
 
     Console::ColorsStatus Console::s_colorsStatus = Console::ColorsAuto;
+
+    void Console::init()
+    {
+        // Change s_colorsStatus based on the SOFA_COLOR_TERMINAL environnement variable.
+        const char *sofa_color_terminal = getenv("SOFA_COLOR_TERMINAL");
+        if (sofa_color_terminal != NULL)
+        {
+            const std::string colors(sofa_color_terminal);
+            if (colors == "yes" || colors == "on" || colors == "always")
+                s_colorsStatus = Console::ColorsEnabled;
+            else if (colors == "no" || colors == "off" || colors == "never")
+                s_colorsStatus = Console::ColorsDisabled;
+            else if (colors == "auto")
+                s_colorsStatus = Console::ColorsAuto;
+            else
+                Logger::getMainLogger().log(Logger::Warning, "Bad value for environnement variable SOFA_COLOR_TERMINAL (" + colors + ")");
+        }
+    }
 
 #ifdef WIN32
 

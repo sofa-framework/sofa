@@ -500,6 +500,39 @@ inline void ImplicitHierarchicalMap3::setFaceId(Dart d, unsigned int i, unsigned
  *               CELLS INFORMATION                 *
  ***************************************************/
 
+
+template<unsigned int ORBIT>
+void ImplicitHierarchicalMap3::checkEmbedding(Cell<ORBIT> c)
+{
+#ifndef DNDEBUG
+        std::map< unsigned, unsigned > cellEmbeddings;
+        TraversorDartsOfOrbit< MAP, ORBIT > traDoC(*this, c);
+        for (Dart it = traDoC.begin(); it != traDoC.end() ;it = traDoC.next())
+        {
+            const unsigned int dartLevel = getDartLevel(it);
+            std::map< unsigned, unsigned >::const_iterator embeddingIT = cellEmbeddings.find(dartLevel);
+            if (embeddingIT == cellEmbeddings.end())
+            {
+                cellEmbeddings[dartLevel] = this->ParentMap::template getEmbedding< ORBIT >(it) ;
+            } else {
+                assert(this->ParentMap::template getEmbedding< ORBIT >(it) == embeddingIT->second );
+            }
+        }
+#endif
+}
+
+template<unsigned int ORBIT>
+void ImplicitHierarchicalMap3::checkAllEmbeddingsOfOrbit()
+{
+#ifndef DNDEBUG
+    TraversorCell< MAP, ORBIT, FORCE_DART_MARKING > tra(*this, true);
+    for (Cell<ORBIT> c = tra.begin(); c != tra.end() ; c = tra.next())
+    {
+        this->template checkEmbedding(c);
+    }
+#endif
+}
+
 //TODO
 inline unsigned int ImplicitHierarchicalMap3::vertexInsertionLevel(Dart d) const
 {

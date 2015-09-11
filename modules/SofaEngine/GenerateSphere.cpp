@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,51 +22,44 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <MultiThreading/config.h>
+#define SOFA_COMPONENT_ENGINE_GENERATESPHERE_CPP
+#include "GenerateSphere.inl"
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/Vec3Types.h>
 
-
-extern "C"
+namespace sofa
 {
 
-void initExternalModule()
+namespace component
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-const char* getModuleName()
+namespace engine
 {
-    return "MultiThreading";
-}
+using namespace sofa::defaulttype;
 
-const char* getModuleVersion()
-{
-    return "1.0";
-}
+SOFA_DECL_CLASS(GenerateSphere)
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "MultiThreading SOFA Framework";
-}
-
-const char* getModuleComponentList()
-{
-    return "DataExchange, AnimationLoopParallelScheduler ";
-}
-
-}
+int GenerateSphereClass = core::RegisterObject("Generate a sphereical (Bezier) Tetrahedral and Triangular Mesh")
+#ifndef SOFA_FLOAT
+        .add< GenerateSphere<Vec3dTypes> >()
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+        .add< GenerateSphere<Vec3fTypes> >()
+#endif //SOFA_DOUBLE
+        ;
 
 
-#ifdef SOFA_HAVE_BOOST
-SOFA_LINK_CLASS(AnimationLoopParallelScheduler)
-#endif
-SOFA_LINK_CLASS(DataExchange)
+#ifndef SOFA_FLOAT
+template class SOFA_ENGINE_API GenerateSphere<Vec3dTypes>;
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SOFA_ENGINE_API GenerateSphere<Vec3fTypes>;
+#endif //SOFA_DOUBLE
+
+
+} // namespace constraint
+
+} // namespace component
+
+} // namespace sofa
 
