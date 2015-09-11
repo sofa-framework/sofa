@@ -114,4 +114,4 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SofaGui/SofaGuiConfig.h"
 
 # CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaGui ${SofaFramework_VERSION})
+sofa_write_package_config_files(SofaGui ${SOFAGUI_VERSION} "" "include")

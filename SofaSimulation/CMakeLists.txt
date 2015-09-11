@@ -35,4 +35,4 @@ set_target_properties(SofaSimulationTree PROPERTIES FOLDER "SofaSimulation")
 
 # CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaSimulation ${SOFASIMULATION_VERSION})
+sofa_write_package_config_files(SofaSimulation ${SOFASIMULATION_VERSION} "${SofaSimulation_ACTUAL_SOURCE_DIR}" "include")

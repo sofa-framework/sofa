@@ -1,6 +1,6 @@
 include(CMakePackageConfigHelpers)
 
-# sofa_write_package_config_files(Foo 1.0)
+# sofa_write_package_config_files(Foo <version> <build-include-dirs> <install-include-dirs>)
 #
 # Create CMake package configuration files
 # - In the build tree:
@@ -12,8 +12,31 @@ include(CMakePackageConfigHelpers)
 #
 # This macro factorizes boilerplate CMake code for the different
 # packages in Sofa.  Is assumes the following conventions hold:
-# - There is a FooConfig.cmake.in file template in the same directory
-macro(sofa_write_package_config_files package_name version)
+# - There is a FooConfig.cmake.in file template in the same directory.
+#   This file can refer to @PACKAGE_FOO_INCLUDE_DIR@, which will
+#   expand to the include directories for this package, either in the
+#   build tree or in the install tree. See example below.
+
+
+# Assuming Foo depends on Bar and Baz, and creates the targets Foo and
+# Qux, here is a typical FooConfig.cmake.in:
+#
+# @PACKAGE_INIT@
+#
+# find_package(Bar REQUIRED)
+# find_package(Baz REQUIRED)
+#
+# if(NOT TARGET Qux)
+# 	include("${CMAKE_CURRENT_LIST_DIR}/SofaBaseTargets.cmake")
+# endif()
+#
+# check_required_components(Foo Qux)
+#
+# set(Foo_LIBRARIES Foo Qux)
+# set(Foo_INCLUDE_DIRS @PACKAGE_FOO_INCLUDE_DIR@ ${Bar_INCLUDE_DIRS} ${Baz_INCLUDE_DIRS})
+
+
+macro(sofa_write_package_config_files package_name version build_include_dirs install_include_dirs)
 
     string(TOUPPER ${package_name} uppercase_package_name)
 
@@ -28,13 +51,13 @@ macro(sofa_write_package_config_files package_name version)
     set(input_file ${package_name}Config.cmake.in)
     set(output_file ${package_name}Config.cmake)
     ## Build tree
-    set(${uppercase_package_name}_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+    set(${uppercase_package_name}_INCLUDE_DIR ${build_include_dirs} "${CMAKE_CURRENT_BINARY_DIR}")
     configure_package_config_file(${input_file}
                                   ${output_file}
                                   INSTALL_DESTINATION none
                                   PATH_VARS ${uppercase_package_name}_INCLUDE_DIR)
     ## Install tree
-    set(${uppercase_package_name}_INCLUDE_DIR include)
+    set(${uppercase_package_name}_INCLUDE_DIR ${install_include_dirs})
     configure_package_config_file(${input_file}
                                   Installed${output_file}
                                   INSTALL_DESTINATION lib/cmake/${package_name}
@@ -45,7 +68,6 @@ macro(sofa_write_package_config_files package_name version)
 
 
     ## <package_name>Targets.cmake
-    install(EXPORT ${package_name}Targets
-            DESTINATION lib/cmake/${package_name})
+    install(EXPORT ${package_name}Targets DESTINATION lib/cmake/${package_name})
 
 endmacro()

@@ -38,4 +38,4 @@ endforeach()
 
 # CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaMisc ${SofaFramework_VERSION})
+sofa_write_package_config_files(SofaMisc ${SOFAMISC_VERSION} "" "include")

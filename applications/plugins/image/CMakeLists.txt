@@ -159,4 +159,4 @@ endif()
 
 # CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(image ${IMAGE_VERSION})
+sofa_write_package_config_files(image ${IMAGE_VERSION} "" "include")

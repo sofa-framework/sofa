@@ -117,4 +117,4 @@ install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
 # CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaHAPI ${SOFAHAPI_VERSION})
+sofa_write_package_config_files(SofaHAPI ${SOFAHAPI_VERSION} "" "include")
