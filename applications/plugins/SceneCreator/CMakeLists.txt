@@ -51,4 +51,4 @@ install(TARGETS ${PROJECT_NAME}
 
 # CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SceneCreator ${SCENECREATOR_VERSION})
+sofa_write_package_config_files(SceneCreator ${SCENECREATOR_VERSION} "" "include")

@@ -251,4 +251,4 @@ add_subdirectory(Compliant_gui)
 
 # CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(Compliant ${COMPLIANT_VERSION})
+sofa_write_package_config_files(Compliant ${COMPLIANT_VERSION} "" "include")

@@ -196,7 +196,7 @@ set_target_properties(SofaCore PROPERTIES FOLDER "SofaFramework")
 
 # CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaFramework ${SOFAFRAMEWORK_VERSION})
+sofa_write_package_config_files(SofaFramework ${SOFAFRAMEWORK_VERSION} "${SofaFramework_ACTUAL_SOURCE_DIR}" "include")
 
 ## CMakeSofaCreateTarget.cmake
 # Build tree

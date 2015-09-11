@@ -280,4 +280,4 @@ endif()
 
 # CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(Flexible ${FLEXIBLE_VERSION})
+sofa_write_package_config_files(Flexible ${FLEXIBLE_VERSION} "" "include")

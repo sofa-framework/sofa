@@ -66,4 +66,4 @@ endif()
 check_required_components(SofaHelper SofaDefaultType SofaCore)
 
 set(SofaFramework_LIBRARIES SofaHelper SofaDefaultType SofaCore)
-set(SofaFramework_INCLUDE_DIRS "@PACKAGE_SOFAFRAMEWORK_INCLUDE_DIRS@")
+set(SofaFramework_INCLUDE_DIRS "@PACKAGE_SOFAFRAMEWORK_INCLUDE_DIR@")

@@ -89,4 +89,4 @@ install(DIRECTORY scenes/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
 # CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(CGALPlugin ${CGALPLUGIN_VERSION})
+sofa_write_package_config_files(CGALPlugin ${CGALPLUGIN_VERSION} "" "include")
