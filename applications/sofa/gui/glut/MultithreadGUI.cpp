@@ -795,7 +795,7 @@ void MultithreadGUI::DrawBox(SReal* minBBox, SReal* maxBBox, SReal r)//Moreno mo
 void MultithreadGUI::DrawXYPlane(double zo, double xmin, double xmax, double ymin,
         double ymax, double step)
 {
-    register double x, y;
+    double x, y;
 
     Enable<GL_DEPTH_TEST> depth;
 
@@ -824,7 +824,7 @@ void MultithreadGUI::DrawXYPlane(double zo, double xmin, double xmax, double ymi
 void MultithreadGUI::DrawYZPlane(double xo, double ymin, double ymax, double zmin,
         double zmax, double step)
 {
-    register double y, z;
+    double y, z;
     Enable<GL_DEPTH_TEST> depth;
 
     glBegin(GL_LINES);
@@ -853,7 +853,7 @@ void MultithreadGUI::DrawYZPlane(double xo, double ymin, double ymax, double zmi
 void MultithreadGUI::DrawXZPlane(double yo, double xmin, double xmax, double zmin,
         double zmax, double step)
 {
-    register double x, z;
+    double x, z;
     Enable<GL_DEPTH_TEST> depth;
 
     glBegin(GL_LINES);

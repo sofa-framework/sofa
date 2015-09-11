@@ -71,16 +71,21 @@ void GenerateCylinder<DataTypes>::init()
     addInput(&f_radius);
     addInput(&f_height);
     addInput(&f_origin);
+
     addInput(&f_resolutionCircumferential);
     addInput(&f_resolutionRadial);
     addInput(&f_resolutionHeight);
-    addOutput(&f_outputTetrahedraPositions);
+
+    addOutput(&f_triangles);
     addOutput(&f_outputTrianglesPositions);
     addOutput(&f_bezierTriangleWeight);
+	addOutput(&f_isBezierTriangleRational);
+
+	
+    addOutput(&f_tetrahedra);
+    addOutput(&f_outputTetrahedraPositions);
 	addOutput(&f_bezierTetrahedronWeight);
 	addOutput(&f_isBezierTetrahedronRational);
-    addOutput(&f_tetrahedra);
-    addOutput(&f_triangles);
     setDirtyValue();
 }
 

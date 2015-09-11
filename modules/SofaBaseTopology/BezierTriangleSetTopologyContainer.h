@@ -103,7 +103,8 @@ public :
     {
         POINT = 0,
         EDGE =1 ,
-        TRIANGLE = 2
+        TRIANGLE = 2,
+		NONE = 3
     };
 	/// get the Degree of the Bezier Tetrahedron 
 	BezierDegreeType getDegree() const;
