@@ -45,13 +45,6 @@ if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" ST
     target_compile_options(${PROJECT_NAME} PRIVATE "-fPIC")
 endif()
 
-#for preprocessor definition of MINI_FLOWVR
-set(MINI_FLOWVR TRUE)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/MiniFlowVR.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/flowvr/MiniFlowVR.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/flowvr/MiniFlowVR.h
-         DESTINATION "include/flowvr")
-
 set_target_properties(miniFlowVR PROPERTIES DEBUG_POSTFIX "_d")
 # set_target_properties(miniFlowVR PROPERTIES VERSION ${MINIFLOWVR_VERSION})
 # set_target_properties(miniFlowVR PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
