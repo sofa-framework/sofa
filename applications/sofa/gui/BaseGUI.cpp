@@ -130,11 +130,12 @@ void BaseGUI::exportGnuplot(sofa::simulation::Node* node, std::string /*gnuplot_
 
 bool BaseGUI::saveScreenshot(const std::string& filename, int compression_level)
 {
-	if(getViewer()) { 
-		getViewer()->screenshot(filename, compression_level);
-		return true;
-	}
-	else return false;
+    if(getViewer())
+    {
+        getViewer()->screenshot(filename, compression_level);
+        return true;
+    }
+    else return false;
 }
 
 const std::string& BaseGUI::getConfigDirectoryPath()
@@ -147,24 +148,37 @@ const std::string& BaseGUI::getScreenshotDirectoryPath()
     return screenshotDirectoryPath;
 }
 
-void BaseGUI::setConfigDirectoryPath(const std::string& path)
+static void setDirectoryPath(std::string& outputVariable, const std::string& path, bool createIfNecessary)
 {
-    if (!FileSystem::exists(path))
-        std::cerr << "BaseGUI::setConfigDirectoryPath(): no such directory: " << path << std::endl;
-    else if (!FileSystem::isDirectory(path))
-        std::cerr << "BaseGUI::setConfigDirectoryPath(): not a directory: " << path << std::endl;
+    const bool pathExists = FileSystem::exists(path);
+
+    if (!pathExists && !createIfNecessary)
+    {
+        std::cerr << "Error: No such directory: " << path << std::endl;
+    }
+    else if (pathExists && !FileSystem::isDirectory(path))
+    {
+        std::cerr << "Error: Not a directory: " << path << std::endl;
+    }
     else
-        configDirectoryPath = path;
+    {
+        if (!pathExists)
+        {
+            FileSystem::createDirectory(path);
+            std::cout << "Created directory: " << path << std::endl;
+        }
+        outputVariable = path;
+    }
 }
 
-void BaseGUI::setScreenshotDirectoryPath(const std::string& path)
+void BaseGUI::setConfigDirectoryPath(const std::string& path, bool createIfNecessary)
 {
-    if (!FileSystem::exists(path))
-        std::cerr << "BaseGUI::setScreenshotDirectoryPath(): no such directory: " << path << std::endl;
-    else if (!FileSystem::isDirectory(path))
-        std::cerr << "BaseGUI::setScreenshotDirectoryPath(): not a directory: " << path << std::endl;
-    else
-        screenshotDirectoryPath = path;
+    setDirectoryPath(configDirectoryPath, path, createIfNecessary);
+}
+
+void BaseGUI::setScreenshotDirectoryPath(const std::string& path, bool createIfNecessary)
+{
+    setDirectoryPath(screenshotDirectoryPath, path, createIfNecessary);
 }
 
 
