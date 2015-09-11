@@ -454,9 +454,9 @@ void BezierTriangleSetTopologyContainer::getLocationFromGlobalIndex(const size_t
 				}
 			}
 		} else {
-#ifndef NDEBUG
-			sout << "Error. [BezierTriangleSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInTriangle] Cannot find global index of control point with global index   "<< gi  <<sendl;
-#endif
+			location=NONE;
+			elementIndex=0;
+			elementOffset=0;
 		}
 	}
 }
