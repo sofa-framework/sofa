@@ -203,8 +203,8 @@ endif()
 # Note: keep cuda_include_directories() before cuda_add_library().
 cuda_include_directories(${CMAKE_CURRENT_BINARY_DIR})
 cuda_include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-cuda_include_directories(${SofaFramework_INCLUDE_DIRS})
-cuda_include_directories(${SofaBase_INCLUDE_DIRS})
+cuda_include_directories(${SofaAdvanced_INCLUDE_DIRS})
+cuda_include_directories(${SofaMisc_INCLUDE_DIRS})
 
 # Let nvcc build the library
 cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS} ${WINDOWS_OPTIONS})
