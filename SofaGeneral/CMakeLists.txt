@@ -18,6 +18,8 @@ set(SOFA_HAVE_CSPARSE ${CSparse_FOUND})
 set(SOFAGENERAL_DEPENDENCY_INCLUDE_DIR ${SofaCommon_INCLUDE_DIRS})
 
 
+set(SOFAGENERAL_VERSION ${SofaFramework_VERSION})
+
 configure_file(SofaGeneralConfig.h.in
                SofaGeneral/SofaGeneralConfig.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaGeneral/SofaGeneralConfig.h

@@ -10,6 +10,9 @@ set(SofaCommon_ACTUAL_SOURCE_DIR ${SofaCommon_SOURCE_DIR}/../modules)
 find_package(SofaBase REQUIRED)
 set(SOFACOMMON_DEPENDENCY_INCLUDE_DIR ${SofaBase_INCLUDE_DIRS})
 
+
+set(SOFACOMMON_VERSION ${SofaFramework_VERSION})
+
 configure_file(SofaCommonConfig.h.in SofaCommon/SofaCommonConfig.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaCommon/SofaCommonConfig.h DESTINATION "include/SofaCommon")
 # make sure everyone in the build tree can see <SofaCommon/SofaCommonConfig.h>
