@@ -25,59 +25,48 @@
 #include <MultiThreading/config.h>
 
 
-namespace sofa
+extern "C"
 {
 
-namespace component
+void initExternalModule()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-	void initExternalModule()
-	{
-		static bool first = true;
-		if (first)
-		{
-			first = false;
-		}
+const char* getModuleName()
+{
+    return "MultiThreading";
+}
 
+const char* getModuleVersion()
+{
+    return "1.0";
+}
 
-	}
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-	const char* getModuleName()
-	{
-		return "MultiThreading";
-	}
+const char* getModuleDescription()
+{
+    return "MultiThreading SOFA Framework";
+}
 
-	const char* getModuleVersion()
-	{
-		return "1.0";
-	}
+const char* getModuleComponentList()
+{
+    return "DataExchange, AnimationLoopParallelScheduler ";
+}
 
-	const char* getModuleLicense()
-	{
-		return "LGPL";
-	}
+}
 
-	const char* getModuleDescription()
-	{
-		return "MultiThreading SOFA Framework";
-	}
-
-	const char* getModuleComponentList()
-	{
-		return "DataExchange, AnimationLoopParallelScheduler ";
-	}
-
-
-
-
-
-} // namespace component
-
-
-} // namespace sofa
 
 #ifdef SOFA_HAVE_BOOST
-	SOFA_LINK_CLASS(AnimationLoopParallelScheduler)
+SOFA_LINK_CLASS(AnimationLoopParallelScheduler)
 #endif
 SOFA_LINK_CLASS(DataExchange)
 
