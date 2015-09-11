@@ -16,6 +16,8 @@ set(SOFAADVANCED_DEPENDENCY_DIR ${SofaGeneral_INCLUDE_DIRS} ${MiniFlowVR_INCLUDE
 set(SOFAADVANCED_DEPENDENCY_LINK ${MiniFlowVR_LIBRARIES})
 
 
+set(SOFAADVANCED_VERSION ${SofaFramework_VERSION})
+
 configure_file(SofaAdvancedConfig.h.in SofaAdvanced/SofaAdvancedConfig.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaAdvanced/SofaAdvancedConfig.h DESTINATION "include/SofaAdvanced")
 # make sure everyone in the build tree can see <SofaAdvanced/SofaAdvancedConfig.h>

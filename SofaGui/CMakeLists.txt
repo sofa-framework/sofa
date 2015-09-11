@@ -32,6 +32,9 @@ if(WIN32)
 endif()
 install(FILES ${QT4_DLLS} DESTINATION bin)
 
+
+set(SOFAGUI_VERSION ${SofaFramework_VERSION})
+
 ## Thoses variables are used in SofaGuiConfig.cmake.in
 set(SOFA_HAVE_QT ${Qt4_FOUND})
 set(SOFA_QT4 ${Qt4_FOUND})

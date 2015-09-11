@@ -12,6 +12,9 @@ set(SOFABASE_DEPENDENCY_INCLUDE_DIR)
 find_package(SofaSimulation REQUIRED)
 list(APPEND SOFABASE_DEPENDENCY_INCLUDE_DIR ${SofaSimulation_INCLUDE_DIRS})
 
+
+set(SOFABASE_VERSION ${SofaFramework_VERSION})
+
 configure_file(SofaBaseConfig.h.in SofaBase/SofaBaseConfig.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaBase/SofaBaseConfig.h DESTINATION "include/SofaBase")
 # make sure everyone in the build tree can see <SofaBase/SofaBaseConfig.h>
