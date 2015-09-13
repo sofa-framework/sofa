@@ -485,15 +485,17 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
 	if(bgcol[0] > maxdarkcolor || bgcol[1] > maxdarkcolor || bgcol[2] > maxdarkcolor)
 		textcolor = Color (0.0f, 0.0f, 0.0f, 0.0f);
 
-    vparams->drawTool()->writeOverlayText(
-        10+f_legendOffset.getValue().x(), 10+f_legendOffset.getValue().y(), 14,  // x, y, size
-        textcolor,
-        smax.str().c_str());
+    vparams->drawTool()->writeOverlayText(10 + (int)f_legendOffset.getValue().x(), // x
+                                          10 + (int)f_legendOffset.getValue().y(), // y
+                                          14u, // size
+                                          textcolor,
+                                          smax.str().c_str());
 
-    vparams->drawTool()->writeOverlayText(
-        10+f_legendOffset.getValue().x(), 135+f_legendOffset.getValue().y(), 14,  // x, y, size
-        textcolor,
-        smin.str().c_str());
+    vparams->drawTool()->writeOverlayText(10 + (int)f_legendOffset.getValue().x(), // x
+                                          135 + (int)f_legendOffset.getValue().y(), // y
+                                          14u, // size
+                                          textcolor,
+                                          smin.str().c_str());
 
     // Restore state
     glPopAttrib();
