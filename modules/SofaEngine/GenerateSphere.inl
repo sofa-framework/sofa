@@ -213,10 +213,10 @@ void GenerateSphere<DataTypes>::update()
 
 	if (solid==TETRAHEDRON) {
 		nbVertices=4;
-		pos=Coord(0.,0.,1.);posTrian.push_back(pos);
-		pos=Coord(0.0,(Real)(2*M_SQRT2/3.),-1.0/3.0);posTrian.push_back(pos);
-		pos=Coord((Real)(-M_SQRT2/sqrt(3.)),(Real)( -M_SQRT2/3), -1.0/3.0);posTrian.push_back(pos);
-		pos=Coord((Real)(M_SQRT2/sqrt(3.)), (Real)(-M_SQRT2/3), -1.0/3.0);posTrian.push_back(pos);
+		pos=Coord(0.f,0.f,1.f);posTrian.push_back(pos);
+		pos=Coord(0.f,(Real)(2*M_SQRT2/3.),-1.f/3.f);posTrian.push_back(pos);
+		pos=Coord((Real)(-M_SQRT2/sqrt(3.)),(Real)( -M_SQRT2/3), -1.f/3.f);posTrian.push_back(pos);
+		pos=Coord((Real)(M_SQRT2/sqrt(3.)), (Real)(-M_SQRT2/3), -1.f/3.f);posTrian.push_back(pos);
 		// edge array
 		for (i=0;i<6;++i) {
 			e=Edge(tetrahedron_edge_vertex[i][0],tetrahedron_edge_vertex[i][1]);
@@ -253,7 +253,7 @@ void GenerateSphere<DataTypes>::update()
 		// icosahedron
 		nbVertices=12;
 		for(i=0;i<12;++i) {
-			pos=Coord(icosahedron_vertices_pos[i][0],icosahedron_vertices_pos[i][1],icosahedron_vertices_pos[i][2]);
+			pos=Coord((Real)icosahedron_vertices_pos[i][0],(Real)icosahedron_vertices_pos[i][1],(Real)icosahedron_vertices_pos[i][2]);
 			pos/=pos.norm();
 			posTrian.push_back(pos);
 		}
