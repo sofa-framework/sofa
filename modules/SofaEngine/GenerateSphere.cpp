@@ -62,4 +62,3 @@ template class SOFA_ENGINE_API GenerateSphere<Vec3fTypes>;
 } // namespace component
 
 } // namespace sofa
-
