@@ -27,7 +27,7 @@
 
 #define SOFAPYTHON_VERSION_STR "0.0"
 
-#include <SofaGui/SofaGuiConfig.h>
+#include <SofaGui/config.h>
 
 #define SOFAPYTHON_MAJOR_VERSION ${SOFAPYTHON_MAJOR_VERSION}
 #define SOFAPYTHON_MINOR_VERSION ${SOFAPYTHON_MINOR_VERSION}

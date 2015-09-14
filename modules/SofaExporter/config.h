@@ -25,6 +25,6 @@
 #ifndef SOFAEXPORTER_CONFIG_H
 #define SOFAEXPORTER_CONFIG_H
 
-#include <SofaGeneral/SofaGeneralConfig.h>
+#include <SofaGeneral/config.h>
 
 #endif

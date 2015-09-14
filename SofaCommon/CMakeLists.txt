@@ -13,9 +13,9 @@ set(SOFACOMMON_DEPENDENCY_INCLUDE_DIR ${SofaBase_INCLUDE_DIRS})
 
 set(SOFACOMMON_VERSION ${SofaFramework_VERSION})
 
-configure_file(SofaCommonConfig.h.in SofaCommon/SofaCommonConfig.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaCommon/SofaCommonConfig.h DESTINATION "include/SofaCommon")
-# make sure everyone in the build tree can see <SofaCommon/SofaCommonConfig.h>
+configure_file(config.h.in SofaCommon/config.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaCommon/config.h DESTINATION "include/SofaCommon")
+# make sure everyone in the build tree can see <SofaCommon/config.h>
 #include_directories(${CMAKE_CURRENT_BINARY_DIR})
 #include_directories(${SofaCommon_ACTUAL_SOURCE_DIR})
 

@@ -16,78 +16,79 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Misc                                  *
+*                                SOFA :: Common                               *
 *                                                                             *
 * Authors: The SOFA Team (see Authors.txt)                                    *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAMISC_SOFAMISCCONFIG_H
-#define SOFAMISC_SOFAMISCCONFIG_H
+#ifndef SOFACOMMON_CONFIG_H
+#define SOFACOMMON_CONFIG_H
 
-#include <SofaGeneral/SofaGeneralConfig.h>
+#include <SofaBase/config.h>
 
-#ifdef SOFA_BUILD_MISC_TOPOLOGY
-#  define SOFA_TARGET SofaMiscTopology
-#  define SOFA_MISC_TOPOLOGY_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_LOADER
+#  define  SOFA_TARGET    SofaLoader
+#  define SOFA_LOADER_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_MISC_TOPOLOGY_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_LOADER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#ifdef SOFA_BUILD_MISC_MAPPING
-#  define SOFA_TARGET SofaMiscMapping
-#  define SOFA_MISC_MAPPING_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_RIGID
+#  define SOFA_TARGET    SofaRigid
+#  define SOFA_RIGID_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_MISC_MAPPING_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_RIGID_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#ifdef SOFA_BUILD_MISC_FORCEFIELD
-#  define SOFA_TARGET SofaMiscForceField
-#  define SOFA_MISC_FORCEFIELD_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_DEFORMABLE
+#  define SOFA_TARGET    SofaDeformable
+#  define SOFA_DEFORMABLE_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_MISC_FORCEFIELD_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_DEFORMABLE_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#ifdef SOFA_BUILD_MISC_FEM
-#  define SOFA_TARGET SofaMiscFem
-#  define SOFA_MISC_FEM_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_SIMPLE_FEM
+#  define SOFA_TARGET    SofaSimpleFem
+#  define SOFA_SIMPLE_FEM_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_MISC_FEM_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_SIMPLE_FEM_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#ifdef SOFA_BUILD_MISC_ENGINE
-#  define SOFA_TARGET SofaMiscEngine
-#  define SOFA_MISC_ENGINE_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_OBJECT_INTERACTION
+#  define SOFA_TARGET    SofaObjectInteraction
+#  define SOFA_OBJECT_INTERACTION_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_MISC_ENGINE_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_OBJECT_INTERACTION_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#ifdef SOFA_BUILD_MISC_COLLISION
-#  define SOFA_TARGET SofaMiscCollision
-#  define SOFA_MISC_COLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_MESH_COLLISION
+#  define SOFA_TARGET    SofaMeshCollision
+#  define SOFA_MESH_COLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_MISC_COLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_MESH_COLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#ifdef SOFA_BUILD_MISC_SOLVER
-#  define SOFA_TARGET SofaMiscSolver
-#  define SOFA_MISC_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_EXPLICIT_ODE_SOLVER
+#  define SOFA_TARGET    SofaExplicitOdeSolver
+#  define SOFA_EXPLICIT_ODE_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_MISC_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_EXPLICIT_ODE_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#ifdef SOFA_BUILD_MISC
-#  define SOFA_TARGET SofaMisc
-#  define SOFA_MISC_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_IMPLICIT_ODE_SOLVER
+#  define SOFA_TARGET    SofaImplicitOdeSolver
+#  define SOFA_IMPLICIT_ODE_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_MISC_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_IMPLICIT_ODE_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#ifdef SOFA_BUILD_COMPONENT_MISC
-#  define SOFA_TARGET SofaComponentMisc
-#  define SOFA_COMPONENT_MISC_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_COMPONENT_COMMON
+#  define SOFA_TARGET    SofaComponentCommon
+#  define SOFA_COMPONENT_COMMON_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_COMPONENT_MISC_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_COMPONENT_COMMON_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
+
 
 #endif

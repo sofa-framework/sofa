@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAADVANCED_SOFAADVANCEDCONFIG_H
-#define SOFAADVANCED_SOFAADVANCEDCONFIG_H
+#ifndef SOFAADVANCED_CONFIG_H
+#define SOFAADVANCED_CONFIG_H
 
-#include <SofaCommon/SofaCommonConfig.h>
+#include <SofaCommon/config.h>
 
 #cmakedefine SOFA_HAVE_FLOWVR
 

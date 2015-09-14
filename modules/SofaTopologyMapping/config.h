@@ -25,6 +25,6 @@
 #ifndef SOFATOPOLOGYMAPPING_CONFIG_H
 #define SOFATOPOLOGYMAPPING_CONFIG_H
 
-#include <SofaGeneral/SofaGeneralConfig.h>
+#include <SofaGeneral/config.h>
 
 #endif

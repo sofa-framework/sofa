@@ -25,6 +25,6 @@
 #ifndef SOFAHAPTICS_CONFIG_H
 #define SOFAHAPTICS_CONFIG_H
 
-#include <SofaGeneral/SofaGeneralConfig.h>
+#include <SofaGeneral/config.h>
 
 #endif

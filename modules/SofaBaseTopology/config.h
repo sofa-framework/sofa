@@ -25,6 +25,6 @@
 #ifndef SOFABASETOPOLOGY_CONFIG_H
 #define SOFABASETOPOLOGY_CONFIG_H
 
-#include <SofaBase/SofaBaseConfig.h>
+#include <SofaBase/config.h>
 
 #endif

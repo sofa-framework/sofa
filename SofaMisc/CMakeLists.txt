@@ -13,9 +13,9 @@ set(SOFAMISC_DEPENDENCY_DIR ${SofaGeneral_INCLUDE_DIRS})
 
 set(SOFAMISC_VERSION ${SofaFramework_VERSION})
 
-configure_file(SofaMiscConfig.h.in SofaMisc/SofaMiscConfig.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaMisc/SofaMiscConfig.h DESTINATION "include/SofaMisc")
-# make sure everyone in the build tree can see <SofaMisc/SofaMiscConfig.h>
+configure_file(config.h.in SofaMisc/config.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaMisc/config.h DESTINATION "include/SofaMisc")
+# make sure everyone in the build tree can see <SofaMisc/config.h>
 #include_directories(${CMAKE_CURRENT_BINARY_DIR})
 #include_directories(${SofaMisc_ACTUAL_SOURCE_DIR}/../../)
 
