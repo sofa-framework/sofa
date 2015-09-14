@@ -13,6 +13,8 @@ find_package(Newmat)
 find_package(CSparse)
 
 set(SOFA_HAVE_NEWMAT @SOFA_HAVE_NEWMAT@)
+set(SOFA_HAVE_PARDISO @SOFA_HAVE_PARDISO@)
+
 set(SofaGeneral_TARGETS @SOFAGENERAL_TARGETS@)
 
 if(SOFA_HAVE_NEWMAT)

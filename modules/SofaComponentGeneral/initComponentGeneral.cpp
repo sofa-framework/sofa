@@ -46,6 +46,9 @@
 #ifdef SOFA_HAVE_EIGEN2
 #include <SofaEigen2Solver/initEigen2Solver.h>
 #endif
+#ifdef SOFA_HAVE_PARDISO
+#include <SofaPardisoSolver/initPardisoSolver.h>
+#endif
 
 #include <SofaPreconditioner/initPreconditioner.h>
 #include <SofaOpenglVisual/initOpenGLVisual.h>
@@ -87,7 +90,9 @@ void initComponentGeneral()
 #ifdef SOFA_HAVE_EIGEN2
     initEigen2Solver();
 #endif
-
+#ifdef SOFA_HAVE_PARDISO
+    initPardisoSolver();
+#endif
     initPreconditioner();
 #ifndef SOFA_NO_OPENGL
     initOpenGLVisual();
