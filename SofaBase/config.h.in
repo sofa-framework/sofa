@@ -16,24 +16,64 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: GUI                                    *
+*                              SOFA :: SofaBase                               *
 *                                                                             *
 * Authors: The SOFA Team (see Authors.txt)                                    *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAGUI_SOFAGUICONFIG_H
-#define SOFAGUI_SOFAGUICONFIG_H
+#ifndef SOFABASE_CONFIG_H
+#define SOFABASE_CONFIG_H
 
-#include <sofa/config.h>
+#include <sofa/simulation/config.h>
 
-// Glut GUI
-#cmakedefine SOFA_GUI_GLUT
+#ifdef SOFA_BUILD_BASE_TOPOLOGY
+#  define SOFA_TARGET SofaBaseTopology
+#  define SOFA_BASE_TOPOLOGY_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_BASE_TOPOLOGY_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-// Qt GUI
-#cmakedefine SOFA_GUI_QT
-#cmakedefine SOFA_GUI_QGLVIEWER
-#cmakedefine SOFA_GUI_QTVIEWER
-#cmakedefine SOFA_GUI_INTERACTION
+#ifdef SOFA_BUILD_BASE_LINEAR_SOLVER
+#  define SOFA_TARGET SofaBaseLinearSolver
+#  define SOFA_BASE_LINEAR_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_BASE_LINEAR_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#ifdef SOFA_BUILD_BASE_MECHANICS
+#  define SOFA_TARGET SofaBaseMechanics
+#  define SOFA_BASE_MECHANICS_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_BASE_MECHANICS_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#ifdef SOFA_BUILD_BASE_COLLISION
+#  define SOFA_TARGET SofaBaseCollision
+#  define SOFA_BASE_COLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_BASE_COLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#ifdef SOFA_BUILD_BASE_ANIMATION_LOOP
+#  define SOFA_TARGET SofaBaseAnimationLoop
+#  define SOFA_BASE_ANIMATION_LOOP_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_BASE_ANIMATION_LOOP_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#ifdef SOFA_BUILD_BASE_VISUAL
+#  define SOFA_TARGET SofaBaseVisual
+#  define SOFA_BASE_VISUAL_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_BASE_VISUAL_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#ifdef SOFA_BUILD_COMPONENT_BASE
+#  define SOFA_TARGET SofaComponentBase
+#  define SOFA_COMPONENT_BASE_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_COMPONENT_BASE_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
 #endif

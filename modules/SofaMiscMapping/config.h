@@ -25,6 +25,6 @@
 #ifndef SOFAMISCMAPPING_CONFIG_H
 #define SOFAMISCMAPPING_CONFIG_H
 
-#include <SofaMisc/SofaMiscConfig.h>
+#include <SofaMisc/config.h>
 
 #endif

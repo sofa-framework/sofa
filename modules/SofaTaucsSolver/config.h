@@ -25,6 +25,6 @@
 #ifndef SOFATAUCSSOLVER_CONFIG_H
 #define SOFATAUCSSOLVER_CONFIG_H
 
-#include <SofaGeneral/SofaGeneralConfig.h>
+#include <SofaGeneral/config.h>
 
 #endif

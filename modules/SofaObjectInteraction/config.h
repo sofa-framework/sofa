@@ -25,6 +25,6 @@
 #ifndef SOFAOBJECTINTERACTION_CONFIG_H
 #define SOFAOBJECTINTERACTION_CONFIG_H
 
-#include <SofaCommon/SofaCommonConfig.h>
+#include <SofaCommon/config.h>
 
 #endif

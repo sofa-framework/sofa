@@ -25,6 +25,6 @@
 #ifndef SOFABASEANIMATIONLOOP_CONFIG_H
 #define SOFABASEANIMATIONLOOP_CONFIG_H
 
-#include <SofaBase/SofaBaseConfig.h>
+#include <SofaBase/config.h>
 
 #endif

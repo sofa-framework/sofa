@@ -25,6 +25,6 @@
 #ifndef SOFAMISCCOLLISION_CONFIG_H
 #define SOFAMISCCOLLISION_CONFIG_H
 
-#include <SofaMisc/SofaMiscConfig.h>
+#include <SofaMisc/config.h>
 
 #endif

@@ -25,6 +25,6 @@
 #ifndef SOFASIMPLEFEM_CONFIG_H
 #define SOFASIMPLEFEM_CONFIG_H
 
-#include <SofaCommon/SofaCommonConfig.h>
+#include <SofaCommon/config.h>
 
 #endif

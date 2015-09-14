@@ -25,6 +25,6 @@
 #ifndef SOFACOMPONENTADVANCED_CONFIG_H
 #define SOFACOMPONENTADVANCED_CONFIG_H
 
-#include <SofaAdvanced/SofaAdvancedConfig.h>
+#include <SofaAdvanced/config.h>
 
 #endif

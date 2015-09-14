@@ -25,6 +25,6 @@
 #ifndef SOFACOMPONENTGENERAL_CONFIG_H
 #define SOFACOMPONENTGENERAL_CONFIG_H
 
-#include <SofaGeneral/SofaGeneralConfig.h>
+#include <SofaGeneral/config.h>
 
 #endif

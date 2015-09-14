@@ -25,6 +25,6 @@
 #ifndef SOFAEXPLICITODESOLVER_CONFIG_H
 #define SOFAEXPLICITODESOLVER_CONFIG_H
 
-#include <SofaCommon/SofaCommonConfig.h>
+#include <SofaCommon/config.h>
 
 #endif

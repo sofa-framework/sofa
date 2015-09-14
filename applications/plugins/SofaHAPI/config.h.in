@@ -25,7 +25,7 @@
 #ifndef SOFAHAPI_CONFIG_H
 #define SOFAHAPI_CONFIG_H
 
-#include <SofaGeneral/SofaGeneralConfig.h>
+#include <SofaGeneral/config.h>
 
 #define SOFAHAPI_MAJOR_VERSION ${SOFAHAPI_MAJOR_VERSION}
 #define SOFAHAPI_MINOR_VERSION ${SOFAHAPI_MINOR_VERSION}

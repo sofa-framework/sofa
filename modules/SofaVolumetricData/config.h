@@ -25,6 +25,6 @@
 #ifndef SOFAVOLUMETRICDATA_CONFIG_H
 #define SOFAVOLUMETRICDATA_CONFIG_H
 
-#include <SofaAdvanced/SofaAdvancedConfig.h>
+#include <SofaAdvanced/config.h>
 
 #endif

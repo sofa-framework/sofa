@@ -25,6 +25,6 @@
 #ifndef SOFACONSTRAINT_CONFIG_H
 #define SOFACONSTRAINT_CONFIG_H
 
-#include <SofaGeneral/SofaGeneralConfig.h>
+#include <SofaGeneral/config.h>
 
 #endif

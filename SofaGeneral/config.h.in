@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAGENERAL_SOFAGENERALCONFIG_H
-#define SOFAGENERAL_SOFAGENERALCONFIG_H
+#ifndef SOFAGENERAL_CONFIG_H
+#define SOFAGENERAL_CONFIG_H
 
-#include <SofaCommon/SofaCommonConfig.h>
+#include <SofaCommon/config.h>
 
 #cmakedefine SOFA_HAVE_NEWMAT
 

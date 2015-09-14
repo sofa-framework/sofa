@@ -107,10 +107,9 @@ foreach(TARGET ${SOFAGUI_TARGETS})
 endforeach()
 
 
-## SofaGuiConfig.h
-configure_file(SofaGuiConfig.h.in SofaGui/SofaGuiConfig.h)
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SofaGui/SofaGuiConfig.h"
-        DESTINATION "include/SofaGui")
+## SofaGuiConfig/config.h
+configure_file(config.h.in SofaGui/config.h)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SofaGui/config.h" DESTINATION "include/SofaGui")
 
 # CMake package configurations files
 include(SofaPackageConfigHelpers)

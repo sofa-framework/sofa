@@ -3,7 +3,6 @@ project(SofaMisc)
 
 set(HEADER_FILES
 
-    config.h
     initMisc.h
     MeshTetraStuffing.h
 

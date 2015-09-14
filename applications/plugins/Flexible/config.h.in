@@ -25,7 +25,7 @@
 #ifndef FLEXIBLE_CONFIG_H
 #define FLEXIBLE_CONFIG_H
 
-#include <SofaBase/SofaBaseConfig.h>
+#include <SofaBase/config.h>
 
 #define FLEXIBLE_MAJOR_VERSION ${FLEXIBLE_MAJOR_VERSION}
 #define FLEXIBLE_MINOR_VERSION ${FLEXIBLE_MINOR_VERSION}
