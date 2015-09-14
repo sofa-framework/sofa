@@ -57,17 +57,30 @@ void GenericConstraintCorrection::bwdInit() {
     linearsolvers.clear();
 
     const helper::vector<std::string>& solverNames = solverName.getValue();
-    for (unsigned int i=0; i<solverNames.size(); ++i) {
+    if (solverNames.size() == 0) {
         sofa::core::behavior::LinearSolver* s = NULL;
-        c->get(s, solverNames[i]);
-
+        c->get(s);
         if (s) {
             if (s->getTemplateName() == "GraphScattered") {
-                serr << "ERROR GenericConstraintCorrection cannot use the solver " << solverNames[i] << " because it is templated on GraphScatteredType" << sendl;
+                serr << "ERROR GenericConstraintCorrection cannot use the solver " << s->getName() << " because it is templated on GraphScatteredType" << sendl;
             } else {
                 linearsolvers.push_back(s);
             }
-        } else serr << "Solver \"" << solverNames[i] << "\" not found." << sendl;
+        }
+    }
+    else {
+        for (unsigned int i=0; i<solverNames.size(); ++i) {
+            sofa::core::behavior::LinearSolver* s = NULL;
+            c->get(s, solverNames[i]);
+
+            if (s) {
+                if (s->getTemplateName() == "GraphScattered") {
+                    serr << "ERROR GenericConstraintCorrection cannot use the solver " << solverNames[i] << " because it is templated on GraphScatteredType" << sendl;
+                } else {
+                    linearsolvers.push_back(s);
+                }
+            } else serr << "Solver \"" << solverNames[i] << "\" not found." << sendl;
+        }
     }
 
     if (odesolver == NULL) {
@@ -80,7 +93,7 @@ void GenericConstraintCorrection::bwdInit() {
         return;
     }
 
-    sout << "Found " << linearsolvers.size() << "linearsolvers" << sendl;
+    sout << "Found " << linearsolvers.size() << " linearsolvers" << sendl;
     for (unsigned i = 0; i < linearsolvers.size(); i++) {
         sout << linearsolvers[i]->getName() << sendl;
     }
