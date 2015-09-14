@@ -131,7 +131,7 @@ void GenerateCylinder<DataTypes>::update()
 		for(j=1;j<=freqR;++j) {
 			r=j*radius/(freqR);
 			for(k=0;k<freqTheta;++k) {
-				theta=(Real)k*2*M_PI/freqTheta;
+				theta=(Real)(k*2*M_PI/freqTheta);
 				xValue= r*cos(theta);
 				yValue= r*sin(theta);
 				pos=Coord(xValue,yValue,zValue);
