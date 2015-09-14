@@ -390,7 +390,9 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
 		{
 			if (!constraintCorrectionIsActive[i]) continue;
 			BaseConstraintCorrection* cc = constraintCorrections[i];
+			sofa::helper::AdvancedTimer::stepBegin("ApplyCorrection on: " + cc->getName());
 			cc->computeAndApplyMotionCorrection(cParams, xId, vId, this->m_fId, &current_cp->f);
+			sofa::helper::AdvancedTimer::stepEnd("ApplyCorrection on: " + cc->getName());
 		}
 	}
 	else if (cParams->constOrder() == core::ConstraintParams::POS)
@@ -400,7 +402,9 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
 		{
 			if (!constraintCorrectionIsActive[i]) continue;
 			BaseConstraintCorrection* cc = constraintCorrections[i];
+			sofa::helper::AdvancedTimer::stepBegin("ApplyCorrection on: " + cc->getName());
 			cc->computeAndApplyPositionCorrection(cParams, xId, this->m_fId, &current_cp->f);
+			sofa::helper::AdvancedTimer::stepEnd("ApplyCorrection on: " + cc->getName());
 		}
 	}
 	else if (cParams->constOrder() == core::ConstraintParams::VEL)
@@ -410,7 +414,9 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
 		{
 			if (!constraintCorrectionIsActive[i]) continue;
 			BaseConstraintCorrection* cc = constraintCorrections[i];
+			sofa::helper::AdvancedTimer::stepBegin("ApplyCorrection on: " + cc->getName());
 			cc->computeAndApplyVelocityCorrection(cParams, vId, this->m_fId, &current_cp->f);
+			sofa::helper::AdvancedTimer::stepEnd("ApplyCorrection on: " + cc->getName());
 		}
 	}
 
