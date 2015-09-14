@@ -59,6 +59,11 @@ if(SOFA_HAVE_EIGEN2)
     list(APPEND SOFAGENERAL_TARGETS SofaEigen2Solver)
 endif()
 
+option(SOFAGENERAL_PARDISOSOLVER "Build the SofaPardisoSolver library" OFF)
+if(SOFAGENERAL_PARDISOSOLVER)
+    list(APPEND SOFAGENERAL_TARGETS SofaPardisoSolver)
+endif()
+
 foreach(TARGET ${SOFAGENERAL_TARGETS})
     add_subdirectory(${SofaGeneral_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
     set_target_properties(${TARGET} PROPERTIES FOLDER "SofaGeneral") # IDE folder

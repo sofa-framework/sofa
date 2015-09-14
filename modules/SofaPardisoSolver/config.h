@@ -25,6 +25,6 @@
 #ifndef SOFAPARDISOSOLVER_CONFIG_H
 #define SOFAPARDISOSOLVER_CONFIG_H
 
-@THERE@
+#include <SofaGeneral/SofaGeneralConfig.h>
 
 #endif
