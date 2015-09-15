@@ -2,46 +2,24 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaDenseSolver)
 
 set(HEADER_FILES
-
+    LULinearSolver.h
+    NewMatMatrix.h
+    NewMatVector.h
     config.h
     initDenseSolver.h
-    LULinearSolver.h
-    NewMatVector.h
-    NewMatMatrix.h
-
-    )
+)
 
 set(SOURCE_FILES
-
-    initDenseSolver.cpp
     LULinearSolver.cpp
     NewMatCGLinearSolver.cpp
     NewMatCholeskySolver.cpp
-
-    )
-
-set(GROUP_BASE_DIR "..")
+    initDenseSolver.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver)
 target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/SofaGeneral>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAGENERAL_DEPENDENCY_INCLUDE_DIR}>")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_DENSE_SOLVER")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-set( SOFADENSE_SOLVER_COMPILER_FLAGS "-DSOFA_BUILD_DENSE_SOLVER")
-
-set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
-set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFAGENERAL_VERSION} )
-set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFADENSE_SOLVER_COMPILER_FLAGS}"  )
-set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
-
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaGeneral_libraries
-        EXPORT    SofaGeneralTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}"
-)
-
+SofaGeneral_install(${PROJECT_NAME})

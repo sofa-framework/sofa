@@ -1,7 +1,4 @@
-# CMake package configuration file for the miniFlowVR library.
-# It defines the following variables:
-# - MiniFlowVR_INCLUDE_DIRS
-# - MiniFlowVR_LIBRARIES
+# CMake package configuration file for the miniFlowVR library
 
 @PACKAGE_INIT@
 
@@ -13,6 +10,5 @@ endif()
 
 check_required_components(miniFlowVR)
 
-# Variables for compatibility with MODULE mode find_package.
 set(MiniFlowVR_LIBRARIES miniFlowVR)
-set(MiniFlowVR_INCLUDE_DIRS ${MINIFLOWVR_INCLUDE_DIR})
+set_and_check(MiniFlowVR_INCLUDE_DIRS @PACKAGE_MINIFLOWVR_INCLUDE_DIR@)

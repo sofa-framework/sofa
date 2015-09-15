@@ -1,7 +1,9 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(SofaCUDA)
 
-set(SOFACUDA_VERSION 0.1)
+set(SOFACUDA_MAJOR_VERSION 0)
+set(SOFACUDA_MINOR_VERSION 1)
+set(SOFACUDA_VERSION ${SOFACUDA_MAJOR_VERSION}.${SOFACUDA_MINOR_VERSION})
 
 # quick and dirty fix for nvcc compatibility with -fno-partial-inlining flag
 if(NOT WIN32)
@@ -288,6 +290,6 @@ install(TARGETS ${PROJECT_NAME}
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
-# CMake package configurations files
+## CMake package configurations files
 include(SofaPackageConfigHelpers)
 sofa_write_package_config_files(SofaCUDA ${SOFACUDA_VERSION} "" "include")

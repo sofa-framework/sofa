@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(ExternalBehaviorModel)
 
 
@@ -22,10 +22,10 @@ target_link_libraries(${PROJECT_NAME} SofaComponentGeneral)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 install(TARGETS ${PROJECT_NAME}
-    COMPONENT ExternalBehaviorModel_libraries
-    EXPORT ExternalBehaviorModelTargets
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
+        COMPONENT ExternalBehaviorModel_libraries
+        EXPORT ExternalBehaviorModelTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 
 install(DIRECTORY example/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

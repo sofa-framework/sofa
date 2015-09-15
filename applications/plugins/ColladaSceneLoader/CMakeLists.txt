@@ -1,6 +1,5 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(ColladaSceneLoader)
-
 
 set(HEADER_FILES
     SceneColladaLoader.h
@@ -12,7 +11,7 @@ set(SOURCE_FILES
     initPlugin.cpp
 )
 
-set(README_FILES ColladaSceneLoader.txt )
+set(README_FILES ColladaSceneLoader.txt)
 
 find_package(SofaBase REQUIRED)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
@@ -45,11 +44,11 @@ endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${COLLADASCENELOADER_COMPILE_FLAGS}")
 
 install(TARGETS ${PROJECT_NAME}
-    COMPONENT ColladaSceneLoader_libraries
-    EXPORT ColladaSceneLoaderTargets
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
+        COMPONENT ColladaSceneLoader_libraries
+        EXPORT ColladaSceneLoaderTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 
 install(DIRECTORY Demos/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 

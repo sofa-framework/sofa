@@ -1,8 +1,7 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(SofaModeler)
 
 set(HEADER_FILES
-
     ../../../sofa/gui/qt/SofaPluginManager.h
     AddPreset.h
     FilterLibrary.h
@@ -20,7 +19,6 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-
     ../../../sofa/gui/qt/SofaPluginManager.cpp
     AddPreset.cpp
     FilterLibrary.cpp
@@ -46,13 +44,7 @@ qt4_wrap_ui(FORM_FILES ${UI_FILES})
 set(FORM_FILES_GROUP "Generated")
 
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
-
-# since "SofaComponentMain" does not exist any more we link to every components collection
-# this is temporary, until every module is switched to plugins
 target_link_libraries(${PROJECT_NAME} SofaGuiMain SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
-# SofaGuiCommon Qwt SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField
-
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 install(TARGETS ${PROJECT_NAME}

@@ -1,38 +1,45 @@
-cmake_minimum_required(VERSION 2.8.11)
-set(SOLUTION_NAME "SofaSimulation")
-project(${SOLUTION_NAME})
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaSimulation)
 
-#temporary until we move the sub projects
-set(SofaSimulation_ACTUAL_SOURCE_DIR ${SofaSimulation_SOURCE_DIR}/../modules/sofa/simulation)
-
-
-set(SOFASIMULATION_DEPENDENCY_INCLUDE_DIRS)
-## SofaSimulation dependencies
-##
+## Dependencies
 find_package(SofaFramework REQUIRED)
-list(APPEND SOFASIMULATION_DEPENDENCY_INCLUDE_DIRS ${SofaFramework_INCLUDE_DIRS})
 
-
+## Version
 set(SOFASIMULATION_VERSION ${SofaFramework_VERSION})
 
-#include_directories(${SofaFramework_INCLUDE_DIRS})
+## sofa/simulation/config.h
+configure_file(config.h.in sofa/simulation/config.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/simulation/config.h DESTINATION include/sofa/simulation)
 
-configure_file(config.h.in
-               sofa/simulation/config.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/simulation/config.h
-        DESTINATION include/sofa/simulation)
-# make sure everyone in the build tree can see <sofa/simulation/config.h>
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+## Installation macro for subdirectories
+macro(SofaSimulation_install lib)
+    install(TARGETS ${lib}
+            EXPORT SofaSimulationTargets
+            RUNTIME DESTINATION bin COMPONENT SofaSimulation_libraries
+            LIBRARY DESTINATION lib COMPONENT SofaSimulation_libraries
+            ARCHIVE DESTINATION lib COMPONENT SofaSimulation_libraries
+            PUBLIC_HEADER DESTINATION include/${lib} COMPONENT SofaSimulation_headers)
+endmacro()
 
-add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/common ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationCommon)
-add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/tree ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationTree)
-add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/graph ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationGraph)
+## Subdirectories
+add_subdirectory(../modules/sofa/simulation/common ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationCommon)
+add_subdirectory(../modules/sofa/simulation/tree ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationTree)
+add_subdirectory(../modules/sofa/simulation/graph ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationGraph)
 
-# IDE folder
-set_target_properties(SofaSimulationCommon PROPERTIES FOLDER "SofaSimulation")
-set_target_properties(SofaSimulationGraph PROPERTIES FOLDER "SofaSimulation")
-set_target_properties(SofaSimulationTree PROPERTIES FOLDER "SofaSimulation")
+set(SOFASIMULATION_TARGETS
+    SofaSimulationCommon
+    SofaSimulationGraph
+    SofaSimulationTree
+)
 
-# CMake package configurations files
+foreach(TARGET ${SOFASIMULATION_TARGETS})
+    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules>")
+    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>") # For sofa/simulation/config.h
+    set_target_properties(${TARGET} PROPERTIES DEBUG_POSTFIX _d)
+    set_target_properties(${TARGET} PROPERTIES FOLDER SofaSimulation) # IDE folder
+    set_target_properties(${TARGET} PROPERTIES VERSION  ${SOFASIMULATION_VERSION})
+endforeach()
+
+## CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaSimulation ${SOFASIMULATION_VERSION} "${SofaSimulation_ACTUAL_SOURCE_DIR}" "include")
+sofa_write_package_config_files(SofaSimulation ${SOFASIMULATION_VERSION} "${CMAKE_CURRENT_SOURCE_DIR}/../modules" "include")

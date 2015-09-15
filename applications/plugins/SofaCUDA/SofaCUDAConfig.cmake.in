@@ -1,13 +1,6 @@
-# CMake package configuration file for the SofaCUDA plugin.
-# It defines the following variables:
-# - SofaCUDA_INCLUDE_DIRS
-# - SofaCUDA_LIBRARIES
+# CMake package configuration file for the SofaCUDA plugin
 
 @PACKAGE_INIT@
-
-set_and_check(SOFACUDA_INCLUDE_DIR "@PACKAGE_SOFACUDA_INCLUDE_DIR@")
-
-check_required_components(SofaCUDA)
 
 find_package(SofaAdvanced REQUIRED)
 find_package(SofaMisc REQUIRED)
@@ -17,5 +10,7 @@ if(NOT TARGET SofaCUDA)
 	include("${CMAKE_CURRENT_LIST_DIR}/SofaCUDATargets.cmake")
 endif()
 
+check_required_components(SofaCUDA)
+
 set(SofaCUDA_LIBRARIES SofaCUDA)
-set(SofaCUDA_INCLUDE_DIRS ${SofaMisc_INCLUDE_DIRS} ${SofaAdvanced_INCLUDE_DIRS})
+set_and_check(SofaCUDA_INCLUDE_DIRS @PACKAGE_SOFACUDA_INCLUDE_DIR@ ${SofaMisc_INCLUDE_DIRS} ${SofaAdvanced_INCLUDE_DIRS})

@@ -2,17 +2,6 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaHelper)
 
 set(HEADER_FILES
-    IndexOpenMP.h
-    Logger.h
-    OptionsGroup.h
-    deque.h
-    helper.h
-    init.h
-    integer_id.h
-    system/Locale.h
-    system/console.h
-    system/thread/CircularQueue.h
-    system/thread/CircularQueue.inl
     AdvancedTimer.h
     ArgumentParser.h
     BackTrace.h
@@ -23,12 +12,15 @@ set(HEADER_FILES
     FnDispatcher.h
     FnDispatcher.inl
     GenerateRigid.h
+    IndexOpenMP.h
     LCPSolver.h
     LCPSolver.inl
     LCPcalc.h
+    Logger.h
     MarchingCubeUtility.h
     MatEigen.h
     MemoryManager.h
+    OptionsGroup.h
     ParticleMask.h
     Polynomial_LD.h
     Polynomial_LD.inl
@@ -45,9 +37,13 @@ set(HEADER_FILES
     accessor.h
     decompose.h
     decompose.inl
+    deque.h
     fixed_array.h
     gl/Trackball.h
     gl/Transformation.h
+    helper.h
+    init.h
+    integer_id.h
     io/Image.h
     io/ImageBMP.h
     io/ImageDDS.h
@@ -81,16 +77,20 @@ set(HEADER_FILES
     system/DynamicLibrary.h
     system/FileRepository.h
     system/FileSystem.h
+    system/Locale.h
     system/PipeProcess.h
     system/PluginManager.h
     system/SetDirectory.h
     system/SofaOStream.h
     system/atomic.h
     system/config.h
+    system/console.h
     system/gl.h
     system/glu.h
     system/glut.h
     system/thread/CTime.h
+    system/thread/CircularQueue.h
+    system/thread/CircularQueue.inl
     system/thread/debug.h
     system/thread/thread_specific_ptr.h
     vector.h
@@ -100,17 +100,14 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    ArgumentParser.cpp
-    Logger.cpp
-    init.cpp
-    system/Locale.cpp
-    system/console.cpp
     AdvancedTimer.cpp
+    ArgumentParser.cpp
     BackTrace.cpp
     DualQuat.cpp
     Factory.cpp
     GenerateRigid.cpp
     LCPcalc.cpp
+    Logger.cpp
     MarchingCubeUtility.cpp
     OptionsGroup.cpp
     Polynomial_LD.cpp
@@ -122,6 +119,7 @@ set(SOURCE_FILES
     decompose.cpp
     gl/Trackball.cpp
     gl/Transformation.cpp
+    init.cpp
     io/Image.cpp
     io/ImageBMP.cpp
     io/ImageDDS.cpp
@@ -145,10 +143,12 @@ set(SOURCE_FILES
     system/DynamicLibrary.cpp
     system/FileRepository.cpp
     system/FileSystem.cpp
+    system/Locale.cpp
     system/PipeProcess.cpp
     system/PluginManager.cpp
     system/SetDirectory.cpp
     system/SofaOStream.cpp
+    system/console.cpp
     system/thread/CTime.cpp
     system/thread/CircularQueue.cpp
     system/thread/debug.cpp
@@ -161,13 +161,13 @@ if(SOFA_HAVE_PNG)
 endif()
 
 if(Boost_thread_FOUND)
-    list(APPEND HEADER_FILES "system/thread/TimeoutWatchdog.h")
-    list(APPEND SOURCE_FILES "system/thread/TimeoutWatchdog.cpp")
+    list(APPEND HEADER_FILES system/thread/TimeoutWatchdog.h)
+    list(APPEND SOURCE_FILES system/thread/TimeoutWatchdog.cpp)
 endif()
 
 if(NOT SOFA_NO_OPENGL)
-    if(SOFA_HAVE_GLUT)
 
+    if(SOFA_HAVE_GLUT)
         list(APPEND HEADER_FILES
             gl/Axis.h
             gl/BasicShapes.h
@@ -178,13 +178,11 @@ if(NOT SOFA_NO_OPENGL)
             gl/glText.inl
             system/glut.h
         )
-
         list(APPEND SOURCE_FILES
             gl/Axis.cpp
             gl/Cylinder.cpp
             gl/glText.cpp
         )
-
     endif()
 
     list(APPEND HEADER_FILES
@@ -215,44 +213,39 @@ if(NOT SOFA_NO_OPENGL)
             gl/GLSLShader.cpp
             gl/Texture.cpp
         )
-    endif(SOFA_HAVE_GLEW)
-endif(NOT SOFA_NO_OPENGL)
+    endif()
 
-if(SOFA-EXTERNAL_HAVE_FFMPEG)
-    list(APPEND HEADER_FILES "gl/VideoRecorder.h")
-    list(APPEND SOURCE_FILES "gl/VideoRecorder.cpp")
 endif()
+
+# # TODO
+# if(SOFA-EXTERNAL_HAVE_FFMPEG)
+#     list(APPEND HEADER_FILES gl/VideoRecorder.h)
+#     list(APPEND SOURCE_FILES gl/VideoRecorder.cpp)
+# endif()
 
 if(PS3)
-    list(APPEND HEADER_FILES "gl/ps3gl_compat.h")
-    list(APPEND SOURCE_FILES "gl/ps3gl_compat.cpp")
-endif()
-
-if(WIN32)
-    # Windows lib, used in system::FileSystem
-    list(APPEND SOFA_HELPER_LINK_PRIVATE_DEPENDENCIES Shlwapi)
-endif()
-
-if(UNIX)
-    list(APPEND SOFA_HELPER_LINK_PRIVATE_DEPENDENCIES dl)
+    list(APPEND HEADER_FILES gl/ps3gl_compat.h)
+    list(APPEND SOURCE_FILES gl/ps3gl_compat.cpp)
 endif()
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+if(WIN32)
+    # Windows library, used in system::FileSystem
+    target_link_libraries(${PROJECT_NAME} PRIVATE Shlwapi)
+endif()
+if(UNIX)
+    target_link_libraries(${PROJECT_NAME} PRIVATE dl)
+endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${SOFA_HELPER_LINK_PRIVATE_DEPENDENCIES})
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../>"
-                                                  "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>")
-
-# make the name of debug libraries end in _d.
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>")
+# For generated files, like sofa/config.h
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/SofaFramework>")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_HELPER -DUNICODE -DSOFA_LIBSUFFIX=_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-set_property(SOURCE system/PluginManager.cpp PROPERTY COMPILE_DEFINITIONS_DEBUG "SOFA_LIBSUFFIX=_d")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAFRAMEWORK_VERSION})
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
 
-set(SOFAHELPER_COMPILER_FLAGS "-DSOFA_BUILD_HELPER -DUNICODE")
-
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAHELPER_COMPILER_FLAGS}" )
-# set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "${GLOBAL_PROJECT_OPTION_FOLDER_${PROJECT_NAME}}")
 
 install(TARGETS ${PROJECT_NAME}
         COMPONENT SofaFramework_libraries
@@ -261,6 +254,6 @@ install(TARGETS ${PROJECT_NAME}
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 
-install(DIRECTORY ${SofaHelper_SOURCE_DIR}/ DESTINATION "include/sofa/helper"
+install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/" DESTINATION "include/sofa/helper"
         COMPONENT SofaFramework_headers
         FILES_MATCHING PATTERN "*.h" PATTERN "*.inl")

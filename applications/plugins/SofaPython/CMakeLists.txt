@@ -1,24 +1,9 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(SofaPython)
 
-##
-## SofaPython version
-##
 set(SOFAPYTHON_MAJOR_VERSION 0)
-set(SOFAPYTHON_MINOR_VERSION 0)
-set(SOFAPYTHON_BUILD_VERSION 1)
-
-set(SOFAPYTHON_VERSION ${SOFAPYTHON_MAJOR_VERSION}.${SOFAPYTHON_MINOR_VERSION}.${SOFAPYTHON_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
-
-
-
-find_package(PythonLibs 2.7 REQUIRED)
-
-find_package(SofaGui REQUIRED)
-find_package(SofaGeneral REQUIRED)
-find_package(SofaMisc REQUIRED)
-
-set(SOFAPYTHON_DEPENDENCY_INCLUDE_DIR ${SofaGui_INCLUDE_DIRS} ${SofaGeneral_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
+set(SOFAPYTHON_MINOR_VERSION 1)
+set(SOFAPYTHON_VERSION ${SOFAPYTHON_MAJOR_VERSION}.${SOFAPYTHON_MINOR_VERSION})
 
 set(SOFA_HAVE_PYTHON 1)
 
@@ -121,21 +106,18 @@ set(PYTHON_FILES
     python/SofaPython/script.py
     python/SofaPython/sml.py
     python/SofaPython/units.py
-
 )
 
+
+find_package(PythonLibs 2.7 REQUIRED)
+find_package(SofaGui REQUIRED)
+find_package(SofaGeneral REQUIRED)
+find_package(SofaMisc REQUIRED)
+
+# SofaPython/config.h
 configure_file(config.h.in SofaPython/config.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaPython/config.h DESTINATION "include/SofaPython")
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral ${PYTHON_LIBRARIES})
-if(CMAKE_SYSTEM_NAME STREQUAL Linux)
-    # dlopen() is used on Linux for a workaround (see PythonEnvironnement.cpp)
-    target_link_libraries(${PROJECT_NAME} PRIVATE dl)
-endif()
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAPYTHON_DEPENDENCY_INCLUDE_DIR}>")
 set(SOFAPYTHON_COMPILER_FLAGS "-DSOFA_BUILD_SOFAPYTHON")
 
 # The implementation of Python deliberately breaks strict-aliasing rules, so we
@@ -145,19 +127,20 @@ if(${CMAKE_COMPILER_IS_GNUCC})
     set(SOFAPYTHON_COMPILER_FLAGS "${SOFAPYTHON_COMPILER_FLAGS} -fno-strict-aliasing")
 endif()
 
-# make the name of debug libraries end in _d.
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral ${PYTHON_LIBRARIES})
+if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+    # dlopen() is used on Linux for a workaround (see PythonEnvironnement.cpp)
+    target_link_libraries(${PROJECT_NAME} PRIVATE dl)
+endif()
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
+target_include_directories(${PROJECT_NAME} PUBLIC "${PYTHON_INCLUDE_DIRS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAPYTHON_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAPYTHON_COMPILER_FLAGS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
-
-
-# We can't add SofaPython_test, because it needs SofaTest, which needs
-# SofaPython. Instead, SofaPython_test is added from the top-level
-# CMakeLists.txt
-
-# add_subdirectory(SofaPython_test)
 
 
 install(TARGETS ${PROJECT_NAME}
@@ -170,6 +153,6 @@ install(TARGETS ${PROJECT_NAME}
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
-# CMake package configurations files
+## CMake package configurations files
 include(SofaPackageConfigHelpers)
 sofa_write_package_config_files(SofaPython ${SOFAPYTHON_VERSION} "" "include")

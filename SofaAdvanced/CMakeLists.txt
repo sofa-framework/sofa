@@ -1,28 +1,31 @@
-cmake_minimum_required(VERSION 2.8.11)
-set(SOLUTION_NAME "SofaAdvanced")
-project(${SOLUTION_NAME})
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaAdvanced)
 
-#temporary until we move the sub projects
-set(SofaAdvanced_ACTUAL_SOURCE_DIR ${SofaAdvanced_SOURCE_DIR}/../modules/)
-
-## SofaAdvanced dependencies
-##
+## Dependencies
 find_package(SofaGeneral REQUIRED)
 find_package(MiniFlowVR)
-
 set(SOFA_HAVE_MINIFLOWVR ${MiniFlowVR_FOUND})
+set(SOFA_HAVE_FLOWVR ${MiniFlowVR_FOUND}) # cmakedefine
 
-set(SOFAADVANCED_DEPENDENCY_DIR ${SofaGeneral_INCLUDE_DIRS} ${MiniFlowVR_INCLUDE_DIRS})
-set(SOFAADVANCED_DEPENDENCY_LINK ${MiniFlowVR_LIBRARIES})
-
-
+## Version
 set(SOFAADVANCED_VERSION ${SofaFramework_VERSION})
 
+## SofaAdvanced/config.h
 configure_file(config.h.in SofaAdvanced/config.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaAdvanced/config.h DESTINATION "include/SofaAdvanced")
-# make sure everyone in the build tree can see <SofaAdvanced/config.h>
-#include_directories(${CMAKE_CURRENT_BINARY_DIR})
-#include_directories(${SofaAdvanced_ACTUAL_SOURCE_DIR}/../../)
+
+## Installation macro for subdirectories
+macro(SofaAdvanced_install lib)
+    install(TARGETS ${lib}
+            EXPORT SofaAdvancedTargets
+            RUNTIME DESTINATION bin COMPONENT SofaAdvanced_libraries
+            LIBRARY DESTINATION lib COMPONENT SofaAdvanced_libraries
+            ARCHIVE DESTINATION lib COMPONENT SofaAdvanced_libraries
+            PUBLIC_HEADER DESTINATION include/${lib} COMPONENT SofaAdvanced_headers)
+endmacro()
+
+
+### Subdirectories
 
 set(SOFAADVANCED_TARGETS
     SofaComponentAdvanced
@@ -33,10 +36,16 @@ set(SOFAADVANCED_TARGETS
 )
 
 foreach(TARGET ${SOFAADVANCED_TARGETS})
-    add_subdirectory(${SofaAdvanced_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
-    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaAdvanced") # IDE folder
+    add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules>")
+    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>") # For SofaAdvanced/config.h
+    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${SofaGeneral_INCLUDE_DIRS}>")
+    set_target_properties(${TARGET} PROPERTIES DEBUG_POSTFIX _d)
+    set_target_properties(${TARGET} PROPERTIES FOLDER SofaAdvanced) # IDE folder
+    set_target_properties(${TARGET} PROPERTIES VERSION  ${SOFAADVANCED_VERSION})
 endforeach()
 
-# CMake package configurations files
+
+## CMake package configurations files
 include(SofaPackageConfigHelpers)
 sofa_write_package_config_files(SofaAdvanced ${SOFAADVANCED_VERSION} "" "include")

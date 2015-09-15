@@ -2,11 +2,8 @@ cmake_minimum_required(VERSION 2.8.12)
 project(Flexible)
 
 set(FLEXIBLE_MAJOR_VERSION 0)
-set(FLEXIBLE_MINOR_VERSION 0)
-set(FLEXIBLE_BUILD_VERSION 1)
-
-set(FLEXIBLE_VERSION ${FLEXIBLE_MAJOR_VERSION}.${FLEXIBLE_MINOR_VERSION}.${FLEXIBLE_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
-
+set(FLEXIBLE_MINOR_VERSION 1)
+set(FLEXIBLE_VERSION ${FLEXIBLE_MAJOR_VERSION}.${FLEXIBLE_MINOR_VERSION})
 
 set(HEADER_FILES
     BaseJacobian.h
@@ -168,7 +165,6 @@ set(SOURCE_FILES
 )
 
 set(PYTHON_FILES
-
     python/Flexible/__init__.py
     python/Flexible/IO.py
     python/Flexible/StressVisu.py
@@ -181,32 +177,31 @@ find_package(SofaMisc REQUIRED)
 
 find_package(image QUIET)
 if(image_FOUND)
+    list(APPEND HEADER_FILES
+        deformationMapping/ImageDeformation.h
+        mass/ImageDensityMass.h
+        mass/ImageDensityMass.inl
+        mass/MassFromDensity.cpp
+        mass/MassFromDensity.h
+        quadrature/ImageGaussPointSampler.h
+        shapeFunction/BaseImageShapeFunction.h
+        shapeFunction/DiffusionShapeFunction.h
+        shapeFunction/ShapeFunctionDiscretizer.h
+        shapeFunction/VoronoiShapeFunction.h)
 
-    list(APPEND HEADER_FILES "deformationMapping/ImageDeformation.h")
-    list(APPEND HEADER_FILES "mass/ImageDensityMass.h")
-    list(APPEND HEADER_FILES "mass/ImageDensityMass.inl")
-    list(APPEND HEADER_FILES "mass/MassFromDensity.cpp")
-    list(APPEND HEADER_FILES "mass/MassFromDensity.h")
-    list(APPEND HEADER_FILES "quadrature/ImageGaussPointSampler.h")
-    list(APPEND HEADER_FILES "shapeFunction/BaseImageShapeFunction.h")
-    list(APPEND HEADER_FILES "shapeFunction/DiffusionShapeFunction.h")
-    list(APPEND HEADER_FILES "shapeFunction/ShapeFunctionDiscretizer.h")
-    list(APPEND HEADER_FILES "shapeFunction/VoronoiShapeFunction.h")
-    list(APPEND SOURCE_FILES "deformationMapping/ImageDeformation.cpp")
-    list(APPEND SOURCE_FILES "mass/ImageDensityMass.cpp")
-    list(APPEND SOURCE_FILES "quadrature/ImageGaussPointSampler.cpp")
-    list(APPEND SOURCE_FILES "shapeFunction/DiffusionShapeFunction.cpp")
-    list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.cpp")
-    list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.h")
-    list(APPEND SOURCE_FILES "shapeFunction/ShapeFunctionDiscretizer.cpp")
-    list(APPEND SOURCE_FILES "shapeFunction/VoronoiShapeFunction.cpp")
-
+    list(APPEND SOURCE_FILES
+        deformationMapping/ImageDeformation.cpp
+        mass/ImageDensityMass.cpp
+        quadrature/ImageGaussPointSampler.cpp
+        shapeFunction/DiffusionShapeFunction.cpp
+        shapeFunction/ImageShapeFunctionContainer.cpp
+        shapeFunction/ImageShapeFunctionContainer.h
+        shapeFunction/ShapeFunctionDiscretizer.cpp
+        shapeFunction/VoronoiShapeFunction.cpp)
 else()
     message(STATUS "Flexible: could not find image")
 endif()
 
-
-set(FLEXIBLE_DEPENDENCY_INCLUDE_DIR ${SofaMisc_INCLUDE_DIRS})
 
 configure_file(config.h.in Flexible/config.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Flexible/config.h DESTINATION "include/Flexible")
@@ -246,14 +241,11 @@ if(WIN32)
 else()
 	include_directories("/usr/include/suitesparse/")
 endif()
-
 if(UNIX)
     target_link_libraries(${PROJECT_NAME} pthread)
 endif()
-
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${FLEXIBLE_DEPENDENCY_INCLUDE_DIR}>")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${FLEXIBLE_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${FLEXIBLE_COMPILER_FLAGS}")
@@ -278,6 +270,6 @@ if(SofaTest_FOUND)
     add_subdirectory(Flexible_test)
 endif()
 
-# CMake package configurations files
+## CMake package configurations files
 include(SofaPackageConfigHelpers)
 sofa_write_package_config_files(Flexible ${FLEXIBLE_VERSION} "" "include")

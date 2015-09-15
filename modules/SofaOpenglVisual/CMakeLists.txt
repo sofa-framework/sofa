@@ -1,103 +1,85 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(SofaOpenglVisual)
 
-
 set(HEADER_FILES
-
-    config.h
-    initOpenGLVisual.h
-    OglModel.h
-    OglViewport.h
+    ClipPlane.h
+    ColorMap.h
+    CompositingVisualLoop.h
+    DataDisplay.h
     Light.h
     LightManager.h
-    PointSplatModel.h
-    OglRenderingSRGB.h
-    ClipPlane.h
-    CompositingVisualLoop.h
-    ColorMap.h
-    DataDisplay.h
-    OglLabel.h
     OglCylinderModel.h
-    OglSceneFrame.h
     OglGrid.h
+    OglLabel.h
     OglLineAxis.h
-
-    )
-
-set(SOURCE_FILES
-
-    initOpenGLVisual.cpp
-    OglModel.cpp
-    OglViewport.cpp
-    Light.cpp
-    LightManager.cpp
-    PointSplatModel.cpp
-    OglRenderingSRGB.cpp
-    ClipPlane.cpp
-    CompositingVisualLoop.cpp
-    ColorMap.cpp
-    DataDisplay.cpp
-    OglLabel.cpp
-    OglCylinderModel.cpp
-    OglSceneFrame.cpp
-    OglGrid.cpp
-    OglLineAxis.cpp
-
-    )
-
-if(SOFA_HAVE_GLEW)
-	list(APPEND HEADER_FILES "OglAttribute.h")
-	list(APPEND HEADER_FILES "OglAttribute.inl")
-	list(APPEND HEADER_FILES "OglShader.h")
-	list(APPEND HEADER_FILES "OglShaderMacro.h")
-	list(APPEND HEADER_FILES "OglShaderVisualModel.h")
-	list(APPEND HEADER_FILES "OglShadowShader.h")
-	list(APPEND HEADER_FILES "OglTetrahedralModel.h")
-	list(APPEND HEADER_FILES "OglTetrahedralModel.inl")
-	list(APPEND HEADER_FILES "OglTexture.h")
-	list(APPEND HEADER_FILES "OglVariable.h")
-	list(APPEND HEADER_FILES "OglVariable.inl")
-	list(APPEND HEADER_FILES "PostProcessManager.h")
-	list(APPEND HEADER_FILES "SlicedVolumetricModel.h")
-	list(APPEND HEADER_FILES "VisualManagerPass.h")
-	list(APPEND HEADER_FILES "VisualManagerSecondaryPass.h")
-
-	list(APPEND SOURCE_FILES "OglAttribute.cpp")
-	list(APPEND SOURCE_FILES "OglShader.cpp")
-	list(APPEND SOURCE_FILES "OglShaderMacro.cpp")
-	list(APPEND SOURCE_FILES "OglShaderVisualModel.cpp")
-	list(APPEND SOURCE_FILES "OglShadowShader.cpp")
-	list(APPEND SOURCE_FILES "OglTetrahedralModel.cpp")
-	list(APPEND SOURCE_FILES "OglTexture.cpp")
-	list(APPEND SOURCE_FILES "OglVariable.cpp")
-	list(APPEND SOURCE_FILES "PostProcessManager.cpp")
-	list(APPEND SOURCE_FILES "SlicedVolumetricModel.cpp")
-	list(APPEND SOURCE_FILES "VisualManagerPass.cpp")
-	list(APPEND SOURCE_FILES "VisualManagerSecondaryPass.cpp")
-endif()
-
-set(GROUP_BASE_DIR "..")
-
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries( ${PROJECT_NAME} PUBLIC SofaBaseVisual SofaSimulationCommon )
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/SofaGeneral>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAGENERAL_DEPENDENCY_INCLUDE_DIR}>")
-
-set( SOFAOPENGL_VISUAL_COMPILER_FLAGS "-DSOFA_BUILD_OPENGL_VISUAL")
-
-set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
-set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFAGENERAL_VERSION} )
-set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAOPENGL_VISUAL_COMPILER_FLAGS}"  )
-set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
-
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaGeneral_libraries
-        EXPORT    SofaGeneralTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}"
-
+    OglModel.h
+    OglRenderingSRGB.h
+    OglSceneFrame.h
+    OglViewport.h
+    PointSplatModel.h
+    config.h
+    initOpenGLVisual.h
 )
 
+set(SOURCE_FILES
+    ClipPlane.cpp
+    ColorMap.cpp
+    CompositingVisualLoop.cpp
+    DataDisplay.cpp
+    Light.cpp
+    LightManager.cpp
+    OglCylinderModel.cpp
+    OglGrid.cpp
+    OglLabel.cpp
+    OglLineAxis.cpp
+    OglModel.cpp
+    OglRenderingSRGB.cpp
+    OglSceneFrame.cpp
+    OglViewport.cpp
+    PointSplatModel.cpp
+    initOpenGLVisual.cpp
+)
+
+if(SOFA_HAVE_GLEW)
+
+    list(APPEND HEADER_FILES
+        OglAttribute.h
+        OglAttribute.inl
+        OglShader.h
+        OglShaderMacro.h
+        OglShaderVisualModel.h
+        OglShadowShader.h
+        OglTetrahedralModel.h
+        OglTetrahedralModel.inl
+        OglTexture.h
+        OglVariable.h
+        OglVariable.inl
+        PostProcessManager.h
+        SlicedVolumetricModel.h
+        VisualManagerPass.h
+        VisualManagerSecondaryPass.h
+    )
+
+    list(APPEND SOURCE_FILES
+        OglAttribute.cpp
+        OglShader.cpp
+        OglShaderMacro.cpp
+        OglShaderVisualModel.cpp
+        OglShadowShader.cpp
+        OglTetrahedralModel.cpp
+        OglTexture.cpp
+        OglVariable.cpp
+        PostProcessManager.cpp
+        SlicedVolumetricModel.cpp
+        VisualManagerPass.cpp
+        VisualManagerSecondaryPass.cpp
+    )
+
+endif()
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual SofaSimulationCommon)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_OPENGL_VISUAL")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+
+SofaGeneral_install(${PROJECT_NAME})

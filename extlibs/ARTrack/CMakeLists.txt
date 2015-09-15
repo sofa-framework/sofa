@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(ARTrackLib)
 
 set(HEADER_FILES dtracklib.h)
@@ -18,6 +18,7 @@ endif()
 
 set_target_properties(ARTrackLib PROPERTIES COMPILE_FLAGS ${ARTRACK_COMPILER_FLAGS})
 
+
 install(TARGETS ARTrackLib
         EXPORT ARTrackLibTargets
         RUNTIME DESTINATION bin COMPONENT ARTrackLib_libraries
@@ -25,26 +26,25 @@ install(TARGETS ARTrackLib
         ARCHIVE DESTINATION lib COMPONENT ARTrackLib_libraries
         PUBLIC_HEADER DESTINATION include COMPONENT ARTrackLib_headers)
 
+
 include(CMakePackageConfigHelpers)
 
-# ARTrackLibConfig.cmake (build tree)
+### ARTrackLibConfig.cmake
+## Build tree
 set(ARTRACK_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 configure_package_config_file(ARTrackLibConfig.cmake.in
                               ARTrackLibConfig.cmake
                               INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
                               PATH_VARS ARTRACK_INCLUDE_DIR)
-
-# ARTrackLibConfig.cmake (installed)
+## Install tree
 set(ARTRACK_INCLUDE_DIR include)
 configure_package_config_file(ARTrackLibConfig.cmake.in
-                              ARTrackLibConfigInstall.cmake
+                              InstalledARTrackLibConfig.cmake
                               INSTALL_DESTINATION lib/cmake/ARTrackLib
                               PATH_VARS ARTRACK_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ARTrackLibConfigInstall.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/InstalledARTrackLibConfig.cmake
         DESTINATION lib/cmake/ARTrackLib
         RENAME ARTrackLibConfig.cmake)
 
-# ARTrackLibTargets.cmake (installed)
-install(EXPORT ARTrackLibTargets
-        DESTINATION lib/cmake/ARTrackLib)
+## ARTrackLibTargets.cmake
+install(EXPORT ARTrackLibTargets DESTINATION lib/cmake/ARTrackLib)

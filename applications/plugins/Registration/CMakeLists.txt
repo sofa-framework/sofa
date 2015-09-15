@@ -2,11 +2,8 @@ cmake_minimum_required(VERSION 2.8.12)
 project(Registration)
 
 set(REGISTRATION_MAJOR_VERSION 0)
-set(REGISTRATION_MINOR_VERSION 0)
-set(REGISTRATION_BUILD_VERSION 1)
-
-set(REGISTRATION_VERSION ${REGISTRATION_MAJOR_VERSION}.${REGISTRATION_MINOR_VERSION}.${REGISTRATION_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
-
+set(REGISTRATION_MINOR_VERSION 1)
+set(REGISTRATION_VERSION ${REGISTRATION_MAJOR_VERSION}.${REGISTRATION_MINOR_VERSION})
 
 set(HEADER_FILES
     ClosestPointRegistrationForceField.h
@@ -43,29 +40,24 @@ find_package(SofaGui REQUIRED)
 find_package(image QUIET)
 
 if(image_FOUND)
-    list(APPEND HEADER_FILES "IntensityProfileRegistrationForceField.h")
-    list(APPEND HEADER_FILES "IntensityProfileRegistrationForceField.inl")
-    list(APPEND SOURCE_FILES "IntensityProfileRegistrationForceField.cpp")
+    list(APPEND HEADER_FILES IntensityProfileRegistrationForceField.h)
+    list(APPEND HEADER_FILES IntensityProfileRegistrationForceField.inl)
+    list(APPEND SOURCE_FILES IntensityProfileRegistrationForceField.cpp)
 else()
-    message(STATUS "Registration: could not find image")
+    message(STATUS "Registration: could not find image, won't build IntensityProfileRegistrationForceField")
 endif()
 
-
-set(REGISTRATION_DEPENDENCY_INCLUDE_DIR ${SofaBase_INCLUDE_DIRS} ${Newmat_INCLUDE_DIRS})
-
+## Registration/config.h
 configure_file(config.h.in Registration/config.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Registration/config.h DESTINATION "include/Registration")
-
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} image)
 endif()
-
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${REGISTRATION_DEPENDENCY_INCLUDE_DIR}>")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${REGISTRATION_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_REGISTRATION")
@@ -84,6 +76,6 @@ install(TARGETS ${PROJECT_NAME}
         ARCHIVE DESTINATION lib
         PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
 
-# CMake package configurations files
+## CMake package configurations files
 include(SofaPackageConfigHelpers)
 sofa_write_package_config_files(Registration ${REGISTRATION_VERSION} "" "include")

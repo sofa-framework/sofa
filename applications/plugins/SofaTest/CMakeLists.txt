@@ -1,12 +1,7 @@
-cmake_minimum_required(VERSION 2.8)
-
+cmake_minimum_required(VERSION 2.8.12)
 project(SofaTest)
 
-set(SOFATEST_MAJOR_VERSION 0)
-set(SOFATEST_MINOR_VERSION 0)
-set(SOFATEST_BUILD_VERSION 1)
-
-set(SOFATEST_VERSION ${SOFATEST_MAJOR_VERSION}.${SOFATEST_MINOR_VERSION}.${SOFATEST_BUILD_VERSION} CACHE INTERNAL "SofaTest version")
+set(SOFATEST_VERSION 0.1)
 
 set(HEADER_FILES
     BroadPhase_test.h
@@ -47,14 +42,11 @@ else()
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
-
 if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaPython)
 endif()
-
 target_link_libraries(${PROJECT_NAME} SceneCreator SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
 target_link_libraries(${PROJECT_NAME} gtest)
-
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_TEST -DSOFA_SRC_DIR=\"\\\"${CMAKE_CURRENT_SOURCE_DIR}/../../..\\\"\"")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
@@ -68,6 +60,6 @@ install(TARGETS ${PROJECT_NAME}
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 
-# CMake package configurations files
+## CMake package configurations files
 include(SofaPackageConfigHelpers)
 sofa_write_package_config_files(SofaTest ${SOFATEST_VERSION} "" "include")
