@@ -59,7 +59,7 @@ typename V_ATT::DATA_TYPE newellNormal(typename PFP::MAP& map, Face f, const V_A
 {
 	typedef typename V_ATT::DATA_TYPE VEC3;
     typedef typename PFP::MAP MAP;
-    using bl::var;
+
     VEC3 N(0,0,0), P, Q;
 
 //	foreach_incident2<VERTEX>(map, f, [&] (Vertex v)
@@ -70,15 +70,16 @@ typename V_ATT::DATA_TYPE newellNormal(typename PFP::MAP& map, Face f, const V_A
 //		N[1] += (P[2] - Q[2]) * (P[0] + Q[0]);
 //		N[2] += (P[0] - Q[0]) * (P[1] + Q[1]);
 //	});
+    Traversor2FV<MAP> traV(map, f);
+    for (VertexCell v = traV.begin(), end = traV.end() ; v != end ; v = traV.next())
+    {
+        const VEC3& P = position[v];
+        const VEC3& Q = position[map.phi1(v)];
+        N[0] += (P[1] - Q[1]) * (P[2] + Q[2]);
+        N[1] += (P[2] - Q[2]) * (P[0] + Q[0]);
+        N[2] += (P[0] - Q[0]) * (P[1] + Q[1]);
+    }
 
-    foreach_incident2<VERTEX>(map, f,
-    (
-        var(P) = bl::bind(static_cast<const VEC3& (V_ATT::*)(VertexCell) const>(&V_ATT::operator[]), boost::cref(position), bl::_1),
-        var(Q) = bl::bind(static_cast<const VEC3& (V_ATT::*)(VertexCell) const>(&V_ATT::operator[]), boost::cref(position), bl::bind(&MAP::phi1, boost::cref(map), bl::_1)),
-        N[0] += (P[1] - Q[1]) * (P[2] + Q[2]),
-        N[1] += (P[2] - Q[2]) * (P[0] + Q[0]),
-        N[2] += (P[0] - Q[0]) * (P[1] + Q[1])
-    ));
 	N.normalize();
 	return N;
 }

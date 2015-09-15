@@ -149,7 +149,7 @@ void CenterOfMassMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpar
     for(unsigned int i=0 ; i<OutCoord::spatial_dimensions ; i++)
     {
         OutCoord v;
-        v[i] = (Real)0.1;
+        v[i] = 0.1f;
         point1 = Out::getCPos((X[0] -v));
         point2 = Out::getCPos((X[0] +v));
         points.push_back(point1);
