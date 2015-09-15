@@ -28,7 +28,6 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
-#include <SofaComponentMain/init.h>
 #include <SofaGraphComponent/Gravity.h>
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SofaImplicitOdeSolver/StaticSolver.h>
@@ -40,6 +39,12 @@
 #include <sofa/core/VecId.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/accessor.h>
+
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
 
 #include <sofa/component/typedef/Sofa_typedef.h>
 
@@ -53,7 +58,11 @@ using sofa::core::VecId;
 int main(int, char** argv)
 {
     sofa::simulation::tree::init();
-    sofa::component::init();
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
     sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
     //=========================== Build the scene

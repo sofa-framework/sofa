@@ -35,7 +35,13 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
+
+// FIX: temporarily disabled as SofaSimpleFem is not supposed to depend on SofaOpenGLVisual
+//#define SIMPLEFEM_COLORMAP
+
+#ifdef SIMPLEFEM_COLORMAP
 #include <SofaOpenglVisual/ColorMap.h>
+#endif
 
 #include <map>
 #include <sofa/helper/map.h>
@@ -304,8 +310,10 @@ public:
 
     sofa::core::topology::BaseMeshTopology* _topology;
 
+#ifdef SIMPLEFEM_COLORMAP
 #ifndef SOFA_NO_OPENGL
 	visualmodel::ColorMap::SPtr showStressColorMapReal;
+#endif
 #endif
 
     template<class MatrixWriter>
@@ -325,9 +333,13 @@ public:
     /// Display parameters
     Data<bool> showStressValue;
     Data<bool> showStressVector;
+#ifdef SIMPLEFEM_COLORMAP
     Data<std::string> showStressColorMap;
+#endif
     Data<Real> showStressMaxValue;
+#ifdef SIMPLEFEM_COLORMAP
     Data<float> showStressValueAlpha;
+#endif
 
 
     TFEMFFOTriangleInfoHandler* triangleInfoHandler;

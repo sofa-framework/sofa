@@ -32,7 +32,7 @@
 #include <CL/cl.h>
 #endif
 
-#include <SofaOpenCL/config.h>
+#include "config.h"
 #include <string>
 
 

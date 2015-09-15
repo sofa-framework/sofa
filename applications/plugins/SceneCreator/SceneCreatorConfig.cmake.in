@@ -1,0 +1,15 @@
+# CMake package configuration file for the SceneCreator library
+
+@PACKAGE_INIT@
+
+find_package(SofaSimulation REQUIRED)
+find_package(SofaMisc REQUIRED)
+
+if(NOT TARGET SceneCreator)
+	include("${CMAKE_CURRENT_LIST_DIR}/SceneCreatorTargets.cmake")
+endif()
+
+check_required_components(SceneCreator)
+
+set(SceneCreator_LIBRARIES SceneCreator)
+set_and_check(SceneCreator_INCLUDE_DIRS ${SofaMisc_INCLUDE_DIRS} @PACKAGE_SCENECREATOR_INCLUDE_DIR@)

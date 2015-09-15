@@ -134,32 +134,11 @@ typedef double SReal;
 // documentation purposes) even if it is not used in the code.
 #define SOFA_UNUSED(x) (void)(x)
 
-// Use of "extern template" is activated by the following macro
-// It must be used for DLLs on windows, and is now also activated
-// on other platforms (unless SOFA_NO_EXTERN_TEMPLATE is set), as
-// it can fix RTTI issues (typeid / dynamic_cast) on Mac and can
-// significantly speed-up compilation and link
-#if !defined SOFA_NO_EXTERN_TEMPLATE && !defined SOFA_STATIC_LIBRARY
-#  define SOFA_EXTERN_TEMPLATE
-#endif
-
-#if defined SOFA_STATIC_LIBRARY || !defined _WIN32
-#  define SOFA_EXPORT_DYNAMIC_LIBRARY
-#  define SOFA_IMPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec(dllexport)
-#  define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec(dllimport)
-#  ifdef _MSC_VER
-#    pragma warning(disable: 4231) // nonstandard extension used : 'identifier' before template explicit instantiation
-#    pragma warning(disable: 4910) // '<identifier>' : '__declspec(dllexport)' and 'extern' are incompatible on an explicit instantiation
-#  endif
-#endif
-
 // utility for debug tracing
 #ifdef _MSC_VER
-  #define SOFA_CLASS_METHOD (std::string(this->getClassName()) + "::" + __FUNCTION__ + " ")
+    #define SOFA_CLASS_METHOD ( std::string(this->getClassName()) + "::" + __FUNCTION__ + " " )
 #else
-  #define SOFA_CLASS_METHOD (std::string(this->getClassName()) + "::" + __func__ + " ")
+    #define SOFA_CLASS_METHOD ( std::string(this->getClassName()) + "::" + __func__ + " " )
 #endif
 
 #endif // SOFA_HELPER_SYSTEM_CONFIG_H

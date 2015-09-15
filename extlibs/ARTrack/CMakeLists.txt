@@ -1,24 +1,50 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(ARTrackLib)
 
-set(HEADER_FILES
+set(HEADER_FILES dtracklib.h)
+set(SOURCE_FILES mainTracker.cpp)
 
-    dtracklib.h
-	)
+add_library(ARTrackLib ${HEADER_FILES} ${SOURCE_FILES})
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaExtlibs")
+target_include_directories(ARTrackLib PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
+set_target_properties(ARTrackLib PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-set(SOURCE_FILES
-
-    mainTracker.cpp
-	)
-
-add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
+set(ARTRACK_COMPILER_FLAGS "-Duse_namespace")
 
 # The code must be relocatable if we want to link a shared library against it
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"
-        OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    AddCompilerFlags("-fPIC")
+if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xClang")
+    set(ARTRACK_COMPILER_FLAGS "${ARTRACK_COMPILER_FLAGS} -fPIC")
 endif()
 
-AddCompilerDefinitions("use_namespace")
+set_target_properties(ARTrackLib PROPERTIES COMPILE_FLAGS ${ARTRACK_COMPILER_FLAGS})
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
 
+install(TARGETS ARTrackLib
+        EXPORT ARTrackLibTargets
+        RUNTIME DESTINATION bin COMPONENT ARTrackLib_libraries
+        LIBRARY DESTINATION lib COMPONENT ARTrackLib_libraries
+        ARCHIVE DESTINATION lib COMPONENT ARTrackLib_libraries
+        PUBLIC_HEADER DESTINATION include COMPONENT ARTrackLib_headers)
+
+
+include(CMakePackageConfigHelpers)
+
+### ARTrackLibConfig.cmake
+## Build tree
+set(ARTRACK_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+configure_package_config_file(ARTrackLibConfig.cmake.in
+                              ARTrackLibConfig.cmake
+                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
+                              PATH_VARS ARTRACK_INCLUDE_DIR)
+## Install tree
+set(ARTRACK_INCLUDE_DIR include)
+configure_package_config_file(ARTrackLibConfig.cmake.in
+                              InstalledARTrackLibConfig.cmake
+                              INSTALL_DESTINATION lib/cmake/ARTrackLib
+                              PATH_VARS ARTRACK_INCLUDE_DIR)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/InstalledARTrackLibConfig.cmake
+        DESTINATION lib/cmake/ARTrackLib
+        RENAME ARTrackLibConfig.cmake)
+
+## ARTrackLibTargets.cmake
+install(EXPORT ARTrackLibTargets DESTINATION lib/cmake/ARTrackLib)

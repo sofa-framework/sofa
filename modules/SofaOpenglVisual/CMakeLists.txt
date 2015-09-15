@@ -1,84 +1,85 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaOpenglVisual)
 
 set(HEADER_FILES
-
-    config.h
-    initOpenGLVisual.h
-    OglModel.h
-    OglViewport.h
+    ClipPlane.h
+    ColorMap.h
+    CompositingVisualLoop.h
+    DataDisplay.h
     Light.h
     LightManager.h
-    PointSplatModel.h
-    OglRenderingSRGB.h
-    ClipPlane.h
-    CompositingVisualLoop.h
-    ColorMap.h
-    DataDisplay.h
-    OglLabel.h
     OglCylinderModel.h
-    OglSceneFrame.h
     OglGrid.h
+    OglLabel.h
     OglLineAxis.h
-
-    )
+    OglModel.h
+    OglRenderingSRGB.h
+    OglSceneFrame.h
+    OglViewport.h
+    PointSplatModel.h
+    config.h
+    initOpenGLVisual.h
+)
 
 set(SOURCE_FILES
-
-    initOpenGLVisual.cpp
-    OglModel.cpp
-    OglViewport.cpp
+    ClipPlane.cpp
+    ColorMap.cpp
+    CompositingVisualLoop.cpp
+    DataDisplay.cpp
     Light.cpp
     LightManager.cpp
-    PointSplatModel.cpp
-    OglRenderingSRGB.cpp
-    ClipPlane.cpp
-    CompositingVisualLoop.cpp
-    ColorMap.cpp
-    DataDisplay.cpp
-    OglLabel.cpp
     OglCylinderModel.cpp
-    OglSceneFrame.cpp
     OglGrid.cpp
+    OglLabel.cpp
     OglLineAxis.cpp
+    OglModel.cpp
+    OglRenderingSRGB.cpp
+    OglSceneFrame.cpp
+    OglViewport.cpp
+    PointSplatModel.cpp
+    initOpenGLVisual.cpp
+)
 
+if(SOFA_HAVE_GLEW)
+
+    list(APPEND HEADER_FILES
+        OglAttribute.h
+        OglAttribute.inl
+        OglShader.h
+        OglShaderMacro.h
+        OglShaderVisualModel.h
+        OglShadowShader.h
+        OglTetrahedralModel.h
+        OglTetrahedralModel.inl
+        OglTexture.h
+        OglVariable.h
+        OglVariable.inl
+        PostProcessManager.h
+        SlicedVolumetricModel.h
+        VisualManagerPass.h
+        VisualManagerSecondaryPass.h
     )
 
-if(SOFA-EXTERNAL_GLEW)
-	list(APPEND HEADER_FILES "OglAttribute.h")
-	list(APPEND HEADER_FILES "OglAttribute.inl")
-	list(APPEND HEADER_FILES "OglShader.h")
-	list(APPEND HEADER_FILES "OglShaderMacro.h")
-	list(APPEND HEADER_FILES "OglShaderVisualModel.h")
-	list(APPEND HEADER_FILES "OglShadowShader.h")
-	list(APPEND HEADER_FILES "OglTetrahedralModel.h")
-	list(APPEND HEADER_FILES "OglTetrahedralModel.inl")
-	list(APPEND HEADER_FILES "OglTexture.h")
-	list(APPEND HEADER_FILES "OglVariable.h")
-	list(APPEND HEADER_FILES "OglVariable.inl")
-	list(APPEND HEADER_FILES "PostProcessManager.h")
-	list(APPEND HEADER_FILES "SlicedVolumetricModel.h")
-	list(APPEND HEADER_FILES "VisualManagerPass.h")
-	list(APPEND HEADER_FILES "VisualManagerSecondaryPass.h")
+    list(APPEND SOURCE_FILES
+        OglAttribute.cpp
+        OglShader.cpp
+        OglShaderMacro.cpp
+        OglShaderVisualModel.cpp
+        OglShadowShader.cpp
+        OglTetrahedralModel.cpp
+        OglTexture.cpp
+        OglVariable.cpp
+        PostProcessManager.cpp
+        SlicedVolumetricModel.cpp
+        VisualManagerPass.cpp
+        VisualManagerSecondaryPass.cpp
+    )
 
-	list(APPEND SOURCE_FILES "OglAttribute.cpp")
-	list(APPEND SOURCE_FILES "OglShader.cpp")
-	list(APPEND SOURCE_FILES "OglShaderMacro.cpp")
-	list(APPEND SOURCE_FILES "OglShaderVisualModel.cpp")
-	list(APPEND SOURCE_FILES "OglShadowShader.cpp")
-	list(APPEND SOURCE_FILES "OglTetrahedralModel.cpp")
-	list(APPEND SOURCE_FILES "OglTexture.cpp")
-	list(APPEND SOURCE_FILES "OglVariable.cpp")
-	list(APPEND SOURCE_FILES "PostProcessManager.cpp")
-	list(APPEND SOURCE_FILES "SlicedVolumetricModel.cpp")
-	list(APPEND SOURCE_FILES "VisualManagerPass.cpp")
-	list(APPEND SOURCE_FILES "VisualManagerSecondaryPass.cpp")
 endif()
 
-set(GROUP_BASE_DIR "..")
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseVisual SofaSimulationCommon)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_OPENGL_VISUAL")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_OPENGL_VISUAL")
-AddLinkerDependencies(SofaBaseVisual SofaSimulationCommon)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+SofaGeneral_install(${PROJECT_NAME})

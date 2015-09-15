@@ -1,9 +1,11 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaPython)
 
-## plugin external dependencies
-find_package(PythonLibs 2.7 REQUIRED)
+set(SOFAPYTHON_MAJOR_VERSION 0)
+set(SOFAPYTHON_MINOR_VERSION 1)
+set(SOFAPYTHON_VERSION ${SOFAPYTHON_MAJOR_VERSION}.${SOFAPYTHON_MINOR_VERSION})
 
-include_directories(${PYTHON_INCLUDE_DIRS})
+set(SOFA_HAVE_PYTHON 1)
 
 set(HEADER_FILES
     Binding.h
@@ -47,7 +49,6 @@ set(HEADER_FILES
     ScriptEnvironment.h
     ScriptEvent.h
     ScriptFunction.h
-    config.h
 )
 
 set(SOURCE_FILES
@@ -105,19 +106,53 @@ set(PYTHON_FILES
     python/SofaPython/script.py
     python/SofaPython/sml.py
     python/SofaPython/units.py
-
 )
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 
-# Python's implementation deliberately breaks strict-aliasing rules, so we
+find_package(PythonLibs 2.7 REQUIRED)
+find_package(SofaGui REQUIRED)
+find_package(SofaGeneral REQUIRED)
+find_package(SofaMisc REQUIRED)
+
+# SofaPython/config.h
+configure_file(config.h.in SofaPython/config.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaPython/config.h DESTINATION "include/SofaPython")
+
+set(SOFAPYTHON_COMPILER_FLAGS "-DSOFA_BUILD_SOFAPYTHON")
+
+# The implementation of Python deliberately breaks strict-aliasing rules, so we
 # compile with -fno-strict-aliasing to prevent the compiler from relying on
 # those rules to optimize the code.
 if(${CMAKE_COMPILER_IS_GNUCC})
-    AddCompilerFlags("-fno-strict-aliasing")
+    set(SOFAPYTHON_COMPILER_FLAGS "${SOFAPYTHON_COMPILER_FLAGS} -fno-strict-aliasing")
 endif()
 
-AddCompilerDefinitions("SOFA_BUILD_SOFAPYTHON")
-AddLinkerDependencies(SofaCore SofaSimulationCommon SofaGuiCommon ${PYTHON_LIBRARIES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral ${PYTHON_LIBRARIES})
+if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+    # dlopen() is used on Linux for a workaround (see PythonEnvironnement.cpp)
+    target_link_libraries(${PROJECT_NAME} PRIVATE dl)
+endif()
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
+target_include_directories(${PROJECT_NAME} PUBLIC "${PYTHON_INCLUDE_DIRS}")
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAPYTHON_VERSION})
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAPYTHON_COMPILER_FLAGS}")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT SofaPython_libraries
+        EXPORT SofaPythonTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
+
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
+
+## CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(SofaPython ${SOFAPYTHON_VERSION} "" "include")

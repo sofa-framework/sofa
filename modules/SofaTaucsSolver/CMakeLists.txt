@@ -1,41 +1,35 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaTaucsSolver)
+
 
 set(HEADER_FILES
-
+    IncompleteTAUCSSolver.h
+    SparseTAUCSSolver.h
     config.h
     initTaucsSolver.h
-    SparseTAUCSSolver.h
-    IncompleteTAUCSSolver.h
-    )
+)
 
 set(SOURCE_FILES
-
-	initTaucsSolver.cpp
-    SparseTAUCSSolver.cpp
     IncompleteTAUCSSolver.cpp
-    )
+    SparseTAUCSSolver.cpp
+    initTaucsSolver.cpp
+)
 
-#if(SOFA-EXTERNAL_TAUCS_MT)
-#	list(APPEND HEADER_FILES "linearsolvSparseTAUCSLLtSolver.h")
-#
-#	list(APPEND SOURCE_FILES "linearsolvSparseTAUCSLLtSolver.cpp")
-#endif()
-
-set(GROUP_BASE_DIR "..")
+# # TODO?
+# if(SOFA-EXTERNAL_TAUCS_MT)
+#    list(APPEND HEADER_FILES linearsolvSparseTAUCSLLtSolver.h)
+#    list(APPEND SOURCE_FILES linearsolvSparseTAUCSLLtSolver.cpp)
+# endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-
-AddCompilerDefinitions("SOFA_BUILD_TAUCS_SOLVER")
-
-#if(WIN32 OR SOFA-EXTERNAL_TAUCS_MT)
-#	AddLinkerDependencies(metis)
-#endif()
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseCollision SofaLoader SofaMeshCollision)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_TAUCS_SOLVER")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 if(WIN32)
-	include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")
-	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
-
-	AddLinkerDependencies(blas lapack)
+    target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../extlibs/SuiteSparse/cholmod/Include>")
+    link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
+    target_link_libraries(${PROJECT_NAME} PRIVATE blas lapack)
 endif()
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+SofaGeneral_install(${PROJECT_NAME})

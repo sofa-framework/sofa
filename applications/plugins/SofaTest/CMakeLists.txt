@@ -1,4 +1,7 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaTest)
+
+set(SOFATEST_VERSION 0.1)
 
 set(HEADER_FILES
     BroadPhase_test.h
@@ -20,48 +23,43 @@ set(SOURCE_FILES
     Sofa_test.cpp
 )
 
-AddCompilerDefinitions("SOFA_BUILD_TEST")
-AddCompilerDefinitions("GTEST_LINKED_AS_SHARED_LIBRARY")
-AddCompilerDefinitions("_VARIADIC_MAX=10")
-AddCompilerDefinitions("SOFA_SRC_DIR=\"${SOFA_SRC_DIR}\"")
 set(PYTHON_FILES "")
 
-if(SOFA-PLUGIN_SOFAPYTHON)
+find_package(SofaFramework REQUIRED)
+find_package(SofaMisc REQUIRED)
+find_package(SceneCreator REQUIRED)
+
+find_package(SofaPython QUIET)
+if(SofaPython_FOUND)
     list(APPEND HEADER_FILES "Python_test.h")
     list(APPEND SOURCE_FILES "Python_test.cpp")
-
-    AddLinkerDependencies(SofaPython)
-
-
     set(PYTHON_FILES
         python/SofaTest/Macro.py
         python/SofaTest/__init__.py
     )
+else()
+    message(STATUS "SofaTest: could not find SofaPython, won't build Python_test")
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
-
-AddLinkerDependencies(SofaSimulationGraph)
-AddLinkerDependencies(SceneCreator)
-
-include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
-
-
-# it is problematic on Linux (and no needed ?)
-# a story of fPIC
-if(CMAKE_SYSTEM MATCHES "Windows" OR APPLE)
-    AddLinkerDependencies(gtest)
+if(SofaPython_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaPython)
 endif()
+target_link_libraries(${PROJECT_NAME} SceneCreator SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
+target_link_libraries(${PROJECT_NAME} gtest)
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_TEST -DSOFA_SRC_DIR=\"\\\"${CMAKE_CURRENT_SOURCE_DIR}/../../..\\\"\"")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
-if(UNIX)
-    # Note at this level the system component has already been looked
-    # for in externals.cmake, so no need to look for it again
-    # (and with a risk of mixing several boost versions)
-    if( NOT Boost_SYSTEM_LIBRARY )
-        message("A compiled Boost system library is mandatory for SofaTest")
-    else()
-        AddLinkerDependencies(${Boost_SYSTEM_LIBRARY})
-    endif()
-endif()
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT SofaTest_libraries
+        EXPORT SofaTestTargets
+        PUBLIC_HEADER DESTINATION include/SofaTest
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+## CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(SofaTest ${SOFATEST_VERSION} "" "include")

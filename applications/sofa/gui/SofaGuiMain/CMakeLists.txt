@@ -1,40 +1,17 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaGuiMain)
 
-set(HEADER_FILES
+add_library(${PROJECT_NAME} SHARED ../Main.h ../Main.cpp)
+set(SOFAGUIMAIN_DEPS ${SOFAGUI_TARGETS})
+list(REMOVE_ITEM SOFAGUIMAIN_DEPS SofaGuiMain)
+target_link_libraries(${PROJECT_NAME} ${SOFAGUIMAIN_DEPS})
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_GUIMAIN")
 
-	../Main.h
-	)
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT SofaGui_libraries
+        EXPORT SofaGuiTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 
-set(SOURCE_FILES
-
-	../Main.cpp
-	)
-	
-set(GROUP_BASE_DIR "..")
-
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-
-
-
-if(SOFA-LIB_GUI_QTVIEWER)
-	AddCompilerDefinitions("SOFA_GUI_QTVIEWER")
-endif()
-
-if(SOFA-LIB_GUI_QGLVIEWER)
-	AddCompilerDefinitions("SOFA_GUI_QGLVIEWER")
-endif()
-
-AddCompilerDefinitions("SOFA_BUILD_GUIMAIN")
-AddLinkerDependencies(SofaGuiCommon)
-
-if(SOFA-LIB_GUI_QT)
-    UseQt()
-    AddLinkerDependencies(SofaGuiQt)
-endif()
-
-if(SOFA-LIB_GUI_GLUT)
-    AddLinkerDependencies(SofaGuiGlut)
-endif()
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+install(FILES ${HEADER_FILES} DESTINATION "include/sofa/gui" COMPONENT SofaGui_headers)

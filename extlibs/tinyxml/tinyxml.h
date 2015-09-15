@@ -30,6 +30,16 @@ distribution.
 	#define TIXML_USE_STL
 #endif
 
+#if defined (_WIN32)
+	#if defined(tinyxml_EXPORTS)
+		#define EXPORT __declspec(dllexport)
+	#else
+		#define EXPORT __declspec(dllimport)
+	#endif
+#else
+	#define EXPORT
+#endif
+
 #ifdef _MSC_VER
 #pragma warning( push )
 #pragma warning( disable : 4530 )
@@ -88,22 +98,6 @@ distribution.
 	#endif
 #endif	
 
-#ifndef WIN32
-#	define SOFA_TINYXML_API
-#else
-#   ifdef SOFA_BUILD_TINYXML
-#	   define SOFA_TINYXML_API __declspec( dllexport )
-#   else
-#      define SOFA_TINYXML_API __declspec( dllimport )
-#   endif
-#endif
-
-
-namespace sofa
-{
-
-namespace tinyxml
-{
 
 class TiXmlDocument;
 class TiXmlElement;
@@ -150,7 +144,7 @@ struct TiXmlCursor
 
 	@sa TiXmlNode::Accept()
 */
-class SOFA_TINYXML_API TiXmlVisitor
+class EXPORT TiXmlVisitor
 {
 public:
 	virtual ~TiXmlVisitor() {}
@@ -216,7 +210,7 @@ const TiXmlEncoding TIXML_DEFAULT_ENCODING = TIXML_ENCODING_UNKNOWN;
 	A Decleration contains: Attributes (not on tree)
 	@endverbatim
 */
-class SOFA_TINYXML_API TiXmlBase
+class EXPORT TiXmlBase
 {
 	friend class TiXmlNode;
 	friend class TiXmlElement;
@@ -445,7 +439,7 @@ private:
 	in a document, or stand on its own. The type of a TiXmlNode
 	can be queried, and it can be cast to its more defined type.
 */
-class SOFA_TINYXML_API TiXmlNode : public TiXmlBase
+class EXPORT TiXmlNode : public TiXmlBase
 {
 	friend class TiXmlDocument;
 	friend class TiXmlElement;
@@ -456,7 +450,7 @@ public:
 	    /** An input stream operator, for every class. Tolerant of newlines and
 		    formatting, but doesn't expect them.
 	    */
-	    friend SOFA_TINYXML_API std::istream& operator >> (std::istream& in, TiXmlNode& base);
+	    friend EXPORT std::istream& operator >> (std::istream& in, TiXmlNode& base);
 
 	    /** An output stream operator, for every class. Note that this outputs
 		    without any newlines or formatting, as opposed to Print(), which
@@ -474,10 +468,10 @@ public:
 		    A TiXmlDocument will read nodes until it reads a root element, and
 			all the children of that root element.
 	    */	
-	    friend SOFA_TINYXML_API std::ostream& operator<< (std::ostream& out, const TiXmlNode& base);
+	    friend EXPORT std::ostream& operator<< (std::ostream& out, const TiXmlNode& base);
 
 		/// Appends the XML node or attribute to a std::string.
-		friend SOFA_TINYXML_API std::string& operator<< (std::string& out, const TiXmlNode& base );
+		friend EXPORT std::string& operator<< (std::string& out, const TiXmlNode& base );
 
 	#endif
 
@@ -801,7 +795,7 @@ private:
 		  part of the tinyXML document object model. There are other
 		  suggested ways to look at this problem.
 */
-class SOFA_TINYXML_API TiXmlAttribute : public TiXmlBase
+class EXPORT TiXmlAttribute : public TiXmlBase
 {
 	friend class TiXmlAttributeSet;
 
@@ -925,7 +919,7 @@ private:
 		- I like circular lists
 		- it demonstrates some independence from the (typical) doubly linked list.
 */
-class SOFA_TINYXML_API TiXmlAttributeSet
+class EXPORT TiXmlAttributeSet
 {
 public:
 	TiXmlAttributeSet();
@@ -962,7 +956,7 @@ private:
 	and can contain other elements, text, comments, and unknowns.
 	Elements also contain an arbitrary number of attributes.
 */
-class SOFA_TINYXML_API TiXmlElement : public TiXmlNode
+class EXPORT TiXmlElement : public TiXmlNode
 {
 public:
 	/// Construct an element.
@@ -1184,7 +1178,7 @@ private:
 
 /**	An XML comment.
 */
-class SOFA_TINYXML_API TiXmlComment : public TiXmlNode
+class EXPORT TiXmlComment : public TiXmlNode
 {
 public:
 	/// Constructs an empty comment.
@@ -1234,7 +1228,7 @@ private:
 	you generally want to leave it alone, but you can change the output mode with 
 	SetCDATA() and query it with CDATA().
 */
-class SOFA_TINYXML_API TiXmlText : public TiXmlNode
+class EXPORT TiXmlText : public TiXmlNode
 {
 	friend class TiXmlElement;
 public:
@@ -1307,7 +1301,7 @@ private:
 	handled as special cases, not generic attributes, simply
 	because there can only be at most 3 and they are always the same.
 */
-class SOFA_TINYXML_API TiXmlDeclaration : public TiXmlNode
+class EXPORT TiXmlDeclaration : public TiXmlNode
 {
 public:
 	/// Construct an empty declaration.
@@ -1376,7 +1370,7 @@ private:
 
 	DTD tags get thrown into TiXmlUnknowns.
 */
-class SOFA_TINYXML_API TiXmlUnknown : public TiXmlNode
+class EXPORT TiXmlUnknown : public TiXmlNode
 {
 public:
 	TiXmlUnknown() : TiXmlNode( TiXmlNode::TINYXML_UNKNOWN )	{}
@@ -1415,7 +1409,7 @@ private:
 	XML pieces. It can be saved, loaded, and printed to the screen.
 	The 'value' of a document node is the xml file name.
 */
-class SOFA_TINYXML_API TiXmlDocument : public TiXmlNode
+class EXPORT TiXmlDocument : public TiXmlNode
 {
 public:
 	/// Create an empty document, that has no name.
@@ -1660,7 +1654,7 @@ private:
 	}
 	@endverbatim
 */
-class SOFA_TINYXML_API TiXmlHandle
+class EXPORT TiXmlHandle
 {
 public:
 	/// Create a handle from any node (at any depth of the tree.) This can be a null pointer.
@@ -1743,7 +1737,7 @@ private:
 	fprintf( stdout, "%s", printer.CStr() );
 	@endverbatim
 */
-class SOFA_TINYXML_API TiXmlPrinter : public TiXmlVisitor
+class EXPORT TiXmlPrinter : public TiXmlVisitor
 {
 public:
 	TiXmlPrinter() : depth( 0 ), simpleTextPrint( false ),
@@ -1806,11 +1800,6 @@ private:
 	TIXML_STRING lineBreak;
 };
 
-} // namespace tinyxml
-
-} // namespace sofa
-
-using namespace sofa::tinyxml;
 
 #ifdef _MSC_VER
 #pragma warning( pop )

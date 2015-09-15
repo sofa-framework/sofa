@@ -1,4 +1,9 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(Compliant)
+
+set(COMPLIANT_MAJOR_VERSION 0)
+set(COMPLIANT_MINOR_VERSION 1)
+set(COMPLIANT_VERSION ${COMPLIANT_MAJOR_VERSION}.${COMPLIANT_MINOR_VERSION})
 
 set(HEADER_FILES
     assembly/AssembledSystem.h
@@ -23,7 +28,6 @@ set(HEADER_FILES
     constraint/Stabilization.h
     constraint/UnilateralConstraint.h
     constraint/VelocityConstraintValue.h
-    config.h
     contact/BaseContact.h
     contact/CompliantContact.h
     contact/FrictionCompliantContact.h
@@ -187,7 +191,6 @@ set(SOURCE_FILES
 )
 
 set(PYTHON_FILES
-
     python/Compliant/Control.py
     python/Compliant/Frame.py
     python/Compliant/Quaternion.py
@@ -199,43 +202,46 @@ set(PYTHON_FILES
     python/Compliant/__init__.py
     python/Compliant/future.py
     python/Compliant/sml.py
-
 )
 
 set(README_FILES Compliant.txt)
 
+find_package(SofaMisc REQUIRED)
+
+## Compliant/config.h
+configure_file(config.h.in Compliant/config.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Compliant/config.h DESTINATION "include/Compliant")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
+target_link_libraries(${PROJECT_NAME} SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaSimulationGraph)
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${COMPLIANT_VERSION})
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_Compliant")
 
-AddCompilerDefinitions("SOFA_BUILD_Compliant")
-AddLinkerDependencies( SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaSimulationGraph )
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT Compliant_libraries
+        EXPORT CompliantTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
+foreach(HEADER ${HEADER_FILES})
+    string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
+    install(FILES ${HEADER} DESTINATION "include/${PROJECT_NAME}/${DIR}")
+endforeach(HEADER HEADERS)
 
-
-#### BOOST ######
-
-# Compliant is forced to use a header-only Boost
-# But sadely, some configs (e.g. gcc4.6 only in debug)
-# still require to link with a compiled Boost system lib.
-# So if this lib is installed we always link with it.
-# Otherwise we pray the header-only compilation works.
-# Note at this level the system component has already been looked
-# for in externals.cmake, so no need to look for it again
-# (and with a risk of mixing several boost versions)
-if( Boost_SYSTEM_LIBRARY )
-    AddLinkerDependencies( ${Boost_SYSTEM_LIBRARY} )
+find_package(SofaTest QUIET)
+if(SofaTest_FOUND)
+    add_subdirectory(Compliant_test)
 endif()
 
+add_subdirectory(Compliant_gui)
 
-if(LINUX OR UNIX AND NOT APPLE)
-    AddLinkerDependencies( rt ) # clock_gettime
-endif()
-
-
-
-
-
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-include(custom.cmake OPTIONAL)
+## CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(Compliant ${COMPLIANT_VERSION} "" "include")

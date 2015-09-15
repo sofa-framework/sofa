@@ -1,0 +1,21 @@
+# CMake package configuration file for SofaAdvanced
+
+@PACKAGE_INIT@
+
+find_package(SofaGeneral REQUIRED)
+
+set(SOFA_HAVE_MINIFLOWVR @SOFA_HAVE_MINIFLOWVR@)
+
+if(SOFA_HAVE_MINIFLOWVR)
+    find_package(MiniFlowVR REQUIRED)
+endif()
+
+if(NOT TARGET SofaComponentAdvanced)
+	include("${CMAKE_CURRENT_LIST_DIR}/SofaAdvancedTargets.cmake")
+endif()
+
+check_required_components(@SOFAADVANCED_TARGETS@)
+
+# For compatibility only
+set(SofaAdvanced_LIBRARIES SofaComponentAdvanced)
+set(SofaAdvanced_INCLUDE_DIRS @PACKAGE_SOFAADVANCED_INCLUDE_DIR@ ${SofaGeneral_INCLUDE_DIRS})

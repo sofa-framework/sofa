@@ -1,15 +1,9 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(sofaInfo)
 
+find_package(SofaGeneral)
+find_package(SofaAdvanced)
+find_package(SofaMisc)
 
-
-set(SOURCE_FILES
-
-    sofaInfo.cpp
-    )
-
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-
-AddLinkerDependencies(SofaGuiMain )
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+add_executable(${PROJECT_NAME} sofaInfo.cpp)
+target_link_libraries(${PROJECT_NAME} SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)

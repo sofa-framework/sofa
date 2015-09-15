@@ -1,24 +1,15 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(Compliant_gui)
 
-if (SOFA-LIB_GUI_QT)
-
-set(HEADER_FILES
+set(MOC_HEADER_FILES
     QCompliantMouseOperations.h
 )
 
-UseQt()
-SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
-
-# make mocced header / form files path from absolute to relative
-ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
-
-# these header files do not need MOCcing
-list(APPEND HEADER_FILES
+set(HEADER_FILES
     config.h
     CompliantAttachPerformer.h
     CompliantAttachPerformer.inl
 )
-
 
 set(SOURCE_FILES
     initCompliant_gui.cpp
@@ -26,23 +17,11 @@ set(SOURCE_FILES
     QCompliantMouseOperations.cpp
 )
 
+find_package(SofaGui QUIET)
 
-
-set(MOC_FILES_GROUP "Generated")
-
-
-if(WIN32)
-	include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")
-	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
-else()
-	include_directories("/usr/include/suitesparse/")
+if(SofaGui_FOUND)
+    qt4_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
+    add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${MOC_FILES})
+    add_definitions("-DSOFA_BUILD_COMPLIANT_GUI")
+    target_link_libraries(${PROJECT_NAME} SofaGuiMain Compliant)
 endif()
-
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${MOC_FILES})
-
-AddCompilerDefinitions("SOFA_BUILD_COMPLIANT_GUI")
-AddLinkerDependencies(SofaGuiMain Compliant)
-
-endif()
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)

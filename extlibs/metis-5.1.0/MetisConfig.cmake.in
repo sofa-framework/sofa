@@ -1,0 +1,12 @@
+# CMake package configuration file for the metis library
+
+@PACKAGE_INIT@
+
+if(NOT TARGET metis)
+	include("${CMAKE_CURRENT_LIST_DIR}/MetisTargets.cmake")
+endif()
+
+check_required_components(newmat)
+
+set(Metis_LIBRARIES metis)
+set(Metis_INCLUDE_DIRS @PACKAGE_METIS_INCLUDE_DIR@)

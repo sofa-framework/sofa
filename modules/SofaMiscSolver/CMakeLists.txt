@@ -1,27 +1,22 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaMiscSolver)
 
 set(HEADER_FILES
-
-    config.h
-    initMiscSolver.h
     DampVelocitySolver.h
     NewmarkImplicitSolver.h
-
-    )
+    config.h
+    initMiscSolver.h
+)
 
 set(SOURCE_FILES
-
-    initMiscSolver.cpp
     DampVelocitySolver.cpp
     NewmarkImplicitSolver.cpp
-
-    )
-
-set(GROUP_BASE_DIR "..")
+    initMiscSolver.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MISC_SOLVER")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_MISC_SOLVER")
-AddLinkerDependencies(SofaSimulationTree)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+SofaMisc_install(${PROJECT_NAME})

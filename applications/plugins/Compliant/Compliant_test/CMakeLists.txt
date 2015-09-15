@@ -1,4 +1,6 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+
+project(Compliant_test)
 
 set(HEADER_FILES
     Compliant_test.h
@@ -13,39 +15,26 @@ set(SOURCE_FILES
     RigidJointMapping_test.cpp
 )
 
-if(APPLE)
-    # set(RC_FILES "runSOFA.icns")
+set(PYTHON_FILES
+    python/AffineMultiMapping.py
+    python/Example.py
+    python/GenerateRigid.py
+    python/LambdaPropagation.py
+    python/UniformCompliance.py
+    python/friction.py
+)
+
+find_package(SofaPython QUIET)
+
+if(SofaPython_FOUND)
+    add_definitions("-DCOMPLIANT_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python\"")
+    list(APPEND SOURCE_FILES python_test_list.cpp)
 endif()
 
-if(WIN32)
-    link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
+add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
+target_link_libraries(${PROJECT_NAME} Compliant SofaTest SofaGTestMain)
+if(SofaPython_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaPython)
 endif()
 
-if(SOFA-PLUGIN_SOFAPYTHON)
-    AddCompilerDefinitions("COMPLIANT_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python\"")
-    list(APPEND SOURCE_FILES "python_test_list.cpp")
-    AddLinkerDependencies(SofaPython)
-
-    set(PYTHON_FILES
-        python/AffineMultiMapping.py
-        python/Example.py
-        python/GenerateRigid.py
-        python/LambdaPropagation.py
-        python/UniformCompliance.py
-        python/friction.py
-    )
-
-endif()
-
-add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${RC_FILES} ${PYTHON_FILES})
-
-AddLinkerDependencies(Compliant SofaTest SofaGTestMain)
-
-
-
-
-# needed by python tests
-AddCompilerDefinitions("SOFA_SRC_DIR=${SOFA_SRC_DIR}")
-
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

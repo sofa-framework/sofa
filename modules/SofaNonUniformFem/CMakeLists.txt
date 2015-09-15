@@ -1,51 +1,58 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaNonUniformFem)
 
 set(HEADER_FILES
-
-    config.h
-    initNonUniformFEM.h
-    NonUniformHexahedralFEMForceFieldAndMass.h
-    NonUniformHexahedralFEMForceFieldAndMass.inl
-    NonUniformHexahedronFEMForceFieldAndMass.h
-    NonUniformHexahedronFEMForceFieldAndMass.inl
-#    NonUniformHexahedronFEMForceFieldDensity.h
-#    NonUniformHexahedronFEMForceFieldDensity.inl
     DynamicSparseGridGeometryAlgorithms.h
     DynamicSparseGridGeometryAlgorithms.inl
     DynamicSparseGridTopologyAlgorithms.h
     DynamicSparseGridTopologyContainer.h
     DynamicSparseGridTopologyModifier.h
-    MultilevelHexahedronSetTopologyContainer.h
-    SparseGridMultipleTopology.h
-    SparseGridRamificationTopology.h
-    HexahedronCompositeFEMForceFieldAndMass.h
-    HexahedronCompositeFEMForceFieldAndMass.inl
     HexahedronCompositeFEMMapping.h
     HexahedronCompositeFEMMapping.inl
-    )
+    MultilevelHexahedronSetTopologyContainer.h
+    NonUniformHexahedralFEMForceFieldAndMass.h
+    NonUniformHexahedralFEMForceFieldAndMass.inl
+    NonUniformHexahedronFEMForceFieldAndMass.h
+    NonUniformHexahedronFEMForceFieldAndMass.inl
+    # NonUniformHexahedronFEMForceFieldDensity.h
+    # NonUniformHexahedronFEMForceFieldDensity.inl
+    SparseGridMultipleTopology.h
+    SparseGridRamificationTopology.h
+    config.h
+    initNonUniformFEM.h
+)
 
 set(SOURCE_FILES
-
-    initNonUniformFEM.cpp
-    NonUniformHexahedralFEMForceFieldAndMass.cpp
-    NonUniformHexahedronFEMForceFieldAndMass.cpp
-#    NonUniformHexahedronFEMForceFieldDensity.cpp
-    MultilevelHexahedronSetTopologyContainer.cpp
     DynamicSparseGridGeometryAlgorithms.cpp
     DynamicSparseGridTopologyAlgorithms.cpp
     DynamicSparseGridTopologyContainer.cpp
     DynamicSparseGridTopologyModifier.cpp
+    HexahedronCompositeFEMMapping.cpp
+    MultilevelHexahedronSetTopologyContainer.cpp
+    NonUniformHexahedralFEMForceFieldAndMass.cpp
+    NonUniformHexahedronFEMForceFieldAndMass.cpp
+    # NonUniformHexahedronFEMForceFieldDensity.cpp
     SparseGridMultipleTopology.cpp
     SparseGridRamificationTopology.cpp
-    HexahedronCompositeFEMForceFieldAndMass.cpp
-    HexahedronCompositeFEMMapping.cpp
-    )
+    initNonUniformFEM.cpp
+)
 
-set(GROUP_BASE_DIR "..")
+if(SOFA_HAVE_NEWMAT)
+    list(APPEND HEADER_FILES
+        HexahedronCompositeFEMForceFieldAndMass.h
+        HexahedronCompositeFEMForceFieldAndMass.inl
+    )
+    list(APPEND SOURCE_FILES
+        HexahedronCompositeFEMForceFieldAndMass.cpp
+    )
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem SofaBaseTopology SofaBaseMechanics)
+if(SOFA_HAVE_NEWMAT)
+    target_link_libraries(${PROJECT_NAME} PUBLIC SofaDenseSolver)
+endif()
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_NON_UNIFORM_FEM")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_NON_UNIFORM_FEM" )
-AddLinkerDependencies(SofaSimpleFem ${SOFA_VISUAL_LIB} SofaDenseSolver SofaVolumetricData )
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+SofaAdvanced_install(${PROJECT_NAME})

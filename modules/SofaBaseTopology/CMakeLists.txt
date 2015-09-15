@@ -1,13 +1,17 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaBaseTopology)
+
 
 set(HEADER_FILES
-
-    config.h
-    initBaseTopology.h
+    BezierTetrahedronSetGeometryAlgorithms.h
+    BezierTetrahedronSetGeometryAlgorithms.inl
+    BezierTetrahedronSetTopologyContainer.h
+    BezierTriangleSetGeometryAlgorithms.h
+    BezierTriangleSetGeometryAlgorithms.inl
+    BezierTriangleSetTopologyContainer.h
     CommonAlgorithms.h
     CubeTopology.h
     CylinderGridTopology.h
-    SphereQuadTopology.h
     EdgeSetGeometryAlgorithms.h
     EdgeSetGeometryAlgorithms.inl
     EdgeSetTopologyAlgorithms.h
@@ -21,9 +25,9 @@ set(HEADER_FILES
     HexahedronSetTopologyAlgorithms.inl
     HexahedronSetTopologyContainer.h
     HexahedronSetTopologyModifier.h
-	NumericalIntegrationDescriptor.h
-	NumericalIntegrationDescriptor.inl
     MeshTopology.h
+    NumericalIntegrationDescriptor.h
+    NumericalIntegrationDescriptor.inl
     PointSetGeometryAlgorithms.h
     PointSetGeometryAlgorithms.inl
     PointSetTopologyAlgorithms.h
@@ -38,47 +42,44 @@ set(HEADER_FILES
     QuadSetTopologyModifier.h
     RegularGridTopology.h
     SparseGridTopology.h
+    SphereQuadTopology.h
     TetrahedronSetGeometryAlgorithms.h
     TetrahedronSetGeometryAlgorithms.inl
-    BezierTetrahedronSetGeometryAlgorithms.h
-    BezierTetrahedronSetGeometryAlgorithms.inl
-    BezierTriangleSetGeometryAlgorithms.h
-    BezierTriangleSetGeometryAlgorithms.inl
     TetrahedronSetTopologyAlgorithms.h
     TetrahedronSetTopologyAlgorithms.inl
     TetrahedronSetTopologyContainer.h
-    BezierTetrahedronSetTopologyContainer.h
-    BezierTriangleSetTopologyContainer.h
     TetrahedronSetTopologyModifier.h
+    TopologyData.h
+    TopologyData.inl
+    TopologyDataHandler.h
+    TopologyDataHandler.inl
+    TopologyEngine.h
+    TopologyEngine.inl
+    TopologySparseData.h
+    TopologySparseData.inl
+    TopologySparseDataHandler.h
+    TopologySparseDataHandler.inl
+    TopologySubsetData.h
+    TopologySubsetData.inl
+    TopologySubsetDataHandler.h
+    TopologySubsetDataHandler.inl
     TriangleSetGeometryAlgorithms.h
     TriangleSetGeometryAlgorithms.inl
     TriangleSetTopologyAlgorithms.h
     TriangleSetTopologyAlgorithms.inl
     TriangleSetTopologyContainer.h
     TriangleSetTopologyModifier.h
-    TopologyData.h
-    TopologyData.inl
-    TopologyDataHandler.h
-    TopologyDataHandler.inl
-    TopologySparseDataHandler.h
-    TopologySparseDataHandler.inl
-    TopologySparseData.h
-    TopologySparseData.inl
-    TopologySubsetData.h
-    TopologySubsetData.inl
-    TopologySubsetDataHandler.h
-    TopologySubsetDataHandler.inl
-    TopologyEngine.h
-    TopologyEngine.inl
-
-    )
+    config.h
+    initBaseTopology.h
+)
 
 set(SOURCE_FILES
-
-    initBaseTopology.cpp
+    BezierTetrahedronSetGeometryAlgorithms.cpp
+    BezierTetrahedronSetTopologyContainer.cpp
+    BezierTriangleSetGeometryAlgorithms.cpp
+    BezierTriangleSetTopologyContainer.cpp
     CubeTopology.cpp
     CylinderGridTopology.cpp
-    SphereQuadTopology.cpp
     EdgeSetGeometryAlgorithms.cpp
     EdgeSetTopologyAlgorithms.cpp
     EdgeSetTopologyContainer.cpp
@@ -89,7 +90,7 @@ set(SOURCE_FILES
     HexahedronSetTopologyContainer.cpp
     HexahedronSetTopologyModifier.cpp
     MeshTopology.cpp
-	NumericalIntegrationDescriptor.cpp
+    NumericalIntegrationDescriptor.cpp
     PointSetGeometryAlgorithms.cpp
     PointSetTopologyAlgorithms.cpp
     PointSetTopologyContainer.cpp
@@ -100,26 +101,21 @@ set(SOURCE_FILES
     QuadSetTopologyModifier.cpp
     RegularGridTopology.cpp
     SparseGridTopology.cpp
+    SphereQuadTopology.cpp
     TetrahedronSetGeometryAlgorithms.cpp
-    BezierTetrahedronSetGeometryAlgorithms.cpp
-	BezierTriangleSetGeometryAlgorithms.cpp
     TetrahedronSetTopologyAlgorithms.cpp
     TetrahedronSetTopologyContainer.cpp
-    BezierTetrahedronSetTopologyContainer.cpp
-	BezierTriangleSetTopologyContainer.cpp
     TetrahedronSetTopologyModifier.cpp
     TriangleSetGeometryAlgorithms.cpp
     TriangleSetTopologyAlgorithms.cpp
     TriangleSetTopologyContainer.cpp
     TriangleSetTopologyModifier.cpp
-
-    )
-
-set(GROUP_BASE_DIR "..")
+    initBaseTopology.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_BASE_TOPOLOGY")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_BASE_TOPOLOGY")
-AddLinkerDependencies(SofaSimulationTree)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+SofaBase_install(${PROJECT_NAME})

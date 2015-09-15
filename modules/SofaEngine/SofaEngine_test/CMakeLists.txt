@@ -1,4 +1,6 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+
+project(SofaEngine_test)
 
 
 set(HEADER_FILES
@@ -10,15 +12,9 @@ set(SOURCE_FILES
 
     TestEngine.cpp
 	Engine_test.cpp
-	TransformEngine_test.cpp
-        )
+	TransformEngine_test.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
 
-AddLinkerDependencies(
-    SofaGTestMain
-    SofaTest
-    SofaEngine
-)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

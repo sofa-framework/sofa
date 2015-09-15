@@ -1,0 +1,16 @@
+# CMake package configuration file for the SofaHAPI plugin
+
+@PACKAGE_INIT@
+
+find_package(SofaGeneral REQUIRED)
+find_package(HAPI REQUIRED)
+find_package(H3DUtil REQUIRED)
+
+if(NOT TARGET SofaHAPI)
+	include("${CMAKE_CURRENT_LIST_DIR}/SofaHAPITargets.cmake")
+endif()
+
+check_required_components(SofaHAPI)
+
+set(SofaHAPI_LIBRARIES SofaHAPI)
+set_and_check(SofaHAPI_INCLUDE_DIRS @PACKAGE_SOFAHAPI_INCLUDE_DIR@ ${SofaGui_INCLUDE_DIRS})

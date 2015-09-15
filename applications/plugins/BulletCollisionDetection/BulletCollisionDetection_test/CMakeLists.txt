@@ -1,4 +1,6 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+
+project(BulletCollisionDetection_test)
 
 set(HEADER_FILES
     BCD_test.h
@@ -8,20 +10,7 @@ set(SOURCE_FILES
     BCD_test.cpp
 )
 
-if(WIN32)
-	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
-endif()
-
-find_package(Bullet CONFIG REQUIRED)
-include_directories(${BULLET_INCLUDE_DIRS})
-link_directories(${BULLET_LIBRARY_DIRS})
-
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} BulletCollisionDetection ${BULLET_LIBRARIES} SofaTest SofaGTestMain)
 
-AddLinkerDependencies(BulletCollisionDetection SofaTest SofaGTestMain)
-AddLinkerDependencies(LinearMath BulletCollision BulletDynamics HACD)
-
-# needed by python tests
-AddCompilerDefinitions("SOFA_SRC_DIR=${SOFA_SRC_DIR}")
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

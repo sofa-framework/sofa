@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenCL/config.h>
+#include "config.h"
 
 namespace sofa
 {
@@ -35,7 +35,7 @@ void initExternalModule()
     static bool first = true;
     if (first)
     {
-        first = false;        
+        first = false;
     }
 }
 

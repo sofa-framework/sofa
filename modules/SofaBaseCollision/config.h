@@ -25,12 +25,6 @@
 #ifndef SOFABASECOLLISION_CONFIG_H
 #define SOFABASECOLLISION_CONFIG_H
 
-#include <sofa/helper/system/config.h>
-
-#ifdef SOFA_BUILD_BASE_COLLISION
-#  define SOFA_BASE_COLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_BASE_COLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <SofaBase/config.h>
 
 #endif

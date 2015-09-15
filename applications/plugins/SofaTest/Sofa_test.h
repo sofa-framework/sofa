@@ -27,10 +27,6 @@
 #ifndef SOFA_STANDARDTEST_Sofa_test_H
 #define SOFA_STANDARDTEST_Sofa_test_H
 
-#if (_MSC_VER == 1700) 
-#define _VARIADIC_MAX 10 
-#endif
-
 #include "InitPlugin_test.h"
 #include <gtest/gtest.h>
 #include <sofa/defaulttype/Vec.h>
@@ -43,6 +39,19 @@
 using std::cout;
 using std::cerr;
 using std::endl;
+
+// Maybe not the right place to put this (private header?)
+#ifndef SOFA_FLOAT
+typedef sofa::defaulttype::Rigid3dTypes Rigid3;
+typedef sofa::defaulttype::Rigid3dMass Rigid3Mass;
+typedef sofa::defaulttype::Vec3dTypes Vec3Types;
+typedef sofa::defaulttype::Vec1dTypes Vec1Types;
+#else
+typedef sofa::defaulttype::Rigid3fTypes Rigid3;
+typedef sofa::defaulttype::Rigid3fMass Rigid3Mass;
+typedef sofa::defaulttype::Vec3fTypes Vec3Types;
+typedef sofa::defaulttype::Vec1fTypes Vec1Types;
+#endif
 
 namespace sofa {
 

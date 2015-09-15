@@ -27,6 +27,8 @@
 #ifndef FLOWVR_RENDER_MESH_H
 #define FLOWVR_RENDER_MESH_H
 
+#define MINI_FLOWVR
+
 #include <ftl/type.h>
 #include <ftl/quat.h>
 #include "bbox.h"

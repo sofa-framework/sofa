@@ -1,4 +1,8 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(qwt)
+
+
+set(QWT_VERSION 6.0.1)
 
 file(GLOB HEADER_FILES qwt_*.h)
 
@@ -18,8 +22,8 @@ set(Q_OBJECT_HEADER_FILES
     qwt_magnifier.h
     qwt_panner.h
     qwt_picker.h
-    qwt_plot_canvas.h
     qwt_plot.h
+    qwt_plot_canvas.h
     qwt_plot_magnifier.h
     qwt_plot_panner.h
     qwt_plot_picker.h
@@ -30,20 +34,60 @@ set(Q_OBJECT_HEADER_FILES
     qwt_slider.h
     qwt_text_label.h
     qwt_thermo.h
-    qwt_wheel.h)
+    qwt_wheel.h
+)
 
 
-UseQt()
-# Declare moccable files, and get a list of the files to be generated
-QT4_WRAP_CPP(MOC_FILES ${Q_OBJECT_HEADER_FILES})
-# Convert absolute paths of moc-generated files to relative paths
-ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
+find_package(Qt4)
+include(${QT_USE_FILE})
+
+qt4_wrap_cpp(MOC_FILES ${Q_OBJECT_HEADER_FILES})
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES})
-
-AddCompilerDefinitions("QT_DLL;QWT_DLL;QWT_MAKEDLL;QWT_NO_SVG;QT_NO_QT_INCLUDE_WARN")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
+target_link_libraries(${PROJECT_NAME} PRIVATE ${QT_LIBRARIES})
 if(UNIX AND NOT APPLE)
-    AddLinkerDependencies(rt)
+    target_link_libraries(${PROJECT_NAME} PRIVATE rt)
 endif()
+target_compile_options(${PROJECT_NAME} PUBLIC "-DQT_DLL" "-DQWT_DLL" "-DQWT_MAKEDLL" "-DQWT_NO_SVG" ${QT_DEFINITIONS})
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaExtlibs")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${QWT_VERSION})
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+install(TARGETS ${PROJECT_NAME}
+        EXPORT QwtTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        PUBLIC_HEADER DESTINATION include)
+
+
+include(CMakePackageConfigHelpers)
+
+## QwtConfigVersion.cmake
+write_basic_package_version_file(QwtConfigVersion.cmake
+                                 VERSION ${QWT_VERSION}
+                                 COMPATIBILITY AnyNewerVersion)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/QwtConfigVersion.cmake DESTINATION lib/cmake/Qwt)
+
+
+### QwtConfig.cmake
+## Build tree
+set(QWT_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+configure_package_config_file(QwtConfig.cmake.in
+                              QwtConfig.cmake
+                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
+                              PATH_VARS QWT_INCLUDE_DIR)
+## Install tree
+set(QWT_INCLUDE_DIR include)
+configure_package_config_file(QwtConfig.cmake.in
+                              InstalledQwtConfig.cmake
+                              INSTALL_DESTINATION lib/cmake/Qwt
+                              PATH_VARS QWT_INCLUDE_DIR)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/InstalledQwtConfig.cmake
+        DESTINATION lib/cmake/Qwt
+        RENAME QwtConfig.cmake)
+
+## QwtTargets.cmake
+install(EXPORT QwtTargets DESTINATION lib/cmake/Qwt)

@@ -3,7 +3,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include "labelgridimagetoolbox.h"
-#include "ImageTypes.h"
+#include <image/ImageTypes.h>
 
 
 

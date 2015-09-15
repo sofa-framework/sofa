@@ -1,4 +1,6 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+
+project(Flexible_test)
 
 set(HEADER_FILES
     StrainMapping_test.h
@@ -27,38 +29,38 @@ set(SOURCE_FILES
     TetrahedronVolumeMapping_test.cpp
 )
 
+set(PYTHON_FILES
+    scenes/python/reInitMapping.py
+)
 
 if(WIN32)
     list(APPEND HEADER_FILES "stdafx.h")
     list(APPEND SOURCE_FILES "stdafx.cpp")
 endif()
 
-if(APPLE)
-    #    set(RC_FILES "runSOFA.icns")
+find_package(SofaPython QUIET)
+
+if(SofaPython_FOUND)
+    list(APPEND SOURCE_FILES python_test_list.cpp)
+    add_definitions("-DFLEXIBLE_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes/python\"")
 endif()
 
-include_directories("${SOFA_APPLICATIONS_PROJECTS_DIR}/Standard_test")
+add_definitions("-DFLEXIBLE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 
-if(SOFA-PLUGIN_SOFAPYTHON)
-    AddCompilerDefinitions("FLEXIBLE_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes/python\"")
-    list(APPEND SOURCE_FILES "python_test_list.cpp")
-    AddLinkerDependencies(SofaPython)
-    set(PYTHON_FILES
-        scenes/python/reInitMapping.py
-    )
+find_package(image QUIET)
+
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${PYTHON_FILES})
+target_link_libraries(${PROJECT_NAME} Flexible SofaTest SofaGTestMain)
+if(image_FOUND)
+    target_link_libraries(${PROJECT_NAME} image)
 endif()
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${RC_FILES} ${PYTHON_FILES})
-AddCompilerDefinitions("FLEXIBLE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
-
+# ???
 if(WIN32 AND NOT CMAKE_CL_64)
-    AddCompilerDefinitions("EIGEN_DONT_ALIGN")
+    add_definitions("-DEIGEN_DONT_ALIGN")
 endif()
 
-AddLinkerDependencies(Flexible SofaTest image Compliant SofaGTestMain)
-target_link_libraries(${PROJECT_NAME} DiffusionSolver)
+# #Needed by python test
+# AddCompilerDefinitions("SOFA_SRC_DIR=${SOFA_SRC_DIR}")
 
-#Needed by python test
-AddCompilerDefinitions("SOFA_SRC_DIR=${SOFA_SRC_DIR}")
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

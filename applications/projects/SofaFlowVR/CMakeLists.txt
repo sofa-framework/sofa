@@ -1,13 +1,7 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
-   
-set(SOURCE_FILES
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaFlowVR)
 
-    Main.cpp
-    )
-    
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+find_package(SofaGui)
 
-AddLinkerDependencies(SofaGuiMain )
-
-    
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+add_executable(${PROJECT_NAME} Main.cpp)
+target_link_libraries(${PROJECT_NAME} SofaGuiMain)

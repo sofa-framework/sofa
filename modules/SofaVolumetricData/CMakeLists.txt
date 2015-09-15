@@ -1,46 +1,55 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaVolumetricData)
 
 set(HEADER_FILES
-
-    config.h
-    initVolumetricData.h
     ImplicitSurfaceContainer.h
-    InterpolatedImplicitSurface.h
-    InterpolatedImplicitSurface.inl
-    DistanceGridForceField.h
-    DistanceGridForceField.inl
     ImplicitSurfaceMapping.h
     ImplicitSurfaceMapping.inl
-    DistanceGrid.h
-    DistanceGridCollisionModel.h
-    RigidDistanceGridDiscreteIntersection.h
-    RigidDistanceGridDiscreteIntersection.inl
-    FFDDistanceGridDiscreteIntersection.h
-    FFDDistanceGridDiscreteIntersection.inl
-
-    )
+    InterpolatedImplicitSurface.h
+    InterpolatedImplicitSurface.inl
+    config.h
+    initVolumetricData.h
+)
 
 set(SOURCE_FILES
-
-    initVolumetricData.cpp
     ImplicitSurfaceContainer.cpp
-    InterpolatedImplicitSurface.cpp
-    DistanceGridForceField.cpp
     ImplicitSurfaceMapping.cpp
-    DistanceGrid.cpp
-    DistanceGridCollisionModel.cpp
-    RayDistanceGridContact.cpp
-    RigidDistanceGridDiscreteIntersection.cpp
-    FFDDistanceGridDiscreteIntersection.cpp
-    BarycentricPenalityContact_DistanceGrid.cpp
+    InterpolatedImplicitSurface.cpp
+    initVolumetricData.cpp
+)
 
+if(SOFA_HAVE_MINIFLOWVR)
+
+    list(APPEND HEADER_FILES
+        DistanceGrid.h
+        DistanceGridCollisionModel.h
+        DistanceGridForceField.h
+        DistanceGridForceField.inl
+        FFDDistanceGridDiscreteIntersection.h
+        FFDDistanceGridDiscreteIntersection.inl
+        RigidDistanceGridDiscreteIntersection.h
+        RigidDistanceGridDiscreteIntersection.inl
     )
 
-set(GROUP_BASE_DIR "..")
+    list(APPEND SOURCE_FILES
+        BarycentricPenalityContact_DistanceGrid.cpp
+        DistanceGrid.cpp
+        DistanceGridCollisionModel.cpp
+        DistanceGridForceField.cpp
+        FFDDistanceGridDiscreteIntersection.cpp
+        RayDistanceGridContact.cpp
+        RigidDistanceGridDiscreteIntersection.cpp
+    )
+
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision ${SOFAADVANCED_DEPENDENCY_LINK})
+if(SOFA_HAVE_MINIFLOWVR)
+    target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction)
+    target_link_libraries(${PROJECT_NAME} PUBLIC miniFlowVR)
+endif()
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_VOLUMETRIC_DATA")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_VOLUMETRIC_DATA" )
-AddLinkerDependencies(SofaBaseCollision SofaMeshCollision SofaUserInteraction FlowVR)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+SofaAdvanced_install(${PROJECT_NAME})

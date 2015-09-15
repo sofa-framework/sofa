@@ -1,39 +1,36 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaMiscForceField)
 
 set(HEADER_FILES
-
-    config.h
-    initMiscForcefield.h
+    GearSpringForceField.h
+    GearSpringForceField.inl
+    LennardJonesForceField.h
+    LennardJonesForceField.inl
+    LineBendingSprings.h
+    LineBendingSprings.inl
     MatrixMass.h
     MatrixMass.inl
     MeshMatrixMass.h
     MeshMatrixMass.inl
-    LennardJonesForceField.h
-    LennardJonesForceField.inl
     WashingMachineForceField.h
     WashingMachineForceField.inl
-    GearSpringForceField.h
-    GearSpringForceField.inl
-    LineBendingSprings.h
-    LineBendingSprings.inl
-    )
+    config.h
+    initMiscForcefield.h
+)
 
 set(SOURCE_FILES
-
-    initMiscForcefield.cpp
+    GearSpringForceField.cpp
+    LennardJonesForceField.cpp
+    LineBendingSprings.cpp
     MatrixMass.cpp
     MeshMatrixMass.cpp
-    LennardJonesForceField.cpp
     WashingMachineForceField.cpp
-    GearSpringForceField.cpp
-    LineBendingSprings.cpp
-    )
-
-set(GROUP_BASE_DIR "..")
+    initMiscForcefield.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaDeformable SofaBoundaryCondition SofaMiscTopology)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MISC_FORCEFIELD -DPOINT_DATA_VECTOR_ACCESS")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_MISC_FORCEFIELD" )
-AddLinkerDependencies(SofaDeformable SofaBoundaryCondition SofaMiscTopology )
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+SofaMisc_install(${PROJECT_NAME})
