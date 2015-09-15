@@ -2,46 +2,46 @@ cmake_minimum_required(VERSION 2.8.12)
 project(QGLViewer)
 
 set(HEADER_FILES
-	camera.h
-	frame.h
-	keyFrameInterpolator.h
-	manipulatedCameraFrame.h
-	manipulatedFrame.h
-	qglviewer.h
+    camera.h
+    frame.h
+    keyFrameInterpolator.h
+    manipulatedCameraFrame.h
+    manipulatedFrame.h
+    qglviewer.h
 )
 
 set(SOURCE_FILES
-	VRender/BSPSortMethod.cpp
-	VRender/BackFaceCullingOptimizer.cpp
-	VRender/EPSExporter.cpp
-	VRender/Exporter.cpp
-	VRender/FIGExporter.cpp
-	VRender/NVector3.cpp
-	VRender/ParserGL.cpp
-	VRender/Primitive.cpp
-	VRender/PrimitivePositioning.cpp
-	VRender/TopologicalSortMethod.cpp
-	VRender/VRender.cpp
-	VRender/Vector2.cpp
-	VRender/Vector3.cpp
-	VRender/VisibilityOptimizer.cpp
-	VRender/gpc.cpp
-	camera.cpp
-	constraint.cpp
-	frame.cpp
-	keyFrameInterpolator.cpp
-	manipulatedCameraFrame.cpp
-	manipulatedFrame.cpp
-	mouseGrabber.cpp
-	qglviewer.cpp
-	quaternion.cpp
-	saveSnapshot.cpp
-	vec.cpp
+    VRender/BSPSortMethod.cpp
+    VRender/BackFaceCullingOptimizer.cpp
+    VRender/EPSExporter.cpp
+    VRender/Exporter.cpp
+    VRender/FIGExporter.cpp
+    VRender/NVector3.cpp
+    VRender/ParserGL.cpp
+    VRender/Primitive.cpp
+    VRender/PrimitivePositioning.cpp
+    VRender/TopologicalSortMethod.cpp
+    VRender/VRender.cpp
+    VRender/Vector2.cpp
+    VRender/Vector3.cpp
+    VRender/VisibilityOptimizer.cpp
+    VRender/gpc.cpp
+    camera.cpp
+    constraint.cpp
+    frame.cpp
+    keyFrameInterpolator.cpp
+    manipulatedCameraFrame.cpp
+    manipulatedFrame.cpp
+    mouseGrabber.cpp
+    qglviewer.cpp
+    quaternion.cpp
+    saveSnapshot.cpp
+    vec.cpp
 )
 
 set(UI_FILES
-	ImageInterface.ui
- 	VRenderInterface.ui
+    ImageInterface.ui
+     VRenderInterface.ui
 )
 
 find_package(OpenGL REQUIRED)
@@ -53,25 +53,25 @@ qt4_wrap_ui(FORM_FILES ${UI_FILES})
 
 # These header files don't need to be processed by the moc.
 list(APPEND HEADER_FILES
-	VRender/AxisAlignedBox.h
-	VRender/Exporter.h
-	VRender/NVector3.h
-	VRender/Optimizer.h
-	VRender/ParserGL.h
-	VRender/Primitive.h
-	VRender/PrimitivePositioning.h
-	VRender/SortMethod.h
-	VRender/Types.h
-	VRender/VRender.h
-	VRender/Vector2.h
-	VRender/Vector3.h
-	VRender/gpc.h
-	config.h
-	constraint.h
-	domUtils.h
-	mouseGrabber.h
-	quaternion.h
-	vec.h
+    VRender/AxisAlignedBox.h
+    VRender/Exporter.h
+    VRender/NVector3.h
+    VRender/Optimizer.h
+    VRender/ParserGL.h
+    VRender/Primitive.h
+    VRender/PrimitivePositioning.h
+    VRender/SortMethod.h
+    VRender/Types.h
+    VRender/VRender.h
+    VRender/Vector2.h
+    VRender/Vector3.h
+    VRender/gpc.h
+    config.h
+    constraint.h
+    domUtils.h
+    mouseGrabber.h
+    quaternion.h
+    vec.h
 )
 
 set(QGLVIEWER_VERSION 2.4.0)
