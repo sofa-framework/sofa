@@ -2,102 +2,83 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaMeshCollision)
 
 set(HEADER_FILES
-
-    config.h
-    initMeshCollision.h
-    MeshNewProximityIntersection.h
-    MeshNewProximityIntersection.inl
-    BarycentricPenalityContact.h
-    BarycentricPenalityContact.inl
     BarycentricContactMapper.h
     BarycentricContactMapper.inl
+    BarycentricPenalityContact.h
+    BarycentricPenalityContact.inl
+    CollisionPM.h
+    DirectSAP.h
+    DirectSAP.inl
+    EndPoint.h
     IdentityContactMapper.h
     IdentityContactMapper.inl
+    IncrSAP.h
+    IncrSAP.inl
+    IntrMeshUtility.h
+    IntrMeshUtility.inl
+    IntrTriangleOBB.h
+    IntrTriangleOBB.inl
+    Line.h
+    LineLocalMinDistanceFilter.h
+    LineModel.h
+    LineModel.inl
+    LocalMinDistanceFilter.h
+    MeshDiscreteIntersection.h
+    MeshDiscreteIntersection.inl
+    MeshIntTool.h
+    MeshIntTool.inl
+    MeshMinProximityIntersection.h
+    MeshNewProximityIntersection.h
+    MeshNewProximityIntersection.inl
+    Point.h
+    PointLocalMinDistanceFilter.h
+    PointModel.h
+    PointModel.inl
+    RayTriangleIntersection.h
     RigidContactMapper.h
     RigidContactMapper.inl
     SubsetContactMapper.h
     SubsetContactMapper.inl
-    MeshDiscreteIntersection.h
-    MeshDiscreteIntersection.inl
-    MeshMinProximityIntersection.h
-    Point.h
-    PointModel.h
-    PointModel.inl
-    Line.h
-    LineModel.h
-    LineModel.inl
     Triangle.h
+    TriangleLocalMinDistanceFilter.h
     TriangleModel.h
     TriangleModel.inl
     TriangleOctree.h
     TriangleOctreeModel.h
-    RayTriangleIntersection.h
-    PointLocalMinDistanceFilter.h
-    LineLocalMinDistanceFilter.h
-    TriangleLocalMinDistanceFilter.h
-    LocalMinDistanceFilter.h
-    MeshIntTool.h
-    MeshIntTool.inl
-    IntrTriangleOBB.h
-    IntrTriangleOBB.inl
-    IntrMeshUtility.h
-    IntrMeshUtility.inl
-    IncrSAP.h
-    IncrSAP.inl
-    DirectSAP.h
-    DirectSAP.inl
-    CollisionPM.h
-    EndPoint.h
-    )
+    config.h
+    initMeshCollision.h
+)
 
 set(SOURCE_FILES
-
-    initMeshCollision.cpp
-    MeshNewProximityIntersection.cpp
-    BarycentricPenalityContact.cpp
     BarycentricContactMapper.cpp
+    BarycentricPenalityContact.cpp
+    DirectSAP.cpp
     IdentityContactMapper.cpp
-    SubsetContactMapper.cpp
-    MeshDiscreteIntersection.cpp
-    MeshMinProximityIntersection.cpp
-    PointModel.cpp
+    IncrSAP.cpp
+    IntrMeshUtility.cpp
+    IntrTriangleOBB.cpp
+    LineLocalMinDistanceFilter.cpp
     LineModel.cpp
+    LocalMinDistanceFilter.cpp
+    MeshDiscreteIntersection.cpp
+    MeshIntTool.cpp
+    MeshMinProximityIntersection.cpp
+    MeshNewProximityIntersection.cpp
+    PointLocalMinDistanceFilter.cpp
+    PointModel.cpp
+    RayTriangleIntersection.cpp
+    RigidContactMapper.cpp
+    SubsetContactMapper.cpp
+    TriangleLocalMinDistanceFilter.cpp
     TriangleModel.cpp
     TriangleOctree.cpp
     TriangleOctreeModel.cpp
-    RayTriangleIntersection.cpp
-    PointLocalMinDistanceFilter.cpp
-    LineLocalMinDistanceFilter.cpp
-    TriangleLocalMinDistanceFilter.cpp
-    LocalMinDistanceFilter.cpp
-    MeshIntTool.cpp
-    RigidContactMapper.cpp
-    IntrTriangleOBB.cpp
-    IntrMeshUtility.cpp
-    IncrSAP.cpp
-    DirectSAP.cpp
-    )
-
-set(GROUP_BASE_DIR "..")
+    initMeshCollision.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaObjectInteraction SofaRigid SofaBaseCollision)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MESH_COLLISION")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-target_link_libraries( ${PROJECT_NAME} PUBLIC SofaObjectInteraction SofaRigid SofaBaseCollision)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/SofaCommon>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFACOMMON_DEPENDENCY_INCLUDE_DIR}>")
-
-set( SOFAMESHCOLLISION_COMPILER_FLAGS "-DSOFA_BUILD_MESH_COLLISION")
-
-set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
-set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFACOMMON_VERSION} )
-set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAMESHCOLLISION_COMPILER_FLAGS}"  )
-set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
-
-install(TARGETS ${PROJECT_NAME}
-        EXPORT  SofaCommonTargets
-        RUNTIME DESTINATION bin COMPONENT SofaCommon_libraries
-        LIBRARY DESTINATION lib COMPONENT SofaCommon_libraries
-        ARCHIVE DESTINATION lib COMPONENT SofaCommon_libraries
-        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}" COMPONENT SofaCommon_headers
-        )
+SofaCommon_install(${PROJECT_NAME})

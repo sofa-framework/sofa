@@ -1,10 +1,9 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(ManifoldTopologies)
 
 set(MANIFOLDTOPOLOGIES_MAJOR_VERSION 0)
-set(MANIFOLDTOPOLOGIES_MINOR_VERSION 0)
-set(MANIFOLDTOPOLOGIES_BUILD_VERSION 1)
-set(MANIFOLDTOPOLOGIES_VERSION ${MANIFOLDTOPOLOGIES_MAJOR_VERSION}.${MANIFOLDTOPOLOGIES_MINOR_VERSION}.${MANIFOLDTOPOLOGIES_BUILD_VERSION})
+set(MANIFOLDTOPOLOGIES_MINOR_VERSION 1)
+set(MANIFOLDTOPOLOGIES_VERSION ${MANIFOLDTOPOLOGIES_MAJOR_VERSION}.${MANIFOLDTOPOLOGIES_MINOR_VERSION})
 
 set(HEADER_FILES
     ManifoldEdgeSetGeometryAlgorithms.h
@@ -39,10 +38,9 @@ set(README_FILES ManifoldTopologies.txt)
 
 find_package(SofaBase REQUIRED)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ManifoldTopologies.h.in
-               ${CMAKE_CURRENT_BINARY_DIR}/ManifoldTopologies/ManifoldTopologies.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ManifoldTopologies/ManifoldTopologies.h
-        DESTINATION "include/ManifoldTopologies")
+## ManifoldTopologies/config.h
+configure_file(config.h.in ManifoldTopologies/config.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ManifoldTopologies/config.h DESTINATION "include/ManifoldTopologies")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
@@ -54,10 +52,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MAN
 target_link_libraries(${PROJECT_NAME} SofaBaseTopology)
 
 install(TARGETS ${PROJECT_NAME}
-    COMPONENT ManifoldTopologies_libraries
-    EXPORT ManifoldTopologiesTargets
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
+        COMPONENT ManifoldTopologies_libraries
+        EXPORT ManifoldTopologiesTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

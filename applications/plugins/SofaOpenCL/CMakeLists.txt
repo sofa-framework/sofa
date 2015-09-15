@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(SofaOpenCL)
 
 set(SOFAOPENCL_VERSION 0.1)
@@ -101,6 +101,6 @@ install(TARGETS ${PROJECT_NAME}
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 
-# CMake package configurations files
+## CMake package configurations files
 include(SofaPackageConfigHelpers)
 sofa_write_package_config_files(SofaOpenCL ${SOFAOPENCL_VERSION} "" "include")

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 
 add_subdirectory(../SofaBaseCollision/SofaBaseCollision_test tests/SofaBaseCollision)
 add_subdirectory(../SofaBaseLinearSolver/SofaBaseLinearSolver_test tests/SofaBaseLinearSolver)

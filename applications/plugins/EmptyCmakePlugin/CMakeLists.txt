@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(EmptyCmakePlugin)
 
 set(HEADER_FILES
@@ -17,8 +17,8 @@ target_link_libraries(${PROJECT_NAME} SofaCore)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 install(TARGETS ${PROJECT_NAME}
-    COMPONENT EmptyCmakePlugin_libraries
-    EXPORT EmptyCmakePluginTargets
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
+        COMPONENT EmptyCmakePlugin_libraries
+        EXPORT EmptyCmakePluginTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)

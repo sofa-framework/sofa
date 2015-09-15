@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(gtest CXX C)
 
 ## Options
@@ -51,20 +51,22 @@ install(TARGETS gtest gtest_main
 
 include(CMakePackageConfigHelpers)
 
-## GTestConfig.cmake (build tree)
+### GTestConfig.cmake
+## Build tree
 set(GTEST_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
 configure_package_config_file(GTestConfig.cmake.in
                               GTestConfig.cmake
                               INSTALL_DESTINATION none
                               PATH_VARS GTEST_INCLUDE_DIR)
-
-## GTestConfig.cmake (installed)
+## Install tree
 set(GTEST_INCLUDE_DIR include)
 configure_package_config_file(GTestConfig.cmake.in
-                              GTestConfigInstall.cmake
+                              InstalledGTestConfig.cmake
                               INSTALL_DESTINATION lib/cmake/GTest
                               PATH_VARS GTEST_INCLUDE_DIR)
-install(EXPORT GTestTargets DESTINATION lib/cmake/GTest) # GTestTargets.cmake
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/GTestConfigInstall.cmake"
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/InstalledGTestConfig.cmake"
         DESTINATION lib/cmake/GTest
         RENAME GTestConfig.cmake)
+
+## GTestTargets.cmake
+install(EXPORT GTestTargets DESTINATION lib/cmake/GTest)

@@ -2,71 +2,52 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaLoader)
 
 set(HEADER_FILES
-
-    config.h
-    initLoader.h
+    GIDMeshLoader.h
     GridMeshCreator.h
-    StringMeshCreator.h
+    InputEventReader.h
     MeshGmshLoader.h
     MeshObjLoader.h
-	GIDMeshLoader.h
     MeshOffLoader.h
+    MeshSTLLoader.h
     MeshTrianLoader.h
     MeshVTKLoader.h
-    MeshSTLLoader.h
     MeshXspLoader.h
     OffSequenceLoader.h
-    SphereLoader.h
-    VoxelGridLoader.h
-    InputEventReader.h
     ReadState.h
     ReadState.inl
     ReadTopology.h
     ReadTopology.inl
-    )
+    SphereLoader.h
+    StringMeshCreator.h
+    VoxelGridLoader.h
+    config.h
+    initLoader.h
+)
 
 set(SOURCE_FILES
-
-    initLoader.cpp
+    GIDMeshLoader.cpp
     GridMeshCreator.cpp
-    StringMeshCreator.cpp
+    InputEventReader.cpp
     MeshGmshLoader.cpp
-	MeshObjLoader.cpp
-	GIDMeshLoader.cpp
+    MeshObjLoader.cpp
     MeshOffLoader.cpp
+    MeshSTLLoader.cpp
     MeshTrianLoader.cpp
     MeshVTKLoader.cpp
-    MeshSTLLoader.cpp
     MeshXspLoader.cpp
     OffSequenceLoader.cpp
-    SphereLoader.cpp
-    VoxelGridLoader.cpp
-    InputEventReader.cpp
     ReadState.cpp
     ReadTopology.cpp
-    )
+    SphereLoader.cpp
+    StringMeshCreator.cpp
+    VoxelGridLoader.cpp
+    initLoader.cpp
+)
 
-set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree SofaHelper)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_LOADER")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-target_link_libraries( ${PROJECT_NAME} PUBLIC SofaSimulationTree SofaHelper)
-
-set( SOFALOADER_COMPILER_FLAGS "-DSOFA_BUILD_LOADER")
-
-set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
-set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFACOMMON_VERSION} )
-set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFALOADER_COMPILER_FLAGS}"  )
-set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
-
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/SofaCommon>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFACOMMON_DEPENDENCY_INCLUDE_DIR}>")
-
-install(TARGETS ${PROJECT_NAME}
-        EXPORT  SofaCommonTargets
-        RUNTIME DESTINATION bin COMPONENT SofaCommon_libraries
-        LIBRARY DESTINATION lib COMPONENT SofaCommon_libraries
-        ARCHIVE DESTINATION lib COMPONENT SofaCommon_libraries
-        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}" COMPONENT SofaCommon_headers
-        )
+SofaCommon_install(${PROJECT_NAME})

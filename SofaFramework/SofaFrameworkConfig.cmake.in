@@ -1,7 +1,4 @@
-# CMake package configuration file for SofaSimulation.
-# It defines the following variables:
-# - SofaFramework_INCLUDE_DIRS
-# - SofaFramework_LIBRARIES
+# CMake package configuration file for SofaFramework
 
 @PACKAGE_INIT@
 
@@ -27,8 +24,6 @@ set(SOFA_HAVE_GTEST "@SOFA_HAVE_GTEST@")
 
 if(SOFA_HAVE_GTEST)
     find_package(GTest CONFIG REQUIRED)
-    # sofa_create_target(GTest SofaFramework "${GTEST_LIBRARY}" "${GTEST_INCLUDE_DIR}")
-    # sofa_create_target(GTestMain SofaFramework "${GTEST_MAIN_LIBRARY}" "${GTEST_INCLUDE_DIR}")
 endif()
 
 if(SOFA_HAVE_ZLIB)
@@ -66,4 +61,4 @@ endif()
 check_required_components(SofaHelper SofaDefaultType SofaCore)
 
 set(SofaFramework_LIBRARIES SofaHelper SofaDefaultType SofaCore)
-set(SofaFramework_INCLUDE_DIRS "@PACKAGE_SOFAFRAMEWORK_INCLUDE_DIR@")
+set(SofaFramework_INCLUDE_DIRS @PACKAGE_SOFAFRAMEWORK_INCLUDE_DIR@)

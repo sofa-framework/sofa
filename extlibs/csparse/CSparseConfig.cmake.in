@@ -1,11 +1,6 @@
-# CMake package configuration file for the csparse library.
-# It defines the following variables:
-# - CSparse_INCLUDE_DIRS
-# - CSparse_LIBRARIES
+# CMake package configuration file for the csparse library
 
 @PACKAGE_INIT@
-
-set_and_check(CSPARSE_INCLUDE_DIR "@PACKAGE_CSPARSE_INCLUDE_DIR@")
 
 if(NOT TARGET csparse)
 	include("${CMAKE_CURRENT_LIST_DIR}/CSparseTargets.cmake")
@@ -13,6 +8,5 @@ endif()
 
 check_required_components(csparse)
 
-# Variables for compatibility with MODULE mode find_package.
 set(CSparse_LIBRARIES csparse)
-set(CSparse_INCLUDE_DIRS ${CSPARSE_INCLUDE_DIR})
+set_and_check(CSparse_INCLUDE_DIRS @PACKAGE_CSPARSE_INCLUDE_DIR@)

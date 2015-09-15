@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(ARTrack)
 
 
@@ -34,8 +34,8 @@ if(UNIX)
 endif()
 
 install(TARGETS ${PROJECT_NAME}
-    COMPONENT ARTrack_libraries
-    EXPORT ARTrackTargets
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
+        COMPONENT ARTrack_libraries
+        EXPORT ARTrackTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)

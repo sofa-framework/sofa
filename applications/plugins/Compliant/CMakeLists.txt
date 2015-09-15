@@ -2,11 +2,8 @@ cmake_minimum_required(VERSION 2.8.12)
 project(Compliant)
 
 set(COMPLIANT_MAJOR_VERSION 0)
-set(COMPLIANT_MINOR_VERSION 0)
-set(COMPLIANT_BUILD_VERSION 1)
-
-set(COMPLIANT_VERSION ${COMPLIANT_MAJOR_VERSION}.${COMPLIANT_MINOR_VERSION}.${COMPLIANT_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
-
+set(COMPLIANT_MINOR_VERSION 1)
+set(COMPLIANT_VERSION ${COMPLIANT_MAJOR_VERSION}.${COMPLIANT_MINOR_VERSION})
 
 set(HEADER_FILES
     assembly/AssembledSystem.h
@@ -194,7 +191,6 @@ set(SOURCE_FILES
 )
 
 set(PYTHON_FILES
-
     python/Compliant/Control.py
     python/Compliant/Frame.py
     python/Compliant/Quaternion.py
@@ -206,25 +202,21 @@ set(PYTHON_FILES
     python/Compliant/__init__.py
     python/Compliant/future.py
     python/Compliant/sml.py
-
 )
 
 set(README_FILES Compliant.txt)
 
 find_package(SofaMisc REQUIRED)
 
-set(COMPLIANT_DEPENDENCY_INCLUDE_DIR ${SofaMisc_INCLUDE_DIRS})
-
+## Compliant/config.h
 configure_file(config.h.in Compliant/config.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Compliant/config.h DESTINATION "include/Compliant")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaSimulationGraph)
-
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${COMPLIANT_DEPENDENCY_INCLUDE_DIR}>")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${COMPLIANT_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_Compliant")
@@ -250,6 +242,6 @@ endif()
 
 add_subdirectory(Compliant_gui)
 
-# CMake package configurations files
+## CMake package configurations files
 include(SofaPackageConfigHelpers)
 sofa_write_package_config_files(Compliant ${COMPLIANT_VERSION} "" "include")

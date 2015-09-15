@@ -2,9 +2,6 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaSimpleFem)
 
 set(HEADER_FILES
-
-    config.h
-    initSimpleFEM.h
     BeamFEMForceField.h
     BeamFEMForceField.inl
     HexahedralFEMForceField.h
@@ -15,26 +12,27 @@ set(HEADER_FILES
     HexahedronFEMForceField.inl
     HexahedronFEMForceFieldAndMass.h
     HexahedronFEMForceFieldAndMass.inl
+    LengthContainer.h
+    PoissonContainer.h
+    RadiusContainer.h
+    StiffnessContainer.h
     TetrahedralCorotationalFEMForceField.h
     TetrahedralCorotationalFEMForceField.inl
     TetrahedronFEMForceField.h
     TetrahedronFEMForceField.inl
-#    TriangularAnisotropicFEMForceField.h
-#    TriangularAnisotropicFEMForceField.inl
-#    TriangleFEMForceField.h
-#    TriangleFEMForceField.inl
-#    TriangularFEMForceField.h
-#    TriangularFEMForceField.inl
+    # TriangleFEMForceField.h
+    # TriangleFEMForceField.inl
+    # TriangularAnisotropicFEMForceField.h
+    # TriangularAnisotropicFEMForceField.inl
+    # TriangularFEMForceField.h
+    # TriangularFEMForceField.inl
     TriangularFEMForceFieldOptim.h
     TriangularFEMForceFieldOptim.inl
-    PoissonContainer.h
-    StiffnessContainer.h
-    RadiusContainer.h
-    LengthContainer.h
-    )
+    config.h
+    initSimpleFEM.h
+)
 
 set(SOURCE_FILES
-
     initSimpleFEM.cpp
     BeamFEMForceField.cpp
     HexahedralFEMForceField.cpp
@@ -43,33 +41,16 @@ set(SOURCE_FILES
     HexahedronFEMForceFieldAndMass.cpp
     TetrahedralCorotationalFEMForceField.cpp
     TetrahedronFEMForceField.cpp
-#    TriangularAnisotropicFEMForceField.cpp
-#    TriangleFEMForceField.cpp
-#    TriangularFEMForceField.cpp
+    # TriangularAnisotropicFEMForceField.cpp
+    # TriangleFEMForceField.cpp
+    # TriangularFEMForceField.cpp
     TriangularFEMForceFieldOptim.cpp
-    )
-
-set(GROUP_BASE_DIR "..")
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SIMPLE_FEM")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-target_link_libraries( ${PROJECT_NAME} PUBLIC SofaBaseTopology)
-
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/SofaCommon>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFACOMMON_DEPENDENCY_INCLUDE_DIR}>")
-
-set( SOFASIMPLEFEM_COMPILER_FLAGS "-DSOFA_BUILD_SIMPLE_FEM")
-
-set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
-set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFACOMMON_VERSION} )
-set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFASIMPLEFEM_COMPILER_FLAGS}"  )
-set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
-
-install(TARGETS ${PROJECT_NAME}
-        EXPORT  SofaCommonTargets
-        RUNTIME DESTINATION bin COMPONENT SofaCommon_libraries
-        LIBRARY DESTINATION lib COMPONENT SofaCommon_libraries
-        ARCHIVE DESTINATION lib COMPONENT SofaCommon_libraries
-        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}" COMPONENT SofaCommon_headers
-        )
+SofaCommon_install(${PROJECT_NAME})

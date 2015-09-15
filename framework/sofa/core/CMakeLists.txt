@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(SofaCore)
 
 set(HEADER_FILES
@@ -218,51 +218,54 @@ set(SOURCE_FILES
     visual/VisualParams.cpp
 )
 
-
 if(NOT SOFA_NO_OPENGL)
     if(SOFA_HAVE_GLUT)
-        list(APPEND HEADER_FILES "visual/DrawToolGL.h")
-        list(APPEND SOURCE_FILES "visual/DrawToolGL.cpp")
+        list(APPEND HEADER_FILES visual/DrawToolGL.h)
+        list(APPEND SOURCE_FILES visual/DrawToolGL.cpp)
     endif()
 endif()
 
 if(Boost_thread_FOUND)
-    list(APPEND HEADER_FILES "objectmodel/AspectPool.h")
-    list(APPEND SOURCE_FILES "objectmodel/AspectPool.cpp")
+    list(APPEND HEADER_FILES objectmodel/AspectPool.h)
+    list(APPEND SOURCE_FILES objectmodel/AspectPool.cpp)
 endif()
 
 if(SOFA-MISC_SMP)
-    list(APPEND HEADER_FILES "CallContext.h")
-    list(APPEND HEADER_FILES "objectmodel/BaseObjectTasks.h")
-    list(APPEND HEADER_FILES "ParallelCollisionModel.h")
-    list(APPEND HEADER_FILES "behavior/ParallelMultiVec.h")
-    list(APPEND HEADER_FILES "collision/ParallelPipeline.h")
-    list(APPEND HEADER_FILES "collision/ParallelNarrowPhaseDetection.h")
+    list(APPEND HEADER_FILES
+        CallContext.h
+        ParallelCollisionModel.h
+        behavior/ParallelMultiVec.h
+        collision/ParallelNarrowPhaseDetection.h
+        collision/ParallelPipeline.h
+        objectmodel/BaseObjectTasks.h
+    )
 
-    list(APPEND SOURCE_FILES "CallContext.cpp")
-    list(APPEND SOURCE_FILES "collision/ParallelPipeline.cpp")
-    list(APPEND SOURCE_FILES "objectmodel/BaseObjectTasks.cpp")
+    list(APPEND SOURCE_FILES
+        CallContext.cpp
+        collision/ParallelPipeline.cpp
+        objectmodel/BaseObjectTasks.cpp
+    )
 endif()
 
-if(SOFA-MISC_SUPPORT_MOVING_FRAMES)
-    list(APPEND HEADER_FILES "behavior/InertiaForce.h")
-endif()
+# # TODO?
+# if(SOFA-MISC_SUPPORT_MOVING_FRAMES)
+#     list(APPEND HEADER_FILES behavior/InertiaForce.h)
+# endif()
 
 if(PS3)
-    list(APPEND HEADER_FILES "ps3/cxa_demangle.h")
-    list(APPEND HEADER_FILES "ps3/cxxabi.h")
-    list(APPEND SOURCE_FILES "ps3/cxa_demangle.cpp")
+    list(APPEND HEADER_FILES ps3/cxa_demangle.h)
+    list(APPEND HEADER_FILES ps3/cxxabi.h)
+    list(APPEND SOURCE_FILES ps3/cxa_demangle.cpp)
 endif()
+
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaDefaultType)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../>")
-
-set(SOFACORE_COMPILER_FLAGS "-DSOFA_BUILD_CORE")
-# make the name of debug libraries end in _d.
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_CORE")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAFRAMEWORK_VERSION})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACORE_COMPILER_FLAGS}")
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
+
 
 install(TARGETS ${PROJECT_NAME}
         COMPONENT SofaFramework_libraries
@@ -271,7 +274,6 @@ install(TARGETS ${PROJECT_NAME}
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 
-install(DIRECTORY ${SofaCore_SOURCE_DIR}/
-        DESTINATION "include/sofa/core"
+install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/" DESTINATION "include/sofa/core"
         COMPONENT SofaFramework_headers
         FILES_MATCHING PATTERN "*.h" PATTERN "*.inl")

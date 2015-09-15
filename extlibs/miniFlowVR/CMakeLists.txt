@@ -46,8 +46,6 @@ if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" ST
 endif()
 
 set_target_properties(miniFlowVR PROPERTIES DEBUG_POSTFIX "_d")
-# set_target_properties(miniFlowVR PROPERTIES VERSION ${MINIFLOWVR_VERSION})
-# set_target_properties(miniFlowVR PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 install(TARGETS miniFlowVR
         EXPORT MiniFlowVRTargets
@@ -60,35 +58,25 @@ foreach(HEADER ${HEADER_FILES})
     install(FILES ${HEADER} DESTINATION "include/${DIR}")
 endforeach(HEADER HEADERS)
 
+
 include(CMakePackageConfigHelpers)
 
-# MiniFlowVRConfigVersion.cmake file (same for build tree and intall)
-# write_basic_package_version_file(MiniFlowVRConfigVersion.cmake
-                                 # VERSION ${MINIFLOWVR_VERSION}
-                                 # COMPATIBILITY AnyNewerVersion)
-
-# install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MiniFlowVRConfigVersion.cmake
-        # DESTINATION lib/cmake/MiniFlowVR)
-
-
-# MiniFlowVRConfig.cmake (build tree)
+### MiniFlowVRConfig.cmake
+## Build tree
 set(MINIFLOWVR_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 configure_package_config_file(MiniFlowVRConfig.cmake.in
                               MiniFlowVRConfig.cmake
                               INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
                               PATH_VARS MINIFLOWVR_INCLUDE_DIR)
-
-# MiniFlowVRConfig.cmake (installed)
+## Install tree
 set(MINIFLOWVR_INCLUDE_DIR include)
 configure_package_config_file(MiniFlowVRConfig.cmake.in
-                              MiniFlowVRConfigInstall.cmake
+                              InstalledMiniFlowVRConfig.cmake
                               INSTALL_DESTINATION lib/cmake/MiniFlowVR
                               PATH_VARS MINIFLOWVR_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MiniFlowVRConfigInstall.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/InstalledMiniFlowVRConfig.cmake
         DESTINATION lib/cmake/MiniFlowVR
         RENAME MiniFlowVRConfig.cmake)
 
-# MiniFlowVRTargets.cmake (installed)
-install(EXPORT MiniFlowVRTargets
-        DESTINATION lib/cmake/MiniFlowVR)
+## MiniFlowVRTargets.cmake
+install(EXPORT MiniFlowVRTargets DESTINATION lib/cmake/MiniFlowVR)

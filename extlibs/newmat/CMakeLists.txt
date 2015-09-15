@@ -2,19 +2,26 @@ cmake_minimum_required(VERSION 2.8.12)
 project(newmat)
 
 set(HEADER_FILES
-
-    newmat/include.h
-    newmat/newmat.h
-    newmat/newmatrc.h
     newmat/boolean.h
-    newmat/myexcept.h
     newmat/controlw.h
+    newmat/include.h
+    newmat/myexcept.h
+    newmat/newmat.h
     newmat/newmatap.h
+    newmat/newmatrc.h
     newmat/newmatrm.h
-    newmat/precisio.h)
+    newmat/precisio.h
+)
 
 set(SOURCE_FILES
-
+    newmat/bandmat.cpp
+    newmat/cholesky.cpp
+    newmat/evalue.cpp
+    newmat/fft.cpp
+    newmat/hholder.cpp
+    newmat/jacobi.cpp
+    newmat/myexcept.cpp
+    newmat/newfft.cpp
     newmat/newmat1.cpp
     newmat/newmat2.cpp
     newmat/newmat3.cpp
@@ -26,17 +33,10 @@ set(SOURCE_FILES
     newmat/newmat9.cpp
     newmat/newmatex.cpp
     newmat/newmatrm.cpp
-    newmat/bandmat.cpp
-    newmat/submat.cpp
-    newmat/myexcept.cpp
-    newmat/cholesky.cpp
-    newmat/evalue.cpp
-    newmat/fft.cpp
-    newmat/hholder.cpp
-    newmat/jacobi.cpp
-    newmat/newfft.cpp
     newmat/sort.cpp
-    newmat/svd.cpp)
+    newmat/submat.cpp
+    newmat/svd.cpp
+)
 
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaExtlibs")
@@ -52,33 +52,33 @@ endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
+
+install(TARGETS ${PROJECT_NAME}
+        EXPORT NewmatTargets
+        RUNTIME DESTINATION bin COMPONENT Newmat_libraries
+        LIBRARY DESTINATION lib COMPONENT Newmat_libraries
+        ARCHIVE DESTINATION lib COMPONENT Newmat_libraries
+        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}" COMPONENT Newmat_headers)
+
+
 include(CMakePackageConfigHelpers)
 
-# NewmatConfig.cmake (build tree)
+### NewmatConfig.cmake
+## Build tree
 set(NEWMAT_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 configure_package_config_file(NewmatConfig.cmake.in
                               NewmatConfig.cmake
                               INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
                               PATH_VARS NEWMAT_INCLUDE_DIR)
-
-# NewmatConfig.cmake (installed)
+## Install tree
 set(NEWMAT_INCLUDE_DIR include)
 configure_package_config_file(NewmatConfig.cmake.in
-                              NewmatConfigInstall.cmake
+                              InstalledNewmatConfig.cmake
                               INSTALL_DESTINATION lib/cmake/Newmat
                               PATH_VARS NEWMAT_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/NewmatConfigInstall.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/InstalledNewmatConfig.cmake
         DESTINATION lib/cmake/Newmat
         RENAME NewmatConfig.cmake)
 
-install(TARGETS ${PROJECT_NAME}
-    EXPORT NewmatTargets
-    RUNTIME DESTINATION bin COMPONENT Newmat_libraries
-    LIBRARY DESTINATION lib COMPONENT Newmat_libraries
-    ARCHIVE DESTINATION lib COMPONENT Newmat_libraries
-    PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}" COMPONENT Newmat_headers)
-
-# NewmatTargets.cmake (installed)
-install(EXPORT NewmatTargets
-        DESTINATION lib/cmake/Newmat)
+## NewmatTargets.cmake
+install(EXPORT NewmatTargets DESTINATION lib/cmake/Newmat)

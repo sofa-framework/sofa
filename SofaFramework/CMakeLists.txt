@@ -1,31 +1,28 @@
 cmake_minimum_required(VERSION 2.8.12)
+project(SofaFramework)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
 include(CMakeSofaCreateTarget)
 
-set(SOLUTION_NAME "SofaFramework")
-project(${SOLUTION_NAME})
 
-# Temporary variable until we move the sub projects
-set(SofaFramework_ACTUAL_SOURCE_DIR ${SofaFramework_SOURCE_DIR}/../framework)
+### Options
 
-##
-## SofaFramework options
-##
 option(SOFA_DETECTIONOUTPUT_FREEMOTION
 "Compile Sofa with the DETECTIONOUTPUT_FREEMOTION macro defined." OFF)
+set(DETECTIONOUTPUT_FREEMOTION ${SOFA_DETECTIONOUTPUT_FREEMOTION}) # Used in sofa/config.h.in
 
 option(SOFA_DETECTIONOUTPUT_BARYCENTRICINFO
 "Compile Sofa with the DETECTIONOUTPUT_BARYCENTRICINFO macro defined." OFF)
+set(DETECTIONOUTPUT_BARYCENTRICINFO ${SOFA_DETECTIONOUTPUT_BARYCENTRICINFO}) # Used in sofa/config.h.in
 
 option(SOFA_NO_OPENGL
-"Compile Sofa with no OpenGL support. (This will define the
-SOFA_NO_OPENGL macro.)" OFF)
+"Compile Sofa with no OpenGL support. (This will define the SOFA_NO_OPENGL
+macro.)" OFF)
 
 option(SOFA_NO_EXTERN_TEMPLATE
-"Compile Sofa without using the extern templates mechanism. (This will
-prevent the SOFA_EXTERN_TEMPLATE macro from being defined.)" OFF)
+"Compile Sofa without using the extern templates mechanism. (This will prevent
+the SOFA_EXTERN_TEMPLATE macro from being defined.)" OFF)
 
 option(SOFA_NO_UPDATE_BBOX
 "Compile Sofa with the SOFA_NO_UPDATE_BBOX macro defined." OFF)
@@ -42,24 +39,18 @@ set(SOFA_FLOATING_POINT_TYPE double CACHE STRING
 set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double both)
 
 if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
-    set(SOFA_DOUBLE 1)
+    set(SOFA_DOUBLE 1)          # Used in sofa/config.h.in
 elseif(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
-    set(SOFA_FLOAT 1)
+    set(SOFA_FLOAT 1)           # Used in sofa/config.h.in
 endif()
 
-set(DETECTIONOUTPUT_FREEMOTION ${SOFA_DETECTIONOUTPUT_FREEMOTION})
-set(DETECTIONOUTPUT_BARYCENTRICINFO ${SOFA_DETECTIONOUTPUT_BARYCENTRICINFO})
 
 
-set(SOFAFRAMEWORK_EXTLIBS_DIR "${SofaFramework_ACTUAL_SOURCE_DIR}/../extlibs")
-
+### Dependencies
 
 set(SOFAFRAMEWORK_DEPENDENCY_LINK)
 set(SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 
-##
-## Dependencies lookup
-##
 
 find_package(GTest CONFIG QUIET)
 if(GTest_FOUND)
@@ -72,12 +63,14 @@ if(NOT SOFA_NO_OPENGL)
 
     # OpenGL (glu)
     find_package(OpenGL REQUIRED)
-    # no target support for OpenGL on windows yet see https://github.com/Kitware/CMake/commit/02e34de2b6c27ee5d367be4fa280ffd3ad1965ba
-    # it is not too harmful since this particular library gives symbolic names that can be consumed upon install on the target system.
+    # no target support for OpenGL on windows yet see
+    # https://github.com/Kitware/CMake/commit/02e34de2b6c27ee5d367be4fa280ffd3ad1965ba
+    # it is not too harmful since this particular library gives symbolic names
+    # that can be consumed upon install on the target system.
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${OPENGL_LIBRARIES})
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${OPENGL_INCLUDE_DIR})
 
-    # GLEW
+    ## GLEW
     find_package(GLEW)
     if(GLEW_FOUND)
         sofa_create_target(GLEW SofaFramework "${GLEW_LIBRARIES}" "${GLEW_INCLUDE_DIRS}")
@@ -86,7 +79,7 @@ if(NOT SOFA_NO_OPENGL)
     endif()
     set(SOFA_HAVE_GLEW ${GLEW_FOUND})
 
-    # GLUT
+    ## GLUT
     find_package(GLUT)
     if(GLUT_FOUND)
         if(NOT APPLE)
@@ -106,13 +99,13 @@ if(NOT SOFA_NO_OPENGL)
 
 endif()
 
-#tinyxml
+## tinyxml
 find_package(TinyXML REQUIRED)
 sofa_create_target(TinyXML SofaFramework "${TinyXML_LIBRARIES}" "${TinyXML_INCLUDE_DIRS}")
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${TinyXML_Target})
 set(SOFA_HAVE_TINYXML 1)
 
-#zlib
+## zlib
 find_package(ZLIB)
 if(ZLIB_FOUND)
     sofa_create_target(ZLIB SofaFramework "${ZLIB_LIBRARIES}" "${ZLIB_INCLUDE_DIRS}")
@@ -120,7 +113,7 @@ if(ZLIB_FOUND)
 endif()
 set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 
-# PNG
+## PNG
 find_package(PNG)
 if(PNG_FOUND)
     sofa_create_target(PNG SofaFramework "${PNG_LIBRARY}" "${PNG_INCLUDE_DIRS}")
@@ -128,7 +121,7 @@ if(PNG_FOUND)
 endif()
 set(SOFA_HAVE_PNG ${PNG_FOUND})
 
-# Boost
+## Boost
 find_package(Boost COMPONENTS thread system date_time chrono QUIET)
 
 set(SOFA_HAVE_BOOST_SYSTEM ${Boost_SYSTEM_FOUND})
@@ -157,36 +150,34 @@ else()
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
 endif()
 
-#Eigen
+## Eigen
 find_package(Eigen3 REQUIRED)
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${EIGEN3_INCLUDE_DIR})
 set(SOFA_HAVE_EIGEN2 1)
 
+## sofa/config.h
 configure_file(config.h.in sofa/config.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/config.h DESTINATION "include/sofa")
 # make sure everyone in the build tree can see <sofa/config.h>
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
-
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 
 ## Version
+set(SOFAFRAMEWORK_VERSION "15.12.0")
 
-# Not really pretty, just a number that satisfies SOFA_VERSION > LAST_RELEASED_VERSION
-set(SOFA_VERSION "999999")
+## sofa/version.h
+set(SOFA_VERSION "151200")
 set(SOFA_VERSION_STR "\"devel\"")
-set(SOFAFRAMEWORK_VERSION "99.99.99")
-# Generate sofa/version.h
-configure_file(${SofaFramework_ACTUAL_SOURCE_DIR}/sofa/version.h.in
-               ${CMAKE_CURRENT_BINARY_DIR}/sofa/version.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/version.h
-        DESTINATION "include/sofa")
+configure_file(../framework/sofa/version.h.in sofa/version.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/version.h DESTINATION include/sofa)
 
 
-add_subdirectory(${SofaFramework_ACTUAL_SOURCE_DIR}/sofa/helper ${CMAKE_CURRENT_BINARY_DIR}/SofaHelper)
-add_subdirectory(${SofaFramework_ACTUAL_SOURCE_DIR}/sofa/defaulttype ${CMAKE_CURRENT_BINARY_DIR}/SofaDefaultType)
-add_subdirectory(${SofaFramework_ACTUAL_SOURCE_DIR}/sofa/core ${CMAKE_CURRENT_BINARY_DIR}/SofaCore)
+## Subdirectories
+add_subdirectory(../framework/sofa/helper ${CMAKE_CURRENT_BINARY_DIR}/SofaHelper)
+add_subdirectory(../framework/sofa/defaulttype ${CMAKE_CURRENT_BINARY_DIR}/SofaDefaultType)
+add_subdirectory(../framework/sofa/core ${CMAKE_CURRENT_BINARY_DIR}/SofaCore)
 if(SOFA_HAVE_GTEST)
-    add_subdirectory(${SofaFramework_ACTUAL_SOURCE_DIR}/framework_test ${CMAKE_CURRENT_BINARY_DIR}/framework_test)
+    add_subdirectory(../framework/framework_test ${CMAKE_CURRENT_BINARY_DIR}/framework_test)
 endif()
 
 # IDE folder
@@ -194,9 +185,10 @@ set_target_properties(SofaHelper PROPERTIES FOLDER "SofaFramework")
 set_target_properties(SofaDefaultType PROPERTIES FOLDER "SofaFramework")
 set_target_properties(SofaCore PROPERTIES FOLDER "SofaFramework")
 
-# CMake package configurations files
+
+## CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaFramework ${SOFAFRAMEWORK_VERSION} "${SofaFramework_ACTUAL_SOURCE_DIR}" "include")
+sofa_write_package_config_files(SofaFramework ${SOFAFRAMEWORK_VERSION} "${CMAKE_CURRENT_SOURCE_DIR}/../framework" "include")
 
 ## CMakeSofaCreateTarget.cmake
 # Build tree
@@ -210,7 +202,7 @@ configure_file(SofaPackageConfigHelpers.cmake SofaPackageConfigHelpers.cmake COP
 # Install tree
 install(FILES SofaPackageConfigHelpers.cmake DESTINATION lib/cmake/SofaFramework)
 
-# CMakeParseLibraryList.cmake
+## CMakeParseLibraryList.cmake
 # Build tree
 configure_file(CMakeParseLibraryList.cmake CMakeParseLibraryList.cmake COPYONLY)
 # Install tree

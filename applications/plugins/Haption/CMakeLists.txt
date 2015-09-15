@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(Haption)
 
 
@@ -24,10 +24,10 @@ target_link_libraries(${PROJECT_NAME} SofaComponentGeneral)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 install(TARGETS ${PROJECT_NAME}
-    COMPONENT Haption_libraries
-    EXPORT HaptionTargets
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
+        COMPONENT Haption_libraries
+        EXPORT HaptionTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 
 install(DIRECTORY exemple/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

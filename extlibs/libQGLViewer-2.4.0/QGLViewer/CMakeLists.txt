@@ -2,45 +2,47 @@ cmake_minimum_required(VERSION 2.8.12)
 project(QGLViewer)
 
 set(HEADER_FILES
-	qglviewer.h
 	camera.h
-	manipulatedFrame.h
-	manipulatedCameraFrame.h
 	frame.h
-	keyFrameInterpolator.h)
+	keyFrameInterpolator.h
+	manipulatedCameraFrame.h
+	manipulatedFrame.h
+	qglviewer.h
+)
 
 set(SOURCE_FILES
-	qglviewer.cpp
-	camera.cpp
-	manipulatedFrame.cpp
-	manipulatedCameraFrame.cpp
-	frame.cpp
-	saveSnapshot.cpp
-	constraint.cpp
-	keyFrameInterpolator.cpp
-	mouseGrabber.cpp
-	quaternion.cpp
-	vec.cpp
-
+	VRender/BSPSortMethod.cpp
 	VRender/BackFaceCullingOptimizer.cpp
 	VRender/EPSExporter.cpp
+	VRender/Exporter.cpp
 	VRender/FIGExporter.cpp
 	VRender/NVector3.cpp
-	VRender/Primitive.cpp
-	VRender/TopologicalSortMethod.cpp
-	VRender/Vector3.cpp
-	VRender/VRender.cpp
-	VRender/BSPSortMethod.cpp
-	VRender/Exporter.cpp
-	VRender/gpc.cpp
 	VRender/ParserGL.cpp
+	VRender/Primitive.cpp
 	VRender/PrimitivePositioning.cpp
+	VRender/TopologicalSortMethod.cpp
+	VRender/VRender.cpp
 	VRender/Vector2.cpp
-	VRender/VisibilityOptimizer.cpp)
+	VRender/Vector3.cpp
+	VRender/VisibilityOptimizer.cpp
+	VRender/gpc.cpp
+	camera.cpp
+	constraint.cpp
+	frame.cpp
+	keyFrameInterpolator.cpp
+	manipulatedCameraFrame.cpp
+	manipulatedFrame.cpp
+	mouseGrabber.cpp
+	qglviewer.cpp
+	quaternion.cpp
+	saveSnapshot.cpp
+	vec.cpp
+)
 
 set(UI_FILES
 	ImageInterface.ui
- 	VRenderInterface.ui)
+ 	VRenderInterface.ui
+)
 
 find_package(OpenGL REQUIRED)
 find_package(Qt4 QUIET REQUIRED QtCore QtOpenGL QtXml QtGui)
@@ -51,16 +53,8 @@ qt4_wrap_ui(FORM_FILES ${UI_FILES})
 
 # These header files don't need to be processed by the moc.
 list(APPEND HEADER_FILES
-	config.h
-	constraint.h
-	domUtils.h
-	mouseGrabber.h
-	quaternion.h
-	vec.h
-
 	VRender/AxisAlignedBox.h
 	VRender/Exporter.h
-	VRender/gpc.h
 	VRender/NVector3.h
 	VRender/Optimizer.h
 	VRender/ParserGL.h
@@ -68,9 +62,17 @@ list(APPEND HEADER_FILES
 	VRender/PrimitivePositioning.h
 	VRender/SortMethod.h
 	VRender/Types.h
+	VRender/VRender.h
 	VRender/Vector2.h
 	VRender/Vector3.h
-	VRender/VRender.h)
+	VRender/gpc.h
+	config.h
+	constraint.h
+	domUtils.h
+	mouseGrabber.h
+	quaternion.h
+	vec.h
+)
 
 set(QGLVIEWER_VERSION 2.4.0)
 
@@ -97,35 +99,33 @@ install(TARGETS ${PROJECT_NAME}
         ARCHIVE DESTINATION lib
         PUBLIC_HEADER DESTINATION include)
 
+
 include(CMakePackageConfigHelpers)
 
-# QGLViewerConfigVersion.cmake file (same for build tree and intall)
+## QGLViewerConfigVersion.cmake
 write_basic_package_version_file(QGLViewerConfigVersion.cmake
                                  VERSION ${QGLVIEWER_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
-
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/QGLViewerConfigVersion.cmake"
         DESTINATION lib/cmake/QGLViewer)
 
 
-# QGLViewerConfig.cmake (build tree)
+### QGLViewerConfig.cmake
+## Build tree
 set(QGLVIEWER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 configure_package_config_file(QGLViewerConfig.cmake.in
                               QGLViewerConfig.cmake
                               INSTALL_DESTINATION ${CMAKE_BINARY_DIR}/QGLViewer/
                               PATH_VARS QGLVIEWER_INCLUDE_DIR)
-
-# QGLViewerConfig.cmake (installed)
+## Install tree
 set(QGLVIEWER_INCLUDE_DIR include)
 configure_package_config_file(QGLViewerConfig.cmake.in
-                              QGLViewerConfigInstall.cmake
+                              InstalledQGLViewerConfig.cmake
                               INSTALL_DESTINATION lib/cmake/QGLViewer
                               PATH_VARS QGLVIEWER_INCLUDE_DIR)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/QGLViewerConfigInstall.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/InstalledQGLViewerConfig.cmake
         DESTINATION lib/cmake/QGLViewer
         RENAME QGLViewerConfig.cmake)
 
-# QGLViewerTargets.cmake (installed)
-install(EXPORT QGLViewerTargets
-        DESTINATION lib/cmake/QGLViewer)
+## QGLViewerTargets.cmake
+install(EXPORT QGLViewerTargets DESTINATION lib/cmake/QGLViewer)

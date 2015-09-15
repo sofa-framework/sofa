@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(csparse)
 
 set(HEADER_FILES
@@ -16,10 +16,8 @@ if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" ST
 endif()
 
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaExtlibs")
-
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
-
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaExtlibs")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 install(TARGETS csparse
@@ -32,24 +30,22 @@ install(TARGETS csparse
 
 include(CMakePackageConfigHelpers)
 
-# CSparseConfig.cmake (build tree)
+### CSparseConfig.cmake
+## Build tree
 set(CSPARSE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 configure_package_config_file(CSparseConfig.cmake.in
                               CSparseConfig.cmake
                               INSTALL_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
                               PATH_VARS CSPARSE_INCLUDE_DIR)
-
-# CSparseConfig.cmake (installed)
+## Install trew
 set(CSPARSE_INCLUDE_DIR include)
 configure_package_config_file(CSparseConfig.cmake.in
-                              CSparseConfigInstall.cmake
+                              InstalledCSparseConfig.cmake
                               INSTALL_DESTINATION lib/cmake/CSparse
                               PATH_VARS CSPARSE_INCLUDE_DIR)
-
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/CSparseConfigInstall.cmake"
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/InstalledCSparseConfig.cmake"
         DESTINATION lib/cmake/CSparse
         RENAME CSparseConfig.cmake)
 
-# CSparseTargets.cmake
-install(EXPORT CSparseTargets
-        DESTINATION lib/cmake/CSparse)
+## CSparseTargets.cmake
+install(EXPORT CSparseTargets DESTINATION lib/cmake/CSparse)

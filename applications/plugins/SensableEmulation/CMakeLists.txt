@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(SensableEmulation)
 
 
@@ -27,10 +27,10 @@ target_link_libraries(${PROJECT_NAME} SofaComponentGeneral SofaHaptics ${Boost_L
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 install(TARGETS ${PROJECT_NAME}
-    COMPONENT SensableEmulation_libraries
-    EXPORT SensableEmulationTargets
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
+        COMPONENT SensableEmulation_libraries
+        EXPORT SensableEmulationTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

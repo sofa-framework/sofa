@@ -1,7 +1,4 @@
-# CMake package configuration file for the SofaPhysicsAPI plugin.
-# It defines the following variables:
-# - SofaPhysicsAPI_INCLUDE_DIRS
-# - SofaPhysicsAPI_LIBRARIES
+# CMake package configuration file for SofaPhysicsAPI
 
 @PACKAGE_INIT@
 
@@ -16,4 +13,4 @@ if(NOT TARGET SofaPhysicsAPI)
 endif()
 
 set(SofaPhysicsAPI_LIBRARIES SofaPhysicsAPI)
-set(SofaPhysicsAPI_INCLUDE_DIRS ${SOFAPYTHON_INCLUDE_DIR} ${SofaGeneral_INCLUDE_DIRS})
+set(SofaPhysicsAPI_INCLUDE_DIRS ${SOFAPHYSICSAPI_INCLUDE_DIR} ${SOFAPYTHON_INCLUDE_DIR} ${SofaGeneral_INCLUDE_DIRS})

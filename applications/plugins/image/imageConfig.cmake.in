@@ -1,13 +1,6 @@
-# CMake package configuration file for the image plugin.
-# It defines the following variables:
-# - image_INCLUDE_DIRS
-# - image_LIBRARIES
+# CMake package configuration file for the image plugin
 
 @PACKAGE_INIT@
-
-set_and_check(IMAGE_INCLUDE_DIR "@PACKAGE_IMAGE_INCLUDE_DIR@")
-
-check_required_components(image)
 
 find_package(SofaBase REQUIRED)
 find_package(Newmat REQUIRED)
@@ -19,8 +12,7 @@ if(NOT TARGET image)
 	include("${CMAKE_CURRENT_LIST_DIR}/imageTargets.cmake")
 endif()
 
+check_required_components(image)
+
 set(image_LIBRARIES image)
-set(image_INCLUDE_DIRS
-    ${CImg_INCLUDE_DIRS}
-    ${SofaBase_INCLUDE_DIRS}
-    ${Newmat_INCLUDE_DIRS})
+set_and_check(image_INCLUDE_DIRS @PACKAGE_IMAGE_INCLUDE_DIR@ ${CImg_INCLUDE_DIRS} ${SofaBase_INCLUDE_DIRS} ${Newmat_INCLUDE_DIRS})

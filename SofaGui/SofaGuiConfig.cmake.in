@@ -1,18 +1,11 @@
-# CMake package configuration file for SofaGui.
-# It defines the following variables:
-# - SofaGui_INCLUDE_DIRS
-# - SofaGui_LIBRARIES
+# CMake package configuration file for SofaGui
 
 @PACKAGE_INIT@
 
-set(SOFAGUI_INCLUDE_DIR "@PACKAGE_SOFAGUI_INCLUDE_DIR@")
-set(SofaGUI_TARGETS @SOFAGUI_TARGETS@)
-
-# Transitive dependencies
 find_package(SofaGeneral REQUIRED)
-find_package(QGLViewer REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(SofaAdvanced REQUIRED)
+find_package(QGLViewer REQUIRED)
 
 set(SOFA_HAVE_QT @SOFA_HAVE_QT@)
 set(SOFA_GUI_GLUT @SOFA_GUI_GLUT@)
@@ -23,16 +16,15 @@ set(SOFA_GUI_QGLVIEWER @SOFA_GUI_QGLVIEWER@)
 
 if(SOFA_HAVE_QT)
     set(QT_USE_IMPORTED_TARGETS 1)
-    set(QT4_NO_LINK_QTMAIN      1)
+    set(QT4_NO_LINK_QTMAIN 1)
     find_package(Qt4 QUIET REQUIRED COMPONENTS qtcore qtgui qtopengl qt3support qtxml)
 endif()
 
-if( NOT TARGET SofaGuiCommon )
+if(NOT TARGET SofaGuiCommon)
 	include("${CMAKE_CURRENT_LIST_DIR}/SofaGuiTargets.cmake")
 endif()
 
-check_required_components(${SofaGUI_TARGETS})
+check_required_components(@SOFAGUI_TARGETS@)
 
-# For compatibility only
 set(SofaGui_LIBRARIES SofaGuiCommon)
-set(SofaGui_INCLUDE_DIRS ${SOFAGUI_INCLUDE_DIR} ${SofaGeneral_INCLUDE_DIRS} ${SofaMisc_INCLUDE_DIRS} ${SofaAdvanced_INCLUDE_DIRS})
+set(SofaGui_INCLUDE_DIRS @PACKAGE_SOFAGUI_INCLUDE_DIR@ ${SofaGeneral_INCLUDE_DIRS} ${SofaMisc_INCLUDE_DIRS} ${SofaAdvanced_INCLUDE_DIRS})

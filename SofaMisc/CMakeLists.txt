@@ -1,23 +1,28 @@
-cmake_minimum_required(VERSION 2.8.11)
-set(SOLUTION_NAME "SofaMisc")
-project(${SOLUTION_NAME})
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaMisc)
 
-#temporary until we move the sub projects
-set(SofaMisc_ACTUAL_SOURCE_DIR ${SofaMisc_SOURCE_DIR}/../modules/)
-
-## SofaMisc dependencies
-##
+## Dependencies
 find_package(SofaGeneral REQUIRED)
-set(SOFAMISC_DEPENDENCY_DIR ${SofaGeneral_INCLUDE_DIRS})
 
-
+## Version
 set(SOFAMISC_VERSION ${SofaFramework_VERSION})
 
+## SofaMisc/config.h
 configure_file(config.h.in SofaMisc/config.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaMisc/config.h DESTINATION "include/SofaMisc")
-# make sure everyone in the build tree can see <SofaMisc/config.h>
-#include_directories(${CMAKE_CURRENT_BINARY_DIR})
-#include_directories(${SofaMisc_ACTUAL_SOURCE_DIR}/../../)
+
+## Installation macro for subdirectories
+macro(SofaMisc_install lib)
+    install(TARGETS ${lib}
+            EXPORT SofaMiscTargets
+            RUNTIME DESTINATION bin COMPONENT SofaMisc_libraries
+            LIBRARY DESTINATION lib COMPONENT SofaMisc_libraries
+            ARCHIVE DESTINATION lib COMPONENT SofaMisc_libraries
+            PUBLIC_HEADER DESTINATION include/${lib} COMPONENT SofaMisc_headers)
+endmacro()
+
+
+### Subdirectories
 
 set(SOFAMISC_TARGETS
     SofaComponentMisc
@@ -32,10 +37,16 @@ set(SOFAMISC_TARGETS
 )
 
 foreach(TARGET ${SOFAMISC_TARGETS})
-    add_subdirectory(${SofaMisc_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
-    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaMisc") # IDE folder
+    add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules>")
+    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>") # For SofaMisc/config.h
+    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${SofaGeneral_INCLUDE_DIRS}>")
+    set_target_properties(${TARGET} PROPERTIES DEBUG_POSTFIX _d)
+    set_target_properties(${TARGET} PROPERTIES FOLDER SofaMisc) # IDE folder
+    set_target_properties(${TARGET} PROPERTIES VERSION  ${SOFAMISC_VERSION})
 endforeach()
 
-# CMake package configurations files
+
+## CMake package configurations files
 include(SofaPackageConfigHelpers)
 sofa_write_package_config_files(SofaMisc ${SOFAMISC_VERSION} "" "include")

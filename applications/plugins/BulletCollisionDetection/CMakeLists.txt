@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(BulletCollisionDetection)
 
 #WARNING, when installing bullet write in the bullet CMakeLists.txt the line add_definitions(-DBULLET_TRIANGLE_COLLISION)
@@ -58,11 +58,9 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_BULLETCOLLISIONDETECTION")
 target_link_libraries(${PROJECT_NAME} SofaMeshCollision SofaMiscCollision SofaVolumetricData)
-
 if(Compliant_FOUND)
     target_link_libraries(${PROJECT_NAME} Compliant)
 endif()
-
 target_link_libraries(${PROJECT_NAME} ${BULLET_LIBRARIES} HACD)
 
 find_package(SofaTest QUIET)
@@ -71,10 +69,10 @@ if(SofaTest_FOUND)
 endif()
 
 install(TARGETS ${PROJECT_NAME}
-    COMPONENT BulletCollisionDetection_libraries
-    EXPORT BulletCollisionDetectionTargets
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
+        COMPONENT BulletCollisionDetection_libraries
+        EXPORT BulletCollisionDetectionTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

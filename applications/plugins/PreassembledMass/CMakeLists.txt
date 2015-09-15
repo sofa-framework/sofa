@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(PreassembledMass)
 
 
@@ -33,10 +33,10 @@ endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS ${PREASSEMBLEDMASS_COMPILER_FLAGS})
 
 install(TARGETS ${PROJECT_NAME}
-    COMPONENT PreassembledMass_libraries
-    EXPORT PreassembledMassTargets
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
+        COMPONENT PreassembledMass_libraries
+        EXPORT PreassembledMassTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

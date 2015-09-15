@@ -4,11 +4,8 @@ project(image)
 add_subdirectory(extlibs/DiffusionSolver)
 
 set(IMAGE_MAJOR_VERSION 0)
-set(IMAGE_MINOR_VERSION 0)
-set(IMAGE_BUILD_VERSION 1)
-
-set(IMAGE_VERSION ${IMAGE_MAJOR_VERSION}.${IMAGE_MINOR_VERSION}.${IMAGE_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
-
+set(IMAGE_MINOR_VERSION 1)
+set(IMAGE_VERSION ${IMAGE_MAJOR_VERSION}.${IMAGE_MINOR_VERSION})
 
 set(SOURCE_FILES
     CollisionToCarvingEngine.cpp
@@ -59,10 +56,8 @@ set(HEADER_FILES
 )
 
 set(PYTHON_FILES
-
     python/SofaImage/API.py
     python/SofaImage/__init__.py
-
 )
 
 set(README_FILES image.txt)
@@ -71,29 +66,27 @@ find_package(SofaBase REQUIRED)
 find_package(Newmat REQUIRED)
 find_package(CImg REQUIRED)
 
-set(IMAGE_DEPENDENCY_INCLUDE_DIR ${CImg_INCLUDE_DIRS} ${SofaBase_INCLUDE_DIRS} ${Newmat_INCLUDE_DIRS})
 
 configure_file(config.h.in image/config.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/image/config.h DESTINATION "include/image")
 
 if(NOT SOFA-NO_OPENGL)
-    list(APPEND HEADER_FILES "ImageViewer.h")
-    list(APPEND SOURCE_FILES "ImageViewer.cpp")
+    list(APPEND HEADER_FILES ImageViewer.h)
+    list(APPEND SOURCE_FILES ImageViewer.cpp)
 endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 find_package(Freenect QUIET)
 
 if(FREENECT_FOUND)
-    list(APPEND IMAGE_DEPENDENCY_INCLUDE_DIR ${FREENECT_INCLUDE_DIR})
-    list(APPEND HEADER_FILES "Kinect.h")
-    list(APPEND SOURCE_FILES "Kinect.cpp")
+    list(APPEND HEADER_FILES Kinect.h)
+    list(APPEND SOURCE_FILES Kinect.cpp)
     message(STATUS "image: found the freenect library")
 else()
     message(STATUS "image: could not find the freenect library, won't build the Kinect component")
 endif()
 
-# todo
+# todo?
 
 # if(SOFA-EXTERNAL_OPENCV)
 # AddLinkerDependencies("ml")
@@ -117,7 +110,10 @@ endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${IMAGE_DEPENDENCY_INCLUDE_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CImg_INCLUDE_DIRS}>")
+if(FREENECT_FOUND)
+    target_include_directories(${PROJECT_NAME} PUBLIC "${FREENECT_INCLUDE_DIR}")
+endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${IMAGE_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_IMAGE")
@@ -157,6 +153,6 @@ if(SofaGui_FOUND AND SOFA_GUI_QT)
     add_subdirectory(image_gui)
 endif()
 
-# CMake package configurations files
+## CMake package configurations files
 include(SofaPackageConfigHelpers)
 sofa_write_package_config_files(image ${IMAGE_VERSION} "" "include")
