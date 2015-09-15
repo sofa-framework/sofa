@@ -117,7 +117,7 @@ struct SOFA_TestPlugin_API Sofa_test : public BaseSofa_test
         }
         Real result = 0;
         for( unsigned i=0; i<N; i++ ){
-            Real diff = fabs(m1[i]-m2.element(i));
+            Real diff = (Real)fabs(m1[i] - m2.element(i));
             if( diff>result  ) result=diff;
         }
         return result;
@@ -130,7 +130,7 @@ struct SOFA_TestPlugin_API Sofa_test : public BaseSofa_test
     {
         Real result = 0;
         for( unsigned i=0; i<N; i++ ){
-            Real diff = fabs(m1[i]-m2[i]);
+            Real diff = (Real)fabs(m1[i] - m2[i]);
             if( diff>result  ) result=diff;
         }
         return result;
@@ -187,8 +187,8 @@ struct SOFA_TestPlugin_API Sofa_test : public BaseSofa_test
         }
         for(typename Matrix1::Index i=0; i<m1.rowSize(); i++)
             for(typename Matrix1::Index j=0; j<m1.colSize(); j++){
-                Real diff = abs(m1.element(i,j)-m2.element(i,j));
-                if(diff>result)
+                Real diff = (Real)fabs(m1.element(i,j) - m2.element(i,j));
+                if(diff > result)
                     result = diff;
             }
         return result;
@@ -205,8 +205,8 @@ struct SOFA_TestPlugin_API Sofa_test : public BaseSofa_test
         }
         for(unsigned i=0; i<M; i++)
             for(unsigned j=0; j<N; j++){
-                Real diff = abs(m1[i][j]-m2.element(i,j));
-                if(diff>result)
+                Real diff = (Real)fabs(m1[i][j] - m2.element(i,j));
+                if(diff > result)
                     result = diff;
             }
         return result;
@@ -230,7 +230,7 @@ protected:
 template<class Vector, class ReadData>
 void copyFromData( Vector& v, const ReadData& d){
     v.resize(d.size());
-    for( unsigned i=0; i<v.size(); i++)
+    for(unsigned i=0; i<v.size(); i++)
         v[i] = d[i];
 }
 

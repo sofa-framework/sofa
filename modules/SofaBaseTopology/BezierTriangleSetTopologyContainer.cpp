@@ -441,7 +441,7 @@ void BezierTriangleSetTopologyContainer::getLocationFromGlobalIndex(const size_t
 			} else {
 				offset -= 3;
 				BezierDegreeType degree=d_degree.getValue();
-                if (offset<3*(BezierDegreeType)(degree-1)){
+                if ((BezierDegreeType)offset<3*(degree-1)){
 					location=EDGE;
 					// get the id of the edge on which it lies
 					elementIndex=getEdgesInTriangle(itcpl->second.first)[offset/(degree-1)];

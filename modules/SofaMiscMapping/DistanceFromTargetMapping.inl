@@ -245,8 +245,10 @@ void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams
                         b[j][k] =     - directions[i][j]*directions[i][k];
                 }
             }
-            b *= childForce[i][0] * invlengths[i] * kfactor;  // (I - uu^T)*f/l*kfactor     do not forget kfactor !
-            // note that computing a block is not efficient here, but it would makes sense for storing a stiffness matrix
+            // (I - uu^T)*f/l*kfactor  --  do not forget kfactor !
+            b *= (Real)(childForce[i][0] * invlengths[i] * kfactor);
+            // note that computing a block is not efficient here, but it would
+            // makes sense for storing a stiffness matrix
 
             InDeriv dx = parentDisplacement[indices[i]];
             InDeriv df;

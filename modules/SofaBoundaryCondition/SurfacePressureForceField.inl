@@ -247,7 +247,7 @@ void SurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParam
 
 
 	//    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
-	Real kFactor = mparams->kFactor();
+	Real kFactor = (Real)mparams->kFactor();
 	if (m_useTangentStiffness.getValue()) {
 		VecDeriv& df       = *(d_df.beginEdit());
 		const VecDeriv& dx =   d_dx.getValue()  ;
