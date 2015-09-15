@@ -78,6 +78,7 @@ set(HEADER_FILES
     odesolver/CompliantNLImplicitSolver.h
     odesolver/CompliantPostStabilizationAnimationLoop.h
     odesolver/CompliantPseudoStaticSolver.h
+    odesolver/CompliantPseudoStaticSolver.inl
     odesolver/CompliantStaticSolver.h
     odesolver/ConstantCompliantImplicitSolver.h
     preconditioner/BasePreconditioner.h
