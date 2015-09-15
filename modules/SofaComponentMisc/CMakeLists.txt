@@ -1,24 +1,18 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaComponentMisc)
 
 set(HEADER_FILES
-
     config.h
     initComponentMisc.h
-
-    )
+)
 
 set(SOURCE_FILES
-
     initComponentMisc.cpp
-
-    )
-
-set(GROUP_BASE_DIR "..")
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaMisc SofaMiscCollision SofaMiscEngine SofaMiscFem SofaMiscForceField SofaMiscMapping SofaMiscSolver SofaMiscTopology)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_COMPONENT_MISC")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_COMPONENT_MISC" )
-AddLinkerDependencies(SofaMiscTopology SofaMiscMapping SofaMiscForceField SofaMiscFem SofaMiscEngine SofaMiscCollision SofaMiscSolver SofaMisc )
-
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+SofaMisc_install(${PROJECT_NAME})

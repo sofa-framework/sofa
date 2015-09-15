@@ -13,7 +13,7 @@
 
 #include "../labelpointsbysection/labelpointsbysectionimagetoolbox.h"
 #include "../labelbox/labelboximagetoolbox.h"
-#include "ImageTypes.h"
+#include <image/ImageTypes.h>
 
 
 #include <image/image_gui/config.h>

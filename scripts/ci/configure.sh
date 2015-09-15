@@ -98,162 +98,100 @@ case $CI_JOB in
     # Build with default options
     *default*)
         # Only change from the default configuration: Enable tests
-        append "-DSOFA-MISC_TESTS=ON"
-        append "-DSOFA-PLUGIN_SOFATEST=ON"
-        append "-DSOFA-PLUGIN_SOFAPYTHON=ON"
-        append "-DSOFA-PLUGIN_SCENECREATOR=ON"
+        append "-DSOFA_BUILD_TESTS=ON"
         ;;
     # Build with as many options enabled
     *options*)
-
-        append "-DSOFA-MISC_TESTS=ON"
-
-        if [[ ( $(uname) = Darwin || $(uname) = Linux ) ]]; then
-            append "-DSOFA-MISC_C++11=ON"
-        else
-            append "-DSOFA-MISC_C++11=OFF"
-        fi
+        append "-DSOFA_BUILD_TESTS=ON"
+        append "-DSOFA_BUILD_METIS=ON"
+        append "-DSOFA_BUILD_ARTRACK=ON"
 
         if [[ -n "$CI_QT_PATH" ]]; then
-            append "-DSOFA-EXTERNAL_QT_PATH=$CI_QT_PATH"
+            append "-DQT_ROOT=$CI_QT_PATH"
         fi
 
         if [[ -n "$CI_HAVE_BOOST" ]]; then
-            append "-DSOFA-EXTERNAL_BOOST_PATH=$CI_BOOST_PATH"
+            append "-DBOOST_ROOT=$CI_BOOST_PATH"
         fi
 
         if [[ -n "$CI_BULLET_DIR" ]]; then
             append "-DBullet_DIR=$CI_BULLET_DIR"
         fi
 
-        ### Tutorials
-
-        append "-DSOFA-TUTORIAL_CHAIN_HYBRID=ON"
-        append "-DSOFA-TUTORIAL_COMPOSITE_OBJECT=ON"
-        append "-DSOFA-TUTORIAL_HOUSE_OF_CARDS=ON"
-        append "-DSOFA-TUTORIAL_MIXED_PENDULUM=ON"
-        append "-DSOFA-TUTORIAL_ONE_PARTICLE=ON"
-        append "-DSOFA-TUTORIAL_ONE_TETRAHEDRON=ON"
-
-        ### Applications
-
-        append "-DSOFA-APPLICATION_GENERATEDOC=ON"
-        append "-DSOFA-APPLICATION_GENERATERIGID=ON"
-        append "-DSOFA-APPLICATION_GENERATETYPEDEFS=ON"
-        append "-DSOFA-APPLICATION_GLUTONEPICK=ON"
-        # ?
-        append "-DSOFA-APPLICATION_MESHCONV=OFF"
-        append "-DSOFA-APPLICATION_MODELER=ON"
-        append "-DSOFA-APPLICATION_QTSOFA=ON"
-        append "-DSOFA-APPLICATION_RUNSOFA=ON"
-        append "-DSOFA-APPLICATION_SOFABATCH=ON"
-        # ?
-        append "-DSOFA-APPLICATION_SOFAFLOWVR=OFF"
-        append "-DSOFA-APPLICATION_SOFAINFO=ON"
-        append "-DSOFA-APPLICATION_SOFAINITTIMER=ON"
-        if [[ -n "$CI_HAVE_OPENCL" ]]; then
-            append "-DSOFA-APPLICATION_SOFAOPENCL=ON"
-        else
-            append "-DSOFA-APPLICATION_SOFAOPENCL=OFF"
-        fi
-        # ?
-        append "-DSOFA-APPLICATION_SOFAPHYSICSAPI=OFF"
-        # ?
-        append "-DSOFA-APPLICATION_SOFAPROJECTEXAMPLE=OFF"
-        # Bug on Ubuntu 14.04:
-        #   Linking CXX executable ../../../bin/sofaTypedefs
-        #   Inconsistency detected by ld.so: dl-version.c: 224: _dl_check_map_versions: Assertion `needed != ((void *)0)' failed!
-        if [[ $(uname) = Linux ]]; then
-            append "-DSOFA-APPLICATION_SOFATYPEDEFS=OFF"
-        else
-            append "-DSOFA-APPLICATION_SOFATYPEDEFS=ON"
-        fi
-        append "-DSOFA-APPLICATION_SOFAVERIFICATION=ON"
-        # ?
-        append "-DSOFA-APPLICATION_XMLCONVERT-DISPLAYFLAGS=OFF"
+        # # Bug on Ubuntu 14.04:
+        # #   Linking CXX executable ../../../bin/sofaTypedefs
+        # #   Inconsistency detected by ld.so: dl-version.c: 224: _dl_check_map_versions: Assertion `needed != ((void *)0)' failed!
+        # if [[ $(uname) = Linux ]]; then
+        #     append "-DSOFA-APPLICATION_SOFATYPEDEFS=OFF"
+        # else
+        #     append "-DSOFA-APPLICATION_SOFATYPEDEFS=ON"
+        # fi
+        # append "-DSOFA-APPLICATION_SOFAVERIFICATION=ON"
+        # # ?
+        # append "-DSOFA-APPLICATION_XMLCONVERT-DISPLAYFLAGS=OFF"
 
         ### Plugins
-        append "-DSOFA-PLUGIN_ARTRACK=ON"
+        append "-DPLUGIN_ARTRACK=ON"
         if [[ -n "$CI_BULLET_DIR" ]]; then
-            append "-DSOFA-PLUGIN_BULLETCOLLISIONDETECTION=ON"
+            append "-DPLUGIN_BULLETCOLLISIONDETECTION=ON"
         else
-            append "-DSOFA-PLUGIN_BULLETCOLLISIONDETECTION=OFF"
+            append "-DPLUGIN_BULLETCOLLISIONDETECTION=OFF"
         fi
         # Missing CGAL library
-        append "-DSOFA-PLUGIN_CGALPLUGIN=OFF"
+        append "-DPLUGIN_CGALPLUGIN=OFF"
         # For Windows, there is the dll of the assimp library *inside* the repository
         if [[ ( $(uname) = Darwin || $(uname) = Linux ) && -z "$CI_HAVE_ASSIMP" ]]; then
-            append "-DSOFA-PLUGIN_COLLADASCENELOADER=OFF"
+            append "-DPLUGIN_COLLADASCENELOADER=OFF"
         else
-            append "-DSOFA-PLUGIN_COLLADASCENELOADER=ON"
+            append "-DPLUGIN_COLLADASCENELOADER=ON"
         fi
-        append "-DSOFA-PLUGIN_COMPLIANT=ON"
-        append "-DSOFA-PLUGIN_EXTERNALBEHAVIORMODEL=ON"
-        append "-DSOFA-PLUGIN_FLEXIBLE=ON"
+        append "-DPLUGIN_COMPLIANT=ON"
+        append "-DPLUGIN_EXTERNALBEHAVIORMODEL=ON"
+        append "-DPLUGIN_FLEXIBLE=ON"
         # Requires specific libraries.
-        append "-DSOFA-PLUGIN_HAPTION=OFF"
-        append "-DSOFA-PLUGIN_IMAGE=ON"
-        append "-DSOFA-PLUGIN_INVERTIBLEFVM=ON"
-        append "-DSOFA-PLUGIN_MANIFOLDTOPOLOGIES=ON"
-        append "-DSOFA-PLUGIN_MANUALMAPPING=ON"
+        append "-DPLUGIN_HAPTION=OFF"
+        append "-DPLUGIN_IMAGE=ON"
+        append "-DPLUGIN_INVERTIBLEFVM=ON"
+        append "-DPLUGIN_MANIFOLDTOPOLOGIES=ON"
+        append "-DPLUGIN_MANUALMAPPING=ON"
         if [ -n "$CI_HAVE_OPENCASCADE" ]; then
-            append "-DSOFA-PLUGIN_MESHSTEPLOADER=ON"
+            append "-DPLUGIN_MESHSTEPLOADER=ON"
         else
-            append "-DSOFA-PLUGIN_MESHSTEPLOADER=OFF"
+            append "-DPLUGIN_MESHSTEPLOADER=OFF"
         fi
-        append "-DSOFA-PLUGIN_MULTITHREADING=ON"
-        append "-DSOFA-PLUGIN_OPTITRACKNATNET=ON"
+        append "-DPLUGIN_MULTITHREADING=ON"
+        append "-DPLUGIN_OPTITRACKNATNET=ON"
         # Does not compile, but it just needs to be updated.
-        append "-DSOFA-PLUGIN_PERSISTENTCONTACT=OFF"
-        append "-DSOFA-PLUGIN_PLUGINEXAMPLE=ON"
-        append "-DSOFA-PLUGIN_REGISTRATION=ON"
-        append "-DSOFA-PLUGIN_SCENECREATOR=ON"
+        append "-DPLUGIN_PERSISTENTCONTACT=OFF"
+        append "-DPLUGIN_PLUGINEXAMPLE=ON"
+        append "-DPLUGIN_REGISTRATION=ON"
+        append "-DPLUGIN_SCENECREATOR=ON"
         # Requires OpenHaptics libraries.
-        append "-DSOFA-PLUGIN_SENSABLE=OFF"
+        append "-DPLUGIN_SENSABLE=OFF"
         if [[ -n "$CI_HAVE_BOOST" ]]; then
-            append "-DSOFA-PLUGIN_SENSABLEEMULATION=ON"
+            append "-DPLUGIN_SENSABLEEMULATION=ON"
         else
-            append "-DSOFA-PLUGIN_SENSABLEEMULATION=OFF"
+            append "-DPLUGIN_SENSABLEEMULATION=OFF"
         fi
         # Requires Sixense libraries.
-        append "-DSOFA-PLUGIN_SIXENSEHYDRA=OFF"
-        append "-DSOFA-PLUGIN_SOFACARVING=ON"
+        append "-DPLUGIN_SIXENSEHYDRA=OFF"
+        append "-DPLUGIN_SOFACARVING=ON"
         if [[ -n "$CI_HAVE_CUDA" ]]; then
-            append "-DSOFA-PLUGIN_SOFACUDA=ON"
+            append "-DPLUGIN_SOFACUDA=ON"
         else
-            append "-DSOFA-PLUGIN_SOFACUDA=OFF"
+            append "-DPLUGIN_SOFACUDA=OFF"
         fi
         # Requires HAPI libraries.
-        append "-DSOFA-PLUGIN_SOFAHAPI=OFF"
-        if [[ -n "$CI_HAVE_OPENCL" ]]; then
-            append "-DSOFA-PLUGIN_SOFAOPENCL=ON"
-        else
-            append "-DSOFA-PLUGIN_SOFAOPENCL=OFF"
-        fi
+        append "-DPLUGIN_SOFAHAPI=OFF"
         # Not sure if worth maintaining
-        append "-DSOFA-PLUGIN_SOFAPML=OFF"
-        append "-DSOFA-PLUGIN_SOFASIMPLEGUI=ON"
-        append "-DSOFA-PLUGIN_SOFATEST=ON"
-        append "-DSOFA-PLUGIN_THMPGSPATIALHASHING=ON"
+        append "-DPLUGIN_SOFAPML=OFF"
+        append "-DPLUGIN_SOFASIMPLEGUI=ON"
+        append "-DPLUGIN_SOFATEST=ON"
+        append "-DPLUGIN_THMPGSPATIALHASHING=ON"
+        # Requires SofaCUDALDI (Strange, SofaCUDALDI is in sofa-dev!)
+        append "-DPLUGIN_VOXELIZER=OFF"
         # Requires XiRobot library.
-        append "-DSOFA-PLUGIN_XITACT=OFF"
-
-        ### Misc
-
-        if [[ -n "$CI_HAVE_CSPARSE" ]]; then
-            append "-DSOFA-EXTERNAL_CSPARSE=OFF"
-        else
-            append "-DSOFA-EXTERNAL_CSPARSE=ON"
-        fi
-        if [[ -n "$CI_HAVE_METIS" ]]; then
-            append "-DSOFA-EXTERNAL_METIS=OFF"
-        else
-            append "-DSOFA-EXTERNAL_METIS=ON"
-        fi
-        append "-DSOFA-LIB_COMPONENT_SPARSE_SOLVER=ON"
-
-        append "-DSOFA-LIB_GUI_INTERACTION=ON"
-        append "-DSOFA-LIB_GUI_QGLVIEWER=ON"
+        append "-DPLUGIN_XITACT=OFF"
         ;;
 esac
 

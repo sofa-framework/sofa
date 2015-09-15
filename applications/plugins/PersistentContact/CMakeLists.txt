@@ -1,8 +1,6 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(PersistentContact)
 
-##plugin external dependencies
-#find_package( REQUIRED)
-#include_directories(${})
 
 set(HEADER_FILES
     config.h
@@ -28,9 +26,22 @@ set(SOURCE_FILES
 
 set(README_FILES PersistentContact.txt)
 
+set(README_FILES
+	PersistentContact.txt)
+
+find_package(SofaGeneral REQUIRED)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_PERSISTENTCONTACT")
+target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaRigid SofaConstraint)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
-AddCompilerDefinitions("SOFA_BUILD_PERSISTENTCONTACT")
-AddLinkerDependencies(SofaHelper SofaMeshCollision SofaConstraint )
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT PersistentContact_libraries
+        EXPORT PersistentContactTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

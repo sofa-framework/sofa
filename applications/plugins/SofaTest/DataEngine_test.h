@@ -27,7 +27,6 @@
 #define SOFA_STANDARDTEST_DataEngine_test_H
 
 #include "Sofa_test.h"
-#include <SofaComponentMain/init.h>
 
 
 #include <sofa/defaulttype/VecTypes.h>

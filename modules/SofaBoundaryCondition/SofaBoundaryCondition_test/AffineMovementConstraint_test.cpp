@@ -67,7 +67,6 @@ struct AffineMovementConstraint_test : public Elasticity_test<_DataTypes>
      void SetUp()
      { 
         // Init simulation
-        sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
          root = simulation::getSimulation()->createNewGraph("root");

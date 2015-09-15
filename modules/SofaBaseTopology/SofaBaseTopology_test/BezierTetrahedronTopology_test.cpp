@@ -25,7 +25,6 @@
 #include <SofaTest/Sofa_test.h>
 #include<sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation
@@ -82,7 +81,6 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
     void SetUp()
     { 
         // Init simulation
-        sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
          root = simulation::getSimulation()->createNewGraph("root");

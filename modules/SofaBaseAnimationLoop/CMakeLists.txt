@@ -1,26 +1,22 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaBaseAnimationLoop)
 
 set(HEADER_FILES
-
-    config.h
-	initBaseAnimationLoop.h
     MultiStepAnimationLoop.h
     MultiTagAnimationLoop.h
-	)
+    config.h
+    initBaseAnimationLoop.h
+)
 
 set(SOURCE_FILES
-
-	initBaseAnimationLoop.cpp
     MultiStepAnimationLoop.cpp
     MultiTagAnimationLoop.cpp
-	)
-
-set(GROUP_BASE_DIR "..")
+    initBaseAnimationLoop.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_BASE_ANIMATION_LOOP")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_BASE_ANIMATION_LOOP")
-AddLinkerDependencies(SofaSimulationTree)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+SofaBase_install(${PROJECT_NAME})

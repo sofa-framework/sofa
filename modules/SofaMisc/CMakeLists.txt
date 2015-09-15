@@ -1,32 +1,25 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaMisc)
 
 set(HEADER_FILES
-
-    config.h
-    initMisc.h
     MeshTetraStuffing.h
-
-    )
+    initMisc.h
+)
 
 set(SOURCE_FILES
-
-    initMisc.cpp
     MeshTetraStuffing.cpp
+    initMisc.cpp
+)
 
-    )
-
-if(SOFA-MISC_SMP)
-	list(APPEND HEADER_FILES "ParallelCGLinearSolver.h")
-	list(APPEND HEADER_FILES "ParallelCGLinearSolver.inl")
-
-	list(APPEND SOURCE_FILES "ParallelCGLinearSolver.cpp")
+if(SOFA_HAVE_SMP)
+    list(APPEND HEADER_FILES ParallelCGLinearSolver.h)
+    list(APPEND HEADER_FILES ParallelCGLinearSolver.inl)
+    list(APPEND SOURCE_FILES ParallelCGLinearSolver.cpp)
 endif()
 
-set(GROUP_BASE_DIR "..")
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaMiscTopology SofaTopologyMapping)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MISC")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_MISC" )
-AddLinkerDependencies(SofaMeshCollision SofaMiscTopology SofaTopologyMapping )
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+SofaMisc_install(${PROJECT_NAME})

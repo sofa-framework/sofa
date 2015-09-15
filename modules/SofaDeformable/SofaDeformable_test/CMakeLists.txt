@@ -1,16 +1,11 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+
+project(SofaDeformable_test)
 
 set(SOURCE_FILES
+    StiffSpringForceField_test.cpp)
 
- #alphabetical order
-    StiffSpringForceField_test.cpp
-)
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${RC_FILES} ${PYTHON_FILES})
-
-AddLinkerDependencies(
-    SofaGTestMain
-    SofaTest
-)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

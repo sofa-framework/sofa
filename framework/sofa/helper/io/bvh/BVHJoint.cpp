@@ -27,7 +27,10 @@
 #include <sofa/helper/helper.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
+
+#ifdef SOFA_HAVE_GLUT
 #include <sofa/helper/system/glut.h>
+#endif 
 
 #include <iostream>
 
@@ -127,8 +130,9 @@ void BVHJoint::display(int frameNum)
     }
 
     glColor3f(1.0,0.0,0.0);
+#ifdef SOFA_HAVE_GLUT
     glutSolidSphere(0.01,16,16);
-
+#endif 
     for (unsigned int i=0; i<children.size(); i++)
     {
         children[i]->display(frameNum);
@@ -147,7 +151,9 @@ void BVHJoint::displayInGlobalFrame(void)
     glMultMatrixd(matrix);
     glDisable(GL_LIGHTING);
     glColor3f(1.0, 0.0, 0.0);
+#ifdef SOFA_HAVE_GLUT
     glutSolidSphere(0.005,16,16);
+#endif
     glPopMatrix();
 
     for (unsigned int i=0; i<children.size(); i++)

@@ -1,8 +1,12 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(Flexible)
+
+set(FLEXIBLE_MAJOR_VERSION 0)
+set(FLEXIBLE_MINOR_VERSION 1)
+set(FLEXIBLE_VERSION ${FLEXIBLE_MAJOR_VERSION}.${FLEXIBLE_MINOR_VERSION})
 
 set(HEADER_FILES
     BaseJacobian.h
-    config.h
     deformationMapping/BaseDeformationImpl.inl
     deformationMapping/BaseDeformationMapping.h
     deformationMapping/BaseDeformationMapping.inl
@@ -161,7 +165,6 @@ set(SOURCE_FILES
 )
 
 set(PYTHON_FILES
-
     python/Flexible/__init__.py
     python/Flexible/IO.py
     python/Flexible/StressVisu.py
@@ -169,63 +172,104 @@ set(PYTHON_FILES
     python/Flexible/sml.py
 )
 
-if(SOFA-PLUGIN_IMAGE)
 
-    list(APPEND HEADER_FILES "deformationMapping/ImageDeformation.h")
-    list(APPEND HEADER_FILES "mass/ImageDensityMass.h")
-    list(APPEND HEADER_FILES "mass/ImageDensityMass.inl")
-    list(APPEND HEADER_FILES "mass/MassFromDensity.cpp")
-    list(APPEND HEADER_FILES "mass/MassFromDensity.h")
-    list(APPEND HEADER_FILES "quadrature/ImageGaussPointSampler.h")
-    list(APPEND HEADER_FILES "shapeFunction/BaseImageShapeFunction.h")
-    list(APPEND HEADER_FILES "shapeFunction/DiffusionShapeFunction.h")
-    list(APPEND HEADER_FILES "shapeFunction/ShapeFunctionDiscretizer.h")
-    list(APPEND HEADER_FILES "shapeFunction/VoronoiShapeFunction.h")
-    list(APPEND SOURCE_FILES "deformationMapping/ImageDeformation.cpp")
-    list(APPEND SOURCE_FILES "mass/ImageDensityMass.cpp")
-    list(APPEND SOURCE_FILES "quadrature/ImageGaussPointSampler.cpp")
-    list(APPEND SOURCE_FILES "shapeFunction/DiffusionShapeFunction.cpp")
-    list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.cpp")
-    list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.h")
-    list(APPEND SOURCE_FILES "shapeFunction/ShapeFunctionDiscretizer.cpp")
-    list(APPEND SOURCE_FILES "shapeFunction/VoronoiShapeFunction.cpp")
+find_package(SofaMisc REQUIRED)
 
-    AddCompilerDefinitions("SOFA_HAVE_IMAGE" )
+find_package(image QUIET)
+if(image_FOUND)
+    list(APPEND HEADER_FILES
+        deformationMapping/ImageDeformation.h
+        mass/ImageDensityMass.h
+        mass/ImageDensityMass.inl
+        mass/MassFromDensity.cpp
+        mass/MassFromDensity.h
+        quadrature/ImageGaussPointSampler.h
+        shapeFunction/BaseImageShapeFunction.h
+        shapeFunction/DiffusionShapeFunction.h
+        shapeFunction/ShapeFunctionDiscretizer.h
+        shapeFunction/VoronoiShapeFunction.h)
 
-
-    AddLinkerDependencies(image)
-
+    list(APPEND SOURCE_FILES
+        deformationMapping/ImageDeformation.cpp
+        mass/ImageDensityMass.cpp
+        quadrature/ImageGaussPointSampler.cpp
+        shapeFunction/DiffusionShapeFunction.cpp
+        shapeFunction/ImageShapeFunctionContainer.cpp
+        shapeFunction/ImageShapeFunctionContainer.h
+        shapeFunction/ShapeFunctionDiscretizer.cpp
+        shapeFunction/VoronoiShapeFunction.cpp)
+else()
+    message(STATUS "Flexible: could not find image")
 endif()
 
+
+configure_file(config.h.in Flexible/config.h)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Flexible/config.h DESTINATION "include/Flexible")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
+target_link_libraries(${PROJECT_NAME} SofaComponentMisc)
 
+set(FLEXIBLE_COMPILER_FLAGS "-DSOFA_BUILD_FLEXIBLE")
 
-AddCompilerDefinitions("SOFA_BUILD_Flexible")
-AddLinkerDependencies(SofaEigen2Solver SofaBaseVisual)
+if(image_FOUND)
+    target_link_libraries(${PROJECT_NAME} image)
+    set(FLEXIBLE_COMPILER_FLAGS "${FLEXIBLE_COMPILER_FLAGS} -DSOFA_HAVE_IMAGE")
+endif()
+
+set(SOFA-EXTERNAL_MGDIFFUSI0N_PATH "" CACHE PATH "Path to the MGDIFFUSI0N library")
+if(NOT SOFA-EXTERNAL_MGDIFFUSI0N_PATH STREQUAL "")
+    set(FLEXIBLE_COMPILER_FLAGS "${FLEXIBLE_COMPILER_FLAGS} -DSOFA_HAVE_MGDIFFUSI0N")
+    target_include_directories(${PROJECT_NAME} "${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/mgdiffusion/DiffusionSolver/")
+
+    # link_directories(${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/mgdiffusion/DiffusionSolver/)
+    # target_link_libraries(${PROJECT_NAME} "DiffusionSolver")
+    # link_directories(${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Public_Library/)
+    # link_directories(${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Common_Libraries/)
+    # target_link_libraries(${PROJECT_NAME} "PhysBAM_PhysBAM_Tools" "Threading_Tools")
+
+    # TODO fix this!
+    # link_directories does not add a -Lpath to the link command so I found this workaround for now
+
+    target_link_libraries(${PROJECT_NAME}
+        ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/mgdiffusion/DiffusionSolver/libDiffusionSolver.so
+        ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Public_Library/libPhysBAM_PhysBAM_Tools.so
+        ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Common_Libraries/libThreading_Tools.so)
+endif()
 
 if(WIN32)
-    include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")
-
-    AddCompilerDefinitions("EIGEN_DONT_ALIGN")
+    set(FLEXIBLE_COMPILER_FLAGS "${FLEXIBLE_COMPILER_FLAGS} -DEIGEN_DONT_ALIGN")
 else()
-    include_directories("/usr/include/suitesparse/")
+	include_directories("/usr/include/suitesparse/")
 endif()
-
 if(UNIX)
-    link_directories("/usr/lib/x86_64-linux-gnu/")
-    AddLinkerDependencies("pthread")
+    target_link_libraries(${PROJECT_NAME} pthread)
+endif()
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${FLEXIBLE_VERSION})
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${FLEXIBLE_COMPILER_FLAGS}")
+
+
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT Flexible_libraries
+        EXPORT FlexibleTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
+
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
+
+foreach(HEADER ${HEADER_FILES})
+    string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
+    install(FILES ${HEADER} DESTINATION "include/${PROJECT_NAME}/${DIR}")
+endforeach(HEADER HEADERS)
+
+find_package(SofaTest QUIET)
+if(SofaTest_FOUND)
+    add_subdirectory(Flexible_test)
 endif()
 
-if(APPLE)
-    find_package(X11)
-    if(NOT X11_FOUND)
-        message(FATAL_ERROR "Failed to find X11 which is required to build image plugin")
-    endif(NOT X11_FOUND)
-    AddLinkerDependencies(${X11_X11_LIB})
-    include_directories(${X11_X11_INCLUDE_PATH})
-endif()
-
-
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+## CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_write_package_config_files(Flexible ${FLEXIBLE_VERSION} "" "include")

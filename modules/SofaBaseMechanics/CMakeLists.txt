@@ -1,50 +1,44 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaBaseMechanics)
 
 set(HEADER_FILES
-
-    config.h
-    initBaseMechanics.h
+    AddMToMatrixFunctor.h
+    BarycentricMapping.h
+    BarycentricMapping.inl
+    DiagonalMass.h
+    DiagonalMass.inl
+    IdentityMapping.h
+    IdentityMapping.inl
     MappedObject.h
     MappedObject.inl
     MechanicalObject.h
     MechanicalObject.inl
-    AddMToMatrixFunctor.h
-    DiagonalMass.h
-    DiagonalMass.inl
-    UniformMass.h
-    UniformMass.inl
-    BarycentricMapping.h
-    BarycentricMapping.inl
-    IdentityMapping.h
-    IdentityMapping.inl
     SubsetMapping.h
     SubsetMapping.inl
-
-    )
+    UniformMass.h
+    UniformMass.inl
+    config.h
+    initBaseMechanics.h
+)
 
 set(SOURCE_FILES
-
-    initBaseMechanics.cpp
+    BarycentricMapping.cpp
+    DiagonalMass.cpp
+    IdentityMapping.cpp
     MappedObject.cpp
     MechanicalObject.cpp
-    DiagonalMass.cpp
-    UniformMass.cpp
-    BarycentricMapping.cpp
-    IdentityMapping.cpp
     SubsetMapping.cpp
-
-    )
+    UniformMass.cpp
+    initBaseMechanics.cpp
+)
 
 if(SOFA-MISC_SMP)
-    list(APPEND HEADER_FILES "MechanicalObjectTasks.inl")
+    list(APPEND HEADER_FILES MechanicalObjectTasks.inl)
 endif()
 
-set(GROUP_BASE_DIR "..")
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} SofaBaseTopology)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_BASE_MECHANICS")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_BASE_MECHANICS")
-AddSourceDependencies(eigen)
-AddLinkerDependencies(SofaBaseTopology SofaBaseLinearSolver)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+SofaBase_install(${PROJECT_NAME})

@@ -25,15 +25,6 @@
 #ifndef IMAGE_INIT_H
 #define IMAGE_INIT_H
 
-#include <sofa/helper/system/config.h>
-
-#define BUILD_ALL_IMAGE_TYPES // comment to reduce compilation time
-
-#ifdef SOFA_BUILD_IMAGE
-#define SOFA_IMAGE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#define SOFA_IMAGE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <image/image.h>
 
 #endif //IMAGE_INIT_H
-

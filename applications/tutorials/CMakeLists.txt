@@ -1,11 +1,19 @@
+cmake_minimum_required(VERSION 2.8.12)
 
-#RegisterProjects("ObjectCreator" PATH "${CMAKE_CURRENT_SOURCE_DIR}/objectCreator")
+set(SOFATUTORIALS_TARGETS
+    # No CMakeLists.txt
+    # anatomyModelling
+    chainHybrid
+    compositeObject
+    houseOfCards
+    mixedPendulum
+    oneParticle
+    # Needs SofaTypedefs
+    # oneParticleWithSofaTypedefs
+    oneTetrahedron
+)
 
-RegisterProjects("ChainHybrid" OPTION "SOFA-TUTORIAL_CHAIN_HYBRID" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/chainHybrid")
-RegisterProjects("CompositeObject" OPTION "SOFA-TUTORIAL_COMPOSITE_OBJECT" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/compositeObject")
-RegisterProjects("HouseOfCards" OPTION "SOFA-TUTORIAL_HOUSE_OF_CARDS" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/houseOfCards")
-RegisterProjects("MixedPendulum" OPTION "SOFA-TUTORIAL_MIXED_PENDULUM" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/mixedPendulum")
-RegisterProjects("OneParticle" OPTION "SOFA-TUTORIAL_ONE_PARTICLE" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/oneParticle")
-#RegisterProjects("OneParticleWithSofaTypedefs" OPTION "SOFA-TUTORIAL_ONE_PARTICLE_WITH_SOFA_TYPEDEFS" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/oneParticleWithSofaTypedefs")
-RegisterProjects("OneTetrahedron" OPTION "SOFA-TUTORIAL_ONE_TETRAHEDRON" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/oneTetrahedron")
-#RegisterProjects("AnatomyModelling" OPTION "SOFA-TUTORIAL_ANATOMY_MODELLING" COMPILE_DEFINITIONS "SOFA_HAVE_TUTORIALS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/anatomyModelling") # currently there is no CMakeLists.txt
+foreach(TARGET ${SOFATUTORIALS_TARGETS})
+    add_subdirectory(${TARGET})
+    set_target_properties(${TARGET} PROPERTIES FOLDER SofaTutorials) # IDE folder
+endforeach()

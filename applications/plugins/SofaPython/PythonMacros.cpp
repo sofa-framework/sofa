@@ -14,16 +14,9 @@
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/GridTopology.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
-#include <sofa/component/typedef/Sofa_typedef.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <sofa/core/BaseMapping.h>
-
-
-#ifndef SOFA_FLOAT
-#include <sofa/component/typedef/Mapping_double.h>
-#endif
-#ifndef SOFA_DOUBLE
-#include <sofa/component/typedef/Mapping_float.h>
-#endif
 
 
 #include "PythonScriptController.h"
@@ -51,6 +44,9 @@
 #include "Binding_SubsetMultiMapping.h"
 #include "Binding_VisualModel.h"
 #include "Binding_OBJExporter.h"
+
+typedef sofa::component::container::MechanicalObject< sofa::defaulttype::Vec3Types > MechanicalObject3;
+typedef sofa::component::mapping::SubsetMultiMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types > SubsetMultiMapping3_to_3;
 
 using sofa::core::objectmodel::Base;
 

@@ -1,0 +1,14 @@
+# CMake package configuration file for the SofaSimpleGUI plugin
+
+@PACKAGE_INIT@
+
+find_package(SofaGeneral REQUIRED)
+
+if(NOT TARGET SofaSimpleGUI)
+	include("${CMAKE_CURRENT_LIST_DIR}/SofaSimpleGUITargets.cmake")
+endif()
+
+check_required_components(SofaSimpleGUI)
+
+set(SofaSimpleGUI_LIBRARIES SofaSimpleGUI)
+set_and_check(SofaSimpleGUI_INCLUDE_DIRS @PACKAGE_SOFASIMPLEGUI_INCLUDE_DIR@ ${SofaGeneral_INCLUDE_DIRS})

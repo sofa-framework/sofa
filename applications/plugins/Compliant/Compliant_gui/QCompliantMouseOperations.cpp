@@ -24,8 +24,8 @@
 ******************************************************************************/
 
 #include "QCompliantMouseOperations.h"
-#include <QDisplayDataWidget.h>
-#include <DataWidget.h>
+#include <sofa/gui/qt/QDisplayDataWidget.h>
+#include <sofa/gui/qt/DataWidget.h>
 #include "../misc/CompliantAttachButtonSetting.h"
 
 #ifdef SOFA_QT4

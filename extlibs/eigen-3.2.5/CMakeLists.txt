@@ -1,12 +1,17 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
 
-# only take the librairy headers, not test headers and other stuff
-file(GLOB_RECURSE HEADER_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/Eigen/*.h ${CMAKE_CURRENT_SOURCE_DIR}/unsupported/Eigen/*.h)
+set(EIGEN_ROOT "${CMAKE_CURRENT_SOURCE_DIR}" CACHE PATH "Directory for find_package(Eigen3)")
 
-add_custom_target(${PROJECT_NAME} SOURCES ${HEADER_FILES})
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Eigen
+        COMPONENT Eigen_headers
+        DESTINATION include
+        PATTERN "*.in" EXCLUDE
+        PATTERN "*.txt" EXCLUDE
+        PATTERN "*.cpp" EXCLUDE)
 
-#add_library(${PROJECT_NAME} SHARED ${HEADER_FILES}) # it contains only headers but it is still generating an empty lib
-#SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX) # otherwise cmake cannot recognize the language
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/unsupported/Eigen
+        COMPONENT Eigen_headers
+        DESTINATION include
+        PATTERN "*.in" EXCLUDE
+        PATTERN "*.txt" EXCLUDE
+        PATTERN "*.cpp" EXCLUDE)

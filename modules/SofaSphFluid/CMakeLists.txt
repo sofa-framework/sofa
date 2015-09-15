@@ -1,39 +1,34 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaSphFluid)
 
 set(HEADER_FILES
-
-    config.h
-    initSPHFluid.h
-    SpatialGridContainer.h
-    SpatialGridContainer.inl
-    SPHFluidForceField.h
-    SPHFluidForceField.inl
-    SPHFluidSurfaceMapping.h
-    SPHFluidSurfaceMapping.inl
     ParticleSink.h
     ParticleSource.h
     ParticlesRepulsionForceField.h
     ParticlesRepulsionForceField.inl
-
-    )
+    SPHFluidForceField.h
+    SPHFluidForceField.inl
+    SPHFluidSurfaceMapping.h
+    SPHFluidSurfaceMapping.inl
+    SpatialGridContainer.h
+    SpatialGridContainer.inl
+    config.h
+    initSPHFluid.h
+)
 
 set(SOURCE_FILES
-
-    initSPHFluid.cpp
-    SpatialGridContainer.cpp
-    SPHFluidForceField.cpp
-    SPHFluidSurfaceMapping.cpp
     ParticleSink.cpp
     ParticleSource.cpp
     ParticlesRepulsionForceField.cpp
-
-    )
-
-set(GROUP_BASE_DIR "..")
+    SPHFluidForceField.cpp
+    SPHFluidSurfaceMapping.cpp
+    SpatialGridContainer.cpp
+    initSPHFluid.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaBaseMechanics)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SPH_FLUID")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_SPH_FLUID")
-AddLinkerDependencies(SofaBaseMechanics)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+SofaAdvanced_install(${PROJECT_NAME})

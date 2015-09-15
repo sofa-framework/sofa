@@ -27,7 +27,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
-#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
 #include <SofaBoundaryCondition/QuadPressureForceField.h>
@@ -89,7 +88,6 @@ struct StabilizedNeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3
     void SetUp()
     { 
         // Init simulation
-        sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 		
         vIndex=25;

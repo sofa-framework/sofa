@@ -43,12 +43,13 @@ void initVolumetricData()
 }
 
 SOFA_LINK_CLASS(InterpolatedImplicitSurface)
+#ifdef SOFA_HAVE_MINIFLOWVR
 SOFA_LINK_CLASS(DistanceGridForceField)
 SOFA_LINK_CLASS(ImplicitSurfaceMapping)
 SOFA_LINK_CLASS(FFDDistanceGridDiscreteIntersection)
 SOFA_LINK_CLASS(RigidDistanceGridDiscreteIntersection)
 SOFA_LINK_CLASS(RayDistanceGridContact)
-
+#endif
 
 } // namespace component
 

@@ -1,4 +1,6 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+
+project(SofaBaseLinearSolver_test)
 
 set(SOURCE_FILES
     Matrix_test.cpp
@@ -6,16 +8,10 @@ set(SOURCE_FILES
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SofaBaseLinearSolver)
 
-# This macro is needed for float on windows
-if(WIN32)
-    AddCompilerDefinitions("EIGEN_DONT_ALIGN")
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
+
+if(MSVC)
+    add_definitions("-DEIGEN_DONT_ALIGN")
 endif()
-
-AddLinkerDependencies(
-    SofaTest
-    SofaGTestMain
-    SofaBaseLinearSolver
-)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)

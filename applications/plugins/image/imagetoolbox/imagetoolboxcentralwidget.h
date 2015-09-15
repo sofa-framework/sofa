@@ -48,7 +48,7 @@
 #include <qtgui.h>
 #endif
 
-#include "ImageTypes.h"
+#include <image/ImageTypes.h>
 #include "imagetoolboxdata.h"
 #include "../image_gui/ImagePlaneWidget.h"
 

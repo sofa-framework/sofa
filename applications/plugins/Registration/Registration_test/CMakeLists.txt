@@ -1,27 +1,20 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+
+project(Registration_test)
 
 # FF temporarily deactivated InertiaAlign_test, as well as add_executable since it does not accept 0 parameter
 set(SOURCE_FILES
     # InertiaAlign_test.cpp
 )
 
-if(APPLE)
-    # set(RC_FILES "runSOFA.icns")
+if(WIN32)
+    list(APPEND HEADER_FILES "stdafx.h")
+    list(APPEND SOURCE_FILES "stdafx.cpp")
 endif()
 
-include_directories("${SOFA_APPLICATIONS_PROJECTS_DIR}/Standard_test")
+add_definitions("-DFLEXIBLE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 
-#if(SOFA-PLUGIN_SOFAPYTHON)
-#    AddCompilerDefinitions("REGISTRATION_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes/python\"")
-#    list(APPEND SOURCE_FILES "python_test_list.cpp")
-#    AddLinkerDependencies(SofaPython)
-#    include(./scenes/python/python.cmake)
-#endif()
+# add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+# target_link_libraries(${PROJECT_NAME} Registration SofaTest SofaGTestMain)
 
-#add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${RC_FILES} ${PYTHON_FILES})
-
-AddCompilerDefinitions("FLEXIBLE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
-AddLinkerDependencies(SofaTest Registration SofaGTestMain)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+# add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

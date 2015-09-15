@@ -1,160 +1,174 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaGuiQt)
 
-set(HEADER_FILES
-
-	GenGraphForm.h
-	AddObject.h
-	RealGUI.h
-	LinkWidget.h
-	DataWidget.h
-	DataFilenameWidget.h
-	DisplayFlagsDataWidget.h
-	GraphDataWidget.h
-	MaterialDataWidget.h
-	ModifyObject.h
-	SimpleDataWidget.h
-	WDoubleLineEdit.h
-	SofaPluginManager.h
-	SofaMouseManager.h
-	SofaVideoRecorderManager.h
-	QDataDescriptionWidget.h
-	QDisplayPropertyWidget.h
-	QDisplayLinkWidget.h     
-	QDisplayDataWidget.h
-	QGraphStatWidget.h
-	QEnergyStatWidget.h              
-	QMomentumStatWidget.h 
-	QTabulationModifyObject.h
-	QTransformationWidget.h
-	QMouseOperations.h
-	QSofaListView.h
-	QSofaRecorder.h
-	QSofaStatWidget.h
-	QModelViewTableUpdater.h
-	)
-
-set(SOURCE_FILES
-
-	viewer/SofaViewer.cpp
-	GraphListenerQListView.cpp
-	GenGraphForm.cpp
-	AddObject.cpp
-	RealGUI.cpp
-	LinkWidget.cpp 
-	DataWidget.cpp 
-	DataFilenameWidget.cpp
-	DisplayFlagsDataWidget.cpp
-	GraphDataWidget.cpp  
-	MaterialDataWidget.cpp
-	ModifyObject.cpp
-	SimpleDataWidget.cpp
-	StructDataWidget.cpp
-	TableDataWidget.cpp
-	WDoubleLineEdit.cpp
-	FileManagement.cpp
-	SofaPluginManager.cpp
-	SofaVideoRecorderManager.cpp
-	SofaMouseManager.cpp
-	QDataDescriptionWidget.cpp
-	PickHandlerCallBacks.cpp
-	QDisplayPropertyWidget.cpp
-	QDisplayLinkWidget.cpp
-	QDisplayDataWidget.cpp
-	QMouseOperations.cpp               
-	QTabulationModifyObject.cpp
-	QTransformationWidget.cpp
-	QSofaListView.cpp
-	QSofaRecorder.cpp
-	QSofaStatWidget.cpp
-	QMenuFilesRecentlyOpened.cpp
-	ImageQt.cpp 
-	)
-	
-set(UI_FILES
-
-	GUI.ui
-	BaseGenGraphForm.ui
-	DialogAddObject.ui
-	PluginManager.ui
-	MouseManager.ui
-	VideoRecorderManager.ui
-	)
-
-if(SOFA-MISC_DUMP_VISITOR_INFO)
-	list(APPEND HEADER_FILES
-
-		 WindowVisitor.h
-		 QVisitorControlPanel.h
-		 PieWidget.h
-		 )
-		
-	list(APPEND SOURCE_FILES
-	
-		 GraphVisitor.cpp
-		 WindowVisitor.cpp
-		 QVisitorControlPanel.cpp
-		 PieWidget.cpp
-		 )
-	
-	list(APPEND UI_FILES VisitorGUI.ui)
-endif()
-
-
-if(SOFA-LIB_GUI_QTVIEWER)
-	list(APPEND HEADER_FILES viewer/qt/QtViewer.h)
-# 	
-	list(APPEND SOURCE_FILES viewer/qt/QtViewer.cpp)
-	
-	AddCompilerDefinitions("SOFA_GUI_QTVIEWER")
-endif()
-
-if(SOFA-LIB_GUI_QGLVIEWER)
-	list(APPEND HEADER_FILES viewer/qgl/QtGLViewer.h)
-
-	list(APPEND SOURCE_FILES viewer/qgl/QtGLViewer.cpp)
-	
-	AddCompilerDefinitions("SOFA_GUI_QGLVIEWER")
-	AddLinkerDependencies(QGLViewer)
-endif()
-
-UseQt()
-
-
-SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
-SOFA_QT4_WRAP_UI(FORM_FILES ${UI_FILES})
-
-# make mocced header / form files path from absolute to relative
-ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
-ToRelativePath(FORM_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${FORM_FILES}")
+set(MOC_HEADER_FILES
+    AddObject.h
+    DataFilenameWidget.h
+    DataWidget.h
+    DisplayFlagsDataWidget.h
+    GenGraphForm.h
+    LinkWidget.h
+    MaterialDataWidget.h
+    ModifyObject.h
+    QDataDescriptionWidget.h
+    QDisplayDataWidget.h
+    QDisplayLinkWidget.h
+    QDisplayPropertyWidget.h
+    QModelViewTableUpdater.h
+    QMouseOperations.h
+    QSofaListView.h
+    QSofaRecorder.h
+    QSofaStatWidget.h
+    QTabulationModifyObject.h
+    QTransformationWidget.h
+    RealGUI.h
+    SimpleDataWidget.h
+    SofaMouseManager.h
+    SofaPluginManager.h
+    SofaVideoRecorderManager.h
+    WDoubleLineEdit.h
+)
 
 # these header files do not need MOCcing
-list(APPEND HEADER_FILES
+set(HEADER_FILES
+    FileManagement.h
+    GraphListenerQListView.h
+    ImageQt.h
+    PickHandlerCallBacks.h
+    QMenuFilesRecentlyOpened.h
+    QModelViewTableDataContainer.h
+    SofaGUIQt.h
+    StructDataWidget.h
+    TableDataWidget.h
+    viewer/SofaViewer.h
+    viewer/VisualModelPolicy.h
+)
 
-	viewer/VisualModelPolicy.h
-	viewer/SofaViewer.h
-	GraphListenerQListView.h
-	SofaGUIQt.h
-	StructDataWidget.h
-	TableDataWidget.h
-	FileManagement.h
-	PickHandlerCallBacks.h
-	QMenuFilesRecentlyOpened.h
-	ImageQt.h
-	QModelViewTableDataContainer.h
-	)
+set(SOURCE_FILES
+    AddObject.cpp
+    DataFilenameWidget.cpp
+    DataWidget.cpp
+    DisplayFlagsDataWidget.cpp
+    FileManagement.cpp
+    GenGraphForm.cpp
+    GraphListenerQListView.cpp
+    ImageQt.cpp
+    LinkWidget.cpp
+    MaterialDataWidget.cpp
+    ModifyObject.cpp
+    PickHandlerCallBacks.cpp
+    QDataDescriptionWidget.cpp
+    QDisplayDataWidget.cpp
+    QDisplayLinkWidget.cpp
+    QDisplayPropertyWidget.cpp
+    QMenuFilesRecentlyOpened.cpp
+    QMouseOperations.cpp
+    QSofaListView.cpp
+    QSofaRecorder.cpp
+    QSofaStatWidget.cpp
+    QTabulationModifyObject.cpp
+    QTransformationWidget.cpp
+    RealGUI.cpp
+    SimpleDataWidget.cpp
+    SofaMouseManager.cpp
+    SofaPluginManager.cpp
+    SofaVideoRecorderManager.cpp
+    StructDataWidget.cpp
+    TableDataWidget.cpp
+    WDoubleLineEdit.cpp
+    viewer/SofaViewer.cpp
+)
 
-if(SOFA-MISC_DUMP_VISITOR_INFO)
-    list(APPEND HEADER_FILES  GraphVisitor.h  )
+set(UI_FILES
+    BaseGenGraphForm.ui
+    DialogAddObject.ui
+    GUI.ui
+    MouseManager.ui
+    PluginManager.ui
+    VideoRecorderManager.ui
+)
+
+if(SOFA_DUMP_VISITOR_INFO)
+    list(APPEND MOC_HEADER_FILES
+
+         WindowVisitor.h
+         QVisitorControlPanel.h
+         PieWidget.h)
+
+    list(APPEND HEADER_FILES
+
+         GraphVisitor.h)
+
+    list(APPEND SOURCE_FILES
+
+         GraphVisitor.cpp
+         WindowVisitor.cpp
+         QVisitorControlPanel.cpp
+         PieWidget.cpp)
+
+    list(APPEND UI_FILES VisitorGUI.ui)
 endif()
 
+
+if(SOFA_HAVE_QWT)
+    list(APPEND MOC_HEADER_FILES
+         GraphDataWidget.h
+         QGraphStatWidget.h
+         QEnergyStatWidget.h
+         QMomentumStatWidget.h)
+
+    list(APPEND SOURCE_FILES
+         GraphDataWidget.cpp)
+endif()
+
+# QtViewer
+if(SOFAGUI_QTVIEWER)
+    list(APPEND MOC_HEADER_FILES viewer/qt/QtViewer.h)
+    list(APPEND SOURCE_FILES viewer/qt/QtViewer.cpp)
+endif()
+
+# QGLViewer
+if(SOFAGUI_QGLVIEWER)
+    find_package(QGLViewer)
+
+    list(APPEND MOC_HEADER_FILES viewer/qgl/QtGLViewer.h)
+    list(APPEND SOURCE_FILES viewer/qgl/QtGLViewer.cpp)
+endif()
+
+if(SOFA_DUMP_VISITOR_INFO)
+endif()
+
+set(QT_USE_IMPORTED_TARGETS 1)
+set(QT4_NO_LINK_QTMAIN 1)
+find_package(Qt4 QUIET COMPONENTS qtcore qtgui qtopengl qt3support qtxml REQUIRED)
+
+qt4_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
 set(MOC_FILES_GROUP "Generated")
+qt4_wrap_ui(FORM_FILES ${UI_FILES})
 set(FORM_FILES_GROUP "Generated")
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${MOC_HEADER_FILES} ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
+# For files generated by the moc
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QT3SUPPORT_LIBRARY} ${QT_QTXML_LIBRARY})
+if(SOFA_HAVE_QWT)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Qwt)
+endif()
+if(SOFAGUI_QGLVIEWER)
+    target_link_libraries(${PROJECT_NAME} PUBLIC QGLViewer)
+endif()
+target_compile_definitions(${PROJECT_NAME} PUBLIC "SOFA_QT4")
+target_compile_definitions(${PROJECT_NAME} PUBLIC "QT3_SUPPORT")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
 
-AddCompilerDefinitions("SOFA_BUILD_SOFAGUIQT")
-AddLinkerDependencies(SofaGuiCommon Qwt SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
+install(TARGETS ${PROJECT_NAME}
+        EXPORT SofaGuiTargets
+        RUNTIME DESTINATION bin COMPONENT SofaGui_libraries
+        LIBRARY DESTINATION lib COMPONENT SofaGui_libraries
+        ARCHIVE DESTINATION lib COMPONENT SofaGui_libraries)
 
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+install(FILES ${HEADER_FILES} DESTINATION "include/sofa/gui/qt"
+        COMPONENT SofaGui_headers)
+install(FILES ${MOC_HEADER_FILES} DESTINATION "include/sofa/gui/qt"
+        COMPONENT SofaGui_headers)

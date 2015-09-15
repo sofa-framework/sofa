@@ -22,7 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaComponentMain/init.h>
+
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
+
 #include <SofaGraphComponent/Gravity.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
@@ -68,7 +74,11 @@ int main(int argc, char** argv)
     sofa::simulation::tree::init();
     sofa::helper::parse("This is a SOFA application.")
     (argc,argv);
-    sofa::component::init();
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
     sofa::gui::initMain();
     sofa::gui::GUIManager::Init(argv[0]);
 

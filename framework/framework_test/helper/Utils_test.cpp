@@ -43,7 +43,7 @@ TEST(UtilsTest, upcaseString)
 TEST(UtilsTest, getExecutablePath)
 {
     const std::string path = Utils::getExecutablePath();
-    EXPECT_TRUE(path.find("framework_test") != std::string::npos);
+    EXPECT_TRUE(path.find("SofaFramework_test") != std::string::npos);
 }
 
 TEST(UtilsTest, getExecutableDirectory)

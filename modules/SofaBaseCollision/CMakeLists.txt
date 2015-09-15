@@ -1,79 +1,76 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaBaseCollision)
 
 set(HEADER_FILES
-
-    config.h
-    initBaseCollision.h
     BaseContactMapper.h
-    DefaultPipeline.h
-    Sphere.h
-    SphereModel.h
-    SphereModel.inl
+    BaseIntTool.h
+    BaseProximityIntersection.h
+    BruteForceDetection.h
+    CapsuleIntTool.h
+    CapsuleIntTool.inl
+    CapsuleModel.h
+    CapsuleModel.inl
+    ContactListener.h
     Cube.h
     CubeModel.h
-    DiscreteIntersection.h
-    BruteForceDetection.h
+    CylinderModel.h
+    CylinderModel.inl
     DefaultContactManager.h
+    DefaultPipeline.h
+    DiscreteIntersection.h
+    Intersector.h
+    IntrCapsuleOBB.h
+    IntrCapsuleOBB.inl
+    IntrOBBOBB.h
+    IntrOBBOBB.inl
+    IntrSphereOBB.h
+    IntrSphereOBB.inl
+    IntrUtility3.h
+    IntrUtility3.inl
     MinProximityIntersection.h
     NewProximityIntersection.h
     NewProximityIntersection.inl
-    CapsuleModel.h
-    CapsuleModel.inl
-    BaseProximityIntersection.h
-    CapsuleIntTool.h
-    CapsuleIntTool.inl
-    OBBModel.inl
-    OBBModel.h
-	RigidCapsuleModel.h
-	RigidCapsuleModel.inl
-	CylinderModel.h
-	CylinderModel.inl
     OBBIntTool.h
-    IntrOBBOBB.h
-    IntrOBBOBB.inl
-    IntrUtility3.h
-    IntrUtility3.inl
-    IntrSphereOBB.h
-    IntrCapsuleOBB.h
-    IntrCapsuleOBB.inl
-    IntrSphereOBB.inl
-    Intersector.h
-    BaseIntTool.h
-    ContactListener.h
-    )
+    OBBModel.h
+    OBBModel.inl
+    RigidCapsuleModel.h
+    RigidCapsuleModel.inl
+    Sphere.h
+    SphereModel.h
+    SphereModel.inl
+    config.h
+    initBaseCollision.h
+)
 
 set(SOURCE_FILES
-
-    initBaseCollision.cpp
     BaseContactMapper.cpp
-    DefaultPipeline.cpp
-    SphereModel.cpp
-    CubeModel.cpp
-    CapsuleModel.cpp
-    DiscreteIntersection.cpp
+    BaseIntTool.cpp
+    BaseProximityIntersection.cpp
     BruteForceDetection.cpp
+    CapsuleIntTool.cpp
+    CapsuleModel.cpp
+    ContactListener.cpp
+    CubeModel.cpp
+    CylinderModel.cpp
     DefaultContactManager.cpp
+    DefaultPipeline.cpp
+    DiscreteIntersection.cpp
+    IntrCapsuleOBB.cpp
+    IntrOBBOBB.cpp
+    IntrSphereOBB.cpp
+    IntrUtility3.cpp
     MinProximityIntersection.cpp
     NewProximityIntersection.cpp
-    BaseProximityIntersection.cpp
-    CapsuleIntTool.cpp
-    OBBModel.cpp
-	RigidCapsuleModel.cpp
-	CylinderModel.cpp
     OBBIntTool.cpp
-    IntrOBBOBB.cpp
-    IntrUtility3.cpp
-    IntrCapsuleOBB.cpp
-    IntrSphereOBB.cpp
-    BaseIntTool.cpp
-    ContactListener.cpp
-    )
-
-set(GROUP_BASE_DIR "..")
+    OBBModel.cpp
+    RigidCapsuleModel.cpp
+    SphereModel.cpp
+    initBaseCollision.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_BASE_COLLISION")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_BASE_COLLISION")
-AddLinkerDependencies(SofaBaseMechanics SofaRigid FlowVR SofaSphFluid)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+SofaBase_install(${PROJECT_NAME})

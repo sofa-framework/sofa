@@ -25,7 +25,7 @@
 #ifndef SOFAHAPI_CONV_H
 #define SOFAHAPI_CONV_H
 
-//#include "SofaHAPI.h"
+#include <SofaHAPI/config.h>
 
 //HAPI include
 #include <HAPI/HAPITypes.h>

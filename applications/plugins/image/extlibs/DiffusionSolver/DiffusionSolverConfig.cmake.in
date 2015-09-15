@@ -1,0 +1,11 @@
+# CMake package configuration file for the DiffusionSolver library.
+
+@PACKAGE_INIT@
+
+find_package(CImg REQUIRED)
+
+check_required_components(DiffusionSolver)
+
+if(NOT TARGET DiffusionSolver)
+	include("${CMAKE_CURRENT_LIST_DIR}/DiffusionSolverTargets.cmake")
+endif()

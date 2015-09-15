@@ -1,9 +1,7 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaObjectInteraction)
 
 set(HEADER_FILES
-
-    config.h
-    initObjectInteraction.h
     AttachConstraint.h
     AttachConstraint.inl
     BoxStiffSpringForceField.h
@@ -14,23 +12,23 @@ set(HEADER_FILES
     PenalityContactForceField.inl
     RepulsiveSpringForceField.h
     RepulsiveSpringForceField.inl
-    )
+    config.h
+    initObjectInteraction.h
+)
 
 set(SOURCE_FILES
-
-    initObjectInteraction.cpp
     AttachConstraint.cpp
     BoxStiffSpringForceField.cpp
     InteractionEllipsoidForceField.cpp
     PenalityContactForceField.cpp
     RepulsiveSpringForceField.cpp
-    )
+    initObjectInteraction.cpp
+)
 
-set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaDeformable)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_OBJECT_INTERACTION")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_OBJECT_INTERACTION")
-AddLinkerDependencies(SofaDeformable SofaMiscMapping)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+SofaCommon_install(${PROJECT_NAME})

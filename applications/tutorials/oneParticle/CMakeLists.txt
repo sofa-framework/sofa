@@ -1,19 +1,8 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(oneParticle)
 
-set(SOURCE_FILES
+find_package(SofaSimulation)
+find_package(SofaGui)
 
-    oneParticle.cpp
-
-    )
-
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-
-AddLinkerDependencies(SofaSimulationTree SofaComponentMain SofaGuiMain)
-
-if(SOFA-LIB_SIMULATION_GRAPH_DAG)
-    AddLinkerDependencies(SofaSimulationGraph)
-endif()
-
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+add_executable(${PROJECT_NAME} oneParticle.cpp)
+target_link_libraries(${PROJECT_NAME} SofaSimulationGraph SofaGuiMain)
