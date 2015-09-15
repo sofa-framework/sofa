@@ -137,10 +137,10 @@ void BezierTriangleSetTopologyContainer::reinit()
 				wa.resize(this->getNbPoints());
 				std::fill(wa.begin(),wa.end(),(SReal)1);
 			}
-		// initialize the array of weights if necessary
-		if (d_isRationalSpline.getValue().empty()){
+		// initialize the array of boolean indicating if the nature of the Bezier triangle if necessary
+		if ((d_isRationalSpline.getValue().empty()) && (getNumberOfTriangles()>0)){
 			helper::WriteOnlyAccessor<Data <SeqBools> >  isRationalSpline=d_isRationalSpline;
-			isRationalSpline.resize(this->getNbPoints());
+			isRationalSpline.resize(this->getNumberOfTriangles());
 			std::fill(isRationalSpline.begin(),isRationalSpline.end(),false);
 		}
 		// manually creates the edge and triangle structures.
@@ -441,7 +441,7 @@ void BezierTriangleSetTopologyContainer::getLocationFromGlobalIndex(const size_t
 			} else {
 				offset -= 3;
 				BezierDegreeType degree=d_degree.getValue();
-                if (offset<3*(BezierDegreeType)(degree-1)){
+                if ((BezierDegreeType)offset<3*(degree-1)){
 					location=EDGE;
 					// get the id of the edge on which it lies
 					elementIndex=getEdgesInTriangle(itcpl->second.first)[offset/(degree-1)];
@@ -454,9 +454,9 @@ void BezierTriangleSetTopologyContainer::getLocationFromGlobalIndex(const size_t
 				}
 			}
 		} else {
-#ifndef NDEBUG
-			sout << "Error. [BezierTriangleSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInTriangle] Cannot find global index of control point with global index   "<< gi  <<sendl;
-#endif
+			location=NONE;
+			elementIndex=0;
+			elementOffset=0;
 		}
 	}
 }

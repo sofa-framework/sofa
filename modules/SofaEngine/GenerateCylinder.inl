@@ -71,16 +71,21 @@ void GenerateCylinder<DataTypes>::init()
     addInput(&f_radius);
     addInput(&f_height);
     addInput(&f_origin);
+
     addInput(&f_resolutionCircumferential);
     addInput(&f_resolutionRadial);
     addInput(&f_resolutionHeight);
-    addOutput(&f_outputTetrahedraPositions);
+
+    addOutput(&f_triangles);
     addOutput(&f_outputTrianglesPositions);
     addOutput(&f_bezierTriangleWeight);
+	addOutput(&f_isBezierTriangleRational);
+
+	
+    addOutput(&f_tetrahedra);
+    addOutput(&f_outputTetrahedraPositions);
 	addOutput(&f_bezierTetrahedronWeight);
 	addOutput(&f_isBezierTetrahedronRational);
-    addOutput(&f_tetrahedra);
-    addOutput(&f_triangles);
     setDirtyValue();
 }
 
@@ -126,7 +131,7 @@ void GenerateCylinder<DataTypes>::update()
 		for(j=1;j<=freqR;++j) {
 			r=j*radius/(freqR);
 			for(k=0;k<freqTheta;++k) {
-				theta=(Real)k*2*M_PI/freqTheta;
+				theta=(Real)(k*2*M_PI/freqTheta);
 				xValue= r*cos(theta);
 				yValue= r*sin(theta);
 				pos=Coord(xValue,yValue,zValue);
@@ -214,7 +219,7 @@ void GenerateCylinder<DataTypes>::update()
 		std::map<Edge,size_t>::iterator item; 
 		SeqTetrahedra::iterator itt;
         //size_t pointOffset=freqTheta*freqZ;
-		Real ctheta=cos(M_PI/freqTheta);
+		Real ctheta=(Real)cos(M_PI/freqTheta);
 		Coord posTmp,posTmp2;
 		std::vector<Edge> edgeArray;
 		for (tetraRank=0,itt=tetras.begin();itt!=tetras.end();++itt,++tetraRank) {
@@ -435,7 +440,7 @@ void GenerateCylinder<DataTypes>::update()
 		// vertex index = i*(freQTheta*freqR+1)
 		zValue=i*height/(freqZ-1);
 		for(k=0;k<freqTheta;++k) {
-			theta=(Real)k*2*M_PI/freqTheta;
+			theta=(Real)(k*2*M_PI/freqTheta);
 			xValue= radius*cos(theta);
 			yValue= radius*sin(theta);
 			pos=Coord(xValue,yValue,zValue);
@@ -452,7 +457,7 @@ void GenerateCylinder<DataTypes>::update()
 				r=j*radius/(freqR);
 
 				for(k=0;k<freqTheta;++k) {
-					theta=(Real)k*2*M_PI/freqTheta;
+					theta=(Real)(k*2*M_PI/freqTheta);
 					xValue= r*cos(theta);
 					yValue= r*sin(theta);
 					pos=Coord(xValue,yValue,zValue);
@@ -553,7 +558,7 @@ void GenerateCylinder<DataTypes>::update()
 		std::map<Edge,size_t>::iterator item; 
 		SeqTriangles::iterator itt;
 		size_t pointOffset=freqTheta*freqZ;
-		Real ctheta=cos(M_PI/freqTheta);
+		Real ctheta=(Real)cos(M_PI/freqTheta);
 		Coord posTmp,posTmp2;
 		size_t nbCircularSurfaceNodes;
 		std::vector<Edge> edgeArray;
