@@ -38,6 +38,8 @@ set(SOFA_FLOATING_POINT_TYPE double CACHE STRING
    is selected, SReal defaults to double.)")
 set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double both)
 
+option(SOFA_OPENMP "Compile Sofa with OpenMP multithreading." OFF)
+
 if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
     set(SOFA_DOUBLE 1)          # Used in sofa/config.h.in
 elseif(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
@@ -184,6 +186,14 @@ endif()
 set_target_properties(SofaHelper PROPERTIES FOLDER "SofaFramework")
 set_target_properties(SofaDefaultType PROPERTIES FOLDER "SofaFramework")
 set_target_properties(SofaCore PROPERTIES FOLDER "SofaFramework")
+
+## OpenMP
+if(SOFA_OPENMP)
+    find_package(OpenMP REQUIRED)
+    target_compile_definitions(SofaHelper PUBLIC "USING_OMP_PRAGMAS")
+    target_compile_options(SofaHelper PUBLIC "${OpenMP_CXX_FLAGS}")
+endif()
+
 
 
 ## CMake package configurations files
