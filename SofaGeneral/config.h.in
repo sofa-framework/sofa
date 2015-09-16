@@ -32,6 +32,7 @@
 #cmakedefine SOFA_HAVE_EIGEN2
 #cmakedefine SOFA_HAVE_TAUCS
 #cmakedefine SOFA_HAVE_PARDISO
+#cmakedefine SOFA_HAVE_METIS
 
 #ifdef SOFA_BUILD_VALIDATION
 #  define SOFA_TARGET SofaValidation
