@@ -46,13 +46,6 @@ if(XBOX)
     add_definitions("-wd4250 -wd4231 /GR /EHsc /bigobj")
 endif()
 
-# NDEBUG preprocessor macro
-if(WIN32 OR APPLE)
-    # NDEBUG and _DEBUG are automatically set in the default c/cxx flags of the right configurations
-elseif(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
-    list(APPEND compilerDefines "NDEBUG")
-endif()
-
 if(PS3)
     list(APPEND compilerDefines "SOFA_FLOAT")
     list(APPEND compilerDefines "SOFA_NO_EXTERN_TEMPLATE")

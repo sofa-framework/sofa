@@ -194,6 +194,12 @@ if(SOFA_OPENMP)
     target_compile_options(SofaHelper PUBLIC "${OpenMP_CXX_FLAGS}")
 endif()
 
+# NDEBUG preprocessor macro
+if(WIN32 OR APPLE)
+    # NDEBUG and _DEBUG are automatically set in the default c/cxx flags of the right configurations
+elseif(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
+    target_compile_definitions(SofaHelper PUBLIC "NDEBUG")
+endif()
 
 
 ## CMake package configurations files
