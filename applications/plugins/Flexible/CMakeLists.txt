@@ -186,6 +186,7 @@ if(image_FOUND)
         quadrature/ImageGaussPointSampler.h
         shapeFunction/BaseImageShapeFunction.h
         shapeFunction/DiffusionShapeFunction.h
+        shapeFunction/ImageShapeFunctionContainer.h
         shapeFunction/ShapeFunctionDiscretizer.h
         shapeFunction/VoronoiShapeFunction.h)
 
@@ -195,7 +196,6 @@ if(image_FOUND)
         quadrature/ImageGaussPointSampler.cpp
         shapeFunction/DiffusionShapeFunction.cpp
         shapeFunction/ImageShapeFunctionContainer.cpp
-        shapeFunction/ImageShapeFunctionContainer.h
         shapeFunction/ShapeFunctionDiscretizer.cpp
         shapeFunction/VoronoiShapeFunction.cpp)
 else()
