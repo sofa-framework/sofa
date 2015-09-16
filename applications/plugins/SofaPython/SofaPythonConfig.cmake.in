@@ -14,6 +14,3 @@ if(NOT TARGET SofaPython)
 endif()
 
 check_required_components(SofaPython)
-
-set(SofaPython_LIBRARIES SofaPython)
-set_and_check(SofaPython_INCLUDE_DIRS ${SofaGui_INCLUDE_DIRS} ${SofaGeneral_INCLUDE_DIRS} ${SofaMisc_INCLUDE_DIRS} @PACKAGE_SOFAPYTHON_INCLUDE_DIR@)

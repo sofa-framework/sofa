@@ -11,6 +11,3 @@ if(NOT TARGET SofaCUDA)
 endif()
 
 check_required_components(SofaCUDA)
-
-set(SofaCUDA_LIBRARIES SofaCUDA)
-set_and_check(SofaCUDA_INCLUDE_DIRS @PACKAGE_SOFACUDA_INCLUDE_DIR@ ${SofaMisc_INCLUDE_DIRS} ${SofaAdvanced_INCLUDE_DIRS})

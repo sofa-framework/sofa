@@ -52,4 +52,4 @@ endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_VOLUMETRIC_DATA")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-SofaAdvanced_install(${PROJECT_NAME})
+sofa_install_targets(SofaAdvanced ${PROJECT_NAME} ${PROJECT_NAME})

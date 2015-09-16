@@ -15,7 +15,8 @@ set(HEADER_FILES
 	include/flowvr/render/bbox.h
 	include/flowvr/render/mesh.h
 	include/flowvr/render/mesh.inl
-	include/flowvr/render/noise.h)
+	include/flowvr/render/noise.h
+)
 
 set(SOURCE_FILES
 	src/ftlm/cmdline.cpp
@@ -31,7 +32,8 @@ set(SOURCE_FILES
 	src/librender/mesh_io_off.cpp
 	src/librender/mesh_io_stl.cpp
 	src/librender/mesh_io_vtk.cpp
-	src/librender/mesh_io_lwo.cpp)
+	src/librender/mesh_io_lwo.cpp
+)
 
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaExtlibs")
@@ -47,36 +49,10 @@ endif()
 
 set_target_properties(miniFlowVR PROPERTIES DEBUG_POSTFIX "_d")
 
-install(TARGETS miniFlowVR
-        EXPORT MiniFlowVRTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+include(../../SofaFramework/SofaPackageConfigHelpers.cmake)
+sofa_create_package(MiniFlowVR 0.0 miniFlowVR "")
 
 foreach(HEADER ${HEADER_FILES})
     string(REGEX MATCH "f(.*)[/\\]" DIR ${HEADER})
     install(FILES ${HEADER} DESTINATION "include/${DIR}")
 endforeach(HEADER HEADERS)
-
-
-include(CMakePackageConfigHelpers)
-
-### MiniFlowVRConfig.cmake
-## Build tree
-set(MINIFLOWVR_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(MiniFlowVRConfig.cmake.in
-                              MiniFlowVRConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-                              PATH_VARS MINIFLOWVR_INCLUDE_DIR)
-## Install tree
-set(MINIFLOWVR_INCLUDE_DIR include)
-configure_package_config_file(MiniFlowVRConfig.cmake.in
-                              InstalledMiniFlowVRConfig.cmake
-                              INSTALL_DESTINATION lib/cmake/MiniFlowVR
-                              PATH_VARS MINIFLOWVR_INCLUDE_DIR)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/InstalledMiniFlowVRConfig.cmake
-        DESTINATION lib/cmake/MiniFlowVR
-        RENAME MiniFlowVRConfig.cmake)
-
-## MiniFlowVRTargets.cmake
-install(EXPORT MiniFlowVRTargets DESTINATION lib/cmake/MiniFlowVR)

@@ -12,4 +12,4 @@ endif()
 check_required_components(Registration)
 
 set(Registration_LIBRARIES Registration)
-set_and_check(Registration_INCLUDE_DIRS @PACKAGE_REGISTRATION_INCLUDE_DIR@ ${REGISTRATION_INCLUDE_DIR})
+set(Registration_INCLUDE_DIRS @PACKAGE_REGISTRATION_INCLUDE_DIR@ ${REGISTRATION_INCLUDE_DIR})

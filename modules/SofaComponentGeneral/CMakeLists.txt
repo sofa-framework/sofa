@@ -31,4 +31,4 @@ if(SOFAGENERAL_PARDISOSOLVER)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaPardisoSolver)
 endif()
 
-SofaGeneral_install(${PROJECT_NAME})
+sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})

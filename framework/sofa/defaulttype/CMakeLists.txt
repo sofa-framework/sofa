@@ -49,13 +49,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_DEF
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
 
-
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaFramework_libraries
-        EXPORT SofaFrameworkTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+sofa_install_targets(SofaFramework SofaDefaultType "")
 
 install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/" DESTINATION "include/sofa/defaulttype"
         COMPONENT SofaFramework_headers

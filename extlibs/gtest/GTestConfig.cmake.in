@@ -10,4 +10,4 @@ check_required_components(gtest gtest_main)
 
 set(GTest_LIBRARY gtest)
 set(GTest_MAIN_LIBRARY gtest_main)
-set_and_check(GTest_INCLUDE_DIRS @PACKAGE_GTEST_INCLUDE_DIR@)
+set(GTest_INCLUDE_DIRS @PACKAGE_GTEST_INCLUDE_DIR@)

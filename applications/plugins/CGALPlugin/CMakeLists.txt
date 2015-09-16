@@ -45,8 +45,8 @@ find_package(Boost QUIET REQUIRED COMPONENTS system thread)
 
 
 ## CGALPlugin/config.h
-configure_file(config.h.in CGALPlugin/config.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CGALPlugin/config.h DESTINATION "include/CGALPlugin")
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/CGALPlugin/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/CGALPlugin/config.h" DESTINATION "include/CGALPlugin")
 
 if(WIN32)
     # Copy CGAL dlls
@@ -71,18 +71,9 @@ if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} ${CGAL_ImageIO_LIBRARY} image)
 endif()
 
-
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT CGALPlugin_libraries
-        EXPORT CGALPluginTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
-
-install(DIRECTORY scenes/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
-
-
-## CMake package configurations files
+## Install rules for the library and the headers; CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(CGALPlugin ${CGALPLUGIN_VERSION} "" "include")
+sofa_create_package(CGALPlugin ${CGALPLUGIN_VERSION} CGALPlugin CGALPlugin)
+
+## Install rules for the resources
+install(DIRECTORY scenes/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

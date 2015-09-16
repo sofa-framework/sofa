@@ -9,4 +9,4 @@ endif()
 check_required_components(newmat)
 
 set(Newmat_LIBRARIES newmat)
-set_and_check(Newmat_INCLUDE_DIRS @PACKAGE_NEWMAT_INCLUDE_DIR@)
+set(Newmat_INCLUDE_DIRS @PACKAGE_NEWMAT_INCLUDE_DIR@)

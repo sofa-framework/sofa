@@ -11,6 +11,3 @@ if(NOT TARGET SofaHAPI)
 endif()
 
 check_required_components(SofaHAPI)
-
-set(SofaHAPI_LIBRARIES SofaHAPI)
-set_and_check(SofaHAPI_INCLUDE_DIRS @PACKAGE_SOFAHAPI_INCLUDE_DIR@ ${SofaGui_INCLUDE_DIRS})

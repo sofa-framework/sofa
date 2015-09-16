@@ -187,8 +187,8 @@ set(CUDA_SOURCES
 set(README_FILES SofaCUDA.txt)
 
 
-configure_file(config.h.in SofaCUDA/config.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaCUDA/config.h DESTINATION "include/SofaCUDA")
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaCUDA/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/SofaCUDA/config.h" DESTINATION "include/SofaCUDA")
 
 find_package(SofaAdvanced REQUIRED)
 find_package(SofaMisc REQUIRED)
@@ -203,16 +203,12 @@ endif()
 
 # Give include directories to nvcc compiler.
 # Note: keep cuda_include_directories() before cuda_add_library().
-cuda_include_directories(${CMAKE_CURRENT_BINARY_DIR})
-cuda_include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-cuda_include_directories(${SofaAdvanced_INCLUDE_DIRS})
-cuda_include_directories(${SofaMisc_INCLUDE_DIRS})
-
+cuda_include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
+cuda_include_directories("${CMAKE_BINARY_DIR}/include")
 # Let nvcc build the library
 cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS} ${WINDOWS_OPTIONS})
 
-# include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 
 option(SOFACUDA_DOUBLE "Activate double-precision support in CUDA (requires GT200+ GPU and -arch sm_13 flag." OFF)
@@ -281,15 +277,9 @@ target_link_libraries(${PROJECT_NAME} SofaOpenglVisual SofaEngine SofaSphFluid S
 # Make the compiler definitions available to nvcc
 add_definitions("${SOFACUDA_COMPILE_DEFINITIONS}")
 
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaCUDA_libraries
-        EXPORT SofaCUDATargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
-
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
-
-## CMake package configurations files
+## Install rules for the library and headers; CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaCUDA ${SOFACUDA_VERSION} "" "include")
+sofa_create_package(SofaCUDA ${SOFACUDA_VERSION} SofaCUDA SofaCUDA)
+
+## Install rules for the resources
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

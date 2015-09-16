@@ -20,32 +20,5 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaExtlibs")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-install(TARGETS csparse
-        EXPORT CSparseTargets
-        RUNTIME DESTINATION bin COMPONENT CSparse_libraries
-        LIBRARY DESTINATION lib COMPONENT CSparse_libraries
-        ARCHIVE DESTINATION lib COMPONENT CSparse_libraries
-        PUBLIC_HEADER DESTINATION include COMPONENT CSparse_headers)
-
-
-include(CMakePackageConfigHelpers)
-
-### CSparseConfig.cmake
-## Build tree
-set(CSPARSE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
-configure_package_config_file(CSparseConfig.cmake.in
-                              CSparseConfig.cmake
-                              INSTALL_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
-                              PATH_VARS CSPARSE_INCLUDE_DIR)
-## Install trew
-set(CSPARSE_INCLUDE_DIR include)
-configure_package_config_file(CSparseConfig.cmake.in
-                              InstalledCSparseConfig.cmake
-                              INSTALL_DESTINATION lib/cmake/CSparse
-                              PATH_VARS CSPARSE_INCLUDE_DIR)
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/InstalledCSparseConfig.cmake"
-        DESTINATION lib/cmake/CSparse
-        RENAME CSparseConfig.cmake)
-
-## CSparseTargets.cmake
-install(EXPORT CSparseTargets DESTINATION lib/cmake/CSparse)
+include(../../SofaFramework/SofaPackageConfigHelpers.cmake)
+sofa_create_package(CSparse 0.0 csparse "")

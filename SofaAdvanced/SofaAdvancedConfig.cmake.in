@@ -15,7 +15,3 @@ if(NOT TARGET SofaComponentAdvanced)
 endif()
 
 check_required_components(@SOFAADVANCED_TARGETS@)
-
-# For compatibility only
-set(SofaAdvanced_LIBRARIES SofaComponentAdvanced)
-set(SofaAdvanced_INCLUDE_DIRS @PACKAGE_SOFAADVANCED_INCLUDE_DIR@ ${SofaGeneral_INCLUDE_DIRS})

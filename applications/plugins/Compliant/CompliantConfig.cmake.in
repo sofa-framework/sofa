@@ -10,6 +10,3 @@ if(NOT TARGET Compliant)
 endif()
 
 check_required_components(Compliant)
-
-set(Compliant_LIBRARIES Compliant)
-set_and_check(Compliant_INCLUDE_DIRS ${SofaMisc_INCLUDE_DIRS} @PACKAGE_COMPLIANT_INCLUDE_DIR@)

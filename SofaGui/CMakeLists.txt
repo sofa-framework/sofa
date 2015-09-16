@@ -96,10 +96,7 @@ endif()
 ## IDE folder
 foreach(TARGET ${SOFAGUI_TARGETS})
     set_target_properties(${TARGET} PROPERTIES FOLDER "SofaGui")
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>") # For SofaGui/config.h
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${SofaGeneral_INCLUDE_DIRS}>")
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${SofaMisc_INCLUDE_DIRS}>")
-    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${SofaAdvanced_INCLUDE_DIRS}>")
+    target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
     target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../applications>")
     # target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${QT_INCLUDES}>")
     set_target_properties(${TARGET} PROPERTIES DEBUG_POSTFIX "_d")
@@ -108,9 +105,9 @@ endforeach()
 
 
 ## SofaGuiConfig/config.h
-configure_file(config.h.in SofaGui/config.h)
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SofaGui/config.h" DESTINATION "include/SofaGui")
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaGui/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/SofaGui/config.h" DESTINATION "include/SofaGui")
 
 ## CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaGui ${SOFAGUI_VERSION} "" "include")
+sofa_write_package_config_files(SofaGui ${SOFAGUI_VERSION})

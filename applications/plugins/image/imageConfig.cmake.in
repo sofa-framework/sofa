@@ -13,6 +13,3 @@ if(NOT TARGET image)
 endif()
 
 check_required_components(image)
-
-set(image_LIBRARIES image)
-set_and_check(image_INCLUDE_DIRS @PACKAGE_IMAGE_INCLUDE_DIR@ ${CImg_INCLUDE_DIRS} ${SofaBase_INCLUDE_DIRS} ${Newmat_INCLUDE_DIRS})

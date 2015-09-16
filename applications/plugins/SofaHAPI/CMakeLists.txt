@@ -58,8 +58,7 @@ if(WIN32)
               "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
 endif()
 
-set(SOFAHAPI_DEPENDENCY_INCLUDE_DIR ${SofaGeneral_INCLUDE_DIRS}
-                                    ${HAPI_INCLUDE_DIR}
+set(SOFAHAPI_DEPENDENCY_INCLUDE_DIR ${HAPI_INCLUDE_DIR}
                                     ${H3DUTIL_INCLUDE_DIR})
 
 if(H3D_USE_DEPENDENCIES_ONLY)
@@ -84,7 +83,7 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction SofaHaptics ${HAPI_LIBRARIES} ${H3DUTIL_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAHAPI_DEPENDENCY_INCLUDE_DIR}>")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
@@ -92,19 +91,14 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAHAPI_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAHAPI")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-configure_file(SofaHAPI.h.in SofaHAPI/config.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaHAPI/config.h DESTINATION "include/SofaHAPI")
+## SofaHAPI/config.h
+configure_file(SofaHAPI.h.in "${CMAKE_BINARY_DIR}/include/SofaHAPI/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/SofaHAPI/config.h" DESTINATION "include/SofaHAPI")
 
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaHAPI_libraries
-        EXPORT SofaHAPITargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
+## Install rules for the library and the header; CMake package configurations files
+include(SofaPackageConfigHelpers)
+sofa_create_package(SofaHAPI ${SOFAHAPI_VERSION} SofaHAPI SofaHAPI)
 
+## Install rules for the resources
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
-## CMake package configurations files
-include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaHAPI ${SOFAHAPI_VERSION} "" "include")

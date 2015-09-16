@@ -52,33 +52,5 @@ endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-
-install(TARGETS ${PROJECT_NAME}
-        EXPORT NewmatTargets
-        RUNTIME DESTINATION bin COMPONENT Newmat_libraries
-        LIBRARY DESTINATION lib COMPONENT Newmat_libraries
-        ARCHIVE DESTINATION lib COMPONENT Newmat_libraries
-        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}" COMPONENT Newmat_headers)
-
-
-include(CMakePackageConfigHelpers)
-
-### NewmatConfig.cmake
-## Build tree
-set(NEWMAT_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(NewmatConfig.cmake.in
-                              NewmatConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-                              PATH_VARS NEWMAT_INCLUDE_DIR)
-## Install tree
-set(NEWMAT_INCLUDE_DIR include)
-configure_package_config_file(NewmatConfig.cmake.in
-                              InstalledNewmatConfig.cmake
-                              INSTALL_DESTINATION lib/cmake/Newmat
-                              PATH_VARS NEWMAT_INCLUDE_DIR)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/InstalledNewmatConfig.cmake
-        DESTINATION lib/cmake/Newmat
-        RENAME NewmatConfig.cmake)
-
-## NewmatTargets.cmake
-install(EXPORT NewmatTargets DESTINATION lib/cmake/Newmat)
+include(../../SofaFramework/SofaPackageConfigHelpers.cmake)
+sofa_create_package(Newmat 2.6.2 newmat newmat)

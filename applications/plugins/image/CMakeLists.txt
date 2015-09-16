@@ -67,8 +67,8 @@ find_package(Newmat REQUIRED)
 find_package(CImg REQUIRED)
 
 
-configure_file(config.h.in image/config.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/image/config.h DESTINATION "include/image")
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/image/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/image/config.h" DESTINATION "include/image")
 
 if(NOT SOFA-NO_OPENGL)
     list(APPEND HEADER_FILES ImageViewer.h)
@@ -108,7 +108,7 @@ if(FREENECT_FOUND)
     target_link_libraries(${PROJECT_NAME} freenect_sync)
 endif()
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CImg_INCLUDE_DIRS}>")
 if(FREENECT_FOUND)
@@ -132,17 +132,6 @@ if(APPLE)
     include_directories(${X11_X11_INCLUDE_PATH})
 endif()
 
-
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT image_libraries
-        EXPORT imageTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
-
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
-
 find_package(SofaTest QUIET)
 if(SofaTest_FOUND)
     add_subdirectory(image_test)
@@ -153,6 +142,9 @@ if(SofaGui_FOUND AND SOFA_GUI_QT)
     add_subdirectory(image_gui)
 endif()
 
-## CMake package configurations files
+## Install rules for the library and headers; CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(image ${IMAGE_VERSION} "" "include")
+sofa_create_package(image ${IMAGE_VERSION} ${PROJECT_NAME} image)
+
+## Install rules for the resources
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

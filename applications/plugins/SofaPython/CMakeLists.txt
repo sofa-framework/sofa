@@ -118,8 +118,8 @@ find_package(SofaMisc REQUIRED)
 add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/../../..\"")
 
 # SofaPython/config.h
-configure_file(config.h.in SofaPython/config.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaPython/config.h DESTINATION "include/SofaPython")
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaPython/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/SofaPython/config.h" DESTINATION "include/SofaPython")
 
 set(SOFAPYTHON_COMPILER_FLAGS "-DSOFA_BUILD_SOFAPYTHON")
 
@@ -143,19 +143,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAPYTHON_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAPYTHON_COMPILER_FLAGS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
-
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaPython_libraries
-        EXPORT SofaPythonTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
-
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
-
-## CMake package configurations files
+## Install rules for the library and headers; CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaPython ${SOFAPYTHON_VERSION} "" "include")
+sofa_create_package(SofaPython ${SOFAPYTHON_VERSION} ${PROJECT_NAME} include/SofaPython)
+
+## Install rules for the resources
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

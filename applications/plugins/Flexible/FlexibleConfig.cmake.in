@@ -11,6 +11,3 @@ if(NOT TARGET Flexible)
 endif()
 
 check_required_components(Flexible)
-
-set(Flexible_LIBRARIES Flexible)
-set_and_check(Flexible_INCLUDE_DIRS @PACKAGE_FLEXIBLE_INCLUDE_DIR@ ${SofaMisc_INCLUDE_DIRS} ${image_INCLUDE_DIRS})
