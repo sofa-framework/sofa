@@ -17,21 +17,22 @@ set(SOURCE_FILES
     initSparseSolver.cpp
 )
 
-find_package(Metis QUIET)
-
-if(Metis_FOUND)
+if(SOFA_HAVE_METIS)
     list(APPEND HEADER_FILES SparseLDLSolver.h SparseLDLSolver.inl SparseLDLSolverImpl.h)
     list(APPEND SOURCE_FILES SparseLDLSolver.h SparseLDLSolver.cpp)
+    message(STATUS "SofaSparseSolver: metis was found, SparseLDLSolver will be built")
 else()
-    message(STATUS "SofaSparseSolver: could not find libmetis, won't build SparseLDLSolver")
+    message(STATUS "SofaSparseSolver: metis was not found, SparseLDLSolver won't be built")
 endif()
 
 if(SOFA_HAVE_CSPARSE)
     list(APPEND HEADER_FILES SparseCholeskySolver.h)
     list(APPEND HEADER_FILES SparseLUSolver.h)
-
     list(APPEND SOURCE_FILES SparseCholeskySolver.cpp)
     list(APPEND SOURCE_FILES SparseLUSolver.cpp)
+    message(STATUS "SofaSparseSolver: csparse was found, SparseLUSolver and SparseCholeskySolver will be built")
+else()
+    message(STATUS "SofaSparseSolver: csparse was not found, SparseLUSolver and SparseCholeskySolver won't be built")
 endif()
 
 
