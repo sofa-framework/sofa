@@ -205,6 +205,10 @@ elseif(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
     target_compile_definitions(SofaHelper PUBLIC "NDEBUG")
 endif()
 
+if(WIN32 OR XBOX)
+    # Increase Number of Sections in .Obj file
+    target_compile_options(SofaHelper PUBLIC "/bigobj")
+endif()
 
 if(MSVC)
     if(SOFA_VECTORIZE)
