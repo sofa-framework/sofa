@@ -114,6 +114,9 @@ find_package(SofaGui REQUIRED)
 find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
 
+# TODO: Get rid of absolute paths in SofaPython
+add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/../../..\"")
+
 # SofaPython/config.h
 configure_file(config.h.in SofaPython/config.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaPython/config.h DESTINATION "include/SofaPython")
