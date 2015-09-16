@@ -18,33 +18,5 @@ endif()
 
 set_target_properties(ARTrackLib PROPERTIES COMPILE_FLAGS ${ARTRACK_COMPILER_FLAGS})
 
-
-install(TARGETS ARTrackLib
-        EXPORT ARTrackLibTargets
-        RUNTIME DESTINATION bin COMPONENT ARTrackLib_libraries
-        LIBRARY DESTINATION lib COMPONENT ARTrackLib_libraries
-        ARCHIVE DESTINATION lib COMPONENT ARTrackLib_libraries
-        PUBLIC_HEADER DESTINATION include COMPONENT ARTrackLib_headers)
-
-
-include(CMakePackageConfigHelpers)
-
-### ARTrackLibConfig.cmake
-## Build tree
-set(ARTRACK_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
-configure_package_config_file(ARTrackLibConfig.cmake.in
-                              ARTrackLibConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-                              PATH_VARS ARTRACK_INCLUDE_DIR)
-## Install tree
-set(ARTRACK_INCLUDE_DIR include)
-configure_package_config_file(ARTrackLibConfig.cmake.in
-                              InstalledARTrackLibConfig.cmake
-                              INSTALL_DESTINATION lib/cmake/ARTrackLib
-                              PATH_VARS ARTRACK_INCLUDE_DIR)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/InstalledARTrackLibConfig.cmake
-        DESTINATION lib/cmake/ARTrackLib
-        RENAME ARTrackLibConfig.cmake)
-
-## ARTrackLibTargets.cmake
-install(EXPORT ARTrackLibTargets DESTINATION lib/cmake/ARTrackLib)
+include(../../SofaFramework/SofaPackageConfigHelpers.cmake)
+sofa_create_package(ARTrackLib 0.0 ARTrackLib "")

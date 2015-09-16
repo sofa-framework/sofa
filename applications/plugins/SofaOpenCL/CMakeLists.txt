@@ -93,14 +93,6 @@ add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/../../..\"")
 add_definitions("-DSOFA_BUILD_GPU_OPENCL")
 target_link_libraries(${PROJECT_NAME} ${OPENCL_LIBRARIES} SofaHelper SofaEngine SofaSphFluid SofaUserInteraction csparse) # taucs taucs_mt system-taucs)
 
-
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaOpenCL_libraries
-        EXPORT SofaOpenCLTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
-
-## CMake package configurations files
+## Install rules for the library and headers; CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaOpenCL ${SOFAOPENCL_VERSION} "" "include")
+sofa_create_package(SofaOpenCL ${SOFAOPENCL_VERSION} SofaOpenCL SofaOpenCL)

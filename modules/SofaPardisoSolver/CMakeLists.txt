@@ -16,4 +16,4 @@ target_link_libraries(${PROJECT_NAME} SofaSimulationTree SofaMeshCollision SofaB
 target_link_libraries(${PROJECT_NAME} pardiso500-GNU461-X86-64 gfortran blas lapack gomp)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_PARDISO_SOLVER")
 
-SofaGeneral_install(${PROJECT_NAME})
+sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})

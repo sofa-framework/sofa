@@ -36,17 +36,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOF
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
-
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaSimpleGUI_libraries
-        EXPORT SofaSimpleGUITargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
-
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
-
-## CMake package configurations files
+## Install rules for the library and headers; CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaSimpleGUI ${SOFASIMPLEGUI_VERSION} "" "include")
+sofa_create_package(SofaSimpleGUI ${SOFASIMPLEGUI_VERSION} ${PROJECT_NAME} SofaSimpleGUI)
+
+## Install rules for the resources
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

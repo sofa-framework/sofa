@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(ManifoldTopologies)
 
-set(MANIFOLDTOPOLOGIES_MAJOR_VERSION 0)
-set(MANIFOLDTOPOLOGIES_MINOR_VERSION 1)
-set(MANIFOLDTOPOLOGIES_VERSION ${MANIFOLDTOPOLOGIES_MAJOR_VERSION}.${MANIFOLDTOPOLOGIES_MINOR_VERSION})
+set(MANIFOLDTOPOLOGIES_VERSION 0.1)
 
 set(HEADER_FILES
     ManifoldEdgeSetGeometryAlgorithms.h
@@ -38,12 +36,7 @@ set(README_FILES ManifoldTopologies.txt)
 
 find_package(SofaBase REQUIRED)
 
-## ManifoldTopologies/config.h
-configure_file(config.h.in ManifoldTopologies/config.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ManifoldTopologies/config.h DESTINATION "include/ManifoldTopologies")
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")

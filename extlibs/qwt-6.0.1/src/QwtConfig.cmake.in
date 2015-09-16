@@ -9,4 +9,4 @@ if(NOT TARGET qwt)
 endif()
 
 set(Qwt_LIBRARIES qwt)
-set_and_check(Qwt_INCLUDE_DIRS @PACKAGE_QWT_INCLUDE_DIR@)
+set(Qwt_INCLUDE_DIRS @PACKAGE_QWT_INCLUDE_DIR@)

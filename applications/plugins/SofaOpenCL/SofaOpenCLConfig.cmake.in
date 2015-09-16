@@ -10,6 +10,3 @@ if(NOT TARGET SofaOpenCL)
 endif()
 
 check_required_components(SofaOpenCL)
-
-set(SofaOpenCL_LIBRARIES SofaOpenCL)
-set_and_check(SofaOpenCL_INCLUDE_DIRS @PACKAGE_SOFAOPENCL_INCLUDE_DIR@ ${SofaGeneral_INCLUDE_DIRS} ${OPENCL_INCLUDE_DIRS})

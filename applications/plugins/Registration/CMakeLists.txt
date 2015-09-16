@@ -48,15 +48,15 @@ else()
 endif()
 
 ## Registration/config.h
-configure_file(config.h.in Registration/config.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Registration/config.h DESTINATION "include/Registration")
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/Registration/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/Registration/config.h" DESTINATION "include/Registration")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} image)
 endif()
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${REGISTRATION_VERSION})
@@ -68,14 +68,6 @@ if(SofaTest_FOUND)
     add_subdirectory(Registration_test)
 endif()
 
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT Registration_libraries
-        EXPORT RegistrationTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
-
-## CMake package configurations files
+## Install rules for the library; CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(Registration ${REGISTRATION_VERSION} "" "include")
+sofa_create_package(Registration ${REGISTRATION_VERSION} Registration Registration)

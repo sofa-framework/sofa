@@ -203,8 +203,9 @@ else()
 endif()
 
 
-configure_file(config.h.in Flexible/config.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Flexible/config.h DESTINATION "include/Flexible")
+## Flexible/config.h
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/Flexible/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/Flexible/config.h" DESTINATION "include/Flexible")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaComponentMisc)
@@ -244,32 +245,26 @@ endif()
 if(UNIX)
     target_link_libraries(${PROJECT_NAME} pthread)
 endif()
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${FLEXIBLE_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${FLEXIBLE_COMPILER_FLAGS}")
-
-
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT Flexible_libraries
-        EXPORT FlexibleTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
-
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
-
-foreach(HEADER ${HEADER_FILES})
-    string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
-    install(FILES ${HEADER} DESTINATION "include/${PROJECT_NAME}/${DIR}")
-endforeach(HEADER HEADERS)
 
 find_package(SofaTest QUIET)
 if(SofaTest_FOUND)
     add_subdirectory(Flexible_test)
 endif()
 
-## CMake package configurations files
+## Install rules for the library; CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(Flexible ${FLEXIBLE_VERSION} "" "include")
+sofa_create_package(Flexible ${FLEXIBLE_VERSION} Flexible Flexible)
+
+## Install rules for the resources
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
+
+## Hand-crafted install rules for the headers, to preserve the directory structure
+foreach(HEADER ${HEADER_FILES})
+    string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
+    install(FILES ${HEADER} DESTINATION "include/Flexible/${DIR}")
+endforeach(HEADER HEADERS)

@@ -9,4 +9,4 @@ endif()
 check_required_components(csparse)
 
 set(CSparse_LIBRARIES csparse)
-set_and_check(CSparse_INCLUDE_DIRS @PACKAGE_CSPARSE_INCLUDE_DIR@)
+set(CSparse_INCLUDE_DIRS @PACKAGE_CSPARSE_INCLUDE_DIR@)

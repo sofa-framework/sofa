@@ -9,6 +9,3 @@ if(NOT TARGET SofaComponentBase)
 endif()
 
 check_required_components(@SOFABASE_TARGETS@)
-
-set(SofaBase_LIBRARIES SofaComponentBase)
-set(SofaBase_INCLUDE_DIRS @PACKAGE_SOFABASE_INCLUDE_DIR@ ${SofaSimulation_INCLUDE_DIRS})

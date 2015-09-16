@@ -93,40 +93,5 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${QGLVIEWER_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-install(TARGETS ${PROJECT_NAME}
-        EXPORT QGLViewerTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        PUBLIC_HEADER DESTINATION include)
-
-
-include(CMakePackageConfigHelpers)
-
-## QGLViewerConfigVersion.cmake
-write_basic_package_version_file(QGLViewerConfigVersion.cmake
-                                 VERSION ${QGLVIEWER_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/QGLViewerConfigVersion.cmake"
-        DESTINATION lib/cmake/QGLViewer)
-
-
-### QGLViewerConfig.cmake
-## Build tree
-set(QGLVIEWER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-configure_package_config_file(QGLViewerConfig.cmake.in
-                              QGLViewerConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_BINARY_DIR}/QGLViewer/
-                              PATH_VARS QGLVIEWER_INCLUDE_DIR)
-## Install tree
-set(QGLVIEWER_INCLUDE_DIR include)
-configure_package_config_file(QGLViewerConfig.cmake.in
-                              InstalledQGLViewerConfig.cmake
-                              INSTALL_DESTINATION lib/cmake/QGLViewer
-                              PATH_VARS QGLVIEWER_INCLUDE_DIR)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/InstalledQGLViewerConfig.cmake
-        DESTINATION lib/cmake/QGLViewer
-        RENAME QGLViewerConfig.cmake)
-
-## QGLViewerTargets.cmake
-install(EXPORT QGLViewerTargets DESTINATION lib/cmake/QGLViewer)
+include(../../../SofaFramework/SofaPackageConfigHelpers.cmake)
+sofa_create_package(QGLViewer 2.4.0 QGLViewer QGLViewer)

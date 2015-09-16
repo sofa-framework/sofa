@@ -32,4 +32,4 @@ if(WIN32)
     target_link_libraries(${PROJECT_NAME} PRIVATE blas lapack)
 endif()
 
-SofaGeneral_install(${PROJECT_NAME})
+sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})

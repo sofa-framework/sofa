@@ -37,36 +37,5 @@ endif()
 target_include_directories(gtest PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
 target_include_directories(gtest_main PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
 
-
-## Installation rules
-install(DIRECTORY include/ DESTINATION include)
-install(TARGETS gtest gtest_main
-        EXPORT GTestTargets
-        COMPONENT gtest_libraries
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
-
-
-### GTestConfig.cmake
-
-include(CMakePackageConfigHelpers)
-
-### GTestConfig.cmake
-## Build tree
-set(GTEST_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
-configure_package_config_file(GTestConfig.cmake.in
-                              GTestConfig.cmake
-                              INSTALL_DESTINATION none
-                              PATH_VARS GTEST_INCLUDE_DIR)
-## Install tree
-set(GTEST_INCLUDE_DIR include)
-configure_package_config_file(GTestConfig.cmake.in
-                              InstalledGTestConfig.cmake
-                              INSTALL_DESTINATION lib/cmake/GTest
-                              PATH_VARS GTEST_INCLUDE_DIR)
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/InstalledGTestConfig.cmake"
-        DESTINATION lib/cmake/GTest
-        RENAME GTestConfig.cmake)
-
-## GTestTargets.cmake
-install(EXPORT GTestTargets DESTINATION lib/cmake/GTest)
+include(../../SofaFramework/SofaPackageConfigHelpers.cmake)
+sofa_create_package(GTest 2.6.2 "gtest;gtest_main" "")

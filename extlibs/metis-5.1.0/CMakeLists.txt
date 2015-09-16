@@ -23,32 +23,5 @@ if(UNIX)
 endif()
 
 
-install(TARGETS ${PROJECT_NAME}
-        EXPORT MetisTargets
-        RUNTIME DESTINATION bin COMPONENT Metis_libraries
-        LIBRARY DESTINATION lib COMPONENT Metis_libraries
-        ARCHIVE DESTINATION lib COMPONENT Metis_libraries
-        PUBLIC_HEADER DESTINATION include COMPONENT Metis_headers)
-
-
-include(CMakePackageConfigHelpers)
-
-### MetisConfig.cmake
-## Build tree
-set(METIS_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
-configure_package_config_file(MetisConfig.cmake.in
-                              ${CMAKE_CURRENT_BINARY_DIR}/MetisConfig.cmake
-                              INSTALL_DESTINATION metis
-                              PATH_VARS METIS_INCLUDE_DIR)
-## Install tree
-set(METIS_INCLUDE_DIR include)
-configure_package_config_file(MetisConfig.cmake.in
-                              ${CMAKE_CURRENT_BINARY_DIR}/InstalledMetisConfig.cmake
-                              INSTALL_DESTINATION lib/metis/cmake
-                              PATH_VARS METIS_INCLUDE_DIR)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/InstalledMetisConfig.cmake
-        DESTINATION lib/metis/cmake
-        RENAME MetisConfig.cmake)
-
-## MetisTargets.cmake
-install(EXPORT MetisTargets DESTINATION lib/metis/cmake)
+include(../../SofaFramework/SofaPackageConfigHelpers.cmake)
+sofa_create_package(Metis 5.1.0 metis "")

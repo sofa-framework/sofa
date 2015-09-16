@@ -25,6 +25,3 @@ if(NOT TARGET SofaGuiCommon)
 endif()
 
 check_required_components(@SOFAGUI_TARGETS@)
-
-set(SofaGui_LIBRARIES SofaGuiCommon)
-set(SofaGui_INCLUDE_DIRS @PACKAGE_SOFAGUI_INCLUDE_DIR@ ${SofaGeneral_INCLUDE_DIRS} ${SofaMisc_INCLUDE_DIRS} ${SofaAdvanced_INCLUDE_DIRS})

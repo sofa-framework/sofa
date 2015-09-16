@@ -9,4 +9,4 @@ endif()
 check_required_components(tinyxml)
 
 set(TinyXML_LIBRARIES tinyxml)
-set_and_check(TinyXML_INCLUDE_DIRS @PACKAGE_TINYXML_INCLUDE_DIR@)
+set(TinyXML_INCLUDE_DIRS @PACKAGE_TINYXML_INCLUDE_DIR@)

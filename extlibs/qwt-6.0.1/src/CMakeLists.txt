@@ -55,39 +55,5 @@ set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaExtlibs")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${QWT_VERSION})
 
-install(TARGETS ${PROJECT_NAME}
-        EXPORT QwtTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        PUBLIC_HEADER DESTINATION include)
-
-
-include(CMakePackageConfigHelpers)
-
-## QwtConfigVersion.cmake
-write_basic_package_version_file(QwtConfigVersion.cmake
-                                 VERSION ${QWT_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/QwtConfigVersion.cmake DESTINATION lib/cmake/Qwt)
-
-
-### QwtConfig.cmake
-## Build tree
-set(QWT_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-configure_package_config_file(QwtConfig.cmake.in
-                              QwtConfig.cmake
-                              INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-                              PATH_VARS QWT_INCLUDE_DIR)
-## Install tree
-set(QWT_INCLUDE_DIR include)
-configure_package_config_file(QwtConfig.cmake.in
-                              InstalledQwtConfig.cmake
-                              INSTALL_DESTINATION lib/cmake/Qwt
-                              PATH_VARS QWT_INCLUDE_DIR)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/InstalledQwtConfig.cmake
-        DESTINATION lib/cmake/Qwt
-        RENAME QwtConfig.cmake)
-
-## QwtTargets.cmake
-install(EXPORT QwtTargets DESTINATION lib/cmake/Qwt)
+include(../../../SofaFramework/SofaPackageConfigHelpers.cmake)
+sofa_create_package(Qwt 6.0.1 qwt)

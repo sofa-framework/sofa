@@ -162,8 +162,8 @@ list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${EIGEN3_INCLUDE_DIR})
 set(SOFA_HAVE_EIGEN2 1)
 
 ## sofa/config.h
-configure_file(config.h.in sofa/config.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/config.h DESTINATION "include/sofa")
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/sofa/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config.h" DESTINATION "include/sofa")
 # make sure everyone in the build tree can see <sofa/config.h>
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
@@ -174,8 +174,8 @@ set(SOFAFRAMEWORK_VERSION "15.12.0")
 ## sofa/version.h
 set(SOFA_VERSION "151200")
 set(SOFA_VERSION_STR "\"devel\"")
-configure_file(../framework/sofa/version.h.in sofa/version.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/version.h DESTINATION include/sofa)
+configure_file(../framework/sofa/version.h.in "${CMAKE_BINARY_DIR}/include/sofa/version.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/sofa/version.h" DESTINATION include/sofa)
 
 
 ## Subdirectories
@@ -216,24 +216,26 @@ if(MSVC)
     endif()
 endif()
 
+set(SOFAFRAMEWORK_TARGETS SofaCore SofaDefaultType SofaHelper)
+
 ## CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaFramework ${SOFAFRAMEWORK_VERSION} "${CMAKE_CURRENT_SOURCE_DIR}/../framework" "include")
+sofa_write_package_config_files(SofaFramework ${SOFAFRAMEWORK_VERSION})
 
 ## CMakeSofaCreateTarget.cmake
 # Build tree
-configure_file(CMakeSofaCreateTarget.cmake CMakeSofaCreateTarget.cmake COPYONLY)
+configure_file(CMakeSofaCreateTarget.cmake ${CMAKE_BINARY_DIR}/cmake/CMakeSofaCreateTarget.cmake COPYONLY)
 # Install tree
 install(FILES CMakeSofaCreateTarget.cmake DESTINATION lib/cmake/SofaFramework)
 
 ## SofaPackageConfigHelpers.cmake
 # Build tree
-configure_file(SofaPackageConfigHelpers.cmake SofaPackageConfigHelpers.cmake COPYONLY)
+configure_file(SofaPackageConfigHelpers.cmake ${CMAKE_BINARY_DIR}/cmake/SofaPackageConfigHelpers.cmake COPYONLY)
 # Install tree
 install(FILES SofaPackageConfigHelpers.cmake DESTINATION lib/cmake/SofaFramework)
 
 ## CMakeParseLibraryList.cmake
 # Build tree
-configure_file(CMakeParseLibraryList.cmake CMakeParseLibraryList.cmake COPYONLY)
+configure_file(CMakeParseLibraryList.cmake ${CMAKE_BINARY_DIR}/cmake/CMakeParseLibraryList.cmake COPYONLY)
 # Install tree
 install(FILES CMakeParseLibraryList.cmake DESTINATION lib/cmake/SofaFramework)

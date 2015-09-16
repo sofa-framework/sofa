@@ -28,22 +28,12 @@ find_package(SofaGeneral REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiMain SofaComponentGeneral)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SofaGui_INCLUDE_DIRS}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SofaGeneral_INCLUDE_DIRS}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAPHYSICSAPI_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAPHYSICSAPI")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-## CMake package configurations files
+## Install rules and CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaPhysicsAPI ${SOFAPHYSICSAPI_VERSION} "" "include")
-
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaPhysicsAPI_libraries
-        EXPORT SofaPhysicsAPITargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}" SofaPhysicsAPI_headers)
+sofa_create_package(SofaPhysicsAPI ${SOFAPHYSICSAPI_VERSION} ${PROJECT_NAME} include/SofaPhysicsAPI)

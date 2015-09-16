@@ -9,4 +9,4 @@ endif()
 check_required_components(ARTrackLib)
 
 set(ARTrackLib_LIBRARIES ARTrackLib)
-set_and_check(ARTrackLib_INCLUDE_DIRS @PACKAGE_ARTRACK_INCLUDE_DIR@)
+set(ARTrackLib_INCLUDE_DIRS @PACKAGE_ARTRACK_INCLUDE_DIR@)

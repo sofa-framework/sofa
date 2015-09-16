@@ -52,14 +52,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_TES
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaTest_libraries
-        EXPORT SofaTestTargets
-        PUBLIC_HEADER DESTINATION include/SofaTest
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
-
-## CMake package configurations files
+## Install rules for the library and headers; CMake package configurations files
 include(SofaPackageConfigHelpers)
-sofa_write_package_config_files(SofaTest ${SOFATEST_VERSION} "" "include")
+sofa_create_package(SofaTest ${SOFATEST_VERSION} ${PROJECT_NAME} include/SofaTest)
