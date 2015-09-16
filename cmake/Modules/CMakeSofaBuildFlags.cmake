@@ -61,15 +61,6 @@ elseif(CMAKE_BUILD_TYPE MATCHES "Debug")
     list(APPEND compilerDefines "SOFA_DEBUG")
 endif()
 
-# SSE Flags on Win32
-if(SOFA-MISC_VECTORIZE)
-    if(MSVC)
-	    set(ARCH_FLAGS "/arch:SSE2 /fp:fast")
-	    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ARCH_FLAGS}")
-	    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${ARCH_FLAGS}")
-    endif()
-endif()
-
 
 # tests activation
 enable_testing()

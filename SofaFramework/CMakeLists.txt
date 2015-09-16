@@ -40,6 +40,10 @@ set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double both)
 
 option(SOFA_OPENMP "Compile Sofa with OpenMP multithreading." OFF)
 
+if(MSVC)
+    option(SOFA_VECTORIZE "Enable the use of SSE2 instructions by the compiler (Only available for MSVC)." OFF)
+endif()
+
 if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
     set(SOFA_DOUBLE 1)          # Used in sofa/config.h.in
 elseif(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
@@ -201,6 +205,12 @@ elseif(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
     target_compile_definitions(SofaHelper PUBLIC "NDEBUG")
 endif()
 
+
+if(MSVC)
+    if(SOFA_VECTORIZE)
+        target_compile_options(SofaHelper PUBLIC "/arch:SSE2 /fp:fast")
+    endif()
+endif()
 
 ## CMake package configurations files
 include(SofaPackageConfigHelpers)
