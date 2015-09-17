@@ -156,7 +156,6 @@ if(SOFA_BUILD_METIS)
     add_subdirectory(extlibs/metis-5.1.0 "extlibs/metis")
 endif()
 
-
 add_subdirectory(SofaFramework)
 add_subdirectory(SofaSimulation)
 add_subdirectory(SofaBase)
@@ -165,6 +164,15 @@ add_subdirectory(SofaGeneral)
 add_subdirectory(SofaAdvanced)
 add_subdirectory(SofaMisc)
 add_subdirectory(SofaGui)
+
+option(SOFA_BUILD_CGOGN
+"Build the CGoGN library in the extlibs directory. CGoGN is an implementation of combinatorial maps topologies." OFF)
+if(SOFA_BUILD_CGOGN)
+    if ((NOT WIN32) AND NOT SOFA_USE_C++11 )
+        message(AUTHOR_WARNING "Building the CGoGN library. It is recommended to activate SOFA_USE_C++11.")
+    endif()
+    add_subdirectory(extlibs/CGoGN extlibs/CGoGN)
+endif()
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(tools/SofaGTestMain)
