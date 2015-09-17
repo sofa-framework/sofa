@@ -31,10 +31,6 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGraphComponent SofaBaseCollision SofaUserInteraction SofaBaseVisual SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUI")
 
-install(TARGETS ${PROJECT_NAME}
-        EXPORT SofaGuiTargets
-        RUNTIME DESTINATION bin COMPONENT SofaGui_libraries
-        LIBRARY DESTINATION lib COMPONENT SofaGui_libraries
-        ARCHIVE DESTINATION lib COMPONENT SofaGui_libraries)
+sofa_install_targets(SofaGui SofaGuiCommon "")
 
-install(FILES ${HEADER_FILES} DESTINATION include/sofa/gui COMPONENT SofaGui_headers)
+install(FILES ${HEADER_FILES} DESTINATION include/sofa/gui)

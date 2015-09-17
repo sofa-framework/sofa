@@ -17,13 +17,10 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGuiCommon)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIGLUT")
 
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaGui_libraries
-        EXPORT SofaGuiTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+include(SofaPackageConfigHelpers)
+sofa_install_targets(SofaGui SofaGuiGlut "")
+
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
 install(DIRECTORY ${SofaGuiGlut_SOURCE_DIR}/ DESTINATION "include/SofaGuiGlut"
-        COMPONENT SofaGui_headers
         FILES_MATCHING PATTERN "*.h" PATTERN "*.inl")

@@ -47,10 +47,5 @@ add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${
 target_link_libraries(${PROJECT_NAME} SofaGuiMain SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaGui_libraries
-        EXPORT SofaGuiTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
+include(SofaPackageConfigHelpers)
+sofa_install_targets(SofaGui SofaModeler "SofaModeler")
