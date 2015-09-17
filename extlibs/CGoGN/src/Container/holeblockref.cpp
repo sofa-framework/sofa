@@ -29,9 +29,9 @@
 #include <cassert>
 #include <stdio.h>
 #include <string.h>
-#include <libxml/encoding.h>
-#include <libxml/xmlwriter.h>
-#include <libxml/parser.h>
+// #include <libxml/encoding.h>
+// #include <libxml/xmlwriter.h>
+// #include <libxml/parser.h>
 
 #include <iostream>
 #include <sstream>
