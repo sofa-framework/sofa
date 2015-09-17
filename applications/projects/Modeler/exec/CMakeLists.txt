@@ -7,7 +7,7 @@ else()
     set(RC_FILES "sofa.rc")
 endif()
 
-qt4_add_resources(RESOURCE_FILES "../../../../share/${SOFA_SHARE_DIR}/textures/modeler/icons.qrc")
+qt4_add_resources(RESOURCE_FILES "../../../../share/textures/modeler/icons.qrc")
 set(RESOURCE_FILES_GROUP "Generated")
 
 add_executable(${PROJECT_NAME} Main.cpp ${RC_FILES} ${RESOURCE_FILES})
