@@ -36,6 +36,8 @@ endif()
 
 target_include_directories(gtest PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
 target_include_directories(gtest_main PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
+target_include_directories(gtest PUBLIC "$<INSTALL_INTERFACE:include>")
+target_include_directories(gtest_main PUBLIC "$<INSTALL_INTERFACE:include>")
 
 include(../../SofaFramework/SofaPackageConfigHelpers.cmake)
 sofa_create_package(GTest 2.6.2 "gtest;gtest_main" "")

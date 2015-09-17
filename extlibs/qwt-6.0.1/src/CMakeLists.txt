@@ -45,6 +45,7 @@ qt4_wrap_cpp(MOC_FILES ${Q_OBJECT_HEADER_FILES})
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_link_libraries(${PROJECT_NAME} PRIVATE ${QT_LIBRARIES})
 if(UNIX AND NOT APPLE)
     target_link_libraries(${PROJECT_NAME} PRIVATE rt)

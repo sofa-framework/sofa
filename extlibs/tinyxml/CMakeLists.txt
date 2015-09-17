@@ -17,12 +17,13 @@ set(HEADER_FILES
 )
 
 
-add_library(tinyxml SHARED ${SOURCE_FILES} ${HEADER_FILES})
+add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${HEADER_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaExtlibs")
-target_include_directories(tinyxml PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
-set_target_properties(tinyxml PROPERTIES DEBUG_POSTFIX "_d")
-set_target_properties(tinyxml PROPERTIES VERSION ${TINYXML_VERSION})
-set_target_properties(tinyxml PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${TINYXML_VERSION})
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 include(../../SofaFramework/SofaPackageConfigHelpers.cmake)
 sofa_create_package(TinyXML 2.6.2 tinyxml "")

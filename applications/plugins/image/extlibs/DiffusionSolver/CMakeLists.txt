@@ -37,6 +37,7 @@ target_link_libraries(${PROJECT_NAME} SofaHelper)
 
 find_package(CImg REQUIRED)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CImg_INCLUDE_DIRS}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 if(UNIX)
     # Seems to be required by CImg
     target_link_libraries(${PROJECT_NAME} pthread)
