@@ -4,9 +4,6 @@ project(SofaGui)
 
 ### Dependencies
 
-# This variable is used in other CMakeLists.txt files (SofaGuiCommon, SofaGuiMain...)
-set(SOFAGUI_DEPENDENCY_DIR "")
-
 ## Sofa
 find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
@@ -57,8 +54,9 @@ if(SOFAGUI_QT)
     ## Qt GUI options, used in the relevant CMakeLists.txt
 
     ## SOFA_GUI_INTERACTION
-    option(SOFAGUI_QT_INTERACTION "Enable interaction mode for the Qt GUI, whatever that means
-(this will define the SOFA_GUI_INTERACTION macro)." ON)
+    option(SOFAGUI_QT_INTERACTION
+"Enable interaction mode for the Qt GUI, whatever that means (this
+will define the SOFA_GUI_INTERACTION macro)." OFF)
     if(SOFAGUI_QT_INTERACTION)
         set(SOFA_GUI_INTERACTION 1) # cmakedefine
     endif()
