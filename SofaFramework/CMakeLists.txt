@@ -210,9 +210,17 @@ if(WIN32 OR XBOX)
     target_compile_options(SofaHelper PUBLIC "/bigobj")
 endif()
 
+# SSE2 flags
 if(MSVC)
     if(SOFA_VECTORIZE)
         target_compile_options(SofaHelper PUBLIC "/arch:SSE2 /fp:fast")
+    endif()
+endif()
+
+# C++11
+if(NOT WIN32)
+    if(SOFA_USE_C++11)
+        target_compile_options(SofaHelper PUBLIC "-std=c++11")
     endif()
 endif()
 

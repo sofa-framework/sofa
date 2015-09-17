@@ -56,7 +56,7 @@ ELSE (DEFINED CGoGN_ASSERT_ACTIVED)
         add_definitions("-DCGOGN_ASSERT_BOOL=false")
 ENDIF (DEFINED CGoGN_ASSERT_ACTIVED)
 
-# define includes of external libs 
+# define includes of external libs
 LIST (APPEND CGoGN_EXT_INCLUDES
 	${CGoGN_ROOT_DIR}/ThirdParty/include
 	${ZLIB_INCLUDE_DIRS}
@@ -209,7 +209,7 @@ ENDIF(WIN32)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaExtlibs")
-target_link_libraries(${PROJECT_NAME} SofaDefaultType ${CGoGN_EXT_LIBS} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} )
+target_link_libraries(${PROJECT_NAME} SofaDefaultType ${CGoGN_EXT_LIBS} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CGoGN_ROOT_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CGoGN_EXT_INCLUDES}>")
