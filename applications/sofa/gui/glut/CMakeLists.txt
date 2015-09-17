@@ -19,8 +19,3 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOF
 
 include(SofaPackageConfigHelpers)
 sofa_install_targets(SofaGui SofaGuiGlut "")
-
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
-
-install(DIRECTORY ${SofaGuiGlut_SOURCE_DIR}/ DESTINATION "include/SofaGuiGlut"
-        FILES_MATCHING PATTERN "*.h" PATTERN "*.inl")
