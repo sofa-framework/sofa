@@ -51,10 +51,6 @@ if(NOT WIN32)
 "Use C++11 as a target language. Even though Sofa is written in C++98, it is
 compatible with C++11. Targetting this standard allows you to benefit from
 a more optimized STL."  OFF)
-    if(SOFA_USE_C++11)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11"
-            CACHE STRING "Flags used by the compiler during all build types." FORCE)
-    endif()
 endif()
 
 
@@ -123,38 +119,15 @@ if(SOFA_BUILD_TESTS)
     add_subdirectory(extlibs/gtest)
 endif()
 
+add_subdirectory(extlibs)
+
 # Try to find an installed boost. If boost is not found, use miniBoost.
 find_package(Boost QUIET)
 if(NOT Boost_FOUND)
     add_subdirectory(extlibs/miniBoost)
 endif()
 
-## Necessary ones
-add_subdirectory(extlibs/SuiteSparse)
-add_subdirectory(extlibs/csparse)
-add_subdirectory(extlibs/eigen-3.2.5 extlibs/eigen)
-add_subdirectory(extlibs/miniFlowVR)
-add_subdirectory(extlibs/newmat)
-add_subdirectory(extlibs/tinyxml)
-
-## Optional ones
-add_subdirectory(extlibs/CImg)
-add_subdirectory(extlibs/libQGLViewer-2.4.0/QGLViewer extlibs/QGLViewer)
-
-option(SOFA_BUILD_ARTRACK
-"Build the ARTrack library distributed in the extlibs/ directory.  This library
-is used only by the ARTrack plugin."  OFF)
-if(SOFA_BUILD_ARTRACK)
-    add_subdirectory(extlibs/ARTrack extlibs/ARTrackLib)
-endif()
-
-option(SOFA_BUILD_METIS
-"Build the metis library distributed in the extlibs/ directory.  It is used only
-by the SparseLDLSolver component.  Note that this library is usually available
-on Linux distributions." OFF)
-if(SOFA_BUILD_METIS)
-    add_subdirectory(extlibs/metis-5.1.0 "extlibs/metis")
-endif()
+### Main Sofa subdirectories
 
 add_subdirectory(SofaFramework)
 add_subdirectory(SofaSimulation)
@@ -165,13 +138,22 @@ add_subdirectory(SofaAdvanced)
 add_subdirectory(SofaMisc)
 add_subdirectory(SofaGui)
 
+## CGoGN: CGoGN is in extlibs, but it needs SofaDefaultType, so it
+## must be added after SofaFramework.
 option(SOFA_BUILD_CGOGN
-"Build the CGoGN library in the extlibs directory. CGoGN is an implementation of combinatorial maps topologies." OFF)
+"Build the CGoGN library distributed in the extlibs/ directory. CGoGN is an
+implementation of combinatorial maps topologies." OFF)
 if(SOFA_BUILD_CGOGN)
-    if ((NOT WIN32) AND NOT SOFA_USE_C++11 )
-        message(AUTHOR_WARNING "Building the CGoGN library. It is recommended to activate SOFA_USE_C++11.")
+    if((NOT WIN32) AND NOT SOFA_USE_C++11)
     endif()
     add_subdirectory(extlibs/CGoGN extlibs/CGoGN)
+    if(NOT WIN32)
+        if(SOFA_USE_C++11)
+            target_compile_options(CGoGN PUBLIC "-std=c++11")
+        else()
+            message(AUTHOR_WARNING "Enabling SOFA_USE_C++11 is recommended when using the CGoGN library.")
+        endif()
+    endif()
 endif()
 
 if(SOFA_BUILD_TESTS)

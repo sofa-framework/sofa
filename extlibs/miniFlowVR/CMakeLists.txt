@@ -36,7 +36,6 @@ set(SOURCE_FILES
 )
 
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaExtlibs")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${Boost_INCLUDE_DIRS}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
@@ -46,8 +45,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xClang")
     target_compile_options(${PROJECT_NAME} PRIVATE "-fPIC")
 endif()
-
-set_target_properties(miniFlowVR PROPERTIES DEBUG_POSTFIX "_d")
 
 include(../../SofaFramework/SofaPackageConfigHelpers.cmake)
 sofa_create_package(MiniFlowVR 0.0 miniFlowVR "")
