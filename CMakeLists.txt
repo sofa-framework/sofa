@@ -20,7 +20,11 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
 endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
-message("Install prefix: ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
+
+# Remove generated CMake files, this prevents CMake from finding packages that
+# were disabled (like, unchecked in cmake-gui) after being built once.
+file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/cmake)
 
 # Set the output directories globally
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)

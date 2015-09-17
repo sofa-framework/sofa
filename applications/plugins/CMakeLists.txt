@@ -6,11 +6,6 @@ macro(add_plugin plugin)
     if(${plugin_option})
         add_subdirectory(${plugin})
         set_target_properties(${plugin} PROPERTIES FOLDER "Plugins") # IDE folder
-    else()
-        # Workaround: if we uncheck a plugin in cmake-gui, we remove the
-        # (possibly not existing) cmake package configuration file, to ensure
-        # that searching for this plugin with find_package() will fail.
-        file(REMOVE ${CMAKE_BINARY_DIR}/applications/plugins/${plugin}/${plugin}Config.cmake)
     endif()
 endmacro()
 
