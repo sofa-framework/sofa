@@ -13,9 +13,5 @@ endif()
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGuiMain SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
 
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaGui_applications
-        EXPORT SofaGuiTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+include(SofaPackageConfigHelpers)
+sofa_install_targets(SofaGui runSofa "")

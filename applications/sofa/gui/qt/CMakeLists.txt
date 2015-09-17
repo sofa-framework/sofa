@@ -162,13 +162,7 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC "SOFA_QT4")
 target_compile_definitions(${PROJECT_NAME} PUBLIC "QT3_SUPPORT")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
 
-install(TARGETS ${PROJECT_NAME}
-        EXPORT SofaGuiTargets
-        RUNTIME DESTINATION bin COMPONENT SofaGui_libraries
-        LIBRARY DESTINATION lib COMPONENT SofaGui_libraries
-        ARCHIVE DESTINATION lib COMPONENT SofaGui_libraries)
+sofa_install_targets(SofaGui SofaGuiQt "")
 
-install(FILES ${HEADER_FILES} DESTINATION "include/sofa/gui/qt"
-        COMPONENT SofaGui_headers)
-install(FILES ${MOC_HEADER_FILES} DESTINATION "include/sofa/gui/qt"
-        COMPONENT SofaGui_headers)
+install(FILES ${HEADER_FILES} DESTINATION "include/sofa/gui/qt")
+install(FILES ${MOC_HEADER_FILES} DESTINATION "include/sofa/gui/qt")
