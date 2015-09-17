@@ -198,7 +198,7 @@ if(SOFA_BUILD_TUTORIALS)
     add_subdirectory(applications/tutorials)
 endif()
 
-set(SOFA_EXTERNAL_DIRECTORIES "" CACHE STRING "")
+set(SOFA_EXTERNAL_DIRECTORIES "" CACHE STRING "list of paths separated by ';'")
 if(NOT "${SOFA_EXTERNAL_DIRECTORIES}" STREQUAL "")
     foreach(dir ${SOFA_EXTERNAL_DIRECTORIES})
         message("Adding external directory: ${dir}")
