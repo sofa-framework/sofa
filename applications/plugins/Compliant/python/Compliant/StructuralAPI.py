@@ -136,6 +136,7 @@ class RigidBody:
             self.triangles = self.node.createObject('TriangleModel', name='model')
             self.mapping = self.node.createObject('RigidMapping', name="mapping")
             self.normals = None
+            self.visual = None
 
         def addNormals(self, invert=False):
             ## add a component to compute mesh normals at each timestep
@@ -143,7 +144,8 @@ class RigidBody:
 
         def addVisualModel(self):
             ## add a visual model identical to the collision model
-            return RigidBody.CollisionMesh.VisualModel( self.node )
+            self.visual = RigidBody.CollisionMesh.VisualModel( self.node )
+            return self.visual
 
         class VisualModel:
             def __init__(self, node ):
