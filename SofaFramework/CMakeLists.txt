@@ -220,7 +220,7 @@ endif()
 # C++11
 if(NOT WIN32)
     if(SOFA_USE_C++11)
-        target_compile_options(SofaHelper PUBLIC "-std=c++11")
+        target_compile_options(SofaHelper PUBLIC "$<$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>:-std=c++11>")
     endif()
 endif()
 
