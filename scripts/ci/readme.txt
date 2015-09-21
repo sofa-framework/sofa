@@ -1,16 +1,30 @@
+Continuous Integration Scripts
+------------------------------
+
 
 This directory contains the scripts used on Jenkins, the continuous integration
-system used for Sofa.
+system used for Sofa.  Each time commits are pushed in a branch, those scripts
+are executed on various machines to build the tip of the branch and run the
+automatic tests that are available.
 
 Those are bash scripts that run on Linux, OS X and Windows.  They are tailored
 to the machines used behind Jenkins, but can reasonnably be expected to run on
 any Linux or OS X system.
 
-Obviously, you should not commit any change to those scripts that does not make
-perfect sense to you.  Few people are expected to modify those scripts; if you
-are not sure you are amongst them, then you aren't.
+Obviously, you should only commit changes to those scripts that make perfect
+sense to you.  Few people are expected to modify those scripts; if you are not
+sure you are one of them, then you aren't.
 
 
+The main build script is main.sh, and is responsible for calling the other ones
+and communicating with the dashboard (http://www.sofa-framework.org/dash/).
+
+  main.sh
+  ├── init-build.sh
+  ├── configure.sh
+  ├── compile.sh
+  ├── tests.sh
+  └── scene-tests.sh
 
 
 Miscellaneous notes / peculiarities:
