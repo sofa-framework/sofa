@@ -37,8 +37,9 @@ if(SofaPython_FOUND)
         python/SofaTest/Macro.py
         python/SofaTest/__init__.py
     )
+    message(STATUS "SofaTest: optional dependency SofaPython found, Python_test will be built")
 else()
-    message(STATUS "SofaTest: could not find SofaPython, won't build Python_test")
+    message(STATUS "SofaTest: optional dependency SofaPython NOT found, Python_test won't be built")
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
