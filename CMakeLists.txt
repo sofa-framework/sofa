@@ -39,6 +39,17 @@ list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/extlibs)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/plugins)
 
+# RPATH
+if(UNIX)
+    # RPATH is a field in ELF binaries that is used as a hint by the system
+    # loader to find needed shared libraries.
+    #
+    # In the build directory, cmake creates binaries with absolute paths in
+    # RPATH.  And by default, it strips RPATH from installed binaries.  Here we
+    # use CMAKE_INSTALL_RPATH to set a relative RPATH.  By doing so, we avoid
+    # the need to play with LD_LIBRARY_PATH to get applications to run.
+    set(CMAKE_INSTALL_RPATH "../lib")
+endif(UNIX)
 
 include(CMakeSofaBuildFlags)
 
