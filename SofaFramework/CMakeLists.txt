@@ -30,7 +30,7 @@ option(SOFA_NO_UPDATE_BBOX
 option(SOFA_DUMP_VISITOR_INFO
 "Compile Sofa with the SOFA_DUMP_VISITOR_INFO macro defined." OFF)
 
-set(SOFA_FLOATING_POINT_TYPE double CACHE STRING
+set(SOFA_FLOATING_POINT_TYPE both CACHE STRING
 "Type used for floating point values in SOFA. It actually determines:
  - what template instanciations will be compiled (via the definition of the
    SOFA_FLOAT and SOFA_DOUBLE macros)
