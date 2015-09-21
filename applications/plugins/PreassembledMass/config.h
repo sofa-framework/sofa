@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef PREASSEMBLEDMASS_INITPLUGIN_H
-#define PREASSEMBLEDMASS_INITPLUGIN_H
+#ifndef PREASSEMBLEDMASS_CONFIG_H
+#define PREASSEMBLEDMASS_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
@@ -33,4 +33,4 @@
 #define SOFA_PreassembledMass_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // PREASSEMBLEDMASS_INITPLUGIN_H
+#endif
