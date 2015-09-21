@@ -99,6 +99,7 @@ case $CI_JOB in
     *default*)
         # Only change from the default configuration: Enable tests
         append "-DSOFA_BUILD_TESTS=ON"
+        append "-DPLUGIN_SOFAPYTHON=ON"
         ;;
     # Build with as many options enabled
     *options*)
@@ -117,18 +118,6 @@ case $CI_JOB in
         if [[ -n "$CI_BULLET_DIR" ]]; then
             append "-DBullet_DIR=$CI_BULLET_DIR"
         fi
-
-        # # Bug on Ubuntu 14.04:
-        # #   Linking CXX executable ../../../bin/sofaTypedefs
-        # #   Inconsistency detected by ld.so: dl-version.c: 224: _dl_check_map_versions: Assertion `needed != ((void *)0)' failed!
-        # if [[ $(uname) = Linux ]]; then
-        #     append "-DSOFA-APPLICATION_SOFATYPEDEFS=OFF"
-        # else
-        #     append "-DSOFA-APPLICATION_SOFATYPEDEFS=ON"
-        # fi
-        # append "-DSOFA-APPLICATION_SOFAVERIFICATION=ON"
-        # # ?
-        # append "-DSOFA-APPLICATION_XMLCONVERT-DISPLAYFLAGS=OFF"
 
         ### Plugins
         append "-DPLUGIN_ARTRACK=ON"
@@ -185,11 +174,10 @@ case $CI_JOB in
         append "-DPLUGIN_SOFAHAPI=OFF"
         # Not sure if worth maintaining
         append "-DPLUGIN_SOFAPML=OFF"
+        append "-DPLUGIN_SOFAPYTHON=ON"
         append "-DPLUGIN_SOFASIMPLEGUI=ON"
         append "-DPLUGIN_SOFATEST=ON"
         append "-DPLUGIN_THMPGSPATIALHASHING=ON"
-        # Requires SofaCUDALDI (Strange, SofaCUDALDI is in sofa-dev!)
-        append "-DPLUGIN_VOXELIZER=OFF"
         # Requires XiRobot library.
         append "-DPLUGIN_XITACT=OFF"
         ;;
@@ -202,23 +190,12 @@ fi
 
 cd "$build_dir"
 
-
-## Preconfigure
-
-if [ -e "full-build" ]; then
-    call-cmake -G"$(generator)" "$src_dir"
-fi
-
-
 ## Configure
 
 echo "Calling cmake with the following options:"
 echo "$cmake_options" | tr -s ' ' '\n'
-call-cmake $cmake_options .
-
-# Work around a bug in the cmake scripts, where the include directories of gtest
-# are not searched after the first "configure".
 if [ -e "full-build" ]; then
-    echo "Calling cmake again, to workaround the gtest missing include directories bug."
-    call-cmake .
+    call-cmake -G"$(generator)" $cmake_options "$src_dir"
+else
+    call-cmake $cmake_options .
 fi
