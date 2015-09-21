@@ -27,6 +27,8 @@
 
 #include <sofa/config.h>
 
+#define SOFA_HAVE_DAG
+
 #ifdef SOFA_BUILD_SIMULATION_COMMON
 #   define SOFA_TARGET SofaSimulationCommon
 #	define SOFA_SIMULATION_COMMON_API SOFA_EXPORT_DYNAMIC_LIBRARY
