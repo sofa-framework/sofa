@@ -30,6 +30,7 @@
 #include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
 #ifdef SOFA_HAVE_DAG
 #include <sofa/simulation/graph/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
