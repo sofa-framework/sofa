@@ -156,10 +156,6 @@ if(SOFA_BUILD_CGOGN)
     endif()
 endif()
 
-if(SOFA_BUILD_TESTS)
-    add_subdirectory(tools/SofaGTestMain)
-endif()
-
 # SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
 option(PLUGIN_SOFAPYTHON "Build the SofaPython plugin." OFF)
 if(PLUGIN_SOFAPYTHON)
