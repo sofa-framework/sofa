@@ -142,6 +142,10 @@ endif()
 
 add_subdirectory(SofaFramework)
 add_subdirectory(SofaSimulation)
+if(SOFA_BUILD_TESTS)
+    # Depends on SofaSimulation
+    add_subdirectory(tools/SofaGTestMain)
+endif()
 add_subdirectory(SofaBase)
 add_subdirectory(SofaCommon)
 add_subdirectory(SofaGeneral)
