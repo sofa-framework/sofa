@@ -30,6 +30,10 @@ foreach(TARGET ${SOFASIMULATION_TARGETS})
     set_target_properties(${TARGET} PROPERTIES VERSION ${SOFASIMULATION_VERSION})
 endforeach()
 
+if(SOFA_HAVE_GTEST)
+    add_subdirectory(../tools/SofaGTestMain ${CMAKE_CURRENT_BINARY_DIR}/SofaGTestMain)
+endif()
+
 ## CMake package configurations files
 include(SofaPackageConfigHelpers)
 sofa_write_package_config_files(SofaSimulation ${SOFASIMULATION_VERSION})

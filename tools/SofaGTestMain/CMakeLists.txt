@@ -7,3 +7,4 @@ add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
 add_library(SofaGTestMain SofaGTestMain.cpp)
 target_link_libraries(SofaGTestMain gtest SofaSimulationTree SofaSimulationGraph)
+sofa_install_targets(SofaSimulation SofaGTestMain "")

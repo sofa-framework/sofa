@@ -59,11 +59,7 @@ set(SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 
 
 find_package(GTest CONFIG QUIET)
-if(GTest_FOUND)
-    set(SOFA_HAVE_GTEST ${GTest_FOUND})
-else()
-    set(SOFA_HAVE_GTEST ${GTest_FOUND})
-endif()
+set(SOFA_HAVE_GTEST ${GTest_FOUND})
 
 if(NOT SOFA_NO_OPENGL)
 
