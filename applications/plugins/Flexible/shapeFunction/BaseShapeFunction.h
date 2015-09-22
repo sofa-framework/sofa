@@ -217,8 +217,8 @@ struct ShapeFunctionTypes
 
     typedef vector< SVector<unsigned int> > VecVRef;
     typedef vector< SVector<Real> > VecVReal;
-	typedef vector<VGradient> VecVGradient;
-	typedef vector<VHessian> VecVHessian;
+    typedef vector< SVector<Gradient> > VecVGradient;
+    typedef vector< SVector<Hessian> > VecVHessian;
 
     static const int spatial_dimensions=spatial_dimensions_ ;
     static const char* Name();
