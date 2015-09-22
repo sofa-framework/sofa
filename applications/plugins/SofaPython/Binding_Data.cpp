@@ -143,7 +143,7 @@ PyObject *GetDataValuePython(BaseData* data)
                 }
                 else if (typeinfo->Scalar())
                 {
-                    // it's a SReal
+                    // it's a Real
                     PyList_SetItem(row,j,PyFloat_FromDouble(typeinfo->getScalarValue(valueVoidPtr,i*rowWidth+j)));
                 }
                 else if (typeinfo->Integer())
