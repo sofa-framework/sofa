@@ -25,6 +25,7 @@
 #include "PythonMacros.h"
 #include "PythonMainScriptController.h"
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 #include "Binding_Base.h"
 #include "Binding_BaseContext.h"
@@ -137,11 +138,13 @@ void PythonMainScriptController::script_onMouseWheel(const int posX,const int po
 
 void PythonMainScriptController::script_onBeginAnimationStep(const double dt)
 {
+    helper::ScopedAdvancedTimer advancedTimer("PythonMainScriptController_AnimationStep");
     SP_CALL_FILEFUNC(const_cast<char*>("onBeginAnimationStep"),const_cast<char*>("(d)"), dt)
 }
 
 void PythonMainScriptController::script_onEndAnimationStep(const double dt)
 {
+    helper::ScopedAdvancedTimer advancedTimer("PythonMainScriptController_AnimationStep");
     SP_CALL_FILEFUNC(const_cast<char*>("onEndAnimationStep"),const_cast<char*>("(d)"), dt)
 }
 
