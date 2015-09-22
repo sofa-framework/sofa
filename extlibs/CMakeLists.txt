@@ -43,11 +43,11 @@ endforeach()
 
 # C++11
 set(CPP11_EXTLIBS_TARGETS ${EXTLIBS_TARGETS})
-list(REMOVE_ITEM CPP11_EXTLIBS_TARGETS cparse)
+list(REMOVE_ITEM CPP11_EXTLIBS_TARGETS csparse)
 if(NOT WIN32)
     if(SOFA_USE_C++11)
         foreach(target ${CPP11_EXTLIBS_TARGETS})
-            target_compile_options(${target} PUBLIC "$<$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>:-std=c++11>")
+            target_compile_options(${target} PRIVATE "-std=c++11")
         endforeach()
     endif()
 endif()
