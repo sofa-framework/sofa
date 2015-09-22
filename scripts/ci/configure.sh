@@ -94,25 +94,21 @@ append() {
     cmake_options="$cmake_options $*"
 }
 
+# Options common to all configurations
+append "-DSOFA_BUILD_TESTS=ON"
+append "-DPLUGIN_SOFAPYTHON=ON"
+if [[ -n "$CI_HAVE_BOOST" ]]; then
+    append "-DBOOST_ROOT=$CI_BOOST_PATH"
+fi
+
 case $CI_JOB in
-    # Build with default options
-    *default*)
-        # Only change from the default configuration: Enable tests
-        append "-DSOFA_BUILD_TESTS=ON"
-        append "-DPLUGIN_SOFAPYTHON=ON"
-        ;;
-    # Build with as many options enabled
+    # Build with as many options enabled as possible
     *options*)
-        append "-DSOFA_BUILD_TESTS=ON"
         append "-DSOFA_BUILD_METIS=ON"
         append "-DSOFA_BUILD_ARTRACK=ON"
 
         if [[ -n "$CI_QT_PATH" ]]; then
             append "-DQT_ROOT=$CI_QT_PATH"
-        fi
-
-        if [[ -n "$CI_HAVE_BOOST" ]]; then
-            append "-DBOOST_ROOT=$CI_BOOST_PATH"
         fi
 
         if [[ -n "$CI_BULLET_DIR" ]]; then
@@ -174,9 +170,7 @@ case $CI_JOB in
         append "-DPLUGIN_SOFAHAPI=OFF"
         # Not sure if worth maintaining
         append "-DPLUGIN_SOFAPML=OFF"
-        append "-DPLUGIN_SOFAPYTHON=ON"
         append "-DPLUGIN_SOFASIMPLEGUI=ON"
-        append "-DPLUGIN_SOFATEST=ON"
         append "-DPLUGIN_THMPGSPATIALHASHING=ON"
         # Requires XiRobot library.
         append "-DPLUGIN_XITACT=OFF"
