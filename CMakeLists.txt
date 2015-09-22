@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 2.8.12)
-
 project(Sofa)
+
+## Default build type
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Release")
+endif()
 
 ## Set some policies to avoid warnings from CMake.
 cmake_policy(SET CMP0015 OLD)   # CMake 3.0.2 warns if this is not set.
@@ -16,7 +20,7 @@ endif()
 # it. (E.g. some versions of Visual Studio have 'solution folders')
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-# Change default install prefix
+## Change default install prefix
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
 endif()
@@ -26,20 +30,20 @@ message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
 # were disabled (like, unchecked in cmake-gui) after being built once.
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/cmake)
 
-# Set the output directories globally
+## Set the output directories globally
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-
-# Environment
+## Environment
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaFramework")
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/extlibs)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/plugins)
 
-# RPATH
+## RPATH
 if(UNIX)
     # RPATH is a field in ELF binaries that is used as a hint by the system
     # loader to find needed shared libraries.
@@ -51,7 +55,7 @@ if(UNIX)
     set(CMAKE_INSTALL_RPATH "../lib")
 endif(UNIX)
 
-include(CMakeSofaBuildFlags)
+include(CompilerOptions)
 
 # C++11 Support
 #
@@ -65,11 +69,7 @@ a more optimized STL."  OFF)
 endif()
 
 
-# cmake functions specific to sofa that needs to be redistributed.
-install(FILES cmake/Modules/CMakeSofaBuildFlags.cmake DESTINATION share/cmake/Modules)
-
-
-# Dependency pack for Windows
+### Dependency pack for Windows
 if(MSVC)
 
     if(SOFA_DEPENDENCY_PACK_DIR)
@@ -93,18 +93,19 @@ if(MSVC)
         file(GLOB DLLS "${DEPENDENCY_PACK_DIR}/lib/win32/*.dll")
         file(GLOB LIBS "${DEPENDENCY_PACK_DIR}/lib/win32/*.lib")
     endif()
-    # Copy DLLs to the build tree
+    ## Copy DLLs to the build tree
     foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
         file(COPY ${DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
     endforeach()
-    # Install DLLs
+    ## Install DLLs
     install(FILES ${DLLS} DESTINATION bin)
     install(FILES ${LIBS} DESTINATION lib)
     install(DIRECTORY ${DEPENDENCY_PACK_DIR}/include/ DESTINATION include)
 
 endif()
 
-# Install resource files
+
+## Install resource files
 install(DIRECTORY share/ DESTINATION share/sofa)
 install(DIRECTORY examples/ DESTINATION share/sofa/examples)
 # Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
@@ -116,27 +117,29 @@ configure_file(etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
 set(SHARE_DIR "../share/sofa")
 set(EXAMPLES_DIR "../share/sofa/examples")
 configure_file(etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
-install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini"
-        DESTINATION etc
-        RENAME sofa.ini)
+install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini)
 
 # Temporary (todo: think about this typedef thing)
 install(DIRECTORY modules/sofa/component/typedef/ DESTINATION include/sofa/component/typedef)
+
 
 ### Extlibs
 
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
 if(SOFA_BUILD_TESTS)
+    # Enable testing features of cmake, like the add_test() command.
+    enable_testing()
     add_subdirectory(extlibs/gtest)
 endif()
 
 add_subdirectory(extlibs)
 
-# Try to find an installed boost. If boost is not found, use miniBoost.
+## Try to find an installed boost. If boost is not found, use miniBoost.
 find_package(Boost QUIET)
 if(NOT Boost_FOUND)
     add_subdirectory(extlibs/miniBoost)
 endif()
+
 
 ### Main Sofa subdirectories
 
@@ -195,15 +198,16 @@ if(SOFA_BUILD_TESTS)
     add_subdirectory(applications/plugins/SofaTest/SofaTest_test SofaTest/SofaTest_test)
 endif()
 
-# Plugins
+## Plugins
 add_subdirectory(applications/plugins)
 
-# Tutorials
+## Tutorials
 option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
 if(SOFA_BUILD_TUTORIALS)
     add_subdirectory(applications/tutorials)
 endif()
 
+## Build external projects at the same time
 set(SOFA_EXTERNAL_DIRECTORIES "" CACHE STRING "list of paths separated by ';'")
 if(NOT "${SOFA_EXTERNAL_DIRECTORIES}" STREQUAL "")
     foreach(dir ${SOFA_EXTERNAL_DIRECTORIES})
