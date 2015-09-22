@@ -398,7 +398,7 @@ class Behavior:
                 self.mapping.indices= str(data['indices'])
                 self.mapping.weights= str(data['weights'])
                 self.mapping.weightGradients= str(data['weightGradients'])
-                # self.mapping.weightHessians= str(data['weightHessians'])    # @todo: fix SVector<Mat33> serialization
+                self.mapping.weightHessians= str(data['weightHessians'])    
                 print 'Imported Weights from '+filename
 
     def write(self, filenamePrefix=None, directory=""):

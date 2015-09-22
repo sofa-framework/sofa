@@ -581,7 +581,7 @@ protected:
     //@}
 
     // polynomial orders
-    inline unsigned int fillOrder() const {return 1;}     // For the mapping, we use first order fit (not 2nd order, to have translation invariance of elastons)
+    inline unsigned int fillOrder() const {return 2;}     // For the mapping, we use second order fit (to have translation invariance of elastons, use first order)
     inline unsigned int fitOrder() const {return (this->f_order.getValue()==1)?0:1;} // for elastons, we measure the quality of the integration using first order least squares fit
     inline unsigned int volOrder() const {return (this->f_order.getValue()==1)?0:4;} // for elastons, we generate volume moments up to order 4
 
