@@ -602,6 +602,7 @@ std::istream& operator>>(std::istream& in, MatSym<D,real>& m)
     while (c==' ' || c=='\n' || c=='[')
     {
         in.get();
+        if( c=='[' ) break;
         c = in.peek();
     }
     ///////////////////////////////////////////////
@@ -625,6 +626,7 @@ std::istream& operator>>(std::istream& in, MatSym<D,real>& m)
     while (c==' ' || c=='\n' || c==']')
     {
         in.get();
+        if( c==']' ) break;
         c = in.peek();
     }
     return in;

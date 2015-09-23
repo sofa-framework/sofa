@@ -980,6 +980,7 @@ std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
     while (c==' ' || c=='\n' || c=='[')
     {
         in.get();
+        if( c=='[' ) break;
         c = in.peek();
     }
     in >> m[0];
@@ -997,6 +998,7 @@ std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
     while (c==' ' || c=='\n' || c==']')
     {
         in.get();
+        if( c==']' ) break;
         c = in.peek();
     }
     return in;

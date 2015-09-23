@@ -123,6 +123,12 @@ PyObject *GetDataValuePython(BaseData* data)
     {
         // this is a vector; return a python list of the corresponding type (ints, scalars or strings)
 
+        if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
+        {
+            SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" )
+            return PyString_FromString(data->getValueString().c_str());
+        }
+
         PyObject *rows = PyList_New(nbRows);
         for (int i=0; i<nbRows; i++)
         {
@@ -137,7 +143,7 @@ PyObject *GetDataValuePython(BaseData* data)
                 }
                 else if (typeinfo->Scalar())
                 {
-                    // it's a SReal
+                    // it's a Real
                     PyList_SetItem(row,j,PyFloat_FromDouble(typeinfo->getScalarValue(valueVoidPtr,i*rowWidth+j)));
                 }
                 else if (typeinfo->Integer())
@@ -147,9 +153,8 @@ PyObject *GetDataValuePython(BaseData* data)
                 }
                 else
                 {
-                    // this type is not yet supported
-                    SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" )
-                    PyList_SetItem(row,j,PyString_FromString(typeinfo->getTextValue(valueVoidPtr,i*rowWidth+j).c_str()));
+                    // this type is not yet supported (should not happen)
+                    SP_MESSAGE_ERROR( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value (should not come here!)" )
                 }
             }
             PyList_SetItem(rows,i,row);

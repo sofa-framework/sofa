@@ -13,7 +13,7 @@ def createScene(node):
     node.createObject('RequiredPlugin', name = 'Compliant' )
     node.createObject('CompliantAttachButtonSetting' )
     node.createObject('CompliantImplicitSolver', name='odesolver',stabilization=1)
-    node.createObject('MinresSolver', name='numsolver', iterations='250', precision='1e-14');
+    node.createObject('MinresSolver', name='numsolver', iterations='250', precision='1e-14')
     
     model = SofaPython.sml.Model(os.path.join(os.path.dirname(__file__), "bielle_manivelle.xml"))
     
