@@ -8,6 +8,7 @@ if(HAS_SOFAFRAMEWORK_CMAKE_MODULE_PATH EQUAL -1)
 endif()
 
 include(CMakeSofaCreateTarget)
+include(SofaMacros)
 
 find_package(TinyXML REQUIRED)
 sofa_create_target(TinyXML SofaFramework "${TinyXML_LIBRARIES}" "${TinyXML_INCLUDE_DIRS}")
