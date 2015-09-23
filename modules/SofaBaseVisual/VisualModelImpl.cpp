@@ -1025,7 +1025,7 @@ void VisualModelImpl::computeTangents()
     m_vbitangents.endEdit();
 }
 
-void VisualModelImpl::computeBBox(sofa::core::ExecParams* params, bool)
+void VisualModelImpl::computeBBox(const core::ExecParams* params, bool)
 {
     const VecCoord& x = getVertices(); //m_vertices.getValue(params);
 

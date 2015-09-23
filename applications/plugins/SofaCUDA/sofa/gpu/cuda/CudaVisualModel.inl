@@ -448,6 +448,26 @@ void CudaVisualModel< TDataTypes >::internalDraw(const core::visual::VisualParam
     d_x->endEdit();
 }
 
+template<class TDataTypes>
+void CudaVisualModel< TDataTypes >::computeBBox(const core::ExecParams* params, bool)
+{
+    const VecCoord& x = state->write(core::VecCoordId::position())->getValue();
+
+    SReal minBBox[3] = {std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max()};
+    SReal maxBBox[3] = {-std::numeric_limits<Real>::max(),-std::numeric_limits<Real>::max(),-std::numeric_limits<Real>::max()};
+    for (unsigned int i = 0; i < x.size(); i++)
+    {
+        const Coord& p = x[i];
+        for (int c=0; c<3; c++)
+        {
+            if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
+            if (p[c] < minBBox[c]) minBBox[c] = p[c];
+        }
+    }
+    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
+}
+
+
 } // namespace visualmodel
 
 } // namespace component
