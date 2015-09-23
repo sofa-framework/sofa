@@ -108,6 +108,12 @@ void TTriangleModel<DataTypes>::init()
 
     updateFromTopology();
     updateNormals();
+
+    for(int i=0; i<this->getSize();++i)
+    {
+        getTriangleFlags(i);
+    }
+
 }
 
 template<class DataTypes>
