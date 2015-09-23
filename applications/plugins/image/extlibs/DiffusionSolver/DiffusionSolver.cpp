@@ -23,6 +23,7 @@ template < typename Real > const char DiffusionSolver< Real >::DIRICHLET =  0;
 template < typename Real >
 void DiffusionSolver< Real >::setNbThreads( unsigned nb )
 {
+    (void)nb;
 #ifdef _OPENMP
     omp_set_num_threads( std::min( nb, (unsigned)omp_get_num_procs() ) );
 #endif
