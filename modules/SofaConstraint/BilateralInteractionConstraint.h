@@ -183,7 +183,7 @@ public:
         }
     }
 
-    virtual void resolution(int line, double** /*w*/, double* d, double* force, double* dFree)
+    virtual void resolution(int line, double** /*w*/, double* d, double* force, double* /*dFree*/)
     {
         for(int i=0; i<N; i++)
         {

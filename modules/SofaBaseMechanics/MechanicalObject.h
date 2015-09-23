@@ -392,7 +392,7 @@ public:
     /// @{
 
     virtual void printDOF(core::ConstVecId, std::ostream& =std::cerr, int firstIndex=0, int range=-1 ) const ;
-    virtual unsigned printDOFWithElapsedTime(core::VecId, unsigned =0, unsigned =0, std::ostream& =std::cerr );
+    virtual unsigned printDOFWithElapsedTime(core::ConstVecId, unsigned =0, unsigned =0, std::ostream& =std::cerr );
 
     void draw(const core::visual::VisualParams* vparams);
 
