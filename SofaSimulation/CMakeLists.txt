@@ -31,5 +31,4 @@ foreach(TARGET ${SOFASIMULATION_TARGETS})
 endforeach()
 
 ## CMake package configurations files
-include(SofaPackageConfigHelpers)
 sofa_write_package_config_files(SofaSimulation ${SOFASIMULATION_VERSION})

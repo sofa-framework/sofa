@@ -144,7 +144,6 @@ if(SofaGui_FOUND AND SOFA_GUI_QT)
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
-include(SofaPackageConfigHelpers)
 sofa_create_package(image ${IMAGE_VERSION} ${PROJECT_NAME} image)
 
 ## Install rules for the resources

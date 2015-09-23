@@ -220,5 +220,5 @@ install(DIRECTORY include/Algo include/Container include/Geometry include/Topolo
         FILES_MATCHING PATTERN "*.h" PATTERN "*hpp" PATTERN "*.inl")
 
 
-include(../../SofaFramework/SofaPackageConfigHelpers.cmake)
+include(../../SofaFramework/SofaMacros.cmake)
 sofa_create_package(CGoGN ${CGoGN_VERSION} CGoGN  "")

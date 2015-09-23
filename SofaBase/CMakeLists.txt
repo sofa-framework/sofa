@@ -33,5 +33,4 @@ foreach(TARGET ${SOFABASE_TARGETS})
 endforeach()
 
 ## CMake package configurations files
-include(SofaPackageConfigHelpers)
 sofa_write_package_config_files(SofaBase ${SOFABASE_VERSION})

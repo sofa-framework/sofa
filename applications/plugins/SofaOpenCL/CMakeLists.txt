@@ -94,5 +94,4 @@ add_definitions("-DSOFA_BUILD_GPU_OPENCL")
 target_link_libraries(${PROJECT_NAME} ${OPENCL_LIBRARIES} SofaHelper SofaEngine SofaSphFluid SofaUserInteraction csparse) # taucs taucs_mt system-taucs)
 
 ## Install rules for the library and headers; CMake package configurations files
-include(SofaPackageConfigHelpers)
 sofa_create_package(SofaOpenCL ${SOFAOPENCL_VERSION} SofaOpenCL SofaOpenCL)

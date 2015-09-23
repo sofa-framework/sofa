@@ -107,5 +107,4 @@ configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaGui/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/SofaGui/config.h" DESTINATION "include/SofaGui")
 
 ## CMake package configurations files
-include(SofaPackageConfigHelpers)
 sofa_write_package_config_files(SofaGui ${SOFAGUI_VERSION})
