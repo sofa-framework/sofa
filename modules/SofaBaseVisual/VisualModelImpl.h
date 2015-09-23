@@ -472,7 +472,7 @@ public:
     virtual void computeMesh();
     virtual void computeNormals();
     virtual void computeTangents();
-    virtual void computeBBox(sofa::core::ExecParams* params, bool=false);
+    virtual void computeBBox(const core::ExecParams* params, bool=false);
 
     virtual void updateBuffers() {}
 
