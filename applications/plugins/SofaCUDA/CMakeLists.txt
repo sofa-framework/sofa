@@ -208,7 +208,7 @@ if(SOFACUDA_CUDPP)
 endif()
 
 # Note: THRUST is included in CUDA SDK 4.0+, it is recommended to use it if available
-option(SOFACUDA_THRUST "Activate THRUST (for RadixSort)." OFF)
+option(SOFACUDA_THRUST "Activate THRUST (for RadixSort)." ON)
 if(SOFACUDA_THRUST)
     set(SOFA_GPU_THRUST 1)       # #cmakedefine
 endif()
@@ -273,9 +273,6 @@ if(SOFACUDA_CUBLAS)
 endif()
 if(SOFACUDA_CUDPP)
     target_link_libraries(${PROJECT_NAME} cudpp)
-endif()
-if(SOFACUDA_THRUST)
-    target_link_libraries(${PROJECT_NAME} thrust)
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
