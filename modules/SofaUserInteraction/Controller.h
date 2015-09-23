@@ -93,48 +93,48 @@ public:
     /**
     * @brief Mouse event callback.
     */
-    virtual void onMouseEvent(core::objectmodel::MouseEvent *) {};
+    virtual void onMouseEvent(core::objectmodel::MouseEvent *) {}
 
     /**
     * @brief HapticDevice event callback.
     */
-    virtual void onHapticDeviceEvent(core::objectmodel::HapticDeviceEvent *) {};
+    virtual void onHapticDeviceEvent(core::objectmodel::HapticDeviceEvent *) {}
 
     /**
     * @brief Xitact event callback.
     */
-    //virtual void onXitactEvent(core::objectmodel::HapticDeviceEvent *){};
+    //virtual void onXitactEvent(core::objectmodel::HapticDeviceEvent *){}
 
 
     /**
     * @brief Key Press event callback.
     */
-    virtual void onKeyPressedEvent(core::objectmodel::KeypressedEvent *) {};
+    virtual void onKeyPressedEvent(core::objectmodel::KeypressedEvent *) {}
 
     /**
     * @brief Key Release event callback.
     */
-    virtual void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *) {};
+    virtual void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *) {}
 
     /**
     * @brief Joystick event callback.
     */
-    virtual void onJoystickEvent(core::objectmodel::JoystickEvent *) {};
+    virtual void onJoystickEvent(core::objectmodel::JoystickEvent *) {}
 
     /**
     * @brief Begin Animation event callback.
     */
-    virtual void onBeginAnimationStep(const double /*dt*/) {};
+    virtual void onBeginAnimationStep(const double /*dt*/) {}
 
     /**
     * @brief End Animation event callback.
     */
-    virtual void onEndAnimationStep(const double /*dt*/) {};
+    virtual void onEndAnimationStep(const double /*dt*/) {}
 
     /**
     * @brief GUI event callback.
     */
-    virtual void onGUIEvent(core::objectmodel::GUIEvent *) {};
+    virtual void onGUIEvent(core::objectmodel::GUIEvent *) {}
 
 protected:
 

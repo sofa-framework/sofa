@@ -89,9 +89,13 @@ class Model:
             self.position = None
             self.mesh = list() # list of meshes
             self.meshAttributes = dict() # attributes associated with each mesh
+
+            #TODO replace this with a MassInfo?
             self.mass = None
             self.com = None # x,y,z
-            self.inertia = None # Ixx, Ixy, Ixz, Iyy, Iyz, Izz
+            self.inertia = None # Ixx, Ixy, Ixz, Iyy, Iyz, Izz or Ixx, Iyy, Izz
+            self.inertia_rotation = None # only useful for diagonal (3 values) inertia
+
             self.skinnings=list()
             if not solidXml is None:
                 self.parseXml(solidXml)

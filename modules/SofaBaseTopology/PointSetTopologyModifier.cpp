@@ -75,16 +75,20 @@ void PointSetTopologyModifier::addPointsProcess(const unsigned int nPoints)
 void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints, const bool addDOF)
 {
     m_container->setPointTopologyToDirty();
+    const unsigned int startIndex = m_container->getNbPoints()-nPoints;
+    sofa::helper::vector <unsigned int> indices; indices.resize(nPoints);
+    for(unsigned int i=0; i<nPoints; ++i)
+        indices[i] = startIndex+i;
 
     if(addDOF)
     {
-        PointsAdded *e2 = new PointsAdded(nPoints);
+        PointsAdded *e2 = new PointsAdded(nPoints,indices);
         addStateChange(e2);
         propagateStateChanges();
     }
 
     // Warning that vertices just got created
-    PointsAdded *e = new PointsAdded(nPoints);
+    PointsAdded *e = new PointsAdded(nPoints,indices);
     this->addTopologyChange(e);
 }
 

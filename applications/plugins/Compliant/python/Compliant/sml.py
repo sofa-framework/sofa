@@ -19,7 +19,7 @@ def insertRigid(parentNode, rigidModel, density, param=None):
         2) mesh if possible
         3) default to a unit sphere TODO: is it relevant to do so ?
     """
-    print "rigid:", rigidModel.name
+    print "Compliant.sml.insertRigid: ", rigidModel.name
     rigid = StructuralAPI.RigidBody(parentNode, rigidModel.name)
 
     # check mesh formats are supported by generateRigid
@@ -31,14 +31,18 @@ def insertRigid(parentNode, rigidModel, density, param=None):
         # all inertial data is present, let's use it
         massinfo = SofaPython.mass.RigidMassInfo()
         massinfo.mass = rigidModel.mass # TODO: convert units ?
-        massinfo.com = rigidModel.com
-        # TODO: convert units ?
-        massinfo.setFromInertia(rigidModel.inertia[0], rigidModel.inertia[1], rigidModel.inertia[2], # Ixx, Ixy, Ixz
-                                rigidModel.inertia[3], rigidModel.inertia[4], # Iyy, Iyz
-                                rigidModel.inertia[5] ) # Izz
+        massinfo.com = rigidModel.com # TODO: convert units ?
+
+        if len(rigidModel.inertia)==3 and not rigidModel.inertia_rotation is None:
+            massinfo.diagonal_inertia = rigidModel.inertia
+            massinfo.inertia_rotation = rigidModel.inertia_rotation
+        else:
+            massinfo.setFromInertia(rigidModel.inertia[0], rigidModel.inertia[1], rigidModel.inertia[2], # Ixx, Ixy, Ixz
+                                    rigidModel.inertia[3], rigidModel.inertia[4], # Iyy, Iyz
+                                    rigidModel.inertia[5] ) # Izz
         rigid.setFromRigidInfo(massinfo, offset=rigidModel.position , inertia_forces = False )    # TODO: handle inertia_forces ?
     elif len(rigidModel.mesh)!=0 and meshFormatSupported:
-        # get inertia from mesh and density
+        # get inertia from meshes and density
         massinfo = SofaPython.sml.getSolidRigidMassInfo(rigidModel, density)
         rigid.setFromRigidInfo(massinfo, offset=rigidModel.position , inertia_forces = False )    # TODO: handle inertia_forces ?
 
@@ -54,11 +58,14 @@ def insertRigid(parentNode, rigidModel, density, param=None):
     else:
         # no mesh, get mass/inertia if present, default to a unit sphere
         print "WARNING: Compliant.sml.insertRigid using default rigidMass"
-        mass=SofaPython.units.mass_from_SI(1.)
-        if not rigidModel.mass is None:
-            mass = rigidModel.mass
+        mass = rigidModel.mass  if not rigidModel.mass is None else SofaPython.units.mass_from_SI(1.)
         inertia = [1,1,1]
-        rigid.setManually(rigidModel.position, mass, inertia)
+        t = rigidModel.position
+        if not rigidModel.com is None:
+            t[0] += rigidModel.com[0]
+            t[1] += rigidModel.com[1]
+            t[2] += rigidModel.com[2]
+        rigid.setManually(t, mass, inertia)
 
     if not param is None:
         rigid.dofs.showObject = param.showRigid

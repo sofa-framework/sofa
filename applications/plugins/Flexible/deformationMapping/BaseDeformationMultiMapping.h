@@ -129,8 +129,10 @@ public:
     typedef typename BaseShapeFunction::VecVReal VecVReal;
     typedef typename BaseShapeFunction::Gradient Gradient;
     typedef typename BaseShapeFunction::VGradient VGradient;
+    typedef typename BaseShapeFunction::VecVGradient VecVGradient;
     typedef typename BaseShapeFunction::Hessian Hessian;
     typedef typename BaseShapeFunction::VHessian VHessian;
+    typedef typename BaseShapeFunction::VecVHessian VecVHessian;
     typedef typename BaseShapeFunction::VRef VRef;
     typedef typename BaseShapeFunction::VecVRef VecVRef;
     typedef typename BaseShapeFunction::Coord mCoord; ///< material coordinates
@@ -263,8 +265,8 @@ public:
     VecVRef f_index_parentToChild1;            ///< Constructed at init from f_index1 to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i of type 1.
     VecVRef f_index_parentToChild2;            ///< Constructed at init from f_index2 to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i of type 2.
     Data<VecVReal >       f_w;
-    Data<vector<VGradient> >   f_dw;
-    Data<vector<VHessian> >    f_ddw;
+    Data<VecVGradient >   f_dw;
+    Data<VecVHessian >    f_ddw;
     Data<VMaterialToSpatial>    f_F0;   ///< initial value of deformation gradients
     Data< vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
 

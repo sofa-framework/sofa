@@ -270,9 +270,9 @@ public:
     ///@brief Get parent's influence weights on each child
     virtual VecVReal getWeights(){ return f_w.getValue(); }
     ///@brief Get parent's influence weights gradient on each child
-    virtual vector<VGradient> getWeightsGradient(){ return f_dw.getValue(); }
+    virtual VecVGradient getWeightsGradient(){ return f_dw.getValue(); }
     ///@brief Get parent's influence weights hessian on each child
-    virtual vector<VHessian> getWeightsHessian(){ return f_ddw.getValue(); }
+    virtual VecVHessian getWeightsHessian(){ return f_ddw.getValue(); }
     ///@brief Get mapped positions
     VecCoord getMappedPositions() { return f_pos; }
     ///@brief Get init positions
@@ -309,8 +309,8 @@ public:
                                                  @warning Therefore to get access to parent's child index only you have to perform a loop over index[i] with an offset of size 2.
                                              */
     Data<VecVReal >       f_w;         ///< Influence weights of the parents for each child
-    Data<vector<VGradient> >   f_dw;        ///< Influence weight gradients
-    Data<vector<VHessian> >    f_ddw;       ///< Influence weight hessians
+    Data<VecVGradient >   f_dw;        ///< Influence weight gradients
+    Data<VecVHessian >    f_ddw;       ///< Influence weight hessians
     Data<VMaterialToSpatial>    f_F0;       ///< initial value of deformation gradients
     Data< vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
 
