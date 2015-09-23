@@ -23,5 +23,5 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${TINYXML_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-include(../../SofaFramework/SofaPackageConfigHelpers.cmake)
+include(../../SofaFramework/SofaMacros.cmake)
 sofa_create_package(TinyXML 2.6.2 tinyxml "")

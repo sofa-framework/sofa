@@ -94,5 +94,5 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${QGLVIEWER_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-include(../../../SofaFramework/SofaPackageConfigHelpers.cmake)
+include(../../../SofaFramework/SofaMacros.cmake)
 sofa_create_package(QGLViewer 2.4.0 QGLViewer QGLViewer)

@@ -50,5 +50,5 @@ if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" ST
 endif()
 
 
-include(../../SofaFramework/SofaPackageConfigHelpers.cmake)
+include(../../SofaFramework/SofaMacros.cmake)
 sofa_create_package(Newmat 2.6.2 newmat newmat)

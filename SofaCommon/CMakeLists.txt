@@ -37,5 +37,4 @@ endforeach()
 
 
 ## CMake package configurations files
-include(SofaPackageConfigHelpers)
 sofa_write_package_config_files(SofaCommon ${SOFACOMMON_VERSION})

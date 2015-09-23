@@ -12,5 +12,4 @@ target_link_libraries(${PROJECT_NAME} SofaComponentAdvanced SofaComponentMisc)
 target_link_libraries(${PROJECT_NAME} SofaSimulationGraph)
 target_link_libraries(${PROJECT_NAME} SofaGuiMain)
 
-include(SofaPackageConfigHelpers)
 sofa_install_targets(SofaGui runSofa "")

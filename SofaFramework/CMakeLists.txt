@@ -3,7 +3,6 @@ project(SofaFramework)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
-include(CMakeSofaCreateTarget)
 include(SofaMacros)
 
 
@@ -231,29 +230,16 @@ endif()
 set(SOFAFRAMEWORK_TARGETS SofaCore SofaDefaultType SofaHelper)
 
 ## CMake package configurations files
-include(SofaPackageConfigHelpers)
 sofa_write_package_config_files(SofaFramework ${SOFAFRAMEWORK_VERSION})
-
-## SofaMacros.cmake
-# Build tree
-configure_file(SofaMacros.cmake ${CMAKE_BINARY_DIR}/cmake/SofaMacros.cmake COPYONLY)
-# Install tree
-install(FILES SofaMacros.cmake DESTINATION lib/cmake/SofaFramework)
-
-## CMakeSofaCreateTarget.cmake
-# Build tree
-configure_file(CMakeSofaCreateTarget.cmake ${CMAKE_BINARY_DIR}/cmake/CMakeSofaCreateTarget.cmake COPYONLY)
-# Install tree
-install(FILES CMakeSofaCreateTarget.cmake DESTINATION lib/cmake/SofaFramework)
-
-## SofaPackageConfigHelpers.cmake
-# Build tree
-configure_file(SofaPackageConfigHelpers.cmake ${CMAKE_BINARY_DIR}/cmake/SofaPackageConfigHelpers.cmake COPYONLY)
-# Install tree
-install(FILES SofaPackageConfigHelpers.cmake DESTINATION lib/cmake/SofaFramework)
 
 ## CMakeParseLibraryList.cmake
 # Build tree
 configure_file(CMakeParseLibraryList.cmake ${CMAKE_BINARY_DIR}/cmake/CMakeParseLibraryList.cmake COPYONLY)
 # Install tree
 install(FILES CMakeParseLibraryList.cmake DESTINATION lib/cmake/SofaFramework)
+
+## SofaMacros.cmake
+# Build tree
+configure_file(SofaMacros.cmake ${CMAKE_BINARY_DIR}/cmake/SofaMacros.cmake COPYONLY)
+# Install tree
+install(FILES SofaMacros.cmake DESTINATION lib/cmake/SofaFramework)

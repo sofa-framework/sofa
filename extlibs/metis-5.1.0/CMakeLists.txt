@@ -22,5 +22,5 @@ if(UNIX)
     target_link_libraries(${PROJECT_NAME} m)
 endif()
 
-include(../../SofaFramework/SofaPackageConfigHelpers.cmake)
+include(../../SofaFramework/SofaMacros.cmake)
 sofa_create_package(Metis 5.1.0 metis "")

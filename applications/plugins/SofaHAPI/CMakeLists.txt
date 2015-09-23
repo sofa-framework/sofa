@@ -96,7 +96,6 @@ configure_file(SofaHAPI.h.in "${CMAKE_BINARY_DIR}/include/SofaHAPI/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/SofaHAPI/config.h" DESTINATION "include/SofaHAPI")
 
 ## Install rules for the library and the header; CMake package configurations files
-include(SofaPackageConfigHelpers)
 sofa_create_package(SofaHAPI ${SOFAHAPI_VERSION} SofaHAPI SofaHAPI)
 
 ## Install rules for the resources
