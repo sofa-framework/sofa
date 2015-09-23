@@ -240,8 +240,8 @@ install(FILES "${CMAKE_BINARY_DIR}/include/SofaCUDA/config.h" DESTINATION "inclu
 # With some versions of CMake, CUDA_HOST_COMPILER defaults to CMAKE_C_COMPILER,
 # but few host compilers are actually supported. Workarounds should go here.
 if (${CUDA_HOST_COMPILER} MATCHES "ccache$")
-    message(STATUS "SofaCUDA: CUDA host compiler was set to ccache, changing to gcc")
-    set(CUDA_HOST_COMPILER "gcc" CACHE STRING "Host side compiler used by NVCC" FORCE)
+    message(STATUS "SofaCUDA: CUDA host compiler was set to ccache, changing to g++")
+    set(CUDA_HOST_COMPILER "g++" CACHE STRING "Host side compiler used by NVCC" FORCE)
 endif()
 
 # quick and dirty fix for nvcc compatibility with -fno-partial-inlining flag
