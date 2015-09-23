@@ -4,6 +4,7 @@ project(SofaFramework)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
 include(CMakeSofaCreateTarget)
+include(SofaMacros)
 
 
 ### Options
@@ -232,6 +233,12 @@ set(SOFAFRAMEWORK_TARGETS SofaCore SofaDefaultType SofaHelper)
 ## CMake package configurations files
 include(SofaPackageConfigHelpers)
 sofa_write_package_config_files(SofaFramework ${SOFAFRAMEWORK_VERSION})
+
+## SofaMacros.cmake
+# Build tree
+configure_file(SofaMacros.cmake ${CMAKE_BINARY_DIR}/cmake/SofaMacros.cmake COPYONLY)
+# Install tree
+install(FILES SofaMacros.cmake DESTINATION lib/cmake/SofaFramework)
 
 ## CMakeSofaCreateTarget.cmake
 # Build tree
