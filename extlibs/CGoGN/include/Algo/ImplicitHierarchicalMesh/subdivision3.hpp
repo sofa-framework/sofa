@@ -181,15 +181,12 @@ void subdivideFace(typename PFP::MAP& map, Dart d, typename AttributeHandler_Tra
         map.checkEmbedding(FaceCell(f));
     }
 
-    map.template checkAllEmbeddingsOfOrbit<FACE>();
-    map.template checkAllEmbeddingsOfOrbit<VOLUME>();
-
-//    map.checkEdgeAndFaceIDAttributes();
+    map.checkEdgeAndFaceIDAttributes();
     map.setCurrentLevel(cur) ;
 }
 
 template <typename PFP>
-Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHandler_Traits< typename PFP::VEC3, VERTEX, typename PFP::MAP >::Handler& position, bool OneLevelDifference)
+Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHandler_Traits< typename PFP::VEC3, VERTEX, typename PFP::MAP >::Handler& position)
 {
     typedef typename PFP::MAP MAP;
     assert(map.getDartLevel(d) <= map.getCurrentLevel() || !"Access to a dart introduced after current level") ;
@@ -298,7 +295,9 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
         map.setCurrentLevel(cur);
     }
 
-    map.setCurrentLevel(vLevel + 1) ; // go to the next level to perform volume subdivision
+    map.setCurrentLevel(vLevel + 1) ; // go to the next level to perform volume 
+    map.template checkAllEmbeddingsOfOrbit<FACE>();
+    map.template checkAllEmbeddingsOfOrbit<VOLUME>();
 
     std::vector<Dart> newEdges;	//save darts from inner edges
     newEdges.reserve(50);
@@ -468,6 +467,8 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
 
     map.checkEdgeAndFaceIDAttributes();
     map.setCurrentLevel(cur) ;
+    map.template checkAllEmbeddingsOfOrbit<FACE>();
+    map.template checkAllEmbeddingsOfOrbit<VOLUME>();
     return centralDart;
 }
 
