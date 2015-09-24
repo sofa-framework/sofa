@@ -37,6 +37,7 @@ set(HEADER_FILES
     Binding_Topology.h
     Binding_Vector.h
     Binding_VisualModel.h
+    PythonCommon.h
     PythonEnvironment.h
     PythonMacros.h
     PythonMainScriptController.h
