@@ -34,9 +34,7 @@
 
 #include <boost/scoped_ptr.hpp>
 
-#ifdef SOFA_HAVE_EIGEN2
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-#endif
 
 
 namespace sofa

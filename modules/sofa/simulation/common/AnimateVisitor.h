@@ -48,9 +48,7 @@ class SOFA_SIMULATION_COMMON_API AnimateVisitor : public Visitor
 
 protected :
     SReal dt;
-#ifdef SOFA_HAVE_EIGEN2
     bool firstNodeVisited;
-#endif
 public:
     AnimateVisitor(const core::ExecParams* params = core::ExecParams::defaultInstance());
     AnimateVisitor(const core::ExecParams* params, SReal dt);

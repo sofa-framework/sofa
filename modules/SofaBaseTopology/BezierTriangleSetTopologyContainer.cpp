@@ -483,7 +483,7 @@ sofa::helper::vector<BezierTriangleSetTopologyContainer::LocalTriangleIndex> Bez
 			}
 		}
 	}
-	assert(subtriangleArray.size()==((degree+1)*(degree+1)));
+    assert(subtriangleArray.size()==(size_t)((degree+1)*(degree+1)));
 	return(subtriangleArray);
 
 }
@@ -546,7 +546,7 @@ bool BezierTriangleSetTopologyContainer::checkBezierPointTopology()
 	size_t nTrians,elem;
 	BezierDegreeType degree=d_degree.getValue();
 	// check the total number of vertices.
-	assert(getNbPoints()==(getNumberOfTriangularPoints()+getNumberOfEdges()*(degree-1)+getNumberOfTriangles()*(degree-1)*(degree-2)/2));
+    assert(getNbPoints()==(int)(getNumberOfTriangularPoints()+getNumberOfEdges()*(degree-1)+getNumberOfTriangles()*(degree-1)*(degree-2)/2));
 	sofa::helper::vector<TriangleBezierIndex> tbiArray=getTriangleBezierIndexArray();
 	VecPointID indexArray;
 	BezierTrianglePointLocation location; 
@@ -555,7 +555,7 @@ bool BezierTriangleSetTopologyContainer::checkBezierPointTopology()
 		indexArray.clear();
 		getGlobalIndexArrayOfBezierPointsInTriangle(nTrians,indexArray);
 		// check the number of control points per Triangle is correct
-		assert(indexArray.size()==(3+3*(degree-1)+(degree-1)*(degree-2)/2));
+        assert(indexArray.size()==(size_t)(3+3*(degree-1)+(degree-1)*(degree-2)/2));
 		for(elem=0;elem<indexArray.size();++elem) {
 			size_t globalIndex=getGlobalIndexOfBezierPoint(nTrians,tbiArray[elem]);
 			// check that getGlobalIndexOfBezierPoint and getGlobalIndexArrayOfBezierPointsInTriangle give the same answer

@@ -36,11 +36,9 @@
 #include <sofa/defaulttype/MatSym.h>
 #include <string>
 
-#ifdef SOFA_HAVE_EIGEN2
 //#include <Eigen/Core>
 #include <Eigen/QR>
 #include <Eigen/Eigenvalues>
-#endif
 namespace sofa
 {
 
@@ -123,10 +121,8 @@ public:
   typedef typename DataTypes::Coord Coord;
   typedef typename Coord::value_type Real;
   typedef defaulttype::MatSym<3,Real> MatrixSym;
-#ifdef SOFA_HAVE_EIGEN2
   typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::MatrixType EigenMatrix;
   typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::RealVectorType CoordEigen;
-#endif
   /// Trace of C = I1
   Real trC;
   Real J;
@@ -138,10 +134,8 @@ public:
   bool hasBeenInitialized;
   /// right Cauchy-Green deformation tensor C (gradPhi^T gradPhi)
   MatrixSym deformationTensor;
-#ifdef SOFA_HAVE_EIGEN2
   EigenMatrix Evect;
   CoordEigen Evalue;
-#endif
   Real logJ;
   MatrixSym E;
 

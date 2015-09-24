@@ -106,7 +106,6 @@ set(SOURCE_FILES
     initBoundaryCondition.cpp
 )
 
-if(SOFA_HAVE_EIGEN2)
 
     list(APPEND HEADER_FILES
         ProjectToLineConstraint.h
@@ -126,14 +125,10 @@ if(SOFA_HAVE_EIGEN2)
           ProjectDirectionConstraint.cpp
     )
 
-endif()
-
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
-if(SOFA_HAVE_EIGEN2)
-    target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver)
-endif()
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver)
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION  "${SOFAGENERAL_VERSION}")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_BOUNDARY_CONDITION")

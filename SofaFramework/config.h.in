@@ -45,8 +45,6 @@
 
 #cmakedefine SOFA_HAVE_TINYXML
 
-#cmakedefine SOFA_HAVE_EIGEN2
-
 #cmakedefine SOFA_DUMP_VISITOR_INFO
 
 #cmakedefine SOFA_NO_OPENGL

@@ -41,10 +41,10 @@
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
-//#ifdef SOFA_HAVE_EIGEN2
+
 //TO REMOVE ONCE THE CONVERGENCE IS DONE
 #include <sofa/core/behavior/BaseLMConstraint.h>
-//#endif
+
 //#include <sofa/defaulttype/BaseMatrix.h>
 //#include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -1814,71 +1814,6 @@ public:
 #endif
 };
 
-//#ifdef SOFA_HAVE_EIGEN2
-
-//class SOFA_SIMULATION_COMMON_API MechanicalExpressJacobianVisitor: public MechanicalVisitor
-//{
-//public:
-//    MechanicalExpressJacobianVisitor(simulation::Node* n);
-//    virtual void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map);
-//    virtual Result fwdLMConstraint(simulation::Node* node, core::behavior::BaseLMConstraint* c);
-
-//    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-//    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-//    {
-//        return false; // !map->isMechanical();
-//    }
-//    /// Return a class name for this visitor
-//    /// Only used for debugging / profiling purposes
-//    virtual const char* getClassName() const { return "MechanicalExpressJacobianVisitor"; }
-//    virtual bool isThreadSafe() const{ return false;}
-//#ifdef SOFA_DUMP_VISITOR_INFO
-//    void setReadWriteVectors()
-//    {
-//    }
-//#endif
-//  protected:
-//    unsigned int constraintId;
-//};
-
-
-
-//class SOFA_SIMULATION_COMMON_API MechanicalSolveLMConstraintVisitor: public MechanicalVisitor
-//{
-// public:
-// MechanicalSolveLMConstraintVisitor(VecId v,bool priorStatePropagation,bool updateVelocity=true):state(v), propagateState(priorStatePropagation),isPositionChangeUpdateVelocity(updateVelocity){
-//#ifdef SOFA_DUMP_VISITOR_INFO
-//    setReadWriteVectors();
-//#endif
-//        };
-
-
-//  virtual Result fwdConstraintSolver(simulation::Node* /*node*/, core::behavior::ConstraintSolver* s);
-//    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-//  virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-//    {
-//        return false; // !map->isMechanical();
-//    }
-
-//  /// Return a class name for this visitor
-//  /// Only used for debugging / profiling purposes
-//  virtual const char* getClassName() const { return "MechanicalSolveLMConstraintVisitor"; }
-//  virtual std::string getInfos() const { std::string name= "["+state.getName()+"]"; return name; }
-
-//  virtual bool isThreadSafe() const
-//  {
-//    return false;
-//  }
-//#ifdef SOFA_DUMP_VISITOR_INFO
-//    void setReadWriteVectors()
-//    {
-//        addReadWriteVector(state);
-//    }
-//#endif
-//    VecId state;
-//    bool propagateState;
-//    bool isPositionChangeUpdateVelocity;
-//};
 
 class SOFA_SIMULATION_COMMON_API MechanicalWriteLMConstraint : public BaseMechanicalVisitor
 {
@@ -1890,7 +1825,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
-    };
+    }
 
     virtual Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c);
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
@@ -1944,7 +1879,6 @@ protected:
 
 };
 
-//#endif
 
 class SOFA_SIMULATION_COMMON_API MechanicalAccumulateConstraint : public BaseMechanicalVisitor
 {

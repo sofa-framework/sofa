@@ -60,7 +60,6 @@ set(SOURCE_FILES
     initConstraint.cpp
 )
 
-if(SOFA_HAVE_EIGEN2)
 
     list(APPEND HEADER_FILES
         BarycentricDistanceLMConstraintContact.h
@@ -87,13 +86,10 @@ if(SOFA_HAVE_EIGEN2)
         LMConstraintDirectSolver.cpp
     )
 
-endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaSimpleFem SofaImplicitOdeSolver SofaUserInteraction SofaBaseLinearSolver)
-if(SOFA_HAVE_EIGEN2)
-   target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver)
-endif()
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_CONSTRAINT")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 

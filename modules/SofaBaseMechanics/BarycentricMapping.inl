@@ -4340,7 +4340,6 @@ void BarycentricMapping<TIn, TOut>::handleTopologyChange ( core::topology::Topol
 }
 
 
-#ifdef SOFA_HAVE_EIGEN2
 
 template<class TIn, class TOut>
 const vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::getJs()
@@ -4360,7 +4359,6 @@ const vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::getJs()
 }
 
 
-#endif
 
 } // namespace mapping
 
