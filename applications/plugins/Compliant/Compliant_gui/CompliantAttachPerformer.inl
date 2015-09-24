@@ -32,7 +32,7 @@
 using std::cerr;
 using std::endl;
 
-#include "compliance/UniformCompliance.h"
+#include "../compliance/UniformCompliance.h"
 #include <sofa/simulation/common/InitVisitor.h>
 
 
