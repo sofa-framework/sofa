@@ -55,10 +55,6 @@ if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} image)
 endif()
 
-# ???
-if(WIN32 AND NOT CMAKE_CL_64)
-    add_definitions("-DEIGEN_DONT_ALIGN")
-endif()
 
 # #Needed by python test
 # AddCompilerDefinitions("SOFA_SRC_DIR=${SOFA_SRC_DIR}")

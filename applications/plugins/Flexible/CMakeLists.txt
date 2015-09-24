@@ -237,11 +237,7 @@ if(NOT SOFA-EXTERNAL_MGDIFFUSI0N_PATH STREQUAL "")
         ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Common_Libraries/libThreading_Tools.so)
 endif()
 
-if(WIN32)
-    set(FLEXIBLE_COMPILER_FLAGS "${FLEXIBLE_COMPILER_FLAGS} -DEIGEN_DONT_ALIGN")
-#else()
-#	include_directories("/usr/include/suitesparse/")
-endif()
+
 if(UNIX)
     target_link_libraries(${PROJECT_NAME} pthread)
 endif()

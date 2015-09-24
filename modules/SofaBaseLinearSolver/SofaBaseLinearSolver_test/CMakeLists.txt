@@ -12,6 +12,4 @@ target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SofaBaseLinearSolve
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 
-if(MSVC)
-    add_definitions("-DEIGEN_DONT_ALIGN")
-endif()
+
