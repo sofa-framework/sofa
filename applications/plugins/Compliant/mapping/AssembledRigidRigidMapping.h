@@ -28,8 +28,8 @@
 #include "AssembledMapping.h"
 #include <Compliant/config.h>
 
-#include "../utils/se3.h"
-#include "../utils/pair.h"
+#include "utils/se3.h" 
+#include "utils/pair.h"
 
 #include <sofa/core/ObjectFactory.h>
 
