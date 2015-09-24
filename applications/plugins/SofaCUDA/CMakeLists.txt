@@ -255,12 +255,7 @@ cuda_include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 cuda_include_directories("${CMAKE_BINARY_DIR}/include")
 cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS} ${WINDOWS_OPTIONS})
 
-set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch ${SOFACUDA_ARCH} -Xcompiler")
-if(NOT WIN32)
-    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -fPIC")
-endif()
-set(CUDA_NVCC_FLAGS_DEBUG "-g")
-set(CUDA_NVCC_FLAGS_RELEASE "-DNDEBUG")
+include(SofaCUDANvccFlags)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
@@ -275,6 +270,12 @@ endif()
 if(SOFACUDA_CUDPP)
     target_link_libraries(${PROJECT_NAME} cudpp)
 endif()
+
+## SofaCUDANvccFlags.cmake
+# Build tree
+configure_file(SofaCUDANvccFlags.cmake ${CMAKE_BINARY_DIR}/cmake/SofaCUDANvccFlags.cmake COPYONLY)
+# Install tree
+install(FILES SofaCUDANvccFlags.cmake DESTINATION lib/cmake/SofaCUDA)
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package(SofaCUDA ${SOFACUDA_VERSION} SofaCUDA SofaCUDA)

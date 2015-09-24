@@ -2,6 +2,13 @@
 
 @PACKAGE_INIT@
 
+list(FIND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}" HAS_SOFACUDA_CMAKE_MODULE_PATH)
+if(HAS_SOFACUDA_CMAKE_MODULE_PATH EQUAL -1)
+    list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR})
+endif()
+
+set(SOFACUDA_ARCH @SOFACUDA_ARCH@)
+
 find_package(SofaAdvanced REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(CUDA REQUIRED)
@@ -11,3 +18,5 @@ if(NOT TARGET SofaCUDA)
 endif()
 
 check_required_components(SofaCUDA)
+
+include(SofaCUDANvccFlags)
