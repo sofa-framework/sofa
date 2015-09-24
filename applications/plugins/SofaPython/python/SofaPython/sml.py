@@ -458,6 +458,20 @@ class BaseScene:
         else :
             return "default"
 
+    def getCollision(self,solidId,meshId):
+        """ returns a collision object identified by solidId/meshId
+        """
+        mesh=None
+        if hasattr(self, 'rigids'):  # inserted by Compliant.sml
+            if solidId in self.rigids:
+                if meshId in self.rigids[solidId].collisions:
+                    mesh = self.rigids[solidId].collisions[meshId]
+        if hasattr(self, 'collisions'):  # inserted by Anatomy.sml
+            if solidId in self.collisions:
+                if meshId in self.collisions[solidId]:
+                    mesh = self.collisions[solidId][meshId]
+        return mesh
+
     def dagValidation(self):
         err = DAGValidation.test( self.root, True )
         if not len(err) is 0:
