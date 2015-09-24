@@ -71,6 +71,7 @@ template <> inline std::string nameOfType(const sofa::defaulttype::Vec3f& /*v*/)
 template <> inline std::string nameOfType(const sofa::defaulttype::Vec3d& /*v*/) { return "sofaVec3d"; }
 template <> inline std::string nameOfType(const sofa::defaulttype::Vec4f& /*v*/) { return "sofaVec4f"; }
 template <> inline std::string nameOfType(const sofa::defaulttype::Vec4d& /*v*/) { return "sofaVec4d"; }
+template <> inline std::string nameOfType(const sofa::helper::vector<FaceCell>& ) { return "SofaVecFaceCell"; }
 
 template <> inline std::string nameOfType(const char& /*v*/) { return "char"; }
 

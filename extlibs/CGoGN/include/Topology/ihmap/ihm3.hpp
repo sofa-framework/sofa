@@ -515,7 +515,9 @@ void ImplicitHierarchicalMap3::checkEmbedding(Cell<ORBIT> c)
             {
                 cellEmbeddings[dartLevel] = this->ParentMap::template getEmbedding< ORBIT >(it) ;
             } else {
-                assert(this->ParentMap::template getEmbedding< ORBIT >(it) == embeddingIT->second );
+                const unsigned int emb1 = this->ParentMap::template getEmbedding< ORBIT >(it);
+                const unsigned int emb2 = embeddingIT->second;
+                assert( emb1 == emb2 );
             }
         }
 #endif
