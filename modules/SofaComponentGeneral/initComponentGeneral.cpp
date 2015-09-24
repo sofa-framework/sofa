@@ -43,9 +43,7 @@
 #ifdef SOFA_HAVE_TAUCS
 #include <SofaTaucsSolver/initTaucsSolver.h>
 #endif
-#ifdef SOFA_HAVE_EIGEN2
 #include <SofaEigen2Solver/initEigen2Solver.h>
-#endif
 #ifdef SOFA_HAVE_PARDISO
 #include <SofaPardisoSolver/initPardisoSolver.h>
 #endif
@@ -87,9 +85,7 @@ void initComponentGeneral()
 #ifdef SOFA_HAVE_TAUCS
     initTaucsSolver();
 #endif
-#ifdef SOFA_HAVE_EIGEN2
-    initEigen2Solver();
-#endif
+initEigen2Solver();
 #ifdef SOFA_HAVE_PARDISO
     initPardisoSolver();
 #endif

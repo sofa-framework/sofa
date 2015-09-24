@@ -50,18 +50,14 @@ namespace simulation
 AnimateVisitor::AnimateVisitor(const core::ExecParams* params, SReal dt)
     : Visitor(params)
     , dt(dt)
-#ifdef SOFA_HAVE_EIGEN2
     , firstNodeVisited(false)
-#endif
 {
 }
 
 AnimateVisitor::AnimateVisitor(const core::ExecParams* params)
     : Visitor(params)
     , dt(0)
-#ifdef SOFA_HAVE_EIGEN2
     , firstNodeVisited(false)
-#endif
 {
 }
 
@@ -127,8 +123,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 
     //cerr<<"AnimateVisitor::process Node  "<<node->getName()<<endl;
     if (!node->isActive()) return Visitor::RESULT_PRUNE;
-	if (node->isSleeping()) return Visitor::RESULT_PRUNE;
-#ifdef SOFA_HAVE_EIGEN2
+    if (node->isSleeping()) return Visitor::RESULT_PRUNE;
     if (!firstNodeVisited)
     {
         firstNodeVisited=true;
@@ -145,7 +140,6 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         MechanicalResetConstraintVisitor resetConstraint(&mparams);
         node->execute(&resetConstraint);
     }
-#endif
 
     if (dt == 0) setDt(node->getDt());
     else node->setDt(dt);
@@ -184,14 +178,12 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         sofa::core::MechanicalParams m_mparams(*this->params);
         m_mparams.setDt(dt);
 
-#ifdef SOFA_HAVE_EIGEN2
         {
             unsigned int constraintId=0;
             core::ConstraintParams cparams;
             //MechanicalAccumulateConstraint(&m_mparams, constraintId, VecCoordId::position()).execute(node);
             simulation::MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::holonomicC(),constraintId).execute(node);
         }
-#endif
 
         for( unsigned i=0; i<node->solver.size(); i++ )
         {

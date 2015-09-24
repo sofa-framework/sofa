@@ -216,10 +216,8 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
     // apply the solution
 
-#ifdef SOFA_HAVE_EIGEN2
     //For to No MultiOp, as it would be impossible to apply the constraints
 #define SOFA_NO_VMULTIOP
-#endif
 
 #ifdef SOFA_SMP
     // For SofaSMP we would need VMultiOp to be implemented in a SofaSMP compatible way

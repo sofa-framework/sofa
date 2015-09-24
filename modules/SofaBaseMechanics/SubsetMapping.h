@@ -37,10 +37,7 @@
 
 #include <boost/scoped_ptr.hpp>
 
-#ifdef SOFA_HAVE_EIGEN2
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-#endif
-
 
 namespace sofa
 {
@@ -132,7 +129,6 @@ public:
 
     const sofa::defaulttype::BaseMatrix* getJ();
 
-#ifdef SOFA_HAVE_EIGEN2
 public:
     typedef vector< defaulttype::BaseMatrix* > js_type;
     virtual const js_type* getJs();
@@ -142,7 +138,6 @@ protected:
     eigen_type eigen;
     js_type js;
 public:
-#endif
 
 protected:
     boost::scoped_ptr<MatrixType> matrixJ;

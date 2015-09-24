@@ -155,7 +155,6 @@ endif()
 ## Eigen
 find_package(Eigen3 REQUIRED)
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${EIGEN3_INCLUDE_DIR})
-set(SOFA_HAVE_EIGEN2 1)
 if(MSVC)
     add_definitions("-DEIGEN_DONT_ALIGN")
 endif()

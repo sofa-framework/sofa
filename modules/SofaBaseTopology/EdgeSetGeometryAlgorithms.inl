@@ -887,7 +887,6 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
         }
         else
         {
-#ifdef SOFA_HAVE_EIGEN2   // use the SVD decomposition of Eigen
             size_t n = weights.size();     // start index for this vertex
             weights.resize( n + ve.size() ); // concatenate all the W of the nodes
             defaulttype::Vector3 a,u;
@@ -936,10 +935,6 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
                 weights[n+i][2] = u * edgeVec[i];
                 //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to z = " << weights[n+i][2] << endl;
             }
-
-#else
-            std::cerr << "EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, cholDcmp failed, subsequent results are undefined " << std::endl;
-#endif
         }
 
     }

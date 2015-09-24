@@ -30,9 +30,7 @@
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
-#ifdef SOFA_HAVE_EIGEN2
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-#endif
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/MechanicalParams.h>
@@ -1081,7 +1079,6 @@ public:
     virtual const sofa::defaulttype::BaseMatrix* getJ();
 
 
-#ifdef SOFA_HAVE_EIGEN2
 public:
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
@@ -1093,8 +1090,6 @@ protected:
     vector< defaulttype::BaseMatrix* > js;
 
 public:
-
-#endif
 
     void draw(const core::visual::VisualParams* vparams);
 

@@ -27,9 +27,7 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
-#ifdef SOFA_HAVE_EIGEN2
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-#endif
 #include <iostream>
 
 namespace sofa
@@ -51,7 +49,6 @@ void SubsetMultiMapping<TIn, TOut>::init()
 
     Inherit::init();
 
-#ifdef SOFA_HAVE_EIGEN2
     unsigned Nin = TIn::deriv_total_size, Nout = Nin;
 
     for( unsigned i=0; i<baseMatrices.size(); i++ )
@@ -100,7 +97,6 @@ void SubsetMultiMapping<TIn, TOut>::init()
     {
         baseMatrices[i]->compress();
     }
-#endif
 }
 
 template <class TIn, class TOut>
@@ -118,14 +114,11 @@ SubsetMultiMapping<TIn, TOut>::~SubsetMultiMapping()
     }
 }
 
-#ifdef SOFA_HAVE_EIGEN2
 template <class TIn, class TOut>
 const helper::vector<sofa::defaulttype::BaseMatrix*>* SubsetMultiMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }
-#endif
-
 
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::addPoint( const core::BaseState* from, int index)

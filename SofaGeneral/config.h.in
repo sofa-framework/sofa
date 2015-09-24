@@ -29,7 +29,6 @@
 
 #cmakedefine SOFA_HAVE_NEWMAT
 #cmakedefine SOFA_HAVE_CSPARSE
-#cmakedefine SOFA_HAVE_EIGEN2
 #cmakedefine SOFA_HAVE_TAUCS
 #cmakedefine SOFA_HAVE_PARDISO
 #cmakedefine SOFA_HAVE_METIS
@@ -145,13 +144,11 @@
 #  endif
 #endif
 
-#ifdef SOFA_HAVE_EIGEN2
 #ifdef SOFA_BUILD_EIGEN2_SOLVER
 #  define SOFA_TARGET SofaEigen2Solver
 #  define SOFA_EIGEN2_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_EIGEN2_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
 #endif
 
 #ifdef SOFA_HAVE_PARDISO
