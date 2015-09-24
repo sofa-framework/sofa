@@ -252,9 +252,11 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${FLEXIBLE_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${FLEXIBLE_COMPILER_FLAGS}")
 
-find_package(SofaTest QUIET)
-if(SofaTest_FOUND)
-    add_subdirectory(Flexible_test)
+if(SOFA_BUILD_TESTS)
+    find_package(SofaTest QUIET)
+    if(SofaTest_FOUND)
+        add_subdirectory(Flexible_test)
+    endif()
 endif()
 
 ## Install rules for the library; CMake package configurations files
