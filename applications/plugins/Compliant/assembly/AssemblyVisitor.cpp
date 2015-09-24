@@ -314,7 +314,7 @@ void AssemblyVisitor::bottom_up(simulation::Visitor* vis) const {
 // simply fetch infos for each dof.
 void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 	assert( node->mechanicalState );
-    assert( chunks.find( node->mechanicalState ) == chunks.end() );
+    assert( chunks.find( node->mechanicalState ) == chunks.end() && "Did you run the simulation with a DAG traversal?" );
 
 	// fill chunk for current dof
 	chunk& c = chunks[ node->mechanicalState ];
