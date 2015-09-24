@@ -245,14 +245,14 @@ public:
     Data< TexCoord > m_scaleTex;
     Data< TexCoord > m_translationTex;
 
-    void applyTranslation(const Real dx, const Real dy, const Real dz);
+    void applyTranslation(const SReal dx, const SReal dy, const SReal dz);
 
     /// Apply Rotation from Euler angles (in degree!)
-    void applyRotation (const Real rx, const Real ry, const Real rz);
+    void applyRotation (const SReal rx, const SReal ry, const SReal rz);
 
     void applyRotation(const sofa::defaulttype::Quat q);
 
-    void applyScale(const Real sx, const Real sy, const Real sz);
+    void applyScale(const SReal sx, const SReal sy, const SReal sz);
 
     virtual void applyUVTransformation();
 

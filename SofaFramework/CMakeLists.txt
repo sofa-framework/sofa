@@ -190,7 +190,6 @@ set_target_properties(SofaCore PROPERTIES FOLDER "SofaFramework")
 ## OpenMP
 if(SOFA_OPENMP)
     find_package(OpenMP REQUIRED)
-    target_compile_definitions(SofaHelper PUBLIC "USING_OMP_PRAGMAS")
     target_compile_options(SofaHelper PUBLIC "${OpenMP_CXX_FLAGS}")
 endif()
 

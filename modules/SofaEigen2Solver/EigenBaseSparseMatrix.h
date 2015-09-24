@@ -370,7 +370,7 @@ public:
         }
 
 
-        virtual InteractionMatrixRef getMatrix(const core::behavior::BaseMechanicalState* mstate1, const core::behavior::BaseMechanicalState* mstate2) const
+        virtual InteractionMatrixRef getMatrix(const core::behavior::BaseMechanicalState* /*mstate1*/, const core::behavior::BaseMechanicalState* /*mstate2*/) const
         {
             assert(false);
             InteractionMatrixRef ref;

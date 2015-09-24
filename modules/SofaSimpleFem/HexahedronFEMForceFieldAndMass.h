@@ -86,6 +86,7 @@ public:
 
     virtual void addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
+    using HexahedronFEMForceFieldT::addKToMatrix;
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
     {
         HexahedronFEMForceFieldT::addKToMatrix(mparams, matrix);
@@ -117,7 +118,7 @@ public:
 
     virtual void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v);
 
-    SReal getElementMass(unsigned int index);
+    SReal getElementMass(unsigned int index) const;
     // visual model
 
     virtual void draw(const core::visual::VisualParams* vparams);

@@ -177,6 +177,7 @@ private:
 	BarycentricMapper& operator=(const BarycentricMapper& n) ;
 	
 public:
+    using core::objectmodel::BaseObject::init;
     virtual void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
     virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) = 0;
     virtual const sofa::defaulttype::BaseMatrix* getJ(int /*outSize*/, int /*inSize*/)
@@ -187,11 +188,13 @@ public:
     virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
     virtual void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) = 0;
     virtual void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) = 0;
+
+    using core::objectmodel::BaseObject::draw;
     virtual void draw(const core::visual::VisualParams*, const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
 
     //-- test mapping partiel
     virtual void applyOnePoint( const unsigned int& /*hexaId*/, typename Out::VecCoord& /*out*/, const typename In::VecCoord& /*in*/)
-    {};
+    {}
     //--
 
 
@@ -274,6 +277,7 @@ public:
     enum { NOut = Inherit::NOut };
     typedef typename Inherit::MBloc MBloc;
     typedef typename Inherit::MatrixType MatrixType;
+    typedef typename MatrixType::Index MatrixTypeIndex;
 
 protected:
     void addMatrixContrib(MatrixType* m, int row, int col, Real value)
@@ -409,6 +413,7 @@ public:
     enum { NOut = Inherit::NOut };
     typedef typename Inherit::MBloc MBloc;
     typedef typename Inherit::MatrixType MatrixType;
+    typedef typename MatrixType::Index MatrixTypeIndex;
 
 protected:
     void addMatrixContrib(MatrixType* m, int row, int col, Real value)
@@ -492,6 +497,7 @@ public:
     enum { NOut = Inherit::NOut };
     typedef typename Inherit::MBloc MBloc;
     typedef typename Inherit::MatrixType MatrixType;
+    typedef typename MatrixType::Index MatrixTypeIndex;
 
 protected:
     void addMatrixContrib(MatrixType* m, int row, int col, Real value)
@@ -569,6 +575,7 @@ public:
     enum { NOut = Inherit::NOut };
     typedef typename Inherit::MBloc MBloc;
     typedef typename Inherit::MatrixType MatrixType;
+    typedef typename MatrixType::Index MatrixTypeIndex;
 
 protected:
     topology::PointData< sofa::helper::vector<MappingData > > map;
@@ -660,6 +667,7 @@ public:
     enum { NOut = Inherit::NOut };
     typedef typename Inherit::MBloc MBloc;
     typedef typename Inherit::MatrixType MatrixType;
+    typedef typename MatrixType::Index MatrixTypeIndex;
 
 protected:
     topology::PointData< sofa::helper::vector<MappingData> > map;
@@ -751,6 +759,7 @@ public:
     enum { NOut = Inherit::NOut };
     typedef typename Inherit::MBloc MBloc;
     typedef typename Inherit::MatrixType MatrixType;
+    typedef typename MatrixType::Index MatrixTypeIndex;
 
 protected:
     topology::PointData< sofa::helper::vector<MappingData> >  map;
@@ -842,6 +851,7 @@ public:
     enum { NOut = Inherit::NOut };
     typedef typename Inherit::MBloc MBloc;
     typedef typename Inherit::MatrixType MatrixType;
+    typedef typename MatrixType::Index MatrixTypeIndex;
 
 protected:
     topology::PointData< sofa::helper::vector<MappingData > >  map;
@@ -909,6 +919,7 @@ public:
     enum { NOut = Inherit::NOut };
     typedef typename Inherit::MBloc MBloc;
     typedef typename Inherit::MatrixType MatrixType;
+    typedef typename MatrixType::Index MatrixTypeIndex;
 
 protected:
     topology::PointData< sofa::helper::vector<MappingData> >  map;

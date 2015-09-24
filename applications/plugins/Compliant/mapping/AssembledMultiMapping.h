@@ -248,6 +248,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
     virtual void assemble_geometric( const vector<const_in_coord_type>& /*in*/,
                                      const const_out_deriv_type& /*out*/) { }
     
+    using Inherit::apply;
 	// perform mapping operation on positions
     virtual void apply(out_pos_type& out, 
 					   const vector<in_pos_type>& in ) = 0;

@@ -2382,7 +2382,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addFrom
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaMechanicalObject_ImplMethods(T) \
-template<> void MechanicalObject< T >::accumulateForce(const core::ExecParams* /* params */) \
+template<> void MechanicalObject< T >::accumulateForce(const core::ExecParams* /* params */, core::VecDerivId) \
 { data.accumulateForce(this); } \
 template<> void MechanicalObject< T >::vOp(const core::ExecParams* /* params */, core::VecId v, core::ConstVecId a, core::ConstVecId b, SReal f) \
 { data.vOp(this, v, a, b, f); }		\
@@ -2390,7 +2390,7 @@ template<> void MechanicalObject< T >::vMultiOp(const core::ExecParams* params, 
 { data.vMultiOp(this, params, ops); }                                    \
 template<> SReal MechanicalObject< T >::vDot(const core::ExecParams* /* params */, core::ConstVecId a, core::ConstVecId b) \
 { return data.vDot(this, a, b); }				    \
-template<> void MechanicalObject< T >::resetForce(const core::ExecParams* /* params */) \
+template<> void MechanicalObject< T >::resetForce(const core::ExecParams* /* params */, core::VecDerivId) \
 { data.resetForce(this); } \
 template<> void MechanicalObject< T >::copyToBaseVector(defaulttype::BaseVector * dest, core::ConstVecId src, unsigned int &offset) \
 { if (CudaBaseVectorType<Real> * vec = dynamic_cast<CudaBaseVectorType<Real> *>(dest)) data.copyToCudaBaseVector(this, vec,src,offset); \
@@ -2412,10 +2412,10 @@ CudaMechanicalObject_ImplMethods(gpu::cuda::CudaRigid3fTypes)
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
-CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3dTypes);
-CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3d1Types);
-CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec6dTypes);
-CudaMechanicalObject_ImplMethods(gpu::cuda::CudaRigid3dTypes);
+CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3dTypes)
+CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3d1Types)
+CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec6dTypes)
+CudaMechanicalObject_ImplMethods(gpu::cuda::CudaRigid3dTypes)
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 

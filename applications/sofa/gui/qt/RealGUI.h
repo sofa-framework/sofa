@@ -293,7 +293,8 @@ public:
 //    virtual void saveXML();
 
     virtual void setViewerResolution(int w, int h);
-    virtual void setFullScreen(bool enable = true);
+    virtual void setFullScreen() { setFullScreen(true); }
+    virtual void setFullScreen(bool enable);
     virtual void setBackgroundColor(const defaulttype::Vector3& c);
     virtual void setBackgroundImage(const std::string& i);
     virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf);

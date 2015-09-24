@@ -193,7 +193,7 @@ public:
     /// @}
 
     virtual void initGnuplot(const std::string path);
-    virtual void exportGnuplot(Real time);
+    virtual void exportGnuplot(SReal time);
 
     virtual void resize( int vsize);
     virtual void reserve(int vsize);
@@ -316,11 +316,11 @@ public:
     /// @name Integration related methods
     /// @{
 
-    virtual void beginIntegration(Real dt);
+    virtual void beginIntegration(SReal dt);
 
-    virtual void endIntegration(const core::ExecParams* params, Real dt);
+    virtual void endIntegration(const core::ExecParams* params, SReal dt);
 
-    virtual void accumulateForce(const core::ExecParams* params); // see BaseMechanicalState::accumulateForce(const ExecParams*, VecId)
+    virtual void accumulateForce(const core::ExecParams* params, core::VecDerivId f = core::VecDerivId::force()); // see BaseMechanicalState::accumulateForce(const ExecParams*, VecId)
 
     /// Increment the index of the given VecCoordId, so that all 'allocated' vectors in this state have a lower index
     virtual void vAvail(const core::ExecParams* params, core::VecCoordId& v);
@@ -378,9 +378,9 @@ public:
 
     virtual size_t vSize( const core::ExecParams* params, core::ConstVecId v );
 
-    virtual void resetForce(const core::ExecParams* params);
+    virtual void resetForce(const core::ExecParams* params, core::VecDerivId f = core::VecDerivId::force());
 
-    virtual void resetAcc(const core::ExecParams* params);
+    virtual void resetAcc(const core::ExecParams* params, core::VecDerivId a = core::VecDerivId::dx());
 
     virtual void resetConstraint(const core::ExecParams* params);
 
