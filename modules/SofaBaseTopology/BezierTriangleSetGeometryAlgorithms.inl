@@ -400,7 +400,7 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Vi
 				std::vector<Real> edgeLengthArray;
 				// compute median of the edge distance between control points	
 				sofa::helper::set<std::pair<Edge,bool> >::iterator ite=bezierTriangleEdgeSet.begin();
-				Real val=0;
+//				Real val=0;
 				Coord pp;
 				for (; ite!=bezierTriangleEdgeSet.end(); ite++)
 				{
@@ -462,7 +462,7 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Vi
 				std::vector<Real> edgeLengthArray;
 				// compute median of the edge distance between control points	
 				sofa::helper::set<std::pair<Edge,bool> >::iterator ite=bezierTriangleEdgeSet.begin();
-				Real val=0;
+//				Real val=0;
 				Coord pp;
 				for (; ite!=bezierTriangleEdgeSet.end(); ite++)
 				{
