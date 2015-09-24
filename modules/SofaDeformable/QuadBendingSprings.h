@@ -62,9 +62,8 @@ public:
     /// Searches triangle topology and creates the bending springs
     virtual void init();
 
-    virtual void draw()
-    {
-    }
+    virtual void draw(const core::visual::VisualParams*) {}
+
     void setObject1(MechanicalState* object1) {this->mstate1=object1;}
     void setObject2(MechanicalState* object2) {this->mstate2=object2;}
 

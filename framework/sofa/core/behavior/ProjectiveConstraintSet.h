@@ -74,6 +74,12 @@ protected:
 
     virtual ~ProjectiveConstraintSet();
 public:
+
+    // to get rid of warnings
+    using BaseProjectiveConstraintSet::projectResponse;
+
+
+
     Data<Real> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
 

@@ -268,7 +268,7 @@ void MechanicalObject<DataTypes>::initGnuplot(const std::string path)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::exportGnuplot(Real time)
+void MechanicalObject<DataTypes>::exportGnuplot(SReal time)
 {
     if( m_gnuplotFileX!=NULL )
     {
@@ -1374,7 +1374,7 @@ void MechanicalObject<DataTypes>::writeState(std::ostream& out)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::beginIntegration(Real /*dt*/)
+void MechanicalObject<DataTypes>::beginIntegration(SReal /*dt*/)
 {
     this->forceMask.activate(false);
 }
@@ -1384,7 +1384,7 @@ void MechanicalObject<DataTypes>::endIntegration(const core::ExecParams*
                                                  #ifdef SOFA_SMP
                                                  params
                                                  #endif
-                                                , Real /*dt*/    )
+                                                , SReal /*dt*/    )
 {
     this->forceMask.clear();
     //By default the mask is disabled, the user has to enable it to benefit from the speedup
@@ -1405,13 +1405,13 @@ void MechanicalObject<DataTypes>::endIntegration(const core::ExecParams*
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params)
+void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params, core::VecDerivId fId)
 {
 #ifdef SOFA_SMP
     if (params->execMode() == core::ExecParams::EXEC_KAAPI)
     {
         BaseObject::Task < vPEq2 <  VecDeriv, VecDeriv > >
-                (this, **defaulttype::getShared(*this->write(VecDerivId::force())),
+                (this, **defaulttype::getShared(*this->write(fId)),
                  **defaulttype::getShared(*this->read(ConstVecDerivId::externalForce())));
     }
     else
@@ -1421,7 +1421,7 @@ void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params
 
         if (!extForces_rA.empty())
         {
-            helper::WriteAccessor< Data<VecDeriv> > f_wA ( params, *this->write(core::VecDerivId::force()) );
+            helper::WriteAccessor< Data<VecDeriv> > f_wA ( params, *this->write(fId) );
 
             if (!this->forceMask.isInUse())
             {
@@ -2501,17 +2501,17 @@ unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(core::ConstVecId v
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::resetForce(const core::ExecParams* params)
+void MechanicalObject<DataTypes>::resetForce(const core::ExecParams* params, core::VecDerivId fid)
 {
 #ifdef SOFA_SMP
     if (params->execMode() == core::ExecParams::EXEC_KAAPI)
     {
-        BaseObject::Task< vClear<VecDeriv, Deriv> >(this, **defaulttype::getShared(*this->write(core::VecDerivId::force())));
+        BaseObject::Task< vClear<VecDeriv, Deriv> >(this, **defaulttype::getShared(*this->write(fid)));
     }
     else
 #endif /* SOFA_SMP */
     {
-        helper::WriteAccessor< Data<VecDeriv> > f( params, *this->write(core::VecDerivId::force()) );
+        helper::WriteAccessor< Data<VecDeriv> > f( params, *this->write(fid) );
 
         if (!this->forceMask.isInUse())
         {
@@ -2536,17 +2536,17 @@ void MechanicalObject<DataTypes>::resetForce(const core::ExecParams* params)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams* params)
+void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams* params, core::VecDerivId aId)
 {
 #ifdef SOFA_SMP
     if (params->execMode() == core::ExecParams::EXEC_KAAPI)
     {
-        BaseObject::Task< vClear<VecDeriv, Deriv> >(this, **defaulttype::getShared(*this->write(core::VecDerivId::dx())));
+        BaseObject::Task< vClear<VecDeriv, Deriv> >(this, **defaulttype::getShared(*this->write(aId)));
     }
     else
 #endif /* SOFA_SMP */
     {
-        helper::WriteAccessor< Data<VecDeriv> > a( params, *this->write(core::VecDerivId::dx()) );
+        helper::WriteAccessor< Data<VecDeriv> > a( params, *this->write(aId) );
 
         for (unsigned i = 0; i < a.size(); ++i)
         {

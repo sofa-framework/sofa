@@ -586,7 +586,7 @@ void VisualModelImpl::applyUVTransformation()
     m_translationTex.setValue(TexCoord(0,0));
 }
 
-void VisualModelImpl::applyTranslation(const Real dx, const Real dy, const Real dz)
+void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SReal dz)
 {
     Coord d(dx,dy,dz);
 
@@ -616,9 +616,9 @@ void VisualModelImpl::applyTranslation(const Real dx, const Real dy, const Real 
     updateVisual();
 }
 
-void VisualModelImpl::applyRotation(const Real rx, const Real ry, const Real rz)
+void VisualModelImpl::applyRotation(const SReal rx, const SReal ry, const SReal rz)
 {
-    Quaternion q = helper::Quater<SReal>::createQuaterFromEuler( Vec<3,Real>(rx,ry,rz)*M_PI/180.0);
+    Quaternion q = helper::Quater<SReal>::createQuaterFromEuler( Vec<3,SReal>(rx,ry,rz)*M_PI/180.0);
     applyRotation(q);
 }
 
@@ -649,7 +649,7 @@ void VisualModelImpl::applyRotation(const Quat q)
     updateVisual();
 }
 
-void VisualModelImpl::applyScale(const Real sx, const Real sy, const Real sz)
+void VisualModelImpl::applyScale(const SReal sx, const SReal sy, const SReal sz)
 {
     Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
     VecCoord &x = *d_x->beginEdit();

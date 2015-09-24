@@ -120,7 +120,7 @@ public:
 
 
 protected:
-	State() {} ;
+    State() {}
     virtual ~State() { }
 	
 private:

@@ -129,7 +129,7 @@ public:
             datawidget_ = DataWidgetFactory::CreateObject(widgetName, dwarg);
 
         return datawidget_;
-    };
+    }
 
 
 public Q_SLOTS:

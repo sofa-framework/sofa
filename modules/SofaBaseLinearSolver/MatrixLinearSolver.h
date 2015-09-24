@@ -335,6 +335,8 @@ public:
 
 protected:
 
+    using BaseMatrixLinearSolver<Matrix, Vector>::partial_solve;
+
     /// newPartially solve the system
     virtual void partial_solve(Matrix& /*M*/, Vector& /*partial_solution*/, Vector& /*sparse_rh*/, ListIndex& /* indices_solution*/, ListIndex& /* indices input */)
     {

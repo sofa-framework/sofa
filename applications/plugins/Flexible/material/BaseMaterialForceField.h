@@ -138,6 +138,7 @@ public:
     }
 
     //Pierre-Luc : Implementation in HookeForceField
+    using Inherit::addForce;
     virtual void addForce(DataVecDeriv& /*_f*/ , const DataVecCoord& /*_x*/ , const DataVecDeriv& /*_v*/, const vector<SReal> /*_vol*/)
     {
         std::cout << "Do nothing" << std::endl;
@@ -235,6 +236,8 @@ public:
     }
     //@}
 
+
+    using Inherit::getPotentialEnergy;
 
     virtual SReal getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x ) const
     {
