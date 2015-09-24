@@ -53,6 +53,12 @@ if(UNIX)
     # use CMAKE_INSTALL_RPATH to set a relative RPATH.  By doing so, we avoid
     # the need to play with LD_LIBRARY_PATH to get applications to run.
     set(CMAKE_INSTALL_RPATH "../lib")
+
+    if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+        set(CMAKE_MACOSX_RPATH ON)
+        
+    endif()
+
 endif(UNIX)
 
 include(CompilerOptions)
