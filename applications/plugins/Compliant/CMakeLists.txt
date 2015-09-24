@@ -229,7 +229,10 @@ if(SOFA_BUILD_TESTS)
     endif()
 endif()
 
-add_subdirectory(Compliant_gui)
+find_package(SofaGui QUIET)
+if(SofaGui_FOUND AND SOFA_GUI_QT)
+    add_subdirectory(Compliant_gui)
+endif()
 
 ## Install rules for the library; CMake package configurations files
 sofa_create_package(Compliant ${COMPLIANT_VERSION} Compliant Compliant)
