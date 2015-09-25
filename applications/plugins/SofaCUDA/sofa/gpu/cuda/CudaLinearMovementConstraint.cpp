@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include "CudaTypes.h"
 #include "CudaLinearMovementConstraint.inl"
+#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
