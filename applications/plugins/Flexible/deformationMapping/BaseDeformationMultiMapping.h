@@ -174,6 +174,10 @@ public:
     virtual void init();
     virtual void reinit();
 
+    using Inherit::apply;
+    using Inherit::applyJ;
+    using Inherit::applyJT;
+
     void apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord1>& dIn1, const Data<InVecCoord2>& dIn2);
     virtual void apply(const core::MechanicalParams* mparams,const helper::vector<Data<OutVecCoord>*>& dOut, const helper::vector<const Data<InVecCoord1>*>& dIn1, const helper::vector<const Data<InVecCoord2>*>& dIn2)
     {

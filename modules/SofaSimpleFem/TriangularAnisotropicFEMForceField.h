@@ -105,6 +105,7 @@ public:
 
         TRQSTriangleHandler(TriangularAnisotropicFEMForceField<DataTypes>* _ff, topology::TriangleData<helper::vector<triangleInfo> >*  _data) : topology::TopologyDataHandler<topology::Triangle, helper::vector<triangleInfo> >(_data), ff(_ff) {}
 
+        using topology::TopologyDataHandler<topology::Triangle,vector<Deriv> >::applyCreateFunction;
         void applyCreateFunction(unsigned int triangleIndex,
                                  helper::vector<triangleInfo> & ,
                                  const topology::Triangle & t,

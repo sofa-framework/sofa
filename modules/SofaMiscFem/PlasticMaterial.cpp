@@ -62,7 +62,7 @@ PlasticMaterial::PlasticMaterial()
 	_sigma.push_back(Stress);
 }
 
-void PlasticMaterial::computeStress(Vector3& Stress, Vector3 Strain, int elementIndex)
+void PlasticMaterial::computeStress(Vector3& Stress, Vector3& Strain, unsigned int& elementIndex)
 {
 	// Computes the Von Mises strain
     SReal vonMisesStrain = computeVonMisesStrain(Strain);
@@ -91,7 +91,7 @@ void PlasticMaterial::computeStress(Vector3& Stress, Vector3 Strain, int element
 	_previousVonMisesStrain.push_back(vonMisesStrain);
 }
 
-void PlasticMaterial::computeDStress(Vector3& dStress, Vector3 dStrain)
+void PlasticMaterial::computeDStress(Vector3& dStress, Vector3& dStrain)
 {
 	dStress[0] = dStrain[0] + _poissonRatio.getValue() * dStrain[1];
 	dStress[1] = _poissonRatio.getValue() * dStrain[0] + dStrain[1];

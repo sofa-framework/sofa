@@ -125,6 +125,10 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
     /// input and output DOFs (mostly identity or data-conversion mappings).
     virtual bool sameTopology() const { return true; }
 
+    using Inherit::apply;
+    using Inherit::applyJ;
+    using Inherit::applyJT;
+
     //Apply
     void apply( OutVecCoord& out, const InVecCoord& in, const InRootVecCoord* inroot  );
     void apply(

@@ -247,7 +247,7 @@ public:
             animateEnd(ev->getDt(), this->getContext()->getTime());
     }
 
-    virtual void draw()
+    virtual void draw(const core::visual::VisualParams*)
     {
 #ifndef SOFA_NO_OPENGL
         if (!showPlane.getValue()) return;

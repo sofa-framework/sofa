@@ -67,7 +67,7 @@ public:
 
     void init();
 
-    void draw()
+    void draw( const core::visual::VisualParams* )
     {
         // draw the haptic_freq in the openGL window
 

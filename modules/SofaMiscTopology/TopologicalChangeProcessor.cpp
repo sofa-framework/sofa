@@ -851,7 +851,7 @@ void TopologicalChangeProcessor::saveIndices()
         ++it;
         std::istringstream str2(*it);
 
-        unsigned int nbElements;
+        unsigned int nbElements = 0;
         str2 >> buff;
         if (buff == "INCISE=")
         {

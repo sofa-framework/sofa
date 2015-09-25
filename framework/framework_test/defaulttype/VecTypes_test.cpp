@@ -52,7 +52,7 @@ TEST(VecTypesTest, testDefaultConstructor)
 {
     ResizableExtVector<int> v;
     EXPECT_EQ(v.empty(), true);
-    EXPECT_EQ(v.size(), 0);
+    EXPECT_EQ(v.size(), 0u);
     EXPECT_EQ(v.getData(), (int*)0);
     EXPECT_EQ(v.begin(), v.end());
 }
@@ -60,14 +60,14 @@ TEST(VecTypesTest, testDefaultConstructor)
 TEST_F(ResizableExtVectorTest, testSizing)
 {
     EXPECT_EQ(v.empty(), false);
-    EXPECT_EQ(v.size(), 10);
+    EXPECT_EQ(v.size(), 10u);
 }
 
 TEST_F(ResizableExtVectorTest, testClear)
 {
     v.clear();
     EXPECT_EQ(v.empty(), true);
-    EXPECT_EQ(v.size(), 0);
+    EXPECT_EQ(v.size(), 0u);
 }
 
 TEST_F(ResizableExtVectorTest, testIterators)
@@ -81,7 +81,7 @@ TEST_F(ResizableExtVectorTest, testIterators)
 TEST_F(ResizableExtVectorTest, testIncreaseSize)
 {
     v.resize(20);
-    EXPECT_EQ(v.size(), 20);
+    EXPECT_EQ(v.size(), 20u);
     for(int i = 0; i < 10; ++i)
     {
         EXPECT_EQ(v[i], i);
@@ -91,7 +91,7 @@ TEST_F(ResizableExtVectorTest, testIncreaseSize)
 TEST_F(ResizableExtVectorTest, testReduceSize)
 {
     v.resize(5);
-    EXPECT_EQ(v.size(), 5);
+    EXPECT_EQ(v.size(), 5u);
     for(int i = 0; i < 5; ++i)
     {
         EXPECT_EQ(v[i], i);
@@ -102,7 +102,7 @@ TEST_F(ResizableExtVectorTest, testSetNullAllocator)
 {
     v.setAllocator(0);
     EXPECT_EQ(v.empty(), true);
-    EXPECT_EQ(v.size(), 0);
+    EXPECT_EQ(v.size(), 0u);
     EXPECT_EQ(v.getData(), (int*)0);
 }
 
@@ -110,7 +110,7 @@ TEST_F(ResizableExtVectorTest, testSetOtherAllocator)
 {
     v.setAllocator(new DefaultAllocator<int>);
     EXPECT_EQ(v.empty(), false);
-    EXPECT_EQ(v.size(), 10);
+    EXPECT_EQ(v.size(), 10u);
     EXPECT_TRUE(v.getData() != 0);
 
     for(int i = 0; i < 10; ++i)
@@ -123,7 +123,7 @@ TEST_F(ResizableExtVectorTest, testCopyConstructor_Sizing)
 {
     ResizableExtVector<int> v2 = v;
     EXPECT_EQ(v2.empty(), false);
-    EXPECT_EQ(v2.size(), 10);
+    EXPECT_EQ(v2.size(), 10u);
 }
 
 TEST_F(ResizableExtVectorTest, testCopyConstructor_Separation)
@@ -131,7 +131,7 @@ TEST_F(ResizableExtVectorTest, testCopyConstructor_Separation)
     ResizableExtVector<int> v2 = v;
     v.resize(0);
     EXPECT_EQ(v2.empty(), false);
-    EXPECT_EQ(v2.size(), 10);
+    EXPECT_EQ(v2.size(), 10u);
 }
 
 

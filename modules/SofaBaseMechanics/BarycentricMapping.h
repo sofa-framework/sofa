@@ -239,8 +239,8 @@ public:
     virtual int setPointInCube(const int /*pointIndex*/, const int /*cubeIndex*/, const SReal* /*baryCoords*/) {return 0;}
     virtual int createPointInCube(const typename Out::Coord& /*p*/, int /*cubeIndex*/, const typename In::VecCoord* /*points*/) {return 0;}
 
-    virtual void setToTopology( topology::PointSetTopologyContainer* toTopology) {this->toTopology = toTopology;};
-    const topology::PointSetTopologyContainer *getToTopology() const {return toTopology;};
+    virtual void setToTopology( topology::PointSetTopologyContainer* toTopology) {this->toTopology = toTopology;}
+    const topology::PointSetTopologyContainer *getToTopology() const {return toTopology;}
 
 protected:
     TopologyBarycentricMapper(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology = NULL)

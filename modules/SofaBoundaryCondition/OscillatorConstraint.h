@@ -117,8 +117,6 @@ public:
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
 
-    void draw() {}
-
 protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);

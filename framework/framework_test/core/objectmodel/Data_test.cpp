@@ -82,11 +82,11 @@ struct vectorData_test: public ::testing::Test
     void test_resize()
     {
        vDataInt.resize(3);
-       ASSERT_EQ(vDataInt.size(),3);
+       ASSERT_EQ(vDataInt.size(),3u);
        vDataInt.resize(10);
-       ASSERT_EQ(vDataInt.size(),10);
+       ASSERT_EQ(vDataInt.size(),10u);
        vDataInt.resize(8);
-       ASSERT_EQ(vDataInt.size(),8);
+       ASSERT_EQ(vDataInt.size(),8u);
     }
 
     void test_link()

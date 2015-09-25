@@ -91,7 +91,7 @@ class VerondaWestman : public HyperelasticMaterial<DataTypes>{
 	}
 	
 
-	virtual void applyElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,const MatrixSym inputTensor, MatrixSym &outputTensor)  {
+    virtual void applyElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,const MatrixSym& inputTensor, MatrixSym &outputTensor)  {
 		MatrixSym inversematrix;
 		MatrixSym C=sinfo->deformationTensor;
 		invertMatrix(inversematrix,C);

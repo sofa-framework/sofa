@@ -393,6 +393,7 @@ public:
         }
     }
 
+    using core::behavior::ProjectiveConstraintSet<TDataTypes>::projectResponse;
     void projectResponse(VecDeriv& dx)
     {
         projectResponseT(dx);

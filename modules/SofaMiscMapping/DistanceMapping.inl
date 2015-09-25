@@ -735,7 +735,7 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
 
             // TODO optimize (precompute base Index per mechanicalobject)
             size_t globalIndex0 = 0;
-            for( unsigned i=0 ; i<pair0[0] ; ++i )
+            for( int i=0 ; i<pair0[0] ; ++i )
             {
                 size_t insize = this->getFromModels()[i]->getSize();
                 globalIndex0 += insize;
@@ -743,7 +743,7 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
             globalIndex0 += pair0[1];
 
             size_t globalIndex1 = 0;
-            for( unsigned i=0 ; i<pair1[0] ; ++i )
+            for( int i=0 ; i<pair1[0] ; ++i )
             {
                 size_t insize = this->getFromModels()[i]->getSize();
                 globalIndex1 += insize;
