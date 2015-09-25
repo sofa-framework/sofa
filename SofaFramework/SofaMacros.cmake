@@ -162,9 +162,19 @@ endmacro()
 
 macro(sofa_add_plugin directory plugin_name)
     string(TOUPPER PLUGIN_${plugin_name} plugin_option)
-    option(${plugin_option} "Build the ${plugin} plugin." OFF)
+    option(${plugin_option} "Build the ${plugin_name} plugin." OFF)
     if(${plugin_option})
         add_subdirectory(${directory} ${plugin_name})
         set_target_properties(${plugin_name} PROPERTIES FOLDER "Plugins") # IDE folder
+    endif()
+endmacro()
+
+
+macro(sofa_add_application directory app_name)
+    string(TOUPPER APPLICATION_${app_name} application_option)
+    option(${application_option} "Build the ${app_name} application." OFF)
+    if(${application_option})
+        add_subdirectory(${directory} ${CMAKE_CURRENT_BINARY_DIR}/${app_name})
+        list(APPEND SOFAGUI_TARGETS ${app_name})
     endif()
 endmacro()
