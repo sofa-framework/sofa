@@ -95,6 +95,8 @@ public:
         _f1.resize(d_dx.getValue().size());
     }
 
+    using Inherit::addKToMatrix;
+
     /// Constant force has null variation
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
 

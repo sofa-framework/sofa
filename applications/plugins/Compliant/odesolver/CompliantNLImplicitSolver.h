@@ -59,7 +59,7 @@ class SOFA_Compliant_API CompliantNLImplicitSolver : public CompliantImplicitSol
 
 
 
-
+    using CompliantImplicitSolver::integrate;
     /// newPos = oldPos + beta*h*vel
     void integrate( SolverOperations& sop, core::MultiVecCoordId oldPos, core::MultiVecCoordId newPos, core::MultiVecDerivId vel );
 
