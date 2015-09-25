@@ -90,6 +90,7 @@ void Stabilization::filterConstraints( vector<bool>* activateMask, const core::M
     mask.resize( n );
 
     activateMask = NULL; // all activated
+    (void) activateMask;
 
     SReal* violation = new SReal[size];
     mstate->copyToBuffer(violation, posId.getId(mstate.get()), size);
