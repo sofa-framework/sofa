@@ -8,7 +8,7 @@ namespace component {
 namespace linearsolver {
 
 class BasePreconditioner;
-struct AssembledSystem;
+class AssembledSystem;
 
 
 
