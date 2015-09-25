@@ -10,12 +10,12 @@ using namespace sofa::defaulttype;
 // the graph
 
 #ifndef SOFA_FLOAT
-template class SOFA_Compliant_API CoulombConstraint<Vec3dTypes>;
-template class SOFA_Compliant_API CoulombConstraint<Vec6dTypes>;
+template struct SOFA_Compliant_API CoulombConstraint<Vec3dTypes>;
+template struct SOFA_Compliant_API CoulombConstraint<Vec6dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_Compliant_API CoulombConstraint<Vec3fTypes>;
-template class SOFA_Compliant_API CoulombConstraint<Vec6fTypes>;
+template struct SOFA_Compliant_API CoulombConstraint<Vec3fTypes>;
+template struct SOFA_Compliant_API CoulombConstraint<Vec6fTypes>;
 #endif
 
 }

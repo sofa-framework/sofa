@@ -140,6 +140,7 @@ public:
         }
     }
 
+    using core::behavior::ProjectiveConstraintSet<DataTypes>::applyConstraint;
     virtual void applyConstraint(defaulttype::BaseMatrix *, unsigned int /*offset*/) {}
     virtual void applyConstraint(defaulttype::BaseVector *, unsigned int /*offset*/) {}
 

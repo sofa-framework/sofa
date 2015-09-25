@@ -240,6 +240,7 @@ public:
     sofa::core::objectmodel::Data<T>* getData() {return Tdata;}
     const sofa::core::objectmodel::Data<T>* getData() const {return Tdata;}
 
+    using DataWidget::setData;
     inline virtual void setData(MyTData* d)
     {
         Tdata = d;

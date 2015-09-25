@@ -275,7 +275,7 @@ public:
       *Unuseful methods because all is done in addCollisionModel
       */
     void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ){}
-    void addCollisionPairs (std::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&){}
+    void addCollisionPairs (const helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&){}
 
     virtual void beginNarrowPhase();
 

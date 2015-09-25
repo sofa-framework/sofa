@@ -146,13 +146,13 @@ public:
     sofa::component::topology::EdgeData<sofa::helper::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
 
 
-    class EdgeBSHandler : public sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge, sofa::helper::vector<EdgeInformation> >
+    class EdgeBSHandler : public topology::TopologyDataHandler<topology::Edge, helper::vector<EdgeInformation> >
     {
     public:
         typedef typename QuadularBendingSprings<DataTypes>::EdgeInformation EdgeInformation;
 
-        EdgeBSHandler(QuadularBendingSprings<DataTypes>* ff, sofa::component::topology::EdgeData<sofa::helper::vector<EdgeInformation> >* data )
-            :sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge, sofa::helper::vector<EdgeInformation> >(data)
+        EdgeBSHandler(QuadularBendingSprings<DataTypes>* ff, topology::EdgeData<sofa::helper::vector<EdgeInformation> >* data )
+            :topology::TopologyDataHandler<topology::Edge, sofa::helper::vector<EdgeInformation> >(data)
             ,ff(ff)
         {
         }
@@ -168,6 +168,8 @@ public:
                 const sofa::helper::vector<sofa::helper::vector<double> > &);
 
         void applyQuadDestruction(const sofa::helper::vector<unsigned int> & quadRemoved);
+
+        using topology::TopologyDataHandler<topology::Edge, helper::vector<EdgeInformation> >::ApplyTopologyChange;
 
         /// Callback to add quads elements.
         void ApplyTopologyChange(const core::topology::QuadsAdded* /*event*/);

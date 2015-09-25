@@ -118,6 +118,8 @@ public:
         void applyCreateFunction(unsigned int pointIndex, TMassType& m, const Point&, const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double > &);
 
+        using topology::TopologyDataHandler<Point,MassVector>::ApplyTopologyChange;
+
         ///////////////////////// Functions on Edges //////////////////////////////////////
         /// Apply adding edges elements.
         void applyEdgeCreation(const sofa::helper::vector< unsigned int >& /*indices*/,

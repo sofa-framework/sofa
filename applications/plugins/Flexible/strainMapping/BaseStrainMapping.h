@@ -155,6 +155,10 @@ public:
         Inherit::reinit();
     }
 
+    using Inherit::apply;
+    using Inherit::applyJ;
+    using Inherit::applyJT;
+
     virtual void applyJT()
     {
         applyJT(NULL, *this->fromModel->write(core::VecDerivId::force()), *this->toModel->read(core::ConstVecDerivId::force()));

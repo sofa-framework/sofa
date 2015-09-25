@@ -83,21 +83,21 @@ protected:
 TEST_F(MeshLoader_test, createSubElements)
 {
     populateMesh_1triangle_1tetra();
-    EXPECT_EQ(4, meshLoader.positions.getValue().size());
-    EXPECT_EQ(1, meshLoader.triangles.getValue().size());
-    EXPECT_EQ(1, meshLoader.tetrahedra.getValue().size());
+    EXPECT_EQ(4u, meshLoader.positions.getValue().size());
+    EXPECT_EQ(1u, meshLoader.triangles.getValue().size());
+    EXPECT_EQ(1u, meshLoader.tetrahedra.getValue().size());
 
     meshLoader.createSubelements.setValue(false);
     updateMesh();
-    EXPECT_EQ(4, meshLoader.positions.getValue().size());
-    EXPECT_EQ(1, meshLoader.triangles.getValue().size());
-    EXPECT_EQ(1, meshLoader.tetrahedra.getValue().size());
+    EXPECT_EQ(4u, meshLoader.positions.getValue().size());
+    EXPECT_EQ(1u, meshLoader.triangles.getValue().size());
+    EXPECT_EQ(1u, meshLoader.tetrahedra.getValue().size());
 
     meshLoader.createSubelements.setValue(true);
     updateMesh();
-    EXPECT_EQ(4, meshLoader.positions.getValue().size());
-    EXPECT_EQ(4, meshLoader.triangles.getValue().size());
-    EXPECT_EQ(1, meshLoader.tetrahedra.getValue().size());
+    EXPECT_EQ(4u, meshLoader.positions.getValue().size());
+    EXPECT_EQ(4u, meshLoader.triangles.getValue().size());
+    EXPECT_EQ(1u, meshLoader.tetrahedra.getValue().size());
 
 }
 

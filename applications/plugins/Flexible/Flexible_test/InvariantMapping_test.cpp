@@ -26,7 +26,7 @@ namespace sofa {
         typedef typename Inherited::OutVecCoord OutVecCoord;
         typedef typename In::Frame InFrame;
 
-
+        using Inherited::runTest;
         bool runTest()
         {
             this->deltaRange = std::make_pair( 100, 10000 );
@@ -42,7 +42,7 @@ namespace sofa {
                     strain[i][j] = (i+1)*2+j*0.3; 
                 }
             }
-                defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> defo( strain );
+//                defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> defo( strain );
                 defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> C;
                 C = (strain.transposed())*strain;
                 

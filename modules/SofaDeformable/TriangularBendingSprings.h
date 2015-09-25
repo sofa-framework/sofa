@@ -128,29 +128,30 @@ protected:
 
     sofa::component::topology::EdgeData<helper::vector<EdgeInformation> > edgeInfo;
 
-    class TriangularBSEdgeHandler : public sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge, vector<EdgeInformation> >
+    class TriangularBSEdgeHandler : public topology::TopologyDataHandler<topology::Edge, vector<EdgeInformation> >
     {
     public:
         typedef typename TriangularBendingSprings<DataTypes>::EdgeInformation EdgeInformation;
-        TriangularBSEdgeHandler(TriangularBendingSprings<DataTypes>* _ff, sofa::component::topology::EdgeData<sofa::helper::vector<EdgeInformation> >* _data)
-            : sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge, sofa::helper::vector<EdgeInformation> >(_data), ff(_ff) {}
+        TriangularBSEdgeHandler(TriangularBendingSprings<DataTypes>* _ff, topology::EdgeData<helper::vector<EdgeInformation> >* _data)
+            : topology::TopologyDataHandler<topology::Edge, sofa::helper::vector<EdgeInformation> >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int edgeIndex,
                 EdgeInformation &ei,
                 const sofa::component::topology::Edge& ,  const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double >&);
 
-        void applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded,
-                const sofa::helper::vector<sofa::component::topology::Triangle> & ,
-                const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ,
-                const sofa::helper::vector<sofa::helper::vector<double> > &);
+        void applyTriangleCreation(const helper::vector<unsigned int> &triangleAdded,
+                const helper::vector<topology::Triangle> & ,
+                const helper::vector<helper::vector<unsigned int> > & ,
+                const helper::vector<helper::vector<double> > &);
 
-        void applyTriangleDestruction(const sofa::helper::vector<unsigned int> &triangleRemoved);
+        void applyTriangleDestruction(const helper::vector<unsigned int> &triangleRemoved);
 
-        void applyPointDestruction(const sofa::helper::vector<unsigned int> &pointIndices);
+        void applyPointDestruction(const helper::vector<unsigned int> &pointIndices);
 
-        void applyPointRenumbering(const sofa::helper::vector<unsigned int> &pointToRenumber);
+        void applyPointRenumbering(const helper::vector<unsigned int> &pointToRenumber);
 
+        using topology::TopologyDataHandler<topology::Edge, vector<EdgeInformation> >::ApplyTopologyChange;
         /// Callback to add triangles elements.
         void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
         /// Callback to remove triangles elements.
