@@ -82,11 +82,13 @@ namespace behavior
     template class SOFA_Flexible_API ForceField< defaulttype::TYPEABSTRACTNAME3dTypes >;
     template class SOFA_Flexible_API Mass< defaulttype::TYPEABSTRACTNAME3dTypes >;
     template class SOFA_Flexible_API ConstraintCorrection< defaulttype::TYPEABSTRACTNAME3dTypes >;
+    template class SOFA_Flexible_API ProjectiveConstraintSet< defaulttype::TYPEABSTRACTNAME3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API ForceField< defaulttype::TYPEABSTRACTNAME3fTypes >;
     template class SOFA_Flexible_API Mass< defaulttype::TYPEABSTRACTNAME3fTypes >;
     template class SOFA_Flexible_API ConstraintCorrection< defaulttype::TYPEABSTRACTNAME3fTypes >;
+    template class SOFA_Flexible_API ProjectiveConstraintSet< defaulttype::TYPEABSTRACTNAME3fTypes >;
 #endif
 
 
