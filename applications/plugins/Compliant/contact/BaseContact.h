@@ -352,7 +352,7 @@ protected:
     /// insert a ConstraintValue component in the given graph depending on restitution/damping values
     /// return possible pointer to the activated constraint mask
     template<class contact_dofs_type>
-    const vector<bool>* addConstraintValue( node_type* node, contact_dofs_type* dofs/*, real damping*/, real restitution=0 )
+    vector<bool>* addConstraintValue( node_type* node, contact_dofs_type* dofs/*, real damping*/, real restitution=0 )
     {
         assert( restitution>=0 && restitution<=1 );
 
@@ -372,7 +372,7 @@ protected:
             constraintValue->mask.endEdit();
 
             constraintValue->init();
-            return &constraintValue->mask.getValue();
+            return &mask;
         }
 //        else //if( damping ) // damped constraint
 //        {
@@ -398,7 +398,7 @@ protected:
             stab->mask.endEdit();
 
             stab->init();
-            return &stab->mask.getValue();
+            return &mask;
         }
         else // stabilized constraint
         {
@@ -416,7 +416,7 @@ protected:
             stab->mask.endEdit();
 
             stab->init();
-            return &stab->mask.getValue();
+            return &mask;
         }
 
         return NULL;

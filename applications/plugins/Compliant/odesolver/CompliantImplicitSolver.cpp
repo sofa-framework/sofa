@@ -262,7 +262,7 @@ using namespace core::behavior;
 
             const unsigned dim = dofs->getSize(); // nb lines per constraint
             const unsigned constraint_dim = dofs->getDerivDimension(); // nb lines per constraint
-            constraint.value->filterConstraints( constraint.projector->mask, posId, dim, constraint_dim );
+            constraint.value->filterConstraints( const_cast<system_type::constraint_type*>(&constraint)->projector->mask, posId, dim, constraint_dim );
         }
     }
 

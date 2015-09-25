@@ -115,7 +115,7 @@ protected:
 
 
         // constraint value
-        const vector<bool>* cvmask = this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
+        vector<bool>* cvmask = this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
 
         // projector
         typedef linearsolver::CoulombConstraint<contact_type> proj_type;
