@@ -1,8 +1,9 @@
 import Sofa
 import SofaTest
+import SofaPython.Tools
 
-flexible_path = Sofa.src_dir() + '/applications/plugins/Flexible'
-mesh_path = flexible_path+ '/examples/beam/'
+OBJ = SofaPython.Tools.localPath( __file__, "beam.obj" )
+RAW = SofaPython.Tools.localPath( __file__, "beam.raw" )
 
 ##Check if calling Mapping::init() change anything
 #
@@ -92,7 +93,7 @@ def createBarycentricFrame( parentNode, name ):
 
 	#Visu child node
     visuNode = node.createChild('Visu')
-    visuNode.createObject('OglModel', template="ExtVec3f", name='Visual',filename=mesh_path+"beam.obj", translation="0 1 0")
+    visuNode.createObject('OglModel', template="ExtVec3f", name='Visual',filename=OBJ, translation="0 1 0")
     visuNode.createObject('LinearMapping', template='Affine,ExtVec3f')
 
 def createVoronoiFrame( parentNode, name ):
@@ -103,8 +104,8 @@ def createVoronoiFrame( parentNode, name ):
     node.createObject('CGLinearSolver', name='linearSolver', iterations='200', tolerance="1e-15", threshold='1.0e-15')
 
     #Frame
-    node.createObject("MeshObjLoader", name="mesh", filename=mesh_path+"beam.obj", triangulate="1")
-    node.createObject("ImageContainer", name="image", template="ImageUC", filename=mesh_path+"beam.raw", drawBB="false")
+    node.createObject("MeshObjLoader", name="mesh", filename=OBJ, triangulate="1")
+    node.createObject("ImageContainer", name="image", template="ImageUC", filename=RAW, drawBB="false")
     node.createObject("ImageSampler", name="sampler", template="ImageUC", src="@image", method="1", param="0", fixedPosition="0 0 -0.999 0 0 0.999", printLog="false")
     node.createObject("MergeMeshes", name="merged", nbMeshes="2", position1="@sampler.fixedPosition", position2="@sampler.position")
     #node.createObject("ImageViewer", template="ImageB", name="viewer", src="@image")
@@ -131,7 +132,7 @@ def createVoronoiFrame( parentNode, name ):
 
 	#Visu child node
     visuNode = node.createChild('Visu')
-    visuNode.createObject('OglModel', template="ExtVec3f", name='Visual',filename=mesh_path+"beam.obj")
+    visuNode.createObject('OglModel', template="ExtVec3f", name='Visual',filename=OBJ)
     visuNode.createObject('LinearMapping', template='Affine,ExtVec3f')
 
     return node
