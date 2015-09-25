@@ -38,7 +38,6 @@ set(SOFA_FLOATING_POINT_TYPE both CACHE STRING
    is selected, SReal defaults to double.)")
 set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double both)
 
-option(SOFA_OPENMP "Compile Sofa with OpenMP multithreading." OFF)
 
 if(MSVC)
     option(SOFA_VECTORIZE "Enable the use of SSE2 instructions by the compiler (Only available for MSVC)." OFF)
@@ -156,7 +155,7 @@ endif()
 find_package(Eigen3 REQUIRED)
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${EIGEN3_INCLUDE_DIR})
 if(MSVC)
-    add_definitions("-DEIGEN_DONT_ALIGN")
+    target_compile_definitions(SofaHelper PUBLIC "-DEIGEN_DONT_ALIGN")
 endif()
 
 
@@ -190,11 +189,6 @@ set_target_properties(SofaHelper PROPERTIES FOLDER "SofaFramework")
 set_target_properties(SofaDefaultType PROPERTIES FOLDER "SofaFramework")
 set_target_properties(SofaCore PROPERTIES FOLDER "SofaFramework")
 
-## OpenMP
-if(SOFA_OPENMP)
-    find_package(OpenMP REQUIRED)
-    target_compile_options(SofaHelper PUBLIC "${OpenMP_CXX_FLAGS}")
-endif()
 
 # NDEBUG preprocessor macro
 if(WIN32 OR APPLE)

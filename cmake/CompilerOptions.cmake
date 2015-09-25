@@ -56,3 +56,17 @@ if(WIN32 OR APPLE)
 elseif(CMAKE_BUILD_TYPE MATCHES "Debug")
     add_definitions("-DSOFA_DEBUG")
 endif()
+
+
+
+## OpenMP
+option(SOFA_OPENMP "Compile Sofa with OpenMP multithreading." OFF)
+if(SOFA_OPENMP)
+    find_package(OpenMP REQUIRED)
+#    target_compile_options(SofaHelper PUBLIC "${OpenMP_CXX_FLAGS}") # it is not enough to declare it for SofaHelper, because a link flag is also expected
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set (CMAKE_C_LINK_FLAGS "${CMAKE_C_LINK_FLAGS} ${OpenMP_C_FLAGS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    set (CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
+
