@@ -75,6 +75,13 @@ a more optimized STL."  OFF)
 endif()
 
 
+## Try to find an installed boost. If boost is not found, use miniBoost.
+find_package(Boost QUIET)
+if(NOT Boost_FOUND)
+    add_subdirectory(extlibs/miniBoost)
+endif()
+
+
 ### Dependency pack for Windows
 if(MSVC)
 
@@ -143,12 +150,6 @@ if(SOFA_BUILD_TESTS)
 endif()
 
 add_subdirectory(extlibs)
-
-## Try to find an installed boost. If boost is not found, use miniBoost.
-find_package(Boost QUIET)
-if(NOT Boost_FOUND)
-    add_subdirectory(extlibs/miniBoost)
-endif()
 
 
 ### Main Sofa subdirectories
