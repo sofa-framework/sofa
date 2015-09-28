@@ -34,6 +34,7 @@ set(SOURCE_FILES
     SofaTutorialManager.cpp
     TutorialSelector.cpp
 )
+find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml qt3support)
 
 set(UI_FILES ../../../sofa/gui/qt/PluginManager.ui)
 
@@ -46,5 +47,6 @@ set(FORM_FILES_GROUP "Generated")
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGuiMain SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${QT_INCLUDES}>")
 
 sofa_install_targets(SofaGui SofaModeler "SofaModeler")
