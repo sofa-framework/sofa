@@ -9,6 +9,7 @@ if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no ne
     find_package(OpenMP QUIET)
     if (OPENMP_FOUND)
         target_compile_options(DiffusionSolver PUBLIC "${OpenMP_CXX_FLAGS}")
+        set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${OpenMP_CXX_FLAGS}")
     else()
         if(UNIX AND NOT APPLE)
             # GCC implements OpenMP, so if OpenMP is not "FOUND", then the current
