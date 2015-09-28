@@ -239,7 +239,7 @@ protected:
                     Real dv = dv0; if(weightByVolumeChange.getValue()) dv /= computeHexaVolume(pn); // local volume change supposing that voxels are cubes
 
                     // compute bounding box
-                    Real BB[3][2];
+                    Real BB[3][2] = { {-std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max()}, {-std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max()}, {-std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max()} };
                     bool valid=true;
                     for(unsigned int i=0; i<8; i++)
                     {

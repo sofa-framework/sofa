@@ -71,6 +71,8 @@ public:
     {
         Vec2ui sections;
         double ratio;
+
+        InterpolationItem() : ratio(0.0) {}
     };
 
     typedef helper::vector< InterpolationItem > VecII;

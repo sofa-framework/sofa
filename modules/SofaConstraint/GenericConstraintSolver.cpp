@@ -505,7 +505,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
 
 	int i, j, k, l, nb;
 
-	double errF[6];
+    double errF[6] = {0,0,0,0,0,0};
 	double error=0.0;
 
 	bool convergence = false;
@@ -771,7 +771,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 
 	int i, j, l, nb;
 
-	double errF[6];
+    double errF[6] = {0,0,0,0,0,0};
 	double error=0.0;
 
 	bool convergence = false;
