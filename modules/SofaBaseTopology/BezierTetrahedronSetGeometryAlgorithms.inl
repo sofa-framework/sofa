@@ -209,7 +209,7 @@ typename DataTypes::Real BezierTetrahedronSetGeometryAlgorithms<DataTypes>::comp
 	if (isRational) {
 		const BezierTetrahedronSetTopologyContainer::SeqWeights &wa=container->getWeightArray();
 		Real weight=(Real)0.0f;
-		Real dweight[3];
+        Real dweight[3]= {0,0,0};
 		Coord pos;
 		for(size_t i=0; i<tbiArray.size(); ++i)
 		{
