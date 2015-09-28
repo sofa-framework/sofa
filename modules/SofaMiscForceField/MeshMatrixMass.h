@@ -419,7 +419,7 @@ protected:
                 const sofa::helper::vector< double >&);
 
                /// Edge coefficient of mass matrix destruction function to handle creation of new tetrahedra
-        void applyDestructionFunction(const sofa::helper::vector<unsigned int> & /*indices*/);
+//        void applyDestructionFunction(const sofa::helper::vector<unsigned int> & /*indices*/);
 
     protected:
         MeshMatrixMass<DataTypes,TMassType>* m;

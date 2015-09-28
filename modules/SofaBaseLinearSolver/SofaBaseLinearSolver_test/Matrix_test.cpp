@@ -202,9 +202,9 @@ struct TestSparseMatrices : public Sofa_test<_Real>
         eiVecN.resize(NCOLS);
         for( unsigned i=0; i<NCOLS; i++)
         {
-            fullVec_ncols[i] = i;
-            vecN[i] = i;
-            eiVecN[i] = i;
+            fullVec_ncols[i] = (Real)i;
+            vecN[i] = (Real)i;
+            eiVecN[i] = (Real)i;
         }
         fullMat.mul(fullVec_nrows_reference,fullVec_ncols); //    cerr<<"MatrixTest: vref = " << vref << endl;
 
@@ -291,7 +291,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
                     // create a block and give it some value
                     BlockMN b;
                     for( unsigned k=0; k<BROWS && k<BCOLS; k++ ){
-                        b[k][k] = i+j;
+                        b[k][k] = (Real)i+j;
                         ma.set(i*BROWS+k, j*BCOLS+k, i+j);
                     }
 

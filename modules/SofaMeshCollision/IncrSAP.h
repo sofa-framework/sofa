@@ -217,7 +217,7 @@ private:
       *Inits the field intersectors used to find the right intersector between the two collision models with better speed compared to
       *find intersector.
       */
-    void initIntersectors();
+//    void initIntersectors();
 
     /**
       *Used in initialisatio of IncrSAP. It clears all the IncrSAP fields.

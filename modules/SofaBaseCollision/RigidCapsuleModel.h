@@ -155,10 +155,6 @@ public:
 
     const sofa::defaulttype::Quaternion orientation(int index)const;
 
-    int point1Index(int index)const;
-
-    int point2Index(int index)const;
-
     Real height(int index)const;
 
     inline unsigned int nbCap()const;
