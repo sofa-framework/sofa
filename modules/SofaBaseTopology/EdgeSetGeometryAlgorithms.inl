@@ -87,12 +87,12 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
 	qpa.clear();
 	a=0.5*(1-sqrt((Real)3/5.0));
 	v=BarycentricCoordinatesType(a);
-	qpa.push_back(QuadraturePoint(v,(Real)5.0/18.0));
+    qpa.push_back(QuadraturePoint(v,(Real)(5.0/18.0)));
 	b=0.5*(1+sqrt((Real)3/5.0));
 	v=BarycentricCoordinatesType(b);
-	qpa.push_back(QuadraturePoint(v,(Real)5.0/18.0));
+    qpa.push_back(QuadraturePoint(v,(Real)(5.0/18.0)));
 	v=BarycentricCoordinatesType(0.5);
-	qpa.push_back(QuadraturePoint(v,(Real)8.0/18.0));
+    qpa.push_back(QuadraturePoint(v,(Real)(8.0/18.0)));
 	edgeNumericalIntegration.addQuadratureMethod(m,3,qpa);
 	/// integration with quartic accuracy.
 	qpa.clear();
@@ -130,7 +130,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
 	qpa.push_back(QuadraturePoint(v,a2/2));
 
 	v=BarycentricCoordinatesType(0.5);
-	qpa.push_back(QuadraturePoint(v,(Real)512/1800.0));
+    qpa.push_back(QuadraturePoint(v,(Real)(512/1800.0)));
 	edgeNumericalIntegration.addQuadratureMethod(m,5,qpa);
 
 	/// integration with  accuracy of order 6.

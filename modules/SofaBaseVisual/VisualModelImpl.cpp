@@ -588,7 +588,7 @@ void VisualModelImpl::applyUVTransformation()
 
 void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SReal dz)
 {
-    Coord d(dx,dy,dz);
+    Coord d((Real)dx,(Real)dy,(Real)dz);
 
     Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
     VecCoord &x = *d_x->beginEdit();
@@ -656,9 +656,9 @@ void VisualModelImpl::applyScale(const SReal sx, const SReal sy, const SReal sz)
 
     for (unsigned int i = 0; i < x.size(); i++)
     {
-        x[i][0] *=  sx;
-        x[i][1] *=  sy;
-        x[i][2] *=  sz;
+        x[i][0] *= (Real)sx;
+        x[i][1] *= (Real)sy;
+        x[i][2] *= (Real)sz;
     }
 
     d_x->endEdit();
@@ -669,9 +669,9 @@ void VisualModelImpl::applyScale(const SReal sx, const SReal sy, const SReal sz)
 
         for (unsigned int i = 0; i < restPositions.size(); i++)
         {
-            restPositions[i][0] *=  sx;
-            restPositions[i][1] *=  sy;
-            restPositions[i][2] *=  sz;
+            restPositions[i][0] *= (Real)sx;
+            restPositions[i][1] *= (Real)sy;
+            restPositions[i][2] *= (Real)sz;
         }
 
         m_restPositions.endEdit();
