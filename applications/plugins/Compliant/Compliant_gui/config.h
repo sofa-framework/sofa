@@ -33,4 +33,4 @@
 #  define SOFA_Compliant_gui_API  SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // INITCompliantGUI_H
+#endif // COMPLIANT_GUI_CONFIG_H
