@@ -209,14 +209,15 @@ endif()
 # C++11
 if(NOT WIN32)
     if(SOFA_USE_C++11)
+
         # If we compile in c++11, then everyone linking against us should, so we
         # put -std=c++11 in the INTERFACE_COMPILE_OPTIONS of SofaHelper.
         #
         # Exceptionnally, you can prevent a target from being compiled with this
         # option with the SOFA_NO_CXX11 property.  E.g.
-        #
         #   set_target_properties(Foo PROPERTIES SOFA_NO_CXX11 1)
-        target_compile_options(SofaHelper PUBLIC "$<$<AND:$<NOT:$<BOOL:$<TARGET_PROPERTY:SOFA_NO_CXX11>>>,$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>>:-std=c++11>")
+
+        target_compile_options(SofaHelper PUBLIC "$<$<AND:$<NOT:$<BOOL:$<TARGET_PROPERTY:SOFA_NO_CXX11>>>,$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>>:${CXX11_FLAG}>")
     endif()
 endif()
 
