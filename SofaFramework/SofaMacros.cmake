@@ -160,7 +160,7 @@ endmacro()
 
 
 
-macro(sofa_add_generic directory name type dest)
+macro(sofa_add_generic directory name type)
     string(TOUPPER ${type}_${name} option)
 
     # optional parameter to activate/desactivate the option
@@ -174,7 +174,7 @@ macro(sofa_add_generic directory name type dest)
 
     option(${option} "Build the ${name} ${type}." ${active})
     if(${option})
-        add_subdirectory(${directory} ${dest})
+        add_subdirectory(${directory} ${name})
         set_target_properties(${name} PROPERTIES FOLDER ${type}) # IDE folder
         set_target_properties(${name} PROPERTIES DEBUG_POSTFIX "_d")
     endif()
@@ -185,12 +185,12 @@ endmacro()
 
 
 macro(sofa_add_plugin directory plugin_name)
-    sofa_add_generic( ${directory} ${plugin_name} "Plugin" ${plugin_name} ${ARGV2} )
+    sofa_add_generic( ${directory} ${plugin_name} "Plugin" ${ARGV2} )
 endmacro()
 
 
 macro(sofa_add_application directory app_name)
-    sofa_add_generic( ${directory} ${app_name} "Application" "${CMAKE_CURRENT_BINARY_DIR}/${app_name}" ${ARGV2} )
+    sofa_add_generic( ${directory} ${app_name} "Application" ${ARGV2} )
 endmacro()
 
 
