@@ -154,9 +154,6 @@ endif()
 ## Eigen
 find_package(Eigen3 REQUIRED)
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${EIGEN3_INCLUDE_DIR})
-if(MSVC)
-    target_compile_definitions(SofaHelper PUBLIC "-DEIGEN_DONT_ALIGN")
-endif()
 
 
 ## sofa/config.h
@@ -221,6 +218,11 @@ if(NOT WIN32)
         #   set_target_properties(Foo PROPERTIES SOFA_NO_CXX11 1)
         target_compile_options(SofaHelper PUBLIC "$<$<AND:$<NOT:$<BOOL:$<TARGET_PROPERTY:SOFA_NO_CXX11>>>,$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>>:-std=c++11>")
     endif()
+endif()
+
+# Eigen
+if(MSVC AND NOT ${CMAKE_CL_64}) # windows 32 bits only
+    target_compile_definitions(SofaHelper PUBLIC "-DEIGEN_DONT_ALIGN")
 endif()
 
 set(SOFAFRAMEWORK_TARGETS SofaCore SofaDefaultType SofaHelper)
