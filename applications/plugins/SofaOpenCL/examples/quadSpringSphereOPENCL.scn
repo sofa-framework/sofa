@@ -1,5 +1,8 @@
+<?xml version="1.0"?>
 <Node name="root" gravity="0.0 -2.0 0.0" dt="0.04" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0">
 
+    <RequiredPlugin name="SofaOpenCL"/>
+    
 	<Node name="Floor">
 		<RegularGrid nx="2" ny="1" nz="2" xmin="20" xmax="-20" ymin="-3.05" ymax="-3.05" zmin="-20" zmax="20" />
 		<MechanicalObject />
