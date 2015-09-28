@@ -26,6 +26,14 @@ find_package(ZLIB REQUIRED)
 find_package(SofaFramework REQUIRED)
 # find_package(LibXml2 REQUIRED)
 
+if(NOT WIN32)
+    # c++11 flag is given by SofaFramework target options
+    # TODO: force c++11 flag here?
+    if(NOT SOFA_USE_C++11)
+        message(AUTHOR_WARNING "Enabling SOFA_USE_C++11 is recommended when using the CGoGN library.")
+    endif()
+endif()
+
 IF (CGOGN_WITH_QT)
     add_definitions("-DCGOGN_WITH_QT")
 	SET(QT_USE_QTCORE TRUE)
