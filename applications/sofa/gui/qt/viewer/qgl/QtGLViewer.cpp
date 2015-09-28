@@ -1165,10 +1165,10 @@ void QtGLViewer::setSizeH( int size )
 
 }
 
-QString QtGLViewer::helpString()
+QString QtGLViewer::helpString() const
 {
 
-    QString text(
+    static QString text(
         (QString)"<H1>QtGLViewer</H1><hr>\
                 <ul>\
                 <li><b>Mouse</b>: TO NAVIGATE<br></li>\
