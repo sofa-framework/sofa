@@ -42,6 +42,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaFramework")
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/extlibs)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/plugins)
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/projects)
 
 ## RPATH
 if(UNIX)
@@ -225,6 +226,9 @@ endif()
 
 ## Plugins
 add_subdirectory(applications/plugins)
+
+## Applications
+add_subdirectory(applications/projects)
 
 ## Tutorials
 option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)

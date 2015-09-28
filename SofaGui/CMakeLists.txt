@@ -82,18 +82,6 @@ endif()
 list(APPEND SOFAGUI_TARGETS SofaGuiMain)
 add_subdirectory(../applications/sofa/gui/SofaGuiMain ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiMain)
 
-## GUI Applications
-option(SOFAGUI_RUNSOFA "Build the runSofa application" ON)
-if(SOFAGUI_RUNSOFA)
-    add_subdirectory(../applications/projects/runSofa ${CMAKE_CURRENT_BINARY_DIR}/runSofa)
-    list(APPEND SOFAGUI_TARGETS runSofa)
-endif()
-option(SOFAGUI_MODELER "Build the Modeler application" ON)
-if(SOFAGUI_MODELER)
-    add_subdirectory(../applications/projects/Modeler ${CMAKE_CURRENT_BINARY_DIR}/Modeler)
-    list(APPEND SOFAGUI_TARGETS Modeler)
-endif()
-
 
 ## IDE folder
 foreach(TARGET ${SOFAGUI_TARGETS})

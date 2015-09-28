@@ -160,21 +160,37 @@ endmacro()
 
 
 
-macro(sofa_add_plugin directory plugin_name)
-    string(TOUPPER PLUGIN_${plugin_name} plugin_option)
-    option(${plugin_option} "Build the ${plugin_name} plugin." OFF)
-    if(${plugin_option})
-        add_subdirectory(${directory} ${plugin_name})
-        set_target_properties(${plugin_name} PROPERTIES FOLDER "Plugins") # IDE folder
+macro(sofa_add_generic directory name type dest)
+    string(TOUPPER ${type}_${name} option)
+
+    # optional parameter to activate/desactivate the option
+    #  e.g.  sofa_add_application( path/MYAPP MYAPP APPLICATION DEST ON)
+    set(active OFF)
+    if(${ARGV4})
+        if( ${ARGV4} STREQUAL ON )
+            set(active ON)
+        endif()
     endif()
+
+    option(${option} "Build the ${name} ${type}." ${active})
+    if(${option})
+        add_subdirectory(${directory} ${dest})
+        set_target_properties(${name} PROPERTIES FOLDER ${type}) # IDE folder
+        set_target_properties(${name} PROPERTIES DEBUG_POSTFIX "_d")
+    endif()
+
+endmacro()
+
+
+
+
+macro(sofa_add_plugin directory plugin_name)
+    sofa_add_generic( ${directory} ${plugin_name} "Plugin" ${plugin_name} ${ARGV2} )
 endmacro()
 
 
 macro(sofa_add_application directory app_name)
-    string(TOUPPER APPLICATION_${app_name} application_option)
-    option(${application_option} "Build the ${app_name} application." OFF)
-    if(${application_option})
-        add_subdirectory(${directory} ${CMAKE_CURRENT_BINARY_DIR}/${app_name})
-        list(APPEND SOFAGUI_TARGETS ${app_name})
-    endif()
+    sofa_add_generic( ${directory} ${app_name} "Application" "${CMAKE_CURRENT_BINARY_DIR}/${app_name}" ${ARGV2} )
 endmacro()
+
+
