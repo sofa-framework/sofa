@@ -253,7 +253,7 @@ namespace sofa
 			bool mIsInitialized;
 			// The following members may be accessed by _multiple_ threads at the same time:
 			volatile unsigned mWorkerCount;	
-			volatile unsigned mTargetWorkerCount;	
+//			volatile unsigned mTargetWorkerCount;
 			volatile unsigned mActiveWorkerCount;
 
 

@@ -104,8 +104,8 @@ template <typename Mat>
 inline static Mat identity()
 {
     Mat F;
-    if(Mat::nbLines>=Mat::nbCols) for(size_t i=0; i<Mat::nbCols; i++) F[i][i]=1.0;
-    else for(size_t i=0; i<Mat::nbLines; i++) F[i][i]=1.0;
+    if(Mat::nbLines>=Mat::nbCols) for(int i=0; i<Mat::nbCols; i++) F[i][i]=1.0;
+    else for(int i=0; i<Mat::nbLines; i++) F[i][i]=1.0;
     return F;
 }
 

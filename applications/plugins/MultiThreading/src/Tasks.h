@@ -143,7 +143,7 @@ namespace sofa
 			typedef boost::singleton_pool<TaskBaseTag, sizeof(T)> memory_pool; 
 
 		public:
-			static inline void* operator new (std::size_t size)
+            static inline void* operator new (std::size_t /*size*/)
 			{
 				return memory_pool::malloc();
 			}

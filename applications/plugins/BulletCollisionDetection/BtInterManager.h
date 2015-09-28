@@ -35,7 +35,7 @@ static int getId(T1 & t1,T2 & t2){
 }
 
 template <class T1>
-static int getId(T1 & t1,T1 & t2){
+static int getId(T1 & t1,T1 & /*t2*/){
     return t1.getIndex();
 }
 
