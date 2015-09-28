@@ -18,6 +18,7 @@ if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no ne
             set(CMAKE_CXX_COMPILER "/usr/bin/g++")
             set(CMAKE_CXX_COMPILER_ARG1 "")
             target_compile_options(DiffusionSolver PUBLIC "-fopenmp")
+            set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} -fopenmp")
         else()
             # Using clang on OS X? Then no OpenMP...
             message(WARNING "your compiler does not implement OpenMP, DiffusionSolver will be single-threaded and very inefficient...")
@@ -29,7 +30,6 @@ if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no ne
     endif()
 
 endif()
-
 
 
 find_package(SofaFramework REQUIRED)
