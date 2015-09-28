@@ -4,30 +4,30 @@ project(DiffusionSolver)
 add_library(${PROJECT_NAME} SHARED DiffusionSolver.h DiffusionSolver.cpp)
 
 
-#if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no need for openmp in debug
+if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no need for openmp in debug
 
-#    find_package(OpenMP QUIET)
-#    if (OPENMP_FOUND)
-#        target_compile_options(DiffusionSolver PUBLIC "${OpenMP_CXX_FLAGS}")
-#    else()
-#        if(UNIX AND NOT APPLE)
-#            # GCC implements OpenMP, so if OpenMP is not "FOUND", then the current
-#            # compiler must be something else, so we change it to g++.
-#            message(WARNING "your compiler does not implement OpenMP, DiffusionSolver will be compiled with g++")
-#            set(CMAKE_CXX_COMPILER "/usr/bin/g++")
-#            set(CMAKE_CXX_COMPILER_ARG1 "")
-#            target_compile_options(DiffusionSolver PUBLIC "-fopenmp")
-#        else()
-#            # Using clang on OS X? Then no OpenMP...
-#            message(WARNING "your compiler does not implement OpenMP, DiffusionSolver will be single-threaded and very inefficient...")
-#        endif()
-#    endif()
+    find_package(OpenMP QUIET)
+    if (OPENMP_FOUND)
+        target_compile_options(DiffusionSolver PUBLIC "${OpenMP_CXX_FLAGS}")
+    else()
+        if(UNIX AND NOT APPLE)
+            # GCC implements OpenMP, so if OpenMP is not "FOUND", then the current
+            # compiler must be something else, so we change it to g++.
+            message(WARNING "your compiler does not implement OpenMP, DiffusionSolver will be compiled with g++")
+            set(CMAKE_CXX_COMPILER "/usr/bin/g++")
+            set(CMAKE_CXX_COMPILER_ARG1 "")
+            target_compile_options(DiffusionSolver PUBLIC "-fopenmp")
+        else()
+            # Using clang on OS X? Then no OpenMP...
+            message(WARNING "your compiler does not implement OpenMP, DiffusionSolver will be single-threaded and very inefficient...")
+        endif()
+    endif()
 
-#    if(NOT WIN32)
-#        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
-#    endif()
+    if(NOT WIN32)
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
+    endif()
 
-#endif()
+endif()
 
 
 
