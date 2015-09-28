@@ -134,7 +134,7 @@ public:
     int initDevice(OmniData& data);
 
     void cleanup();
-    virtual void draw();
+    virtual void draw(const core::visual::VisualParams*);
 
     //ajout
     void setForceFeedbacks(vector<ForceFeedback*> ffs);
@@ -145,7 +145,7 @@ public:
     void setDataValue();
     void reinitVisual();
 
-    void setOmniSimThreadCreated(bool b) { omniSimThreadCreated = b;};
+    void setOmniSimThreadCreated(bool b) { omniSimThreadCreated = b;}
 
     bool afterFirstStep;
     SolidTypes<double>::Transform prevPosition;
