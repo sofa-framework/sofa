@@ -432,7 +432,7 @@ void DistanceMultiMapping<TIn, TOut>::addPoint( const core::BaseState* from, int
 template <class TIn, class TOut>
 void DistanceMultiMapping<TIn, TOut>::addPoint( int from, int index)
 {
-    assert(from<this->fromModels.size());
+    assert((size_t)from<this->fromModels.size());
     vector<defaulttype::Vec2i>& indexPairsVector = *d_indexPairs.beginEdit();
     indexPairsVector.push_back(defaulttype::Vec2i(from,index));
     d_indexPairs.endEdit();

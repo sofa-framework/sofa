@@ -294,11 +294,11 @@ bool GIDMeshLoader::readGID(std::ifstream &file)
 		return readHexahedralElements(file);
 		break;
 
-	default :
-		return false;
+    default :
 		break;
 	}
 
+    return false;
 }
 
 bool GIDMeshLoader::readLinearElements(std::ifstream &file)
