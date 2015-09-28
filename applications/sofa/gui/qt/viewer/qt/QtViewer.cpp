@@ -1668,9 +1668,9 @@ void QtViewer::setSizeH(int size)
 //    }
 //}
 
-QString QtViewer::helpString()
+QString QtViewer::helpString() const
 {
-    QString
+    static QString
     text(
         "<H1>QtViewer</H1><hr>\
 <ul>\

@@ -81,7 +81,7 @@ public:
     virtual void configureViewerTab(QTabWidget *) {}
 
     virtual QWidget* getQWidget()=0;
-    virtual QString helpString()=0;
+    virtual QString helpString() const =0;
 
     //*************************************************************
     // QT
