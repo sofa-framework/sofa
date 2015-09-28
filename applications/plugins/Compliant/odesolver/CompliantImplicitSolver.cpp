@@ -540,7 +540,10 @@ using namespace core::behavior;
         assemblyVisitor = new simulation::AssemblyVisitor(mparams);
 
         // fetch nodes/data
-        send( *assemblyVisitor );
+        {
+            scoped::timer step("assembly: fetch data");
+            send( *assemblyVisitor );
+        }
 
         // assemble system
         assemblyVisitor->assemble(sys);

@@ -1,4 +1,5 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 #include "../utils/sparse.h"
 
@@ -49,6 +50,9 @@ static void add(LValue& lval, const RValue& rval) {
 // hopefully avoids a temporary alloc/dealloc for product
 template<class LValue, class LHS, class RHS>
 static void add_prod(LValue& lval, const LHS& lhs, const RHS& rhs) {
+
+    helper::ScopedAdvancedTimer advancedTimer("add_prod");
+
     if( empty(lval) ) {
         sparse::fast_prod(lval, lhs, rhs);
         // lval = lhs * rhs;
