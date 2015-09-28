@@ -168,17 +168,13 @@ template<> struct row_bit<1> {
 template<typename Lhs, typename Rhs, typename ResultType>
 static void fast_prod(ResultType& res, const Lhs& lhs, const Rhs& rhs, bool accumulate = false) {
 
-    static const bool use_default = SPARSE_USE_DEFAULT_PRODUCT;
-
-    if( use_default ) {
-
+#if SPARSE_USE_DEFAULT_PRODUCT
         if( accumulate ) {
             res += lhs * rhs;
         } else {
             res = lhs * rhs;
         }
-        
-    } else {
+#else
         typedef impl::row_bit< impl::check_row_major_bit<ResultType, Lhs, Rhs>::value > select;
 
         // TODO assert sizes ?
@@ -189,7 +185,7 @@ static void fast_prod(ResultType& res, const Lhs& lhs, const Rhs& rhs, bool accu
         }
         
         select::fast_prod(res, lhs, rhs, accumulate);
-    }
+#endif
 }
 
 // convenience
