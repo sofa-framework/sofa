@@ -76,7 +76,6 @@ endif()
 
 
 ## Try to find an installed boost. If boost is not found, use miniBoost.
-SET(Boost_USE_STATIC_LIBS   ON)
 find_package(Boost QUIET)
 if(NOT Boost_FOUND)
     add_subdirectory(extlibs/miniBoost)
