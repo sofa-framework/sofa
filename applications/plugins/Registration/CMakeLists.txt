@@ -51,6 +51,9 @@ endif()
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/Registration/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/Registration/config.h" DESTINATION "include/Registration")
 
+# Config files and install rules for pythons scripts
+sofa_set_python_directory(Registration "python")
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
 if(image_FOUND)

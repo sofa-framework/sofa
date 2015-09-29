@@ -181,8 +181,38 @@ macro(sofa_add_generic directory name type)
 
 endmacro()
 
+# Declare a (unique, TODO?) directory containing the python scripts of
+# a plugin.  This macro:
+# - creates rules to install all the .py scripts in ${directory} to
+#   lib/python2.7/site-packages/${plugin_name}
+# - creates a etc/sofa/python.d/${plugin_name} file in the build tree
+#   pointing to the source tree
+# - creates a etc/sofa/python.d/${plugin_name} file in the install
+#   tree, containing a relative path to the installed script directory
+#
+# Assumes relative path.
+macro(sofa_set_python_directory plugin_name directory)
+    ## Install python scripts, preserving the file tree
+    file(GLOB_RECURSE PYTHON_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${directory}/*.py")
+    foreach(python_file ${PYTHON_FILES})
+        file(RELATIVE_PATH script "${CMAKE_CURRENT_SOURCE_DIR}/${directory}" "${python_file}")
+        get_filename_component(path ${script} DIRECTORY)
+        install(FILES ${directory}/${script}
+                DESTINATION "lib/python2.7/site-packages/${plugin_name}/${path}")
+    endforeach()
 
-
+    ## Python configuration file (build tree)
+    file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/${plugin_name}"
+         "${CMAKE_CURRENT_SOURCE_DIR}/python
+")
+    ## Python configuration file (install tree)
+     file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaPython-config"
+         "lib/python2.7/site-packages/${plugin_name}
+")
+     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaPython-config"
+             DESTINATION "etc/sofa/python.d"
+             RENAME "${plugin_name}")
+endmacro()
 
 macro(sofa_add_plugin directory plugin_name)
     sofa_add_generic( ${directory} ${plugin_name} "Plugin" ${ARGV2} )

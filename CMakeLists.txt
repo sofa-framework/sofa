@@ -29,6 +29,9 @@ message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
 # Remove generated CMake files, this prevents CMake from finding packages that
 # were disabled (like, unchecked in cmake-gui) after being built once.
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/cmake)
+# Remove generated SofaPython configuration files, to prevent SofaPython from
+# adding paths to disabled plugins.
+file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/etc/sofa/python.d)
 
 ## Set the output directories globally
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
