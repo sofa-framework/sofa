@@ -8,7 +8,7 @@ if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no ne
 
     find_package(OpenMP QUIET)
     if (OPENMP_FOUND)
-        target_compile_options(DiffusionSolver PUBLIC "${OpenMP_CXX_FLAGS}")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
         set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${OpenMP_CXX_FLAGS}")
     else()
         if(UNIX AND NOT APPLE)
@@ -17,7 +17,7 @@ if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no ne
             message(WARNING "your compiler does not implement OpenMP, DiffusionSolver will be compiled with g++")
             set(CMAKE_CXX_COMPILER "/usr/bin/g++")
             set(CMAKE_CXX_COMPILER_ARG1 "")
-            target_compile_options(DiffusionSolver PUBLIC "-fopenmp")
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
             set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} -fopenmp")
         else()
             # Using clang on OS X? Then no OpenMP...

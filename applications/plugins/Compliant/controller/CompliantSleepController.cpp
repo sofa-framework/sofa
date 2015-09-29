@@ -1,8 +1,8 @@
 #include "CompliantSleepController.h"
 
 #include <sofa/core/ObjectFactory.h>
-#include <compliance/DiagonalCompliance.h>
-#include <compliance/UniformCompliance.h>
+#include "../compliance/DiagonalCompliance.h"
+#include "../compliance/UniformCompliance.h"
 
 namespace sofa
 {

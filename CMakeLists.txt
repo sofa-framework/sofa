@@ -244,3 +244,10 @@ if(NOT "${SOFA_EXTERNAL_DIRECTORIES}" STREQUAL "")
         add_subdirectory(${dir} "${CMAKE_CURRENT_BINARY_DIR}/external_directories/${name}")
     endforeach()
 endif()
+
+
+## Custom
+if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
+    message("Adding custom file")
+    include( "custom.cmake" )
+endif()
