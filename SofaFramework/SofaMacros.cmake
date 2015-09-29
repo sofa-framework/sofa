@@ -161,24 +161,31 @@ endmacro()
 
 
 macro(sofa_add_generic directory name type)
-    string(TOUPPER ${type}_${name} option)
 
-    # optional parameter to activate/desactivate the option
-    #  e.g.  sofa_add_application( path/MYAPP MYAPP APPLICATION DEST ON)
-    set(active OFF)
-    if(${ARGV4})
-        if( ${ARGV4} STREQUAL ON )
-            set(active ON)
+    if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
+
+        string(TOUPPER ${type}_${name} option)
+
+        # optional parameter to activate/desactivate the option
+        #  e.g.  sofa_add_application( path/MYAPP MYAPP APPLICATION DEST ON)
+        set(active OFF)
+        if(${ARGV4})
+            if( ${ARGV4} STREQUAL ON )
+                set(active ON)
+            endif()
         endif()
-    endif()
 
-    option(${option} "Build the ${name} ${type}." ${active})
-    if(${option})
-        add_subdirectory(${directory} ${name})
-        set_target_properties(${name} PROPERTIES FOLDER ${type}) # IDE folder
-        set_target_properties(${name} PROPERTIES DEBUG_POSTFIX "_d")
-    endif()
+        option(${option} "Build the ${name} ${type}." ${active})
+        if(${option})
+            add_subdirectory(${directory} ${name})
+            set_target_properties(${name} PROPERTIES FOLDER ${type}s) # IDE folder
+            set_target_properties(${name} PROPERTIES DEBUG_POSTFIX "_d")
+        endif()
+    else()
 
+        message("${type} ${name} (${CMAKE_CURRENT_LIST_DIR}/${directory}) does not exist and will be ignored.")
+
+    endif()
 endmacro()
 
 
