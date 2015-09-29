@@ -163,7 +163,7 @@ unsigned int kdTree<Coord>::getClosest(const Coord &x, const VecCoord& positions
 }
 
 template<class Coord>
-void kdTree<Coord>::getNClosestCached(distanceSet &cl,  distanceToPoint &cacheThresh_max, distanceToPoint &cacheThresh_min, Coord &previous_x, const Coord &x, const VecCoord& positions, const unsigned int n)
+bool kdTree<Coord>::getNClosestCached(distanceSet &cl,  distanceToPoint &cacheThresh_max, distanceToPoint &cacheThresh_min, Coord &previous_x, const Coord &x, const VecCoord& positions, const unsigned int n)
 {
     Real dx=(previous_x-x).norm();
     if(dx>=cacheThresh_max.first || cl.size()<2)
@@ -177,6 +177,7 @@ void kdTree<Coord>::getNClosestCached(distanceSet &cl,  distanceToPoint &cacheTh
         cacheThresh_min.second=it0->second;
         previous_x=x;
 //        std::cout<<"not in cache"<<std::endl;
+        return false;
     }
     else if(dx>=cacheThresh_min.first) // in the cache -> update N-1 distances
     {
@@ -188,6 +189,7 @@ void kdTree<Coord>::getNClosestCached(distanceSet &cl,  distanceToPoint &cacheTh
                 newset.insert(distanceToPoint(std::numeric_limits<Real>::max(),it->second));
         cl.swap(newset);
 //        std::cout<<"in cache:"<<std::endl;
+        return true;
     }
     else // still the same closest point
     {
@@ -199,6 +201,7 @@ void kdTree<Coord>::getNClosestCached(distanceSet &cl,  distanceToPoint &cacheTh
                 newset.insert(distanceToPoint(std::numeric_limits<Real>::max(),it->second));
         cl.swap(newset);
 //        std::cout<<"same"<<std::endl;
+        return true;
     }
 }
 
