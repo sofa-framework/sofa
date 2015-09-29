@@ -31,6 +31,8 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/simulation/common/Node.h>
 
+#include <sofa/helper/Utils.h>
+
 #if __linux__
 #  include <dlfcn.h>            // for dlopen(), see workaround in Init()
 #endif
@@ -39,6 +41,7 @@
 using namespace sofa::component::controller;
 
 using sofa::helper::system::FileSystem;
+using sofa::helper::Utils;
 
 
 namespace sofa
@@ -100,41 +103,21 @@ try:\n\
 except:\n\
     pass");
 
-    // Fill sys.path with the paths to the python modules defined in plugins.
+    // Add the paths to the plugins' python modules to sys.path.  Those paths
+    // are read from all the files in 'etc/sofa/python.d'
+    std::string confDir = Utils::getSofaPathPrefix() + "/etc/sofa/python.d";
+    if (FileSystem::exists(confDir))
+    {
+        std::vector<std::string> files;
+        FileSystem::listDirectory(confDir, files);
+        for (size_t i=0; i<files.size(); i++)
+        {
+            addPythonModulePathsFromConfigFile(confDir + "/" + files[i]);
+        }
+    }
 
-    // Currently, if a plugin defines one or more python modules, it must be in
-    // a "python" directory at the root of the plugin directory.  Here we add
-    // those "python" directories to sys.path, so that we can "import" those
-    // modules in python scripts.
-
-    // For now, this initialization function is called automatically when
-    // loading the library; this is horrendous, and prevents us from accepting
-    // parameters.  As a result, we use hard-coded path to the source tree to
-    // find the usual plugin directories.
-
-    // As a workaround, we allow passing additional paths via an environnement
-    // variable, to allow for use cases where this hard-coded path does not
-    // exist: SOFAPYTHON_PLUGINS_PATH is a colon-separated list of paths to
-    // directories that contain Sofa plugins.
-
-#ifdef SOFA_SRC_DIR
-    static const std::string pluginsDir = std::string(SOFA_SRC_DIR) + "/applications/plugins";
-    if (FileSystem::exists(pluginsDir))
-        addPythonModulePathsForPlugins(pluginsDir);
-
-    static const std::string devPluginsDir = std::string(SOFA_SRC_DIR) + "/applications-dev/plugins";
-    if (FileSystem::exists(devPluginsDir))
-        addPythonModulePathsForPlugins(devPluginsDir);
-
-    static const std::string projectsDir = std::string(SOFA_SRC_DIR) + "/applications/projects";
-    if (FileSystem::exists(projectsDir))
-        addPythonModulePathsForPlugins(projectsDir);
-
-    static const std::string devProjectsDir = std::string(SOFA_SRC_DIR) + "/applications-dev/projects";
-    if (FileSystem::exists(devProjectsDir))
-        addPythonModulePathsForPlugins(devProjectsDir);
-#endif
-
+    // Add the directories listed in the SOFAPYTHON_PLUGINS_PATH environnement
+    // variable (colon-separated) to sys.path
     char * pathVar = getenv("SOFAPYTHON_PLUGINS_PATH");
     if (pathVar != NULL)
     {
@@ -160,6 +143,20 @@ void PythonEnvironment::addPythonModulePath(const std::string& path)
 {
     PyRun_SimpleString(std::string("sys.path.insert(0, \"" + path + "\")").c_str());
     SP_MESSAGE_INFO("Added '" + path + "' to sys.path");
+}
+
+void PythonEnvironment::addPythonModulePathsFromConfigFile(const std::string& path)
+{
+    std::ifstream configFile(path.c_str());
+    std::string line;
+    while(std::getline(configFile, line))
+    {
+        if (!FileSystem::isAbsolute(line))
+        {
+            line = Utils::getSofaPathPrefix() + "/" + line;
+        }
+        addPythonModulePath(line);
+    }
 }
 
 void PythonEnvironment::addPythonModulePathsForPlugins(const std::string& pluginsDirectory)

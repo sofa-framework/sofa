@@ -42,6 +42,9 @@ else()
     message(STATUS "SofaTest: optional dependency SofaPython NOT found, Python_test won't be built")
 endif()
 
+# Config files and install rules for pythons scripts
+sofa_set_python_directory(SofaTest "python")
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaPython)

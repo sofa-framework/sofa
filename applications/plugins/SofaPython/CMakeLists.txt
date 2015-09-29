@@ -122,6 +122,9 @@ add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/../../..\"")
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaPython/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/SofaPython/config.h" DESTINATION "include/SofaPython")
 
+# Config files and install rules for pythons scripts
+sofa_set_python_directory(SofaPython "python")
+
 set(SOFAPYTHON_COMPILER_FLAGS "-DSOFA_BUILD_SOFAPYTHON")
 
 # The implementation of Python deliberately breaks strict-aliasing rules, so we
