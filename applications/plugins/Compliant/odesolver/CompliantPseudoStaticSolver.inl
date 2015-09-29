@@ -1,6 +1,6 @@
 #include "CompliantPseudoStaticSolver.h"
 
-#include "assembly/AssemblyVisitor.h"
+#include "../assembly/AssemblyVisitor.h"
 
 #include <sofa/helper/rmath.h>
 

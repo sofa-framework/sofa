@@ -3,7 +3,7 @@
 
 #include "AssembledMapping.h"
 #include <Compliant/config.h>
-#include "utils/map.h"
+#include "../utils/map.h"
 
 namespace sofa {
 

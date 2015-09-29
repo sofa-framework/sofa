@@ -1,7 +1,7 @@
 #include "DiagonalResponse.h"
 
 #include <sofa/core/ObjectFactory.h>
-#include "utils/nan.h"
+#include "../utils/nan.h"
 
 namespace sofa {
 namespace component {

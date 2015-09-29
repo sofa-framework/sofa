@@ -6,15 +6,15 @@
 #include <sofa/core/ObjectFactory.h>
 
 
-#include "utils/kkt.h"
-#include "utils/preconditionedcg.h"
+#include "../utils/kkt.h"
+#include "../utils/preconditionedcg.h"
 
 
 namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(PreconditionedCgSolver);
+SOFA_DECL_CLASS(PreconditionedCgSolver)
 static int PreconditionedCgSolverClass = core::RegisterObject("Sparse PCG linear solver").add< PreconditionedCgSolver >();
 
 
