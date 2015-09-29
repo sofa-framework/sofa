@@ -3,9 +3,9 @@
 #include <sofa/core/ObjectFactory.h>
 
 
-#include "utils/schur.h"
-#include "utils/kkt.h"
-#include "utils/bicgstab.h"
+#include "../utils/schur.h"
+#include "../utils/kkt.h"
+#include "../utils/bicgstab.h"
 
 
 namespace sofa {

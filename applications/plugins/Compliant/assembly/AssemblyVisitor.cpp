@@ -5,9 +5,9 @@
 #include <SofaBaseLinearSolver/SingleMatrixAccessor.h>
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 
-#include "./utils/scoped.h"
-#include "./utils/cast.h"
-#include "./utils/sparse.h"
+#include "../utils/scoped.h"
+#include "../utils/cast.h"
+#include "../utils/sparse.h"
 
 #include "../constraint/ConstraintValue.h"
 #include "../constraint/Stabilization.h"

@@ -4,8 +4,8 @@
 #include <SofaEigen2Solver/EigenVector.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include "assembly/AssemblyVisitor.h"
-#include "utils/scoped.h"
+#include "../assembly/AssemblyVisitor.h"
+#include "../utils/scoped.h"
 
 using std::cerr;
 using std::endl;

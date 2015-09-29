@@ -6,8 +6,8 @@
 #include <sofa/simulation/common/MechanicalOperations.h>
 #include <sofa/simulation/common/VectorOperations.h>
 
-#include "assembly/AssemblyVisitor.h"
-#include "constraint/ConstraintValue.h"
+#include "../assembly/AssemblyVisitor.h"
+#include "../constraint/ConstraintValue.h"
 
 
 
