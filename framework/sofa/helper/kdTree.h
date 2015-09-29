@@ -68,6 +68,7 @@ public:
         unsigned int right; // index of the right node
     } TREENODE;
 
+    bool isEmpty() {return tree.size()==0;}
     void build(const VecCoord& positions);       ///< update tree (to be used whenever positions have changed)
     void build(const VecCoord& positions, const vector<unsigned int> &ROI);       ///< update tree based on positions subset (to be used whenever points p have changed)
     void getNClosest(distanceSet &cl, const Coord &x, const VecCoord& positions, const unsigned int n);  ///< get an ordered set of n distance/index pairs between positions and x
