@@ -1,7 +1,7 @@
 #include "DiagonalCompliance.h"
 #include <iostream>
 
-#include <utils/edit.h>
+#include "../utils/edit.h"
 
 using std::cerr;
 using std::endl;

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <Compliant/config.h>
 #include "misc/CompliantSolverMerger.h"
-#include <contact/CompliantContact.h>
+#include "contact/CompliantContact.h"
 
 namespace sofa
 {
