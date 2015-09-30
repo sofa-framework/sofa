@@ -427,10 +427,12 @@ struct AssemblyVisitor::process_helper {
 //            std::cerr<<"Assembly::geometricStiffnessJc "<<geometricStiffnessJc<<" "<<curr->getName()<<std::endl;
         }
 
-        if( zero(Jc) )  {
-            using namespace std;
+        if( zero(Jc) && curr->getSize() !=0 )  {
+            // If the dof size is null, let's consider it is not a big deal.
+            // Indeed, having null dof is useful when setting up a static graph that is filled in dynamically
 
-            cerr << "houston we have a problem with " << c->dofs->getName()  << " under " << c->dofs->getContext()->getName() << endl
+            using namespace std;
+            cerr << "Compliant/AssemblyVisitor: Houston we have a problem with " << c->dofs->getName()  << " under " << c->dofs->getContext()->getName() << endl
                  << "master: " << c->master() << endl
 //                 << "mapped: " << (c->map.empty() ? string("nope") : p->dofs->getName() )<< endl
 //                 << "p mechanical ? " << p->mechanical << endl
