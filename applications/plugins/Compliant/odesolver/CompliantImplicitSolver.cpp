@@ -665,21 +665,23 @@ using namespace core::behavior;
                     dynamics_solution = x;
                 }
 
-
-                switch( formulation.getValue().getSelectedId() )
+                if(!this->f_onlyVelocity.getValue())
                 {
-                case FORMULATION_VEL: // p+ = p- + h.v
-                    set_state( sys, x, velId ); // set v and lambda
-                    integrate( sop, posId, velId );
-                    break;
-                case FORMULATION_DV: // v+ = v- + dv     p+ = p- + h.v
-                    set_state( sys, x, _acc.id() ); // set v and lambda
-                    integrate( sop, posId, velId, _acc.id(), 1.0  );
-                    break;
-                case FORMULATION_ACC: // v+ = v- + h.a   p+ = p- + h.v
-                    set_state( sys, x, _acc.id() ); // set v and lambda
-                    integrate( sop, posId, velId, _acc.id(), dt  );
-                    break;
+                    switch( formulation.getValue().getSelectedId() )
+                    {
+                    case FORMULATION_VEL: // p+ = p- + h.v
+                        set_state( sys, x, velId ); // set v and lambda
+                        integrate( sop, posId, velId );
+                        break;
+                    case FORMULATION_DV: // v+ = v- + dv     p+ = p- + h.v
+                        set_state( sys, x, _acc.id() ); // set v and lambda
+                        integrate( sop, posId, velId, _acc.id(), 1.0  );
+                        break;
+                    case FORMULATION_ACC: // v+ = v- + h.a   p+ = p- + h.v
+                        set_state( sys, x, _acc.id() ); // set v and lambda
+                        integrate( sop, posId, velId, _acc.id(), dt  );
+                        break;
+                    }
                 }
 
                 // TODO is this even needed at this point ? NO it is done by the animation loop
@@ -695,7 +697,7 @@ using namespace core::behavior;
             }
 
             // constraint post-stabilization
-            if( stabilizationType>=POST_STABILIZATION_RHS )
+            if( stabilizationType>=POST_STABILIZATION_RHS && !this->f_onlyVelocity.getValue())
             {
                 post_stabilization( sop, posId, velId, stabilizationType==POST_STABILIZATION_ASSEMBLY);
             }

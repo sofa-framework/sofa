@@ -36,7 +36,8 @@ namespace core
 namespace behavior
 {
 
-OdeSolver::OdeSolver()
+OdeSolver::OdeSolver():
+f_onlyVelocity(initData(&f_onlyVelocity,false,"onlyVelocity","do not perform the position integration in the solver"))
 {}
 
 OdeSolver::~OdeSolver()
