@@ -898,7 +898,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 
 			if(update)
 			{
-				double tempF[6];
+                double tempF[6] = {0,0,0,0,0,0};
 				for(l=0; l<nb; l++)
 				{
 					tempF[l] = force[j+l];
@@ -1019,7 +1019,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 int GenericConstraintSolverClass = core::RegisterObject("A Generic Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components")
 .add< GenericConstraintSolver >();
 
-SOFA_DECL_CLASS(GenericConstraintSolver);
+SOFA_DECL_CLASS(GenericConstraintSolver)
 
 
 } // namespace constraintset
