@@ -232,15 +232,22 @@ const std::string& Utils::getExecutableDirectory()
 
 static std::string computeSofaPathPrefix()
 {
-    const std::string exePath = Utils::getExecutablePath();
-    std::size_t pos = exePath.rfind("/bin/");
-    if (pos == std::string::npos) {
-        Logger::getMainLogger().log(Logger::Error, "failed to deduce the root path of Sofa from the application path: (" + exePath + ")", "Utils::getSofaPathPrefix()");
-        // Safest thing to return in this case, I guess.
-        return Utils::getExecutableDirectory();
+    char* pathVar = getenv("SOFA_ROOT");
+    if (pathVar != NULL && FileSystem::exists(pathVar))
+    {
+        return std::string(pathVar);
     }
     else {
-        return exePath.substr(0, pos);
+        const std::string exePath = Utils::getExecutablePath();
+        std::size_t pos = exePath.rfind("/bin/");
+        if (pos == std::string::npos) {
+            Logger::getMainLogger().log(Logger::Error, "failed to deduce the root path of Sofa from the application path: (" + exePath + ")", "Utils::getSofaPathPrefix()");
+            // Safest thing to return in this case, I guess.
+            return Utils::getExecutableDirectory();
+        }
+        else {
+            return exePath.substr(0, pos);
+        }
     }
 }
 
