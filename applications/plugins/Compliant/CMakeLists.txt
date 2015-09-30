@@ -213,7 +213,7 @@ configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/Compliant/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/Compliant/config.h" DESTINATION "include/Compliant")
 
 # Config files and install rules for pythons scripts
-sofa_set_python_directory(Compliant "python")
+sofa_set_python_directory(${PROJECT_NAME} "python")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaSimulationGraph)

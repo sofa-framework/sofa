@@ -43,7 +43,7 @@ else()
 endif()
 
 # Config files and install rules for pythons scripts
-sofa_set_python_directory(SofaTest "python")
+sofa_set_python_directory(${PROJECT_NAME} "python")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 if(SofaPython_FOUND)

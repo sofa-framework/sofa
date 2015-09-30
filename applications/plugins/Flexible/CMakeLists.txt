@@ -208,7 +208,7 @@ configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/Flexible/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/Flexible/config.h" DESTINATION "include/Flexible")
 
 # Config files and install rules for pythons scripts
-sofa_set_python_directory(Flexible "python")
+sofa_set_python_directory(${PROJECT_NAME} "python")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaComponentMisc)

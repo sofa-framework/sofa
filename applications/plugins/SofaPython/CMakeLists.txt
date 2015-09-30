@@ -123,7 +123,7 @@ configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaPython/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/SofaPython/config.h" DESTINATION "include/SofaPython")
 
 # Config files and install rules for pythons scripts
-sofa_set_python_directory(SofaPython "python")
+sofa_set_python_directory(${PROJECT_NAME} "python")
 
 set(SOFAPYTHON_COMPILER_FLAGS "-DSOFA_BUILD_SOFAPYTHON")
 
