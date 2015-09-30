@@ -167,10 +167,10 @@ macro(sofa_add_generic directory name type)
         string(TOUPPER ${type}_${name} option)
 
         # optional parameter to activate/desactivate the option
-        #  e.g.  sofa_add_application( path/MYAPP MYAPP APPLICATION DEST ON)
+        #  e.g.  sofa_add_application( path/MYAPP MYAPP APPLICATION ON)
         set(active OFF)
-        if(${ARGV4})
-            if( ${ARGV4} STREQUAL ON )
+        if(${ARGV3})
+            if( ${ARGV3} STREQUAL ON )
                 set(active ON)
             endif()
         endif()

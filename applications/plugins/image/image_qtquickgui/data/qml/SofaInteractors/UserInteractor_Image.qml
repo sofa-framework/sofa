@@ -13,7 +13,9 @@ UserInteractor {
     property real zoomSpeed: 1.0
 
     function init() {
-        addMousePressedMapping(Qt.LeftButton, function(mouse) {
+        addMousePressedMapping(Qt.LeftButton, function(mouse, viewer) {
+            var scene = viewer.scene;
+
             var nearPosition = viewer.mapToWorld(Qt.vector3d(mouse.x + 0.5, mouse.y + 0.5, 0.0));
             var farPosition = viewer.mapToWorld(Qt.vector3d(mouse.x + 0.5, mouse.y + 0.5, 1.0));
             if(scene.pickingInteractor.pick(nearPosition, farPosition.minus(nearPosition))) {
@@ -21,7 +23,7 @@ UserInteractor {
                 var position = viewer.camera.projectOnViewPlane(nearPosition, z);
                 scene.pickingInteractor.position = position;
 
-                setMouseMoveMapping(function(mouse) {
+                setMouseMoveMapping(function(mouse, viewer) {
                     var nearPosition = viewer.mapToWorld(Qt.vector3d(mouse.x + 0.5, mouse.y + 0.5, 0.0));
                     var farPosition = viewer.mapToWorld(Qt.vector3d(mouse.x + 0.5, mouse.y + 0.5, 1.0));
                     var z = viewer.camera.computeDepth(scene.pickingInteractor.pickedPointPosition());
@@ -31,13 +33,15 @@ UserInteractor {
             }
         });
 
-        addMouseReleasedMapping(Qt.LeftButton, function(mouse) {
+        addMouseReleasedMapping(Qt.LeftButton, function(mouse, viewer) {
+            var scene = viewer.scene;
+
             scene.pickingInteractor.release();
 
             setMouseMoveMapping(null);
         });
 
-        addMouseDoubleClickedMapping(Qt.LeftButton, function(mouse) {
+        addMouseDoubleClickedMapping(Qt.LeftButton, function(mouse, viewer) {
             var position = viewer.projectOnGeometry(Qt.point(mouse.x + 0.5, mouse.y + 0.5));
             if(1.0 === position.w) {
                 viewer.camera.target = position.toVector3d();
@@ -45,14 +49,14 @@ UserInteractor {
             }
         });
 
-        addMousePressedMapping(Qt.MiddleButton, function(mouse) {
+        addMousePressedMapping(Qt.MiddleButton, function(mouse, viewer) {
             previousX = mouse.x;
             previousY = mouse.y;
 
             viewer.crosshairGizmo.show();
             SofaToolsScript.Tools.overrideCursorShape = Qt.ClosedHandCursor;
 
-            setMouseMoveMapping(function(mouse) {
+            setMouseMoveMapping(function(mouse, viewer) {
                 if(!viewer.camera)
                     return;
 
@@ -74,21 +78,21 @@ UserInteractor {
             });
         });
 
-        addMouseReleasedMapping(Qt.MiddleButton, function(mouse) {
+        addMouseReleasedMapping(Qt.MiddleButton, function(mouse, viewer) {
             setMouseMoveMapping(null);
 
             SofaToolsScript.Tools.overrideCursorShape = 0;
             viewer.crosshairGizmo.hide();
         });
 
-        addMousePressedMapping(Qt.RightButton, function(mouse) {
+        addMousePressedMapping(Qt.RightButton, function(mouse, viewer) {
             previousX = mouse.x;
             previousY = mouse.y;
 
             viewer.crosshairGizmo.show();
             SofaToolsScript.Tools.overrideCursorShape = Qt.ClosedHandCursor;
 
-            setMouseMoveMapping(function(mouse) {
+            setMouseMoveMapping(function(mouse, viewer) {
                 if(!viewer.camera)
                     return;
 
@@ -103,7 +107,7 @@ UserInteractor {
             });
         });
 
-        addMouseReleasedMapping(Qt.RightButton, function(mouse) {
+        addMouseReleasedMapping(Qt.RightButton, function(mouse, viewer) {
             setMouseMoveMapping(null);
 
             SofaToolsScript.Tools.overrideCursorShape = 0;
