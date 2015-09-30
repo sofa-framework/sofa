@@ -65,6 +65,7 @@ class SOFA_CORE_API OdeSolver : public virtual objectmodel::BaseObject
 public:
     SOFA_ABSTRACT_CLASS(OdeSolver, objectmodel::BaseObject);
     SOFA_BASE_CAST_IMPLEMENTATION(OdeSolver)
+    Data<bool> f_onlyVelocity;
 protected:
     OdeSolver();
 
