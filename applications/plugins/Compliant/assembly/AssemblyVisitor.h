@@ -432,7 +432,7 @@ struct AssemblyVisitor::process_helper {
             // Indeed, having null dof is useful when setting up a static graph that is filled in dynamically
 
             using namespace std;
-            cerr << "Compliant/AssemblyVisitor: Houston we have a problem with " << c->dofs->getName()  << " under " << c->dofs->getContext()->getName() << endl
+            cerr << "Compliant/AssemblyVisitor: Houston we have a problem with \"" << c->dofs->getName()  << "\" under node \"" << c->dofs->getContext()->getName() << "\"" << endl
                  << "master: " << c->master() << endl
 //                 << "mapped: " << (c->map.empty() ? string("nope") : p->dofs->getName() )<< endl
 //                 << "p mechanical ? " << p->mechanical << endl
