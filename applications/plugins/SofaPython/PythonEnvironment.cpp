@@ -141,8 +141,12 @@ void PythonEnvironment::Release()
 
 void PythonEnvironment::addPythonModulePath(const std::string& path)
 {
-    PyRun_SimpleString(std::string("sys.path.insert(0, \"" + path + "\")").c_str());
-    SP_MESSAGE_INFO("Added '" + path + "' to sys.path");
+    static std::set<std::string> addedPath;
+    if (addedPath.find(path)==addedPath.end()) {
+        PyRun_SimpleString(std::string("sys.path.insert(0,\""+path+"\")").c_str());
+        SP_MESSAGE_INFO("Added '" + path + "' to sys.path");
+        addedPath.insert(path);
+    }
 }
 
 void PythonEnvironment::addPythonModulePathsFromConfigFile(const std::string& path)
