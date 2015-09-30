@@ -1,7 +1,7 @@
+add_subdirectory(extlibs/DiffusionSolver)
+
 cmake_minimum_required(VERSION 2.8.12)
 project(image)
-
-add_subdirectory(extlibs/DiffusionSolver)
 
 set(IMAGE_MAJOR_VERSION 0)
 set(IMAGE_MINOR_VERSION 1)
