@@ -132,7 +132,7 @@ if(APPLE)
         message(FATAL_ERROR "Failed to find X11 which is required to build plugin 'image'")
     endif()
     target_link_libraries(${PROJECT_NAME} ${X11_X11_LIB})
-    include_directories(${X11_X11_INCLUDE_PATH})
+    target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${X11_X11_INCLUDE_PATH}>")
 endif()
 
 if(SOFA_BUILD_TESTS)
