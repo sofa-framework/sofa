@@ -665,14 +665,38 @@ void MechanicalObject<DataTypes>::resize(const int size)
         numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
 
-    //if (size!=vsize)
+    if(size>0)
     {
-        vsize = size;
+        //if (size!=vsize)
+        {
+            vsize = size;
+            for (unsigned int i = 0; i < vectorsCoord.size(); i++)
+            {
+                if (vectorsCoord[i] != NULL && vectorsCoord[i]->isSet())
+                {
+                    vectorsCoord[i]->beginEdit()->resize(size);
+                    vectorsCoord[i]->endEdit();
+                }
+            }
+
+            for (unsigned int i = 0; i < vectorsDeriv.size(); i++)
+            {
+                if (vectorsDeriv[i] != NULL && vectorsDeriv[i]->isSet())
+                {
+                    vectorsDeriv[i]->beginEdit()->resize(size);
+                    vectorsDeriv[i]->endEdit();
+                }
+            }
+        }
+    }
+    else // clear
+    {
+        vsize = 0;
         for (unsigned int i = 0; i < vectorsCoord.size(); i++)
         {
             if (vectorsCoord[i] != NULL && vectorsCoord[i]->isSet())
             {
-                vectorsCoord[i]->beginEdit()->resize(size);
+                vectorsCoord[i]->beginEdit()->clear();
                 vectorsCoord[i]->endEdit();
             }
         }
@@ -681,7 +705,7 @@ void MechanicalObject<DataTypes>::resize(const int size)
         {
             if (vectorsDeriv[i] != NULL && vectorsDeriv[i]->isSet())
             {
-                vectorsDeriv[i]->beginEdit()->resize(size);
+                vectorsDeriv[i]->beginEdit()->clear();
                 vectorsDeriv[i]->endEdit();
             }
         }
