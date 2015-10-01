@@ -83,11 +83,11 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 		dofs_type* p = safe_cast<dofs_type>(from[i]);
 
 		// skip non-mechanical dofs
-		if(!p) continue;
+        if(!p || p->getSize()==0 ) continue;
 
         if( !notempty((*js)[i]) )
         {
-            std::cerr<<"ERROR: AssemblyVisitor: empty mapping block for " + mapping_name(node) + " (is mapping matrix assembled?)"<<std::endl;
+            MAINLOGGER( Warning, "empty mapping block for " << mapping_name(node) << " (is mapping matrix assembled?)", "AssemblyVisitor" )
             continue;
         }
 
@@ -137,7 +137,8 @@ const defaulttype::BaseMatrix* compliance_impl( const core::MechanicalParams* mp
     }
     else
     {
-        std::cerr<<"AssemblyVisitor::compliance: "<<ffield->getName()<<" getComplianceMatrix not implemented"<< std::endl;
+        MAINLOGGER( Warning, "compliance: "<<ffield->getName()<< "(node="<<ffield->getContext()->getName()<<"): getComplianceMatrix not implemented", "AssemblyVisitor" )
+
         // TODO inverting stiffness matrix
     }
 
@@ -165,7 +166,7 @@ const defaulttype::BaseMatrix* AssemblyVisitor::compliance(simulation::Node* nod
 
         if( ffield->getMechModel1() != ffield->getMechModel2() )
         {
-            std::cerr<<SOFA_CLASS_METHOD<<"WARNING: interactionForceField "<<ffield->getName()<<" cannot be simulated as a compliance."<<std::endl;
+            MAINLOGGER( Warning, "interactionForceField "<<ffield->getName()<<" cannot be simulated as a compliance.", "AssemblyVisitor" )
         }
         else
         {
@@ -318,6 +319,8 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 
 	assert( node->mechanicalState );
     assert( chunks.find( node->mechanicalState ) == chunks.end() && "Did you run the simulation with a DAG traversal?" );
+
+    if( node->mechanicalState->getSize()==0 ) return;
 
 	// fill chunk for current dof
 	chunk& c = chunks[ node->mechanicalState ];
