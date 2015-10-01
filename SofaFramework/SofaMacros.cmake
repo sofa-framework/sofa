@@ -177,6 +177,7 @@ macro(sofa_add_generic directory name type)
 
         option(${option} "Build the ${name} ${type}." ${active})
         if(${option})
+            message("Adding ${type} ${name}")
             add_subdirectory(${directory} ${name})
             set_target_properties(${name} PROPERTIES FOLDER ${type}s) # IDE folder
             set_target_properties(${name} PROPERTIES DEBUG_POSTFIX "_d")
