@@ -32,7 +32,7 @@ if(UNIX)
     target_link_libraries(${PROJECT_NAME} pthread)
 endif()
 
-if(APPLE)
+if(UNIX)
     find_package(X11)
     if(NOT X11_FOUND)
         message(FATAL_ERROR "Failed to find X11 which is required to build DiffusionSolver")
