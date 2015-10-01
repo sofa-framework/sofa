@@ -247,10 +247,7 @@ endif()
 
 
 ## Custom
-if(NOT DEFINED CUSTOM_PRECONFIGURE_DONE)
-    set(CUSTOM_PRECONFIGURE_DONE 1 CACHE INTERNAL "")
-    if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
-        message("Adding custom file")
-        include( "custom.cmake" )
-    endif()
+if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
+    message("Adding custom file")
+    include( "custom.cmake" )
 endif()
