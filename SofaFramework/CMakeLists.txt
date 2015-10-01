@@ -218,6 +218,7 @@ if(NOT WIN32)
         #   set_target_properties(Foo PROPERTIES SOFA_NO_CXX11 1)
 
         target_compile_options(SofaHelper PUBLIC "$<$<AND:$<NOT:$<BOOL:$<TARGET_PROPERTY:SOFA_NO_CXX11>>>,$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>>:${CXX11_FLAG}>")
+        target_compile_options(SofaHelper PUBLIC "$<$<AND:$<NOT:$<BOOL:$<TARGET_PROPERTY:SOFA_NO_CXX11>>>,$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>>:-Wno-deprecated-register>")
     endif()
 endif()
 
