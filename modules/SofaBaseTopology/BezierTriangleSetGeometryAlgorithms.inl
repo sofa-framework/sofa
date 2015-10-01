@@ -202,7 +202,7 @@ typename DataTypes::Real BezierTriangleSetGeometryAlgorithms<DataTypes>::compute
 	if (isRational) {
 		const BezierTriangleSetTopologyContainer::SeqWeights &wa=container->getWeightArray();
 		Real weight=(Real)0.0f;
-		Real dweight[2];
+        Real dweight[2]={0,0};
 		Coord pos;
 		for(size_t i=0; i<tbiArray.size(); ++i)
 		{
