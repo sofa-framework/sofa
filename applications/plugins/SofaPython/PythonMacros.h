@@ -333,7 +333,7 @@ static PyTypeObject DummyChild_PyTypeObject = {
 // ERROR / WARNING MESSAGES
 // =============================================================================
 
-#define SP_MESSAGE_BASE( level, msg ) { std::stringstream ss; ss<<msg; sofa::helper::Logger::getMainLogger().log( sofa::helper::Logger::level, ss.str(), "SofaPython" ); }
+#define SP_MESSAGE_BASE( level, msg ) { MAINLOGGER( level, msg, "SofaPython" ) }
 #define SP_MESSAGE_INFO( msg ) { SP_MESSAGE_BASE( Info, msg ) }
 #define SP_MESSAGE_WARNING( msg ) { SP_MESSAGE_BASE( Warning, msg ) }
 #define SP_MESSAGE_ERROR( msg ) { SP_MESSAGE_BASE( Error, msg ) }
