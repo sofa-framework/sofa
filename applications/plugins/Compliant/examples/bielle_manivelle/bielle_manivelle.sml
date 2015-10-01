@@ -16,7 +16,7 @@
         <tag>part</tag>
         <tag>rigid</tag>
         <position>0 0 0 0 0 0 1</position>
-        <mesh id="0.obj">
+        <mesh collision="False" id="0.obj">
             <source format="obj">0.obj</source>
         </mesh>
     </solid>
