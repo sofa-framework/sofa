@@ -37,6 +37,9 @@ public:
 
     Data< Real > damping;
 
+    Data< bool > resizable;
+
+
     virtual void init();
 
     /// Compute the compliance matrix
