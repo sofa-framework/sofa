@@ -32,7 +32,7 @@ bool TIntrCapsuleOBB<TDataTypes,TDataTypes2>::Find (Real dmax)
     bool config_modified;
 
     // Get the endpoints of the segment.
-    Vec3 segment[2] =
+    const Vec3 segment[2] =
     {
         _cap->point1(),
         _cap->point2()
@@ -63,7 +63,7 @@ bool TIntrCapsuleOBB<TDataTypes,TDataTypes2>::Find (Real dmax)
         }
     }
 
-    Vec3 cap_direction = segment[1] - segment[0];
+    Vec3 cap_direction = _cap->point2() - _cap->point1();
 
     // Test seg-direction cross box-edges.
     for (i = 0; i < 3; i++)

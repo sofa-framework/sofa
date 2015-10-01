@@ -57,8 +57,11 @@ public:
      */
     LineInfo()
         : InfoFilter(NULL)
+        , m_computedRightAngleCone(0.0)
+        , m_computedLeftAngleCone(0.0)
+        , m_twoTrianglesAroundEdge(false)
     {
-        todo=false;
+//        todo=false;
     }
 
     /**
@@ -66,14 +69,17 @@ public:
      */
     LineInfo(LocalMinDistanceFilter *lmdFilters)
         : InfoFilter(lmdFilters)
+        , m_computedRightAngleCone(0.0)
+        , m_computedLeftAngleCone(0.0)
+        , m_twoTrianglesAroundEdge(false)
     {
-        todo=false;
+//        todo=false;
     }
 
     /**
      * @brief Default destructor.
      */
-    virtual ~LineInfo() {};
+    virtual ~LineInfo() {}
 
     /**
      * @brief Returns the validity of a detected contact according to this LineInfo.
@@ -112,7 +118,7 @@ protected:
     double	m_computedRightAngleCone; ///<
     double	m_computedLeftAngleCone; ///<
     bool	m_twoTrianglesAroundEdge; ///<
-    bool todo;
+//    bool todo;
 };
 
 
