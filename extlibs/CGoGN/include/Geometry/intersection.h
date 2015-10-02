@@ -155,7 +155,7 @@ Intersection intersectionLineTriangle2D(const VEC3& P, const VEC3& Dir, const VE
  * @return the intersection
  */
 template <typename VEC3>
-Intersection intersectionSegmentTriangle(const VEC3& PA, const VEC3& PB, const VEC3& Ta, const VEC3& Tb, const VEC3& Tc, VEC3& Inter) ;
+Intersection intersectionSegmentTriangle(const VEC3& PA, const VEC3& PB, const VEC3& Ta, const VEC3& Tb, const VEC3& Tc, VEC3& Inter, double epsilon) ;
 
 template <typename VEC3, typename PLANE3D>
 Intersection intersectionPlaneRay(const PLANE3D& pl,const VEC3& p1,const VEC3& dir, VEC3& Inter) ;
