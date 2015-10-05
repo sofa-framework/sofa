@@ -30,38 +30,43 @@
 #include <sofa/core/CollisionElement.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/defaulttype/Vec.h>
-#include "LinearMath/btQuaternion.h"
-#include "LinearMath/btTransform.h"
-#include "BulletCollision/NarrowPhaseCollision/btVoronoiSimplexSolver.h"
-#include "BulletCollision/CollisionShapes/btBoxShape.h"
-#include "BulletCollision/NarrowPhaseCollision/btGjkPairDetector.h"
-#include "BulletCollision/NarrowPhaseCollision/btPointCollector.h"
-#include "BulletCollision/NarrowPhaseCollision/btVoronoiSimplexSolver.h"
-#include "BulletCollision/NarrowPhaseCollision/btConvexPenetrationDepthSolver.h"
-#include "BulletCollision/NarrowPhaseCollision/btGjkEpaPenetrationDepthSolver.h"
+//#include "LinearMath/btQuaternion.h"
+//#include "LinearMath/btTransform.h"
+//#include "BulletCollision/NarrowPhaseCollision/btVoronoiSimplexSolver.h"
+//#include "BulletCollision/NarrowPhaseCollision/btGjkPairDetector.h"
+//#include "BulletCollision/NarrowPhaseCollision/btPointCollector.h"
+//#include "BulletCollision/NarrowPhaseCollision/btConvexPenetrationDepthSolver.h"
+//#include "BulletCollision/NarrowPhaseCollision/btGjkEpaPenetrationDepthSolver.h"
 //static btScalar gContactBreakingThreshold=1.0f;
 
 ///C'EST ICI !!!!!!!!!!!!!!!!!!!
 
-#include "BulletCollision/BroadphaseCollision/btDbvtBroadphase.h"
-#include "BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h"
-#include "BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
-#include "BulletCollision/CollisionShapes/btTriangleMesh.h"
+//#include "BulletCollision/BroadphaseCollision/btDbvtBroadphase.h"
+//#include "BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h"
+//#include "BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
 
-#include "LinearMath/btTransformUtil.h"
+//#include "LinearMath/btTransformUtil.h"
 
-#include "btBulletCollisionCommon.h"
+//#include "btBulletCollisionCommon.h"
 #include "BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h"
-#include "BulletCollision/Gimpact/btGImpactShape.h"
+//#include "BulletCollision/Gimpact/btGImpactShape.h"
 #include "BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h"
-#include "BulletDynamics/Dynamics/btRigidBody.h"
-#include "BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
+//#include "BulletDynamics/Dynamics/btRigidBody.h"
+//#include "BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
 //static btScalar gContactBreakingThreshold=.02f;
 
 #include "BulletCollisionModel.h"
 #include "BulletTriangleModel.h"
 #include <boost/unordered_map.hpp>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wignored-qualifiers"
 #include "BtInterManager.h"
+#pragma GCC diagnostic pop
+
+
+
+
 #include <iostream>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>

@@ -2531,8 +2531,8 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
                 D[10] = _rotatedInitialElements[elementIndex][3][1] - deforme[3][1];
                 D[11] =_rotatedInitialElements[elementIndex][3][2] - deforme[3][2];
             }
-
-            if (method == POLAR) {
+            else // POLAR / SVD
+            {
                 Transformation A;
                 A[0] = X[index[1]]-X[index[0]];
                 A[1] = X[index[2]]-X[index[0]];
