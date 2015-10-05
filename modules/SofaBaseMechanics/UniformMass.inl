@@ -156,7 +156,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
                     {
                         this->totalMass.setValue (this->mstate->getSize() * (Real)this->mass.getValue() );
                     } else {
-                        this->mass.setValue( static_cast< MassType >(this->totalMass.getValue() / this->mstate->getSize()) );
+                        this->mass.setValue( static_cast< MassType >( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->getSize()) );
                     }
                 }
                 break;

@@ -35,7 +35,7 @@ using namespace qglviewer;
  See IODistance(), physicalDistanceToScreen(), physicalScreenWidth() and focusDistance()
  documentations for default stereo parameter values. */
 Camera::Camera()
-  : fieldOfView_(M_PI/4.0f)
+  : fieldOfView_((float)(M_PI/4.0f))
 {
   // #CONNECTION# Camera copy constructor
   interpolationKfi_ = new KeyFrameInterpolator;
@@ -805,7 +805,7 @@ void Camera::setFOVToFitScene()
   if (distanceToSceneCenter() > sqrt(2.0)*sceneRadius())
     setFieldOfView(2.0 * asin(sceneRadius() / distanceToSceneCenter()));
   else
-    setFieldOfView(M_PI / 2.0f);
+    setFieldOfView( (float)(M_PI / 2.0f) );
 }
 
 /*! Makes the Camera smoothly zoom on the pointUnderPixel() \p pixel.
@@ -1745,7 +1745,7 @@ void Camera::initFromDOMElement(const QDomElement& element)
       if (child.tagName() == "Parameters")
 	{
 	  // #CONNECTION# Default values set in constructor
-	  setFieldOfView(DomUtils::floatFromDom(child, "fieldOfView", M_PI/4.0f));
+      setFieldOfView(DomUtils::floatFromDom(child, "fieldOfView", (float)(M_PI/4.0f)));
 	  setZNearCoefficient(DomUtils::floatFromDom(child, "zNearCoefficient", 0.005f));
 	  setZClippingCoefficient(DomUtils::floatFromDom(child, "zClippingCoefficient", sqrt(3.0)));
 	  orthoCoef_ = DomUtils::floatFromDom(child, "orthoCoef", tan(fieldOfView()/2.0));

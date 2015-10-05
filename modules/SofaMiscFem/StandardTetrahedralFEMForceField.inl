@@ -597,7 +597,7 @@ void  StandardTetrahedralFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttyp
 			noeud1=edgeArray[l][1];
 			N0 = offd3+noeud0;
 			N1 = offd3+noeud1;
-			Matrix3 stiff= einfo->DfDx*kFact;
+            Matrix3 stiff= einfo->DfDx*(Real)kFact;
             Matrix3 stiffTransposed= einfo->DfDx.transposed()*(Real)kFact;
 
 			*crsmat->wbloc(N0,N0,true) += stiffTransposed;
