@@ -1,6 +1,7 @@
 import os.path
 import math
 import xml.etree.ElementTree as etree
+import sys
 
 from Compliant import StructuralAPI
 
@@ -13,13 +14,22 @@ import SofaPython.sml
 import Flexible.API
 import Flexible.sml
 
+printLog = True
+
 def insertRigid(parentNode, rigidModel, density, param=None):
     """ create a StructuralAPI.RigidBody from the rigidModel, compute rigidMass from
         1) mass, com and inertia if present
         2) mesh if possible
         3) default to a unit sphere TODO: is it relevant to do so ?
     """
-    print "Compliant.sml.insertRigid: ", rigidModel.name
+
+    if printLog:
+        print "[Compliant.sml.insertRigid] ", rigidModel.name
+        for mesh in rigidModel.mesh :
+            if rigidModel.meshAttributes[mesh.id].collision is True:
+                print "     collision mesh: ", mesh.name
+        sys.stdout.flush()
+
     rigid = StructuralAPI.RigidBody(parentNode, rigidModel.name)
 
     # check mesh formats are supported by generateRigid
@@ -87,7 +97,11 @@ def insertRigid(parentNode, rigidModel, density, param=None):
 
 def insertJoint(jointModel, rigids, param=None):
     """ create a StructuralAPI.GenericRigidJoint from the jointModel """
-    print "joint:", jointModel.name
+
+    if printLog:
+        print "[Compliant.sml.insertJoint] joint: ", jointModel.name
+        sys.stdout.flush()
+
     frames=list()
     for i,offset in enumerate(jointModel.offsets):
         rigid = rigids[jointModel.solids[i].id] # shortcut
