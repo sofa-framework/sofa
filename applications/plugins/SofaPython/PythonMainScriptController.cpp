@@ -70,7 +70,7 @@ void PythonMainScriptController::loadScript()
 
 using namespace sofa::core::objectmodel;
 
-
+// call a function that returns void
 #define SP_CALL_FILEFUNC(func, ...){\
         loadScript(); \
         PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));\
@@ -82,6 +82,25 @@ using namespace sofa::core::objectmodel;
         }\
 /*    else {serr<<"SP_CALL_FILEFUNC "<<func<<" not callable"<<sendl;}*/ \
 }
+
+// call a function that returns bool
+#define SP_CALL_FILEBOOLFUNC(func, ...){\
+        loadScript(); \
+        PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));\
+        PyObject *pFunc = PyDict_GetItemString(pDict, func);\
+        if (PyCallable_Check(pFunc))\
+        {\
+            PyObject *res = PyObject_CallFunction(pFunc,__VA_ARGS__); \
+            if( res ) { \
+                if( PyBool_Check(res) ) b = ( res == Py_True ); \
+                /*else SP_MESSAGE_WARNING("PythonMainScriptController::"<<func<<" should return a bool")*/ \
+                Py_DECREF(res); \
+            } \
+        } \
+/*    else {serr<<"SP_CALL_FILEFUNC "<<func<<" not callable"<<sendl;}*/ \
+}
+
+
 
 void PythonMainScriptController::script_onLoaded(sofa::simulation::Node *node)
 {
@@ -103,13 +122,17 @@ void PythonMainScriptController::script_bwdInitGraph(sofa::simulation::Node *nod
     SP_CALL_FILEFUNC(const_cast<char*>("bwdInitGraph"),const_cast<char*>("(O)"),SP_BUILD_PYSPTR(node))
 }
 
-void PythonMainScriptController::script_onKeyPressed(const char c)
+bool PythonMainScriptController::script_onKeyPressed(const char c)
 {
-    SP_CALL_FILEFUNC(const_cast<char*>("onKeyPressed"),const_cast<char*>("(c)"), c)
+    bool b = false;
+    SP_CALL_FILEBOOLFUNC(const_cast<char*>("onKeyPressed"),const_cast<char*>("(c)"), c)
+    return b;
 }
-void PythonMainScriptController::script_onKeyReleased(const char c)
+bool PythonMainScriptController::script_onKeyReleased(const char c)
 {
-    SP_CALL_FILEFUNC(const_cast<char*>("onKeyReleased"),const_cast<char*>("(c)"), c)
+    bool b = false;
+    SP_CALL_FILEBOOLFUNC(const_cast<char*>("onKeyReleased"),const_cast<char*>("(c)"), c)
+    return b;
 }
 
 void PythonMainScriptController::script_onMouseButtonLeft(const int posX,const int posY,const bool pressed)

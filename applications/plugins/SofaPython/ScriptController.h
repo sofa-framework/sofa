@@ -144,8 +144,9 @@ protected:
     virtual void script_cleanup() = 0;
 
     /// keyboard & mouse events
-    virtual void script_onKeyPressed(const char c) = 0;
-    virtual void script_onKeyReleased(const char c) = 0;
+    /// \returns true iff the event is handled (the event won't be sent to other components)
+    virtual bool script_onKeyPressed(const char c) = 0;
+    virtual bool script_onKeyReleased(const char c) = 0;
 
     virtual void script_onMouseButtonLeft(const int posX,const int posY,const bool pressed) = 0;
     virtual void script_onMouseButtonRight(const int posX,const int posY,const bool pressed) = 0;
