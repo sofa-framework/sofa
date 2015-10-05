@@ -163,7 +163,7 @@ using namespace sofa::core::objectmodel;
     } \
     else \
     { \
-        if( PyBool_Check(res) ) b = ( res == Py_True ); \
+        if PyBool_Check(res) b = ( res == Py_True ); \
         /*else SP_MESSAGE_WARNING("PythonScriptController::"<<func<<" should return a bool")*/ \
         Py_DECREF(res); \
     } \
