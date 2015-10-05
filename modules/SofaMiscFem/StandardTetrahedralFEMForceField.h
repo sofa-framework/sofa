@@ -147,7 +147,7 @@ public :
 	   /// Input stream
 	   inline friend std::istream& operator>> ( std::istream& in, EdgeInformation& /*eri*/ ) { return in; }
 
-     EdgeInformation(): DfDx(), vertices() {}
+     EdgeInformation(): DfDx() { vertices[0]=0.f; vertices[1]=0.f; }
    };
    typedef typename VecCoord::template rebind<EdgeInformation>::other edgeInformationVector;
 

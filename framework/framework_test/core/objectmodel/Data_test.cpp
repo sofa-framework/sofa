@@ -51,7 +51,7 @@ struct DataLink_test: public ::testing::Test
         data1.setValue(1);
         ASSERT_FALSE(data1.isDirty());
         ASSERT_TRUE(data2.isDirty());
-        ASSERT_TRUE(data2.getValue());
+        ASSERT_TRUE(data2.getValue()!=0);
 
     }
 
