@@ -92,7 +92,7 @@ using namespace sofa::core::objectmodel;
         {\
             PyObject *res = PyObject_CallFunction(pFunc,__VA_ARGS__); \
             if( res ) { \
-                if( PyBool_Check(res) ) b = ( res == Py_True ); \
+                if PyBool_Check(res) b = ( res == Py_True ); \
                 /*else SP_MESSAGE_WARNING("PythonMainScriptController::"<<func<<" should return a bool")*/ \
                 Py_DECREF(res); \
             } \
