@@ -2,11 +2,8 @@
 #define BULLET_TRIANGLE_MODEL
 
 #include <SofaMeshCollision/TriangleModel.h>
-#include <BulletCollision/CollisionShapes/btTriangleMesh.h>
 #include "BulletCollisionModel.h"
-#include "BulletCollision/Gimpact/btGImpactShape.h"
 #include <sofa/simulation/common/CollisionBeginEvent.h>
-#include "BulletDynamics/Dynamics/btRigidBody.h"
 #include <BulletCollisionDetection/config.h>
 
 namespace sofa

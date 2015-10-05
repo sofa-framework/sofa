@@ -1,10 +1,21 @@
 #ifndef BULLET_COLLISION_MODEL_H
 #define BULLET_COLLISION_MODEL_H
 
-#include "btBulletCollisionCommon.h"
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Data.h>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#include "btBulletCollisionCommon.h"
+#include <BulletCollision/CollisionShapes/btCompoundShape.h>
+#include <BulletCollision/CollisionShapes/btTriangleMesh.h>
+//#include <BulletCollision/CollisionShapes/btBoxShape.h>
+#include <BulletDynamics/Dynamics/btRigidBody.h>
+#include <BulletCollision/Gimpact/btGImpactShape.h>
+#pragma GCC diagnostic pop
+
+
 
 class BulletCollisionModel /*: public sofa::core::objectmodel::BaseObject */{
 public:

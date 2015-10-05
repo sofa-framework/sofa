@@ -186,7 +186,7 @@ public:
     template<typename T>
     static void set ( Deriv& /*c*/, T /*x*/, T /*y*/, T /*z*/ )  {    }
     template<typename T>
-    static void get ( T& /*x*/, T& /*y*/, T& /*z*/, const Deriv& /*c*/ ) {    }
+    static void get ( T& x, T& y, T& z, const Deriv& /*c*/ ) { x=y=z=0; std::cerr<<"WARNING: BaseStrainTypes::get(): a strain cannot be converted to spatial coordinates.\n";  }
     template<typename T>
     static void add ( Deriv& /*c*/, T /*x*/, T /*y*/, T /*z*/ )    {    }
     //@}

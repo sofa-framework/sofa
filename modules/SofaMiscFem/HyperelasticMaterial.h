@@ -102,7 +102,7 @@ struct MaterialParameters {
   typedef typename Coord::value_type Real;
 
   /** an array of Real values that correspond to the material parameters : the size depends on the material,
-  e.g. 2 Lam� coefficients for St-Venant Kirchhoff materials */
+  e.g. 2 Lame coefficients for St-Venant Kirchhoff materials */
   std::vector<Real> parameterArray;
   /** the direction of anisotropy in the rest configuration  : the size of the array is 0 if the material is
   isotropic, 1 if it is transversely isotropic and 2 for orthotropic materials (assumed to be orthogonal to each other)*/
@@ -140,7 +140,7 @@ public:
   MatrixSym E;
 
 
-  StrainInformation() : hasBeenInitialized(false) {}
+  StrainInformation() : trC(0), J(0), lambda(0), trCsquare(0), hasBeenInitialized(false), deformationTensor(), Evect(), Evalue(), logJ(0), E() {}
   virtual ~StrainInformation() {}
 };
 

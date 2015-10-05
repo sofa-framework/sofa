@@ -2,7 +2,6 @@
 #define BT_INTER_MANAGER_H
 
 #include <sofa/core/collision/Intersection.inl>
-#include "btBulletCollisionCommon.h"
 #include <sofa/helper/FnDispatcher.inl>
 #include "BulletOBBModel.h"
 #include "BulletConvexHullModel.h"
