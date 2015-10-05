@@ -909,10 +909,10 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
 
     //Tracking Mode
 
-    // 	cerr<<"QtGLViewer::keyPressEvent, get "<<e->key()<<endl;
+//    std::cerr<<"QtGLViewer::keyPressEvent, get "<<e->key()<<std::endl;
     if( isControlPressed() ) // pass event to the scene data structure
     {
-        //cerr<<"QtGLViewer::keyPressEvent, key = "<<e->key()<<" with Control pressed "<<endl;
+//        std::cerr<<"QtGLViewer::keyPressEvent, key = "<<e->key()<<" with Control pressed "<<std::endl;
         if (groot)
         {
             sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());

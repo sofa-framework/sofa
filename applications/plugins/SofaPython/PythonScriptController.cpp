@@ -140,6 +140,7 @@ void PythonScriptController::loadScript()
 using namespace sofa::core::objectmodel;
 
 
+// call a function that returns void
 #define SP_CALL_OBJECTFUNC(func, ...) { \
     PyObject *res = PyObject_CallMethod(m_ScriptControllerInstance,func,__VA_ARGS__); \
     if (!res) \
@@ -150,6 +151,24 @@ using namespace sofa::core::objectmodel;
     else \
         Py_DECREF(res); \
 }
+
+
+// call a function that returns a boolean
+#define SP_CALL_OBJECTBOOLFUNC(func, ...) { \
+    PyObject *res = PyObject_CallMethod(m_ScriptControllerInstance,func,__VA_ARGS__); \
+    if (!res) \
+    { \
+        SP_MESSAGE_EXCEPTION( "in " << m_classname.getValueString() << "." << func ) \
+        PyErr_Print(); \
+    } \
+    else \
+    { \
+        if( PyBool_Check(res) ) b = ( res == Py_True ); \
+        /*else SP_MESSAGE_WARNING("PythonScriptController::"<<func<<" should return a bool")*/ \
+        Py_DECREF(res); \
+    } \
+}
+
 
 void PythonScriptController::script_onLoaded(sofa::simulation::Node *node)
 {
@@ -175,17 +194,20 @@ void PythonScriptController::script_bwdInitGraph(sofa::simulation::Node *node)
     SP_CALL_OBJECTFUNC(const_cast<char*>("bwdInitGraph"),const_cast<char*>("(O)"),SP_BUILD_PYSPTR(node))
 }
 
-void PythonScriptController::script_onKeyPressed(const char c)
+bool PythonScriptController::script_onKeyPressed(const char c)
 {
     helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonScriptController_Event_")+this->getName()).c_str() );
-//    SP_CALL_MODULEFUNC(m_Func_onKeyPressed, "(c)", c)
-    SP_CALL_OBJECTFUNC(const_cast<char*>("onKeyPressed"),const_cast<char*>("(c)"), c)
+    bool b = false;
+    SP_CALL_OBJECTBOOLFUNC(const_cast<char*>("onKeyPressed"),const_cast<char*>("(c)"), c)
+    return b;
 }
-void PythonScriptController::script_onKeyReleased(const char c)
+
+bool PythonScriptController::script_onKeyReleased(const char c)
 {
     helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonScriptController_Event_")+this->getName()).c_str() );
-//    SP_CALL_MODULEFUNC(m_Func_onKeyReleased, "(c)", c)
-    SP_CALL_OBJECTFUNC(const_cast<char*>("onKeyReleased"),const_cast<char*>("(c)"), c)
+    bool b = false;
+    SP_CALL_OBJECTBOOLFUNC(const_cast<char*>("onKeyReleased"),const_cast<char*>("(c)"), c)
+    return b;
 }
 
 void PythonScriptController::script_onMouseButtonLeft(const int posX,const int posY,const bool pressed)

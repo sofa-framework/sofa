@@ -158,13 +158,13 @@ void ScriptController::onMouseEvent(core::objectmodel::MouseEvent * evt)
 
 void ScriptController::onKeyPressedEvent(core::objectmodel::KeypressedEvent * evt)
 {
-    script_onKeyPressed(evt->getKey());
+    if( script_onKeyPressed(evt->getKey()) ) evt->setHandled();
     ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent * evt)
 {
-    script_onKeyReleased(evt->getKey());
+    if( script_onKeyReleased(evt->getKey()) ) evt->setHandled();
     ScriptEnvironment::initScriptNodes();
 }
 
