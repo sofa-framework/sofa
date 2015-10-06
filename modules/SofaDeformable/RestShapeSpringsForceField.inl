@@ -207,6 +207,8 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
 
             //	Deriv dx = p[i] - p_0[i];
             //	f[ indices[i] ] -=  dx * k[0] ;
+
+            this->mstate->forceMask.insertEntry(i);
         }
     }
     else
@@ -228,6 +230,8 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
 
             //	Deriv dx = p[i] - p_0[i];
             //	f[ indices[i] ] -=  dx * k[i] ;
+
+            this->mstate->forceMask.insertEntry(i);
         }
     }
 }
