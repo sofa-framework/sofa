@@ -33,6 +33,7 @@
 #ifdef SOFA_BUILD_IMAGE
 #  define SOFA_TARGET image
 #  define SOFA_IMAGE_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#  define BUILD_ALL_IMAGE_TYPES // comment to reduce compilation time
 #else
 #  define SOFA_IMAGE_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
