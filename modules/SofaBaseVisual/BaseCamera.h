@@ -60,6 +60,27 @@ public:
     typedef defaulttype::Matrix4 Mat4;
     typedef defaulttype::Quat Quat;
 
+    enum Side {LEFT, RIGHT, MONO};
+
+    enum StereoMode
+    {
+        STEREO_AUTO = 0,
+        STEREO_INTERLACED = 1,
+        STEREO_FRAME_PACKING = 2,
+        STEREO_SIDE_BY_SIDE = 3,
+        STEREO_TOP_BOTTOM = 4,
+        STEREO_SIDE_BY_SIDE_HALF = 5,
+        STEREO_TOP_BOTTOM_HALF = 6,
+        STEREO_NONE = 7,
+        NB_STEREO_MODES = 8
+    };
+    enum StereoStrategy
+    {
+        PARALLEL = 0,
+        TOEDIN = 1
+
+    };
+
     Data<Vec3> p_position;
     Data<Quat> p_orientation;
     Data<Vec3> p_lookAt;
@@ -218,6 +239,52 @@ public:
 
     void handleEvent(sofa::core::objectmodel::Event* event);
     void computeZ();
+
+    virtual bool isStereo()
+    {
+        return false;
+    }
+    virtual void setCurrentSide(Side /*newSide*/)
+    {
+        return;
+    }
+    virtual Side getCurrentSide()
+    {
+        return MONO;
+    }
+    virtual void setStereoEnabled(bool /*newEnable*/)
+    {
+        return;
+    }
+    virtual bool getStereoEnabled()
+    {
+        return false;
+    }
+    virtual void setStereoMode(StereoMode /*newMode*/)
+    {
+        return;
+    }
+    virtual StereoMode getStereoMode()
+    {
+        return STEREO_AUTO;
+    }
+    virtual void setStereoStrategy(StereoStrategy /*newStrategy*/)
+    {
+        return;
+    }
+    virtual StereoStrategy getStereoStrategy()
+    {
+        return PARALLEL;
+    }
+    virtual void setStereoShift(double /*newShift*/)
+    {
+        return;
+    }
+    virtual double getStereoShift()
+    {
+        return 1.0;
+    }
+
 protected:
     Vec3 sceneCenter;
     SReal sceneRadius;

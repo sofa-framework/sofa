@@ -47,10 +47,6 @@ BaseViewer::BaseViewer()
     , backgroundImageFile("textures/SOFA_logo.bmp")
     , ambientColour(defaulttype::Vector3())
     , pick(NULL)
-    , _stereoEnabled(false)
-    , _stereoMode(STEREO_AUTO)
-    , _stereoStrategy(PARALLEL)
-    , _stereoShift(1.0)
     , _screenshotDirectory(".")
 {
     pick = new PickHandler();

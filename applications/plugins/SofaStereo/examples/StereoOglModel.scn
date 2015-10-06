@@ -1,0 +1,7 @@
+<Node name="root" dt="0.01">
+    <RequiredPlugin pluginName="SofaStereo"/>
+    <StereoCamera enabled="true" mode="3" strategy="0" baseline="10" />
+
+    <StereoOglModel name="VisualModel" fileMesh="mesh/floor2.obj" textureleft="textures/floor.bmp" textureright="textures/floor2.bmp" />
+</Node>
+    

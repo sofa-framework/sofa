@@ -1,0 +1,16 @@
+#ifndef INITSTEREOPLUGIN_H
+#define INITSTEREOPLUGIN_H
+
+#include <sofa/helper/system/config.h>
+
+#ifdef SOFA_BUILD_PLUGIN_STEREO
+#define SOFA_STEREO_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#define SOFA_STEREO_API  SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+/** \mainpage
+  This is a simple example plugin.
+  */
+
+#endif // INITSTEREOPLUGIN_H
