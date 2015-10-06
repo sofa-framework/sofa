@@ -462,6 +462,9 @@ public:
     Iterative::IterativePartition*  prepareTask();
 #endif
 
+    /// Return the full path name of this object
+    virtual std::string getPathName() const;
+
 protected:
 
     SingleLink<BaseObject, BaseContext, BaseLink::FLAG_DOUBLELINK> l_context;
