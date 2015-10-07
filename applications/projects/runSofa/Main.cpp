@@ -153,6 +153,8 @@ int main(int argc, char** argv)
     std::string verif = "";
 #ifdef SOFA_SMP
     std::string simulationType = "smp";
+#elif defined(SOFA_HAVE_DAG)
+    std::string simulationType = "dag";
 #else
     std::string simulationType = "tree";
 #endif
