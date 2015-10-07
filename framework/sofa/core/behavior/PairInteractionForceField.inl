@@ -43,7 +43,6 @@ template<class DataTypes>
 PairInteractionForceField<DataTypes>::PairInteractionForceField(MechanicalState<DataTypes> *mm1, MechanicalState<DataTypes> *mm2)
     : mstate1(initLink("object1", "First object in interaction"), mm1)
     , mstate2(initLink("object2", "Second object in interaction"), mm2)
-    , mask1(NULL), mask2(NULL)
 {
     if (!mm1)
         mstate1.setPath("@./"); // default to state of the current node
@@ -69,9 +68,6 @@ void PairInteractionForceField<DataTypes>::init()
         //getContext()->removeObject(this);
         return;
     }
-
-    this->mask1 = &mstate1->forceMask;
-    this->mask2 = &mstate2->forceMask;
 }
 
 #ifdef SOFA_SMP
@@ -162,9 +158,6 @@ void PairInteractionForceField<DataTypes>::addForce(const MechanicalParams* mpar
 {
     if (mstate1 && mstate2)
     {
-        mstate1->forceMask.setInUse(this->useMask());
-        mstate2->forceMask.setInUse(this->useMask());
-
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
         {

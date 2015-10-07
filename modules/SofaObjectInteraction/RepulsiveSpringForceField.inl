@@ -72,11 +72,6 @@ void RepulsiveSpringForceField<DataTypes>::addForce(const sofa::core::Mechanical
             Deriv force = u*forceIntensity;
             f1[a]+=force;
             f2[b]-=force;
-            if (this->maskInUse)
-            {
-                this->mstate1->forceMask.insertEntry(a);
-                this->mstate2->forceMask.insertEntry(b);
-            }
 
             Mat& m = this->dfdx[i];
             Real tgt = forceIntensity * inverseLength;
@@ -108,6 +103,14 @@ SReal RepulsiveSpringForceField<DataTypes>::getPotentialEnergy(const sofa::core:
 {
     serr<<"RepulsiveSpringForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
+}
+
+
+
+template <class DataTypes>
+void RepulsiveSpringForceField<DataTypes>::updateMaskForce()
+{
+    // already done in addForceImplementation
 }
 
 

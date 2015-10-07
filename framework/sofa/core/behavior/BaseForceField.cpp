@@ -75,8 +75,6 @@ void BaseForceField::addSubBToMatrix(const MechanicalParams* mparams, const sofa
 }
 
 
-
-
 } // namespace behavior
 
 } // namespace core

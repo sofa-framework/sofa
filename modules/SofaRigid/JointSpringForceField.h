@@ -327,7 +327,11 @@ protected:
     JointSpringForceField();
 
     virtual ~JointSpringForceField();
+
+    virtual void updateForceMask();
+
 public:
+
     core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
     core::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
 
@@ -374,8 +378,6 @@ public:
         springs.beginEdit()->push_back(s);
         springs.endEdit();
     }
-
-    bool useMask() const {return true;}
 
     /// the list of the springs
     Data<sofa::helper::vector<Spring> > springs;

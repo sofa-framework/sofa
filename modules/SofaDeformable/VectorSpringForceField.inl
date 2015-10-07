@@ -301,7 +301,7 @@ void VectorSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /
     if(useTopology)
     {
 
-        Deriv relativeVelocity,force;
+        Deriv force;
         for (int i=0; i<_topology->getNbEdges(); i++)
         {
             const topology::Edge &e=_topology->getEdge(i);
@@ -322,7 +322,7 @@ void VectorSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /
     else
     {
 
-        Deriv relativeVelocity,force;
+        Deriv force;
         for (unsigned int i=0; i<edgeArray.size(); i++)
         {
             const topology::Edge &e=edgeArray[i];
@@ -433,6 +433,15 @@ void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* v
     }
     vparams->drawTool()->drawLines(points, 3, Vec<4,float>(1,0,0,1));
 }
+
+
+
+template<class DataTypes>
+void VectorSpringForceField<DataTypes>::updateForceMask()
+{
+    // already done in addForceImplementation
+}
+
 
 } // namespace interactionforcefield
 

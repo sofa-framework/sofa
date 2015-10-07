@@ -113,6 +113,9 @@ protected:
     PenalityContactForceField()
     {
     }
+
+    virtual void updateForceMask();
+
 public:
     void clear(int reserve = 0);
 

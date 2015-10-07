@@ -108,9 +108,9 @@ void PenalityContactForceField<DataTypes>::addForce(const sofa::core::Mechanical
             Deriv force = -c.norm*fN;
 
             f1[c.m1]+=force;
-            this->mask1->insertEntry(c.m1);
+            this->mstate1->forceMask.insertEntry(c.m1);
             f2[c.m2]-=force;
-            this->mask2->insertEntry(c.m2);
+            this->mstate2->forceMask.insertEntry(c.m2);
         }
     }
     contacts.endEdit();
@@ -268,6 +268,11 @@ void PenalityContactForceField<DataTypes>::grabPoint(
 
 }
 
+template<class DataTypes>
+void PenalityContactForceField<DataTypes>::updateForceMask()
+{
+    // already done in addForceImplementation
+}
 
 } // namespace interactionforcefield
 

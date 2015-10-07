@@ -227,6 +227,17 @@ public:
 
 protected:
     SingleLink<ForceField<DataTypes>,MechanicalState<DataTypes>,BaseLink::FLAG_STRONGLINK> mstate;
+
+
+
+    /// Useful when the forcefield is applied only on a subset of dofs.
+    /// It is automatically called by addForce.
+    ///
+    /// That way, we can optimize the time spent to transfer forces through the mechanical mappings.
+    /// Every Dofs are inserted by default. The forcefields using only a subset of dofs should only insert these particles in the mask.
+    virtual void updateForceMask();
+
+
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_FORCEFIELD_CPP)
