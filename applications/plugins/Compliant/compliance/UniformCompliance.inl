@@ -137,7 +137,7 @@ SReal UniformCompliance<DataTypes>::getPotentialEnergy( const core::MechanicalPa
 template<class DataTypes>
 const sofa::defaulttype::BaseMatrix* UniformCompliance<DataTypes>::getComplianceMatrix(const core::MechanicalParams*)
 {
-    if( resizable.getValue() && (defaulttype::BaseMatrix::Index)this->getMState()->getSize() != matC.rows() ) reinit();
+    if( resizable.getValue() && (defaulttype::BaseMatrix::Index)this->mstate->getSize() != matC.rows() ) reinit();
 
     return &matC;
 }

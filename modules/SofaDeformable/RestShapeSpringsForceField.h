@@ -131,6 +131,9 @@ protected :
     helper::vector<CPos> m_pivots;
 
     SReal lastUpdatedStep;
+
+    virtual void updateForceMask();
+
 private :
 
     bool useRestMState; /// An external MechanicalState is used as rest reference.

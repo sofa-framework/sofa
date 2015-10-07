@@ -84,11 +84,6 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
 //        serr<<"StiffSpringForceField<DataTypes>::addSpringForce, force = "<< force <<sendl;
         f1[a]+=force;
         f2[b]-=force;
-        if (this->maskInUse)
-        {
-            this->mstate1->forceMask.insertEntry(a);
-            this->mstate2->forceMask.insertEntry(b);
-        }
 
         // Compute stiffness dF/dX
         // The force change dF comes from length change dl and unit vector change dU:

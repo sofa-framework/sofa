@@ -1411,8 +1411,6 @@ void MechanicalObject<DataTypes>::endIntegration(const core::ExecParams*
                                                 , SReal /*dt*/    )
 {
     this->forceMask.clear();
-    //By default the mask is disabled, the user has to enable it to benefit from the speedup
-    this->forceMask.setInUse(this->useMask.getValue());
 
 #ifdef SOFA_SMP
     if (params->execMode() == core::ExecParams::EXEC_KAAPI)
@@ -1454,9 +1452,8 @@ void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params
             }
             else
             {
-                typedef helper::ParticleMask ParticleMask;
-                const ParticleMask::InternalStorage &indices = this->forceMask.getEntries();
-                ParticleMask::InternalStorage::const_iterator it;
+                const helper::StateMask::InternalStorage &indices = this->forceMask.getEntries();
+                helper::StateMask::InternalStorage::const_iterator it;
                 for (it = indices.begin(); it != indices.end(); it++)
                 {
                     const int i = (*it);
@@ -2546,10 +2543,8 @@ void MechanicalObject<DataTypes>::resetForce(const core::ExecParams* params, cor
         }
         else
         {
-            typedef helper::ParticleMask ParticleMask;
-
-            const ParticleMask::InternalStorage &indices = this->forceMask.getEntries();
-            ParticleMask::InternalStorage::const_iterator it;
+            const helper::StateMask::InternalStorage &indices = this->forceMask.getEntries();
+            helper::StateMask::InternalStorage::const_iterator it;
 
             for (it = indices.begin(); it != indices.end(); it++)
             {

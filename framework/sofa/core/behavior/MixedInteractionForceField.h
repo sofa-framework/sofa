@@ -66,7 +66,6 @@ public:
     typedef typename DataTypes2::Coord    Coord2;
     typedef typename DataTypes2::Deriv    Deriv2;
     typedef typename DataTypes2::Real     Real2;
-    typedef helper::ParticleMask ParticleMask;
 
     typedef core::objectmodel::Data<VecCoord1>    DataVecCoord1;
     typedef core::objectmodel::Data<VecDeriv1>    DataVecDeriv1;
@@ -211,10 +210,6 @@ public:
 protected:
     SingleLink<MixedInteractionForceField<DataTypes1,DataTypes2>, MechanicalState<DataTypes1>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
     SingleLink<MixedInteractionForceField<DataTypes1,DataTypes2>, MechanicalState<DataTypes2>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
-
-    ParticleMask *mask1;
-    ParticleMask *mask2;
-
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONFORCEFIELD_CPP)
