@@ -21,7 +21,7 @@ set(HEADER_FILES
     MatEigen.h
     MemoryManager.h
     OptionsGroup.h
-    ParticleMask.h
+    StateMask.h
     Polynomial_LD.h
     Polynomial_LD.inl
     Quater.h
