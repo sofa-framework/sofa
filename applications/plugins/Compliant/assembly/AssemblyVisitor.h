@@ -300,6 +300,9 @@ struct AssemblyVisitor::process_helper {
                 // mapping blocks
                 MySPtr<rmat> jc( convertSPtr<rmat>( g[*e.first].data->J ) );
 
+                if( zero( *jc ) ) MAINLOGGER( Warning, "Empty Jacobian for mapping: "<<((simulation::Node*)curr->getContext())->mechanicalMapping->getPathName()
+                                              << std::endl << "mask=\""<<curr->forceMask.getEntries() <<"\"", "AssemblyVisitor" )
+
                 // parent is not mapped: we put a shift matrix with the
                 // correct offset as its full mapping matrix, so that its
                 // children will get the right place on multiplication
@@ -338,19 +341,18 @@ struct AssemblyVisitor::process_helper {
 
             using namespace std;
             MAINLOGGER( Warning,
-                        "Houston we have a problem. Null Jacobian for mapping \""<< ((simulation::Node*)c->dofs->getContext())->mechanicalMapping->getPathName()<<"\""<< endl
+                        "Houston we have a problem. Null full Jacobian for dof \""<< c->dofs->getPathName()<<"\""<< endl
                         << "master=" << c->master() << ", "
        //                 << "mapped: " << (c->map.empty() ? string("nope") : p->dofs->getName() )<< endl
        //                 << "p mechanical ? " << p->mechanical << endl
        //                 << "empty Jp " << empty(Jp) << endl
                         << "empty Jc=" << empty(Jc) << ", "
-                        << "mask: "<<c->dofs->forceMask.getEntries()
                         , "AssemblyVisitor" )
 
             assert( false );
         }
-//        else
-//            MAINLOGGER( Info, ((simulation::Node*)c->dofs->getContext())->mechanicalMapping->getPathName()<<" "<<Jc.nonZeros() , "AssemblyVisitor" )
+        else
+            MAINLOGGER( Info, ((simulation::Node*)c->dofs->getContext())->mechanicalMapping->getPathName()<<" "<<Jc.nonZeros() , "AssemblyVisitor" )
 
     }
 
