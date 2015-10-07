@@ -226,12 +226,8 @@ template <class TIn, class TOut>
 const typename IdentityMapping<TIn, TOut>::js_type* IdentityMapping<TIn, TOut>::getJs()
 {
     bool isMaskInUse = maskTo->isInUse();
-    if ( !isMaskInUse )
-        maskFrom->setInUse(false);
-    else
-        updateJ = true;
 
-	if( !eigen.compressedMatrix.nonZeros() || updateJ ) {
+    if( !eigen.compressedMatrix.nonZeros() || updateJ || isMaskInUse ) {
 		updateJ = false;
 
 		assert( this->fromModel->getSize() == this->toModel->getSize());
