@@ -40,11 +40,11 @@ namespace helper
  *  This class is used inside the BaseMechanicalState.
  * Forcefields, Constraints which acts only on a little number of particles should activate the mask (by redefining the method bool useMask()) and add entries in the particle mask
  */
-class ParticleMask
+class StateMask
 {
 public:
-    typedef helper::set< unsigned int > InternalStorage;
-    ParticleMask(Data<bool> *activator):inUse(activator), activated(true), allComponentsAreUsingMask(true) {}
+    typedef helper::set< size_t > InternalStorage;
+    StateMask(Data<bool> *activator):inUse(activator), activated(true) {}
 
     /// Insert an entry in the mask
     void insertEntry(unsigned int index)
@@ -52,16 +52,7 @@ public:
         indices.insert(index);
     }
 
-
-    const InternalStorage &getEntries() const {return indices;}
-    InternalStorage &getEntries() {return indices;}
-
-    /// To activate the use of the mask. External components like forcefields and constraints have to use this method if they want to get benefit of the mask mechanism
-    /// A mask deactivated previously will remain deactivated until explicit activation using activate method.
-    void setInUse(bool use)
-    {
-        allComponentsAreUsingMask = use && allComponentsAreUsingMask;
-    }
+    const InternalStorage &getEntries() const { return indices; }
 
     /// Explicit activation: when during some process we need the mask, we activate it
     void activate(bool a)
@@ -75,17 +66,20 @@ public:
     ///    * all the components of the node must use the mask. If a single one has deactivated its mask, we can't use the mask for the whole node.
     bool isInUse() const
     {
-        return inUse->getValue() && activated && allComponentsAreUsingMask;
+        return inUse->getValue() && activated;
     }
 
-    void clear() {indices.clear(); activated=true; allComponentsAreUsingMask=true;}
+    void clear()
+    {
+        indices.clear();
+        activated=true;
+    }
 
 protected:
     InternalStorage indices;
     // Act as a switch, to enable or not the mask.
-    Data<bool> *inUse;
-    bool activated;
-    bool allComponentsAreUsingMask;
+    Data<bool> *inUse; // manual switch
+    bool activated; // automatic switch (the mask is only used for specific operations)
 
 };
 
