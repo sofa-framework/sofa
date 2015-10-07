@@ -25,7 +25,6 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <SceneCreator/SceneCreator.h>
 //Including Simulation
-#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
 #include <SofaTest/Sofa_test.h>
@@ -175,7 +174,6 @@ struct ImageEngine_test : public Sofa_test<>
         TestImageEngine::SPtr imageEngine;
 
         // Create a scene
-        sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         // Root node
@@ -248,7 +246,6 @@ struct ImageEngine_test : public Sofa_test<>
         ImageViewer::SPtr imageViewer;
 
         // Create a scene
-        sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         // Root node

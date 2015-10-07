@@ -67,6 +67,9 @@ public:
 
     virtual ~TopologyElementHandler() {}
 
+
+    using TopologyHandler::ApplyTopologyChange;
+
     /// Apply swap between indices elements.
     virtual void ApplyTopologyChange(const EIndicesSwap* event);
     /// Apply adding elements.
@@ -125,6 +128,7 @@ protected:
     virtual void removeOnMovedPosition(const sofa::helper::vector<unsigned int> &/*indices*/) {}
 
 };
+
 
 } // namespace topology
 

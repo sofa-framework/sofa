@@ -398,7 +398,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopologyRigi
         matrixJ = new MatrixType;
     }
 
-    if (matrixJ->rowBSize() != (unsigned)outSize || matrixJ->colBSize() != (unsigned)inSize)
+    if (matrixJ->rowBSize() != (MatrixTypeIndex)outSize || matrixJ->colBSize() != (MatrixTypeIndex)inSize)
     {
         //std::cout << "Resizing to " << outSize*NOut  << " X " << inSize*NIn << std::endl;
         matrixJ->resize(outSize*NOut, inSize*NIn);

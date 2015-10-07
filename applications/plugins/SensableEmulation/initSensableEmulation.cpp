@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initSensableEmulation.h"
+#include <SensableEmulation/config.h>
 
 namespace sofa
 {

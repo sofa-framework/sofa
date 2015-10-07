@@ -8,11 +8,28 @@
 #include <algorithm> // Necessary to have the function std::min on visual studio 2013
 #endif
 
-#include <sofa/helper/IndexOpenMP.h>
 
 #ifdef _OPENMP
 #include <omp.h>
 #endif
+
+
+
+/// From any given index type, this struct gives a OpenMP valid index
+/// Versions of OpenMP anterior to 3.0 are only able to manage signed index in a parallel for
+/// Actual versions of visual studio only implement OpenMP 2.5 as old gcc.
+template<class T>
+struct IndexOpenMP
+{
+#if defined(_OPENMP) && _OPENMP < 200805 /*yearmonth of version 3.0*/
+        typedef typename std::make_signed<T>::type type;
+#else
+        typedef T type;
+#endif
+}; // struct IndexOpenMP
+
+
+
 
 
 template < typename Real > const char DiffusionSolver< Real >::OUTSIDE   = -1;
@@ -23,6 +40,7 @@ template < typename Real > const char DiffusionSolver< Real >::DIRICHLET =  0;
 template < typename Real >
 void DiffusionSolver< Real >::setNbThreads( unsigned nb )
 {
+    (void)nb;
 #ifdef _OPENMP
     omp_set_num_threads( std::min( nb, (unsigned)omp_get_num_procs() ) );
 #endif
@@ -273,7 +291,7 @@ void genericColoredGSImpl(ImageType& img, const MaskType& mask, unsigned iterati
 #ifdef _OPENMP
         #pragma omp parallel for shared(it,OK,img,mask,material,minValueThreshold,sor,change) private(average)
 #endif
-        for(sofa::helper::IndexOpenMP<size_t>::type i = 0 ; i<OK->size() ; ++i )
+        for(IndexOpenMP<size_t>::type i = 0 ; i<OK->size() ; ++i )
         {
             const unsigned long& off = (*OK)[i];
 
@@ -396,7 +414,7 @@ void genericJacobiImpl(ImageType& img, const MaskType& mask, unsigned iterations
 #ifdef _OPENMP
         #pragma omp parallel for shared(it,previous,current,mask,material,minValueThreshold,change) private(average)
 #endif
-        for( sofa::helper::IndexOpenMP<unsigned long>::type off = 0 ; off<img.size() ; ++off )
+        for( IndexOpenMP<unsigned long>::type off = 0 ; off<img.size() ; ++off )
         {
             char m = mask[off];
 
@@ -518,7 +536,7 @@ void matrixmult(ImageType& res, const ImageType& x, const MaskType& mask, size_t
 #ifdef _OPENMP
     #pragma omp parallel for shared(res,x,mask,material,lineSize,sliceSize)
 #endif
-    for(sofa::helper::IndexOpenMP<unsigned long>::type off = 0 ; off<x.size() ; ++off )
+    for( IndexOpenMP<unsigned long>::type off = 0 ; off<x.size() ; ++off )
     {
         if( mask[off] == DiffusionSolverReal::INSIDE )
         {
@@ -538,7 +556,7 @@ Real img_dot( const ImageType& i, const ImageType& j )
 #ifdef _OPENMP
     #pragma omp parallel for shared(i,j) reduction(+:d)
 #endif
-    for(sofa::helper::IndexOpenMP<unsigned long>::type off = 0 ; off<i.size() ; ++off )
+    for( IndexOpenMP<unsigned long>::type off = 0 ; off<i.size() ; ++off )
         d += i[off]*j[off];
     return d;
 }
@@ -550,7 +568,7 @@ void img_eq( ImageType& res, const ImageType& in )
 #ifdef _OPENMP
     #pragma omp parallel for shared(res,in)
 #endif
-    for(sofa::helper::IndexOpenMP<unsigned long>::type off = 0 ; off<res.size() ; ++off )
+    for( IndexOpenMP<unsigned long>::type off = 0 ; off<res.size() ; ++off )
         res[off] = in[off];
 }
 
@@ -561,7 +579,7 @@ void img_peq( ImageType& res, const ImageType& in )
 #ifdef _OPENMP
     #pragma omp parallel for shared(res,in)
 #endif
-    for(sofa::helper::IndexOpenMP<unsigned long>::type off = 0 ; off<res.size() ; ++off )
+    for( IndexOpenMP<unsigned long>::type off = 0 ; off<res.size() ; ++off )
         res[off] += in[off];
 }
 
@@ -572,7 +590,7 @@ void img_peq( ImageType& res, const ImageType& in, Real a )
 #ifdef _OPENMP
     #pragma omp parallel for shared(res,in,a)
 #endif
-    for(sofa::helper::IndexOpenMP<unsigned long>::type off = 0 ; off<res.size() ; ++off )
+    for( IndexOpenMP<unsigned long>::type off = 0 ; off<res.size() ; ++off )
         res[off] += a*in[off];
 }
 
@@ -583,7 +601,7 @@ void img_meq( ImageType& res, const ImageType& in, Real a )
 #ifdef _OPENMP
     #pragma omp parallel for shared(res,in,a)
 #endif
-    for(sofa::helper::IndexOpenMP<unsigned long>::type off = 0 ; off<res.size() ; ++off )
+    for( IndexOpenMP<unsigned long>::type off = 0 ; off<res.size() ; ++off )
         res[off] -= a*in[off];
 }
 
@@ -594,7 +612,7 @@ void img_teq( ImageType& res, Real a )
 #ifdef _OPENMP
     #pragma omp parallel for shared(res,a)
 #endif
-	for(sofa::helper::IndexOpenMP<unsigned long>::type off = 0 ; off<res.size() ; ++off )
+    for( IndexOpenMP<unsigned long>::type off = 0 ; off<res.size() ; ++off )
         res[off] *= a;
 }
 
@@ -621,7 +639,7 @@ void genericCGImpl(ImageType& img, const MaskType& mask, unsigned iterations, Re
 #ifdef _OPENMP
     #pragma omp parallel for shared(r,mask,img)
 #endif
-    for(sofa::helper::IndexOpenMP<unsigned long>::type off = 0 ; off<img.size() ; ++off )
+    for( IndexOpenMP<unsigned long>::type off = 0 ; off<img.size() ; ++off )
     {
         r[off] += Value::cgrhs( off, img, mask, lineSize, sliceSize,spacingX,spacingY,spacingZ, material );
     }

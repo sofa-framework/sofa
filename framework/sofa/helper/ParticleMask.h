@@ -43,7 +43,7 @@ namespace helper
 class ParticleMask
 {
 public:
-    typedef std::set< unsigned int > InternalStorage;
+    typedef helper::set< unsigned int > InternalStorage;
     ParticleMask(Data<bool> *activator):inUse(activator), activated(true), allComponentsAreUsingMask(true) {}
 
     /// Insert an entry in the mask

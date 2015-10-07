@@ -1,52 +1,47 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaValidation)
 
 set(HEADER_FILES
-
-    config.h
-    initValidation.h
     CompareState.h
     CompareTopology.h
+    DataController.h
+    DataMonitor.h
     DevAngleCollisionMonitor.h
     DevAngleCollisionMonitor.inl
+    DevMonitor.h
+    DevMonitorManager.h
     DevTensionMonitor.h
     DevTensionMonitor.inl
-    DevMonitorManager.h
-    DevMonitor.h
-    ExtraMonitor.h
-    ExtraMonitor.inl
-    Monitor.h
-    Monitor.inl
     EvalPointsDistance.h
     EvalPointsDistance.inl
     EvalSurfaceDistance.h
     EvalSurfaceDistance.inl
-    DataMonitor.h
-    DataController.h
-
-    )
+    ExtraMonitor.h
+    ExtraMonitor.inl
+    Monitor.h
+    Monitor.inl
+    config.h
+    initValidation.h
+)
 
 set(SOURCE_FILES
-
-    initValidation.cpp
     CompareState.cpp
     CompareTopology.cpp
+    DataController.cpp
+    DataMonitor.cpp
     DevAngleCollisionMonitor.cpp
-    DevTensionMonitor.cpp
     DevMonitorManager.cpp
-    ExtraMonitor.cpp
-    Monitor.cpp
+    DevTensionMonitor.cpp
     EvalPointsDistance.cpp
     EvalSurfaceDistance.cpp
-    DataMonitor.cpp
-    DataController.cpp
-
-    )
-
-set(GROUP_BASE_DIR "..")
+    ExtraMonitor.cpp
+    Monitor.cpp
+    initValidation.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseCollision SofaLoader SofaMeshCollision)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_VALIDATION")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_VALIDATION" )
-AddLinkerDependencies(${ZLIB_LIBRARIES_OPTIONAL} SofaBaseCollision SofaLoader SofaMeshCollision )
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})

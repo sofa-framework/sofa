@@ -2,8 +2,8 @@
 #define COMPLIANT_MAPPING_FILTERMAPPING_H
 
 #include "AssembledMapping.h"
-#include "initCompliant.h"
-#include "utils/map.h"
+#include <Compliant/config.h>
+#include "../utils/map.h"
 
 namespace sofa {
 

@@ -1,43 +1,21 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaBoundaryCondition)
 
 set(HEADER_FILES
-
-    config.h
-    initBoundaryCondition.h
+    AffineMovementConstraint.h
+    AffineMovementConstraint.inl
     BuoyantForceField.h
     BuoyantForceField.inl
     ConicalForceField.h
     ConicalForceField.inl
     ConstantForceField.h
     ConstantForceField.inl
+    DiagonalVelocityDampingForceField.h
+    DiagonalVelocityDampingForceField.inl
     EdgePressureForceField.h
     EdgePressureForceField.inl
     EllipsoidForceField.h
     EllipsoidForceField.inl
-    LinearForceField.h
-    LinearForceField.inl
-    OscillatingTorsionPressureForceField.h
-    OscillatingTorsionPressureForceField.inl
-    PlaneForceField.h
-    PlaneForceField.inl
-    QuadPressureForceField.h
-    QuadPressureForceField.inl
-    SphereForceField.h
-    SphereForceField.inl
-    SurfacePressureForceField.h
-    SurfacePressureForceField.inl
-    TaitSurfacePressureForceField.h
-    TaitSurfacePressureForceField.inl
-    TrianglePressureForceField.h
-    TrianglePressureForceField.inl
-    VaccumSphereForceField.h
-    VaccumSphereForceField.inl
-	UniformVelocityDampingForceField.h
-	UniformVelocityDampingForceField.inl
-	DiagonalVelocityDampingForceField.h
-	DiagonalVelocityDampingForceField.inl
-    AffineMovementConstraint.inl
-    AffineMovementConstraint.h
     FixedConstraint.h
     FixedConstraint.inl
     FixedPlaneConstraint.h
@@ -48,10 +26,14 @@ set(HEADER_FILES
     FixedTranslationConstraint.inl
     HermiteSplineConstraint.h
     HermiteSplineConstraint.inl
-     LinearMovementConstraint.h
+    LinearForceField.h
+    LinearForceField.inl
+    LinearMovementConstraint.h
     LinearMovementConstraint.inl
     LinearVelocityConstraint.h
     LinearVelocityConstraint.inl
+    OscillatingTorsionPressureForceField.h
+    OscillatingTorsionPressureForceField.inl
     OscillatorConstraint.h
     OscillatorConstraint.inl
     ParabolicConstraint.h
@@ -60,77 +42,96 @@ set(HEADER_FILES
     PartialFixedConstraint.inl
     PartialLinearMovementConstraint.h
     PartialLinearMovementConstraint.inl
-    PatchTestMovementConstraint.inl
     PatchTestMovementConstraint.h
+    PatchTestMovementConstraint.inl
+    PlaneForceField.h
+    PlaneForceField.inl
     PointConstraint.h
     PointConstraint.inl
     PositionBasedDynamicsConstraint.h
     PositionBasedDynamicsConstraint.inl
+    QuadPressureForceField.h
+    QuadPressureForceField.inl
     SkeletalMotionConstraint.h
     SkeletalMotionConstraint.inl
-    )
+    SphereForceField.h
+    SphereForceField.inl
+    SurfacePressureForceField.h
+    SurfacePressureForceField.inl
+    TaitSurfacePressureForceField.h
+    TaitSurfacePressureForceField.inl
+    TrianglePressureForceField.h
+    TrianglePressureForceField.inl
+    UniformVelocityDampingForceField.h
+    UniformVelocityDampingForceField.inl
+    VaccumSphereForceField.h
+    VaccumSphereForceField.inl
+    config.h
+    initBoundaryCondition.h
+)
 
 set(SOURCE_FILES
-
-    initBoundaryCondition.cpp
+    AffineMovementConstraint.cpp
     BuoyantForceField.cpp
     ConicalForceField.cpp
     ConstantForceField.cpp
+    DiagonalVelocityDampingForceField.cpp
     EdgePressureForceField.cpp
     EllipsoidForceField.cpp
-    LinearForceField.cpp
-    OscillatingTorsionPressureForceField.cpp
-    PlaneForceField.cpp
-    QuadPressureForceField.cpp
-    SphereForceField.cpp
-    SurfacePressureForceField.cpp
-    TaitSurfacePressureForceField.cpp
-    TrianglePressureForceField.cpp
-    VaccumSphereForceField.cpp
-	UniformVelocityDampingForceField.cpp
-	DiagonalVelocityDampingForceField.cpp
-    AffineMovementConstraint.cpp
     FixedConstraint.cpp
     FixedPlaneConstraint.cpp
     FixedRotationConstraint.cpp
     FixedTranslationConstraint.cpp
     HermiteSplineConstraint.cpp
+    LinearForceField.cpp
     LinearMovementConstraint.cpp
     LinearVelocityConstraint.cpp
+    OscillatingTorsionPressureForceField.cpp
     OscillatorConstraint.cpp
     ParabolicConstraint.cpp
     PartialFixedConstraint.cpp
     PartialLinearMovementConstraint.cpp
     PatchTestMovementConstraint.cpp
+    PlaneForceField.cpp
     PointConstraint.cpp
     PositionBasedDynamicsConstraint.cpp
+    QuadPressureForceField.cpp
     SkeletalMotionConstraint.cpp
+    SphereForceField.cpp
+    SurfacePressureForceField.cpp
+    TaitSurfacePressureForceField.cpp
+    TrianglePressureForceField.cpp
+    UniformVelocityDampingForceField.cpp
+    VaccumSphereForceField.cpp
+    initBoundaryCondition.cpp
+)
+
+
+    list(APPEND HEADER_FILES
+        ProjectToLineConstraint.h
+        ProjectToLineConstraint.inl
+        ProjectToPlaneConstraint.h
+        ProjectToPlaneConstraint.inl
+        ProjectToPointConstraint.h
+        ProjectToPointConstraint.inl
+        ProjectDirectionConstraint.h
+        ProjectDirectionConstraint.inl
     )
 
-if(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
-    list(APPEND HEADER_FILES "ProjectToLineConstraint.h")
-    list(APPEND HEADER_FILES "ProjectToLineConstraint.inl")
-    list(APPEND HEADER_FILES "ProjectToPlaneConstraint.h")
-    list(APPEND HEADER_FILES "ProjectToPlaneConstraint.inl")
-    list(APPEND HEADER_FILES "ProjectToPointConstraint.h")
-    list(APPEND HEADER_FILES "ProjectToPointConstraint.inl")
-    list(APPEND HEADER_FILES "ProjectDirectionConstraint.h")
-    list(APPEND HEADER_FILES "ProjectDirectionConstraint.inl")
+    list(APPEND SOURCE_FILES
+          ProjectToLineConstraint.cpp
+          ProjectToPlaneConstraint.cpp
+          ProjectToPointConstraint.cpp
+          ProjectDirectionConstraint.cpp
+    )
 
-    list(APPEND SOURCE_FILES "ProjectToLineConstraint.cpp")
-    list(APPEND SOURCE_FILES "ProjectToPlaneConstraint.cpp")
-    list(APPEND SOURCE_FILES "ProjectToPointConstraint.cpp")
-    list(APPEND SOURCE_FILES "ProjectDirectionConstraint.cpp")
-endif()
-
-set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver)
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION  "${SOFAGENERAL_VERSION}")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_BOUNDARY_CONDITION")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_BOUNDARY_CONDITION")
-AddLinkerDependencies(SofaBaseTopology)
-if(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
-    AddLinkerDependencies(SofaEigen2Solver)
-endif()
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})

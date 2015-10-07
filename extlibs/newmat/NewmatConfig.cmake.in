@@ -1,0 +1,12 @@
+# CMake package configuration file for the newmat library
+
+@PACKAGE_INIT@
+
+if(NOT TARGET newmat)
+	include("${CMAKE_CURRENT_LIST_DIR}/NewmatTargets.cmake")
+endif()
+
+check_required_components(newmat)
+
+set(Newmat_LIBRARIES newmat)
+set(Newmat_INCLUDE_DIRS @PACKAGE_NEWMAT_INCLUDE_DIR@)

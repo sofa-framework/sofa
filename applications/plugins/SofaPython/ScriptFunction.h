@@ -25,7 +25,7 @@
 #ifndef SCRIPTFUNCTION_H
 #define SCRIPTFUNCTION_H
 
-#include "initSofaPython.h"
+#include <SofaPython/config.h>
 #include <string>
 
 namespace sofa

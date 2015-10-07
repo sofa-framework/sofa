@@ -107,6 +107,8 @@ public:
 
     virtual void init();
 
+    using Inherit::apply;
+
     virtual void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
 
     virtual void apply(const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
@@ -269,6 +271,10 @@ public:
             dataVecOutForce[i]->endEdit(mparams);
 
     }
+
+    using Inherit::apply;
+    using Inherit::applyJ;
+    using Inherit::applyJT;
 
     virtual void apply(const helper::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos);
     virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, const helper::vector<const  InVecDeriv*>& inDeriv);

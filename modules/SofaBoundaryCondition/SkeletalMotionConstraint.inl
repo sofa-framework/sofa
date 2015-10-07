@@ -211,7 +211,7 @@ void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename 
             SkeletonJoint<DataTypes>& skeletonJoint = (*skeletonJoints.beginEdit())[i];
             if(  skeletonJoint.mPreviousMotionTime !=  skeletonJoint.mNextMotionTime)
             {
-                Real dt = (cT - skeletonJoint.mPreviousMotionTime) / (skeletonJoint.mNextMotionTime - skeletonJoint.mPreviousMotionTime);
+                Real dt = (Real)((cT - skeletonJoint.mPreviousMotionTime) / (skeletonJoint.mNextMotionTime - skeletonJoint.mPreviousMotionTime));
 
                 const helper::vector<defaulttype::RigidCoord<3, Real> >& channels = skeletonJoint.mChannels;
 

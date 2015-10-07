@@ -127,6 +127,7 @@ private:
 public:
 	typedef T DATA_TYPE ;
     typedef AttributeAccessorPolicy HandlerAccessorPolicy;
+    typedef T value_type;
 	/**
 	 * Default constructor
 	 * Constructs a non-valid AttributeHandler (i.e. not linked to any attribute)
@@ -278,10 +279,98 @@ public:
 	 */
 	void next(unsigned int& iter) const;
 
-    boost::function< void ( Cell<ORBIT> ) > m_onNewCellCallBack;
-    boost::function< void ( Cell<ORBIT> ) > m_onCellBeingRemovedCallBack;
+    inline friend std::ostream& operator<< ( std::ostream& os, const AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& handler )
+    {
+        if (handler.isValid())
+        {
+            const unsigned int currLVL = handler.map()->getCurrentLevel();
+            handler.map()->setCurrentLevel(handler.map()->getMaxLevel());
+            handler.enableBrowser();
 
-    virtual void computeAttributeOnNewCell(Dart d)
+            unsigned int i = handler.begin();
+            const unsigned e = handler.end();
+            while (i != e)
+            {
+                unsigned next = i;
+                handler.next(next);
+                if (next == e)
+                {
+                    break;
+                } else {
+                    os<< handler[i] << " ";
+                    i = next;
+                }
+
+            }
+            os<< handler[i];
+
+            handler.disableBrowser();
+            handler.map()->setCurrentLevel(currLVL);
+        }
+        return os;
+    }
+
+    inline friend std::istream& operator>> ( std::istream& in, AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& handler )
+    {
+        const unsigned int currLVL = handler.map()->getCurrentLevel();
+        handler.map()->setCurrentLevel(handler.map()->getMaxLevel());
+        handler.enableBrowser();
+
+        T t= T();
+        unsigned int i = handler.begin();
+        while( in >> t)
+        {
+            handler[i] = t;
+            handler.next(i);
+        }
+        handler.map()->setCurrentLevel(currLVL);
+        handler.disableBrowser();
+
+        if ( in.rdstate() & std::ios_base::eofbit )
+        {
+            in.clear();
+        }
+
+        return in;
+    }
+
+    inline void enableBrowser() const
+    {
+        m_map->template getAttributeContainer<ORBIT>().enableBrowser();
+    }
+
+    inline void disableBrowser() const
+    {
+        m_map->template getAttributeContainer<ORBIT>().disableBrowser();
+    }
+
+    inline unsigned int computeNumberOfFinestCells() const
+    {
+        this->enableBrowser();
+        unsigned int res = 0u;
+        for (unsigned int cellIT = this->begin(), end = this->end() ; cellIT != end ; this->next(cellIT))
+        {
+            ++res;
+        }
+        this->disableBrowser();
+        return res;
+    }
+
+
+
+
+
+
+    /**
+     *  callbacks
+     */
+
+    inline void setNewCellCallback(const boost::function<void (Cell<ORBIT>)>& fun)
+    {
+        m_onNewCellCallBack = fun;
+    }
+
+    inline  void computeAttributeOnNewCell(Dart d)
     {
         if (m_onNewCellCallBack)
         {
@@ -289,10 +378,8 @@ public:
         }
     }
 
-    inline void setNewCellCallback(const boost::function<void (Cell<ORBIT>)>& fun)
-    {
-        m_onNewCellCallBack = fun;
-    }
+    boost::function< void ( Cell<ORBIT> ) > m_onNewCellCallBack;
+    boost::function< void ( Cell<ORBIT> ) > m_onCellBeingRemovedCallBack;
 } ;
 
 template<class T, unsigned int ORBIT, class MAP >

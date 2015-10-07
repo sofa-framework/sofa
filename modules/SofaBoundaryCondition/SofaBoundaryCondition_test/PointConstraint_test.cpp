@@ -45,17 +45,17 @@ void createUniformMass(simulation::Node::SPtr node, component::container::Mechan
     node->addObject(sofa::core::objectmodel::New<component::mass::UniformMass<DataTypes, typename DataTypes::Real> >());
 }
 
-template<>
-void createUniformMass(simulation::Node::SPtr node, component::container::MechanicalObject<defaulttype::Rigid3Types>& /*dofs*/)
-{
-    node->addObject(sofa::core::objectmodel::New<component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> >());
-}
+//template<>
+//void createUniformMass(simulation::Node::SPtr node, component::container::MechanicalObject<defaulttype::Rigid3Types>& /*dofs*/)
+//{
+//    node->addObject(sofa::core::objectmodel::New<component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> >());
+//}
 
-template<>
-void createUniformMass(simulation::Node::SPtr node, component::container::MechanicalObject<defaulttype::Rigid2Types>& /*dofs*/)
-{
-    node->addObject(sofa::core::objectmodel::New<component::mass::UniformMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass> >());
-}
+//template<>
+//void createUniformMass(simulation::Node::SPtr node, component::container::MechanicalObject<defaulttype::Rigid2Types>& /*dofs*/)
+//{
+//    node->addObject(sofa::core::objectmodel::New<component::mass::UniformMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass> >());
+//}
 
 
 

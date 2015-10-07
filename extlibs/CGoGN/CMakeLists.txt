@@ -1,11 +1,11 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(CGoGN)
 
-
-SET(CGoGN_ROOT_DIR ${SOFA_EXTLIBS_DIR}/CGoGN )
+SET(CGoGN_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR} )
 LIST (APPEND CMAKE_MODULE_PATH ${CGoGN_ROOT_DIR}/cmake_modules/ )
-
+SET(CGoGN_VERSION 15.09)
 #SET ( CMAKE_VERBOSE_MAKEFILE 1 )
-SET ( CGOGN_WITH_QT ON)
+SET ( CGOGN_WITH_QT OFF)
 SET ( CGOGN_DESIRED_QT_VERSION "4")
 SET ( CGoGN_COMPILE_SANDBOX OFF)
 SET ( CGoGN_ONELIB ON)
@@ -23,10 +23,19 @@ SET (CGoGN_EXT_LIBS "")
 
 find_package(Boost COMPONENTS regex thread system REQUIRED)
 find_package(ZLIB REQUIRED)
-find_package(LibXml2 REQUIRED)
+find_package(SofaFramework REQUIRED)
+# find_package(LibXml2 REQUIRED)
+
+if(NOT WIN32)
+    # c++11 flag is given by SofaFramework target options
+    # TODO: force c++11 flag here?
+    if(NOT SOFA_USE_C++11)
+        message(AUTHOR_WARNING "Enabling SOFA_USE_C++11 is recommended when using the CGoGN library.")
+    endif()
+endif()
 
 IF (CGOGN_WITH_QT)
-        add_definitions("-DCGOGN_WITH_QT")
+    add_definitions("-DCGOGN_WITH_QT")
 	SET(QT_USE_QTCORE TRUE)
 	SET(QT_USE_QTOPENGL TRUE)
 	SET(QT_USE_QTSVG TRUE)
@@ -37,9 +46,9 @@ IF (CGOGN_WITH_QT)
         LIST (APPEND CGoGN_EXT_LIBS ${QT_LIBRARIES} )
 ENDIF (CGOGN_WITH_QT)
 
-if(NOT (SOFA-EXTERNAL_BOOST_PATH STREQUAL ""))
-	message(FATAL_ERROR "CGoGN needs the full boost version. You need to set SOFA-EXTERNAL_BOOST_PATH to \"\"")
-endif()
+# if(NOT (SOFA-EXTERNAL_BOOST_PATH STREQUAL ""))
+# 	message(FATAL_ERROR "CGoGN needs the full boost version. You need to set SOFA-EXTERNAL_BOOST_PATH to \"\"")
+# endif()
 
 add_definitions("-DSHADERPATH=\"${CGoGN_ROOT_DIR}/lib/Shaders/\"")
 add_definitions("-Werror=return-type")
@@ -55,25 +64,17 @@ ELSE (DEFINED CGoGN_ASSERT_ACTIVED)
         add_definitions("-DCGOGN_ASSERT_BOOL=false")
 ENDIF (DEFINED CGoGN_ASSERT_ACTIVED)
 
-# define includes of external libs 
+# define includes of external libs
 LIST (APPEND CGoGN_EXT_INCLUDES
 	${CGoGN_ROOT_DIR}/ThirdParty/include
 	${ZLIB_INCLUDE_DIRS}
 	${LIBXML2_INCLUDE_DIR}
 	${Boost_INCLUDE_DIRS}
-	${SOFA-EXTERNAL_EIGEN_PATH}
-)
-
-include_directories(
-	${CGoGN_ROOT_DIR}/include
-	${CMAKE_CURRENT_BINARY_DIR}
-	${CGoGN_EXT_INCLUDES}
 )
 
 # define libs for external libs
 LIST (APPEND CGoGN_EXT_LIBS
 	${ZLIB_LIBRARIES}
-	${LIBXML2_LIBRARIES}
 	${Boost_SYSTEM_LIBRARY}
 	${Boost_REGEX_LIBRARY}
 	${Boost_THREAD_LIBRARY}
@@ -188,14 +189,14 @@ ENDIF()
 
 
 IF(WIN32)
-        add_library(${PROJECT_NAME} ${files_topology} ${files_container} ${files_algo} ${files_utils} ${files_utils_withQt})
+        add_library(${PROJECT_NAME} SHARED ${files_topology} ${files_container} ${files_algo} ${files_utils} ${files_utils_withQt})
 	add_dependencies(${PROJECT_NAME} shader_target )
 	set(CMAKE_CONFIGURATION_TYPES Release Debug)
 	set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE STRING "Only Release or Debug" FORCE)
 #	set(CMAKE_CONFIGURATION_TYPES "Release Debug" CACHE STRING "Only Release or Debug" FORCE)
 ELSE(WIN32)
         IF (CGoGN_ONELIB)
-            add_library(${PROJECT_NAME} ${files_topology} ${files_container} ${files_algo} ${files_utils} ${files_utils_withQt})
+            add_library(${PROJECT_NAME} SHARED  ${files_topology} ${files_container} ${files_algo} ${files_utils} ${files_utils_withQt})
             add_dependencies(${PROJECT_NAME} shader_target )
             SET(CGOGN_LIBS "${PROJECT_NAME}")
         ELSE (CGoGN_ONELIB)
@@ -208,8 +209,24 @@ ELSE(WIN32)
         ENDIF (CGoGN_ONELIB)
 ENDIF(WIN32)
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
+# include_directories(
+#     ${CGoGN_ROOT_DIR}/include
+#     ${CMAKE_CURRENT_BINARY_DIR}
+#     ${CGoGN_EXT_INCLUDES}
+# )
 
-AddLinkerDependencies(${CGoGN_EXT_LIBS} SofaDefaultType ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES}  ${QT_LIBRARIES})
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaExtlibs")
+target_link_libraries(${PROJECT_NAME} SofaDefaultType ${CGoGN_EXT_LIBS} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CGoGN_ROOT_DIR}/include>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CGoGN_EXT_INCLUDES}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+install(DIRECTORY include/Algo include/Container include/Geometry include/Topology include/Utils ThirdParty/include/glm
+        DESTINATION include/CGoGN
+        FILES_MATCHING PATTERN "*.h" PATTERN "*hpp" PATTERN "*.inl")
+
+
+include(../../SofaFramework/SofaMacros.cmake)
+sofa_create_package(CGoGN ${CGoGN_VERSION} CGoGN  "")

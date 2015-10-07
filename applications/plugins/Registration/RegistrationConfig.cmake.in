@@ -1,0 +1,15 @@
+# CMake package configuration file for the Registration plugin
+
+@PACKAGE_INIT@
+
+find_package(SofaGui REQUIRED)
+find_package(image QUIET)
+
+if(NOT TARGET Registration)
+	include("${CMAKE_CURRENT_LIST_DIR}/RegistrationTargets.cmake")
+endif()
+
+check_required_components(Registration)
+
+set(Registration_LIBRARIES Registration)
+set(Registration_INCLUDE_DIRS @PACKAGE_REGISTRATION_INCLUDE_DIR@ ${REGISTRATION_INCLUDE_DIR})

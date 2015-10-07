@@ -159,38 +159,38 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_F1:
         // --- enable stereo mode
     {
-        _stereoEnabled = !_stereoEnabled;
-        std::cout << "Stereoscopic View " << (_stereoEnabled ? "Enabled" : "Disabled") << std::endl;
+        currentCamera->setStereoEnabled(!currentCamera->getStereoEnabled());
+        std::cout << "Stereoscopic View " << (currentCamera->getStereoEnabled() ? "Enabled" : "Disabled") << std::endl;
         break;
     }
     case Qt::Key_F2:
         // --- reduce shift distance
     {
-        _stereoShift -= 0.1;
-        std::cout << "Stereo separation = " << _stereoShift << std::endl;
+        currentCamera->setStereoShift(currentCamera->getStereoShift()-0.1);
+        std::cout << "Stereo separation = " << currentCamera->getStereoShift() << std::endl;
         break;
     }
     case Qt::Key_F3:
         // --- increase shift distance
     {
-        _stereoShift += 0.1;
-        std::cout << "Stereo separation = " << _stereoShift << std::endl;
+        currentCamera->setStereoShift(currentCamera->getStereoShift()+0.1);
+        std::cout << "Stereo separation = " << currentCamera->getStereoShift() << std::endl;
         break;
     }
     case Qt::Key_F4:
     {
         // --- Switch between parallax and toedIn stereovision
-        switch (_stereoStrategy) {
-        case PARALLEL:
-            _stereoStrategy=TOEDIN;
+        switch (currentCamera->getStereoStrategy()) {
+        case sofa::component::visualmodel::BaseCamera::PARALLEL:
+            currentCamera->setStereoStrategy(sofa::component::visualmodel::BaseCamera::TOEDIN);
             std::cout << "Stereo Strategy: TOEDIN" << std::endl;
             break;
-        case TOEDIN:
-            _stereoStrategy = PARALLEL;
+        case sofa::component::visualmodel::BaseCamera::TOEDIN:
+            currentCamera->setStereoStrategy(sofa::component::visualmodel::BaseCamera::PARALLEL);
             std::cout << "Stereo Strategy: Parallel" << std::endl;
             break;
         default:
-            _stereoStrategy = PARALLEL;
+            currentCamera->setStereoStrategy(sofa::component::visualmodel::BaseCamera::PARALLEL);
             break;
         }
         break;
@@ -198,25 +198,26 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_F5:
         // --- enable binocular mode
     {
-        _stereoMode = (StereoMode)(((int)_stereoMode+1)%(int)NB_STEREO_MODES);
-        switch (_stereoMode)
+        //_stereoMode = (StereoMode)(((int)_stereoMode+1)%(int)NB_STEREO_MODES);
+        currentCamera->setStereoMode((sofa::component::visualmodel::BaseCamera::StereoMode)(((int)currentCamera->getStereoMode()+1)%(int)sofa::component::visualmodel::BaseCamera::NB_STEREO_MODES));
+        switch (currentCamera->getStereoMode())
         {
-        case STEREO_INTERLACED:
+        case sofa::component::visualmodel::BaseCamera::STEREO_INTERLACED:
             std::cout << "Stereo mode: Interlaced" << std::endl;
             break;
-        case STEREO_SIDE_BY_SIDE:
+        case sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE:
             std::cout << "Stereo mode: Side by Side" << std::endl; break;
-        case STEREO_SIDE_BY_SIDE_HALF:
+        case sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE_HALF:
             std::cout << "Stereo mode: Side by Side Half" << std::endl; break;
-        case STEREO_FRAME_PACKING:
+        case sofa::component::visualmodel::BaseCamera::STEREO_FRAME_PACKING:
             std::cout << "Stereo mode: Frame Packing" << std::endl; break;
-        case STEREO_TOP_BOTTOM:
+        case sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM:
             std::cout << "Stereo mode: Top Bottom" << std::endl; break;
-        case STEREO_TOP_BOTTOM_HALF:
+        case sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM_HALF:
             std::cout << "Stereo mode: Top Bottom Half" << std::endl; break;
-        case STEREO_AUTO:
+        case sofa::component::visualmodel::BaseCamera::STEREO_AUTO:
             std::cout << "Stereo mode: Automatic" << std::endl; break;
-        case STEREO_NONE:
+        case sofa::component::visualmodel::BaseCamera::STEREO_NONE:
             std::cout << "Stereo mode: None" << std::endl; break;
         default:
             std::cout << "Stereo mode: INVALID" << std::endl; break;
@@ -227,7 +228,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_Control:
     {
         m_isControlPressed = true;
-        //cerr<<"QtViewer::keyPressEvent, CONTROL pressed"<<endl;
+//        std::cerr<<"QtViewer::keyPressEvent, CONTROL pressed"<<std::endl;
         break;
     }
     default:

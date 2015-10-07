@@ -269,7 +269,7 @@ void MechanicalStateController<DataTypes>::setMainDirection(const sofa::defaultt
 
 
 template <class DataTypes>
-void MechanicalStateController<DataTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
+void MechanicalStateController<DataTypes>::onMouseEvent(core::objectmodel::MouseEvent* /*mev*/)
 {
 
 }

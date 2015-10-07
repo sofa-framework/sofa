@@ -25,7 +25,7 @@
 #ifndef PLUGINEXAMPLE_MYDATAWIDGETUNSIGNED_H
 #define PLUGINEXAMPLE_MYDATAWIDGETUNSIGNED_H
 
-#include "initPlugin.h"
+#include <PluginExample/config.h>
 
 #include <sofa/gui/qt/DataWidget.h>
 

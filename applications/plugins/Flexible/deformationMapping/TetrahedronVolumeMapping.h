@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_TetrahedronVolumeMapping_H
 #define SOFA_COMPONENT_MAPPING_TetrahedronVolumeMapping_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include <sofa/core/Mapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -128,9 +128,9 @@ public:
         jacobian.compress();
     }
 
-    virtual void applyJ(const core::MechanicalParams */*mparams*/, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)    { if( jacobian.rowSize() > 0 ) jacobian.mult(dOut,dIn);    }
-    virtual void applyJT(const core::MechanicalParams */*mparams*/, Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)    { if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(dIn,dOut);    }
-    virtual void applyJT(const core::ConstraintParams */*cparams*/, Data<InMatrixDeriv>& /*dIn*/, const Data<OutMatrixDeriv>& /*dOut*/) {}
+    virtual void applyJ(const core::MechanicalParams* /* mparams */, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)    { if( jacobian.rowSize() > 0 ) jacobian.mult(dOut,dIn);    }
+    virtual void applyJT(const core::MechanicalParams* /* mparams */, Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)    { if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(dIn,dOut);    }
+    virtual void applyJT(const core::ConstraintParams* /* cparams */, Data<InMatrixDeriv>& /*dIn*/, const Data<OutMatrixDeriv>& /*dOut*/) {}
 
     virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
     {

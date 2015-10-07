@@ -1,8 +1,7 @@
 #ifndef COMPLIANT_CompliantPseudoStaticSolver_H
 #define COMPLIANT_CompliantPseudoStaticSolver_H
 
-#include "../initCompliant.h"
-#include <Compliant/odesolver/CompliantImplicitSolver.h>
+#include <Compliant/config.h>
 #include <sofa/simulation/common/MechanicalOperations.h>
 
 
@@ -28,10 +27,11 @@ using core::ConstMultiVecDerivId;
 */
 
 
-class SOFA_Compliant_API CompliantPseudoStaticSolver : public CompliantImplicitSolver {
+template< typename CompliantOdeSolver >
+class CompliantPseudoStaticSolver : public CompliantOdeSolver {
   public:
 				
-    SOFA_CLASS(CompliantPseudoStaticSolver, CompliantImplicitSolver);
+    SOFA_CLASS(CompliantPseudoStaticSolver, CompliantOdeSolver);
 				
     Data<SReal> d_threshold;        ///< Convergence threshold between 2 iterations
     Data<unsigned> d_iterations;    ///< Max number of iterations
@@ -47,6 +47,8 @@ class SOFA_Compliant_API CompliantPseudoStaticSolver : public CompliantImplicitS
                        core::MultiVecCoordId posId,
                        core::MultiVecDerivId velId);
 
+    virtual std::string getTemplateName() const { return templateName(this); }
+    static std::string templateName(const CompliantPseudoStaticSolver<CompliantOdeSolver>* x= NULL) { return CompliantOdeSolver::className( (CompliantOdeSolver*)x ); }
 };
 
 }

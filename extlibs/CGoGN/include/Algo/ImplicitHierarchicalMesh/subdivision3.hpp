@@ -158,7 +158,7 @@ void subdivideFace(typename PFP::MAP& map, Dart d, typename AttributeHandler_Tra
     for (std::vector< Dart >::iterator dit = newFaces.begin() ; dit != newFaces.end() ; ++dit)
     {
         const Dart f = (*dit);
-        const unsigned lvl1Face = Algo::Topo::setOrbitEmbeddingOnNewCell<FACE>(map, f);
+        const unsigned lvl1Face = map.template newCell<FACE>(); // the new emb for darts of lvl equals to flevel +1
         {
             map.setCurrentLevel(map.getMaxLevel());
             TraversorDartsOfOrbit< MAP, FACE > traDoF(map, f);
@@ -168,6 +168,7 @@ void subdivideFace(typename PFP::MAP& map, Dart d, typename AttributeHandler_Tra
                 const unsigned int dl = map.getDartLevel(fit);
                 if ( dl > fLevel)
                 {
+                    assert(dl == fLevel +1u);
                     map.setCurrentLevel(dl);
                     map.template setDartEmbedding<FACE>(fit, lvl1Face);
                     map.setCurrentLevel(map.getMaxLevel());
@@ -177,15 +178,15 @@ void subdivideFace(typename PFP::MAP& map, Dart d, typename AttributeHandler_Tra
         }
         map.template getAttributeContainer<FACE>().copyLine(lvl1Face, oldEmb);
         map.setFaceLevel(f, fLevel+1);
+        map.checkEmbedding(FaceCell(f));
     }
 
-
-//    map.checkEdgeAndFaceIDAttributes();
+    map.checkEdgeAndFaceIDAttributes();
     map.setCurrentLevel(cur) ;
 }
 
 template <typename PFP>
-Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHandler_Traits< typename PFP::VEC3, VERTEX, typename PFP::MAP >::Handler& position, bool OneLevelDifference)
+Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHandler_Traits< typename PFP::VEC3, VERTEX, typename PFP::MAP >::Handler& position)
 {
     typedef typename PFP::MAP MAP;
     assert(map.getDartLevel(d) <= map.getCurrentLevel() || !"Access to a dart introduced after current level") ;
@@ -261,7 +262,7 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
 
     //Store the darts from quadrangulated faces
     std::vector<std::pair<Dart,Dart> > subdividedfaces;
-    subdividedfaces.reserve(25);
+    subdividedfaces.reserve(32);
 //    map.checkEdgeAndFaceIDAttributes();
     //First step : subdivide edges and faces
     //creates a i+1 edge level and i+1 face level
@@ -294,7 +295,9 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
         map.setCurrentLevel(cur);
     }
 
-    map.setCurrentLevel(vLevel + 1) ; // go to the next level to perform volume subdivision
+    map.setCurrentLevel(vLevel + 1) ; // go to the next level to perform volume 
+    map.template checkAllEmbeddingsOfOrbit<FACE>();
+    map.template checkAllEmbeddingsOfOrbit<VOLUME>();
 
     std::vector<Dart> newEdges;	//save darts from inner edges
     newEdges.reserve(50);
@@ -429,6 +432,7 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
                     map.setCurrentLevel(vLevel + 1) ;
                 }
                 map.setFaceLevel(f, vLevel+1);
+                map.checkEmbedding(f);
             }
         }
 
@@ -463,6 +467,8 @@ Dart subdivideVolumeClassic(typename PFP::MAP& map, Dart d, typename AttributeHa
 
     map.checkEdgeAndFaceIDAttributes();
     map.setCurrentLevel(cur) ;
+    map.template checkAllEmbeddingsOfOrbit<FACE>();
+    map.template checkAllEmbeddingsOfOrbit<VOLUME>();
     return centralDart;
 }
 

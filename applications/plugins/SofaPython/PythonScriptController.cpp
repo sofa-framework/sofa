@@ -25,6 +25,7 @@
 #include "PythonMacros.h"
 #include "PythonScriptController.h"
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 #include "Binding_Base.h"
 #include "Binding_BaseContext.h"
@@ -139,6 +140,7 @@ void PythonScriptController::loadScript()
 using namespace sofa::core::objectmodel;
 
 
+// call a function that returns void
 #define SP_CALL_OBJECTFUNC(func, ...) { \
     PyObject *res = PyObject_CallMethod(m_ScriptControllerInstance,func,__VA_ARGS__); \
     if (!res) \
@@ -149,6 +151,24 @@ using namespace sofa::core::objectmodel;
     else \
         Py_DECREF(res); \
 }
+
+
+// call a function that returns a boolean
+#define SP_CALL_OBJECTBOOLFUNC(func, ...) { \
+    PyObject *res = PyObject_CallMethod(m_ScriptControllerInstance,func,__VA_ARGS__); \
+    if (!res) \
+    { \
+        SP_MESSAGE_EXCEPTION( "in " << m_classname.getValueString() << "." << func ) \
+        PyErr_Print(); \
+    } \
+    else \
+    { \
+        if PyBool_Check(res) b = ( res == Py_True ); \
+        /*else SP_MESSAGE_WARNING("PythonScriptController::"<<func<<" should return a bool")*/ \
+        Py_DECREF(res); \
+    } \
+}
+
 
 void PythonScriptController::script_onLoaded(sofa::simulation::Node *node)
 {
@@ -174,19 +194,25 @@ void PythonScriptController::script_bwdInitGraph(sofa::simulation::Node *node)
     SP_CALL_OBJECTFUNC(const_cast<char*>("bwdInitGraph"),const_cast<char*>("(O)"),SP_BUILD_PYSPTR(node))
 }
 
-void PythonScriptController::script_onKeyPressed(const char c)
+bool PythonScriptController::script_onKeyPressed(const char c)
 {
-//    SP_CALL_MODULEFUNC(m_Func_onKeyPressed, "(c)", c)
-    SP_CALL_OBJECTFUNC(const_cast<char*>("onKeyPressed"),const_cast<char*>("(c)"), c)
+    helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonScriptController_Event_")+this->getName()).c_str() );
+    bool b = false;
+    SP_CALL_OBJECTBOOLFUNC(const_cast<char*>("onKeyPressed"),const_cast<char*>("(c)"), c)
+    return b;
 }
-void PythonScriptController::script_onKeyReleased(const char c)
+
+bool PythonScriptController::script_onKeyReleased(const char c)
 {
-//    SP_CALL_MODULEFUNC(m_Func_onKeyReleased, "(c)", c)
-    SP_CALL_OBJECTFUNC(const_cast<char*>("onKeyReleased"),const_cast<char*>("(c)"), c)
+    helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonScriptController_Event_")+this->getName()).c_str() );
+    bool b = false;
+    SP_CALL_OBJECTBOOLFUNC(const_cast<char*>("onKeyReleased"),const_cast<char*>("(c)"), c)
+    return b;
 }
 
 void PythonScriptController::script_onMouseButtonLeft(const int posX,const int posY,const bool pressed)
 {
+    helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonScriptController_Event_")+this->getName()).c_str() );
     PyObject *pyPressed = pressed? Py_True : Py_False;
 //    SP_CALL_MODULEFUNC(m_Func_onMouseButtonLeft, "(iiO)", posX,posY,pyPressed)
     SP_CALL_OBJECTFUNC(const_cast<char*>("onMouseButtonLeft"),const_cast<char*>("(iiO)"), posX,posY,pyPressed)
@@ -194,6 +220,7 @@ void PythonScriptController::script_onMouseButtonLeft(const int posX,const int p
 
 void PythonScriptController::script_onMouseButtonRight(const int posX,const int posY,const bool pressed)
 {
+    helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonScriptController_Event_")+this->getName()).c_str() );
     PyObject *pyPressed = pressed? Py_True : Py_False;
 //    SP_CALL_MODULEFUNC(m_Func_onMouseButtonRight, "(iiO)", posX,posY,pyPressed)
     SP_CALL_OBJECTFUNC(const_cast<char*>("onMouseButtonRight"),const_cast<char*>("(iiO)"), posX,posY,pyPressed)
@@ -201,6 +228,7 @@ void PythonScriptController::script_onMouseButtonRight(const int posX,const int 
 
 void PythonScriptController::script_onMouseButtonMiddle(const int posX,const int posY,const bool pressed)
 {
+    helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonScriptController_Event_")+this->getName()).c_str() );
     PyObject *pyPressed = pressed? Py_True : Py_False;
 //    SP_CALL_MODULEFUNC(m_Func_onMouseButtonMiddle, "(iiO)", posX,posY,pyPressed)
     SP_CALL_OBJECTFUNC(const_cast<char*>("onMouseButtonMiddle"),const_cast<char*>("(iiO)"), posX,posY,pyPressed)
@@ -208,6 +236,7 @@ void PythonScriptController::script_onMouseButtonMiddle(const int posX,const int
 
 void PythonScriptController::script_onMouseWheel(const int posX,const int posY,const int delta)
 {
+    helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonScriptController_Event_")+this->getName()).c_str() );
 //    SP_CALL_MODULEFUNC(m_Func_onMouseWheel, "(iii)", posX,posY,delta)
     SP_CALL_OBJECTFUNC(const_cast<char*>("onMouseWheel"),const_cast<char*>("(iii)"), posX,posY,delta)
 }
@@ -215,12 +244,14 @@ void PythonScriptController::script_onMouseWheel(const int posX,const int posY,c
 
 void PythonScriptController::script_onBeginAnimationStep(const double dt)
 {
+    helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonScriptController_AnimationStep_")+this->getName()).c_str() );
 //    SP_CALL_MODULEFUNC(m_Func_onBeginAnimationStep, "(d)", dt)
     SP_CALL_OBJECTFUNC(const_cast<char*>("onBeginAnimationStep"),const_cast<char*>("(d)"), dt)
 }
 
 void PythonScriptController::script_onEndAnimationStep(const double dt)
 {
+    helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonScriptController_AnimationStep_")+this->getName()).c_str() );
 //    SP_CALL_MODULEFUNC(m_Func_onEndAnimationStep, "(d)", dt)
     SP_CALL_OBJECTFUNC(const_cast<char*>("onEndAnimationStep"),const_cast<char*>("(d)"), dt)
 }
@@ -245,12 +276,14 @@ void PythonScriptController::script_cleanup()
 
 void PythonScriptController::script_onGUIEvent(const char* controlID, const char* valueName, const char* value)
 {
+    helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonScriptController_Event_")+this->getName()).c_str() );
 //    SP_CALL_MODULEFUNC(m_Func_onGUIEvent,"(sss)",controlID,valueName,value)
     SP_CALL_OBJECTFUNC(const_cast<char*>("onGUIEvent"),const_cast<char*>("(sss)"),controlID,valueName,value)
 }
 
 void PythonScriptController::script_onScriptEvent(core::objectmodel::ScriptEvent* event)
 {
+    helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonScriptController_Event_")+this->getName()).c_str() );
     core::objectmodel::PythonScriptEvent *pyEvent = dynamic_cast<core::objectmodel::PythonScriptEvent*>(event);
     if (!pyEvent)
     {

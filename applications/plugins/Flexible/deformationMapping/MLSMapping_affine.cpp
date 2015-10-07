@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_MLSMAPPING_affine_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "MLSMapping.h"
 #include <sofa/core/ObjectFactory.h>
 

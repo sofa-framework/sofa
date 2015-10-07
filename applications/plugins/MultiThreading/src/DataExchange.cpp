@@ -1,6 +1,6 @@
 #include "DataExchange.inl"
 
-#include "initMultiThreading.h"
+#include <MultiThreading/config.h>
 
 #include <sofa/core/ObjectFactory.h>
 

@@ -1,6 +1,6 @@
 #ifndef SOFA_COMPONENT_COMPLIANCE_UniformCompliance_H
 #define SOFA_COMPONENT_COMPLIANCE_UniformCompliance_H
-#include "initCompliant.h"
+#include <Compliant/config.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/defaulttype/Mat.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
@@ -36,6 +36,9 @@ public:
     Data< Real > compliance;    ///< Same compliance applied to all the DOFs
 
     Data< Real > damping;
+
+    Data< bool > resizable;
+
 
     virtual void init();
 

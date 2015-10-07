@@ -1,27 +1,15 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
-
-set(SOURCE_FILES
-
-	Main.cpp
-	)
-
-if(SOFA-LIB_GUI_QT)
-	UseQt()
-endif()
+cmake_minimum_required(VERSION 2.8.12)
+project(runSofa)
 
 if(APPLE)
     set(RC_FILES "runSOFA.icns")
 else()
     set(RC_FILES "sofa.rc")
 endif()
-	
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
-AddLinkerDependencies(SofaSimulationTree SofaGuiMain SofaComponentMain)
+add_executable(${PROJECT_NAME} ${RC_FILES} Main.cpp)
+target_link_libraries(${PROJECT_NAME} SofaComponentAdvanced SofaComponentMisc)
+target_link_libraries(${PROJECT_NAME} SofaSimulationGraph)
+target_link_libraries(${PROJECT_NAME} SofaGuiMain)
 
-if(SOFA-LIB_SIMULATION_GRAPH_DAG)
-    AddLinkerDependencies(SofaSimulationGraph)
-    AddCompilerDefinitions("SOFA_HAVE_DAG" )
-endif()
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+sofa_install_targets(SofaGui runSofa "")

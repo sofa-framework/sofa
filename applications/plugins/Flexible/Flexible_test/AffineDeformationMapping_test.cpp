@@ -28,7 +28,7 @@
 // Including component
 #include "../deformationMapping/LinearMapping.h"
 
-#include <Mapping_test.h>
+#include <SofaTest/Mapping_test.h>
 //#include "../shapeFunction/DiffusionShapeFunction.h"
 namespace sofa {
 
@@ -110,6 +110,7 @@ namespace sofa {
             }
         }
         
+        using Inherited::runTest;
         /// After simulation compare the positions of points to the theoretical positions.
         bool runTest(double /*convergenceAccuracy*/)
         {

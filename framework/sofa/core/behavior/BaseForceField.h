@@ -65,6 +65,12 @@ public:
 protected:
     BaseForceField();
     virtual ~BaseForceField() {}
+	
+private:
+	BaseForceField(const BaseForceField& n) ;
+	BaseForceField& operator=(const BaseForceField& n) ;	
+
+	
 public:
     /// @name Vector operations
     /// @{

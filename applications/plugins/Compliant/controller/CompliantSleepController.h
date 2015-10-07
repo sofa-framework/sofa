@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_COMPLIANTSLEEPCONTROLLER_H
 #define SOFA_COMPONENT_CONTROLLER_COMPLIANTSLEEPCONTROLLER_H
 
-#include "initCompliant.h"
+#include <Compliant/config.h>
 #include <SofaUserInteraction/SleepController.h>
 
 namespace sofa

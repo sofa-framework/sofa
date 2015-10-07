@@ -1,15 +1,9 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(sofaVerification)
 
-set(SOURCE_FILES
+find_package(SofaGeneral)
+find_package(SofaAdvanced)
+find_package(SofaMisc)
 
-    meshconv.cpp
-    tesselate.cpp
-
-    )
-
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-
-AddLinkerDependencies(SofaComponentMain )
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+add_executable(${PROJECT_NAME} meshconv.cpp tesselate.cpp)
+target_link_libraries(${PROJECT_NAME} SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)

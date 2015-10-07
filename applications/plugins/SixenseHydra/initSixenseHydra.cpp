@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initSixenseHydra.h"
+#include <SixenseHydra/config.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

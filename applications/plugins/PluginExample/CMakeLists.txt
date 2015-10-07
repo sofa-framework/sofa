@@ -1,51 +1,43 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(PluginExample)
+
 
 set(HEADER_FILES
+    MyBehaviorModel.h
+    MyMappingPendulumInPlane.h
+    MyMappingPendulumInPlane.inl
+    MyProjectiveConstraintSet.h
+    MyProjectiveConstraintSet.inl
+    config.h
+)
 
-    MyDataWidgetUnsigned.h 
-
-	)
+set(HEADER_FILES_TO_MOC
+    MyDataWidgetUnsigned.h
+)
 
 set(SOURCE_FILES
-
-    MyBehaviorModel.cpp 
-    MyDataWidgetUnsigned.cpp 
-    MyProjectiveConstraintSet.cpp 
-    MyMappingPendulumInPlane.cpp 
+    MyBehaviorModel.cpp
+    MyDataWidgetUnsigned.cpp
+    MyMappingPendulumInPlane.cpp
+    MyProjectiveConstraintSet.cpp
     initPlugin.cpp
+)
 
-	)
+set(README_FILES PluginExample.txt)
 
-set(README_FILES
+find_package(SofaGui REQUIRED)
+find_package(Qt4 REQUIRED)
 
-	PluginExample.txt
+qt4_wrap_cpp(MOCCED_HEADER_FILES ${HEADER_FILES_TO_MOC})
 
-	)
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES_TO_MOC} ${MOCCED_HEADER_FILES} ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_PLUGINEXAMPLE")
+target_link_libraries(${PROJECT_NAME} SofaGuiQt)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
-UseQt()
-
-SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
-
-# make mocced header files path from absolute to relative
-ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
-
-# these header files do not need MOCcing
-list(APPEND HEADER_FILES
-
-	MyBehaviorModel.h 
-    MyMappingPendulumInPlane.h 
-    MyMappingPendulumInPlane.inl 
-    MyProjectiveConstraintSet.h 
-    MyProjectiveConstraintSet.inl 
-	initPlugin.h
-
-	)
-
-set(MOC_FILES_GROUP "Generated")
-
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
-
-AddCompilerDefinitions("SOFA_BUILD_PLUGINEXAMPLE")
-AddLinkerDependencies(SofaGuiQt)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT PluginExample_libraries
+        EXPORT PluginExampleTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)

@@ -159,6 +159,7 @@ namespace sofa {
                 virtual void assemble_geometric( const in_pos_type& /*in*/,
                                                  const out_force_type& /*out*/) { }
                 
+                using core::Mapping<In, Out>::apply;
 				virtual void apply(out_pos_type& out, const in_pos_type& in ) = 0;
 	
 				typedef linearsolver::EigenSparseMatrix<In, Out> jacobian_type;

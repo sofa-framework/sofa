@@ -88,9 +88,10 @@ public:
             ++i;
             for ( ; i!=this->end(); ++i )
                 os << ", " << *i;
-            os << "]";
+            os << " ]";
 
         }
+        else os << "[]"; // empty vector
         return os;
     }
 
@@ -99,23 +100,37 @@ public:
         T t;
         this->clear();
         char c;
+
         in >> c;
+
+        if( in.eof() ) return in; // empty stream
+
         if ( c != '[' )
         {
             std::cerr << "SVector::read : Bad begin character : " << c << ", expected  [" << std::endl;
             return in;
         }
-        c = ',';
-        while( !in.eof() && c == ',')
+        std::streampos pos = in.tellg();
+        in >> c;
+        if( c == ']' ) // empty vector
         {
-            in >> t;
-            this->push_back ( t );
-            in >> c;
-        }
-        if ( c != ']' )
-        {
-            std::cerr << "SVector::read : Bad end character : " << c << ", expected  ]" << std::endl;
             return in;
+        }
+        else
+        {
+            in.seekg( pos ); // coming-back to previous character
+            c = ',';
+            while( !in.eof() && c == ',')
+            {
+                in >> t;
+                this->push_back ( t );
+                in >> c;
+            }
+            if ( c != ']' )
+            {
+                std::cerr << "SVector::read : Bad end character : " << c << ", expected  ]" << std::endl;
+                return in;
+            }
         }
         return in;
     }

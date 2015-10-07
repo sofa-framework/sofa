@@ -3,7 +3,7 @@
 
 #include <sofa/gui/qt/SimpleDataWidget.h>
 #include <sofa/gui/qt/DataWidget.h>
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 #include "../VectorVis.h"
 
 #ifdef SOFA_QT4

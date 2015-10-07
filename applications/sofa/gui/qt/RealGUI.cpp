@@ -291,7 +291,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 
     timerStep = new QTimer(this);
     connect ( timerStep, SIGNAL ( timeout() ), this, SLOT ( step() ) );
-    connect(this, SIGNAL(quit()), this, SLOT(fileExit()));
+    connect ( this, SIGNAL ( quit() ), this, SLOT ( fileExit() ) );
     connect ( startButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( playpauseGUI ( bool ) ) );
     connect ( ResetSceneButton, SIGNAL ( clicked() ), this, SLOT ( resetScene() ) );
     connect ( dtEdit, SIGNAL ( textChanged ( const QString& ) ), this, SLOT ( setDt ( const QString& ) ) );
@@ -1110,7 +1110,7 @@ void RealGUI::setFullScreen (bool enable)
 
     if( isEmbeddedViewer() )
     {
-        QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
+        //QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
 
         QList<int> list;
         static QList<int> savedsizes;
@@ -1613,7 +1613,7 @@ void RealGUI::initViewer(BaseViewer* _viewer)
 
     init(); //init data member from RealGUI for the viewer initialisation in the GUI
 
-    // embedded our viewer or not ?
+    // Is our viewer embedded or not ?
     sofa::gui::qt::viewer::SofaViewer* qtViewer = dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(_viewer);
     if( qtViewer == NULL )
     {
@@ -1635,7 +1635,7 @@ void RealGUI::initViewer(BaseViewer* _viewer)
                                               ));
 
         qtViewer->getQWidget()->setMinimumSize ( QSize ( 0, 0 ) );
-        qtViewer->getQWidget()->setMouseTracking ( false );
+        qtViewer->getQWidget()->setMouseTracking ( true );
         qtViewer->configureViewerTab(tabs);
 
         connect ( qtViewer->getQWidget(), SIGNAL ( resizeW ( int ) ), sizeW, SLOT ( setValue ( int ) ) );
@@ -1855,10 +1855,10 @@ void RealGUI::createSceneDescription()
 //======================= SIGNALS-SLOTS ========================= {
 void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)
 {
-    std::string filename(this->windowFilePath().toStdString());
-    std::string message="You are about to changed the root node of the scene : "  + filename +
-            "to the root node of the scene : " + std::string(path) +
-            "\nThis imply that the simulation singleton have to changed its root node.\nAre you sure you want to do that ?";
+    std::string filename(this->windowFilePath().ascii());
+    std::string message="You are about to change the root node of the scene : "  + filename +
+            "to the root node : " + std::string(path) +
+            "\nThis implies that the simulation singleton has to change its root node.\nDo you want to proceed ?";
     if ( QMessageBox::warning ( this, "New root node: ",message.c_str(), QMessageBox::Yes | QMessageBox::Default, QMessageBox::No ) != QMessageBox::Yes )
         return;
 

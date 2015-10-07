@@ -1,0 +1,12 @@
+# CMake package configuration file for the SofaOpenCL plugin
+
+@PACKAGE_INIT@
+
+find_package(OpenCL REQUIRED)
+find_package(SofaGeneral REQUIRED)
+
+if(NOT TARGET SofaOpenCL)
+	include("${CMAKE_CURRENT_LIST_DIR}/SofaOpenCLTargets.cmake")
+endif()
+
+check_required_components(SofaOpenCL)

@@ -72,7 +72,7 @@ public:
 
     void update();
 
-    void draw();
+    void draw( const core::visual::VisualParams* );
 
     virtual std::string getTemplateName() const
     {

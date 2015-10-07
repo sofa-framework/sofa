@@ -2,9 +2,9 @@
 #define IMAGETOOLBOXDATA_H
 
 #include "labelimagetoolbox.h"
-#include "ImageTypes.h"
+#include <image/ImageTypes.h>
 
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 
 namespace sofa
 {

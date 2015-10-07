@@ -43,7 +43,7 @@ TEST(UtilsTest, upcaseString)
 TEST(UtilsTest, getExecutablePath)
 {
     const std::string path = Utils::getExecutablePath();
-    EXPECT_TRUE(path.find("framework_test") != std::string::npos);
+    EXPECT_TRUE(path.find("SofaFramework_test") != std::string::npos);
 }
 
 TEST(UtilsTest, getExecutableDirectory)
@@ -68,11 +68,11 @@ TEST(UtilsTest, readBasicIniFile)
 {
     const std::string path = std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/UtilsTest.ini";
     std::map<std::string, std::string> values = Utils::readBasicIniFile(path);
-    EXPECT_EQ(3, values.size());
-    EXPECT_EQ(1, values.count("a"));
+    EXPECT_EQ(3u, values.size());
+    EXPECT_EQ(1u, values.count("a"));
     EXPECT_EQ("b again", values["a"]);
-    EXPECT_EQ(1, values.count("someKey"));
+    EXPECT_EQ(1u, values.count("someKey"));
     EXPECT_EQ("someValue", values["someKey"]);
-    EXPECT_EQ(1, values.count("foo bar baz"));
+    EXPECT_EQ(1u, values.count("foo bar baz"));
     EXPECT_EQ("qux 42", values["foo bar baz"]);
 }

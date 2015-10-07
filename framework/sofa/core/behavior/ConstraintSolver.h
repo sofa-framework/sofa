@@ -55,6 +55,12 @@ protected:
     ConstraintSolver();
 
     virtual ~ConstraintSolver();
+	
+private:
+	ConstraintSolver(const ConstraintSolver& n) ;
+	ConstraintSolver& operator=(const ConstraintSolver& n) ;
+
+	
 public:
     /**
      * Launch the sequence of operations in order to solve the constraints

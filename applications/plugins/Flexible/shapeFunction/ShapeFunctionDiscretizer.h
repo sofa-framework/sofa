@@ -25,7 +25,7 @@
 #ifndef FLEXIBLE_ShapeFunctionDiscretizer_H
 #define FLEXIBLE_ShapeFunctionDiscretizer_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../shapeFunction/BaseShapeFunction.h"
 #include <image/ImageTypes.h>
 

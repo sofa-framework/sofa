@@ -28,9 +28,17 @@
 #define SOFA_STANDARDTEST_Mapping_test_H
 
 #include "Sofa_test.h"
-#include <SofaComponentMain/init.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/common/VectorOperations.h>
+
+#include <SceneCreator/SceneCreator.h>
+
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
+
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -128,7 +136,11 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
     Mapping_test():deltaRange(1,1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
-        sofa::component::init();
+        sofa::component::initComponentBase();
+        sofa::component::initComponentCommon();
+        sofa::component::initComponentGeneral();
+        sofa::component::initComponentAdvanced();
+        sofa::component::initComponentMisc();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Parent node
@@ -144,7 +156,11 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
     Mapping_test(std::string fileName):deltaRange(1,1000),errorMax(100),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
-        sofa::component::init();
+        sofa::component::initComponentBase();
+        sofa::component::initComponentCommon();
+        sofa::component::initComponentGeneral();
+        sofa::component::initComponentAdvanced();
+        sofa::component::initComponentMisc();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Load the scene

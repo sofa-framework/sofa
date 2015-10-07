@@ -25,8 +25,8 @@
 #include <typeinfo>
 #include <stdio.h>
 #include <string.h>
-#include <libxml/encoding.h>
-#include <libxml/xmlwriter.h>
+// #include <libxml/encoding.h>
+// #include <libxml/xmlwriter.h>
 #include <iostream>
 
 #include "Container/attributeContainer.h"
@@ -35,6 +35,11 @@
 
 namespace CGoGN
 {
+
+ContainerBrowser::~ContainerBrowser()
+{
+
+}
 
 AttributeContainer::AttributeContainer() :
     m_currentBrowser(NULL),
@@ -317,6 +322,16 @@ void AttributeContainer::printFreeIndices() {
         block->printTableFree();
     }
     std::cerr << "end printFreeIndices()" << std::endl;
+}
+
+void AttributeContainer::printUsage()
+{
+    std::cerr << "#############################" << std::endl;
+    for (unsigned i = this->begin() ; i != this->end() ; this->next(i))
+    {
+        std::cerr << "emb " << i << ", usage = " << this->nbRefs(i) << std::endl;
+    }
+    std::cerr << "#############################" << std::endl;
 }
 
 

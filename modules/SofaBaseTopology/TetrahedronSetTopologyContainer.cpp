@@ -74,6 +74,7 @@ void TetrahedronSetTopologyContainer::init()
 {
     d_tetrahedron.updateIfDirty(); // make sure m_tetrahedron is up to date
     helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
+	TriangleSetTopologyContainer::init();
     if (!m_tetrahedron.empty())
     {
         for (unsigned int i=0; i<m_tetrahedron.size(); ++i)
@@ -86,7 +87,7 @@ void TetrahedronSetTopologyContainer::init()
         }
     }
 
-    TriangleSetTopologyContainer::init();
+   
 	// eventually force the creation of triangles
 	if (d_createTriangleArray.getValue())
 		createTriangleSetArray();

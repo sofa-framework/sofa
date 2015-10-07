@@ -88,34 +88,100 @@ public:
     static const DPos& getDPos(const Deriv& d) { return d; }
     static void setDPos(Deriv& d, const DPos& v) { d = v; }
 
+
+    /// @internal size dependant specializations
+    /// @{
+
+    /// default implementation for size >= 3
+    template<int N, class T>
+    struct Impl
+    {
+        static void set( Coord& c, T x, T y, T z )
+        {
+            c[0] = (Real)x;
+            c[1] = (Real)y;
+            c[2] = (Real)z;
+        }
+
+        static void get( T& x, T& y, T& z, const Coord& c )
+        {
+            x = (T) c[0];
+            y = (T) c[1];
+            z = (T) c[2];
+        }
+
+        static void add( Coord& c, T x, T y, T z )
+        {
+            c[0] += (Real)x;
+            c[1] += (Real)y;
+            c[2] += (Real)z;
+        }
+    };
+
+    /// specialization for size == 2
+    template<class T>
+    struct Impl<2,T>
+    {
+        static void set( Coord& c, T x, T y, T )
+        {
+            c[0] = (Real)x;
+            c[1] = (Real)y;
+        }
+
+        static void get( T& x, T& y, T& z, const Coord& c )
+        {
+            x = (T) c[0];
+            y = (T) c[1];
+            z = (T) 0;
+        }
+
+        static void add( Coord& c, T x, T y, T )
+        {
+            c[0] += (Real)x;
+            c[1] += (Real)y;
+        }
+    };
+
+    /// specialization for size == 1
+    template<class T>
+    struct Impl<1,T>
+    {
+        static void set( Coord& c, T x, T, T )
+        {
+            c[0] = (Real)x;
+        }
+
+        static void get( T& x, T& y, T& z, const Coord& c )
+        {
+            x = (T) c[0];
+            y = (T) 0;
+            z = (T) 0;
+        }
+
+        static void add( Coord& c, T x, T, T )
+        {
+            c[0] += (Real)x;
+        }
+    };
+
+    ///@}
+
     template<class C, typename T>
     static void set( C& c, T x, T y, T z )
     {
-        if ( c.size() >0 )
-            c[0] = (Real) x;
-        if ( c.size() >1 )
-            c[1] = (Real) y;
-        if ( c.size() >2 )
-            c[2] = (Real) z;
+        Impl<spatial_dimensions,T>::set(c,x,y,z);
     }
 
     template<class C, typename T>
     static void get( T& x, T& y, T& z, const C& c )
     {
-        x = ( c.size() >0 ) ? (T) c[0] : (T) 0.0;
-        y = ( c.size() >1 ) ? (T) c[1] : (T) 0.0;
-        z = ( c.size() >2 ) ? (T) c[2] : (T) 0.0;
+        Impl<spatial_dimensions,T>::get(x,y,z,c);
     }
 
     template<class C, typename T>
     static void add( C& c, T x, T y, T z )
     {
-        if ( c.size() >0 )
-            c[0] += (Real) x;
-        if ( c.size() >1 )
-            c[1] += (Real) y;
-        if ( c.size() >2 )
-            c[2] += (Real) z;
+        Impl<spatial_dimensions,T>::add(c,x,y,z);
     }
 
     template<class C>
@@ -427,66 +493,54 @@ public:
     static void set(Coord& r, T x, T y, T z)
     {
         Vec3& c = r.getCenter();
-        if ( c.size() >0 )
-            c[0] = (Real) x;
-        if ( c.size() >1 )
-            c[1] = (Real) y;
-        if ( c.size() >2 )
-            c[2] = (Real) z;
+        c[0] = (Real) x;
+        c[1] = (Real) y;
+        c[2] = (Real) z;
     }
 
     template<typename T>
     static void get(T& x, T& y, T& z, const Coord& r)
     {
         const Vec3& c = r.getCenter();
-        x = ( c.size() >0 ) ? (T) c[0] : (T) 0.0;
-        y = ( c.size() >1 ) ? (T) c[1] : (T) 0.0;
-        z = ( c.size() >2 ) ? (T) c[2] : (T) 0.0;
+        x = (T) c[0];
+        y = (T) c[1];
+        z = (T) c[2];
     }
 
     template<typename T>
     static void add(Coord& r, T x, T y, T z)
     {
         Vec3& c = r.getCenter();
-        if ( c.size() >0 )
-            c[0] += (Real) x;
-        if ( c.size() >1 )
-            c[1] += (Real) y;
-        if ( c.size() >2 )
-            c[2] += (Real) z;
+        c[0] += (Real) x;
+        c[1] += (Real) y;
+        c[2] += (Real) z;
     }
 
     template<typename T>
     static void set(Deriv& r, T x, T y, T z)
     {
         Vec3& c = getVCenter(r);
-        if ( c.size() >0 )
-            c[0] = (Real) x;
-        if ( c.size() >1 )
-            c[1] = (Real) y;
-        if ( c.size() >2 )
-            c[2] = (Real) z;
+        c[0] = (Real) x;
+        c[1] = (Real) y;
+        c[2] = (Real) z;
     }
 
     template<typename T>
     static void get(T& x, T& y, T& z, const Deriv& r)
     {
         const Vec3& c = getVCenter(r);
-        x = ( c.size() >0 ) ? (T) c[0] : (T) 0.0;
-        y = ( c.size() >1 ) ? (T) c[1] : (T) 0.0;
-        z = ( c.size() >2 ) ? (T) c[2] : (T) 0.0;
+        x = (T) c[0];
+        y = (T) c[1];
+        z = (T) c[2];
     }
 
     template<typename T>
     static void add(Deriv& r, T x, T y, T z)
     {
         Vec3& c = getVCenter(r);
-        if ( c.size() >0 )
-            c[0] += (Real) x;
-        if ( c.size() >1 )
-            c[1] += (Real) y;
-        if ( c.size() >2 )
-            c[2] += (Real) z;
+        c[0] += (Real) x;
+        c[1] += (Real) y;
+        c[2] += (Real) z;
     }
 
     static Coord interpolate(const helper::vector< Coord > & ancestors, const helper::vector< Real > & coefs)

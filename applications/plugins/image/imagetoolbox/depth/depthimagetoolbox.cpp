@@ -3,7 +3,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include "depthimagetoolbox.h"
-#include "ImageTypes.h"
+#include <image/ImageTypes.h>
 
 
 

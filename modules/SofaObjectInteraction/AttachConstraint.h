@@ -122,6 +122,10 @@ public:
 
 protected :
 
+    using core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::projectPosition;
+    using core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity;
+    using core::behavior::PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse;
+
     void projectPosition(Coord& x1, Coord& x2, bool /*freeRotations*/, unsigned index)
     {
         // do nothing if distance between x2 & x1 is bigger than f_minDistance

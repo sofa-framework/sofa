@@ -85,7 +85,7 @@ public:
         SPKTensorGeneral=(C-ID)*mu+ID*lambda/(Real)2.0*(I1-(Real)3.0);
 	}
 
-   void applyElasticityTensor(StrainInformation<DataTypes> *, const MaterialParameters<DataTypes> &param,const MatrixSym inputTensor, MatrixSym &outputTensor)  {
+   void applyElasticityTensor(StrainInformation<DataTypes> *, const MaterialParameters<DataTypes> &param,const MatrixSym& inputTensor, MatrixSym &outputTensor)  {
 		Real mu=param.parameterArray[0];
         Real lambda=param.parameterArray[1];
 		MatrixSym ID;

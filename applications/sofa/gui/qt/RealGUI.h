@@ -25,6 +25,7 @@
 #ifndef SOFA_GUI_VIEWER_REALGUI_H
 #define SOFA_GUI_VIEWER_REALGUI_H
 
+#include <SofaGui/config.h>
 #include <ui_GUI.h>
 #include <sofa/gui/qt/SofaGUIQt.h>
 #include "GraphListenerQListView.h"
@@ -260,7 +261,8 @@ public:
 //    virtual void saveXML();
 
     virtual void setViewerResolution(int w, int h);
-    virtual void setFullScreen(bool enable = true);
+    virtual void setFullScreen() { setFullScreen(true); }
+    virtual void setFullScreen(bool enable);
     virtual void setBackgroundColor(const defaulttype::Vector3& c);
     virtual void setBackgroundImage(const std::string& i);
     virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf);

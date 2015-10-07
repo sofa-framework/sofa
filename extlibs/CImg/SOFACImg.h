@@ -324,7 +324,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
 
 #ifdef SOFA_HAVE_ZLIB
 
-static void _load_gz_inr_header(gzFile file, int out[8], float *const voxsize, float *const translation=0, float *const rotation=0)
+static inline void _load_gz_inr_header(gzFile file, int out[8], float *const voxsize, float *const translation=0, float *const rotation=0)
 {
 	char item[1024] = {0}, tmp1[64]={0}, tmp2[64]={0};
 	gzgets(file, item, 63);

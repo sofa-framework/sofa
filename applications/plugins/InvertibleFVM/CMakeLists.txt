@@ -1,32 +1,33 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(InvertibleFVM)
 
-##plugin external dependencies
-#find_package( REQUIRED)
-#include_directories(${})
 
 set(HEADER_FILES
-
-    InvertibleFVMForceField.h 
-	InvertibleFVMForceField.inl 
-	initPlugin.h
-
-	)
+    InvertibleFVMForceField.h
+    InvertibleFVMForceField.inl
+    config.h
+)
 
 set(SOURCE_FILES
-
-    InvertibleFVMForceField.cpp 
+    InvertibleFVMForceField.cpp
     initPlugin.cpp
+)
 
-	)
+set(README_FILES InvertibleFVM.txt)
 
-set(README_FILES
-
-	InvertibleFVM.txt
-	)
+find_package(SofaBase REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
-AddCompilerDefinitions("SOFA_BUILD_INVERTIBLEFVM")
-AddLinkerDependencies(SofaGuiQt )
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_INVERTIBLEFVM")
+target_link_libraries(${PROJECT_NAME} SofaBaseTopology)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT InvertibleFVM_libraries
+        EXPORT InvertibleFVMTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
+
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

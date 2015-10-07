@@ -1,34 +1,29 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaHaptics)
 
 set(HEADER_FILES
-
-    config.h
-    initHaptics.h
+    # EnslavementForceFeedback.h
     ForceFeedback.h
-    NullForceFeedbackT.h
-    NullForceFeedback.h
-    #EnslavementForceFeedback.h
     LCPForceFeedback.h
     LCPForceFeedback.inl
     MechanicalStateForceFeedback.h
-
-    )
+    NullForceFeedback.h
+    NullForceFeedbackT.h
+    config.h
+    initHaptics.h
+)
 
 set(SOURCE_FILES
-
-    initHaptics.cpp
+    # EnslavementForceFeedback.cpp
+    LCPForceFeedback.cpp
     NullForceFeedback.cpp
     NullForceFeedbackT.cpp
-    #EnslavementForceFeedback.cpp
-    LCPForceFeedback.cpp
-
-    )
-
-set(GROUP_BASE_DIR "..")
+    initHaptics.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaConstraint)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_HAPTICS")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_HAPTICS" )
-AddLinkerDependencies(SofaConstraint )
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})

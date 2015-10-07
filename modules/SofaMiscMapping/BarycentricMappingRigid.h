@@ -62,6 +62,7 @@ public:
     enum { NOut = Inherit::NOut };
     typedef typename Inherit::MBloc MBloc;
     typedef typename Inherit::MatrixType MatrixType;
+    typedef typename MatrixType::Index MatrixTypeIndex;
 
 protected:
     topology::PointData< sofa::helper::vector<MappingData > >  map;

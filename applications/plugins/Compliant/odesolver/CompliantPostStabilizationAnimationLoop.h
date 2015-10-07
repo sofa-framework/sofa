@@ -3,7 +3,7 @@
 
 
 
-#include "initCompliant.h"
+#include <Compliant/config.h>
 #include <sofa/simulation/common/CollisionAnimationLoop.h>
 
 

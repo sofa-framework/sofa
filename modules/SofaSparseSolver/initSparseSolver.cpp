@@ -46,6 +46,8 @@ void initSparseSolver()
 SOFA_LINK_CLASS(PrecomputedLinearSolver)
 SOFA_LINK_CLASS(SparseCholeskySolver)
 SOFA_LINK_CLASS(SparseLUSolver)
+#endif
+#ifdef SOFA_HAVE_METIS
 SOFA_LINK_CLASS(SparseLDLSolver)
 #endif
 

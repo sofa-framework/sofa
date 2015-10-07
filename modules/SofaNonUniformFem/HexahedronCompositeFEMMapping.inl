@@ -74,10 +74,10 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
     _finestSparseGrid = _sparseGrid->_virtualFinerLevels[_sparseGrid->getNbVirtualFinerLevels() -_forcefield->_nbVirtualFinerLevels.getValue()];
 
 
-    for(unsigned i=0; i<this->toModel->getSize(); ++i)
+    for(unsigned i=0; i<(unsigned)this->toModel->getSize(); ++i)
         _p0.push_back( this->toModel->read(core::ConstVecCoordId::position())->getValue()[i] );
 
-    for(unsigned i=0; i<this->fromModel->getSize(); ++i) // par construction de la sparse grid, pas de rotation initiale
+    for(unsigned i=0; i<(unsigned)this->fromModel->getSize(); ++i) // par construction de la sparse grid, pas de rotation initiale
         _qCoarse0.push_back( this->fromModel->read(core::ConstVecCoordId::position())->getValue()[i] );
 
     InCoord translation0 = this->fromModel->read(core::ConstVecCoordId::position())->getValue()[0] - _sparseGrid->getPointPos(0);

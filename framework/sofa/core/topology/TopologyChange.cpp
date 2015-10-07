@@ -239,7 +239,7 @@ SOFA_CORE_API std::ostream& operator << (std::ostream& out, const ElemAncestorEl
 }
 
 template<int NV>
-SOFA_CORE_API std::istream& operator >> (std::istream& in, ElemAncestorElem<NV>& d)
+SOFA_CORE_API std::istream& operator >> (std::istream& in, ElemAncestorElem<NV>& /*d*/)
 {
     /*
     in >> d.pointSrcElems;

@@ -2,7 +2,7 @@
 #define __PreassembledMass_H
 
 
-#include "initPlugin.h"
+#include <PreassembledMass/config.h>
 #include <sofa/core/behavior/Mass.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 

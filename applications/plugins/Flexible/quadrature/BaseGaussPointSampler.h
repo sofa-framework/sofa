@@ -25,7 +25,7 @@
 #ifndef SOFA_BaseGaussPointSAMPLER_H
 #define SOFA_BaseGaussPointSAMPLER_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>

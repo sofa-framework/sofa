@@ -32,7 +32,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
-#include "initOpenCTMPlugin.h"
+#include <OpenCTMPlugin/config.h>
 
 #include <fstream>
 

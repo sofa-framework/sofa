@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_CompliantAttachPerformer_H
 #define SOFA_COMPONENT_COLLISION_CompliantAttachPerformer_H
 
-#include "initCompliant_gui.h"
+#include <Compliant/Compliant_gui/config.h>
 #include <SofaUserInteraction/InteractionPerformer.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
 #include <SofaMiscMapping/DistanceFromTargetMapping.h>

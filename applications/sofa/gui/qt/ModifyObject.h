@@ -62,8 +62,10 @@ namespace qt
 {
 
 class QTransformationWidget;
+#ifdef SOFA_HAVE_QWT
 class QEnergyStatWidget;
 class QMomentumStatWidget;
+#endif
 class QTabulationModifyObject;
 
 typedef struct ModifyObjectFlags
@@ -187,10 +189,12 @@ protected:
     //Widget specific to Node:
     //Transformation widget: translation, rotation, scale ( only experimental and deactivated)
     QTransformationWidget* transformation;
+#ifdef SOFA_HAVE_QWT
     //Energy widget: plot the kinetic & potential energy
     QEnergyStatWidget* energy;
     //Momentum widget: plot the linear & angular momentum
     QMomentumStatWidget* momentum;
+#endif
     //Visual Flags
 
     std::vector< QTabulationModifyObject* > m_tabs;

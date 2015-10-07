@@ -141,11 +141,12 @@ public:
             }
             if (ORBIT == FACE)
             {
-                a = map->ParentMap::template getEmbedding<FACE>(map->dartOfMaxFaceLevel(FaceCell(c.dart)));
+                a = map->ParentMap::template getEmbedding<FACE>(map->dartOfMaxFaceLevel(FaceCell(c.dart))/*map->faceNewestDart(c.dart)*/);
             }
             if (ORBIT == VOLUME)
             {
-                a = map->ParentMap::template getEmbedding<VOLUME>(map->dartOfMaxVolumeLevel(VolumeCell(c.dart)));
+//                std::cerr << "dartOfMaxVolumeLevel lvl " << map->getDartLevel(map->dartOfMaxVolumeLevel(VolumeCell(c.dart))) << std::endl;
+                a = map->ParentMap::template getEmbedding<VOLUME>(map->dartOfMaxVolumeLevel(VolumeCell(c.dart)) /*map->volumeNewestDart(c.dart)*/);
             }
 
             if (a == EMBNULL)
@@ -189,7 +190,27 @@ public:
 //    typedef AttributeHandler< T, ORBIT, MAP , AttributeAccessorDefault< T, ORBIT, MAP  > >    HandlerFinestResolution;
 //    typedef AttributeHandler< T, ORBIT, MAP , NonVertexAttributeAccessorCPHMap< T, ORBIT> >  Handler;
 
+    template<unsigned int ORBIT>
+    class OrbitAttributeBrowser : public ContainerBrowser{
+    BOOST_STATIC_ASSERT(ORBIT == VERTEX || ORBIT == FACE || ORBIT == VOLUME);
+        // ContainerBrowser interface
+    public:
+        OrbitAttributeBrowser(ImplicitHierarchicalMap3* ihm3);
+        virtual unsigned int begin() const;
+        virtual unsigned int end() const;
+        virtual void next(unsigned int &it) const;
+        virtual void enable();
+        virtual void disable();
+        virtual ~OrbitAttributeBrowser();
+    private:
+        bool m_enabled;
+        ImplicitHierarchicalMap3* m_ihm3;
+        AttributeMultiVector<Dart>** m_orbitQT;
+    };
 
+    typedef OrbitAttributeBrowser< VERTEX > VertexAttributeBrowser;
+    typedef OrbitAttributeBrowser< FACE > FaceAttributeBrowser;
+    typedef OrbitAttributeBrowser< VOLUME > VolumeAttributeBrowser;
 public:
 	FunctorType* vertexVertexFunctor ;
 	FunctorType* edgeVertexFunctor ;
@@ -325,6 +346,10 @@ private:
     AttributeMultiVector<unsigned int>* a_maxVolumeLevel;
     AttributeMultiVector<unsigned int>* a_maxFaceLevel;
 
+    VolumeAttributeBrowser* m_volumeAttributeBrowser;
+    FaceAttributeBrowser* m_faceAttributeBrowser;
+    VertexAttributeBrowser* m_vertexAttributeBrowser;
+
 public:
 //    void clear(bool removeAttrib);
     inline void setFaceLevel(FaceCell f, unsigned int lvl)
@@ -358,6 +383,34 @@ public:
         if (ORBIT == VOLUME)
         {
             return this->volumeLevel(c.dart);
+        }
+
+        return std::numeric_limits<unsigned int>::max();
+    }
+
+    template< unsigned int ORBIT >
+    inline unsigned int getCellLevel(unsigned int cellEmb) const
+    {
+        if (ORBIT == DART)
+        {
+            return m_dartLevel->operator [](cellEmb) ;
+        }
+        if (ORBIT == VERTEX)
+        {
+            return this->getDartLevel(this->m_quickTraversal[VERTEX]->operator[](cellEmb)) ;
+        }
+
+        if (ORBIT == EDGE)
+        {
+            return std::numeric_limits<unsigned int>::max();  // TODO
+        }
+        if (ORBIT == FACE)
+        {
+            return this->a_faceLevel[cellEmb];
+        }
+        if (ORBIT == VOLUME)
+        {
+            return this->a_volumeLevel[cellEmb];
         }
 
         return std::numeric_limits<unsigned int>::max();
@@ -647,23 +700,11 @@ public:
 
 
     template <unsigned int ORBIT>
-    void checkEmbedding(Cell<ORBIT> c) {
-#ifndef DNDEBUG
-        std::map< unsigned, unsigned > cellEmbeddings;
-        TraversorDartsOfOrbit< MAP, ORBIT > traDoC(*this, c);
-        for (Dart it = traDoC.begin(); it != traDoC.end() ;it = traDoC.next())
-        {
-            const unsigned int dartLevel = getDartLevel(it);
-            std::map< unsigned, unsigned >::const_iterator embeddingIT = cellEmbeddings.find(dartLevel);
-            if (embeddingIT == cellEmbeddings.end())
-            {
-                cellEmbeddings[dartLevel] = this->ParentMap::template getEmbedding< ORBIT >(it) ;
-            } else {
-                assert(this->ParentMap::template getEmbedding< ORBIT >(it) == embeddingIT->second );
-            }
-        }
-#endif
-    }
+    void checkEmbedding(Cell<ORBIT> c) ;
+
+    template <unsigned int ORBIT>
+    void checkAllEmbeddingsOfOrbit();
+
 
     template <unsigned int ORBIT>
     unsigned int getEmbedding(Cell<ORBIT> c) const ;
@@ -696,6 +737,8 @@ public:
     void setDartEmbedding(Dart d, unsigned int emb)
     {
         assert(this->template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+        if (this->isBoundaryMarkedCurrent(d))
+            return;
         if (getDartLevel(d) != getCurrentLevel())
         {
             return;
@@ -734,8 +777,11 @@ public:
     template <unsigned int ORBIT>
     void initDartEmbedding(Dart d, unsigned int emb)
     {
+
         assert(this->template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
         assert(ParentMap::template getEmbedding<ORBIT>(d) == EMBNULL || !"initDartEmbedding called on already embedded dart");
+        if (this->isBoundaryMarkedCurrent(d))
+            return;
         if (getDartLevel(d) != getCurrentLevel())
         {
             return;
@@ -826,6 +872,8 @@ public:
         }
         this->setCurrentLevel(curr);
     }
+
+    bool checkCounters();
 } ;
 } // namespace IHM
 } // namespace Volume

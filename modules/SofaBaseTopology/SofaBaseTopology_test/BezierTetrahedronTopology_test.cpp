@@ -25,7 +25,6 @@
 #include <SofaTest/Sofa_test.h>
 #include<sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation
@@ -82,7 +81,6 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
     void SetUp()
     { 
         // Init simulation
-        sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
          root = simulation::getSimulation()->createNewGraph("root");
@@ -103,13 +101,13 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 		eng->f_height=1.0;
 		// TetrahedronSetTopologyContainer object
 		sofa::component::topology::TetrahedronSetTopologyContainer::SPtr container1= sofa::modeling::addNew<sofa::component::topology::TetrahedronSetTopologyContainer>(root,"Container1");
-		sofa::modeling::setDataLink(&eng->f_tetrahedron,&container1->d_tetrahedron);
-		sofa::modeling::setDataLink(&eng->f_outputX,&container1->d_initPoints);
+		sofa::modeling::setDataLink(&eng->f_tetrahedra,&container1->d_tetrahedron);
+		sofa::modeling::setDataLink(&eng->f_outputTetrahedraPositions,&container1->d_initPoints);
 		// TetrahedronSetGeometryAlgorithms object
         typename sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>::SPtr geo1= sofa::modeling::addNew<sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes> >(root);
 		// mechanicalObject object
         typename MechanicalObject::SPtr meca1= sofa::modeling::addNew<MechanicalObject>(root);
-		sofa::modeling::setDataLink(&eng->f_outputX,&meca1->x);
+		sofa::modeling::setDataLink(&eng->f_outputTetrahedraPositions,&meca1->x);
 		// subnode
 	    simulation::Node::SPtr bezierNode = root->createChild("BezierTetrahedronTopology");
 		// BezierTetrahedronSetTopologyContainer
@@ -142,7 +140,7 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 		}
 
 		sofa::helper::vector<TetrahedronBezierIndex> tbiArray=container->getTetrahedronBezierIndexArray();
-		sofa::component::topology::VecPointID indexArray;
+		BezierTetrahedronSetTopologyContainer::VecPointID indexArray;
 		BezierTetrahedronPointLocation location; 
 		size_t elementIndex, elementOffset/*,localIndex*/;
 		for (nTetras=0;nTetras<container->getNumberOfTetrahedra();++nTetras) {
@@ -206,7 +204,7 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 		typename MechanicalObject::WriteVecCoord coords = dofs->writePositions();
 		size_t i,j;	
 		BezierDegreeType degree=container->getDegree();
-		sofa::component::topology::VecPointID indexArray;
+		BezierTetrahedronSetTopologyContainer::VecPointID indexArray;
 		sofa::helper::vector<TetrahedronBezierIndex> tbiArray=container->getTetrahedronBezierIndexArray();
 		for ( i = 0; i<container->getNumberOfTetrahedra(); i++)
 		{
@@ -243,7 +241,7 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 		size_t i,j,k,rank;	
 		BezierDegreeType degree=container->getDegree();
 		Real tetraVol1,tetraVol2,totalVol1,totalVol2;
-		sofa::component::topology::VecPointID indexArray;
+		BezierTetrahedronSetTopologyContainer::VecPointID indexArray;
 		sofa::helper::vector<TetrahedronBezierIndex> tbiArray=container->getTetrahedronBezierIndexArray();
 		size_t nbControlPoints=(degree+1)*(degree+2)*(degree+3)/6;
 		totalVol1=0;

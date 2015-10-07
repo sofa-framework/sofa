@@ -100,7 +100,7 @@ void CheckPosition(StubMechanicalObject<DataType>& mechanicalObject)
 
 TYPED_TEST(MechanicalObject_test, checkThatDefaultSizeIsOne)
 {
-    ASSERT_EQ(1u, this->mechanicalObject.getSize());
+    ASSERT_EQ(1, this->mechanicalObject.getSize());
 }
 
 TYPED_TEST(MechanicalObject_test, checkThatTheSizeOfTheDefaultPositionIsEqualToTheSizeOfTheDataTypeCoord)

@@ -25,7 +25,7 @@
 #ifndef SOFA_SIMULATION_SCENELOADERFACTORY_H
 #define SOFA_SIMULATION_SCENELOADERFACTORY_H
 
-#include <sofa/core/core.h>
+#include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/SetDirectory.h>
 

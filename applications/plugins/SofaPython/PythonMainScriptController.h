@@ -53,7 +53,7 @@ protected:
     PythonMainScriptController( const char* filename );
 
     /// @name Script interface
-    ///   Function that need to be implemented for each script language
+    ///   Function that needs to be implemented for each script language
     /// Typically, all "script_*" functions call the corresponding "*" function of the script, if it exists
     /// @{
 
@@ -70,8 +70,8 @@ protected:
     virtual void script_cleanup();
 
     /// keyboard & mouse events
-    virtual void script_onKeyPressed(const char c);
-    virtual void script_onKeyReleased(const char c);
+    virtual bool script_onKeyPressed(const char c);
+    virtual bool script_onKeyReleased(const char c);
 
     virtual void script_onMouseButtonLeft(const int posX,const int posY,const bool pressed);
     virtual void script_onMouseButtonRight(const int posX,const int posY,const bool pressed);

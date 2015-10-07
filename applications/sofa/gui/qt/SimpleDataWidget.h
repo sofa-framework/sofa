@@ -598,7 +598,7 @@ public:
         if ((unsigned)i < (unsigned)size(d))
             d[i] = v;
     }
-    static void resize( int s, data_type& d)
+    static void resize( int /*s*/, data_type& /*d*/)
     {
     }
 
@@ -913,7 +913,7 @@ public:
     enum { NDIM = 1 };
     enum { SIZE = L };
     static int size(const data_type&) { return SIZE; }
-    static const char* header(const data_type& d, int i = 0)
+    static const char* header(const data_type& /*d*/, int /*i*/ = 0)
     {
         return NULL;
     }

@@ -50,7 +50,7 @@ typedef int SkeletonBone;
 
 // impose a specific motion (translation and rotation) for each DOFs of a MechanicalObject
 template <class TDataTypes>
-class SkeletalMotionConstraint : public sofa::core::behavior::ProjectiveConstraintSet<TDataTypes>
+class SkeletalMotionConstraint : public core::behavior::ProjectiveConstraintSet<TDataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(SkeletalMotionConstraint,TDataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
@@ -89,6 +89,7 @@ public:
     void projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData);
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
 
+    using core::behavior::ProjectiveConstraintSet<TDataTypes>::applyConstraint;
     void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
 

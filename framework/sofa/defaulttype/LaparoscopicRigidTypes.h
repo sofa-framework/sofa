@@ -39,6 +39,9 @@ namespace sofa
 namespace defaulttype
 {
 
+/// TODO
+/// What this type is for?
+/// A little description here ?
 class LaparoscopicRigid3Types
 {
 public:
@@ -308,9 +311,11 @@ public:
     }
 
     template<typename T>
-    static void get(T& x, T&, T&, const Coord& c)
+    static void get(T& x, T& y, T& z, const Coord& c)
     {
         x = (T)c.getTranslation();
+        y = (T)0;
+        z = (T)0;
     }
 
     template<typename T>

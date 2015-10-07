@@ -44,10 +44,9 @@
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/Quater.h>
 
-#ifdef SOFA_HAVE_EIGEN2
 #include <SofaConstraint/LMConstraintSolver.h>
 #include <sofa/simulation/common/Node.h>
-#endif
+
 
 //#include <glib.h>
 #include <sstream>
@@ -253,30 +252,22 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         this->getContext()->get(cgLinearSolver);
         this->getContext()->get(linearSolver);
 
-#ifdef SOFA_HAVE_EIGEN2
         simulation::Node *solvernode = NULL;
-#endif
 
         if (eulerSolver && cgLinearSolver)
         {
             sout << "use EulerImplicitSolver & CGLinearSolver" << sendl;
-#ifdef SOFA_HAVE_EIGEN2
             solvernode = (simulation::Node*)eulerSolver->getContext();
-#endif
         }
         else if (eulerSolver && linearSolver)
         {
             sout << "use EulerImplicitSolver & LinearSolver" << sendl;
-#ifdef SOFA_HAVE_EIGEN2
             solvernode = (simulation::Node*)eulerSolver->getContext();
-#endif
         }
         else if(eulerSolver)
         {
             sout << "use EulerImplicitSolver" << sendl;
-#ifdef SOFA_HAVE_EIGEN2
             solvernode = (simulation::Node*)eulerSolver->getContext();
-#endif
         }
         else
         {
@@ -284,7 +275,6 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             return;
         }
 
-#ifdef SOFA_HAVE_EIGEN2
         helper::vector< sofa::component::constraintset::LMConstraintSolver* > listLMConstraintSolver;
         solvernode->get< sofa::component::constraintset::LMConstraintSolver >(&listLMConstraintSolver, core::objectmodel::BaseContext::SearchDown);
         helper::vector< ConstraintActivation > listConstraintActivation(listLMConstraintSolver.size());
@@ -299,7 +289,6 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             listConstraintActivation[i].pos=listLMConstraintSolver[i]->constraintPos.getValue();
             listLMConstraintSolver[i]->constraintPos.setValue(false);
         }
-#endif
 
         // Change the solver parameters
         double buf_tolerance = 0, buf_threshold = 0;
@@ -413,14 +402,12 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         for (unsigned int i = 0; i < pos.size(); i++)
             pos[i] = prev_pos[i];
 
-#ifdef SOFA_HAVE_EIGEN2
         for (unsigned int i=0; i<listLMConstraintSolver.size(); ++i)
         {
             listLMConstraintSolver[i]->constraintAcc.setValue(listConstraintActivation[i].acc);
             listLMConstraintSolver[i]->constraintVel.setValue(listConstraintActivation[i].vel);
             listLMConstraintSolver[i]->constraintPos.setValue(listConstraintActivation[i].pos);
         }
-#endif
     }
 
     //std::cout << "appCompliance = invM->data\n";

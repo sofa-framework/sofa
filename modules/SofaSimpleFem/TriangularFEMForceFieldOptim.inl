@@ -83,18 +83,26 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
     , vertexInfo(initData(&vertexInfo, "vertexInfo", "Internal point data"))
     , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
     , _topology(NULL)
+#ifdef SIMPLEFEM_COLORMAP
 #ifndef SOFA_NO_OPENGL
 	, showStressColorMapReal(sofa::core::objectmodel::New< visualmodel::ColorMap >())
+#endif
 #endif
     , f_poisson(initData(&f_poisson,(Real)(0.45),"poissonRatio","Poisson ratio in Hooke's law"))
     , f_young(initData(&f_young,(Real)(1000.0),"youngModulus","Young modulus in Hooke's law"))
     , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , f_restScale(initData(&f_restScale,(Real)1.,"restScale","Scale factor applied to rest positions (to simulate pre-stretched materials)"))
+#ifdef SIMPLEFEM_COLORMAP
     , showStressValue(initData(&showStressValue,true,"showStressValue","Flag activating rendering of stress values as a color in each triangle"))
+#endif
     , showStressVector(initData(&showStressVector,false,"showStressVector","Flag activating rendering of stress directions within each triangle"))
+#ifdef SIMPLEFEM_COLORMAP
     , showStressColorMap(initData(&showStressColorMap,"showStressColorMap", "Color map used to show stress values"))
+#endif
     , showStressMaxValue(initData(&showStressMaxValue,(Real)0.0,"showStressMaxValue","Max value for rendering of stress values"))
+#ifdef SIMPLEFEM_COLORMAP
     , showStressValueAlpha(initData(&showStressValueAlpha,(float)1.0,"showStressValueAlpha","Alpha (1-transparency) value for rendering of stress values"))
+#endif
     , drawPrevMaxStress((Real)-1.0)
 {
     triangleInfoHandler = new TFEMFFOTriangleInfoHandler(this, &triangleInfo);
@@ -251,6 +259,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::reinit()
     vi.resize(nbPoints);
     vertexInfo.endEdit();
 
+#ifdef SIMPLEFEM_COLORMAP
 #ifndef SOFA_NO_OPENGL
     // TODO: This is deprecated. Use ColorMap as a component.
      visualmodel::ColorMap* colorMap = NULL;
@@ -259,6 +268,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::reinit()
         showStressColorMapReal = colorMap;
     else
         showStressColorMapReal->initOld(showStressColorMap.getValue());
+#endif
 #endif
 
     data.reinit(this);
@@ -553,7 +563,6 @@ void TriangularFEMForceFieldOptim<DataTypes>::getTrianglePrincipalStress(unsigne
 template<class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!_topology || !this->mstate) return;
 
     if (!vparams->displayFlags().getShowForceFields())
@@ -632,6 +641,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
         {
             maxStress = showStressMaxValue.getValue();
         }
+#ifdef SIMPLEFEM_COLORMAP
         visualmodel::ColorMap::evaluator<Real> evalColor = showStressColorMapReal->getEvaluator(minStress, maxStress);
         if (showStressValue)
         {
@@ -763,6 +773,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
  
             vparams->drawTool()->setPolygonMode(0,false);
        }
+#endif
         if (showStressVector && maxStress > 0)
         {
             std::vector< Vector3 > points[2];
@@ -843,7 +854,6 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
         vparams->drawTool()->drawLines(points[2], 1, c2);
         vparams->drawTool()->drawLines(points[3], 1, c3);
     }
-#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace forcefield

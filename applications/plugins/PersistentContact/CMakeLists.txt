@@ -1,42 +1,47 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(PersistentContact)
 
-##plugin external dependencies
-#find_package( REQUIRED)
-#include_directories(${})
 
 set(HEADER_FILES
-
-    PersistentContact.h 
-	PersistentContactMapping.h 
-	PersistentFrictionContact.h 
-	PersistentFrictionContact.inl 
-	PersistentUnilateralInteractionConstraint.h 
-	PersistentUnilateralInteractionConstraint.inl 
-	PersistentContactBarycentricMapping.h 
-	PersistentContactBarycentricMapping.inl 
-	PersistentContactRigidMapping.h 
-	PersistentContactRigidMapping.inl
-
-	)
+    config.h
+    PersistentContactBarycentricMapping.h
+    PersistentContactBarycentricMapping.inl
+    PersistentContactMapping.h
+    PersistentContactRigidMapping.h
+    PersistentContactRigidMapping.inl
+    PersistentFrictionContact.h
+    PersistentFrictionContact.inl
+    PersistentUnilateralInteractionConstraint.h
+    PersistentUnilateralInteractionConstraint.inl
+)
 
 set(SOURCE_FILES
-
-    PersistentContactMapping.cpp 
-	PersistentFrictionContact.cpp 
-	PersistentUnilateralInteractionConstraint.cpp 
-	PersistentContactBarycentricMapping.cpp 
-	PersistentContactRigidMapping.cpp 
+    PersistentContactBarycentricMapping.cpp
+    PersistentContactMapping.cpp
+    PersistentContactRigidMapping.cpp
+    PersistentFrictionContact.cpp
+    PersistentUnilateralInteractionConstraint.cpp
     initPersistentContact.cpp
+)
 
-	)
+set(README_FILES PersistentContact.txt)
 
 set(README_FILES
-
 	PersistentContact.txt)
 
+find_package(SofaGeneral REQUIRED)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_PERSISTENTCONTACT")
+target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaRigid SofaConstraint)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
-AddCompilerDefinitions("SOFA_BUILD_PERSISTENTCONTACT")
-AddLinkerDependencies(SofaHelper SofaMeshCollision SofaConstraint )
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT PersistentContact_libraries
+        EXPORT PersistentContactTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

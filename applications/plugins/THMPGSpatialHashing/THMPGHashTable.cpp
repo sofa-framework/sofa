@@ -39,14 +39,14 @@ void THMPGHashTable::refersh(SReal timeStamp){
         ++nb_added_elems;
         const defaulttype::Vector3 & minVec = c.minVect();
 
-        mincell[0] = std::floor((minVec[0] - _alarmDistd2)/cell_size);
-        mincell[1] = std::floor((minVec[1] - _alarmDistd2)/cell_size);
-        mincell[2] = std::floor((minVec[2] - _alarmDistd2)/cell_size);
+        mincell[0] = (int)std::floor((minVec[0] - _alarmDistd2)/cell_size);
+        mincell[1] = (int)std::floor((minVec[1] - _alarmDistd2)/cell_size);
+        mincell[2] = (int)std::floor((minVec[2] - _alarmDistd2)/cell_size);
 
         const defaulttype::Vector3 & maxVec = c.maxVect();
-        maxcell[0] = std::floor((maxVec[0] + _alarmDistd2)/cell_size);
-        maxcell[1] = std::floor((maxVec[1] + _alarmDistd2)/cell_size);
-        maxcell[2] = std::floor((maxVec[2] + _alarmDistd2)/cell_size);
+        maxcell[0] = (int)std::floor((maxVec[0] + _alarmDistd2)/cell_size);
+        maxcell[1] = (int)std::floor((maxVec[1] + _alarmDistd2)/cell_size);
+        maxcell[2] = (int)std::floor((maxVec[2] + _alarmDistd2)/cell_size);
 
         for(movingcell[0] = mincell[0] ; movingcell[0] <= maxcell[0] ; ++movingcell[0]){
             for(movingcell[1] = mincell[1] ; movingcell[1] <= maxcell[1] ; ++movingcell[1]){

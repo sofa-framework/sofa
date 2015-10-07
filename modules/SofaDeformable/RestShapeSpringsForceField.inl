@@ -104,12 +104,10 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
 
     recomputeIndices();
 
-#ifdef SOFA_HAVE_EIGEN2
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
     matS.resize(state->getMatrixSize(),state->getMatrixSize());
     lastUpdatedStep = -1.0;
-#endif
 }
 
 
@@ -209,6 +207,8 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
 
             //	Deriv dx = p[i] - p_0[i];
             //	f[ indices[i] ] -=  dx * k[0] ;
+
+            this->mstate->forceMask.insertEntry(i);
         }
     }
     else
@@ -230,6 +230,8 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
 
             //	Deriv dx = p[i] - p_0[i];
             //	f[ indices[i] ] -=  dx * k[i] ;
+
+            this->mstate->forceMask.insertEntry(i);
         }
     }
 }

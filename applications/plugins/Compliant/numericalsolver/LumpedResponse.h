@@ -1,7 +1,7 @@
 #ifndef COMPLIANT_LUMPEDRESPONSE_H
 #define COMPLIANT_LUMPEDRESPONSE_H
 
-#include "initCompliant.h"
+#include <Compliant/config.h>
 #include "Response.h"
 
 namespace sofa {

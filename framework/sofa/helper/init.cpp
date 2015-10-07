@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include "init.h"
 
+#include <sofa/helper/system/console.h>
 #include <sofa/helper/Logger.h>
 
 #include <iostream>
@@ -41,6 +42,7 @@ SOFA_HELPER_API void init()
 {
     if (!s_initialized)
     {
+        Console::init();
         s_initialized = true;
     }
 }

@@ -1,7 +1,7 @@
 #ifndef __COMPLIANT_COMPLIANTSOLVERMERGER_H__
 #define __COMPLIANT_COMPLIANTSOLVERMERGER_H__
 
-#include "initCompliant.h"
+#include <Compliant/config.h>
 #include <sofa/core/behavior/LinearSolver.h>
 
 namespace sofa

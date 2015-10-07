@@ -33,7 +33,7 @@ namespace sofa
 namespace helper
 {
 
-Logger::SPtr Logger::s_mainLogger = Logger::SPtr(new TTYLogger());
+Logger::SPtr Logger::s_mainLogger;
 
 Logger::Logger(): m_currentLevel(Logger::All)
 {
@@ -60,6 +60,8 @@ Logger::Level Logger::getLevel()
 
 Logger& Logger::getMainLogger()
 {
+    if (s_mainLogger == NULL)
+        s_mainLogger = Logger::SPtr(new TTYLogger());
     return *s_mainLogger.get();
 }
 

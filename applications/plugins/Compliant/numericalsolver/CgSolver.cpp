@@ -3,9 +3,9 @@
 #include <sofa/core/ObjectFactory.h>
 
 
-#include "utils/schur.h"
-#include "utils/kkt.h"
-#include "utils/cg.h"
+#include "../utils/schur.h"
+#include "../utils/kkt.h"
+#include "../utils/cg.h"
 // #include "utils/preconditionedcg.h"
 
 

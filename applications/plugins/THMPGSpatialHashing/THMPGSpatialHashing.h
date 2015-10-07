@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_THMPGSPATIALHASHING_H
 #define SOFA_COMPONENT_COLLISION_THMPGSPATIALHASHING_H
+#include "config.h"
 
 #include <sofa/core/collision/BroadPhaseDetection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
@@ -51,7 +52,7 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-class SOFA_BASE_COLLISION_API THMPGSpatialHashing :
+class SOFA_THMPGSPATIALHASHING_API THMPGSpatialHashing:
     public core::collision::BroadPhaseDetection,
     public core::collision::NarrowPhaseDetection
 {

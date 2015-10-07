@@ -1,43 +1,74 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(Registration)
 
+set(REGISTRATION_MAJOR_VERSION 0)
+set(REGISTRATION_MINOR_VERSION 1)
+set(REGISTRATION_VERSION ${REGISTRATION_MAJOR_VERSION}.${REGISTRATION_MINOR_VERSION})
 
 set(HEADER_FILES
-    initRegistration.h
+    ClosestPointRegistrationForceField.h
+    ClosestPointRegistrationForceField.inl
+    GroupwiseRegistrationEngine.h
+    InertiaAlign.h
     RegistrationContact.h
     RegistrationContact.inl
     RegistrationContactForceField.h
     RegistrationContactForceField.inl
-    ClosestPointRegistrationForceField.h
-    ClosestPointRegistrationForceField.inl
     RegistrationExporter.h
-    GroupwiseRegistrationEngine.h
-    InertiaAlign.h)
+)
 
 set(SOURCE_FILES
-    initRegistration.cpp
+    ClosestPointRegistrationForceField.cpp
+    GroupwiseRegistrationEngine.cpp
+    InertiaAlign.cpp
     RegistrationContact.cpp
     RegistrationContactForceField.cpp
-    ClosestPointRegistrationForceField.cpp
     RegistrationExporter.cpp
-    GroupwiseRegistrationEngine.cpp
-    InertiaAlign.cpp)
+    initRegistration.cpp
+)
+
+set(PYTHON_FILES
+
+    python/Registration/__init__.py
+    python/Registration/sml.py
+
+)
 
 set(README_FILES README.txt)
 
-# include python files
-include(./python/python.cmake)
+find_package(SofaGui REQUIRED)
+find_package(image QUIET)
 
-if(SOFA-PLUGIN_IMAGE)
-    list(APPEND HEADER_FILES "IntensityProfileRegistrationForceField.h")
-    list(APPEND HEADER_FILES "IntensityProfileRegistrationForceField.inl")
-    list(APPEND SOURCE_FILES "IntensityProfileRegistrationForceField.cpp")
-    AddLinkerDependencies(image)
+if(image_FOUND)
+    list(APPEND HEADER_FILES IntensityProfileRegistrationForceField.h)
+    list(APPEND HEADER_FILES IntensityProfileRegistrationForceField.inl)
+    list(APPEND SOURCE_FILES IntensityProfileRegistrationForceField.cpp)
+else()
+    message(STATUS "Registration: could not find image, won't build IntensityProfileRegistrationForceField")
 endif()
 
+## Registration/config.h
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/Registration/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/Registration/config.h" DESTINATION "include/Registration")
+
+# Config files and install rules for pythons scripts
+sofa_set_python_directory(Registration "python")
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
-AddCompilerDefinitions("SOFA_BUILD_REGISTRATION")
-AddLinkerDependencies(SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
-#AddLinkerDependencies(SofaGuiQt)
+target_link_libraries(${PROJECT_NAME} SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
+if(image_FOUND)
+    target_link_libraries(${PROJECT_NAME} image)
+endif()
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${REGISTRATION_VERSION})
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_REGISTRATION")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
+find_package(SofaTest QUIET)
+if(SofaTest_FOUND)
+    add_subdirectory(Registration_test)
+endif()
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+## Install rules for the library; CMake package configurations files
+sofa_create_package(Registration ${REGISTRATION_VERSION} Registration Registration)

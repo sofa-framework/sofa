@@ -24,7 +24,11 @@
 ******************************************************************************/
 #include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
-#include <SofaComponentMain/init.h>
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
 #include <sofa/core/ObjectFactory.h>
 
 // ---------------------------------------------------------------------
@@ -33,7 +37,12 @@
 int main(int /*argc*/, char** argv)
 {
     sofa::simulation::tree::init();
-    sofa::component::init();
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
+
     if (argv[1] == NULL)
     {
         std::cout << "Usage: sofaInfo FILE" << std::endl;

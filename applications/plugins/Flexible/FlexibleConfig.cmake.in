@@ -1,0 +1,13 @@
+# CMake package configuration file for the Flexible plugin
+
+@PACKAGE_INIT@
+
+find_package(SofaMisc REQUIRED)
+find_package(SofaPython QUIET)
+find_package(image QUIET)
+
+if(NOT TARGET Flexible)
+	include("${CMAKE_CURRENT_LIST_DIR}/FlexibleTargets.cmake")
+endif()
+
+check_required_components(Flexible)

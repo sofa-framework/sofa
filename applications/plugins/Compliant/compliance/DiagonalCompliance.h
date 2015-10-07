@@ -1,6 +1,6 @@
 #ifndef SOFA_COMPONENT_COMPLIANCE_DiagonalCompliance_H
 #define SOFA_COMPONENT_COMPLIANCE_DiagonalCompliance_H
-#include "initCompliant.h"
+#include <Compliant/config.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/defaulttype/Mat.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>

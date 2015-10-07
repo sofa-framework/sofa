@@ -49,17 +49,17 @@ public :
     {
         this->setFilename(sofa::helper::system::DataRepository.getFile(filename));
         this->load();
-        EXPECT_EQ(pointNb, this->positions.getValue().size());
-        EXPECT_EQ(edgeNb, this->edges.getValue().size());
-        EXPECT_EQ(triangleNb, this->triangles.getValue().size());
-        EXPECT_EQ(quadNb, this->quads.getValue().size());
-        EXPECT_EQ(polygonNb, this->polygons.getValue().size());
-        EXPECT_EQ(tetraNb, this->tetrahedra.getValue().size());
-        EXPECT_EQ(hexaNb, this->hexahedra.getValue().size());
-        EXPECT_EQ(normalPerVertexNb, this->normals.getValue().size());
-        EXPECT_EQ(normalListNb, this->normalsList.getValue().size());
-        EXPECT_EQ(texCoordListNb, this->texCoordsList.getValue().size());
-        EXPECT_EQ(materialNb, this->materials.getValue().size());
+        EXPECT_EQ((size_t)pointNb, this->positions.getValue().size());
+        EXPECT_EQ((size_t)edgeNb, this->edges.getValue().size());
+        EXPECT_EQ((size_t)triangleNb, this->triangles.getValue().size());
+        EXPECT_EQ((size_t)quadNb, this->quads.getValue().size());
+        EXPECT_EQ((size_t)polygonNb, this->polygons.getValue().size());
+        EXPECT_EQ((size_t)tetraNb, this->tetrahedra.getValue().size());
+        EXPECT_EQ((size_t)hexaNb, this->hexahedra.getValue().size());
+        EXPECT_EQ((size_t)normalPerVertexNb, this->normals.getValue().size());
+        EXPECT_EQ((size_t)normalListNb, this->normalsList.getValue().size());
+        EXPECT_EQ((size_t)texCoordListNb, this->texCoordsList.getValue().size());
+        EXPECT_EQ((size_t)materialNb, this->materials.getValue().size());
     }
 
 };

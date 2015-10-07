@@ -1,129 +1,97 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaOpenCL)
 
-find_package(OpenCL REQUIRED)
+set(SOFAOPENCL_VERSION 0.1)
 
 set(HEADER_FILES
-
-    myopencl.h
-    initSofaOpenCL.h
-    OpenCLKernel.h
-    OpenCLProgram.h
-    OpenCLProgramParser.h
-    OpenCLTypes.h
-    OpenCLCommon.h
-
-    OpenCLSphereForceField.h
-    OpenCLSphereForceField.inl
-
-    OpenCLSPHFluidForceField.h
-    OpenCLSPHFluidForceField.inl
     CPUSPHFluidForceField.h
     CPUSPHFluidForceFieldWithOpenCL.h
-
-    OpenCLSpringForceField.h
-    OpenCLSpringForceField.inl
-
-    OpenCLUniformMass.h
-    OpenCLUniformMass.inl
-
+    OpenCLCommon.h
     OpenCLFixedConstraint.h
     OpenCLFixedConstraint.inl
-
     OpenCLIdentityMapping.h
     OpenCLIdentityMapping.inl
-
+    OpenCLKernel.h
     OpenCLMechanicalObject.h
     OpenCLMechanicalObject.inl
-
     OpenCLMemoryManager.h
-
     OpenCLPlaneForceField.h
     OpenCLPlaneForceField.inl
-
+    OpenCLProgram.h
+    OpenCLProgramParser.h
+    OpenCLSPHFluidForceField.h
+    OpenCLSPHFluidForceField.inl
     OpenCLSpatialGridContainer.h
     OpenCLSpatialGridContainer.inl
-
+    OpenCLSphereForceField.h
+    OpenCLSphereForceField.inl
+    OpenCLSpringForceField.h
+    OpenCLSpringForceField.inl
+    OpenCLTypes.h
+    OpenCLUniformMass.h
+    OpenCLUniformMass.inl
+    config.h
+    myopencl.h
+    oclRadixSort/CPUSortWithCuda.h
+    oclRadixSort/CPUSortWithOpenCL.h
     oclRadixSort/RadixSort.h
     oclRadixSort/Scan.h
-    oclRadixSort/CPUSortWithOpenCL.h
-    oclRadixSort/CPUSortWithCuda.h
-
-    tools/top.h
     tools/showvector.h
-    )
+    tools/top.h
+)
 
 set(SOURCE_FILES
-
-    myopencl.cpp
-    initSofaOpenCL.cpp
-    OpenCLCommon.cpp
-    OpenCLProgram.cpp
-    OpenCLMouseInteraction.cpp
-
-    OpenCLSphereForceField.cpp
-
-    OpenCLSPHFluidForceField.cpp
     CPUSPHFluidForceField.cpp
     CPUSPHFluidForceFieldWithOpenCL.cpp
-
-    OpenCLSpringForceField.cpp
-
-    OpenCLUniformMass.cpp
-
     OpenCLBoxROI.cpp
-
+    OpenCLCommon.cpp
     OpenCLFixedConstraint.cpp
-
     OpenCLIdentityMapping.cpp
-
     OpenCLMechanicalObject.cpp
-
     OpenCLMemoryManager.cpp
-
+    OpenCLMouseInteraction.cpp
     OpenCLPlaneForceField.cpp
-
+    OpenCLProgram.cpp
+    OpenCLSPHFluidForceField.cpp
     OpenCLSpatialGridContainer.cpp
-
+    OpenCLSphereForceField.cpp
+    OpenCLSpringForceField.cpp
+    OpenCLUniformMass.cpp
+    initSofaOpenCL.cpp
+    myopencl.cpp
     oclRadixSort/RadixSort.cpp
     oclRadixSort/Scan.cpp
-
-    tools/top.cpp
     tools/showvector.cpp
-    )
+    tools/top.cpp
+)
 
 set(OTHER_FILES
-
-    kernels/OpenCLGenericParticleForceField.cl
-
-    kernels/OpenCLSPHFluidForceField.cl
-
-    kernels/OpenCLSpringForceField.cl
-
-    kernels/OpenCLUniformMass.cl
-
     kernels/OpenCLFixedConstraint.cl
-
-    kernels/OpenCLMechanicalObject.cl
-
-    kernels/OpenCLMemoryManager.cl
-
+    kernels/OpenCLGenericParticleForceField.cl
     kernels/OpenCLGenericParticleForceField_Plane.macrocl
-
     kernels/OpenCLGenericParticleForceField_Sphere.macrocl
-
+    kernels/OpenCLMechanicalObject.cl
+    kernels/OpenCLMemoryManager.cl
+    kernels/OpenCLSPHFluidForceField.cl
     kernels/OpenCLSpatialGridContainer.cl
-
     kernels/OpenCLSpatialGridForce.cl
-
+    kernels/OpenCLSpringForceField.cl
+    kernels/OpenCLUniformMass.cl
     kernels/oclRadixSort/RadixSort.cl
     kernels/oclRadixSort/Scan_b.cl
-    )
+)
+
+find_package(OpenCL REQUIRED)
+find_package(SofaGeneral REQUIRED)
+
+message(WARNING "SofaOpenCL: TODO: don't use absolute path (SOFA_SRC_DIR)")
 
 include_directories(${OPENCL_INCLUDE_DIRS})
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${OTHER_FILES})
+add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/../../..\"")
 
-AddCompilerDefinitions("SOFA_BUILD_GPU_OPENCL")
-AddLinkerDependencies(${OPENCL_LIBRARIES} SofaHelper SofaEngine SofaSphFluid SofaUserInteraction csparse) # taucs taucs_mt system-taucs)
+add_definitions("-DSOFA_BUILD_GPU_OPENCL")
+target_link_libraries(${PROJECT_NAME} ${OPENCL_LIBRARIES} SofaHelper SofaEngine SofaSphFluid SofaUserInteraction csparse) # taucs taucs_mt system-taucs)
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+## Install rules for the library and headers; CMake package configurations files
+sofa_create_package(SofaOpenCL ${SOFAOPENCL_VERSION} SofaOpenCL SofaOpenCL)

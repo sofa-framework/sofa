@@ -1,32 +1,18 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
-
-set(SOURCE_FILES
-
-    Main.cpp
-    )
+cmake_minimum_required(VERSION 2.8.12)
+project(Modeler)
 
 if(APPLE)
-
     set(RC_FILES "../Modeler.icns")
-    
 else()
-    
     set(RC_FILES "sofa.rc")
-
 endif()
 
-UseQt()
-
-SOFA_QT_ADD_RESOURCES(RESOURCE_FILES "${SOFA_SHARE_DIR}/textures/modeler/icons.qrc")
-
-# make resource files path from absolute to relative
-ToRelativePath(RESOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${RESOURCE_FILES}")
-
+# TODO QT5
+find_package(Qt4)
+qt4_add_resources(RESOURCE_FILES "${CMAKE_SOURCE_DIR}/share/textures/modeler/icons.qrc")
 set(RESOURCE_FILES_GROUP "Generated")
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES} ${RESOURCE_FILES})
+add_executable(${PROJECT_NAME} Main.cpp ${RC_FILES} ${RESOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} SofaModeler SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
 
-AddLinkerDependencies(SofaModeler SofaComponentMain tinyxml)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+sofa_install_targets(SofaGui Modeler "")

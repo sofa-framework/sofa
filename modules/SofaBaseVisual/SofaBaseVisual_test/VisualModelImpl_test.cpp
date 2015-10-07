@@ -23,14 +23,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "Sofa_test.h"
+#include <gtest/gtest.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa {
 
 template <typename _DataTypes>
-struct VisualModelImpl_test : public Sofa_test<typename _DataTypes::Real>
+struct VisualModelImpl_test : public ::testing::Test
 {
     typedef _DataTypes DataTypes;
 
@@ -128,7 +128,7 @@ TEST( VisualModelImpl_test , checkThatMembersAreCorrectlyConstructed )
 
     ASSERT_EQ(false_var, visualModel.m_edges.getFlag(core::objectmodel::BaseData::FLAG_AUTOLINK));
 
-    ASSERT_EQ(1, visualModel.xforms.size());
+    ASSERT_EQ(1u, visualModel.xforms.size());
 }
 
 } //sofa

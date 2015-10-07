@@ -4,13 +4,13 @@
 #include <SofaMiscCollision/SolverMerger.h>
 #include <sofa/helper/FnDispatcher.inl>
 
-#include "odesolver/CompliantImplicitSolver.h"
-#include "odesolver/CompliantNLImplicitSolver.h"
+#include "../odesolver/CompliantImplicitSolver.h"
+#include "../odesolver/CompliantNLImplicitSolver.h"
 
-#include "numericalsolver/MinresSolver.h"
-#include "numericalsolver/CgSolver.h"
-#include "numericalsolver/EigenSparseSolver.h"
-#include "numericalsolver/SequentialSolver.h"
+#include "../numericalsolver/MinresSolver.h"
+#include "../numericalsolver/CgSolver.h"
+#include "../numericalsolver/EigenSparseSolver.h"
+#include "../numericalsolver/SequentialSolver.h"
 
 namespace sofa
 {

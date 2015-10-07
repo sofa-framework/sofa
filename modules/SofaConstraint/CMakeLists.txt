@@ -1,103 +1,96 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaConstraint)
 
 set(HEADER_FILES
-
-    config.h
-    initConstraint.h
-    LocalMinDistance.h
-    LocalMinDistance.inl
-    LMDNewProximityIntersection.h
-    LMDNewProximityIntersection.inl
-    FrictionContact.h
-    FrictionContact.inl
-    StickContactConstraint.h
-    StickContactConstraint.inl
-    UnilateralInteractionConstraint.h
-    UnilateralInteractionConstraint.inl
-    UncoupledConstraintCorrection.h
-    UncoupledConstraintCorrection.inl
-    PrecomputedConstraintCorrection.h
-    PrecomputedConstraintCorrection.inl
-    LinearSolverConstraintCorrection.h
-    LinearSolverConstraintCorrection.inl
-    GenericConstraintCorrection.h
-    GenericConstraintCorrection.inl
-    LCPConstraintSolver.h
-    ConstraintSolverImpl.h
-    FreeMotionAnimationLoop.h
-    ContactDescription.h
-    GenericConstraintSolver.h
     BilateralInteractionConstraint.h
     BilateralInteractionConstraint.inl
     ConstraintAnimationLoop.h
-    StopperConstraint.h
-    StopperConstraint.inl
-    SlidingConstraint.h
-    SlidingConstraint.inl
     ConstraintAttachBodyPerformer.h
     ConstraintAttachBodyPerformer.inl
-
-    )
+    ConstraintSolverImpl.h
+    ContactDescription.h
+    FreeMotionAnimationLoop.h
+    FrictionContact.h
+    FrictionContact.inl
+    GenericConstraintCorrection.h
+    GenericConstraintCorrection.inl
+    GenericConstraintSolver.h
+    LCPConstraintSolver.h
+    LMDNewProximityIntersection.h
+    LMDNewProximityIntersection.inl
+    LinearSolverConstraintCorrection.h
+    LinearSolverConstraintCorrection.inl
+    LocalMinDistance.h
+    LocalMinDistance.inl
+    PrecomputedConstraintCorrection.h
+    PrecomputedConstraintCorrection.inl
+    SlidingConstraint.h
+    SlidingConstraint.inl
+    StickContactConstraint.h
+    StickContactConstraint.inl
+    StopperConstraint.h
+    StopperConstraint.inl
+    UncoupledConstraintCorrection.h
+    UncoupledConstraintCorrection.inl
+    UnilateralInteractionConstraint.h
+    UnilateralInteractionConstraint.inl
+    config.h
+    initConstraint.h
+)
 
 set(SOURCE_FILES
-
-    initConstraint.cpp
-    LocalMinDistance.cpp
-    LMDNewProximityIntersection.cpp
-    FrictionContact.cpp
-    StickContactConstraint.cpp
-    UnilateralInteractionConstraint.cpp
-    UncoupledConstraintCorrection.cpp
-    PrecomputedConstraintCorrection.cpp
-    LinearSolverConstraintCorrection.cpp
-    LCPConstraintSolver.cpp
-    ConstraintSolverImpl.cpp
-    FreeMotionAnimationLoop.cpp
-    GenericConstraintSolver.cpp
     BilateralInteractionConstraint.cpp
     ConstraintAnimationLoop.cpp
-    StopperConstraint.cpp
-    SlidingConstraint.cpp
     ConstraintAttachBodyPerformer.cpp
+    ConstraintSolverImpl.cpp
+    FreeMotionAnimationLoop.cpp
+    FrictionContact.cpp
     GenericConstraintCorrection.cpp
+    GenericConstraintSolver.cpp
+    LCPConstraintSolver.cpp
+    LMDNewProximityIntersection.cpp
+    LinearSolverConstraintCorrection.cpp
+    LocalMinDistance.cpp
+    PrecomputedConstraintCorrection.cpp
+    SlidingConstraint.cpp
+    StickContactConstraint.cpp
+    StopperConstraint.cpp
+    UncoupledConstraintCorrection.cpp
+    UnilateralInteractionConstraint.cpp
+    initConstraint.cpp
+)
 
+
+    list(APPEND HEADER_FILES
+        BarycentricDistanceLMConstraintContact.h
+        BarycentricDistanceLMConstraintContact.inl
+        DOFBlockerLMConstraint.h
+        DOFBlockerLMConstraint.inl
+        FixedLMConstraint.h
+        FixedLMConstraint.inl
+        DistanceLMContactConstraint.h
+        DistanceLMContactConstraint.inl
+        DistanceLMConstraint.h
+        DistanceLMConstraint.inl
+        LMConstraintSolver.h
+        LMConstraintDirectSolver.h
     )
 
-if(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
-	list(APPEND HEADER_FILES "BarycentricDistanceLMConstraintContact.h")
-	list(APPEND HEADER_FILES "BarycentricDistanceLMConstraintContact.inl")
-	list(APPEND HEADER_FILES "DOFBlockerLMConstraint.h")
-	list(APPEND HEADER_FILES "DOFBlockerLMConstraint.inl")
-	list(APPEND HEADER_FILES "FixedLMConstraint.h")
-	list(APPEND HEADER_FILES "FixedLMConstraint.inl")
-	list(APPEND HEADER_FILES "DistanceLMContactConstraint.h")
-	list(APPEND HEADER_FILES "DistanceLMContactConstraint.inl")
-	list(APPEND HEADER_FILES "DistanceLMConstraint.h")
-	list(APPEND HEADER_FILES "DistanceLMConstraint.inl")
-	list(APPEND HEADER_FILES "LMConstraintSolver.h")
-	list(APPEND HEADER_FILES "LMConstraintDirectSolver.h")
+    list(APPEND SOURCE_FILES
+        BarycentricDistanceLMConstraintContact.cpp
+        DOFBlockerLMConstraint.cpp
+        FixedLMConstraint.cpp
+        DistanceLMContactConstraint.cpp
+        DistanceLMConstraint.cpp
+        LMConstraintSolver.cpp
+        LMConstraintDirectSolver.cpp
+    )
 
-	list(APPEND SOURCE_FILES "BarycentricDistanceLMConstraintContact.cpp")
-	list(APPEND SOURCE_FILES "DOFBlockerLMConstraint.cpp")
-	list(APPEND SOURCE_FILES "FixedLMConstraint.cpp")
-	list(APPEND SOURCE_FILES "DistanceLMContactConstraint.cpp")
-	list(APPEND SOURCE_FILES "DistanceLMConstraint.cpp")
-	list(APPEND SOURCE_FILES "LMConstraintSolver.cpp")
-	list(APPEND SOURCE_FILES "LMConstraintDirectSolver.cpp")
-
-
-endif()
-
-set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaSimpleFem SofaImplicitOdeSolver SofaUserInteraction SofaBaseLinearSolver)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_CONSTRAINT")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_CONSTRAINT" )
-AddSourceDependencies(eigen)
-AddLinkerDependencies(SofaMeshCollision SofaSimpleFem SofaImplicitOdeSolver SofaUserInteraction )
-AddSourceDependencies(eigen)
-if(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
-    AddLinkerDependencies(SofaEigen2Solver)
-endif()
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})

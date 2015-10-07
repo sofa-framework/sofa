@@ -25,7 +25,7 @@
 #ifndef SOFA_PLUGINMANAGER_H
 #define SOFA_PLUGINMANAGER_H
 
-#include "ui_PluginManager.h"
+#include <ui_PluginManager.h>
 #include "SofaGUIQt.h"
 #include <QTreeWidgetItem>
 

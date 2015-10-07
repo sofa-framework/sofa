@@ -1,6 +1,6 @@
 
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 
 
 #include "ComponentSpecializationsDefines.h"
@@ -82,11 +82,13 @@ namespace behavior
     template class SOFA_Flexible_API ForceField< defaulttype::TYPEABSTRACTNAME3dTypes >;
     template class SOFA_Flexible_API Mass< defaulttype::TYPEABSTRACTNAME3dTypes >;
     template class SOFA_Flexible_API ConstraintCorrection< defaulttype::TYPEABSTRACTNAME3dTypes >;
+    template class SOFA_Flexible_API ProjectiveConstraintSet< defaulttype::TYPEABSTRACTNAME3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API ForceField< defaulttype::TYPEABSTRACTNAME3fTypes >;
     template class SOFA_Flexible_API Mass< defaulttype::TYPEABSTRACTNAME3fTypes >;
     template class SOFA_Flexible_API ConstraintCorrection< defaulttype::TYPEABSTRACTNAME3fTypes >;
+    template class SOFA_Flexible_API ProjectiveConstraintSet< defaulttype::TYPEABSTRACTNAME3fTypes >;
 #endif
 
 
@@ -435,60 +437,63 @@ template class SOFA_Flexible_API ProjectToPointConstraint<TYPEABSTRACTNAME3dType
 template class SOFA_Flexible_API ProjectToPointConstraint<TYPEABSTRACTNAME3fTypes>;
 #endif
 
-// ==========================================================================
-// ProjectToLineConstraint
-SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ProjectToLineConstraint) )
-int EVALUATOR(TYPEABSTRACTNAME,ProjectToLineConstraintClass) = core::RegisterObject ( "Project particles to a line" )
-#ifndef SOFA_FLOAT
-.add< ProjectToLineConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-.add< ProjectToLineConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
-#endif
-;
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API ProjectToLineConstraint<TYPEABSTRACTNAME3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API ProjectToLineConstraint<TYPEABSTRACTNAME3fTypes>;
-#endif
 
-// ==========================================================================
-// ProjectToPlaneConstraint
-SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ProjectToPlaneConstraint) )
-int EVALUATOR(TYPEABSTRACTNAME,ProjectToPlaneConstraintClass) = core::RegisterObject ( "Project particles to a plane" )
-#ifndef SOFA_FLOAT
-.add< ProjectToPlaneConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-.add< ProjectToPlaneConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
-#endif
-;
+// TODO: jacobians need to be adjusted to complex types for following projective constaints
 
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API ProjectToPlaneConstraint<TYPEABSTRACTNAME3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API ProjectToPlaneConstraint<TYPEABSTRACTNAME3fTypes>;
-#endif
+//// ==========================================================================
+//// ProjectToLineConstraint
+//SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ProjectToLineConstraint) )
+//int EVALUATOR(TYPEABSTRACTNAME,ProjectToLineConstraintClass) = core::RegisterObject ( "Project particles to a line" )
+//#ifndef SOFA_FLOAT
+//.add< ProjectToLineConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
+//#endif
+//#ifndef SOFA_DOUBLE
+//.add< ProjectToLineConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
+//#endif
+//;
+//#ifndef SOFA_FLOAT
+//template class SOFA_Flexible_API ProjectToLineConstraint<TYPEABSTRACTNAME3dTypes>;
+//#endif
+//#ifndef SOFA_DOUBLE
+//template class SOFA_Flexible_API ProjectToLineConstraint<TYPEABSTRACTNAME3fTypes>;
+//#endif
 
-// ==========================================================================
-// ProjectDirectionConstraint
-SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ProjectDirectionConstraint) )
-int EVALUATOR(TYPEABSTRACTNAME,ProjectDirectionConstraintClass) = core::RegisterObject ( "Project particles to a line" )
-#ifndef SOFA_FLOAT
-.add< ProjectDirectionConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-.add< ProjectDirectionConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
-#endif
-    ;
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API ProjectDirectionConstraint<TYPEABSTRACTNAME3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API ProjectDirectionConstraint<TYPEABSTRACTNAME3fTypes>;
-#endif
+//// ==========================================================================
+//// ProjectToPlaneConstraint
+//SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ProjectToPlaneConstraint) )
+//int EVALUATOR(TYPEABSTRACTNAME,ProjectToPlaneConstraintClass) = core::RegisterObject ( "Project particles to a plane" )
+//#ifndef SOFA_FLOAT
+//.add< ProjectToPlaneConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
+//#endif
+//#ifndef SOFA_DOUBLE
+//.add< ProjectToPlaneConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
+//#endif
+//;
+
+//#ifndef SOFA_FLOAT
+//template class SOFA_Flexible_API ProjectToPlaneConstraint<TYPEABSTRACTNAME3dTypes>;
+//#endif
+//#ifndef SOFA_DOUBLE
+//template class SOFA_Flexible_API ProjectToPlaneConstraint<TYPEABSTRACTNAME3fTypes>;
+//#endif
+
+//// ==========================================================================
+//// ProjectDirectionConstraint
+//SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ProjectDirectionConstraint) )
+//int EVALUATOR(TYPEABSTRACTNAME,ProjectDirectionConstraintClass) = core::RegisterObject ( "Project particles to a line" )
+//#ifndef SOFA_FLOAT
+//.add< ProjectDirectionConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
+//#endif
+//#ifndef SOFA_DOUBLE
+//.add< ProjectDirectionConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
+//#endif
+//    ;
+//#ifndef SOFA_FLOAT
+//template class SOFA_Flexible_API ProjectDirectionConstraint<TYPEABSTRACTNAME3dTypes>;
+//#endif
+//#ifndef SOFA_DOUBLE
+//template class SOFA_Flexible_API ProjectDirectionConstraint<TYPEABSTRACTNAME3fTypes>;
+//#endif
 
 
 } // namespace projectiveconstraintset

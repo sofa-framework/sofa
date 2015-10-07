@@ -25,12 +25,6 @@
 #ifndef SOFACOMPONENTADVANCED_CONFIG_H
 #define SOFACOMPONENTADVANCED_CONFIG_H
 
-#include <sofa/helper/system/config.h>
-
-#ifdef SOFA_BUILD_COMPONENT_ADVANCED
-#  define SOFA_COMPONENT_ADVANCED_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_ADVANCED_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <SofaAdvanced/config.h>
 
 #endif

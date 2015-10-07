@@ -48,6 +48,7 @@ public:
     typedef typename Coord::value_type Real;
     typedef defaulttype::Mat< 3, 3, Real > Mat3x3;
 
+    using BaseRotationFinder::getRotations;
     virtual const helper::vector< Mat3x3 >& getRotations() = 0;
 };
 
