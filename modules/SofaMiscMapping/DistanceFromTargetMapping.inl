@@ -45,8 +45,8 @@ DistanceFromTargetMapping<TIn, TOut>::DistanceFromTargetMapping()
     , f_targetPositions(initData(&f_targetPositions, "targetPositions", "Positions to compute the distances from"))
     , f_restDistances(initData(&f_restDistances, "restLengths", "Rest lengths of the connections."))
     , d_geometricStiffness(initData(&d_geometricStiffness, (unsigned)2, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
-    , _arrowSize(-1)
-    , _color( 1,0,0,1 )
+    , d_showObjectScale(initData(&d_showObjectScale, 0.f, "showObjectScale", "Scale for object display"))
+    , d_color(initData(&d_color, defaulttype::Vec4f(1,0,0,1), "showColor", "Color for object display"))
 {
 }
 
@@ -127,6 +127,13 @@ void DistanceFromTargetMapping<TIn, TOut>::init()
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
 
+
+    core::behavior::BaseMechanicalState *state;
+    if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModel.get())))
+        maskFrom = &state->forceMask;
+    if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModel.get())))
+        maskTo = &state->forceMask;
+
     this->Inherit::init();  // applies the mapping, so after the Data init
 }
 
@@ -149,7 +156,8 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
     directions.resize(out.size());
     invlengths.resize(out.size());
 
-    for(unsigned i=0; i<indices.size(); i++ )
+
+    for(unsigned i=0; i<indices.size() ; i++ )
     {
         Direction& gap = directions[i];
 
@@ -188,7 +196,7 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
 //    cerr<<"DistanceFromTargetMapping<TIn, TOut>::apply, out = " << out << endl;
 
     jacobian.compress();
-//    cerr<<"DistanceFromTargetMapping<TIn, TOut>::apply, jacobian: "<<endl<< jacobian << endl;
+//    serr << "apply, jacobian: " << sendl << jacobian << sendl;
 
 }
 
@@ -204,6 +212,16 @@ void DistanceFromTargetMapping<TIn, TOut>::applyJ(const core::MechanicalParams *
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
 {
+    if( (maskTo->isInUse()) )
+    {
+        helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+        typedef helper::ParticleMask ParticleMask;
+        const ParticleMask::InternalStorage &maskindices=maskTo->getEntries();
+        ParticleMask::InternalStorage::const_iterator it;
+        for (it=maskindices.begin(); it!=maskindices.end(); it++) maskFrom->insertEntry(indices[*it]);
+        // the Jacobian matrix could be reduced here (or at least filtered), but it is not sure it would be less costly than just filtering the parent and keeping the full Jacobian here
+    }
+
     if( jacobian.rowSize() > 0 )
         jacobian.addMultTranspose(dIn,dOut);
 }
@@ -335,7 +353,8 @@ void DistanceFromTargetMapping<TIn, TOut>::updateK( const core::MechanicalParams
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if( _arrowSize<0 ) return;
+    float arrowsize = d_showObjectScale.getValue();
+    if( arrowsize<0 ) return;
 
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
     helper::ReadAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
@@ -349,11 +368,11 @@ void DistanceFromTargetMapping<TIn, TOut>::draw(const core::visual::VisualParams
         points.push_back( sofa::defaulttype::Vector3(TIn::getCPos(pos[indices[i]]) ) );
     }
 
-    if( !_arrowSize )
-        vparams->drawTool()->drawLines ( points, 1, _color );
+    if( !arrowsize )
+        vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
     else
         for (unsigned int i=0; i<points.size()/2; ++i)
-            vparams->drawTool()->drawArrow( points[2*i+1], points[2*i], (float)_arrowSize, _color );
+            vparams->drawTool()->drawArrow( points[2*i+1], points[2*i], arrowsize, d_color.getValue() );
 
 }
 
