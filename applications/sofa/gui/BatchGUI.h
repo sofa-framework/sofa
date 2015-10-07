@@ -52,7 +52,7 @@ public:
     void redraw();
     int closeGUI();
 
-    static void setNumIterations(unsigned int n) {nbIter=n;};
+    static void setNumIterations(unsigned int n) {nbIter=n;}
     sofa::simulation::Node* currentSimulation();
 
     /// @}
