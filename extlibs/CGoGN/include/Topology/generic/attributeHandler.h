@@ -281,30 +281,32 @@ public:
 
     inline friend std::ostream& operator<< ( std::ostream& os, const AttributeHandler<T, ORBIT, MAP, AttributeAccessorPolicy >& handler )
     {
-
-        const unsigned int currLVL = handler.map()->getCurrentLevel();
-        handler.map()->setCurrentLevel(handler.map()->getMaxLevel());
-        handler.enableBrowser();
-
-        unsigned int i = handler.begin();
-        const unsigned e = handler.end();
-        while (i != e)
+        if (handler.isValid())
         {
-            unsigned next = i;
-            handler.next(next);
-            if (next == e)
+            const unsigned int currLVL = handler.map()->getCurrentLevel();
+            handler.map()->setCurrentLevel(handler.map()->getMaxLevel());
+            handler.enableBrowser();
+
+            unsigned int i = handler.begin();
+            const unsigned e = handler.end();
+            while (i != e)
             {
-                break;
-            } else {
-                os<< handler[i] << " ";
-                i = next;
+                unsigned next = i;
+                handler.next(next);
+                if (next == e)
+                {
+                    break;
+                } else {
+                    os<< handler[i] << " ";
+                    i = next;
+                }
+
             }
+            os<< handler[i];
 
+            handler.disableBrowser();
+            handler.map()->setCurrentLevel(currLVL);
         }
-        os<< handler[i];
-
-        handler.disableBrowser();
-        handler.map()->setCurrentLevel(currLVL);
         return os;
     }
 
