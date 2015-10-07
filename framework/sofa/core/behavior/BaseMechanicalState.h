@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/ParticleMask.h>
+#include <sofa/helper/StateMask.h>
 
 #include <iostream>
 
@@ -313,7 +313,7 @@ public:
 
     Data<bool> useMask;
     /// Mask to filter the particles. Used inside MechanicalMappings inside applyJ and applyJT methods.
-    helper::ParticleMask forceMask;
+    helper::StateMask forceMask;
 
     /// @}
 
