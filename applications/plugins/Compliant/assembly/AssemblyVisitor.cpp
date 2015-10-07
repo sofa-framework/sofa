@@ -87,7 +87,7 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 
         if( !notempty((*js)[i]) )
         {
-            MAINLOGGER( Warning, "empty mapping block for " << mapping_name(node) << " (is mapping matrix assembled?)", "AssemblyVisitor" )
+            MAINLOGGER( Warning, "Empty mapping block for " << mapping_name(node) << " (is mapping matrix assembled?)", "AssemblyVisitor" )
             continue;
         }
 
