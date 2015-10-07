@@ -346,65 +346,64 @@ Intersection intersectionLineTriangle2D(const VEC3& P, const VEC3& Dir, const VE
 }
 
 template <typename VEC3>
-Intersection intersectionSegmentTriangle(const VEC3& PA, const VEC3& PB, const VEC3& Ta, const VEC3& Tb, const VEC3& Tc, VEC3& Inter)
+Intersection intersectionSegmentTriangle(const VEC3& PA, const VEC3& PB, const VEC3& Ta, const VEC3& Tb, const VEC3& Tc, VEC3& Inter, double precision)
 {
-        typedef double T ;
-        const T precision = std::numeric_limits<T>::min();
+    typedef double T ;
 
-	VEC3 u = Tb - Ta ;
-	VEC3 v = Tc - Ta ;
-	VEC3 Dir = PB - PA ;
+    VEC3 const& u = Tb - Ta ;
+    VEC3 const& v = Tc - Ta ;
+    VEC3 const& Dir = PB - PA ;
 
-        VEC3 n = u.cross(v) ;
+    VEC3 const& n = u.cross(v) ;
 
-	VEC3 w0 = PA - Ta ;
-    float a = -(n * w0) ;
-    float b = (n * Dir) ;
+    VEC3 const& w0 = PA - Ta ;
+    const double a = -(n * w0) ;
+    const double b = (n * Dir) ;
 
-    if(fabs(b) < precision)			//ray parallel to triangle
-		return NO_INTERSECTION ;
-
-	//compute intersection
-	T r = a / b ;
-
-	if((r < -precision) || (r > (T(1) + precision)))
-		return NO_INTERSECTION;
-
-	Inter = PA + r * Dir;			// intersect point of ray and plane
-
-    // is I inside T?
-	T uu = u.norm2() ;
-	T uv = u * v ;
-	T vv = v.norm2() ;
-	VEC3 w = Inter - Ta ;
-	T wu = w * u ;
-	T wv = w * v ;
-	T D = (uv * uv) - (uu * vv) ;
-
-    // get and test parametric coords
-	T s = ((uv * wv) - (vv * wu)) / D ;
-
-	if(s <= precision)
-		s = 0.0f;
-
-	if(s < T(0) || s > T(1))
-		return NO_INTERSECTION ;
-
-	T t = ((uv * wu) - (uu * wv)) / D ;
-
-	if(t <= precision)
-		t = 0.0f;
-
-	if(t < T(0) || (s + t) > T(1))
+    if(std::fabs(b) < precision)			//ray parallel to triangle
         return NO_INTERSECTION ;
 
-	if((s == T(0) || s == T(1)))
-		if(t == T(0) || t == T(1))
-			return VERTEX_INTERSECTION ;
-		else
-			return EDGE_INTERSECTION ;
-	else if(t == T(0) || t == T(1))
-			return EDGE_INTERSECTION ;
+    //compute intersection
+    const double r = a / b ;
+
+    if((r < -precision) || (r > (1. + precision)))
+        return NO_INTERSECTION;
+
+    Inter = PA + r * Dir;			// intersect point of ray and plane
+
+    // is I inside T?
+    const double uu = u.norm2() ;
+    const double uv = u * v ;
+    const double vv = v.norm2() ;
+    VEC3 const &w = Inter - Ta ;
+    const double  wu = w * u ;
+    const double  wv = w * v ;
+    const double  D = (uv * uv) - (uu * vv) ;
+
+    // get and test parametric coords
+    double  s = ((uv * wv) - (vv * wu)) / D ;
+
+    if(s <= precision)
+        s = 0.;
+
+    if(s < 0. || s > 1.)
+        return NO_INTERSECTION ;
+
+    double t = ((uv * wu) - (uu * wv)) / D ;
+
+    if(t <= precision)
+        t = 0.0;
+
+    if(t < 0. || (s + t) > 1.)
+        return NO_INTERSECTION ;
+
+    if(s == 0. || s == 1.)
+        if(t == 0. || t == 1.)
+            return VERTEX_INTERSECTION ;
+        else
+            return EDGE_INTERSECTION ;
+    else if(t == 0. || t == 1.)
+        return EDGE_INTERSECTION ;
 
     return FACE_INTERSECTION ;
 }
