@@ -10,7 +10,7 @@ namespace simulation {
 class FailNode : public Node {
 public:
 	
-	void doExecuteVisitor(simulation::Visitor* action);
+    void doExecuteVisitor(simulation::Visitor* action, bool precomputedOrder=false);
 
 	static void fail();
 
@@ -57,6 +57,7 @@ public:
     /// Test if the given node is an ancestor of this node.
     /// An ancestor is a parent or (recursively) the parent of an ancestor.
     virtual bool hasAncestor(const BaseNode* node) const;
+    virtual bool hasAncestor(const BaseContext* context) const;
 
     /// Remove the current node from the graph: depending on the type of Node, it can have one or several parents.
     virtual void detachFromGraph();

@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENT_COMPLIANCE_UniformLinearPotentialEnergy_H
 #define SOFA_COMPONENT_COMPLIANCE_UniformLinearPotentialEnergy_H
 
-#include "initCompliant.h"
+#include <Compliant/config.h>
 #include <sofa/core/behavior/ForceField.h>
 
 namespace sofa
@@ -78,7 +78,7 @@ protected:
 
     UniformLinearPotentialEnergy( core::behavior::MechanicalState<DataTypes> *mm = 0)
         : Base(mm)
-        , d_factor(initData(&d_factor, 1.0, "factor", "scalar factor"))
+        , d_factor(initData(&d_factor, (SReal)1.0, "factor", "scalar factor"))
     {}
     
 };

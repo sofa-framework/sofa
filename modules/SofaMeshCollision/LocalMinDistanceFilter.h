@@ -56,7 +56,9 @@ public:
      */
     InfoFilter(LocalMinDistanceFilter *lmdFilters)
         :	m_revision(-1),
-            m_lmdFilters(lmdFilters)
+            m_lmdFilters(lmdFilters),
+            base_mesh_topology(NULL),
+            position_filtering(NULL)
     {}
 
     /**

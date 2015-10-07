@@ -194,7 +194,7 @@ TEST_F(Engine_test , check_propagation )
 
 //////////////////////////
 
-#include <AverageCoord.h>
+#include <SofaEngine/AverageCoord.h>
 #include <SofaEngine/BoxROI.h>
 #include <SofaEngine/PairBoxRoi.h>
 #include <SofaEngine/PlaneROI.h>

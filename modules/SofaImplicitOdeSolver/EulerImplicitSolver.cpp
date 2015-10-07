@@ -98,6 +98,10 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     MultiVecCoord newPos(&vop, xResult );
     MultiVecDeriv newVel(&vop, vResult );
 
+	/// inform the constraint parameters about the position and velocity id
+	mop.cparams.setX(xResult);
+	mop.cparams.setV(vResult);
+
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
     MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
 
@@ -212,10 +216,8 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
     // apply the solution
 
-#ifdef SOFA_HAVE_EIGEN2
     //For to No MultiOp, as it would be impossible to apply the constraints
 #define SOFA_NO_VMULTIOP
-#endif
 
 #ifdef SOFA_SMP
     // For SofaSMP we would need VMultiOp to be implemented in a SofaSMP compatible way

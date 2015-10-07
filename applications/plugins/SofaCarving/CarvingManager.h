@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_CARVINGMANAGER_H
 #define SOFA_COMPONENT_COLLISION_CARVINGMANAGER_H
 
-#include "initSofaCarving.h"
+#include <SofaCarving/config.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>

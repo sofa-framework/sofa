@@ -3,7 +3,7 @@
 namespace utils {
 anderson::anderson(unsigned n, unsigned m, const vec& metric)
     : n(n), m(m), metric(metric) {
-    
+
     if( m ) {
         G = dmat::Zero(n, m);
         F = dmat::Zero(n, m);
@@ -16,6 +16,8 @@ anderson::anderson(unsigned n, unsigned m, const vec& metric)
 
 
 void anderson::operator()(vec& x, bool sign_check) {
+
+    (void)n;
 
     if( k > 0 ) {
         const unsigned index = k % m;

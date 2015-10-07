@@ -27,7 +27,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
-#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
 #include "../strainMapping/InvariantMapping.h"
@@ -93,7 +92,6 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
     void SetUp()
     { 
         // Init simulation
-        sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 		
         vIndex=25;
@@ -145,14 +143,14 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
     }
 
     ForceFieldSPtr addMooneyRivlinForceField(simulation::Node::SPtr node,
-        double youngModulus,double poissonRatio)
+        double /*youngModulus*/,double poissonRatio)
     {
         // Mooney Rivlin Force Field
         MooneyRivlinForceFieldSPtr hookeFf = addNew<MooneyRivlinForceField>(node,"strainMapping");
 
-        Real lambda=youngModulus*poissonRatio/((1+poissonRatio)*(1-2*poissonRatio));
-        Real mu=youngModulus/(2*(1+poissonRatio));
-        Real bulkModulus=lambda+2*mu/3;
+//        Real lambda=youngModulus*poissonRatio/((1+poissonRatio)*(1-2*poissonRatio));
+//        Real mu=youngModulus/(2*(1+poissonRatio));
+//        Real bulkModulus=lambda+2*mu/3;
         vector<Real> c1Vec; vector<Real> c2Vec;vector<Real> bulkModulusVec;
         // Neo Hooke with its mooney rivlin equivalent model
         c1Vec.push_back(0.25/(1.0+poissonRatio)); c2Vec.push_back(0);bulkModulusVec.push_back(1.0/(3*(1-2*poissonRatio)));

@@ -111,6 +111,7 @@ namespace sofa {
 
         }
 
+        using Inherited::runTest;
         /// After simulation compare the positions of deformation gradients to the theoretical positions.
         bool runTest(double convergenceAccuracy)
         {

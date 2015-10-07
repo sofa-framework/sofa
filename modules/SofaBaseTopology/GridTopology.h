@@ -120,6 +120,7 @@ public:
     */
 
     Hexa getHexaCopy(int i);
+    using MeshTopology::getHexahedron;
     Hexa getHexahedron(int x, int y, int z);
 
 #ifndef SOFA_NEW_HEXA
@@ -128,6 +129,7 @@ public:
 #endif
 
     Quad getQuadCopy(int i);
+    using MeshTopology::getQuad;
     Quad getQuad(int x, int y, int z);
 
     int point(int x, int y, int z) const { return x+n.getValue()[0]*(y+n.getValue()[1]*z); }

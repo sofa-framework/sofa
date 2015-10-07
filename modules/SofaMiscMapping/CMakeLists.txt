@@ -1,82 +1,74 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaMiscMapping)
 
 set(HEADER_FILES
-
-    config.h
-    initMiscMapping.h
+    BarycentricMappingRigid.h
+    BarycentricMappingRigid.inl
     BeamLinearMapping.h
     BeamLinearMapping.inl
-    CenterPointMechanicalMapping.h
-    CenterPointMechanicalMapping.inl
+    CatmullRomSplineMapping.h
+    CatmullRomSplineMapping.inl
     CenterOfMassMapping.h
     CenterOfMassMapping.inl
-    CenterOfMassMultiMapping.h
-    CenterOfMassMultiMapping.inl
     CenterOfMassMulti2Mapping.h
     CenterOfMassMulti2Mapping.inl
+    CenterOfMassMultiMapping.h
+    CenterOfMassMultiMapping.inl
+    CenterPointMechanicalMapping.h
+    CenterPointMechanicalMapping.inl
     CurveMapping.h
     CurveMapping.inl
-    DistanceMapping.h
-    DistanceMapping.inl
+    DeformableOnRigidFrameMapping.h
+    DeformableOnRigidFrameMapping.inl
     DistanceFromTargetMapping.h
     DistanceFromTargetMapping.inl
+    DistanceMapping.h
+    DistanceMapping.inl
     ExternalInterpolationMapping.h
     ExternalInterpolationMapping.inl
+    IdentityMultiMapping.h
+    IdentityMultiMapping.inl
+    PCAOnRigidFrameMapping.h
+    PCAOnRigidFrameMapping.inl
+    ProjectionToLineMapping.h
+    ProjectionToLineMapping.inl
+    ProjectionToPlaneMapping.h
+    ProjectionToPlaneMapping.inl
     SubsetMultiMapping.h
     SubsetMultiMapping.inl
     TubularMapping.h
     TubularMapping.inl
     VoidMapping.h
-    BarycentricMappingRigid.h
-    BarycentricMappingRigid.inl
-    DeformableOnRigidFrameMapping.h
-    DeformableOnRigidFrameMapping.inl
-    PCAOnRigidFrameMapping.h
-    PCAOnRigidFrameMapping.inl
-    CatmullRomSplineMapping.h
-    CatmullRomSplineMapping.inl
-    IdentityMultiMapping.h
-    IdentityMultiMapping.inl
-    ProjectionToLineMapping.h
-    ProjectionToLineMapping.inl
-    ProjectionToPlaneMapping.h
-    ProjectionToPlaneMapping.inl
-
-    )
+    config.h
+    initMiscMapping.h
+)
 
 set(SOURCE_FILES
-
-    initMiscMapping.cpp
+    BarycentricMappingRigid.cpp
     BeamLinearMapping.cpp
-    CenterPointMechanicalMapping.cpp
+    CatmullRomSplineMapping.cpp
     CenterOfMassMapping.cpp
-    CenterOfMassMultiMapping.cpp
     CenterOfMassMulti2Mapping.cpp
+    CenterOfMassMultiMapping.cpp
+    CenterPointMechanicalMapping.cpp
     CurveMapping.cpp
-    DistanceMapping.cpp
+    DeformableOnRigidFrameMapping.cpp
     DistanceFromTargetMapping.cpp
+    DistanceMapping.cpp
     ExternalInterpolationMapping.cpp
+    IdentityMultiMapping.cpp
+    PCAOnRigidFrameMapping.cpp
+    ProjectionToLineMapping.cpp
+    ProjectionToPlaneMapping.cpp
     SubsetMultiMapping.cpp
     TubularMapping.cpp
     VoidMapping.cpp
-    BarycentricMappingRigid.cpp
-    DeformableOnRigidFrameMapping.cpp
-    PCAOnRigidFrameMapping.cpp
-    CatmullRomSplineMapping.cpp
-    IdentityMultiMapping.cpp
-    ProjectionToLineMapping.cpp
-    ProjectionToPlaneMapping.cpp
-    )
-
-set(GROUP_BASE_DIR "..")
-
-AddSourceDependencies(eigen)
+    initMiscMapping.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem SofaRigid)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MISC_MAPPING")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_MISC_MAPPING" )
-AddSourceDependencies(eigen)
-AddLinkerDependencies(SofaSimpleFem SofaRigid)
-
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+sofa_install_targets(SofaMisc ${PROJECT_NAME} ${PROJECT_NAME})

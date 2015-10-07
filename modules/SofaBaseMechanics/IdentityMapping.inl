@@ -225,7 +225,9 @@ struct IdentityMappingMatrixHelper
 template <class TIn, class TOut>
 const typename IdentityMapping<TIn, TOut>::js_type* IdentityMapping<TIn, TOut>::getJs()
 {
-	if( !eigen.compressedMatrix.nonZeros() || updateJ ) {
+    bool isMaskInUse = maskTo->isInUse();
+
+    if( !eigen.compressedMatrix.nonZeros() || updateJ || isMaskInUse ) {
 		updateJ = false;
 
 		assert( this->fromModel->getSize() == this->toModel->getSize());
@@ -238,13 +240,33 @@ const typename IdentityMapping<TIn, TOut>::js_type* IdentityMapping<TIn, TOut>::
 		const unsigned rows = n * NOut;
         const unsigned cols = n * NIn;
 
+        static const unsigned N = std::min<unsigned>(NIn, NOut);
+
+
+        typedef helper::ParticleMask ParticleMask;
+        const ParticleMask::InternalStorage& indices = maskTo->getEntries();
+        ParticleMask::InternalStorage::const_iterator it = indices.begin();
+
         eigen.compressedMatrix.resize( rows, cols );
 		eigen.compressedMatrix.setZero();
-        eigen.compressedMatrix.reserve( rows );
-		
-		for(unsigned i = 0 ; i < n; ++i) {
+        eigen.compressedMatrix.reserve( isMaskInUse ? indices.size() : rows );
 
-			for(unsigned r = 0; r < std::min<unsigned>(NIn, NOut); ++r) {
+        for(unsigned i = 0; i < n && !(isMaskInUse && it == indices.end()); ++i)
+        {
+            if (isMaskInUse)
+            {
+                if(i != *it)
+                {
+                    // do not forget to add empty rows (mandatory for Eigen)
+                    for(unsigned r = 0; r < N; ++r) {
+                        const unsigned row = NOut * i + r;
+                        eigen.compressedMatrix.startVec( row );
+                    }
+                    continue;
+                }
+                ++it;
+            }
+            for(unsigned r = 0; r < N; ++r) {
 				const unsigned row = NOut * i + r;
 
 				eigen.compressedMatrix.startVec( row );

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_StabilizedNeoHookeanFORCEFIELD_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../material/StabilizedNeoHookeanForceField.h"
 #include "../types/StrainTypes.h"
 #include <sofa/core/ObjectFactory.h>

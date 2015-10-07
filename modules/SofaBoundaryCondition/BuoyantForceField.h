@@ -134,6 +134,7 @@ public:
         return 0.0;
     }
 
+    using core::behavior::ForceField<DataTypes>::addKToMatrix;
     virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, SReal /*kFact*/) {}
 
     void draw(const core::visual::VisualParams* vparams);

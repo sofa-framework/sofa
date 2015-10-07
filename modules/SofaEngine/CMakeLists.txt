@@ -1,171 +1,171 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaEngine)
 
 set(HEADER_FILES
-
-    config.h
-    initEngine.h
     AverageCoord.h
     AverageCoord.inl
     BoxROI.h
     BoxROI.inl
-    PairBoxRoi.h
-    PairBoxRoi.inl
-    PlaneROI.h
-    PlaneROI.inl
-    SphereROI.h
-    SphereROI.inl
+    ClusteringEngine.h
+    ClusteringEngine.inl
     DilateEngine.h
     DilateEngine.inl
+    ExtrudeEdgesAndGenerateQuads.h
+    ExtrudeEdgesAndGenerateQuads.inl
+    ExtrudeQuadsAndGenerateHexas.h
+    ExtrudeQuadsAndGenerateHexas.inl
+    ExtrudeSurface.h
+    ExtrudeSurface.inl
     GenerateCylinder.h
     GenerateCylinder.inl
     GenerateGrid.h
     GenerateGrid.inl
-    ExtrudeSurface.h
-    ExtrudeSurface.inl
-    ExtrudeQuadsAndGenerateHexas.h
-    ExtrudeQuadsAndGenerateHexas.inl
-    ExtrudeEdgesAndGenerateQuads.h
-    ExtrudeEdgesAndGenerateQuads.inl
     GenerateRigidMass.h
     GenerateRigidMass.inl
+    GenerateSphere.h
+    GenerateSphere.inl
     GroupFilterYoungModulus.h
     GroupFilterYoungModulus.inl
+    HausdorffDistance.h
+    HausdorffDistance.inl
+    IndexValueMapper.h
+    IndexValueMapper.inl
+    Indices2ValuesMapper.h
+    Indices2ValuesMapper.inl
+    IndicesFromValues.h
+    IndicesFromValues.inl
+    JoinPoints.h
+    JoinPoints.inl
+    MapIndices.h
+    MapIndices.inl
     MathOp.h
     MathOp.inl
     MergeMeshes.h
     MergeMeshes.inl
     MergePoints.h
     MergePoints.inl
+    MergeROIs.h
     MergeSets.h
     MergeSets.inl
     MergeVectors.h
     MergeVectors.inl
-    MergeROIs.h
     MeshBarycentricMapperEngine.h
     MeshBarycentricMapperEngine.inl
-    MeshROI.h
-    MeshROI.inl
-    TransformPosition.h
-    TransformPosition.inl
-    TransformEngine.h
-    TransformEngine.inl
-    TransformMatrixEngine.h
-    PointsFromIndices.h
-    PointsFromIndices.inl
-    ValuesFromIndices.h
-    ValuesFromIndices.inl
-    IndicesFromValues.h
-    IndicesFromValues.inl
-    IndexValueMapper.h
-    IndexValueMapper.inl
-    ROIValueMapper.h
-    JoinPoints.h
-    JoinPoints.inl
-    MapIndices.h
-    MapIndices.inl
-    RandomPointDistributionInSurface.h
-    RandomPointDistributionInSurface.inl
-    SmoothMeshEngine.h
-    SmoothMeshEngine.inl
-    Spiral.h
-    Spiral.inl
-    Vertex2Frame.h
-    Vertex2Frame.inl
-    TextureInterpolation.h
-    TextureInterpolation.inl
-    SubsetTopology.h
-    SubsetTopology.inl
-    RigidToQuatEngine.h
-    RigidToQuatEngine.inl
-    QuatToRigidEngine.h
-    QuatToRigidEngine.inl
-    ValuesFromPositions.h
-    ValuesFromPositions.inl
-    NormalsFromPoints.h
-    NormalsFromPoints.inl
-    ClusteringEngine.h
-    ClusteringEngine.inl
-    ShapeMatching.h
-    ShapeMatching.inl
-    ProximityROI.h
-    ProximityROI.inl
-    HausdorffDistance.h
-    HausdorffDistance.inl
-    NormEngine.h
-    NormEngine.inl
     MeshClosingEngine.h
     MeshClosingEngine.inl
-    MeshSubsetEngine.h
-    MeshSubsetEngine.inl
+    MeshROI.h
+    MeshROI.inl
     MeshSampler.h
     MeshSampler.inl
     MeshSplittingEngine.h
     MeshSplittingEngine.inl
-    Indices2ValuesMapper.h
-    Indices2ValuesMapper.inl
-    )
+    MeshSubsetEngine.h
+    MeshSubsetEngine.inl
+    NormEngine.h
+    NormEngine.inl
+    NormalsFromPoints.h
+    NormalsFromPoints.inl
+    PairBoxRoi.h
+    PairBoxRoi.inl
+    PlaneROI.h
+    PlaneROI.inl
+    PointsFromIndices.h
+    PointsFromIndices.inl
+    ProximityROI.h
+    ProximityROI.inl
+    QuatToRigidEngine.h
+    QuatToRigidEngine.inl
+    ROIValueMapper.h
+    RandomPointDistributionInSurface.h
+    RandomPointDistributionInSurface.inl
+    RigidToQuatEngine.h
+    RigidToQuatEngine.inl
+    ShapeMatching.h
+    ShapeMatching.inl
+    SmoothMeshEngine.h
+    SmoothMeshEngine.inl
+    SphereROI.h
+    SphereROI.inl
+    Spiral.h
+    Spiral.inl
+    SubsetTopology.h
+    SubsetTopology.inl
+    TextureInterpolation.h
+    TextureInterpolation.inl
+    TransformEngine.h
+    TransformEngine.inl
+    TransformMatrixEngine.h
+    TransformPosition.h
+    TransformPosition.inl
+    ValuesFromIndices.h
+    ValuesFromIndices.inl
+    ValuesFromPositions.h
+    ValuesFromPositions.inl
+    Vertex2Frame.h
+    Vertex2Frame.inl
+    config.h
+    initEngine.h
+)
 
 set(SOURCE_FILES
-
-    initEngine.cpp
     AverageCoord.cpp
     BoxROI.cpp
-    PairBoxRoi.cpp
-    PlaneROI.cpp
-    SphereROI.cpp
+    ClusteringEngine.cpp
     DilateEngine.cpp
-    GenerateCylinder.cpp
-	GenerateGrid.cpp
-    ExtrudeSurface.cpp
-    ExtrudeQuadsAndGenerateHexas.cpp
     ExtrudeEdgesAndGenerateQuads.cpp
+    ExtrudeQuadsAndGenerateHexas.cpp
+    ExtrudeSurface.cpp
+    GenerateCylinder.cpp
+    GenerateGrid.cpp
     GenerateRigidMass.cpp
+    GenerateSphere.cpp
     GroupFilterYoungModulus.cpp
+    HausdorffDistance.cpp
+    IndexValueMapper.cpp
+    Indices2ValuesMapper.cpp
+    IndicesFromValues.cpp
+    JoinPoints.cpp
+    MapIndices.cpp
     MathOp.cpp
     MergeMeshes.cpp
     MergePoints.cpp
+    MergeROIs.cpp
     MergeSets.cpp
     MergeVectors.cpp
-    MergeROIs.cpp
     MeshBarycentricMapperEngine.cpp
-    MeshROI.cpp
-    TransformPosition.cpp
-    TransformEngine.cpp
-    TransformMatrixEngine.cpp
-    PointsFromIndices.cpp
-    ValuesFromIndices.cpp
-    IndicesFromValues.cpp
-    IndexValueMapper.cpp
-    ROIValueMapper.cpp
-    JoinPoints.cpp
-    MapIndices.cpp
-    RandomPointDistributionInSurface.cpp
-    SmoothMeshEngine.cpp
-    Spiral.cpp
-    Vertex2Frame.cpp
-    TextureInterpolation.cpp
-    SubsetTopology.cpp
-    RigidToQuatEngine.cpp
-    QuatToRigidEngine.cpp
-    ValuesFromPositions.cpp
-    NormalsFromPoints.cpp
-    ClusteringEngine.cpp
-    ShapeMatching.cpp
-    ProximityROI.cpp
-    HausdorffDistance.cpp
-    NormEngine.cpp
     MeshClosingEngine.cpp
-    MeshSubsetEngine.cpp
+    MeshROI.cpp
     MeshSampler.cpp
     MeshSplittingEngine.cpp
-    Indices2ValuesMapper.cpp
-    )
-
-set(GROUP_BASE_DIR "..")
+    MeshSubsetEngine.cpp
+    NormEngine.cpp
+    NormalsFromPoints.cpp
+    PairBoxRoi.cpp
+    PlaneROI.cpp
+    PointsFromIndices.cpp
+    ProximityROI.cpp
+    QuatToRigidEngine.cpp
+    ROIValueMapper.cpp
+    RandomPointDistributionInSurface.cpp
+    RigidToQuatEngine.cpp
+    ShapeMatching.cpp
+    SmoothMeshEngine.cpp
+    SphereROI.cpp
+    Spiral.cpp
+    SubsetTopology.cpp
+    TextureInterpolation.cpp
+    TransformEngine.cpp
+    TransformMatrixEngine.cpp
+    TransformPosition.cpp
+    ValuesFromIndices.cpp
+    ValuesFromPositions.cpp
+    Vertex2Frame.cpp
+    initEngine.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_ENGINE")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_ENGINE")
-AddLinkerDependencies(SofaMeshCollision)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})

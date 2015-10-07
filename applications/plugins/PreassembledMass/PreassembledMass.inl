@@ -65,7 +65,8 @@ void PreassembledMass< DataTypes >::bwdInit()
 
         simulation::AssemblyVisitor assemblyVisitor( &mparams );
         this->getContext()->executeVisitor( &assemblyVisitor );
-        component::linearsolver::AssembledSystem sys = assemblyVisitor.assemble();
+        component::linearsolver::AssembledSystem sys;
+        assemblyVisitor.assemble( sys );
         massMatrix.compressedMatrix = sys.H;
 
         if( massMatrix.rows()!=this->mstate->getMatrixSize() )

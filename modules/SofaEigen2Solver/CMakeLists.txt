@@ -1,34 +1,28 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaEigen2Solver)
 
 set(HEADER_FILES
-
+    EigenBaseSparseMatrix.h
+    EigenBaseSparseMatrix_MT.h
+    EigenMatrixManipulator.h
+    EigenSparseMatrix.h
+    # EigenSparseSquareMatrix.h
+    EigenVector.h
+    EigenVectorWrapper.h
+    SVDLinearSolver.h
     config.h
-	initEigen2Solver.h
-	EigenMatrixManipulator.h
-	EigenBaseSparseMatrix.h
-        EigenBaseSparseMatrix_MT.h
-	EigenSparseMatrix.h
-#    EigenSparseSquareMatrix.h
-	EigenVector.h
-	EigenVectorWrapper.h
-	SVDLinearSolver.h
-	)
+    initEigen2Solver.h
+)
 
 set(SOURCE_FILES
-
-	initEigen2Solver.cpp
-	EigenMatrixManipulator.cpp
-	SVDLinearSolver.cpp
-	)
-
-include_directories("${SOFA_EXTLIBS_DIR}/newmat")
-set(GROUP_BASE_DIR "..")
+    EigenMatrixManipulator.cpp
+    SVDLinearSolver.cpp
+    initEigen2Solver.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_EIGEN2_SOLVER")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_EIGEN2_SOLVER")
-AddSourceDependencies(eigen)
-AddLinkerDependencies(SofaDenseSolver)   #eigen-unsupported??
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})

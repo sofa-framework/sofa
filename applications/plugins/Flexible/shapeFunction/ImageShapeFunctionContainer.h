@@ -25,7 +25,7 @@
 #ifndef FLEXIBLE_ImageShapeFunctionContainer_H
 #define FLEXIBLE_ImageShapeFunctionContainer_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../shapeFunction/BaseShapeFunction.h"
 #include "../shapeFunction/BaseImageShapeFunction.h"
 

@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <initCGALPlugin.h>
+#include <CGALPlugin/config.h>
 
 #include <MeshGenerationFromPolyhedron.h>
 
@@ -32,7 +32,7 @@ namespace sofa
 namespace component
 {
 
-//Here are just several convenient functions to help user to know what contains the plugin
+//Here are just several convenient functions to help users know what the plugin contains 
 
 extern "C" {
     SOFA_CGALPLUGIN_API void initExternalModule();

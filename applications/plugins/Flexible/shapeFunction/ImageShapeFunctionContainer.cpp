@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define FLEXIBLE_ImageShapeFunctionContainer_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../shapeFunction/ImageShapeFunctionContainer.h"
 #include <sofa/core/ObjectFactory.h>
 

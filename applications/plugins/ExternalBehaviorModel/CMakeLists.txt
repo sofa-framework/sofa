@@ -1,23 +1,31 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(ExternalBehaviorModel)
+
 
 set(HEADER_FILES
-
-    initExternalBehaviorModel.h 
-    FEMGridBehaviorModel.h 
-    FEMGridBehaviorModel.inl 
-	)
+    FEMGridBehaviorModel.h
+    FEMGridBehaviorModel.inl
+    config.h
+)
 
 set(SOURCE_FILES
+    FEMGridBehaviorModel.cpp
+    initExternalBehaviorModel.cpp
+)
 
-    initExternalBehaviorModel.cpp 
-    FEMGridBehaviorModel.cpp 
-        )
+
+find_package(SofaGeneral REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_ExternalBehaviorModel")
+target_link_libraries(${PROJECT_NAME} SofaComponentGeneral)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
-AddCompilerDefinitions("SOFA_BUILD_ExternalBehaviorModel")
-AddLinkerDependencies(SofaGuiQt)
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT ExternalBehaviorModel_libraries
+        EXPORT ExternalBehaviorModelTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 
-
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+install(DIRECTORY example/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

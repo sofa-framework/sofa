@@ -5,9 +5,9 @@
 #include <SofaBaseLinearSolver/SingleMatrixAccessor.h>
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 
-#include "./utils/scoped.h"
-#include "./utils/cast.h"
-#include "./utils/sparse.h"
+#include "../utils/scoped.h"
+#include "../utils/cast.h"
+#include "../utils/sparse.h"
 
 #include "../constraint/ConstraintValue.h"
 #include "../constraint/Stabilization.h"
@@ -83,11 +83,11 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 		dofs_type* p = safe_cast<dofs_type>(from[i]);
 
 		// skip non-mechanical dofs
-		if(!p) continue;
+        if(!p || p->getSize()==0 ) continue;
 
         if( !notempty((*js)[i]) )
         {
-            std::cerr<<"ERROR: AssemblyVisitor: empty mapping block for " + mapping_name(node) + " (is mapping matrix assembled?)"<<std::endl;
+            MAINLOGGER( Warning, "Empty mapping block for " << mapping_name(node) << " (is mapping matrix assembled?)", "AssemblyVisitor" )
             continue;
         }
 
@@ -137,7 +137,8 @@ const defaulttype::BaseMatrix* compliance_impl( const core::MechanicalParams* mp
     }
     else
     {
-        std::cerr<<"AssemblyVisitor::compliance: "<<ffield->getName()<<" getComplianceMatrix not implemented"<< std::endl;
+        MAINLOGGER( Warning, "compliance: "<<ffield->getName()<< "(node="<<ffield->getContext()->getName()<<"): getComplianceMatrix not implemented", "AssemblyVisitor" )
+
         // TODO inverting stiffness matrix
     }
 
@@ -165,7 +166,7 @@ const defaulttype::BaseMatrix* AssemblyVisitor::compliance(simulation::Node* nod
 
         if( ffield->getMechModel1() != ffield->getMechModel2() )
         {
-            std::cerr<<SOFA_CLASS_METHOD<<"WARNING: interactionForceField "<<ffield->getName()<<" cannot be simulated as a compliance."<<std::endl;
+            MAINLOGGER( Warning, "interactionForceField "<<ffield->getName()<<" cannot be simulated as a compliance.", "AssemblyVisitor" )
         }
         else
         {
@@ -313,8 +314,13 @@ void AssemblyVisitor::bottom_up(simulation::Visitor* vis) const {
 // this is called on the *top-down* traversal, once for each node. we
 // simply fetch infos for each dof.
 void AssemblyVisitor::fill_prefix(simulation::Node* node) {
+
+    helper::ScopedAdvancedTimer advancedTimer( "assembly: fill_prefix" );
+
 	assert( node->mechanicalState );
-    assert( chunks.find( node->mechanicalState ) == chunks.end() );
+    assert( chunks.find( node->mechanicalState ) == chunks.end() && "Did you run the simulation with a DAG traversal?" );
+
+    if( node->mechanicalState->getSize()==0 ) return;
 
 	// fill chunk for current dof
 	chunk& c = chunks[ node->mechanicalState ];
@@ -358,6 +364,9 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 
 // bottom-up: build dependency graph
 void AssemblyVisitor::fill_postfix(simulation::Node* node) {
+
+    helper::ScopedAdvancedTimer advancedTimer( "assembly: fill_postfix" );
+
 	assert( node->mechanicalState );
 	assert( chunks.find( node->mechanicalState ) != chunks.end() );
 
@@ -466,7 +475,7 @@ struct AssemblyVisitor::prefix_helper {
 
 
 AssemblyVisitor::process_type* AssemblyVisitor::process() const {
-	// scoped::timer step("mapping processing");
+    scoped::timer step("assembly: mapping processing");
 
     process_type* res = new process_type();
 
@@ -497,7 +506,7 @@ AssemblyVisitor::process_type* AssemblyVisitor::process() const {
 	size_m = off_m;
 	size_c = off_c;
 
-	// prefix mapping concatenation and stuff
+    // prefix mapping concatenation and stuff
     std::for_each(prefix.begin(), prefix.end(), process_helper(*res, graph) ); 	// TODO merge with offsets computation ?
 
 
@@ -532,6 +541,8 @@ AssemblyVisitor::process_type* AssemblyVisitor::process() const {
 // this is meant to optimize L^T D L products
 inline const AssemblyVisitor::rmat& AssemblyVisitor::ltdl(const rmat& l, const rmat& d) const
 {
+    scoped::timer advancedTimer("assembly: ltdl");
+
 //#ifdef _OPENMP
 //    return component::linearsolver::mul_EigenSparseMatrix_MT( l.transpose(), component::linearsolver::mul_EigenSparseMatrix_MT( d, l ) );
 //#else
@@ -546,6 +557,8 @@ inline const AssemblyVisitor::rmat& AssemblyVisitor::ltdl(const rmat& l, const r
 
 inline void AssemblyVisitor::add_ltdl(rmat& res, const rmat& l, const rmat& d)  const
 {
+    scoped::timer advancedTimer("assembly: ltdl");
+
     sparse::fast_prod(tmp1, d, l);
     tmp3 = l.transpose();
     sparse::fast_add_prod(res, tmp3, tmp1);
@@ -673,7 +686,7 @@ template<> struct add_shifted<METHOD_NOMULT> {
 
 // produce actual system assembly
 void AssemblyVisitor::assemble(system_type& res) const {
-	scoped::timer step("assembly");
+    scoped::timer step("assembly: build system");
 	assert(!chunks.empty() && "need to send a visitor first");
 
 	// assert( !_processed );

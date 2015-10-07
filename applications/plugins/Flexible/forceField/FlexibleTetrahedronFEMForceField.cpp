@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define FLEXIBLE_TETRAHEDRONFEMFORCEFIELD_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "FlexibleTetrahedronFEMForceField.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ForceField.inl>

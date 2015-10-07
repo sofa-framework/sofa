@@ -99,7 +99,7 @@ void LennardJonesForceField<DataTypes>::addForce(const core::MechanicalParams* /
 
             Real fa ;
             if(aInit.getValue()!=0)
-                fa = a*alpha.getValue()*(1.0/d2);
+                fa = a*alpha.getValue()*(1.f/d2);
             else
                 fa = a*alpha.getValue()*(Real)pow(d,-alpha.getValue()-1);
 

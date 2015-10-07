@@ -1,15 +1,8 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(houseOfCards)
 
-set(SOURCE_FILES
+find_package(SofaGui)
+find_package(SceneCreator)
 
-    houseOfCards.cpp
-
-    )
-
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-
-AddSourceDependencies(eigen)
-AddLinkerDependencies(SofaSimulationTree SofaComponentMain SofaGuiMain SceneCreator)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+add_executable(${PROJECT_NAME} houseOfCards.cpp)
+target_link_libraries(${PROJECT_NAME} SofaGuiMain SceneCreator)

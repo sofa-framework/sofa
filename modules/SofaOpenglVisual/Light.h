@@ -102,7 +102,6 @@ public:
     virtual void initVisual();
     void init();
     virtual void drawLight();
-    virtual void draw() {}
     virtual void reinit();
     virtual void updateVisual();
 

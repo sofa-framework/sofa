@@ -116,9 +116,9 @@ public:
     void setPrefix(const std::string& prefix);
     virtual void screenshot(const std::string& filename, int compression_level =-1);
 
-    virtual void getView(sofa::defaulttype::Vec3d& pos, sofa::defaulttype::Quat& ori) const;
-    virtual void setView(const sofa::defaulttype::Vec3d& pos, const sofa::defaulttype::Quat &ori);
-    virtual void moveView(const sofa::defaulttype::Vec3d& pos, const sofa::defaulttype::Quat &ori);
+    virtual void getView(sofa::defaulttype::Vector3& pos, sofa::defaulttype::Quat& ori) const;
+    virtual void setView(const sofa::defaulttype::Vector3& pos, const sofa::defaulttype::Quat &ori);
+    virtual void moveView(const sofa::defaulttype::Vector3& pos, const sofa::defaulttype::Quat &ori);
     virtual void newView();
     virtual void resetView();
 
@@ -182,31 +182,6 @@ protected:
     bool _mouseInteractorMoving;
     int _mouseInteractorSavedPosX;
     int _mouseInteractorSavedPosY;
-
-    //Stereo parameters
-    bool _stereoEnabled;
-    enum StereoMode
-    {
-        STEREO_AUTO = 0,
-        STEREO_INTERLACED,
-        STEREO_FRAME_PACKING,
-        STEREO_SIDE_BY_SIDE,
-        STEREO_TOP_BOTTOM,
-        STEREO_SIDE_BY_SIDE_HALF,
-        STEREO_TOP_BOTTOM_HALF,
-        STEREO_NONE,
-        NB_STEREO_MODES
-    };
-    enum StereoStrategy
-    {
-        PARALLEL,
-        TOEDIN
-
-    };
-
-    StereoMode _stereoMode;
-    StereoStrategy _stereoStrategy;
-    double _stereoShift;
 
     std::string _screenshotDirectory;
 };

@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENT_MISC_REGISTRATIONEXPORTER_H
 #define SOFA_COMPONENT_MISC_REGISTRATIONEXPORTER_H
 
-#include "initRegistration.h"
+#include <Registration/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/objectmodel/DataFileName.h>

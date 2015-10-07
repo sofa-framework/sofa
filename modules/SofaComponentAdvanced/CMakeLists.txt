@@ -1,26 +1,18 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaComponentAdvanced)
 
 set(HEADER_FILES
-
     config.h
     initComponentAdvanced.h
-
-    )
+)
 
 set(SOURCE_FILES
-
     initComponentAdvanced.cpp
-
-    )
-
-set(GROUP_BASE_DIR "..")
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaEulerianFluid SofaNonUniformFem SofaSphFluid SofaVolumetricData)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_COMPONENT_ADVANCED")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_COMPONENT_ADVANCED")
-AddLinkerDependencies(SofaEulerianFluid SofaSphFluid SofaVolumetricData SofaNonUniformFem)
-if(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
-    AddLinkerDependencies(SofaEigen2Solver)
-endif()
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+sofa_install_targets(SofaAdvanced ${PROJECT_NAME} ${PROJECT_NAME})

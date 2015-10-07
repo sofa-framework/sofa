@@ -129,8 +129,8 @@ public:
     virtual const defaulttype::BaseMatrix* getK();
 
     virtual void draw(const core::visual::VisualParams* vparams);
-    SReal _arrowSize;
-    defaulttype::Vec<4,SReal> _color;
+    Data<float> d_showObjectScale;
+    Data<defaulttype::Vec4f> d_color;
 
 protected:
     DistanceFromTargetMapping();
@@ -144,6 +144,9 @@ protected:
 
     /// r=b-a only for position (eventual rotation, affine transform... remains null)
     void computeCoordPositionDifference( Direction& r, const InCoord& a, const InCoord& b );
+
+    helper::ParticleMask* maskFrom;
+    helper::ParticleMask* maskTo;
 };
 
 

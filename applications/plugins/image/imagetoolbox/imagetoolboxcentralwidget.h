@@ -26,7 +26,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 #include <sofa/gui/qt/DataWidget.h>
 #include <sofa/gui/qt/SimpleDataWidget.h>
 
@@ -48,7 +48,7 @@
 #include <qtgui.h>
 #endif
 
-#include "ImageTypes.h"
+#include <image/ImageTypes.h>
 #include "imagetoolboxdata.h"
 #include "../image_gui/ImagePlaneWidget.h"
 
@@ -345,7 +345,7 @@ public:
     }
     
     
-       void setReadOnly(bool readOnly) { }
+       void setReadOnly(bool /*readOnly*/) { }
     void readFromData(const ImagePlanetype& d0) {  if(graphXY) graphXY->readFromData(d0); if(graphXZ) graphXZ->readFromData(d0); if(graphZY) graphZY->readFromData(d0);}
     void writeToData(ImagePlanetype& d) { if(graphXY) graphXY->writeToData(d); if(graphXZ) graphXZ->writeToData(d); if(graphZY) graphZY->writeToData(d);}
 

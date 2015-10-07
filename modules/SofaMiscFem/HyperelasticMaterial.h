@@ -36,11 +36,9 @@
 #include <sofa/defaulttype/MatSym.h>
 #include <string>
 
-#ifdef SOFA_HAVE_EIGEN2
 //#include <Eigen/Core>
 #include <Eigen/QR>
 #include <Eigen/Eigenvalues>
-#endif
 namespace sofa
 {
 
@@ -87,7 +85,7 @@ public:
 	}
 	/** computes the Elasticity Tensor of the current configuration */
 
-	virtual void applyElasticityTensor(StrainInformation<DataTypes> *, const  MaterialParameters<DataTypes> &,const MatrixSym , MatrixSym &)  {
+    virtual void applyElasticityTensor(StrainInformation<DataTypes> *, const  MaterialParameters<DataTypes> &,const MatrixSym& , MatrixSym &)  {
 		
 	}
 
@@ -104,7 +102,7 @@ struct MaterialParameters {
   typedef typename Coord::value_type Real;
 
   /** an array of Real values that correspond to the material parameters : the size depends on the material,
-  e.g. 2 Lam� coefficients for St-Venant Kirchhoff materials */
+  e.g. 2 Lame coefficients for St-Venant Kirchhoff materials */
   std::vector<Real> parameterArray;
   /** the direction of anisotropy in the rest configuration  : the size of the array is 0 if the material is
   isotropic, 1 if it is transversely isotropic and 2 for orthotropic materials (assumed to be orthogonal to each other)*/
@@ -123,10 +121,8 @@ public:
   typedef typename DataTypes::Coord Coord;
   typedef typename Coord::value_type Real;
   typedef defaulttype::MatSym<3,Real> MatrixSym;
-#ifdef SOFA_HAVE_EIGEN2
   typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::MatrixType EigenMatrix;
   typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::RealVectorType CoordEigen;
-#endif
   /// Trace of C = I1
   Real trC;
   Real J;
@@ -138,15 +134,13 @@ public:
   bool hasBeenInitialized;
   /// right Cauchy-Green deformation tensor C (gradPhi^T gradPhi)
   MatrixSym deformationTensor;
-#ifdef SOFA_HAVE_EIGEN2
   EigenMatrix Evect;
   CoordEigen Evalue;
-#endif
   Real logJ;
   MatrixSym E;
 
 
-  StrainInformation() : hasBeenInitialized(false) {}
+  StrainInformation() : trC(0), J(0), lambda(0), trCsquare(0), hasBeenInitialized(false), deformationTensor(), Evect(), Evalue(), logJ(0), E() {}
   virtual ~StrainInformation() {}
 };
 

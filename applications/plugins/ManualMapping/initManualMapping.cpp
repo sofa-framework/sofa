@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initManualMapping.h"
+#include <ManualMapping/config.h>
 
 namespace sofa
 {

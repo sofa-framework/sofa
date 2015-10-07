@@ -130,7 +130,7 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
     //	sout<<"------------------------------------ new iteration ---------------------------------"<<sendl;
     int i, j, k, l, nb;
 
-    double errF[6];
+    double errF[6] = {0,0,0,0,0,0};
     double error=0.0;
 
 
@@ -777,7 +777,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
 
     int i, j, k, l, nb;
 
-    double errF[6];
+    double errF[6] = {0,0,0,0,0,0};
     double error=0.0;
 
     double tolerance = _tol.getValue();

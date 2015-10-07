@@ -1,5 +1,6 @@
 #include "UniformCompliance.h"
 #include <iostream>
+
 using std::cerr;
 using std::endl;
 
@@ -20,6 +21,7 @@ UniformCompliance<DataTypes>::UniformCompliance( core::behavior::MechanicalState
     : Inherit(mm)
     , compliance( initData(&compliance, (Real)0, "compliance", "Compliance value uniformly applied to all the DOF."))
     , damping( initData(&damping, Real(0), "damping", "uniform viscous damping."))
+    , resizable( initData(&resizable, false, "resizable", "can the associated dofs can be resized? (in which case the matrices must be updated)"))
 	  
 {
     this->isCompliance.setValue(true);
@@ -135,6 +137,8 @@ SReal UniformCompliance<DataTypes>::getPotentialEnergy( const core::MechanicalPa
 template<class DataTypes>
 const sofa::defaulttype::BaseMatrix* UniformCompliance<DataTypes>::getComplianceMatrix(const core::MechanicalParams*)
 {
+    if( resizable.getValue() && (defaulttype::BaseMatrix::Index)this->getMState()->getSize() != matC.rows() ) reinit();
+
     return &matC;
 }
 
@@ -157,6 +161,8 @@ void UniformCompliance<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix *
 template<class DataTypes>
 void UniformCompliance<DataTypes>::addForce(const core::MechanicalParams *, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /*v*/)
 {
+    if( resizable.getValue() &&  (defaulttype::BaseMatrix::Index)x.getValue().size() != matK.compressedMatrix.rows() ) reinit();
+
 //    if( matK.compressedMatrix.nonZeros() )
         matK.addMult( f, x  );
 

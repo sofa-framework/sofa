@@ -3,7 +3,7 @@
 
 #include "BaseContact.h"
 
-#include "../initCompliant.h"
+#include <Compliant/config.h>
 
 
 #include "../constraint/UnilateralConstraint.h"
@@ -91,7 +91,7 @@ protected:
 
 
 
-        const vector<bool>* cvmask = NULL; // keep an eye on violated contacts
+        vector<bool>* cvmask = NULL; // keep an eye on violated contacts
 
         const unsigned size = this->mappedContacts.size();
 

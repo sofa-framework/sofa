@@ -1,0 +1,11 @@
+# CMake package configuration file for the CGoGN library
+
+@PACKAGE_INIT@
+
+find_package(SofaFramework REQUIRED)
+
+check_required_components(CGoGN)
+
+if(NOT TARGET CGoGN)
+	include("${CMAKE_CURRENT_LIST_DIR}/CGoGNTargets.cmake")
+endif()

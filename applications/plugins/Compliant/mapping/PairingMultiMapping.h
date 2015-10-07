@@ -2,9 +2,9 @@
 #define COMPLIANT_MAPPING_PAIRINGMULTIMAPPING_H
 
 #include "AssembledMultiMapping.h"
-#include "initCompliant.h"
+#include <Compliant/config.h>
 
-#include "utils/map.h"
+#include "../utils/map.h"
 
 namespace sofa {
 
@@ -41,7 +41,7 @@ public:
 
 
     PairingMultiMapping() :
-        sign(initData(&sign, 1.0, "sign", "scalar factor")) {
+        sign(initData(&sign, (SReal)1.0, "sign", "scalar factor")) {
         
     }
     

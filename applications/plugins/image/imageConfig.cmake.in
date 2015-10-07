@@ -1,0 +1,15 @@
+# CMake package configuration file for the image plugin
+
+@PACKAGE_INIT@
+
+find_package(SofaBase REQUIRED)
+find_package(Newmat REQUIRED)
+find_package(CImg REQUIRED)
+find_package(Freenect QUIET)
+find_package(DiffusionSolver CONFIG REQUIRED)
+
+if(NOT TARGET image)
+	include("${CMAKE_CURRENT_LIST_DIR}/imageTargets.cmake")
+endif()
+
+check_required_components(image)

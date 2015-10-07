@@ -1,42 +1,41 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaPreconditioner)
 
 set(HEADER_FILES
-
-    config.h
-    initPreconditioner.h
-    ShewchukPCGLinearSolver.h
-    JacobiPreconditioner.h
-    JacobiPreconditioner.inl
     BlockJacobiPreconditioner.h
     BlockJacobiPreconditioner.inl
-    SSORPreconditioner.h
-    SSORPreconditioner.inl
-    WarpPreconditioner.h
-    WarpPreconditioner.inl
+    JacobiPreconditioner.h
+    JacobiPreconditioner.inl
     PrecomputedWarpPreconditioner.h
     PrecomputedWarpPreconditioner.inl
-    )
+    SSORPreconditioner.h
+    SSORPreconditioner.inl
+    ShewchukPCGLinearSolver.h
+    WarpPreconditioner.h
+    WarpPreconditioner.inl
+    config.h
+    initPreconditioner.h
+)
 
 set(SOURCE_FILES
-
-    initPreconditioner.cpp
-    ShewchukPCGLinearSolver.cpp
-    JacobiPreconditioner.cpp
     BlockJacobiPreconditioner.cpp
-    SSORPreconditioner.cpp
-    WarpPreconditioner.cpp
+    JacobiPreconditioner.cpp
     PrecomputedWarpPreconditioner.cpp
-    )
-
-set(GROUP_BASE_DIR "..")
+    SSORPreconditioner.cpp
+    ShewchukPCGLinearSolver.cpp
+    WarpPreconditioner.cpp
+    initPreconditioner.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-
-AddCompilerDefinitions("SOFA_BUILD_PRECONDITIONER" )
-AddLinkerDependencies(SofaDenseSolver SofaImplicitOdeSolver SofaSimpleFem)
-
-if(SOFA-EXTERNAL_CSPARSE)
-    AddLinkerDependencies(SofaSparseSolver)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaImplicitOdeSolver SofaSimpleFem SofaBaseLinearSolver)
+if(SOFA_HAVE_CSPARSE)
+    target_link_libraries(${PROJECT_NAME} PUBLIC SofaSparseSolver)
 endif()
+if(SOFA_HAVE_NEWMAT)
+    target_link_libraries(${PROJECT_NAME} PUBLIC SofaDenseSolver)
+endif()
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_PRECONDITIONER")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})

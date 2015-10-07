@@ -481,14 +481,12 @@ Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* nod
     sofa::core::MechanicalParams mparams(*this->params);
     mparams.setDt(dt);
 
-//#ifdef SOFA_HAVE_EIGEN2
     {
         unsigned int constraintId=0;
         core::ConstraintParams cparams;
         simulation::MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::holonomicC(), constraintId).execute(node);
 
     }
-//#endif
     //cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver start solve obj"<<endl;
     obj->solve(params, dt);
     //cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver endVisitor ok"<<endl;
@@ -1439,37 +1437,6 @@ Visitor::Result MechanicalResetConstraintVisitor::fwdConstraintSet(simulation::N
 }
 
 
-//#ifdef SOFA_HAVE_EIGEN2
-
-//MechanicalExpressJacobianVisitor::MechanicalExpressJacobianVisitor(simulation::Node* /*n*/)
-//{
-//#ifdef SOFA_DUMP_VISITOR_INFO
-//setReadWriteVectors();
-//#endif
-//constraintId=0;
-//}
-
-
-//Visitor::Result MechanicalExpressJacobianVisitor::fwdLMConstraint(simulation::Node* /*node*/, core::behavior::BaseLMConstraint* c)
-//{
-//	c->buildJacobian(constraintId);
-//	return RESULT_CONTINUE;
-//}
-
-
-//void MechanicalExpressJacobianVisitor::bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
-//{
-//	map->accumulateConstraint();
-//}
-
-
-//Visitor::Result MechanicalSolveLMConstraintVisitor::fwdConstraintSolver(simulation::Node* /*node*/, core::behavior::ConstraintSolver* s)
-//{
-//	typedef core::behavior::BaseMechanicalState::VecId VecId;
-//	s->solveConstraint(propagateState,state);
-//	return RESULT_PRUNE;
-//}
-
 
 Visitor::Result MechanicalWriteLMConstraint::fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c)
 {
@@ -1481,7 +1448,6 @@ Visitor::Result MechanicalWriteLMConstraint::fwdConstraintSet(simulation::Node* 
     return RESULT_CONTINUE;
 }
 
-//#endif
 
 Visitor::Result MechanicalAccumulateConstraint::fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c)
 {

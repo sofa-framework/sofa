@@ -89,9 +89,13 @@ class Model:
             self.position = None
             self.mesh = list() # list of meshes
             self.meshAttributes = dict() # attributes associated with each mesh
+
+            #TODO replace this with a MassInfo?
             self.mass = None
             self.com = None # x,y,z
-            self.inertia = None # Ixx, Ixy, Ixz, Iyy, Iyz, Izz
+            self.inertia = None # Ixx, Ixy, Ixz, Iyy, Iyz, Izz or Ixx, Iyy, Izz
+            self.inertia_rotation = None # only useful for diagonal (3 values) inertia
+
             self.skinnings=list()
             if not solidXml is None:
                 self.parseXml(solidXml)
@@ -453,6 +457,20 @@ class BaseScene:
             return self.solidMaterial[solid]
         else :
             return "default"
+
+    def getCollision(self,solidId,meshId):
+        """ returns a collision object identified by solidId/meshId
+        """
+        mesh=None
+        if hasattr(self, 'rigids'):  # inserted by Compliant.sml
+            if solidId in self.rigids:
+                if meshId in self.rigids[solidId].collisions:
+                    mesh = self.rigids[solidId].collisions[meshId]
+        if hasattr(self, 'collisions'):  # inserted by Anatomy.sml
+            if solidId in self.collisions:
+                if meshId in self.collisions[solidId]:
+                    mesh = self.collisions[solidId][meshId]
+        return mesh
 
     def dagValidation(self):
         err = DAGValidation.test( self.root, True )

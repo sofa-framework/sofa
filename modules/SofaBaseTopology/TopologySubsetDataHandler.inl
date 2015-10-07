@@ -57,7 +57,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::add(unsigned int nbE
     // Using default values
     container_type& data = *(m_topologyData->beginEdit());
 
-    unsigned int size = data.size();
+    size_t size = data.size();
     bool test;
     for (unsigned int i = 0; i < nbElements; ++i)
     {
@@ -130,7 +130,7 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::remove( const sofa::
                 data[it2]=index[i];
 
             data[it1]=data[data.size()-1];
-            unsigned int size_before = data.size();
+           size_t size_before = data.size();
 
             // Call destroy function implemented in specific component
             this->applyDestroyFunction(index[i], data[data.size()-1]);

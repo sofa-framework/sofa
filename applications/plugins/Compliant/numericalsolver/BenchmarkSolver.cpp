@@ -38,10 +38,10 @@ void BenchmarkSolver::factor(const system_type& system) {
 
 // solution is that of the first solver
 void BenchmarkSolver::correct(vec& res,
-							  const system_type& sys,
-							  const vec& rhs) const {
+                              const system_type& sys,
+                              const vec& rhs, real damping) const {
 	assert( solvers.size() > 1 );
-	solvers.back()->correct(res, sys, rhs);
+    solvers.back()->correct(res, sys, rhs, damping);
 }
 
 // solution is that of the last solver

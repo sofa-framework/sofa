@@ -13,10 +13,10 @@
 
 #include "../labelpointsbysection/labelpointsbysectionimagetoolbox.h"
 #include "../labelbox/labelboximagetoolbox.h"
-#include "ImageTypes.h"
+#include <image/ImageTypes.h>
 
 
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 #include <sofa/helper/rmath.h>
 
 
@@ -71,6 +71,8 @@ public:
     {
         Vec2ui sections;
         double ratio;
+
+        InterpolationItem() : ratio(0.0) {}
     };
 
     typedef helper::vector< InterpolationItem > VecII;

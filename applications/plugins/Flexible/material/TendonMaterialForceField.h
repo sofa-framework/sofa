@@ -25,7 +25,7 @@
 #ifndef SOFA_TendonMaterialFORCEFIELD_H
 #define SOFA_TendonMaterialFORCEFIELD_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../material/BaseMaterialForceField.h"
 #include "../material/TendonMaterialBlock.h"
 

@@ -109,7 +109,7 @@ void BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn
 }
 
 template <typename VecIn, typename VecOut>
-int BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInCube(int cubeIndex, const Real* baryCoords)
+int BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInCube(const int cubeIndex, const SReal* baryCoords)
 {
     map.resize(map.size()+1);
     CubeData& data = map[map.size()-1];
@@ -141,7 +141,7 @@ void BarycentricMapperRegularGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn
             ++outside;
             cube = topology->findNearestCube(defaulttype::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
         }
-        defaulttype::Vec<3,Real> baryCoords = coefs;
+        defaulttype::Vec<3,SReal> baryCoords = coefs;
         addPointInCube(cube, baryCoords.ptr());
     }
 }
@@ -212,7 +212,7 @@ void BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,
 }
 
 template <typename VecIn, typename VecOut>
-int BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInCube(int cubeIndex, const Real* baryCoords)
+int BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInCube(const int cubeIndex, const SReal* baryCoords)
 {
     map.resize(map.size()+1);
     CubeData& data = map[map.size()-1];
@@ -241,7 +241,7 @@ void BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,
             ++outside;
             cube = topology->findNearestCube(defaulttype::Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
         }
-        defaulttype::Vec<3,Real> baryCoords = coefs;
+        defaulttype::Vec<3,SReal> baryCoords = coefs;
         addPointInCube(cube, baryCoords.ptr());
     }
 

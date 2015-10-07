@@ -1,0 +1,29 @@
+# CMake package configuration file for SofaGeneral
+
+@PACKAGE_INIT@
+
+find_package(SofaCommon REQUIRED)
+
+set(SOFA_HAVE_NEWMAT @SOFA_HAVE_NEWMAT@)
+set(SOFA_HAVE_CSPARSE @SOFA_HAVE_CSPARSE@)
+set(SOFA_HAVE_TAUCS @SOFA_HAVE_TAUCS@)
+set(SOFA_HAVE_PARDISO @SOFA_HAVE_PARDISO@)
+set(SOFA_HAVE_METIS @SOFA_HAVE_METIS@)
+
+if(SOFA_HAVE_NEWMAT)
+    find_package(Newmat REQUIRED)
+endif()
+
+if(SOFA_HAVE_CSPARSE)
+    find_package(CSparse REQUIRED)
+endif()
+
+if(SOFA_HAVE_METIS)
+    find_package(Metis REQUIRED)
+endif()
+
+if(NOT TARGET SofaComponentGeneral)
+	include("${CMAKE_CURRENT_LIST_DIR}/SofaGeneralTargets.cmake")
+endif()
+
+check_required_components(@SOFAGENERAL_TARGETS@)

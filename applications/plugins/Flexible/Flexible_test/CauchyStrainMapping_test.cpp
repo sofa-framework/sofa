@@ -24,6 +24,7 @@ namespace sofa {
         typedef typename In::Frame InFrame;
 
 
+        using Inherited::runTest;
         bool runTest()
         {
             defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> strain; 

@@ -824,6 +824,7 @@ public:
     /// Init the partial solve
     void init_partial_solve();
 
+    using MatrixLinearSolver<Matrix,Vector>::partial_solve;
     /// partial solve :
     /// b is accumulated
     /// db is a sparse vector that is added to b

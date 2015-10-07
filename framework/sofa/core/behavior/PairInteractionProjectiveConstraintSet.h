@@ -80,6 +80,10 @@ public:
     MechanicalState<DataTypes>* getMState2() { return mstate2.get(); }
     BaseMechanicalState* getMechModel2() { return mstate2.get(); }
 
+    // to get rid of warnings
+    using BaseInteractionProjectiveConstraintSet::projectPosition;
+    using BaseInteractionProjectiveConstraintSet::projectResponse;
+
     /// @name Vector operations
     /// @{
 

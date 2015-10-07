@@ -32,7 +32,7 @@
 using std::cerr;
 using std::endl;
 
-#include "compliance/UniformCompliance.h"
+#include <Compliant/compliance/UniformCompliance.h>
 #include <sofa/simulation/common/InitVisitor.h>
 
 
@@ -248,8 +248,8 @@ void CompliantAttachPerformer<DataTypes>::start()
         typename MouseTypes::Coord pointOnRayPosition;
         MouseTypes::set(pointOnRayPosition, pointOnRay[0], pointOnRay[1], pointOnRay[2]);
         map->createTarget(/*picked.indexCollisionElement*/ pickedParticleIndex, pointOnRayPosition, /*(picked.point-pointOnRay).norm()*/ 0);
-        map->_arrowSize = _arrowSize;
-        map->_color = _color;
+        map->d_showObjectScale.setValue( _arrowSize );
+        map->d_color.setValue( _color );
         _distanceMapping = map.get();
     }
     else
@@ -262,8 +262,8 @@ void CompliantAttachPerformer<DataTypes>::start()
         typename DataTypes::Coord pointOnRayPosition;
         DataTypes::set(pointOnRayPosition, pointOnRay[0], pointOnRay[1], pointOnRay[2]);
         map->createTarget(/*picked.indexCollisionElement*/ pickedParticleIndex, pointOnRayPosition, /*(picked.point-pointOnRay).norm()*/ 0);
-        map->_arrowSize = _arrowSize;
-        map->_color = _color;
+        map->d_showObjectScale.setValue( _arrowSize );
+        map->d_color.setValue( _color );
         _distanceMapping = map.get();
     }
 

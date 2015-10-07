@@ -127,6 +127,9 @@ public:
         return TDataTypes::Name();
     }
 
+
+    virtual void computeBBox(const core::ExecParams* params, bool=false);
+
 protected:
 
 

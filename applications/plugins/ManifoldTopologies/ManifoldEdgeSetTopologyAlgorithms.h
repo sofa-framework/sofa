@@ -26,6 +26,8 @@
 #define SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETTOPOLOGYALGORITHMS_H
 #include <ManifoldTopologies/config.h>
 
+#include <ManifoldTopologies/config.h>
+
 #include <SofaBaseTopology/EdgeSetTopologyAlgorithms.h>
 
 namespace sofa

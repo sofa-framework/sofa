@@ -1,0 +1,7 @@
+# CMake package configuration file for the CImg library.
+# It defines the following variable:
+# - CImg_INCLUDE_DIRS
+
+@PACKAGE_INIT@
+
+set(CImg_INCLUDE_DIRS "@PACKAGE_CIMG_INCLUDE_DIR@")

@@ -12,7 +12,7 @@
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/core/ObjectFactory.h>
-#include <SofaComponentMain/init.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
 #include <sofa/core/objectmodel/GUIEvent.h>
 
 #include <sofa/gui/GUIManager.h>
@@ -157,6 +157,7 @@ SofaPhysicsDataController** SofaPhysicsSimulation::getDataControllers()
 
 using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
+using namespace sofa::core::objectmodel;
 
 static sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
 
@@ -199,7 +200,7 @@ useGUI(useGUI_), GUIFramerate(GUIFramerate_)
     m_Simulation = new sofa::simulation::tree::TreeSimulation();
     sofa::simulation::setSimulation(m_Simulation);
 
-    sofa::component::init();
+    sofa::component::initComponentGeneral();
 
     sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
             &classVisualModel);

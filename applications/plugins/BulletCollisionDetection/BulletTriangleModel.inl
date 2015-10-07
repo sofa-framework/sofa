@@ -1,5 +1,4 @@
 #include "BulletTriangleModel.h"
-#include "btBulletCollisionCommon.h"
 #include "BtDynamicMesh.h"
 
 namespace sofa

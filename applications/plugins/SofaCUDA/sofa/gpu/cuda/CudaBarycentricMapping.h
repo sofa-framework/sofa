@@ -64,7 +64,7 @@ public:
 
     void clear(int reserve=0);
 
-    int addPointInCube(int cubeIndex, const Real* baryCoords);
+    int addPointInCube(const int cubeIndex, const SReal* baryCoords);
 
     bool isEmpty() { return map.size() == 0; }
     void setTopology(topology::RegularGridTopology* _topology) { topology = _topology; }
@@ -123,7 +123,7 @@ public:
 
     void clear(int reserve=0);
 
-    int addPointInCube(int cubeIndex, const Real* baryCoords);
+    int addPointInCube(const int cubeIndex, const SReal* baryCoords);
 
     bool isEmpty() { return map.size() == 0; }
     void setTopology(topology::RegularGridTopology* _topology) { topology = _topology; }

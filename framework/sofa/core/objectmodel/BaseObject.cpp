@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/topology/Topology.h>
@@ -382,7 +383,20 @@ SReal BaseObject::getTime() const
     return getContext()->getTime();
 }
 
+std::string BaseObject::getPathName() const {
 
+    const BaseContext* context = this->getContext();
+    std::string result = "";
+    if( context )
+    {
+        const BaseNode* node = dynamic_cast<const BaseNode*>( context );
+        if( node )
+            result += node->getPathName() + "/";
+
+    }
+    result += getName();
+    return result;
+}
 
 } // namespace objectmodel
 

@@ -67,8 +67,7 @@ public:
     ~SuturePointPerformer();
 
     void start();
-    void execute() {};
-    void draw() {};
+    void execute() {}
 
 protected:
     bool first;

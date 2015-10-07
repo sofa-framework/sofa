@@ -1,7 +1,7 @@
 #ifndef COMPLIANT_NNCGSolver_H
 #define COMPLIANT_NNCGSolver_H
 
-#include "../initCompliant.h"
+#include <Compliant/config.h>
 #include "SequentialSolver.h"
 
 namespace sofa {

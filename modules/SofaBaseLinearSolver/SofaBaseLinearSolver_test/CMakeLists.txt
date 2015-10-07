@@ -1,4 +1,6 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+
+project(SofaBaseLinearSolver_test)
 
 set(SOURCE_FILES
     Matrix_test.cpp
@@ -6,11 +8,8 @@ set(SOURCE_FILES
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SofaBaseLinearSolver)
 
-AddLinkerDependencies(
-    SofaTest
-    SofaGTestMain
-    SofaBaseLinearSolver
-)
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+

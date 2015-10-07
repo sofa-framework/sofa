@@ -147,28 +147,28 @@ public:
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaMechanicalObject_DeclMethods(T) \
-    template<> inline void MechanicalObject< T >::accumulateForce(const core::ExecParams* params); \
+    template<> inline void MechanicalObject< T >::accumulateForce(const core::ExecParams* params, core::VecDerivId); \
     template<> inline void MechanicalObject< T >::vOp(const core::ExecParams* params, core::VecId v, core::ConstVecId a, core::ConstVecId b, SReal f); \
     template<> inline void MechanicalObject< T >::vMultiOp(const core::ExecParams* params, const VMultiOp& ops); \
     template<> inline SReal MechanicalObject< T >::vDot(const core::ExecParams* params, core::ConstVecId a, core::ConstVecId b); \
-    template<> inline void MechanicalObject< T >::resetForce(const core::ExecParams* params); \
+    template<> inline void MechanicalObject< T >::resetForce(const core::ExecParams* params, core::VecDerivId); \
     template<> inline void MechanicalObject< T >::copyToBaseVector(defaulttype::BaseVector * dest, core::ConstVecId src, unsigned int &offset); \
     template<> inline void MechanicalObject< T >::copyFromBaseVector(core::VecId dest, const defaulttype::BaseVector * src,  unsigned int &offset); \
     template<> inline void MechanicalObject< T >::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector *src, unsigned int &offset);
 
-CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec1fTypes);
-CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec2fTypes);
-CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3fTypes);
-CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3f1Types);
-CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec6fTypes);
-CudaMechanicalObject_DeclMethods(gpu::cuda::CudaRigid3fTypes);
+CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec1fTypes)
+CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec2fTypes)
+CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3fTypes)
+CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3f1Types)
+CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec6fTypes)
+CudaMechanicalObject_DeclMethods(gpu::cuda::CudaRigid3fTypes)
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
-CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3dTypes);
-CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3d1Types);
-CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec6dTypes);
-CudaMechanicalObject_DeclMethods(gpu::cuda::CudaRigid3dTypes);
+CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3dTypes)
+CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3d1Types)
+CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec6dTypes)
+CudaMechanicalObject_DeclMethods(gpu::cuda::CudaRigid3dTypes)
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 

@@ -4,7 +4,7 @@
 #include <QtGui>
 #include "imagetoolboxcentralwidget.h"
 #include "labelimagetoolboxaction.h"
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 
 namespace sofa
 {
@@ -33,7 +33,7 @@ Q_OBJECT
     typedef helper::vector<LabelAction*> VecLabelAction;
     
     VecLabelAction vecLabelAction;
-    int currentLabel;
+//    int currentLabel;
     
     QGraphicsScene *GraphXY;
     QGraphicsScene *GraphXZ;
@@ -41,7 +41,7 @@ Q_OBJECT
 
 public:
     ImageToolBoxLabelActionWidget():QWidget(),
-        currentLabel(0),GraphXY(NULL),GraphXZ(NULL),GraphZY(NULL)
+        /*currentLabel(0),*/GraphXY(NULL),GraphXZ(NULL),GraphZY(NULL)
     {
         this->setToolTip("LabelAction");
 

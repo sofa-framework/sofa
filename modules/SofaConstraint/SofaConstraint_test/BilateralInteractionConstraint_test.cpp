@@ -25,7 +25,6 @@
 
 
 #include <SofaTest/Sofa_test.h>
-#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
@@ -69,7 +68,6 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
     /// Create the context for the tests.
     void SetUp()
     {
-        sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Load the scene

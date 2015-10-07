@@ -30,7 +30,7 @@
 
 //#include <sofa/simulation/tree/GNode.h>
 #include "Binding.h"
-#include "initSofaPython.h"
+#include <SofaPython/config.h>
 #include <vector>
 #include <string>
 
@@ -48,6 +48,9 @@ public:
 
     /// Add a path to sys.path, the list of search path for Python modules.
     static void addPythonModulePath(const std::string& path);
+
+    /// Add each line of a file to sys.path
+    static void addPythonModulePathsFromConfigFile(const std::string& path);
 
     /// Add all the directories matching <pluginsDirectory>/*/python to sys.path
     /// NB: can also be used for projects <projectDirectory>/*/python

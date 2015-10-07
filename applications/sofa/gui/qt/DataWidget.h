@@ -120,7 +120,7 @@ public:
             datawidget_ = DataWidgetFactory::CreateObject(widgetName, dwarg);
 
         return datawidget_;
-    };
+    }
 
 
 public slots:
@@ -231,6 +231,7 @@ public:
     sofa::core::objectmodel::Data<T>* getData() {return Tdata;}
     const sofa::core::objectmodel::Data<T>* getData() const {return Tdata;}
 
+    using DataWidget::setData;
     inline virtual void setData(MyTData* d)
     {
         Tdata = d;

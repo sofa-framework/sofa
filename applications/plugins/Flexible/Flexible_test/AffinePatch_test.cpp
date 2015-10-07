@@ -27,7 +27,6 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/Quater.h>
-#include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation
@@ -81,7 +80,6 @@ namespace sofa {
         void SetUp()
         { 
             // Init simulation
-            sofa::component::init();
             sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
             root = simulation::getSimulation()->createNewGraph("root");

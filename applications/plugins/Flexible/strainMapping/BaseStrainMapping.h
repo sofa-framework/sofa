@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_BaseStrainMAPPING_H
 #define SOFA_COMPONENT_MAPPING_BaseStrainMAPPING_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
@@ -154,6 +154,10 @@ public:
 
         Inherit::reinit();
     }
+
+    using Inherit::apply;
+    using Inherit::applyJ;
+    using Inherit::applyJT;
 
     virtual void applyJT()
     {

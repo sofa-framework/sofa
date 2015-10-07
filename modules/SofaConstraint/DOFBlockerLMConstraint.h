@@ -128,7 +128,7 @@ public:
         return DataTypes::Name();
     }
 
-    bool isCorrectionComputedWithSimulatedDOF(ConstOrder /*order*/)
+    bool isCorrectionComputedWithSimulatedDOF(ConstOrder /*order*/) const
     {
         simulation::Node* node=(simulation::Node*) this->constrainedObject1->getContext();
         if (node->mechanicalMapping.empty()) return true;

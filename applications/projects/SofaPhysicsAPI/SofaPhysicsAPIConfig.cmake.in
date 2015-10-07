@@ -1,0 +1,11 @@
+# CMake package configuration file for SofaPhysicsAPI
+
+@PACKAGE_INIT@
+
+check_required_components(SofaPhysicsAPI)
+
+find_package(SofaGeneral REQUIRED)
+
+if(NOT TARGET SofaPhysicsAPI)
+	include("${CMAKE_CURRENT_LIST_DIR}/SofaPhysicsAPITargets.cmake")
+endif()

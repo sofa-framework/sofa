@@ -1,7 +1,7 @@
 #ifndef SOFA_SpringInteractor_H
 #define SOFA_SpringInteractor_H
 
-#include "initSimpleGUI.h"
+#include <SofaSimpleGUI/config.h>
 #include "Interactor.h"
 
 #include <sofa/component/typedef/Sofa_typedef.h>

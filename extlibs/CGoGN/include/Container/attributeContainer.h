@@ -31,9 +31,9 @@
 
 #include <vector>
 #include <map>
-#include <libxml/encoding.h>
-#include <libxml/xmlwriter.h>
-#include <libxml/parser.h>
+// #include <libxml/encoding.h>
+// #include <libxml/xmlwriter.h>
+// #include <libxml/parser.h>
 
 namespace CGoGN
 {
@@ -50,6 +50,7 @@ public:
 	virtual void next(unsigned int &it) const = 0;
 	virtual void enable() = 0;
 	virtual void disable() = 0;
+    virtual ~ContainerBrowser() = 0;
 };
 
 /**
@@ -149,9 +150,25 @@ public:
 
 	void setRegistry(std::map<std::string, RegisteredBaseAttribute*>* re);
 
-	void setContainerBrowser(ContainerBrowser* bro) { m_currentBrowser = bro;}
+    inline void setContainerBrowser(ContainerBrowser* bro) { m_currentBrowser = bro;}
 
-	bool hasBrowser() { return m_currentBrowser != NULL; }
+    inline bool hasBrowser() { return m_currentBrowser != NULL; }
+
+    inline void enableBrowser()
+    {
+        if (hasBrowser())
+        {
+            m_currentBrowser->enable();
+        }
+    }
+
+    inline void disableBrowser()
+    {
+        if (hasBrowser())
+        {
+            m_currentBrowser->disable();
+        }
+    }
 
 	/**************************************
 	 *          BASIC FEATURES            *
@@ -242,6 +259,10 @@ public:
 	* is the line used in the container
 	*/
 	inline bool used(unsigned int index) const;
+    inline unsigned nbRefs(unsigned int index) const
+    {
+        return m_holesBlocks[index / _BLOCKSIZE_]->nbRefs(index % _BLOCKSIZE_);
+    }
 
 	/**
 	 * @brief check if container contain marker attribute
@@ -378,6 +399,8 @@ public:
 	 **************************************/
 
     void printFreeIndices();
+    void printUsage();
+
 //    void updateHole(unsigned int index);
 	/**
 	* insert a line in the container

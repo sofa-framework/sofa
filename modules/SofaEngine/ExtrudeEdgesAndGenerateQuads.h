@@ -72,8 +72,6 @@ public:
 
     void update();
 
-    void draw();
-
     virtual std::string getTemplateName() const
     {
         return templateName(this);

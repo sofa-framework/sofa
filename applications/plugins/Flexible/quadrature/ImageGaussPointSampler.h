@@ -25,7 +25,7 @@
 #ifndef SOFA_ImageGaussPointSAMPLER_H
 #define SOFA_ImageGaussPointSAMPLER_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../quadrature/BaseGaussPointSampler.h"
 #include "../deformationMapping/BaseDeformationMapping.h"
 
@@ -517,6 +517,8 @@ public:
                                         ///< and writes over values computed by sofa::component::mapping::LinearMapping.
                                         ///< Otherwise shape functions are interpolated only at sample locations using finite differencies in sofa::component::mapping::LinearMapping.
     Data<bool> sampleRigidParts;
+
+    Data< unsigned int > f_fillOrder; ///< Fill Order  // For the mapping, we use second order fit (to have translation invariance of elastons, use first order)
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this); }
@@ -558,6 +560,7 @@ protected:
       , iterations(initData(&iterations,(unsigned int)100,"iterations","maximum number of Lloyd iterations"))
       , evaluateShapeFunction(initData(&evaluateShapeFunction,true,"evaluateShapeFunction","evaluate shape functions over integration regions for the mapping? (otherwise they will be interpolated at sample locations)"))
       , sampleRigidParts(initData(&sampleRigidParts,false,"sampleRigidParts","sample parts influenced only by one dofs? (otherwise put only one Gauss point)"))
+      , f_fillOrder(initData(&f_fillOrder,(unsigned int)2,"fillOrder","fill order"))
       , deformationMapping(NULL)
     {
     }
@@ -581,7 +584,7 @@ protected:
     //@}
 
     // polynomial orders
-    inline unsigned int fillOrder() const {return 1;}     // For the mapping, we use first order fit (not 2nd order, to have translation invariance of elastons)
+    inline unsigned int fillOrder() const {return f_fillOrder.getValue();} // For the mapping, we use second order fit (to have translation invariance of elastons, use first order)
     inline unsigned int fitOrder() const {return (this->f_order.getValue()==1)?0:1;} // for elastons, we measure the quality of the integration using first order least squares fit
     inline unsigned int volOrder() const {return (this->f_order.getValue()==1)?0:4;} // for elastons, we generate volume moments up to order 4
 

@@ -48,17 +48,10 @@ struct DataLink_test: public ::testing::Test
     // Test if the output is updated only if necessary
     void testDataLink()
     {
-       // Set the value of data1
         data1.setValue(1);
-
-        // Test if boolean isDirty of data1 is false
-        ASSERT_EQ(data1.isDirty(),0);
-
-       // Test if boolean isDirty of data2 is true
-       ASSERT_EQ(data2.isDirty(),1);
-
-       // Test if result is correct
-       ASSERT_EQ(data2.getValue(),1);
+        ASSERT_FALSE(data1.isDirty());
+        ASSERT_TRUE(data2.isDirty());
+        ASSERT_TRUE(data2.getValue()!=0);
 
     }
 
@@ -89,11 +82,11 @@ struct vectorData_test: public ::testing::Test
     void test_resize()
     {
        vDataInt.resize(3);
-       ASSERT_EQ(vDataInt.size(),3);
+       ASSERT_EQ(vDataInt.size(),3u);
        vDataInt.resize(10);
-       ASSERT_EQ(vDataInt.size(),10);
+       ASSERT_EQ(vDataInt.size(),10u);
        vDataInt.resize(8);
-       ASSERT_EQ(vDataInt.size(),8);
+       ASSERT_EQ(vDataInt.size(),8u);
     }
 
     void test_link()

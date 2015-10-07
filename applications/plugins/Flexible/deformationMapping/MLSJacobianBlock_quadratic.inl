@@ -591,7 +591,7 @@ public:
     mHessian dFt;      ///< =   (grad2 w)_k^T   =  d (grad F)_k/dt
     Vec<dim+1,Mat<dimq,mdim,Real> > PFdFa;      ///< =   q0.grad w + w.grad q0^*, [q0.(grad2 w)_k^T + (grad w)_k.grad q0^* +  grad q0^*_k.grad w]   =  dF/dA , d (grad F)_k/dA
 
-    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& F0, const Basis& p, const Gradient& dp, const Hessian& ddp)
+    void init( const InCoord& /*InPos*/, const OutCoord& /*OutPos*/, const SpatialCoord& /*SPos*/, const MaterialToSpatial& /*F0*/, const Basis& /*p*/, const Gradient& /*dp*/, const Hessian& /*ddp*/)
     {
 //        Ft=F0.transposed()*dw;
 //        dFt=ddw.transposed()*F0;

@@ -200,15 +200,15 @@ public:
     }
 
     /// Set F = 0
-    virtual void resetForce( const ExecParams* params, VecId f = VecId::force())
+    virtual void resetForce( const ExecParams* params, VecDerivId f = VecDerivId::force())
     { vOp( params, f, ConstVecId::null(), ConstVecId::null(), 1.0 ); }
 
     /// Set Acc =0
-    virtual void resetAcc( const ExecParams* params, VecId a = VecId::dx() )
+    virtual void resetAcc( const ExecParams* params, VecDerivId a = VecDerivId::dx() )
     { vOp( params, a, ConstVecId::null(), ConstVecId::null(), 1.0 ); }
 
     /// Add stored external forces to F
-    virtual void accumulateForce( const ExecParams* params, VecId f = VecId::force() )
+    virtual void accumulateForce( const ExecParams* params, VecDerivId f = VecDerivId::force() )
     {
         vOp( params, f, f, ConstVecId::externalForce(), 1.0 ); // f += externalForce
     }

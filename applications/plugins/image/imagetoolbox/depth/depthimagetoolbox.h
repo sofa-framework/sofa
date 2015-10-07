@@ -13,10 +13,10 @@
 
 #include "../labelgrid/labelgridimagetoolbox.h"
 #include "../depth/depthimagetoolbox.h"
-#include "ImageTypes.h"
+#include <image/ImageTypes.h>
 #include "meshData.h"
 
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 
 
 

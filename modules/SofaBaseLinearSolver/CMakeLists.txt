@@ -1,54 +1,49 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(SofaBaseLinearSolver)
 
 set(HEADER_FILES
-
-    config.h
-    initBaseLinearSolver.h
+    BTDLinearSolver.h
+    BTDLinearSolver.inl
+    BlocMatrixWriter.h
     CGLinearSolver.h
     CGLinearSolver.inl
     CholeskySolver.h
     CholeskySolver.inl
-    BTDLinearSolver.h
-    BTDLinearSolver.inl
-    FullVector.h
-    FullMatrix.h
-    DiagonalMatrix.h
-    SingleMatrixAccessor.h
-    SparseMatrix.h
     CompressedRowSparseMatrix.h
     CompressedRowSparseMatrix.inl
-    GraphScatteredTypes.h
     DefaultMultiMatrixAccessor.h
+    DiagonalMatrix.h
+    FullMatrix.h
+    FullVector.h
+    GraphScatteredTypes.h
+    MatrixExpr.h
     MatrixLinearSolver.h
     MatrixLinearSolver.inl
-    MatrixExpr.h
-    matrix_bloc_traits.h
-    BlocMatrixWriter.h
     MinResLinearSolver.h
     MinResLinearSolver.inl
-
-    )
+    SingleMatrixAccessor.h
+    SparseMatrix.h
+    config.h
+    initBaseLinearSolver.h
+    matrix_bloc_traits.h
+)
 
 set(SOURCE_FILES
-
-    initBaseLinearSolver.cpp
+    BTDLinearSolver.cpp
     CGLinearSolver.cpp
     CholeskySolver.cpp
-    BTDLinearSolver.cpp
+    DefaultMultiMatrixAccessor.cpp
     FullVector.cpp
     GraphScatteredTypes.cpp
-    DefaultMultiMatrixAccessor.cpp
     MatrixLinearSolver.cpp
-    SingleMatrixAccessor.cpp
     MinResLinearSolver.cpp
-
-    )
-
-set(GROUP_BASE_DIR "..")
+    SingleMatrixAccessor.cpp
+    initBaseLinearSolver.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_BASE_LINEAR_SOLVER")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_BASE_LINEAR_SOLVER")
-AddLinkerDependencies(SofaSimulationTree)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+sofa_install_targets(SofaBase ${PROJECT_NAME} ${PROJECT_NAME})

@@ -56,7 +56,7 @@
 
 #include "sofa/defaulttype/Vec3Types.h"
 #include <sofa/simulation/tree/GNode.h>
-#include "initSofaPML.h"
+#include <SofaPML/config.h>
 
 #include <map>
 

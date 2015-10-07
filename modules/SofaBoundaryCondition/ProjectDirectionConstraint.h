@@ -116,7 +116,7 @@ public:
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
 
-
+    using core::behavior::ProjectiveConstraintSet<DataTypes>::applyConstraint;
     void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
 
@@ -136,7 +136,7 @@ public:
             : sofa::component::topology::TopologySubsetDataHandler<sofa::core::topology::Point, Indices >(_data), fc(_fc) {}
 
 
-
+        using component::topology::TopologySubsetDataHandler<component::topology::Point, Indices >::applyDestroyFunction;
         void applyDestroyFunction(unsigned int /*index*/, core::objectmodel::Data<value_type>& /*T*/);
 
 

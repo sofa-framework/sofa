@@ -255,6 +255,7 @@ protected:
         /// Vertex coefficient of mass matrix destruction function to handle creation of new triangles
         void applyTriangleDestruction(const sofa::helper::vector<unsigned int> & /*indices*/);
 
+        using topology::TopologyDataHandler<topology::Point,MassVector>::ApplyTopologyChange;
         /// Callback to add triangles elements.
         void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
         /// Callback to remove triangles elements.
@@ -330,6 +331,7 @@ protected:
                 const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double >&);
 
+        using topology::TopologyDataHandler<topology::Edge,MassVector>::ApplyTopologyChange;
 
         ///////////////////////// Functions on Triangles //////////////////////////////////////
 
@@ -417,7 +419,7 @@ protected:
                 const sofa::helper::vector< double >&);
 
                /// Edge coefficient of mass matrix destruction function to handle creation of new tetrahedra
-        void applyDestructionFunction(const sofa::helper::vector<unsigned int> & /*indices*/);
+//        void applyDestructionFunction(const sofa::helper::vector<unsigned int> & /*indices*/);
 
     protected:
         MeshMatrixMass<DataTypes,TMassType>* m;

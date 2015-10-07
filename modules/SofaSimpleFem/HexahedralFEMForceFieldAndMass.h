@@ -83,6 +83,8 @@ public:
     ///// WARNING this method only add diagonal elements in the given matrix !
     virtual void addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
+    using HexahedralFEMForceFieldT::addKToMatrix;
+    using MassT::addKToMatrix;
     ///// WARNING this method only add diagonal elements in the given matrix !
     virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
@@ -108,7 +110,7 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
-    SReal getElementMass(unsigned int index);
+    SReal getElementMass(unsigned int index) const;
 
     void setDensity(Real d) {_density.setValue( d );}
     Real getDensity() {return _density.getValue();}

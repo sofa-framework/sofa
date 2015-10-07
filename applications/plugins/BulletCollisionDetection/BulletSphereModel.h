@@ -2,13 +2,9 @@
 #define BULLET_SPHERE_MODEL
 
 #include <SofaBaseCollision/SphereModel.h>
-#include <BulletCollision/CollisionShapes/btTriangleMesh.h>
-#include <BulletCollision/CollisionShapes/btCompoundShape.h>
 #include "BulletCollisionModel.h"
-#include <BulletCollision/Gimpact/btGImpactShape.h>
 #include <sofa/simulation/common/CollisionBeginEvent.h>
-#include <BulletDynamics/Dynamics/btRigidBody.h>
-#include "initBulletCollisionDetection.h"
+#include <BulletCollisionDetection/config.h>
 #include <stack>
 
 namespace sofa

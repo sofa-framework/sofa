@@ -189,12 +189,12 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeAll(const InVecCoord& p0,
     for(size_t i=0; i<cSize; ++i)
         wa_w[i].assign(w[i].begin(), w[i].end());
 
-    helper::WriteOnlyAccessor<Data<vector<VGradient> > > wa_dw (this->f_dw);
+    helper::WriteOnlyAccessor<Data<VecVGradient > > wa_dw (this->f_dw);
     wa_dw.resize(cSize);
     for(size_t i=0; i<cSize; ++i)
         wa_dw[i].assign(dw[i].begin(), dw[i].end());
 
-    helper::WriteOnlyAccessor<Data<vector<VHessian> > > wa_ddw (this->f_ddw);
+    helper::WriteOnlyAccessor<Data<VecVHessian > > wa_ddw (this->f_ddw);
     wa_ddw.resize(cSize);
     for(size_t i=0; i<cSize; ++i)
         wa_ddw[i].assign(ddw[i].begin(), ddw[i].end());
@@ -323,8 +323,8 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
 
     helper::WriteOnlyAccessor<Data<VecVRef > > wa_index (this->f_index);   wa_index.resize(size);  for(size_t i=0; i<size; i++ )    wa_index[i].assign(index[i].begin(), index[i].end());
     helper::WriteOnlyAccessor<Data<VecVReal > > wa_w (this->f_w);          wa_w.resize(size);  for(size_t i=0; i<size; i++ )    wa_w[i].assign(w[i].begin(), w[i].end());
-    helper::WriteOnlyAccessor<Data<vector<VGradient> > > wa_dw (this->f_dw);    wa_dw.resize(size);  for(size_t i=0; i<size; i++ )    wa_dw[i].assign(dw[i].begin(), dw[i].end());
-    helper::WriteOnlyAccessor<Data<vector<VHessian> > > wa_ddw (this->f_ddw);   wa_ddw.resize(size);  for(size_t i=0; i<size; i++ )    wa_ddw[i].assign(ddw[i].begin(), ddw[i].end());
+    helper::WriteOnlyAccessor<Data<VecVGradient > > wa_dw (this->f_dw);    wa_dw.resize(size);  for(size_t i=0; i<size; i++ )    wa_dw[i].assign(dw[i].begin(), dw[i].end());
+    helper::WriteOnlyAccessor<Data<VecVHessian > > wa_ddw (this->f_ddw);   wa_ddw.resize(size);  for(size_t i=0; i<size; i++ )    wa_ddw[i].assign(ddw[i].begin(), ddw[i].end());
     helper::WriteOnlyAccessor<Data<VMaterialToSpatial> > wa_F0 (this->f_F0);    wa_F0.resize(size);  for(size_t i=0; i<size; i++ )    for(size_t j=0; j<spatial_dimensions; j++ ) for(size_t k=0; k<material_dimensions; k++ )   wa_F0[i][j][k]=F0[i][j][k];
 
     if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< size <<" custom gauss points imported"<<std::endl;

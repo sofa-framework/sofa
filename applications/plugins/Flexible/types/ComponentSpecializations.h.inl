@@ -1,6 +1,6 @@
 
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 
 
 #include <SofaBaseMechanics/MechanicalObject.h>

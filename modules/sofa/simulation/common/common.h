@@ -25,17 +25,6 @@
 #ifndef SOFA_SIMULATION_COMMON_COMMON_H
 #define SOFA_SIMULATION_COMMON_COMMON_H
 
-#include <sofa/helper/system/config.h>
-
-#ifdef SOFA_BUILD_SIMULATION_COMMON
-#	define SOFA_SIMULATION_COMMON_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_SIMULATION_COMMON_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-// tinyxml is currently the default XML parser
-#if !defined(SOFA_XML_PARSER_LIBXML) && !defined(SOFA_XML_PARSER_TINYXML)
-#define SOFA_XML_PARSER_TINYXML
-#endif
+#include <sofa/simulation/config.h>
 
 #endif

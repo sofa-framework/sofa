@@ -30,9 +30,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologyData.h>
 
-#ifdef SOFA_HAVE_EIGEN2
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-#endif
 
 
 namespace sofa
@@ -178,9 +176,7 @@ protected:
     VecDeriv _forces;
 
     topology::EdgeData< sofa::helper::vector<BeamInfo> > beamsData;
-#ifdef SOFA_HAVE_EIGEN2
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
-#endif
 
     class BeamFFEdgeHandler : public topology::TopologyDataHandler<topology::Edge,sofa::helper::vector<BeamInfo> >
     {
@@ -215,9 +211,7 @@ protected:
     bool _updateStiffnessMatrix;
     bool _assembling;
 
-#ifdef SOFA_HAVE_EIGEN2
     double lastUpdatedStep;
-#endif
 
     container::StiffnessContainer* stiffnessContainer;
 //	container::LengthContainer* lengthContainer;

@@ -268,7 +268,7 @@ void MechanicalObject<DataTypes>::initGnuplot(const std::string path)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::exportGnuplot(Real time)
+void MechanicalObject<DataTypes>::exportGnuplot(SReal time)
 {
     if( m_gnuplotFileX!=NULL )
     {
@@ -665,14 +665,38 @@ void MechanicalObject<DataTypes>::resize(const int size)
         numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
 
-    //if (size!=vsize)
+    if(size>0)
     {
-        vsize = size;
+        //if (size!=vsize)
+        {
+            vsize = size;
+            for (unsigned int i = 0; i < vectorsCoord.size(); i++)
+            {
+                if (vectorsCoord[i] != NULL && vectorsCoord[i]->isSet())
+                {
+                    vectorsCoord[i]->beginEdit()->resize(size);
+                    vectorsCoord[i]->endEdit();
+                }
+            }
+
+            for (unsigned int i = 0; i < vectorsDeriv.size(); i++)
+            {
+                if (vectorsDeriv[i] != NULL && vectorsDeriv[i]->isSet())
+                {
+                    vectorsDeriv[i]->beginEdit()->resize(size);
+                    vectorsDeriv[i]->endEdit();
+                }
+            }
+        }
+    }
+    else // clear
+    {
+        vsize = 0;
         for (unsigned int i = 0; i < vectorsCoord.size(); i++)
         {
             if (vectorsCoord[i] != NULL && vectorsCoord[i]->isSet())
             {
-                vectorsCoord[i]->beginEdit()->resize(size);
+                vectorsCoord[i]->beginEdit()->clear();
                 vectorsCoord[i]->endEdit();
             }
         }
@@ -681,7 +705,7 @@ void MechanicalObject<DataTypes>::resize(const int size)
         {
             if (vectorsDeriv[i] != NULL && vectorsDeriv[i]->isSet())
             {
-                vectorsDeriv[i]->beginEdit()->resize(size);
+                vectorsDeriv[i]->beginEdit()->clear();
                 vectorsDeriv[i]->endEdit();
             }
         }
@@ -1374,7 +1398,7 @@ void MechanicalObject<DataTypes>::writeState(std::ostream& out)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::beginIntegration(Real /*dt*/)
+void MechanicalObject<DataTypes>::beginIntegration(SReal /*dt*/)
 {
     this->forceMask.activate(false);
 }
@@ -1384,7 +1408,7 @@ void MechanicalObject<DataTypes>::endIntegration(const core::ExecParams*
                                                  #ifdef SOFA_SMP
                                                  params
                                                  #endif
-                                                , Real /*dt*/    )
+                                                , SReal /*dt*/    )
 {
     this->forceMask.clear();
     //By default the mask is disabled, the user has to enable it to benefit from the speedup
@@ -1405,13 +1429,13 @@ void MechanicalObject<DataTypes>::endIntegration(const core::ExecParams*
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params)
+void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params, core::VecDerivId fId)
 {
 #ifdef SOFA_SMP
     if (params->execMode() == core::ExecParams::EXEC_KAAPI)
     {
         BaseObject::Task < vPEq2 <  VecDeriv, VecDeriv > >
-                (this, **defaulttype::getShared(*this->write(VecDerivId::force())),
+                (this, **defaulttype::getShared(*this->write(fId)),
                  **defaulttype::getShared(*this->read(ConstVecDerivId::externalForce())));
     }
     else
@@ -1421,7 +1445,7 @@ void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params
 
         if (!extForces_rA.empty())
         {
-            helper::WriteAccessor< Data<VecDeriv> > f_wA ( params, *this->write(core::VecDerivId::force()) );
+            helper::WriteAccessor< Data<VecDeriv> > f_wA ( params, *this->write(fId) );
 
             if (!this->forceMask.isInUse())
             {
@@ -2464,7 +2488,7 @@ void MechanicalObject<DataTypes>::printDOF( core::ConstVecId v, std::ostream& ou
 #endif
 
 template <class DataTypes>
-unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(core::VecId v, unsigned count, unsigned time, std::ostream& out)
+unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(core::ConstVecId v, unsigned count, unsigned time, std::ostream& out)
 {
     if (v.type == sofa::core::V_COORD)
     {
@@ -2501,17 +2525,17 @@ unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(core::VecId v, uns
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::resetForce(const core::ExecParams* params)
+void MechanicalObject<DataTypes>::resetForce(const core::ExecParams* params, core::VecDerivId fid)
 {
 #ifdef SOFA_SMP
     if (params->execMode() == core::ExecParams::EXEC_KAAPI)
     {
-        BaseObject::Task< vClear<VecDeriv, Deriv> >(this, **defaulttype::getShared(*this->write(core::VecDerivId::force())));
+        BaseObject::Task< vClear<VecDeriv, Deriv> >(this, **defaulttype::getShared(*this->write(fid)));
     }
     else
 #endif /* SOFA_SMP */
     {
-        helper::WriteAccessor< Data<VecDeriv> > f( params, *this->write(core::VecDerivId::force()) );
+        helper::WriteAccessor< Data<VecDeriv> > f( params, *this->write(fid) );
 
         if (!this->forceMask.isInUse())
         {
@@ -2536,17 +2560,17 @@ void MechanicalObject<DataTypes>::resetForce(const core::ExecParams* params)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams* params)
+void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams* params, core::VecDerivId aId)
 {
 #ifdef SOFA_SMP
     if (params->execMode() == core::ExecParams::EXEC_KAAPI)
     {
-        BaseObject::Task< vClear<VecDeriv, Deriv> >(this, **defaulttype::getShared(*this->write(core::VecDerivId::dx())));
+        BaseObject::Task< vClear<VecDeriv, Deriv> >(this, **defaulttype::getShared(*this->write(aId)));
     }
     else
 #endif /* SOFA_SMP */
     {
-        helper::WriteAccessor< Data<VecDeriv> > a( params, *this->write(core::VecDerivId::dx()) );
+        helper::WriteAccessor< Data<VecDeriv> > a( params, *this->write(aId) );
 
         for (unsigned i = 0; i < a.size(); ++i)
         {
@@ -3456,15 +3480,15 @@ bool MechanicalObject<DataTypes>::addBBox(SReal* minBBox, SReal* maxBBox)
     // participating to bbox only if it is drawn
     if( !showObject.getValue() ) return false;
 
+    static const unsigned spatial_dimensions = std::min( (unsigned)DataTypes::spatial_dimensions, 3u );
+
     const VecCoord& x = read(core::ConstVecCoordId::position())->getValue();
     for( std::size_t i=0; i<x.size(); i++ )
     {
         defaulttype::Vec<3,Real> p;
         DataTypes::get( p[0], p[1], p[2], x[i] );
 
-        assert( DataTypes::spatial_dimensions <= 3 );
-
-        for( unsigned int j=0 ; j<DataTypes::spatial_dimensions; ++j )
+        for( unsigned int j=0 ; j<spatial_dimensions; ++j )
         {
             if(p[j]<minBBox[j]) minBBox[j]=p[j];
             if(p[j]>maxBBox[j]) maxBBox[j]=p[j];

@@ -30,6 +30,7 @@
 #include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
 #ifdef SOFA_HAVE_DAG
 #include <sofa/simulation/graph/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -39,7 +40,14 @@
 #endif
 #include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
-#include <SofaComponentMain/init.h>
+
+
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
+
 #include <SofaLoader/ReadState.h>
 #include <SofaValidation/CompareState.h>
 #include <sofa/helper/Factory.h>
@@ -97,7 +105,11 @@ int main(int argc, char** argv)
 #ifdef SOFA_HAVE_DAG
     sofa::simulation::graph::init();
 #endif
-    sofa::component::init();
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
     //std::cout << "Using " << sofa::helper::system::atomic<int>::getImplName()<<" atomics." << std::endl;
 
     sofa::helper::BackTrace::autodump();
@@ -216,6 +228,12 @@ int main(int argc, char** argv)
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 #endif
 
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
+
     if (colorsStatus == "auto")
         Console::setColorsStatus(Console::ColorsAuto);
     else if (colorsStatus == "yes")
@@ -237,8 +255,8 @@ int main(int argc, char** argv)
     sofa::helper::system::PluginRepository.addFirstPath(pluginDir);
 
     // Initialise paths
-    sofa::gui::BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config");
-    sofa::gui::BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots");
+    sofa::gui::BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
+    sofa::gui::BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots", true);
 
     if (!files.empty())
         fileName = files[0];

@@ -25,6 +25,7 @@
 #include <sofa/helper/system/config.h>
 #include <SofaComponentCommon/initComponentCommon.h>
 #include <SofaLoader/initLoader.h>
+/*
 #include <SofaRigid/initRigid.h>
 #include <SofaDeformable/initDeformable.h>
 #include <SofaSimpleFem/initSimpleFEM.h>
@@ -32,7 +33,7 @@
 #include <SofaMeshCollision/initMeshCollision.h>
 #include <SofaExplicitOdeSolver/initExplicitODESolver.h>
 #include <SofaImplicitOdeSolver/initImplicitODESolver.h>
-
+*/
 
 namespace sofa
 {
@@ -50,6 +51,7 @@ void initComponentCommon()
     }
 
     initLoader();
+/*
     initRigid();
     initDeformable();
     initSimpleFEM();
@@ -57,7 +59,7 @@ void initComponentCommon()
     initMeshCollision();
     initExplicitODESolver();
     initImplicitODESolver();
-
+*/
 }
 
 } // namespace component

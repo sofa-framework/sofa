@@ -5,7 +5,7 @@ import inspect
 
 class Controller(Sofa.PythonScriptController):
 
-    def __new__(cls, node, name='PythonScriptController'):
+    def __new__(cls, node, name='pythonScriptController'):
 
         node.createObject('PythonScriptController',
                           filename = inspect.getfile(cls),
@@ -18,7 +18,7 @@ class Controller(Sofa.PythonScriptController):
         except AttributeError:
             # if this fails, you need to call
             # Controller.onLoaded(self, node) in derived classes
-            print "script instance not found, did you overload 'onLoaded' in {} ?".format(cls)
+            print "[SofaPython.script.Controller.__new__] instance not found, did you call 'SofaPython.script.Controller.onLoaded' on your overloaded 'onLoaded' in {} ?".format(cls)
             raise
         
     def onLoaded(self, node):

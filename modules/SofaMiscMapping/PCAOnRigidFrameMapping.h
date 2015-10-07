@@ -114,6 +114,11 @@ public:
 
     void init();
 
+
+    using Inherit::apply;
+    using Inherit::applyJ;
+    using Inherit::applyJT;
+
     //Apply
     void apply( OutVecCoord& out, const InVecCoord& in, const InRootVecCoord* inroot  );
     void apply(

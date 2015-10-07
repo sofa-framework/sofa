@@ -82,7 +82,7 @@ class NeoHookean : public HyperelasticMaterial<DataTypes>{
 	}
 	
 
-	virtual void applyElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,const MatrixSym inputTensor, MatrixSym &outputTensor)  {
+    virtual void applyElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,const MatrixSym& inputTensor, MatrixSym &outputTensor)  {
 		Real mu=param.parameterArray[0];
 		Real k=param.parameterArray[1];
 		MatrixSym inversematrix;

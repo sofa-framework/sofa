@@ -25,7 +25,7 @@
 #ifndef IMAGE_IMAGECONTAINER_H
 #define IMAGE_IMAGECONTAINER_H
 
-#include "initImage.h"
+#include <image/config.h>
 #include "ImageTypes.h"
 #include <limits.h>
 #include <sofa/defaulttype/Vec.h>
@@ -79,7 +79,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
     }
 
     template<class ImageContainer>
-    static void parse( ImageContainer* container, sofa::core::objectmodel::BaseObjectDescription */*arg*/=NULL )
+    static void parse( ImageContainer* container, sofa::core::objectmodel::BaseObjectDescription* /* arg */ = NULL )
     {
         if( container->image.isSet() ) return; // image is set from data link
 

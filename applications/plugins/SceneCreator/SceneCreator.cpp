@@ -29,8 +29,6 @@
 
 #include <sofa/helper/system/SetDirectory.h>
 
-#include <SofaComponentMain/init.h>
-
 
 //Including Simulation
 #include <sofa/simulation/common/Simulation.h>
@@ -439,7 +437,6 @@ simulation::Node::SPtr massSpringString
 Node::SPtr initSofa()
 {
     setSimulation(new simulation::graph::DAGSimulation());
-    sofa::component::init();
     return simulation::getSimulation()->createNewGraph("root");
 //    root = modeling::newRoot();
 //    root->setName("Solver_test_scene_root");

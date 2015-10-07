@@ -32,7 +32,6 @@ namespace sofa
 namespace component
 {
 
-
 void SOFA_MISC_SOLVER_API initMiscSolver();
 
 } // namespace component

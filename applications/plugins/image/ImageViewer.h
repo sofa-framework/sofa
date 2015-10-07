@@ -26,7 +26,7 @@
 #define SOFA_IMAGE_IMAGEVIEWER_H
 
 
-#include "initImage.h"
+#include <image/config.h>
 #include "ImageTypes.h"
 #include "VectorVis.h"
 
@@ -349,7 +349,7 @@ public:
         bool imagedirty=image.isDirty();
         if(imagedirty)
         {
-            raImage rimage(this->image);			// used here to propagate changes across linked data
+            this->image.update();
             waHisto whisto(this->histo);
             // Set input for whisto
             whisto->setInput(image.getValue());
@@ -359,8 +359,8 @@ public:
         
         if(wplane->isImagePlaneDirty() || transform.isDirty() || imagedirty)
         {
-            raTransform rtransform(this->transform); // used here to propagate changes across linked data
-            raImage rimage(this->image);			// used here to propagate changes across linked data
+            this->transform.update();
+            this->image.update();
             wplane->setImagePlaneDirty(false);
             
             updateTextures();
@@ -620,7 +620,7 @@ protected:
         raPlane rplane(this->plane);
         if (!rplane->getDimensions()[0]) return;
 
-        raTransform rtransform(this->transform); // used here to propagate changes in linked data..
+        this->transform.update();
 
         float color[]={1.,1.,1.,0.}, specular[]={0.,0.,0.,0.};
         glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);

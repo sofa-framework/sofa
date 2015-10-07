@@ -62,8 +62,6 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/gui/GUIManager.h>
-#include <sofa/gui/Main.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/system/atomic.h>
@@ -85,7 +83,6 @@ namespace sofa
     using core::objectmodel::New;
 
     typedef component::container::MechanicalObject<defaulttype::Vec1Types> MechanicalObject1;
-    typedef component::container::MechanicalObject<defaulttype::Vec3Types> MechanicalObject3;
     typedef component::mapping::RigidMapping<defaulttype::Rigid3Types, defaulttype::Vec3Types> RigidMappingRigid3_to_3;
     typedef component::mapping::SubsetMultiMapping<defaulttype::Vec3Types, defaulttype::Vec3Types> SubsetMultiMapping3_to_3;
     typedef component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> UniformMassRigid3;

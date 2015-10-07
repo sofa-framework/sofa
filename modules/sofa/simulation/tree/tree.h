@@ -25,12 +25,6 @@
 #ifndef SOFA_SIMULATION_TREE_TREE_H
 #define SOFA_SIMULATION_TREE_TREE_H
 
-#include <sofa/helper/system/config.h>
-
-#ifdef SOFA_BUILD_SIMULATION_TREE
-#	define SOFA_SIMULATION_TREE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_SIMULATION_TREE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/simulation/config.h>
 
 #endif

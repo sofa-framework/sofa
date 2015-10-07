@@ -495,7 +495,7 @@ void OmniDriverEmu::reinit()
 
 }
 
-void OmniDriverEmu::draw()
+void OmniDriverEmu::draw(const core::visual::VisualParams *)
 {
     if(omniVisu.getValue())
     {

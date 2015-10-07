@@ -155,6 +155,7 @@ public:
     using Inherit::getPotentialEnergy;
     virtual SReal getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const;
 
+    using Inherit::addKToMatrix;
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*kFact*/, unsigned int &/*offset*/);
 
     SReal getStiffness() const { return ks.getValue(); }

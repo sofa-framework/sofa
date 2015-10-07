@@ -337,8 +337,6 @@ const sofa::defaulttype::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
 
 
 
-#ifdef SOFA_HAVE_EIGEN2
-
 template <class TIn, class TOut>
 const typename SubsetMapping<TIn, TOut>::js_type* SubsetMapping<TIn, TOut>::getJs()
 {
@@ -366,8 +364,6 @@ const typename SubsetMapping<TIn, TOut>::js_type* SubsetMapping<TIn, TOut>::getJ
     js[0] = &eigen;
     return &js;
 }
-
-#endif
 
 } // namespace mapping
 

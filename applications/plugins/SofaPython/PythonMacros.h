@@ -25,15 +25,8 @@
 #ifndef PYTHONMACROS_H
 #define PYTHONMACROS_H
 
-// Python.h should be included before any std header
-#if defined(_MSC_VER) && !defined(NDEBUG)
-// BUT boost/intrusive_ptr.hpp must be included before python.h on Windows to support debug compilation.
-#include <boost/intrusive_ptr.hpp>
-#include "PythonCommon.h"
-#else
 #include "PythonCommon.h"
 #include <boost/intrusive_ptr.hpp>
-#endif
 
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -42,7 +35,7 @@
 
 #include <sofa/helper/Logger.h>
 
-#include "initSofaPython.h"
+#include <SofaPython/config.h>
 
 
 
@@ -340,7 +333,7 @@ static PyTypeObject DummyChild_PyTypeObject = {
 // ERROR / WARNING MESSAGES
 // =============================================================================
 
-#define SP_MESSAGE_BASE( level, msg ) { std::stringstream ss; ss<<msg; sofa::helper::Logger::getMainLogger().log( sofa::helper::Logger::level, ss.str(), "SofaPython" ); }
+#define SP_MESSAGE_BASE( level, msg ) { MAINLOGGER( level, msg, "SofaPython" ) }
 #define SP_MESSAGE_INFO( msg ) { SP_MESSAGE_BASE( Info, msg ) }
 #define SP_MESSAGE_WARNING( msg ) { SP_MESSAGE_BASE( Warning, msg ) }
 #define SP_MESSAGE_ERROR( msg ) { SP_MESSAGE_BASE( Error, msg ) }

@@ -2780,13 +2780,13 @@ template <class In, class Out>
 const sofa::defaulttype::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::getJ(int outSize, int inSize)
 {
 
-    if (matrixJ && !updateJ && matrixJ->rowBSize() == (unsigned)outSize && matrixJ->colBSize() == (unsigned)inSize)
+    if (matrixJ && !updateJ && matrixJ->rowBSize() == (MatrixTypeIndex)outSize && matrixJ->colBSize() == (MatrixTypeIndex)inSize)
         return matrixJ;
     if (outSize > 0 && map1d.size()+map2d.size()+map3d.size() == 0)
         return NULL; // error: maps not yet created ?
 //	std::cout << "BarycentricMapperMeshTopology: creating " << outSize << "x" << inSize << " " << NOut << "x" << NIn << " J matrix" << std::endl;
     if (!matrixJ) matrixJ = new MatrixType;
-    if (matrixJ->rowBSize() != (unsigned)outSize || matrixJ->colBSize() != (unsigned)inSize)
+    if (matrixJ->rowBSize() != (MatrixTypeIndex)outSize || matrixJ->colBSize() != (MatrixTypeIndex)inSize)
         matrixJ->resize(outSize*NOut, inSize*NIn);
     else
         matrixJ->clear();
@@ -2906,7 +2906,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperRegularGridTopology<In,Out
         return matrixJ;
 
     if (!matrixJ) matrixJ = new MatrixType;
-    if (matrixJ->rowBSize() != (unsigned)outSize || matrixJ->colBSize() != (unsigned)inSize)
+    if (matrixJ->rowBSize() != (MatrixTypeIndex)outSize || matrixJ->colBSize() != (MatrixTypeIndex)inSize)
         matrixJ->resize(outSize*NOut, inSize*NIn);
     else
         matrixJ->clear();
@@ -2954,7 +2954,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperSparseGridTopology<In,Out>
         return matrixJ;
 
     if (!matrixJ) matrixJ = new MatrixType;
-    if (matrixJ->rowBSize() != (unsigned)outSize || matrixJ->colBSize() != (unsigned)inSize)
+    if (matrixJ->rowBSize() != (MatrixTypeIndex)outSize || matrixJ->colBSize() != (MatrixTypeIndex)inSize)
         matrixJ->resize(outSize*NOut, inSize*NIn);
     else
         matrixJ->clear();
@@ -3006,7 +3006,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperEdgeSetTopology<In,Out>::g
         return matrixJ;
 
     if (!matrixJ) matrixJ = new MatrixType;
-    if (matrixJ->rowBSize() != (unsigned)outSize || matrixJ->colBSize() != (unsigned)inSize)
+    if (matrixJ->rowBSize() != (MatrixTypeIndex)outSize || matrixJ->colBSize() != (MatrixTypeIndex)inSize)
         matrixJ->resize(outSize*NOut, inSize*NIn);
     else
         matrixJ->clear();
@@ -3056,7 +3056,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTriangleSetTopology<In,Out
         return matrixJ;
 
     if (!matrixJ) matrixJ = new MatrixType;
-    if (matrixJ->rowBSize() != (unsigned)outSize || matrixJ->colBSize() != (unsigned)inSize)
+    if (matrixJ->rowBSize() != (MatrixTypeIndex)outSize || matrixJ->colBSize() != (MatrixTypeIndex)inSize)
         matrixJ->resize(outSize*NOut, inSize*NIn);
     else
         matrixJ->clear();
@@ -3112,7 +3112,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperQuadSetTopology<In,Out>::g
         return matrixJ;
 
     if (!matrixJ) matrixJ = new MatrixType;
-    if (matrixJ->rowBSize() != (unsigned)outSize || matrixJ->colBSize() != (unsigned)inSize)
+    if (matrixJ->rowBSize() != (MatrixTypeIndex)outSize || matrixJ->colBSize() != (MatrixTypeIndex)inSize)
         matrixJ->resize(outSize*NOut, inSize*NIn);
     else
         matrixJ->clear();
@@ -3172,7 +3172,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopology<In,
         return matrixJ;
 
     if (!matrixJ) matrixJ = new MatrixType;
-    if (matrixJ->rowBSize() != (unsigned)outSize || matrixJ->colBSize() != (unsigned)inSize)
+    if (matrixJ->rowBSize() != (MatrixTypeIndex)outSize || matrixJ->colBSize() != (MatrixTypeIndex)inSize)
         matrixJ->resize(outSize*NOut, inSize*NIn);
     else
         matrixJ->clear();
@@ -3230,7 +3230,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperHexahedronSetTopology<In,O
         return matrixJ;
 
     if (!matrixJ) matrixJ = new MatrixType;
-    if (matrixJ->rowBSize() != (unsigned)outSize || matrixJ->colBSize() != (unsigned)inSize)
+    if (matrixJ->rowBSize() != (MatrixTypeIndex)outSize || matrixJ->colBSize() != (MatrixTypeIndex)inSize)
         matrixJ->resize(outSize*NOut, inSize*NIn);
     else
         matrixJ->clear();    
@@ -4340,7 +4340,6 @@ void BarycentricMapping<TIn, TOut>::handleTopologyChange ( core::topology::Topol
 }
 
 
-#ifdef SOFA_HAVE_EIGEN2
 
 template<class TIn, class TOut>
 const vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::getJs()
@@ -4360,7 +4359,6 @@ const vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::getJs()
 }
 
 
-#endif
 
 } // namespace mapping
 

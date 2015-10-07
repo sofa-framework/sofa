@@ -1,0 +1,11 @@
+# CMake package configuration file for SofaMisc
+@PACKAGE_INIT@
+
+find_package(SofaAdvanced REQUIRED)
+find_package(SofaGeneral REQUIRED)
+
+if(NOT TARGET SofaComponentMisc)
+	include("${CMAKE_CURRENT_LIST_DIR}/SofaMiscTargets.cmake")
+endif()
+
+check_required_components(@SOFAMISC_TARGETS@)

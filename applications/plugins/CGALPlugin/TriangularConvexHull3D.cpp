@@ -30,7 +30,7 @@
  */
 #define CGALPLUGIN_TRIANGULARCONVEXHULL3D_CPP
 
-#include <initCGALPlugin.h>
+#include <CGALPlugin/config.h>
 #include "TriangularConvexHull3D.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>

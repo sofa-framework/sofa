@@ -145,7 +145,7 @@ private:
     bool processMessages();
     void releaseAspect(int aspect);
 
-    std::auto_ptr<boost::thread> simuThread;
+    boost::shared_ptr<boost::thread> simuThread;
     AspectPool aspectPool;
     AspectRef glAspect;
     AspectRef simuAspect;

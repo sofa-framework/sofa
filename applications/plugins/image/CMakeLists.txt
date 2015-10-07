@@ -1,105 +1,154 @@
-set(SOFA_PROJECT_FOLDER "SofaExternal")
-RegisterProjects("DiffusionSolver" PATH "${CMAKE_CURRENT_LIST_DIR}/extlibs/DiffusionSolver")
+add_subdirectory(extlibs/DiffusionSolver)
 
-set(SOFA_PROJECT_FOLDER "SofaPlugin")
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(image)
+
+set(IMAGE_MAJOR_VERSION 0)
+set(IMAGE_MINOR_VERSION 1)
+set(IMAGE_VERSION ${IMAGE_MAJOR_VERSION}.${IMAGE_MINOR_VERSION})
 
 set(SOURCE_FILES
-    initImage.cpp
-    ImageTypes.cpp
+    CollisionToCarvingEngine.cpp
+    DepthMapToMeshEngine.cpp
+    ImageAccumulator.cpp
     ImageContainer.cpp
+    ImageDataDisplay.cpp
+    ImageExporter.cpp
     ImageFilter.cpp
     ImageOperation.cpp
+    ImageSampler.cpp
+    ImageToRigidMassEngine.cpp
     ImageTransform.cpp
     ImageTransformEngine.cpp
-    TransferFunction.cpp
+    ImageTypes.cpp
     ImageValuesFromPositions.cpp
+    MarchingCubesEngine.cpp
     MergeImages.cpp
-    ImageAccumulator.cpp
-    DepthMapToMeshEngine.cpp
     MeshToImageEngine.cpp
-    MarchingCubesEngine.cpp 
-	CollisionToCarvingEngine.cpp
-    ImageSampler.cpp 
-    ImageExporter.cpp 
-    ImageDataDisplay.cpp
+    TransferFunction.cpp
     VoronoiToMeshEngine.cpp
-    ImageToRigidMassEngine.cpp
+    initImage.cpp
 )
 
 set(HEADER_FILES
-    initImage.h
-    ImageTypes.h
+    CollisionToCarvingEngine.h
+    Containers.h
+    DepthMapToMeshEngine.h
+    ImageAccumulator.h
+    ImageAlgorithms.h
     ImageContainer.h
+    ImageDataDisplay.h
+    ImageExporter.h
     ImageFilter.h
     ImageOperation.h
+    ImageSampler.h
+    ImageToRigidMassEngine.h
     ImageTransform.h
     ImageTransformEngine.h
-    TransferFunction.h
+    ImageTypes.h
     ImageValuesFromPositions.h
-    MergeImages.h
-    ImageAccumulator.h
-    DepthMapToMeshEngine.h
-    MeshToImageEngine.h
     MarchingCubesEngine.h
-	CollisionToCarvingEngine.h
-    ImageSampler.h
-    ImageExporter.h
-    VectorVis.h 
-    ImageAlgorithms.h 
-    Containers.h 
-    ImageDataDisplay.h
+    MergeImages.h
+    MeshToImageEngine.h
+    TransferFunction.h
+    VectorVis.h
     VoronoiToMeshEngine.h
-    ImageToRigidMassEngine.h
+)
+
+set(PYTHON_FILES
+    python/SofaImage/API.py
+    python/SofaImage/__init__.py
 )
 
 set(README_FILES image.txt)
 
-# include python files
-include(./python/python.cmake)
+find_package(SofaBase REQUIRED)
+find_package(Newmat REQUIRED)
+find_package(CImg REQUIRED)
 
-if (NOT SOFA-MISC_NO_OPENGL)
-    list(APPEND HEADER_FILES "ImageViewer.h")
-    list(APPEND SOURCE_FILES "ImageViewer.cpp")
+
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/image/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/image/config.h" DESTINATION "include/image")
+
+# Config files and install rules for pythons scripts
+sofa_set_python_directory(${PROJECT_NAME} "python")
+
+if(NOT SOFA-NO_OPENGL)
+    list(APPEND HEADER_FILES ImageViewer.h)
+    list(APPEND SOURCE_FILES ImageViewer.cpp)
 endif()
 
-if(SOFA-EXTERNAL_LIBFREENECT)
-    list(APPEND HEADER_FILES "Kinect.h")
-    list(APPEND SOURCE_FILES "Kinect.cpp")
-    AddLinkerDependencies("freenect")
-    AddLinkerDependencies("freenect_sync")
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+find_package(Freenect QUIET)
+
+if(FREENECT_FOUND)
+    list(APPEND HEADER_FILES Kinect.h)
+    list(APPEND SOURCE_FILES Kinect.cpp)
+    message(STATUS "image: found the freenect library")
+else()
+    message(STATUS "image: could not find the freenect library, won't build the Kinect component")
 endif()
 
-if(SOFA-EXTERNAL_ZLIB)
-    AddLinkerDependencies(${ZLIB_LIBRARIES})
+# todo?
+
+# if(SOFA-EXTERNAL_OPENCV)
+# AddLinkerDependencies("ml")
+# AddLinkerDependencies("cvaux")
+# AddLinkerDependencies("highgui")
+# AddLinkerDependencies("cv")
+# AddLinkerDependencies("cxcore")
+# endif()
+
+find_package(DiffusionSolver CONFIG REQUIRED)
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
+target_link_libraries(${PROJECT_NAME} SofaCore SofaComponentBase)
+target_link_libraries(${PROJECT_NAME} DiffusionSolver)
+target_link_libraries(${PROJECT_NAME} newmat)
+
+if(FREENECT_FOUND)
+    target_link_libraries(${PROJECT_NAME} freenect)
+    target_link_libraries(${PROJECT_NAME} freenect_sync)
 endif()
 
-include_directories("${SOFA_EXTLIBS_DIR}")
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CImg_INCLUDE_DIRS}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
+if(FREENECT_FOUND)
+    target_include_directories(${PROJECT_NAME} PUBLIC "${FREENECT_INCLUDE_DIR}")
+endif()
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${IMAGE_VERSION})
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_IMAGE")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-AddCompilerDefinitions("SOFA_BUILD_IMAGE")
-AddLinkerDependencies(SofaBaseVisual)
-# AddLinkerDependencies(${OPENGL_LIBRARIES})
+if(SOFA_HAVE_ZLIB)
+    target_link_libraries(${PROJECT_NAME} SofaFramework::ZLIB)
+endif()
 
 if(APPLE)
     find_package(X11)
     if(NOT X11_FOUND)
-        message(FATAL_ERROR "Failed to find X11 which is required to build image plugin")
-    endif(NOT X11_FOUND)
-    AddLinkerDependencies(${X11_X11_LIB})
-    include_directories(${X11_X11_INCLUDE_PATH})
+        message(FATAL_ERROR "Failed to find X11 which is required to build plugin 'image'")
+    endif()
+    target_link_libraries(${PROJECT_NAME} ${X11_X11_LIB})
+    target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${X11_X11_INCLUDE_PATH}>")
 endif()
 
-if(SOFA-EXTERNAL_OPENCV)
-    AddLinkerDependencies("ml")
-    AddLinkerDependencies("cvaux")
-    AddLinkerDependencies("highgui")
-    AddLinkerDependencies("cv")
-    AddLinkerDependencies("cxcore")
+if(SOFA_BUILD_TESTS)
+    find_package(SofaTest QUIET)
+    if(SofaTest_FOUND)
+        add_subdirectory(image_test)
+    endif()
 endif()
 
-AddLinkerDependencies(newmat)
-AddLinkerDependencies(DiffusionSolver)
+find_package(SofaGui QUIET)
+if(SofaGui_FOUND AND SOFA_GUI_QT)
+    add_subdirectory(image_gui)
+endif()
 
+## Install rules for the library and headers; CMake package configurations files
+sofa_create_package(image ${IMAGE_VERSION} ${PROJECT_NAME} image)
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+## Install rules for the resources
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

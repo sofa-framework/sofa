@@ -1,31 +1,36 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(Xitact)
+
 
 set(HEADER_FILES
-
-    XiTrocarInterface.h 
-    initXitact.h 
-    PaceMaker.h 
     IHPDriver.h
-    ITPDriver.h 
-	)
+    ITPDriver.h
+    PaceMaker.h
+    XiTrocarInterface.h
+    config.h
+)
 
 set(SOURCE_FILES
+    IHPDriver.cpp
+    ITPDriver.cpp
+    PaceMaker.cpp
+    initXitact.cpp
+)
 
-    initXitact.cpp 
-    PaceMaker.cpp  
-    IHPDriver.cpp 
-    ITPDriver.cpp 
+set(README_FILES PluginXitact.txt)
 
-	)
-
-set(README_FILES
-
-	PluginXitact.txt
-	)
+find_package(SofaGui REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_XITACTPLUGIN")
+target_link_libraries(${PROJECT_NAME} SofaComponentMain SofaGui SofaGuiQt XiRobot)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
-AddCompilerDefinitions("SOFA_BUILD_XITACTPLUGIN")
-AddLinkerDependencies(SofaComponentMain SofaGui SofaGuiQt XiRobot)
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT Xitact_libraries
+        EXPORT XitactTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

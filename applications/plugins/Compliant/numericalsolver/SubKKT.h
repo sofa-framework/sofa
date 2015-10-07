@@ -1,7 +1,7 @@
 #ifndef COMPLIANT_SUBKKT_H
 #define COMPLIANT_SUBKKT_H
 
-#include "../initCompliant.h"
+#include <Compliant/config.h>
 #include "../assembly/AssembledSystem.h"
 #include "../utils/eigen_types.h"
 

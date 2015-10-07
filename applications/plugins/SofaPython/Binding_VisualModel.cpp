@@ -47,7 +47,7 @@ extern "C" PyObject * VisualModel_setColor(PyObject *self, PyObject * args)
         b = (double)ib;
         a = (double)ia;
     }
-    obj->setColor(r,g,b,a);
+    obj->setColor((float)r,(float)g,(float)b,(float)a);
     Py_RETURN_NONE;
 }
 

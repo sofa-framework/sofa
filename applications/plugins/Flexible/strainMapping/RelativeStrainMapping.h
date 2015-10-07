@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_RelativeStrainMAPPING_H
 #define SOFA_COMPONENT_MAPPING_RelativeStrainMAPPING_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "BaseStrainMapping.h"
 #include "RelativeStrainJacobianBlock.h"
 

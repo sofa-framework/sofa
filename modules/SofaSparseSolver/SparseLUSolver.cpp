@@ -25,7 +25,7 @@
 // Author: Hadrien Courtecuisse
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <SofaSparseSolver/SparseLUSolver.h>
+#include <SofaSparseSolver/SparseLUSolver.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
@@ -45,81 +45,10 @@ namespace component
 namespace linearsolver
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::behavior;
-using namespace sofa::simulation;
-using namespace sofa::core::objectmodel;
-using sofa::helper::system::thread::CTime;
-using sofa::helper::system::thread::ctime_t;
-using std::cerr;
-using std::endl;
-
-template<class TMatrix, class TVector>
-SparseLUSolver<TMatrix,TVector>::SparseLUSolver()
-    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_tol( initData(&f_tol,0.001,"tolerance","tolerance of factorization") )
-    , S(NULL), N(NULL), tmp(NULL)
-{
-}
-
-template<class TMatrix, class TVector>
-SparseLUSolver<TMatrix,TVector>::~SparseLUSolver()
-{
-    if (S) cs_sfree (S);
-    if (N) cs_nfree (N);
-    if (tmp) cs_free (tmp);
-}
-
-
-template<class TMatrix, class TVector>
-void SparseLUSolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector& r)
-{
-    int n = A.n;
-
-    cs_ipvec (n, N->Pinv, r.ptr(), tmp) ;	/* x = P*b */
-    cs_lsolve (N->L, tmp) ;		/* x = L\x */
-    cs_usolve (N->U, tmp) ;		/* x = U\x */
-    cs_ipvec (n, S->Q, tmp, z.ptr()) ;	/* b = Q*x */
-}
-
-template<class TMatrix, class TVector>
-void SparseLUSolver<TMatrix,TVector>::invert(Matrix& M)
-{
-    int order = -1; //?????
-
-    if (S) cs_sfree(S);
-    if (N) cs_nfree(N);
-    if (tmp) cs_free(tmp);
-    M.compress();
-    //remplir A avec M
-    A.nzmax = M.getColsValue().size();	// maximum number of entries
-    A.m = M.rowBSize();					// number of rows
-    A.n = M.colBSize();					// number of columns
-    A_p = M.getRowBegin();
-    A.p = (int *) &(A_p[0]);							// column pointers (size n+1) or col indices (size nzmax)
-    A_i = M.getColsIndex();
-    A.i = (int *) &(A_i[0]);							// row indices, size nzmax
-    A_x = M.getColsValue();
-    A.x = (double *) &(A_x[0]);				// numerical values, size nzmax
-    A.nz = -1;							// # of entries in triplet matrix, -1 for compressed-col
-    cs_dropzeros( &A );
-
-    //M.check_matrix();
-    //CompressedRowSparseMatrix<double>::check_matrix(-1 /*A.nzmax*/,A.m,A.n,A.p,A.i,A.x);
-    //sout << "diag =";
-    //for (int i=0;i<A.n;++i) sout << " " << M.element(i,i);
-    //sout << sendl;
-    //sout << "SparseCholeskySolver: start factorization, n = " << A.n << " nnz = " << A.p[A.n] << sendl;
-    tmp = (double *) cs_malloc (A.n, sizeof (double)) ;
-    S = cs_sqr (&A, order, 0) ;		/* ordering and symbolic analysis */
-    N = cs_lu (&A, S, f_tol.getValue()) ;		/* numeric LU factorization */
-    //sout << "SparseCholeskySolver: factorization complete, nnz = " << N->L->p[N->L->n] << sendl;
-}
-
 SOFA_DECL_CLASS(SparseLUSolver)
 
 int SparseLUSolverClass = core::RegisterObject("Direct linear solver based on Sparse LU factorization, implemented with the CSPARSE library")
-        .add< SparseLUSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >(true)
+        .add< SparseLUSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >()
         ;
 
 } // namespace linearsolver

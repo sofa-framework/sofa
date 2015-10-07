@@ -55,6 +55,11 @@ protected:
     }
 
     virtual ~BaseConstraintSet() { }
+	
+private:
+	BaseConstraintSet(const BaseConstraintSet& n) ;
+	BaseConstraintSet& operator=(const BaseConstraintSet& n) ;	
+
 public:
     virtual void resetConstraint() {};
 

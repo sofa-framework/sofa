@@ -33,7 +33,12 @@
 #include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
-#include <SofaComponentMain/init.h>
+
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
 
 #include <QApplication>
 
@@ -51,7 +56,12 @@ int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
     sofa::simulation::tree::init();
-    sofa::component::init();
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
+
 
     QApplication* application = new QApplication(argc, argv);
     (void)application;
@@ -108,5 +118,7 @@ int main(int argc, char** argv)
     }
     if (argc <= 1 ) sofaModeler->newTab();
 
-    return application->exec();
+    int appReturnCode = application->exec();
+    sofa::simulation::tree::cleanup();
+    return appReturnCode;
 }
