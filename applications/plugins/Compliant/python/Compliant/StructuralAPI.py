@@ -117,12 +117,15 @@ class RigidBody:
         return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
 
     def setFixed(self, isFixed=True):
-        """ Add/remove a fixed constraint for this rigid
+        """ Add/remove a fixed constraint for this rigid, also set spedd to 0
         """
         if isFixed and self.fixedConstraint is None:
             self.fixedConstraint = self.node.createObject("FixedConstraint", name="fixedConstraint")
+            self.dofs.velocity=[0,0,0,0,0,0]
+            self.node.init()
         elif not isFixed and not self.fixedConstraint is None:
             self.node.removeObject(self.fixedConstraint)
+            self.node.init()
             self.fixedConstraint=None
 
     class CollisionMesh:
