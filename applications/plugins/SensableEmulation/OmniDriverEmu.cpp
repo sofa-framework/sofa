@@ -127,6 +127,27 @@ void OmniDriverEmu::setForceFeedbacks(vector<ForceFeedback*> ffs)
 void OmniDriverEmu::cleanup()
 {
     sout << "OmniDriverEmu::cleanup()" << sendl;
+
+    // If the thread is still running stop it
+    if (omniSimThreadCreated)
+    {
+#ifndef WIN32
+        int err = pthread_cancel(hapSimuThread);
+
+        // no error: thread cancel
+        if(err==0)
+        {
+            std::cout << "OmniDriverEmu: thread haptic cancel in cleanup" << std::endl;
+
+        }
+
+        // error
+        else
+        {
+            std::cout << "OmniDriverEmu: thread not cancel in cleanup = "  << err  << std::endl;
+        }
+#endif
+    }
 }
 
 void OmniDriverEmu::init()
