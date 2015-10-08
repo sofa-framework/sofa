@@ -351,8 +351,8 @@ struct AssemblyVisitor::process_helper {
 
             assert( false );
         }
-        else
-            MAINLOGGER( Info, ((simulation::Node*)c->dofs->getContext())->mechanicalMapping->getPathName()<<" "<<Jc.nonZeros() , "AssemblyVisitor" )
+//        else
+//            MAINLOGGER( Info, ((simulation::Node*)c->dofs->getContext())->mechanicalMapping->getPathName()<<" "<<Jc.nonZeros() , "AssemblyVisitor" )
 
     }
 
