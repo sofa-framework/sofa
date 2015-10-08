@@ -57,7 +57,10 @@ void TComponentMouseInteraction<DataTypes>::createInteractionComponents( sofa::s
     {
         current->setName( current->getName() + "_" + DataTypes::Name() );
 
-        mouseInSofa = sofa::core::objectmodel::New< MouseContainer >(); mouseInSofa->resize(1);
+        mouseInSofa = sofa::core::objectmodel::New< MouseContainer >();
+        // workaround : if xfree is not set, any scene using the FreeMotionAnimationLoop may crash when using mouse interactions
+        boost::dynamic_pointer_cast< MouseContainer >(mouseInSofa)->xfree.forceSet();
+        mouseInSofa->resize(1);
         mouseInSofa->setName("MousePosition");
         current->addObject(mouseInSofa);
 
