@@ -152,7 +152,6 @@ void AddObject::fileOpen()
 //we update the content of the dialog window
 void AddObject::buttonUpdate(bool optionSet)
 {
-    //TODOQT5
     //this->buttonGroup->wi
     int Id=1;
     //Id = 0 : custom radio button clicked: we need to show the selector of the file

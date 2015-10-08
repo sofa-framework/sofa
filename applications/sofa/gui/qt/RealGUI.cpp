@@ -1855,7 +1855,7 @@ void RealGUI::createSceneDescription()
 //======================= SIGNALS-SLOTS ========================= {
 void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)
 {
-    std::string filename(this->windowFilePath().ascii());
+    std::string filename(this->windowFilePath().toStdString());
     std::string message="You are about to change the root node of the scene : "  + filename +
             "to the root node : " + std::string(path) +
             "\nThis implies that the simulation singleton has to change its root node.\nDo you want to proceed ?";
