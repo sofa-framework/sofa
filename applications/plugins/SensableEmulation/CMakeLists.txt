@@ -26,6 +26,11 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SEN
 target_link_libraries(${PROJECT_NAME} SofaComponentGeneral SofaHaptics ${Boost_LIBRARIES})
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
+# Seems to be required by boost::asio
+if(UNIX)
+    target_link_libraries(${PROJECT_NAME} pthread)
+endif()
+
 install(TARGETS ${PROJECT_NAME}
         COMPONENT SensableEmulation_libraries
         EXPORT SensableEmulationTargets
