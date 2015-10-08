@@ -9,28 +9,57 @@ find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(SofaAdvanced REQUIRED)
 
-## Qt4
+## Qt(Qt4/5)
 set(QT_USE_IMPORTED_TARGETS 1)
-set(QT4_NO_LINK_QTMAIN 1)
-find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml qt3support)
-if(WIN32)
-    file(GLOB QT4_DLLS "${QT_BINARY_DIR}/*.dll")
-    if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
-        foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-            file(COPY ${QT4_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
-        endforeach()
-    else()                      # Single-config generator (nmake)
-        file(COPY ${QT4_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+
+find_package(Qt5 COMPONENTS Core QUIET)
+if(Qt5Core_FOUND)
+    set(QT5_NO_LINK_QTMAIN 1)
+    find_package(Qt5 COMPONENTS Gui OpenGL Xml REQUIRED)
+
+    if(WIN32)
+        #TODO: check if it is working well...
+        file(GLOB QT5_DLLS "${_qt5Core_install_prefix}/lib/*.dll")
+        if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
+            foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+                file(COPY ${QT5_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
+            endforeach()
+        else()                      # Single-config generator (nmake)
+            file(COPY ${QT5_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+        endif()
     endif()
+
+    install(FILES ${QT5_DLLS} DESTINATION bin)
+else()
+    set(QT4_NO_LINK_QTMAIN 1)
+    find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml)
+    if(WIN32)
+        file(GLOB QT4_DLLS "${QT_BINARY_DIR}/*.dll")
+        if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
+            foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+                file(COPY ${QT4_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
+            endforeach()
+        else()                      # Single-config generator (nmake)
+            file(COPY ${QT4_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+        endif()
+    endif()
+
+    install(FILES ${QT4_DLLS} DESTINATION bin)
 endif()
-install(FILES ${QT4_DLLS} DESTINATION bin)
+
+
 
 ## Version
 set(SOFAGUI_VERSION ${SofaFramework_VERSION})
 
 ## Thoses variables are used in SofaGuiConfig.cmake.in
-set(SOFA_HAVE_QT ${Qt4_FOUND})
+if(Qt5_FOUND)
+    set(SOFA_HAVE_QT ${Qt4_FOUND})
+else()
+    set(SOFA_HAVE_QT ${Qt5_FOUND})
+endif()
 set(SOFA_QT4 ${Qt4_FOUND})
+set(SOFA_QT5 ${Qt5_FOUND})
 set(SOFAGUI_TARGETS "")
 
 
