@@ -7,10 +7,17 @@ else()
     set(RC_FILES "sofa.rc")
 endif()
 
-# TODO QT5
-find_package(Qt4)
-qt4_add_resources(RESOURCE_FILES "${CMAKE_SOURCE_DIR}/share/textures/modeler/icons.qrc")
-set(RESOURCE_FILES_GROUP "Generated")
+find_package(Qt5 COMPONENTS Core QUIET)
+
+if(Qt5Core_FOUND)
+    message("Modeler: Using Qt5")
+    qt5_add_resources(RESOURCE_FILES "${CMAKE_SOURCE_DIR}/share/textures/modeler/icons.qrc")
+else()
+	message("Modeler: Using Qt4")
+	find_package(Qt4)
+	qt4_add_resources(RESOURCE_FILES "${CMAKE_SOURCE_DIR}/share/textures/modeler/icons.qrc")
+	set(RESOURCE_FILES_GROUP "Generated")
+endif()
 
 add_executable(${PROJECT_NAME} Main.cpp ${RC_FILES} ${RESOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaModeler SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
