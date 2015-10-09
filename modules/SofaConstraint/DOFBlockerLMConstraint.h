@@ -135,8 +135,6 @@ public:
         else return false;
     }
 
-    bool useMask() const {return true;}
-
     Data<helper::vector<Deriv> > BlockedAxis;
     Data<helper::vector<SReal> > factorAxis;
     SetIndex f_indices;

@@ -128,8 +128,6 @@ public:
         else return false;
     }
 
-    bool useMask() const {return true;}
-
     SetIndex f_indices;
     Data<double> _drawSize;
 

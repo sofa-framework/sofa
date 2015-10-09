@@ -425,9 +425,9 @@ void BaseDeformationMappingT<JacobianBlockType>::updateJ()
     }
     else
     {
-        typedef helper::ParticleMask ParticleMask;
-        const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
-        for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
+        using helper::StateMask;
+        const StateMask::InternalStorage &indices=this->maskTo->getEntries();
+        for (StateMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
         {
             size_t i = ( size_t ) ( *it );
             J.beginBlockRow(i);
@@ -466,9 +466,9 @@ void BaseDeformationMappingT<JacobianBlockType>::updateK( const core::Mechanical
     }
     else
     {
-        typedef helper::ParticleMask ParticleMask;
-        const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
-        for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
+        using helper::StateMask;
+        const StateMask::InternalStorage &indices=this->maskTo->getEntries();
+        for (StateMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
         {
             size_t i = ( size_t ) ( *it );
             for(size_t j=0; j<jacobian[i].size(); j++)
@@ -565,9 +565,8 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJ(OutVecDeriv& out, const 
         }
         else
         {
-            typedef helper::ParticleMask ParticleMask;
-            const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
-            for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
+            const helper::StateMask::InternalStorage &indices=this->maskTo->getEntries();
+            for (helper::StateMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
             {
                 size_t i= ( size_t ) ( *it );
                 out[i]=OutDeriv();
@@ -654,9 +653,8 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJ(const core::MechanicalPa
         }
         else
         {
-            typedef helper::ParticleMask ParticleMask;
-            const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
-            for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
+            const helper::StateMask::InternalStorage &indices=this->maskTo->getEntries();
+            for (helper::StateMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
             {
                 size_t i= ( size_t ) ( *it );
                 out[i]=OutDeriv();
@@ -714,9 +712,8 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
         }
         else
         {
-            typedef helper::ParticleMask ParticleMask;
-            const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
-            for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
+            const helper::StateMask::InternalStorage &indices=this->maskTo->getEntries();
+            for (helper::StateMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
             {
                 const int i= ( int ) ( *it );
                 for(size_t j=0; j<jacobian[i].size(); j++)
@@ -776,9 +773,8 @@ void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::Mechanical
             }
             else
             {
-                typedef helper::ParticleMask ParticleMask;
-                const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
-                for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
+                const helper::StateMask::InternalStorage &indices=this->maskTo->getEntries();
+                for (helper::StateMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
                 {
                     const int i= ( int ) ( *it );
                     for(size_t j=0; j<jacobian[i].size(); j++)
@@ -1098,12 +1094,6 @@ const vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMappingT<JacobianBl
             previousMask = this->maskTo->getEntries();
             updateJ();
         }
-
-//            typedef helper::ParticleMask ParticleMask;
-//            const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
-//            for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
-//                std::cerr<<*it<<" ";
-//            std::cerr<<std::endl;
     }
     else if( !eigenJacobian.compressedMatrix.nonZeros() ) updateJ();
 

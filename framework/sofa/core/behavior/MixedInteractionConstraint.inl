@@ -79,7 +79,17 @@ void MixedInteractionConstraint<DataTypes1, DataTypes2>::buildConstraintMatrix(c
     if (cParams)
     {
         buildConstraintMatrix(cParams, *cId[mstate1.get(cParams)].write(), *cId[mstate2.get(cParams)].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2));
+        updateForceMask();
     }
+}
+
+template<class DataTypes1, class DataTypes2>
+void MixedInteractionConstraint<DataTypes1, DataTypes2>::updateForceMask()
+{
+    // the default implementation adds every dofs to the mask
+    // this sould be overloaded by each forcefield to only add the implicated dofs subset to the mask
+    mask1->assign( mstate1->getSize(), true );
+    mask2->assign( mstate2->getSize(), true );
 }
 
 } // namespace behavior

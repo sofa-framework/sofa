@@ -74,6 +74,8 @@ public:
     typedef typename OutDataTypes::VecCoord OutVecCoord;
     typedef typename OutDataTypes::VecDeriv OutVecDeriv;
 
+    typedef typename Inherit::ForceMask ForceMask;
+
     enum
     {
         N = OutDataTypes::spatial_dimensions
@@ -91,19 +93,11 @@ public:
     typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
 
-    helper::ParticleMask* maskFrom;
-    helper::ParticleMask* maskTo;
     //enum { N=((int)Deriv::static_size < (int)InDeriv::static_size ? (int)Deriv::static_size : (int)InDeriv::static_size) };
 
-    core::behavior::BaseMechanicalState *stateFrom;
-    core::behavior::BaseMechanicalState *stateTo;
 protected:
     IdentityMapping()
         : Inherit(),
-          maskFrom(NULL),
-          maskTo(NULL),
-          stateFrom(NULL),
-          stateTo(NULL),
           matrixJ(),
           updateJ(false)
     {
@@ -114,6 +108,9 @@ protected:
     virtual ~IdentityMapping()
     {
     }
+
+    virtual void updateForceMask();
+
 public:
     /// Return true if the destination model has the same topology as the source model.
     ///

@@ -25,6 +25,8 @@
 #ifndef SOFA_HELPER_PARTICLEMASK_H
 #define SOFA_HELPER_PARTICLEMASK_H
 
+#include <sofa/helper/vector.h>
+
 namespace sofa
 {
 
@@ -38,47 +40,50 @@ namespace helper
  *  If only a little subset of particles are used, we would like to propagate those forces (applyJT), and velocities (applyJ) to this subset only.
  *
  *  This class is used inside the BaseMechanicalState.
- * Forcefields, Constraints which acts only on a little number of particles should activate the mask (by redefining the method bool useMask()) and add entries in the particle mask
+ *
+ *  USAGE:
+ *
+ *     - Forcefields, Constraints
+ *              which acts only on a little number of dofs should use the mask by adding entries in the mask
+ *              This can be done in the utility fonction updateForceMask() (the default implementation adds every dofs in the mask)
+ *              Note that for optimization considerations, dofs can be inserted in the mask directly in the ForceField::addForce and Constraint::buildConstraintMatrix functions.
+ *              In that case the updateForceMask() should be overloaded not to insert any dofs. (e.g. GearSpringForceField)
+ *
+ *     - (Multi)Mappings
+ *              they must propagate the mask from their child (tomodel) to their parents (frommodels)
+ *              ApplyJ shoud use getActivatedEntry to check if a child dof is active (as in some case, every dofs must be updated, do not use unsafe getEntry)
+ *              ApplyJT shoud use getEntry to check if a child dof is active and CAN insert parent dofs in the parent mask.
+ *              ApplyDJT, getJ/getJs shoud use getEntry to check if a child dof is active
+ *              updateForceMask() must insert only active parent dofs in the parent mask (or should add nothing if parents have already been added in ApplyJT)
+ *
  */
 class StateMask
 {
+
 public:
-    typedef helper::set< size_t > InternalStorage;
-    StateMask(Data<bool> *activator):inUse(activator), activated(true) {}
 
-    /// Insert an entry in the mask
-    void insertEntry(unsigned int index)
+    StateMask() : activated(false) {}
+
+    void assign( size_t size, bool value ) { mask.assign( size, value ); }
+
+    void insertEntry( size_t index ) { mask[index]=true; }
+    bool getEntry( size_t index ) const { return mask[index]; } // unsafe to be use where we do not care if the mapping in deactivated
+    bool getActivatedEntry( size_t index ) const { return activated ? mask[index] : true; } // a if at each check rather that a single if per mapping function is the price to pay no to have duplicated code in mappings
+
+    void resize( size_t size ) { mask.resize( size ); }
+    void clear() { mask.clear(); }
+    size_t size() const { return mask.size(); }
+
+    inline friend std::ostream& operator<< ( std::ostream& os, const StateMask& sm )
     {
-        indices.insert(index);
+        return os << sm.mask;
     }
 
-    const InternalStorage &getEntries() const { return indices; }
-
-    /// Explicit activation: when during some process we need the mask, we activate it
-    void activate(bool a)
-    {
-        activated = a;
-    }
-
-    /// Test if the mask can be used:
-    ///    * the parameter of the BaseMechanicalState useMask must be active
-    ///    * we must be inside a process using the mask
-    ///    * all the components of the node must use the mask. If a single one has deactivated its mask, we can't use the mask for the whole node.
-    bool isInUse() const
-    {
-        return inUse->getValue() && activated;
-    }
-
-    void clear()
-    {
-        indices.clear();
-        activated=true;
-    }
+    void activate( bool a ) { activated = a; }
 
 protected:
-    InternalStorage indices;
-    // Act as a switch, to enable or not the mask.
-    Data<bool> *inUse; // manual switch
+
+    helper::vector<bool> mask; // note this should be space-optimized (a bool = a bit) in the STL
     bool activated; // automatic switch (the mask is only used for specific operations)
 
 };

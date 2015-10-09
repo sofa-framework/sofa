@@ -74,6 +74,7 @@ public:
 
     typedef sofa::core::behavior::MechanicalState<DataTypes>      Inherited;
     typedef typename Inherited::VMultiOp    VMultiOp;
+    typedef typename Inherited::ForceMask   ForceMask;
     typedef typename DataTypes::Real        Real;
     typedef typename DataTypes::Coord       Coord;
     typedef typename DataTypes::Deriv       Deriv;

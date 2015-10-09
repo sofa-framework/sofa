@@ -53,9 +53,7 @@ namespace mapping
 
 template <class TIn, class TOut>
 SkinningMapping<TIn, TOut>::SkinningMapping ()
-    : Inherit (  )
-    , maskFrom(NULL)
-    , maskTo(NULL)
+    : Inherit ()
     , f_initPos ( initData ( &f_initPos,"initPos","initial child coordinates in the world reference frame." ) )
 #ifdef SOFA_DEV
     , useDQ ( initData ( &useDQ, false, "useDQ","use dual quaternion blending instead of linear blending ." ) )
@@ -83,13 +81,6 @@ SkinningMapping<TIn, TOut>::~SkinningMapping ()
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::init()
 {
-
-    if ( core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *> ( this->fromModel.get() ) )
-        maskFrom = &stateFrom->forceMask;
-
-    if ( core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *> ( this->toModel.get( )) )
-        maskTo = &stateTo->forceMask;
-
     unsigned int numChildren = this->toModel->getSize();
     sofa::helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
     sofa::helper::WriteAccessor<Data<OutVecCoord> > initPos(this->f_initPos);
@@ -343,87 +334,51 @@ void SkinningMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mpar
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
 {
-    OutVecDeriv& out = *outData.beginEdit(mparams);
+    OutVecDeriv& out = *outData.beginWriteOnly(mparams);
     const InVecDeriv& in = inData.getValue();
 
     unsigned int nbref=nbRef.getValue()[0];
     sofa::helper::ReadAccessor<Data<vector<sofa::helper::SVector<InReal> > > > m_weights  ( weight );
     sofa::helper::ReadAccessor<Data<vector<sofa::helper::SVector<unsigned int> > > > index ( f_index );
 
-    if ( ! ( this->maskTo->isInUse() ) )
-    {
+
 #ifdef SOFA_DEV
-        if(this->useDQ.getValue())
+    if(this->useDQ.getValue())
+    {
+        for( size_t i=0 ; i<this->maskTo->size() ; ++i)
         {
-            for ( unsigned int i=0; i<out.size(); i++ )
-            {
-                if(nbRef.getValue().size() == m_weights.size())
-                    nbref = nbRef.getValue()[i];
+            if( !this->maskTo->getActivatedEntry(i) ) continue;
 
-                out[i] = OutDeriv();
-                for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
-                {
-                    out[i] += f_Pt[i][j] * getLinear( in[index[i][j]] )  + f_Pa[i][j] * getAngular(in[index[i][j]]);
-                }
-            }
-        }
-        else
-#endif
-        {
-            for ( unsigned int i=0; i<out.size(); i++ )
-            {
-                if(nbRef.getValue().size() == m_weights.size())
-                    nbref = nbRef.getValue()[i];
+            out[i] = OutDeriv();
 
-                out[i] = OutDeriv();
-                for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
-                {
-                    out[i] += getLinear( in[index[i][j]] ) * m_weights[i][j] + cross(getAngular(in[index[i][j]]), f_rotatedPos[i][j]);
-                }
+            if(nbRef.getValue().size() == m_weights.size())
+                nbref = nbRef.getValue()[i];
+
+            for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
+            {
+                out[i] += f_Pt[i][j] * getLinear( in[index[i][j]] )  + f_Pa[i][j] * getAngular(in[index[i][j]]);
             }
         }
     }
     else
-    {
-        typedef helper::ParticleMask ParticleMask;
-        const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
-
-        ParticleMask::InternalStorage::const_iterator it;
-#ifdef SOFA_DEV
-        if(this->useDQ.getValue())
-        {
-            for ( it=indices.begin(); it!=indices.end(); it++ )
-            {
-                unsigned int i= ( unsigned int ) ( *it );
-                out[i] = OutDeriv();
-
-                if(nbRef.getValue().size() == m_weights.size())
-                    nbref = nbRef.getValue()[i];
-
-                for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
-                {
-                    out[i] += f_Pt[i][j] * getLinear( in[index[i][j]] )  + f_Pa[i][j] * getAngular(in[index[i][j]]);
-                }
-            }
-        }
-        else
 #endif
+    {
+        for( size_t i=0 ; i<this->maskTo->size() ; ++i)
         {
-            for ( it=indices.begin(); it!=indices.end(); it++ )
+            if( !this->maskTo->getActivatedEntry(i) ) continue;
+
+            out[i] = OutDeriv();
+
+            if(nbRef.getValue().size() == m_weights.size())
+                nbref = nbRef.getValue()[i];
+
+            for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
             {
-                unsigned int i= ( unsigned int ) ( *it );
-                out[i] = OutDeriv();
-
-                if(nbRef.getValue().size() == m_weights.size())
-                    nbref = nbRef.getValue()[i];
-
-                for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
-                {
-                    out[i] += getLinear( in[index[i][j]] ) * m_weights[i][j] + cross(getAngular(in[index[i][j]]), f_rotatedPos[i][j]);
-                }
+                out[i] += getLinear( in[index[i][j]] ) * m_weights[i][j] + cross(getAngular(in[index[i][j]]), f_rotatedPos[i][j]);
             }
         }
     }
+
     outData.endEdit(mparams);
 }
 
@@ -437,83 +392,45 @@ void SkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mp
     sofa::helper::ReadAccessor<Data<vector<sofa::helper::SVector<InReal> > > > m_weights  ( weight );
     sofa::helper::ReadAccessor<Data<vector<sofa::helper::SVector<unsigned int> > > > index ( f_index );
 
-    if ( ! ( this->maskTo->isInUse() ) )
-    {
-        this->maskFrom->setInUse ( false );
+    ForceMask& mask = *this->maskFrom;
+
 #ifdef SOFA_DEV
-        if(this->useDQ.getValue())
+    if(this->useDQ.getValue())
+    {
+        for( size_t i=0 ; i<this->maskTo->size() ; ++i)
         {
-            for ( unsigned int i=0; i<in.size(); i++ )
-            {
-                if(nbRef.getValue().size() == m_weights.size())
-                    nbref = nbRef.getValue()[i];
+            if( !this->maskTo->getEntry(i) ) continue;
 
-                for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
-                {
-                    getLinear(out[index[i][j]])  += f_Pt[i][j].transposed() * in[i];
-                    getAngular(out[index[i][j]]) += f_Pa[i][j].transposed() * in[i];
-                }
-            }
-        }
-        else
-#endif
-        {
-            for ( unsigned int i=0; i<in.size(); i++ )
-            {
-                if(nbRef.getValue().size() == m_weights.size())
-                    nbref = nbRef.getValue()[i];
+            if(nbRef.getValue().size() == m_weights.size())
+                nbref = nbRef.getValue()[i];
 
-                for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
-                {
-                    getLinear(out[index[i][j]])  += in[i] * m_weights[i][j];
-                    getAngular(out[index[i][j]]) += cross(f_rotatedPos[i][j], in[i]);
-                }
+            for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
+            {
+                getLinear(out[index[i][j]])  += f_Pt[i][j].transposed() * in[i];
+                getAngular(out[index[i][j]]) += f_Pa[i][j].transposed() * in[i];
+                mask[index[i][j]] = true;
             }
         }
     }
     else
-    {
-        typedef helper::ParticleMask ParticleMask;
-        const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
-
-        ParticleMask::InternalStorage::const_iterator it;
-#ifdef SOFA_DEV
-        if(this->useDQ.getValue())
-        {
-            for ( it=indices.begin(); it!=indices.end(); it++ )
-            {
-                const int i= ( int ) ( *it );
-
-                if(nbRef.getValue().size() == m_weights.size())
-                    nbref = nbRef.getValue()[i];
-
-                for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
-                {
-                    getLinear(out[index[i][j]])  += f_Pt[i][j].transposed() * in[i];
-                    getAngular(out[index[i][j]]) += f_Pa[i][j].transposed() * in[i];
-                    maskFrom->insertEntry ( index[i][j] );
-                }
-            }
-        }
-        else
 #endif
+    {
+        for( size_t i=0 ; i<this->maskTo->size() ; ++i)
         {
-            for ( it=indices.begin(); it!=indices.end(); it++ )
+            if( !this->maskTo->getEntry(i) ) continue;
+
+            if(nbRef.getValue().size() == m_weights.size())
+                nbref = nbRef.getValue()[i];
+
+            for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
             {
-                const int i= ( int ) ( *it );
-
-                if(nbRef.getValue().size() == m_weights.size())
-                    nbref = nbRef.getValue()[i];
-
-                for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
-                {
-                    getLinear(out[index[i][j]])  += in[i] * m_weights[i][j];
-                    getAngular(out[index[i][j]]) += cross(f_rotatedPos[i][j], in[i]);
-                    maskFrom->insertEntry ( index[i][j] );
-                }
+                getLinear(out[index[i][j]])  += in[i] * m_weights[i][j];
+                getAngular(out[index[i][j]]) += cross(f_rotatedPos[i][j], in[i]);
+                mask.insertEntry(index[i][j]);
             }
         }
     }
+
     outData.endEdit(mparams);
 }
 

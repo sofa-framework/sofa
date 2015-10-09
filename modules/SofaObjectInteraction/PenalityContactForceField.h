@@ -136,8 +136,6 @@ public:
             helper::vector< unsigned int > &triangle,
             helper::vector< unsigned int > &index_point) ;
 
-    virtual bool useMask() const {return true;}
-
     void draw(const core::visual::VisualParams* vparams);
 };
 
