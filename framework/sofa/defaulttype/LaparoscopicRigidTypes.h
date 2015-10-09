@@ -143,6 +143,21 @@ public:
             else       return this->vOrientation(i-1);
         }
 
+        /// @name Tests operators
+        /// @{
+
+        bool operator==(const Deriv& b) const
+        {
+            return vTranslation == b.vTranslation && vOrientation == b.vOrientation;
+        }
+
+        bool operator!=(const Deriv& b) const
+        {
+            return vTranslation != b.vTranslation || vOrientation != b.vOrientation;
+        }
+
+        /// @}
+
     };
 
     class Coord
