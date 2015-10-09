@@ -25,18 +25,11 @@
 #include "QVisitorControlPanel.h"
 #include <sofa/simulation/common/Visitor.h>
 
-#ifdef SOFA_QT4
 #include <QPushButton>
 #include <QCheckBox>
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#else
-#include <qpushbutton.h>
-#include <qcheckbox.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#endif
 
 #if !defined(INFINITY)
 #define INFINITY 9.0e10
@@ -52,8 +45,9 @@ namespace qt
 
 QVisitorControlPanel::QVisitorControlPanel(QWidget* parent): QWidget(parent)
 {
-    QVBoxLayout *vbox=new QVBoxLayout(this,0,0);
-
+    QVBoxLayout *vbox=new QVBoxLayout(this);
+    vbox->setMargin(0);
+    vbox->setSpacing(0);
 
     //Filter the results to quickly find a visitor
     QWidget *filterResult = new QWidget(this);

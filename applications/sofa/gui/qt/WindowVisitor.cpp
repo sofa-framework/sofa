@@ -24,27 +24,12 @@
 ******************************************************************************/
 #include "WindowVisitor.h"
 
-#ifdef SOFA_QT4
-#include <Q3Header>
-#include <Q3PopupMenu>
+#include <QHeaderView>
+#include <QMenu>
 #include <QMessageBox>
 #include <QPainter>
 #include <QGridLayout>
-#else
-#include <qheader.h>
-#include <qpopupmenu.h>
-#include <qmessagebox.h>
-#include <qpainter.h>
-#include <qlayout.h>
-#include <qsplitter.h>
-#endif
 
-
-#ifndef SOFA_QT4
-typedef QPopupMenu Q3PopupMenu;
-typedef QListViewItem Q3ListViewItem;
-typedef QTable QTableWidget;
-#endif
 namespace sofa
 {
 
@@ -58,18 +43,13 @@ QPixmap *WindowVisitor::icons[WindowVisitor::OTHER+1];
 WindowVisitor::WindowVisitor()
 {
     setupUi(this);
-#ifdef SOFA_QT4
-    connect(graphView, SIGNAL(rightButtonClicked ( Q3ListViewItem *, const QPoint &, int )),  this, SLOT( rightClick(Q3ListViewItem *, const QPoint &, int )));
-#else
-    connect(graphView, SIGNAL(rightButtonClicked ( QListViewItem *, const QPoint &, int )),  this, SLOT( rightClick(QListViewItem *, const QPoint &, int )));
-#endif
 
+    this->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(graphView, SIGNAL(customContextMenuRequested(const QPoint&)),  this, SLOT( rightClick(const QPoint&)));
 
     QImage * img[OTHER+1];
-    img[NODE] = new QImage(10,10,32);
+    img[NODE] = new QImage(10,10,QImage::Format_ARGB32);
 
-
-    img[NODE]->setAlphaBuffer(true);
     img[NODE]->fill(qRgba(0,0,0,0));
     // Workaround for qt 3.x where fill() does not set the alpha channel
     for (int y=0 ; y < 10 ; y++)
@@ -116,18 +96,11 @@ WindowVisitor::WindowVisitor()
         {
             img[OTHER]   ->setPixel(x,y,qRgba(0,0,255,255));
         }
-#ifdef SOFA_QT4
     icons[NODE]    = new QPixmap(QPixmap::fromImage(*img[NODE]));
     icons[COMMENT]    = new QPixmap(QPixmap::fromImage(*img[COMMENT]));
     icons[COMPONENT]    = new QPixmap(QPixmap::fromImage(*img[COMPONENT]));
     icons[OTHER]    = new QPixmap(QPixmap::fromImage(*img[OTHER]));
-#else
 
-    icons[NODE]    = new QPixmap(*img[NODE]   );
-    icons[COMMENT] = new QPixmap(*img[COMMENT]);
-    icons[COMPONENT] = new QPixmap(*img[COMPONENT]);
-    icons[OTHER]   = new QPixmap(*img[OTHER]  );
-#endif
     statsWidget=new QWidget(splitterStats);
 
     QGridLayout *statsLayout=new QGridLayout(statsWidget);
@@ -139,12 +112,8 @@ WindowVisitor::WindowVisitor()
             << "Total execution time";
 
 
-#ifdef SOFA_QT4
     splitterStats->addWidget(statsWidget);
     typeOfCharts->insertItems(0,list);
-#else
-    typeOfCharts->insertStringList(list,0);
-#endif
 
     chartsComponent=new ChartsWidget("Component (name)", statsWidget);
     chartsVisitor  =new ChartsWidget("Visitor", statsWidget);
@@ -160,6 +129,7 @@ WindowVisitor::WindowVisitor()
     connect( controlPanel, SIGNAL(focusOn(QString)), this, SLOT(focusOn(QString)));
     connect( controlPanel, SIGNAL(clearGraph()), this, SLOT(clearGraph()));
     controlPanel->setMaximumHeight(110);
+
 }
 
 
@@ -172,7 +142,7 @@ void WindowVisitor::setCharts(std::vector< dataTime >&latestC, std::vector< data
     visitorsTime=latestV;
     visitorsTimeMax=maxTV;
     visitorsTimeTotal=totalV;
-    setCurrentCharts(typeOfCharts->currentItem());
+    setCurrentCharts(typeOfCharts->currentIndex());
 }
 
 
@@ -196,60 +166,67 @@ void WindowVisitor::setCurrentCharts(int type)
     }
 }
 
-void WindowVisitor::rightClick(Q3ListViewItem *item, const QPoint &point, int index)
+void WindowVisitor::rightClick( const QPoint& point)
 {
+    QTreeWidgetItem *item = graphView->itemAt( point );
+
     if (!item) return;
 
-    Q3PopupMenu *contextMenu = new Q3PopupMenu ( this, "ContextMenu" );
+    QMenu *contextMenu = new QMenu ( this  );
+    contextMenu->setObjectName( "ContextMenu");
+
     if(item->childCount())
     {
-        contextMenu->insertItem("Collapse", this, SLOT( collapseNode()));
-        contextMenu->insertItem("Expand"  , this, SLOT( expandNode()));
+        contextMenu->addAction("Collapse", this,SLOT(collapseNode()));
+        contextMenu->addAction("Expand", this,SLOT(expandNode()));
 
-        contextMenu->popup ( point, index );
+        contextMenu->exec ( this->mapToGlobal(point));
     }
 }
 
 void WindowVisitor::focusOn(QString text)
 {
-    Q3ListViewItem *item = graphView->firstChild();
+    if(graphView->topLevelItemCount() < 1) return;
 
-    while (item)
+    bool found = false;
+    for(int i=0 ; i<graphView->topLevelItemCount() && !found; i++)
     {
-        bool found=setFocusOn(item, text);
-        if (found) return;
-        item = item->nextSibling();
+        QTreeWidgetItem *item = graphView->topLevelItem(i);
+        found = setFocusOn(item, text);
     }
+
     graphView->clearSelection();
 
 }
 
-bool WindowVisitor::setFocusOn(Q3ListViewItem *item, QString text)
+bool WindowVisitor::setFocusOn(QTreeWidgetItem *item, QString text)
 {
-    for ( int c=0; c<graphView->columns(); ++c)
+    for ( int c=0; c<graphView->columnCount(); ++c)
     {
-        if (item->text(c).contains(text, false))
+        if (item->text(c).contains(text, Qt::CaseInsensitive))
         {
-            if ( !graphView->selectedItem() ||
-                    graphView->itemPos(graphView->selectedItem()) < graphView->itemPos(item) )
+            if ( !graphView->currentItem() ||
+                    graphView->visualItemRect(graphView->currentItem()).topLeft().y() < graphView->visualItemRect(item).topLeft().y() )
             {
-                graphView->ensureItemVisible(item);
+//                graphView->ensureItemVisible(item);
+                graphView->scrollToItem(item);
                 graphView->clearSelection();
-                graphView->setSelected(item,true);
-                item->setOpen(true);
+                graphView->setCurrentItem(item);
+                item->setExpanded(true);
                 return true;
             }
         }
     }
 
-    item = item->firstChild();
-    while (item)
+    bool found = false;
+    for(int i=0 ; i<item->childCount() && !found; i++)
     {
-        bool found=setFocusOn(item, text);
-        if (found) return true;
-        item = item->nextSibling();
+        QTreeWidgetItem *child = item->child(i);
+        found = setFocusOn(child, text);
+
     }
-    return false;
+
+    return found;
 }
 
 void WindowVisitor::expandNode()
@@ -257,21 +234,20 @@ void WindowVisitor::expandNode()
     expandNode(graphView->currentItem());
 }
 
-void WindowVisitor::expandNode(Q3ListViewItem* item)
+void WindowVisitor::expandNode(QTreeWidgetItem* item)
 {
     if (!item) return;
 
-    item->setOpen ( true );
+    item->setExpanded( true );
     if ( item != NULL )
     {
-        Q3ListViewItem* child;
-        child = item->firstChild();
-        while ( child != NULL )
+        QTreeWidgetItem* child;
+
+        for(int i=0 ; i<item->childCount() ; i++)
         {
-            item = child;
-            child->setOpen ( true );
+            child = item->child(i);
+            child->setExpanded( true );
             expandNode(item);
-            child = child->nextSibling();
         }
     }
 }
@@ -279,25 +255,29 @@ void WindowVisitor::expandNode(Q3ListViewItem* item)
 void WindowVisitor::collapseNode()
 {
     collapseNode(graphView->currentItem());
-    Q3ListViewItem* item = graphView->currentItem();
-    item = item->firstChild();
-    while (item)
+    QTreeWidgetItem* item = graphView->currentItem();
+    QTreeWidgetItem* child;
+
+    for(int i=0 ; i<item->childCount() ; i++)
     {
-        collapseNode(item);
-        item = item->nextSibling();
+        child = item->child(i);
+        collapseNode(child);
     }
-    graphView->currentItem()->setOpen(true);
+
+    graphView->currentItem()->setExpanded(true);
 }
-void WindowVisitor::collapseNode(Q3ListViewItem* item)
+void WindowVisitor::collapseNode(QTreeWidgetItem* item)
 {
     if (!item) return;
 
-    item->setOpen(false);
-    item = item->firstChild();
-    while ( item )
+    item->setExpanded(false);
+
+    QTreeWidgetItem* child;
+
+    for(int i=0 ; i<item->childCount() ; i++)
     {
-        collapseNode(item);
-        item = item->nextSibling();
+        child = item->child(i);
+        collapseNode(child);
     }
 }
 
