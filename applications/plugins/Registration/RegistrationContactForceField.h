@@ -102,6 +102,10 @@ protected:
 	
 	// contacts from previous frame
 	sofa::helper::vector<Contact> prevContacts;
+
+    void updateForceMask() { /* already done in addForce implementation */ }
+
+
 public:
 
 	RegistrationContactForceField(MechanicalState* object1, MechanicalState* object2)

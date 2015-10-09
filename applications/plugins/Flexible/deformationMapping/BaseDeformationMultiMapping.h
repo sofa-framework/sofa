@@ -166,6 +166,9 @@ public:
     typedef linearsolver::EigenSparseMatrix<In2,In2>    SparseKMatrixEigen2;
     //@}	
 
+    typedef typename Inherit::ForceMask ForceMask;
+
+
     void resizeOut(); /// automatic resizing (of output model and jacobian blocks) when input samples have changed. Recomputes weights from shape function component.
     virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0); /// resizing given custom positions and weights
 
@@ -209,14 +212,11 @@ public:
         if(!this->assemble.getValue()) { updateJ1(); updateJ2(); }
         else
         {
-            if( this->maskTo && this->maskTo->isInUse() )
+            if( previousMask!=this->maskTo->getEntries() )
             {
-                if( previousMask!=this->maskTo->getEntries() )
-                {
-                    previousMask = this->maskTo->getEntries();
-                    updateJ1();
-                    updateJ2();
-                }
+                previousMask = this->maskTo->getEntries();
+                updateJ1();
+                updateJ2();
             }
             else
             {
@@ -309,9 +309,9 @@ protected:
     core::State<In2>* fromModel2;   ///< DOF of the master2
     core::State<Out>* toModel;      ///< DOF of the slave
 
-    helper::StateMask* maskFrom1;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
-    helper::StateMask* maskFrom2;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
-    helper::StateMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
+    ForceMask* maskFrom1;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
+    ForceMask* maskFrom2;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
+    ForceMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
 
 
 
@@ -324,7 +324,7 @@ protected:
 
     SparseKMatrixEigen1 K;  ///< Assembled geometric stiffness matrix
 
-    helper::StateMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
+    typename ForceMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization
     const defaulttype::ResizableExtVector<core::topology::BaseMeshTopology::Triangle> *extTriangles;
@@ -334,6 +334,9 @@ protected:
     Data< helper::OptionsGroup > showColorOnTopology;
     Data< float > showColorScale;
     Data< unsigned > d_geometricStiffness;
+
+
+    //    void updateForceMask(); TODO
 };
 
 

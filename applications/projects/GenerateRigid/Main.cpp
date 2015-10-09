@@ -22,11 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "GenerateRigid.h"
-#include <SofaComponentMain/init.h>
-#include <sofa/simulation/common/init.h>
+#include <sofa/helper/GenerateRigid.h>
 #include <iostream>
 #include <fstream>
+
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
 
 using namespace sofa::defaulttype;
 
@@ -38,8 +40,10 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    sofa::simulation::common::init();
-    sofa::component::init();
+
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
 
 //////// SCALE //////
     Vector3 scale(1, 1, 1);
@@ -91,6 +95,5 @@ int main(int argc, char** argv)
     if (out != &std::cout)
         delete out;
 
-    sofa::simulation::common::cleanup();
     return 0;
 }

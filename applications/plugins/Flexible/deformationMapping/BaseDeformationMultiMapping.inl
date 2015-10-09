@@ -294,31 +294,18 @@ template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::updateJ1()
 {
     eigenJacobian1.resizeBlocks(jacobian1.size(),this->getFromSize1());
-    if( !this->maskTo || !this->maskTo->isInUse() )
-    {
-        for(size_t i=0; i<jacobian1.size(); i++)
-        {
-            eigenJacobian1.beginBlockRow(i);
-            for(size_t j=0; j<jacobian1[i].size(); j++)
-            {
-                eigenJacobian1.createBlock( this->f_index1.getValue()[i][j], jacobian1[i][j].getJ());
-            }
 
-            eigenJacobian1.endBlockRow();
-        }
-    }
-    else
+    for( size_t i=0 ; i<maskTo->size() ; ++i)
     {
-        const helper::StateMask::InternalStorage &indices=this->maskTo->getEntries();
-        for (helper::StateMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
+        if( maskTo->getActivatedEntry(i) )
         {
-            size_t i= ( size_t ) ( *it );
             eigenJacobian1.beginBlockRow(i);
             for(size_t j=0; j<jacobian1[i].size(); j++)
                 eigenJacobian1.createBlock( this->f_index1.getValue()[i][j], jacobian1[i][j].getJ());
             eigenJacobian1.endBlockRow();
         }
     }
+
     eigenJacobian1.compress();
 }
 
@@ -326,29 +313,18 @@ template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::updateJ2()
 {
     eigenJacobian2.resizeBlocks(jacobian2.size(),this->getFromSize2());
-    if( !this->maskTo || !this->maskTo->isInUse() )
+
+    for( size_t i=0 ; i<maskTo->size() ; ++i)
     {
-        for(size_t i=0; i<jacobian2.size(); i++)
+        if( maskTo->getActivatedEntry(i) )
         {
-            eigenJacobian2.beginBlockRow(i);
-            for(size_t j=0; j<jacobian2[i].size(); j++)
-            {
-                eigenJacobian2.createBlock( this->f_index2.getValue()[i][j], jacobian2[i][j].getJ());
-            }
-            eigenJacobian2.endBlockRow();
-        }    }
-    else
-    {
-        const helper::StateMask::InternalStorage &indices=this->maskTo->getEntries();
-        for (helper::StateMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
-        {
-            size_t i= ( size_t ) ( *it );
             eigenJacobian2.beginBlockRow(i);
             for(size_t j=0; j<jacobian2[i].size(); j++)
                 eigenJacobian2.createBlock( this->f_index2.getValue()[i][j], jacobian2[i][j].getJ());
             eigenJacobian2.endBlockRow();
         }
     }
+
     eigenJacobian2.compress();
 }
 
@@ -456,15 +432,12 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 
     if(this->assemble.getValue())
     {
-        if( this->maskTo && this->maskTo->isInUse() )
+        if( previousMask!=this->maskTo->getEntries() )
         {
-            if( previousMask!=this->maskTo->getEntries() )
-            {
-                previousMask = this->maskTo->getEntries();
-                updateJ1();
-                updateJ2();
-                J1Dirty = J2Dirty = false;
-            }
+            previousMask = this->maskTo->getEntries();
+            updateJ1();
+            updateJ2();
+            J1Dirty = J2Dirty = false;
         }
         else
         {
@@ -489,32 +462,10 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
         const InVecDeriv1& in1 = dIn1.getValue();
         const InVecDeriv2& in2 = dIn2.getValue();
 
-        if( !this->maskTo || !this->maskTo->isInUse() )
+        for( size_t i=0 ; i<maskTo->size() ; ++i)
         {
-#ifdef _OPENMP
-#pragma omp parallel for
-#endif
-			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian1.size(); i++)
+            if( maskTo->getActivatedEntry(i) )
             {
-                out[i]=OutDeriv();
-                for(size_t j=0; j<jacobian1[i].size(); j++)
-                {
-                    size_t index=this->f_index1.getValue()[i][j];
-                    jacobian1[i][j].addmult(out[i],in1[index]);
-                }
-                for(size_t j=0; j<jacobian2[i].size(); j++)
-                {
-                    size_t index=this->f_index2.getValue()[i][j];
-                    jacobian2[i][j].addmult(out[i],in2[index]);
-                }
-            }
-        }
-        else
-        {
-            const helper::StateMask::InternalStorage &indices=this->maskTo->getEntries();
-            for (helper::StateMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
-            {
-                size_t i= ( size_t ) ( *it );
                 out[i]=OutDeriv();
                 for(size_t j=0; j<jacobian1[i].size(); j++)
                 {
@@ -545,51 +496,10 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
         InVecDeriv2& in2 = *dIn2.beginEdit();
         const OutVecDeriv& out = dOut.getValue();
 
-        if( !this->maskTo || !this->maskTo->isInUse() )
+        for( size_t i=0 ; i<maskTo->size() ; ++i)
         {
-            // update index_parentToChild
-            if( this->f_index_parentToChild1.size()!=in1.size())
+            if( maskTo->getActivatedEntry(i) )
             {
-                this->f_index_parentToChild1.resize(in1.size());
-                for(unsigned int i=0; i<jacobian1.size(); i++) for(size_t j=0; j<jacobian1[i].size(); j++) { size_t indexp=this->f_index1.getValue()[i][j]; this->f_index_parentToChild1[indexp].push_back(i); this->f_index_parentToChild1[indexp].push_back(j); }
-            }
-            if( this->f_index_parentToChild2.size()!=in2.size())
-            {
-                this->f_index_parentToChild2.resize(in2.size());
-                for(unsigned int i=0; i<jacobian2.size(); i++) for(size_t j=0; j<jacobian2[i].size(); j++) { size_t indexp=this->f_index2.getValue()[i][j]; this->f_index_parentToChild2[indexp].push_back(i); this->f_index_parentToChild2[indexp].push_back(j); }
-            }
-
-#ifdef _OPENMP
-#pragma omp parallel for
-#endif
-			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<this->f_index_parentToChild1.size(); i++)
-            {
-                for(size_t j=0; j<this->f_index_parentToChild1[i].size(); j+=2)
-                {
-                    size_t indexc=this->f_index_parentToChild1[i][j];
-                    jacobian1[indexc][this->f_index_parentToChild1[i][j+1]].addMultTranspose(in1[i],out[indexc]);
-                }
-            }
-
-#ifdef _OPENMP
-#pragma omp parallel for
-#endif
-			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<this->f_index_parentToChild2.size(); i++)
-            {
-                for(size_t j=0; j<this->f_index_parentToChild2[i].size(); j+=2)
-                {
-                    size_t indexc=this->f_index_parentToChild2[i][j];
-                    jacobian2[indexc][this->f_index_parentToChild2[i][j+1]].addMultTranspose(in2[i],out[indexc]);
-                }
-            }
-
-        }
-        else
-        {
-            const helper::StateMask::InternalStorage &indices=this->maskTo->getEntries();
-            for (helper::StateMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
-            {
-                const int i= ( int ) ( *it );
                 for(size_t j=0; j<jacobian1[i].size(); j++)
                 {
                     size_t index=this->f_index1.getValue()[i][j];

@@ -62,6 +62,8 @@ class StateMask
 
 public:
 
+    typedef helper::vector<bool> InternalStorage; // note this should be space-optimized (a bool = a bit) in the STL
+
     StateMask() : activated(false) {}
 
     void assign( size_t size, bool value ) { mask.assign( size, value ); }
@@ -69,6 +71,7 @@ public:
     void insertEntry( size_t index ) { mask[index]=true; }
     bool getEntry( size_t index ) const { return mask[index]; } // unsafe to be use where we do not care if the mapping in deactivated
     bool getActivatedEntry( size_t index ) const { return activated ? mask[index] : true; } // a if at each check rather that a single if per mapping function is the price to pay no to have duplicated code in mappings
+    const InternalStorage& getEntries() const { return mask; }
 
     void resize( size_t size ) { mask.resize( size ); }
     void clear() { mask.clear(); }
@@ -83,7 +86,7 @@ public:
 
 protected:
 
-    helper::vector<bool> mask; // note this should be space-optimized (a bool = a bit) in the STL
+    InternalStorage mask; // note this should be space-optimized (a bool = a bit) in the STL
     bool activated; // automatic switch (the mask is only used for specific operations)
 
 };

@@ -216,6 +216,16 @@ public:
 
     /// @}
 
+
+protected:
+
+    /// Useful when the forcefield is applied only on a subset of dofs.
+    /// It is automatically called by addForce.
+    ///
+    /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
+    /// Every Dofs are inserted by default. The forcefields using only a subset of dofs should only insert these dofs in the mask.
+    virtual void updateForceMask() = 0;
+
 };
 
 } // namespace behavior

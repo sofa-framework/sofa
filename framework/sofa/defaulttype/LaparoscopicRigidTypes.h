@@ -143,7 +143,7 @@ public:
             else       return this->vOrientation(i-1);
         }
 
-        /// @name Tests operators
+        /// @name Comparison operators
         /// @{
 
         bool operator==(const Deriv& b) const

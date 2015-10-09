@@ -240,6 +240,13 @@ void MultiMapping<In,Out>::disable()
 {
 }
 
+template < class In, class Out >
+void MultiMapping<In,Out>::updateForceMask()
+{
+    helper::vector<behavior::BaseMechanicalState*> fromModels = getMechFrom();
+    for (size_t i=0 ; i<fromModels.size() ; i++)
+        fromModels[i]->forceMask.assign(fromModels[i]->getSize(),true);
+}
 
 } // namespace core
 

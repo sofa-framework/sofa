@@ -298,7 +298,7 @@ public:
 
 protected:
 
-    typedef typename behavior::BaseMechanicalState::ForceMask ForceMask;
+    typedef BaseMapping::ForceMask ForceMask;
     /// keep an eye on the dof masks (if the dofs are Mechanical)
     ForceMask *maskFrom, *maskTo;
 
