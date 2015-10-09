@@ -121,9 +121,6 @@ void Mapping<In,Out>::init()
             maskTo = &state->forceMask;
     }
 
-
-    if( !maskFrom || !maskTo ) serr<<"masks: "<<maskFrom<<" "<<maskTo<<sendl;
-
     apply(MechanicalParams::defaultInstance(), VecCoordId::position(), ConstVecCoordId::position());
     applyJ(MechanicalParams::defaultInstance(), VecDerivId::velocity(), ConstVecDerivId::velocity());
     if (f_applyRestPosition.getValue())
