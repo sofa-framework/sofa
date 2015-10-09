@@ -47,8 +47,8 @@ class SOFA_CORE_API BaseState : public virtual objectmodel::BaseObject
 public:
     SOFA_ABSTRACT_CLASS(BaseState, objectmodel::BaseObject);
 protected:
-	BaseState(){} ;
-    virtual ~BaseState() { }
+    BaseState() {}
+    virtual ~BaseState() {}
 	
 private:
 	BaseState(const BaseState& n) ;

@@ -352,15 +352,14 @@ protected :
     virtual void initJacobianBlocks()=0;
     virtual void initJacobianBlocks(const InVecCoord& /*inCoord*/, const OutVecCoord& /*outCoord*/){ std::cout << "Only implemented in LinearMapping for now." << std::endl;}
 
-//    helper::ParticleMask* maskFrom;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
-    helper::ParticleMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
+    helper::StateMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
 
 
     SparseMatrixEigen eigenJacobian;  ///< Assembled Jacobian matrix
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
     bool Jdirty; ///< Does J needs to be updated?
     void updateJ();
-    helper::ParticleMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence (TODO add such a mechanism directly in ParticleMask?)
+    helper::StateMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence (TODO add such a mechanism directly in ParticleMask?)
 
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
 

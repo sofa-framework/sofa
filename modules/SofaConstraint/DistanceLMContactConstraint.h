@@ -82,7 +82,7 @@ protected:
         , intersection(0)
     {
         initColorContactState();
-    };
+    }
 
     DistanceLMContactConstraint( MechanicalState *dof1, MechanicalState * dof2)
         : core::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2)
@@ -91,7 +91,7 @@ protected:
         , intersection(0)
     {
         initColorContactState();
-    };
+    }
 
     DistanceLMContactConstraint()
         : pointPairs(sofa::core::objectmodel::Base::initData(&pointPairs, "pointPairs", "List of the edges to constrain"))
@@ -101,7 +101,7 @@ protected:
         initColorContactState();
     }
 
-    ~DistanceLMContactConstraint() {};
+    ~DistanceLMContactConstraint() {}
 public:
     // -- LMConstraint interface
     void buildConstraintMatrix(const core::ConstraintParams* cParams, core::MultiMatrixDerivId cId, unsigned int &cIndex);
@@ -116,7 +116,6 @@ public:
     /// register a new contact
     void addContact(unsigned m1, unsigned m2);
     virtual void draw(const core::visual::VisualParams* vparams);
-    bool useMask() const {return true;}
 
     std::string getTemplateName() const
     {

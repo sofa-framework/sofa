@@ -85,7 +85,6 @@ void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, int index1
 template<class DataTypes>
 void PenalityContactForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& /*data_v1*/, const DataVecDeriv& /*data_v2*/ )
 {
-
     VecDeriv&       f1 = *data_f1.beginEdit();
     const VecCoord& x1 =  data_x1.getValue();
     //const VecDeriv& v1 =  data_v1.getValue();
@@ -271,7 +270,7 @@ void PenalityContactForceField<DataTypes>::grabPoint(
 template<class DataTypes>
 void PenalityContactForceField<DataTypes>::updateForceMask()
 {
-    // already done in addForceImplementation
+    // already done in addForce implementation
 }
 
 } // namespace interactionforcefield

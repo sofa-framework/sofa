@@ -55,12 +55,12 @@ protected:
     topology::RegularGridTopology* topology;
     void calcMapT();
 public:
-    BarycentricMapperRegularGridTopology(topology::RegularGridTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, helper::ParticleMask *, helper::ParticleMask *)
+    BarycentricMapperRegularGridTopology(topology::RegularGridTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, helper::StateMask *, helper::StateMask *)
         : Inherit(fromTopology, toTopology)
         , maxNOut(0), topology(fromTopology)
     {}
-    void setMaskFrom(helper::ParticleMask *) {}
-    void setMaskTo  (helper::ParticleMask *) {}
+    void setMaskFrom(helper::StateMask *) {}
+    void setMaskTo  (helper::StateMask *) {}
 
     void clear(int reserve=0);
 
@@ -114,12 +114,12 @@ protected:
     void buildTranslate(unsigned outsize);
 
 public:
-    BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, helper::ParticleMask *, helper::ParticleMask *)
+    BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, helper::StateMask *, helper::StateMask *)
         : Inherit(fromTopology, toTopology)
         , topology(fromTopology), bHexa(true), bTrans(true)
     {}
-    void setMaskFrom(helper::ParticleMask *) {}
-    void setMaskTo  (helper::ParticleMask *) {}
+    void setMaskFrom(helper::StateMask *) {}
+    void setMaskTo  (helper::StateMask *) {}
 
     void clear(int reserve=0);
 
@@ -183,15 +183,15 @@ protected:
     int getMapIndex(int outIndex, int j);
     void calcMapT();
 public:
-    BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, helper::ParticleMask *, helper::ParticleMask *)
+    BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, helper::StateMask *, helper::StateMask *)
         : Inherit(fromTopology, toTopology)
         , maxNIn(0), maxNOut(0), insize(0), size(0), topology(fromTopology)
     {
         if (topology==NULL || topology->getNbHexahedra()==0) maxNIn = 4;
         else maxNIn = 8;
     }
-    void setMaskFrom(helper::ParticleMask *) {}
-    void setMaskTo  (helper::ParticleMask *) {}
+    void setMaskFrom(helper::StateMask *) {}
+    void setMaskTo  (helper::StateMask *) {}
 
     void clear(int reserve=0);
 
@@ -244,7 +244,7 @@ public:
     BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> > internalMapper;
 
 public:
-    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology,helper::ParticleMask *_maskFrom,helper::ParticleMask *_maskTo)
+    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology,helper::StateMask *_maskFrom,helper::StateMask *_maskTo)
         : Inherit(fromTopology, _toTopology),
           internalMapper(fromTopology,_toTopology,_maskFrom,_maskTo)
     {}

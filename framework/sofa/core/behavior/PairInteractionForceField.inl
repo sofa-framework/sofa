@@ -176,6 +176,8 @@ void PairInteractionForceField<DataTypes>::addForce(const MechanicalParams* mpar
             addForce( mparams, *fId[mstate1.get(mparams)].write()   , *fId[mstate2.get(mparams)].write()   ,
                     *mparams->readX(mstate1), *mparams->readX(mstate2),
                     *mparams->readV(mstate1), *mparams->readV(mstate2) );
+
+        updateForceMask();
     }
     else
         serr<<"PairInteractionForceField<DataTypes>::addForce(const MechanicalParams* /*mparams*/, MultiVecDerivId /*fId*/ ), mstate missing"<<sendl;
@@ -309,6 +311,14 @@ SReal PairInteractionForceField<DataTypes>::getPotentialEnergy(const VecCoord& ,
 */
 
 
+template<class DataTypes>
+void PairInteractionForceField<DataTypes>::updateForceMask()
+{
+    // the default implementation adds every dofs to the mask
+    // this sould be overloaded by each forcefield to only add the implicated dofs subset to the mask
+    mstate1->forceMask.assign( mstate1->getSize(), true );
+    mstate2->forceMask.assign( mstate2->getSize(), true );
+}
 
 
 

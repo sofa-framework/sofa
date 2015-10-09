@@ -127,13 +127,6 @@ void DistanceFromTargetMapping<TIn, TOut>::init()
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
 
-
-    core::behavior::BaseMechanicalState *state;
-    if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModel.get())))
-        maskFrom = &state->forceMask;
-    if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModel.get())))
-        maskTo = &state->forceMask;
-
     this->Inherit::init();  // applies the mapping, so after the Data init
 }
 
@@ -212,16 +205,6 @@ void DistanceFromTargetMapping<TIn, TOut>::applyJ(const core::MechanicalParams *
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
 {
-    if( (maskTo->isInUse()) )
-    {
-        helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
-        typedef helper::ParticleMask ParticleMask;
-        const ParticleMask::InternalStorage &maskindices=maskTo->getEntries();
-        ParticleMask::InternalStorage::const_iterator it;
-        for (it=maskindices.begin(); it!=maskindices.end(); it++) maskFrom->insertEntry(indices[*it]);
-        // the Jacobian matrix could be reduced here (or at least filtered), but it is not sure it would be less costly than just filtering the parent and keeping the full Jacobian here
-    }
-
     if( jacobian.rowSize() > 0 )
         jacobian.addMultTranspose(dIn,dOut);
 }
@@ -376,7 +359,14 @@ void DistanceFromTargetMapping<TIn, TOut>::draw(const core::visual::VisualParams
 
 }
 
-
+template <class TIn, class TOut>
+void DistanceFromTargetMapping<TIn, TOut>::updateForceMask()
+{
+    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    for( size_t i = 0 ; i<this->maskTo->size() ; ++i )
+        if( this->maskTo->getEntry(i) )
+            this->maskFrom->insertEntry(indices[i]);
+}
 
 } // namespace mapping
 

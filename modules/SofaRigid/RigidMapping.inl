@@ -139,8 +139,6 @@ RigidMapping<TIn, TOut>::RigidMapping()
     , rigidIndexPerPoint(initData(&rigidIndexPerPoint, "rigidIndexPerPoint", "For each mapped point, the index of the Rigid it is mapped from"))
     , globalToLocalCoords(initData(&globalToLocalCoords, "globalToLocalCoords", "are the output DOFs initially expressed in global coordinates"))
     , geometricStiffness(initData(&geometricStiffness, 0, "geometricStiffness", "assemble (and use) geometric stiffness (0=no GS, 1=non symmetric, 2=symmetrized)"))
-    , maskFrom(NULL)
-    , maskTo(NULL)
     , matrixJ()
     , updateJ(false)
 {
@@ -234,14 +232,6 @@ template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::init()
 {
     //    rigidMappingDummyFunction();
-    if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModel.get()))
-    {
-        maskFrom = &stateFrom->forceMask;
-    }
-    if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModel.get()))
-    {
-        maskTo = &stateTo->forceMask;
-    }
 
     if (!fileRigidMapping.getValue().empty())
         this->load(fileRigidMapping.getFullPath().c_str());
@@ -373,21 +363,10 @@ void RigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/,
     const VecCoord& pts = this->getPoints();
     out.resize(pts.size());
 
-    bool isMaskInUse = maskTo && maskTo->isInUse();
-
-    typedef helper::ParticleMask ParticleMask;
-    ParticleMask::InternalStorage* indices = isMaskInUse ? &maskTo->getEntries() : NULL;
-    ParticleMask::InternalStorage::const_iterator it;
-    if (isMaskInUse) it = indices->begin();
-
-
-    for (unsigned int i = 0; i < pts.size() && !(isMaskInUse && it == indices->end()) ; i++)
+    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
-        if( isMaskInUse )
-        {
-            if( i!=*it) continue;
-            ++it;
-        }
+        if( !this->maskTo->getActivatedEntry(i) ) continue;
+
         unsigned int rigidIndex = getRigidIndex(i);
         out[i] = velocityAtRotatedPoint( in[rigidIndex], rotatedPoints[i] );
     }
@@ -399,34 +378,18 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
     helper::WriteAccessor< Data<InVecDeriv> > out = dOut;
     helper::ReadAccessor< Data<VecDeriv> > in = dIn;
 
-    const VecCoord& pts = this->getPoints();
+    ForceMask &mask = *this->maskFrom;
 
-    bool isMaskInUse = maskTo && maskTo->isInUse();
-    if (maskFrom) maskFrom->setInUse(isMaskInUse);
-
-
-    typedef helper::ParticleMask ParticleMask;
-    ParticleMask::InternalStorage* indices = isMaskInUse ? &maskTo->getEntries() : NULL;
-    ParticleMask::InternalStorage::const_iterator it;
-    if (isMaskInUse) it = indices->begin();
-
-
-    for (unsigned int i = 0; i < pts.size() && !(isMaskInUse && it == indices->end()) ; i++)
+    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
-        if( isMaskInUse )
-        {
-            if( i!=*it ) continue;
-            ++it;
-        }
+        if( !this->maskTo->getEntry(i) ) continue;
+
         unsigned int rigidIndex = getRigidIndex(i);
 
         getVCenter(out[rigidIndex]) += in[i];
         getVOrientation(out[rigidIndex]) += (typename InDeriv::Rot)cross(rotatedPoints[i], in[i]);
 
-        if (isMaskInUse)
-        {
-            maskFrom->insertEntry(rigidIndex);
-        }
+        mask.insertEntry(rigidIndex);
     }
 
 }
@@ -500,23 +463,10 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
             InReal kfactor = (InReal)mparams->kFactor();
             //    cerr<<"RigidMapping<TIn, TOut>::applyDJT, kfactor = "<< kfactor << endl;
 
-            const VecCoord& pts = this->getPoints();
-
-            bool isMaskInUse = maskTo && maskTo->isInUse();
-            if (maskFrom) maskFrom->setInUse(isMaskInUse);
-            typedef helper::ParticleMask ParticleMask;
-            ParticleMask::InternalStorage* indices = isMaskInUse ? &maskTo->getEntries() : NULL;
-            ParticleMask::InternalStorage::const_iterator it;
-            if (isMaskInUse) it = indices->begin();
-
-
-            for (unsigned int i = 0; i < pts.size() && !(isMaskInUse && it == indices->end()) ; i++)
+            for( size_t i=0 ; i<this->maskTo->size() ; ++i)
             {
-                if( isMaskInUse )
-                {
-                    if( i!=*it ) continue;
-                    ++it;
-                }
+                if( !this->maskTo->getEntry(i) ) continue;
+
                 unsigned int rigidIndex = getRigidIndex(i);
 
                 typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[rigidIndex]);
@@ -524,11 +474,6 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
                 //  const typename TIn::AngularVector& torqueDecrement = symCrossCross( childForces[i], parentRotation, rotatedPoints[i]) * kfactor;
                 const typename TIn::AngularVector& torqueDecrement = TIn::crosscross( childForces[i], parentRotation, rotatedPoints[i]) * kfactor;
                 parentTorque -=  torqueDecrement;
-
-                if (isMaskInUse)
-                {
-                    maskFrom->insertEntry(rigidIndex);
-                }
             }
         }
     }
@@ -644,7 +589,6 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
 {
 	const VecCoord& out =this->toModel->read(core::ConstVecCoordId::position())->getValue();
     const InVecCoord& in =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& pts = this->getPoints();
 
 	typename SparseMatrixEigen::CompressedMatrix& J = eigenJacobian.compressedMatrix;
 	
@@ -661,30 +605,21 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
 		// translation part
 		block.template leftCols<NOut>().setIdentity();
 
-        bool isMaskInUse = maskTo && maskTo->isInUse();
-        if (maskFrom) maskFrom->setInUse(isMaskInUse);
-        typedef helper::ParticleMask ParticleMask;
-        ParticleMask::InternalStorage* indices = isMaskInUse ? &maskTo->getEntries() : NULL;
-        ParticleMask::InternalStorage::const_iterator it;
-        if (isMaskInUse) it = indices->begin();
 
 
-        for (unsigned int outIdx = 0; outIdx < pts.size() && !(isMaskInUse && it == indices->end()) ; outIdx++)
+        for( size_t outIdx=0 ; outIdx<this->maskTo->size() ; ++outIdx)
         {
-            if( isMaskInUse )
+            if( !this->maskTo->getEntry(outIdx) )
             {
-                if( outIdx!=*it )
+                // do not forget to add empty rows (mandatory for Eigen)
+                for(unsigned i = 0; i < NOut; ++i)
                 {
-                    // do not forget to add empty rows (mandatory for Eigen)
-                    for(unsigned i = 0; i < NOut; ++i)
-                    {
-                        unsigned row = outIdx * NOut + i;
-                        J.startVec( row );
-                    }
-                    continue;
+                    unsigned row = outIdx * NOut + i;
+                    J.startVec( row );
                 }
-                ++it;
+                continue;
             }
+
 
             unsigned int inIdx = getRigidIndex(outIdx);
 

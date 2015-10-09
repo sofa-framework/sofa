@@ -48,8 +48,8 @@ public:
     typedef BarycentricMapperTetrahedronSetTopologyRigid<In,Out> Inherit;
 
     BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology,
-            helper::ParticleMask *_maskFrom,
-            helper::ParticleMask *_maskTo)
+            helper::StateMask *_maskFrom,
+            helper::StateMask *_maskTo)
         : Inherit(fromTopology, _toTopology, _maskFrom, _maskTo)
     {}
 

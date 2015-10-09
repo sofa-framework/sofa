@@ -69,7 +69,6 @@ typename IdentityContactMapper<TCollisionModel,DataTypes>::MMechanicalState* Ide
     }
     simulation::Node::SPtr child = parent->createChild(name);
     typename MMechanicalState::SPtr mstate = sofa::core::objectmodel::New<MMechanicalObject>(); child->addObject(mstate);
-    mstate->useMask.setValue(true);
     mapping = sofa::core::objectmodel::New<MMapping>(model->getMechanicalState(), mstate); child->addObject(mapping);
     return mstate.get();
 }

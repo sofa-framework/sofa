@@ -145,6 +145,8 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(const Mechanic
             addForce( mparams, *fId[mstate1.get(mparams)].write()   , *fId[mstate2.get(mparams)].write()   ,
                     *mparams->readX(mstate1), *mparams->readX(mstate2),
                     *mparams->readV(mstate1), *mparams->readV(mstate2) );
+
+        updateForceMask();
     }
 }
 
@@ -254,6 +256,18 @@ SReal MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(con
     return 0.0;
 }
 */
+
+
+template<class DataTypes1, class DataTypes2>
+void MixedInteractionForceField<DataTypes1, DataTypes2>::updateForceMask()
+{
+    // the default implementation adds every dofs to the mask
+    // this sould be overloaded by each forcefield to only add the implicated dofs subset to the mask
+    mstate1->forceMask.assign( mstate1->getSize(), true );
+    mstate2->forceMask.assign( mstate2->getSize(), true );
+}
+
+
 
 
 } // namespace behavior

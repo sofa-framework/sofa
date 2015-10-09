@@ -168,6 +168,10 @@ protected:
 
     BaseMechanicalState         *simulatedObject1;
     BaseMechanicalState         *simulatedObject2;
+
+
+    /// Mask are handled manually in LMConstraints (MUST be setted in buildConstaintMatrix)
+    virtual void updateForceMask() {}
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_LMCONSTRAINT_CPP)

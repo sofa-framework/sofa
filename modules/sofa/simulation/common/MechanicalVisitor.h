@@ -1099,7 +1099,8 @@ public:
     MechanicalPropagatePositionAndResetForceVisitor(const sofa::core::MechanicalParams* mparams,
                                                     sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId f, bool m)
         : MechanicalVisitor(mparams) , x(x), f(f), ignoreMask(m), applyProjections(true)
-    {}
+    {
+    }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);

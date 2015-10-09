@@ -74,12 +74,6 @@ void CatmullRomSplineMapping<TIn, TOut>::init()
     sourceMesh=this->getFromModel()->getContext()->getMeshTopology();
     targetMesh=this->getToModel()->getContext()->getMeshTopology() ;
 
-    maskFrom = NULL;
-    if ( core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *> ( this->getFromModel() ) )
-        maskFrom = &stateFrom->forceMask;
-    maskTo = NULL;
-    if ( core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *> ( this->getToModel() ) )
-        maskTo = &stateTo->forceMask;
     unsigned int k = SplittingLevel.getValue();
     unsigned int P = sourceMesh->getNbPoints();
     unsigned int E = sourceMesh->getNbEdges();
@@ -193,27 +187,13 @@ void CatmullRomSplineMapping<TIn, TOut>::apply( const sofa::core::MechanicalPara
 template <class TIn, class TOut>
 void CatmullRomSplineMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
 {
-    OutVecDeriv& out = *outData.beginEdit(mparams);
+    OutVecDeriv& out = *outData.beginWriteOnly(mparams);
     const InVecDeriv& in = inData.getValue();
 
-    if ( ! ( this->maskTo->isInUse() ) )
+    for( size_t i = 0 ; i<this->maskTo->size() ; ++i )
     {
-        for ( unsigned int i=0; i<out.size(); i++ )
+        if( this->maskTo->getActivatedEntry(i) )
         {
-            out[i] = OutDeriv();
-            for ( unsigned int j=0; j<4 ; j++ )     out[i] += in[m_index[i][j]] * m_weight[i][j] ;
-        }
-    }
-    else
-    {
-        typedef helper::ParticleMask ParticleMask;
-        const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
-
-        ParticleMask::InternalStorage::const_iterator it;
-
-        for ( it=indices.begin(); it!=indices.end(); it++ )
-        {
-            unsigned int i= ( unsigned int ) ( *it );
             out[i] = OutDeriv();
             for ( unsigned int j=0; j<4 ; j++ )  out[i] += in[m_index[i][j]] * m_weight[i][j] ;
         }
@@ -230,31 +210,20 @@ void CatmullRomSplineMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalPa
     InVecDeriv& out = *outData.beginEdit(mparams);
     const OutVecDeriv& in = inData.getValue();
 
-    if ( ! ( this->maskTo->isInUse() ) )
+    ForceMask &mask = *this->maskFrom;
+
+    for( size_t i = 0 ; i<this->maskTo->size() ; ++i )
     {
-        this->maskFrom->setInUse ( false );
-
-        for ( unsigned int i=0; i<in.size(); i++ )
-            for ( unsigned int j=0; j<4 ; j++ )
-                out[m_index[i][j]]  += in[i] * m_weight[i][j];
-    }
-    else
-    {
-        typedef helper::ParticleMask ParticleMask;
-        const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
-
-        ParticleMask::InternalStorage::const_iterator it;
-
-        for ( it=indices.begin(); it!=indices.end(); it++ )
+        if( this->maskTo->getEntry(i) )
         {
-            const int i= ( int ) ( *it );
             for ( unsigned int j=0; j<4 ; j++ )
             {
                 out[m_index[i][j]]  += in[i] * m_weight[i][j];
-                maskFrom->insertEntry ( m_index[i][j] );
+                mask.insertEntry(m_index[i][j]);
             }
         }
     }
+
 
     outData.endEdit(mparams);
 }

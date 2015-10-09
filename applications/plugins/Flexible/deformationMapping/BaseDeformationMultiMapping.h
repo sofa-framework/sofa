@@ -309,9 +309,9 @@ protected:
     core::State<In2>* fromModel2;   ///< DOF of the master2
     core::State<Out>* toModel;      ///< DOF of the slave
 
-    helper::ParticleMask* maskFrom1;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
-    helper::ParticleMask* maskFrom2;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
-    helper::ParticleMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
+    helper::StateMask* maskFrom1;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
+    helper::StateMask* maskFrom2;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
+    helper::StateMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
 
 
 
@@ -324,7 +324,7 @@ protected:
 
     SparseKMatrixEigen1 K;  ///< Assembled geometric stiffness matrix
 
-    helper::ParticleMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
+    helper::StateMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization
     const defaulttype::ResizableExtVector<core::topology::BaseMeshTopology::Triangle> *extTriangles;

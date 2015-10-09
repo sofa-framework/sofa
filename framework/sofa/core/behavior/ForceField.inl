@@ -205,8 +205,7 @@ void ForceField<DataTypes>::updateForceMask()
 {
     // the default implementation adds every dofs to the mask
     // this sould be overloaded by each forcefield to only add the implicated dofs subset to the mask
-    for( size_t i=0 ; i<(size_t)mstate->getSize() ; ++i )
-        mstate->forceMask.insertEntry( i );
+    mstate->forceMask.assign( mstate->getSize(), true );
 }
 
 

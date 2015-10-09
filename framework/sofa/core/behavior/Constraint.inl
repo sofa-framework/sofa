@@ -81,8 +81,18 @@ void Constraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
     if (cParams)
     {
         buildConstraintMatrix(cParams, *cId[mstate].write(), cIndex, *cParams->readX(mstate));
+        updateForceMask();
     }
 }
+
+template<class DataTypes>
+void Constraint<DataTypes>::updateForceMask()
+{
+    // the default implementation adds every dofs to the mask
+    // this sould be overloaded by each forcefield to only add the implicated dofs subset to the mask
+    mstate->forceMask.assign( mstate->getSize(), true );
+}
+
 
 } // namespace behavior
 

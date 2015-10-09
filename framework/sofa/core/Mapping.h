@@ -27,6 +27,7 @@
 
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/State.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -76,8 +77,10 @@ protected:
     SingleLink<Mapping<In,Out>, State< Out >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> toModel;
 public:
 
-    Data<bool> f_applyRestPosition; ///< @todo document this
-    Data<bool> f_checkJacobian;     ///< @todo document this
+    /// by default rest position are NOT propagated to mapped dofs.
+    /// In some cases, rest pos is needed for mapped dofs (generally when this dof is used to compute mechanics).
+    /// In that case, Data applyRestPosition must be setted to true for all the mappings until the desired dof.
+    Data<bool> f_applyRestPosition;
 protected:
     /// Constructor, taking input and output models as parameters.
     ///
@@ -292,14 +295,19 @@ public:
         return name;
     }
 
+
 protected:
 
-    void matrixApplyJ( OutVecDeriv& /* out */, const InVecDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
-    void matrixApplyJT( InVecDeriv& /* out */, const OutVecDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
-    void matrixApplyJT( InMatrixDeriv& /* out */, const OutMatrixDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
-    bool checkApplyJ( const MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in, const sofa::defaulttype::BaseMatrix* /* J */);
-    bool checkApplyJT( const MechanicalParams* mparams, InDataVecDeriv& /* out */, const OutDataVecDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
-    bool checkApplyJT( const ConstraintParams* cparams, InDataMatrixDeriv& /* out */, const OutDataMatrixDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
+    typedef typename behavior::BaseMechanicalState::ForceMask ForceMask;
+    /// keep an eye on the dof masks (if the dofs are Mechanical)
+    ForceMask *maskFrom, *maskTo;
+
+    /// Useful when the mapping is applied only on a subset of parent dofs.
+    /// It is automatically called by applyJT.
+    ///
+    /// That way, we can optimize Jacobian sparsity.
+    /// Every Dofs are inserted by default. The mappings using only a subset of dofs should only insert these dofs in the mask.
+    virtual void updateForceMask();
 
 };
 
