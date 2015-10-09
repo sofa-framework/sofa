@@ -6,7 +6,7 @@
   <RequiredPlugin name="SensableEmulation" pluginName="SensableEmulation" />
 
   <FreeMotionAnimationLoop />
-    <GenericConstraintSolver />
+    <GenericConstraintSolver maxIterations="1000" tolerance="0.001"/>
 
     <CollisionPipeline depth="8" />
     <BruteForceDetection name="N2" />
@@ -31,7 +31,7 @@
 
     <Node name="Tool">
         <EulerImplicit />
-        <CGLinearSolver />
+        <CGLinearSolver iterations="25" tolerance="1e-05" threshold="1e-05"/>
 
         <MechanicalObject name="ms" template="Rigid"/>
         <UniformMass totalmass="0.1" />
