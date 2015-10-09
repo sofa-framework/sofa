@@ -1576,7 +1576,7 @@ void RealGUI::startDumpVisitor()
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     Node* root = currentSimulation();
-    if (root && this->exportVisitorCheckbox->isOn())
+    if (root && this->exportVisitorCheckbox->isChecked())
     {
         m_dumpVisitorStream.str("");
         Visitor::startDumpVisitor(&m_dumpVisitorStream, root->getTime());
@@ -1589,7 +1589,7 @@ void RealGUI::startDumpVisitor()
 void RealGUI::stopDumpVisitor()
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
-    if (this->exportVisitorCheckbox->isOn())
+    if (this->exportVisitorCheckbox->isChecked())
     {
         Visitor::stopDumpVisitor();
         m_dumpVisitorStream.flush();
@@ -1828,7 +1828,7 @@ void RealGUI::createWindowVisitor()
 #else
     //Main window containing a QListView only
     windowTraceVisitor = new WindowVisitor;
-    windowTraceVisitor->graphView->setSorting(-1);
+    windowTraceVisitor->graphView->setSortingEnabled(false);
     windowTraceVisitor->hide();
     connect ( exportVisitorCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportVisitor ( bool ) ) );
     connect(windowTraceVisitor, SIGNAL(WindowVisitorClosed(bool)), this->exportVisitorCheckbox, SLOT(setChecked(bool)));

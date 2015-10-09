@@ -25,16 +25,10 @@
 #ifndef SOFA_GRAPHVISITOR_H
 #define SOFA_GRAPHVISITOR_H
 
-#ifdef SOFA_QT4
-#include <Q3ListView>
-#include <Q3ListViewItem>
-#include <Q3TextDrag>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+#include <QDrag>
 #include <QPixmap>
-#else
-#include <qlistview.h>
-#include <qdragobject.h>
-#include <qpixmap.h>
-#endif
 
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/common/Node.h>
@@ -57,35 +51,29 @@ namespace gui
 namespace qt
 {
 
-#ifndef SOFA_QT4
-typedef QListView Q3ListView;
-typedef QListViewItem Q3ListViewItem;
-#endif
-
-
 class GraphVisitor
 {
 public:
     GraphVisitor(WindowVisitor *w) { window=w; graph=w->graphView; totalTimeMax=-1; initSize=false;}
-    Q3ListViewItem *addNode(Q3ListViewItem *parent,Q3ListViewItem *elementAbove, std::string info);
-    Q3ListViewItem *addComment(Q3ListViewItem *element, Q3ListViewItem *elementAbove, std::string comment);
-    void addInformation(Q3ListViewItem *element, std::string name, std::string info);
-    void addTime(Q3ListViewItem *element, std::string info);
+    QTreeWidgetItem *addNode(QTreeWidgetItem *parent,QTreeWidgetItem *elementAbove, std::string info);
+    QTreeWidgetItem *addComment(QTreeWidgetItem *element, QTreeWidgetItem *elementAbove, std::string comment);
+    void addInformation(QTreeWidgetItem *element, std::string name, std::string info);
+    void addTime(QTreeWidgetItem *element, std::string info);
 
     bool load(std::string &file);
 
-    void setGraph(Q3ListView* g) {graph = g;}
+    void setGraph(QTreeWidget* g) {graph = g;}
     void clear() {graph->clear();}
 
     double getTotalTime(TiXmlNode* node) const;
     inline double getTime(TiXmlAttribute* attribute) const;
 
 protected:
-    void openTime           ( TiXmlNode* element, Q3ListViewItem* item);
-    void openAttribute      ( TiXmlElement* element, Q3ListViewItem* item);
-    Q3ListViewItem* openNode( TiXmlNode* node, Q3ListViewItem* parent, Q3ListViewItem* elementAbove);
+    void openTime           ( TiXmlNode* element, QTreeWidgetItem* item);
+    void openAttribute      ( TiXmlElement* element, QTreeWidgetItem* item);
+    QTreeWidgetItem* openNode( TiXmlNode* node, QTreeWidgetItem* parent, QTreeWidgetItem* elementAbove);
 
-    Q3ListView *graph;
+    QTreeWidget *graph;
     WindowVisitor *window;
 
     double totalTime;

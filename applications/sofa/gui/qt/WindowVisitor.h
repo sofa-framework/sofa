@@ -29,20 +29,11 @@
 #include "PieWidget.h"
 #include "QVisitorControlPanel.h"
 
-#ifdef SOFA_QT4
-#include <Q3ListViewItem>
-#include <Q3TextDrag>
+#include <QTreeWidgetItem>
+#include <QDrag>
 #include <QPixmap>
 #include <QTableWidget>
 #include <QComboBox>
-#else
-#include <qlistview.h>
-#include <qdragobject.h>
-#include <qpixmap.h>
-#include <qtable.h>
-#include <qcombobox.h>
-#endif
-
 
 #include <iostream>
 
@@ -55,11 +46,6 @@ namespace gui
 namespace qt
 {
 
-#ifndef SOFA_QT4
-typedef QListView Q3ListView;
-typedef QListViewItem Q3ListViewItem;
-#endif
-
 class WindowVisitor: public QWidget, public Ui_VisitorGUI
 {
     Q_OBJECT
@@ -67,8 +53,8 @@ public:
     enum componentType {NODE, COMMENT, COMPONENT, VECTOR, OTHER};
     WindowVisitor();
 
-    void collapseNode(Q3ListViewItem* item);
-    void expandNode(Q3ListViewItem* item);
+    void collapseNode(QTreeWidgetItem* item);
+    void expandNode(QTreeWidgetItem* item);
 
     void setCharts(std::vector< dataTime >&latestC, std::vector< dataTime >&maxTC, std::vector< dataTime >&totalC,
             std::vector< dataTime >&latestV, std::vector< dataTime >&maxTV, std::vector< dataTime >&totalV);
@@ -77,11 +63,8 @@ public:
 public slots:
     void setCurrentCharts(int);
 
-#ifdef SOFA_QT4
-    void rightClick(Q3ListViewItem *, const QPoint &, int );
-#else
-    void rightClick(QListViewItem *, const QPoint &, int );
-#endif
+    void rightClick( const QPoint& point);
+
     void collapseNode();
     void expandNode();
 
@@ -130,7 +113,7 @@ public:
 
     QWidget *statsWidget;
 protected:
-    bool setFocusOn(Q3ListViewItem *item, QString text);
+    bool setFocusOn(QTreeWidgetItem *item, QString text);
 
     static QPixmap *icons[OTHER+1];
 

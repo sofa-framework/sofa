@@ -30,14 +30,10 @@
 
 #include <sofa/helper/system/thread/CTime.h>
 
-#ifndef SOFA_QT4
-#include <qsplitter.h>
-#include <qvaluelist.h>
-typedef QListViewItem Q3ListViewItem;
-#else
 #include <QSplitter>
 #include <QList>
-#endif
+
+
 namespace sofa
 {
 
@@ -49,7 +45,7 @@ namespace qt
 
 typedef sofa::helper::system::thread::CTime CTime;
 
-bool cmpTime(const dataTime &a, const dataTime &b) { return a.time > b.time;};
+bool cmpTime(const dataTime &a, const dataTime &b) { return a.time > b.time;}
 bool GraphVisitor::load(std::string &file)
 {
     //Open it using TinyXML
@@ -96,11 +92,8 @@ bool GraphVisitor::load(std::string &file)
     if (!initSize)
     {
         const int sizeLeft = window->graphView->columnWidth(0)+window->graphView->columnWidth(1)+7;
-#ifdef SOFA_QT4
+
         QList< int > listSize;
-#else
-        QValueList< int > listSize;
-#endif
         listSize << sizeLeft
                 << window->statsWidget->width()-(sizeLeft-window->graphView->width());
         window->splitterStats->setSizes(listSize);
@@ -110,7 +103,7 @@ bool GraphVisitor::load(std::string &file)
 }
 
 
-void GraphVisitor::openAttribute      ( TiXmlElement* element, Q3ListViewItem* item)
+void GraphVisitor::openAttribute      ( TiXmlElement* element, QTreeWidgetItem* item)
 {
     if (!element) return;
     TiXmlAttribute* attribute=element->FirstAttribute();
@@ -126,7 +119,7 @@ void GraphVisitor::openAttribute      ( TiXmlElement* element, Q3ListViewItem* i
 
 
 
-void GraphVisitor::openTime      ( TiXmlNode* node, Q3ListViewItem* item)
+void GraphVisitor::openTime      ( TiXmlNode* node, QTreeWidgetItem* item)
 {
     TiXmlElement* element=node->ToElement();
     if (!element) return;
@@ -228,7 +221,7 @@ double GraphVisitor::getTotalTime(TiXmlNode* node) const
     return 1;
 }
 
-Q3ListViewItem* GraphVisitor::openNode( TiXmlNode* node, Q3ListViewItem* parent, Q3ListViewItem* elementAbove)
+QTreeWidgetItem* GraphVisitor::openNode( TiXmlNode* node, QTreeWidgetItem* parent, QTreeWidgetItem* elementAbove)
 {
     if (!node) return NULL;
 
@@ -239,7 +232,7 @@ Q3ListViewItem* GraphVisitor::openNode( TiXmlNode* node, Q3ListViewItem* parent,
     // replace these constants with checks of the return value of ToElement(), ...
     // -- Jeremie A. 02/07/2011
     //int typeOfNode=node->Type();
-    Q3ListViewItem *graphNode=NULL;
+    QTreeWidgetItem *graphNode=NULL;
     if (node->ToDocument())   // case TiXmlNode::DOCUMENT:
     {
     }
@@ -269,7 +262,7 @@ Q3ListViewItem* GraphVisitor::openNode( TiXmlNode* node, Q3ListViewItem* parent,
     {
     }
 
-    Q3ListViewItem *element=NULL;
+    QTreeWidgetItem *element=NULL;
     timeComponentsBelow.push_back(0);
 
     for ( TiXmlNode* child = node->FirstChild(); child != 0; child = child->NextSibling())
@@ -287,33 +280,35 @@ Q3ListViewItem* GraphVisitor::openNode( TiXmlNode* node, Q3ListViewItem* parent,
 }
 
 
-Q3ListViewItem *GraphVisitor::addNode(Q3ListViewItem *parent, Q3ListViewItem *elementAbove, std::string name)
+QTreeWidgetItem *GraphVisitor::addNode(QTreeWidgetItem *parent, QTreeWidgetItem *elementAbove, std::string name)
 {
-    Q3ListViewItem *item=NULL;
+    QTreeWidgetItem *item=NULL;
     if (!parent)
     {
         //Add a Root
-        item=new Q3ListViewItem(graph, QString(name.c_str()));
-        item->setOpen(true);
+        item=new QTreeWidgetItem(graph);
+        item->setText(0, QString(name.c_str()));
+        item->setExpanded(true);
     }
     else
     {
         //Add a child to a node
-        item=new Q3ListViewItem(parent,elementAbove, QString(name.c_str()));
+        item=new QTreeWidgetItem(parent,elementAbove);
+        item->setText(0, QString(name.c_str()));
     }
     QPixmap*  icon=WindowVisitor::getPixmap(WindowVisitor::getComponentType(name));
-    if (icon) item->setPixmap(0,*icon);
-    item->setMultiLinesEnabled(true);
+    if (icon) item->setIcon(0,QIcon(*icon));
+    //item->setMultiLinesEnabled(true);
     return item;
 }
 
-void GraphVisitor::addTime(Q3ListViewItem *element, std::string info)
+void GraphVisitor::addTime(QTreeWidgetItem *element, std::string info)
 {
     if (!element) return;
     element->setText(1, QString( info.c_str()));
 }
 
-void GraphVisitor::addInformation(Q3ListViewItem *element, std::string name, std::string info)
+void GraphVisitor::addInformation(QTreeWidgetItem *element, std::string name, std::string info)
 {
     if (!element) return;
     if (element->text(0) == QString("Node"))
@@ -361,13 +356,15 @@ void GraphVisitor::addInformation(Q3ListViewItem *element, std::string name, std
     }
 }
 
-Q3ListViewItem *GraphVisitor::addComment(Q3ListViewItem *element,Q3ListViewItem *elementAbove,  std::string comment)
+QTreeWidgetItem *GraphVisitor::addComment(QTreeWidgetItem *element,QTreeWidgetItem *elementAbove,  std::string comment)
 {
     if (!element) return NULL;
-    Q3ListViewItem *result = new Q3ListViewItem(element, elementAbove,QString(comment.c_str()));
-    result->setPixmap(0,*WindowVisitor::getPixmap(WindowVisitor::COMMENT));
-    result->setSelectable(false);
-    result->setMultiLinesEnabled(true);
+    QTreeWidgetItem *result = new QTreeWidgetItem(element, elementAbove);
+    result->setIcon(0,QIcon(*WindowVisitor::getPixmap(WindowVisitor::COMMENT)));
+    result->setText(1, QString(comment.c_str()));
+    //result->setSelectable(false);
+    result->setFlags(Qt::ItemIsEnabled);
+    //result->setMultiLinesEnabled(true);
     return result;
 }
 

@@ -26,17 +26,10 @@
 #ifndef SOFA_PIEWIDGET_H
 #define SOFA_PIEWIDGET_H
 
-#ifdef SOFA_QT4
 #include <QWidget>
 #include <QPainter>
 #include <QTableWidget>
-#else
-#include <qwidget.h>
-#include <qpainter.h>
-#include <qtable.h>
-typedef QTable QTableWidget;
-typedef QTableItem QTableWidgetItem;
-#endif
+
 
 #include <vector>
 #include <sofa/defaulttype/Vec.h>

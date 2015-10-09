@@ -25,19 +25,10 @@
 #include "PieWidget.h"
 #include <iostream>
 
-#ifdef SOFA_QT4
 #include <QGridLayout>
 #include <QStringList>
 #include <QHeaderView>
 #include <QSplitter>
-#include <Qt>
-#else
-#include <qheader.h>
-#include <qlayout.h>
-#include <qsplitter.h>
-#endif
-
-
 
 namespace sofa
 {
@@ -117,21 +108,14 @@ ChartsWidget::ChartsWidget(const std::string &name, QWidget *parent): QWidget(pa
     splitter->setOrientation(Qt::Horizontal);
     QGridLayout *grid = new QGridLayout(this);
     pie = new PieWidget(splitter);
-#ifdef SOFA_QT4
+
     table = new QTableWidget(0,3,splitter);
-    table->horizontalHeader()->setResizeMode(0,QHeaderView::Fixed);
+    table->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Fixed);
     table->horizontalHeader()->resizeSection(0,30);
-    table->horizontalHeader()->setResizeMode(1,QHeaderView::ResizeToContents);
-    table->horizontalHeader()->setResizeMode(2,QHeaderView::ResizeToContents);
+    table->horizontalHeader()->setSectionResizeMode(1,QHeaderView::ResizeToContents);
+    table->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
     QStringList list; list<<"Id" << name.c_str() << "Time";
     table->setHorizontalHeaderLabels(list);
-#else
-    table = new QTableWidget(0,2,splitter);
-    table->horizontalHeader()->setLabel(0,QString(name.c_str()));
-    table->horizontalHeader()->setStretchEnabled(true,0);
-    table->horizontalHeader()->setLabel(1,QString("Time"));
-    table->horizontalHeader()->setStretchEnabled(true,1);
-#endif
 
     grid->addWidget(splitter,0,0);
 
@@ -140,11 +124,8 @@ ChartsWidget::ChartsWidget(const std::string &name, QWidget *parent): QWidget(pa
 
 void ChartsWidget::clear()
 {
-#ifdef SOFA_QT4
     int rows=table->rowCount();
-#else
-    int rows=table->numRows();
-#endif
+
     for (int i=0; i<rows; ++i) table->removeRow(0);
     pie->clear();
 }
@@ -156,11 +137,8 @@ void ChartsWidget::setChart( std::vector< dataTime >& value, unsigned int s)
     selection=s;
     for (unsigned int i=0; i<value.size() && i<selection; ++i)
     {
-#ifdef SOFA_QT4
         table->insertRow(i);
-#else
-        table->insertRows(i);
-#endif
+
         defaulttype::Vec<3,int> c=PieWidget::getColor(i);
         QColor color(c[0],c[1],c[2]);
 
@@ -174,7 +152,6 @@ void ChartsWidget::setChart( std::vector< dataTime >& value, unsigned int s)
             text+=")";
         }
 
-#ifdef SOFA_QT4
         QTableWidgetItem *itemColor = new QTableWidgetItem();
         itemColor->setBackgroundColor(color);
         QTableWidgetItem *item = new QTableWidgetItem();
@@ -188,17 +165,7 @@ void ChartsWidget::setChart( std::vector< dataTime >& value, unsigned int s)
         itemColor->setFlags(0);
         item->setFlags(0);
         itemTime->setFlags(0);
-#else
-        QTableWidgetItem *item = new QTableWidgetItem(table, QTableItem::Never);
-        QPixmap p(20,20); p.fill(color);
-        item->setPixmap(p);
-        QTableWidgetItem *itemTime = new QTableWidgetItem(table, QTableItem::Never);
-        item->setText(text);
-        table->setItem(i,0, item);
-        itemTime->setText(time);
-        table->setItem(i,1, itemTime);
-        table->adjustColumn(0);
-#endif
+
     }
     pie->repaint();
 
