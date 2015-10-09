@@ -210,6 +210,10 @@ public:
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     //@}	
 
+    typedef typename Inherit::ForceMask ForceMask;
+
+
+
     ///@brief Update \see f_index_parentToChild from \see f_index
     void updateIndex();
     void updateIndex(const size_t parentSize, const size_t childSize);
@@ -328,7 +332,7 @@ public:
 
 protected:
     BaseDeformationMappingT (core::State<In>* from = NULL, core::State<Out>* to= NULL);
-    virtual ~BaseDeformationMappingT()     { }
+    virtual ~BaseDeformationMappingT() { }
 
 public:
 
@@ -352,20 +356,19 @@ protected :
     virtual void initJacobianBlocks()=0;
     virtual void initJacobianBlocks(const InVecCoord& /*inCoord*/, const OutVecCoord& /*outCoord*/){ std::cout << "Only implemented in LinearMapping for now." << std::endl;}
 
-    helper::StateMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
-
-
     SparseMatrixEigen eigenJacobian;  ///< Assembled Jacobian matrix
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
     bool Jdirty; ///< Does J needs to be updated?
     void updateJ();
-    helper::StateMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence (TODO add such a mechanism directly in ParticleMask?)
+    typename ForceMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence (TODO add such a mechanism directly in ParticleMask?)
 
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization
     const defaulttype::ResizableExtVector<core::topology::BaseMeshTopology::Triangle> *extTriangles;
     const defaulttype::ResizableExtVector<int> *extvertPosIdx;
+
+//    void updateForceMask(); TODO
 
 public:
 

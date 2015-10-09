@@ -108,9 +108,9 @@ void RegistrationContactForceField<DataTypes>::addForce(const MechanicalParams* 
 			Deriv force = -c.norm*fN;
 
 			f1[c.m1]+=force;
-                        this->mask1->insertEntry(c.m1);
+                        this->mstate1->forceMask.insertEntry(c.m1);
 			f2[c.m2]-=force;
-                        this->mask2->insertEntry(c.m2);
+                        this->mstate2->forceMask.insertEntry(c.m2);
 		}
 	}
  	contacts.endEdit();

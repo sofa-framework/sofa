@@ -208,6 +208,15 @@ void Multi2Mapping<In1,In2,Out>::disable()
 {
 }
 
+
+template < class In1, class In2, class Out >
+void Multi2Mapping<In1,In2,Out>::updateForceMask()
+{
+    helper::vector<behavior::BaseMechanicalState*> fromModels = getMechFrom();
+    for (size_t i=0 ; i<fromModels.size() ; i++)
+        fromModels[i]->forceMask.assign(fromModels[i]->getSize(),true);
+}
+
 } // namespace core
 
 } // namespace sofa

@@ -56,6 +56,7 @@ class SOFA_CORE_API BaseMapping : public virtual objectmodel::BaseObject
 public:
     SOFA_ABSTRACT_CLASS(BaseMapping, objectmodel::BaseObject);
 protected:
+
     /// Constructor
     BaseMapping();
 
@@ -172,6 +173,16 @@ public:
 
 protected:
     bool testMechanicalState(BaseState* state);
+
+
+    /// type used for masks
+    typedef behavior::BaseMechanicalState::ForceMask ForceMask;
+    /// Useful when the mapping is applied only on a subset of parent dofs.
+    /// It is automatically called by applyJT.
+    ///
+    /// That way, we can optimize Jacobian sparsity.
+    /// Every Dofs are inserted by default. The mappings using only a subset of dofs should only insert these dofs in the mask.
+    virtual void updateForceMask() = 0;
 };
 
 } // namespace core

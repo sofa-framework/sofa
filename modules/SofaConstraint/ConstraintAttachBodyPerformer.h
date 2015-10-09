@@ -28,7 +28,7 @@
 
 #include <SofaUserInteraction/InteractionPerformer.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
-#include <sofa/core/behavior/BaseForceField.h>
+//#include <sofa/core/behavior/BaseForceField.h>
 #include <SofaDeformable/SpringForceField.h>
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <SofaGraphComponent/AttachBodyButtonSetting.h>

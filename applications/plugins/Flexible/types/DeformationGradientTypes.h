@@ -151,6 +151,21 @@ struct DefGradientTypes
             return getVec().norm();
         }
 
+        /// @name Comparison operators
+        /// @{
+
+        bool operator==(const Deriv& o) const
+        {
+            return getVec() == o.getVec();
+        }
+
+        bool operator!=(const Deriv& o) const
+        {
+            return getVec() != o.getVec();
+        }
+
+        /// @}
+
     };
 
     typedef vector<Deriv> VecDeriv;
