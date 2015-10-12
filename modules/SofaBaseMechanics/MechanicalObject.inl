@@ -654,7 +654,7 @@ void MechanicalObject<DataTypes>::renumberValues( const sofa::helper::vector< un
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::resize(const int size)
+void MechanicalObject<DataTypes>::resize(const size_t size)
 {
 #ifdef SOFA_SMP_NUMA
     if(this->getContext()->getProcessor()!=-1)
@@ -711,7 +711,7 @@ void MechanicalObject<DataTypes>::resize(const int size)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::reserve(const int size)
+void MechanicalObject<DataTypes>::reserve(const size_t size)
 {
     if (size == 0) return;
 
@@ -1303,7 +1303,7 @@ void MechanicalObject<DataTypes>::writeVec(core::ConstVecId v, std::ostream &out
 template <class DataTypes>
 void MechanicalObject<DataTypes>::readVec(core::VecId v, std::istream &in)
 {
-    int i = 0;
+    size_t i = 0;
 
     switch (v.type)
     {
@@ -2713,7 +2713,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
 
         defaulttype::Mat<4,4, GLfloat> modelviewM;
 
-        for (int i=0 ; i< vsize ; i++)
+        for (size_t i=0 ; i< vsize ; i++)
         {
             std::ostringstream oss;
             oss << i;
@@ -2794,7 +2794,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
     {
         const float& scale = showObjectScale.getValue();
         vector<Vector3> positions(vsize);
-        for (int i = 0; i < vsize; ++i)
+        for (size_t i = 0; i < vsize; ++i)
             positions[i] = Vector3(getPX(i), getPY(i), getPZ(i));
 
         switch (drawMode.getValue())
@@ -3415,7 +3415,7 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
 //                            cerr<<"MechanicalObject<DataTypes>::pickParticles, ray dir = " << rayDx << ", " << rayDy << ", " << rayDz << endl;
 //                            cerr<<"MechanicalObject<DataTypes>::pickParticles, radius0 = " << radius0 << endl;
 //                            cerr<<"MechanicalObject<DataTypes>::pickParticles, dRadius = " << dRadius << endl;
-        for (int i=0; i< vsize; ++i)
+        for (size_t i=0; i< vsize; ++i)
         {
             defaulttype::Vec<3,Real> pos;
             DataTypes::get(pos[0],pos[1],pos[2],x[i]);

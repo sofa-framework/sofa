@@ -83,9 +83,9 @@ protected:
 public:
     /// @name Methods allowing to have access to the geometry without a template class (generic but not efficient)
     /// @{
-    virtual SReal getPX(int /*i*/) const { return 0.0; }
-    virtual SReal getPY(int /*i*/) const { return 0.0; }
-    virtual SReal getPZ(int /*i*/) const { return 0.0; }
+    virtual SReal getPX(size_t /*i*/) const { return 0.0; }
+    virtual SReal getPY(size_t /*i*/) const { return 0.0; }
+    virtual SReal getPZ(size_t /*i*/) const { return 0.0; }
 
     /// @}
 
@@ -270,8 +270,8 @@ public:
     /// Write current state to the given output stream
     virtual void writeState( std::ostream& out );
 
-    virtual unsigned int getCoordDimension() const { return 0; }
-    virtual unsigned int getDerivDimension() const { return 0; }
+    virtual size_t getCoordDimension() const { return 0; }
+    virtual size_t getDerivDimension() const { return 0; }
 
     /// Translate the current state
     virtual void applyTranslation(const SReal dx, const SReal dy, const SReal dz)=0;
@@ -324,12 +324,12 @@ public:
     /// \brief Get the number of scalars per Deriv value, as necessary to build mechanical matrices and vectors.
     ///
     /// If not all Derivs have the same number of scalars, then return 1 here and overload the getMatrixSize() method.
-    virtual unsigned int getMatrixBlockSize() const { return getDerivDimension(); }
+    virtual size_t getMatrixBlockSize() const { return getDerivDimension(); }
 
     /// \brief Get the number of rows necessary to build mechanical matrices and vectors.
     ///
     /// In most cases this is equivalent to getSize() * getMatrixBlockSize().
-    virtual unsigned int getMatrixSize() const { return getSize() * getMatrixBlockSize(); }
+    virtual size_t getMatrixSize() const { return getSize() * getMatrixBlockSize(); }
 
     /// \brief Copy data to a global BaseVector from the state stored in a local vector.
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns

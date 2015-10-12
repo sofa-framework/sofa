@@ -146,7 +146,7 @@ public:
 
     virtual void addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& _v)
     {
-        if(this->mstate->getSize()!=(int)material.size()) resize();
+        if(this->mstate->getSize()!=material.size()) resize();
 
         VecDeriv&  f = *_f.beginEdit();
         const VecCoord&  x = _x.getValue();

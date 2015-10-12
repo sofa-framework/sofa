@@ -533,7 +533,7 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::vi
 
         defaulttype::Mat<4,4, GLfloat> modelviewM;
 
-        for ( int i=0 ; i< vsize ; i++ )
+        for ( size_t i=0 ; i< vsize ; i++ )
         {
             std::ostringstream oss;
             oss << i;
@@ -576,7 +576,7 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::vi
         const float& scale = showObjectScale.getValue();
         const defaulttype::TYPEABSTRACTNAME3dTypes::VecCoord& x = ( read(core::ConstVecCoordId::position())->getValue() );
         
-        for (int i = 0; i < this->getSize(); ++i)
+        for (size_t i = 0; i < this->getSize(); ++i)
         {
             vparams->drawTool()->pushMatrix();
             float glTransform[16];
@@ -622,7 +622,7 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3fTypes>::draw(const core::vi
 
         defaulttype::Mat<4,4, GLfloat> modelviewM;
 
-        for ( int i=0 ; i< vsize ; i++ )
+        for ( size_t i=0 ; i< vsize ; i++ )
         {
             std::ostringstream oss;
             oss << i;
@@ -665,7 +665,7 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3fTypes>::draw(const core::vi
         const float& scale = showObjectScale.getValue();
         const defaulttype::TYPEABSTRACTNAME3fTypes::VecCoord& x = read(core::ConstVecCoordId::position())->getValue();
 
-        for (int i = 0; i < this->getSize(); ++i)
+        for (size_t i = 0; i < this->getSize(); ++i)
         {
             vparams->drawTool()->pushMatrix();
             float glTransform[16];

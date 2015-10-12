@@ -257,7 +257,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     for(unsigned int i=0;i<sf.size();i++)
     {
         if(this->f_shapeFunction_name.isSet()) {if(this->f_shapeFunction_name.getValue().compare(sf[i]->getName()) == 0) _shapeFunction=sf[i];}
-        else if((int)sf[i]->f_position.getValue().size() == this->fromModel->getSize()) _shapeFunction=sf[i];
+        else if(sf[i]->f_position.getValue().size() == this->fromModel->getSize()) _shapeFunction=sf[i];
     }
 
     if(_shapeFunction) // if we have a shape function, we use it to compute needed data (index, weights, etc.)
