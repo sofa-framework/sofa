@@ -44,10 +44,8 @@ namespace helper
  *  USAGE:
  *
  *     - Forcefields, Constraints
- *              which acts only on a little number of dofs should use the mask by adding entries in the mask
- *              This can be done in the utility fonction updateForceMask() (the default implementation adds every dofs in the mask)
- *              Note that for optimization considerations, dofs can be inserted in the mask directly in the ForceField::addForce and Constraint::buildConstraintMatrix functions.
- *              In that case the updateForceMask() should be overloaded not to insert any dofs. (e.g. GearSpringForceField)
+ *              which acts only on a little number of dofs should use the mask by only adding active entries
+ *              in the fonction updateForceMask() (the default implementation adds every dofs in the mask)
  *
  *     - (Multi)Mappings
  *              they must propagate the mask from their child (tomodel) to their parents (frommodels)
