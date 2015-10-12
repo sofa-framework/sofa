@@ -49,6 +49,16 @@ void IdentityMultiMapping<TIn, TOut>::init()
 
     this->toModels[0]->resize( outSize );
 
+
+    helper::vector<core::behavior::BaseMechanicalState*> mstatesfrom = this->getMechFrom();
+    helper::vector<core::behavior::BaseMechanicalState*> mstatesto = this->getMechTo();
+
+    if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModels[0])) maskTo = &stateTo->forceMask;
+    maskFrom.resize( this->fromModels.size() );
+    for( unsigned i=0 ; i<this->fromModels.size() ; ++i )
+        if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModels[i])) maskFrom[i] = &stateFrom->forceMask;
+
+
     Inherit::init();
 
     unsigned Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size;
@@ -126,7 +136,8 @@ void IdentityMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mpara
 
         for(unsigned int j=0; j<in.size(); j++)
         {
-            helper::eq( out[offset+j], in[j]);
+            if( maskTo->getActivatedEntry(offset+j) )
+                helper::eq( out[offset+j], in[j]);
         }
         offset += in.size();
     }
@@ -146,7 +157,8 @@ void IdentityMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mpar
 
         for(unsigned int j=0; j<out.size(); j++)
         {
-            helper::peq( out[j], in[offset+j]);
+            if( maskTo->getEntry(offset+j) )
+                helper::peq( out[j], in[offset+j]);
         }
 
         dataVecOutForce[i]->endEdit(mparams);
@@ -168,6 +180,22 @@ template <class TIn, class TOut>
 const helper::vector<sofa::defaulttype::BaseMatrix*>* IdentityMultiMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
+}
+
+
+template <class TIn, class TOut>
+void IdentityMultiMapping<TIn, TOut>::updateForceMask()
+{
+    unsigned offset = 0;
+    for(size_t i=0; i<maskFrom.size(); i++ )
+    {
+        helper::StateMask& maskfrom = *maskFrom[i];
+
+        for( size_t j = 0 ; j<maskfrom.size() ; ++j, ++offset )
+        {
+            if( maskTo->getEntry(offset) ) maskfrom.insertEntry( j );
+        }
+    }
 }
 
 
