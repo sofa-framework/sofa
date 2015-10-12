@@ -114,8 +114,6 @@ protected:
     {
     }
 
-    virtual void updateForceMask();
-
 public:
     void clear(int reserve = 0);
 
@@ -137,6 +135,8 @@ public:
             helper::vector< unsigned int > &index_point) ;
 
     void draw(const core::visual::VisualParams* vparams);
+
+    virtual void updateForceMask();
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP)

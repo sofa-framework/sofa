@@ -103,8 +103,6 @@ protected:
 
     void resizeArray(unsigned int n);
 
-    virtual void updateForceMask();
-
 
 public:
 
@@ -200,6 +198,8 @@ public:
     /// forward declaration of the loader class used to read spring information from file
     class Loader;
     friend class Loader;
+
+    virtual void updateForceMask();
 
 };
 
