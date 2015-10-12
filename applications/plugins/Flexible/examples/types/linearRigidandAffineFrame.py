@@ -41,7 +41,7 @@ def createScene(root):
     behaviorNode = rigidNode.createChild('behavior')
     
     behaviorNode.createObject('ImageGaussPointSampler', name="sampler", indices="@../../SF.indices", weights="@../../SF.weights", transform="@../../SF.transform", method="2", order="1", showSamplesScale="0", printLog="true", targetNumber="200" )
-    behaviorNode.createObject('MechanicalObject', template="F331", name="F",  useMask="0",  showObject="1", showObjectScale="0.05" )
+    behaviorNode.createObject('MechanicalObject', template="F331", name="F" )
     behaviorNode.createObject('LinearMultiMapping', template="Rigid,Affine,F331", input1="@..", input2="@../../Affine", output="@.", printLog="0", showDeformationGradientScale="0", assemble="0")
     
     affineNode.addChild( behaviorNode )
