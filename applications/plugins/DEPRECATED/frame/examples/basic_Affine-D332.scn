@@ -5,7 +5,7 @@
 	<CGLinearSolver template="GraphScattered" iterations="150"  threshold="1e-008" />
 
 	<Node name="Beam">
-		<MechanicalObject template="FrameAffine" name="DOFs" useMask="0" rest_position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1]"  />
+		<MechanicalObject template="FrameAffine" name="DOFs"  rest_position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1]"  />
 		<HookeMaterial3 name="hookeMat" template="Material3" youngModulus="2000" poissonRatio="0.3" bulkModulus="100" />
 		<FrameDiagonalMass template="AffineFrame3x12dMass" showAxisSizeFactor="0.2"/>
 
@@ -14,8 +14,8 @@
 		<Node name="Physics">
 <!--			<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
 			<Mesh src="@MeshLoader" /> 
-     			<MechanicalObject  template="DeformationGradient332" name="PointSet" useMask="0"  showObject="1" showObjectScale="0.05"/> -->
-			<MechanicalObject template="DeformationGradient332" name="PointSet" useMask="0"  showObject="1" showObjectScale="0.05" position="0 0 0  1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
+     			<MechanicalObject  template="DeformationGradient332" name="PointSet"   showObject="1" showObjectScale="0.05"/> -->
+			<MechanicalObject template="DeformationGradient332" name="PointSet"   showObject="1" showObjectScale="0.05" position="0 0 0  1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
 			<FrameBlendingMapping template="FrameAffine,DeformationGradient332" input="@../DOFs"  output="@PointSet" showStrain="0" />
 			<GreenLagrangeForceField template="DeformationGradient332"   printLog="0" />
 	<!--		<FrameVolumePreservationForceField template="DeformationGradient332"   printLog="0" /> -->
@@ -24,7 +24,7 @@
 		<Node name="Collision">
 			<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
     		  	<Mesh src="@MeshLoader" /> 
-     		 	<MechanicalObject  name="PointSet" useMask="1" />
+     		 	<MechanicalObject  name="PointSet"  />
       			<Triangle />
 			<FrameBlendingMapping template="FrameAffine,Vec3d" input="@../DOFs"  output="@PointSet" showStrain="0"/>
 		</Node>
@@ -36,12 +36,12 @@
 
 <!-- frame/frame mapping -->
 <!--		<Node name="AffineFrameMapping">
-			<MechanicalObject template="FrameAffine" name="MappedDOFs" useMask="0" position="0 0 0 [1 0 0, 0 1 0, 0 0 1]" showObject="1" showObjectScale="0.5"/>
+			<MechanicalObject template="FrameAffine" name="MappedDOFs"  position="0 0 0 [1 0 0, 0 1 0, 0 0 1]" showObject="1" showObjectScale="0.5"/>
 			<FrameBlendingMapping template="FrameAffine,FrameAffine;" input="@../DOFs"  output="@MappedDOFs" />
 		</Node>
 		
 		<Node name="RigidFrameMapping">
-			<MechanicalObject template="Rigid" name="MappedDOFs" useMask="0" position="0 0 0 0 0 0 1" showObject="1" showObjectScale="0.5"/>
+			<MechanicalObject template="Rigid" name="MappedDOFs"  position="0 0 0 0 0 0 1" showObject="1" showObjectScale="0.5"/>
 			<FrameBlendingMapping template="FrameAffine,Rigid;" input="@../DOFs"  output="@MappedDOFs" />
 		</Node>-->
 	</Node>

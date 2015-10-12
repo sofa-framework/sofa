@@ -14,11 +14,11 @@
 		<ImageContainer template="ImageUC" name="image"  listening="1"  filename="beam.raw"  drawBB="0" />
 		<ImageSampler template="ImageUC" name="sampler"  printLog="0"  listening="1"  image="@image.image"  transform="@image.transform"  method="1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)=1)"  param="1" />
 		<MergeMeshes template="Vec3d" name="merged"  nbMeshes="2"  position1="@sampler.fixedPosition"  position2="@sampler.position" />
-		<MechanicalObject template="Rigid" name="parent"  useMask="0"  position="@merged.position"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  showObject="1" />
+		<MechanicalObject template="Rigid" name="parent"    position="@merged.position"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  showObject="1" />
 		<VoronoiShapeFunction template="ShapeFunctiond,ImageUC" name="SF"  nbRef="4"  position="@parent.rest_position"  image="@image.image"  transform="@image.transform"  method="0 - Distance ratio"  useDijkstra="1" />
 		<Node 	 name="collision"  >
 			<MeshTopology name="mesh"  position="@../../mesh.position"  edges="@../../mesh.edges"  triangles="@../../mesh.triangles"  quads="@../../mesh.quads"  tetrahedra="@../../mesh.tetras"  hexahedra="@../../mesh.hexas" />
-			<MechanicalObject template="Vec3d" name="pts"  useMask="0"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
+			<MechanicalObject template="Vec3d" name="pts"    position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
 			<UniformMass template="Vec3d" name="uniformMass1"  totalmass="3" />
 			<LinearMapping template="Rigid,Vec3d" name="linearMap1"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="0 - None"  input="@../"  output="@./" />
 			<StiffSpringForceField template="Vec3d" name="stiffSpringFF1"  spring="0 2 100 0 0
@@ -32,10 +32,10 @@
 	<Node 	 name="Rigid"  >
 		<EulerImplicitSolver name="eulerImplicitSolver2" />
 		<CGLinearSolver template="GraphScattered" name="cGLinearSolver2"  iterations="200"  tolerance="1e-15"  threshold="1e-15" />
-		<MechanicalObject template="Rigid" name="parent"  useMask="0"  position="1 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  showObject="1" />
+		<MechanicalObject template="Rigid" name="parent"    position="1 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  showObject="1" />
 		<Node 	 name="collision"  >
 			<MeshTopology name="mesh"  position="@../../mesh.position"  edges="@../../mesh.edges"  triangles="@../../mesh.triangles"  quads="@../../mesh.quads"  tetrahedra="@../../mesh.tetras"  hexahedra="@../../mesh.hexas" />
-			<MechanicalObject template="Vec3d" name="pts"  useMask="0"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
+			<MechanicalObject template="Vec3d" name="pts"    position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
 			<UniformMass template="Vec3d" name="uniformMass2"  totalmass="3" />
 			<RigidMapping template="Rigid,Vec3d" name="rigidMap1"  input="@../"  output="@./" />
 			<StiffSpringForceField template="Vec3d" name="stiffSpringFF2"  spring="1 2 100 0 0

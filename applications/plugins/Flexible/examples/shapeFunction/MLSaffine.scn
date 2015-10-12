@@ -64,7 +64,7 @@
 
 	    <Node 	name="collision"   >
 		<Mesh name="mesh" src="@../surf" /> 
-		<MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
+		<MechanicalObject  template="Vec3d" name="pts"    />
 
 	    	<UniformMass totalMass="250" />
 

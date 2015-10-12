@@ -53,7 +53,7 @@ def createScene(root):
                 
     massNode = rigidNode.createChild('mass')
     massNode.createObject('TransferFunction',name="densityTF", template="ImageUC,ImageD", inputImage="@../../rasterizer.image", param="0 0 1 0.005")
-    massNode.createObject('MechanicalObject', position="@../../merged.position", useMask="0")
+    massNode.createObject('MechanicalObject', position="@../../merged.position")
 #    massNode.createObject('ImageDensityMass', template="Vec3d", densityImage="@densityTF.outputImage", transform="@../../rasterizer.transform", lumping="0",  printMassMatrix="true" )
     massNode.createObject('UniformMass', totalMass="20" )
     massNode.createObject('LinearMultiMapping', template="Rigid,Affine,Vec3d", input1="@..", input2="@../../Affine", output="@.", printLog="0", assemble="0")
