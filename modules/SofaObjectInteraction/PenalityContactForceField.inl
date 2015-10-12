@@ -92,13 +92,14 @@ void PenalityContactForceField<DataTypes>::addForce(const sofa::core::Mechanical
     const VecCoord& x2 =  data_x2.getValue();
     //const VecDeriv& v2 =  data_v2.getValue();
 
+    helper::vector<Contact>& cc = *contacts.beginEdit();
 
     f1.resize(x1.size());
     f2.resize(x2.size());
 
-    for (unsigned int i=0; i<contacts.getValue().size(); i++)
+    for (unsigned int i=0; i<cc.size(); i++)
     {
-        Contact& c = (*contacts.beginEdit())[i];
+        Contact& c = cc[i];
         Coord u = x2[c.m2]-x1[c.m1];
         c.pen = c.dist - u*c.norm;
         if (c.pen > 0)
@@ -107,9 +108,7 @@ void PenalityContactForceField<DataTypes>::addForce(const sofa::core::Mechanical
             Deriv force = -c.norm*fN;
 
             f1[c.m1]+=force;
-            this->mstate1->forceMask.insertEntry(c.m1);
             f2[c.m2]-=force;
-            this->mstate2->forceMask.insertEntry(c.m2);
         }
     }
     contacts.endEdit();
@@ -127,12 +126,13 @@ void PenalityContactForceField<DataTypes>::addDForce(const sofa::core::Mechanica
     const VecDeriv&  dx1 =  data_dx1.getValue();
     const VecDeriv&  dx2 =  data_dx2.getValue();
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    const helper::vector<Contact>& cc = contacts.getValue();
 
     df1.resize(dx1.size());
     df2.resize(dx2.size());
-    for (unsigned int i=0; i<contacts.getValue().size(); i++)
+    for (unsigned int i=0; i<cc.size(); i++)
     {
-        const Contact& c = contacts.getValue()[i];
+        const Contact& c = cc[i];
         if (c.pen > 0) // + dpen > 0)
         {
             Coord du = dx2[c.m2]-dx1[c.m1];
@@ -163,13 +163,15 @@ void PenalityContactForceField<DataTypes>::draw(const core::visual::VisualParams
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+    const helper::vector<Contact>& cc = contacts.getValue();
+
     //glDisable(GL_LIGHTING); // do not use gl under draw component, it cause crash when using other render !
 
     std::vector< defaulttype::Vector3 > points[4];
 
-    for (unsigned int i=0; i<contacts.getValue().size(); i++)
+    for (unsigned int i=0; i<cc.size(); i++)
     {
-        const Contact& c = contacts.getValue()[i];
+        const Contact& c = cc[i];
         Real d = c.dist - (p2[c.m2]-p1[c.m1])*c.norm;
         if (c.age > 10) //c.spen > c.mu_s * c.ks * 0.99)
             if (d > 0)
@@ -202,9 +204,9 @@ void PenalityContactForceField<DataTypes>::draw(const core::visual::VisualParams
     std::vector< defaulttype::Vector3 > pointsN;
     if (vparams->displayFlags().getShowNormals())
     {
-        for (unsigned int i=0; i<contacts.getValue().size(); i++)
+        for (unsigned int i=0; i<cc.size(); i++)
         {
-            const Contact& c = contacts.getValue()[i];
+            const Contact& c = cc[i];
             Coord p = p1[c.m1] - c.norm;
             pointsN.push_back(p1[c.m1]);
             pointsN.push_back(p);
@@ -270,7 +272,16 @@ void PenalityContactForceField<DataTypes>::grabPoint(
 template<class DataTypes>
 void PenalityContactForceField<DataTypes>::updateForceMask()
 {
-    // already done in addForce implementation
+    const helper::vector<Contact>& cc = contacts.getValue();
+    for (unsigned int i=0; i<cc.size(); i++)
+    {
+        const Contact& c = cc[i];
+        if (c.pen > 0)
+        {
+            this->mstate1->forceMask.insertEntry(c.m1);
+            this->mstate2->forceMask.insertEntry(c.m2);
+        }
+    }
 }
 
 } // namespace interactionforcefield
