@@ -107,9 +107,9 @@ protected:
             {
                 complianceValues[i][0] = 1.0/this->stiffness.getValue();
 
-//                // only violated penetrations will propagate forces
-//                this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
-//                if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
+                // only violated penetrations will propagate forces
+                this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
+                if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
             }
             else
             {

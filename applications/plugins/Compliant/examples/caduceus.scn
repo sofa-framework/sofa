@@ -45,8 +45,8 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <Triangle  selfCollision="1" />
-            <Line    selfCollision="1" />
-            <Point  selfCollision="1" />
+            <Line    selfCollision="0" />
+            <Point  selfCollision="0" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
 

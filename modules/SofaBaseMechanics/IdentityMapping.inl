@@ -201,7 +201,7 @@ const typename IdentityMapping<TIn, TOut>::js_type* IdentityMapping<TIn, TOut>::
 
         for( size_t i=0 ; i<this->maskTo->size() ; ++i)
         {
-            if( this->maskTo->getEntry(i) )
+            if( !this->maskTo->getEntry(i) )
             {
                 // do not forget to add empty rows (mandatory for Eigen)
                 for(unsigned r = 0; r < N; ++r) {
