@@ -76,7 +76,7 @@ public:
     Data<VecCoord> f_X;
     Data<VecDeriv> f_V;
 
-    virtual void resize(int vsize) { f_X.beginEdit()->resize(vsize); f_X.endEdit(); f_V.beginEdit()->resize(vsize); f_V.endEdit(); }
+    virtual void resize(size_t vsize) { f_X.beginEdit()->resize(vsize); f_X.endEdit(); f_V.beginEdit()->resize(vsize); f_V.endEdit(); }
 
     VecCoord* getX()  { return f_X.beginEdit(); }
     VecDeriv* getV()  { return f_V.beginEdit(); }
@@ -84,9 +84,9 @@ public:
     const VecCoord* getX()  const { return &f_X.getValue();  }
     const VecDeriv* getV()  const { return &f_V.getValue();  }
 
-    int getSize() const
+    size_t getSize() const
     {
-        return (int)f_X.getValue().size();
+        return f_X.getValue().size();
     }
 
     Data< VecCoord >* write(core::VecCoordId v)
