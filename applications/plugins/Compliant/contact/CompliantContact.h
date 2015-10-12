@@ -123,12 +123,12 @@ protected:
         this->copyNormals( *editOnly(contact_map->normal) );
         this->copyPenetrations( *editOnly(*contact_dofs->write(core::VecCoordId::position())) );
 
-//        // every contact points must propagate constraint forces
-//        for(unsigned i = 0; i < size; ++i)
-//        {
-//            this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
-//            if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
-//        }
+        // every contact points must propagate constraint forces
+        for(unsigned i = 0; i < size; ++i)
+        {
+            this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
+            if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
+        }
 
         contact_map->init();
 
