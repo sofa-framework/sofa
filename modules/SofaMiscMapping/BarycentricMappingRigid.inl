@@ -155,11 +155,16 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::init(const typename O
 }
 
 
+
+template<class In, class Out>
+void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::resize( core::State<Out>* toModel )
+{
+    toModel->resize(map.getValue().size());
+}
+
 template<class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    this->toModel->resize(map.getValue().size());
-
     actualTetraPosition=in;
     //get number of point being mapped
     const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
@@ -223,7 +228,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::
 template<class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    out.resize( this->toModel->getSize() );
+    out.resize( map.getValue().size() );
 
     const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
     const sofa::helper::vector<MappingData >& map = this->map.getValue();

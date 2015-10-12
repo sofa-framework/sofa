@@ -74,6 +74,12 @@ bool BaryMapperTest::test_inside(SReal alpha,SReal beta){
     //makeTri()
     component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::PointSetTopologyContainer*)0x0/*model->getMeshTopology(), (topology::PointSetTopologyContainer*)NULL, &model->getMechanicalState()->forceMask, &mstate->forceMask*/);
 
+    helper::StateMask maskFrom, maskTo;
+    maskFrom.assign( triPts.size(), true );
+
+    mapper->maskFrom = &maskFrom;
+    mapper->maskTo = &maskTo;
+
     Vector3 the_point = ((SReal)(1.0) - alpha - beta) * triPts[0] + alpha * triPts[1] + beta * triPts[2];
     Vector3 the_point_trans = the_point + (SReal)(10.0) * norm;
     mapper->createPointInTriangle( the_point_trans, 0, &triPts );
@@ -92,6 +98,12 @@ bool BaryMapperTest::test_outside(int index){
     MeshTopology * topo = initMesh(father);
     //makeTri()
     component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::PointSetTopologyContainer*)0x0/*model->getMeshTopology(), (topology::PointSetTopologyContainer*)NULL, &model->getMechanicalState()->forceMask, &mstate->forceMask*/);
+
+    helper::StateMask maskFrom, maskTo;
+    maskFrom.assign( triPts.size(), true );
+
+    mapper->maskFrom = &maskFrom;
+    mapper->maskTo = &maskTo;
 
     Vector3 the_point = (SReal)(2.0) * triPts[index] + (SReal)(10.0) * norm;
 

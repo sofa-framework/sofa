@@ -1106,7 +1106,6 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
         this->addSlave(mapper.get());
         mapper->maskFrom = this->maskFrom;
         mapper->maskTo = this->maskTo;
-        mapper->toModel = this->toModel;
     }
 }
 
@@ -1165,15 +1164,23 @@ void BarycentricMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mpara
 #endif
         mapper != NULL)
     {
+        mapper->resize( this->toModel );
         mapper->apply(*out.beginWriteOnly(), in.getValue());
         out.endEdit();
     }
 }
 
+
+template <class In, class Out>
+void BarycentricMapperMeshTopology<In,Out>::resize( core::State<Out>* toModel )
+{
+    toModel->resize(map1d.size() +map2d.size() +map3d.size());
+}
+
 template <class In, class Out>
 void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    this->toModel->resize(map1d.size() +map2d.size() +map3d.size());
+    out.resize( map1d.size() +map2d.size() +map3d.size() );
 
     const sofa::core::topology::BaseMeshTopology::SeqLines& lines = this->fromTopology->getLines();
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
@@ -1274,10 +1281,18 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
     }
 }
 
+
+template <class In, class Out>
+void BarycentricMapperRegularGridTopology<In,Out>::resize( core::State<Out>* toModel )
+{
+    toModel->resize(map.size());
+}
+
+
 template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    this->toModel->resize(map.size());
+    out.resize( map.size() );
 
     for ( unsigned int i=0; i<map.size(); i++ )
     {
@@ -1311,9 +1326,15 @@ void BarycentricMapperRegularGridTopology<In,Out>::apply ( typename Out::VecCoor
 }
 
 template <class In, class Out>
+void BarycentricMapperSparseGridTopology<In,Out>::resize( core::State<Out>* toModel )
+{
+    toModel->resize(map.size());
+}
+
+template <class In, class Out>
 void BarycentricMapperSparseGridTopology<In,Out>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    this->toModel->resize(map.size());
+    out.resize( map.size() );
 
     typedef sofa::helper::vector< CubeData > CubeDataVector;
     typedef typename CubeDataVector::const_iterator CubeDataVectorIt;
@@ -1358,9 +1379,15 @@ void BarycentricMapperSparseGridTopology<In,Out>::apply ( typename Out::VecCoord
 }
 
 template <class In, class Out>
+void BarycentricMapperEdgeSetTopology<In,Out>::resize( core::State<Out>* toModel )
+{
+    toModel->resize(map.getValue().size());
+}
+
+template <class In, class Out>
 void BarycentricMapperEdgeSetTopology<In,Out>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    this->toModel->resize(map.getValue().size());
+    out.resize( map.getValue().size() );
 
     const sofa::helper::vector<topology::Edge>& edges = this->fromTopology->getEdges();
     // 2D elements
@@ -1377,9 +1404,15 @@ void BarycentricMapperEdgeSetTopology<In,Out>::apply ( typename Out::VecCoord& o
 }
 
 template <class In, class Out>
+void BarycentricMapperTriangleSetTopology<In,Out>::resize( core::State<Out>* toModel )
+{
+    toModel->resize(map.getValue().size());
+}
+
+template <class In, class Out>
 void BarycentricMapperTriangleSetTopology<In,Out>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    this->toModel->resize(map.getValue().size());
+    out.resize( map.getValue().size() );
 
     const sofa::helper::vector<topology::Triangle>& triangles = this->fromTopology->getTriangles();
     for ( unsigned int i=0; i<map.getValue().size(); i++ )
@@ -1395,9 +1428,15 @@ void BarycentricMapperTriangleSetTopology<In,Out>::apply ( typename Out::VecCoor
 }
 
 template <class In, class Out>
+void BarycentricMapperQuadSetTopology<In,Out>::resize( core::State<Out>* toModel )
+{
+    toModel->resize(map.getValue().size());
+}
+
+template <class In, class Out>
 void BarycentricMapperQuadSetTopology<In,Out>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    this->toModel->resize(map.getValue().size());
+    out.resize( map.getValue().size() );
 
     const sofa::helper::vector<topology::Quad>& quads = this->fromTopology->getQuads();
     for ( unsigned int i=0; i<map.getValue().size(); i++ )
@@ -1414,9 +1453,15 @@ void BarycentricMapperQuadSetTopology<In,Out>::apply ( typename Out::VecCoord& o
 }
 
 template <class In, class Out>
+void BarycentricMapperTetrahedronSetTopology<In,Out>::resize( core::State<Out>* toModel )
+{
+    toModel->resize(map.getValue().size());
+}
+
+template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopology<In,Out>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    this->toModel->resize(map.getValue().size());
+    out.resize( map.getValue().size() );
 
     const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
     for ( unsigned int i=0; i<map.getValue().size(); i++ )
@@ -1436,9 +1481,15 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::apply ( typename Out::VecC
 }
 
 template <class In, class Out>
+void BarycentricMapperHexahedronSetTopology<In,Out>::resize( core::State<Out>* toModel )
+{
+    toModel->resize(map.getValue().size());
+}
+
+template <class In, class Out>
 void BarycentricMapperHexahedronSetTopology<In,Out>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    this->toModel->resize(map.getValue().size());
+    out.resize( map.getValue().size() );
 
     const sofa::helper::vector<topology::Hexahedron>& cubes = this->fromTopology->getHexahedra();
     for ( unsigned int i=0; i<map.getValue().size(); i++ )
@@ -1502,7 +1553,7 @@ void BarycentricMapping<TIn, TOut>::applyJ (const core::MechanicalParams * /*mpa
 template <class In, class Out>
 void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    out.resize( this->toModel->getSize() );
+    out.resize( map1d.size() +map2d.size() +map3d.size() );
 
     const sofa::core::topology::BaseMeshTopology::SeqLines& lines = this->fromTopology->getLines();
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
@@ -1617,7 +1668,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
 template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    out.resize( this->toModel->getSize() );
+    out.resize( map.size() );
 
     for( size_t index=0 ; index<this->maskTo->size() ; ++index)
     {
@@ -1655,7 +1706,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJ ( typename Out::VecDer
 template <class In, class Out>
 void BarycentricMapperSparseGridTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    out.resize( this->toModel->getSize() );
+    out.resize( map.size() );
 
     for( size_t index=0 ; index<this->maskTo->size() ; ++index)
     {
@@ -1694,7 +1745,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJ ( typename Out::VecDeri
 template <class In, class Out>
 void BarycentricMapperEdgeSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    out.resize( this->toModel->getSize() );
+    out.resize( map.getValue().size() );
 
     const sofa::helper::vector<topology::Edge>& edges = this->fromTopology->getEdges();
 
@@ -1713,7 +1764,7 @@ void BarycentricMapperEdgeSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& 
 template <class In, class Out>
 void BarycentricMapperTriangleSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    out.resize( this->toModel->getSize() );
+    out.resize( map.getValue().size() );
 
     const sofa::helper::vector<topology::Triangle>& triangles = this->fromTopology->getTriangles();
 
@@ -1734,7 +1785,7 @@ void BarycentricMapperTriangleSetTopology<In,Out>::applyJ ( typename Out::VecDer
 template <class In, class Out>
 void BarycentricMapperQuadSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    out.resize( this->toModel->getSize() );
+    out.resize( map.getValue().size() );
 
     const sofa::helper::vector<topology::Quad>& quads = this->fromTopology->getQuads();
 
@@ -1756,7 +1807,7 @@ void BarycentricMapperQuadSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& 
 template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    out.resize( this->toModel->getSize() );
+    out.resize( map.getValue().size() );
 
     const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
 
@@ -1780,7 +1831,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJ ( typename Out::Vec
 template <class In, class Out>
 void BarycentricMapperHexahedronSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    out.resize( this->toModel->getSize() );
+    out.resize( map.getValue().size() );
 
     const sofa::helper::vector<topology::Hexahedron>& cubes = this->fromTopology->getHexahedra();
 

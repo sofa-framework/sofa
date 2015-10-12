@@ -75,6 +75,7 @@ public:
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void resize( core::State<Out>* toModel );
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<In, Out> &b )
     {
@@ -134,6 +135,7 @@ public:
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void resize( core::State<Out>* toModel );
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperSparseGridTopology<In, Out> &b )
     {
@@ -214,6 +216,7 @@ public:
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void resize( core::State<Out>* toModel );
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<In, Out> &b )
     {
@@ -241,7 +244,7 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename In::VecCoord VecCoord;
 
-    BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> > internalMapper;
+    BarycentricMapperMeshTopology< In, Out > internalMapper;
 
 public:
     BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology)
@@ -281,6 +284,10 @@ public:
 
     void draw(const core::visual::VisualParams* vp,const typename Out::VecCoord& out, const typename In::VecCoord& in) {
         internalMapper.draw(vp,out,in);
+    }
+
+    void resize( core::State<Out>* toModel ) {
+        internalMapper.resize(toModel);
     }
 };
 

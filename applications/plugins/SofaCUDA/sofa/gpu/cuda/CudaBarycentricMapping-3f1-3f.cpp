@@ -381,6 +381,13 @@ void BarycentricMapperMeshTopology<CudaVec3f1Types,CudaVec3fTypes>::draw (const 
 }
 
 template<>
+void BarycentricMapperMeshTopology<CudaVec3f1Types,CudaVec3fTypes>::resize( core::State<Out>* /*toModel*/ )
+{
+//    toModel->resize(size);
+}
+
+
+template<>
 void BarycentricMapperMeshTopology<CudaVec3fTypes,CudaVec3f1Types>::apply( Out::VecCoord& out, const In::VecCoord& in )
 {
     out.fastResize(size);
@@ -412,7 +419,11 @@ void BarycentricMapperMeshTopology<CudaVec3fTypes,CudaVec3f1Types>::draw (const 
 {
 }
 
-
+template<>
+void BarycentricMapperMeshTopology<CudaVec3fTypes,CudaVec3f1Types>::resize( core::State<Out>* /*toModel*/ )
+{
+//    toModel->resize(size);
+}
 
 
 ////////////////////////////////////////////////////////////////////////////
