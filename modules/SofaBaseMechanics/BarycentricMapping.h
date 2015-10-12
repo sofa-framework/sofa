@@ -218,7 +218,7 @@ public:
 
     ForceMask *maskFrom;
     ForceMask *maskTo;
-    core::State<Out>* toModel;
+//    core::State<Out>* toModel;
 
 protected:
     virtual ~TopologyBarycentricMapper() {}
@@ -252,6 +252,8 @@ public:
     {
         // mask is already filled in the mapper's applyJT;
     }
+
+    virtual void resize( core::State<Out>* toModel ) = 0;
 
 protected:
     TopologyBarycentricMapper(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology = NULL)
@@ -339,6 +341,7 @@ public:
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
     const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void resize( core::State<Out>* toModel );
 
 	sofa::helper::vector< MappingData3D > const* getMap3d() const { return &map3d; }
 
@@ -462,6 +465,7 @@ public:
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
     const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void resize( core::State<Out>* toModel );
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<In, Out> &b )
     {
@@ -539,6 +543,7 @@ public:
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
     const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void resize( core::State<Out>* toModel );
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperSparseGridTopology<In, Out> &b )
     {
@@ -611,6 +616,7 @@ public:
     virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
 
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void resize( core::State<Out>* toModel );
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperEdgeSetTopology<In, Out> &b )
     {
@@ -699,6 +705,7 @@ public:
     virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
 
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void resize( core::State<Out>* toModel );
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperTriangleSetTopology<In, Out> &b )
     {
@@ -787,6 +794,7 @@ public:
     virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
 
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void resize( core::State<Out>* toModel );
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperQuadSetTopology<In, Out> &b )
     {
@@ -877,6 +885,7 @@ public:
     virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
 
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void resize( core::State<Out>* toModel );
 
 
 };
@@ -948,6 +957,7 @@ public:
     virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
 
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void resize( core::State<Out>* toModel );
 
     //-- test mapping partiel
     void applyOnePoint( const unsigned int& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in);
