@@ -17,7 +17,7 @@
 		<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" />
 		<CGLinearSolver template="GraphScattered" iterations="150"  threshold="1e-008" />
 
-		<MechanicalObject template="FrameAffine" name="DOFs" useMask="0" rest_position="0 0 -0.95 [1 0 0, 0 1 0, 0 0 1] 0 0 0.95 [1 0 0, 0 1 0, 0 0 1]" 
+		<MechanicalObject template="FrameAffine" name="DOFs"  rest_position="0 0 -0.95 [1 0 0, 0 1 0, 0 0 1] 0 0 0.95 [1 0 0, 0 1 0, 0 0 1]" 
 												position="0 0 -0.95 [1 0 0, 0 1 0, 0 0 1] 0 0 2 [1 0 0, 0 1 0, 0 0 1]"/> 
 		<FrameDiagonalMass template="AffineFrame3x12dMass"  showAxisSizeFactor="0.2"/>
 
@@ -39,7 +39,7 @@
 				/>
 <!--
 		<Node name="Physics">
-			<MechanicalObject template="DeformationGradient332" useMask="0" name="PointSet" showObject="1" showObjectScale="0.1" 
+			<MechanicalObject template="DeformationGradient332"  name="PointSet" showObject="1" showObjectScale="0.1" 
 position="0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
 			<FrameBlendingMapping template="FrameAffine,DeformationGradient332" name="SMapping"  input="@../DOFs"  output="@PointSet" 
 				targetFrameNumber="2"

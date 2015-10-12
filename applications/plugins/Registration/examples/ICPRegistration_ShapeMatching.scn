@@ -14,7 +14,7 @@
 	<Node name="source">
 			<MeshObjLoader name="meshLoader" filename="data/femur_m_res.obj"/>
 			<Mesh src="@meshLoader"/>
-			<MechanicalObject  name="PointSet"  position="@meshLoader.position" useMask="0" />
+			<MechanicalObject  name="PointSet"  position="@meshLoader.position"  />
 			<UniformMass mass="10"/>
 			<RotationFinder neighborhoodLevel="2" axisToFlip="0"/>
             <ShapeMatchingForceField name="ShapeMatching" stiffness="10" />

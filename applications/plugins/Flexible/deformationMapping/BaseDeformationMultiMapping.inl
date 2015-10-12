@@ -148,7 +148,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
     for(unsigned int i=0;i<sf.size();i++)
     {
         if(this->f_shapeFunction_name.isSet()) {if(this->f_shapeFunction_name.getValue().compare(sf[i]->getName()) == 0) _shapeFunction=sf[i];}
-        else if((int)sf[i]->f_position.getValue().size() == this->fromModel1->getSize()+this->fromModel2->getSize()) _shapeFunction=sf[i];
+        else if(sf[i]->f_position.getValue().size() == this->fromModel1->getSize()+this->fromModel2->getSize()) _shapeFunction=sf[i];
     }
 
     if (_shapeFunction)

@@ -8,7 +8,7 @@
         <EulerImplicitSolver name="cg_odesolver" printLog="0" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <LMConstraintSolver name="default0" listening="1" constraintVel="1" constraintPos="1" numIterations="27" maxError="1e-7"/>
-        <MechanicalObject template="Vec3d" name="dof" useMask="1" translation="0 2 0" rotation="30 20 15" restScale="1" />
+        <MechanicalObject template="Vec3d" name="dof"  translation="0 2 0" rotation="30 20 15" restScale="1" />
         <UniformMass template="Vec3d" name="default2" mass="0.25" />
         <RegularGridTopology name="default3" n="5 5 5" min="-3.5 -3.5 -3.5" max="3.5 3.5 3.5" p0="-3.5 -3.5 -3.5" />
         <TetrahedronFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="25" updateStiffnessMatrix="0" computeGlobalMatrix="0" />
@@ -19,7 +19,7 @@
         <Node name="Surf" gravity="0 -9.81 0">
             <MeshObjLoader name="meshLoader" filename="mesh/smCube125.obj" />
             <MeshTopology src="@meshLoader" />
-            <MechanicalObject template="Vec3d" name="default6" useMask="1" translation="@../dof.translation" rotation="@../dof.rotation" scale3d="@../dof.scale3d" restScale="1" />
+            <MechanicalObject template="Vec3d" name="default6"  translation="@../dof.translation" rotation="@../dof.rotation" scale3d="@../dof.scale3d" restScale="1" />
             <TTriangleModel template="Vec3d" name="default1" contactFriction="0.6" />
             <LineModel name="default2" contactFriction="@[-1].contactFriction" />
             <PointModel name="default3" contactFriction="@[-1].contactFriction" />
@@ -29,7 +29,7 @@
     <Node name="Floor" gravity="0 -9.81 0">
         <MeshObjLoader name="meshLoader" filename="mesh/floor3.obj" />
         <MeshTopology src="@meshLoader" />
-        <MechanicalObject template="Vec3d" name="default12" useMask="1" translation="0 -10 0" scale3d="1.75 1.75 1.75" restScale="1" />
+        <MechanicalObject template="Vec3d" name="default12"  translation="0 -10 0" scale3d="1.75 1.75 1.75" restScale="1" />
         <TTriangleModel template="Vec3d" name="FloorTriangle" moving="0" simulated="0" contactFriction="0.6" />
         <LineModel name="FloorLine" moving="0" simulated="0" contactFriction="@[-1].contactFriction" />
         <PointModel name="FloorLine" moving="0" simulated="0" contactFriction="@[-1].contactFriction" />

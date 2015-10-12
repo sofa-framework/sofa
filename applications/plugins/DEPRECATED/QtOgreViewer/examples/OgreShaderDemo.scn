@@ -11,7 +11,7 @@
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-09"  threshold="1e-09" />
 		<MeshLoader name="meshLoader"  filename="mesh/liver.msh" />
 		<TetrahedronSetTopologyContainer name="topo" />
-		<MechanicalObject template="Vec3d" name="dofs"  useMask="1"  translation="0 9 0"  restScale="1" />
+		<MechanicalObject template="Vec3d" name="dofs"    translation="0 9 0"  restScale="1" />
 		<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
 		<DiagonalMass template="Vec3d" name="computed using mass density"  massDensity="1" />
 		<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="100"  computeGlobalMatrix="0" />
@@ -21,7 +21,7 @@
 		</Node>
 		<Node 	name="Surf" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<SphereModel name="CollisionModel"  fileSphere="mesh/liver.sph" />
-			<MechanicalObject template="Vec3d" name="default12"  useMask="1"  translation="@../dofs.translation"  restScale="1" />
+			<MechanicalObject template="Vec3d" name="default12"    translation="@../dofs.translation"  restScale="1" />
 			<BarycentricMapping template="Vec3d,Vec3d" name="sphere mapping"  hexamap="0 " />
 		</Node>
 	</Node>
@@ -30,7 +30,7 @@
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-09"  threshold="1e-09" />
 		<MeshLoader name="meshLoader"  filename="mesh/liver.msh" />
 		<TetrahedronSetTopologyContainer name="topo" />
-		<MechanicalObject template="Vec3d" name="dofs"  useMask="1"  translation="8 9 0"  restScale="1" />
+		<MechanicalObject template="Vec3d" name="dofs"    translation="8 9 0"  restScale="1" />
 		<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
 		<DiagonalMass template="Vec3d" name="computed using mass density"  massDensity="1" />
 		<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="100"  computeGlobalMatrix="0" />
@@ -40,7 +40,7 @@
 		</Node>
 		<Node 	name="Surf" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<SphereModel name="CollisionModel"  fileSphere="mesh/liver.sph" />
-			<MechanicalObject template="Vec3d" name="default12"  useMask="1"  translation="@../dofs.translation"  restScale="1" />
+			<MechanicalObject template="Vec3d" name="default12"    translation="@../dofs.translation"  restScale="1" />
 			<BarycentricMapping template="Vec3d,Vec3d" name="sphere mapping"  hexamap="0 " />
 		</Node>
 	</Node>
@@ -49,7 +49,7 @@
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-09"  threshold="1e-09" />
 		<MeshLoader name="meshLoader"  filename="mesh/liver.msh" />
 		<TetrahedronSetTopologyContainer name="topo" />
-		<MechanicalObject template="Vec3d" name="dofs"  useMask="1"  translation="-8 9 0"  restScale="1" />
+		<MechanicalObject template="Vec3d" name="dofs"    translation="-8 9 0"  restScale="1" />
 		<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
 		<DiagonalMass template="Vec3d" name="computed using mass density"  massDensity="1" />
 		<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="100"  computeGlobalMatrix="0" />
@@ -61,14 +61,14 @@
 		</Node>
 		<Node 	name="Surf" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<SphereModel name="CollisionModel"  fileSphere="mesh/liver.sph" />
-			<MechanicalObject template="Vec3d" name="default12"  useMask="1"  translation="@../dofs.translation"  restScale="1" />
+			<MechanicalObject template="Vec3d" name="default12"    translation="@../dofs.translation"  restScale="1" />
 			<BarycentricMapping template="Vec3d,Vec3d" name="sphere mapping"  hexamap="0 " />
 		</Node>
 	</Node>
 	<Node 	name="OffsetMapping" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 		<MeshLoader name="default6"  filename="mesh/canapVM.obj" />
 		<MeshTopology name="default7" />
-		<MechanicalObject template="Vec3d" name="default8"  useMask="1"  translation="0 0 0"  rotation="0 0 0"  scale3d="1 1 1"  restScale="1" />
+		<MechanicalObject template="Vec3d" name="default8"    translation="0 0 0"  rotation="0 0 0"  scale3d="1 1 1"  restScale="1" />
 		<TTriangleModel template="Vec3d" name="default9"  moving="0"  simulated="0"  contactStiffness="10000"  contactFriction="0.01" />
 		<LineModel name="default10"  moving="0"  simulated="0"  contactStiffness="10000"  contactFriction="0.01" />
 		<PointModel name="default11"  moving="0"  simulated="0"  contactStiffness="10000"  contactFriction="0.01" />

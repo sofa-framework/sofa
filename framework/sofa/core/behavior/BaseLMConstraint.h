@@ -214,12 +214,6 @@ public:
     /// get Mechanical State 2 where the constraint will b*e solved
     virtual BaseMechanicalState* getSimulatedMechModel2()const =0;
 
-    /// If the constraint is applied only on a subset of particles.
-    /// That way, we can optimize the time spent traversing the mappings
-    /// Deactivated by default. The constraints using only a subset of particles should activate the mask,
-    /// and during projectResponse(), insert the indices of the particles modified
-//    virtual bool useMask() const {return false;}
-
     /// Useful when the Constraint is applied only on a subset of dofs.
     /// It is automatically called by ???
     ///
