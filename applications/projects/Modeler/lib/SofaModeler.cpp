@@ -1074,7 +1074,7 @@ void SofaModeler::openTutorial()
     GraphModeler *graphTuto=tuto->getGraph();
     graphTuto->setSofaLibrary(library);
     graphTuto->setPreset(preset);
-    connect(graphTuto, SIGNAL(currentChanged(QTreeWidgetItem *)), this, SLOT(changeInformation(QTreeWidgetItem *)));
+    connect(graphTuto, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(changeInformation(QTreeWidgetItem *,QTreeWidgetItem*)));
 
     tuto->show();
 }
@@ -1218,10 +1218,10 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
 #endif
 
 
-    connect(p, SIGNAL(processExited()), this, SLOT(sofaExited()));
+    connect(p, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(sofaExited(int, QProcess::ExitStatus)));
     QDir dir(QString(sofa::helper::system::SetDirectory::GetParentDir(sceneFilename.c_str()).c_str()));
-    connect(p, SIGNAL( readyReadStdout () ), this , SLOT ( redirectStdout() ) );
-    connect(p, SIGNAL( readyReadStderr () ), this , SLOT ( redirectStderr() ) );
+    connect(p, SIGNAL( readyReadStandardOutput () ), this , SLOT ( redirectStdout() ) );
+    connect(p, SIGNAL( readyReadStandardError () ), this , SLOT ( redirectStderr() ) );
 
  #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     p->start(QString(filename.c_str()), argv);
@@ -1280,7 +1280,7 @@ void SofaModeler::redirectStderr()
     }
 }
 
-void SofaModeler::sofaExited()
+void SofaModeler::sofaExited(int exitCode, QProcess::ExitStatus existStatus)
 {
     QProcess *p = ((QProcess*) sender());
     std::string programName;
@@ -1291,15 +1291,15 @@ void SofaModeler::sofaExited()
     programName = p->program().toStdString();
 #endif
     removeTemporaryFiles(programName);
-    if (p->exitCode() == QProcess::NormalExit ) return;
+    if (existStatus == QProcess::NormalExit ) return;
     typedef std::multimap< const QWidget*, QProcess* >::iterator multimapIterator;
     for (multimapIterator it=mapSofa.begin(); it!=mapSofa.end(); ++it)
     {
         if (it->second == p)
         {
             const QString caption("Problem");
-            const QString warning("Error running Sofa");
-            QMessageBox::critical( this, caption,warning, QMessageBox::Ok | QMessageBox::Escape, QMessageBox::NoButton );
+            const QString warning("Error running Sofa, error code ");
+            QMessageBox::critical( this, caption,warning + QString(exitCode), QMessageBox::Ok | QMessageBox::Escape, QMessageBox::NoButton );
             return;
         }
     }

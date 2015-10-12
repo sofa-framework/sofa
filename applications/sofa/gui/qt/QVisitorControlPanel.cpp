@@ -89,8 +89,8 @@ QVisitorControlPanel::QVisitorControlPanel(QWidget* parent): QWidget(parent)
     spinRange->setMaximumWidth(50);
 
     connect(activation, SIGNAL(toggled(bool)), this, SLOT(activateTraceStateVectors(bool)));
-    connect(spinIndex, SIGNAL(lostFocus()), this, SLOT(changeFirstIndex()));
-    connect(spinRange, SIGNAL(lostFocus()), this, SLOT(changeRange()));
+    connect(spinIndex, SIGNAL(editingFinished()), this, SLOT(changeFirstIndex()));
+    connect(spinRange, SIGNAL(editingFinished()), this, SLOT(changeRange()));
 
 
     hboxParameters->addWidget(activation);

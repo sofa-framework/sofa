@@ -160,7 +160,7 @@ public slots:
     /// Launch the current simulation into Sofa
     void runInSofa();
     void runInSofa(const std::string &sceneFilename, Node *groot);
-    void sofaExited();
+    void sofaExited(int exitCode, QProcess::ExitStatus existStatus);
     void removeTemporaryFiles(const std::string &filename);
 
     /// Change of simulation by changing the current opened tabulation

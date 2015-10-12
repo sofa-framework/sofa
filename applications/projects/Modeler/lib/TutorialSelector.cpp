@@ -45,7 +45,7 @@ namespace qt
 
 TutorialSelector::TutorialSelector(QWidget* parent):QTreeWidget(parent)
 {
-    connect (this, SIGNAL(doubleClicked( QTreeWidgetItem *)),
+    connect (this, SIGNAL(itemDoubleClicked( QTreeWidgetItem *, int)),
             this, SLOT( changeRequested( QTreeWidgetItem *)));
 
     this->header()->hide();
@@ -121,12 +121,12 @@ void TutorialSelector::openNode(TiXmlNode *node, QTreeWidgetItem *parent, bool i
     {
         if (!isRoot)
         {
-            QTreeWidgetItem* last = new QTreeWidgetItem();
-            last->setText(0, QString(nameOfNode.c_str()));
+            item = new QTreeWidgetItem();
+            item->setText(0, QString(nameOfNode.c_str()));
 
             if (!parent)
             {
-                this->addTopLevelItem(last);
+                this->addTopLevelItem(item);
                 item->setExpanded(true);
             }
             else
