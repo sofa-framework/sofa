@@ -57,7 +57,7 @@ namespace helper
  *              updateForceMask() must insert only active parent dofs in the parent mask (or should add nothing if parents have already been added in ApplyJT)
  *
  */
-class StateMask
+class SOFA_HELPER_API StateMask
 {
 
 public:
