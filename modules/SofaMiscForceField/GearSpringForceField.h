@@ -229,8 +229,6 @@ protected:
 
     virtual ~GearSpringForceField();
 
-    virtual void updateForceMask();
-
 public:
 
     core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
@@ -325,6 +323,8 @@ public:
 
     /// bool to allow the display of the extra torsion
     Data<Real> showFactorSize;
+
+    virtual void updateForceMask();
 
 };
 

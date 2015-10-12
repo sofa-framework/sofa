@@ -328,8 +328,6 @@ protected:
 
     virtual ~JointSpringForceField();
 
-    virtual void updateForceMask();
-
 public:
 
     core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
@@ -392,6 +390,7 @@ public:
     Data<bool> showExtraTorsion;
     Data<Real> showFactorSize;
 
+    virtual void updateForceMask();
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP)

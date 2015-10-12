@@ -101,9 +101,7 @@ protected:
 	Data<sofa::helper::vector<Contact> > contacts;
 	
 	// contacts from previous frame
-	sofa::helper::vector<Contact> prevContacts;
-
-    void updateForceMask();
+    sofa::helper::vector<Contact> prevContacts;
 
 
 public:
@@ -139,6 +137,8 @@ public:
 	virtual bool useMask() const {return true;}
 
 	void draw(const core::visual::VisualParams* vparams);
+
+    void updateForceMask();
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_REGISTRATIONCONTACTFORCEFIELD_CPP)

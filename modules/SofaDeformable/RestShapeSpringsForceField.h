@@ -121,6 +121,8 @@ public:
     const VecIndex& getIndices() const { return m_indices; }
     const VecIndex& getExtIndices() const { return (useRestMState ? m_ext_indices : m_indices); }
 
+    virtual void updateForceMask();
+
 protected :
 
     void recomputeIndices();
@@ -131,8 +133,6 @@ protected :
     helper::vector<CPos> m_pivots;
 
     SReal lastUpdatedStep;
-
-    virtual void updateForceMask();
 
 private :
 

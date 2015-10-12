@@ -217,8 +217,6 @@ public:
     /// @}
 
 
-protected:
-
     /// Useful when the forcefield is applied only on a subset of dofs.
     /// It is automatically called by addForce.
     ///

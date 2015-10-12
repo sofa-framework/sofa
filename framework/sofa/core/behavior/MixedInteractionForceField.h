@@ -207,10 +207,6 @@ public:
         return name;
     }
 
-protected:
-    SingleLink<MixedInteractionForceField<DataTypes1,DataTypes2>, MechanicalState<DataTypes1>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
-    SingleLink<MixedInteractionForceField<DataTypes1,DataTypes2>, MechanicalState<DataTypes2>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
-
 
     /// Useful when the forcefield is applied only on a subset of dofs.
     /// It is automatically called by addForce.
@@ -218,6 +214,11 @@ protected:
     /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
     /// Every Dofs are inserted by default. The forcefields using only a subset of dofs should only insert these dofs in the mask.
     virtual void updateForceMask();
+
+protected:
+    SingleLink<MixedInteractionForceField<DataTypes1,DataTypes2>, MechanicalState<DataTypes1>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
+    SingleLink<MixedInteractionForceField<DataTypes1,DataTypes2>, MechanicalState<DataTypes2>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
+
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONFORCEFIELD_CPP)

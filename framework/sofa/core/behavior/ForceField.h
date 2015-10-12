@@ -225,11 +225,6 @@ public:
         return name;
     }
 
-protected:
-    SingleLink<ForceField<DataTypes>,MechanicalState<DataTypes>,BaseLink::FLAG_STRONGLINK> mstate;
-
-
-
     /// Useful when the forcefield is applied only on a subset of dofs.
     /// It is automatically called by addForce.
     ///
@@ -237,6 +232,9 @@ protected:
     /// Every Dofs are inserted by default. The forcefields using only a subset of dofs should only insert these dofs in the mask.
     virtual void updateForceMask();
 
+
+protected:
+    SingleLink<ForceField<DataTypes>,MechanicalState<DataTypes>,BaseLink::FLAG_STRONGLINK> mstate;
 
 };
 
