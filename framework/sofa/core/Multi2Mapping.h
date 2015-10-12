@@ -206,6 +206,7 @@ public:
         helper::vector<const OutDataVecDeriv*> vecInForce;
         getConstVecOutDeriv(outForce, vecInForce);
         this->applyJT(mparams, vecOut1Force, vecOut2Force, vecInForce);
+        updateForceMask();
     }
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.

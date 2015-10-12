@@ -226,6 +226,8 @@ void MultiMapping<In,Out>::applyJT(const MechanicalParams* mparams, MultiVecDeri
     getConstVecOutDeriv(outForce, vecInForce);
 
     this->applyJT(mparams, vecOutForce, vecInForce);
+
+    updateForceMask();
 }// MultiMapping::applyJT
 
 template <class In, class Out>
