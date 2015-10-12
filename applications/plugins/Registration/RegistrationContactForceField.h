@@ -103,7 +103,7 @@ protected:
 	// contacts from previous frame
 	sofa::helper::vector<Contact> prevContacts;
 
-    void updateForceMask() { /* already done in addForce implementation */ }
+    void updateForceMask();
 
 
 public:

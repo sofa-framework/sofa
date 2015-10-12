@@ -190,8 +190,8 @@ void GearSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/
     Real f = ( - spring.angle1 * spring.Ratio - spring.angle2 ) * spring.softStiffnessRot; // force1 = - force2  at contact point
 
     // convert 1D force into torques
-    getVOrientation(f1[spring.m1]) += axis1*f; 					this->mstate1->forceMask.insertEntry(spring.m2);
-    getVOrientation(f2[spring.m2]) += axis2*f/spring.Ratio; 	this->mstate2->forceMask.insertEntry(spring.m1);
+    getVOrientation(f1[spring.m1]) += axis1*f;
+    getVOrientation(f2[spring.m2]) += axis2*f/spring.Ratio;
 
     // write output file
     if (outfile)
@@ -356,7 +356,15 @@ void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
 template<class DataTypes>
 void GearSpringForceField<DataTypes>::updateForceMask()
 {
-    // already done in addForceImplementation
+    const helper::vector<Spring>& springs = this->springs.getValue();
+    for (unsigned int i=0; i<springs.size(); i++)
+    {
+        const Spring& spring = springs[i];
+        this->mstate1->forceMask.insertEntry(spring.m1);
+        if( spring.m1!=spring.p1 ) this->mstate1->forceMask.insertEntry(spring.p1);
+        this->mstate2->forceMask.insertEntry(spring.m2);
+        if( spring.m2!=spring.p2 ) this->mstate2->forceMask.insertEntry(spring.p2);
+    }
 }
 
 
