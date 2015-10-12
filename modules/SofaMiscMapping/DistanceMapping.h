@@ -146,6 +146,8 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
+    virtual void updateForceMask();
+
 protected:
     DistanceMapping();
     virtual ~DistanceMapping();
@@ -288,6 +290,8 @@ public:
     virtual const defaulttype::BaseMatrix* getK();
 
     virtual void draw(const core::visual::VisualParams* vparams);
+
+    virtual void updateForceMask();
 
 protected:
     DistanceMultiMapping();

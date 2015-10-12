@@ -77,7 +77,7 @@ void CatmullRomSplineMapping<TIn, TOut>::init()
     unsigned int k = SplittingLevel.getValue();
     unsigned int P = sourceMesh->getNbPoints();
     unsigned int E = sourceMesh->getNbEdges();
-    SeqEdges Edges = sourceMesh->getEdges();
+    const SeqEdges& Edges = sourceMesh->getEdges();
 
     // given the level of splitting and number of input edges E and points P , we can define the nb of mapped nodes
     // ( at each splitting, each edge is cut in two )
