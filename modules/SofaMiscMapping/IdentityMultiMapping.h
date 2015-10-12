@@ -82,6 +82,8 @@ public:
 
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
+    virtual void updateForceMask();
+
 
 protected :
 
@@ -89,6 +91,9 @@ protected :
     virtual ~IdentityMultiMapping();
 
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+
+    helper::vector<helper::StateMask*> maskFrom;
+    helper::StateMask* maskTo;
 
 };
 
