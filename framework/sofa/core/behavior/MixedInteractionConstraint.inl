@@ -88,8 +88,8 @@ void MixedInteractionConstraint<DataTypes1, DataTypes2>::updateForceMask()
 {
     // the default implementation adds every dofs to the mask
     // this sould be overloaded by each forcefield to only add the implicated dofs subset to the mask
-    mask1->assign( mstate1->getSize(), true );
-    mask2->assign( mstate2->getSize(), true );
+    mstate1->forceMask.assign( mstate1->getSize(), true );
+    mstate2->forceMask.assign( mstate2->getSize(), true );
 }
 
 } // namespace behavior
