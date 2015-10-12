@@ -247,6 +247,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     else  // retrieve initial positions from children dofs (vec types)
     {
         size = out.size();
+        this->toModel->resize(size);
         pos0.resize(size);  for(size_t i=0; i<size; i++ )  Out::get(pos0[i][0],pos0[i][1],pos0[i][2],out[i]);
 //        F0.resize(size); for(size_t i=0; i<size; ++i) identity(F0[i]); // necessary ?
     }
@@ -385,7 +386,7 @@ void BaseDeformationMappingT<JacobianBlockType>::init()
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::reinit()
 {
-    if(this->assemble.getValue()) updateJ();
+    if(this->isMechanical() && this->assemble.getValue()) updateJ();
 
     apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel->read(core::ConstVecCoordId::position()));
 

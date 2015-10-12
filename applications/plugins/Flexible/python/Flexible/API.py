@@ -10,7 +10,7 @@ import SofaPython.Tools
 from SofaPython.Tools import listToStr as concat
 from SofaPython import Quaternion
 
-def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, cell='', assemble=True, geometricStiffness=2):
+def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, cell='', assemble=True, geometricStiffness=2, isMechanical=True):
     """ insert the correct Linear(Multi)Mapping
     hopefully the template is deduced automatically by the component
     """
@@ -20,15 +20,15 @@ def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, cell='', as
         if dofRigidNode is None:
             return node.createObject(
                 "LinearMapping", cell=cell, shapeFunction = 'shapeFunction',
-                input="@"+dofAffineNode.getPathName(), output="@.", assemble=assemble)
+                input="@"+dofAffineNode.getPathName(), output="@.", assemble=assemble, mapForces=isMechanical, mapConstraints=isMechanical, mapMasses=isMechanical)
         elif dofAffineNode is None:
             return node.createObject(
                 "LinearMapping", cell=cell, shapeFunction = 'shapeFunction',
-                input="@"+dofRigidNode.getPathName(), output="@.", assemble=assemble, geometricStiffness=geometricStiffness)
+                input="@"+dofRigidNode.getPathName(), output="@.", assemble=assemble, geometricStiffness=geometricStiffness, mapForces=isMechanical, mapConstraints=isMechanical, mapMasses=isMechanical)
         else:
             return node.createObject(
                 "LinearMultiMapping", cell=cell, shapeFunction = 'shapeFunction',
-                input1="@"+dofRigidNode.getPathName(), input2="@"+dofAffineNode.getPathName(), output="@.", assemble=assemble, geometricStiffness=geometricStiffness)
+                input1="@"+dofRigidNode.getPathName(), input2="@"+dofAffineNode.getPathName(), output="@.", assemble=assemble, geometricStiffness=geometricStiffness, mapForces=isMechanical, mapConstraints=isMechanical, mapMasses=isMechanical)
 
 class Deformable:
     """ This class reprents a deformable object build from a mesh.
@@ -84,7 +84,7 @@ class Deformable:
     def visualFromDeformable(self, deformable, color=[1,1,1,1]):
         deformable.node.addChild(self.node)
         self.visual = self.node.createObject("VisualModel", name="model", filename="@"+SofaPython.Tools.getObjectPath(deformable.meshLoader)+".filename", color=concat(color))
-        self.mapping = self.node.createObject("IdentityMapping", name="mapping", input='@'+deformable.node.getPathName(),output="@.")
+        self.mapping = self.node.createObject("IdentityMapping", name="mapping", input='@'+deformable.node.getPathName(),output="@.", mapForces=False, mapConstraints=False, mapMasses=False )
         self.normals = self.meshLoader
 
     def subsetFromDeformable(self, deformable, indices ):
@@ -136,17 +136,18 @@ class Deformable:
             return
         self.mass = self.node.createObject('UniformMass', totalMass=totalMass)
 
-    def addMapping(self, dofRigidNode=None, dofAffineNode=None, labelImage=None, labels=None, useGlobalIndices=False, assemble=True):
+    def addMapping(self, dofRigidNode=None, dofAffineNode=None, labelImage=None, labels=None, useGlobalIndices=False, assemble=True, isMechanical=True):
         cell = ''
         if not labelImage is None and not labels is None : # use labels to select specific voxels in branching image
            offsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+self.topology.name+".position", src="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage), labels=concat(labels), useGlobalIndices=useGlobalIndices)
            cell = "@"+SofaPython.Tools.getObjectPath(offsets)+".cell"
-        self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, cell, assemble)
 
-    def addSkinning(self, armatureNode, indices, weights, assemble=True):
+        self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, cell, assemble, isMechanical=isMechanical)
+
+    def addSkinning(self, armatureNode, indices, weights, assemble=True, isMechanical=True):
         """ Add skinning (linear) mapping based on the armature (Rigid3) in armatureNode using
         """
-        self.mapping = self.node.createObject("LinearMapping", template="Rigid3,Vec3", name="mapping", input="@"+armatureNode.getPathName(), indices=concat(indices), weights=concat(weights), assemble=assemble)
+        self.mapping = self.node.createObject("LinearMapping", template="Rigid3,Vec3", name="mapping", input="@"+armatureNode.getPathName(), indices=concat(indices), weights=concat(weights), assemble=assemble, mapForces=isMechanical, mapConstraints=isMechanical, mapMasses=isMechanical)
 
 
     def getFilename(self, filenamePrefix=None, directory=""):
