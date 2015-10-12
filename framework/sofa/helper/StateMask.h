@@ -66,14 +66,14 @@ public:
 
     StateMask() : activated(false) {}
 
-    void assign( size_t size, bool value ) { mask.assign( size, value ); }
+    void assign( size_t size, bool value );
 
     void insertEntry( size_t index ) { mask[index]=true; }
     bool getEntry( size_t index ) const { return mask[index]; } // unsafe to be use where we do not care if the mapping in deactivated
-    bool getActivatedEntry( size_t index ) const { return activated ? mask[index] : true; } // a if at each check rather that a single if per mapping function is the price to pay no to have duplicated code in mappings
+    bool getActivatedEntry( size_t index ) const;
     const InternalStorage& getEntries() const { return mask; }
 
-    void resize( size_t size ) { mask.resize( size ); }
+    void resize( size_t size );
     void clear() { mask.clear(); }
     size_t size() const { return mask.size(); }
 
@@ -82,7 +82,7 @@ public:
         return os << sm.mask;
     }
 
-    void activate( bool a ) { activated = a; }
+    void activate( bool a );
 
 protected:
 

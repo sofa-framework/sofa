@@ -110,6 +110,7 @@ set(SOURCE_FILES
     Logger.cpp
     MarchingCubeUtility.cpp
     OptionsGroup.cpp
+    StateMask.cpp
     Polynomial_LD.cpp
     Quater.cpp
     RandomGenerator.cpp
