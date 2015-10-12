@@ -20,12 +20,12 @@ set(HEADER_FILES
     TetrahedralCorotationalFEMForceField.inl
     TetrahedronFEMForceField.h
     TetrahedronFEMForceField.inl
-    TriangleFEMForceField.h
-    TriangleFEMForceField.inl
-    TriangularAnisotropicFEMForceField.h
-    TriangularAnisotropicFEMForceField.inl
-    TriangularFEMForceField.h
-    TriangularFEMForceField.inl
+#    TriangleFEMForceField.h
+#    TriangleFEMForceField.inl
+#    TriangularAnisotropicFEMForceField.h
+#    TriangularAnisotropicFEMForceField.inl
+#    TriangularFEMForceField.h
+#    TriangularFEMForceField.inl
     TriangularFEMForceFieldOptim.h
     TriangularFEMForceFieldOptim.inl
     config.h
@@ -41,15 +41,15 @@ set(SOURCE_FILES
     HexahedronFEMForceFieldAndMass.cpp
     TetrahedralCorotationalFEMForceField.cpp
     TetrahedronFEMForceField.cpp
-    TriangularAnisotropicFEMForceField.cpp
-    TriangleFEMForceField.cpp
-    TriangularFEMForceField.cpp
+#    TriangularAnisotropicFEMForceField.cpp
+#    TriangleFEMForceField.cpp
+#    TriangularFEMForceField.cpp
     TriangularFEMForceFieldOptim.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaOpenglVisual)
-target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology) # SofaOpenglVisual)
+#target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SIMPLE_FEM")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
