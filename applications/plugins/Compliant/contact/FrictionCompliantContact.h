@@ -132,23 +132,23 @@ protected:
     }
 
 
-    void update_node( typename node_type::SPtr ) {
+    void update_node() {
         const unsigned size = this->mappedContacts.size();
 
         // update delta node
         vector< defaulttype::Vec<2, unsigned> > pairs(size);
         for(unsigned i = 0; i < size; ++i) {
-            pairs[i][0] = mappedContacts[i].index1;
-            pairs[i][1] = mappedContacts[i].index2;
+            pairs[i][0] = this->mappedContacts[i].index1;
+            pairs[i][1] = this->mappedContacts[i].index2;
         }
 
         if( this->selfCollision ) {
             typedef mapping::DifferenceMapping<ResponseDataTypes, ResponseDataTypes> map_type;
-            dynamic_cast<map_type*>(deltaContactMap.get())->pairs.setValue(pairs);
+            dynamic_cast<map_type*>(this->deltaContactMap.get())->pairs.setValue(pairs);
 
         } else {
             typedef mapping::DifferenceMultiMapping<ResponseDataTypes, ResponseDataTypes> map_type;
-            dynamic_cast<map_type*>(deltaContactMap.get())->pairs.setValue(pairs);
+            dynamic_cast<map_type*>(this->deltaContactMap.get())->pairs.setValue(pairs);
         }
 
         contact_dofs->resize( size );
@@ -163,7 +163,7 @@ protected:
             if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
         }
 
-        node->init(core::ExecParams::defaultInstance());
+        this->node->init(core::ExecParams::defaultInstance());
     }
 
 
