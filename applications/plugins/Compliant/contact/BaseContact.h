@@ -120,21 +120,19 @@ public:
     {
         assert( contacts );
 
-        if( node )
+        if( !node )
         {
-            mapper1.cleanup();
-            mapper2.cleanup();
+            //fancy names
+            std::string name1 = this->model1->getClassName() + " contact points";
+            std::string name2 = this->model2->getClassName() + " contact points";
+
+            // obtain point mechanical models from mappers
+            mstate1 = mapper1.createMapping( name1.c_str() );
+
+            mstate2 = this->selfCollision ? mstate1 : mapper2.createMapping( name2.c_str() );
+            mstate2->setName("dofs");
         }
-
-        // fancy names
-        std::string name1 = this->model1->getClassName() + " contact points";
-        std::string name2 = this->model2->getClassName() + " contact points";
-
-        // obtain point mechanical models from mappers
-        mstate1 = mapper1.createMapping( name1.c_str() );
-
-        mstate2 = this->selfCollision ? mstate1 : mapper2.createMapping( name2.c_str() );
-        mstate2->setName("dofs");
+       
 
 
         // resize mappers
@@ -196,13 +194,11 @@ public:
         mapper1.update();
         if (!this->selfCollision) mapper2.update();
 
-
-
-        // if(! node ) {
-        node = create_node();
-        // } else {
-        // 	update_node();
-        // }
+        if(!node) {
+            node = create_node();
+        } else {
+         	update_node(node);
+        }
 
         //		assert( dynamic_cast< node_type* >( group ) );
 
@@ -212,26 +208,18 @@ public:
 
 
     void removeResponse() {
-        // std::cout << "removeResponse" << std::endl;
-        if( node ) {
+        if( node) {
             mapper1.resize(0);
             mapper2.resize(0);
-
-            node->detachFromGraph();
         }
-
     }
 
     void cleanup() {
-        // std::cout << "cleanup" << std::endl;
-
         if( node ) {
-
             mapper1.cleanup();
-
             if (!this->selfCollision) mapper2.cleanup();
-
-            // TODO can/should we delete node here ?
+            node->detachFromGraph();
+            node.reset();
         }
 
         mappedContacts.clear();
@@ -245,6 +233,10 @@ protected:
     typedef sofa::simulation::Node node_type;
     node_type::SPtr node;
 
+    // the difference mapping used in the delta node (needed by update_node)
+    typedef sofa::core::BaseMapping delta_map_type;
+    delta_map_type::SPtr deltaContactMap;
+
     typename MechanicalState1::SPtr mstate1;
     typename MechanicalState2::SPtr mstate2;
 
@@ -256,12 +248,13 @@ protected:
     typedef container::MechanicalObject<ResponseDataTypes> delta_dofs_type;
 
     // convenience
-    struct delta_type { // TODO to compliantconstraint
+    struct delta_type {
         node_type::SPtr node;
         typename delta_dofs_type::SPtr dofs;
     };
 
-    delta_type make_delta() const {  // TODO to compliantconstraint
+    delta_type make_delta() {  // TODO to compliantconstraint
+
         node_type::SPtr delta_node = node_type::create( this->getName() + " delta" );
 
         // TODO vec3types according to the types in interaction !
@@ -289,6 +282,10 @@ protected:
         }
 
 
+        delta_type res;
+        res.node = delta_node;
+        res.dofs = delta_dofs;
+
         // delta mappings
         if( this->selfCollision ) {
             typedef mapping::DifferenceMapping<ResponseDataTypes, ResponseDataTypes> map_type;
@@ -309,6 +306,7 @@ protected:
             static_cast< node_type* >(this->mstate1->getContext())->addChild( delta_node.get() );
 
             map->init();
+            deltaContactMap  = static_cast<delta_map_type*>(map.get());
 
         } else {
             typedef mapping::DifferenceMultiMapping<ResponseDataTypes, ResponseDataTypes> map_type;
@@ -333,15 +331,11 @@ protected:
             static_cast< node_type* >(this->mstate2->getContext())->addChild( delta_node.get() );
 
             map->init();
-
+            deltaContactMap  = static_cast<delta_map_type*>(map.get());
         }
 
         // ensure all graph context parameters (e.g. dt are well copied)
         delta_node->updateSimulationContext();
-
-        delta_type res;
-        res.node = delta_node;
-        res.dofs = delta_dofs;
 
         return res;
     }

@@ -38,6 +38,12 @@ public:
     Data< bool > horizontalConeProjection; ///< should the cone projection be horizontal (default)? Otherwise an orthogonal cone projection is performed.
 
 protected:
+    typedef defaulttype::Vec3Types contact_type;
+    typedef container::MechanicalObject<contact_type> contact_dofs_type;
+    typename contact_dofs_type::SPtr contact_dofs;
+
+    typedef mapping::ContactMapping<ResponseDataTypes, contact_type> contact_map_type;
+    typename contact_map_type::SPtr contact_map;
 
 //    FrictionCompliantContact()
 //        : Inherit()
@@ -70,17 +76,13 @@ protected:
         // ensure all graph context parameters (e.g. dt are well copied)
         contact_node->updateSimulationContext();
 
-        // TODO change this
-        typedef defaulttype::Vec3Types contact_type;
 
-        typedef container::MechanicalObject<contact_type> contact_dofs_type;
-        typename contact_dofs_type::SPtr contact_dofs = sofa::core::objectmodel::New<contact_dofs_type>();
+        contact_dofs = sofa::core::objectmodel::New<contact_dofs_type>();
 
         contact_dofs->resize( size );
         contact_node->addObject( contact_dofs.get() );
 
-        typedef mapping::ContactMapping<ResponseDataTypes, contact_type> contact_map_type;
-        typename contact_map_type::SPtr contact_map = core::objectmodel::New<contact_map_type>();
+        contact_map = core::objectmodel::New<contact_map_type>();
 
         contact_map->setModels( delta.dofs.get(), contact_dofs.get() );
         contact_node->addObject( contact_map.get() );
@@ -131,7 +133,37 @@ protected:
 
 
     void update_node( typename node_type::SPtr ) {
-        // TODO
+        const unsigned size = this->mappedContacts.size();
+
+        // update delta node
+        vector< defaulttype::Vec<2, unsigned> > pairs(size);
+        for(unsigned i = 0; i < size; ++i) {
+            pairs[i][0] = mappedContacts[i].index1;
+            pairs[i][1] = mappedContacts[i].index2;
+        }
+
+        if( this->selfCollision ) {
+            typedef mapping::DifferenceMapping<ResponseDataTypes, ResponseDataTypes> map_type;
+            dynamic_cast<map_type*>(deltaContactMap.get())->pairs.setValue(pairs);
+
+        } else {
+            typedef mapping::DifferenceMultiMapping<ResponseDataTypes, ResponseDataTypes> map_type;
+            dynamic_cast<map_type*>(deltaContactMap.get())->pairs.setValue(pairs);
+        }
+
+        contact_dofs->resize( size );
+
+        this->copyNormals( *editOnly(contact_map->normal) );
+        this->copyPenetrations( *editOnly(*contact_dofs->write(core::VecCoordId::position())) );
+
+        // every contact points must propagate constraint forces
+        for(unsigned i = 0; i < size; ++i)
+        {
+            this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
+            if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
+        }
+
+        node->init(core::ExecParams::defaultInstance());
     }
 
 
