@@ -24,8 +24,14 @@
 ******************************************************************************/
 #ifndef SOFA_HELPER_PARTICLEMASK_H
 #define SOFA_HELPER_PARTICLEMASK_H
-
 #include <sofa/helper/vector.h>
+
+#include <sofa/defaulttype/Mat.h>
+#ifdef Success
+#undef Success // dirty workaround to cope with the (dirtier) X11 define. See http://eigen.tuxfamily.org/bz/show_bug.cgi?id=253
+#endif
+#include <Eigen/Dense>
+
 
 namespace sofa
 {
@@ -64,11 +70,26 @@ public:
 
     StateMask() : activated(false) {}
 
+    /// filling-up (and eventuelly resize) the mask
     void assign( size_t size, bool value );
 
+    /// the mask can be deactivated when the mappings must be applied to every dofs (e.g. propagatePosition)
+    /// it must be activated when the mappings can be limited to active dofs
+    void activate( bool a );
+    bool isActivated() const { return activated; }
+
+    /// add the given dof index in the mask
     void insertEntry( size_t index ) { mask[index]=true; }
+
+    /// is the given dof index in the mask?
+    /// @warning always returns the mask value w/o checking if the mask is activated (for Mapping::applyJT/getJs)
     bool getEntry( size_t index ) const { return mask[index]; } // unsafe to be use where we do not care if the mapping in deactivated
+
+    /// is the given dof index activated? If the mask is not activated it always returns true, otherwise it gives the real mask value.
+    /// useful for Mapping::applyJ
     bool getActivatedEntry( size_t index ) const;
+
+    /// getting mask entries is useful for advanced uses.
     const InternalStorage& getEntries() const { return mask; }
 
     void resize( size_t size );
@@ -80,7 +101,19 @@ public:
         return os << sm.mask;
     }
 
-    void activate( bool a );
+
+    /// get the mask converted to a eigen vector
+    /// useful to build a projection matrix
+    template<class Real>
+    Eigen::Matrix<Real, Eigen::Dynamic, 1> toEigenVec() const
+    {
+        typedef Eigen::Matrix<Real, Eigen::Dynamic, 1> vec;
+        vec v( size() );
+        for( size_t i=0 ; i<size() ; ++i )
+            v[i] = mask[i] ? (Real)1 : (Real)0;
+        return v;
+    }
+
 
 protected:
 
