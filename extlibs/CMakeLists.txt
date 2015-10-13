@@ -17,7 +17,7 @@ add_subdirectory(tinyxml)
 
 ## Optional ones
 add_subdirectory(CImg)
-add_subdirectory(libQGLViewer-2.4.0/QGLViewer QGLViewer)
+add_subdirectory(libQGLViewer-2.6.3/QGLViewer QGLViewer)
 
 option(SOFA_BUILD_ARTRACK
 "Build the ARTrack library distributed in the extlibs/ directory.  This library
