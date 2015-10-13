@@ -197,7 +197,7 @@ public:
         if(!node) {
             node = create_node();
         } else {
-         	update_node(node);
+         	update_node();
         }
 
         //		assert( dynamic_cast< node_type* >( group ) );
@@ -242,7 +242,7 @@ protected:
 
     // all you're left to implement \o/
     virtual node_type::SPtr create_node() = 0;
-    virtual void update_node(node_type::SPtr node) = 0;
+    virtual void update_node() = 0;
 
     // TODO correct real type
     typedef container::MechanicalObject<ResponseDataTypes> delta_dofs_type;
@@ -277,8 +277,8 @@ protected:
         vector< defaulttype::Vec<2, unsigned> > pairs(size);
 
         for(unsigned i = 0; i < size; ++i) {
-            pairs[i][0] = mappedContacts[i].index1;
-            pairs[i][1] = mappedContacts[i].index2;
+            pairs[i][0] = this->mappedContacts[i].index1;
+            pairs[i][1] = this->mappedContacts[i].index2;
         }
 
 
