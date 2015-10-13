@@ -154,13 +154,13 @@ public slots:
     void newTab();
 
     /// Quit the Modeler
-    void exit() {close();};
+    void exit() {close();}
 
     void openTutorial();
     /// Launch the current simulation into Sofa
     void runInSofa();
     void runInSofa(const std::string &sceneFilename, Node *groot);
-    void sofaExited(int exitCode, QProcess::ExitStatus existStatus);
+    void sofaExited(int exitCode, QProcess::ExitStatus status);
     void removeTemporaryFiles(const std::string &filename);
 
     /// Change of simulation by changing the current opened tabulation

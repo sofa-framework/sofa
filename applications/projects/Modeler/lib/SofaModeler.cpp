@@ -597,7 +597,7 @@ void SofaModeler::closeTab()
 bool SofaModeler::closeTab(int i)
 {
     if (i<0) return true;
-    return closeTab(i);
+    return closeTab(sceneTab->widget(i));
 }
 
 bool SofaModeler::closeTab(QWidget *curTab, bool forceClose)
@@ -1161,7 +1161,7 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
     {
         std::string binaryName="runSofa";
 #ifndef NDEBUG
-        binaryName+='d';
+        binaryName+="_d";
 #endif
 
 #ifdef WIN32
@@ -1171,7 +1171,7 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
 #endif
     }
 
-    argv << QString(sofaBinary.c_str()) << QString(filename.c_str());
+    argv << QString(filename.c_str());
 
     messageLaunch = QString("Use command: ")
             + QString(sofaBinary.c_str())
@@ -1208,26 +1208,16 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
 
     QProcess *p = new QProcess(this);
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     p->setObjectName(QString(filename.c_str()) );
     p->setWorkingDirectory(QString(binPath.c_str()) );
-#else
     p->setArguments(argv);
-    p->setWorkingDirectory(QString(binPath.c_str()) );
-    p->setProgram(filename.c_str());
-#endif
-
 
     connect(p, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(sofaExited(int, QProcess::ExitStatus)));
     QDir dir(QString(sofa::helper::system::SetDirectory::GetParentDir(sceneFilename.c_str()).c_str()));
     connect(p, SIGNAL( readyReadStandardOutput () ), this , SLOT ( redirectStdout() ) );
     connect(p, SIGNAL( readyReadStandardError () ), this , SLOT ( redirectStderr() ) );
 
- #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    p->start(QString(filename.c_str()), argv);
-#else
-    p->start();
-#endif
+    p->start(QString(sofaBinary.c_str()), argv);
 
     mapSofa.insert(std::make_pair(tabGraph, p));
 
@@ -1241,19 +1231,10 @@ void SofaModeler::redirectStdout()
     {
         return;
     }
-//    QString data;
-//    while(p->canReadLineStdout())
-//    {
-//        data = p->readLineStdout();
-//        std::cout << data.toStdString() << std::endl;
-//    }
 
     if (p->waitForStarted(-1))
     {
-        while(p->waitForReadyRead(-1))
-        {
-            std::cout << QString(p->readAllStandardOutput()).toStdString() << std::endl;
-        }
+        std::cout << "FROM SOFA [OUT] >> " << QString(p->readAllStandardOutput()).toStdString() << std::endl;
     }
 }
 
@@ -1264,19 +1245,9 @@ void SofaModeler::redirectStderr()
     {
         return;
     }
-//    QString data;
-//    while(p->canReadLineStderr())
-//    {
-//        data = p->readLineStderr();
-//        std::cerr << data.toStdString() << std::endl;
-//    }
-
     if (p->waitForStarted(-1))
     {
-        while(p->waitForReadyRead(-1))
-        {
-            std::cerr << QString(p->readAllStandardError()).toStdString() << std::endl;
-        }
+        std::cerr << "FROM SOFA [ERR] >> " << QString(p->readAllStandardError()).toStdString() << std::endl;
     }
 }
 
@@ -1285,13 +1256,22 @@ void SofaModeler::sofaExited(int exitCode, QProcess::ExitStatus existStatus)
     QProcess *p = ((QProcess*) sender());
     std::string programName;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     programName = p->objectName().toStdString();
-#else
-    programName = p->program().toStdString();
-#endif
+
     removeTemporaryFiles(programName);
-    if (existStatus == QProcess::NormalExit ) return;
+    if (existStatus == QProcess::NormalExit )
+    {
+        p->closeWriteChannel();
+        disconnect(p, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(sofaExited(int, QProcess::ExitStatus)));
+        disconnect(p, SIGNAL( readyReadStandardOutput () ), this , SLOT ( redirectStdout() ) );
+        disconnect(p, SIGNAL( readyReadStandardError () ), this , SLOT ( redirectStderr() ) );
+        if(p->atEnd())
+            std::cout << "Sofa exited safely." << std::endl;
+        else
+            std::cout << "Chelou." << std::endl;
+        p->kill();
+        return;
+    }
     typedef std::multimap< const QWidget*, QProcess* >::iterator multimapIterator;
     for (multimapIterator it=mapSofa.begin(); it!=mapSofa.end(); ++it)
     {
@@ -1303,6 +1283,7 @@ void SofaModeler::sofaExited(int exitCode, QProcess::ExitStatus existStatus)
             return;
         }
     }
+
 }
 
 void SofaModeler::removeTemporaryFiles(const std::string &f)
