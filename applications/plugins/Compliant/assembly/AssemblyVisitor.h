@@ -300,8 +300,8 @@ struct AssemblyVisitor::process_helper {
                 // mapping blocks
                 MySPtr<rmat> jc( convertSPtr<rmat>( g[*e.first].data->J ) );
 
-                if( zero( *jc ) ) MAINLOGGER( Warning, "Empty Jacobian for mapping: "<<((simulation::Node*)curr->getContext())->mechanicalMapping->getPathName()
-                                              << std::endl << "mask=\""<<curr->forceMask.getEntries() <<"\"", "AssemblyVisitor" )
+//                if( zero( *jc ) ) MAINLOGGER( Warning, "Empty Jacobian for mapping: "<<((simulation::Node*)curr->getContext())->mechanicalMapping->getPathName()
+//                                              << std::endl << "mask=\""<<curr->forceMask.getEntries() <<"\"", "AssemblyVisitor" )
 
                 // parent is not mapped: we put a shift matrix with the
                 // correct offset as its full mapping matrix, so that its
