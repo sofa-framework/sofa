@@ -57,7 +57,7 @@
         
         <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="1" /> 
         
-	<MechanicalObject template="F332" name="F"    showObject="1" showObjectScale="0.05" />
+	<MechanicalObject template="F332" name="F"  />
     	<LinearMapping template="Affine,F332"  />
 
 	<Node 	name="E"   >
