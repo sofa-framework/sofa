@@ -283,6 +283,9 @@ protected:
     /// Every Dofs are inserted by default. The mappings using only a subset of dofs should only insert these dofs in the mask.
     virtual void updateForceMask();
 
+    /// keep pointers on the masks
+    helper::vector<helper::StateMask*> maskFrom, maskTo;
+
 };
 
 

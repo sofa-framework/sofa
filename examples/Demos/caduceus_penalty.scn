@@ -28,7 +28,7 @@
             <MeshObjLoader name="loader" filename="mesh/meca_snake_900tri.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
-            <Triangle  selfCollision="1"  contactStiffness="10"/>
+            <Triangle  selfCollision="0"  contactStiffness="10"/>
             <Line    selfCollision="0" contactStiffness="10"/>
             <Point  selfCollision="0" contactStiffness="10"/>
             <BarycentricMapping name="barymeca" input="@.." output="@." />
