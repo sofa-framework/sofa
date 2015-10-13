@@ -1,6 +1,5 @@
 <?xml version="1.0" ?>
-<!-- NEW DEFAULT SOFA SCENE (Thanks to Jeremy Ringard for the caduceus model) -->
-<Node name="root" gravity="0 -10 0" dt="0.02">
+<Node name="root" gravity="0 -50 0" dt="0.02">
     
      <RequiredPlugin name="Compliant"/>
      
@@ -35,7 +34,7 @@
 <!--         <EulerImplicitSolver name="cg_odesolver" rayleighMass="1" rayleighStiffness="0.03" /> -->
 <!--         <CGLinearSolver name="linear solver" iterations="20" tolerance="1e-12" threshold="1e-18" /> -->
 		<MechanicalObject name="dofs"  scale="1" dy="2"/>
-        <UniformMass totalMass="1000.0" />
+        <UniformMass totalMass="2000.0" />
         <HexahedronFEMForceField name="FEM" youngModulus="30000.0" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" isCompliance="0"/>
 
 <!-- 		<UncoupledConstraintCorrection /> -->
@@ -45,8 +44,8 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <Triangle  selfCollision="1" />
-            <Line    selfCollision="0" />
-            <Point  selfCollision="0" />
+            <Line    selfCollision="1" />
+            <Point  selfCollision="1" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
 

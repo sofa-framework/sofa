@@ -45,6 +45,7 @@ namespace helper
     bool StateMask::getActivatedEntry( size_t index ) const
     {
         return activated ? mask[index] : true; // a 'if' at each check rather than a single 'if' per mapping function is the price to pay no to have duplicated code in mappings
+        // TODO: implementing it with a fonction pointer?
     }
 
     void StateMask::activate( bool a )
