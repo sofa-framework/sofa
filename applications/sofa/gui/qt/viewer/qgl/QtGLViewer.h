@@ -47,6 +47,7 @@
 
 
 #include <QGLViewer/qglviewer.h>
+#include <QGLViewer/manipulatedFrame.h>
 
 #define TRACKING_MOUSE
 
