@@ -62,6 +62,12 @@ public:
 
 protected:
 
+    typedef container::MechanicalObject<defaulttype::Vec1Types> contact_dofs_type;
+    typename contact_dofs_type::SPtr contact_dofs;
+
+    typedef mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec1Types> contact_map_type;
+    typename contact_map_type::SPtr contact_map;
+
 
     CompliantContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
         : Inherit(model1, model2, intersectionMethod)
@@ -105,16 +111,14 @@ protected:
         contact_node->updateSimulationContext();
 
         // 1d contact dofs
-        typedef container::MechanicalObject<defaulttype::Vec1Types> contact_dofs_type;
-        typename contact_dofs_type::SPtr contact_dofs = sofa::core::objectmodel::New<contact_dofs_type>();
+        contact_dofs = sofa::core::objectmodel::New<contact_dofs_type>();
 
         contact_dofs->resize( size );
         contact_dofs->setName( this->getName() + " contact dofs" );
         contact_node->addObject( contact_dofs.get() );
 
         // contact mapping
-        typedef mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec1Types> contact_map_type;
-        typename contact_map_type::SPtr contact_map = core::objectmodel::New<contact_map_type>();
+        contact_map = core::objectmodel::New<contact_map_type>();
 
         contact_map->setModels( delta.dofs.get(), contact_dofs.get() );
         contact_map->setName( this->getName() + " contact mapping" );
@@ -211,31 +215,46 @@ protected:
                 contact_node->addObject( damping.get() );
                 damping->dampingCoefficient.setValue( frictionCoefficient );
                 damping->init();
-
-
-
-
-                // constraint version
-
-                // compliance
-//                typedef forcefield::DampingCompliance<defaulttype::Vec2Types> compliance_type;
-//                compliance_type::SPtr compliance = sofa::core::objectmodel::New<compliance_type>();
-//                contact_node->addObject( compliance.get() );
-//                compliance->damping.setValue( frictionCoefficient );
-//                compliance->init();
-
-//                // constraint value
-//                typedef odesolver::DampingValue cv_type;
-//                cv_type::SPtr cv = sofa::core::objectmodel::New<cv_type>( contact_dofs.get() );
-//                contact_node->addObject( cv.get() );
-//                cv->init();
             }
         }
 
         return delta.node;
     }
 
-    void update_node(typename node_type::SPtr ) { }
+    void update_node(typename node_type::SPtr ) {
+
+        const unsigned size = this->mappedContacts.size();
+
+        // update delta node
+        vector< defaulttype::Vec<2, unsigned> > pairs(size);
+        for(unsigned i = 0; i < size; ++i) {
+            pairs[i][0] = mappedContacts[i].index1;
+            pairs[i][1] = mappedContacts[i].index2;
+        }
+
+        if( this->selfCollision ) {
+            typedef mapping::DifferenceMapping<ResponseDataTypes, ResponseDataTypes> map_type;
+            dynamic_cast<map_type*>(deltaContactMap.get())->pairs.setValue(pairs);
+
+        } else {
+            typedef mapping::DifferenceMultiMapping<ResponseDataTypes, ResponseDataTypes> map_type;
+            dynamic_cast<map_type*>(deltaContactMap.get())->pairs.setValue(pairs);
+        }
+
+        contact_dofs->resize( size );
+
+        this->copyNormals( *editOnly(contact_map->normal) );
+        this->copyPenetrations( *editOnly(*contact_dofs->write(core::VecCoordId::position())) );
+
+        // every contact points must propagate constraint forces
+        for(unsigned i = 0; i < size; ++i)
+        {
+            this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
+            if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
+        }
+
+        node->init(core::ExecParams::defaultInstance());
+    }
 
 
 

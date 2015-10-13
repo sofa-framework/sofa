@@ -42,6 +42,15 @@ public:
 
 protected:
 
+    typedef container::MechanicalObject<defaulttype::Vec1Types> contact_dofs_type;
+    typename contact_dofs_type::SPtr contact_dofs;
+
+    typedef mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec1Types> contact_map_type;
+    typename contact_map_type::SPtr contact_map;
+
+    typedef forcefield::DiagonalCompliance<defaulttype::Vec1Types> compliance_type;
+    compliance_type::SPtr compliance;
+
     PenalityCompliantContact()
         : Inherit()
         , stiffness( initData(&stiffness, SReal(10), "stiffness", "Contact Stiffness") )
@@ -68,16 +77,14 @@ protected:
         contact_node->updateSimulationContext();
 
         // 1d contact dofs
-        typedef container::MechanicalObject<defaulttype::Vec1Types> contact_dofs_type;
-        typename contact_dofs_type::SPtr contact_dofs = sofa::core::objectmodel::New<contact_dofs_type>();
+        contact_dofs = sofa::core::objectmodel::New<contact_dofs_type>();
 
         contact_dofs->resize( size );
         contact_dofs->setName( this->getName() + " contact dofs" );
         contact_node->addObject( contact_dofs.get() );
 
         // contact mapping
-        typedef mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec1Types> contact_map_type;
-        typename contact_map_type::SPtr contact_map = core::objectmodel::New<contact_map_type>();
+        contact_map = core::objectmodel::New<contact_map_type>();
 
         contact_map->setModels( delta.dofs.get(), contact_dofs.get() );
         contact_map->setName( this->getName() + " contact mapping" );
@@ -90,8 +97,7 @@ protected:
 
 
         // compliance
-        typedef forcefield::DiagonalCompliance<defaulttype::Vec1Types> compliance_type;
-        compliance_type::SPtr compliance = sofa::core::objectmodel::New<compliance_type>( contact_dofs.get() );
+        compliance = sofa::core::objectmodel::New<compliance_type>( contact_dofs.get() );
         contact_node->addObject( compliance.get() );
         editOnly(compliance->damping)->assign(1, this->damping_ratio.getValue() );
         compliance->isCompliance.setValue( false );
@@ -125,7 +131,59 @@ protected:
 
 
 
-    void update_node(typename node_type::SPtr ) { }
+    void update_node(typename node_type::SPtr ) 
+    {
+        const unsigned size = this->mappedContacts.size();
+
+        // update delta node
+        vector< defaulttype::Vec<2, unsigned> > pairs(size);
+        for(unsigned i = 0; i < size; ++i) {
+            pairs[i][0] = mappedContacts[i].index1;
+            pairs[i][1] = mappedContacts[i].index2;
+        }
+
+        if( this->selfCollision ) {
+            typedef mapping::DifferenceMapping<ResponseDataTypes, ResponseDataTypes> map_type;
+            dynamic_cast<map_type*>(deltaContactMap.get())->pairs.setValue(pairs);
+
+        } else {
+            typedef mapping::DifferenceMultiMapping<ResponseDataTypes, ResponseDataTypes> map_type;
+            dynamic_cast<map_type*>(deltaContactMap.get())->pairs.setValue(pairs);
+        }
+
+        contact_dofs->resize( size );
+
+        this->copyNormals( *editOnly(contact_map->normal) );
+        this->copyPenetrations( *editOnly(*contact_dofs->write(core::VecCoordId::position())) );
+
+        // every contact points must propagate constraint forces
+        for(unsigned i = 0; i < size; ++i)
+        {
+            this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
+            if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
+        }
+
+        // update compliance value
+        typename compliance_type::VecDeriv complianceValues( size );
+        for( unsigned i = 0 ; i < size ; ++i )
+        {
+            if( (*this->contacts)[i].value < 0 )
+            {
+                complianceValues[i][0] = 1.0/this->stiffness.getValue();
+
+                // only violated penetrations will propagate forces
+                this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
+                if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
+            }
+            else
+            {
+                complianceValues[i][0] = std::numeric_limits<int>::max();
+            }
+        }
+        compliance->diagonal.setValue( complianceValues );
+
+        node->init(core::ExecParams::defaultInstance());
+    }
 
 
 
