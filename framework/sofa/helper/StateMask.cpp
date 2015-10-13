@@ -54,7 +54,6 @@ namespace helper
     }
 
 
-
 } // namespace helper
 
 } // namespace sofa
