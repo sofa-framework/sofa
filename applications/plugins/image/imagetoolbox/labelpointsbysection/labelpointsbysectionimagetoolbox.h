@@ -3,16 +3,21 @@
 #ifndef LABELPOINTSBYSECTIONIMAGETOOLBOX_H
 #define LABELPOINTSBYSECTIONIMAGETOOLBOX_H
 
+#include <QDataStream>
+#include "../labelimagetoolbox.h"
+
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #include "labelpointsbysectionimagetoolboxaction.h"
-#include "../labelimagetoolbox.h"
+
+
 #include <string>
 #include <cstring>
 
+#include <QDockWidget>
 
 #include <image/image_gui/config.h>
 

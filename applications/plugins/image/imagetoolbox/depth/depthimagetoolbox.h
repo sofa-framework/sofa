@@ -1,6 +1,9 @@
 #ifndef DEPTHIMAGETOOLBOX_H
 #define DEPTHIMAGETOOLBOX_H
 
+#include <QTextStream>
+#include <QFile>
+
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>

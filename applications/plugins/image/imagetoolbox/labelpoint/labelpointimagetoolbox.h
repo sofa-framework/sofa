@@ -4,8 +4,10 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
+#include <QDataStream>
 #include "labelpointimagetoolboxaction.h"
 #include "../labelimagetoolbox.h"
+
 
 
 

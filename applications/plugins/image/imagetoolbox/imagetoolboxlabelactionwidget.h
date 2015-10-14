@@ -1,7 +1,11 @@
 #ifndef IMAGETOOLBOXLABELACTIONWIDGET_H
 #define IMAGETOOLBOXLABELACTIONWIDGET_H
 
-#include <QtGui>
+#include <QVBoxLayout>
+#include <QComboBox>
+#include <QPushButton>
+#include <QStackedWidget>
+
 #include "imagetoolboxcentralwidget.h"
 #include "labelimagetoolboxaction.h"
 #include <image/image_gui/config.h>

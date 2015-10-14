@@ -1,8 +1,8 @@
-#include <QString>
-
+#include "depthimagetoolbox.h"
 #include "depthimagetoolboxaction.h"
 
-#include "depthimagetoolbox.h"
+#include <QString>
+#include <QLabel>
 
 namespace sofa
 {

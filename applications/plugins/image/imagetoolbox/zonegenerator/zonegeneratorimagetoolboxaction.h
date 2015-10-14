@@ -1,7 +1,8 @@
 #ifndef ZONEGENERATORIMAGETOOLBOXACTION_H
 #define ZONEGENERATORIMAGETOOLBOXACTION_H
 
-#include <QtGui>
+#include <QPushButton>
+#include <QLineEdit>
 #include <QAction>
 #include <QGraphicsLineItem>
 

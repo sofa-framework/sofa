@@ -1,7 +1,8 @@
 #ifndef LABELGRIDIMAGETOOLBOXACTION_H
 #define LABELGRIDIMAGETOOLBOXACTION_H
 
-#include <QtGui>
+#include <QSpinBox>
+#include <QPushButton>
 
 
 #include "../labelimagetoolboxaction.h"

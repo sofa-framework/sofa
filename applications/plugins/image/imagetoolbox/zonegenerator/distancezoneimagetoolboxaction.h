@@ -1,7 +1,8 @@
 #ifndef DISTANCEZONEIMAGETOOLBOXACTION_H
 #define DISTANCEZONEIMAGETOOLBOXACTION_H
 
-#include <QtGui>
+#include <QPushButton>
+#include <QLineEdit>
 #include <QAction>
 #include <QGraphicsLineItem>
 

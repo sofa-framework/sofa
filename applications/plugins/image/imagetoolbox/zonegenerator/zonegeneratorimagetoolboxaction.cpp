@@ -1,5 +1,6 @@
 #include <QString>
 #include <QWidgetAction>
+#include <QGroupBox>
 
 #include "zonegeneratorimagetoolboxaction.h"
 
