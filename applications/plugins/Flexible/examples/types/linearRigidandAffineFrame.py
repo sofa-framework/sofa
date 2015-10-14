@@ -10,7 +10,7 @@ def createScene(root):
     root.gravity = [0, -9.8, 0]
     
     root.createObject('ImplicitEulerSolver')
-    root.createObject('MinResLinearSolver', iteration="100", tolerance="1e-15")
+    root.createObject('MinResLinearSolver', iterations="100", tolerance="1e-15")
     
     root.createObject('MeshObjLoader', name="loader", filename="mesh/torus.obj", triangulate="1")
     #root.createObject('OglModel', template="ExtVec3f", name="Visual", fileMesh="mesh/torus.obj", color="1 0.8 0.8 ")

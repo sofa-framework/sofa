@@ -190,44 +190,23 @@ public:
     virtual void applyJ(const core::MechanicalParams* mparams , const helper::vector<Data<OutVecDeriv>*>& dOut, const helper::vector<const Data<InVecDeriv1>*>& dIn1, const helper::vector<const Data<InVecDeriv2>*>& dIn2)
     {
         if(this->isMechanical())
-        applyJ(mparams,*dOut[0],*dIn1[0],*dIn2[0]);
+            applyJ(mparams,*dOut[0],*dIn1[0],*dIn2[0]);
     }
     void applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv1>& dIn1, Data<InVecDeriv2>& dIn2, const Data<OutVecDeriv>& dOut);
     virtual void applyJT(const core::MechanicalParams* mparams , const helper::vector<Data<InVecDeriv1>*>& dIn1,  const helper::vector<Data<InVecDeriv2>*>& dIn2, const helper::vector<const Data<OutVecDeriv>*>& dOut)
     {
         if(this->isMechanical())
-        applyJT(mparams,*dIn1[0],*dIn2[0],*dOut[0]);
+            applyJT(mparams,*dIn1[0],*dIn2[0],*dOut[0]);
     }
     void applyJT(const core::ConstraintParams * /*cparams*/ , Data<InMatrixDeriv1>& /*out1*/, Data<InMatrixDeriv2>& /*out2*/,  const Data<OutMatrixDeriv>& /*in*/);
     virtual void applyJT(const core::ConstraintParams* cparams ,const helper::vector<Data<InMatrixDeriv1>*>& dIn1,const  helper::vector<Data<InMatrixDeriv2>*>& dIn2, const helper::vector<const Data<OutMatrixDeriv>*>& dOut)
     {
         if(this->isMechanical())
-        applyJT(cparams,*dIn1[0],*dIn2[0],*dOut[0]);
+            applyJT(cparams,*dIn1[0],*dIn2[0],*dOut[0]);
     }
     virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId );
 
-    // Compliant plugin experimental API
-    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs()
-    {
-        if(!this->assemble.getValue()) { updateJ1(); updateJ2(); }
-        else
-        {
-            if( previousMask!=this->maskTo->getEntries() )
-            {
-                previousMask = this->maskTo->getEntries();
-                updateJ1();
-                updateJ2();
-            }
-            else
-            {
-                if(!BlockType1::constant || !eigenJacobian1.compressedMatrix.nonZeros()) updateJ1();
-                if(!BlockType2::constant || !eigenJacobian2.compressedMatrix.nonZeros()) updateJ2();
-            }
-        }
-
-        return &baseMatrices;
-    }
-
+    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
     virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
 
@@ -309,17 +288,12 @@ protected:
     core::State<In2>* fromModel2;   ///< DOF of the master2
     core::State<Out>* toModel;      ///< DOF of the slave
 
-    ForceMask* maskFrom1;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
-    ForceMask* maskFrom2;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
-    ForceMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
 
-
-
-    bool J1Dirty, J2Dirty; ///< Does J needs to be updated?
-    SparseMatrixEigen1 eigenJacobian1;  ///< Assembled Jacobian matrix
+    SparseMatrixEigen1 eigenJacobian1, maskedEigenJacobian1;  ///< Assembled Jacobian matrix
     void updateJ1();
-    SparseMatrixEigen2 eigenJacobian2;  ///< Assembled Jacobian matrix
+    SparseMatrixEigen2 eigenJacobian2, maskedEigenJacobian2;  ///< Assembled Jacobian matrix
     void updateJ2();
+    void updateMaskedJ();
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
 
     SparseKMatrixEigen1 K;  ///< Assembled geometric stiffness matrix
@@ -336,7 +310,7 @@ protected:
     Data< unsigned > d_geometricStiffness;
 
 
-    //    void updateForceMask(); TODO
+    virtual void updateForceMask();
 };
 
 
