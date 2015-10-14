@@ -28,7 +28,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaMiscMapping/IdentityMultiMapping.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <iostream>
 
 namespace sofa
@@ -52,29 +51,39 @@ void IdentityMultiMapping<TIn, TOut>::init()
     Inherit::init();
 
     unsigned Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size;
+    static const unsigned N = std::min<unsigned>(Nin, Nout);
 
     for( unsigned i=0; i<baseMatrices.size(); i++ )
         delete baseMatrices[i];
-
     baseMatrices.resize( this->getFrom().size() );
-    typedef linearsolver::EigenSparseMatrix<TIn,TOut> Jacobian;
-    vector<Jacobian*> jacobians( this->getFrom().size() );
+
 
     unsigned offset = 0;
     for(unsigned i=0; i<baseMatrices.size(); i++ )
     {
-        baseMatrices[i] = jacobians[i] = new linearsolver::EigenSparseMatrix<TIn,TOut>;
+        baseMatrices[i] = new EigenMatrix;
 
-        size_t inmatrixsize = this->fromModels[i]->getSize()*Nin;
+        EigenMatrix& J = *static_cast<EigenMatrix*>(baseMatrices[i]);
 
-        jacobians[i]->resize( Nout*outSize, inmatrixsize ); // each jacobian has the same number of rows
+        size_t n = this->fromModels[i]->getSize();
 
-        // fill the jacobian
-        for(unsigned j=0; j<inmatrixsize; j++ )
-            jacobians[i]->insertBack( offset+j, j, (SReal)1. );
-        jacobians[i]->compress();
+        J.resize( Nout*outSize, Nin*n ); // each
 
-        offset += inmatrixsize;
+        J.compressedMatrix.reserve( n*N );
+
+        for( size_t i=0 ; i<n ; ++i )
+        {
+            for(unsigned r = 0; r < N; ++r)
+            {
+                const unsigned row = Nout * (offset+i) + r;
+                J.compressedMatrix.startVec( row );
+                const unsigned col = Nin * i + r;
+                J.compressedMatrix.insertBack( row, col ) = (OutReal)1;
+            }
+        }
+        J.compressedMatrix.finalize();
+
+        offset += n;
     }
 }
 
@@ -169,6 +178,41 @@ void IdentityMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*c
 template <class TIn, class TOut>
 const helper::vector<sofa::defaulttype::BaseMatrix*>* IdentityMultiMapping<TIn, TOut>::getJs()
 {
+// it looks like it is more costly to update the Jacobian matrix than using the full, unfiltered matrix in assembly
+//    size_t currentHash = this->maskTo[0]->getHash();
+//    if( previousMaskHash!=currentHash )
+//    {
+//        previousMaskHash = currentHash;
+//        unsigned offset = 0;
+
+//        unsigned Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size;
+//        static const unsigned N = std::min<unsigned>(Nin, Nout);
+
+//        for(unsigned i=0; i<baseMatrices.size(); i++ )
+//        {
+//            typename EigenMatrix::CompressedMatrix& J = static_cast<EigenMatrix*>(baseMatrices[i])->compressedMatrix;
+
+//            J.setZero();
+
+//            size_t n = this->getFrom()[i]->getSize();
+
+//            for( size_t k=0, kend=n ; k<kend ; ++k )
+//            {
+//                if( this->maskTo[0]->getEntry(offset+k) )
+//                {
+//                    for( size_t j=0 ; j<N ; ++j )
+//                    {
+//                        int row = (k+offset)*Nout+j;
+//                        int col = k*Nin+j;
+//                        J.insert( row, col ) = (OutReal)1;
+//                    }
+//                }
+//            }
+
+//            offset += n;
+//        }
+//    }
+
     return &baseMatrices;
 }
 

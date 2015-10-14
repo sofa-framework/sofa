@@ -337,9 +337,10 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
 template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::updateMaskedJ()
 {
-    if( previousMask!=this->maskTo[0]->getEntries() )
+    size_t currentHash = this->maskTo[0]->getHash();
+    if( previousMaskHash!=currentHash )
     {
-        previousMask = this->maskTo[0]->getEntries();
+        previousMaskHash = currentHash;
         maskedEigenJacobian1.resize(0,0);
         maskedEigenJacobian2.resize(0,0);
     }

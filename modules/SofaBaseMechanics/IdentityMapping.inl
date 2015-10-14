@@ -43,9 +43,33 @@ namespace mapping
 template<class TIn, class TOut>
 void IdentityMapping<TIn, TOut>::init()
 {
-    this->toModel->resize( this->fromModel->getSize() );
+    const unsigned n = this->fromModel->getSize();
+
+    this->toModel->resize( n );
 
     Inherit::init();
+
+
+    // build J
+    {
+        static const unsigned N = std::min<unsigned>(NIn, NOut);
+
+        J.compressedMatrix.resize( n*NOut, n*NIn );
+        J.compressedMatrix.reserve( n*N );
+
+        for( size_t i=0 ; i<n ; ++i )
+        {
+            for(unsigned r = 0; r < N; ++r)
+            {
+                const unsigned row = NOut * i + r;
+                J.compressedMatrix.startVec( row );
+                const unsigned col = NIn * i + r;
+                J.compressedMatrix.insertBack( row, col ) = (OutReal)1;
+            }
+        }
+        J.compressedMatrix.finalize();
+    }
+
 }
 
 template <class TIn, class TOut>
@@ -53,8 +77,6 @@ void IdentityMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
 {
     helper::WriteOnlyAccessor< Data<VecCoord> > out = dOut;
     helper::ReadAccessor< Data<InVecCoord> > in = dIn;
-
-//    out.resize(in.size());
 
     for(unsigned int i=0; i<out.size(); i++)
     {
@@ -127,107 +149,48 @@ void IdentityMapping<TIn, TOut>::handleTopologyChange()
     if ( this->toModel && this->fromModel && this->toModel->getSize() != this->fromModel->getSize()) this->init();
 }
 
+//template <class TIn, class TOut>
+//void IdentityMapping<TIn, TOut>::updateJ()
+//{
+//    size_t currentHash = this->maskTo->getHash();
+//    if(  previousMaskHash!=currentHash )
+//    {
+//        previousMaskHash = currentHash;
+
+//        assert( this->fromModel->getSize() == this->toModel->getSize());
+
+//        static const unsigned N = std::min<unsigned>(NIn, NOut);
+
+//        J.compressedMatrix.setZero();
+
+//        for( size_t i=0 ; i<this->toModel->getSize() ; ++i )
+//        {
+//            for(unsigned r = 0; r < N; ++r)
+//            {
+//                if( this->maskTo->getEntry(i) )
+//                {
+//                    const unsigned row = NOut * i + r;
+//                    const unsigned col = NIn * i + r;
+//                    J.compressedMatrix.insert( row, col ) = (OutReal)1;
+//                }
+//            }
+//        }
+//    }
+//}
+
+
 template <class TIn, class TOut>
 const sofa::defaulttype::BaseMatrix* IdentityMapping<TIn, TOut>::getJ()
 {
-    const unsigned int outStateSize = this->toModel->getSize();
-    const unsigned int  inStateSize = this->fromModel->getSize();
-    assert(outStateSize == inStateSize);
-
-    if (matrixJ.get() == 0 || updateJ)
-    {
-        updateJ = false;
-        if (matrixJ.get() == 0 || (unsigned int)matrixJ->rowBSize() != outStateSize || (unsigned int)matrixJ->colBSize() != inStateSize)
-        {
-            matrixJ.reset(new MatrixType(outStateSize * NOut, inStateSize * NIn));
-        }
-        else
-        {
-            matrixJ->clear();
-        }
-
-        for( size_t i=0 ; i<this->maskTo->size() ; ++i)
-        {
-            if( this->maskTo->getEntry(i) )
-            {
-                MBloc& block = *matrixJ->wbloc(i, i, true);
-                IdentityMappingMatrixHelper<NOut, NIn, Real>::setMatrix(block);
-            }
-        }
-    }
-    return matrixJ.get();
+//    updateJ();
+    return &J;
 }
-
-template<int N, int M, class Real>
-struct IdentityMappingMatrixHelper
-{
-    template <class Matrix>
-    static void setMatrix(Matrix& mat)
-    {
-        for(int r = 0; r < N; ++r)
-        {
-            for(int c = 0; c < M; ++c)
-            {
-                mat[r][c] = (Real) 0;
-            }
-            if( r<M ) mat[r][r] = (Real) 1.0;
-        }
-    }
-};
-
 
 template <class TIn, class TOut>
 const typename IdentityMapping<TIn, TOut>::js_type* IdentityMapping<TIn, TOut>::getJs()
 {
-    if( !eigen.compressedMatrix.nonZeros() || updateJ ) {
-		updateJ = false;
-
-		assert( this->fromModel->getSize() == this->toModel->getSize());
-
-		const unsigned n = this->fromModel->getSize();
-
-		// each block (input i, output j) has only its top-left
-		// principal submatrix filled with identity
-		
-		const unsigned rows = n * NOut;
-        const unsigned cols = n * NIn;
-
-        static const unsigned N = std::min<unsigned>(NIn, NOut);
-
-
-        eigen.compressedMatrix.resize( rows, cols );
-        eigen.compressedMatrix.setZero();
-        eigen.compressedMatrix.reserve( rows );
-
-        for( size_t i=0 ; i<this->maskTo->size() ; ++i)
-        {
-            if( !this->maskTo->getEntry(i) )
-            {
-                // do not forget to add empty rows (mandatory for Eigen)
-                for(unsigned r = 0; r < N; ++r) {
-                    const unsigned row = NOut * i + r;
-                    eigen.compressedMatrix.startVec( row );
-                }
-                continue;
-            }
-
-            for(unsigned r = 0; r < N; ++r) {
-				const unsigned row = NOut * i + r;
-
-				eigen.compressedMatrix.startVec( row );
-
-				const unsigned col = NIn * i + r;
-				eigen.compressedMatrix.insertBack( row, col ) = 1;
-			}
-			
-		}
-		
-		eigen.compressedMatrix.finalize();
-    }
-
-	// std::cout << eigen.compressedMatrix << std::endl;
-
-	return &js;
+//    updateJ();
+    return &Js;
 }
 
 
@@ -235,7 +198,7 @@ template<class TIn, class TOut>
 void IdentityMapping<TIn, TOut>::updateForceMask()
 {
     for( size_t i = 0 ; i<this->maskTo->size() ; ++i )
-        if( this->maskTo->getEntry(i) ) this->maskFrom->insertEntry( i );
+        if( this->maskTo->getEntry(i) )this->maskFrom->insertEntry( i );
 
 }
 

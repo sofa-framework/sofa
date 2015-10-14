@@ -361,7 +361,7 @@ protected :
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
     void updateJ();
     void updateMaskedJ();
-    typename ForceMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence (TODO add such a mechanism directly in ParticleMask?)
+    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
 
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
 
