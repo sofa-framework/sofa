@@ -375,13 +375,16 @@ void BaseDeformationMappingT<JacobianBlockType>::init()
     baseMatrices.resize( 1 ); // just a wrapping for getJs()
     baseMatrices[0] = &eigenJacobian;
 
-    { // TODO this must be done before resizeOut() but is done again in Inherit::init();
+    {
+        // TODO this must be done before resizeOut() but is done again in Inherit::init();
         // also clean the numerous calls to apply
         core::behavior::BaseMechanicalState *state;
         if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModel.get())))
             this->maskFrom = &state->forceMask;
         if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModel.get())))
             this->maskTo = &state->forceMask;
+        else
+            this->setNonMechanical();
     }
 
     resizeOut();
