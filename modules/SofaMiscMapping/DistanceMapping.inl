@@ -598,7 +598,7 @@ void DistanceMultiMapping<TIn, TOut>::applyJ(const helper::vector<OutVecDeriv*>&
     // let the first valid jacobian set its contribution    out = J_0 * in_0
     for( ; i < n ; ++i ) {
         const SparseMatrixEigen& J = *static_cast<SparseMatrixEigen*>(baseMatrices[i]);
-        if( J.rowSize() > 0 && this->maskTo[0]->getActivatedEntry(i) ) {
+        if( J.rowSize() > 0 && (!this->maskTo[0]->isActivated() || this->maskTo[0]->getEntry(i) ) ) {
             J.mult(*outDeriv[0], *inDeriv[i]);
             break;
         }
@@ -609,7 +609,7 @@ void DistanceMultiMapping<TIn, TOut>::applyJ(const helper::vector<OutVecDeriv*>&
     // the next valid jacobians will add their contributions    out += J_i * in_i
     for( ; i < n ; ++i ) {
         const SparseMatrixEigen& J = *static_cast<SparseMatrixEigen*>(baseMatrices[i]);
-        if( J.rowSize() > 0 && this->maskTo[0]->getActivatedEntry(i) )
+        if( J.rowSize() > 0 && (!this->maskTo[0]->isActivated() || this->maskTo[0]->getEntry(i) ) )
             J.addMult(*outDeriv[0], *inDeriv[i]);
     }
 }

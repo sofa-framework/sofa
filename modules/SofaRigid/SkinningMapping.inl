@@ -347,7 +347,7 @@ void SkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mpa
     {
         for( size_t i=0 ; i<this->maskTo->size() ; ++i)
         {
-            if( !this->maskTo->getActivatedEntry(i) ) continue;
+            if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
 
             out[i] = OutDeriv();
 
@@ -365,7 +365,7 @@ void SkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mpa
     {
         for( size_t i=0 ; i<this->maskTo->size() ; ++i)
         {
-            if( !this->maskTo->getActivatedEntry(i) ) continue;
+            if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
 
             out[i] = OutDeriv();
 

@@ -70,7 +70,7 @@ void IdentityMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams
 
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
-        if( this->maskTo->getActivatedEntry(i) )
+        if( !this->maskTo->isActivated() || this->maskTo->getEntry(i) )
             helper::eq(out[i], in[i]);
     }
 }

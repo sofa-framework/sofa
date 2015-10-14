@@ -42,15 +42,17 @@ namespace helper
         mask.assign( size, value );
     }
 
-    bool StateMask::getActivatedEntry( size_t index ) const
-    {
-        return activated ? mask[index] : true; // a 'if' at each check rather than a single 'if' per mapping function is the price to pay no to have duplicated code in mappings
-        // TODO: implementing it with a fonction pointer?
-    }
-
     void StateMask::activate( bool a )
     {
         activated = a;
+    }
+
+    size_t StateMask::nbActiveDofs() const
+    {
+        size_t t = 0;
+        for( size_t i = 0 ; i<size() ; ++i )
+            if( getEntry(i) ) t++;
+        return t;
     }
 
 

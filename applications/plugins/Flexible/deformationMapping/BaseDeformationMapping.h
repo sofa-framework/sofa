@@ -167,6 +167,7 @@ public:
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
+    typedef typename Out::Real OutReal;
     enum { spatial_dimensions = Out::spatial_dimensions };
     enum { material_dimensions = OutDataTypesInfo<Out>::material_dimensions };
     //@}
@@ -356,10 +357,10 @@ protected :
     virtual void initJacobianBlocks()=0;
     virtual void initJacobianBlocks(const InVecCoord& /*inCoord*/, const OutVecCoord& /*outCoord*/){ std::cout << "Only implemented in LinearMapping for now." << std::endl;}
 
-    SparseMatrixEigen eigenJacobian;  ///< Assembled Jacobian matrix
+    SparseMatrixEigen eigenJacobian, maskedEigenJacobian;  ///< Assembled Jacobian matrix
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
-    bool Jdirty; ///< Does J needs to be updated?
     void updateJ();
+    void updateMaskedJ();
     typename ForceMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence (TODO add such a mechanism directly in ParticleMask?)
 
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
@@ -368,7 +369,7 @@ protected :
     const defaulttype::ResizableExtVector<core::topology::BaseMeshTopology::Triangle> *extTriangles;
     const defaulttype::ResizableExtVector<int> *extvertPosIdx;
 
-//    void updateForceMask(); TODO
+    void updateForceMask();
 
 public:
 
