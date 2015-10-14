@@ -276,7 +276,7 @@ struct AssemblyVisitor::process_helper {
 
         if( c->master() || !c->mechanical ) return;
 
-        rmat& Jc = full[ curr ];
+        rmat& Jc = full[ curr ]; // (output) full mapping from independent dofs to mapped dofs c
         assert( empty(Jc) );
 
 
@@ -295,13 +295,21 @@ struct AssemblyVisitor::process_helper {
 
             // parent data chunk/mapping matrix
             const chunk* p = vp.data;
-            rmat& Jp = full[ vp.dofs ];
+            rmat& Jp = full[ vp.dofs ]; // (input) full mapping from independent dofs to parent p of dofs c
             {
                 // mapping blocks
                 MySPtr<rmat> jc( convertSPtr<rmat>( g[*e.first].data->J ) );
 
-//                if( zero( *jc ) ) MAINLOGGER( Warning, "Empty Jacobian for mapping: "<<((simulation::Node*)curr->getContext())->mechanicalMapping->getPathName()
+                if( zero( *jc ) )
+                {
+                    continue;
+
+                    // Note a Jacobian can be null in a multimapping (child only mapped from one parent)
+                    // or when the corresponding mask is empty
+//                    MAINLOGGER( Info, "Empty Jacobian for mapping: "<<((simulation::Node*)curr->getContext())->mechanicalMapping->getPathName()
 //                                              << std::endl << "mask=\""<<curr->forceMask <<"\"", "AssemblyVisitor" )
+                }
+
 
                 // parent is not mapped: we put a shift matrix with the
                 // correct offset as its full mapping matrix, so that its

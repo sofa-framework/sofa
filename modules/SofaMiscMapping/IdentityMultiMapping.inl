@@ -126,7 +126,7 @@ void IdentityMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mpara
 
         for(unsigned int j=0; j<in.size(); j++)
         {
-            if( this->maskTo[0]->getActivatedEntry(offset+j) )
+            if( !this->maskTo[0]->isActivated() || this->maskTo[0]->getEntry(offset+j) )
                 helper::eq( out[offset+j], in[j]);
         }
         offset += in.size();

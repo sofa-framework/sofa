@@ -1578,7 +1578,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
 
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
-        if( !this->maskTo->getActivatedEntry(i) ) continue;
+        if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
 
         // 1D elements
         if (i < idxStart1)
@@ -1672,7 +1672,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJ ( typename Out::VecDer
 
     for( size_t index=0 ; index<this->maskTo->size() ; ++index)
     {
-        if( !this->maskTo->getActivatedEntry(index) ) continue;
+        if( this->maskTo->isActivated() && !this->maskTo->getEntry(index) ) continue;
 
 #ifdef SOFA_NEW_HEXA
         const topology::RegularGridTopology::Hexa cube = this->fromTopology->getHexaCopy ( this->map[index].in_index );
@@ -1710,7 +1710,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJ ( typename Out::VecDeri
 
     for( size_t index=0 ; index<this->maskTo->size() ; ++index)
     {
-        if( !this->maskTo->getActivatedEntry(index) ) continue;
+        if( this->maskTo->isActivated() && !this->maskTo->getEntry(index) ) continue;
 
 #ifdef SOFA_NEW_HEXA
         const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( this->map[index].in_index );
@@ -1751,7 +1751,7 @@ void BarycentricMapperEdgeSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& 
 
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
-        if( !this->maskTo->getActivatedEntry(i) ) continue;
+        if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
 
         const Real fx = map.getValue()[i].baryCoords[0];
         int index = map.getValue()[i].in_index;
@@ -1770,7 +1770,7 @@ void BarycentricMapperTriangleSetTopology<In,Out>::applyJ ( typename Out::VecDer
 
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
-        if( !this->maskTo->getActivatedEntry(i) ) continue;
+        if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
 
         const Real fx = map.getValue()[i].baryCoords[0];
         const Real fy = map.getValue()[i].baryCoords[1];
@@ -1791,7 +1791,7 @@ void BarycentricMapperQuadSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& 
 
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
-        if( !this->maskTo->getActivatedEntry(i) ) continue;
+        if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
 
         const Real fx = map.getValue()[i].baryCoords[0];
         const Real fy = map.getValue()[i].baryCoords[1];
@@ -1814,7 +1814,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJ ( typename Out::Vec
 
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
-        if( !this->maskTo->getActivatedEntry(i) ) continue;
+        if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
 
         const Real fx = map.getValue()[i].baryCoords[0];
         const Real fy = map.getValue()[i].baryCoords[1];
@@ -1837,7 +1837,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyJ ( typename Out::VecD
 
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
-        if( !this->maskTo->getActivatedEntry(i) ) continue;
+        if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
 
         const Real fx = map.getValue()[i].baryCoords[0];
         const Real fy = map.getValue()[i].baryCoords[1];

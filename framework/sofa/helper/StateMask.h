@@ -30,7 +30,7 @@
 #ifdef Success
 #undef Success // dirty workaround to cope with the (dirtier) X11 define. See http://eigen.tuxfamily.org/bz/show_bug.cgi?id=253
 #endif
-#include <Eigen/Dense>
+#include <Eigen/SparseCore>
 
 
 namespace sofa
@@ -55,7 +55,7 @@ namespace helper
  *
  *     - (Multi)Mappings
  *              they must propagate the mask from their child (tomodel) to their parents (frommodels)
- *              ApplyJ shoud use getActivatedEntry to check if a child dof is active (as in some case, every dofs must be updated, do not use unsafe getEntry)
+ *              ApplyJ shoud check is the mask is active and use getEntry to check if a child dof is active
  *              ApplyJT shoud use getEntry to check if a child dof is active and CAN insert parent dofs in the parent mask.
  *              ApplyDJT, getJ/getJs shoud use getEntry to check if a child dof is active
  *              updateForceMask() must insert only active parent dofs in the parent mask (or should add nothing if parents have already been added in ApplyJT)
@@ -76,24 +76,20 @@ public:
     /// the mask can be deactivated when the mappings must be applied to every dofs (e.g. propagatePosition)
     /// it must be activated when the mappings can be limited to active dofs
     void activate( bool a );
-    bool isActivated() const { return activated; }
+    inline bool isActivated() const { return activated; }
 
     /// add the given dof index in the mask
-    void insertEntry( size_t index ) { mask[index]=true; }
+    inline void insertEntry( size_t index ) { mask[index]=true; }
 
     /// is the given dof index in the mask?
-    /// @warning always returns the mask value w/o checking if the mask is activated (for Mapping::applyJT/getJs)
-    bool getEntry( size_t index ) const { return mask[index]; } // unsafe to be use where we do not care if the mapping in deactivated
-
-    /// is the given dof index activated? If the mask is not activated it always returns true, otherwise it gives the real mask value.
-    /// useful for Mapping::applyJ
-    bool getActivatedEntry( size_t index ) const;
+    /// @warning always returns the mask value w/o checking if the mask is activated (ie do no forget to check if mask is activated in Mapping::applyJ)
+    inline bool getEntry( size_t index ) const { return mask[index]; } // unsafe to be use where we do not care if the mapping in deactivated
 
     /// getting mask entries is useful for advanced uses.
     const InternalStorage& getEntries() const { return mask; }
 
     void resize( size_t size );
-    void clear() { mask.clear(); }
+    inline void clear() { mask.clear(); }
     size_t size() const { return mask.size(); }
 
     inline friend std::ostream& operator<< ( std::ostream& os, const StateMask& sm )
@@ -102,17 +98,44 @@ public:
     }
 
 
-    /// get the mask converted to a eigen vector
-    /// useful to build a projection matrix
+    /// filtering the given input matrix by using the mask as a diagonal projection matrix
+    /// output = mask.asDiagonal() * input
     template<class Real>
-    Eigen::Matrix<Real, Eigen::Dynamic, 1> toEigenVec() const
+    void maskedMatrix( Eigen::SparseMatrix<Real,Eigen::RowMajor>& output, const Eigen::SparseMatrix<Real,Eigen::RowMajor>& input, size_t blockSize=1 ) const
     {
-        typedef Eigen::Matrix<Real, Eigen::Dynamic, 1> vec;
-        vec v( size() );
-        for( size_t i=0 ; i<size() ; ++i )
-            v[i] = mask[i] ? (Real)1 : (Real)0;
-        return v;
+        typedef Eigen::SparseMatrix<Real,Eigen::RowMajor> Mat;
+
+        output.resize( input.rows(), input.cols() );
+
+        for( size_t k=0 ; k<mask.size() ; ++k )
+        {
+            if( mask[k] )
+            {
+                for( size_t i=0 ; i<blockSize ; ++i )
+                {
+                    int row = k*blockSize+i;
+                    output.startVec( row );
+                    for( typename Mat::InnerIterator it(input,row) ; it ; ++it )
+                    {
+                        output.insertBack( row, it.col() ) = it.value();
+                    }
+                }
+
+            }
+            else
+            {
+                // do not forget to add empty lines
+                for( size_t i=0 ; i<blockSize ; ++i )
+                    output.startVec( k*blockSize+i );
+            }
+        }
+        output.finalize();
     }
+
+
+
+    /// return the number of dofs in the mask
+    size_t nbActiveDofs() const;
 
 
 protected:

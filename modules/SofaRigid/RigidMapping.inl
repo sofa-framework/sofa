@@ -365,7 +365,7 @@ void RigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/,
 
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
-        if( !this->maskTo->getActivatedEntry(i) ) continue;
+        if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
 
         unsigned int rigidIndex = getRigidIndex(i);
         out[i] = velocityAtRotatedPoint( in[rigidIndex], rotatedPoints[i] );

@@ -297,13 +297,10 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
 
     for( size_t i=0 ; i<maskTo->size() ; ++i)
     {
-        if( maskTo->getActivatedEntry(i) )
-        {
-            eigenJacobian1.beginBlockRow(i);
-            for(size_t j=0; j<jacobian1[i].size(); j++)
-                eigenJacobian1.createBlock( this->f_index1.getValue()[i][j], jacobian1[i][j].getJ());
-            eigenJacobian1.endBlockRow();
-        }
+        eigenJacobian1.beginBlockRow(i);
+        for(size_t j=0; j<jacobian1[i].size(); j++)
+            eigenJacobian1.createBlock( this->f_index1.getValue()[i][j], jacobian1[i][j].getJ());
+        eigenJacobian1.endBlockRow();
     }
 
     eigenJacobian1.compress();
@@ -316,13 +313,10 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
 
     for( size_t i=0 ; i<maskTo->size() ; ++i)
     {
-        if( maskTo->getActivatedEntry(i) )
-        {
-            eigenJacobian2.beginBlockRow(i);
-            for(size_t j=0; j<jacobian2[i].size(); j++)
-                eigenJacobian2.createBlock( this->f_index2.getValue()[i][j], jacobian2[i][j].getJ());
-            eigenJacobian2.endBlockRow();
-        }
+        eigenJacobian2.beginBlockRow(i);
+        for(size_t j=0; j<jacobian2[i].size(); j++)
+            eigenJacobian2.createBlock( this->f_index2.getValue()[i][j], jacobian2[i][j].getJ());
+        eigenJacobian2.endBlockRow();
     }
 
     eigenJacobian2.compress();
@@ -464,7 +458,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 
         for( size_t i=0 ; i<maskTo->size() ; ++i)
         {
-            if( maskTo->getActivatedEntry(i) )
+            if( !this->maskTo->isActivated() || this->maskTo->getEntry(i) )
             {
                 out[i]=OutDeriv();
                 for(size_t j=0; j<jacobian1[i].size(); j++)
@@ -498,7 +492,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 
         for( size_t i=0 ; i<maskTo->size() ; ++i)
         {
-            if( maskTo->getActivatedEntry(i) )
+            if( maskTo->getEntry(i) )
             {
                 for(size_t j=0; j<jacobian1[i].size(); j++)
                 {

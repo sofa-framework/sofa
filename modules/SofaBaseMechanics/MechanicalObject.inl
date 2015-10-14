@@ -1398,7 +1398,7 @@ void MechanicalObject<DataTypes>::writeState(std::ostream& out)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::beginIntegration(SReal /*dt*/)
 {
-//    this->forceMask.activate(false);
+    this->forceMask.activate(false);
 }
 
 template <class DataTypes>

@@ -192,7 +192,7 @@ void CatmullRomSplineMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalPar
 
     for( size_t i = 0 ; i<this->maskTo->size() ; ++i )
     {
-        if( this->maskTo->getActivatedEntry(i) )
+        if( !this->maskTo->isActivated() || this->maskTo->getEntry(i) )
         {
             out[i] = OutDeriv();
             for ( unsigned int j=0; j<4 ; j++ )  out[i] += in[m_index[i][j]] * m_weight[i][j] ;

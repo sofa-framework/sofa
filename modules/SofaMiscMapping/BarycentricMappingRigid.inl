@@ -237,7 +237,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJ( typename Out:
 
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
-        if( !this->maskTo->getActivatedEntry(i) ) continue;
+        if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
 
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];

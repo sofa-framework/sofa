@@ -297,7 +297,7 @@ void RigidRigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mpara
 
             for( size_t i=0 ; i<this->maskTo->size() ; ++i)
             {
-                if( !this->maskTo->getActivatedEntry(i) ) continue;
+                if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
 
                 getVCenter(childVelocities[i]) =  v + cross(omega,pointsR0[i].getCenter());
                 getVOrientation(childVelocities[i]) = omega;
@@ -328,7 +328,7 @@ void RigidRigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mpara
 
             for(unsigned int ito=0; ito<val; ito++,cptchildVelocities++)
             {
-                if( !this->maskTo->getActivatedEntry(cptchildVelocities) ) continue;
+                if( this->maskTo->isActivated() && !this->maskTo->getEntry(cptchildVelocities) ) continue;
 
                 getVCenter(childVelocities[cptchildVelocities]) =  v + cross(omega,(pointsR0[cptchildVelocities]).getCenter());
                 getVOrientation(childVelocities[cptchildVelocities]) = omega;
@@ -350,7 +350,7 @@ void RigidRigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mpara
 
             for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++,cptchildVelocities++)
             {
-                if( !this->maskTo->getActivatedEntry(cptchildVelocities) ) continue;
+                if( this->maskTo->isActivated() && !this->maskTo->getEntry(cptchildVelocities) ) continue;
 
                 getVCenter(childVelocities[cptchildVelocities]) =  v + cross(omega,(pointsR0[cptchildVelocities]).getCenter());
                 getVOrientation(childVelocities[cptchildVelocities]) = omega;
