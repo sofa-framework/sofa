@@ -25,11 +25,17 @@
 
 #include "StateMask.h"
 
+#include <boost/functional/hash.hpp>
+
+
+
 namespace sofa
 {
 
 namespace helper
 {
+
+    static boost::hash<typename StateMask::InternalStorage> s_maskHash;
 
     void StateMask::resize( size_t size )
     {
@@ -53,6 +59,11 @@ namespace helper
         for( size_t i = 0 ; i<size() ; ++i )
             if( getEntry(i) ) t++;
         return t;
+    }
+
+    size_t StateMask::getHash() const
+    {
+        return s_maskHash(mask);
     }
 
 
