@@ -434,14 +434,16 @@ void BaseDeformationMappingT<JacobianBlockType>::updateJ()
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::updateMaskedJ()
 {
-    if( previousMask!=this->maskTo->getEntries() )
+    size_t currentHash = this->maskTo->getHash();
+    if( previousMaskHash!=currentHash )
     {
-        previousMask = this->maskTo->getEntries();
+        previousMaskHash = currentHash;
         maskedEigenJacobian.resize(0,0);
     }
     if( !maskedEigenJacobian.rows() )
     {
         this->maskTo->maskedMatrix( maskedEigenJacobian.compressedMatrix, eigenJacobian.compressedMatrix, Out::deriv_total_size );
+        sout<<"updateMaskedJ "<<maskedEigenJacobian.compressedMatrix.nonZeros()<<sendl;
     }
 }
 

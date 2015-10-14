@@ -27,7 +27,7 @@
 #include "config.h"
 
 #include <sofa/core/MultiMapping.h>
-//#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 namespace sofa
 {
@@ -60,6 +60,7 @@ public:
     typedef typename In::Deriv InDeriv;
     typedef typename In::MatrixDeriv InMatrixDeriv;
     typedef typename InCoord::value_type Real;
+    typedef typename OutCoord::value_type OutReal;
     typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
     typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
 
@@ -91,6 +92,9 @@ protected :
     virtual ~IdentityMultiMapping();
 
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+
+    typedef linearsolver::EigenSparseMatrix<TIn,TOut> EigenMatrix;
+//    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
 
 
 };
