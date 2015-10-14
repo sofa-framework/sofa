@@ -35,6 +35,9 @@
 #include <image/image_gui/config.h>
 #include <typeinfo>
 
+#include <QDockWidget>
+#include <QMainWindow>
+
 namespace sofa
 {
 namespace gui
@@ -97,7 +100,8 @@ public:
     bool createLayout( QLayout* layout)
     {
         if ( container_layout != NULL ) return false;
-        container_layout = new Layout(layout);
+        container_layout = new Layout();
+        layout->addItem(container_layout);
         return true;
     }
 
@@ -169,7 +173,7 @@ public:
             //connect(button,SIGNAL(clicked()),main,SLOT(show()));
             connect(button,SIGNAL(clicked()),main,SLOT(showMaximized()));
 
-            container_layout->add(button);
+            container_layout->addWidget(button);
         }
         
        // if(setting) container_layout->add(setting->getWidget());

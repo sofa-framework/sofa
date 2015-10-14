@@ -1,8 +1,17 @@
+
+#include "labelpointimagetoolbox.h"
+
 #include <QString>
+#include <QGroupBox>
+#include <QPushButton>
+
+#undef Bool // conflicts with macro Bool in Xlib.h
+#undef CursorShape // conflicts with macro CursorShape in X.h
+
+#include <QGraphicsItem>
 
 #include "labelpointimagetoolboxaction.h"
 
-#include "labelpointimagetoolbox.h"
 
 namespace sofa
 {

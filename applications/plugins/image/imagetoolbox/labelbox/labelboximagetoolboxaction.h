@@ -3,7 +3,7 @@
 #ifndef LABELBOXIMAGETOOLBOXACTION_H
 #define LABELBOXIMAGETOOLBOXACTION_H
 
-#include <QtGui>
+#include <QPushButton>
 #include <QGraphicsLineItem>
 
 

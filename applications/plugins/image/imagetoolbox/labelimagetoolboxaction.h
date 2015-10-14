@@ -1,7 +1,8 @@
 #ifndef LABELIMAGETOOLBOXACTION_H
 #define LABELIMAGETOOLBOXACTION_H
 
-#include <QtGui>
+#include <QVBoxLayout>
+#include <QGraphicsScene>
 #include <image/image_gui/config.h>
 #include <sofa/defaulttype/VecTypes.h>
 //#include "labelimagetoolbox.h"

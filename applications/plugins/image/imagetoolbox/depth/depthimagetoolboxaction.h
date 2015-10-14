@@ -1,8 +1,8 @@
 #ifndef DEPTHIMAGETOOLBOXACTION_H
 #define DEPTHIMAGETOOLBOXACTION_H
 
-#include <QtGui>
-
+#include <QFormLayout>
+#include <QLineEdit>
 
 #include "../labelimagetoolboxaction.h"
 #include "../labelgrid/labelgridimagetoolbox.h"

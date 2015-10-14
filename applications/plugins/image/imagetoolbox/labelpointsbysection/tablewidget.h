@@ -1,8 +1,13 @@
 #ifndef TABLEWIDGET_H
 #define TABLEWIDGET_H
 
-#include <QtGui>
+#include <QGroupBox>
+#undef None // conflict with X11/X.h
+#include <QTableWidget>
+#include <QPushButton>
+#include <QComboBox>
 #include <QMap>
+#include <QVBoxLayout>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <iostream>

@@ -1,12 +1,14 @@
 
 
+#include "labelpointsbysectionimagetoolbox.h"
+
 #include <QString>
-#include <QtGui>
 #include <QPointF>
+#include <QGroupBox>
+#include <QMessageBox>
 
 #include "labelpointsbysectionimagetoolboxaction.h"
 
-#include "labelpointsbysectionimagetoolbox.h"
 #include <sofa/helper/rmath.h>
 
 

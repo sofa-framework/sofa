@@ -1,8 +1,11 @@
 #ifndef CONTOURIMAGETOOLBOXACTION_H
 #define CONTOURIMAGETOOLBOXACTION_H
 
-#include <QtGui>
+#include <QPushButton>
+#include <QSpinBox>
 #include <QAction>
+#include <QGroupBox>
+
 #include <QGraphicsLineItem>
 
 

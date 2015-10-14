@@ -29,23 +29,13 @@
 #include <sofa/gui/qt/DataWidget.h>
 #include <sofa/gui/qt/SimpleDataWidget.h>
 
-#ifdef SOFA_QT4
 #include <QLabel>
 #include <QImage>
 #include <QSlider>
 #include <QString>
 #include <QGraphicsView>
 #include <QGraphicsScene>
-#include <QtGui>
-#else
-#include <qlabel.h>
-#include <qimage.h>
-#include <qslider.h>
-#include <qstring.h>
-#include <qgraphicsView.h>
-#include <qgraphicsscene.h>
-#include <qtgui.h>
-#endif
+
 
 #include "../ImageTypes.h"
 #include <sofa/helper/vector.h>
@@ -103,16 +93,16 @@ public:
 
         QHBoxLayout *layout = new QHBoxLayout(parent);
         layout->setMargin(0);
-        layout->add(label1);
+        layout->addWidget(label1);
         layout->addStretch();
-        layout->add(label2);
+        layout->addWidget(label2);
         layout->addStretch();
-        layout->add(label3);
+        layout->addWidget(label3);
         widget = new QWidget(parent);
         widget->setLayout(layout);
     }
 
-    virtual ~THistogramSetting() {};
+    virtual ~THistogramSetting() {}
 
     void readFromData(const Histotype& d0)
     {
@@ -279,9 +269,9 @@ public:
         QHBoxLayout *layout = new QHBoxLayout(this);
         layout->setMargin(0);
         layout->setSpacing(10);
-        layout->add(labelName);
-        layout->add(slider);
-        layout->add(label);
+        layout->addWidget(labelName);
+        layout->addWidget(slider);
+        layout->addWidget(label);
     }
 
     void setRange(const int minimum, const int maximum) 	{	slider->setRange(minimum,maximum); }
@@ -336,7 +326,8 @@ public:
     bool createLayout( QLayout* layout)
     {
         if ( container_layout != NULL ) return false;
-        container_layout = new Layout(layout);
+        container_layout = new Layout();
+        layout->addItem(container_layout);
         return true;
     }
 
@@ -364,9 +355,9 @@ public:
     void insertWidgets()
     {
         assert(container_layout);
-        if(graph) container_layout->add(graph);
-        if(setting) container_layout->add(setting->getWidget());
-        if(options) container_layout->add(options);
+        if(graph) container_layout->addWidget(graph);
+        if(setting) container_layout->addWidget(setting->getWidget());
+        if(options) container_layout->addWidget(options);
     }
 };
 
