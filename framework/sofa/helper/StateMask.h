@@ -109,24 +109,15 @@ public:
 
         for( size_t k=0 ; k<mask.size() ; ++k )
         {
-            if( mask[k] )
+            for( size_t i=0 ; i<blockSize ; ++i )
             {
-                for( size_t i=0 ; i<blockSize ; ++i )
+                int row = k*blockSize+i;
+                output.startVec( row );
+                if( mask[k] )
                 {
-                    int row = k*blockSize+i;
-                    output.startVec( row );
                     for( typename Mat::InnerIterator it(input,row) ; it ; ++it )
-                    {
                         output.insertBack( row, it.col() ) = it.value();
-                    }
                 }
-
-            }
-            else
-            {
-                // do not forget to add empty lines
-                for( size_t i=0 ; i<blockSize ; ++i )
-                    output.startVec( k*blockSize+i );
             }
         }
         output.finalize();
@@ -136,6 +127,8 @@ public:
 
     /// return the number of dofs in the mask
     size_t nbActiveDofs() const;
+
+    size_t getHash() const;
 
 
 protected:
