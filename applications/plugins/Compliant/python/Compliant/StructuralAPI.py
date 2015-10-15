@@ -334,8 +334,10 @@ class GenericRigidJoint:
         def __init__(self, node, mask, forces):
             self.node = node.createChild( "controller" )
 
-            position = [0] * len(mask)
-            points = numpy.arange(0,len(mask)+1,1)
+            size = sum(x!=0 for x in mask)
+
+            position = [0] * size
+            points = numpy.arange(0,size,1)
 
             self.dofs = self.node.createObject('MechanicalObject', template='Vec1'+template_suffix, name='dofs', position=concat(position))
             self.mapping = self.node.createObject('MaskMapping', dofs=concat(mask))
