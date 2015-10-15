@@ -38,6 +38,8 @@
 # Files created by QtCreator
 CMakeLists.txt.user*
 
+# custom cmake file
+custom.cmake
 
 # anything user-specific (as opposed to repository-specific) should go
 # to .git/info/exclude instead of .gitignore. Also, .gitignore files
