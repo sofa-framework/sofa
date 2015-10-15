@@ -122,10 +122,9 @@ class RigidBody:
         if isFixed and self.fixedConstraint is None:
             self.fixedConstraint = self.node.createObject("FixedConstraint", name="fixedConstraint")
             self.dofs.velocity=[0,0,0,0,0,0]
-            self.node.init()
+            self.fixedConstraint.init()
         elif not isFixed and not self.fixedConstraint is None:
             self.node.removeObject(self.fixedConstraint)
-            self.node.init()
             self.fixedConstraint=None
 
     class CollisionMesh:
