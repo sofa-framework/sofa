@@ -1539,12 +1539,12 @@ Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes
         vectorsDeriv[v.index] = new Data< VecDeriv >;
         if (f_reserve.getValue() > 0)
         {
-            vectorsDeriv[v.index]->beginEdit()->reserve(f_reserve.getValue());
+            vectorsDeriv[v.index]->beginWriteOnly()->reserve(f_reserve.getValue());
             vectorsDeriv[v.index]->endEdit();
         }
         if (vectorsDeriv[v.index]->getValue().size() != (size_t)getSize())
         {
-            vectorsDeriv[v.index]->beginEdit()->resize( getSize() );
+            vectorsDeriv[v.index]->beginWriteOnly()->resize( getSize() );
             vectorsDeriv[v.index]->endEdit();
         }
     }
@@ -1776,12 +1776,10 @@ void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params
 {
     Data< VecCoord >* vec_d = this->write(vId);
 
-    if (!vec_d->isSet(params))
+    if (!vec_d->isSet(params) || vec_d->getValue().empty())
     {
         vec_d->forceSet(params);
-
-        if (vSrcId != core::ConstVecCoordId::null())
-            vOp(params, vId, vSrcId);
+        vOp(params, vId, vSrcId);
     }
 }
 
@@ -1792,12 +1790,10 @@ void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params,
 {
     Data< VecDeriv >* vec_d = this->write(vId);
 
-    if (!vec_d->isSet(params))
+    if (!vec_d->isSet(params) || vec_d->getValue().empty())
     {
         vec_d->forceSet(params);
-
-        if (vSrcId != core::ConstVecDerivId::null())
-            vOp(params, vId, vSrcId);
+        vOp(params, vId, vSrcId);
     }
 }
 
