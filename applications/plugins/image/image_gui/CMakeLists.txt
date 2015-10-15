@@ -28,6 +28,7 @@ find_package(Qt5 COMPONENTS Core QUIET)
 if(Qt5Core_FOUND)
     qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
 else()
+    find_package(Qt4 COMPONENTS qtcore)
     qt4_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
 endif()
 
