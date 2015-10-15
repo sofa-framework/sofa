@@ -1208,9 +1208,10 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
 
     QProcess *p = new QProcess(this);
 
-    p->setObjectName(QString(filename.c_str()) );
+
     p->setWorkingDirectory(QString(binPath.c_str()) );
-    p->setArguments(argv);
+    p->setObjectName(QString(filename.c_str()) );
+
 
     connect(p, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(sofaExited(int, QProcess::ExitStatus)));
     QDir dir(QString(sofa::helper::system::SetDirectory::GetParentDir(sceneFilename.c_str()).c_str()));
