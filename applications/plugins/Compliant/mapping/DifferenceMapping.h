@@ -137,6 +137,21 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
         }
 #endif /* SOFA_NO_OPENGL */
     }
+
+    virtual void updateForceMask()
+    {
+        const pairs_type& p = pairs.getValue();
+
+        for( size_t i = 0, iend = p.size(); i < iend; ++i )
+        {
+            if( this->maskTo->getEntry(i) )
+            {
+                const index_pair& indices = p[i];
+                this->maskFrom->insertEntry(indices[0]);
+                this->maskFrom->insertEntry(indices[1]);
+            }
+        }
+    }
 	
 };
 
