@@ -1,46 +1,44 @@
 <?xml version="1.0" ?>
-<!-- NEW DEFAULT SOFA SCENE (Thanks to Jeremy Ringard for the caduceus model) -->
-<Node name="root" gravity="0 -10 0" dt="0.02">
-    
-     <RequiredPlugin name="Compliant"/>
-     
+<Node name="root" gravity="0 -50 0" dt="0.02">
+
+    <RequiredPlugin name="Compliant"/>
+
     <CompliantAttachButton compliance="1e-3" arrowSize=".5"/>
-    
-    <VisualStyle displayFlags="showVisual  " /> <!--showBehaviorModels showCollisionModels-->
-<!-- 	<LCPConstraintSolver tolerance="1e-3" initial_guess="false" build_lcp="false"  printLog="0" mu="0.2"/> -->
-<!--     <FreeMotionAnimationLoop /> -->
+
+    <VisualStyle displayFlags="showVisual  " />
+
     <CollisionPipeline depth="15" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
-	<MinProximityIntersection name="Proximity" alarmDistance=".5" contactDistance=".3" />
-        
-      
-  <DefaultContactManager responseParams="compliance=0&amp;restitution=0&amp;holonomic=1&amp;mu=0.2" response="CompliantContact" />
-  
- 
-  <CompliantImplicitSolver stabilization="1" neglecting_compliance_forces_in_geometric_stiffness="1"/>
-  <SequentialSolver precision="1e-3" relative="true" iterations="500" /> 
-  <LDLTResponse/>
-        
-        
+    <MinProximityIntersection name="Proximity" alarmDistance=".5" contactDistance=".3" useLinePoint="false" />
+
+
+    <DefaultContactManager responseParams="compliance=0&amp;restitution=0&amp;holonomic=1&amp;mu=0.2&amp;keep=true" response="CompliantContact" />
+
+
+    <CompliantImplicitSolver stabilization="1" neglecting_compliance_forces_in_geometric_stiffness="1"/>
+    <SequentialSolver precision="1e-3" relative="true" iterations="500" /> 
+    <LDLTResponse/>
+
+
 
     <LightManager />
     <SpotLight name="light1" color="1 1 1" position="0 80 25" direction="0 -1 -0.8" cutoff="30" exponent="1" />
-	<SpotLight name="light2" color="1 1 1" position="0 40 100" direction="0 0 -1" cutoff="30" exponent="1" />
+    <SpotLight name="light2" color="1 1 1" position="0 40 100" direction="0 0 -1" cutoff="30" exponent="1" />
 
+    
+    
+    
     <Node name="Snake" >
 
-		<SparseGridRamification n="4 12 3" fileTopology="mesh/snake_body.obj" nbVirtualFinerLevels="3" finestConnectivity="0" />
-<!--                <SparseGridRamification n="8 20 5" fileTopology="mesh/snake_body.obj" nbVirtualFinerLevels="1" finestConnectivity="0" /> -->
+        <SparseGridRamification n="4 12 3" fileTopology="mesh/snake_body.obj" nbVirtualFinerLevels="3" finestConnectivity="0" />
+        <!--                <SparseGridRamification n="8 20 5" fileTopology="mesh/snake_body.obj" nbVirtualFinerLevels="1" finestConnectivity="0" /> -->
 
-<!--         <EulerImplicitSolver name="cg_odesolver" rayleighMass="1" rayleighStiffness="0.03" /> -->
-<!--         <CGLinearSolver name="linear solver" iterations="20" tolerance="1e-12" threshold="1e-18" /> -->
-		<MechanicalObject name="dofs"  scale="1" dy="2"/>
+        
+        <MechanicalObject name="dofs"  scale="1" dy="2"/>
         <UniformMass totalMass="1000.0" />
         <HexahedronFEMForceField name="FEM" youngModulus="30000.0" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" isCompliance="0"/>
 
-<!-- 		<UncoupledConstraintCorrection /> -->
-
-		<Node name="Collis">
+        <Node name="Collis">
             <MeshObjLoader name="loader" filename="mesh/meca_snake_900tri.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
@@ -51,70 +49,74 @@
         </Node>
 
         <Node name="VisuBody" tags="Visual" >
-                        <OglModel  name="VisualBody" fileMesh="mesh/snake_body.obj"   />
-			<BarycentricMapping />
+            <OglModel  name="VisualBody" fileMesh="mesh/snake_body.obj"   />
+            <BarycentricMapping />
         </Node>
 
         <Node name="VisuCornea" tags="Visual" >
-                        <OglModel  name="VisualCornea" fileMesh="mesh/snake_cornea.obj"   />
-			<BarycentricMapping />
+            <OglModel  name="VisualCornea" fileMesh="mesh/snake_cornea.obj"   />
+            <BarycentricMapping />
         </Node>
 
         <Node name="VisuEye" tags="Visual" >
-                        <OglModel  name="VisualEye" fileMesh="mesh/snake_yellowEye.obj"   />
-			<BarycentricMapping />
+            <OglModel  name="VisualEye" fileMesh="mesh/snake_yellowEye.obj"   />
+            <BarycentricMapping />
         </Node>
     </Node>
 
+    
+    
+    
     <Node name="Base" >
-        
+
         <MechanicalObject template="Rigid"/>
         <RigidMass mass="1" inertia="1 1 1"/>
         <FixedConstraint fixAll="1"/>
 
-		<Node name="Stick">
-			<MeshObjLoader name="loader" filename="mesh/collision_batons.obj" />
+        <Node name="Stick">
+            <MeshObjLoader name="loader" filename="mesh/collision_batons.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <RigidMapping/>
             <Line simulated="false" moving="false" proximity="1.4" />
             <Point simulated="false"  moving="false" proximity="1.4"/>
-		</Node>
-		<Node name="Blobs">
-			<MeshObjLoader name="loader" filename="mesh/collision_boules_V3.obj" />
+        </Node>
+        
+        <Node name="Blobs">
+            <MeshObjLoader name="loader" filename="mesh/collision_boules_V3.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <RigidMapping/>
-                    <Triangle simulated="false" moving="false" proximity="1" />
-                    <Line simulated="false" moving="false" proximity="1" />
-                    <Point simulated="false" moving="false" proximity="1" />
-		</Node>
-
-		<Node name="Foot">
-			<MeshObjLoader name="loader" filename="mesh/collision_pied.obj" />
-            <Mesh src="@loader" />
-            <MechanicalObject src="@loader" name="CollisModel" />
-            <RigidMapping/>
-			<Triangle simulated="false" moving="false" proximity="1" />
+            <Triangle simulated="false" moving="false" proximity="1" />
             <Line simulated="false" moving="false" proximity="1" />
             <Point simulated="false" moving="false" proximity="1" />
-		</Node>
+        </Node>
 
-                
-<!--          <Node name="collision">
-                        <MeshObjLoader name="loader" filename="mesh/mesh/SOFA_pod.obj" />
+        <Node name="Foot">
+            <MeshObjLoader name="loader" filename="mesh/collision_pied.obj" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" name="CollisModel" />
             <RigidMapping/>
-                        <Triangle simulated="false" moving="false"/>
-                </Node>  -->    
-                
-                
+            <Triangle simulated="false" moving="false" proximity="1" />
+            <Line simulated="false" moving="false" proximity="1" />
+            <Point simulated="false" moving="false" proximity="1" />
+        </Node>
+
+
+        <!-- <Node name="collision">
+            <MeshObjLoader name="loader" filename="mesh/mesh/SOFA_pod.obj" />
+            <Mesh src="@loader" />
+            <MechanicalObject src="@loader" name="CollisModel" />
+            <RigidMapping/>
+            <Triangle simulated="false" moving="false"/>
+        </Node>  -->    
+
+
         <Node name="Visu" tags="Visual" >
             <OglModel  name="OglModel" fileMesh="mesh/SOFA_pod.obj" />
         </Node>
-        
-        
-        
+
     </Node>
+    
+    
 </Node>

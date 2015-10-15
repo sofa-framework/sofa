@@ -69,7 +69,7 @@ protected:
 
         delta_type delta = this->make_delta();
 
-        typename node_type::SPtr contact_node = node_type::create( this->getName() + " contact frame" );
+        typename node_type::SPtr contact_node = node_type::create( this->getName() + "_contact_frame" );
 
         delta.node->addChild( contact_node.get() );
 
@@ -80,14 +80,14 @@ protected:
         contact_dofs = sofa::core::objectmodel::New<contact_dofs_type>();
 
         contact_dofs->resize( size );
-        contact_dofs->setName( this->getName() + " contact dofs" );
+        contact_dofs->setName( this->getName() + "_contact_dofs" );
         contact_node->addObject( contact_dofs.get() );
 
         // contact mapping
         contact_map = core::objectmodel::New<contact_map_type>();
 
         contact_map->setModels( delta.dofs.get(), contact_dofs.get() );
-        contact_map->setName( this->getName() + " contact mapping" );
+        contact_map->setName( this->getName() + "_contact_mapping" );
         contact_node->addObject( contact_map.get() );
 
         this->copyNormals( *editOnly(contact_map->normal) );
