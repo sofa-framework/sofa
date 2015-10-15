@@ -13,6 +13,8 @@
 #include "../constraint/Restitution.h"
 #include "../constraint/HolonomicConstraintValue.h"
 
+//#include <sofa/simulation/common/DeactivatedNodeVisitor.h>
+
 
 namespace sofa
 {
@@ -49,6 +51,7 @@ public:
 
     Data< SReal > damping_ratio;
     Data<bool> holonomic;
+    Data<bool> keep;
 
 protected:
 
@@ -82,11 +85,13 @@ protected:
     BaseContact()
         : damping_ratio( this->initData(&damping_ratio, SReal(0.0), "damping", "contact damping (used for stabilization)") )
         , holonomic(this->initData(&holonomic, false, "holonomic", "only enforce null relative velocity, do not try to remove penetration during the dynamics pass"))
+        , keep(this->initData(&keep, false, "keepAlive", "always keep contact nodes (deactivated when not colliding"))
     { }
 
     BaseContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
         : damping_ratio( this->initData(&damping_ratio, SReal(0.0), "damping", "contact damping (used for stabilization)") )
         , holonomic(this->initData(&holonomic, false, "holonomic", "only enforce null relative velocity, do not try to remove penetration during the dynamics pass"))
+        , keep(this->initData(&keep, false, "keepAlive", "always keep contact nodes (deactivated when not colliding"))
         , model1(model1)
         , model2(model2)
         , intersectionMethod(intersectionMethod)
@@ -118,13 +123,20 @@ public:
 
     void createResponse(core::objectmodel::BaseContext* /*group*/ )
     {
-        assert( contacts );
+        if( !contacts )
+        {
+            // should only be called when keepAlive
+            node->setActive( false );
+//            simulation::DeactivationVisitor v(sofa::core::ExecParams::defaultInstance(), false);
+//            node->executeVisitor(&v);
+            return; // keeping contact alive imposes a call with a null DetectionOutput
+        }
 
         if( !node )
         {
             //fancy names
-            std::string name1 = this->model1->getClassName() + " contact points";
-            std::string name2 = this->model2->getClassName() + " contact points";
+            std::string name1 = this->model1->getClassName() + "_contact_points";
+            std::string name2 = this->model2->getClassName() + "_contact_points";
 
             // obtain point mechanical models from mappers
             mstate1 = mapper1.createMapping( name1.c_str() );
@@ -133,7 +145,6 @@ public:
             mstate2->setName("dofs");
         }
        
-
 
         // resize mappers
         unsigned size = contacts->size();
@@ -197,24 +208,25 @@ public:
         if(!node) {
             node = create_node();
         } else {
+            node->setActive( true );
+//            simulation::DeactivationVisitor v(sofa::core::ExecParams::defaultInstance(), true);
+//            node->executeVisitor(&v);
          	update_node();
         }
-
-        //		assert( dynamic_cast< node_type* >( group ) );
-
-        // TODO is this needed ?!
-        // static_cast< node_type* >( group )->addChild( node );
     }
 
 
     void removeResponse() {
-        if( node) {
+        if( node ) {
             mapper1.resize(0);
             mapper2.resize(0);
         }
     }
 
     void cleanup() {
+
+        // should be called only when !keep
+
         if( node ) {
             mapper1.cleanup();
             if (!this->selfCollision) mapper2.cleanup();
@@ -225,6 +237,8 @@ public:
         mappedContacts.clear();
     }
 
+
+    virtual bool keepAlive() { return keep.getValue(); }
 
 
 protected:
@@ -255,7 +269,7 @@ protected:
 
     delta_type make_delta() {  // TODO to compliantconstraint
 
-        node_type::SPtr delta_node = node_type::create( this->getName() + " delta" );
+        node_type::SPtr delta_node = node_type::create( this->getName() + "_delta" );
 
         // TODO vec3types according to the types in interaction !
 
@@ -265,7 +279,7 @@ protected:
         assert( size );
 
         delta_dofs = core::objectmodel::New<delta_dofs_type>();
-        delta_dofs->setName( this->model2->getName() + " - " + this->model1->getName()  );
+        delta_dofs->setName( this->model2->getName() + "_-_" + this->model1->getName()  );
         delta_dofs->resize( size );
         
 //        delta_dofs->showObject.setValue(true);
@@ -295,7 +309,7 @@ protected:
 
             map->pairs.setValue( pairs );
 
-            map->setName( "delta mapping" );
+            map->setName( "delta_mapping" );
 
             delta_node->addObject( map.get() );
 
@@ -319,7 +333,7 @@ protected:
 
             map->pairs.setValue( pairs );
 
-            map->setName( "delta mapping" );
+            map->setName( "delta_mapping" );
 
             delta_node->addObject( map.get() );
 

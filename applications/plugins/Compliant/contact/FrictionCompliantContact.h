@@ -69,7 +69,7 @@ protected:
         // node->addChild( delta.node.get() );
 
         // TODO maybe remove this mapping level
-        typename node_type::SPtr contact_node = node_type::create( this->getName() + " contact frame" );
+        typename node_type::SPtr contact_node = node_type::create( this->getName() + "_contact_frame" );
 
         delta.node->addChild( contact_node.get() );
 
