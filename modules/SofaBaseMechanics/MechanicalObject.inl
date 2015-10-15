@@ -1551,12 +1551,12 @@ Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes
         vectorsDeriv[v.index] = new Data< VecDeriv >;
         if (f_reserve.getValue() > 0)
         {
-            vectorsDeriv[v.index]->beginEdit()->reserve(f_reserve.getValue());
+            vectorsDeriv[v.index]->beginWriteOnly()->reserve(f_reserve.getValue());
             vectorsDeriv[v.index]->endEdit();
         }
         if (vectorsDeriv[v.index]->getValue().size() != (size_t)getSize())
         {
-            vectorsDeriv[v.index]->beginEdit()->resize( getSize() );
+            vectorsDeriv[v.index]->beginWriteOnly()->resize( getSize() );
             vectorsDeriv[v.index]->endEdit();
         }
     }
