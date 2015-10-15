@@ -1788,7 +1788,7 @@ void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params
 {
     Data< VecCoord >* vec_d = this->write(vId);
 
-    if (!vec_d->isSet(params))
+    if (!vec_d->isSet(params) || vec_d->getValue().empty())
     {
         vec_d->forceSet(params);
 
@@ -1804,7 +1804,7 @@ void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params,
 {
     Data< VecDeriv >* vec_d = this->write(vId);
 
-    if (!vec_d->isSet(params))
+    if (!vec_d->isSet(params) || vec_d->getValue().empty())
     {
         vec_d->forceSet(params);
 
