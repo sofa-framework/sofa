@@ -1791,9 +1791,7 @@ void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params
     if (!vec_d->isSet(params) || vec_d->getValue().empty())
     {
         vec_d->forceSet(params);
-
-        if (vSrcId != core::ConstVecCoordId::null())
-            vOp(params, vId, vSrcId);
+        vOp(params, vId, vSrcId);
     }
 }
 
@@ -1807,9 +1805,7 @@ void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params,
     if (!vec_d->isSet(params) || vec_d->getValue().empty())
     {
         vec_d->forceSet(params);
-
-        if (vSrcId != core::ConstVecDerivId::null())
-            vOp(params, vId, vSrcId);
+        vOp(params, vId, vSrcId);
     }
 }
 
