@@ -59,7 +59,7 @@ void TComponentMouseInteraction<DataTypes>::createInteractionComponents( sofa::s
 
         mouseInSofa = sofa::core::objectmodel::New< MouseContainer >();
         mouseInSofa->resize(1);
-        mouseInSofa->setName("MousePosition");
+        mouseInSofa->setName("MappedMousePosition");
         current->addObject(mouseInSofa);
 
         mouseInteractor = sofa::core::objectmodel::New< Interactor >();
