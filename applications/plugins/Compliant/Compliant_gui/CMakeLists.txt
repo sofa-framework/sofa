@@ -20,7 +20,14 @@ set(SOURCE_FILES
 find_package(SofaGui QUIET)
 
 if(SofaGui_FOUND)
-    qt4_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
+    find_package(Qt5 COMPONENTS Core QUIET)
+    if(Qt5Core_FOUND)
+        qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
+    else()
+        find_package(Qt4 COMPONENTS qtcore)
+        qt4_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
+    endif()
+    
     add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${MOC_FILES})
     add_definitions("-DSOFA_BUILD_COMPLIANT_GUI")
     target_link_libraries(${PROJECT_NAME} SofaGuiMain Compliant)
