@@ -42,6 +42,7 @@
 #include <sofa/core/behavior/ConstraintCorrection.inl>
 #include <SofaDeformable/RestShapeSpringsForceField.inl>
 #include <SofaBoundaryCondition/ConstantForceField.inl>
+#include <SofaBoundaryCondition/UniformVelocityDampingForceField.inl>
 
 
 #ifdef SOFA_HAVE_IMAGE
@@ -1179,6 +1180,25 @@ namespace forcefield
     #endif
     #ifndef SOFA_DOUBLE
         template class SOFA_Flexible_API ConstantForceField< defaulttype::TYPEABSTRACTNAME3fTypes >;
+    #endif
+
+    SOFA_DECL_CLASS(EVALUATOR(TYPEABSTRACTNAME,UniformVelocityDampingForceField))
+
+    // Register in the Factory
+    int EVALUATOR(TYPEABSTRACTNAME,UniformVelocityDampingForceFieldClass) = core::RegisterObject("Uniform velocity damping")
+    #ifndef SOFA_FLOAT
+            .add< UniformVelocityDampingForceField< defaulttype::TYPEABSTRACTNAME3dTypes > >()
+    #endif
+    #ifndef SOFA_DOUBLE
+            .add< UniformVelocityDampingForceField< defaulttype::TYPEABSTRACTNAME3fTypes > >()
+    #endif
+    ;
+
+    #ifndef SOFA_FLOAT
+    template class SOFA_Flexible_API UniformVelocityDampingForceField<defaulttype::TYPEABSTRACTNAME3dTypes>;
+    #endif
+    #ifndef SOFA_DOUBLE
+    template class SOFA_Flexible_API UniformVelocityDampingForceField<defaulttype::TYPEABSTRACTNAME3fTypes>;
     #endif
 
 } // namespace forcefield
