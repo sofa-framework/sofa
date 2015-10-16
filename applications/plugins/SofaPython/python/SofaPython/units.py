@@ -206,7 +206,16 @@ def inertia_to_SI( i, length_unit=None, mass_unit=None ):
     mass_unit = mass_unit or local_mass
     return i * length_unit * length_unit * mass_unit 
 
+# c = N.s/m = kg/s
+def damping_from_SI(d, mass_unit=None, time_unit=None):
+    mass_unit = mass_unit or local_mass
+    time_unit = time_unit or local_time
+    return d / mass_unit * time_unit
 
+def damping_to_SI(d, mass_unit=None, time_unit=None):
+    mass_unit = mass_unit or local_mass
+    time_unit = time_unit or local_time
+    return d * mass_unit / time_unit
 
 # MATERIAL
 
