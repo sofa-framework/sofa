@@ -26,9 +26,14 @@ set(SOURCE_FILES
 set(README_FILES PluginExample.txt)
 
 find_package(SofaGui REQUIRED)
-find_package(Qt4 REQUIRED)
 
-qt4_wrap_cpp(MOCCED_HEADER_FILES ${HEADER_FILES_TO_MOC})
+find_package(Qt5 COMPONENTS Core QUIET)
+if(Qt5Core_FOUND)
+    qt5_wrap_cpp(MOCCED_HEADER_FILES ${HEADER_FILES_TO_MOC})
+else()
+    find_package(Qt4 COMPONENTS qtcore)
+    qt4_wrap_cpp(MOCCED_HEADER_FILES ${HEADER_FILES_TO_MOC})
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES_TO_MOC} ${MOCCED_HEADER_FILES} ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_PLUGINEXAMPLE")
