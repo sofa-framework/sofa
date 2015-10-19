@@ -203,6 +203,12 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
         virtual void init()
         {
+            if(!pairs.getValue().size()) // if no pair is defined-> map all dofs
+            {
+                helper::WriteOnlyAccessor<Data<pairs_type> > p(pairs);
+                p.resize(this->getFromModels()[0]->readPositions().size());
+                for( unsigned j = 0; j < p.size(); ++j) p[j]=index_pair(j,j);
+            }
             this->getToModels()[0]->resize( pairs.getValue().size() );
             AssembledMultiMapping<TIn, TOut>::init();
         }
