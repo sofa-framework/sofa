@@ -15,6 +15,8 @@
 
 //#include <sofa/simulation/common/DeactivatedNodeVisitor.h>
 
+#include "../utils/cast.h"
+
 
 namespace sofa
 {
@@ -315,11 +317,7 @@ protected:
 
             delta_node->addObject( deltaContactMap.get() );
 
-            // TODO is there a cleaner way of doing this ?
-
-            // this is of uttermost importance
-            assert( dynamic_cast<node_type*>(this->mstate1->getContext()) );
-            static_cast< node_type* >(this->mstate1->getContext())->addChild( delta_node.get() );
+            down_cast< node_type >(this->mstate1->getContext())->addChild( delta_node.get() );
 
             deltaContactMap->init();
 
@@ -339,11 +337,8 @@ protected:
             delta_node->addObject( deltaContactMultiMap.get() );
 
             // the scene graph should reflect mapping dependencies
-            assert( dynamic_cast<node_type*>(this->mstate1->getContext()) );
-            assert( dynamic_cast<node_type*>(this->mstate2->getContext()) );
-
-            static_cast< node_type* >(this->mstate1->getContext())->addChild( delta_node.get() );
-            static_cast< node_type* >(this->mstate2->getContext())->addChild( delta_node.get() );
+            down_cast< node_type >(this->mstate1->getContext())->addChild( delta_node.get() );
+            down_cast< node_type >(this->mstate2->getContext())->addChild( delta_node.get() );
 
             deltaContactMultiMap->init();
         }
