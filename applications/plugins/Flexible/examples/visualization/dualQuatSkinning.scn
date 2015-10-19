@@ -29,7 +29,7 @@
                 <MechanicalObject template="Affine" name="dofa" showObject="true" showObjectScale="1.5" position="@../../merged.position2" />
 
                 <Node name="behavior"   >
-                    <MechanicalObject template="F331" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
+                    <MechanicalObject template="F331" name="F"    showObject="1" showObjectScale="0.05" />
                     <ImageGaussPointSampler name="sampler" indices="@../../../SF.indices" weights="@../../../SF.weights" transform="@../../../SF.transform" method="2" order="1" showSamplesScale="0" printLog="true" targetNumber="200" />
         
                     <LinearMultiMapping template="Rigid,Affine,F331" input1="@../.." input2="@.." output="@." printLog="0" showDeformationGradientScale="0" assemble="0"/>
@@ -45,7 +45,7 @@
                     <VisualStyle displayFlags="showVisualModels hideBehaviorModels" />
                     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
                     <Mesh name="mesh" src="@loader" />
-                    <MechanicalObject useMask="0"/>
+                    <MechanicalObject />
                     <UniformMass totalMass="10" />
                     <LinearMultiMapping template="Rigid,Affine,Vec3d" input1="@../.." input2="@.." output="@." printLog="0" assemble="0"/>
                 </Node>
@@ -93,7 +93,7 @@
                 <MechanicalObject template="Affine" name="dof_cpu" showObject="true" showObjectScale="1.5" position="@../../merged_cpu.position2" />
                 
                 <Node name="behavior_cpu"   >
-                    <MechanicalObject template="F331" name="F_cpu"  useMask="0"  showObject="1" showObjectScale="0.05" />
+                    <MechanicalObject template="F331" name="F_cpu"    showObject="1" showObjectScale="0.05" />
                     <ImageGaussPointSampler name="sampler_cpu" indices="@../../../SF_cpu.indices" weights="@../../../SF_cpu.weights" transform="@../../../SF_cpu.transform" method="2" order="1" showSamplesScale="0" printLog="true" targetNumber="200" />
         
                     <LinearMultiMapping template="Rigid,Affine,F331" input1="@../.." input2="@.." output="@." printLog="0" showDeformationGradientScale="0" assemble="0"/>
@@ -109,7 +109,7 @@
                     <VisualStyle displayFlags="showVisualModels hideBehaviorModels" />
                     <MeshGmshLoader name="loaderCpu" filename="mesh/torus_low_res.msh" />
                     <Mesh name="mesh_cpu" src="@loaderCpu" />
-                    <MechanicalObject useMask="0"/>
+                    <MechanicalObject />
                     <UniformMass totalMass="10" />
                     <LinearMultiMapping template="Rigid,Affine,Vec3d" input1="@../.." input2="@.." output="@." printLog="0" assemble="0"/>
                 </Node>

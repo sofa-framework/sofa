@@ -140,7 +140,6 @@ void CompliantAttachPerformer<DataTypes>::start()
         }
         std::string name = "contactMouse";
         mstateCollisionVec = mapper->createMapping(name.c_str());
-        mstateCollisionVec->useMask.setValue(false);
         mapper->resize(1);
 
         typename MouseTypes::Coord pointPicked;

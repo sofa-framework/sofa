@@ -647,9 +647,9 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
 
         // fill the end renumbering list with the new order
 
-        for (int dof = 0; dof < this->mstate->getSize(); dof++)
+        for (size_t dof = 0; dof < this->mstate->getSize(); dof++)
         {
-            for (unsigned int c = 0; c < ordering_per_dof[dof].size(); c++)
+            for (size_t c = 0; c < ordering_per_dof[dof].size(); c++)
             {
                 renumbering.push_back(ordering_per_dof[dof][c]); // push_back the list of constraint by starting from the smallest dof
             }
@@ -687,7 +687,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
 
 
 
-    for ( int i=0; i<this->mstate->getSize(); i++)
+    for ( size_t i=0; i<this->mstate->getSize(); i++)
     {
         for  (unsigned int j=0; j<derivDim; j++)
             systemRHVector_buf->set(i*derivDim+j, constraint_force[i][j]);

@@ -351,9 +351,9 @@ public:
     {
     }
 
-    unsigned int size(const core::ExecParams* params = 0) const
+    size_t size(const core::ExecParams* params = 0) const
     {
-        return (unsigned int)m_value[core::ExecParams::currentAspect(params)].size();
+        return (size_t)m_value[core::ExecParams::currentAspect(params)].size();
     }
 
     bool empty(const core::ExecParams* params = 0) const
@@ -458,7 +458,7 @@ public:
         return OwnerType::GetClass();
     }
 
-    unsigned int getSize() const
+    size_t getSize() const
     {
         return size();
     }

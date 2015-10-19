@@ -266,7 +266,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
 
         defaulttype::Mat<4,4, GLfloat> modelviewM;
 
-        for (int i=0 ; i< vsize ; i++)
+        for (size_t i=0 ; i< vsize ; i++)
         {
             std::ostringstream oss;
             oss << i;
@@ -349,7 +349,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
     {
         const float& scale = showObjectScale.getValue();
         helper::ReadAccessor<Data<VecCoord> > x = *this->read(core::VecCoordId::position());
-        for (int i = 0; i < vsize; ++i)
+        for (size_t i = 0; i < vsize; ++i)
         {
             vparams->drawTool()->pushMatrix();
             float glTransform[16];
@@ -531,7 +531,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
 
         Mat<4,4, GLfloat> modelviewM;
 
-        for (int i=0 ; i< vsize ; i++)
+        for (size_t i=0 ; i< vsize ; i++)
         {
             std::ostringstream oss;
             oss << i;
@@ -615,7 +615,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
     {
         const float& scale = showObjectScale.getValue();
         helper::ReadAccessor<Data<VecCoord> > x = *this->read(core::VecCoordId::position());
-        for (int i = 0; i < vsize; ++i)
+        for (size_t i = 0; i < vsize; ++i)
         {
             vparams->drawTool()->pushMatrix();
             float glTransform[16];
@@ -659,7 +659,7 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
 
         defaulttype::Mat<4,4, GLfloat> modelviewM;
 
-        for (int i=0 ; i< vsize ; i++)
+        for (size_t i=0 ; i< vsize ; i++)
         {
             std::ostringstream oss;
             oss << i;
@@ -700,7 +700,7 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
     {
         const float& scale = showObjectScale.getValue();
         helper::ReadAccessor<Data<VecCoord> > x = *this->read(core::VecCoordId::position());
-        for (int i = 0; i < vsize; ++i)
+        for (size_t i = 0; i < vsize; ++i)
         {
             vparams->drawTool()->pushMatrix();
             glTranslatef((float)getPX(i), (float)getPY(i), (float)getPZ(i));

@@ -29,7 +29,7 @@
 	    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
 
 	    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="2" /> 
-	    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" showObjectScale="0.5" src="@sampler" />
+	    <MechanicalObject template="Affine" name="parent"  showObject="true" showObjectScale="0.5" src="@sampler" />
 	    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" />
 
    	    <Node 	name="behavior"   >
@@ -46,7 +46,7 @@
 
 		<Node name="ModelInteraction">
 			<MeshObjLoader name="MeshLoader"  filename="data/femur_m.obj" />
-			<MechanicalObject  name="PointSet"  position="@MeshLoader.position" useMask="0" />
+			<MechanicalObject  name="PointSet"  position="@MeshLoader.position"  />
 			<UniformMass totalMass="20" />
 			<LinearMapping template="Affine,Vec3d" assemble="1" />
 

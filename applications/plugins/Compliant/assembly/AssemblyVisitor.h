@@ -276,7 +276,7 @@ struct AssemblyVisitor::process_helper {
 
         if( c->master() || !c->mechanical ) return;
 
-        rmat& Jc = full[ curr ];
+        rmat& Jc = full[ curr ]; // (output) full mapping from independent dofs to mapped dofs c
         assert( empty(Jc) );
 
 
@@ -295,13 +295,21 @@ struct AssemblyVisitor::process_helper {
 
             // parent data chunk/mapping matrix
             const chunk* p = vp.data;
-            rmat& Jp = full[ vp.dofs ];
+            rmat& Jp = full[ vp.dofs ]; // (input) full mapping from independent dofs to parent p of dofs c
             {
                 // mapping blocks
                 MySPtr<rmat> jc( convertSPtr<rmat>( g[*e.first].data->J ) );
 
-//                if( zero( *jc ) ) MAINLOGGER( Warning, "Empty Jacobian for mapping: "<<((simulation::Node*)curr->getContext())->mechanicalMapping->getPathName()
-//                                              << std::endl << "mask=\""<<curr->forceMask.getEntries() <<"\"", "AssemblyVisitor" )
+                if( zero( *jc ) )
+                {
+                    continue;
+
+                    // Note a Jacobian can be null in a multimapping (child only mapped from one parent)
+                    // or when the corresponding mask is empty
+//                    MAINLOGGER( Info, "Empty Jacobian for mapping: "<<((simulation::Node*)curr->getContext())->mechanicalMapping->getPathName()
+//                                              << std::endl << "mask=\""<<curr->forceMask <<"\"", "AssemblyVisitor" )
+                }
+
 
                 // parent is not mapped: we put a shift matrix with the
                 // correct offset as its full mapping matrix, so that its
@@ -335,22 +343,22 @@ struct AssemblyVisitor::process_helper {
 //            std::cerr<<"Assembly::geometricStiffnessJc "<<geometricStiffnessJc<<" "<<curr->getName()<<std::endl;
         }
 
-        if( zero(Jc) && curr->getSize() !=0 )  {
-            // If the dof size is null, let's consider it is not a big deal.
-            // Indeed, having null dof is useful when setting up a static graph that is filled in dynamically
+//        if( zero(Jc) && curr->getSize() !=0 )  {
+//            // If the dof size is null, let's consider it is not a big deal.
+//            // Indeed, having null dof is useful when setting up a static graph that is filled in dynamically
 
-            using namespace std;
-            MAINLOGGER( Warning,
-                        "Houston we have a problem. Null full Jacobian for dof \""<< c->dofs->getPathName()<<"\""<< endl
-                        << "master=" << c->master() << ", "
-       //                 << "mapped: " << (c->map.empty() ? string("nope") : p->dofs->getName() )<< endl
-       //                 << "p mechanical ? " << p->mechanical << endl
-       //                 << "empty Jp " << empty(Jp) << endl
-                        << "empty Jc=" << empty(Jc) << ", "
-                        , "AssemblyVisitor" )
+//            using namespace std;
+//            MAINLOGGER( Warning,
+//                        "Houston we have a problem. Null full Jacobian for dof \""<< c->dofs->getPathName()<<"\""<< endl
+//                        << "master=" << c->master() << ", "
+//       //                 << "mapped: " << (c->map.empty() ? string("nope") : p->dofs->getName() )<< endl
+//       //                 << "p mechanical ? " << p->mechanical << endl
+//       //                 << "empty Jp " << empty(Jp) << endl
+//                        << "empty Jc=" << empty(Jc) << ", "
+//                        , "AssemblyVisitor" )
 
-            assert( false );
-        }
+//            assert( false );
+//        }
 //        else
 //            MAINLOGGER( Info, ((simulation::Node*)c->dofs->getContext())->mechanicalMapping->getPathName()<<" "<<Jc.nonZeros() , "AssemblyVisitor" )
 

@@ -314,8 +314,6 @@ public:
     }
 
 
-    bool useMask() const {return true;}
-
     /// the list of the springs
     Data<sofa::helper::vector<Spring> > springs;
     sofa::core::objectmodel::DataFileName f_filename;
@@ -325,6 +323,8 @@ public:
 
     /// bool to allow the display of the extra torsion
     Data<Real> showFactorSize;
+
+    virtual void updateForceMask();
 
 };
 

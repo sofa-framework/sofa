@@ -65,7 +65,6 @@ public:
     typedef typename DataTypes2::MatrixDeriv MatrixDeriv2;
     typedef typename DataTypes2::Coord Coord2;
     typedef typename DataTypes2::Deriv Deriv2;
-    typedef helper::ParticleMask ParticleMask;
 
     typedef core::objectmodel::Data< VecCoord1 >		DataVecCoord1;
     typedef core::objectmodel::Data< VecDeriv1 >		DataVecDeriv1;
@@ -161,8 +160,16 @@ public:
 protected:
     SingleLink<MixedInteractionConstraint<DataTypes1,DataTypes2>, MechanicalState<DataTypes1>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
     SingleLink<MixedInteractionConstraint<DataTypes1,DataTypes2>, MechanicalState<DataTypes2>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
-    ParticleMask *mask1;
-    ParticleMask *mask2;
+    typename MechanicalState<DataTypes1>::ForceMask *mask1;
+    typename MechanicalState<DataTypes2>::ForceMask *mask2;
+
+
+    /// Useful when the Constraint is applied only on a subset of dofs.
+    /// It is automatically called by buildConstraintMatrix
+    ///
+    /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
+    /// Every Dofs are inserted by default. The Constraint using only a subset of dofs should only insert these dofs in the mask.
+    virtual void updateForceMask();
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_CPP)

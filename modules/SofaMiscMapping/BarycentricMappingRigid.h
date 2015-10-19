@@ -64,6 +64,8 @@ public:
     typedef typename Inherit::MatrixType MatrixType;
     typedef typename MatrixType::Index MatrixTypeIndex;
 
+    typedef typename Inherit::ForceMask ForceMask;
+
 protected:
     topology::PointData< sofa::helper::vector<MappingData > >  map;
     topology::PointData< sofa::helper::vector<MappingOrientData > >  mapOrient;
@@ -72,8 +74,6 @@ protected:
 
     topology::TetrahedronSetTopologyContainer*			_fromContainer;
     topology::TetrahedronSetGeometryAlgorithms<In>*	_fromGeomAlgo;
-    helper::ParticleMask *maskFrom;
-    helper::ParticleMask *maskTo;
 
     MatrixType* matrixJ;
     bool updateJ;
@@ -84,16 +84,12 @@ protected:
 
     /// TEMP
 
-    BarycentricMapperTetrahedronSetTopologyRigid(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology,
-            helper::ParticleMask *_maskFrom,
-            helper::ParticleMask *_maskTo)
+    BarycentricMapperTetrahedronSetTopologyRigid(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology)
         : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
           map(initData(&map,"map", "mapper data")),
           mapOrient(initData(&mapOrient,"mapOrient", "mapper data for mapped frames")),
           _fromContainer(fromTopology),
           _fromGeomAlgo(NULL),
-          maskFrom(_maskFrom),
-          maskTo(_maskTo),
           matrixJ(NULL),
           updateJ(true)
     {}
@@ -116,6 +112,7 @@ public:
     virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
 
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void resize( core::State<Out>* toModel );
 
     //virtual int addContactPointFromInputMapping(const typename In::VecDeriv& in, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
 };
@@ -129,10 +126,8 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopology,In,Out),SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopologyRigid,In,Out));
     typedef BarycentricMapperTetrahedronSetTopologyRigid<In,Out> Inherit;
 
-    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology,
-            helper::ParticleMask *_maskFrom,
-            helper::ParticleMask *_maskTo)
-        : Inherit(fromTopology, _toTopology, _maskFrom, _maskTo)
+    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology)
+        : Inherit(fromTopology, _toTopology)
     {}
 
 };

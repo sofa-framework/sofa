@@ -143,7 +143,6 @@ void ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams*
     if (mstate)
     {
 //        std::cerr << "ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) " << this->getName() << " has mstate " << std::endl;
-        mstate->forceMask.setInUse(this->useMask());
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
             Task<projectResponseTask<ProjectiveConstraintSet< DataTypes > > >(mparams, this,
@@ -163,7 +162,6 @@ void ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams*
 
     if (mstate)
     {
-        mstate->forceMask.setInUse(this->useMask());
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
             Task<projectVelocityTask<ProjectiveConstraintSet< DataTypes > > >(mparams, this,
@@ -183,7 +181,6 @@ void ProjectiveConstraintSet<DataTypes>::projectPosition(const MechanicalParams*
 
     if (mstate)
     {
-        mstate->forceMask.setInUse(this->useMask());
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
             Task<projectPositionTask<ProjectiveConstraintSet< DataTypes > > >(mparams, this,

@@ -36,7 +36,7 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(SkinningMapping);
+SOFA_DECL_CLASS(SkinningMapping)
 
 using namespace defaulttype;
 using namespace core;

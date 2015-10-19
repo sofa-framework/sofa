@@ -207,8 +207,6 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
 
             //	Deriv dx = p[i] - p_0[i];
             //	f[ indices[i] ] -=  dx * k[0] ;
-
-            this->mstate->forceMask.insertEntry(i);
         }
     }
     else
@@ -230,8 +228,6 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
 
             //	Deriv dx = p[i] - p_0[i];
             //	f[ indices[i] ] -=  dx * k[i] ;
-
-            this->mstate->forceMask.insertEntry(i);
         }
     }
 }
@@ -387,6 +383,14 @@ void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const core::Mechanic
             }
         }
     }
+}
+
+
+template<class DataTypes>
+void RestShapeSpringsForceField<DataTypes>::updateForceMask()
+{
+    for (unsigned int i=0; i<m_indices.size(); i++)
+        this->mstate->forceMask.insertEntry(m_indices[i]);
 }
 
 

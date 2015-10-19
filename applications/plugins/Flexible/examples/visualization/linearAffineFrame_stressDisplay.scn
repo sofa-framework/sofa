@@ -28,7 +28,7 @@
 
 	    <Node 	name="collision"   >
 		<Mesh name="mesh" src="@../loader" /> 
-		<MechanicalObject  template="Vec3d" name="pts"  useMask="1"  />
+		<MechanicalObject  template="Vec3d" name="pts"    />
 	    	<LinearMapping template="Affine,Vec3d"/>
 	    </Node>
 
