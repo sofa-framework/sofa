@@ -57,4 +57,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${QWT_VERSION})
 
 include(../../../SofaFramework/SofaMacros.cmake)
-sofa_create_package(Qwt 6.0.1 qwt)
+sofa_create_package(Qwt 6.0.1 qwt qwt)
