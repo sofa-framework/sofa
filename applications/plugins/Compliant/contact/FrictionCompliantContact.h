@@ -29,7 +29,6 @@ public:
 
     typedef BaseCompliantConstraintContact<TCollisionModel1, TCollisionModel2, ResponseDataTypes> Inherit;
     typedef typename Inherit::node_type node_type;
-    typedef typename Inherit::delta_type delta_type;
     typedef typename Inherit::CollisionModel1 CollisionModel1;
     typedef typename Inherit::CollisionModel2 CollisionModel2;
     typedef typename Inherit::Intersection Intersection;
@@ -38,12 +37,21 @@ public:
     Data< bool > horizontalConeProjection; ///< should the cone projection be horizontal (default)? Otherwise an orthogonal cone projection is performed.
 
 protected:
+
+    typename node_type::SPtr contact_node;
+
     typedef defaulttype::Vec3Types contact_type;
     typedef container::MechanicalObject<contact_type> contact_dofs_type;
     typename contact_dofs_type::SPtr contact_dofs;
 
     typedef mapping::ContactMapping<ResponseDataTypes, contact_type> contact_map_type;
     typename contact_map_type::SPtr contact_map;
+
+    typedef forcefield::UniformCompliance<contact_type> compliance_type;
+    compliance_type::SPtr compliance;
+
+    typedef linearsolver::CoulombConstraint<contact_type> proj_type;
+    proj_type::SPtr projector;
 
 //    FrictionCompliantContact()
 //        : Inherit()
@@ -60,18 +68,18 @@ protected:
     }
 
 
-    typename node_type::SPtr create_node()
+    void create_node()
     {
         const unsigned size = this->mappedContacts.size();
 
-        delta_type delta = this->make_delta();
+        this->make_delta();
 
         // node->addChild( delta.node.get() );
 
         // TODO maybe remove this mapping level
-        typename node_type::SPtr contact_node = node_type::create( this->getName() + "_contact_frame" );
+        contact_node = node_type::create( this->getName() + "_contact_frame" );
 
-        delta.node->addChild( contact_node.get() );
+        this->delta_node->addChild( contact_node.get() );
 
         // ensure all graph context parameters (e.g. dt are well copied)
         contact_node->updateSimulationContext();
@@ -84,24 +92,23 @@ protected:
 
         contact_map = core::objectmodel::New<contact_map_type>();
 
-        contact_map->setModels( delta.dofs.get(), contact_dofs.get() );
+        contact_map->setModels( this->delta_dofs.get(), contact_dofs.get() );
         contact_node->addObject( contact_map.get() );
 
         this->copyNormals( *editOnly(contact_map->normal) );
         this->copyPenetrations( *editOnly(*contact_dofs->write(core::VecCoordId::position())) );
 
-        // every contact points must propagate constraint forces
-        for(unsigned i = 0; i < size; ++i)
-        {
-            this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
-            if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
-        }
+//        // every contact points must propagate constraint forces
+//        for(unsigned i = 0; i < size; ++i)
+//        {
+//            this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
+//            if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
+//        }
 
         contact_map->init();
 
         // TODO diagonal compliance, soft  and compliance_value for normal
-        typedef forcefield::UniformCompliance<contact_type> compliance_type;
-        compliance_type::SPtr compliance = sofa::core::objectmodel::New<compliance_type>( contact_dofs.get() );
+        compliance = sofa::core::objectmodel::New<compliance_type>( contact_dofs.get() );
 //        compliance->_restitution.setValue( restitution_coef.getValue() );
         contact_node->addObject( compliance.get() );
         compliance->compliance.setValue( this->compliance_value.getValue() );
@@ -120,50 +127,65 @@ protected:
         vector<bool>* cvmask = this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
 
         // projector
-        typedef linearsolver::CoulombConstraint<contact_type> proj_type;
-        proj_type::SPtr projector = sofa::core::objectmodel::New<proj_type>( frictionCoefficient );
+        projector = sofa::core::objectmodel::New<proj_type>( frictionCoefficient );
         projector->horizontalProjection = horizontalConeProjection.getValue();
         contact_node->addObject( projector.get() );
         // for restitution, only activate violated constraints
         if( restitutionCoefficient ) projector->mask = cvmask;
-
-
-        return delta.node;
     }
 
 
     void update_node() {
         const unsigned size = this->mappedContacts.size();
 
-        // update delta node
-        vector< defaulttype::Vec<2, unsigned> > pairs(size);
-        for(unsigned i = 0; i < size; ++i) {
-            pairs[i][0] = this->mappedContacts[i].index1;
-            pairs[i][1] = this->mappedContacts[i].index2;
+        if( this->selfCollision )
+        {
+            this->copyPairs( *this->deltaContactMap->pairs.beginEdit() );
+            this->deltaContactMap->pairs.endEdit();
+            this->deltaContactMap->reinit();
         }
-
-        if( this->selfCollision ) {
-            typedef mapping::DifferenceMapping<ResponseDataTypes, ResponseDataTypes> map_type;
-            dynamic_cast<map_type*>(this->deltaContactMap.get())->pairs.setValue(pairs);
-
-        } else {
-            typedef mapping::DifferenceMultiMapping<ResponseDataTypes, ResponseDataTypes> map_type;
-            dynamic_cast<map_type*>(this->deltaContactMap.get())->pairs.setValue(pairs);
+        else
+        {
+            this->copyPairs( *this->deltaContactMultiMap->pairs.beginEdit() );
+            this->deltaContactMultiMap->pairs.endEdit();
+            this->deltaContactMultiMap->reinit();
         }
 
         contact_dofs->resize( size );
 
         this->copyNormals( *editOnly(contact_map->normal) );
         this->copyPenetrations( *editOnly(*contact_dofs->write(core::VecCoordId::position())) );
+        contact_map->reinit();
 
-        // every contact points must propagate constraint forces
-        for(unsigned i = 0; i < size; ++i)
+        if( compliance->compliance.getValue() != this->compliance_value.getValue() ||
+                compliance->damping.getValue() != this->damping_ratio.getValue() )
         {
-            this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
-            if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
+            compliance->compliance.setValue( this->compliance_value.getValue() );
+            compliance->damping.setValue( this->damping_ratio.getValue() );
+            compliance->reinit();
         }
 
-        this->node->init(core::ExecParams::defaultInstance());
+        // approximate current mu between the 2 objects as the product of both friction coefficients
+        const SReal frictionCoefficient = mu.getValue() ? mu.getValue() : this->model1->getContactFriction(0)*this->model2->getContactFriction(0);
+
+        // approximate restitution coefficient between the 2 objects as the product of both coefficients
+        const SReal restitutionCoefficient = this->restitution_coef.getValue() ? this->restitution_coef.getValue() : this->model1->getContactRestitution(0) * this->model2->getContactRestitution(0);
+        // updating constraint value
+        contact_node->removeObject( this->baseConstraintValue ) ;
+        vector<bool>* cvmask = this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
+
+        if( restitutionCoefficient ) projector->mask = cvmask; // for restitution, only activate violated constraints
+        else projector->mask = NULL;
+        projector->horizontalProjection = horizontalConeProjection.getValue();
+        projector->mu = frictionCoefficient;
+
+//        // every contact points must propagate constraint forces
+//        for(unsigned i = 0; i < size; ++i)
+//        {
+//            this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
+//            if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
+//        }
+
     }
 
 

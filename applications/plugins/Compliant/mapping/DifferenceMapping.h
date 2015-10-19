@@ -51,10 +51,10 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
 	enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
 
-    virtual void init()
+    virtual void reinit()
     {
         this->getToModel()->resize( pairs.getValue().size() );
-        AssembledMapping<TIn, TOut>::init();
+        AssembledMapping<TIn, TOut>::reinit();
     }
 
 	virtual void apply(typename self::out_pos_type& out, 
@@ -201,7 +201,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
         enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
-        virtual void init()
+        virtual void reinit()
         {
             if(!pairs.getValue().size()) // if no pair is defined-> map all dofs
             {
@@ -210,7 +210,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
                 for( unsigned j = 0; j < p.size(); ++j) p[j]=index_pair(j,j);
             }
             this->getToModels()[0]->resize( pairs.getValue().size() );
-            AssembledMultiMapping<TIn, TOut>::init();
+            AssembledMultiMapping<TIn, TOut>::reinit();
         }
 
         virtual void apply(typename self::out_pos_type& out,

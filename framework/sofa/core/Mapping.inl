@@ -121,11 +121,18 @@ void Mapping<In,Out>::init()
             maskTo = &state->forceMask;
     }
 
+    reinit();
+}
+
+template <class In, class Out>
+void Mapping<In,Out>::reinit()
+{
     apply(MechanicalParams::defaultInstance(), VecCoordId::position(), ConstVecCoordId::position());
     applyJ(MechanicalParams::defaultInstance(), VecDerivId::velocity(), ConstVecDerivId::velocity());
     if (f_applyRestPosition.getValue())
         apply(MechanicalParams::defaultInstance(), VecCoordId::restPosition(), ConstVecCoordId::restPosition());
 }
+
 
 template <class In, class Out>
 sofa::defaulttype::BaseMatrix* Mapping<In,Out>::createMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix m_createMappedMatrix)

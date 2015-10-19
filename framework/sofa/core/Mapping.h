@@ -172,8 +172,11 @@ public:
     {
     }
 
-    /// Propagate positions and velocities to the output
+    /// get pointers to eventual mechanical state masks
     virtual void init();
+    /// Propagate positions and velocities to the output
+    virtual void reinit();
+
 
     ///<TO REMOVE>  FF:why would we remove this, is there any alternative function ?
     // Useful ?
