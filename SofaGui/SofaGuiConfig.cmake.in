@@ -5,7 +5,7 @@
 find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(SofaAdvanced REQUIRED)
-if (SOFA-LIB_GUI_QGLVIEWER)
+if (SOFAGUI_QGLVIEWER)
     find_package(QGLViewer REQUIRED)
 endif()
 
