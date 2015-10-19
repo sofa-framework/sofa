@@ -25,7 +25,7 @@
 
 #include "StateMask.h"
 
-#include <boost/functional/hash.hpp>
+//#include <boost/functional/hash.hpp>
 
 
 
@@ -35,7 +35,7 @@ namespace sofa
 namespace helper
 {
 
-    static boost::hash<StateMask::InternalStorage> s_maskHash;
+//    static boost::hash<StateMask::InternalStorage> s_maskHash;
 
     void StateMask::resize( size_t size )
     {
@@ -61,10 +61,10 @@ namespace helper
         return t;
     }
 
-    size_t StateMask::getHash() const
-    {
-        return s_maskHash(mask);
-    }
+//    size_t StateMask::getHash() const
+//    {
+//        return s_maskHash(mask);
+//    }
 
 
 } // namespace helper

@@ -427,25 +427,25 @@ void BaseDeformationMappingT<JacobianBlockType>::updateJ()
 
     J.compress();
 
-    maskedEigenJacobian.resize(0,0);
+//    maskedEigenJacobian.resize(0,0);
 }
 
 
-template <class JacobianBlockType>
-void BaseDeformationMappingT<JacobianBlockType>::updateMaskedJ()
-{
-    size_t currentHash = this->maskTo->getHash();
-    if( previousMaskHash!=currentHash )
-    {
-        previousMaskHash = currentHash;
-        maskedEigenJacobian.resize(0,0);
-    }
-    if( !maskedEigenJacobian.rows() )
-    {
-        this->maskTo->maskedMatrix( maskedEigenJacobian.compressedMatrix, eigenJacobian.compressedMatrix, Out::deriv_total_size );
-        sout<<"updateMaskedJ "<<maskedEigenJacobian.compressedMatrix.nonZeros()<<sendl;
-    }
-}
+//template <class JacobianBlockType>
+//void BaseDeformationMappingT<JacobianBlockType>::updateMaskedJ()
+//{
+//    size_t currentHash = this->maskTo->getHash();
+//    if( previousMaskHash!=currentHash )
+//    {
+//        previousMaskHash = currentHash;
+//        maskedEigenJacobian.resize(0,0);
+//    }
+//    if( !maskedEigenJacobian.rows() )
+//    {
+//        this->maskTo->maskedMatrix( maskedEigenJacobian.compressedMatrix, eigenJacobian.compressedMatrix, Out::deriv_total_size );
+//        sout<<"updateMaskedJ "<<maskedEigenJacobian.compressedMatrix.nonZeros()<<sendl;
+//    }
+//}
 
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
@@ -580,12 +580,12 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJ(const core::MechanicalPa
     {
         if( !eigenJacobian.rows() ) updateJ();
 
-        if( this->maskTo->isActivated() )
-        {
-            updateMaskedJ();
-            maskedEigenJacobian.mult(dOut,dIn);
-        }
-        else
+//        if( this->maskTo->isActivated() )
+//        {
+//            updateMaskedJ();
+//            maskedEigenJacobian.mult(dOut,dIn);
+//        }
+//        else
             eigenJacobian.mult(dOut,dIn);
     }
     else
@@ -618,12 +618,12 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
     {
         if( !eigenJacobian.rows() ) updateJ();
 
-        if( this->maskTo->isActivated() )
-        {
-            updateMaskedJ();
-            maskedEigenJacobian.addMultTranspose(dIn,dOut);
-        }
-        else
+//        if( this->maskTo->isActivated() )
+//        {
+//            updateMaskedJ();
+//            maskedEigenJacobian.addMultTranspose(dIn,dOut);
+//        }
+//        else
             eigenJacobian.addMultTranspose(dIn,dOut);
     }
     else
@@ -977,11 +977,11 @@ const defaulttype::BaseMatrix* BaseDeformationMappingT<JacobianBlockType>::getJ(
 {
     if(!this->assemble.getValue() || !BlockType::constant || !eigenJacobian.rows()) updateJ();
 
-    if( this->maskTo->isActivated() )
-    {
-        updateMaskedJ();
-        return &maskedEigenJacobian;
-    }
+//    if( this->maskTo->isActivated() )
+//    {
+//        updateMaskedJ();
+//        return &maskedEigenJacobian;
+//    }
 
     return &eigenJacobian;
 }
@@ -992,15 +992,16 @@ const vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMappingT<JacobianBl
 {
     if(!this->assemble.getValue() || !BlockType::constant || !eigenJacobian.rows()) updateJ();
 
-    if( this->maskTo->isActivated() )
-    {
-        updateMaskedJ();
-        baseMatrices[0] = &maskedEigenJacobian;
-    }
-    else
-    {
-        baseMatrices[0] = &eigenJacobian;
-    }
+//    if( this->maskTo->isActivated() )
+//    {
+//        updateMaskedJ();
+//        baseMatrices[0] = &maskedEigenJacobian;
+//    }
+//    else
+//    {
+//        baseMatrices[0] = &eigenJacobian;
+//    }
+
     return &baseMatrices;
 }
 
