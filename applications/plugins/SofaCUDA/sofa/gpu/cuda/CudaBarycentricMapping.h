@@ -55,12 +55,12 @@ protected:
     topology::RegularGridTopology* topology;
     void calcMapT();
 public:
-    BarycentricMapperRegularGridTopology(topology::RegularGridTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, helper::ParticleMask *, helper::ParticleMask *)
+    BarycentricMapperRegularGridTopology(topology::RegularGridTopology* fromTopology, topology::PointSetTopologyContainer* toTopology)
         : Inherit(fromTopology, toTopology)
         , maxNOut(0), topology(fromTopology)
     {}
-    void setMaskFrom(helper::ParticleMask *) {}
-    void setMaskTo  (helper::ParticleMask *) {}
+    void setMaskFrom(helper::StateMask *) {}
+    void setMaskTo  (helper::StateMask *) {}
 
     void clear(int reserve=0);
 
@@ -75,6 +75,7 @@ public:
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void resize( core::State<Out>* toModel );
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<In, Out> &b )
     {
@@ -114,12 +115,12 @@ protected:
     void buildTranslate(unsigned outsize);
 
 public:
-    BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, helper::ParticleMask *, helper::ParticleMask *)
+    BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology, topology::PointSetTopologyContainer* toTopology)
         : Inherit(fromTopology, toTopology)
         , topology(fromTopology), bHexa(true), bTrans(true)
     {}
-    void setMaskFrom(helper::ParticleMask *) {}
-    void setMaskTo  (helper::ParticleMask *) {}
+    void setMaskFrom(helper::StateMask *) {}
+    void setMaskTo  (helper::StateMask *) {}
 
     void clear(int reserve=0);
 
@@ -134,6 +135,7 @@ public:
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void resize( core::State<Out>* toModel );
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperSparseGridTopology<In, Out> &b )
     {
@@ -183,15 +185,15 @@ protected:
     int getMapIndex(int outIndex, int j);
     void calcMapT();
 public:
-    BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, helper::ParticleMask *, helper::ParticleMask *)
+    BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology)
         : Inherit(fromTopology, toTopology)
         , maxNIn(0), maxNOut(0), insize(0), size(0), topology(fromTopology)
     {
         if (topology==NULL || topology->getNbHexahedra()==0) maxNIn = 4;
         else maxNIn = 8;
     }
-    void setMaskFrom(helper::ParticleMask *) {}
-    void setMaskTo  (helper::ParticleMask *) {}
+    void setMaskFrom(helper::StateMask *) {}
+    void setMaskTo  (helper::StateMask *) {}
 
     void clear(int reserve=0);
 
@@ -214,6 +216,7 @@ public:
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void resize( core::State<Out>* toModel );
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<In, Out> &b )
     {
@@ -241,12 +244,12 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename In::VecCoord VecCoord;
 
-    BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> > internalMapper;
+    BarycentricMapperMeshTopology< In, Out > internalMapper;
 
 public:
-    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology,helper::ParticleMask *_maskFrom,helper::ParticleMask *_maskTo)
+    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology)
         : Inherit(fromTopology, _toTopology),
-          internalMapper(fromTopology,_toTopology,_maskFrom,_maskTo)
+          internalMapper(fromTopology,_toTopology)
     {}
 
     virtual ~BarycentricMapperTetrahedronSetTopology() {}
@@ -281,6 +284,10 @@ public:
 
     void draw(const core::visual::VisualParams* vp,const typename Out::VecCoord& out, const typename In::VecCoord& in) {
         internalMapper.draw(vp,out,in);
+    }
+
+    void resize( core::State<Out>* toModel ) {
+        internalMapper.resize(toModel);
     }
 };
 

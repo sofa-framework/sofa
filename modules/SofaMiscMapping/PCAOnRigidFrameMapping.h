@@ -109,9 +109,6 @@ public:
     Data< bool > indexFromEnd;
     Data<sofa::helper::vector<unsigned int> >  repartition;
 
-    helper::ParticleMask* maskFrom;
-    helper::ParticleMask* maskTo;
-
     void init();
 
 

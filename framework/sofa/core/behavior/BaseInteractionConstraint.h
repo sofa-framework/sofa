@@ -59,7 +59,7 @@ public:
     virtual BaseMechanicalState* getMechModel2() = 0;
 	
 protected:
-	BaseInteractionConstraint() {};
+    BaseInteractionConstraint() {}
 	virtual ~BaseInteractionConstraint(){}
 	
 private:

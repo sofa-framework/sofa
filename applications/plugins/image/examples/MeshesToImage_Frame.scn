@@ -27,7 +27,7 @@
 
       <ImageSampler template="ImageD" name="sampler" src="@../image" method="1" param="10" fixedPosition="-1.5 0 0"  />
       <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-      <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" showObjectScale="0.2" src="@merged" />
+      <MechanicalObject template="Affine" name="parent"  showObject="true" showObjectScale="0.2" src="@merged" />
       <VoronoiShapeFunction template="ShapeFunctiond,ImageD" name="SF" position="@parent.rest_position" src="@../image" bias="true"/>
 
       <Node name="behavior">
@@ -66,7 +66,7 @@
       <Node name="Collision">
         <MeshObjLoader name="MeshLoader" filename="mesh/bubille_out.obj"/>
         <Mesh src="@MeshLoader" />
-        <MechanicalObject useMask="1" />
+        <MechanicalObject  />
         <LinearMapping template="Affine,Vec3d"/>
       </Node>
     </Node>
@@ -87,7 +87,7 @@
 
       <ImageSampler template="ImageD" name="sampler" src="@../image" method="1" param="10" fixedPosition="-1.5 0 0"  />
       <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-      <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" showObjectScale="0.2" src="@merged" />
+      <MechanicalObject template="Affine" name="parent"  showObject="true" showObjectScale="0.2" src="@merged" />
       <VoronoiShapeFunction template="ShapeFunctiond,ImageD" name="SF" position="@parent.rest_position" src="@../image" bias="true"/>
 
       <Node name="behavior">
@@ -126,7 +126,7 @@
       <Node name="Collision">
         <MeshObjLoader name="MeshLoader" filename="mesh/bubille_out.obj"/>
         <Mesh src="@MeshLoader" />
-        <MechanicalObject useMask="1" />
+        <MechanicalObject  />
         <LinearMapping template="Affine,Vec3d"/>
       </Node>
     </Node>

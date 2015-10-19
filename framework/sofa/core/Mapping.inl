@@ -43,7 +43,6 @@ Mapping<In,Out>::Mapping(State<In>* from, State<Out>* to)
     , fromModel(initLink("input", "Input object to map"), from)
     , toModel(initLink("output", "Output object to map"), to)
     , f_applyRestPosition( initData( &f_applyRestPosition, false, "applyRestPosition", "set to true to apply this mapping to restPosition at init"))
-    , f_checkJacobian( initData( &f_checkJacobian, false, "checkJacobian", "set to true to compare results of applyJ/applyJT methods with multiplication with the matrix given by getJ()" ) )
 {
     if(to != NULL && !testMechanicalState(to))
         setNonMechanical();
@@ -108,7 +107,19 @@ template <class In, class Out>
 void Mapping<In,Out>::init()
 {
     if(toModel && !testMechanicalState(toModel.get()))
+    {
         setNonMechanical();
+        maskFrom = NULL;
+        maskTo = NULL;
+    }
+    else
+    {
+        core::behavior::BaseMechanicalState *state;
+        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModel.get())))
+            maskFrom = &state->forceMask;
+        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModel.get())))
+            maskTo = &state->forceMask;
+    }
 
     apply(MechanicalParams::defaultInstance(), VecCoordId::position(), ConstVecCoordId::position());
     applyJ(MechanicalParams::defaultInstance(), VecDerivId::velocity(), ConstVecDerivId::velocity());
@@ -188,21 +199,14 @@ void Mapping<In,Out>::applyJ(const MechanicalParams* mparams, MultiVecDerivId ou
         const InDataVecDeriv* in = inVel[fromModel].read();
         if(out && in)
         {
-            if (this->isMechanical() && this->f_checkJacobian.getValue(mparams))
-            {
-                checkApplyJ(mparams, *out, *in, this->getJ(mparams));
-                out->endEdit(mparams);
-            }
-            else
-            {
+
 #ifdef SOFA_SMP
-                if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-                    Task<ParallelMappingApplyJ< Mapping<In,Out> > >(mparams, this,
-                            **defaulttype::getShared(*out), **defaulttype::getShared(*in));
-                else
+            if (mparams->execMode() == ExecParams::EXEC_KAAPI)
+                Task<ParallelMappingApplyJ< Mapping<In,Out> > >(mparams, this,
+                        **defaulttype::getShared(*out), **defaulttype::getShared(*in));
+            else
 #endif /* SOFA_SMP */
-                    this->applyJ(mparams, *out, *in);
-            }
+                this->applyJ(mparams, *out, *in);
         }
     }
 }// Mapping::applyJ
@@ -218,13 +222,8 @@ void Mapping<In,Out>::applyJT(const MechanicalParams *mparams, MultiVecDerivId i
         const OutDataVecDeriv* in = outForce[toModel].read();
         if(out && in)
         {
-            if (this->isMechanical() && this->f_checkJacobian.getValue(mparams))
-            {
-                checkApplyJT(mparams, *out, *in, this->getJ(mparams));
-                out->endEdit(mparams);
-            }
-            else
-                this->applyJT(mparams, *out, *in);
+            this->applyJT(mparams, *out, *in);
+            updateForceMask();
         }
     }
 }// Mapping::applyJT
@@ -241,13 +240,7 @@ void Mapping<In,Out>::applyJT(const ConstraintParams* cparams, MultiMatrixDerivI
         const OutDataMatrixDeriv* in = outConst[toModel].read();
         if(out && in)
         {
-            if (this->isMechanical() && this->f_checkJacobian.getValue())
-            {
-                checkApplyJT(cparams, *out, *in, this->getJ());
-                out->endEdit(cparams);
-            }
-            else
-                this->applyJT(cparams, *out, *in);
+            this->applyJT(cparams, *out, *in);
         }
     }
 }// Mapping::applyJT (Constraint)
@@ -310,292 +303,14 @@ std::string Mapping<In,Out>::templateName(const Mapping<In, Out>* /*mapping*/)
 
 
 template <class In, class Out>
-bool Mapping<In,Out>::checkApplyJ( const MechanicalParams* mparams, OutDataVecDeriv& outData, const InDataVecDeriv& inData, const sofa::defaulttype::BaseMatrix* J )
+void Mapping<In,Out>::updateForceMask()
 {
-
-    applyJ(mparams, outData, inData);
-    if (!J)
-    {
-        serr << "CheckApplyJ: getJ returned a NULL matrix" << sendl;
-        return false;
-    }
-
-    behavior::BaseMechanicalState* toMechaModel = NULL;
-    helper::vector<behavior::BaseMechanicalState*> toMechaModelVec = this->getMechTo();
-    if(toMechaModelVec.size() < 1)
-        return false;
-    else toMechaModel = toMechaModelVec[0];
-
-    if (toMechaModel->forceMask.isInUse())
-    {
-        serr << "Mask in use in mapped model. Disabled because of checkApplyJ." << sendl;
-        toMechaModel->forceMask.setInUse(false);
-    }
-
-    OutVecDeriv& out = *outData.beginEdit(mparams);
-    const InVecDeriv& in = inData.getValue(mparams);
-
-    OutVecDeriv out2;
-    out2.resize(out.size());
-
-    matrixApplyJ(out2, in, J);
-
-    // compare out and out2
-    const int NOut = sofa::defaulttype::DataTypeInfo<typename Out::Deriv>::Size;
-    double diff_mean = 0, diff_max = 0, val1_mean = 0, val2_mean = 0;
-    for (unsigned int i=0; i<out.size(); ++i)
-        for (int j=0; j<NOut; ++j)
-        {
-            double v1 = out[i][j];
-            double v2 = out2[i][j];
-            double diff = v1-v2;
-            if (diff < 0) diff = -diff;
-            if (diff > diff_max) diff_max = diff;
-            diff_mean += diff;
-            if (v1 < 0) v1=-v1;
-            val1_mean += v1;
-            if (v2 < 0) v2=-v2;
-            val2_mean += v2;
-        }
-    diff_mean /= out.size() * NOut;
-    val1_mean /= out.size() * NOut;
-    val2_mean /= out.size() * NOut;
-    sout << "Comparison of applyJ() and matrix from getJ(): ";
-    sout << "Max Error = " << diff_max;
-    sout << "\t Mean Error = " << diff_mean;
-    sout << "\t Mean Abs Value from applyJ = " << val1_mean;
-    sout << "\t Mean Abs Value from matrix = " << val2_mean;
-    sout << sendl;
-    if (this->f_printLog.getValue() || diff_max > 0.1*(val1_mean+val2_mean)/2)
-    {
-        sout << "Input vector       : " << in << sendl;
-        sout << "Result from applyJ : " << out << sendl;
-        sout << "Result from matrix : " << out2 << sendl;
-    }
-
-    outData.endEdit(mparams);
-
-    return true;
+    assert( maskFrom /*&& SOFA_CLASS_METHOD*/ );
+    // the default implementation adds every dofs to the parent mask
+    // this sould be overloaded by each mapping to only add the implicated parent dofs to the mask
+    maskFrom->assign( fromModel->getSize(), true );
 }
 
-template <class In, class Out>
-void Mapping<In,Out>::matrixApplyJ( OutVecDeriv& out, const InVecDeriv& in, const sofa::defaulttype::BaseMatrix* J )
-{
-    typedef typename Out::Real OutReal;
-    typedef typename In::Real InReal;
-    typedef typename Out::Deriv OutDeriv;
-    typedef typename In::Deriv InDeriv;
-    if (!J) return;
-    if (J->rowSize() == 0) return;
-    const int NIn = sofa::defaulttype::DataTypeInfo<InDeriv>::Size;
-    const int NOut = sofa::defaulttype::DataTypeInfo<OutDeriv>::Size;
-    out.resize(J->rowSize() / NOut);
-    OutReal* in_alloc = NULL;
-    OutReal* out_alloc = NULL;
-    const OutReal* in_buffer = NULL;
-    OutReal* out_buffer = NULL;
-    if (sizeof(InReal) == sizeof(OutReal) && sofa::defaulttype::DataTypeInfo<InDeriv>::SimpleLayout)
-    {
-        // we can use the data directly
-        in_buffer = (const OutReal*)&in[0];
-    }
-    else
-    {
-        // we must copy the values
-        in_alloc = new OutReal[in.size()*NIn];
-        for (unsigned int i=0; i<in.size(); ++i)
-            for (int j=0; j<NIn; ++j)
-                in_alloc[i*NIn+j] = (OutReal)in[i][j];
-        in_buffer = in_alloc;
-    }
-    if (sofa::defaulttype::DataTypeInfo<OutDeriv>::SimpleLayout)
-    {
-        // we can use the data directly
-        out_buffer = (OutReal*)&out[0];
-    }
-    else
-    {
-        // we must copy the values
-        out_alloc = new OutReal[out.size()*NOut];
-        for (unsigned int i=0; i<out.size(); ++i)
-            for (int j=0; j<NOut; ++j)
-                out_alloc[i*NOut+j] = (OutReal)0; //out[i][j];
-        out_buffer = out_alloc;
-    }
-    // Do the matrix multiplication
-    J->opMulV(out_buffer, in_buffer);
-    if (in_alloc)
-    {
-        delete[] in_alloc;
-    }
-    if (out_alloc)
-    {
-        for (unsigned int i=0; i<out.size(); ++i)
-            for (int j=0; j<NOut; ++j)
-                out[i][j] = out_alloc[i*NOut+j];
-        delete[] out_alloc;
-    }
-}
-
-template <class In, class Out>
-bool Mapping<In,Out>::checkApplyJT(const MechanicalParams* mparams, InDataVecDeriv& outData, const OutDataVecDeriv& inData, const sofa::defaulttype::BaseMatrix* J )
-{
-    if (!J)
-    {
-        serr << "CheckApplyJT: getJ returned a NULL matrix" << sendl;
-        applyJT(mparams, outData, inData);
-        return false;
-    }
-
-    behavior::BaseMechanicalState* toMechaModel = NULL;
-    helper::vector<behavior::BaseMechanicalState*> toMechaModelVec = this->getMechTo();
-    if(toMechaModelVec.size() < 1)
-        return false;
-    else toMechaModel = toMechaModelVec[0];
-
-    if (toMechaModel->forceMask.isInUse())
-    {
-        serr << "Mask in use in mapped model. Disabled because of checkApplyJT." << sendl;
-        toMechaModel->forceMask.setInUse(false);
-    }
-
-    InVecDeriv& out = *outData.beginEdit(mparams);
-    const OutVecDeriv& in = inData.getValue(mparams);
-
-    InDataVecDeriv tmpData;
-    InVecDeriv& tmp = *tmpData.beginEdit(mparams);
-    tmp.resize(out.size());
-    tmpData.endEdit(mparams);
-
-    applyJT(mparams, tmpData, inData);
-
-    tmp = *tmpData.beginEdit(mparams);
-    if (tmp.size() > out.size())
-        out.resize(tmp.size());
-    for (unsigned int i=0; i<tmp.size(); ++i)
-        out[i] += tmp[i];
-
-    InVecDeriv tmp2;
-    tmp2.resize(out.size());
-
-    matrixApplyJT(tmp2, in, J);
-
-    // compare tmp and tmp2
-    const int NOut = sofa::defaulttype::DataTypeInfo<typename In::Deriv>::Size;
-    double diff_mean = 0, diff_max = 0, val1_mean = 0, val2_mean = 0;
-    for (unsigned int i=0; i<tmp.size(); ++i)
-        for (int j=0; j<NOut; ++j)
-        {
-            double v1 = tmp[i][j];
-            double v2 = tmp2[i][j];
-            double diff = v1-v2;
-            if (diff < 0) diff = -diff;
-            if (diff > diff_max) diff_max = diff;
-            diff_mean += diff;
-            if (v1 < 0) v1=-v1;
-            val1_mean += v1;
-            if (v2 < 0) v2=-v2;
-            val2_mean += v2;
-        }
-    diff_mean /= tmp.size() * NOut;
-    val1_mean /= tmp.size() * NOut;
-    val2_mean /= tmp.size() * NOut;
-    sout << "Comparison of applyJT() and matrix^T from getJ(): ";
-    sout << "Max Error = " << diff_max;
-    sout << "\t Mean Error = " << diff_mean;
-    sout << "\t Mean Abs Value from applyJT = " << val1_mean;
-    sout << "\t Mean Abs Value from matrixT = " << val2_mean;
-    sout << sendl;
-    if (this->f_printLog.getValue() || diff_max > 0.1*(val1_mean+val2_mean)/2)
-    {
-        sout << "Input vector        : " << in << sendl;
-        sout << "Result from applyJT : " << tmp << sendl;
-        sout << "Result from matrixT : " << tmp2 << sendl;
-    }
-
-    tmpData.beginEdit(mparams);
-    outData.beginEdit(mparams);
-
-    return true;
-}
-
-template <class In, class Out>
-void Mapping<In,Out>::matrixApplyJT( InVecDeriv& out, const OutVecDeriv& in, const sofa::defaulttype::BaseMatrix* J )
-{
-    typedef typename Out::Real OutReal;
-    typedef typename In::Real InReal;
-    typedef typename Out::Deriv OutDeriv;
-    typedef typename In::Deriv InDeriv;
-    if (!J) return;
-    if (J->rowSize() == 0) return;
-    const int NIn = sofa::defaulttype::DataTypeInfo<InDeriv>::Size;
-    const int NOut = sofa::defaulttype::DataTypeInfo<OutDeriv>::Size;
-    out.resize(J->colSize() / NOut);
-    InReal* in_alloc = NULL;
-    InReal* out_alloc = NULL;
-    const InReal* in_buffer = NULL;
-    InReal* out_buffer = NULL;
-    if (sofa::defaulttype::DataTypeInfo<OutDeriv>::SimpleLayout)
-    {
-        // we can use the data directly
-        in_buffer = (const InReal*)&in[0];
-    }
-    else
-    {
-        // we must copy the values
-        in_alloc = new InReal[in.size()*NOut];
-        for (unsigned int i=0; i<in.size(); ++i)
-            for (int j=0; j<NOut; ++j)
-                in_alloc[i*NOut+j] = (InReal)in[i][j];
-        in_buffer = in_alloc;
-    }
-    if (sizeof(InReal) == sizeof(OutReal) && sofa::defaulttype::DataTypeInfo<InDeriv>::SimpleLayout)
-    {
-        // we can use the data directly
-        out_buffer = (InReal*)&out[0];
-    }
-    else
-    {
-        // we must copy the values
-        out_alloc = new InReal[out.size()*NIn];
-        for (unsigned int i=0; i<out.size(); ++i)
-            for (int j=0; j<NIn; ++j)
-                out_alloc[i*NIn+j] = (InReal)0; //out[i][j];
-        out_buffer = out_alloc;
-    }
-    // Do the transposed matrix multiplication
-    J->opPMulTV(out_buffer, in_buffer);
-    if (in_alloc)
-    {
-        delete[] in_alloc;
-    }
-    if (out_alloc)
-    {
-        for (unsigned int i=0; i<out.size(); ++i)
-            for (int j=0; j<NIn; ++j)
-                out[i][j] += out_alloc[i*NIn+j];
-        delete[] out_alloc;
-    }
-}
-
-template <class In, class Out>
-bool Mapping<In,Out>::checkApplyJT(const ConstraintParams* cparams, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in, const sofa::defaulttype::BaseMatrix* J )
-{
-    applyJT(cparams, out, in);
-    if (!J)
-    {
-        serr << "CheckApplyJT: getJ returned a NULL matrix" << sendl;
-        return false;
-    }
-
-    return true;
-}
-
-template <class In, class Out>
-void Mapping<In,Out>::matrixApplyJT( InMatrixDeriv& /*out*/, const OutMatrixDeriv& /*in*/, const sofa::defaulttype::BaseMatrix* /*J*/ )
-{
-    serr << "matrixApplyJT for MatrixDeriv NOT IMPLEMENTED" << sendl;
-}
 
 } // namespace core
 

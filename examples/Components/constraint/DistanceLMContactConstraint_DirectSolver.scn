@@ -9,7 +9,7 @@
     <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
     <LMConstraintDirectSolver name="default0" maxError="1e-7" listening="1" constraintVel="1" constraintPos="0" numIterations="1" solverAlgorithm="SVD" />
     <Node name="cubeFEM" gravity="0 -9.81 0">
-        <MechanicalObject template="Vec3d" name="dof" useMask="1" position="0 0 0" velocity="0 0 0" force="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" translation="0 2 0" rotation="30 20 15" />
+        <MechanicalObject template="Vec3d" name="dof"  position="0 0 0" velocity="0 0 0" force="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" translation="0 2 0" rotation="30 20 15" />
         <UniformMass template="Vec3d" name="default2" mass="0.25" />
         <RegularGridTopology name="default3" n="5 5 5" min="-3.5 -3.5 -3.5" max="3.5 3.5 3.5" p0="-3.5 -3.5 -3.5" />
         <TetrahedronFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="25" updateStiffnessMatrix="0" computeGlobalMatrix="0" />
@@ -20,7 +20,7 @@
         <Node name="Surf" gravity="0 -9.81 0">
             <MeshObjLoader name="loader" filename="mesh/smCube125.obj" />
             <MeshTopology src="@loader" name="default5" />
-            <MechanicalObject src="@loader" template="Vec3d" name="default6" useMask="1" position="0 0 0" velocity="0 0 0" force="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" translation="@../dof.translation" rotation="@../dof.rotation" scale3d="@../dof.scale3d" />
+            <MechanicalObject src="@loader" template="Vec3d" name="default6"  position="0 0 0" velocity="0 0 0" force="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" translation="@../dof.translation" rotation="@../dof.rotation" scale3d="@../dof.scale3d" />
             <TTriangleModel template="Vec3d" name="default1" contactFriction="0.6" />
             <LineModel name="default2" contactFriction="@[-1].contactFriction" />
             <PointModel name="default3" contactFriction="@[-1].contactFriction" />
@@ -30,14 +30,14 @@
     <Node name="Floor" gravity="0 -9.81 0">
         <MeshObjLoader name="loader" filename="mesh/floor3.obj" />
         <MeshTopology src="@loader" name="default11" />
-        <MechanicalObject src="@loader" template="Vec3d" name="default12" useMask="1" position="0 0 0" velocity="0 0 0" force="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" translation="0 -10 0" scale3d="1.75 1.75 1.75" />
+        <MechanicalObject src="@loader" template="Vec3d" name="default12"  position="0 0 0" velocity="0 0 0" force="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" translation="0 -10 0" scale3d="1.75 1.75 1.75" />
         <TTriangleModel template="Vec3d" name="FloorTriangle" moving="0" simulated="0" contactFriction="0.6" />
         <LineModel name="FloorLine" moving="0" simulated="0" contactFriction="@[-1].contactFriction" />
         <PointModel name="FloorLine" moving="0" simulated="0" contactFriction="@[-1].contactFriction" />
         <OglModel template="ExtVec3f" name="FloorV" fileMesh="mesh/floor3.obj" texturename="textures/brushed_metal.bmp" translation="0 -10 0" scale3d="1.75 1.75 1.75" />
     </Node>
     <Node name="cubeFEM" gravity="0 -9.81 0">
-        <MechanicalObject template="Vec3d" name="dof" useMask="1" position="0 0 0" velocity="0 0 0" force="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" translation="0 15 0" rotation="30 20 15" />
+        <MechanicalObject template="Vec3d" name="dof"  position="0 0 0" velocity="0 0 0" force="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" translation="0 15 0" rotation="30 20 15" />
         <UniformMass template="Vec3d" name="default2" mass="0.25" />
         <RegularGridTopology name="default3" n="5 5 5" min="-3.5 -3.5 -3.5" max="3.5 3.5 3.5" p0="-3.5 -3.5 -3.5" />
         <TetrahedronFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="25" updateStiffnessMatrix="0" computeGlobalMatrix="0" />
@@ -48,7 +48,7 @@
         <Node name="Surf" gravity="0 -9.81 0">
             <MeshObjLoader name="loader" filename="mesh/smCube125.obj" />
             <MeshTopology src="@loader" name="default5" />
-            <MechanicalObject src="@loader" template="Vec3d" name="default6" useMask="1" position="0 0 0" velocity="0 0 0" force="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" translation="@../dof.translation" rotation="@../dof.rotation" scale3d="@../dof.scale3d" />
+            <MechanicalObject src="@loader" template="Vec3d" name="default6"  position="0 0 0" velocity="0 0 0" force="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" translation="@../dof.translation" rotation="@../dof.rotation" scale3d="@../dof.scale3d" />
             <TTriangleModel template="Vec3d" name="default1" contactFriction="0.6" />
             <LineModel name="default2" contactFriction="@[-1].contactFriction" />
             <PointModel name="default3" contactFriction="@[-1].contactFriction" />

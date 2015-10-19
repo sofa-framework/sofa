@@ -62,7 +62,6 @@ public:
     typedef objectmodel::Data<VecCoord> DataVecCoord;
     typedef objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef typename DataTypes::Real Real;
-    typedef helper::ParticleMask ParticleMask;
 protected:
     PairInteractionProjectiveConstraintSet(MechanicalState<DataTypes> *mm1 = NULL, MechanicalState<DataTypes> *mm2 = NULL);
 
@@ -197,8 +196,8 @@ public:
 protected:
     SingleLink<PairInteractionProjectiveConstraintSet<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
     SingleLink<PairInteractionProjectiveConstraintSet<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
-    ParticleMask *mask1;
-    ParticleMask *mask2;
+    typename MechanicalState<DataTypes>::ForceMask *mask1;
+    typename MechanicalState<DataTypes>::ForceMask *mask2;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONPROJECTIVECONSTRAINTSET_CPP)

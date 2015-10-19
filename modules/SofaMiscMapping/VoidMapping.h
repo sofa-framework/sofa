@@ -123,6 +123,8 @@ protected:
     virtual ~VoidMapping()
     {
     }
+
+    virtual void updateForceMask() { fromModel->forceMask.assign(fromModel->getSize(),true); }
 };
 
 } // namespace mapping

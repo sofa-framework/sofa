@@ -89,13 +89,12 @@ public:
     typedef BaseMeshTopology::SeqTriangles   SeqTriangles;
     typedef BaseMeshTopology::index_type ID;
 
+    typedef typename Inherit::ForceMask ForceMask;
+
 protected:
 
     CatmullRomSplineMapping ();
     virtual ~CatmullRomSplineMapping();
-
-    helper::ParticleMask* maskFrom;
-    helper::ParticleMask* maskTo;
 
     Data<unsigned int> SplittingLevel;
     //Data<Real> Radius;

@@ -87,7 +87,17 @@ void PairInteractionConstraint<DataTypes>::buildConstraintMatrix(const Constrain
     if (cParams)
     {
         buildConstraintMatrix(cParams, *cId[mstate1.get(cParams)].write(), *cId[mstate2.get(cParams)].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2));
+        updateForceMask();
     }
+}
+
+template<class DataTypes>
+void PairInteractionConstraint<DataTypes>::updateForceMask()
+{
+    // the default implementation adds every dofs to the mask
+    // this sould be overloaded by each forcefield to only add the implicated dofs subset to the mask
+    mstate1->forceMask.assign( mstate1->getSize(), true );
+    mstate2->forceMask.assign( mstate2->getSize(), true );
 }
 
 } // namespace behavior

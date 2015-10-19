@@ -21,7 +21,7 @@ set(HEADER_FILES
     MatEigen.h
     MemoryManager.h
     OptionsGroup.h
-    ParticleMask.h
+    StateMask.h
     Polynomial_LD.h
     Polynomial_LD.inl
     Quater.h
@@ -110,6 +110,7 @@ set(SOURCE_FILES
     Logger.cpp
     MarchingCubeUtility.cpp
     OptionsGroup.cpp
+    StateMask.cpp
     Polynomial_LD.cpp
     Quater.cpp
     RandomGenerator.cpp

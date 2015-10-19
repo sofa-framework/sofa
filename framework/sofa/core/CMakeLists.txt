@@ -157,7 +157,6 @@ set(SOURCE_FILES
     SofaLibrary.cpp
     State.cpp
     behavior/BaseAnimationLoop.cpp
-    behavior/BaseConstraint.cpp
     behavior/BaseForceField.cpp
     behavior/BaseLMConstraint.cpp
     behavior/BaseMechanicalState.cpp

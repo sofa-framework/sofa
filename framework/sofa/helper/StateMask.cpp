@@ -22,20 +22,51 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BaseConstraint.h"
+
+#include "StateMask.h"
+
+#include <boost/functional/hash.hpp>
+
+
 
 namespace sofa
 {
 
-namespace core
+namespace helper
 {
 
-namespace behavior
-{
+    static boost::hash<typename StateMask::InternalStorage> s_maskHash;
+
+    void StateMask::resize( size_t size )
+    {
+        mask.resize( size );
+        /*assign( size, true );*/
+    }
+
+    void StateMask::assign( size_t size, bool value )
+    {
+        mask.assign( size, value );
+    }
+
+    void StateMask::activate( bool a )
+    {
+        activated = a;
+    }
+
+    size_t StateMask::nbActiveDofs() const
+    {
+        size_t t = 0;
+        for( size_t i = 0 ; i<size() ; ++i )
+            if( getEntry(i) ) t++;
+        return t;
+    }
+
+    size_t StateMask::getHash() const
+    {
+        return s_maskHash(mask);
+    }
 
 
-} // namespace behavior
-
-} // namespace core
+} // namespace helper
 
 } // namespace sofa

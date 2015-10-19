@@ -146,6 +146,8 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
+    virtual void updateForceMask();
+
 protected:
     DistanceMapping();
     virtual ~DistanceMapping();
@@ -289,6 +291,8 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
+    virtual void updateForceMask();
+
 protected:
     DistanceMultiMapping();
     virtual ~DistanceMultiMapping();
@@ -308,22 +312,19 @@ private:
 
   // allocate jacobians
   virtual void alloc() {
-
       const unsigned n = this->getFrom().size();
       if( n != baseMatrices.size() ) {
-          release();
-
+          release( n ); // will only do something if n<oldsize
+          size_t oldsize = baseMatrices.size();
           baseMatrices.resize( n );
-          for( unsigned i = 0; i < n; ++i )
-          {
+          for( unsigned i = oldsize ; i < n ; ++i ) // will only do something if n>oldsize
               baseMatrices[i] = new SparseMatrixEigen;
-          }
       }
   }
 
   // delete jacobians
-  void release() {
-      for( unsigned i = 0, n = baseMatrices.size(); i < n; ++i) {
+  void release( size_t from=0 ) {
+      for( unsigned i = from, n = baseMatrices.size(); i < n; ++i) {
           delete baseMatrices[i];
           baseMatrices[i] = 0;
       }

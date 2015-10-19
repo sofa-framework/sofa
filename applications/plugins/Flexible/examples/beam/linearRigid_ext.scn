@@ -77,7 +77,7 @@
         <ImageContainer template="ImageUC" name="image" filename="beam.raw" drawBB="false"/>
         <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="0" fixedPosition="0 0 -0.999 0 0 0.999" printLog="false"/> 
         <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-	<MechanicalObject template="Rigid" name="parent" useMask="0" showObject="true" src="@merged" />	
+	<MechanicalObject template="Rigid" name="parent"  showObject="true" src="@merged" />	
 	<VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="4"/>
 
 	<Node 	name="behavior"   >
@@ -100,7 +100,7 @@
 
 	    <Node 	name="collision"   >
 		<Mesh name="mesh" src="@../mesh" /> 
-		<MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
+		<MechanicalObject  template="Vec3d" name="pts"    />
 		<UniformMass totalMass="10" />
 
        		 <BoxROI template="Vec3d" box="-1 -1 -1.1 1 1 -0.99" />

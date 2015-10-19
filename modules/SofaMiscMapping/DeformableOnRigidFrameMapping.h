@@ -109,9 +109,6 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
     Data< Real > m_rootAngularForceScaleFactor;
     Data< Real > m_rootLinearForceScaleFactor;
 
-    helper::ParticleMask* maskFrom;
-    helper::ParticleMask* maskTo;
-
     int addPoint ( const OutCoord& c );
     int addPoint ( const OutCoord& c, int indexFrom );
 

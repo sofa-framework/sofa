@@ -100,8 +100,8 @@ public:
     SOFA_ABSTRACT_CLASS(BaseConstraint, BaseConstraintSet);
 
 protected:
-	BaseConstraint() { };
-    virtual ~BaseConstraint() { }
+    BaseConstraint() {}
+    virtual ~BaseConstraint() {}
 	
 private:
 	BaseConstraint(const BaseConstraint& n) ;
