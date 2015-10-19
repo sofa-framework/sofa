@@ -357,11 +357,11 @@ protected :
     virtual void initJacobianBlocks()=0;
     virtual void initJacobianBlocks(const InVecCoord& /*inCoord*/, const OutVecCoord& /*outCoord*/){ std::cout << "Only implemented in LinearMapping for now." << std::endl;}
 
-    SparseMatrixEigen eigenJacobian, maskedEigenJacobian;  ///< Assembled Jacobian matrix
+    SparseMatrixEigen eigenJacobian/*, maskedEigenJacobian*/;  ///< Assembled Jacobian matrix
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
     void updateJ();
-    void updateMaskedJ();
-    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
+//    void updateMaskedJ();
+//    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
 
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
 

@@ -313,7 +313,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
 
     eigenJacobian1.compress();
 
-    maskedEigenJacobian1.resize(0,0);
+//    maskedEigenJacobian1.resize(0,0);
 }
 
 template <class JacobianBlockType1,class JacobianBlockType2>
@@ -331,24 +331,24 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
 
     eigenJacobian2.compress();
 
-    maskedEigenJacobian2.resize(0,0);
+//    maskedEigenJacobian2.resize(0,0);
 }
 
-template <class JacobianBlockType1,class JacobianBlockType2>
-void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::updateMaskedJ()
-{
-    size_t currentHash = this->maskTo[0]->getHash();
-    if( previousMaskHash!=currentHash )
-    {
-        previousMaskHash = currentHash;
-        maskedEigenJacobian1.resize(0,0);
-        maskedEigenJacobian2.resize(0,0);
-    }
-    if( !maskedEigenJacobian1.rows() )
-        this->maskTo[0]->maskedMatrix( maskedEigenJacobian1.compressedMatrix, eigenJacobian1.compressedMatrix, Out::deriv_total_size );
-    if( !maskedEigenJacobian2.rows() )
-        this->maskTo[0]->maskedMatrix( maskedEigenJacobian2.compressedMatrix, eigenJacobian2.compressedMatrix, Out::deriv_total_size );
-}
+//template <class JacobianBlockType1,class JacobianBlockType2>
+//void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::updateMaskedJ()
+//{
+//    size_t currentHash = this->maskTo[0]->getHash();
+//    if( previousMaskHash!=currentHash )
+//    {
+//        previousMaskHash = currentHash;
+//        maskedEigenJacobian1.resize(0,0);
+//        maskedEigenJacobian2.resize(0,0);
+//    }
+//    if( !maskedEigenJacobian1.rows() )
+//        this->maskTo[0]->maskedMatrix( maskedEigenJacobian1.compressedMatrix, eigenJacobian1.compressedMatrix, Out::deriv_total_size );
+//    if( !maskedEigenJacobian2.rows() )
+//        this->maskTo[0]->maskedMatrix( maskedEigenJacobian2.compressedMatrix, eigenJacobian2.compressedMatrix, Out::deriv_total_size );
+//}
 
 
 template <class JacobianBlockType1,class JacobianBlockType2>
@@ -455,13 +455,13 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
         if( !eigenJacobian1.rows() ) updateJ1();
         if( !eigenJacobian2.rows() ) updateJ2();
 
-        if( this->maskTo[0]->isActivated() )
-        {
-            updateMaskedJ();
-            maskedEigenJacobian1.mult(dOut,dIn1);
-            maskedEigenJacobian2.mult(dOut,dIn2);
-        }
-        else
+//        if( this->maskTo[0]->isActivated() )
+//        {
+//            updateMaskedJ();
+//            maskedEigenJacobian1.mult(dOut,dIn1);
+//            maskedEigenJacobian2.mult(dOut,dIn2);
+//        }
+//        else
         {
             eigenJacobian1.mult(dOut,dIn1);
             eigenJacobian2.addMult(dOut,dIn2);
@@ -505,13 +505,13 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
         if( !eigenJacobian1.rows() ) updateJ1();
         if( !eigenJacobian2.rows() ) updateJ2();
 
-        if( this->maskTo[0]->isActivated() )
-        {
-            updateMaskedJ();
-            maskedEigenJacobian1.addMultTranspose(dIn1,dOut);
-            maskedEigenJacobian2.addMultTranspose(dIn2,dOut);
-        }
-        else
+//        if( this->maskTo[0]->isActivated() )
+//        {
+//            updateMaskedJ();
+//            maskedEigenJacobian1.addMultTranspose(dIn1,dOut);
+//            maskedEigenJacobian2.addMultTranspose(dIn2,dOut);
+//        }
+//        else
         {
             eigenJacobian1.addMultTranspose(dIn1,dOut);
             eigenJacobian2.addMultTranspose(dIn2,dOut);
@@ -801,17 +801,17 @@ const vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMultiMappingT<Jacob
     if( !eigenJacobian1.rows() ) updateJ1();
     if( !eigenJacobian2.rows() ) updateJ2();
 
-    if( this->maskTo[0]->isActivated() )
-    {
-        updateMaskedJ();
-        baseMatrices[0] = &maskedEigenJacobian1;
-        baseMatrices[1] = &maskedEigenJacobian2;
-    }
-    else
-    {
-        baseMatrices[0] = &eigenJacobian1;
-        baseMatrices[1] = &eigenJacobian2;
-    }
+//    if( this->maskTo[0]->isActivated() )
+//    {
+//        updateMaskedJ();
+//        baseMatrices[0] = &maskedEigenJacobian1;
+//        baseMatrices[1] = &maskedEigenJacobian2;
+//    }
+//    else
+//    {
+//        baseMatrices[0] = &eigenJacobian1;
+//        baseMatrices[1] = &eigenJacobian2;
+//    }
 
     return &baseMatrices;
 }

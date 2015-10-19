@@ -289,16 +289,16 @@ protected:
     core::State<Out>* toModel;      ///< DOF of the slave
 
 
-    SparseMatrixEigen1 eigenJacobian1, maskedEigenJacobian1;  ///< Assembled Jacobian matrix
+    SparseMatrixEigen1 eigenJacobian1/*, maskedEigenJacobian1*/;  ///< Assembled Jacobian matrix
     void updateJ1();
-    SparseMatrixEigen2 eigenJacobian2, maskedEigenJacobian2;  ///< Assembled Jacobian matrix
+    SparseMatrixEigen2 eigenJacobian2/*, maskedEigenJacobian2*/;  ///< Assembled Jacobian matrix
     void updateJ2();
-    void updateMaskedJ();
+//    void updateMaskedJ();
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
 
     SparseKMatrixEigen1 K;  ///< Assembled geometric stiffness matrix
 
-    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
+//    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization
     const defaulttype::ResizableExtVector<core::topology::BaseMeshTopology::Triangle> *extTriangles;
