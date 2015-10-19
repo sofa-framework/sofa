@@ -35,7 +35,7 @@ namespace sofa
 namespace helper
 {
 
-    static boost::hash<typename StateMask::InternalStorage> s_maskHash;
+    static boost::hash<StateMask::InternalStorage> s_maskHash;
 
     void StateMask::resize( size_t size )
     {
