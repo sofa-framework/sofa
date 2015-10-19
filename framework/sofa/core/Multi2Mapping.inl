@@ -173,6 +173,12 @@ void Multi2Mapping<In1,In2,Out>::init()
         if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModels[i])) maskTo[i] = &stateTo->forceMask;
         else this->setNonMechanical();
 
+    reinit();
+}
+
+template < class In1, class In2, class Out >
+void Multi2Mapping<In1,In2,Out>::reinit()
+{
     apply(MechanicalParams::defaultInstance() , VecCoordId::position(), ConstVecCoordId::position());
     applyJ(MechanicalParams::defaultInstance() , VecDerivId::velocity(), ConstVecDerivId::velocity());
     if (f_applyRestPosition.getValue())

@@ -31,7 +31,6 @@ public:
 
     typedef BaseContact<TCollisionModel1, TCollisionModel2, ResponseDataTypes> Inherit;
     typedef typename Inherit::node_type node_type;
-    typedef typename Inherit::delta_type delta_type;
     typedef typename Inherit::CollisionModel1 CollisionModel1;
     typedef typename Inherit::CollisionModel2 CollisionModel2;
     typedef typename Inherit::Intersection Intersection;
@@ -63,15 +62,15 @@ protected:
 
 
 
-    typename node_type::SPtr create_node()
+    void create_node()
     {
         const unsigned size = this->mappedContacts.size();
 
-        delta_type delta = this->make_delta();
+        this->make_delta();
 
         typename node_type::SPtr contact_node = node_type::create( this->getName() + "_contact_frame" );
 
-        delta.node->addChild( contact_node.get() );
+        this->delta_node->addChild( contact_node.get() );
 
         // ensure all graph context parameters (e.g. dt are well copied)
         contact_node->updateSimulationContext();
@@ -86,7 +85,7 @@ protected:
         // contact mapping
         contact_map = core::objectmodel::New<contact_map_type>();
 
-        contact_map->setModels( delta.dofs.get(), contact_dofs.get() );
+        contact_map->setModels( this->delta_dofs.get(), contact_dofs.get() );
         contact_map->setName( this->getName() + "_contact_mapping" );
         contact_node->addObject( contact_map.get() );
 
@@ -125,8 +124,6 @@ protected:
         compliance->diagonal.setValue( complianceValues );
 
         compliance->init();
-
-        return delta.node;
     }
 
 
@@ -135,20 +132,17 @@ protected:
     {
         const unsigned size = this->mappedContacts.size();
 
-        // update delta node
-        vector< defaulttype::Vec<2, unsigned> > pairs(size);
-        for(unsigned i = 0; i < size; ++i) {
-            pairs[i][0] = this->mappedContacts[i].index1;
-            pairs[i][1] = this->mappedContacts[i].index2;
+        if( this->selfCollision )
+        {
+            this->copyPairs( *this->deltaContactMap->pairs.beginEdit() );
+            this->deltaContactMap->pairs.endEdit();
+            this->deltaContactMap->reinit();
         }
-
-        if( this->selfCollision ) {
-            typedef mapping::DifferenceMapping<ResponseDataTypes, ResponseDataTypes> map_type;
-            dynamic_cast<map_type*>(this->deltaContactMap.get())->pairs.setValue(pairs);
-
-        } else {
-            typedef mapping::DifferenceMultiMapping<ResponseDataTypes, ResponseDataTypes> map_type;
-            dynamic_cast<map_type*>(this->deltaContactMap.get())->pairs.setValue(pairs);
+        else
+        {
+            this->copyPairs( *this->deltaContactMultiMap->pairs.beginEdit() );
+            this->deltaContactMultiMap->pairs.endEdit();
+            this->deltaContactMultiMap->reinit();
         }
 
         contact_dofs->resize( size );
@@ -156,12 +150,14 @@ protected:
         this->copyNormals( *editOnly(contact_map->normal) );
         this->copyPenetrations( *editOnly(*contact_dofs->write(core::VecCoordId::position())) );
 
-        // every contact points must propagate constraint forces
-        for(unsigned i = 0; i < size; ++i)
-        {
-            this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
-            if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
-        }
+        contact_map->reinit();
+
+//        // every contact points must propagate constraint forces
+//        for(unsigned i = 0; i < size; ++i)
+//        {
+//            this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
+//            if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
+//        }
 
         // update compliance value
         typename compliance_type::VecDeriv complianceValues( size );
@@ -181,8 +177,7 @@ protected:
             }
         }
         compliance->diagonal.setValue( complianceValues );
-
-        this->node->init(core::ExecParams::defaultInstance());
+        compliance->reinit();
     }
 
 

@@ -126,13 +126,13 @@ public:
         if( !contacts )
         {
             // should only be called when keepAlive
-            node->setActive( false );
+            delta_node->setActive( false );
 //            simulation::DeactivationVisitor v(sofa::core::ExecParams::defaultInstance(), false);
 //            node->executeVisitor(&v);
             return; // keeping contact alive imposes a call with a null DetectionOutput
         }
 
-        if( !node )
+        if( !delta_node )
         {
             //fancy names
             std::string name1 = this->model1->getClassName() + "_contact_points";
@@ -205,10 +205,10 @@ public:
         mapper1.update();
         if (!this->selfCollision) mapper2.update();
 
-        if(!node) {
-            node = create_node();
+        if(!delta_node) {
+            create_node();
         } else {
-            node->setActive( true );
+            delta_node->setActive( true );
 //            simulation::DeactivationVisitor v(sofa::core::ExecParams::defaultInstance(), true);
 //            node->executeVisitor(&v);
          	update_node();
@@ -216,66 +216,80 @@ public:
     }
 
 
+    /// @internal for SOFA collision mechanism
+    /// called before setting-up new collisions
     void removeResponse() {
-        if( node ) {
+        if( delta_node ) {
             mapper1.resize(0);
             mapper2.resize(0);
         }
     }
 
+    /// @internal for SOFA collision mechanism
+    /// called when the collision components must be removed from the scene graph
     void cleanup() {
 
         // should be called only when !keep
 
-        if( node ) {
+        if( delta_node ) {
             mapper1.cleanup();
             if (!this->selfCollision) mapper2.cleanup();
-            node->detachFromGraph();
-            node.reset();
+            delta_node->detachFromGraph();
+            delta_node.reset();
         }
 
         mappedContacts.clear();
     }
 
 
+    /// @internal for SOFA collision mechanism
+    /// to check if the collision components must be removed from the scene graph
+    /// or if it should be kept but deactivated
+    /// when the objects are no longer colliding
     virtual bool keepAlive() { return keep.getValue(); }
 
 
 protected:
 
+    typedef SReal real;
+
     // the node that will hold all the stuff
     typedef sofa::simulation::Node node_type;
-    node_type::SPtr node;
+    node_type::SPtr delta_node;
+
+    // TODO correct real type
+    typedef container::MechanicalObject<ResponseDataTypes> delta_dofs_type;
+    typename delta_dofs_type::SPtr delta_dofs;
+
 
     // the difference mapping used in the delta node (needed by update_node)
-    typedef sofa::core::BaseMapping delta_map_type;
-    delta_map_type::SPtr deltaContactMap;
+    typedef mapping::DifferenceMapping<ResponseDataTypes, ResponseDataTypes> delta_map_type;
+    typename delta_map_type::SPtr deltaContactMap;
+    typedef mapping::DifferenceMultiMapping<ResponseDataTypes, ResponseDataTypes> delta_multimap_type;
+    typename delta_multimap_type::SPtr deltaContactMultiMap;
 
     typename MechanicalState1::SPtr mstate1;
     typename MechanicalState2::SPtr mstate2;
 
+    typename odesolver::BaseConstraintValue::SPtr baseConstraintValue;
+
     // all you're left to implement \o/
-    virtual node_type::SPtr create_node() = 0;
+    virtual void create_node() = 0;
     virtual void update_node() = 0;
 
-    // TODO correct real type
-    typedef container::MechanicalObject<ResponseDataTypes> delta_dofs_type;
 
-    // convenience
-    struct delta_type {
-        node_type::SPtr node;
-        typename delta_dofs_type::SPtr dofs;
-    };
 
-    delta_type make_delta() {  // TODO to compliantconstraint
+    /// @internal
+    /// create main node / dof for Compliant Contact
+    /// as a differencemapping
+    void make_delta() {
 
-        node_type::SPtr delta_node = node_type::create( this->getName() + "_delta" );
+        delta_node = node_type::create( this->getName() + "_delta" );
 
         // TODO vec3types according to the types in interaction !
 
         // delta dofs
-        typename delta_dofs_type::SPtr delta_dofs;
-        const unsigned size = mappedContacts.size();
+        const size_t size = mappedContacts.size();
         assert( size );
 
         delta_dofs = core::objectmodel::New<delta_dofs_type>();
@@ -287,31 +301,19 @@ protected:
 
         delta_node->addObject( delta_dofs );
 
-        // index pairs and stuff
-        vector< defaulttype::Vec<2, unsigned> > pairs(size);
-
-        for(unsigned i = 0; i < size; ++i) {
-            pairs[i][0] = this->mappedContacts[i].index1;
-            pairs[i][1] = this->mappedContacts[i].index2;
-        }
-
-
-        delta_type res;
-        res.node = delta_node;
-        res.dofs = delta_dofs;
 
         // delta mappings
         if( this->selfCollision ) {
-            typedef mapping::DifferenceMapping<ResponseDataTypes, ResponseDataTypes> map_type;
-            typename map_type::SPtr map = sofa::core::objectmodel::New<map_type>();
+            deltaContactMap = sofa::core::objectmodel::New<delta_map_type>();
 
-            map->setModels( this->mstate1.get(), delta_dofs.get() );
+            deltaContactMap->setModels( this->mstate1.get(), delta_dofs.get() );
 
-            map->pairs.setValue( pairs );
+            copyPairs( *deltaContactMap->pairs.beginEdit() );
+            deltaContactMap->pairs.endEdit();
 
-            map->setName( "delta_mapping" );
+            deltaContactMap->setName( "delta_mapping" );
 
-            delta_node->addObject( map.get() );
+            delta_node->addObject( deltaContactMap.get() );
 
             // TODO is there a cleaner way of doing this ?
 
@@ -319,23 +321,22 @@ protected:
             assert( dynamic_cast<node_type*>(this->mstate1->getContext()) );
             static_cast< node_type* >(this->mstate1->getContext())->addChild( delta_node.get() );
 
-            map->init();
-            deltaContactMap  = static_cast<delta_map_type*>(map.get());
+            deltaContactMap->init();
 
         } else {
-            typedef mapping::DifferenceMultiMapping<ResponseDataTypes, ResponseDataTypes> map_type;
-            typename map_type::SPtr map = core::objectmodel::New<map_type>();
+            deltaContactMultiMap = core::objectmodel::New<delta_multimap_type>();
 
-            map->addInputModel( this->mstate1.get() );
-            map->addInputModel( this->mstate2.get() );
+            deltaContactMultiMap->addInputModel( this->mstate1.get() );
+            deltaContactMultiMap->addInputModel( this->mstate2.get() );
 
-            map->addOutputModel( delta_dofs.get() );
+            deltaContactMultiMap->addOutputModel( delta_dofs.get() );
 
-            map->pairs.setValue( pairs );
+            copyPairs( *deltaContactMultiMap->pairs.beginEdit() );
+            deltaContactMultiMap->pairs.endEdit();
 
-            map->setName( "delta_mapping" );
+            deltaContactMultiMap->setName( "delta_mapping" );
 
-            delta_node->addObject( map.get() );
+            delta_node->addObject( deltaContactMultiMap.get() );
 
             // the scene graph should reflect mapping dependencies
             assert( dynamic_cast<node_type*>(this->mstate1->getContext()) );
@@ -344,19 +345,15 @@ protected:
             static_cast< node_type* >(this->mstate1->getContext())->addChild( delta_node.get() );
             static_cast< node_type* >(this->mstate2->getContext())->addChild( delta_node.get() );
 
-            map->init();
-            deltaContactMap  = static_cast<delta_map_type*>(map.get());
+            deltaContactMultiMap->init();
         }
 
         // ensure all graph context parameters (e.g. dt are well copied)
         delta_node->updateSimulationContext();
-
-        return res;
     }
 
 
-    typedef SReal real;
-// TODO to compliantconstraint
+    /// @internal
     /// insert a ConstraintValue component in the given graph depending on restitution/damping values
     /// return possible pointer to the activated constraint mask
     template<class contact_dofs_type>
@@ -380,6 +377,7 @@ protected:
             constraintValue->mask.endEdit();
 
             constraintValue->init();
+            baseConstraintValue = constraintValue;
             return &mask;
         }
 //        else //if( damping ) // damped constraint
@@ -406,6 +404,7 @@ protected:
             stab->mask.endEdit();
 
             stab->init();
+            baseConstraintValue = stab;
             return &mask;
         }
         else // stabilized constraint
@@ -424,6 +423,7 @@ protected:
             stab->mask.endEdit();
 
             stab->init();
+            baseConstraintValue = stab;
             return &mask;
         }
 
@@ -443,6 +443,7 @@ protected:
 //        }
 //    }
 
+    /// @internal copying the contact normals to the given vector
     typedef vector< defaulttype::Vec<3, real> > normal_type;
     void copyNormals( normal_type& res ) const {
         const unsigned size = mappedContacts.size();
@@ -456,6 +457,7 @@ protected:
         }
     }
 
+    /// @internal copying the contact penetrations to the given vector
     template< class Coord >
     void copyPenetrations( helper::vector<Coord>& res ) const {
         const unsigned size = mappedContacts.size();
@@ -465,6 +467,20 @@ protected:
 
         for(unsigned i = 0; i < size; ++i) {
             res[i][0] = (*contacts)[i].value;
+        }
+    }
+
+    /// @internal copying the contact pair indices to the given vector
+    void copyPairs( helper::vector< defaulttype::Vec<2, unsigned> >& res ) const {
+        const unsigned size = mappedContacts.size();
+        assert( size );
+        assert( size == contacts->size() );
+
+        res.resize( size );
+
+        for(unsigned i = 0; i < size; ++i) {
+            res[i][0] = this->mappedContacts[i].index1;
+            res[i][1] = this->mappedContacts[i].index2;
         }
     }
 
