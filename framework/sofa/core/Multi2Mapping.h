@@ -267,7 +267,6 @@ public:
     }
 
     virtual void init();
-    virtual void reinit();
 
     /// Disable the mapping to get the original coordinates of the mapped model.
     ///

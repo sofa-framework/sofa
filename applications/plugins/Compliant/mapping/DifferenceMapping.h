@@ -31,7 +31,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
   public:
     SOFA_CLASS(SOFA_TEMPLATE2(DifferenceMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMapping,TIn,TOut));
 	
-	typedef DifferenceMapping self;
+    typedef DifferenceMapping self;
 	
 	typedef defaulttype::Vec<2, unsigned> index_pair;
     typedef vector< index_pair > pairs_type;
@@ -50,6 +50,12 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
     {}
 
 	enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
+
+    virtual void init()
+    {
+        this->getToModel()->resize( pairs.getValue().size() );
+        AssembledMapping<TIn, TOut>::init();
+    }
 
     virtual void reinit()
     {
@@ -200,6 +206,18 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
         typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
 
         enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
+
+        virtual void init()
+        {
+            if(!pairs.getValue().size() && this->getFromModels()[0]->getSize()==this->getFromModels()[1]->getSize()) // if no pair is defined-> map all dofs
+            {
+                helper::WriteOnlyAccessor<Data<pairs_type> > p(pairs);
+                p.resize(this->getFromModels()[0]->getSize());
+                for( unsigned j = 0; j < p.size(); ++j) p[j]=index_pair(j,j);
+            }
+            this->getToModels()[0]->resize( pairs.getValue().size() );
+            AssembledMultiMapping<TIn, TOut>::init();
+        }
 
         virtual void reinit()
         {
