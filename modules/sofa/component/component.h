@@ -25,7 +25,11 @@
 #ifndef SOFA_COMPONENT_H
 #define SOFA_COMPONENT_H
 
-#warning This file is useless. If you need it, you are doing something wrong.
+#ifdef WIN32
+	#pragma message ( "component.h : This file is useless. If you need it, you are doing something wrong." )
+#else
+	#warning component.h This file is useless. If you need it, you are doing something wrong.
+#endif
 
 #include <sofa/helper/system/config.h>
 
