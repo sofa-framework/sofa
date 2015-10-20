@@ -9,7 +9,7 @@
         <PartialFixedConstraint fixedDirections="1 1 1 0 0 0" />
         <UniformMass template="Rigid" name="mass" />
         <Node name="child node with DOFs mapped from the parent">
-            <MechanicalObject template="Rigid" name="endpoint coordinates" position="1 0 0 0 0 0 1" useMask="0" />
+            <MechanicalObject template="Rigid" name="endpoint coordinates" position="1 0 0 0 0 0 1"  />
             <RigidRigidMapping name="angle-coord mapping" input="@.." output="@." index="0" />
             <ConstantForceField force="1 -1 0 0 0 0" points="0" />
         </Node>

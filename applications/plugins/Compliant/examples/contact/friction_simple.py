@@ -2,7 +2,7 @@ import Sofa
 
 import math
 
-from Compliant import Rigid, Tools
+from Compliant import StructuralAPI, Tools
 
 dir = Tools.path( __file__ )
 
@@ -30,6 +30,7 @@ def createScene(node):
                             name = 'num',
                             iterations = 100,
                             precision = 1e-14)
+    node.createObject( "LDLTResponse" )
     
     proximity = node.getObject('proximity')
 
@@ -39,21 +40,30 @@ def createScene(node):
 
   
     # plane
-    plane = Rigid.Body('plane')
-    plane.visual = dir + '/../mesh/ground.obj'
-    plane.collision = plane.visual
-    plane.mass_from_mesh( plane.visual, 10 )
-    plane.mu = 0.5 # per object friction coefficient
-    plane.node = plane.insert( scene )
+    mesh = dir + '/../mesh/ground.obj'
+    plane = StructuralAPI.RigidBody( node, "plane" )
+    plane.setManually( [0,0,0,0,0,0,1], 1, [1,1,1] )
+    #body3.setFromMesh( mesh, 1 )
+    cm = plane.addCollisionMesh( mesh )
+    cm.addVisualModel()
     plane.node.createObject('FixedConstraint', indices = '0')
+    cm.triangles.contactFriction = 0.5 # per object friction coefficient
+    
     
     # box
-    box = Rigid.Body('box')
-    box.visual = dir + '/../mesh/cube.obj'
-    box.collision = box.visual
-    box.dofs.translation = [0, 3, 0]
-    box.mass_from_mesh( box.visual, 50 )
-    box.mu = 1 # per object friction coefficient
-    box.node = box.insert( scene )
+    mesh = dir + '/../mesh/cube.obj'
+    box = StructuralAPI.RigidBody( node, "box" )
+    box.setFromMesh( mesh, 50, [0, 3, 0, 0,0,0,1] )
+    cm = box.addCollisionMesh( mesh )
+    cm.addVisualModel()
+    cm.triangles.contactFriction = 1 # per object friction coefficient
+    
+    #box = Rigid.Body('box')
+    #box.visual = dir + '/../mesh/cube.obj'
+    #box.collision = box.visual
+    #box.dofs.translation = [0, 3, 0]
+    #box.mass_from_mesh( box.visual, 50 )
+    #box.mu = 1 # per object friction coefficient
+    #box.node = box.insert( scene )
 
    

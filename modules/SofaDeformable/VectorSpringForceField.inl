@@ -301,7 +301,7 @@ void VectorSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /
     if(useTopology)
     {
 
-        Deriv relativeVelocity,force;
+        Deriv force;
         for (int i=0; i<_topology->getNbEdges(); i++)
         {
             const topology::Edge &e=_topology->getEdge(i);
@@ -313,17 +313,15 @@ void VectorSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /
             force = (squash_vector * s.ks) + (relativeVelocity * s.kd);
 
             f1[e[0]]+=force;
-            this->mstate1->forceMask.insertEntry(e[0]);
             f2[e[1]]-=force;
-            this->mstate2->forceMask.insertEntry(e[1]);
         }
 
     }
     else
     {
 
-        Deriv relativeVelocity,force;
-        for (unsigned int i=0; i<edgeArray.size(); i++)
+        Deriv force;
+        for (size_t i=0; i<edgeArray.size(); i++)
         {
             const topology::Edge &e=edgeArray[i];
             const Spring &s=springArrayData[i];
@@ -334,9 +332,7 @@ void VectorSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /
             force = (squash_vector * s.ks) + (relativeVelocity * s.kd);
 
             f1[e[0]]+=force;
-            this->mstate1->forceMask.insertEntry(e[0]);
             f2[e[1]]-=force;
-            this->mstate2->forceMask.insertEntry(e[1]);
         }
     }
     springArray.endEdit();
@@ -378,7 +374,7 @@ void VectorSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* 
     else
     {
 
-        for (unsigned int i=0; i<edgeArray.size(); i++)
+        for (size_t i=0; i<edgeArray.size(); i++)
         {
             const topology::Edge &e=edgeArray[i];
             const Spring &s=springArrayData[i];
@@ -433,6 +429,32 @@ void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* v
     }
     vparams->drawTool()->drawLines(points, 3, Vec<4,float>(1,0,0,1));
 }
+
+
+
+template<class DataTypes>
+void VectorSpringForceField<DataTypes>::updateForceMask()
+{
+    if(useTopology)
+    {
+        for (int i=0; i<_topology->getNbEdges(); i++)
+        {
+            const topology::Edge &e=_topology->getEdge(i);
+            this->mstate1->forceMask.insertEntry(e[0]);
+            this->mstate2->forceMask.insertEntry(e[1]);
+        }
+    }
+    else
+    {
+        for (size_t i=0; i<edgeArray.size(); i++)
+        {
+            const topology::Edge &e=edgeArray[i];
+            this->mstate1->forceMask.insertEntry(e[0]);
+            this->mstate2->forceMask.insertEntry(e[1]);
+        }
+    }
+}
+
 
 } // namespace interactionforcefield
 

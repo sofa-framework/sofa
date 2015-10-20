@@ -167,6 +167,7 @@ public:
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
+    typedef typename Out::Real OutReal;
     enum { spatial_dimensions = Out::spatial_dimensions };
     enum { material_dimensions = OutDataTypesInfo<Out>::material_dimensions };
     //@}
@@ -209,6 +210,10 @@ public:
     typedef typename BlockType::KBlock  KBlock;  ///< stiffness block matrix
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     //@}	
+
+    typedef typename Inherit::ForceMask ForceMask;
+
+
 
     ///@brief Update \see f_index_parentToChild from \see f_index
     void updateIndex();
@@ -328,7 +333,7 @@ public:
 
 protected:
     BaseDeformationMappingT (core::State<In>* from = NULL, core::State<Out>* to= NULL);
-    virtual ~BaseDeformationMappingT()     { }
+    virtual ~BaseDeformationMappingT() { }
 
 public:
 
@@ -352,21 +357,19 @@ protected :
     virtual void initJacobianBlocks()=0;
     virtual void initJacobianBlocks(const InVecCoord& /*inCoord*/, const OutVecCoord& /*outCoord*/){ std::cout << "Only implemented in LinearMapping for now." << std::endl;}
 
-//    helper::ParticleMask* maskFrom;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
-    helper::ParticleMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
-
-
-    SparseMatrixEigen eigenJacobian;  ///< Assembled Jacobian matrix
+    SparseMatrixEigen eigenJacobian/*, maskedEigenJacobian*/;  ///< Assembled Jacobian matrix
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
-    bool Jdirty; ///< Does J needs to be updated?
     void updateJ();
-    helper::ParticleMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence (TODO add such a mechanism directly in ParticleMask?)
+//    void updateMaskedJ();
+//    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
 
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization
     const defaulttype::ResizableExtVector<core::topology::BaseMeshTopology::Triangle> *extTriangles;
     const defaulttype::ResizableExtVector<int> *extvertPosIdx;
+
+    void updateForceMask();
 
 public:
 

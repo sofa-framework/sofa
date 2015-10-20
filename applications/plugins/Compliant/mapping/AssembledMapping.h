@@ -15,6 +15,7 @@ namespace sofa {
 			class AssembledMapping : public core::Mapping<In, Out> {
 
 				typedef AssembledMapping self;
+                typedef typename core::Mapping<In, Out> base;
 	
 				typedef vector<sofa::defaulttype::BaseMatrix*> js_type;
 				js_type js;
@@ -27,10 +28,19 @@ namespace sofa {
 					js.resize(1);
 					js[0] = &jacobian;
 					// assemble( in_pos() );
-	  
-					typedef typename core::Mapping<In, Out> base; // fixes g++-4.4
+
 					base::init();
 				}
+
+                virtual void reinit()
+                {
+                    base::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
+                    base::applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
+                    if (this->f_applyRestPosition.getValue())
+                        base::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
+
+                    base::reinit();
+                }
 	
 				const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() {
 					assert( !js.empty() );

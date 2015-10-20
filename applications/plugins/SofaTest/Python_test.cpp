@@ -5,6 +5,8 @@
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/common/Simulation.h>
 
+#include <sofa/helper/Logger.h>
+
 
 namespace sofa {
 
@@ -20,7 +22,7 @@ Python_test::Python_test()
 
 void Python_test::run( const Python_test_data& data ) {
 
-    std::cout << "Python_test::run "<< data.filepath << std::endl;
+    MAINLOGGER( Info, "running "<< data.filepath, "Python_test" );
 
     {
         // Check the file exists
@@ -64,7 +66,7 @@ struct Listener : core::objectmodel::BaseObject {
 
 void Python_scene_test::run( const Python_test_data& data ) {
 
-    std::cout << "Python_scene_test::run "<< data.filepath << std::endl;
+    MAINLOGGER( Info, "running "<< data.filepath, "Python_scene_test" );
 
     {
         // Check the file exists

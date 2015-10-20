@@ -65,8 +65,9 @@ const char* getModuleComponentList()
 }
 
 
-#ifdef SOFA_HAVE_BOOST
-SOFA_LINK_CLASS(AnimationLoopParallelScheduler)
-#endif
-SOFA_LINK_CLASS(DataExchange)
+// Fix this it doesn't compile with these lines !!
+//#ifdef SOFA_HAVE_BOOST
+//SOFA_LINK_CLASS(AnimationLoopParallelScheduler)
+//#endif
+//SOFA_LINK_CLASS(DataExchange)
 

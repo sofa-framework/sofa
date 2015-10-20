@@ -69,7 +69,7 @@ def createBarycentricFrame( parentNode, name ):
 
     #Frame
     dofPosition="0 1.0 -0.999 1 0 0 0 1 0 0 0 1 " + "0 1.0 0.999 1 0 0 0 1 0 0 0 1 "
-    node.createObject('MechanicalObject', template='Affine', name='dofs', position=dofPosition, useMask="0", showObject='true,', showObjectScale='0.5')
+    node.createObject('MechanicalObject', template='Affine', name='dofs', position=dofPosition, showObject='true,', showObjectScale='0.5')
     node.createObject('UniformMass', template='Affine',totalMass='0.01')
     #Constraint
     node.createObject('BoxROI', name='roi', template='Vec3d', box="-1 -2 -1.2 1 2 -0.8", drawBoxes='true', drawSize=1)
@@ -82,7 +82,7 @@ def createBarycentricFrame( parentNode, name ):
     #Integration point sampling
     behaviorNode = node.createChild('behavior')
     behaviorNode.createObject("TopologyGaussPointSampler", name="sampler", inPosition="@../dofs.rest_position", showSamplesScale="0.1", drawMode="0")
-    behaviorNode.createObject('MechanicalObject', name="intePts", template='F332', useMask="0", showObject="true", showObjectScale="0.05")
+    behaviorNode.createObject('MechanicalObject', name="intePts", template='F332', showObject="true", showObjectScale="0.05")
     behaviorNode.createObject('LinearMapping', name="mapping", template='Affine,F332', showDeformationGradientScale='0.2', showSampleScale="0", printLog="false")
 
     #Behavior
@@ -109,7 +109,7 @@ def createVoronoiFrame( parentNode, name ):
     node.createObject("ImageSampler", name="sampler", template="ImageUC", src="@image", method="1", param="0", fixedPosition="0 0 -0.999 0 0 0.999", printLog="false")
     node.createObject("MergeMeshes", name="merged", nbMeshes="2", position1="@sampler.fixedPosition", position2="@sampler.position")
     #node.createObject("ImageViewer", template="ImageB", name="viewer", src="@image")
-    node.createObject('MechanicalObject', template='Affine', name='dofs', src="@merged", useMask="0", showObject='true,', showObjectScale='0.5')
+    node.createObject('MechanicalObject', template='Affine', name='dofs', src="@merged", showObject='true,', showObjectScale='0.5')
     #Shape function
     node.createObject('VoronoiShapeFunction', name="shapeFunc", position='@dofs.rest_position', src='@image', useDijkstra="true", method="0", nbRef="4")
     #Uniform Mass
@@ -121,7 +121,7 @@ def createVoronoiFrame( parentNode, name ):
     #Gauss point sampling
     behaviorNode = node.createChild('behavior')
     behaviorNode.createObject('ImageGaussPointSampler', name='sampler', indices='@../shapeFunc.indices', weights='@../shapeFunc.weights', transform='@../shapeFunc.transform', method='2', order='4', targetNumber='1', printLog='false', showSamplesScale=0.1, drawMode=0, evaluateShapeFunction="false")
-    behaviorNode.createObject('MechanicalObject', name="intePts", template='F332', useMask="0", showObject="false", showObjectScale="0.05")
+    behaviorNode.createObject('MechanicalObject', name="intePts", template='F332', showObject="false", showObjectScale="0.05")
     behaviorNode.createObject('LinearMapping', name="mapping", template='Affine,F332', assembleJ='true', showDeformationGradientScale='0.2', printLog="false")
 
     #Behavior

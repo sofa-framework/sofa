@@ -95,7 +95,7 @@ public:
     typedef defaulttype::Vec<N, Real> Vector;
     typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
-
+    typedef typename Inherit::ForceMask ForceMask;
 
     Data<VecCoord> points;    ///< mapped points in local coordinates
     VecCoord rotatedPoints;   ///< vectors from frame origin to mapped points, projected to world coordinates
@@ -110,8 +110,6 @@ public:
 
     Data<int> geometricStiffness;
 
-    helper::ParticleMask* maskFrom;
-    helper::ParticleMask* maskTo;
 protected:
     RigidMapping();
     virtual ~RigidMapping() {}

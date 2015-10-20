@@ -157,7 +157,7 @@ void OmniDriverEmu::init()
     if (!mState) serr << "OmniDriverEmu has no binding MechanicalState" << sendl;
     else std::cout << "[Omni] init" << std::endl;
 
-    if(mState->getSize()<toolCount.getValue())
+    if(mState->getSize()<(size_t)toolCount.getValue())
         mState->resize(toolCount.getValue());
 }
 

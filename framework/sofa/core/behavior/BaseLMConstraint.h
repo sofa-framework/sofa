@@ -113,11 +113,11 @@ public:
 
 
     /// Return the number of constraint contained in this group
-    std::size_t getNumConstraint() const { return equations.size();};
+    std::size_t getNumConstraint() const { return equations.size();}
 
     /// Return the order of the constraint
     /// @see ConstOrder
-    ConstraintParams::ConstOrder getOrder() const { return Order;};
+    ConstraintParams::ConstOrder getOrder() const { return Order;}
 
     bool isActive()const {return active;}
     void setActive(bool b) {active=b;}
@@ -144,7 +144,7 @@ public:
 protected:
     BaseLMConstraint();
 
-    ~BaseLMConstraint() {};
+    ~BaseLMConstraint() {}
 public:
 
     /// Called by MechanicalWriteLMConstaint: The Object will compute the constraints present in the current state, and create the ConstraintGroup related.
@@ -153,7 +153,7 @@ public:
     /// Compute the new Lagrange Multiplier given a block of the compliance matrix W, and the current correction (left hand term) and previous Lagrange Multiplier
     virtual void LagrangeMultiplierEvaluation(const SReal* /*W*/,
             const SReal* /*c*/, SReal* /*Lambda*/,
-            ConstraintGroup * /*group*/) {};
+            ConstraintGroup * /*group*/) {}
 
 
     /// Get Right Hand Term
@@ -214,11 +214,12 @@ public:
     /// get Mechanical State 2 where the constraint will b*e solved
     virtual BaseMechanicalState* getSimulatedMechModel2()const =0;
 
-    /// If the constraint is applied only on a subset of particles.
-    /// That way, we can optimize the time spent traversing the mappings
-    /// Deactivated by default. The constraints using only a subset of particles should activate the mask,
-    /// and during projectResponse(), insert the indices of the particles modified
-    virtual bool useMask() const {return false;}
+    /// Useful when the Constraint is applied only on a subset of dofs.
+    /// It is automatically called by ???
+    ///
+    /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
+    /// Every Dofs are inserted by default. The Constraint using only a subset of dofs should only insert these dofs in the mask.
+    virtual void updateForceMask() = 0;
 
     /// Methods to know if we have to propagate the state we want to constrain before computing the correction
     /// If the correction is computed with the simulatedDOF, there is no need, and we can reach a good speed-up

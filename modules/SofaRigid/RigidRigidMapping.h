@@ -67,6 +67,7 @@ public:
     enum { N=OutDataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
     typedef defaulttype::Vec<N,Real> Vector ;
+    typedef typename Inherit::ForceMask ForceMask;
 
 protected:
     Data < OutVecCoord > points;
@@ -84,8 +85,6 @@ public:
     Data< bool > indexFromEnd;
     Data< bool > globalToLocalCoords;
 
-    helper::ParticleMask* maskFrom;
-    helper::ParticleMask* maskTo;
 protected:
     RigidRigidMapping()
         : Inherit(),
@@ -95,12 +94,9 @@ protected:
           fileRigidRigidMapping(initData(&fileRigidRigidMapping,"fileRigidRigidMapping","Filename")),
           axisLength(initData( &axisLength, 0.7, "axisLength", "axis length for display")),
           indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") ),
-          globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) ),
-          maskFrom(NULL),
-          maskTo(NULL)
+          globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
     {
         this->addAlias(&fileRigidRigidMapping,"filename");
-
     }
 
     virtual ~RigidRigidMapping()
@@ -140,6 +136,8 @@ protected:
     bool getShow(const core::objectmodel::BaseObject* /*m*/, const core::visual::VisualParams* vparams) const { return vparams->displayFlags().getShowMappings(); }
 
     bool getShow(const core::BaseMapping* /*m*/, const core::visual::VisualParams* vparams) const { return vparams->displayFlags().getShowMechanicalMappings(); }
+
+    virtual void updateForceMask() { /*already done in applyJT*/ }
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_CPP)

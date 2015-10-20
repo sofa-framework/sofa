@@ -42,6 +42,7 @@
 #include <sofa/core/behavior/ConstraintCorrection.inl>
 #include <SofaDeformable/RestShapeSpringsForceField.inl>
 #include <SofaBoundaryCondition/ConstantForceField.inl>
+#include <SofaBoundaryCondition/UniformVelocityDampingForceField.inl>
 
 
 #ifdef SOFA_HAVE_IMAGE
@@ -533,7 +534,7 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::vi
 
         defaulttype::Mat<4,4, GLfloat> modelviewM;
 
-        for ( int i=0 ; i< vsize ; i++ )
+        for ( size_t i=0 ; i< vsize ; i++ )
         {
             std::ostringstream oss;
             oss << i;
@@ -576,7 +577,7 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::vi
         const float& scale = showObjectScale.getValue();
         const defaulttype::TYPEABSTRACTNAME3dTypes::VecCoord& x = ( read(core::ConstVecCoordId::position())->getValue() );
         
-        for (int i = 0; i < this->getSize(); ++i)
+        for (size_t i = 0; i < this->getSize(); ++i)
         {
             vparams->drawTool()->pushMatrix();
             float glTransform[16];
@@ -622,7 +623,7 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3fTypes>::draw(const core::vi
 
         defaulttype::Mat<4,4, GLfloat> modelviewM;
 
-        for ( int i=0 ; i< vsize ; i++ )
+        for ( size_t i=0 ; i< vsize ; i++ )
         {
             std::ostringstream oss;
             oss << i;
@@ -665,7 +666,7 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3fTypes>::draw(const core::vi
         const float& scale = showObjectScale.getValue();
         const defaulttype::TYPEABSTRACTNAME3fTypes::VecCoord& x = read(core::ConstVecCoordId::position())->getValue();
 
-        for (int i = 0; i < this->getSize(); ++i)
+        for (size_t i = 0; i < this->getSize(); ++i)
         {
             vparams->drawTool()->pushMatrix();
             float glTransform[16];
@@ -1179,6 +1180,25 @@ namespace forcefield
     #endif
     #ifndef SOFA_DOUBLE
         template class SOFA_Flexible_API ConstantForceField< defaulttype::TYPEABSTRACTNAME3fTypes >;
+    #endif
+
+    SOFA_DECL_CLASS(EVALUATOR(TYPEABSTRACTNAME,UniformVelocityDampingForceField))
+
+    // Register in the Factory
+    int EVALUATOR(TYPEABSTRACTNAME,UniformVelocityDampingForceFieldClass) = core::RegisterObject("Uniform velocity damping")
+    #ifndef SOFA_FLOAT
+            .add< UniformVelocityDampingForceField< defaulttype::TYPEABSTRACTNAME3dTypes > >()
+    #endif
+    #ifndef SOFA_DOUBLE
+            .add< UniformVelocityDampingForceField< defaulttype::TYPEABSTRACTNAME3fTypes > >()
+    #endif
+    ;
+
+    #ifndef SOFA_FLOAT
+    template class SOFA_Flexible_API UniformVelocityDampingForceField<defaulttype::TYPEABSTRACTNAME3dTypes>;
+    #endif
+    #ifndef SOFA_DOUBLE
+    template class SOFA_Flexible_API UniformVelocityDampingForceField<defaulttype::TYPEABSTRACTNAME3fTypes>;
     #endif
 
 } // namespace forcefield

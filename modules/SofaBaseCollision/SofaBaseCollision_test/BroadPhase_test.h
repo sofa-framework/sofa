@@ -162,7 +162,7 @@ void randMoving(sofa::core::CollisionModel* cm,const Vector3 & min_vect,const Ve
     Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *dof->write( sofa::core::VecId::velocity() );
     MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
 
-    for(int i = 0 ; i < dof->getSize() ; ++i){
+    for(size_t i = 0 ; i < dof->getSize() ; ++i){
         if( (sofa::helper::irand()) < RAND_MAX/2.0){//make it move !
             velocities[i] = Vector3(1,1,1);//velocity is used only to know if a primitive moves, its direction is not important
             positions[i] = Rigid3Types::Coord(randVect(min_vect,max_vect),Quaternion(0,0,0,1));

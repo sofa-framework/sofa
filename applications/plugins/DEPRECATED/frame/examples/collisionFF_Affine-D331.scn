@@ -16,14 +16,14 @@
 	<CGLinearSolver template="GraphScattered" iterations="150"  threshold="1e-008" />
 
 	<Node name="Beam">
-		<MechanicalObject template="FrameAffine" name="DOFs" position="0 2 -1 [1 0 0, 0 1 0, 0 0 1] 0 2 1 [1 0 0, 0 1 0, 0 0 1]" useMask="0"/>
+		<MechanicalObject template="FrameAffine" name="DOFs" position="0 2 -1 [1 0 0, 0 1 0, 0 0 1] 0 2 1 [1 0 0, 0 1 0, 0 0 1]" />
 		<HookeMaterial3 template="Material3" />
 		<FrameDiagonalMass template="AffineFrame3x12dMass" showAxisSizeFactor="0.2"/>
 
 		<Node name="Physics">
 			<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
 			<Mesh src="@MeshLoader" />
-			<MechanicalObject  template="DeformationGradient331" name="PointSet"   showObject="1" showObjectScale="0.05" translation="0 2 0" useMask="0"/>
+			<MechanicalObject  template="DeformationGradient331" name="PointSet"   showObject="1" showObjectScale="0.05" translation="0 2 0" />
 			<FrameBlendingMapping template="FrameAffine,DeformationGradient331"  input="@../DOFs"  output="@PointSet"  />
 			<CorotationalForceField template="DeformationGradient331"   printLog="0" />
 		</Node>
@@ -31,7 +31,7 @@
 		<Node name="Collision">
 			<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
 			<Mesh src="@MeshLoader"  tags="LDI"/>
-			<MechanicalObject  name="PointSet" translation="0 2 0" useMask="0"/>
+			<MechanicalObject  name="PointSet" translation="0 2 0" />
 			<PlaneForceField name="Plane" stiffness="500" normal="0 1 0"/>
 			<Triangle />
 			<FrameBlendingMapping template="FrameAffine,Vec3d" input="@../DOFs"  output="@PointSet" />
@@ -51,7 +51,7 @@
 		<Node 	name="CollisionNode" gravity="0 -9.81 0"  >
 			<MeshObjLoader name="collisionLoader"  filename="mesh/cube.obj" />
 			<MeshTopology name="default16" />
-			<MechanicalObject template="Vec3d" name="default17"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  scale3d="1 1 1" useMask="0"/>
+			<MechanicalObject template="Vec3d" name="default17"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  scale3d="1 1 1" />
 			<PlaneForceField name="Plane" stiffness="500" normal="0 1 0"/>
 			<TTriangleModel template="Vec3d" name="default18"  contactStiffness="200" />
 			<LineModel name="default19"  contactStiffness="@[-1].contactStiffness" />

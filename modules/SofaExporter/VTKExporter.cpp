@@ -432,9 +432,9 @@ void VTKExporter::writeVTKSimple()
             *outfile << pointsPos[i] << std::endl;
         }
     }
-    else if (mstate && mstate->getSize() == nbp)
+    else if (mstate && mstate->getSize() == (size_t)nbp)
     {
-        for (int i=0 ; i<mstate->getSize() ; i++)
+        for (size_t i=0 ; i<mstate->getSize() ; i++)
         {
             *outfile << mstate->getPX(i) << " " << mstate->getPY(i) << " " << mstate->getPZ(i) << std::endl;
         }
@@ -641,9 +641,9 @@ void VTKExporter::writeVTKXML()
             *outfile << "\t" << pointsPos[i] << std::endl;
         }
     }
-    else if (mstate && mstate->getSize() == nbp)
+    else if (mstate && mstate->getSize() == (size_t)nbp)
     {
-        for (int i = 0; i < mstate->getSize(); i++)
+        for (size_t i = 0; i < mstate->getSize(); i++)
             *outfile << "          " << mstate->getPX(i) << " " << mstate->getPY(i) << " " << mstate->getPZ(i) << std::endl;
     }
     else

@@ -74,6 +74,8 @@ public:
     typedef typename OutDataTypes::VecCoord OutVecCoord;
     typedef typename OutDataTypes::VecDeriv OutVecDeriv;
 
+    typedef typename Inherit::ForceMask ForceMask;
+
     enum
     {
         N = OutDataTypes::spatial_dimensions
@@ -88,32 +90,23 @@ public:
     };
 
     typedef defaulttype::Mat<N, N, Real> Mat;
-    typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
-    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
 
-    helper::ParticleMask* maskFrom;
-    helper::ParticleMask* maskTo;
     //enum { N=((int)Deriv::static_size < (int)InDeriv::static_size ? (int)Deriv::static_size : (int)InDeriv::static_size) };
 
-    core::behavior::BaseMechanicalState *stateFrom;
-    core::behavior::BaseMechanicalState *stateTo;
 protected:
     IdentityMapping()
-        : Inherit(),
-          maskFrom(NULL),
-          maskTo(NULL),
-          stateFrom(NULL),
-          stateTo(NULL),
-          matrixJ(),
-          updateJ(false)
+        : Inherit()
     {
-        js.resize( 1 );
-        js[0] = &eigen;
+        Js.resize( 1 );
+        Js[0] = &J;
     }
 
     virtual ~IdentityMapping()
     {
     }
+
+    virtual void updateForceMask();
+
 public:
     /// Return true if the destination model has the same topology as the source model.
     ///
@@ -135,19 +128,20 @@ public:
 
     virtual void handleTopologyChange();
 
-protected:
-    boost::scoped_ptr<MatrixType> matrixJ;
-    bool updateJ;
-
 
 protected:
+
     typedef linearsolver::EigenSparseMatrix<TIn, TOut> eigen_type;
-    eigen_type eigen;
+    eigen_type J;
 
     typedef vector< defaulttype::BaseMatrix* > js_type;
-    js_type js;
+    js_type Js;
+
+//    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
+//    void updateJ();
 
 public:
+
     const js_type* getJs();
 
 };

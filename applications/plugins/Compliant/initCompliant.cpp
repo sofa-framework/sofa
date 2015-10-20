@@ -52,6 +52,9 @@ void initExternalModule()
         first = false;
 
         component::collision::CompliantSolverMerger::add();
+
+        // previous Eigen versions have a critical bug (v.noalias()+=w does not work in every situations)
+        BOOST_STATIC_ASSERT( EIGEN_WORLD_VERSION>=3 && EIGEN_MAJOR_VERSION>=2 && EIGEN_MINOR_VERSION>=5 );
     }
 }
 

@@ -22,82 +22,51 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_CONSTRAINT_INL
-#define SOFA_CORE_BEHAVIOR_CONSTRAINT_INL
 
-#include <sofa/core/behavior/Constraint.h>
+#include "StateMask.h"
+
+//#include <boost/functional/hash.hpp>
+
+
 
 namespace sofa
 {
 
-namespace core
+namespace helper
 {
 
-namespace behavior
-{
+//    static boost::hash<StateMask::InternalStorage> s_maskHash;
 
-template<class DataTypes>
-Constraint<DataTypes>::Constraint(MechanicalState<DataTypes> *mm)
-    : endTime( initData(&endTime,(Real)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
-    , mstate(mm)
-{
-}
-
-template<class DataTypes>
-Constraint<DataTypes>::~Constraint()
-{
-}
-
-
-template <class DataTypes>
-bool Constraint<DataTypes>::isActive() const
-{
-    if( endTime.getValue()<0 ) return true;
-    return endTime.getValue()>getContext()->getTime();
-}
-
-
-template<class DataTypes>
-void Constraint<DataTypes>::init()
-{
-    BaseConstraint::init();
-    mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
-}
-
-
-template<class DataTypes>
-void Constraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v)
-{
-    if (cParams)
+    void StateMask::resize( size_t size )
     {
-        getConstraintViolation(cParams, v, *cParams->readX(mstate), *cParams->readV(mstate));
+        mask.resize( size );
+        /*assign( size, true );*/
     }
-}
 
-
-template<class DataTypes>
-void Constraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex)
-{
-    if (cParams)
+    void StateMask::assign( size_t size, bool value )
     {
-        buildConstraintMatrix(cParams, *cId[mstate].write(), cIndex, *cParams->readX(mstate));
-        updateForceMask();
+        mask.assign( size, value );
     }
-}
 
-template<class DataTypes>
-void Constraint<DataTypes>::updateForceMask()
-{
-    // the default implementation adds every dofs to the mask
-    // this sould be overloaded by each forcefield to only add the implicated dofs subset to the mask
-    mstate->forceMask.assign( mstate->getSize(), true );
-}
+    void StateMask::activate( bool a )
+    {
+        activated = a;
+    }
+
+    size_t StateMask::nbActiveDofs() const
+    {
+        size_t t = 0;
+        for( size_t i = 0 ; i<size() ; ++i )
+            if( getEntry(i) ) t++;
+        return t;
+    }
+
+//    size_t StateMask::getHash() const
+//    {
+//        return s_maskHash(mask);
+//    }
 
 
-} // namespace behavior
-
-} // namespace core
+} // namespace helper
 
 } // namespace sofa
-
-#endif // SOFA_CORE_BEHAVIOR_CONSTRAINT_INL

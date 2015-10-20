@@ -73,10 +73,18 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 		assert( (this->getTo().size() == 1) && 
 		        "sorry, multi mapping to multiple output dofs unimplemented" );
 		
-		
-		typedef core::MultiMapping<TIn, TOut> base; // fixes g++-4.4
-		base::init();
+        Inherit::init();
 	}
+
+    virtual void reinit() {
+
+        Inherit::apply(core::MechanicalParams::defaultInstance() , core::VecCoordId::position(), core::ConstVecCoordId::position());
+        Inherit::applyJ(core::MechanicalParams::defaultInstance() , core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
+        if (this->f_applyRestPosition.getValue())
+            Inherit::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
+
+        Inherit::reinit();
+    }
 
     typedef linearsolver::EigenSparseMatrix<In, In> geometric_type;
     geometric_type geometric;

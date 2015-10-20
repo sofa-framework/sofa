@@ -6,18 +6,18 @@
 
 
 	<Node name="BeamLinear">
-		<MechanicalObject template="Rigid" name="DOFs" useMask="0" rest_position="0 0 -1 0 0 0 1 0 0 1 0 0 0 1" position="0 0 -1 0 0 0 1    0 0 1  0 0 0 1"/>
+		<MechanicalObject template="Rigid" name="DOFs"  rest_position="0 0 -1 0 0 0 1 0 0 1 0 0 0 1" position="0 0 -1 0 0 0 1    0 0 1  0 0 0 1"/>
 		<FrameDiagonalMass template="RigidFrame3x6dMass" showAxisSizeFactor="0.2"/>
 		<HookeMaterial3 template="Material3" />
 
 		<FrameFixedConstraint template="Rigid" indices="0" allowed="0 0 0 0 0 0 0 0 0"/>
 
 		<Node name="Physics">
-			<MechanicalObject template="DeformationGradient332" useMask="0" name="PointSet" showObject="1" showObjectScale="0.05" position="0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 " />
+			<MechanicalObject template="DeformationGradient332"  name="PointSet" showObject="1" showObjectScale="0.05" position="0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 " />
 <!--
 			<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
 			<Mesh src="@MeshLoader" /> 
-     			<MechanicalObject  template="DeformationGradient332" name="PointSet"  useMask="0"  showObject="1" showObjectScale="0.05"/>
+     			<MechanicalObject  template="DeformationGradient332" name="PointSet"    showObject="1" showObjectScale="0.05"/>
 -->
 
 			<FrameBlendingMapping template="Rigid,DeformationGradient332"  name="PMapping" input="@../DOFs"  output="@PointSet"  />
@@ -36,29 +36,29 @@
 
 		<!-- frame/frame mapping -->
 		<!-- <Node name="AffineFrameMapping">
-			<MechanicalObject template="FrameAffine" name="MappedDOFs" useMask="0" position="0 0 0 [1 0 0, 0 1 0, 0 0 1]" showObject="1" showObjectScale="0.5"/>
+			<MechanicalObject template="FrameAffine" name="MappedDOFs"  position="0 0 0 [1 0 0, 0 1 0, 0 0 1]" showObject="1" showObjectScale="0.5"/>
 			<FrameBlendingMapping template="Rigid,FrameAffine;" input="@../DOFs"  output="@MappedDOFs" />
 		</Node>
 		<Node name="RigidFrameMapping">
-			<MechanicalObject template="Rigid" name="MappedDOFs" useMask="0" position="0 0 0 0 0 0 1" showObject="1" showObjectScale="0.5"/>
+			<MechanicalObject template="Rigid" name="MappedDOFs"  position="0 0 0 0 0 0 1" showObject="1" showObjectScale="0.5"/>
 			<FrameBlendingMapping template="Rigid,Rigid;" input="@../DOFs"  output="@MappedDOFs" />
 		</Node>-->
 	</Node>	
 	
 	
 	<Node name="BeamDualQuat">
-		<MechanicalObject template="Rigid" name="DOFs" useMask="0" rest_position="0 0 -1 0 0 0 1 0 0 1 0 0 0 1" position="1 0 -1 0 0 0 1    1 0 1  0 0 0 1"/>
+		<MechanicalObject template="Rigid" name="DOFs"  rest_position="0 0 -1 0 0 0 1 0 0 1 0 0 0 1" position="1 0 -1 0 0 0 1    1 0 1  0 0 0 1"/>
 		<FrameDiagonalMass template="RigidFrame3x6dMass" showAxisSizeFactor="0.2"/>
 		<HookeMaterial3 template="Material3" />
 
 		<FrameFixedConstraint template="Rigid" indices="0" allowed="0 0 0 0 0 0 0 0 0"/>
 
 		<Node name="Physics">
-			<MechanicalObject template="DeformationGradient332" useMask="0" name="PointSet" showObject="1" showObjectScale="0.05" position="0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0    0 0 -0.5 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0    0 0 0.5 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0    0.1 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0   -0.1 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0   0 0.1 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0   0 -0.1 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
+			<MechanicalObject template="DeformationGradient332"  name="PointSet" showObject="1" showObjectScale="0.05" position="0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0    0 0 -0.5 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0    0 0 0.5 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0    0.1 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0   -0.1 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0   0 0.1 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0   0 -0.1 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
 <!--
 			<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
 			<Mesh src="@MeshLoader" /> 
-     			<MechanicalObject  template="DeformationGradient332" name="PointSet"  useMask="0"  showObject="1" showObjectScale="0.05"/>
+     			<MechanicalObject  template="DeformationGradient332" name="PointSet"    showObject="1" showObjectScale="0.05"/>
 -->
 
 			<FrameBlendingMapping template="Rigid,DeformationGradient332"  name="PMappingDQ" useDQ="1" input="@../DOFs"  output="@PointSet"  />
@@ -78,11 +78,11 @@
 
 		<!-- frame/frame mapping -->
 		<!-- <Node name="AffineFrameMapping">
-			<MechanicalObject template="FrameAffine" name="MappedDOFs" useMask="0" position="0 0 0 [1 0 0, 0 1 0, 0 0 1]" showObject="1" showObjectScale="0.5"/>
+			<MechanicalObject template="FrameAffine" name="MappedDOFs"  position="0 0 0 [1 0 0, 0 1 0, 0 0 1]" showObject="1" showObjectScale="0.5"/>
 			<FrameBlendingMapping template="Rigid,FrameAffine;" useDQ="1" input="@../DOFs"  output="@MappedDOFs" />
 		</Node>
 		<Node name="RigidFrameMapping">
-			<MechanicalObject template="Rigid" name="MappedDOFs" useMask="0" position="0 0 0 0 0 0 1" showObject="1" showObjectScale="0.5"/>
+			<MechanicalObject template="Rigid" name="MappedDOFs"  position="0 0 0 0 0 0 1" showObject="1" showObjectScale="0.5"/>
 			<FrameBlendingMapping template="Rigid,Rigid;" useDQ="1" input="@../DOFs"  output="@MappedDOFs" />
 		</Node>-->
 	</Node>		

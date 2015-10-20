@@ -40,7 +40,6 @@ template<class DataTypes1, class DataTypes2>
 MixedInteractionForceField<DataTypes1, DataTypes2>::MixedInteractionForceField(MechanicalState<DataTypes1> *mm1, MechanicalState<DataTypes2> *mm2)
     : mstate1(initLink("object1", "First object in interaction"), mm1)
     , mstate2(initLink("object2", "Second object in interaction"), mm2)
-    , mask1(NULL), mask2(NULL)
 {
     if (!mm1)
         mstate1.setPath("@./"); // default to state of the current node
@@ -64,8 +63,6 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::init()
         //getContext()->removeObject(this);
         return;
     }
-    this->mask1 = &mstate1->forceMask;
-    this->mask2 = &mstate2->forceMask;
 }
 
 
@@ -137,8 +134,6 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(const Mechanic
 
     if (mstate1 && mstate2)
     {
-        mstate1->forceMask.setInUse(this->useMask());
-        mstate2->forceMask.setInUse(this->useMask());
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
             Task<ParallelMixedInteractionForceFieldAddForce< DataTypes1, DataTypes2> >(mparams, this,
@@ -150,6 +145,8 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(const Mechanic
             addForce( mparams, *fId[mstate1.get(mparams)].write()   , *fId[mstate2.get(mparams)].write()   ,
                     *mparams->readX(mstate1), *mparams->readX(mstate2),
                     *mparams->readV(mstate1), *mparams->readV(mstate2) );
+
+        updateForceMask();
     }
 }
 
@@ -259,6 +256,18 @@ SReal MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(con
     return 0.0;
 }
 */
+
+
+template<class DataTypes1, class DataTypes2>
+void MixedInteractionForceField<DataTypes1, DataTypes2>::updateForceMask()
+{
+    // the default implementation adds every dofs to the mask
+    // this sould be overloaded by each forcefield to only add the implicated dofs subset to the mask
+    mstate1->forceMask.assign( mstate1->getSize(), true );
+    mstate2->forceMask.assign( mstate2->getSize(), true );
+}
+
+
 
 
 } // namespace behavior

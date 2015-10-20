@@ -37,5 +37,6 @@ set(MOC_FILES_GROUP "Generated")
 add_definitions("-DSOFA_BUILD_IMAGE_GUI")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES})
 target_link_libraries(image_gui image ${OPENGL_LIBRARIES} SofaGuiQt)
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX _d)
 
 # TODO: install rules
