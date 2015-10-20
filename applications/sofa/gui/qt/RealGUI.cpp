@@ -130,10 +130,10 @@ protected:
         {
         case QEvent::FileOpen:
         {
-            std::string filename = static_cast<QFileOpenEvent *>(event)->file().toStdString();
+//            std::string filename = static_cast<QFileOpenEvent *>(event)->file().toStdString();
             if(this->topLevelWidgets().count() < 1)
                 return false;
-            RealGUI* mainGui = static_cast<RealGUI*>(this->topLevelWidgets()[0]);
+//            RealGUI* mainGui = static_cast<RealGUI*>(this->topLevelWidgets()[0]);
             //mainGui->fileOpen(filename);
 
 //            if (filename != std::string(static_cast<RealGUI*>(QApplication::topLevelWidgets()[0])->windowFilePath().toStdString()))
@@ -2472,7 +2472,7 @@ void RealGUI::toolsDockMoved()
 		dockWindow->resize(500, 700);
 }
 
-void RealGUI::propertyDockMoved(Qt::DockWidgetArea a)
+void RealGUI::propertyDockMoved(Qt::DockWidgetArea /*a*/)
 {
     QDockWidget* dockWindow = qobject_cast<QDockWidget*>(sender());
 	if(!dockWindow)

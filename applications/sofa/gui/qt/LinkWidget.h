@@ -138,7 +138,7 @@ signals:
 public:
     typedef core::objectmodel::BaseLink MyLink;
 
-    LinkWidget(QWidget* parent,const char* name, MyLink* l) :
+    LinkWidget(QWidget* parent,const char* /*name*/, MyLink* l) :
         QWidget(parent /*,name */), baseLink(l), dirty(false), counter(-1)
     {
     }

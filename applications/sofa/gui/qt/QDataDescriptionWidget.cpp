@@ -42,7 +42,7 @@ namespace qt
 {
 void QDataDescriptionWidget::addRow(QGridLayout* grid, const std::string& title,
                                     const std::string& value, unsigned int row,
-                                    unsigned int minimumWidth)
+                                    unsigned int /*minimumWidth*/)
 {
     QLabel* tmplabel;
     grid->addWidget(new QLabel(QString(title.c_str())), row, 0);
