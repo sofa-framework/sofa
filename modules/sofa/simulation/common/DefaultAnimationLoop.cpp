@@ -25,29 +25,14 @@
 #include <sofa/simulation/common/DefaultAnimationLoop.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/simulation/common/PrintVisitor.h>
-#include <sofa/simulation/common/FindByTypeVisitor.h>
-#include <sofa/simulation/common/ExportGnuplotVisitor.h>
-#include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/AnimateVisitor.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/simulation/common/CollisionVisitor.h>
-//#include <sofa/simulation/common/CollisionBeginEvent.h>
-//#include <sofa/simulation/common/CollisionEndEvent.h>
 #include <sofa/simulation/common/UpdateContextVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
-#include <sofa/simulation/common/ResetVisitor.h>
-#include <sofa/simulation/common/VisualVisitor.h>
-#include <sofa/simulation/common/ExportOBJVisitor.h>
-#include <sofa/simulation/common/WriteStateVisitor.h>
-#include <sofa/simulation/common/XMLPrintVisitor.h>
 #include <sofa/simulation/common/PropagateEventVisitor.h>
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/simulation/common/UpdateMappingEndEvent.h>
-#include <sofa/simulation/common/CleanupVisitor.h>
-#include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
 #include <sofa/simulation/common/xml/NodeElement.h>
 
@@ -67,7 +52,7 @@ namespace sofa
 namespace simulation
 {
 
-SOFA_DECL_CLASS(DefaultAnimationLoop);
+SOFA_DECL_CLASS(DefaultAnimationLoop)
 
 int DefaultAnimationLoopClass = core::RegisterObject("The simplest animation loop, created by default when user do not put on scene")
         .add< DefaultAnimationLoop >()
