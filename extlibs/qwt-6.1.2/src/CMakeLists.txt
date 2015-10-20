@@ -262,9 +262,10 @@ if(Qt5Core_FOUND)
     qt5_wrap_cpp(MOC_FILES ${Q_OBJECT_HEADER_FILES})
 else()
 
-	find_package(Qt4)
+	find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml qtnetwork REQUIRED)
 
 	include(${QT_USE_FILE})
+	include_directories(${QT_INCLUDE_DIR})
 
 	qt4_wrap_cpp(MOC_FILES ${Q_OBJECT_HEADER_FILES})
 endif()
