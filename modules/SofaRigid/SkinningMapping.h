@@ -87,6 +87,8 @@ public:
     typedef sofa::defaulttype::Mat<OutDeriv::total_size,InDeriv::total_size,Real>     MatBlock;
     typedef sofa::component::linearsolver::EigenSparseMatrix<In, Out> SparseJMatrixEigen;
 
+    typedef typename Inherit::ForceMask ForceMask;
+
 #ifdef SOFA_DEV
     typedef helper::DualQuatCoord3<OutReal> DQCoord;
     typedef defaulttype::Mat<4,4,OutReal> Mat44;
@@ -97,8 +99,6 @@ public:
 
 protected:
 
-    helper::ParticleMask* maskFrom;
-    helper::ParticleMask* maskTo;
 
     Data<OutVecCoord> f_initPos;  // initial child coordinates in the world reference frame
 

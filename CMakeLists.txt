@@ -112,6 +112,9 @@ endif()
 ### Dependency pack for Windows
 if(MSVC)
 
+    #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
+    add_definitions(-DBOOST_ALL_DYN_LINK)
+
     if(SOFA_DEPENDENCY_PACK_DIR)
         set(DEPENDENCY_PACK_DIR "${SOFA_DEPENDENCY_PACK_DIR}")
     else()
@@ -193,15 +196,6 @@ add_subdirectory(SofaGeneral)
 add_subdirectory(SofaAdvanced)
 add_subdirectory(SofaMisc)
 add_subdirectory(SofaGui)
-
-## CGoGN: CGoGN is in extlibs, but it needs SofaDefaultType, so it
-## must be added after SofaFramework.
-option(SOFA_BUILD_CGOGN
-"Build the CGoGN library distributed in the extlibs/ directory. CGoGN is an
-implementation of combinatorial maps topologies." OFF)
-if(SOFA_BUILD_CGOGN)
-    add_subdirectory(extlibs/CGoGN extlibs/CGoGN)
-endif()
 
 # SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
 sofa_add_plugin( applications/plugins/SofaPython SofaPython )

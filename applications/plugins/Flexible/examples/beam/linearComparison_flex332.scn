@@ -21,7 +21,7 @@
 
     <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="0" fixedPosition="0 0 -1   0 0 -0.8   0 0 -0.6  0 0 -0.4   0 0 -0.2   0 0 0    0 0 0.2   0 0 0.4  0 0 0.6  0 0 0.8  0 0 1" printLog="false"/> 
     <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" src="@merged" />
+    <MechanicalObject template="Affine" name="parent"  showObject="true" src="@merged" />
 
 <!--linear weights-->
 <Mesh name="edges" position="@parent.rest_position" edges="0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10"/>
@@ -47,7 +47,7 @@
     <Node 	name="collision"   >
         <VisualStyle displayFlags="hideBehaviorModels " />
 	<Mesh name="mesh" src="@../mesh" /> 
-	<MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
+	<MechanicalObject  template="Vec3d" name="pts"    />
 	<UniformMass totalMass="10" />
 	<BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1"  position="@mesh.position" /> 
 	<ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -1 0"/> 
@@ -71,7 +71,7 @@
 
     <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="0" fixedPosition="0 0 -1   0 0 -0.8   0 0 -0.6  0 0 -0.4   0 0 -0.2   0 0 0    0 0 0.2   0 0 0.4  0 0 0.6  0 0 0.8  0 0 1" printLog="false"/> 
     <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-    <MechanicalObject template="Rigid" name="parent" useMask="0" showObject="true" src="@merged" />
+    <MechanicalObject template="Rigid" name="parent"  showObject="true" src="@merged" />
 
 <!--linear weights-->
 <Mesh name="edges" position="@parent.rest_position" edges="0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10"/>
@@ -97,7 +97,7 @@
     <Node 	name="collision"   >
         <VisualStyle displayFlags="hideBehaviorModels " />
 	<Mesh name="mesh" src="@../mesh" /> 
-	<MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
+	<MechanicalObject  template="Vec3d" name="pts"    />
 	<UniformMass totalMass="10" />
 	<BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1"  position="@mesh.position" /> 
 	<ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -1 0"/> 
@@ -123,7 +123,7 @@
 
     <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="0" fixedPosition="0 0 -1   0 0 -0.8   0 0 -0.6  0 0 -0.4   0 0 -0.2   0 0 0    0 0 0.2   0 0 0.4  0 0 0.6  0 0 0.8  0 0 1" printLog="false"/> 
     <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-    <MechanicalObject template="Quadratic" name="parent" useMask="0" showObject="true" src="@merged" />
+    <MechanicalObject template="Quadratic" name="parent"  showObject="true" src="@merged" />
 
 <!--linear weights-->
 <Mesh name="edges" position="@parent.rest_position" edges="0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10"/>
@@ -149,7 +149,7 @@
     <Node 	name="collision"   >
         <VisualStyle displayFlags="hideBehaviorModels " />
 	<Mesh name="mesh" src="@../mesh" /> 
-	<MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
+	<MechanicalObject  template="Vec3d" name="pts"    />
 	<UniformMass totalMass="10" />
 	<BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1"  position="@mesh.position" /> 
 	<ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -1 0"/> 

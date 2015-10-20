@@ -27,7 +27,7 @@ class GlobalCollision(Sofa.PythonScriptController):
 		floorNode.createObject('Triangle', name='Floor', simulated=0, moving=0)
 		#floorNode.createObject('Line', name='Floor', simulated=0, moving=0)
 		floorNode.createObject('OglModel', name='FloorV', filename='mesh/SaladBowl.obj',texturename='textures/texture.bmp')#, texturename='textures/SaladBowl$.bmp')
-
+                floorNode.createObject('FixedConstraint',fixAll=True)
 
 		space = 7
 

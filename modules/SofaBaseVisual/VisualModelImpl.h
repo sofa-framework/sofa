@@ -101,19 +101,21 @@ public:
         m_vnormals.setGroup("Vector");
     }
 
-    virtual void resize(int vsize)
+    virtual void resize(size_t vsize)
     {
-        modified = true;
         helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > positions = m_positions;
+        if( positions.size() == vsize ) return;
         helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > restPositions = m_restPositions;
         helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Deriv> > > normals = m_vnormals;
 
         positions.resize(vsize);
-        restPositions.resize(vsize);
+        restPositions.resize(vsize); // todo allocate restpos only when it is necessary
         normals.resize(vsize);
+
+        modified = true;
     }
 
-    virtual int getSize() const { return (int)m_positions.getValue().size(); }
+    virtual size_t getSize() const { return m_positions.getValue().size(); }
 
     //State API
     virtual       Data<VecCoord>* write(     core::VecCoordId  v )

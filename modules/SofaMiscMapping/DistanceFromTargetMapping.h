@@ -94,6 +94,7 @@ public:
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
     typedef defaulttype::Vec<In::spatial_dimensions> Direction;
+    typedef typename Inherit::ForceMask ForceMask;
 
     Data< vector<unsigned> > f_indices;         ///< indices of the parent points
     Data< InVecCoord >       f_targetPositions; ///< positions the distances are measured from
@@ -145,8 +146,8 @@ protected:
     /// r=b-a only for position (eventual rotation, affine transform... remains null)
     void computeCoordPositionDifference( Direction& r, const InCoord& a, const InCoord& b );
 
-    helper::ParticleMask* maskFrom;
-    helper::ParticleMask* maskTo;
+    virtual void updateForceMask();
+
 };
 
 

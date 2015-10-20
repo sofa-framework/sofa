@@ -17,7 +17,10 @@ add_subdirectory(tinyxml)
 
 ## Optional ones
 add_subdirectory(CImg)
-add_subdirectory(libQGLViewer-2.6.3/QGLViewer QGLViewer)
+if (SOFAGUI_QGLVIEWER)
+    add_subdirectory(libQGLViewer-2.6.3/QGLViewer QGLViewer)
+endif()
+add_subdirectory(qwt-6.1.2/src Qwt)
 
 option(SOFA_BUILD_ARTRACK
 "Build the ARTrack library distributed in the extlibs/ directory.  This library
@@ -47,8 +50,8 @@ list(REMOVE_ITEM CPP11_EXTLIBS_TARGETS csparse)
 if(NOT WIN32)
     if(SOFA_USE_C++11)
         foreach(target ${CPP11_EXTLIBS_TARGETS})
-            target_compile_options(${target} PRIVATE ${CXX11_FLAG})
-            target_compile_options(${target} PRIVATE "-Wno-deprecated-register")
+            target_compile_options(${target} PRIVATE "$<$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>:${CXX11_FLAG}>")
+            target_compile_options(${target} PRIVATE "$<$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>:-Wno-deprecated-register>")
         endforeach()
     endif()
 endif()

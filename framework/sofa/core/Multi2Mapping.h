@@ -206,6 +206,7 @@ public:
         helper::vector<const OutDataVecDeriv*> vecInForce;
         getConstVecOutDeriv(outForce, vecInForce);
         this->applyJT(mparams, vecOut1Force, vecOut2Force, vecInForce);
+        updateForceMask();
     }
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
@@ -358,6 +359,17 @@ protected:
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].write());      }
     void getConstMatOutDeriv(const ConstMultiMatrixDerivId id, helper::vector<const OutDataMatrixDeriv*> &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].read());       }
+
+
+    /// Useful when the mapping is applied only on a subset of parent dofs.
+    /// It is automatically called by applyJT.
+    ///
+    /// That way, we can optimize Jacobian sparsity.
+    /// Every Dofs are inserted by default. The mappings using only a subset of dofs should only insert these dofs in the mask.
+    virtual void updateForceMask();
+
+    /// keep pointers on the masks
+    helper::vector<helper::StateMask*> maskFrom1, maskFrom2, maskTo;
 };
 
 

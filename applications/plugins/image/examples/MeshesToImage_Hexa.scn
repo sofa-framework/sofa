@@ -66,7 +66,7 @@
 		<Node name="Collision">
 			<MeshObjLoader name="MeshLoader" filename="mesh/bubille_out.obj"/>
 			<Mesh src="@MeshLoader" /> 
-			<MechanicalObject useMask="1" />
+			<MechanicalObject  />
 		    	<LinearMapping template="Vec3d,Vec3d"/>
 		</Node>
     </Node>

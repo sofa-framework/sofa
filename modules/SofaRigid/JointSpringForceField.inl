@@ -280,9 +280,7 @@ void JointSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*
     // add force
     const Deriv force(fT0, fR );
     f1[a] += force;
-    this->mask1->insertEntry(a);
     f2[b] -= force;
-    this->mask2->insertEntry(b);
 
     // write output file
     if (outfile)
@@ -438,6 +436,19 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
             helper::gl::drawArrow(p1[springs[i].m1].getCenter(), p1[springs[i].m1].projectPoint(springs[i].torsion-springs[i].lawfulTorsion), (float)(0.5*showFactorSize.getValue()));
     }
 #endif /* SOFA_NO_OPENGL */
+}
+
+template <class DataTypes>
+void JointSpringForceField<DataTypes>::updateForceMask()
+{
+    const helper::vector<Spring>& springs= this->springs.getValue();
+
+    for( unsigned int i=0, iend=springs.size() ; i<iend ; ++i )
+    {
+        const Spring& s = springs[i];
+        this->mstate1->forceMask.insertEntry(s.m1);
+        this->mstate2->forceMask.insertEntry(s.m2);
+    }
 }
 
 } // namespace interactionforcefield

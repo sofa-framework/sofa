@@ -14,7 +14,7 @@
 	<Node name="source">
 			<MeshObjLoader name="meshLoader" filename="data/femur_m_res.obj"/>
 			<Mesh src="@meshLoader" />
-			<MechanicalObject  name="PointSet"  useMask="0" />
+			<MechanicalObject  name="PointSet"   />
 			<UniformMass mass="10"/>
 			
 			<ClusteringEngine template="Vec3d" name="clustering" radius='0.4'  number='100' position="@meshLoader.position"/>

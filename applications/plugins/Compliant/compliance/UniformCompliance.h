@@ -72,6 +72,7 @@ protected:
     block_matrix_type matB; /// damping matrix (Negative S.D.)
 
     static const Real s_complianceEpsilon; /// threshold for which stiffness can be computed by inverting compliance
+
 };
 
 }

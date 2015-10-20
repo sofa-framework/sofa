@@ -10,7 +10,7 @@ def createScene(root):
     root.gravity = [0, -9.8, 0]
     
     root.createObject('ImplicitEulerSolver')
-    root.createObject('MinResLinearSolver', iteration="100", tolerance="1e-15")
+    root.createObject('MinResLinearSolver', iterations="100", tolerance="1e-15")
     
     root.createObject('MeshObjLoader', name="loader", filename="mesh/torus.obj", triangulate="1")
     #root.createObject('OglModel', template="ExtVec3f", name="Visual", fileMesh="mesh/torus.obj", color="1 0.8 0.8 ")
@@ -41,7 +41,7 @@ def createScene(root):
     behaviorNode = rigidNode.createChild('behavior')
     
     behaviorNode.createObject('ImageGaussPointSampler', name="sampler", indices="@../../SF.indices", weights="@../../SF.weights", transform="@../../SF.transform", method="2", order="1", showSamplesScale="0", printLog="true", targetNumber="200" )
-    behaviorNode.createObject('MechanicalObject', template="F331", name="F",  useMask="0",  showObject="1", showObjectScale="0.05" )
+    behaviorNode.createObject('MechanicalObject', template="F331", name="F" )
     behaviorNode.createObject('LinearMultiMapping', template="Rigid,Affine,F331", input1="@..", input2="@../../Affine", output="@.", printLog="0", showDeformationGradientScale="0", assemble="0")
     
     affineNode.addChild( behaviorNode )
@@ -53,7 +53,7 @@ def createScene(root):
                 
     massNode = rigidNode.createChild('mass')
     massNode.createObject('TransferFunction',name="densityTF", template="ImageUC,ImageD", inputImage="@../../rasterizer.image", param="0 0 1 0.005")
-    massNode.createObject('MechanicalObject', position="@../../merged.position", useMask="0")
+    massNode.createObject('MechanicalObject', position="@../../merged.position")
 #    massNode.createObject('ImageDensityMass', template="Vec3d", densityImage="@densityTF.outputImage", transform="@../../rasterizer.transform", lumping="0",  printMassMatrix="true" )
     massNode.createObject('UniformMass', totalMass="20" )
     massNode.createObject('LinearMultiMapping', template="Rigid,Affine,Vec3d", input1="@..", input2="@../../Affine", output="@.", printLog="0", assemble="0")

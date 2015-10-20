@@ -5,8 +5,8 @@
 	<CGLinearSolver template="GraphScattered" iterations="150"  threshold="1e-008" />
 
 	<Node name="Beam">
-<!--		<MechanicalObject template="FrameAffine" name="DOFs" useMask="0" position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1] "/>-->
-		<MechanicalObject template="FrameAffine" name="DOFs" useMask="0" rest_position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1] " position="0 0 -1 [1 0 0,0 1 0,0 0 1] -2.64131e-15 3.15661e-14 0.663231 [2.53633e-28 1 1.19699e-14,-1 1.5651e-29 1.98817e-14,1.98817e-14 -1.19699e-14 1]"/>
+<!--		<MechanicalObject template="FrameAffine" name="DOFs"  position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1] "/>-->
+		<MechanicalObject template="FrameAffine" name="DOFs"  rest_position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1] " position="0 0 -1 [1 0 0,0 1 0,0 0 1] -2.64131e-15 3.15661e-14 0.663231 [2.53633e-28 1 1.19699e-14,-1 1.5651e-29 1.98817e-14,1.98817e-14 -1.19699e-14 1]"/>
 		<HookeMaterial3 template="Material3" bulkModulus="0" youngModulus="1" poissonRatio="0" />
 		<FrameDiagonalMass template="AffineFrame3x12dMass" showAxisSizeFactor="0.2"/>
 		<ConstantForceField template="FrameAffine"   points="1" forces="0 0 0  [0 -0.1 0,  0.1 0 0,   0 0 0]" />
@@ -15,7 +15,7 @@
 
 
 		<Node name="Physics">
-			<MechanicalObject template="DeformationGradient331" name="PointSet" useMask="0"  position="1 0 0  1 0 0 0 1 0 0 0 1      -1 0 0  1 0 0 0 1 0 0 0 1 "  showObject="1" showObjectScale="0.05"/>
+			<MechanicalObject template="DeformationGradient331" name="PointSet"   position="1 0 0  1 0 0 0 1 0 0 0 1      -1 0 0  1 0 0 0 1 0 0 0 1 "  showObject="1" showObjectScale="0.05"/>
 			<FrameBlendingMapping template="FrameAffine,DeformationGradient331"  input="@../DOFs"  output="@PointSet"  />
 			<CorotationalForceField template="DeformationGradient331"   printLog="0" />
 		</Node>

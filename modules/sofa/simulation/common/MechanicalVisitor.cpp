@@ -1293,6 +1293,7 @@ Visitor::Result MechanicalComputeForceVisitor::fwdForceField(simulation::Node* /
 {
     //cerr<<"MechanicalComputeForceVisitor::fwdForceField "<<ff->getName()<<endl;
     if( !neglectingCompliance || !ff->isCompliance.getValue() ) ff->addForce(this->mparams, res);
+    else ff->updateForceMask(); // compliances must update the force mask too
     return RESULT_CONTINUE;
 }
 

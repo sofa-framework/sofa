@@ -84,6 +84,11 @@ void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3fTypes>::draw (
 {
 }
 
+template<>
+void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3fTypes>::resize( core::State<Out>* /*toModel*/ )
+{
+//    toModel->resize(map.size());
+}
 ////////////////////////////////////////////////////////////////////////////
 //////////          BarycentricMapperSparseGridTopology           //////////
 ////////////////////////////////////////////////////////////////////////////
@@ -217,6 +222,11 @@ void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3fTypes>::draw (c
 {
 }
 
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3fTypes>::resize( core::State<Out>* /*toModel*/ )
+{
+//    toModel->resize(map.size());
+}
 
 ////////////////////////////////////////////////////////////
 //////////            BaseMeshTopology            //////////
@@ -283,6 +293,11 @@ void BarycentricMapperMeshTopology<CudaVec3fTypes,CudaVec3fTypes>::draw (const c
 {
 }
 
+template<>
+void BarycentricMapperMeshTopology<CudaVec3fTypes,CudaVec3fTypes>::resize( core::State<Out>* /*toModel*/ )
+{
+//    toModel->resize(size);
+}
 
 
 

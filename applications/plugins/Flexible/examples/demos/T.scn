@@ -25,7 +25,7 @@
 
 	    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="0" fixedPosition="0 -4.8 0 0 5.5 0 0 5.5 -4.5 0 5.5 4.5" printLog="false"/> 
             <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-	    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" showObjectScale="1" src="@merged" />
+	    <MechanicalObject template="Affine" name="parent"  showObject="true" showObjectScale="1" src="@merged" />
 
 	    <FixedConstraint indices="0" /> 
 
@@ -33,7 +33,7 @@
 
 	    <Node 	name="behavior"   >
 		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="1"/>
-		<MechanicalObject template="F332" name="F"  useMask="0"  showObject="0" showObjectScale="0.05" />
+		<MechanicalObject template="F332" name="F"    showObject="0" showObjectScale="0.05" />
 	    	<LinearMapping template="Affine,F332"  />
 
 		<Node 	name="E"   >
@@ -52,7 +52,7 @@
 
 	    <Node 	name="collision"   >	
 		<Mesh name="mesh" src="@../mesh" /> 
-		<MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
+		<MechanicalObject  template="Vec3d" name="pts"    />
 	    	<LinearMapping template="Affine,Vec3d"/>
 	    </Node>
 

@@ -568,7 +568,7 @@ void LMConstraintSolver::buildInverseMassMatrix( const sofa::core::behavior::Bas
     FullMatrix<SReal> computationM(dimensionDofs, dimensionDofs);
     MatrixEigen invMEigen((int)dimensionDofs,(int)dimensionDofs);
 
-    for (int i=0; i<mstate->getSize(); ++i)
+    for (size_t i=0; i<mstate->getSize(); ++i)
     {
         mass->getElementMass(i,&computationM);
 

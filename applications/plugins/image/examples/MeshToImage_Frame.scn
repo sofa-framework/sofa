@@ -14,7 +14,7 @@
   <!-- <ImageViewer template="ImageB" name="viewer" src="@image" /> -->
 
 	    <ImageSampler template="ImageB" name="sampler" src="@image" method="1" param="10" /> 
-	    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" showObjectScale="1" src="@sampler" />
+	    <MechanicalObject template="Affine" name="parent"  showObject="true" showObjectScale="1" src="@sampler" />
 	    <VoronoiShapeFunction template="ShapeFunctiond,ImageB" name="SF" position="@parent.rest_position" src="@image" />
 
 	    <Node 	name="behavior"   >
@@ -38,7 +38,7 @@
 	    <Node 	name="collision"   >
 		<MeshObjLoader name="MeshLoader" filename="mesh/Armadillo_simplified.obj" />
 		<Mesh src="@MeshLoader" /> 
-		<MechanicalObject useMask="1" />
+		<MechanicalObject  />
 	    	<LinearMapping template="Affine,Vec3d"/>
 	    </Node>
 
