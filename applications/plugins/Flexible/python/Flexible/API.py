@@ -10,6 +10,9 @@ import SofaPython.Tools
 from SofaPython.Tools import listToStr as concat
 from SofaPython import Quaternion
 
+printLog = True
+
+
 def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, cell='', assemble=True, geometricStiffness=2, isMechanical=True):
     """ insert the correct Linear(Multi)Mapping
     hopefully the template is deduced automatically by the component
@@ -184,7 +187,8 @@ class Deformable:
                 data.update(json.load(f))
                 self.mapping.indices= str(data['indices'])
                 self.mapping.weights= str(data['weights'])
-                print 'Imported Weights from '+filename
+                if printLog:
+                    print 'Imported Weights from '+filename
 
 class AffineMass:
     def __init__(self, dofAffineNode):
@@ -213,7 +217,8 @@ class AffineMass:
             with open(filename,'r') as f:
                 data.update(json.load(f))
                 self.mass = self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix=data['massMatrix'])
-                print 'Imported Affine Mass from '+filename
+                if printLog:
+                    print 'Imported Affine Mass from '+filename
 
     def write(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
@@ -259,7 +264,8 @@ class AffineDof:
             with open(filename,'r') as f:
                 data.update(json.load(f))
                 self.dof = self.node.createObject("MechanicalObject", template="Affine", name="dofs", position=data['position'], rest_position=data['rest_position'])
-                print 'Imported Affine Dof from '+filename
+                if printLog:
+                    print 'Imported Affine Dof from '+filename
 
     def write(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
@@ -380,7 +386,8 @@ class Behavior:
             if not self.labelImage is None and not self.labels is None:
                 celloffsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+SofaPython.Tools.getObjectPath(self.sampler)+".position", src="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage), labels=concat(self.labels))
                 self.cell = "@"+SofaPython.Tools.getObjectPath(celloffsets)+".cell"
-            print 'Imported Gauss Points from '+filename
+            if printLog:
+                print 'Imported Gauss Points from '+filename
 
 
     def readWeights(self, filenamePrefix=None, directory=""):
@@ -400,7 +407,8 @@ class Behavior:
                 self.mapping.weights= str(data['weights'])
                 self.mapping.weightGradients= str(data['weightGradients'])
                 self.mapping.weightHessians= str(data['weightHessians'])    
-                print 'Imported Weights from '+filename
+                if printLog:
+                    print 'Imported Weights from '+filename
 
     def write(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
