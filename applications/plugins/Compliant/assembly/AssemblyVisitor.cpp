@@ -826,9 +826,9 @@ void AssemblyVisitor::assemble(system_type& res) const {
                 // otherwise a fallback is used depending on the constraint type
                 if( !constraint.value ) {
 
-                    // a non bilateral constraint should be stabilizable, as a non compliant (hard) bilateral constraint
-                    if( constraint.projector || zero(*C) /*|| fillWithZeros(*C)*/ ) constraint.value = new component::odesolver::Stabilization( c.dofs );
-                    // by default, a compliant bilateral constraint is considered as elastic and is so not stabilized
+                    // a non-compliant (hard) bilateral constraint is stabilizable
+                    if( zero(*C) /*|| fillWithZeros(*C)*/ ) constraint.value = new component::odesolver::Stabilization( c.dofs );
+                    // by default, a compliant (elastic) constraint is not stabilized
                     else constraint.value = new component::odesolver::ConstraintValue( c.dofs );
 
                     c.dofs->getContext()->addObject( constraint.value );
