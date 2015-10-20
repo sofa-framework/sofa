@@ -94,7 +94,7 @@ void QSofaStatWidget::CreateStats(Node* root)
         items_stats.clear();
     }
 
-    for(unsigned int i=0 ; i<statsCounter->topLevelItemCount() ; i++)
+    for(int i=0 ; i<statsCounter->topLevelItemCount() ; i++)
         delete statsCounter->takeTopLevelItem(i);
 
 

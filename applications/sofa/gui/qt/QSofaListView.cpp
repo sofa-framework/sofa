@@ -169,7 +169,7 @@ void QSofaListView::collapseNode(QTreeWidgetItem* item)
 {
     if (!item) return;
     emit Lock(true);
-    for(unsigned int i=0 ; i<item->childCount() ; i++)
+    for(int i=0 ; i<item->childCount() ; i++)
     {
         QTreeWidgetItem* child = item->child(i);
         child->setExpanded(false);// setOpen ( false );
@@ -188,7 +188,7 @@ void QSofaListView::expandNode(QTreeWidgetItem* item)
     if (!item) return;
     emit Lock(true);
     item->setExpanded ( true );
-    for(unsigned int i=0 ; i<item->childCount() ; i++)
+    for(int i=0 ; i<item->childCount() ; i++)
     {
         QTreeWidgetItem* child = item->child(i);
         child->setExpanded(true);// setOpen ( false );
@@ -401,7 +401,7 @@ void QSofaListView::RunSofaRightClicked( const QPoint& point)
     contextMenu->exec ( this->mapToGlobal(point) /*, index */);
 }
 
-void QSofaListView::RunSofaDoubleClicked(QTreeWidgetItem* item, int index)
+void QSofaListView::RunSofaDoubleClicked(QTreeWidgetItem* item, int /*index*/)
 {
     if(item == NULL)
     {
@@ -617,7 +617,7 @@ bool QSofaListView::isNodeErasable ( BaseNode* node)
     }
 
     //check the item childs
-    for(unsigned int i=0 ; i<item->childCount() ; i++)
+    for(int i=0 ; i<item->childCount() ; i++)
     {
         QTreeWidgetItem *child = item->child(i);
         for( it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); ++it)

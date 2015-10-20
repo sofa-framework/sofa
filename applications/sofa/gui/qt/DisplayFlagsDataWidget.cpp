@@ -149,7 +149,7 @@ void DisplayFlagWidget::setTreeWidgetNodeCheckable(QTreeWidgetItem* w, const cha
 
 void DisplayFlagWidget::findChildren(QTreeWidgetItem *item, std::vector<QTreeWidgetItem *> &children)
 {   
-    for(unsigned int i=0; i<item->childCount() ; i++)
+    for(int i=0; i<item->childCount() ; i++)
     {
         QTreeWidgetItem * child = (QTreeWidgetItem * )item->child(i);
         children.push_back(child);
