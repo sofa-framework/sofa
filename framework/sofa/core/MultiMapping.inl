@@ -132,12 +132,6 @@ void MultiMapping<In,Out>::init()
         if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModels[i])) maskTo[i] = &stateTo->forceMask;
         else this->setNonMechanical();
 
-    reinit();
-}
-
-template <class In, class Out>
-void MultiMapping<In,Out>::reinit()
-{
     apply(MechanicalParams::defaultInstance() , VecCoordId::position(), ConstVecCoordId::position());
     applyJ(MechanicalParams::defaultInstance() , VecDerivId::velocity(), ConstVecDerivId::velocity());
     if (f_applyRestPosition.getValue())

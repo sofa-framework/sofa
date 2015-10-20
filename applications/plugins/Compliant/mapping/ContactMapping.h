@@ -39,11 +39,11 @@ namespace mapping
 template <class TIn, class TOut >
 class ContactMapping : public AssembledMapping<TIn, TOut>
 {
-	typedef ContactMapping self;
+    typedef ContactMapping self;
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(ContactMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMapping,TIn,TOut));
 
-	typedef typename TIn::Real real;
+    typedef typename TIn::Real real;
 
 	typedef vector< defaulttype::Vec<3, real> > normal_type;
     Data<normal_type> normal;
@@ -54,7 +54,7 @@ public:
     ContactMapping()
         : normal(initData(&normal, "normal", "contact normals"))
     {}
-	
+
 protected:
 
 	virtual void apply(typename self::out_pos_type& out,
