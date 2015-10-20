@@ -20,7 +20,7 @@ set(SOURCE_FILES
 find_package(SofaGui QUIET)
 
 if(SofaGui_FOUND)
-    find_package(Qt5 COMPONENTS Core QUIET)
+    find_package(Qt5 COMPONENTS Core Gui Widgets QUIET)
     if(Qt5Core_FOUND)
         qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
     else()
