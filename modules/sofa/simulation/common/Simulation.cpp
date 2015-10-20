@@ -294,7 +294,10 @@ void Simulation::reset ( Node* root )
         root->setTime(0.);
     UpdateSimulationContextVisitor(sofa::core::ExecParams::defaultInstance()).execute(root);
 
-    root->execute<CleanupVisitor>(params);
+//    root->execute<CleanupVisitor>(params);
+    // by definition cleanup() MUST only be called right before destroying the object
+    // if for some reason some components need to do something, it has to be done in reset or storeResetState
+
     root->execute<ResetVisitor>(params);
     sofa::core::MechanicalParams mparams(*params);
     root->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
