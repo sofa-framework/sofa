@@ -152,7 +152,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
 
     if (creators.empty())
     {	// The object cannot be created
-        arg->logWarning("Object type " + classname + std::string("<") + templatename + std::string("> creation failed"));
+        arg->logError("Object type " + classname + std::string("<") + templatename + std::string("> creation failed"));
     }
     else
     {
