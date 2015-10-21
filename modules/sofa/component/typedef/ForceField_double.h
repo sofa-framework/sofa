@@ -74,11 +74,11 @@
 #include <SofaMiscFem/TetrahedralTensorMassForceField.h>
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
 #include <SofaDeformable/TriangleBendingSprings.h>
-// #include <SofaSimpleFem/TriangleFEMForceField.h>
-// #include <SofaSimpleFem/TriangularAnisotropicFEMForceField.h>
+#include <SofaMiscFem/TriangleFEMForceField.h>
+#include <SofaMiscFem/TriangularAnisotropicFEMForceField.h>
 #include <SofaDeformable/TriangularBendingSprings.h>
 #include <SofaDeformable/TriangularBiquadraticSpringsForceField.h>
-// #include <SofaSimpleFem/TriangularFEMForceField.h>
+#include <SofaMiscFem/TriangularFEMForceField.h>
 #include <SofaDeformable/TriangularQuadraticSpringsForceField.h>
 #include <SofaDeformable/TriangularTensorMassForceField.h>
 #include <SofaBoundaryCondition/VaccumSphereForceField.h>
