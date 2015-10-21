@@ -132,7 +132,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaultty
     for (unsigned int i = 0; i < x.size(); i++)
     {
         x[i].getCenter() = q.rotate(x[i].getCenter());
-        x[i].getOrientation() *= q;
+        x[i].getOrientation() = q * x[i].getOrientation();
     }
 }
 
@@ -394,7 +394,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaultty
     for (unsigned int i = 0; i < x.size(); i++)
     {
         x[i].getCenter() = q.rotate(x[i].getCenter());
-        x[i].getOrientation() *= q;
+        x[i].getOrientation() = q * x[i].getOrientation();
     }
 }
 
