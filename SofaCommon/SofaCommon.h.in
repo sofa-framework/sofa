@@ -1,0 +1,99 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This library is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This library is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this library; if not, write to the Free Software Foundation,     *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+*******************************************************************************
+*                                SOFA :: Common                               *
+*                                                                             *
+* Authors: The SOFA Team (see Authors.txt)                                    *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+
+#ifndef _SOFA_COMMON_H_
+#define _SOFA_COMMON_H_
+
+#include <sofa/SofaBase.h>
+
+#define SOFACOMMON_MAJOR_VERSION ${SOFACOMMON_MAJOR_VERSION}
+#define SOFACOMMON_MINOR_VERSION ${SOFACOMMON_MINOR_VERSION}
+#define SOFACOMMON_BUILD_VERSION ${SOFACOMMON_BUILD_VERSION}
+
+#ifdef SOFA_BUILD_LOADER
+#  define  SOFA_TARGET    SofaLoader
+#  define SOFA_LOADER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_LOADER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#ifdef SOFA_BUILD_RIGID
+#  define SOFA_TARGET    SofaRigid
+#  define SOFA_RIGID_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_RIGID_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#ifdef SOFA_BUILD_DEFORMABLE
+#  define SOFA_TARGET    SofaDeformable
+#  define SOFA_DEFORMABLE_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_DEFORMABLE_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#ifdef SOFA_BUILD_SIMPLE_FEM
+#  define SOFA_TARGET    SofaSimpleFem
+#  define SOFA_SIMPLE_FEM_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SIMPLE_FEM_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#ifdef SOFA_BUILD_OBJECT_INTERACTION
+#  define SOFA_TARGET    SofaObjectInteraction
+#  define SOFA_OBJECT_INTERACTION_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_OBJECT_INTERACTION_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#ifdef SOFA_BUILD_MESH_COLLISION
+#  define SOFA_TARGET    SofaMeshCollision
+#  define SOFA_MESH_COLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_MESH_COLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#ifdef SOFA_BUILD_EXPLICIT_ODE_SOLVER
+#  define SOFA_TARGET    SofaExplicitOdeSolver
+#  define SOFA_EXPLICIT_ODE_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_EXPLICIT_ODE_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#ifdef SOFA_BUILD_IMPLICIT_ODE_SOLVER
+#  define SOFA_TARGET    SofaImplicitOdeSolver
+#  define SOFA_IMPLICIT_ODE_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_IMPLICIT_ODE_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#ifdef SOFA_BUILD_COMPONENT_COMMON
+#  define SOFA_TARGET    SofaComponentCommon
+#  define SOFA_COMPONENT_COMMON_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_COMPONENT_COMMON_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+
+#endif // _SOFA_COMMON_H_

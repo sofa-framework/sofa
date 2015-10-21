@@ -38,7 +38,7 @@
 #include <SofaBaseCollision/BaseContactMapper.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
-#include <SofaMiscCollision/TetrahedronModel.h>
+//#include <SofaMiscCollision/TetrahedronModel.h>
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaBaseCollision/OBBModel.h>

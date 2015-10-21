@@ -29,6 +29,8 @@
 #include "Binding_Vector.h"
 #include "ScriptEnvironment.h"
 
+#include <sofa/defaulttype/Vec3Types.h>
+using namespace sofa::defaulttype;
 #include <sofa/core/ObjectFactory.h>
 using namespace sofa::core;
 #include <sofa/core/objectmodel/BaseContext.h>

@@ -32,7 +32,6 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/BaseMapping.h>
 
-
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 

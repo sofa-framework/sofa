@@ -26,8 +26,9 @@
 #define SOFA_CORE_COLLISION_LINEARSOLVERCONTACTCORRECTION_H
 #include "config.h"
 
-#include <sofa/core/behavior/ConstraintCorrection.h>
+#include <sofa/SofaGeneral.h>
 
+#include <sofa/core/behavior/ConstraintCorrection.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
 

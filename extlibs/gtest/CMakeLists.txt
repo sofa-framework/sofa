@@ -5,6 +5,10 @@
 # ctest.  You can select which tests to run using 'ctest -R regex'.
 # For more options, run 'ctest --help'.
 
+if(NOT WIN32)
+    set(CMAKE_CXX_FLAGS -fPIC)
+endif()
+
 # BUILD_SHARED_LIBS is a standard CMake variable, but we declare it here to
 # make it prominent in the GUI.
 option(BUILD_SHARED_LIBS "Build shared libraries (DLLs)." OFF)
@@ -251,5 +255,40 @@ if (gtest_build_tests)
   py_test(gtest_xml_output_unittest)
 endif()
 
-set_target_properties(gtest PROPERTIES DEBUG_POSTFIX d RELWITHDEBINFO_POSTFIX rd)
-set_target_properties(gtest_main PROPERTIES DEBUG_POSTFIX d RELWITHDEBINFO_POSTFIX rd)
+
+
+include(CMakePackageConfigHelpers)
+
+target_include_directories(gtest PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
+target_include_directories(gtest_main PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
+
+# The trailing slash is important
+install(DIRECTORY include/ DESTINATION include)
+
+install(TARGETS gtest gtest_main
+        EXPORT GTestTargets
+        COMPONENT gtest_libraries
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
+
+# GTestTargets.cmake
+install(EXPORT GTestTargets
+        DESTINATION lib/cmake/GTest)
+
+# GTestConfig.cmake (build tree)
+set(GTEST_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+configure_package_config_file(GTestConfig.cmake.in
+                              ${CMAKE_BINARY_DIR}/GTest/GTestConfig.cmake
+                              INSTALL_DESTINATION GTest
+                              PATH_VARS GTEST_INCLUDE_DIR)
+
+# GTestConfig.cmake (install directory)
+set(GTEST_INCLUDE_DIR include)
+configure_package_config_file(GTestConfig.cmake.in
+                              ${CMAKE_BINARY_DIR}/GTest/GTestConfigInstall.cmake
+                              INSTALL_DESTINATION lib/cmake/GTest
+                              PATH_VARS GTEST_INCLUDE_DIR)
+
+install(FILES ${CMAKE_BINARY_DIR}/GTest/GTestConfigInstall.cmake
+        DESTINATION lib/cmake/GTest
+        RENAME GTestConfig.cmake)

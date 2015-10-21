@@ -1,9 +1,9 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(GenerateRigid)
 
+find_package(SofaGeneral)
+find_package(SofaAdvanced)
+find_package(SofaMisc)
 
 add_executable(${PROJECT_NAME} Main.cpp)
-
-AddLinkerDependencies( SofaComponentMain )
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+target_link_libraries(${PROJECT_NAME} SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)

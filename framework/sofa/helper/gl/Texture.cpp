@@ -516,19 +516,12 @@ void Texture::init()
     else
     {
 #if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_1_2)
-        if (GLEW_VERSION_1_2)
-        {
             glTexParameteri( target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
             glTexParameteri( target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
             glTexParameteri( target, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
-        }
-        else
+#else
+        std::cerr << __FUNCTION__<< " GLEW_VERSION_1_2 required for cubic texture." << std::endl;
 #endif
-        {
-            glTexParameteri( target, GL_TEXTURE_WRAP_S, GL_CLAMP );
-            glTexParameteri( target, GL_TEXTURE_WRAP_T, GL_CLAMP );
-            glTexParameteri( target, GL_TEXTURE_WRAP_R, GL_CLAMP );
-        }
     }
 
 #if defined(SOFA_HAVE_GLEW) && defined(GLEW_ARB_seamless_cube_map)

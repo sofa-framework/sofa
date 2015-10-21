@@ -30,6 +30,7 @@
 #pragma once
 #endif
 
+#include <sofa/SofaMisc.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/MechanicalState.h>

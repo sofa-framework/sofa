@@ -22,10 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/SofaGui.h>
 #include "Main.h"
 #include "GUIManager.h"
+
 #include "BatchGUI.h"
-#if defined(SOFA_GUI_QT) || defined(SOFA_GUI_QTVIEWER) || defined(SOFA_GUI_QGLVIEWER)
+#ifdef SOFA_GUI_QT
 #include "qt/RealGUI.h"
 #endif
 #ifdef SOFA_GUI_GLUT
@@ -61,7 +63,6 @@ void initMain()
 int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::InitGUI, -1);
 
 #ifdef SOFA_GUI_GLUT
-
 int SimpleGUIClass = GUIManager::RegisterGUI("glut", &glut::SimpleGUI::CreateGUI, &glut::SimpleGUI::InitGUI, 0);
 
 #ifdef SOFA_HAVE_BOOST

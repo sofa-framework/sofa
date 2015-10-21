@@ -26,12 +26,12 @@
 #define SOFA_COMPONENT_COLLISION_OCTREEDETECTION_H
 #include "config.h"
 
+#include <sofa/SofaGeneral.h>
 #include <sofa/core/collision/BroadPhaseDetection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/defaulttype/Vec.h>
 #include <set>
-
 
 namespace sofa
 {

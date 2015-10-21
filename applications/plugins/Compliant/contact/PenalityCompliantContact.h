@@ -3,7 +3,7 @@
 
 #include "BaseContact.h"
 
-#include "../initCompliant.h"
+#include <Compliant/Compliant.h>
 
 #include "../compliance/DiagonalCompliance.h"
 

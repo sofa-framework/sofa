@@ -1,21 +1,9 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(generateDoc)
 
-set(HEADER_FILES
-    
-    generateDoc.h
-    
-    )
+find_package(SofaGeneral)
+find_package(SofaAdvanced)
+find_package(SofaMisc)
 
-set(SOURCE_FILES
-
-    generateDoc.cpp
-	Main.cpp
-
-	)
-
-add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
-
-AddLinkerDependencies(SofaComponentMain )
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+add_executable(${PROJECT_NAME} generateDoc.h generateDoc.cpp Main.cpp)
+target_link_libraries(${PROJECT_NAME} SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)

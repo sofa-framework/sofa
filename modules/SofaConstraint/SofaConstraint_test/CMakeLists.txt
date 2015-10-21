@@ -1,17 +1,12 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+
+project(SofaConstraint_test)
 
 set(SOURCE_FILES
-    BilateralInteractionConstraint_test.cpp
-        )
+    BilateralInteractionConstraint_test.cpp)
 
+add_definitions("-DSOFATEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes_test\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
 
-AddLinkerDependencies(
-    SofaGTestMain
-    SofaTest
-    SofaConstraint
-)
-
-AddCompilerDefinitions("SOFATEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes_test\"")
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

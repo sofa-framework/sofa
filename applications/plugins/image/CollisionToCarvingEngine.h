@@ -35,7 +35,6 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>

@@ -1,0 +1,21 @@
+# CMake package configuration file for the Flexible plugin.
+# It defines the following variables:
+# - Flexible_INCLUDE_DIRS
+# - Flexible_LIBRARIES
+
+@PACKAGE_INIT@
+
+set_and_check(FLEXIBLE_INCLUDE_DIR "@PACKAGE_FLEXIBLE_INCLUDE_DIR@")
+
+check_required_components(Flexible)
+
+find_package(SofaMisc REQUIRED)
+find_package(SofaPython QUIET)
+find_package(image QUIET)
+
+if(NOT TARGET Flexible)
+	include("${CMAKE_CURRENT_LIST_DIR}/FlexibleTargets.cmake")
+endif()
+
+set(Flexible_LIBRARIES Flexible)
+set(Flexible_INCLUDE_DIRS ${FLEXIBLE_INCLUDE_DIR})

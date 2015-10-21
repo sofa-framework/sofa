@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELD_H
 #include "config.h"
 
-
+#include <sofa/SofaAdvanced.h>
 #include <SofaSimpleFem/HexahedronFEMForceFieldAndMass.h>
 
 namespace sofa

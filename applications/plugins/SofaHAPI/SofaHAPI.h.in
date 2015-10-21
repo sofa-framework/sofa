@@ -1,0 +1,44 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This library is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This library is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this library; if not, write to the Free Software Foundation,     *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+*******************************************************************************
+*                              SOFA :: Framework                              *
+*                                                                             *
+* Authors: The SOFA Team (see Authors.txt)                                    *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+
+#ifndef _SOFA_HAPI_H_
+#define _SOFA_HAPI_H_
+
+#include <sofa/SofaGeneral.h>
+
+#define SOFAHAPI_MAJOR_VERSION ${SOFAHAPI_MAJOR_VERSION}
+#define SOFAHAPI_MINOR_VERSION ${SOFAHAPI_MINOR_VERSION}
+#define SOFAHAPI_BUILD_VERSION ${SOFAHAPI_BUILD_VERSION}
+
+#define SOFA_HAVE_HAPI
+
+#ifdef SOFA_BUILD_SOFAHAPI
+#  define SOFA_TARGET SofaHAPI
+#  define SOFA_SOFAHAPI_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAHAPI_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#endif // _SOFA_HAPI_H_

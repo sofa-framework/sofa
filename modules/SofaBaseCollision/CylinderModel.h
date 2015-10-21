@@ -30,6 +30,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/SofaBase.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/accessor.h>
 

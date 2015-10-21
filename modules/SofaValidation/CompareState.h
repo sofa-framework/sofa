@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MISC_COMPARESTATE_H
 #include "config.h"
 
+#include <sofa/SofaGeneral.h>
 #include <SofaLoader/ReadState.h>
 #include <sofa/simulation/common/Visitor.h>
 

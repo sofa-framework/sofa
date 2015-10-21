@@ -1,0 +1,22 @@
+# CMake package configuration file for SofaTest.
+# It defines the following variables:
+# - SofaTest_INCLUDE_DIRS
+# - SofaTest_LIBRARIES
+
+@PACKAGE_INIT@
+
+set_and_check(SOFATEST_INCLUDE_DIR "@PACKAGE_SOFATEST_INCLUDE_DIR@")
+
+check_required_components(SofaTest)
+
+find_package(SofaFramework REQUIRED)
+find_package(SofaMisc REQUIRED)
+find_package(SceneCreator REQUIRED)
+find_package(SofaPython QUIET)
+
+if(NOT TARGET SofaTest)
+	include("${CMAKE_CURRENT_LIST_DIR}/SofaTestTargets.cmake")
+endif()
+
+set(SofaTest_LIBRARIES SofaTest)
+set(SofaTest_INCLUDE_DIRS ${SOFATEST_INCLUDE_DIR})

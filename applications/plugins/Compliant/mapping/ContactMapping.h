@@ -3,7 +3,7 @@
 
 #include "AssembledMapping.h"
 
-#include "../initCompliant.h"
+#include <Compliant/initCompliant.h>
 
 //#include "debug.h"
 

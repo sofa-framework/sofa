@@ -25,7 +25,6 @@
 
 #include <SofaTest/Sofa_test.h>
 
-#include <SofaComponentMain/init.h>
 #include <SofaBoundaryCondition/PlaneForceField.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -75,7 +74,6 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
 
     void SetUp()
     {
-        sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         // Create the scene

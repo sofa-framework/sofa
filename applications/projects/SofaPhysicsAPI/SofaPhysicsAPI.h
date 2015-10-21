@@ -1,6 +1,14 @@
 #ifndef SOFAPHYSICSAPI_H
 #define SOFAPHYSICSAPI_H
 
+#include <sofa/SofaGeneral.h>
+
+#ifdef SOFA_BUILD_SOFAPHYSICSAPI
+#  define SOFA_SOFAPHYSICSAPI_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAPHYSICSAPI_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
 class SofaPhysicsSimulation;
 class SofaPhysicsOutputMesh;
 class SofaPhysicsOutputMeshTetrahedron;
@@ -12,7 +20,7 @@ typedef float Real;         ///< Type used for coordinates
 typedef void* ID;           ///< Type used for IDs
 
 /// Main class used to control a Sofa Simulation
-class SofaPhysicsSimulation
+class SOFA_SOFAPHYSICSAPI_API SofaPhysicsSimulation
 {
 public:
     SofaPhysicsSimulation(bool useGUI = false, int GUIFramerate = 0);
@@ -102,7 +110,7 @@ public:
 };
 
 /// Class describing one output mesh (i.e. visual model) in the simulation
-class SofaPhysicsOutputMesh
+class SOFA_SOFAPHYSICSAPI_API SofaPhysicsOutputMesh
 {
 public:
 
@@ -144,7 +152,7 @@ public:
     Impl* impl;
 };
 
-class SofaPhysicsOutputMeshTetrahedron 
+class SOFA_SOFAPHYSICSAPI_API SofaPhysicsOutputMeshTetrahedron 
 {
 public:
 
@@ -191,7 +199,7 @@ public:
 };
 
 /// Class for data monitoring
-class SofaPhysicsDataMonitor
+class SOFA_SOFAPHYSICSAPI_API SofaPhysicsDataMonitor
 {
 public:
 
@@ -211,7 +219,7 @@ public:
 };
 
 /// Class for data control
-class SofaPhysicsDataController
+class SOFA_SOFAPHYSICSAPI_API SofaPhysicsDataController
 {
 public:
 

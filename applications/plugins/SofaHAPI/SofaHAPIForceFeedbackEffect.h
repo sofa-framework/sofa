@@ -25,7 +25,7 @@
 #ifndef SOFAHAPI_SOFAHAPIFORCEFEEDBACKEFFECT_H
 #define SOFAHAPI_SOFAHAPIFORCEFEEDBACKEFFECT_H
 
-#include "initSofaHAPI.h"
+#include <SofaHAPI/SofaHAPI.h>
 
 //HAPI include
 #include <HAPI/HAPIForceEffect.h>

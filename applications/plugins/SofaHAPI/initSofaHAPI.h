@@ -22,19 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITSOFAHAPI_H
-#define INITSOFAHAPI_H
+#ifndef SOFAHAPI_INITSOFAHAPI_H
+#define SOFAHAPI_INITSOFAHAPI_H
 
+#include <SofaHAPI/SofaHAPI.h>
 
-#include <sofa/helper/system/config.h>
-
-#ifdef SOFA_BUILD_SOFAHAPI
-#define SOFA_SOFAHAPI_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#define SOFA_SOFAHAPI_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofa
+namespace SofaHAPI
 {
 
 	namespace component
@@ -54,7 +47,17 @@ namespace sofa
 }
 
 /** \mainpage
-  This is a the starting page of the plugin documentation, defined in file initSofaHAPI.h
+  This is a the starting page of the plugin documentation, defined in file SofaHAPI.h
   */
+    extern "C" {
+        SOFA_SOFAHAPI_API void initExternalModule();
+        SOFA_SOFAHAPI_API const char* getModuleName();
+        SOFA_SOFAHAPI_API const char* getModuleVersion();
+        SOFA_SOFAHAPI_API const char* getModuleLicense();
+        SOFA_SOFAHAPI_API const char* getModuleDescription();
+        SOFA_SOFAHAPI_API const char* getModuleComponentList();
+    }
 
-#endif // INITEmptyPlugin_H
+} // namespace SofaHAPI
+
+#endif // SOFAHAPI_INITSOFAHAPI_H

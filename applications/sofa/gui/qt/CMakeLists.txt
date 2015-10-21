@@ -1,6 +1,7 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(SofaGuiQt)
 
-set(HEADER_FILES
+set(MOC_HEADER_FILES
 
 	GenGraphForm.h
 	AddObject.h
@@ -9,7 +10,6 @@ set(HEADER_FILES
 	DataWidget.h
 	DataFilenameWidget.h
 	DisplayFlagsDataWidget.h
-	GraphDataWidget.h
 	MaterialDataWidget.h
 	ModifyObject.h
 	SimpleDataWidget.h
@@ -19,19 +19,30 @@ set(HEADER_FILES
 	SofaVideoRecorderManager.h
 	QDataDescriptionWidget.h
 	QDisplayPropertyWidget.h
-	QDisplayLinkWidget.h     
+	QDisplayLinkWidget.h
 	QDisplayDataWidget.h
-	QGraphStatWidget.h
-	QEnergyStatWidget.h              
-	QMomentumStatWidget.h 
 	QTabulationModifyObject.h
 	QTransformationWidget.h
 	QMouseOperations.h
 	QSofaListView.h
 	QSofaRecorder.h
 	QSofaStatWidget.h
-	QModelViewTableUpdater.h
-	)
+	QModelViewTableUpdater.h)
+
+# these header files do not need MOCcing
+set(HEADER_FILES
+
+	viewer/VisualModelPolicy.h
+	viewer/SofaViewer.h
+	GraphListenerQListView.h
+	SofaGUIQt.h
+	StructDataWidget.h
+	TableDataWidget.h
+	FileManagement.h
+	PickHandlerCallBacks.h
+	QMenuFilesRecentlyOpened.h
+	ImageQt.h
+	QModelViewTableDataContainer.h)
 
 set(SOURCE_FILES
 
@@ -40,11 +51,10 @@ set(SOURCE_FILES
 	GenGraphForm.cpp
 	AddObject.cpp
 	RealGUI.cpp
-	LinkWidget.cpp 
-	DataWidget.cpp 
+	LinkWidget.cpp
+	DataWidget.cpp
 	DataFilenameWidget.cpp
 	DisplayFlagsDataWidget.cpp
-	GraphDataWidget.cpp  
 	MaterialDataWidget.cpp
 	ModifyObject.cpp
 	SimpleDataWidget.cpp
@@ -60,16 +70,15 @@ set(SOURCE_FILES
 	QDisplayPropertyWidget.cpp
 	QDisplayLinkWidget.cpp
 	QDisplayDataWidget.cpp
-	QMouseOperations.cpp               
+	QMouseOperations.cpp
 	QTabulationModifyObject.cpp
 	QTransformationWidget.cpp
 	QSofaListView.cpp
 	QSofaRecorder.cpp
 	QSofaStatWidget.cpp
 	QMenuFilesRecentlyOpened.cpp
-	ImageQt.cpp 
-	)
-	
+	ImageQt.cpp)
+
 set(UI_FILES
 
 	GUI.ui
@@ -77,84 +86,107 @@ set(UI_FILES
 	DialogAddObject.ui
 	PluginManager.ui
 	MouseManager.ui
-	VideoRecorderManager.ui
-	)
+	VideoRecorderManager.ui)
 
-if(SOFA-MISC_DUMP_VISITOR_INFO)
-	list(APPEND HEADER_FILES
+set(SOFAGUIQT_COMPILER_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
+set(SOFAGUIQT_LINK_LIBRARIES SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
+
+if(SOFA_DUMP_VISITOR_INFO)
+	list(APPEND MOC_HEADER_FILES
 
 		 WindowVisitor.h
 		 QVisitorControlPanel.h
-		 PieWidget.h
-		 )
-		
+		 PieWidget.h)
+
+    list(APPEND HEADER_FILES
+
+         GraphVisitor.h)
+
 	list(APPEND SOURCE_FILES
-	
+
 		 GraphVisitor.cpp
 		 WindowVisitor.cpp
 		 QVisitorControlPanel.cpp
-		 PieWidget.cpp
-		 )
-	
+		 PieWidget.cpp)
+
 	list(APPEND UI_FILES VisitorGUI.ui)
 endif()
 
 
-if(SOFA-LIB_GUI_QTVIEWER)
-	list(APPEND HEADER_FILES viewer/qt/QtViewer.h)
-# 	
+if(SOFA_HAVE_QWT)
+	list(APPEND MOC_HEADER_FILES
+		 GraphDataWidget.h
+		 QGraphStatWidget.h
+		 QEnergyStatWidget.h
+		 QMomentumStatWidget.h)
+
+	list(APPEND SOURCE_FILES
+		 GraphDataWidget.cpp)
+	list(APPEND SOFAGUIQT_LINK_LIBRARIES Qwt)
+endif()
+
+#if(SOFA-LIB_GUI_QTVIEWER)
+	list(APPEND MOC_HEADER_FILES viewer/qt/QtViewer.h)
 	list(APPEND SOURCE_FILES viewer/qt/QtViewer.cpp)
-	
-	AddCompilerDefinitions("SOFA_GUI_QTVIEWER")
-endif()
+#endif()
 
-if(SOFA-LIB_GUI_QGLVIEWER)
-	list(APPEND HEADER_FILES viewer/qgl/QtGLViewer.h)
+find_package(QGLViewer)
 
+# if(QGLViewer_FOUND)
+	list(APPEND MOC_HEADER_FILES viewer/qgl/QtGLViewer.h)
 	list(APPEND SOURCE_FILES viewer/qgl/QtGLViewer.cpp)
-	
-	AddCompilerDefinitions("SOFA_GUI_QGLVIEWER")
-	AddLinkerDependencies(QGLViewer)
-endif()
-
-UseQt()
-
-
-SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
-SOFA_QT4_WRAP_UI(FORM_FILES ${UI_FILES})
+	list(APPEND SOFAGUIQT_LINK_LIBRARIES QGLViewer)
+# endif()
 
 # make mocced header / form files path from absolute to relative
-ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
-ToRelativePath(FORM_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${FORM_FILES}")
+#ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
+#ToRelativePath(FORM_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${FORM_FILES}")
 
-# these header files do not need MOCcing
-list(APPEND HEADER_FILES
-
-	viewer/VisualModelPolicy.h
-	viewer/SofaViewer.h
-	GraphListenerQListView.h
-	SofaGUIQt.h
-	StructDataWidget.h
-	TableDataWidget.h
-	FileManagement.h
-	PickHandlerCallBacks.h
-	QMenuFilesRecentlyOpened.h
-	ImageQt.h
-	QModelViewTableDataContainer.h
-	)
-
-if(SOFA-MISC_DUMP_VISITOR_INFO)
-    list(APPEND HEADER_FILES  GraphVisitor.h  )
+if(SOFA_DUMP_VISITOR_INFO)
 endif()
+
+set(QT_USE_IMPORTED_TARGETS 1)
+set(QT4_NO_LINK_QTMAIN 1)
+find_package(Qt4 QUIET COMPONENTS qtcore qtgui qtopengl qt3support qtxml REQUIRED)
+
+list(APPEND SOFAGUIQT_LINK_LIBRARIES
+     ${QT_QTCORE_LIBRARY}
+     ${QT_QTGUI_LIBRARY}
+     ${QT_QTOPENGL_LIBRARY}
+     ${QT_QT3SUPPORT_LIBRARY}
+     ${QT_QTXML_LIBRARY})
+
+QT4_WRAP_CPP(MOC_FILES ${MOC_HEADER_FILES})
+QT4_WRAP_UI(FORM_FILES ${UI_FILES})
 
 set(MOC_FILES_GROUP "Generated")
 set(FORM_FILES_GROUP "Generated")
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${MOC_HEADER_FILES} ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
 
-AddCompilerDefinitions("SOFA_BUILD_SOFAGUIQT")
-AddLinkerDependencies(SofaGuiCommon Qwt SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAGUIQT_LINK_LIBRARIES})
+target_compile_definitions(${PROJECT_NAME} PUBLIC "SOFA_QT4")
+#target_compile_definitions(${PROJECT_NAME} PUBLIC "${QT_DEFINITIONS}")
+target_compile_definitions(${PROJECT_NAME} PUBLIC "QT3_SUPPORT")
+#target_compile_options(${PROJECT_NAME} PUBLIC "-DSOFA_QT4")
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAGUI_VERSION})
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAGUIQT_COMPILER_FLAGS}")
+# set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES} {MOC_HEADER_FILES}")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAGUI_BUILD_INCLUDE_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
+#target_include_directories(${PROJECT_NAME} PUBLIC "${QT_INCLUDES}")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAGUI_DEPENDENCY_DIR}>")
 
+install(TARGETS ${PROJECT_NAME}
+        EXPORT SofaGuiTargets
+        RUNTIME DESTINATION "${SOFAGUI_INSTALL_BIN_DIR}" COMPONENT SofaGui_libraries
+        LIBRARY DESTINATION "${SOFAGUI_INSTALL_LIB_DIR}" COMPONENT SofaGui_libraries
+        ARCHIVE DESTINATION "${SOFAGUI_INSTALL_LIB_DIR}" COMPONENT SofaGui_libraries)
+# PUBLIC_HEADER DESTINATION "${SOFAGUI_INSTALL_LIB_DIR}/sofa/gui/qt" COMPONENT SofaGui_headers)
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+install(FILES ${HEADER_FILES} DESTINATION "${SOFAGUI_INSTALL_INCLUDE_DIR}/sofa/gui/qt"
+        COMPONENT SofaGui_headers)
+install(FILES ${MOC_HEADER_FILES} DESTINATION "${SOFAGUI_INSTALL_INCLUDE_DIR}/sofa/gui/qt"
+        COMPONENT SofaGui_headers)

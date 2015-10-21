@@ -3,7 +3,7 @@
 
 #include "BaseContact.h"
 
-#include "../initCompliant.h"
+#include <Compliant/initCompliant.h>
 
 #include <Compliant/constraint/CoulombConstraint.h>
 #include <Compliant/mapping/ContactMapping.h>

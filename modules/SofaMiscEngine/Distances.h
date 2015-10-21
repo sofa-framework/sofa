@@ -30,6 +30,7 @@
 #pragma once
 #endif
 
+#include <sofa/SofaMisc.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <SofaNonUniformFem/DynamicSparseGridTopologyContainer.h>

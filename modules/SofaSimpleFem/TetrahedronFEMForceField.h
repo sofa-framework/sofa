@@ -34,8 +34,14 @@
 #include <sofa/core/behavior/BaseRotationFinder.h>
 #include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/helper/OptionsGroup.h>
-#include <SofaOpenglVisual/ColorMap.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
+
+// FIX: temporarily disabled as SofaSimpleFem is not supposed to depend on SofaOpenGLVisual
+//#define SIMPLEFEM_COLORMAP
+
+#ifdef SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
+#include <SofaOpenglVisual/ColorMap.h>
+#endif
 
 // corotational tetrahedron from
 // @InProceedings{NPF05,
@@ -285,6 +291,7 @@ public:
     Data<helper::vector<Real> > _vonMisesPerNode;
     Data<helper::vector<defaulttype::Vec3f> > _vonMisesStressColors;
 
+#ifdef SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
 #ifndef SOFA_NO_OPENGL
 	visualmodel::ColorMap::SPtr _showStressColorMapReal;
 #endif
@@ -292,6 +299,7 @@ public:
     Data<std::string> _showStressColorMap;
     Data<float> _showStressAlpha;
     Data<bool> _showVonMisesStressPerNode;
+#endif
     /// Suppress field for save as function
     Data < bool > isToPrint;
     Data<bool>  _updateStiffness;
@@ -324,12 +332,14 @@ protected:
         , _vonMisesPerElement(initData(&_vonMisesPerElement, "vonMisesPerElement", "von Mises Stress per element"))
         , _vonMisesPerNode(initData(&_vonMisesPerNode, "vonMisesPerNode", "von Mises Stress per node"))
         , _vonMisesStressColors(initData(&_vonMisesStressColors, "vonMisesStressColors", "Vector of colors describing the VonMises stress"))
+#ifdef SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
 #ifndef SOFA_NO_OPENGL
         , _showStressColorMapReal(sofa::core::objectmodel::New< visualmodel::ColorMap >())
 #endif
         , _showStressColorMap(initData(&_showStressColorMap,"showStressColorMap", "Color map used to show stress values"))
         , _showStressAlpha(initData(&_showStressAlpha, 1.0f, "showStressAlpha", "Alpha for vonMises visualisation"))
         , _showVonMisesStressPerNode(initData(&_showVonMisesStressPerNode,false,"showVonMisesStressPerNode","draw points  showing vonMises stress interpolated in nodes"))
+#endif
         , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
         , _updateStiffness(initData(&_updateStiffness,false,"updateStiffness","udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)"))
     {

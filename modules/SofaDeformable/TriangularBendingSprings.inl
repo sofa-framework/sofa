@@ -36,6 +36,8 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_INL
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_INL
 
+#include <sofa/SofaFramework.h>
+
 #include <SofaDeformable/TriangularBendingSprings.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologyChange.h>
