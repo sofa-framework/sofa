@@ -23,7 +23,7 @@ def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, cell='', as
         if dofRigidNode is None:
             return node.createObject(
                 "LinearMapping", cell=cell, shapeFunction = 'shapeFunction',
-                input="@"+dofAffineNode.getPathName(), output="@.", assemble=assemble, mapForces=isMechanical, mapConstraints=isMechanical, mapMasses=isMechanical)
+                input="@"+dofAffineNode.getPathName(), output="@.", assemble=assemble, geometricStiffness=geometricStiffness, mapForces=isMechanical, mapConstraints=isMechanical, mapMasses=isMechanical)
         elif dofAffineNode is None:
             return node.createObject(
                 "LinearMapping", cell=cell, shapeFunction = 'shapeFunction',
