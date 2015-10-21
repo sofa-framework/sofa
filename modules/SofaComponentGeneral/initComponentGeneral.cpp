@@ -33,15 +33,18 @@
 #include <SofaUserInteraction/initUserInteraction.h>
 #include <SofaConstraint/initConstraint.h>
 #include <SofaHaptics/initHaptics.h>
+
+#ifdef SOFA_HAVE_NEWMAT
 #include <SofaDenseSolver/initDenseSolver.h>
+#endif
 #ifdef SOFA_HAVE_CSPARSE
 #include <SofaSparseSolver/initSparseSolver.h>
 #endif
 #ifdef SOFA_HAVE_TAUCS
 #include <SofaTaucsSolver/initTaucsSolver.h>
 #endif
-#ifdef SOFA_HAVE_PARDISO
-#include <SofaPardisoSolver/initPardisoSolver.h>
+#ifdef SOFA_HAVE_EIGEN2
+#include <SofaEigen2Solver/initEigen2Solver.h>
 #endif
 
 #include <SofaPreconditioner/initPreconditioner.h>
@@ -72,15 +75,17 @@ void initComponentGeneral()
     initUserInteraction();
     initConstraint();
     initHaptics();
+#ifdef SOFA_HAVE_NEWMAT
     initDenseSolver();
+#endif
 #ifdef SOFA_HAVE_CSPARSE
     initSparseSolver();
 #endif
 #ifdef SOFA_HAVE_TAUCS
     initTaucsSolver();
 #endif
-#ifdef SOFA_HAVE_PARDISO
-    initPardisoSolver();
+#ifdef SOFA_HAVE_EIGEN2
+    initEigen2Solver();
 #endif
 
     initPreconditioner();

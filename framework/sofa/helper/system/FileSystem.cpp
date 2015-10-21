@@ -162,6 +162,7 @@ bool FileSystem::removeDirectory(const std::string& path)
 bool FileSystem::exists(const std::string& path)
 {
 #if defined(WIN32)
+	::SetLastError(0);
     if (PathFileExists(Utils::widenString(path).c_str()) != 0)
         return true;
     else

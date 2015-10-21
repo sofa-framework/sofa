@@ -35,7 +35,6 @@
 #include <sofa/gui/BaseGUI.h>
 #include <sofa/gui/BaseViewer.h>
 #include <sofa/gui/GUIManager.h>
-#include <sofa/config.h>
 #include <sofa/helper/GenerateRigid.h>
 #include <sofa/simulation/common/Simulation.h>
 
@@ -180,14 +179,6 @@ extern "C" PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args)
     Py_RETURN_NONE;
 }
 
-
-extern "C" PyObject* Sofa_build_dir(PyObject * /*self*/, PyObject * /*args*/ ) {
-	return Py_BuildValue("s", SOFA_BUILD_DIR);
-}
-
-extern "C" PyObject* Sofa_src_dir(PyObject * /*self*/, PyObject * /*args*/ ) {
-	return Py_BuildValue("s", SOFA_SRC_DIR);
-}
 // ask the GUI to save a screenshot
 extern "C" PyObject * Sofa_saveScreenshot(PyObject * /*self*/, PyObject * args)
 {
@@ -236,7 +227,7 @@ extern "C" PyObject * Sofa_setViewerResolution(PyObject * /*self*/, PyObject * a
 extern "C" PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObject * args)
 {
 	float r = 0.0f, g = 0.0f, b = 0.0f;
-	Vector3 color;
+	sofa::defaulttype::Vector3 color;
     if (!PyArg_ParseTuple(args, "fff", &r, &g, &b))
     {
         PyErr_BadArgument();
@@ -287,7 +278,7 @@ extern "C" PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
         SP_MESSAGE_ERROR( "setViewerCamera: no Viewer!" )
         return Py_BuildValue("i",-1);
     }
-    viewer->setView(Vector3(px,py,pz),Quat(qx,qy,qz,qw));
+    viewer->setView(sofa::defaulttype::Vector3(px,py,pz),sofa::defaulttype::Quat(qx,qy,qz,qw));
 
     return Py_BuildValue("i",0);
 }
@@ -295,8 +286,8 @@ extern "C" PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
 
 extern "C" PyObject * Sofa_getViewerCamera(PyObject * /*self*/, PyObject *)
 {
-    Vec3d pos;
-    Quat orient;
+    sofa::defaulttype::Vector3 pos;
+    sofa::defaulttype::Quat orient;
 
 
     BaseGUI *gui = GUIManager::getGUI();
@@ -366,8 +357,6 @@ SP_MODULE_METHOD_KW(Sofa,createObject)
 SP_MODULE_METHOD(Sofa,getObject)        // deprecated on date 2012/07/18
 SP_MODULE_METHOD(Sofa,getChildNode)     // deprecated on date 2012/07/18
 SP_MODULE_METHOD(Sofa,sendGUIMessage)
-SP_MODULE_METHOD(Sofa,build_dir)
-SP_MODULE_METHOD(Sofa,src_dir)
 SP_MODULE_METHOD(Sofa,saveScreenshot)
 SP_MODULE_METHOD(Sofa,setViewerResolution)
 SP_MODULE_METHOD(Sofa,setViewerBackgroundColor)

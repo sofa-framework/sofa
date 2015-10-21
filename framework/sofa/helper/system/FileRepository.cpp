@@ -24,7 +24,6 @@
 ******************************************************************************/
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/config.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>

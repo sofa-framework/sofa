@@ -29,8 +29,6 @@
 
 #include <sofa/helper/system/SetDirectory.h>
 
-#include <SofaComponentMain/init.h>
-
 
 //Including Simulation
 #include <sofa/simulation/common/Simulation.h>
@@ -82,6 +80,7 @@ using namespace component::container;
 using namespace component::topology;
 using namespace component::collision;
 using namespace component::visualmodel;
+using namespace component::mapping;
 
 typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 typedef component::mapping::BarycentricMapping<defaulttype::Vec3Types, defaulttype::Vec3Types > BarycentricMapping3_to_3;
@@ -438,7 +437,6 @@ simulation::Node::SPtr massSpringString
 Node::SPtr initSofa()
 {
     setSimulation(new simulation::graph::DAGSimulation());
-    sofa::component::init();
     return simulation::getSimulation()->createNewGraph("root");
 //    root = modeling::newRoot();
 //    root->setName("Solver_test_scene_root");

@@ -1,8 +1,7 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(SofaSimulationCommon)
 
 set(HEADER_FILES
-
-	common.h
 	init.h
 	Node.h
 	AnimateBeginEvent.h
@@ -32,7 +31,7 @@ set(HEADER_FILES
 	MechanicalComputeEnergyVisitor.h
     MechanicalGetMomentumVisitor.h
 	MechanicalMatrixVisitor.h
-	 MechanicalOperations.h
+	MechanicalOperations.h
 	MechanicalVPrintVisitor.h
 	MechanicalVisitor.h
 	MutationListener.h
@@ -148,11 +147,37 @@ if(SOFA-MISC_SMP)
 	list(APPEND SOURCE_FILES "ParallelMechanicalVisitor.cpp")
 endif()
 
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-AddCompilerDefinitions("SOFA_BUILD_SIMULATION_COMMON")
-AddSourceDependencies(eigen)
-AddLinkerDependencies(SofaCore tinyxml)
+target_link_libraries( ${PROJECT_NAME} PUBLIC ${SofaFramework_LIBRARIES} ) 
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFASIMULATION_BUILD_INCLUDE_DIR}>"  )
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFASIMULATION_DEPENDENCY_INCLUDE_DIRS}>")
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+set( SOFASIMULATIONCOMMON_COMPILER_FLAGS "-DSOFA_BUILD_SIMULATION_COMMON")
 
+set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
+set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFASIMULATION_VERSION} )
+set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFASIMULATIONCOMMON_COMPILER_FLAGS}"  )
+
+
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT SofaSimulation_libraries
+        EXPORT  SofaSimulationTargets
+        RUNTIME DESTINATION "${SOFASIMULATION_INSTALL_BIN_DIR}"
+        LIBRARY DESTINATION "${SOFASIMULATION_INSTALL_LIB_DIR}"
+        ARCHIVE DESTINATION "${SOFASIMULATION_INSTALL_LIB_DIR}"
+        )
+        
+install(DIRECTORY ${SofaSimulationCommon_SOURCE_DIR}/ DESTINATION "${SOFASIMULATION_INSTALL_INCLUDE_DIR}/sofa/simulation/common"
+        COMPONENT SofaSimulation_headers
+        FILES_MATCHING 
+            PATTERN "*.h"
+            PATTERN "*.inl"
+            PATTERN "*.hxx"
+            PATTERN "*.hpp"
+        )
+
+        
+        

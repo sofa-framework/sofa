@@ -30,6 +30,7 @@
 #pragma once
 #endif
 
+#include <sofa/SofaMisc.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/fixed_array.h>

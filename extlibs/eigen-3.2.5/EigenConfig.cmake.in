@@ -1,0 +1,17 @@
+# CMake package configuration file for the eigen library.
+# It defines the following variables:
+# - Eigen_INCLUDE_DIRS
+# - Eigen_LIBRARIES
+
+@PACKAGE_INIT@
+
+set_and_check(EIGEN_INCLUDE_DIR "@PACKAGE_EIGEN_INCLUDE_DIR@")
+
+check_required_components(Eigen)
+
+if(NOT TARGET SofaEigenHeaders)
+    include("${CMAKE_CURRENT_LIST_DIR}/EigenTargets.cmake")
+endif()
+
+set(Eigen_INCLUDE_DIRS ${EIGEN_INCLUDE_DIR})
+set(Eigen_LIBRARIES SofaEigenHeaders)

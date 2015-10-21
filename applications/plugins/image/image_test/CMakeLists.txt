@@ -1,32 +1,20 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
 
-set(HEADER_FILES
-    TestImageEngine.h
-)
+project(image_test)
 
 set(SOURCE_FILES
     TestImageEngine.cpp
     DataImage_test.cpp
-    ImageEngine_test.cpp
-        )
+    ImageEngine_test.cpp)
 
-if(APPLE)
-#    set(RC_FILES "runSOFA.icns")
-endif()
+add_definitions("-DIMAGE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 
-include_directories("${SOFA_APPLICATIONS_PROJECTS_DIR}/Standard_test")
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} image SofaTest SofaGTestMain)
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${RC_FILES} ${PYTHON_FILES})
-AddCompilerDefinitions("IMAGE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
-
+# ???
 if(WIN32 AND NOT CMAKE_CL_64)
-    AddCompilerDefinitions("EIGEN_DONT_ALIGN")
+    add_definitions("-DEIGEN_DONT_ALIGN")
 endif()
 
-# Define a macro to get the absolute path to a directory;
-# absolute paths are perfectly OK for test resources.
-AddCompilerDefinitions("IMAGETEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
-
-AddLinkerDependencies(SofaTest image SofaGTestMain)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

@@ -32,7 +32,6 @@
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <SofaBaseCollision/OBBModel.h>
-#include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
 #include <sofa/simulation/common/Simulation.h>

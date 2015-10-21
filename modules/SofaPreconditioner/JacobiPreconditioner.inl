@@ -30,12 +30,11 @@
 
 #include <SofaPreconditioner/JacobiPreconditioner.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaDenseSolver/NewMatMatrix.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/DiagonalMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <iostream>
-#include "sofa/helper/system/thread/CTime.h"
+#include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/helper/system/thread/CTime.h>

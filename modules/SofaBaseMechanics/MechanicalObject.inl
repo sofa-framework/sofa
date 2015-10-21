@@ -25,6 +25,8 @@
 #ifndef SOFA_COMPONENT_MECHANICALOBJECT_INL
 #define SOFA_COMPONENT_MECHANICALOBJECT_INL
 
+#include <sofa/SofaFramework.h>
+
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/visual/VisualParams.h>
 #ifdef SOFA_SMP

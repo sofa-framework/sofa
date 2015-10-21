@@ -36,12 +36,21 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
+#ifdef SOFA_HAVE_DAG
+#include <sofa/simulation/graph/DAGSimulation.h>
+#endif
+#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/common/xml/initXml.h>
 
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <SofaComponentMain/init.h>
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
@@ -55,6 +64,7 @@
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
 
+#include <utility>
 
 
 
@@ -192,7 +202,7 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     }
 
     // distribution of the grid particles to the different parents (independent particle or solids.
-    vector< pair<MechanicalObject3*,unsigned> > parentParticles(xgrid.size());
+    vector< std::pair<MechanicalObject3*,unsigned> > parentParticles(xgrid.size());
 
     // Copy the independent particles to their parent DOF
     independentParticles_dof->resize( numX*numY*numZ - numMapped );
@@ -200,7 +210,7 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     unsigned independentIndex=0;
     for( unsigned i=0; i<xgrid.size(); i++ ){
         if( isFree[i] ){
-            parentParticles[i]=make_pair(independentParticles_dof.get(),independentIndex);
+            parentParticles[i]=std::make_pair(independentParticles_dof.get(),independentIndex);
             xindependent[independentIndex] = xgrid[i];
             independentIndex++;
         }
@@ -221,7 +231,7 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
         for(unsigned i=0; i<ind.size(); i++)
         {
             rigidIndexPerPoint.push_back( b );
-            parentParticles[ind[i]]=make_pair(mappedParticles_dof.get(),mappedIndex);
+            parentParticles[ind[i]]=std::make_pair(mappedParticles_dof.get(),mappedIndex);
             xmapped[mappedIndex] = xgrid[ ind[i] ];
             mappedIndex++;
         }
@@ -249,7 +259,11 @@ int main(int argc, char** argv)
     .option(&verbose,'v',"verbose","print debug info")
     (argc,argv);
 
-    sofa::component::init();
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
     sofa::gui::initMain();
 
     if (int err = sofa::gui::GUIManager::Init(argv[0],"")) return err;

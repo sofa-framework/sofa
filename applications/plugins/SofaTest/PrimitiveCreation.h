@@ -15,8 +15,6 @@
 #endif
 #include <sofa/simulation/common/Node.h>
 
-#include <sofa/gui/GUIManager.h>
-#include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
 #include <SofaMiscMapping/SubsetMultiMapping.h>
@@ -31,7 +29,6 @@
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <SofaBaseCollision/OBBModel.h>
-#include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
 

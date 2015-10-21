@@ -1,4 +1,5 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(SofaMiscCollision)
 
 set(HEADER_FILES
 
@@ -20,7 +21,6 @@ set(HEADER_FILES
 set(SOURCE_FILES
 
     initMiscCollision.cpp
-	FrictionContact_DistanceGrid.cpp
     TriangleModelInRegularGrid.cpp
     RuleBasedContactManager.cpp
     DefaultCollisionGroupManager.cpp
@@ -34,31 +34,47 @@ set(SOURCE_FILES
     BarycentricStickContact.cpp
     RayTriangleVisitor.cpp
 
-	TetrahedronBarycentricDistanceLMConstraintContact.cpp # eigen2solver
-	BarycentricDistanceLMConstraintContact_DistanceGrid.cpp # eigen2solver
     )
 
-if(SOFA-MISC_SMP)
+if(SOFA_HAVE_SMP)
 	list(APPEND HEADER_FILES "ParallelCollisionPipeline.h")
 	list(APPEND SOURCE_FILES "ParallelCollisionPipeline.cpp")
 endif()
 
+if(SOFA_HAVE_MINIFLOWVR)
+    list(APPEND SOURCE_FILES "FrictionContact_DistanceGrid.cpp")
+endif()
 
-#if(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
-#	list(APPEND SOURCE_FILES "TetrahedronBarycentricDistanceLMConstraintContact.cpp")
-#	list(APPEND SOURCE_FILES "BarycentricDistanceLMConstraintContact_DistanceGrid.cpp")
-#endif()
+if(SOFA_HAVE_EIGEN2)
+	list(APPEND SOURCE_FILES "TetrahedronBarycentricDistanceLMConstraintContact.cpp")
+if(SOFA_HAVE_MINIFLOWVR)
+	list(APPEND SOURCE_FILES "BarycentricDistanceLMConstraintContact_DistanceGrid.cpp")
+endif()
+endif()
 
 set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-
-AddCompilerDefinitions("SOFA_BUILD_MISC_COLLISION" )
-AddSourceDependencies(eigen)
-AddLinkerDependencies(SofaMeshCollision SofaConstraint SofaVolumetricData SofaExplicitOdeSolver SofaImplicitOdeSolver SofaEigen2Solver)
-
-#if(SOFA-LIB_COMPONENT_EIGEN2_SOLVER)
-#    AddLinkerDependencies(SofaEigen2Solver)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaMeshCollision SofaConstraint SofaVolumetricData SofaExplicitOdeSolver SofaImplicitOdeSolver SofaSphFluid SofaOpenglVisual)
+#if(SOFA_HAVE_EIGEN2)
+#    target_link_libraries(${PROJECT_NAME} SofaEigen2Solver)
 #endif()
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAMISC_BUILD_INCLUDE_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAMISC_DEPENDENCY_DIR}>")
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+set( SOFAMISCCOLLISION_COMPILER_FLAGS "-DSOFA_BUILD_MISC_COLLISION")
+
+set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
+set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFAMISC_VERSION} )
+set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAMISCCOLLISION_COMPILER_FLAGS}"  )
+set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
+
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT SofaMiscCollision_libraries
+        EXPORT    SofaMiscTargets
+        RUNTIME DESTINATION "${SOFAMISC_INSTALL_BIN_DIR}" COMPONENT SofaMisc_libraries
+        LIBRARY DESTINATION "${SOFAMISC_INSTALL_LIB_DIR}" COMPONENT SofaMisc_libraries
+        ARCHIVE DESTINATION "${SOFAMISC_INSTALL_LIB_DIR}" COMPONENT SofaMisc_libraries
+        PUBLIC_HEADER DESTINATION "${SOFAMISC_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}" COMPONENT SofaMisc_headers
+)

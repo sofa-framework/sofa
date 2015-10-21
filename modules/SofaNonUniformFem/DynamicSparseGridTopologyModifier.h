@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDTOPOLOGYMODIFIER_H
 #include "config.h"
 
+#include <sofa/SofaAdvanced.h>
 #include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
 
 namespace sofa

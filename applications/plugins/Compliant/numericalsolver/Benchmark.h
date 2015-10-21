@@ -1,7 +1,7 @@
 #ifndef COMPLIANT_MISC_BENCHMARK_H
 #define COMPLIANT_MISC_BENCHMARK_H
 
-#include "../initCompliant.h"
+#include <Compliant/Compliant.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include <Eigen/Core>

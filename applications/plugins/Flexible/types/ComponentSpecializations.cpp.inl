@@ -64,7 +64,7 @@ namespace core
 
 #ifndef SOFA_FLOAT
     template class SOFA_Flexible_API State< defaulttype::TYPEABSTRACTNAME3dTypes >;
-	template class SOFA_Flexible_API Mapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes >;
+    template class SOFA_Flexible_API Mapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes >;
     template class SOFA_Flexible_API MultiMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
@@ -545,7 +545,7 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::vi
             glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-			defaulttype::Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
+            defaulttype::Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
             temp = modelviewM.transform ( temp );
 
             //glLoadMatrixf(modelview);
@@ -634,7 +634,7 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3fTypes>::draw(const core::vi
             glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-			defaulttype::Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
+            defaulttype::Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
             temp = modelviewM.transform ( temp );
 
             //glLoadMatrixf(modelview);
@@ -1028,20 +1028,17 @@ int EVALUATOR(TYPEABSTRACTNAME,UncoupledConstraintCorrectionClass) = core::Regis
 namespace mapping
 {
 
-
 SOFA_DECL_CLASS(EVALUATOR(TYPEABSTRACTNAME,IdentityMapping))
 
 // Register in the Factory
 int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Special case of mapping where the child points are the same as the parent points")
 #ifndef SOFA_FLOAT
 		.add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes > >()
-        .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3dTypes > >()
-        .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dTypes > >()
+		.add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::Vec3fTypes > >()
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::ExtVec3fTypes > >()
-        .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACTNAME3fTypes > >()
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
@@ -1049,8 +1046,6 @@ int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Spe
 		.add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::ExtVec3dTypes > >()
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3fTypes > >()
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3fTypes > >()
-        .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACTNAME3dTypes > >()
-        .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3fTypes > >()
 #endif
 #endif
         ;
@@ -1060,13 +1055,11 @@ int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Spe
 
 #ifndef SOFA_FLOAT
 	template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes >;
-    template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3dTypes >;
-    template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dTypes >;
+	template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::Vec3fTypes >;
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::ExtVec3fTypes >;
-    template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACTNAME3fTypes >;
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
@@ -1074,8 +1067,6 @@ int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Spe
 	template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::ExtVec3dTypes >;
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3fTypes >;
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3fTypes >;
-    template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACTNAME3dTypes >;
-    template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3fTypes >;
 #endif
 #endif
 

@@ -23,7 +23,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
-#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
@@ -74,7 +73,6 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
     void SetUp()
     {      
         //Init
-        sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Create the scene

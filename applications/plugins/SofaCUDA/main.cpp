@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gpu/cuda/gpucuda.h>
+#include <SofaCUDA/SofaCUDA.h>
 #include <sofa/gpu/cuda/mycuda.h>
 #include <sofa/core/ObjectFactory.h>
 

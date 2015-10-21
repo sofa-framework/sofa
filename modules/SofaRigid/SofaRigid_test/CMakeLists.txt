@@ -1,16 +1,12 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+
+project(SofaRigid_test)
 
 set(SOURCE_FILES
- #alphabetical order
     RigidMapping_test.cpp
-    RigidRigidMapping_test.cpp
-)
+    RigidRigidMapping_test.cpp)
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${RC_FILES} ${PYTHON_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
 
-AddLinkerDependencies(
-    SofaGTestMain
-    SofaTest
-)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

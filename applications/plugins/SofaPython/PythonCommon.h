@@ -8,22 +8,31 @@
 // "Since Python may define some pre-processor definitions which affect the
 // standard headers on some systems, you must include Python.h before any
 // standard headers are included."
+#if defined(_MSC_VER)
+// intrusive_ptr.hpp has to be ahead of python.h on windows to support debug compilation.
+#include <boost/intrusive_ptr.hpp>
 
-#if defined(_WIN32)
-#	define MS_NO_COREDLL // deactivate pragma linking on Win32 done in Python.h
-#	define Py_ENABLE_SHARED 1 // this flag ensure to use dll's version (needed because of MS_NO_COREDLL define).
+// undefine _DEBUG since we want to always link to the release version of
+// python and pyconfig.h automatically links debug version if _DEBUG is
+// defined.
+#ifdef _DEBUG
+#define _DEBUG_UNDEFED
+#undef _DEBUG
 #endif
 
-#if defined(_MSC_VER) && defined(_DEBUG)
-// if you use Python on windows in debug build, be sure to provide a compiled version because
-// installation package doesn't come with debug libs.
-#undef _DEBUG /* remove debug before including Python.h and restore it afterwards. */
-#    include <Python.h> 
-#define _DEBUG
-//#elif defined(__APPLE__) && defined(__MACH__)
-//#    include <Python/Python.h>
+#endif
+
+#if defined(__APPLE__) && defined(__MACH__)
+#    include <Python/Python.h>
 #else
 #    include <Python.h>
+#endif
+
+#if defined(_MSC_VER)
+// redefine _DEBUG if it was undefed
+#ifdef _DEBUG_UNDEFED
+#define _DEBUG
+#endif
 #endif
 
 #endif

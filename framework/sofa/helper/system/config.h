@@ -25,6 +25,8 @@
 #ifndef SOFA_HELPER_SYSTEM_CONFIG_H
 #define SOFA_HELPER_SYSTEM_CONFIG_H
 
+#include <sofa/helper/helper.h>
+
 // to define NULL
 #include <cstring>
 
@@ -182,11 +184,11 @@ typedef double SReal;
 // on other platforms (unless SOFA_NO_EXTERN_TEMPLATE is set), as
 // it can fix RTTI issues (typeid / dynamic_cast) on Mac and can
 // significantly speed-up compilation and link
-#if !defined SOFA_NO_EXTERN_TEMPLATE && !defined SOFA_STATIC_LIBRARY
-#	define SOFA_EXTERN_TEMPLATE
+#ifndef SOFA_NO_EXTERN_TEMPLATE
+#define SOFA_EXTERN_TEMPLATE
 #endif
 
-#if defined SOFA_STATIC_LIBRARY || !defined WIN32
+#ifndef WIN32
 #	define SOFA_EXPORT_DYNAMIC_LIBRARY
 #   define SOFA_IMPORT_DYNAMIC_LIBRARY
 #else

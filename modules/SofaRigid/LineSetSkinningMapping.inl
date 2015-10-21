@@ -26,6 +26,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_INL
 #define SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_INL
 
+#include <sofa/SofaFramework.h>
 #include <SofaRigid/LineSetSkinningMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 

@@ -14,16 +14,9 @@
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/GridTopology.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
-#include <sofa/component/typedef/Sofa_typedef.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <sofa/core/BaseMapping.h>
-
-
-#ifndef SOFA_FLOAT
-#include <sofa/component/typedef/Mapping_double.h>
-#endif
-#ifndef SOFA_DOUBLE
-#include <sofa/component/typedef/Mapping_float.h>
-#endif
 
 
 #include "PythonScriptController.h"
@@ -51,9 +44,10 @@
 #include "Binding_SubsetMultiMapping.h"
 #include "Binding_VisualModel.h"
 
+typedef sofa::component::container::MechanicalObject< sofa::defaulttype::Vec3Types > MechanicalObject3;
+typedef sofa::component::mapping::SubsetMultiMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types > SubsetMultiMapping3_to_3;
 
-using namespace sofa::core::objectmodel;
-
+using sofa::core::objectmodel::Base;
 
 // crée un objet Python à partir d'un objet Cpp héritant de Base,
 // retournant automatiquement le type Python de plus haut niveau possible
@@ -63,9 +57,9 @@ PyObject* SP_BUILD_PYSPTR(Base* obj)
 {
     if (dynamic_cast<sofa::simulation::Node*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Node));
-    if (dynamic_cast<Context*>(obj))
+    if (dynamic_cast<sofa::core::objectmodel::Context*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Context));
-    if (dynamic_cast<BaseContext*>(obj))
+    if (dynamic_cast<sofa::core::objectmodel::BaseContext*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseContext));
 
     if (dynamic_cast<sofa::core::loader::MeshLoader*>(obj))
@@ -101,7 +95,7 @@ PyObject* SP_BUILD_PYSPTR(Base* obj)
     if (dynamic_cast<sofa::core::BaseMapping*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseMapping));
 
-    if (dynamic_cast<BaseObject*>(obj))
+    if (dynamic_cast<sofa::core::objectmodel::BaseObject*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseObject));
 
     // par défaut...

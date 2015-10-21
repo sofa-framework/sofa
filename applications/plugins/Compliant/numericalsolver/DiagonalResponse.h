@@ -1,7 +1,7 @@
 #ifndef COMPLIANT_DIAGONALRESPONSE_H
 #define COMPLIANT_DIAGONALRESPONSE_H
 
-#include "initCompliant.h"
+#include <Compliant/Compliant.h>
 #include "Response.h"
 
 namespace sofa {

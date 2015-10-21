@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_H
 #include "config.h"
 
+#include <sofa/SofaAdvanced.h>
 #include <sofa/core/Mapping.h>
 #include <SofaBaseTopology/MeshTopology.h>
 #include <sofa/helper/MarchingCubeUtility.h>

@@ -1,12 +1,23 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
 
-# only take the librairy headers, not test headers and other stuff
-file(GLOB_RECURSE HEADER_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/Eigen/*.h ${CMAKE_CURRENT_SOURCE_DIR}/unsupported/Eigen/*.h)
+project(Eigen)
 
-add_custom_target(${PROJECT_NAME} SOURCES ${HEADER_FILES})
+set(EIGEN_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
-#add_library(${PROJECT_NAME} SHARED ${HEADER_FILES}) # it contains only headers but it is still generating an empty lib
-#SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX) # otherwise cmake cannot recognize the language
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Eigen
+        COMPONENT Eigen_headers
+        DESTINATION "${EIGEN_INSTALL_INCLUDE_DIR}"
+        PATTERN ".svn" EXCLUDE
+        PATTERN ".git" EXCLUDE
+        PATTERN "CMakeLists.txt" EXCLUDE
+        PATTERN ".cxx" EXCLUDE
+        PATTERN ".cpp" EXCLUDE)
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/unsupported/Eigen
+        COMPONENT Eigen_headers
+        DESTINATION "${EIGEN_INSTALL_INCLUDE_DIR}"
+        PATTERN ".svn" EXCLUDE
+        PATTERN ".git" EXCLUDE
+        PATTERN "CMakeLists.txt" EXCLUDE
+        PATTERN ".cxx" EXCLUDE
+        PATTERN ".cpp" EXCLUDE)

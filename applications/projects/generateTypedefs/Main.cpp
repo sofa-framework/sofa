@@ -38,7 +38,11 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <SofaComponentMain/init.h>
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
 #include <algorithm>
 #include <functional>
 using sofa::core::SofaLibrary;
@@ -594,7 +598,11 @@ int main(int , char** )
     //bannedComponents.insert(std::make_pair("ProjectiveConstraintSet","PartialLinearMovementConstraint"));
 
     sofa::core::init();
-    sofa::component::init();
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
     SofaLibrary library; library.build();
     const SofaLibrary::VecCategory &categories = library.getCategories();
 

@@ -27,7 +27,6 @@
 #include "config.h"
 
 #include <SofaBaseVisual/BaseCamera.h>
-
 namespace sofa
 {
 

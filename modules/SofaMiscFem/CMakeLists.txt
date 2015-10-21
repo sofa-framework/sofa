@@ -1,4 +1,5 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(SofaMiscFem)
 
 set(HEADER_FILES
 
@@ -14,10 +15,11 @@ set(HEADER_FILES
 	Costa.h
 	HyperelasticMaterial.h
 	MooneyRivlin.h
-	PlasticMaterial.h
 	STVenantKirchhoff.h
 	VerondaWestman.h
-
+    BaseMaterial.h
+    NeoHookean.h
+    Ogden.h
     )
 
 set(SOURCE_FILES
@@ -26,16 +28,42 @@ set(SOURCE_FILES
     FastTetrahedralCorotationalForceField.cpp
     TetrahedralTensorMassForceField.cpp
  	StandardTetrahedralFEMForceField.cpp
-	PlasticMaterial.cpp
 
     )
+
+if(SOFA_HAVE_NEWMAT)
+  list(APPEND HEADER_FILES
+	PlasticMaterial.h
+  )
+  list(APPEND SOURCE_FILES
+	PlasticMaterial.cpp
+  )
+endif()
 
 set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem )
 
-AddCompilerDefinitions("SOFA_BUILD_MISC_FEM" )
-AddSourceDependencies(eigen)
-AddLinkerDependencies(SofaSimpleFem )
+if(SOFA_HAVE_NEWMAT)
+    target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
+endif()
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAMISC_BUILD_INCLUDE_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAMISC_DEPENDENCY_DIR}>")
+
+set( SOFAMISCFEM_COMPILER_FLAGS "-DSOFA_BUILD_MISC_FEM")
+
+set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
+set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFAMISC_VERSION} )
+set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAMISCFEM_COMPILER_FLAGS}"  )
+set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
+
+install(TARGETS ${PROJECT_NAME}
+        EXPORT    SofaMiscTargets
+        RUNTIME DESTINATION "${SOFAMISC_INSTALL_BIN_DIR}" COMPONENT SofaMisc_libraries
+        LIBRARY DESTINATION "${SOFAMISC_INSTALL_LIB_DIR}" COMPONENT SofaMisc_libraries
+        ARCHIVE DESTINATION "${SOFAMISC_INSTALL_LIB_DIR}" COMPONENT SofaMisc_libraries
+        PUBLIC_HEADER DESTINATION "${SOFAMISC_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}" COMPONENT SofaMisc_headers
+)

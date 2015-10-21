@@ -26,6 +26,8 @@
 #define SOFA_COMPONENT_TOPOLOGY_MANIFOLDTRIANGLESETTOPOLOGYMODIFIER_H
 #include <ManifoldTopologies/config.h>
 
+#include <ManifoldTopologies/ManifoldTopologies.h>
+
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
 
 namespace sofa

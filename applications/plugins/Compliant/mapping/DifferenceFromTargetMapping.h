@@ -1,7 +1,7 @@
 #ifndef DIFFERENCEFROMTARGETMAPPING_H
 #define DIFFERENCEFROMTARGETMAPPING_H
 
-#include "../initCompliant.h"
+#include <Compliant/Compliant.h>
 
 #include "AssembledMapping.h"
 

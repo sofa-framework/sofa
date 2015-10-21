@@ -25,7 +25,7 @@
 #ifndef MYCUDA_H
 #define MYCUDA_H
 
-#include "gpucuda.h"
+#include <SofaCUDA/SofaCUDA.h>
 #include <string.h>
 
 #ifdef SOFA_GPU_CUBLAS

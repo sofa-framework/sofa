@@ -1,10 +1,12 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.8)
+project(SofaCore)
 
-set(HEADER_FILES
 
-	core.h
+set(SOFACORE_HEADERS
 	init.h
 	VecId.h
+#	Plugin.h
+#	PluginManager.h
 	ConstraintParams.h
 	ExecParams.h
 	MechanicalParams.h
@@ -137,7 +139,7 @@ set(HEADER_FILES
 	objectmodel/GUIEvent.h
 	)
 
-set(SOURCE_FILES
+set(SOFACORE_SOURCES
 	init.cpp
 	objectmodel/AspectPool.cpp
 	objectmodel/Base.cpp
@@ -164,6 +166,8 @@ set(SOURCE_FILES
 	ObjectFactory.cpp
 	ExecParams.cpp
 	MechanicalParams.cpp
+#	Plugin.cpp
+#	PluginManager.cpp
 	ConstraintParams.cpp
 	SofaLibrary.cpp
 	CategoryLibrary.cpp
@@ -214,45 +218,67 @@ set(SOURCE_FILES
 	objectmodel/GUIEvent.cpp
 	)
 
-if(NOT SOFA-MISC_NO_OPENGL)
-  list(APPEND HEADER_FILES "visual/DrawToolGL.h")
-	
-	list(APPEND SOURCE_FILES "visual/DrawToolGL.cpp")
+if(NOT SOFA_NO_OPENGL)
+	if(SOFA_HAVE_GLUT)
+		list(APPEND SOFACORE_HEADERS "visual/DrawToolGL.h")
+		list(APPEND SOFACORE_SOURCES "visual/DrawToolGL.cpp")
+	endif()
 endif()  
   
-if(SOFA-EXTERNAL_BOOST)
-	list(APPEND HEADER_FILES "objectmodel/AspectPool.h")
-	
-	list(APPEND SOURCE_FILES "objectmodel/AspectPool.cpp")
+if(Boost_thread_FOUND)
+	list(APPEND SOFACORE_HEADERS "objectmodel/AspectPool.h")
+	list(APPEND SOFACORE_SOURCES "objectmodel/AspectPool.cpp")
 endif()
 
 if(SOFA-MISC_SMP)
-	list(APPEND HEADER_FILES "CallContext.h")
-	list(APPEND HEADER_FILES "objectmodel/BaseObjectTasks.h")
-	list(APPEND HEADER_FILES "ParallelCollisionModel.h")
-	list(APPEND HEADER_FILES "behavior/ParallelMultiVec.h")
-	list(APPEND HEADER_FILES "collision/ParallelPipeline.h")
-	list(APPEND HEADER_FILES "collision/ParallelNarrowPhaseDetection.h")
+	list(APPEND SOFACORE_HEADERS "CallContext.h")
+	list(APPEND SOFACORE_HEADERS "objectmodel/BaseObjectTasks.h")
+	list(APPEND SOFACORE_HEADERS "ParallelCollisionModel.h")
+	list(APPEND SOFACORE_HEADERS "behavior/ParallelMultiVec.h")
+	list(APPEND SOFACORE_HEADERS "collision/ParallelPipeline.h")
+	list(APPEND SOFACORE_HEADERS "collision/ParallelNarrowPhaseDetection.h")
 	
-	list(APPEND SOURCE_FILES "CallContext.cpp")
-	list(APPEND SOURCE_FILES "collision/ParallelPipeline.cpp")
-	list(APPEND SOURCE_FILES "objectmodel/BaseObjectTasks.cpp")
+	list(APPEND SOFACORE_SOURCES "CallContext.cpp")
+	list(APPEND SOFACORE_SOURCES "collision/ParallelPipeline.cpp")
+	list(APPEND SOFACORE_SOURCES "objectmodel/BaseObjectTasks.cpp")
 endif()
 
 if(SOFA-MISC_SUPPORT_MOVING_FRAMES)
-	list(APPEND HEADER_FILES "behavior/InertiaForce.h")
+	list(APPEND SOFACORE_HEADERS "behavior/InertiaForce.h")
 endif()
 
 if(PS3)
-	list(APPEND HEADER_FILES "ps3/cxa_demangle.h")
-	list(APPEND HEADER_FILES "ps3/cxxabi.h")
-	list(APPEND SOURCE_FILES "ps3/cxa_demangle.cpp")
+	list(APPEND SOFACORE_HEADERS "ps3/cxa_demangle.h")
+	list(APPEND SOFACORE_HEADERS "ps3/cxxabi.h")
+	list(APPEND SOFACORE_SOURCES "ps3/cxa_demangle.cpp")
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${SOFACORE_HEADERS} ${SOFACORE_SOURCES})
+target_link_libraries( ${PROJECT_NAME} PUBLIC SofaDefaultType)
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../>") 
 
-AddCompilerDefinitions("SOFA_BUILD_CORE")
-AddLinkerDependencies(SofaDefaultType ${GLEW_LIBRARIES} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES})
+set( SOFACORE_COMPILER_FLAGS "-DSOFA_BUILD_CORE")
+# make the name of debug libraries end in _d.
+set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
+set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFAFRAMEWORK_VERSION} )
+set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACORE_COMPILER_FLAGS}"  )
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+install(TARGETS ${PROJECT_NAME}
+    COMPONENT SofaFramework_libraries
+    EXPORT  SofaFrameworkTargets
+    RUNTIME DESTINATION "${SOFAFRAMEWORK_INSTALL_BIN_DIR}"
+    LIBRARY DESTINATION "${SOFAFRAMEWORK_INSTALL_LIB_DIR}"
+    ARCHIVE DESTINATION "${SOFAFRAMEWORK_INSTALL_LIB_DIR}"
+    )
+ 
+install(DIRECTORY ${SofaCore_SOURCE_DIR}/ 
+        DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}/sofa/core"
+        COMPONENT SofaFramework_headers
+        FILES_MATCHING 
+            PATTERN "*.h"
+            PATTERN "*.inl"
+            PATTERN "*.hxx"
+            PATTERN "*.hpp"
+        )
+
 

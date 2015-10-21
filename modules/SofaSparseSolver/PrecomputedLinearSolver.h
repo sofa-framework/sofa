@@ -101,7 +101,9 @@ public:
     void invert(TMatrix& M);
     void setSystemMBKMatrix(const core::MechanicalParams* mparams);
     void loadMatrix(TMatrix& M);
+#ifdef SOFA_HAVE_CSPARSE
     void loadMatrixWithCSparse(TMatrix& M);
+#endif
     bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
 
 

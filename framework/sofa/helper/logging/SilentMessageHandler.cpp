@@ -42,8 +42,7 @@ namespace helper
 namespace logging
 {
 
-void SilentMessageHandler::process(Message& m) {
-    SOFA_UNUSED(m) ;
+void SilentMessageHandler::process(Message& /*m*/) {
 }
 
 

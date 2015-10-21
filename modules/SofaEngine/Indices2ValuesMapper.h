@@ -30,6 +30,7 @@
 #pragma once
 #endif
 
+#include <sofa/SofaGeneral.h>
 #include <sofa/core/DataEngine.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/vector.h>

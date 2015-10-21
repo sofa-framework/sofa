@@ -72,6 +72,9 @@
 #include <Eigen/Dense>
 using std::cout;
 
+using sofa::component::container::MechanicalObject;
+using sofa::component::mass::UniformMass;
+
 using namespace sofa;
 using namespace sofa::component;
 using namespace modeling;
@@ -113,9 +116,9 @@ public:
     typedef sofa::component::forcefield::UniformCompliance<defaulttype::Vec1Types> UniformCompliance1;
 
     // Vec3-Vec1
-    typedef sofa::component::mapping::DistanceMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMapping31;
-    typedef sofa::component::mapping::DistanceFromTargetMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceFromTargetMapping31;
-    typedef sofa::component::mapping::DistanceMultiMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMultiMapping31;
+    typedef sofa::component::mapping::DistanceMapping<MechanicalObject<Vec3Types>::DataTypes, MechanicalObject<Vec1Types>::DataTypes> DistanceMapping31;
+    typedef sofa::component::mapping::DistanceFromTargetMapping<MechanicalObject<Vec3Types>::DataTypes, MechanicalObject<Vec1Types>::DataTypes> DistanceFromTargetMapping31;
+    typedef sofa::component::mapping::DistanceMultiMapping<MechanicalObject<Vec3Types>::DataTypes, MechanicalObject<Vec1Types>::DataTypes> DistanceMultiMapping31;
 
     typedef sofa::component::interactionforcefield::StiffSpringForceField<defaulttype::Vec3Types>  StiffSpringForceField3;
 
@@ -134,11 +137,11 @@ protected:
         //--------
         simulation::Node::SPtr  string_node = parent->createChild(oss.str());
 
-        MechanicalObject3::SPtr DOF = New<MechanicalObject3>();
+        MechanicalObject<Vec3Types>::SPtr DOF = New<MechanicalObject<Vec3Types> >();
         string_node->addObject(DOF);
         DOF->setName(oss.str()+"_DOF");
 
-        UniformMass3::SPtr mass = New<UniformMass3>();
+        UniformMass<Rigid3, Rigid3Mass>::SPtr mass = New<UniformMass<Rigid3, Rigid3Mass> >();
         string_node->addObject(mass);
         mass->setName(oss.str()+"_mass");
         mass->mass.setValue( totalMass/numParticles );
@@ -149,7 +152,7 @@ protected:
         //--------
         simulation::Node::SPtr extension_node = string_node->createChild( oss.str()+"_ExtensionNode");
 
-        MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
+        MechanicalObject<Vec1Types>::SPtr extensions = New<MechanicalObject<Vec1Types> >();
         extension_node->addObject(extensions);
         extensions->setName(oss.str()+"_extensionsDOF");
 
@@ -171,7 +174,7 @@ protected:
         //--------
         // create the particles
         DOF->resize(numParticles);
-        MechanicalObject3::WriteVecCoord x = DOF->writePositions();
+        MechanicalObject<Vec3Types>::WriteVecCoord x = DOF->writePositions();
         helper::vector<SReal> restLengths;
         for( unsigned i=0; i<numParticles; i++ )
         {
@@ -195,11 +198,11 @@ protected:
     struct ParticleString
     {
         simulation::Node::SPtr  string_node; ///< root
-        MechanicalObject3::SPtr DOF; ///< particle states
-        UniformMass3::SPtr mass;
+        MechanicalObject<Vec3Types>::SPtr DOF; ///< particle states
+        UniformMass<Rigid3, Rigid3Mass>::SPtr mass;
 
         simulation::Node::SPtr extension_node;
-        MechanicalObject1::SPtr extensions;
+        MechanicalObject<Vec1Types>::SPtr extensions;
         EdgeSetTopologyContainer::SPtr edgeSet;
         DistanceMapping31::SPtr extensionMapping;
         UniformCompliance1::SPtr compliance;
@@ -215,11 +218,11 @@ protected:
         string_node = parent->createChild(oss.str());
 //        cerr<<"Particle string added as child of " << parent->getName() << endl;
 
-        DOF = New<MechanicalObject3>();
+        DOF = New<MechanicalObject<Vec3Types> >();
         string_node->addObject(DOF);
         DOF->setName(oss.str()+"_DOF");
 
-        mass = New<UniformMass3>();
+        mass = New<UniformMass<Rigid3, Rigid3Mass> >();
         string_node->addObject(mass);
         mass->setName(oss.str()+"_mass");
         mass->mass.setValue( totalMass/numParticles );
@@ -228,7 +231,7 @@ protected:
         //--------
         extension_node = string_node->createChild( oss.str()+"_ExtensionNode");
 
-        extensions = New<MechanicalObject1>();
+        extensions = New<MechanicalObject<Vec1Types> >();
         extension_node->addObject(extensions);
         extensions->setName(oss.str()+"_extensionsDOF");
 
@@ -248,7 +251,7 @@ protected:
         //--------
         // create the particles
         DOF->resize(numParticles);
-        MechanicalObject3::WriteVecCoord x = DOF->writePositions();
+        MechanicalObject<Vec3Types>::WriteVecCoord x = DOF->writePositions();
         helper::vector<SReal> restLengths;
         for( unsigned i=0; i<numParticles; i++ )
         {

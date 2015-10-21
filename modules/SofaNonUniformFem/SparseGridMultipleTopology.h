@@ -27,10 +27,8 @@
 #include "config.h"
 
 #include <string>
-
-
+#include <sofa/SofaAdvanced.h>
 #include <SofaNonUniformFem/SparseGridRamificationTopology.h>
-
 
 namespace sofa
 {
