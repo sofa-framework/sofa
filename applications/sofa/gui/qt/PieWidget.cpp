@@ -110,10 +110,19 @@ ChartsWidget::ChartsWidget(const std::string &name, QWidget *parent): QWidget(pa
     pie = new PieWidget(splitter);
 
     table = new QTableWidget(0,3,splitter);
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    table->horizontalHeader()->setResizeMode(0,QHeaderView::Fixed);
+    table->horizontalHeader()->setResizeMode(1,QHeaderView::ResizeToContents);
+    table->horizontalHeader()->setResizeMode(2,QHeaderView::ResizeToContents);
+#else
     table->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Fixed);
-    table->horizontalHeader()->resizeSection(0,30);
     table->horizontalHeader()->setSectionResizeMode(1,QHeaderView::ResizeToContents);
     table->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
+#endif // QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+
+    table->horizontalHeader()->resizeSection(0,30);
+
     QStringList list; list<<"Id" << name.c_str() << "Time";
     table->setHorizontalHeaderLabels(list);
 
