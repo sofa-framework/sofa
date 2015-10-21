@@ -223,7 +223,7 @@ if(NOT WIN32)
 endif()
 
 # Eigen
-if(${CMAKE_CL_64}) # visual-studio 64 bits only
+if(MSVC AND NOT ${CMAKE_CL_64}) # visual-studio 32 bits only
     target_compile_definitions(SofaHelper PUBLIC "-DEIGEN_DONT_ALIGN")
 endif()
 

@@ -79,7 +79,11 @@ bool NodeElement::init()
 {
     bool res = Element<core::objectmodel::BaseNode>::init();
     //Store the warnings created by the objects
-    for (unsigned int i=0; i<warnings.size(); ++i) getObject()->serr << warnings[i] << getObject()->sendl;
+    for (unsigned int i=0; i<errors.size(); ++i)
+    {
+        const std::string name = getObject()->getClassName() + " \"" + getObject()->getName() + "\"";
+        MAINLOGGER( Error, errors[i], name );
+    }
 
     return res;
 }
