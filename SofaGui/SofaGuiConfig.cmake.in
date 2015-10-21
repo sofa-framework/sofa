@@ -2,6 +2,8 @@
 
 @PACKAGE_INIT@
 
+set(SOFAGUI_QGLVIEWER @SOFAGUI_QGLVIEWER@)
+
 find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(SofaAdvanced REQUIRED)
