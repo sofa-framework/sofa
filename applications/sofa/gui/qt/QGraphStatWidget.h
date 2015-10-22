@@ -50,7 +50,6 @@ namespace qt
 /// TODO add gnuplot export
 class QGraphStatWidget : public QWidget
 {
-
     Q_OBJECT
 
 public:
