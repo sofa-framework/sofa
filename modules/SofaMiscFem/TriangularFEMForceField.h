@@ -67,7 +67,7 @@ using sofa::helper::vector;
 * }
 */
 template<class DataTypes>
-class SOFA_SIMPLE_FEM_API TriangularFEMForceField : public core::behavior::ForceField<DataTypes>
+class TriangularFEMForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(TriangularFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
@@ -171,7 +171,7 @@ public:
     {
     public:
         EdgeInformation()
-            :fracturable(false) {};
+            :fracturable(false) {}
 
         bool fracturable;
 
@@ -193,7 +193,7 @@ public:
     {
     public:
         VertexInformation()
-            :sumEigenValues(0.0), stress(0.0) {};
+            :sumEigenValues(0.0), stress(0.0) {}
 
         Coord meanStrainDirection;
         double sumEigenValues;
@@ -365,11 +365,11 @@ public:
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_SIMPLE_FEM_API TriangularFEMForceField<defaulttype::Vec3dTypes>;
+extern template class SOFA_MISC_FEM_API TriangularFEMForceField<defaulttype::Vec3dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-extern template class SOFA_SIMPLE_FEM_API TriangularFEMForceField<defaulttype::Vec3fTypes>;
+extern template class SOFA_MISC_FEM_API TriangularFEMForceField<defaulttype::Vec3fTypes>;
 #endif
 
 #endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_CPP)
