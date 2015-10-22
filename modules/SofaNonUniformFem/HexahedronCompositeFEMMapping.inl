@@ -405,7 +405,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJT( const sofa::core::Mec
 template <class BasicMapping>
 void HexahedronCompositeFEMMapping<BasicMapping>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowMappings()) return;
+    if (!vparams->displayFlags().getShowVisualMappings()) return;
 
     std::vector< sofa::defaulttype::Vector3 > points;
     sofa::defaulttype::Vector3 point;

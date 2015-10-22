@@ -275,7 +275,7 @@ void BeamLinearMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cpar
 template <class TIn, class TOut>
 void BeamLinearMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowMappings()) return;
+    if (!vparams->displayFlags().getShowVisualMappings()) return;
     std::vector< sofa::defaulttype::Vector3 > points;
     sofa::defaulttype::Vector3 point;
 
