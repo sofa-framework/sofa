@@ -143,7 +143,7 @@ Node::SPtr oneTetra()
     flags.setShowMechanicalMappings(false);
     flags.setShowCollisionModels(false);
     flags.setShowBoundingCollisionModels(false);
-    flags.setShowMappings(false);
+    flags.setShowVisualMappings(false);
     flags.setShowForceFields(true);
     flags.setShowWireFrame(true);
     flags.setShowVisualModels(true);

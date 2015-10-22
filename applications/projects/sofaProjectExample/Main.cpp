@@ -326,7 +326,7 @@ int main(int argc, char** argv)
     // groot->setShowMechanicalMappings(false);
     // groot->setShowCollisionModels(false);
     // groot->setShowBoundingCollisionModels(false);
-    // groot->setShowMappings(false);
+    // groot->setShowVisualMappings(false);
     // groot->setShowForceFields(true);
     // groot->setShowWireFrame(true);
     // groot->setShowVisualModels(true);
