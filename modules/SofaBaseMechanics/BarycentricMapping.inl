@@ -2684,7 +2684,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperHexahedronSetTopology<In,O
 template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if ( !vparams->displayFlags().getShowMappings() ) return;
+    if ( !vparams->displayFlags().getShowVisualMappings() ) return;
 
     const OutVecCoord& out = this->toModel->read(core::ConstVecCoordId::position())->getValue();
     std::vector< sofa::defaulttype::Vector3 > points;

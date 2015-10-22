@@ -44,7 +44,7 @@ SP_CLASS_METHODS_END
 \item showCollisionModels
 \item showBoundingCollisionModels
 \item showMapping
-\item showMappings
+\item showVisualMappings
 \item showMechanicalMappings
 \item showOptions
 \item showWireFrame
@@ -103,7 +103,7 @@ DISPLAYFLAG_ATTRIBUTE_IMPL(Collision)
 DISPLAYFLAG_ATTRIBUTE_IMPL(CollisionModels)
 DISPLAYFLAG_ATTRIBUTE_IMPL(BoundingCollisionModels)
 DISPLAYFLAG_ATTRIBUTE_IMPL(Mapping)
-DISPLAYFLAG_ATTRIBUTE_IMPL(Mappings)
+DISPLAYFLAG_ATTRIBUTE_IMPL(VisualMappings)
 DISPLAYFLAG_ATTRIBUTE_IMPL(MechanicalMappings)
 DISPLAYFLAG_ATTRIBUTE_IMPL(Options)
 DISPLAYFLAG_ATTRIBUTE_IMPL(WireFrame)
@@ -123,7 +123,7 @@ SP_CLASS_ATTR(DisplayFlagsData,showCollision)
 SP_CLASS_ATTR(DisplayFlagsData,showCollisionModels)
 SP_CLASS_ATTR(DisplayFlagsData,showBoundingCollisionModels)
 SP_CLASS_ATTR(DisplayFlagsData,showMapping)
-SP_CLASS_ATTR(DisplayFlagsData,showMappings)
+SP_CLASS_ATTR(DisplayFlagsData,showVisualMappings)
 SP_CLASS_ATTR(DisplayFlagsData,showMechanicalMappings)
 SP_CLASS_ATTR(DisplayFlagsData,showOptions)
 SP_CLASS_ATTR(DisplayFlagsData,showWireFrame)

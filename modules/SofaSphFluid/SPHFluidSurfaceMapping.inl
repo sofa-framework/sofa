@@ -409,7 +409,7 @@ void SPHFluidSurfaceMapping<In,Out>::applyJT(const core::MechanicalParams * /*mp
 template <class In, class Out>
 void SPHFluidSurfaceMapping<In,Out>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowMappings()) return;
+    if (!vparams->displayFlags().getShowVisualMappings()) return;
     if (!grid) return;
     grid->draw(vparams);
 

@@ -263,7 +263,7 @@ template <class TIn, class TOut>
 void CatmullRomSplineMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
-    if (!vparams->displayFlags().getShowMappings()) return;
+    if (!vparams->displayFlags().getShowVisualMappings()) return;
 
     const typename Out::VecCoord& xto = this->toModel->read(core::ConstVecCoordId::position())->getValue();
     const typename In::VecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
