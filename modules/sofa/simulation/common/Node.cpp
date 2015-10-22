@@ -816,7 +816,7 @@ void Node::setDefaultVisualContextValue()
     if (getShowBehaviorModels() == -1)          setShowBehaviorModels(false);
     if (getShowCollisionModels() == -1)         setShowCollisionModels(false);
     if (getShowBoundingCollisionModels() == -1) setShowBoundingCollisionModels(false);
-    if (getShowMappings() == -1)                setShowMappings(false);
+    if (getShowVisualMappings() == -1)          setShowVisualMappings(false);
     if (getShowMechanicalMappings() == -1)      setShowMechanicalMappings(false);
     if (getShowForceFields() == -1)             setShowForceFields(false);
     if (getShowInteractionForceFields() == -1)  setShowInteractionForceFields(false);

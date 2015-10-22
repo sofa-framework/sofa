@@ -84,7 +84,7 @@ void MyMappingPendulumInPlane<In, Out>::init()
 template <class In, class Out>
 void MyMappingPendulumInPlane<In, Out>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowMappings()) return;
+    if (!vparams->displayFlags().getShowVisualMappings()) return;
 
     ReadAccessor<Data<VecOutCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
     std::vector< Vector3 > points(out.size());
