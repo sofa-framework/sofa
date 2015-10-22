@@ -171,7 +171,7 @@ public:
                 }
             }
 
-            static unsigned int getLastID()
+            static std::size_t getLastID()
             {
                 return getInstance().idsList.size()-1;
             }
