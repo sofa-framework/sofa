@@ -54,10 +54,10 @@ int TriangleFEMForceFieldClass = core::RegisterObject("Triangular finite element
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_SIMPLE_FEM_API TriangleFEMForceField<Vec3dTypes>;
+template class SOFA_MISC_FEM_API TriangleFEMForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_SIMPLE_FEM_API TriangleFEMForceField<Vec3fTypes>;
+template class SOFA_MISC_FEM_API TriangleFEMForceField<Vec3fTypes>;
 #endif
 
 } // namespace forcefield
