@@ -60,8 +60,11 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
         //*******
         // begin create scene under the root node
 
-        EulerImplicitSolver::SPtr eulerSolver = addNew<EulerImplicitSolver> (getRoot() );
-        CGLinearSolver::SPtr linearSolver = addNew<CGLinearSolver>   (getRoot() );
+        EulerImplicitSolver::SPtr eulerSolver = addNew<EulerImplicitSolver>(getRoot() );
+        CGLinearSolver::SPtr linearSolver = addNew<CGLinearSolver>(getRoot() );
+        linearSolver->f_maxIter.setValue(25);
+        linearSolver->f_tolerance.setValue(1e-5);
+        linearSolver->f_smallDenominatorThreshold.setValue(1e-5);
 
         simulation::Node::SPtr string = massSpringString(
                     getRoot(), // attached to root node
@@ -141,7 +144,10 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
         getRoot()->setGravity(Vec3(0,0,0));
 
         EulerImplicitSolver::SPtr eulerSolver = addNew<EulerImplicitSolver> (getRoot() );
-        CGLinearSolver::SPtr linearSolver = addNew<CGLinearSolver>   (getRoot() );
+        CGLinearSolver::SPtr linearSolver = addNew<CGLinearSolver> (getRoot() );
+        linearSolver->f_maxIter.setValue(25);
+        linearSolver->f_tolerance.setValue(1e-5);
+        linearSolver->f_smallDenominatorThreshold.setValue(1e-5);
 
 
         MechanicalObject<Vec3Types>::SPtr DOF = addNew<MechanicalObject<Vec3Types> >(getRoot(),"DOF");

@@ -111,6 +111,9 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     solver->f_rayleighStiffness.setValue(0.5);
     solver->f_rayleighMass.setValue(0.5);
     CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(SquareNode,"linearSolver");
+    cgLinearSolver->f_maxIter.setValue(25);
+    cgLinearSolver->f_tolerance.setValue(1e-5);
+    cgLinearSolver->f_smallDenominatorThreshold.setValue(1e-5);
 
     // Mass
     typename UniformMass::SPtr mass = modeling::addNew<UniformMass>(SquareNode,"mass");
