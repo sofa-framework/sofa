@@ -552,7 +552,7 @@ void GraphModeler::collapseNode(QTreeWidgetItem* item)
 {
     if (!item) return;
 
-    for(unsigned int i=0; i<item->childCount();i++)
+    for(int i=0; i<item->childCount();i++)
     {
         QTreeWidgetItem* child = item->child(i);
         child->setExpanded( false );
@@ -575,7 +575,7 @@ void GraphModeler::expandNode(QTreeWidgetItem* item)
     item->setExpanded( true );
     if ( item != NULL )
     {
-        for(unsigned int i=0; i<item->childCount();i++)
+        for(int i=0; i<item->childCount();i++)
         {
             QTreeWidgetItem* child = item->child(i);
             child->setExpanded( true );
@@ -615,10 +615,10 @@ void GraphModeler::globalModification()
     getSelectedItems(selection);
 
     helper::vector< QTreeWidgetItem* > hierarchySelection;
-    for (unsigned int i=0; i<selection.size(); ++i) getComponentHierarchy(selection[i], hierarchySelection);
+    for (size_t i=0; i<selection.size(); ++i) getComponentHierarchy(selection[i], hierarchySelection);
 
     helper::vector< Base* > allComponentsSelected;
-    for (unsigned int i=0; i<hierarchySelection.size(); ++i) allComponentsSelected.push_back(getComponent(hierarchySelection[i]));
+    for (size_t i=0; i<hierarchySelection.size(); ++i) allComponentsSelected.push_back(getComponent(hierarchySelection[i]));
 
     sofa::gui::qt::GlobalModification *window=new sofa::gui::qt::GlobalModification(allComponentsSelected, historyManager);
 
@@ -1071,7 +1071,7 @@ bool GraphModeler::isNodeErasable ( BaseNode* node)
 
     //check the item childs
 
-    for(unsigned int i=0 ; i<item->childCount() ; i++)
+    for(int i=0 ; i<item->childCount() ; i++)
     {
          QTreeWidgetItem *child = item->child(i);
         for( it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); ++it)
@@ -1251,8 +1251,8 @@ bool GraphModeler::paste(std::string path)
 
         //Find all the QListViewItem inserted
         helper::vector< QTreeWidgetItem* > insertedItems;
-        QTreeWidgetItem *insertedItem=last;
-        for(unsigned int i=0 ; i<last->parent()->childCount() ; i++)
+//        QTreeWidgetItem *insertedItem=last;
+        for(int i=0 ; i<last->parent()->childCount() ; i++)
         {
             QTreeWidgetItem *insertedItem = last->parent()->child(i);
             if(insertedItem != last)

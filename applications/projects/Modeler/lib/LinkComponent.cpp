@@ -79,7 +79,7 @@ LinkComponent::LinkComponent(GraphModeler* mg, const std::vector<QTreeWidgetItem
     listView->setSelectionMode(QAbstractItemView::SingleSelection);
     //listView->addColumn("");
 
-    QString text;
+//    QString text;
     QTreeWidgetItem *item = NULL;
     QTreeWidgetItem *childItem = NULL;
     QTreeWidgetItem *parentItem = NULL;
@@ -101,7 +101,7 @@ LinkComponent::LinkComponent(GraphModeler* mg, const std::vector<QTreeWidgetItem
 
         childItem = NULL;
 
-        for(unsigned int i=0 ; i<cur->childCount();i++)
+        for(int i=0 ; i<cur->childCount();i++)
         {
             QTreeWidgetItem* curChild = cur->child(i);
 
