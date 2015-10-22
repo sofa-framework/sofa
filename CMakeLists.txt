@@ -171,7 +171,6 @@ install(DIRECTORY modules/sofa/component/typedef/ DESTINATION include/sofa/compo
 
 
 ### Extlibs
-
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
 if(SOFA_BUILD_TESTS)
     # Enable testing features of cmake, like the add_test() command.
