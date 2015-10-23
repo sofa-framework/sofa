@@ -936,7 +936,7 @@ void MeshGenerator<DataTypes>::updateTrianglesInfos( const vector< vector<unsign
 template <class DataTypes>
 void MeshGenerator<DataTypes>::draw()
 {
-    //if ( !getContext()->getShowVisualMappings() ) return;
+    //if ( !getContext()->getShowMappings() ) return;
 
     const double& scaleFactor = showTextScaleFactor.getValue();
 
