@@ -12,6 +12,7 @@
 # of the searched directories, and that contains directives like those:
 #
 # ignore "path/to/file.scn"
+# add "path/to/file.scn"
 # timeout "path/to/file.scn" "number-of-seconds"
 # iterations "path/to/file.scn" "number-of-iterations"
 
@@ -159,6 +160,8 @@ create-directories() {
     while read path; do
         rm -f "$output_dir/$path/ignore-patterns.txt"
         touch "$output_dir/$path/ignore-patterns.txt"
+        rm -f "$output_dir/$path/add-patterns.txt"
+        touch "$output_dir/$path/add-patterns.txt"
         list-scenes "$src_dir/$path" > "$output_dir/$path/scenes.txt"
         while read scene; do
             mkdir -p "$output_dir/$path/$scene"
@@ -183,6 +186,17 @@ parse-options-files() {
                                 get-arg "$args" 1 >> "$output_dir/$path/ignore-patterns.txt"
                             else
                                 echo "$path/.scene-tests: warning: 'ignore' expects one argument: ignore <pattern>" | log
+                            fi
+                            ;;
+			add)
+                            if [[ "$(count-args "$args")" = 1 ]]; then
+                                scene="$(get-arg "$args" 1)"
+                                echo $scene >> "$output_dir/$path/add-patterns.txt"
+                                mkdir -p "$output_dir/$path/$scene"
+                                echo 30 > "$output_dir/$path/$scene/timeout.txt" # Default timeout, in seconds
+                                echo 100 > "$output_dir/$path/$scene/iterations.txt" # Default number of iterations
+                            else
+                                echo "$path/.scene-tests: warning: 'add' expects one argument: add <pattern>" | log
                             fi
                             ;;
                         timeout)
@@ -220,7 +234,7 @@ parse-options-files() {
         fi
     done < "$output_dir/directories.txt"
 
-    # echo "Listing ignored scenes."
+    # echo "Listing ignored and added scenes."
     while read path; do
         grep -xf "$output_dir/$path/ignore-patterns.txt" \
             "$output_dir/$path/scenes.txt" \
@@ -232,8 +246,19 @@ parse-options-files() {
         else
             cp  "$output_dir/$path/scenes.txt" "$output_dir/$path/tested-scenes.txt"
         fi
-
+	
         sed -e "s:^:$path/:" "$output_dir/$path/ignored-scenes.txt" >> "$output_dir/all-ignored-scenes.txt"
+
+        # Add scenes
+        cp "$output_dir/$path/add-patterns.txt" "$output_dir/$path/added-scenes.txt"
+        if [ -s "$output_dir/$path/add-patterns.txt" ]; then
+            cat "$output_dir/$path/add-patterns.txt" \
+                >> "$output_dir/$path/tested-scenes.txt" || true
+            cat "$output_dir/$path/add-patterns.txt" \
+                >> "$output_dir/$path/scenes.txt" || true
+        fi
+
+        sed -e "s:^:$path/:" "$output_dir/$path/added-scenes.txt" >> "$output_dir/all-added-scenes.txt"
         sed -e "s:^:$path/:" "$output_dir/$path/tested-scenes.txt" >> "$output_dir/all-tested-scenes.txt"
     done < "$output_dir/directories.txt"
 }

@@ -205,7 +205,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix()
 
     //index to add in temporary scenes created by the Modeler
     count='0';
-    int menuIndex=4;
+//    int menuIndex=4;
     isPasteReady=false;
     pasteAction->setEnabled(false);
     fileMenu->removeAction(fooAction);
@@ -442,7 +442,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix()
     }
     //----------------------------------------------------------------------
     //Configure Recently Opened Menu
-    const int indexRecentlyOpened=fileMenu->actions().count()-2;
+//    const int indexRecentlyOpened=fileMenu->actions().count()-2;
     QMenu *recentMenu = recentlyOpenedFilesManager.createWidget(this);
     //TODOQT5
     fileMenu->addMenu(recentMenu /*,indexRecentlyOpened,indexRecentlyOpened */);

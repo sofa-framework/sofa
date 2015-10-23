@@ -32,7 +32,8 @@ def xml_insert(sofanode, xmlnode):
         return sofanode.createObject(xmlnode.tag, **xmlnode.attrib)
         
 def xml_load(filename):
-    return ET.parse(filename).getroot()
+    
+    return ET.parse('{0}/{1}'.format(path(), filename)).getroot()
 
 
 import sys
@@ -70,4 +71,8 @@ def contacts(node, **kwargs):
     node.createObject('DefaultContactManager',
                       response = kwargs.get('response',
                                             'FrictionCompliantContact'))
-    
+
+import sys
+import os
+def path():
+    return os.path.dirname(os.path.abspath(sys.modules['__main__'].__file__))

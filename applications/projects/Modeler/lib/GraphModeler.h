@@ -139,7 +139,7 @@ public:
         if(item->childCount() < 1)
             return;
 
-        for(unsigned int i=0 ; i<item->childCount() ; i++)
+        for(int i=0 ; i<item->childCount() ; i++)
         {
             item = item->child(i);
             getComponentHierarchy(item, hierarchy);

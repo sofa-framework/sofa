@@ -60,6 +60,8 @@ void CenterOfMassMapping<TIn, TOut>::init()
     //compute the total mass of the object
     for (unsigned int i=0, size = this->fromModel->getSize() ; i< size; i++)
         totalMass += masses->getElementMass(i);
+
+    Inherit::init();
 }
 
 

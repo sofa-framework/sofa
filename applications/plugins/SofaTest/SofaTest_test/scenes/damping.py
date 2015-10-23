@@ -116,7 +116,7 @@ def createScene(node):
     # angular damping test
     angularNode = node.createChild('rotation')
     angularNode.createObject('EulerImplicit',name='odesolver',rayleighStiffness=0,rayleighMass=0)
-    angularNode.createObject('CGLinearSolver',name = 'numsolver',precision=1e-10,threshold=1e-10,iterations=1000)
+    angularNode.createObject('CGLinearSolver',name = 'numsolver',tolerance=1e-10,threshold=1e-10,iterations=1000)
     angularNode.createObject('MechanicalObject', template="Rigid", name="dofs", position="0 0 0 0 0 0 1", velocity="0 0 0 "+str(INITIAL_VELOCITY)+" 0 0")
     angularNode.createObject('UniformMass', filename=path+"/damping_mass.rigid")
     angularNode.createObject('UniformVelocityDampingForceField', dampingCoefficient=DAMPING_COEF)
@@ -126,7 +126,7 @@ def createScene(node):
     # translation damping test
     translationNode = node.createChild('translation')
     translationNode.createObject('EulerImplicit',name='odesolver',rayleighStiffness=0,rayleighMass=0)
-    translationNode.createObject('CGLinearSolver',name = 'numsolver',precision=1e-10,threshold=1e-10,iterations=1000)
+    translationNode.createObject('CGLinearSolver',name = 'numsolver',tolerance=1e-10,threshold=1e-10,iterations=1000)
     translationNode.createObject('MechanicalObject', template="Rigid", name="dofs", position="0 0 0 0 0 0 1", velocity=str(INITIAL_VELOCITY)+" 0 0  0 0 0")
     translationNode.createObject('UniformMass', filename=path+"/damping_mass.rigid")
     translationNode.createObject('UniformVelocityDampingForceField', dampingCoefficient=DAMPING_COEF)

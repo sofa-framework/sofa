@@ -105,6 +105,12 @@ will define the SOFA_GUI_INTERACTION macro)." OFF)
     if(SOFAGUI_QGLVIEWER)
         set(SOFA_GUI_QGLVIEWER 1) # cmakedefine
     endif()
+
+   ## QWT
+   option(SOFA_ENABLE_QWT "Enable QWT for Qt GUIs")
+   if(SOFA_ENABLE_QWT)
+        set(SOFA_HAVE_QWT 1) # cmakedefine
+    endif()
 endif()
 
 ## SofaGuiMain
