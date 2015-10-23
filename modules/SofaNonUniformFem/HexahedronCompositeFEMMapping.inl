@@ -220,7 +220,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 // 	}
 
 
-
+    Inherit::init();
 
 }
 
