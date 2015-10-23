@@ -31,18 +31,14 @@
 
 #include <fstream>
 
-#ifdef SOFA_QT4
-#include "q3filedialog.h"
-#else
-#include "qlistview.h"
-#include "qcheckbox.h"
-#include "qpushbutton.h"
-#include "qlineedit.h"
-#include "qfiledialog.h"
-#include "qheader.h"
-#include "qcombobox.h"
-#include "qradiobutton.h"
-#endif
+#include <QFileDialog>
+#include <QListView>
+#include <QCheckBox>
+#include <QPushButton>
+#include <QLineEdit>
+#include <QHeaderView>
+#include <QComboBox>
+#include <QRadioButton>
 
 namespace sofa
 {
@@ -52,12 +48,6 @@ namespace gui
 
 namespace qt
 {
-
-#ifndef SOFA_QT4
-typedef QListView Q3ListView;
-typedef QListViewItem Q3ListViewItem;
-typedef QFileDialog Q3FileDialog;
-#endif
 
 GenGraphForm::GenGraphForm()
     : currentTask(NULL), settingFilter(false)
@@ -196,30 +186,32 @@ void GenGraphForm::changeFilter()
     {
         if (it->second == filt)
         {
-            presetFilter->setCurrentText(it->first.c_str());
+            int index = presetFilter->findText(it->first.c_str());
+            presetFilter->setCurrentIndex(index);
             return;
         }
     }
-    presetFilter->setCurrentText("");
+    int index = presetFilter->findText("");
+    presetFilter->setCurrentIndex(index);
 }
 
 QString removeFileExt(const QString &s)
 {
-    int ext = s.findRev('.');
+    int ext = s.lastIndexOf('.');
     if (ext==-1) return s;
-    if (s.find('/', ext+1)!=-1 || s.find('\\', ext+1)!=-1)
+    if (s.indexOf('/', ext+1) != -1|| s.indexOf('\\', ext+1) != -1)
         return s;
     return s.left(ext);
 }
 
 void GenGraphForm::doBrowse()
 {
-    QString s = Q3FileDialog::getSaveFileName(
-            filename->text(),
-            "DOT Graph (*.dot)",
+    QString s = QFileDialog::getSaveFileName(
             this,
-            "export graph file dialog",
-            "Choose a file to save" );
+            "Choose a file to save",
+//            "export graph file dialog",
+            filename->text(),
+            "DOT Graph (*.dot)" );
     if (s.length()>0)
     {
         if (removeFileExt(s)==s) // no extension specified
@@ -246,53 +238,53 @@ void GenGraphForm::doExport()
         dotfile += ".dot";
 
     std::ofstream fdot;
-    fdot.open(dotfile, std::ofstream::out | std::ofstream::trunc);
+    fdot.open(dotfile.toStdString().c_str(), std::ofstream::out | std::ofstream::trunc);
     if (!fdot.is_open())
     {
-        qFatal("Output to %s failed.\n",(const char*)dotfile);
+        qFatal("Output to %s failed.\n",dotfile.toStdString().c_str());
         return;
     }
     {
         sofa::simulation::tree::ExportDotVisitor act(sofa::core::ExecParams::defaultInstance(), &fdot);
-        act.showNode = this->showNodes->isOn();
-        act.showObject = this->showObjects->isOn();
-        act.showBehaviorModel = this->showBehaviorModels->isOn();
-        act.showCollisionModel = this->showCollisionModels->isOn();
-        act.showVisualModel = this->showVisualModels->isOn();
-        act.showMapping = this->showMappings->isOn();
-        act.showContext = this->showContext->isOn();
-        act.showCollisionPipeline = this->showCollisionPipeline->isOn();
-        act.showSolver = this->showSolvers->isOn();
-        act.showMechanicalState = this->showMechanicalStates->isOn();
-        act.showForceField = this->showForceFields->isOn();
-        act.showInteractionForceField = this->showInteractionForceFields->isOn();
-        act.showConstraint = this->showConstraints->isOn();
-        act.showMass = this->showMass->isOn();
-        act.showTopology = this->showTopology->isOn();
-        act.showMechanicalMapping = this->showMechanicalMappings->isOn();
-        act.labelNodeName = this->labelNodeName->isOn();
-        act.labelNodeClass = this->labelNodeClass->isOn();
-        act.labelObjectName = this->labelObjectName->isOn();
-        act.labelObjectClass = this->labelObjectClass->isOn();
+        act.showNode = this->showNodes->isChecked();
+        act.showObject = this->showObjects->isChecked();
+        act.showBehaviorModel = this->showBehaviorModels->isChecked();
+        act.showCollisionModel = this->showCollisionModels->isChecked();
+        act.showVisualModel = this->showVisualModels->isChecked();
+        act.showMapping = this->showMappings->isChecked();
+        act.showContext = this->showContext->isChecked();
+        act.showCollisionPipeline = this->showCollisionPipeline->isChecked();
+        act.showSolver = this->showSolvers->isChecked();
+        act.showMechanicalState = this->showMechanicalStates->isChecked();
+        act.showForceField = this->showForceFields->isChecked();
+        act.showInteractionForceField = this->showInteractionForceFields->isChecked();
+        act.showConstraint = this->showConstraints->isChecked();
+        act.showMass = this->showMass->isChecked();
+        act.showTopology = this->showTopology->isChecked();
+        act.showMechanicalMapping = this->showMechanicalMappings->isChecked();
+        act.labelNodeName = this->labelNodeName->isChecked();
+        act.labelNodeClass = this->labelNodeClass->isChecked();
+        act.labelObjectName = this->labelObjectName->isChecked();
+        act.labelObjectClass = this->labelObjectClass->isChecked();
         graph->executeVisitor(&act);
     }
     fdot.close();
 
     QStringList argv0;
-    if (layoutDirV->isOn())
+    if (layoutDirV->isChecked())
         argv0 << "dot" << "-Grankdir=TB";
-    else if (layoutDirH->isOn())
+    else if (layoutDirH->isChecked())
         argv0 << "dot" << "-Grankdir=LR";
-    else if (layoutSpring->isOn())
+    else if (layoutSpring->isChecked())
         argv0 << "neato";
-    else if (layoutRadial->isOn())
+    else if (layoutRadial->isChecked())
         argv0 << "twopi";
 
     bool exp = false;
 
     exportedFile = dotfile;
 
-    if (genPNG->isOn())
+    if (genPNG->isChecked())
     {
         QStringList argv = argv0;
         argv << "-Tpng" << "-o" << basefile+".png";
@@ -305,7 +297,7 @@ void GenGraphForm::doExport()
         }
     }
 
-    if (genPS->isOn())
+    if (genPS->isChecked())
     {
         QStringList argv = argv0;
         argv << "-Tps" << "-o" << basefile+".ps";
@@ -318,7 +310,7 @@ void GenGraphForm::doExport()
         }
     }
 
-    if (genFIG->isOn())
+    if (genFIG->isChecked())
     {
         QStringList argv = argv0;
         argv << "-Tfig" << "-o" << basefile+".fig";
@@ -331,7 +323,7 @@ void GenGraphForm::doExport()
         }
     }
 
-    if (genSVG->isOn())
+    if (genSVG->isChecked())
     {
         QStringList argv = argv0;
         argv << "-Tsvg" << "-o" << basefile+".svg";
@@ -351,24 +343,18 @@ void GenGraphForm::doDisplay()
 {
     if (exportedFile==QString("")) return;
 
-    std::cout << "OPEN " << (const char*)exportedFile << std::endl;
+    std::cout << "OPEN " << exportedFile.toStdString() << std::endl;
 
 #ifdef WIN32
-    ShellExecuteA(NULL, "open", exportedFile, NULL, NULL, SW_SHOWNORMAL);
+    ShellExecuteA(NULL, "open", exportedFile.toStdString().c_str(), NULL, NULL, SW_SHOWNORMAL);
 #else
     QStringList argv;
     argv << "display" << exportedFile;
-#ifdef SOFA_QT4
+
     QString program = argv.front();
     argv.pop_front();
     //QProcess::startDetached(program, argv); //QString("start \"\"\"")+exportedFile+QString("\"\"\""));
     QProcess::startDetached(program, argv); //QString("start \"\"\"")+exportedFile+QString("\"\"\""));
-#else
-    QProcess* p = new QProcess(argv, this);
-    p->setCommunication(0);
-    connect(p,SIGNAL(processExited()),p,SLOT(deleteLater()));
-    p->start();
-#endif
 #endif
 }
 
@@ -406,11 +392,7 @@ void GenGraphForm::taskFinished()
 {
     std::cout << "TASK FINISHED" << std::endl;
     if (currentTask == NULL) return;
-//#ifdef SOFA_QT4
-//	if (currentTask->state() != QProcess::NotRunning) return;
-//#else
-//	if (currentTask->isRunning()) return;
-//#endif
+
     delete currentTask;
     currentTask = NULL;
     if (tasks.empty())
@@ -430,20 +412,14 @@ void GenGraphForm::runTask()
     tasks.pop_front();
     exportButton->setText("&Kill");
     QString cmd = argv.join(QString(" "));
-    std::cout << "STARTING TASK " << (const char*)cmd << std::endl;
-#ifdef SOFA_QT4
+    std::cout << "STARTING TASK " << cmd.toStdString() << std::endl;
+
     QProcess* p = new QProcess(this);
     QString program = argv.front();
     argv.pop_front();
     p->setReadChannelMode(QProcess::ForwardedChannels);
     connect(p,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(taskFinished()));
     p->start(program, argv);
-#else
-    QProcess* p = new QProcess(argv, this);
-    p->setCommunication(0);
-    connect(p,SIGNAL(processExited()),this,SLOT(taskFinished()));
-    p->start();
-#endif
     currentTask = p;
 }
 
@@ -451,7 +427,7 @@ void GenGraphForm::setFilter()
 {
     QString fname = presetFilter->currentText();
     if (fname == "") return;
-    std::string name = (const char*)fname;
+    std::string name = fname.toStdString();
     if (presetFilters.count(name) > 0)
     {
         const std::set<std::string> & filt = presetFilters[name];
@@ -474,7 +450,8 @@ void GenGraphForm::setFilter()
         this->showMechanicalMappings->setChecked(filt.find("showMechanicalMappings")!=filt.end());
         settingFilter = false;
         displayButton->setEnabled(false);
-        presetFilter->setCurrentText(fname);
+        int index = presetFilter->findText(fname);
+        presetFilter->setCurrentIndex(index);
     }
     else
     {
@@ -486,22 +463,22 @@ void GenGraphForm::setFilter()
 std::set<std::string> GenGraphForm::getCurrentFilter()
 {
     std::set<std::string> filt;
-    if (this->showNodes->isOn()) filt.insert("showNodes");
-    if (this->showObjects->isOn()) filt.insert("showObjects");
-    if (this->showBehaviorModels->isOn()) filt.insert("showBehaviorModels");
-    if (this->showCollisionModels->isOn()) filt.insert("showCollisionModels");
-    if (this->showVisualModels->isOn()) filt.insert("showVisualModels");
-    if (this->showMappings->isOn()) filt.insert("showMappings");
-    if (this->showContext->isOn()) filt.insert("showContext");
-    if (this->showCollisionPipeline->isOn()) filt.insert("showCollisionPipeline");
-    if (this->showSolvers->isOn()) filt.insert("showSolvers");
-    if (this->showMechanicalStates->isOn()) filt.insert("showMechanicalStates");
-    if (this->showForceFields->isOn()) filt.insert("showForceFields");
-    if (this->showInteractionForceFields->isOn()) filt.insert("showInteractionForceFields");
-    if (this->showConstraints->isOn()) filt.insert("showConstraints");
-    if (this->showMass->isOn()) filt.insert("showMass");
-    if (this->showTopology->isOn()) filt.insert("showTopology");
-    if (this->showMechanicalMappings->isOn()) filt.insert("showMechanicalMappings");
+    if (this->showNodes->isChecked()) filt.insert("showNodes");
+    if (this->showObjects->isChecked()) filt.insert("showObjects");
+    if (this->showBehaviorModels->isChecked()) filt.insert("showBehaviorModels");
+    if (this->showCollisionModels->isChecked()) filt.insert("showCollisionModels");
+    if (this->showVisualModels->isChecked()) filt.insert("showVisualModels");
+    if (this->showMappings->isChecked()) filt.insert("showMappings");
+    if (this->showContext->isChecked()) filt.insert("showContext");
+    if (this->showCollisionPipeline->isChecked()) filt.insert("showCollisionPipeline");
+    if (this->showSolvers->isChecked()) filt.insert("showSolvers");
+    if (this->showMechanicalStates->isChecked()) filt.insert("showMechanicalStates");
+    if (this->showForceFields->isChecked()) filt.insert("showForceFields");
+    if (this->showInteractionForceFields->isChecked()) filt.insert("showInteractionForceFields");
+    if (this->showConstraints->isChecked()) filt.insert("showConstraints");
+    if (this->showMass->isChecked()) filt.insert("showMass");
+    if (this->showTopology->isChecked()) filt.insert("showTopology");
+    if (this->showMechanicalMappings->isChecked()) filt.insert("showMechanicalMappings");
     return filt;
 }
 

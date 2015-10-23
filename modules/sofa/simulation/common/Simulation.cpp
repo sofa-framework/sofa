@@ -45,9 +45,11 @@
 #include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
 #include <sofa/simulation/common/UpdateLinksVisitor.h>
+#include <sofa/simulation/common/init.h>
 
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/init.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -86,6 +88,10 @@ Node::SPtr Simulation::sRoot = NULL;
 using namespace sofa::defaulttype;
 Simulation::Simulation()
 {
+    // Safety check; it could be elsewhere, but here is a good place, I guess.
+    if (!sofa::simulation::common::isInitialized())
+        sofa::helper::printUninitializedLibraryWarning("SofaSimulationCommon", "sofa::simulation::common::init()");
+
     name.setValue("Simulation");
 }
 
@@ -288,7 +294,10 @@ void Simulation::reset ( Node* root )
         root->setTime(0.);
     UpdateSimulationContextVisitor(sofa::core::ExecParams::defaultInstance()).execute(root);
 
-    root->execute<CleanupVisitor>(params);
+//    root->execute<CleanupVisitor>(params);
+    // by definition cleanup() MUST only be called right before destroying the object
+    // if for some reason some components need to do something, it has to be done in reset or storeResetState
+
     root->execute<ResetVisitor>(params);
     sofa::core::MechanicalParams mparams(*params);
     root->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);

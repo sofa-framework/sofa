@@ -38,6 +38,7 @@ namespace component
 namespace projectiveconstraintset
 {
 
+template class FixedConstraint<gpu::cuda::CudaVec1fTypes>;
 
 template class FixedConstraint<gpu::cuda::CudaVec3fTypes>;
 template class FixedConstraint<gpu::cuda::CudaVec3f1Types>;
@@ -64,6 +65,7 @@ namespace cuda
 SOFA_DECL_CLASS(CudaFixedConstraint)
 
 int FixedConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< component::projectiveconstraintset::FixedConstraint<CudaVec1fTypes> >()
         .add< component::projectiveconstraintset::FixedConstraint<CudaVec3fTypes> >()
         .add< component::projectiveconstraintset::FixedConstraint<CudaVec3f1Types> >()
         .add< component::projectiveconstraintset::FixedConstraint<CudaVec6fTypes> >()

@@ -1,7 +1,8 @@
 #ifndef DISTANCEZONEIMAGETOOLBOXACTION_H
 #define DISTANCEZONEIMAGETOOLBOXACTION_H
 
-#include <QtGui>
+#include <QPushButton>
+#include <QLineEdit>
 #include <QAction>
 #include <QGraphicsLineItem>
 
@@ -10,7 +11,7 @@
 #include "../labelimagetoolboxaction.h"
 //#include "zonegeneratorimagetoolbox.h"
 
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 
 namespace sofa
 {

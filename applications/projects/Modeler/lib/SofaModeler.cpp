@@ -51,6 +51,7 @@
 #include <QVBoxLayout>
 #include <QDesktopServices>
 #include <QSettings>
+#include <QMimeData>
 
 using namespace sofa::core;
 
@@ -73,68 +74,68 @@ void SofaModeler::createActions()
 
     newTabAction = new QAction(QIcon(":/image0.png"), "New &Tab", this);
     newTabAction->setShortcut(QString("Ctrl+T"));
-    connect(newTabAction, SIGNAL(activated()), this, SLOT(newTab()));
+    connect(newTabAction, SIGNAL(triggered()), this, SLOT(newTab()));
 
     closeTabAction = new QAction(QIcon(":/imageClose.png"), "&Close Tab", this);
     closeTabAction->setShortcut(QString("Ctrl+W"));
-    connect(closeTabAction, SIGNAL(activated()), this, SLOT(closeTab()));
+    connect(closeTabAction, SIGNAL(triggered()), this, SLOT(closeTab()));
 
     clearTabAction = new QAction(QIcon(":/image0.png"), "Clear", this);
     clearTabAction->setShortcut(QString("Ctrl+N"));
-    connect(clearTabAction, SIGNAL(activated()), this, SLOT(clearTab()));
+    connect(clearTabAction, SIGNAL(triggered()), this, SLOT(clearTab()));
 
     openAction = new QAction(QIcon(":/image1.png"), "&Open...", this);
     openAction->setShortcut(QString("Ctrl+O"));
-    connect(openAction, SIGNAL(activated()), this, SLOT(fileOpen()));
+    connect(openAction, SIGNAL(triggered()), this, SLOT(fileOpen()));
 
     saveAction = new QAction(QIcon(":/image3.png"), "&Save", this);
     saveAction->setShortcut(QString("Ctrl+S"));
-    connect(saveAction, SIGNAL(activated()), this, SLOT(fileSave()));
+    connect(saveAction, SIGNAL(triggered()), this, SLOT(fileSave()));
 
     saveAsAction = new QAction("Save &As", this);
-    connect(saveAsAction, SIGNAL(activated()), this, SLOT(fileSaveAs()));
+    connect(saveAsAction, SIGNAL(triggered()), this, SLOT(fileSaveAs()));
 
     reloadAction = new QAction("Reload", this);
-    connect(reloadAction, SIGNAL(activated()), this, SLOT(fileReload()));
+    connect(reloadAction, SIGNAL(triggered()), this, SLOT(fileReload()));
 
     exitAction = new QAction("E&xit", this);
-    connect(exitAction, SIGNAL(activated()), this, SLOT(exit()));
+    connect(exitAction, SIGNAL(triggered()), this, SLOT(exit()));
 
     undoAction = new QAction(QIcon(":/image5.png"), "&Undo", this);
     undoAction->setEnabled(false);
     undoAction->setShortcut(QString("Ctrl+Z"));
-    connect(undoAction, SIGNAL(activated()), this, SLOT(undo()));
+    connect(undoAction, SIGNAL(triggered()), this, SLOT(undo()));
 
     redoAction = new QAction(QIcon(":/image6.png"), "&Redo", this);
     redoAction->setEnabled(false);
     redoAction->setShortcut(QString("Ctrl+Y"));
-    connect(redoAction, SIGNAL(activated()), this, SLOT(redo()));
+    connect(redoAction, SIGNAL(triggered()), this, SLOT(redo()));
 
     cutAction = new QAction(QIcon(":/image7.png"), "&Cut", this);
     cutAction->setShortcut(QString("Ctrl+X"));
-    connect(cutAction, SIGNAL(activated()), this, SLOT(cut()));
+    connect(cutAction, SIGNAL(triggered()), this, SLOT(cut()));
 
     copyAction = new QAction(QIcon(":/image8.png"), "C&opy", this);
     copyAction->setShortcut(QString("Ctrl+C"));
-    connect(copyAction, SIGNAL(activated()), this, SLOT(copy()));
+    connect(copyAction, SIGNAL(triggered()), this, SLOT(copy()));
 
     pasteAction = new QAction(QIcon(":/image9.png"), "&Paste", this);
     pasteAction->setEnabled(false);
     pasteAction->setShortcut(QString("Ctrl+V"));
-    connect(pasteAction, SIGNAL(activated()), this, SLOT(paste()));
+    connect(pasteAction, SIGNAL(triggered()), this, SLOT(paste()));
 
     openPluginManagerAction = new QAction("Plugin Manager", this);
-    connect(openPluginManagerAction, SIGNAL(activated()), this, SLOT(showPluginManager()));
+    connect(openPluginManagerAction, SIGNAL(triggered()), this, SLOT(showPluginManager()));
 
     runInSofaAction = new QAction(QIcon(":/image2.png"), "&Run in SOFA", this);
     runInSofaAction->setShortcut(QString("Ctrl+R"));
-    connect(runInSofaAction, SIGNAL(activated()), this, SLOT(runInSofa()));
+    connect(runInSofaAction, SIGNAL(triggered()), this, SLOT(runInSofa()));
 
     openTutorialsAction = new QAction(QIcon(":/image11.png"), "Launch the &Tutorials" ,this);
-    connect(openTutorialsAction, SIGNAL(activated()), this, SLOT(openTutorial()));
+    connect(openTutorialsAction, SIGNAL(triggered()), this, SLOT(openTutorial()));
 
     exportSofaClassesAction = new QAction("Export Sofa Classes", this);
-    connect(exportSofaClassesAction, SIGNAL(activated()), this, SLOT(exportSofaClasses()));
+    connect(exportSofaClassesAction, SIGNAL(triggered()), this, SLOT(exportSofaClasses()));
 }
 
 void SofaModeler::createMenu()
@@ -219,10 +220,11 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix()
     presetFile = sofa::helper::system::DataRepository.getFile ( presetFile );
 
 
-    Q3PopupMenu *openTutorial = new Q3PopupMenu(this);
-    this->menuBar()->insertItem(tr(QString("&Tutorials")), openTutorial, menuIndex++);
-    openTutorialsAction->addTo(openTutorial);
-    openTutorialsAction->addTo(toolBar);
+    QMenu *openTutorial = new QMenu(this);
+    openTutorial->setTitle(QString(tr("&Tutorials")));
+    this->menuBar()->addMenu(/* QString(tr("&Tutorials")), */ openTutorial /*, menuIndex++ */);
+    openTutorial->addAction(openTutorialsAction);
+    toolBar->addAction(openTutorialsAction);
 
 
     //Find all the scene files in examples directory
@@ -244,13 +246,14 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix()
     addDockWidget(Qt::LeftDockWidgetArea, dockLibrary);
 
 
-
-    QWidget *leftPartWidget = new QWidget( dockLibrary, "LibraryLayout");
+    QWidget *leftPartWidget = new QWidget( dockLibrary);
+    leftPartWidget->setObjectName("LibraryLayout");
     QVBoxLayout *leftPartLayout = new QVBoxLayout(leftPartWidget);
 
     //----------------------------------------------------------------------
     //Add a Filter to the Library
-    QWidget *filterContainer = new QWidget( leftPartWidget, "filterContainer" );
+    QWidget *filterContainer = new QWidget( leftPartWidget );
+    filterContainer->setObjectName("filterContainer");
     QHBoxLayout *filterLayout = new QHBoxLayout(filterContainer);
     leftPartLayout->addWidget(filterContainer);
     //--> Label
@@ -276,7 +279,8 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix()
 
     //----------------------------------------------------------------------
     //Add the button to create Node
-    QPushButton *GNodeButton = new QPushButton( leftPartWidget, "GNodeButton");
+    QPushButton *GNodeButton = new QPushButton( leftPartWidget);
+    GNodeButton->setObjectName("GNodeButton");
     GNodeButton->setText("Node");
     leftPartLayout->addWidget(GNodeButton);
     connect( GNodeButton, SIGNAL( pressed() ),  this, SLOT( pressedGNodeButton() ) );
@@ -288,7 +292,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix()
     connect(l, SIGNAL( componentDragged( std::string, std::string, std::string, ClassEntry::SPtr) ),
             this, SLOT( componentDraggedReception( std::string, std::string, std::string, ClassEntry::SPtr) ));
 
-    for (unsigned int i=0; i<exampleQString.size(); ++i) exampleFiles.push_back(exampleQString[i].ascii());
+    for (unsigned int i=0; i<exampleQString.size(); ++i) exampleFiles.push_back(exampleQString[i].toStdString());
 
     //----------------------------------------------------------------------
     //Create the information widget
@@ -319,7 +323,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix()
     connect( sceneTab, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
 #endif
 
-    connect( sceneTab, SIGNAL(currentChanged( QWidget*)), this, SLOT( changeCurrentScene( QWidget*)));
+    connect( sceneTab, SIGNAL(currentChanged( int)), this, SLOT( changeCurrentScene( int)));
 
     //----------------------------------------------------------------------
     //Create the properties visualization
@@ -353,18 +357,21 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix()
 
     //----------------------------------------------------------------------
     //Add menu runSofa
-    Q3PopupMenu *runSofaMenu = new Q3PopupMenu(this);
-    this->menuBar()->insertItem(tr(QString("&RunSofa")), runSofaMenu, menuIndex++);
+    QMenu *runSofaMenu = new QMenu(this);
+    runSofaMenu->setTitle(QString(tr("&RunSofa")));
+    this->menuBar()->addMenu(runSofaMenu /*, menuIndex++ */);
 
-    runInSofaAction->addTo(runSofaMenu);
+    runSofaMenu->addAction(runInSofaAction);
 
-    runInSofaAction->addTo(toolBar);
+    toolBar->addAction(runInSofaAction);
 
-    runSofaMenu->insertItem("Change Sofa Binary...", this, SLOT( changeSofaBinary()));
+    runSofaMenu->addAction("Change Sofa Binary...", this, SLOT( changeSofaBinary()));
     sofaBinary=std::string();
 
-    runSofaGUI = new Q3PopupMenu(this);
-    runSofaMenu->insertItem(QIconSet(), tr("Viewer"), runSofaGUI);
+
+    runSofaGUI = new QMenu(this);
+    runSofaGUI->setTitle(tr("Viewer"));
+    runSofaMenu->addMenu(runSofaGUI);
 
     updateViewerList();
 
@@ -372,15 +379,17 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix()
 
     //----------------------------------------------------------------------
     //Add menu Preset
-    preset = new Q3PopupMenu(this);
+    preset = new QMenu(this);
     // this->menuBar()->insertItem(tr(QString("&Presets")), preset, menuIndex++);
 
     //----------------------------------------------------------------------
     //Add menu Window: to quickly find an opened simulation
-    windowMenu = new Q3PopupMenu(this);
-    this->menuBar()->insertItem(tr(QString("&Scenes")), windowMenu, menuIndex++);
-
-    connect(windowMenu, SIGNAL(activated(int)), this, SLOT( changeCurrentScene(int)));
+    windowMenu = new QMenu(this);
+    windowMenu->setTitle(QString(tr("&Scenes")));
+    //windowMenu->addAction(QIcon(), QString(tr("&Scenes")),this, ));
+    this->menuBar()->addMenu(windowMenu);
+    windowMenu->addSeparator();
+    connect(windowMenu, SIGNAL(triggered(QAction*)), this, SLOT( changeCurrentScene(QAction*)));
 
 
 
@@ -418,24 +427,26 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix()
     while(it_preset != presetArchitecture.end())
     {
         std::string directoryName = it_preset->first;
-        Q3PopupMenu* directory = new Q3PopupMenu(this);
-        connect( directory, SIGNAL(activated(int)), this, SLOT(loadPreset(int)));
-        preset->insertItem(QIconSet(), tr( it_preset->first.c_str()), directory);
+        QMenu* directory = new QMenu(this);
+        connect( directory, SIGNAL(triggered(QAction*)), this, SLOT(loadPreset(QAction*)));
+        directory->setTitle( tr( it_preset->first.c_str()));
+        preset->addMenu(directory);
 
         std::map< std::string, std::string > &mPreset=mapPreset[directory];
 
         for (unsigned int i=0; i<presetArchitecture.count(directoryName); i++,it_preset++)
         {
-            directory->insertItem(it_preset->second.first.c_str());//, this, SLOT(loadPreset()) );
+            directory->addAction(it_preset->second.first.c_str());//, this, SLOT(loadPreset()) );
             mPreset.insert(it_preset->second);
         }
     }
     //----------------------------------------------------------------------
     //Configure Recently Opened Menu
-    const int indexRecentlyOpened=fileMenu->count()-2;
+    const int indexRecentlyOpened=fileMenu->actions().count()-2;
     QMenu *recentMenu = recentlyOpenedFilesManager.createWidget(this);
-    fileMenu->insertItem(QPixmap(),recentMenu,indexRecentlyOpened,indexRecentlyOpened);
-    connect(recentMenu, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
+    //TODOQT5
+    fileMenu->addMenu(recentMenu /*,indexRecentlyOpened,indexRecentlyOpened */);
+    connect(recentMenu, SIGNAL(triggered(QAction*)), this, SLOT(fileRecentlyOpened(QAction*)));
 
 
     //----------------------------------------------------------------------
@@ -447,7 +458,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix()
     //Configure the Tutorials
     tuto=0;
     displayHelpModeler();
-};
+}
 
 void SofaModeler::updateViewerList()
 {
@@ -455,7 +466,7 @@ void SofaModeler::updateViewerList()
     std::vector<QAction*>::iterator it;
     for( it = listActionGUI.begin(); it != listActionGUI.end(); ++it)
     {
-        (*it)->removeFrom(runSofaGUI);
+        runSofaGUI->removeAction(*it);
     }
     listActionGUI.clear();
 
@@ -467,22 +478,24 @@ void SofaModeler::updateViewerList()
 
     //Insert default GUI
     {
-        QAction *act= new QAction(this, QString("default")+QString("Action"));
+        QAction *act= new QAction(QIcon(), QString("default")+QString("Action"), this);
         act->setText( "default");
-        act->setToggleAction( true ); act->setOn(true);
-        act->addTo( runSofaGUI);
+        //act->setToggleAction( true );
+        act->setCheckable(true);
+        act->setChecked(true);
+        runSofaGUI->addAction(act);
         listActionGUI.push_back(act);
-        connect(act, SIGNAL( activated()), this, SLOT( GUIChanged() ));
+        connect(act, SIGNAL( triggered()), this, SLOT( GUIChanged() ));
     }
     //Add content of GUI Factory
     for (unsigned int i=0; i<listGUI.size(); ++i)
     {
-        QAction *act= new QAction(this, QString(listGUI[i].c_str())+QString("Action"));
+        QAction *act= new QAction(QIcon(), QString(listGUI[i].c_str())+QString("Action"), this);
         act->setText( QString(listGUI[i].c_str()));
-        act->setToggleAction( true );
-        act->addTo( runSofaGUI);
+        act->setCheckable(true);
+        runSofaGUI->addAction(act);
         listActionGUI.push_back(act);
-        connect(act, SIGNAL( activated()), this, SLOT( GUIChanged() ));
+        connect(act, SIGNAL( triggered()), this, SLOT( GUIChanged() ));
     }
 
 }
@@ -511,7 +524,7 @@ void SofaModeler::fileNew( Node* root)
     changeNameWindow("");
     //no parent, adding root: if root is NULL, then an empty Node will be created
     graph->setRoot( root, false);
-    sceneTab->setCurrentPage( sceneTab->count()-1);
+    sceneTab->setCurrentIndex(sceneTab->count()-1);
 }
 
 void SofaModeler::fileOpen()
@@ -551,7 +564,8 @@ void SofaModeler::createTab()
 {
     QWidget *newtab = new QWidget();
     tabGraph = newtab;
-    QVBoxLayout *currentTabLayout = new QVBoxLayout(newtab, 0,1, QString("ModelerScene"));
+    QVBoxLayout *currentTabLayout = new QVBoxLayout(newtab);
+    currentTabLayout->setObjectName(QString("ModelerScene"));
     sceneTab->addTab(newtab, QString("New Scene"));
     GraphModeler* modelerGraph = new GraphModeler(newtab,"Modeler");
     mapGraph.insert(std::make_pair(newtab, modelerGraph));
@@ -566,7 +580,7 @@ void SofaModeler::createTab()
     graph->setPreset(preset);
     fileNew();
 
-    connect(graph, SIGNAL(currentChanged(Q3ListViewItem *)), this, SLOT(changeInformation(Q3ListViewItem *)));
+    connect(graph, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(changeInformation(QTreeWidgetItem *,QTreeWidgetItem*)));
     connect(graph, SIGNAL( fileOpen(const QString&)), this, SLOT(fileOpen(const QString&)));
     connect(graph, SIGNAL( undoEnabled(bool)), this, SLOT(setUndoEnabled(bool)));
     connect(graph, SIGNAL( redoEnabled(bool)), this, SLOT(setRedoEnabled(bool)));
@@ -583,7 +597,7 @@ void SofaModeler::closeTab()
 bool SofaModeler::closeTab(int i)
 {
     if (i<0) return true;
-    return closeTab(sceneTab->page(i));
+    return closeTab(sceneTab->widget(i));
 }
 
 bool SofaModeler::closeTab(QWidget *curTab, bool forceClose)
@@ -607,24 +621,24 @@ bool SofaModeler::closeTab(QWidget *curTab, bool forceClose)
     if (mapSofa.size() &&
         mapSofa.find(curTab) != mapSofa.end())
     {
-        typedef std::multimap< const QWidget*, Q3Process* >::iterator multimapIterator;
+        typedef std::multimap< const QWidget*, QProcess* >::iterator multimapIterator;
         std::pair< multimapIterator,multimapIterator > range;
         range=mapSofa.equal_range(curTab);
         for (multimapIterator it=range.first; it!=range.second; ++it)
         {
-            removeTemporaryFiles(it->second->name());
+            removeTemporaryFiles(it->second->objectName().toStdString());
             it->second->kill();
         }
         mapSofa.erase(range.first, range.second);
     }
 
     //Find the scene in the window menu
-    std::map< int, QWidget* >::const_iterator it;
+    std::map< QAction*, QWidget* >::const_iterator it;
     for (it = mapWindow.begin(); it!=mapWindow.end(); ++it)
     {
         if (it->second == curTab) break;
     }
-    windowMenu->removeItem(it->first);
+    windowMenu->removeAction(it->first);
     mapWindow.erase(it->first);
 
     //Closing the Modify Dialog opened
@@ -635,7 +649,7 @@ bool SofaModeler::closeTab(QWidget *curTab, bool forceClose)
     }
 
 
-    sceneTab->removePage(curTab);
+    sceneTab->removeTab(sceneTab->indexOf(curTab));
     mapGraph.erase(curTab);
     curTab->close();
     return true;
@@ -650,11 +664,11 @@ void SofaModeler::fileOpen(const QUrl &u)
     }
     else
     {
-        std::string path=u.toString().ascii();
+        std::string path=u.toString().toStdString();
         fileOpen(path);
     }
 #else
-    std::string path=u.path().ascii();
+    std::string path=u.path().toStdString();
     fileOpen(path);
 #endif
 }
@@ -672,23 +686,23 @@ void SofaModeler::fileOpen(std::string filename)
         {
             createTab();
             fileNew(root.get());
-            sceneTab->setCurrentPage( sceneTab->count()-1);
+            sceneTab->setCurrentIndex(sceneTab->count()-1);
 
             graph->setFilename(filename);
             changeTabName(graph,QString(sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).c_str()));
 
             changeNameWindow(graph->getFilename());
-
-            mapWindow.insert(std::make_pair(windowMenu->insertItem( graph->getFilename().c_str()), tabGraph));
+            QAction* act = windowMenu->addAction(graph->getFilename().c_str());
+            mapWindow.insert(std::make_pair(act, tabGraph));
             recentlyOpenedFilesManager.openFile(filename);
         }
     }
     displayHelpModeler();
 }
 
-void SofaModeler::fileRecentlyOpened(int id)
+void SofaModeler::fileRecentlyOpened(QAction* act)
 {
-    fileOpen(recentlyOpenedFilesManager.getFilename((unsigned int)id));
+    fileOpen(act->text());
 }
 
 void SofaModeler::pressedGNodeButton()
@@ -716,13 +730,13 @@ void SofaModeler::fileSaveAs()
     if ( s.length() >0 )
     {
 
-        std::string extension=sofa::helper::system::SetDirectory::GetExtension(s.ascii());
+        std::string extension=sofa::helper::system::SetDirectory::GetExtension(s.toStdString().c_str());
         if (extension.empty()) s+=QString(".scn");
 
-        graph->save( s.ascii() );
+        graph->save( s.toStdString() );
         //  	    if (graph->getFilename().empty())
         //  	      {
-        std::string filename = s.ascii();
+        std::string filename = s.toStdString();
         graph->setFilename(filename);
         changeNameWindow(filename);
         changeTabName(graph, QString(sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).c_str()));
@@ -821,10 +835,10 @@ void SofaModeler::exportSofaClasses()
 	std::cout << "Sofa classes have been XML exported in: " << filename.toStdString() << std::endl << std::endl;
 }
 
-void SofaModeler::loadPreset(int id)
+void SofaModeler::loadPreset(QAction* act)
 {
-    Q3PopupMenu *s = (Q3PopupMenu*) sender();
-    const std::string elementClicked(s->text(id).ascii());
+    QMenu *s = (QMenu*) sender();
+    const std::string elementClicked(act->text().toStdString());
     std::string presetFile = presetPath+ mapPreset[s][elementClicked];
 
     if (sofa::helper::system::DataRepository.findFile ( presetFile ))
@@ -852,8 +866,8 @@ void SofaModeler::changeTabName(GraphModeler *graph, const QString &name, const 
         {
             if (it->second == graph)
             {
-                sceneTab->setTabLabel(it->first, name+suffix);
-                sceneTab->setTabToolTip(tabGraph, fullPath+suffix);
+                sceneTab->setTabText(sceneTab->indexOf(it->first), name+suffix);
+                sceneTab->setTabToolTip(sceneTab->indexOf(tabGraph), fullPath+suffix);
 
                 tabGraph = it->first;
                 break;
@@ -865,12 +879,12 @@ void SofaModeler::changeTabName(GraphModeler *graph, const QString &name, const 
 
     //Update the Scene menu
     {
-        std::map< int, QWidget *>::iterator it;
+        std::map< QAction*, QWidget *>::iterator it;
         for (it=mapWindow.begin(); it!=mapWindow.end(); ++it)
         {
             if (it->second == tabGraph)
             {
-                windowMenu->changeItem(it->first, fullPath + suffix);
+                it->first->setText(fullPath + suffix);
                 break;
             }
         }
@@ -914,14 +928,14 @@ void SofaModeler::graphModifiedNotification(bool modified)
 }
 
 
-void SofaModeler::changeInformation(Q3ListViewItem *item)
+void SofaModeler::changeInformation(QTreeWidgetItem *item, QTreeWidgetItem * /* previous */)
 {
     if (!item || item->childCount() != 0)
     {
         displayHelpModeler();
         return;
     }
-    std::string nameObject = item->text(0).ascii();
+    std::string nameObject = item->text(0).toStdString();
     std::string::size_type end_name = nameObject.find(" ");
     if (end_name != std::string::npos) nameObject.resize(end_name);
     changeComponent( library->getComponentDescription(nameObject) );
@@ -934,10 +948,14 @@ void SofaModeler::componentDraggedReception( std::string description, std::strin
     changeComponent(description );
     if (!graph) return;
     graph->setLastSelectedComponent(templateName, componentEntry);
-    if (tuto && tuto->isShown()) tuto->getGraph()->setLastSelectedComponent(templateName, componentEntry);
-    Q3TextDrag *dragging = new Q3TextDrag(QString("ComponentCreation"), (QWidget*) this->sender());
-    dragging->setText(QString("ComponentCreation"));
-    dragging->dragCopy();
+    if (tuto && tuto->isVisible()) tuto->getGraph()->setLastSelectedComponent(templateName, componentEntry);
+
+    QDrag *dragging = new QDrag((QWidget*) this->sender());
+    QMimeData* mimedata = new QMimeData();
+    mimedata->setText("ComponentCreation");
+    dragging->setMimeData(mimedata);
+    dragging->exec(Qt::CopyAction | Qt::MoveAction);
+    //dragging->dragCopy();
 }
 
 void SofaModeler::changeComponent(const std::string &description)
@@ -948,15 +966,22 @@ void SofaModeler::changeComponent(const std::string &description)
 
 void SofaModeler::newGNode()
 {
-    Q3TextDrag *dragging = new Q3TextDrag(QString("Node"), (QPushButton*)sender());
-    dragging->setText(QString("Node"));
-    dragging->dragCopy();
+    QDrag *dragging = new QDrag((QPushButton*) this->sender());
+    QMimeData* mimedata = new QMimeData();
+    mimedata->setText("Node");
+    dragging->setMimeData(mimedata);
+
+    //dragging->dragCopy();
+    dragging->exec(Qt::CopyAction | Qt::MoveAction);
 }
 
 
-void SofaModeler::changeCurrentScene( QWidget* currentGraph)
+void SofaModeler::changeCurrentScene( int id)
 {
+    QWidget* currentGraph = sceneTab->widget(id);
+
     tabGraph=currentGraph;
+
     graph = mapGraph[currentGraph];
     if (graph)
     {
@@ -972,9 +997,9 @@ void SofaModeler::changeCurrentScene( QWidget* currentGraph)
 }
 
 
-void SofaModeler::changeCurrentScene(int id)
+void SofaModeler::changeCurrentScene(QAction* act)
 {
-    sceneTab->setCurrentPage( sceneTab->indexOf(mapWindow[id]) );
+    sceneTab->setCurrentWidget(mapWindow[act] );
 }
 
 
@@ -983,11 +1008,9 @@ void SofaModeler::changeNameWindow(std::string filename)
 
     std::string str = "Sofa Modeler";
     if (!filename.empty()) str+= std::string(" - ") + filename;
-#ifdef WIN32
+
     setWindowTitle ( str.c_str() );
-#else
-    setCaption ( str.c_str() );
-#endif
+
 }
 
 void SofaModeler::dropEvent(QDropEvent* event)
@@ -996,8 +1019,11 @@ void SofaModeler::dropEvent(QDropEvent* event)
     if (push) push->setDown(false);
 
     QString text;
-    Q3TextDrag::decode(event, text);
-    std::string filename(text.ascii());
+
+    if (event->mimeData()->hasText())
+        text = event->mimeData()->text();
+
+    std::string filename(text.toStdString());
     std::string test = filename; test.resize(4);
     if (test == "file")
     {
@@ -1038,7 +1064,7 @@ void SofaModeler::openTutorial()
 {
     if (tuto)
     {
-        if (tuto->isShown()) return;
+        if (tuto->isVisible()) return;
         delete tuto;
     }
 
@@ -1048,7 +1074,7 @@ void SofaModeler::openTutorial()
     GraphModeler *graphTuto=tuto->getGraph();
     graphTuto->setSofaLibrary(library);
     graphTuto->setPreset(preset);
-    connect(graphTuto, SIGNAL(currentChanged(Q3ListViewItem *)), this, SLOT(changeInformation(Q3ListViewItem *)));
+    connect(graphTuto, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(changeInformation(QTreeWidgetItem *,QTreeWidgetItem*)));
 
     tuto->show();
 }
@@ -1085,9 +1111,9 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
         std::string viewerName;
         for (unsigned int i=0; i<listActionGUI.size(); ++i)
         {
-            if (listActionGUI[i]->isOn())
+            if (listActionGUI[i]->isChecked())
             {
-                viewerName = listActionGUI[i]->text().ascii();
+                viewerName = listActionGUI[i]->text().toStdString();
                 if (viewerName == "default")
                     viewerName = sofa::gui::GUIManager::GetValidGUIName();
 
@@ -1135,7 +1161,7 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
     {
         std::string binaryName="runSofa";
 #ifndef NDEBUG
-        binaryName+='d';
+        binaryName+="_d";
 #endif
 
 #ifdef WIN32
@@ -1145,7 +1171,7 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
 #endif
     }
 
-    argv << QString(sofaBinary.c_str()) << QString(filename.c_str());
+    argv << QString(filename.c_str());
 
     messageLaunch = QString("Use command: ")
             + QString(sofaBinary.c_str())
@@ -1154,9 +1180,9 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
     //Setting the GUI
     for (unsigned int i=0; i<listActionGUI.size(); ++i)
     {
-        if (listActionGUI[i]->isOn())
+        if (listActionGUI[i]->isChecked())
         {
-            if (std::string(listActionGUI[i]->text().ascii()) != "default")
+            if (std::string(listActionGUI[i]->text().toStdString()) != "default")
             {
                 argv << "-g" << listActionGUI[i]->text();
                 messageLaunch += QString("-g ") + QString(listActionGUI[i]->text());
@@ -1180,66 +1206,85 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
     argv << "-t";
 
 
-    Q3Process *p = new Q3Process(argv, this);
-    p->setName(filename.c_str());
-    p->setWorkingDirectory( QDir(binPath.c_str()) );
-    connect(p, SIGNAL(processExited()), this, SLOT(sofaExited()));
+    QProcess *p = new QProcess(this);
+
+
+    p->setWorkingDirectory(QString(binPath.c_str()) );
+    p->setObjectName(QString(filename.c_str()) );
+
+
+    connect(p, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(sofaExited(int, QProcess::ExitStatus)));
     QDir dir(QString(sofa::helper::system::SetDirectory::GetParentDir(sceneFilename.c_str()).c_str()));
-    connect(p, SIGNAL( readyReadStdout () ), this , SLOT ( redirectStdout() ) );
-    connect(p, SIGNAL( readyReadStderr () ), this , SLOT ( redirectStderr() ) );
-    p->start();
+    connect(p, SIGNAL( readyReadStandardOutput () ), this , SLOT ( redirectStdout() ) );
+    connect(p, SIGNAL( readyReadStandardError () ), this , SLOT ( redirectStderr() ) );
+
+    p->start(QString(sofaBinary.c_str()), argv);
+
     mapSofa.insert(std::make_pair(tabGraph, p));
 
-    statusBar()->message(messageLaunch,5000);
+    statusBar()->showMessage(messageLaunch,5000);
 }
 
 void SofaModeler::redirectStdout()
 {
-    Q3Process* p = ((Q3Process*) sender());
+    QProcess* p = ((QProcess*) sender());
     if( !p )
     {
         return;
     }
-    QString data;
-    while(p->canReadLineStdout())
-    {
-        data = p->readLineStdout();
-        std::cout << data.ascii() << std::endl;
-    }
 
+    if (p->waitForStarted(-1))
+    {
+        std::cout << "FROM SOFA [OUT] >> " << QString(p->readAllStandardOutput()).toStdString() << std::endl;
+    }
 }
 
 void SofaModeler::redirectStderr()
 {
-    Q3Process* p = ((Q3Process*) sender());
+    QProcess* p = ((QProcess*) sender());
     if( !p )
     {
         return;
     }
-    QString data;
-    while(p->canReadLineStderr())
+    if (p->waitForStarted(-1))
     {
-        data = p->readLineStderr();
-        std::cerr << data.ascii() << std::endl;
+        std::cerr << "FROM SOFA [ERR] >> " << QString(p->readAllStandardError()).toStdString() << std::endl;
     }
 }
 
-void SofaModeler::sofaExited()
+void SofaModeler::sofaExited(int exitCode, QProcess::ExitStatus existStatus)
 {
-    Q3Process *p = ((Q3Process*) sender());
-    removeTemporaryFiles(p->name());
-    if (p->normalExit()) return;
-    typedef std::multimap< const QWidget*, Q3Process* >::iterator multimapIterator;
+    QProcess *p = ((QProcess*) sender());
+    std::string programName;
+
+    programName = p->objectName().toStdString();
+
+    removeTemporaryFiles(programName);
+    if (existStatus == QProcess::NormalExit )
+    {
+        p->closeWriteChannel();
+        disconnect(p, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(sofaExited(int, QProcess::ExitStatus)));
+        disconnect(p, SIGNAL( readyReadStandardOutput () ), this , SLOT ( redirectStdout() ) );
+        disconnect(p, SIGNAL( readyReadStandardError () ), this , SLOT ( redirectStderr() ) );
+        if(p->atEnd())
+            std::cout << "Sofa exited safely." << std::endl;
+        else
+            std::cout << "Chelou." << std::endl;
+        p->kill();
+        return;
+    }
+    typedef std::multimap< const QWidget*, QProcess* >::iterator multimapIterator;
     for (multimapIterator it=mapSofa.begin(); it!=mapSofa.end(); ++it)
     {
         if (it->second == p)
         {
             const QString caption("Problem");
-            const QString warning("Error running Sofa");
-            QMessageBox::critical( this, caption,warning, QMessageBox::Ok | QMessageBox::Escape, QMessageBox::NoButton );
+            const QString warning("Error running Sofa, error code ");
+            QMessageBox::critical( this, caption,warning + QString(exitCode), QMessageBox::Ok | QMessageBox::Escape, QMessageBox::NoButton );
             return;
         }
     }
+
 }
 
 void SofaModeler::removeTemporaryFiles(const std::string &f)
@@ -1253,7 +1298,7 @@ void SofaModeler::removeTemporaryFiles(const std::string &f)
     std::string viewFilename=filename + std::string(".view");
     for (unsigned int i=0; i<listActionGUI.size(); ++i)
     {
-        const std::string viewerName=listActionGUI[i]->text().ascii();
+        const std::string viewerName=listActionGUI[i]->text().toStdString();
         if (viewerName != "default" && viewerName != "batch")
         {
             std::string viewFilename=filename + std::string(".") + viewerName + std::string(".view");
@@ -1271,11 +1316,12 @@ void SofaModeler::removeTemporaryFiles(const std::string &f)
 void SofaModeler::dragEnterEvent( QDragEnterEvent* event)
 {
     QString text;
-    Q3TextDrag::decode(event, text);
+    if (event->mimeData()->hasText())
+        text = event->mimeData()->text();
     if (text.isEmpty()) event->ignore();
     else
     {
-        std::string filename(text.ascii());
+        std::string filename(text.toStdString());
         std::string test = filename; test.resize(4);
         if (test == "file")  event->accept();
         else event->ignore();
@@ -1286,11 +1332,12 @@ void SofaModeler::dragEnterEvent( QDragEnterEvent* event)
 void SofaModeler::dragMoveEvent( QDragMoveEvent* event)
 {
     QString text;
-    Q3TextDrag::decode(event, text);
+    if (event->mimeData()->hasText())
+        text = event->mimeData()->text();
     if (text.isEmpty()) event->ignore();
     else
     {
-        std::string filename(text.ascii());
+        std::string filename(text.toStdString());
         std::string test = filename; test.resize(4);
         if (test == "file")  event->accept();
         else event->ignore();
@@ -1320,7 +1367,7 @@ void SofaModeler::changeSofaBinary()
             "open sofa binary",  "Choose a binary to use" );
     if (s.length() >0)
     {
-        sofaBinary=s.ascii();
+        sofaBinary=s.toStdString();
         binPath=sofa::helper::system::SetDirectory::GetParentDir(sofaBinary.c_str());
     }
     else
@@ -1334,7 +1381,7 @@ void SofaModeler::GUIChanged()
     QAction *act=(QAction*) sender();
     for (unsigned int i=0; i<listActionGUI.size(); ++i)
     {
-        listActionGUI[i]->setOn(listActionGUI[i] == act);
+        listActionGUI[i]->setChecked(listActionGUI[i] == act);
     }
 }
 
@@ -1372,7 +1419,7 @@ void SofaModeler::showPluginManager()
 void SofaModeler::displayMessage(const std::string &m)
 {
     QString messageLaunch(m.c_str());
-    statusBar()->message(messageLaunch,5000);
+    statusBar()->showMessage(messageLaunch,5000);
 }
 
 void SofaModeler::displayHelpModeler()

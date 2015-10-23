@@ -10,9 +10,6 @@ using std::endl;
 
 namespace sofa {
 using core::objectmodel::Tag;
-using std::cerr;
-using std::cout;
-using std::endl;
 
 namespace simplegui {
 
@@ -24,7 +21,7 @@ SofaGL::SofaGL(SofaScene *s) :
 {
     if(!_sofaScene)
     {
-        cerr << "Error: you are trying to create a SofaGL object with a null SofaScene" << endl;
+        std::cerr << "Error: you are trying to create a SofaGL object with a null SofaScene" << std::endl;
         return;
     }
 
@@ -92,8 +89,8 @@ void SofaGL::draw()
         {
             GLuint* buffer = selectBuf;
             // process the hits
-            GLint i, j, numberOfNames;
-            GLuint names, *ptr, minZ,*ptrNames;
+            GLint i, j, numberOfNames=0;
+            GLuint names, *ptr, minZ,*ptrNames=0;
 
             ptr = (GLuint *) buffer;
             minZ = 0xffffffff;

@@ -25,14 +25,6 @@
 #include "SofaVideoRecorderManager.h"
 
 #include <iostream>
-#ifndef SOFA_QT4
-#include <qlineedit.h>
-#include <qcombobox.h>
-#include <qlabel.h>
-#include <qgroupbox.h>
-#include <qlayout.h>
-#include <qradiobutton.h>
-#endif
 
 namespace sofa
 {
@@ -50,8 +42,8 @@ CaptureOptionsWidget::CaptureOptionsWidget( QWidget * parent)
     QHBoxLayout *HLayoutFramerate = new QHBoxLayout();
     QLabel *labelFramerate=new QLabel(QString("Framerate (in img/s): "), this);
     framerateSpinBox = new QSpinBox(this);
-    framerateSpinBox->setMinValue(1);
-    framerateSpinBox->setMaxValue(120);
+    framerateSpinBox->setMinimum(1);
+    framerateSpinBox->setMaximum(120);
     framerateSpinBox->setValue(60);
     HLayoutFramerate->addWidget (labelFramerate);
     HLayoutFramerate->addWidget (framerateSpinBox);
@@ -61,8 +53,8 @@ CaptureOptionsWidget::CaptureOptionsWidget( QWidget * parent)
     QHBoxLayout *HLayoutFrameskip = new QHBoxLayout();
     QLabel *labelFrameskip=new QLabel(QString("Skip frames before capture (fast replay): "), this);
     frameskipSpinBox = new QSpinBox(this);
-    frameskipSpinBox->setMinValue(0);
-    frameskipSpinBox->setMaxValue(100);
+    frameskipSpinBox->setMinimum(0);
+    frameskipSpinBox->setMaximum(100);
     frameskipSpinBox->setValue(0);
     HLayoutFrameskip->addWidget (labelFrameskip);
     HLayoutFrameskip->addWidget (frameskipSpinBox);
@@ -89,7 +81,7 @@ MovieOptionsWidget::MovieOptionsWidget( QWidget * parent)
     QLabel *labelCodec=new QLabel(QString("Codec: "), this);
     codecComboBox = new QComboBox(this);
     for(unsigned int i=0; i<listCodecs.size(); i++)
-        codecComboBox->insertItem(QString(listCodecs[i].description.c_str()));
+        codecComboBox->addItem(QString(listCodecs[i].description.c_str()));
     codecComboBox->setCurrentIndex(2);
     HLayoutCodec->addWidget (labelCodec);
     HLayoutCodec->addWidget (codecComboBox);
@@ -97,8 +89,8 @@ MovieOptionsWidget::MovieOptionsWidget( QWidget * parent)
     QHBoxLayout *HLayoutBitrate = new QHBoxLayout();
     QLabel *labelBitrate=new QLabel(QString("Bitrate (in KB/s): "), this);
     bitrateSpinBox = new QSpinBox(this);
-    bitrateSpinBox->setMinValue(100);
-    bitrateSpinBox->setMaxValue(40960);
+    bitrateSpinBox->setMinimum(100);
+    bitrateSpinBox->setMaximum(40960);
     bitrateSpinBox->setValue(5000);
     HLayoutBitrate->addWidget (labelBitrate);
     HLayoutBitrate->addWidget (bitrateSpinBox);
@@ -129,13 +121,13 @@ SofaVideoRecorderManager::SofaVideoRecorderManager()
 
 std::string SofaVideoRecorderManager::getCodecExtension()
 {
-    unsigned int index = movieOptionsWidget->codecComboBox->currentItem();
+    unsigned int index = movieOptionsWidget->codecComboBox->currentIndex();
     return movieOptionsWidget->listCodecs[index].extension;
 }
 
 std::string SofaVideoRecorderManager::getCodecName()
 {
-    unsigned int index = movieOptionsWidget->codecComboBox->currentItem();
+    unsigned int index = movieOptionsWidget->codecComboBox->currentIndex();
     return movieOptionsWidget->listCodecs[index].codec;
 }
 
@@ -174,12 +166,7 @@ void SofaVideoRecorderManager::onChangeRecordingType()
 
 void SofaVideoRecorderManager::internalAddWidget(QWidget* parent, QWidget* widgetToAdd)
 {
-
-#ifdef SOFA_QT4
     parent->layout()->addWidget(widgetToAdd);
-#else
-    parent->layout()->add(widgetToAdd);
-#endif
 }
 
 void SofaVideoRecorderManager::close()

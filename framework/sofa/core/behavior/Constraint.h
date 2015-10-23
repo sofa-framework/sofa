@@ -134,6 +134,13 @@ public:
 
 protected:
     MechanicalState<DataTypes> *mstate;
+
+    /// Useful when the Constraint is applied only on a subset of dofs.
+    /// It is automatically called by buildConstraintMatrix
+    ///
+    /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
+    /// Every Dofs are inserted by default. The Constraint using only a subset of dofs should only insert these dofs in the mask.
+    virtual void updateForceMask();
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_CONSTRAINT_CPP)

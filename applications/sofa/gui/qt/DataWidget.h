@@ -36,22 +36,13 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#ifdef SOFA_QT4
 #include <QDialog>
 #include <QLineEdit>
-#include <Q3Table>
+#include <QTableWidget>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QRadioButton>
 #include <QButtonGroup>
-#else
-#include <qspinbox.h>
-#include <qdialog.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
-#include <qradiobutton.h>
-#include <qbuttongroup.h>
-#endif // SOFA_QT4
 
 
 //If a table has higher than MAX_NUM_ELEM, its data won't be loaded at the creation of the window
@@ -129,10 +120,10 @@ public:
             datawidget_ = DataWidgetFactory::CreateObject(widgetName, dwarg);
 
         return datawidget_;
-    };
+    }
 
 
-public Q_SLOTS:
+public slots:
     /// Checks that widget has been edited
     /// emit DataOwnerDirty in case the name field has been modified
     void updateDataValue();
@@ -147,7 +138,7 @@ public Q_SLOTS:
     /// value is out of sync with the underlying data value.
     void setWidgetDirty(bool b=true);
 
-Q_SIGNALS:
+signals:
     /// Emitted each time setWidgetDirty is called. You can also emit
     /// it if you want to tell the widget value is out of sync with
     /// the underlying data value.
@@ -240,6 +231,7 @@ public:
     sofa::core::objectmodel::Data<T>* getData() {return Tdata;}
     const sofa::core::objectmodel::Data<T>* getData() const {return Tdata;}
 
+    using DataWidget::setData;
     inline virtual void setData(MyTData* d)
     {
         Tdata = d;
@@ -306,14 +298,12 @@ typedef sofa::helper::Factory<std::string, DataWidget, DataWidget::CreatorArgume
 } // namespace gui
 
 //MOC_SKIP_BEGIN
-#ifdef SOFA_QT4
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_SOFAGUIQT)
 namespace helper
 {
 //delay load of the specialized Factory class. unique definition reside in the cpp file
 extern template class SOFA_SOFAGUIQT_API Factory<std::string, gui::qt::DataWidget, gui::qt::DataWidget::CreatorArgument>;
 }
-#endif
 #endif
 //MOC_SKIP_END
 

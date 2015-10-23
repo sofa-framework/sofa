@@ -54,7 +54,8 @@
         <BoxROI name="boxROI" position="@ms.position" box="-1 49 -1  101 51 1   -1 49 99 101 51 101   -1 49 -1 1 51 101   99 49 -1 101 51 101" drawBoxes="true" />
 	<FixedConstraint indices="@boxROI.indices" />
 	<TriangularFEMForceFieldOptim name="FEM" youngModulus="6000" poissonRatio="0.35" method="large" showStressValue="true" showStressVector="true"
-			showFracturableTriangles="true" hosfordExponant="10.0" criteriaValue="10000" computePrincipalStress="true" restScale="1"/>
+			restScale="1"/>
+	<!--<TriangularFEMForceField name="FEM" youngModulus="6000" poissonRatio="0.35" method="large" showStressValue="true" showStressVector="true" showFracturableTriangles="true" hosfordExponant="10.0" criteriaValue="10000" computePrincipalStress="true" restScale="1"/> -->
         <TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
         <TriangleModel name="cmTriangles" contactStiffness="5000" />
         <LineModel name="cmLines" contactStiffness="5000" />

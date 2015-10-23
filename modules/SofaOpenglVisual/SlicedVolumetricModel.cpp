@@ -132,7 +132,7 @@ void SlicedVolumetricModel::init()
 
 
     _textureCoordinates.resize( _mstate->getSize() );
-    for( int i=0; i<_mstate->getSize(); ++i)
+    for( size_t i=0; i<_mstate->getSize(); ++i)
     {
         const Coord& p = GETCOORD( i );
         _textureCoordinates[i][0] = (Real)((p[0]- _minBBox[0]) / (_maxBBox[0] - _minBBox[0]));
@@ -264,7 +264,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 
 
 
-    for(int i = 0 ; i < _mstate->getSize(); ++i )
+    for(size_t i = 0 ; i < _mstate->getSize(); ++i )
     {
         Coord p = GETCOORD( i );
 

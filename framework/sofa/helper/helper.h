@@ -25,6 +25,6 @@
 #ifndef SOFA_HELPER_HELPER_H
 #define SOFA_HELPER_HELPER_H
 
-#include <sofa/SofaFramework.h>
+#include <sofa/config.h>
 
 #endif

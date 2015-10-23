@@ -30,10 +30,10 @@
 #pragma once
 #endif
 
-#include <sofa/SofaGeneral.h>
 #include <sofa/core/DataEngine.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/vector.h>
+
 
 namespace sofa
 {
@@ -43,6 +43,7 @@ namespace component
 
 namespace engine
 {
+
 
 template <class DataTypes>
 class IndexValueMapper : public sofa::core::DataEngine

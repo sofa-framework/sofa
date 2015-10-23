@@ -1,13 +1,6 @@
-# CMake package configuration file for the Compliant plugin.
-# It defines the following variables:
-# - Compliant_INCLUDE_DIRS
-# - Compliant_LIBRARIES
+# CMake package configuration file for the Compliant plugin
 
 @PACKAGE_INIT@
-
-set_and_check(COMPLIANT_INCLUDE_DIR "@PACKAGE_COMPLIANT_INCLUDE_DIR@")
-
-check_required_components(Compliant)
 
 find_package(SofaSimulation REQUIRED)
 find_package(SofaMisc REQUIRED)
@@ -16,5 +9,4 @@ if(NOT TARGET Compliant)
 	include("${CMAKE_CURRENT_LIST_DIR}/CompliantTargets.cmake")
 endif()
 
-set(Compliant_LIBRARIES Compliant)
-set(Compliant_INCLUDE_DIRS ${COMPLIANT_INCLUDE_DIR})
+check_required_components(Compliant)

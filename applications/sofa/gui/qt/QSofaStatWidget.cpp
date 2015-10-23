@@ -30,17 +30,9 @@
 #include <sofa/simulation/common/Node.h>
 
 
-
-#ifdef SOFA_QT4
 #include <QApplication>
 #include <QPixmap>
 #include <QVBoxLayout>
-#else
-#include "qapplication.h"
-#include "qpixmap.h"
-#include "qlabel.h"
-#include "qlayout.h"
-#endif
 
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
@@ -51,35 +43,40 @@ namespace gui
 namespace qt
 {
 
-QSofaStatWidget::QSofaStatWidget(QWidget* parent):QWidget(parent)
+QSofaStatWidget::QSofaStatWidget(QWidget* parent)
+    : QWidget(parent)
 {
     QVBoxLayout* layout = new QVBoxLayout(this);
     statsLabel = new QLabel(this);
     statsLabel->setText(QString("Collision Elements present :"));
+    statsLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 //        statsLabel->setObjectName(QString("statsLabel"));
-
-#ifdef SOFA_QT4
     statsLabel->setWordWrap(false);
-#endif
+
     layout->addWidget(statsLabel);
-    statsCounter = new Q3ListView(this);
-    statsCounter->addColumn(QString("Name"));
-    statsCounter->header()->setClickEnabled(true, statsCounter->header()->count() - 1);
-    statsCounter->header()->setResizeEnabled(true, statsCounter->header()->count() - 1);
-    statsCounter->addColumn(QString("Type"));
-    statsCounter->header()->setClickEnabled(true, statsCounter->header()->count() - 1);
-    statsCounter->header()->setResizeEnabled(true, statsCounter->header()->count() - 1);
-    statsCounter->addColumn(QString("Size"));
-    statsCounter->header()->setClickEnabled(true, statsCounter->header()->count() - 1);
-    statsCounter->header()->setResizeEnabled(true, statsCounter->header()->count() - 1);
-    statsCounter->addColumn(QString("Groups"));
-    statsCounter->header()->setClickEnabled(true, statsCounter->header()->count() - 1);
-    statsCounter->header()->setResizeEnabled(true, statsCounter->header()->count() - 1);
-    statsCounter->setResizeMode(Q3ListView::LastColumn);
-    statsCounter->header()->setLabel(0, QString("Name"));
-    statsCounter->header()->setLabel(1, QString("Type"));
-    statsCounter->header()->setLabel(2, QString("Size"));
-    statsCounter->header()->setLabel(3, QString("Groups"));
+
+    statsCounter = new QTreeWidget(this);
+    statsCounter->setHeaderLabels(QStringList() << "Name" << "Type" << "Size" << "Groups");
+
+//    QTreeWidgetItem* item = new QTreeWidgetItem();
+
+//    statsCounter->addColumn(QString("Name"));
+//    statsCounter->header()->setClickEnabled(true, statsCounter->header()->count() - 1);
+//    statsCounter->header()->setResizeEnabled(true, statsCounter->header()->count() - 1);
+//    statsCounter->addColumn(QString("Type"));
+//    statsCounter->header()->setClickEnabled(true, statsCounter->header()->count() - 1);
+//    statsCounter->header()->setResizeEnabled(true, statsCounter->header()->count() - 1);
+//    statsCounter->addColumn(QString("Size"));
+//    statsCounter->header()->setClickEnabled(true, statsCounter->header()->count() - 1);
+//    statsCounter->header()->setResizeEnabled(true, statsCounter->header()->count() - 1);
+//    statsCounter->addColumn(QString("Groups"));
+//    statsCounter->header()->setClickEnabled(true, statsCounter->header()->count() - 1);
+//    statsCounter->header()->setResizeEnabled(true, statsCounter->header()->count() - 1);
+//    statsCounter->setResizeMode(QTreeWidget::LastColumn);
+//    statsCounter->header()->setLabel(0, QString("Name"));
+//    statsCounter->header()->setLabel(1, QString("Type"));
+//    statsCounter->header()->setLabel(2, QString("Size"));
+//    statsCounter->header()->setLabel(3, QString("Groups"));
     layout->addWidget(statsCounter);
 
 
@@ -96,7 +93,10 @@ void QSofaStatWidget::CreateStats(Node* root)
         delete items_stats[0].second;
         items_stats.clear();
     }
-    statsCounter->clear();
+
+    for(int i=0 ; i<statsCounter->topLevelItemCount() ; i++)
+        delete statsCounter->takeTopLevelItem(i);
+
 
     addCollisionModelsStat(list_collisionModels);
 
@@ -107,25 +107,25 @@ void QSofaStatWidget::CreateStats(Node* root)
 
 void QSofaStatWidget::addCollisionModelsStat(const sofa::helper::vector< sofa::core::CollisionModel* >& v)
 {
-    std::map< BaseContext*, Q3ListViewItem* > listStats;
+    std::map< BaseContext*, QTreeWidgetItem* > listStats;
     for (unsigned int i=0; i<v.size(); i++)
     {
         if ( !v[i]->isActive()) continue;
-        std::map< BaseContext*, Q3ListViewItem* >::iterator it = listStats.find(v[i]->getContext());
-        Q3ListViewItem *item;
+        std::map< BaseContext*, QTreeWidgetItem* >::iterator it = listStats.find(v[i]->getContext());
+        QTreeWidgetItem *item;
         if (it != listStats.end())
         {
-            item = new Q3ListViewItem((*it).second);
+            item = new QTreeWidgetItem((*it).second);
         }
         else
         {
-            Q3ListViewItem *node = new Q3ListViewItem(statsCounter);
+            QTreeWidgetItem *node = new QTreeWidgetItem(statsCounter);
             node->setText(0,QString(v[i]->getContext()->getName().c_str()));
             QPixmap* pix = getPixmap(v[i]->getContext());
-            if (pix) node->setPixmap(0,*pix);
+            if (pix) node->setIcon(0, QIcon(*pix));
             listStats.insert(std::make_pair(v[i]->getContext(), node));
-            item = new Q3ListViewItem(node);
-            node->setOpen(true);
+            item = new QTreeWidgetItem(node);
+            node->setExpanded(true);
         }
         assert(item);
         item->setText(0,v[i]->getName().c_str());
@@ -152,7 +152,7 @@ void QSofaStatWidget::addSummary()
 
 
     for (unsigned int i=0; i < items_stats.size(); i++)
-        mapElement[items_stats[i].first->getClassName()] += atoi(items_stats[i].second->text(2));
+        mapElement[items_stats[i].first->getClassName()] += (items_stats[i].second->text(2).toInt());
 
 
     std::string textStats("<hr>Collision Elements present: <ul>");

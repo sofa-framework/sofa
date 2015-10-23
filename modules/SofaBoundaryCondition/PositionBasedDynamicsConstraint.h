@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_POSITIONBASEDDYNAMICSCONSTRAINT_H
 #include "config.h"
 
-#include <sofa/SofaGeneral.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -103,8 +102,8 @@ public:
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
 
-    void applyConstraint(defaulttype::BaseMatrix *, unsigned int ) {}
-    void applyConstraint(defaulttype::BaseVector *, unsigned int ) {}
+//    void applyConstraint(defaulttype::BaseMatrix *, unsigned int ) {}
+//    void applyConstraint(defaulttype::BaseVector *, unsigned int ) {}
 
     // Handle topological changes
     virtual void handleTopologyChange();

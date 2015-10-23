@@ -1,8 +1,9 @@
-#include <QString>
-
 #include "labelgridimagetoolboxaction.h"
-
 #include "labelgridimagetoolbox.h"
+
+#include <QFormLayout>
+#include <QLabel>
+
 
 namespace sofa
 {

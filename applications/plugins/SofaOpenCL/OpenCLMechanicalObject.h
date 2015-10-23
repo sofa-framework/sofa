@@ -87,16 +87,16 @@ public:
 
 // I know using macros is bad design but this is the only way not to repeat the code for all OpenCL types
 #define OpenCLMechanicalObject_DeclMethods(T) \
-    template<> inline void MechanicalObject< T >::accumulateForce(const core::ExecParams* params); \
+    template<> inline void MechanicalObject< T >::accumulateForce(const core::ExecParams* params, core::VecDerivId f); \
     template<> inline void MechanicalObject< T >::vOp(const core::ExecParams* params /* PARAMS FIRST */, core::VecId v, core::ConstVecId a, core::ConstVecId b, SReal f); \
     template<> inline void MechanicalObject< T >::vMultiOp(const core::ExecParams* params /* PARAMS FIRST */, const VMultiOp& ops); \
     template<> inline SReal MechanicalObject< T >::vDot(const core::ExecParams* params /* PARAMS FIRST */, core::ConstVecId a, core::ConstVecId b); \
-    template<> inline void MechanicalObject< T >::resetForce(const core::ExecParams* params);
+    template<> inline void MechanicalObject< T >::resetForce(const core::ExecParams* params, core::VecDerivId f);
 
 //OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3fTypes);
-OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3f1Types);
-OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3dTypes);
-OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3d1Types);
+OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3f1Types)
+OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3dTypes)
+OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3d1Types)
 
 #undef OpenCLMechanicalObject_DeclMethods
 

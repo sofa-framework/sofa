@@ -4,9 +4,9 @@
 #include "IterativeSolver.h"
 #include "Response.h"
 
-#include "utils/krylov.h"
+#include "../utils/krylov.h"
 
-#include "assembly/AssembledSystem.h"
+#include "../assembly/AssembledSystem.h"
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include "SubKKT.h"

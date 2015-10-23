@@ -1,8 +1,11 @@
 #ifndef CONTOURIMAGETOOLBOXACTION_H
 #define CONTOURIMAGETOOLBOXACTION_H
 
-#include <QtGui>
+#include <QPushButton>
+#include <QSpinBox>
 #include <QAction>
+#include <QGroupBox>
+
 #include <QGraphicsLineItem>
 
 
@@ -10,7 +13,7 @@
 #include "../labelimagetoolboxaction.h"
 //#include "contourimagetoolbox.h"
 
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 
 namespace sofa
 {

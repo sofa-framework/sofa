@@ -25,7 +25,7 @@
 #ifndef SOFA_MooneyRivlinFORCEFIELD_H
 #define SOFA_MooneyRivlinFORCEFIELD_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../material/BaseMaterialForceField.h"
 #include "../material/MooneyRivlinMaterialBlock.h"
 

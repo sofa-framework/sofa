@@ -284,7 +284,7 @@ protected:
 
         BaseVTKDataIO* newVTKDataIO(const std::string& typestr, int num)
         {
-            BaseVTKDataIO* result;
+            BaseVTKDataIO* result = NULL;
 
             if (num == 1)
                 result = newVTKDataIO(typestr);

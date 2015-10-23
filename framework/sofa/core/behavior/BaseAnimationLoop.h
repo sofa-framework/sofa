@@ -65,6 +65,11 @@ protected:
 
     /// Save the initial state for later uses in reset()
     virtual void storeResetState();
+	
+	
+private:
+	BaseAnimationLoop(const BaseAnimationLoop& n) ;
+	BaseAnimationLoop& operator=(const BaseAnimationLoop& n) ;
 
 public:
     /// Main computation method.

@@ -27,18 +27,11 @@
 #include <QTableWidget>
 
 #include <QPalette>
-#ifdef SOFA_QT4
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <Q3GroupBox>
+#include <QGroupBox>
 #include <QLabel>
 #include <QValidator>
-#else
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qgroupbox.h>
-#include <qvalidator.h>
-#endif
 
 #define TEXTSIZE_THRESHOLD 45
 
@@ -55,7 +48,7 @@ namespace qt
 
 QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         BaseData* data,
-        const ModifyObjectFlags& flags):Q3GroupBox(parent),
+        const ModifyObjectFlags& flags):QGroupBox(),
     data_(data),
     flags_(flags),
     datainfowidget_(NULL),
@@ -63,6 +56,11 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     numWidgets_(0)
 
 {
+    gridLayout_ = new QHBoxLayout();
+    this->setLayout(gridLayout_);
+
+    parent->layout()->addWidget(this);
+
     setAutoFillBackground(true);
 
     if(data_ == NULL)
@@ -75,7 +73,6 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         datainfowidget_ = new QDisplayDataInfoWidget(this,label_text,data_,flags.LINKPATH_MODIFIABLE_FLAG, flags_);
 		datainfowidget_->setContentsMargins(0, 0, 0, 0);
 		datainfowidget_->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-
         numWidgets_ += 1;
     }
 
@@ -112,12 +109,12 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
 	if(datawidget_->layout())
 	{
 		datawidget_->layout()->setAlignment(Qt::AlignCenter);
-		datawidget_->layout()->setContentsMargins(2, 2, 2, 2);
+        datawidget_->layout()->setContentsMargins(0, 0, 0, 0);
 	}
 
-	datawidget_->setContentsMargins(0, 0, 0, 0);
-	datawidget_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-
+    datawidget_->setContentsMargins(0, 16, 0, 0);
+    datawidget_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 	const std::string valuetype = data_->getValueTypeString();
 	if (!valuetype.empty())
 		datawidget_->setToolTip(valuetype.c_str());
@@ -154,21 +151,25 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
 			connect(refresh, SIGNAL(clicked(bool)), refresh, SLOT(setVisible(bool)));
 		}
 
-		setStyleSheet("QGroupBox{border:0;}");
+        setStyleSheet("QGroupBox{border:0;}");
         setContentsMargins(0, 0, 0, 0);
-		setInsideMargin(0);
-        setInsideSpacing(0);
+        //setInsideMargin(0);
+        //setInsideSpacing(0);
 
-        setColumns(numWidgets_);
+        //setColumns(numWidgets_);
     }
     else
     {
-		setTitle(data_->getName().c_str());
-        setInsideMargin(4);
-        setInsideSpacing(2);
+        setTitle(data_->getName().c_str());
+        setContentsMargins(0,0,0,0);
+        //setInsideMargin(4);
+        //setInsideSpacing(2);
 
-        setColumns(numWidgets_); //datawidget_->numColumnWidget());
+        //setColumns(numWidgets_); //datawidget_->numColumnWidget());
     }
+    gridLayout_->setContentsMargins(10,10,10,10);
+    gridLayout_->addWidget(datawidget_);
+    gridLayout_->setAlignment(datawidget_, Qt::AlignVCenter);
 }
 
 void QDisplayDataWidget::UpdateData()
@@ -194,7 +195,7 @@ bool QDataSimpleEdit::createWidgets()
         innerWidget_.type = TEXTEDIT;
         innerWidget_.widget.textEdit = new QTextEdit(this); innerWidget_.widget.textEdit->setText(str);
         connect(innerWidget_.widget.textEdit , SIGNAL( textChanged() ), this, SLOT ( setWidgetDirty() ) );
-        layout->add(innerWidget_.widget.textEdit);
+        layout->addWidget(innerWidget_.widget.textEdit);
     }
     else
     {
@@ -202,7 +203,7 @@ bool QDataSimpleEdit::createWidgets()
         innerWidget_.widget.lineEdit  = new QLineEdit(this);
         innerWidget_.widget.lineEdit->setText(str);
         connect( innerWidget_.widget.lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT( setWidgetDirty() ) );
-        layout->add(innerWidget_.widget.lineEdit);
+        layout->addWidget(innerWidget_.widget.lineEdit);
     }
 
 
@@ -243,11 +244,11 @@ void QDataSimpleEdit::writeToData()
         std::string value;
         if( innerWidget_.type == TEXTEDIT)
         {
-            value = innerWidget_.widget.textEdit->text().ascii();
+            value = innerWidget_.widget.textEdit->toPlainText().toStdString();
         }
         else if( innerWidget_.type == LINEEDIT)
         {
-            value = innerWidget_.widget.lineEdit->text().ascii();
+            value = innerWidget_.widget.lineEdit->text().toStdString();
         }
         getBaseData()->read(value);
     }
@@ -264,7 +265,7 @@ QPoissonRatioWidget::QPoissonRatioWidget(QWidget * parent, const char * name, so
 
 bool QPoissonRatioWidget::createWidgets()
 {
-    QGridLayout* layout = new QGridLayout(this,2,3);
+    QGridLayout* layout = new QGridLayout(this /*,2,3 */);
 
     lineEdit = new QLineEdit(this);
     lineEdit->setText(QString("-1.0"));
@@ -281,7 +282,7 @@ bool QPoissonRatioWidget::createWidgets()
 
     slider = new QSlider(Qt::Horizontal, this);
     slider->setRange(0,50); //max times 10 at the power 2 (2 digits after ".")
-    slider->setTickmarks(QSlider::Below);
+    slider->setTickPosition(QSlider::TicksBelow);
     slider->setTickInterval(5);
     layout->addWidget(slider,1,1,Qt::AlignHCenter);
 

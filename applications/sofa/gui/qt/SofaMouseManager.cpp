@@ -30,13 +30,6 @@
 #include <sofa/gui/OperationFactory.h>
 
 #include <iostream>
-#ifndef SOFA_QT4
-#include <qlineedit.h>
-#include <qcombobox.h>
-#include <qlabel.h>
-#include <qgroupbox.h>
-#include <qlayout.h>
-#endif
 
 namespace sofa
 {
@@ -82,16 +75,16 @@ void SofaMouseManager::updateContent()
         int idx=0;
         for (OperationFactory::RegisterStorage::const_iterator it=registry.begin(); it!=registry.end(); ++it)
         {
-            gui->LeftOperationCombo  ->insertItem(QString(OperationFactory::GetDescription(it->first).c_str()));
-            gui->MiddleOperationCombo->insertItem(QString(OperationFactory::GetDescription(it->first).c_str()));
-            gui->RightOperationCombo ->insertItem(QString(OperationFactory::GetDescription(it->first).c_str()));
+            gui->LeftOperationCombo  ->addItem(QString(OperationFactory::GetDescription(it->first).c_str()));
+            gui->MiddleOperationCombo->addItem(QString(OperationFactory::GetDescription(it->first).c_str()));
+            gui->RightOperationCombo ->addItem(QString(OperationFactory::GetDescription(it->first).c_str()));
 
             if (OperationFactory::GetDescription(it->first) == OperationFactory::GetDescription(usedOperations[LEFT]))
-                gui->LeftOperationCombo->setCurrentItem(idx);
+                gui->LeftOperationCombo->setCurrentIndex(idx);
             if (OperationFactory::GetDescription(it->first) == OperationFactory::GetDescription(usedOperations[MIDDLE]))
-                gui->MiddleOperationCombo->setCurrentItem(idx);
+                gui->MiddleOperationCombo->setCurrentIndex(idx);
             if (OperationFactory::GetDescription(it->first) == OperationFactory::GetDescription(usedOperations[RIGHT]))
-                gui->RightOperationCombo->setCurrentItem(idx);
+                gui->RightOperationCombo->setCurrentIndex(idx);
 
             mapIndexOperation.insert(std::make_pair(idx++, it->first));
         }
@@ -145,29 +138,17 @@ void SofaMouseManager::updateOperation( Operation* operation)
     {
     case LEFT:
     {
-#ifdef SOFA_QT4
         gui->LeftButton->layout()->addWidget(qoperation);
-#else
-        gui->LeftButton->layout()->add(qoperation);
-#endif
         break;
     }
     case MIDDLE:
     {
-#ifdef SOFA_QT4
         gui->MiddleButton->layout()->addWidget(qoperation);
-#else
-        gui->MiddleButton->layout()->add(qoperation);
-#endif
         break;
     }
     case RIGHT:
     {
-#ifdef SOFA_QT4
         gui->RightButton->layout()->addWidget(qoperation);
-#else
-        gui->RightButton->layout()->add(qoperation);
-#endif
         break;
     }
     default:

@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <initOpenCTMPlugin.h>
+#include <OpenCTMPlugin/config.h>
 
 namespace sofa
 {

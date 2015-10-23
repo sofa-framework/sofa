@@ -27,7 +27,6 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SparseLDLSolver_INL
 #define SOFA_COMPONENT_LINEARSOLVER_SparseLDLSolver_INL
 
-#include <sofa/SofaGeneral.h>
 #include <SofaSparseSolver/SparseLDLSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>

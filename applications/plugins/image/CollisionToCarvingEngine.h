@@ -25,7 +25,7 @@
 #ifndef SOFA_IMAGE_COLLISIONTOCARVINGENGINE_H
 #define SOFA_IMAGE_COLLISIONTOCARVINGENGINE_H
 
-#include "initImage.h"
+#include <image/config.h>
 #include "ImageTypes.h"
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/behavior/BaseForceField.h>
@@ -202,7 +202,7 @@ protected:
 		}
     }
 
-    virtual void draw(const core::visual::VisualParams* vparams)
+    virtual void draw(const core::visual::VisualParams* /*vparams*/)
     {
 
     }

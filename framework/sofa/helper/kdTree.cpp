@@ -22,10 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-
+#define SOFA_HELPER_KDTREE_CPP
 #include "kdTree.inl"
-
 
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -35,19 +33,16 @@ namespace sofa
 namespace helper
 {
 
-using namespace defaulttype;
-
-
 #ifndef SOFA_FLOAT
-template class SOFA_HELPER_API kdTree< Vec2d >;
-template class SOFA_HELPER_API kdTree< Vec3d >;
+template class SOFA_HELPER_API kdTree<sofa::defaulttype::Vec2d>;
+template class SOFA_HELPER_API kdTree<sofa::defaulttype::Vec3d>;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_HELPER_API kdTree< Vec2f >;
-template class SOFA_HELPER_API kdTree< Vec3f >;
+template class SOFA_HELPER_API kdTree<sofa::defaulttype::Vec2f>;
+template class SOFA_HELPER_API kdTree<sofa::defaulttype::Vec3f>;
 #endif
 
-
 }
+
 }

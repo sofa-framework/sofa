@@ -39,6 +39,7 @@
 #include <QPushButton>
 #include <QSpacerItem>
 #include <QGroupBox>
+#include <QHeaderView>
 
 namespace sofa
 {
@@ -50,14 +51,15 @@ namespace qt
 {
 
 
-LinkComponent::LinkComponent(GraphModeler* mg, const std::vector<Q3ListViewItem*>& items, Q3ListViewItem* sel) :
+LinkComponent::LinkComponent(GraphModeler* mg, const std::vector<QTreeWidgetItem*>& items, QTreeWidgetItem* sel) :
     listView(NULL),
     mainGraph(mg),
     items2components(),
     selectedComponent(sel),
     loaderNum(0)
 {
-    setCaption(QString("Link Component"));
+    setWindowTitle(QString("Link Component"));
+    //setCaption(QString("Link Component"));
 
     if(!selectedComponent)
         return;
@@ -70,35 +72,39 @@ LinkComponent::LinkComponent(GraphModeler* mg, const std::vector<Q3ListViewItem*
     QWidget *loaderNameWidget = new QWidget(this);
     QVBoxLayout *loaderNameLayout = new QVBoxLayout(loaderNameWidget);
 
-    listView = new Q3ListView(loaderNameWidget);
+    listView = new QTreeWidget(loaderNameWidget);
     listView->setAcceptDrops(false);
-    listView->setSorting(-1);
+    listView->setSortingEnabled(false);
     listView->header()->hide();
-    listView->setSelectionMode(Q3ListView::Single);
-    listView->addColumn("");
+    listView->setSelectionMode(QAbstractItemView::SingleSelection);
+    //listView->addColumn("");
 
     QString text;
-    Q3ListViewItem *item = NULL;
-    Q3ListViewItem *childItem = NULL;
-    Q3ListViewItem *parentItem = NULL;
-    for(std::vector<Q3ListViewItem*>::const_reverse_iterator it = items.rbegin(); it != items.rend();)
+    QTreeWidgetItem *item = NULL;
+    QTreeWidgetItem *childItem = NULL;
+    QTreeWidgetItem *parentItem = NULL;
+    for(std::vector<QTreeWidgetItem*>::const_reverse_iterator it = items.rbegin(); it != items.rend();)
     {
-        Q3ListViewItem const * const & cur = *it++;
-        Q3ListViewItem const * next = NULL;
+        QTreeWidgetItem const * const & cur = *it++;
+        QTreeWidgetItem const * next = NULL;
         if(it != items.rend())
             next = *it;
 
         if(!item)
         {
-            item = new Q3ListViewItem(listView, cur->text(0));
-            item->setPixmap(0, *cur->pixmap(0));
-            item->setOpen(true);
-            item->setSelectable(false);
+            item = new QTreeWidgetItem(listView);
+            item->setText(0, cur->text(0));//??
+            item->setIcon(0, cur->icon(0));
+            item->setFlags(Qt::ItemIsEnabled);
+            item->setSelected(false);
         }
 
         childItem = NULL;
-        for(Q3ListViewItem* curChild = cur->firstChild(); curChild != NULL; curChild = curChild->nextSibling())
+
+        for(unsigned int i=0 ; i<cur->childCount();i++)
         {
+            QTreeWidgetItem* curChild = cur->child(i);
+
             // is the object a Loader
             bool isLoader = false;
             if(dynamic_cast<sofa::core::loader::BaseLoader*>(mainGraph->getObject(curChild)))
@@ -118,27 +124,33 @@ LinkComponent::LinkComponent(GraphModeler* mg, const std::vector<Q3ListViewItem*
             if(	!isLoader && !isValidNode && !isSelectedObject)
                 continue;
 
-            Q3ListViewItem* previousItem = childItem;
-            childItem = new Q3ListViewItem(item, curChild->text(0));
-            childItem->setPixmap(0, *curChild->pixmap(0));
-            childItem->setOpen(true);
+            QTreeWidgetItem* previousItem = childItem;
+            childItem = new QTreeWidgetItem(item);
+            childItem->setText(0, curChild->text(0));
+            childItem->setIcon(0, curChild->icon(0));
+            childItem->setExpanded(true);
             if(isLoader)
             {
                 items2components[childItem] = dynamic_cast<sofa::core::loader::BaseLoader*>(mainGraph->getObject(curChild));
                 ++loaderNum;
             }
             else
-                childItem->setSelectable(false);
+                childItem->setFlags(Qt::ItemIsEnabled);
 
             if(previousItem)
-                childItem->moveItem(previousItem);
+            {
+                QTreeWidgetItem* parent;
+                int index = parent->indexOfChild(childItem);
+                QTreeWidgetItem* tmpItem = parent->takeChild(index);
+                parent->insertChild(parent->indexOfChild(previousItem), tmpItem);
+            }
 
             if(curChild == next)
                 parentItem = childItem;
 
             if(curChild == sel)
             {
-                childItem->setEnabled(false);
+                childItem->setFlags(Qt::ItemIsSelectable);
                 break;
             }
         }
@@ -174,7 +186,7 @@ LinkComponent::LinkComponent(GraphModeler* mg, const std::vector<Q3ListViewItem*
 
     //***********************************************************************************
     //Do the connections
-    connect(listView, SIGNAL(returnPressed(Q3ListViewItem*)), this, SLOT(applyLinkComponent()));
+    connect(listView, SIGNAL(returnPressed(QTreeWidgetItem*)), this, SLOT(applyLinkComponent()));
     connect(linkButton, SIGNAL(clicked()), this, SLOT(applyLinkComponent()));
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(close()));
 }
@@ -191,17 +203,34 @@ unsigned int LinkComponent::loaderNumber() const
 
 void LinkComponent::applyLinkComponent()
 {
-    Q3ListViewItem* selectedLoader = listView->selectedItem();
-    sofa::core::loader::BaseLoader* loader = items2components[selectedLoader];
+    QList<QTreeWidgetItem*> selectedLoader = listView->selectedItems();
 
-    if(!selectedLoader || !loader)
+    if(selectedLoader.count() < 1 || !items2components[selectedLoader[0]])
     {
         const std::string message="You did not select any loader, the component cannot be linked";
         emit displayMessage(message);
         return;
     }
 
-    int depthDiff = selectedComponent->depth() - selectedLoader->depth();
+    sofa::core::loader::BaseLoader* loader = items2components[selectedLoader[0]];
+
+    //compute depth for the 2 elements as depth() disappeared starting from Qt4
+    int depthComponent=0;
+    int depthLoader=0;
+    QTreeWidgetItem* currentItem = selectedComponent;
+    while(currentItem->parent())
+    {
+        currentItem = currentItem->parent();
+        depthComponent++;
+    }
+    currentItem = selectedLoader[0];
+    while(currentItem->parent())
+    {
+        currentItem = currentItem->parent();
+        depthLoader++;
+    }
+
+    int depthDiff = depthComponent - depthLoader;
 
     std::string loaderPath = "@";
     for(int i = 0; i < depthDiff; ++i)

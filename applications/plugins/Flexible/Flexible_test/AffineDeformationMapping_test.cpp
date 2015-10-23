@@ -110,6 +110,7 @@ namespace sofa {
             }
         }
         
+        using Inherited::runTest;
         /// After simulation compare the positions of points to the theoretical positions.
         bool runTest(double /*convergenceAccuracy*/)
         {

@@ -30,7 +30,6 @@
 #pragma once
 #endif
 
-#include <sofa/SofaCommon.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
@@ -105,7 +104,7 @@ protected:
 
     sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
 
-    class TriangularTMEdgeHandler : public sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge,sofa::helper::vector<EdgeRestInformation> >
+    class TriangularTMEdgeHandler : public topology::TopologyDataHandler<topology::Edge,helper::vector<EdgeRestInformation> >
     {
     public:
         typedef typename TriangularTensorMassForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
@@ -130,6 +129,7 @@ protected:
 
         void applyTriangleDestruction(const sofa::helper::vector<unsigned int> &triangleRemoved);
 
+        using topology::TopologyDataHandler<topology::Edge,helper::vector<EdgeRestInformation> >::ApplyTopologyChange;
         /// Callback to add triangles elements.
         void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
         /// Callback to remove triangles elements.

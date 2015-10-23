@@ -1,13 +1,11 @@
 #ifndef LABELPOINTIMAGETOOLBOXACTION_H
 #define LABELPOINTIMAGETOOLBOXACTION_H
 
-#include <QtGui>
-
+#include <QPushButton>
 
 #include "../labelimagetoolboxaction.h"
-//#include "labelpointimagetoolbox.h"
 
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 
 namespace sofa
 {

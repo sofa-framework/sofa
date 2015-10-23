@@ -108,6 +108,7 @@ namespace sofa {
 
         }
       
+        using Mapping_test<_Mapping>::runTest;
         bool runTest(double convergenceAccuracy)
         {
             // Init simulation

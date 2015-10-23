@@ -138,7 +138,7 @@ public:
     }
 
     /// multiply the transpose current matrix by m matrix and strore the result in m
-    virtual void opMulTM(defaulttype::BaseMatrix * bresult,defaulttype::BaseMatrix * bm)
+    virtual void opMulTM(defaulttype::BaseMatrix * bresult,defaulttype::BaseMatrix * bm) const
     {
         if (RotationMatrix<Real> * m = dynamic_cast<RotationMatrix<Real> * >(bm))
         {

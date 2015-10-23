@@ -210,7 +210,7 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::update()
 
 
 template <class DataTypes>
-void ExtrudeQuadsAndGenerateHexas<DataTypes>::draw()
+void ExtrudeQuadsAndGenerateHexas<DataTypes>::draw(const core::visual::VisualParams *)
 {
 
 }

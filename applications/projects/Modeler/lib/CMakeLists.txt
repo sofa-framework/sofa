@@ -1,71 +1,74 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(SofaModeler)
 
 set(HEADER_FILES
-
-    SofaModeler.h
-    GraphModeler.h
-    SofaTutorialManager.h
-    TutorialSelector.h
+    ../../../sofa/gui/qt/SofaPluginManager.h
     AddPreset.h
     FilterLibrary.h
     GlobalModification.h
-	LinkComponent.h
     GraphHistoryManager.h
+    GraphModeler.h
+    LinkComponent.h
     ModifierCondition.h
-    ../../../sofa/gui/qt/SofaPluginManager.h
+    QCategoryTreeLibrary.h
+    QComponentTreeLibrary.h
+    QSofaTreeLibrary.h
+    SofaModeler.h
+    SofaTutorialManager.h
+    TutorialSelector.h
 )
 
 set(SOURCE_FILES
-
-    SofaModeler.cpp
-    GraphModeler.cpp
-	LinkComponent.cpp
-    SofaTutorialManager.cpp
-    TutorialSelector.cpp
+    ../../../sofa/gui/qt/SofaPluginManager.cpp
     AddPreset.cpp
     FilterLibrary.cpp
     GlobalModification.cpp
     GraphHistoryManager.cpp
+    GraphModeler.cpp
+    LinkComponent.cpp
     ModifierCondition.cpp
-    ../../../sofa/gui/qt/SofaPluginManager.cpp
+    QCategoryTreeLibrary.cpp
+    QComponentTreeLibrary.cpp
+    QSofaTreeLibrary.cpp
+    SofaModeler.cpp
+    SofaTutorialManager.cpp
+    TutorialSelector.cpp
 )
 
 set(UI_FILES ../../../sofa/gui/qt/PluginManager.ui)
 
-list(APPEND HEADER_FILES "QSofaTreeLibrary.h")
-list(APPEND HEADER_FILES "QCategoryTreeLibrary.h")
-list(APPEND HEADER_FILES "QComponentTreeLibrary.h")
+find_package(Qt5 COMPONENTS Core QUIET)
 
-list(APPEND SOURCE_FILES "QSofaTreeLibrary.cpp")
-list(APPEND SOURCE_FILES "QCategoryTreeLibrary.cpp")
-list(APPEND SOURCE_FILES "QComponentTreeLibrary.cpp")
+if(Qt5Core_FOUND)
+    message("Modeler: Using Qt5")
+    find_package(Qt5 COMPONENTS Gui OpenGL REQUIRED)
 
-qt4_wrap_cpp(MOC_FILES ${HEADER_FILES})
-qt4_wrap_ui(FORM_FILES ${UI_FILES})
+    set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS} ${Qt5Xml_INCLUDE_DIRS})
+    set(EXT_QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES})
 
-# make mocced header / form files path from absolute to relative
-#ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
-#ToRelativePath(FORM_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${FORM_FILES}")
+    qt5_wrap_cpp(MOC_FILES ${HEADER_FILES})
+    set(MOC_FILES_GROUP "Generated")
 
-set(MOC_FILES_GROUP "Generated")
-set(FORM_FILES_GROUP "Generated")
+    qt5_wrap_ui(FORM_FILES ${UI_FILES})
+    set(FORM_FILES_GROUP "Generated")
+
+else()
+    message("Modeler: Using Qt4")
+
+    find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml)
+    set (EXT_QT_INCLUDES ${QT_INCLUDES})
+    set(EXT_QT_LIBRARIES ${QT_LIBRARIES})
+
+    qt4_wrap_cpp(MOC_FILES ${HEADER_FILES})
+    set(MOC_FILES_GROUP "Generated")
+
+    qt4_wrap_ui(FORM_FILES ${UI_FILES})
+    set(FORM_FILES_GROUP "Generated")
+endif()
 
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
-
-# since "SofaComponentMain" does not exist any more we link to every components collection
-# this is temporary, until every module is switched to plugins
-target_link_libraries(${PROJECT_NAME} SofaGuiMain SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
-# SofaGuiCommon Qwt SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField
-
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFABASE_VERSION})
+target_link_libraries(${PROJECT_NAME} SofaGuiMain SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc ${EXT_QT_LIBRARIES})
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${EXT_QT_INCLUDES}>")
 
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaGui_libraries
-        EXPORT SofaGuiTargets
-        RUNTIME DESTINATION "${SOFABASE_INSTALL_BIN_DIR}"
-        LIBRARY DESTINATION "${SOFABASE_INSTALL_LIB_DIR}"
-        ARCHIVE DESTINATION "${SOFABASE_INSTALL_LIB_DIR}"
-        PUBLIC_HEADER DESTINATION "${SOFABASE_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}")
+sofa_install_targets(SofaGui SofaModeler "SofaModeler")

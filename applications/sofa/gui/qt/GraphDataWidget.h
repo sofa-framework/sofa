@@ -157,9 +157,7 @@ class GraphSetting
 public:
     virtual ~GraphSetting() {};
     virtual void exportGNUPlot(const std::string &baseFileName) const=0;
-#ifdef SOFA_QT4
     virtual void exportImage(const std::string &baseFileName) const=0;
-#endif
 };
 
 class GraphOptionWidget: public QWidget
@@ -172,10 +170,7 @@ public slots:
 
     void openFindFileDialog();
     void exportGNUPlot();
-//MOC_SKIP_BEGIN
-#ifdef SOFA_QT4
     void exportImage();
-#endif
 //MOC_SKIP_END
 
     bool isCheckedBox() {
@@ -188,12 +183,11 @@ protected:
     QLineEdit *fileGNUPLOTLineEdit;
     QPushButton* findGNUPLOTFile;
 
-#ifdef SOFA_QT4
     QCheckBox * checkBox;
     QPushButton* exportImageButton;
     QLineEdit *fileImageLineEdit;
     QPushButton* findImageFile;
-#endif
+
     GraphSetting *graph;
 };
 
@@ -213,14 +207,10 @@ public:
 
     GraphWidget(QWidget *parent)
     {
-#ifdef SOFA_QT4
         w = new Widget(QwtText(""), parent);
-#else
-        w = new Widget(parent, "Graph");
-#endif
 
         w->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
-        w->setAxisScaleEngine(Widget::yLeft, new QwtLog10ScaleEngine);
+        w->setAxisScaleEngine(Widget::yLeft, new QwtLogScaleEngine(10));
     }
 
     virtual ~GraphWidget() {};
@@ -291,7 +281,7 @@ public:
             if(c->minYValue() < minY) minY = c->minYValue();
             if(c->maxYValue() > maxY) maxY = c->maxYValue();
 
-            rect = rect.unite(cdata[i]->boundingRect());
+            rect = rect.united(cdata[i]->boundingRect());
         }
 
 
@@ -329,7 +319,7 @@ public:
             gnuplotFile.close();
         }
     }
-#ifdef SOFA_QT4
+
     void exportImage(const std::string &baseFileName) const
     {
         const std::string filename=baseFileName + ".svg";
@@ -351,7 +341,7 @@ public:
         //	w->print(image,filter);
         //	image.save(filename.c_str());
     }
-#endif
+
 protected:
     std::string getCurveFilename(unsigned int idx) const
     {
@@ -399,7 +389,8 @@ public:
     bool createLayout( QLayout* layout)
     {
         if ( container_layout != NULL ) return false;
-        container_layout = new Layout(layout);
+        container_layout = new Layout();
+        layout->addItem(container_layout);
         return true;
     }
 
@@ -425,8 +416,8 @@ public:
     void insertWidgets()
     {
         assert(container_layout);
-        container_layout->add(w->getWidget());
-        container_layout->add(options);
+        container_layout->addWidget(w->getWidget());
+        container_layout->addWidget(options);
     }
 };
 

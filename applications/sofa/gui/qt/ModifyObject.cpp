@@ -36,18 +36,13 @@
 #endif
 
 #include <iostream>
-#ifdef SOFA_QT4
+
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QTabWidget>
-#include <Q3ListView>
-#else
-#include <qpushbutton.h>
-#include <qlayout.h>
-#include <qtabwidget.h>
-#include <qtextedit.h>
-#endif
+#include <QTreeWidget>
+
 
 // uncomment to show traces of GUI operations in this file
 //#define DEBUG_GUI
@@ -62,14 +57,13 @@ namespace qt
 {
 
 
-ModifyObject::ModifyObject(
-    void *Id,
-    Q3ListViewItem* item_clicked,
+ModifyObject::ModifyObject(void *Id,
+    QTreeWidgetItem* item_clicked,
     QWidget* parent,
     const ModifyObjectFlags& dialogFlags,
     const char* name,
-    bool modal, Qt::WFlags f )
-    :QDialog(parent, name, modal, f),
+    bool modal, Qt::WindowFlags f )
+    :QDialog(parent, f),
      Id_(Id),
      item_(item_clicked),
      node(NULL),
@@ -85,7 +79,9 @@ ModifyObject::ModifyObject(
      ,momentum(NULL)
 #endif
 {
-    setCaption(name);
+    setWindowTitle(name);
+    //setObjectName(name);
+    setModal(modal);
 }
 
 void ModifyObject::createDialog(core::objectmodel::Base* base)
@@ -108,22 +104,27 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
     data_ = NULL;
 
     //Layout to organize the whole window
-    QVBoxLayout *generalLayout = new QVBoxLayout(this, 0, 1, "generalLayout");
-
+    QVBoxLayout *generalLayout = new QVBoxLayout(this);
+    generalLayout->setObjectName("generalLayout");
+    generalLayout->setMargin(0);
+    generalLayout->setSpacing(1);
     //Tabulation widget
     dialogTab = new QTabWidget(this);
     generalLayout->addWidget(dialogTab);
-    connect(dialogTab, SIGNAL( currentChanged( QWidget*)), this, SLOT( updateTables()));
+    connect(dialogTab, SIGNAL( currentChanged(int)), this, SLOT( updateTables()));
 
 //    bool isNode = (dynamic_cast< simulation::Node *>(node) != NULL);
 
-    buttonUpdate = new QPushButton( this, "buttonUpdate" );
+    buttonUpdate = new QPushButton( this );
+    buttonUpdate->setObjectName("buttonUpdate");
     buttonUpdate->setText("&Update");
     buttonUpdate->setEnabled(false);
-    QPushButton *buttonOk = new QPushButton( this, "buttonOk" );
+    QPushButton *buttonOk = new QPushButton( this );
+    buttonOk->setObjectName("buttonOk");
     buttonOk->setText( tr( "&OK" ) );
 
-    QPushButton *buttonCancel = new QPushButton( this, "buttonCancel" );
+    QPushButton *buttonCancel = new QPushButton( this );
+    buttonCancel->setObjectName("buttonCancel");
     buttonCancel->setText( tr( "&Cancel" ) );
 
     // displayWidget
@@ -327,7 +328,10 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
 
         //Adding buttons at the bottom of the dialog
-        QHBoxLayout *lineLayout = new QHBoxLayout( 0, 0, 6, "Button Layout");
+        QHBoxLayout *lineLayout = new QHBoxLayout( 0);
+        lineLayout->setMargin(0);
+        lineLayout->setSpacing(6);
+        lineLayout->setObjectName("Button Layout");
         lineLayout->addWidget(buttonUpdate);
         QSpacerItem *Horizontal_Spacing = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
         lineLayout->addItem( Horizontal_Spacing );
@@ -360,14 +364,23 @@ void ModifyObject::createDialog(core::objectmodel::BaseData* data)
     std::cout << "GUI: createDialog( Data<" << data->getValueTypeString() << "> " << data->getName() << ")" << std::endl;
 #endif
 
-    QVBoxLayout *generalLayout = new QVBoxLayout(this, 0, 1, "generalLayout");
-    QHBoxLayout *lineLayout = new QHBoxLayout( 0, 0, 6, "Button Layout");
-    buttonUpdate = new QPushButton( this, "buttonUpdate" );
+    QVBoxLayout *generalLayout = new QVBoxLayout(this);
+    generalLayout->setMargin(0);
+    generalLayout->setSpacing(1);
+    generalLayout->setObjectName("generalLayout");
+    QHBoxLayout *lineLayout = new QHBoxLayout( 0);
+    lineLayout->setMargin(0);
+    lineLayout->setSpacing(6);
+    lineLayout->setObjectName("Button Layout");
+    buttonUpdate = new QPushButton( this );
+    buttonUpdate->setObjectName("buttonUpdate");
     buttonUpdate->setText("&Update");
     buttonUpdate->setEnabled(false);
-    QPushButton *buttonOk = new QPushButton( this, "buttonOk" );
+    QPushButton *buttonOk = new QPushButton( this );
+    buttonOk->setObjectName("buttonOk");
     buttonOk->setText( tr( "&OK" ) );
-    QPushButton *buttonCancel = new QPushButton( this, "buttonCancel" );
+    QPushButton *buttonCancel = new QPushButton( this );
+    buttonCancel->setObjectName("buttonCancel");
     buttonCancel->setText( tr( "&Cancel" ) );
 
     QDisplayDataWidget* displaydatawidget = new QDisplayDataWidget(this,data,getFlags());
@@ -401,23 +414,27 @@ void ModifyObject::updateConsole()
         if (!logWarningEdit)
         {
             warningTab = new QWidget();
-            QVBoxLayout* tabLayout = new QVBoxLayout( warningTab, 0, 1, QString("tabWarningLayout"));
-
-            QPushButton *buttonClearWarnings = new QPushButton(warningTab, "buttonClearWarnings");
+            QVBoxLayout* tabLayout = new QVBoxLayout( warningTab);
+            tabLayout->setMargin(0);
+            tabLayout->setSpacing(1);
+            tabLayout->setObjectName("tabWarningLayout");
+            QPushButton *buttonClearWarnings = new QPushButton(warningTab);
+            buttonClearWarnings->setObjectName("buttonClearWarnings");
             tabLayout->addWidget(buttonClearWarnings);
             buttonClearWarnings->setText( tr("&Clear"));
             connect( buttonClearWarnings, SIGNAL( clicked()), this, SLOT( clearWarnings()));
 
-            logWarningEdit = new Q3TextEdit( warningTab, QString("WarningEdit"));
+            logWarningEdit = new QTextEdit( warningTab);
+            logWarningEdit->setObjectName("WarningEdit");
             tabLayout->addWidget( logWarningEdit );
 
             logWarningEdit->setReadOnly(true);
         }
 
-        if (dialogTab->currentPage() == warningTab)
+        if (dialogTab->currentWidget() == warningTab)
         {
             logWarningEdit->setText(QString(node->getWarnings().c_str()));
-            logWarningEdit->moveCursor(Q3TextEdit::MoveEnd, false);
+            logWarningEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
             logWarningEdit->ensureCursorVisible();
         }
     }
@@ -427,23 +444,27 @@ void ModifyObject::updateConsole()
         if (!logOutputEdit)
         {
             outputTab = new QWidget();
-            QVBoxLayout* tabLayout = new QVBoxLayout( outputTab, 0, 1, QString("tabOutputLayout"));
-
-            QPushButton *buttonClearOutputs = new QPushButton(outputTab, "buttonClearOutputs");
+            QVBoxLayout* tabLayout = new QVBoxLayout( outputTab );
+            tabLayout->setMargin(0);
+            tabLayout->setSpacing(1);
+            tabLayout->setObjectName("tabOutputLayout");
+            QPushButton *buttonClearOutputs = new QPushButton(outputTab);
+            buttonClearOutputs->setObjectName("buttonClearOutputs");
             tabLayout->addWidget(buttonClearOutputs);
             buttonClearOutputs->setText( tr("&Clear"));
             connect( buttonClearOutputs, SIGNAL( clicked()), this, SLOT( clearOutputs()));
 
-            logOutputEdit = new Q3TextEdit( outputTab, QString("OutputEdit"));
+            logOutputEdit = new QTextEdit( outputTab );
+            logOutputEdit->setObjectName("OutputEdit");
             tabLayout->addWidget( logOutputEdit );
 
             logOutputEdit->setReadOnly(true);
         }
 
-        if (dialogTab->currentPage() == outputTab)
+        if (dialogTab->currentWidget() == outputTab)
         {
             logOutputEdit->setText(QString(node->getOutputs().c_str()));
-            logOutputEdit->moveCursor(Q3TextEdit::MoveEnd, false);
+            logOutputEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
             logOutputEdit->ensureCursorVisible();
         }
     }
@@ -515,9 +536,9 @@ void ModifyObject::updateValues()
 
 void ModifyObject::updateListViewItem()
 {
-    Q3ListViewItem* parent = item_->parent();
+    QTreeWidgetItem* parent = item_->parent();
     QString currentName =parent->text(0);
-    std::string name = parent->text(0).ascii();
+    std::string name = parent->text(0).toStdString();
     std::string::size_type pos = name.find(' ');
     if (pos != std::string::npos)
         name.resize(pos);
@@ -542,13 +563,13 @@ void ModifyObject::updateTables()
     if (energy)
     {
         energy->step();
-        if (dialogTab->currentPage() == energy) energy->updateVisualization();
+        if (dialogTab->currentWidget() == energy) energy->updateVisualization();
     }
 
     if (momentum)
     {
         momentum->step();
-        if (dialogTab->currentPage() == momentum) momentum->updateVisualization();
+        if (dialogTab->currentWidget() == momentum) momentum->updateVisualization();
     }
 #endif
 

@@ -23,7 +23,7 @@
     <!-- fixedPosition = USER POSITIONS OF FRAMES -->
     <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="5" fixedPosition="" printLog="false"/>
     <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-    <MechanicalObject template="Quadratic" name="parent" useMask="0" showObject="true" showObjectScale="0.5" src="@merged" />
+    <MechanicalObject template="Quadratic" name="parent"  showObject="true" showObjectScale="0.5" src="@merged" />
 
 
     <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@merged.position" name="FixedROI"/>
@@ -36,7 +36,7 @@
       <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
       <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="50" />
 
-      <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
+      <MechanicalObject template="F332" name="F"    showObject="1" showObjectScale="0.05" />
       <LinearMapping template="Quadratic,F332"  />
 
       <Node 	name="E"   >
@@ -58,7 +58,7 @@
     <Node 	name="collision"   >
       <MeshObjLoader name="MeshLoader" filename="mesh/torus.obj"/>
       <Mesh name="mesh" src="@MeshLoader" />
-      <MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
+      <MechanicalObject  template="Vec3d" name="pts"    />
       <LinearMapping template="Quadratic,Vec3d"/>
     </Node>
     <Node 	name="visual"   >
@@ -84,7 +84,7 @@
     <!-- fixedPosition = USER POSITIONS OF FRAMES -->
     <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="5" fixedPosition="" printLog="false"/>
     <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-    <MechanicalObject template="Quadratic" name="parent" useMask="0" showObject="true" showObjectScale="0.5" src="@merged" />
+    <MechanicalObject template="Quadratic" name="parent"  showObject="true" showObjectScale="0.5" src="@merged" />
 
 
     <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@merged.position" name="FixedROI"/>
@@ -101,7 +101,7 @@
       <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
       <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="50" />
 
-      <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
+      <MechanicalObject template="F332" name="F"    showObject="1" showObjectScale="0.05" />
       <LinearMapping template="Quadratic,F332"  />
 
       <Node 	name="E"   >
@@ -115,7 +115,7 @@
     <Node 	name="collision"   >
       <MeshObjLoader name="MeshLoader" filename="mesh/torus.obj"/>
       <Mesh name="mesh" src="@MeshLoader" />
-      <MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
+      <MechanicalObject  template="Vec3d" name="pts"    />
       <LinearMapping template="Quadratic,Vec3d"/>
     </Node>
 
@@ -136,7 +136,7 @@
     <!-- fixedPosition = USER POSITIONS OF FRAMES -->
     <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="5" fixedPosition="" printLog="false"/>
     <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-    <MechanicalObject template="Quadratic" name="parent" useMask="0" showObject="true" showObjectScale="0.5" src="@merged" />
+    <MechanicalObject template="Quadratic" name="parent"  showObject="true" showObjectScale="0.5" src="@merged" />
 
 
     <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@merged.position" name="FixedROI"/>
@@ -153,7 +153,7 @@
       <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
       <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="50" />
 
-      <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
+      <MechanicalObject template="F332" name="F"    showObject="1" showObjectScale="0.05" />
       <LinearMapping template="Quadratic,F332"  />
 
       <Node 	name="E"   >
@@ -167,7 +167,7 @@
     <Node 	name="collision"   >
       <MeshObjLoader name="MeshLoader" filename="mesh/torus.obj"/>
       <Mesh name="mesh" src="@MeshLoader" />
-      <MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
+      <MechanicalObject  template="Vec3d" name="pts"    />
       <LinearMapping template="Quadratic,Vec3d"/>
     </Node>
 
@@ -187,7 +187,7 @@
     <!-- fixedPosition = USER POSITIONS OF FRAMES -->
     <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="5" fixedPosition="" printLog="false"/>
     <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-    <MechanicalObject template="Quadratic" name="parent" useMask="0" showObject="true" showObjectScale="0.5" src="@merged" />
+    <MechanicalObject template="Quadratic" name="parent"  showObject="true" showObjectScale="0.5" src="@merged" />
 
 
     <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@merged.position" name="FixedROI"/>
@@ -204,7 +204,7 @@
       <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
       <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="50" />
 
-      <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
+      <MechanicalObject template="F332" name="F"    showObject="1" showObjectScale="0.05" />
       <LinearMapping template="Quadratic,F332"  />
 
       <Node 	name="E"   >
@@ -218,7 +218,7 @@
     <Node 	name="collision"   >
       <MeshObjLoader name="MeshLoader" filename="mesh/torus.obj"/>
       <Mesh name="mesh" src="@MeshLoader" />
-      <MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
+      <MechanicalObject  template="Vec3d" name="pts"    />
       <LinearMapping template="Quadratic,Vec3d"/>
     </Node>
 

@@ -127,6 +127,27 @@ void OmniDriverEmu::setForceFeedbacks(vector<ForceFeedback*> ffs)
 void OmniDriverEmu::cleanup()
 {
     sout << "OmniDriverEmu::cleanup()" << sendl;
+
+    // If the thread is still running stop it
+    if (omniSimThreadCreated)
+    {
+#ifndef WIN32
+        int err = pthread_cancel(hapSimuThread);
+
+        // no error: thread cancel
+        if(err==0)
+        {
+            std::cout << "OmniDriverEmu: thread haptic cancel in cleanup" << std::endl;
+
+        }
+
+        // error
+        else
+        {
+            std::cout << "OmniDriverEmu: thread not cancel in cleanup = "  << err  << std::endl;
+        }
+#endif
+    }
 }
 
 void OmniDriverEmu::init()
@@ -136,7 +157,7 @@ void OmniDriverEmu::init()
     if (!mState) serr << "OmniDriverEmu has no binding MechanicalState" << sendl;
     else std::cout << "[Omni] init" << std::endl;
 
-    if(mState->getSize()<toolCount.getValue())
+    if(mState->getSize()<(size_t)toolCount.getValue())
         mState->resize(toolCount.getValue());
 }
 
@@ -495,7 +516,7 @@ void OmniDriverEmu::reinit()
 
 }
 
-void OmniDriverEmu::draw()
+void OmniDriverEmu::draw(const core::visual::VisualParams *)
 {
     if(omniVisu.getValue())
     {

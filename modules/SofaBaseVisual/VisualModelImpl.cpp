@@ -31,12 +31,13 @@
 #include <SofaBaseTopology/QuadSetTopologyModifier.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
 #include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
+#include <SofaBaseTopology/BezierTriangleSetTopologyContainer.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
 #include <SofaBaseTopology/SparseGridTopology.h>
-
+#include <SofaBaseTopology/CommonAlgorithms.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/gl/RAII.h>
 #include <sofa/helper/vector.h>
@@ -585,9 +586,9 @@ void VisualModelImpl::applyUVTransformation()
     m_translationTex.setValue(TexCoord(0,0));
 }
 
-void VisualModelImpl::applyTranslation(const Real dx, const Real dy, const Real dz)
+void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SReal dz)
 {
-    Coord d(dx,dy,dz);
+    Coord d((Real)dx,(Real)dy,(Real)dz);
 
     Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
     VecCoord &x = *d_x->beginEdit();
@@ -615,9 +616,9 @@ void VisualModelImpl::applyTranslation(const Real dx, const Real dy, const Real 
     updateVisual();
 }
 
-void VisualModelImpl::applyRotation(const Real rx, const Real ry, const Real rz)
+void VisualModelImpl::applyRotation(const SReal rx, const SReal ry, const SReal rz)
 {
-    Quaternion q = helper::Quater<SReal>::createQuaterFromEuler( Vec<3,Real>(rx,ry,rz)*M_PI/180.0);
+    Quaternion q = helper::Quater<SReal>::createQuaterFromEuler( Vec<3,SReal>(rx,ry,rz)*M_PI/180.0);
     applyRotation(q);
 }
 
@@ -648,16 +649,16 @@ void VisualModelImpl::applyRotation(const Quat q)
     updateVisual();
 }
 
-void VisualModelImpl::applyScale(const Real sx, const Real sy, const Real sz)
+void VisualModelImpl::applyScale(const SReal sx, const SReal sy, const SReal sz)
 {
     Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
     VecCoord &x = *d_x->beginEdit();
 
     for (unsigned int i = 0; i < x.size(); i++)
     {
-        x[i][0] *=  sx;
-        x[i][1] *=  sy;
-        x[i][2] *=  sz;
+        x[i][0] *= (Real)sx;
+        x[i][1] *= (Real)sy;
+        x[i][2] *= (Real)sz;
     }
 
     d_x->endEdit();
@@ -668,9 +669,9 @@ void VisualModelImpl::applyScale(const Real sx, const Real sy, const Real sz)
 
         for (unsigned int i = 0; i < restPositions.size(); i++)
         {
-            restPositions[i][0] *=  sx;
-            restPositions[i][1] *=  sy;
-            restPositions[i][2] *=  sz;
+            restPositions[i][0] *= (Real)sx;
+            restPositions[i][1] *= (Real)sy;
+            restPositions[i][2] *= (Real)sz;
         }
 
         m_restPositions.endEdit();
@@ -1024,7 +1025,7 @@ void VisualModelImpl::computeTangents()
     m_vbitangents.endEdit();
 }
 
-void VisualModelImpl::computeBBox(sofa::core::ExecParams* params, bool)
+void VisualModelImpl::computeBBox(const core::ExecParams* params, bool)
 {
     const VecCoord& x = getVertices(); //m_vertices.getValue(params);
 
@@ -1206,10 +1207,11 @@ void VisualModelImpl::updateVisual()
             }
         }
         computePositions();
+        updateBuffers();
+
         computeNormals();
         if (m_updateTangents.getValue())
             computeTangents();
-        updateBuffers();
         modified = false;
     }
 
@@ -1271,11 +1273,24 @@ void VisualModelImpl::computePositions()
         m_vertices2.endEdit();
     }
 }
-
+double multinomial(const size_t n,const sofa::component::topology::TriangleBezierIndex tbiIn)
+{
+	size_t i,ival;
+	sofa::component::topology::TriangleBezierIndex tbi=tbiIn;
+	// divide n! with the largest of the multinomial coefficient
+	std::sort(tbi.begin(),tbi.end());
+	ival=1;
+	for (i=n;i>tbi[2];--i){
+		ival*=i;
+	}
+	return(((double)ival)/(sofa::helper::factorial(tbi[0])*sofa::helper::factorial(tbi[1])));
+}
 void VisualModelImpl::computeMesh()
 {
     using sofa::component::topology::SparseGridTopology;
     using sofa::core::behavior::BaseMechanicalState;
+
+	sofa::helper::vector<Coord> bezierControlPointsArray;
 
     if ((m_positions.getValue()).empty() && (m_vertices2.getValue()).empty())
     {
@@ -1291,39 +1306,41 @@ void VisualModelImpl::computeMesh()
                 setMesh(m, !texturename.getValue().empty());
                 sout << m.getVertices().size() << " points, " << m.getFacets().size()  << " triangles." << sendl;
                 useTopology = false; //visual model needs to be created only once at initial time
-                return;
-            }
+				return;
+			}
 
-            if (this->f_printLog.getValue())
-                sout << "VisualModel: copying " << m_topology->getNbPoints() << " points from topology." << sendl;
+			if (this->f_printLog.getValue())
+				sout << "VisualModel: copying " << m_topology->getNbPoints() << " points from topology." << sendl;
 
-            vertices.resize(m_topology->getNbPoints());
+			vertices.resize(m_topology->getNbPoints());
 
-            for (unsigned int i=0; i<vertices.size(); i++)
-            {
-                vertices[i][0] = (Real)m_topology->getPX(i);
-                vertices[i][1] = (Real)m_topology->getPY(i);
-                vertices[i][2] = (Real)m_topology->getPZ(i);
-            }
+			for (unsigned int i=0; i<vertices.size(); i++)
+			{
+				vertices[i][0] = (Real)m_topology->getPX(i);
+				vertices[i][1] = (Real)m_topology->getPY(i);
+				vertices[i][2] = (Real)m_topology->getPZ(i);
+			}
+
         }
         else
         {
             BaseMechanicalState* mstate = dynamic_cast< BaseMechanicalState* >(m_topology->getContext()->getMechanicalState());
 
             if (mstate)
-            {
-                if (this->f_printLog.getValue())
-                    sout << "VisualModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
+			{
+				if (this->f_printLog.getValue())
+					sout << "VisualModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
 
-                vertices.resize(mstate->getSize());
+				vertices.resize(mstate->getSize());
 
-                for (unsigned int i=0; i<vertices.size(); i++)
-                {
-                    vertices[i][0] = (Real)mstate->getPX(i);
-                    vertices[i][1] = (Real)mstate->getPY(i);
-                    vertices[i][2] = (Real)mstate->getPZ(i);
-                }
-            }
+				for (unsigned int i=0; i<vertices.size(); i++)
+				{
+					vertices[i][0] = (Real)mstate->getPX(i);
+					vertices[i][1] = (Real)mstate->getPY(i);
+					vertices[i][2] = (Real)mstate->getPZ(i);
+				}
+				
+			}
         }
         m_positions.endEdit();
     }
@@ -1332,17 +1349,19 @@ void VisualModelImpl::computeMesh()
 
     const vector< Triangle >& inputTriangles = m_topology->getTriangles();
 
-    if (this->f_printLog.getValue())
-        sout << "VisualModel: copying " << inputTriangles.size() << " triangles from topology." << sendl;
 
-    ResizableExtVector< Triangle >& triangles = *(m_triangles.beginEdit());
-    triangles.resize(inputTriangles.size());
+	if (this->f_printLog.getValue())
+		sout << "VisualModel: copying " << inputTriangles.size() << " triangles from topology." << sendl;
 
-    for (unsigned int i=0; i<triangles.size(); ++i)
-    {
-        triangles[i] = inputTriangles[i];
-    }
-    m_triangles.endEdit();
+	ResizableExtVector< Triangle >& triangles = *(m_triangles.beginEdit());
+	triangles.resize(inputTriangles.size());
+
+	for (unsigned int i=0; i<triangles.size(); ++i)
+	{
+		triangles[i] = inputTriangles[i];
+	}
+	m_triangles.endEdit();
+
 
     const vector< BaseMeshTopology::Quad >& inputQuads = m_topology->getQuads();
 

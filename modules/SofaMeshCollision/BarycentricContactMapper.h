@@ -224,13 +224,20 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_CPP)
-//extern template class SOFA_MESH_COLLISION_API ContactMapper<SphereModel>;
-//extern template class SOFA_MESH_COLLISION_API ContactMapper<PointModel>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<LineModel>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<TriangleModel>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<CapsuleModel>;
-//extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidDistanceGridCollisionModel>;
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
+extern template class SOFA_MESH_COLLISION_API ContactMapper<LineModel, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<TriangleModel, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<CapsuleModel, sofa::defaulttype::Vec3Types>;
+
+#  ifdef _MSC_VER
+// Manual declaration of non-specialized members, to avoid warnings from MSVC.
+extern template SOFA_MESH_COLLISION_API void BarycentricContactMapper<LineModel, defaulttype::Vec3Types>::cleanup();
+extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* BarycentricContactMapper<LineModel, defaulttype::Vec3Types>::createMapping(const char*);
+extern template SOFA_MESH_COLLISION_API void BarycentricContactMapper<TriangleModel, defaulttype::Vec3Types>::cleanup();
+extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* BarycentricContactMapper<TriangleModel, defaulttype::Vec3Types>::createMapping(const char*);
+extern template SOFA_MESH_COLLISION_API void BarycentricContactMapper<CapsuleModel, defaulttype::Vec3Types>::cleanup();
+extern template SOFA_MESH_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* BarycentricContactMapper<CapsuleModel, defaulttype::Vec3Types>::createMapping(const char*);
+#  endif
 #endif
 
 } // namespace collision

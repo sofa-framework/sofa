@@ -1,7 +1,7 @@
 #ifndef COMPLIANT_CompliantNLImplicitSolver_H
 #define COMPLIANT_CompliantNLImplicitSolver_H
 
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 #include <Compliant/odesolver/CompliantImplicitSolver.h>
 #include <sofa/simulation/common/MechanicalOperations.h>
 
@@ -59,7 +59,7 @@ class SOFA_Compliant_API CompliantNLImplicitSolver : public CompliantImplicitSol
 
 
 
-
+    using CompliantImplicitSolver::integrate;
     /// newPos = oldPos + beta*h*vel
     void integrate( SolverOperations& sop, core::MultiVecCoordId oldPos, core::MultiVecCoordId newPos, core::MultiVecDerivId vel );
 

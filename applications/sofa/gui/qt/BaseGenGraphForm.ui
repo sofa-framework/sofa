@@ -54,7 +54,7 @@
    <item>
     <layout class="QHBoxLayout">
      <item>
-      <widget class="Q3ButtonGroup" name="layoutGroup">
+      <widget class="QGroupBox" name="layoutGroup">
        <property name="title">
         <string>Layout</string>
        </property>
@@ -94,7 +94,7 @@
       </widget>
      </item>
      <item>
-      <widget class="Q3GroupBox" name="outputsBox">
+      <widget class="QGroupBox" name="outputsBox">
        <property name="title">
         <string>Outputs</string>
        </property>
@@ -227,7 +227,7 @@
     </layout>
    </item>
    <item>
-    <widget class="Q3GroupBox" name="filterBox">
+    <widget class="QGroupBox" name="filterBox">
      <property name="title">
       <string>Filter</string>
      </property>
@@ -398,7 +398,7 @@
    <item>
     <layout class="QHBoxLayout">
      <item>
-      <widget class="Q3GroupBox" name="groupNodeLabel">
+      <widget class="QGroupBox" name="groupNodeLabel">
        <property name="title">
         <string>Nodes Labels</string>
        </property>
@@ -424,7 +424,7 @@
       </widget>
      </item>
      <item>
-      <widget class="Q3GroupBox" name="groupObjectLabel">
+      <widget class="QGroupBox" name="groupObjectLabel">
        <property name="title">
         <string>Objects Labels</string>
        </property>
@@ -513,20 +513,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ButtonGroup</class>
-   <extends>Q3GroupBox</extends>
-   <header>Qt3Support/Q3ButtonGroup</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>filename</tabstop>
   <tabstop>browseButton</tabstop>

@@ -29,10 +29,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vector.h>
-
-#ifdef SOFA_HAVE_EIGEN2
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-#endif
 
 
 namespace sofa
@@ -92,9 +89,7 @@ public:
     Data< sofa::defaulttype::Vec4f > springColor;
 
     sofa::core::behavior::MechanicalState< DataTypes > *restMState;
-#ifdef SOFA_HAVE_EIGEN2
-    linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;    
-#endif
+    linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
     //VecDeriv Springs_dir;
 protected:
@@ -126,6 +121,8 @@ public:
     const VecIndex& getIndices() const { return m_indices; }
     const VecIndex& getExtIndices() const { return (useRestMState ? m_ext_indices : m_indices); }
 
+    virtual void updateForceMask();
+
 protected :
 
     void recomputeIndices();
@@ -135,15 +132,14 @@ protected :
     VecIndex m_ext_indices;
     helper::vector<CPos> m_pivots;
 
-#ifdef SOFA_HAVE_EIGEN2
     SReal lastUpdatedStep;
-#endif
+
 private :
 
     bool useRestMState; /// An external MechanicalState is used as rest reference.
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGSFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec3dTypes>;
@@ -162,7 +158,7 @@ extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defau
 //extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Rigid2fTypes>;
 #endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_CPP)
+#endif
 
 } // namespace forcefield
 

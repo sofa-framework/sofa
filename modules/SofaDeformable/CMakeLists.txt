@@ -2,15 +2,26 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaDeformable)
 
 set(HEADER_FILES
-
-    config.h
-    initDeformable.h
     FastTriangularBendingSprings.h
     FastTriangularBendingSprings.inl
+    FrameSpringForceField.h
+    FrameSpringForceField.inl
+    MeshSpringForceField.h
+    MeshSpringForceField.inl
+    QuadBendingSprings.h
+    QuadBendingSprings.inl
     QuadularBendingSprings.h
     QuadularBendingSprings.inl
+    RegularGridSpringForceField.h
+    RegularGridSpringForceField.inl
     RestShapeSpringsForceField.h
     RestShapeSpringsForceField.inl
+    SpringForceField.h
+    SpringForceField.inl
+    StiffSpringForceField.h
+    StiffSpringForceField.inl
+    TriangleBendingSprings.h
+    TriangleBendingSprings.inl
     TriangularBendingSprings.h
     TriangularBendingSprings.inl
     TriangularBiquadraticSpringsForceField.h
@@ -19,67 +30,35 @@ set(HEADER_FILES
     TriangularQuadraticSpringsForceField.inl
     TriangularTensorMassForceField.h
     TriangularTensorMassForceField.inl
-    FrameSpringForceField.h
-    FrameSpringForceField.inl
-    MeshSpringForceField.h
-    MeshSpringForceField.inl
-    QuadBendingSprings.h
-    QuadBendingSprings.inl
-    RegularGridSpringForceField.h
-    RegularGridSpringForceField.inl
-    SpringForceField.h
-    SpringForceField.inl
-    StiffSpringForceField.h
-    StiffSpringForceField.inl
-    TriangleBendingSprings.h
-    TriangleBendingSprings.inl
     VectorSpringForceField.h
     VectorSpringForceField.inl
-
-    )
+    config.h
+    initDeformable.h
+)
 
 set(SOURCE_FILES
-
-    initDeformable.cpp
     FastTriangularBendingSprings.cpp
+    FrameSpringForceField.cpp
+    MeshSpringForceField.cpp
+    QuadBendingSprings.cpp
     QuadularBendingSprings.cpp
+    RegularGridSpringForceField.cpp
     RestShapeSpringsForceField.cpp
+    SpringForceField.cpp
+    StiffSpringForceField.cpp
+    TriangleBendingSprings.cpp
     TriangularBendingSprings.cpp
     TriangularBiquadraticSpringsForceField.cpp
     TriangularQuadraticSpringsForceField.cpp
     TriangularTensorMassForceField.cpp
-    FrameSpringForceField.cpp
-    MeshSpringForceField.cpp
-    QuadBendingSprings.cpp
-    RegularGridSpringForceField.cpp
-    SpringForceField.cpp
-    StiffSpringForceField.cpp
-    TriangleBendingSprings.cpp
     VectorSpringForceField.cpp
+    initDeformable.cpp
+)
 
-    )
-
-set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_DEFORMABLE")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-target_link_libraries( ${PROJECT_NAME} PUBLIC SofaBaseTopology )
-
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFACOMMON_BUILD_INCLUDE_DIR}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFACOMMON_DEPENDENCY_INCLUDE_DIR}>")
-
-set( SOFADEFORMABLE_COMPILER_FLAGS "-DSOFA_BUILD_DEFORMABLE")
-
-set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
-set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFACOMMON_VERSION} )
-set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFADEFORMABLE_COMPILER_FLAGS}"  )
-set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
-
-install(TARGETS ${PROJECT_NAME}
-        EXPORT  SofaCommonTargets
-        RUNTIME DESTINATION "${SOFACOMMON_INSTALL_BIN_DIR}" COMPONENT SofaCommon_libraries
-        LIBRARY DESTINATION "${SOFACOMMON_INSTALL_LIB_DIR}" COMPONENT SofaCommon_libraries
-        ARCHIVE DESTINATION "${SOFACOMMON_INSTALL_LIB_DIR}" COMPONENT SofaCommon_libraries
-        PUBLIC_HEADER DESTINATION "${SOFACOMMON_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}" COMPONENT SofaCommon_headers
-        )
+sofa_install_targets(SofaCommon ${PROJECT_NAME} ${PROJECT_NAME})

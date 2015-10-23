@@ -21,6 +21,8 @@ namespace mapping {
 	
 */
 
+// TODO also fill a mask Data from python to be able to setup frommasks
+
 template<class TIn, class TOut>
 class SOFA_Compliant_API PythonMultiMapping : public AssembledMultiMapping<TIn, TOut> {
 	typedef PythonMultiMapping self;

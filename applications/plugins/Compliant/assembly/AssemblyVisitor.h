@@ -1,7 +1,7 @@
 #ifndef ASSEMBLYVISITOR_H
 #define ASSEMBLYVISITOR_H
 
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaEigen2Solver/EigenVector.h>
@@ -14,6 +14,7 @@
 
 #include "../utils/find.h"
 
+#include <sofa/helper/Logger.h>
 
 
 namespace sofa {
@@ -30,102 +31,6 @@ namespace simulation {
 // preallocated std::unordered_map instead of std::map for
 // chunks/global, in case the scene really has a large number of
 // mstates
-
-
-
-/// res += constraint forces (== lambda/dt), only for mechanical object linked to a compliance
-class MechanicalAddComplianceForce : public MechanicalVisitor
-{
-    core::MultiVecDerivId res, lambdas;
-    SReal invdt;
-
-
-public:
-    MechanicalAddComplianceForce(const sofa::core::MechanicalParams* mparams, core::MultiVecDerivId res, core::MultiVecDerivId lambdas, SReal dt )
-        : MechanicalVisitor(mparams), res(res), lambdas(lambdas), invdt(1.0/dt)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
-
-    // reset lambda where there is no compliant FF
-    // these reseted lambdas were previously propagated, but were not computed from the last solve
-    virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm)
-    {
-        // a compliant FF must be alone, so if there is one, it is the first one of the list.
-        const core::behavior::BaseForceField* ff = NULL;
-
-        if( !node->forceField.empty() ) ff = *node->forceField.begin();
-        else if( !node->interactionForceField.empty() ) ff = *node->interactionForceField.begin();
-
-        if( !ff || !ff->isCompliance.getValue() )
-        {
-            const core::VecDerivId& lambdasid = lambdas.getId(mm);
-            if( !lambdasid.isNull() ) // previously allocated
-            {
-                mm->resetForce(this->params, lambdasid);
-            }
-        }
-        return RESULT_CONTINUE;
-    }
-
-    virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm)
-    {
-        return fwdMechanicalState( node, mm );
-    }
-
-    // pop-up lamdas without modifying f
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
-    {
-        map->applyJT( this->mparams, lambdas, lambdas );
-    }
-
-    // for all dofs, f += lambda / dt
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-    {
-        const core::VecDerivId& lambdasid = lambdas.getId(mm);
-        if( !lambdasid.isNull() ) // previously allocated
-        {
-            const core::VecDerivId& resid = res.getId(mm);
-
-            mm->vOp( this->params, resid, resid, lambdasid, invdt ); // f += lambda / dt
-        }
-    }
-
-    virtual void bwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm)
-    {
-        bwdMechanicalState( node, mm );
-    }
-
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const {return "MechanicalAddLambdas";}
-    virtual std::string getInfos() const
-    {
-        std::string name=std::string("[")+res.getName()+","+lambdas.getName()+std::string("]");
-        return name;
-    }
-
-    /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
-    {
-        return true;
-    }
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
-    {
-        addWriteVector(res);
-        addWriteVector(lambdas);
-    }
-#endif
-};
-
-
-
-
 
 class SOFA_Compliant_API AssemblyVisitor : public simulation::MechanicalVisitor {
 protected:
@@ -371,7 +276,7 @@ struct AssemblyVisitor::process_helper {
 
         if( c->master() || !c->mechanical ) return;
 
-        rmat& Jc = full[ curr ];
+        rmat& Jc = full[ curr ]; // (output) full mapping from independent dofs to mapped dofs c
         assert( empty(Jc) );
 
 
@@ -390,10 +295,21 @@ struct AssemblyVisitor::process_helper {
 
             // parent data chunk/mapping matrix
             const chunk* p = vp.data;
-            rmat& Jp = full[ vp.dofs ];
+            rmat& Jp = full[ vp.dofs ]; // (input) full mapping from independent dofs to parent p of dofs c
             {
                 // mapping blocks
                 MySPtr<rmat> jc( convertSPtr<rmat>( g[*e.first].data->J ) );
+
+                if( zero( *jc ) )
+                {
+                    continue;
+
+                    // Note a Jacobian can be null in a multimapping (child only mapped from one parent)
+                    // or when the corresponding mask is empty
+//                    MAINLOGGER( Info, "Empty Jacobian for mapping: "<<((simulation::Node*)curr->getContext())->mechanicalMapping->getPathName()
+//                                              << std::endl << "mask=\""<<curr->forceMask <<"\"", "AssemblyVisitor" )
+                }
+
 
                 // parent is not mapped: we put a shift matrix with the
                 // correct offset as its full mapping matrix, so that its
@@ -427,18 +343,24 @@ struct AssemblyVisitor::process_helper {
 //            std::cerr<<"Assembly::geometricStiffnessJc "<<geometricStiffnessJc<<" "<<curr->getName()<<std::endl;
         }
 
-        if( zero(Jc) )  {
-            using namespace std;
+//        if( zero(Jc) && curr->getSize() !=0 )  {
+//            // If the dof size is null, let's consider it is not a big deal.
+//            // Indeed, having null dof is useful when setting up a static graph that is filled in dynamically
 
-            cerr << "houston we have a problem with " << c->dofs->getName()  << " under " << c->dofs->getContext()->getName() << endl
-                 << "master: " << c->master() << endl
-//                 << "mapped: " << (c->map.empty() ? string("nope") : p->dofs->getName() )<< endl
-//                 << "p mechanical ? " << p->mechanical << endl
-//                 << "empty Jp " << empty(Jp) << endl
-                 << "empty Jc " << empty(Jc) << endl;
+//            using namespace std;
+//            MAINLOGGER( Warning,
+//                        "Houston we have a problem. Null full Jacobian for dof \""<< c->dofs->getPathName()<<"\""<< endl
+//                        << "master=" << c->master() << ", "
+//       //                 << "mapped: " << (c->map.empty() ? string("nope") : p->dofs->getName() )<< endl
+//       //                 << "p mechanical ? " << p->mechanical << endl
+//       //                 << "empty Jp " << empty(Jp) << endl
+//                        << "empty Jc=" << empty(Jc) << ", "
+//                        , "AssemblyVisitor" )
 
-            assert( false );
-        }
+//            assert( false );
+//        }
+//        else
+//            MAINLOGGER( Info, ((simulation::Node*)c->dofs->getContext())->mechanicalMapping->getPathName()<<" "<<Jc.nonZeros() , "AssemblyVisitor" )
 
     }
 

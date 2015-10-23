@@ -1,11 +1,6 @@
-# CMake package configuration file for the ARTrack library.
-# It defines the following variables:
-# - ARTrackLib_INCLUDE_DIRS
-# - ARTrackLib_LIBRARIES
+# CMake package configuration file for the ARTrack library
 
 @PACKAGE_INIT@
-
-set_and_check(ARTRACK_INCLUDE_DIR "@PACKAGE_ARTRACK_INCLUDE_DIR@")
 
 if(NOT TARGET ARTrackLib)
 	include("${CMAKE_CURRENT_LIST_DIR}/ARTrackLibTargets.cmake")
@@ -14,4 +9,4 @@ endif()
 check_required_components(ARTrackLib)
 
 set(ARTrackLib_LIBRARIES ARTrackLib)
-set(ARTrackLib_INCLUDE_DIRS ${ARTRACK_INCLUDE_DIR})
+set(ARTrackLib_INCLUDE_DIRS @PACKAGE_ARTRACK_INCLUDE_DIR@)

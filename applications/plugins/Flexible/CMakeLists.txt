@@ -2,217 +2,213 @@ cmake_minimum_required(VERSION 2.8.12)
 project(Flexible)
 
 set(FLEXIBLE_MAJOR_VERSION 0)
-set(FLEXIBLE_MINOR_VERSION 0)
-set(FLEXIBLE_BUILD_VERSION 1)
-
-set(FLEXIBLE_VERSION ${FLEXIBLE_MAJOR_VERSION}.${FLEXIBLE_MINOR_VERSION}.${FLEXIBLE_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
-
-set(FLEXIBLE_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(FLEXIBLE_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
-set(FLEXIBLE_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(FLEXIBLE_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/Flexible)
-
-set(FLEXIBLE_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(FLEXIBLE_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(FLEXIBLE_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(FLEXIBLE_INSTALL_CMAKE_DIR ${FLEXIBLE_INSTALL_LIB_DIR}/cmake/Flexible)
+set(FLEXIBLE_MINOR_VERSION 1)
+set(FLEXIBLE_VERSION ${FLEXIBLE_MAJOR_VERSION}.${FLEXIBLE_MINOR_VERSION})
 
 set(HEADER_FILES
-
-    initFlexible.h
     BaseJacobian.h
-    helper.h
-    types/DeformationGradientTypes.h
-    types/StrainTypes.h
-    types/AffineTypes.h
-    types/AffineComponents.h
-    types/QuadraticTypes.h
-    types/QuadraticComponents.h
-    types/PolynomialBasis.h
-    types/ComponentSpecializations.h.inl
-    types/ComponentSpecializations.cpp.inl
-    types/ComponentSpecializationsDefines.h
-    types/ComponentSpecializationsUndef.h
-    types/DeformableFrameMass.h
-    types/RigidConstraint.h
-    quadrature/BaseGaussPointSampler.h
-    quadrature/TopologyGaussPointSampler.h
-    quadrature/GaussPointContainer.h
-    shapeFunction/BaseShapeFunction.h
-    shapeFunction/ImageShapeFunctionSelectNode.h
-    shapeFunction/ShepardShapeFunction.h
-    shapeFunction/HatShapeFunction.h
-    shapeFunction/BarycentricShapeFunction.h
-    shapeFunction/BezierShapeFunction.h
     deformationMapping/BaseDeformationImpl.inl
     deformationMapping/BaseDeformationMapping.h
     deformationMapping/BaseDeformationMapping.inl
-    deformationMapping/CustomJacobianBlock.h
-    deformationMapping/LinearMapping.h
-    deformationMapping/LinearJacobianBlock.h
-    deformationMapping/LinearJacobianBlock_point.inl
-    deformationMapping/LinearJacobianBlock_affine.inl
-    deformationMapping/LinearJacobianBlock_rigid.inl
-    deformationMapping/LinearJacobianBlock_quadratic.inl
     deformationMapping/BaseDeformationMultiMapping.h
     deformationMapping/BaseDeformationMultiMapping.inl
+    deformationMapping/CorotationalMeshMapping.h
+    deformationMapping/CustomJacobianBlock.h
+    deformationMapping/LinearJacobianBlock.h
+    deformationMapping/LinearJacobianBlock_affine.inl
+    deformationMapping/LinearJacobianBlock_point.inl
+    deformationMapping/LinearJacobianBlock_quadratic.inl
+    deformationMapping/LinearJacobianBlock_rigid.inl
+    deformationMapping/LinearMapping.h
     deformationMapping/LinearMultiMapping.h
-    deformationMapping/MLSMapping.h
     deformationMapping/MLSJacobianBlock.h
-    deformationMapping/MLSJacobianBlock_point.inl
     deformationMapping/MLSJacobianBlock_affine.inl
-    deformationMapping/MLSJacobianBlock_rigid.inl
+    deformationMapping/MLSJacobianBlock_point.inl
     deformationMapping/MLSJacobianBlock_quadratic.inl
+    deformationMapping/MLSJacobianBlock_rigid.inl
+    deformationMapping/MLSMapping.h
+    deformationMapping/TetrahedronVolumeMapping.h
     deformationMapping/TriangleDeformationMapping.h
     deformationMapping/TriangleDeformationMapping.inl
     deformationMapping/TriangleStrainAverageMapping.h
     deformationMapping/TriangleStrainAverageMapping.inl
     deformationMapping/VolumeMapping.h
-    deformationMapping/TetrahedronVolumeMapping.h
-    deformationMapping/CorotationalMeshMapping.h
     engine/ComputeDualQuatEngine.h
     engine/ComputeDualQuatEngine.inl
     engine/ComputeWeightEngine.h
+    # forceField/FlexibleTetrahedronFEMForceField.h
+    helper.h
     mass/AffineMass.h
-    strainMapping/BaseStrainMapping.h
-    strainMapping/CauchyStrainMapping.h
-    strainMapping/CauchyStrainJacobianBlock.h
-    strainMapping/GreenStrainMapping.h
-    strainMapping/GreenStrainJacobianBlock.h
-    strainMapping/CorotationalStrainMapping.h
-    strainMapping/CorotationalStrainJacobianBlock.h
-    strainMapping/CorotationalStrainJacobianBlock.inl
-    strainMapping/PrincipalStretchesMapping.h
-    strainMapping/PrincipalStretchesJacobianBlock.h
-    strainMapping/InvariantMapping.h
-    strainMapping/InvariantJacobianBlock.h
-    strainMapping/InvariantJacobianBlock.inl
-    strainMapping/PlasticStrainMapping.h
-    strainMapping/PlasticStrainJacobianBlock.h
-    strainMapping/RelativeStrainMapping.h
-    strainMapping/RelativeStrainJacobianBlock.h
     material/BaseMaterial.h
     material/BaseMaterialForceField.h
     material/HookeForceField.h
     material/HookeMaterialBlock.h
     material/HookeMaterialBlock.inl
-    material/StabilizedHookeForceField.h
-    material/StabilizedHookeMaterialBlock.h
-    material/NeoHookeanForceField.h
-    material/NeoHookeanMaterialBlock.h
-    material/StabilizedNeoHookeanForceField.h
-    material/StabilizedNeoHookeanMaterialBlock.h
     material/MooneyRivlinForceField.h
     material/MooneyRivlinMaterialBlock.h
+    material/MuscleMaterialBlock.h
+    material/MuscleMaterialForceField.h
+    material/NeoHookeanForceField.h
+    material/NeoHookeanMaterialBlock.h
     material/OgdenForceField.h
     material/OgdenMaterialBlock.h
+    material/PolynomialMaterialBlock.h
+    material/PolynomialMaterialForceField.h
+    material/ProjectiveForceField.h
+    material/ProjectiveMaterialBlock.h
+    material/StabilizedHookeForceField.h
+    material/StabilizedHookeMaterialBlock.h
+    material/StabilizedNeoHookeanForceField.h
+    material/StabilizedNeoHookeanMaterialBlock.h
+    material/TendonMaterialBlock.h
+    material/TendonMaterialForceField.h
     material/VolumePreservationForceField.h
     material/VolumePreservationMaterialBlock.h
     material/VolumePreservationMaterialBlock.inl
-    material/PolynomialMaterialForceField.h
-    material/PolynomialMaterialBlock.h
-    material/MuscleMaterialForceField.h
-    material/MuscleMaterialBlock.h
-    material/TendonMaterialForceField.h
-    material/TendonMaterialBlock.h
-    material/ProjectiveForceField.h
-    material/ProjectiveMaterialBlock.h)
-    #forceField/FlexibleTetrahedronFEMForceField.h)
+    quadrature/BaseGaussPointSampler.h
+    quadrature/GaussPointContainer.h
+    quadrature/TopologyGaussPointSampler.h
+    shapeFunction/BarycentricShapeFunction.h
+    shapeFunction/BaseShapeFunction.h
+    shapeFunction/BezierShapeFunction.h
+    shapeFunction/HatShapeFunction.h
+    shapeFunction/ImageShapeFunctionSelectNode.h
+    shapeFunction/ShepardShapeFunction.h
+    strainMapping/BaseStrainMapping.h
+    strainMapping/CauchyStrainJacobianBlock.h
+    strainMapping/CauchyStrainMapping.h
+    strainMapping/CorotationalStrainJacobianBlock.h
+    strainMapping/CorotationalStrainJacobianBlock.inl
+    strainMapping/CorotationalStrainMapping.h
+    strainMapping/GreenStrainJacobianBlock.h
+    strainMapping/GreenStrainMapping.h
+    strainMapping/InvariantJacobianBlock.h
+    strainMapping/InvariantJacobianBlock.inl
+    strainMapping/InvariantMapping.h
+    strainMapping/PlasticStrainJacobianBlock.h
+    strainMapping/PlasticStrainMapping.h
+    strainMapping/PrincipalStretchesJacobianBlock.h
+    strainMapping/PrincipalStretchesMapping.h
+    strainMapping/RelativeStrainJacobianBlock.h
+    strainMapping/RelativeStrainMapping.h
+    types/AffineComponents.h
+    types/AffineTypes.h
+    types/ComponentSpecializations.cpp.inl
+    types/ComponentSpecializations.h.inl
+    types/ComponentSpecializationsDefines.h
+    types/ComponentSpecializationsUndef.h
+    types/DeformableFrameMass.h
+    types/DeformationGradientTypes.h
+    types/PolynomialBasis.h
+    types/QuadraticComponents.h
+    types/QuadraticTypes.h
+    types/RigidConstraint.h
+    types/StrainTypes.h
+)
 
 set(SOURCE_FILES
-    initFlexible.cpp
-    types/DeformationGradientTypes.cpp
-    types/StrainTypes.cpp
-    types/AffineComponents.cpp
-    types/QuadraticComponents.cpp
-    types/RigidConstraint.cpp
-    quadrature/BaseGaussPointSampler.cpp
-    quadrature/TopologyGaussPointSampler.cpp
-    quadrature/GaussPointContainer.cpp
-    shapeFunction/BaseShapeFunction.cpp
-    shapeFunction/ImageShapeFunctionSelectNode.cpp
-    shapeFunction/ShepardShapeFunction.cpp
-    shapeFunction/HatShapeFunction.cpp
-    shapeFunction/BarycentricShapeFunction.cpp
-    shapeFunction/BezierShapeFunction.cpp
     deformationMapping/BaseDeformationMapping.cpp
     deformationMapping/BaseDeformationMultiMapping.cpp
-    deformationMapping/LinearMapping_point.cpp
+    deformationMapping/CorotationalMeshMapping.cpp
     deformationMapping/LinearMapping_affine.cpp
-    deformationMapping/LinearMapping_rigid.cpp
+    deformationMapping/LinearMapping_point.cpp
     deformationMapping/LinearMapping_quadratic.cpp
+    deformationMapping/LinearMapping_rigid.cpp
     deformationMapping/LinearMultiMapping_rigidaffine.cpp
-    deformationMapping/MLSMapping_point.cpp
     deformationMapping/MLSMapping_affine.cpp
-    deformationMapping/MLSMapping_rigid.cpp
+    deformationMapping/MLSMapping_point.cpp
     deformationMapping/MLSMapping_quadratic.cpp
+    deformationMapping/MLSMapping_rigid.cpp
+    deformationMapping/TetrahedronVolumeMapping.cpp
     deformationMapping/TriangleDeformationMapping.cpp
     deformationMapping/TriangleStrainAverageMapping.cpp
     deformationMapping/VolumeMapping.cpp
-    deformationMapping/TetrahedronVolumeMapping.cpp
-    deformationMapping/CorotationalMeshMapping.cpp
     engine/ComputeDualQuatEngine.cpp
     engine/ComputeWeightEngine.cpp
+    # forceField/FlexibleTetrahedronFEMForceField.cpp
+    initFlexible.cpp
     mass/AffineMass.cpp
-    strainMapping/BaseStrainMapping.cpp
-    strainMapping/CauchyStrainMapping.cpp
-    strainMapping/GreenStrainMapping.cpp
-    strainMapping/CorotationalStrainMapping.cpp
-    strainMapping/PrincipalStretchesMapping.cpp
-    strainMapping/InvariantMapping.cpp
-    strainMapping/PlasticStrainMapping.cpp
-    strainMapping/RelativeStrainMapping.cpp
     material/BaseMaterialForceField.cpp
     material/HookeForceField.cpp
-    material/StabilizedHookeForceField.cpp
-    material/NeoHookeanForceField.cpp
-    material/StabilizedNeoHookeanForceField.cpp
     material/MooneyRivlinForceField.cpp
-    material/OgdenForceField.cpp
-    material/VolumePreservationForceField.cpp
-    material/PolynomialMaterialForceField.cpp
     material/MuscleMaterialForceField.cpp
+    material/NeoHookeanForceField.cpp
+    material/OgdenForceField.cpp
+    material/PolynomialMaterialForceField.cpp
+    material/ProjectiveForceField.cpp
+    material/StabilizedHookeForceField.cpp
+    material/StabilizedNeoHookeanForceField.cpp
     material/TendonMaterialForceField.cpp
-    material/ProjectiveForceField.cpp)
-    #forceField/FlexibleTetrahedronFEMForceField.cpp)
+    material/VolumePreservationForceField.cpp
+    quadrature/BaseGaussPointSampler.cpp
+    quadrature/GaussPointContainer.cpp
+    quadrature/TopologyGaussPointSampler.cpp
+    shapeFunction/BarycentricShapeFunction.cpp
+    shapeFunction/BaseShapeFunction.cpp
+    shapeFunction/BezierShapeFunction.cpp
+    shapeFunction/HatShapeFunction.cpp
+    shapeFunction/ImageShapeFunctionSelectNode.cpp
+    shapeFunction/ShepardShapeFunction.cpp
+    strainMapping/BaseStrainMapping.cpp
+    strainMapping/CauchyStrainMapping.cpp
+    strainMapping/CorotationalStrainMapping.cpp
+    strainMapping/GreenStrainMapping.cpp
+    strainMapping/InvariantMapping.cpp
+    strainMapping/PlasticStrainMapping.cpp
+    strainMapping/PrincipalStretchesMapping.cpp
+    strainMapping/RelativeStrainMapping.cpp
+    types/AffineComponents.cpp
+    types/DeformationGradientTypes.cpp
+    types/QuadraticComponents.cpp
+    types/RigidConstraint.cpp
+    types/StrainTypes.cpp
+)
+
+set(PYTHON_FILES
+    python/Flexible/__init__.py
+    python/Flexible/IO.py
+    python/Flexible/StressVisu.py
+    python/Flexible/API.py
+    python/Flexible/sml.py
+)
 
 
 find_package(SofaMisc REQUIRED)
 
 find_package(image QUIET)
 if(image_FOUND)
-   	list(APPEND HEADER_FILES "quadrature/ImageGaussPointSampler.h")
-   	list(APPEND HEADER_FILES "shapeFunction/BaseImageShapeFunction.h")
-   	list(APPEND HEADER_FILES "shapeFunction/VoronoiShapeFunction.h")
-   	list(APPEND HEADER_FILES "shapeFunction/DiffusionShapeFunction.h")
-   	list(APPEND HEADER_FILES "shapeFunction/ShapeFunctionDiscretizer.h")
-   	list(APPEND HEADER_FILES "deformationMapping/ImageDeformation.h")
-    list(APPEND HEADER_FILES "mass/MassFromDensity.h")
-   	list(APPEND HEADER_FILES "mass/ImageDensityMass.h")
-   	list(APPEND HEADER_FILES "mass/ImageDensityMass.inl")
-    list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.h")
-   	list(APPEND SOURCE_FILES "quadrature/ImageGaussPointSampler.cpp")
-   	list(APPEND SOURCE_FILES "shapeFunction/VoronoiShapeFunction.cpp")
-   	list(APPEND SOURCE_FILES "shapeFunction/DiffusionShapeFunction.cpp")
-   	list(APPEND SOURCE_FILES "shapeFunction/ShapeFunctionDiscretizer.cpp")
-   	list(APPEND SOURCE_FILES "deformationMapping/ImageDeformation.cpp")
-    list(APPEND HEADER_FILES "mass/MassFromDensity.cpp")
-   	list(APPEND SOURCE_FILES "mass/ImageDensityMass.cpp")
-    list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.cpp")
+    list(APPEND HEADER_FILES
+        deformationMapping/ImageDeformation.h
+        mass/ImageDensityMass.h
+        mass/ImageDensityMass.inl
+        mass/MassFromDensity.cpp
+        mass/MassFromDensity.h
+        quadrature/ImageGaussPointSampler.h
+        shapeFunction/BaseImageShapeFunction.h
+        shapeFunction/DiffusionShapeFunction.h
+        shapeFunction/ImageShapeFunctionContainer.h
+        shapeFunction/ShapeFunctionDiscretizer.h
+        shapeFunction/VoronoiShapeFunction.h)
+
+    list(APPEND SOURCE_FILES
+        deformationMapping/ImageDeformation.cpp
+        mass/ImageDensityMass.cpp
+        quadrature/ImageGaussPointSampler.cpp
+        shapeFunction/DiffusionShapeFunction.cpp
+        shapeFunction/ImageShapeFunctionContainer.cpp
+        shapeFunction/ShapeFunctionDiscretizer.cpp
+        shapeFunction/VoronoiShapeFunction.cpp)
 else()
     message(STATUS "Flexible: could not find image")
 endif()
 
 
-# include python files
-include(./python/python.cmake)
+## Flexible/config.h
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/Flexible/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/Flexible/config.h" DESTINATION "include/Flexible")
 
-set(FLEXIBLE_DEPENDENCY_INCLUDE_DIR ${SofaMisc_INCLUDE_DIRS})
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Flexible.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/Flexible/Flexible.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Flexible/Flexible.h
-         DESTINATION "${FLEXIBLE_INSTALL_INCLUDE_DIR}/Flexible")
+# Config files and install rules for pythons scripts
+sofa_set_python_directory(${PROJECT_NAME} "python")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaComponentMisc)
@@ -244,71 +240,31 @@ if(NOT SOFA-EXTERNAL_MGDIFFUSI0N_PATH STREQUAL "")
         ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Common_Libraries/libThreading_Tools.so)
 endif()
 
-if(WIN32)
-    set(FLEXIBLE_COMPILER_FLAGS "${FLEXIBLE_COMPILER_FLAGS} -DEIGEN_DONT_ALIGN")
-else()
-	include_directories("/usr/include/suitesparse/")
-endif()
 
 if(UNIX)
     target_link_libraries(${PROJECT_NAME} pthread)
 endif()
-
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${FLEXIBLE_DEPENDENCY_INCLUDE_DIR}>")
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${FLEXIBLE_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${FLEXIBLE_COMPILER_FLAGS}")
 
-
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT Flexible_libraries
-        EXPORT FlexibleTargets
-        RUNTIME DESTINATION "${FLEXIBLE_INSTALL_BIN_DIR}"
-        LIBRARY DESTINATION "${FLEXIBLE_INSTALL_LIB_DIR}"
-        ARCHIVE DESTINATION "${FLEXIBLE_INSTALL_LIB_DIR}")
-
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
-
-foreach(HEADER ${HEADER_FILES})
-    string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
-    install(FILES ${HEADER} DESTINATION "${FLEXIBLE_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}/${DIR}")
-endforeach(HEADER HEADERS)
-
-find_package(SofaTest QUIET)
-if(SofaTest_FOUND)
-    add_subdirectory(Flexible_test)
+if(SOFA_BUILD_TESTS)
+    find_package(SofaTest QUIET)
+    if(SofaTest_FOUND)
+        add_subdirectory(Flexible_test)
+    endif()
 endif()
 
-include(CMakePackageConfigHelpers)
-# FlexibleConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(${FLEXIBLE_BUILD_CMAKE_DIR}/FlexibleConfigVersion.cmake
-                                 VERSION ${FLEXIBLE_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
+## Install rules for the library; CMake package configurations files
+sofa_create_package(Flexible ${FLEXIBLE_VERSION} Flexible Flexible)
 
-install(FILES ${FLEXIBLE_BUILD_CMAKE_DIR}/FlexibleConfigVersion.cmake
-        DESTINATION ${FLEXIBLE_INSTALL_CMAKE_DIR})
+## Install rules for the resources
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
-
-# FlexibleConfig.cmake (build tree)
-set(FLEXIBLE_INCLUDE_DIR "${FLEXIBLE_BUILD_INCLUDE_DIR}")
-configure_package_config_file(FlexibleConfig.cmake.in
-                              ${FLEXIBLE_BUILD_CMAKE_DIR}/FlexibleConfig.cmake
-                              INSTALL_DESTINATION ${FLEXIBLE_BUILD_CMAKE_DIR}
-                              PATH_VARS FLEXIBLE_INCLUDE_DIR)
-
-# FlexibleConfig.cmake (installed)
-set(FLEXIBLE_INCLUDE_DIR "${FLEXIBLE_INSTALL_INCLUDE_DIR}")
-configure_package_config_file(FlexibleConfig.cmake.in
-                              ${FLEXIBLE_BUILD_CMAKE_DIR}/FlexibleConfigInstall.cmake
-                              INSTALL_DESTINATION ${FLEXIBLE_INSTALL_CMAKE_DIR}
-                              PATH_VARS FLEXIBLE_INCLUDE_DIR)
-
-install(FILES ${FLEXIBLE_BUILD_CMAKE_DIR}/FlexibleConfigInstall.cmake
-        DESTINATION ${FLEXIBLE_INSTALL_CMAKE_DIR}
-        RENAME FlexibleConfig.cmake)
-
-# FlexibleTargets.cmake (installed)
-install(EXPORT FlexibleTargets
-        DESTINATION ${FLEXIBLE_INSTALL_CMAKE_DIR})
+## Hand-crafted install rules for the headers, to preserve the directory structure
+foreach(HEADER ${HEADER_FILES})
+    string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
+    install(FILES ${HEADER} DESTINATION "include/Flexible/${DIR}")
+endforeach(HEADER HEADERS)

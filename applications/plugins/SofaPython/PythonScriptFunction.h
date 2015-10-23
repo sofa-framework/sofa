@@ -26,7 +26,7 @@
 #define PYTHONSCRIPTFUNCTION_H
 
 #include "PythonMacros.h"
-#include "initSofaPython.h"
+#include <SofaPython/config.h>
 #include "ScriptFunction.h"
 
 

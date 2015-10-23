@@ -37,7 +37,6 @@
 #define SOFA_COMPONENT_MISC_PARTICLESOURCE_H
 #include "config.h"
 
-#include <sofa/SofaAdvanced.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
@@ -394,6 +393,7 @@ public:
         }
     }
 
+    using core::behavior::ProjectiveConstraintSet<TDataTypes>::projectResponse;
     void projectResponse(VecDeriv& dx)
     {
         projectResponseT(dx);

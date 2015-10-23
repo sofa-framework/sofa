@@ -38,6 +38,8 @@ namespace cuda
 
 extern "C"
 {
+    void FixedConstraintCuda1f_projectResponseContiguous(unsigned int size, void* dx);
+    void FixedConstraintCuda1f_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
     void FixedConstraintCuda3f_projectResponseContiguous(unsigned int size, void* dx);
     void FixedConstraintCuda3f_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
     void FixedConstraintCuda3f1_projectResponseContiguous(unsigned int size, void* dx);
@@ -129,6 +131,16 @@ __global__ void FixedConstraintCudaRigid3t_projectResponseIndexed_kernel(int siz
 // CPU-side methods //
 //////////////////////
 
+void FixedConstraintCuda1f_projectResponseContiguous(unsigned int size, void* dx)
+{
+    dim3 threads(BSIZE,1);
+    //dim3 grid((size+BSIZE-1)/BSIZE,1);
+    //FixedConstraintCuda3t_projectResponseContiguous_kernel<float><<< grid, threads >>>(size, (CudaVec3<float>*)dx);
+    //dim3 grid((3*size+BSIZE-1)/BSIZE,1);
+    //FixedConstraintCuda1t_projectResponseContiguous_kernel<float><<< grid, threads >>>(3*size, (float*)dx);
+    cudaMemset(dx, 0, size*sizeof(float));
+}
+
 void FixedConstraintCuda3f_projectResponseContiguous(unsigned int size, void* dx)
 {
     dim3 threads(BSIZE,1);
@@ -153,6 +165,13 @@ void FixedConstraintCudaRigid3f_projectResponseContiguous(unsigned int size, voi
 {
 //	dim3 threads(BSIZE,1);
     cudaMemset(dx, 0, size*6*sizeof(float));
+}
+
+void FixedConstraintCuda1f_projectResponseIndexed(unsigned int size, const void* indices, void* dx)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    {FixedConstraintCuda1t_projectResponseIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, (float*)dx); mycudaDebugError("FixedConstraintCuda1t_projectResponseIndexed_kernel<float>");}
 }
 
 void FixedConstraintCuda3f_projectResponseIndexed(unsigned int size, const void* indices, void* dx)

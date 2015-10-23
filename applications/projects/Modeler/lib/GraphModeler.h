@@ -43,10 +43,9 @@
 #include <sofa/gui/qt/GraphListenerQListView.h>
 
 
-#include <Q3ListView>
-#include <Q3ListViewItem>
-#include <Q3TextDrag>
-#include <Q3PopupMenu>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+#include <QMenu>
 
 #include <iostream>
 
@@ -68,20 +67,20 @@ using namespace sofa::core::objectmodel;
 using namespace sofa::simulation;
 using sofa::core::SofaLibrary;
 
-class GraphModeler : public Q3ListView
+class GraphModeler : public QTreeWidget
 {
     friend class GraphHistoryManager;
     friend class LinkComponent;
     Q_OBJECT
 public:
-    GraphModeler( QWidget* parent=0, const char* name=0, Qt::WFlags f = 0 );
+    GraphModeler( QWidget* parent=0, const char* name=0, Qt::WindowFlags f = 0 );
     ~GraphModeler();
 
     /// Set the Sofa Resources: intern library to get the creators of the elements
     void setSofaLibrary( SofaLibrary *l) { sofaLibrary = l;}
 
     /// Set a menu of Preset available when right clicking on a node
-    void setPreset(Q3PopupMenu *_preset) {preset=_preset;}
+    void setPreset(QMenu *_preset) {preset=_preset;}
 
     void setPropertyWidget(QDisplayPropertyWidget* propertyWid) {propertyWidget = propertyWid;}
 
@@ -101,15 +100,17 @@ public:
     /// Keyboard Management
     void keyPressEvent ( QKeyEvent * e );
 
+    //void mouseReleaseEvent(QMouseEvent* event);
+
     template <class T>
     void getSelectedItems(T& selection)
     {
-        Q3ListViewItemIterator it( this, Q3ListViewItemIterator::Selected );
-        while ( it.current() )
+        QTreeWidgetItemIterator it( this, QTreeWidgetItemIterator::Selected );
+        while ( *it )
         {
             //Verify if the parent item (node) is not selected
-            Q3ListViewItem *currentItem = it.current();
-            Q3ListViewItem *parentItem=currentItem->parent();
+            QTreeWidgetItem *currentItem = *it;
+            QTreeWidgetItem *parentItem=currentItem->parent();
             bool parentNodeAlreadySelected=false;
             while (parentItem && !parentNodeAlreadySelected)
             {
@@ -122,23 +123,25 @@ public:
                 parentItem=currentItem->parent();
             }
             if (!parentNodeAlreadySelected)
-                selection.push_back(it.current());
+                selection.push_back(*it);
             ++it;
         }
     }
 
 
     template <class T>
-    void getComponentHierarchy(Q3ListViewItem *item, T &hierarchy)
+    void getComponentHierarchy(QTreeWidgetItem *item, T &hierarchy)
     {
         if (!item) return;
+
         hierarchy.push_back(item);
-        item = item->firstChild();
-        if (!item) return;
-        getComponentHierarchy(item, hierarchy);
-        while (item->nextSibling())
+
+        if(item->childCount() < 1)
+            return;
+
+        for(unsigned int i=0 ; i<item->childCount() ; i++)
         {
-            item = item->nextSibling();
+            item = item->child(i);
             getComponentHierarchy(item, hierarchy);
         }
     }
@@ -154,21 +157,21 @@ public:
     void dropEvent(QDropEvent* event);
 
     /// collapse all the nodes below the current one
-    void collapseNode(Q3ListViewItem* item);
+    void collapseNode(QTreeWidgetItem* item);
     /// expande all the nodes below the current one
-    void expandNode(Q3ListViewItem* item);
+    void expandNode(QTreeWidgetItem* item);
     /// load a node as a child of the current one
-    Node::SPtr loadNode(Q3ListViewItem* item, std::string filename="", bool saveHistory=true);
+    Node::SPtr loadNode(QTreeWidgetItem* item, std::string filename="", bool saveHistory=true);
     /// Save the whole graphe
     void save(const std::string &fileName);
     /// Save components
-    void saveComponents(helper::vector<Q3ListViewItem*> items, const std::string &file);
+    void saveComponents(helper::vector<QTreeWidgetItem*> items, const std::string &file);
     /// Open the window to configure a component
-    void openModifyObject(Q3ListViewItem *);
+    void openModifyObject(QTreeWidgetItem *);
     /// Add the component in the PropertyWidget
-    void addInPropertyWidget(Q3ListViewItem *, bool clear = true);
+    void addInPropertyWidget(QTreeWidgetItem *, bool clear = true);
     /// Delete a componnent
-    void deleteComponent(Q3ListViewItem *item, bool saveHistory=true);
+    void deleteComponent(QTreeWidgetItem *item, bool saveHistory=true);
     /// Construct a node from a BaseElement, by passing the factory
     Node::SPtr buildNodeFromBaseElement(Node::SPtr node,xml::BaseElement *elem, bool saveHistory=false);
     void configureElement(Base* b, xml::BaseElement *elem);
@@ -197,9 +200,9 @@ public slots:
     bool paste(std::string path);
 
     //Right Click Menu
-    void doubleClick(Q3ListViewItem *);
-    void leftClick(Q3ListViewItem *, const QPoint &, int );
-    void rightClick(Q3ListViewItem *, const QPoint &, int );
+    void doubleClick(QTreeWidgetItem *, int column);
+    void leftClick(QTreeWidgetItem *, const QPoint &, int );
+    void rightClick(const QPoint & p);
     /// Context Menu Operation: collasping all the nodes below the current one
     void collapseNode();
     /// Context Menu Operation: expanding all the nodes below the current one
@@ -239,14 +242,14 @@ protected:
     Node      *getNode(const QPoint &pos) const;
 
     /// Given a item of the list, return the Node corresponding
-    Base      *getComponent(Q3ListViewItem *item) const;
+    Base      *getComponent(QTreeWidgetItem *item) const;
     /// Given a item of the list, return the Node corresponding
-    Node      *getNode(Q3ListViewItem *item) const;
+    Node      *getNode(QTreeWidgetItem *item) const;
     /// Get the component corresponding to the item, NULL if the item is a Node
-    BaseObject *getObject(Q3ListViewItem *item) const;
+    BaseObject *getObject(QTreeWidgetItem *item) const;
 
     /// Given a component, return the item of the list corresponding
-    Q3ListViewItem *getItem(Base *component) const;
+    QTreeWidgetItem *getItem(Base *component) const;
 
     /// Insert a Node in the scene
     Node::SPtr addNode(Node::SPtr parent, Node::SPtr node=NULL, bool saveHistory=true);
@@ -256,11 +259,11 @@ protected:
     void changeComponentDataValue(const std::string &name, const std::string &value, Base* component) const ;
 
     /// Find the Sofa Component above the item
-    Base *getComponentAbove(Q3ListViewItem *item);
+    Base *getComponentAbove(QTreeWidgetItem *item);
     /// Set a dropped component in the right position in the graph
-    void initItem(Q3ListViewItem *item, Q3ListViewItem *above);
-    /// Move an item (and the sofa component corresponding) above the other Q3ListViewItem "above"
-    void moveItem(Q3ListViewItem *item, Q3ListViewItem *above);
+    void initItem(QTreeWidgetItem *item, QTreeWidgetItem *above);
+    /// Move an item (and the sofa component corresponding) above the other QTreeWidgetItem "above"
+    void moveItem(QTreeWidgetItem *item, QTreeWidgetItem *above);
 
     /// Verify if no component is being edited, starting from the current Node passed, and going through all the children
     bool isNodeErasable ( core::objectmodel::BaseNode* element );
@@ -272,13 +275,13 @@ protected:
     GraphListenerQListView *graphListener; // Management of the list: Listener of the sofa tree
     Node::SPtr graphRoot; ///< root node of the graph (it is now necessary to hold a smart pointer to it in order to keep it from being deleted)
     SofaLibrary *sofaLibrary;
-    Q3PopupMenu *preset;  //Preset menu selection appearing when right click on a node
+    QMenu *preset;  //Preset menu selection appearing when right click on a node
     AddPreset *DialogAdd; //Single Window appearing when adding a preset
     QDisplayPropertyWidget* propertyWidget; //To modify components data
 
     //Modify windows management: avoid duplicity, and dependencies
     void *current_Id_modifyDialog;
-    std::map< void*, Q3ListViewItem* >       map_modifyDialogOpened;
+    std::map< void*, QTreeWidgetItem* >       map_modifyDialogOpened;
     std::map< void*, QDialog* >    map_modifyObjectWindow;
 
     std::string filenameXML; //name associated to the current graph

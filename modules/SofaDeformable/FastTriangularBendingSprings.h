@@ -41,7 +41,6 @@
 #pragma once
 #endif
 
-#include <sofa/SofaCommon.h>
 #include <map>
 
 #include <sofa/core/behavior/ForceField.h>
@@ -51,10 +50,7 @@
 
 #include <sofa/defaulttype/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
-
-#ifdef SOFA_HAVE_EIGEN2
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-#endif
 
 #define LOCAL_OPTIM
 
@@ -261,7 +257,7 @@ protected:
     /// The list of edge springs, one for each edge between two triangles
     sofa::component::topology::EdgeData<helper::vector<EdgeSpring> > edgeSprings;
 
-    class TriangularBSEdgeHandler : public sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge, vector<EdgeSpring> >
+    class TriangularBSEdgeHandler : public topology::TopologyDataHandler<topology::Edge, vector<EdgeSpring> >
     {
     public:
         typedef typename FastTriangularBendingSprings<DataTypes>::EdgeSpring EdgeSpring;
@@ -284,6 +280,7 @@ protected:
 
         void applyPointRenumbering(const sofa::helper::vector<unsigned int> &pointToRenumber);
 
+        using topology::TopologyDataHandler<topology::Edge, vector<EdgeSpring> >::ApplyTopologyChange;
         /// Callback to add triangles elements.
         void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
         /// Callback to remove triangles elements.

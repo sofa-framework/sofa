@@ -25,7 +25,7 @@
 #ifndef SOFA_IMAGE_IMAGESAMPLER_H
 #define SOFA_IMAGE_IMAGESAMPLER_H
 
-#include "initImage.h"
+#include <image/config.h>
 #include "ImageTypes.h"
 #include "ImageAlgorithms.h"
 #include <sofa/core/DataEngine.h>
@@ -718,7 +718,7 @@ protected:
 			int tmp[] = {0,1,2, 0,2,3, 0,1,5, 0,5,4, 1,2,6, 1,6,5, 3,2,6, 3,6,7, 0,3,7, 0,7,4, 7,4,5, 7,5,6};
 			int ns1, ns2, ns3;
             defaulttype::Vector3 s1, s2, s3;
-			for(int iH=0;iH<this->hexahedra.getValue().size(); iH++)
+            for(size_t iH=0;iH<this->hexahedra.getValue().size(); iH++)
 			{
 				sofa::core::topology::Topology::Hexahedron currentCube = hexahedra.getValue().at(iH);
 

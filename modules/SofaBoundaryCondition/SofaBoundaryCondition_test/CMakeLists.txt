@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 
 project(SofaBoundaryCondition_test)
 
 set(SOURCE_FILES
     AffineMovementConstraint_test.cpp
     FixedConstraint_test.cpp
-    PartialFixedConstraint.cpp	
+    PartialFixedConstraint.cpp
     PlaneForceField_test.cpp
     PointConstraint_test.cpp
     ProjectDirectionConstraint_test.cpp

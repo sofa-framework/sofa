@@ -27,7 +27,7 @@
 #include "config.h"
 
 #include <sofa/core/Mapping.h>
-#include <sofa/SofaGeneral.h>
+
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa { namespace core { namespace topology { class BaseMeshTopology; } } }

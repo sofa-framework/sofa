@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef RIGIDTOQUATENGINE_H
-#define RIGIDTOQUATENGINE_H
+#ifndef SOFA_COMPONENT_ENGINE_RIGIDENGINE_H
+#define SOFA_COMPONENT_ENGINE_RIGIDENGINE_H
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -83,7 +83,7 @@ public:
     Data<helper::vector<RigidVec3> > f_rigids;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(RIGIDTOQUATENGINE_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_RIGIDENGINE_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_COMPONENT_ENGINE_API RigidToQuatEngine<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT
@@ -98,4 +98,4 @@ extern template class SOFA_COMPONENT_ENGINE_API RigidToQuatEngine<defaulttype::V
 
 } // namespace sofa
 
-#endif // RIGIDTOQUATENGINE_H
+#endif

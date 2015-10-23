@@ -113,6 +113,7 @@ protected:
     PenalityContactForceField()
     {
     }
+
 public:
     void clear(int reserve = 0);
 
@@ -133,9 +134,9 @@ public:
             helper::vector< unsigned int > &triangle,
             helper::vector< unsigned int > &index_point) ;
 
-    virtual bool useMask() const {return true;}
-
     void draw(const core::visual::VisualParams* vparams);
+
+    virtual void updateForceMask();
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP)

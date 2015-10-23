@@ -28,14 +28,10 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/Factory.inl>
 
-#ifdef SOFA_QT4
 #include <QImage>
 #include <QList>
 #include <QImageReader>
 #include <QApplication>
-#else
-#include <qimage.h>
-#endif
 
 #include <string.h>
 
@@ -56,7 +52,6 @@ public:
     std::vector<sofa::helper::io::Image::FactoryImage::Creator*> creators;
     ImageQtCreators()
     {
-#ifdef SOFA_QT4
 #ifdef WIN32
         std::string plugdir = sofa::helper::system::SetDirectory::GetRelativeFromProcess("../tools/qt4win/plugins");
         QCoreApplication::addLibraryPath ( QString(plugdir.c_str()) );
@@ -65,11 +60,7 @@ public:
         for (QList<QByteArray>::const_iterator it = formats.begin(); it != formats.end(); ++it)
         {
             const char* format = it->data();
-#else
-        QStrList formats = QImageIO::inputFormats();
-        for (const char* format = formats.first(); format; format = formats.next())
-        {
-#endif
+
             // ignore if format already supported
             if (sofa::helper::io::Image::FactoryImage::HasKey(format)) continue;
             //std::cout << "ImageQt: supporting format "<<format<<std::endl;
@@ -95,12 +86,13 @@ bool ImageQt::load(std::string filename)
     if (qin.depth() <= 8 && !qin.isGrayscale()) // paletted -> not supported by sofa
     {
         QImage orig = qin;
-        qin = orig.convertDepth(32);
+        //qin = orig.convertDepth(32);
+        qin = orig.convertToFormat(QImage::Format_ARGB32);
     }
     if (qin.depth() >= 24)
     {
         QImage orig = qin;
-        qin = orig.swapRGB();
+        qin = orig.rgbSwapped();
     }
     Image::init(qin.width(), qin.height(), qin.depth());
     int lsize = ((int)qin.bytesPerLine() < (int)getLineSize() ? (int)qin.bytesPerLine() : (int)getLineSize());

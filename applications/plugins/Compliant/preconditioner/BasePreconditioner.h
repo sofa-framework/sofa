@@ -2,7 +2,7 @@
 #define COMPLIANT_BASEPRECONDITIONER_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 #include "../assembly/AssembledSystem.h"
 
 namespace sofa {

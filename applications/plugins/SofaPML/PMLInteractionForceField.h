@@ -46,7 +46,7 @@
 
 #include "PMLBody.h"
 #include <SofaDeformable/StiffSpringForceField.h>
-#include "initSofaPML.h"
+#include <SofaPML/config.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <map>

@@ -26,7 +26,7 @@
 #define QCOMPLIANTMOUSEOPERATIONS_H
 
 #include <sofa/gui/MouseOperations.h>
-#include "SofaMouseManager.h"
+#include <sofa/gui/qt/SofaMouseManager.h>
 
 #ifdef SOFA_QT4
 #include <QWidget>
@@ -49,7 +49,7 @@
 #endif
 #include <iostream>
 
-#include <QMouseOperations.h>
+#include <sofa/gui/qt/QMouseOperations.h>
 #include "CompliantAttachPerformer.h"
 
 namespace sofa

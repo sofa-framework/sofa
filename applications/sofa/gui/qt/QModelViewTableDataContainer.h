@@ -321,7 +321,8 @@ public:
     bool createLayout( QLayout* layout)
     {
         if ( container_layout != NULL ) return false;
-        container_layout = new Layout(layout);
+        container_layout = new Layout();
+        layout->addItem(container_layout);
         return true;
     }
 
@@ -355,7 +356,7 @@ public:
             text=item->text();
 
             if (!text.isNull())
-                return std::string(text.ascii());
+                return std::string(text.toStdString());
         }
         return std::string("");
     }
@@ -387,8 +388,11 @@ public:
         rows = 0;
         int dataRows = rhelper::size(d);
 
-        wSize = new QSpinBox(0, INT_MAX, 1, parent);
-		wSize->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        wSize = new QSpinBox(parent);
+        wSize->setMinimum(0);
+        wSize->setMaximum(INT_MAX);
+        wSize->setSingleStep(1);
+        wSize->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         wDisplay = new QPushButtonUpdater( QString("Display the values"), parent);
 		wDisplay->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -409,7 +413,7 @@ public:
 
         widget=parent;
 
-        wDisplay->setToggleButton(true);
+        wDisplay->setCheckable(true);
         QWidget* parentWidget = parent;
         if(parentWidget)
             parentWidget = static_cast<QWidget*>(parentWidget->parent());
@@ -426,7 +430,7 @@ public:
 		}
 
         if(!propertyWidgetFlagOn)
-            wDisplay->setOn(dataRows < MAX_NUM_ELEM && dataRows != 0 );
+            wDisplay->setChecked(dataRows < MAX_NUM_ELEM && dataRows != 0 );
         wDisplay->setAutoDefault(false);
 
         wSize->setValue(dataRows);
@@ -468,7 +472,7 @@ public:
 
         wDisplay->toggle();
         if(propertyWidgetFlagOn)
-            wDisplay->setOn(false);
+            wDisplay->setChecked(false);
         else
             wDisplay->toggle();
 
@@ -488,7 +492,7 @@ public:
 
     bool isDisplayed()
     {
-        return (wDisplay->isOn());
+        return (wDisplay->isChecked());
     }
 
 
@@ -630,9 +634,9 @@ public:
     void insertWidgets()
     {
         assert(container_layout);
-        container_layout->add(wSize);
-        container_layout->add(wTableView);
-        container_layout->add(wDisplay);
+        container_layout->addWidget(wSize);
+        container_layout->addWidget(wTableView);
+        container_layout->addWidget(wDisplay);
     }
 };
 

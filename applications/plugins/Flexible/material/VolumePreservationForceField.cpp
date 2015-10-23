@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_VolumePreservationFORCEFIELD_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../material/VolumePreservationForceField.h"
 #include "../types/StrainTypes.h"
 #include <sofa/core/ObjectFactory.h>

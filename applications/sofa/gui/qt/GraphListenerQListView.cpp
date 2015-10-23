@@ -130,8 +130,10 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
             if (flags & (1<<i))
                 ++nc;
         int nx = 2+iconWidth*nc+iconMargin;
-        QImage * img = new QImage(nx,iconHeight,32);
-        img->setAlphaBuffer(true);
+        //QImage * img = new QImage(nx,iconHeight,32);
+        QImage * img = new QImage(nx,iconHeight,QImage::Format_ARGB32);
+
+        //img->setAlphaBuffer(true);
         img->fill(qRgba(0,0,0,0));
         // Workaround for qt 3.x where fill() does not set the alpha channel
         for (int y=0 ; y < iconHeight ; y++)
@@ -166,11 +168,9 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
             }
         for (int y=0 ; y < iconHeight ; y++)
             img->setPixel(2+iconWidth*nc-1,y,qRgba(0,0,0,255));
-#ifdef SOFA_QT4
+
         pixmaps[flags] = new QPixmap(QPixmap::fromImage(*img));
-#else
-        pixmaps[flags] = new QPixmap(*img);
-#endif
+
         delete img;
     }
     return pixmaps[flags];
@@ -179,14 +179,17 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
 
 
 /*****************************************************************************************************************/
-Q3ListViewItem* GraphListenerQListView::createItem(Q3ListViewItem* parent)
+QTreeWidgetItem* GraphListenerQListView::createItem(QTreeWidgetItem* parent)
 {
-    Q3ListViewItem* last = parent->firstChild();
-    if (last == NULL)
-        return new Q3ListViewItem(parent);
-    while (last->nextSibling()!=NULL)
-        last = last->nextSibling();
-    return new Q3ListViewItem(parent, last);
+//    QTreeWidgetItem* last = parent->firstChild();
+//    if (last == NULL)
+//        return new QTreeWidgetItem(parent);
+//    while (last->nextSibling()!=NULL)
+//        last = last->nextSibling();
+//    return new QTreeWidgetItem(parent, last);
+    if(parent->childCount() == 0)
+        return new QTreeWidgetItem(parent);
+    return new QTreeWidgetItem(parent, parent->child(parent->childCount()-1));
 }
 
 
@@ -198,13 +201,13 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
     if (frozen) return;
     if (items.count(child))
     {
-        Q3ListViewItem* item = items[child];
-        if (item->listView() == NULL)
+        QTreeWidgetItem* item = items[child];
+        if (item->treeWidget() == NULL)
         {
             if (parent == NULL)
-                widget->insertItem(item);
+                widget->insertTopLevelItem(0, item);
             else if (items.count(parent))
-                items[parent]->insertItem(item);
+                items[parent]->insertChild(0, item);
             else
             {
                 std::cerr << "Graph -> QT ERROR: Unknown parent node "<<parent->getName()<<std::endl;
@@ -214,26 +217,26 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
         else
         {
             //Node with multiple parent
-            Q3ListViewItem *nodeItem=items[child];
+            QTreeWidgetItem *nodeItem=items[child];
             if (parent &&
                 parent != findObject(nodeItem->parent()) &&
                 !nodeWithMultipleParents.count(nodeItem))
             {
-                Q3ListViewItem* item= createItem(items[parent]);
-                item->setDropEnabled(true);
+                QTreeWidgetItem* item= createItem(items[parent]);
+                //item->setDropEnabled(true);
                 QString name=QString("MultiNode ") + QString(child->getName().c_str());
                 item->setText(0, name);
                 nodeWithMultipleParents.insert(std::make_pair(items[child], item));
                 static QPixmap pixMultiNode((const char**)iconmultinode_xpm);
-                item->setPixmap(0, pixMultiNode);
+                item->setIcon(0, QIcon(pixMultiNode));
             }
         }
     }
     else
     {
-        Q3ListViewItem* item;
+        QTreeWidgetItem* item;
         if (parent == NULL)
-            item = new Q3ListViewItem(widget);
+            item = new QTreeWidgetItem(widget);
         else if (items.count(parent))
             item = createItem(items[parent]);
         else
@@ -242,22 +245,21 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
             return;
         }
 
-        //	    if (std::string(child->getName(),0,7) != "default")
-        item->setDropEnabled(true);
+        //item->setDropEnabled(true);
         item->setText(0, child->getName().c_str());
         if (child->getWarnings().empty())
         {
             QPixmap* pix = getPixmap(child);
             if (pix)
-                item->setPixmap(0, *pix);
+                item->setIcon(0, QIcon(*pix));
         }
         else
         {
             static QPixmap pixWarning((const char**)iconwarning_xpm);
-            item->setPixmap(0,pixWarning);
+            item->setIcon(0, QIcon(pixWarning));
         }
 
-        item->setOpen(true);
+        item->setExpanded(true);
         items[child] = item;
     }
     // Add all objects and grand-children
@@ -280,11 +282,12 @@ void GraphListenerQListView::moveChild(Node* previous, Node* parent, Node* child
 {
     if (frozen && items.count(child))
     {
-        Q3ListViewItem* itemChild = items[child];
+        QTreeWidgetItem* itemChild = items[child];
         if (items.count(previous)) //itemChild->listView() != NULL)
         {
-            Q3ListViewItem* itemPrevious = items[previous];
-            itemPrevious->takeItem(itemChild);
+            QTreeWidgetItem* itemPrevious = items[previous];
+            //itemPrevious->takeItem(itemChild);
+            itemPrevious->removeChild(itemChild);
         }
         else
         {
@@ -302,11 +305,13 @@ void GraphListenerQListView::moveChild(Node* previous, Node* parent, Node* child
     }
     else
     {
-        Q3ListViewItem* itemChild = items[child];
-        Q3ListViewItem* itemPrevious = items[previous];
-        Q3ListViewItem* itemParent = items[parent];
-        itemPrevious->takeItem(itemChild);
-        itemParent->insertItem(itemChild);
+        QTreeWidgetItem* itemChild = items[child];
+        QTreeWidgetItem* itemPrevious = items[previous];
+        QTreeWidgetItem* itemParent = items[parent];
+//        itemPrevious->takeItem(itemChild);
+        itemPrevious->removeChild(itemChild);
+//        itemParent->insertItem(itemChild);
+        itemParent->addChild(itemChild);
     }
 }
 
@@ -316,11 +321,12 @@ void GraphListenerQListView::addObject(Node* parent, core::objectmodel::BaseObje
     if (frozen) return;
     if (items.count(object))
     {
-        Q3ListViewItem* item = items[object];
-        if (item->listView() == NULL)
+        QTreeWidgetItem* item = items[object];
+        if (item->treeWidget() == NULL)
         {
             if (items.count(parent))
-                items[parent]->insertItem(item);
+//                items[parent]->insertItem(item);
+                items[parent]->addChild(item);
             else
             {
                 std::cerr << "Graph -> QT ERROR: Unknown parent node "<<parent->getName()<<std::endl;
@@ -330,7 +336,7 @@ void GraphListenerQListView::addObject(Node* parent, core::objectmodel::BaseObje
     }
     else
     {
-        Q3ListViewItem* item;
+        QTreeWidgetItem* item;
         if (items.count(parent))
             item = createItem(items[parent]);
         else
@@ -353,13 +359,13 @@ void GraphListenerQListView::addObject(Node* parent, core::objectmodel::BaseObje
         {
             QPixmap* pix = getPixmap(object);
             if (pix)
-                item->setPixmap(0, *pix);
+                item->setIcon(0, QIcon(*pix));
 
         }
         else
         {
             static QPixmap pixWarning((const char**)iconwarning_xpm);
-            item->setPixmap(0,pixWarning);
+            item->setIcon(0, QIcon(pixWarning));
         }
 
 
@@ -387,9 +393,10 @@ void GraphListenerQListView::moveObject(Node* previous, Node* parent, core::obje
 {
     if (frozen && items.count(object))
     {
-        Q3ListViewItem* itemObject = items[object];
-        Q3ListViewItem* itemPrevious = items[previous];
-        itemPrevious->takeItem(itemObject);
+        QTreeWidgetItem* itemObject = items[object];
+        QTreeWidgetItem* itemPrevious = items[previous];
+//        itemPrevious->takeItem(itemObject);
+         itemPrevious->removeChild(itemObject);
         return;
     }
     if (!items.count(object) || !items.count(previous))
@@ -402,11 +409,13 @@ void GraphListenerQListView::moveObject(Node* previous, Node* parent, core::obje
     }
     else
     {
-        Q3ListViewItem* itemObject = items[object];
-        Q3ListViewItem* itemPrevious = items[previous];
-        Q3ListViewItem* itemParent = items[parent];
-        itemPrevious->takeItem(itemObject);
-        itemParent->insertItem(itemObject);
+        QTreeWidgetItem* itemObject = items[object];
+        QTreeWidgetItem* itemPrevious = items[previous];
+        QTreeWidgetItem* itemParent = items[parent];
+//        itemPrevious->takeItem(itemObject);
+        itemPrevious->removeChild(itemObject);
+//        itemParent->insertItem(itemObject);
+        itemParent->addChild(itemObject);
     }
 }
 
@@ -416,11 +425,12 @@ void GraphListenerQListView::addSlave(core::objectmodel::BaseObject* master, cor
     if (frozen) return;
     if (items.count(slave))
     {
-        Q3ListViewItem* item = items[slave];
-        if (item->listView() == NULL)
+        QTreeWidgetItem* item = items[slave];
+        if (item->treeWidget() == NULL)
         {
             if (items.count(master))
-                items[master]->insertItem(item);
+//                items[master]->insertItem(item);
+                items[master]->addChild(item);
             else
             {
                 std::cerr << "Graph -> QT ERROR: Unknown master node "<<master->getName()<<std::endl;
@@ -430,7 +440,7 @@ void GraphListenerQListView::addSlave(core::objectmodel::BaseObject* master, cor
     }
     else
     {
-        Q3ListViewItem* item;
+        QTreeWidgetItem* item;
         if (items.count(master))
             item = createItem(items[master]);
         else
@@ -453,13 +463,13 @@ void GraphListenerQListView::addSlave(core::objectmodel::BaseObject* master, cor
         {
             QPixmap* pix = getPixmap(slave);
             if (pix)
-                item->setPixmap(0, *pix);
+                item->setIcon(0, QIcon(*pix));
 
         }
         else
         {
             static QPixmap pixWarning((const char**)iconwarning_xpm);
-            item->setPixmap(0,pixWarning);
+            item->setIcon(0, QIcon(pixWarning));
         }
 
 
@@ -487,9 +497,10 @@ void GraphListenerQListView::moveSlave(core::objectmodel::BaseObject* previous, 
 {
     if (frozen && items.count(slave))
     {
-        Q3ListViewItem* itemSlave = items[slave];
-        Q3ListViewItem* itemPrevious = items[previous];
-        itemPrevious->takeItem(itemSlave);
+        QTreeWidgetItem* itemSlave = items[slave];
+        QTreeWidgetItem* itemPrevious = items[previous];
+//        itemPrevious->takeItem(itemSlave);
+        itemPrevious->removeChild(itemSlave);
         return;
     }
     if (!items.count(slave) || !items.count(previous))
@@ -502,11 +513,13 @@ void GraphListenerQListView::moveSlave(core::objectmodel::BaseObject* previous, 
     }
     else
     {
-        Q3ListViewItem* itemSlave = items[slave];
-        Q3ListViewItem* itemPrevious = items[previous];
-        Q3ListViewItem* itemMaster = items[master];
-        itemPrevious->takeItem(itemSlave);
-        itemMaster->insertItem(itemSlave);
+        QTreeWidgetItem* itemSlave = items[slave];
+        QTreeWidgetItem* itemPrevious = items[previous];
+        QTreeWidgetItem* itemMaster = items[master];
+//        itemPrevious->takeItem(itemSlave);
+        itemPrevious->removeChild(itemSlave);
+//        itemMaster->insertItem(itemSlave);
+        itemMaster->addChild(itemSlave);
     }
 }
 
@@ -515,10 +528,10 @@ void GraphListenerQListView::sleepChanged(Node* node)
 {
 	if (items.count(node))
     {
-		Q3ListViewItem* item = items[node];
-		QPixmap* pix = getPixmap(node);
-		if (pix)
-			item->setPixmap(0, *pix);
+        QTreeWidgetItem* item = items[node];
+        QPixmap* pix = getPixmap(node);
+        if (pix)
+            item->setIcon(0, QIcon(*pix));
 	}
 }
 
@@ -539,13 +552,13 @@ void GraphListenerQListView::unfreeze(Node* groot)
 }
 
 /*****************************************************************************************************************/
-core::objectmodel::Base* GraphListenerQListView::findObject(const Q3ListViewItem* item)
+core::objectmodel::Base* GraphListenerQListView::findObject(const QTreeWidgetItem* item)
 {
     core::objectmodel::Base* base = NULL;
 
     if(item)
     {
-        for ( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = items.begin() ; it != items.end() ; ++ it )
+        for ( std::map<core::objectmodel::Base*, QTreeWidgetItem* >::iterator it = items.begin() ; it != items.end() ; ++ it )
         {
             if ( ( *it ).second == item )
             {
@@ -556,7 +569,7 @@ core::objectmodel::Base* GraphListenerQListView::findObject(const Q3ListViewItem
     }
     if (!base) //Can be a multi node
     {
-        std::multimap<Q3ListViewItem *, Q3ListViewItem*>::iterator it;
+        std::multimap<QTreeWidgetItem *, QTreeWidgetItem*>::iterator it;
         for (it=nodeWithMultipleParents.begin(); it!=nodeWithMultipleParents.end(); ++it)
         {
             if (it->second == item) return findObject(it->first);
@@ -566,13 +579,13 @@ core::objectmodel::Base* GraphListenerQListView::findObject(const Q3ListViewItem
 }
 
 /*****************************************************************************************************************/
-core::objectmodel::BaseData* GraphListenerQListView::findData(const Q3ListViewItem* item)
+core::objectmodel::BaseData* GraphListenerQListView::findData(const QTreeWidgetItem* item)
 // returns NULL if nothing is found.
 {
     BaseData* data = NULL;
     if(item)
     {
-        std::map<BaseData*,Q3ListViewItem*>::const_iterator it;
+        std::map<BaseData*,QTreeWidgetItem*>::const_iterator it;
         for( it = datas.begin(); it != datas.end(); ++it)
         {
             if((*it).second == item)
@@ -612,7 +625,7 @@ void GraphListenerQListView::removeDatas(core::objectmodel::BaseObject* parent)
 void GraphListenerQListView::addDatas(sofa::core::objectmodel::BaseObject *parent)
 {
     if (frozen) return;
-    Q3ListViewItem* new_item;
+    QTreeWidgetItem* new_item;
     std::string name;
     BaseData* data = NULL;
     if(items.count(parent))
@@ -629,10 +642,11 @@ void GraphListenerQListView::addDatas(sofa::core::objectmodel::BaseObject *paren
                 new_item = createItem(items[parent]);
                 name += "  ";
                 name += data->getName();
-                datas.insert(std::pair<BaseData*,Q3ListViewItem*>(data,new_item));
+                datas.insert(std::pair<BaseData*,QTreeWidgetItem*>(data,new_item));
                 new_item->setText(0, name.c_str());
-                new_item->setPixmap(0,pixData);
-                widget->ensureItemVisible(new_item);
+                new_item->setIcon(0, QIcon(pixData));
+//                widget->ensureItemVisible(new_item);
+                widget->scrollToItem(new_item);
                 name.clear();
             }
         }

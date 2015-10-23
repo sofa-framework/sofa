@@ -128,14 +128,12 @@ public:
         return DataTypes::Name();
     }
 
-    bool isCorrectionComputedWithSimulatedDOF(ConstOrder /*order*/)
+    bool isCorrectionComputedWithSimulatedDOF(ConstOrder /*order*/) const
     {
         simulation::Node* node=(simulation::Node*) this->constrainedObject1->getContext();
         if (node->mechanicalMapping.empty()) return true;
         else return false;
     }
-
-    bool useMask() const {return true;}
 
     Data<helper::vector<Deriv> > BlockedAxis;
     Data<helper::vector<SReal> > factorAxis;

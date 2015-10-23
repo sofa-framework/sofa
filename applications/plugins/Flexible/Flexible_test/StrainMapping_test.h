@@ -40,6 +40,7 @@ namespace sofa {
         typedef typename Inherited::InVecCoord InVecCoord;
         typedef typename In::Frame InFrame;
 
+        using Inherited::runTest;
         bool runTest( defaulttype::Mat<3,3,Real>& rotation, defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real>& strain, const OutVecCoord& expectedChildCoords)
         {
             InVecCoord xin(1);

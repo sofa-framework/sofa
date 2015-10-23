@@ -1,5 +1,4 @@
 #include "BulletTriangleModel.h"
-#include "btBulletCollisionCommon.h"
 #include "BtDynamicMesh.h"
 
 namespace sofa
@@ -173,7 +172,7 @@ void TBulletTriangleModel<DataTypes>::updateBullet(){
     _bt_mesh->getLockedVertexIndexBase(&vertexbase,numverts,type,vertexStride,&indexbase,indexstride,numfaces,indicestype);
 
     const VecCoord & pos = mstate->read(core::ConstVecCoordId::position())->getValue();
-    assert(mstate->getSize() == numverts);
+    assert(mstate->getSize() == (size_t)numverts);
 
     if(type == PHY_FLOAT){
         myFillFunc<float>(pos,numverts,vertexbase,vertexStride);

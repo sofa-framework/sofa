@@ -25,12 +25,6 @@
 #ifndef SOFAUSERINTERACTION_CONFIG_H
 #define SOFAUSERINTERACTION_CONFIG_H
 
-#include <sofa/helper/system/config.h>
-
-#ifdef SOFA_BUILD_USER_INTERACTION
-#  define SOFA_USER_INTERACTION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_USER_INTERACTION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <SofaGeneral/config.h>
 
 #endif

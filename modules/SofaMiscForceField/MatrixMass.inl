@@ -267,7 +267,7 @@ void MatrixMass<DataTypes, MassType>::init()
         _usingDefaultDiagonalMatrices=true;
     }
 
-    assert( f_mass.getValue().size() == this->mstate->getSize() );
+    assert( f_mass.getValue().size() == (size_t)this->mstate->getSize() );
 
     if( this->_lumped.getValue() )
     {

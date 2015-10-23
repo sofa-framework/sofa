@@ -47,7 +47,7 @@
 #include <sofa/component/controller/VMechanismsForceFeedback.h>
 #endif
 #include "PaceMaker.h"
-#include "initXitact.h"
+#include <Xitact/config.h>
 namespace sofa
 {
 namespace simulation { class Node; }

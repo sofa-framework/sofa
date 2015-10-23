@@ -69,7 +69,6 @@ public:
     typedef typename DataTypes2::Coord    Coord2;
     typedef typename DataTypes2::Deriv    Deriv2;
     typedef typename DataTypes2::Real     Real2;
-    typedef sofa::helper::ParticleMask ParticleMask;
 
     typedef core::objectmodel::Data<VecCoord1>    DataVecCoord1;
     typedef core::objectmodel::Data<VecDeriv1>    DataVecDeriv1;

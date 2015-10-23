@@ -52,7 +52,7 @@ namespace topology
 */
 
 template< class TopologyElementType, class VecT >
-class TopologySubsetDataHandler : public sofa::core::topology::TopologyElementHandler< TopologyElementType >
+class TopologySubsetDataHandler : public core::topology::TopologyElementHandler< TopologyElementType >
 {
 public:
     typedef VecT container_type;
@@ -76,8 +76,8 @@ protected:
 
 public:
     // constructor
-    TopologySubsetDataHandler(sofa::core::topology::BaseTopologyData <VecT>* _topologyData,value_type defaultValue=value_type())
-        : sofa::core::topology::TopologyElementHandler < TopologyElementType >()
+    TopologySubsetDataHandler(core::topology::BaseTopologyData <VecT>* _topologyData,value_type defaultValue=value_type())
+        : core::topology::TopologyElementHandler < TopologyElementType >()
         , m_topologyData(_topologyData), m_defaultValue(defaultValue) {}
 
     bool isTopologyDataRegistered() {return m_topologyData != 0;}
@@ -94,6 +94,8 @@ public:
 protected:
     /// Swaps values at indices i1 and i2.
     virtual void swap( unsigned int i1, unsigned int i2 );
+
+    using core::topology::TopologyElementHandler< TopologyElementType >::add;
 
     /// Add some values. Values are added at the end of the vector.
     virtual void add( unsigned int nbElements,

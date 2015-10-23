@@ -237,7 +237,7 @@ public:
     static bool _mouseRotate;
 
 
-    QString helpString();
+    QString helpString() const;
 //    void setCameraMode(core::visual::VisualParams::CameraType mode);
 
 private:

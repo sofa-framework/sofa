@@ -33,15 +33,8 @@
 
 #include <sofa/simulation/common/TransformationVisitor.h>
 
-
-#ifdef SOFA_QT4
-#include <Q3PopupMenu>
-#else
-#include <qapplication.h>
-#include <qpopupmenu.h>
-#endif
-
-
+#include <QMenu>
+#include <QtGlobal> // version macro
 
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
@@ -52,23 +45,19 @@ namespace gui
 namespace qt
 {
 
-#ifndef SOFA_QT4
-typedef QPopupMenu Q3PopupMenu;
-#endif
-
-
-
 
 QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
         QWidget* parent,
         const char* name,
-        Qt::WFlags f):
-    Q3ListView(parent,name,f),
+        Qt::WindowFlags f):
+    QTreeWidget(parent),
     graphListener_(NULL),
     AddObjectDialog_(NULL),
     attribute_(attribute),
     propertyWidget(NULL)
 {
+    this->setObjectName(name);
+    this->setWindowFlags(f);
     //List of objects
     //Read the object.txt that contains the information about the objects which can be added to the scenes whithin a given BoundingBox and scale range
     std::string object ( "config/object.txt" );
@@ -90,24 +79,28 @@ QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
     AddObjectDialog_->hide();
 
 
-    addColumn(QString());
-    header()->setClickEnabled(false, header()->count() - 1);
-    header()->setResizeEnabled(false, header()->count() - 1);
-    header()->setLabel(0, QString());
+    //addColumn(QString());
+
+//    header()->setClickEnabled(false, header()->count() - 1);
+//    header()->
+    //header()->setResizeEnabled(false, header()->count() - 1);
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    header()->setResizeMode(header()->count() - 1, QHeaderView::Fixed);
+#else
+    header()->setSectionResizeMode(header()->count() - 1, QHeaderView::Fixed);
+#endif // SOFA_QT5
+    //header()->setLabel(0, QString());
 
     setRootIsDecorated(true);
-    setTreeStepSize(15);
+    //setTreeStepSize(15);
+    setIndentation(15);
     graphListener_ = new GraphListenerQListView(this);
-#ifdef SOFA_QT4
-    connect(this,SIGNAL(rightButtonClicked(Q3ListViewItem*,const QPoint&, int)) ,this,SLOT(RunSofaRightClicked(Q3ListViewItem*,const QPoint&, int)) );
-    connect(this,SIGNAL(doubleClicked(Q3ListViewItem*) ), this, SLOT(RunSofaDoubleClicked(Q3ListViewItem*)) );
-    connect(this,SIGNAL(clicked(Q3ListViewItem*) ), this, SLOT(updateMatchingObjectmodel(Q3ListViewItem*)) );
-#else
-    connect(this,SIGNAL(rightButtonClicked(Q3ListViewItem*,const QPoint&, int)) ,this,SLOT(RunSofaRightClicked(Q3ListViewItem*,const QPoint&, int)) );
-    connect(this,SIGNAL(doubleClicked(Q3ListViewItem*) ), this, SLOT(RunSofaDoubleClicked(Q3ListViewItem*)) );
-    connect(this,SIGNAL(clicked(Q3ListViewItem*) ), this, SLOT(updateMatchingObjectmodel(Q3ListViewItem*)) );
 
-#endif
+    this->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(this,SIGNAL(customContextMenuRequested(const QPoint&)) ,this,SLOT(RunSofaRightClicked(const QPoint&)) );
+    connect(this,SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int )), this, SLOT(RunSofaDoubleClicked(QTreeWidgetItem*, int)) );
+    connect(this,SIGNAL(itemClicked(QTreeWidgetItem*,int) ), this, SLOT(updateMatchingObjectmodel(QTreeWidgetItem*, int)) );
+
 }
 
 QSofaListView::~QSofaListView()
@@ -130,11 +123,13 @@ void QSofaListView::Clear(Node* rootNode)
     CloseAllDialogs();
     clear();
     graphListener_ = new GraphListenerQListView(this);
-    setSorting ( -1 );
+
+    this->setSortingEnabled(false);
+//    setSorting ( -1 );
     header()->hide();
     graphListener_->addChild ( NULL, rootNode );
     graphListener_->freeze ( rootNode );
-    std::map<Base*, Q3ListViewItem* >::iterator graph_iterator;
+    std::map<Base*, QTreeWidgetItem* >::iterator graph_iterator;
 
     for (graph_iterator = graphListener_->items.begin();
             graph_iterator != graphListener_->items.end();
@@ -170,18 +165,16 @@ void QSofaListView::collapseNode()
     collapseNode(currentItem());
 }
 
-void QSofaListView::collapseNode(Q3ListViewItem* item)
+void QSofaListView::collapseNode(QTreeWidgetItem* item)
 {
     if (!item) return;
     emit Lock(true);
-    Q3ListViewItem* child;
-    child = item->firstChild();
-    while ( child != NULL )
+    for(int i=0 ; i<item->childCount() ; i++)
     {
-        child->setOpen ( false );
-        child = child->nextSibling();
+        QTreeWidgetItem* child = item->child(i);
+        child->setExpanded(false);// setOpen ( false );
     }
-    item->setOpen ( true );
+    item->setExpanded ( true );
     emit Lock(false);
 }
 
@@ -190,27 +183,27 @@ void QSofaListView::expandNode()
     expandNode(currentItem());
 }
 
-void QSofaListView::expandNode(Q3ListViewItem* item)
+void QSofaListView::expandNode(QTreeWidgetItem* item)
 {
     if (!item) return;
     emit Lock(true);
-    item->setOpen ( true );
-    if ( item != NULL )
+    item->setExpanded ( true );
+    for(int i=0 ; i<item->childCount() ; i++)
     {
-        Q3ListViewItem* child;
-        child = item->firstChild();
-        while ( child != NULL )
-        {
-            item = child;
-            child->setOpen ( true );
-            expandNode(item);
-            child = child->nextSibling();
-        }
+        QTreeWidgetItem* child = item->child(i);
+        child->setExpanded(true);// setOpen ( false );
+        expandNode(item);
     }
+
     emit Lock(false);
 }
 
-void QSofaListView::updateMatchingObjectmodel(Q3ListViewItem* item)
+void QSofaListView::updateMatchingObjectmodel(QTreeWidgetItem* item, int)
+{
+    updateMatchingObjectmodel(item);
+}
+
+void QSofaListView::updateMatchingObjectmodel(QTreeWidgetItem* item)
 {
     BaseData* data = NULL;
     Base* base = NULL;
@@ -247,13 +240,7 @@ void QSofaListView::updateMatchingObjectmodel(Q3ListViewItem* item)
 
 	addInPropertyWidget(item, true);
 }
-
-void QSofaListView::updateMatchingObjectmodel()
-{
-    updateMatchingObjectmodel(currentItem());
-}
-
-void QSofaListView::addInPropertyWidget(Q3ListViewItem *item, bool clear)
+void QSofaListView::addInPropertyWidget(QTreeWidgetItem *item, bool clear)
 {
     if(!item)
         return;
@@ -272,7 +259,7 @@ void QSofaListView::addInPropertyWidget(Q3ListViewItem *item, bool clear)
 
 void QSofaListView::Freeze()
 {
-    Node* groot = dynamic_cast<Node*>( graphListener_->findObject(firstChild()) );
+    Node* groot = dynamic_cast<Node*>( graphListener_->findObject(this->topLevelItem(0) ));
 
     assert(groot);
     graphListener_->freeze(groot);
@@ -280,7 +267,7 @@ void QSofaListView::Freeze()
 
 void QSofaListView::Unfreeze()
 {
-    Node* groot = dynamic_cast<Node*>(graphListener_->findObject(firstChild()) );
+    Node* groot = dynamic_cast<Node*>(graphListener_->findObject(this->topLevelItem(0)) );
     assert(groot);
     graphListener_->unfreeze(groot);
 }
@@ -304,87 +291,124 @@ void QSofaListView::focusNode()
 
 
 /*****************************************************************************************************************/
-void QSofaListView::RunSofaRightClicked( Q3ListViewItem *item,
-        const QPoint& point,
-        int index )
+void QSofaListView::RunSofaRightClicked( const QPoint& point)
 {
+    QTreeWidgetItem *item = this->itemAt( point );
 
     if( item == NULL) return;
+
+    updateMatchingObjectmodel(item);
     //updateMatchingObjectmodel();
+
+    QAction* act;
+
     bool object_hasData = false;
     if(object_.type == typeObject)
     {
         object_hasData = object_.ptr.Object->getDataFields().size() > 0 ? true : false;
     }
-    Q3PopupMenu *contextMenu = new Q3PopupMenu ( this, "ContextMenu" );
+    QMenu *contextMenu = new QMenu ( this );
+    contextMenu->setObjectName( "ContextMenu");
     if( object_.isNode() )
     {
-        int index_menu = contextMenu->insertItem("Focus", this,SLOT(focusNode()) );
+        //int index_menu = contextMenu->insertItem("Focus", this,SLOT( focusNode() )  );
+        act = contextMenu->addAction("Focus", this,SLOT(focusNode()));
         bool enable = object_.ptr.Node->f_bbox.getValue().isValid() && !object_.ptr.Node->f_bbox.getValue().isFlat();
-        contextMenu->setItemEnabled(index_menu,enable);
+        act->setEnabled(enable);
+        //contextMenu->setItemEnabled(index_menu,enable);
     }
     if( object_.isObject() )
     {
-        int index_menu = contextMenu->insertItem("Focus", this,SLOT( focusObject() ) );
+       // int index_menu = contextMenu->insertItem("Focus", this,SLOT( focusObject() ) );
+        act = contextMenu->addAction("Focus", this,SLOT(focusObject()));
         bool enable = object_.ptr.Object->f_bbox.getValue().isValid() && !object_.ptr.Object->f_bbox.getValue().isFlat() ;
-        contextMenu->setItemEnabled(index_menu,enable);
+        //contextMenu->setItemEnabled(index_menu,enable);
+        act->setEnabled(enable);
     }
-    contextMenu->insertSeparator();
+    //contextMenu->insertSeparator();
+    contextMenu->addSeparator();
 
     //Creation of the context Menu
     if ( object_.type == typeNode)
     {
-        contextMenu->insertItem ( "Collapse", this, SLOT ( collapseNode() ) );
-        contextMenu->insertItem ( "Expand", this, SLOT ( expandNode() ) );
-        contextMenu->insertSeparator ();
+//        contextMenu->insertItem ( "Collapse", this, SLOT ( collapseNode() ) );
+        act = contextMenu->addAction("Collapse", this,SLOT(collapseNode()));
+//        contextMenu->insertItem ( "Expand", this, SLOT ( expandNode() ) );
+        act = contextMenu->addAction("Expand", this,SLOT(expandNode()));
+//        contextMenu->insertSeparator ();
+        contextMenu->addSeparator();
         /*****************************************************************************************************************/
         if (object_.ptr.Node->isActive())
-            contextMenu->insertItem ( "Deactivate", this, SLOT ( DeactivateNode() ) );
+        {
+//            contextMenu->insertItem ( "Deactivate", this, SLOT ( DeactivateNode() ) );
+            act = contextMenu->addAction("Deactivate", this,SLOT(DeactivateNode()));
+        }
         else
-            contextMenu->insertItem ( "Activate", this, SLOT ( ActivateNode() ) );
+        {
+//            contextMenu->insertItem ( "Activate", this, SLOT ( ActivateNode() ) );
+            act = contextMenu->addAction("Activate", this,SLOT(ActivateNode()));
+        }
 		if (object_.ptr.Node->isSleeping())
-            contextMenu->insertItem ( "Wake up", this, SLOT ( WakeUpNode() ) );
+        {
+//            contextMenu->insertItem ( "Wake up", this, SLOT ( WakeUpNode() ) );
+            act = contextMenu->addAction("Wake up", this,SLOT(WakeUpNode()));
+        }
         else
-            contextMenu->insertItem ( "Put to sleep", this, SLOT ( PutNodeToSleep() ) );
-        contextMenu->insertSeparator ();
+        {
+//            contextMenu->insertItem ( "Put to sleep", this, SLOT ( PutNodeToSleep() ) );
+            act = contextMenu->addAction("Put to sleep", this,SLOT(PutNodeToSleep()));
+        }
+//        contextMenu->insertSeparator ();
+        contextMenu->addSeparator();
         /*****************************************************************************************************************/
 
-        contextMenu->insertItem ( "Save Node", this, SLOT ( SaveNode() ) );
-        contextMenu->insertItem ( "Export OBJ", this, SLOT ( exportOBJ() ) );
+//        contextMenu->insertItem ( "Save Node", this, SLOT ( SaveNode() ) );
+        act = contextMenu->addAction("Save Node", this,SLOT(SaveNode()));
+//        contextMenu->insertItem ( "Export OBJ", this, SLOT ( exportOBJ() ) );
+        act = contextMenu->addAction("Export OBJ", this,SLOT(exportOBJ()));
 
         if ( attribute_ == SIMULATION)
         {
-            contextMenu->insertItem ( "Add Node", this, SLOT ( RaiseAddObject() ) );
+//            contextMenu->insertItem ( "Add Node", this, SLOT ( RaiseAddObject() ) );
+            act = contextMenu->addAction("Add Node", this,SLOT(RaiseAddObject()));
 
-            int index_menu = contextMenu->insertItem ( "Remove Node", this, SLOT ( RemoveNode() ) );
+//            int index_menu = contextMenu->insertItem ( "Remove Node", this, SLOT ( RemoveNode() ) );
+            act = contextMenu->addAction("Remove Node", this,SLOT(RemoveNode()));
             //If one of the elements or child of the current node is beeing modified, you cannot allow the user to erase the node
             if ( !isNodeErasable ( object_.ptr.Node ) )
-                contextMenu->setItemEnabled ( index_menu,false );
+            {
+//                contextMenu->setItemEnabled ( index_menu,false );
+                act->setEnabled(false);
+            }
         }
     }
-    contextMenu->insertItem ( "Modify", this, SLOT ( Modify() ) );
+    //contextMenu->insertItem ( "Modify", this, SLOT ( Modify() ) );
+    act = contextMenu->addAction("Modify", this,SLOT(Modify()));
     if(object_hasData)
     {
         if(item->childCount() > 0)
         {
-            contextMenu->insertItem("Hide Data",this, SLOT ( HideDatas() ) );
+//            contextMenu->insertItem("Hide Data",this, SLOT ( HideDatas() ) );
+            act = contextMenu->addAction("Hide Data", this,SLOT(HideDatas()));
         }
         else
         {
-            contextMenu->insertItem("Show Data", this, SLOT ( ShowDatas() ) );
+//            contextMenu->insertItem("Show Data", this, SLOT ( ShowDatas() ) );
+            act = contextMenu->addAction("Show Data", this,SLOT(ShowDatas()));
         }
     }
-    contextMenu->popup ( point, index );
+
+    contextMenu->exec ( this->mapToGlobal(point) /*, index */);
 }
 
-void QSofaListView::RunSofaDoubleClicked(Q3ListViewItem* item)
+void QSofaListView::RunSofaDoubleClicked(QTreeWidgetItem* item, int /*index*/)
 {
     if(item == NULL)
     {
         return;
     }
 
-    item->setOpen( !item->isOpen());
+    item->setExpanded( !item->isExpanded());
     Modify();
 
 }
@@ -392,14 +416,14 @@ void QSofaListView::RunSofaDoubleClicked(Q3ListViewItem* item)
 /*****************************************************************************************************************/
 void QSofaListView::nodeNameModification(simulation::Node* node)
 {
-    Q3ListViewItem *item=graphListener_->items[node];
+    QTreeWidgetItem *item=graphListener_->items[node];
 
     QString nameToUse(node->getName().c_str());
     item->setText(0,nameToUse);
 
     nameToUse=QString("MultiNode ")+nameToUse;
 
-    typedef std::multimap<Q3ListViewItem *, Q3ListViewItem*>::iterator ItemIterator;
+    typedef std::multimap<QTreeWidgetItem *, QTreeWidgetItem*>::iterator ItemIterator;
     std::pair<ItemIterator,ItemIterator> range=graphListener_->nodeWithMultipleParents.equal_range(item);
 
     for (ItemIterator it=range.first; it!=range.second; ++it) it->second->setText(0,nameToUse);
@@ -409,7 +433,7 @@ void QSofaListView::nodeNameModification(simulation::Node* node)
 void QSofaListView::DeactivateNode()
 {
     emit RequestActivation(object_.ptr.Node,false);
-    currentItem()->setOpen(false);
+    currentItem()->setExpanded(false);
 
 }
 
@@ -454,7 +478,7 @@ void QSofaListView::RaiseAddObject()
     emit Lock(true);
     assert(AddObjectDialog_);
 
-    std::string path( ((RealGUI*) (qApp->mainWidget()))->windowFilePath().ascii());
+    std::string path( ((RealGUI*) (QApplication::topLevelWidgets()[0]))->windowFilePath().toStdString());
     AddObjectDialog_->setPath ( path );
     AddObjectDialog_->show();
     AddObjectDialog_->raise();
@@ -521,7 +545,7 @@ void QSofaListView::Modify()
         }
 
 
-        dialogModifyObject = new ModifyObject(current_Id_modifyDialog,currentItem(),this,dialogFlags,currentItem()->text(0));
+        dialogModifyObject = new ModifyObject(current_Id_modifyDialog,currentItem(),this,dialogFlags,currentItem()->text(0).toStdString().c_str());
         if(object_.type == typeData)
             dialogModifyObject->createDialog(object_.ptr.Data);
         if(object_.type == typeNode)
@@ -538,6 +562,7 @@ void QSofaListView::Modify()
         connect ( dialogModifyObject, SIGNAL( dataModified(QString) ), this, SIGNAL( dataModified(QString) ) );
         dialogModifyObject->show();
         dialogModifyObject->raise();
+
     }
     emit Lock(false);
 }
@@ -579,39 +604,39 @@ void QSofaListView::ShowDatas()
 // Test if a node can be erased in the graph : the condition is that none of its children has a menu modify opened
 bool QSofaListView::isNodeErasable ( BaseNode* node)
 {
-    Q3ListViewItem* item = graphListener_->items[node];
+    QTreeWidgetItem* item = graphListener_->items[node];
     if(item == NULL)
     {
         return false;
     }
     // check if there is already a dialog opened for that item in the graph
-    std::map< void*, Q3ListViewItem*>::iterator it;
+    std::map< void*, QTreeWidgetItem*>::iterator it;
     for (it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); ++it)
     {
         if (it->second == item) return false;
     }
 
     //check the item childs
-    Q3ListViewItem *child = item->firstChild();
-    while (child != NULL)
+    for(int i=0 ; i<item->childCount() ; i++)
     {
+        QTreeWidgetItem *child = item->child(i);
         for( it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); ++it)
         {
             if( it->second == child) return false;
         }
-        child = child->nextSibling();
     }
+
     return true;
 
 }
 
 void QSofaListView::Export()
 {
-    Node* root = dynamic_cast<Node*>(graphListener_->findObject(firstChild()));
+    Node* root = dynamic_cast<Node*>(graphListener_->findObject(this->topLevelItem(0)));
     assert(root);
     GenGraphForm* form = new sofa::gui::qt::GenGraphForm;
     form->setScene ( root );
-    std::string gname(((RealGUI*) (qApp->mainWidget()))->windowFilePath().ascii());
+    std::string gname(((RealGUI*) (QApplication::topLevelWidgets()[0]))->windowFilePath().toStdString());
     std::size_t gpath = gname.find_last_of("/\\");
     std::size_t gext = gname.rfind('.');
     if (gext != std::string::npos && (gpath == std::string::npos || gext > gpath))
@@ -632,10 +657,10 @@ void QSofaListView::loadObject ( std::string path, double dx, double dy, double 
     //the object will be added to the root node
     if ( currentItem() == NULL )
     {
-        for ( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = graphListener_->items.begin() ;
+        for ( std::map<core::objectmodel::Base*, QTreeWidgetItem* >::iterator it = graphListener_->items.begin() ;
                 it != graphListener_->items.end() ; ++ it )
         {
-            if ( ( *it ).second->itemPos() == 0 ) //Root node position
+            if ( ( *it ).second->parent() == NULL ) //Root node position
             {
                 object_.ptr.Node = dynamic_cast< sofa::simulation::Node *> ( ( *it ).first );
                 object_.type = typeNode;

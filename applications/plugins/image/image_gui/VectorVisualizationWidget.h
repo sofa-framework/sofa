@@ -3,14 +3,10 @@
 
 #include <sofa/gui/qt/SimpleDataWidget.h>
 #include <sofa/gui/qt/DataWidget.h>
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 #include "../VectorVis.h"
 
-#ifdef SOFA_QT4
 #include <QCheckBox>
-#else
-#include <qcheckbox.h>
-#endif
 
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Data.h>
@@ -32,7 +28,7 @@ class VectorVisSettings: public QObject
     Q_OBJECT
 
 public:
-    virtual ~VectorVisSettings() {};
+    virtual ~VectorVisSettings() {}
 
     /**
     * @name From Options
@@ -213,8 +209,8 @@ public:
         checkbox = new QCheckBox(this);
         label = new QLabel(this);
         label->setText(name);
-        layout->add(checkbox);
-        layout->add(label);
+        layout->addWidget(checkbox);
+        layout->addWidget(label);
     }
 };
 
@@ -243,8 +239,8 @@ public:
         slider->setValue( (int) min + (max-min)/2);
         numLabel = new QLabel(this);
         numLabel->setNum(slider->value());
-        layout->add(slider);
-        layout->add(numLabel);
+        layout->addWidget(slider);
+        layout->addWidget(numLabel);
 
         connect(slider, SIGNAL( valueChanged(int) ), this, SLOT( updateNumLabel(int) ) );
 
@@ -315,25 +311,25 @@ public:
         shapeScaleSlider = new VectorVisualizationSliderWidget(this, 1, 100);
 
         QVBoxLayout * layout = new QVBoxLayout(this);
-        layout->add(rgbCheckbox);
-        layout->add(shapeCheckbox);
-        layout->add(subsampleXYSlider);
+        layout->addWidget(rgbCheckbox);
+        layout->addWidget(shapeCheckbox);
+        layout->addWidget(subsampleXYSlider);
 
         QLabel* xyLabel = new QLabel(this);
         xyLabel->setText("XY Subsampling");
-        layout->add(xyLabel);
+        layout->addWidget(xyLabel);
 
-        layout->add(subsampleZSlider);
+        layout->addWidget(subsampleZSlider);
 
         QLabel* zLabel = new QLabel(this);
         zLabel->setText("Z Subsampling");
-        layout->add(zLabel);
+        layout->addWidget(zLabel);
 
-        layout->add(shapeScaleSlider);
+        layout->addWidget(shapeScaleSlider);
 
         QLabel* scaleLabel = new QLabel(this);
         scaleLabel->setText("Vector Scale");
-        layout->add(scaleLabel);
+        layout->addWidget(scaleLabel);
 
         //rgbCheckbox->checkbox->setEnabled(false);
 
@@ -442,7 +438,8 @@ public:
     bool createLayout(QLayout* layout)
     {
         if(container_layout != NULL) return false;
-        container_layout = new QVBoxLayout(layout);
+        container_layout = new QVBoxLayout();
+        layout->addItem(container_layout);
         return true;
     }
 
@@ -464,9 +461,9 @@ public:
     {
         assert(container_layout);
         if(settings)
-            container_layout->add(settings->getWidget());
+            container_layout->addWidget(settings->getWidget());
         if(options)
-            container_layout->add(options);
+            container_layout->addWidget(options);
     }
 };
 

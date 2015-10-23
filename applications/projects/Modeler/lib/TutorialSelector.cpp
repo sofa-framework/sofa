@@ -30,7 +30,7 @@
 
 #include <sofa/helper/vector.h>
 
-#include <Q3Header>
+#include <QHeaderView>
 #include <QImage>
 
 namespace sofa
@@ -43,17 +43,18 @@ namespace qt
 {
 
 
-TutorialSelector::TutorialSelector(QWidget* parent):Q3ListView(parent)
+TutorialSelector::TutorialSelector(QWidget* parent):QTreeWidget(parent)
 {
-    connect (this, SIGNAL(doubleClicked( Q3ListViewItem *)),
-            this, SLOT( changeRequested( Q3ListViewItem *)));
+    connect (this, SIGNAL(itemDoubleClicked( QTreeWidgetItem *, int)),
+            this, SLOT( changeRequested( QTreeWidgetItem *)));
+
     this->header()->hide();
-    this->setSorting(-1);
+    this->setSortingEnabled(false);
 
-    this->addColumn("Tutorials");
-    this->setColumnWidthMode(0,Q3ListView::Maximum);
+    //this->addColumn("Tutorials");
+    //this->setColumnWidthMode(0,QTreeWidget::Maximum);
 
-    itemToCategory.insert(std::make_pair((Q3ListViewItem*)0, Category("All Sofa Tutorials", sofa::helper::system::DataRepository.getFile("Tutorials/Tutorials.xml"), sofa::helper::system::DataRepository.getFile("Tutorials/Tutorials.html"))));
+    itemToCategory.insert(std::make_pair((QTreeWidgetItem*)0, Category("All Sofa Tutorials", sofa::helper::system::DataRepository.getFile("Tutorials/Tutorials.xml"), sofa::helper::system::DataRepository.getFile("Tutorials/Tutorials.html"))));
 }
 
 void TutorialSelector::init()
@@ -62,7 +63,7 @@ void TutorialSelector::init()
 
     //Store all the categories we have for the software
     helper::vector< Category > allCategories;
-    std::map< Q3ListViewItem *, Category>::const_iterator itCategory;
+    std::map< QTreeWidgetItem *, Category>::const_iterator itCategory;
     for (itCategory=itemToCategory.begin(); itCategory!=itemToCategory.end(); ++itCategory)
     {
         allCategories.push_back(itCategory->second);
@@ -75,7 +76,7 @@ void TutorialSelector::init()
         const Category& currentCategory=allCategories.back();
 
         openCategory(currentCategory);
-        std::map< Q3ListViewItem *, Tutorial>::const_iterator itTuto;
+        std::map< QTreeWidgetItem *, Tutorial>::const_iterator itTuto;
         for (itTuto=itemToTutorial.begin(); itTuto!=itemToTutorial.end(); ++itTuto)
         {
             listTutoFromFile.insert(std::make_pair(currentCategory, itTuto->second));
@@ -107,7 +108,7 @@ void TutorialSelector::loadTutorials(const std::string &fileTutorial)
     this->setMaximumWidth((int)(this->columnWidth(0)*1.1));
 }
 
-void TutorialSelector::openNode(TiXmlNode *node, Q3ListViewItem *parent, bool isRoot)
+void TutorialSelector::openNode(TiXmlNode *node, QTreeWidgetItem *parent, bool isRoot)
 {
     std::string nameOfNode=node->Value();
     // TinyXml API changed in 2.6.0, ELEMENT was replaced with TINYXML_ELEMENT
@@ -115,32 +116,23 @@ void TutorialSelector::openNode(TiXmlNode *node, Q3ListViewItem *parent, bool is
     // replace these constants with checks of the return value of ToElement(), ...
     // -- Jeremie A. 02/07/2011
     //int typeOfNode=node->Type();
-    Q3ListViewItem* item=0;
+    QTreeWidgetItem* item=0;
     if (node->ToElement())   // case TiXmlNode::ELEMENT:
     {
         if (!isRoot)
         {
+            item = new QTreeWidgetItem();
+            item->setText(0, QString(nameOfNode.c_str()));
+
             if (!parent)
             {
-                Q3ListViewItem *last = this->firstChild();
-                if (last == 0) item = new Q3ListViewItem(this, QString(nameOfNode.c_str()));
-                else
-                {
-                    while (last->nextSibling() != 0) last = last->nextSibling();
-                    item = new Q3ListViewItem(this, last, QString(nameOfNode.c_str()));
-                }
-                item->setOpen(true);
+                this->addTopLevelItem(item);
+                item->setExpanded(true);
             }
             else
             {
-                Q3ListViewItem *last = parent->firstChild();
-                if (last == 0) item = new Q3ListViewItem(parent, QString(nameOfNode.c_str()));
-                else
-                {
-                    while (last->nextSibling() != 0) last = last->nextSibling();
-                    item = new Q3ListViewItem(parent, last, QString(nameOfNode.c_str()));
-                }
-                item->setOpen(false);
+                parent->addChild(item);
+                item->setExpanded(false);
             }
         }
         openAttribute(node->ToElement(), item);
@@ -154,7 +146,7 @@ void TutorialSelector::openNode(TiXmlNode *node, Q3ListViewItem *parent, bool is
     }
 }
 
-void TutorialSelector::openAttribute(TiXmlElement* element,  Q3ListViewItem *item)
+void TutorialSelector::openAttribute(TiXmlElement* element,  QTreeWidgetItem *item)
 {
     if (!element || !item) return;
     TiXmlAttribute* attribute=element->FirstAttribute();
@@ -179,7 +171,7 @@ void TutorialSelector::openAttribute(TiXmlElement* element,  Q3ListViewItem *ite
     if (typeElement == "Group")
     {
         static QPixmap pixNode((const char**)iconnode_xpm);
-        item->setPixmap(0, pixNode);
+        item->setIcon(0, QIcon(pixNode));
     }
     else if (typeElement == "Category")
     {
@@ -187,12 +179,12 @@ void TutorialSelector::openAttribute(TiXmlElement* element,  Q3ListViewItem *ite
         static QPixmap pixScene;
         if (imageScene.width() != 20)
         {
-            imageScene=imageScene.smoothScale(20,10);
+            imageScene=imageScene.scaled(20,10, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
             pixScene.convertFromImage(imageScene);
         }
-        item->setPixmap(0,pixScene);
+        item->setIcon(0,QIcon(pixScene));
 
-        Category C(item->text(0).ascii(), attributes["xml"], attributes["html"]);
+        Category C(item->text(0).toStdString(), attributes["xml"], attributes["html"]);
         if (C.htmlFilename.empty() && C.xmlFilename.size() >= 4)
         {
             std::string htmlFile=C.xmlFilename;
@@ -219,12 +211,12 @@ void TutorialSelector::openAttribute(TiXmlElement* element,  Q3ListViewItem *ite
         static QPixmap pixScene;
         if (imageScene.width() != 20)
         {
-            imageScene=imageScene.smoothScale(20,20);
+            imageScene=imageScene.scaled(20,20, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
             pixScene.convertFromImage(imageScene);
         }
 
-        item->setPixmap(0,pixScene);
-        Tutorial T(item->text(0).ascii(), attributes["scene"], attributes["html"]);
+        item->setIcon(0,QIcon(pixScene));
+        Tutorial T(item->text(0).toStdString(), attributes["scene"], attributes["html"]);
         if (T.htmlFilename.empty() && T.sceneFilename.size() >= 4)
         {
             std::string htmlFile=T.sceneFilename;
@@ -249,7 +241,7 @@ void TutorialSelector::openAttribute(TiXmlElement* element,  Q3ListViewItem *ite
     }
 }
 
-void TutorialSelector::changeRequested( Q3ListViewItem *item )
+void TutorialSelector::changeRequested( QTreeWidgetItem *item )
 {
     if (itemToTutorial.find(item) != itemToTutorial.end())
     {
@@ -265,10 +257,10 @@ void TutorialSelector::changeRequested( Q3ListViewItem *item )
 
 void TutorialSelector::openCategory( const QString &name)
 {
-    std::map< Q3ListViewItem *, Category>::const_iterator it;
+    std::map< QTreeWidgetItem *, Category>::const_iterator it;
     for (it=itemToCategory.begin(); it!=itemToCategory.end(); ++it)
     {
-        if (it->second.name == name.ascii())
+        if (it->second.name == name.toStdString())
         {
             openCategory(it->second);
             return;
@@ -324,13 +316,13 @@ void TutorialSelector::usingScene(const std::string &filename)
             }
             emit openHTML(t.htmlFilename);
 
-            std::map< Q3ListViewItem *, Tutorial>::const_iterator it;
+            std::map< QTreeWidgetItem *, Tutorial>::const_iterator it;
             for (it=itemToTutorial.begin(); it!=itemToTutorial.end(); ++it)
             {
                 //select in the list the current tutorial
                 if (it->second.sceneFilename == filename)
                 {
-                    if (it->first) this->setSelected(it->first,true);
+                    if (it->first) this->setCurrentItem(it->first);
                     break;
                 }
             }
@@ -368,7 +360,7 @@ void TutorialSelector::keyPressEvent ( QKeyEvent * e )
     }
     default:
     {
-        Q3ListView::keyPressEvent(e);
+        QTreeWidget::keyPressEvent(e);
         break;
     }
     }

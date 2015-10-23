@@ -2,7 +2,7 @@
 #define PROJECTIONMAPPING_H
 
 #include "AssembledMapping.h"
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 
 #include "../utils/map.h"
 #include "../utils/pair.h"
@@ -102,6 +102,19 @@ protected:
 		}
 		
 	}
+
+    virtual void updateForceMask()
+    {
+        const vector<set_type>& s = set.getValue();
+
+        for( size_t i = 0, iend = s.size(); i < iend; ++i )
+        {
+            if( this->maskTo->getEntry(i) )
+            {
+                this->maskFrom->insertEntry(s[i].first());
+            }
+        }
+    }
 	
 };
 

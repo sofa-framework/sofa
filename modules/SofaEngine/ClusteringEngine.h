@@ -129,7 +129,7 @@ private:
     bool save();
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_CLUSTERING_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_CLUSTERINGENGINE_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_ENGINE_API ClusteringEngine<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

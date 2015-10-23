@@ -31,7 +31,7 @@
 #include <SofaNonUniformFem/DynamicSparseGridTopologyModifier.h>
 #include <SofaNonUniformFem/DynamicSparseGridTopologyAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaNonUniformFem/DynamicSparseGridGeometryAlgorithms.h>
+//#include <SofaNonUniformFem/DynamicSparseGridGeometryAlgorithms.h>
 #include <algorithm>
 #include <functional>
 
@@ -47,8 +47,8 @@ class DynamicSparseGridTopologyContainer;
 
 class DynamicSparseGridTopologyModifier;
 
-template < class DataTypes >
-class DynamicSparseGridGeometryAlgorithms;
+//template < class DataTypes >
+//class DynamicSparseGridGeometryAlgorithms;
 
 /**
 * A class that performs topology algorithms on an HexahedronSet.

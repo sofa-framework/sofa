@@ -82,7 +82,7 @@ protected:
     helper::gl::Texture *tex; //this texture is used only if a texture name is specified in the scn
     GLuint vbo, iboEdges, iboTriangles, iboQuads;
     bool canUseVBO, VBOGenDone, initDone, useEdges, useTriangles, useQuads, canUsePatches;
-    unsigned int oldVerticesSize, oldEdgesSize, oldTrianglesSize, oldQuadsSize;
+    unsigned int oldVerticesSize, oldNormalsSize, oldTexCoordsSize, oldTangentsSize, oldBitangentsSize, oldEdgesSize, oldTrianglesSize, oldQuadsSize;
     void internalDraw(const core::visual::VisualParams* vparams, bool transparent);
 
     void drawGroup(int ig, bool transparent);

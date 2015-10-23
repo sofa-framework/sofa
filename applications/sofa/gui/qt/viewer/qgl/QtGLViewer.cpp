@@ -100,8 +100,10 @@ QGLFormat QtGLViewer::setupGLFormat(const unsigned int nbMSAASamples)
 }
 
 QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbMSAASamples)
-    : QGLViewer(setupGLFormat(nbMSAASamples), parent, name)
+    : QGLViewer(setupGLFormat(nbMSAASamples), parent)
 {
+    this->setObjectName(name);
+
     groot = NULL;
     initTexturesDone = false;
 
@@ -909,10 +911,10 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
 
     //Tracking Mode
 
-    // 	cerr<<"QtGLViewer::keyPressEvent, get "<<e->key()<<endl;
+//    std::cerr<<"QtGLViewer::keyPressEvent, get "<<e->key()<<std::endl;
     if( isControlPressed() ) // pass event to the scene data structure
     {
-        //cerr<<"QtGLViewer::keyPressEvent, key = "<<e->key()<<" with Control pressed "<<endl;
+//        std::cerr<<"QtGLViewer::keyPressEvent, key = "<<e->key()<<" with Control pressed "<<std::endl;
         if (groot)
         {
             sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
@@ -993,7 +995,7 @@ void QtGLViewer::mouseMoveEvent ( QMouseEvent * e )
 
 bool QtGLViewer::mouseEvent(QMouseEvent * e)
 {
-    if(e->state()&Qt::ShiftButton)
+    if(e->modifiers()&Qt::ShiftModifier)
     {
         SofaViewer::mouseEvent(e);
         return true;
@@ -1165,10 +1167,10 @@ void QtGLViewer::setSizeH( int size )
 
 }
 
-QString QtGLViewer::helpString()
+QString QtGLViewer::helpString() const
 {
 
-    QString text(
+    static QString text(
         (QString)"<H1>QtGLViewer</H1><hr>\
                 <ul>\
                 <li><b>Mouse</b>: TO NAVIGATE<br></li>\

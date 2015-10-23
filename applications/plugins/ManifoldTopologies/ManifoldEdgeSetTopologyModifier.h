@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETTOPOLOGYMODIFIER_H
 #include <ManifoldTopologies/config.h>
 
-#include <ManifoldTopologies/ManifoldTopologies.h>
+#include <ManifoldTopologies/config.h>
 
 #include <SofaBaseTopology/EdgeSetTopologyModifier.h>
 
@@ -85,6 +85,7 @@ public:
     */
     virtual void removeEdgesProcess(const sofa::helper::vector<unsigned int> &indices, const bool removeIsolatedItems = false);
 
+    using EdgeSetTopologyModifier::removeEdges;
     /** \brief Remove a set  of edges
     @param edges an array of edge indices to be removed (note that the array is not const since it needs to be sorted)
     *
@@ -93,6 +94,7 @@ public:
     virtual void removeEdges(/*const*/ sofa::helper::vector< unsigned int >& edges,
             const bool removeIsolatedPoints = true);
 
+    using EdgeSetTopologyModifier::removeItems;
     /** \brief Generic method to remove a list of items.
      */
     virtual void removeItems(/*const*/ sofa::helper::vector< unsigned int >& items);

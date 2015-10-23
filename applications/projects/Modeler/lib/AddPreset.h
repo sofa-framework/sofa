@@ -27,7 +27,7 @@
 
 #include <sofa/simulation/common/Node.h>
 
-#include <QtGui/QDialog>
+#include <QDialog>
 
 class QLabel;
 class QLineEdit;

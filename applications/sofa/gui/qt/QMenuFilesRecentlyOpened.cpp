@@ -40,20 +40,18 @@ namespace qt
 void QMenuFilesRecentlyOpened::updateWidget()
 {
     //Clear the current widget
-    while (menuRecentlyOpenedFiles->count()) menuRecentlyOpenedFiles->removeItemAt(0);
+    menuRecentlyOpenedFiles->clear();
+    //while (menuRecentlyOpenedFiles->actions().count())
+    //    menuRecentlyOpenedFiles->removeAction(menuRecentlyOpenedFiles->actions()[0]);
     //Add the content of files
-    for (unsigned int i=0; i<files.size(); ++i) menuRecentlyOpenedFiles->insertItem(QString(files[i].c_str()),i);
+    for (unsigned int i=0; i<files.size(); ++i)
+        menuRecentlyOpenedFiles->addAction(QString(files[i].c_str()));
 }
 
 QMenu *QMenuFilesRecentlyOpened::createWidget(QWidget *parent, const std::string &name)
 {
-
-#ifdef SOFA_QT4
     menuRecentlyOpenedFiles = new QMenu(QString(name.c_str()), parent);
     menuRecentlyOpenedFiles->setTearOffEnabled(true);
-#else
-    menuRecentlyOpenedFiles = new QMenu(parent,QString(name.c_str()));
-#endif
 
     updateWidget();
     return menuRecentlyOpenedFiles;

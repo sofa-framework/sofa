@@ -25,31 +25,17 @@
 #ifndef SOFA_IMAGE_IMAGETRANSFORMWIDGET_H
 #define SOFA_IMAGE_IMAGETRANSFORMWIDGET_H
 
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 #include <sofa/gui/qt/DataWidget.h>
 #include <sofa/gui/qt/SimpleDataWidget.h>
 #include <sofa/gui/qt/WDoubleLineEdit.h>
 
-#ifdef SOFA_QT4
 #include <QTextEdit>
-#include <Q3GroupBox>
+#include <QGroupBox>
 #include <QLabel>
 #include <QGridLayout>
 #include <QString>
 #include <QDoubleSpinBox>
-#include <QtGui>
-#else
-#include <qtextedit.h>
-#include <qgroupbox.h>
-#include <qlabel.h>
-#include <qgridlayout.h>
-#include <qlayout.h>
-#include <qstring.h>
-#include <qdoublespinbox.h>
-#include <qtgui.h>
-typedef QGroupBox Q3GroupBox;
-typedef QTextEdit   Q3TextEdit;
-#endif
 
 #include "../ImageTypes.h"
 #include <sofa/helper/vector.h>

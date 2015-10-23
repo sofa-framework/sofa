@@ -25,7 +25,6 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_INL
 
-#include <sofa/SofaFramework.h>
 #include "TetrahedronFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/GridTopology.h>
@@ -2452,6 +2451,11 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 
     helper::ReadAccessor<Data<VecCoord> > X0 =  _initialPoints;
 
+#ifdef SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
+#ifndef SOFA_NO_OPENGL
+    _showStressColorMapReal->entries.clear();
+#endif
+#endif
 
     VecCoord U;
     U.resize(X.size());
@@ -2527,8 +2531,8 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
                 D[10] = _rotatedInitialElements[elementIndex][3][1] - deforme[3][1];
                 D[11] =_rotatedInitialElements[elementIndex][3][2] - deforme[3][2];
             }
-
-            if (method == POLAR) {
+            else // POLAR / SVD
+            {
                 Transformation A;
                 A[0] = X[index[1]]-X[index[0]];
                 A[1] = X[index[2]]-X[index[0]];

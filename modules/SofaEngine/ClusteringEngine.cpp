@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_CLUSTERING_CPP
+#define SOFA_COMPONENT_ENGINE_CLUSTERINGENGINE_CPP
 #include <SofaEngine/ClusteringEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>

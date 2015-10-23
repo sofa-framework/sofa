@@ -30,9 +30,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-#ifdef SOFA_HAVE_EIGEN2
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-#endif
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -97,7 +95,7 @@ public:
     typedef defaulttype::Vec<N, Real> Vector;
     typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
-
+    typedef typename Inherit::ForceMask ForceMask;
 
     Data<VecCoord> points;    ///< mapped points in local coordinates
     VecCoord rotatedPoints;   ///< vectors from frame origin to mapped points, projected to world coordinates
@@ -112,8 +110,6 @@ public:
 
     Data<int> geometricStiffness;
 
-    helper::ParticleMask* maskFrom;
-    helper::ParticleMask* maskTo;
 protected:
     RigidMapping();
     virtual ~RigidMapping() {}
@@ -141,12 +137,10 @@ public:
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
 
-#ifdef SOFA_HAVE_EIGEN2
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
     virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
     virtual const defaulttype::BaseMatrix* getK();
-#endif
 
 
     virtual void draw(const core::visual::VisualParams* vparams);
@@ -171,14 +165,12 @@ protected:
     boost::scoped_ptr<MatrixType> matrixJ;
     bool updateJ;
 
-#ifdef SOFA_HAVE_EIGEN2
     typedef linearsolver::EigenSparseMatrix<In,Out> SparseMatrixEigen;
     SparseMatrixEigen eigenJacobian;                      ///< Jacobian of the mapping used by getJs
     helper::vector<sofa::defaulttype::BaseMatrix*> eigenJacobians; /// used by getJs
 
     typedef linearsolver::EigenSparseMatrix<In,In> StiffnessSparseMatrixEigen;
     StiffnessSparseMatrixEigen geometricStiffnessMatrix;
-#endif
 };
 
 template <int N, class Real>

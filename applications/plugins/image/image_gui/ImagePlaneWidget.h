@@ -25,11 +25,13 @@
 #ifndef SOFA_IMAGE_IMAGEPLANEWIDGET_H
 #define SOFA_IMAGE_IMAGEPLANEWIDGET_H
 
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 #include <sofa/gui/qt/DataWidget.h>
 #include <sofa/gui/qt/SimpleDataWidget.h>
 
-#ifdef SOFA_QT4
+#include "../ImageTypes.h"
+#include "../ImageViewer.h"
+
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QGridLayout>
@@ -39,28 +41,14 @@
 #include <QDoubleSpinBox>
 #include <QGraphicsView>
 #include <QGraphicsScene>
-#include <QtGui>
-#else
-#include <qlabel.h>
-#include <qvboxlayout.h>
-#include <qgridlayout.h>
-#include <qimage.h>
-#include <qlayout.h>
-#include <qslider.h>
-#include <qstring.h>
-#include <qdoublespinbox.h>
-#include <qgraphicsView.h>
-#include <qgraphicsscene.h>
-#include <qtgui.h>
-#endif
+#include <QScrollBar>
 
-#include "../ImageTypes.h"
-#include "../ImageViewer.h"
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/vector.h>
 
+#undef Bool
 
 #if !defined(INFINITY)
 #define INFINITY 9.0e10
@@ -457,9 +445,9 @@ public:
         QHBoxLayout *layout = new QHBoxLayout(this);
         layout->setMargin(0);
         layout->setSpacing(10);
-        layout->add(toggle);
-        layout->add(slider);
-        layout->add(label);
+        layout->addWidget(toggle);
+        layout->addWidget(slider);
+        layout->addWidget(label);
 
         this->setFixedHeight ( height );
     }
@@ -514,9 +502,9 @@ public:
         label3=new QLabel(this);
 
         QVBoxLayout *layout = new QVBoxLayout(this);
-        layout->add(label1);
-        layout->add(label2);
-        layout->add(label3);
+        layout->addWidget(label1);
+        layout->addWidget(label2);
+        layout->addWidget(label3);
     }
 
 public slots:
@@ -551,7 +539,7 @@ public:
         indexPoint = 1;
 
         QHBoxLayout *layout = new QHBoxLayout(this);
-        layout->add(textEdit);
+        layout->addWidget(textEdit);
     }
 
 public slots:
@@ -632,7 +620,8 @@ public:
     bool createLayout( QLayout* layout)
     {
         if ( container_layout != NULL ) return false;
-        container_layout = new Layout(layout);
+        container_layout = new Layout();
+        layout->addItem(container_layout);
         return true;
     }
 
@@ -736,8 +725,8 @@ public:
         assert(container_layout);
 
         QGridLayout* layout = new QGridLayout();
-        layout->setColStretch(0, 50);
-        layout->setColStretch(1, 50);
+        layout->setColumnStretch(0, 50);
+        layout->setColumnStretch(1, 50);
 
         layout->setRowStretch(0,50);
         layout->setRowStretch(2,50);
@@ -755,11 +744,11 @@ public:
         layout->addWidget(togglePointList,3,1);
 
         container_layout->addLayout(layout);
-        container_layout->add(togglemodels);
+        container_layout->addWidget(togglemodels);
 
         //if(graphXY && graphXZ && graphZY) layout->addWidget(info,2,1);
         //else
-        container_layout->add(info);
+        container_layout->addWidget(info);
 
     }
 

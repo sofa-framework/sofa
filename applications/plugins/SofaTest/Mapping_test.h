@@ -29,7 +29,6 @@
 
 #include "Sofa_test.h"
 #include <sofa/core/MechanicalParams.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/VectorOperations.h>
 
 #include <SceneCreator/SceneCreator.h>
@@ -252,6 +251,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         copyToData(xin,parentInit); // xin = parentInit
 
         outDofs->resize(childInit.size());
+        outDofs->forceMask.assign(outDofs->getSize(),true); // child mask must be filled-up
         WriteOutVecCoord xout = outDofs->writePositions();
         copyToData(xout,childInit);
 
@@ -283,8 +283,8 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         OutVecDeriv vc(Nc),fc(Nc);
 
         // get position data
-        copyFromData( xp,inDofs->readPositions() );
-        copyFromData( xc,  outDofs->readPositions() ); // positions and have already been propagated
+        copyFromData( xp, inDofs->readPositions() );
+        copyFromData( xc, outDofs->readPositions() ); // positions and have already been propagated
         //          cout<<"parent positions xp = "<< xp << endl;
         //          cout<<"child  positions xc = "<< xc << endl;
 

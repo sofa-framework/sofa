@@ -24,7 +24,6 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_EigenVector_H
 #define SOFA_COMPONENT_LINEARSOLVER_EigenVector_H
-#include "config.h"
 
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Vec.h>

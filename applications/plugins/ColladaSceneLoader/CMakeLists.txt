@@ -1,20 +1,17 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(ColladaSceneLoader)
 
-set(COLLADASCENELOADER_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(COLLADASCENELOADER_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(COLLADASCENELOADER_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-
 set(HEADER_FILES
-	initPlugin.h
-    SceneColladaLoader.h)
+    SceneColladaLoader.h
+    config.h
+)
 
 set(SOURCE_FILES
-	initPlugin.cpp
-    SceneColladaLoader.cpp)
+    SceneColladaLoader.cpp
+    initPlugin.cpp
+)
 
-set(README_FILES
-	ColladaSceneLoader.txt)
+set(README_FILES ColladaSceneLoader.txt)
 
 find_package(SofaBase REQUIRED)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
@@ -25,6 +22,7 @@ find_package(image QUIET)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 target_link_libraries(${PROJECT_NAME} SofaLoader SofaSimulationCommon SofaBaseMechanics SofaRigid SofaBoundaryCondition SofaBaseTopology SofaBaseVisual SofaOpenglVisual SofaDeformable SofaMeshCollision)
 set(COLLADASCENELOADER_COMPILE_FLAGS "-DSOFA_BUILD_COLLADASCENELOADER")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 include_directories(${ASSIMP_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${ASSIMP_LIBRARIES})
@@ -46,16 +44,16 @@ endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${COLLADASCENELOADER_COMPILE_FLAGS}")
 
 install(TARGETS ${PROJECT_NAME}
-    COMPONENT ColladaSceneLoader_libraries
-    EXPORT ColladaSceneLoaderTargets
-    RUNTIME DESTINATION "${COLLADASCENELOADER_INSTALL_BIN_DIR}"
-    LIBRARY DESTINATION "${COLLADASCENELOADER_INSTALL_LIB_DIR}"
-    ARCHIVE DESTINATION "${COLLADASCENELOADER_INSTALL_LIB_DIR}")
+        COMPONENT ColladaSceneLoader_libraries
+        EXPORT ColladaSceneLoaderTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 
 install(DIRECTORY Demos/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
+# Copy Assimp DLLs on Windows
 if(WIN32)
-    # Copy OpenCascade DLLs
     file(COPY ${ASSIMP_DLLS} DESTINATION bin)
-    install(FILES ${ASSIMP_DLLS} DESTINATION ${COLLADASCENELOADER_INSTALL_BIN_DIR})
+    install(FILES ${ASSIMP_DLLS} DESTINATION bin)
 endif()

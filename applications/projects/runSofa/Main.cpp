@@ -30,6 +30,7 @@
 #include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
 #ifdef SOFA_HAVE_DAG
 #include <sofa/simulation/graph/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -152,6 +153,8 @@ int main(int argc, char** argv)
     std::string verif = "";
 #ifdef SOFA_SMP
     std::string simulationType = "smp";
+#elif defined(SOFA_HAVE_DAG)
+    std::string simulationType = "dag";
 #else
     std::string simulationType = "tree";
 #endif
@@ -254,8 +257,8 @@ int main(int argc, char** argv)
     sofa::helper::system::PluginRepository.addFirstPath(pluginDir);
 
     // Initialise paths
-    sofa::gui::BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config");
-    sofa::gui::BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots");
+    sofa::gui::BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
+    sofa::gui::BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots", true);
 
     if (!files.empty())
         fileName = files[0];

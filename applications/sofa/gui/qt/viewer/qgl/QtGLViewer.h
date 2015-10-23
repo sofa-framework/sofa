@@ -47,6 +47,7 @@
 
 
 #include <QGLViewer/qglviewer.h>
+#include <QGLViewer/manipulatedFrame.h>
 
 #define TRACKING_MOUSE
 
@@ -155,7 +156,7 @@ public:
 
     void setCameraMode(core::visual::VisualParams::CameraType mode);
 
-    QString helpString();
+    QString helpString() const;
 
 
 private:

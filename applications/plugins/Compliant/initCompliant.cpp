@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initCompliant.h"
+#include <Compliant/config.h>
 #include "misc/CompliantSolverMerger.h"
-#include <contact/CompliantContact.h>
+#include "contact/CompliantContact.h"
 
 namespace sofa
 {
@@ -52,6 +52,9 @@ void initExternalModule()
         first = false;
 
         component::collision::CompliantSolverMerger::add();
+
+        // previous Eigen versions have a critical bug (v.noalias()+=w does not work in every situations)
+        BOOST_STATIC_ASSERT( EIGEN_WORLD_VERSION>=3 && EIGEN_MAJOR_VERSION>=2 && EIGEN_MINOR_VERSION>=5 );
     }
 }
 

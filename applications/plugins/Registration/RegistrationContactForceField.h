@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_REGISTRATIONCONTACTFORCEFIELD_H
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_REGISTRATIONCONTACTFORCEFIELD_H
 
-#include "initRegistration.h"
+#include <Registration/config.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -101,7 +101,9 @@ protected:
 	Data<sofa::helper::vector<Contact> > contacts;
 	
 	// contacts from previous frame
-	sofa::helper::vector<Contact> prevContacts;
+    sofa::helper::vector<Contact> prevContacts;
+
+
 public:
 
 	RegistrationContactForceField(MechanicalState* object1, MechanicalState* object2)
@@ -131,10 +133,10 @@ public:
                     helper::vector< std::pair< core::objectmodel::BaseObject*, defaulttype::Vec3f> > &result, 
 					helper::vector< unsigned int > &triangle,
 					helper::vector< unsigned int > &index_point) ;
-	
-	virtual bool useMask() const {return true;}
 
 	void draw(const core::visual::VisualParams* vparams);
+
+    void updateForceMask();
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_REGISTRATIONCONTACTFORCEFIELD_CPP)

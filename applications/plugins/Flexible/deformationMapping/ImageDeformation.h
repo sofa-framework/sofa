@@ -25,7 +25,6 @@
 #ifndef SOFA_Flexible_ImageDeformation_H
 #define SOFA_Flexible_ImageDeformation_H
 
-#include <image/initImage.h>
 #include <image/ImageTypes.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -33,6 +32,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/OptionsGroup.h>
+
 
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
@@ -239,7 +239,7 @@ protected:
                     Real dv = dv0; if(weightByVolumeChange.getValue()) dv /= computeHexaVolume(pn); // local volume change supposing that voxels are cubes
 
                     // compute bounding box
-                    Real BB[3][2];
+                    Real BB[3][2] = { {-std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max()}, {-std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max()}, {-std::numeric_limits<Real>::max(),std::numeric_limits<Real>::max()} };
                     bool valid=true;
                     for(unsigned int i=0; i<8; i++)
                     {

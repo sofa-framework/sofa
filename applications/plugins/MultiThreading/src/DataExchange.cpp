@@ -1,6 +1,6 @@
 #include "DataExchange.inl"
 
-#include "initMultiThreading.h"
+#include <MultiThreading/config.h>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -38,7 +38,7 @@ namespace sofa
 	namespace core
 	{
 
-		SOFA_DECL_CLASS(DataExchange);
+		SOFA_DECL_CLASS(DataExchange)
 
 // Register in the Factory
 int DataExchangeClass = core::RegisterObject("DataExchange")

@@ -1,69 +1,54 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(SofaMiscFem)
 
 set(HEADER_FILES
-
-    config.h
-    initMiscFEM.h
+    BaseMaterial.h
+    BoyceAndArruda.h
+    Costa.h
     FastTetrahedralCorotationalForceField.h
     FastTetrahedralCorotationalForceField.inl
-    TetrahedralTensorMassForceField.h
-    TetrahedralTensorMassForceField.inl
-	StandardTetrahedralFEMForceField.h
-	StandardTetrahedralFEMForceField.inl
-	BoyceAndArruda.h
-	Costa.h
-	HyperelasticMaterial.h
-	MooneyRivlin.h
-	STVenantKirchhoff.h
-	VerondaWestman.h
-    BaseMaterial.h
+    HyperelasticMaterial.h
+    MooneyRivlin.h
     NeoHookean.h
     Ogden.h
-    )
+    STVenantKirchhoff.h
+    StandardTetrahedralFEMForceField.h
+    StandardTetrahedralFEMForceField.inl
+    TetrahedralTensorMassForceField.h
+    TetrahedralTensorMassForceField.inl
+    VerondaWestman.h
+    config.h
+    initMiscFEM.h
+    TriangleFEMForceField.h
+    TriangleFEMForceField.inl
+    TriangularAnisotropicFEMForceField.h
+    TriangularAnisotropicFEMForceField.inl
+    TriangularFEMForceField.h
+    TriangularFEMForceField.inl
+)
 
 set(SOURCE_FILES
-
-    initMiscFEM.cpp
     FastTetrahedralCorotationalForceField.cpp
+    StandardTetrahedralFEMForceField.cpp
     TetrahedralTensorMassForceField.cpp
- 	StandardTetrahedralFEMForceField.cpp
-
-    )
+    initMiscFEM.cpp
+    TriangularAnisotropicFEMForceField.cpp
+    TriangleFEMForceField.cpp
+    TriangularFEMForceField.cpp
+)
 
 if(SOFA_HAVE_NEWMAT)
-  list(APPEND HEADER_FILES
-	PlasticMaterial.h
-  )
-  list(APPEND SOURCE_FILES
-	PlasticMaterial.cpp
-  )
+    list(APPEND HEADER_FILES PlasticMaterial.h)
+    list(APPEND SOURCE_FILES PlasticMaterial.cpp)
 endif()
 
-set(GROUP_BASE_DIR "..")
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem )
-
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem SofaOpenglVisual)
 if(SOFA_HAVE_NEWMAT)
     target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
 endif()
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MISC_FEM")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAMISC_BUILD_INCLUDE_DIR}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAMISC_DEPENDENCY_DIR}>")
-
-set( SOFAMISCFEM_COMPILER_FLAGS "-DSOFA_BUILD_MISC_FEM")
-
-set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
-set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFAMISC_VERSION} )
-set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAMISCFEM_COMPILER_FLAGS}"  )
-set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
-
-install(TARGETS ${PROJECT_NAME}
-        EXPORT    SofaMiscTargets
-        RUNTIME DESTINATION "${SOFAMISC_INSTALL_BIN_DIR}" COMPONENT SofaMisc_libraries
-        LIBRARY DESTINATION "${SOFAMISC_INSTALL_LIB_DIR}" COMPONENT SofaMisc_libraries
-        ARCHIVE DESTINATION "${SOFAMISC_INSTALL_LIB_DIR}" COMPONENT SofaMisc_libraries
-        PUBLIC_HEADER DESTINATION "${SOFAMISC_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}" COMPONENT SofaMisc_headers
-)
+sofa_install_targets(SofaMisc ${PROJECT_NAME} ${PROJECT_NAME})

@@ -54,8 +54,8 @@ bool DataFileNameWidget::createWidgets()
     openFileButton = new QPushButton(this);
     openFileButton->setText("...");
 
-    layout->add(openFilePath);
-    layout->add(openFileButton);
+    layout->addWidget(openFilePath);
+    layout->addWidget(openFileButton);
     connect( openFileButton, SIGNAL( clicked() ), this, SLOT( raiseDialog() ) );
     connect( openFilePath, SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ) );
     return true;
@@ -70,13 +70,13 @@ void DataFileNameWidget::setDataReadOnly(bool readOnly)
 void DataFileNameWidget::readFromData()
 {
     const std::string& filepath = this->getData()->getValue();
-    if (openFilePath->text().ascii() != filepath)
+    if (openFilePath->text().toStdString() != filepath)
         openFilePath->setText(QString(filepath.c_str()) );
 }
 
 void DataFileNameWidget::writeToData()
 {
-    std::string fileName( openFilePath->text().ascii() );
+    std::string fileName( openFilePath->text().toStdString() );
     if (this->getData()->getValueString() != fileName)
         this->getData()->setValue(fileName);
 
@@ -85,7 +85,7 @@ void DataFileNameWidget::writeToData()
 
 void DataFileNameWidget::raiseDialog()
 {
-    std::string fileName( openFilePath->text().ascii() );
+    std::string fileName( openFilePath->text().toStdString() );
 
     if (sofa::helper::system::DataRepository.findFile(fileName))
         fileName=sofa::helper::system::DataRepository.getFile(fileName);
@@ -97,7 +97,7 @@ void DataFileNameWidget::raiseDialog()
 
 
     if (s.isNull() ) return;
-    fileName=std::string (s.ascii());
+    fileName=std::string (s.toStdString());
 //
 //#ifdef WIN32
 //

@@ -12,7 +12,7 @@
 #include <sofa/simulation/common/CollisionBeginEvent.h>
 #include <sofa/simulation/common/PropagateEventVisitor.h>
 
-using sofa::component::container::MechanicalObject;
+typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
 
 typedef sofa::defaulttype::Vector3 Vec3;
 
@@ -44,12 +44,12 @@ sofa::component::collision::BulletOBBModel::SPtr makeBulletOBB(const Vec3 & p,co
     sofa::simulation::Node::SPtr obb = father->createChild("obb");
 
     //creating a mechanical object which will be attached to the OBBModel
-    MechanicalObject<Rigid3>::SPtr obbDOF = New<MechanicalObject<Rigid3> >();
+    MechanicalObjectRigid3::SPtr obbDOF = New<MechanicalObjectRigid3>();
 
     //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
     obbDOF->resize(1);
-    Data<MechanicalObject<Rigid3>::VecCoord> & dpositions = *obbDOF->write( sofa::core::VecId::position() );
-    MechanicalObject<Rigid3>::VecCoord & positions = *dpositions.beginEdit();
+    Data<MechanicalObjectRigid3::VecCoord> & dpositions = *obbDOF->write( sofa::core::VecId::position() );
+    MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
 
     //we create a frame that we will rotate like it is specified by the parameters angles and order
     Vec3 x(1,0,0);
@@ -74,9 +74,9 @@ sofa::component::collision::BulletOBBModel::SPtr makeBulletOBB(const Vec3 & p,co
     dpositions.endEdit();
 
     //Editting the velocity of the OBB
-    Data<MechanicalObject<Rigid3>::VecDeriv> & dvelocities = *obbDOF->write( sofa::core::VecId::velocity() );
+    Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *obbDOF->write( sofa::core::VecId::velocity() );
 
-    MechanicalObject<Rigid3>::VecDeriv & velocities = *dvelocities.beginEdit();
+    MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
     velocities[0] = v;
     dvelocities.endEdit();
 
@@ -110,10 +110,10 @@ static void randTrans(Vec3 & angles,Vec3 & new_pos){
 }
 
 static void transMechaRigid(const Vec3 & angles,const Vec3 & new_pos,sofa::simulation::Node::SPtr & node){
-    MechanicalObject<Rigid3>* mecha = node->get<MechanicalObject<Rigid3> >(sofa::simulation::Node::SearchDown);
+    MechanicalObjectRigid3* mecha = node->get<MechanicalObjectRigid3>(sofa::simulation::Node::SearchDown);
 
-    Data<MechanicalObject<Rigid3>::VecCoord> & dpositions = *mecha->write( sofa::core::VecId::position() );
-    MechanicalObject<Rigid3>::VecCoord & positions = *dpositions.beginEdit();
+    Data<MechanicalObjectRigid3::VecCoord> & dpositions = *mecha->write( sofa::core::VecId::position() );
+    MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
 
     sofa::defaulttype::Quat & quat = positions[0].getOrientation();
     Vec3 & pos  = positions[0].getCenter();
@@ -129,15 +129,15 @@ struct copyBulletOBB{
         sofa::simulation::Node::SPtr obb = father->createChild("obb");
 
         //creating a mechanical object which will be attached to the OBBModel
-        MechanicalObject<Rigid3>::SPtr obbDOF = New<MechanicalObject<Rigid3> >();
+        MechanicalObjectRigid3::SPtr obbDOF = New<MechanicalObjectRigid3>();
 
         //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
         obbDOF->resize(1);
-        Data<MechanicalObject<Rigid3>::VecCoord> & dpositions = *obbDOF->write( sofa::core::VecId::position() );
-        MechanicalObject<Rigid3>::VecCoord & positions = *dpositions.beginEdit();
+        Data<MechanicalObjectRigid3::VecCoord> & dpositions = *obbDOF->write( sofa::core::VecId::position() );
+        MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
 
-        const MechanicalObject<Rigid3> * read_mec = obb_read->getContext()->get<MechanicalObject<Rigid3> >();
-        const Data<MechanicalObject<Rigid3>::VecCoord> & read_positions = *read_mec->read( sofa::core::VecId::position() );
+        const MechanicalObjectRigid3 * read_mec = obb_read->getContext()->get<MechanicalObjectRigid3>();
+        const Data<MechanicalObjectRigid3::VecCoord> & read_positions = *read_mec->read( sofa::core::VecId::position() );
 
         //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
         positions[0] = (read_positions.getValue())[0];
@@ -172,15 +172,15 @@ struct copyBulletConvexHull{
         sofa::simulation::Node::SPtr obb = father->createChild("obb");
 
         //creating a mechanical object which will be attached to the OBBModel
-        MechanicalObject<Rigid3>::SPtr cv_hullDOF = New<MechanicalObject<Rigid3> >();
+        MechanicalObjectRigid3::SPtr cv_hullDOF = New<MechanicalObjectRigid3>();
 
         //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
         cv_hullDOF->resize(1);
-        Data<MechanicalObject<Rigid3>::VecCoord> & dpositions = *cv_hullDOF->write( sofa::core::VecId::position() );
-        MechanicalObject<Rigid3>::VecCoord & positions = *dpositions.beginEdit();
+        Data<MechanicalObjectRigid3::VecCoord> & dpositions = *cv_hullDOF->write( sofa::core::VecId::position() );
+        MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
 
-        const MechanicalObject<Rigid3> * read_mec = obb_read->getContext()->get<MechanicalObject<Rigid3> >();
-        const Data<MechanicalObject<Rigid3>::VecCoord> & read_positions = *read_mec->read( sofa::core::VecId::position() );
+        const MechanicalObjectRigid3 * read_mec = obb_read->getContext()->get<MechanicalObjectRigid3>();
+        const Data<MechanicalObjectRigid3::VecCoord> & read_positions = *read_mec->read( sofa::core::VecId::position() );
 
         //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
         positions[0] = (read_positions.getValue())[0];
@@ -225,15 +225,15 @@ struct copyBulletConvexHull{
 //    sofa::simulation::Node::SPtr obb = father->createChild("obb");
 
 //    //creating a mechanical object which will be attached to the OBBModel
-//    MechanicalObject<Rigid3>::SPtr obbDOF = New<MechanicalObject<Rigid3> >();
+//    MechanicalObjectRigid3::SPtr obbDOF = New<MechanicalObjectRigid3>();
 
 //    //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
 //    obbDOF->resize(1);
-//    Data<MechanicalObject<Rigid3>::VecCoord> & dpositions = *obbDOF->write( sofa::core::VecId::position() );
-//    MechanicalObject<Rigid3>::VecCoord & positions = *dpositions.beginEdit();
+//    Data<MechanicalObjectRigid3::VecCoord> & dpositions = *obbDOF->write( sofa::core::VecId::position() );
+//    MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
 
-//    const MechanicalObject<Rigid3> * read_mec = obb_read->getContext()->get<MechanicalObject<Rigid3> >();
-//    const Data<MechanicalObject<Rigid3>::VecCoord> & read_positions = *read_mec->read( sofa::core::VecId::position() );
+//    const MechanicalObjectRigid3 * read_mec = obb_read->getContext()->get<MechanicalObjectRigid3>();
+//    const Data<MechanicalObjectRigid3::VecCoord> & read_positions = *read_mec->read( sofa::core::VecId::position() );
 
 //    //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
 //    positions[0] = (read_positions.getValue())[0];

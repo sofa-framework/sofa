@@ -105,6 +105,7 @@ public:
     // getPotentialEnergy of base class SpringForceField.
    ///SOFA_DEPRECATED_ForceField <<<virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double kFact);
 
+    using Inherit::addKToMatrix;
     virtual void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 };
 

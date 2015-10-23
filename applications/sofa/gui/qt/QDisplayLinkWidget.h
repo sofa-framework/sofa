@@ -28,24 +28,12 @@
 #include "LinkWidget.h"
 #include "ModifyObject.h"
 
-#ifdef SOFA_QT4
 #include <QWidget>
 #include <QLineEdit>
 #include <QTextEdit>
-#include <Q3GroupBox>
+#include <QGroupBox>
 #include <QSlider>
-#else
-#include <qslider.h>
-#include <qwidget.h>
-#include <qtextedit.h>
-#include <qlineedit.h>
-#include <qgroupbox.h>
-#endif
 
-#ifndef SOFA_QT4
-typedef QGroupBox Q3GroupBox;
-typedef QTextEdit   Q3TextEdit;
-#endif
 
 namespace sofa
 {
@@ -60,7 +48,7 @@ class LinkWidget;
 class QDisplayLinkInfoWidget;
 struct ModifyObjectFlags;
 
-class QDisplayLinkWidget : public Q3GroupBox
+class QDisplayLinkWidget : public QGroupBox
 {
     Q_OBJECT
 public:
@@ -96,6 +84,7 @@ protected:
     QDisplayLinkInfoWidget*  linkinfowidget_;
     LinkWidget* linkwidget_;
     unsigned int numWidgets_;
+    QHBoxLayout* gridLayout_;
 
 };
 

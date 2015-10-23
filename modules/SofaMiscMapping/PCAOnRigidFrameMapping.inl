@@ -69,8 +69,6 @@ PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::PCAOnRigidFrameMapping ()
     , indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") )
     , repartition ( initData ( &repartition,"repartition","number of dest dofs per entry rigid dof" ) )
 {
-    maskFrom = NULL;
-    maskTo = NULL;
 }
 
 
@@ -79,16 +77,7 @@ template <class TIn, class TInRoot, class TOut>
 void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::init()
 {
     Inherit::init();
-    if(!this->fromModels1.empty())
-    {
-        if (core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModels1.get(0)))
-            maskFrom = &stateFrom->forceMask;
-    }
-    if(!this->toModels.empty())
-    {
-        if (core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModels.get(0)))
-            maskTo = &stateTo->forceMask;
-    }
+
 
     if(this->getFromModels1().empty())
     {

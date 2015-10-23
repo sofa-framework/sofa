@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_MAPPING_DistanceFromTargetMapping_H
 #include "config.h"
 
-#include <sofa/SofaMisc.h>
 #include <sofa/core/Mapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
@@ -95,6 +94,7 @@ public:
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
     typedef defaulttype::Vec<In::spatial_dimensions> Direction;
+    typedef typename Inherit::ForceMask ForceMask;
 
     Data< vector<unsigned> > f_indices;         ///< indices of the parent points
     Data< InVecCoord >       f_targetPositions; ///< positions the distances are measured from
@@ -130,8 +130,8 @@ public:
     virtual const defaulttype::BaseMatrix* getK();
 
     virtual void draw(const core::visual::VisualParams* vparams);
-    SReal _arrowSize;
-    defaulttype::Vec<4,SReal> _color;
+    Data<float> d_showObjectScale;
+    Data<defaulttype::Vec4f> d_color;
 
 protected:
     DistanceFromTargetMapping();
@@ -145,6 +145,9 @@ protected:
 
     /// r=b-a only for position (eventual rotation, affine transform... remains null)
     void computeCoordPositionDifference( Direction& r, const InCoord& a, const InCoord& b );
+
+    virtual void updateForceMask();
+
 };
 
 

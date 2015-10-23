@@ -2,64 +2,45 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaGraphComponent)
 
 set(HEADER_FILES
-
-    config.h
-    initGraphComponent.h
     AddFrameButtonSetting.h
     AddRecordedCameraButtonSetting.h
     AttachBodyButtonSetting.h
     BackgroundSetting.h
     FixPickedParticleButtonSetting.h
-    MouseButtonSetting.h
-    SofaDefaultPathSetting.h
-    StatsSetting.h
-    ViewerSetting.h
     Gravity.h
+    InteractingBehaviorModel.h
+    MouseButtonSetting.h
     PauseAnimation.h
     PauseAnimationOnEvent.h
     RequiredPlugin.h
-    InteractingBehaviorModel.h
-
-    )
+    SofaDefaultPathSetting.h
+    StatsSetting.h
+    ViewerSetting.h
+    config.h
+    initGraphComponent.h
+)
 
 set(SOURCE_FILES
-
-    initGraphComponent.cpp
     AddFrameButtonSetting.cpp
     AddRecordedCameraButtonSetting.cpp
     AttachBodyButtonSetting.cpp
     BackgroundSetting.cpp
     FixPickedParticleButtonSetting.cpp
-    MouseButtonSetting.cpp
-    SofaDefaultPathSetting.cpp
-    StatsSetting.cpp
-    ViewerSetting.cpp
     Gravity.cpp
+    MouseButtonSetting.cpp
     PauseAnimation.cpp
     PauseAnimationOnEvent.cpp
     RequiredPlugin.cpp
+    SofaDefaultPathSetting.cpp
+    StatsSetting.cpp
+    ViewerSetting.cpp
+    initGraphComponent.cpp
+)
 
-    )
-
-set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries( ${PROJECT_NAME} PUBLIC SofaSimulationTree)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAGENERAL_BUILD_INCLUDE_DIR}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAGENERAL_DEPENDENCY_INCLUDE_DIR}>")
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_GRAPH_COMPONENT")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-set( SOFAGRAPHCOMPONENT_COMPILER_FLAGS "-DSOFA_BUILD_GRAPH_COMPONENT")
-
-set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
-set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFAGENERAL_VERSION} )
-set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAGRAPHCOMPONENT_COMPILER_FLAGS}"  )
-set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
-
-install(TARGETS ${PROJECT_NAME}
-        EXPORT    SofaGeneralTargets
-        RUNTIME DESTINATION "${SOFAGENERAL_INSTALL_BIN_DIR}" COMPONENT SofaGeneral_libraries
-        LIBRARY DESTINATION "${SOFAGENERAL_INSTALL_LIB_DIR}" COMPONENT SofaGeneral_libraries
-        ARCHIVE DESTINATION "${SOFAGENERAL_INSTALL_LIB_DIR}" COMPONENT SofaGeneral_libraries
-        PUBLIC_HEADER DESTINATION "${SOFAGENERAL_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}" COMPONENT SofaGeneral_headers
-)
+sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})

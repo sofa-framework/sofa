@@ -116,7 +116,7 @@ void Restitution::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabilizat
 }
 
 
-void Restitution::filterConstraints( const vector<bool>* activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim )
+void Restitution::filterConstraints( vector<bool>* activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim )
 {
     // non-violated constraints with restitution MUST be deactivated
 
@@ -146,10 +146,11 @@ void Restitution::filterConstraints( const vector<bool>* activateMask, const cor
 
     }
 
+    activateMask = &mask;
+    (void) activateMask;
+
     this->mask.endEdit();
     delete [] violation;
-
-    activateMask = &this->mask.getValue();
 
 }
 

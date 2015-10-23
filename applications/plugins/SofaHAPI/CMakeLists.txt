@@ -1,37 +1,21 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(SofaHAPI)
 
-##
-## SofaHAPI version
-##
 set(SOFAHAPI_MAJOR_VERSION 0)
-set(SOFAHAPI_MINOR_VERSION 0)
-set(SOFAHAPI_BUILD_VERSION 1)
+set(SOFAHAPI_MINOR_VERSION 1)
+set(SOFAHAPI_VERSION ${SOFAHAPI_MAJOR_VERSION}.${SOFAHAPI_MINOR_VERSION})
 
-set(SOFAHAPI_VERSION
-    ${SOFAHAPI_MAJOR_VERSION}.${SOFAHAPI_MINOR_VERSION}.${SOFAHAPI_BUILD_VERSION}
-    CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
-
-set(SOFAHAPI_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
-set(SOFAHAPI_BUILD_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
-set(SOFAHAPI_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(SOFAHAPI_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/SofaHAPI)
-
-# Offer the user the choice of overriding the installation directories
-set(SOFAHAPI_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFAHAPI_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFAHAPI_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFAHAPI_INSTALL_CMAKE_DIR ${SOFAHAPI_INSTALL_LIB_DIR}/cmake/SofaHAPI)
 
 set(HEADER_FILES
-    initSofaHAPI.h
+    SofaHAPIForceFeedbackEffect.h
     SofaHAPIHapticsDevice.h
-    SofaHAPIForceFeedbackEffect.h)
+)
 
 set(SOURCE_FILES
-    initSofaHAPI.cpp
+    SofaHAPIForceFeedbackEffect.cpp
     SofaHAPIHapticsDevice.cpp
-    SofaHAPIForceFeedbackEffect.cpp)
+    initSofaHAPI.cpp
+)
 
 find_package(SofaGeneral REQUIRED)
 
@@ -50,7 +34,7 @@ endif()
 if(NOT TARGET HAPI)
     find_package(HAPI REQUIRED)
     if(WIN32)
-         #copy required HAPI dlls
+        # Copy HAPI DLLs
         file(GLOB sharedObjects "${HAPI_DIR}/bin/HAPI_*.dll")
 
         foreach(sharedObject ${sharedObjects})
@@ -74,13 +58,12 @@ if(WIN32)
               "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
 endif()
 
-set(SOFAHAPI_DEPENDENCY_INCLUDE_DIR ${SofaGeneral_INCLUDE_DIRS}
-                                    ${HAPI_INCLUDE_DIR}
+set(SOFAHAPI_DEPENDENCY_INCLUDE_DIR ${HAPI_INCLUDE_DIR}
                                     ${H3DUTIL_INCLUDE_DIR})
 
 if(H3D_USE_DEPENDENCIES_ONLY)
-  # The variables set here must be set by the CMakeLists.txt that sets H3D_USE_DEPENDENCIES_ONLY to true.
-  list(APPEND SOFAHAPI_DEPENDENCY_INCLUDE_DIR ${EXTERNAL_INCLUDE_DIR})
+    # The variables set here must be set by the CMakeLists.txt that sets H3D_USE_DEPENDENCIES_ONLY to true.
+    list(APPEND SOFAHAPI_DEPENDENCY_INCLUDE_DIR ${EXTERNAL_INCLUDE_DIR})
 endif()
 
     foreach(sharedObject ${sharedObjects})
@@ -90,66 +73,31 @@ endif()
     file(COPY "${HAPI_DIR}/External/bin/pthreadVC2.dll" DESTINATION "${SOFA_BIN_DIR}")
     file(COPY "${HAPI_DIR}/External/bin/FreeImage.dll" DESTINATION "${SOFA_BIN_DIR}")
 
-    #file(COPY "${HAPI_DIR}/bin/HAPI_*.dll" DESTINATION ${SOFA_BIN_DIR})
-    #file(COPY "${HAPI_DIR}/bin/H3DUtil_*.dll" DESTINATION ${SOFA_BIN_DIR})
-    #file(COPY "${HAPI_DIR}/External/bin/pthreadVC2.dll" DESTINATION ${SOFA_BIN_DIR})
-    #file(COPY "${HAPI_DIR}/External/bin/FreeImage.dll" DESTINATION ${SOFA_BIN_DIR})
+    # file(COPY "${HAPI_DIR}/bin/HAPI_*.dll" DESTINATION ${SOFA_BIN_DIR})
+    # file(COPY "${HAPI_DIR}/bin/H3DUtil_*.dll" DESTINATION ${SOFA_BIN_DIR})
+    # file(COPY "${HAPI_DIR}/External/bin/pthreadVC2.dll" DESTINATION ${SOFA_BIN_DIR})
+    # file(COPY "${HAPI_DIR}/External/bin/FreeImage.dll" DESTINATION ${SOFA_BIN_DIR})
 
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction SofaHaptics
-                       ${HAPI_LIBRARIES} ${H3DUTIL_LIBRARIES})
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction SofaHaptics ${HAPI_LIBRARIES} ${H3DUTIL_LIBRARIES})
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAHAPI_DEPENDENCY_INCLUDE_DIR}>")
-
-set(SOFAHAPI_COMPILER_FLAGS "-DSOFA_BUILD_SOFAHAPI")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAHAPI_VERSION})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAHAPI_COMPILER_FLAGS}")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAHAPI")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SofaHAPI.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/SofaHAPI/SofaHAPI.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaHAPI/SofaHAPI.h
-         DESTINATION "${SOFAHAPI_INSTALL_INCLUDE_DIR}/SofaHAPI")
+## SofaHAPI/config.h
+configure_file(SofaHAPI.h.in "${CMAKE_BINARY_DIR}/include/SofaHAPI/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/SofaHAPI/config.h" DESTINATION "include/SofaHAPI")
 
-include(CMakePackageConfigHelpers)
-# SofaHAPIConfigVersion.cmake file (same for build tree and intall)
-write_basic_package_version_file(${SOFAHAPI_BUILD_CMAKE_DIR}/SofaHAPIConfigVersion.cmake
-                                 VERSION ${SOFAHAPI_VERSION}
-                                 COMPATIBILITY AnyNewerVersion)
+## Install rules for the library and the header; CMake package configurations files
+sofa_create_package(SofaHAPI ${SOFAHAPI_VERSION} SofaHAPI SofaHAPI)
 
-install(FILES ${SOFAHAPI_BUILD_CMAKE_DIR}/SofaHAPIConfigVersion.cmake
-        DESTINATION ${SOFAHAPI_INSTALL_CMAKE_DIR})
-
-
-# SofaHAPIConfig.cmake (build tree)
-set(SOFAHAPI_INCLUDE_DIR "${SOFAHAPI_BUILD_INCLUDE_DIR}")
-configure_package_config_file(SofaHAPIConfig.cmake.in
-                              ${SOFAHAPI_BUILD_CMAKE_DIR}/SofaHAPIConfig.cmake
-                              INSTALL_DESTINATION ${SOFAHAPI_BUILD_CMAKE_DIR}
-                              PATH_VARS SOFAHAPI_INCLUDE_DIR)
-
-# SofaHAPIConfig.cmake (installed)
-set(SOFAHAPI_INCLUDE_DIR "${SOFAHAPI_INSTALL_INCLUDE_DIR}")
-configure_package_config_file(SofaHAPIConfig.cmake.in
-                              ${SOFAHAPI_BUILD_CMAKE_DIR}/SofaHAPIConfigInstall.cmake
-                              INSTALL_DESTINATION ${SOFAHAPI_INSTALL_CMAKE_DIR}
-                              PATH_VARS SOFAHAPI_INCLUDE_DIR)
-
-install(TARGETS ${PROJECT_NAME}
-    COMPONENT SofaHAPI_libraries
-    EXPORT SofaHAPITargets
-    RUNTIME DESTINATION "${SOFAHAPI_INSTALL_BIN_DIR}"
-    LIBRARY DESTINATION "${SOFAHAPI_INSTALL_LIB_DIR}"
-    ARCHIVE DESTINATION "${SOFAHAPI_INSTALL_LIB_DIR}"
-    PUBLIC_HEADER DESTINATION "${SOFAHAPI_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}")
-
+## Install rules for the resources
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
-# SofaHAPITargets.cmake (installed)
-# install(EXPORT SofaHAPITargets
-        # DESTINATION ${SOFAHAPI_INSTALL_CMAKE_DIR})

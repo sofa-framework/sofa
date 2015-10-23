@@ -80,7 +80,7 @@ public:
     }
 
     /** \copydoc Data(const T&, const char*, bool, bool) */
-    BaseTopologyData( const T& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
+    BaseTopologyData( const T& /*value*/, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
         : Data<T>(helpMsg, isDisplayed, isReadOnly)
     {
     }

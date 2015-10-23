@@ -23,27 +23,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SceneLoaderPY.h"
-#include "initSofaPython.h"
+#include <SofaPython/config.h>
 
-namespace sofa
-{
 
-namespace component
-{
-
-//Here are just several convenient functions to help user to know what contains the plugin
-/*
 extern "C" {
-    SOFA_SOFAPYTHON_API void initExternalModule();
-    SOFA_SOFAPYTHON_API const char* getModuleName();
-    SOFA_SOFAPYTHON_API const char* getModuleVersion();
-    SOFA_SOFAPYTHON_API const char* getModuleLicense();
-    SOFA_SOFAPYTHON_API const char* getModuleDescription();
-    SOFA_SOFAPYTHON_API const char* getModuleComponentList();
-}
-*/
 
-void initExternalModule()
+SOFA_SOFAPYTHON_API void initExternalModule()
 {
     static bool first = true;
     if (first)
@@ -52,38 +37,34 @@ void initExternalModule()
     }
 }
 
-const char* getModuleName()
+SOFA_SOFAPYTHON_API const char* getModuleName()
 {
     return "SofaPython";
 }
 
-const char* getModuleVersion()
+SOFA_SOFAPYTHON_API const char* getModuleVersion()
 {
-    return "0.2";
+    return SOFAPYTHON_VERSION_STR;
 }
 
-const char* getModuleLicense()
+SOFA_SOFAPYTHON_API const char* getModuleLicense()
 {
     return "LGPL";
 }
 
-
-const char* getModuleDescription()
+SOFA_SOFAPYTHON_API const char* getModuleDescription()
 {
     return "Imbeds Python scripts in Sofa";
 }
 
-const char* getModuleComponentList()
+SOFA_SOFAPYTHON_API const char* getModuleComponentList()
 {
     /// string containing the names of the classes provided by the plugin
     return "PythonScriptController";
 }
 
-
-
 }
 
-}
 
 /// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
 SOFA_LINK_CLASS(PythonController)
@@ -91,6 +72,3 @@ SOFA_LINK_CLASS(PythonController)
 
 // register the loader in the factory
 static sofa::simulation::SceneLoader* loaderPY = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPY());
-
-
-

@@ -74,6 +74,12 @@ protected:
 
     virtual ~ProjectiveConstraintSet();
 public:
+
+    // to get rid of warnings
+    using BaseProjectiveConstraintSet::projectResponse;
+
+
+
     Data<Real> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
 
@@ -188,6 +194,7 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_PROJECTIVECONSTRAINTSET_CPP)
 #ifndef SOFA_FLOAT
+extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec6dTypes >;
 extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec3dTypes >;
 extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec2dTypes >;
 extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec1dTypes >;
@@ -196,6 +203,7 @@ extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Rigid2
 #endif
 
 #ifndef SOFA_DOUBLE
+extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec6fTypes >;
 extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec3fTypes >;
 extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec2fTypes >;
 extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Vec1fTypes >;

@@ -25,6 +25,6 @@
 #ifndef SOFA_DEFAULTTYPE_DEFAULTTYPE_H
 #define SOFA_DEFAULTTYPE_DEFAULTTYPE_H
 
-#include <sofa/SofaFramework.h>
+#include <sofa/config.h>
 
 #endif

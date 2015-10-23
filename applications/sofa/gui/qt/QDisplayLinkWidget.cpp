@@ -25,19 +25,11 @@
 #include "QDisplayLinkWidget.h"
 #include "ModifyObject.h"
 
-
-#ifdef SOFA_QT4
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <Q3GroupBox>
+#include <QGroupBox>
 #include <QLabel>
 #include <QValidator>
-#else
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qgroupbox.h>
-#include <qvalidator.h>
-#endif
 
 #define TEXTSIZE_THRESHOLD 45
 
@@ -56,7 +48,7 @@ namespace qt
 QDisplayLinkWidget::QDisplayLinkWidget(QWidget* parent,
         BaseLink* link,
         const ModifyObjectFlags& flags)
-    : Q3GroupBox(parent),
+    : QGroupBox(parent),
       link_(link),
       linkinfowidget_(NULL),
       linkwidget_(NULL),
@@ -66,6 +58,12 @@ QDisplayLinkWidget::QDisplayLinkWidget(QWidget* parent,
     {
         return;
     }
+
+    gridLayout_ = new QHBoxLayout();
+    this->setLayout(gridLayout_);
+
+    parent->layout()->addWidget(this);
+    parent->setContentsMargins(0,0,0,0);
 
     /*
 	const std::string label_text = link_->getHelp();
@@ -104,7 +102,7 @@ QDisplayLinkWidget::QDisplayLinkWidget(QWidget* parent,
 		linkwidget_->layout()->setContentsMargins(2, 2, 2, 2);
 	}
 
-	linkwidget_->setContentsMargins(0, 0, 0, 0);
+    linkwidget_->setContentsMargins(0, 10, 0, 0);
 	linkwidget_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
 	const std::string valuetype = link_->getValueTypeString();
@@ -139,19 +137,21 @@ QDisplayLinkWidget::QDisplayLinkWidget(QWidget* parent,
 
 		setStyleSheet("QGroupBox{border:0;}");
         setContentsMargins(0, 0, 0, 0);
-		setInsideMargin(0);
-        setInsideSpacing(0);
+        //setInsideMargin(0);
+        //setInsideSpacing(0);
 
-        setColumns(numWidgets_);
+        //setColumns(numWidgets_);
     }
     else
 	{
 		setTitle(link_->getName().c_str());
-		setInsideMargin(4);
-		setInsideSpacing(2);
+        setContentsMargins(2,2,4,4);
+        //setInsideMargin(4);
+        //setInsideSpacing(2);
 
-		setColumns(numWidgets_); //linkwidget_->numColumnWidget()
+        //setColumns(numWidgets_); //linkwidget_->numColumnWidget()
 	}
+    gridLayout_->addWidget(linkwidget_);
 }
 
 void QDisplayLinkWidget::UpdateLink()
@@ -183,7 +183,7 @@ bool QLinkSimpleEdit::createWidgets()
 		innerWidget_.widget.textEdit->setFixedHeight(60);
 		connect(innerWidget_.widget.textEdit , SIGNAL( textChanged() ), this, SIGNAL(LinkBeingChanged()));
 		connect(innerWidget_.widget.textEdit , SIGNAL( textChanged() ), this, SLOT(update()));
-        layout->add(innerWidget_.widget.textEdit);
+        layout->addWidget(innerWidget_.widget.textEdit);
     }
     else
     {
@@ -194,7 +194,7 @@ bool QLinkSimpleEdit::createWidgets()
         innerWidget_.widget.lineEdit->setText(str);
 		connect( innerWidget_.widget.lineEdit, SIGNAL(textChanged(const QString&)), this, SIGNAL(LinkBeingChanged()));
 		connect( innerWidget_.widget.lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT(update()));
-        layout->add(innerWidget_.widget.lineEdit);
+        layout->addWidget(innerWidget_.widget.lineEdit);
     }
 	layout->setContentsMargins(0, 0, 0, 0);
 	layout->setSpacing(0);
@@ -222,11 +222,11 @@ void QLinkSimpleEdit::writeToLink()
         std::string value;
         if( innerWidget_.type == TEXTEDIT)
         {
-            value = innerWidget_.widget.textEdit->text().ascii();
+            value = innerWidget_.widget.textEdit->toPlainText().toStdString();
         }
         else if( innerWidget_.type == LINEEDIT)
         {
-            value = innerWidget_.widget.lineEdit->text().ascii();
+            value = innerWidget_.widget.lineEdit->text().toStdString();
         }
         getBaseLink()->read(value);
     }

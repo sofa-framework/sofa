@@ -162,6 +162,17 @@ helper::vector<behavior::BaseMechanicalState*> Multi2Mapping<In1,In2,Out>::getMe
 template < class In1, class In2, class Out >
 void Multi2Mapping<In1,In2,Out>::init()
 {
+    maskFrom1.resize( this->fromModels1.size() );
+    for( unsigned i=0 ; i<this->fromModels1.size() ; ++i )
+        if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModels1[i])) maskFrom1[i] = &stateFrom->forceMask;
+    maskFrom2.resize( this->fromModels2.size() );
+    for( unsigned i=0 ; i<this->fromModels2.size() ; ++i )
+        if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModels2[i])) maskFrom2[i] = &stateFrom->forceMask;
+    maskTo.resize( this->toModels.size() );
+    for( unsigned i=0 ; i<this->toModels.size() ; ++i )
+        if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModels[i])) maskTo[i] = &stateTo->forceMask;
+        else this->setNonMechanical();
+
     apply(MechanicalParams::defaultInstance() , VecCoordId::position(), ConstVecCoordId::position());
     applyJ(MechanicalParams::defaultInstance() , VecDerivId::velocity(), ConstVecDerivId::velocity());
     if (f_applyRestPosition.getValue())
@@ -206,6 +217,15 @@ std::string Multi2Mapping<In1,In2,Out>::templateName(const Multi2Mapping<In1, In
 template < class In1, class In2, class Out >
 void Multi2Mapping<In1,In2,Out>::disable()
 {
+}
+
+
+template < class In1, class In2, class Out >
+void Multi2Mapping<In1,In2,Out>::updateForceMask()
+{
+    helper::vector<behavior::BaseMechanicalState*> fromModels = getMechFrom();
+    for (size_t i=0 ; i<fromModels.size() ; i++)
+        fromModels[i]->forceMask.assign(fromModels[i]->getSize(),true);
 }
 
 } // namespace core

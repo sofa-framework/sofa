@@ -181,7 +181,13 @@ public:
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_TETRAHEDRONMODEL_CPP)
-extern template class SOFA_MISC_COLLISION_API ContactMapper<TetrahedronModel>;
+extern template class SOFA_MISC_COLLISION_API ContactMapper<TetrahedronModel, sofa::defaulttype::Vec3Types>;
+
+#  ifdef _MSC_VER
+// Manual declaration of non-specialized members, to avoid warnings from MSVC.
+extern template SOFA_MISC_COLLISION_API void BarycentricContactMapper<TetrahedronModel, defaulttype::Vec3Types>::cleanup();
+extern template SOFA_MISC_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* BarycentricContactMapper<TetrahedronModel, defaulttype::Vec3Types>::createMapping(const char*);
+#  endif
 #endif
 
 

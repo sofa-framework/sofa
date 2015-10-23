@@ -25,8 +25,6 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_INL
 
-#include <sofa/SofaFramework.h>
-
 #include <SofaDeformable/TriangularBiquadraticSpringsForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <fstream> // for reading the file

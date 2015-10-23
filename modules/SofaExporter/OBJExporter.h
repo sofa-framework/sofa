@@ -53,13 +53,12 @@ namespace misc
 class SOFA_EXPORTER_API OBJExporter : public core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(OBJExporter,core::objectmodel::BaseObject);
+	SOFA_CLASS(OBJExporter, core::objectmodel::BaseObject);
 
 private:
     unsigned int stepCounter;
     std::ofstream* outfile;
     std::ofstream* mtlfile;
-    void writeOBJ();
     sofa::core::objectmodel::BaseContext* context;
     unsigned int maxStep;
 
@@ -76,7 +75,8 @@ public:
     void init();
     void cleanup();
     void bwdInit();
-    void handleEvent(sofa::core::objectmodel::Event *);
+	void handleEvent(sofa::core::objectmodel::Event *);
+	void writeOBJ(); 
 };
 
 }

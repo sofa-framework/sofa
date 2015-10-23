@@ -25,15 +25,15 @@
 #ifndef LABELIMAGETOOLBOX_H
 #define LABELIMAGETOOLBOX_H 
 
+#include <sofa/core/visual/VisualParams.h>
 #include <QObject>
-
-#include "initImage_gui.h"
-#include "ImageTypes.h"
+#include <image/image_gui/config.h>
+#include <image/ImageTypes.h>
 #include "sofa/defaulttype/defaulttype.h"
 #include "sofa/defaulttype/VecTypes.h"
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/visual/VisualParams.h>
+
 
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>

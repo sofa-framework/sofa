@@ -24,9 +24,10 @@
 ******************************************************************************/
 #ifndef SOFA_CORE_COLLISIONELEMENT_H
 #define SOFA_CORE_COLLISIONELEMENT_H
-
-#include <vector>
 #include <sofa/core/core.h>
+
+#include <cstddef>
+#include <vector>
 
 namespace sofa
 {
@@ -34,10 +35,10 @@ namespace sofa
 namespace core
 {
 
-namespace visual 
-{ 
+namespace visual
+{
 class VisualParams;
-} // namespace visual 
+} // namespace visual
 
 class CollisionModel;
 class CollisionElementIterator;

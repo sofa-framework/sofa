@@ -4,8 +4,8 @@
 #include <SofaEigen2Solver/EigenVector.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include "assembly/AssemblyVisitor.h"
-#include "utils/scoped.h"
+#include "../assembly/AssemblyVisitor.h"
+#include "../utils/scoped.h"
 
 using std::cerr;
 using std::endl;
@@ -262,7 +262,7 @@ using namespace core::behavior;
 
             const unsigned dim = dofs->getSize(); // nb lines per constraint
             const unsigned constraint_dim = dofs->getDerivDimension(); // nb lines per constraint
-            constraint.value->filterConstraints( constraint.projector->mask, posId, dim, constraint_dim );
+            constraint.value->filterConstraints( const_cast<system_type::constraint_type*>(&constraint)->projector->mask, posId, dim, constraint_dim );
         }
     }
 
@@ -540,7 +540,10 @@ using namespace core::behavior;
         assemblyVisitor = new simulation::AssemblyVisitor(mparams);
 
         // fetch nodes/data
-        send( *assemblyVisitor );
+        {
+            scoped::timer step("assembly: fetch data");
+            send( *assemblyVisitor );
+        }
 
         // assemble system
         assemblyVisitor->assemble(sys);

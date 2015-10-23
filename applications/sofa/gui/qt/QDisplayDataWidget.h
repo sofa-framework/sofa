@@ -28,24 +28,11 @@
 #include "DataWidget.h"
 #include "ModifyObject.h"
 
-#ifdef SOFA_QT4
 #include <QWidget>
 #include <QLineEdit>
 #include <QTextEdit>
-#include <Q3GroupBox>
+#include <QGroupBox>
 #include <QSlider>
-#else
-#include <qslider.h>
-#include <qwidget.h>
-#include <qtextedit.h>
-#include <qlineedit.h>
-#include <qgroupbox.h>
-#endif
-
-#ifndef SOFA_QT4
-typedef QGroupBox Q3GroupBox;
-typedef QTextEdit   Q3TextEdit;
-#endif
 
 namespace sofa
 {
@@ -65,7 +52,7 @@ class DataWidget;
 class QDisplayDataInfoWidget;
 struct ModifyObjectFlags;
 
-class QDisplayDataWidget : public Q3GroupBox
+class QDisplayDataWidget : public QGroupBox
 {
     Q_OBJECT
 public:
@@ -105,6 +92,7 @@ protected:
     QDisplayDataInfoWidget*  datainfowidget_;
     DataWidget* datawidget_;
     unsigned int numWidgets_;
+    QHBoxLayout* gridLayout_;
 };
 
 

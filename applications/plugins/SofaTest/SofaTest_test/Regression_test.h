@@ -25,23 +25,21 @@
 #ifndef SOFA_Regression_test_H
 #define SOFA_Regression_test_H
 
-
-#include <SofaTest/Sofa_test.h>
-//#include <SceneCreator/SceneCreator.h>
-//#include <sofa/defaulttype/VecTypes.h>
-
-//Including Simulation
-#include <SofaComponentMain/init.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
-
-
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
 
 #include <SofaLoader/ReadState.h>
 #include <SofaExporter/WriteState.h>
 #include <SofaValidation/CompareState.h>
 
+#include <SofaTest/Sofa_test.h>
 
 namespace sofa {
 
@@ -71,7 +69,12 @@ protected:
 
         std::cerr<<"Regression_test : testing scene "<<testScene<<" "<<nbsteps<<std::endl;
 
-        sofa::component::init();
+        sofa::component::initComponentBase();
+        sofa::component::initComponentCommon();
+        sofa::component::initComponentGeneral();
+        sofa::component::initComponentAdvanced();
+        sofa::component::initComponentMisc();
+
         simulation::Simulation* simulation = simulation::getSimulation();
 
         //Load the scene
@@ -209,8 +212,12 @@ protected:
     // Create the context for the scene
     virtual void SetUp()
     {
-        // Init simulation
-        sofa::component::init();
+        sofa::component::initComponentBase();
+        sofa::component::initComponentCommon();
+        sofa::component::initComponentGeneral();
+        sofa::component::initComponentAdvanced();
+        sofa::component::initComponentMisc();
+
         sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
         // pour tous les emplacements critiques

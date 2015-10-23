@@ -104,12 +104,10 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
 
     recomputeIndices();
 
-#ifdef SOFA_HAVE_EIGEN2
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
     matS.resize(state->getMatrixSize(),state->getMatrixSize());
     lastUpdatedStep = -1.0;
-#endif
 }
 
 
@@ -385,6 +383,14 @@ void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const core::Mechanic
             }
         }
     }
+}
+
+
+template<class DataTypes>
+void RestShapeSpringsForceField<DataTypes>::updateForceMask()
+{
+    for (unsigned int i=0; i<m_indices.size(); i++)
+        this->mstate->forceMask.insertEntry(m_indices[i]);
 }
 
 

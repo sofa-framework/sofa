@@ -3,8 +3,12 @@
 #ifndef LABELPOINTSBYSECTIONIMAGETOOLBOXACTION_H
 #define LABELPOINTSBYSECTIONIMAGETOOLBOXACTION_H
 
+#undef CursorShape // conflicts with X.h, CursorShape
+#undef Bool // conflicts with macro Bool in Xlib.h
+
 #include <QAction>
 #include <QGraphicsLineItem>
+
 #include "tablewidget.h"
 
 #include "../labelimagetoolboxaction.h"
@@ -12,7 +16,7 @@
 
 
 
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 
 namespace sofa
 {

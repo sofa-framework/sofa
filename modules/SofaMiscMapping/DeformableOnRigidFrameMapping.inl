@@ -67,8 +67,6 @@ DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::DeformableOnRigidFrameMapping
     , m_toModel(NULL)
     , m_fromRootModel(NULL)
 {
-    maskFrom = NULL;
-    maskTo = NULL;
 }
 
 template <class TIn, class TInRoot, class TOut>
@@ -90,16 +88,6 @@ int DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::addPoint(const OutCoord& 
 template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::init()
 {
-    if(!this->fromModels1.empty())
-    {
-        if (core::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModels1.get(0)))
-            maskFrom = &stateFrom->forceMask;
-    }
-    if(!this->toModels.empty())
-    {
-        if (core::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModels.get(0)))
-            maskTo = &stateTo->forceMask;
-    }
 
     if(this->getFromModels1().empty())
     {

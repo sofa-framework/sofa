@@ -25,7 +25,7 @@
 #ifndef PLUGINEXAMPLE_MYPROJECTIVECONSTRAINTSET_H
 #define PLUGINEXAMPLE_MYPROJECTIVECONSTRAINTSET_H
 
-#include "initPlugin.h"
+#include <PluginExample/config.h>
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/defaulttype/RigidTypes.h>

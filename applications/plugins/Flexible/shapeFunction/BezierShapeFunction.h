@@ -25,7 +25,7 @@
 #ifndef FLEXIBLE_BezierShapeFunction_H
 #define FLEXIBLE_BezierShapeFunction_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../shapeFunction/BarycentricShapeFunction.h"
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/BezierTetrahedronSetTopologyContainer.h>
@@ -102,7 +102,7 @@ public:
         if(this->cellIndex==-1) return;
         if(w.size()!=4) return;
 
-        topology::VecPointID indexArray;
+        BezierTopoContainer::VecPointID indexArray;
         container->getGlobalIndexArrayOfBezierPointsInTetrahedron(this->cellIndex, indexArray);
 
         size_t nbRef = tbiArray.size();

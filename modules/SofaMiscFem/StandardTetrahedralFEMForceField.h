@@ -130,7 +130,8 @@ public :
       /// Input stream
       inline friend std::istream& operator>> ( std::istream& in, TetrahedronRestInformation& /*eri*/ ) { return in; }
 
-      TetrahedronRestInformation(): tetraIndices(), tetraEdges() {}  
+      TetrahedronRestInformation() : restVolume(0), volScale(0), fiberDirection(), strainEnergy(0) {}
+
     };
     typedef typename VecCoord::template rebind<TetrahedronRestInformation>::other tetrahedronRestInfoVector;
     
@@ -148,7 +149,7 @@ public :
 	   /// Input stream
 	   inline friend std::istream& operator>> ( std::istream& in, EdgeInformation& /*eri*/ ) { return in; }
 
-     EdgeInformation(): DfDx(), vertices() {}
+     EdgeInformation(): DfDx() { vertices[0]=0.f; vertices[1]=0.f; }
    };
    typedef typename VecCoord::template rebind<EdgeInformation>::other edgeInformationVector;
 

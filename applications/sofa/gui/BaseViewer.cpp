@@ -47,10 +47,6 @@ BaseViewer::BaseViewer()
     , backgroundImageFile("textures/SOFA_logo.bmp")
     , ambientColour(defaulttype::Vector3())
     , pick(NULL)
-    , _stereoEnabled(false)
-    , _stereoMode(STEREO_AUTO)
-    , _stereoStrategy(PARALLEL)
-    , _stereoShift(1.0)
     , _screenshotDirectory(".")
 {
     pick = new PickHandler();
@@ -147,7 +143,7 @@ void BaseViewer::screenshot(const std::string& filename, int compression_level)
 #endif
 }
 
-void BaseViewer::getView(defaulttype::Vec3d& pos, defaulttype::Quat& ori) const
+void BaseViewer::getView(defaulttype::Vector3& pos, defaulttype::Quat& ori) const
 {
     if (!currentCamera)
         return;
@@ -165,7 +161,7 @@ void BaseViewer::getView(defaulttype::Vec3d& pos, defaulttype::Quat& ori) const
     ori[3] = camOrientation[3];
 }
 
-void BaseViewer::setView(const defaulttype::Vec3d& pos, const defaulttype::Quat &ori)
+void BaseViewer::setView(const defaulttype::Vector3& pos, const defaulttype::Quat &ori)
 {
     defaulttype::Vec3d position;
     defaulttype::Quat orientation;
@@ -182,7 +178,7 @@ void BaseViewer::setView(const defaulttype::Vec3d& pos, const defaulttype::Quat 
     redraw();
 }
 
-void BaseViewer::moveView(const defaulttype::Vec3d& pos, const defaulttype::Quat &ori)
+void BaseViewer::moveView(const defaulttype::Vector3& pos, const defaulttype::Quat &ori)
 {
     if (!currentCamera)
         return;

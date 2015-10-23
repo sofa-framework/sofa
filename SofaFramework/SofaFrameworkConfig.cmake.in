@@ -1,17 +1,13 @@
-# CMake package configuration file for SofaSimulation.
-# It defines the following variables:
-# - SofaFramework_INCLUDE_DIRS
-# - SofaFramework_LIBRARIES
+# CMake package configuration file for SofaFramework
 
 @PACKAGE_INIT@
 
 list(FIND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}" HAS_SOFAFRAMEWORK_CMAKE_MODULE_PATH)
-
 if(HAS_SOFAFRAMEWORK_CMAKE_MODULE_PATH EQUAL -1)
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR})
 endif()
 
-include(CMakeSofaCreateTarget)
+include(SofaMacros)
 
 find_package(TinyXML REQUIRED)
 sofa_create_target(TinyXML SofaFramework "${TinyXML_LIBRARIES}" "${TinyXML_INCLUDE_DIRS}")
@@ -21,14 +17,11 @@ set(SOFA_HAVE_PNG "@SOFA_HAVE_PNG@")
 set(SOFA_HAVE_GLEW "@SOFA_HAVE_GLEW@")
 set(SOFA_HAVE_GLUT "@SOFA_HAVE_GLUT@")
 set(SOFA_HAVE_BOOST "@SOFA_HAVE_BOOST@")
-set(SOFA_HAVE_EIGEN2 "@SOFA_HAVE_EIGEN2@")
 set(SOFA_NO_OPENGL "@SOFA_NO_OPENGL@")
 set(SOFA_HAVE_GTEST "@SOFA_HAVE_GTEST@")
 
 if(SOFA_HAVE_GTEST)
     find_package(GTest CONFIG REQUIRED)
-    # sofa_create_target(GTest SofaFramework "${GTEST_LIBRARY}" "${GTEST_INCLUDE_DIR}")
-    # sofa_create_target(GTestMain SofaFramework "${GTEST_MAIN_LIBRARY}" "${GTEST_INCLUDE_DIR}")
 endif()
 
 if(SOFA_HAVE_ZLIB)
@@ -64,6 +57,3 @@ if(NOT TARGET SofaCore)
 endif()
 
 check_required_components(SofaHelper SofaDefaultType SofaCore)
-
-set(SofaFramework_LIBRARIES SofaHelper SofaDefaultType SofaCore)
-set(SofaFramework_INCLUDE_DIRS "@PACKAGE_SOFAFRAMEWORK_INCLUDE_DIRS@")

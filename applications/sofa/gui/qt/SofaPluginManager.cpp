@@ -34,9 +34,9 @@
 #include <QTextEdit>
 #include <QPushButton>
 
+
 #include <iostream>
 #include <sstream>
-
 
 namespace sofa
 {
@@ -53,15 +53,20 @@ SofaPluginManager::SofaPluginManager()
     // SIGNAL / SLOTS CONNECTIONS
     this->connect(buttonAdd, SIGNAL(clicked() ),  this, SLOT( addLibrary() ));
     this->connect(buttonRemove, SIGNAL(clicked() ),  this, SLOT( removeLibrary() ));
-    this->connect(listPlugins, SIGNAL(selectionChanged(Q3ListViewItem*) ), this, SLOT(updateComponentList(Q3ListViewItem*) ));
-    this->connect(listPlugins, SIGNAL(selectionChanged(Q3ListViewItem*) ), this, SLOT(updateDescription(Q3ListViewItem*) ));
+
+    this->connect(listPlugins, SIGNAL(itemSelectionChanged() ), this, SLOT(updateComponentList() ));
+    this->connect(listPlugins, SIGNAL(itemSelectionChanged() ), this, SLOT(updateDescription() ));
+
+    listPlugins->setHeaderLabels(QStringList() << "Name" << "License" << "Version" << "Location");
+    listComponents->setHeaderLabels(QStringList() << "Component list");
+
     loadPluginsFromIniFile();
-    initPluginListView();
+    updatePluginsListView();
 }
 
 
 
-void SofaPluginManager::initPluginListView()
+void SofaPluginManager::updatePluginsListView()
 {
     typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
     PluginMap& map = sofa::helper::system::PluginManager::getInstance().getPluginMap();
@@ -74,8 +79,14 @@ void SofaPluginManager::initPluginListView()
         QString sname    = plugin.getModuleName();
         QString sversion = plugin.getModuleVersion();
         QString sfile    = (iter->first).c_str();
-        Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, slicense, sversion, sfile);
-        item->setSelectable(true);
+        //QTreeWidgetItem * item = new QTreeWidgetItem(listPlugins, sname, slicense, sversion, sfile);
+        QTreeWidgetItem * item = new QTreeWidgetItem(listPlugins);
+        item->setText(0, sname);
+        item->setText(1, slicense);
+        item->setText(2, sversion);
+        item->setText(3, sfile);
+        //item->setSelected(true);
+        //listPlugins->addTopLevelItem(item);
     }
 }
 
@@ -110,14 +121,15 @@ void SofaPluginManager::addLibrary()
 #endif
     std::stringstream sstream;
 
-    std::string pluginFile = std::string(sfile.ascii());
+    std::string pluginFile = std::string(sfile.toStdString());
     if(sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginFile,&sstream))
     {
         typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
         typedef sofa::helper::system::Plugin    Plugin;
         if( ! sstream.str().empty())
         {
-            QMessageBox * mbox = new QMessageBox(this,"library loading warning");
+            QMessageBox * mbox = new QMessageBox(this);
+            mbox->setWindowTitle("library loading warning");
             mbox->setIcon(QMessageBox::Warning);
             mbox->setText(sstream.str().c_str());
             mbox->show();
@@ -128,14 +140,22 @@ void SofaPluginManager::addLibrary()
         QString sname    = plugin.getModuleName();
         QString sversion = plugin.getModuleVersion();
 
-        Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, slicense, sversion, pluginFile.c_str());
-        item->setSelectable(true);
+        //QTreeWidgetItem * item = new QTreeWidgetItem(listPlugins, sname, slicense, sversion, pluginFile.c_str());
+        QTreeWidgetItem * item = new QTreeWidgetItem(listPlugins);
+        item->setText(0, sname);
+        item->setText(1, slicense);
+        item->setText(2, sversion);
+        item->setText(3, pluginFile.c_str());
+        listPlugins->addTopLevelItem(item);
+
+        //item->setSelectable(true);
         savePluginsToIniFile();
         emit( libraryAdded() );
     }
     else
     {
-        QMessageBox * mbox = new QMessageBox(this,"library loading error");
+        QMessageBox * mbox = new QMessageBox(this);
+        mbox->setWindowTitle("library loading error");
         mbox->setIcon(QMessageBox::Critical);
         mbox->setText(sstream.str().c_str());
         mbox->show();
@@ -149,25 +169,31 @@ void SofaPluginManager::addLibrary()
 void SofaPluginManager::removeLibrary()
 {
     //get the selected item
-    Q3ListViewItem * curItem = listPlugins->selectedItem();
+    if(listPlugins->selectedItems().count() < 1)
+        return;
+
+    QTreeWidgetItem * curItem = listPlugins->selectedItems()[0];
     std::stringstream sstream;
     if (!curItem) return;
 
-    std::string location( curItem->text(LOCATION_COLUMN).toAscii() ); //get the location value
+    std::string location( curItem->text(LOCATION_COLUMN).toStdString() ); //get the location value
 
     if( sofa::helper::system::PluginManager::getInstance().unloadPlugin(location,&sstream) )
     {
-        listPlugins->removeItem(curItem);
+        //listPlugins->removeItem(curItem);
+        delete curItem->parent()->takeChild(curItem->parent()->indexOfChild(curItem));
+
         savePluginsToIniFile();
         emit( libraryRemoved() );
-        description->clear();
-        listComponents->clear();
+        //description->clear();
+        //listComponents->clear();
     }
     else
     {
         std::string errlog;
         sstream >> errlog;
-        QMessageBox * mbox = new QMessageBox(this,"library unloading error");
+        QMessageBox * mbox = new QMessageBox(this);
+        mbox->setWindowTitle("library unloading error");
         mbox->setIcon(QMessageBox::Critical);
         mbox->setText(errlog.c_str());
         mbox->show();
@@ -175,13 +201,18 @@ void SofaPluginManager::removeLibrary()
 
 }
 
-void SofaPluginManager::updateComponentList(Q3ListViewItem* curItem)
+void SofaPluginManager::updateComponentList()
 {
+    if(this->listPlugins->selectedItems().count() < 1)
+        return;
+
+    QTreeWidgetItem* curItem = this->listPlugins->selectedItems()[0];
+
     if(curItem == NULL ) return;
     //update the component list when an item is selected
-    listComponents->clear();
+    //listComponents->clear();
 
-    std::string location( curItem->text(LOCATION_COLUMN).toAscii() ); //get the location value
+    std::string location( curItem->text(LOCATION_COLUMN).toStdString() ); //get the location value
 
     typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
     typedef sofa::helper::system::Plugin    Plugin;
@@ -191,25 +222,34 @@ void SofaPluginManager::updateComponentList(Q3ListViewItem* curItem)
     QString cpts( plugin.getModuleComponentList() );
     cpts.replace(", ","\n");
     cpts.replace(",","\n");
-    std::istringstream in(cpts.ascii());
+    std::istringstream in(cpts.toStdString());
 
     while (!in.eof())
     {
         std::string componentText;
         in >> componentText;
-        Q3ListViewItem *item=new Q3ListViewItem(listComponents,curItem);
-        item->setText(0,componentText.c_str());
+        //QTreeWidgetItem *item=new QTreeWidgetItem(listComponents,curItem);
+
+        QTreeWidgetItem * item = new QTreeWidgetItem(listComponents);
+        item->setText(0, componentText.c_str());
     }
 
 }
 
 
-void SofaPluginManager::updateDescription(Q3ListViewItem* curItem)
+void SofaPluginManager::updateDescription()
 {
+    if(this->listPlugins->selectedItems().count() < 1)
+        return;
+
+    QTreeWidgetItem* curItem = this->listPlugins->selectedItems()[0];
+
     if(curItem == NULL ) return;
     //update the component list when an item is selected
     description->clear();
-    std::string location( curItem->text(LOCATION_COLUMN).toAscii() ); //get the location value
+
+    std::string location( curItem->text(LOCATION_COLUMN).toStdString() ); //get the location value
+
     typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
     typedef sofa::helper::system::Plugin    Plugin;
     PluginMap& map = sofa::helper::system::PluginManager::getInstance().getPluginMap();
