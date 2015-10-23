@@ -200,7 +200,7 @@ void DisplayFlagsDataWidget::readFromData()
     flags->setFlag(DisplayFlagWidget::BEHAVIORMODELS, displayFlags.getShowBehaviorModels());
     flags->setFlag(DisplayFlagWidget::COLLISIONMODELS, displayFlags.getShowCollisionModels());
     flags->setFlag(DisplayFlagWidget::BOUNDINGCOLLISIONMODELS, displayFlags.getShowBoundingCollisionModels());
-    flags->setFlag(DisplayFlagWidget::MAPPINGS, displayFlags.getShowVisualMappings());
+    flags->setFlag(DisplayFlagWidget::MAPPINGS, displayFlags.getShowMappings());
     flags->setFlag(DisplayFlagWidget::MECHANICALMAPPINGS, displayFlags.getShowMechanicalMappings());
     flags->setFlag(DisplayFlagWidget::FORCEFIELDS, displayFlags.getShowForceFields());
     flags->setFlag(DisplayFlagWidget::INTERACTIONFORCEFIELDS, displayFlags.getShowInteractionForceFields());
@@ -220,7 +220,7 @@ void DisplayFlagsDataWidget::writeToData()
     displayFlags.setShowBehaviorModels(flags->getFlag(DisplayFlagWidget::BEHAVIORMODELS));
     displayFlags.setShowCollisionModels(flags->getFlag(DisplayFlagWidget::COLLISIONMODELS));
     displayFlags.setShowBoundingCollisionModels(flags->getFlag(DisplayFlagWidget::BOUNDINGCOLLISIONMODELS));
-    displayFlags.setShowVisualMappings(flags->getFlag(DisplayFlagWidget::MAPPINGS));
+    displayFlags.setShowMappings(flags->getFlag(DisplayFlagWidget::MAPPINGS));
     displayFlags.setShowMechanicalMappings(flags->getFlag(DisplayFlagWidget::MECHANICALMAPPINGS));
     displayFlags.setShowForceFields(flags->getFlag(DisplayFlagWidget::FORCEFIELDS));
     displayFlags.setShowInteractionForceFields(flags->getFlag(DisplayFlagWidget::INTERACTIONFORCEFIELDS));

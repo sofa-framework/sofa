@@ -804,7 +804,7 @@ void RigidMapping<TIn, TOut>::setJMatrixBlock(unsigned outIdx, unsigned inIdx)
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowVisualMappings() || this->toModel==NULL )
+    if (!vparams->displayFlags().getShowMappings() || this->toModel==NULL )
         return;
     std::vector<defaulttype::Vector3> points;
     defaulttype::Vector3 point;
