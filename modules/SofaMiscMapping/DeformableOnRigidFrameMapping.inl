@@ -828,7 +828,7 @@ m_fromModel->getContext()->get(m_fromRootModel, core::objectmodel::BaseContext::
 template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowVisualMappings()) return;
+    if (!vparams->displayFlags().getShowMappings()) return;
     std::vector< sofa::defaulttype::Vector3 > points;
     sofa::defaulttype::Vector3 point;
 

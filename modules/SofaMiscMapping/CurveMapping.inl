@@ -477,7 +477,7 @@ void CurveMapping<TIn, TOut>::handleEvent(sofa::core::objectmodel::Event* event)
 template <class TIn, class TOut>
 void CurveMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowVisualMappings()) return;
+    if (!vparams->displayFlags().getShowMappings()) return;
     std::vector< sofa::defaulttype::Vector3 > points;
     sofa::defaulttype::Vector3 point;
 

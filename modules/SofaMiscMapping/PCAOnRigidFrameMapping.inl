@@ -537,7 +537,7 @@ void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT(typename In::MatrixDeri
 template <class TIn, class TInRoot, class TOut>
 void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowVisualMappings()) return;
+    if (!vparams->displayFlags().getShowMappings()) return;
     std::vector< sofa::defaulttype::Vector3 > points;
     sofa::defaulttype::Vector3 point;
 

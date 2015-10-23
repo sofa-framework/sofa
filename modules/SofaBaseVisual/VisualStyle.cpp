@@ -59,7 +59,7 @@ showAll, hideAll,\n\
         showWireframe hideWireframe").add<VisualStyle>();
 
 VisualStyle::VisualStyle()
-    : displayFlags(initData(&displayFlags,"displayFlags","Display Flags"))
+    :displayFlags(initData(&displayFlags,"displayFlags","Display Flags"))
 {
     displayFlags.setWidget("widget_displayFlags");
     displayFlags.setGroup("Display Flags");
@@ -81,6 +81,7 @@ helper::WriteAccessor<sofa::core::visual::DisplayFlags> addVisualStyle( simulati
 {
     VisualStyle::SPtr visualStyle = New<sofa::component::visualmodel::VisualStyle>();
     node->addObject(visualStyle);
+//    return visualStyle->displayFlags.setValue(displayFlags);
     return helper::write(visualStyle->displayFlags);
 
 }

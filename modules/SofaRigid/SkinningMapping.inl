@@ -520,7 +520,7 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     glPushAttrib( GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT);
     glDisable ( GL_LIGHTING );
 
-    if ( vparams->displayFlags().getShowVisualMappings() )
+    if ( vparams->displayFlags().getShowMappings() )
     {
         // Display mapping links between in and out elements
         glPointSize ( 1 );

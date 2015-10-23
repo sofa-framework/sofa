@@ -82,7 +82,7 @@ void LaparoscopicRigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams *
 template <class TIn, class TOut>
 void LaparoscopicRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowVisualMappings())
+    if (!vparams->displayFlags().getShowMappings())
         return;
 }
 

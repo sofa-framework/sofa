@@ -186,7 +186,7 @@ int main(int, char** argv)
     flags.setShowMechanicalMappings(true);
     flags.setShowCollisionModels(false);
     flags.setShowBoundingCollisionModels(false);
-    flags.setShowVisualMappings(false);
+    flags.setShowMappings(false);
     flags.setShowForceFields(true);
     flags.setShowWireFrame(false);
     flags.setShowVisualModels(true);
