@@ -160,7 +160,7 @@ create-directories() {
     while read path; do
         rm -f "$output_dir/$path/ignore-patterns.txt"
         touch "$output_dir/$path/ignore-patterns.txt"
-	rm -f "$output_dir/$path/add-patterns.txt"
+        rm -f "$output_dir/$path/add-patterns.txt"
         touch "$output_dir/$path/add-patterns.txt"
         list-scenes "$src_dir/$path" > "$output_dir/$path/scenes.txt"
         while read scene; do
@@ -190,7 +190,11 @@ parse-options-files() {
                             ;;
 			add)
                             if [[ "$(count-args "$args")" = 1 ]]; then
-                                get-arg "$args" 1 >> "$output_dir/$path/add-patterns.txt"
+                                scene="$(get-arg "$args" 1)"
+                                echo $scene >> "$output_dir/$path/add-patterns.txt"
+                                mkdir -p "$output_dir/$path/$scene"
+                                echo 30 > "$output_dir/$path/$scene/timeout.txt" # Default timeout, in seconds
+                                echo 100 > "$output_dir/$path/$scene/iterations.txt" # Default number of iterations
                             else
                                 echo "$path/.scene-tests: warning: 'add' expects one argument: add <pattern>" | log
                             fi
@@ -241,12 +245,12 @@ parse-options-files() {
                 > "$output_dir/$path/tested-scenes.txt" || true
         else
             cp  "$output_dir/$path/scenes.txt" "$output_dir/$path/tested-scenes.txt"
-	fi
+        fi
 	
         sed -e "s:^:$path/:" "$output_dir/$path/ignored-scenes.txt" >> "$output_dir/all-ignored-scenes.txt"
 
         # Add scenes
-	cp "$output_dir/$path/add-patterns.txt" "$output_dir/$path/added-scenes.txt" 
+        cp "$output_dir/$path/add-patterns.txt" "$output_dir/$path/added-scenes.txt"
         if [ -s "$output_dir/$path/add-patterns.txt" ]; then
             cat "$output_dir/$path/add-patterns.txt" \
                 >> "$output_dir/$path/tested-scenes.txt" || true
