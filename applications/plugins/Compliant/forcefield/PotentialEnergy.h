@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENT_COMPLIANCE_PotentialEnergy_H
 #define SOFA_COMPONENT_COMPLIANCE_PotentialEnergy_H
 
-#include "initCompliant.h"
+#include <Compliant/config.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/defaulttype/Mat.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
@@ -71,7 +71,7 @@ public:
     
     PotentialEnergy( core::behavior::MechanicalState<DataTypes> *mm = 0)
         : Base(mm),
-          sign(initData(&sign, 1.0, "sign", "scalar factor")) { };
+          sign(initData(&sign, (SReal)1.0, "sign", "scalar factor")) { };
 
 protected:
     

@@ -27,7 +27,7 @@
 
 #include <SofaConstraint/UnilateralInteractionConstraint.h>
 
-#include "PersistentContact.h"
+#include <PersistentContact/config.h>
 
 namespace sofa
 {

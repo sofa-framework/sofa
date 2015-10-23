@@ -2,7 +2,7 @@
 #define COMPLIANT_ASSEMBLEDSOLVER_H
 
 
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/MechanicalParams.h>
@@ -12,7 +12,7 @@
 #include <sofa/simulation/common/VectorOperations.h>
 
 // TODO forward instead ?
-#include "numericalsolver/KKTSolver.h"
+#include "../numericalsolver/KKTSolver.h"
 
 #include <sofa/helper/OptionsGroup.h>
 

@@ -26,12 +26,12 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_H
 #include "config.h"
 
-#include <sofa/SofaGeneral.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <set>
 #include <SofaBaseTopology/TopologySubsetData.h>
+
 
 namespace sofa
 {

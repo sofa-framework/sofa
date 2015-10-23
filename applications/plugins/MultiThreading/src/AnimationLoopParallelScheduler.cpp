@@ -56,7 +56,7 @@ namespace sofa
 namespace simulation
 {
 
-	SOFA_DECL_CLASS(AnimationLoopParallelScheduler);
+    SOFA_DECL_CLASS(AnimationLoopParallelScheduler)
 
 	int AnimationLoopParallelSchedulerClass = core::RegisterObject("parallel animation loop, using intel tbb library")
 		.add< AnimationLoopParallelScheduler >()

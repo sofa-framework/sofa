@@ -118,6 +118,7 @@ protected:
     /// Swaps values at indices i1 and i2.
     virtual void swap( unsigned int i1, unsigned int i2 );
 
+    using core::topology::TopologyElementHandler< TopologyElementType >::add;
     /// Add some values. Values are added at the end of the vector.
     virtual void add( unsigned int nbElements,
             const sofa::helper::vector< TopologyElementType >& ,

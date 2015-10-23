@@ -25,12 +25,12 @@
 #ifndef SOFA_PLUGINMANAGER_H
 #define SOFA_PLUGINMANAGER_H
 
-#include "ui_PluginManager.h"
+#include <ui_PluginManager.h>
 #include "SofaGUIQt.h"
-
-#include <Q3ListViewItem>
+#include <QTreeWidgetItem>
 
 #include <set>
+
 
 namespace sofa
 {
@@ -39,16 +39,13 @@ namespace gui
 namespace qt
 {
 
-#ifndef SOFA_QT4
-typedef QListViewItem Q3ListViewItem;
-#endif
-
 class SofaPluginManager: public QDialog, public Ui_PluginManager
 {
     Q_OBJECT
 public:
 
     SofaPluginManager();
+
 
 signals:
 
@@ -60,12 +57,11 @@ public slots:
     void addLibrary();
     void removeLibrary();
 
-    void updateComponentList(Q3ListViewItem*);
-    void updateDescription(Q3ListViewItem*);
-
-private :
+    void updateComponentList();
+    void updateDescription();
+public:
     void updatePluginsListView();
-    void initPluginListView();
+private:
     void savePluginsToIniFile();
     void loadPluginsFromIniFile();
 };

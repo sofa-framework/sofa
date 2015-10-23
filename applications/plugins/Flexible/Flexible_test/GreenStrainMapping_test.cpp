@@ -23,7 +23,7 @@ namespace sofa {
         typedef typename Inherited::InVecCoord InVecCoord;
         typedef typename In::Frame InFrame;
 
-
+        using Inherited::runTest;
         bool runTest()
         {
             this->deltaRange = std::make_pair( 100, 10000 );

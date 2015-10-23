@@ -55,7 +55,7 @@ namespace contextobject
 
 /** Defines the local coordinate system with respect to its parent.
 */
-class SOFA_GRAPH_COMPONENT_API CoordinateSystem : public core::objectmodel::ContextObject
+class CoordinateSystem : public core::objectmodel::ContextObject
 {
 public:
     SOFA_CLASS(CoordinateSystem, core::objectmodel::ContextObject);

@@ -4,8 +4,8 @@
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-#include "utils/se3.h"
-#include "utils/map.h"
+#include "../utils/se3.h"
+#include "../utils/map.h"
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/Axis.h>

@@ -26,10 +26,10 @@
 #define SOFA_COMPONENT_MAPPING_AssembledRigidRigidMapping_H
 
 #include "AssembledMapping.h"
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 
-#include "utils/se3.h" 
-#include "utils/pair.h"
+#include "../utils/se3.h"
+#include "../utils/pair.h"
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -82,6 +82,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
     }
 
 	typedef defaulttype::SerializablePair<unsigned, typename TIn::Coord> source_type;
+    typedef vector< source_type > source_vectype;
 	Data< vector< source_type > > source;
 
     Data<int> geometricStiffness;
@@ -103,13 +104,15 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
         if( !geomStiff ) return;
 
 
+        const source_vectype& src = source.getValue();
+
         // sorted in-out
         typedef std::map<unsigned, vector<unsigned> > in_out_type;
         in_out_type in_out;
 
         // wahoo it is heavy, can't we find lighter?
-        for(unsigned i = 0, n = source.getValue().size(); i < n; ++i) {
-            const source_type& s = source.getValue()[i];
+        for(unsigned i = 0, n = src.size(); i < n; ++i) {
+            const source_type& s = src[i];
             in_out[ s.first() ].push_back(i);
         }
 
@@ -132,7 +135,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
             {
                 const unsigned i = it->second[w];
 
-                const source_type& s = source.getValue()[i];
+                const source_type& s = src[i];
                 assert( it->first == s.first() );
 
                 const typename TOut::Deriv& lambda = out_force[i];
@@ -209,15 +212,17 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 
 		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
 
+        const source_vectype& src = source.getValue();
+
 		assert( in_pos.size() );
-        assert( source.getValue().size() );
+        assert( src.size() );
 		
-        J.resize(6 * source.getValue().size(),
+        J.resize(6 * src.size(),
 		         6 * in_pos.size() );
 		J.setZero();
 		
-        for(unsigned i = 0, n = source.getValue().size(); i < n; ++i) {
-            const source_type& s = source.getValue()[i];
+        for(unsigned i = 0, n = src.size(); i < n; ++i) {
+            const source_type& s = src[i];
 			
             typename se3::mat66 block = se3::dR(s.second(), in_pos[ s.first() ] );
 			
@@ -243,14 +248,32 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 	
 	virtual void apply(typename self::out_pos_type& out,
 	                   const typename self::in_pos_type& in ) {
-        assert( out.size() == source.getValue().size() );
+
+        const source_vectype& src = source.getValue();
+
+        assert( out.size() == src.size() );
 		
-        for(unsigned i = 0, n = source.getValue().size(); i < n; ++i) {
-            const source_type& s = source.getValue()[i];
+        for(unsigned i = 0, n = src.size(); i < n; ++i) {
+            const source_type& s = src[i];
             out[ i ] = se3::prod( in[ s.first() ], s.second() );
 		}
 		
 	}
+
+
+    virtual void updateForceMask()
+    {
+        const source_vectype& src = source.getValue();
+
+        for(unsigned i = 0, n = src.size(); i < n; ++i)
+        {
+            if( this->maskTo->getEntry(i) )
+            {
+                const source_type& s = src[i];
+                this->maskFrom->insertEntry(s.first());
+            }
+        }
+    }
 
 };
 

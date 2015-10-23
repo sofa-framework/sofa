@@ -47,33 +47,39 @@ template<class T> struct argtype< const T > : argtype<T> { };
 
 template<class Ret>
 static std::string make_argtypes( Ret (*func) () ) {
+    (void)func;
     return "[]";
 }
 
 template<class Ret>
 static std::string make_restype( Ret (*func) () ) {
+    (void)func;
     return argtype<Ret>::value();
 }
 
 
 template<class Ret, class Arg>
 static std::string make_argtypes( Ret (*func) (Arg) ) {
+    (void)func;
     return "[" + argtype<Arg>::value() + "]";
 }
 
 template<class Ret, class Arg>
 static std::string make_restype( Ret (*func) (Arg) ) {
+    (void)func;
     return argtype<Ret>::value();
 }
 
 
 template<class Ret, class Arg1, class Arg2>
 static std::string make_argtypes( Ret (*func) (Arg1, Arg2) ) {
+    (void)func;
     return "[" + argtype<Arg1>::value() + "," + argtype<Arg2>::value() + "]";
 }
 
 template<class Ret, class Arg1, class Arg2>
 static std::string make_restype( Ret (*func) (Arg1, Arg2) ) {
+    (void)func;
     return argtype<Ret>::value();
 }
 

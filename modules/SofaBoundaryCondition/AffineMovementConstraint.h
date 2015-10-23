@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_AFFINEMOVEMENTCONSTRAINT_H
 #include "config.h"
 
-#include <sofa/SofaGeneral.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -158,6 +157,7 @@ public:
         FCPointHandler(AffineMovementConstraint<DataTypes>* _fc, component::topology::PointSubsetData<SetIndexArray>* _data)
             : sofa::component::topology::TopologySubsetDataHandler<component::topology::Point, SetIndexArray >(_data), fc(_fc) {}
 
+        using component::topology::TopologySubsetDataHandler<component::topology::Point, SetIndexArray >::applyDestroyFunction;
         void applyDestroyFunction(unsigned int /*index*/, core::objectmodel::Data<value_type>& /*T*/);
 
         bool applyTestCreateFunction(unsigned int /*index*/,

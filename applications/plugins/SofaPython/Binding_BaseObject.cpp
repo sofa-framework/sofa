@@ -99,6 +99,13 @@ extern "C" PyObject * BaseObject_setSrc(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
+extern "C" PyObject * BaseObject_getPathName(PyObject * self, PyObject * /*args*/)
+{
+    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+
+    return PyString_FromString(obj->getPathName().c_str());
+}
+
 
 SP_CLASS_METHODS_BEGIN(BaseObject)
 SP_CLASS_METHOD(BaseObject,init)
@@ -109,8 +116,8 @@ SP_CLASS_METHOD(BaseObject,reset)
 SP_CLASS_METHOD(BaseObject,cleanup)
 SP_CLASS_METHOD(BaseObject,getContext)
 SP_CLASS_METHOD(BaseObject,getMaster)
-
 SP_CLASS_METHOD(BaseObject,setSrc)
+SP_CLASS_METHOD(BaseObject,getPathName)
 SP_CLASS_METHODS_END
 
 

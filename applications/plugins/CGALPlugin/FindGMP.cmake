@@ -9,7 +9,7 @@
 # TODO: support MacOSX
 
 include(FindPackageHandleStandardArgs)
-include(CGAL_GeneratorSpecificSettings)
+include(CGALGeneratorSpecificSettings)
 
 
 if(GMP_INCLUDE_DIR)

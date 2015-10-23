@@ -1,46 +1,38 @@
+#include "Sofa_test.h"
+#include "InitPlugin_test.h"
+
+#include <SofaBaseCollision/OBBModel.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <SofaBaseTopology/CubeTopology.h>
+#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <SofaBaseTopology/MeshTopology.h>
+#include <SofaBaseTopology/MeshTopology.h>
+#include <SofaBaseVisual/VisualStyle.h>
+#include <SofaExplicitOdeSolver/EulerSolver.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <SofaMeshCollision/MeshIntTool.h>
+#include <SofaMiscCollision/DefaultCollisionGroupManager.h>
+#include <SofaMiscMapping/DistanceFromTargetMapping.h>
+#include <SofaMiscMapping/DistanceMapping.h>
+#include <SofaMiscMapping/SubsetMultiMapping.h>
+
+#include <sofa/helper/ArgumentParser.h>
+#include <sofa/helper/BackTrace.h>
+#include <sofa/helper/UnitTest.h>
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/PluginManager.h>
+#include <sofa/helper/vector.h>
+#include <sofa/helper/vector_algebra.h>
+#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/tree/TreeSimulation.h>
+
+#include <fstream>
 #include <gtest/gtest.h>
 #include <iostream>
 #include <sstream>
-#include <fstream>
-#include <sofa/helper/ArgumentParser.h>
-#include <sofa/helper/UnitTest.h>
-#include <sofa/helper/vector_algebra.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/BackTrace.h>
-#include <sofa/helper/system/PluginManager.h>
-
-//#include <sofa/simulation/tree/TreeSimulation.h>
-#ifdef SOFA_HAVE_DAG
-#include <sofa/simulation/graph/DAGSimulation.h>
-#endif
-#include <sofa/simulation/common/Node.h>
-
-#include <sofa/helper/system/FileRepository.h>
-
-#include <SofaMiscMapping/SubsetMultiMapping.h>
-#include <SofaMiscMapping/DistanceMapping.h>
-#include <SofaMiscMapping/DistanceFromTargetMapping.h>
-#include <SofaBaseTopology/MeshTopology.h>
-#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaBaseTopology/CubeTopology.h>
-#include <SofaBaseVisual/VisualStyle.h>
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-#include <SofaExplicitOdeSolver/EulerSolver.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <SofaBaseCollision/OBBModel.h>
-#include <sofa/simulation/tree/TreeSimulation.h>
-
-
-#include <sofa/simulation/common/Simulation.h>
-#include <SofaMiscCollision/DefaultCollisionGroupManager.h>
-#include <sofa/simulation/tree/GNode.h>
-
-#include <SofaBaseTopology/MeshTopology.h>
-#include <SofaMeshCollision/MeshIntTool.h>
-#include "InitPlugin_test.h"
-
-#include "Sofa_test.h"
 
 namespace sofa{
 

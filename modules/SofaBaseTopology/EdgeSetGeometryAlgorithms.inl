@@ -25,8 +25,6 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL
 
-#include <sofa/SofaFramework.h>
-
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/MatEigen.h>
@@ -89,12 +87,12 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
 	qpa.clear();
 	a=0.5*(1-sqrt((Real)3/5.0));
 	v=BarycentricCoordinatesType(a);
-	qpa.push_back(QuadraturePoint(v,(Real)5.0/18.0));
+    qpa.push_back(QuadraturePoint(v,(Real)(5.0/18.0)));
 	b=0.5*(1+sqrt((Real)3/5.0));
 	v=BarycentricCoordinatesType(b);
-	qpa.push_back(QuadraturePoint(v,(Real)5.0/18.0));
+    qpa.push_back(QuadraturePoint(v,(Real)(5.0/18.0)));
 	v=BarycentricCoordinatesType(0.5);
-	qpa.push_back(QuadraturePoint(v,(Real)8.0/18.0));
+    qpa.push_back(QuadraturePoint(v,(Real)(8.0/18.0)));
 	edgeNumericalIntegration.addQuadratureMethod(m,3,qpa);
 	/// integration with quartic accuracy.
 	qpa.clear();
@@ -132,7 +130,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
 	qpa.push_back(QuadraturePoint(v,a2/2));
 
 	v=BarycentricCoordinatesType(0.5);
-	qpa.push_back(QuadraturePoint(v,(Real)512/1800.0));
+    qpa.push_back(QuadraturePoint(v,(Real)(512/1800.0)));
 	edgeNumericalIntegration.addQuadratureMethod(m,5,qpa);
 
 	/// integration with  accuracy of order 6.
@@ -646,7 +644,9 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
     // Creating director vectors:
     Coord vec1 = edge1[1] - edge1[0];
     Coord vec2 = edge2[1] - edge2[0];
-    Coord X; X[0]=0; X[1]=0; X[2]=0;
+    Coord X;
+    for (unsigned int i=0; i<Coord::spatial_dimensions; i++)
+        X[i] = 0;
 
     int ind1 = -1;
     int ind2 = -1;
@@ -661,7 +661,7 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
         {
             ind1 = i;
 
-            for (unsigned int j = 0; j<3; j++)
+            for (unsigned int j = 0; j<Coord::spatial_dimensions; j++)
                 if ( (vec2[j] > epsilon || vec2[j] < -epsilon) && (j != i))
                 {
                     ind2 = j;
@@ -889,7 +889,6 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
         }
         else
         {
-#ifdef SOFA_HAVE_EIGEN2   // use the SVD decomposition of Eigen
             size_t n = weights.size();     // start index for this vertex
             weights.resize( n + ve.size() ); // concatenate all the W of the nodes
             defaulttype::Vector3 a,u;
@@ -938,10 +937,6 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
                 weights[n+i][2] = u * edgeVec[i];
                 //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to z = " << weights[n+i][2] << endl;
             }
-
-#else
-            std::cerr << "EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, cholDcmp failed, subsequent results are undefined " << std::endl;
-#endif
         }
 
     }

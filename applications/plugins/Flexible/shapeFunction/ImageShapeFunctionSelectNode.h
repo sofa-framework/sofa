@@ -25,7 +25,7 @@
 #ifndef FLEXIBLE_ImageShapeFunctionSelectNode_H
 #define FLEXIBLE_ImageShapeFunctionSelectNode_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include <sofa/core/DataEngine.h>
 
 #include "BaseImageShapeFunction.h"

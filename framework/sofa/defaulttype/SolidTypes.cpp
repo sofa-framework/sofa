@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_DEFAULTTYPE_SOLIDTYPES_CPP
 #include <sofa/defaulttype/SolidTypes.inl>
 
 namespace sofa
@@ -31,10 +32,10 @@ namespace defaulttype
 {
 
 #ifndef SOFA_FLOAT
-template class SolidTypes<double>;
+template class SOFA_DEFAULTTYPE_API SolidTypes<double>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SolidTypes<float>;
+template class SOFA_DEFAULTTYPE_API SolidTypes<float>;
 #endif
 
 }// defaulttype

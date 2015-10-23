@@ -757,6 +757,11 @@ struct Assembly_test : public CompliantSolver_test
         //        restLengths.resize(1);
         //        restLengths[0] = 1.0;
 
+        rigidDOF->forceMask.assign( rigidDOF->getSize(), true );
+        particleOnRigidDOF->forceMask.assign( particleOnRigidDOF->getSize(), true );
+        pointPairDOF->forceMask.assign( pointPairDOF->getSize(), true );
+        extensionDOF->forceMask.assign( extensionDOF->getSize(), true );
+
         UniformCompliance1::SPtr extensionCompliance = addNew<UniformCompliance1>(extension);
         extensionCompliance->compliance.setValue(0);
 

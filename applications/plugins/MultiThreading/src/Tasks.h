@@ -25,7 +25,7 @@
 #ifndef MultiThreadingTasks_h__
 #define MultiThreadingTasks_h__
 
-#include "initMultiThreading.h"
+#include <MultiThreading/config.h>
 
 #include <boost/detail/atomic_count.hpp>
 #include <boost/pool/singleton_pool.hpp>
@@ -143,7 +143,7 @@ namespace sofa
 			typedef boost::singleton_pool<TaskBaseTag, sizeof(T)> memory_pool; 
 
 		public:
-			static inline void* operator new (std::size_t size)
+            static inline void* operator new (std::size_t /*size*/)
 			{
 				return memory_pool::malloc();
 			}

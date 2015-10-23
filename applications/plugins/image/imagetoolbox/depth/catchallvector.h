@@ -25,14 +25,14 @@
 #ifndef SOFA_IMAGE_CATCHALLVECTOR_H
 #define SOFA_IMAGE_CATCHALLVECTOR_H
 
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
 
 #include <sofa/helper/OptionsGroup.h>
 
-#include "ImageContainer.h"
+#include <image/ImageContainer.h>
 
 namespace sofa
 {

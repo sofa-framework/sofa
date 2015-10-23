@@ -101,19 +101,21 @@ public:
         m_vnormals.setGroup("Vector");
     }
 
-    virtual void resize(int vsize)
+    virtual void resize(size_t vsize)
     {
-        modified = true;
         helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > positions = m_positions;
+        if( positions.size() == vsize ) return;
         helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > restPositions = m_restPositions;
         helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Deriv> > > normals = m_vnormals;
 
         positions.resize(vsize);
-        restPositions.resize(vsize);
+        restPositions.resize(vsize); // todo allocate restpos only when it is necessary
         normals.resize(vsize);
+
+        modified = true;
     }
 
-    virtual int getSize() const { return (int)m_positions.getValue().size(); }
+    virtual size_t getSize() const { return m_positions.getValue().size(); }
 
     //State API
     virtual       Data<VecCoord>* write(     core::VecCoordId  v )
@@ -213,13 +215,14 @@ public:
     Data< sofa::defaulttype::ResizableExtVector< Edge > > m_edges;
     Data< sofa::defaulttype::ResizableExtVector< Triangle > > m_triangles;
     Data< sofa::defaulttype::ResizableExtVector< Quad > > m_quads;
+  
 
     /// If vertices have multiple normals/texcoords, then we need to separate them
-    /// This vector store which input position is used for each vertice
+    /// This vector store which input position is used for each vertex
     /// If it is empty then each vertex correspond to one position
     Data< sofa::defaulttype::ResizableExtVector<int> > m_vertPosIdx;
 
-    /// Similarly this vector store which input normal is used for each vertice
+    /// Similarly this vector store which input normal is used for each vertex
     /// If it is empty then each vertex correspond to one normal
     Data< sofa::defaulttype::ResizableExtVector<int> > m_vertNormIdx;
 
@@ -244,14 +247,14 @@ public:
     Data< TexCoord > m_scaleTex;
     Data< TexCoord > m_translationTex;
 
-    void applyTranslation(const Real dx, const Real dy, const Real dz);
+    void applyTranslation(const SReal dx, const SReal dy, const SReal dz);
 
     /// Apply Rotation from Euler angles (in degree!)
-    void applyRotation (const Real rx, const Real ry, const Real rz);
+    void applyRotation (const SReal rx, const SReal ry, const SReal rz);
 
     void applyRotation(const sofa::defaulttype::Quat q);
 
-    void applyScale(const Real sx, const Real sy, const Real sz);
+    void applyScale(const SReal sx, const SReal sy, const SReal sz);
 
     virtual void applyUVTransformation();
 
@@ -324,6 +327,7 @@ protected:
 
     /// Default destructor.
     ~VisualModelImpl();
+
 public:
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
@@ -470,7 +474,7 @@ public:
     virtual void computeMesh();
     virtual void computeNormals();
     virtual void computeTangents();
-    virtual void computeBBox(sofa::core::ExecParams* params, bool=false);
+    virtual void computeBBox(const core::ExecParams* params, bool=false);
 
     virtual void updateBuffers() {}
 

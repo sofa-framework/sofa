@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_COLLISION_CUTTINGPOINT_H
 #include "config.h"
 
-#include <sofa/SofaGeneral.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/collision/Intersection.h>

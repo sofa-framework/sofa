@@ -1,11 +1,8 @@
-
-
-#include <QString>
-
 #include "labelboximagetoolboxaction.h"
-
 #include "labelboximagetoolbox.h"
 
+#include <QString>
+#include <QGroupBox>
 #include <iostream>
 
 namespace sofa

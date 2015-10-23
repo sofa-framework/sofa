@@ -25,8 +25,6 @@
 #ifndef SOFA_COMPONENT_MASS_UNIFORMMASS_INL
 #define SOFA_COMPONENT_MASS_UNIFORMMASS_INL
 
-#include <sofa/SofaFramework.h>
-
 #include <SofaBaseMechanics/UniformMass.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/Topology.h>
@@ -67,6 +65,7 @@ UniformMass<DataTypes, MassType>::UniformMass()
     , showX0 ( initData ( &showX0, false, "showX0", "display the rest positions" ) )
     , localRange ( initData ( &localRange, defaulttype::Vec<2,int> ( -1,-1 ), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
     , m_handleTopoChange ( initData ( &m_handleTopoChange, false, "handleTopoChange", "The mass and totalMass are recomputed on particles add/remove." ) )
+    , d_preserveTotalMass( initData ( &d_preserveTotalMass, false, "preserveTotalMass", "Prevent totalMass from decreasing when removing particles."))
 {
     this->addAlias ( &totalMass, "totalMass" );
 }
@@ -92,9 +91,11 @@ void UniformMass<DataTypes, MassType>::reinit()
 {
     if ( this->totalMass.getValue() >0 && this->mstate!=NULL )
     {
-        MassType* m = this->mass.beginEdit();
+        MassType *m = this->mass.beginEdit();
 
-        if(localRange.getValue() [0] >= 0  && localRange.getValue() [1] > 0 && ( unsigned int ) localRange.getValue() [1]+1 < this->mstate->getSize() )
+        if (localRange.getValue()[0] >= 0
+            && localRange.getValue()[1] > 0
+            && localRange.getValue()[1] + 1 < (int)this->mstate->getSize())
         {
             *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / (localRange.getValue()[1]-localRange.getValue()[0]) );
         }
@@ -151,7 +152,12 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
             case core::topology::POINTSREMOVED:
                 if ( m_handleTopoChange.getValue() )
                 {
-                    this->totalMass.setValue (this->mstate->getSize() * (Real)this->mass.getValue() );
+                    if (!d_preserveTotalMass.getValue())
+                    {
+                        this->totalMass.setValue (this->mstate->getSize() * (Real)this->mass.getValue() );
+                    } else {
+                        this->mass.setValue( static_cast< MassType >( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->getSize()) );
+                    }
                 }
                 break;
 

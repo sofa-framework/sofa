@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_INL
 #define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_INL
 
-#include <sofa/SofaFramework.h>
+
 #include "HexahedralFEMForceFieldAndMass.h"
 #include <sofa/core/visual/VisualParams.h>
 #include "HexahedralFEMForceField.inl"
@@ -628,7 +628,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addDForce(const core::Mechanical
 
 
 template<class DataTypes>
-SReal HexahedralFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*index*/)
+SReal HexahedralFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*index*/) const
 {
     serr<<"HexahedralFEMForceFieldAndMass<DataTypes>::getElementMass not yet implemented"<<sendl; return 0.0;
 }

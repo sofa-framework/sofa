@@ -124,6 +124,14 @@ helper::vector<behavior::BaseMechanicalState*> MultiMapping<In,Out>::getMechTo()
 template <class In, class Out>
 void MultiMapping<In,Out>::init()
 {
+    maskFrom.resize( this->fromModels.size() );
+    for( unsigned i=0 ; i<this->fromModels.size() ; ++i )
+        if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModels[i])) maskFrom[i] = &stateFrom->forceMask;
+    maskTo.resize( this->toModels.size() );
+    for( unsigned i=0 ; i<this->toModels.size() ; ++i )
+        if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModels[i])) maskTo[i] = &stateTo->forceMask;
+        else this->setNonMechanical();
+
     apply(MechanicalParams::defaultInstance() , VecCoordId::position(), ConstVecCoordId::position());
     applyJ(MechanicalParams::defaultInstance() , VecDerivId::velocity(), ConstVecDerivId::velocity());
     if (f_applyRestPosition.getValue())
@@ -226,6 +234,8 @@ void MultiMapping<In,Out>::applyJT(const MechanicalParams* mparams, MultiVecDeri
     getConstVecOutDeriv(outForce, vecInForce);
 
     this->applyJT(mparams, vecOutForce, vecInForce);
+
+    updateForceMask();
 }// MultiMapping::applyJT
 
 template <class In, class Out>
@@ -240,6 +250,13 @@ void MultiMapping<In,Out>::disable()
 {
 }
 
+template < class In, class Out >
+void MultiMapping<In,Out>::updateForceMask()
+{
+    helper::vector<behavior::BaseMechanicalState*> fromModels = getMechFrom();
+    for (size_t i=0 ; i<fromModels.size() ; i++)
+        fromModels[i]->forceMask.assign(fromModels[i]->getSize(),true);
+}
 
 } // namespace core
 

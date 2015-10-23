@@ -217,7 +217,7 @@ private:
       *Inits the field intersectors used to find the right intersector between the two collision models with better speed compared to
       *find intersector.
       */
-    void initIntersectors();
+//    void initIntersectors();
 
     /**
       *Used in initialisatio of IncrSAP. It clears all the IncrSAP fields.
@@ -275,7 +275,7 @@ public:
       *Unuseful methods because all is done in addCollisionModel
       */
     void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ){}
-    void addCollisionPairs (std::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&){}
+    void addCollisionPairs (const helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&){}
 
     virtual void beginNarrowPhase();
 

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_MooneyRivlinFORCEFIELD_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../material/MooneyRivlinForceField.h"
 #include "../types/StrainTypes.h"
 #include <sofa/core/ObjectFactory.h>

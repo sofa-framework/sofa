@@ -16,6 +16,7 @@ class Frame:
                         self.rotation = [0, 0, 0, 1]
 
         def insert(self, parent, template='Rigid', **args):
+                self.node = parent
                 return parent.createObject('MechanicalObject',
                                            template = template,
                                            position = str(self),
@@ -75,3 +76,10 @@ class Frame:
             """
             return self.inv().apply(vec)
 
+        def __eq__(self, other):
+            """ floating point comparison """
+            return allclose(self.translation, other.translation) and allclose(self.rotation, other.rotation)
+
+        def __ne__(self, other):
+            """ floating point comparison """
+            return not allclose(self.translation, other.translation) or not allclose(self.rotation, other.rotation)

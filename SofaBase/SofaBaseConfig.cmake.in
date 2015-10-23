@@ -1,22 +1,11 @@
-# CMake package configuration file for SofaBase.
-# It defines the following variables:
-# - SofaBase_INCLUDE_DIRS
-# - SofaBase_LIBRARIES
+# CMake package configuration file for SofaBase
 
 @PACKAGE_INIT@
 
-set(SOFABASE_INCLUDE_DIR "@PACKAGE_SOFABASE_INCLUDE_DIR@")
-set(SofaBase_TARGETS @SOFABASE_TARGETS@)
-
-# Transitive dependencies
 find_package(SofaSimulation REQUIRED)
 
 if(NOT TARGET SofaComponentBase)
 	include("${CMAKE_CURRENT_LIST_DIR}/SofaBaseTargets.cmake")
 endif()
 
-check_required_components(${SofaBase_TARGETS})
-
-# For compatibility only
-set(SofaBase_LIBRARIES SofaComponentBase)
-set(SofaBase_INCLUDE_DIRS ${SOFABASE_INCLUDE_DIR} ${SofaSimulation_INCLUDE_DIRS})
+check_required_components(@SOFABASE_TARGETS@)

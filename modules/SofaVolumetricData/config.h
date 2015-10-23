@@ -25,12 +25,6 @@
 #ifndef SOFAVOLUMETRICDATA_CONFIG_H
 #define SOFAVOLUMETRICDATA_CONFIG_H
 
-#include <sofa/helper/system/config.h>
-
-#ifdef SOFA_BUILD_VOLUMETRIC_DATA
-#  define SOFA_VOLUMETRIC_DATA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_VOLUMETRIC_DATA_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <SofaAdvanced/config.h>
 
 #endif

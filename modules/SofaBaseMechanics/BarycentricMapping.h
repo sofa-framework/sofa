@@ -30,9 +30,7 @@
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
-#ifdef SOFA_HAVE_EIGEN2
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-#endif
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/MechanicalParams.h>
@@ -171,7 +169,13 @@ public:
 protected:
     BarycentricMapper() {}
     virtual ~BarycentricMapper() {}
+	
+private:
+	BarycentricMapper(const BarycentricMapper& n) ;
+	BarycentricMapper& operator=(const BarycentricMapper& n) ;
+	
 public:
+    using core::objectmodel::BaseObject::init;
     virtual void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
     virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) = 0;
     virtual const sofa::defaulttype::BaseMatrix* getJ(int /*outSize*/, int /*inSize*/)
@@ -182,11 +186,13 @@ public:
     virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
     virtual void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) = 0;
     virtual void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) = 0;
+
+    using core::objectmodel::BaseObject::draw;
     virtual void draw(const core::visual::VisualParams*, const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
 
     //-- test mapping partiel
     virtual void applyOnePoint( const unsigned int& /*hexaId*/, typename Out::VecCoord& /*out*/, const typename In::VecCoord& /*in*/)
-    {};
+    {}
     //--
 
 
@@ -208,6 +214,11 @@ public:
 
     typedef BarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
+    typedef typename core::behavior::BaseMechanicalState::ForceMask ForceMask;
+
+    ForceMask *maskFrom;
+    ForceMask *maskTo;
+//    core::State<Out>* toModel;
 
 protected:
     virtual ~TopologyBarycentricMapper() {}
@@ -233,8 +244,16 @@ public:
     virtual int setPointInCube(const int /*pointIndex*/, const int /*cubeIndex*/, const SReal* /*baryCoords*/) {return 0;}
     virtual int createPointInCube(const typename Out::Coord& /*p*/, int /*cubeIndex*/, const typename In::VecCoord* /*points*/) {return 0;}
 
-    virtual void setToTopology( topology::PointSetTopologyContainer* toTopology) {this->toTopology = toTopology;};
-    const topology::PointSetTopologyContainer *getToTopology() const {return toTopology;};
+    virtual void setToTopology( topology::PointSetTopologyContainer* toTopology) {this->toTopology = toTopology;}
+    const topology::PointSetTopologyContainer *getToTopology() const {return toTopology;}
+
+
+    virtual void updateForceMask()
+    {
+        // mask is already filled in the mapper's applyJT;
+    }
+
+    virtual void resize( core::State<Out>* toModel ) = 0;
 
 protected:
     TopologyBarycentricMapper(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology = NULL)
@@ -269,6 +288,9 @@ public:
     enum { NOut = Inherit::NOut };
     typedef typename Inherit::MBloc MBloc;
     typedef typename Inherit::MatrixType MatrixType;
+    typedef typename MatrixType::Index MatrixTypeIndex;
+
+    typedef typename Inherit::ForceMask ForceMask;
 
 protected:
     void addMatrixContrib(MatrixType* m, int row, int col, Real value)
@@ -280,18 +302,12 @@ protected:
     sofa::helper::vector< MappingData2D >  map2d;
     sofa::helper::vector< MappingData3D >  map3d;
 
-    helper::ParticleMask *maskFrom;
-    helper::ParticleMask *maskTo;
-
     MatrixType* matrixJ;
     bool updateJ;
 
     BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology,
-            topology::PointSetTopologyContainer* toTopology,
-            helper::ParticleMask *_maskFrom,
-            helper::ParticleMask *_maskTo)
+            topology::PointSetTopologyContainer* toTopology)
         : TopologyBarycentricMapper<In,Out>(fromTopology, toTopology),
-          maskFrom(_maskFrom), maskTo(_maskTo),
           matrixJ(NULL), updateJ(true)
     {
     }
@@ -325,6 +341,7 @@ public:
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
     const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void resize( core::State<Out>* toModel );
 
 	sofa::helper::vector< MappingData3D > const* getMap3d() const { return &map3d; }
 
@@ -404,6 +421,9 @@ public:
     enum { NOut = Inherit::NOut };
     typedef typename Inherit::MBloc MBloc;
     typedef typename Inherit::MatrixType MatrixType;
+    typedef typename MatrixType::Index MatrixTypeIndex;
+
+    typedef typename Inherit::ForceMask ForceMask;
 
 protected:
     void addMatrixContrib(MatrixType* m, int row, int col, Real value)
@@ -413,18 +433,13 @@ protected:
 
     sofa::helper::vector<CubeData> map;
     topology::RegularGridTopology* fromTopology;
-    helper::ParticleMask *maskFrom;
-    helper::ParticleMask *maskTo;
 
     MatrixType* matrixJ;
     bool updateJ;
 
     BarycentricMapperRegularGridTopology(topology::RegularGridTopology* fromTopology,
-            topology::PointSetTopologyContainer* toTopology,
-            helper::ParticleMask *_maskFrom,
-            helper::ParticleMask *_maskTo)
+            topology::PointSetTopologyContainer* toTopology)
         : Inherit(fromTopology, toTopology),fromTopology(fromTopology),
-          maskFrom(_maskFrom), maskTo(_maskTo),
           matrixJ(NULL), updateJ(true)
     {
     }
@@ -439,8 +454,6 @@ public:
 
     bool isEmpty() {return this->map.size() == 0;}
     void setTopology(topology::RegularGridTopology* _topology) {this->fromTopology = _topology;}
-    void setMaskFrom(helper::ParticleMask *m) {maskFrom = m;}
-    void setMaskTo  (helper::ParticleMask *m) {maskTo = m;}
     topology::RegularGridTopology *getTopology() {return dynamic_cast<topology::RegularGridTopology *>(this->fromTopology);}
 
     int addPointInCube(const int cubeIndex, const SReal* baryCoords);
@@ -452,6 +465,7 @@ public:
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
     const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void resize( core::State<Out>* toModel );
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<In, Out> &b )
     {
@@ -487,6 +501,9 @@ public:
     enum { NOut = Inherit::NOut };
     typedef typename Inherit::MBloc MBloc;
     typedef typename Inherit::MatrixType MatrixType;
+    typedef typename MatrixType::Index MatrixTypeIndex;
+
+    typedef typename Inherit::ForceMask ForceMask;
 
 protected:
     void addMatrixContrib(MatrixType* m, int row, int col, Real value)
@@ -496,19 +513,14 @@ protected:
 
     sofa::helper::vector<CubeData> map;
     topology::SparseGridTopology* fromTopology;
-    helper::ParticleMask *maskFrom;
-    helper::ParticleMask *maskTo;
 
     MatrixType* matrixJ;
     bool updateJ;
 
     BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology,
-            topology::PointSetTopologyContainer* _toTopology,
-            helper::ParticleMask *_maskFrom,
-            helper::ParticleMask *_maskTo)
+            topology::PointSetTopologyContainer* _toTopology)
         : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
           fromTopology(fromTopology),
-          maskFrom(_maskFrom), maskTo(_maskTo),
           matrixJ(NULL), updateJ(true)
     {
     }
@@ -531,6 +543,7 @@ public:
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
     const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void resize( core::State<Out>* toModel );
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperSparseGridTopology<In, Out> &b )
     {
@@ -564,26 +577,23 @@ public:
     enum { NOut = Inherit::NOut };
     typedef typename Inherit::MBloc MBloc;
     typedef typename Inherit::MatrixType MatrixType;
+    typedef typename MatrixType::Index MatrixTypeIndex;
+
+    typedef typename Inherit::ForceMask ForceMask;
 
 protected:
     topology::PointData< sofa::helper::vector<MappingData > > map;
     topology::EdgeSetTopologyContainer*			_fromContainer;
     topology::EdgeSetGeometryAlgorithms<In>*	_fromGeomAlgo;
-    helper::ParticleMask *maskFrom;
-    helper::ParticleMask *maskTo;
     MatrixType* matrixJ;
     bool updateJ;
 
     BarycentricMapperEdgeSetTopology(topology::EdgeSetTopologyContainer* fromTopology,
-            topology::PointSetTopologyContainer* _toTopology,
-            helper::ParticleMask *_maskFrom,
-            helper::ParticleMask *_maskTo)
+            topology::PointSetTopologyContainer* _toTopology)
         : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
           map(initData(&map,"map", "mapper data")),
           _fromContainer(fromTopology),
           _fromGeomAlgo(NULL),
-          maskFrom(_maskFrom),
-          maskTo(_maskTo),
           matrixJ(NULL),
           updateJ(true)
     {}
@@ -606,6 +616,7 @@ public:
     virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
 
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void resize( core::State<Out>* toModel );
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperEdgeSetTopology<In, Out> &b )
     {
@@ -655,26 +666,23 @@ public:
     enum { NOut = Inherit::NOut };
     typedef typename Inherit::MBloc MBloc;
     typedef typename Inherit::MatrixType MatrixType;
+    typedef typename MatrixType::Index MatrixTypeIndex;
+
+    typedef typename Inherit::ForceMask ForceMask;
 
 protected:
     topology::PointData< sofa::helper::vector<MappingData> > map;
     topology::TriangleSetTopologyContainer*			_fromContainer;
     topology::TriangleSetGeometryAlgorithms<In>*	_fromGeomAlgo;
-    helper::ParticleMask *maskFrom;
-    helper::ParticleMask *maskTo;
     MatrixType* matrixJ;
     bool updateJ;
 
     BarycentricMapperTriangleSetTopology(topology::TriangleSetTopologyContainer* fromTopology,
-            topology::PointSetTopologyContainer* _toTopology,
-            helper::ParticleMask *_maskFrom,
-            helper::ParticleMask *_maskTo)
+            topology::PointSetTopologyContainer* _toTopology)
         : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
           map(initData(&map,"map", "mapper data")),
           _fromContainer(fromTopology),
           _fromGeomAlgo(NULL),
-          maskFrom(_maskFrom),
-          maskTo(_maskTo),
           matrixJ(NULL),
           updateJ(true)
     {}
@@ -697,6 +705,7 @@ public:
     virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
 
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void resize( core::State<Out>* toModel );
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperTriangleSetTopology<In, Out> &b )
     {
@@ -746,26 +755,23 @@ public:
     enum { NOut = Inherit::NOut };
     typedef typename Inherit::MBloc MBloc;
     typedef typename Inherit::MatrixType MatrixType;
+    typedef typename MatrixType::Index MatrixTypeIndex;
+
+    typedef typename Inherit::ForceMask ForceMask;
 
 protected:
     topology::PointData< sofa::helper::vector<MappingData> >  map;
     topology::QuadSetTopologyContainer*			_fromContainer;
     topology::QuadSetGeometryAlgorithms<In>*	_fromGeomAlgo;
-    helper::ParticleMask *maskFrom;
-    helper::ParticleMask *maskTo;
     MatrixType* matrixJ;
     bool updateJ;
 
     BarycentricMapperQuadSetTopology(topology::QuadSetTopologyContainer* fromTopology,
-            topology::PointSetTopologyContainer* _toTopology,
-            helper::ParticleMask *_maskFrom,
-            helper::ParticleMask *_maskTo)
+            topology::PointSetTopologyContainer* _toTopology)
         : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
           map(initData(&map,"map", "mapper data")),
           _fromContainer(fromTopology),
           _fromGeomAlgo(NULL),
-          maskFrom(_maskFrom),
-          maskTo(_maskTo),
           matrixJ(NULL),
           updateJ(true)
     {}
@@ -788,6 +794,7 @@ public:
     virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
 
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void resize( core::State<Out>* toModel );
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperQuadSetTopology<In, Out> &b )
     {
@@ -837,6 +844,9 @@ public:
     enum { NOut = Inherit::NOut };
     typedef typename Inherit::MBloc MBloc;
     typedef typename Inherit::MatrixType MatrixType;
+    typedef typename MatrixType::Index MatrixTypeIndex;
+
+    typedef typename Inherit::ForceMask ForceMask;
 
 protected:
     topology::PointData< sofa::helper::vector<MappingData > >  map;
@@ -845,21 +855,15 @@ protected:
 
     topology::TetrahedronSetTopologyContainer*			_fromContainer;
     topology::TetrahedronSetGeometryAlgorithms<In>*	_fromGeomAlgo;
-    helper::ParticleMask *maskFrom;
-    helper::ParticleMask *maskTo;
 
     MatrixType* matrixJ;
     bool updateJ;
 
-    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology,
-            helper::ParticleMask *_maskFrom,
-            helper::ParticleMask *_maskTo)
+    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology)
         : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
           map(initData(&map,"map", "mapper data")),
           _fromContainer(fromTopology),
           _fromGeomAlgo(NULL),
-          maskFrom(_maskFrom),
-          maskTo(_maskTo),
           matrixJ(NULL),
           updateJ(true)
     {}
@@ -881,6 +885,7 @@ public:
     virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
 
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void resize( core::State<Out>* toModel );
 
 
 };
@@ -904,6 +909,9 @@ public:
     enum { NOut = Inherit::NOut };
     typedef typename Inherit::MBloc MBloc;
     typedef typename Inherit::MatrixType MatrixType;
+    typedef typename MatrixType::Index MatrixTypeIndex;
+
+    typedef typename Inherit::ForceMask ForceMask;
 
 protected:
     topology::PointData< sofa::helper::vector<MappingData> >  map;
@@ -911,28 +919,21 @@ protected:
     topology::HexahedronSetGeometryAlgorithms<In>*	_fromGeomAlgo;
 
     std::set<int>	_invalidIndex;
-    helper::ParticleMask *maskFrom;
-    helper::ParticleMask *maskTo;
     MatrixType* matrixJ;
     bool updateJ;
 
     BarycentricMapperHexahedronSetTopology()
         : TopologyBarycentricMapper<In,Out>(NULL, NULL),
           map(initData(&map,"map", "mapper data")),
-          _fromContainer(NULL),_fromGeomAlgo(NULL),
-          maskFrom(NULL), maskTo(NULL)
+          _fromContainer(NULL),_fromGeomAlgo(NULL)
     {}
 
     BarycentricMapperHexahedronSetTopology(topology::HexahedronSetTopologyContainer* fromTopology,
-            topology::PointSetTopologyContainer* _toTopology,
-            helper::ParticleMask *_maskFrom,
-            helper::ParticleMask *_maskTo)
+            topology::PointSetTopologyContainer* _toTopology)
         : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
           map(initData(&map,"map", "mapper data")),
           _fromContainer(fromTopology),
           _fromGeomAlgo(NULL),
-          maskFrom(_maskFrom),
-          maskTo(_maskTo),
           matrixJ(NULL),
           updateJ(true)
     {}
@@ -956,6 +957,7 @@ public:
     virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
 
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    virtual void resize( core::State<Out>* toModel );
 
     //-- test mapping partiel
     void applyOnePoint( const unsigned int& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in);
@@ -966,8 +968,6 @@ public:
 
     bool isEmpty() {return this->map.getValue().empty();}
     void setTopology(topology::HexahedronSetTopologyContainer* _topology) {this->fromTopology = _topology; _fromContainer=_topology;}
-    void setMaskFrom(helper::ParticleMask *m) {maskFrom = m;}
-    void setMaskTo(helper::ParticleMask *m) {maskTo = m;}
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperHexahedronSetTopology<In, Out> &b )
     {
         unsigned int size_vec;
@@ -1028,6 +1028,8 @@ public:
     //typedef BarycentricMapperRegularGridTopology<InDataTypes, OutDataTypes> RegularGridMapper;
     //typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexaMapper;
 
+    typedef typename Inherit::ForceMask ForceMask;
+
 protected:
 
     SingleLink<BarycentricMapping<In,Out>,Mapper,BaseLink::FLAG_STRONGLINK> mapper;
@@ -1065,7 +1067,6 @@ public:
     virtual const sofa::defaulttype::BaseMatrix* getJ();
 
 
-#ifdef SOFA_HAVE_EIGEN2
 public:
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
@@ -1076,9 +1077,9 @@ protected:
     eigen_type eigen;
     vector< defaulttype::BaseMatrix* > js;
 
-public:
+    virtual void updateForceMask();
 
-#endif
+public:
 
     void draw(const core::visual::VisualParams* vparams);
 

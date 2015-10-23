@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_H
-#define SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_H
+#ifndef SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAMEMAPPING_H
+#define SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAMEMAPPING_H
 #include "config.h"
 
 #include <sofa/core/Multi2Mapping.h>
@@ -109,9 +109,6 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
     Data< Real > m_rootAngularForceScaleFactor;
     Data< Real > m_rootLinearForceScaleFactor;
 
-    helper::ParticleMask* maskFrom;
-    helper::ParticleMask* maskTo;
-
     int addPoint ( const OutCoord& c );
     int addPoint ( const OutCoord& c, int indexFrom );
 
@@ -124,6 +121,10 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
     /// This is the case for mapping keeping a one-to-one correspondance between
     /// input and output DOFs (mostly identity or data-conversion mappings).
     virtual bool sameTopology() const { return true; }
+
+    using Inherit::apply;
+    using Inherit::applyJ;
+    using Inherit::applyJT;
 
     //Apply
     void apply( OutVecCoord& out, const InVecCoord& in, const InRootVecCoord* inroot  );
@@ -260,7 +261,7 @@ protected:
     InRootCoord rootX;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_CPP)  //// ATTENTION PB COMPIL WIN3Z
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAMEMAPPING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_MAPPING_API DeformableOnRigidFrameMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3dTypes >;
 #endif

@@ -24,7 +24,6 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_EigenBaseSparseMatrix_H
 #define SOFA_COMPONENT_LINEARSOLVER_EigenBaseSparseMatrix_H
-#include "config.h"
 
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/Mat.h>
@@ -371,7 +370,7 @@ public:
         }
 
 
-        virtual InteractionMatrixRef getMatrix(const core::behavior::BaseMechanicalState* mstate1, const core::behavior::BaseMechanicalState* mstate2) const
+        virtual InteractionMatrixRef getMatrix(const core::behavior::BaseMechanicalState* /*mstate1*/, const core::behavior::BaseMechanicalState* /*mstate2*/) const
         {
             assert(false);
             InteractionMatrixRef ref;

@@ -65,6 +65,12 @@ public:
 protected:
     BaseForceField();
     virtual ~BaseForceField() {}
+	
+private:
+	BaseForceField(const BaseForceField& n) ;
+	BaseForceField& operator=(const BaseForceField& n) ;	
+
+	
 public:
     /// @name Vector operations
     /// @{
@@ -181,12 +187,6 @@ public:
 
     /// @}
 
-    /// True if the forcefield is applied only on a subset of particles.
-    ///
-    /// That way, we can optimize the time spent to transfer forces through the mechanical mappings.
-    /// Deactivated by default. The forcefields using only a subset of particles should activate the mask,
-    /// and during addForce(), insert the indices of the particles modified.
-    virtual bool useMask() const { return false; }
 
 
     /** @name API used in the Compliant solver to perform global matrix assembly
@@ -215,6 +215,14 @@ public:
     Data< SReal > rayleighStiffness;
 
     /// @}
+
+
+    /// Useful when the forcefield is applied only on a subset of dofs.
+    /// It is automatically called by addForce.
+    ///
+    /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
+    /// Every Dofs are inserted by default. The forcefields using only a subset of dofs should only insert these dofs in the mask.
+    virtual void updateForceMask() = 0;
 
 };
 

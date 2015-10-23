@@ -27,7 +27,7 @@
 		
 	    <ImageSampler template="ImageUC" name="sampler" src="@../image" method="1" param="1" fixedPosition="2.4 0.45 0 1.5 2.5 0" /> 
             <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-            <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" src="@merged" showObjectScale="1"/>
+            <MechanicalObject template="Affine" name="parent"  showObject="true" src="@merged" showObjectScale="1"/>
 	    <FixedConstraint indices="0" />
 
     <VoronoiShapeFunction name="SF" template="ShapeFunctiond,ImageD" image="@../youngM.outputImage" transform="@../extruder.outputTransform" nbRef="2" method="0" bias="true" printLog="false" />
@@ -48,7 +48,7 @@
 	   <!--  <ImageViewer template="ImageD" name="viewer" image="@sampler.error" transform="@sampler.transform" plane="-1 -1 4"/>    -->
 	   <!--  <ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="-1 -1 4"/>  -->
  
-	<MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
+	<MechanicalObject template="F332" name="F"/>
     	<LinearMapping template="Affine,F332"  />
 
 	<Node 	name="E"   >
@@ -65,7 +65,7 @@
 		        <VisualStyle displayFlags="hideBehaviorModels" />
 			<MeshObjLoader name="MeshLoader" filename="../data/mesh/steak.obj"/>
 			<Mesh src="@MeshLoader" /> 
-                        <MechanicalObject  name="PointSet" useMask="0" />
+                        <MechanicalObject  name="PointSet"  />
 			<LinearMapping template="Affine,Vec3d"/>
 		</Node>
 

@@ -327,7 +327,9 @@ protected:
     JointSpringForceField();
 
     virtual ~JointSpringForceField();
+
 public:
+
     core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
     core::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
 
@@ -375,8 +377,6 @@ public:
         springs.endEdit();
     }
 
-    bool useMask() const {return true;}
-
     /// the list of the springs
     Data<sofa::helper::vector<Spring> > springs;
     sofa::core::objectmodel::DataFileName f_outfilename;
@@ -390,6 +390,7 @@ public:
     Data<bool> showExtraTorsion;
     Data<Real> showFactorSize;
 
+    virtual void updateForceMask();
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP)

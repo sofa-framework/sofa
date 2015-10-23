@@ -45,6 +45,8 @@ ValuesFromIndices<T>::ValuesFromIndices()
     , f_out( initData (&f_out, "out", "Output values corresponding to the indices"))
     , f_outStr( initData (&f_outStr, "outStr", "Output values corresponding to the indices, converted as a string"))
 {
+    addAlias(&f_in, "input");
+    addAlias(&f_out, "output");
 }
 
 template <class T>

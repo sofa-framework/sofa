@@ -25,29 +25,19 @@
 #ifndef SOFA_GUI_QT_QSOFALISTVIEW_H
 #define SOFA_GUI_QT_QSOFALISTVIEW_H
 
-#ifdef SOFA_QT4
+
 #include <QWidget>
-#include <Q3ListView>
-#include <Q3ListViewItem>
-#include <Q3Header>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+#include <QHeaderView>
 #include <QPushButton>
-#else
-#include <qwidget.h>
-#include <qlistview.h>
-#include <qheader.h>
-#include <qpushbutton.h>
-#endif
+
 
 #include <sofa/gui/qt/SofaGUIQt.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
-#ifndef SOFA_QT4
-typedef QListView Q3ListView;
-typedef QListViewItem Q3ListViewItem;
-
-#endif
 #include <map>
 
 namespace sofa
@@ -87,25 +77,25 @@ enum SofaListViewAttribute
     MODELER
 };
 
-class SOFA_SOFAGUIQT_API QSofaListView : public Q3ListView
+class SOFA_SOFAGUIQT_API QSofaListView : public QTreeWidget
 {
     Q_OBJECT
 public:
     QSofaListView(const SofaListViewAttribute& attribute,
             QWidget* parent=0,
             const char* name=0,
-            Qt::WFlags f = 0 );
+            Qt::WindowFlags f = 0 );
     ~QSofaListView();
 
-    GraphListenerQListView* getListener() const { return  graphListener_; };
+    GraphListenerQListView* getListener() const { return  graphListener_; }
 
 	void setPropertyWidget(QDisplayPropertyWidget* propertyWid) {propertyWidget = propertyWid;}
-	void addInPropertyWidget(Q3ListViewItem *item, bool clear);
+    void addInPropertyWidget(QTreeWidgetItem *item, bool clear);
 
     void Clear(sofa::simulation::Node* rootNode);
     void Freeze();
     void Unfreeze();
-    SofaListViewAttribute getAttribute() const { return attribute_; };
+    SofaListViewAttribute getAttribute() const { return attribute_; }
 
 	void contextMenuEvent(QContextMenuEvent *event);
 public Q_SLOTS:
@@ -143,26 +133,24 @@ protected Q_SLOTS:
 	void PutNodeToSleep();
     void WakeUpNode();
     void loadObject ( std::string path, double dx, double dy, double dz,  double rx, double ry, double rz,double scale );
-#ifdef SOFA_QT4
-    void updateMatchingObjectmodel(Q3ListViewItem* item);
-    void RunSofaRightClicked( Q3ListViewItem *item, const QPoint& point, int index );
-    void RunSofaDoubleClicked( Q3ListViewItem*);
-#else
-    void updateMatchingObjectmodel(Q3ListViewItem* item);
-    void RunSofaRightClicked( Q3ListViewItem *item, const QPoint& point, int index );
-    void RunSofaDoubleClicked( Q3ListViewItem*);
-#endif
+
+    void updateMatchingObjectmodel(QTreeWidgetItem* item, int);
+    void updateMatchingObjectmodel(QTreeWidgetItem* item);
+
+    void RunSofaRightClicked(const QPoint& point);
+    void RunSofaDoubleClicked( QTreeWidgetItem* item, int index);
+
     void nodeNameModification( simulation::Node*);
     void focusObject();
     void focusNode();
 protected:
-    void collapseNode(Q3ListViewItem* item);
-    void expandNode(Q3ListViewItem* item);
+    void collapseNode(QTreeWidgetItem* item);
+    void expandNode(QTreeWidgetItem* item);
     void transformObject ( sofa::simulation::Node *node, double dx, double dy, double dz,  double rx, double ry, double rz, double scale );
     bool isNodeErasable( core::objectmodel::BaseNode* node);
-    void updateMatchingObjectmodel();
+
     std::list<core::objectmodel::BaseNode*> collectNodesToChange(core::objectmodel::BaseNode* node);
-    std::map< void*, Q3ListViewItem* > map_modifyDialogOpened;
+    std::map< void*, QTreeWidgetItem* > map_modifyDialogOpened;
     std::map< void*, QDialog* > map_modifyObjectWindow;
     GraphListenerQListView* graphListener_;
     std::vector< std::string > list_object;

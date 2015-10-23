@@ -1,7 +1,7 @@
 #ifndef COMPLIANT_NUMSOLVER_KKTSOLVER_H
 #define COMPLIANT_NUMSOLVER_KKTSOLVER_H
 
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 #include "../assembly/AssembledSystem.h"
 
 #include <sofa/core/behavior/LinearSolver.h>

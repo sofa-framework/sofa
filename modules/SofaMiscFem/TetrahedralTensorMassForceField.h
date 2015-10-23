@@ -30,7 +30,6 @@
 #pragma once
 #endif
 
-#include <sofa/SofaMisc.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
@@ -172,6 +171,7 @@ public:
 
         void applyTetrahedronDestruction(const sofa::helper::vector<unsigned int> &edgeRemoved);
 
+        using topology::TopologyDataHandler<topology::Edge,edgeRestInfoVector >::ApplyTopologyChange;
         /// Callback to add tetrahedron elements.
         void ApplyTopologyChange(const core::topology::TetrahedraAdded* /*event*/);
         /// Callback to remove tetrahedron elements.

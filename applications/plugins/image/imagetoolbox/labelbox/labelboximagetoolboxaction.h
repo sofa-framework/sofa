@@ -3,14 +3,14 @@
 #ifndef LABELBOXIMAGETOOLBOXACTION_H
 #define LABELBOXIMAGETOOLBOXACTION_H
 
-#include <QtGui>
+#include <QPushButton>
 #include <QGraphicsLineItem>
 
 
 #include "../labelimagetoolboxaction.h"
 //#include "labelboximagetoolbox.h"
 
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 
 namespace sofa
 {

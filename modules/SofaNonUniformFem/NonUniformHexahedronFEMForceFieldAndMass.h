@@ -22,11 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELD_H
+#ifndef SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDANDMASS_H
+#define SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDANDMASS_H
 #include "config.h"
 
-#include <sofa/SofaAdvanced.h>
+
 #include <SofaSimpleFem/HexahedronFEMForceFieldAndMass.h>
 
 namespace sofa
@@ -139,7 +139,7 @@ using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 #endif
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELD_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDANDMASS_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_NON_UNIFORM_FEM_API NonUniformHexahedronFEMForceFieldAndMass<Vec3dTypes>;
@@ -148,7 +148,7 @@ extern template class SOFA_NON_UNIFORM_FEM_API NonUniformHexahedronFEMForceField
 extern template class SOFA_NON_UNIFORM_FEM_API NonUniformHexahedronFEMForceFieldAndMass<Vec3fTypes>;
 #endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELD_CPP)
+#endif
 
 
 } // namespace forcefield
@@ -157,4 +157,4 @@ extern template class SOFA_NON_UNIFORM_FEM_API NonUniformHexahedronFEMForceField
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELD_H
+#endif

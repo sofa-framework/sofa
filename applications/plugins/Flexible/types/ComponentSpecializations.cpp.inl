@@ -1,6 +1,6 @@
 
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 
 
 #include "ComponentSpecializationsDefines.h"
@@ -42,6 +42,7 @@
 #include <sofa/core/behavior/ConstraintCorrection.inl>
 #include <SofaDeformable/RestShapeSpringsForceField.inl>
 #include <SofaBoundaryCondition/ConstantForceField.inl>
+#include <SofaBoundaryCondition/UniformVelocityDampingForceField.inl>
 
 
 #ifdef SOFA_HAVE_IMAGE
@@ -82,11 +83,13 @@ namespace behavior
     template class SOFA_Flexible_API ForceField< defaulttype::TYPEABSTRACTNAME3dTypes >;
     template class SOFA_Flexible_API Mass< defaulttype::TYPEABSTRACTNAME3dTypes >;
     template class SOFA_Flexible_API ConstraintCorrection< defaulttype::TYPEABSTRACTNAME3dTypes >;
+    template class SOFA_Flexible_API ProjectiveConstraintSet< defaulttype::TYPEABSTRACTNAME3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API ForceField< defaulttype::TYPEABSTRACTNAME3fTypes >;
     template class SOFA_Flexible_API Mass< defaulttype::TYPEABSTRACTNAME3fTypes >;
     template class SOFA_Flexible_API ConstraintCorrection< defaulttype::TYPEABSTRACTNAME3fTypes >;
+    template class SOFA_Flexible_API ProjectiveConstraintSet< defaulttype::TYPEABSTRACTNAME3fTypes >;
 #endif
 
 
@@ -435,60 +438,63 @@ template class SOFA_Flexible_API ProjectToPointConstraint<TYPEABSTRACTNAME3dType
 template class SOFA_Flexible_API ProjectToPointConstraint<TYPEABSTRACTNAME3fTypes>;
 #endif
 
-// ==========================================================================
-// ProjectToLineConstraint
-SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ProjectToLineConstraint) )
-int EVALUATOR(TYPEABSTRACTNAME,ProjectToLineConstraintClass) = core::RegisterObject ( "Project particles to a line" )
-#ifndef SOFA_FLOAT
-.add< ProjectToLineConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-.add< ProjectToLineConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
-#endif
-;
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API ProjectToLineConstraint<TYPEABSTRACTNAME3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API ProjectToLineConstraint<TYPEABSTRACTNAME3fTypes>;
-#endif
 
-// ==========================================================================
-// ProjectToPlaneConstraint
-SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ProjectToPlaneConstraint) )
-int EVALUATOR(TYPEABSTRACTNAME,ProjectToPlaneConstraintClass) = core::RegisterObject ( "Project particles to a plane" )
-#ifndef SOFA_FLOAT
-.add< ProjectToPlaneConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-.add< ProjectToPlaneConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
-#endif
-;
+// TODO: jacobians need to be adjusted to complex types for following projective constaints
 
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API ProjectToPlaneConstraint<TYPEABSTRACTNAME3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API ProjectToPlaneConstraint<TYPEABSTRACTNAME3fTypes>;
-#endif
+//// ==========================================================================
+//// ProjectToLineConstraint
+//SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ProjectToLineConstraint) )
+//int EVALUATOR(TYPEABSTRACTNAME,ProjectToLineConstraintClass) = core::RegisterObject ( "Project particles to a line" )
+//#ifndef SOFA_FLOAT
+//.add< ProjectToLineConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
+//#endif
+//#ifndef SOFA_DOUBLE
+//.add< ProjectToLineConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
+//#endif
+//;
+//#ifndef SOFA_FLOAT
+//template class SOFA_Flexible_API ProjectToLineConstraint<TYPEABSTRACTNAME3dTypes>;
+//#endif
+//#ifndef SOFA_DOUBLE
+//template class SOFA_Flexible_API ProjectToLineConstraint<TYPEABSTRACTNAME3fTypes>;
+//#endif
 
-// ==========================================================================
-// ProjectDirectionConstraint
-SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ProjectDirectionConstraint) )
-int EVALUATOR(TYPEABSTRACTNAME,ProjectDirectionConstraintClass) = core::RegisterObject ( "Project particles to a line" )
-#ifndef SOFA_FLOAT
-.add< ProjectDirectionConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-.add< ProjectDirectionConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
-#endif
-    ;
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API ProjectDirectionConstraint<TYPEABSTRACTNAME3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API ProjectDirectionConstraint<TYPEABSTRACTNAME3fTypes>;
-#endif
+//// ==========================================================================
+//// ProjectToPlaneConstraint
+//SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ProjectToPlaneConstraint) )
+//int EVALUATOR(TYPEABSTRACTNAME,ProjectToPlaneConstraintClass) = core::RegisterObject ( "Project particles to a plane" )
+//#ifndef SOFA_FLOAT
+//.add< ProjectToPlaneConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
+//#endif
+//#ifndef SOFA_DOUBLE
+//.add< ProjectToPlaneConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
+//#endif
+//;
+
+//#ifndef SOFA_FLOAT
+//template class SOFA_Flexible_API ProjectToPlaneConstraint<TYPEABSTRACTNAME3dTypes>;
+//#endif
+//#ifndef SOFA_DOUBLE
+//template class SOFA_Flexible_API ProjectToPlaneConstraint<TYPEABSTRACTNAME3fTypes>;
+//#endif
+
+//// ==========================================================================
+//// ProjectDirectionConstraint
+//SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ProjectDirectionConstraint) )
+//int EVALUATOR(TYPEABSTRACTNAME,ProjectDirectionConstraintClass) = core::RegisterObject ( "Project particles to a line" )
+//#ifndef SOFA_FLOAT
+//.add< ProjectDirectionConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
+//#endif
+//#ifndef SOFA_DOUBLE
+//.add< ProjectDirectionConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
+//#endif
+//    ;
+//#ifndef SOFA_FLOAT
+//template class SOFA_Flexible_API ProjectDirectionConstraint<TYPEABSTRACTNAME3dTypes>;
+//#endif
+//#ifndef SOFA_DOUBLE
+//template class SOFA_Flexible_API ProjectDirectionConstraint<TYPEABSTRACTNAME3fTypes>;
+//#endif
 
 
 } // namespace projectiveconstraintset
@@ -528,7 +534,7 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::vi
 
         defaulttype::Mat<4,4, GLfloat> modelviewM;
 
-        for ( int i=0 ; i< vsize ; i++ )
+        for ( size_t i=0 ; i< vsize ; i++ )
         {
             std::ostringstream oss;
             oss << i;
@@ -571,7 +577,7 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::vi
         const float& scale = showObjectScale.getValue();
         const defaulttype::TYPEABSTRACTNAME3dTypes::VecCoord& x = ( read(core::ConstVecCoordId::position())->getValue() );
         
-        for (int i = 0; i < this->getSize(); ++i)
+        for (size_t i = 0; i < this->getSize(); ++i)
         {
             vparams->drawTool()->pushMatrix();
             float glTransform[16];
@@ -617,7 +623,7 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3fTypes>::draw(const core::vi
 
         defaulttype::Mat<4,4, GLfloat> modelviewM;
 
-        for ( int i=0 ; i< vsize ; i++ )
+        for ( size_t i=0 ; i< vsize ; i++ )
         {
             std::ostringstream oss;
             oss << i;
@@ -660,7 +666,7 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3fTypes>::draw(const core::vi
         const float& scale = showObjectScale.getValue();
         const defaulttype::TYPEABSTRACTNAME3fTypes::VecCoord& x = read(core::ConstVecCoordId::position())->getValue();
 
-        for (int i = 0; i < this->getSize(); ++i)
+        for (size_t i = 0; i < this->getSize(); ++i)
         {
             vparams->drawTool()->pushMatrix();
             float glTransform[16];
@@ -1028,17 +1034,20 @@ int EVALUATOR(TYPEABSTRACTNAME,UncoupledConstraintCorrectionClass) = core::Regis
 namespace mapping
 {
 
+
 SOFA_DECL_CLASS(EVALUATOR(TYPEABSTRACTNAME,IdentityMapping))
 
 // Register in the Factory
 int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Special case of mapping where the child points are the same as the parent points")
 #ifndef SOFA_FLOAT
 		.add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes > >()
-		.add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3dTypes > >()
+        .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3dTypes > >()
+        .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::Vec3fTypes > >()
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::ExtVec3fTypes > >()
+        .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACTNAME3fTypes > >()
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
@@ -1046,6 +1055,8 @@ int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Spe
 		.add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::ExtVec3dTypes > >()
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3fTypes > >()
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3fTypes > >()
+        .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACTNAME3dTypes > >()
+        .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3fTypes > >()
 #endif
 #endif
         ;
@@ -1055,11 +1066,13 @@ int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Spe
 
 #ifndef SOFA_FLOAT
 	template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes >;
-	template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3dTypes >;
+    template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3dTypes >;
+    template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::Vec3fTypes >;
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::ExtVec3fTypes >;
+    template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACTNAME3fTypes >;
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
@@ -1067,6 +1080,8 @@ int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Spe
 	template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::ExtVec3dTypes >;
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3fTypes >;
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3fTypes >;
+    template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACTNAME3dTypes >;
+    template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3fTypes >;
 #endif
 #endif
 
@@ -1165,6 +1180,25 @@ namespace forcefield
     #endif
     #ifndef SOFA_DOUBLE
         template class SOFA_Flexible_API ConstantForceField< defaulttype::TYPEABSTRACTNAME3fTypes >;
+    #endif
+
+    SOFA_DECL_CLASS(EVALUATOR(TYPEABSTRACTNAME,UniformVelocityDampingForceField))
+
+    // Register in the Factory
+    int EVALUATOR(TYPEABSTRACTNAME,UniformVelocityDampingForceFieldClass) = core::RegisterObject("Uniform velocity damping")
+    #ifndef SOFA_FLOAT
+            .add< UniformVelocityDampingForceField< defaulttype::TYPEABSTRACTNAME3dTypes > >()
+    #endif
+    #ifndef SOFA_DOUBLE
+            .add< UniformVelocityDampingForceField< defaulttype::TYPEABSTRACTNAME3fTypes > >()
+    #endif
+    ;
+
+    #ifndef SOFA_FLOAT
+    template class SOFA_Flexible_API UniformVelocityDampingForceField<defaulttype::TYPEABSTRACTNAME3dTypes>;
+    #endif
+    #ifndef SOFA_DOUBLE
+    template class SOFA_Flexible_API UniformVelocityDampingForceField<defaulttype::TYPEABSTRACTNAME3fTypes>;
     #endif
 
 } // namespace forcefield

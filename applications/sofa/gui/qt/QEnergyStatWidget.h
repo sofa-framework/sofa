@@ -46,33 +46,11 @@ class QEnergyStatWidget : public QGraphStatWidget
 
 public:
 
-    QEnergyStatWidget( QWidget* parent, simulation::Node* node ) : QGraphStatWidget( parent, node, "Energy", 3 )
-    {
-        setCurve( 0, "Kinetic", Qt::red );
-        setCurve( 1, "Potential", Qt::green );
-        setCurve( 2, "Mechanical", Qt::blue );
+    QEnergyStatWidget( QWidget* parent, simulation::Node* node );
 
-        m_energyVisitor   = new sofa::simulation::MechanicalComputeEnergyVisitor(core::MechanicalParams::defaultInstance());
-    }
+    ~QEnergyStatWidget();
 
-    ~QEnergyStatWidget()
-    {
-        delete m_energyVisitor;
-    }
-
-    void step()
-    {
-        //Add Time
-        QGraphStatWidget::step();
-
-        m_energyVisitor->execute( _node->getContext() );
-
-        _YHistory[0].push_back( m_energyVisitor->getKineticEnergy() );
-        _YHistory[1].push_back( m_energyVisitor->getPotentialEnergy() );
-
-        //Add Mechanical Energy
-        _YHistory[2].push_back( _YHistory[0].back() + _YHistory[1].back() );
-    }
+    void step();
 
 };
 

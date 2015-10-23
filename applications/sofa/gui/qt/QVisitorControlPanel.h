@@ -27,14 +27,9 @@
 
 #include <sofa/simulation/common/Node.h>
 
-#ifdef SOFA_QT4
 #include <QWidget>
-#else
-#include <qwidget.h>
-#endif
 
 #include "WDoubleLineEdit.h"
-
 
 namespace sofa
 {

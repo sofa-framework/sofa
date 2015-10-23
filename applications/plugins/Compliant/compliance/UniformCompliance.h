@@ -1,6 +1,6 @@
 #ifndef SOFA_COMPONENT_COMPLIANCE_UniformCompliance_H
 #define SOFA_COMPONENT_COMPLIANCE_UniformCompliance_H
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/defaulttype/Mat.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
@@ -37,6 +37,9 @@ public:
 
     Data< Real > damping;
 
+    Data< bool > resizable;
+
+
     virtual void init();
 
     /// Compute the compliance matrix
@@ -69,6 +72,7 @@ protected:
     block_matrix_type matB; /// damping matrix (Negative S.D.)
 
     static const Real s_complianceEpsilon; /// threshold for which stiffness can be computed by inverting compliance
+
 };
 
 }

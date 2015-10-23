@@ -22,7 +22,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifdef SOFA_HAVE_EIGEN2
 #ifndef SOFA_DEFAULTTYPE_MatEigen_H
 #define SOFA_DEFAULTTYPE_MatEigen_H
 
@@ -88,5 +87,4 @@ Eigen::Matrix<Real, NumRows, 1>  eigenVec( const defaulttype::Vec<NumRows, Real>
 
 // iostream
 
-#endif
 #endif

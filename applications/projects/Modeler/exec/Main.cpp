@@ -40,7 +40,7 @@
 #include <SofaComponentAdvanced/initComponentAdvanced.h>
 #include <SofaComponentMisc/initComponentMisc.h>
 
-#include <QtGui/QApplication>
+#include <QApplication>
 
 #include <iostream>
 #include <fstream>
@@ -98,7 +98,7 @@ int main(int argc, char** argv)
 	Q_INIT_RESOURCE(icons);
     sofa::gui::qt::SofaModeler* sofaModeler = new sofa::gui::qt::SofaModeler();
 
-    application->setMainWidget(sofaModeler);
+    //application->setMainWidget(sofaModeler);
     sofaModeler->show();
 
     std::string binaryName=argv[0];
@@ -118,5 +118,7 @@ int main(int argc, char** argv)
     }
     if (argc <= 1 ) sofaModeler->newTab();
 
-    return application->exec();
+    int appReturnCode = application->exec();
+    sofa::simulation::tree::cleanup();
+    return appReturnCode;
 }

@@ -30,9 +30,8 @@
 #include <qvalidator.h>
 #include <qlineedit.h>
 
-#ifdef SOFA_QT4
 #include <QKeyEvent>
-#endif
+
 /* -------------------------------------------------------- */
 
 

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_CorotationalStrainMAPPING_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "CorotationalStrainMapping.h"
 #include <sofa/core/ObjectFactory.h>
 

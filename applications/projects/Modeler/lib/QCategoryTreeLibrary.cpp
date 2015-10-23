@@ -36,8 +36,9 @@ namespace qt
 {
 
 
-QCategoryTreeLibrary::QCategoryTreeLibrary( QWidget *parent, const std::string &categoryName, unsigned int numComponent): QWidget(parent, categoryName.c_str()), CategoryLibrary(categoryName)
+QCategoryTreeLibrary::QCategoryTreeLibrary( QWidget *parent, const std::string &categoryName, unsigned int numComponent): QWidget(parent), CategoryLibrary(categoryName)
 {
+    setObjectName(QString(categoryName.c_str()));
     tree = (QTreeWidget*) parent;
 
     categoryTree = new QTreeWidgetItem( tree );

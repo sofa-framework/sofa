@@ -3,7 +3,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include "zonegeneratorimagetoolbox.h"
-#include "ImageTypes.h"
+#include <image/ImageTypes.h>
 
 
 namespace sofa

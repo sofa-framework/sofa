@@ -25,7 +25,7 @@
 #ifndef SOFA_GUI_VIEWER_REALGUI_H
 #define SOFA_GUI_VIEWER_REALGUI_H
 
-#include <sofa/SofaGui.h>
+#include <SofaGui/config.h>
 #include <ui_GUI.h>
 #include <sofa/gui/qt/SofaGUIQt.h>
 #include "GraphListenerQListView.h"
@@ -38,27 +38,17 @@
 #include <set>
 #include <string>
 
-#ifdef SOFA_QT4
-#   include <Q3ListViewItem>
-typedef Q3ListViewItem QListViewItem;
-#   include <QStackedWidget>
-typedef QStackedWidget QWidgetStack;
-#   include <QUrl>
-#else
-#   include <qurl.h>
-#   include <qwidgetstack.h>
-#   include <qlistview.h>
-#endif
+#include <QListView>
+#include <QStackedWidget>
+#include <QUrl>
+#include <QTimer>
+#include <QTextBrowser>
+#include <QDockWidget>
 
 #include <time.h>
 
 // Recorder GUI is not used (broken in most scenes)
 #define SOFA_GUI_QT_NO_RECORDER
-
-#ifdef SOFA_QT4
-class QTimer;
-class QTextBrowser;
-#endif
 
 class WDoubleLineEdit;
 class QDragEnterEvent;
@@ -108,7 +98,7 @@ class SofaViewer;
 }
 
 
-class SOFA_SOFAGUIQT_API RealGUI : public Q3MainWindow, public Ui::GUI, public sofa::gui::BaseGUI
+class SOFA_SOFAGUIQT_API RealGUI : public QMainWindow, public Ui::GUI, public sofa::gui::BaseGUI
 {
     Q_OBJECT
 
@@ -137,18 +127,7 @@ public:
 
 
 //-----------------OPTIONS DEFINITIONS------------------------{
-public:
-#ifndef SOFA_QT4
-    void setWindowFilePath(const QString &filePath)
-    {
-        filePath_=filePath;
-    }
-
-    QString windowFilePath() const
-    {
-        QString filePath = filePath_; return filePath;
-    }
-#endif
+//public:
 
 #ifdef SOFA_GUI_INTERACTION
     QPushButton *interactionButton;
@@ -161,12 +140,7 @@ public:
     virtual void showFPS(double fps);
 
 public slots:
-#ifdef SOFA_QT4
     virtual void changeHtmlPage( const QUrl&);
-#else
-    virtual void changeHtmlPage( const QString&);
-#endif
-
 
 protected:
 #ifdef SOFA_GUI_INTERACTION
@@ -187,9 +161,6 @@ protected:
 
 
 private:
-#ifndef SOFA_QT4
-    QString filePath_;
-#endif
 
 #ifdef SOFA_GUI_INTERACTION
     bool m_interactionActived;
@@ -245,15 +216,12 @@ protected:
     WDoubleLineEdit *background[3];
     QLineEdit *backgroundImage;
     /// Stack viewer widget
-    QWidgetStack* left_stack;
+    QStackedWidget* left_stack;
     SofaPluginManager* pluginManager_dialog;
     QMenuFilesRecentlyOpened recentlyOpenedFilesManager;
 
-#ifdef SOFA_QT4
-    Q3DockWindow* m_dockTools;
-#else
-    QDockWindow* m_dockTools;
-#endif
+    QDockWidget* m_dockTools;
+
     std::string simulation_name;
     std::string gnuplot_directory;
     std::string pathDumpVisitor;
@@ -293,7 +261,8 @@ public:
 //    virtual void saveXML();
 
     virtual void setViewerResolution(int w, int h);
-    virtual void setFullScreen(bool enable = true);
+    virtual void setFullScreen() { setFullScreen(true); }
+    virtual void setFullScreen(bool enable);
     virtual void setBackgroundColor(const defaulttype::Vector3& c);
     virtual void setBackgroundImage(const std::string& i);
     virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf);
@@ -390,7 +359,7 @@ public slots:
 	virtual void setSleepingNode(sofa::simulation::Node*, bool);
     virtual void fileSaveAs(sofa::simulation::Node *node);
     virtual void LockAnimation(bool);
-    virtual void fileRecentlyOpened(int id);
+    virtual void fileRecentlyOpened(QAction * action);
     virtual void playpauseGUI(bool value);
     virtual void interactionGUI(bool value);
     virtual void step();
@@ -419,7 +388,7 @@ public slots:
     virtual void displayComputationTime(bool);
     virtual void setExportGnuplot(bool);
     virtual void setExportVisitor(bool);
-    virtual void currentTabChanged(QWidget*);
+    virtual void currentTabChanged(int index);
 
     virtual void fileNew();
     virtual void fileOpen();
@@ -437,6 +406,7 @@ public slots:
     virtual void showPluginManager();
     virtual void showMouseManager();
     virtual void showVideoRecorderManager();
+    virtual void toolsDockMoved();
 
 
 protected slots:
@@ -448,8 +418,7 @@ protected slots:
     /// TODO: find a better way to propagate the argument when we construct the viewer
     virtual void updateViewerList();
 
-	void toolsDockMoved(Q3DockWindow::Place p);
-	void propertyDockMoved(Q3DockWindow::Place p);
+    void propertyDockMoved(Qt::DockWidgetArea a);
 
     void appendToDataLogFile(QString);
 
@@ -479,28 +448,26 @@ struct ActivationFunctor
         if (active)
         {
             //Find the corresponding node in the Qt Graph
-            QListViewItem *item=listener->items[n];
+            QTreeWidgetItem *item=listener->items[n];
             //Remove the text
             QString desact_text = item->text(0);
-            desact_text.remove(QString("Deactivated "), true);
+            desact_text.remove(QString("Deactivated "), Qt::CaseInsensitive);
             item->setText(0,desact_text);
             //Remove the icon
             QPixmap *p = getPixmap(n);
-            item->setPixmap(0,*p);
-            item->setOpen(true);
+            item->setIcon(0, QIcon(*p));
+//            item->setOpen(true);
+            item->setExpanded(true);
         }
         else
         {
             //Find the corresponding node in the Qt Graph
-            QListViewItem *item=listener->items[n];
+            QTreeWidgetItem *item=listener->items[n];
             //Remove the text
             item->setText(0, QString("Deactivated ") + item->text(0));
-#ifdef SOFA_QT4
-            item->setPixmap(0,QPixmap::fromImage(QImage(pixmap_filename.c_str())));
-#else
-            item->setPixmap(0,QPixmap(QImage(pixmap_filename.c_str())));
-#endif
-            item->setOpen(false);
+            item->setIcon(0, QIcon(QPixmap::fromImage(QImage(pixmap_filename.c_str()))));
+
+            item->setExpanded(false);
         }
     }
 protected:

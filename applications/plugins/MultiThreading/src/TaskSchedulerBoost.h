@@ -25,7 +25,7 @@
 #ifndef TaskSchedulerBoost_h__
 #define TaskSchedulerBoost_h__
 
-#include "initMultiThreading.h"
+#include <MultiThreading/config.h>
 
 #include "Tasks.h"
 
@@ -253,8 +253,8 @@ namespace sofa
 			bool mIsInitialized;
 			// The following members may be accessed by _multiple_ threads at the same time:
 			volatile unsigned mWorkerCount;	
-			volatile unsigned mTargetWorkerCount;	
-			volatile unsigned mActiveWorkerCount;
+//			volatile unsigned mTargetWorkerCount;
+//			volatile unsigned mActiveWorkerCount;
 
 
 			bool						mWorkersIdle;

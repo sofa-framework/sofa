@@ -86,7 +86,7 @@ OglModel::OglModel()
     , tex(NULL)
     , vbo(0), iboEdges(0), iboTriangles(0), iboQuads(0)
     , canUseVBO(false), VBOGenDone(false), initDone(false), useEdges(false), useTriangles(false), useQuads(false), canUsePatches(false)
-    , oldEdgesSize(0), oldTrianglesSize(0), oldQuadsSize(0)
+    , oldVerticesSize(0), oldNormalsSize(0), oldTexCoordsSize(0), oldTangentsSize(0), oldBitangentsSize(0), oldEdgesSize(0), oldTrianglesSize(0), oldQuadsSize(0)
 {
 
     textures.clear();
@@ -152,6 +152,8 @@ OglModel::~OglModel()
 
 void OglModel::drawGroup(int ig, bool transparent)
 {
+    glEnable(GL_NORMALIZE);
+
     const ResizableExtVector<Edge>& edges = this->getEdges();
     const ResizableExtVector<Triangle>& triangles = this->getTriangles();
     const ResizableExtVector<Quad>& quads = this->getQuads();
@@ -436,7 +438,6 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 {
 //    m_vtexcoords.updateIfDirty();
 //    serr<<" OglModel::internalDraw()"<<sendl;
-
     if (!vparams->displayFlags().getShowVisualModels()) return;
 
     if (vparams->displayFlags().getShowWireFrame())
@@ -854,6 +855,9 @@ void OglModel::initVisual()
 #endif
 
     updateBuffers();
+    computeNormals();
+    if (m_updateTangents.getValue())
+        computeTangents();
 
     if ( alphaBlend.getValue() )
     {
@@ -1081,6 +1085,10 @@ void OglModel::updateBuffers()
     const ResizableExtVector<Triangle>& triangles = this->getTriangles();
     const ResizableExtVector<Quad>& quads = this->getQuads();
     const VecCoord& vertices = this->getVertices();
+    const VecDeriv& normals = this->getVnormals();
+    const VecTexCoord& texCoords = this->getVtexcoords();
+    const VecCoord& tangents = this->getVtangents();
+    const VecCoord& bitangents = this->getVbitangents();
 
     if (initDone)
     {
@@ -1104,7 +1112,11 @@ void OglModel::updateBuffers()
             //Update VBO & IBO
             else
             {
-                if(oldVerticesSize != vertices.size())
+                if(oldVerticesSize != vertices.size() ||
+                   oldNormalsSize != normals.size() ||
+                   oldTexCoordsSize != texCoords.size() ||
+                   oldTangentsSize != tangents.size() ||
+                   oldBitangentsSize != bitangents.size())
                     initVertexBuffer();
                 else
                     updateVertexBuffer();
@@ -1137,6 +1149,10 @@ void OglModel::updateBuffers()
                     createQuadsIndicesBuffer();
             }
             oldVerticesSize = vertices.size();
+            oldNormalsSize = normals.size();
+            oldTexCoordsSize = texCoords.size();
+            oldTangentsSize = tangents.size();
+            oldBitangentsSize = bitangents.size();
             oldEdgesSize = edges.size();
             oldTrianglesSize = triangles.size();
             oldQuadsSize = quads.size();

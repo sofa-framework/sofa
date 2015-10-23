@@ -1,0 +1,31 @@
+######################
+# Wrapper macro to set boolean value to a variable
+macro(setSofaOption name value)
+    set(${name} "${value}" CACHE BOOL "" FORCE)
+    message("${name} ${value}")
+endmacro()
+
+macro(setSofaPath name value)
+    set(${name} "${value}" CACHE PATH "" FORCE)
+    message("${name} ${value}")
+endmacro()
+
+macro(setSofaString name value)
+    set(${name} "${value}" CACHE STRING "" FORCE)
+    message("${name} ${value}")
+endmacro()
+
+macro(setSofaFilePath name value)
+    set(${name} "${value}" CACHE FILEPATH "" FORCE)
+    message("${name} ${value}")
+endmacro()
+######################
+
+# Set custom options for builds (i.e for example, share between debug/release builds)
+# After checking/unchecking options, save this file as "custom.cmake"
+
+# OFF
+# setSofaOption(APPLICATION_MODELER OFF)
+
+# ON
+# setSofaOption(SOFAGUI_QGLVIEWER ON)

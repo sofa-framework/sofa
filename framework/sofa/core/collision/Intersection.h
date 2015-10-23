@@ -139,7 +139,13 @@ class SOFA_CORE_API Intersection : public virtual objectmodel::BaseObject
 public:
     SOFA_ABSTRACT_CLASS(Intersection, objectmodel::BaseObject);
 protected:
+	Intersection() {};
     virtual ~Intersection();
+	
+private:
+	Intersection(const Intersection& n) ;
+	Intersection& operator=(const Intersection& n) ;
+	
 public:
     /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
     /// @param swapModels output value set to true if the collision models must be swapped before calling the intersector.

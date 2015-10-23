@@ -108,8 +108,8 @@ public:
 
     static const std::string& getConfigDirectoryPath();
     static const std::string& getScreenshotDirectoryPath();
-    static void setConfigDirectoryPath(const std::string& path);
-    static void setScreenshotDirectoryPath(const std::string& path);
+    static void setConfigDirectoryPath(const std::string& path, bool createIfNecessary = false);
+    static void setScreenshotDirectoryPath(const std::string& path, bool createIfNecessary = false);
 
 protected:
     BaseGUI();

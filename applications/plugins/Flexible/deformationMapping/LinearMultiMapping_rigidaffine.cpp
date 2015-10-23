@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_LINEARMULTIMAPPING_rigidaffine_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "LinearMultiMapping.h"
 #include <sofa/core/ObjectFactory.h>
 

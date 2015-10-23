@@ -1,7 +1,7 @@
 #ifndef DIFFERENCEMAPPING_H
 #define DIFFERENCEMAPPING_H
 
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 
 #include "AssembledMapping.h"
 #include "AssembledMultiMapping.h"
@@ -31,7 +31,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
   public:
     SOFA_CLASS(SOFA_TEMPLATE2(DifferenceMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMapping,TIn,TOut));
 	
-	typedef DifferenceMapping self;
+    typedef DifferenceMapping self;
 	
 	typedef defaulttype::Vec<2, unsigned> index_pair;
     typedef vector< index_pair > pairs_type;
@@ -55,6 +55,12 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
     {
         this->getToModel()->resize( pairs.getValue().size() );
         AssembledMapping<TIn, TOut>::init();
+    }
+
+    virtual void reinit()
+    {
+        this->getToModel()->resize( pairs.getValue().size() );
+        AssembledMapping<TIn, TOut>::reinit();
     }
 
 	virtual void apply(typename self::out_pos_type& out, 
@@ -137,6 +143,21 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
         }
 #endif /* SOFA_NO_OPENGL */
     }
+
+    virtual void updateForceMask()
+    {
+        const pairs_type& p = pairs.getValue();
+
+        for( size_t i = 0, iend = p.size(); i < iend; ++i )
+        {
+            if( this->maskTo->getEntry(i) )
+            {
+                const index_pair& indices = p[i];
+                this->maskFrom->insertEntry(indices[0]);
+                this->maskFrom->insertEntry(indices[1]);
+            }
+        }
+    }
 	
 };
 
@@ -188,8 +209,26 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
         virtual void init()
         {
+            if(!pairs.getValue().size() && this->getFromModels()[0]->getSize()==this->getFromModels()[1]->getSize()) // if no pair is defined-> map all dofs
+            {
+                helper::WriteOnlyAccessor<Data<pairs_type> > p(pairs);
+                p.resize(this->getFromModels()[0]->getSize());
+                for( unsigned j = 0; j < p.size(); ++j) p[j]=index_pair(j,j);
+            }
             this->getToModels()[0]->resize( pairs.getValue().size() );
             AssembledMultiMapping<TIn, TOut>::init();
+        }
+
+        virtual void reinit()
+        {
+            if(!pairs.getValue().size() && this->getFromModels()[0]->getSize()==this->getFromModels()[1]->getSize()) // if no pair is defined-> map all dofs
+            {
+                helper::WriteOnlyAccessor<Data<pairs_type> > p(pairs);
+                p.resize(this->getFromModels()[0]->getSize());
+                for( unsigned j = 0; j < p.size(); ++j) p[j]=index_pair(j,j);
+            }
+            this->getToModels()[0]->resize( pairs.getValue().size() );
+            AssembledMultiMapping<TIn, TOut>::reinit();
         }
 
         virtual void apply(typename self::out_pos_type& out,
@@ -258,6 +297,22 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
                 J.startVec(r);
                 J.insertBack(r, c) = sign;
+            }
+        }
+
+
+        virtual void updateForceMask()
+        {
+            const pairs_type& p = pairs.getValue();
+
+            for( size_t i = 0, iend = p.size(); i < iend; ++i )
+            {
+                if( this->maskTo[0]->getEntry(i) )
+                {
+                    const index_pair& indices = p[i];
+                    this->maskFrom[0]->insertEntry(indices[0]);
+                    this->maskFrom[1]->insertEntry(indices[1]);
+                }
             }
         }
 

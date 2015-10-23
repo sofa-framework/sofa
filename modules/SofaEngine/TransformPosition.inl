@@ -487,7 +487,7 @@ void TransformPosition<DataTypes>::draw(const core::visual::VisualParams* vparam
         std::vector<sofa::defaulttype::Vector3> points;
         for (unsigned int i=0; i < in.size(); i++)
             points.push_back(in[i]);
-        vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), sofa::defaulttype::Vec4f(0.8, 0.2, 0.2, 1.0));
+        vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), sofa::defaulttype::Vec4f(0.8f, 0.2f, 0.2f, 1.0f));
     }
 
     if (f_drawOutput.getValue())
@@ -496,7 +496,7 @@ void TransformPosition<DataTypes>::draw(const core::visual::VisualParams* vparam
         std::vector<sofa::defaulttype::Vector3> points;
         for (unsigned int i=0; i < out.size(); i++)
             points.push_back(out[i]);
-        vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), sofa::defaulttype::Vec4f(0.2, 0.8, 0.2, 1.0));
+        vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), sofa::defaulttype::Vec4f(0.2f, 0.8f, 0.2f, 1.0f));
     }
 }
 

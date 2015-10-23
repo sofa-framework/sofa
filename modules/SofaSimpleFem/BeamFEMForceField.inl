@@ -110,12 +110,10 @@ BeamFEMForceField<DataTypes>::~BeamFEMForceField()
 template <class DataTypes>
 void BeamFEMForceField<DataTypes>::bwdInit()
 {
-#ifdef SOFA_HAVE_EIGEN2
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
     matS.resize(state->getMatrixSize(),state->getMatrixSize());
     lastUpdatedStep=-1.0;
-#endif
 }
 
 

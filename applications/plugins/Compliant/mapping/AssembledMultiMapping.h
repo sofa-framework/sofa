@@ -15,7 +15,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 
 // #include "debug.h"
 
@@ -73,10 +73,18 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 		assert( (this->getTo().size() == 1) && 
 		        "sorry, multi mapping to multiple output dofs unimplemented" );
 		
-		
-		typedef core::MultiMapping<TIn, TOut> base; // fixes g++-4.4
-		base::init();
+        Inherit::init();
 	}
+
+    virtual void reinit() {
+
+        Inherit::apply(core::MechanicalParams::defaultInstance() , core::VecCoordId::position(), core::ConstVecCoordId::position());
+        Inherit::applyJ(core::MechanicalParams::defaultInstance() , core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
+        if (this->f_applyRestPosition.getValue())
+            Inherit::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
+
+        Inherit::reinit();
+    }
 
     typedef linearsolver::EigenSparseMatrix<In, In> geometric_type;
     geometric_type geometric;
@@ -248,6 +256,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
     virtual void assemble_geometric( const vector<const_in_coord_type>& /*in*/,
                                      const const_out_deriv_type& /*out*/) { }
     
+    using Inherit::apply;
 	// perform mapping operation on positions
     virtual void apply(out_pos_type& out, 
 					   const vector<in_pos_type>& in ) = 0;

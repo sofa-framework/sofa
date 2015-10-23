@@ -2,7 +2,7 @@
 #define COMPLIANT_BENCHMARKSOLVER_H
 
 
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 
 #include "KKTSolver.h"
 
@@ -29,7 +29,8 @@ class SOFA_Compliant_API BenchmarkSolver : public KKTSolver {
 
 	virtual void correct(vec& x,
 						 const system_type& system,
-						 const vec& rhs) const;
+                         const vec& rhs,
+                         real damping = 0) const;
 
   protected:
     std::vector< KKTSolver::SPtr > solvers;

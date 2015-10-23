@@ -86,6 +86,11 @@ SOFA_HELPER_API bool isCleanedUp();
 SOFA_HELPER_API void printUninitializedLibraryWarning(const std::string& library,
                                                       const std::string& initFunction);
 
+/// @brief Print a warning about a library not being cleaned up (meant for
+/// internal use).
+SOFA_HELPER_API void printLibraryNotCleanedUpWarning(const std::string& library,
+                                                     const std::string& cleanupFunction);
+
 } // namespace helper
 
 } // namespace sofa

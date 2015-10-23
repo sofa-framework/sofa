@@ -42,7 +42,7 @@
 #define SOFAPML_PMLMAPPEDBODY_H
 
 #include "PMLBody.h"
-#include "initSofaPML.h"
+#include <SofaPML/config.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <map>

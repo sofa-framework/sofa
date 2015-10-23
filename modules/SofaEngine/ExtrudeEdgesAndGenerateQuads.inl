@@ -154,11 +154,6 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::update()
 }
 
 
-template <class DataTypes>
-void ExtrudeEdgesAndGenerateQuads<DataTypes>::draw()
-{
-
-}
 
 
 } // namespace engine

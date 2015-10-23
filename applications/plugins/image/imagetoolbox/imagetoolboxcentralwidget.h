@@ -26,29 +26,18 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "initImage_gui.h"
+#include <image/image_gui/config.h>
 #include <sofa/gui/qt/DataWidget.h>
 #include <sofa/gui/qt/SimpleDataWidget.h>
 
-#ifdef SOFA_QT4
 #include <QLabel>
 #include <QImage>
 #include <QSlider>
 #include <QString>
 #include <QGraphicsView>
 #include <QGraphicsScene>
-#include <QtGui>
-#else
-#include <qlabel.h>
-#include <qimage.h>
-#include <qslider.h>
-#include <qstring.h>
-#include <qgraphicsView.h>
-#include <qgraphicsscene.h>
-#include <qtgui.h>
-#endif
 
-#include "ImageTypes.h"
+#include <image/ImageTypes.h>
 #include "imagetoolboxdata.h"
 #include "../image_gui/ImagePlaneWidget.h"
 
@@ -104,8 +93,8 @@ public:
         layout->setMargin(0);
         layout->setSpacing(10);
         //layout->add(toggle);
-        layout->add(slider);
-        layout->add(label);
+        layout->addWidget(slider);
+        layout->addWidget(label);
 
         this->setFixedHeight ( height );
     }
@@ -345,7 +334,7 @@ public:
     }
     
     
-       void setReadOnly(bool readOnly) { }
+       void setReadOnly(bool /*readOnly*/) { }
     void readFromData(const ImagePlanetype& d0) {  if(graphXY) graphXY->readFromData(d0); if(graphXZ) graphXZ->readFromData(d0); if(graphZY) graphZY->readFromData(d0);}
     void writeToData(ImagePlanetype& d) { if(graphXY) graphXY->writeToData(d); if(graphXZ) graphXZ->writeToData(d); if(graphZY) graphZY->writeToData(d);}
 
@@ -367,7 +356,7 @@ public:
 
         //if(graphXY && graphXZ && graphZY) layout->addWidget(info,2,1);
         //else
-        if(info)container_layout->add(info);
+        if(info)container_layout->addWidget(info);
 
     }
 

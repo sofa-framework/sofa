@@ -42,12 +42,15 @@ Base class for the Visitors which deal with GNodes specifically rather than Node
 
 	@author The SOFA team </www.sofa-framework.org>
 */
-class SOFA_SIMULATION_TREE_API GNodeVisitor : public sofa::simulation::Visitor
+class SOFA_SIMULATION_TREE_API GNodeVisitor : public Visitor
 {
 public:
     GNodeVisitor(const sofa::core::ExecParams* params);
 
     ~GNodeVisitor();
+
+    using Visitor::processNodeTopDown;
+    using Visitor::processNodeBottomUp;
 
     /// Callback method called when decending to a new node. Recursion will stop if this method returns RESULT_PRUNE
     virtual Result processNodeTopDown(GNode* /*node*/) { return RESULT_CONTINUE; }

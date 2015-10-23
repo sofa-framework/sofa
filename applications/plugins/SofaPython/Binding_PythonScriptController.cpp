@@ -216,7 +216,7 @@ extern "C" PyObject * PythonScriptController_onKeyPressed(PyObject * /*self*/, P
     std::cerr << obj->m_classname.getValueString() << ".onKeyPressed not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
-    Py_RETURN_NONE;
+    Py_RETURN_FALSE;
 }
 
 extern "C" PyObject * PythonScriptController_onKeyReleased(PyObject * /*self*/, PyObject * args)
@@ -233,7 +233,7 @@ extern "C" PyObject * PythonScriptController_onKeyReleased(PyObject * /*self*/, 
     std::cerr << obj->m_classname.getValueString() << ".onKeyReleased not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
-    Py_RETURN_NONE;
+    Py_RETURN_FALSE;
 }
 
 extern "C" PyObject * PythonScriptController_onMouseButtonLeft(PyObject * /*self*/, PyObject * args)

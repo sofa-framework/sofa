@@ -276,10 +276,20 @@ protected:
     void getConstMatOutDeriv(const ConstMultiMatrixDerivId id, helper::vector<const OutDataMatrixDeriv* > &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].read());  }
 
+    /// Useful when the mapping is applied only on a subset of parent dofs.
+    /// It is automatically called by applyJT.
+    ///
+    /// That way, we can optimize Jacobian sparsity.
+    /// Every Dofs are inserted by default. The mappings using only a subset of dofs should only insert these dofs in the mask.
+    virtual void updateForceMask();
+
+    /// keep pointers on the masks
+    helper::vector<helper::StateMask*> maskFrom, maskTo;
+
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_MULTI2MAPPING_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_MULTIMAPPING_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec1dTypes, defaulttype::Vec1dTypes >;

@@ -2,9 +2,9 @@
 #define RIGIDJOINTMAPPING_H
 
 #include "AssembledMapping.h"
-#include <Compliant/Compliant.h>
+#include <Compliant/config.h>
 
-#include "utils/se3.h"
+#include "../utils/se3.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -204,14 +204,29 @@ protected:
 			}
 			
         }
-	}
-public:
+    }
+
 	void output(typename TOut::Coord out) const {
 		out[0] = 0;
 		out[1] = 0;
 		out[2] = 0;
 		std::cerr << this->getContext()->getTime() << ", " << out.norm() << std::endl;
 	}
+
+    virtual void updateForceMask()
+    {
+        const pairs_type& p = pairs.getValue();
+
+        for( size_t i = 0, iend = p.size(); i < iend; ++i )
+        {
+            if( this->maskTo->getEntry(i) )
+            {
+                const index_pair& indices = p[i];
+                this->maskFrom->insertEntry(indices[0]);
+                this->maskFrom->insertEntry(indices[1]);
+            }
+        }
+    }
 };
 }
 }

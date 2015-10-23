@@ -79,18 +79,18 @@ protected:
     DistanceLMConstraint( MechanicalState *dof)
         : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
         , vecConstraint(sofa::core::objectmodel::Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
-    {};
+    {}
 
     DistanceLMConstraint( MechanicalState *dof1, MechanicalState * dof2)
         : core::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2)
         , vecConstraint(sofa::core::objectmodel::Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
-    {};
+    {}
 
     DistanceLMConstraint()
         : vecConstraint(sofa::core::objectmodel::Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
     {}
 
-    ~DistanceLMConstraint() {};
+    ~DistanceLMConstraint() {}
 public:
     void init();
     void reinit();
@@ -109,8 +109,6 @@ public:
         if (node1->mechanicalMapping.empty() && node2->mechanicalMapping.empty()) return true;
         else return false;
     }
-
-    bool useMask() const {return true;}
 
     std::string getTemplateName() const
     {

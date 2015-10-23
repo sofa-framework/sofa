@@ -89,9 +89,6 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
 
-// 	virtual void applyJT( const ConstraintParams* mparams, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in) {}
-
-    virtual void applyJT( InMatrixDeriv& /*out*/, const OutMatrixDeriv& /*in*/ ) {}
 
 protected:
     sofa::defaulttype::Quat currentRotation;

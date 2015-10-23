@@ -86,6 +86,7 @@ protected:
     BaseObject();
 
     virtual ~BaseObject();
+	
 public:
 
     /// @name control
@@ -460,6 +461,9 @@ public:
     Iterative::IterativePartition*  getPartition();
     Iterative::IterativePartition*  prepareTask();
 #endif
+
+    /// Return the full path name of this object
+    virtual std::string getPathName() const;
 
 protected:
 

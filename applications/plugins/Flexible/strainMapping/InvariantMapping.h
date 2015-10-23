@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_InvariantMAPPING_H
 #define SOFA_COMPONENT_MAPPING_InvariantMAPPING_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../strainMapping/BaseStrainMapping.h"
 #include "../strainMapping/InvariantJacobianBlock.inl"
 

@@ -43,14 +43,33 @@ namespace mapping
 template<class TIn, class TOut>
 void IdentityMapping<TIn, TOut>::init()
 {
-    if ((stateFrom = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModel.get())))
-        maskFrom = &stateFrom->forceMask;
-    if ((stateTo = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModel.get())))
-        maskTo = &stateTo->forceMask;
+    const unsigned n = this->fromModel->getSize();
 
-    this->toModel->resize( this->fromModel->getSize() );
+    this->toModel->resize( n );
 
     Inherit::init();
+
+
+    // build J
+    {
+        static const unsigned N = std::min<unsigned>(NIn, NOut);
+
+        J.compressedMatrix.resize( n*NOut, n*NIn );
+        J.compressedMatrix.reserve( n*N );
+
+        for( size_t i=0 ; i<n ; ++i )
+        {
+            for(unsigned r = 0; r < N; ++r)
+            {
+                const unsigned row = NOut * i + r;
+                J.compressedMatrix.startVec( row );
+                const unsigned col = NIn * i + r;
+                J.compressedMatrix.insertBack( row, col ) = (OutReal)1;
+            }
+        }
+        J.compressedMatrix.finalize();
+    }
+
 }
 
 template <class TIn, class TOut>
@@ -58,8 +77,6 @@ void IdentityMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
 {
     helper::WriteOnlyAccessor< Data<VecCoord> > out = dOut;
     helper::ReadAccessor< Data<InVecCoord> > in = dIn;
-
-//    out.resize(in.size());
 
     for(unsigned int i=0; i<out.size(); i++)
     {
@@ -73,25 +90,10 @@ void IdentityMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams
     helper::WriteOnlyAccessor< Data<VecDeriv> > out = dOut;
     helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
 
-//    out.resize(in.size());
-
-    if ( !(maskTo->isInUse()) )
+    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
-        for(unsigned int i=0; i<out.size(); i++)
-        {
+        if( !this->maskTo->isActivated() || this->maskTo->getEntry(i) )
             helper::eq(out[i], in[i]);
-        }
-    }
-    else
-    {
-        typedef helper::ParticleMask ParticleMask;
-        const ParticleMask::InternalStorage &indices=maskTo->getEntries();
-        ParticleMask::InternalStorage::const_iterator it;
-        for (it=indices.begin(); it!=indices.end(); it++)
-        {
-            const int i=(int)(*it);
-            helper::eq(out[i], in[i]);
-        }
     }
 }
 
@@ -101,25 +103,10 @@ void IdentityMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparam
     helper::WriteAccessor< Data<InVecDeriv> > out = dOut;
     helper::ReadAccessor< Data<VecDeriv> > in = dIn;
 
-    if ( !(maskTo->isInUse()) )
+    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
-        maskFrom->setInUse(false);
-        for(unsigned int i=0; i<in.size(); i++)
-        {
+        if( this->maskTo->getEntry(i) )
             helper::peq(out[i], in[i]);
-        }
-    }
-    else
-    {
-        typedef helper::ParticleMask ParticleMask;
-        const ParticleMask::InternalStorage &indices=maskTo->getEntries();
-        ParticleMask::InternalStorage::const_iterator it;
-        for (it=indices.begin(); it!=indices.end(); it++)
-        {
-            const int i=(int)(*it);
-            helper::peq(out[i], in[i]);
-            maskFrom->insertEntry(i);
-        }
     }
 }
 
@@ -162,107 +149,58 @@ void IdentityMapping<TIn, TOut>::handleTopologyChange()
     if ( this->toModel && this->fromModel && this->toModel->getSize() != this->fromModel->getSize()) this->init();
 }
 
+//template <class TIn, class TOut>
+//void IdentityMapping<TIn, TOut>::updateJ()
+//{
+//    size_t currentHash = this->maskTo->getHash();
+//    if(  previousMaskHash!=currentHash )
+//    {
+//        previousMaskHash = currentHash;
+
+//        assert( this->fromModel->getSize() == this->toModel->getSize());
+
+//        static const unsigned N = std::min<unsigned>(NIn, NOut);
+
+//        J.compressedMatrix.setZero();
+
+//        for( size_t i=0 ; i<this->toModel->getSize() ; ++i )
+//        {
+//            for(unsigned r = 0; r < N; ++r)
+//            {
+//                if( this->maskTo->getEntry(i) )
+//                {
+//                    const unsigned row = NOut * i + r;
+//                    const unsigned col = NIn * i + r;
+//                    J.compressedMatrix.insert( row, col ) = (OutReal)1;
+//                }
+//            }
+//        }
+//    }
+//}
+
+
 template <class TIn, class TOut>
 const sofa::defaulttype::BaseMatrix* IdentityMapping<TIn, TOut>::getJ()
 {
-    const unsigned int outStateSize = this->toModel->getSize();
-    const unsigned int  inStateSize = this->fromModel->getSize();
-    assert(outStateSize == inStateSize);
-
-    if (matrixJ.get() == 0 || updateJ)
-    {
-        updateJ = false;
-        if (matrixJ.get() == 0 || (unsigned int)matrixJ->rowBSize() != outStateSize || (unsigned int)matrixJ->colBSize() != inStateSize)
-        {
-            matrixJ.reset(new MatrixType(outStateSize * NOut, inStateSize * NIn));
-        }
-        else
-        {
-            matrixJ->clear();
-        }
-
-        bool isMaskInUse = maskTo->isInUse();
-
-        typedef helper::ParticleMask ParticleMask;
-        const ParticleMask::InternalStorage& indices = maskTo->getEntries();
-        ParticleMask::InternalStorage::const_iterator it = indices.begin();
-
-        for(unsigned i = 0; i < outStateSize && !(isMaskInUse && it == indices.end()); i++)
-        {
-            if (isMaskInUse)
-            {
-                if(i != *it)
-                {
-                    continue;
-                }
-                ++it;
-            }
-            MBloc& block = *matrixJ->wbloc(i, i, true);
-            IdentityMappingMatrixHelper<NOut, NIn, Real>::setMatrix(block);
-        }
-    }
-    return matrixJ.get();
+//    updateJ();
+    return &J;
 }
-
-template<int N, int M, class Real>
-struct IdentityMappingMatrixHelper
-{
-    template <class Matrix>
-    static void setMatrix(Matrix& mat)
-    {
-        for(int r = 0; r < N; ++r)
-        {
-            for(int c = 0; c < M; ++c)
-            {
-                mat[r][c] = (Real) 0;
-            }
-            if( r<M ) mat[r][r] = (Real) 1.0;
-        }
-    }
-};
-
 
 template <class TIn, class TOut>
 const typename IdentityMapping<TIn, TOut>::js_type* IdentityMapping<TIn, TOut>::getJs()
 {
-	if( !eigen.compressedMatrix.nonZeros() || updateJ ) {
-		updateJ = false;
-
-		assert( this->fromModel->getSize() == this->toModel->getSize());
-
-		const unsigned n = this->fromModel->getSize();
-
-		// each block (input i, output j) has only its top-left
-		// principal submatrix filled with identity
-		
-		const unsigned rows = n * NOut;
-        const unsigned cols = n * NIn;
-
-        eigen.compressedMatrix.resize( rows, cols );
-		eigen.compressedMatrix.setZero();
-        eigen.compressedMatrix.reserve( rows );
-		
-		for(unsigned i = 0 ; i < n; ++i) {
-
-			for(unsigned r = 0; r < std::min<unsigned>(NIn, NOut); ++r) {
-				const unsigned row = NOut * i + r;
-
-				eigen.compressedMatrix.startVec( row );
-
-				const unsigned col = NIn * i + r;
-				eigen.compressedMatrix.insertBack( row, col ) = 1;
-			}
-			
-		}
-		
-		eigen.compressedMatrix.finalize();
-    }
-
-	// std::cout << eigen.compressedMatrix << std::endl;
-
-	return &js;
+//    updateJ();
+    return &Js;
 }
 
+
+template<class TIn, class TOut>
+void IdentityMapping<TIn, TOut>::updateForceMask()
+{
+    for( size_t i = 0 ; i<this->maskTo->size() ; ++i )
+        if( this->maskTo->getEntry(i) )this->maskFrom->insertEntry( i );
+
+}
 
 } // namespace mapping
 

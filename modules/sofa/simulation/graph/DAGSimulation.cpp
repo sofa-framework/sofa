@@ -23,11 +23,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/graph/DAGNode.h>
 
 #include <sofa/simulation/common/xml/BaseElement.h>
-#include <sofa/helper/Factory.h>
+#include <sofa/simulation/graph/DAGNode.h>
+#include <sofa/simulation/graph/init.h>
+
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/Factory.h>
+#include <sofa/helper/init.h>
 
 namespace sofa
 {
@@ -52,6 +55,10 @@ Simulation* getSimulation()
 
 DAGSimulation::DAGSimulation()
 {
+    // Safety check; it could be elsewhere, but here is a good place, I guess.
+    if (!sofa::simulation::graph::isInitialized())
+        sofa::helper::printUninitializedLibraryWarning("SofaSimulationGraph", "sofa::simulation::graph::init()");
+
     // I have no idea what this 'DuplicateEntry()' call is for, but it causes an error when we
     // create several DAGSimulation, so I added the preceding 'if' (Marc Legendre, nov. 2013)
     if (! sofa::simulation::xml::BaseElement::NodeFactory::HasKey("MultiMappingObject") )

@@ -36,8 +36,6 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_INL
 #define SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_INL
 
-#include <sofa/SofaFramework.h>
-
 #include <SofaDeformable/FastTriangularBendingSprings.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologyChange.h>

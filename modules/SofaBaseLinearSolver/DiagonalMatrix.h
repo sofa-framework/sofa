@@ -60,12 +60,12 @@ public:
     {
     }
 
-    DiagonalMatrix(Index nbRow, Index nbCol)
+    DiagonalMatrix(Index nbRow, Index /*nbCol*/)
         : data(new T[nbRow])
     {
     }
 
-    DiagonalMatrix(Real* p, Index nbRow, Index nbCol)
+    DiagonalMatrix(Real* p, Index /*nbRow*/, Index /*nbCol*/)
         : data(p)
     {
     }

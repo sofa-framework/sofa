@@ -116,7 +116,7 @@ QDisplayPropertyWidget::~QDisplayPropertyWidget()
 
 }
 
-void QDisplayPropertyWidget::addComponent(const QString& component, core::objectmodel::Base* base, Q3ListViewItem* listItem, bool clear)
+void QDisplayPropertyWidget::addComponent(const QString& component, core::objectmodel::Base* base, QTreeWidgetItem* listItem, bool clear)
 {
     if(clear)
         this->clear();
@@ -152,7 +152,7 @@ void QDisplayPropertyWidget::addComponent(const QString& component, core::object
     componentItem->setForeground(1, *foregroundBrush);
     componentItem->setTextAlignment(1, Qt::AlignRight);
 
-    objects[componentItem] = std::pair<core::objectmodel::Base*, Q3ListViewItem*>(base, listItem);
+    objects[componentItem] = std::pair<core::objectmodel::Base*, QTreeWidgetItem*>(base, listItem);
 
 	// add data
     for(sofa::core::objectmodel::Base::VecData::const_iterator it = fields.begin(); it != fields.end(); ++it)
@@ -474,7 +474,7 @@ void QDisplayPropertyWidget::setConsoleOutput(const QString& component, const QS
 		textEdit->setText(base->getOutputs().c_str());
 		textEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		textEdit->setFixedHeight(200);
-		textEdit->moveCursor(QTextEdit::MoveEnd, false);
+        textEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
 		textEdit->ensureCursorVisible();
 		logLayout->addWidget(textEdit);
 
@@ -521,7 +521,7 @@ void QDisplayPropertyWidget::setConsoleOutput(const QString& component, const QS
 		textEdit->setText(base->getWarnings().c_str());
 		textEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		textEdit->setFixedHeight(200);
-		textEdit->moveCursor(QTextEdit::MoveEnd, false);
+        textEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
 		textEdit->ensureCursorVisible();
 		logLayout->addWidget(textEdit);
 
@@ -561,11 +561,11 @@ void QDisplayPropertyWidget::clearAll()
 
 void QDisplayPropertyWidget::updateListViewItem()
 {
-    std::map<QTreeWidgetItem*, std::pair<core::objectmodel::Base*, Q3ListViewItem*> >::iterator objectIterator;
+    std::map<QTreeWidgetItem*, std::pair<core::objectmodel::Base*, QTreeWidgetItem*> >::iterator objectIterator;
     for(objectIterator = objects.begin(); objectIterator != objects.end(); ++objectIterator)
     {
         core::objectmodel::Base* object = objectIterator->second.first;
-        Q3ListViewItem* item = objectIterator->second.second;
+        QTreeWidgetItem* item = objectIterator->second.second;
 
         if (/*simulation::Node *node=*/dynamic_cast< simulation::Node *>(object))
         {
@@ -576,7 +576,7 @@ void QDisplayPropertyWidget::updateListViewItem()
         {
             QString currentName = item->text(0);
 
-            std::string name=item->text(0).ascii();
+            std::string name=item->text(0).toStdString();
             std::string::size_type pos = name.find(' ');
             if(pos != std::string::npos)
                 name = name.substr(0,pos);

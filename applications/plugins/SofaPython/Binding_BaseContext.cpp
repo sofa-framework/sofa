@@ -124,8 +124,8 @@ extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args,
         //SP_MESSAGE_INFO( "Sofa.Node.createObject("<<type<<") node="<<node->getName()<<" isInitialized()="<<node->isInitialized() )
         if (node->isInitialized())
             SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is already initialized" )
-        if (!ScriptEnvironment::isNodeCreatedByScript(node))
-            SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is not created by the script" )
+//        if (!ScriptEnvironment::isNodeCreatedByScript(node))
+//            SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is not created by the script" )
     }
 
     return SP_BUILD_PYSPTR(obj.get());

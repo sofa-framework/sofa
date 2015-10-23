@@ -28,8 +28,6 @@
 #include <sofa/core/loader/Material.h>
 #include <sofa/defaulttype/Vec.h>
 
-
-#ifdef SOFA_QT4
 #include <QColorDialog>
 #include <QPainter>
 #include <QStyle>
@@ -44,18 +42,6 @@
 #include <QLabel>
 #include <QValidator>
 #include <QColorDialog>
-#else
-#include <qcolor.h>
-#include <qlayout.h>
-#include <qcombobox.h>
-#include <qcheckbox.h>
-#include <qcolordialog.h>
-#include <qcolordialog.h>
-#include <qpixmap.h>
-#include <qvalidator.h>
-#include <qlineedit.h>
-#include <qlabel.h>
-#endif
 
 namespace sofa
 {

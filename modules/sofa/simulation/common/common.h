@@ -25,6 +25,6 @@
 #ifndef SOFA_SIMULATION_COMMON_COMMON_H
 #define SOFA_SIMULATION_COMMON_COMMON_H
 
-#include <sofa/SofaSimulation.h>
+#include <sofa/simulation/config.h>
 
 #endif

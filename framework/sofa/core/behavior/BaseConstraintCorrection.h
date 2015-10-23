@@ -57,7 +57,14 @@ class BaseConstraintCorrection : public virtual objectmodel::BaseObject
 public:
     SOFA_ABSTRACT_CLASS(BaseConstraintCorrection, objectmodel::BaseObject);
 protected:
+	BaseConstraintCorrection() {};
     virtual ~BaseConstraintCorrection() {}
+	
+private:
+	BaseConstraintCorrection(const BaseConstraintCorrection& n) ;
+	BaseConstraintCorrection& operator=(const BaseConstraintCorrection& n) ;
+
+	
 public:
     /// @name Compliance Matrix API
     /// @{

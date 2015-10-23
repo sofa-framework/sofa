@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_PrincipalStretchesMAPPING_H
 #define SOFA_COMPONENT_MAPPING_PrincipalStretchesMAPPING_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../strainMapping/BaseStrainMapping.h"
 #include "../strainMapping/PrincipalStretchesJacobianBlock.h"
 

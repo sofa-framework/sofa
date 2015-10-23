@@ -60,7 +60,7 @@ public:
 
     bool verify(core::objectmodel::Base* c, core::objectmodel::BaseData* d) const;
     bool isActive() const {return activated->isChecked();}
-    std::string getValue() const {return entryName->text().ascii();}
+    std::string getValue() const {return entryName->text().toStdString();}
 protected:
     QCheckBox *activated;
     QLineEdit *entryName;
@@ -78,7 +78,7 @@ public:
     bool verify(core::objectmodel::Base* c, core::objectmodel::BaseData* d) const;
 
     bool isActive() const {return activated->isChecked();}
-    std::string getValue() const {return value->text().ascii();}
+    std::string getValue() const {return value->text().toStdString();}
 protected:
     QCheckBox *activated;
     QLineEdit *value;

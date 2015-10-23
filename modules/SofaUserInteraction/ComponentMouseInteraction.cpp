@@ -22,7 +22,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP
 #define SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP
 #include <SofaUserInteraction/ComponentMouseInteraction.inl>
 
@@ -71,9 +70,11 @@ void ComponentMouseInteraction::attach(Node* parentNode)
         {
             nodeRayPick = parentNode->createChild("MouseInteraction");
             createInteractionComponents(parentNode,nodeRayPick.get());
-            nodeRayPick->detachFromGraph();
         }
-        parentNode->addChild(nodeRayPick);
+        else
+        {
+            parentNode->addChild(nodeRayPick);
+        }
     }
 }
 
@@ -118,4 +119,3 @@ namespace helper
 template class SOFA_USER_INTERACTION_API Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
 }
 }
-#endif // SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP

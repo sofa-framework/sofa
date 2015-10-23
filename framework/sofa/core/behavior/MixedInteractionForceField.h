@@ -66,7 +66,6 @@ public:
     typedef typename DataTypes2::Coord    Coord2;
     typedef typename DataTypes2::Deriv    Deriv2;
     typedef typename DataTypes2::Real     Real2;
-    typedef helper::ParticleMask ParticleMask;
 
     typedef core::objectmodel::Data<VecCoord1>    DataVecCoord1;
     typedef core::objectmodel::Data<VecDeriv1>    DataVecDeriv1;
@@ -208,12 +207,17 @@ public:
         return name;
     }
 
+
+    /// Useful when the forcefield is applied only on a subset of dofs.
+    /// It is automatically called by addForce.
+    ///
+    /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
+    /// Every Dofs are inserted by default. The forcefields using only a subset of dofs should only insert these dofs in the mask.
+    virtual void updateForceMask();
+
 protected:
     SingleLink<MixedInteractionForceField<DataTypes1,DataTypes2>, MechanicalState<DataTypes1>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
     SingleLink<MixedInteractionForceField<DataTypes1,DataTypes2>, MechanicalState<DataTypes2>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
-
-    ParticleMask *mask1;
-    ParticleMask *mask2;
 
 };
 

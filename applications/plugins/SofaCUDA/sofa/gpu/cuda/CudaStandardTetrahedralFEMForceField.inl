@@ -77,7 +77,7 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3fTypes>::addForce(const
 	tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
     Coord anisoDirection;
-    bool anisotropy;
+    bool anisotropy = false;
     if(globalParameters.anisotropyDirection.size()>0)
     {
         anisotropy = true;

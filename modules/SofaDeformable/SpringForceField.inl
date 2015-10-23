@@ -111,7 +111,6 @@ void SpringForceField<DataTypes>::reinit()
         (*springs.beginEdit())[i].ks = (Real) ks.getValue();
         (*springs.beginEdit())[i].kd = (Real) kd.getValue();
     }
-    updateMaskStatus();
 }
 
 template <class DataTypes>
@@ -121,7 +120,6 @@ void SpringForceField<DataTypes>::init()
     if (!fileSprings.getValue().empty())
         load(fileSprings.getFullPath().c_str());
     this->Inherit::init();
-    updateMaskStatus();
 }
 
 template<class DataTypes>
@@ -143,11 +141,6 @@ void SpringForceField<DataTypes>::addSpringForce(Real& ener, VecDeriv& f1, const
     Deriv force = u*forceIntensity;
     f1[a]+=force;
     f2[b]-=force;
-    if (this->maskInUse)
-    {
-        this->mstate1->forceMask.insertEntry(a);
-        this->mstate2->forceMask.insertEntry(b);
-    }
 }
 
 template<class DataTypes>
@@ -402,22 +395,18 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
 
 
 template <class DataTypes>
-void SpringForceField<DataTypes>::updateMaskStatus()
+void SpringForceField<DataTypes>::updateForceMask()
 {
-    if (this->getMechModel1() == this->getMechModel2()) maskInUse = false;
-    else
+    const helper::vector<Spring>& springs= this->springs.getValue();
+
+    for( unsigned int i=0, iend=springs.size() ; i<iend ; ++i )
     {
-        if (springs.getValue().size() < 0.5*this->getMechModel1()->getSize() ||
-            springs.getValue().size() < 0.5*this->getMechModel2()->getSize() ) maskInUse = true;
-        else maskInUse=false;
+        const Spring& s = springs[i];
+        this->mstate1->forceMask.insertEntry(s.m1);
+        this->mstate2->forceMask.insertEntry(s.m2);
     }
 }
 
-template<class DataTypes>
-bool SpringForceField<DataTypes>::useMask() const
-{
-    return maskInUse;
-}
 
 template<class DataTypes>
 void SpringForceField<DataTypes>::initGnuplot(const std::string path)

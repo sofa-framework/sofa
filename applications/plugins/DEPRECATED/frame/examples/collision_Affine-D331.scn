@@ -7,27 +7,27 @@
 	<CGLinearSolver template="GraphScattered" iterations="150"  threshold="1e-008" />
 
 	<Node name="Fixed-Beam">
-		<MechanicalObject template="Rigid" name="DOFs" position="0 0 -1 0 0 0 1" useMask="0"/>
+		<MechanicalObject template="Rigid" name="DOFs" position="0 0 -1 0 0 0 1" />
 		<FixedConstraint template="Rigid" indices="0"/>
 
 		<Node name="Collision">
 			<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
 			<Mesh src="@MeshLoader"  tags="LDI"/>
-			<MechanicalObject  name="PointSet"  translation="0 -2 0" useMask="0"/>
+			<MechanicalObject  name="PointSet"  translation="0 -2 0" />
 			<Triangle />
 			<FrameBlendingMapping template="Rigid,Vec3d" input="@../DOFs"  output="@PointSet" />
 		</Node>
 	</Node>
 
 	<Node name="Beam">
-		<MechanicalObject template="FrameAffine" name="DOFs" position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1]" useMask="0"/>
+		<MechanicalObject template="FrameAffine" name="DOFs" position="0 0 -1 [1 0 0, 0 1 0, 0 0 1] 0 0 1 [1 0 0, 0 1 0, 0 0 1]" />
 		<HookeMaterial3 template="Material3" />
 		<FrameDiagonalMass template="AffineFrame3x12dMass" showAxisSizeFactor="0.2"/>
 
 		<Node name="Physics">
 			<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
 			<Mesh src="@MeshLoader"  />
-			<MechanicalObject  template="DeformationGradient331" name="PointSet"   showObject="1" showObjectScale="0.05" useMask="0"/>
+			<MechanicalObject  template="DeformationGradient331" name="PointSet"   showObject="1" showObjectScale="0.05" />
 			<FrameBlendingMapping template="FrameAffine,DeformationGradient331"  input="@../DOFs"  output="@PointSet"  />
 			<CorotationalForceField template="DeformationGradient331"   printLog="0" />
 		</Node>
@@ -35,7 +35,7 @@
 		<Node name="Collision">
 			<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
 			<Mesh src="@MeshLoader" tags="LDI"/>
-			<MechanicalObject  name="PointSet" useMask="0"/>
+			<MechanicalObject  name="PointSet" />
 			<Triangle />
 			<FrameBlendingMapping template="FrameAffine,Vec3d" input="@../DOFs"  output="@PointSet" />
 		</Node>

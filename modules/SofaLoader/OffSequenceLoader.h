@@ -39,7 +39,7 @@ namespace loader
 
 /** This class load a sequence of .off mesh files, ordered by index in their name
 */
-class SOFA_LOADER_API OffSequenceLoader : public sofa::component::loader::MeshOffLoader
+class SOFA_LOADER_API OffSequenceLoader : public MeshOffLoader
 {
 public:
     SOFA_CLASS(OffSequenceLoader,sofa::component::loader::MeshOffLoader);
@@ -52,6 +52,7 @@ public:
 
     virtual void handleEvent(sofa::core::objectmodel::Event* event);
 
+    using MeshOffLoader::load;
     virtual bool load(const char * filename);
 
     void clear();

@@ -28,11 +28,7 @@
 #include "ModifyObject.h"
 #include <sofa/helper/Factory.inl>
 
-#ifdef SOFA_QT4
 #include <QToolTip>
-#else
-#include <qtooltip.h>
-#endif
 
 #define SIZE_TEXT     60
 
@@ -59,9 +55,9 @@ QDisplayLinkInfoWidget::QDisplayLinkInfoWidget(QWidget* parent, const std::strin
     : QWidget(parent), link(l), numLines_(1)
 {
     QHBoxLayout* layout = new QHBoxLayout(this);
-#ifdef SOFA_QT4
+
     layout->setContentsMargins(0,0,0,0);
-#endif
+
     std::string final_str;
     formatHelperString(helper,final_str);
     

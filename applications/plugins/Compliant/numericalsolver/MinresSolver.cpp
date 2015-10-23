@@ -2,11 +2,11 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include "utils/scoped.h"
-#include "utils/minres.h"
+#include "../utils/scoped.h"
+#include "../utils/minres.h"
 
-#include "utils/kkt.h"
-#include "utils/schur.h"
+#include "../utils/kkt.h"
+#include "../utils/schur.h"
 
 namespace sofa {
 namespace component {

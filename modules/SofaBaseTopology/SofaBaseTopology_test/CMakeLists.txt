@@ -1,10 +1,8 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 
 project(SofaBaseTopology_test)
 
 set(SOURCE_FILES
-
- #alphabetical order
     BezierTetrahedronTopology_test.cpp
     TetrahedronNumericalIntegration_test.cpp)
 

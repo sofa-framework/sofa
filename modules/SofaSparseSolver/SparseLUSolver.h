@@ -44,32 +44,55 @@ namespace component
 namespace linearsolver
 {
 
+//defaut structure for a LDL factorization
+template<class Real>
+class SpaseLUInvertData : public MatrixInvertData {
+public :
+
+    css *S;
+    csn *N;
+    cs A;
+    helper::vector<int> A_i, A_p;
+    helper::vector<Real> A_x;
+    Real * tmp;
+    SpaseLUInvertData()
+    {
+        S=NULL; N=NULL; tmp=NULL;
+    }
+
+    ~SpaseLUInvertData()
+    {
+        if (S) cs_sfree (S);
+        if (N) cs_nfree (N);
+        if (tmp) cs_free (tmp);
+    }
+};
+
 /// Direct linear solver based on Sparse LU factorization, implemented with the CSPARSE library
-template<class TMatrix, class TVector>
-class SparseLUSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
+template<class TMatrix, class TVector, class TThreadManager= NoThreadManager>
+class SparseLUSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SparseLUSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
+    SOFA_CLASS(SOFA_TEMPLATE3(SparseLUSolver,TMatrix,TVector,TThreadManager),SOFA_TEMPLATE3(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector,TThreadManager));
 
     typedef TMatrix Matrix;
     typedef TVector Vector;
-    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
+    typedef typename Matrix::Real Real;
+
+    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager> Inherit;
 
     Data<bool> f_verbose;
     Data<double> f_tol;
 
     SparseLUSolver();
-    ~SparseLUSolver();
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
 
-private :
-    css *S;
-    csn *N;
-    cs A;
-    helper::vector<int> A_i, A_p;
-    helper::vector<double> A_x;
-    double * tmp;
+protected :
+
+    MatrixInvertData * createInvertData() {
+        return new SpaseLUInvertData<Real>();
+    }
 
 };
 

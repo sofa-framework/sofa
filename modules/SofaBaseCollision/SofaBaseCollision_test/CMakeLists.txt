@@ -1,11 +1,14 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 
 project(SofaBaseCollision_test)
 
 set(SOURCE_FILES
-    BroadPhase_test.h)
+    BroadPhase_test.cpp
+    OBB_test.cpp
+    Sphere_test.cpp
+)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} gtest_main SofaTest)
+target_link_libraries(${PROJECT_NAME} SofaTest SofaGTestMain)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

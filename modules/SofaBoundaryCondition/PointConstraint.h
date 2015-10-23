@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PointConstraint_H
 #include "config.h"
 
-#include <sofa/SofaGeneral.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -89,7 +88,7 @@ public:
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
     virtual const sofa::defaulttype::BaseMatrix* getJ(const core::MechanicalParams* );
 
-
+    using core::behavior::ProjectiveConstraintSet<DataTypes>::applyConstraint;
     void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
 

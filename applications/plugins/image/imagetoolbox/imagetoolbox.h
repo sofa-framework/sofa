@@ -28,9 +28,9 @@
 ******************************************************************************/
 
 
-#include "initImage_gui.h"
-#include "ImageTypes.h"
-#include "VectorVis.h"
+#include <image/image_gui/config.h>
+#include <image/ImageTypes.h>
+#include <image/VectorVis.h>
 
 #include <sofa/helper/io/Image.h>
 #include <sofa/helper/gl/Texture.h>

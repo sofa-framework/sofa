@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout">
    <item>
-    <widget class="Q3GroupBox" name="LeftButton">
+    <widget class="QGroupBox" name="LeftButton">
      <property name="title">
       <string>Left Button</string>
      </property>
@@ -37,7 +37,7 @@
     </widget>
    </item>
    <item>
-    <widget class="Q3GroupBox" name="MiddleButton">
+    <widget class="QGroupBox" name="MiddleButton">
      <property name="title">
       <string>Middle Button</string>
      </property>
@@ -59,7 +59,7 @@
     </widget>
    </item>
    <item>
-    <widget class="Q3GroupBox" name="RightButton">
+    <widget class="QGroupBox" name="RightButton">
      <property name="title">
       <string>Right Button</string>
      </property>
@@ -100,14 +100,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

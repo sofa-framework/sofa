@@ -82,19 +82,19 @@ class RigidBody:
     def addCollisionMesh(self, filepath, scale3d=[1,1,1], offset=[0,0,0,0,0,0,1], name_suffix=''):
         ## adding a collision mesh to the rigid body with a relative offset
         # (only a Triangle collision model is created, more models can be added manually)
-        # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
+        # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mechanism could be added
         self.collision = RigidBody.CollisionMesh( self.node, filepath, scale3d, ( self.framecom.inv() * Frame.Frame(offset) ).offset(), name_suffix )
         return self.collision
 
     def addVisualModel(self, filepath, scale3d=[1,1,1], offset=[0,0,0,0,0,0,1], name_suffix=''):
         ## adding a visual model to the rigid body with a relative offset
-        # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
+        # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mechanism could be added
         self.visual = RigidBody.VisualModel( self.node, filepath, scale3d, ( self.framecom.inv() * Frame.Frame(offset) ).offset(), name_suffix )
         return self.visual
 
     def addOffset(self, name, offset=[0,0,0,0,0,0,1]):
         ## adding a relative offset to the rigid body (e.g. used as a joint location)
-        # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
+        # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mechanism could be added
         return RigidBody.Offset( self.node, name, ( self.framecom.inv() * Frame.Frame(offset) ).offset() )
 
     def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1]):
@@ -103,7 +103,7 @@ class RigidBody:
 
     def addMappedPoint(self, name, relativePosition=[0,0,0]):
         ## adding a relative position to the rigid body
-        # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
+        # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mechanism could be added
         frame = Frame.Frame(); frame.translation = relativePosition
         return RigidBody.MappedPoint( self.node, name, (self.framecom.inv()*frame).translation )
 
@@ -117,10 +117,12 @@ class RigidBody:
         return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
 
     def setFixed(self, isFixed=True):
-        """ Add/remove a fixed constraint for this rigid
+        """ Add/remove a fixed constraint for this rigid, also set spedd to 0
         """
         if isFixed and self.fixedConstraint is None:
             self.fixedConstraint = self.node.createObject("FixedConstraint", name="fixedConstraint")
+            self.dofs.velocity=[0,0,0,0,0,0]
+            self.fixedConstraint.init()
         elif not isFixed and not self.fixedConstraint is None:
             self.node.removeObject(self.fixedConstraint)
             self.fixedConstraint=None
@@ -136,6 +138,7 @@ class RigidBody:
             self.triangles = self.node.createObject('TriangleModel', name='model')
             self.mapping = self.node.createObject('RigidMapping', name="mapping")
             self.normals = None
+            self.visual = None
 
         def addNormals(self, invert=False):
             ## add a component to compute mesh normals at each timestep
@@ -143,7 +146,8 @@ class RigidBody:
 
         def addVisualModel(self):
             ## add a visual model identical to the collision model
-            return RigidBody.CollisionMesh.VisualModel( self.node )
+            self.visual = RigidBody.CollisionMesh.VisualModel( self.node )
+            return self.visual
 
         class VisualModel:
             def __init__(self, node ):
@@ -329,8 +333,10 @@ class GenericRigidJoint:
         def __init__(self, node, mask, forces):
             self.node = node.createChild( "controller" )
 
-            position = [0] * len(mask)
-            points = numpy.arange(0,len(mask)+1,1)
+            size = sum(x!=0 for x in mask)
+
+            position = [0] * size
+            points = numpy.arange(0,size,1)
 
             self.dofs = self.node.createObject('MechanicalObject', template='Vec1'+template_suffix, name='dofs', position=concat(position))
             self.mapping = self.node.createObject('MaskMapping', dofs=concat(mask))

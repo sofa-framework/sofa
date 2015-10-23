@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initSofaCarving.h"
+#include <SofaCarving/config.h>
 
 namespace sofa
 {

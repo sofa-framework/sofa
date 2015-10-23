@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_TendonMaterialFORCEFIELD_CPP
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../material/TendonMaterialForceField.h"
 #include "../types/StrainTypes.h"
 #include <sofa/core/ObjectFactory.h>

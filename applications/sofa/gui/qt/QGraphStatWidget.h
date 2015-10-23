@@ -27,29 +27,17 @@
 
 #include <sofa/simulation/common/Node.h>
 
-#ifdef SOFA_QT4
 #include <QWidget>
 #include <QTextEdit>
-#include <Q3GroupBox>
+#include <QGroupBox>
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#else
-#include <qwidget.h>
-#include <qtextedit.h>
-#include <qgroupbox.h>
-#include <qlayout.h>
-#include <qlabel.h>
-#endif
 
 #include <qwt_legend.h>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 
-#ifndef SOFA_QT4
-typedef QGroupBox Q3GroupBox;
-typedef QTextEdit Q3TextEdit;
-#endif
 
 namespace sofa
 {
@@ -67,55 +55,18 @@ class QGraphStatWidget : public QWidget
 
 public:
 
-    QGraphStatWidget( QWidget* parent, simulation::Node* node, const QString& title, unsigned numberOfCurves )
-        : QWidget( parent )
-        , _numberOfCurves( numberOfCurves )
-        , _node( node )
-    {
-        QVBoxLayout *layout = new QVBoxLayout( this, 0, 1, QString( "tabStats" ) + title );
-
-#ifdef SOFA_QT4
-        _graph = new QwtPlot( QwtText( title ), this );
-#else
-        _graph = new QwtPlot( this, title );
-#endif
-
-        _graph->setAxisTitle( QwtPlot::xBottom, "Time (s)" );
-        _graph->setTitle( title );
-        _graph->insertLegend( new QwtLegend(), QwtPlot::BottomLegend );
-
-        layout->addWidget( _graph );
-
-        _curves.resize( _numberOfCurves );
-        _YHistory.resize( _numberOfCurves );
-    }
-
+    QGraphStatWidget( QWidget* parent, simulation::Node* node, const QString& title, unsigned numberOfCurves );
+    virtual ~QGraphStatWidget();
     /// the only function that should be overloaded
-    virtual void step()
-    {
-        //Add Time
-        _XHistory.push_back( _node->getTime() );
-    }
+    virtual void step();
 
-    void updateVisualization()
-    {
-        for( unsigned i=0 ; i<_numberOfCurves ; ++i )
-            _curves[i]->setRawSamples( &_XHistory[0], &(_YHistory[i][0]), _XHistory.size() );
-        _graph->replot();
-    }
+    void updateVisualization();
 
 
 protected:
 
     /// set the index-th curve (index must be < _numberOfCurves)
-    void setCurve( unsigned index, const QString& name, const QColor& color )
-    {
-        assert( index<_numberOfCurves );
-        _curves[index] = new QwtPlotCurve( name );
-        _curves[index]->attach( _graph );
-        _curves[index]->setPen( QPen( color ) );
-    }
-
+    void setCurve( unsigned index, const QString& name, const QColor& color );
     unsigned _numberOfCurves;
 
     simulation::Node *_node;

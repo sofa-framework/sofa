@@ -26,7 +26,7 @@
 
 #include "catchallvector.h"
 #include <sofa/core/ObjectFactory.h>
-#include "ImageTypes.h"
+#include <image/ImageTypes.h>
 
 namespace sofa
 {

@@ -69,6 +69,10 @@ MultiStepAnimationLoop::~MultiStepAnimationLoop()
 
 void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
 {
+    if (dt == 0)
+        dt = this->gnode->getDt();
+
+
     sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Step");
@@ -87,6 +91,7 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
 
     const int ncollis = collisionSteps.getValue();
     const int ninteg = integrationSteps.getValue();
+
     SReal stepDt = dt / (ncollis * ninteg);
     for (int c = 0; c < ncollis; ++c)
     {

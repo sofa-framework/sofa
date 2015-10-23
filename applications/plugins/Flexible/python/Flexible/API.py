@@ -10,7 +10,10 @@ import SofaPython.Tools
 from SofaPython.Tools import listToStr as concat
 from SofaPython import Quaternion
 
-def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, position=None, cell='', assemble=True, geometricStiffness=2):
+printLog = True
+
+
+def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, cell='', assemble=True, geometricStiffness=2, isMechanical=True):
     """ insert the correct Linear(Multi)Mapping
     hopefully the template is deduced automatically by the component
     """
@@ -20,15 +23,15 @@ def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, position=No
         if dofRigidNode is None:
             return node.createObject(
                 "LinearMapping", cell=cell, shapeFunction = 'shapeFunction',
-                input="@"+dofAffineNode.getPathName(), output="@.", assemble=assemble)
+                input="@"+dofAffineNode.getPathName(), output="@.", assemble=assemble, geometricStiffness=geometricStiffness, mapForces=isMechanical, mapConstraints=isMechanical, mapMasses=isMechanical)
         elif dofAffineNode is None:
             return node.createObject(
                 "LinearMapping", cell=cell, shapeFunction = 'shapeFunction',
-                input="@"+dofRigidNode.getPathName(), output="@.", assemble=assemble, geometricStiffness=geometricStiffness)
+                input="@"+dofRigidNode.getPathName(), output="@.", assemble=assemble, geometricStiffness=geometricStiffness, mapForces=isMechanical, mapConstraints=isMechanical, mapMasses=isMechanical)
         else:
             return node.createObject(
                 "LinearMultiMapping", cell=cell, shapeFunction = 'shapeFunction',
-                input1="@"+dofRigidNode.getPathName(), input2="@"+dofAffineNode.getPathName(), output="@.", assemble=assemble, geometricStiffness=geometricStiffness)
+                input1="@"+dofRigidNode.getPathName(), input2="@"+dofAffineNode.getPathName(), output="@.", assemble=assemble, geometricStiffness=geometricStiffness, mapForces=isMechanical, mapConstraints=isMechanical, mapMasses=isMechanical)
 
 class Deformable:
     """ This class reprents a deformable object build from a mesh.
@@ -84,7 +87,7 @@ class Deformable:
     def visualFromDeformable(self, deformable, color=[1,1,1,1]):
         deformable.node.addChild(self.node)
         self.visual = self.node.createObject("VisualModel", name="model", filename="@"+SofaPython.Tools.getObjectPath(deformable.meshLoader)+".filename", color=concat(color))
-        self.mapping = self.node.createObject("IdentityMapping", name="mapping", input='@'+deformable.node.getPathName(),output="@.")
+        self.mapping = self.node.createObject("IdentityMapping", name="mapping", input='@'+deformable.node.getPathName(),output="@.", mapForces=False, mapConstraints=False, mapMasses=False )
         self.normals = self.meshLoader
 
     def subsetFromDeformable(self, deformable, indices ):
@@ -136,18 +139,56 @@ class Deformable:
             return
         self.mass = self.node.createObject('UniformMass', totalMass=totalMass)
 
-    def addMapping(self, dofRigidNode=None, dofAffineNode=None, labelImage=None, labels=None, useGlobalIndices=False, assemble=True):
+    def addMapping(self, dofRigidNode=None, dofAffineNode=None, labelImage=None, labels=None, useGlobalIndices=False, assemble=True, isMechanical=True):
         cell = ''
         if not labelImage is None and not labels is None : # use labels to select specific voxels in branching image
            offsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+self.topology.name+".position", src="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage), labels=concat(labels), useGlobalIndices=useGlobalIndices)
            cell = "@"+SofaPython.Tools.getObjectPath(offsets)+".cell"
-        self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, self.topology, cell, assemble)
 
-    def addSkinning(self, armatureNode, indices, weights, assemble=True):
+        self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, cell, assemble, isMechanical=isMechanical)
+
+    def addSkinning(self, armatureNode, indices, weights, assemble=True, isMechanical=True):
         """ Add skinning (linear) mapping based on the armature (Rigid3) in armatureNode using
         """
-        self.mapping = self.node.createObject("LinearMapping", template="Rigid3,Vec3", name="mapping", input="@"+armatureNode.getPathName(), indices=concat(indices), weights=concat(weights), assemble=assemble)
+        self.mapping = self.node.createObject("LinearMapping", template="Rigid3,Vec3", name="mapping", input="@"+armatureNode.getPathName(), indices=concat(indices), weights=concat(weights), assemble=assemble, mapForces=isMechanical, mapConstraints=isMechanical, mapMasses=isMechanical)
 
+
+    def getFilename(self, filenamePrefix=None, directory=""):
+        _filename=filenamePrefix if not filenamePrefix is None else self.name
+        _filename+=".json"
+        _filename=os.path.join(directory, _filename)
+        return _filename
+
+    def write(self, filenamePrefix=None, directory=""):
+        """ write weights of the linear mapping
+        """
+        if self.mapping is None:
+            return
+        if self.mapping.getClassName().find("Linear") == -1:
+            return
+        filename = self.getFilename(filenamePrefix,directory)
+        data = {'indices': self.mapping.indices, 'weights': self.mapping.weights}
+        with open(filename, 'w') as f:
+            json.dump(data, f)
+            print 'Exported Weights to '+filename
+
+    def read(self, filenamePrefix=None, directory=""):
+        """ read weights of the linear mapping
+            WARNING: the mapping shoud be already created
+        """
+        if self.mapping is None:
+            return
+        if self.mapping.getClassName().find("Linear") == -1:
+            return
+        filename = self.getFilename(filenamePrefix,directory)
+        if os.path.isfile(filename):
+            data = dict()
+            with open(filename,'r') as f:
+                data.update(json.load(f))
+                self.mapping.indices= str(data['indices'])
+                self.mapping.weights= str(data['weights'])
+                if printLog:
+                    print 'Imported Weights from '+filename
 
 class AffineMass:
     def __init__(self, dofAffineNode):
@@ -157,7 +198,7 @@ class AffineMass:
     def massFromDensityImage(self, dofNode, dofRigidNode, densityImage, lumping='0'):
         node = dofNode.createChild('Mass')
         dof = node.createObject('MechanicalObject', name='massPoints', template='Vec3')
-        insertLinearMapping(node, dofRigidNode, self.dofAffineNode, dof, assemble=False)
+        insertLinearMapping(node, dofRigidNode, self.dofAffineNode, assemble=False)
         densityImage.addBranchingToImage('0') # MassFromDensity on branching images does not exist yet
         massFromDensity = node.createObject('MassFromDensity',  name="MassFromDensity",  template="Affine,ImageR", image="@"+SofaPython.Tools.getObjectPath(densityImage.image)+".image", transform="@"+SofaPython.Tools.getObjectPath(densityImage.image)+'.transform', lumping=lumping)
         self.mass = self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix="@"+SofaPython.Tools.getObjectPath(massFromDensity)+".massMatrix")
@@ -175,15 +216,16 @@ class AffineMass:
             data = dict()
             with open(filename,'r') as f:
                 data.update(json.load(f))
-            self.mass = self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix=data['massMatrix'])
-            print 'Imported Affine Mass from '+filename
+                self.mass = self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix=data['massMatrix'])
+                if printLog:
+                    print 'Imported Affine Mass from '+filename
 
     def write(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
         data = {'massMatrix': str(self.mass.findData('massMatrix').value).replace('\n',' ')}
         with open(filename, 'w') as f:
             json.dump(data, f)
-        print 'Exported Affine Mass to '+filename
+            print 'Exported Affine Mass to '+filename
 
 # fix of Sofa<->python serialization
 def affineDatatostr(data):
@@ -221,15 +263,16 @@ class AffineDof:
             data = dict()
             with open(filename,'r') as f:
                 data.update(json.load(f))
-            self.dof = self.node.createObject("MechanicalObject", template="Affine", name="dofs", position=data['position'], rest_position=data['rest_position'])
-            print 'Imported Affine Dof from '+filename
+                self.dof = self.node.createObject("MechanicalObject", template="Affine", name="dofs", position=data['position'], rest_position=data['rest_position'])
+                if printLog:
+                    print 'Imported Affine Dof from '+filename
 
     def write(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
         data = {'template':'Affine', 'rest_position': affineDatatostr(self.dof.rest_position), 'position': affineDatatostr(self.dof.position)}
         with open(filename, 'w') as f:
             json.dump(data, f)
-        print 'Exported Affine Dof to '+filename
+            print 'Exported Affine Dof to '+filename
 
 
 class ShapeFunction:
@@ -325,7 +368,7 @@ class Behavior:
         if self.sampler is None:
             print "[Flexible.API.Behavior] ERROR: no sampler"
         self.dofs = self.node.createObject("MechanicalObject", template="F"+self.type, name="dofs")
-        self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, self.sampler, self.cell , assemble)
+        self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, self.cell , assemble)
     
 
     def getFilename(self, filenamePrefix=None, directory=""):
@@ -339,20 +382,52 @@ class Behavior:
         data = dict()
         with open(filename,'r') as f:
             data.update(json.load(f))
-        self.sampler = self.node.createObject('GaussPointContainer',name='GPContainer', volumeDim=data['volumeDim'], inputVolume=data['inputVolume'], position=data['position'], **kwargs)
-        if not self.labelImage is None and not self.labels is None:
-            celloffsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+SofaPython.Tools.getObjectPath(self.sampler)+".position", src="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage), labels=concat(self.labels))
-            self.cell = "@"+SofaPython.Tools.getObjectPath(celloffsets)+".cell"
-        print 'Imported Gauss Points from '+filename
+            self.sampler = self.node.createObject('GaussPointContainer',name='GPContainer', volumeDim=data['volumeDim'], inputVolume=data['inputVolume'], position=data['position'], **kwargs)
+            if not self.labelImage is None and not self.labels is None:
+                celloffsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+SofaPython.Tools.getObjectPath(self.sampler)+".position", src="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage), labels=concat(self.labels))
+                self.cell = "@"+SofaPython.Tools.getObjectPath(celloffsets)+".cell"
+            if printLog:
+                print 'Imported Gauss Points from '+filename
+
+
+    def readWeights(self, filenamePrefix=None, directory=""):
+        """ read weights of the linear mapping
+            WARNING: the mapping shoud be already created
+        """
+        if self.mapping is None:
+            return
+        if self.mapping.getClassName().find("Linear") == -1:
+            return
+        filename = self.getFilename(filenamePrefix,directory)
+        if os.path.isfile(filename):
+            data = dict()
+            with open(filename,'r') as f:
+                data.update(json.load(f))
+                self.mapping.indices= str(data['indices'])
+                self.mapping.weights= str(data['weights'])
+                self.mapping.weightGradients= str(data['weightGradients'])
+                self.mapping.weightHessians= str(data['weightHessians'])    
+                if printLog:
+                    print 'Imported Weights from '+filename
 
     def write(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
         volumeDim = len(self.sampler.volume)/ len(self.sampler.position) if isinstance(self.sampler.volume, list) is True else 1 # when volume is a list (several GPs or order> 1)
-        data = {'volumeDim': str(volumeDim), 'inputVolume': str(self.sampler.volume).replace('[', '').replace("]", '').replace(",", ' '), 'position': str(self.sampler.position).replace('[', '').replace("]", '').replace(",", ' ')}
+        data = {'volumeDim': str(volumeDim), 'inputVolume': SofaPython.Tools.listListToStr(self.sampler.volume), 'position': SofaPython.Tools.listListToStr(self.sampler.position),
+                'indices': self.mapping.indices, 'weights': self.mapping.weights,
+                'weightGradients': self.mapping.weightGradients, 'weightHessians': self.mapping.weightHessians}
+        # @todo: add restShape ?
         with open(filename, 'w') as f:
             json.dump(data, f)
-        print 'Exported Gauss Points to '+filename
+            print 'Exported Gauss Points to '+filename
 
+    def writeObj(self, filenamePrefix=None, directory=""):
+        filename = self.getFilename(filenamePrefix,directory).replace("json","obj")
+        with open(filename, 'w') as f:
+            f.write(self.name+"\n")
+            for p in self.sampler.position:
+                f.write("v "+SofaPython.Tools.listToStr(p)+"\n")
+            print 'Exported Gauss Points as a mesh: '+filename
 
 
     def addHooke(self, strainMeasure="Corotational", youngModulus=0, poissonRatio=0, viscosity=0, assemble=True):

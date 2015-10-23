@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_COLLISION_RAYDISCRETEINTERSECTION_H
 #include "config.h"
 
-#include <sofa/SofaGeneral.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <SofaBaseCollision/SphereModel.h>

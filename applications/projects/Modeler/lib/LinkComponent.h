@@ -37,10 +37,9 @@
 #include <QLineEdit>
 #include <QStringList>
 #include <QCheckBox>
-#include <Q3ListView>
-#include <Q3ListViewItem>
-#include <Q3TextDrag>
-#include <Q3PopupMenu>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+#include <QMenu>
 
 
 namespace sofa
@@ -57,7 +56,7 @@ class LinkComponent : public QWidget
     Q_OBJECT
 public:
     typedef helper::vector< sofa::core::loader::BaseLoader* > Loaders;
-    LinkComponent(GraphModeler* mg, const std::vector<Q3ListViewItem*>& items, Q3ListViewItem* sel);
+    LinkComponent(GraphModeler* mg, const std::vector<QTreeWidgetItem*>& items, QTreeWidgetItem* sel);
     ~LinkComponent();
 
     // get the number of loader in the tree branch
@@ -68,10 +67,10 @@ public slots:
 signals:
     void displayMessage(const std::string &message);
 protected:
-    Q3ListView* listView;
+    QTreeWidget* listView;
     GraphModeler* mainGraph;
-    std::map<Q3ListViewItem*, sofa::core::loader::BaseLoader*> items2components;
-    Q3ListViewItem* selectedComponent;
+    std::map<QTreeWidgetItem*, sofa::core::loader::BaseLoader*> items2components;
+    QTreeWidgetItem* selectedComponent;
     unsigned int loaderNum;
 };
 

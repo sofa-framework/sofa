@@ -29,11 +29,8 @@
 #include "StructDataWidget.h"
 #include <SofaBaseTopology/TopologyData.h>
 
-#ifdef SOFA_QT4
 #include "QModelViewTableDataContainer.h"
-#else
-#include "QTableDataContainer.h"
-#endif
+
 
 namespace sofa
 {

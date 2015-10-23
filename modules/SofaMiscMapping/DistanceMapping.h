@@ -26,13 +26,13 @@
 #define SOFA_COMPONENT_MAPPING_DistanceMapping_H
 #include "config.h"
 
-#include <sofa/SofaMisc.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/core/MultiMapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
+
 
 namespace sofa
 {
@@ -107,6 +107,8 @@ public:
 
     virtual void init();
 
+    using Inherit::apply;
+
     virtual void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
 
     virtual void apply(const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
@@ -143,6 +145,8 @@ public:
     virtual const defaulttype::BaseMatrix* getK();
 
     virtual void draw(const core::visual::VisualParams* vparams);
+
+    virtual void updateForceMask();
 
 protected:
     DistanceMapping();
@@ -270,6 +274,10 @@ public:
 
     }
 
+    using Inherit::apply;
+    using Inherit::applyJ;
+    using Inherit::applyJT;
+
     virtual void apply(const helper::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos);
     virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, const helper::vector<const  InVecDeriv*>& inDeriv);
     virtual void applyJT(const helper::vector< InVecDeriv*>& outDeriv, const helper::vector<const OutVecDeriv*>& inDeriv);
@@ -282,6 +290,8 @@ public:
     virtual const defaulttype::BaseMatrix* getK();
 
     virtual void draw(const core::visual::VisualParams* vparams);
+
+    virtual void updateForceMask();
 
 protected:
     DistanceMultiMapping();
@@ -302,22 +312,19 @@ private:
 
   // allocate jacobians
   virtual void alloc() {
-
       const unsigned n = this->getFrom().size();
       if( n != baseMatrices.size() ) {
-          release();
-
+          release( n ); // will only do something if n<oldsize
+          size_t oldsize = baseMatrices.size();
           baseMatrices.resize( n );
-          for( unsigned i = 0; i < n; ++i )
-          {
+          for( unsigned i = oldsize ; i < n ; ++i ) // will only do something if n>oldsize
               baseMatrices[i] = new SparseMatrixEigen;
-          }
       }
   }
 
   // delete jacobians
-  void release() {
-      for( unsigned i = 0, n = baseMatrices.size(); i < n; ++i) {
+  void release( size_t from=0 ) {
+      for( unsigned i = from, n = baseMatrices.size(); i < n; ++i) {
           delete baseMatrices[i];
           baseMatrices[i] = 0;
       }

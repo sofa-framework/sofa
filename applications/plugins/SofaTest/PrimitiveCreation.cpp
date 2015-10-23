@@ -43,12 +43,12 @@ sofa::component::collision::OBBModel::SPtr makeOBB(const Vec3 & p,const double *
     sofa::simulation::Node::SPtr obb = father->createChild("obb");
 
     //creating a mechanical object which will be attached to the OBBModel
-    MechanicalObject<Rigid3>::SPtr obbDOF = New<MechanicalObject<Rigid3> >();
+    MechanicalObjectRigid3::SPtr obbDOF = New<MechanicalObjectRigid3>();
 
     //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
     obbDOF->resize(1);
-    Data<MechanicalObject<Rigid3>::VecCoord> & dpositions = *obbDOF->write( sofa::core::VecId::position() );
-    MechanicalObject<Rigid3>::VecCoord & positions = *dpositions.beginEdit();
+    Data<MechanicalObjectRigid3::VecCoord> & dpositions = *obbDOF->write( sofa::core::VecId::position() );
+    MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
 
     //we create a frame that we will rotate like it is specified by the parameters angles and order
     Vec3 x(1,0,0);
@@ -73,9 +73,9 @@ sofa::component::collision::OBBModel::SPtr makeOBB(const Vec3 & p,const double *
     dpositions.endEdit();
 
     //Editting the velocity of the OBB
-    Data<MechanicalObject<Rigid3>::VecDeriv> & dvelocities = *obbDOF->write( sofa::core::VecId::velocity() );
+    Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *obbDOF->write( sofa::core::VecId::velocity() );
 
-    MechanicalObject<Rigid3>::VecDeriv & velocities = *dvelocities.beginEdit();
+    MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
     velocities[0] = v;
     dvelocities.endEdit();
 
@@ -83,7 +83,7 @@ sofa::component::collision::OBBModel::SPtr makeOBB(const Vec3 & p,const double *
     obb->addObject(obbDOF);
 
     //creating an OBBModel and attaching it to the same node than obbDOF
-    sofa::component::collision::OBBModel::SPtr obbCollisionModel = New<sofa::component::collision::OBBModel >();
+    sofa::component::collision::OBBModel::SPtr obbCollisionModel = New<sofa::component::collision::OBBModel>();
     obb->addObject(obbCollisionModel);
 
     //editting the OBBModel
@@ -104,12 +104,12 @@ sofa::component::collision::TriangleModel::SPtr makeTri(const Vec3 & p0,const Ve
     sofa::simulation::Node::SPtr tri = father->createChild("tri");
 
     //creating a mechanical object which will be attached to the OBBModel
-    MechanicalObject<Vec3Types>::SPtr triDOF = New<MechanicalObject<Vec3Types> >();
+    MechanicalObject3::SPtr triDOF = New<MechanicalObject3>();
 
     //editing DOF related to the TriangleModel to be created, size is 3 (3 points) because it contains just one Triangle
     triDOF->resize(3);
-    Data<MechanicalObject<Vec3Types>::VecCoord> & dpositions = *triDOF->write( sofa::core::VecId::position() );
-    MechanicalObject<Vec3Types>::VecCoord & positions = *dpositions.beginEdit();
+    Data<MechanicalObject3::VecCoord> & dpositions = *triDOF->write( sofa::core::VecId::position() );
+    MechanicalObject3::VecCoord & positions = *dpositions.beginEdit();
 
     //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
     positions[0] = p0;
@@ -119,9 +119,9 @@ sofa::component::collision::TriangleModel::SPtr makeTri(const Vec3 & p0,const Ve
     dpositions.endEdit();
 
     //Editting the velocity of the OBB
-    Data<MechanicalObject<Vec3Types>::VecDeriv> & dvelocities = *triDOF->write( sofa::core::VecId::velocity() );
+    Data<MechanicalObject3::VecDeriv> & dvelocities = *triDOF->write( sofa::core::VecId::velocity() );
 
-    MechanicalObject<Vec3Types>::VecDeriv & velocities = *dvelocities.beginEdit();
+    MechanicalObject3::VecDeriv & velocities = *dvelocities.beginEdit();
     velocities[0] = v;
     velocities[1] = v;
     velocities[2] = v;
@@ -139,7 +139,7 @@ sofa::component::collision::TriangleModel::SPtr makeTri(const Vec3 & p0,const Ve
     tri->addObject(bmt);
 
     //creating an OBBModel and attaching it to the same node than obbDOF
-    sofa::component::collision::TriangleModel::SPtr triCollisionModel = New<sofa::component::collision::TriangleModel >();
+    sofa::component::collision::TriangleModel::SPtr triCollisionModel = New<sofa::component::collision::TriangleModel>();
     tri->addObject(triCollisionModel);
 
 
@@ -156,12 +156,12 @@ sofa::component::collision::CapsuleModel::SPtr makeCap(const Vec3 & p0,const Vec
     sofa::simulation::Node::SPtr cap = father->createChild("cap");
 
     //creating a mechanical object which will be attached to the OBBModel
-    MechanicalObject<Vec3Types>::SPtr capDOF = New<MechanicalObject<Vec3Types> >();
+    MechanicalObject3::SPtr capDOF = New<MechanicalObject3>();
 
     //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
     capDOF->resize(2);
-    Data<MechanicalObject<Vec3Types>::VecCoord> & dpositions = *capDOF->write( sofa::core::VecId::position() );
-    MechanicalObject<Vec3Types>::VecCoord & positions = *dpositions.beginEdit();
+    Data<MechanicalObject3::VecCoord> & dpositions = *capDOF->write( sofa::core::VecId::position() );
+    MechanicalObject3::VecCoord & positions = *dpositions.beginEdit();
 
     //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
     positions[0] = p0;
@@ -170,9 +170,9 @@ sofa::component::collision::CapsuleModel::SPtr makeCap(const Vec3 & p0,const Vec
     dpositions.endEdit();
 
     //Editting the velocity of the OBB
-    Data<MechanicalObject<Vec3Types>::VecDeriv> & dvelocities = *capDOF->write( sofa::core::VecId::velocity() );
+    Data<MechanicalObject3::VecDeriv> & dvelocities = *capDOF->write( sofa::core::VecId::velocity() );
 
-    MechanicalObject<Vec3Types>::VecDeriv & velocities = *dvelocities.beginEdit();
+    MechanicalObject3::VecDeriv & velocities = *dvelocities.beginEdit();
     velocities[0] = v;
     velocities[1] = v;
     dvelocities.endEdit();
@@ -185,7 +185,7 @@ sofa::component::collision::CapsuleModel::SPtr makeCap(const Vec3 & p0,const Vec
     cap->addObject(bmt);
 
     //creating an OBBModel and attaching it to the same node than obbDOF
-    sofa::component::collision::CapsuleModel::SPtr capCollisionModel = New<sofa::component::collision::CapsuleModel >();
+    sofa::component::collision::CapsuleModel::SPtr capCollisionModel = New<sofa::component::collision::CapsuleModel>();
     cap->addObject(capCollisionModel);
 
 
@@ -208,12 +208,12 @@ sofa::component::collision::RigidSphereModel::SPtr makeRigidSphere(const Vec3 & 
     sofa::simulation::Node::SPtr sphere = father->createChild("sphere");
 
     //creating a mechanical object which will be attached to the OBBModel
-    MechanicalObject<Rigid3>::SPtr sphereDOF = New<MechanicalObject<Rigid3> >();
+    MechanicalObjectRigid3::SPtr sphereDOF = New<MechanicalObjectRigid3>();
 
     //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
     sphereDOF->resize(1);
-    Data<MechanicalObject<Rigid3>::VecCoord> & dpositions = *sphereDOF->write( sofa::core::VecId::position() );
-    MechanicalObject<Rigid3>::VecCoord & positions = *dpositions.beginEdit();
+    Data<MechanicalObjectRigid3::VecCoord> & dpositions = *sphereDOF->write( sofa::core::VecId::position() );
+    MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
 
     //we create a frame that we will rotate like it is specified by the parameters angles and order
     Vec3 x(1,0,0);
@@ -238,9 +238,9 @@ sofa::component::collision::RigidSphereModel::SPtr makeRigidSphere(const Vec3 & 
     dpositions.endEdit();
 
     //Editting the velocity of the OBB
-    Data<MechanicalObject<Rigid3>::VecDeriv> & dvelocities = *sphereDOF->write( sofa::core::VecId::velocity() );
+    Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *sphereDOF->write( sofa::core::VecId::velocity() );
 
-    MechanicalObject<Rigid3>::VecDeriv & velocities = *dvelocities.beginEdit();
+    MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
     velocities[0] = v;
     dvelocities.endEdit();
 
@@ -248,7 +248,7 @@ sofa::component::collision::RigidSphereModel::SPtr makeRigidSphere(const Vec3 & 
     sphere->addObject(sphereDOF);
 
     //creating an RigidSphereModel and attaching it to the same node than obbDOF
-    sofa::component::collision::RigidSphereModel::SPtr sphereCollisionModel = New<sofa::component::collision::RigidSphereModel >();
+    sofa::component::collision::RigidSphereModel::SPtr sphereCollisionModel = New<sofa::component::collision::RigidSphereModel>();
     sphere->addObject(sphereCollisionModel);
 
     //editing the RigidSphereModel
@@ -268,12 +268,12 @@ sofa::component::collision::SphereModel::SPtr makeSphere(const Vec3 & p,SReal ra
     sofa::simulation::Node::SPtr sphere = father->createChild("sphere");
 
     //creating a mechanical object which will be attached to the OBBModel
-    MechanicalObject<Vec3Types>::SPtr sphereDOF = New<MechanicalObject<Vec3Types> >();
+    MechanicalObject3::SPtr sphereDOF = New<MechanicalObject3>();
 
     //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
     sphereDOF->resize(1);
-    Data<MechanicalObject<Vec3Types>::VecCoord> & dpositions = *sphereDOF->write( sofa::core::VecId::position() );
-    MechanicalObject<Vec3Types>::VecCoord & positions = *dpositions.beginEdit();
+    Data<MechanicalObject3::VecCoord> & dpositions = *sphereDOF->write( sofa::core::VecId::position() );
+    MechanicalObject3::VecCoord & positions = *dpositions.beginEdit();
 
     //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
     positions[0] = p;
@@ -281,9 +281,9 @@ sofa::component::collision::SphereModel::SPtr makeSphere(const Vec3 & p,SReal ra
     dpositions.endEdit();
 
     //Editting the velocity of the OBB
-    Data<MechanicalObject<Vec3Types>::VecDeriv> & dvelocities = *sphereDOF->write( sofa::core::VecId::velocity() );
+    Data<MechanicalObject3::VecDeriv> & dvelocities = *sphereDOF->write( sofa::core::VecId::velocity() );
 
-    MechanicalObject<Vec3Types>::VecDeriv & velocities = *dvelocities.beginEdit();
+    MechanicalObject3::VecDeriv & velocities = *dvelocities.beginEdit();
     velocities[0] = v;
     dvelocities.endEdit();
 
@@ -291,7 +291,7 @@ sofa::component::collision::SphereModel::SPtr makeSphere(const Vec3 & p,SReal ra
     sphere->addObject(sphereDOF);
 
     //creating an RigidSphereModel and attaching it to the same node than obbDOF
-    sofa::component::collision::SphereModel::SPtr sphereCollisionModel = New<sofa::component::collision::SphereModel >();
+    sofa::component::collision::SphereModel::SPtr sphereCollisionModel = New<sofa::component::collision::SphereModel>();
     sphere->addObject(sphereCollisionModel);
 
     //editting the RigidSphereModel

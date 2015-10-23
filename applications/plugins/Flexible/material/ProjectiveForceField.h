@@ -25,7 +25,7 @@
 #ifndef SOFA_ProjectiveFORCEFIELD_H
 #define SOFA_ProjectiveFORCEFIELD_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "../material/BaseMaterialForceField.h"
 #include "../material/ProjectiveMaterialBlock.h"
 

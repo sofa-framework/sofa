@@ -42,7 +42,7 @@ namespace forcefield
 /** Compute Finite Element forces based on hexahedral elements including continuum mass matrices
 */
 template<class DataTypes>
-class HexahedronFEMForceFieldAndMass : virtual public sofa::core::behavior::Mass<DataTypes>, virtual public HexahedronFEMForceField<DataTypes>
+class HexahedronFEMForceFieldAndMass : virtual public core::behavior::Mass<DataTypes>, virtual public HexahedronFEMForceField<DataTypes>
 {
 public:
     SOFA_CLASS2(SOFA_TEMPLATE(HexahedronFEMForceFieldAndMass,DataTypes), SOFA_TEMPLATE(sofa::core::behavior::Mass,DataTypes), SOFA_TEMPLATE(HexahedronFEMForceField,DataTypes));
@@ -86,6 +86,8 @@ public:
 
     virtual void addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
+    using HexahedronFEMForceFieldT::addKToMatrix;
+    using core::behavior::Mass<DataTypes>::addKToMatrix;
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
     {
         HexahedronFEMForceFieldT::addKToMatrix(mparams, matrix);
@@ -117,7 +119,7 @@ public:
 
     virtual void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v);
 
-    SReal getElementMass(unsigned int index);
+    SReal getElementMass(unsigned int index) const;
     // visual model
 
     virtual void draw(const core::visual::VisualParams* vparams);

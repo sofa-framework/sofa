@@ -25,7 +25,7 @@
 #ifndef FLEXIBLE_RigidConstraint_H
 #define FLEXIBLE_RigidConstraint_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include "AffineTypes.h"
 #include "QuadraticTypes.h"
 
@@ -140,6 +140,7 @@ public:
         }
     }
 
+    using core::behavior::ProjectiveConstraintSet<DataTypes>::applyConstraint;
     virtual void applyConstraint(defaulttype::BaseMatrix *, unsigned int /*offset*/) {}
     virtual void applyConstraint(defaulttype::BaseVector *, unsigned int /*offset*/) {}
 

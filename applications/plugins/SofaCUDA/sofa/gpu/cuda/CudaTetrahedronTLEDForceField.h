@@ -114,7 +114,6 @@ public:
     virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& dataF, const DataVecCoord& dataX, const DataVecDeriv& /*dataV*/ ) ;
 //    void addDForce (VecDeriv& /*df*/, const VecDeriv& /*dx*/);
     virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& datadF, const DataVecDeriv& datadX ) ;
-    SReal getPotentialEnergy(const VecCoord&) const { return 0.0; }
     SReal getPotentialEnergy(const sofa::core::MechanicalParams* , const DataVecCoord&) const { return 0.0; }
     // Computes lambda and mu based on Young's modulus and Poisson ratio
     void updateLameCoefficients();

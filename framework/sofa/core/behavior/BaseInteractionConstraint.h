@@ -48,7 +48,6 @@ class SOFA_CORE_API BaseInteractionConstraint : public BaseConstraint
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseInteractionConstraint, BaseConstraint);
-
     /// Get the first MechanicalState
     /// \todo Rename to getMechState1()
     /// \todo Replace with an accessor to a list of states, as an InteractionConstraint can be applied to more than two.
@@ -58,6 +57,15 @@ public:
     /// \todo Rename to getMechState2()
     /// \todo Replace with an accessor to a list of states, as an InteractionConstraint can be applied to more than two.
     virtual BaseMechanicalState* getMechModel2() = 0;
+	
+protected:
+    BaseInteractionConstraint() {}
+	virtual ~BaseInteractionConstraint(){}
+	
+private:
+	BaseInteractionConstraint(const BaseInteractionConstraint& n) ;
+	BaseInteractionConstraint& operator=(const BaseInteractionConstraint& n) ;
+	
 };
 
 } // namespace behavior

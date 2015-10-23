@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_BaseDeformationMAPPING_H
 #define SOFA_COMPONENT_MAPPING_BaseDeformationMAPPING_H
 
-#include "../initFlexible.h"
+#include <Flexible/config.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
@@ -167,6 +167,7 @@ public:
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
+    typedef typename Out::Real OutReal;
     enum { spatial_dimensions = Out::spatial_dimensions };
     enum { material_dimensions = OutDataTypesInfo<Out>::material_dimensions };
     //@}
@@ -210,6 +211,10 @@ public:
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     //@}	
 
+    typedef typename Inherit::ForceMask ForceMask;
+
+
+
     ///@brief Update \see f_index_parentToChild from \see f_index
     void updateIndex();
     void updateIndex(const size_t parentSize, const size_t childSize);
@@ -233,6 +238,10 @@ public:
     //@{
     virtual void init();
     virtual void reinit();
+
+    using Inherit::apply;
+    using Inherit::applyJ;
+    using Inherit::applyJT;
 
     virtual void apply(OutVecCoord& out, const InVecCoord& in);
     virtual void apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn);
@@ -270,9 +279,9 @@ public:
     ///@brief Get parent's influence weights on each child
     virtual VecVReal getWeights(){ return f_w.getValue(); }
     ///@brief Get parent's influence weights gradient on each child
-    virtual vector<VGradient> getWeightsGradient(){ return f_dw.getValue(); }
+    virtual VecVGradient getWeightsGradient(){ return f_dw.getValue(); }
     ///@brief Get parent's influence weights hessian on each child
-    virtual vector<VHessian> getWeightsHessian(){ return f_ddw.getValue(); }
+    virtual VecVHessian getWeightsHessian(){ return f_ddw.getValue(); }
     ///@brief Get mapped positions
     VecCoord getMappedPositions() { return f_pos; }
     ///@brief Get init positions
@@ -309,8 +318,8 @@ public:
                                                  @warning Therefore to get access to parent's child index only you have to perform a loop over index[i] with an offset of size 2.
                                              */
     Data<VecVReal >       f_w;         ///< Influence weights of the parents for each child
-    Data<vector<VGradient> >   f_dw;        ///< Influence weight gradients
-    Data<vector<VHessian> >    f_ddw;       ///< Influence weight hessians
+    Data<VecVGradient >   f_dw;        ///< Influence weight gradients
+    Data<VecVHessian >    f_ddw;       ///< Influence weight hessians
     Data<VMaterialToSpatial>    f_F0;       ///< initial value of deformation gradients
     Data< vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
 
@@ -324,7 +333,7 @@ public:
 
 protected:
     BaseDeformationMappingT (core::State<In>* from = NULL, core::State<Out>* to= NULL);
-    virtual ~BaseDeformationMappingT()     { }
+    virtual ~BaseDeformationMappingT() { }
 
 public:
 
@@ -348,21 +357,19 @@ protected :
     virtual void initJacobianBlocks()=0;
     virtual void initJacobianBlocks(const InVecCoord& /*inCoord*/, const OutVecCoord& /*outCoord*/){ std::cout << "Only implemented in LinearMapping for now." << std::endl;}
 
-//    helper::ParticleMask* maskFrom;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
-    helper::ParticleMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
-
-
-    SparseMatrixEigen eigenJacobian;  ///< Assembled Jacobian matrix
+    SparseMatrixEigen eigenJacobian/*, maskedEigenJacobian*/;  ///< Assembled Jacobian matrix
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
-    bool Jdirty; ///< Does J needs to be updated?
     void updateJ();
-    helper::ParticleMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence (TODO add such a mechanism directly in ParticleMask?)
+//    void updateMaskedJ();
+//    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
 
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization
     const defaulttype::ResizableExtVector<core::topology::BaseMeshTopology::Triangle> *extTriangles;
     const defaulttype::ResizableExtVector<int> *extvertPosIdx;
+
+    void updateForceMask();
 
 public:
 

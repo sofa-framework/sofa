@@ -77,6 +77,9 @@ private:
 };
 
 
+#define MAINLOGGER( level, msg, location ) { std::stringstream ss; ss<<msg; sofa::helper::Logger::getMainLogger().log( sofa::helper::Logger::level, ss.str(), location ); }
+
+
 /// Simple Logger that outputs to stdout and stderr.
 class SOFA_HELPER_API TTYLogger: public Logger
 {

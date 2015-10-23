@@ -35,39 +35,21 @@
 #include <SofaValidation/Monitor.h>
 #include <sofa/gui/qt/WDoubleLineEdit.h>
 
-#ifdef SOFA_QT4
 #include <QDialog>
 #include <QWidget>
-#include <Q3ListViewItem>
-#include <Q3ListView>
-#include <Q3Table>
-#include <Q3GroupBox>
-#include <Q3Grid>
-#include <Q3TextEdit>
+#include <QTreeView>
+#include <QTreeWidgetItem>
+#include <QTableWidget>
+#include <QGroupBox>
+#include <QGridLayout>
+#include <QTextEdit>
 #include <QPushButton>
 #include <QTabWidget>
 #include <QLabel>
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QSpinBox>
-#include <Q3CheckListItem>
 #include <QVBoxLayout>
-#else
-#include <qdialog.h>
-#include <qwidget.h>
-#include <qlistview.h>
-#include <qtable.h>
-#include <qgroupbox.h>
-#include <qgrid.h>
-#include <qtextedit.h>
-#include <qtabwidget.h>
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qcheckbox.h>
-#include <qspinbox.h>
-#include <qlayout.h>
-#endif
 
 
 namespace sofa
@@ -85,15 +67,6 @@ class QEnergyStatWidget;
 class QMomentumStatWidget;
 #endif
 class QTabulationModifyObject;
-#ifndef SOFA_QT4
-typedef QListView   Q3ListView;
-typedef QListViewItem Q3ListViewItem;
-typedef QCheckListItem   Q3CheckListItem;
-typedef QTable    Q3Table;
-typedef QGroupBox Q3GroupBox;
-typedef QTextEdit   Q3TextEdit;
-typedef QGrid       Q3Grid;
-#endif
 
 typedef struct ModifyObjectFlags
 {
@@ -149,12 +122,12 @@ class SOFA_SOFAGUIQT_API ModifyObject : public QDialog
 public:
 
     explicit ModifyObject( void *Id,
-            Q3ListViewItem* item_clicked,
+            QTreeWidgetItem* item_clicked,
             QWidget* parent,
             const ModifyObjectFlags& dialogFlags,
             const char* name= 0,
-            bool  modal= FALSE,
-            Qt::WFlags f= 0 );
+            bool  modal= false,
+            Qt::WindowFlags f= 0 );
 
     ~ModifyObject()
     {
@@ -166,7 +139,7 @@ public:
     void createDialog(core::objectmodel::Base* node);
     void createDialog(core::objectmodel::BaseData* data);
     bool hideData(core::objectmodel::BaseData* data) { return (!data->isDisplayed()) && dialogFlags_.HIDE_FLAG;}
-    void readOnlyData(Q3Table *widget, core::objectmodel::BaseData* data);
+    void readOnlyData(QTableWidget *widget, core::objectmodel::BaseData* data);
     void readOnlyData(QWidget *widget, core::objectmodel::BaseData* data);
 
 public slots:
@@ -200,15 +173,15 @@ protected:
     void updateConsole();  //update the console log of warnings and outputs
     QString parseDataModified();
     void* Id_;
-    Q3ListViewItem* item_;
+    QTreeWidgetItem* item_;
     core::objectmodel::Base* node;
     core::objectmodel::BaseData* data_;
     const ModifyObjectFlags dialogFlags_;
 
     QWidget* outputTab;
-    Q3TextEdit *logOutputEdit;
+    QTextEdit *logOutputEdit;
     QWidget *warningTab;
-    Q3TextEdit *logWarningEdit;
+    QTextEdit *logWarningEdit;
 
     QTabWidget *dialogTab;
     QPushButton *buttonUpdate;

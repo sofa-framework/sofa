@@ -217,7 +217,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             // elm-number elm-type reg-phys reg-elem number-of-nodes <node-number-list ...>
             file >> index >> etype >> rphys >> relem >> nnodes;
         }
-        else if (gmshFormat == 2)
+        else /*if (gmshFormat == 2)*/
         {
             // version 2.0 format is
             // elm-number elm-type number-of-tags < tag > ... node-number-list

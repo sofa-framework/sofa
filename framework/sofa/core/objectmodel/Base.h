@@ -87,13 +87,16 @@ protected:
     /// Use the New() method instead
     Base();
 
+  
+	
     /// Direct calls to destructor are forbidden.
     /// Smart pointers must be used to manage creation/destruction of objects
     virtual ~Base();
 
 private:
-    /// Copy constructor is not allowed
+	/// Copy constructor is not allowed
     Base(const Base& b);
+    Base& operator=(const Base& b);
 
     sofa::helper::system::atomic<int> ref_counter;
     void addRef();

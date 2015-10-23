@@ -119,11 +119,11 @@ public:
     /// Get the full name of this object (i.e. concatenation if all the names of its ancestors and itself)
     virtual std::string getFullName();
 
-    virtual void logWarning(std::string s) {warnings.push_back(s);};
+    virtual void logError(std::string s) {errors.push_back(s);}
 
 protected:
     AttributeMap attributes;
-    std::vector< std::string > warnings;
+    std::vector< std::string > errors;
 };
 
 } // namespace objectmodel

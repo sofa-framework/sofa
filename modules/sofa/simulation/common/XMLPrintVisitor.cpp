@@ -28,9 +28,7 @@
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseInteractionConstraint.h>
-#ifdef SOFA_HAVE_EIGEN2
 #include <sofa/core/behavior/BaseLMConstraint.h>
-#endif
 
 namespace sofa
 {
@@ -115,9 +113,7 @@ Visitor::Result XMLPrintVisitor::processNodeTopDown(simulation::Node* node)
         if (   dynamic_cast<sofa::core::behavior::BaseInteractionForceField*> (obj) == NULL
                 && dynamic_cast<sofa::core::behavior::BaseInteractionConstraint*> (obj) == NULL
                 && dynamic_cast<sofa::core::behavior::BaseInteractionProjectiveConstraintSet*> (obj) == NULL
-#ifdef SOFA_HAVE_EIGEN2
                 && dynamic_cast<sofa::core::behavior::BaseLMConstraint*> (obj) == NULL
-#endif
            )
             this->processObject(obj);
     }
@@ -133,9 +129,7 @@ void XMLPrintVisitor::processNodeBottomUp(simulation::Node* node)
         if (   dynamic_cast<sofa::core::behavior::BaseInteractionForceField*> (obj) != NULL
                 || dynamic_cast<sofa::core::behavior::BaseInteractionConstraint*> (obj) != NULL
                 || dynamic_cast<sofa::core::behavior::BaseInteractionProjectiveConstraintSet*> (obj) != NULL
-#ifdef SOFA_HAVE_EIGEN2
                 || dynamic_cast<sofa::core::behavior::BaseLMConstraint*> (obj) != NULL
-#endif
            )
             this->processObject(obj);
     }

@@ -48,7 +48,7 @@ bool MyDataWidgetUnsigned::createWidgets()
     unsigned myData_value = getData()->virtualGetValue();
 
     qslider = new QSlider(Qt::Horizontal, this);
-    qslider->setTickmarks(QSlider::Below);
+    qslider->setTickPosition(QSlider::TicksBelow);
     qslider->setRange(0, 100);
     qslider->setValue((int)myData_value);
 
@@ -64,9 +64,9 @@ bool MyDataWidgetUnsigned::createWidgets()
 
 
     QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->add(label1);
-    layout->add(label2);
-    layout->add(qslider);
+    layout->addWidget(label1);
+    layout->addWidget(label2);
+    layout->addWidget(qslider);
 
     connect(qslider, SIGNAL(sliderReleased()), this, SLOT(setWidgetDirty()));
     connect(qslider, SIGNAL(valueChanged(int)), this, SLOT(setWidgetDirty()));

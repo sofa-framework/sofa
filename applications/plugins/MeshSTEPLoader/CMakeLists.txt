@@ -1,24 +1,23 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(MeshSTEPLoader)
 
-set(MESHSTEPLOADER_INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
-set(MESHSTEPLOADER_INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(MESHSTEPLOADER_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
     MeshSTEPLoader.h
     ParametricTriangleTopologyContainer.h
-    SingleComponent.inl
-    SingleComponent.h
     STEPShapeMapping.h
-    initMeshSTEPLoader.h)
+    SingleComponent.h
+    SingleComponent.inl
+    config.h
+)
 
 set(SOURCE_FILES
     MeshSTEPLoader.cpp
     ParametricTriangleTopologyContainer.cpp
-    SingleComponent.cpp
     STEPShapeMapping.cpp
-    initMeshSTEPLoader.cpp)
+    SingleComponent.cpp
+    initMeshSTEPLoader.cpp
+)
 
 set(README_FILES PluginMeshSTEPLoader.txt)
 
@@ -32,6 +31,7 @@ set(MESHSTEPLOADER_COMPILER_FLAGS "-DSOFA_BUILD_MESHSTEPLOADERPLUGIN")
 target_link_libraries(${PROJECT_NAME} SofaBaseTopology)
 target_link_libraries(${PROJECT_NAME} ${OPENCASCADE_LIBRARIES})
 include_directories(${OPENCASCADE_INCLUDE_DIR})
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 if(WIN32)
     # required for OpenCASCADE
@@ -43,14 +43,14 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MES
 install(TARGETS ${PROJECT_NAME}
     COMPONENT MeshSTEPLoader_libraries
     EXPORT MeshSTEPLoaderTargets
-    RUNTIME DESTINATION "${MESHSTEPLOADER_INSTALL_BIN_DIR}"
-    LIBRARY DESTINATION "${MESHSTEPLOADER_INSTALL_LIB_DIR}"
-    ARCHIVE DESTINATION "${MESHSTEPLOADER_INSTALL_LIB_DIR}")
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)
 
 install(DIRECTORY example/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
 if(WIN32)
     # Copy OpenCascade DLLs
     file(COPY ${OPENCASCADE_DLLS} DESTINATION bin)
-    install(FILES ${OPENCASCADE_DLLS} DESTINATION ${MESHSTEPLOADER_INSTALL_BIN_DIR})
+    install(FILES ${OPENCASCADE_DLLS} DESTINATION bin)
 endif()

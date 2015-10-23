@@ -62,7 +62,6 @@ public:
     typedef objectmodel::Data<VecCoord> DataVecCoord;
     typedef objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef typename DataTypes::Real Real;
-    typedef helper::ParticleMask ParticleMask;
 protected:
     PairInteractionProjectiveConstraintSet(MechanicalState<DataTypes> *mm1 = NULL, MechanicalState<DataTypes> *mm2 = NULL);
 
@@ -79,6 +78,10 @@ public:
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes>* getMState2() { return mstate2.get(); }
     BaseMechanicalState* getMechModel2() { return mstate2.get(); }
+
+    // to get rid of warnings
+    using BaseInteractionProjectiveConstraintSet::projectPosition;
+    using BaseInteractionProjectiveConstraintSet::projectResponse;
 
     /// @name Vector operations
     /// @{
@@ -193,11 +196,11 @@ public:
 protected:
     SingleLink<PairInteractionProjectiveConstraintSet<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
     SingleLink<PairInteractionProjectiveConstraintSet<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
-    ParticleMask *mask1;
-    ParticleMask *mask2;
+    typename MechanicalState<DataTypes>::ForceMask *mask1;
+    typename MechanicalState<DataTypes>::ForceMask *mask2;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONFORCEFIELD_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONPROJECTIVECONSTRAINTSET_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defaulttype::Vec2dTypes>;

@@ -1,109 +1,89 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(SofaUserInteraction)
 
 set(HEADER_FILES
-
-    config.h
-    initUserInteraction.h
-    RayTraceDetection.h
-    RayContact.h
-    DisabledContact.h
-    ComponentMouseInteraction.h
-    ComponentMouseInteraction.inl
-    MouseInteractor.h
-    MouseInteractor.inl
+    # AddFramePerformer.h
+    # AddFramePerformer.inl
+    AddRecordedCameraPerformer.h
+    ArticulatedHierarchyBVHController.h
+    ArticulatedHierarchyController.h
     AttachBodyPerformer.h
     AttachBodyPerformer.inl
-    FixParticlePerformer.h
-    FixParticlePerformer.inl
-    InteractionPerformer.h
-    SuturePointPerformer.h
-    SuturePointPerformer.inl
-    GraspingManager.h
-    ArticulatedHierarchyController.h
-    ArticulatedHierarchyBVHController.h
+    ComponentMouseInteraction.h
+    ComponentMouseInteraction.inl
     Controller.h
+    CuttingPoint.h
+    DisabledContact.h
     EdgeSetController.h
     EdgeSetController.inl
+    FixParticlePerformer.h
+    FixParticlePerformer.inl
+    GraspingManager.h
+    InciseAlongPathPerformer.h
+    InteractionPerformer.h
+    InterpolationController.h
     MechanicalStateController.h
     MechanicalStateController.inl
+    MechanicalStateControllerOmni.h
+    MechanicalStateControllerOmni.inl
+    MouseInteractor.h
+    MouseInteractor.inl
+    NodeToggleController.h
     Ray.h
-    RayModel.h
+    RayContact.h
     RayDiscreteIntersection.h
     RayDiscreteIntersection.inl
+    RayModel.h
     RayNewProximityIntersection.h
+    RayTraceDetection.h
     RemovePrimitivePerformer.h
     RemovePrimitivePerformer.inl
-    InciseAlongPathPerformer.h
-    TopologicalChangeManager.h
-    CuttingPoint.h
-#    AddFramePerformer.h
-#    AddFramePerformer.inl
-    AddRecordedCameraPerformer.h
-    StartNavigationPerformer.h
-    MechanicalStateControllerOmni.h
-	MechanicalStateControllerOmni.inl
-    NodeToggleController.h
-    InterpolationController.h
     SleepController.h
-    )
-
-set(SOURCE_FILES
-
-    initUserInteraction.cpp
-    RayTraceDetection.cpp
-    RayContact.cpp
-    DisabledContact.cpp
-    ComponentMouseInteraction.cpp
-    MouseInteractor.cpp
-    AttachBodyPerformer.cpp
-    FixParticlePerformer.cpp
-    InteractionPerformer.cpp
-    SuturePointPerformer.cpp
-    GraspingManager.cpp
-    ArticulatedHierarchyController.cpp
-    ArticulatedHierarchyBVHController.cpp
-    Controller.cpp
-    EdgeSetController.cpp
-    MechanicalStateController.cpp
-    RayModel.cpp
-    RayDiscreteIntersection.cpp
-    RayNewProximityIntersection.cpp
-    RemovePrimitivePerformer.cpp
-    InciseAlongPathPerformer.cpp
-    TopologicalChangeManager.cpp
-    CuttingPoint.cpp
-#    AddFramePerformer.cpp
-    AddRecordedCameraPerformer.cpp
-    StartNavigationPerformer.cpp
-    MechanicalStateControllerOmni.cpp
-    NodeToggleController.cpp
-    InterpolationController.cpp
-    InterpolationController.inl
-    SleepController.cpp
-    )
-
-set(GROUP_BASE_DIR "..")
-
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries( ${PROJECT_NAME} PUBLIC SofaMeshCollision SofaTopologyMapping SofaDeformable SofaBoundaryCondition SofaGraphComponent SofaBaseVisual )
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAGENERAL_BUILD_INCLUDE_DIR}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAGENERAL_DEPENDENCY_INCLUDE_DIR}>")
-
-set( SOFAUSER_INTERACTION_COMPILER_FLAGS "-DSOFA_BUILD_USER_INTERACTION")
-
-set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
-set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFAGENERAL_VERSION} )
-set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAUSER_INTERACTION_COMPILER_FLAGS}"  )
-set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
-
-install(TARGETS ${PROJECT_NAME}
-        EXPORT    SofaGeneralTargets
-        RUNTIME DESTINATION "${SOFAGENERAL_INSTALL_BIN_DIR}" COMPONENT SofaGeneral_libraries
-        LIBRARY DESTINATION "${SOFAGENERAL_INSTALL_LIB_DIR}" COMPONENT SofaGeneral_libraries
-        ARCHIVE DESTINATION "${SOFAGENERAL_INSTALL_LIB_DIR}" COMPONENT SofaGeneral_libraries
-        PUBLIC_HEADER DESTINATION "${SOFAGENERAL_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}" COMPONENT SofaGeneral_headers
+    StartNavigationPerformer.h
+    SuturePointPerformer.h
+    SuturePointPerformer.inl
+    TopologicalChangeManager.h
+    config.h
+    initUserInteraction.h
 )
 
+set(SOURCE_FILES
+    # AddFramePerformer.cpp
+    AddRecordedCameraPerformer.cpp
+    ArticulatedHierarchyBVHController.cpp
+    ArticulatedHierarchyController.cpp
+    AttachBodyPerformer.cpp
+    ComponentMouseInteraction.cpp
+    Controller.cpp
+    CuttingPoint.cpp
+    DisabledContact.cpp
+    EdgeSetController.cpp
+    FixParticlePerformer.cpp
+    GraspingManager.cpp
+    InciseAlongPathPerformer.cpp
+    InteractionPerformer.cpp
+    InterpolationController.cpp
+    InterpolationController.inl
+    MechanicalStateController.cpp
+    MechanicalStateControllerOmni.cpp
+    MouseInteractor.cpp
+    NodeToggleController.cpp
+    RayContact.cpp
+    RayDiscreteIntersection.cpp
+    RayModel.cpp
+    RayNewProximityIntersection.cpp
+    RayTraceDetection.cpp
+    RemovePrimitivePerformer.cpp
+    SleepController.cpp
+    StartNavigationPerformer.cpp
+    SuturePointPerformer.cpp
+    TopologicalChangeManager.cpp
+    initUserInteraction.cpp
+)
 
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaTopologyMapping SofaDeformable SofaBoundaryCondition SofaGraphComponent SofaBaseVisual)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_USER_INTERACTION")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+
+sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})

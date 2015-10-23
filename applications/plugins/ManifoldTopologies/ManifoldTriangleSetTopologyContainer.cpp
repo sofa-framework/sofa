@@ -69,7 +69,7 @@ bool ManifoldTriangleSetTopologyContainer::checkTopology() const
 
         //Temporary objects
         Triangle vertexTriangle;
-        unsigned int firstVertex;
+//        unsigned int firstVertex;
         unsigned int vertex, vertexNext;
 
         //Temporary containers
@@ -114,7 +114,7 @@ bool ManifoldTriangleSetTopologyContainer::checkTopology() const
             }
 
             vertexTriangle = m_triangle[ m_trianglesAroundVertex[vertexIndex][0] ];
-            firstVertex = vertexTriangle[ ( getVertexIndexInTriangle(vertexTriangle, vertexIndex)+1 )%3 ];
+//            firstVertex = vertexTriangle[ ( getVertexIndexInTriangle(vertexTriangle, vertexIndex)+1 )%3 ];
 
             //For each vertex, test if the triangle adjacent are fill in the right contiguous way.
             //Triangles should be adjacent one to the next other in counterclockwise direction.

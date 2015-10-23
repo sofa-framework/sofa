@@ -1,15 +1,10 @@
 #include "CompliantNLImplicitSolver.h"
 
-//#include <SofaEigen2Solver/EigenSparseMatrix.h>
-//#include <SofaEigen2Solver/EigenVector.h>
 #include <sofa/core/ObjectFactory.h>
-//#include <sofa/simulation/common/VectorOperations.h>
 
-#include "assembly/AssemblyVisitor.h"
-//#include "constraint/ConstraintValue.h"
+#include "../assembly/AssemblyVisitor.h"
+#include "../utils/scoped.h"
 
-//#include "utils/minres.h"
-#include "utils/scoped.h"
 using std::cerr;
 using std::endl;
 

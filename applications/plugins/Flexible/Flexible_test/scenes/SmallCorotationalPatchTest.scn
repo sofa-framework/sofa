@@ -33,7 +33,7 @@
     <!--Elasticity-->
     <Node 	name="Elasticity" >
       <TopologyGaussPointSampler name="sampler" inPosition="@../loader.position" showSamplesScale="0" method="0" order="1" />
-      <MechanicalObject template="F332"  name="MoElasticity" showObject="1" showObjectScale="5"/>
+      <MechanicalObject template="F332"  name="MoElasticity" />
       <LinearMapping template="Vec3d,F332" showDeformationGradientScale="0.05"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="2 - sqrt(det(F^T.F))-1" assemble="1"/>
 
       <!--Material-->

@@ -32,13 +32,13 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QPushButton>
-#include <QtGui/QSpacerItem>
-#include <QtGui/QGridLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QVBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QSpacerItem>
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 namespace sofa
 {
@@ -80,30 +80,30 @@ AddPreset::AddPreset(QWidget* parent):
     fileFormGridLayout->addWidget(openFileButton2, 2, 2);
     connect(openFileButton2, SIGNAL(clicked()), this, SLOT(fileOpen()));
 
-    QGridLayout * gridLayoutTwo = new QGridLayout(3, 4);
-    gridLayoutTwo->addWidget(new QLabel("Initial Position", this));
+    QGridLayout * gridLayoutTwo = new QGridLayout();
+    gridLayoutTwo->addWidget(new QLabel("Initial Position", this), 0, 0);
     positionX = new QLineEdit(this);
-    gridLayoutTwo->addWidget(positionX);
+    gridLayoutTwo->addWidget(positionX, 0, 1);
     positionY = new QLineEdit(this);
-    gridLayoutTwo->addWidget(positionY);
+    gridLayoutTwo->addWidget(positionY, 0, 2);
     positionZ = new QLineEdit(this);
-    gridLayoutTwo->addWidget(positionZ);
+    gridLayoutTwo->addWidget(positionZ, 0, 3);
 
-    gridLayoutTwo->addWidget(new QLabel("Initial Rotation", this));
+    gridLayoutTwo->addWidget(new QLabel("Initial Rotation", this), 1, 0);
     rotationX = new QLineEdit(this);
-    gridLayoutTwo->addWidget(rotationX);
+    gridLayoutTwo->addWidget(rotationX, 1, 1);
     rotationY = new QLineEdit(this);
-    gridLayoutTwo->addWidget(rotationY);
+    gridLayoutTwo->addWidget(rotationY, 1, 2);
     rotationZ = new QLineEdit(this);
-    gridLayoutTwo->addWidget(rotationZ);
+    gridLayoutTwo->addWidget(rotationZ, 1, 3);
 
-    gridLayoutTwo->addWidget(new QLabel("Initial Scale", this));
+    gridLayoutTwo->addWidget(new QLabel("Initial Scale", this), 2, 0);
     scaleX = new QLineEdit(this);
-    gridLayoutTwo->addWidget(scaleX);
+    gridLayoutTwo->addWidget(scaleX, 2, 0);
     scaleY = new QLineEdit(this);
-    gridLayoutTwo->addWidget(scaleY);
+    gridLayoutTwo->addWidget(scaleY, 2, 0);
     scaleZ = new QLineEdit(this);
-    gridLayoutTwo->addWidget(scaleZ);
+    gridLayoutTwo->addWidget(scaleZ, 2, 0);
 
     QHBoxLayout *buttonHLayout = new QHBoxLayout();
     buttonHLayout->addItem(new QSpacerItem(20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
@@ -202,21 +202,21 @@ void AddPreset::accept()
     std::string filenames[3];
     //In case of static objects
     if (openFileText0->isVisible())
-        filenames[0] = openFilePath0->text().ascii();
+        filenames[0] = openFilePath0->text().toStdString();
     else
-        filenames[0]=openFilePath2->text().ascii();
+        filenames[0]=openFilePath2->text().toStdString();
 
-    filenames[1] = openFilePath1->text().ascii();
-    filenames[2] = openFilePath2->text().ascii();
+    filenames[1] = openFilePath1->text().toStdString();
+    filenames[2] = openFilePath2->text().toStdString();
 
     std::ostringstream out;
-    out << positionX->text().ascii()<<" "<<positionY->text().ascii()<<" "<<positionZ->text().ascii();
+    out << positionX->text().toStdString()<<" "<<positionY->text().toStdString()<<" "<<positionZ->text().toStdString();
     position=out.str();
     out.str("");
-    out << rotationX->text().ascii()<<" "<<rotationY->text().ascii()<<" "<<rotationZ->text().ascii();
+    out << rotationX->text().toStdString()<<" "<<rotationY->text().toStdString()<<" "<<rotationZ->text().toStdString();
     rotation=out.str();
     out.str("");
-    out << scaleX->text().ascii()<<" "<<scaleY->text().ascii()<<" "<<scaleZ->text().ascii();
+    out << scaleX->text().toStdString()<<" "<<scaleY->text().toStdString()<<" "<<scaleZ->text().toStdString();
     scale=out.str();
     out.str("");
 
@@ -239,7 +239,7 @@ void AddPreset::fileOpen()
     const std::string SofaPath (sofa::helper::system::DataRepository.getFirstPath().c_str());
 
     if (s.isNull() ) return;
-    fileName=std::string (s.ascii());
+    fileName=std::string (s.toStdString());
 
     std::string filePath = sofa::helper::system::FileRepository::relativeToPath(fileName,SofaPath);
     if( filePath == fileName)

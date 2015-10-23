@@ -529,12 +529,6 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_CPP)
-
-extern template class SOFA_VOLUMETRIC_DATA_API ContactMapper<FFDDistanceGridCollisionModel>;
-
-#endif
-
 
 /// Mapper for RigidDistanceGridCollisionModel
 template <class DataTypes>
@@ -631,8 +625,16 @@ public:
 //extern template class SOFA_VOLUMETRIC_DATA_API RigidContactMapper<RigidDistanceGridCollisionModel,Vec3dTypes>;
 //#endif
 
-extern template class SOFA_VOLUMETRIC_DATA_API ContactMapper<RigidDistanceGridCollisionModel>;
+extern template class SOFA_VOLUMETRIC_DATA_API ContactMapper<FFDDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_VOLUMETRIC_DATA_API ContactMapper<RigidDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
 
+#  ifdef _MSC_VER
+// Manual declaration of non-specialized members, to avoid warnings from MSVC.
+extern template SOFA_VOLUMETRIC_DATA_API void BarycentricContactMapper<FFDDistanceGridCollisionModel, defaulttype::Vec3Types>::cleanup();
+extern template SOFA_VOLUMETRIC_DATA_API core::behavior::MechanicalState<defaulttype::Vec3Types>* BarycentricContactMapper<FFDDistanceGridCollisionModel, defaulttype::Vec3Types>::createMapping(const char*);
+extern template SOFA_VOLUMETRIC_DATA_API void RigidContactMapper<RigidDistanceGridCollisionModel, defaulttype::Vec3Types>::cleanup();
+extern template SOFA_VOLUMETRIC_DATA_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<RigidDistanceGridCollisionModel, defaulttype::Vec3Types>::createMapping(const char*);
+#  endif
 #endif
 
 
