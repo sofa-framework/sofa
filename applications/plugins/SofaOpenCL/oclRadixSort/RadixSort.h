@@ -83,7 +83,7 @@ private:
     static const unsigned int WARP_SIZE = 32;
     static const unsigned int bitStep = 4;
 
-    unsigned int mNumElements;     // Number of elements of temp storage allocated
+//    unsigned int mNumElements;     // Number of elements of temp storage allocated
 
     Scan *scan;
 
