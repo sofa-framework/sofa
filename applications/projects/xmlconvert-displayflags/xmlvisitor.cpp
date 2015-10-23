@@ -133,10 +133,10 @@ bool DiscoverDisplayFlagsVisitor::VisitEnter(const TiXmlElement & element, const
             if(attribute_value == "1" ) flags->setShowMapping(tristate::true_value);
             if(attribute_value == "0" ) flags->setShowMapping(tristate::false_value);
         }
-        if( attribute_name == "showVisualMappings")
+        if( attribute_name == "showMappings")
         {
-            if(attribute_value == "1" ) flags->setShowVisualMappings(tristate::true_value);
-            if(attribute_value == "0" ) flags->setShowVisualMappings(tristate::false_value);
+            if(attribute_value == "1" ) flags->setShowMappings(tristate::true_value);
+            if(attribute_value == "0" ) flags->setShowMappings(tristate::false_value);
         }
         if( attribute_name == "showMechanicalMappings")
         {
@@ -255,7 +255,7 @@ void removeShowAttributes(TiXmlElement* node)
     node->RemoveAttribute("showCollisionModels");
     node->RemoveAttribute("showBoundingCollisionModels");
     node->RemoveAttribute("showMapping");
-    node->RemoveAttribute("showVisualMappings");
+    node->RemoveAttribute("showMappings");
     node->RemoveAttribute("showMechanicalMappings");
     node->RemoveAttribute("showWireFrame");
     node->RemoveAttribute("showNormals");
@@ -273,8 +273,8 @@ void convert_false_to_neutral(DisplayFlags& flags)
         flags.setShowCollisionModels(tristate::neutral_value);
     if( flags.getShowBoundingCollisionModels().state == tristate::false_value )
         flags.setShowBoundingCollisionModels(tristate::neutral_value);
-    if( flags.getShowVisualMappings().state == tristate::false_value )
-        flags.setShowVisualMappings(tristate::neutral_value);
+    if( flags.getShowMappings().state == tristate::false_value )
+        flags.setShowMappings(tristate::neutral_value);
     if( flags.getShowMechanicalMappings().state == tristate::false_value )
         flags.setShowMechanicalMappings(tristate::neutral_value);
     if( flags.getShowForceFields().state == tristate::false_value )

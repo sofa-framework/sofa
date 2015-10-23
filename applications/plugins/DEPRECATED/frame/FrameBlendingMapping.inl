@@ -945,7 +945,7 @@ void FrameBlendingMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
 
     glDisable ( GL_LIGHTING );
 
-    if ( vparams->displayFlags().getShowVisualMappings() )
+    if ( vparams->displayFlags().getShowMappings() )
     {
         // Display mapping links between in and out elements
         glDisable ( GL_LIGHTING );
