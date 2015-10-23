@@ -6,62 +6,47 @@
 
 #include <sofa/helper/Quater.h>
 #include <sofa/helper/RandomGenerator.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ExecParams.h>
 
-#include "../deformationMapping/LinearMapping.h"
-
-#include <SofaTest/Mapping_test.h>
-
+#include <SceneCreator/SceneCreator.h>
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/Mapping_test.h>
+#include <SofaTest/Elasticity_test.h>
+
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <SofaComponentMain/init.h>
-#include <sofa/core/ExecParams.h>
 
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/Node.h>
 
-#include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
-
-
-#include "Elasticity_test.h"
-#include <sofa/defaulttype/VecTypes.h>
-
-
+#include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include <SofaBoundaryCondition/QuadPressureForceField.h>
-#include "../material/HookeForceField.h"
-
-#include <SceneCreator/SceneCreator.h>
-
-
 #include <SofaBoundaryCondition/TrianglePressureForceField.h>
-
-// Including component
 #include <SofaBoundaryCondition/PatchTestMovementConstraint.h>
 
 
-
-
-#include "../types/DeformationGradientTypes.h"
-#include "../types/StrainTypes.h"
-
-#include "../strainMapping/CorotationalStrainMapping.h"
-#include "../strainMapping/PrincipalStretchesMapping.h"
-#include "../strainMapping/GreenStrainMapping.h"
-#include "../strainMapping/InvariantMapping.h"
-#include "../strainMapping/CauchyStrainMapping.h"
-#include "../strainMapping/InvariantMapping.h"
-#include "../strainMapping/PrincipalStretchesMapping.h"
-
 #include <image/ImageTypes.h>
 #include <image/ImageContainer.h>
-#include "../shapeFunction/VoronoiShapeFunction.h"
-#include "../shapeFunction/ShepardShapeFunction.h"
-#include "../shapeFunction/HatShapeFunction.h"
-#include "../shapeFunction/ShapeFunctionDiscretizer.h"
-#include "../shapeFunction/DiffusionShapeFunction.h"
+#include <Flexible/types/DeformationGradientTypes.h>
+#include <Flexible/types/StrainTypes.h>
+#include <Flexible/material/HookeForceField.h>
+#include <Flexible/deformationMapping/LinearMapping.h>
+#include <Flexible/strainMapping/CorotationalStrainMapping.h>
+#include <Flexible/strainMapping/PrincipalStretchesMapping.h>
+#include <Flexible/strainMapping/GreenStrainMapping.h>
+#include <Flexible/strainMapping/InvariantMapping.h>
+#include <Flexible/strainMapping/CauchyStrainMapping.h>
+#include <Flexible/strainMapping/InvariantMapping.h>
+#include <Flexible/strainMapping/PrincipalStretchesMapping.h>
+#include <Flexible/shapeFunction/VoronoiShapeFunction.h>
+#include <Flexible/shapeFunction/ShepardShapeFunction.h>
+#include <Flexible/shapeFunction/HatShapeFunction.h>
+#include <Flexible/shapeFunction/ShapeFunctionDiscretizer.h>
+#include <Flexible/shapeFunction/DiffusionShapeFunction.h>
 
 
 
