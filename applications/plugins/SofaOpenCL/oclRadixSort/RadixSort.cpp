@@ -68,8 +68,8 @@ RadixSort::RadixSort(
     unsigned int maxElements,
     const int ctaSize,
     bool /*keysOnly = true*/) :
-    CTA_SIZE(ctaSize),
-    mNumElements(0)
+    CTA_SIZE(ctaSize)/*,
+    mNumElements(0)*/
 
 {
     DEBUG_TEXT("RadixSort")

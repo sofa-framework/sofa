@@ -111,7 +111,9 @@ if(SOFA_DUMP_VISITOR_INFO)
 endif()
 
 
-if(SOFA_HAVE_QWT)
+if(SOFA_ENABLE_QWT)
+    find_package(qwt)
+
     list(APPEND MOC_HEADER_FILES
          GraphDataWidget.h
          QGraphStatWidget.h
@@ -119,7 +121,11 @@ if(SOFA_HAVE_QWT)
          QMomentumStatWidget.h)
 
     list(APPEND SOURCE_FILES
-         GraphDataWidget.cpp)
+         GraphDataWidget.cpp         
+         QGraphStatWidget.cpp
+         QEnergyStatWidget.cpp
+         QMomentumStatWidget.cpp
+         )
 endif()
 
 # QtViewer
@@ -181,8 +187,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
 target_link_libraries(${PROJECT_NAME} PUBLIC ${EXT_QT_LIBRARIES})
-if(SOFA_HAVE_QWT)
-    target_link_libraries(${PROJECT_NAME} PUBLIC Qwt)
+if(SOFA_ENABLE_QWT)
+    target_link_libraries(${PROJECT_NAME} PUBLIC qwt)
 endif()
 if(SOFAGUI_QGLVIEWER)
     target_link_libraries(${PROJECT_NAME} PUBLIC QGLViewer)
@@ -192,6 +198,10 @@ endif()
 # target_compile_definitions(${PROJECT_NAME} PUBLIC "QT3_SUPPORT")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
+if(SOFA_ENABLE_QWT)
+    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_HAVE_QWT")
+endif()
+
 
 sofa_install_targets(SofaGui SofaGuiQt "")
 

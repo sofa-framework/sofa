@@ -9,3 +9,9 @@ timeout "validations/rayleighDamping_stiffness.scn" "80"
 # This runs very slowly, so compute only a few iterations
 iterations "validations/damping.scn" "10"
 timeout "validations/damping.scn" "50"
+
+# adding a few python examples
+add "StructuralAPI.py"
+add "contact/soup.py"
+add "contact/friction_simple.py"
+

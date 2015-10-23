@@ -20,7 +20,11 @@ add_subdirectory(CImg)
 if (SOFAGUI_QGLVIEWER)
     add_subdirectory(libQGLViewer-2.6.3/QGLViewer QGLViewer)
 endif()
-add_subdirectory(qwt-6.1.2/src Qwt)
+
+if (SOFA_ENABLE_QWT)
+    message("Qwt activated")
+    add_subdirectory(qwt-6.1.2/src qwt)
+endif()
 
 option(SOFA_BUILD_ARTRACK
 "Build the ARTrack library distributed in the extlibs/ directory.  This library
