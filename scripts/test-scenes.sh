@@ -13,6 +13,8 @@
 #
 # If you want to filter out some scenes, the script accepts a list of patterns
 # to ignore with -i, as understood by grep -x
+# 
+# If you want to add some scenes, the script accepts a list of patterns to add with -a.
 
 set -o nounset # Error when referencing undefined variables
 set -o errexit # Exit on error
@@ -20,6 +22,7 @@ set -o errexit # Exit on error
 usage() {
     echo "Usage: ./test-scenes.sh build-directory (scene-directory|scene-list)"
     echo "                        [-i|--ignore-list file)]"
+    echo "                        [-a|--add-list file)]"
     echo "                        [-n|--iterations number]"
 }
 
@@ -43,6 +46,12 @@ do
                 echo "$IGNORE_LIST: no such file"; exit 1;
             fi
             shift;;
+	-a|--add-list)
+	    ADD_LIST="$1"
+	    if [[ ! -f "$ADD_LIST" ]]; then
+		echo "$ADD_LIST: no such file"; exit 1;
+	    fi
+	shift;;
         -n|--iterations)
             ITERATIONS="$1"
             if [[ ! "$ITERATIONS" =~ ^[0-9]+$ ]]; then
@@ -99,6 +108,20 @@ must_ignore() {
     fi
 }
 
+must_add() {
+    if [[ -z ${ADD_LIST+x} ]]; then
+        return 1
+    else
+        local scene=$1
+        while read pattern; do
+            if echo "$scene" | grep -qx "$pattern"; then
+                return 0
+            fi
+        done < $ADD_LIST
+        return 1
+    fi
+}
+
 list_scenes() {
     if [[ -f "$SCENES" ]]; then
         cat "$SCENES"
@@ -114,6 +137,9 @@ run_all_scenes() {
     do
         if must_ignore "$scene" ; then
             echo "Ignoring $scene"
+        elif must_add "$scene" ; then
+	    echo "Running added $scene"
+            run_single_scene "$scene"
         else
             echo "Running $scene"
             run_single_scene "$scene"
