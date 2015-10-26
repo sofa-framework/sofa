@@ -80,7 +80,7 @@ Node::SPtr TreeSimulation::createNewNode(const std::string& name)
 }
 
 
-SOFA_DECL_CLASS ( TreeSimulation );
+SOFA_DECL_CLASS ( TreeSimulation )
 // Register in the Factory
 //int TreeSimulationClass = core::RegisterObject ( "Main simulation algorithm, based on tree graph" )
 //.add< TreeSimulation >()

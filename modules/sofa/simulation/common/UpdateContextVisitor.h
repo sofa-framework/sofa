@@ -26,7 +26,6 @@
 #define SOFA_SIMULATION_UPDATECONTEXTACTION_H
 
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/core/visual/DisplayFlags.h>
 
 namespace sofa
 {

@@ -29,7 +29,6 @@
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/graph/DAGNode.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/tree/TreeSimulation.h>
 
 using sofa::simulation::graph::DAGNode;
 
@@ -48,7 +47,6 @@ struct DAG_test : public Sofa_test<>
     DAG_test()
     {
         sofa::simulation::setSimulation(new simulation::graph::DAGSimulation());
-//        sofa::simulation::setSimulation(new simulation::tree::TreeSimulation());
     }
 
 
