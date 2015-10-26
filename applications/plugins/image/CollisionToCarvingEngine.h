@@ -171,7 +171,7 @@ protected:
 			cimglist_for(img,l)
 				cimg_forXYZ(img(l),x,y,z)
 				{
-					img(l)(x,y,z)=inimg(l)(x,y,z);
+                    img(l)(x,y,z)=(To)inimg(l)(x,y,z);
 				}
 			img(0)(0,0,0) = 0;
 		}
@@ -183,7 +183,7 @@ protected:
 			
 			if((*out)->isInside(valueinimage.x()/scale.x(), valueinimage.y()/scale.y(), valueinimage.z()/scale.z()))
 			{
-				img(0)(valueinimage.x()/scale.x(), valueinimage.y()/scale.y(), valueinimage.z()/scale.z()) = 1;
+                img(0)(valueinimage.x()/scale.x(), valueinimage.y()/scale.y(), valueinimage.z()/scale.z()) = (To)1;
 			}
 		}
 		else{

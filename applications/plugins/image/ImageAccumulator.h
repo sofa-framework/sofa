@@ -91,7 +91,7 @@ public:
         , outputImage(initData(&outputImage,ImageTypes(),"outputImage",""))
         , outputTransform(initData(&outputTransform,TransformType(),"outputTransform",""))
         , SimuTime(0.0)
-        , count(0.0)
+        , count(0)
     {
         inputImage.setReadOnly(true);
         inputTransform.setReadOnly(true);
