@@ -117,6 +117,8 @@ class Model:
                 self.com = Tools.strToListFloat(objXml.find("com").text)
             if not objXml.find("inertia") is None:
                 self.inertia = Tools.strToListFloat(objXml.find("inertia").text)
+            if not objXml.find("inertia_rotation") is None:
+                self.inertia_rotation = Tools.strToListFloat(objXml.find("inertia_rotation").text)
 
     class Offset:
         def __init__(self, offsetXml=None):
