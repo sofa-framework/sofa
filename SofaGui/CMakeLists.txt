@@ -53,10 +53,8 @@ endif()
 set(SOFAGUI_VERSION ${SofaFramework_VERSION})
 
 ## Thoses variables are used in SofaGuiConfig.cmake.in
-if(Qt5_FOUND)
-    set(SOFA_HAVE_QT ${Qt4_FOUND})
-else()
-    set(SOFA_HAVE_QT ${Qt5_FOUND})
+if(Qt5_FOUND OR Qt4_FOUND)
+    set(SOFA_HAVE_QT 1)
 endif()
 set(SOFA_QT4 ${Qt4_FOUND})
 set(SOFA_QT5 ${Qt5_FOUND})
@@ -80,16 +78,13 @@ endif()
 ## Qt GUI
 option(SOFAGUI_QT "Compile the Qt GUI" ON)
 if(SOFAGUI_QT)
-    set(SOFA_GUI_QT 1) # cmakedefine
-    list(APPEND SOFAGUI_TARGETS SofaGuiQt)
-    add_subdirectory(../applications/sofa/gui/qt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
 
     ## Qt GUI options, used in the relevant CMakeLists.txt
 
     ## SOFA_GUI_INTERACTION
     option(SOFAGUI_QT_INTERACTION
-"Enable interaction mode for the Qt GUI, whatever that means (this
-will define the SOFA_GUI_INTERACTION macro)." OFF)
+            "Enable interaction mode for the Qt GUI, whatever that means (this
+             will define the SOFA_GUI_INTERACTION macro)." OFF)
     if(SOFAGUI_QT_INTERACTION)
         set(SOFA_GUI_INTERACTION 1) # cmakedefine
     endif()
@@ -104,6 +99,7 @@ will define the SOFA_GUI_INTERACTION macro)." OFF)
     option(SOFAGUI_QGLVIEWER "Compile the QGLViewer for the Qt GUI" ON)
     if(SOFAGUI_QGLVIEWER)
         set(SOFA_GUI_QGLVIEWER 1) # cmakedefine
+        add_subdirectory(${CMAKE_SOURCE_DIR}/extlibs/libQGLViewer-2.6.3/QGLViewer ${CMAKE_BINARY_DIR}/extlibs/QGLViewer)
     endif()
 
    ## QWT
@@ -111,6 +107,11 @@ will define the SOFA_GUI_INTERACTION macro)." OFF)
    if(SOFA_ENABLE_QWT)
         set(SOFA_HAVE_QWT 1) # cmakedefine
     endif()
+
+
+    set(SOFA_GUI_QT 1) # cmakedefine
+    list(APPEND SOFAGUI_TARGETS SofaGuiQt)
+    add_subdirectory(../applications/sofa/gui/qt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
 endif()
 
 ## SofaGuiMain
