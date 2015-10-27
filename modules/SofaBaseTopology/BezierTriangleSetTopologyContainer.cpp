@@ -113,13 +113,14 @@ void BezierTriangleSetTopologyContainer::reinit()
 		}
 		// triangle index
 		if (degree>2) {
+			offsetToTriangleBezierIndexArray.clear();
 			size_t ind=0;
 			for (i=1;i<(degree-1);++i) {
 				for (j=1;j<(degree-i);++j,++ind) {
 					TriangleBezierIndex bti(0,0,0);
 					bti[0]=i;bti[1]=j;
 					bti[2]=degree-i-j;
-
+					offsetToTriangleBezierIndexArray.push_back(bti);
 					elementMap.insert(ElementMapType(bti,ElementTriangleIndex(-1,-1,0)));
 					triangleOffsetMap.insert(OffsetMapType(bti,ind));
 					//						std::cerr << "offsetMap["<<(size_t)bti[0]<<' '<<(size_t)bti[1]<<' '<<(size_t)bti[2]<<' '<<(size_t)bti[3]<<" ]= "<<ind<<std::endl;
@@ -539,6 +540,15 @@ sofa::helper::vector<BezierTriangleSetTopologyContainer::LocalTriangleIndex> Bez
 	}
 	assert(subtriangleArray.size()==((deg)*(deg)));
 	return(subtriangleArray);
+}
+void BezierTriangleSetTopologyContainer::getEdgeBezierIndexFromEdgeOffset(size_t offset, EdgeBezierIndex &ebi){
+	assert(offset<d_degree.getValue());
+	ebi[0]=offset+1;
+	ebi[1]=d_degree.getValue()-offset-1;
+}
+void BezierTriangleSetTopologyContainer::getTriangleBezierIndexFromTriangleOffset(size_t offset, TriangleBezierIndex &tbi){
+	assert(offset<(d_degree.getValue()-1)*(d_degree.getValue()-2)/2);
+	tbi=offsetToTriangleBezierIndexArray[offset];
 }
 bool BezierTriangleSetTopologyContainer::checkBezierPointTopology()
 {
