@@ -215,6 +215,19 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeAll(const InVecCoord& p0,
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
 {
+    if( !this->maskFrom )
+    {
+        // TODO this must be done before resizeOut() but is done again in Inherit::init();
+        // also clean the numerous calls to apply
+        core::behavior::BaseMechanicalState *state;
+        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModel.get())))
+            this->maskFrom = &state->forceMask;
+        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModel.get())))
+            this->maskTo = &state->forceMask;
+        else
+            this->setNonMechanical();
+    }
+
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
 
     helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
@@ -314,6 +327,19 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
 {
+    if( !this->maskFrom )
+    {
+        // TODO this must be done before resizeOut() but is done again in Inherit::init();
+        // also clean the numerous calls to apply
+        core::behavior::BaseMechanicalState *state;
+        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModel.get())))
+            this->maskFrom = &state->forceMask;
+        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModel.get())))
+            this->maskTo = &state->forceMask;
+        else
+            this->setNonMechanical();
+    }
+
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
 
     helper::WriteOnlyAccessor<Data<VecCoord> > pos0 (this->f_pos0);
@@ -374,18 +400,6 @@ void BaseDeformationMappingT<JacobianBlockType>::init()
 
     baseMatrices.resize( 1 ); // just a wrapping for getJs()
     baseMatrices[0] = &eigenJacobian;
-
-    {
-        // TODO this must be done before resizeOut() but is done again in Inherit::init();
-        // also clean the numerous calls to apply
-        core::behavior::BaseMechanicalState *state;
-        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModel.get())))
-            this->maskFrom = &state->forceMask;
-        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModel.get())))
-            this->maskTo = &state->forceMask;
-        else
-            this->setNonMechanical();
-    }
 
     resizeOut();
 
