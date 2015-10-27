@@ -80,7 +80,7 @@ public:
     int subDivideRestTetrahedronWithPlane(TetraID tetraIdx, sofa::helper::vector<EdgeID>& intersectedEdgeID, sofa::helper::vector<unsigned int>& intersectedPointID, Coord planeNormal, sofa::helper::vector<Tetra>& toBeAddedTetra);
 
 
-private:
+protected:
     TetrahedronSetTopologyContainer*					m_container;
     TetrahedronSetTopologyModifier*						m_modifier;
     TetrahedronSetGeometryAlgorithms< DataTypes >*		m_geometryAlgorithms;
