@@ -83,6 +83,7 @@ protected:
     sofa::helper::set<std::pair<Edge,size_t> > bezierTetrahedronEdgeSet;
 
 
+
 	/// constructor 
 	BezierTetrahedronSetGeometryAlgorithms();
     virtual ~BezierTetrahedronSetGeometryAlgorithms() {}
@@ -116,6 +117,7 @@ protected:
     Data<bool> drawControlPointsEdges;
 	Data<bool> drawSmoothEdges;
 	Data<bool> drawControlPoints;
+	Data<Real> d_referenceRadius; // radius to draw control points
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_BEZIERTETRAHEDRONSETGEOMETRYALGORITHMS_CPP)
