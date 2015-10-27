@@ -69,7 +69,7 @@ class MeshMatrixMassInternalData
 
 // template<class Vec> void readVec1(Vec& vec, const char* str);
 template <class DataTypes, class TMassType>
-class MeshMatrixMass : public core::behavior::Mass<DataTypes>
+class SOFA_MISC_FORCEFIELD_API MeshMatrixMass : public core::behavior::Mass<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(MeshMatrixMass,DataTypes,TMassType), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
@@ -84,7 +84,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv>               DataVecDeriv;
     typedef TMassType                                       MassType;
     typedef helper::vector<MassType>                        MassVector;
-    typedef helper::vector<MassVector>                        MassVectorVector;
+    typedef helper::vector<MassVector>                      MassVectorVector;
 
     // In case of non 3D template
     typedef defaulttype::Vec<3,Real> Vec3;
@@ -169,7 +169,7 @@ public:
     sofa::component::topology::HexahedronSetGeometryAlgorithms<GeometricalTypes>* hexaGeo;
     sofa::component::topology::BezierTetrahedronSetGeometryAlgorithms<GeometricalTypes>* bezierTetraGeo;
 
-    void clear();
+    virtual void clear();
 
     virtual void reinit();
     virtual void init();
@@ -228,6 +228,8 @@ public:
 
     /// Answer wether mass matrix is lumped or not
     bool isLumped() { return lumping.getValue(); }
+	// returns the mass vector for a given index of a Bezier tetrahedron
+	virtual const  MassVector &getBezierTetrahedronMassVector(const size_t i) const;
 
 protected:
 
