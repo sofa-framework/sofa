@@ -2,14 +2,9 @@
 
 @PACKAGE_INIT@
 
-set(SOFAGUI_QGLVIEWER @SOFAGUI_QGLVIEWER@)
-
 find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(SofaAdvanced REQUIRED)
-if (SOFAGUI_QGLVIEWER)
-    find_package(QGLViewer REQUIRED)
-endif()
 
 set(SOFA_HAVE_QT @SOFA_HAVE_QT@)
 set(SOFA_GUI_GLUT @SOFA_GUI_GLUT@)
@@ -26,6 +21,10 @@ if(SOFA_HAVE_QT)
     else()
     	find_package(Qt4 QUIET REQUIRED COMPONENTS qtcore qtgui qtopengl qtxml)
 	endif()
+
+    if (SOFA_GUI_QGLVIEWER)
+        find_package(QGLViewer REQUIRED)
+    endif()
 endif()
 
 if(NOT TARGET SofaGuiCommon)

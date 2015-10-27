@@ -14,13 +14,10 @@ add_subdirectory(eigen-3.2.5 eigen)
 add_subdirectory(miniFlowVR)
 add_subdirectory(newmat)
 add_subdirectory(tinyxml)
+add_subdirectory(CImg)
+
 
 ## Optional ones
-add_subdirectory(CImg)
-if (SOFAGUI_QGLVIEWER)
-    add_subdirectory(libQGLViewer-2.6.3/QGLViewer QGLViewer)
-endif()
-
 if (SOFA_ENABLE_QWT)
     message("Qwt activated")
     add_subdirectory(qwt-6.1.2/src qwt)
