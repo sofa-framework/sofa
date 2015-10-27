@@ -517,6 +517,8 @@ public:
         camx = camy = (Real)0.0;
     }
 
+    virtual ~ImageLPTransform() {}
+
     //internal data
     helper::Quater<Real> qrotation; Coord axisrotation; Real phirotation; // "rotation" in other formats
 
