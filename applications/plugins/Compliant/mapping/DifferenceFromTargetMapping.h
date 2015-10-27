@@ -95,6 +95,7 @@ class SOFA_Compliant_API DifferenceFromTargetMapping : public AssembledMapping<T
 
         if( ind.empty() )
         {
+            if( out.size()!=in.size() ) this->toModel->resize( this->fromModel->getSize() );
             if( inverted.getValue() )
                 for( size_t j = 0 ; j < in.size() ; ++j )
                 {
@@ -108,6 +109,7 @@ class SOFA_Compliant_API DifferenceFromTargetMapping : public AssembledMapping<T
         }
         else
         {
+            if( out.size()!=in.size() ) this->toModel->resize( ind.size() );
             if( inverted.getValue() )
                 for( size_t j = 0 ; j < ind.size() ; ++j )
                 {
