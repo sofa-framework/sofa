@@ -58,6 +58,7 @@ set(HEADER_FILES
     mapping/ContactMapping.h
     mapping/ConstantAssembledMapping.h
     mapping/ConstantAssembledMultiMapping.h
+    mapping/ContactMultiMapping.h
     mapping/DifferenceFromTargetMapping.h
     mapping/DifferenceMapping.h
     mapping/DotProductMapping.h
@@ -172,6 +173,7 @@ set(SOURCE_FILES
     mapping/AffineMultiMapping.cpp
     mapping/AssembledRigidRigidMapping.cpp
     mapping/ContactMapping.cpp
+    mapping/ContactMultiMapping.cpp
     mapping/DifferenceFromTargetMapping.cpp
     mapping/DifferenceMapping.cpp
     mapping/DotProductMapping.cpp
