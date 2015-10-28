@@ -27,6 +27,7 @@
 #include "config.h"
 
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <tuple>
 
 namespace sofa
 {
