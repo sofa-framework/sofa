@@ -261,7 +261,6 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
         }
 
         void assemble(const vector<typename self::in_pos_type>& in ) {
-
             const pairs_type& p = pairs.getValue();
             assert( !p.empty() );
 
@@ -277,12 +276,9 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
                 for(unsigned k = 0, n = p.size(); k < n; ++k) {
                     write_block(J, k, p[k][i], sign);
                 }
-
                 J.finalize();
             }
         }
-
-
 
         // write sign * identity in jacobian(obj)
         void write_block(typename Inherit::jacobian_type::CompressedMatrix& J,

@@ -7,7 +7,7 @@
 
 #include <Compliant/constraint/CoulombConstraint.h>
 #include <Compliant/mapping/ContactMapping.h>
-
+#include <Compliant/mapping/ContactMultiMapping.h>
 #include <Compliant/compliance/UniformCompliance.h>
 
 #include <Compliant/utils/map.h>
@@ -38,14 +38,11 @@ public:
 
 protected:
 
-    typename node_type::SPtr contact_node;
-
     typedef defaulttype::Vec3Types contact_type;
     typedef container::MechanicalObject<contact_type> contact_dofs_type;
     typename contact_dofs_type::SPtr contact_dofs;
 
-    typedef mapping::ContactMapping<ResponseDataTypes, contact_type> contact_map_type;
-    typename contact_map_type::SPtr contact_map;
+    core::BaseMapping::SPtr contact_map;
 
     typedef forcefield::UniformCompliance<contact_type> compliance_type;
     compliance_type::SPtr compliance;
@@ -72,31 +69,21 @@ protected:
     {
         const unsigned size = this->mappedContacts.size();
 
-        this->make_delta();
-
         // node->addChild( delta.node.get() );
 
-        // TODO maybe remove this mapping level
-        contact_node = node_type::create( this->getName() + "_contact_frame" );
-
-        this->delta_node->addChild( contact_node.get() );
+        this->contact_node = node_type::create( this->getName() + "_contact_frame" );
+        down_cast< node_type >(this->mstate1->getContext())->addChild( this->contact_node.get() );
 
         // ensure all graph context parameters (e.g. dt are well copied)
         contact_node->updateSimulationContext();
 
-
         contact_dofs = sofa::core::objectmodel::New<contact_dofs_type>();
-
         contact_dofs->resize( size );
-        contact_node->addObject( contact_dofs.get() );
+        this->contact_node->addObject( contact_dofs.get() );
 
-        contact_map = core::objectmodel::New<contact_map_type>();
+        // mapping
+        contact_map = this->createContactMapping<defaulttype::Vec3Types>(this->contact_node, contact_dofs);
 
-        contact_map->setModels( this->delta_dofs.get(), contact_dofs.get() );
-        contact_node->addObject( contact_map.get() );
-
-        this->copyNormals( *editOnly(contact_map->normal) );
-        this->copyPenetrations( *editOnly(*contact_dofs->write(core::VecCoordId::position())) );
 
 //        // every contact points must propagate constraint forces
 //        for(unsigned i = 0; i < size; ++i)
@@ -105,7 +92,6 @@ protected:
 //            if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
 //        }
 
-        contact_map->init();
 
         // TODO diagonal compliance, soft  and compliance_value for normal
         compliance = sofa::core::objectmodel::New<compliance_type>( contact_dofs.get() );
@@ -140,21 +126,16 @@ protected:
 
         if( this->selfCollision )
         {
-            this->copyPairs( *this->deltaContactMap->pairs.beginEdit() );
-            this->deltaContactMap->pairs.endEdit();
-            this->deltaContactMap->reinit();
+            typedef mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec3Types> contact_mapping_type;
+            core::objectmodel::SPtr_dynamic_cast<typename contact_mapping_type>(contact_map)->setDetectionOutput(this->contacts);
         }
         else
         {
-            this->copyPairs( *this->deltaContactMultiMap->pairs.beginEdit() );
-            this->deltaContactMultiMap->pairs.endEdit();
-            this->deltaContactMultiMap->reinit();
+            typedef mapping::ContactMultiMapping<ResponseDataTypes, defaulttype::Vec3Types> contact_mapping_type;
+            core::objectmodel::SPtr_dynamic_cast<typename contact_mapping_type>(contact_map)->setDetectionOutput(this->contacts);  
         }
 
         contact_dofs->resize( size );
-
-        this->copyNormals( *editOnly(contact_map->normal) );
-        this->copyPenetrations( *editOnly(*contact_dofs->write(core::VecCoordId::position())) );
         contact_map->reinit();
 
         if( compliance->compliance.getValue() != this->compliance_value.getValue() ||
@@ -178,6 +159,7 @@ protected:
         else projector->mask = NULL;
         projector->horizontalProjection = horizontalConeProjection.getValue();
         projector->mu = frictionCoefficient;
+
 
 //        // every contact points must propagate constraint forces
 //        for(unsigned i = 0; i < size; ++i)

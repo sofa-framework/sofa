@@ -19,6 +19,7 @@
 
 
 #include "../mapping/ContactMapping.h"
+#include "../mapping/ContactMultiMapping.h"
 
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaMiscCollision/TetrahedronModel.h>
@@ -61,13 +62,10 @@ public:
 
 protected:
 
-    typename node_type::SPtr contact_node;
 
     typedef container::MechanicalObject<defaulttype::Vec1Types> contact_dofs_type;
     typename contact_dofs_type::SPtr contact_dofs;
-
-    typedef mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec1Types> contact_map_type;
-    typename contact_map_type::SPtr contact_map;
+    core::BaseMapping::SPtr contact_map;
 
     typedef linearsolver::UnilateralConstraint projector_type;
     projector_type::SPtr projector;
@@ -78,8 +76,7 @@ protected:
     typename node_type::SPtr friction_node;
     typedef container::MechanicalObject<defaulttype::Vec2Types> friction_dofs_type;
     typename friction_dofs_type::SPtr friction_dofs;
-    typedef mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec2Types> friction_map_type;
-    typename friction_map_type::SPtr friction_map;
+    core::BaseMapping::SPtr friction_map;
     typedef forcefield::UniformVelocityDampingForceField<defaulttype::Vec2Types> damping_type;
     damping_type::SPtr damping;
 
@@ -87,91 +84,77 @@ protected:
     CompliantContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
         : Inherit(model1, model2, intersectionMethod)
         , viscousFriction( initData(&viscousFriction, SReal(0), "viscousFriction", "0 <= viscousFriction <= 1") )
+        , friction_node(NULL)
     {}
+
+    virtual void setActiveContact(bool active)
+    {
+        this->contact_node->setActive(active);
+        if(friction_node)
+            friction_node->setActive(active);
+    }
+
+    virtual void cleanup() {
+        // should be called only when !keep
+        if( this->contact_node ) {
+            this->mapper1.cleanup();
+            if (!this->selfCollision) this->mapper2.cleanup();
+            this->contact_node->detachFromGraph();
+            this->contact_node.reset();
+            
+        }
+
+        if(friction_node){
+            friction_node->detachFromGraph();
+            friction_node.reset();
+        }
+
+        mappedContacts.clear();
+    }
 
     void create_node()
     {
-
-//        simulation::MechanicalPropagatePositionAndVelocityVisitor bob( sofa::core::MechanicalParams::defaultInstance() );
-//        this->mstate1->getContext()->getRootContext()->executeVisitor( &bob );
-//        this->mstate2->getContext()->getRootContext()->executeVisitor( &bob );
-//        this->mstate1->getContext()->executeVisitor( &bob );
-//        this->mstate2->getContext()->executeVisitor( &bob );
-
-
-//        typedef sofa::core::TMultiVecId<core::V_DERIV,core::V_READ> DestMultiVecId;
-//        typedef sofa::core::TVecId<core::V_DERIV,core::V_READ> MyVecId;
-
-//        DestMultiVecId v(core::VecDerivId::velocity());
-//        MyVecId vid = v.getId(this->mstate1.get());
-
-//        std::cerr<<SOFA_CLASS_METHOD<<"dof1 "<<this->mstate1->getName()<<"  ";this->mstate1->writeVec(core::VecId::velocity(),std::cerr);std::cerr<<std::endl;
-
-//        MyVecId vid2 = v.getId(this->mstate2.get());
-//        std::cerr<<SOFA_CLASS_METHOD<<"dof2 "<<this->mstate2->getName()<<"  ";this->mstate2->writeVec(core::VecId::velocity(),std::cerr);std::cerr<<std::endl;
-
-
-
         const unsigned size = this->mappedContacts.size();
 
-        this->make_delta();
-
-        contact_node = node_type::create( this->getName() + "_contact_frame" );
-
-        this->delta_node->addChild( contact_node.get() );
+        this->contact_node = node_type::create( this->getName() + "_contact_frame" );
+        down_cast< node_type >(this->mstate1->getContext())->addChild( this->contact_node.get() );
 
         // ensure all graph context parameters (e.g. dt are well copied)
-        contact_node->updateSimulationContext();
+        this->contact_node->updateSimulationContext();
+
 
         // 1d contact dofs
         contact_dofs = sofa::core::objectmodel::New<contact_dofs_type>();
         contact_dofs->resize( size );
         contact_dofs->setName( this->getName() + "_contact_dofs" );
-        contact_node->addObject( contact_dofs.get() );
+        this->contact_node->addObject( contact_dofs.get() );
 
-        // contact mapping
-        contact_map = core::objectmodel::New<contact_map_type>();
-        contact_map->setModels( this->delta_dofs.get(), contact_dofs.get() );
-        contact_map->setName( this->getName() + "_contact_mapping" );
-        contact_node->addObject( contact_map.get() );
-
-        this->copyNormals( *editOnly(contact_map->normal) );
-        this->copyPenetrations( *editOnly(*contact_dofs->write(core::VecCoordId::position())) );
-
-//        // every contact points must propagate constraint forces
-//        for(unsigned i = 0; i < size; ++i)
-//        {
-//            this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
-//            if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
-//        }
-
-        contact_map->init();
-
+        // mapping
+        contact_map = this->createContactMapping<defaulttype::Vec1Types>(this->contact_node, contact_dofs);
 
         // compliance
         compliance = sofa::core::objectmodel::New<compliance_type>( contact_dofs.get() );
-        contact_node->addObject( compliance.get() );
+        this->contact_node->addObject( compliance.get() );
         compliance->compliance.setValue( this->compliance_value.getValue() );
         compliance->damping.setValue( this->damping_ratio.getValue() );
         compliance->init();
-
 
         // approximate restitution coefficient between the 2 objects as the product of both coefficients
         const SReal restitutionCoefficient = this->restitution_coef.getValue() ? this->restitution_coef.getValue() : this->model1->getContactRestitution(0) * this->model2->getContactRestitution(0);
 
         // constraint value + keep an eye on violated contacts
-        vector<bool>* cvmask = this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
+        vector<bool>* cvmask = this->addConstraintValue( this->contact_node.get(), contact_dofs.get(), restitutionCoefficient );
 
         // projector
         projector = sofa::core::objectmodel::New<projector_type>();
-        contact_node->addObject( projector.get() );
+        this->contact_node->addObject( projector.get() );
         if( restitutionCoefficient ) projector->mask = cvmask; // for restitution, only activate violated constraints
 
         // approximate current mu between the 2 objects as the product of both friction coefficients
         const SReal frictionCoefficient = viscousFriction.getValue() ? viscousFriction.getValue() : this->model1->getContactFriction(0)*this->model2->getContactFriction(0);
         if( frictionCoefficient )
         {
-//            frictionCoefficient = 1.0 - frictionCoefficient;
+            //frictionCoefficient = 1.0 - frictionCoefficient;
 
             // counting violated contacts to create only these ones
             int nout = !cvmask ? size : std::count( cvmask->begin(), cvmask->end(), true );
@@ -185,33 +168,18 @@ protected:
     {
         friction_node = node_type::create( this->getName() + "_contact_tangents" );
 
-        this->delta_node->addChild( friction_node.get() );
-
-        // ensure all graph context parameters (e.g. dt are well copied)
-        friction_node->updateSimulationContext();
-
         // 2d friction dofs
         friction_dofs = sofa::core::objectmodel::New<friction_dofs_type>();
         friction_dofs->resize( size );
         friction_dofs->setName( this->getName() + "_friction_dofs" );
         friction_node->addObject( friction_dofs.get() );
+        down_cast< node_type >(this->mstate1->getContext())->addChild( this->friction_node.get() );
 
         // mapping
-        friction_map = core::objectmodel::New<friction_map_type>();
-        friction_map->setModels( this->delta_dofs.get(), friction_dofs.get() );
-        friction_map->setName( this->getName() + "_friction_mapping" );
-        friction_map->mask = *cvmask; // by pointer copy, the vector was deleted before being used in contact mapping...  // TODO improve this by avoiding a copy
-        friction_node->addObject( friction_map.get() );
+        friction_map = this->createContactMapping<defaulttype::Vec2Types>(this->friction_node, friction_dofs, cvmask);       
 
-        this->copyNormals( *editOnly(friction_map->normal) );
-
-//                // every contact points must propagate constraint forces
-//                for(unsigned i = 0; i < size; ++i)
-//                {
-//                    this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
-//                    if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
-//                }
-
+        // ensure all graph context parameters (e.g. dt are well copied)
+        friction_node->updateSimulationContext();
         friction_map->init();
 
         // cheap forcefield version
@@ -222,29 +190,20 @@ protected:
     }
 
 
-
     void update_node() {
 
         const unsigned size = this->mappedContacts.size();
-
+        contact_dofs->resize( size );
         if( this->selfCollision )
         {
-            this->copyPairs( *this->deltaContactMap->pairs.beginEdit() );
-            this->deltaContactMap->pairs.endEdit();
-            this->deltaContactMap->reinit();
+            typedef mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec1Types> contact_mapping_type;
+            core::objectmodel::SPtr_dynamic_cast<typename contact_mapping_type>(contact_map)->setDetectionOutput(this->contacts);
         }
         else
         {
-            this->copyPairs( *this->deltaContactMultiMap->pairs.beginEdit() );
-            this->deltaContactMultiMap->pairs.endEdit();
-            this->deltaContactMultiMap->reinit();
+            typedef mapping::ContactMultiMapping<ResponseDataTypes, defaulttype::Vec1Types> contact_mapping_type;
+            core::objectmodel::SPtr_dynamic_cast<typename contact_mapping_type>(contact_map)->setDetectionOutput(this->contacts);  
         }
-
-        contact_dofs->resize( size );
-
-        this->copyNormals( *editOnly(contact_map->normal) );
-        this->copyPenetrations( *editOnly(*contact_dofs->write(core::VecCoordId::position())) );
-
         contact_map->reinit();
 
         if( compliance->compliance.getValue() != this->compliance_value.getValue() ||
@@ -255,21 +214,13 @@ protected:
             compliance->reinit();
         }
 
-//        // every contact points must propagate constraint forces
-//        for(unsigned i = 0; i < size; ++i)
-//        {
-//            this->mstate1->forceMask.insertEntry( this->mappedContacts[i].index1 );
-//            if( !this->selfCollision ) this->mstate2->forceMask.insertEntry( this->mappedContacts[i].index2 );
-//        }
-
-
 
         // approximate restitution coefficient between the 2 objects as the product of both coefficients
         const SReal restitutionCoefficient = this->restitution_coef.getValue() ? this->restitution_coef.getValue() : this->model1->getContactRestitution(0) * this->model2->getContactRestitution(0);
 
         // updating constraint value
-        contact_node->removeObject( this->baseConstraintValue ) ;
-        vector<bool>* cvmask = this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
+        this->contact_node->removeObject( this->baseConstraintValue ) ;
+        vector<bool>* cvmask = this->addConstraintValue( this->contact_node.get(), contact_dofs.get(), restitutionCoefficient );
 
         if( restitutionCoefficient ) projector->mask = cvmask; // for restitution, only activate violated constraints
         else projector->mask = NULL;
@@ -288,8 +239,20 @@ protected:
                 {
                     damping->dampingCoefficient.setValue( frictionCoefficient );
                     friction_dofs->resize( nout );
-                    this->copyNormals( *editOnly(friction_map->normal) );
-                    friction_map->mask = *cvmask; // by pointer copy, the vector was deleted before being used in contact mapping...  // TODO improve this by avoiding a copy
+                    if( this->selfCollision )
+                    {
+                        typedef mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec2Types> friction_mapping_type;
+                        typename friction_mapping_type::SPtr mapping = core::objectmodel::SPtr_dynamic_cast<typename friction_mapping_type>(friction_map);
+                        mapping->setDetectionOutput(this->contacts);
+                        mapping->mask = *cvmask;
+                    }
+                    else
+                    {
+                        typedef mapping::ContactMultiMapping<ResponseDataTypes, defaulttype::Vec2Types> friction_mapping_type;
+                        typename friction_mapping_type::SPtr mapping = core::objectmodel::SPtr_dynamic_cast<typename friction_mapping_type>(friction_map);
+                        mapping->setDetectionOutput(this->contacts);
+                        mapping->mask = *cvmask;
+                    }
                     friction_map->reinit();
                     friction_node->setActive(true);
                 }
@@ -300,9 +263,6 @@ protected:
         else if( friction_node )
             friction_node->setActive(false);
     }
-
-
-
 };
 
 void registerContactClasses();
