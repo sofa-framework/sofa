@@ -1293,7 +1293,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, 
 //				const MassVector &mv=tetrahedronMassInfo.getValue()[i];
 				const MassVector &mv=getBezierTetrahedronMassVector(i);
 				nbControlPoints=indexArray.size();
-				assert(mv.size()==nbControlPoints*(nbControlPoints-1)/2);
+				assert(mv.size()==nbControlPoints*(nbControlPoints+1)/2);
 				// loop over each entry in the mass matrix of size nbControlPoints*(nbControlPoints+1)/2
 				rank=0;
 				for (size_t j=0; j<nbControlPoints; ++j) {
