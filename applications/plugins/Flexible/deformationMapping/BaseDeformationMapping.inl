@@ -215,7 +215,6 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeAll(const InVecCoord& p0,
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
 {
-    if( !this->maskFrom )
     {
         // TODO this must be done before resizeOut() but is done again in Inherit::init();
         // also clean the numerous calls to apply
@@ -327,7 +326,6 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
 {
-    if( !this->maskFrom )
     {
         // TODO this must be done before resizeOut() but is done again in Inherit::init();
         // also clean the numerous calls to apply
