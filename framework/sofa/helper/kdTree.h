@@ -49,7 +49,7 @@ namespace helper
 
 
 template<class Coord>
-class SOFA_HELPER_API kdTree
+class kdTree
 {
 public:
     typedef typename Coord::value_type Real;
