@@ -68,7 +68,7 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
 
     if (stiffness.getValue().empty())
     {
-        std::cout << "RestShapeSpringsForceField : No stiffness is defined, assuming equal stiffness on each node, k = 100.0 " << std::endl;
+        sout << "No stiffness is defined, assuming equal stiffness on each node, k = 100.0 " << sendl;
 
         VecReal stiffs;
         stiffs.push_back(100.0);
@@ -90,7 +90,7 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
 
         if (path.size() > 0)
         {
-            serr << "RestShapeSpringsForceField : " << external_rest_shape.getValue() << " not found" << sendl;
+            serr << external_rest_shape.getValue() << " not found" << sendl;
         }
     }
     else
@@ -157,7 +157,7 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
 
     if (m_indices.size() > m_ext_indices.size())
     {
-        std::cerr << "Error : the dimention of the source and the targeted points are different " << std::endl;
+        serr << "The dimention of the source and the targeted points are different " << sendl;
         m_indices.clear();
     }
 }
