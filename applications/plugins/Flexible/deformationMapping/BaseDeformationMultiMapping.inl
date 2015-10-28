@@ -99,7 +99,6 @@ BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::BaseDeforma
 template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resizeOut()
 {
-    if( this->maskFrom1.empty() || this->maskFrom2.empty() )
     {
         // TODO this must be done before resizeOut() but is done again in Inherit::init();
         // also clean the numerous calls to apply
@@ -214,7 +213,6 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
 template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
 {
-    if( this->maskFrom1.empty() || this->maskFrom2.empty() )
     {
         // TODO this must be done before resizeOut() but is done again in Inherit::init();
         // also clean the numerous calls to apply
