@@ -219,16 +219,43 @@ if(NOT SOFA_NO_OPENGL)
 endif()
 
 
- if(SOFA-EXTERNAL_HAVE_FFMPEG)
+ if(SOFA-EXTERNAL_FFMPEG)
     list(APPEND HEADER_FILES gl/VideoRecorder.h)
 
     list(APPEND SOURCE_FILES "gl/VideoRecorder.cpp")
 	include_directories(${SOFA-EXTERNAL_FFMPEG_PATH}/include)
+endif()
+	
+
+if(PS3)
+    list(APPEND HEADER_FILES gl/ps3gl_compat.h)
+    list(APPEND SOURCE_FILES gl/ps3gl_compat.cpp)
+endif()
+
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+if(WIN32)
+    # Windows library, used in system::FileSystem
+    target_link_libraries(${PROJECT_NAME} PRIVATE Shlwapi)
+endif()
+if(UNIX)
+    target_link_libraries(${PROJECT_NAME} PRIVATE dl)
+endif()
+if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+    # X11 functions are used in glfont.cpp
+    find_package(X11 REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${X11_X11_LIB})
+    target_include_directories(${PROJECT_NAME} PRIVATE ${X11_X11_INCLUDE_PATH})
+endif()
+if(SOFA-EXTERNAL_FFMPEG)
 	if (WIN32)
-				AddLinkerDependencies("${SOFA-EXTERNAL_FFMPEG_PATH}/lib/avformat.lib") 
-                AddLinkerDependencies("${SOFA-EXTERNAL_FFMPEG_PATH}/lib/avcodec.lib") 
-				AddLinkerDependencies("${SOFA-EXTERNAL_FFMPEG_PATH}/lib/avutil.lib") 
-				AddLinkerDependencies("${SOFA-EXTERNAL_FFMPEG_PATH}/lib/swscale.lib") 
+		 set( FFMPEG_LIBS
+		 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/avformat.lib"
+		 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/avcodec.lib"
+		 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/avutil.lib"
+		 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/swscale.lib"
+		 )
+		target_link_libraries(${PROJECT_NAME} PRIVATE ${FFMPEG_LIBS} )		
         elseif (APPLE)
                 set( FFMPEG_LIBS
                         "libavcodec.a"
@@ -258,27 +285,6 @@ endif()
 			AddLinkerDependencies(swresample)
 		endif()
 
-endif()
-
-if(PS3)
-    list(APPEND HEADER_FILES gl/ps3gl_compat.h)
-    list(APPEND SOURCE_FILES gl/ps3gl_compat.cpp)
-endif()
-
-
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-if(WIN32)
-    # Windows library, used in system::FileSystem
-    target_link_libraries(${PROJECT_NAME} PRIVATE Shlwapi)
-endif()
-if(UNIX)
-    target_link_libraries(${PROJECT_NAME} PRIVATE dl)
-endif()
-if(CMAKE_SYSTEM_NAME STREQUAL Linux)
-    # X11 functions are used in glfont.cpp
-    find_package(X11 REQUIRED)
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${X11_X11_LIB})
-    target_include_directories(${PROJECT_NAME} PRIVATE ${X11_X11_INCLUDE_PATH})
 endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
