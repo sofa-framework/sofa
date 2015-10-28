@@ -25,7 +25,7 @@
 
 #include "StateMask.h"
 
-#include <boost/functional/hash.hpp>
+//#include <boost/functional/hash.hpp>
 
 
 
@@ -35,17 +35,7 @@ namespace sofa
 namespace helper
 {
 
-#ifdef __APPLE__
-    //Workaround for compilation error occuring while using clang/Mac/libc++
-    //boost wants to use the libstdc++ for std::vector instead of the libc++ version (std::__1)
-    std::size_t hash_value(helper::vector<bool> const& b)
-    {
-        boost::hash<int> hasher;
-        return hasher((std::size_t) &b);
-    }
-#endif // __APPLE__
-
-    static boost::hash<StateMask::InternalStorage> s_maskHash;
+//    static boost::hash<StateMask::InternalStorage> s_maskHash;
 
     void StateMask::resize( size_t size )
     {
@@ -71,10 +61,10 @@ namespace helper
         return t;
     }
 
-    size_t StateMask::getHash() const
-    {
-        return s_maskHash(mask);
-    }
+//    size_t StateMask::getHash() const
+//    {
+//        return s_maskHash(mask);
+//    }
 
 
 } // namespace helper
