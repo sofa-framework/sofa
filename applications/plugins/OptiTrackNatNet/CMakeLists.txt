@@ -15,12 +15,12 @@ set(SOURCE_FILES
 )
 
 find_package(SofaGeneral REQUIRED)
-find_package(Boost QUIET COMPONENTS system REQUIRED)
+find_package(Boost QUIET COMPONENTS system regex REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_OPTITRACKNATNET")
 target_link_libraries(${PROJECT_NAME} SofaCore SofaSimulationCommon SofaUserInteraction)
-target_link_libraries(${PROJECT_NAME} ${Boost_SYSTEM_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 # Seems to be required by boost::asio
