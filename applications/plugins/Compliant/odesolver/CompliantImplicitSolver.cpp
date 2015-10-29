@@ -366,7 +366,7 @@ using namespace core::behavior;
             const unsigned total_dim = dim*constraint_dim; // nb constraint lines
 
             assert( constraint.value ); // at least a fallback must be added in filter_constraints
-            constraint.value->dynamics( &res(off), dim, constraint_dim, stabilization.getValue().getSelectedId(), posId, velId );
+            constraint.value->dynamics( &res(off), dim, constraint_dim, stabilization.getValue().getSelectedId()!=0, posId, velId );
 
             // adjust compliant value based on alpha/beta
 

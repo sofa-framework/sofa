@@ -315,7 +315,7 @@ inline void InvertibleFVMForceField<DataTypes>::reinit()
         Coord N0 = cross( bd, bc ); // face (b,c,d)
 
         // the node ordering changes the normal directions
-        Real coef = determinant(A)>0 ? 1/6.0 : -1/6.0;
+        Real coef = determinant(A)>0 ? (Real)(1/6.0) : (Real)(-1/6.0);
 
         //_initialRotation[i].transpose();
 
@@ -417,7 +417,7 @@ inline void InvertibleFVMForceField<DataTypes>::addForce (const core::Mechanical
         F_diagonal[0] -= 1;
         F_diagonal[1] -= 1;
         F_diagonal[2] -= 1;
-        P_diagonal = F_diagonal*/*2**/mu;
+        P_diagonal = F_diagonal* /*2**/ mu;
         Real tmp = lambda*(F_diagonal[0]+F_diagonal[1]+F_diagonal[2]);
         P_diagonal[0] += tmp;
         P_diagonal[1] += tmp;
@@ -559,7 +559,7 @@ inline void InvertibleFVMForceField<DataTypes>::addDForce(const core::Mechanical
         F_diagonal[0][0] -= 1;
         F_diagonal[1][1] -= 1;
         F_diagonal[2][2] -= 1;
-        P_diagonal = F_diagonal*/*2**/mu;
+        P_diagonal = F_diagonal* /*2**/ mu;
         Real tmp = lambda*(F_diagonal[0][0]+F_diagonal[1][1]+F_diagonal[2][2]);
         P_diagonal[0][0] += tmp;
         P_diagonal[1][1] += tmp;
@@ -771,7 +771,7 @@ void InvertibleFVMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
 
 template<class DataTypes>
-void InvertibleFVMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix */*mat*/, SReal /*k*/, unsigned int &/*offset*/)
+void InvertibleFVMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*k*/, unsigned int &/*offset*/)
 {
     serr<<"InvertibleFVMForceField::addKToMatrix is not implemented\n";
 }
