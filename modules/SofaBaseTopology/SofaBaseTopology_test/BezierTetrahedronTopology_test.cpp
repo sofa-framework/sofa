@@ -140,12 +140,12 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 		}
 
 		sofa::helper::vector<TetrahedronBezierIndex> tbiArray=container->getTetrahedronBezierIndexArray();
-		BezierTetrahedronSetTopologyContainer::VecPointID indexArray;
+		
 		BezierTetrahedronPointLocation location; 
 		size_t elementIndex, elementOffset/*,localIndex*/;
 		for (nTetras=0;nTetras<container->getNumberOfTetrahedra();++nTetras) {
-			indexArray.clear();
-			container->getGlobalIndexArrayOfBezierPointsInTetrahedron(nTetras,indexArray);
+			
+			const BezierTetrahedronSetTopologyContainer::VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(nTetras);
 			// check the number of control points per tetrahedron is correct
 			nbPoints=(4+6*(degree-1)+2*(degree-1)*(degree-2)+(degree-1)*(degree-2)*(degree-3)/6);
 			if(indexArray.size()!=nbPoints) {
@@ -204,12 +204,13 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 		typename MechanicalObject::WriteVecCoord coords = dofs->writePositions();
 		size_t i,j;	
 		BezierDegreeType degree=container->getDegree();
-		BezierTetrahedronSetTopologyContainer::VecPointID indexArray;
+
 		sofa::helper::vector<TetrahedronBezierIndex> tbiArray=container->getTetrahedronBezierIndexArray();
 		for ( i = 0; i<container->getNumberOfTetrahedra(); i++)
 		{
-			indexArray.clear();
-			container->getGlobalIndexArrayOfBezierPointsInTetrahedron(i, indexArray);
+			
+			const BezierTetrahedronSetTopologyContainer::VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(i);
+			
 
 			for (j=0;j<tbiArray.size();++j) {
 
@@ -241,14 +242,15 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 		size_t i,j,k,rank;	
 		BezierDegreeType degree=container->getDegree();
 		Real tetraVol1,tetraVol2,totalVol1,totalVol2;
-		BezierTetrahedronSetTopologyContainer::VecPointID indexArray;
+		
 		sofa::helper::vector<TetrahedronBezierIndex> tbiArray=container->getTetrahedronBezierIndexArray();
 		size_t nbControlPoints=(degree+1)*(degree+2)*(degree+3)/6;
 		totalVol1=0;
 		for ( i = 0; i<container->getNumberOfTetrahedra(); i++)
 		{
-			indexArray.clear();
-			container->getGlobalIndexArrayOfBezierPointsInTetrahedron(i, indexArray);
+			
+				const BezierTetrahedronSetTopologyContainer::VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(i);
+			
 			
 			/// get the volume of the tetrahedron
 			tetraVol1=geo->computeTetrahedronVolume(i);

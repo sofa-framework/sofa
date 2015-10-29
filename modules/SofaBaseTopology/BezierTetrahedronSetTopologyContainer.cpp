@@ -245,9 +245,9 @@ size_t BezierTetrahedronSetTopologyContainer::getGlobalIndexOfBezierPoint(const 
 					return(getNumberOfTetrahedralPoints()+eit[ei[1]]*(degree-1)+degree-2-(*omi).second);
 				}
 			} else {
-				ControlPointLocation cpl(eit[ei[1]],EDGE,(*omi).second);
+				ControlPointLocation cpl(eit[ei[1]],std::make_pair(EDGE,(*omi).second));
 				if (e[0]==tet[edgesInTetrahedronArray[ei[1]][0]]) {
-					cpl=ControlPointLocation(eit[ei[1]],EDGE,degree-2-(*omi).second);
+					cpl=ControlPointLocation(eit[ei[1]],std::make_pair(EDGE,degree-2-(*omi).second));
 				}
 				assert(locationToGlobalIndexMap.find(cpl)!=locationToGlobalIndexMap.end());
 				return(locationToGlobalIndexMap[cpl]);
@@ -281,7 +281,7 @@ size_t BezierTetrahedronSetTopologyContainer::getGlobalIndexOfBezierPoint(const 
 			if (locationToGlobalIndexMap.empty()) {
 				return(getNumberOfTetrahedralPoints()+getNumberOfEdges()*(degree-1)+tit[i]*(degree-1)*(degree-2)/2+(*omi).second);
 			} else {
-				ControlPointLocation cpl(tit[i],TRIANGLE,(*omi).second);
+				ControlPointLocation cpl(tit[i],std::make_pair(TRIANGLE,(*omi).second));
 				assert(locationToGlobalIndexMap.find(cpl)!=locationToGlobalIndexMap.end());
 				return(locationToGlobalIndexMap[cpl]);
 			}
@@ -294,7 +294,7 @@ size_t BezierTetrahedronSetTopologyContainer::getGlobalIndexOfBezierPoint(const 
 			if (locationToGlobalIndexMap.empty()) {
 				return(getNumberOfTetrahedralPoints()+getNumberOfEdges()*(degree-1)+getNumberOfTriangles()*(degree-1)*(degree-2)/2+tetrahedronIndex*(degree-1)*(degree-2)*(degree-3)/6+(*omi).second);
 			} else {
-				ControlPointLocation cpl(ei[3],TETRAHEDRON,(*omi).second);
+				ControlPointLocation cpl(ei[3],std::make_pair(TETRAHEDRON,(*omi).second));
 				assert(locationToGlobalIndexMap.find(cpl)!=locationToGlobalIndexMap.end());
 				return(locationToGlobalIndexMap[cpl]);
 			}
@@ -439,7 +439,7 @@ void BezierTetrahedronSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInT
 				
 				if (e[0]!=tet[edgesInTetrahedronArray[i][0]]) {
 					for (j=0;j<(size_t)(degree-1);++j) {
-						cpl=ControlPointLocation(eit[i],EDGE,j);
+						cpl=ControlPointLocation(eit[i],std::make_pair(EDGE,j));
 						assert(locationToGlobalIndexMap.find(cpl)!=locationToGlobalIndexMap.end());
 						indexArray.push_back(locationToGlobalIndexMap[cpl]);
 					}
@@ -447,7 +447,7 @@ void BezierTetrahedronSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInT
 				else {
 					int jj;
 					for (jj=degree-2;jj>=0;--jj) {
-						cpl=ControlPointLocation(eit[i],EDGE,(size_t)jj);
+						cpl=ControlPointLocation(eit[i],std::make_pair(EDGE,(size_t)jj));
 						assert(locationToGlobalIndexMap.find(cpl)!=locationToGlobalIndexMap.end());
 						indexArray.push_back(locationToGlobalIndexMap[cpl]);
 					}
@@ -483,7 +483,7 @@ void BezierTetrahedronSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInT
 					if (locationToGlobalIndexMap.empty()) {
 						indexArray.push_back(offset+(*omi).second);
 					} else {
-						ControlPointLocation cpl(tit[i],TRIANGLE,(*omi).second);
+						ControlPointLocation cpl(tit[i],std::make_pair(TRIANGLE,(*omi).second));
 						assert(locationToGlobalIndexMap.find(cpl)!=locationToGlobalIndexMap.end());
 						indexArray.push_back(locationToGlobalIndexMap[cpl]);
 					}
@@ -504,7 +504,7 @@ void BezierTetrahedronSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInT
 					if (locationToGlobalIndexMap.empty()) {
 						indexArray.push_back(offset+rank);
 					} else {
-						ControlPointLocation cpl(tetrahedronIndex,TETRAHEDRON,rank);
+						ControlPointLocation cpl(tetrahedronIndex,std::make_pair(TETRAHEDRON,rank));
 						assert(locationToGlobalIndexMap.find(cpl)!=locationToGlobalIndexMap.end());
 						indexArray.push_back(locationToGlobalIndexMap[cpl]);
 					}
@@ -560,9 +560,9 @@ void BezierTetrahedronSetTopologyContainer::getLocationFromGlobalIndex(const siz
 			sout << "Error. [BezierTetrahedronSetTopologyContainer::getLocationFromGlobalIndex] Global Index "<< globalIndex <<" is not in the map globalIndexToLocationMap " << sendl;
 		assert(itcpl!=globalIndexToLocationMap.end());
 #endif
-		location=std::get<1>((*itcpl).second);
-		elementIndex=std::get<0>((*itcpl).second);
-		elementOffset=std::get<2>((*itcpl).second);
+		location=((*itcpl).second).second.first;
+		elementIndex=((*itcpl).second).first;
+		elementOffset=((*itcpl).second).second.second;
 	}
 }
 void BezierTetrahedronSetTopologyContainer::getEdgeBezierIndexFromEdgeOffset(size_t offset, EdgeBezierIndex &ebi){

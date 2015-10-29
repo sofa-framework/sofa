@@ -27,7 +27,7 @@
 #include "config.h"
 
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <tuple>
+
 
 namespace sofa
 {
@@ -95,7 +95,7 @@ public :
     };
 	
 
-	typedef std::tuple<size_t,BezierTetrahedronPointLocation,size_t> ControlPointLocation;
+	typedef std::pair<size_t,std::pair< BezierTetrahedronPointLocation,size_t> > ControlPointLocation;
 protected:
     BezierTetrahedronSetTopologyContainer();
 
