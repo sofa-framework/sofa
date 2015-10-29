@@ -191,7 +191,7 @@ void BezierTetrahedronSetTopologyContainer::reinit()
 	tetrahedronDOFArray.clear(); 
 	VecPointID indexArray;
 	size_t i;
-	for (i=0;i<getNbTetrahedra();++i) {
+    for (i=0;i<(size_t)getNbTetrahedra();++i) {
 		indexArray.clear();
 		getGlobalIndexArrayOfBezierPointsInTetrahedron(i,indexArray);
 		tetrahedronDOFArray.push_back(indexArray);
@@ -303,8 +303,9 @@ size_t BezierTetrahedronSetTopologyContainer::getGlobalIndexOfBezierPoint(const 
 #ifndef NDEBUG
 		sout << "Error. [BezierTetrahedronSetTopologyContainer::getGlobalIndexOfBezierPoint] Bezier Index "<< id <<" has not been recognized to be valid" << sendl;
 #endif
-		return (0);
-	} 
+        return (0);
+    }
+    return (0);
 }
 
 TetrahedronBezierIndex BezierTetrahedronSetTopologyContainer::getTetrahedronBezierIndex(const size_t localIndex) const
