@@ -306,7 +306,7 @@ struct SE3 {
 
 		assert( std::abs( sinc ) > epsilon() );
 
-		real alpha = cos / sinc - 1.0;
+        real alpha = cos / sinc - 1;
 		// real alpha = theta / std::tan(theta) - 1.0;
 
 		res += alpha * (mat33::Identity() - n * n.transpose() );

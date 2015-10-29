@@ -124,7 +124,7 @@ namespace sofa {
             }
 
             OutVecDeriv c(a.size());
-            for (size_t i=0; i<a.size() ; ++i)
+            for (size_t i=0; i<(size_t)a.size() ; ++i)
             {
                 c[i] = sort(a[i])-sort(b[i]);
             }
