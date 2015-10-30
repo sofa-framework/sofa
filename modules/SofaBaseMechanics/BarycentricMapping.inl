@@ -632,11 +632,13 @@ template <class In, class Out>
 void BarycentricMapperEdgeSetTopology<In,Out>::init ( const typename Out::VecCoord& /*out*/, const typename In::VecCoord& /*in*/ )
 {
     _fromContainer->getContext()->get ( _fromGeomAlgo );
-    if (this->toTopology)
-    {
-        map.createTopologicalEngine(this->toTopology);
-        map.registerTopologicalData();
-    }
+    // Why do we need that ? is reset the map in case of topology change
+//    if (this->toTopology)
+//    {
+//        map.createTopologicalEngine(this->toTopology);
+//        map.registerTopologicalData();
+//    }
+
     //  int outside = 0;
     //  const sofa::helper::vector<topology::Edge>& edges = this->fromTopology->getEdges();
     //TODO: implementation of BarycentricMapperEdgeSetTopology::init
@@ -685,11 +687,13 @@ template <class In, class Out>
 void BarycentricMapperTriangleSetTopology<In,Out>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     _fromContainer->getContext()->get ( _fromGeomAlgo );
-    if (this->toTopology)
-    {
-        map.createTopologicalEngine(this->toTopology);
-        map.registerTopologicalData();
-    }
+
+    // Why do we need that ? is reset the map in case of topology change
+//    if (this->toTopology)
+//    {
+//        map.createTopologicalEngine(this->toTopology);
+//        map.registerTopologicalData();
+//    }
 
     int outside = 0;
 
@@ -781,11 +785,12 @@ template <class In, class Out>
 void BarycentricMapperQuadSetTopology<In,Out>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     _fromContainer->getContext()->get ( _fromGeomAlgo );
-    if (this->toTopology)
-    {
-        map.createTopologicalEngine(this->toTopology);
-        map.registerTopologicalData();
-    }
+    // Why do we need that ? is reset the map in case of topology change
+//    if (this->toTopology)
+//    {
+//        map.createTopologicalEngine(this->toTopology);
+//        map.registerTopologicalData();
+//    }
 
     int outside = 0;
     const sofa::helper::vector<topology::Quad>& quads = this->fromTopology->getQuads();
@@ -861,11 +866,12 @@ template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopology<In,Out>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     _fromContainer->getContext()->get ( _fromGeomAlgo );
-    if (this->toTopology)
-    {
-        map.createTopologicalEngine(this->toTopology);
-        map.registerTopologicalData();
-    }
+    // Why do we need that ? is reset the map in case of topology change
+//    if (this->toTopology)
+//    {
+//        map.createTopologicalEngine(this->toTopology);
+//        map.registerTopologicalData();
+//    }
 
     int outside = 0;
     const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
@@ -964,11 +970,12 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::init ( const typename Out::
         const typename In::VecCoord& /*in*/ )
 {
     _fromContainer->getContext()->get ( _fromGeomAlgo );
-    if (this->toTopology)
-    {
-        map.createTopologicalEngine(this->toTopology);
-        map.registerTopologicalData();
-    }
+    // Why do we need that ? is reset the map in case of topology change
+//    if (this->toTopology)
+//    {
+//        map.createTopologicalEngine(this->toTopology);
+//        map.registerTopologicalData();
+//    }
 
     if ( _fromGeomAlgo == NULL )
     {
@@ -4171,8 +4178,6 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyJT ( typename In::Matr
 
 /************************************* Topological Changes ***********************************/
 
-
-
 template <class In, class Out>
 void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::topology::Topology* t)
 {
@@ -4333,10 +4338,11 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
 
 // handle topology changes depending on the topology
 template <class TIn, class TOut>
-void BarycentricMapping<TIn, TOut>::handleTopologyChange ( core::topology::Topology* t )
+void BarycentricMapping<TIn, TOut>::handleTopologyChange ( core::topology::Topology* /*t*/ )
 {
-    if (mapper)
-        mapper->handleTopologyChange(t);
+//    if (mapper)
+//        mapper->handleTopologyChange(t);
+    reinit(); // we now recompute the entire mapping when there is a topologychange
 }
 
 
