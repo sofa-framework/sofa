@@ -51,8 +51,8 @@ int TriangularConvexHull3DClass = sofa::core::RegisterObject("Generate triangula
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_CGALPLUGIN_API TriangularConvexHull3D<Vec3dTypes>;
+template class SOFA_CGALPLUGIN_API cgal::TriangularConvexHull3D<Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_CGALPLUGIN_API TriangularConvexHull3D<Vec3fTypes>;
+template class SOFA_CGALPLUGIN_API cgal::TriangularConvexHull3D<Vec3fTypes>;
 #endif //SOFA_DOUBLE
