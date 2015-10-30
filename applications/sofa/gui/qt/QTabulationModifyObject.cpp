@@ -31,6 +31,7 @@
 #include <QDebug>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QScrollArea>
 // uncomment to show traces of GUI operations in this file
 //#define DEBUG_GUI
 
@@ -48,6 +49,8 @@ QTabulationModifyObject::QTabulationModifyObject(QWidget* parent,
         unsigned int idx):
     QWidget(parent), object(o), item(i), index(idx), size(0), dirty(false), pixelSize(0), pixelMaxSize(600)
 {
+    const int screenHeight = QApplication::desktop()->height();
+
     QVBoxLayout* vbox = new QVBoxLayout();
     vbox->setObjectName("tabVisualizationLayout");
     vbox->setMargin(0);
@@ -55,8 +58,14 @@ QTabulationModifyObject::QTabulationModifyObject(QWidget* parent,
 
     this->setLayout(vbox);
 
+//    //add a scrollable area for data properties
+//    QScrollArea* m_scrollArea = new QScrollArea();
+//    m_scrollArea->setMinimumSize(400,100);
+//    m_scrollArea->setWidgetResizable(true);
+//    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+//    m_scrollArea->setWidget(this);
+
     //find correct maxPixelSize according to the current screen resolution
-    const int screenHeight = QApplication::desktop()->height();
     pixelMaxSize = screenHeight - 300;
 }
 
