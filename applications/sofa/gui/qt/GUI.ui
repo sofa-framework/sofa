@@ -30,31 +30,144 @@
    <string>Sofa</string>
   </property>
   <widget class="QWidget" name="widget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <property name="minimumSize">
     <size>
-     <width>200</width>
+     <width>0</width>
      <height>0</height>
     </size>
    </property>
    <layout class="QVBoxLayout">
-    <property name="margin">
+    <property name="sizeConstraint">
+     <enum>QLayout::SetNoConstraint</enum>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
     <item>
-     <widget class="QSplitter" name="splitter2">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="opaqueResize">
-       <bool>false</bool>
-      </property>
-      <property name="handleWidth">
-       <number>1</number>
-      </property>
+     <layout class="QHBoxLayout" name="mainWidgetLayout"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="fileMenu">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="fileNewAction"/>
+    <addaction name="fileOpenAction"/>
+    <addaction name="fileReloadAction"/>
+    <addaction name="fileSaveAction"/>
+    <addaction name="fileSaveAsAction"/>
+    <addaction name="separator"/>
+    <addaction name="separator"/>
+    <addaction name="fileExitAction"/>
+   </widget>
+   <widget class="QMenu" name="editMenu">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="editRecordDirectoryAction"/>
+    <addaction name="editGnuplotDirectoryAction"/>
+    <addaction name="separator"/>
+    <addaction name="PluginManagerAction"/>
+    <addaction name="MouseManagerAction"/>
+    <addaction name="VideoRecorderManagerAction"/>
+   </widget>
+   <widget class="QMenu" name="View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="helpMenu">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="helpContentsAction"/>
+    <addaction name="helpIndexAction"/>
+    <addaction name="separator"/>
+    <addaction name="helpAboutAction"/>
+   </widget>
+   <addaction name="fileMenu"/>
+   <addaction name="editMenu"/>
+   <addaction name="View"/>
+   <addaction name="helpMenu"/>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>200</width>
+     <height>551</height>
+    </size>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>200</width>
+      <height>0</height>
+     </size>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
       <widget class="QWidget" name="optionTabs" native="true">
-       <layout class="QVBoxLayout">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <layout class="QVBoxLayout" name="_13">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetNoConstraint</enum>
+        </property>
         <item>
-         <layout class="QGridLayout">
+         <layout class="QGridLayout" name="_14">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetNoConstraint</enum>
+          </property>
           <item row="2" column="0">
            <widget class="QPushButton" name="ResetViewButton">
             <property name="enabled">
@@ -70,46 +183,6 @@
              <string>Alt+V</string>
             </property>
            </widget>
-          </item>
-          <item row="1" column="1">
-           <layout class="QHBoxLayout">
-            <item>
-             <widget class="QLabel" name="dtLabel">
-              <property name="text">
-               <string>DT:</string>
-              </property>
-              <property name="wordWrap">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="dtEdit">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>80</width>
-                <height>32767</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="realTimeCheckBox">
-              <property name="toolTip">
-               <string>Use the duration of the previous simulation step as the next DT</string>
-              </property>
-              <property name="text">
-               <string>Real Time</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
           </item>
           <item row="0" column="0">
            <widget class="QPushButton" name="startButton">
@@ -185,6 +258,55 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="1">
+           <layout class="QHBoxLayout" name="_15">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetNoConstraint</enum>
+            </property>
+            <item>
+             <widget class="QLabel" name="dtLabel">
+              <property name="text">
+               <string>DT:</string>
+              </property>
+              <property name="wordWrap">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="dtEdit">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>20</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>32767</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="realTimeCheckBox">
+              <property name="toolTip">
+               <string>Use the duration of the previous simulation step as the next DT</string>
+              </property>
+              <property name="text">
+               <string>Real Time</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
          </layout>
         </item>
         <item>
@@ -205,26 +327,44 @@
         </item>
         <item>
          <widget class="QTabWidget" name="tabs">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
           <widget class="QWidget" name="tabView">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <attribute name="title">
             <string>View</string>
            </attribute>
-           <layout class="QGridLayout">
+           <layout class="QGridLayout" name="gridLayout1">
             <item row="2" column="0">
-             <layout class="QGridLayout">
+             <layout class="QGridLayout" name="_17">
               <item row="1" column="0">
-               <layout class="QGridLayout">
+               <layout class="QGridLayout" name="_18">
                 <item row="0" column="2">
                  <spacer name="spacer8">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
                   </property>
                   <property name="sizeType">
-                   <enum>QSizePolicy::Expanding</enum>
+                   <enum>QSizePolicy::Ignored</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
-                    <width>299</width>
+                    <width>0</width>
                     <height>16</height>
                    </size>
                   </property>
@@ -258,11 +398,11 @@
                    <enum>Qt::Horizontal</enum>
                   </property>
                   <property name="sizeType">
-                   <enum>QSizePolicy::Expanding</enum>
+                   <enum>QSizePolicy::Ignored</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
-                    <width>299</width>
+                    <width>0</width>
                     <height>16</height>
                    </size>
                   </property>
@@ -278,7 +418,7 @@
            <attribute name="title">
             <string>Graph</string>
            </attribute>
-           <layout class="QVBoxLayout">
+           <layout class="QVBoxLayout" name="_19">
             <item>
              <widget class="QPushButton" name="ExportGraphButton">
               <property name="text">
@@ -299,7 +439,7 @@
            <attribute name="title">
             <string>Visual</string>
            </attribute>
-           <layout class="QVBoxLayout">
+           <layout class="QVBoxLayout" name="_20">
             <item>
              <widget class="QPushButton" name="ExportVisualGraphButton">
               <property name="text">
@@ -320,7 +460,7 @@
            <attribute name="title">
             <string>Stats</string>
            </attribute>
-           <layout class="QVBoxLayout">
+           <layout class="QVBoxLayout" name="_21">
             <item>
              <widget class="QCheckBox" name="dumpStateCheckBox">
               <property name="toolTip">
@@ -367,14 +507,14 @@
            <attribute name="title">
             <string>Viewer</string>
            </attribute>
-           <layout class="QVBoxLayout">
+           <layout class="QVBoxLayout" name="_22">
             <item>
-             <layout class="QHBoxLayout">
+             <layout class="QHBoxLayout" name="_23">
               <property name="spacing">
                <number>0</number>
               </property>
               <item>
-               <spacer name="spacer5_3_2">
+               <spacer name="spacer5_3_3">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -420,7 +560,7 @@
                </widget>
               </item>
               <item>
-               <spacer name="spacer5_3_2_2">
+               <spacer name="spacer5_3_2_3">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -474,64 +614,9 @@
         </item>
        </layout>
       </widget>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="fileMenu">
-    <property name="title">
-     <string>&amp;File</string>
-    </property>
-    <addaction name="fileNewAction"/>
-    <addaction name="fileOpenAction"/>
-    <addaction name="fileReloadAction"/>
-    <addaction name="fileSaveAction"/>
-    <addaction name="fileSaveAsAction"/>
-    <addaction name="separator"/>
-    <addaction name="separator"/>
-    <addaction name="fileExitAction"/>
+     </item>
+    </layout>
    </widget>
-   <widget class="QMenu" name="editMenu">
-    <property name="title">
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="editRecordDirectoryAction"/>
-    <addaction name="editGnuplotDirectoryAction"/>
-    <addaction name="separator"/>
-    <addaction name="PluginManagerAction"/>
-    <addaction name="MouseManagerAction"/>
-    <addaction name="VideoRecorderManagerAction"/>
-   </widget>
-   <widget class="QMenu" name="View">
-    <property name="title">
-     <string>&amp;View</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="helpMenu">
-    <property name="title">
-     <string>Help</string>
-    </property>
-    <addaction name="helpContentsAction"/>
-    <addaction name="helpIndexAction"/>
-    <addaction name="separator"/>
-    <addaction name="helpAboutAction"/>
-   </widget>
-   <addaction name="fileMenu"/>
-   <addaction name="editMenu"/>
-   <addaction name="View"/>
-   <addaction name="helpMenu"/>
   </widget>
   <action name="fileNewAction">
    <property name="icon">
@@ -768,7 +853,7 @@
  </widget>
  <layoutdefault spacing="2" margin="5"/>
  <includes>
-  <include>sofa/gui/qt/SofaGUIQt.h</include>
+  <include location="local">sofa/gui/qt/SofaGUIQt.h</include>
  </includes>
  <resources/>
  <connections>

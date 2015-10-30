@@ -39,7 +39,6 @@
 #include <string>
 
 #include <QListView>
-#include <QStackedWidget>
 #include <QUrl>
 #include <QTimer>
 #include <QTextBrowser>
@@ -215,12 +214,8 @@ protected:
     QTimer* timerStep;
     WDoubleLineEdit *background[3];
     QLineEdit *backgroundImage;
-    /// Stack viewer widget
-    QStackedWidget* left_stack;
     SofaPluginManager* pluginManager_dialog;
     QMenuFilesRecentlyOpened recentlyOpenedFilesManager;
-
-    QDockWidget* m_dockTools;
 
     std::string simulation_name;
     std::string gnuplot_directory;
