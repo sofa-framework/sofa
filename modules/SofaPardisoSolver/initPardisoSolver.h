@@ -34,7 +34,20 @@ namespace component
 {
 
 
-void SOFA_PARDISO_SOLVER_API initPardisoSolver();
+#ifndef WIN32
+    #define SOFA_EXPORT_DYNAMIC_LIBRARY
+    #define SOFA_IMPORT_DYNAMIC_LIBRARY
+        #define SOFA_PARDISO_SOLVER_API
+#else
+        #ifdef SOFA_BUILD_PARDISO_SOLVER
+        #define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
+                #define SOFA_PARDISO_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+    #else
+        #define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
+                #define SOFA_PARDISO_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+    #endif
+#endif // not WIN32
+
 
 } // namespace component
 

@@ -33,20 +33,63 @@ namespace component
 {
 
 
-void initPardisoSolver()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
+    //Here are just several convenient functions to help user to know what contains the plugin
+
+    extern "C" {
+                    SOFA_PARDISO_SOLVER_API void initExternalModule();
+                    SOFA_PARDISO_SOLVER_API const char* getModuleName();
+                    SOFA_PARDISO_SOLVER_API const char* getModuleVersion();
+                    SOFA_PARDISO_SOLVER_API const char* getModuleLicense();
+                    SOFA_PARDISO_SOLVER_API const char* getModuleDescription();
+                    SOFA_PARDISO_SOLVER_API const char* getModuleComponentList();
     }
-}
 
-#ifdef SOFA_HAVE_PARDISO
-SOFA_LINK_CLASS(SparsePARDISOSolver)
-#endif
+    void initExternalModule()
+    {
+        static bool first = true;
+        if (first)
+        {
+            first = false;
+        }
+    }
 
+    const char* getModuleName()
+    {
+        return "Plugin Pardiso";
+    }
+
+    const char* getModuleVersion()
+    {
+        return "test 1.0";
+    }
+
+    const char* getModuleLicense()
+    {
+        return "LGPL";
+    }
+
+
+    const char* getModuleDescription()
+    {
+        return "Solver using Pardiso library";
+    }
+
+    const char* getModuleComponentList()
+    {
+        return "TetrahedralCryoDiffusionForceField, MassCryo, PotentielInitialization, ExplicitBDFSolver, IsoSurface, TemperatureState, GridToGridEngine, RegularGridMass, RegularGridDiffusionForceField, RegularGridHeatGenerationForceField, FieldInitialization, NeedleConstraint, CylinderROI";
+    }
+
+    void initPardisoSolver()
+    {
+        static bool first = true;
+        if (first)
+        {
+            first = false;
+        }
+    }
 
 } // namespace component
 
 } // namespace sofa
+
+SOFA_LINK_CLASS(SparsePARDISOSolver)
