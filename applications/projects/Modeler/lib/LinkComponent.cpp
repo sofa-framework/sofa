@@ -139,7 +139,7 @@ LinkComponent::LinkComponent(GraphModeler* mg, const std::vector<QTreeWidgetItem
 
             if(previousItem)
             {
-                QTreeWidgetItem* parent;
+                QTreeWidgetItem* parent = curChild->parent();
                 int index = parent->indexOfChild(childItem);
                 QTreeWidgetItem* tmpItem = parent->takeChild(index);
                 parent->insertChild(parent->indexOfChild(previousItem), tmpItem);
