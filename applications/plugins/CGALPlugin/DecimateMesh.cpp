@@ -51,8 +51,8 @@ int DecimateMeshClass = sofa::core::RegisterObject("Simplification of a mesh by 
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_CGALPLUGIN_API DecimateMesh<Vec3dTypes>;
+template class SOFA_CGALPLUGIN_API cgal::DecimateMesh<Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_CGALPLUGIN_API DecimateMesh<Vec3fTypes>;
+template class SOFA_CGALPLUGIN_API cgal::DecimateMesh<Vec3fTypes>;
 #endif //SOFA_DOUBLE
