@@ -1617,7 +1617,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
 			for (size_t i=0; i<nbTetras; i++) {
 				/// get the global index of each control point in the tetrahedron
 				const VecPointID &indexArray=bezierTetraGeo->getTopologyContainer()->getGlobalIndexArrayOfBezierPoints(i) ;
-
+				nbControlPoints=indexArray.size();
 				// get the mass matrix in the tetrahedron
 //				MassVector &mv=tetrahedronMassInfo[i];
 				const MassVector &mv=getBezierTetrahedronMassVector(i);
