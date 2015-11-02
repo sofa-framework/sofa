@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -171,16 +171,16 @@ struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
             for (unsigned int i = 0; i< 3; i++)
             {
-                header.nifti_quaternion[i]   = q[i+1];
-                header.nifti_quaternion[3+i] = rtransform->getTranslation()[i];
+                header.nifti_quaternion[i]   = (float)q[i+1];
+                header.nifti_quaternion[3+i] = (float)rtransform->getTranslation()[i];
             }
 
             defaulttype::Matrix3 mat;
             q.toMatrix(mat);
 
-            header.nifti_affine[0] = mat(0,0) * voxsize[0]; header.nifti_affine[1] = mat(0,1);              header.nifti_affine[2] = mat(0,2);               header.nifti_affine[3] = rtransform->getTranslation()[0];
-            header.nifti_affine[4] = mat(1,0);              header.nifti_affine[5] = mat(1,1) * voxsize[1]; header.nifti_affine[6] = mat(1,2);               header.nifti_affine[7] = rtransform->getTranslation()[1];
-            header.nifti_affine[8] = mat(2,0);              header.nifti_affine[9] = mat(2,1);              header.nifti_affine[10] = mat(2,2) * voxsize[2]; header.nifti_affine[11] = rtransform->getTranslation()[2];
+            header.nifti_affine[0] = (float)(mat(0,0) * voxsize[0]); header.nifti_affine[1] =(float) mat(0,1);              header.nifti_affine[2] = (float)mat(0,2);               header.nifti_affine[3] = (float)rtransform->getTranslation()[0];
+            header.nifti_affine[4] = (float)mat(1,0);              header.nifti_affine[5] = (float)(mat(1,1) * voxsize[1]); header.nifti_affine[6] = (float)mat(1,2);               header.nifti_affine[7] = (float)rtransform->getTranslation()[1];
+            header.nifti_affine[8] = (float)mat(2,0);              header.nifti_affine[9] = (float)mat(2,1);              header.nifti_affine[10] = (float)(mat(2,2) * voxsize[2]); header.nifti_affine[11] = (float)rtransform->getTranslation()[2];
 
             header.nifti_magic[0] = 'n';
             if (fname.find(".hdr")!=std::string::npos)

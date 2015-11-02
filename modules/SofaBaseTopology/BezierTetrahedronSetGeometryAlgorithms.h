@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -83,6 +83,7 @@ protected:
     sofa::helper::set<std::pair<Edge,size_t> > bezierTetrahedronEdgeSet;
 
 
+
 	/// constructor 
 	BezierTetrahedronSetGeometryAlgorithms();
     virtual ~BezierTetrahedronSetGeometryAlgorithms() {}
@@ -116,6 +117,7 @@ protected:
     Data<bool> drawControlPointsEdges;
 	Data<bool> drawSmoothEdges;
 	Data<bool> drawControlPoints;
+	Data<Real> d_referenceRadius; // radius to draw control points
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_BEZIERTETRAHEDRONSETGEOMETRYALGORITHMS_CPP)

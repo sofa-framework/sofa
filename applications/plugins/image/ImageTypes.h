@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -516,6 +516,8 @@ public:
         getScale()[0]=getScale()[1]=getScale()[2]=getScaleT()=(Real)1.0;
         camx = camy = (Real)0.0;
     }
+
+    virtual ~ImageLPTransform() {}
 
     //internal data
     helper::Quater<Real> qrotation; Coord axisrotation; Real phirotation; // "rotation" in other formats

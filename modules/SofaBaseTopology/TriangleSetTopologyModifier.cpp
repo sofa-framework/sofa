@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -723,7 +723,8 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
 #endif
 
     sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
-    for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
+ //   for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
+	 for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
     {
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())

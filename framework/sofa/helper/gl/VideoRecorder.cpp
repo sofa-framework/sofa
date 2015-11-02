@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -88,7 +88,7 @@ AVFrame *VideoRecorder::alloc_picture(PixelFormat pix_fmt, int width, int height
     return picture;
 }
 
-AVStream *VideoRecorder::add_video_stream(AVFormatContext *oc, CodecID codec_id, const std::string& codec)
+AVStream *VideoRecorder::add_video_stream(AVFormatContext *oc, AVCodecID codec_id, const std::string& codec)
 {
     AVCodecContext *c;
     AVStream *st;
@@ -99,7 +99,7 @@ AVStream *VideoRecorder::add_video_stream(AVFormatContext *oc, CodecID codec_id,
 
     c = st->codec;
     c->codec_id = codec_id;
-    c->codec_type = CODEC_TYPE_VIDEO;
+    c->codec_type = AVMEDIA_TYPE_VIDEO;
 
     /* put sample parameters */
     c->bit_rate = p_bitrate;
@@ -145,8 +145,8 @@ AVStream *VideoRecorder::add_video_stream(AVFormatContext *oc, CodecID codec_id,
             c->qcompress = 0.6;
             c->max_b_frames= 3;
             c->me_cmp |= FF_CMP_CHROMA;
-            c->partitions |= X264_PART_I8X8 | X264_PART_I4X4 |
-                    X264_PART_P8X8 | X264_PART_B8X8;
+//            c->partitions |= X264_PART_I8X8 | X264_PART_I4X4 |
+//                    X264_PART_P8X8 | X264_PART_B8X8;
             c->me_method = ME_HEX;
 
             //c->gop_size = 250;
@@ -155,11 +155,11 @@ AVStream *VideoRecorder::add_video_stream(AVFormatContext *oc, CodecID codec_id,
             c->scenechange_threshold = 40;
             c->i_quant_factor = 0.71;
             c->b_frame_strategy = 1;
-            c->directpred = 1;
+//            c->directpred = 1;
             c->trellis = 1;
-            c->flags2 = CODEC_FLAG2_BPYRAMID | CODEC_FLAG2_MIXED_REFS |
-                    CODEC_FLAG2_WPRED | CODEC_FLAG2_8X8DCT | CODEC_FLAG2_FASTPSKIP;
-            c->weighted_p_pred = 2;
+            c->flags2 = CODEC_FLAG2_FAST    | CODEC_FLAG2_NO_OUTPUT |
+                    CODEC_FLAG2_LOCAL_HEADER | CODEC_FLAG2_IGNORE_CROP |  CODEC_FLAG2_CHUNKS;
+    //        c->weighted_p_pred = 2;
         }
         else if (codec == std::string("mpeg4"))
         {
@@ -180,8 +180,8 @@ AVStream *VideoRecorder::add_video_stream(AVFormatContext *oc, CodecID codec_id,
             c->qcompress = 0.6;
             c->max_b_frames= 3;
             c->me_cmp |= FF_CMP_CHROMA;
-            c->partitions |= X264_PART_I8X8 | X264_PART_I4X4 |
-                    X264_PART_P8X8 | X264_PART_B8X8;
+//            c->partitions |= X264_PART_I8X8 | X264_PART_I4X4 |
+ //                   X264_PART_P8X8 | X264_PART_B8X8;
             c->me_method = ME_HEX;
 
             //c->gop_size = 250;
@@ -190,13 +190,13 @@ AVStream *VideoRecorder::add_video_stream(AVFormatContext *oc, CodecID codec_id,
             c->scenechange_threshold = 40;
             c->i_quant_factor = 0.71;
             c->b_frame_strategy = 1;
-            c->directpred = 1;
+       //     c->directpred = 1;
             c->trellis = 1;
-            c->flags2 = CODEC_FLAG2_BPYRAMID | CODEC_FLAG2_MIXED_REFS |
-                    CODEC_FLAG2_WPRED | CODEC_FLAG2_8X8DCT | CODEC_FLAG2_FASTPSKIP;
-            c->weighted_p_pred = 2;
+			c->flags2 = CODEC_FLAG2_FAST    | CODEC_FLAG2_NO_OUTPUT |
+			CODEC_FLAG2_LOCAL_HEADER | CODEC_FLAG2_IGNORE_CROP |  CODEC_FLAG2_CHUNKS;
+    //        c->weighted_p_pred = 2;
 
-            c->cqp = 0;
+//            c->cqp = 0;
 
             /*
                         c->me_range = 16;
@@ -242,7 +242,7 @@ bool VideoRecorder::open_video(AVFormatContext *oc, AVStream *st)
     }
 
     /* open the codec */
-    if (avcodec_open(c, codec) < 0)
+    if (avcodec_open2(c, codec,NULL) < 0)
     {
         std::cerr <<"could not open codec"<<std::endl;
         return false;
@@ -324,7 +324,7 @@ bool VideoRecorder::write_delayed_video_frame(AVFormatContext *oc, AVStream *st)
 
             pkt.pts= av_rescale_q(c->coded_frame->pts, c->time_base, st->time_base);
             if(c->coded_frame->key_frame)
-                pkt.flags |= PKT_FLAG_KEY;
+                pkt.flags |= AV_PKT_FLAG_KEY;
             pkt.stream_index= st->index;
             pkt.data= videoOutbuf;
             pkt.size= out_size;
@@ -345,7 +345,7 @@ bool VideoRecorder::write_video_frame(AVFormatContext *oc, AVStream *st)
 {
     int sws_flags = SWS_BICUBIC;
 
-    int ret;
+    int out_size, ret;
     AVCodecContext *c;
 
     c = st->codec;
@@ -388,7 +388,7 @@ bool VideoRecorder::write_video_frame(AVFormatContext *oc, AVStream *st)
         AVPacket pkt;
         av_init_packet(&pkt);
 
-        pkt.flags |= PKT_FLAG_KEY;
+        pkt.flags |= AV_PKT_FLAG_KEY;
         pkt.stream_index= st->index;
         pkt.data= (uint8_t *)pPicture;
         pkt.size= sizeof(AVPicture);
@@ -399,7 +399,7 @@ bool VideoRecorder::write_video_frame(AVFormatContext *oc, AVStream *st)
     {
         /* encode the image */
         pPicture->pts = pFrameCount;
-        int out_size = avcodec_encode_video(c, videoOutbuf, videoOutbufSize, pPicture);
+        out_size = avcodec_encode_video(c, videoOutbuf, videoOutbufSize, pPicture);
         /* if zero size, it means the image was buffered */
         if (out_size > 0)
         {
@@ -408,7 +408,7 @@ bool VideoRecorder::write_video_frame(AVFormatContext *oc, AVStream *st)
             std::cout << "Encoded Video Frame: " << c->coded_frame->pts << std::endl;
             pkt.pts= av_rescale_q(c->coded_frame->pts, c->time_base, st->time_base);
             if(c->coded_frame->key_frame)
-                pkt.flags |= PKT_FLAG_KEY;
+                pkt.flags |= AV_PKT_FLAG_KEY;
             pkt.stream_index= st->index;
             pkt.data= videoOutbuf;
             pkt.size= out_size;
@@ -519,11 +519,11 @@ bool VideoRecorder::init(const std::string& filename, unsigned int framerate, un
     }
 
     // set the output parameters (must be done even if no parameters)
-    if (av_set_parameters(pFormatContext, NULL) < 0)
+/*    if (av_set_parameters(pFormatContext, NULL) < 0)
     {
         std::cerr <<"Invalid output format parameters" << std::endl;
         return false;
-    }
+    }*/
 
     // now that all the parameters are set, we can open the audio and
     //   video codecs and allocate the necessary encode buffers */
@@ -533,7 +533,7 @@ bool VideoRecorder::init(const std::string& filename, unsigned int framerate, un
     // open the output file, if needed
     if (!(pFormat->flags & AVFMT_NOFILE))
     {
-        if (url_fopen(&pFormatContext->pb, filename.c_str(), URL_WRONLY) < 0)
+        if (avio_open(&pFormatContext->pb, filename.c_str(), AVIO_FLAG_WRITE) < 0)
         {
             std::cerr <<"Could not open '%s'" << std::endl;
             return false;
@@ -541,7 +541,7 @@ bool VideoRecorder::init(const std::string& filename, unsigned int framerate, un
     }
 
     // write the stream header, if any
-    av_write_header(pFormatContext);
+    avformat_write_header(pFormatContext,NULL);
 
     std::cout << "Start Recording in " << filename << std::endl;
     //everything is ok
@@ -563,7 +563,7 @@ void VideoRecorder::finishVideo()
     av_write_trailer(pFormatContext);
 
     //Dump to stdout
-    dump_format(pFormatContext, 0, p_filename.c_str(), 1);
+    av_dump_format(pFormatContext, 0, p_filename.c_str(), 1);
 
     // close each codec
     if (pVideoStream)
@@ -579,7 +579,7 @@ void VideoRecorder::finishVideo()
     if (!(pFormat->flags & AVFMT_NOFILE))
     {
         // close the output file
-        url_fclose(pFormatContext->pb);
+        avio_close(pFormatContext->pb);
     }
 
     // free the stream

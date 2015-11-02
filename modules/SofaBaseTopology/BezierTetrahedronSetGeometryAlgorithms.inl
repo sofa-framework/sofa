@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,6 +57,7 @@ TetrahedronSetGeometryAlgorithms<DataTypes>()
         ,drawControlPointsEdges (core::objectmodel::Base::initData(&drawControlPointsEdges, (bool) false, "drawControlPointsEdges", "Debug : draw Control point edges "))
         ,drawSmoothEdges (core::objectmodel::Base::initData(&drawSmoothEdges, (bool) false, "drawSmoothEdges", "Debug : draw Bezier curves as edges of the  Bezier triangle"))
  	   ,drawControlPoints (core::objectmodel::Base::initData(&drawControlPoints, (bool) false, "drawControlPoints", "Debug : draw Control points with a color depending on its status "))
+	   ,d_referenceRadius (core::objectmodel::Base::initData(&d_referenceRadius, (Real) -1.0f, "referenceRadius", "Debug : radius of control points when drawing "))
     {
     }
 template< class DataTypes>
@@ -149,9 +150,9 @@ typename DataTypes::Coord BezierTetrahedronSetGeometryAlgorithms< DataTypes >::c
 {
 	Coord nodalValue;
 	nodalValue.clear();
-	VecPointID indexArray;
+
 	TetrahedronBezierIndex tbi;
-	container->getGlobalIndexArrayOfBezierPointsInTetrahedron(tetrahedronIndex, indexArray);
+	const VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(tetrahedronIndex);
 	bool isRational=container->isRationalSpline(tetrahedronIndex);
 	if (isRational) {
 		const BezierTetrahedronSetTopologyContainer::SeqWeights &wa=container->getWeightArray();
@@ -200,16 +201,17 @@ typename DataTypes::Real BezierTetrahedronSetGeometryAlgorithms<DataTypes>::comp
  {
 	/// the 3 derivatives
 	Coord dpos[3];
-	VecPointID indexArray;
+	
 	TetrahedronBezierIndex tbi;
 	size_t j;
 	Real val;
-	container->getGlobalIndexArrayOfBezierPointsInTetrahedron(tetrahedronIndex, indexArray);
+	const VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(tetrahedronIndex);
 	bool isRational=container->isRationalSpline(tetrahedronIndex);
 	if (isRational) {
 		const BezierTetrahedronSetTopologyContainer::SeqWeights &wa=container->getWeightArray();
 		Real weight=(Real)0.0f;
         Real dweight[3]= {0,0,0};
+		dweight[0]=dweight[1]=dweight[2]=(Real)0.0f;
 		Coord pos;
 		for(size_t i=0; i<tbiArray.size(); ++i)
 		{
@@ -228,14 +230,14 @@ typename DataTypes::Real BezierTetrahedronSetGeometryAlgorithms<DataTypes>::comp
 				}
 			}
 			for (j=0;j<3;++j) {
-				dpos[j]+=(dval[j]-dval[3])*p[indexArray[i]];
+				dpos[j]+=(dval[j]-dval[3])*wa[indexArray[i]]*p[indexArray[i]];
 				dweight[j]+=(dval[j]-dval[3])*wa[indexArray[i]];
 			}
-			// computes the derivatives of the ratio of the 2 polynomial terms
-			for (j=0;j<3;++j) {
-				dpos[j]=dpos[j]/weight-(dweight[j]/(weight*weight))*pos;
-			}
-		} 
+		}
+		// computes the derivatives of the ratio of the 2 polynomial terms
+		for (j=0;j<3;++j) {
+			dpos[j]=dpos[j]/weight-(dweight[j]/(weight*weight))*pos;
+		}
 	}else {
 		for(size_t i=0; i<tbiArray.size(); ++i)
 		{
@@ -272,11 +274,11 @@ template<class DataTypes>
 void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::computeDeCasteljeauPoints(const size_t tetrahedronIndex, const Vec4 barycentricCoordinate,  const VecCoord& p, Coord dpos[4])
 {
 	/// the 4 derivatives
-	VecPointID indexArray;
+	
 	TetrahedronBezierIndex tbi;
 	size_t j;
 	Real val;
-	container->getGlobalIndexArrayOfBezierPointsInTetrahedron(tetrahedronIndex, indexArray);
+	const VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(tetrahedronIndex);
 	// initialize dpos
 	for (j=0;j<4;++j) 
 		dpos[j]=Coord();
@@ -340,8 +342,8 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::computeDeCasteljeauPoint
 template<class DataTypes>
 bool BezierTetrahedronSetGeometryAlgorithms<DataTypes>::isBezierTetrahedronAffine(const size_t tetrahedronIndex,const VecCoord& p, Real tolerance) const{
 	// get the global indices of all points
-	VecPointID indexArray;
-	container->getGlobalIndexArrayOfBezierPointsInTetrahedron(tetrahedronIndex, indexArray);
+	
+	const VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(tetrahedronIndex);
 	bool affine=true;
 
 	/// skip the first 4 control points corresponding to the 4 corners
@@ -398,6 +400,29 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 	if ((degree>0) && (container) ){
 		TetrahedronSetGeometryAlgorithms<DataTypes>::draw(vparams);	
 		// Draw Tetra
+		// reference radius
+		if (d_referenceRadius.getValue()<0.0) {
+			// estimate the  mean radius of the spheres from the first Bezier triangle 
+			
+			size_t nbPoints=container->getNbPoints();
+			size_t i,elementIndex,elementOffset;
+			const typename DataTypes::VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
+			BezierTetrahedronSetTopologyContainer::BezierTetrahedronPointLocation location;
+			const VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(0);
+			std::vector<Real> edgeLengthArray;
+			// compute median of the edge distance between control points	
+			sofa::helper::set<std::pair<Edge,size_t> >::iterator ite=bezierTetrahedronEdgeSet.begin();
+			//Real val=0;
+			Coord pp;
+			for (; ite!=bezierTetrahedronEdgeSet.end(); ite++)
+			{
+				pp = coords[indexArray[(*ite).first[0]]] -coords[indexArray[(*ite).first[1]]] ;
+				edgeLengthArray.push_back(pp.norm());
+			}
+			std::nth_element(edgeLengthArray.begin(), edgeLengthArray.begin() + edgeLengthArray.size()/2, edgeLengthArray.end());
+			Real radius=edgeLengthArray[edgeLengthArray.size()/2]/5;
+			d_referenceRadius.setValue(radius);
+		}
 		
 		if (drawControlPoints.getValue())
 		{
@@ -409,19 +434,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 			if (container->getNbTriangles()>0) {
 				// estimate the  mean radius of the spheres from the first Bezier triangle 
 				VecPointID indexArray;
-				container->getGlobalIndexArrayOfBezierPointsInTetrahedron(0, indexArray);
-				std::vector<Real> edgeLengthArray;
-				// compute median of the edge distance between control points	
-				sofa::helper::set<std::pair<Edge,size_t> >::iterator ite=bezierTetrahedronEdgeSet.begin();
-                //Real val=0;
-				Coord pp;
-				for (; ite!=bezierTetrahedronEdgeSet.end(); ite++)
-				{
-						pp = pos[indexArray[(*ite).first[0]]] -pos[indexArray[(*ite).first[1]]] ;
-						edgeLengthArray.push_back(pp.norm());
-				}
-				std::nth_element(edgeLengthArray.begin(), edgeLengthArray.begin() + edgeLengthArray.size()/2, edgeLengthArray.end());
-				Real radius=edgeLengthArray[edgeLengthArray.size()/2]/5;
+				float radius=	d_referenceRadius.getValue();
 				std::vector<sofa::defaulttype::Vector3> pointsVertices,pointsEdges,pointsTriangles,pointsTetrahedra;
 				std::vector<float> radiusVertices,radiusEdges,radiusTriangles,radiusTetrahedra;
 				sofa::defaulttype::Vector3 p;
@@ -470,29 +483,14 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 
 			if (!tetraArray.empty())
 			{
-				// estimate the  mean radius of the spheres from the first Bezier triangle 
-				VecPointID indexArray;
-				size_t nbPoints=container->getNbPoints();
-				size_t i,elementIndex,elementOffset;
+				float radius=	d_referenceRadius.getValue();
 				const typename DataTypes::VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-				BezierTetrahedronSetTopologyContainer::BezierTetrahedronPointLocation location;
-				container->getGlobalIndexArrayOfBezierPointsInTetrahedron(0, indexArray);
-				std::vector<Real> edgeLengthArray;
-				// compute median of the edge distance between control points	
-				sofa::helper::set<std::pair<Edge,size_t> >::iterator ite=bezierTetrahedronEdgeSet.begin();
-                //Real val=0;
-				Coord pp;
-				for (; ite!=bezierTetrahedronEdgeSet.end(); ite++)
-				{
-					pp = coords[indexArray[(*ite).first[0]]] -coords[indexArray[(*ite).first[1]]] ;
-					edgeLengthArray.push_back(pp.norm());
-				}
-				std::nth_element(edgeLengthArray.begin(), edgeLengthArray.begin() + edgeLengthArray.size()/2, edgeLengthArray.end());
-				Real radius=edgeLengthArray[edgeLengthArray.size()/2]/5;
 				std::vector<sofa::defaulttype::Vector3> pointsVertices;
 				std::vector<float> radiusVertices;
 				sofa::defaulttype::Vector3 p1;
-
+				size_t elementIndex,i,elementOffset;
+				BezierTetrahedronSetTopologyContainer::BezierTetrahedronPointLocation location;
+				size_t nbPoints=container->getNbPoints();
 
 				for (i=0;i<nbPoints;++i) {
 					container->getLocationFromGlobalIndex(i,location,elementIndex,elementOffset);
@@ -507,7 +505,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 				vparams->drawTool()->setLightingEnabled(true); //Enable lightning
 				vparams->drawTool()->drawSpheres(pointsVertices, radiusVertices,  defaulttype::Vec<4,float>(1.0f,0,0,1.0f));
 				vparams->drawTool()->setLightingEnabled(false); //Disable lightning
-
+				
 				#ifndef SOFA_NO_OPENGL
 				glDisable(GL_LIGHTING);
 				
@@ -524,8 +522,8 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 				sofa::defaulttype::Vec3f p; //,p2;
 				for ( i = 0; i<tetraArray.size(); i++)
 				{
-					indexArray.clear();
-					container->getGlobalIndexArrayOfBezierPointsInTetrahedron(i, indexArray);
+					
+					const VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(i);
 					sofa::helper::vector <sofa::defaulttype::Vec3f> trianCoord;
 					// process each edge of the tetrahedron
 					for (size_t j = 0; j<6; j++) {
@@ -559,13 +557,13 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 				glColor3f(color[0], color[1], color[2]);
 				glBegin(GL_LINES);
 				const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-				VecPointID indexArray;
+				
 				Vec4 baryCoord;
 				sofa::defaulttype::Vec3f p; //,p2;
 				for (unsigned int i = 0; i<tetraArray.size(); i++)
 				{
-					indexArray.clear();
-					container->getGlobalIndexArrayOfBezierPointsInTetrahedron(i, indexArray);
+					
+					const VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(i);
 					sofa::helper::vector <sofa::defaulttype::Vec3f> tetraCoord;
 
 					for (unsigned int j = 0; j<indexArray.size(); j++)

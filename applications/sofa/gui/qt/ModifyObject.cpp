@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -14,7 +14,7 @@
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
 * with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
+* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
 *******************************************************************************
 *                            SOFA :: Applications                             *
 *                                                                             *
@@ -42,10 +42,13 @@
 #include <QVBoxLayout>
 #include <QTabWidget>
 #include <QTreeWidget>
+#include <QScrollArea>
+#include <QApplication>
+#include <QDesktopWidget>
 
 
 // uncomment to show traces of GUI operations in this file
-//#define DEBUG_GUI
+// #define DEBUG_GUI
 
 namespace sofa
 {
@@ -91,7 +94,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         return;
     }
 #ifdef DEBUG_GUI
-    std::cout << "GUI: createDialog(" << base->getClassName() << " " << base->getName() << ")" << std::endl;
+    std::cout << "GUI: (base) createDialog(" << base->getClassName() << " " << base->getName() << ")" << std::endl;
 #endif
 #ifdef DEBUG_GUI
     std::cout << "GUI>emit beginObjectModification(" << base->getName() << ")" << std::endl;
@@ -110,7 +113,19 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
     generalLayout->setSpacing(1);
     //Tabulation widget
     dialogTab = new QTabWidget(this);
-    generalLayout->addWidget(dialogTab);
+    //generalLayout->addWidget(dialogTab);
+
+    //add a scrollable area for data properties
+    QScrollArea* m_scrollArea = new QScrollArea();
+    const int screenHeight = QApplication::desktop()->height();
+    m_scrollArea->setMinimumSize(600,QApplication::desktop()->height() * 0.75);
+    m_scrollArea->setWidgetResizable(true);
+    dialogTab->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_scrollArea->setWidget(dialogTab);
+    generalLayout->addWidget(m_scrollArea);
+
+//    generalLayout->addWidget(dialogTab);
+
     connect(dialogTab, SIGNAL( currentChanged(int)), this, SLOT( updateTables()));
 
 //    bool isNode = (dynamic_cast< simulation::Node *>(node) != NULL);
@@ -269,7 +284,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
                 if (tabs.size() == 1) nameTab=groupName.c_str();
                 else                  nameTab=QString(groupName.c_str())+ " " + QString::number(tabs[i]->getIndex()) + "/" + QString::number(tabs.size());
 #ifdef DEBUG_GUI
-                std::cout << "GUI: add Tab " << nameTab.ascii() << std::endl;
+                std::cout << "GUI: add Tab " << nameTab.toStdString() << std::endl;
 #endif
                 dialogTab->addTab(tabs[i],nameTab);
                 tabs[i]->addStretch();

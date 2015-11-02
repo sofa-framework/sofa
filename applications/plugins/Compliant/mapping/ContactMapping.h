@@ -155,7 +155,7 @@ protected:
                     unsigned col = self::Nin * i + j;
 
                     // local_frame transpose
-                    SReal w = local_frame(j, k);
+                    real w = local_frame(j, k);
                     if(w) J.insertBack(row, col) = w;
                 }
 

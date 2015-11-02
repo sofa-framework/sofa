@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,8 +51,8 @@ int DecimateMeshClass = sofa::core::RegisterObject("Simplification of a mesh by 
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_CGALPLUGIN_API DecimateMesh<Vec3dTypes>;
+template class SOFA_CGALPLUGIN_API cgal::DecimateMesh<Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_CGALPLUGIN_API DecimateMesh<Vec3fTypes>;
+template class SOFA_CGALPLUGIN_API cgal::DecimateMesh<Vec3fTypes>;
 #endif //SOFA_DOUBLE

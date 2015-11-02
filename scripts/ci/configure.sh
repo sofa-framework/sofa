@@ -150,7 +150,6 @@ case $CI_JOB in
         append "-DPLUGIN_PERSISTENTCONTACT=OFF"
         append "-DPLUGIN_PLUGINEXAMPLE=ON"
         append "-DPLUGIN_REGISTRATION=ON"
-        append "-DPLUGIN_SCENECREATOR=ON"
         # Requires OpenHaptics libraries.
         append "-DPLUGIN_SENSABLE=OFF"
         if [[ -n "$CI_HAVE_BOOST" ]]; then
@@ -169,7 +168,6 @@ case $CI_JOB in
         # Requires HAPI libraries.
         append "-DPLUGIN_SOFAHAPI=OFF"
         # Not sure if worth maintaining
-        append "-DPLUGIN_SOFAPML=OFF"
         append "-DPLUGIN_SOFASIMPLEGUI=ON"
         append "-DPLUGIN_THMPGSPATIALHASHING=ON"
         # Requires XiRobot library.

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -370,12 +370,12 @@ protected:
         case DISTANCE:
             if(updateImage || updateTransform)
             {
-                To value=0; if(p.size()) value=(To)p[0];
+                Ti value=0; if(p.size()) value=(Ti)p[0];
                 float scale=1; if(p.size()>1) scale=(float)p[1];
                 float sizex=(float)inT->getScale()[0]*scale;
                 float sizey=(float)inT->getScale()[1]*scale;
                 float sizez=(float)inT->getScale()[2]*scale;
-                CImg<float> metric_distance(2,2,2,1,0.);
+                CImg<float> metric_distance(2,2,2,1,0);
                 metric_distance(1,0,0)=sizex;
                 metric_distance(0,1,0)=sizey;
                 metric_distance(0,0,1)=sizez;
@@ -404,7 +404,7 @@ protected:
                         To ix = (Incc - Ipcc)*(To)0.5/(To)inT->getScale()[0];
                         To iy = (Icnc - Icpc)*(To)0.5/(To)inT->getScale()[1];
                         To iz = (Iccn - Iccp)*(To)0.5/(To)inT->getScale()[2];
-                        *(ptrd++) = sqrt( (SReal) ix*ix+iy*iy+iz*iz);
+                        *(ptrd++) = (To)sqrt( (SReal) ix*ix+iy*iy+iz*iz);
                     }
                 }
             }
@@ -437,7 +437,7 @@ protected:
                 To o2=cimg_library::cimg::type<To>::max();    if(p.size()>1) o2=(To)p[1];
                 Ti i1=cimg_library::cimg::type<Ti>::min();    if(p.size()>2) i1=(Ti)p[2];
                 Ti i2=cimg_library::cimg::type<Ti>::max();    if(p.size()>3) i2=(Ti)p[3];
-                cimglist_for(img,l) {img(l)=inimg(l).get_cut(i1 , i2).get_normalize( o1   , o2);  }
+                cimglist_for(img,l) {img(l)=inimg(l).get_cut(i1 , i2).get_normalize( (Ti)o1, (Ti)o2); }
             }
             break;
         case RESAMPLE:

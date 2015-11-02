@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -147,9 +147,9 @@ void BezierTetra2BezierTriangleTopologicalMapping::init()
 					Loc2GlobVec.push_back(i);
 					Glob2LocMap[i]=Loc2GlobVec.size()-1;
 					// update the local maps of control points
-					BezierTriangleSetTopologyContainer::VecPointID  indexArray;
 					// get the control points of the tetrahedron adjacent to that triangle
-					from_btstc->getGlobalIndexArrayOfBezierPointsInTetrahedron(tat[0],indexArray);
+					const BezierTriangleSetTopologyContainer::VecPointID  &indexArray=
+						from_btstc->getGlobalIndexArrayOfBezierPoints(tat[0]);
 					Tetrahedron tet=from_btstc->getTetrahedron(tat[0]);
 					size_t k,j,l,equiv[3];
 					// get the index of that triangle in the tetrahedron

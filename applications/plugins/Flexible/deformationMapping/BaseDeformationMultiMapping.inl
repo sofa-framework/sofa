@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -99,6 +99,21 @@ BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::BaseDeforma
 template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resizeOut()
 {
+    {
+        // TODO this must be done before resizeOut() but is done again in Inherit::init();
+        // also clean the numerous calls to apply
+        this->maskFrom1.resize( this->fromModels1.size() );
+        for( unsigned i=0 ; i<this->fromModels1.size() ; ++i )
+            if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModels1[i])) this->maskFrom1[i] = &stateFrom->forceMask;
+        this->maskFrom2.resize( this->fromModels2.size() );
+        for( unsigned i=0 ; i<this->fromModels2.size() ; ++i )
+            if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModels2[i])) this->maskFrom2[i] = &stateFrom->forceMask;
+        this->maskTo.resize( this->toModels.size() );
+        for( unsigned i=0 ; i<this->toModels.size() ; ++i )
+            if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModels[i])) this->maskTo[i] = &stateTo->forceMask;
+            else this->setNonMechanical();
+    }
+
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
 
     helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
@@ -198,6 +213,21 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
 template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
 {
+    {
+        // TODO this must be done before resizeOut() but is done again in Inherit::init();
+        // also clean the numerous calls to apply
+        this->maskFrom1.resize( this->fromModels1.size() );
+        for( unsigned i=0 ; i<this->fromModels1.size() ; ++i )
+            if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModels1[i])) this->maskFrom1[i] = &stateFrom->forceMask;
+        this->maskFrom2.resize( this->fromModels2.size() );
+        for( unsigned i=0 ; i<this->fromModels2.size() ; ++i )
+            if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModels2[i])) this->maskFrom2[i] = &stateFrom->forceMask;
+        this->maskTo.resize( this->toModels.size() );
+        for( unsigned i=0 ; i<this->toModels.size() ; ++i )
+            if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModels[i])) this->maskTo[i] = &stateTo->forceMask;
+            else this->setNonMechanical();
+    }
+
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
 
     helper::WriteOnlyAccessor<Data<VecCoord> > pos0 (this->f_pos0);
@@ -264,21 +294,6 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::init()
     baseMatrices.resize( 2 ); // just a wrapping for getJs()
     baseMatrices[0] = &eigenJacobian1;
     baseMatrices[1] = &eigenJacobian2;
-
-    {
-    // TODO this must be done before resizeOut() but is done again in Inherit::init();
-    // also clean the numerous calls to apply
-    this->maskFrom1.resize( this->fromModels1.size() );
-    for( unsigned i=0 ; i<this->fromModels1.size() ; ++i )
-        if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModels1[i])) this->maskFrom1[i] = &stateFrom->forceMask;
-    this->maskFrom2.resize( this->fromModels2.size() );
-    for( unsigned i=0 ; i<this->fromModels2.size() ; ++i )
-        if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModels2[i])) this->maskFrom2[i] = &stateFrom->forceMask;
-    this->maskTo.resize( this->toModels.size() );
-    for( unsigned i=0 ; i<this->toModels.size() ; ++i )
-        if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModels[i])) this->maskTo[i] = &stateTo->forceMask;
-        else this->setNonMechanical();
-    }
 
     resizeOut();
 
