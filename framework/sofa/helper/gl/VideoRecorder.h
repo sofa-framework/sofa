@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -93,7 +93,7 @@ public:
     std::string findFilename(const std::string &v);
 
 protected:
-    AVStream *add_video_stream(AVFormatContext *oc, CodecID codec_id, const std::string& codec="");
+    AVStream *add_video_stream(AVFormatContext *oc, AVCodecID codec_id, const std::string& codec="");
     bool open_video(AVFormatContext *oc, AVStream *st);
     AVFrame *alloc_picture(PixelFormat pix_fmt, int width, int height);
     bool write_video_frame(AVFormatContext *oc, AVStream *st);

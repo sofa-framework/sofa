@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -215,6 +215,18 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeAll(const InVecCoord& p0,
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
 {
+    {
+        // TODO this must be done before resizeOut() but is done again in Inherit::init();
+        // also clean the numerous calls to apply
+        core::behavior::BaseMechanicalState *state;
+        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModel.get())))
+            this->maskFrom = &state->forceMask;
+        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModel.get())))
+            this->maskTo = &state->forceMask;
+        else
+            this->setNonMechanical();
+    }
+
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
 
     helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
@@ -305,7 +317,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     {
         helper::ReadAccessor<Data< VMaterialToSpatial > >  ra_F0(this->f_F0);
         helper::WriteOnlyAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));
-        for(size_t i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = ra_F0[i][j][k];
+        for(size_t i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = (OutReal)ra_F0[i][j][k];
     }
 }
 
@@ -314,6 +326,18 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
 {
+    {
+        // TODO this must be done before resizeOut() but is done again in Inherit::init();
+        // also clean the numerous calls to apply
+        core::behavior::BaseMechanicalState *state;
+        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModel.get())))
+            this->maskFrom = &state->forceMask;
+        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModel.get())))
+            this->maskTo = &state->forceMask;
+        else
+            this->setNonMechanical();
+    }
+
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
 
     helper::WriteOnlyAccessor<Data<VecCoord> > pos0 (this->f_pos0);
@@ -353,7 +377,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
     {
         helper::ReadAccessor<Data< VMaterialToSpatial > >  ra_F0(this->f_F0);
         helper::WriteOnlyAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));
-        for(size_t i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = ra_F0[i][j][k];
+        for(size_t i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = (OutReal)ra_F0[i][j][k];
     }
 }
 
@@ -374,18 +398,6 @@ void BaseDeformationMappingT<JacobianBlockType>::init()
 
     baseMatrices.resize( 1 ); // just a wrapping for getJs()
     baseMatrices[0] = &eigenJacobian;
-
-    {
-        // TODO this must be done before resizeOut() but is done again in Inherit::init();
-        // also clean the numerous calls to apply
-        core::behavior::BaseMechanicalState *state;
-        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModel.get())))
-            this->maskFrom = &state->forceMask;
-        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModel.get())))
-            this->maskTo = &state->forceMask;
-        else
-            this->setNonMechanical();
-    }
 
     resizeOut();
 
@@ -860,7 +872,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
                 if(w[i][j])
                 {
                     In::get(edge[0][0],edge[0][1],edge[0][2],in[ref[i][j]]);
-                    sofa::helper::gl::Color::getHSVA(&col[0],240.*w[i][j],1.,.8,1.);
+                    sofa::helper::gl::Color::getHSVA(&col[0],240.f*(float)w[i][j],1.f,.8f,1.f);
                     vparams->drawTool()->drawLines ( edge, 1, col );
                 }
         }
@@ -885,22 +897,22 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
                 for(int j=0; j<material_dimensions; j++)
                 {
                     defaulttype::Vec<3,float> u=F.transposed()(j)*0.5*scale;
-                    vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
+                    vparams->drawTool()->drawCylinder(p-u,p+u,0.05f*scale,col,subdiv);
                 }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==1)
             {
                 defaulttype::Vec<3,float> u=F.transposed()(0)*0.5*scale;
-                vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
+                vparams->drawTool()->drawCylinder(p-u,p+u,0.05f*scale,col,subdiv);
             }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==2)
             {
                 defaulttype::Vec<3,float> u=F.transposed()(1)*0.5*scale;
-                vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
+                vparams->drawTool()->drawCylinder(p-u,p+u,0.05f*scale,col,subdiv);
             }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==3)
             {
                 defaulttype::Vec<3,float> u=F.transposed()(2)*0.5*scale;
-                vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
+                vparams->drawTool()->drawCylinder(p-u,p+u,0.05f*scale,col,subdiv);
             }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==4) // strain
             {
@@ -912,7 +924,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
                 {
                     F=(defaulttype::Mat<3,3,float>)OutDataTypesInfo<Out>::getF(outf->getValue()[i]);
                     vparams->drawTool()->setMaterial(col);
-                    drawEllipsoid(F,p,0.5*scale);
+                    drawEllipsoid(F,p,0.5f*scale);
                 }
 
         }
@@ -950,7 +962,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
                 {
                     size_t index = (*triangles)[i][j];
                     if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
-                    sofa::helper::gl::Color::getHSVA(&colors[count][0],val[index],1.,.8,1.);
+                    sofa::helper::gl::Color::getHSVA(&colors[count][0],(float)val[index],1.f,.8f,1.f);
                     count++;
                 }
         if(extTriangles)
@@ -960,7 +972,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
                     size_t index = (*extTriangles)[i][j];
                     if(this->extvertPosIdx) index=(*extvertPosIdx)[index];
                     if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
-                    sofa::helper::gl::Color::getHSVA(&colors[count][0],val[index],1.,.8,1.);
+                    sofa::helper::gl::Color::getHSVA(&colors[count][0],(float)val[index],1.f,.8f,1.f);
                     count++;
                 }
 

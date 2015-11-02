@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -145,7 +145,7 @@ public:
         return sn[2] * (A[2] + B[2] + C[2]);
     }
 
-    virtual void apply(const core::MechanicalParams */*mparams*/, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
+    virtual void apply(const core::MechanicalParams * /*mparams*/, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
     {
         if(!m_topology) return;
 
@@ -173,9 +173,9 @@ public:
         hessian.compress();
     }
 
-    virtual void applyJ(const core::MechanicalParams */*mparams*/, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)    { if( jacobian.rowSize() > 0 ) jacobian.mult(dOut,dIn);    }
-    virtual void applyJT(const core::MechanicalParams */*mparams*/, Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)    { if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(dIn,dOut);    }
-    virtual void applyJT(const core::ConstraintParams */*cparams*/, Data<InMatrixDeriv>& /*dIn*/, const Data<OutMatrixDeriv>& /*dOut*/) {}
+    virtual void applyJ(const core::MechanicalParams * /*mparams*/, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)    { if( jacobian.rowSize() > 0 ) jacobian.mult(dOut,dIn);    }
+    virtual void applyJT(const core::MechanicalParams * /*mparams*/, Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)    { if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(dIn,dOut);    }
+    virtual void applyJT(const core::ConstraintParams * /*cparams*/, Data<InMatrixDeriv>& /*dIn*/, const Data<OutMatrixDeriv>& /*dOut*/) {}
 
     virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
     {

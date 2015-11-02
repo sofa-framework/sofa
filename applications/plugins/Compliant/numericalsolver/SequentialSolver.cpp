@@ -108,7 +108,7 @@ void BaseSequentialSolver::factor_impl(const system_type& system) {
 		const block& b = blocks[i];
 		
 		// resize storage if needed TODO alloc max size only once
-		if( b.size > storage.rows() ) storage.resize(b.size, b.size);
+        if( (dmat::Index)b.size > storage.rows() ) storage.resize(b.size, b.size);
 		
 		// view on storage
 		schur_type schur(storage.data(), b.size, b.size);

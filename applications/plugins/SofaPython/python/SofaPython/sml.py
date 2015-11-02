@@ -117,6 +117,8 @@ class Model:
                 self.com = Tools.strToListFloat(objXml.find("com").text)
             if not objXml.find("inertia") is None:
                 self.inertia = Tools.strToListFloat(objXml.find("inertia").text)
+            if not objXml.find("inertia_rotation") is None:
+                self.inertia_rotation = Tools.strToListFloat(objXml.find("inertia_rotation").text)
 
     class Offset:
         def __init__(self, offsetXml=None):
@@ -470,6 +472,20 @@ class BaseScene:
             if solidId in self.collisions:
                 if meshId in self.collisions[solidId]:
                     mesh = self.collisions[solidId][meshId]
+        return mesh
+
+    def getVisual(self,solidId,meshId):
+        """ returns a visual object identified by solidId/meshId
+        """
+        mesh=None
+        if hasattr(self, 'rigids'):  # inserted by Compliant.sml
+            if solidId in self.rigids:
+                if meshId in self.rigids[solidId].visuals:
+                    mesh = self.rigids[solidId].visuals[meshId]
+        if hasattr(self, 'visuals'):  # inserted by Anatomy.sml
+            if solidId in self.visuals:
+                if meshId in self.visuals[solidId]:
+                    mesh = self.visuals[solidId][meshId]
         return mesh
 
     def dagValidation(self):

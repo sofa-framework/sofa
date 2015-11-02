@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,6 +27,7 @@
 #include "config.h"
 
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+
 
 namespace sofa
 {
@@ -60,6 +61,8 @@ public:
 	typedef BaseMeshTopology::Triangle			         Triangle;
 	typedef BaseMeshTopology::Tetra				         Tetra;
 	typedef BaseMeshTopology::SeqTetrahedra			   SeqTetrahedra;
+	typedef sofa::defaulttype::Vec<2,BezierDegreeType>		EdgeBezierIndex;
+	typedef sofa::defaulttype::Vec<3,BezierDegreeType>		TriangleBezierIndex;
 
 
 
@@ -70,6 +73,10 @@ public:
 	typedef sofa::helper::vector<TetraID>         VecTetraID;
 	typedef sofa::helper::vector<SReal> SeqWeights;
 	typedef sofa::helper::vector<bool> SeqBools;
+	typedef VecPointID  BezierDOFInTetrahedron;
+	typedef sofa::helper::vector< VecPointID > SeqBezierDOFInTetrahedron;
+
+
 	
 	typedef sofa::defaulttype::Vec<4,int> ElementTetrahedronIndex;
 	typedef sofa::defaulttype::Vec<4,size_t> LocalTetrahedronIndex;
@@ -77,7 +84,18 @@ public:
 	friend class BezierTetrahedronSetTopologyModifier;
 	friend class Mesh2BezierTopologicalMapping;
 
+public :
+	// specifies where a Bezier Point can lies with respect to the underlying tetrahedral mesh
+	enum BezierTetrahedronPointLocation
+    {
+        POINT = 0,
+        EDGE =1 ,
+        TRIANGLE = 2,
+        TETRAHEDRON = 3
+    };
+	
 
+	typedef std::pair<size_t,std::pair< BezierTetrahedronPointLocation,size_t> > ControlPointLocation;
 protected:
     BezierTetrahedronSetTopologyContainer();
 
@@ -99,14 +117,7 @@ protected :
 	/// the array of weights for rational splines
 	Data <SeqWeights > d_weightArray;
 public :
-	// specifies where a Bezier Point can lies with respect to the underlying tetrahedral mesh
-	enum BezierTetrahedronPointLocation
-    {
-        POINT = 0,
-        EDGE =1 ,
-        TRIANGLE = 2,
-        TETRAHEDRON = 3
-    };
+
 	/// get the Degree of the Bezier Tetrahedron 
 	BezierDegreeType getDegree() const;
 	/// get the number of control points corresponding to the vertices of the tetrahedra 
@@ -114,7 +125,7 @@ public :
 	/// get the global index of the Bezier  point associated with a given tetrahedron index and given its 4D Index   
 	size_t getGlobalIndexOfBezierPoint(const TetraID tetrahedronIndex,const TetrahedronBezierIndex id) ;
 	/// get the indices of all control points associated with a given tetrahedron
-	void getGlobalIndexArrayOfBezierPointsInTetrahedron(const TetraID tetrahedronIndex, VecPointID & indexArray) ;
+	const VecPointID &getGlobalIndexArrayOfBezierPoints(const TetraID tetrahedronIndex) const;
 	/// return the Bezier index given the local index in a tetrahedron
 	TetrahedronBezierIndex getTetrahedronBezierIndex(const size_t localIndex) const;
 	/// get the Tetrahedron Bezier Index Array of degree d
@@ -129,8 +140,14 @@ public :
 	/// return the location, the element index and offset from the global index of a point
 	void getLocationFromGlobalIndex(const size_t globalIndex, BezierTetrahedronPointLocation &location, 
 		size_t &elementIndex, size_t &elementOffset) ;
+		/// convert the edge offset into a EdgeBezierIndex
+	void getEdgeBezierIndexFromEdgeOffset(size_t offset, EdgeBezierIndex &ebi);
+	/// convert the triangle offset into a TriangleBezierIndex
+	void getTriangleBezierIndexFromTriangleOffset(size_t offset, TriangleBezierIndex &tbi);
+	/// convert the tetrahedron offset into a TriangleBezierIndex
+	void getTetrahedronBezierIndexFromTetrahedronOffset(size_t offset, TetrahedronBezierIndex &tbi);
 	/// check the Bezier Point Topology
-	bool checkBezierPointTopology();
+	virtual bool checkBezierPointTopology();
 	/** \brief Returns the weight coordinate of the ith DOF. */
 	virtual SReal getWeight(int i) const;
 	/// returns the array of weights
@@ -202,6 +219,8 @@ public :
         return in;
     }
 protected:
+	/// array describing the global  index of the DOFs used in weightedDOFArray
+	SeqBezierDOFInTetrahedron  tetrahedronDOFArray;
 	/// Map which provides the location (point, edge, triangle, tetrahedron) of a control point given its tetrahedron Bezier index
 	std::map<TetrahedronBezierIndex,ElementTetrahedronIndex> elementMap;
 	/// Map which provides the offset in the DOF vector for a control point lying on an edge 
@@ -216,6 +235,19 @@ protected:
 	sofa::helper::vector<TetrahedronBezierIndex> bezierIndexArray;
 	/// array of the tetrahedron Bezier index outputed by the function getGlobalIndexArrayOfBezierPointsInTetrahedron()
 	sofa::helper::vector<TetrahedronBezierIndex> reducedDegreeBezierIndexArray;
+	/// convert triangle offset into triangle bezier index
+	sofa::helper::vector<TriangleBezierIndex> offsetToTriangleBezierIndexArray;
+	/// convert triangle offset into triangle bezier index
+	sofa::helper::vector<TetrahedronBezierIndex> offsetToTetrahedronBezierIndexArray;
+		/** Map which provides the global index of a control point knowing its location (i.e. triangle index and its TriangleBezierIndex).
+	This is empty by default since there is a default layout of control points based on edge and triangles indices */
+	std::map<ControlPointLocation,size_t> locationToGlobalIndexMap;
+	/** Map which provides the  location (i.e. triangle index and its TriangleBezierIndex) of a control point knowing its  global index.
+	Note that the location may not be unique.
+	This is empty by default since there is a default layout of control points based on edge and triangles indices */
+	std::map<size_t,ControlPointLocation> globalIndexToLocationMap;
+
+	void getGlobalIndexArrayOfBezierPointsInTetrahedron(const TetraID tetrahedronIndex, VecPointID & indexArray) ;
 
 };
 

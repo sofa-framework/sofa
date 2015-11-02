@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -461,7 +461,7 @@ protected:
     {
         Mat<3,3,Real> rotMatrix;
         float c, s, k1, k2;
-        float TH_TINY = 0.00001;
+        float TH_TINY = 0.00001f;
 
         float theta2 =  rotVec[0]*rotVec[0] + rotVec[1]*rotVec[1] + rotVec[2]*rotVec[2];
         float theta = sqrt( theta2 );
@@ -472,9 +472,9 @@ protected:
             k2 = (1 - c) / theta2;
         }
         else {  // Taylor expension around theta = 0
-            k2 = 1.0/2.0 - theta2/24.0;
-            c = 1.0 - theta2*k2;
-            k1 = 1.0 - theta2/6;
+            k2 = 1.0f/2.0f - theta2/24.0f;
+            c = 1.0f - theta2*k2;
+            k1 = 1.0f - theta2/6.0f;
         }
 
         /* I + M*Mt */

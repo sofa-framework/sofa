@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -87,7 +87,7 @@ void TriangleStrainAverageMapping<TIn, TOut>::init()
         for( std::set<unsigned>::const_iterator j=(*i).second.begin(), jend=(*i).second.end(); j!=jend; j++ ) // for each triangle connected to the node
         {
             triangleIndices.push_back(*j);
-            weights.push_back( 1./n );  // todo: used triangle areas
+            weights.push_back( (Real)(1./n) );  // todo: used triangle areas
         }
     }
 
@@ -98,7 +98,7 @@ void TriangleStrainAverageMapping<TIn, TOut>::init()
     unsigned startIndex=0;
     for(unsigned i=0; i<endIndices.size(); i++ )
     {
-        diagMat[i] = sqrt( (endIndices[i]-startIndex)/3.0 );  // sqrt of the area associated with the node. Todo: use triangle areas rather than assuming unit areas.
+        diagMat[i] = (Real)sqrt( (endIndices[i]-startIndex)/3.0 );  // sqrt of the area associated with the node. Todo: use triangle areas rather than assuming unit areas.
 
         jacobian.beginBlockRow(i);
         for( unsigned j=startIndex; j<endIndices[i]; j++)

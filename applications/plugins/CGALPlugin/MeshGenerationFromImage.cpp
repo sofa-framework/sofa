@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -47,8 +47,8 @@ int MeshGenerationFromImageClass = sofa::core::RegisterObject("Generate tetrahed
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_CGALPLUGIN_API MeshGenerationFromImage<Vec3dTypes, ImageUC>;
+template class SOFA_CGALPLUGIN_API cgal::MeshGenerationFromImage<Vec3dTypes, ImageUC>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
- template class SOFA_CGALPLUGIN_API MeshGenerationFromImage<Vec3fTypes, ImageUC>;
+ template class SOFA_CGALPLUGIN_API cgal::MeshGenerationFromImage<Vec3fTypes, ImageUC>;
 #endif //SOFA_DOUBLE

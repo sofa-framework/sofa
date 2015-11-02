@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -64,6 +64,7 @@ public:
 	typedef BaseMeshTopology::TrianglesAroundEdge        	TrianglesAroundEdge;
 	typedef sofa::helper::vector<TriangleID>                  VecTriangleID;
 	typedef sofa::helper::vector<PointID>					  VecPointID;
+	typedef sofa::defaulttype::Vec<2,BezierDegreeType>		EdgeBezierIndex;
 
 	typedef sofa::defaulttype::Vec<3,int> ElementTriangleIndex;
 	typedef sofa::defaulttype::Vec<3,size_t> LocalTriangleIndex;
@@ -88,7 +89,7 @@ public:
 
     /// Bezier Specific Information Topology API
     /// @{
-protected :
+public :
 	/// the degree of the Bezier Tetrahedron 1=linear, 2=quadratic...
 	Data <size_t> d_degree;
 	/// the number of control points corresponding to the vertices of the triangle mesh (different from the total number of points)
@@ -132,6 +133,10 @@ public :
 	/// return the location, the element index and offset from the global index of a point
 	void getLocationFromGlobalIndex(const size_t globalIndex, BezierTrianglePointLocation &location, 
 		size_t &elementIndex, size_t &elementOffset) ;
+	/// convert the edge offset into a EdgeBezierIndex
+	void getEdgeBezierIndexFromEdgeOffset(size_t offset, EdgeBezierIndex &ebi);
+	/// convert the triangle offset into a TriangleBezierIndex
+	void getTriangleBezierIndexFromTriangleOffset(size_t offset, TriangleBezierIndex &tbi);
 	/// check the Bezier Point Topology
 	bool checkBezierPointTopology();
 	 /// @}
@@ -165,6 +170,8 @@ protected:
 	sofa::helper::vector<TriangleBezierIndex> bezierIndexArray;
 	/// array of the Triangle Bezier index outputed by the function getGlobalIndexArrayOfBezierPointsInTriangle()
 	sofa::helper::vector<TriangleBezierIndex> reducedDegreeBezierIndexArray;
+	/// convert triangle offset into triangle bezier index
+	sofa::helper::vector<TriangleBezierIndex> offsetToTriangleBezierIndexArray;
 
 
 

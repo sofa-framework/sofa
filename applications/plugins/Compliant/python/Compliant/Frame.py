@@ -8,7 +8,7 @@ class Frame:
 
         # TODO kwargs
         def __init__(self, value = None):
-                if value != None:
+                if value is not None:
                         self.translation = value[:3]
                         self.rotation = value[3:]
                 else:

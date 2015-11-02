@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -14,7 +14,7 @@
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
 * with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
+* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
 *******************************************************************************
 *                            SOFA :: Applications                             *
 *                                                                             *
@@ -70,7 +70,6 @@
 #include <QWidget>
 #include <QStackedWidget>
 #include <QTreeWidget>
-#include <QSplitter>
 #include <QTextEdit>
 #include <QAction>
 #include <QMessageBox>
@@ -212,7 +211,6 @@ void RealGUI::InitApplication( RealGUI* _gui)
 
     application->setWindowIcon(QIcon(pathIcon));
 
-
     // show the gui
     _gui->show();
 }
@@ -266,7 +264,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     statWidget(NULL),
     timerStep(NULL),
     backgroundImage(NULL),
-    left_stack(NULL),
     pluginManager_dialog(NULL),
     recentlyOpenedFilesManager(sofa::gui::BaseGUI::getConfigDirectoryPath() + "/runSofa.ini"),
     saveReloadFile(false),
@@ -278,6 +275,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     m_viewerMSAANbSampling(1)
 {
     setupUi(this),
+
 //    this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
     parseOptions(options);
 
@@ -303,20 +301,15 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     connect ( tabs, SIGNAL ( currentChanged ( int ) ), this, SLOT ( currentTabChanged ( int ) ) );
 
     this->setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowTabbedDocks);
-    m_dockTools=new QDockWidget(tr(""), this);
-    //m_dockTools->setResizeEnabled(true);
-    m_dockTools->setFixedWidth(300);
-    m_dockTools->setFeatures(QDockWidget::AllDockWidgetFeatures);
-    m_dockTools->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
-    addDockWidget(Qt::LeftDockWidgetArea, m_dockTools);
+    //dockWidget=new QDockWidget(tr(""), this);
+    //dockWidget->setResizeEnabled(true);
+    //dockWidget->setFixedWidth(300);
+    dockWidget->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    dockWidget->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
+    //addDockWidget(Qt::LeftDockWidgetArea, dockWidget);
+    //dockWidget->setWidget(optionTabs);
 
-    //this->moveDockWindow( m_dockTools, Qt::DockLeft);
-    //this->topDock() ->setAcceptDockWindow(m_dockTools,false);
-    //this->bottomDock()->setAcceptDockWindow(m_dockTools,false);
-
-    m_dockTools->setWidget(optionTabs);
-
-    connect(m_dockTools, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), this, SLOT(toolsDockMoved()));
+    connect(dockWidget, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), this, SLOT(toolsDockMoved()));
 
 	/*moveDockWindow(dockWidget, Qt::DockLeft);
 	dockWidget->setFixedExtentWidth(400);
@@ -356,7 +349,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 
     //viewer
     informationOnPickCallBack = InformationOnPickCallBack(this);
-    left_stack = new QStackedWidget ( splitter2 );
 
     viewerMap.clear();
     if (mCreateViewersOpt)
@@ -1077,15 +1069,6 @@ void RealGUI::setViewerResolution ( int w, int h )
         QSize winSize = size();
         QSize viewSize = ( getViewer() ) ? getQtViewer()->getQWidget()->size() : QSize(0,0);
 
-        QList<int> list;
-
-        list.push_back ( 250 );
-        list.push_back ( w );
-        QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
-        splitter_ptr->setSizes ( list );
-
-        layout()->update();
-
         const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
         QSize newWinSize(winSize.width() - viewSize.width() + w, winSize.height() - viewSize.height() + h);
         if (newWinSize.width() > screen.width()) newWinSize.setWidth(screen.width()-20);
@@ -1110,22 +1093,13 @@ void RealGUI::setFullScreen (bool enable)
 
     if( isEmbeddedViewer() )
     {
-        //QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
-
-        QList<int> list;
-        static QList<int> savedsizes;
-
         if (enable)
         {
-            //savedsizes = splitter_ptr->sizes();
             optionTabs->hide();
-            //optionTabs->setParent(static_cast<QWidget*>(splitter_ptr->parent()));
         }
         else if (m_fullScreen)
         {
-            //splitter_ptr->insertWidget(0,optionTabs);
             optionTabs->show();
-            //splitter_ptr->setSizes ( savedsizes );
         }
 
         if (enable)
@@ -1134,17 +1108,17 @@ void RealGUI::setFullScreen (bool enable)
             showFullScreen();
             m_fullScreen = true;
 
-            m_dockTools->setFloating(true);
-            //m_dockTools->undock();
-            m_dockTools->setVisible(false);
+            dockWidget->setFloating(true);
+            //dockWidget->undock();
+            dockWidget->setVisible(false);
         }
         else
         {
             std::cout << "Set Windowed Mode" << std::endl;
             showNormal();
             m_fullScreen = false;
-            m_dockTools->setVisible(true);
-            m_dockTools->setFloating(false);
+            dockWidget->setVisible(true);
+            dockWidget->setFloating(false);
         }
 
         if (enable)
@@ -1195,6 +1169,7 @@ void RealGUI::setBackgroundImage(const std::string& c)
 void RealGUI::setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf)
 {
     const defaulttype::Vec<2,int> &res=viewerConf->resolution.getValue();
+
     if (viewerConf->fullscreen.getValue())
         setFullScreen();
     else
@@ -1268,7 +1243,7 @@ void RealGUI::createViewer(const char* _viewerName, bool _updateViewerList/*=fal
         if( strcmp( iter_map->first.c_str(), _viewerName ) == 0 )
         {
             removeViewer();
-            ViewerQtArgument viewerArg = ViewerQtArgument("viewer", left_stack, m_viewerMSAANbSampling);
+            ViewerQtArgument viewerArg = ViewerQtArgument("viewer", this->widget, m_viewerMSAANbSampling);
             registerViewer( helper::SofaViewerFactory::CreateObject(iter_map->first, viewerArg) );
             //see to put on checkable
             iter_map->second->setChecked(true);
@@ -1325,7 +1300,7 @@ void RealGUI::removeViewer()
         if(isEmbeddedViewer())
         {
             getQtViewer()->removeViewerTab(tabs);
-            left_stack->removeWidget( getQtViewer()->getQWidget() );
+            //left_stack->removeWidget( getQtViewer()->getQWidget() );
         }
         delete mViewer;
         mViewer = NULL;
@@ -1610,7 +1585,6 @@ void RealGUI::initViewer(BaseViewer* _viewer)
         std::cerr<<"ERROR when initViewer, the viewer is NULL"<<std::endl;
         return;
     }
-
     init(); //init data member from RealGUI for the viewer initialisation in the GUI
 
     // Is our viewer embedded or not ?
@@ -1623,9 +1597,8 @@ void RealGUI::initViewer(BaseViewer* _viewer)
     else
     {
         isEmbeddedViewer(true);
-        left_stack->addWidget( qtViewer->getQWidget() );
+        this->mainWidgetLayout->addWidget(qtViewer->getQWidget());
 
-        left_stack->setCurrentWidget ( qtViewer->getQWidget() );
         qtViewer->getQWidget()->setFocusPolicy ( Qt::StrongFocus );
 
         qtViewer->getQWidget()->setSizePolicy ( QSizePolicy ( ( QSizePolicy::Policy ) 7,
@@ -1647,20 +1620,6 @@ void RealGUI::initViewer(BaseViewer* _viewer)
         connect(simulationGraph, SIGNAL( focusChanged(sofa::core::objectmodel::BaseNode*) ),
                 qtViewer->getQWidget(), SLOT( fitNodeBBox(sofa::core::objectmodel::BaseNode*) )
                );
-
-        // splitter2 separates horizontally the OptionTab widget and the viewer widget
-        QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
-        splitter_ptr->addWidget( left_stack );
-        splitter_ptr->setOpaqueResize ( false );
-
-        // rescale factor for the space occuped by the widget index
-        splitter_ptr->setStretchFactor( 0, 2); // OptionTab
-        splitter_ptr->setStretchFactor( 1, 10); // Viewer -> you won't an embedded viewer : set to (1,0)
-        QList<int> list;
-
-        list.push_back ( 250 ); // OptionTab
-        list.push_back ( 640 ); // Viewer -> you won't an embedded viewer : set to 0
-        splitter_ptr->setSizes ( list );
 
         // setGUI
         textEdit1->setText ( qtViewer->helpString() );
@@ -2469,7 +2428,7 @@ void RealGUI::toolsDockMoved()
 		return;
 
     if(dockWindow->isFloating())
-		dockWindow->resize(500, 700);
+        dockWindow->resize(500, 700);
 }
 
 void RealGUI::propertyDockMoved(Qt::DockWidgetArea /*a*/)
@@ -2479,7 +2438,7 @@ void RealGUI::propertyDockMoved(Qt::DockWidgetArea /*a*/)
 		return;
 
     if(dockWindow->isFloating())
-		dockWindow->resize(500, 700);
+        dockWindow->resize(500, 700);
 }
 
 namespace
