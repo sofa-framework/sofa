@@ -368,6 +368,9 @@ void AssemblyVisitor::fill_postfix(simulation::Node* node) {
     helper::ScopedAdvancedTimer advancedTimer( "assembly: fill_postfix" );
 
 	assert( node->mechanicalState );
+
+    if( node->mechanicalState->getSize()==0 ) return;
+
 	assert( chunks.find( node->mechanicalState ) != chunks.end() );
 
 	// fill chunk for current dof
