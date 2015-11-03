@@ -572,11 +572,11 @@ void BezierTetrahedronSetTopologyContainer::getEdgeBezierIndexFromEdgeOffset(siz
 	ebi[1]=d_degree.getValue()-offset-1;
 }
 void BezierTetrahedronSetTopologyContainer::getTriangleBezierIndexFromTriangleOffset(size_t offset, TriangleBezierIndex &tbi){
-	assert(offset<(d_degree.getValue()-1)*(d_degree.getValue()-2)/2);
+    assert(offset<(size_t)((d_degree.getValue()-1)*(d_degree.getValue()-2)/2));
 	tbi=offsetToTriangleBezierIndexArray[offset];
 }
 void BezierTetrahedronSetTopologyContainer::getTetrahedronBezierIndexFromTetrahedronOffset(size_t offset, TetrahedronBezierIndex &tbi){
-	assert(offset<(d_degree.getValue()-1)*(d_degree.getValue()-2)*(d_degree.getValue()-3)/6);
+    assert(offset<(size_t)((d_degree.getValue()-1)*(d_degree.getValue()-2)*(d_degree.getValue()-3)/6));
 	tbi=offsetToTetrahedronBezierIndexArray[offset];
 }
 bool BezierTetrahedronSetTopologyContainer::checkBezierPointTopology()
