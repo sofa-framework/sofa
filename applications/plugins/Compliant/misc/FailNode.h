@@ -32,6 +32,12 @@ public:
 
 	virtual Parents getParents() const;
 	virtual Children getChildren() const;
+
+    /// returns number of parents
+    virtual size_t getNbParents() const;
+
+    /// return the first parent (returns NULL if no parent)
+    virtual BaseNode* getFirstParent() const;
 	
 	  /// Add a child node
     virtual void addChild(BaseNode::SPtr node); 

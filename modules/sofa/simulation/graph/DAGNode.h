@@ -91,6 +91,12 @@ public:
     /// Get a list of parent node
     virtual Parents getParents() const;
 
+    /// returns number of parents
+    virtual size_t getNbParents() const;
+
+    /// return the first parent (returns NULL if no parent)
+    virtual BaseNode* getFirstParent() const;
+
     /// Test if the given node is a parent of this node.
     bool hasParent(const BaseNode* node) const;
 

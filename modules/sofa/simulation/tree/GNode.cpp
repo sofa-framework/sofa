@@ -316,17 +316,18 @@ core::objectmodel::BaseNode::Parents GNode::getParents() const
     return p;
 }
 
-/// Get parent node (or NULL if no hierarchy or for root node)
-core::objectmodel::BaseNode* GNode::getParent()
+/// returns number of parents
+size_t GNode::getNbParents() const
+{
+    return parent() ? 1 : 0;
+}
+
+/// return the first parent (returns NULL if no parent)
+core::objectmodel::BaseNode* GNode::getFirstParent() const
 {
     return parent();
 }
 
-/// Get parent node (or NULL if no hierarchy or for root node)
-const core::objectmodel::BaseNode* GNode::getParent() const
-{
-    return parent();
-}
 
 /// Test if the given context is an ancestor of this context.
 /// An ancestor is a parent or (recursively) the parent of an ancestor.
@@ -378,7 +379,7 @@ void GNode::doExecuteVisitor(simulation::Visitor* action, bool)
 
 void GNode::initVisualContext()
 {
-    if (getParent() != NULL)
+    if ( getNbParents() )
     {
         this->setDisplayWorldGravity(false); //only display gravity for the root: it will be propagated at each time step
     }
@@ -386,11 +387,11 @@ void GNode::initVisualContext()
 
 void GNode::updateContext()
 {
-    if ( getParent() != NULL )
+    if ( getNbParents() )
     {
         if( debug_ )
         {
-            std::cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *getParent()->getContext() << std::endl;
+            std::cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *parent()->getContext() << std::endl;
         }
         copyContext(*parent());
     }
@@ -399,11 +400,11 @@ void GNode::updateContext()
 
 void GNode::updateSimulationContext()
 {
-    if ( getParent() != NULL )
+    if ( getNbParents() )
     {
         if( debug_ )
         {
-            std::cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *getParent()->getContext() << std::endl;
+            std::cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *parent()->getContext() << std::endl;
         }
         copySimulationContext(*parent());
     }
@@ -418,15 +419,15 @@ Node* GNode::findCommonParent( simulation::Node* node2 )
                              *gnodeGroup2=static_cast<GNode*>(node2);
     helper::vector<GNode*> hierarchyParent;
 
-    gnodeGroup1=static_cast<GNode*>(gnodeGroup1->getParent());
+    gnodeGroup1=static_cast<GNode*>(gnodeGroup1->parent());
     while ( gnodeGroup1)
     {
         hierarchyParent.push_back(gnodeGroup1);
-        gnodeGroup1=static_cast<GNode*>(gnodeGroup1->getParent());
+        gnodeGroup1=static_cast<GNode*>(gnodeGroup1->parent());
     }
     if (hierarchyParent.empty())   return NULL;
 
-    gnodeGroup2=static_cast<GNode*>(gnodeGroup2->getParent());
+    gnodeGroup2=static_cast<GNode*>(gnodeGroup2->parent());
     while (gnodeGroup2)
     {
         helper::vector<GNode*>::iterator it=std::find(hierarchyParent.begin(), hierarchyParent.end(), gnodeGroup2);
@@ -434,7 +435,7 @@ Node* GNode::findCommonParent( simulation::Node* node2 )
         {
             return gnodeGroup2;
         }
-        gnodeGroup2=static_cast<GNode*>(gnodeGroup2->getParent());
+        gnodeGroup2=static_cast<GNode*>(gnodeGroup2->parent());
     }
 
     return NULL;
