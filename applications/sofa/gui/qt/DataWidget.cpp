@@ -241,7 +241,7 @@ void QDisplayDataInfoWidget::linkModification()
 }
 void QDisplayDataInfoWidget::linkEdited()
 {
-    std::cerr << "linkEdited " << linkpath_edit->text().toStdString() << std::endl;
+//    std::cerr << "QDisplayDataInfoWidget::linkEdited " << linkpath_edit->text().toStdString() << std::endl;
     data->setParent(linkpath_edit->text().toStdString() );
 }
 
