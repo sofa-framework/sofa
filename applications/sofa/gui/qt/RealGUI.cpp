@@ -1704,6 +1704,7 @@ void RealGUI::createBackgroundGUIInfos()
         background[i]->setMinValue( 0.0f);
         background[i]->setMaxValue( 1.0f);
         background[i]->setValue( 1.0f);
+        background[i]->setMaximumSize(50, 20);
 
         colourLayout->addWidget(background[i]);
         connect( background[i], SIGNAL( returnPressed() ), this, SLOT( updateBackgroundColour() ) );
@@ -1715,7 +1716,6 @@ void RealGUI::createBackgroundGUIInfos()
 
     backgroundImage = new QLineEdit(image);
     backgroundImage->setText("backgroundImage");
-
     if ( getViewer() )
         backgroundImage->setText( QString(getViewer()->getBackgroundImage().c_str()) );
     else
