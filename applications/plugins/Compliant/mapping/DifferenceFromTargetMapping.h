@@ -127,6 +127,8 @@ class SOFA_Compliant_API DifferenceFromTargetMapping : public AssembledMapping<T
 
     virtual void assemble( const typename Self::in_pos_type& in )
     {
+        assert( Nout==Nin ); // supposing TIn==TOut
+
         const vector<unsigned>& ind = indices.getValue();
         typename Self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
 
@@ -139,11 +141,19 @@ class SOFA_Compliant_API DifferenceFromTargetMapping : public AssembledMapping<T
         else
         {
             J.resize( Nout * ind.size(), Nin * in.size());
+
+            const int value = inverted.getValue() ? -1 : 1;
+
             for( size_t j = 0 ; j < ind.size() ; ++j )
             {
                 const unsigned k = ind[j];
-                J.startVec( k );
-                J.insertBack( k, j ) = 1;
+                for( size_t w=0 ; w<Nout ; ++w )
+                {
+                    const size_t line = j*Nout+w;
+                    const size_t col = k*Nout+w;
+                    J.startVec( line );
+                    J.insertBack( line, col ) = value;
+                }
             }
         }
 	}
