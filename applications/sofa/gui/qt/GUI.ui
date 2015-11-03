@@ -339,6 +339,9 @@
             <height>0</height>
            </size>
           </property>
+          <property name="currentIndex">
+           <number>4</number>
+          </property>
           <widget class="QWidget" name="tabView">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -534,6 +537,9 @@
                 <property name="maximum">
                  <number>30000</number>
                 </property>
+                <property name="value">
+                 <number>800</number>
+                </property>
                </widget>
               </item>
               <item>
@@ -557,6 +563,9 @@
                 <property name="maximum">
                  <number>30000</number>
                 </property>
+                <property name="value">
+                 <number>600</number>
+                </property>
                </widget>
               </item>
               <item>
@@ -579,34 +588,6 @@
             </item>
             <item>
              <widget class="QTextBrowser" name="textEdit1"/>
-            </item>
-            <item>
-             <widget class="QFrame" name="textEdit2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>20</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>32767</width>
-                <height>32767</height>
-               </size>
-              </property>
-              <property name="text" stdset="0">
-               <string/>
-              </property>
-              <property name="readOnly" stdset="0">
-               <bool>true</bool>
-              </property>
-             </widget>
             </item>
            </layout>
           </widget>
