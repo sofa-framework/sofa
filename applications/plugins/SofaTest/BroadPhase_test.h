@@ -1,6 +1,13 @@
 #ifndef SOFA_STANDARDTEST_BroadPhase_test_H
 #define SOFA_STANDARDTEST_BroadPhase_test_H
 
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseCollision/NewProximityIntersection.h>
+#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/tree/GNode.h>
+
+#include <gtest/gtest.h>
+
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
 
