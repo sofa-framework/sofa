@@ -106,7 +106,7 @@ namespace gui
 namespace qt
 {
 
-SOFA_LINK_CLASS(ImageQt);
+SOFA_LINK_CLASS(ImageQt)
 
 
 using sofa::core::objectmodel::BaseObject;
@@ -212,7 +212,7 @@ void RealGUI::InitApplication( RealGUI* _gui)
     application->setWindowIcon(QIcon(pathIcon));
 
     // show the gui
-    _gui->show();
+    _gui->show(); // adding extra line in the console?
 }
 //======================= STATIC METHODS ========================= }
 
@@ -274,7 +274,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     frameCounter(0),
     m_viewerMSAANbSampling(1)
 {
-    setupUi(this),
+    setupUi(this);
 
 //    this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
     parseOptions(options);
