@@ -1067,10 +1067,10 @@ void RealGUI::setViewerResolution ( int w, int h )
 {
     if( isEmbeddedViewer() )
     {
-        QSize winSize = size();
-        QSize viewSize = ( getViewer() ) ? getQtViewer()->getQWidget()->size() : QSize(0,0);
+//        QSize winSize = size();
+//        QSize viewSize = ( getViewer() ) ? getQtViewer()->getQWidget()->size() : QSize(0,0);
 
-        const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
+//        const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
         QSize newWinSize(dockWidget->width() + w, dockWidget->height() + h);
         
         
