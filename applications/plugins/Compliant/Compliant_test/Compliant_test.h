@@ -45,43 +45,18 @@
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <SofaBoundaryCondition/FixedConstraint.h>
 
-#include "../odesolver/CompliantImplicitSolver.h"
-#include "../numericalsolver/EigenSparseSolver.h"
-#include "../numericalsolver/EigenSparseResponse.h"
-#include "../compliance/UniformCompliance.h"
+#include <Compliant/odesolver/CompliantImplicitSolver.h>
+#include <Compliant/numericalsolver/EigenSparseSolver.h>
+#include <Compliant/numericalsolver/EigenSparseResponse.h>
+#include <Compliant/compliance/UniformCompliance.h>
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaRigid/RigidMapping.h>
 
-#include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/helper/system/PluginManager.h>
-#include <SofaLoader/ReadState.h>
-#include <SofaValidation/CompareState.h>
-#include <sofa/helper/Factory.h>
-#include <sofa/helper/BackTrace.h>
-#include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/system/SetDirectory.h>
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glut.h>
-#include <sofa/helper/system/atomic.h>
 
-
-#include <Eigen/Dense>
-using std::cout;
-
-using sofa::component::container::MechanicalObject;
-using sofa::component::mass::UniformMass;
-
-using namespace sofa;
-using namespace sofa::component;
-using namespace modeling;
-using sofa::helper::vector;
 
 namespace sofa
 {
-    using core::objectmodel::New;
-
     typedef component::container::MechanicalObject<defaulttype::Vec1Types> MechanicalObject1;
     typedef component::mapping::RigidMapping<defaulttype::Rigid3Types, defaulttype::Vec3Types> RigidMappingRigid3_to_3;
     typedef component::mapping::SubsetMultiMapping<defaulttype::Vec3Types, defaulttype::Vec3Types> SubsetMultiMapping3_to_3;
@@ -104,6 +79,7 @@ namespace sofa
 /** Base class for tests of the Compliance plugin. Contains typedefs and helpers */
 class CompliantSolver_test : public Sofa_test<>
 {
+
 public:
 
 
@@ -112,6 +88,8 @@ public:
     typedef sofa::component::topology::EdgeSetTopologyContainer EdgeSetTopologyContainer;
     typedef sofa::defaulttype::Vec<3,SReal> Vec3;
     typedef sofa::component::forcefield::UniformCompliance<defaulttype::Vec1Types> UniformCompliance1;
+
+    typedef modeling::MechanicalObject3 MechanicalObject3;
 
     // Vec3-Vec1
     typedef sofa::component::mapping::DistanceMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMapping31;
@@ -135,11 +113,11 @@ protected:
         //--------
         simulation::Node::SPtr  string_node = parent->createChild(oss.str());
 
-        MechanicalObject3::SPtr DOF = New<MechanicalObject3>();
+        MechanicalObject3::SPtr DOF = core::objectmodel::New<MechanicalObject3>();
         string_node->addObject(DOF);
         DOF->setName(oss.str()+"_DOF");
 
-        UniformMass3::SPtr mass = New<UniformMass3>();
+        UniformMass3::SPtr mass = core::objectmodel::New<UniformMass3>();
         string_node->addObject(mass);
         mass->setName(oss.str()+"_mass");
         mass->mass.setValue( totalMass/numParticles );
@@ -150,19 +128,19 @@ protected:
         //--------
         simulation::Node::SPtr extension_node = string_node->createChild( oss.str()+"_ExtensionNode");
 
-        MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
+        MechanicalObject1::SPtr extensions = core::objectmodel::New<MechanicalObject1>();
         extension_node->addObject(extensions);
         extensions->setName(oss.str()+"_extensionsDOF");
 
-        EdgeSetTopologyContainer::SPtr edgeSet = New<EdgeSetTopologyContainer>();
+        EdgeSetTopologyContainer::SPtr edgeSet = core::objectmodel::New<EdgeSetTopologyContainer>();
         extension_node->addObject(edgeSet);
 
-        DistanceMapping31::SPtr extensionMapping = New<DistanceMapping31>();
+        DistanceMapping31::SPtr extensionMapping = core::objectmodel::New<DistanceMapping31>();
         extensionMapping->setName(oss.str()+"_extensionsMapping");
         extensionMapping->setModels( DOF.get(), extensions.get() );
         extension_node->addObject( extensionMapping );
 
-        UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
+        UniformCompliance1::SPtr compliance = core::objectmodel::New<UniformCompliance1>();
         extension_node->addObject(compliance);
         compliance->setName(oss.str()+"_extensionsCompliance");
         compliance->compliance.setValue(complianceValue);
@@ -216,11 +194,11 @@ protected:
         string_node = parent->createChild(oss.str());
 //        cerr<<"Particle string added as child of " << parent->getName() << endl;
 
-        DOF = New<MechanicalObject3>();
+        DOF = core::objectmodel::New<MechanicalObject3>();
         string_node->addObject(DOF);
         DOF->setName(oss.str()+"_DOF");
 
-        mass = New<UniformMass3>();
+        mass = core::objectmodel::New<UniformMass3>();
         string_node->addObject(mass);
         mass->setName(oss.str()+"_mass");
         mass->mass.setValue( totalMass/numParticles );
@@ -229,19 +207,19 @@ protected:
         //--------
         extension_node = string_node->createChild( oss.str()+"_ExtensionNode");
 
-        extensions = New<MechanicalObject1>();
+        extensions = core::objectmodel::New<MechanicalObject1>();
         extension_node->addObject(extensions);
         extensions->setName(oss.str()+"_extensionsDOF");
 
-        edgeSet = New<EdgeSetTopologyContainer>();
+        edgeSet = core::objectmodel::New<EdgeSetTopologyContainer>();
         extension_node->addObject(edgeSet);
 
-        extensionMapping = New<DistanceMapping31>();
+        extensionMapping = core::objectmodel::New<DistanceMapping31>();
         extensionMapping->setName(oss.str()+"_extensionsMapping");
         extensionMapping->setModels( DOF.get(), extensions.get() );
         extension_node->addObject( extensionMapping );
 
-        compliance = New<UniformCompliance1>();
+        compliance = core::objectmodel::New<UniformCompliance1>();
         extension_node->addObject(compliance);
         compliance->setName(oss.str()+"_extensionsCompliance");
 

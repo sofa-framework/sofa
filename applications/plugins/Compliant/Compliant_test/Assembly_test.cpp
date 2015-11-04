@@ -9,6 +9,7 @@ namespace sofa
 using namespace modeling;
 using namespace component;
 using namespace simulation;
+using core::objectmodel::New;
 
 /** Test suite for matrix assembly.
  */

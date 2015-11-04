@@ -1,46 +1,6 @@
 #ifndef SOFA_STANDARDTEST_BroadPhase_test_H
 #define SOFA_STANDARDTEST_BroadPhase_test_H
 
-#include <SofaBaseCollision/NewProximityIntersection.h>
-#include <SofaBaseCollision/OBBModel.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaBaseTopology/CubeTopology.h>
-#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
-#include <SofaBaseTopology/MeshTopology.h>
-#include <SofaBaseTopology/MeshTopology.h>
-#include <SofaBaseVisual/VisualStyle.h>
-#include <SofaExplicitOdeSolver/EulerSolver.h>
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-#include <SofaMeshCollision/DirectSAP.h>
-#include <SofaMeshCollision/IncrSAP.h>
-#include <SofaMeshCollision/MeshIntTool.h>
-#include <SofaMiscCollision/DefaultCollisionGroupManager.h>
-#include <SofaMiscMapping/SubsetMultiMapping.h>
-
-#include <sofa/core/CollisionModel.h>
-#include <sofa/helper/ArgumentParser.h>
-#include <sofa/helper/BackTrace.h>
-#include <sofa/helper/UnitTest.h>
-#include <sofa/helper/random.h>
-#include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/system/PluginManager.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/vector_algebra.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/tree/TreeSimulation.h>
-#include <sofa/simulation/tree/tree.h>
-
-#include <fstream>
-#include <gtest/gtest.h>
-#include <iostream>
-#include <sstream>
-#include <stdlib.h>
-
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
 
