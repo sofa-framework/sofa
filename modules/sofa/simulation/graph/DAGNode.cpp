@@ -104,13 +104,13 @@ void DAGNode::moveChild(BaseNode::SPtr node)
     DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
     if (!dagnode) return;
 
-    if (!getNbParents())
+    if (!dagnode->getNbParents())
     {
         addChild(node);
     }
     else
     {
-        const LinkParents::Container& parents = l_parents.getValue();
+        const LinkParents::Container& parents = dagnode->l_parents.getValue();
         for ( unsigned int i = 0; i < parents.size() ; ++i)
         {
             DAGNode *prev = parents[i];
@@ -444,7 +444,6 @@ void DAGNode::precomputeTraversalOrder( const core::ExecParams* params )
 
         virtual Result processNodeTopDown(Node* node)
         {
-            assert( std::find( _orderList.begin(), _orderList.end(), static_cast<DAGNode*>(node) ) == _orderList.end() );
             _orderList.push_back( static_cast<DAGNode*>(node) );
             return RESULT_CONTINUE;
         }
