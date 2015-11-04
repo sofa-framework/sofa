@@ -160,6 +160,14 @@ void TransformPosition<DataTypes>::init()
     f_normal.endEdit();
 
     addInput(&f_inputX);
+    addInput(&f_origin);
+    addInput(&f_normal);
+    addInput(&f_translation);
+    addInput(&f_rotation);
+    addInput(&f_scale);
+    addInput(&f_affineMatrix);
+    addInput(&f_fixedIndices);
+
     addOutput(&f_outputX);
 
     setDirtyValue();
@@ -391,6 +399,7 @@ void TransformPosition<DataTypes>::update()
     helper::ReadAccessor< Data<Coord> > translation = f_translation;
     helper::ReadAccessor< Data<Coord> > scale = f_scale;
     helper::ReadAccessor< Data<Coord> > rotation = f_rotation;
+    helper::ReadAccessor< Data<Mat4x4> > affineMatrix = f_affineMatrix;
     helper::ReadAccessor< Data<Real> > maxDisplacement = f_maxRandomDisplacement;
     helper::ReadAccessor< Data<long> > seed = f_seed;
     helper::ReadAccessor< Data<SetIndex> > fixedIndices = f_fixedIndices;
@@ -463,7 +472,7 @@ void TransformPosition<DataTypes>::update()
     case AFFINE:
         for (i=0; i< in.size(); ++i)
         {
-            Vec4 coord = f_affineMatrix.getValue()*Vec4(in[i], 1);
+            Vec4 coord = affineMatrix.ref()*Vec4(in[i], 1);
             if ( fabs(coord[3]) > 1e-10)
                 out[i]=coord/coord[3];
         }
