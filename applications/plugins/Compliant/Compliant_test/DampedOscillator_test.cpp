@@ -11,6 +11,11 @@
 namespace sofa
 {
 
+using namespace component;
+using namespace modeling;
+using helper::vector;
+
+
 /**
  * @brief Integrate a one-dimensional damped oscillator in time, using an CompliantImplicitSolver.
  * The oscillator is composed of one fixed and one moving particle, connected by a spring with damping.
