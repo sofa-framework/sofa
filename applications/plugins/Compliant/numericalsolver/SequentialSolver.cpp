@@ -536,7 +536,7 @@ void SequentialSolver::factor(const system_type& system) {
             )
     {
         fetch_blocks( system ); // find blocks
-        return factor_impl( system );
+        factor_impl( system );
     }
     else
     {

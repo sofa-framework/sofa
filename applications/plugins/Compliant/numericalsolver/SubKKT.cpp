@@ -106,7 +106,8 @@ void SubKKT::filter_kkt(rmat& res,
                        bool only_lower) {
 
 
-    res.resize(P.cols() + Q.cols(), P.cols() + Q.cols());
+    const size_t size = P.cols() + Q.cols(); // free independent dofs + bilateral constraint dofs
+    res.resize(size,size);
     res.setZero();
     res.reserve(H.nonZeros() + 2 * J.nonZeros() + C.nonZeros());
 
@@ -171,7 +172,10 @@ void SubKKT::filter_kkt(rmat& res,
 
             if( only_lower && itC.col() > itC.row() ) break;
 
-            SReal& ref = res.insertBack(P_cols + sub_row, P_cols + itC.col());
+            unsigned sub_col = 0;
+            if(!has_row(itC.col(), Q, &sub_col, Q_is_identity)) continue;
+
+            SReal& ref = res.insertBack(P_cols + sub_row, P_cols + sub_col);
             ref = -itC.value();
 
             // store diagonal ref
