@@ -145,17 +145,17 @@ BaseLinearSolver::SPtr createLinearSolver(OdeSolver* solver1, OdeSolver* solver2
     {
         if (lsolver1->f_maxIter.getValue() > maxIter) maxIter = lsolver1->f_maxIter.getValue();
         if (lsolver1->f_tolerance.getValue() < tolerance) tolerance = lsolver1->f_tolerance.getValue();
-        if (lsolver1->f_smallDenominatorThreshold.getValue() > smallDenominatorThreshold) smallDenominatorThreshold = lsolver1->f_smallDenominatorThreshold.getValue();
+        if (lsolver1->f_smallDenominatorThreshold.getValue() < smallDenominatorThreshold) smallDenominatorThreshold = lsolver1->f_smallDenominatorThreshold.getValue();
     }
     if (lsolver2)
     {
         if (lsolver2->f_maxIter.getValue() > maxIter) maxIter = lsolver2->f_maxIter.getValue();
         if (lsolver2->f_tolerance.getValue() < tolerance) tolerance = lsolver2->f_tolerance.getValue();
-        if (lsolver2->f_smallDenominatorThreshold.getValue() > smallDenominatorThreshold) smallDenominatorThreshold = lsolver2->f_smallDenominatorThreshold.getValue();
+        if (lsolver2->f_smallDenominatorThreshold.getValue() < smallDenominatorThreshold) smallDenominatorThreshold = lsolver2->f_smallDenominatorThreshold.getValue();
     }
-    if (maxIter > 0) lsolver->f_maxIter.setValue( maxIter );
-    if (tolerance < 1.0e10) lsolver->f_tolerance.setValue( tolerance );
-    if (smallDenominatorThreshold < 1.0e10) lsolver->f_smallDenominatorThreshold.setValue( smallDenominatorThreshold );
+    lsolver->f_maxIter.setValue( maxIter );
+    lsolver->f_tolerance.setValue( tolerance );
+    lsolver->f_smallDenominatorThreshold.setValue( smallDenominatorThreshold );
     return lsolver;
 }
 
