@@ -189,36 +189,44 @@ void DefaultPipeline::doCollisionResponse()
 
     const sofa::helper::vector<Contact::SPtr>& contacts = contactManager->getContacts();
 
-    // First we remove all contacts with non-simulated objects and directly add them
-    sofa::helper::vector<Contact::SPtr> notStaticContacts;
-
-
-    for (sofa::helper::vector<Contact::SPtr>::const_iterator it = contacts.begin(); it!=contacts.end(); ++it)
-    {
-        Contact::SPtr c = *it;
-        if (!c->getCollisionModels().first->isSimulated())
-        {
-            c->createResponse(c->getCollisionModels().second->getContext());
-        }
-        else if (!c->getCollisionModels().second->isSimulated())
-        {
-            c->createResponse(c->getCollisionModels().first->getContext());
-        }
-        else
-            notStaticContacts.push_back(c);
-    }
-
-
     if (groupManager==NULL)
     {
         VERBOSE(sout << "Linking all contacts to Scene"<<sendl);
-        for (sofa::helper::vector<Contact::SPtr>::const_iterator it = notStaticContacts.begin(); it!=notStaticContacts.end(); ++it)
+        for (sofa::helper::vector<Contact::SPtr>::const_iterator it = contacts.begin(); it!=contacts.end(); ++it)
         {
-            (*it)->createResponse(scene);
+            Contact* c = it->get();
+            core::objectmodel::BaseContext* node = scene;
+            if (!c->getCollisionModels().first->isSimulated())
+            {
+                node = c->getCollisionModels().second->getContext();
+            }
+            else if (!c->getCollisionModels().second->isSimulated())
+            {
+                node = c->getCollisionModels().first->getContext();
+            }
+            c->createResponse(node);
         }
     }
     else
     {
+        // First we remove all contacts with non-simulated objects and directly add them
+        sofa::helper::vector<Contact::SPtr> notStaticContacts;
+
+        for (sofa::helper::vector<Contact::SPtr>::const_iterator it = contacts.begin(); it!=contacts.end(); ++it)
+        {
+            Contact::SPtr c = *it;
+            if (!c->getCollisionModels().first->isSimulated())
+            {
+                c->createResponse(c->getCollisionModels().second->getContext());
+            }
+            else if (!c->getCollisionModels().second->isSimulated())
+            {
+                c->createResponse(c->getCollisionModels().first->getContext());
+            }
+            else
+                notStaticContacts.push_back(c);
+        }
+
         VERBOSE(sout << "Create Groups "<<groupManager->getName()<<sendl);
         groupManager->createGroups(scene, notStaticContacts);
     }
