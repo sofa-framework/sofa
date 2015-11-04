@@ -205,6 +205,8 @@ void DefaultPipeline::doCollisionResponse()
                 node = c->getCollisionModels().first->getContext();
             }
             c->createResponse(node);
+            c->computeResponse();
+            c->finalizeResponse(node);
         }
     }
     else
@@ -218,10 +220,14 @@ void DefaultPipeline::doCollisionResponse()
             if (!c->getCollisionModels().first->isSimulated())
             {
                 c->createResponse(c->getCollisionModels().second->getContext());
+                c->computeResponse();
+                c->finalizeResponse(c->getCollisionModels().second->getContext());
             }
             else if (!c->getCollisionModels().second->isSimulated())
             {
                 c->createResponse(c->getCollisionModels().first->getContext());
+                c->computeResponse();
+                c->finalizeResponse(c->getCollisionModels().first->getContext());
             }
             else
                 notStaticContacts.push_back(c);

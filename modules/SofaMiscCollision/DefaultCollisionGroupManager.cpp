@@ -219,10 +219,14 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
         simulation::Node::SPtr group = contactGroup[i];
         while (group!=NULL && mergedGroups.find(group.get())!=mergedGroups.end())
             group = mergedGroups[group.get()];
+        core::objectmodel::BaseContext* node = scene;
         if (group!=NULL)
-            contact->createResponse(group.get());
-        else
-            contact->createResponse(scene);
+        {
+            node = group.get();
+        }
+        contact->createResponse(node);
+        contact->computeResponse();
+        contact->finalizeResponse(node);
     }
 
     // delete removed groups

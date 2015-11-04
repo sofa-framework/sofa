@@ -263,10 +263,14 @@ void ParallelCollisionPipeline::doCollisionResponse()
         if (!c->getCollisionModels().first->isSimulated())
         {
             c->createResponse(c->getCollisionModels().second->getContext());
+            c->computeResponse();
+            c->finalizeResponse(c->getCollisionModels().second->getContext());
         }
         else if (!c->getCollisionModels().second->isSimulated())
         {
             c->createResponse(c->getCollisionModels().first->getContext());
+            c->computeResponse();
+            c->finalizeResponse(c->getCollisionModels().first->getContext());
         }
         else
             notStaticContacts.push_back(c);
@@ -279,6 +283,8 @@ void ParallelCollisionPipeline::doCollisionResponse()
         for (sofa::helper::vector<Contact*>::const_iterator it = notStaticContacts.begin(); it!=notStaticContacts.end(); ++it)
         {
             (*it)->createResponse(scene);
+            (*it)->computeResponse();
+            (*it)->finalizeResponse(scene);
         }
     }
     else
