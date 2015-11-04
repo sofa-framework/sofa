@@ -225,8 +225,10 @@ struct SpecificTest<FlexibleDataEngine_test< TestDataEngine< component::engine::
         tested->root->addObject( tested->m_engine );
         tested->root->addObject( tested->m_engineInput );
 
-        tested->m_engineInput->l_visualModel.add( dynamic_cast<component::visualmodel::VisualModelImpl*>(tested->root->getObject("Visual")) );// tested->m_engineInput->l_visualModel.updateLinks();
-        tested->m_engineInput->l_shapeFunction.setPath( "@./" ); //tested->m_engineInput->l_shapeFunction.updateLinks();
+        tested->m_engineInput->l_visualModel.setPath( "@/Visual" );
+        tested->m_engineInput->l_shapeFunction.setPath( "@/SF" );
+        tested->m_engine->l_visualModel.setPath( "@/Visual" );
+        tested->m_engine->l_shapeFunction.setPath( "@/SF" );
     }
 };
 

@@ -90,7 +90,9 @@ struct DataEngine_test : public Sofa_test<>
     DataEngine_test()
     {
         m_engine = sofa::core::objectmodel::New<Engine>();
+        m_engine->name.setValue("engine");
         m_engineInput = sofa::core::objectmodel::New<DataEngineType>();
+        m_engineInput->name.setValue("engineInput");
     }
 
     virtual void init()
