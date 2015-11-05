@@ -50,7 +50,7 @@ BaseMapping::~BaseMapping()
 //}
 
 
-bool BaseMapping::setFrom(BaseState*  from)
+bool BaseMapping::setFrom(BaseState*  )
 {
     this->serr<<"BaseMapping::setFrom is not implemented for " << this->getName()<< sendl;
     return false;

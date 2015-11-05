@@ -290,7 +290,7 @@ bool Mapping<In,Out>::setFrom(BaseState* from)
     State<In>* in = dynamic_cast< State<In>* >(from);
     if( !in )
     {
-        serr<<"setFrom "<<from->getName()<<" should be of type "<<State<In>::getTypeName()<<sendl;
+        serr<<"setFrom "<<from->getName()<<" should be of type "<<State<In>::template typeName< State<In> >()<<sendl;
         return false;
     }
 
@@ -306,7 +306,7 @@ bool Mapping<In,Out>::setTo(BaseState* to)
     State<Out>* out = dynamic_cast< State<Out>* >(to);
     if( !out )
     {
-        serr<<"setTo "<<to->getName()<<" should be of type "<<State<Out>::getTypeName()<<sendl;
+        serr<<"setTo "<<to->getName()<<" should be of type "<<State<Out>::template typeName< State<Out> >()<<sendl;
         return false;
     }
 
