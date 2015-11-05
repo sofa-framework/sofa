@@ -30,7 +30,6 @@
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/Mapping.inl>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
