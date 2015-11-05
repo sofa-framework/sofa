@@ -24,7 +24,6 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectDirectionConstraint_CPP
 #include <SofaBoundaryCondition/ProjectDirectionConstraint.inl>
-#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/simulation/common/Node.h>

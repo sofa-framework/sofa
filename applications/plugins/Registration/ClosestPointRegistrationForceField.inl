@@ -27,7 +27,6 @@
 
 #include "ClosestPointRegistrationForceField.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
