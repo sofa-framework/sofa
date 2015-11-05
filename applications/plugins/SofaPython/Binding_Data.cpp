@@ -752,6 +752,14 @@ extern "C" PyObject * Data_unset(PyObject *self, PyObject * /*args*/)
     Py_RETURN_NONE;
 }
 
+extern "C" PyObject * Data_updateIfDirty(PyObject *self, PyObject * /*args*/)
+{
+    BaseData* data=((PyPtr<BaseData>*)self)->object;
+
+    data->updateIfDirty();
+
+    Py_RETURN_NONE;
+}
 
 SP_CLASS_METHODS_BEGIN(Data)
 SP_CLASS_METHOD(Data,getValueTypeString)
@@ -761,6 +769,7 @@ SP_CLASS_METHOD(Data,getValue)
 SP_CLASS_METHOD(Data,getSize)
 SP_CLASS_METHOD(Data,setSize)
 SP_CLASS_METHOD(Data,unset)
+SP_CLASS_METHOD(Data,updateIfDirty)
 SP_CLASS_METHODS_END
 
 
