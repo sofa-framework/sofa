@@ -283,14 +283,38 @@ void Mapping<In,Out>::setModels(State<In>* from, State<Out>* to)
 }
 
 template <class In, class Out>
+bool Mapping<In,Out>::setFrom(BaseState* from)
+{
+    if( !from ) return false;
+
+    State<In>* in = dynamic_cast< State<In>* >(from);
+    if( !in )
+    {
+        serr<<"setFrom "<<from->getName()<<" should be of type "<<State<In>::getTypeName()<<sendl;
+        return false;
+    }
+
+    this->fromModel.set( in );
+    return true;
+}
+
+template <class In, class Out>
 bool Mapping<In,Out>::setTo(BaseState* to)
 {
-    if( to!=NULL && dynamic_cast< State<Out>* >(to)==NULL )
-        return false;
+    if( !to ) return false;
+
     State<Out>* out = dynamic_cast< State<Out>* >(to);
+    if( !out )
+    {
+        serr<<"setTo "<<to->getName()<<" should be of type "<<State<Out>::getTypeName()<<sendl;
+        return false;
+    }
+
     this->toModel.set( out );
+
     if( !testMechanicalState(out))
         setNonMechanical();
+
     return true;
 }
 
