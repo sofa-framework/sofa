@@ -107,34 +107,20 @@ extern "C" PyObject * BaseMapping_setTo(PyObject * self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseMapping_apply(PyObject * self, PyObject * args)
+extern "C" PyObject * BaseMapping_apply(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping = dynamic_cast<BaseMapping*>(((PySPtr<Base>*)self)->object.get());
 
-    int id;
-    VecCoordId vecid;
-    if ( !PyArg_ParseTuple( args, "i", &id ) )
-        vecid = VecCoordId::position(); // position by default
-    else
-        vecid = VecCoordId( id );
-
-    mapping->apply(MechanicalParams::defaultInstance(),vecid,vecid);
+    mapping->apply(MechanicalParams::defaultInstance(),VecCoordId::position(),ConstVecCoordId::position());
 
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseMapping_applyJ(PyObject * self, PyObject * args)
+extern "C" PyObject * BaseMapping_applyJ(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping = dynamic_cast<BaseMapping*>(((PySPtr<Base>*)self)->object.get());
 
-    int id;
-    VecDerivId vecid;
-    if ( !PyArg_ParseTuple( args, "i", &id ) )
-        vecid = VecDerivId::velocity(); // velocity by default
-    else
-        vecid = VecDerivId( id );
-
-    mapping->applyJ(MechanicalParams::defaultInstance(),vecid,vecid);
+    mapping->applyJ(MechanicalParams::defaultInstance(),VecDerivId::velocity(),ConstVecDerivId::velocity());
 
     Py_RETURN_NONE;
 }
