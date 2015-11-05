@@ -107,12 +107,45 @@ extern "C" PyObject * BaseMapping_setTo(PyObject * self, PyObject * args)
     Py_RETURN_NONE;
 }
 
+extern "C" PyObject * BaseMapping_apply(PyObject * self, PyObject * args)
+{
+    BaseMapping* mapping = dynamic_cast<BaseMapping*>(((PySPtr<Base>*)self)->object.get());
+
+    int id;
+    VecCoordId vecid;
+    if ( !PyArg_ParseTuple( args, "i", &id ) )
+        vecid = VecCoordId::position(); // position by default
+    else
+        vecid = VecCoordId( id );
+
+    mapping->apply(MechanicalParams::defaultInstance(),vecid,vecid);
+
+    Py_RETURN_NONE;
+}
+
+extern "C" PyObject * BaseMapping_applyJ(PyObject * self, PyObject * args)
+{
+    BaseMapping* mapping = dynamic_cast<BaseMapping*>(((PySPtr<Base>*)self)->object.get());
+
+    int id;
+    VecDerivId vecid;
+    if ( !PyArg_ParseTuple( args, "i", &id ) )
+        vecid = VecDerivId::velocity(); // velocity by default
+    else
+        vecid = VecDerivId( id );
+
+    mapping->applyJ(MechanicalParams::defaultInstance(),vecid,vecid);
+
+    Py_RETURN_NONE;
+}
 
 SP_CLASS_METHODS_BEGIN(BaseMapping)
 SP_CLASS_METHOD(BaseMapping,getFrom)
 SP_CLASS_METHOD(BaseMapping,getTo)
 SP_CLASS_METHOD(BaseMapping,setFrom)
 SP_CLASS_METHOD(BaseMapping,setTo)
+SP_CLASS_METHOD(BaseMapping,apply)
+SP_CLASS_METHOD(BaseMapping,applyJ)
 SP_CLASS_METHODS_END
 
 SP_CLASS_TYPE_SPTR(BaseMapping,BaseMapping,BaseObject)
