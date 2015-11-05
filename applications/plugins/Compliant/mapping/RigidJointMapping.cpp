@@ -1,7 +1,6 @@
 #include "RigidJointMapping.h"
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/Mapping.inl>
 
 namespace sofa
 {
