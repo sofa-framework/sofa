@@ -80,6 +80,10 @@ protected:
     BaseMechanicalState();
 
     virtual ~BaseMechanicalState();
+private:
+	BaseMechanicalState(const BaseMechanicalState& n);
+	BaseMechanicalState& operator=(const BaseMechanicalState& n);
+
 public:
     /// @name Methods allowing to have access to the geometry without a template class (generic but not efficient)
     /// @{
