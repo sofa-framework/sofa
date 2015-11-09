@@ -158,12 +158,12 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MISC_EVALPOINTSDISTANCE_CPP)
 #ifndef SOFA_FLOAT
-extern template class EvalPointsDistance<defaulttype::Vec3dTypes>;
-extern template class EvalPointsDistance<defaulttype::Rigid3dTypes>;
+extern template class SOFA_VALIDATION_API EvalPointsDistance<defaulttype::Vec3dTypes>;
+extern template class SOFA_VALIDATION_API EvalPointsDistance<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class EvalPointsDistance<defaulttype::Vec3fTypes>;
-extern template class EvalPointsDistance<defaulttype::Rigid3fTypes>;
+extern template class SOFA_VALIDATION_API EvalPointsDistance<defaulttype::Vec3fTypes>;
+extern template class SOFA_VALIDATION_API EvalPointsDistance<defaulttype::Rigid3fTypes>;
 #endif
 #endif
 
