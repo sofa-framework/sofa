@@ -855,7 +855,11 @@ void OglModel::initVisual()
 #endif
 
     updateBuffers();
+
+    // forcing the normal computation if we do not want to use the given ones
+    if( !this->m_useNormals.getValue() ) { this->m_vnormals.beginWriteOnly()->clear(); this->m_vnormals.endEdit(); }
     computeNormals();
+
     if (m_updateTangents.getValue())
         computeTangents();
 
