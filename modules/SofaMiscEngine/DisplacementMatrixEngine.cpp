@@ -1,7 +1,5 @@
 #define FLEXIBLE_DisplacementMatrixENGINE_CPP
 
-#include <Flexible/config.h>
-
 #include "DisplacementMatrixEngine.inl"
 
 #include <sofa/core/ObjectFactory.h>
@@ -26,7 +24,7 @@ int DisplacementMatrixEngineClass = core::RegisterObject("Converts a vector of R
 ;
 
 
-template class SOFA_Flexible_API DisplacementMatrixEngine<Rigid3Types>;
+template class SOFA_MISC_ENGINE_API DisplacementMatrixEngine<Rigid3Types>;
 
 
 } // namespace engine

@@ -6,37 +6,6 @@
 using std::cerr;
 using std::endl;
 
-//namespace
-//{
-
-    
-//    // Does nothing
-//    template < typename Real >
-//    const sofa::defaulttype::RigidCoord< 3, Real >& getRigid(  const typename sofa::defaulttype::StdRigidTypes< 3, Real >::Coord& x )
-//    {
-//        return x;
-//    }
-
-
-//    // Transforms an Affine to a Rigid
-//    template < typename Real >
-//    const sofa::defaulttype::RigidCoord< 3, Real > getRigid(  typename sofa::defaulttype::StdAffineTypes< 3, Real >::Coord x)
-//    {
-//        typedef sofa::defaulttype::RigidCoord< 3, Real > Rigid;
-//        typedef sofa::helper::Quater<Real> Quater;
-
-//        // Project the Affine to a rigid (is that necessary ?)
-//        x.setRigid();
-
-//        // Extract the Rigid from the affine
-//        Quater r;
-//        r.fromMatrix( x.getAffine() );
-
-//        return Rigid( x.getCenter(), r ) ;
-//    }
-
-//}
-
 
 namespace sofa
 {
@@ -59,6 +28,17 @@ DisplacementMatrixEngine< DataTypes >::DisplacementMatrixEngine()
     setDirtyValue();
 }
 
+
+template < class DataTypes >
+void DisplacementMatrixEngine< DataTypes >::init()
+{
+    const VecCoord& x0 = d_x0.getValue();
+    inverses.resize(x0.size());
+    for( size_t i=0; i<x0.size(); i++ )
+    {
+        sofa::defaulttype::StdRigidTypes< 3, Real >::inverse(x0[i]).toMatrix(inverses[i]);
+    }
+}
 
 template < class DataTypes >
 void DisplacementMatrixEngine< DataTypes >::update()
@@ -89,11 +69,8 @@ void DisplacementMatrixEngine< DataTypes >::update()
         x[i].toMatrix(displaceMats[i]);
 //        cerr << "DisplacementMatrixEngine< DataTypes >::update(), x[i]  = " << x[i] << endl;
 //        cerr << "DisplacementMatrixEngine< DataTypes >::update(), x0[i] = " << x0[i] << endl;
-        Mat4 inv;
-        sofa::defaulttype::StdRigidTypes< 3, Real >::inverse(x0[i]).toMatrix(inv);
-//        cerr << "DisplacementMatrixEngine< DataTypes >::update(), mat   = " << displaceMats[i] << endl;
-        displaceMats[i] = displaceMats[i] * inv;
-//        cerr << "DisplacementMatrixEngine< DataTypes >::update(), inv   = " << inv << endl;
+        displaceMats[i] = displaceMats[i] * inverses[i];
+//        cerr << "DisplacementMatrixEngine< DataTypes >::update(), inv   = " << inverses[i] << endl;
 //        cerr << "DisplacementMatrixEngine< DataTypes >::update(), disp  = " << displaceMats[i] << endl;
     }
 
