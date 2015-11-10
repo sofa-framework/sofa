@@ -127,10 +127,8 @@ void DAGNode::detachFromGraph()
 {
     DAGNode::SPtr me = this; // make sure we don't delete ourself before the end of this method
     const LinkParents::Container& parents = l_parents.getValue();
-    for ( unsigned int i = 0; i < parents.size() ; ++i)
-    {
-        parents[i]->removeChild(this);
-    }
+    while(!parents.empty())
+        parents.back()->removeChild(this);
 }
 
 
