@@ -1,10 +1,7 @@
-#include "DisplacementMatrixEngine.h"
+#ifndef SOFA_COMPONENT_ENGINE_DisplacementMatrixEngine_INL
+#define SOFA_COMPONENT_ENGINE_DisplacementMatrixEngine_INL
 
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/DualQuat.h>
-#include <iostream>
-using std::cerr;
-using std::endl;
+#include "DisplacementMatrixEngine.h"
 
 
 namespace sofa
@@ -16,36 +13,33 @@ namespace component
 namespace engine
 {
 
-template < class DataTypes >
-DisplacementMatrixEngine< DataTypes >::DisplacementMatrixEngine()
+template < class DataTypes, class OutputType >
+DisplacementTransformEngine< DataTypes, OutputType >::DisplacementTransformEngine()
     : d_x0( initData( &d_x0, "x0", "Rest position" ) )
     , d_x( initData( &d_x, "x", "Current position" ) )
-    , d_displaceMats( initData( &d_displaceMats, "displaceMats", "Displacement matrices with respect to original rigid positions") )
+    , d_displacements( initData( &d_displacements, "displacements", "Displacement transforms with respect to original rigid positions") )
 {
     addInput( &d_x0 );
     addInput( &d_x );
-    addOutput( &d_displaceMats );
+    addOutput( &d_displacements );
     setDirtyValue();
 }
 
 
-template < class DataTypes >
-void DisplacementMatrixEngine< DataTypes >::init()
+template < class DataTypes, class OutputType >
+void DisplacementTransformEngine< DataTypes, OutputType >::init()
 {
     const VecCoord& x0 = d_x0.getValue();
     inverses.resize(x0.size());
     for( size_t i=0; i<x0.size(); i++ )
     {
-        sofa::defaulttype::StdRigidTypes< 3, Real >::inverse(x0[i]).toMatrix(inverses[i]);
+        setInverse( inverses[i], x0[i] );
     }
 }
 
-template < class DataTypes >
-void DisplacementMatrixEngine< DataTypes >::update()
+template < class DataTypes, class OutputType >
+void DisplacementTransformEngine< DataTypes, OutputType >::update()
 {
-    typedef sofa::helper::DualQuatCoord3<Real> DualQuat;
-
-
     const VecCoord& x = d_x.getValue();
     const VecCoord& x0 = d_x0.getValue();
     const size_t size = x.size();
@@ -61,21 +55,16 @@ void DisplacementMatrixEngine< DataTypes >::update()
     cleanDirty();
 
     // Clean the output
-    helper::vector< defaulttype::Mat4x4f >& displaceMats = *d_displaceMats.beginWriteOnly();
-    displaceMats.resize(size);
+    helper::vector< OutputType >& displacements = *d_displacements.beginWriteOnly();
+    displacements.resize(size);
 
     for( unsigned int i = 0; i < size; ++i )
     {
-        x[i].toMatrix(displaceMats[i]);
-//        cerr << "DisplacementMatrixEngine< DataTypes >::update(), x[i]  = " << x[i] << endl;
-//        cerr << "DisplacementMatrixEngine< DataTypes >::update(), x0[i] = " << x0[i] << endl;
-        displaceMats[i] = displaceMats[i] * inverses[i];
-//        cerr << "DisplacementMatrixEngine< DataTypes >::update(), inv   = " << inverses[i] << endl;
-//        cerr << "DisplacementMatrixEngine< DataTypes >::update(), disp  = " << displaceMats[i] << endl;
+        mult( displacements[i], inverses[i], x[i] );
     }
 
-    d_displaceMats.endEdit();
-//    cerr << "DisplacementMatrixEngine< DataTypes >::update(), displaceMats  = " << d_displaceMats.getValue() << endl;
+    d_displacements.endEdit();
+//    serr << "update(), displaceMats  = " << d_displaceMats.getValue() << sendl;
 }
 
 } // namespace engine
@@ -83,3 +72,5 @@ void DisplacementMatrixEngine< DataTypes >::update()
 } // namespace component
 
 } // namespace sofa
+
+#endif
