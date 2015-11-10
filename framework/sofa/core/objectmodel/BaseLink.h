@@ -85,6 +85,7 @@ public:
         Owner* owner;
     };
 
+    BaseLink(LinkFlags flags);
     BaseLink(const BaseInitLink& init, LinkFlags flags);
     virtual ~BaseLink();
 

@@ -341,6 +341,11 @@ public:
     typedef LinkTraitsPtrCasts<TDestType> TraitsDestCasts;
 #undef ACTIVEFLAG
 
+    TLink()
+        : BaseLink(ActiveFlags)
+    {
+    }
+
     TLink(const InitLink<OwnerType>& init)
         : BaseLink(init, ActiveFlags), m_owner(init.owner)
     {
@@ -622,6 +627,12 @@ public:
         return TraitsOwnerCasts::getData(m_owner);
     }
 
+    void setOwner(OwnerType* owner)
+    {
+        m_owner = owner;
+        m_owner->addLink(this);
+    }
+
 protected:
     OwnerType* m_owner;
     helper::fixed_array<Container, SOFA_DATA_MAX_ASPECTS> m_value;
@@ -785,6 +796,11 @@ public:
     typedef typename Inherit::TraitsFindDest TraitsFindDest;
 
     typedef void (OwnerType::*ValidatorFn)(DestPtr before, DestPtr& after);
+
+    SingleLink()
+        : m_validator(NULL)
+    {
+    }
 
     SingleLink(const BaseLink::InitLink<OwnerType>& init)
         : Inherit(init), m_validator(NULL)
