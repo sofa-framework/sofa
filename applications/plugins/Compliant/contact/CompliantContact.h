@@ -96,12 +96,12 @@ protected:
 
     virtual void cleanup() {
         // should be called only when !keep
+        
         if( this->contact_node ) {
             this->mapper1.cleanup();
             if (!this->selfCollision) this->mapper2.cleanup();
             this->contact_node->detachFromGraph();
             this->contact_node.reset();
-            
         }
 
         if(friction_node){

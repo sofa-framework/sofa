@@ -107,12 +107,6 @@ public:
     }
 
 
-    virtual void setActiveContact(bool active)
-    {
-        contact_node->setActive(active);
-    }
-
-
     void createResponse(core::objectmodel::BaseContext* /*group*/ )
     {
 
@@ -222,7 +216,7 @@ public:
     /// @internal for SOFA collision mechanism
     /// called when the collision components must be removed from the scene graph
     virtual void cleanup() {
-
+        
         // should be called only when !keep
 
         if( contact_node ) {
@@ -233,7 +227,6 @@ public:
         }
         mappedContacts.clear();
     }
-
 
     /// @internal for SOFA collision mechanism
     /// to check if the collision components must be removed from the scene graph
@@ -262,6 +255,11 @@ protected:
     // all you're left to implement \o/
     virtual void create_node() = 0;
     virtual void update_node() = 0;
+
+    virtual void setActiveContact(bool active)
+    {
+        contact_node->setActive(active);
+    }
 
     template <class OutType>
     core::BaseMapping::SPtr createContactMapping(node_type::SPtr node, typename container::MechanicalObject<OutType>::SPtr dofs,   vector<bool>* cvmask = NULL)
@@ -378,60 +376,6 @@ protected:
         }
 
         return NULL;
-    }
-
-
-
-//    typedef vector<real> distances_type;
-//    void copyDistances( distances_type& res ) const {
-//        const unsigned size = mappedContacts.size();
-//        assert( size );
-
-//        res.resize( size );
-//        for(unsigned i = 0; i < size; ++i) {
-//            res[i] = mappedContacts[i].distance;
-//        }
-//    }
-
-    /// @internal copying the contact normals to the given vector
-    typedef vector< defaulttype::Vec<3, real> > normal_type;
-    void copyNormals( normal_type& res ) const {
-        const unsigned size = mappedContacts.size();
-        assert( size );
-        assert( size == contacts->size() );
-
-        res.resize(size);
-
-        for(unsigned i = 0; i < size; ++i) {
-            res[i] = (*contacts)[i].normal;
-        }
-    }
-
-    /// @internal copying the contact penetrations to the given vector
-    template< class Coord >
-    void copyPenetrations( helper::vector<Coord>& res ) const {
-        const unsigned size = mappedContacts.size();
-        assert( size );
-        assert( size == contacts->size() );
-        assert( size == res.size() );
-
-        for(unsigned i = 0; i < size; ++i) {
-            res[i][0] = (*contacts)[i].value;
-        }
-    }
-
-    /// @internal copying the contact pair indices to the given vector
-    void copyPairs( helper::vector< defaulttype::Vec<2, unsigned> >& res ) const {
-        const unsigned size = mappedContacts.size();
-        assert( size );
-        assert( size == contacts->size() );
-
-        res.resize( size );
-
-        for(unsigned i = 0; i < size; ++i) {
-            res[i][0] = this->mappedContacts[i].index1;
-            res[i][1] = this->mappedContacts[i].index2;
-        }
     }
 
 };

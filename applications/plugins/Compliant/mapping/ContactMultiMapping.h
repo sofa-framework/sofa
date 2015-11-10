@@ -199,17 +199,16 @@ protected:
                 J1.startVec( row );
                 J2.startVec( row );
 
-                 for( unsigned j = 0; j < self::Nin; ++j) {
-                     real w = local_frame(j, k);
-                     if(w)
-                     {
-                             J1.insertBack(row, (*pairs)[i][0] * Nin + j ) = -w;
-                             J2.insertBack(row, (*pairs)[i][1] * Nin + j ) = w;
-                   
-                     }
-                 }
-
+                for( unsigned j = 0; j < self::Nin; ++j) {
+                    real w = local_frame(j, k);
+                    if(w)
+                    {
+                        J1.insertBack(row, (*pairs)[i][0] * Nin + j ) = -w;
+                        J2.insertBack(row, (*pairs)[i][1] * Nin + j ) = w;
+                    }
+                }
             }
+
             ++activatedIndex;
         }
 		J1.finalize();
