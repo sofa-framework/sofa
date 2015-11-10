@@ -22,6 +22,7 @@ set(HEADER_FILES
     Binding_DisplayFlagsData.h
     Binding_GridTopology.h
     Binding_LinearSpring.h
+    Binding_Link.h
     Binding_Mapping.h
     Binding_MechanicalObject.h
     Binding_MeshLoader.h
@@ -67,6 +68,7 @@ set(SOURCE_FILES
     Binding_DisplayFlagsData.cpp
     Binding_GridTopology.cpp
     Binding_LinearSpring.cpp
+    Binding_Link.cpp
     Binding_Mapping.cpp
     Binding_MechanicalObject.cpp
     Binding_MeshLoader.cpp
