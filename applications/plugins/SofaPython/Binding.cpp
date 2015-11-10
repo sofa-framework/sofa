@@ -29,6 +29,7 @@
 
 #include "Binding_Data.h"
 #include "Binding_DisplayFlagsData.h"
+#include "Binding_Link.h"
 #include "Binding_Base.h"
 #include "Binding_BaseObject.h"
 #include "Binding_BaseState.h"
@@ -68,6 +69,8 @@ void bindSofaPythonModule()
 	SofaPythonModule = SP_INIT_MODULE(Sofa)
 	SP_ADD_CLASS(SofaPythonModule,Data)
 	SP_ADD_CLASS(SofaPythonModule,DisplayFlagsData)
+
+    SP_ADD_CLASS(SofaPythonModule,Link)
 
 	SP_ADD_CLASS(SofaPythonModule,Vector3)
 
