@@ -94,7 +94,7 @@ public:
     /// Update
     virtual void reinit();
     /// Reset the computation of the distances
-    virtual void reset() { reinit(); };
+    virtual void reset() { reinit(); }
 
     /** Distance computation */
 
