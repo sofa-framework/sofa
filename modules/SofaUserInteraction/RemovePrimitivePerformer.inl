@@ -25,8 +25,6 @@
 #include <SofaUserInteraction/RemovePrimitivePerformer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologicalMapping.h>
-//#include <sofa/helper/Factory.inl>
-#include <sofa/helper/system/glut.h>
 
 #if 0
 #include <SofaMiscCollision/TetrahedronModel.h>

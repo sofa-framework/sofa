@@ -37,7 +37,6 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 
 #include <sofa/helper/accessor.h>
-#include <sofa/helper/system/glut.h>
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>

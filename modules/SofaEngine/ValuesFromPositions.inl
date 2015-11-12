@@ -36,8 +36,6 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
 
-#include <sofa/helper/system/glut.h>
-
 namespace sofa
 {
 

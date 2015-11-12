@@ -26,8 +26,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glut.h>
+#include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/simulation/common/Simulation.h>
 
 namespace sofa
@@ -215,10 +214,9 @@ void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::com
         Vector3 p = points[i];
 
         glPushMatrix();
-        glTranslated(p[0], p[1], p[2]);
         ratio = (float)i / (float)npoints;
         glColor4f(red,ratio,0,1);
-        glutSolidSphere(radius[i], 32, 16);
+		helper::gl::drawSphere(p, radius[i], 32, 16);
 
         glPopMatrix();
     }

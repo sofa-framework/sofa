@@ -27,7 +27,6 @@
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/helper/system/glut.h>
 
 
 namespace sofa

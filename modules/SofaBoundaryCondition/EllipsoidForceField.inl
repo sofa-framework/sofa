@@ -30,7 +30,6 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glut.h>
 #include <assert.h>
 #include <iostream>
 
