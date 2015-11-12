@@ -405,10 +405,12 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
             helper::gl::glTranslate(cx2, cy2, cz2);
             helper::gl::glMultMatrix( &(R[0][0]) );
         }
-        helper::gl::glTranslate(cx1, cy1, cz1);
-        helper::gl::glScale(rx, ry, (stiffness.getValue()>0?rz:-rz));
-        glutSolidSphere(1,32,16);
-        //glTranslated(-cx2, -cy2, -cz2);
+		sofa::defaulttype::Vector3 center(cx1, cy1, cz1);
+		sofa::defaulttype::Vector3 radii(rx, ry, (stiffness.getValue()>0 ? rz : -rz));
+		
+		vparams->drawTool()->drawEllipsoid(center, radii);
+
+        glTranslated(-cx2, -cy2, -cz2);
 
         glPopMatrix();
         glDisable(GL_CULL_FACE);

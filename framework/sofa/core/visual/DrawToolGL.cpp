@@ -663,6 +663,15 @@ void DrawToolGL::drawSphere( const Vector3 &p, float radius)
     glPopMatrix();
 }
 
+void DrawToolGL::drawEllipsoid(const Vector3 &p, const Vector3 &radii)
+{
+	glPushMatrix();
+	glTranslated(p[0], p[1], p[2]);
+	glScale(radii[0], radii[1], radii[2]);
+	glutSolidSphere(1, 32, 16);
+	glPopMatrix();
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void DrawToolGL::drawBoundingBox( const Vector3 &min, const Vector3 &max )
