@@ -113,7 +113,7 @@ class DisplacementMatrixEngine : public DisplacementTransformEngine<DataTypes, d
 public:
     SOFA_CLASS( SOFA_TEMPLATE( DisplacementMatrixEngine, DataTypes ),SOFA_TEMPLATE2( DisplacementTransformEngine, DataTypes, defaulttype::Mat4x4f ) );
 
-    typedef DisplacementTransformEngine<DataTypes, defaulttype::Mat4x4f> DisplacementTransformEngine;
+    typedef DisplacementTransformEngine<DataTypes, defaulttype::Mat4x4f> Inherit;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord; // rigid
     typedef typename DataTypes::VecCoord VecCoord;
