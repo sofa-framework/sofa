@@ -51,6 +51,9 @@ namespace engine
  * Generalization of DisplacementMatrixEngine (kept for backward compatibility)
  * The output transform type is a template parameter, it can be a Mat4x4f or a Rigid::Coord (ie translation+quaternion)
  *
+ * Ali Dicko, 2015
+ * Add of a data scale to the DisplacementMatrixEngine which is a scale matrix add to the computation of D(t). Now D(t) = M(t).M(0)^-1.S
+ * By default S is the identity matrix, but the user can set other matrices
  */
 template < class DataTypes, class OutputType >
 class DisplacementTransformEngine : public sofa::core::DataEngine
@@ -69,11 +72,10 @@ public:
     // outputs
     Data< helper::vector< OutputType > > d_displacements; ///< displacement
 
-
+    // methods
     DisplacementTransformEngine();
     void init();   // compute the inverse matrices
     void update(); // compute the displacements wrt original positions
-
 
     // To simplify the template name in the xml file
     virtual std::string getTemplateName() const { return templateName(this); }
@@ -99,38 +101,38 @@ void DisplacementTransformEngine<defaulttype::Rigid3Types,defaulttype::Mat4x4f >
 template <>
 void DisplacementTransformEngine<defaulttype::Rigid3Types,defaulttype::Mat4x4f >::mult( defaulttype::Mat4x4f& out, const defaulttype::Mat4x4f& inv, const Coord& x );
 
-
-
 /////////////////////////////////////////////
-
-
 
 /*
  * kept for backward compatibility
  */
 template < class DataTypes >
-class DisplacementMatrixEngine : public DisplacementTransformEngine<DataTypes,defaulttype::Mat4x4f>
+class DisplacementMatrixEngine : public DisplacementTransformEngine<DataTypes, defaulttype::Mat4x4f>
 {
 
 public:
     SOFA_CLASS( SOFA_TEMPLATE( DisplacementMatrixEngine, DataTypes ),SOFA_TEMPLATE2( DisplacementTransformEngine, DataTypes, defaulttype::Mat4x4f ) );
 
+    typedef DisplacementTransformEngine<DataTypes, defaulttype::Mat4x4f> DisplacementTransformEngine;
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord; // rigid
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename defaulttype::Mat4x4f Matrix4x4;
+    typedef typename sofa::defaulttype::Vec<4,float> Line;
 
-    DisplacementMatrixEngine()
-        : DisplacementTransformEngine<DataTypes,defaulttype::Mat4x4f>()
-    {
-        this->d_displacements.setName( "displaceMats" );
-        this->addAlias( &this->d_displacements, "displaceMats" );
-    }
+    // Method
+    DisplacementMatrixEngine();
+
+    void init();   // compute the inverse matrices
+    void update(); // compute the displacements wrt original positions
 
     // To simplify the template name in the xml file
     virtual std::string getTemplateName() const { return templateName(this); }
     static std::string templateName(const DisplacementMatrixEngine<DataTypes>* = NULL) { return DataTypes::Name(); }
+
+    // inputs
+    Data< helper::vector< sofa::defaulttype::Vec<3,Real> > > d_scales; ///< scale matrices
 };
-
-
-
-
 
 } // namespace engine
 
