@@ -773,9 +773,9 @@ extern "C" PyObject * Data_read(PyObject *self, PyObject * args)
         Py_RETURN_NONE;
     }
 
-    if (PyString_Check(value))
+    if (PyUnicode_Check(value))
     {
-        data->read(PyString_AsString(value));
+        data->read(PyUnicode_AsUTF8(value));
     }
     else
     {
@@ -797,9 +797,9 @@ extern "C" PyObject * Data_setParent(PyObject *self, PyObject * args)
         Py_RETURN_NONE;
     }
 
-    if (PyString_Check(value))
+    if (PyUnicode_Check(value))
     {
-        data->setParent(PyString_AsString(value));
+        data->setParent(PyUnicode_AsUTF8(value));
         data->setDirtyOutputs(); // forcing children updates (should it be done in BaseData?)
     }
     else
