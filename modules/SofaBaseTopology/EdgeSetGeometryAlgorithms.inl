@@ -719,8 +719,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         sofa::defaulttype::Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-        glColor3f(color[0], color[1], color[2]);
-        glDisable(GL_LIGHTING);
+		Vector4 color4(color[0], color[1], color[2], 1.0);
         float scale = this->getIndicesScale();
 
         //for edges:
@@ -728,44 +727,20 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
         const sofa::helper::vector <Edge>& edgeArray = this->m_topology->getEdges();
 
-        for (unsigned int i =0; i<edgeArray.size(); i++)
-        {
+		for (unsigned int i = 0; i < edgeArray.size(); i++)
+		{
 
-            Edge the_edge = edgeArray[i];
-            Coord vertex1 = coords[ the_edge[0] ];
-            Coord vertex2 = coords[ the_edge[1] ];
-            sofa::defaulttype::Vec3f center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2))/2;
+			Edge the_edge = edgeArray[i];
+			Coord vertex1 = coords[the_edge[0]];
+			Coord vertex2 = coords[the_edge[1]];
+			sofa::defaulttype::Vec3f center; center = (DataTypes::getCPos(vertex1) + DataTypes::getCPos(vertex2)) / 2;
 
-            std::ostringstream oss;
-            oss << i;
-            std::string tmp = oss.str();
-            const char* s = tmp.c_str();
-            glPushMatrix();
-
-            glTranslatef(center[0], center[1], center[2]);
-            glScalef(scale,scale,scale);
-
-            // Makes text always face the viewer by removing the scene rotation
-            // get the current modelview matrix
-            glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
-            modelviewM.transpose();
-
-            sofa::defaulttype::Vec3f temp = modelviewM.transform(center);
-
-            //glLoadMatrixf(modelview);
-            glLoadIdentity();
-
-            glTranslatef(temp[0], temp[1], temp[2]);
-            glScalef(scale,scale,scale);
-
-            while(*s)
-            {
-                glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
-                s++;
-            }
-
-            glPopMatrix();
-        }
+			std::ostringstream oss;
+			oss << i;
+			std::string tmp = oss.str();
+			const char* s = tmp.c_str();
+			vparams->drawTool()->draw3DText(center, scale, color4, s);
+		}
     }
 
 
