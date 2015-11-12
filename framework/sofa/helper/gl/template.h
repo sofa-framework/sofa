@@ -268,7 +268,9 @@ inline void glTranslateNv<1>(const double* p)
 template<class Coord>
 inline void glTranslateT(const Coord& c)
 {
-    glTranslateNv<Coord::spatial_dimensions>(c.ptr());
+	//
+    //glTranslateNv<Coord::spatial_dimensions>(c.ptr());
+	glTranslateNv<Coord::static_size>(c.data());
 }
 
 template<>
