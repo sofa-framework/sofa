@@ -866,8 +866,51 @@ void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const Vec4f 
     glDepthMask(GL_TRUE);
 
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void DrawToolGL::draw3DText(const helper::vector<Vector3> &p, float scale, const Vec4f &color, const char* text)
+{
+	unsigned int i = 0;
+	for (const char*c = text; *c; ++c, ++i)
+	{
+		Vector3 position = (i < p.size()) ? p[i] : *(p.end()-1);
 
+		DrawToolGL::draw3DText(position, scale, color, c);
+	}
+}
 
+void DrawToolGL::draw3DText(const Vector3 &p, float scale, const Vec4f &color, const char* text)
+{
+	glColor4fv(color.ptr());
+	
+	defaulttype::Mat<4, 4, GLfloat> modelviewM;
+
+	glPushMatrix();
+
+	glTranslatef((float)p[0], (float)p[1], (float)p[2]);
+	glScalef(scale, scale, scale);
+
+	// Makes text always face the viewer by removing the scene rotation
+	// get the current modelview matrix
+	glGetFloatv(GL_MODELVIEW_MATRIX, modelviewM.ptr());
+	modelviewM.transpose();
+
+	defaulttype::Vec3d temp(p[0], p[1], p[2]);
+	temp = modelviewM.transform(temp);
+
+	//glLoadMatrixf(modelview);
+	glLoadIdentity();
+
+	glTranslatef((float)temp[0], (float)temp[1], (float)temp[2]);
+	glScalef(scale, scale, scale);
+
+	while(*text)
+	{
+		glutStrokeCharacter(GLUT_STROKE_ROMAN, *text);
+		text++;
+	}
+	glPopMatrix();
+	
+}
 
 } // namespace visual
 
