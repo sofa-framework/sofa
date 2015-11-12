@@ -395,9 +395,7 @@ void printPythonExceptions();
 #if PY_MAJOR_VERSION < 3
     #define PyLong_FromLong PyInt_FromLong
     #define PyLong_AsLong PyInt_AsLong
-    #define PyLong_Check PyInt_Check
-    #define PyUnicode_Check PyString_Check
-    #define PyUnicode_AsUTF8 PyUnicode_AsUTF8
+    #define PyUnicode_AsUTF8 PyString_AsString
     #define SP_INIT_MODULE(result,MODULENAME) result = Py_InitModule(#MODULENAME,MODULENAME##ModuleMethods);
 #else
     #define SP_INIT_MODULE(result,MODULENAME) { \
