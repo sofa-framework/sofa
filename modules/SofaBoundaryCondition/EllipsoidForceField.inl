@@ -157,15 +157,16 @@ void EllipsoidForceField<DataTypes>::draw(const core::visual::VisualParams* vpar
     DataTypes::get(cx, cy, cz, center.getValue());
     Real rx=1, ry=1, rz=1;
     DataTypes::get(rx, ry, rz, vradius.getValue());
+	sofa::defaulttype::Vector3 radii(rx, ry, (stiffness.getValue()>0 ? rz : -rz));
+	sofa::defaulttype::Vector3 vCenter(cx, cy, cz);
+
     glEnable(GL_CULL_FACE);
     glEnable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);
     glColor3f(color.getValue()[0],color.getValue()[1],color.getValue()[2]);
-    glPushMatrix();
-    glTranslated(cx, cy, cz);
-    glScaled(rx, ry, (stiffness.getValue()>0?rz:-rz));
-    glutSolidSphere(1,32,16);
-    glPopMatrix();
+    
+	vparams->drawTool()->drawEllipsoid(vCenter, radii);
+
     glDisable(GL_CULL_FACE);
     glDisable(GL_LIGHTING);
     glDisable(GL_COLOR_MATERIAL);

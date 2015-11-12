@@ -125,6 +125,7 @@ public:
 
 
     virtual void drawSphere( const Vector3 &p, float radius);
+	virtual void drawEllipsoid(const Vector3 &p, const Vector3 &radii);
 
     virtual void drawBoundingBox( const Vector3 &min, const Vector3 &max );
 

@@ -134,6 +134,7 @@ public:
     virtual void drawQuads(const std::vector<Vector3> &points, const Vec4f& colour) = 0 ;
 
     virtual void drawSphere( const Vector3 &p, float radius) = 0 ;
+	virtual void drawEllipsoid(const Vector3 &p, const Vector3 &radii) = 0;
 
     virtual void drawBoundingBox( const Vector3 &min, const Vector3 &max ) = 0;
 
