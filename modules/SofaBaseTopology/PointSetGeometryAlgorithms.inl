@@ -234,7 +234,7 @@ void PointSetGeometryAlgorithms<DataTypes>::initPointAdded(unsigned int index, c
 
 
 template<class DataTypes>
-void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* )
+void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
     if (showPointIndices.getValue())
@@ -244,8 +244,8 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
         sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
-        glColor3f(1.0,1.0,1.0);
-        glDisable(GL_LIGHTING);
+		Vector4 color4(1.0, 1.0, 1.0, 1.0);
+
         sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
 
         float PointIndicesScale = getIndicesScale();
@@ -259,29 +259,7 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
             const char* s = tmp.c_str();
             glPushMatrix();
             sofa::defaulttype::Vec3f center; center = DataTypes::getCPos(coords[i]);
-            glTranslatef(center[0], center[1], center[2]);
-            glScalef(PointIndicesScale,PointIndicesScale,PointIndicesScale);
-
-            // Makes text always face the viewer by removing the scene rotation
-            // get the current modelview matrix
-            glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
-            modelviewM.transpose();
-
-            sofa::defaulttype::Vec3f temp = modelviewM.transform(center);
-
-            //glLoadMatrixf(modelview);
-            glLoadIdentity();
-
-            glTranslatef(temp[0], temp[1], temp[2]);
-            glScalef(PointIndicesScale,PointIndicesScale,PointIndicesScale);
-
-            while(*s)
-            {
-                glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
-                s++;
-            }
-
-            glPopMatrix();
+			vparams->drawTool()->draw3DText(center, PointIndicesScale, color4, s);
 
         }
     }
