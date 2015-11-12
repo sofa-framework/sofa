@@ -28,6 +28,7 @@
 #ifndef SOFA_NO_OPENGL
 
 #include <sofa/helper/gl/template.h>
+#include <sofa/helper/fixed_array.h>
 #include <sofa/helper/system/glu.h>
 #include <cmath>
 
@@ -104,7 +105,7 @@ void drawArrow(const V& p1, const V& p2, const float& rad, const int subd=8)
 template <typename V>
 void drawSphere(const V& center, const float& rad, const int subd1=8, const int subd2=8)
 {
-    GLUquadricObj*	sphere = gluNewQuadric();
+    GLUquadricObj* sphere = gluNewQuadric();
     gluQuadricDrawStyle(sphere, GLU_FILL);
     gluQuadricOrientation(sphere, GLU_OUTSIDE);
     gluQuadricNormals(sphere, GLU_SMOOTH);
@@ -130,7 +131,7 @@ void drawWireSphere(const V& center, const float& rad, const int subd1=8, const 
 
 template <typename V>
 void drawTorus(const float* coordinateMatrix, const float& bodyRad=0.0,  const float& rad=1.0, const int precision=20,
-               const V& color=sofa::defaulttype::Vec3i(255,215,180))
+               const V& color=sofa::helper::fixed_array<int,3>(255,215,180))
 {
     GLUquadricObj* disk = gluNewQuadric();
     glColor3ub(color.x(), color.y(), color.z());
@@ -177,7 +178,7 @@ void drawTorus(const float* coordinateMatrix, const float& bodyRad=0.0,  const f
 
 template <typename V>
 void drawEmptyParallelepiped(const V& vert1, const V& vert2, const V& vert3, const V& vert4, const V& vecFromFaceToOppositeFace, const float& rad=1.0, const int precision=8,
-                             const V& color=sofa::defaulttype::Vec3i(255,0,0))
+                             const V& color=sofa::helper::fixed_array<int, 3>(255,0,0))
 {
 	GLUquadricObj* parallelepiped = gluNewQuadric();
     glColor3ub(255, 255, 255);
