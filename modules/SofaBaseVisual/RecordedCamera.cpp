@@ -29,7 +29,6 @@
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 
-#include <sofa/helper/system/glut.h>
 #include <math.h>
 #include <iostream>
 using std::cerr;

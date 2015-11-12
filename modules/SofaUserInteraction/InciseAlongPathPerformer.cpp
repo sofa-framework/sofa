@@ -28,7 +28,6 @@
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 
 #include <sofa/helper/Factory.inl>
-#include <sofa/helper/system/glut.h>
 
 namespace sofa
 {

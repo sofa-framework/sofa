@@ -29,8 +29,6 @@
 //#include <SofaBaseMechanics/MechanicalObject.inl>
 //#include <sofa/helper/gl/glText.inl>
 
-#include <sofa/helper/system/glut.h>
-
 namespace sofa
 {
 
