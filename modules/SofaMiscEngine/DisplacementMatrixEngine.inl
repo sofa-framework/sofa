@@ -70,7 +70,7 @@ void DisplacementTransformEngine< DataTypes, OutputType >::update()
 
 template < class DataTypes >
 DisplacementMatrixEngine< DataTypes >::DisplacementMatrixEngine()
-: DisplacementTransformEngine()
+: Inherit()
 , d_scales( initData(&d_scales, "scales", "Scale transformation added to the rigid transformation"))
 {
     this->addInput( &d_scales );
@@ -83,7 +83,7 @@ template < class DataTypes >
 void DisplacementMatrixEngine< DataTypes >::init()
 {
     // parent method
-    DisplacementTransformEngine::init();
+    Inherit::init();
 
     // Init of the scale matrices in case if the user did not initialize them
     const VecCoord& x0 = this->d_x0.getValue();
@@ -100,7 +100,7 @@ template < class DataTypes >
 void DisplacementMatrixEngine< DataTypes >::update()
 {
     // parent method
-    DisplacementTransformEngine::update();
+    Inherit::update();
 
     // Variable
     const VecCoord& x = this->d_x.getValue();
