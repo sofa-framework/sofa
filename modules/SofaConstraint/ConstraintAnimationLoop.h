@@ -237,7 +237,6 @@ protected:
     ConstraintAnimationLoop(simulation::Node* gnode = NULL);
     virtual ~ConstraintAnimationLoop();
 public:
-    // virtual const char* getTypeName() const { return "AnimationLoop"; }
 
     virtual void step(const core::ExecParams* params, SReal dt);
 
