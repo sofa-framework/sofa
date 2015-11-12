@@ -10,9 +10,9 @@
             <Node 	 name="GPUMesh"  >
                <OglModel template="ExtVec3f"  />
                 <IdentityMapping template="Vec3d,ExtVec3f" mapForces="0"  mapConstraints="0"  mapMasses="0"   />
-                <DisplacementMatrixEngine name="BoneDisplacements" template="Rigid3d"  x0="@../../Bones.rest_position"  x="@../../Bones.position"   />
+                <DisplacementTransformEngine name="BoneDisplacements" template="Rigid3d,Mat<4,4,float>"  x0="@../../Bones.rest_position"  x="@../../Bones.position"   />
                 <OglShader name="SkinningShader"  fileVertexShader="shaders/linearBlendSkinning.vert"  fileFragmentShader="shaders/linearBlendSkinning.frag" />
-                <OglMatrix4VectorVariable  id="boneMatrix"  value="@BoneDisplacements.displaceMats"  transpose="1" />
+                <OglMatrix4VectorVariable  id="boneMatrix"  value="@BoneDisplacements.displacements"  transpose="1" />
                 <OglInt4Attribute   id="indices"  value="0 0 0 0 0 0 0 0 0 1 0 0 0 1 0 0 1 0 0 0 1 0 0 0" />
                 <OglFloat4Attribute id="weights"  value="1 0 0 0 1 0 0 0 0.5 0.5 0 0 0.5 0.5 0 0 1 0 0 0 1 0 0 0" />
             </Node>
