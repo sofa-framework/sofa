@@ -111,7 +111,7 @@ void printPythonExceptions()
 {
     PyObject *ptype, *pvalue /* error msg */, *ptraceback /*stack snapshot and many other informations (see python traceback structure)*/;
     PyErr_Fetch(&ptype, &pvalue, &ptraceback);
-    if( pvalue ) SP_MESSAGE_EXCEPTION( PyString_AsString(pvalue) )
+    if( pvalue ) SP_MESSAGE_EXCEPTION( PyUnicode_AsUTF8(pvalue) )
 
     // TODO improve the error message by using ptraceback
 }

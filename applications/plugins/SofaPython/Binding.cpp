@@ -66,7 +66,7 @@ void bindSofaPythonModule()
 {
     //PyImport_AppendInittab( (char*)"Sofa", &initSofa );
 
-	SofaPythonModule = SP_INIT_MODULE(Sofa)
+    SP_INIT_MODULE(SofaPythonModule,Sofa)
 	SP_ADD_CLASS(SofaPythonModule,Data)
 	SP_ADD_CLASS(SofaPythonModule,DisplayFlagsData)
 

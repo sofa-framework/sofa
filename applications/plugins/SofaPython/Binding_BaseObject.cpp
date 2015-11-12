@@ -103,7 +103,7 @@ extern "C" PyObject * BaseObject_getPathName(PyObject * self, PyObject * /*args*
 {
     BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
 
-    return PyString_FromString(obj->getPathName().c_str());
+    return PyUnicode_FromString(obj->getPathName().c_str());
 }
 
 

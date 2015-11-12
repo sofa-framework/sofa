@@ -53,7 +53,7 @@ bool PythonVisitor::treeTraversal(TreeTraversalRepetition& repeat)
     PyObject *res = PyObject_CallMethod(m_PyVisitor,const_cast<char*>("treeTraversal"),const_cast<char*>("()"));
 
 
-    if( !res || !PyInt_Check(res) )
+    if( !res || !PyLong_Check(res) )
     {
         // no error -> the function is not overloaded -> default implementation
 //        SP_MESSAGE_EXCEPTION("")
@@ -63,7 +63,7 @@ bool PythonVisitor::treeTraversal(TreeTraversalRepetition& repeat)
         return false;
     }
 
-    int r = PyInt_AsLong(res);
+    int r = PyLong_AsLong(res);
     Py_DECREF(res);
 
     switch( r )

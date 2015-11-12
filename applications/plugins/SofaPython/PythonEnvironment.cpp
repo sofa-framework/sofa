@@ -52,7 +52,25 @@ namespace simulation
 
 PyMODINIT_FUNC initModulesHelper(const std::string& name, PyMethodDef* methodDef)
 {
-    Py_InitModule(name.c_str(), methodDef);
+    #if PY_MAJOR_VERSION < 3
+        Py_InitModule(name.c_str(), methodDef);
+    #else
+        static struct PyModuleDef module = {
+           PyModuleDef_HEAD_INIT,
+           name.c_str(),   /* name of module */
+           NULL, /* module documentation, may be NULL */
+           -1,       /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
+           methodDef, \
+           NULL, /*Currently unused, should be NULL. */ \
+           NULL, /*A traversal function to call during GC traversal of the module object, or NULL if not needed.*/ \
+           NULL, /*A clear function to call during GC clearing of the module object, or NULL if not needed. */ \
+           NULL /*A function to call during deallocation of the module object, or NULL if not needed. */ \
+        };
+
+
+
+        return PyModule_Create(&module);
+    #endif
 }
 
 void PythonEnvironment::addModule(const std::string& name, PyMethodDef* methodDef)
@@ -232,7 +250,7 @@ std::string PythonEnvironment::getError()
     PyObject *ptype, *pvalue /* error msg */, *ptraceback /*stack snapshot and many other informations (see python traceback structure)*/;
     PyErr_Fetch(&ptype, &pvalue, &ptraceback);
     if(pvalue)
-        error = PyString_AsString(pvalue);
+        error = PyUnicode_AsUTF8(pvalue);
 
     return error;
 }
@@ -272,24 +290,53 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
 
     if(!arguments.empty())
     {
-        char**argv = new char*[arguments.size()+1];
-        argv[0] = new char[bareFilename.size()+1];
-        strcpy( argv[0], bareFilename.c_str() );
-        for( size_t i=0 ; i<arguments.size() ; ++i )
-        {
-            argv[i+1] = new char[arguments[i].size()+1];
-            strcpy( argv[i+1], arguments[i].c_str() );
-        }
+        #if PY_MAJOR_VERSION < 3
 
-        Py_SetProgramName(argv[0]); // TODO check what it is doing exactly
+            char**argv = new char*[arguments.size()+1];
+            argv[0] = new char[bareFilename.size()+1];
+            strcpy( argv[0], bareFilename.c_str() );
+            for( size_t i=0 ; i<arguments.size() ; ++i )
+            {
+                argv[i+1] = new char[arguments[i].size()+1];
+                strcpy( argv[i+1], arguments[i].c_str() );
+            }
+            Py_SetProgramName(argv[0]);
+            PySys_SetArgv(arguments.size()+1, argv);
 
-        PySys_SetArgv(arguments.size()+1, argv);
+            for( size_t i=0 ; i<arguments.size()+1 ; ++i )
+            {
+                delete [] argv[i];
+            }
+            delete [] argv;
+        #else
+//            Py_SetProgramName(Py_DecodeLocale(argv[0],&size)); // Py_DecodeLocale for python >= 3.5 only
 
-        for( size_t i=0 ; i<arguments.size()+1 ; ++i )
-        {
-            delete [] argv[i];
-        }
-        delete [] argv;
+            wchar_t**argv = new wchar_t*[arguments.size()+1];
+
+            size_t size = bareFilename.size()+1;
+            std::wstring ws( size, L'#' );
+            mbstowcs( &ws[0], bareFilename.c_str(), size );
+            argv[0] = &ws[0];
+
+            for( size_t i=0 ; i<arguments.size() ; ++i )
+            {
+                size_t size = arguments[i].size()+1;
+                std::wstring ws( size, L'#' );
+                mbstowcs( &ws[0], arguments[i].c_str(), size );
+                argv[i+1] = &ws[0];
+            }
+
+            Py_SetProgramName(argv[0]);
+            PySys_SetArgv(arguments.size()+1, argv);
+
+            for( size_t i=0 ; i<arguments.size()+1 ; ++i )
+            {
+                delete [] argv[i];
+            }
+            delete [] argv;
+        #endif
+
+
     }
 
     //  Py_BEGIN_ALLOW_THREADS
@@ -297,38 +344,57 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     PyRun_SimpleString("import sys");
     PyRun_SimpleString(commandString.c_str());
 
-    // Load the scene script
-	char* pythonFilename = strdup(filename);
-    PyObject* scriptPyFile = PyFile_FromString(pythonFilename, (char*)("r"));
-	free(pythonFilename);
 
-    if( !scriptPyFile )
-    {
-        SP_MESSAGE_ERROR("cannot open file:" << filename)
-        PyErr_Print();
-        return false;
-    }
+
+    // Load the scene script
 
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
 	std::string backupFileName;
     PyObject* backupFileObject = PyDict_GetItemString(pDict, "__file__");
 	if(backupFileObject)
-		backupFileName = PyString_AsString(backupFileObject);
+		backupFileName = PyUnicode_AsUTF8(backupFileObject);
 
-    PyObject* newFileObject = PyString_FromString(filename);
+    PyObject* newFileObject = PyUnicode_FromString(filename);
     PyDict_SetItemString(pDict, "__file__", newFileObject);
 
-    int error = PyRun_SimpleFileEx(PyFile_AsFile(scriptPyFile), filename, 1);
 
-    backupFileObject = PyString_FromString(backupFileName.c_str());
+#if PY_MAJOR_VERSION < 3
+
+    char* pythonFilename = strdup(filename);
+    PyObject* scriptPyFile = PyFile_FromString(pythonFilename, (char*)("r"));
+    free(pythonFilename);
+
+    if( !scriptPyFile )
+    {
+        SP_MESSAGE_ERROR("Cannot open file:" << filename)
+        PyErr_Print();
+        return false;
+    }
+    int error = PyRun_SimpleFileEx(PyFile_AsFile(scriptPyFile), filename, 1);
+#else
+    FILE * f = fopen (filename, "r");
+    if( !f )
+    {
+        SP_MESSAGE_ERROR("Cannot open file:" << filename)
+        PyErr_Print();
+        return false;
+    }
+    int error = PyRun_SimpleFileEx(f, filename, 1);
+#endif
+
+
+
+
+
+    backupFileObject = PyUnicode_FromString(backupFileName.c_str());
     PyDict_SetItemString(pDict, "__file__", backupFileObject);
 
     //  Py_END_ALLOW_THREADS
 
     if(0 != error)
     {
-        SP_MESSAGE_ERROR("Script (file:" << bareFilename << ") import error")
+        SP_MESSAGE_ERROR( "Script (file: " << bareFilename << ") import error "<< error )
         PyErr_Print();
         return false;
     }

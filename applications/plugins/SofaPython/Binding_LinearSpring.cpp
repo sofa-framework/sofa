@@ -37,7 +37,7 @@ extern "C" PyObject * LinearSpring_getAttr_Index1(PyObject *self, void*)
         PyErr_BadArgument();
         Py_RETURN_NONE;
     }
-    return PyInt_FromLong(obj->m1);
+    return PyLong_FromLong(obj->m1);
 }
 
 extern "C" int LinearSpring_setAttr_Index1(PyObject *self, PyObject * args, void*)
@@ -48,8 +48,8 @@ extern "C" int LinearSpring_setAttr_Index1(PyObject *self, PyObject * args, void
         PyErr_BadArgument();
         return 0;
     }
-//    printf("***** DBG LinearSpring_setAttr_Index1 %d\n",(int)PyInt_AsLong(args));
-    obj->m1=PyInt_AsLong(args);
+//    printf("***** DBG LinearSpring_setAttr_Index1 %d\n",(int)PyLong_AsLong(args));
+    obj->m1=PyLong_AsLong(args);
     return 0;
 }
 
@@ -61,7 +61,7 @@ extern "C" PyObject * LinearSpring_getAttr_Index2(PyObject *self, void*)
         PyErr_BadArgument();
         return 0;
     }
-    return PyInt_FromLong(obj->m2);
+    return PyLong_FromLong(obj->m2);
 }
 
 extern "C" int LinearSpring_setAttr_Index2(PyObject *self, PyObject * args, void*)
@@ -72,8 +72,8 @@ extern "C" int LinearSpring_setAttr_Index2(PyObject *self, PyObject * args, void
         PyErr_BadArgument();
         return 0;
     }
-//    printf("***** DBG LinearSpring_setAttr_Index2 %d\n",(int)PyInt_AsLong(args));
-    obj->m2=PyInt_AsLong(args);
+//    printf("***** DBG LinearSpring_setAttr_Index2 %d\n",(int)PyLong_AsLong(args));
+    obj->m2=PyLong_AsLong(args);
     return 0;
 }
 

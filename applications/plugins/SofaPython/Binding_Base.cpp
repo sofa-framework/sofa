@@ -71,7 +71,7 @@ extern "C" PyObject * Base_findLink(PyObject *self, PyObject * args)
 extern "C" PyObject* Base_GetAttr(PyObject *o, PyObject *attr_name)
 {
     Base* obj=dynamic_cast<Base*>(((PySPtr<Base>*)o)->object.get());
-    char *attrName = PyString_AsString(attr_name);
+    char *attrName = PyUnicode_AsUTF8(attr_name);
 //    printf("Base_GetAttr type=%s name=%s attrName=%s\n",obj->getClassName().c_str(),obj->getName().c_str(),attrName);
 
     // see if a Data field has this name...
@@ -90,7 +90,7 @@ extern "C" int Base_SetAttr(PyObject *o, PyObject *attr_name, PyObject *v)
 {
     // attribute does not exist: see if a Data field has this name...
     Base* obj=dynamic_cast<Base*>(((PySPtr<Base>*)o)->object.get());
-    char *attrName = PyString_AsString(attr_name);
+    char *attrName = PyUnicode_AsUTF8(attr_name);
 
 //    printf("Base_SetAttr name=%s\n",dataName);
     BaseData * data = obj->findData(attrName);
@@ -115,7 +115,7 @@ extern "C" PyObject * Base_getClassName(PyObject * self, PyObject * /*args*/)
     // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
     Base* node = dynamic_cast<Base*>(((PySPtr<Base>*)self)->object.get());
 
-    return PyString_FromString(node->getClassName().c_str());
+    return PyUnicode_FromString(node->getClassName().c_str());
 }
 
 extern "C" PyObject * Base_getTemplateName(PyObject * self, PyObject * /*args*/)
@@ -123,7 +123,7 @@ extern "C" PyObject * Base_getTemplateName(PyObject * self, PyObject * /*args*/)
     // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
     Base* node = dynamic_cast<Base*>(((PySPtr<Base>*)self)->object.get());
 
-    return PyString_FromString(node->getTemplateName().c_str());
+    return PyUnicode_FromString(node->getTemplateName().c_str());
 }
 
 extern "C" PyObject * Base_getName(PyObject * self, PyObject * /*args*/)
@@ -131,7 +131,7 @@ extern "C" PyObject * Base_getName(PyObject * self, PyObject * /*args*/)
     // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
     Base* node = dynamic_cast<Base*>(((PySPtr<Base>*)self)->object.get());
 
-    return PyString_FromString(node->getName().c_str());
+    return PyUnicode_FromString(node->getName().c_str());
 }
 
 SP_CLASS_METHODS_BEGIN(Base)

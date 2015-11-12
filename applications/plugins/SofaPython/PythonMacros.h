@@ -60,9 +60,6 @@
 // Module declarations & methods
 // =============================================================================
 
-// PyObject *MyModule = SP_INIT_MODULE(MyModuleName)
-#define SP_INIT_MODULE(MODULENAME) Py_InitModule(#MODULENAME,MODULENAME##ModuleMethods);
-
 #define SP_MODULE_METHODS_BEGIN(MODULENAME) PyMethodDef MODULENAME##ModuleMethods[] = {
 #define SP_MODULE_METHODS_END {NULL,NULL,0,NULL} };
 #define SP_MODULE_METHOD(MODULENAME,M) {#M, MODULENAME##_##M, METH_VARARGS, ""},
@@ -87,7 +84,7 @@ struct PySPtr
         // and so the destructor of the smart ptr is not called when the PyObject
         // is destroyed. To prevent leaking we explicitly remove the reference here.
         _self->object.reset ();
-        _self->ob_type->tp_free( (PyObject*)_self );
+        Py_TYPE(_self)->tp_free( (PyObject*)_self );
     }
 };
 
@@ -260,28 +257,53 @@ static PyTypeObject DummyChild_PyTypeObject = {
 // déclaration, .h
 #define SP_DECLARE_CLASS_TYPE(Type) SOFA_SOFAPYTHON_API extern PyTypeObject SP_SOFAPYTYPEOBJECT(Type);
 
+
 // définition générique (macro intermédiaire)
-#define SP_CLASS_TYPE_DEF(Type,ObjSize,AttrTable,ParentTypeObjet,NewFunc,FreeFunc,GetAttrFunc,SetAttrFunc, DeallocFunc)   \
-                                                                    PyTypeObject SP_SOFAPYTYPEOBJECT(Type) = { \
-                                                                    PyVarObject_HEAD_INIT(NULL, 0) \
-                                                                    "Sofa."#Type, \
-                                                                    ObjSize, \
-                                                                    0, \
-                                                                    (destructor)DeallocFunc, 0, \
-                                                                    0,0,0,0,0,0,0,0,0,0, \
-                                                                    GetAttrFunc, \
-                                                                    SetAttrFunc, \
-                                                                    0, \
-                                                                    Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, \
-                                                                    0,0,0,0,0,0,0, \
-                                                                    SP_SOFAPYMETHODS(Type), \
-                                                                    0, \
-                                                                    AttrTable, \
-                                                                    ParentTypeObjet, \
-                                                                    0,0,0,0,0,0, \
-                                                                    NewFunc, FreeFunc, \
-                                                                    0,0,0,0,0,0,0,0 \
-                                                                };
+#if PY_MAJOR_VERSION < 3
+    #define SP_CLASS_TYPE_DEF(Type,ObjSize,AttrTable,ParentTypeObjet,NewFunc,FreeFunc,GetAttrFunc,SetAttrFunc, DeallocFunc)   \
+                                                                        PyTypeObject SP_SOFAPYTYPEOBJECT(Type) = { \
+                                                                        PyVarObject_HEAD_INIT(NULL, 0) \
+                                                                        "Sofa."#Type, \
+                                                                        ObjSize, \
+                                                                        0, \
+                                                                        (destructor)DeallocFunc, 0, \
+                                                                        0,0,0,0,0,0,0,0,0,0, \
+                                                                        GetAttrFunc, \
+                                                                        SetAttrFunc, \
+                                                                        0, \
+                                                                        Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, \
+                                                                        0,0,0,0,0,0,0, \
+                                                                        SP_SOFAPYMETHODS(Type), \
+                                                                        0, \
+                                                                        AttrTable, \
+                                                                        ParentTypeObjet, \
+                                                                        0,0,0,0,0,0, \
+                                                                        NewFunc, FreeFunc, \
+                                                                        0,0,0,0,0,0,0,0 \
+                                                                    };
+#else
+    #define SP_CLASS_TYPE_DEF(Type,ObjSize,AttrTable,ParentTypeObjet,NewFunc,FreeFunc,GetAttrFunc,SetAttrFunc, DeallocFunc)   \
+                                                                        PyTypeObject SP_SOFAPYTYPEOBJECT(Type) = { \
+                                                                        PyVarObject_HEAD_INIT(NULL, 0) \
+                                                                        "Sofa."#Type, \
+                                                                        ObjSize, \
+                                                                        0, \
+                                                                        (destructor)DeallocFunc, 0, \
+                                                                        0,0,0,0,0,0,0,0,0,0, \
+                                                                        GetAttrFunc, \
+                                                                        SetAttrFunc, \
+                                                                        0, \
+                                                                        Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, \
+                                                                        0,0,0,0,0,0,0, \
+                                                                        SP_SOFAPYMETHODS(Type), \
+                                                                        0, \
+                                                                        AttrTable, \
+                                                                        ParentTypeObjet, \
+                                                                        0,0,0,0,0,0, \
+                                                                        NewFunc, FreeFunc, \
+                                                                        0,0,0,0,0,0,0,0,0 \
+                                                                    };
+#endif
 
 
 // définition type de base(=sans parent) sans attributs
@@ -318,12 +340,12 @@ static PyTypeObject DummyChild_PyTypeObject = {
     extern "C" PyObject * C##_getAttr_##D(PyObject *self, void*) \
     { \
         C::SPtr obj=((PySPtr<C>*)self)->object;  \
-        return PyString_FromString(obj->findData(#D)->getValueString().c_str()); \
+        return PyUnicode_FromString(obj->findData(#D)->getValueString().c_str()); \
     } \
     extern "C" int C##_setAttr_##D(PyObject *self, PyObject * args, void*) \
     { \
         C::SPtr obj=((PySPtr<C>*)self)->object; \
-        char *str = PyString_AsString(args); \
+        char *str = PyUnicode_AsUTF8(args); \
         obj->findData(#D)->read(str); \
         return 0; \
     }
@@ -370,6 +392,28 @@ void printPythonExceptions();
     } \
 }
 
-
+#if PY_MAJOR_VERSION < 3
+    #define PyLong_FromLong PyInt_FromLong
+    #define PyLong_AsLong PyInt_AsLong
+    #define PyLong_Check PyInt_Check
+    #define PyUnicode_Check PyString_Check
+    #define PyUnicode_AsUTF8 PyUnicode_AsUTF8
+    #define SP_INIT_MODULE(result,MODULENAME) result = Py_InitModule(#MODULENAME,MODULENAME##ModuleMethods);
+#else
+    #define SP_INIT_MODULE(result,MODULENAME) { \
+            static struct PyModuleDef module = { \
+               PyModuleDef_HEAD_INIT, \
+               #MODULENAME,   /* name of module */ \
+               NULL, /* module documentation, may be NULL */ \
+               -1,       /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */ \
+               MODULENAME##ModuleMethods, \
+               NULL, /*Currently unused, should be NULL. */ \
+               NULL, /*A traversal function to call during GC traversal of the module object, or NULL if not needed.*/ \
+               NULL, /*A clear function to call during GC clearing of the module object, or NULL if not needed. */ \
+               NULL /*A function to call during deallocation of the module object, or NULL if not needed. */ \
+            }; \
+            result = PyModule_Create(&module);\
+        }
+#endif
 
 #endif // PYTHONMACROS_H

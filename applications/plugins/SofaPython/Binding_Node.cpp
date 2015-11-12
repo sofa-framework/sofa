@@ -166,7 +166,7 @@ extern "C" PyObject * Node_getPathName(PyObject * self, PyObject * /*args*/)
     // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
     Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
 
-    return PyString_FromString(node->getPathName().c_str());
+    return PyUnicode_FromString(node->getPathName().c_str());
 }
 
 extern "C" PyObject * Node_createChild(PyObject *self, PyObject * args)

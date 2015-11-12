@@ -77,7 +77,7 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, Py
         PyObject* values = PyDict_Values(kw);
         for (int i=0; i<PyDict_Size(kw); i++)
         {
-            desc.setAttribute(PyString_AsString(PyList_GetItem(keys,i)),PyString_AsString(PyList_GetItem(values,i)));
+            desc.setAttribute(PyUnicode_AsUTF8(PyList_GetItem(keys,i)),PyUnicode_AsUTF8(PyList_GetItem(values,i)));
         }
         Py_DecRef(keys);
         Py_DecRef(values);

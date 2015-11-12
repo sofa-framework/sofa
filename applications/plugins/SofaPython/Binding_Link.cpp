@@ -40,12 +40,12 @@ using namespace sofa::defaulttype;
 SP_CLASS_ATTR_GET(Link,name)(PyObject *self, void*)
 {
     BaseLink* link=((PyPtr<BaseLink>*)self)->object; // TODO: check dynamic cast
-    return PyString_FromString(link->getName().c_str());
+    return PyUnicode_FromString(link->getName().c_str());
 }
 SP_CLASS_ATTR_SET(Link,name)(PyObject *self, PyObject * args, void*)
 {
     BaseLink* link=((PyPtr<BaseLink>*)self)->object; // TODO: check dynamic cast
-    char *str = PyString_AsString(args); // for setters, only one object and not a tuple....
+    char *str = PyUnicode_AsUTF8(args); // for setters, only one object and not a tuple....
     link->setName(str);
     return 0;
 }
@@ -53,7 +53,7 @@ SP_CLASS_ATTR_SET(Link,name)(PyObject *self, PyObject * args, void*)
 PyObject *GetLinkValuePython(BaseLink* link)
 {
     // only by string for now
-    return PyString_FromString(link->getValueString().c_str());
+    return PyUnicode_FromString(link->getValueString().c_str());
 }
 
 bool SetLinkValuePython(BaseLink* link, PyObject* args)
@@ -61,10 +61,10 @@ bool SetLinkValuePython(BaseLink* link, PyObject* args)
     // only by string for now
 
     // de quel type est args ?
-    if( PyString_Check(args) )
+    if( PyUnicode_Check(args) )
     {
         // it's a string
-        char *str = PyString_AsString(args); // for setters, only one object and not a tuple....
+        char *str = PyUnicode_AsUTF8(args); // for setters, only one object and not a tuple....
         link->read(str);
         return true;
     }
@@ -114,9 +114,9 @@ SP_CLASS_ATTR_SET(Link,value)(PyObject *self, PyObject * args, void*)
 //    if (typeinfo->Scalar())
 //        return PyFloat_FromDouble(typeinfo->getScalarValue(link->getValueVoidPtr(),index));
 //    if (typeinfo->Integer())
-//        return PyInt_FromLong((long)typeinfo->getIntegerValue(link->getValueVoidPtr(),index));
+//        return PyLong_FromLong((long)typeinfo->getIntegerValue(link->getValueVoidPtr(),index));
 //    if (typeinfo->Text())
-//        return PyString_FromString(typeinfo->getTextValue(link->getValueVoidPtr(),index).c_str());
+//        return PyUnicode_FromString(typeinfo->getTextValue(link->getValueVoidPtr(),index).c_str());
 
 //    // should never happen....
 //    SP_MESSAGE_ERROR( "Link.getValue unknown link type" )
@@ -145,17 +145,17 @@ SP_CLASS_ATTR_SET(Link,value)(PyObject *self, PyObject * args, void*)
 //    if (typeinfo->Scalar() && PyFloat_Check(value))
 //    {
 //        typeinfo->setScalarValue((void*)link->getValueVoidPtr(),index,PyFloat_AsDouble(value));
-//        return PyInt_FromLong(0);
+//        return PyLong_FromLong(0);
 //    }
-//    if (typeinfo->Integer() && PyInt_Check(value))
+//    if (typeinfo->Integer() && PyLong_Check(value))
 //    {
-//        typeinfo->setIntegerValue((void*)link->getValueVoidPtr(),index,PyInt_AsLong(value));
-//        return PyInt_FromLong(0);
+//        typeinfo->setIntegerValue((void*)link->getValueVoidPtr(),index,PyLong_AsLong(value));
+//        return PyLong_FromLong(0);
 //    }
-//    if (typeinfo->Text() && PyString_Check(value))
+//    if (typeinfo->Text() && PyUnicode_Check(value))
 //    {
-//        typeinfo->setTextValue((void*)link->getValueVoidPtr(),index,PyString_AsString(value));
-//        return PyInt_FromLong(0);
+//        typeinfo->setTextValue((void*)link->getValueVoidPtr(),index,PyUnicode_AsUTF8(value));
+//        return PyLong_FromLong(0);
 //    }
 
 //    // should never happen....
@@ -168,19 +168,19 @@ SP_CLASS_ATTR_SET(Link,value)(PyObject *self, PyObject * args, void*)
 extern "C" PyObject * Link_getValueTypeString(PyObject *self, PyObject * /*args*/)
 {
     BaseLink* link=((PyPtr<BaseLink>*)self)->object;
-    return PyString_FromString(link->getValueTypeString().c_str());
+    return PyUnicode_FromString(link->getValueTypeString().c_str());
 }
 
 extern "C" PyObject * Link_getValueString(PyObject *self, PyObject * /*args*/)
 {
     BaseLink* link=((PyPtr<BaseLink>*)self)->object;
-    return PyString_FromString(link->getValueString().c_str());
+    return PyUnicode_FromString(link->getValueString().c_str());
 }
 
 extern "C" PyObject * Link_getSize(PyObject *self, PyObject * /*args*/)
 {
     BaseLink* link=((PyPtr<BaseLink>*)self)->object;
-    return PyInt_FromLong( link->getSize() );
+    return PyLong_FromLong( link->getSize() );
 }
 
 

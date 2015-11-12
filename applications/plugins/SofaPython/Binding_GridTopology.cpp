@@ -59,7 +59,7 @@ extern "C" PyObject * GridTopology_setNumVertices(PyObject *self, PyObject * arg
 extern "C" PyObject * GridTopology_getNx(PyObject *self, PyObject * /*args*/)
 {
     GridTopology* obj=dynamic_cast<GridTopology*>(((PySPtr<Base>*)self)->object.get());
-    return PyInt_FromLong(obj->getNx());
+    return PyLong_FromLong(obj->getNx());
 }
 
 extern "C" PyObject * GridTopology_setNx(PyObject *self, PyObject * args)
@@ -78,7 +78,7 @@ extern "C" PyObject * GridTopology_setNx(PyObject *self, PyObject * args)
 extern "C" PyObject * GridTopology_getNy(PyObject *self, PyObject * /*args*/)
 {
     GridTopology* obj=dynamic_cast<GridTopology*>(((PySPtr<Base>*)self)->object.get());
-    return PyInt_FromLong(obj->getNy());
+    return PyLong_FromLong(obj->getNy());
 }
 
 extern "C" PyObject * GridTopology_setNy(PyObject *self, PyObject * args)
@@ -97,7 +97,7 @@ extern "C" PyObject * GridTopology_setNy(PyObject *self, PyObject * args)
 extern "C" PyObject * GridTopology_getNz(PyObject *self, PyObject * /*args*/)
 {
     GridTopology* obj=dynamic_cast<GridTopology*>(((PySPtr<Base>*)self)->object.get());
-    return PyInt_FromLong(obj->getNz());
+    return PyLong_FromLong(obj->getNz());
 }
 
 extern "C" PyObject * GridTopology_setNz(PyObject *self, PyObject * args)

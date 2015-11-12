@@ -100,11 +100,11 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
         {
             PyObject *key = PyList_GetItem(keys,i);
             PyObject *value = PyList_GetItem(values,i);
-        //    std::cout << PyString_AsString(PyList_GetItem(keys,i)) << "=\"" << PyString_AsString(PyObject_Str(PyList_GetItem(values,i))) << "\"" << std::endl;
-            if (PyString_Check(value))
-                desc.setAttribute(PyString_AsString(key),PyString_AsString(value));
+        //    std::cout << PyUnicode_AsUTF8(PyList_GetItem(keys,i)) << "=\"" << PyUnicode_AsUTF8(PyObject_Str(PyList_GetItem(values,i))) << "\"" << std::endl;
+            if (PyUnicode_Check(value))
+                desc.setAttribute(PyUnicode_AsUTF8(key),PyUnicode_AsUTF8(value));
             else
-                desc.setAttribute(PyString_AsString(key),PyString_AsString(PyObject_Str(value)));
+                desc.setAttribute(PyUnicode_AsUTF8(key),PyUnicode_AsUTF8(PyObject_Str(value)));
         }
         Py_DecRef(keys);
         Py_DecRef(values);
