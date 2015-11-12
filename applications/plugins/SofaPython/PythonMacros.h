@@ -397,6 +397,17 @@ void printPythonExceptions();
     #define PyLong_AsLong PyInt_AsLong
     #define PyUnicode_AsUTF8 PyString_AsString
     #define SP_INIT_MODULE(result,MODULENAME) result = Py_InitModule(#MODULENAME,MODULENAME##ModuleMethods);
+
+    #ifdef PyLong_Check
+        #undef PyLong_Check
+    #endif
+    #define PyLong_Check PyInt_Check
+
+    #ifdef PyUnicode_Check
+        #undef PyUnicode_Check
+    #endif
+    #define PyUnicode_Check PyString_Check
+
 #else
     #define SP_INIT_MODULE(result,MODULENAME) { \
             static struct PyModuleDef module = { \
