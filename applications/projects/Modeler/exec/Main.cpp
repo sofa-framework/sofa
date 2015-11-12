@@ -24,7 +24,6 @@
 ******************************************************************************/
 #include "../lib/SofaModeler.h"
 
-#include <sofa/helper/system/glut.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileSystem.h>
@@ -54,7 +53,6 @@ using sofa::helper::Utils;
 
 int main(int argc, char** argv)
 {
-    glutInit(&argc,argv);
     sofa::simulation::tree::init();
     sofa::component::initComponentBase();
     sofa::component::initComponentCommon();
