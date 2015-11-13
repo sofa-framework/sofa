@@ -124,6 +124,7 @@ public:
     DisplacementMatrixEngine();
 
     void init();   // compute the inverse matrices
+    void reinit(); // compute S*inverse and store it once and for all.
     void update(); // compute the displacements wrt original positions
 
     // To simplify the template name in the xml file
@@ -132,6 +133,7 @@ public:
 
     // inputs
     Data< helper::vector< sofa::defaulttype::Vec<3,Real> > > d_scales; ///< scale matrices
+    helper::vector<Matrix4x4> SxInverses;  ///< inverse initial positions
 };
 
 } // namespace engine
