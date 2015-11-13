@@ -113,7 +113,6 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::reinit()
 {
-    std::cerr << "RestShapeSpringsForceField<DataTypes>::reinit()" << std::endl;
     if (stiffness.getValue().empty())
     {
         std::cout << "RestShapeSpringsForceField : No stiffness is defined, assuming equal stiffness on each node, k = 100.0 " << std::endl;
