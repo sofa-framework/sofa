@@ -98,6 +98,39 @@ void DisplacementMatrixEngine< DataTypes >::init()
             scales.push_back(sofa::defaulttype::Vec<3,Real>(1,1,1));
         }
     d_scales.endEdit();
+
+    // Init of the product between the scale matrices and the inverse
+    this->reinit();
+}
+
+template < class DataTypes >
+void DisplacementMatrixEngine< DataTypes >::reinit()
+{
+    // parent method
+    Inherit::reinit();;
+
+    const VecCoord& x0 = this->d_x0.getValue();
+    const helper::vector< sofa::defaulttype::Vec<3,Real> >& scales = this->d_scales.getValue();
+    const size_t size0 = x0.size();
+    const size_t sizeS = scales.size();
+
+    if( size0 != sizeS)
+    {
+        serr << "x0 and S have not the same size: respectively " << ", " << size0 << " and " << sizeS << sendl;
+        return;
+    }
+
+    this->SxInverses.resize(size0);
+    for( unsigned int i = 0; i < size0; ++i )
+    {
+        Matrix4x4 S;
+        S[0][0] = scales[i][0];
+        S[1][1] = scales[i][1];
+        S[2][2] = scales[i][2];
+        S[3][3] = (Real)1;
+
+        this->SxInverses[i] =  S * this->inverses[i];
+    }
 }
 
 template < class DataTypes >
@@ -123,15 +156,8 @@ void DisplacementMatrixEngine< DataTypes >::update()
     displacements.resize(size);
     for( unsigned int i = 0; i < size; ++i )
     {
-        // Convert the scale vector into a 4x4 matrix to allow the multiplication
-        Matrix4x4 S;
-        S[0][0] = scales[i][0];
-        S[1][1] = scales[i][1];
-        S[2][2] = scales[i][2];
-        S[3][3] = (Real)1;
-
         x[i].toMatrix(displacements[i]);
-        displacements[i] = displacements[i] * S * this->inverses[i];
+        displacements[i] = displacements[i] * this->SxInverses[i];
     }
     this->d_displacements.endEdit();
 
