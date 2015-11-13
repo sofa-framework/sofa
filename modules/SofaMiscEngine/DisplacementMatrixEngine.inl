@@ -13,6 +13,9 @@ namespace component
 namespace engine
 {
 
+///////////////////////////////////////////////////////////////
+/// DisplacementTransformEngine
+///////////////////////////////////////////////////////////////
 template < class DataTypes, class OutputType >
 DisplacementTransformEngine< DataTypes, OutputType >::DisplacementTransformEngine()
 : d_x0( initData( &d_x0, "x0", "Rest position" ) )
@@ -66,11 +69,12 @@ void DisplacementTransformEngine< DataTypes, OutputType >::update()
     //serr << "update(), displaceMats  = " << d_displaceMats.getValue() << sendl;
 }
 
-/////////////////////////////////////////////
-
+///////////////////////////////////////////////////////////////
+/// DisplacementMatrixEngine
+///////////////////////////////////////////////////////////////
 template < class DataTypes >
 DisplacementMatrixEngine< DataTypes >::DisplacementMatrixEngine()
-: Inherit()
+: DisplacementTransformEngine()
 , d_scales( initData(&d_scales, "scales", "Scale transformation added to the rigid transformation"))
 {
     this->addInput( &d_scales );
@@ -83,7 +87,7 @@ template < class DataTypes >
 void DisplacementMatrixEngine< DataTypes >::init()
 {
     // parent method
-    Inherit::init();
+    DisplacementTransformEngine::init();
 
     // Init of the scale matrices in case if the user did not initialize them
     const VecCoord& x0 = this->d_x0.getValue();
@@ -99,38 +103,35 @@ void DisplacementMatrixEngine< DataTypes >::init()
 template < class DataTypes >
 void DisplacementMatrixEngine< DataTypes >::update()
 {
-    // parent method
-    Inherit::update();
-
-    // Variable
     const VecCoord& x = this->d_x.getValue();
-    const helper::vector< sofa::defaulttype::Vec<3,Real> >& scales = d_scales.getValue();
+    const VecCoord& x0 = this->d_x0.getValue();
+    const helper::vector< sofa::defaulttype::Vec<3,Real> >& scales = this->d_scales.getValue();
     const size_t size = x.size();
+    const size_t size0 = x0.size();
     const size_t sizeS = scales.size();
 
     // Check the size of x0
-    if( size != sizeS )
+    if( size != size0 || size != sizeS)
     {
-        serr << "x, and S have not the same size: respectively " << size << " and " << sizeS << sendl;
+        serr << "x, x0 and S have not the same size: respectively " << size << ", " << size0 << " and " << sizeS << sendl;
         return;
     }
 
-    // Convert the scale vector into a 4x4 matrix to allow the multiplication
-    helper::vector< Matrix4x4 > S;
-    for( size_t i=0; i<scales.size(); ++i )
-    {
-        Matrix4x4 s;
-        s[0][0] = scales[i][0];
-        s[1][1] = scales[i][1];
-        s[2][2] = scales[i][2];
-        s[3][3] = (Real)1;
-        S.push_back(s);
-    }
+    this->cleanDirty();
 
     helper::vector< Matrix4x4 >& displacements = *this->d_displacements.beginWriteOnly();
+    displacements.resize(size);
     for( unsigned int i = 0; i < size; ++i )
     {
-        displacements[i] = displacements[i] * S[i];
+        // Convert the scale vector into a 4x4 matrix to allow the multiplication
+        Matrix4x4 S;
+        S[0][0] = scales[i][0];
+        S[1][1] = scales[i][1];
+        S[2][2] = scales[i][2];
+        S[3][3] = (Real)1;
+
+        x[i].toMatrix(displacements[i]);
+        displacements[i] = displacements[i] * S * this->inverses[i];
     }
     this->d_displacements.endEdit();
 
