@@ -752,6 +752,64 @@ extern "C" PyObject * Data_unset(PyObject *self, PyObject * /*args*/)
     Py_RETURN_NONE;
 }
 
+extern "C" PyObject * Data_updateIfDirty(PyObject *self, PyObject * /*args*/)
+{
+    BaseData* data=((PyPtr<BaseData>*)self)->object;
+
+    data->updateIfDirty();
+
+    Py_RETURN_NONE;
+}
+
+
+extern "C" PyObject * Data_read(PyObject *self, PyObject * args)
+{
+    BaseData* data=((PyPtr<BaseData>*)self)->object;
+
+    PyObject *value;
+    if (!PyArg_ParseTuple(args, "O",&value))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    if (PyString_Check(value))
+    {
+        data->read(PyString_AsString(value));
+    }
+    else
+    {
+        SP_MESSAGE_ERROR( "Data.read type mismatch" )
+        PyErr_BadArgument();
+    }
+
+    Py_RETURN_NONE;
+}
+
+extern "C" PyObject * Data_setParent(PyObject *self, PyObject * args)
+{
+    BaseData* data=((PyPtr<BaseData>*)self)->object;
+
+    PyObject *value;
+    if (!PyArg_ParseTuple(args, "O",&value))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    if (PyString_Check(value))
+    {
+        data->setParent(PyString_AsString(value));
+        data->setDirtyOutputs(); // forcing children updates (should it be done in BaseData?)
+    }
+    else
+    {
+        SP_MESSAGE_ERROR( "Data.setParent type mismatch" )
+        PyErr_BadArgument();
+    }
+
+    Py_RETURN_NONE;
+}
 
 SP_CLASS_METHODS_BEGIN(Data)
 SP_CLASS_METHOD(Data,getValueTypeString)
@@ -761,6 +819,9 @@ SP_CLASS_METHOD(Data,getValue)
 SP_CLASS_METHOD(Data,getSize)
 SP_CLASS_METHOD(Data,setSize)
 SP_CLASS_METHOD(Data,unset)
+SP_CLASS_METHOD(Data,updateIfDirty)
+SP_CLASS_METHOD(Data,read)
+SP_CLASS_METHOD(Data,setParent)
 SP_CLASS_METHODS_END
 
 

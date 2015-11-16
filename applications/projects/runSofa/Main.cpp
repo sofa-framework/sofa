@@ -101,17 +101,6 @@ void loadVerificationData(std::string& directory, std::string& filename, sofa::s
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    sofa::simulation::tree::init();
-#ifdef SOFA_HAVE_DAG
-    sofa::simulation::graph::init();
-#endif
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
-    //std::cout << "Using " << sofa::helper::system::atomic<int>::getImplName()<<" atomics." << std::endl;
-
     sofa::helper::BackTrace::autodump();
 
     sofa::core::ExecParams::defaultInstance()->setAspectID(0);
@@ -192,6 +181,20 @@ int main(int argc, char** argv)
     .option(&affinity,'f',"affinity","Enable aFfinity base Work Stealing")
 #endif
     (argc,argv);
+
+    // Note that initializations must be done after ArgumentParser that can exit the application (without cleanup)
+    // even if everything is ok e.g. asking for help
+    sofa::simulation::tree::init();
+#ifdef SOFA_HAVE_DAG
+    sofa::simulation::graph::init();
+#endif
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
+    //std::cout << "Using " << sofa::helper::system::atomic<int>::getImplName()<<" atomics." << std::endl;
+
 
 #ifdef SOFA_SMP
     int ac = 0;

@@ -14,6 +14,8 @@ set(HEADER_FILES
     compliance/DiagonalCompliance.inl
     compliance/UniformCompliance.h
     compliance/UniformCompliance.inl
+    compliance/FullCompliance.h
+    compliance/FullCompliance.inl
     constraint/BaseConstraintValue.h
     constraint/ClosureConstraint.h
     constraint/Constraint.h
@@ -121,6 +123,7 @@ set(SOURCE_FILES
     compliance/DampingCompliance.cpp
     compliance/DiagonalCompliance.cpp
     compliance/UniformCompliance.cpp
+    compliance/FullCompliance.cpp
     constraint/ClosureConstraint.cpp
     constraint/Constraint.cpp
     constraint/ConstraintValue.cpp

@@ -425,10 +425,9 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
             }
             else
             {
-                Parents parents = node->getParents();
-                if (parents.empty()) return NULL;
-                node = dynamic_cast<Node*>(parents[0]); // TODO: explore other parents
-                if (!node) return NULL;
+                core::objectmodel::BaseNode* firstParent = node->getFirstParent();
+                if (!firstParent) return NULL;
+                node = static_cast<Node*>(firstParent); // TODO: explore other parents
 #ifdef DEBUG_LINK
                 std::cout << "  to parent node " << node->getName() << std::endl;
 #endif
@@ -481,10 +480,9 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
                     }
                     if (based) return NULL;
                     // this can still be found from an ancestor node
-                    Parents parents = node->getParents();
-                    if (parents.empty()) return NULL;
-                    node = dynamic_cast<Node*>(parents[0]); // TODO: explore other parents
-                    if (!node) return NULL;
+                    core::objectmodel::BaseNode* firstParent = node->getFirstParent();
+                    if (!firstParent) return NULL;
+                    node = static_cast<Node*>(firstParent); // TODO: explore other parents
 #ifdef DEBUG_LINK
                     std::cout << "  looking in ancestor node " << node->getName() << std::endl;
 #endif

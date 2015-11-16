@@ -87,6 +87,8 @@ struct RigidRigidMappingTest : public Mapping_test<_RigidRigidMapping>
         // RigidRigidMapping assembly is not implemented
         // you can use Compliant AssembledRigidRigidMapping for that purpose
         this->flags &= ~Inherit::TEST_ASSEMBLY_API;
+
+        this->errorFactorDJ = 10;
     }
 
     OutVecCoord create_childCoord()

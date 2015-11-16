@@ -44,6 +44,7 @@
 #include "Binding_SubsetMultiMapping.h"
 #include "Binding_VisualModel.h"
 #include "Binding_OBJExporter.h"
+#include "Binding_DataEngine.h"
 
 typedef sofa::component::container::MechanicalObject< sofa::defaulttype::Vec3Types > MechanicalObject3;
 typedef sofa::component::mapping::SubsetMultiMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types > SubsetMultiMapping3_to_3;
@@ -97,6 +98,8 @@ PyObject* SP_BUILD_PYSPTR(Base* obj)
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(SubsetMultiMapping3_to_3));
     if (dynamic_cast<sofa::core::BaseMapping*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseMapping));
+    if (dynamic_cast<sofa::core::DataEngine*>(obj))
+        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(DataEngine));
 
     if (dynamic_cast<sofa::core::objectmodel::BaseObject*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseObject));

@@ -104,16 +104,16 @@ void DAGNode::moveChild(BaseNode::SPtr node)
     DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
     if (!dagnode) return;
 
-    core::objectmodel::BaseNode::Parents  nodeParents = dagnode->getParents();
-    if (nodeParents.empty())
+    if (!dagnode->getNbParents())
     {
         addChild(node);
     }
     else
     {
-        for (core::objectmodel::BaseNode::Parents::iterator it = nodeParents.begin(); it != nodeParents.end(); ++it)
+        const LinkParents::Container& parents = dagnode->l_parents.getValue();
+        for ( unsigned int i = 0; i < parents.size() ; ++i)
         {
-            DAGNode *prev = static_cast<DAGNode*>(*it);
+            DAGNode *prev = parents[i];
             notifyMoveChild(dagnode,prev);
             prev->doRemoveChild(dagnode);
         }
@@ -126,11 +126,9 @@ void DAGNode::moveChild(BaseNode::SPtr node)
 void DAGNode::detachFromGraph()
 {
     DAGNode::SPtr me = this; // make sure we don't delete ourself before the end of this method
-    LinkParents::Container parents = l_parents.getValue();
-    for ( unsigned int i = 0; i < parents.size() ; ++i)
-    {
-        parents[i]->removeChild(this);
-    }
+    const LinkParents::Container& parents = l_parents.getValue();
+    while(!parents.empty())
+        parents.back()->removeChild(this);
 }
 
 
@@ -168,7 +166,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 {
     if (dir == SearchRoot)
     {
-        if (!getParents().empty()) return getRootContext()->getObject(class_info, tags, dir);
+        if (getNbParents()) return getRootContext()->getObject(class_info, tags, dir);
         else dir = SearchDown; // we are the root, search down from here.
     }
     void *result = NULL;
@@ -209,10 +207,9 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
         case SearchParents:
         case SearchUp:
         {
-            Parents parents = getParents();
-            if (!parents.empty())
-                for (Parents::iterator it = parents.begin(); it!=parents.end() && !result; ++it)
-                    result = dynamic_cast<Node*>(*it)->getObject(class_info, tags, SearchUp);
+            const LinkParents::Container& parents = l_parents.getValue();
+            for ( unsigned int i = 0; i < parents.size() ; ++i)
+                result = parents[i]->getObject(class_info, tags, SearchUp);
         }
         break;
         case SearchDown:
@@ -244,8 +241,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     else if (path[0] == '/')
     {
         // absolute path; let's start from root
-        Parents parents = getParents();
-        if (parents.empty()) return getObject(class_info,std::string(path,1));
+        if (!getNbParents()) return getObject(class_info,std::string(path,1));
         else return getRootContext()->getObject(class_info,path);
     }
     else if (std::string(path,0,2)==std::string("./"))
@@ -262,12 +258,12 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
         std::string newpath = std::string(path, 3);
         while (!newpath.empty() && path[0] == '/')
             newpath.erase(0);
-        Parents parents = getParents();
-        if (!parents.empty())
+        if (getNbParents())
         {
-            for (Parents::iterator it = parents.begin(); it!=parents.end(); ++it)
+            const LinkParents::Container& parents = l_parents.getValue();
+            for ( unsigned int i = 0; i < parents.size() ; ++i)
             {
-                void* obj = dynamic_cast<Node*>(*it)->getObject(class_info,newpath);
+                void* obj = parents[i]->getObject(class_info,newpath);
                 if (obj) return obj;
             }
             return 0;   // not found in any parent node at all
@@ -324,7 +320,7 @@ void DAGNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
 {
     if( dir == SearchRoot )
     {
-        if( !getParents().empty() )
+        if( getNbParents() )
         {
             getRootContext()->getObjects( class_info, container, tags, dir );
             return;
@@ -369,34 +365,46 @@ core::objectmodel::BaseNode::Parents DAGNode::getParents() const
 {
     Parents p;
 
-    LinkParents::Container parents = l_parents.getValue();
+    const LinkParents::Container& parents = l_parents.getValue();
     for ( unsigned int i = 0; i < parents.size() ; ++i)
-    {
-        if (parents[i])
-        {
-            p.push_back(parents[i]);
-//            printf("DAGNode::getParents() \"%s\"=%X parents[%d]=%X\"%s\"\n",getName().c_str(),this,i,(void*)parents[i],parents[i]->getName().c_str());
-        }
-//        else
-//            printf("DAGNode::getParents() \"%s\"=%X parents[%d]=%X\n",getName().c_str(),this,i,(void*)parents[i]);
-    }
+        p.push_back(parents[i]);
 
     return p;
 }
 
+
+/// returns number of parents
+size_t DAGNode::getNbParents() const
+{
+    return l_parents.getValue().size();
+}
+
+/// return the first parent (returns NULL if no parent)
+core::objectmodel::BaseNode* DAGNode::getFirstParent() const
+{
+    const LinkParents::Container& parents = l_parents.getValue();
+    if( parents.empty() ) return NULL;
+    else return l_parents.getValue()[0];
+}
+
+
 /// Test if the given node is a parent of this node.
 bool DAGNode::hasParent(const BaseNode* node) const
 {
-    Parents p = getParents();
-    return (p.end() != std::find(p.begin(), p.end(), node));
+    const LinkParents::Container& parents = l_parents.getValue();
+    for ( unsigned int i = 0; i < parents.size() ; ++i)
+    {
+        if (parents[i]==node) return true;
+    }
+    return false;
 }
 
 /// Test if the given context is a parent of this context.
 bool DAGNode::hasParent(const BaseContext* context) const
 {
-    if (context == NULL) return getParents().empty();
+    if (context == NULL) return !getNbParents();
 
-    LinkParents::Container parents = l_parents.getValue();
+    const LinkParents::Container& parents = l_parents.getValue();
     for ( unsigned int i = 0; i < parents.size() ; ++i)
         if (context == parents[i]->getContext()) return true;
     return false;
@@ -409,7 +417,7 @@ bool DAGNode::hasParent(const BaseContext* context) const
 /// An ancestor is a parent or (recursively) the parent of an ancestor.
 bool DAGNode::hasAncestor(const BaseContext* context) const
 {
-    LinkParents::Container parents = l_parents.getValue();
+    const LinkParents::Container& parents = l_parents.getValue();
     for ( unsigned int i = 0; i < parents.size() ; ++i)
         if (context == parents[i]->getContext()
             || parents[i]->hasAncestor(context))
@@ -540,7 +548,7 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
         for ( unsigned int i = 0; i < parents.size() ; i++ )
         {
             // if the visitor is run from a sub-graph containing a multinode linked with a node outside of the subgraph, do not consider the outside node by looking on the sub-graph descendancy
-            if ( parents[i] && ( visitorRoot->_descendancy.find(parents[i])!=visitorRoot->_descendancy.end() || parents[i]==visitorRoot ) )
+            if ( visitorRoot->_descendancy.find(parents[i])!=visitorRoot->_descendancy.end() || parents[i]==visitorRoot )
             {
                 // all parents must have been visited before
                 if ( statusMap[parents[i]] == NOT_VISITED )
@@ -608,7 +616,7 @@ void DAGNode::setDirtyDescendancy()
     const LinkParents::Container &parents = l_parents.getValue();
     for ( unsigned int i = 0; i < parents.size() ; i++ )
     {
-        if ( parents[i] ) parents[i]->setDirtyDescendancy();
+        parents[i]->setDirtyDescendancy();
     }
 }
 
@@ -672,7 +680,7 @@ void DAGNode::executeVisitorTreeTraversal( simulation::Visitor* action, StatusMa
 
 void DAGNode::initVisualContext()
 {
-    if (!getParents().empty())
+    if (getNbParents())
     {
         this->setDisplayWorldGravity(false); //only display gravity for the root: it will be propagated at each time step
     }
@@ -680,30 +688,34 @@ void DAGNode::initVisualContext()
 
 void DAGNode::updateContext()
 {
-    if ( !getParents().empty() )
+    core::objectmodel::BaseNode* firstParent = getFirstParent();
+
+    if ( firstParent )
     {
         if( debug_ )
         {
-            std::cerr<<"DAGNode::updateContext, node = "<<getName()<<", incoming context = "<< getParents()[0]->getContext() << std::endl;
+            std::cerr<<"DAGNode::updateContext, node = "<<getName()<<", incoming context = "<< firstParent->getContext() << std::endl;
         }
         // TODO
         // ahem.... not sure here... which parent should I copy my context from exactly ?
-        copyContext(*dynamic_cast<Context*>(getParents()[0]));
+        copyContext(*static_cast<Context*>(static_cast<DAGNode*>(firstParent)));
     }
     simulation::Node::updateContext();
 }
 
 void DAGNode::updateSimulationContext()
 {
-    if ( !getParents().empty() )
+    core::objectmodel::BaseNode* firstParent = getFirstParent();
+
+    if ( firstParent )
     {
         if( debug_ )
         {
-            std::cerr<<"DAGNode::updateContext, node = "<<getName()<<", incoming context = "<< getParents()[0]->getContext() << std::endl;
+            std::cerr<<"DAGNode::updateContext, node = "<<getName()<<", incoming context = "<< firstParent->getContext() << std::endl;
         }
         // TODO
         // ahem.... not sure here... which parent should I copy my simulation context from exactly ?
-        copySimulationContext(*dynamic_cast<Context*>(getParents()[0]));
+        copySimulationContext(*static_cast<Context*>(static_cast<DAGNode*>(firstParent)));
     }
     simulation::Node::updateSimulationContext();
 }

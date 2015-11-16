@@ -404,10 +404,10 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 		if (d_referenceRadius.getValue()<0.0) {
 			// estimate the  mean radius of the spheres from the first Bezier triangle 
 			
-			size_t nbPoints=container->getNbPoints();
-			size_t i,elementIndex,elementOffset;
+//			size_t nbPoints=container->getNbPoints();
+//			size_t i,elementIndex,elementOffset;
 			const typename DataTypes::VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-			BezierTetrahedronSetTopologyContainer::BezierTetrahedronPointLocation location;
+//			BezierTetrahedronSetTopologyContainer::BezierTetrahedronPointLocation location;
 			const VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(0);
 			std::vector<Real> edgeLengthArray;
 			// compute median of the edge distance between control points	
@@ -523,8 +523,8 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 				for ( i = 0; i<tetraArray.size(); i++)
 				{
 					
-					const VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(i);
-					sofa::helper::vector <sofa::defaulttype::Vec3f> trianCoord;
+//					const VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(i);
+//					sofa::helper::vector <sofa::defaulttype::Vec3f> trianCoord;
 					// process each edge of the tetrahedron
 					for (size_t j = 0; j<6; j++) {
 						Vec4 baryCoord;

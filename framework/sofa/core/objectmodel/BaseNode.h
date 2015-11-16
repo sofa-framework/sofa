@@ -84,8 +84,16 @@ public:
 
     typedef sofa::helper::vector< BaseNode* > Parents;
     /// Get a list of parent node
+    /// @warning a temporary is created, this can be really inefficient
     virtual Parents getParents() const = 0;
 
+    /// returns number of parents
+    virtual size_t getNbParents() const = 0;
+
+    /// return the first parent (returns NULL if no parent)
+    virtual BaseNode* getFirstParent() const = 0;
+
+    /// returns the root by following up the first parent for multinodes
     virtual BaseNode* getRoot() const;
 
     /// Add a child node

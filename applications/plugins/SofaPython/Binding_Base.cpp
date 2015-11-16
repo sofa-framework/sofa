@@ -25,6 +25,7 @@
 #include "Binding_Base.h"
 #include "Binding_Data.h"
 #include "Binding_DisplayFlagsData.h"
+#include "Binding_Link.h"
 
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseData.h>
@@ -50,38 +51,63 @@ extern "C" PyObject * Base_findData(PyObject *self, PyObject * args)
     return SP_BUILD_PYPTR(Data,BaseData,data,false);
 }
 
+extern "C" PyObject * Base_findLink(PyObject *self, PyObject * args)
+{
+    Base* obj=dynamic_cast<Base*>(((PySPtr<Base>*)self)->object.get());
+    char *linkName;
+    if (!PyArg_ParseTuple(args, "s",&linkName))
+        Py_RETURN_NONE;
+    BaseLink * link = obj->findLink(linkName);
+    if (!link)
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    return SP_BUILD_PYPTR(Link,BaseLink,link,false);
+}
+
 // Generic accessor to Data fields (in python native type)
 extern "C" PyObject* Base_GetAttr(PyObject *o, PyObject *attr_name)
 {
     Base* obj=dynamic_cast<Base*>(((PySPtr<Base>*)o)->object.get());
-    char *dataName = PyString_AsString(attr_name);
-//    printf("Base_GetAttr type=%s name=%s attrName=%s\n",obj->getClassName().c_str(),obj->getName().c_str(),dataName);
+    char *attrName = PyString_AsString(attr_name);
+//    printf("Base_GetAttr type=%s name=%s attrName=%s\n",obj->getClassName().c_str(),obj->getName().c_str(),attrName);
 
-    // attribute does not exist: see if a Data field has this name...
-    BaseData * data = obj->findData(dataName);
-    if (!data)
-    {
-//        printf("Base_GetAttr ERROR data not found - type=%s name=%s attrName=%s\n",obj->getClassName().c_str(),obj->getName().c_str(),dataName);
+    // see if a Data field has this name...
+    BaseData * data = obj->findData(attrName);
+    if (data) return GetDataValuePython(data); // we have our data... let's create the right Python type....
 
-        return PyObject_GenericGetAttr(o,attr_name);;
-    }
-    // we have our data... let's create the right Python type....
-    return GetDataValuePython(data);
+    // see if a Link has this name...
+    BaseLink * link = obj->findLink(attrName);
+    if (link) return GetLinkValuePython(link); // we have our link... let's create the right Python type....
+
+    //        printf("Base_GetAttr ERROR data not found - type=%s name=%s attrName=%s\n",obj->getClassName().c_str(),obj->getName().c_str(),attrName);
+    return PyObject_GenericGetAttr(o,attr_name);;
 }
 
 extern "C" int Base_SetAttr(PyObject *o, PyObject *attr_name, PyObject *v)
 {
     // attribute does not exist: see if a Data field has this name...
     Base* obj=dynamic_cast<Base*>(((PySPtr<Base>*)o)->object.get());
-    char *dataName = PyString_AsString(attr_name);
+    char *attrName = PyString_AsString(attr_name);
+
 //    printf("Base_SetAttr name=%s\n",dataName);
-    BaseData * data = obj->findData(dataName);
-    if (!data)
-        return PyObject_GenericSetAttr(o,attr_name,v);
-    // we have our data... let's create the right Python type....
-    if (!SetDataValuePython(data,v))
-        return -1;
-    return 0;
+    BaseData * data = obj->findData(attrName);
+    if (data)
+    {
+        if (SetDataValuePython(data,v)) return 0;
+        else return -1;
+    }
+
+    BaseLink * link = obj->findLink(attrName);
+    if (link)
+    {
+        if (SetLinkValuePython(link,v)) return 0;
+        else return -1;
+    }
+
+    return PyObject_GenericSetAttr(o,attr_name,v);
 }
 
 extern "C" PyObject * Base_getClassName(PyObject * self, PyObject * /*args*/)
@@ -110,6 +136,7 @@ extern "C" PyObject * Base_getName(PyObject * self, PyObject * /*args*/)
 
 SP_CLASS_METHODS_BEGIN(Base)
 SP_CLASS_METHOD(Base,findData)
+SP_CLASS_METHOD(Base,findLink)
 SP_CLASS_METHOD(Base,getClassName)
 SP_CLASS_METHOD(Base,getTemplateName)
 SP_CLASS_METHOD(Base,getName)

@@ -80,6 +80,8 @@ public:
 
     /// Accessor to the input model of this mapping
     virtual helper::vector<BaseState*> getFrom() = 0;
+    /// If the type is compatible set the input model and return true, otherwise do nothing and return false.
+    virtual bool setFrom( BaseState* from );
 
     /// Accessor to the output model of this mapping
     virtual helper::vector<BaseState*> getTo() = 0;

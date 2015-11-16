@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaMiscEngine)
 
 set(HEADER_FILES
+    DisplacementMatrixEngine.h
+    DisplacementMatrixEngine.inl
     Distances.h
     Distances.inl
     ProjectiveTransformEngine.h
@@ -11,6 +13,7 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
+    DisplacementMatrixEngine.cpp
     Distances.cpp
     ProjectiveTransformEngine.cpp
     initMiscEngine.cpp

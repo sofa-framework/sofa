@@ -27,7 +27,6 @@
 #include <SofaMiscMapping/TubularMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.inl>
 
 namespace sofa
 {

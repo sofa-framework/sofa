@@ -49,6 +49,14 @@ BaseMapping::~BaseMapping()
 //    serr<<"Mapping "<< getName() <<", BaseMapping::computeLocalCoordinates() is not implemented for this class. It may be still implemented in the init() method." << sendl;
 //}
 
+
+bool BaseMapping::setFrom(BaseState*  )
+{
+    this->serr<<"BaseMapping::setFrom is not implemented for " << this->getName()<< sendl;
+    return false;
+}
+
+
 bool BaseMapping::setTo( BaseState*  )
 {
     this->serr<<"BaseMapping::setTo is not implemented for " << this->getName()<< sendl;

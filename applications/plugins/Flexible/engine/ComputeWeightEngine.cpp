@@ -68,7 +68,10 @@ void ComputeWeightEngine::reinit()
 void ComputeWeightEngine::update()
 {
     if( !l_visualModel || !l_shapeFunction )
+    {
+        serr<<"visualModel or shapeFunction is undefined"<<sendl;
         return;
+    }
 
     // Get vertices from the visual model.
     // We can not use another method as vertices might be duplicated

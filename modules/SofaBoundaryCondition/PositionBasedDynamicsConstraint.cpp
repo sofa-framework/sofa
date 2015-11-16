@@ -24,7 +24,6 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_POSITIONBASEDDYNAMICSCONSTRAINT_CPP
 #include <SofaBoundaryCondition/PositionBasedDynamicsConstraint.inl>
-#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/Vec3Types.h>

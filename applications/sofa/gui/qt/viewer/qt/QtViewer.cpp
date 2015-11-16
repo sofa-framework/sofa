@@ -1018,7 +1018,7 @@ void QtViewer::resizeGL(int width, int height)
     // 	std::cout << "GL window: " <<width<<"x"<<height <<std::endl;
 
     calcProjection(width, height);
-    this->resize(width, height);
+
     emit( resizeW(_W));
     emit( resizeH(_H));
 }

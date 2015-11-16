@@ -117,7 +117,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
     //add a scrollable area for data properties
     QScrollArea* m_scrollArea = new QScrollArea();
-    const int screenHeight = QApplication::desktop()->height();
+//    const int screenHeight = QApplication::desktop()->height();
     m_scrollArea->setMinimumSize(600,QApplication::desktop()->height() * 0.75);
     m_scrollArea->setWidgetResizable(true);
     dialogTab->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

@@ -84,7 +84,8 @@ public:
 	struct chunk {
 		chunk();
 				
-		unsigned offset, size;
+        unsigned offset;
+        unsigned size; // dof type size
 
         const defaulttype::BaseMatrix* C; ///< Compliance matrix (only valid for mapped dof with a compliance)
         rmat P; ///< Projective constraint matrix (only valid for master dof)
@@ -195,10 +196,8 @@ public:
 	// traversal order
 	typedef std::vector< unsigned > prefix_type;
 	prefix_type prefix;
-	
-	// TODO we don't even need dofs since they are in data
-	struct vertex {
-		dofs_type* dofs;
+
+    struct vertex {
 		chunk* data;					// avoids map lookups 
 	};
 
@@ -267,8 +266,8 @@ struct AssemblyVisitor::process_helper {
 
     void operator()(unsigned v) const {
 
-        dofs_type* curr = g[v].dofs;
         chunk* c = g[v].data;
+        dofs_type* curr = c->dofs;
 
         const unsigned& size_m = res.size_m;
         fullmapping_type& full = res.fullmapping;
@@ -295,7 +294,9 @@ struct AssemblyVisitor::process_helper {
 
             // parent data chunk/mapping matrix
             const chunk* p = vp.data;
-            rmat& Jp = full[ vp.dofs ]; // (input) full mapping from independent dofs to parent p of dofs c
+            dofs_type* pdofs = p->dofs;
+
+            rmat& Jp = full[ pdofs ]; // (input) full mapping from independent dofs to parent p of dofs c
             {
                 // mapping blocks
                 MySPtr<rmat> jc( convertSPtr<rmat>( g[*e.first].data->J ) );
@@ -315,10 +316,10 @@ struct AssemblyVisitor::process_helper {
                 // correct offset as its full mapping matrix, so that its
                 // children will get the right place on multiplication
                 if( p->master() && empty(Jp) ) {
-                    Jp = shift_right<rmat>( find(offsets, vp.dofs), p->size, size_m);
+                    Jp = shift_right<rmat>( find(offsets, pdofs), p->size, size_m);
                 }
 
-                // Jp is empty for children of a non-master dof (e.g. mouse)
+                // Jp can be empty for multinodes, when a child is mapped only from a subset of its parents
                 if(!empty(Jp) ){
                     // scoped::timer step("mapping matrix product");
 
@@ -335,8 +336,6 @@ struct AssemblyVisitor::process_helper {
                                   Jp );
                         localOffsetParentInMapped += p->size;
                     }
-                } else {
-                    assert( false && "parent has empty J matrix :-/" );
                 }
             }
 
