@@ -1256,13 +1256,14 @@ void MechanicalObject<DataTypes>::storeResetState()
         vOp(core::ExecParams::defaultInstance(), core::VecId::resetVelocity(), core::VecId::velocity());
 }
 
-//
-// Integration related methods
-//
+
 template <class DataTypes>
 void MechanicalObject<DataTypes>::reset()
 {
-    if (!reset_position.isSet())
+    // resetting force for every dofs, even mapped ones
+    vOp(core::ExecParams::defaultInstance(), core::VecId::force());
+
+    if (!reset_position.isSet()) // mapped states are deduced from independent ones
         return;
 
     vOp(core::ExecParams::defaultInstance(), core::VecId::position(), core::VecId::resetPosition());
@@ -3486,3 +3487,4 @@ bool MechanicalObject<DataTypes>::isIndependent() const
 } // namespace sofa
 
 #endif
+
