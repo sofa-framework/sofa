@@ -95,7 +95,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , showObject(initData(&showObject, (bool) false, "showObject", "Show objects"))
     , showObjectScale(initData(&showObjectScale, (float) 0.1, "showObjectScale", "Scale for object display"))
     , showIndices(initData(&showIndices, (bool) false, "showIndices", "Show indices"))
-    , showIndicesScale(initData(&showIndicesScale, (float) 0.0001, "showIndicesScale", "Scale for indices display"))
+    , showIndicesScale(initData(&showIndicesScale, (float) 0.02, "showIndicesScale", "Scale for indices display"))
     , showVectors(initData(&showVectors, (bool) false, "showVectors", "Show velocity"))
     , showVectorsScale(initData(&showVectorsScale, (float) 0.0001, "showVectorsScale", "Scale for vectors display"))
     , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow.\n\nThe DOFS will be drawn:\n- 0: point\n- >1: sphere"))
@@ -2707,17 +2707,14 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
 		Vector4 color(1.0, 1.0, 1.0,1.0);
         
 		float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue() );
-		
-		for (size_t i = 0; i < vsize; i++)
-		{
-			std::ostringstream oss;
-			oss << i;
-			std::string tmp = oss.str();
-			const char* s = tmp.c_str();
-			Vector3 pos(this->getPX(i), this->getPY(i), this->getPZ(i));
-			vparams->drawTool()->draw3DText(pos, scale, color, s);
-		}
+
+        helper::vector<Vector3> positions;
+        for (size_t i = 0; i < vsize; ++i)
+            positions.push_back(Vector3(getPX(i), getPY(i), getPZ(i)));
+
+        vparams->drawTool()->draw3DText_Indices(positions, scale, color);
     }
+
     if (showVectors.getValue())
     {
 //        Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
