@@ -199,8 +199,11 @@ using namespace core::behavior;
     }
 
     void CompliantImplicitSolver::reset() {
-        sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
-        vop.v_clear( lagrange.id() );
+        if( !lagrange.id().isNull() )
+        {
+            sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
+            vop.v_clear( lagrange.id() );
+        }
     }
 
     void CompliantImplicitSolver::cleanup() {
