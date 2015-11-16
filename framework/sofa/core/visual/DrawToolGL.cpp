@@ -31,6 +31,7 @@
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/Cylinder.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/helper/gl/glText.h>
 #include <cmath>
 
 namespace sofa
@@ -919,6 +920,13 @@ void DrawToolGL::draw3DText(const Vector3 &p, float scale, const Vec4f &color, c
 	}
 	glPopMatrix();
 	
+}
+
+void DrawToolGL::draw3DText_Indices(const helper::vector<Vector3> &positions, float scale, const Vec4f &color)
+{
+    glColor4f(color[0], color[1], color[2], color[3]);
+
+    sofa::helper::gl::GlText::textureDraw_Indices(positions, scale);
 }
 
 } // namespace visual

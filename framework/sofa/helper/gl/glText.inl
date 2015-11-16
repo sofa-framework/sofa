@@ -35,7 +35,6 @@
 #include <algorithm>
 #include <iostream>
 
-
 namespace sofa
 {
 
@@ -160,6 +159,103 @@ void GlText::draw ( const T& text, const defaulttype::Vector3& position, const d
 
     glPopMatrix();
 #endif
+}
+
+
+template <typename T>
+void GlText::textureDraw(const T& text, const defaulttype::Vector3& position, const double& scale)
+{
+    defaulttype::Mat<4, 4, GLfloat> modelviewM;
+
+    const unsigned int nb_char_width = 16;
+    const unsigned int nb_char_height = 16;
+    const float worldSize = 1.0;
+
+    std::ostringstream oss;
+    oss << text;
+    std::string tmp = oss.str();
+    unsigned int length = tmp.size();
+
+    typedef sofa::helper::fixed_array<float, 3> Vector3;
+    typedef sofa::helper::fixed_array<float, 2> Vector2;
+
+    std::vector<Vector3> vertices;
+    std::vector<Vector2> UVs;
+
+    glDisable(GL_LIGHTING);
+    glPushMatrix();
+
+    // Makes text always face the viewer by removing the scene rotation
+    // get the current modelview matrix
+    glGetFloatv(GL_MODELVIEW_MATRIX, modelviewM.ptr());
+    modelviewM.transpose();
+
+    defaulttype::Vec3d temp(position[0], position[1], position[2]);
+    temp = modelviewM.transform(temp);
+
+    glLoadIdentity();
+    glTranslatef((float)temp[0], (float)temp[1], (float)temp[2]);
+    glScalef((float)scale, (float)scale, (float)scale);
+    glRotatef(180.0, 1, 0, 0);
+
+    for (unsigned int i = 0; i<length; i++)
+    {
+        Vector3 vertex_up_left = Vector3(i*worldSize, worldSize, 0.0);
+        Vector3 vertex_up_right = Vector3(i*worldSize + worldSize, worldSize, 0.0);
+        Vector3 vertex_down_right = Vector3(i*worldSize + worldSize, 0.0, 0.0);
+        Vector3 vertex_down_left = Vector3(i*worldSize, 0.0, 0.0);
+
+        vertices.push_back(vertex_up_left);
+        vertices.push_back(vertex_down_left);
+        vertices.push_back(vertex_up_right);
+
+        vertices.push_back(vertex_down_right);
+        vertices.push_back(vertex_up_right);
+        vertices.push_back(vertex_down_left);
+
+        char character = text[i] - 32 ;
+        float uv_x = (character % nb_char_width) / (float)nb_char_width;
+        float uv_y = 1.0 - ( (character / nb_char_height) / (float)nb_char_height );
+
+        Vector2 uv_up_left = Vector2(uv_x, (uv_y - (1.0f / (float)nb_char_height)));
+        Vector2 uv_up_right = Vector2(uv_x + (1.0f / (float)nb_char_width), (uv_y - (1.0f / (float)nb_char_height)));
+        Vector2 uv_down_right = Vector2(uv_x + (1.0f / (float)nb_char_width), uv_y);
+        Vector2 uv_down_left = Vector2(uv_x, uv_y);
+
+        UVs.push_back(uv_up_left);
+        UVs.push_back(uv_down_left);
+        UVs.push_back(uv_up_right);
+
+        UVs.push_back(uv_down_right);
+        UVs.push_back(uv_up_right);
+        UVs.push_back(uv_down_left);
+    }
+
+    glPushAttrib(GL_TEXTURE_BIT);
+    glEnable(GL_TEXTURE_2D);
+
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.0);
+    m_tex->init();
+    m_tex->bind();
+
+    glBegin(GL_TRIANGLES);
+    for (unsigned int i = 0; i < vertices.size() ; i++)
+    {
+        glColor4f(1.0, 1.0, 1.0, 0.0);
+        glTexCoord2fv(UVs[i].data());
+        glVertex3fv(vertices[i].data());
+    }
+    glEnd();
+
+    m_tex->unbind();
+    glDisable(GL_ALPHA_TEST);
+    glPopAttrib();
+
+    glPopMatrix();
+
+    glEnable(GL_LIGHTING);
 }
 
 } // namespace gl
