@@ -41,7 +41,7 @@ namespace misc
 {
 
 template <class TDataTypes>
-class DevMonitor: public virtual core::DevBaseMonitor
+class SOFA_VALIDATION_API DevMonitor: public virtual core::DevBaseMonitor
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(DevMonitor,TDataTypes), core::DevBaseMonitor);

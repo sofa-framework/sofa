@@ -29,6 +29,7 @@
 
 #include "Binding_Data.h"
 #include "Binding_DisplayFlagsData.h"
+#include "Binding_Link.h"
 #include "Binding_Base.h"
 #include "Binding_BaseObject.h"
 #include "Binding_BaseState.h"
@@ -55,6 +56,7 @@
 #include "Binding_SubsetMultiMapping.h"
 #include "Binding_VisualModel.h"
 #include "Binding_OBJExporter.h"
+#include "Binding_DataEngine.h"
 
 PyObject *SofaPythonModule = 0;
 
@@ -68,6 +70,8 @@ void bindSofaPythonModule()
 	SofaPythonModule = SP_INIT_MODULE(Sofa)
 	SP_ADD_CLASS(SofaPythonModule,Data)
 	SP_ADD_CLASS(SofaPythonModule,DisplayFlagsData)
+
+    SP_ADD_CLASS(SofaPythonModule,Link)
 
 	SP_ADD_CLASS(SofaPythonModule,Vector3)
 
@@ -84,6 +88,7 @@ void bindSofaPythonModule()
 	SP_ADD_CLASS(SofaPythonModule,MechanicalObject)
 	SP_ADD_CLASS(SofaPythonModule,VisualModel)
 	SP_ADD_CLASS(SofaPythonModule,BaseMapping)
+    SP_ADD_CLASS(SofaPythonModule,DataEngine)
 	//SP_ADD_CLASS(SofaPythonModule,Mapping)
 	//SP_ADD_CLASS(SofaPythonModule,RigidMapping)
 	//SP_ADD_CLASS(SofaPythonModule,MultiMapping3_to_3)

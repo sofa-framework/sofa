@@ -138,7 +138,7 @@ void EvalPointsDistance<DataTypes>::reinit()
 
     if(f_period.getValue() == 0.0)
     {
-        serr << " ERROR perido must be different of zero  " << sendl;
+        serr << " ERROR period must be different of zero  " << sendl;
         return;
     }
 

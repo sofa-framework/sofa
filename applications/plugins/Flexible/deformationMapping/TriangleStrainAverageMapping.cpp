@@ -28,19 +28,13 @@
 #include "TriangleStrainAverageMapping.inl"
 #include "../types/StrainTypes.h"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/Mapping.inl>
 
 namespace sofa
 {
 namespace core
 {
 using namespace sofa::defaulttype;
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API Mapping< E321fTypes, E321dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API Mapping< E321fTypes, E321fTypes >;
-#endif
+template class SOFA_Flexible_API Mapping< E321Types, E321Types >;
 }
 
 namespace component
@@ -55,22 +49,10 @@ using namespace defaulttype;
 
 // Register in the Factory
 int TriangleStrainAverageMappingClass = core::RegisterObject("Compute deformation gradients in triangles")
-#ifndef SOFA_FLOAT
-        .add< TriangleStrainAverageMapping< E321dTypes, E321dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TriangleStrainAverageMapping< E321fTypes, E321fTypes > >()
-#endif
+        .add< TriangleStrainAverageMapping< E321Types, E321Types > >()
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API TriangleStrainAverageMapping< E321dTypes, E321dTypes >;
-#endif
-
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API TriangleStrainAverageMapping< E321fTypes, E321fTypes >;
-#endif
-
+template class SOFA_Flexible_API TriangleStrainAverageMapping< E321Types, E321Types >;
 
 
 

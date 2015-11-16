@@ -40,6 +40,12 @@ Node::SPtr FailNode::createChild(const std::string& /*nodeName*/) { fail(); retu
 
 FailNode::Parents FailNode::getParents() const { fail();  FailNode::Parents oNull; return oNull; }
 FailNode::Children FailNode::getChildren() const { fail();  FailNode::Parents oNull; return oNull; }
+
+/// returns number of parents
+size_t FailNode::getNbParents() const { fail(); return 0;}
+
+/// return the first parent (returns NULL if no parent)
+BaseNode* FailNode::getFirstParent() const { fail(); return NULL; }
 	
 /// Add a child node
 void FailNode::addChild(BaseNode::SPtr /*node*/){ fail(); }

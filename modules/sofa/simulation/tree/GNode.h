@@ -78,23 +78,23 @@ public:
     /// Get a list of parent node
     virtual Parents getParents() const;
 
-    /// Get parent node (or NULL if no hierarchy or for root node)
-    core::objectmodel::BaseNode* getParent();
+    /// returns number of parents
+    virtual size_t getNbParents() const;
 
-    /// Get parent node (or NULL if no hierarchy or for root node)
-    const core::objectmodel::BaseNode* getParent() const;
+    /// return the first parent (returns NULL if no parent)
+    virtual BaseNode* getFirstParent() const;
 
     /// Test if the given node is a parent of this node.
     bool hasParent(const BaseNode* node) const
     {
-        return getParent() == node;
+        return parent() == node;
     }
 
     /// Test if the given context is a parent of this context.
     bool hasParent(const BaseContext* context) const
     {
-        if (context == NULL) return getParent() == NULL;
-        else return getParent()->getContext() == context;
+        if (context == NULL) return parent() == NULL;
+        else return parent()->getContext() == context;
     }
 
     /// Test if the given context is an ancestor of this context.
@@ -145,12 +145,13 @@ public:
         return obj;
     }
 
-    GNode* parent() const { return l_parent.get(); }
 
     /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
     virtual Node* findCommonParent( simulation::Node* node2 );
 
 protected:
+
+    inline GNode* parent() const { return l_parent.get(); }
 
     SingleLink<GNode,GNode,BaseLink::FLAG_DOUBLELINK> l_parent;
 

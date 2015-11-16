@@ -1,6 +1,5 @@
 #include "AffineMultiMapping.h"
 
-#include <sofa/core/MultiMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
 

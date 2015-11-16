@@ -201,10 +201,10 @@ std::string ExportDotVisitor::getParentName(core::objectmodel::BaseObject* obj)
         return getName(node->solver[0]);
     if (node->animationManager!=obj && display(node->solver[0]))
         return getName(node->animationManager);
-    if ((node->mechanicalState==obj || node->solver[0]==obj) && !node->mechanicalMapping && node->parent() && display(node->parent()->solver[0]))
-        return getName(node->parent()->solver[0]);
-    if ((node->mechanicalState==obj || node->solver[0]==obj || node->animationManager==obj) && !node->mechanicalMapping && node->parent() && display(node->parent()->animationManager))
-        return getName(node->parent()->animationManager);
+    if ((node->mechanicalState==obj || node->solver[0]==obj) && !node->mechanicalMapping && node->getFirstParent() && display(static_cast<GNode*>(node->getFirstParent())->solver[0]))
+        return getName(static_cast<GNode*>(node->getFirstParent())->solver[0]);
+    if ((node->mechanicalState==obj || node->solver[0]==obj || node->animationManager==obj) && !node->mechanicalMapping && node->getFirstParent() && display(static_cast<GNode*>(node->getFirstParent())->animationManager))
+        return getName(static_cast<GNode*>(node->getFirstParent())->animationManager);
     return "";
 }
 
@@ -236,7 +236,7 @@ std::string ExportDotVisitor::getName(core::objectmodel::Base* o, std::string pr
 }
 
 /// Compute the name of a given node
-std::string ExportDotVisitor::getName(GNode* node)
+std::string ExportDotVisitor::getName(core::objectmodel::BaseNode* node)
 {
     return getName(node, "n_");
 }
@@ -341,9 +341,9 @@ simulation::Visitor::Result ExportDotVisitor::processNodeTopDown(GNode* node)
                 *out << node->getName();
         }
         *out << "\"];" << std::endl;
-        if (node->parent())
+        if (node->getFirstParent())
         {
-            *out << getName(node->parent()) << " -> " << getName(node)<< " [minlen=2,style=\"bold\"];" << std::endl;
+            *out << getName(node->getFirstParent()) << " -> " << getName(node)<< " [minlen=2,style=\"bold\"];" << std::endl;
         }
     }
 

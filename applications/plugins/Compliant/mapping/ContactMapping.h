@@ -63,7 +63,7 @@ protected:
 		// local frames have been computed in assemble
 
         (void)in;
-        assert( in.size() == out.size() || std::count( mask.begin(),mask.end(),true)==out.size() );
+        assert( in.size() == out.size() || (size_t)std::count( mask.begin(),mask.end(),true)==out.size() );
 
         unsigned n = out.size();
 

@@ -39,8 +39,10 @@ using namespace core::behavior;
 
 #ifndef SOFA_FLOAT
 template class SOFA_CORE_API MultiMapping< Vec1dTypes, Vec1dTypes >;
+template class SOFA_CORE_API MultiMapping< Vec2dTypes, Vec1dTypes >;
 template class SOFA_CORE_API MultiMapping< Vec3dTypes, Vec3dTypes >;
 template class SOFA_CORE_API MultiMapping< Vec3dTypes, Vec1dTypes >;
+template class SOFA_CORE_API MultiMapping< Vec6dTypes, Vec1dTypes >;
 template class SOFA_CORE_API MultiMapping< Rigid3dTypes, Vec1dTypes >;
 template class SOFA_CORE_API MultiMapping< Rigid3dTypes, Vec3dTypes >;
 template class SOFA_CORE_API MultiMapping< Rigid3dTypes, Vec6dTypes >;
@@ -49,8 +51,10 @@ template class SOFA_CORE_API MultiMapping< Rigid3dTypes, Rigid3dTypes >;
 
 #ifndef SOFA_DOUBLE
 template class SOFA_CORE_API MultiMapping< Vec1fTypes, Vec1fTypes >;
+template class SOFA_CORE_API MultiMapping< Vec2fTypes, Vec1fTypes >;
 template class SOFA_CORE_API MultiMapping< Vec3fTypes, Vec3fTypes >;
 template class SOFA_CORE_API MultiMapping< Vec3fTypes, Vec1fTypes >;
+template class SOFA_CORE_API MultiMapping< Vec6fTypes, Vec1fTypes >;
 template class SOFA_CORE_API MultiMapping< Rigid3fTypes, Vec1fTypes >;
 template class SOFA_CORE_API MultiMapping< Rigid3fTypes, Vec3fTypes >;
 template class SOFA_CORE_API MultiMapping< Rigid3fTypes, Vec6fTypes >;

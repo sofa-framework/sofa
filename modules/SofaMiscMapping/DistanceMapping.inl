@@ -150,8 +150,8 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
             invlengths[i] = 0;
 
             // arbritary vector mapping all directions
-            Real p = 1.0f/std::sqrt((Real)Nin);
-            for( unsigned i=0;i<Nin;++i)
+            Real p = 1.0f/std::sqrt((Real)In::spatial_dimensions);
+            for( unsigned i=0;i<In::spatial_dimensions;++i)
                 gap[i]=p;
         }
 
@@ -161,12 +161,12 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
         {
             for(unsigned j=0; j<Nout; j++)
             {
-                for(unsigned k=0; k<Nin; k++ )
+                for(unsigned k=0; k<In::spatial_dimensions; k++ )
                 {
                     jacobian.insertBack( i*Nout+j, links[i][1]*Nin+k, gap[k] );
 //                    jacobian.add( i*Nout+j, links[i][1]*Nin+k, gap[k] );
                 }
-                for(unsigned k=0; k<Nin; k++ )
+                for(unsigned k=0; k<In::spatial_dimensions; k++ )
                 {
 //                    jacobian.add( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
                     jacobian.insertBack( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
@@ -177,12 +177,12 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
         {
             for(unsigned j=0; j<Nout; j++)
             {
-                for(unsigned k=0; k<Nin; k++ )
+                for(unsigned k=0; k<In::spatial_dimensions; k++ )
                 {
 //                    jacobian.add( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
                     jacobian.insertBack( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
                 }
-                for(unsigned k=0; k<Nin; k++ )
+                for(unsigned k=0; k<In::spatial_dimensions; k++ )
                 {
 //                    jacobian.add( i*Nout+j, links[i][1]*Nin+k, gap[k] );
                     jacobian.insertBack( i*Nout+j, links[i][1]*Nin+k, gap[k] );
@@ -238,9 +238,9 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
             if( childForce[i][0] < 0 || geometricStiffness==1 )
             {
                 sofa::defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
-                for(unsigned j=0; j<Nin; j++)
+                for(unsigned j=0; j<In::spatial_dimensions; j++)
                 {
-                    for(unsigned k=0; k<Nin; k++)
+                    for(unsigned k=0; k<In::spatial_dimensions; k++)
                     {
                         if( j==k )
                             b[j][k] = 1.f - directions[i][j]*directions[i][k];
@@ -311,9 +311,9 @@ void DistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, 
         if( childForce[i][0] < 0 || geometricStiffness==1 )
         {
             sofa::defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
-            for(unsigned j=0; j<Nin; j++)
+            for(unsigned j=0; j<In::spatial_dimensions; j++)
             {
-                for(unsigned k=0; k<Nin; k++)
+                for(unsigned k=0; k<In::spatial_dimensions; k++)
                 {
                     if( j==k )
                         b[j][k] = 1.f - directions[i][j]*directions[i][k];
@@ -518,7 +518,6 @@ void DistanceMultiMapping<TIn, TOut>::apply(const helper::vector<OutVecCoord*>& 
 {
     OutVecCoord& out = *outPos[0];
 
-
     const vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
     helper::ReadAccessor<Data<vector<Real> > > restLengths(f_restLengths);
     const SeqEdges& links = edgeContainer->getEdges();
@@ -564,14 +563,14 @@ void DistanceMultiMapping<TIn, TOut>::apply(const helper::vector<OutVecCoord*>& 
             invlengths[i] = 0;
 
             // arbritary vector mapping all directions
-            Real p = 1.0f/std::sqrt((Real)Nin);
-            for( unsigned i=0;i<Nin;++i)
+            Real p = 1.0f/std::sqrt((Real)In::spatial_dimensions);
+            for( unsigned i=0;i<In::spatial_dimensions;++i)
                 gap[i]=p;
         }
 
         for(unsigned j=0; j<Nout; j++)
         {
-            for(unsigned k=0; k<Nin; k++ )
+            for(unsigned k=0; k<In::spatial_dimensions; k++ )
             {
                 static_cast<SparseMatrixEigen*>(baseMatrices[pair0[0]])->add( i*Nout+j, pair0[1]*Nin+k, -gap[k] );
                 static_cast<SparseMatrixEigen*>(baseMatrices[pair1[0]])->add( i*Nout+j, pair1[1]*Nin+k,  gap[k] );
@@ -667,9 +666,9 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
 
 
             defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
-            for(unsigned j=0; j<Nin; j++)
+            for(unsigned j=0; j<In::spatial_dimensions; j++)
             {
-                for(unsigned k=0; k<Nin; k++)
+                for(unsigned k=0; k<In::spatial_dimensions; k++)
                 {
                     if( j==k )
                         b[j][k] = 1.f - directions[i][j]*directions[i][k];
@@ -732,9 +731,9 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
         {
 
             defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
-            for(unsigned j=0; j<Nin; j++)
+            for(unsigned j=0; j<In::spatial_dimensions; j++)
             {
-                for(unsigned k=0; k<Nin; k++)
+                for(unsigned k=0; k<In::spatial_dimensions; k++)
                 {
                     if( j==k )
                         b[j][k] = 1.f - directions[i][j] * directions[i][k];

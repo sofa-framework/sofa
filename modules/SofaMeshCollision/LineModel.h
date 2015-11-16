@@ -161,8 +161,6 @@ public:
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 
-    //virtual const char* getTypeName() const { return "Line"; }
-
     Deriv velocity(int index)const;
 
     LineLocalMinDistanceFilter *getFilter() const;

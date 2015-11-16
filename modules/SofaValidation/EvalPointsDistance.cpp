@@ -54,12 +54,12 @@ int EvalPointsDistanceClass = core::RegisterObject("Periodically compute the dis
         ;
 
 #ifndef SOFA_FLOAT
-template class EvalPointsDistance<Vec3dTypes>;
-template class EvalPointsDistance<Rigid3dTypes>;
+template class SOFA_VALIDATION_API EvalPointsDistance<Vec3dTypes>;
+template class SOFA_VALIDATION_API EvalPointsDistance<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class EvalPointsDistance<Vec3fTypes>;
-template class EvalPointsDistance<Rigid3fTypes>;
+template class SOFA_VALIDATION_API EvalPointsDistance<Vec3fTypes>;
+template class SOFA_VALIDATION_API EvalPointsDistance<Rigid3fTypes>;
 #endif
 
 } // namespace misc

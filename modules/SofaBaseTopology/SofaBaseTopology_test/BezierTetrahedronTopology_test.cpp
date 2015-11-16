@@ -249,7 +249,7 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 		for ( i = 0; i<container->getNumberOfTetrahedra(); i++)
 		{
 			
-				const BezierTetrahedronSetTopologyContainer::VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(i);
+//				const BezierTetrahedronSetTopologyContainer::VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(i);
 			
 			
 			/// get the volume of the tetrahedron

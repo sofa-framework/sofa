@@ -76,10 +76,7 @@ class Frame:
             """
             return self.inv().apply(vec)
 
-        def __eq__(self, other):
+        def almostEqual(self, other, tolerance):
             """ floating point comparison """
-            return allclose(self.translation, other.translation) and allclose(self.rotation, other.rotation)
+            return allclose(self.translation, other.translation, atol=tolerance) and allclose(self.rotation, other.rotation, atol=tolerance)
 
-        def __ne__(self, other):
-            """ floating point comparison """
-            return not allclose(self.translation, other.translation) or not allclose(self.rotation, other.rotation)

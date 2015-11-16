@@ -106,7 +106,7 @@ namespace gui
 namespace qt
 {
 
-SOFA_LINK_CLASS(ImageQt);
+SOFA_LINK_CLASS(ImageQt)
 
 
 using sofa::core::objectmodel::BaseObject;
@@ -212,7 +212,7 @@ void RealGUI::InitApplication( RealGUI* _gui)
     application->setWindowIcon(QIcon(pathIcon));
 
     // show the gui
-    _gui->show();
+    _gui->show(); // adding extra line in the console?
 }
 //======================= STATIC METHODS ========================= }
 
@@ -274,7 +274,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     frameCounter(0),
     m_viewerMSAANbSampling(1)
 {
-    setupUi(this),
+    setupUi(this);
 
 //    this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
     parseOptions(options);
@@ -421,6 +421,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     if(mCreateViewersOpt)
         getQtViewer()->getQWidget()->installEventFilter(this);
 #endif
+    
 
 }
 
@@ -1070,12 +1071,13 @@ void RealGUI::setViewerResolution ( int w, int h )
         QSize viewSize = ( getViewer() ) ? getQtViewer()->getQWidget()->size() : QSize(0,0);
 
         const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
+//      QSize newWinSize(dockWidget->width() + w, dockWidget->height() + h);
+        
         QSize newWinSize(winSize.width() - viewSize.width() + w, winSize.height() - viewSize.height() + h);
         if (newWinSize.width() > screen.width()) newWinSize.setWidth(screen.width()-20);
         if (newWinSize.height() > screen.height()) newWinSize.setHeight(screen.height()-20);
-        this->resize(newWinSize);
-        //std::cout<<"winSize.width() - viewSize.width() + w = "<< winSize.width()<<"-"<< viewSize.width()<<"+"<<w<<std::endl;
-        //std::cout<<"winSize.height() - viewSize.height() + h = "<< winSize.height()<<"-"<< viewSize.height()<<"+"<<h<<std::endl;
+
+		this->resize(newWinSize);
         //std::cout << "Setting windows dimension to " << size().width() << " x " << size().height() << std::endl;
     }
     else
@@ -1704,6 +1706,7 @@ void RealGUI::createBackgroundGUIInfos()
         background[i]->setMinValue( 0.0f);
         background[i]->setMaxValue( 1.0f);
         background[i]->setValue( 1.0f);
+        background[i]->setMaximumSize(50, 20);
 
         colourLayout->addWidget(background[i]);
         connect( background[i], SIGNAL( returnPressed() ), this, SLOT( updateBackgroundColour() ) );
@@ -1715,7 +1718,6 @@ void RealGUI::createBackgroundGUIInfos()
 
     backgroundImage = new QLineEdit(image);
     backgroundImage->setText("backgroundImage");
-
     if ( getViewer() )
         backgroundImage->setText( QString(getViewer()->getBackgroundImage().c_str()) );
     else

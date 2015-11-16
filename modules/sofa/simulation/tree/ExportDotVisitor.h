@@ -98,7 +98,7 @@ protected:
     std::string getName(core::objectmodel::Base* o, std::string prefix);
 
     /// Compute the name of a given node
-    std::string getName(GNode* node);
+    std::string getName(core::objectmodel::BaseNode *node);
 
     /// Compute the name of a given object
     std::string getName(core::objectmodel::BaseObject* obj);

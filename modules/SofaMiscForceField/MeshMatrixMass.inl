@@ -1603,7 +1603,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
 				massTotal += 2*edgeMass[j];
 			}
 		} else if (bezierTetraGeo ){
-			topology::BezierDegreeType degree=bezierTetraGeo->getTopologyContainer()->getDegree();
+//			topology::BezierDegreeType degree=bezierTetraGeo->getTopologyContainer()->getDegree();
 //			size_t nbControlPoints=(degree+1)*(degree+2)*(degree+3)/6;
 			size_t nbControlPoints;
 			typedef typename topology::BezierTetrahedronSetGeometryAlgorithms<DataTypes>::VecPointID VecPointID;

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -133,7 +133,7 @@ int OglFloatVector4VariableClass = core::RegisterObject("OglFloatVector4Variable
         .add< OglFloatVector4Variable >()
         ;
 
-/** FLOAT VECTOR VARIABLE **/
+/** Matrix VARIABLE **/
 SOFA_DECL_CLASS(OglMatrix2Variable)
 SOFA_DECL_CLASS(OglMatrix3Variable)
 SOFA_DECL_CLASS(OglMatrix4Variable)
@@ -189,6 +189,11 @@ int OglMatrix4x3VariableClass = core::RegisterObject("OglMatrix4x3Variable")
         .add< OglMatrix4x3Variable >()
         ;
 
+/** Matrix vector VARIABLE **/
+//Register OglMatrix4VectorVariable in the Object Factory
+int OglMatrix4VectorVariableClass = core::RegisterObject("OglMatrix4VectorVariable")
+        .add< OglMatrix4VectorVariable >()
+        ;
 
 
 OglIntVariable::OglIntVariable()
@@ -777,6 +782,28 @@ void OglMatrix4x3Variable::initVisual()
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setMatrix4x3(idShader, idstr.c_str(), v.size()/12, transp, vptr);
 }
+
+OglMatrix4VectorVariable::OglMatrix4VectorVariable()
+    : transpose(initData(&transpose,false,"transpose","Transpose the matrix (e.g. to use row-dominant matrices in OpenGL"))
+{
+}
+
+void OglMatrix4VectorVariable::init()
+{
+    OglVariable<helper::vector<defaulttype::Mat4x4f> >::init();
+}
+void OglMatrix4VectorVariable::initVisual()
+{
+    const unsigned int idShader = indexShader.getValue();
+    const std::string& idstr = id.getValue();
+    const helper::vector<defaulttype::Mat4x4f>& v = value.getValue();
+    //serr << "OglMatrix4VectorVariable::initVisual(), v = " << v << sendl;
+    const float* vptr = v.empty() ? NULL : &(v[0][0][0]);
+    bool transp = transpose.getValue();
+    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+        (*it)->setMatrix4(idShader, idstr.c_str(), v.size(), transp, vptr);
+}
+
 
 } // namespace visual
 

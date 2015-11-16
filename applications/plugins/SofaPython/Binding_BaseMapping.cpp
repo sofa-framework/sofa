@@ -35,9 +35,7 @@ using namespace sofa::core::objectmodel;
 
 extern "C" PyObject * BaseMapping_getFrom(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
     BaseMapping* mapping = dynamic_cast<BaseMapping*>(((PySPtr<Base>*)self)->object.get());
-
 
     helper::vector<BaseState*> from = mapping->getFrom();
 
@@ -51,9 +49,7 @@ extern "C" PyObject * BaseMapping_getFrom(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * BaseMapping_getTo(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
     BaseMapping* mapping = dynamic_cast<BaseMapping*>(((PySPtr<Base>*)self)->object.get());
-
 
     helper::vector<BaseState*> to = mapping->getTo();
 
@@ -66,9 +62,76 @@ extern "C" PyObject * BaseMapping_getTo(PyObject * self, PyObject * /*args*/)
 }
 
 
+
+extern "C" PyObject * BaseMapping_setFrom(PyObject * self, PyObject * args)
+{
+    BaseMapping* mapping = dynamic_cast<BaseMapping*>(((PySPtr<Base>*)self)->object.get());
+
+    PyObject* pyFrom;
+    if (!PyArg_ParseTuple(args, "O",&pyFrom))
+    {
+        SP_MESSAGE_ERROR( "BaseMapping_setFrom: a BaseState* is required" );
+        Py_RETURN_NONE;
+    }
+
+    BaseState* from=dynamic_cast<BaseState*>(((PySPtr<Base>*)pyFrom)->object.get());
+    if (!from)
+    {
+        SP_MESSAGE_ERROR( "BaseMapping_setFrom: is not a BaseState*" );
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    mapping->setFrom( from );
+
+    Py_RETURN_NONE;
+}
+
+extern "C" PyObject * BaseMapping_setTo(PyObject * self, PyObject * args)
+{
+    BaseMapping* mapping = dynamic_cast<BaseMapping*>(((PySPtr<Base>*)self)->object.get());
+
+    PyObject* pyTo;
+    if (!PyArg_ParseTuple(args, "O",&pyTo))
+        Py_RETURN_NONE;
+
+    BaseState* to=dynamic_cast<BaseState*>(((PySPtr<Base>*)pyTo)->object.get());
+    if (!to)
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    mapping->setTo( to );
+
+    Py_RETURN_NONE;
+}
+
+extern "C" PyObject * BaseMapping_apply(PyObject * self, PyObject * /*args*/)
+{
+    BaseMapping* mapping = dynamic_cast<BaseMapping*>(((PySPtr<Base>*)self)->object.get());
+
+    mapping->apply(MechanicalParams::defaultInstance(),VecCoordId::position(),ConstVecCoordId::position());
+
+    Py_RETURN_NONE;
+}
+
+extern "C" PyObject * BaseMapping_applyJ(PyObject * self, PyObject * /*args*/)
+{
+    BaseMapping* mapping = dynamic_cast<BaseMapping*>(((PySPtr<Base>*)self)->object.get());
+
+    mapping->applyJ(MechanicalParams::defaultInstance(),VecDerivId::velocity(),ConstVecDerivId::velocity());
+
+    Py_RETURN_NONE;
+}
+
 SP_CLASS_METHODS_BEGIN(BaseMapping)
 SP_CLASS_METHOD(BaseMapping,getFrom)
 SP_CLASS_METHOD(BaseMapping,getTo)
+SP_CLASS_METHOD(BaseMapping,setFrom)
+SP_CLASS_METHOD(BaseMapping,setTo)
+SP_CLASS_METHOD(BaseMapping,apply)
+SP_CLASS_METHOD(BaseMapping,applyJ)
 SP_CLASS_METHODS_END
 
 SP_CLASS_TYPE_SPTR(BaseMapping,BaseMapping,BaseObject)

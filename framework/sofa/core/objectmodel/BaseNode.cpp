@@ -49,9 +49,9 @@ BaseNode::~BaseNode()
 
 BaseNode* BaseNode::getRoot() const
 {
-    Parents p = getParents();
-    if (p.empty()) return const_cast<BaseNode*>(this);
-    else return p[0]->getRoot();
+    BaseNode* firstParent = getFirstParent();
+    if (!firstParent) return const_cast<BaseNode*>(this);
+    else return firstParent->getRoot();
 }
 
 core::behavior::BaseAnimationLoop* BaseNode::getAnimationLoop() const

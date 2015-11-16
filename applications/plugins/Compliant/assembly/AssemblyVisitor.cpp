@@ -291,7 +291,7 @@ void AssemblyVisitor::top_down(simulation::Visitor* vis) const {
 	assert( !prefix.empty() );
 
 	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
-		simulation::Node* node = down_cast<simulation::Node>(graph[ prefix[i] ].dofs->getContext());
+        simulation::Node* node = down_cast<simulation::Node>(graph[ prefix[i] ].data->dofs->getContext());
 		vis->processNodeTopDown( node );
 	}
 
@@ -301,7 +301,7 @@ void AssemblyVisitor::bottom_up(simulation::Visitor* vis) const {
 	assert( !prefix.empty() );
 
 	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
-		simulation::Node* node = down_cast<simulation::Node>(graph[ prefix[ n - 1 - i] ].dofs->getContext());
+        simulation::Node* node = down_cast<simulation::Node>(graph[ prefix[ n - 1 - i] ].data->dofs->getContext());
 		vis->processNodeBottomUp( node );
 	}
 	
@@ -328,7 +328,7 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 	c.size = node->mechanicalState->getMatrixSize();
 	c.dofs = node->mechanicalState;
 
-	vertex v; v.dofs = c.dofs; v.data = &c;
+    vertex v; v.data = &c;
 
 	c.H = odeMatrix( node );
 //    cerr << "AssemblyVisitor::fill_prefix, c.H = " << endl << dmat(c.H) << endl;
@@ -368,6 +368,9 @@ void AssemblyVisitor::fill_postfix(simulation::Node* node) {
     helper::ScopedAdvancedTimer advancedTimer( "assembly: fill_postfix" );
 
 	assert( node->mechanicalState );
+
+    if( node->mechanicalState->getSize()==0 ) return;
+
 	assert( chunks.find( node->mechanicalState ) != chunks.end() );
 
 	// fill chunk for current dof
@@ -494,7 +497,7 @@ AssemblyVisitor::process_type* AssemblyVisitor::process() const {
 
 		// independent
 		if( c->master() ) {
-			offsets[ graph[ prefix[i] ].dofs ] = off_m;
+            offsets[ c->dofs ] = off_m;
 			off_m += c->size;
         } else if( notempty(c->C) ) {
 			off_c += c->size;
@@ -737,7 +740,7 @@ void AssemblyVisitor::assemble(system_type& res) const {
 //            std::cerr<<"multimapping "<<c.dofs->getName()<<std::endl;
 
             // full mapping chunk for geometric stiffness
-            const rmat& geometricStiffnessJc = _processed->fullmappinggeometricstiffness[ graph[ prefix[i] ].dofs ];
+            const rmat& geometricStiffnessJc = _processed->fullmappinggeometricstiffness[ c.dofs ];
 
 
 
@@ -796,7 +799,7 @@ void AssemblyVisitor::assemble(system_type& res) const {
 		else {
 
             // full mapping chunk
-            const rmat& Jc = _processed->fullmapping[ graph[ prefix[i] ].dofs ];
+            const rmat& Jc = _processed->fullmapping[ c.dofs ];
 
 			if( !zero(Jc) ) {
                 assert( Jc.cols() == int(_processed->size_m) );

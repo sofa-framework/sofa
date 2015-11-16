@@ -60,6 +60,7 @@ private:
     helper::gl::Trackball currentTrackball;
 
     void internalUpdate();
+protected:
     void moveCamera(int x, int y);
     void manageEvent(core::objectmodel::Event* e);
     void processMouseEvent(core::objectmodel::MouseEvent* me);

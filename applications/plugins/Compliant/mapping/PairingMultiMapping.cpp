@@ -1,7 +1,6 @@
 #include "PairingMultiMapping.h"
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/MultiMapping.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
