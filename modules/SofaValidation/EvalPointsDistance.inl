@@ -264,7 +264,7 @@ void EvalPointsDistance<DataTypes>::handleEvent(sofa::core::objectmodel::Event* 
     if (!mstate1 || !mstate2)
             return;
     // std::ostream *out = (outfile==NULL)? (std::ostream *)(&sout) : outfile;
-    if (dynamic_cast<simulation::AnimateEndEvent*>(event))
+    if (event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
     {
         double time = getContext()->getTime();
         // write the state using a period

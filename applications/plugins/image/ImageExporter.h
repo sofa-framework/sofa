@@ -285,8 +285,10 @@ protected:
 
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
-        if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
+        if (event->getEventTypeIndex() == sofa::core::objectmodel::KeypressedEvent::s_eventTypeIndex)
         {
+            sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
+
             //std::cout << "key pressed " << std::endl;
             switch(ev->getKey())
             {
@@ -297,7 +299,7 @@ protected:
                 break;
             }
         }
-        else if ( /*simulation::AnimateEndEvent* ev =*/  dynamic_cast<simulation::AnimateEndEvent*>(event))
+        else if ( /*simulation::AnimateEndEvent* ev =*/  event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
         {
             raImage in(this->image);
             raTransform inT(this->transform);
@@ -321,7 +323,10 @@ protected:
                 write();
             }
         }
-        else if (sofa::core::objectmodel::GUIEvent * guiEvent = dynamic_cast<sofa::core::objectmodel::GUIEvent*>(event)) {
+        else if (event->getEventTypeIndex() == sofa::core::objectmodel::GUIEvent::s_eventTypeIndex)
+        {
+            sofa::core::objectmodel::GUIEvent *guiEvent = static_cast<sofa::core::objectmodel::GUIEvent *>(event);
+
             if (guiEvent->getValueName().compare("ImageExport") == 0)
                 write();
         }

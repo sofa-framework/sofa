@@ -36,6 +36,8 @@ namespace core
 namespace objectmodel
 {
 
+SOFA_EVENT_CPP( KeyreleasedEvent )
+
 KeyreleasedEvent::KeyreleasedEvent(char c)
     : core::objectmodel::Event()
     , m_char(c)

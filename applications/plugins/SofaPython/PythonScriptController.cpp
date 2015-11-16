@@ -284,13 +284,10 @@ void PythonScriptController::script_onGUIEvent(const char* controlID, const char
 void PythonScriptController::script_onScriptEvent(core::objectmodel::ScriptEvent* event)
 {
     helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonScriptController_Event_")+this->getName()).c_str() );
-    core::objectmodel::PythonScriptEvent *pyEvent = dynamic_cast<core::objectmodel::PythonScriptEvent*>(event);
-    if (!pyEvent)
+
+    if( event->getEventTypeIndex() == sofa::core::objectmodel::PythonScriptEvent::s_eventTypeIndex)
     {
-        // ignore
-    }
-    else
-    {
+        core::objectmodel::PythonScriptEvent *pyEvent = static_cast<core::objectmodel::PythonScriptEvent*>(event);
 //        SP_CALL_MODULEFUNC(m_Func_onScriptEvent,"(OsO)",SP_BUILD_PYSPTR(pyEvent->getSender().get()),pyEvent->getEventName().c_str(),pyEvent->getUserData())
 
         SP_CALL_OBJECTFUNC(const_cast<char*>("onScriptEvent"),const_cast<char*>("(OsO)"),SP_BUILD_PYSPTR(pyEvent->getSender().get()),const_cast<char*>(pyEvent->getEventName().c_str()),pyEvent->getUserData())

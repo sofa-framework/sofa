@@ -139,8 +139,9 @@ void GraspingManager::doGrasp()
 
 void GraspingManager::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
+    if (event->getEventTypeIndex() == sofa::core::objectmodel::KeypressedEvent::s_eventTypeIndex)
     {
+        sofa::core::objectmodel::KeypressedEvent* ev = static_cast<sofa::core::objectmodel::KeypressedEvent*>(event);
         if (ev->getKey() == keyEvent.getValue())
         {
             active.setValue(true);
@@ -150,14 +151,15 @@ void GraspingManager::handleEvent(sofa::core::objectmodel::Event* event)
             active.setValue(!active.getValue());
         }
     }
-    else if (sofa::core::objectmodel::KeyreleasedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeyreleasedEvent*>(event))
+    if (event->getEventTypeIndex() == sofa::core::objectmodel::KeyreleasedEvent::s_eventTypeIndex)
     {
+        sofa::core::objectmodel::KeyreleasedEvent* ev = static_cast<sofa::core::objectmodel::KeyreleasedEvent*>(event);
         if (ev->getKey() == keyEvent.getValue())
         {
             active.setValue(false);
         }
     }
-    else if (/* simulation::AnimateEndEvent* ev = */ dynamic_cast<simulation::AnimateEndEvent*>(event))
+    else if (/* simulation::AnimateEndEvent* ev = */ event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
     {
 //        if (active.getValue())
         doGrasp();

@@ -5,8 +5,6 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
@@ -129,8 +127,9 @@ void RegistrationExporter::writeMesh()
 
 void RegistrationExporter::handleEvent(sofa::core::objectmodel::Event *event)
 {
-	if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
-	{
+    if (event->getEventTypeIndex() == sofa::core::objectmodel::KeypressedEvent::s_eventTypeIndex)
+    {
+        sofa::core::objectmodel::KeypressedEvent* ev = static_cast<sofa::core::objectmodel::KeypressedEvent*>(event);
         //std::cout << "key pressed " << ev->getKey() << std::endl;
 		switch(ev->getKey())
 		{
@@ -141,7 +140,7 @@ void RegistrationExporter::handleEvent(sofa::core::objectmodel::Event *event)
             break;
 		}
 	}
-    else if ( /*simulation::AnimateEndEvent* ev =*/  dynamic_cast<simulation::AnimateEndEvent*>(event))
+    else if ( /*simulation::AnimateEndEvent* ev =*/  event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
 	{
         unsigned int maxStep = exportEveryNbSteps.getValue();
         if (maxStep == 0) return;

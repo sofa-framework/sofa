@@ -71,7 +71,7 @@ Controller::~Controller()
 
 void Controller::handleEvent(core::objectmodel::Event *event)
 {
-    if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
+    if (event->getEventTypeIndex() == sofa::simulation::AnimateBeginEvent::s_eventTypeIndex)
     {
         onBeginAnimationStep((static_cast<sofa::simulation::AnimateBeginEvent *> (event))->getDt());
     }
@@ -79,34 +79,34 @@ void Controller::handleEvent(core::objectmodel::Event *event)
     {
         onEndAnimationStep((static_cast<sofa::simulation::AnimateEndEvent *> (event))->getDt());
     }
-    else if (dynamic_cast<sofa::core::objectmodel::KeypressedEvent *>(event))
+    else if (event->getEventTypeIndex() == sofa::core::objectmodel::KeypressedEvent::s_eventTypeIndex)
     {
-        sofa::core::objectmodel::KeypressedEvent *kpev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
+        sofa::core::objectmodel::KeypressedEvent *kpev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
         onKeyPressedEvent(kpev);
     }
-    else if (dynamic_cast<sofa::core::objectmodel::KeyreleasedEvent *>(event))
+    else if (event->getEventTypeIndex() == sofa::core::objectmodel::KeyreleasedEvent::s_eventTypeIndex)
     {
-        sofa::core::objectmodel::KeyreleasedEvent *krev = dynamic_cast<sofa::core::objectmodel::KeyreleasedEvent *>(event);
+        sofa::core::objectmodel::KeyreleasedEvent *krev = static_cast<sofa::core::objectmodel::KeyreleasedEvent *>(event);
         onKeyReleasedEvent(krev);
     }
-    else if (dynamic_cast<sofa::core::objectmodel::MouseEvent *>(event))
+    else if (event->getEventTypeIndex() == sofa::core::objectmodel::MouseEvent::s_eventTypeIndex)
     {
-        sofa::core::objectmodel::MouseEvent *mev = dynamic_cast<sofa::core::objectmodel::MouseEvent *>(event);
+        sofa::core::objectmodel::MouseEvent *mev = static_cast<sofa::core::objectmodel::MouseEvent *>(event);
         onMouseEvent(mev);
     }
-    else if (dynamic_cast<sofa::core::objectmodel::JoystickEvent *>(event))
+    else if (event->getEventTypeIndex() == sofa::core::objectmodel::JoystickEvent::s_eventTypeIndex)
     {
-        sofa::core::objectmodel::JoystickEvent *jev = dynamic_cast<sofa::core::objectmodel::JoystickEvent *>(event);
+        sofa::core::objectmodel::JoystickEvent *jev = static_cast<sofa::core::objectmodel::JoystickEvent *>(event);
         onJoystickEvent(jev);
     }
-    else if (dynamic_cast<sofa::core::objectmodel::HapticDeviceEvent *>(event))
+    else if (event->getEventTypeIndex() == sofa::core::objectmodel::HapticDeviceEvent::s_eventTypeIndex)
     {
-        sofa::core::objectmodel::HapticDeviceEvent *oev = dynamic_cast<sofa::core::objectmodel::HapticDeviceEvent *>(event);
+        sofa::core::objectmodel::HapticDeviceEvent *oev = static_cast<sofa::core::objectmodel::HapticDeviceEvent *>(event);
         onHapticDeviceEvent(oev);
     }
-    else if (dynamic_cast<sofa::core::objectmodel::GUIEvent *>(event))
+    else if (event->getEventTypeIndex() == sofa::core::objectmodel::GUIEvent::s_eventTypeIndex)
     {
-        sofa::core::objectmodel::GUIEvent *gev = dynamic_cast<sofa::core::objectmodel::GUIEvent *>(event);
+        sofa::core::objectmodel::GUIEvent *gev = static_cast<sofa::core::objectmodel::GUIEvent *>(event);
         onGUIEvent(gev);
     }
 }

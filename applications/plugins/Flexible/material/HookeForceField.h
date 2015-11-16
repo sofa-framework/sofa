@@ -33,7 +33,6 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 
-#include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 
 
@@ -132,7 +131,7 @@ public:
 
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
-        if ( dynamic_cast<simulation::AnimateEndEvent*>(event))
+        if ( event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
         {
             if(_youngModulus.isDirty() || _poissonRatio.isDirty() || _viscosity.isDirty()) reinit();
         }
@@ -250,7 +249,7 @@ public:
 
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
-        if ( dynamic_cast<simulation::AnimateEndEvent*>(event))
+        if ( event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
         {
             if(_youngModulusX.isDirty() || _youngModulusY.isDirty() || _youngModulusZ.isDirty() ||
                     _poissonRatioXY.isDirty() || _poissonRatioYZ.isDirty() || _poissonRatioZX.isDirty() ||
@@ -342,7 +341,7 @@ public:
 
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
-        if ( dynamic_cast<simulation::AnimateEndEvent*>(event))
+        if ( event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
         {
             if(_youngModulusX.isDirty() || _youngModulusY.isDirty() ||
                     _poissonRatioXY.isDirty() || _poissonRatioYZ.isDirty() ||

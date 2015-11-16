@@ -138,7 +138,7 @@ public:
 
     void handleEvent(core::objectmodel::Event *event)
     {
-        if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event) && _update.getValue().getSelectedId()==EVERY_TIMESTEP)
+        if (event->getEventTypeIndex() == sofa::simulation::AnimateBeginEvent::s_eventTypeIndex && _update.getValue().getSelectedId()==EVERY_TIMESTEP)
             update();
     }
 

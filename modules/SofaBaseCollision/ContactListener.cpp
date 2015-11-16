@@ -77,12 +77,12 @@ namespace sofa
 
 			void ContactListener::handleEvent( core::objectmodel::Event* _event )
 			{
-				if (dynamic_cast<simulation::CollisionBeginEvent *>(_event))
+                if (_event->getEventTypeIndex() == simulation::CollisionBeginEvent::s_eventTypeIndex)
 				{
 					mContactsVector.clear();
 				}
 
-				else if (dynamic_cast<simulation::CollisionEndEvent *>(_event))
+                else if (_event->getEventTypeIndex() == simulation::CollisionEndEvent::s_eventTypeIndex)
 				{
 
 					const NarrowPhaseDetection::DetectionOutputMap& detectionOutputsMap = mNarrowPhase->getDetectionOutputs();

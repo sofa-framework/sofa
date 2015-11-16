@@ -95,7 +95,7 @@ void AverageCoord<DataTypes>::update()
 template<class DataTypes>
 void AverageCoord<DataTypes>::handleEvent(core::objectmodel::Event *event)
 {
-    if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
+    if (event->getEventTypeIndex() == sofa::simulation::AnimateBeginEvent::s_eventTypeIndex)
         this->onBeginAnimationStep(this->getContext()->getDt());
 }
 

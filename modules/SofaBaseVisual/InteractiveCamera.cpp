@@ -173,17 +173,22 @@ void InteractiveCamera::manageEvent(core::objectmodel::Event* e)
 
     if(p_activated.getValue())
     {
-        core::objectmodel::MouseEvent* me;
-        core::objectmodel::KeypressedEvent* kpe;
-        core::objectmodel::KeyreleasedEvent* kre;
-
         //Dispatch event
-        if ((me = dynamic_cast<core::objectmodel::MouseEvent* > (e)))
+        if (e->getEventTypeIndex() == sofa::core::objectmodel::MouseEvent::s_eventTypeIndex)
+        {
+            sofa::core::objectmodel::MouseEvent* me = static_cast<sofa::core::objectmodel::MouseEvent*>(e);
             processMouseEvent(me);
-        else if ((kpe = dynamic_cast<core::objectmodel::KeypressedEvent* > (e)))
+        }
+        else if (e->getEventTypeIndex() == sofa::core::objectmodel::KeypressedEvent::s_eventTypeIndex)
+        {
+            sofa::core::objectmodel::KeypressedEvent* kpe = static_cast<sofa::core::objectmodel::KeypressedEvent*>(e);
             processKeyPressedEvent(kpe);
-        else if ((kre = dynamic_cast<core::objectmodel::KeyreleasedEvent* > (e)))
+        }
+        else if (e->getEventTypeIndex() == sofa::core::objectmodel::KeyreleasedEvent::s_eventTypeIndex)
+        {
+            sofa::core::objectmodel::KeyreleasedEvent* kre = static_cast<core::objectmodel::KeyreleasedEvent* > (e);
             processKeyReleasedEvent(kre);
+        }
 
         internalUpdate();
     }
