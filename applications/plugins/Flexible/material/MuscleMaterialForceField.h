@@ -29,7 +29,6 @@
 #include "../material/BaseMaterialForceField.h"
 #include "../material/MuscleMaterialBlock.h"
 
-#include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 
 namespace sofa
@@ -85,7 +84,7 @@ public:
 
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
-        if ( dynamic_cast<simulation::AnimateEndEvent*>(event))
+        if ( event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
         {
             if(f_lambda0.isDirty() || f_sigmaMax.isDirty() || f_a.isDirty() || f_b.isDirty() || f_Vvm.isDirty() || f_Ver.isDirty() || f_Vsh.isDirty()) reinit();
         }

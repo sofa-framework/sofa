@@ -29,7 +29,6 @@
 #include "../material/BaseMaterialForceField.h"
 #include "../material/OgdenMaterialBlock.h"
 
-#include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 
 namespace sofa
@@ -91,7 +90,7 @@ public:
 
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
-        if ( dynamic_cast<simulation::AnimateEndEvent*>(event))
+        if ( event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
         {
             if( f_mu1.isDirty() || f_mu2.isDirty() || f_mu3.isDirty() ||
                  f_alpha1.isDirty() || f_alpha2.isDirty() || f_alpha3.isDirty() ||

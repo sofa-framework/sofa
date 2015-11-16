@@ -142,7 +142,7 @@ protected:
 
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
-        if ( /*simulation::AnimateEndEvent* ev =*/  dynamic_cast<simulation::AnimateEndEvent*>(event)) update();
+        if ( /*simulation::AnimateEndEvent* ev =*/  event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex) update();
     }
 };
 

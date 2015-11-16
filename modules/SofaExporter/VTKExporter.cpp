@@ -1004,7 +1004,7 @@ void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
     }
 
 
-    if ( /*simulation::AnimateEndEvent* ev =*/  dynamic_cast<simulation::AnimateEndEvent*>(event))
+    if ( /*simulation::AnimateEndEvent* ev =*/  event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
     {
         unsigned int maxStep = exportEveryNbSteps.getValue();
         if (maxStep == 0) return;

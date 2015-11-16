@@ -26,6 +26,7 @@
 #define SOFA_CORE_OBJECTMODEL_EVENT_H
 
 #include <sofa/core/core.h>
+#include <stdlib.h>
 
 namespace sofa
 {
@@ -35,6 +36,16 @@ namespace core
 
 namespace objectmodel
 {
+
+/// this has to be added in the Event class definition (as public)
+#define SOFA_EVENT_H(T) \
+    static const size_t s_eventTypeIndex; \
+    virtual size_t getEventTypeIndex() const { return T::s_eventTypeIndex; } ///< @warning this mechanism will only work for the last derivated type (and not for eventual intermediaries)
+
+/// this has to be added in the Event implementation file
+#define SOFA_EVENT_CPP(T) \
+    const size_t T::s_eventTypeIndex = ++sofa::core::objectmodel::Event::s_lastEventTypeIndex;
+
 
 /**
  *  \brief Base class for all events received by the objects.
@@ -57,8 +68,15 @@ public:
     bool isHandled() const;
 
     virtual const char* getClassName() const { return "Event"; }
+
+    /// fast Event type comparison with unique indices
+    /// @warning this mechanism will only work for the last derivated type (and not for eventual intermediaries)
+    virtual size_t getEventTypeIndex() const;
+
 protected:
     bool m_handled;
+
+    static size_t s_lastEventTypeIndex; ///< storing the next free id
 };
 
 } // namespace objectmodel

@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/core/objectmodel/Event.h>
+#include <iostream>
 
 namespace sofa
 {
@@ -33,6 +34,9 @@ namespace core
 
 namespace objectmodel
 {
+
+
+size_t Event::s_lastEventTypeIndex = 0;
 
 Event::Event()
 {
@@ -52,6 +56,12 @@ void Event::setHandled()
 bool Event::isHandled() const
 {
     return m_handled;
+}
+
+size_t Event::getEventTypeIndex() const
+{
+    std::cerr<< "ERROR: You forgot to add SOFA_EVENT_H / SOFA_EVENT_CPP macros to your implementation of "<<getClassName()<<std::endl;
+    return 0;
 }
 
 

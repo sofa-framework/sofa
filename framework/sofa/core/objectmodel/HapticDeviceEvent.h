@@ -45,6 +45,8 @@ class SOFA_CORE_API HapticDeviceEvent : public sofa::core::objectmodel::Event
 {
 public:
 
+    SOFA_EVENT_H( HapticDeviceEvent )
+
     /**
      * @brief Define the device state (which button is pressed).
      */

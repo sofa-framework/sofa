@@ -57,6 +57,8 @@ class SOFA_CORE_API JoystickEvent : public sofa::core::objectmodel::Event
 {
 public:
 
+    SOFA_EVENT_H( JoystickEvent )
+
     /**
      * @brief	Implements an event that notifies about axis positions (like analog controls of a joystick).
      * 			The axis position is normalized so values are always in the range [-1, 1].

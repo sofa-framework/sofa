@@ -35,6 +35,7 @@
 #include <iostream>
 #include <set>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
 
 
 namespace sofa
@@ -2414,7 +2415,7 @@ void TetrahedronFEMForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::Bas
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::handleEvent(core::objectmodel::Event *event)
 {
-    if (dynamic_cast< sofa::simulation::AnimateBeginEvent *>(event)) {
+    if (event->getEventTypeIndex()==sofa::simulation::AnimateBeginEvent::s_eventTypeIndex) {
         if (_updateStiffness.getValue()) {
             //std::cout << this->getName() << " HANDLE EVENT " << std::endl;
             const VecReal& youngModulus = _youngModulus.getValue();

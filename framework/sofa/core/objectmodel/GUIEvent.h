@@ -45,6 +45,7 @@ class SOFA_CORE_API GUIEvent : public sofa::core::objectmodel::Event
 {
 public:
 
+    SOFA_EVENT_H( GUIEvent )
 
     /**
      * @brief Constructor.
