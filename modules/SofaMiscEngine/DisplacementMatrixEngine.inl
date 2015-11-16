@@ -107,7 +107,7 @@ template < class DataTypes >
 void DisplacementMatrixEngine< DataTypes >::reinit()
 {
     // parent method
-    Inherit::reinit();;
+    Inherit::reinit();
 
     const VecCoord& x0 = this->d_x0.getValue();
     const helper::vector< sofa::defaulttype::Vec<3,Real> >& scales = this->d_scales.getValue();
