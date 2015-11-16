@@ -36,6 +36,8 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/helper/system/glut.h>
+#include <sofa/helper/fixed_array.h>
+#include <sofa/helper/gl/Texture.h>
 
 #include <sofa/helper/helper.h>
 
@@ -90,7 +92,21 @@ public:
     template <typename T>
     static void draw ( const T& text, const defaulttype::Vector3& position, const double& scale );
 
+
+    /// Render the text at the defined position and scale
+    template <typename T>
+    static void textureDraw(const T& text, const defaulttype::Vector3& position, const double& scale);
+
+    static void textureDraw_Indices(const helper::vector<defaulttype::Vector3>& positions, const double& scale);
+
 private:
+    static void initTexture();
+
+    static const std::string ASCII_TEXTURE_PATH;
+
+    static sofa::helper::io::Image *s_asciiImage;
+    static sofa::helper::gl::Texture* s_asciiTexture;
+
     double scale;
     std::string text;
     defaulttype::Vector3 position;

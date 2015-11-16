@@ -140,6 +140,7 @@ public:
 
 	virtual void draw3DText(const Vector3 &p, float scale, const Vec4f &color, const char* text) = 0;
 	virtual void draw3DText(const helper::vector<Vector3> &p, float scale, const Vec4f &color, const char* text) = 0;
+    virtual void draw3DText_Indices(const helper::vector<Vector3> &positions, float scale, const Vec4f &color) = 0;
     /// @}
 
     /// @name Transformation methods.
