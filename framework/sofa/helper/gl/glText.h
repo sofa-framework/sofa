@@ -97,6 +97,8 @@ public:
     template <typename T>
     static void textureDraw(const T& text, const defaulttype::Vector3& position, const double& scale);
 
+
+    static void textureDraw_Overlay(const char* text, const double scale = 1.0);
     static void textureDraw_Indices(const helper::vector<defaulttype::Vector3>& positions, const double& scale);
 
 private:

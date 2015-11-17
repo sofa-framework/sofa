@@ -131,6 +131,83 @@ void GlText::draw()
 #endif
 }
 
+void GlText::textureDraw_Overlay(const char* text, const double scale)
+{
+    if (!s_asciiTexture)
+        GlText::initTexture();
+
+    const unsigned int nb_char_width = 16;
+    const unsigned int nb_char_height = 16;
+    const float worldHeight = 1.0 * scale;
+    const float worldWidth = 0.50 * scale;
+
+    typedef sofa::helper::fixed_array<float, 3> Vector3;
+    typedef sofa::helper::fixed_array<float, 2> Vector2;
+    std::vector<Vector3> vertices;
+    std::vector<Vector2> UVs;
+
+    std::ostringstream oss;
+    oss << text;
+    std::string str = oss.str();
+    unsigned int length = str.size();
+
+    glPushAttrib(GL_TEXTURE_BIT);
+    glEnable(GL_TEXTURE_2D);
+
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE); // multiply tex color with glColor
+    //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // only tex color (no glColor)
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.0);
+    s_asciiTexture->init();
+    s_asciiTexture->bind();
+
+    for (unsigned int j = 0; j < length; j++)
+    {
+        Vector3 vertex_up_left = Vector3(j*worldWidth, worldHeight, 0.0);
+        Vector3 vertex_up_right = Vector3(j*worldWidth + worldWidth, worldHeight, 0.0);
+        Vector3 vertex_down_right = Vector3(j*worldWidth + worldWidth, 0.0, 0.0);
+        Vector3 vertex_down_left = Vector3(j*worldWidth, 0.0, 0.0);
+
+        vertices.push_back(vertex_up_left);
+        vertices.push_back(vertex_down_left);
+        vertices.push_back(vertex_up_right);
+
+        vertices.push_back(vertex_down_right);
+        vertices.push_back(vertex_up_right);
+        vertices.push_back(vertex_down_left);
+
+        char character = str[j] - 32;
+
+        float uv_x = (character % nb_char_width) / (float)nb_char_width;
+        float uv_y = 1.0 - ((character / nb_char_height) / (float)nb_char_height);
+
+        Vector2 uv_up_left = Vector2(uv_x, (uv_y - (1.0f / (float)nb_char_height)));
+        Vector2 uv_up_right = Vector2(uv_x + (1.0f / (float)nb_char_width), (uv_y - (1.0f / (float)nb_char_height)));
+        Vector2 uv_down_right = Vector2(uv_x + (1.0f / (float)nb_char_width), uv_y);
+        Vector2 uv_down_left = Vector2(uv_x, uv_y);
+
+        UVs.push_back(uv_up_left);
+        UVs.push_back(uv_down_left);
+        UVs.push_back(uv_up_right);
+
+        UVs.push_back(uv_down_right);
+        UVs.push_back(uv_up_right);
+        UVs.push_back(uv_down_left);
+    }
+
+    glBegin(GL_TRIANGLES);
+    for (unsigned int j = 0; j < vertices.size(); j++)
+    {
+        glTexCoord2fv(UVs[j].data());
+        glVertex3fv(vertices[j].data());
+    }
+    glEnd();
+
+    s_asciiTexture->unbind();
+    glDisable(GL_ALPHA_TEST);
+    glPopAttrib();
+
+}
 
 void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& positions, const double& scale)
 {
