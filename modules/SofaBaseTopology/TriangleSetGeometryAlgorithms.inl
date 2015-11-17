@@ -2179,7 +2179,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
         sofa::defaulttype::Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-		Vector4 color4(color[0] - 0.2f, color[1] - 0.2f, color[2] - 0.2f, 1.0);
+        defaulttype::Vec4f color4(color[0] - 0.2f, color[1] - 0.2f, color[2] - 0.2f, 1.0);
         float scale = this->getIndicesScale();
 
         //for triangles:
@@ -2187,7 +2187,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
 
         const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
 
-        helper::vector<Vector3> positions;
+        helper::vector<defaulttype::Vector3> positions;
         for (unsigned int i =0; i<triangleArray.size(); i++)
         {
 
@@ -2195,7 +2195,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
             Coord vertex1 = coords[ the_tri[0] ];
             Coord vertex2 = coords[ the_tri[1] ];
             Coord vertex3 = coords[ the_tri[2] ];
-            sofa::defaulttype::Vec3f center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3))/3;
+            defaulttype::Vector3 center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3))/3;
 
             positions.push_back(center);
 

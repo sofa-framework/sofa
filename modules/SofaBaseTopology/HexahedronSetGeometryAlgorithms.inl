@@ -854,7 +854,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
 
         const sofa::helper::vector<Hexahedron> &hexaArray = this->m_topology->getHexahedra();
 
-        helper::vector<Vector3> positions;
+        helper::vector<defaulttype::Vector3> positions;
         for (unsigned int i =0; i<hexaArray.size(); i++)
         {
 
@@ -863,7 +863,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
 
             for (unsigned int j = 0; j<8; j++)
             {
-                sofa::defaulttype::Vec3f vertex; vertex = DataTypes::getCPos(coords[ the_hexa[j] ]);
+                defaulttype::Vector3 vertex; vertex = DataTypes::getCPos(coords[ the_hexa[j] ]);
                 center += vertex;
             }
 

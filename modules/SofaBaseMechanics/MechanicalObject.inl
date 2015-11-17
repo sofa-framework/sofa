@@ -2704,13 +2704,13 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
 
     if (showIndices.getValue())
     {
-		Vector4 color(1.0, 1.0, 1.0,1.0);
+		defaulttype::Vector4 color(1.0, 1.0, 1.0,1.0);
         
 		float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue() );
 
-        helper::vector<Vector3> positions;
+        helper::vector<defaulttype::Vector3> positions;
         for (size_t i = 0; i < vsize; ++i)
-            positions.push_back(Vector3(getPX(i), getPY(i), getPZ(i)));
+            positions.push_back(defaulttype::Vector3(getPX(i), getPY(i), getPZ(i)));
 
         vparams->drawTool()->draw3DText_Indices(positions, scale, color);
     }
