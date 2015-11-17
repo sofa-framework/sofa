@@ -244,16 +244,16 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
         sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
-		Vector4 color4(1.0, 1.0, 1.0, 1.0);
+		defaulttype::Vec4f color4(1.0, 1.0, 1.0, 1.0);
 
         sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
 
         float scale = getIndicesScale();
 
-        helper::vector<Vector3> positions;
+        helper::vector<defaulttype::Vector3> positions;
         for (unsigned int i =0; i<coords.size(); i++)
         {
-            sofa::defaulttype::Vec3f center; center = DataTypes::getCPos(coords[i]);
+            defaulttype::Vector3 center; center = DataTypes::getCPos(coords[i]);
             positions.push_back(center);
 
         }

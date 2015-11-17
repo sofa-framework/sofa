@@ -360,7 +360,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-		Vector4 color4(color[0] - 0.2f, color[1] - 0.2f, color[2] - 0.2f, 1.0);
+        defaulttype::Vec4f color4(color[0] - 0.2f, color[1] - 0.2f, color[2] - 0.2f, 1.0);
         float scale = this->getIndicesScale();
 
         //for quads:
@@ -368,7 +368,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
         const sofa::helper::vector<Quad>& quadArray = this->m_topology->getQuads();
 
-        helper::vector<Vector3> positions;
+        helper::vector<defaulttype::Vector3> positions;
         for (unsigned int i =0; i<quadArray.size(); i++)
         {
 
@@ -377,7 +377,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
             Coord vertex2 = coords[ the_quad[1] ];
             Coord vertex3 = coords[ the_quad[2] ];
             Coord vertex4 = coords[ the_quad[3] ];
-            sofa::defaulttype::Vec3f center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3)+DataTypes::getCPos(vertex4))/4;
+            defaulttype::Vector3 center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3)+DataTypes::getCPos(vertex4))/4;
 
             positions.push_back(center);
 

@@ -727,14 +727,14 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
         const sofa::helper::vector <Edge>& edgeArray = this->m_topology->getEdges();
 
-        helper::vector<Vector3> positions;
+        helper::vector<defaulttype::Vector3> positions;
 		for (unsigned int i = 0; i < edgeArray.size(); i++)
 		{
 
 			Edge the_edge = edgeArray[i];
 			Coord vertex1 = coords[the_edge[0]];
 			Coord vertex2 = coords[the_edge[1]];
-			sofa::defaulttype::Vec3f center; 
+            defaulttype::Vector3 center;
             center = (DataTypes::getCPos(vertex1) + DataTypes::getCPos(vertex2)) / 2;
 
             positions.push_back(center);
