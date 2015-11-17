@@ -48,6 +48,8 @@ class SOFA_CORE_API MouseEvent : public sofa::core::objectmodel::Event
 {
 public:
 
+    SOFA_EVENT_H( MouseEvent )
+
     /**
      * @brief Defines possible Mouse states.
      */

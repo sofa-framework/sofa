@@ -47,6 +47,7 @@ class SOFA_SOFAPYTHON_API PythonScriptEvent : public sofa::core::objectmodel::Sc
 {
 public:
 
+    SOFA_EVENT_H( PythonScriptEvent )
 
     /**
      * @brief Constructor.
@@ -61,7 +62,7 @@ public:
     /**
      * @brief Get the event name
      */
-    PyObject* getUserData(void) const {return m_userData;};
+    PyObject* getUserData(void) const {return m_userData;}
 
     virtual const char* getClassName() const { return "PythonScriptEvent"; }
 private:

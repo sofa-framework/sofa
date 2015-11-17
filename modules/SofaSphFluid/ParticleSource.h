@@ -470,10 +470,16 @@ public:
 
     virtual void handleEvent(sofa::core::objectmodel::Event* event)
     {
-        if (simulation::AnimateBeginEvent* ev = dynamic_cast<simulation::AnimateBeginEvent*>(event))
+        if(simulation::AnimateBeginEvent::checkEventType(event) )
+        {
+            simulation::AnimateBeginEvent* ev = static_cast<simulation::AnimateBeginEvent*>(event);
             animateBegin(ev->getDt(), this->getContext()->getTime());
-        if (simulation::AnimateEndEvent* ev = dynamic_cast<simulation::AnimateEndEvent*>(event))
+        }
+        else if(simulation::AnimateEndEvent::checkEventType(event) )
+        {
+            simulation::AnimateEndEvent* ev = static_cast<simulation::AnimateEndEvent*>(event);
             animateEnd(ev->getDt(), this->getContext()->getTime());
+        }
     }
 
 
