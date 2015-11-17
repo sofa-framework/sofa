@@ -38,18 +38,15 @@
 
 namespace sofa
 {
-
-
-	
-
 	namespace core
 	{
-
-		using namespace sofa;
 
 		class DataExchangeEvent : public sofa::core::objectmodel::Event
 		{
 		public:
+
+            SOFA_EVENT_H(DataExchangeEvent)
+
 			DataExchangeEvent( double dt )
 				: sofa::core::objectmodel::Event()
 				, dt(dt) 

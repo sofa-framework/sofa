@@ -306,7 +306,7 @@ void RecordedCamera::moveCamera_translation()
 
 void RecordedCamera::handleEvent(sofa::core::objectmodel::Event *event)
 {
-    if (dynamic_cast<simulation::AnimateBeginEvent*>(event))
+    if (simulation::AnimateBeginEvent::checkEventType(event))
     {
         double simuTime = this->getContext()->getTime();
         double simuDT = this->getContext()->getDt();
@@ -336,8 +336,9 @@ void RecordedCamera::handleEvent(sofa::core::objectmodel::Event *event)
         if(m_navigationMode.getValue())
             this->moveCamera_navigation();	
     }
-    if (core::objectmodel::KeypressedEvent* ke = dynamic_cast<core::objectmodel::KeypressedEvent* >(event))
+    else if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
     {
+        sofa::core::objectmodel::KeypressedEvent* ke = static_cast<sofa::core::objectmodel::KeypressedEvent*>(event);
         cerr<<"RecordedCamera::handleEvent gets character " << ke->getKey() << endl;
     }
 
@@ -479,10 +480,12 @@ void RecordedCamera::manageEvent(core::objectmodel::Event* e)
 {
     if(p_activated.getValue())
     {
-        core::objectmodel::MouseEvent* me;
         //Dispatch event
-        if ((me = dynamic_cast<core::objectmodel::MouseEvent* > (e)))
+        if (sofa::core::objectmodel::MouseEvent::checkEventType(e))
+        {
+            sofa::core::objectmodel::MouseEvent* me = static_cast<sofa::core::objectmodel::MouseEvent*>(e);
             processMouseEvent(me);
+        }
     }
     else
     {

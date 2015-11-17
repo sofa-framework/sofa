@@ -198,6 +198,14 @@ using namespace core::behavior;
         if( assemblyVisitor ) delete assemblyVisitor;
     }
 
+    void CompliantImplicitSolver::reset() {
+        if( !lagrange.id().isNull() )
+        {
+            sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
+            vop.v_clear( lagrange.id() );
+        }
+    }
+
     void CompliantImplicitSolver::cleanup() {
         sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
         vop.v_free( lagrange.id(), false, true );

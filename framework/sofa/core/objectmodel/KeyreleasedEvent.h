@@ -43,6 +43,9 @@ namespace objectmodel
 class SOFA_CORE_API KeyreleasedEvent : public core::objectmodel::Event
 {
 public:
+
+    SOFA_EVENT_H( KeyreleasedEvent )
+
     /// Constructor
     KeyreleasedEvent( char );
     /// Destructor

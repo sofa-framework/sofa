@@ -38,9 +38,17 @@ namespace sofa
 namespace helper
 {
 
-/** A helper class which implements a vector of a variable number of data
+
+
+typedef enum{DataEngineNothing,DataEngineInput,DataEngineOutput} DataEngineDataType;
+
+
+
+/** A helper class which implements a vector of a variable number of Data
  *
- * @todo when the component is a DataEngine, the data are automatically added as  inputs or outputs
+ * When the owner component is a DataEngine, the Data can be automatically added as inputs or outputs
+ *
+ * @warning The first index is 1 in the Data name
  *
  * @author Thomas Lemaire @date 2014
  */
@@ -48,27 +56,35 @@ template<class T>
 class vectorData : public vector< core::objectmodel::Data<T>* > {
 
 public:
+
+    typedef enum{Nothing,Input,Output} DataEngineInOut;
+
     typedef vector< core::objectmodel::Data<T>* > Inherit;
 
-    vectorData(core::objectmodel::Base* component, std::string const& name, std::string const& help, const bool isInput=true, const T& defaultValue=T())
+    /// 'dataEngineInOut' is only valid if 'component' is a DataEngine
+    vectorData(core::objectmodel::Base* component, std::string const& name, std::string const& help, DataEngineDataType dataEngineDataType=DataEngineNothing, const T& defaultValue=T())
         : m_component(component)
         , m_name(name)
         , m_help(help)
-        , m_isInput(isInput)
+        , m_dataEngineDataType(dataEngineDataType)
         , m_defaultValue(defaultValue)
     { }
 
-
     ~vectorData()
     {
-        core::DataEngine* componentAsDataEngine = dynamic_cast<core::DataEngine*>(m_component);
+        if( m_dataEngineDataType!=Nothing )
+        {
+            if( core::DataEngine* componentAsDataEngine = dynamic_cast<core::DataEngine*>(m_component) )
+            {
+                for (unsigned int i=0; i<this->size(); ++i)
+                {
+                    if(m_dataEngineDataType==DataEngineInput) componentAsDataEngine->delInput((*this)[i]);
+                    else if(m_dataEngineDataType==DataEngineOutput) componentAsDataEngine->delOutput((*this)[i]);
+                }
+            }
+        }
         for (unsigned int i=0; i<this->size(); ++i)
         {
-            if (componentAsDataEngine!=NULL)
-            {
-                if(m_isInput) componentAsDataEngine->delInput((*this)[i]);
-                else componentAsDataEngine->delOutput((*this)[i]);
-            }
             delete (*this)[i];
         }
         this->clear();
@@ -100,41 +116,46 @@ public:
 
     void resize(const unsigned int size)
     {
-        core::DataEngine* componentAsDataEngine = dynamic_cast<core::DataEngine*>(m_component);
+        core::DataEngine* componentAsDataEngine = m_dataEngineDataType!=Nothing ? componentAsDataEngine = dynamic_cast<core::DataEngine*>(m_component) : NULL;
+
         if (size < this->size()) {
-            // some data if size is inferior than current size
+            // removing some data if size is inferior than current size
             for (unsigned int i=size; i<this->size(); ++i) {
                 if (componentAsDataEngine!=NULL)
                 {
-                    if(m_isInput) componentAsDataEngine->delInput((*this)[i]);
-                    else componentAsDataEngine->delOutput((*this)[i]);
+                    if(m_dataEngineDataType==DataEngineInput) componentAsDataEngine->delInput((*this)[i]);
+                    else if(m_dataEngineDataType==DataEngineOutput) componentAsDataEngine->delOutput((*this)[i]);
                 }
                 delete (*this)[i];
             }
-            Inherit::resize(size);
+            if( size ) Inherit::resize(size);
+            else Inherit::clear();
         }
-        for (unsigned int i=this->size(); i<size; ++i) {
-            std::ostringstream oname, ohelp;
-            oname << m_name << (i+1);
-            ohelp << m_help << "(" << (i+1) << ")";
-            Data< T >* d = new Data< T >(m_defaultValue, ohelp.str().c_str(), true, false);
-            d->setName(oname.str());
-            this->push_back(d);
-            if (m_component!=NULL)
-                m_component->addData(d);
-            if (componentAsDataEngine!=NULL)
+        else
+        {
+            for (unsigned int i=this->size(); i<size; ++i)
             {
-                if(m_isInput)  componentAsDataEngine->addInput(d);
-                else  componentAsDataEngine->addOutput(d);
+                std::ostringstream oname, ohelp;
+                oname << m_name << (i+1);
+                ohelp << m_help << "(" << (i+1) << ")";
+                Data< T >* d = new Data< T >(m_defaultValue, ohelp.str().c_str(), true, false);
+                d->setName(oname.str());
+                this->push_back(d);
+                if (m_component!=NULL)
+                    m_component->addData(d);
+                if (componentAsDataEngine!=NULL)
+                {
+                    if(m_dataEngineDataType==DataEngineInput) componentAsDataEngine->addInput(d);
+                    else if(m_dataEngineDataType==DataEngineOutput) componentAsDataEngine->addOutput(d);
+                }
             }
-
         }
     }
 
 protected:
     core::objectmodel::Base* m_component;
     std::string m_name, m_help;
-    bool m_isInput;
+    DataEngineDataType m_dataEngineDataType; ///< only valid if m_component is a DataEngine
     T m_defaultValue;
 };
 

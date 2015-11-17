@@ -38,6 +38,9 @@ namespace core
 namespace objectmodel
 {
 
+
+SOFA_EVENT_CPP( JoystickEvent )
+
 /*************
  * AxisEvent
  *************/

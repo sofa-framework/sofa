@@ -10,10 +10,6 @@ namespace sofa
 	namespace core
 	{
 
-		using namespace sofa;
-
-
-
 		template <class DataTypes>
 		DataExchange<DataTypes>::DataExchange( const char* from, const char* to )
 			: BaseObject()
