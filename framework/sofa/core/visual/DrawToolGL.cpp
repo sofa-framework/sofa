@@ -822,7 +822,8 @@ void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const Vec4f 
     glGetIntegerv( GL_VIEWPORT, viewport );
 
 
-    static const float letterSize = (float)glutStrokeWidth( GLUT_STROKE_ROMAN, 'm' );
+    //static const float letterSize = (float)glutStrokeWidth( GLUT_STROKE_ROMAN, 'm' );
+    static const float letterSize = 0.5;
 
     float scale = fontSize / letterSize;
 
@@ -846,24 +847,30 @@ void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const Vec4f 
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    gluOrtho2D(0, viewport[2], 0, viewport[3] );
+    gluOrtho2D(0, viewport[2], viewport[3], 0 );
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
 
 
-    glTranslated(x,viewport[3]-y-fontSize,0);
+    glTranslated(x,y,0);
 
 
     glScalef( scale, scale, scale );
 
     glLineWidth( fontSize/20.0f );
 
-    for( const char*c = text ; *c ; ++c )
-    {
-        glutStrokeCharacter ( GLUT_STROKE_ROMAN, *c );
-    }
+    //for( const char*c = text ; *c ; ++c )
+    //{
+    //    glutStrokeCharacter ( GLUT_STROKE_ROMAN, *c );
+    //}
+    //glPointSize(10.0);
+    //glBegin(GL_POINTS);
+    //glVertex2f(0.0, 0.0);
+    //glEnd();
+
+    helper::gl::GlText::textureDraw_Overlay(text);
 
     glPopAttrib(); // GL_ENABLE_BIT
     glPopAttrib(); // GL_LIGHTING_BIT

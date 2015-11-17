@@ -117,6 +117,21 @@ void drawSphere(const V& center, const float& rad, const int subd1=8, const int 
 }
 
 template <typename V>
+void drawEllipsoid(const V& center, const float& radx, const float& rady, const float& radz, const int subd1 = 8, const int subd2 = 8)
+{
+    GLUquadricObj* sphere = gluNewQuadric();
+    gluQuadricDrawStyle(sphere, GLU_FILL);
+    gluQuadricOrientation(sphere, GLU_OUTSIDE);
+    gluQuadricNormals(sphere, GLU_SMOOTH);
+    glPushMatrix();
+    helper::gl::glTranslateT(center);
+    helper::gl::glScale(radx,rady,radz);
+    gluSphere(sphere, 1.0, subd1, subd2);
+    glPopMatrix();
+    // 		delete sphere;
+}
+
+template <typename V>
 void drawWireSphere(const V& center, const float& rad, const int subd1=8, const int subd2=8)
 {
     GLUquadricObj*	sphere = gluNewQuadric();
