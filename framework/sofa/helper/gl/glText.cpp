@@ -231,7 +231,7 @@ void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& pos
 
         glLoadIdentity();
         //translate a little bit to center the text on the position (instead of starting from a top-left position)
-        glTranslatef((float)temp[0] - worldWidth*0.5, (float)temp[1] - worldHeight*0.5, (float)temp[2]);
+        glTranslatef((float)temp[0] - (worldWidth*length)*0.5, (float)temp[1] + worldHeight*0.5, (float)temp[2]);
         glScalef((float)scale, (float)scale, (float)scale);
         glRotatef(180.0, 1, 0, 0);
 
