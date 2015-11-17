@@ -131,7 +131,7 @@ public:
 
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
-        if ( event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
+        if (simulation::AnimateEndEvent::checkEventType(event))
         {
             if(_youngModulus.isDirty() || _poissonRatio.isDirty() || _viscosity.isDirty()) reinit();
         }
@@ -249,7 +249,7 @@ public:
 
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
-        if ( event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
+        if (simulation::AnimateEndEvent::checkEventType(event))
         {
             if(_youngModulusX.isDirty() || _youngModulusY.isDirty() || _youngModulusZ.isDirty() ||
                     _poissonRatioXY.isDirty() || _poissonRatioYZ.isDirty() || _poissonRatioZX.isDirty() ||
@@ -341,7 +341,7 @@ public:
 
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
-        if ( event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
+        if (simulation::AnimateEndEvent::checkEventType(event))
         {
             if(_youngModulusX.isDirty() || _youngModulusY.isDirty() ||
                     _poissonRatioXY.isDirty() || _poissonRatioYZ.isDirty() ||

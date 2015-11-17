@@ -49,8 +49,8 @@ struct Listener : core::objectmodel::BaseObject {
     }
 
     virtual void handleEvent(core::objectmodel::Event * event) {
-        if (event->getEventTypeIndex() == core::objectmodel::PythonScriptEvent::s_eventTypeIndex
-              || event->getEventTypeIndex() == core::objectmodel::ScriptEvent::s_eventTypeIndex )
+        if (core::objectmodel::PythonScriptEvent::checkEventType(event)
+              ||core::objectmodel::ScriptEvent::checkEventType(event) )
        {
             core::objectmodel::ScriptEvent* e = static_cast<core::objectmodel::ScriptEvent*>(event);
             std::string name = e->getEventName();

@@ -234,7 +234,7 @@ public:
     {
         typename ImagePlaneType::pCoord pc(0,0,0);
 
-        if (event->getEventTypeIndex() == sofa::core::objectmodel::KeypressedEvent::s_eventTypeIndex)
+        if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
         {
             sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
 
@@ -277,7 +277,7 @@ public:
             }
         }
 
-        if (event->getEventTypeIndex() == sofa::simulation::AnimateBeginEvent::s_eventTypeIndex && this->scroll.getValue() > 0)
+        if (sofa::simulation::AnimateBeginEvent::checkEventType(event) && this->scroll.getValue() > 0)
         {
             waPlane wplane(this->plane);
             unsigned int xmax = this->image.getValue().getDimensions()[0];

@@ -71,7 +71,7 @@ Controller::~Controller()
 
 void Controller::handleEvent(core::objectmodel::Event *event)
 {
-    if (event->getEventTypeIndex() == sofa::simulation::AnimateBeginEvent::s_eventTypeIndex)
+    if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
     {
         onBeginAnimationStep((static_cast<sofa::simulation::AnimateBeginEvent *> (event))->getDt());
     }
@@ -79,32 +79,32 @@ void Controller::handleEvent(core::objectmodel::Event *event)
     {
         onEndAnimationStep((static_cast<sofa::simulation::AnimateEndEvent *> (event))->getDt());
     }
-    else if (event->getEventTypeIndex() == sofa::core::objectmodel::KeypressedEvent::s_eventTypeIndex)
+    else if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
     {
         sofa::core::objectmodel::KeypressedEvent *kpev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
         onKeyPressedEvent(kpev);
     }
-    else if (event->getEventTypeIndex() == sofa::core::objectmodel::KeyreleasedEvent::s_eventTypeIndex)
+    else if (sofa::core::objectmodel::KeyreleasedEvent::checkEventType(event))
     {
         sofa::core::objectmodel::KeyreleasedEvent *krev = static_cast<sofa::core::objectmodel::KeyreleasedEvent *>(event);
         onKeyReleasedEvent(krev);
     }
-    else if (event->getEventTypeIndex() == sofa::core::objectmodel::MouseEvent::s_eventTypeIndex)
+    else if (sofa::core::objectmodel::MouseEvent::checkEventType(event))
     {
         sofa::core::objectmodel::MouseEvent *mev = static_cast<sofa::core::objectmodel::MouseEvent *>(event);
         onMouseEvent(mev);
     }
-    else if (event->getEventTypeIndex() == sofa::core::objectmodel::JoystickEvent::s_eventTypeIndex)
+    else if (sofa::core::objectmodel::JoystickEvent::checkEventType(event))
     {
         sofa::core::objectmodel::JoystickEvent *jev = static_cast<sofa::core::objectmodel::JoystickEvent *>(event);
         onJoystickEvent(jev);
     }
-    else if (event->getEventTypeIndex() == sofa::core::objectmodel::HapticDeviceEvent::s_eventTypeIndex)
+    else if (sofa::core::objectmodel::HapticDeviceEvent::checkEventType(event))
     {
         sofa::core::objectmodel::HapticDeviceEvent *oev = static_cast<sofa::core::objectmodel::HapticDeviceEvent *>(event);
         onHapticDeviceEvent(oev);
     }
-    else if (event->getEventTypeIndex() == sofa::core::objectmodel::GUIEvent::s_eventTypeIndex)
+    else if (sofa::core::objectmodel::GUIEvent::checkEventType(event))
     {
         sofa::core::objectmodel::GUIEvent *gev = static_cast<sofa::core::objectmodel::GUIEvent *>(event);
         onGUIEvent(gev);

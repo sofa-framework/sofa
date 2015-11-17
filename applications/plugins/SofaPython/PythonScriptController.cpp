@@ -285,7 +285,7 @@ void PythonScriptController::script_onScriptEvent(core::objectmodel::ScriptEvent
 {
     helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonScriptController_Event_")+this->getName()).c_str() );
 
-    if( event->getEventTypeIndex() == sofa::core::objectmodel::PythonScriptEvent::s_eventTypeIndex)
+    if(sofa::core::objectmodel::PythonScriptEvent::checkEventType(event))
     {
         core::objectmodel::PythonScriptEvent *pyEvent = static_cast<core::objectmodel::PythonScriptEvent*>(event);
 //        SP_CALL_MODULEFUNC(m_Func_onScriptEvent,"(OsO)",SP_BUILD_PYSPTR(pyEvent->getSender().get()),pyEvent->getEventName().c_str(),pyEvent->getUserData())
@@ -304,7 +304,7 @@ void PythonScriptController::script_draw(const core::visual::VisualParams*)
 
 void PythonScriptController::handleEvent(core::objectmodel::Event *event)
 {
-    if (event->getEventTypeIndex() == sofa::core::objectmodel::PythonScriptEvent::s_eventTypeIndex)
+    if (sofa::core::objectmodel::PythonScriptEvent::checkEventType(event))
     {
         script_onScriptEvent(static_cast<core::objectmodel::PythonScriptEvent *> (event));
         simulation::ScriptEnvironment::initScriptNodes();

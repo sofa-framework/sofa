@@ -172,14 +172,14 @@ void SleepController::reset()
 
 void SleepController::handleEvent(core::objectmodel::Event* event)
 {
-    if (event->getEventTypeIndex() == sofa::simulation::AnimateBeginEvent::s_eventTypeIndex)
+    if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
 		putNodesToSleep();
-    else if (event->getEventTypeIndex() == sofa::simulation::CollisionEndEvent::s_eventTypeIndex)
+    else if (sofa::simulation::CollisionEndEvent::checkEventType(event))
 	{
 		wakeUpNodes();
 		updateSleepStatesRecursive();
 	}
-    else if (event->getEventTypeIndex() == sofa::simulation::AnimateEndEvent::s_eventTypeIndex)
+    else if (sofa::simulation::AnimateEndEvent::checkEventType(event))
 		updateTimeSinceWakeUp();
 }
 

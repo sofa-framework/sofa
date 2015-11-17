@@ -124,11 +124,11 @@ void ReadState::reset()
 
 void ReadState::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (/* simulation::AnimateBeginEvent* ev = */ event->getEventTypeIndex() == simulation::AnimateBeginEvent::s_eventTypeIndex)
+    if (/* simulation::AnimateBeginEvent* ev = */simulation::AnimateBeginEvent::checkEventType(event))
     {
         processReadState();
     }
-    if (/* simulation::AnimateEndEvent* ev = */ event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
+    if (/* simulation::AnimateEndEvent* ev = */simulation::AnimateEndEvent::checkEventType(event))
     {
 
     }

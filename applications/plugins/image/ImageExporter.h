@@ -285,7 +285,7 @@ protected:
 
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
-        if (event->getEventTypeIndex() == sofa::core::objectmodel::KeypressedEvent::s_eventTypeIndex)
+        if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
         {
             sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
 
@@ -299,7 +299,7 @@ protected:
                 break;
             }
         }
-        else if ( /*simulation::AnimateEndEvent* ev =*/  event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
+        else if ( /*simulation::AnimateEndEvent* ev =*/ simulation::AnimateEndEvent::checkEventType(event))
         {
             raImage in(this->image);
             raTransform inT(this->transform);
@@ -323,7 +323,7 @@ protected:
                 write();
             }
         }
-        else if (event->getEventTypeIndex() == sofa::core::objectmodel::GUIEvent::s_eventTypeIndex)
+        else if (sofa::core::objectmodel::GUIEvent::checkEventType(event))
         {
             sofa::core::objectmodel::GUIEvent *guiEvent = static_cast<sofa::core::objectmodel::GUIEvent *>(event);
 

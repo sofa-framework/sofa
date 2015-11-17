@@ -304,7 +304,7 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
 template <typename DataTypes>
 void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *event)
 {
-    if (event->getEventTypeIndex() != sofa::simulation::AnimateEndEvent::s_eventTypeIndex)
+    if (sofa::simulation::AnimateEndEvent::checkEventType(event))
         return;
 
     if (!constraintSolver)

@@ -470,7 +470,7 @@ void LightManager::restoreDefaultLight(VisualParams* vp)
 
 void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (event->getEventTypeIndex() == sofa::core::objectmodel::KeypressedEvent::s_eventTypeIndex)
+    if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
     {
         sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
         switch(ev->getKey())

@@ -957,7 +957,7 @@ void OptiTrackNatNetClient::processModelDef(const ModelDef* data)
 
 void OptiTrackNatNetClient::handleEvent(sofa::core::objectmodel::Event *event)
 {
-    if (event->getEventTypeIndex() == sofa::simulation::AnimateBeginEvent::s_eventTypeIndex)
+    if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
     {
         update();
     }

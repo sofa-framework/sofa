@@ -780,8 +780,8 @@ bool SpatialGridContainer<DataTypes>::sortPoints()
 template<class DataTypes>
 void SpatialGridContainer<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (/* simulation::AnimateBeginEvent* ev = */ event->getEventTypeIndex() == simulation::AnimateBeginEvent::s_eventTypeIndex)
-        //if (simulation::AnimateEndEvent* ev = event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
+    if (/* simulation::AnimateBeginEvent* ev = */simulation::AnimateBeginEvent::checkEventType(event))
+        //if (simulation::AnimateEndEvent* ev =simulation::AnimateEndEvent::checkEventType(event))
     {
         if (d_sortPoints.getValue())
         {

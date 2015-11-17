@@ -139,7 +139,7 @@ inline void ShewchukPCGLinearSolver<component::linearsolver::GraphScatteredMatri
 template<class Matrix, class Vector>
 void ShewchukPCGLinearSolver<Matrix,Vector>::handleEvent(sofa::core::objectmodel::Event* event) {
     /// this event shoul be launch before the addKToMatrix
-    if (event->getEventTypeIndex() == sofa::simulation::AnimateBeginEvent::s_eventTypeIndex) {
+    if (sofa::simulation::AnimateBeginEvent::checkEventType(event)) {
         newton_iter = 0;
         std::map < std::string, sofa::helper::vector<double> >& graph = * f_graph.beginEdit();
         graph.clear();

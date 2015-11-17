@@ -145,7 +145,7 @@ void Monitor<DataTypes>::reinit()
 template<class DataTypes>
 void Monitor<DataTypes>::handleEvent( core::objectmodel::Event* ev )
 {
-    if (ev->getEventTypeIndex() == sofa::simulation::AnimateEndEvent::s_eventTypeIndex)
+    if (sofa::simulation::AnimateEndEvent::checkEventType(ev))
     {
         if ( saveXToGnuplot.getValue() || saveVToGnuplot.getValue() || saveFToGnuplot.getValue() )
             exportGnuplot ( (Real) this ->getTime() );

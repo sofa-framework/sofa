@@ -182,14 +182,14 @@ void TopologicalChangeProcessor::setTime(double time)
 
 void TopologicalChangeProcessor::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (/* simulation::AnimateBeginEvent* ev = */ event->getEventTypeIndex() == simulation::AnimateBeginEvent::s_eventTypeIndex)
+    if (/* simulation::AnimateBeginEvent* ev = */simulation::AnimateBeginEvent::checkEventType(event))
     {
         if (m_useDataInputs.getValue())
             processTopologicalChanges(this->getTime());
         else
             processTopologicalChanges();
     }
-    if (/* simulation::AnimateEndEvent* ev = */ event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
+    if (/* simulation::AnimateEndEvent* ev = */simulation::AnimateEndEvent::checkEventType(event))
     {
 
     }

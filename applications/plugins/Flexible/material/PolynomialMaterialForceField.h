@@ -89,7 +89,7 @@ public:
 
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
-        if ( event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
+        if (simulation::AnimateEndEvent::checkEventType(event))
         {
             if(f_C10.isDirty() || f_C01.isDirty() || f_C20.isDirty() || f_C02.isDirty() || f_C30.isDirty() || f_C03.isDirty() || f_C11.isDirty() || f_bulk.isDirty() ) reinit();
         }
