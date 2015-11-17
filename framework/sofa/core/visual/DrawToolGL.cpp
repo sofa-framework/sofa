@@ -835,14 +835,8 @@ void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const Vec4f 
     glEnable( GL_COLOR_MATERIAL );
 
     glPushAttrib( GL_ENABLE_BIT );
-    glEnable( GL_LINE_SMOOTH );
-    glEnable( GL_POLYGON_SMOOTH );
-    glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
-
-
 
     glColor4f( color[0], color[1], color[2], color[3] );
-
 
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
@@ -853,22 +847,11 @@ void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const Vec4f 
     glPushMatrix();
     glLoadIdentity();
 
-
     glTranslated(x,y,0);
-
 
     glScalef( scale, scale, scale );
 
     glLineWidth( fontSize/20.0f );
-
-    //for( const char*c = text ; *c ; ++c )
-    //{
-    //    glutStrokeCharacter ( GLUT_STROKE_ROMAN, *c );
-    //}
-    //glPointSize(10.0);
-    //glBegin(GL_POINTS);
-    //glVertex2f(0.0, 0.0);
-    //glEnd();
 
     helper::gl::GlText::textureDraw_Overlay(text);
 
