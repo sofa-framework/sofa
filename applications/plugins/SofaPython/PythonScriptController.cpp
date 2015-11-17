@@ -302,6 +302,16 @@ void PythonScriptController::script_draw(const core::visual::VisualParams*)
 }
 
 
+void PythonScriptController::handleEvent(core::objectmodel::Event *event)
+{
+    if (event->getEventTypeIndex() == sofa::core::objectmodel::PythonScriptEvent::s_eventTypeIndex)
+    {
+        script_onScriptEvent(static_cast<core::objectmodel::PythonScriptEvent *> (event));
+        simulation::ScriptEnvironment::initScriptNodes();
+    }
+    else ScriptController::handleEvent(event);
+}
+
 
 } // namespace controller
 
