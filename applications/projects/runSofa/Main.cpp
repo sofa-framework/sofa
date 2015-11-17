@@ -60,8 +60,12 @@
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
 #include <sofa/helper/Logger.h>
 #include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glut.h>
 #include <sofa/helper/system/atomic.h>
+
+#ifdef SOFA_HAVE_GLUT
+#include <sofa/helper/system/glut.h>
+#endif // SOFA_HAVE_GLUT
+
 #ifdef SOFA_SMP
 #include <athapascan-1>
 #endif /* SOFA_SMP */
@@ -216,8 +220,10 @@ int main(int argc, char** argv)
 #endif /* SOFA_SMP */
 
 #ifndef SOFA_NO_OPENGL
+#ifdef SOFA_HAVE_GLUT
     if(gui!="batch") glutInit(&argc,argv);
-#endif
+#endif // SOFA_HAVE_GLUT
+#endif // SOFA_NO_OPENGL
 
 #ifdef SOFA_SMP
         if (simulationType == "smp")

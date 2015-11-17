@@ -51,7 +51,8 @@ namespace gl
 
 
 /**
- * This class, called GlText, allow to render text at a 3D position, facing the camera
+ * This class, called GlText, allows to render text in OpenGL, always facing the camera
+ * in 2D (screen) or in 3D (world coordinates)
 */
 
 class SOFA_HELPER_API GlText

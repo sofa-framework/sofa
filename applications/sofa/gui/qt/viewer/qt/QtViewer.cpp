@@ -382,7 +382,6 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     glLineWidth(3.0);
     glScalef(fontScale, fontScale, fontScale);
 
-    //glutStrokeCharacter(GLUT_STROKE_ROMAN, 88);
     helper::gl::GlText::draw('X');
 
     glScalef(1.0f / fontScale, 1.0f / fontScale, 1.0f / fontScale);
@@ -403,7 +402,6 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
     glLineWidth(3.0);
     glScalef(fontScale, fontScale, fontScale);
-    //glutStrokeCharacter(GLUT_STROKE_ROMAN, 89);
     helper::gl::GlText::draw('Y');
     glScalef(1.0f / fontScale, 1.0f / fontScale, 1.0f / fontScale);
     glLineWidth(1.0);
@@ -424,7 +422,6 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     glLineWidth(3.0);
     glScalef(fontScale, fontScale, fontScale);
     helper::gl::GlText::draw('Z');
-    //glutStrokeCharacter(GLUT_STROKE_ROMAN, 90);
     glScalef(1.0f / fontScale, 1.0f / fontScale, 1.0f / fontScale);
     glLineWidth(1.0);
     // --- Undo transforms
@@ -741,7 +738,6 @@ void QtViewer::DisplayMenu(void)
     glColor3f(0.3f, 0.7f, 0.95f);
     glRasterPos2i(_W / 2 - 5, _H - 15);
     //sprintf(buffer,"FPS: %.1f\n", _frameRate.GetFPS());
-    //PrintString(GLUT_BITMAP_HELVETICA_12, buffer);
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
