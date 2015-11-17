@@ -221,14 +221,6 @@ void PostProcessManager::postDrawScene(VisualParams* /*vp*/)
 
 void PostProcessManager::handleEvent(sofa::core::objectmodel::Event* /*event*/)
 {
-    /* if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
-        {
-            switch(ev->getKey())
-            {
-
-            }
-        }
-     */
 }
 
 } //visualmodel

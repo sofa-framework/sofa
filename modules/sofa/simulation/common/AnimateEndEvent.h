@@ -53,6 +53,9 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API AnimateEndEvent : public sofa::core::objectmodel::Event
 {
 public:
+
+    SOFA_EVENT_H( AnimateEndEvent )
+
     AnimateEndEvent( SReal dt );
 
     ~AnimateEndEvent();

@@ -33,6 +33,8 @@ namespace core
 namespace objectmodel
 {
 
+SOFA_EVENT_CPP( DetachNodeEvent )
+
 DetachNodeEvent::DetachNodeEvent(BaseNode* n)
     : node(n)
 {

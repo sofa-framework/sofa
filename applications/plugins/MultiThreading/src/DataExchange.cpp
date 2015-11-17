@@ -38,6 +38,8 @@ namespace sofa
 	namespace core
 	{
 
+        SOFA_EVENT_CPP(DataExchangeEvent)
+
 		SOFA_DECL_CLASS(DataExchange)
 
 // Register in the Factory

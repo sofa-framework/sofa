@@ -36,6 +36,8 @@ namespace core
 namespace objectmodel
 {
 
+SOFA_EVENT_CPP( KeypressedEvent )
+
 KeypressedEvent::KeypressedEvent(char c)
     : Event()
     , m_char(c)

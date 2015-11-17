@@ -22,11 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_INTEGRATEENDEVENT_H
-#define SOFA_SIMULATION_INTEGRATEENDEVENT_H
 
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/common/common.h>
+#include "IntegrateEndEvent.h"
 
 namespace sofa
 {
@@ -34,20 +31,9 @@ namespace sofa
 namespace simulation
 {
 
-/**
-  Event fired by IntegrateVisitor after performing the integrate detection step.
-*/
-class SOFA_SIMULATION_COMMON_API IntegrateEndEvent : public sofa::core::objectmodel::Event
-{
-public:
-
-    SOFA_EVENT_H( IntegrateEndEvent )
-
-    virtual const char* getClassName() const { return "IntegrateEndEvent"; }
-};
+    SOFA_EVENT_CPP( IntegrateEndEvent )
 
 } // namespace simulation
 
 } // namespace sofa
 
-#endif

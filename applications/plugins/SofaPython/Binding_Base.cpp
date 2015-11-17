@@ -35,7 +35,7 @@ using namespace sofa::core::visual;
 
 extern "C" PyObject * Base_findData(PyObject *self, PyObject * args)
 {
-    Base* obj=dynamic_cast<Base*>(((PySPtr<Base>*)self)->object.get());
+    Base* obj=static_cast<Base*>(((PySPtr<Base>*)self)->object.get());
     char *dataName;
     if (!PyArg_ParseTuple(args, "s",&dataName))
         Py_RETURN_NONE;
