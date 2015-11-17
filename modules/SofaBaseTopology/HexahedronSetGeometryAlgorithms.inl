@@ -854,6 +854,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
 
         const sofa::helper::vector<Hexahedron> &hexaArray = this->m_topology->getHexahedra();
 
+        helper::vector<Vector3> positions;
         for (unsigned int i =0; i<hexaArray.size(); i++)
         {
 
@@ -867,14 +868,10 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
             }
 
             center = center/8;
-
-            std::ostringstream oss;
-            oss << i;
-            std::string tmp = oss.str();
-            const char* s = tmp.c_str();
-
-			vparams->drawTool()->draw3DText(center, scale, color4, s);
+            positions.push_back(center);
         }
+
+        vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
     }
 
 

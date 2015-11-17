@@ -104,30 +104,9 @@ void GlText::draw()
     glDisable ( GL_LIGHTING );
 
     const char* s = text.c_str();
-    glPushMatrix();
 
-    glTranslatef ( (float)position[0], (float)position[1], (float)position[2]);
-    glScalef ( (float)scale, (float)scale, (float)scale );
+    GlText::draw(s, position, scale);
 
-    // Makes text always face the viewer by removing the scene rotation
-    // get the current modelview matrix
-    glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
-    modelviewM.transpose();
-
-    Vec3d temp ( position[0],  position[1],  position[2] );
-    temp = modelviewM.transform ( temp );
-
-    glLoadIdentity();
-    glTranslatef ( (float)temp[0], (float)temp[1], (float)temp[2] );
-    glScalef ( (float)scale, (float)scale, (float)scale );
-
-    while ( *s )
-    {
-        glutStrokeCharacter ( GLUT_STROKE_ROMAN, *s );
-        s++;
-    }
-
-    glPopMatrix();
 #endif
 }
 
@@ -138,11 +117,9 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
 
     const unsigned int nb_char_width = 16;
     const unsigned int nb_char_height = 16;
-    const float worldHeight = 1.0 * scale;
-    const float worldWidth = 0.50 * scale;
+    const float worldHeight = 1.0;
+    const float worldWidth = 0.50;
 
-    typedef sofa::helper::fixed_array<float, 3> Vector3;
-    typedef sofa::helper::fixed_array<float, 2> Vector2;
     std::vector<Vector3> vertices;
     std::vector<Vector2> UVs;
 
@@ -160,6 +137,8 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
     glAlphaFunc(GL_GREATER, 0.0);
     s_asciiTexture->init();
     s_asciiTexture->bind();
+
+    glScalef((float)scale, (float)scale, (float)scale);
 
     for (unsigned int j = 0; j < length; j++)
     {
@@ -213,10 +192,7 @@ void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& pos
 {
     if (!s_asciiTexture)
         GlText::initTexture();
-
-    typedef sofa::helper::fixed_array<float, 3> Vector3;
-    typedef sofa::helper::fixed_array<float, 2> Vector2;
-
+    
     defaulttype::Mat<4, 4, GLfloat> modelviewM;
 
     const unsigned int nb_char_width = 16;
@@ -257,7 +233,8 @@ void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& pos
         temp = modelviewM.transform(temp);
 
         glLoadIdentity();
-        glTranslatef((float)temp[0], (float)temp[1], (float)temp[2]);
+        //translate a little bit to center the text on the position (instead of starting from a top-left position)
+        glTranslatef((float)temp[0] - worldWidth*0.5, (float)temp[1] - worldHeight*0.5, (float)temp[2]);
         glScalef((float)scale, (float)scale, (float)scale);
         glRotatef(180.0, 1, 0, 0);
 

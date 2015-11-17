@@ -265,15 +265,11 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
 
 		float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
 
-		for (size_t i = 0; i < vsize; i++)
-		{
-			std::ostringstream oss;
-			oss << i;
-			std::string tmp = oss.str();
-			const char* s = tmp.c_str();
-			Vector3 pos(this->getPX(i), this->getPY(i), this->getPZ(i));
-			vparams->drawTool()->draw3DText(pos, scale, color, s);
-		}
+        helper::vector<Vector3> positions;
+        for (size_t i = 0; i < vsize; ++i)
+            positions.push_back(Vector3(getPX(i), getPY(i), getPZ(i)));
+
+        vparams->drawTool()->draw3DText_Indices(positions, scale, color);
 	}
 
     if (showVectors.getValue())
@@ -503,15 +499,11 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
 
 		float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
 
-		for (size_t i = 0; i < vsize; i++)
-		{
-			std::ostringstream oss;
-			oss << i;
-			std::string tmp = oss.str();
-			const char* s = tmp.c_str();
-			Vector3 pos(this->getPX(i), this->getPY(i), this->getPZ(i));
-			vparams->drawTool()->draw3DText(pos, scale, color, s);
-		}
+        helper::vector<Vector3> positions;
+        for (size_t i = 0; i < vsize; ++i)
+            positions.push_back(Vector3(getPX(i), getPY(i), getPZ(i)));
+
+        vparams->drawTool()->draw3DText_Indices(positions, scale, color);
 	}
 
     if (showVectors.getValue())
@@ -602,15 +594,11 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
 
 		float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
 
-		for (size_t i = 0; i < vsize; i++)
-		{
-			std::ostringstream oss;
-			oss << i;
-			std::string tmp = oss.str();
-			const char* s = tmp.c_str();
-			Vector3 pos(this->getPX(i), this->getPY(i), this->getPZ(i));
-			vparams->drawTool()->draw3DText(pos, scale, color, s);
-		}
+        helper::vector<Vector3> positions;
+        for (size_t i = 0; i < vsize; ++i)
+            positions.push_back(Vector3(getPX(i), getPY(i), getPZ(i)));
+
+        vparams->drawTool()->draw3DText_Indices(positions, scale, color);
 	}
 
     if (showObject.getValue())

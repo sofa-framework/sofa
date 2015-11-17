@@ -248,20 +248,16 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
 
         sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
 
-        float PointIndicesScale = getIndicesScale();
-        //float scale = showIndicesScale.getValue();
+        float scale = getIndicesScale();
 
+        helper::vector<Vector3> positions;
         for (unsigned int i =0; i<coords.size(); i++)
         {
-            std::ostringstream oss;
-            oss << i;
-            std::string tmp = oss.str();
-            const char* s = tmp.c_str();
-            glPushMatrix();
             sofa::defaulttype::Vec3f center; center = DataTypes::getCPos(coords[i]);
-			vparams->drawTool()->draw3DText(center, PointIndicesScale, color4, s);
+            positions.push_back(center);
 
         }
+        vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
     }
 #endif /* SOFA_NO_OPENGL */
 }

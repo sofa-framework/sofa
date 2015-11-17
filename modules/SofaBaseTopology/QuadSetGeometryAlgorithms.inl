@@ -368,6 +368,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
         const sofa::helper::vector<Quad>& quadArray = this->m_topology->getQuads();
 
+        helper::vector<Vector3> positions;
         for (unsigned int i =0; i<quadArray.size(); i++)
         {
 
@@ -378,14 +379,10 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
             Coord vertex4 = coords[ the_quad[3] ];
             sofa::defaulttype::Vec3f center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3)+DataTypes::getCPos(vertex4))/4;
 
-            std::ostringstream oss;
-            oss << i;
-            std::string tmp = oss.str();
-            const char* s = tmp.c_str();
-
-			vparams->drawTool()->draw3DText(center, scale, color4, s);
+            positions.push_back(center);
 
         }
+        vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
     }
 
 
