@@ -43,7 +43,7 @@ namespace objectmodel
     static const size_t s_eventTypeIndex; \
     public:\
     virtual size_t getEventTypeIndex() const { return T::s_eventTypeIndex; } \
-    static bool checkEventType( const Event* event ) { return T::checkEventType(event); }
+    static bool checkEventType( const Event* event ) { return event->getEventTypeIndex() == T::s_eventTypeIndex; }
 
 
 /// this has to be added in the Event implementation file
