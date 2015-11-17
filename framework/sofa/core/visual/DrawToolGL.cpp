@@ -27,11 +27,11 @@
 #include <sofa/core/visual/DrawToolGL.h>
 
 #include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glut.h>
+#include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/Cylinder.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/glText.h>
+#include <sofa/helper/gl/glText.inl>
 #include <cmath>
 
 namespace sofa
@@ -659,17 +659,14 @@ void DrawToolGL::drawQuads(const std::vector<Vector3> &points, const Vec4f& colo
 void DrawToolGL::drawSphere( const Vector3 &p, float radius)
 {
     glPushMatrix();
-    glTranslated(p[0], p[1], p[2]);
-    glutSolidSphere(radius, 32, 16);
+    helper::gl::drawSphere(p, radius, 32, 16);
     glPopMatrix();
 }
 
 void DrawToolGL::drawEllipsoid(const Vector3 &p, const Vector3 &radii)
 {
 	glPushMatrix();
-	glTranslated(p[0], p[1], p[2]);
-	glScale(radii[0], radii[1], radii[2]);
-	glutSolidSphere(1, 32, 16);
+    helper::gl::drawEllipsoid(p, radii[0], radii[1], radii[2], 32, 16);
 	glPopMatrix();
 }
 
@@ -821,8 +818,6 @@ void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const Vec4f 
     GLint viewport[4];
     glGetIntegerv( GL_VIEWPORT, viewport );
 
-
-    //static const float letterSize = (float)glutStrokeWidth( GLUT_STROKE_ROMAN, 'm' );
     static const float letterSize = 0.5;
 
     float scale = fontSize / letterSize;
@@ -867,49 +862,11 @@ void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const Vec4f 
 
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void DrawToolGL::draw3DText(const helper::vector<Vector3> &p, float scale, const Vec4f &color, const char* text)
-{
-	unsigned int i = 0;
-	for (const char*c = text; *c; ++c, ++i)
-	{
-		Vector3 position = (i < p.size()) ? p[i] : *(p.end()-1);
-
-		DrawToolGL::draw3DText(position, scale, color, c);
-	}
-}
-
 void DrawToolGL::draw3DText(const Vector3 &p, float scale, const Vec4f &color, const char* text)
 {
 	glColor4fv(color.ptr());
 	
-	defaulttype::Mat<4, 4, GLfloat> modelviewM;
-
-	glPushMatrix();
-
-	glTranslatef((float)p[0], (float)p[1], (float)p[2]);
-	glScalef(scale, scale, scale);
-
-	// Makes text always face the viewer by removing the scene rotation
-	// get the current modelview matrix
-	glGetFloatv(GL_MODELVIEW_MATRIX, modelviewM.ptr());
-	modelviewM.transpose();
-
-	defaulttype::Vec3d temp(p[0], p[1], p[2]);
-	temp = modelviewM.transform(temp);
-
-	//glLoadMatrixf(modelview);
-	glLoadIdentity();
-
-	glTranslatef((float)temp[0], (float)temp[1], (float)temp[2]);
-	glScalef(scale, scale, scale);
-
-	while(*text)
-	{
-		glutStrokeCharacter(GLUT_STROKE_ROMAN, *text);
-		text++;
-	}
-	glPopMatrix();
-	
+    sofa::helper::gl::GlText::draw(text, p, scale);
 }
 
 void DrawToolGL::draw3DText_Indices(const helper::vector<Vector3> &positions, float scale, const Vec4f &color)

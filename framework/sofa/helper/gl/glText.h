@@ -35,7 +35,6 @@
 
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
-#include <sofa/helper/system/glut.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/gl/Texture.h>
 
@@ -58,6 +57,9 @@ namespace gl
 class SOFA_HELPER_API GlText
 {
 public:
+    typedef sofa::helper::fixed_array<float, 3> Vector3;
+    typedef sofa::helper::fixed_array<float, 2> Vector2;
+
     /// Constructor
     GlText ();
     /// Constructor with specified text
@@ -82,22 +84,17 @@ public:
     /// Render the text at the defined position and scale.
     void draw();
 
-    /// Render the text at the current position with no scale
-    template <typename T>
-    static void draw ( const T& text );
-    /// Render the text at the defined position with no scale
-    template <typename T>
-    static void draw ( const T& text, const defaulttype::Vector3& position );
-    /// Render the text at the defined position and scale
-    template <typename T>
-    static void draw ( const T& text, const defaulttype::Vector3& position, const double& scale );
-
+    ///// Render the text at the current position with no scale
+    //template <typename T>
+    //static void draw ( const T& text );
+    ///// Render the text at the defined position with no scale
+    //template <typename T>
+    //static void draw ( const T& text, const defaulttype::Vector3& position );
 
     /// Render the text at the defined position and scale
     template <typename T>
-    static void textureDraw(const T& text, const defaulttype::Vector3& position, const double& scale);
-
-
+    static void draw ( const T& text, const defaulttype::Vector3& position = defaulttype::Vector3(0.0,0.0,0.0), const double& scale = 1.0);
+    
     static void textureDraw_Overlay(const char* text, const double scale = 1.0);
     static void textureDraw_Indices(const helper::vector<defaulttype::Vector3>& positions, const double& scale);
 

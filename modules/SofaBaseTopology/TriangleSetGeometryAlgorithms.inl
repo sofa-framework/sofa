@@ -2187,6 +2187,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
 
         const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
 
+        helper::vector<Vector3> positions;
         for (unsigned int i =0; i<triangleArray.size(); i++)
         {
 
@@ -2196,13 +2197,10 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
             Coord vertex3 = coords[ the_tri[2] ];
             sofa::defaulttype::Vec3f center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3))/3;
 
-            std::ostringstream oss;
-            oss << i;
-            std::string tmp = oss.str();
-            const char* s = tmp.c_str();
-			vparams->drawTool()->draw3DText(center, scale, color4, s);
+            positions.push_back(center);
 
         }
+        vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
     }
 
 
