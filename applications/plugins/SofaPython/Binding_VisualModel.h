@@ -30,5 +30,6 @@
 #include <SofaBaseVisual/VisualModelImpl.h>
 
 SP_DECLARE_CLASS_TYPE(VisualModel)
+SP_DECLARE_CLASS_TYPE(VisualModelImpl)
 
 #endif
