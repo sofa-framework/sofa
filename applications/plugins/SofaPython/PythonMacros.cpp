@@ -81,6 +81,8 @@ PyObject* SP_BUILD_PYSPTR(Base* obj)
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Topology));
 
     if (dynamic_cast<sofa::component::visualmodel::VisualModelImpl*>(obj))
+        return BuildPySPtr<Base>(obj, &SP_SOFAPYTYPEOBJECT(VisualModelImpl));
+    if (dynamic_cast<sofa::core::visual::VisualModel*>(obj))
 		return BuildPySPtr<Base>(obj, &SP_SOFAPYTYPEOBJECT(VisualModel));
 	if (dynamic_cast<sofa::component::misc::OBJExporter*>(obj))
 		return BuildPySPtr<Base>(obj, &SP_SOFAPYTYPEOBJECT(OBJExporter));
