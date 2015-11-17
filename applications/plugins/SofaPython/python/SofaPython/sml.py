@@ -184,16 +184,16 @@ class Model:
     class Surface:
         def __init__(self):
             self.solid=None # a Model.Solid object
-            self.mesh=None # a Model.Mesh object
-            self.group=None # the id of the group
+            self.mesh=None  # a Model.Mesh object
+            self.group=None # the vertex indices of the group
             self.image=None
 
     class SurfaceLink:
         def __init__(self,objXml=None):
             self.id = None
             self.name = None
-            self.tags = set()
-            self.surfaces = [None,None]
+            self.tags = set()           # user-defined tags
+            self.surfaces = [None,None] # two Model.Surface
             self.distance=None
             if not objXml is None:
                 self.parseXml(objXml)
