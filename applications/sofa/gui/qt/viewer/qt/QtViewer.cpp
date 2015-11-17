@@ -45,8 +45,7 @@
 #include <sofa/gui/qt/GenGraphForm.h>
 
 
-#include <sofa/helper/system/glut.h>
-#include <sofa/helper/gl/glfont.h>
+#include <sofa/helper/gl/glText.inl>
 #include <sofa/helper/gl/RAII.h>
 #ifdef SOFA_HAVE_GLEW
 #include <sofa/helper/gl/GLSLShader.h>
@@ -337,12 +336,8 @@ void QtViewer::initializeGL(void)
 void QtViewer::PrintString(void* font, char* string)
 {
     int len, i;
-
-    len = (int) strlen(string);
-    for (i = 0; i < len; i++)
-    {
-        glutBitmapCharacter(font, string[i]);
-    }
+    
+    helper::gl::GlText::draw(string);
 }
 
 // ---------------------------------------------------------
@@ -354,10 +349,7 @@ void QtViewer::Display3DText(float x, float y, float z, char* string)
 
     glPushMatrix();
     glTranslatef(x, y, z);
-    for (c = string; *c != '\0'; c++)
-    {
-        glutStrokeCharacter(GLUT_STROKE_ROMAN, *c);
-    }
+    helper::gl::GlText::draw(string);
     glPopMatrix();
 }
 
@@ -385,11 +377,14 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     glTranslated(0.0, 0.0, arrowSize);
     gluCylinder(_arrow, arrowSize / 15.0, 0.0, arrowSize / 5.0, 10, 10);
     // ---- Display a "X" near the tip of the arrow
-    glTranslated(-0.5 * fontScale * (double) glutStrokeWidth(GLUT_STROKE_ROMAN,
-            88), arrowSize / 15.0, arrowSize / 5.0);
+    glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
+
     glLineWidth(3.0);
     glScalef(fontScale, fontScale, fontScale);
-    glutStrokeCharacter(GLUT_STROKE_ROMAN, 88);
+
+    //glutStrokeCharacter(GLUT_STROKE_ROMAN, 88);
+    helper::gl::GlText::draw('X');
+
     glScalef(1.0f / fontScale, 1.0f / fontScale, 1.0f / fontScale);
     glLineWidth(1.0f);
     // --- Undo transforms
@@ -405,11 +400,11 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     glTranslated(0.0, 0.0, arrowSize);
     gluCylinder(_arrow, arrowSize / 15.0, 0.0, arrowSize / 5.0, 10, 10);
     // ---- Display a "Y" near the tip of the arrow
-    glTranslated(-0.5 * fontScale * (double) glutStrokeWidth(GLUT_STROKE_ROMAN,
-            89), arrowSize / 15.0, arrowSize / 5.0);
+    glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
     glLineWidth(3.0);
     glScalef(fontScale, fontScale, fontScale);
-    glutStrokeCharacter(GLUT_STROKE_ROMAN, 89);
+    //glutStrokeCharacter(GLUT_STROKE_ROMAN, 89);
+    helper::gl::GlText::draw('Y');
     glScalef(1.0f / fontScale, 1.0f / fontScale, 1.0f / fontScale);
     glLineWidth(1.0);
     // --- Undo transforms
@@ -425,11 +420,11 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     glTranslated(0.0, 0.0, arrowSize);
     gluCylinder(_arrow, arrowSize / 15.0, 0.0, arrowSize / 5.0, 10, 10);
     // ---- Display a "Z" near the tip of the arrow
-    glTranslated(-0.5 * fontScale * (double) glutStrokeWidth(GLUT_STROKE_ROMAN,
-            90), arrowSize / 15.0, arrowSize / 5.0);
+    glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
     glLineWidth(3.0);
     glScalef(fontScale, fontScale, fontScale);
-    glutStrokeCharacter(GLUT_STROKE_ROMAN, 90);
+    helper::gl::GlText::draw('Z');
+    //glutStrokeCharacter(GLUT_STROKE_ROMAN, 90);
     glScalef(1.0f / fontScale, 1.0f / fontScale, 1.0f / fontScale);
     glLineWidth(1.0);
     // --- Undo transforms

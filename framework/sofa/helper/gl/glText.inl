@@ -73,6 +73,15 @@ void GlText::draw(const T& text, const defaulttype::Vector3& position, const dou
     std::vector<Vector3> vertices;
     std::vector<Vector2> UVs;
 
+    glEnable(GL_TEXTURE_2D);
+
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.0);
+
+    s_asciiTexture->init();
+    s_asciiTexture->bind();
+
     glDisable(GL_LIGHTING);
 
     glPushMatrix();
