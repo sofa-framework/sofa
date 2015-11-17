@@ -241,10 +241,16 @@ public:
 
     virtual void handleEvent(sofa::core::objectmodel::Event* event)
     {
-        if (simulation::AnimateBeginEvent* ev = dynamic_cast<simulation::AnimateBeginEvent*>(event))
+        if( event->getEventTypeIndex() == simulation::AnimateBeginEvent::s_eventTypeIndex )
+        {
+            simulation::AnimateBeginEvent* ev = static_cast<simulation::AnimateBeginEvent*>(event);
             animateBegin(ev->getDt(), this->getContext()->getTime());
-        if (simulation::AnimateEndEvent* ev = dynamic_cast<simulation::AnimateEndEvent*>(event))
+        }
+        else if( event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex )
+        {
+            simulation::AnimateEndEvent* ev = static_cast<simulation::AnimateEndEvent*>(event);
             animateEnd(ev->getDt(), this->getContext()->getTime());
+        }
     }
 
     virtual void draw(const core::visual::VisualParams*)
