@@ -184,9 +184,6 @@ void ColorMap::reinit()
 {
     entries.clear();
 
-    min=d_min.getValue();
-    max=d_max.getValue();
-
     unsigned int nColors = f_paletteSize.getValue();
     if (nColors < 2) {
         serr << "Palette size must be greater than or equal to 2.";
@@ -347,8 +344,6 @@ void ColorMap::reinit()
             entries.push_back(Color(hsv2rgb(Color3(i*step,1,1)), 1.0f));
         }
     }
-
-    prepareLegend();
 }
 
 ColorMap* ColorMap::getDefault()
@@ -362,31 +357,12 @@ ColorMap* ColorMap::getDefault()
     return defaultColorMap.get();
 }
 
-void ColorMap::prepareLegend()
-{
-    int width = getNbColors();
-    unsigned char *data = new unsigned char[ width * 3 ];
-
-    for (int i=0; i<width; i++) {
-        Color c = getColor(i);
-        data[i*3+0] = (unsigned char)(c[0]*255);
-        data[i*3+1] = (unsigned char)(c[1]*255);
-        data[i*3+2] = (unsigned char)(c[2]*255);
-    }
-
-    if (texture)
-    {
-        glBindTexture(GL_TEXTURE_1D, texture);
-
-        glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB, width, 0, GL_RGB, GL_UNSIGNED_BYTE,
-            data);
-    }
-
-    delete[] data;
-}
-
 void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
 {
+
+    if (!f_showLegend.getValue()) return;
+
+
     // Prepare texture for legend
     // crashes on mac in batch mode (no GL context)
     if (vparams->isSupported(core::visual::API_OpenGL)
@@ -398,10 +374,26 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
         glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+        int width = getNbColors();
+        unsigned char *data = new unsigned char[ width * 3 ];
+
+        for (int i=0; i<width; i++) {
+            Color c = getColor(i);
+            data[i*3+0] = (unsigned char)(c[0]*255);
+            data[i*3+1] = (unsigned char)(c[1]*255);
+            data[i*3+2] = (unsigned char)(c[2]*255);
+        }
+
+        glBindTexture(GL_TEXTURE_1D, texture);
+
+        glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB, width, 0, GL_RGB, GL_UNSIGNED_BYTE,
+            data);
+
+        delete[] data;
     }
 
 
-    if (!f_showLegend.getValue()) return;
 
     //
     // Draw legend
@@ -465,6 +457,7 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
 
     // Save state and disable clipping plane
     glPushAttrib(GL_ENABLE_BIT);
+    glDisable(GL_LIGHTING);
 	for(int i = 0; i < GL_MAX_CLIP_PLANES; ++i)
 		glDisable(GL_CLIP_PLANE0+i);
 
@@ -472,8 +465,8 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
     //
 
     std::ostringstream smin, smax;
-    smin << min;
-    smax << max;
+    smin << d_min.getValue();
+    smax << d_max.getValue();
 
 	Color textcolor(1.0f, 1.0f, 1.0f, 1.0f);
 

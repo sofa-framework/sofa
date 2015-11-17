@@ -232,7 +232,7 @@ void InputEventReader::getInputEvents()
 
 void InputEventReader::handleEvent(core::objectmodel::Event *event)
 {
-    if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
+    if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
     {
         getInputEvents();
         //Mouse event

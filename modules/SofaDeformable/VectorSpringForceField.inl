@@ -258,8 +258,10 @@ void VectorSpringForceField<DataTypes>::handleEvent( core::objectmodel::Event* e
 {
     if (useTopology)
     {
-        if( sofa::core::objectmodel::KeypressedEvent* ke = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>( e ) )
+        if (sofa::core::objectmodel::KeypressedEvent::checkEventType(e))
         {
+            sofa::core::objectmodel::KeypressedEvent* ke = static_cast<sofa::core::objectmodel::KeypressedEvent*>( e );
+
             /// handle ctrl+d key
             if (ke->getKey()=='D')
             {
