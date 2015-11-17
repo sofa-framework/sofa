@@ -399,7 +399,7 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(const co
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::handleEvent(sofa::core::objectmodel::Event *event)
 {
-    if (event->getEventTypeIndex() == sofa::core::objectmodel::KeypressedEvent::s_eventTypeIndex)
+    if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
     {
         sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
 
@@ -416,7 +416,7 @@ void BilateralInteractionConstraint<DataTypes>::handleEvent(sofa::core::objectmo
     }
 
 
-    if ( event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex )
+    if (simulation::AnimateEndEvent::checkEventType(event) )
     {
         ++iteration;
         if (!activated && activateAtIteration.getValue() >= 0 && activateAtIteration.getValue() <= iteration)

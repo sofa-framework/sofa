@@ -2415,7 +2415,7 @@ void TetrahedronFEMForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::Bas
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::handleEvent(core::objectmodel::Event *event)
 {
-    if (event->getEventTypeIndex()==sofa::simulation::AnimateBeginEvent::s_eventTypeIndex) {
+    if (sofa::simulation::AnimateBeginEvent::checkEventType(event)) {
         if (_updateStiffness.getValue()) {
             //std::cout << this->getName() << " HANDLE EVENT " << std::endl;
             const VecReal& youngModulus = _youngModulus.getValue();

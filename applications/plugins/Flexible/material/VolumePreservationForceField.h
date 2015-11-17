@@ -76,7 +76,7 @@ public:
 
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
-        if ( event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
+        if (simulation::AnimateEndEvent::checkEventType(event))
         {
             if(f_k.isDirty()) reinit();
         }

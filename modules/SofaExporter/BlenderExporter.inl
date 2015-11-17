@@ -88,7 +88,7 @@ namespace sofa
             void BlenderExporter<T>::handleEvent(sofa::core::objectmodel::Event* event)
             {
 
-                if (event->getEventTypeIndex() == simulation::AnimateBeginEvent::s_eventTypeIndex)
+                if (simulation::AnimateBeginEvent::checkEventType(event))
                 {
                     if(!(frameCounter%simulationStep.getValue())) // save a new frame!
                     {

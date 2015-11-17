@@ -98,7 +98,7 @@ void OffSequenceLoader::init()
 void OffSequenceLoader::handleEvent(sofa::core::objectmodel::Event* event)
 {
     //load the next file at the beginning of animation step and if the current file duration is over
-    if (event->getEventTypeIndex() == simulation::AnimateBeginEvent::s_eventTypeIndex)
+    if (simulation::AnimateBeginEvent::checkEventType(event))
     {
         if ( (currentIndex-firstIndex)*stepDuration.getValue() <= this->getContext()->getTime())
         {

@@ -39,8 +39,12 @@ namespace objectmodel
 
 /// this has to be added in the Event class definition (as public)
 #define SOFA_EVENT_H(T) \
+    protected:\
     static const size_t s_eventTypeIndex; \
-    virtual size_t getEventTypeIndex() const { return T::s_eventTypeIndex; } ///< @warning this mechanism will only work for the last derivated type (and not for eventual intermediaries)
+    public:\
+    virtual size_t getEventTypeIndex() const { return T::s_eventTypeIndex; } \
+    static bool checkEventType( const Event* event ) { return T::checkEventType(event); }
+
 
 /// this has to be added in the Event implementation file
 #define SOFA_EVENT_CPP(T) \
@@ -69,14 +73,19 @@ public:
 
     virtual const char* getClassName() const { return "Event"; }
 
-    /// fast Event type comparison with unique indices
+
+    /// \returns unique type index
+    /// for fast Event type comparison with unique indices (see function 'checkEventType')
     /// @warning this mechanism will only work for the last derivated type (and not for eventual intermediaries)
-    virtual size_t getEventTypeIndex() const;
+    /// e.g. for C derivated from B derivated from A, checkEventType will returns true only for C* but false for B* or A*
+    /// Should be implemented by using macros SOFA_EVENT_H / SOFA_EVENT_CPP
+    virtual size_t getEventTypeIndex() const = 0;
 
 protected:
     bool m_handled;
 
-    static size_t s_lastEventTypeIndex; ///< storing the next free id
+
+    static size_t s_lastEventTypeIndex; ///< storing the last given id
 };
 
 } // namespace objectmodel

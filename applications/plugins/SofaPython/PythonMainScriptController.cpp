@@ -193,7 +193,7 @@ void PythonMainScriptController::script_onGUIEvent(const char* controlID, const 
 
 void PythonMainScriptController::script_onScriptEvent(core::objectmodel::ScriptEvent* event)
 {
-    if( event->getEventTypeIndex() == sofa::core::objectmodel::PythonScriptEvent::s_eventTypeIndex)
+    if(sofa::core::objectmodel::PythonScriptEvent::checkEventType(event))
     {
         core::objectmodel::PythonScriptEvent *pyEvent = static_cast<core::objectmodel::PythonScriptEvent*>(event);
 
@@ -210,7 +210,7 @@ void PythonMainScriptController::script_draw(const core::visual::VisualParams*)
 
 void PythonMainScriptController::handleEvent(core::objectmodel::Event *event)
 {
-    if (event->getEventTypeIndex() == sofa::core::objectmodel::PythonScriptEvent::s_eventTypeIndex)
+    if (sofa::core::objectmodel::PythonScriptEvent::checkEventType(event))
     {
         script_onScriptEvent(static_cast<core::objectmodel::PythonScriptEvent *> (event));
         simulation::ScriptEnvironment::initScriptNodes();

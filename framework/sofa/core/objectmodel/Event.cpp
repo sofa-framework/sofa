@@ -58,13 +58,6 @@ bool Event::isHandled() const
     return m_handled;
 }
 
-size_t Event::getEventTypeIndex() const
-{
-    std::cerr<< "ERROR: You forgot to add SOFA_EVENT_H / SOFA_EVENT_CPP macros to your implementation of "<<getClassName()<<std::endl;
-    return 0;
-}
-
-
 } // namespace objectmodel
 
 } // namespace core

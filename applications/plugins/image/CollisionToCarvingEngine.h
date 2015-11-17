@@ -195,7 +195,7 @@ protected:
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
 		
-        if ( event->getEventTypeIndex() == simulation::AnimateBeginEvent::s_eventTypeIndex )
+        if ( simulation::AnimateBeginEvent::checkEventType(event) )
         { 
 			//cout<<"test"<<endl;
 			update();

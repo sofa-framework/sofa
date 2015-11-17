@@ -122,11 +122,11 @@ CompareState::CompareState(): ReadState()
 //-------------------------------- handleEvent-------------------------------------------
 void CompareState::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (/* simulation::AnimateBeginEvent* ev = */ event->getEventTypeIndex() == simulation::AnimateBeginEvent::s_eventTypeIndex)
+    if (/* simulation::AnimateBeginEvent* ev = */simulation::AnimateBeginEvent::checkEventType(event))
     {
         processCompareState();
     }
-    if (/* simulation::AnimateEndEvent* ev = */ event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
+    if (/* simulation::AnimateEndEvent* ev = */simulation::AnimateEndEvent::checkEventType(event))
     {
 
     }

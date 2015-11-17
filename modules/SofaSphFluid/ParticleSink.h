@@ -241,12 +241,12 @@ public:
 
     virtual void handleEvent(sofa::core::objectmodel::Event* event)
     {
-        if( event->getEventTypeIndex() == simulation::AnimateBeginEvent::s_eventTypeIndex )
+        if(simulation::AnimateBeginEvent::checkEventType(event) )
         {
             simulation::AnimateBeginEvent* ev = static_cast<simulation::AnimateBeginEvent*>(event);
             animateBegin(ev->getDt(), this->getContext()->getTime());
         }
-        else if( event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex )
+        else if(simulation::AnimateEndEvent::checkEventType(event) )
         {
             simulation::AnimateEndEvent* ev = static_cast<simulation::AnimateEndEvent*>(event);
             animateEnd(ev->getDt(), this->getContext()->getTime());

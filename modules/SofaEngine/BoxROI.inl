@@ -794,7 +794,7 @@ void BoxROI<DataTypes>::computeBBox(const core::ExecParams*  params , bool /*onl
 template<class DataTypes>
 void BoxROI<DataTypes>::handleEvent(core::objectmodel::Event *event)
 {
-    if (event->getEventTypeIndex() == sofa::simulation::AnimateBeginEvent::s_eventTypeIndex)
+    if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
     {
         setDirtyValue();
         update();

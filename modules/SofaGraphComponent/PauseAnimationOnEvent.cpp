@@ -59,7 +59,7 @@ bool PauseAnimationOnEvent::isPaused()
 
 void PauseAnimationOnEvent::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (event->getEventTypeIndex() == sofa::simulation::PauseEvent::s_eventTypeIndex)
+    if (sofa::simulation::PauseEvent::checkEventType(event))
     {
         paused = true;
         pause();

@@ -90,7 +90,7 @@ public:
 
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
-        if ( event->getEventTypeIndex() == simulation::AnimateEndEvent::s_eventTypeIndex)
+        if (simulation::AnimateEndEvent::checkEventType(event))
         {
             if( f_mu1.isDirty() || f_mu2.isDirty() || f_mu3.isDirty() ||
                  f_alpha1.isDirty() || f_alpha2.isDirty() || f_alpha3.isDirty() ||
