@@ -60,13 +60,13 @@ class SOFA_CORE_API Contact : public virtual objectmodel::BaseObject
 public:
     SOFA_ABSTRACT_CLASS(Contact, objectmodel::BaseObject);
 protected:
-	Contact() {};
+    Contact() {}
     ///Destructor
     virtual ~Contact() { }
 	
 private:
-	Contact(const Contact& n) ;
-	Contact& operator=(const Contact& n) ;
+    Contact(const Contact& n);
+    Contact& operator=(const Contact& n);
 	
 public:
     /// Get the pair of collision models which are in contact
