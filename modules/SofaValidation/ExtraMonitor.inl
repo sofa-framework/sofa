@@ -199,7 +199,7 @@ void ExtraMonitor<DataTypes>::initGnuplot ( const std::string path )
 template<class DataTypes>
 void ExtraMonitor<DataTypes>::handleEvent( core::objectmodel::Event* ev )
 {
-    if (dynamic_cast<sofa::simulation::AnimateEndEvent*>(ev))
+    if (ev->getEventTypeIndex() == sofa::simulation::AnimateEndEvent::s_eventTypeIndex)
     {
         if ( this->saveXToGnuplot.getValue() || this->saveVToGnuplot.getValue() || this->saveFToGnuplot.getValue() || saveWcinToGnuplot.getValue() || saveWextToGnuplot.getValue() )
             exportGnuplot ( (Real) this ->getTime() );

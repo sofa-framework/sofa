@@ -982,8 +982,10 @@ void VTKExporter::writeParallelFile()
 
 void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
 {
-    if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
+    if (event->getEventTypeIndex() == sofa::core::objectmodel::KeypressedEvent::s_eventTypeIndex)
     {
+        sofa::core::objectmodel::KeypressedEvent* ev = static_cast<sofa::core::objectmodel::KeypressedEvent*>(event);
+
         std::cout << "key pressed " << std::endl;
         switch(ev->getKey())
         {

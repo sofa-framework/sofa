@@ -369,7 +369,7 @@ void CurveMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
 template <class TIn, class TOut>
 void CurveMapping<TIn, TOut>::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (dynamic_cast<sofa::simulation::AnimateBeginEvent*>(event))
+    if (event->getEventTypeIndex() == sofa::simulation::AnimateBeginEvent::s_eventTypeIndex)
     {
         if (fabs(velocity.getValue()) > 0.00001)
         {

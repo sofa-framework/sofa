@@ -927,7 +927,7 @@ void LMConstraintSolver::computeKineticEnergy(MultiVecId id)
 
 void LMConstraintSolver::handleEvent(core::objectmodel::Event *e)
 {
-    if (dynamic_cast<sofa::simulation::AnimateBeginEvent*>(e))
+    if (e->getEventTypeIndex() == sofa::simulation::AnimateBeginEvent::s_eventTypeIndex)
     {
         graphGSError.beginEdit()->clear();
         graphGSError.endEdit();
