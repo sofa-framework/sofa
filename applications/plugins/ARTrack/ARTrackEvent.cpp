@@ -32,6 +32,8 @@ namespace core
 
 namespace objectmodel
 {
+    
+SOFA_EVENT_CPP(ARTrackEvent)
 
 ARTrackEvent::ARTrackEvent(const Vector3& position, const Quat& orientation, const sofa::helper::fixed_array<double,3>& angles, const sofa::helper::fixed_array<Vector3,3>& fingersPosition)
     : sofa::core::objectmodel::Event()
