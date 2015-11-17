@@ -41,7 +41,7 @@ public:
     SOFA_CLASS(BaseTopologyObject, core::objectmodel::BaseObject);
 
 protected:
-	BaseTopologyObject() {};
+    BaseTopologyObject() {}
     virtual ~BaseTopologyObject() {}
 
 };
