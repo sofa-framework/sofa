@@ -702,7 +702,6 @@ void QtGLViewer::DisplayMenu(void)
     glColor3f(0.3f, 0.7f, 0.95f);
     glRasterPos2i(_W / 2 - 5, _H - 15);
     //sprintf(buffer,"FPS: %.1f\n", _frameRate.GetFPS());
-    //PrintString(GLUT_BITMAP_HELVETICA_12, buffer);
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();

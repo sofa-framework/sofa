@@ -56,20 +56,17 @@ GlText::GlText()
 }
 
 GlText::GlText ( const string& text )
-    :GlText()
 {
     this->text = text;
 }
 
 GlText::GlText ( const string& text, const defaulttype::Vector3& position )
-    : GlText()
 {
     this->text = text;
     this->position = position;
 }
 
 GlText::GlText ( const string& text, const defaulttype::Vector3& position, const double& scale )
-    :GlText()
 {
     this->text = text;
     this->position = position;
