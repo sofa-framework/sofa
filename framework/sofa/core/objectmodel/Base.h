@@ -82,6 +82,10 @@ namespace topology {
     class BaseTopologyObject;
 } // namespace topology
 namespace collision {
+    class CollisionGroupManager;
+    class ContactManager;
+    class Detection;
+    class Intersection;
     class Pipeline;
 } // namespace collision
 } // namespace core
@@ -487,6 +491,10 @@ public:
     SOFA_BASE_CAST_DEFINITION( topology,    Topology                    )
     SOFA_BASE_CAST_DEFINITION( topology,    BaseMeshTopology            )
     SOFA_BASE_CAST_DEFINITION( topology,    BaseTopologyObject          )
+    SOFA_BASE_CAST_DEFINITION( collision,   CollisionGroupManager       )
+    SOFA_BASE_CAST_DEFINITION( collision,   ContactManager              )
+    SOFA_BASE_CAST_DEFINITION( collision,   Detection                   )
+    SOFA_BASE_CAST_DEFINITION( collision,   Intersection                )
     SOFA_BASE_CAST_DEFINITION( collision,   Pipeline                    )
 
 
