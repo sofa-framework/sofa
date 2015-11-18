@@ -61,6 +61,7 @@ class CollisionGroupManager : public virtual CollisionAlgorithm
 {
 public:
     SOFA_ABSTRACT_CLASS(CollisionGroupManager, CollisionAlgorithm);
+    SOFA_BASE_CAST_IMPLEMENTATION(CollisionGroupManager)
 
 protected:
     /// integration groups
