@@ -103,6 +103,7 @@ public:
     virtual void drawCapsule(const Vector3& p1, const Vector3 &p2, float radius, const Vec4f& colour,  int subd=16) = 0 ;
 
     virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, const Vec4f& colour,  int subd=16) = 0 ;
+    virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, float coneLength, const Vec4f& colour,  int subd=16) = 0 ;
 
     /// Draw a plus sign of size one centered on the current point.
     virtual void drawPlus    (const float& radius, const Vec4f& colour, const int& subd=16) = 0 ;
