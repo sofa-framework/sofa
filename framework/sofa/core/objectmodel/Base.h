@@ -57,6 +57,7 @@ namespace core {
     class DataEngine;
     class DevBaseMonitor;
 namespace objectmodel {
+    class BaseContext;
     class BaseObject;
     class BaseNode;
     class ContextObject;
@@ -74,6 +75,7 @@ namespace behavior {
     class BaseProjectiveConstraintSet;
     class BaseConstraintSet;
     class BaseConstraint;
+    class BaseLMConstraint;
 } // namespace behavior
 namespace visual {
     class VisualModel;
@@ -481,6 +483,7 @@ public:
     SOFA_BASE_CAST_DEFINITION( core,        CollisionModel              )
     SOFA_BASE_CAST_DEFINITION( core,        DataEngine                  )
     SOFA_BASE_CAST_DEFINITION( core,        DevBaseMonitor              )
+    SOFA_BASE_CAST_DEFINITION( objectmodel, BaseContext                 )
     SOFA_BASE_CAST_DEFINITION( objectmodel, BaseObject                  )
     SOFA_BASE_CAST_DEFINITION( objectmodel, BaseNode                    )
     SOFA_BASE_CAST_DEFINITION( objectmodel, ContextObject               )
@@ -496,6 +499,7 @@ public:
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseProjectiveConstraintSet )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraintSet           )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraint              )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseLMConstraint            )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualModel                 )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualManager               )
     SOFA_BASE_CAST_DEFINITION( visual,      VisualLoop                  )

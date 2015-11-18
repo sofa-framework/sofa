@@ -73,6 +73,7 @@ class SOFA_CORE_API BaseContext : public virtual Base
 {
 public:
     SOFA_CLASS(BaseContext, Base);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseContext)
 
     /// @name Types defined for local coordinate system handling
     /// @{
