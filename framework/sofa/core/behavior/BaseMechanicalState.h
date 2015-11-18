@@ -76,6 +76,7 @@ class SOFA_CORE_API BaseMechanicalState : public virtual BaseState
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseMechanicalState, BaseState);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseMechanicalState)
 protected:
     BaseMechanicalState();
 

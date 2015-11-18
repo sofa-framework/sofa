@@ -63,6 +63,7 @@ namespace behavior {
     class LinearSolver;
     class ConstraintSolver;
     class BaseMass;
+    class BaseMechanicalState;
     class BaseInteractionForceField;
     class BaseForceField;
     class BaseProjectiveConstraintSet;
@@ -472,6 +473,7 @@ public:
     SOFA_BASE_CAST_DEFINITION( behavior,    LinearSolver                )
     SOFA_BASE_CAST_DEFINITION( behavior,    ConstraintSolver            )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseMass                    )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseMechanicalState         )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseInteractionForceField   )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseForceField              )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseProjectiveConstraintSet )
