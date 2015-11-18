@@ -54,6 +54,7 @@ namespace core {
     class CollisionModel;
 namespace objectmodel {
     class BaseObject;
+    class BaseNode;
     class ContextObject;
     class ConfigurationSetting;
 } // namespace objectmodel
@@ -466,6 +467,7 @@ public:
     SOFA_BASE_CAST_DEFINITION( core,        BehaviorModel               )
     SOFA_BASE_CAST_DEFINITION( core,        CollisionModel              )
     SOFA_BASE_CAST_DEFINITION( objectmodel, BaseObject                  )
+    SOFA_BASE_CAST_DEFINITION( objectmodel, BaseNode                    )
     SOFA_BASE_CAST_DEFINITION( objectmodel, ContextObject               )
     SOFA_BASE_CAST_DEFINITION( objectmodel, ConfigurationSetting        )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseAnimationLoop           )
