@@ -62,9 +62,9 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/atomic.h>
 
-#ifdef SOFA_HAVE_GLUT
+#ifdef SOFA_HAVE_GLUT_GUI
 #include <sofa/helper/system/glut.h>
-#endif // SOFA_HAVE_GLUT
+#endif // SOFA_HAVE_GLUT_GUI
 
 #ifdef SOFA_SMP
 #include <athapascan-1>
@@ -220,9 +220,9 @@ int main(int argc, char** argv)
 #endif /* SOFA_SMP */
 
 #ifndef SOFA_NO_OPENGL
-#ifdef SOFA_HAVE_GLUT
+#ifdef SOFA_HAVE_GLUT_GUI
     if(gui!="batch") glutInit(&argc,argv);
-#endif // SOFA_HAVE_GLUT
+#endif // SOFA_HAVE_GLUT_GUI
 #endif // SOFA_NO_OPENGL
 
 #ifdef SOFA_SMP
