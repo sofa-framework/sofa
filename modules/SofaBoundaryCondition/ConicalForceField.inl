@@ -31,8 +31,6 @@
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/rmath.h>
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glut.h>
 #include <assert.h>
 #include <iostream>
 
@@ -179,33 +177,12 @@ void ConicalForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
     glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_BLEND) ;
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) ;
-    glColor4f(color.getValue()[0],color.getValue()[1],color.getValue()[2], 0.5);
+    sofa::defaulttype::Vec4f color4(color.getValue()[0], color.getValue()[1], color.getValue()[2], 0.5);
 
     glPushMatrix();
-    glTranslated(c[0], c[1], c[2]);
-    glRotated(acos(height*Coord(0,0,1)/h)*180/M_PI ,-axis[0], axis[1], axis[2]);
-    glRotatef(180.0,1.0,0.0,0.0);
-    glTranslated(0.0, 0.0, -h);
-
-    glutSolidCone( b, h, 32, 16);
+    vparams->drawTool()->drawCone(c, c+height, 0, b, color4);
     glPopMatrix();
 
-    /*    glPushMatrix();
-
-        glColor3f(1.0,0.0,0.0);
-        glPointSize (16.0);
-        glBegin (GL_POINTS);
-        for (unsigned int i = 0 ; i <contacts.getValue().size() ; i++)
-    	{
-
-    	glVertex3f(contacts.getValue()[i].pos[0], contacts.getValue()[i].pos[1],contacts.getValue()[i].pos[2]);
-    	//glVertex3f(contacts.getValue()[i].pos[0]+contacts.getValue()[i].normal[0],
-    	//	   contacts.getValue()[i].pos[1]+contacts.getValue()[i].normal[1],
-    	//	   contacts.getValue()[i].pos[2]+contacts.getValue()[i].normal[2]);
-
-    	}
-    	glEnd();
-        glPopMatrix();*/
     glDisable(GL_BLEND) ;
     glDisable(GL_LIGHTING);
     glDisable(GL_COLOR_MATERIAL);

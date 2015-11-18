@@ -56,7 +56,7 @@ class VisualParams;
 class SOFA_CORE_API VisualModel : public virtual objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(VisualModel, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(VisualModel, objectmodel::BaseObject);
 protected:
     /// Destructor
     virtual ~VisualModel() { }

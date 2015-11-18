@@ -26,7 +26,6 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glut.h>
 #include <sofa/helper/gl/RAII.h>
 #include <sofa/helper/gl/GLSLShader.h>
 #include <sofa/helper/vector.h>

@@ -15,7 +15,6 @@
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glut.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/common/Simulation.h>

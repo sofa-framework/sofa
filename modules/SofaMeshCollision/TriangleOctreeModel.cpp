@@ -34,7 +34,6 @@
 
 #include <cmath>
 #include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glut.h>
 
 namespace sofa
 {

@@ -35,7 +35,8 @@
 
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
-#include <sofa/helper/system/glut.h>
+#include <sofa/helper/fixed_array.h>
+#include <sofa/helper/gl/Texture.h>
 
 #include <sofa/helper/helper.h>
 
@@ -50,12 +51,16 @@ namespace gl
 
 
 /**
- * This class, called GlText, allow to render text at a 3D position, facing the camera
+ * This class, called GlText, allows to render text in OpenGL, always facing the camera
+ * in 2D (screen) or in 3D (world coordinates)
 */
 
 class SOFA_HELPER_API GlText
 {
 public:
+    typedef sofa::helper::fixed_array<float, 3> Vector3;
+    typedef sofa::helper::fixed_array<float, 2> Vector2;
+
     /// Constructor
     GlText ();
     /// Constructor with specified text
@@ -80,17 +85,28 @@ public:
     /// Render the text at the defined position and scale.
     void draw();
 
-    /// Render the text at the current position with no scale
-    template <typename T>
-    static void draw ( const T& text );
-    /// Render the text at the defined position with no scale
-    template <typename T>
-    static void draw ( const T& text, const defaulttype::Vector3& position );
+    ///// Render the text at the current position with no scale
+    //template <typename T>
+    //static void draw ( const T& text );
+    ///// Render the text at the defined position with no scale
+    //template <typename T>
+    //static void draw ( const T& text, const defaulttype::Vector3& position );
+
     /// Render the text at the defined position and scale
     template <typename T>
-    static void draw ( const T& text, const defaulttype::Vector3& position, const double& scale );
+    static void draw ( const T& text, const defaulttype::Vector3& position = defaulttype::Vector3(0.0,0.0,0.0), const double& scale = 1.0);
+    
+    static void textureDraw_Overlay(const char* text, const double scale = 1.0);
+    static void textureDraw_Indices(const helper::vector<defaulttype::Vector3>& positions, const double& scale);
 
 private:
+    static void initTexture();
+
+    static const std::string ASCII_TEXTURE_PATH;
+
+    static sofa::helper::io::Image *s_asciiImage;
+    static sofa::helper::gl::Texture* s_asciiTexture;
+
     double scale;
     std::string text;
     defaulttype::Vector3 position;

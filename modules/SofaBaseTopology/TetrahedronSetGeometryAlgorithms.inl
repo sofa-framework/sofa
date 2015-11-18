@@ -820,7 +820,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
 
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-        glColor3f(color[0], color[1], color[2]);
+        defaulttype::Vec4f color4(color[0] - 0.2f, color[1] - 0.2f, color[2] - 0.2f, 1.0);
         glDisable(GL_LIGHTING);
         float scale = this->getIndicesScale();
 
@@ -829,6 +829,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
 
         const sofa::helper::vector<Tetrahedron> &tetraArray = this->m_topology->getTetrahedra();
 
+        helper::vector<defaulttype::Vector3> positions;
         for (unsigned int i =0; i<tetraArray.size(); i++)
         {
 
@@ -837,39 +838,12 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
             Coord vertex2 = coords[ the_tetra[1] ];
             Coord vertex3 = coords[ the_tetra[2] ];
             Coord vertex4 = coords[ the_tetra[3] ];
-            sofa::defaulttype::Vec3f center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3)+DataTypes::getCPos(vertex4))/4;
+            defaulttype::Vector3 center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3)+DataTypes::getCPos(vertex4))/4;
 
-            std::ostringstream oss;
-            oss << i;
-            std::string tmp = oss.str();
-            const char* s = tmp.c_str();
-            glPushMatrix();
-
-            glTranslatef(center[0], center[1], center[2]);
-            glScalef(scale,scale,scale);
-
-            // Makes text always face the viewer by removing the scene rotation
-            // get the current modelview matrix
-            glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
-            modelviewM.transpose();
-
-            sofa::defaulttype::Vec3f temp = modelviewM.transform(center);
-
-            //glLoadMatrixf(modelview);
-            glLoadIdentity();
-
-            glTranslatef(temp[0], temp[1], temp[2]);
-            glScalef(scale,scale,scale);
-
-            while(*s)
-            {
-                glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
-                s++;
-            }
-
-            glPopMatrix();
+            positions.push_back(center);
 
         }
+        vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
     }
 
 

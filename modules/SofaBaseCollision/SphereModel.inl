@@ -36,7 +36,6 @@
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glut.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/common/Simulation.h>
@@ -110,17 +109,11 @@ void TSphereModel<DataTypes>::init()
 
 
 template<class DataTypes>
-void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* ,int index)
+void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int index)
 {
-#ifndef SOFA_NO_OPENGL
     TSphere<DataTypes> t(this,index);
 
-    sofa::defaulttype::Vector3 p = t.p();
-    glPushMatrix();
-    glTranslated(p[0], p[1], p[2]);
-    glutSolidSphere(t.r(), 32, 16);
-    glPopMatrix();
-#endif /* SOFA_NO_OPENGL */
+	vparams->drawTool()->drawSphere(t.p(), t.r());
 }
 
 

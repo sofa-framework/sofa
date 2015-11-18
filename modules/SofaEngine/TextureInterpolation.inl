@@ -31,7 +31,6 @@
 
 #include <SofaEngine/TextureInterpolation.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/glut.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
 
@@ -257,7 +256,7 @@ void TextureInterpolation<DataTypes>::standardLinearInterpolation()
 
 
 template <class DataTypes>
-void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* )
+void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* vparams )
 {
 #ifndef SOFA_NO_OPENGL
     // to force update. getX() must have call to endEdit()
@@ -305,8 +304,6 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* )
 
 
         sofa::simulation::Node* context = static_cast<sofa::simulation::Node*>(this->getContext());
-        glColor3f(1.0,1.0,1.0);
-        glDisable(GL_LIGHTING);
         sofa::simulation::getSimulation()->computeBBox(context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
 
         if (sceneMinBBox[0] > 10000000) // hack when BB is not found
@@ -317,39 +314,15 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* )
 
         // Recompute, in case Box has moved.
         float scale = (float)(sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
-
+        sofa::defaulttype::Vector4 color4(1.0,1.0,1.0,1.0);
         for (unsigned int i = 0; i<nbr; i++)
         {
             std::ostringstream oss;
             oss << (float)potentiels[i][0];
             std::string tmp = oss.str();
             const char* s = tmp.c_str();
-            glPushMatrix();
 
-            glTranslatef((float)coords[i][0], (float)coords[i][1], (float)coords[i][2]);
-            glScalef(scale, scale, scale);
-
-            // Makes text always face the viewer by removing the scene rotation
-            // get the current modelview matrix
-            glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
-            modelviewM.transpose();
-
-            sofa::defaulttype::Vec3d temp(coords[i][0], coords[i][1], coords[i][2]);
-            temp = modelviewM.transform(temp);
-
-            //glLoadMatrixf(modelview);
-            glLoadIdentity();
-
-            glTranslatef((float)temp[0], (float)temp[1], (float)temp[2]);
-            glScalef(scale, scale, scale);
-
-            while(*s)
-            {
-                glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
-                s++;
-            }
-
-            glPopMatrix();
+            vparams->drawTool()->draw3DText(coords[i], scale, color4, s);
 
         }
     }
