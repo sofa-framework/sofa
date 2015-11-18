@@ -44,6 +44,8 @@
 #include <string>
 #include <map>
 
+#include <sofa/helper/logging/Messaging.h>
+
 namespace sofa
 {
 
@@ -275,9 +277,13 @@ public:
     ///   Messages and warnings logging
     /// @{
 
-    mutable sofa::helper::system::SofaOStream<Base> sendl;
-    mutable std::ostringstream                      serr;
-    mutable std::ostringstream                      sout;
+    //mutable sofa::helper::system::SofaOStream<Base> sendl;
+    #define sendl
+    #define serr msg_error(this->getName())
+    #define sout msg_info(this->getName())
+    #define swarn msg_warning(this->getName())
+    //mutable std::ostringstream                      serr;
+    //mutable std::ostringstream                      sout;
 
     const std::string& getWarnings() const;
     const std::string& getOutputs() const;
