@@ -62,6 +62,7 @@ class SOFA_CORE_API BaseForceField : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseForceField, objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseForceField)
 protected:
     BaseForceField();
     virtual ~BaseForceField() {}

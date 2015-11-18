@@ -46,6 +46,7 @@ class SOFA_CORE_API BaseConstraintSet : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseConstraintSet, objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseConstraintSet)
 
 protected:
     BaseConstraintSet()

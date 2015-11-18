@@ -57,6 +57,7 @@ class SOFA_CORE_API Pipeline : public virtual sofa::core::objectmodel::BaseObjec
 {
 public:
     SOFA_ABSTRACT_CLASS(Pipeline, sofa::core::objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(Pipeline)
 
 protected:
 

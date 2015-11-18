@@ -57,6 +57,7 @@ class SOFA_CORE_API VisualModel : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(VisualModel, objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(VisualModel)
 protected:
     /// Destructor
     virtual ~VisualModel() { }

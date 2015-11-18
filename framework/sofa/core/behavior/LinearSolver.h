@@ -71,6 +71,7 @@ class SOFA_CORE_API LinearSolver : public BaseLinearSolver
 {
 public:
     SOFA_ABSTRACT_CLASS(LinearSolver, BaseLinearSolver);
+    SOFA_BASE_CAST_IMPLEMENTATION(LinearSolver)
 protected:
     LinearSolver();
 

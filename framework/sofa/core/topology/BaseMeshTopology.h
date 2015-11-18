@@ -54,6 +54,7 @@ class SOFA_CORE_API BaseMeshTopology : public core::topology::Topology
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseMeshTopology, core::topology::Topology);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseMeshTopology)
 
     typedef sofa::helper::vector<Edge> 		        SeqEdges;
     typedef sofa::helper::vector<Triangle>		        SeqTriangles;

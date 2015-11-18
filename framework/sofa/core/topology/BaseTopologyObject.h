@@ -39,6 +39,7 @@ class SOFA_CORE_API BaseTopologyObject : public virtual core::objectmodel::BaseO
 {
 public:
     SOFA_CLASS(BaseTopologyObject, core::objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseTopologyObject)
 
 protected:
     BaseTopologyObject() {}

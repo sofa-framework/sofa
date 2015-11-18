@@ -135,6 +135,7 @@ public:
 
 
     SOFA_CLASS(Topology, core::objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(Topology)
 protected:
     Topology():BaseObject() {}
     virtual ~Topology()

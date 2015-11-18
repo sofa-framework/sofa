@@ -42,6 +42,7 @@ class VisualManager : public virtual VisualModel
 {
 public:
     SOFA_CLASS(VisualManager, VisualModel);
+    SOFA_BASE_CAST_IMPLEMENTATION(VisualManager)
 protected:
     /// Destructor
     virtual ~VisualManager() { }

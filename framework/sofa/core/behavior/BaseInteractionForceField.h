@@ -50,6 +50,7 @@ class SOFA_CORE_API BaseInteractionForceField : public BaseForceField
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseInteractionForceField, BaseForceField);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseInteractionForceField)
 
     /// Get the first MechanicalState
     /// \todo Rename to getMechState1()
