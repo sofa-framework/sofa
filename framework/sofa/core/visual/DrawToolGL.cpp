@@ -750,7 +750,7 @@ void DrawToolGL::setLightingEnabled(bool _isAnabled)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void DrawToolGL::setMaterial(const Vec<4,float> &colour,std::string)
+void DrawToolGL::setMaterial(const Vec<4,float> &colour)
 {
     glColor4f(colour[0],colour[1],colour[2],colour[3]);
     glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, &colour[0]);
@@ -774,13 +774,18 @@ void DrawToolGL::setMaterial(const Vec<4,float> &colour,std::string)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void DrawToolGL::resetMaterial(const Vec<4,float> &colour,std::string)
+void DrawToolGL::resetMaterial(const Vec<4,float> &colour)
 {
     if (colour[3] < 1)
     {
-        glDisable(GL_BLEND);
-        glDepthMask(1);
+        resetMaterial();
     }
+}
+
+void DrawToolGL::resetMaterial()
+{
+    glDisable(GL_BLEND);
+    glDepthMask(1);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
