@@ -171,7 +171,7 @@ void ConicalForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
     const Real h = sqrt(pow(coneHeight.getValue()[0],2) + pow(coneHeight.getValue()[1],2) +	pow(coneHeight.getValue()[2],2));
     const Real b = (Real)tan((a/180*M_PI)) * h;
     const Coord c = coneCenter.getValue();
-    Coord axis = height.cross(Coord(0,0,1));
+//    Coord axis = height.cross(Coord(0,0,1));
 
     glEnable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);
