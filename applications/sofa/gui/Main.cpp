@@ -78,6 +78,10 @@ int QGLViewerGUIClass = GUIManager::RegisterGUI ( "qglviewer", &qt::RealGUI::Cre
 int QtGUIClass = GUIManager::RegisterGUI ( "qt", &qt::RealGUI::CreateGUI, &qt::RealGUI::InitGUI, 2 );
 #endif
 
+#ifdef SOFA_GUI_EDITORVIEWER
+int EditorGUIClass = GUIManager::RegisterGUI ( "editor", &qt::RealGUI::CreateGUI, &qt::RealGUI::InitGUI, 4 );
+#endif
+
 } // namespace gui
 
 } // namespace sofa
