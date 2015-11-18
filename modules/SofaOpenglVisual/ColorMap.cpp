@@ -418,6 +418,7 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
     glDisable(GL_LIGHTING);
     glDisable(GL_BLEND);
 
+    // disable clipping planes
 	for(int i = 0; i < GL_MAX_CLIP_PLANES; ++i)
 		glDisable(GL_CLIP_PLANE0+i);
 
@@ -460,22 +461,11 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
 
-    // Restore state
-    glPopAttrib();
-
-    // Save state and disable clipping plane
-    glPushAttrib(GL_ENABLE_BIT);
-    glDisable(GL_LIGHTING);
-	for(int i = 0; i < GL_MAX_CLIP_PLANES; ++i)
-		glDisable(GL_CLIP_PLANE0+i);
 
     // Maximum & minimum
-    //
-
     std::ostringstream smin, smax;
     smin << d_min.getValue();
     smax << d_max.getValue();
-
 
     static const Color whiteTextcolor(1.0f, 1.0f, 1.0f, 1.0f);
     static const Color blackTextcolor(0.0f, 0.0f, 0.0f, 1.0f);

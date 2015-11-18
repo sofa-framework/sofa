@@ -135,9 +135,10 @@ public:
 
     virtual void clear();
 
-    virtual void setMaterial(const Vec4f &colour, std::string name=std::string());
+    virtual void setMaterial(const Vec4f &colour);
 
-    virtual void resetMaterial(const Vec4f &colour, std::string name=std::string());
+    virtual void resetMaterial(const Vec4f &colour);
+    virtual void resetMaterial();
 
     virtual void pushMatrix();
     virtual void popMatrix();

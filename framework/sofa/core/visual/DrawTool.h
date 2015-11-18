@@ -154,9 +154,10 @@ public:
     /// @}
 
     /// @name Drawing style methods.
-    virtual void setMaterial(const Vec4f &colour, std::string name=std::string()) = 0 ;
+    virtual void setMaterial(const Vec4f &colour) = 0 ;
 
-    virtual void resetMaterial(const Vec4f &colour, std::string name=std::string()) = 0 ;
+    virtual void resetMaterial(const Vec4f &colour) = 0 ;
+    virtual void resetMaterial() = 0 ;
 
     virtual void setPolygonMode(int _mode, bool _wireframe) = 0 ;
 
