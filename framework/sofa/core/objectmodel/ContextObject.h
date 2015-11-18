@@ -44,6 +44,7 @@ class ContextObject : public virtual BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(ContextObject, BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(ContextObject)
 protected:
     ContextObject()
         : BaseObject()

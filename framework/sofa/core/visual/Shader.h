@@ -46,6 +46,7 @@ class SOFA_CORE_API Shader : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(Shader, objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(Shader)
 protected:
     Shader() {}
     /// Destructor

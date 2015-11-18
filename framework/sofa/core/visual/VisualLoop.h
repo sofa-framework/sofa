@@ -48,6 +48,7 @@ class SOFA_CORE_API VisualLoop : public virtual VisualModel
 {
 public:
     SOFA_CLASS(VisualLoop, VisualModel);
+    SOFA_BASE_CAST_IMPLEMENTATION(VisualLoop)
 protected:
     /// Destructor
     virtual ~VisualLoop() { }

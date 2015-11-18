@@ -55,6 +55,7 @@ class SOFA_CORE_API BaseMass : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseMass, objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseMass)
 protected:
     BaseMass()
         : m_separateGravity (initData(&m_separateGravity , false, "separateGravity", "add separately gravity to velocity computation"))

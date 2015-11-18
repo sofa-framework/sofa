@@ -44,6 +44,60 @@
 #include <string>
 #include <map>
 
+
+// forward declaration of castable classes
+namespace sofa {
+namespace core {
+    class BaseState;
+    class BaseMapping;
+    class BehaviorModel;
+    class CollisionModel;
+namespace objectmodel {
+    class BaseObject;
+    class ContextObject;
+    class ConfigurationSetting;
+} // namespace objectmodel
+namespace behavior {
+    class BaseAnimationLoop;
+    class OdeSolver;
+    class LinearSolver;
+    class ConstraintSolver;
+    class BaseMass;
+    class BaseInteractionForceField;
+    class BaseForceField;
+    class BaseProjectiveConstraintSet;
+    class BaseConstraintSet;
+} // namespace behavior
+namespace visual {
+    class VisualModel;
+    class VisualManager;
+    class VisualLoop;
+    class Shader;
+} // namespace visual
+namespace topology {
+    class Topology;
+    class BaseMeshTopology;
+    class BaseTopologyObject;
+} // namespace topology
+namespace collision {
+    class Pipeline;
+} // namespace collision
+} // namespace core
+} // namespace sofa
+
+// VisitorScheduler
+
+
+#define SOFA_BASE_CAST_DEFINITION(NAMESPACE,CLASSNAME) \
+virtual const NAMESPACE::CLASSNAME* to##CLASSNAME() const { return NULL; } \
+virtual       NAMESPACE::CLASSNAME* to##CLASSNAME()       { return NULL; }
+
+#define SOFA_BASE_CAST_IMPLEMENTATION(CLASSNAME) \
+virtual const CLASSNAME* to##CLASSNAME() const { return this; } \
+virtual       CLASSNAME* to##CLASSNAME()       { return this; }
+
+
+
 namespace sofa
 {
 
@@ -396,7 +450,48 @@ public:
 
     Data< sofa::defaulttype::BoundingBox > f_bbox;
 
+
+    /// @name casting
+    ///   trivial cast to a few base components
+    ///   through virtual functions
+    ///   returns NULL by default
+    ///   must be specialized in each type implementation to return a pointer of this type
+    /// @{
+    ///
+public:
+
+    SOFA_BASE_CAST_DEFINITION( core,        BaseState                   )
+    SOFA_BASE_CAST_DEFINITION( core,        BaseMapping                 )
+    SOFA_BASE_CAST_DEFINITION( core,        BehaviorModel               )
+    SOFA_BASE_CAST_DEFINITION( core,        CollisionModel              )
+    SOFA_BASE_CAST_DEFINITION( objectmodel, BaseObject                  )
+    SOFA_BASE_CAST_DEFINITION( objectmodel, ContextObject               )
+    SOFA_BASE_CAST_DEFINITION( objectmodel, ConfigurationSetting        )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseAnimationLoop           )
+    SOFA_BASE_CAST_DEFINITION( behavior,    OdeSolver                   )
+    SOFA_BASE_CAST_DEFINITION( behavior,    LinearSolver                )
+    SOFA_BASE_CAST_DEFINITION( behavior,    ConstraintSolver            )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseMass                    )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseInteractionForceField   )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseForceField              )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseProjectiveConstraintSet )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraintSet           )
+    SOFA_BASE_CAST_DEFINITION( visual,      VisualModel                 )
+    SOFA_BASE_CAST_DEFINITION( visual,      VisualManager               )
+    SOFA_BASE_CAST_DEFINITION( visual,      VisualLoop                  )
+    SOFA_BASE_CAST_DEFINITION( visual,      Shader                      )
+    SOFA_BASE_CAST_DEFINITION( topology,    Topology                    )
+    SOFA_BASE_CAST_DEFINITION( topology,    BaseMeshTopology            )
+    SOFA_BASE_CAST_DEFINITION( topology,    BaseTopologyObject          )
+    SOFA_BASE_CAST_DEFINITION( collision,   Pipeline                    )
+
+
+    /// @}
 };
+
+
+
+
 
 } // namespace objectmodel
 
