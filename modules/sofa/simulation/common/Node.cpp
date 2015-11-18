@@ -848,7 +848,7 @@ void Node::initialize()
     //     // Put the OdeSolver, if any, in first position. This makes sure that the OdeSolver component is initialized only when all its sibling and children components are already initialized.
     //     /// @todo Putting the solver first means that it will be initialized *before* any sibling or childrens. Is that what we want? -- Jeremie A.
     //     Sequence<BaseObject>::iterator i=object.begin(), iend=object.end();
-    //     for ( ; i!=iend && dynamic_cast<core::behavior::OdeSolver*>(*i)==NULL; i++ ) // find the OdeSolver
+    //     for ( ; i!=iend && i->toOdeSolver()==NULL; i++ ) // find the OdeSolver
     //         {}
     //     if ( i!=iend && !object.empty() ) // found
     //     {
