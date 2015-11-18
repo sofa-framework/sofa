@@ -16,7 +16,6 @@ set(HEADER_FILES
     LCPSolver.h
     LCPSolver.inl
     LCPcalc.h
-    Logger.h
     MarchingCubeUtility.h
     MatEigen.h
     MemoryManager.h
@@ -96,7 +95,6 @@ set(HEADER_FILES
     vectorData.h
     vector_algebra.h
     vector_device.h
-	Logger.h
     logging/Messaging.h
     logging/Message.h
     logging/MessageDispatcher.h
@@ -119,7 +117,6 @@ set(SOURCE_FILES
     Factory.cpp
     GenerateRigid.cpp
     LCPcalc.cpp
-    Logger.cpp
     MarchingCubeUtility.cpp
     OptionsGroup.cpp
     StateMask.cpp
@@ -166,7 +163,6 @@ set(SOURCE_FILES
     system/thread/CircularQueue.cpp
     system/thread/debug.cpp
     vector.cpp
-	Logger.cpp
     logging/Message.cpp
     logging/MessageDispatcher.cpp
     logging/ClangStyleMessageFormatter.cpp

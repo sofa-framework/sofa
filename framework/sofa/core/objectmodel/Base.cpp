@@ -24,11 +24,12 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/helper/Logger.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <map>
 #include <typeinfo>
 #include <string.h>
 #include <sstream>
+
 
 namespace sofa
 {
