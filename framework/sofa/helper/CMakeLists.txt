@@ -87,7 +87,6 @@ set(HEADER_FILES
     system/console.h
     system/gl.h
     system/glu.h
-    system/glut.h
     system/thread/CTime.h
     system/thread/CircularQueue.h
     system/thread/CircularQueue.inl
@@ -189,25 +188,6 @@ if(Boost_thread_FOUND)
 endif()
 
 if(NOT SOFA_NO_OPENGL)
-
-    if(SOFA_HAVE_GLUT)
-        list(APPEND HEADER_FILES
-            gl/Axis.h
-            gl/BasicShapes.h
-            gl/Cylinder.h
-            gl/Trackball.h
-            gl/Transformation.h
-            gl/glText.h
-            gl/glText.inl
-            system/glut.h
-        )
-        list(APPEND SOURCE_FILES
-            gl/Axis.cpp
-            gl/Cylinder.cpp
-            gl/glText.cpp
-        )
-    endif()
-
     list(APPEND HEADER_FILES
         gl/Capture.h
         gl/Color.h
@@ -216,14 +196,29 @@ if(NOT SOFA_NO_OPENGL)
         gl/template.h
         system/gl.h
         system/glu.h
+        gl/Axis.h
+        gl/BasicShapes.h
+        gl/Cylinder.h
+        gl/Trackball.h
+        gl/Transformation.h
+        gl/glText.h
+        gl/glText.inl
     )
-
     list(APPEND SOURCE_FILES
+        gl/Axis.cpp
+        gl/Cylinder.cpp
+        gl/glText.cpp
         gl/Capture.cpp
         gl/Color.cpp
         gl/glfont.cpp
         system/gl.cpp
     )
+
+    if(SOFA_HAVE_GLUT)
+        list(APPEND HEADER_FILES
+            system/glut.h
+        )
+    endif()
 
     if(SOFA_HAVE_GLEW)
         list(APPEND HEADER_FILES

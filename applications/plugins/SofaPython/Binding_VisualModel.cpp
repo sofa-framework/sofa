@@ -29,8 +29,9 @@
 
 using namespace sofa::component::visualmodel;
 using namespace sofa::core::objectmodel;
+using namespace sofa::core::visual;
 
-extern "C" PyObject * VisualModel_setColor(PyObject *self, PyObject * args)
+extern "C" PyObject * VisualModelImpl_setColor(PyObject *self, PyObject * args)
 {
     VisualModelImpl* obj=dynamic_cast<VisualModelImpl*>(((PySPtr<Base>*)self)->object.get());
     double r,g,b,a;
@@ -52,12 +53,15 @@ extern "C" PyObject * VisualModel_setColor(PyObject *self, PyObject * args)
 }
 
 
-
 SP_CLASS_METHODS_BEGIN(VisualModel)
-SP_CLASS_METHOD(VisualModel,setColor)
+SP_CLASS_METHODS_END
+
+SP_CLASS_METHODS_BEGIN(VisualModelImpl)
+SP_CLASS_METHOD(VisualModelImpl,setColor)
 SP_CLASS_METHODS_END
 
 
-SP_CLASS_TYPE_SPTR(VisualModel,VisualModelImpl,BaseState)
+SP_CLASS_TYPE_SPTR(VisualModel,VisualModel,BaseState)
+SP_CLASS_TYPE_SPTR(VisualModelImpl,VisualModelImpl,VisualModel)
 
 

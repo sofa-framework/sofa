@@ -359,6 +359,7 @@ ColorMap* ColorMap::getDefault()
 
 void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
 {
+    if( !vparams->displayFlags().getShowVisual() ) return;
 
     if (!f_showLegend.getValue()) return;
 

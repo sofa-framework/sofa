@@ -37,7 +37,6 @@
 
 #include <cmath>
 #include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glut.h>
 
 
 namespace sofa
@@ -74,8 +73,11 @@ void TriangleOctree::draw (const core::visual::VisualParams* vparams)
             (defaulttype::Vector3 (x, y, z) + defaulttype::Vector3 (size / 2, size / 2, size / 2));
         glPushMatrix ();
         glTranslatef ((float)center[0], (float)center[1], (float)center[2]);
-        glutWireCube (size);
+        vparams->drawTool()->setPolygonMode(0, false);
+        vparams->drawTool()->drawCube(size, sofa::defaulttype::Vec4f(0.5, 0.5, 0.5, 1.0));
         glPopMatrix ();
+
+        vparams->drawTool()->setPolygonMode(0, true);
     }
     for (int i = 0; i < 8; i++)
     {
