@@ -296,12 +296,12 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 	
 	core::behavior::BaseMechanicalState* from(unsigned i) {
 		// TODO assert
-		return dynamic_cast<core::behavior::BaseMechanicalState* > (this->getFrom()[i]);
+        return this->getFrom()[i]->toBaseMechanicalState();
 	}
 
 	core::behavior::BaseMechanicalState* to(unsigned i = 0) {
 		// TODO assert
-		return dynamic_cast<core::behavior::BaseMechanicalState* > (this->getTo()[i]);
+        return this->getTo()[i]->toBaseMechanicalState();
 	}
 
 	

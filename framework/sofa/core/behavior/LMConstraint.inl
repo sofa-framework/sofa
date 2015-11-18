@@ -63,7 +63,7 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
         if (constrainedObject1->getContext() != getContext())
         {
             BaseContext *context = NULL;
-            BaseNode *currentNode = dynamic_cast< BaseNode * >(constrainedObject1->getContext());
+            BaseNode *currentNode = constrainedObject1->getContext()->toBaseNode();
 
             std::string constrainedObject_name = currentNode->getPathName();
             if (context != NULL)
@@ -73,7 +73,7 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
         if (constrainedObject2->getContext() != getContext())
         {
             BaseContext *context = NULL;
-            BaseNode *currentNode = dynamic_cast< BaseNode* >(constrainedObject2->getContext());
+            BaseNode *currentNode = constrainedObject2->getContext()->toBaseNode();
 
             std::string constrainedObject_name = currentNode->getPathName();
             if (context != NULL)

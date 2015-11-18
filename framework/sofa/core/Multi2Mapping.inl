@@ -133,13 +133,13 @@ helper::vector<behavior::BaseMechanicalState*> Multi2Mapping<In1,In2,Out>::getMe
     helper::vector<behavior::BaseMechanicalState*> mechFromVec;
     for (size_t i=0 ; i<this->fromModels1.size() ; i++)
     {
-        behavior::BaseMechanicalState* meshFrom = dynamic_cast<behavior::BaseMechanicalState*> (this->fromModels1.get((unsigned)i));
+        behavior::BaseMechanicalState* meshFrom = this->fromModels1.get((unsigned)i)->toBaseMechanicalState();
         if(meshFrom)
             mechFromVec.push_back(meshFrom);
     }
     for (size_t i=0 ; i<this->fromModels2.size() ; i++)
     {
-        behavior::BaseMechanicalState* meshFrom = dynamic_cast<behavior::BaseMechanicalState*> (this->fromModels2.get((unsigned)i));
+        behavior::BaseMechanicalState* meshFrom = this->fromModels2.get((unsigned)i)->toBaseMechanicalState();
         if(meshFrom)
             mechFromVec.push_back(meshFrom);
     }
@@ -152,7 +152,7 @@ helper::vector<behavior::BaseMechanicalState*> Multi2Mapping<In1,In2,Out>::getMe
     helper::vector<behavior::BaseMechanicalState*> mechToVec;
     for (size_t i=0 ; i<this->toModels.size() ; i++)
     {
-        behavior::BaseMechanicalState* meshTo = dynamic_cast<behavior::BaseMechanicalState*> (this->toModels.get((unsigned)i));
+        behavior::BaseMechanicalState* meshTo = this->toModels.get((unsigned)i)->toBaseMechanicalState();
         if(meshTo)
             mechToVec.push_back(meshTo);
     }
@@ -164,10 +164,10 @@ void Multi2Mapping<In1,In2,Out>::init()
 {
     maskFrom1.resize( this->fromModels1.size() );
     for( unsigned i=0 ; i<this->fromModels1.size() ; ++i )
-        if (core::behavior::BaseMechanicalState* stateFrom = this->fromModels1[i]->toBaseMechanicalState()) maskFrom1[i] = &stateFrom->forceMask;
+        if( core::behavior::BaseMechanicalState* stateFrom = this->fromModels1[i]->toBaseMechanicalState() ) maskFrom1[i] = &stateFrom->forceMask;
     maskFrom2.resize( this->fromModels2.size() );
     for( unsigned i=0 ; i<this->fromModels2.size() ; ++i )
-        if (core::behavior::BaseMechanicalState* stateFrom = this->fromModels2[i]->toBaseMechanicalState()) maskFrom2[i] = &stateFrom->forceMask;
+        if( core::behavior::BaseMechanicalState* stateFrom = this->fromModels2[i]->toBaseMechanicalState() ) maskFrom2[i] = &stateFrom->forceMask;
     maskTo.resize( this->toModels.size() );
     for( unsigned i=0 ; i<this->toModels.size() ; ++i )
         if (core::behavior::BaseMechanicalState* stateTo = this->toModels[i]->toBaseMechanicalState()) maskTo[i] = &stateTo->forceMask;

@@ -801,7 +801,7 @@ return;
 std::cout<<"recmpute Rigid Mass" <<std::endl;
 
 
-masses = dynamic_cast<BaseMass*> (m_fromModel->getContext()->getMass());
+masses = m_fromModel->getContext()->getMass();
 if(!masses)
 return;
 

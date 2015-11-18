@@ -402,7 +402,7 @@ void GraphModeler::openModifyObject(QTreeWidgetItem *item)
         if(object)
         {
             current_Id_modifyDialog = object;
-            if (dynamic_cast<core::objectmodel::ConfigurationSetting*>(object)) dialogFlags.HIDE_FLAG=true;
+            if (object->toConfigurationSetting()) dialogFlags.HIDE_FLAG=true;
         }
         else
         {

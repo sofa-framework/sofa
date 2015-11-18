@@ -1290,7 +1290,7 @@ void VisualModelImpl::computeMesh()
     using sofa::component::topology::SparseGridTopology;
     using sofa::core::behavior::BaseMechanicalState;
 
-	sofa::helper::vector<Coord> bezierControlPointsArray;
+//	sofa::helper::vector<Coord> bezierControlPointsArray;
 
     if ((m_positions.getValue()).empty() && (m_vertices2.getValue()).empty())
     {
@@ -1324,7 +1324,7 @@ void VisualModelImpl::computeMesh()
         }
         else
         {
-            BaseMechanicalState* mstate = dynamic_cast< BaseMechanicalState* >(m_topology->getContext()->getMechanicalState());
+            BaseMechanicalState* mstate = m_topology->getContext()->getMechanicalState();
 
             if (mstate)
 			{

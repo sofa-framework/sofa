@@ -71,8 +71,10 @@ namespace behavior {
     class BaseMass;
     class BaseMechanicalState;
     class BaseInteractionForceField;
+    class BaseInteractionConstraint;
     class BaseForceField;
     class BaseProjectiveConstraintSet;
+    class BaseInteractionProjectiveConstraintSet;
     class BaseConstraintSet;
     class BaseConstraint;
     class BaseLMConstraint;
@@ -477,42 +479,44 @@ public:
     ///
 public:
 
-    SOFA_BASE_CAST_DEFINITION( core,        BaseState                   )
-    SOFA_BASE_CAST_DEFINITION( core,        BaseMapping                 )
-    SOFA_BASE_CAST_DEFINITION( core,        BehaviorModel               )
-    SOFA_BASE_CAST_DEFINITION( core,        CollisionModel              )
-    SOFA_BASE_CAST_DEFINITION( core,        DataEngine                  )
-    SOFA_BASE_CAST_DEFINITION( core,        DevBaseMonitor              )
-    SOFA_BASE_CAST_DEFINITION( objectmodel, BaseContext                 )
-    SOFA_BASE_CAST_DEFINITION( objectmodel, BaseObject                  )
-    SOFA_BASE_CAST_DEFINITION( objectmodel, BaseNode                    )
-    SOFA_BASE_CAST_DEFINITION( objectmodel, ContextObject               )
-    SOFA_BASE_CAST_DEFINITION( objectmodel, ConfigurationSetting        )
-    SOFA_BASE_CAST_DEFINITION( behavior,    BaseAnimationLoop           )
-    SOFA_BASE_CAST_DEFINITION( behavior,    OdeSolver                   )
-    SOFA_BASE_CAST_DEFINITION( behavior,    LinearSolver                )
-    SOFA_BASE_CAST_DEFINITION( behavior,    ConstraintSolver            )
-    SOFA_BASE_CAST_DEFINITION( behavior,    BaseMass                    )
-    SOFA_BASE_CAST_DEFINITION( behavior,    BaseMechanicalState         )
-    SOFA_BASE_CAST_DEFINITION( behavior,    BaseInteractionForceField   )
-    SOFA_BASE_CAST_DEFINITION( behavior,    BaseForceField              )
-    SOFA_BASE_CAST_DEFINITION( behavior,    BaseProjectiveConstraintSet )
-    SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraintSet           )
-    SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraint              )
-    SOFA_BASE_CAST_DEFINITION( behavior,    BaseLMConstraint            )
-    SOFA_BASE_CAST_DEFINITION( visual,      VisualModel                 )
-    SOFA_BASE_CAST_DEFINITION( visual,      VisualManager               )
-    SOFA_BASE_CAST_DEFINITION( visual,      VisualLoop                  )
-    SOFA_BASE_CAST_DEFINITION( visual,      Shader                      )
-    SOFA_BASE_CAST_DEFINITION( topology,    Topology                    )
-    SOFA_BASE_CAST_DEFINITION( topology,    BaseMeshTopology            )
-    SOFA_BASE_CAST_DEFINITION( topology,    BaseTopologyObject          )
-    SOFA_BASE_CAST_DEFINITION( collision,   CollisionGroupManager       )
-    SOFA_BASE_CAST_DEFINITION( collision,   ContactManager              )
-    SOFA_BASE_CAST_DEFINITION( collision,   Detection                   )
-    SOFA_BASE_CAST_DEFINITION( collision,   Intersection                )
-    SOFA_BASE_CAST_DEFINITION( collision,   Pipeline                    )
-    SOFA_BASE_CAST_DEFINITION( loader,      BaseLoader                  )
+    SOFA_BASE_CAST_DEFINITION( core,        BaseState                              )
+    SOFA_BASE_CAST_DEFINITION( core,        BaseMapping                            )
+    SOFA_BASE_CAST_DEFINITION( core,        BehaviorModel                          )
+    SOFA_BASE_CAST_DEFINITION( core,        CollisionModel                         )
+    SOFA_BASE_CAST_DEFINITION( core,        DataEngine                             )
+    SOFA_BASE_CAST_DEFINITION( core,        DevBaseMonitor                         )
+    SOFA_BASE_CAST_DEFINITION( objectmodel, BaseContext                            )
+    SOFA_BASE_CAST_DEFINITION( objectmodel, BaseObject                             )
+    SOFA_BASE_CAST_DEFINITION( objectmodel, BaseNode                               )
+    SOFA_BASE_CAST_DEFINITION( objectmodel, ContextObject                          )
+    SOFA_BASE_CAST_DEFINITION( objectmodel, ConfigurationSetting                   )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseAnimationLoop                      )
+    SOFA_BASE_CAST_DEFINITION( behavior,    OdeSolver                              )
+    SOFA_BASE_CAST_DEFINITION( behavior,    LinearSolver                           )
+    SOFA_BASE_CAST_DEFINITION( behavior,    ConstraintSolver                       )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseMass                               )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseMechanicalState                    )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseInteractionForceField              )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseInteractionConstraint              )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseForceField                         )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseProjectiveConstraintSet            )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseInteractionProjectiveConstraintSet )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraintSet                      )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseConstraint                         )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseLMConstraint                       )
+    SOFA_BASE_CAST_DEFINITION( visual,      VisualModel                            )
+    SOFA_BASE_CAST_DEFINITION( visual,      VisualManager                          )
+    SOFA_BASE_CAST_DEFINITION( visual,      VisualLoop                             )
+    SOFA_BASE_CAST_DEFINITION( visual,      Shader                                 )
+    SOFA_BASE_CAST_DEFINITION( topology,    Topology                               )
+    SOFA_BASE_CAST_DEFINITION( topology,    BaseMeshTopology                       )
+    SOFA_BASE_CAST_DEFINITION( topology,    BaseTopologyObject                     )
+    SOFA_BASE_CAST_DEFINITION( collision,   CollisionGroupManager                  )
+    SOFA_BASE_CAST_DEFINITION( collision,   ContactManager                         )
+    SOFA_BASE_CAST_DEFINITION( collision,   Detection                              )
+    SOFA_BASE_CAST_DEFINITION( collision,   Intersection                           )
+    SOFA_BASE_CAST_DEFINITION( collision,   Pipeline                               )
+    SOFA_BASE_CAST_DEFINITION( loader,      BaseLoader                             )
 
 
     /// @}

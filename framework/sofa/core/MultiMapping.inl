@@ -101,7 +101,7 @@ helper::vector<behavior::BaseMechanicalState*> MultiMapping<In,Out>::getMechFrom
     helper::vector<behavior::BaseMechanicalState*> mechFromVec;
     for (size_t i=0 ; i<this->fromModels.size() ; i++)
     {
-        behavior::BaseMechanicalState* meshFrom = dynamic_cast<behavior::BaseMechanicalState*> (this->fromModels.get((unsigned)i));
+        behavior::BaseMechanicalState* meshFrom = this->fromModels.get((unsigned)i)->toBaseMechanicalState();
         if(meshFrom)
             mechFromVec.push_back(meshFrom);
     }
@@ -114,7 +114,7 @@ helper::vector<behavior::BaseMechanicalState*> MultiMapping<In,Out>::getMechTo()
     helper::vector<behavior::BaseMechanicalState*> mechToVec;
     for (size_t i=0 ; i<this->toModels.size() ; i++)
     {
-        behavior::BaseMechanicalState* meshTo = dynamic_cast<behavior::BaseMechanicalState*> (this->toModels.get((unsigned)i));
+        behavior::BaseMechanicalState* meshTo = this->toModels.get((unsigned)i)->toBaseMechanicalState();
         if(meshTo)
             mechToVec.push_back(meshTo);
     }
@@ -126,10 +126,10 @@ void MultiMapping<In,Out>::init()
 {
     maskFrom.resize( this->fromModels.size() );
     for( unsigned i=0 ; i<this->fromModels.size() ; ++i )
-        if (core::behavior::BaseMechanicalState* stateFrom = this->fromModels[i]->toBaseMechanicalState()) maskFrom[i] = &stateFrom->forceMask;
+        if( core::behavior::BaseMechanicalState* stateFrom = this->fromModels[i]->toBaseMechanicalState() ) maskFrom[i] = &stateFrom->forceMask;
     maskTo.resize( this->toModels.size() );
     for( unsigned i=0 ; i<this->toModels.size() ; ++i )
-        if (core::behavior::BaseMechanicalState* stateTo = this->toModels[i]->toBaseMechanicalState()) maskTo[i] = &stateTo->forceMask;
+        if( core::behavior::BaseMechanicalState* stateTo = this->toModels[i]->toBaseMechanicalState() ) maskTo[i] = &stateTo->forceMask;
         else this->setNonMechanical();
 
     apply(MechanicalParams::defaultInstance() , VecCoordId::position(), ConstVecCoordId::position());
