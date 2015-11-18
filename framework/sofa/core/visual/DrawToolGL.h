@@ -94,6 +94,7 @@ public:
     virtual void drawCapsule(const Vector3& p1, const Vector3 &p2, float radius, const Vec4f& colour,  int subd=16);
 
     virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, const Vec4f& colour,  int subd=16);
+    virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, float coneLength, const Vec4f& colour,  int subd=16);
 
     virtual void drawPlus    (const float& radius, const Vec4f& colour, const int& subd=16);
 
@@ -125,14 +126,20 @@ public:
 
 
     virtual void drawSphere( const Vector3 &p, float radius);
+	virtual void drawEllipsoid(const Vector3 &p, const Vector3 &radii);
 
     virtual void drawBoundingBox( const Vector3 &min, const Vector3 &max );
 
+	virtual void draw3DText(const Vector3 &p, float scale, const Vec4f &color, const char* text);
+
+    virtual void draw3DText_Indices(const helper::vector<Vector3> &positions, float scale, const Vec4f &color);
+
     virtual void clear();
 
-    virtual void setMaterial(const Vec4f &colour, std::string name=std::string());
+    virtual void setMaterial(const Vec4f &colour);
 
-    virtual void resetMaterial(const Vec4f &colour, std::string name=std::string());
+    virtual void resetMaterial(const Vec4f &colour);
+    virtual void resetMaterial();
 
     virtual void pushMatrix();
     virtual void popMatrix();

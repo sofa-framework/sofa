@@ -179,7 +179,7 @@ void ScriptController::onGUIEvent(core::objectmodel::GUIEvent *event)
 
 void ScriptController::handleEvent(core::objectmodel::Event *event)
 {
-    if (dynamic_cast<core::objectmodel::ScriptEvent *>(event))
+    if (sofa::core::objectmodel::ScriptEvent::checkEventType(event))
     {
         script_onScriptEvent(static_cast<core::objectmodel::ScriptEvent *> (event));
         ScriptEnvironment::initScriptNodes();

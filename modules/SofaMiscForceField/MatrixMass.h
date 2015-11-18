@@ -28,7 +28,6 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/Mass.h>
-#include <sofa/core/objectmodel/Event.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <sofa/helper/vector.h>
 

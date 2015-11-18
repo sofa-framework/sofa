@@ -153,7 +153,7 @@ class RigidBody:
             def __init__(self, node ):
                 global idxVisualModel;
                 self.node = node.createChild( "visual" )  # node
-                self.model = self.node.createObject('VisualModel', name="model"+str(idxVisualModel))
+                self.model = self.node.createObject('VisualModel', name="model"+str(idxVisualModel), useNormals=False, updateNormals=False)
                 self.mapping = self.node.createObject('IdentityMapping', name="mapping")
                 idxVisualModel+=1
 
@@ -163,8 +163,9 @@ class RigidBody:
             global idxVisualModel;
             self.node = node.createChild( "visual"+name_suffix )  # node
             r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
-            meshLoader = SofaPython.Tools.meshLoader(self.node, filepath, scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r))
-            self.model = self.node.createObject('VisualModel', name="visual"+str(idxVisualModel), src="@"+meshLoader.name)
+            self.model = self.node.createObject('VisualModel', name="visual"+str(idxVisualModel), fileMesh=filepath,
+                                                scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r),
+                                                useNormals=False, updateNormals=False)
             self.mapping = self.node.createObject('RigidMapping', name="mapping")
             idxVisualModel+=1
 

@@ -40,6 +40,9 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API PositionEvent : public sofa::core::objectmodel::Event
 {
 public:
+
+    SOFA_EVENT_H( PositionEvent )
+
     PositionEvent();
 
     ~PositionEvent();

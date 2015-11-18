@@ -259,52 +259,22 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
     glPushAttrib(GL_LIGHTING_BIT);
     glDisable(GL_LIGHTING);
 
-    if (showIndices.getValue())
-    {
-        glColor3f(1.0f,1.0f,1.0f);
-        float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue() );
+	if (showIndices.getValue())
+	{
+        defaulttype::Vector4 color(1.0, 1.0, 1.0, 1.0);
 
-        defaulttype::Mat<4,4, GLfloat> modelviewM;
+		float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
 
-        for (size_t i=0 ; i< vsize ; i++)
-        {
-            std::ostringstream oss;
-            oss << i;
-            std::string tmp = oss.str();
-            const char* s = tmp.c_str();
-            //glVertex3f(getPX(i),getPY(i),getPZ(i) );
-            glPushMatrix();
+        helper::vector<defaulttype::Vector3> positions;
+        for (size_t i = 0; i < vsize; ++i)
+            positions.push_back(defaulttype::Vector3(getPX(i), getPY(i), getPZ(i)));
 
-            glTranslatef((float)getPX(i), (float)getPY(i), (float)getPZ(i));
-            glScalef(scale,scale,scale);
-
-            // Makes text always face the viewer by removing the scene rotation
-            // get the current modelview matrix
-            glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
-            modelviewM.transpose();
-
-            Vec3d temp(getPX(i), getPY(i), getPZ(i));
-            temp = modelviewM.transform(temp);
-
-            //glLoadMatrixf(modelview);
-            glLoadIdentity();
-
-            glTranslatef((float)temp[0], (float)temp[1], (float)temp[2]);
-            glScalef(scale,scale,scale);
-
-            while(*s)
-            {
-                glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
-                s++;
-            }
-
-            glPopMatrix();
-        }
-    }
+        vparams->drawTool()->draw3DText_Indices(positions, scale, color);
+	}
 
     if (showVectors.getValue())
     {
-        Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+//        Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
 //        sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
         glColor3f(1.0,1.0,1.0);
 //        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
@@ -522,55 +492,23 @@ template<>
 void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
-    if (showIndices.getValue())
-    {
-        glColor3f(1.0,1.0,1.0);
-        glPushAttrib(GL_LIGHTING_BIT);
-        glDisable(GL_LIGHTING);
-        float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue() );
 
-        Mat<4,4, GLfloat> modelviewM;
+	if (showIndices.getValue())
+	{
+        defaulttype::Vector4 color(1.0, 1.0, 1.0, 1.0);
 
-        for (size_t i=0 ; i< vsize ; i++)
-        {
-            std::ostringstream oss;
-            oss << i;
-            std::string tmp = oss.str();
-            const char* s = tmp.c_str();
-            //glVertex3f(getPX(i),getPY(i),getPZ(i) );
-            glPushMatrix();
+		float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
 
-            glTranslatef((float)getPX(i), (float)getPY(i), (float)getPZ(i));
-            glScalef(scale,scale,scale);
+        helper::vector<defaulttype::Vector3> positions;
+        for (size_t i = 0; i < vsize; ++i)
+            positions.push_back(defaulttype::Vector3(getPX(i), getPY(i), getPZ(i)));
 
-            // Makes text always face the viewer by removing the scene rotation
-            // get the current modelview matrix
-            glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
-            modelviewM.transpose();
-
-            Vec3d temp(getPX(i), getPY(i), getPZ(i));
-            temp = modelviewM.transform(temp);
-
-            //glLoadMatrixf(modelview);
-            glLoadIdentity();
-
-            glTranslatef((float)temp[0], (float)temp[1], (float)temp[2]);
-            glScalef(scale,scale,scale);
-
-            while(*s)
-            {
-                glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
-                s++;
-            }
-
-            glPopMatrix();
-        }
-        glPopAttrib();
-    }
+        vparams->drawTool()->draw3DText_Indices(positions, scale, color);
+	}
 
     if (showVectors.getValue())
     {
-        Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+//        Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
 //        sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
         glColor3f(1.0,1.0,1.0);
 //        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
@@ -650,51 +588,18 @@ template<>
 void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
-    if (showIndices.getValue())
-    {
-        glColor3f(1.0,1.0,1.0);
-        glPushAttrib(GL_LIGHTING_BIT);
-        glDisable(GL_LIGHTING);
-        float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue() );
+	if (showIndices.getValue())
+	{
+        defaulttype::Vector4 color(1.0, 1.0, 1.0, 1.0);
 
-        defaulttype::Mat<4,4, GLfloat> modelviewM;
+		float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
 
-        for (size_t i=0 ; i< vsize ; i++)
-        {
-            std::ostringstream oss;
-            oss << i;
-            std::string tmp = oss.str();
-            const char* s = tmp.c_str();
-            //glVertex3f(getPX(i),getPY(i),getPZ(i) );
-            glPushMatrix();
+        helper::vector<defaulttype::Vector3> positions;
+        for (size_t i = 0; i < vsize; ++i)
+            positions.push_back(defaulttype::Vector3(getPX(i), getPY(i), getPZ(i)));
 
-            glTranslatef((float)getPX(i), (float)getPY(i), (float)getPZ(i));
-            glScalef(scale,scale,scale);
-
-            // Makes text always face the viewer by removing the scene rotation
-            // get the current modelview matrix
-            glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
-            modelviewM.transpose();
-
-            Vec3d temp(getPX(i), getPY(i), getPZ(i));
-            temp = modelviewM.transform(temp);
-
-            //glLoadMatrixf(modelview);
-            glLoadIdentity();
-
-            glTranslatef((float)temp[0], (float)temp[1], (float)temp[2]);
-            glScalef(scale,scale,scale);
-
-            while(*s)
-            {
-                glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
-                s++;
-            }
-
-            glPopMatrix();
-        }
-        glPopAttrib();
-    }
+        vparams->drawTool()->draw3DText_Indices(positions, scale, color);
+	}
 
     if (showObject.getValue())
     {

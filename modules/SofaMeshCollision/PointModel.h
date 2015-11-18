@@ -123,8 +123,6 @@ public:
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 
-    //virtual const char* getTypeName() const { return "Point"; }
-
     Deriv getNormal(int index){ return (normals.size()) ? normals[index] : Deriv();}
 
     PointLocalMinDistanceFilter *getFilter() const;

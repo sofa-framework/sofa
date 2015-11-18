@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/core/objectmodel/Event.h>
+#include <iostream>
 
 namespace sofa
 {
@@ -33,6 +34,9 @@ namespace core
 
 namespace objectmodel
 {
+
+
+size_t Event::s_lastEventTypeIndex = 0;
 
 Event::Event()
 {
@@ -53,7 +57,6 @@ bool Event::isHandled() const
 {
     return m_handled;
 }
-
 
 } // namespace objectmodel
 

@@ -68,11 +68,13 @@ add_subdirectory(../applications/sofa/gui/SofaGuiCommon ${CMAKE_CURRENT_BINARY_D
 list(APPEND SOFAGUI_TARGETS SofaGuiCommon)
 
 ## Glut GUI
-option(SOFAGUI_GLUT "Compile the Glut GUI" ON)
-if(SOFAGUI_GLUT)
-    set(SOFA_GUI_GLUT 1) # cmakedefine
-    list(APPEND SOFAGUI_TARGETS SofaGuiGlut)
-    add_subdirectory(../applications/sofa/gui/glut ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiGlut)
+if(SOFA_HAVE_GLUT)
+    option(SOFAGUI_GLUT "Compile the Glut GUI" ON)
+    if(SOFAGUI_GLUT)
+        set(SOFA_GUI_GLUT 1) # cmakedefine
+        list(APPEND SOFAGUI_TARGETS SofaGuiGlut)
+        add_subdirectory(../applications/sofa/gui/glut ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiGlut)
+    endif()
 endif()
 
 ## Qt GUI

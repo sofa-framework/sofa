@@ -126,13 +126,7 @@ protected:
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_TriangleDeformationMapping_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_Flexible_API TriangleDeformationMapping< Vec3dTypes, F321dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_Flexible_API TriangleDeformationMapping< Vec3fTypes, F321fTypes >;
-#endif
-
+extern template class SOFA_Flexible_API TriangleDeformationMapping< defaulttype::Vec3Types, defaulttype::F321Types >;
 #endif
 
 } // namespace mapping

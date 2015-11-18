@@ -46,7 +46,7 @@ namespace component
 namespace misc
 {
 
-class DevMonitorManager : public DevMonitor<sofa::defaulttype::Vec3Types>
+class SOFA_VALIDATION_API DevMonitorManager : public DevMonitor<sofa::defaulttype::Vec3Types>
 {
 public:
     SOFA_CLASS(DevMonitorManager, SOFA_TEMPLATE(DevMonitor,sofa::defaulttype::Vec3Types));

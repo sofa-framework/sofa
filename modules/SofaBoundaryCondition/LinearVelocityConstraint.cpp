@@ -24,7 +24,6 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARVELOCITYCONSTRAINT_CPP
 #include <SofaBoundaryCondition/LinearVelocityConstraint.inl>
-#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>

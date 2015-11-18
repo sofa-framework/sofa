@@ -37,7 +37,7 @@
 
         <Node 	name="behavior_vol"   >
 	    <MechanicalObject  template="Vec1d" name="Volume"   />
-    	    <VolumeMapping template="Vec3d,Vec1d" offset="-20"/>   <!-- the offset is the opposite of the target volume -->
+    	    <VolumeMapping template="Vec3d,Vec1d" geometricStiffness="false" triangles="@../mesh.triangles" offset="-20"/>   <!-- the offset is the opposite of the target volume -->
 	    <UniformCompliance template="Vec1d" compliance="0"/>
 	<!--<RestShapeSpringsForceField template="Vec1d" points="0" stiffness="10000"/>-->
         </Node>
@@ -74,7 +74,7 @@
 
         <Node 	name="behavior_vol"   >
 	    <MechanicalObject  template="Vec1d" name="Volume"   />
-    	    <VolumeMapping template="Vec3d,Vec1d" offset="0"/>
+    	    <VolumeMapping template="Vec3d,Vec1d" geometricStiffness="false" triangles="@../mesh.triangles" offset="0"/>
 	    <ConstantForceField points="0" force="1000"/>
         </Node>
 <!--  This is equivalent to      <SurfacePressureForceField pressure="1000" volumeConservationMode="0"/>-->

@@ -30,7 +30,6 @@
 #include "../material/VolumePreservationMaterialBlock.inl"
 
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 
 namespace sofa
@@ -77,7 +76,7 @@ public:
 
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
-        if ( dynamic_cast<simulation::AnimateEndEvent*>(event))
+        if (simulation::AnimateEndEvent::checkEventType(event))
         {
             if(f_k.isDirty()) reinit();
         }

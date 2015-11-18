@@ -30,7 +30,6 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glut.h>
 #include <assert.h>
 #include <iostream>
 
@@ -188,14 +187,9 @@ void SphereForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     const Real r = sphereRadius.getValue();
 
     glEnable(GL_LIGHTING);
-    glEnable(GL_COLOR_MATERIAL);
-    glColor3f(color.getValue()[0],color.getValue()[1],color.getValue()[2]);
-    glPushMatrix();
-    glTranslated(center[0], center[1], center[2]);
-    glutSolidSphere(r*0.99,32,16); // slightly reduce rendered radius
-    glPopMatrix();
+    vparams->drawTool()->drawSphere(center, r*0.99);
     glDisable(GL_LIGHTING);
-    glDisable(GL_COLOR_MATERIAL);
+
 #endif /* SOFA_NO_OPENGL */
 }
 

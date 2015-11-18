@@ -123,14 +123,7 @@ protected:
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_TriangleStrainAverageMapping_CPP)
-
-#ifndef SOFA_FLOAT
-extern template class SOFA_Flexible_API TriangleStrainAverageMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::F321dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_Flexible_API TriangleStrainAverageMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::F321fTypes >;
-#endif
-
+extern template class SOFA_Flexible_API TriangleStrainAverageMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::F321Types >;
 #endif
 
 } // namespace mapping

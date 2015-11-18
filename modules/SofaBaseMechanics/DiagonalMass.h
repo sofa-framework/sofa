@@ -214,7 +214,6 @@ protected:
 
     ~DiagonalMass();
 public:
-    //virtual const char* getTypeName() const { return "DiagonalMass"; }
 
     bool load(const char *filename);
 

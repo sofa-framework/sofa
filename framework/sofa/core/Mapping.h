@@ -93,6 +93,8 @@ protected:
 public:
     /// Specify the input and output models.
     virtual void setModels(State< In > * from, State< Out >* to);
+    /// If the type is compatible set the input model and return true, otherwise do nothing and return false.
+    virtual bool setFrom( BaseState* from );
     /// If the type is compatible set the output model and return true, otherwise do nothing and return false.
     virtual bool setTo( BaseState* to );
 

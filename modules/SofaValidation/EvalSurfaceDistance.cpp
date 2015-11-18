@@ -52,10 +52,10 @@ int EvalSurfaceDistanceClass = core::RegisterObject("Periodically compute the di
         ;
 
 #ifndef SOFA_FLOAT
-template class EvalSurfaceDistance<Vec3dTypes>;
+template class SOFA_VALIDATION_API EvalSurfaceDistance<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class EvalSurfaceDistance<Vec3fTypes>;
+template class SOFA_VALIDATION_API EvalSurfaceDistance<Vec3fTypes>;
 #endif
 
 } // namespace misc

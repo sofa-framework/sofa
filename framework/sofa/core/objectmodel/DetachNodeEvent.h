@@ -45,6 +45,9 @@ namespace objectmodel
 class SOFA_CORE_API DetachNodeEvent : public Event
 {
 public:
+
+    SOFA_EVENT_H( DetachNodeEvent )
+
     DetachNodeEvent( BaseNode* n );
 
     ~DetachNodeEvent();

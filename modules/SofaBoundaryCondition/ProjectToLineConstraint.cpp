@@ -24,7 +24,6 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToLineConstraint_CPP
 #include <SofaBoundaryCondition/ProjectToLineConstraint.inl>
-#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/simulation/common/Node.h>

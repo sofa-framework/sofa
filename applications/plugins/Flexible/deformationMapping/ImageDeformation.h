@@ -371,7 +371,7 @@ protected:
 
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
-        if ( dynamic_cast<simulation::AnimateEndEvent*>(event))
+        if (simulation::AnimateEndEvent::checkEventType(event))
         {
             raImage in(this->inputImage);
             raTransform inT(this->inputTransform);

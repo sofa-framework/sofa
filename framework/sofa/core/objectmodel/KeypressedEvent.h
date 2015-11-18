@@ -43,6 +43,9 @@ namespace objectmodel
 class SOFA_CORE_API KeypressedEvent : public Event
 {
 public:
+
+    SOFA_EVENT_H( KeypressedEvent )
+
     /// Constructor
     KeypressedEvent( char );
     /// Destructor

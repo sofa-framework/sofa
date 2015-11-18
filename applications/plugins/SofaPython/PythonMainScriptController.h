@@ -52,6 +52,8 @@ protected:
     PythonMainScriptController();
     PythonMainScriptController( const char* filename );
 
+    void handleEvent(core::objectmodel::Event *event);
+
     /// @name Script interface
     ///   Function that needs to be implemented for each script language
     /// Typically, all "script_*" functions call the corresponding "*" function of the script, if it exists

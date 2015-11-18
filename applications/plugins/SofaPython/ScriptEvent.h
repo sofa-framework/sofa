@@ -47,6 +47,7 @@ class SOFA_SOFAPYTHON_API ScriptEvent : public sofa::core::objectmodel::Event
 {
 public:
 
+    SOFA_EVENT_H( ScriptEvent )
 
     /**
      * @brief Constructor.

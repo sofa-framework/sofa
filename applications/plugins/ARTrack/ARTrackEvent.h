@@ -47,6 +47,8 @@ using namespace sofa::defaulttype;
 class ARTrackEvent : public sofa::core::objectmodel::Event
 {
 public:
+    
+    SOFA_EVENT_H(ARTrackEvent)
 
     /**
      * @brief Constructor.

@@ -33,6 +33,8 @@ namespace core
 namespace objectmodel
 {
 
+SOFA_EVENT_CPP( GUIEvent )
+
 GUIEvent::GUIEvent(const char* controlID, const char* valueName, const char* value)
     : sofa::core::objectmodel::Event()
     , m_controlID(controlID)

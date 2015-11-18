@@ -218,10 +218,8 @@ set(SOURCE_FILES
 )
 
 if(NOT SOFA_NO_OPENGL)
-    if(SOFA_HAVE_GLUT)
-        list(APPEND HEADER_FILES visual/DrawToolGL.h)
-        list(APPEND SOURCE_FILES visual/DrawToolGL.cpp)
-    endif()
+    list(APPEND HEADER_FILES visual/DrawToolGL.h)
+    list(APPEND SOURCE_FILES visual/DrawToolGL.cpp)
 endif()
 
 if(Boost_thread_FOUND)

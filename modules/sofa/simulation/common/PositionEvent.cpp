@@ -30,6 +30,8 @@ namespace sofa
 namespace simulation
 {
 
+SOFA_EVENT_CPP( PositionEvent )
+
 PositionEvent::PositionEvent()
     : sofa::core::objectmodel::Event()
 {

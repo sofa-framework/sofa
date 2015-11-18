@@ -51,10 +51,10 @@ int DevTensionMonitorClass = core::RegisterObject("Tension monitoring")
         ;
 
 #ifndef SOFA_FLOAT
-template class DevTensionMonitor<Rigid3dTypes>;
+template class SOFA_VALIDATION_API DevTensionMonitor<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class DevTensionMonitor<Rigid3fTypes>;
+template class SOFA_VALIDATION_API DevTensionMonitor<Rigid3fTypes>;
 #endif
 
 } // namespace misc

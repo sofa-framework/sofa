@@ -119,7 +119,8 @@ ColorMap::ColorMap()
 : f_paletteSize(initData(&f_paletteSize, (unsigned int)256, "paletteSize", "How many colors to use"))
 , f_colorScheme(initData(&f_colorScheme, "colorScheme", "Color scheme to use"))
 , f_showLegend(initData(&f_showLegend, false, "showLegend", "Activate rendering of color scale legend on the side"))
-, f_legendOffset(initData(&f_legendOffset, defaulttype::Vec2f(0.0f,0.0f),"legendOffset", "Draw the legend on screen with an x,y offset"))
+, f_legendOffset(initData(&f_legendOffset, defaulttype::Vec2f(10.0f,5.0f),"legendOffset", "Draw the legend on screen with an x,y offset"))
+, f_legendTitle(initData(&f_legendTitle,"legendTitle", "Add a title to the legend"))
 , d_min(initData(&d_min,0.0f,"min","min value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the min"))
 , d_max(initData(&d_max,0.0f,"max","max value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the max"))
 , texture(0)
@@ -183,9 +184,6 @@ void ColorMap::init()
 void ColorMap::reinit()
 {
     entries.clear();
-
-    min=d_min.getValue();
-    max=d_max.getValue();
 
     unsigned int nColors = f_paletteSize.getValue();
     if (nColors < 2) {
@@ -347,8 +345,6 @@ void ColorMap::reinit()
             entries.push_back(Color(hsv2rgb(Color3(i*step,1,1)), 1.0f));
         }
     }
-
-    prepareLegend();
 }
 
 ColorMap* ColorMap::getDefault()
@@ -362,31 +358,13 @@ ColorMap* ColorMap::getDefault()
     return defaultColorMap.get();
 }
 
-void ColorMap::prepareLegend()
-{
-    int width = getNbColors();
-    unsigned char *data = new unsigned char[ width * 3 ];
-
-    for (int i=0; i<width; i++) {
-        Color c = getColor(i);
-        data[i*3+0] = (unsigned char)(c[0]*255);
-        data[i*3+1] = (unsigned char)(c[1]*255);
-        data[i*3+2] = (unsigned char)(c[2]*255);
-    }
-
-    if (texture)
-    {
-        glBindTexture(GL_TEXTURE_1D, texture);
-
-        glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB, width, 0, GL_RGB, GL_UNSIGNED_BYTE,
-            data);
-    }
-
-    delete[] data;
-}
-
 void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
 {
+    if( !vparams->displayFlags().getShowVisual() ) return;
+
+    if (!f_showLegend.getValue()) return;
+
+
     // Prepare texture for legend
     // crashes on mac in batch mode (no GL context)
     if (vparams->isSupported(core::visual::API_OpenGL)
@@ -398,15 +376,37 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
         glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+        int width = getNbColors();
+        unsigned char *data = new unsigned char[ width * 3 ];
+
+        for (int i=0; i<width; i++) {
+            Color c = getColor(i);
+            data[i*3+0] = (unsigned char)(c[0]*255);
+            data[i*3+1] = (unsigned char)(c[1]*255);
+            data[i*3+2] = (unsigned char)(c[2]*255);
+        }
+
+        glBindTexture(GL_TEXTURE_1D, texture);
+
+        glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB, width, 0, GL_RGB, GL_UNSIGNED_BYTE,
+            data);
+
+        delete[] data;
     }
 
 
-    if (!f_showLegend.getValue()) return;
 
     //
     // Draw legend
     //
     // TODO: move the code to DrawTool
+
+
+    const std::string& legendTitle = f_legendTitle.getValue();
+    int yoffset = legendTitle.empty() ? 0 : 25;
+
+
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT,viewport);
     const int vWidth = viewport[2];
@@ -418,6 +418,7 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
     glDisable(GL_LIGHTING);
     glDisable(GL_BLEND);
 
+    // disable clipping planes
 	for(int i = 0; i < GL_MAX_CLIP_PLANES; ++i)
 		glDisable(GL_CLIP_PLANE0+i);
 
@@ -439,16 +440,16 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
     glBegin(GL_QUADS);
 
     glTexCoord1f(1.0);
-    glVertex3f(20.0f+f_legendOffset.getValue().x(), 30.0f+f_legendOffset.getValue().y(), 0.0f);
+    glVertex3f(10.0f+f_legendOffset.getValue().x(), yoffset+20.0f+f_legendOffset.getValue().y(), 0.0f);
 
     glTexCoord1f(1.0);
-    glVertex3f(30.0f+f_legendOffset.getValue().x(), 30.0f+f_legendOffset.getValue().y(), 0.0f);
+    glVertex3f(20.0f+f_legendOffset.getValue().x(), yoffset+20.0f+f_legendOffset.getValue().y(), 0.0f);
 
     glTexCoord1f(0.0);
-    glVertex3f(30.0f+f_legendOffset.getValue().x(), 130.0f+f_legendOffset.getValue().y(), 0.0f);
+    glVertex3f(20.0f+f_legendOffset.getValue().x(), yoffset+120.0f+f_legendOffset.getValue().y(), 0.0f);
 
     glTexCoord1f(0.0);
-    glVertex3f(20.0f+f_legendOffset.getValue().x(), 130.0f+f_legendOffset.getValue().y(), 0.0f);
+    glVertex3f(10.0f+f_legendOffset.getValue().x(), yoffset+120.0f+f_legendOffset.getValue().y(), 0.0f);
 
     glEnd();
 
@@ -460,42 +461,45 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
 
-    // Restore state
-    glPopAttrib();
-
-    // Save state and disable clipping plane
-    glPushAttrib(GL_ENABLE_BIT);
-	for(int i = 0; i < GL_MAX_CLIP_PLANES; ++i)
-		glDisable(GL_CLIP_PLANE0+i);
 
     // Maximum & minimum
-    //
-
     std::ostringstream smin, smax;
-    smin << min;
-    smax << max;
+    smin << d_min.getValue();
+    smax << d_max.getValue();
 
-	Color textcolor(1.0f, 1.0f, 1.0f, 1.0f);
+    static const Color whiteTextcolor(1.0f, 1.0f, 1.0f, 1.0f);
+    static const Color blackTextcolor(0.0f, 0.0f, 0.0f, 1.0f);
+    // We check here if the background is dark enough to have white text
+    // else we use black text
+    GLfloat bgcol[4];
+    glGetFloatv(GL_COLOR_CLEAR_VALUE,bgcol);
+    static const float maxdarkcolor = 0.2f;
+    const Color& textcolor = (bgcol[0] > maxdarkcolor || bgcol[1] > maxdarkcolor || bgcol[2] > maxdarkcolor) ? blackTextcolor : whiteTextcolor;
 
-	// We check here if the background is dark enough to have white text
-	// else we use black text
-	GLfloat bgcol[4];
-	glGetFloatv(GL_COLOR_CLEAR_VALUE,bgcol);
-	float maxdarkcolor = 0.2f;
-	if(bgcol[0] > maxdarkcolor || bgcol[1] > maxdarkcolor || bgcol[2] > maxdarkcolor)
-		textcolor = Color (0.0f, 0.0f, 0.0f, 0.0f);
+    if( !legendTitle.empty() )
+    {
+        vparams->drawTool()->writeOverlayText((int)f_legendOffset.getValue().x(), // x
+                                              (int)f_legendOffset.getValue().y(), // y
+                                              11u, // size
+                                              textcolor,
+                                              legendTitle.c_str());
+    }
 
-    vparams->drawTool()->writeOverlayText(10 + (int)f_legendOffset.getValue().x(), // x
-                                          10 + (int)f_legendOffset.getValue().y(), // y
-                                          14u, // size
+
+
+    vparams->drawTool()->writeOverlayText((int)f_legendOffset.getValue().x(), // x
+                                          yoffset + (int)f_legendOffset.getValue().y(), // y
+                                          12u, // size
                                           textcolor,
                                           smax.str().c_str());
 
-    vparams->drawTool()->writeOverlayText(10 + (int)f_legendOffset.getValue().x(), // x
-                                          135 + (int)f_legendOffset.getValue().y(), // y
-                                          14u, // size
+    vparams->drawTool()->writeOverlayText((int)f_legendOffset.getValue().x(), // x
+                                          yoffset + 120 + (int)f_legendOffset.getValue().y(), // y
+                                          12u, // size
                                           textcolor,
                                           smin.str().c_str());
+
+
 
     // Restore state
     glPopAttrib();

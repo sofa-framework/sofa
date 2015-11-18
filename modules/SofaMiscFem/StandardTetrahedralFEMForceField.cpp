@@ -28,7 +28,6 @@
 
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/ForceField.inl>
 
 namespace sofa
 {

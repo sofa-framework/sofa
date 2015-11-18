@@ -37,7 +37,6 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 
 #include <sofa/helper/accessor.h>
-#include <sofa/helper/system/glut.h>
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
@@ -96,7 +95,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , showObject(initData(&showObject, (bool) false, "showObject", "Show objects"))
     , showObjectScale(initData(&showObjectScale, (float) 0.1, "showObjectScale", "Scale for object display"))
     , showIndices(initData(&showIndices, (bool) false, "showIndices", "Show indices"))
-    , showIndicesScale(initData(&showIndicesScale, (float) 0.0001, "showIndicesScale", "Scale for indices display"))
+    , showIndicesScale(initData(&showIndicesScale, (float) 0.02, "showIndicesScale", "Scale for indices display"))
     , showVectors(initData(&showVectors, (bool) false, "showVectors", "Show velocity"))
     , showVectorsScale(initData(&showVectorsScale, (float) 0.0001, "showVectorsScale", "Scale for vectors display"))
     , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow.\n\nThe DOFS will be drawn:\n- 0: point\n- >1: sphere"))
@@ -1256,13 +1255,14 @@ void MechanicalObject<DataTypes>::storeResetState()
         vOp(core::ExecParams::defaultInstance(), core::VecId::resetVelocity(), core::VecId::velocity());
 }
 
-//
-// Integration related methods
-//
+
 template <class DataTypes>
 void MechanicalObject<DataTypes>::reset()
 {
-    if (!reset_position.isSet())
+    // resetting force for every dofs, even mapped ones
+    vOp(core::ExecParams::defaultInstance(), core::VecId::force());
+
+    if (!reset_position.isSet()) // mapped states are deduced from independent ones
         return;
 
     vOp(core::ExecParams::defaultInstance(), core::VecId::position(), core::VecId::resetPosition());
@@ -2704,46 +2704,17 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
 
     if (showIndices.getValue())
     {
-        glColor3f(1.0,1.0,1.0);
-        float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue() );
+		defaulttype::Vector4 color(1.0, 1.0, 1.0,1.0);
+        
+		float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue() );
 
-        defaulttype::Mat<4,4, GLfloat> modelviewM;
+        helper::vector<defaulttype::Vector3> positions;
+        for (size_t i = 0; i < vsize; ++i)
+            positions.push_back(defaulttype::Vector3(getPX(i), getPY(i), getPZ(i)));
 
-        for (size_t i=0 ; i< vsize ; i++)
-        {
-            std::ostringstream oss;
-            oss << i;
-            std::string tmp = oss.str();
-            const char* s = tmp.c_str();
-            //glVertex3f(getPX(i),getPY(i),getPZ(i) );
-            glPushMatrix();
-
-            glTranslatef((float)getPX(i), (float)getPY(i), (float)getPZ(i));
-            glScalef(scale,scale,scale);
-
-            // Makes text always face the viewer by removing the scene rotation
-            // get the current modelview matrix
-            glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
-            modelviewM.transpose();
-
-            defaulttype::Vec3d temp(getPX(i), getPY(i), getPZ(i));
-            temp = modelviewM.transform(temp);
-
-            //glLoadMatrixf(modelview);
-            glLoadIdentity();
-
-            glTranslatef((float)temp[0], (float)temp[1], (float)temp[2]);
-            glScalef(scale,scale,scale);
-
-            while(*s)
-            {
-                glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
-                s++;
-            }
-
-            glPopMatrix();
-        }
+        vparams->drawTool()->draw3DText_Indices(positions, scale, color);
     }
+
     if (showVectors.getValue())
     {
 //        Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
@@ -3486,3 +3457,4 @@ bool MechanicalObject<DataTypes>::isIndependent() const
 } // namespace sofa
 
 #endif
+
