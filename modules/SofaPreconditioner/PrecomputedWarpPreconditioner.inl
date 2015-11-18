@@ -316,7 +316,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
         core::objectmodel::BaseObject* ptr = NULL;
         this->getContext()->get(ptr, solverName.getValue());
         CGlinearSolver = dynamic_cast<CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>*>(ptr);
-        linearSolver = dynamic_cast<core::behavior::LinearSolver*>(ptr);
+        linearSolver = ptr->toLinearSolver();
     }
 
     if(EulerSolver && CGlinearSolver)

@@ -72,7 +72,6 @@ ReadState::~ReadState()
 
 void ReadState::init()
 {
-//     mmodel = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
     reset();
 }
 

@@ -126,10 +126,10 @@ void MultiMapping<In,Out>::init()
 {
     maskFrom.resize( this->fromModels.size() );
     for( unsigned i=0 ; i<this->fromModels.size() ; ++i )
-        if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModels[i])) maskFrom[i] = &stateFrom->forceMask;
+        if (core::behavior::BaseMechanicalState* stateFrom = this->fromModels[i]->toBaseMechanicalState()) maskFrom[i] = &stateFrom->forceMask;
     maskTo.resize( this->toModels.size() );
     for( unsigned i=0 ; i<this->toModels.size() ; ++i )
-        if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModels[i])) maskTo[i] = &stateTo->forceMask;
+        if (core::behavior::BaseMechanicalState* stateTo = this->toModels[i]->toBaseMechanicalState()) maskTo[i] = &stateTo->forceMask;
         else this->setNonMechanical();
 
     apply(MechanicalParams::defaultInstance() , VecCoordId::position(), ConstVecCoordId::position());

@@ -566,7 +566,7 @@ sofa::helper::vector <unsigned int> RemovePrimitivePerformer<DataTypes>::getElem
 {
     // - STEP 0: Compute appropriate scale from BB:  selectorScale = 100 => zone = all mesh
     defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-    core::objectmodel::BaseNode* root = dynamic_cast<core::objectmodel::BaseNode*>(mstateCollision->getContext());
+    core::objectmodel::BaseNode* root = mstateCollision->getContext()->toBaseNode();
     if (root) root = root->getRoot();
     if (root) { sceneMinBBox = root->f_bbox.getValue().minBBox(); sceneMaxBBox = root->f_bbox.getValue().maxBBox(); }
     else      { sceneMinBBox = mstateCollision->getContext()->f_bbox.getValue().minBBox(); sceneMaxBBox = mstateCollision->getContext()->f_bbox.getValue().maxBBox(); }

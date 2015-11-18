@@ -97,78 +97,78 @@ bool ExportDotVisitor::display(core::objectmodel::BaseObject* obj, const char **
     *color = COLOR[OBJECT];
     bool show = false;
     bool hide = false;
-    if (dynamic_cast<core::behavior::BaseMechanicalState*>(obj))
+    if (obj->toBaseMechanicalState())
     {
         if (showMechanicalState) { show = true; *color = COLOR[MMODEL]; }
         else hide = true;
     }
-    if (dynamic_cast<core::behavior::BaseMass*>(obj))
+    if (obj->toBaseMass())
     {
         if (showMass) { show = true; *color = COLOR[MASS]; }
         else hide = true;
     }
-    if (dynamic_cast<core::topology::Topology *>(obj))
+    if (obj->toTopology ())
     {
         if (showTopology) { show = true; *color = COLOR[TOPOLOGY]; }
         else hide = true;
     }
-    if (dynamic_cast<core::CollisionModel*>(obj))
+    if (obj->toCollisionModel())
     {
         if (showCollisionModel) { show = true; *color = COLOR[CMODEL]; }
         else hide = true;
     }
-    if (dynamic_cast<core::BaseMapping*>(obj))
+    if (obj->toBaseMapping())
     {
         if (showMapping) { show = true; *color = COLOR[MAPPING]; }
         else hide = true;
     }
-    if (dynamic_cast<core::objectmodel::ContextObject*>(obj))
+    if (obj->toContextObject())
     {
         if (showContext) { show = true; *color = COLOR[CONTEXT]; }
         else hide = true;
     }
-    if (dynamic_cast<core::collision::Pipeline*>(obj)
-        || dynamic_cast<core::collision::Intersection*>(obj)
-        || dynamic_cast<core::collision::Detection*>(obj)
-        || dynamic_cast<core::collision::ContactManager*>(obj)
-        || dynamic_cast<core::collision::CollisionGroupManager*>(obj))
+    if (obj->toPipeline()
+        || obj->toIntersection()
+        || obj->toDetection()
+        || obj->toContactManager()
+        || obj->toCollisionGroupManager())
     {
         if (showCollisionPipeline) { show = true; *color = COLOR[COLLISION]; }
         else hide = true;
     }
-    if (dynamic_cast<core::behavior::OdeSolver*>(obj))
+    if (obj->toOdeSolver())
     {
         if (showSolver) { show = true; *color = COLOR[SOLVER]; }
         else hide = true;
     }
-    if (dynamic_cast<core::behavior::BaseInteractionForceField*>(obj) &&
-        dynamic_cast<core::behavior::BaseInteractionForceField*>(obj)->getMechModel1()!=dynamic_cast<core::behavior::BaseInteractionForceField*>(obj)->getMechModel2())
+    if (obj->toBaseInteractionForceField() &&
+        obj->toBaseInteractionForceField()->getMechModel1()!=obj->toBaseInteractionForceField()->getMechModel2())
     {
         if (showInteractionForceField) { show = true; *color = COLOR[IFFIELD]; }
         else hide = true;
     }
-    else if (dynamic_cast<core::behavior::BaseForceField*>(obj))
+    else if (obj->toBaseForceField())
     {
         if (showForceField) { show = true; *color = COLOR[FFIELD]; }
         else hide = true;
     }
-    if (dynamic_cast<core::behavior::BaseProjectiveConstraintSet*>(obj))
+    if (obj->toBaseProjectiveConstraintSet())
     {
         if (showConstraint) { show = true; *color = COLOR[PROJECTIVECONSTRAINTSET]; }
         else hide = true;
     }
-    if (dynamic_cast<core::behavior::BaseConstraintSet*>(obj))
+    if (obj->toBaseConstraintSet())
     {
         if (showConstraint) { show = true; *color = COLOR[CONSTRAINTSET]; }
         else hide = true;
     }
-    if (dynamic_cast<core::BehaviorModel*>(obj))
+    if (obj->toBehaviorModel())
     {
         if (showBehaviorModel) { show = true; *color = COLOR[BMODEL]; }
         else hide = true;
     }
 
-    if (dynamic_cast<core::visual::VisualModel*>(obj) && !hide && !show)
+    if (obj->toVisualModel() && !hide && !show)
     {
         if (showVisualModel) { show = true; *color = COLOR[VMODEL]; }
         else hide = true;
@@ -186,13 +186,13 @@ std::string ExportDotVisitor::getParentName(core::objectmodel::BaseObject* obj)
     if (!node) return "";
     if (display(node))
         return getName(node);
-    if (dynamic_cast<core::BaseMapping*>(obj))
+    if (obj->toBaseMapping())
         return "";
     if (!node->collisionPipeline.empty() && display(node->collisionPipeline) &&
-        (dynamic_cast<core::collision::Intersection*>(obj) ||
-                dynamic_cast<core::collision::Detection*>(obj) ||
-                dynamic_cast<core::collision::ContactManager*>(obj) ||
-                dynamic_cast<core::collision::CollisionGroupManager*>(obj)))
+        (obj->toIntersection() ||
+                obj->toDetection() ||
+                obj->toContactManager() ||
+                obj->toCollisionGroupManager()))
         return getName(node->collisionPipeline);
     /// \todo consider all solvers instead of the first one (FF)
     if (node->mechanicalState!=obj && node->solver[0]!=obj  && node->animationManager!=obj && display(node->mechanicalState))
@@ -278,11 +278,11 @@ void ExportDotVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseObj
         if (!pname.empty())
         {
             *out << pname << " -> " << name;
-            if (dynamic_cast<core::BaseMapping*>(obj))
+            if (obj->toBaseMapping())
                 *out << "[constraint=false]";
             *out << ";" << std::endl;
         }
-        core::behavior::BaseInteractionForceField* iff = dynamic_cast<core::behavior::BaseInteractionForceField*>(obj);
+        core::behavior::BaseInteractionForceField* iff = obj->toBaseInteractionForceField();
         if (iff!=NULL)
         {
             core::behavior::BaseMechanicalState* model1 = iff->getMechModel1();
@@ -295,7 +295,7 @@ void ExportDotVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseObj
                     *out << name << " -> " << getName(model2) << " [style=\"dashed\",arrowhead=\"open\"];" << std::endl;
             }
         }
-        core::BaseMapping* map = dynamic_cast<core::BaseMapping*>(obj);
+        core::BaseMapping* map = obj->toBaseMapping();
         if (map!=NULL)
         {
             core::objectmodel::BaseObject* model1 = map->getFrom()[0];
@@ -303,7 +303,7 @@ void ExportDotVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseObj
             if (display(model1))
             {
                 *out << getName(model1) << " -> " << name << " [style=\"dashed\",arrowhead=\"none\"";
-                core::BaseMapping* bmm = dynamic_cast<core::BaseMapping*>(obj);
+                core::BaseMapping* bmm = obj->toBaseMapping();
                 if (bmm)
                 {
                     if(bmm->isMechanical())
