@@ -15,7 +15,7 @@ target_link_libraries(${PROJECT_NAME} SofaSimulationGraph)
 target_link_libraries(${PROJECT_NAME} SofaGuiMain)
 
 if(SOFA_HAVE_GLUT)
-	target_compile_definitions(${PROJECT_NAME} PUBLIC "SOFA_HAVE_GLUT")
+	target_compile_definitions(${PROJECT_NAME} PUBLIC "SOFA_HAVE_GLUT_GUI")
 endif()
 
 sofa_install_targets(SofaGui runSofa "")

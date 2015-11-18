@@ -261,15 +261,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
 
 	if (showIndices.getValue())
 	{
-        defaulttype::Vector4 color(1.0, 1.0, 1.0, 1.0);
-
-		float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
-
-        helper::vector<defaulttype::Vector3> positions;
-        for (size_t i = 0; i < vsize; ++i)
-            positions.push_back(defaulttype::Vector3(getPX(i), getPY(i), getPZ(i)));
-
-        vparams->drawTool()->draw3DText_Indices(positions, scale, color);
+        drawIndices(vparams);
 	}
 
     if (showVectors.getValue())
@@ -495,15 +487,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
 
 	if (showIndices.getValue())
 	{
-        defaulttype::Vector4 color(1.0, 1.0, 1.0, 1.0);
-
-		float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
-
-        helper::vector<defaulttype::Vector3> positions;
-        for (size_t i = 0; i < vsize; ++i)
-            positions.push_back(defaulttype::Vector3(getPX(i), getPY(i), getPZ(i)));
-
-        vparams->drawTool()->draw3DText_Indices(positions, scale, color);
+        drawIndices(vparams);
 	}
 
     if (showVectors.getValue())
@@ -590,15 +574,7 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
 #ifndef SOFA_NO_OPENGL
 	if (showIndices.getValue())
 	{
-        defaulttype::Vector4 color(1.0, 1.0, 1.0, 1.0);
-
-		float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
-
-        helper::vector<defaulttype::Vector3> positions;
-        for (size_t i = 0; i < vsize; ++i)
-            positions.push_back(defaulttype::Vector3(getPX(i), getPY(i), getPZ(i)));
-
-        vparams->drawTool()->draw3DText_Indices(positions, scale, color);
+        drawIndices(vparams);
 	}
 
     if (showObject.getValue())

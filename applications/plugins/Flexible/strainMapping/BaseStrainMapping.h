@@ -55,6 +55,12 @@ using helper::vector;
 */
 class SOFA_Flexible_API BaseStrainMapping : public virtual core::objectmodel::BaseObject
 {
+protected:
+    BaseStrainMapping() {}
+private:
+    BaseStrainMapping(const BaseStrainMapping& b);
+    BaseStrainMapping& operator=(const BaseStrainMapping& b);
+
 public:
     virtual void resizeOut()=0;
     virtual void applyJT()=0;
