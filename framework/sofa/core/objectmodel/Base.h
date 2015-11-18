@@ -55,6 +55,7 @@ namespace core {
     class BehaviorModel;
     class CollisionModel;
     class DataEngine;
+    class DevBaseMonitor;
 namespace objectmodel {
     class BaseObject;
     class BaseNode;
@@ -479,6 +480,7 @@ public:
     SOFA_BASE_CAST_DEFINITION( core,        BehaviorModel               )
     SOFA_BASE_CAST_DEFINITION( core,        CollisionModel              )
     SOFA_BASE_CAST_DEFINITION( core,        DataEngine                  )
+    SOFA_BASE_CAST_DEFINITION( core,        DevBaseMonitor              )
     SOFA_BASE_CAST_DEFINITION( objectmodel, BaseObject                  )
     SOFA_BASE_CAST_DEFINITION( objectmodel, BaseNode                    )
     SOFA_BASE_CAST_DEFINITION( objectmodel, ContextObject               )
