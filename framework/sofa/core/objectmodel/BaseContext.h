@@ -53,25 +53,6 @@ namespace core
 
 // forward declaration of classes accessible from the context
 
-class BaseState;
-
-namespace topology
-{
-class Topology;
-class BaseMeshTopology;
-} // namespace topology
-
-namespace behavior
-{
-class BaseMechanicalState;
-class BaseMass;
-} // namespace behavior
-
-namespace visual
-{
-class Shader;
-} // namespace visual
-
 namespace objectmodel
 {
 class BaseObject;
