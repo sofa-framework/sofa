@@ -111,6 +111,11 @@ public:
 template <int spatial_dimensions,typename Real>
 class BasePointMapper : public virtual core::objectmodel::BaseObject
 {
+protected:
+    BasePointMapper() {}
+    BasePointMapper(const BasePointMapper& b);
+    BasePointMapper& operator=(const BasePointMapper& b);
+
 public:
     typedef defaulttype::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
 
