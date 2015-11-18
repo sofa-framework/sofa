@@ -70,7 +70,7 @@ public:
         SOFA_UNUSED(force);
         SOFA_UNUSED(dFree);
         std::cerr << "ERROR(" << "ConstraintResolution" << ")::resolution(int , double** , double* , double* , double * ) not implemented." << std::endl;
-    };
+    }
 
     /// Called after Gauss-Seidel last iteration, in order to store last computed forces for the inital guess
     virtual void store(int /*line*/, double* /*force*/, bool /*convergence*/) {}
@@ -98,6 +98,7 @@ class SOFA_CORE_API BaseConstraint : public BaseConstraintSet
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseConstraint, BaseConstraintSet);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseConstraint)
 
 protected:
     BaseConstraint() {}
