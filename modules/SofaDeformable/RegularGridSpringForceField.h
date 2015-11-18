@@ -57,13 +57,6 @@ public:
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
-    /*
-    typedef helper::ReadAccessor<VecCoord> RRefVecCoord;
-    typedef helper::WriteAccessor<VecCoord> WRefVecCoord;
-    typedef helper::ReadAccessor<VecDeriv> RRefVecDeriv;
-    typedef helper::WriteAccessor<VecDeriv> WRefVecDeriv;
-    */
-    //virtual const char* getTypeName() const { return "RegularGridSpringForceField"; }
 
 protected:
     Data< Real > linesStiffness;

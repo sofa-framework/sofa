@@ -362,7 +362,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     if (vsplit)
     {
         vertices2.resize(nbVOut);
-        vnormals.resize(nbVOut);
+        if( m_useNormals.getValue() ) vnormals.resize(nbVOut);
         vtexcoords.resize(nbVOut);
         vertPosIdx.resize(nbVOut);
         vertNormIdx.resize(nbVOut);
@@ -370,7 +370,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     else
     {
         //vertices2.resize(nbVIn);
-        vnormals.resize(nbVIn);
+        if( m_useNormals.getValue() ) vnormals.resize(nbVIn);
         vtexcoords.resize(nbVIn);
     }
 
@@ -388,7 +388,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         {
             int t = it->first.first;
             int n = it->first.second;
-            if ((unsigned)n < normalsImport.size())
+            if ( m_useNormals.getValue() && (unsigned)n < normalsImport.size())
                 vnormals[j] = normalsImport[n];
             if ((unsigned)t < texCoordsImport.size())
                 vtexcoords[j] = texCoordsImport[t];

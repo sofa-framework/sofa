@@ -24,7 +24,6 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MISC_PARTICLESOURCE_CPP
 #include "ParticleSource.h"
-#include "sofa/core/behavior/Constraint.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include "sofa/defaulttype/Vec3Types.h"

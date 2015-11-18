@@ -40,6 +40,9 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API IntegrateBeginEvent : public sofa::core::objectmodel::Event
 {
 public:
+
+    SOFA_EVENT_H( IntegrateBeginEvent )
+
     virtual const char* getClassName() const { return "IntegrateBeginEvent"; }
 };
 

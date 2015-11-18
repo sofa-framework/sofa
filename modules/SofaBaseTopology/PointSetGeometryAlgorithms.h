@@ -31,8 +31,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/system/glut.h>
-
 namespace sofa
 {
 
@@ -69,7 +67,7 @@ public:
 protected:
     PointSetGeometryAlgorithms()
         : GeometryAlgorithms()
-        ,showIndicesScale (core::objectmodel::Base::initData(&showIndicesScale, (float) 0.0001, "showIndicesScale", "Debug : scale for view topology indices"))
+        ,showIndicesScale (core::objectmodel::Base::initData(&showIndicesScale, (float) 0.02, "showIndicesScale", "Debug : scale for view topology indices"))
         ,showPointIndices (core::objectmodel::Base::initData(&showPointIndices, (bool) false, "showPointIndices", "Debug : view Point indices"))
     {
     }

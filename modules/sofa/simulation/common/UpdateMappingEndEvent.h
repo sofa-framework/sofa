@@ -52,6 +52,9 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API UpdateMappingEndEvent : public sofa::core::objectmodel::Event
 {
 public:
+
+    SOFA_EVENT_H( UpdateMappingEndEvent )
+
     UpdateMappingEndEvent( SReal dt );
 
     ~UpdateMappingEndEvent();

@@ -138,7 +138,7 @@ void WriteTopology::reset()
 
 void WriteTopology::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (/* simulation::AnimateBeginEvent* ev = */ dynamic_cast<simulation::AnimateBeginEvent*>(event))
+    if (/* simulation::AnimateBeginEvent* ev = */simulation::AnimateBeginEvent::checkEventType(event))
     {
         if (!m_topology) return;
         if (!outfile

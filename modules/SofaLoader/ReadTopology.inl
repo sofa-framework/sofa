@@ -121,11 +121,11 @@ void ReadTopology::reset()
 
 void ReadTopology::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (/* simulation::AnimateBeginEvent* ev = */ dynamic_cast<simulation::AnimateBeginEvent*>(event))
+    if (/* simulation::AnimateBeginEvent* ev = */simulation::AnimateBeginEvent::checkEventType(event))
     {
         processReadTopology();
     }
-    if (/* simulation::AnimateEndEvent* ev = */ dynamic_cast<simulation::AnimateEndEvent*>(event))
+    if (/* simulation::AnimateEndEvent* ev = */simulation::AnimateEndEvent::checkEventType(event))
     {
 
     }

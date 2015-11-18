@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -389,6 +389,24 @@ public:
     virtual void init();
     virtual void initVisual();
 };
+
+class SOFA_OPENGL_VISUAL_API OglMatrix4VectorVariable : public OglVariable<helper::vector<defaulttype::Mat4x4f> >
+{
+public:
+    SOFA_CLASS(OglMatrix4VectorVariable,OglVariable<helper::vector<defaulttype::Mat4x4f> >);
+
+    OglMatrix4VectorVariable();
+    virtual ~OglMatrix4VectorVariable() { }
+
+    virtual void init();
+    virtual void initVisual();
+
+    Data<bool> transpose;
+    virtual void setTranspose( const bool& v ) { transpose.setValue(v); }
+
+};
+
+
 
 } // namespace visualmodel
 

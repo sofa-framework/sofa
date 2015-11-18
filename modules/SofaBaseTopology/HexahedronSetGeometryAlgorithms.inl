@@ -845,8 +845,8 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
 
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-        glColor3f(color[0], color[1], color[2]);
-        glDisable(GL_LIGHTING);
+		sofa::defaulttype::Vec4f color4(color[0], color[1], color[2], 1.0);
+
         float scale = this->getIndicesScale();
 
         //for hexa:
@@ -854,6 +854,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
 
         const sofa::helper::vector<Hexahedron> &hexaArray = this->m_topology->getHexahedra();
 
+        helper::vector<defaulttype::Vector3> positions;
         for (unsigned int i =0; i<hexaArray.size(); i++)
         {
 
@@ -862,43 +863,15 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
 
             for (unsigned int j = 0; j<8; j++)
             {
-                sofa::defaulttype::Vec3f vertex; vertex = DataTypes::getCPos(coords[ the_hexa[j] ]);
+                defaulttype::Vector3 vertex; vertex = DataTypes::getCPos(coords[ the_hexa[j] ]);
                 center += vertex;
             }
 
             center = center/8;
-
-            std::ostringstream oss;
-            oss << i;
-            std::string tmp = oss.str();
-            const char* s = tmp.c_str();
-            glPushMatrix();
-
-            glTranslatef(center[0], center[1], center[2]);
-            glScalef(scale,scale,scale);
-
-            // Makes text always face the viewer by removing the scene rotation
-            // get the current modelview matrix
-            glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
-            modelviewM.transpose();
-
-            sofa::defaulttype::Vec3f temp = modelviewM.transform(center);
-
-            //glLoadMatrixf(modelview);
-            glLoadIdentity();
-
-            glTranslatef(temp[0], temp[1], temp[2]);
-            glScalef(scale,scale,scale);
-
-            while(*s)
-            {
-                glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
-                s++;
-            }
-
-            glPopMatrix();
-
+            positions.push_back(center);
         }
+
+        vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
     }
 
 

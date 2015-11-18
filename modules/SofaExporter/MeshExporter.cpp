@@ -848,8 +848,10 @@ void MeshExporter::writeMeshTetgen()
 
 void MeshExporter::handleEvent(sofa::core::objectmodel::Event *event)
 {
-    if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
+    if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
     {
+        sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
+
         //std::cout << "key pressed " << std::endl;
         switch(ev->getKey())
         {
@@ -860,7 +862,7 @@ void MeshExporter::handleEvent(sofa::core::objectmodel::Event *event)
             break;
         }
     }
-    else if ( /*simulation::AnimateEndEvent* ev =*/  dynamic_cast<simulation::AnimateEndEvent*>(event))
+    else if ( /*simulation::AnimateEndEvent* ev =*/ simulation::AnimateEndEvent::checkEventType(event))
     {
         unsigned int maxStep = exportEveryNbSteps.getValue();
         if (maxStep == 0) return;

@@ -11,6 +11,9 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/Mass.h>
+#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
+#include <sofa/core/behavior/ConstraintCorrection.inl>
+#include <sofa/core/Mapping.h>
 
 
 #ifdef SOFA_HAVE_IMAGE
@@ -140,15 +143,31 @@ namespace behavior
 #ifndef SOFA_FLOAT
 extern template class SOFA_Flexible_API ForceField<defaulttype::TYPEABSTRACTNAME3dTypes>;
 extern template class SOFA_Flexible_API Mass<defaulttype::TYPEABSTRACTNAME3dTypes>;
+extern template class SOFA_Flexible_API ConstraintCorrection<defaulttype::TYPEABSTRACTNAME3dTypes>;
+extern template class SOFA_Flexible_API ProjectiveConstraintSet<defaulttype::TYPEABSTRACTNAME3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_Flexible_API ForceField<defaulttype::TYPEABSTRACTNAME3fTypes>;
 extern template class SOFA_Flexible_API Mass<defaulttype::TYPEABSTRACTNAME3fTypes>;
+extern template class SOFA_Flexible_API ConstraintCorrection<defaulttype::TYPEABSTRACTNAME3fTypes>;
+extern template class SOFA_Flexible_API ProjectiveConstraintSet<defaulttype::TYPEABSTRACTNAME3fTypes>;
 #endif
 #endif
 
 
 } // namespace behavior
+
+
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_COMPILING_CPP)
+#ifndef SOFA_FLOAT
+extern template class SOFA_Flexible_API Mapping<defaulttype::TYPEABSTRACTNAME3dTypes,defaulttype::Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_Flexible_API Mapping<defaulttype::TYPEABSTRACTNAME3fTypes,defaulttype::Rigid3fTypes>;
+#endif
+#endif
+
 
 } // namespace core
 

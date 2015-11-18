@@ -108,8 +108,8 @@ protected:
 
     ROIValueMapper(): Inherited()
         , nbROIs ( initData ( &nbROIs,(unsigned int)0,"nbROIs","size of indices/value vector" ) )
-        , f_indices(this, "indices", "ROIs")
-        , f_value(this, "value", "Values")
+        , f_indices(this, "indices", "ROIs", helper::DataEngineInput)
+        , f_value(this, "value", "Values", helper::DataEngineInput)
         , f_outputValues(initData(&f_outputValues, "outputValues", "New vector of values"))
         , p_defaultValue(initData(&p_defaultValue, (Real) 0.0, "defaultValue", "Default value for indices out of ROIs"))
     {

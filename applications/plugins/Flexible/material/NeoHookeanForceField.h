@@ -29,7 +29,6 @@
 #include "../material/BaseMaterialForceField.h"
 #include "../material/NeoHookeanMaterialBlock.h"
 
-#include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 
 namespace sofa
@@ -81,7 +80,7 @@ public:
 
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
-        if ( dynamic_cast<simulation::AnimateEndEvent*>(event))
+        if (simulation::AnimateEndEvent::checkEventType(event))
         {
             if(_youngModulus.isDirty() || _poissonRatio.isDirty() || f_PSDStabilization.isDirty() ) reinit();
         }

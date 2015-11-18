@@ -369,7 +369,7 @@ void CurveMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
 template <class TIn, class TOut>
 void CurveMapping<TIn, TOut>::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (/*sofa::simulation::AnimateBeginEvent* ev = */dynamic_cast<sofa::simulation::AnimateBeginEvent*>(event))
+    if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
     {
         if (fabs(velocity.getValue()) > 0.00001)
         {
@@ -393,8 +393,10 @@ void CurveMapping<TIn, TOut>::handleEvent(sofa::core::objectmodel::Event* event)
             abscissa.setValue(ab);
         }
     }
-    else if (sofa::core::objectmodel::MouseEvent* ev = dynamic_cast<sofa::core::objectmodel::MouseEvent*>(event))
+    else if (sofa::core::objectmodel::MouseEvent::checkEventType(event))
     {
+        sofa::core::objectmodel::MouseEvent *ev = static_cast<sofa::core::objectmodel::MouseEvent *>(event);
+
         switch (ev->getState())
         {
         case sofa::core::objectmodel::MouseEvent::Wheel :
@@ -419,8 +421,10 @@ void CurveMapping<TIn, TOut>::handleEvent(sofa::core::objectmodel::Event* event)
             break;
         }
     }
-    else if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
+    else if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
     {
+        sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
+
         helper::vector<Real> ab;
         helper::vector<Real> ang;
         switch(ev->getKey())

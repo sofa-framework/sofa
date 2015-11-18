@@ -108,10 +108,10 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MISC_DEVTENSIONMONITOR_CPP)
 #ifndef SOFA_FLOAT
-extern template class DevTensionMonitor<defaulttype::Rigid3dTypes>;
+extern template class SOFA_VALIDATION_API DevTensionMonitor<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class DevTensionMonitor<defaulttype::Rigid3fTypes>;
+extern template class SOFA_VALIDATION_API DevTensionMonitor<defaulttype::Rigid3fTypes>;
 #endif
 #endif
 

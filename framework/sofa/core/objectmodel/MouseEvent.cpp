@@ -36,6 +36,7 @@ namespace core
 namespace objectmodel
 {
 
+SOFA_EVENT_CPP( MouseEvent )
 
 MouseEvent::MouseEvent(State state, int wheelDelta)
     : sofa::core::objectmodel::Event()

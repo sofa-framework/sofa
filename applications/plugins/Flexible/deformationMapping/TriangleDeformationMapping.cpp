@@ -27,19 +27,13 @@
 #include <Flexible/config.h>
 #include "TriangleDeformationMapping.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/Mapping.inl>
 
 namespace sofa
 {
 namespace core
 {
 using namespace sofa::defaulttype;
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API Mapping< Vec3fTypes, F321dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API Mapping< Vec3fTypes, F321fTypes >;
-#endif
+template class SOFA_Flexible_API Mapping< Vec3Types, F321Types >;
 }
 
 namespace component
@@ -54,23 +48,10 @@ using namespace defaulttype;
 
 // Register in the Factory
 int TriangleDeformationMappingClass = core::RegisterObject("Compute deformation gradients in triangles")
-#ifndef SOFA_FLOAT
-        .add< TriangleDeformationMapping< Vec3dTypes, F321dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< TriangleDeformationMapping< Vec3fTypes, F321fTypes > >()
-#endif
+        .add< TriangleDeformationMapping< Vec3Types, F321Types > >()
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API TriangleDeformationMapping< Vec3dTypes, F321dTypes >;
-#endif
-
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API TriangleDeformationMapping< Vec3fTypes, F321fTypes >;
-#endif
-
-
+template class SOFA_Flexible_API TriangleDeformationMapping< Vec3Types, F321Types >;
 
 
 } // namespace mapping

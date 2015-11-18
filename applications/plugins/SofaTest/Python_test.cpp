@@ -1,4 +1,4 @@
-#include <SofaPython/ScriptEvent.h>
+#include <SofaPython/PythonScriptEvent.h>
 
 #include "Python_test.h"
 
@@ -49,10 +49,10 @@ struct Listener : core::objectmodel::BaseObject {
     }
 
     virtual void handleEvent(core::objectmodel::Event * event) {
-        typedef core::objectmodel::ScriptEvent event_type;
-
-        if (event_type* e = dynamic_cast<event_type *>(event)) {
-
+        if (core::objectmodel::PythonScriptEvent::checkEventType(event)
+              || core::objectmodel::ScriptEvent::checkEventType(event) )
+       {
+            core::objectmodel::ScriptEvent* e = static_cast<core::objectmodel::ScriptEvent*>(event);
             std::string name = e->getEventName();
             if( name == "success" ) {
                 throw Python_scene_test::result(true);

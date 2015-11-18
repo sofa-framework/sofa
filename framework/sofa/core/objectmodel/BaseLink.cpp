@@ -41,6 +41,13 @@ namespace core
 namespace objectmodel
 {
 
+BaseLink::BaseLink(LinkFlags flags)
+    : m_flags(flags)
+{
+    m_counters.assign(0);
+    //m_isSets.assign(false);
+}
+
 BaseLink::BaseLink(const BaseInitLink& init, LinkFlags flags)
     : m_flags(flags), m_name(init.name), m_help(init.help)
 {

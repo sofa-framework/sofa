@@ -65,10 +65,14 @@ public:
     class evaluator
     {
     public:
+        evaluator()
+            : map(NULL), vmin(0), vmax(0), vscale(0)
+        {}
+
         evaluator(const ColorMap* map, Real vmin, Real vmax)
             : map(map), vmin(vmin), vmax(vmax), vscale((vmax == vmin) ? (Real)0 : (map->entries.size()-1)/(vmax-vmin)) {}
 
-        Color operator()(Real r)
+        Color operator()(Real r) const
         {
             Real e = (r-vmin)*vscale;
             if (e<0) return map->entries.front();
@@ -82,9 +86,9 @@ public:
         }
     protected:
         const ColorMap* map;
-        const Real vmin;
-        const Real vmax;
-        const Real vscale;
+        Real vmin;
+        Real vmax;
+        Real vscale;
     };
 
     Data<unsigned int> f_paletteSize;
@@ -92,11 +96,11 @@ public:
 
     Data<bool> f_showLegend;
     Data<defaulttype::Vec2f> f_legendOffset;
+    Data<std::string> f_legendTitle;
     Data<float> d_min, d_max;
 
     VecColor entries;
     GLuint texture;
-    double min, max;
 
     void initOld(const std::string &data);
 
@@ -110,7 +114,6 @@ public:
     //void drawTransparent(const VisualParams* /*vparams*/)
     //void updateVisual();
 
-    void prepareLegend();
 
 
     unsigned int getNbColors() { return (unsigned int) entries.size(); }
@@ -124,8 +127,6 @@ public:
     template<class Real>
     evaluator<Real> getEvaluator(Real vmin, Real vmax)
     {
-        min = (double)vmin;
-        max = (double)vmax;
         if (!entries.empty()) {
             return evaluator<Real>(this, vmin, vmax);
         } else {

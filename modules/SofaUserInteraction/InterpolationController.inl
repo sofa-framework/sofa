@@ -106,7 +106,7 @@ void InterpolationController<DataTypes>::interpolation() { //VecCoord &interpXs)
 
 template<class DataTypes>
 void InterpolationController<DataTypes>::handleEvent(core::objectmodel::Event *event) {
-    if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
+    if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
     {
         if (f_evolution.getValue() != STABLE)
         {

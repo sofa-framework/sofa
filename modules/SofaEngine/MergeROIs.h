@@ -99,7 +99,7 @@ protected:
 
     MergeROIs(): Inherited()
         , nbROIs ( initData ( &nbROIs,(unsigned int)0,"nbROIs","size of indices/value vector" ) )
-        , f_indices(this, "indices", "ROIs")
+        , f_indices(this, "indices", "ROIs", helper::DataEngineInput)
         , f_outputIndices(initData(&f_outputIndices, "roiIndices", "Vector of ROIs"))
     {
     }

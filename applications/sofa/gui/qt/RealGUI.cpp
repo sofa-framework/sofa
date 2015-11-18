@@ -1067,28 +1067,17 @@ void RealGUI::setViewerResolution ( int w, int h )
 {
     if( isEmbeddedViewer() )
     {
-//        QSize winSize = size();
-//        QSize viewSize = ( getViewer() ) ? getQtViewer()->getQWidget()->size() : QSize(0,0);
+        QSize winSize = size();
+        QSize viewSize = ( getViewer() ) ? getQtViewer()->getQWidget()->size() : QSize(0,0);
 
-//        const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
-        QSize newWinSize(dockWidget->width() + w, dockWidget->height() + h);
+        const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
+//      QSize newWinSize(dockWidget->width() + w, dockWidget->height() + h);
         
-        
-//        std::cout << "now windows dimension to screen " << screen.width() << " x " << screen.height() << std::endl;
-//        std::cout << "now windows dimension to winsize " << winSize.width() << " x " << winSize.height() << std::endl;
-//        std::cout << "now windows dimension to viewsize" << viewSize.width() << " x " << viewSize.height() << std::endl;
-//        
-//        
-//        
-//        QSize newWinSize(winSize.width() - viewSize.width() + w, winSize.height() - viewSize.height() + h);
-//        //if (newWinSize.width() > screen.width()) newWinSize.setWidth(screen.width()-20);
-//        //if (newWinSize.height() > screen.height()) newWinSize.setHeight(screen.height()-20);
-//        std::cout << "Trying to set windows dimension to " << newWinSize.width() << " x " << newWinSize.height() << std::endl;
-        this->resize(newWinSize);
-//        std::cout<<"winSize.width() - viewSize.width() + w = "<< winSize.width()<<"-"<< viewSize.width()<<"+"<<w<<std::endl;
-//        std::cout<<"winSize.height() - viewSize.height() + h = "<< winSize.height()<<"-"<< viewSize.height()<<"+"<<h<<std::endl;
-//        //std::cout<<newWinSize.height()<<"-"<< viewSize.height()<<"+"<<h<<std::endl;
-//
+        QSize newWinSize(winSize.width() - viewSize.width() + w, winSize.height() - viewSize.height() + h);
+        if (newWinSize.width() > screen.width()) newWinSize.setWidth(screen.width()-20);
+        if (newWinSize.height() > screen.height()) newWinSize.setHeight(screen.height()-20);
+
+		this->resize(newWinSize);
         //std::cout << "Setting windows dimension to " << size().width() << " x " << size().height() << std::endl;
     }
     else

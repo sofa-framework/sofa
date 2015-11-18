@@ -338,13 +338,6 @@ void BaseObject::cleanup()
 /// Handle an event
 void BaseObject::handleEvent( Event* /*e*/ )
 {
-    /*
-    serr<<"BaseObject "<<getName()<<" ("<<getTypeName()<<") gets an event"<<sendl;
-    if( KeypressedEvent* ke = dynamic_cast<KeypressedEvent*>( e ) )
-    {
-    serr<<"BaseObject "<<getName()<<" gets a key event: "<<ke->getKey()<<sendl;
-    }
-    */
 }
 
 /// Handle topological Changes from a given Topology

@@ -34,7 +34,6 @@
 #include <sofa/core/behavior/BaseRotationFinder.h>
 #include <sofa/core/behavior/RotationMatrix.h>
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/simulation/common/AnimateBeginEvent.h>
 
 // FIX: temporarily disabled as SofaSimpleFem is not supposed to depend on SofaOpenGLVisual
 //#define SIMPLEFEM_COLORMAP

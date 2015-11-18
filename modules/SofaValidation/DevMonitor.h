@@ -41,7 +41,7 @@ namespace misc
 {
 
 template <class TDataTypes>
-class DevMonitor: public virtual core::DevBaseMonitor
+class SOFA_VALIDATION_API DevMonitor: public virtual core::DevBaseMonitor
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(DevMonitor,TDataTypes), core::DevBaseMonitor);
@@ -73,7 +73,7 @@ public:
 
     void handleEvent(sofa::core::objectmodel::Event* event)
     {
-        if (dynamic_cast<simulation::AnimateEndEvent*>(event))
+        if (simulation::AnimateEndEvent::checkEventType(event))
         {
             timestamp = getContext()->getTime();
             // write the state using a period

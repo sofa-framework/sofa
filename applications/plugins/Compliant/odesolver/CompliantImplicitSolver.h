@@ -204,6 +204,7 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
 	CompliantImplicitSolver();
     virtual ~CompliantImplicitSolver();
 
+    virtual void reset();
     virtual void cleanup();
 
     enum { NO_STABILIZATION=0, PRE_STABILIZATION, POST_STABILIZATION_RHS, POST_STABILIZATION_ASSEMBLY, NB_STABILIZATION };

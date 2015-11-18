@@ -92,8 +92,8 @@ protected:
 
     GroupwiseRegistrationEngine()    :   Inherited()
       , f_nbInputs (initData(&f_nbInputs, (unsigned)2, "nbInputs", "Number of input vectors"))
-      , vf_inputs(this, "input", "input vector ")
-      , vf_outputs(this, "output", "output vector",false)
+      , vf_inputs(this, "input", "input vector ", helper::DataEngineInput)
+      , vf_outputs(this, "output", "output vector", helper::DataEngineOutput)
     {
         vf_inputs.resize(f_nbInputs.getValue());
         vf_outputs.resize(f_nbInputs.getValue());

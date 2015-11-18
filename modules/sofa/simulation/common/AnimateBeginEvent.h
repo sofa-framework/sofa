@@ -52,6 +52,9 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API AnimateBeginEvent : public sofa::core::objectmodel::Event
 {
 public:
+
+    SOFA_EVENT_H( AnimateBeginEvent )
+
     AnimateBeginEvent( SReal dt );
 
     ~AnimateBeginEvent();
@@ -61,6 +64,7 @@ public:
 protected:
     SReal dt;
 };
+
 
 } // namespace simulation
 

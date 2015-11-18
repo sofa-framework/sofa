@@ -50,6 +50,8 @@ public:
 protected:
     PythonScriptController();
 
+    void handleEvent(core::objectmodel::Event *event);
+
     /// @name Script interface
     ///   Function that need to be implemented for each script language
     /// Typically, all "script_*" functions call the corresponding "*" function of the script, if it exists

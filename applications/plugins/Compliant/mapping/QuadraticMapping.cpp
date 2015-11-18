@@ -2,8 +2,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/Mapping.inl> // ???
-
 namespace sofa
 {
 

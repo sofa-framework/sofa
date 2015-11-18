@@ -75,7 +75,7 @@ extern "C" PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*ar
 }
 
 // object factory
-extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args, PyObject * kw)
+extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args, PyObject * kw, bool printWarnings)
 {
     BaseContext* context=dynamic_cast<BaseContext*>(((PySPtr<Base>*)self)->object.get());
 
@@ -113,24 +113,34 @@ extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args,
     BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,&desc);
     if (obj==0)
     {
-        SP_MESSAGE_ERROR( "createObject " << desc.getName() << " of type " << desc.getAttribute("type","")<< " in node "<<context->getName() )
+        SP_MESSAGE_ERROR( "createObject: component '" << desc.getName() << "' of type '" << desc.getAttribute("type","")<< "' in node '"<<context->getName()<<"'" )
         PyErr_BadArgument();
         Py_RETURN_NONE;
     }
 
-    Node *node = static_cast<Node*>(context);
-    if (node)
+    if( printWarnings )
     {
-        //SP_MESSAGE_INFO( "Sofa.Node.createObject("<<type<<") node="<<node->getName()<<" isInitialized()="<<node->isInitialized() )
-        if (node->isInitialized())
-            SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is already initialized" )
-//        if (!ScriptEnvironment::isNodeCreatedByScript(node))
-//            SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is not created by the script" )
+        Node *node = static_cast<Node*>(context);
+        if (node)
+        {
+            //SP_MESSAGE_INFO( "Sofa.Node.createObject("<<type<<") node="<<node->getName()<<" isInitialized()="<<node->isInitialized() )
+            if (node->isInitialized())
+                SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is already initialized" )
+    //        if (!ScriptEnvironment::isNodeCreatedByScript(node))
+    //            SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is not created by the script" )
+        }
     }
 
     return SP_BUILD_PYSPTR(obj.get());
 }
-
+extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args, PyObject * kw)
+{
+    return BaseContext_createObject_Impl( self, args, kw, true );
+}
+extern "C" PyObject * BaseContext_createObject_noWarning(PyObject * self, PyObject * args, PyObject * kw)
+{
+    return BaseContext_createObject_Impl( self, args, kw, false );
+}
 
 extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args)
 {
@@ -185,6 +195,7 @@ SP_CLASS_METHOD(BaseContext,getDt)
 SP_CLASS_METHOD(BaseContext,getGravity)
 SP_CLASS_METHOD(BaseContext,setGravity)
 SP_CLASS_METHOD_KW(BaseContext,createObject)
+SP_CLASS_METHOD_KW(BaseContext,createObject_noWarning)
 SP_CLASS_METHOD(BaseContext,getObject)
 SP_CLASS_METHOD(BaseContext,getObjects)
 SP_CLASS_METHODS_END

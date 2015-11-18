@@ -115,8 +115,10 @@ void OBJExporter::writeOBJ()
 
 void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
 {
-    if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
+    if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
     {
+        sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
+
         switch(ev->getKey())
         {
 
@@ -140,7 +142,7 @@ void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
         }
     }
 
-    if ( /*simulation::AnimateEndEvent* ev =*/  dynamic_cast<simulation::AnimateEndEvent*>(event))
+    if ( /*simulation::AnimateEndEvent* ev =*/ simulation::AnimateEndEvent::checkEventType(event))
     {
         if (maxStep == 0 || !activateExport) return;
 
