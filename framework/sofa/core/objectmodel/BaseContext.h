@@ -30,7 +30,11 @@
 #include <sofa/core/objectmodel/Tag.h>
 #include <sofa/core/objectmodel/ClassInfo.h>
 #include <sofa/core/ExecParams.h>
+
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
 #include <sofa/defaulttype/SolidTypes.h>
+#endif
+
 #include <set>
 #ifdef SOFA_SMP
 #include <IterativePartition.h>
@@ -92,14 +96,17 @@ public:
     /// @name Types defined for local coordinate system handling
     /// @{
 
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
     typedef defaulttype::SolidTypes<SReal> SolidTypes;
-
     typedef SolidTypes::Transform Frame;
-    typedef SolidTypes::Vec Vec3;
-    typedef SolidTypes::Rot Quat;
-    typedef SolidTypes::Mat Mat33;
     typedef SolidTypes::SpatialVector SpatialVector;
+#endif
+//    typedef SolidTypes::Rot Quat;
+//    typedef SolidTypes::Mat Mat33;
     /// @}
+
+    typedef defaulttype::Vector3 Vec3;
+
 protected:
     BaseContext();
     virtual ~BaseContext();
@@ -126,7 +133,7 @@ public:
 #endif
 
     /// State of the context
-    virtual void setActive(bool) {};
+    virtual void setActive(bool) {}
 
 	/// Sleeping state of the context
 	virtual bool isSleeping() const;
