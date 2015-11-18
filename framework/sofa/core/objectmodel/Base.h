@@ -39,20 +39,12 @@
 #include <sofa/core/objectmodel/Tag.h>
 
 #include <boost/intrusive_ptr.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include <string>
 #include <map>
 
-#include <sofa/helper/logging/Messaging.h>
-
 namespace sofa
 {
-
-namespace helper
-{
-class Logger;
-}
 
 namespace core
 {
@@ -277,13 +269,9 @@ public:
     ///   Messages and warnings logging
     /// @{
 
-    //mutable sofa::helper::system::SofaOStream<Base> sendl;
-    #define sendl
-    #define serr msg_error(this->getName())
-    #define sout msg_info(this->getName())
-    #define swarn msg_warning(this->getName())
-    //mutable std::ostringstream                      serr;
-    //mutable std::ostringstream                      sout;
+    mutable sofa::helper::system::SofaOStream<Base> sendl;
+    mutable std::ostringstream                      serr;
+    mutable std::ostringstream                      sout;
 
     const std::string& getWarnings() const;
     const std::string& getOutputs() const;
@@ -292,13 +280,6 @@ public:
     void clearOutputs();
 
     void processStream(std::ostream& out);
-
-    /// @brief Get the logger used to process the messages sent to the sout and serr streams of components.
-    static helper::Logger& getComponentLogger();
-    /// @brief Change the logger used to process the messages sent to the sout and serr streams of components.
-    static void setComponentLogger(boost::shared_ptr<helper::Logger> logger);
-private:
-    static boost::shared_ptr<helper::Logger> s_componentLogger;
 
     /// @}
 
