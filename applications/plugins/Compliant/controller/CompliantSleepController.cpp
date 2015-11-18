@@ -114,7 +114,7 @@ void GetConstrainedContextPairs::processObject(simulation::Node* /*node*/, core:
 
 void GetConstrainedContextPairs::processMapping(simulation::Node* /*node*/, core::objectmodel::BaseObject* o)
 {
-	core::BaseMapping* mapping = dynamic_cast< core::BaseMapping* >(o);
+    core::BaseMapping* mapping = o->toBaseMapping();
 	if (mapping != NULL)
 	{
 		m_mapping = mapping;

@@ -72,7 +72,7 @@ ReadTopologyCreator::ReadTopologyCreator(const std::string &n, bool _createInMap
 //Create a Read Topology component each time a BaseMeshTopology is found
 simulation::Visitor::Result ReadTopologyCreator::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::core::topology::BaseMeshTopology* topo = dynamic_cast<sofa::core::topology::BaseMeshTopology *>( gnode->getMeshTopology());
+    sofa::core::topology::BaseMeshTopology* topo = gnode->getMeshTopology();
     if (!topo)   return simulation::Visitor::RESULT_CONTINUE;
     //We have a meshTopology
     addReadTopology(topo, gnode);
