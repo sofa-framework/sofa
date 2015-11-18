@@ -46,6 +46,8 @@
 
 
 // forward declaration of castable classes
+// @author Matthieu Nesme, 2015
+// it is not super elegant, but it is way more efficient than dynamic_cast
 namespace sofa {
 namespace core {
     class BaseState;
@@ -89,6 +91,10 @@ namespace collision {
     class Intersection;
     class Pipeline;
 } // namespace collision
+namespace loader
+{
+    class BaseLoader;
+} // namespace loader
 } // namespace core
 } // namespace sofa
 
@@ -498,6 +504,7 @@ public:
     SOFA_BASE_CAST_DEFINITION( collision,   Detection                   )
     SOFA_BASE_CAST_DEFINITION( collision,   Intersection                )
     SOFA_BASE_CAST_DEFINITION( collision,   Pipeline                    )
+    SOFA_BASE_CAST_DEFINITION( loader,      BaseLoader                  )
 
 
     /// @}
