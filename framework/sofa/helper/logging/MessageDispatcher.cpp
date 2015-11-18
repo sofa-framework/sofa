@@ -48,6 +48,8 @@ using std::remove ;
 
 #include "MessageHandler.h"
 
+#include <sofa/core/objectmodel/Base.h>
+
 namespace sofa
 {
 
