@@ -72,7 +72,6 @@ set(HEADER_FILES
     shapeFunction/BaseShapeFunction.h
     shapeFunction/BezierShapeFunction.h
     shapeFunction/HatShapeFunction.h
-    shapeFunction/ImageShapeFunctionSelectNode.h
     shapeFunction/ShepardShapeFunction.h
     strainMapping/BaseStrainMapping.h
     strainMapping/CauchyStrainJacobianBlock.h
@@ -150,7 +149,6 @@ set(SOURCE_FILES
     shapeFunction/BaseShapeFunction.cpp
     shapeFunction/BezierShapeFunction.cpp
     shapeFunction/HatShapeFunction.cpp
-    shapeFunction/ImageShapeFunctionSelectNode.cpp
     shapeFunction/ShepardShapeFunction.cpp
     strainMapping/BaseStrainMapping.cpp
     strainMapping/CauchyStrainMapping.cpp
@@ -190,6 +188,7 @@ if(image_FOUND)
         quadrature/ImageGaussPointSampler.h
         shapeFunction/BaseImageShapeFunction.h
         shapeFunction/DiffusionShapeFunction.h
+        shapeFunction/ImageShapeFunctionSelectNode.h
         shapeFunction/ImageShapeFunctionContainer.h
         shapeFunction/ShapeFunctionDiscretizer.h
         shapeFunction/VoronoiShapeFunction.h)
@@ -200,6 +199,7 @@ if(image_FOUND)
         quadrature/ImageGaussPointSampler.cpp
         shapeFunction/DiffusionShapeFunction.cpp
         shapeFunction/ImageShapeFunctionContainer.cpp
+        shapeFunction/ImageShapeFunctionSelectNode.cpp
         shapeFunction/ShapeFunctionDiscretizer.cpp
         shapeFunction/VoronoiShapeFunction.cpp)
 else()
