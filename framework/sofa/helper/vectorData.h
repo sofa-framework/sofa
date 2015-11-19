@@ -114,7 +114,7 @@ public:
 
     void resize(const unsigned int size)
     {
-        core::DataEngine* componentAsDataEngine = m_dataEngineDataType!=Nothing ? componentAsDataEngine = m_component->toDataEngine() : NULL;
+        core::DataEngine* componentAsDataEngine = m_dataEngineDataType!=DataEngineNothing ? m_component->toDataEngine() : NULL;
 
         if (size < this->size()) {
             // removing some data if size is inferior than current size

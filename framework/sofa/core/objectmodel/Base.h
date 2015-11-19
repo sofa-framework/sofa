@@ -107,10 +107,6 @@ namespace loader
 // VisitorScheduler
 
 
-#define SOFA_BASE_CAST_DEFINITION(NAMESPACE,CLASSNAME) \
-virtual const NAMESPACE::CLASSNAME* to##CLASSNAME() const { return NULL; } \
-virtual       NAMESPACE::CLASSNAME* to##CLASSNAME()       { return NULL; }
-
 #define SOFA_BASE_CAST_IMPLEMENTATION(CLASSNAME) \
 virtual const CLASSNAME* to##CLASSNAME() const { return this; } \
 virtual       CLASSNAME* to##CLASSNAME()       { return this; }
@@ -479,6 +475,11 @@ public:
     ///
 public:
 
+
+#define SOFA_BASE_CAST_DEFINITION(NAMESPACE,CLASSNAME) \
+    virtual const NAMESPACE::CLASSNAME* to##CLASSNAME() const { return NULL; } \
+    virtual       NAMESPACE::CLASSNAME* to##CLASSNAME()       { return NULL; }
+
     SOFA_BASE_CAST_DEFINITION( core,        BaseState                              )
     SOFA_BASE_CAST_DEFINITION( core,        BaseMapping                            )
     SOFA_BASE_CAST_DEFINITION( core,        BehaviorModel                          )
@@ -518,6 +519,7 @@ public:
     SOFA_BASE_CAST_DEFINITION( collision,   Pipeline                               )
     SOFA_BASE_CAST_DEFINITION( loader,      BaseLoader                             )
 
+#undef SOFA_BASE_CAST_DEFINITION
 
     /// @}
 };
