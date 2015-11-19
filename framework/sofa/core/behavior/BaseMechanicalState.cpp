@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 
 
 namespace sofa
@@ -93,6 +94,19 @@ void BaseMechanicalState::handleStateChange(core::topology::Topology* t)
 
 void BaseMechanicalState::writeState( std::ostream& )
 { }
+
+bool BaseMechanicalState::insertInNode( objectmodel::BaseNode* node )
+{
+    node->addMechanicalState(this);
+    return true;
+}
+
+bool BaseMechanicalState::removeInNode( objectmodel::BaseNode* node )
+{
+    node->removeMechanicalState(this);
+    return true;
+}
+
 
 } // namespace behavior
 

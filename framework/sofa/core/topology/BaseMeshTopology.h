@@ -334,6 +334,13 @@ public:
 protected:
 
     sofa::core::objectmodel::DataFileName fileTopology;
+
+
+public:
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
+
 };
 
 } // namespace topology

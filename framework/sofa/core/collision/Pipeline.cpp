@@ -23,8 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/collision/Pipeline.h>
-//#include <sofa/component/collision/DiscreteIntersection.h>
-//#include <sofa/simulation/common/Node.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 
 namespace sofa
 {
@@ -123,6 +122,23 @@ void Pipeline::computeCollisionResponse()
 }
 
 #endif
+
+
+
+bool Pipeline::insertInNode( objectmodel::BaseNode* node )
+{
+    node->addCollisionPipeline(this);
+    return true;
+}
+
+bool Pipeline::removeInNode( objectmodel::BaseNode* node )
+{
+    node->removeCollisionPipeline(this);
+    return true;
+}
+
+
+
 
 } // namespace collision
 

@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 
 #include <cstdlib>
 #include <cmath>
@@ -54,6 +55,18 @@ void BaseAnimationLoop::storeResetState()
 SReal BaseAnimationLoop::getResetTime() const
 {
     return m_resetTime;
+}
+
+bool BaseAnimationLoop::insertInNode( objectmodel::BaseNode* node )
+{
+    node->addAnimationLoop(this);
+    return true;
+}
+
+bool BaseAnimationLoop::removeInNode( objectmodel::BaseNode* node )
+{
+    node->removeAnimationLoop(this);
+    return true;
 }
 
 } // namespace behavior

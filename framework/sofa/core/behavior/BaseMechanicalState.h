@@ -390,6 +390,10 @@ public:
     virtual SReal compareVec(ConstVecId v, std::istream &in) = 0;
 
     /// @}getPotent
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
+
 };
 
 } // namespace behavior

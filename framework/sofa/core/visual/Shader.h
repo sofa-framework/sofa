@@ -64,6 +64,9 @@ public:
     ///Tells if it must be activated automatically(value false : the visitor will switch the shader)
     ///or manually (value true : useful when another component wants to use it for itself only)
     virtual bool isActive() = 0;
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
 };
 
 /**

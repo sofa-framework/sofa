@@ -105,7 +105,6 @@ Node::Node(const std::string& name)
 
     , unsorted(initLink("unsorted", "The remaining objects attached to this node"))
 
-    , actionScheduler(initLink("visitorScheduler", "The VisitorScheduler attached to this node (deprecated)"))
     , debug_(false)
     , initialized(false)
     , depend(initData(&depend,"depend","Dependencies between the nodes.\nname 1 name 2 name3 name4 means that name1 must be initialized before name2 and name3 before name4"))
@@ -552,45 +551,8 @@ void Node::doAddObject(BaseObject::SPtr sobj)
     this->setObjectContext(sobj);
     object.add(sobj);
     BaseObject* obj = sobj.get();
-    int inserted=0;
-    inserted+= animationManager.add(obj->toBaseAnimationLoop());
-    inserted+= solver.add(obj->toOdeSolver());
-    inserted+= linearSolver.add(obj->toLinearSolver());
-    inserted+= constraintSolver.add(obj->toConstraintSolver());
-    inserted+= visualLoop.add(obj->toVisualLoop());
-    inserted+= state.add(obj->toBaseState());
-    inserted+= mechanicalState.add(obj->toBaseMechanicalState());
-    core::BaseMapping* bmap = obj->toBaseMapping();
-    if(bmap)
-    {
-        if(bmap->isMechanical())
-            inserted += mechanicalMapping.add(bmap);
-        else
-            inserted += mapping.add(bmap);
-    }
 
-    inserted+= mass.add(obj->toBaseMass());
-    inserted+= topology.add(obj->toTopology());
-    inserted+= meshTopology.add(obj->toBaseMeshTopology());
-    inserted+= topologyObject.add(obj->toBaseTopologyObject());
-    inserted+= shaders.add(obj->toShader());
-
-    bool isInteractionForceField = interactionForceField.add(obj->toBaseInteractionForceField());
-    inserted+= isInteractionForceField;
-    if (!isInteractionForceField)
-        forceField.add(obj->toBaseForceField());
-    inserted+= projectiveConstraintSet.add(obj->toBaseProjectiveConstraintSet());
-    inserted+= constraintSet.add(obj->toBaseConstraintSet());
-    inserted+= behaviorModel.add(obj->toBehaviorModel());
-    inserted+= visualModel.add(obj->toVisualModel());
-    inserted+= visualManager.add(obj->toVisualManager());
-    inserted+= collisionModel.add(obj->toCollisionModel());
-    inserted+= contextObject.add(obj->toContextObject());
-    inserted+= configurationSetting.add(obj->toConfigurationSetting());
-    inserted+= collisionPipeline.add(obj->toPipeline());
-    inserted+= actionScheduler.add(dynamic_cast< VisitorScheduler*>(obj));
-
-    if ( inserted==0 )
+    if( !obj->insertInNode( this ) )
     {
         //cerr<<"Node::doAddObject, object "<<obj->getName()<<" is unsorted"<<endl;
         unsorted.add(obj);
@@ -608,36 +570,9 @@ void Node::doRemoveObject(BaseObject::SPtr sobj)
     this->clearObjectContext(sobj);
     object.remove(sobj);
     BaseObject* obj = sobj.get();
-    animationManager.remove(obj->toBaseAnimationLoop());
-    solver.remove(obj->toOdeSolver());
-    linearSolver.remove(obj->toLinearSolver());
-    constraintSolver.remove(obj->toConstraintSolver());
-    visualLoop.remove(obj->toVisualLoop());
-    state.remove(obj->toBaseState());
-    mechanicalState.remove(obj->toBaseMechanicalState());
-    mechanicalMapping.remove(obj->toBaseMapping());
-    mass.remove(obj->toBaseMass());
-    topology.remove(obj->toTopology());
-    meshTopology.remove(obj->toBaseMeshTopology());
-    topologyObject.remove(obj->toBaseTopologyObject());
-    shaders.remove(obj->toShader());
 
-    forceField.remove(obj->toBaseForceField());
-    interactionForceField.remove(obj->toBaseInteractionForceField());
-    projectiveConstraintSet.remove(obj->toBaseProjectiveConstraintSet());
-    constraintSet.remove(obj->toBaseConstraintSet());
-    mapping.remove(obj->toBaseMapping());
-    behaviorModel.remove(obj->toBehaviorModel());
-    visualModel.remove(obj->toVisualModel());
-    visualManager.remove(obj->toVisualManager());
-    collisionModel.remove(obj->toCollisionModel());
-    contextObject.remove(obj->toContextObject());
-    configurationSetting.remove(obj->toConfigurationSetting());
-    collisionPipeline.remove(obj->toPipeline());
-
-    actionScheduler.remove(dynamic_cast< VisitorScheduler*>(obj));
-
-    unsorted.remove(obj);
+    if( !obj->removeInNode( this ) )
+        unsorted.remove(obj);
 }
 
 
@@ -928,10 +863,7 @@ void Node::executeVisitor(Visitor* action, bool precomputedOrder)
     ++level;
 #endif
 
-    if (actionScheduler)
-        actionScheduler->executeVisitor(this,action);
-    else
-        doExecuteVisitor(action, precomputedOrder);
+    doExecuteVisitor(action, precomputedOrder);
 
 #ifdef DEBUG_VISITOR
     --level;
@@ -1031,9 +963,6 @@ void Node::printComponents()
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"Pipeline: ";
     for ( Single<Pipeline>::iterator i=collisionPipeline.begin(), iend=collisionPipeline.end(); i!=iend; ++i )
-        serr<<(*i)->getName()<<" ";
-    serr<<sendl<<"VisitorScheduler: ";
-    for ( Single<VisitorScheduler>::iterator i=actionScheduler.begin(), iend=actionScheduler.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl;
 }

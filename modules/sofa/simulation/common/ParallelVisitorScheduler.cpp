@@ -54,8 +54,7 @@ void ParallelVisitorScheduler::executeVisitor(Node* node, simulation::Visitor* a
 
 void ParallelVisitorScheduler::recursiveClone(Node* node)
 {
-    if (!node->actionScheduler)
-        node->addObject( this->clone() );
+    node->addObject( this->clone() );
 
     for(Node::ChildIterator it = node->child.begin(); it != node->child.end(); ++it)
         recursiveClone(it->get());

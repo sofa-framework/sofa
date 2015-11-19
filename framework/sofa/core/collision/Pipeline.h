@@ -122,6 +122,11 @@ protected:
     virtual void doCollisionDetection(const sofa::helper::vector<core::CollisionModel*>& collisionModels) = 0;
     /// Add collision response in the simulation graph
     virtual void doCollisionResponse() = 0;
+
+public:
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
 };
 
 } // namespace collision

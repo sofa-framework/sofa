@@ -50,6 +50,7 @@ class SOFA_CORE_API BaseLinearSolver : public objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseLinearSolver, objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseLinearSolver)
 
     /// Check if this solver handle multiple independent integration groups, placed as child nodes in the scene graph.
     /// If this is the case, then when collisions occur, the CollisionGroupManager can simply group the interacting groups into new child nodes without creating a new solver to handle them.
@@ -57,6 +58,9 @@ public:
     {
         return false;
     }
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
 
 }; // class BaseLinearSolver
 

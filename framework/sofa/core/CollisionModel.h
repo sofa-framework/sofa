@@ -494,6 +494,11 @@ protected:
 
 	void* userData;
 
+public:
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
+
 };
 
 } // namespace core

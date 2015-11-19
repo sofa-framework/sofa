@@ -319,11 +319,12 @@ int main(int argc, char** argv)
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
     sofa::gui::GUIManager::SetDimension(800,600);
 
-    sofa::simulation::Node::SPtr groot = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()).get() );
-    if (groot==NULL)
-    {
+    sofa::simulation::Node::SPtr groot;
+    sofa::core::objectmodel::BaseNode* baseroot = sofa::simulation::getSimulation()->load(fileName.c_str()).get();
+    if( !baseroot )
         groot = sofa::simulation::getSimulation()->createNewGraph("");
-    }
+    else
+        groot = down_cast<sofa::simulation::Node>( baseroot );
 
     if (!verif.empty())
     {

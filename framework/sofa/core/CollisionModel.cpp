@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "CollisionModel.h"
+#include <sofa/core/objectmodel/BaseNode.h>
 
 namespace sofa
 {
@@ -65,6 +66,20 @@ const float* CollisionModel::getColor4f()
         else            {setColor4f(defaultColorMoving); return defaultColorMoving;}
     else if (isActive()) {setColor4f(defaultColorActive); return defaultColorActive;}
     else            {setColor4f(defaultColor); return defaultColor;}
+}
+
+
+
+bool CollisionModel::insertInNode( objectmodel::BaseNode* node )
+{
+    node->addCollisionModel(this);
+    return true;
+}
+
+bool CollisionModel::removeInNode( objectmodel::BaseNode* node )
+{
+    node->removeCollisionModel(this);
+    return true;
 }
 
 

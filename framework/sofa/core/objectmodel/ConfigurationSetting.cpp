@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 
 namespace sofa
 {
@@ -55,6 +56,20 @@ void ConfigurationSetting::init()
         data->setReadOnly(true);
     }
 }
+
+
+bool ConfigurationSetting::insertInNode( objectmodel::BaseNode* node )
+{
+    node->addConfigurationSetting(this);
+    return true;
+}
+
+bool ConfigurationSetting::removeInNode( objectmodel::BaseNode* node )
+{
+    node->removeConfigurationSetting(this);
+    return true;
+}
+
 
 } // namespace objectmodel
 

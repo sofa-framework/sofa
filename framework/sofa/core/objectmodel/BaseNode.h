@@ -155,6 +155,50 @@ protected:
     /// Reset the context of an object
     void clearObjectContext(BaseObject::SPtr obj);
 
+
+
+
+    /// @name virtual functions to add/remove special components direclty in the right Sequence
+    /// Note it is useful for Node, but is not mandatory for every BaseNode Inheritances
+    /// so the default implementation does nothing
+    /// @{
+
+#define BASENODE_ADD_SPECIAL_COMPONENT( CLASSNAME, FUNCTIONNAME, SEQUENCENAME ) \
+    virtual void add##FUNCTIONNAME( CLASSNAME* ) {} \
+    virtual void remove##FUNCTIONNAME( CLASSNAME* ) {}
+
+public:
+
+     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::visual::VisualLoop, VisualLoop, visualLoop )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::BehaviorModel, BehaviorModel, behaviorModel )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::BaseMapping, Mapping, mapping )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::OdeSolver, OdeSolver, solver )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseLinearSolver, LinearSolver, linearSolver )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::topology::Topology, Topology, topology )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::topology::BaseMeshTopology, MeshTopology, meshTopology )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::topology::BaseTopologyObject, TopologyObject, topologyObject )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::BaseState, State, state )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseMechanicalState,MechanicalState, mechanicalState )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::BaseMapping, MechanicalMapping, mechanicalMapping )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseMass, Mass, mass )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseForceField, ForceField, forceField )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseInteractionForceField, InteractionForceField, interactionForceField )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseProjectiveConstraintSet, ProjectiveConstraintSet, projectiveConstraintSet )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseConstraintSet, ConstraintSet, constraintSet )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::objectmodel::ContextObject, ContextObject, contextObject )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::objectmodel::ConfigurationSetting, ConfigurationSetting, configurationSetting )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::visual::Shader, Shader, shaders )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::visual::VisualModel, VisualModel, visualModel )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::visual::VisualManager, VisualManager, visualManager )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::CollisionModel, CollisionModel, collisionModel )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::collision::Pipeline, CollisionPipeline, collisionPipeline )
+
+#undef BASENODE_ADD_SPECIAL_COMPONENT
+
+    /// @}
+
 };
 
 } // namespace objectmodel

@@ -66,6 +66,7 @@ namespace objectmodel {
 namespace behavior {
     class BaseAnimationLoop;
     class OdeSolver;
+    class BaseLinearSolver;
     class LinearSolver;
     class ConstraintSolver;
     class BaseMass;
@@ -493,6 +494,7 @@ public:
     SOFA_BASE_CAST_DEFINITION( objectmodel, ConfigurationSetting                   )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseAnimationLoop                      )
     SOFA_BASE_CAST_DEFINITION( behavior,    OdeSolver                              )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseLinearSolver                       )
     SOFA_BASE_CAST_DEFINITION( behavior,    LinearSolver                           )
     SOFA_BASE_CAST_DEFINITION( behavior,    ConstraintSolver                       )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseMass                               )

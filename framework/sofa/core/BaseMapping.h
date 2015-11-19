@@ -188,6 +188,11 @@ protected:
     virtual void updateForceMask() = 0;
 
 
+public:
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
+
 };
 
 } // namespace core

@@ -137,6 +137,10 @@ public:
         return getSolutionIntegrationFactor(0);
     }
 
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
+
 };
 
 } // namespace behavior
