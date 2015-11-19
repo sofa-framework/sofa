@@ -45,7 +45,7 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_OPENGL_VISUAL_API OglLabel : public virtual sofa::core::visual::VisualModel
+class SOFA_OPENGL_VISUAL_API OglLabel : public sofa::core::visual::VisualModel
 {
 public:
     SOFA_CLASS(OglLabel, sofa::core::visual::VisualModel);

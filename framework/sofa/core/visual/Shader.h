@@ -42,7 +42,7 @@ namespace visual
  *
  *
  */
-class SOFA_CORE_API Shader : public virtual objectmodel::BaseObject
+class SOFA_CORE_API Shader : public objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(Shader, objectmodel::BaseObject);

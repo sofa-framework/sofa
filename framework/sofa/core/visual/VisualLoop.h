@@ -44,7 +44,7 @@ class VisualParams;
  * These components launch all visual visitor and managing visual steps.
  *
  * */
-class SOFA_CORE_API VisualLoop : public virtual VisualModel
+class SOFA_CORE_API VisualLoop : public VisualModel
 {
 public:
     SOFA_CLASS(VisualLoop, VisualModel);

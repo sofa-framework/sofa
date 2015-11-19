@@ -38,7 +38,7 @@ namespace visual
 
 class VisualParams;
 
-class VisualManager : public virtual VisualModel
+class VisualManager : public VisualModel
 {
 public:
     SOFA_CLASS(VisualManager, VisualModel);

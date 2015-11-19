@@ -41,7 +41,7 @@ namespace forcefield
 {
 
 template<class DataTypes>
-class LennardJonesForceField : public sofa::core::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
+class LennardJonesForceField : public sofa::core::behavior::ForceField<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(LennardJonesForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
