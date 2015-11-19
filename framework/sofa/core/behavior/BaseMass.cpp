@@ -37,12 +37,14 @@ namespace behavior
 bool BaseMass::insertInNode( objectmodel::BaseNode* node )
 {
     node->addMass(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool BaseMass::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeMass(this);
+    Inherit1::removeInNode(node);
     return true;
 }
 

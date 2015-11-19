@@ -52,12 +52,14 @@ OdeSolver::~OdeSolver()
 bool OdeSolver::insertInNode( objectmodel::BaseNode* node )
 {
     node->addOdeSolver(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool OdeSolver::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeOdeSolver(this);
+    Inherit1::removeInNode(node);
     return true;
 }
 

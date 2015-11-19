@@ -37,12 +37,14 @@ namespace visual
 bool VisualLoop::insertInNode( objectmodel::BaseNode* node )
 {
     node->addVisualLoop(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool VisualLoop::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeVisualLoop(this);
+    Inherit1::removeInNode(node);
     return true;
 }
 

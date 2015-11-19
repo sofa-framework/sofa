@@ -37,12 +37,14 @@ namespace topology
 bool Topology::insertInNode( objectmodel::BaseNode* node )
 {
     node->addTopology(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool Topology::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeTopology(this);
+    Inherit1::removeInNode(node);
     return true;
 }
 

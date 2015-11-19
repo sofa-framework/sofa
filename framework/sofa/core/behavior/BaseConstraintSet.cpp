@@ -37,12 +37,14 @@ namespace behavior
 bool BaseConstraintSet::insertInNode( objectmodel::BaseNode* node )
 {
     node->addConstraintSet(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool BaseConstraintSet::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeConstraintSet(this);
+    Inherit1::removeInNode(node);
     return true;
 }
 

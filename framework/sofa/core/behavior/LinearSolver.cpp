@@ -44,12 +44,14 @@ LinearSolver::~LinearSolver()
 bool BaseLinearSolver::insertInNode( objectmodel::BaseNode* node )
 {
     node->addLinearSolver(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool BaseLinearSolver::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeLinearSolver(this);
+    Inherit1::removeInNode(node);
     return true;
 }
 

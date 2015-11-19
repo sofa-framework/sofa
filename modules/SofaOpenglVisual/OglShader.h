@@ -64,10 +64,10 @@ namespace visualmodel
  *  and Ati's >2K series.
  */
 
-class SOFA_OPENGL_VISUAL_API OglShader : public core::visual::Shader, public core::visual::VisualModel
+class SOFA_OPENGL_VISUAL_API OglShader : public core::visual::Shader
 {
 public:
-    SOFA_CLASS2(OglShader, core::visual::Shader, core::visual::VisualModel);
+    SOFA_CLASS(OglShader, core::visual::Shader);
 
     ///Activates or not the shader
     Data<bool> turnOn;
@@ -181,9 +181,6 @@ public:
     GLint getGeometryVerticesOut(const unsigned int index) ;
     void  setGeometryVerticesOut(const unsigned int index, GLint v);
 
-
-    virtual bool insertInNode( core::objectmodel::BaseNode* node ) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
-    virtual bool removeInNode( core::objectmodel::BaseNode* node ) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 };
 
 /**

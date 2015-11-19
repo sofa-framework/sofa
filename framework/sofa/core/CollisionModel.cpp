@@ -73,12 +73,14 @@ const float* CollisionModel::getColor4f()
 bool CollisionModel::insertInNode( objectmodel::BaseNode* node )
 {
     node->addCollisionModel(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool CollisionModel::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeCollisionModel(this);
+    Inherit1::removeInNode(node);
     return true;
 }
 

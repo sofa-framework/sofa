@@ -60,12 +60,14 @@ SReal BaseAnimationLoop::getResetTime() const
 bool BaseAnimationLoop::insertInNode( objectmodel::BaseNode* node )
 {
     node->addAnimationLoop(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool BaseAnimationLoop::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeAnimationLoop(this);
+    Inherit1::removeInNode(node);
     return true;
 }
 

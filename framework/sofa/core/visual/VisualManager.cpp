@@ -37,12 +37,14 @@ namespace visual
 bool VisualManager::insertInNode( objectmodel::BaseNode* node )
 {
     node->addVisualManager(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool VisualManager::removeInNode( objectmodel::BaseNode* node )
 {
-    node->removeVisualManager(this);
+    node->removeVisualManager(this);    
+    Inherit1::removeInNode(node);
     return true;
 }
 

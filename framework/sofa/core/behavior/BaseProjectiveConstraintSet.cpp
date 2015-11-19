@@ -37,12 +37,14 @@ namespace behavior
 bool BaseProjectiveConstraintSet::insertInNode( objectmodel::BaseNode* node )
 {
     node->addProjectiveConstraintSet(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool BaseProjectiveConstraintSet::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeProjectiveConstraintSet(this);
+    Inherit1::removeInNode(node);
     return true;
 }
 

@@ -164,6 +164,7 @@ bool BaseMapping::insertInNode( objectmodel::BaseNode* node )
 {
     if( isMechanical() ) node->addMechanicalMapping(this);
     else node->addMapping(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
@@ -171,6 +172,7 @@ bool BaseMapping::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeMechanicalMapping(this);
     node->removeMapping(this);
+    Inherit1::removeInNode(node);
     return true;
 }
 

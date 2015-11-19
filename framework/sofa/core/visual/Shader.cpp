@@ -37,12 +37,14 @@ namespace visual
 bool Shader::insertInNode( objectmodel::BaseNode* node )
 {
     node->addShader(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool Shader::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeShader(this);
+    Inherit1::removeInNode(node);
     return true;
 }
 
