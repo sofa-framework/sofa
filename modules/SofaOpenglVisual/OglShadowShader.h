@@ -66,10 +66,6 @@ protected:
     static const std::string PATH_TO_SOFT_SHADOW_VERTEX_SHADERS;
     static const std::string PATH_TO_SOFT_SHADOW_FRAGMENT_SHADERS;
 
-public:
-    virtual bool insertInNode( core::objectmodel::BaseNode* node ) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
-    virtual bool removeInNode( core::objectmodel::BaseNode* node ) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
-
 };
 
 }//namespace visualmodel

@@ -35,12 +35,14 @@ namespace core
 bool BaseState::insertInNode( objectmodel::BaseNode* node )
 {
     node->addState(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool BaseState::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeState(this);
+    Inherit1::removeInNode(node);
     return true;
 }
 

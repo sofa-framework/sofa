@@ -79,12 +79,14 @@ void BaseForceField::addSubBToMatrix(const MechanicalParams* mparams, const sofa
 bool BaseForceField::insertInNode( objectmodel::BaseNode* node )
 {
     node->addForceField(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool BaseForceField::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeForceField(this);
+    Inherit1::removeInNode(node);
     return true;
 }
 

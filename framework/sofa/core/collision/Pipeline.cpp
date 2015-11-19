@@ -128,12 +128,14 @@ void Pipeline::computeCollisionResponse()
 bool Pipeline::insertInNode( objectmodel::BaseNode* node )
 {
     node->addCollisionPipeline(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool Pipeline::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeCollisionPipeline(this);
+    Inherit1::removeInNode(node);
     return true;
 }
 

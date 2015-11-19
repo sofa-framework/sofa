@@ -35,12 +35,14 @@ namespace core
 bool BehaviorModel::insertInNode( objectmodel::BaseNode* node )
 {
     node->addBehaviorModel(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool BehaviorModel::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeBehaviorModel(this);
+    Inherit1::removeInNode(node);
     return true;
 }
 

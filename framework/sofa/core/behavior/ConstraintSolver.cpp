@@ -92,12 +92,14 @@ void ConstraintSolver::solveConstraint(const ConstraintParams * cParams, MultiVe
 bool ConstraintSolver::insertInNode( objectmodel::BaseNode* node )
 {
     node->addConstraintSolver(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool ConstraintSolver::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeConstraintSolver(this);
+    Inherit1::removeInNode(node);
     return true;
 }
 

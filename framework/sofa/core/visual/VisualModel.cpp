@@ -37,12 +37,14 @@ namespace visual
 bool VisualModel::insertInNode( objectmodel::BaseNode* node )
 {
     node->addVisualModel(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool VisualModel::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeVisualModel(this);
+    Inherit1::removeInNode(node);
     return true;
 }
 

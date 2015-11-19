@@ -38,12 +38,14 @@ namespace objectmodel
 bool ContextObject::insertInNode( objectmodel::BaseNode* node )
 {
     node->addContextObject(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool ContextObject::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeContextObject(this);
+    Inherit1::removeInNode(node);
     return true;
 }
 

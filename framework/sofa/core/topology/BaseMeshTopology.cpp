@@ -528,12 +528,14 @@ BaseMeshTopology::Quad BaseMeshTopology::getLocalQuadsInHexahedron (const PointI
 bool BaseMeshTopology::insertInNode( objectmodel::BaseNode* node )
 {
     node->addMeshTopology(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool BaseMeshTopology::removeInNode( objectmodel::BaseNode* node )
 {
-    node->removeMeshTopology(this);
+    node->removeMeshTopology(this);    
+    Inherit1::removeInNode(node);
     return true;
 }
 

@@ -98,12 +98,14 @@ void BaseMechanicalState::writeState( std::ostream& )
 bool BaseMechanicalState::insertInNode( objectmodel::BaseNode* node )
 {
     node->addMechanicalState(this);
+    Inherit1::insertInNode(node);
     return true;
 }
 
 bool BaseMechanicalState::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeMechanicalState(this);
+    Inherit1::removeInNode(node);
     return true;
 }
 
