@@ -717,7 +717,7 @@ public:
                              const sofa::helper::vector< double > &coefs)
     {
         const VecCoord& x = this->m_topologyData->getValue();
-        std::cout << "VisualModelPointHandler: new point " << pointIndex << "/" << x.size() << " on " << this->m_topologyData->getName() << " : ancestors = " << ancestors << " , coefs = " << coefs << std::endl;
+        //std::cout << "VisualModelPointHandler: new point " << pointIndex << "/" << x.size() << " on " << this->m_topologyData->getName() << " : ancestors = " << ancestors << " , coefs = " << coefs << std::endl;
         if (!ancestors.empty())
         {
             if (algo == 1 && ancestors.size() > 1) //fixMergedUVSeams
