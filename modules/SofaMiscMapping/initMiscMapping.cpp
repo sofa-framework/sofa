@@ -53,7 +53,6 @@ SOFA_LINK_CLASS(SubsetMultiMapping)
 SOFA_LINK_CLASS(TubularMapping)
 SOFA_LINK_CLASS(VoidMapping)
 SOFA_LINK_CLASS(DeformableOnRigidFrameMapping)
-SOFA_LINK_CLASS(PCAOnRigidFrameMapping)
 SOFA_LINK_CLASS(CatmullRomSplineMapping)
 
 } // namespace component

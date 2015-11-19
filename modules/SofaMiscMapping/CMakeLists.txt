@@ -28,8 +28,6 @@ set(HEADER_FILES
     ExternalInterpolationMapping.inl
     IdentityMultiMapping.h
     IdentityMultiMapping.inl
-    PCAOnRigidFrameMapping.h
-    PCAOnRigidFrameMapping.inl
     ProjectionToLineMapping.h
     ProjectionToLineMapping.inl
     ProjectionToPlaneMapping.h
@@ -57,7 +55,6 @@ set(SOURCE_FILES
     DistanceMapping.cpp
     ExternalInterpolationMapping.cpp
     IdentityMultiMapping.cpp
-    PCAOnRigidFrameMapping.cpp
     ProjectionToLineMapping.cpp
     ProjectionToPlaneMapping.cpp
     SubsetMultiMapping.cpp

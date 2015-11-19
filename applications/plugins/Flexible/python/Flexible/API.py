@@ -364,10 +364,10 @@ class Behavior:
         self.sampler = self.node.createObject("TopologyGaussPointSampler", name="sampler", method="0", inPosition="@"+meshPath+".position", order=order, **kwargs)
         self.cell = "@"+SofaPython.Tools.getObjectPath(self.sampler)+".cell"
 
-    def addMechanicalObject(self, dofRigidNode=None, dofAffineNode=None, assemble=True):
+    def addMechanicalObject(self, dofRigidNode=None, dofAffineNode=None, assemble=True, **kwargs):
         if self.sampler is None:
             print "[Flexible.API.Behavior] ERROR: no sampler"
-        self.dofs = self.node.createObject("MechanicalObject", template="F"+self.type, name="dofs")
+        self.dofs = self.node.createObject("MechanicalObject", template="F"+self.type, name="dofs", **kwargs)
         self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, self.cell , assemble)
     
 
