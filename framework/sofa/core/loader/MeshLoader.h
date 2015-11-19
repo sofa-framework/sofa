@@ -46,7 +46,7 @@ namespace loader
 using sofa::defaulttype::Vector3;
 
 
-class SOFA_CORE_API MeshLoader : public virtual BaseLoader
+class SOFA_CORE_API MeshLoader : public BaseLoader
 {
 public:
     SOFA_ABSTRACT_CLASS(MeshLoader, BaseLoader);
