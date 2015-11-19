@@ -57,8 +57,6 @@ class vectorData : public vector< core::objectmodel::Data<T>* > {
 
 public:
 
-    typedef enum{Nothing,Input,Output} DataEngineInOut;
-
     typedef vector< core::objectmodel::Data<T>* > Inherit;
 
     /// 'dataEngineInOut' is only valid if 'component' is a DataEngine
@@ -72,7 +70,7 @@ public:
 
     ~vectorData()
     {
-        if( m_dataEngineDataType!=Nothing )
+        if( m_dataEngineDataType!=DataEngineNothing )
         {
             if( core::DataEngine* componentAsDataEngine = m_component->toDataEngine() )
             {
