@@ -78,6 +78,10 @@ public:
         std::cout << time << std::endl << "Warning ::: exportGnuplot not implemented for all interaction force field" << std::endl;
     }
 
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
+
 };
 
 } // namespace behavior

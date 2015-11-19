@@ -135,6 +135,12 @@ public:
     Data< SReal > rayleighMass;
 
     /// @}
+
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
+
+
 };
 
 } // namespace behavior

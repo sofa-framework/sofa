@@ -56,6 +56,10 @@ public:
     /// modify the Context
     virtual void apply()=0;
 
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
+
 };
 
 

@@ -141,6 +141,8 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     BaseMapping.cpp
+    BaseState.cpp
+    BehaviorModel.cpp
     CategoryLibrary.cpp
     CollisionModel.cpp
     ComponentLibrary.cpp
@@ -157,9 +159,13 @@ set(SOURCE_FILES
     SofaLibrary.cpp
     State.cpp
     behavior/BaseAnimationLoop.cpp
+    behavior/BaseConstraintSet.cpp
     behavior/BaseForceField.cpp
+    behavior/BaseInteractionForceField.cpp
     behavior/BaseLMConstraint.cpp
+    behavior/BaseMass.cpp
     behavior/BaseMechanicalState.cpp
+    behavior/BaseProjectiveConstraintSet.cpp
     behavior/Constraint.cpp
     behavior/ConstraintCorrection.cpp
     behavior/ConstraintSolver.cpp
@@ -195,6 +201,7 @@ set(SOURCE_FILES
     objectmodel/BaseObjectDescription.cpp
     objectmodel/ClassInfo.cpp
     objectmodel/ConfigurationSetting.cpp
+    objectmodel/ContextObject.cpp
     objectmodel/Context.cpp
     objectmodel/DDGNode.cpp
     objectmodel/Data.cpp
@@ -210,10 +217,16 @@ set(SOURCE_FILES
     objectmodel/Tag.cpp
     topology/BaseMeshTopology.cpp
     topology/BaseTopology.cpp
+    topology/BaseTopologyObject.cpp
+    topology/Topology.cpp
     topology/TopologyChange.cpp
     topology/TopologyElementHandler.cpp
     topology/TopologyHandler.cpp
+    visual/Shader.cpp
     visual/DisplayFlags.cpp
+    visual/VisualLoop.cpp
+    visual/VisualManager.cpp
+    visual/VisualModel.cpp
     visual/VisualParams.cpp
 )
 

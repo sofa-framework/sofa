@@ -130,6 +130,11 @@ protected:
 
     VecDerivId m_fId;
     VecDerivId m_dxId;
+
+public:
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
 };
 
 } // namespace behavior

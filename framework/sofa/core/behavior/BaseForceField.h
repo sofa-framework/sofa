@@ -225,6 +225,10 @@ public:
     /// Every Dofs are inserted by default. The forcefields using only a subset of dofs should only insert these dofs in the mask.
     virtual void updateForceMask() = 0;
 
+
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
 };
 
 } // namespace behavior

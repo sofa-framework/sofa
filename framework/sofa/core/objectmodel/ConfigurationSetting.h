@@ -53,6 +53,9 @@ protected:
 public:
     virtual void init();
 
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
+
 };
 
 } // namespace objectmodel

@@ -488,6 +488,16 @@ protected:
 
 public:
 
+    /// the component can insert itseft direclty in the right sequence in the Node
+    /// so the Node does not have to test its type against every known types.
+    /// \returns true iff the component was inserted
+    virtual bool insertInNode( BaseNode* /*node*/ ) { return false; }
+
+    /// the component can remove itseft direclty in the right sequence in the Node
+    /// so the Node does not have to test its type against every known types.
+    /// \returns true iff the component was removed
+    virtual bool removeInNode( BaseNode* /*node*/ ) { return false; }
+
 };
 
 } // namespace objectmodel

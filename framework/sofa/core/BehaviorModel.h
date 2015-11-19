@@ -68,6 +68,9 @@ public:
         return false;
     }
 
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
+
 };
 
 } // namespace core

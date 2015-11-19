@@ -63,6 +63,10 @@ public:
      *  Return true if this object actually did the rendering, or false if it wasn't done.
      */
     virtual bool drawScene(VisualParams* /*vparams*/) { return false; }
+
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
 };
 
 } // namespace visual
