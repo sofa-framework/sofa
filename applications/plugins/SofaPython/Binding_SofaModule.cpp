@@ -98,22 +98,6 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, Py
 
 extern "C" PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * /*args*/)
 {
-    /*
-        PyObject* pyContext;
-        char *path;
-        if (!PyArg_ParseTuple(args, "Os",&pyContext,&path))
-            return 0;
-        BaseContext *context=dynamic_cast<BaseContext*>(((PySPtr<Base>*)pyContext)->object.get());
-        if (!context || !path)
-        {
-            PyErr_BadArgument();
-            return 0;
-        }
-        BaseObject::SPtr sptr;
-        context->get<BaseObject>(sptr,path);
-
-        return SP_BUILD_PYSPTR(sptr.get());
-    */
     // deprecated on date 2012/07/18
     SP_MESSAGE_ERROR( "Sofa.getObject(BaseContext,path) is deprecated. Please use BaseContext.getObject(path) instead." )
     PyErr_BadArgument();
@@ -123,35 +107,6 @@ extern "C" PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * /*args*/)
 
 extern "C" PyObject * Sofa_getChildNode(PyObject * /*self*/, PyObject * /*args*/)
 {
-    /*
-    PyObject* pyBaseNode;
-    char *path;
-    if (!PyArg_ParseTuple(args, "Os",&pyBaseNode,&path))
-        return 0;
-    BaseNode *node=dynamic_cast<BaseNode*>(((PySPtr<Base>*)pyBaseNode)->object.get());
-    if (!node || !path)
-    {
-        PyErr_BadArgument();
-        return 0;
-    }
-
-    const objectmodel::BaseNode::Children& children = node->getChildren();
-    Node *childNode = 0;
-    // BaseNode ne pouvant pas être bindé en Python, et les BaseNodes des graphes étant toujours des Nodes,
-    // on caste directement en Node.
-    for (unsigned int i=0; i<children.size(); ++i)
-        if (children[i]->getName() == path)
-        {
-            childNode = dynamic_cast<Node*>(children[i]);
-            break;
-        }
-    if (!childNode)
-    {
-        SP_MESSAGE_ERROR( "Sofa.getChildNode("<<path<<") not found." )
-        return 0;
-    }
-    return SP_BUILD_PYSPTR(childNode);
-    */
     // deprecated on date 2012/07/18
     SP_MESSAGE_ERROR( "Sofa.getChildNode(Node,path) is deprecated. Please use Node.getChild(path) instead." )
     PyErr_BadArgument();
