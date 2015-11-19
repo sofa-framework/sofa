@@ -43,10 +43,10 @@ namespace misc
 /**
  * Abstract class defining how to pause the animation.
  */
-class PauseAnimation: public virtual core::objectmodel::BaseObject
+class PauseAnimation: public core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(PauseAnimation, core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(PauseAnimation, core::objectmodel::BaseObject);
 
 protected:
     PauseAnimation ();
