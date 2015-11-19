@@ -50,10 +50,8 @@ add_definitions("-DFLEXIBLE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes
 find_package(image QUIET)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} Flexible SofaTest SofaGTestMain)
-if(image_FOUND)
-    target_link_libraries(${PROJECT_NAME} image)
-endif()
+target_link_libraries(${PROJECT_NAME} Flexible SofaTest SofaGTestMain image)
+
 
 
 # #Needed by python test

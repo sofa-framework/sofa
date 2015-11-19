@@ -219,11 +219,13 @@ class GenericRigidJoint:
         self.dofs = self.node.createObject('MechanicalObject', template = 'Vec6'+template_suffix, name = 'dofs', position = '0 0 0 0 0 0' )
         input = [] # @internal
         input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
-        input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
-        self.mapping = self.node.createObject('RigidJointMultiMapping', name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2),
-                                              geometricStiffness = geometric_stiffness)
+        if not node2 is None:
+            input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
+            self.mapping = self.node.createObject('RigidJointMultiMapping', name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2), geometricStiffness = geometric_stiffness)
+            node2.addChild( self.node )
+        else:
+            self.mapping = self.node.createObject('RigidJointMapping', name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2), geometricStiffness = geometric_stiffness)
         self.constraint = GenericRigidJoint.Constraint( self.node, mask, compliance )
-        node2.addChild( self.node )
 
     class Constraint:
         def __init__(self, node, mask, compliance):
