@@ -31,6 +31,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/SolidTypes.h>
 
 #include <sofa/helper/system/thread/CTime.h>
 
