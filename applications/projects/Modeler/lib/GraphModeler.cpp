@@ -345,8 +345,6 @@ Node *GraphModeler::getNode(QTreeWidgetItem *item) const
     if (!item) return NULL;
     sofa::core::objectmodel::Base *component=getComponent(item);
 
-    std::map<core::objectmodel::Base*, QTreeWidgetItem* >::iterator it;
-
     if (Node *node=dynamic_cast<Node*>(component)) return node;
     else
     {

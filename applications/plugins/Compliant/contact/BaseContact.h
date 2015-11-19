@@ -15,7 +15,7 @@
 
 //#include <sofa/simulation/common/DeactivatedNodeVisitor.h>
 
-#include "../utils/cast.h"
+#include <sofa/helper/cast.h>
 
 
 namespace sofa

@@ -26,6 +26,7 @@
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/common/xml/NodeElement.h>
 #include <sofa/helper/Factory.inl>
+#include <sofa/helper/cast.h>
 
 namespace sofa
 {
@@ -79,7 +80,7 @@ void GNode::doRemoveChild(GNode::SPtr node)
 /// Add a child node
 void GNode::addChild(core::objectmodel::BaseNode::SPtr node)
 {
-    GNode::SPtr gnode = sofa::core::objectmodel::SPtr_dynamic_cast<GNode>(node);
+    GNode::SPtr gnode = down_cast<GNode>(node.get());
     notifyAddChild(gnode);
     doAddChild(gnode);
 }
@@ -87,7 +88,7 @@ void GNode::addChild(core::objectmodel::BaseNode::SPtr node)
 /// Remove a child
 void GNode::removeChild(core::objectmodel::BaseNode::SPtr node)
 {
-    GNode::SPtr gnode = sofa::core::objectmodel::SPtr_dynamic_cast<GNode>(node);
+    GNode::SPtr gnode = down_cast<GNode>(node.get());
     notifyRemoveChild(gnode);
     doRemoveChild(gnode);
 }
@@ -96,7 +97,7 @@ void GNode::removeChild(core::objectmodel::BaseNode::SPtr node)
 /// Move a node from another node
 void GNode::moveChild(BaseNode::SPtr node)
 {
-    GNode::SPtr gnode = sofa::core::objectmodel::SPtr_dynamic_cast<GNode>(node);
+    GNode::SPtr gnode = down_cast<GNode>(node.get());
     if (!gnode) return;
     GNode* prev = gnode->parent();
     if (prev==NULL)
