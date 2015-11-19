@@ -35,7 +35,7 @@ using namespace sofa::core::objectmodel;
 
 extern "C" PyObject * BaseMapping_getFrom(PyObject * self, PyObject * /*args*/)
 {
-    BaseMapping* mapping = dynamic_cast<BaseMapping*>(((PySPtr<Base>*)self)->object.get());
+    BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
 
     helper::vector<BaseState*> from = mapping->getFrom();
 
@@ -49,7 +49,7 @@ extern "C" PyObject * BaseMapping_getFrom(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * BaseMapping_getTo(PyObject * self, PyObject * /*args*/)
 {
-    BaseMapping* mapping = dynamic_cast<BaseMapping*>(((PySPtr<Base>*)self)->object.get());
+    BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
 
     helper::vector<BaseState*> to = mapping->getTo();
 
@@ -65,7 +65,7 @@ extern "C" PyObject * BaseMapping_getTo(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * BaseMapping_setFrom(PyObject * self, PyObject * args)
 {
-    BaseMapping* mapping = dynamic_cast<BaseMapping*>(((PySPtr<Base>*)self)->object.get());
+    BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
 
     PyObject* pyFrom;
     if (!PyArg_ParseTuple(args, "O",&pyFrom))
@@ -74,7 +74,7 @@ extern "C" PyObject * BaseMapping_setFrom(PyObject * self, PyObject * args)
         Py_RETURN_NONE;
     }
 
-    BaseState* from=dynamic_cast<BaseState*>(((PySPtr<Base>*)pyFrom)->object.get());
+    BaseState* from=((PySPtr<Base>*)pyFrom)->object->toBaseState();
     if (!from)
     {
         SP_MESSAGE_ERROR( "BaseMapping_setFrom: is not a BaseState*" );
@@ -89,13 +89,13 @@ extern "C" PyObject * BaseMapping_setFrom(PyObject * self, PyObject * args)
 
 extern "C" PyObject * BaseMapping_setTo(PyObject * self, PyObject * args)
 {
-    BaseMapping* mapping = dynamic_cast<BaseMapping*>(((PySPtr<Base>*)self)->object.get());
+    BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
 
     PyObject* pyTo;
     if (!PyArg_ParseTuple(args, "O",&pyTo))
         Py_RETURN_NONE;
 
-    BaseState* to=dynamic_cast<BaseState*>(((PySPtr<Base>*)pyTo)->object.get());
+    BaseState* to=((PySPtr<Base>*)pyTo)->object->toBaseState();
     if (!to)
     {
         PyErr_BadArgument();
@@ -109,7 +109,7 @@ extern "C" PyObject * BaseMapping_setTo(PyObject * self, PyObject * args)
 
 extern "C" PyObject * BaseMapping_apply(PyObject * self, PyObject * /*args*/)
 {
-    BaseMapping* mapping = dynamic_cast<BaseMapping*>(((PySPtr<Base>*)self)->object.get());
+    BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
 
     mapping->apply(MechanicalParams::defaultInstance(),VecCoordId::position(),ConstVecCoordId::position());
 
@@ -118,7 +118,7 @@ extern "C" PyObject * BaseMapping_apply(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * BaseMapping_applyJ(PyObject * self, PyObject * /*args*/)
 {
-    BaseMapping* mapping = dynamic_cast<BaseMapping*>(((PySPtr<Base>*)self)->object.get());
+    BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
 
     mapping->applyJ(MechanicalParams::defaultInstance(),VecDerivId::velocity(),ConstVecDerivId::velocity());
 

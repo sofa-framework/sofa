@@ -35,21 +35,21 @@ using namespace sofa::core::objectmodel;
 
 extern "C" PyObject * BaseLoader_load(PyObject *self, PyObject * /*args*/)
 {
-    BaseLoader* obj=dynamic_cast<BaseLoader*>(((PySPtr<Base>*)self)->object.get());
+    BaseLoader* obj=((PySPtr<Base>*)self)->object->toBaseLoader();
     bool result = obj->load();
     return PyBool_FromLong(result);
 }
 
 extern "C" PyObject * BaseLoader_canLoad(PyObject *self, PyObject * /*args*/)
 {
-    BaseLoader* obj=dynamic_cast<BaseLoader*>(((PySPtr<Base>*)self)->object.get());
+    BaseLoader* obj=((PySPtr<Base>*)self)->object->toBaseLoader();
     bool result = obj->canLoad();
     return PyBool_FromLong(result);
 }
 
 extern "C" PyObject * BaseLoader_setFilename(PyObject *self, PyObject * args)
 {
-    BaseLoader* obj=dynamic_cast<BaseLoader*>(((PySPtr<Base>*)self)->object.get());
+    BaseLoader* obj=((PySPtr<Base>*)self)->object->toBaseLoader();
     char *filename;
     if (!PyArg_ParseTuple(args, "s",&filename))
     {
@@ -62,7 +62,7 @@ extern "C" PyObject * BaseLoader_setFilename(PyObject *self, PyObject * args)
 
 extern "C" PyObject * BaseLoader_getFilename(PyObject *self, PyObject * /*args*/)
 {
-    BaseLoader* obj=dynamic_cast<BaseLoader*>(((PySPtr<Base>*)self)->object.get());
+    BaseLoader* obj=((PySPtr<Base>*)self)->object->toBaseLoader();
     std::string filename = obj->getFilename();
     return PyString_FromString(filename.c_str());
 }

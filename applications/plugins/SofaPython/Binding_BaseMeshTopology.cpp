@@ -32,31 +32,31 @@ using namespace sofa::core::objectmodel;
 
 extern "C" PyObject * BaseMeshTopology_getNbEdges(PyObject *self, PyObject * /*args*/)
 {
-    BaseMeshTopology* obj=dynamic_cast<BaseMeshTopology*>(((PySPtr<Base>*)self)->object.get());
+    BaseMeshTopology* obj=((PySPtr<Base>*)self)->object->toBaseMeshTopology();
     return PyInt_FromLong(obj->getNbEdges());
 }
 
 extern "C" PyObject * BaseMeshTopology_getNbTriangles(PyObject *self, PyObject * /*args*/)
 {
-    BaseMeshTopology* obj=dynamic_cast<BaseMeshTopology*>(((PySPtr<Base>*)self)->object.get());
+    BaseMeshTopology* obj=((PySPtr<Base>*)self)->object->toBaseMeshTopology();
     return PyInt_FromLong(obj->getNbTriangles());
 }
 
 extern "C" PyObject * BaseMeshTopology_getNbQuads(PyObject *self, PyObject * /*args*/)
 {
-    BaseMeshTopology* obj=dynamic_cast<BaseMeshTopology*>(((PySPtr<Base>*)self)->object.get());
+    BaseMeshTopology* obj=((PySPtr<Base>*)self)->object->toBaseMeshTopology();
     return PyInt_FromLong(obj->getNbQuads());
 }
 
 extern "C" PyObject * BaseMeshTopology_getNbTetrahedra(PyObject *self, PyObject * /*args*/)
 {
-    BaseMeshTopology* obj=dynamic_cast<BaseMeshTopology*>(((PySPtr<Base>*)self)->object.get());
+    BaseMeshTopology* obj=((PySPtr<Base>*)self)->object->toBaseMeshTopology();
     return PyInt_FromLong(obj->getNbTetrahedra());
 }
 
 extern "C" PyObject * BaseMeshTopology_getNbHexahedra(PyObject *self, PyObject * /*args*/)
 {
-    BaseMeshTopology* obj=dynamic_cast<BaseMeshTopology*>(((PySPtr<Base>*)self)->object.get());
+    BaseMeshTopology* obj=((PySPtr<Base>*)self)->object->toBaseMeshTopology();
     return PyInt_FromLong(obj->getNbHexahedra());
 }
 
