@@ -111,7 +111,7 @@ void drawSphere(const V& center, const float& rad, const int subd1=8, const int 
     gluQuadricNormals(sphere, GLU_SMOOTH);
     glPushMatrix();
     helper::gl::glTranslateT( center );
-    gluSphere(sphere,2.0*rad,subd1,subd2);
+    gluSphere(sphere,rad,subd1,subd2);
     glPopMatrix();
     // 		delete sphere;
 }
@@ -204,14 +204,14 @@ void drawEmptyParallelepiped(const V& vert1, const V& vert2, const V& vert3, con
     glPushMatrix();
 
 	//Vertices of the parallelepiped
-	drawSphere(vert1,2.0*rad);
-	drawSphere(vert2,2.0*rad);
-	drawSphere(vert3,2.0*rad);
-	drawSphere(vert4,2.0*rad);
-	drawSphere(vert1 + vecFromFaceToOppositeFace,2.0*rad);
-	drawSphere(vert2 + vecFromFaceToOppositeFace,2.0*rad);
-	drawSphere(vert3 + vecFromFaceToOppositeFace,2.0*rad);
-	drawSphere(vert4 + vecFromFaceToOppositeFace,2.0*rad);
+    drawSphere(vert1,rad);
+    drawSphere(vert2,rad);
+    drawSphere(vert3,rad);
+    drawSphere(vert4,rad);
+    drawSphere(vert1 + vecFromFaceToOppositeFace,rad);
+    drawSphere(vert2 + vecFromFaceToOppositeFace,rad);
+    drawSphere(vert3 + vecFromFaceToOppositeFace,rad);
+    drawSphere(vert4 + vecFromFaceToOppositeFace,rad);
 
 	glColor3ub(color.x(), color.y(), color.z());
 	//First face
