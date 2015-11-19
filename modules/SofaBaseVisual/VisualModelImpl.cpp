@@ -712,7 +712,7 @@ public:
     VisualModelPointHandler(VisualModelImpl* obj, sofa::component::topology::PointData<VecCoord>* data, int algo)
         : sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point, VecCoord >(data), obj(obj), algo(algo) {}
 
-    void applyCreateFunction(unsigned int pointIndex, Coord& dest, const sofa::core::topology::Point &,
+    void applyCreateFunction(unsigned int /*pointIndex*/, Coord& dest, const sofa::core::topology::Point &,
                              const sofa::helper::vector< unsigned int > &ancestors,
                              const sofa::helper::vector< double > &coefs)
     {
