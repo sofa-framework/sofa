@@ -92,7 +92,7 @@ struct FlexibleDataEngine_test : public DataEngine_test<DataEngineType>
     void openScene( const std::string& fileName )
     {
         this->root = modeling::clearScene();
-        this->root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
+        this->root = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()).get() );
     }
 
 };

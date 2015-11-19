@@ -47,6 +47,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/Factory.inl>
+#include <sofa/helper/cast.h>
 #include <sofa/simulation/common/xml/Element.inl>
 #include <iostream>
 
@@ -220,14 +221,15 @@ bool Node::removeObject(BaseObject::SPtr obj)
 /// Move an object from another node
 void Node::moveObject(BaseObject::SPtr obj)
 {
-    Node* prev = dynamic_cast<Node*>(obj->getContext());
-    if (prev==NULL)
+    BaseNode* baseprev = obj->getContext()->toBaseNode();
+    if (baseprev==NULL)
     {
         obj->getContext()->removeObject(obj);
         addObject(obj);
     }
     else
     {
+        Node* prev = down_cast<Node>(baseprev);
         notifyMoveObject(obj,prev);
         prev->doRemoveObject(obj);
         doAddObject(obj);
@@ -395,8 +397,9 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
 #ifdef DEBUG_LINK
         std::cout << "  absolute path" << std::endl;
 #endif
-        node = dynamic_cast<Node*>(this->getRoot());
-        if (!node) return NULL;
+        BaseNode* basenode = this->getRoot();
+        if (!basenode) return NULL;
+        node = down_cast<Node>(basenode);
         ++ppos;
         based = true;
     }
