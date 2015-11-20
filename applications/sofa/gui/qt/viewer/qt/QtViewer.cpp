@@ -333,10 +333,8 @@ void QtViewer::initializeGL(void)
 // ---------------------------------------------------------
 // ---
 // ---------------------------------------------------------
-void QtViewer::PrintString(void* font, char* string)
+void QtViewer::PrintString(void* /*font*/, char* string)
 {
-    int len, i;
-    
     helper::gl::GlText::draw(string);
 }
 
@@ -345,8 +343,6 @@ void QtViewer::PrintString(void* font, char* string)
 // ---------------------------------------------------------
 void QtViewer::Display3DText(float x, float y, float z, char* string)
 {
-    char* c;
-
     glPushMatrix();
     glTranslatef(x, y, z);
     helper::gl::GlText::draw(string);
