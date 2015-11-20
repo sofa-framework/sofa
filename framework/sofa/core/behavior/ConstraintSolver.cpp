@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 
 namespace sofa
 {
@@ -86,6 +87,24 @@ void ConstraintSolver::solveConstraint(const ConstraintParams * cParams, MultiVe
 
     AdvancedTimer::stepEnd(className + "SolveConstraints ");
 }
+
+
+bool ConstraintSolver::insertInNode( objectmodel::BaseNode* node )
+{
+    node->addConstraintSolver(this);
+    Inherit1::insertInNode(node);
+    return true;
+}
+
+bool ConstraintSolver::removeInNode( objectmodel::BaseNode* node )
+{
+    node->removeConstraintSolver(this);
+    Inherit1::removeInNode(node);
+    return true;
+}
+
+
+
 
 } // namespace behavior
 

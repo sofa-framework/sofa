@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 
 namespace sofa
 {
@@ -74,6 +75,20 @@ void BaseForceField::addSubBToMatrix(const MechanicalParams* mparams, const sofa
     addBToMatrix(mparams,matrix);
 }
 
+
+bool BaseForceField::insertInNode( objectmodel::BaseNode* node )
+{
+    node->addForceField(this);
+    Inherit1::insertInNode(node);
+    return true;
+}
+
+bool BaseForceField::removeInNode( objectmodel::BaseNode* node )
+{
+    node->removeForceField(this);
+    Inherit1::removeInNode(node);
+    return true;
+}
 
 } // namespace behavior
 

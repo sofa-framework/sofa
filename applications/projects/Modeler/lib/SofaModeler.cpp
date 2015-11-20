@@ -36,6 +36,7 @@
 #include <sofa/gui/qt/FileManagement.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/Utils.h>
+#include <sofa/helper/cast.h>
 
 
 #define MAX_RECENTLY_OPENED 10
@@ -681,7 +682,7 @@ void SofaModeler::fileOpen(std::string filename)
         filename =  sofa::helper::system::DataRepository.getFile ( filename );
         openPath = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
         Node::SPtr root = NULL;
-        root = sofa::core::objectmodel::SPtr_dynamic_cast<Node> ( sofa::simulation::getSimulation()->load(filename.c_str()) );
+        root = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(filename.c_str()).get() );
         if (root)
         {
             createTab();

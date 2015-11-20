@@ -44,9 +44,10 @@ class DevBaseMonitor : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(DevBaseMonitor, objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(DevBaseMonitor)
 
     /// Destructor
-    virtual ~DevBaseMonitor() { };
+    virtual ~DevBaseMonitor() {}
     /// Compute metrics
     virtual void eval() = 0;
 };

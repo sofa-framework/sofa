@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 SP_CLASS_ATTR_GET(Vector3,x)(PyObject *self, void*)
 {
-    Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
+    Vector3* obj=((PyPtr<Vector3>*)self)->object;
     if (!obj)
     {
         PyErr_BadArgument();
@@ -42,7 +42,7 @@ SP_CLASS_ATTR_GET(Vector3,x)(PyObject *self, void*)
 }
 SP_CLASS_ATTR_SET(Vector3,x)(PyObject *self, PyObject * args, void*)
 {
-    Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
+    Vector3* obj=((PyPtr<Vector3>*)self)->object;
     if (!obj)
     {
         PyErr_BadArgument();
@@ -54,7 +54,7 @@ SP_CLASS_ATTR_SET(Vector3,x)(PyObject *self, PyObject * args, void*)
 
 SP_CLASS_ATTR_GET(Vector3,y)(PyObject *self, void*)
 {
-    Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
+    Vector3* obj=((PyPtr<Vector3>*)self)->object;
     if (!obj)
     {
         PyErr_BadArgument();
@@ -64,7 +64,7 @@ SP_CLASS_ATTR_GET(Vector3,y)(PyObject *self, void*)
 }
 SP_CLASS_ATTR_SET(Vector3,y)(PyObject *self, PyObject * args, void*)
 {
-    Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
+    Vector3* obj=((PyPtr<Vector3>*)self)->object;
     if (!obj)
     {
         PyErr_BadArgument();
@@ -76,7 +76,7 @@ SP_CLASS_ATTR_SET(Vector3,y)(PyObject *self, PyObject * args, void*)
 
 SP_CLASS_ATTR_GET(Vector3,z)(PyObject *self, void*)
 {
-    Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
+    Vector3* obj=((PyPtr<Vector3>*)self)->object;
     if (!obj)
     {
         PyErr_BadArgument();
@@ -86,7 +86,7 @@ SP_CLASS_ATTR_GET(Vector3,z)(PyObject *self, void*)
 }
 SP_CLASS_ATTR_SET(Vector3,z)(PyObject *self, PyObject * args, void*)
 {
-    Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
+    Vector3* obj=((PyPtr<Vector3>*)self)->object;
     if (!obj)
     {
         PyErr_BadArgument();
@@ -114,7 +114,7 @@ PyObject * Vector3_PyNew(PyTypeObject * /*type*/, PyObject *args, PyObject * /*k
 void Vector3_PyFree(void * self)
 {
     if (!((PyPtr<Vector3>*)self)->deletable) return;
-    Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);
+    Vector3* obj=((PyPtr<Vector3>*)self)->object;
     delete obj; // done!
 }
 

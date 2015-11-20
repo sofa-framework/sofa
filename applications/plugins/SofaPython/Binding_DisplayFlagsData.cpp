@@ -51,31 +51,11 @@ SP_CLASS_METHODS_END
 \item showNormals
 */
 
-// let's make a macro for this:
-/*
-extern "C" PyObject * DisplayFlagsData_getAttr_showBehaviorModels(PyObject *self, void*)
-{
-    Data<DisplayFlags>* data= dynamic_cast<Data<DisplayFlags>*>( ((PyPtr<BaseData>*)self)->object ); // TODO: check dynamic cast
-    DisplayFlags* flags = data->beginEdit();
-    bool b = (tristate::false_value != flags->getShowBehaviorModels());
-    data->endEdit();
-    return PyBool_FromLong(b);
-}
-extern "C" int DisplayFlagsData_setAttr_showBehaviorModels(PyObject *self, PyObject * args, void*)
-{
-    Data<DisplayFlags>* data= dynamic_cast<Data<DisplayFlags>*>( ((PyPtr<BaseData>*)self)->object ); // TODO: check dynamic cast
-    bool b = (Py_True==args); // pour les setters, un seul objet et pas un tuple....
-    DisplayFlags* flags = data->beginEdit();
-    flags->setShowBehaviorModels(b);
-    printf("DisplayFlagsData_setAttr_showBehaviorModels %d\n",b);
-    data->endEdit();
-    return 0;
-}
-*/
+
 #define DISPLAYFLAG_ATTRIBUTE_IMPL(flagName) \
     extern "C" PyObject * DisplayFlagsData_getAttr_show##flagName(PyObject *self, void*) \
     { \
-        Data<DisplayFlags>* data= dynamic_cast<Data<DisplayFlags>*>( ((PyPtr<BaseData>*)self)->object ); \
+        Data<DisplayFlags>* data= down_cast<Data<DisplayFlags> >( ((PyPtr<BaseData>*)self)->object ); \
         DisplayFlags* flags = data->beginEdit(); \
         bool b = (tristate::false_value != flags->getShow##flagName()); \
         data->endEdit(); \
@@ -83,7 +63,7 @@ extern "C" int DisplayFlagsData_setAttr_showBehaviorModels(PyObject *self, PyObj
     } \
     extern "C" int DisplayFlagsData_setAttr_show##flagName(PyObject *self, PyObject * args, void*) \
     { \
-        Data<DisplayFlags>* data= dynamic_cast<Data<DisplayFlags>*>( ((PyPtr<BaseData>*)self)->object ); \
+        Data<DisplayFlags>* data= down_cast<Data<DisplayFlags> >( ((PyPtr<BaseData>*)self)->object ); \
         bool b = (Py_True==args); \
         DisplayFlags* flags = data->beginEdit(); \
         flags->setShow##flagName(b); \

@@ -382,7 +382,7 @@ std::string BaseObject::getPathName() const {
     std::string result = "";
     if( context )
     {
-        const BaseNode* node = dynamic_cast<const BaseNode*>( context );
+        const BaseNode* node = context->toBaseNode();
         if( node )
             result += node->getPathName() + "/";
 

@@ -50,7 +50,7 @@ namespace misc
  *
  */
 
-class SOFA_MISC_API MeshTetraStuffing : public virtual core::objectmodel::BaseObject
+class SOFA_MISC_API MeshTetraStuffing : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(MeshTetraStuffing,core::objectmodel::BaseObject);

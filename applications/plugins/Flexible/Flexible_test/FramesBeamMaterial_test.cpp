@@ -98,7 +98,7 @@ struct BeamMaterial_test : public Sofa_test<typename Vec3Types::Real>
        std::string sceneName = (DataTypes::sceneName);
        std::string fileName = std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + sceneName;
        root = simulation->createNewGraph("root");
-       root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
+       root = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()).get() );
 
        // Get child nodes
        simulation::Node::SPtr flexibleNode = root->getChild("Flexible");

@@ -297,7 +297,7 @@ void Visitor::debug_write_state_before( core::objectmodel::BaseObject* obj )
     if( dynamic_cast<VisualVisitor*>(this) ) return;
     cerr<<"Visitor "<<getClassName()<<" enter component "<<obj->getName();
     using core::behavior::BaseMechanicalState;
-    if( BaseMechanicalState* dof = dynamic_cast<BaseMechanicalState*> ( obj->getContext()->getMechanicalState() ) )
+    if( BaseMechanicalState* dof = obj->getContext()->getMechanicalState() )
     {
         cerr<<", state:\nx= "; dof->writeX(cerr);
         cerr<<"\nv= ";        dof->writeV(cerr);
@@ -314,7 +314,7 @@ void Visitor::debug_write_state_after( core::objectmodel::BaseObject* obj )
     if( dynamic_cast<VisualVisitor*>(this) ) return;
     cerr<<"Visitor "<<getClassName()<<" leave component "<<obj->getName();
     using core::behavior::BaseMechanicalState;
-    if( BaseMechanicalState* dof = dynamic_cast<BaseMechanicalState*> ( obj->getContext()->getMechanicalState() ) )
+    if( BaseMechanicalState* dof = obj->getContext()->getMechanicalState() )
     {
         cerr<<", state:\nx= "; dof->writeX(cerr);
         cerr<<"\nv= ";        dof->writeV(cerr);

@@ -64,10 +64,10 @@ namespace visualmodel
  *  and Ati's >2K series.
  */
 
-class SOFA_OPENGL_VISUAL_API OglShader : public core::visual::Shader, public core::visual::VisualModel
+class SOFA_OPENGL_VISUAL_API OglShader : public core::visual::Shader
 {
 public:
-    SOFA_CLASS2(OglShader, core::visual::Shader, core::visual::VisualModel);
+    SOFA_CLASS(OglShader, core::visual::Shader);
 
     ///Activates or not the shader
     Data<bool> turnOn;
@@ -180,6 +180,7 @@ public:
 
     GLint getGeometryVerticesOut(const unsigned int index) ;
     void  setGeometryVerticesOut(const unsigned int index, GLint v);
+
 };
 
 /**
@@ -201,11 +202,11 @@ protected:
     helper::set<OglShader*> shaders;
 public:
     OglShaderElement();
-    virtual ~OglShaderElement() { };
+    virtual ~OglShaderElement() {}
     virtual void init();
-    const std::string getId() const {return id.getValue();};
-    void setID( std::string str ) { *(id.beginEdit()) = str; id.endEdit();};
-    void setIndexShader( unsigned int index) { *(indexShader.beginEdit()) = index; indexShader.endEdit();};
+    const std::string getId() const {return id.getValue();}
+    void setID( std::string str ) { *(id.beginEdit()) = str; id.endEdit();}
+    void setIndexShader( unsigned int index) { *(indexShader.beginEdit()) = index; indexShader.endEdit();}
 
     // Returns the ID of the shader element
     const std::string& getSEID() const { return id.getValue(); }
