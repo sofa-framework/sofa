@@ -359,7 +359,7 @@ void QtViewer::Display3DText(float x, float y, float z, char* string)
 // ---------------------------------------------------
 void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
 {
-    float fontScale = (float) (arrowSize / 600.0);
+    float fontScale = (float) (arrowSize * 0.25);
 
     Enable<GL_DEPTH_TEST> depth;
     Enable<GL_LIGHTING> lighting;
@@ -379,13 +379,8 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     // ---- Display a "X" near the tip of the arrow
     glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
 
-    glLineWidth(3.0);
-    glScalef(fontScale, fontScale, fontScale);
+    helper::gl::GlText::draw('X', sofa::defaulttype::Vector3(0.0, 0.0, 0.0), fontScale);
 
-    helper::gl::GlText::draw('X');
-
-    glScalef(1.0f / fontScale, 1.0f / fontScale, 1.0f / fontScale);
-    glLineWidth(1.0f);
     // --- Undo transforms
     glTranslated(-xpos, -ypos, -zpos);
     glPopMatrix();
@@ -400,11 +395,7 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     gluCylinder(_arrow, arrowSize / 15.0, 0.0, arrowSize / 5.0, 10, 10);
     // ---- Display a "Y" near the tip of the arrow
     glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
-    glLineWidth(3.0);
-    glScalef(fontScale, fontScale, fontScale);
-    helper::gl::GlText::draw('Y');
-    glScalef(1.0f / fontScale, 1.0f / fontScale, 1.0f / fontScale);
-    glLineWidth(1.0);
+    helper::gl::GlText::draw('Y', sofa::defaulttype::Vector3(0.0, 0.0, 0.0), fontScale);
     // --- Undo transforms
     glTranslated(-xpos, -ypos, -zpos);
     glPopMatrix();
@@ -419,11 +410,7 @@ void QtViewer::DrawAxis(double xpos, double ypos, double zpos, double arrowSize)
     gluCylinder(_arrow, arrowSize / 15.0, 0.0, arrowSize / 5.0, 10, 10);
     // ---- Display a "Z" near the tip of the arrow
     glTranslated(-0.5 * fontScale, arrowSize / 15.0, arrowSize / 5.0);
-    glLineWidth(3.0);
-    glScalef(fontScale, fontScale, fontScale);
-    helper::gl::GlText::draw('Z');
-    glScalef(1.0f / fontScale, 1.0f / fontScale, 1.0f / fontScale);
-    glLineWidth(1.0);
+    helper::gl::GlText::draw('Z', sofa::defaulttype::Vector3(0.0, 0.0, 0.0), fontScale);
     // --- Undo transforms
     glTranslated(-xpos, -ypos, -zpos);
     glPopMatrix();
