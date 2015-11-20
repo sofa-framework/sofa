@@ -92,7 +92,7 @@ protected:
     QDisplayDataInfoWidget*  datainfowidget_;
     DataWidget* datawidget_;
     unsigned int numWidgets_;
-    QHBoxLayout* gridLayout_;
+    QGridLayout* gridLayout_;
 };
 
 
