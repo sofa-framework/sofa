@@ -56,7 +56,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     numWidgets_(0)
 
 {
-    gridLayout_ = new QHBoxLayout();
+    gridLayout_ = new QGridLayout();
     this->setLayout(gridLayout_);
 
     parent->layout()->addWidget(this);
@@ -66,17 +66,18 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     if(data_ == NULL)
         return;
 
-	const std::string label_text = data_->getHelp();
+    const std::string label_text = data_->getHelp();
 
     if (label_text != "TODO")
     {
         datainfowidget_ = new QDisplayDataInfoWidget(this,label_text,data_,flags.LINKPATH_MODIFIABLE_FLAG, flags_);
-		datainfowidget_->setContentsMargins(0, 0, 0, 0);
-		datainfowidget_->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        datainfowidget_->setContentsMargins(0, 0, 0, 0);
+        datainfowidget_->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        gridLayout_->addWidget(datainfowidget_, 0,0);
         numWidgets_ += 1;
     }
 
-	setToolTip(data_->getHelp());
+    setToolTip(data_->getHelp());
 
     DataWidget::CreatorArgument dwarg;
     dwarg.name =  data_->getName();
@@ -96,7 +97,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         }
     }
 
-	datawidget_= DataWidget::CreateDataWidget(dwarg);
+    datawidget_= DataWidget::CreateDataWidget(dwarg);
 
     if (datawidget_ == 0)
     {
@@ -106,18 +107,18 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         assert(datawidget_ != NULL);
     }
 
-	if(datawidget_->layout())
-	{
-		datawidget_->layout()->setAlignment(Qt::AlignCenter);
+    if(datawidget_->layout())
+    {
+        datawidget_->layout()->setAlignment(Qt::AlignCenter);
         datawidget_->layout()->setContentsMargins(0, 0, 0, 0);
-	}
+    }
 
     datawidget_->setContentsMargins(0, 16, 0, 0);
     datawidget_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-	const std::string valuetype = data_->getValueTypeString();
-	if (!valuetype.empty())
-		datawidget_->setToolTip(valuetype.c_str());
+    const std::string valuetype = data_->getValueTypeString();
+    if (!valuetype.empty())
+        datawidget_->setToolTip(valuetype.c_str());
 
     //std::cout << "WIDGET created for data " << dwarg.data << " : " << dwarg.name << " : " << dwarg.data->getValueTypeString() << std::endl;
     numWidgets_ += datawidget_->sizeWidget();
@@ -129,27 +130,27 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
 
     if(flags.PROPERTY_WIDGET_FLAG)
     {
-		QWidget* refreshWidget = new QWidget(this);
-		refreshWidget->setFixedSize(QSize(16, 16));
+        QWidget* refreshWidget = new QWidget(this);
+        refreshWidget->setFixedSize(QSize(16, 16));
         QPushButton *refresh = new QPushButton(RefreshIcon(), "", refreshWidget);
         refresh->setHidden(true);
         refresh->setFixedSize(QSize(16, 16));
-		refresh->setContentsMargins(0, 0, 0, 0);
+        refresh->setContentsMargins(0, 0, 0, 0);
 
         ++numWidgets_;
 
-		{
-			connect(datawidget_,SIGNAL(WidgetDirty(bool)), refresh, SLOT ( setVisible(bool) ) );
+        {
+            connect(datawidget_,SIGNAL(WidgetDirty(bool)), refresh, SLOT ( setVisible(bool) ) );
 
-			if(datainfowidget_ && flags.LINKPATH_MODIFIABLE_FLAG)
-			{
-				connect(datainfowidget_,SIGNAL(WidgetDirty()), refresh, SLOT ( show() ) );
-				connect(refresh, SIGNAL(clicked()), datainfowidget_, SLOT(linkEdited()));
-			}
+            if(datainfowidget_ && flags.LINKPATH_MODIFIABLE_FLAG)
+            {
+                connect(datainfowidget_,SIGNAL(WidgetDirty()), refresh, SLOT ( show() ) );
+                connect(refresh, SIGNAL(clicked()), datainfowidget_, SLOT(linkEdited()));
+            }
 
-			connect(refresh, SIGNAL(clicked()), this, SLOT(UpdateData()));
-			connect(refresh, SIGNAL(clicked(bool)), refresh, SLOT(setVisible(bool)));
-		}
+            connect(refresh, SIGNAL(clicked()), this, SLOT(UpdateData()));
+            connect(refresh, SIGNAL(clicked(bool)), refresh, SLOT(setVisible(bool)));
+        }
 
         setStyleSheet("QGroupBox{border:0;}");
         setContentsMargins(0, 0, 0, 0);
@@ -168,7 +169,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         //setColumns(numWidgets_); //datawidget_->numColumnWidget());
     }
     gridLayout_->setContentsMargins(10,10,10,10);
-    gridLayout_->addWidget(datawidget_);
+    gridLayout_->addWidget(datawidget_, 0, 1);
     gridLayout_->setAlignment(datawidget_, Qt::AlignVCenter);
 }
 
