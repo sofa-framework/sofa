@@ -55,7 +55,7 @@ SP_CLASS_METHODS_END
 #define DISPLAYFLAG_ATTRIBUTE_IMPL(flagName) \
     extern "C" PyObject * DisplayFlagsData_getAttr_show##flagName(PyObject *self, void*) \
     { \
-        Data<DisplayFlags>* data= down_cast<Data<DisplayFlags>>( ((PyPtr<BaseData>*)self)->object ); \
+        Data<DisplayFlags>* data= down_cast<Data<DisplayFlags> >( ((PyPtr<BaseData>*)self)->object ); \
         DisplayFlags* flags = data->beginEdit(); \
         bool b = (tristate::false_value != flags->getShow##flagName()); \
         data->endEdit(); \
@@ -63,7 +63,7 @@ SP_CLASS_METHODS_END
     } \
     extern "C" int DisplayFlagsData_setAttr_show##flagName(PyObject *self, PyObject * args, void*) \
     { \
-        Data<DisplayFlags>* data= down_cast<Data<DisplayFlags>>( ((PyPtr<BaseData>*)self)->object ); \
+        Data<DisplayFlags>* data= down_cast<Data<DisplayFlags> >( ((PyPtr<BaseData>*)self)->object ); \
         bool b = (Py_True==args); \
         DisplayFlags* flags = data->beginEdit(); \
         flags->setShow##flagName(b); \
