@@ -317,12 +317,13 @@ extern "C" PyObject * PythonScriptController_onScriptEvent(PyObject * /*self*/, 
         PyErr_BadArgument();
         Py_RETURN_NONE;
     }
-    Node* senderNode=dynamic_cast<Node*>(((PySPtr<Base>*)pySenderNode)->object.get());
-    if (!senderNode)
+    BaseNode* senderBaseNode = ((PySPtr<Base>*)pySenderNode)->object->toBaseNode();
+    if (!senderBaseNode)
     {
         PyErr_BadArgument();
         Py_RETURN_NONE;
     }
+
     // TODO check pyData
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
