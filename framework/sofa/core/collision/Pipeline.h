@@ -57,6 +57,7 @@ class SOFA_CORE_API Pipeline : public virtual sofa::core::objectmodel::BaseObjec
 {
 public:
     SOFA_ABSTRACT_CLASS(Pipeline, sofa::core::objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(Pipeline)
 
 protected:
 
@@ -121,6 +122,11 @@ protected:
     virtual void doCollisionDetection(const sofa::helper::vector<core::CollisionModel*>& collisionModels) = 0;
     /// Add collision response in the simulation graph
     virtual void doCollisionResponse() = 0;
+
+public:
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
 };
 
 } // namespace collision

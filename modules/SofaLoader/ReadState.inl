@@ -72,13 +72,12 @@ ReadState::~ReadState()
 
 void ReadState::init()
 {
-//     mmodel = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
     reset();
 }
 
 void ReadState::reset()
 {
-    mmodel = dynamic_cast< sofa::core::behavior::BaseMechanicalState* >(this->getContext()->getMechanicalState());
+    mmodel = this->getContext()->getMechanicalState();
     if (infile)
     {
         delete infile;

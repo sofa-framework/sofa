@@ -47,7 +47,7 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_OPENGL_VISUAL_API ColorMap : public virtual sofa::core::visual::VisualModel
+class SOFA_OPENGL_VISUAL_API ColorMap : public sofa::core::visual::VisualModel
 {
 public:
     SOFA_CLASS(ColorMap, sofa::core::visual::VisualModel);

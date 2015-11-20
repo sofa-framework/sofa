@@ -72,7 +72,7 @@ public:
     {
         if( m_dataEngineDataType!=DataEngineNothing )
         {
-            if( core::DataEngine* componentAsDataEngine = dynamic_cast<core::DataEngine*>(m_component) )
+            if( core::DataEngine* componentAsDataEngine = m_component->toDataEngine() )
             {
                 for (unsigned int i=0; i<this->size(); ++i)
                 {
@@ -114,7 +114,7 @@ public:
 
     void resize(const unsigned int size)
     {
-        core::DataEngine* componentAsDataEngine = m_dataEngineDataType!=DataEngineNothing ? dynamic_cast<core::DataEngine*>(m_component) : NULL;
+        core::DataEngine* componentAsDataEngine = m_dataEngineDataType!=DataEngineNothing ? m_component->toDataEngine() : NULL;
 
         if (size < this->size()) {
             // removing some data if size is inferior than current size

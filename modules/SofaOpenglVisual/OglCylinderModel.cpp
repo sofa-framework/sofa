@@ -74,7 +74,7 @@ void OglCylinderModel::init()
 {
     getContext()->get(_topology);
     if(_topology)
-        _mstate = dynamic_cast<core::behavior::BaseMechanicalState*>(_topology->getContext()->getMechanicalState());
+        _mstate = _topology->getContext()->getMechanicalState();
     else
         getContext()->get(_mstate);
 

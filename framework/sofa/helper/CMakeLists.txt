@@ -5,6 +5,7 @@ set(HEADER_FILES
     AdvancedTimer.h
     ArgumentParser.h
     BackTrace.h
+    cast.h
     DualQuat.h
     DualQuat.inl
     Factory.h

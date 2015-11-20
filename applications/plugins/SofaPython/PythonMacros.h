@@ -34,6 +34,7 @@
 
 
 #include <sofa/helper/Logger.h>
+#include <sofa/helper/cast.h>
 
 #include <SofaPython/config.h>
 

@@ -94,6 +94,12 @@ protected:
     void computeNormals();
     helper::vector<defaulttype::Vec3f> m_normals;
 
+public:
+
+
+    virtual bool insertInNode( core::objectmodel::BaseNode* node ) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    virtual bool removeInNode( core::objectmodel::BaseNode* node ) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+
 };
 
 } // namespace visualmodel

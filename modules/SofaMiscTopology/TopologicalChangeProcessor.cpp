@@ -105,7 +105,7 @@ TopologicalChangeProcessor::~TopologicalChangeProcessor()
 
 void TopologicalChangeProcessor::init()
 {
-    m_topology = dynamic_cast<core::topology::BaseMeshTopology*>(this->getContext()->getMeshTopology());
+    m_topology = this->getContext()->getMeshTopology();
 
     if (!m_useDataInputs.getValue())
         this->readDataFile();

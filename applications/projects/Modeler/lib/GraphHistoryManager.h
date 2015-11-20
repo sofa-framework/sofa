@@ -56,7 +56,7 @@ public:
     class Operation
     {
     public:
-        Operation() {};
+        Operation() {}
         enum op {DELETE_OBJECT,DELETE_Node, ADD_OBJECT,ADD_Node, NODE_MODIFICATION, COMPONENT_MODIFICATION};
         Operation(Base::SPtr sofaComponent_,  op ID_): sofaComponent(sofaComponent_), above(NULL), ID(ID_)
         {}

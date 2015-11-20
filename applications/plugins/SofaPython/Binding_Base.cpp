@@ -35,7 +35,7 @@ using namespace sofa::core::visual;
 
 extern "C" PyObject * Base_findData(PyObject *self, PyObject * args)
 {
-    Base* obj=static_cast<Base*>(((PySPtr<Base>*)self)->object.get());
+    Base* obj=((PySPtr<Base>*)self)->object.get();
     char *dataName;
     if (!PyArg_ParseTuple(args, "s",&dataName))
         Py_RETURN_NONE;
@@ -53,7 +53,7 @@ extern "C" PyObject * Base_findData(PyObject *self, PyObject * args)
 
 extern "C" PyObject * Base_findLink(PyObject *self, PyObject * args)
 {
-    Base* obj=dynamic_cast<Base*>(((PySPtr<Base>*)self)->object.get());
+    Base* obj=((PySPtr<Base>*)self)->object.get();
     char *linkName;
     if (!PyArg_ParseTuple(args, "s",&linkName))
         Py_RETURN_NONE;
@@ -70,7 +70,7 @@ extern "C" PyObject * Base_findLink(PyObject *self, PyObject * args)
 // Generic accessor to Data fields (in python native type)
 extern "C" PyObject* Base_GetAttr(PyObject *o, PyObject *attr_name)
 {
-    Base* obj=dynamic_cast<Base*>(((PySPtr<Base>*)o)->object.get());
+    Base* obj=down_cast<Base>(((PySPtr<Base>*)o)->object.get());
     char *attrName = PyString_AsString(attr_name);
 //    printf("Base_GetAttr type=%s name=%s attrName=%s\n",obj->getClassName().c_str(),obj->getName().c_str(),attrName);
 
@@ -89,7 +89,7 @@ extern "C" PyObject* Base_GetAttr(PyObject *o, PyObject *attr_name)
 extern "C" int Base_SetAttr(PyObject *o, PyObject *attr_name, PyObject *v)
 {
     // attribute does not exist: see if a Data field has this name...
-    Base* obj=dynamic_cast<Base*>(((PySPtr<Base>*)o)->object.get());
+    Base* obj=down_cast<Base>(((PySPtr<Base>*)o)->object.get());
     char *attrName = PyString_AsString(attr_name);
 
 //    printf("Base_SetAttr name=%s\n",dataName);
@@ -113,7 +113,7 @@ extern "C" int Base_SetAttr(PyObject *o, PyObject *attr_name, PyObject *v)
 extern "C" PyObject * Base_getClassName(PyObject * self, PyObject * /*args*/)
 {
     // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
-    Base* node = dynamic_cast<Base*>(((PySPtr<Base>*)self)->object.get());
+    Base* node = ((PySPtr<Base>*)self)->object.get();
 
     return PyString_FromString(node->getClassName().c_str());
 }
@@ -121,7 +121,7 @@ extern "C" PyObject * Base_getClassName(PyObject * self, PyObject * /*args*/)
 extern "C" PyObject * Base_getTemplateName(PyObject * self, PyObject * /*args*/)
 {
     // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
-    Base* node = dynamic_cast<Base*>(((PySPtr<Base>*)self)->object.get());
+    Base* node = ((PySPtr<Base>*)self)->object.get();
 
     return PyString_FromString(node->getTemplateName().c_str());
 }
@@ -129,7 +129,7 @@ extern "C" PyObject * Base_getTemplateName(PyObject * self, PyObject * /*args*/)
 extern "C" PyObject * Base_getName(PyObject * self, PyObject * /*args*/)
 {
     // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
-    Base* node = dynamic_cast<Base*>(((PySPtr<Base>*)self)->object.get());
+    Base* node = ((PySPtr<Base>*)self)->object.get();
 
     return PyString_FromString(node->getName().c_str());
 }

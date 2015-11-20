@@ -38,10 +38,11 @@ namespace visual
 
 class VisualParams;
 
-class VisualManager : public virtual VisualModel
+class VisualManager : public VisualModel
 {
 public:
     SOFA_CLASS(VisualManager, VisualModel);
+    SOFA_BASE_CAST_IMPLEMENTATION(VisualManager)
 protected:
     /// Destructor
     virtual ~VisualManager() { }
@@ -62,6 +63,10 @@ public:
      *  Return true if this object actually did the rendering, or false if it wasn't done.
      */
     virtual bool drawScene(VisualParams* /*vparams*/) { return false; }
+
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
 };
 
 } // namespace visual

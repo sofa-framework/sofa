@@ -194,9 +194,9 @@ std::string BaseLink::CreateString(const std::string& path, const std::string& d
 std::string BaseLink::CreateStringPath(Base* dest, Base* from)
 {
     if (!dest || dest == from) return std::string("[]");
-    BaseObject* o = dynamic_cast<BaseObject*>(dest);
-    BaseObject* f = dynamic_cast<BaseObject*>(from);
-    BaseContext* ctx = dynamic_cast<BaseContext*>(from);
+    BaseObject* o = dest->toBaseObject();
+    BaseObject* f = from->toBaseObject();
+    BaseContext* ctx = from->toBaseContext();
     if (!ctx && f) ctx = f->getContext();
     if (o)
     {
@@ -207,7 +207,7 @@ std::string BaseLink::CreateStringPath(Base* dest, Base* from)
             objectPath = master->getName() + std::string("/") + objectPath;
             master = master->getMaster();
         }
-        BaseNode* n = dynamic_cast<BaseNode*>(o->getContext());
+        BaseNode* n = o->getContext()->toBaseNode();
         if (f && o->getContext() == ctx)
             return objectPath;
         else if (n)
@@ -219,7 +219,7 @@ std::string BaseLink::CreateStringPath(Base* dest, Base* from)
     {
         if (f && ctx == dest)
             return std::string("./");
-        BaseNode* n = dynamic_cast<BaseNode*>(dest);
+        BaseNode* n = dest->toBaseNode();
         if (n) return n->getPathName(); // TODO: compute relative path
         else return dest->getName(); // we could not determine destination path, specifying simply its name might be enough to find it back
     }

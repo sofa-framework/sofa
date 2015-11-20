@@ -46,6 +46,7 @@ class SOFA_CORE_API BaseConstraintSet : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseConstraintSet, objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseConstraintSet)
 
 protected:
     BaseConstraintSet()
@@ -88,6 +89,10 @@ protected:
     Data< int > group;
 public:
     Data< unsigned int > m_constraintIndex; /// Constraint index (first index in the right hand term resolution vector)
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
+
 };
 
 } // namespace behavior

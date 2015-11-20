@@ -25,6 +25,7 @@
 #include <sofa/core/behavior/OdeSolver.h>
 #include <cstdlib>
 #include <cmath>
+#include <sofa/core/objectmodel/BaseNode.h>
 
 namespace sofa
 {
@@ -45,6 +46,23 @@ OdeSolver::~OdeSolver()
 //const OdeSolver::MechanicalMatrix OdeSolver::M(1,0,0);
 //const OdeSolver::MechanicalMatrix OdeSolver::B(0,1,0);
 //const OdeSolver::MechanicalMatrix OdeSolver::K(0,0,1);
+
+
+
+bool OdeSolver::insertInNode( objectmodel::BaseNode* node )
+{
+    node->addOdeSolver(this);
+    Inherit1::insertInNode(node);
+    return true;
+}
+
+bool OdeSolver::removeInNode( objectmodel::BaseNode* node )
+{
+    node->removeOdeSolver(this);
+    Inherit1::removeInNode(node);
+    return true;
+}
+
 
 } // namespace behavior
 

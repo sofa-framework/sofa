@@ -76,7 +76,7 @@ void CompareTopology::handleEvent(sofa::core::objectmodel::Event* event)
 void CompareTopology::processCompareTopology()
 {
 
-    sofa::core::topology::BaseMeshTopology* topo = m_topology = dynamic_cast<core::topology::BaseMeshTopology*>(this->getContext()->getMeshTopology());
+    sofa::core::topology::BaseMeshTopology* topo = m_topology = this->getContext()->getMeshTopology();
     if (!topo)
     {
         serr << "Error, compareTopology can't acces to the Topology." << sendl;

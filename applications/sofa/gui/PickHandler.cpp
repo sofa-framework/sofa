@@ -131,7 +131,6 @@ void PickHandler::init(core::objectmodel::BaseNode* root)
 
 
     //get a node of scene (root), create a new child (mouseNode), config it, then detach it from scene by default
-    //Node *root = dynamic_cast<Node*>(simulation::getSimulation()->getContext());
     mouseNode = dynamic_cast<simulation::Node*>(root)->createChild("Mouse");
 
     mouseContainer = sofa::core::objectmodel::New<MouseContainer>(); mouseContainer->resize(1);
@@ -468,7 +467,7 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const
     // Look for particles hit by this ray
 //  std::cerr<<"PickHandler::findCollisionUsingBruteForce" << std::endl;
     simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(), origin, direction, maxLength, 0 );
-    //core::objectmodel::BaseNode* rootNode = mouseNode->getRoot(); //dynamic_cast<core::objectmodel::BaseNode*>(sofa::simulation::getSimulation()->getContext());
+    //core::objectmodel::BaseNode* rootNode = mouseNode->getRoot(); //sofa::simulation::getSimulation()->getContext()->toBaseNode();
 
     if (rootNode) picker.execute(rootNode->getContext());
     else std::cerr << "ERROR: root node not found." << std::endl;
