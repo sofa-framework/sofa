@@ -40,7 +40,7 @@ namespace objectmodel
  *  \brief Base class for simulation objects that modify the shared context (such as gravity, local coordinate system, ...).
  *
  */
-class ContextObject : public virtual BaseObject
+class SOFA_CORE_API ContextObject : public virtual BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(ContextObject, BaseObject);
