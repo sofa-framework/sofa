@@ -45,7 +45,7 @@ namespace core
  *  to compute a new simulation step.
  *
  */
-class BehaviorModel : public virtual sofa::core::objectmodel::BaseObject
+class SOFA_CORE_API BehaviorModel : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BehaviorModel, objectmodel::BaseObject);
