@@ -210,7 +210,7 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
                 char* p;
                 for (p = strtok(l, " "); p; p = strtok(NULL, " "))
                     vLine.push_back(std::string(p));
-                delete l;
+                delete [] l;
 
                 std::vector<Real> values;
                 for (vecString::iterator it = vLine.begin(); it < vLine.end(); it++)
@@ -281,7 +281,7 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
             char* p;
             for (p = strtok(l, " "); p; p = strtok(NULL, " "))
                 vLine.push_back(std::string(p));
-            delete l;
+            delete [] l;
 
             if (vLine.size()>3 )
             {
@@ -359,7 +359,7 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
             char* p;
             for (p = strtok(l, " "); p; p = strtok(NULL, " "))
                 vLine.push_back(std::string(p));
-            delete l;
+            delete [] l;
 
             if (vLine.size()>4 )
             {
