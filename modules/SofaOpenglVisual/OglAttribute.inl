@@ -175,8 +175,24 @@ void OglAttribute< size, type, DataTypes>::enable()
         return; // index not valid
     glBindBufferARB(GL_ARRAY_BUFFER, _abo);
 #ifndef PS3
-    glEnableVertexAttribArrayARB ( _index );
-    glVertexAttribPointerARB ( _index, size, type, GL_FALSE, 0, ( char* ) NULL + 0);
+    glEnableVertexAttribArrayARB(_index);
+
+    switch (type)
+    {
+    case GL_INT:
+    case GL_UNSIGNED_INT:
+    case GL_BYTE:
+    case GL_UNSIGNED_BYTE:
+    case GL_SHORT:
+    case GL_UNSIGNED_SHORT:
+        glVertexAttribIPointer(_index, size, type, 0, (char*)NULL + 0);
+        break;
+    case GL_DOUBLE:
+        glVertexAttribLPointer(_index, size, type, 0, (char*)NULL + 0);
+        break;
+    default:
+        glVertexAttribPointer(_index, size, type, GL_FALSE, 0, (char*)NULL + 0);
+    }
 #endif
     glBindBufferARB(GL_ARRAY_BUFFER, 0);
 }
