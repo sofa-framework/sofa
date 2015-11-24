@@ -142,7 +142,6 @@ public:
 protected:
     Data< Vec3i > n;
     Data <bool> p_createTexCoords;
-    Data <TextCoords2D> m_texCoords;
 
     virtual void setSize();
 };
