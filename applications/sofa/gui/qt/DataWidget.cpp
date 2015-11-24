@@ -27,6 +27,7 @@
 #include "DataWidget.h"
 #include "ModifyObject.h"
 #include <sofa/helper/Factory.inl>
+#include <sofa/helper/logging/Messaging.h>
 
 #include <QToolTip>
 
@@ -120,7 +121,7 @@ DataWidget::updateDataValue()
             }
             else
             {
-                Logger::mainlog( Logger::Error, std::string("updateDataValue: ") + baseData->getName() + std::string(" has an owner that is neither a Node nor an Object. Something went wrong..."), "DataWidget" );
+                msg_error("DataWidget") << "updateDataValue: " << baseData->getName() << " has an owner that is neither a Node nor an Object. Something went wrong...";
             }
 
             const QString dataString = (path + " = " + baseData->getValueString()).c_str();
