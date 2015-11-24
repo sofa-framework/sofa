@@ -10,8 +10,6 @@
                 
                 <MergeVectors template="Vec3d" name="mergedPositions"  nbInputs="2" input1="@mesh1.position" input2="@mesh2.position" />
                 <MechanicalObject  template="Vec3d"  position="@mergedPositions.output" showObject="True" />
-                
-                <MergeVectors template="Vec2u" name="mergedTexCoord" nbInputs="2" input1="@mesh1.texcoords" input2="@mesh2.texcoords" />
-                
+                                
     </Node>
 </Node>
