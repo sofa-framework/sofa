@@ -131,7 +131,7 @@ void PickHandler::init(core::objectmodel::BaseNode* root)
 
 
     //get a node of scene (root), create a new child (mouseNode), config it, then detach it from scene by default
-    mouseNode = dynamic_cast<simulation::Node*>(root)->createChild("Mouse");
+    mouseNode = down_cast<simulation::Node>(root)->createChild("Mouse");
 
     mouseContainer = sofa::core::objectmodel::New<MouseContainer>(); mouseContainer->resize(1);
     mouseContainer->setName("MousePosition");

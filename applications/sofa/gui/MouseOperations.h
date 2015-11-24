@@ -33,6 +33,7 @@
 #include <SofaGraphComponent/AttachBodyButtonSetting.h>
 #include <SofaGraphComponent/FixPickedParticleButtonSetting.h>
 #include <sofa/gui/SofaGUI.h>
+#include <sofa/helper/cast.h>
 
 namespace sofa
 {
@@ -117,7 +118,7 @@ public:
     static std::string getDescription() {return "Attach an object to the Mouse";}
 
 protected:
-    virtual void setSetting(sofa::component::configurationsetting::MouseButtonSetting* s) { Operation::setSetting(s); setting = dynamic_cast<sofa::component::configurationsetting::AttachBodyButtonSetting*>(s); }
+    virtual void setSetting(sofa::component::configurationsetting::MouseButtonSetting* s) { Operation::setSetting(s); setting = down_cast<sofa::component::configurationsetting::AttachBodyButtonSetting>(s); }
     virtual std::string defaultPerformerType();
     virtual void configurePerformer(sofa::component::collision::InteractionPerformer* p);
 

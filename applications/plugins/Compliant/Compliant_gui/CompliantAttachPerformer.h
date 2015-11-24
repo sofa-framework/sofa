@@ -58,7 +58,7 @@ public:
 protected:
     virtual std::string defaultPerformerType() { return "CompliantAttach"; }
 
-    virtual void setSetting(sofa::component::configurationsetting::MouseButtonSetting* s) { Operation::setSetting(s); setting = dynamic_cast<sofa::component::configurationsetting::CompliantAttachButtonSetting*>(s); }
+    virtual void setSetting(sofa::component::configurationsetting::MouseButtonSetting* s) { Operation::setSetting(s); setting = down_cast<sofa::component::configurationsetting::CompliantAttachButtonSetting>(s); }
     sofa::component::configurationsetting::CompliantAttachButtonSetting::SPtr setting;
 };
 }
