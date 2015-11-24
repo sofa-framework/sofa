@@ -47,6 +47,7 @@ class ContactManager : public virtual CollisionAlgorithm
 {
 public:
     SOFA_ABSTRACT_CLASS(ContactManager, CollisionAlgorithm);
+    SOFA_BASE_CAST_IMPLEMENTATION(ContactManager)
 
     typedef NarrowPhaseDetection::DetectionOutputMap DetectionOutputMap;
     typedef sofa::helper::vector<Contact::SPtr> ContactVector;

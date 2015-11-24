@@ -50,7 +50,7 @@ struct AssembledRigidRigidMappingTest : public Mapping_test<Mapping>
 
     AssembledRigidRigidMappingTest() {
         mapping = static_cast<Mapping*>(this->base::mapping);
-        this->errorMax *= 1.5;
+        this->errorMax *= 1.6;
     }
 
     bool test()

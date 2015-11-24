@@ -74,6 +74,11 @@ class Deformable:
         self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.visual.name )
         self.normals = self.visual
 
+    def loadVisualCylinder(self, meshPath, offset = [0,0,0,0,0,0,1], scale=[1,1,1], color=[1,1,1,1],radius=0.01,**kwargs):
+        r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
+        self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.visual.name )
+        self.normals = self.visual
+
 
     def addVisual(self, color=[1,1,1,1]):
         if self.dofs is None: # use static (triangulated) mesh from topology
@@ -83,6 +88,14 @@ class Deformable:
             d = Deformable(self.node,"Visual")
             d.visualFromDeformable(self,color)
             return d
+
+
+    def addVisualCylinder(self,radius=0.01, color=[1,1,1,1]):
+        if not self.dofs is None:
+            d = Deformable(self.node,"Visual")
+            d.visual =  d.node.createObject("OglCylinderModel", name="model",radius=radius, color=concat(color))
+            return d
+
 
     def visualFromDeformable(self, deformable, color=[1,1,1,1]):
         deformable.node.addChild(self.node)
@@ -139,13 +152,14 @@ class Deformable:
             return
         self.mass = self.node.createObject('UniformMass', totalMass=totalMass)
 
-    def addMapping(self, dofRigidNode=None, dofAffineNode=None, labelImage=None, labels=None, useGlobalIndices=False, assemble=True, isMechanical=True):
+    def addMapping(self, dofRigidNode=None, dofAffineNode=None, labelImage=None, labels=None, useGlobalIndices=False, useIndexLabelPairs=False, assemble=True, isMechanical=True):
         cell = ''
         if not labelImage is None and not labels is None : # use labels to select specific voxels in branching image
-           offsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+self.topology.name+".position", src="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage), labels=concat(labels), useGlobalIndices=useGlobalIndices)
+           offsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+self.topology.name+".position", src="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage), labels=concat(labels), useGlobalIndices=useGlobalIndices, useIndexLabelPairs=useIndexLabelPairs)
            cell = "@"+SofaPython.Tools.getObjectPath(offsets)+".cell"
 
         self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, cell, assemble, isMechanical=isMechanical)
+
 
     def addSkinning(self, armatureNode, indices, weights, assemble=True, isMechanical=True):
         """ Add skinning (linear) mapping based on the armature (Rigid3) in armatureNode using
@@ -364,10 +378,10 @@ class Behavior:
         self.sampler = self.node.createObject("TopologyGaussPointSampler", name="sampler", method="0", inPosition="@"+meshPath+".position", order=order, **kwargs)
         self.cell = "@"+SofaPython.Tools.getObjectPath(self.sampler)+".cell"
 
-    def addMechanicalObject(self, dofRigidNode=None, dofAffineNode=None, assemble=True):
+    def addMechanicalObject(self, dofRigidNode=None, dofAffineNode=None, assemble=True, **kwargs):
         if self.sampler is None:
             print "[Flexible.API.Behavior] ERROR: no sampler"
-        self.dofs = self.node.createObject("MechanicalObject", template="F"+self.type, name="dofs")
+        self.dofs = self.node.createObject("MechanicalObject", template="F"+self.type, name="dofs", **kwargs)
         self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, self.cell , assemble)
     
 

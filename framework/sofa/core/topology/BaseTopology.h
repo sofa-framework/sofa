@@ -30,6 +30,7 @@
 #include <sofa/core/VecId.h>
 
 #include <sofa/helper/list.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 
 
 namespace sofa
@@ -316,6 +317,13 @@ protected:
 
     /// List of topology engines which will interact on all topological Data.
     sofa::helper::list<TopologyEngine *> m_topologyEngineList;
+
+public:
+
+
+    virtual bool insertInNode( objectmodel::BaseNode* node ) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    virtual bool removeInNode( objectmodel::BaseNode* node ) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+
 };
 
 

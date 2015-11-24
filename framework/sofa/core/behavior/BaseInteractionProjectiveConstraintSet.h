@@ -48,6 +48,7 @@ class SOFA_CORE_API BaseInteractionProjectiveConstraintSet : public BaseProjecti
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseInteractionProjectiveConstraintSet, BaseProjectiveConstraintSet);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseInteractionProjectiveConstraintSet)
 
     /// Get the first MechanicalState
     /// \todo Rename to getMechState1()

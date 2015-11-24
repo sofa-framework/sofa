@@ -50,6 +50,7 @@ class BaseLoader : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseLoader, objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseLoader)
 protected:
     ///Constructor
     BaseLoader(): m_filename(initData(&m_filename,"filename","Filename of the object")) {}

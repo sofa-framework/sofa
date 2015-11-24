@@ -164,7 +164,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         /// Load the scene
         root = simulation->createNewGraph("root");
-        root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
+        root = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()).get() );
 
         // InDofs
         inDofs = root->get<InDOFs>(root->SearchDown);

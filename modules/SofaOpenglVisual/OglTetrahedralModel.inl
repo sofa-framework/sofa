@@ -124,7 +124,7 @@ void OglTetrahedralModel<DataTypes>::computeMesh()
             position[i][2] = (Real)m_topology->getPZ(i);
         }
     }
-    else if( BaseMechanicalState* mstate = dynamic_cast< BaseMechanicalState* >(m_topology->getContext()->getMechanicalState()) ) 
+    else if( BaseMechanicalState* mstate = m_topology->getContext()->getMechanicalState() )
     {
         if( this->f_printLog.getValue() ) 
             sout<<"OglTetrahedralModel: copying "<< mstate->getSize()<< " points from mechanical state." <<sendl;

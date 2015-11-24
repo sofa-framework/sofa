@@ -180,6 +180,11 @@ public:
 
     GLint getGeometryVerticesOut(const unsigned int index) ;
     void  setGeometryVerticesOut(const unsigned int index, GLint v);
+
+
+    virtual bool insertInNode( core::objectmodel::BaseNode* node ) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    virtual bool removeInNode( core::objectmodel::BaseNode* node ) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+
 };
 
 /**
@@ -201,11 +206,11 @@ protected:
     helper::set<OglShader*> shaders;
 public:
     OglShaderElement();
-    virtual ~OglShaderElement() { };
+    virtual ~OglShaderElement() {}
     virtual void init();
-    const std::string getId() const {return id.getValue();};
-    void setID( std::string str ) { *(id.beginEdit()) = str; id.endEdit();};
-    void setIndexShader( unsigned int index) { *(indexShader.beginEdit()) = index; indexShader.endEdit();};
+    const std::string getId() const {return id.getValue();}
+    void setID( std::string str ) { *(id.beginEdit()) = str; id.endEdit();}
+    void setIndexShader( unsigned int index) { *(indexShader.beginEdit()) = index; indexShader.endEdit();}
 
     // Returns the ID of the shader element
     const std::string& getSEID() const { return id.getValue(); }

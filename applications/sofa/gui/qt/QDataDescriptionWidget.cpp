@@ -86,7 +86,7 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
             nextRow++;
         }
 
-        core::objectmodel::BaseNode* node = dynamic_cast<core::objectmodel::BaseNode*>(object); // Node
+        core::objectmodel::BaseNode* node = object->toBaseNode(); // Node
         if (node && node->getNbParents()>1) // MultiNode
         {
             addRow(boxLayout, "Path", node->getPathName(), nextRow, 20);

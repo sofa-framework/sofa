@@ -2696,6 +2696,22 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
 }
 
 template <class DataTypes>
+inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualParams* vparams)
+{
+#ifndef SOFA_NO_OPENGL
+    defaulttype::Vec4f color(1.0, 1.0, 1.0, 1.0);
+
+    float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
+
+    helper::vector<defaulttype::Vector3> positions;
+    for (size_t i = 0; i < vsize; ++i)
+        positions.push_back(defaulttype::Vector3(getPX(i), getPY(i), getPZ(i)));
+
+    vparams->drawTool()->draw3DText_Indices(positions, scale, color);
+#endif // SOFA_NO_OPENGL
+}
+
+template <class DataTypes>
 inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
@@ -2704,15 +2720,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
 
     if (showIndices.getValue())
     {
-		defaulttype::Vector4 color(1.0, 1.0, 1.0,1.0);
-        
-		float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue() );
-
-        helper::vector<defaulttype::Vector3> positions;
-        for (size_t i = 0; i < vsize; ++i)
-            positions.push_back(defaulttype::Vector3(getPX(i), getPY(i), getPZ(i)));
-
-        vparams->drawTool()->draw3DText_Indices(positions, scale, color);
+        drawIndices(vparams);
     }
 
     if (showVectors.getValue())

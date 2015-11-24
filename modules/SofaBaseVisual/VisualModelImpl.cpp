@@ -712,12 +712,12 @@ public:
     VisualModelPointHandler(VisualModelImpl* obj, sofa::component::topology::PointData<VecCoord>* data, int algo)
         : sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point, VecCoord >(data), obj(obj), algo(algo) {}
 
-    void applyCreateFunction(unsigned int pointIndex, Coord& dest, const sofa::core::topology::Point &,
+    void applyCreateFunction(unsigned int /*pointIndex*/, Coord& dest, const sofa::core::topology::Point &,
                              const sofa::helper::vector< unsigned int > &ancestors,
                              const sofa::helper::vector< double > &coefs)
     {
         const VecCoord& x = this->m_topologyData->getValue();
-        std::cout << "VisualModelPointHandler: new point " << pointIndex << "/" << x.size() << " on " << this->m_topologyData->getName() << " : ancestors = " << ancestors << " , coefs = " << coefs << std::endl;
+        //std::cout << "VisualModelPointHandler: new point " << pointIndex << "/" << x.size() << " on " << this->m_topologyData->getName() << " : ancestors = " << ancestors << " , coefs = " << coefs << std::endl;
         if (!ancestors.empty())
         {
             if (algo == 1 && ancestors.size() > 1) //fixMergedUVSeams
@@ -1290,7 +1290,7 @@ void VisualModelImpl::computeMesh()
     using sofa::component::topology::SparseGridTopology;
     using sofa::core::behavior::BaseMechanicalState;
 
-	sofa::helper::vector<Coord> bezierControlPointsArray;
+//	sofa::helper::vector<Coord> bezierControlPointsArray;
 
     if ((m_positions.getValue()).empty() && (m_vertices2.getValue()).empty())
     {
@@ -1324,7 +1324,7 @@ void VisualModelImpl::computeMesh()
         }
         else
         {
-            BaseMechanicalState* mstate = dynamic_cast< BaseMechanicalState* >(m_topology->getContext()->getMechanicalState());
+            BaseMechanicalState* mstate = m_topology->getContext()->getMechanicalState();
 
             if (mstate)
 			{

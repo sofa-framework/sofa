@@ -58,7 +58,7 @@ TransformPosition<DataTypes>::TransformPosition()
     , f_translation(initData(&f_translation, "translation", "translation vector ") )
     , f_rotation(initData(&f_rotation, "rotation", "rotation vector ") )
     , f_scale(initData(&f_scale, Coord(1.0,1.0,1.0), "scale", "scale factor") )
-    , f_affineMatrix(initData(&f_affineMatrix, AffineMatrix(), "matrix", "4x4 affine matrix") )
+    , f_affineMatrix(initData(&f_affineMatrix, Mat4x4::s_identity, "matrix", "4x4 affine matrix") )
     , f_method(initData(&f_method, "method", "transformation method either translation or scale or rotation or random or projectOnPlane") )
     , f_seed(initData(&f_seed, (long) 0, "seedValue", "the seed value for the random generator") )
     , f_maxRandomDisplacement(initData(&f_maxRandomDisplacement, (Real) 1.0, "maxRandomDisplacement", "the maximum displacement around initial position for the random transformation") )
@@ -160,6 +160,14 @@ void TransformPosition<DataTypes>::init()
     f_normal.endEdit();
 
     addInput(&f_inputX);
+    addInput(&f_origin);
+    addInput(&f_normal);
+    addInput(&f_translation);
+    addInput(&f_rotation);
+    addInput(&f_scale);
+    addInput(&f_affineMatrix);
+    addInput(&f_fixedIndices);
+
     addOutput(&f_outputX);
 
     setDirtyValue();
@@ -185,7 +193,7 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
     if (stream)
     {
         std::string line;
-        AffineMatrix mat;
+        Mat4x4 mat(Mat4x4::s_identity);
 
         bool found = false;
         while (getline(stream,line) && !found)
@@ -202,7 +210,7 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
                 char* p;
                 for (p = strtok(l, " "); p; p = strtok(NULL, " "))
                     vLine.push_back(std::string(p));
-                delete l;
+                delete [] l;
 
                 std::vector<Real> values;
                 for (vecString::iterator it = vLine.begin(); it < vLine.end(); it++)
@@ -253,7 +261,7 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
     {
         std::string line;
         unsigned int nbLines = 0;
-        AffineMatrix mat;
+        Mat4x4 mat(Mat4x4::s_identity);
 
         while (getline(stream,line))
         {
@@ -273,7 +281,7 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
             char* p;
             for (p = strtok(l, " "); p; p = strtok(NULL, " "))
                 vLine.push_back(std::string(p));
-            delete l;
+            delete [] l;
 
             if (vLine.size()>3 )
             {
@@ -331,7 +339,7 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
     {
         std::string line;
         unsigned int nbLines = 0;
-        AffineMatrix mat;
+        Mat4x4 mat(Mat4x4::s_identity);
 
         while (getline(stream,line))
         {
@@ -351,7 +359,7 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
             char* p;
             for (p = strtok(l, " "); p; p = strtok(NULL, " "))
                 vLine.push_back(std::string(p));
-            delete l;
+            delete [] l;
 
             if (vLine.size()>4 )
             {
@@ -391,6 +399,7 @@ void TransformPosition<DataTypes>::update()
     helper::ReadAccessor< Data<Coord> > translation = f_translation;
     helper::ReadAccessor< Data<Coord> > scale = f_scale;
     helper::ReadAccessor< Data<Coord> > rotation = f_rotation;
+    helper::ReadAccessor< Data<Mat4x4> > affineMatrix = f_affineMatrix;
     helper::ReadAccessor< Data<Real> > maxDisplacement = f_maxRandomDisplacement;
     helper::ReadAccessor< Data<long> > seed = f_seed;
     helper::ReadAccessor< Data<SetIndex> > fixedIndices = f_fixedIndices;
@@ -463,7 +472,7 @@ void TransformPosition<DataTypes>::update()
     case AFFINE:
         for (i=0; i< in.size(); ++i)
         {
-            Vec4 coord = f_affineMatrix.getValue()*Vec4(in[i], 1);
+            Vec4 coord = affineMatrix.ref()*Vec4(in[i], 1);
             if ( fabs(coord[3]) > 1e-10)
                 out[i]=coord/coord[3];
         }

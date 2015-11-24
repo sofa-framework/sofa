@@ -85,7 +85,7 @@ template <class In, class Out>
 helper::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechFrom()
 {
     helper::vector<behavior::BaseMechanicalState*> vec;
-    behavior::BaseMechanicalState* meshFrom = dynamic_cast<behavior::BaseMechanicalState*> (this->fromModel.get());
+    behavior::BaseMechanicalState* meshFrom = this->fromModel.get()->toBaseMechanicalState();
     if(meshFrom)
         vec.push_back(meshFrom);
 
@@ -96,7 +96,7 @@ template <class In, class Out>
 helper::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechTo()
 {
     helper::vector<behavior::BaseMechanicalState*> vec;
-    behavior::BaseMechanicalState* meshTo = dynamic_cast<behavior::BaseMechanicalState*> (this->toModel.get());
+    behavior::BaseMechanicalState* meshTo = this->toModel.get()->toBaseMechanicalState();
     if(meshTo)
         vec.push_back(meshTo);
 
@@ -115,9 +115,9 @@ void Mapping<In,Out>::init()
     else
     {
         core::behavior::BaseMechanicalState *state;
-        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModel.get())))
+        if( (state = this->fromModel.get()->toBaseMechanicalState()) )
             maskFrom = &state->forceMask;
-        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModel.get())))
+        if( (state = this->toModel.get()->toBaseMechanicalState()) )
             maskTo = &state->forceMask;
     }
 

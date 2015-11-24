@@ -82,6 +82,7 @@ class SOFA_CORE_API BaseObject : public virtual Base
 {
 public:
     SOFA_CLASS(BaseObject, Base);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseObject)
 protected:
     BaseObject();
 
@@ -484,6 +485,19 @@ protected:
 #ifdef SOFA_SMP
     Iterative::IterativePartition *partition_;
 #endif
+
+public:
+
+    /// the component can insert itseft direclty in the right sequence in the Node
+    /// so the Node does not have to test its type against every known types.
+    /// \returns true iff the component was inserted
+    virtual bool insertInNode( BaseNode* /*node*/ ) { return false; }
+
+    /// the component can remove itseft direclty in the right sequence in the Node
+    /// so the Node does not have to test its type against every known types.
+    /// \returns true iff the component was removed
+    virtual bool removeInNode( BaseNode* /*node*/ ) { return false; }
+
 };
 
 } // namespace objectmodel

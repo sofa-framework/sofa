@@ -111,25 +111,6 @@ public:
 
     virtual void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
 
-    virtual void apply(const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
-    {
-        //Not optimized at all...
-        helper::vector<OutVecCoord*> vecOutPos;
-        for(unsigned int i=0; i<dataVecOutPos.size(); i++)
-            vecOutPos.push_back(dataVecOutPos[i]->beginEdit(mparams));
-
-        helper::vector<const InVecCoord*> vecInPos;
-        for(unsigned int i=0; i<dataVecInPos.size(); i++)
-            vecInPos.push_back(&dataVecInPos[i]->getValue(mparams));
-
-        this->apply(mparams, dataVecOutPos, dataVecInPos);
-
-        //Really Not optimized at all...
-        for(unsigned int i=0; i<dataVecOutPos.size(); i++)
-            dataVecOutPos[i]->endEdit(mparams);
-    }
-
-
     virtual void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in);
 
     virtual void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<OutVecDeriv>& in);

@@ -360,7 +360,7 @@ SReal CompliantNLImplicitSolver::compute_residual( SolverOperations sop, MultiVe
                     }
                 }
 
-                delete violation;
+                delete [] violation;
             }
 
             off += size;

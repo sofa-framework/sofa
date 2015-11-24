@@ -84,7 +84,7 @@ WriteState::~WriteState()
 
 void WriteState::init()
 {
-    mmodel = dynamic_cast<core::behavior::BaseMechanicalState*>(this->getContext()->getMechanicalState());
+    mmodel = this->getContext()->getMechanicalState();
 
     // test the size and range of the DOFs to write in the file output
     if (mmodel)

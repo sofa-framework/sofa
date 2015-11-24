@@ -138,6 +138,7 @@ class SOFA_CORE_API Intersection : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(Intersection, objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(Intersection)
 protected:
     Intersection() {}
     virtual ~Intersection();

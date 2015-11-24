@@ -41,6 +41,8 @@ namespace helper
 namespace gl
 {
 
+static GLUquadricObj* quadric = gluNewQuadric();
+
 template <typename V>
 void drawCone(const V& p1, const V& p2, const float& radius1, const float& radius2, const int subd=8)
 {
@@ -105,58 +107,51 @@ void drawArrow(const V& p1, const V& p2, const float& rad, const int subd=8)
 template <typename V>
 void drawSphere(const V& center, const float& rad, const int subd1=8, const int subd2=8)
 {
-    GLUquadricObj* sphere = gluNewQuadric();
-    gluQuadricDrawStyle(sphere, GLU_FILL);
-    gluQuadricOrientation(sphere, GLU_OUTSIDE);
-    gluQuadricNormals(sphere, GLU_SMOOTH);
+    gluQuadricDrawStyle(quadric, GLU_FILL);
+    gluQuadricOrientation(quadric, GLU_OUTSIDE);
+    gluQuadricNormals(quadric, GLU_SMOOTH);
     glPushMatrix();
     helper::gl::glTranslateT( center );
-    gluSphere(sphere,2.0*rad,subd1,subd2);
+    gluSphere(quadric,rad,subd1,subd2);
     glPopMatrix();
-    // 		delete sphere;
 }
 
 template <typename V>
 void drawEllipsoid(const V& center, const float& radx, const float& rady, const float& radz, const int subd1 = 8, const int subd2 = 8)
 {
-    GLUquadricObj* sphere = gluNewQuadric();
-    gluQuadricDrawStyle(sphere, GLU_FILL);
-    gluQuadricOrientation(sphere, GLU_OUTSIDE);
-    gluQuadricNormals(sphere, GLU_SMOOTH);
+    gluQuadricDrawStyle(quadric, GLU_FILL);
+    gluQuadricOrientation(quadric, GLU_OUTSIDE);
+    gluQuadricNormals(quadric, GLU_SMOOTH);
     glPushMatrix();
     helper::gl::glTranslateT(center);
     helper::gl::glScale(radx,rady,radz);
-    gluSphere(sphere, 1.0, subd1, subd2);
+    gluSphere(quadric, 1.0, subd1, subd2);
     glPopMatrix();
-    // 		delete sphere;
 }
 
 template <typename V>
 void drawWireSphere(const V& center, const float& rad, const int subd1=8, const int subd2=8)
 {
-    GLUquadricObj*	sphere = gluNewQuadric();
-    gluQuadricDrawStyle(sphere, GLU_LINE);
-    gluQuadricOrientation(sphere, GLU_OUTSIDE);
+    gluQuadricDrawStyle(quadric, GLU_LINE);
+    gluQuadricOrientation(quadric, GLU_OUTSIDE);
     glPushMatrix();
     helper::gl::glTranslateT( center );
-    gluSphere(sphere,2.0*rad,subd1,subd2);
+    gluSphere(quadric,rad,subd1,subd2);
     glPopMatrix();
-    // 		delete sphere;
 }
 
 template <typename V>
 void drawTorus(const float* coordinateMatrix, const float& bodyRad=0.0,  const float& rad=1.0, const int precision=20,
                const V& color=sofa::helper::fixed_array<int,3>(255,215,180))
 {
-    GLUquadricObj* disk = gluNewQuadric();
     glColor3ub(color.x(), color.y(), color.z());
-    gluQuadricDrawStyle(disk, GLU_FILL);
-    gluQuadricOrientation(disk, GLU_OUTSIDE);
-    gluQuadricNormals(disk, GLU_SMOOTH);
+//    gluQuadricDrawStyle(quadric, GLU_FILL);
+//    gluQuadricOrientation(quadric, GLU_OUTSIDE);
+//    gluQuadricNormals(quadric, GLU_SMOOTH);
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glMultMatrixf(coordinateMatrix);
-    //gluDisk(disk, 2.0*bodyRad, 2.0*rad, 10, 10);
+    //gluDisk(quadric, 2.0*bodyRad, 2.0*rad, 10, 10);
 
     float rr=1.5f*bodyRad;
     double dv=2*M_PI/precision;
@@ -195,23 +190,22 @@ template <typename V>
 void drawEmptyParallelepiped(const V& vert1, const V& vert2, const V& vert3, const V& vert4, const V& vecFromFaceToOppositeFace, const float& rad=1.0, const int precision=8,
                              const V& color=sofa::helper::fixed_array<int, 3>(255,0,0))
 {
-	GLUquadricObj* parallelepiped = gluNewQuadric();
     glColor3ub(255, 255, 255);
-    gluQuadricDrawStyle(parallelepiped, GLU_FILL);
-    gluQuadricOrientation(parallelepiped, GLU_OUTSIDE);
-    gluQuadricNormals(parallelepiped, GLU_SMOOTH);
+    gluQuadricDrawStyle(quadric, GLU_FILL);
+    gluQuadricOrientation(quadric, GLU_OUTSIDE);
+    gluQuadricNormals(quadric, GLU_SMOOTH);
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
 
 	//Vertices of the parallelepiped
-	drawSphere(vert1,2.0*rad);
-	drawSphere(vert2,2.0*rad);
-	drawSphere(vert3,2.0*rad);
-	drawSphere(vert4,2.0*rad);
-	drawSphere(vert1 + vecFromFaceToOppositeFace,2.0*rad);
-	drawSphere(vert2 + vecFromFaceToOppositeFace,2.0*rad);
-	drawSphere(vert3 + vecFromFaceToOppositeFace,2.0*rad);
-	drawSphere(vert4 + vecFromFaceToOppositeFace,2.0*rad);
+    drawSphere(vert1,rad);
+    drawSphere(vert2,rad);
+    drawSphere(vert3,rad);
+    drawSphere(vert4,rad);
+    drawSphere(vert1 + vecFromFaceToOppositeFace,rad);
+    drawSphere(vert2 + vecFromFaceToOppositeFace,rad);
+    drawSphere(vert3 + vecFromFaceToOppositeFace,rad);
+    drawSphere(vert4 + vecFromFaceToOppositeFace,rad);
 
 	glColor3ub(color.x(), color.y(), color.z());
 	//First face

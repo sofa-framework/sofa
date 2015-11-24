@@ -51,6 +51,7 @@
 #include <SofaLoader/ReadState.h>
 #include <SofaValidation/CompareState.h>
 #include <sofa/helper/Factory.h>
+#include <sofa/helper/cast.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -63,9 +64,9 @@
 
 #include <sofa/helper/logging/Messaging.h>
 
-#ifdef SOFA_HAVE_GLUT
+#ifdef SOFA_HAVE_GLUT_GUI
 #include <sofa/helper/system/glut.h>
-#endif // SOFA_HAVE_GLUT
+#endif // SOFA_HAVE_GLUT_GUI
 
 #ifdef SOFA_SMP
 #include <athapascan-1>
@@ -221,9 +222,9 @@ int main(int argc, char** argv)
 #endif /* SOFA_SMP */
 
 #ifndef SOFA_NO_OPENGL
-#ifdef SOFA_HAVE_GLUT
+#ifdef SOFA_HAVE_GLUT_GUI
     if(gui!="batch") glutInit(&argc,argv);
-#endif // SOFA_HAVE_GLUT
+#endif // SOFA_HAVE_GLUT_GUI
 #endif // SOFA_NO_OPENGL
 
 #ifdef SOFA_SMP
@@ -319,11 +320,12 @@ int main(int argc, char** argv)
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
     sofa::gui::GUIManager::SetDimension(800,600);
 
-    sofa::simulation::Node::SPtr groot = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
-    if (groot==NULL)
-    {
+    sofa::simulation::Node::SPtr groot;
+    sofa::core::objectmodel::BaseNode* baseroot = sofa::simulation::getSimulation()->load(fileName.c_str()).get();
+    if( !baseroot )
         groot = sofa::simulation::getSimulation()->createNewGraph("");
-    }
+    else
+        groot = down_cast<sofa::simulation::Node>( baseroot );
 
     if (!verif.empty())
     {

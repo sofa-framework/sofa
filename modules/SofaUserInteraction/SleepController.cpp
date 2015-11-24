@@ -340,7 +340,7 @@ void SleepController::addWakeupPair(std::vector<BaseContexts>& wakeupPairs, core
 core::objectmodel::BaseContext* SleepController::getParentContextThatCanSleep(core::objectmodel::BaseContext* context)
 {
 	// Start the search from the given node
-	core::objectmodel::BaseNode* node = dynamic_cast<core::objectmodel::BaseNode*>(context);
+    core::objectmodel::BaseNode* node =context->toBaseNode();
 	if (!node)
 		return context;
 

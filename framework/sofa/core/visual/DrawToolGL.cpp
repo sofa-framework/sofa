@@ -479,12 +479,30 @@ void DrawToolGL::drawCylinder(const Vector3& p1, const Vector3 &p2, float radius
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void DrawToolGL::drawArrow(const Vector3& p1, const Vector3 &p2, float radius, const Vec<4,float>& colour,  int subd)
+void DrawToolGL::drawArrow(const Vector3& p1, const Vector3 &p2, float radius, const Vec<4,float>& colour, int subd)
 {
-
     Vector3 p3 = p1*.2+p2*.8;
     drawCylinder( p1,p3,radius,colour,subd);
     drawCone( p3,p2,radius*2.5f,0,colour,subd);
+}
+
+
+void DrawToolGL::drawArrow(const Vector3& p1, const Vector3 &p2, float radius, float coneLength, const Vec<4,float>& colour, int subd)
+{
+    // fixed coneLength ; cone can be stretched or when its length depends on the total arrow length
+
+    Vector3 a = p2 - p1;
+    SReal n = a.norm();
+    if( coneLength >= n )
+        drawCone( p1,p2,radius*2.5f,0,colour,subd);
+    else
+    {
+        a /= n; // normalizing
+        Vector3 p3 = p2 - coneLength*a;
+        drawCylinder( p1,p3,radius,colour,subd);
+        drawCone( p3,p2,radius*2.5f,0,colour,subd);
+    }
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -750,7 +768,7 @@ void DrawToolGL::setLightingEnabled(bool _isAnabled)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void DrawToolGL::setMaterial(const Vec<4,float> &colour,std::string)
+void DrawToolGL::setMaterial(const Vec<4,float> &colour)
 {
     glColor4f(colour[0],colour[1],colour[2],colour[3]);
     glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, &colour[0]);
@@ -774,13 +792,18 @@ void DrawToolGL::setMaterial(const Vec<4,float> &colour,std::string)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void DrawToolGL::resetMaterial(const Vec<4,float> &colour,std::string)
+void DrawToolGL::resetMaterial(const Vec<4,float> &colour)
 {
     if (colour[3] < 1)
     {
-        glDisable(GL_BLEND);
-        glDepthMask(1);
+        resetMaterial();
     }
+}
+
+void DrawToolGL::resetMaterial()
+{
+    glDisable(GL_BLEND);
+    glDepthMask(1);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
