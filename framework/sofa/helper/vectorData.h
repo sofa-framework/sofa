@@ -150,6 +150,26 @@ public:
         }
     }
 
+    /// merging several Data from a VectorData into a large Data (of the same type)
+    static void merge(Data<T>& outputData, const vectorData<T>& vectorData)
+    {
+        size_t nbInput = vectorData.size();
+        size_t nbElems = 0;
+
+        for( size_t i=0 ; i<nbInput ; ++i )
+            nbElems += vectorData[i]->getValue().size();
+
+        helper::WriteOnlyAccessor< Data<T> > out = outputData;
+        out.clear();
+        out.reserve(nbElems);
+        for( size_t i=0 ; i<nbInput ; ++i )
+        {
+            helper::ReadAccessor< Data<T> > in = vectorData[i];
+            for( size_t j=0, jend=in.size() ; j<jend ; ++j )
+                out.push_back(in[j]);
+        }
+    }
+
 protected:
     core::objectmodel::Base* m_component;
     std::string m_name, m_help;
