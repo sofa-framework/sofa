@@ -1,5 +1,5 @@
 #include <sofa/helper/system/FileSystem.h>
-#include <sofa/helper/logging/messaging.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Utils.h>
 
 #include <fstream>
