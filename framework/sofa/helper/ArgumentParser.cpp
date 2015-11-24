@@ -27,7 +27,7 @@
 // Francois Faure, iMAGIS-GRAVIR, May 2001
 //========================================================
 #include "ArgumentParser.h"
-#include <sofa/helper/Logger.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -146,11 +146,11 @@ void ArgumentParser::operator () ( std::list<std::string> str )
             if( longName.find(a) != longName.end() )
             {
                 if( !(longName[ a ]->read( str )))
-                    Logger::getMainLogger().log(Logger::Warning, std::string("Could not read value for option: ") + name);
+                    msg_warning("ArgumentParser") << "Could not read value for option: " << name;
                 else parameter_set[longName[ a ]] = true;
             }
             else
-                Logger::getMainLogger().log(Logger::Warning, std::string("Unknown option: ") + name);
+                msg_warning("ArgumentParser") << "Unknown option: " << name;
         }
 
         // short names (possibly concatenated)
@@ -162,17 +162,17 @@ void ArgumentParser::operator () ( std::list<std::string> str )
                 if( shortName.find(a) != shortName.end() )
                 {
                     if( !(shortName[ a ]->read( str )))
-                        Logger::getMainLogger().log(Logger::Warning, std::string("Could not read value for option: ") + name);
+                        msg_warning("ArgumentParser") << "Could not read value for option: " << name;
 
                     else parameter_set[shortName[ a ]] = true;
                 }
                 else
-                    Logger::getMainLogger().log(Logger::Warning, std::string("Unknown option: ") + name[i]);
+                    msg_warning("ArgumentParser") << "Unknown option: " << name;
             }
         }
 
         else
-            Logger::getMainLogger().log(Logger::Warning, std::string("Unknown option: ") + name);
+            msg_warning("ArgumentParser") << "Unknown option: " << name;
 
     }
 

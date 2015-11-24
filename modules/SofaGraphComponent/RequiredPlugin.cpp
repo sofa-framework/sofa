@@ -26,7 +26,7 @@
 #include "RequiredPlugin.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
-#include <sofa/helper/Logger.h>
+#include <sofa/helper/logging/Messaging.h>
 
 using sofa::helper::system::PluginManager;
 
@@ -81,7 +81,8 @@ void RequiredPlugin::loadPlugin()
     else
     {
         const std::string msg = "Plugin not found: \"" + pluginName.getValue() + "\"";
-        helper::Logger::getMainLogger().log(helper::Logger::Error, msg, "RequiredPlugin");
+        msg_error("RequiredPlugin") << msg;
+
     }
 }
 

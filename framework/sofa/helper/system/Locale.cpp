@@ -1,7 +1,5 @@
 #include "Locale.h"
-
-#include <sofa/helper/Logger.h>
-
+#include <sofa/helper/logging/Messaging.h>
 #include <clocale>
 
 namespace sofa {
@@ -16,7 +14,7 @@ TemporaryLocale::TemporaryLocale(int category, std::string locale):
 {
     char *value = setlocale(category, locale.c_str());
     if (value == NULL)
-        Logger::getMainLogger().log(Logger::Error, "Failed to set " + Locale::getCategoryName(category) + " to " + locale);
+        msg_error("TemporaryLocale") << "Failed to set " << Locale::getCategoryName(category) << " to " << locale;
 }
 
 TemporaryLocale::~TemporaryLocale()

@@ -244,20 +244,19 @@ void Base::setName(const std::string& n, int counter)
 
 void Base::processStream(std::ostream& out)
 {
-    using sofa::helper::Logger;
-    const std::string name = getClassName() + " \"" + getName() + "\"";
+    // const std::string name = getClassName() + " \"" + getName() + "\"";
 
     if (&out == &serr)
     {
         std::string str = serr.str();
         serr << "\n";
 
-        getComponentLogger().log(Logger::Warning, str, name);
+        msg_warning(this) << str;
 
         if (warnings.size()+str.size() >= MAXLOGSIZE)
         {
             const std::string msg = "Log overflow! Resetting serr buffer.";
-            getComponentLogger().log(Logger::Warning, msg, name);
+            msg_warning(this) << msg;
             warnings.clear();
             warnings = msg;
         }
@@ -270,30 +269,18 @@ void Base::processStream(std::ostream& out)
         sout << "\n";
         if (f_printLog.getValue())
         {
-            getComponentLogger().log(Logger::Info, str, name);
+            msg_warning(this) << str;
         }
         if (outputs.size()+str.size() >= MAXLOGSIZE)
         {
             const std::string msg = "Log overflow! Resetting sout buffer.";
-            getComponentLogger().log(Logger::Warning, msg, name);
+            msg_warning(this) << msg;
             outputs.clear();
             outputs = msg;
         }
         outputs += str;
         sout.str("");
     }
-}
-
-helper::Logger::SPtr Base::s_componentLogger = helper::Logger::SPtr(new helper::TTYLogger());
-
-helper::Logger& Base::getComponentLogger()
-{
-    return *s_componentLogger.get();
-}
-
-void Base::setComponentLogger(helper::Logger::SPtr logger)
-{
-    s_componentLogger = logger;
 }
 
 const std::string& Base::getWarnings() const
