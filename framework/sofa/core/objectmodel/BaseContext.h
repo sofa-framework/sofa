@@ -30,7 +30,11 @@
 #include <sofa/core/objectmodel/Tag.h>
 #include <sofa/core/objectmodel/ClassInfo.h>
 #include <sofa/core/ExecParams.h>
+
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
 #include <sofa/defaulttype/SolidTypes.h>
+#endif
+
 #include <set>
 #ifdef SOFA_SMP
 #include <IterativePartition.h>
@@ -48,25 +52,6 @@ namespace core
 {
 
 // forward declaration of classes accessible from the context
-
-class BaseState;
-
-namespace topology
-{
-class Topology;
-class BaseMeshTopology;
-} // namespace topology
-
-namespace behavior
-{
-class BaseMechanicalState;
-class BaseMass;
-} // namespace behavior
-
-namespace visual
-{
-class Shader;
-} // namespace visual
 
 namespace objectmodel
 {
@@ -88,18 +73,22 @@ class SOFA_CORE_API BaseContext : public virtual Base
 {
 public:
     SOFA_CLASS(BaseContext, Base);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseContext)
 
     /// @name Types defined for local coordinate system handling
     /// @{
 
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
     typedef defaulttype::SolidTypes<SReal> SolidTypes;
-
     typedef SolidTypes::Transform Frame;
-    typedef SolidTypes::Vec Vec3;
-    typedef SolidTypes::Rot Quat;
-    typedef SolidTypes::Mat Mat33;
     typedef SolidTypes::SpatialVector SpatialVector;
+#endif
+//    typedef SolidTypes::Rot Quat;
+//    typedef SolidTypes::Mat Mat33;
     /// @}
+
+    typedef defaulttype::Vector3 Vec3;
+
 protected:
     BaseContext();
     virtual ~BaseContext();
@@ -126,7 +115,7 @@ public:
 #endif
 
     /// State of the context
-    virtual void setActive(bool) {};
+    virtual void setActive(bool) {}
 
 	/// Sleeping state of the context
 	virtual bool isSleeping() const;

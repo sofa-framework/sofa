@@ -57,6 +57,7 @@ class SOFA_CORE_API VisualModel : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(VisualModel, objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(VisualModel)
 protected:
     /// Destructor
     virtual ~VisualModel() { }
@@ -173,6 +174,9 @@ public:
     virtual void exportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, int& /*vindex*/, int& /*nindex*/, int& /*tindex*/, int& /*count*/)
     {
     }
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
 };
 
 } // namespace visual

@@ -64,6 +64,7 @@ class SOFA_CORE_API OdeSolver : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(OdeSolver, objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(OdeSolver)
 protected:
     OdeSolver();
 
@@ -135,6 +136,10 @@ public:
     {
         return getSolutionIntegrationFactor(0);
     }
+
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
 
 };
 

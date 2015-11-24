@@ -47,7 +47,7 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_OPENGL_VISUAL_API ColorMap : public virtual sofa::core::visual::VisualModel
+class SOFA_OPENGL_VISUAL_API ColorMap : public sofa::core::visual::VisualModel
 {
 public:
     SOFA_CLASS(ColorMap, sofa::core::visual::VisualModel);
@@ -96,6 +96,7 @@ public:
 
     Data<bool> f_showLegend;
     Data<defaulttype::Vec2f> f_legendOffset;
+    Data<std::string> f_legendTitle;
     Data<float> d_min, d_max;
 
     VecColor entries;
@@ -126,8 +127,6 @@ public:
     template<class Real>
     evaluator<Real> getEvaluator(Real vmin, Real vmax)
     {
-        d_min.setValue( (float)vmin );
-        d_max.setValue( (float)vmax );
         if (!entries.empty()) {
             return evaluator<Real>(this, vmin, vmax);
         } else {

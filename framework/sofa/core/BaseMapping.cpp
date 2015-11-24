@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/BaseMapping.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 
 namespace sofa
 {
@@ -153,10 +154,26 @@ bool BaseMapping::testMechanicalState(BaseState* state)
     bool isMecha = false;
     if(state)
     {
-        behavior::BaseMechanicalState* toMechaModel = dynamic_cast<behavior::BaseMechanicalState* > (state);
+        behavior::BaseMechanicalState* toMechaModel = state->toBaseMechanicalState();
         isMecha = (toMechaModel) ? true : false;
     }
     return isMecha;
+}
+
+bool BaseMapping::insertInNode( objectmodel::BaseNode* node )
+{
+    if( isMechanical() ) node->addMechanicalMapping(this);
+    else node->addMapping(this);
+    Inherit1::insertInNode(node);
+    return true;
+}
+
+bool BaseMapping::removeInNode( objectmodel::BaseNode* node )
+{
+    node->removeMechanicalMapping(this);
+    node->removeMapping(this);
+    Inherit1::removeInNode(node);
+    return true;
 }
 
 } // namespace core

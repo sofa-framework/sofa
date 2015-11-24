@@ -157,7 +157,7 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
 
             simulation::Node *mappedNode=(simulation::Node *) mstateCollision->getContext();
             simulation::Node *mainNode=(simulation::Node *) picked.body->getContext();
-            core::behavior::BaseMechanicalState *mainDof=dynamic_cast<core::behavior::BaseMechanicalState *>(mainNode->getMechanicalState());
+            core::behavior::BaseMechanicalState *mainDof=mainNode->getMechanicalState();
             const core::objectmodel::TagSet &tags=mainDof->getTags();
             for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
             {

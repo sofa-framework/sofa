@@ -514,7 +514,7 @@ void LMConstraintSolver::buildInverseMassMatrices( const SetDof &setDofs, DofToM
         //************************************************************
         //Building M^-1
         //Called only ONCE!
-        core::behavior::BaseMass *mass=dynamic_cast< core::behavior::BaseMass *>(dofs->getContext()->getMass());
+        core::behavior::BaseMass *mass=dofs->getContext()->getMass();
 
         if (needToConstructMassMatrix)
         {
@@ -918,7 +918,7 @@ void LMConstraintSolver::computeKineticEnergy(MultiVecId id)
     for (SetDof::const_iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); ++itDofs)
     {
         const sofa::core::behavior::BaseMechanicalState* dofs=*itDofs;
-        const core::behavior::BaseMass *mass=dynamic_cast< core::behavior::BaseMass *>(dofs->getContext()->getMass());
+        const core::behavior::BaseMass *mass=dofs->getContext()->getMass();
         if (mass) kineticEnergy += mass->getKineticEnergy();
     }
     vError.push_back(kineticEnergy);

@@ -53,7 +53,7 @@ public:
  *			objects with no initial velocity aren't put to sleep right away.
  *			If a sleeping object is in contact with another object, it's woken up.
  */
-class SOFA_USER_INTERACTION_API SleepController : public virtual core::objectmodel::BaseObject
+class SOFA_USER_INTERACTION_API SleepController : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(SleepController, core::objectmodel::BaseObject);

@@ -353,7 +353,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
    *
    */
 template<class _ImageTypes>
-class ImageContainer : public virtual core::objectmodel::BaseObject
+class ImageContainer : public core::objectmodel::BaseObject
 {
 
     friend struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>;

@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 
 namespace sofa
 {
@@ -39,6 +40,20 @@ LinearSolver::LinearSolver()
 
 LinearSolver::~LinearSolver()
 {}
+
+bool BaseLinearSolver::insertInNode( objectmodel::BaseNode* node )
+{
+    node->addLinearSolver(this);
+    Inherit1::insertInNode(node);
+    return true;
+}
+
+bool BaseLinearSolver::removeInNode( objectmodel::BaseNode* node )
+{
+    node->removeLinearSolver(this);
+    Inherit1::removeInNode(node);
+    return true;
+}
 
 } // namespace behavior
 

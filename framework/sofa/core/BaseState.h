@@ -46,6 +46,7 @@ class SOFA_CORE_API BaseState : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseState, objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseState)
 protected:
     BaseState() {}
     virtual ~BaseState() {}
@@ -67,6 +68,10 @@ public:
     virtual const objectmodel::BaseData* baseRead(ConstVecId v) const = 0;
 
     /// @}
+
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
 
 };
 

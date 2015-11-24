@@ -30,6 +30,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
 #include <Eigen/Dense>
 #include <Eigen/Core>
 #include <Eigen/Geometry>

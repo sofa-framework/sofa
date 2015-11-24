@@ -78,6 +78,7 @@ class SOFA_CORE_API DataEngine : public core::objectmodel::DDGNode, public virtu
 {
 public:
     SOFA_ABSTRACT_CLASS(DataEngine, core::objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(DataEngine)
 protected:
     /// Constructor
     DataEngine();

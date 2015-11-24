@@ -66,8 +66,6 @@ protected:
     static const std::string PATH_TO_SOFT_SHADOW_VERTEX_SHADERS;
     static const std::string PATH_TO_SOFT_SHADOW_FRAGMENT_SHADERS;
 
-
-
 };
 
 }//namespace visualmodel

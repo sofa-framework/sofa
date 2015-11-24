@@ -144,7 +144,6 @@ public:
     /// @{
 
     /// Execute a recursive action starting from this node.
-    /// This method bypasses the actionScheduler of this node if any.
     virtual void doExecuteVisitor(Visitor* action, bool precomputedOrder=false)=0;
 
     /// Execute a recursive action starting from this node
@@ -468,8 +467,6 @@ public:
     /// Update the visual context values, based on parent and local ContextObjects
     virtual void updateVisualContext();
 
-    Single<VisitorScheduler> actionScheduler;
-
     // VisitorScheduler can use doExecuteVisitor() method
     friend class VisitorScheduler;
 
@@ -533,6 +530,52 @@ public:
     /// Sort the components according to the dependencies expressed in Data depend.
     void sortComponents();
 
+
+
+    /// @name virtual functions to add/remove some special components direclty in the right Sequence
+    /// @{
+
+#define NODE_ADD_IN_SEQUENCE( CLASSNAME, FUNCTIONNAME, SEQUENCENAME ) \
+    virtual void add##FUNCTIONNAME( CLASSNAME* obj ) { SEQUENCENAME.add(obj); } \
+    virtual void remove##FUNCTIONNAME( CLASSNAME* obj ) { SEQUENCENAME.remove(obj); }
+
+    // WARNINGS subtilities:
+    // an InteractioFF is NOT in the FF Sequence
+    // a MechanicalMapping is NOT in the Mapping Sequence
+    // a Mass is in the FF Sequence
+    // a MeshTopology is in the topology Sequence
+
+public:
+
+    NODE_ADD_IN_SEQUENCE( core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
+    NODE_ADD_IN_SEQUENCE( core::visual::VisualLoop, VisualLoop, visualLoop )
+    NODE_ADD_IN_SEQUENCE( core::BehaviorModel, BehaviorModel, behaviorModel )
+    NODE_ADD_IN_SEQUENCE( core::BaseMapping, Mapping, mapping )
+    NODE_ADD_IN_SEQUENCE( core::behavior::OdeSolver, OdeSolver, solver )
+    NODE_ADD_IN_SEQUENCE( core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
+    NODE_ADD_IN_SEQUENCE( core::behavior::BaseLinearSolver, LinearSolver, linearSolver )
+    NODE_ADD_IN_SEQUENCE( core::topology::Topology, Topology, topology )
+    NODE_ADD_IN_SEQUENCE( core::topology::BaseMeshTopology, MeshTopology, meshTopology )
+    NODE_ADD_IN_SEQUENCE( core::topology::BaseTopologyObject, TopologyObject, topologyObject )
+    NODE_ADD_IN_SEQUENCE( core::BaseState, State, state )
+    NODE_ADD_IN_SEQUENCE( core::behavior::BaseMechanicalState,MechanicalState, mechanicalState )
+    NODE_ADD_IN_SEQUENCE( core::BaseMapping, MechanicalMapping, mechanicalMapping )
+    NODE_ADD_IN_SEQUENCE( core::behavior::BaseMass, Mass, mass )
+    NODE_ADD_IN_SEQUENCE( core::behavior::BaseForceField, ForceField, forceField )
+    NODE_ADD_IN_SEQUENCE( core::behavior::BaseInteractionForceField, InteractionForceField, interactionForceField )
+    NODE_ADD_IN_SEQUENCE( core::behavior::BaseProjectiveConstraintSet, ProjectiveConstraintSet, projectiveConstraintSet )
+    NODE_ADD_IN_SEQUENCE( core::behavior::BaseConstraintSet, ConstraintSet, constraintSet )
+    NODE_ADD_IN_SEQUENCE( core::objectmodel::ContextObject, ContextObject, contextObject )
+    NODE_ADD_IN_SEQUENCE( core::objectmodel::ConfigurationSetting, ConfigurationSetting, configurationSetting )
+    NODE_ADD_IN_SEQUENCE( core::visual::Shader, Shader, shaders )
+    NODE_ADD_IN_SEQUENCE( core::visual::VisualModel, VisualModel, visualModel )
+    NODE_ADD_IN_SEQUENCE( core::visual::VisualManager, VisualManager, visualManager )
+    NODE_ADD_IN_SEQUENCE( core::CollisionModel, CollisionModel, collisionModel )
+    NODE_ADD_IN_SEQUENCE( core::collision::Pipeline, CollisionPipeline, collisionPipeline )
+
+#undef NODE_ADD_IN_SEQUENCE
+
+    /// @}
 
 };
 

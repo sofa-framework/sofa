@@ -135,6 +135,7 @@ public:
 
 
     SOFA_CLASS(Topology, core::objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(Topology)
 protected:
     Topology():BaseObject() {}
     virtual ~Topology()
@@ -149,6 +150,10 @@ public:
     virtual SReal getPX(int /*i*/) const { return 0.0; }
     virtual SReal getPY(int /*i*/) const { return 0.0; }
     virtual SReal getPZ(int /*i*/) const { return 0.0; }
+
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
 };
 
 template<class TopologyElement>

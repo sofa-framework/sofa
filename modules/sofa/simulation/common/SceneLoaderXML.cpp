@@ -25,6 +25,7 @@
 #include "SceneLoaderXML.h"
 
 #include <sofa/helper/system/Locale.h>
+#include <sofa/helper/cast.h>
 
 #include <sofa/simulation/common/xml/NodeElement.h>
 #include <sofa/simulation/common/FindByTypeVisitor.h>
@@ -123,13 +124,15 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
         loadSucceed = false;
     }
 
-    Node::SPtr root = dynamic_cast<Node*> ( xml->getObject() );
-    if ( root == NULL )
+    core::objectmodel::BaseNode* baseroot = xml->getObject()->toBaseNode();
+    if ( baseroot == NULL )
     {
         std::cerr << "LOAD ERROR: Objects initialization failed."<<std::endl;
         loadSucceed = false;
         return NULL;
     }
+
+    Node::SPtr root = down_cast<Node> ( baseroot );
 
     // Find the Simulation component in the scene
     FindByTypeVisitor<Simulation> findSimu(params);

@@ -48,6 +48,12 @@ using helper::vector;
 */
 class SOFA_Flexible_API BaseMaterialForceField : public virtual core::objectmodel::BaseObject
 {
+protected:
+    BaseMaterialForceField() {}
+private:
+    BaseMaterialForceField(const BaseMaterialForceField& b);
+    BaseMaterialForceField& operator=(const BaseMaterialForceField& b);
+
 public:
     virtual void resize()=0;
     virtual SReal getPotentialEnergy( const unsigned int index ) const=0;
@@ -263,8 +269,11 @@ public:
 
     Data<bool> assemble;
 
-protected:
+private:
+    BaseMaterialForceFieldT(const BaseMaterialForceFieldT& b);
+    BaseMaterialForceFieldT& operator=(const BaseMaterialForceFieldT& b);
 
+protected:
     BaseMaterialForceFieldT(core::behavior::MechanicalState<DataTypes> *mm = NULL)
         : Inherit(mm)
         , assemble ( initData ( &assemble,false, "assemble","Assemble the needed material matrices (compliance C,stiffness K,damping B)" ) )

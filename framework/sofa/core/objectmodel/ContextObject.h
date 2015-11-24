@@ -40,10 +40,11 @@ namespace objectmodel
  *  \brief Base class for simulation objects that modify the shared context (such as gravity, local coordinate system, ...).
  *
  */
-class ContextObject : public virtual BaseObject
+class SOFA_CORE_API ContextObject : public virtual BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(ContextObject, BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(ContextObject)
 protected:
     ContextObject()
         : BaseObject()
@@ -54,6 +55,10 @@ protected:
 public:
     /// modify the Context
     virtual void apply()=0;
+
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
 
 };
 

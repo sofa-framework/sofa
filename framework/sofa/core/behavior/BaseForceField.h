@@ -62,6 +62,7 @@ class SOFA_CORE_API BaseForceField : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseForceField, objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseForceField)
 protected:
     BaseForceField();
     virtual ~BaseForceField() {}
@@ -224,6 +225,10 @@ public:
     /// Every Dofs are inserted by default. The forcefields using only a subset of dofs should only insert these dofs in the mask.
     virtual void updateForceMask() = 0;
 
+
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
 };
 
 } // namespace behavior

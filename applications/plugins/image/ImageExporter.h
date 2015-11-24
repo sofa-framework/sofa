@@ -215,7 +215,7 @@ struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
 
 template <class _ImageTypes>
-class ImageExporter : public virtual core::objectmodel::BaseObject
+class ImageExporter : public core::objectmodel::BaseObject
 {
     friend struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>;
     friend struct ImageExporterSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;

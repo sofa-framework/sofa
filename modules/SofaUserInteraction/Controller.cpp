@@ -75,7 +75,7 @@ void Controller::handleEvent(core::objectmodel::Event *event)
     {
         onBeginAnimationStep((static_cast<sofa::simulation::AnimateBeginEvent *> (event))->getDt());
     }
-    else if (dynamic_cast<sofa::simulation::AnimateEndEvent *>(event))
+    else if (sofa::simulation::AnimateEndEvent::checkEventType(event))
     {
         onEndAnimationStep((static_cast<sofa::simulation::AnimateEndEvent *> (event))->getDt());
     }
