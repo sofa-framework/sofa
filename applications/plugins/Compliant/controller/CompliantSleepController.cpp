@@ -3,6 +3,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include "../compliance/DiagonalCompliance.h"
 #include "../compliance/UniformCompliance.h"
+#include <sofa/helper/cast.h>
 
 namespace sofa
 {
@@ -13,10 +14,14 @@ namespace component
 namespace controller
 {
 
+// TODO improve this mechanism detecting bilateral constraints
 template <class DataTypes>
 bool ComplianceTester<DataTypes>::canConvert(core::objectmodel::BaseObject* o)
 {
-	return dynamic_cast< DataTypes* >(o) != NULL;
+    if( o->toBaseForceField() )
+        return dynamic_cast< DataTypes* >(o) != NULL;
+    else
+        return false;
 }
 
 CompliantSleepController::CompliantSleepController()
@@ -87,7 +92,7 @@ void GetConstrainedContextPairs::processNodeBottomUp(simulation::Node* node)
 				case 1:
 					// this state is just mapped on another one, we should test the parent state
 					// (typically, this will be a mapping that converts to the dofs the compliance applies on, like a DistanceMapping)
-					searchNode = dynamic_cast<simulation::Node*>(states[0]->getContext());
+                    searchNode = down_cast<simulation::Node>(states[0]->getContext());
 					break;
 				case 2:
 				{
@@ -124,7 +129,7 @@ void GetConstrainedContextPairs::processMapping(simulation::Node* /*node*/, core
 int CompliantSleepControllerClass = core::RegisterObject("A controller that puts node into sleep when the objects are not moving, and wake them up again when there are in collision with a moving object (compatible with compliant specific constraints)")
 	.add< CompliantSleepController >();
 
-SOFA_DECL_CLASS(CompliantSleepController);
+SOFA_DECL_CLASS(CompliantSleepController)
 
 } // namespace controller
 
