@@ -30,9 +30,6 @@
 
 #include <QToolTip>
 
-#include <sofa/helper/Logger.h>
-using sofa::helper::Logger;
-
 #define SIZE_TEXT     60
 namespace sofa
 {

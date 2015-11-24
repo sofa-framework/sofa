@@ -44,7 +44,6 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
-#include <sofa/helper/Logger.h>
 
 namespace sofa {
 

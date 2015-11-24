@@ -33,6 +33,7 @@
 #define MESSAGEDISPATCHER_H
 
 #include <sofa/helper/helper.h>
+#include <sofa/core/objectmodel/Base.h>
 #include "Message.h"
 
 #include <boost/shared_ptr.hpp>
@@ -82,7 +83,7 @@ public:
             m_dispatcher(dispatcher)
         {
         }
-/*
+
         LoggerStream(MessageDispatcher& dispatcher, const std::string& mclass, const std::string& type,
                      const sofa::core::objectmodel::Base* sender, FileInfo fileInfo):
             m_fileInfo(fileInfo),
@@ -92,7 +93,7 @@ public:
             m_dispatcher(dispatcher)
         {
         }
-*/
+
         ~LoggerStream()
         {
             const std::string message(m_stream.str());
@@ -123,44 +124,44 @@ public:
                      const std::string& sender = "", FileInfo fileInfo = FileInfo()) {
         return LoggerStream(*this, mclass, type, sender, fileInfo);
     }
-/*
+
     LoggerStream log(const std::string& mclass, const std::string& type,
                      const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
         return LoggerStream(*this, mclass, type, sender, fileInfo);
     }
-*/
+
     LoggerStream info(const std::string& mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) {
         return log(mclass, "info", sender, fileInfo);
     }
-/*
+
     LoggerStream info(const std::string& mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
         return log(mclass, "info", sender, fileInfo);
     }
-*/
+
     LoggerStream warning(const std::string& mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) {
         return log(mclass, "warn", sender, fileInfo);
     }
-/*
+
     LoggerStream warning(const std::string& mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
         return log(mclass, "warn", sender, fileInfo);
     }
-*/
+
     LoggerStream error(const std::string& mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) {
         return log(mclass, "error", sender, fileInfo);
     }
-/*
+
     LoggerStream error(const std::string& mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
         return log(mclass, "error", sender, fileInfo);
     }
-*/
+
     LoggerStream fatal(const std::string& mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) {
         return log(mclass, "fatal", sender, fileInfo);
     }
-/*
+
     LoggerStream fatal(const std::string& mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
         return log(mclass, "fatal", sender, fileInfo);
     }
-*/
+
     // message IDs can stay static, they won't interfere if several dispatchers coexist
     static int getLastMessageId() ;
     static int getLastErrorId() ;

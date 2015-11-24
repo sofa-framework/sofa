@@ -58,9 +58,10 @@
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
-#include <sofa/helper/Logger.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/atomic.h>
+
+#include <sofa/helper/logging/Messaging.h>
 
 #ifdef SOFA_HAVE_GLUT
 #include <sofa/helper/system/glut.h>
@@ -254,7 +255,7 @@ int main(int argc, char** argv)
     else
     {
         Console::setColorsStatus(Console::ColorsAuto);
-        sofa::helper::Logger::getMainLogger().log( sofa::helper::Logger::Warning, std::string( "Invalid argument ‘") + colorsStatus + std::string("‘ for ‘--colors‘" ) );
+        msg_warning("main") << "Invalid argument ‘" << colorsStatus << "‘ for ‘--colors‘";
     }
 
     // Add the plugin directory to PluginRepository

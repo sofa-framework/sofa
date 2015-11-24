@@ -25,7 +25,6 @@
 #include "init.h"
 
 #include <sofa/helper/system/console.h>
-#include <sofa/helper/Logger.h>
 
 #include <iostream>
 

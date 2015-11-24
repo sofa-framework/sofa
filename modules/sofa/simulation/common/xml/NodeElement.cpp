@@ -25,6 +25,7 @@
 #include <sofa/simulation/common/xml/NodeElement.h>
 //#include <sofa/simulation/common/xml/ObjectElement.h>
 #include <sofa/simulation/common/xml/Element.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -82,7 +83,9 @@ bool NodeElement::init()
     for (unsigned int i=0; i<errors.size(); ++i)
     {
         const std::string name = getObject()->getClassName() + " \"" + getObject()->getName() + "\"";
-        MAINLOGGER( Error, errors[i], name );
+        //MAINLOGGER( Error, errors[i], name );
+        //msg_error(this) << errors[i];
+        msg_error(name) << errors[i];
     }
 
     return res;
