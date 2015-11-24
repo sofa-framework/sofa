@@ -62,6 +62,7 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/atomic.h>
 
+#include <sofa/helper/system/console.h>
 #include <sofa/helper/logging/Messaging.h>
 
 #ifdef SOFA_HAVE_GLUT_GUI

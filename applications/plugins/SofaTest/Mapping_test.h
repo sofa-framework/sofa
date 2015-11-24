@@ -45,11 +45,12 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
 
+#include <sofa/helper/logging/Messaging.h>
+
 namespace sofa {
 
 using std::cout;
 using std::endl;
-using helper::Logger;
 
 
 /** @brief Base class for the Mapping tests, with helpers to automatically test applyJ, applyJT, applyDJT and getJs using finite differences.
@@ -232,10 +233,10 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         if( deltaRange.second / errorMax <= g_minDeltaErrorRatio )
             ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
 
-        if( !(flags & TEST_getJs) )          Logger::mainlog( Logger::Warning, "getJs is not tested", "MappingTest" );
-        if( !(flags & TEST_getK) )           Logger::mainlog( Logger::Warning, "getK is not tested", "MappingTest" );
-        if( !(flags & TEST_applyJT_matrix) ) Logger::mainlog( Logger::Warning, "applyJT on matrices is not tested", "MappingTest" );
-        if( !(flags & TEST_applyDJT) )       Logger::mainlog( Logger::Warning, "applyDJT is not tested", "MappingTest" );
+        if( !(flags & TEST_getJs) )          msg_warning("MappingTest") << "getJs is not tested";
+        if( !(flags & TEST_getK) )           msg_warning("MappingTest") << "getK is not tested";
+        if( !(flags & TEST_applyJT_matrix) ) msg_warning("MappingTest") << "applyJT on matrices is not tested";
+        if( !(flags & TEST_applyDJT) )       msg_warning("MappingTest") << "applyDJT is not tested";
 
 
         const Real errorThreshold = this->epsilon()*errorMax;
