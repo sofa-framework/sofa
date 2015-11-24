@@ -49,6 +49,7 @@ int MergeVectorsClass = core::RegisterObject("Apply a merge operation to combine
     .add< MergeVectors< helper::vector<int> > >()
     .add< MergeVectors< helper::vector<bool> > >()
     //.add< MergeVectors< helper::vector<std::string> > >()
+    .add< MergeVectors< helper::vector<defaulttype::Vec2u> > >()
 #ifndef SOFA_FLOAT
     .add< MergeVectors< helper::vector<defaulttype::Vec2d> > >()
     .add< MergeVectors< helper::vector<defaulttype::Vec3d> > >()
@@ -72,6 +73,7 @@ int MergeVectorsClass = core::RegisterObject("Apply a merge operation to combine
 template class SOFA_ENGINE_API MergeVectors< helper::vector<int> >;
 template class SOFA_ENGINE_API MergeVectors< helper::vector<bool> >;
 //template class SOFA_ENGINE_API MergeVectors< helper::vector<std::string> >;
+template class SOFA_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec2u> >;
 
 #ifndef SOFA_FLOAT
 template class SOFA_ENGINE_API MergeVectors< helper::vector<double> >;

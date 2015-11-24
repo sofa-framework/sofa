@@ -32,6 +32,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/helper/vectorData.h>
 
 namespace sofa
 {
@@ -56,13 +57,13 @@ public:
 protected:
     MergeVectors();
 
-    ~MergeVectors();
+    virtual ~MergeVectors();
 public:
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg );
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str );
+    void parseFields( const std::map<std::string,std::string*>& str );
 
     void init();
 
@@ -81,11 +82,9 @@ public:
     }
 
     Data<unsigned int> f_nbInputs;
-    helper::vector<Data<VecValue>*> vf_inputs;
+    helper::vectorData<VecValue> vf_inputs;
     Data<VecValue> f_output;
 
-protected:
-    void createInputs(int nb = -1);
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MERGEVECTORS_CPP)
@@ -93,6 +92,7 @@ protected:
 extern template class SOFA_ENGINE_API MergeVectors< helper::vector<int> >;
 extern template class SOFA_ENGINE_API MergeVectors< helper::vector<bool> >;
 //extern template class SOFA_ENGINE_API MergeVectors< helper::vector<std::string> >;
+extern template class SOFA_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec2u> >;
 #ifndef SOFA_FLOAT
 extern template class SOFA_ENGINE_API MergeVectors< helper::vector<double> >;
 extern template class SOFA_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec2d> >;
