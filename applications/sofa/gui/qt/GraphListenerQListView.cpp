@@ -216,19 +216,28 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
         }
         else
         {
-            //Node with multiple parent
-            QTreeWidgetItem *nodeItem=items[child];
+            static QPixmap pixMultiNode((const char**)iconmultinode_xpm);
+
+            // Node with multiple parents
             if (parent &&
-                parent != findObject(nodeItem->parent()) &&
-                !nodeWithMultipleParents.count(nodeItem))
+                parent != findObject(item->parent()) &&
+                !nodeWithMultipleParents.count(item))
             {
-                QTreeWidgetItem* item= createItem(items[parent]);
+                QTreeWidgetItem* item = createItem(items[parent]);
                 //item->setDropEnabled(true);
-                QString name=QString("MultiNode ") + QString(child->getName().c_str());
-                item->setText(0, name);
+//                QString name=QString("MultiNode ") + QString(child->getName().c_str());
+//                item->setText(0, name);
+                item->setText(0, child->getName().c_str());
                 nodeWithMultipleParents.insert(std::make_pair(items[child], item));
-                static QPixmap pixMultiNode((const char**)iconmultinode_xpm);
                 item->setIcon(0, QIcon(pixMultiNode));
+
+                // this is the second parent, the first child item must be displayed as a multinode
+                if( child->getNbParents()==2 )
+                {
+                    QTreeWidgetItem* item = items[child];
+                    item->setIcon(0, QIcon(pixMultiNode));
+//                    item->setText(0, QString("MultiNode ") + item->text(0) );
+                }
             }
         }
     }
