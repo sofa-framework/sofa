@@ -10,7 +10,7 @@
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject />
         <UniformMass totalmass="100.0" />
-        <RegularGrid nx="4" ny="3" nz="3" xmin="-10.25" xmax="-3.25" ymin="0.25" ymax="5.25" zmin="-2" zmax="3"  createTexCoords="true"/>
+        <RegularGrid nx="4" ny="3" nz="3" xmin="-10.25" xmax="-3.25" ymin="0.25" ymax="5.25" zmin="-2" zmax="3" />
         <BoxConstraint box="-8.5 0 -2.5 -5 3 2" />
         <RegularGridSpringForceField name="Springs" stiffness="400" damping="4" />
         <Node name="Visu">
