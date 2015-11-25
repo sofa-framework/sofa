@@ -87,7 +87,7 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 
         if( !notempty((*js)[i]) )
         {
-            MAINLOGGER( Warning, "Empty mapping block for " << mapping_name(node) << " (is mapping matrix assembled?)", "AssemblyVisitor" )
+            msg_warning("AssemblyVisitor" ) << "Empty mapping block for " << mapping_name(node) << " (is mapping matrix assembled?)";
             continue;
         }
 
@@ -137,8 +137,7 @@ const defaulttype::BaseMatrix* compliance_impl( const core::MechanicalParams* mp
     }
     else
     {
-        MAINLOGGER( Warning, "compliance: "<<ffield->getName()<< "(node="<<ffield->getContext()->getName()<<"): getComplianceMatrix not implemented", "AssemblyVisitor" )
-
+        msg_warning("AssemblyVisitor") << "compliance: "<<ffield->getName()<< "(node="<<ffield->getContext()->getName()<<"): getComplianceMatrix not implemented";
         // TODO inverting stiffness matrix
     }
 
@@ -166,7 +165,7 @@ const defaulttype::BaseMatrix* AssemblyVisitor::compliance(simulation::Node* nod
 
         if( ffield->getMechModel1() != ffield->getMechModel2() )
         {
-            MAINLOGGER( Warning, "interactionForceField "<<ffield->getName()<<" cannot be simulated as a compliance.", "AssemblyVisitor" )
+            msg_warning("AssemblyVisitor") << "interactionForceField "<<ffield->getName()<<" cannot be simulated as a compliance.";
         }
         else
         {

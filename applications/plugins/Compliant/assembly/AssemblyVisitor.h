@@ -14,7 +14,7 @@
 
 #include "../utils/find.h"
 
-#include <sofa/helper/Logger.h>
+#include <sofa/helper/logging/Messaging.h>
 
 
 namespace sofa {
