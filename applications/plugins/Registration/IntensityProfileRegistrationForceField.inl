@@ -275,7 +275,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
     unsigned int ipdepth=this->Sizes.getValue()[0]+this->Sizes.getValue()[1]+1;
     unsigned int nbchannels =  prof.spectrum();
     if(prof.height() != (int)nbpoints || prof.width()!=(int)(ipdepth+2*searchRange.getValue())) { serr<<"IntensityProfileRegistrationForceField: invalid profile size"<<sendl; return; }
-    if(profref.height() != (int)nbpoints || profref.width()!=(int)ipdepth) { serr<<"IntensityProfileRegistrationForceField: invalid profile ref length"<<sendl; return; }
+    if(/*profref.height() != (int)nbpoints ||*/ profref.width()!=(int)ipdepth) { serr<<"IntensityProfileRegistrationForceField: invalid profile ref length"<<sendl; return; }
     if(profref.spectrum() != (int)nbchannels) { serr<<"IntensityProfileRegistrationForceField: invalid profile ref channel number"<<sendl; return; }
 
     // convolve
@@ -288,6 +288,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
 #endif
         for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
         {
+            unsigned int iref=i<profref.height()?i:profref.height()-1;
             for(unsigned int j=0;j<dims[0];j++)
             {
                 Ts& s = simi(j,i);
@@ -299,7 +300,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
                             if(maskOutside.getValue() && (refMask (x,i,0,k) || mask (x+j,i,0,k))) similarityMask(j,i)=1;
                             else
                             {
-                                T vref= profref (x,i,0,k) , v = prof (x+j,i,0,k);
+                                T vref= profref (x,iref,0,k) , v = prof (x+j,i,0,k);
                                 s+=((Ts)v-(Ts)vref)*((Ts)v-(Ts)vref);
                             }
                         }
@@ -313,6 +314,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
 #endif
         for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
         {
+            unsigned int iref=i<profref.height()?i:profref.height()-1;
             for(unsigned int j=0;j<dims[0];j++)
             {
                 Ts& s = simi(j,i);
@@ -325,7 +327,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
                             if(maskOutside.getValue() && (refMask (x,i,0,k) || mask (x+j,i,0,k)))  similarityMask(j,i)=1;
                             else
                             {
-                                T vref= profref (x,i,0,k) , v = prof (x+j,i,0,k);
+                                T vref= profref (x,iref,0,k) , v = prof (x+j,i,0,k);
                                 refmean+=(Ts)vref; mean+=(Ts)v;
                             }
                         }
@@ -336,7 +338,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
                     for(unsigned int k=0;k<nbchannels;k++)
                         for(unsigned int x=0;x<ipdepth;x++)
                         {
-                            Ts vref= (Ts)profref (x,i,0,k) , v = (Ts)prof (x+j,i,0,k);
+                            Ts vref= (Ts)profref (x,iref,0,k) , v = (Ts)prof (x+j,i,0,k);
                             s       -= (vref-refmean)*(v-mean);
                             refnorm += (vref-refmean)*(vref-refmean);
                             norm    += (v-mean)*(v-mean);
