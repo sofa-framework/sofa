@@ -109,7 +109,7 @@ protected:
             friction_node.reset();
         }
 
-        mappedContacts.clear();
+        this->mappedContacts.clear();
     }
 
     void create_node()
@@ -196,12 +196,12 @@ protected:
         contact_dofs->resize( size );
         if( this->selfCollision )
         {
-            typedef mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec1Types> contact_mapping_type;
+            typedef sofa::component::mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec1Types> contact_mapping_type;
             core::objectmodel::SPtr_dynamic_cast<typename contact_mapping_type>(contact_map)->setDetectionOutput(this->contacts);
         }
         else
         {
-            typedef mapping::ContactMultiMapping<ResponseDataTypes, defaulttype::Vec1Types> contact_mapping_type;
+            typedef sofa::component::mapping::ContactMultiMapping<ResponseDataTypes, defaulttype::Vec1Types> contact_mapping_type;
             core::objectmodel::SPtr_dynamic_cast<typename contact_mapping_type>(contact_map)->setDetectionOutput(this->contacts);  
         }
         contact_map->reinit();

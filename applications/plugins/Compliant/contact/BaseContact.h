@@ -268,7 +268,7 @@ protected:
         if( this->selfCollision ) {
 
             // contact mapping
-            typedef mapping::ContactMapping<ResponseDataTypes, OutType> contact_mapping_type;
+            typedef sofa::component::mapping::ContactMapping<ResponseDataTypes, OutType> contact_mapping_type;
             typename contact_mapping_type::SPtr mapping  = core::objectmodel::New<contact_mapping_type>();
             mapping->setModels( this->mstate1.get(), dofs.get() );
             mapping->setDetectionOutput(this->contacts);
@@ -283,7 +283,7 @@ protected:
         }
         else
         {
-            typedef mapping::ContactMultiMapping<ResponseDataTypes, OutType> contact_mapping_type;
+            typedef sofa::component::mapping::ContactMultiMapping<ResponseDataTypes, OutType> contact_mapping_type;
             typename contact_mapping_type::SPtr mapping = core::objectmodel::New<contact_mapping_type>();
             mapping->addInputModel( this->mstate1.get() );
             mapping->addInputModel( this->mstate2.get() );
