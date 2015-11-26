@@ -76,7 +76,7 @@ protected:
         this->contact_node->addObject( contact_dofs.get() );
 
         // contact mapping
-        contact_map = this->createContactMapping<defaulttype::Vec1Types>(this->contact_node, contact_dofs);
+        contact_map = this->template createContactMapping<defaulttype::Vec1Types>(this->contact_node, contact_dofs);
 
         // compliance
         compliance = sofa::core::objectmodel::New<compliance_type>( contact_dofs.get() );
