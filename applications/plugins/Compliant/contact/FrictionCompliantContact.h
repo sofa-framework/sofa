@@ -94,7 +94,7 @@ protected:
         // TODO diagonal compliance, soft  and compliance_value for normal
         compliance = sofa::core::objectmodel::New<compliance_type>( contact_dofs.get() );
 //        compliance->_restitution.setValue( restitution_coef.getValue() );
-        contact_node->addObject( compliance.get() );
+        this->contact_node->addObject( compliance.get() );
         compliance->compliance.setValue( this->compliance_value.getValue() );
         compliance->damping.setValue( this->damping_ratio.getValue() );
         compliance->init();
@@ -108,12 +108,12 @@ protected:
 
 
         // constraint value
-        vector<bool>* cvmask = this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
+        vector<bool>* cvmask = this->addConstraintValue( this->contact_node.get(), contact_dofs.get(), restitutionCoefficient );
 
         // projector
         projector = sofa::core::objectmodel::New<proj_type>( frictionCoefficient );
         projector->horizontalProjection = horizontalConeProjection.getValue();
-        contact_node->addObject( projector.get() );
+        this->contact_node->addObject( projector.get() );
         // for restitution, only activate violated constraints
         if( restitutionCoefficient ) projector->mask = cvmask;
     }
@@ -125,12 +125,12 @@ protected:
         if( this->selfCollision )
         {
             typedef mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec3Types> contact_mapping_type;
-            core::objectmodel::SPtr_dynamic_cast<typename contact_mapping_type>(contact_map)->setDetectionOutput(this->contacts);
+            core::objectmodel::SPtr_dynamic_cast<contact_mapping_type>(contact_map)->setDetectionOutput(this->contacts);
         }
         else
         {
             typedef mapping::ContactMultiMapping<ResponseDataTypes, defaulttype::Vec3Types> contact_mapping_type;
-            core::objectmodel::SPtr_dynamic_cast<typename contact_mapping_type>(contact_map)->setDetectionOutput(this->contacts);  
+            core::objectmodel::SPtr_dynamic_cast<contact_mapping_type>(contact_map)->setDetectionOutput(this->contacts);  
         }
 
         contact_dofs->resize( size );
@@ -150,8 +150,8 @@ protected:
         // approximate restitution coefficient between the 2 objects as the product of both coefficients
         const SReal restitutionCoefficient = this->restitution_coef.getValue() ? this->restitution_coef.getValue() : this->model1->getContactRestitution(0) * this->model2->getContactRestitution(0);
         // updating constraint value
-        contact_node->removeObject( this->baseConstraintValue ) ;
-        vector<bool>* cvmask = this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
+        this->contact_node->removeObject( this->baseConstraintValue ) ;
+        vector<bool>* cvmask = this->addConstraintValue( this->contact_node.get(), contact_dofs.get(), restitutionCoefficient );
 
         if( restitutionCoefficient ) projector->mask = cvmask; // for restitution, only activate violated constraints
         else projector->mask = NULL;
