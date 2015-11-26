@@ -61,7 +61,7 @@ protected:
 
     void create_node()
     {
-        const unsigned size = this->mappedContacts.size();
+        const size_t size = this->mappedContacts.size();
 
         this->contact_node = node_type::create( this->getName() + "_contact_frame" );
         down_cast< node_type >(this->mstate1->getContext())->addChild( this->contact_node.get() );
@@ -113,7 +113,7 @@ protected:
 
     void update_node() 
     {
-        const unsigned size = this->mappedContacts.size();
+        const size_t size = this->mappedContacts.size();
 
         if( this->selfCollision )
         {

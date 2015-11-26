@@ -65,7 +65,7 @@ protected:
 
     void create_node()
     {
-        const unsigned size = this->mappedContacts.size();
+        const size_t size = this->mappedContacts.size();
 
         // node->addChild( delta.node.get() );
 
@@ -120,7 +120,7 @@ protected:
 
 
     void update_node() {
-        const unsigned size = this->mappedContacts.size();
+        const size_t size = this->mappedContacts.size();
 
         if( this->selfCollision )
         {
