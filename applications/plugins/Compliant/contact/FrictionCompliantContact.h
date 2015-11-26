@@ -73,7 +73,7 @@ protected:
         down_cast< node_type >(this->mstate1->getContext())->addChild( this->contact_node.get() );
 
         // ensure all graph context parameters (e.g. dt are well copied)
-        contact_node->updateSimulationContext();
+        this->contact_node->updateSimulationContext();
 
         contact_dofs = sofa::core::objectmodel::New<contact_dofs_type>();
         contact_dofs->resize( size );
