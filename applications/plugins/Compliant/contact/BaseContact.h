@@ -10,6 +10,8 @@
 
 #include "../constraint/Restitution.h"
 #include "../constraint/HolonomicConstraintValue.h"
+#include "../mapping/ContactMapping.h"
+#include "../mapping/ContactMultiMapping.h"
 
 //#include <sofa/simulation/common/DeactivatedNodeVisitor.h>
 
