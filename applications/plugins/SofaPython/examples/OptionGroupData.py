@@ -29,7 +29,8 @@ def createSceneAndController(node):
     print "currentItem", og.currentItem, "currentId", og.currentId
 
 
-    print defaultContactManager.response
+    print defaultContactManager.response, defaultContactManager.response.currentItem, defaultContactManager.response.currentId
+    print defaultContactManager.response.getValueString()
 
 
 
