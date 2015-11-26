@@ -80,7 +80,7 @@ protected:
 
         // compliance
         compliance = sofa::core::objectmodel::New<compliance_type>( contact_dofs.get() );
-        contact_node->addObject( compliance.get() );
+        this->contact_node->addObject( compliance.get() );
         editOnly(compliance->damping)->assign(1, this->damping_ratio.getValue() );
         compliance->isCompliance.setValue( false );
 
@@ -118,12 +118,12 @@ protected:
         if( this->selfCollision )
         {
             typedef mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec1Types> contact_mapping_type;
-            core::objectmodel::SPtr_dynamic_cast<typename contact_mapping_type>(contact_map)->setDetectionOutput(this->contacts);
+            core::objectmodel::SPtr_dynamic_cast<contact_mapping_type>(contact_map)->setDetectionOutput(this->contacts);
         }
         else
         {
             typedef mapping::ContactMultiMapping<ResponseDataTypes, defaulttype::Vec1Types> contact_mapping_type;
-            core::objectmodel::SPtr_dynamic_cast<typename contact_mapping_type>(contact_map)->setDetectionOutput(this->contacts);  
+            core::objectmodel::SPtr_dynamic_cast<contact_mapping_type>(contact_map)->setDetectionOutput(this->contacts);  
         }
         contact_map->reinit();
 
