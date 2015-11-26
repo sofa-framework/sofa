@@ -91,9 +91,9 @@ protected:
             return;
 
 		// local frames have been computed in assemble
-        assert( contacts->size() == out.size() || std::count( mask.begin(),mask.end(),true)==out.size() );
+        assert( (size_t)contacts->size() == out.size() || std::count( mask.begin(),mask.end(),true)==out.size() );
 
-        unsigned n = out.size();
+        size_t n = out.size();
 
 
 		for(unsigned i = 0; i < n; ++i) {
@@ -104,7 +104,7 @@ protected:
             }
             else
             {
-                out[i][0] = (*contacts)[i].value;
+                out[i][0] = (real)(*contacts)[i].value;
                 //out[i][0] = (TIn::getCPos( in[(*pairs)[i][1]] ) - TIn::getCPos( in[(*pairs)[i][0]] )) * (*contacts)[i].normal;
                 if( self::Nout == 3 ) 
                 {
@@ -121,14 +121,14 @@ protected:
 
         Eigen::Matrix<real, 3, self::Nout> local_frame;
 
-		unsigned n = this->toModel->getSize();
+		size_t n = this->toModel->getSize();
 
 		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
-        J.resize( this->toModel->getSize() * self::Nout, this->fromModel->getSize() * self::Nin );
+        J.resize( (int) this->toModel->getSize() * self::Nout, (int) this->fromModel->getSize() * self::Nin );
         J.setZero();
 
         assert( !contacts->empty() );
-        assert(pairs->size() == contacts->size());
+        assert(pairs->size() == (size_t)contacts->size());
 		
         for(unsigned i = 0, activatedIndex=0; i < n; ++i)
         {

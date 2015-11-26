@@ -25,6 +25,7 @@ namespace component
 namespace collision
 {
 
+
 /// This is essentially a helper class to factor out all the painful
 /// logic of contact classes in order to leave only interesting methods
 /// for derived classes to implement.
@@ -93,7 +94,6 @@ protected:
     }
 
     virtual ~BaseContact() {}
-
 
 
 public:
