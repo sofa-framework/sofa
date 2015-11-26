@@ -108,7 +108,7 @@ public:
 		
 		// local frames have been computed in assemble
         assert( contacts->size() == out.size() || std::count( mask.begin(),mask.end(),true)==out.size() );
-        unsigned n = out.size();
+        size_t n = out.size();
 
 		for(unsigned i = 0; i < n; ++i) {
             if( self::Nout == 2 ) // hopefully this is optimized at compilation time (known template parameter)
@@ -118,7 +118,7 @@ public:
             }
             else
             {
-                out[i][0] = (*contacts)[i].value;
+                out[i][0] = (real)(*contacts)[i].value;
                 //out[i][0] = (TIn::getCPos( in[1] [(*pairs)[i][1]] ) - TIn::getCPos( in[0] [(*pairs)[i][0]] )) * (*contacts)[i].normal;
                 if( self::Nout == 3 ) 
                 {
@@ -140,12 +140,12 @@ protected:
 
         Eigen::Matrix<real, 3, self::Nout> local_frame;
 
-		unsigned n = this->getToModels()[0]->getSize();
+		size_t n = this->getToModels()[0]->getSize();
         
 		typename Inherit::jacobian_type::CompressedMatrix& J1 = this->jacobian(0).compressedMatrix;
         typename Inherit::jacobian_type::CompressedMatrix& J2 = this->jacobian(1).compressedMatrix;
-        J1.resize( this->getToModels()[0]->getSize() * self::Nout, this->getFromModels()[0]->getSize() * self::Nin );
-        J2.resize( this->getToModels()[0]->getSize() * self::Nout, this->getFromModels()[1]->getSize() * self::Nin );
+        J1.resize( (int) this->getToModels()[0]->getSize() * self::Nout, (int) this->getFromModels()[0]->getSize() * self::Nin );
+        J2.resize( (int) this->getToModels()[0]->getSize() * self::Nout, (int) this->getFromModels()[1]->getSize() * self::Nin );
 
         J1.setZero();
         J2.setZero();

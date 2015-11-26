@@ -109,7 +109,7 @@ protected:
 
     void create_node()
     {
-        const unsigned size = this->mappedContacts.size();
+        const size_t size = this->mappedContacts.size();
 
         this->contact_node = node_type::create( this->getName() + "_contact_frame" );
         down_cast< node_type >(this->mstate1->getContext())->addChild( this->contact_node.get() );
@@ -152,7 +152,7 @@ protected:
             //frictionCoefficient = 1.0 - frictionCoefficient;
 
             // counting violated contacts to create only these ones
-            int nout = !cvmask ? size : std::count( cvmask->begin(), cvmask->end(), true );
+            size_t nout = !cvmask ? size : std::count( cvmask->begin(), cvmask->end(), true );
             if( nout ) create_friction_node( frictionCoefficient, nout, cvmask );
         }
     }
@@ -187,7 +187,7 @@ protected:
 
     void update_node() {
 
-        const unsigned size = this->mappedContacts.size();
+        const size_t size = this->mappedContacts.size();
         contact_dofs->resize( size );
         if( this->selfCollision )
         {
@@ -225,7 +225,7 @@ protected:
         const SReal frictionCoefficient = viscousFriction.getValue() ? viscousFriction.getValue() : this->model1->getContactFriction(0)*this->model2->getContactFriction(0);
         if( frictionCoefficient )
         {
-            int nout = !cvmask ? size : std::count( cvmask->begin(), cvmask->end(), true );
+            size_t nout = !cvmask ? size : (size_t) std::count( cvmask->begin(), cvmask->end(), true );
             if( nout )
             {
                 if( !friction_node )
