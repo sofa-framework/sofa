@@ -21,6 +21,7 @@ set(HEADER_FILES
     Binding_Data.h
     Binding_DataEngine.h
     Binding_DisplayFlagsData.h
+    Binding_OptionsGroupData.h
     Binding_GridTopology.h
     Binding_LinearSpring.h
     Binding_Link.h
@@ -68,6 +69,7 @@ set(SOURCE_FILES
     Binding_Data.cpp
     Binding_DataEngine.cpp
     Binding_DisplayFlagsData.cpp
+    Binding_OptionsGroupData.cpp
     Binding_GridTopology.cpp
     Binding_LinearSpring.cpp
     Binding_Link.cpp
