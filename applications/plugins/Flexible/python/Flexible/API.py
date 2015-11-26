@@ -16,6 +16,7 @@ printLog = True
 def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, cell='', assemble=True, geometricStiffness=2, isMechanical=True):
     """ insert the correct Linear(Multi)Mapping
     hopefully the template is deduced automatically by the component
+    TODO: better names for input dofRigidNode and dofAffineNode, they can be any kind of nodes
     """
     if dofRigidNode is None and dofAffineNode is None:
         print "[Flexible.API.insertLinearMapping] ERROR: no dof given"
