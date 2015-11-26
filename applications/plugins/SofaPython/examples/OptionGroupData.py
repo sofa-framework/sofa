@@ -8,28 +8,28 @@ def createSceneAndController(node):
     og = defaultContactManager.findData('response')
     print og
     print 'getSize()',og.getSize()
-    print "getCurrentItem()", og.getCurrentItem(), "getCurrentId()", og.getCurrentId()
-    print "currentItem", og.currentItem, "currentId", og.currentId
+    print "getSelectedItem()", og.getSelectedItem(), "getSelectedId()", og.getSelectedId()
+    print "selectedItem", og.selectedItem, "selectedId", og.selectedId
     print "getItem(1)", og.getItem(1)
 
-    print 'setCurrentItem("default")'
-    og.setCurrentItem("default")
-    print "currentItem", og.currentItem, "currentId", og.currentId
+    print 'setSelectedItem("default")'
+    og.setSelectedItem("default")
+    print "selectedItem", og.selectedItem, "selectedId", og.selectedId
 
-    print 'setCurrentId(0)'
-    og.setCurrentId(0)
-    print "currentItem", og.currentItem, "currentId", og.currentId
+    print 'setSelectedId(0)'
+    og.setSelectedId(0)
+    print "selectedItem", og.selectedItem, "selectedId", og.selectedId
 
-    print 'currentItem = "default"'
-    og.currentItem = "default"
-    print "currentItem", og.currentItem, "currentId", og.currentId
+    print 'selectedItem = "default"'
+    og.selectedItem = "default"
+    print "selectedItem", og.selectedItem, "selectedId", og.selectedId
 
-    print 'currentId=0'
-    og.currentId=0
-    print "currentItem", og.currentItem, "currentId", og.currentId
+    print 'selectedId=0'
+    og.selectedId=0
+    print "selectedItem", og.selectedItem, "selectedId", og.selectedId
 
 
-    print defaultContactManager.response, defaultContactManager.response.currentItem, defaultContactManager.response.currentId
+    print defaultContactManager.response, defaultContactManager.response.selectedItem, defaultContactManager.response.selectedId
     print defaultContactManager.response.getValueString()
 
 

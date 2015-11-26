@@ -32,12 +32,12 @@ using namespace sofa::core::objectmodel;
 
 
 
-extern "C" PyObject * OptionsGroupData_getAttr_currentItem(PyObject *self, void*)
+extern "C" PyObject * OptionsGroupData_getAttr_selectedItem(PyObject *self, void*)
 {
     Data<OptionsGroup>* data = down_cast<Data<OptionsGroup> >( ((PyPtr<BaseData>*)self)->object );
     return PyString_FromString(data->getValue().getSelectedItem().c_str());
 }
-extern "C" int OptionsGroupData_setAttr_currentItem_impl(PyObject *self, char* item)
+extern "C" int OptionsGroupData_setAttr_selectedItem_impl(PyObject *self, char* item)
 {
     Data<OptionsGroup>* data = down_cast<Data<OptionsGroup> >( ((PyPtr<BaseData>*)self)->object );
     OptionsGroup* optionGroups = data->beginEdit();
@@ -45,37 +45,37 @@ extern "C" int OptionsGroupData_setAttr_currentItem_impl(PyObject *self, char* i
     data->endEdit();
     return 0;
 }
-extern "C" int OptionsGroupData_setAttr_currentItem(PyObject *self, PyObject * args, void*)
+extern "C" int OptionsGroupData_setAttr_selectedItem(PyObject *self, PyObject * args, void*)
 {
     char *str = PyString_AsString(args); // for setters, only one object and not a tuple....
-    OptionsGroupData_setAttr_currentItem_impl(self,str);
+    OptionsGroupData_setAttr_selectedItem_impl(self,str);
     return 0;
 }
 
-extern "C" PyObject * OptionsGroupData_getAttr_currentId(PyObject *self, void*)
+extern "C" PyObject * OptionsGroupData_getAttr_selectedId(PyObject *self, void*)
 {
     Data<OptionsGroup>* data = down_cast<Data<OptionsGroup> >( ((PyPtr<BaseData>*)self)->object );
     return PyInt_FromLong((long)data->getValue().getSelectedId());
 }
-void OptionsGroupData_setAttr_currentId_impl(PyObject *self, unsigned id)
+void OptionsGroupData_setAttr_selectedId_impl(PyObject *self, unsigned id)
 {
     Data<OptionsGroup>* data = down_cast<Data<OptionsGroup> >( ((PyPtr<BaseData>*)self)->object );
     OptionsGroup* optionGroups = data->beginEdit();
     optionGroups->setSelectedItem( (unsigned)id );
     data->endEdit();
 }
-extern "C" int OptionsGroupData_setAttr_currentId(PyObject *self, PyObject * args, void*)
+extern "C" int OptionsGroupData_setAttr_selectedId(PyObject *self, PyObject * args, void*)
 {
-    OptionsGroupData_setAttr_currentId_impl( self, (unsigned)PyInt_AsLong(args) );
+    OptionsGroupData_setAttr_selectedId_impl( self, (unsigned)PyInt_AsLong(args) );
     return 0;
 }
 
 
-extern "C" PyObject * OptionsGroupData_getCurrentId(PyObject *self, PyObject *)
+extern "C" PyObject * OptionsGroupData_getSelectedId(PyObject *self, PyObject *)
 {
-    return OptionsGroupData_getAttr_currentId(self,NULL);
+    return OptionsGroupData_getAttr_selectedId(self,NULL);
 }
-extern "C" PyObject * OptionsGroupData_setCurrentId(PyObject *self, PyObject * args)
+extern "C" PyObject * OptionsGroupData_setSelectedId(PyObject *self, PyObject * args)
 {
     int index;
     if (!PyArg_ParseTuple(args, "i",&index))
@@ -83,14 +83,14 @@ extern "C" PyObject * OptionsGroupData_setCurrentId(PyObject *self, PyObject * a
         PyErr_BadArgument();
         Py_RETURN_NONE;
     }
-    OptionsGroupData_setAttr_currentId_impl(self,index);
+    OptionsGroupData_setAttr_selectedId_impl(self,index);
     Py_RETURN_NONE;
 }
-extern "C" PyObject * OptionsGroupData_getCurrentItem(PyObject *self, PyObject *)
+extern "C" PyObject * OptionsGroupData_getSelectedItem(PyObject *self, PyObject *)
 {
-    return OptionsGroupData_getAttr_currentItem(self,NULL);
+    return OptionsGroupData_getAttr_selectedItem(self,NULL);
 }
-extern "C" PyObject * OptionsGroupData_setCurrentItem(PyObject *self, PyObject * args)
+extern "C" PyObject * OptionsGroupData_setSelectedItem(PyObject *self, PyObject * args)
 {
     char *item;
     if (!PyArg_ParseTuple(args, "s",&item))
@@ -98,7 +98,7 @@ extern "C" PyObject * OptionsGroupData_setCurrentItem(PyObject *self, PyObject *
         PyErr_BadArgument();
         Py_RETURN_NONE;
     }
-    OptionsGroupData_setAttr_currentItem_impl(self,item);
+    OptionsGroupData_setAttr_selectedItem_impl(self,item);
     Py_RETURN_NONE;
 }
 
@@ -124,8 +124,8 @@ extern "C" PyObject * OptionsGroupData_getSize(PyObject *self, PyObject *)
 
 
 SP_CLASS_ATTRS_BEGIN(OptionsGroupData)
-SP_CLASS_ATTR(OptionsGroupData,currentItem)
-SP_CLASS_ATTR(OptionsGroupData,currentId)
+SP_CLASS_ATTR(OptionsGroupData,selectedItem)
+SP_CLASS_ATTR(OptionsGroupData,selectedId)
 SP_CLASS_ATTRS_END
 
 
@@ -133,10 +133,10 @@ SP_CLASS_ATTRS_END
 SP_CLASS_METHODS_BEGIN(OptionsGroupData)
 SP_CLASS_METHOD(OptionsGroupData,getSize)
 SP_CLASS_METHOD(OptionsGroupData,getItem)
-SP_CLASS_METHOD(OptionsGroupData,getCurrentItem)
-SP_CLASS_METHOD(OptionsGroupData,setCurrentItem)
-SP_CLASS_METHOD(OptionsGroupData,getCurrentId)
-SP_CLASS_METHOD(OptionsGroupData,setCurrentId)
+SP_CLASS_METHOD(OptionsGroupData,getSelectedItem)
+SP_CLASS_METHOD(OptionsGroupData,setSelectedItem)
+SP_CLASS_METHOD(OptionsGroupData,getSelectedId)
+SP_CLASS_METHOD(OptionsGroupData,setSelectedId)
 SP_CLASS_METHODS_END
 
 
