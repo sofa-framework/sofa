@@ -30,7 +30,6 @@ def createSceneAndController(node):
 
 
     print defaultContactManager.response
-    print "currentItem", defaultContactManager.response.currentItem, "currentId", defaultContactManager.response.currentId
 
 
 

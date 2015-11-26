@@ -36,25 +36,28 @@ using namespace sofa::core::visual;
 #include <sofa/helper/OptionsGroup.h>
 using namespace sofa::helper;
 
-extern "C" PyObject * Base_findData_impl(PyObject *self, char*dataName, bool error )
+extern "C" PyObject * Base_findData(PyObject *self, PyObject *args )
 {
     Base* obj=((PySPtr<Base>*)self)->object.get();
-
+    char *dataName;
+    if (!PyArg_ParseTuple(args, "s",&dataName))
+    {
+        std::cerr<<"Base_findData_impl not a string\n";
+        Py_RETURN_NONE;
+    }
     BaseData * data = obj->findData(dataName);
     if (!data)
     {
-        if( error )
+        if( obj->hasField(dataName) )
+            std::cerr<<"Base_findData: object '"<<obj->getName()<<"' has a field '"<<dataName<<"' but it is not a Data"<<std::endl;
+        else
         {
-            if( obj->hasField(dataName) )
-                std::cerr<<"Base_findData: object '"<<obj->getName()<<"' has a field '"<<dataName<<"' but it is not a Data"<<std::endl;
-            else
-            {
-                std::cerr<<"Base_findData: object '"<<obj->getName()<<"' does no have a field '"<<dataName<<"'"<<std::endl;
-                obj->writeDatas(std::cerr,";");
-            }
-
-            PyErr_BadArgument();
+            std::cerr<<"Base_findData: object '"<<obj->getName()<<"' does no have a field '"<<dataName<<"'"<<std::endl;
+            obj->writeDatas(std::cerr,";");
         }
+
+        PyErr_BadArgument();
+
         Py_RETURN_NONE;
     }
 
@@ -68,60 +71,47 @@ extern "C" PyObject * Base_findData_impl(PyObject *self, char*dataName, bool err
 }
 
 
-extern "C" PyObject * Base_findData(PyObject *self, PyObject * args)
-{
-    char *dataName;
-     if (!PyArg_ParseTuple(args, "s",&dataName))
-     {
-         std::cerr<<"Base_findData_impl not a string\n";
-         Py_RETURN_NONE;
-     }
-    return Base_findData_impl( self, dataName, true );
-}
-
-extern "C" PyObject * Base_findLink_impl(PyObject *self, char*linkName, bool error)
+extern "C" PyObject * Base_findLink(PyObject *self, PyObject *args)
 {
     Base* obj=((PySPtr<Base>*)self)->object.get();
+    char *linkName;
+     if (!PyArg_ParseTuple(args, "s",&linkName))
+         Py_RETURN_NONE;
     BaseLink * link = obj->findLink(linkName);
     if (!link)
     {
-        if( error )
+        if( obj->hasField(linkName) )
+            std::cerr<<"Base_findLink: object '"<<obj->getName()<<"' has a field '"<<linkName<<"' but it is not a Link"<<std::endl;
+        else
         {
-            if( obj->hasField(linkName) )
-                std::cerr<<"Base_findLink: object '"<<obj->getName()<<"' has a field '"<<linkName<<"' but it is not a Link"<<std::endl;
-            else
-            {
-                std::cerr<<"Base_findLink: object '"<<obj->getName()<<"' does no have a field '"<<linkName<<"'"<<std::endl;
-                obj->writeDatas(std::cerr,";");
-            }
-
-            PyErr_BadArgument();
+            std::cerr<<"Base_findLink: object '"<<obj->getName()<<"' does no have a field '"<<linkName<<"'"<<std::endl;
+            obj->writeDatas(std::cerr,";");
         }
+
+        PyErr_BadArgument();
         Py_RETURN_NONE;
     }
 
     return SP_BUILD_PYPTR(Link,BaseLink,link,false);
 }
 
-extern "C" PyObject * Base_findLink(PyObject *self, PyObject * args)
-{
-    char *linkName;
-     if (!PyArg_ParseTuple(args, "s",&linkName))
-         Py_RETURN_NONE;
-    return Base_findLink_impl( self, linkName, true );
-}
 
 // Generic accessor to Data fields (in python native type)
 extern "C" PyObject* Base_GetAttr(PyObject *o, PyObject *attr_name)
 {
+    Base* obj=down_cast<Base>(((PySPtr<Base>*)o)->object.get());
     char *attrName = PyString_AsString(attr_name);
+//    printf("Base_GetAttr type=%s name=%s attrName=%s\n",obj->getClassName().c_str(),obj->getName().c_str(),attrName);
 
-    PyObject* pyobj = Base_findData_impl( o, attrName, false );
-    if( pyobj != Py_None ) return pyobj;
+    // see if a Data field has this name...
+    BaseData * data = obj->findData(attrName);
+    if (data) return GetDataValuePython(data); // we have our data... let's create the right Python type....
 
-    pyobj = Base_findLink_impl( o, attrName, false );
-    if( pyobj != Py_None ) return pyobj;
+    // see if a Link has this name...
+    BaseLink * link = obj->findLink(attrName);
+    if (link) return GetLinkValuePython(link); // we have our link... let's create the right Python type....
 
+    //        printf("Base_GetAttr ERROR data not found - type=%s name=%s attrName=%s\n",obj->getClassName().c_str(),obj->getName().c_str(),attrName);
     return PyObject_GenericGetAttr(o,attr_name);
 }
 
