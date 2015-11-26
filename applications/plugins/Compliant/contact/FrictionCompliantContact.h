@@ -80,7 +80,7 @@ protected:
         this->contact_node->addObject( contact_dofs.get() );
 
         // mapping
-        contact_map = this->createContactMapping<defaulttype::Vec3Types>(this->contact_node, contact_dofs);
+        contact_map = this->template createContactMapping<defaulttype::Vec3Types>(this->contact_node, contact_dofs);
 
 
 //        // every contact points must propagate constraint forces
