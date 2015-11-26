@@ -16,11 +16,6 @@
 // for forcefield version
 #include <SofaBoundaryCondition/UniformVelocityDampingForceField.h>
 
-
-
-#include "../mapping/ContactMapping.h"
-#include "../mapping/ContactMultiMapping.h"
-
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaMiscCollision/TetrahedronModel.h>
 #include <SofaMeshCollision/LineModel.h>

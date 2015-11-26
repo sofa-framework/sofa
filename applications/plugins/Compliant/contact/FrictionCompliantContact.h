@@ -6,8 +6,6 @@
 #include <Compliant/config.h>
 
 #include <Compliant/constraint/CoulombConstraint.h>
-#include <Compliant/mapping/ContactMapping.h>
-#include <Compliant/mapping/ContactMultiMapping.h>
 #include <Compliant/compliance/UniformCompliance.h>
 
 #include <Compliant/utils/map.h>

@@ -7,9 +7,6 @@
 
 #include "../compliance/DiagonalCompliance.h"
 
-#include <Compliant/mapping/ContactMapping.h>
-#include <Compliant/mapping/ContactMultiMapping.h>
-
 #include "../utils/edit.h"
 
 
