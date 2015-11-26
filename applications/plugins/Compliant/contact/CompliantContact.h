@@ -125,7 +125,7 @@ protected:
         this->contact_node->addObject( contact_dofs.get() );
 
         // mapping
-        contact_map = this->createContactMapping<defaulttype::Vec1Types>(this->contact_node, contact_dofs);
+        contact_map = this->template createContactMapping<defaulttype::Vec1Types>(this->contact_node, contact_dofs);
 
         // compliance
         compliance = sofa::core::objectmodel::New<compliance_type>( contact_dofs.get() );
@@ -171,7 +171,7 @@ protected:
         down_cast< node_type >(this->mstate1->getContext())->addChild( this->friction_node.get() );
 
         // mapping
-        friction_map = this->createContactMapping<defaulttype::Vec2Types>(this->friction_node, friction_dofs, cvmask);       
+        friction_map = this->template createContactMapping<defaulttype::Vec2Types>(this->friction_node, friction_dofs, cvmask);       
 
         // ensure all graph context parameters (e.g. dt are well copied)
         friction_node->updateSimulationContext();
@@ -192,12 +192,12 @@ protected:
         if( this->selfCollision )
         {
             typedef sofa::component::mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec1Types> contact_mapping_type;
-            core::objectmodel::SPtr_dynamic_cast<typename contact_mapping_type>(contact_map)->setDetectionOutput(this->contacts);
+            core::objectmodel::SPtr_dynamic_cast<contact_mapping_type>(contact_map)->setDetectionOutput(this->contacts);
         }
         else
         {
             typedef sofa::component::mapping::ContactMultiMapping<ResponseDataTypes, defaulttype::Vec1Types> contact_mapping_type;
-            core::objectmodel::SPtr_dynamic_cast<typename contact_mapping_type>(contact_map)->setDetectionOutput(this->contacts);  
+            core::objectmodel::SPtr_dynamic_cast<contact_mapping_type>(contact_map)->setDetectionOutput(this->contacts);  
         }
         contact_map->reinit();
 
@@ -237,14 +237,14 @@ protected:
                     if( this->selfCollision )
                     {
                         typedef mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec2Types> friction_mapping_type;
-                        typename friction_mapping_type::SPtr mapping = core::objectmodel::SPtr_dynamic_cast<typename friction_mapping_type>(friction_map);
+                        typename friction_mapping_type::SPtr mapping = core::objectmodel::SPtr_dynamic_cast<friction_mapping_type>(friction_map);
                         mapping->setDetectionOutput(this->contacts);
                         mapping->mask = *cvmask;
                     }
                     else
                     {
                         typedef mapping::ContactMultiMapping<ResponseDataTypes, defaulttype::Vec2Types> friction_mapping_type;
-                        typename friction_mapping_type::SPtr mapping = core::objectmodel::SPtr_dynamic_cast<typename friction_mapping_type>(friction_map);
+                        typename friction_mapping_type::SPtr mapping = core::objectmodel::SPtr_dynamic_cast<friction_mapping_type>(friction_map);
                         mapping->setDetectionOutput(this->contacts);
                         mapping->mask = *cvmask;
                     }
