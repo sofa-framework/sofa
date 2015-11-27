@@ -566,7 +566,7 @@ public:
             // Remove the objects from the container that are not in the new list
             for (size_t i = 0; i != container.size(); i++)
             {
-                DestPtr dest(container[i]);
+                DestPtr dest(container[(unsigned int)i]);
                 bool destFound = false;
                 typename PairVector::iterator j = newList.begin();
                 while (j != newList.end() && !destFound)
@@ -716,7 +716,7 @@ public:
         if (!this->m_owner) return false;
         bool ok = true;
         const int aspect = core::ExecParams::currentAspect();
-        unsigned int n = this->size();
+        size_t n = this->size();
         for (unsigned int i=0; i<n; ++i)
         {
             ValueType& value = this->m_value[aspect][i];
