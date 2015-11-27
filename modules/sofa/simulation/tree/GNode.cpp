@@ -356,7 +356,7 @@ void GNode::doExecuteVisitor(simulation::Visitor* action, bool)
     {
         if (action->childOrderReversed(this))
         {
-            for(unsigned int i = child.size(); i>0;)
+            for(unsigned int i = (unsigned int)child.size(); i>0;)
             {
                 child[--i]->executeVisitor(action);
             }

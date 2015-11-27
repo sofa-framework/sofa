@@ -568,10 +568,10 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
 //        std::cout << "...pruned (all parents pruned)" << std::endl;
         // ... but continue the recursion anyway!
         if( action->childOrderReversed(this) )
-            for(unsigned int i = child.size(); i>0;)
+            for(unsigned int i = (unsigned int)child.size(); i>0;)
                 static_cast<DAGNode*>(child[--i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
         else
-            for(unsigned int i = 0; i<child.size(); ++i)
+            for(unsigned int i = 0; i<(unsigned int)child.size(); ++i)
                 static_cast<DAGNode*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
     }
     else
@@ -586,10 +586,10 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
 
         // ... and continue the recursion
         if( action->childOrderReversed(this) )
-            for(unsigned int i = child.size(); i>0;)
+            for(unsigned int i = (unsigned int)child.size(); i>0;)
                 static_cast<DAGNode*>(child[--i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
         else
-            for(unsigned int i = 0; i<child.size(); ++i)
+            for(unsigned int i = 0; i<(unsigned int)child.size(); ++i)
                 static_cast<DAGNode*>(child[i].get())->executeVisitorTopDown(action,executedNodes,statusMap,visitorRoot);
 
     }
@@ -623,7 +623,7 @@ void DAGNode::updateDescendancy()
 {
     if( _descendancy.empty() && !child.empty() )
     {
-        for(unsigned int i = 0; i<child.size(); ++i)
+        for(unsigned int i = 0; i<(unsigned int)child.size(); ++i)
         {
             DAGNode* dagnode = static_cast<DAGNode*>(child[i].get());
             dagnode->updateDescendancy();
@@ -662,10 +662,10 @@ void DAGNode::executeVisitorTreeTraversal( simulation::Visitor* action, StatusMa
     {
         statusMap[this] = VISITED;
         if( action->childOrderReversed(this) )
-            for(unsigned int i = child.size(); i>0;)
+            for(unsigned int i = (unsigned int)child.size(); i>0;)
                 static_cast<DAGNode*>(child[--i].get())->executeVisitorTreeTraversal(action,statusMap,repeat,alreadyRepeated);
         else
-            for(unsigned int i = 0; i<child.size(); ++i)
+            for(unsigned int i = 0; i<(unsigned int)child.size(); ++i)
                 static_cast<DAGNode*>(child[i].get())->executeVisitorTreeTraversal(action,statusMap,repeat,alreadyRepeated);
     }
     else
