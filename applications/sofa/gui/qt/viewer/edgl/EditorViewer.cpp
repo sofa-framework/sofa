@@ -155,10 +155,6 @@ EditorViewer::EditorViewer(QWidget* parent, const char* name, const unsigned int
     m_navigating = false;
 
 
-    sofa::core::objectmodel::BaseObjectDescription descriptionSphereROI("mSphereROI","SphereROI");
-    sofa::core::objectmodel::BaseObject::SPtr obj = sofa::core::ObjectFactory::CreateObject(getSimulation()->GetRoot()->getContext(), &descriptionSphereROI);
-    m_sphereSelection = dynamic_cast<sofa::component::engine::SphereROI<defaulttype::Vec3dTypes>* >(obj.get());
-
     connect( &captureTimer, SIGNAL(timeout()), this, SLOT(captureEvent()) );
 }
 
@@ -177,7 +173,6 @@ EditorViewer::~EditorViewer()
 void EditorViewer::init(void)
 {
     restoreStateFromFile();
-
 
     static	 GLfloat	specref[4];
     static	 GLfloat	ambientLight[4];
@@ -929,10 +924,8 @@ void EditorViewer::keyPressEvent ( QKeyEvent * e )
 
     //Tracking Mode
 
-//    std::cerr<<"QtGLViewer::keyPressEvent, get "<<e->key()<<std::endl;
     if( isControlPressed() ) // pass event to the scene data structure
     {
-//        std::cerr<<"QtGLViewer::keyPressEvent, key = "<<e->key()<<" with Control pressed "<<std::endl;
         if (groot)
         {
             sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
@@ -958,22 +951,33 @@ void EditorViewer::keyPressEvent ( QKeyEvent * e )
         }
         case Qt::Key_Z:
         {
-            GLint viewport[4];
-            glGetIntegerv(GL_VIEWPORT,viewport);
-            getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
+            if(!e->isAutoRepeat())
+            {
+                sofa::core::objectmodel::BaseObjectDescription descriptionSphereROI("mSphereROI","SphereROI");
+                descriptionSphereROI.setAttribute("template", "Vec3d");
+                descriptionSphereROI.setAttribute("drawSphere", "true");
+                descriptionSphereROI.setAttribute("name", "SphereSelection");
+                simulation::Node* node = getSimulation()->GetRoot().get();//->getChild("surface");
+                sofa::core::objectmodel::BaseObject::SPtr obj = sofa::core::ObjectFactory::CreateObject(node, &descriptionSphereROI);
+                m_sphereSelection =  core::objectmodel::SPtr_dynamic_cast<sofa::component::engine::SphereROI<defaulttype::Vec3dTypes> >(obj);
 
-            helper::vector<defaulttype::Vec<3,Real> > center;
-            center.push_back(getPickHandler()->getLastPicked()->point);
-            std::cout << getPickHandler()->getLastPicked()->point << std::endl;
+                m_sphereSelection->init();
 
-//            m_sphereSelection->centers.setValue(center);
-            setMouseTracking(true);
-            m_selecting = true;
+                GLint viewport[4];
+                glGetIntegerv(GL_VIEWPORT,viewport);
+                getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
+                setMouseTracking(true);
+                m_selecting = true;
+            }
+
             break;
         }
         case Qt::Key_R:
         {
-            m_navigating = true;
+            if(!e->isAutoRepeat())
+            {
+                m_navigating = true;
+            }
             break;
         }
         case Qt::Key_D:
@@ -1011,23 +1015,36 @@ void EditorViewer::keyReleaseEvent ( QKeyEvent * e )
     {
         case Qt::Key_Z:
         {
-            getPickHandler()->deactivateRay();
-            setMouseTracking(false);
-            m_selecting = false;
+            if(!e->isAutoRepeat())
+            {
+                getSimulation()->GetRoot()->removeObject(m_sphereSelection);
+
+                getPickHandler()->deactivateRay();
+                setMouseTracking(false);
+                m_selecting = false;
+            }
             break;
         }
         case Qt::Key_R:
         {
-            m_navigating = false;
+            if(!e->isAutoRepeat())
+            {
+                m_navigating = false;
+            }
             break;
         }
         default:
         {
             QGLViewer::keyReleaseEvent(e);
+
+            sofa::core::objectmodel::KeyreleasedEvent kre(e->key());
+            currentCamera->manageEvent(&kre);
+
             SofaViewer::keyReleaseEvent(e);
         }
 
     }
+    update();
 }
 
 void EditorViewer::mousePressEvent ( QMouseEvent * e )
@@ -1035,16 +1052,12 @@ void EditorViewer::mousePressEvent ( QMouseEvent * e )
     //1. selection
     if(m_selecting && (e->button() == Qt::LeftButton || e->button() == Qt::RightButton))
     {
-        //only vertices for now
-
         switch(m_selectionMethod)
         {
             case SingleCell:
             {
                 if(e->button() == Qt::LeftButton)
                 {
-                    std::cout << "select the vertex" << std::endl;
-
                     //code for the ray selection
 
                     GLint viewport[4];
@@ -1060,44 +1073,21 @@ void EditorViewer::mousePressEvent ( QMouseEvent * e )
                     getPickHandler()->updateMouse2D( mousepos );
 
 
-                    switch (e->type())
+                    if (e->button() == Qt::LeftButton)
                     {
-                    case QEvent::MouseButtonPress:
-                        if (e->button() == Qt::LeftButton)
-                        {
-                            getPickHandler()->handleMouseEvent(PRESSED, LEFT);
-                        }
-                        else if (e->button() == Qt::RightButton) // Shift+Rightclick to remove triangles
-                        {
-                            getPickHandler()->handleMouseEvent(PRESSED, RIGHT);
-                        }
-                        else if (e->button() == Qt::MidButton) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
-                        {
-                            getPickHandler()->handleMouseEvent(PRESSED, MIDDLE);
-                        }
-                        break;
-                    case QEvent::MouseButtonRelease:
-                        //if (e->button() == Qt::LeftButton)
+                        getPickHandler()->handleMouseEvent(PRESSED, LEFT);
+                    }
+                    else if (e->button() == Qt::RightButton) // Shift+Rightclick to remove triangles
                     {
+                        getPickHandler()->handleMouseEvent(PRESSED, RIGHT);
+                    }
+                    else if (e->button() == Qt::MidButton) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
+                    {
+                        getPickHandler()->handleMouseEvent(PRESSED, MIDDLE);
+                    }
 
-                        if (e->button() == Qt::LeftButton)
-                        {
-                            getPickHandler()->handleMouseEvent(RELEASED, LEFT);
-                        }
-                        else if (e->button() == Qt::RightButton)
-                        {
-                            getPickHandler()->handleMouseEvent(RELEASED, RIGHT);
-                        }
-                        else if (e->button() == Qt::MidButton)
-                        {
-                            getPickHandler()->handleMouseEvent(RELEASED, MIDDLE);
-                        }
-                    }
-                    break;
-                    default:
-                        break;
-                    }
                     moveRayPickInteractor(e->x(), e->y());
+
                 }
                 else if(e->button() == Qt::RightButton)
                     std::cout << "deselect the vertex" << std::endl;
@@ -1110,6 +1100,14 @@ void EditorViewer::mousePressEvent ( QMouseEvent * e )
                 break;
             }
         }
+
+        helper::vector<defaulttype::Vec<3,Real> > center;
+        center.push_back(getPickHandler()->getLastPicked()->point);
+        m_sphereSelection->centers.setValue(center);
+
+        helper::vector<Real> radii;
+        radii.push_back(getPickHandler()->getLastPicked()->rayLength / 4.0);
+        m_sphereSelection->radii.setValue(radii);
     }
     else
 //    if( ! mouseEvent(e) )
@@ -1120,6 +1118,67 @@ void EditorViewer::mousePressEvent ( QMouseEvent * e )
 void EditorViewer::mouseReleaseEvent ( QMouseEvent * e )
 {
 //    if( ! mouseEvent(e) )
+    if(m_selecting && (e->button() == Qt::LeftButton || e->button() == Qt::RightButton))
+    {
+        //only vertices for now
+
+        switch(m_selectionMethod)
+        {
+            case SingleCell:
+            {
+                if(e->button() == Qt::LeftButton)
+                {
+                    //code for the ray selection
+                    GLint viewport[4];
+                    glGetIntegerv(GL_VIEWPORT,viewport);
+
+                    MousePosition mousepos;
+                    mousepos.screenWidth  = viewport[2];
+                    mousepos.screenHeight = viewport[3];
+                    mousepos.x      = e->x();
+                    mousepos.y      = e->y();
+
+                    getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
+                    getPickHandler()->updateMouse2D( mousepos );
+
+
+                    if (e->button() == Qt::LeftButton)
+                    {
+                        getPickHandler()->handleMouseEvent(RELEASED, LEFT);
+                    }
+                    else if (e->button() == Qt::RightButton) // Shift+Rightclick to remove triangles
+                    {
+                        getPickHandler()->handleMouseEvent(RELEASED, RIGHT);
+                    }
+                    else if (e->button() == Qt::MidButton) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
+                    {
+                        getPickHandler()->handleMouseEvent(RELEASED, MIDDLE);
+                    }
+
+                    moveRayPickInteractor(e->x(), e->y());
+
+                }
+                else if(e->button() == Qt::RightButton)
+                    std::cout << "deselect the vertex" << std::endl;
+
+                break;
+            }
+            case WithinSphere:
+            {
+                std::cout << "select within sphere" << std::endl;
+                break;
+            }
+        }
+
+        helper::vector<defaulttype::Vec<3,Real> > center;
+        center.push_back(getPickHandler()->getLastPicked()->point);
+        m_sphereSelection->centers.setValue(center);
+
+        helper::vector<Real> radii;
+        radii.push_back(getPickHandler()->getLastPicked()->rayLength / 4.0);
+        m_sphereSelection->radii.setValue(radii);
+    }
+    else
         SofaViewer::mouseReleaseEvent(e);
         QGLViewer::mouseReleaseEvent(e);
 }
@@ -1131,48 +1190,48 @@ void EditorViewer::mouseMoveEvent ( QMouseEvent * e )
     if(m_dragging)
     {
         std::cout << "draging" << std::endl;
-        //_sceneTransform.ApplyInverse();
-        switch (e->type())
-        {
-        case QEvent::MouseButtonPress:
-            if (e->button() == Qt::LeftButton)
-            {
-                getPickHandler()->handleMouseEvent(PRESSED, LEFT);
-            }
-            else if (e->button() == Qt::RightButton) // Shift+Rightclick to remove triangles
-            {
-                getPickHandler()->handleMouseEvent(PRESSED, RIGHT);
-            }
-            else if (e->button() == Qt::MidButton) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
-            {
-                getPickHandler()->handleMouseEvent(PRESSED, MIDDLE);
-            }
-            break;
-        case QEvent::MouseButtonRelease:
-            //if (e->button() == Qt::LeftButton)
-        {
+//        //_sceneTransform.ApplyInverse();
+//        switch (e->type())
+//        {
+//        case QEvent::MouseButtonPress:
+//            if (e->button() == Qt::LeftButton)
+//            {
+//                getPickHandler()->handleMouseEvent(PRESSED, LEFT);
+//            }
+//            else if (e->button() == Qt::RightButton) // Shift+Rightclick to remove triangles
+//            {
+//                getPickHandler()->handleMouseEvent(PRESSED, RIGHT);
+//            }
+//            else if (e->button() == Qt::MidButton) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
+//            {
+//                getPickHandler()->handleMouseEvent(PRESSED, MIDDLE);
+//            }
+//            break;
+//        case QEvent::MouseButtonRelease:
+//            //if (e->button() == Qt::LeftButton)
+//        {
 
-            if (e->button() == Qt::LeftButton)
-            {
-                getPickHandler()->handleMouseEvent(RELEASED, LEFT);
-            }
-            else if (e->button() == Qt::RightButton)
-            {
-                getPickHandler()->handleMouseEvent(RELEASED, RIGHT);
-            }
-            else if (e->button() == Qt::MidButton)
-            {
-                getPickHandler()->handleMouseEvent(RELEASED, MIDDLE);
-            }
-        }
-        break;
-        default:
-            break;
-        }
-        moveRayPickInteractor(e->x(), e->y());
+//            if (e->button() == Qt::LeftButton)
+//            {
+//                getPickHandler()->handleMouseEvent(RELEASED, LEFT);
+//            }
+//            else if (e->button() == Qt::RightButton)
+//            {
+//                getPickHandler()->handleMouseEvent(RELEASED, RIGHT);
+//            }
+//            else if (e->button() == Qt::MidButton)
+//            {
+//                getPickHandler()->handleMouseEvent(RELEASED, MIDDLE);
+//            }
+//        }
+//        break;
+//        default:
+//            break;
+//        }
+//        moveRayPickInteractor(e->x(), e->y());
 
     }
-    //else
+    else
     //    if( ! mouseEvent(e) )
             SofaViewer::mouseMoveEvent(e);
             QGLViewer::mouseMoveEvent(e);
@@ -1193,20 +1252,29 @@ void EditorViewer::wheelEvent(QWheelEvent* e)
 {
     if(m_selecting)
     {
-        switch(m_selectionMethod)
-        {
-            case SingleCell:
-                break;
-            case WithinSphere:
-            {
-                if(e->delta() > 0)
-                    selection_radiusCoef *= 0.9f;
-                else
-                    selection_radiusCoef *= 1.1f;
+        helper::vector<Real> v = m_sphereSelection->radii.getValue();
 
-                break;
-            }
-        }
+        if(e->delta() > 0)
+            v[0] *= 0.9f;
+        else
+            v[0] *= 1.1f;
+
+        m_sphereSelection->radii.setValue(v);
+
+//        switch(m_selectionMethod)
+//        {
+//            case SingleCell:
+//                break;
+//            case WithinSphere:
+//            {
+//                if(e->delta() > 0)
+//                    selection_radiusCoef *= 0.9f;
+//                else
+//                    selection_radiusCoef *= 1.1f;
+
+//                break;
+//            }
+//        }
     }
     else if(m_navigating)
     {
@@ -1222,6 +1290,8 @@ void EditorViewer::wheelEvent(QWheelEvent* e)
     }
     else
         QGLViewer::wheelEvent(e);
+
+    update();
 }
 
 void EditorViewer::moveRayPickInteractor(int eventX, int eventY)
