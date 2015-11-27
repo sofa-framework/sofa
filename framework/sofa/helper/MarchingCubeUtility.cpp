@@ -669,7 +669,7 @@ void MarchingCubeUtility::run ( unsigned char *_data, const sofa::helper::vector
 {
     std::map< Vector3, PointID> map_vertices;
     for ( size_t i = map_vertices.size(); i < vertices.size(); i++ )
-        map_vertices.insert ( std::make_pair ( vertices[i], i ) );
+        map_vertices.insert ( std::make_pair ( vertices[i], (PointID)i ) );
 
     run( _data, seeds, isolevel, mesh, vertices, map_vertices, triangleIndexInRegularGrid, propagate);
 }
@@ -702,7 +702,7 @@ void MarchingCubeUtility::run ( unsigned char *_data, const float isolevel,
 
     std::map< Vector3, PointID> map_vertices;
     for ( size_t i = 0; i < vertices.size(); i++ )
-        map_vertices.insert ( std::make_pair ( vertices[i], i ) );
+        map_vertices.insert ( std::make_pair ( vertices[i], (PointID)i ) );
 
     Vec3i bboxMin = Vec3i ( bbox.min / cubeStep );
     Vec3i bboxMax = Vec3i ( bbox.max / cubeStep );

@@ -62,7 +62,7 @@ BaseLink::~BaseLink()
 /// Print the value of the associated variable
 void BaseLink::printValue( std::ostream& o ) const
 {
-    unsigned int size = getSize();
+    size_t size = getSize();
     bool first = true;
     for (unsigned int i=0; i<size; ++i)
     {
