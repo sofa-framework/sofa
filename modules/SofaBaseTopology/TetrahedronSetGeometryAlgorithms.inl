@@ -89,11 +89,11 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoi
 	/// integration with quadric accuracy.
 	qpa.clear();
 	v=BarycentricCoordinatesType(0.25,0.25,0.25,0.25);
-	Real c= -0.131555555555555556e-01;
+	Real c= (Real)-0.131555555555555556e-01;
 	qpa.push_back(QuadraturePoint(v,(Real)c ));
 	a=(Real)0.714285714285714285e-01;
 	b=(Real)1-3*a;
-	Real c1=0.762222222222222222e-02;
+	Real c1=(Real)0.762222222222222222e-02;
 	for (i=0;i<4;++i) {
 		v=BarycentricCoordinatesType(a,a,a,a);
 		v[i]=b;

@@ -317,7 +317,7 @@ bool HexahedronSetGeometryAlgorithms< DataTypes >::isHexahedronAffine(const Hexa
 template< class DataTypes>
 typename  DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeShapeFunction(const LocalCoord nc,const HexahedronBinaryIndex bi) const 
 {
-	return((bi[0] ? nc[0] : 1-nc[0])*(bi[1] ? nc[1] : 1-nc[1])*(bi[2] ? nc[2] : 1-nc[2]));
+	return(DataTypes::Real)((bi[0] ? nc[0] : 1-nc[0])*(bi[1] ? nc[1] : 1-nc[1])*(bi[2] ? nc[2] : 1-nc[2]));
 }
 template< class DataTypes>
 typename DataTypes::Coord HexahedronSetGeometryAlgorithms< DataTypes >::computeNodalValue(const HexaID hx,const LocalCoord nc,const VecCoord& p) const

@@ -97,9 +97,9 @@ public:
 		return container;
 	}
 	/// computes the nodal value given the Triangle index, the barycentric coordinates and the vector of nodal values
-	Coord computeNodalValue(const size_t triangleIndex,const Vec3 barycentricCoordinate,const VecCoord& p); 
+	Coord computeNodalValue(const TriangleID triangleIndex,const Vec3 barycentricCoordinate,const VecCoord& p); 
 	/// computes the nodal value assuming that the position is the regular position in the mechanical state object
-	Coord computeNodalValue(const size_t triangleIndex,const Vec3 barycentricCoordinate); 
+	Coord computeNodalValue(const TriangleID triangleIndex,const Vec3 barycentricCoordinate); 
 	/// computes the shape function 
 	Real computeBernsteinPolynomial(const TriangleBezierIndex tbi, const Vec3 barycentricCoordinate);
 	/// computes the shape function gradient
@@ -107,13 +107,13 @@ public:
     /// computes the shape function hessian
     Mat33 computeBernsteinPolynomialHessian(const TriangleBezierIndex tbi, const Vec3 barycentricCoordinate);
 	/// computes Jacobian i.e. cross product  of dpos/du and dpos/dv
-	Deriv computeJacobian(const size_t triangleIndex, const Vec3 barycentricCoordinate,const VecCoord& p);
+	Deriv computeJacobian(const TriangleID triangleIndex, const Vec3 barycentricCoordinate,const VecCoord& p);
 	/// computes Jacobian
-	Deriv computeJacobian(const size_t triangleIndex, const Vec3 barycentricCoordinate);
+	Deriv computeJacobian(const TriangleID triangleIndex, const Vec3 barycentricCoordinate);
 	/// compute the 4 De Casteljeau  of degree d-1
-	void computeDeCasteljeauPoints(const size_t triangleIndex, const Vec3 barycentricCoordinate, const VecCoord& p,Coord point[3]);
+	void computeDeCasteljeauPoints(const TriangleID triangleIndex, const Vec3 barycentricCoordinate, const VecCoord& p,Coord point[3]);
 	/// test if the Bezier Triangle is a simple affine tesselation of a regular Triangle
-	bool isBezierTriangleAffine(const size_t triangleIndex,const VecCoord& p, const Real tolerance=(Real)1e-5) const; 
+	bool isBezierTriangleAffine(const TriangleID triangleIndex,const VecCoord& p, const Real tolerance=(Real)1e-5) const; 
 
 };
 

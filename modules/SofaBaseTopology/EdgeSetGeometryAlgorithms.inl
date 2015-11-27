@@ -76,56 +76,56 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
 	edgeNumericalIntegration.addQuadratureMethod(m,1,qpa);
 	/// integration with quadratic accuracy.
 	qpa.clear();
-	Real a=0.5+1/(2*sqrt(3.));
+	Real a=(Real)(0.5+1/(2*sqrt(3.)));
 	v=BarycentricCoordinatesType(a);
 	qpa.push_back(QuadraturePoint(v,(Real)0.5));
-	Real b=0.5-1/(2*sqrt(3.));
+	Real b=(Real)(0.5-1/(2*sqrt(3.)));
 	v=BarycentricCoordinatesType(b);
 	qpa.push_back(QuadraturePoint(v,(Real)0.5));
 	edgeNumericalIntegration.addQuadratureMethod(m,2,qpa);
 	/// integration with cubic accuracy.
 	qpa.clear();
-	a=0.5*(1-sqrt((Real)3/5.0));
+	a=(Real)(0.5*(1-sqrt(3/5.0)));
 	v=BarycentricCoordinatesType(a);
     qpa.push_back(QuadraturePoint(v,(Real)(5.0/18.0)));
-	b=0.5*(1+sqrt((Real)3/5.0));
+	b=(Real)(0.5*(1+sqrt(3/5.0)));
 	v=BarycentricCoordinatesType(b);
     qpa.push_back(QuadraturePoint(v,(Real)(5.0/18.0)));
-	v=BarycentricCoordinatesType(0.5);
+	v=BarycentricCoordinatesType((Real)0.5);
     qpa.push_back(QuadraturePoint(v,(Real)(8.0/18.0)));
 	edgeNumericalIntegration.addQuadratureMethod(m,3,qpa);
 	/// integration with quartic accuracy.
 	qpa.clear();
-	a=0.5*(1-sqrt((Real)(3+2*sqrt(6.0/5.0))/7));
+	a=(Real)(0.5*(1-sqrt((3+2*sqrt(6.0/5.0))/7)));
 	v=BarycentricCoordinatesType(a);
-	Real a2=0.25-sqrt(5.0/6.0)/12;
+	Real a2=(Real)(0.25-sqrt(5.0/6.0)/12);
 	qpa.push_back(QuadraturePoint(v,a2));
-	a=0.5*(1+sqrt((Real)(3+2*sqrt(6.0/5.0))/7));
-	v=BarycentricCoordinatesType(a);
-	qpa.push_back(QuadraturePoint(v,a2));
-	a=0.5*(1-sqrt((Real)(3-2*sqrt(6.0/5.0))/7));
-	a2=0.25+sqrt(5.0/6.0)/12;
+	a=(Real)(0.5*(1+sqrt((3+2*sqrt(6.0/5.0))/7)));
 	v=BarycentricCoordinatesType(a);
 	qpa.push_back(QuadraturePoint(v,a2));
-	a=0.5*(1+sqrt((Real)(3-2*sqrt(6.0/5.0))/7));
+	a=(Real)(0.5*(1-sqrt((Real)(3-2*sqrt(6.0/5.0))/7)));
+	a2=(Real)(0.25+sqrt(5.0/6.0)/12);
+	v=BarycentricCoordinatesType(a);
+	qpa.push_back(QuadraturePoint(v,a2));
+	a=(Real)(0.5*(1+sqrt((Real)(3-2*sqrt(6.0/5.0))/7)));
 	v=BarycentricCoordinatesType(a);
 	qpa.push_back(QuadraturePoint(v,a2));
 	edgeNumericalIntegration.addQuadratureMethod(m,4,qpa);
 	/// integration with quintic accuracy.
 	qpa.clear();
-	a=0.5*(1-sqrt((Real)(5+2*sqrt(10.0/7.0)))/3);
+	a=(Real)(0.5*(1-sqrt((Real)(5+2*sqrt(10.0/7.0)))/3));
 	v=BarycentricCoordinatesType(a);
-	a2=(322-13*sqrt(70.0))/900;
+	a2=(Real)((322-13*sqrt(70.0))/900);
 	qpa.push_back(QuadraturePoint(v,a2/2));
-	a=0.5*(1+sqrt((Real)(5+2*sqrt(10.0/7.0)))/3);
+	a=(Real)(0.5*(1+sqrt((Real)(5+2*sqrt(10.0/7.0)))/3));
 	v=BarycentricCoordinatesType(a);
 	qpa.push_back(QuadraturePoint(v,a2/2));
 
-	a=0.5*(1-sqrt((Real)(5-2*sqrt(10.0/7.0)))/3);
+	a=(Real)(0.5*(1-sqrt((Real)(5-2*sqrt(10.0/7.0)))/3));
 	v=BarycentricCoordinatesType(a);
-	a2=(322+13*sqrt(70.0))/900;
+	a2=(Real)(322+13*sqrt(70.0))/900;
 	qpa.push_back(QuadraturePoint(v,a2/2));
-	a=0.5*(1+sqrt((Real)(5-2*sqrt(10.0/7.0)))/3);
+	a=(Real)(0.5*(1+sqrt((Real)(5-2*sqrt(10.0/7.0)))/3));
 	v=BarycentricCoordinatesType(a);
 	qpa.push_back(QuadraturePoint(v,a2/2));
 
@@ -148,9 +148,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
 	varray[2]=0.9324695142031520278123016; warray[2]=0.1713244923791703450402961;
 
 	for (i=0;i<nbIPs;++i) {
-		v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+		v=BarycentricCoordinatesType((Real)(0.5*(1+varray[i])));
 		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-		v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+		v=BarycentricCoordinatesType((Real)(0.5*(1-varray[i])));
 		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
 	}
 	edgeNumericalIntegration.addQuadratureMethod(m,6,qpa);
@@ -162,9 +162,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
 	varray[2]=0.9491079123427585245261897;	warray[2]=0.1294849661688696932706114;
 
 	for (i=0;i<nbIPs;++i) {
-		v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+		v=BarycentricCoordinatesType((Real)(0.5*(1+varray[i])));
 		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-		v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+		v=BarycentricCoordinatesType((Real)(0.5*(1-varray[i])));
 		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
 	}
 	v=BarycentricCoordinatesType(0.5);
@@ -180,9 +180,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
 
 
 	for (i=0;i<nbIPs;++i) {
-		v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+		v=BarycentricCoordinatesType((Real)(0.5*(1+varray[i])));
 		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-		v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+		v=BarycentricCoordinatesType((Real)(0.5*(1-varray[i])));
 		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
 	}
 	edgeNumericalIntegration.addQuadratureMethod(m,8,qpa);
@@ -196,9 +196,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
 
 
 	for (i=0;i<nbIPs;++i) {
-		v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+		v=BarycentricCoordinatesType((Real)(0.5*(1+varray[i])));
 		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-		v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+		v=BarycentricCoordinatesType((Real)(0.5*(1-varray[i])));
 		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
 	}
 	v=BarycentricCoordinatesType(0.5);
@@ -215,9 +215,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
 	nbIPs=5;
 
 	for (i=0;i<nbIPs;++i) {
-		v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+		v=BarycentricCoordinatesType((Real)((Real)(0.5*(1+varray[i]))));
 		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-		v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+		v=BarycentricCoordinatesType((Real)((Real)(0.5*(1-varray[i]))));
 		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
 	}
 	edgeNumericalIntegration.addQuadratureMethod(m,10,qpa);
@@ -231,9 +231,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
 	varray[4]=0.9782286581460569928039380;	warray[4]=	0.0556685671161736664827537;
 
 	for (i=0;i<nbIPs;++i) {
-		v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+		v=BarycentricCoordinatesType((Real)(0.5*(1+varray[i])));
 		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-		v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+		v=BarycentricCoordinatesType((Real)(0.5*(1-varray[i])));
 		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
 	}
 	v=BarycentricCoordinatesType(0.5);
@@ -249,9 +249,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
 	nbIPs=6;
 
 	for (i=0;i<nbIPs;++i) {
-		v=BarycentricCoordinatesType(0.5*(1+varray[i]));
+		v=BarycentricCoordinatesType((Real)(0.5*(1+varray[i])));
 		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
-		v=BarycentricCoordinatesType(0.5*(1-varray[i]));
+		v=BarycentricCoordinatesType((Real)(0.5*(1-varray[i])));
 		qpa.push_back(QuadraturePoint(v,(Real)warray[i]/2));
 	}
 	edgeNumericalIntegration.addQuadratureMethod(m,10,qpa);	

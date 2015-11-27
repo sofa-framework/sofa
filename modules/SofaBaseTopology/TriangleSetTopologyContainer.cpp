@@ -821,7 +821,7 @@ unsigned int TriangleSetTopologyContainer::getNumberOfConnectedComponent()
     while (elemAll.size() < nbr)
     {
         std::sort(elemAll.begin(), elemAll.end());
-        TriangleID other_triangleID = elemAll.size();
+        TriangleID other_triangleID = (TriangleID)elemAll.size();
 
         for (TriangleID i = 0; i<elemAll.size(); ++i)
             if (elemAll[i] != i)

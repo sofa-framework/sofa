@@ -218,7 +218,7 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
             edgeIndex = m_container->getEdgeIndex(t[(j+1)%3],t[(j+2)%3]);
             sofa::helper::vector< unsigned int > edgeIndexList;
             edgeIndexList.push_back((unsigned int) edgeIndex);
-            addEdgesWarning( v.size(), v, edgeIndexList);
+            addEdgesWarning( (unsigned int)v.size(), v, edgeIndexList);
         }
 
         if(m_container->hasEdgesInTriangle())

@@ -542,7 +542,7 @@ void TetrahedronSetTopologyModifier::removeTrianglesProcess( const sofa::helper:
             for (sofa::helper::vector<unsigned int>::iterator itt=m_container->m_tetrahedraAroundTriangle[lastTriangle].begin();
                     itt!=m_container->m_tetrahedraAroundTriangle[lastTriangle].end(); ++itt)
             {
-                unsigned int triangleIndex=m_container->getTriangleIndexInTetrahedron(m_container->m_trianglesInTetrahedron[(*itt)],lastTriangle);
+                int triangleIndex=m_container->getTriangleIndexInTetrahedron(m_container->m_trianglesInTetrahedron[(*itt)],(TriangleID)lastTriangle);
                 m_container->m_trianglesInTetrahedron[(*itt)][triangleIndex] = indices[i];
             }
 

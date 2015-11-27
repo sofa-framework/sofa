@@ -83,7 +83,7 @@ void BezierTriangleSetTopologyContainer::reinit()
 		triangleOffsetMap.clear();
 
 		// fill the elementMap and the 3 offsetMap in order to get the global index of an element from its Bezier index 
-		BezierDegreeType degree=d_degree.getValue();
+		BezierDegreeType degree=(BezierDegreeType)d_degree.getValue();
 		BezierDegreeType i,j;
 		size_t localIndex=0;
 		// vertex index
@@ -174,7 +174,7 @@ const BezierTriangleSetTopologyContainer::SeqWeights & BezierTriangleSetTopology
 }
 
 BezierDegreeType BezierTriangleSetTopologyContainer::getDegree() const{
-	return d_degree.getValue();
+	return (BezierDegreeType)d_degree.getValue();
 }
 
 size_t BezierTriangleSetTopologyContainer::getNumberOfTriangularPoints() const{
@@ -186,7 +186,7 @@ size_t BezierTriangleSetTopologyContainer::getGlobalIndexOfBezierPoint(const Tet
 
          if (locationToGlobalIndexMap.empty()) {
              Triangle tr=getTriangle(triangleIndex);
-             BezierDegreeType degree=d_degree.getValue();
+             BezierDegreeType degree=(BezierDegreeType)d_degree.getValue();
              ElementMapIterator emi=elementMap.find(id);
              if (emi!=elementMap.end()) {
                  ElementTriangleIndex ei=(*emi).second;
@@ -280,7 +280,7 @@ sofa::helper::vector<TriangleBezierIndex> BezierTriangleSetTopologyContainer::ge
 sofa::helper::vector<TriangleBezierIndex> BezierTriangleSetTopologyContainer::getTriangleBezierIndexArrayOfGivenDegree(const BezierDegreeType deg) const
 {
 	// vertex index
-	size_t i,j;
+	BezierDegreeType i,j;
 	sofa::helper::vector<TriangleBezierIndex> tbiArray;
 	for (i=0;i<3;++i) {
 		TriangleBezierIndex bti(0,0,0);
@@ -316,7 +316,7 @@ sofa::helper::vector<TriangleBezierIndex> BezierTriangleSetTopologyContainer::ge
 }
 sofa::helper::vector<BezierTriangleSetTopologyContainer::LocalTriangleIndex> BezierTriangleSetTopologyContainer::getMapOfTriangleBezierIndexArrayFromInferiorDegree() const
 {
-	BezierDegreeType degree=d_degree.getValue();
+	BezierDegreeType degree=(BezierDegreeType)d_degree.getValue();
 	sofa::helper::vector<TriangleBezierIndex> tbiDerivArray=getTriangleBezierIndexArrayOfGivenDegree(degree-1);
 	sofa::helper::vector<TriangleBezierIndex> tbiLinearArray=getTriangleBezierIndexArrayOfGivenDegree(1);
 	TriangleBezierIndex tbi;
@@ -346,7 +346,7 @@ void BezierTriangleSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInTria
 
 		size_t offset;
 		// edge index
-		BezierDegreeType degree=d_degree.getValue();
+		BezierDegreeType degree=(BezierDegreeType)d_degree.getValue();
 		if (degree>1) {
 			EdgesInTriangle eit=getEdgesInTriangle(triangleIndex);
 			for (i=0;i<3;++i) {
@@ -355,12 +355,12 @@ void BezierTriangleSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInTria
 				// check the order of the edge to be consistent with the Triangle
 				if (e[0]==tr[(i+1)%3] ) {
 					for (j=0;j<(size_t)(degree-1);++j) {
-						indexArray.push_back(offset+j);
+						indexArray.push_back((PointID)(offset+j));
 					}
 				} else {
 					int jj;
 					for (jj=degree-2;jj>=0;--jj) {
-						indexArray.push_back(offset+jj);
+						indexArray.push_back((PointID)(offset+jj));
 					}
 				}
 			}
@@ -375,7 +375,7 @@ void BezierTriangleSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInTria
 			size_t rank=0;
 			for (i=0;i<(size_t)(degree-2);++i) {
 				for (j=0;j<(degree-i-2);++j) {
-					indexArray.push_back(offset+rank);
+					indexArray.push_back((PointID)(offset+rank));
 					rank++;
 				}
 			}
@@ -386,7 +386,7 @@ void BezierTriangleSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInTria
 		for (i=0;i<bezierIndexArray.size();++i) {
 			itgi=locationToGlobalIndexMap.find(ControlPointLocation(triangleIndex,bezierIndexArray[i]));
 			if (itgi!=locationToGlobalIndexMap.end()) {
-				indexArray.push_back(itgi->second);
+				indexArray.push_back((PointID)itgi->second);
 			} else {
 #ifndef NDEBUG
 				sout << "Error. [BezierTriangleSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInTriangle] Cannot find global index of control point with TRBI  "<< (sofa::defaulttype::Vec<3,int> )(bezierIndexArray[i]) <<" and triangle index " << triangleIndex <<sendl;
@@ -408,7 +408,7 @@ void BezierTriangleSetTopologyContainer::getLocationFromGlobalIndex(const size_t
 			elementOffset=0;
 		} else {
 			gi-=getNumberOfTriangularPoints();
-			BezierDegreeType degree=d_degree.getValue();
+			BezierDegreeType degree=(BezierDegreeType)d_degree.getValue();
 			if (gi<(getNumberOfEdges()*(degree-1))) {
 				location=EDGE;
 				elementIndex=gi/(degree-1);
@@ -437,15 +437,15 @@ void BezierTriangleSetTopologyContainer::getLocationFromGlobalIndex(const size_t
 			// if its local index is less than 3 then it is a triangle vertex
 			if (offset<3) {
 				location=POINT;
-				elementIndex=getTriangle(itcpl->second.first)[offset];
+				elementIndex=getTriangle((TriangleID)itcpl->second.first)[offset];
 				elementOffset=0;
 			} else {
 				offset -= 3;
-				BezierDegreeType degree=d_degree.getValue();
+				BezierDegreeType degree=(BezierDegreeType)d_degree.getValue();
                 if ((BezierDegreeType)offset<3*(degree-1)){
 					location=EDGE;
 					// get the id of the edge on which it lies
-					elementIndex=getEdgesInTriangle(itcpl->second.first)[offset/(degree-1)];
+					elementIndex=getEdgesInTriangle((TriangleID)itcpl->second.first)[offset/(degree-1)];
 					elementOffset=offset%(degree-1);
 				} else {
 					offset -= 3*(degree-1);
@@ -463,11 +463,11 @@ void BezierTriangleSetTopologyContainer::getLocationFromGlobalIndex(const size_t
 }
 sofa::helper::vector<BezierTriangleSetTopologyContainer::LocalTriangleIndex> BezierTriangleSetTopologyContainer::getLocalIndexSubtriangleArray() const {
 	sofa::helper::vector<LocalTriangleIndex> subtriangleArray;
-	BezierDegreeType degree=d_degree.getValue();
+	BezierDegreeType degree=(BezierDegreeType)d_degree.getValue();
 	TriangleBezierIndex tbi1,tbi2,tbi3;
 	LocalTriangleIndex lti;
-	for (size_t i=1;i<=degree;++i) {
-		for (size_t j=0;j<(degree-i+1);++j) {
+	for (BezierDegreeType i=1;i<=degree;++i) {
+		for (BezierDegreeType j=0;j<(degree-i+1);++j) {
 			tbi1=TriangleBezierIndex(i,j,degree-i-j);
 			tbi2=TriangleBezierIndex(i-1,j+1,degree-i-j);
 			tbi3=TriangleBezierIndex(i-1,j,degree-i-j+1);
@@ -493,18 +493,18 @@ sofa::helper::vector<BezierTriangleSetTopologyContainer::LocalTriangleIndex> Bez
 	sofa::helper::vector<TriangleBezierIndex> tbia=getTriangleBezierIndexArrayOfGivenDegree(deg);
 	// create a local map for indexing
 	std::map<TriangleBezierIndex,size_t> tmpLocalIndexMap;
-	size_t i;
+	BezierDegreeType i;
 	for (i=0;i<tbia.size();++i)
 		tmpLocalIndexMap.insert(OffsetMapType(tbia[i],i));
 	// now create the array of subtriangles
 	sofa::helper::vector<LocalTriangleIndex> subtriangleArray;
 	
 	TriangleBezierIndex tbi[3];
-	size_t k;
+	BezierDegreeType k;
 	LocalTriangleIndex lti;
 	std::map<TriangleBezierIndex,size_t>::iterator omi;
 	for ( i=1;i<=deg;++i) {
-		for (size_t j=0;j<(deg-i+1);++j) {
+		for (BezierDegreeType j=0;j<(deg-i+1);++j) {
 			tbi[0]=TriangleBezierIndex(i,j,deg-i-j);
 			tbi[1]=TriangleBezierIndex(i-1,j+1,deg-i-j);
 			tbi[2]=TriangleBezierIndex(i-1,j,deg-i-j+1);
@@ -543,8 +543,8 @@ sofa::helper::vector<BezierTriangleSetTopologyContainer::LocalTriangleIndex> Bez
 }
 void BezierTriangleSetTopologyContainer::getEdgeBezierIndexFromEdgeOffset(size_t offset, EdgeBezierIndex &ebi){
 	assert(offset<d_degree.getValue());
-	ebi[0]=offset+1;
-	ebi[1]=d_degree.getValue()-offset-1;
+	ebi[0]=(BezierDegreeType)offset+1;
+	ebi[1]=(BezierDegreeType)(d_degree.getValue()-offset-1);
 }
 void BezierTriangleSetTopologyContainer::getTriangleBezierIndexFromTriangleOffset(size_t offset, TriangleBezierIndex &tbi){
 	assert(offset<(d_degree.getValue()-1)*(d_degree.getValue()-2)/2);

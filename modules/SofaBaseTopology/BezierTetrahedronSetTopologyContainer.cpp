@@ -190,8 +190,8 @@ void BezierTetrahedronSetTopologyContainer::reinit()
 		// initialize 	weightedDOFArray
 	tetrahedronDOFArray.clear(); 
 	VecPointID indexArray;
-	size_t i;
-    for (i=0;i<(size_t)getNbTetrahedra();++i) {
+	TetraID i;
+    for (i=0;i<(TetraID)getNbTetrahedra();++i) {
 		indexArray.clear();
 		getGlobalIndexArrayOfBezierPointsInTetrahedron(i,indexArray);
 		tetrahedronDOFArray.push_back(indexArray);
@@ -340,7 +340,7 @@ sofa::helper::vector<TetrahedronBezierIndex> BezierTetrahedronSetTopologyContain
 sofa::helper::vector<TetrahedronBezierIndex> BezierTetrahedronSetTopologyContainer::getTetrahedronBezierIndexArrayOfGivenDegree(const BezierDegreeType deg) const
 {
 	// vertex index
-	size_t i,j,k;
+	BezierDegreeType i,j,k;
 	sofa::helper::vector<TetrahedronBezierIndex> tbiArray;
 	for (i=0;i<4;++i) {
 		TetrahedronBezierIndex bti(0,0,0,0);
@@ -361,7 +361,7 @@ sofa::helper::vector<TetrahedronBezierIndex> BezierTetrahedronSetTopologyContain
 	// triangle index
 	if (deg>2) {;
 		for (i=0;i<4;++i) {
-			for (j=1;j<(size_t)(deg-1);++j) {
+			for (j=1;j<(deg-1);++j) {
 				for (k=1;k<(deg-j);++k) {
 					TetrahedronBezierIndex bti(0,0,0,0);
 					bti[trianglesInTetrahedronArray[i][0]]=j;
@@ -411,7 +411,7 @@ void BezierTetrahedronSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInT
 	Tetrahedron tet=getTetrahedron(tetrahedronIndex);
 	indexArray.clear();
 	// vertex index
-	size_t i,j,k;
+	TetraID i,j,k;
 	for (i=0;i<4;++i)
 		indexArray.push_back(tet[i]);
 
@@ -427,12 +427,12 @@ void BezierTetrahedronSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInT
 				// check the order of the edge to be consistent with the tetrahedron
 				if (e[0]==tet[edgesInTetrahedronArray[i][0]]) {
 					for (j=0;j<(size_t)(degree-1);++j) {
-						indexArray.push_back(offset+j);
+						indexArray.push_back((PointID)(offset+j));
 					}
 				} else {
 					int jj;
 					for (jj=degree-2;jj>=0;--jj) {
-						indexArray.push_back(offset+jj);
+						indexArray.push_back((PointID)(offset+jj));
 					}
 				}
 			} else {
@@ -442,7 +442,7 @@ void BezierTetrahedronSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInT
 					for (j=0;j<(size_t)(degree-1);++j) {
 						cpl=ControlPointLocation(eit[i],std::make_pair(EDGE,j));
 						assert(locationToGlobalIndexMap.find(cpl)!=locationToGlobalIndexMap.end());
-						indexArray.push_back(locationToGlobalIndexMap[cpl]);
+						indexArray.push_back((PointID)locationToGlobalIndexMap[cpl]);
 					}
 				}
 				else {
@@ -450,7 +450,7 @@ void BezierTetrahedronSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInT
 					for (jj=degree-2;jj>=0;--jj) {
 						cpl=ControlPointLocation(eit[i],std::make_pair(EDGE,(size_t)jj));
 						assert(locationToGlobalIndexMap.find(cpl)!=locationToGlobalIndexMap.end());
-						indexArray.push_back(locationToGlobalIndexMap[cpl]);
+						indexArray.push_back((PointID)locationToGlobalIndexMap[cpl]);
 					}
 				}
 
@@ -482,11 +482,11 @@ void BezierTetrahedronSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInT
 					bti[trianglesInTetrahedronArray[i][indexTriangle[2]]]=degree-j-k;
 					OffsetMapIterator omi=triangleOffsetMap.find(bti);
 					if (locationToGlobalIndexMap.empty()) {
-						indexArray.push_back(offset+(*omi).second);
+						indexArray.push_back((PointID)(offset+(*omi).second));
 					} else {
 						ControlPointLocation cpl(tit[i],std::make_pair(TRIANGLE,(*omi).second));
 						assert(locationToGlobalIndexMap.find(cpl)!=locationToGlobalIndexMap.end());
-						indexArray.push_back(locationToGlobalIndexMap[cpl]);
+						indexArray.push_back((PointID)locationToGlobalIndexMap[cpl]);
 					}
 				}
 			}
@@ -503,11 +503,11 @@ void BezierTetrahedronSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInT
 			for (j=0;j<(degree-i-3);++j) {
 				for (k=0;k<(degree-j-i-3);++k) {
 					if (locationToGlobalIndexMap.empty()) {
-						indexArray.push_back(offset+rank);
+						indexArray.push_back((PointID)(offset+rank));
 					} else {
 						ControlPointLocation cpl(tetrahedronIndex,std::make_pair(TETRAHEDRON,rank));
 						assert(locationToGlobalIndexMap.find(cpl)!=locationToGlobalIndexMap.end());
-						indexArray.push_back(locationToGlobalIndexMap[cpl]);
+						indexArray.push_back((PointID)locationToGlobalIndexMap[cpl]);
 					}
 					rank++;
 				}
@@ -568,8 +568,8 @@ void BezierTetrahedronSetTopologyContainer::getLocationFromGlobalIndex(const siz
 }
 void BezierTetrahedronSetTopologyContainer::getEdgeBezierIndexFromEdgeOffset(size_t offset, EdgeBezierIndex &ebi){
 	assert(offset<d_degree.getValue());
-	ebi[0]=offset+1;
-	ebi[1]=d_degree.getValue()-offset-1;
+	ebi[0]=(BezierDegreeType)offset+1;
+	ebi[1]=(BezierDegreeType)(d_degree.getValue()-offset)-1;
 }
 void BezierTetrahedronSetTopologyContainer::getTriangleBezierIndexFromTriangleOffset(size_t offset, TriangleBezierIndex &tbi){
     assert(offset<(size_t)((d_degree.getValue()-1)*(d_degree.getValue()-2)/2));
@@ -581,7 +581,8 @@ void BezierTetrahedronSetTopologyContainer::getTetrahedronBezierIndexFromTetrahe
 }
 bool BezierTetrahedronSetTopologyContainer::checkBezierPointTopology()
 {
-	size_t nTetras,elem;
+	TetraID nTetras;
+    size_t elem;
 	BezierDegreeType degree=d_degree.getValue();
 	// check the total number of vertices.
     assert((size_t)getNbPoints()==(getNumberOfTetrahedralPoints()+getNumberOfEdges()*(degree-1)+getNumberOfTriangles()*(degree-1)*(degree-2)/2+getNumberOfTetrahedra()*(degree-1)*(degree-2)*(degree-3)/6));
@@ -589,7 +590,7 @@ bool BezierTetrahedronSetTopologyContainer::checkBezierPointTopology()
 	VecPointID indexArray;
 	BezierTetrahedronPointLocation location; 
     size_t elementIndex, elementOffset/*,localIndex*/;
-	for (nTetras=0;nTetras<getNumberOfTetrahedra();++nTetras) {
+	for (nTetras=0;nTetras<(TetraID)getNumberOfTetrahedra();++nTetras) {
 		indexArray.clear();
 		getGlobalIndexArrayOfBezierPointsInTetrahedron(nTetras,indexArray);
 		// check the number of control points per tetrahedron is correct

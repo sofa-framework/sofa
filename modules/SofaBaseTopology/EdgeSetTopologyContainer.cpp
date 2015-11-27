@@ -297,7 +297,7 @@ unsigned int EdgeSetTopologyContainer::getNumberOfConnectedComponent()
     while (elemAll.size() < nbr)
     {
         std::sort(elemAll.begin(), elemAll.end());
-        EdgeID other_edgeID = elemAll.size();
+        EdgeID other_edgeID = (EdgeID)elemAll.size();
 
         for (EdgeID i = 0; i<(EdgeID)elemAll.size(); ++i)
             if (elemAll[i] != i)

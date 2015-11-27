@@ -84,11 +84,12 @@ template< class DataTypes>
 		/// precompute the factorial of the degree.
 		for (size_t i=0;i<tbiArray.size();++i) {
 			tbi=tbiArray[i];
-			bernsteinCoefficientArray[i]=multinomial(degree,tbi); 
+			bernsteinCoefficientArray[i]=(Real)multinomial(degree,tbi); 
             bernsteinCoeffMap.insert(std::pair<TriangleBezierIndex,Real>(tbi,(Real) bernsteinCoefficientArray[i]));
 		}
 		/// insert coefficient for the inferior degree
-        BezierDegreeType i,j,k,/*l,*/m,n,index1,index2;
+        BezierDegreeType i,j,k,/*l,*/m,n;
+        size_t index1,index2;
 		for (i=0;i<=(degree-1);++i) {
 			for (j=0;j<=(degree-i-1);++j) {
 				k=degree-1-i-j;
@@ -137,13 +138,13 @@ template< class DataTypes>
 {
 }
 template< class DataTypes>
-typename DataTypes::Coord BezierTriangleSetGeometryAlgorithms< DataTypes >::computeNodalValue(const size_t triangleIndex,const Vec3 barycentricCoordinate, const typename DataTypes::VecCoord& p)
+typename DataTypes::Coord BezierTriangleSetGeometryAlgorithms< DataTypes >::computeNodalValue(const TriangleID triangleIndex,const Vec3 barycentricCoordinate, const typename DataTypes::VecCoord& p)
 {
 	Coord nodalValue;
 	nodalValue.clear();
 	VecPointID indexArray;
 	TriangleBezierIndex tbi;
-	bool isRational=container->isRationalSpline(triangleIndex);
+	bool isRational=container->isRationalSpline((int)triangleIndex);
 
 	container->getGlobalIndexArrayOfBezierPointsInTriangle(triangleIndex, indexArray);
 	if (isRational) {
@@ -153,9 +154,9 @@ typename DataTypes::Coord BezierTriangleSetGeometryAlgorithms< DataTypes >::comp
 		for(size_t i=0; i<tbiArray.size(); ++i)
 		{
 			tbi=tbiArray[i];
-			bernsteinPolynonial=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2]);
+			bernsteinPolynonial=(Real)(bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2]));
 			nodalValue+=wa[indexArray[i]]*bernsteinPolynonial*p[indexArray[i]];
-			weight+=wa[indexArray[i]]*bernsteinPolynonial;
+			weight+=(Real)wa[indexArray[i]]*bernsteinPolynonial;
 		}
 		nodalValue/=weight;
 	} else {
@@ -169,7 +170,7 @@ typename DataTypes::Coord BezierTriangleSetGeometryAlgorithms< DataTypes >::comp
 	return(nodalValue);
 }
 template< class DataTypes>
-typename DataTypes::Coord BezierTriangleSetGeometryAlgorithms< DataTypes >::computeNodalValue(const size_t triangleIndex,const Vec3 barycentricCoordinate)
+typename DataTypes::Coord BezierTriangleSetGeometryAlgorithms< DataTypes >::computeNodalValue(const TriangleID triangleIndex,const Vec3 barycentricCoordinate)
 {
 	const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
 	return(computeNodalValue(triangleIndex,barycentricCoordinate,p));
@@ -177,24 +178,24 @@ typename DataTypes::Coord BezierTriangleSetGeometryAlgorithms< DataTypes >::comp
 template<class DataTypes>
 typename DataTypes::Real BezierTriangleSetGeometryAlgorithms<DataTypes>::computeBernsteinPolynomial(const TriangleBezierIndex tbi, const Vec3 barycentricCoordinate)
 {
-	Real  val=pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2]);
+	Real  val=(Real)(pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2]));
     typename std::map<TriangleBezierIndex,Real>::iterator it=bernsteinCoeffMap.find(tbi);
 	if (it!=bernsteinCoeffMap.end()) {
 		val*=(*it).second;
 		return(val);
 	} else {
-		val*=multinomial(tbi[0]+tbi[1]+tbi[2],tbi);
+		val*=(Real)multinomial(tbi[0]+tbi[1]+tbi[2],tbi);
 		return(val);
 	}
 }
  template<class DataTypes>
  typename BezierTriangleSetGeometryAlgorithms<DataTypes>::Deriv 
-	 BezierTriangleSetGeometryAlgorithms<DataTypes>::computeJacobian(const size_t triangleIndex, const Vec3 barycentricCoordinate, const typename DataTypes::VecCoord& p)
+	 BezierTriangleSetGeometryAlgorithms<DataTypes>::computeJacobian(const TriangleID triangleIndex, const Vec3 barycentricCoordinate, const typename DataTypes::VecCoord& p)
  {
 	/// the 2 derivatives
 	Deriv dpos[2];
 	VecPointID indexArray;
-	bool isRational=container->isRationalSpline(triangleIndex);
+	bool isRational=container->isRationalSpline((int)triangleIndex);
 	TriangleBezierIndex tbi;
 	size_t j;
 	Real val;
@@ -207,10 +208,10 @@ typename DataTypes::Real BezierTriangleSetGeometryAlgorithms<DataTypes>::compute
 		for(size_t i=0; i<tbiArray.size(); ++i)
 		{
 			tbi=tbiArray[i];
-			val=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2]);
+			val=(Real)(bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2]));
 			// compute the numerator and denominator
 			pos+=wa[indexArray[i]]*val*p[indexArray[i]];
-			weight+=wa[indexArray[i]]*val;
+			weight+=(Real)wa[indexArray[i]]*val;
 
 			Vec3 dval(0,0,0);
 			for (j=0;j<3;++j) {
@@ -224,7 +225,7 @@ typename DataTypes::Real BezierTriangleSetGeometryAlgorithms<DataTypes>::compute
 			}
 			for (j=0;j<2;++j) {
 				dpos[j]+=(dval[j]-dval[2])*wa[indexArray[i]]*p[indexArray[i]];
-				dweight[j]+=(dval[j]-dval[2])*wa[indexArray[i]];
+				dweight[j]+=(Real)((dval[j]-dval[2])*wa[indexArray[i]]);
 			}
 		}
 		// computes the derivatives of the ratio of the 2 polynomial terms
@@ -235,7 +236,7 @@ typename DataTypes::Real BezierTriangleSetGeometryAlgorithms<DataTypes>::compute
 		for(size_t i=0; i<tbiArray.size(); ++i)
 		{
 			tbi=tbiArray[i];
-			val=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2]);
+			val=(Real)(bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2]));
 			Vec3 dval(0,0,0);
 			for (j=0;j<3;++j) {
 				if(tbi[j] && barycentricCoordinate[j]){
@@ -255,19 +256,19 @@ typename DataTypes::Real BezierTriangleSetGeometryAlgorithms<DataTypes>::compute
  }
  template<class DataTypes>
  typename BezierTriangleSetGeometryAlgorithms<DataTypes>::Deriv 
-	 BezierTriangleSetGeometryAlgorithms<DataTypes>::computeJacobian(const size_t triangleIndex, const Vec3 barycentricCoordinate)
+	 BezierTriangleSetGeometryAlgorithms<DataTypes>::computeJacobian(const TriangleID triangleIndex, const Vec3 barycentricCoordinate)
  {
 	 const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
 	 return(computeJacobian(triangleIndex,barycentricCoordinate,p));
 
  }
 template<class DataTypes>
-void BezierTriangleSetGeometryAlgorithms<DataTypes>::computeDeCasteljeauPoints(const size_t triangleIndex, const Vec3 barycentricCoordinate,  const VecCoord& p, Coord dpos[3])
+void BezierTriangleSetGeometryAlgorithms<DataTypes>::computeDeCasteljeauPoints(const TriangleID triangleIndex, const Vec3 barycentricCoordinate,  const VecCoord& p, Coord dpos[3])
 {
 	/// the 4 derivatives
 	VecPointID indexArray;
 	TriangleBezierIndex tbi;
-	bool isRational=container->isRationalSpline(triangleIndex);
+	bool isRational=container->isRationalSpline((int)triangleIndex);
 	size_t j;
 	Real val;
 	container->getGlobalIndexArrayOfBezierPointsInTriangle(triangleIndex, indexArray);
@@ -283,9 +284,9 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::computeDeCasteljeauPoints(c
 		for(size_t i=0; i<tbiArray.size(); ++i)
 		{
 			tbi=tbiArray[i];
-			val=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2]);
+			val=(Real)(bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2]));
 			pos+=val*p[indexArray[i]];
-			weight+=val*wa[indexArray[i]];
+			weight+=(Real)(val*wa[indexArray[i]]);
 			Vec3 dval(0,0,0);
 			for (j=0;j<3;++j) {
 				if(tbi[j] && barycentricCoordinate[j]){
@@ -296,7 +297,7 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::computeDeCasteljeauPoints(c
 						dval[j]*=(Real)(pow( barycentricCoordinate[(j+k)%3],tbi[(j+k)%3]));
 				}
 				dpos[j]+=dval[j]*p[indexArray[i]];
-				dweight[j]+=dval[j]*wa[indexArray[i]];
+				dweight[j]+=(Real)(dval[j]*wa[indexArray[i]]);
 			}
 		}
 		for (j=0;j<3;++j) {
@@ -306,7 +307,7 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::computeDeCasteljeauPoints(c
 		for(size_t i=0; i<tbiArray.size(); ++i)
 		{
 			tbi=tbiArray[i];
-			val=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2]);
+			val=(Real)(bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2]));
 			Vec3 dval(0,0,0);
 			for (j=0;j<3;++j) {
 				if(tbi[j] && barycentricCoordinate[j]){
@@ -326,7 +327,7 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::computeDeCasteljeauPoints(c
 }
 
 template<class DataTypes>
-bool BezierTriangleSetGeometryAlgorithms<DataTypes>::isBezierTriangleAffine(const size_t triangleIndex,const VecCoord& p, Real tolerance) const{
+bool BezierTriangleSetGeometryAlgorithms<DataTypes>::isBezierTriangleAffine(const TriangleID triangleIndex,const VecCoord& p, Real tolerance) const{
 	// get the global indices of all points
 	VecPointID indexArray;
 	container->getGlobalIndexArrayOfBezierPointsInTriangle(triangleIndex, indexArray);
@@ -373,7 +374,7 @@ bool BezierTriangleSetGeometryAlgorithms<DataTypes>::isBezierTriangleAffine(cons
          if(barycentricCoordinate[i])
              for(unsigned j=0;j<3;++j)
              {
-                 if(i==j) { if(tbi[i]>1) ddval[j][i]=((Real)tbi[i]-1.)*dval[j]/barycentricCoordinate[i]; }
+                 if(i==j) { if(tbi[i]>1) ddval[j][i]=((Real)tbi[i]-1)*(Real)dval[j]/(Real)barycentricCoordinate[i]; }
                  else { if(tbi[i]) ddval[j][i]=(Real)tbi[i]*dval[j]/barycentricCoordinate[i]; }
              }
      return ddval;
@@ -389,7 +390,8 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Vi
 		if (drawControlPoints.getValue())
 		{
 			size_t nbPoints=container->getNbPoints();
-			size_t i,elementIndex,elementOffset;
+            size_t elementIndex,elementOffset;
+			int i;
 			const typename DataTypes::VecCoord& pos =(this->object->read(core::ConstVecCoordId::position())->getValue());
 			BezierTriangleSetTopologyContainer::BezierTrianglePointLocation location;
 
@@ -408,32 +410,32 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Vi
 						edgeLengthArray.push_back(pp.norm());
 				}
 				std::nth_element(edgeLengthArray.begin(), edgeLengthArray.begin() + edgeLengthArray.size()/2, edgeLengthArray.end());
-				Real radius=edgeLengthArray[edgeLengthArray.size()/2]/5;
+				float radius=(float)edgeLengthArray[edgeLengthArray.size()/2]/5;
 				std::vector<sofa::defaulttype::Vector3> pointsVertices,pointsEdges,pointsTriangles;
 				std::vector<float> radiusVertices,radiusEdges,radiusTriangles;
 				sofa::defaulttype::Vector3 p;
 
 
 				for (i=0;i<nbPoints;++i) {
-					container->getLocationFromGlobalIndex(i,location,elementIndex,elementOffset);
+					container->getLocationFromGlobalIndex((size_t)i,location,elementIndex,elementOffset);
 					if (location==BezierTriangleSetTopologyContainer::NONE) {
 					} else if (location==BezierTriangleSetTopologyContainer::POINT) {
 						p=pos[i];
 						pointsVertices.push_back(p);
 
-						radiusVertices.push_back(radius*container->getWeight(i));
+						radiusVertices.push_back(radius*(float)container->getWeight((int)i));
 
 					} else if (location==BezierTriangleSetTopologyContainer::EDGE) {
 						p=pos[i];
 						pointsEdges.push_back(p);
 
-						radiusEdges.push_back(radius*container->getWeight(i));
+						radiusEdges.push_back(radius*(float)container->getWeight(i));
 
 					} else {
 						p=pos[i];
 						pointsTriangles.push_back(p);
 
-						radiusTriangles.push_back(radius*container->getWeight(i));
+						radiusTriangles.push_back(radius*(float)container->getWeight(i));
 
 					}
 				}
@@ -455,7 +457,8 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Vi
 				// estimate the  mean radius of the spheres from the first Bezier triangle 
 				VecPointID indexArray;
 				size_t nbPoints=container->getNbPoints();
-				size_t i,elementIndex,elementOffset;
+				size_t elementIndex,elementOffset;
+                int i;
 				const typename DataTypes::VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 				BezierTriangleSetTopologyContainer::BezierTrianglePointLocation location;
 				container->getGlobalIndexArrayOfBezierPointsInTriangle(0, indexArray);
@@ -470,19 +473,19 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Vi
 					edgeLengthArray.push_back(pp.norm());
 				}
 				std::nth_element(edgeLengthArray.begin(), edgeLengthArray.begin() + edgeLengthArray.size()/2, edgeLengthArray.end());
-				Real radius=edgeLengthArray[edgeLengthArray.size()/2]/5;
+				float radius=(float)edgeLengthArray[edgeLengthArray.size()/2]/5;
 				std::vector<sofa::defaulttype::Vector3> pointsVertices;
 				std::vector<float> radiusVertices;
 				sofa::defaulttype::Vector3 p1;
 
 
 				for (i=0;i<nbPoints;++i) {
-					container->getLocationFromGlobalIndex(i,location,elementIndex,elementOffset);
+					container->getLocationFromGlobalIndex((size_t)i,location,elementIndex,elementOffset);
 					if (location==BezierTriangleSetTopologyContainer::POINT) {
 						p1=coords[i];
 						pointsVertices.push_back(p1);
 
-						radiusVertices.push_back(radius*container->getWeight(i));
+						radiusVertices.push_back(radius*(float)container->getWeight(i));
 
 					} 
 				}
