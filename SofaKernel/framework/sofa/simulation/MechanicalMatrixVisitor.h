@@ -207,15 +207,6 @@ public:
 
     //Masses are now added in the addMBKToMatrix call for all ForceFields
 
-    virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
-    {
-        if (matrix != NULL)
-        {
-            c->applyConstraint(this->mparams, matrix);
-        }
-
-        return RESULT_CONTINUE;
-    }
 };
 
 /** Accumulate the entries of a mechanical matrix (mass or stiffness) of the whole scene ONLY ON THE subMatrixIndex */
@@ -252,6 +243,29 @@ public:
     }
 
     //Masses are now added in the addMBKToMatrix call for all ForceFields
+
+};
+
+/** Apply projective constaints of the whole scene */
+class SOFA_SIMULATION_COMMON_API MechanicalAddProjectiveConstraint_ToMatrixVisitor : public MechanicalVisitor
+{
+public:
+    const sofa::core::behavior::MultiMatrixAccessor* matrix;
+
+    MechanicalAddProjectiveConstraint_ToMatrixVisitor(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, const sofa::core::behavior::MultiMatrixAccessor* _matrix )
+        : MechanicalVisitor(mparams) ,  matrix(_matrix) //,m(_m),b(_b),k(_k)
+    {
+    }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalAddProjectiveConstraint_ToMatrixVisitor"; }
+
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*ms*/)
+    {
+        //ms->setOffset(offsetOnExit);
+        return RESULT_CONTINUE;
+    }
 
     virtual Result fwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
     {

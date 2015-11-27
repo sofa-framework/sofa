@@ -514,7 +514,8 @@ void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatr
     if (matrix != NULL)
     {
         //std::cout << "MechanicalAddMBK_ToMatrixVisitor "<< mFact << " " << bFact << " " << kFact << " " << offset << std::endl;
-        executeVisitor( MechanicalAddMBK_ToMatrixVisitor(&mparams, matrix) );
+        executeVisitor( MechanicalAddMBK_ToMatrixVisitor(&mparams /* PARAMS FIRST */, matrix) );
+        executeVisitor( MechanicalAddProjectiveConstraint_ToMatrixVisitor(&mparams /* PARAMS FIRST */, matrix) );
     }
 }
 
@@ -526,7 +527,8 @@ void MechanicalOperations::addSubMBK_ToMatrix(const sofa::core::behavior::MultiM
     if (matrix != NULL)
     {
         //std::cout << "MechanicalAddMBK_ToMatrixVisitor "<< mFact << " " << bFact << " " << kFact << " " << offset << std::endl;
-        executeVisitor( MechanicalAddSubMBK_ToMatrixVisitor(&mparams, matrix, subMatrixIndex) );
+        executeVisitor( MechanicalAddSubMBK_ToMatrixVisitor(&mparams /* PARAMS FIRST */, matrix, subMatrixIndex) );
+        executeVisitor( MechanicalAddProjectiveConstraint_ToMatrixVisitor(&mparams /* PARAMS FIRST */, matrix) );
     }
 }
 
