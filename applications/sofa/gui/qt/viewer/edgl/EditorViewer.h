@@ -121,7 +121,6 @@ private:
 
     sofa::component::engine::SphereROI<defaulttype::Vec3dTypes>::SPtr m_sphereSelection;
 
-
 public:
 
     static EditorViewer* create(EditorViewer*, sofa::gui::BaseViewerArgument& arg)
