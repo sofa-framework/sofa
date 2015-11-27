@@ -119,7 +119,7 @@ private:
     float selection_radiusCoef;
     SelectionMethod m_selectionMethod;
 
-    sofa::component::engine::SphereROI<defaulttype::Vec3dTypes>* m_sphereSelection;
+    sofa::component::engine::SphereROI<defaulttype::Vec3dTypes>::SPtr m_sphereSelection;
 
 
 public:
