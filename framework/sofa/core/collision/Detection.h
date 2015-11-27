@@ -45,6 +45,7 @@ class Detection : public virtual CollisionAlgorithm
 {
 public:
     SOFA_CLASS(Detection, CollisionAlgorithm);
+    SOFA_BASE_CAST_IMPLEMENTATION(Detection)
 
 protected:
     /// Current intersection method

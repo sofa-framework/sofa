@@ -31,62 +31,62 @@ using namespace sofa::core::objectmodel;
 
 extern "C" PyObject * BaseObject_init(PyObject *self, PyObject * /*args*/)
 {
-    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     obj->init();
     Py_RETURN_NONE;
 }
 
 extern "C" PyObject * BaseObject_bwdInit(PyObject *self, PyObject * /*args*/)
 {
-    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     obj->bwdInit();
     Py_RETURN_NONE;
 }
 
 extern "C" PyObject * BaseObject_reinit(PyObject *self, PyObject * /*args*/)
 {
-    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     obj->reinit();
     Py_RETURN_NONE;
 }
 
 extern "C" PyObject * BaseObject_storeResetState(PyObject *self, PyObject * /*args*/)
 {
-    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     obj->storeResetState();
     Py_RETURN_NONE;
 }
 
 extern "C" PyObject * BaseObject_reset(PyObject *self, PyObject * /*args*/)
 {
-    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     obj->reset();
     Py_RETURN_NONE;
 }
 
 extern "C" PyObject * BaseObject_cleanup(PyObject *self, PyObject * /*args*/)
 {
-    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     obj->cleanup();
     Py_RETURN_NONE;
 }
 
 extern "C" PyObject * BaseObject_getContext(PyObject *self, PyObject * /*args*/)
 {
-    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     return SP_BUILD_PYSPTR(obj->getContext());
 }
 
 extern "C" PyObject * BaseObject_getMaster(PyObject *self, PyObject * /*args*/)
 {
-    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     return SP_BUILD_PYSPTR(obj->getMaster());
 }
 
 
 extern "C" PyObject * BaseObject_setSrc(PyObject *self, PyObject * args)
 {
-    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     char *valueString;
     PyObject *pyLoader;
     if (!PyArg_ParseTuple(args, "sO",&valueString,&pyLoader))
@@ -94,14 +94,14 @@ extern "C" PyObject * BaseObject_setSrc(PyObject *self, PyObject * args)
         PyErr_BadArgument();
         Py_RETURN_NONE;
     }
-    BaseObject* loader=dynamic_cast<BaseObject*>(((PySPtr<Base>*)pyLoader)->object.get());
+    BaseObject* loader=((PySPtr<Base>*)self)->object->toBaseObject();
     obj->setSrc(valueString,loader);
     Py_RETURN_NONE;
 }
 
 extern "C" PyObject * BaseObject_getPathName(PyObject * self, PyObject * /*args*/)
 {
-    BaseObject* obj=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
 
     return PyString_FromString(obj->getPathName().c_str());
 }

@@ -81,7 +81,7 @@ namespace sofa {
         {
             // Load the scene from the xml file
             std::string fileName = std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + sceneName;
-            root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
+            root = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()).get() );
         }
 
         /// After simulation compare the positions of points to the theoretical positions.

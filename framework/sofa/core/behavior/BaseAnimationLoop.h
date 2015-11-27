@@ -54,6 +54,7 @@ class SOFA_CORE_API BaseAnimationLoop : public virtual objectmodel::BaseObject
 
 public:
     SOFA_ABSTRACT_CLASS(BaseAnimationLoop, objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseAnimationLoop)
 
 protected:
     BaseAnimationLoop();
@@ -80,6 +81,10 @@ public:
 
     /// Returns starting time of the simulation
     SReal getResetTime() const;
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
+
 };
 
 } // namespace behavior

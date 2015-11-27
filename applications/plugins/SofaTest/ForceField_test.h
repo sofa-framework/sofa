@@ -126,7 +126,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
 
         /// Load the scene
         node = simu->createNewGraph("root");
-        node = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(filename.c_str()));
+        node = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(filename.c_str()).get() );
 
         ///  Get mechanical object
         dof = node->get<DOF>(node->SearchDown);

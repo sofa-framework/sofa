@@ -362,7 +362,7 @@ void RegularGridTopology::createTexCoords()
 #ifndef NDEBUG
     std::cout << "nbP: " << nPts << std::endl;
 #endif
-    helper::WriteAccessor< Data< TextCoords2D > > _texCoords = m_texCoords;
+    helper::WriteAccessor< Data< vector<Vector2> > > _texCoords = this->seqUVs;
     _texCoords.resize(nPts);
 
     // check if flat grid

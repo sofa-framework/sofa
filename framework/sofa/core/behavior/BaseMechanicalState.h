@@ -76,6 +76,7 @@ class SOFA_CORE_API BaseMechanicalState : public virtual BaseState
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseMechanicalState, BaseState);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseMechanicalState)
 protected:
     BaseMechanicalState();
 
@@ -389,6 +390,10 @@ public:
     virtual SReal compareVec(ConstVecId v, std::istream &in) = 0;
 
     /// @}getPotent
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
+
 };
 
 } // namespace behavior

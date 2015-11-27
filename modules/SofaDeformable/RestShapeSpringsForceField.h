@@ -98,6 +98,8 @@ public:
     /// BaseObject initialization method.
     void bwdInit();
 
+    virtual void reinit();
+
     /// Add the forces.
     virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 

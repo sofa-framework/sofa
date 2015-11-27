@@ -59,6 +59,8 @@ def meshLoader(parentNode, filename, name=None, **args):
         return parentNode.createObject('MeshObjLoader', filename=filename, name=_name, **args)
     elif ext == ".vtu" or ext == ".vtk":
         return parentNode.createObject('MeshVTKLoader', filename=filename, name=_name, **args)
+    elif ext == ".stl":
+        return parentNode.createObject('MeshSTLLoader', filename=filename, name=_name, **args)
     else:
         print "ERROR SofaPython.Tools.meshLoader: unknown mesh extension:", ext
         return None

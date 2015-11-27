@@ -160,7 +160,6 @@ protected:
 
 
     /// Execute a recursive action starting from this node.
-    /// This method bypass the actionScheduler of this node if any.
     void doExecuteVisitor(simulation::Visitor* action, bool=false);
     // VisitorScheduler can use doExecuteVisitor() method
     friend class simulation::VisitorScheduler;

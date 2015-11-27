@@ -25,6 +25,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/io/MeshTopologyLoader.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 
 namespace sofa
 {
@@ -523,6 +524,21 @@ BaseMeshTopology::Quad BaseMeshTopology::getLocalQuadsInHexahedron (const PointI
     serr<<"getLocalQuadsInHexahedron() not supported." << sendl;
     return empty;
 }
+
+bool BaseMeshTopology::insertInNode( objectmodel::BaseNode* node )
+{
+    node->addMeshTopology(this);
+    Inherit1::insertInNode(node);
+    return true;
+}
+
+bool BaseMeshTopology::removeInNode( objectmodel::BaseNode* node )
+{
+    node->removeMeshTopology(this);    
+    Inherit1::removeInNode(node);
+    return true;
+}
+
 
 
 } // namespace topology

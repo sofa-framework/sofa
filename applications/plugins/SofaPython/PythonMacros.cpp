@@ -57,57 +57,82 @@ using sofa::core::objectmodel::Base;
 // Ceci afin de permettre l'utilisation de fonctions des sous-classes de Base
 PyObject* SP_BUILD_PYSPTR(Base* obj)
 {
-    if (dynamic_cast<sofa::simulation::Node*>(obj))
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Node));
-    if (dynamic_cast<sofa::core::objectmodel::Context*>(obj))
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Context));
-    if (dynamic_cast<sofa::core::objectmodel::BaseContext*>(obj))
+
+
+    if( obj->toBaseObject() )
+    {
+        if( obj->toBaseLoader() )
+        {
+            if (dynamic_cast<sofa::core::loader::MeshLoader*>(obj))
+                return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(MeshLoader));
+            return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseLoader));
+        }
+
+        if( obj->toTopology() )
+        {
+            if( obj->toBaseMeshTopology() )
+            {
+                if (dynamic_cast<sofa::component::topology::MeshTopology*>(obj))
+                    return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(MeshTopology));
+                return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseMeshTopology));
+            }
+            if (dynamic_cast<sofa::component::topology::RegularGridTopology*>(obj))
+                return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(RegularGridTopology));
+            if (dynamic_cast<sofa::component::topology::GridTopology*>(obj))
+                return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(GridTopology));
+            return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Topology));
+        }
+
+        if( obj->toVisualModel())
+        {
+            if (dynamic_cast<sofa::component::visualmodel::VisualModelImpl*>(obj))
+                return BuildPySPtr<Base>(obj, &SP_SOFAPYTYPEOBJECT(VisualModelImpl));
+            return BuildPySPtr<Base>(obj, &SP_SOFAPYTYPEOBJECT(VisualModel));
+        }
+
+        if( obj->toBaseState() )
+        {
+            if (obj->toBaseMechanicalState())
+            {
+                if (dynamic_cast<sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*>(obj))
+                    return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(MechanicalObject));
+                return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseMechanicalState));
+            }
+            return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseState));
+        }
+
+
+        if (obj->toBaseMapping())
+        {
+            if (dynamic_cast<SubsetMultiMapping3_to_3*>(obj))
+                return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(SubsetMultiMapping3_to_3));
+            return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseMapping));
+        }
+
+        if (obj->toDataEngine())
+            return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(DataEngine));
+
+        if (dynamic_cast<sofa::component::controller::PythonScriptController*>(obj))
+            return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(PythonScriptController));
+
+        if (dynamic_cast<sofa::component::misc::OBJExporter*>(obj))
+            return BuildPySPtr<Base>(obj, &SP_SOFAPYTYPEOBJECT(OBJExporter));
+
+        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseObject)); // at least we know it is a BaseObject
+
+    }
+    else if( obj->toBaseContext() )
+    {
+
+        if (dynamic_cast<sofa::simulation::Node*>(obj))
+            return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Node));
+        if (dynamic_cast<sofa::core::objectmodel::Context*>(obj))
+            return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Context));
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseContext));
 
-    if (dynamic_cast<sofa::core::loader::MeshLoader*>(obj))
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(MeshLoader));
-    if (dynamic_cast<sofa::core::loader::BaseLoader*>(obj))
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseLoader));
+    }
 
-    if (dynamic_cast<sofa::component::topology::RegularGridTopology*>(obj))
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(RegularGridTopology));
-    if (dynamic_cast<sofa::component::topology::GridTopology*>(obj))
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(GridTopology));
-    if (dynamic_cast<sofa::component::topology::MeshTopology*>(obj))
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(MeshTopology));
-    if (dynamic_cast<sofa::component::topology::BaseMeshTopology*>(obj))
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseMeshTopology));
-    if (dynamic_cast<sofa::component::topology::Topology*>(obj))
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Topology));
-
-    if (dynamic_cast<sofa::component::visualmodel::VisualModelImpl*>(obj))
-        return BuildPySPtr<Base>(obj, &SP_SOFAPYTYPEOBJECT(VisualModelImpl));
-    if (dynamic_cast<sofa::core::visual::VisualModel*>(obj))
-		return BuildPySPtr<Base>(obj, &SP_SOFAPYTYPEOBJECT(VisualModel));
-	if (dynamic_cast<sofa::component::misc::OBJExporter*>(obj))
-		return BuildPySPtr<Base>(obj, &SP_SOFAPYTYPEOBJECT(OBJExporter));
-    if (dynamic_cast<sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*>(obj))
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(MechanicalObject));
-    if (dynamic_cast<sofa::core::behavior::BaseMechanicalState*>(obj))
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseMechanicalState));
-    if (dynamic_cast<sofa::core::BaseState*>(obj))
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseState));
-
-    if (dynamic_cast<sofa::component::controller::PythonScriptController*>(obj))
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(PythonScriptController));
-
-    if (dynamic_cast<SubsetMultiMapping3_to_3*>(obj))
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(SubsetMultiMapping3_to_3));
-    if (dynamic_cast<sofa::core::BaseMapping*>(obj))
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseMapping));
-    if (dynamic_cast<sofa::core::DataEngine*>(obj))
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(DataEngine));
-
-    if (dynamic_cast<sofa::core::objectmodel::BaseObject*>(obj))
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseObject));
-
-    // par défaut...
-    return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Base));
+    return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Base)); // Base by default
 }
 
 

@@ -175,9 +175,35 @@ void OglAttribute< size, type, DataTypes>::enable()
         return; // index not valid
     glBindBufferARB(GL_ARRAY_BUFFER, _abo);
 #ifndef PS3
-    glEnableVertexAttribArrayARB ( _index );
-    glVertexAttribPointerARB ( _index, size, type, GL_FALSE, 0, ( char* ) NULL + 0);
-#endif
+    glEnableVertexAttribArrayARB(_index);
+
+    //OS X does not support those functions in OpenGL Compatibility Mode
+    ///TODO: if in the future Sofa works with OpenGL Core Mode,
+    ///please remove these preprocessor instructions
+#ifndef __APPLE__
+    switch (type)
+    {
+    case GL_INT:
+    case GL_UNSIGNED_INT:
+    case GL_BYTE:
+    case GL_UNSIGNED_BYTE:
+    case GL_SHORT:
+    case GL_UNSIGNED_SHORT:
+        glVertexAttribIPointer(_index, size, type, 0, (char*)NULL + 0);
+        break;
+    case GL_DOUBLE:
+        glVertexAttribLPointer(_index, size, type, 0, (char*)NULL + 0);
+        break;
+    default:
+        glVertexAttribPointer(_index, size, type, GL_FALSE, 0, (char*)NULL + 0);
+    }
+#else
+
+    glVertexAttribPointerARB(_index, size, type, GL_FALSE, 0, (char*)NULL + 0);
+
+#endif // __APPLE__
+
+#endif // PS3
     glBindBufferARB(GL_ARRAY_BUFFER, 0);
 }
 

@@ -33,7 +33,7 @@ using namespace sofa::core::objectmodel;
 
 extern "C" PyObject * DataEngine_updateIfDirty(PyObject *self, PyObject * /*args*/)
 {
-    DataEngine* engine=dynamic_cast<DataEngine*>(((PySPtr<Base>*)self)->object.get());
+    DataEngine* engine=((PySPtr<Base>*)self)->object->toDataEngine();
 
     engine->updateIfDirty();
 
@@ -42,7 +42,7 @@ extern "C" PyObject * DataEngine_updateIfDirty(PyObject *self, PyObject * /*args
 
 extern "C" PyObject * DataEngine_update(PyObject *self, PyObject * /*args*/)
 {
-    DataEngine* engine=dynamic_cast<DataEngine*>(((PySPtr<Base>*)self)->object.get());
+    DataEngine* engine=((PySPtr<Base>*)self)->object->toDataEngine();
 
     engine->update();
 
@@ -51,7 +51,7 @@ extern "C" PyObject * DataEngine_update(PyObject *self, PyObject * /*args*/)
 
 extern "C" PyObject * DataEngine_isDirty(PyObject *self, PyObject * /*args*/)
 {
-    DataEngine* engine=dynamic_cast<DataEngine*>(((PySPtr<Base>*)self)->object.get());
+    DataEngine* engine=((PySPtr<Base>*)self)->object->toDataEngine();
 
     return PyBool_FromLong( engine->isDirty() );
 }

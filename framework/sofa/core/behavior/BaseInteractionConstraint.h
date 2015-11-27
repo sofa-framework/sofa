@@ -48,6 +48,8 @@ class SOFA_CORE_API BaseInteractionConstraint : public BaseConstraint
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseInteractionConstraint, BaseConstraint);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseInteractionConstraint)
+
     /// Get the first MechanicalState
     /// \todo Rename to getMechState1()
     /// \todo Replace with an accessor to a list of states, as an InteractionConstraint can be applied to more than two.

@@ -513,6 +513,10 @@ public:
     /// Temporary added here from RigidState deprecated inheritance
     sofa::defaulttype::Rigid3fTypes::VecCoord xforms;
     bool xformsModified;
+
+
+    virtual bool insertInNode( core::objectmodel::BaseNode* node ) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    virtual bool removeInNode( core::objectmodel::BaseNode* node ) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 };
 
 

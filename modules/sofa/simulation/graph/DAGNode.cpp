@@ -456,7 +456,6 @@ void DAGNode::precomputeTraversalOrder( const core::ExecParams* params )
 
 
 /// Execute a recursive action starting from this node
-/// This method bypass the actionScheduler of this node if any.
 void DAGNode::doExecuteVisitor(simulation::Visitor* action, bool precomputedOrder)
 {
 	if( precomputedOrder && !_precomputedTraversalOrder.empty() )

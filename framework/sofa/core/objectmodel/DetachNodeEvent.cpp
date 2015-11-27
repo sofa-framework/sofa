@@ -60,7 +60,7 @@ bool DetachNodeEvent::contains(BaseNode* n) const
 
 bool DetachNodeEvent::contains(BaseObject* o) const
 {
-    return contains(dynamic_cast<BaseNode*>(o->getContext()));
+    return contains(o->getContext()->toBaseNode());
 }
 
 } // namespace objectmodel

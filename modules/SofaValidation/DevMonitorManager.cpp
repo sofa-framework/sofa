@@ -71,7 +71,7 @@ void DevMonitorManager::init()
     getContext()->get<core::DevBaseMonitor, sofa::helper::vector<core::DevBaseMonitor*> >(&monitors, core::objectmodel::BaseContext::SearchDown);
 
     //remove itself
-    it = std::find(monitors.begin(), monitors.end(), dynamic_cast<core::DevBaseMonitor*>(this));
+    it = std::find(monitors.begin(), monitors.end(), this->toDevBaseMonitor());
     if(it != monitors.end())
         monitors.erase(it);
 

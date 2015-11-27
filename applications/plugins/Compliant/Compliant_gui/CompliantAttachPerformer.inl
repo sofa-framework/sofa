@@ -130,7 +130,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     {
 //        std::cerr<<"mapped\n";
 
-        pickedNode = dynamic_cast<simulation::Node*> (picked.body->getContext());
+        pickedNode = down_cast<simulation::Node>(picked.body->getContext());
 
         mapper = MouseContactMapper::Create(picked.body);
         if (!mapper)
@@ -161,7 +161,7 @@ void CompliantAttachPerformer<DataTypes>::start()
 
             simulation::Node *mappedNode=(simulation::Node *) mstateCollisionVec->getContext();
             simulation::Node *mainNode=(simulation::Node *) picked.body->getContext();
-            core::behavior::BaseMechanicalState *mainDof=dynamic_cast<core::behavior::BaseMechanicalState *>(mainNode->getMechanicalState());
+            core::behavior::BaseMechanicalState *mainDof=mainNode->getMechanicalState();
             const core::objectmodel::TagSet &tags=mainDof->getTags();
             for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
             {
@@ -181,7 +181,7 @@ void CompliantAttachPerformer<DataTypes>::start()
 
 //        typedef mapping::DistanceFromTargetMapping< MouseTypes,DataTypes1 >  DistanceFromTargetMappingMouse;
 
-        pickedNode = dynamic_cast<simulation::Node*> (picked.mstate->getContext());
+        pickedNode = down_cast<simulation::Node>(picked.mstate->getContext());
 
         mstateCollision = dynamic_cast< core::behavior::MechanicalState<DataTypes>*  >(picked.mstate);
         //        cerr<<"CompliantAttachPerformer<DataTypes>::attach, pickedParticleIndex = " << pickedParticleIndex << endl;
@@ -201,7 +201,7 @@ void CompliantAttachPerformer<DataTypes>::start()
 
     //-------- Mouse manipulator
     mouseMapping = this->interactor->core::objectmodel::BaseObject::template searchUp<sofa::core::BaseMapping>();
-    this->mouseState = dynamic_cast<Point3dState*>(this->interactor->getMouseContainer());
+    this->mouseState = down_cast<Point3dState>(this->interactor->getMouseContainer());
 //    typename Point3dState::ReadVecCoord xmouse = mouseState->readPositions();
 //    typename Point3dState::Coord pointOnRay = mouseState->readPositions()[0];
 

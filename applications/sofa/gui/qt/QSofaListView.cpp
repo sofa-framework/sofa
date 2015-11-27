@@ -30,8 +30,8 @@
 #include "GenGraphForm.h"
 #include "RealGUI.h"
 #include <sofa/simulation/common/DeleteVisitor.h>
-
 #include <sofa/simulation/common/TransformationVisitor.h>
+#include <sofa/helper/cast.h>
 
 #include <QMenu>
 #include <QtGlobal> // version macro
@@ -208,7 +208,7 @@ void QSofaListView::updateMatchingObjectmodel(QTreeWidgetItem* item)
     BaseData* data = NULL;
     Base* base = NULL;
     BaseObject* object = NULL;
-    Node* node = NULL;
+    BaseNode* basenode = NULL;
     if(item == NULL)
     {
         object_.ptr.Node = NULL;
@@ -224,8 +224,8 @@ void QSofaListView::updateMatchingObjectmodel(QTreeWidgetItem* item)
             object_.type = typeData;
             return;
         }
-        node = dynamic_cast<Node*>(base);
-        if( node == NULL)
+        basenode = base->toBaseNode();
+        if( basenode == NULL)
         {
             object = dynamic_cast<BaseObject*>(base);
             object_.ptr.Object = object;
@@ -233,7 +233,7 @@ void QSofaListView::updateMatchingObjectmodel(QTreeWidgetItem* item)
         }
         else
         {
-            object_.ptr.Node = node;
+            object_.ptr.Node = down_cast<Node>(basenode);
             object_.type = typeNode;
         }
     }
@@ -259,16 +259,13 @@ void QSofaListView::addInPropertyWidget(QTreeWidgetItem *item, bool clear)
 
 void QSofaListView::Freeze()
 {
-    Node* groot = dynamic_cast<Node*>( graphListener_->findObject(this->topLevelItem(0) ));
-
-    assert(groot);
+    Node* groot = down_cast<Node>( graphListener_->findObject(this->topLevelItem(0))->toBaseNode() );
     graphListener_->freeze(groot);
 }
 
 void QSofaListView::Unfreeze()
 {
-    Node* groot = dynamic_cast<Node*>(graphListener_->findObject(this->topLevelItem(0)) );
-    assert(groot);
+    Node* groot = down_cast<Node>( graphListener_->findObject(this->topLevelItem(0))->toBaseNode() );
     graphListener_->unfreeze(groot);
 }
 
@@ -632,8 +629,7 @@ bool QSofaListView::isNodeErasable ( BaseNode* node)
 
 void QSofaListView::Export()
 {
-    Node* root = dynamic_cast<Node*>(graphListener_->findObject(this->topLevelItem(0)));
-    assert(root);
+    Node* root = down_cast<Node>( graphListener_->findObject(this->topLevelItem(0))->toBaseNode() );
     GenGraphForm* form = new sofa::gui::qt::GenGraphForm;
     form->setScene ( root );
     std::string gname(((RealGUI*) (QApplication::topLevelWidgets()[0]))->windowFilePath().toStdString());
@@ -682,13 +678,15 @@ void QSofaListView::loadObject ( std::string path, double dx, double dy, double 
     //std::cout << "Initializing objects"<<std::endl;
     if ( !xml->init() )  std::cerr << "Objects initialization failed."<<std::endl;
 
-    Node* new_node = dynamic_cast<Node*> ( xml->getObject() );
-    if ( new_node == NULL )
+    BaseNode* new_basenode = xml->getObject()->toBaseNode();
+    if ( new_basenode == NULL )
     {
         std::cerr << "Objects initialization failed."<<std::endl;
         delete xml;
         return ;
     }
+
+    Node* new_node = down_cast<Node> ( new_basenode );
 
     new_node->addListener(graphListener_);
     if ( object_.ptr.Node && new_node)

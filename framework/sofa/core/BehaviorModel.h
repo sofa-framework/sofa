@@ -45,12 +45,13 @@ namespace core
  *  to compute a new simulation step.
  *
  */
-class BehaviorModel : public virtual sofa::core::objectmodel::BaseObject
+class SOFA_CORE_API BehaviorModel : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BehaviorModel, objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(BehaviorModel)
 protected:
-	BehaviorModel() {};
+    BehaviorModel() {}
     /// Destructor
     virtual ~BehaviorModel() {}
 	
@@ -66,6 +67,10 @@ public:
     {
         return false;
     }
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
+
 };
 
 } // namespace core

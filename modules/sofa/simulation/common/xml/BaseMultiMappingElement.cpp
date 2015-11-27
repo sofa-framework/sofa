@@ -52,7 +52,7 @@ bool BaseMultiMappingElement::initNode()
     if( result )
     {
 
-        BaseMapping* multimapping =  dynamic_cast<BaseMapping*>(this->getTypedObject());
+        BaseMapping* multimapping = this->getTypedObject()->toBaseMapping();
         NodeElement* currentNodeElement = dynamic_cast<NodeElement *>(getParent());
         simulation::Node* currentNode =  dynamic_cast<simulation::Node* >( currentNodeElement->getTypedObject() );
         helper::vector<core::BaseState*> inputStates  = multimapping->getFrom();

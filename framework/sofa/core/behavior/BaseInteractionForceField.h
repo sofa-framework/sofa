@@ -50,6 +50,7 @@ class SOFA_CORE_API BaseInteractionForceField : public BaseForceField
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseInteractionForceField, BaseForceField);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseInteractionForceField)
 
     /// Get the first MechanicalState
     /// \todo Rename to getMechState1()
@@ -76,6 +77,10 @@ public:
     virtual void exportGnuplot(SReal time){
         std::cout << time << std::endl << "Warning ::: exportGnuplot not implemented for all interaction force field" << std::endl;
     }
+
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
 
 };
 
