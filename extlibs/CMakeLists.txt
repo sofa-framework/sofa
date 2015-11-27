@@ -10,7 +10,7 @@ set(EXTLIBS_TARGETS
 ## Necessary ones
 add_subdirectory(SuiteSparse)
 add_subdirectory(csparse)
-add_subdirectory(eigen-3.2.5 eigen)
+add_subdirectory(eigen-3.2.7 eigen)
 add_subdirectory(miniFlowVR)
 add_subdirectory(newmat)
 add_subdirectory(tinyxml)

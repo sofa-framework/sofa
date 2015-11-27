@@ -82,7 +82,7 @@ WriteTopology::~WriteTopology()
 
 void WriteTopology::init()
 {
-    m_topology = dynamic_cast<core::topology::BaseMeshTopology*>(this->getContext()->getMeshTopology());
+    m_topology = this->getContext()->getMeshTopology();
 
     // test the size and range of the DOFs to write in the file output
     //    if (m_topology)

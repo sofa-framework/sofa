@@ -62,8 +62,8 @@ void ScriptController::parse(sofa::core::objectmodel::BaseObjectDescription *arg
     // load & bind script
     loadScript();
     // call script notifications...
-    script_onLoaded( dynamic_cast<simulation::Node*>(getContext()) );
-    script_createGraph( dynamic_cast<simulation::Node*>(getContext()) );
+    script_onLoaded( down_cast<simulation::Node>(getContext()) );
+    script_createGraph( down_cast<simulation::Node>(getContext()) );
 
  //   ScriptEnvironment::initScriptNodes();
 }
@@ -72,7 +72,7 @@ void ScriptController::init()
 {
     Controller::init();
     // init the script
-    script_initGraph( dynamic_cast<simulation::Node*>(getContext()) );
+    script_initGraph( down_cast<simulation::Node>(getContext()) );
 //    ScriptEnvironment::initScriptNodes();
 }
 
@@ -80,7 +80,7 @@ void ScriptController::bwdInit()
 {
     Controller::bwdInit();
     // init the script
-    script_bwdInitGraph( dynamic_cast<simulation::Node*>(getContext()) );
+    script_bwdInitGraph( down_cast<simulation::Node>(getContext()) );
 //    ScriptEnvironment::initScriptNodes();
 }
 

@@ -40,6 +40,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/simulation/common/DeactivatedNodeVisitor.h>
+#include <sofa/helper/cast.h>
 
 
 namespace sofa
@@ -75,7 +76,7 @@ void NodeToggleController::init()
 {
     if(f_printLog.getValue())
     {
-        Node* context = dynamic_cast<Node*>(getContext());
+        Node* context = down_cast<Node>(getContext());
         std::cout<<"context name = "<<context->name<<std::endl;
 
         if(d_key.getValue()=='*')
@@ -90,15 +91,15 @@ void NodeToggleController::init()
 
     if(d_nameNode.getValue()!="")
     {
-        Node* context = dynamic_cast<Node*>(getContext());
+        Node* context = down_cast<Node>(getContext());
         Node::Children children = context->getChildren();
         if (children.size()==0) return; // no subnode, return directly
         for (int i=0; i<(int)children.size(); i++)
         {
-            Node* n = dynamic_cast<Node*>(children[i]);
+            Node* n = down_cast<Node>(children[i]);
             if(n->getName() == d_nameNode.getValue())
             {
-                specificNode = dynamic_cast<Node*>(children[i]);
+                specificNode = down_cast<Node>(children[i]);
                 nodeFound = true;
 
                 if(f_printLog.getValue())
@@ -113,31 +114,31 @@ void NodeToggleController::toggle()
 {
     if(d_nameNode.getValue()=="")
     {
-        Node* context = dynamic_cast<Node*>(getContext());
+        Node* context = down_cast<Node>(getContext());
         Node::Children children = context->getChildren();
 
         if (children.size()==0) return; // no subnode, return directly
 
         for (int i=0; i<(int)children.size(); i++)
         {
-            Node* n = dynamic_cast<Node*>(children[i]);
+            Node* n = down_cast<Node>(children[i]);
 
             if (!n->isActive())
             {
-                dynamic_cast<Node*>(children[i])->is_activated.setValue(true);
-                dynamic_cast<Node*>(children[i])->setActive(true);
+                n->is_activated.setValue(true);
+                n->setActive(true);
                 sofa::simulation::DeactivationVisitor visitorON(sofa::core::ExecParams::defaultInstance(), true);
-                dynamic_cast<Node*>(children[i])->executeVisitor(&visitorON);
+                n->executeVisitor(&visitorON);
 
                 if(f_printLog.getValue())
                     std::cout<<"Activate"<<std::endl;
             }
             else
             {
-                dynamic_cast<Node*>(children[i])->is_activated.setValue(true);
+                n->is_activated.setValue(true);
                 sofa::simulation::DeactivationVisitor visitorOFF(sofa::core::ExecParams::defaultInstance(), false);
-                dynamic_cast<Node*>(children[i])->executeVisitor(&visitorOFF);
-                dynamic_cast<Node*>(children[i])->setActive(false);
+                n->executeVisitor(&visitorOFF);
+                n->setActive(false);
 
                 if(f_printLog.getValue())
                     std::cout<<"Desactivate"<<std::endl;
@@ -146,7 +147,7 @@ void NodeToggleController::toggle()
     }
     else // Case: a specific node is given
     {
-        if(dynamic_cast<Node*>(getContext())->getChildren().size()==0) return;
+        if(down_cast<Node>(getContext())->getChildren().size()==0) return;
 
         if(d_firstFrame.getValue() && nodeFound)
         {

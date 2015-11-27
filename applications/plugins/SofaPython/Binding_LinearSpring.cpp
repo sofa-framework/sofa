@@ -28,10 +28,11 @@
 
 
 using namespace sofa::component::interactionforcefield;
+typedef LinearSpring<SReal> LinearSpringR;
 
 extern "C" PyObject * LinearSpring_getAttr_Index1(PyObject *self, void*)
 {
-    LinearSpring<SReal>* obj=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)
     {
         PyErr_BadArgument();
@@ -42,7 +43,7 @@ extern "C" PyObject * LinearSpring_getAttr_Index1(PyObject *self, void*)
 
 extern "C" int LinearSpring_setAttr_Index1(PyObject *self, PyObject * args, void*)
 {
-    LinearSpring<SReal>* obj=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)
     {
         PyErr_BadArgument();
@@ -55,7 +56,7 @@ extern "C" int LinearSpring_setAttr_Index1(PyObject *self, PyObject * args, void
 
 extern "C" PyObject * LinearSpring_getAttr_Index2(PyObject *self, void*)
 {
-    LinearSpring<SReal>* obj=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)
     {
         PyErr_BadArgument();
@@ -66,7 +67,7 @@ extern "C" PyObject * LinearSpring_getAttr_Index2(PyObject *self, void*)
 
 extern "C" int LinearSpring_setAttr_Index2(PyObject *self, PyObject * args, void*)
 {
-    LinearSpring<SReal>* obj=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)
     {
         PyErr_BadArgument();
@@ -79,7 +80,7 @@ extern "C" int LinearSpring_setAttr_Index2(PyObject *self, PyObject * args, void
 
 extern "C" PyObject * LinearSpring_getAttr_Ks(PyObject *self, void*)
 {
-    LinearSpring<SReal>* obj=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)
     {
         PyErr_BadArgument();
@@ -90,7 +91,7 @@ extern "C" PyObject * LinearSpring_getAttr_Ks(PyObject *self, void*)
 
 extern "C" int LinearSpring_setAttr_Ks(PyObject *self, PyObject * args, void*)
 {
-    LinearSpring<SReal>* obj=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)
     {
         PyErr_BadArgument();
@@ -104,7 +105,7 @@ extern "C" int LinearSpring_setAttr_Ks(PyObject *self, PyObject * args, void*)
 
 extern "C" PyObject * LinearSpring_getAttr_Kd(PyObject *self, void*)
 {
-    LinearSpring<SReal>* obj=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)
     {
         PyErr_BadArgument();
@@ -115,7 +116,7 @@ extern "C" PyObject * LinearSpring_getAttr_Kd(PyObject *self, void*)
 
 extern "C" int LinearSpring_setAttr_Kd(PyObject *self, PyObject * args, void*)
 {
-    LinearSpring<SReal>* obj=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)
     {
         PyErr_BadArgument();
@@ -129,7 +130,7 @@ extern "C" int LinearSpring_setAttr_Kd(PyObject *self, PyObject * args, void*)
 
 extern "C" PyObject * LinearSpring_getAttr_L(PyObject *self, void*)
 {
-    LinearSpring<SReal>* obj=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)
     {
         PyErr_BadArgument();
@@ -140,7 +141,7 @@ extern "C" PyObject * LinearSpring_getAttr_L(PyObject *self, void*)
 
 extern "C" int LinearSpring_setAttr_L(PyObject *self, PyObject * args, void*)
 {
-    LinearSpring<SReal>* obj=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)
     {
         PyErr_BadArgument();
@@ -168,7 +169,7 @@ PyObject * LinearSpring_PyNew(PyTypeObject * /*type*/, PyObject *args, PyObject 
 void LinearSpring_PyFree(void * self)
 {
     if (!((PyPtr<LinearSpring<SReal> >*)self)->deletable) return;
-    LinearSpring<SReal>* obj=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     delete obj; // done!
 }
 

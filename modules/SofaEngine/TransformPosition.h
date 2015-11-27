@@ -83,12 +83,6 @@ public:
 
 protected:
 
-    class AffineMatrix : public Mat4x4
-    {
-    public:
-        AffineMatrix() : Mat4x4(){this->identity();}
-    };
-
     TransformPosition();
 
     ~TransformPosition() {}
@@ -144,7 +138,7 @@ protected:
     Data<Coord> f_translation; // translation
     Data<Coord> f_rotation; // rotation
     Data<Coord> f_scale; // scale
-    Data<AffineMatrix> f_affineMatrix; // affine transformation
+    Data<Mat4x4> f_affineMatrix; // affine transformation
     Data<sofa::helper::OptionsGroup> f_method; // the method of the transformation
     Data<long> f_seed; // the seed for the random generator
     Data<Real> f_maxRandomDisplacement; // the maximum displacement for the random generator

@@ -99,14 +99,11 @@ public:
 #endif
     }
 
-    virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
+    virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
     {
-        if (core::behavior::BaseConstraintSet *c=dynamic_cast<core::behavior::BaseConstraintSet*>(cSet))
-        {
-            ctime_t t0 = begin(node, c);
-            c->getConstraintViolation(cparams, m_v);
-            end(node, c, t0);
-        }
+        ctime_t t0 = begin(node, c);
+        c->getConstraintViolation(cparams, m_v);
+        end(node, c, t0);
         return RESULT_CONTINUE;
     }
 

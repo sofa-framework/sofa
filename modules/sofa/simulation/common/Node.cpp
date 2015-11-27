@@ -47,6 +47,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/Factory.inl>
+#include <sofa/helper/cast.h>
 #include <sofa/simulation/common/xml/Element.inl>
 #include <iostream>
 
@@ -104,7 +105,6 @@ Node::Node(const std::string& name)
 
     , unsorted(initLink("unsorted", "The remaining objects attached to this node"))
 
-    , actionScheduler(initLink("visitorScheduler", "The VisitorScheduler attached to this node (deprecated)"))
     , debug_(false)
     , initialized(false)
     , depend(initData(&depend,"depend","Dependencies between the nodes.\nname 1 name 2 name3 name4 means that name1 must be initialized before name2 and name3 before name4"))
@@ -220,14 +220,15 @@ bool Node::removeObject(BaseObject::SPtr obj)
 /// Move an object from another node
 void Node::moveObject(BaseObject::SPtr obj)
 {
-    Node* prev = dynamic_cast<Node*>(obj->getContext());
-    if (prev==NULL)
+    BaseNode* baseprev = obj->getContext()->toBaseNode();
+    if (baseprev==NULL)
     {
         obj->getContext()->removeObject(obj);
         addObject(obj);
     }
     else
     {
+        Node* prev = down_cast<Node>(baseprev);
         notifyMoveObject(obj,prev);
         prev->doRemoveObject(obj);
         doAddObject(obj);
@@ -395,8 +396,9 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
 #ifdef DEBUG_LINK
         std::cout << "  absolute path" << std::endl;
 #endif
-        node = dynamic_cast<Node*>(this->getRoot());
-        if (!node) return NULL;
+        BaseNode* basenode = this->getRoot();
+        if (!basenode) return NULL;
+        node = down_cast<Node>(basenode);
         ++ppos;
         based = true;
     }
@@ -549,45 +551,8 @@ void Node::doAddObject(BaseObject::SPtr sobj)
     this->setObjectContext(sobj);
     object.add(sobj);
     BaseObject* obj = sobj.get();
-    int inserted=0;
-    inserted+= animationManager.add(dynamic_cast< core::behavior::BaseAnimationLoop* >(obj));
-    inserted+= solver.add(dynamic_cast< core::behavior::OdeSolver* >(obj));
-    inserted+= linearSolver.add(dynamic_cast< core::behavior::LinearSolver* >(obj));
-    inserted+= constraintSolver.add(dynamic_cast< core::behavior::ConstraintSolver* >(obj));
-    inserted+= visualLoop.add(dynamic_cast< core::visual::VisualLoop* >(obj));
-    inserted+= state.add(dynamic_cast< core::BaseState* >(obj));
-    inserted+= mechanicalState.add(dynamic_cast< core::behavior::BaseMechanicalState* >(obj));
-    core::BaseMapping* bmap = dynamic_cast< core::BaseMapping* >(obj);
-    if(bmap)
-    {
-        if(bmap->isMechanical())
-            inserted += mechanicalMapping.add(bmap);
-        else
-            inserted += mapping.add(bmap);
-    }
 
-    inserted+= mass.add(dynamic_cast< core::behavior::BaseMass* >(obj));
-    inserted+= topology.add(dynamic_cast< core::topology::Topology* >(obj));
-    inserted+= meshTopology.add(dynamic_cast< core::topology::BaseMeshTopology* >(obj));
-    inserted+= topologyObject.add(dynamic_cast< core::topology::BaseTopologyObject* >(obj));
-    inserted+= shaders.add(dynamic_cast< sofa::core::visual::Shader* >(obj));
-
-    bool isInteractionForceField = interactionForceField.add(dynamic_cast< core::behavior::BaseInteractionForceField* >(obj));
-    inserted+= isInteractionForceField;
-    if (!isInteractionForceField)
-        forceField.add(dynamic_cast< core::behavior::BaseForceField* >(obj));
-    inserted+= projectiveConstraintSet.add(dynamic_cast< core::behavior::BaseProjectiveConstraintSet* >(obj));
-    inserted+= constraintSet.add(dynamic_cast< core::behavior::BaseConstraintSet* >(obj));
-    inserted+= behaviorModel.add(dynamic_cast< core::BehaviorModel* >(obj));
-    inserted+= visualModel.add(dynamic_cast< core::visual::VisualModel* >(obj));
-    inserted+= visualManager.add(dynamic_cast< core::visual::VisualManager* >(obj));
-    inserted+= collisionModel.add(dynamic_cast< core::CollisionModel* >(obj));
-    inserted+= contextObject.add(dynamic_cast< core::objectmodel::ContextObject* >(obj));
-    inserted+= configurationSetting.add(dynamic_cast< core::objectmodel::ConfigurationSetting* >(obj));
-    inserted+= collisionPipeline.add(dynamic_cast< core::collision::Pipeline* >(obj));
-    inserted+= actionScheduler.add(dynamic_cast< VisitorScheduler* >(obj));
-
-    if ( inserted==0 )
+    if( !obj->insertInNode( this ) )
     {
         //cerr<<"Node::doAddObject, object "<<obj->getName()<<" is unsorted"<<endl;
         unsorted.add(obj);
@@ -605,36 +570,9 @@ void Node::doRemoveObject(BaseObject::SPtr sobj)
     this->clearObjectContext(sobj);
     object.remove(sobj);
     BaseObject* obj = sobj.get();
-    animationManager.remove(dynamic_cast< core::behavior::BaseAnimationLoop* >(obj));
-    solver.remove(dynamic_cast< core::behavior::OdeSolver* >(obj));
-    linearSolver.remove(dynamic_cast< core::behavior::LinearSolver* >(obj));
-    constraintSolver.remove(dynamic_cast< core::behavior::ConstraintSolver* >(obj));
-    visualLoop.remove(dynamic_cast< core::visual::VisualLoop* >(obj));
-    state.remove(dynamic_cast< core::BaseState* >(obj));
-    mechanicalState.remove(dynamic_cast< core::behavior::BaseMechanicalState* >(obj));
-    mechanicalMapping.remove(dynamic_cast< core::BaseMapping* >(obj));
-    mass.remove(dynamic_cast< core::behavior::BaseMass* >(obj));
-    topology.remove(dynamic_cast< core::topology::Topology* >(obj));
-    meshTopology.remove(dynamic_cast< core::topology::BaseMeshTopology* >(obj));
-    topologyObject.remove(dynamic_cast< core::topology::BaseTopologyObject* >(obj));
-    shaders.remove(dynamic_cast<sofa::core::visual::Shader* >(obj));
 
-    forceField.remove(dynamic_cast< core::behavior::BaseForceField* >(obj));
-    interactionForceField.remove(dynamic_cast< core::behavior::BaseInteractionForceField* >(obj));
-    projectiveConstraintSet.remove(dynamic_cast< core::behavior::BaseProjectiveConstraintSet* >(obj));
-    constraintSet.remove(dynamic_cast< core::behavior::BaseConstraintSet* >(obj));
-    mapping.remove(dynamic_cast< core::BaseMapping* >(obj));
-    behaviorModel.remove(dynamic_cast< core::BehaviorModel* >(obj));
-    visualModel.remove(dynamic_cast< core::visual::VisualModel* >(obj));
-    visualManager.remove(dynamic_cast< core::visual::VisualManager* >(obj));
-    collisionModel.remove(dynamic_cast< core::CollisionModel* >(obj));
-    contextObject.remove(dynamic_cast<core::objectmodel::ContextObject* >(obj));
-    configurationSetting.remove(dynamic_cast<core::objectmodel::ConfigurationSetting* >(obj));
-    collisionPipeline.remove(dynamic_cast< core::collision::Pipeline* >(obj));
-
-    actionScheduler.remove(dynamic_cast< VisitorScheduler* >(obj));
-
-    unsorted.remove(obj);
+    if( !obj->removeInNode( this ) )
+        unsorted.remove(obj);
 }
 
 
@@ -848,7 +786,7 @@ void Node::initialize()
     //     // Put the OdeSolver, if any, in first position. This makes sure that the OdeSolver component is initialized only when all its sibling and children components are already initialized.
     //     /// @todo Putting the solver first means that it will be initialized *before* any sibling or childrens. Is that what we want? -- Jeremie A.
     //     Sequence<BaseObject>::iterator i=object.begin(), iend=object.end();
-    //     for ( ; i!=iend && dynamic_cast<core::behavior::OdeSolver*>(*i)==NULL; i++ ) // find the OdeSolver
+    //     for ( ; i!=iend && i->toOdeSolver()==NULL; i++ ) // find the OdeSolver
     //         {}
     //     if ( i!=iend && !object.empty() ) // found
     //     {
@@ -925,10 +863,7 @@ void Node::executeVisitor(Visitor* action, bool precomputedOrder)
     ++level;
 #endif
 
-    if (actionScheduler)
-        actionScheduler->executeVisitor(this,action);
-    else
-        doExecuteVisitor(action, precomputedOrder);
+    doExecuteVisitor(action, precomputedOrder);
 
 #ifdef DEBUG_VISITOR
     --level;
@@ -1028,9 +963,6 @@ void Node::printComponents()
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"Pipeline: ";
     for ( Single<Pipeline>::iterator i=collisionPipeline.begin(), iend=collisionPipeline.end(); i!=iend; ++i )
-        serr<<(*i)->getName()<<" ";
-    serr<<sendl<<"VisitorScheduler: ";
-    for ( Single<VisitorScheduler>::iterator i=actionScheduler.begin(), iend=actionScheduler.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl;
 }

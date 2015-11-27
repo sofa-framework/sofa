@@ -55,6 +55,12 @@ using helper::vector;
 */
 class SOFA_Flexible_API BaseStrainMapping : public virtual core::objectmodel::BaseObject
 {
+protected:
+    BaseStrainMapping() {}
+private:
+    BaseStrainMapping(const BaseStrainMapping& b);
+    BaseStrainMapping& operator=(const BaseStrainMapping& b);
+
 public:
     virtual void resizeOut()=0;
     virtual void applyJT()=0;
@@ -129,9 +135,9 @@ public:
     //@{
     virtual void init()
     {
-        if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModel.get()))
+        if( core::behavior::BaseMechanicalState* stateFrom = this->fromModel.get()->toBaseMechanicalState() )
             maskFrom = &stateFrom->forceMask;
-        if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModel.get()))
+        if( core::behavior::BaseMechanicalState* stateTo = this->toModel.get()->toBaseMechanicalState() )
             maskTo = &stateTo->forceMask;
 
         // init jacobians

@@ -27,6 +27,7 @@
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/cast.h>
 
 #include <QHBoxLayout>
 #include <QUrl>
@@ -150,7 +151,7 @@ void SofaTutorialManager::openTutorial(const std::string& filename)
     xml::BaseElement* newXML = xml::loadFromFile ( filename.c_str() );
     if (newXML == NULL) return;
     if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
-    Node *root = dynamic_cast<Node*> ( newXML->getObject() );
+    Node *root = down_cast<Node>( newXML->getObject()->toBaseNode() );
     graph->setRoot(root, false);
     graph->setFilename(filename);
     selector->usingScene(filename);

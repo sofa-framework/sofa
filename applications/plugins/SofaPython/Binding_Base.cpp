@@ -25,6 +25,7 @@
 #include "Binding_Base.h"
 #include "Binding_Data.h"
 #include "Binding_DisplayFlagsData.h"
+#include "Binding_OptionsGroupData.h"
 #include "Binding_Link.h"
 
 #include <sofa/core/objectmodel/Base.h>
@@ -32,34 +33,61 @@
 using namespace sofa::core::objectmodel;
 #include <sofa/core/visual/DisplayFlags.h>
 using namespace sofa::core::visual;
+#include <sofa/helper/OptionsGroup.h>
+using namespace sofa::helper;
 
-extern "C" PyObject * Base_findData(PyObject *self, PyObject * args)
+extern "C" PyObject * Base_findData(PyObject *self, PyObject *args )
 {
-    Base* obj=static_cast<Base*>(((PySPtr<Base>*)self)->object.get());
+    Base* obj=((PySPtr<Base>*)self)->object.get();
     char *dataName;
     if (!PyArg_ParseTuple(args, "s",&dataName))
+    {
+        std::cerr<<"Base_findData_impl not a string\n";
         Py_RETURN_NONE;
+    }
     BaseData * data = obj->findData(dataName);
     if (!data)
     {
+        if( obj->hasField(dataName) )
+            std::cerr<<"Base_findData: object '"<<obj->getName()<<"' has a field '"<<dataName<<"' but it is not a Data"<<std::endl;
+        else
+        {
+            std::cerr<<"Base_findData: object '"<<obj->getName()<<"' does no have a field '"<<dataName<<"'"<<std::endl;
+            obj->writeDatas(std::cerr,";");
+        }
+
         PyErr_BadArgument();
+
         Py_RETURN_NONE;
     }
 
     if (dynamic_cast<Data<DisplayFlags>*>(data))
         return SP_BUILD_PYPTR(DisplayFlagsData,BaseData,data,false);
+
+    if (dynamic_cast<Data<OptionsGroup>*>(data))
+        return SP_BUILD_PYPTR(OptionsGroupData,BaseData,data,false);
+
     return SP_BUILD_PYPTR(Data,BaseData,data,false);
 }
 
-extern "C" PyObject * Base_findLink(PyObject *self, PyObject * args)
+
+extern "C" PyObject * Base_findLink(PyObject *self, PyObject *args)
 {
-    Base* obj=dynamic_cast<Base*>(((PySPtr<Base>*)self)->object.get());
+    Base* obj=((PySPtr<Base>*)self)->object.get();
     char *linkName;
-    if (!PyArg_ParseTuple(args, "s",&linkName))
-        Py_RETURN_NONE;
+     if (!PyArg_ParseTuple(args, "s",&linkName))
+         Py_RETURN_NONE;
     BaseLink * link = obj->findLink(linkName);
     if (!link)
     {
+        if( obj->hasField(linkName) )
+            std::cerr<<"Base_findLink: object '"<<obj->getName()<<"' has a field '"<<linkName<<"' but it is not a Link"<<std::endl;
+        else
+        {
+            std::cerr<<"Base_findLink: object '"<<obj->getName()<<"' does no have a field '"<<linkName<<"'"<<std::endl;
+            obj->writeDatas(std::cerr,";");
+        }
+
         PyErr_BadArgument();
         Py_RETURN_NONE;
     }
@@ -67,10 +95,11 @@ extern "C" PyObject * Base_findLink(PyObject *self, PyObject * args)
     return SP_BUILD_PYPTR(Link,BaseLink,link,false);
 }
 
+
 // Generic accessor to Data fields (in python native type)
 extern "C" PyObject* Base_GetAttr(PyObject *o, PyObject *attr_name)
 {
-    Base* obj=dynamic_cast<Base*>(((PySPtr<Base>*)o)->object.get());
+    Base* obj=down_cast<Base>(((PySPtr<Base>*)o)->object.get());
     char *attrName = PyString_AsString(attr_name);
 //    printf("Base_GetAttr type=%s name=%s attrName=%s\n",obj->getClassName().c_str(),obj->getName().c_str(),attrName);
 
@@ -83,13 +112,13 @@ extern "C" PyObject* Base_GetAttr(PyObject *o, PyObject *attr_name)
     if (link) return GetLinkValuePython(link); // we have our link... let's create the right Python type....
 
     //        printf("Base_GetAttr ERROR data not found - type=%s name=%s attrName=%s\n",obj->getClassName().c_str(),obj->getName().c_str(),attrName);
-    return PyObject_GenericGetAttr(o,attr_name);;
+    return PyObject_GenericGetAttr(o,attr_name);
 }
 
 extern "C" int Base_SetAttr(PyObject *o, PyObject *attr_name, PyObject *v)
 {
     // attribute does not exist: see if a Data field has this name...
-    Base* obj=dynamic_cast<Base*>(((PySPtr<Base>*)o)->object.get());
+    Base* obj=down_cast<Base>(((PySPtr<Base>*)o)->object.get());
     char *attrName = PyString_AsString(attr_name);
 
 //    printf("Base_SetAttr name=%s\n",dataName);
@@ -113,7 +142,7 @@ extern "C" int Base_SetAttr(PyObject *o, PyObject *attr_name, PyObject *v)
 extern "C" PyObject * Base_getClassName(PyObject * self, PyObject * /*args*/)
 {
     // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
-    Base* node = dynamic_cast<Base*>(((PySPtr<Base>*)self)->object.get());
+    Base* node = ((PySPtr<Base>*)self)->object.get();
 
     return PyString_FromString(node->getClassName().c_str());
 }
@@ -121,7 +150,7 @@ extern "C" PyObject * Base_getClassName(PyObject * self, PyObject * /*args*/)
 extern "C" PyObject * Base_getTemplateName(PyObject * self, PyObject * /*args*/)
 {
     // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
-    Base* node = dynamic_cast<Base*>(((PySPtr<Base>*)self)->object.get());
+    Base* node = ((PySPtr<Base>*)self)->object.get();
 
     return PyString_FromString(node->getTemplateName().c_str());
 }
@@ -129,7 +158,7 @@ extern "C" PyObject * Base_getTemplateName(PyObject * self, PyObject * /*args*/)
 extern "C" PyObject * Base_getName(PyObject * self, PyObject * /*args*/)
 {
     // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
-    Base* node = dynamic_cast<Base*>(((PySPtr<Base>*)self)->object.get());
+    Base* node = ((PySPtr<Base>*)self)->object.get();
 
     return PyString_FromString(node->getName().c_str());
 }

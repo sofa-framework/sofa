@@ -94,7 +94,6 @@ set(HEADER_FILES
     utils/anderson.h
     utils/basis.h
     utils/bicgstab.h
-    utils/cast.h
     utils/cg.h
     utils/cone.h
     utils/edit.h

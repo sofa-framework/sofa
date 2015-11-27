@@ -887,19 +887,31 @@ struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,real> > : public FixedArrayT
     static std::string name() { std::ostringstream o; o << "VecNoInit<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
 };
 
+
+
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
 
-template<> struct DataTypeName<defaulttype::Vec1f> { static const char* name() { return "Vec1f"; } };
-template<> struct DataTypeName<defaulttype::Vec1d> { static const char* name() { return "Vec1d"; } };
-template<> struct DataTypeName<defaulttype::Vec2f> { static const char* name() { return "Vec2f"; } };
-template<> struct DataTypeName<defaulttype::Vec2d> { static const char* name() { return "Vec2d"; } };
-template<> struct DataTypeName<defaulttype::Vec3f> { static const char* name() { return "Vec3f"; } };
-template<> struct DataTypeName<defaulttype::Vec3d> { static const char* name() { return "Vec3d"; } };
-template<> struct DataTypeName<defaulttype::Vec4f> { static const char* name() { return "Vec4f"; } };
-template<> struct DataTypeName<defaulttype::Vec4d> { static const char* name() { return "Vec4d"; } };
-template<> struct DataTypeName<defaulttype::Vec6f> { static const char* name() { return "Vec6f"; } };
-template<> struct DataTypeName<defaulttype::Vec6d> { static const char* name() { return "Vec6d"; } };
+#define DataTypeInfoName(type,suffix)\
+template<int N>\
+struct DataTypeInfo< sofa::defaulttype::Vec<N,type> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,type> >\
+{\
+    static std::string name() { std::ostringstream o; o << "Vec" << N << suffix; return o.str(); }\
+};\
+template<int N>\
+struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,type> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,type> >\
+{\
+    static std::string name() { std::ostringstream o; o << "VecNoInit" << N << suffix; return o.str(); }\
+};
+
+DataTypeInfoName( float, "f" )
+DataTypeInfoName( double, "d" )
+DataTypeInfoName( int, "i" )
+DataTypeInfoName( unsigned, "u" )
+
+#undef DataTypeInfoName
+
+
 
 /// \endcond
 

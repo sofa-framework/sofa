@@ -34,19 +34,19 @@ using namespace sofa::core::objectmodel;
 
 extern "C" PyObject * Topology_hasPos(PyObject *self, PyObject * /*args*/)
 {
-    Topology* obj=dynamic_cast<Topology*>(((PySPtr<Base>*)self)->object.get());
+    Topology* obj=((PySPtr<Base>*)self)->object->toTopology();
     return PyBool_FromLong(obj->hasPos());
 }
 
 extern "C" PyObject * Topology_getNbPoints(PyObject *self, PyObject * /*args*/)
 {
-    Topology* obj=dynamic_cast<Topology*>(((PySPtr<Base>*)self)->object.get());
+    Topology* obj=((PySPtr<Base>*)self)->object->toTopology();
     return PyInt_FromLong(obj->getNbPoints());
 }
 
 extern "C" PyObject * Topology_setNbPoints(PyObject *self, PyObject * args)
 {
-    Topology* obj=dynamic_cast<Topology*>(((PySPtr<Base>*)self)->object.get());
+    Topology* obj=((PySPtr<Base>*)self)->object->toTopology();
     int nb;
     if (!PyArg_ParseTuple(args, "i",&nb))
     {
@@ -59,7 +59,7 @@ extern "C" PyObject * Topology_setNbPoints(PyObject *self, PyObject * args)
 
 extern "C" PyObject * Topology_getPX(PyObject *self, PyObject * args)
 {
-    Topology* obj=dynamic_cast<Topology*>(((PySPtr<Base>*)self)->object.get());
+    Topology* obj=((PySPtr<Base>*)self)->object->toTopology();
     int i;
     if (!PyArg_ParseTuple(args, "i",&i))
     {
@@ -71,7 +71,7 @@ extern "C" PyObject * Topology_getPX(PyObject *self, PyObject * args)
 
 extern "C" PyObject * Topology_getPY(PyObject *self, PyObject * args)
 {
-    Topology* obj=dynamic_cast<Topology*>(((PySPtr<Base>*)self)->object.get());
+    Topology* obj=((PySPtr<Base>*)self)->object->toTopology();
     int i;
     if (!PyArg_ParseTuple(args, "i",&i))
     {
@@ -83,7 +83,7 @@ extern "C" PyObject * Topology_getPY(PyObject *self, PyObject * args)
 
 extern "C" PyObject * Topology_getPZ(PyObject *self, PyObject * args)
 {
-    Topology* obj=dynamic_cast<Topology*>(((PySPtr<Base>*)self)->object.get());
+    Topology* obj=((PySPtr<Base>*)self)->object->toTopology();
     int i;
     if (!PyArg_ParseTuple(args, "i",&i))
     {

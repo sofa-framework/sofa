@@ -67,7 +67,7 @@ public:
     {
         //serr<<"fwdConstraint called on "<<c->getName()<<sendl;
 
-        if (core::behavior::BaseConstraint *c=dynamic_cast<core::behavior::BaseConstraint*>(cSet))
+        if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())
         {
             ctime_t t0 = begin(node, c);
             c->getConstraintResolution(_cparams, _res, _offset);

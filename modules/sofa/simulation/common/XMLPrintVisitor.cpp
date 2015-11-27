@@ -110,10 +110,10 @@ Visitor::Result XMLPrintVisitor::processNodeTopDown(simulation::Node* node)
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         sofa::core::objectmodel::BaseObject* obj = it->get();
-        if (   dynamic_cast<sofa::core::behavior::BaseInteractionForceField*> (obj) == NULL
-                && dynamic_cast<sofa::core::behavior::BaseInteractionConstraint*> (obj) == NULL
-                && dynamic_cast<sofa::core::behavior::BaseInteractionProjectiveConstraintSet*> (obj) == NULL
-                && dynamic_cast<sofa::core::behavior::BaseLMConstraint*> (obj) == NULL
+        if (    obj->toBaseInteractionForceField() == NULL
+            &&  obj->toBaseInteractionConstraint() == NULL
+            &&  obj->toBaseInteractionProjectiveConstraintSet() == NULL
+            &&  obj->toBaseLMConstraint() == NULL
            )
             this->processObject(obj);
     }
@@ -126,10 +126,10 @@ void XMLPrintVisitor::processNodeBottomUp(simulation::Node* node)
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         sofa::core::objectmodel::BaseObject* obj = it->get();
-        if (   dynamic_cast<sofa::core::behavior::BaseInteractionForceField*> (obj) != NULL
-                || dynamic_cast<sofa::core::behavior::BaseInteractionConstraint*> (obj) != NULL
-                || dynamic_cast<sofa::core::behavior::BaseInteractionProjectiveConstraintSet*> (obj) != NULL
-                || dynamic_cast<sofa::core::behavior::BaseLMConstraint*> (obj) != NULL
+        if (    obj->toBaseInteractionForceField() == NULL
+            &&  obj->toBaseInteractionConstraint() == NULL
+            &&  obj->toBaseInteractionProjectiveConstraintSet() == NULL
+            &&  obj->toBaseLMConstraint() == NULL
            )
             this->processObject(obj);
     }

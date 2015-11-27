@@ -219,9 +219,9 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
         // TODO this must be done before resizeOut() but is done again in Inherit::init();
         // also clean the numerous calls to apply
         core::behavior::BaseMechanicalState *state;
-        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModel.get())))
+        if ((state = this->fromModel.get()->toBaseMechanicalState()))
             this->maskFrom = &state->forceMask;
-        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModel.get())))
+        if ((state = this->toModel.get()->toBaseMechanicalState()))
             this->maskTo = &state->forceMask;
         else
             this->setNonMechanical();
@@ -330,9 +330,9 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
         // TODO this must be done before resizeOut() but is done again in Inherit::init();
         // also clean the numerous calls to apply
         core::behavior::BaseMechanicalState *state;
-        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->fromModel.get())))
+        if( (state = this->fromModel.get()->toBaseMechanicalState()) )
             this->maskFrom = &state->forceMask;
-        if ((state = dynamic_cast< core::behavior::BaseMechanicalState *>(this->toModel.get())))
+        if( (state = this->toModel.get()->toBaseMechanicalState()) )
             this->maskTo = &state->forceMask;
         else
             this->setNonMechanical();

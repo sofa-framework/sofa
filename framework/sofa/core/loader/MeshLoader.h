@@ -27,11 +27,11 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/Quat.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/loader/PrimitiveGroup.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/helper/fixed_array.h>
-
 
 
 namespace sofa
@@ -46,7 +46,7 @@ namespace loader
 using sofa::defaulttype::Vector3;
 
 
-class SOFA_CORE_API MeshLoader : public virtual BaseLoader
+class SOFA_CORE_API MeshLoader : public BaseLoader
 {
 public:
     SOFA_ABSTRACT_CLASS(MeshLoader, BaseLoader);

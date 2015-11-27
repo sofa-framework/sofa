@@ -53,6 +53,7 @@ class SOFA_CORE_API BaseProjectiveConstraintSet : public virtual objectmodel::Ba
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseProjectiveConstraintSet, objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseProjectiveConstraintSet)
 protected:
     BaseProjectiveConstraintSet()
         : group(initData(&group, 0, "group", "ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle."))
@@ -120,6 +121,12 @@ public:
 
 protected:
     Data<int> group;
+
+public:
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
+
 };
 
 } // namespace behavior

@@ -527,21 +527,9 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::vi
 
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
-    if (showIndices.getValue())
+    if ( showIndices.getValue() )
     {
-        Vec4f color(1.0f, 1.0f, 1.0f, 1.0f);
-
-        float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
-
-        for (size_t i = 0; i < vsize; i++)
-        {
-            std::ostringstream oss;
-            oss << i;
-            std::string tmp = oss.str();
-            const char* s = tmp.c_str();
-            Vector3 pos(this->getPX(i), this->getPY(i), this->getPZ(i));
-            vparams->drawTool()->draw3DText(pos, scale, color, s);
-        }
+        drawIndices(vparams);
     }
 
 
@@ -587,21 +575,9 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3fTypes>::draw(const core::vi
 
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
-    if (showIndices.getValue())
+    if ( showIndices.getValue() )
     {
-        Vec4f color(1.0f, 1.0f, 1.0f, 1.0f);
-
-        float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
-
-        for (size_t i = 0; i < vsize; i++)
-        {
-            std::ostringstream oss;
-            oss << i;
-            std::string tmp = oss.str();
-            const char* s = tmp.c_str();
-            Vector3 pos(this->getPX(i), this->getPY(i), this->getPZ(i));
-            vparams->drawTool()->draw3DText(pos, scale, color, s);
-        }
+        drawIndices(vparams);
     }
 
 

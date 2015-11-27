@@ -33,7 +33,7 @@ using namespace sofa::core::visual;
 
 extern "C" PyObject * VisualModelImpl_setColor(PyObject *self, PyObject * args)
 {
-    VisualModelImpl* obj=dynamic_cast<VisualModelImpl*>(((PySPtr<Base>*)self)->object.get());
+    VisualModelImpl* obj=down_cast<VisualModelImpl>(((PySPtr<Base>*)self)->object->toVisualModel());
     double r,g,b,a;
     if (!PyArg_ParseTuple(args, "dddd",&r,&g,&b,&a))
     {

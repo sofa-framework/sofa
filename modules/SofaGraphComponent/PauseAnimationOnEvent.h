@@ -41,7 +41,7 @@ namespace misc
 
 /**
 */
-class PauseAnimationOnEvent : public virtual PauseAnimation
+class PauseAnimationOnEvent : public PauseAnimation
 {
 public:
     SOFA_CLASS(PauseAnimationOnEvent,PauseAnimation);

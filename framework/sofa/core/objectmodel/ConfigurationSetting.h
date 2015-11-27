@@ -45,12 +45,17 @@ class SOFA_CORE_API ConfigurationSetting: public BaseObject
 {
 public:
     SOFA_CLASS(ConfigurationSetting, BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(ConfigurationSetting)
 protected:
     ConfigurationSetting(); ///< Default constructor.
 
     virtual ~ConfigurationSetting();
 public:
     virtual void init();
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
+
 };
 
 } // namespace objectmodel

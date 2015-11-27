@@ -62,9 +62,9 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
     using namespace sofa::simulation::Colors;
     unsigned int flags=0;
 
-    if (dynamic_cast<core::objectmodel::BaseNode*>(obj))
+    if (obj->toBaseNode())
     {
-		if (dynamic_cast<core::objectmodel::BaseNode*>(obj)->getContext()->isSleeping())
+        if (obj->toBaseNode()->getContext()->isSleeping())
 		{
 			static QPixmap pixNode((const char**)iconsleep_xpm);
 			return &pixNode;
@@ -76,46 +76,46 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
 		}
         //flags |= 1 << NODE;
     }
-    else if (dynamic_cast<core::objectmodel::BaseObject*>(obj))
+    else if (obj->toBaseObject())
     {
-        if (dynamic_cast<core::objectmodel::ContextObject*>(obj))
+        if (obj->toContextObject())
             flags |= 1 << CONTEXT;
-        if (dynamic_cast<core::BehaviorModel*>(obj))
+        if (obj->toBehaviorModel())
             flags |= 1 << BMODEL;
-        if (dynamic_cast<core::CollisionModel*>(obj))
+        if (obj->toCollisionModel())
             flags |= 1 << CMODEL;
-        if (dynamic_cast<core::behavior::BaseMechanicalState*>(obj))
+        if (obj->toBaseMechanicalState())
             flags |= 1 << MMODEL;
-        if (dynamic_cast<core::behavior::BaseProjectiveConstraintSet*>(obj))
+        if (obj->toBaseProjectiveConstraintSet())
             flags |= 1 << PROJECTIVECONSTRAINTSET;
-        if (dynamic_cast<core::behavior::BaseConstraintSet*>(obj))
+        if (obj->toBaseConstraintSet())
             flags |= 1 << CONSTRAINTSET;
-        if (dynamic_cast<core::behavior::BaseInteractionForceField*>(obj) &&
-            dynamic_cast<core::behavior::BaseInteractionForceField*>(obj)->getMechModel1()!=dynamic_cast<core::behavior::BaseInteractionForceField*>(obj)->getMechModel2())
+        if (obj->toBaseInteractionForceField() &&
+            obj->toBaseInteractionForceField()->getMechModel1()!=obj->toBaseInteractionForceField()->getMechModel2())
             flags |= 1 << IFFIELD;
-        else if (dynamic_cast<core::behavior::BaseForceField*>(obj))
+        else if (obj->toBaseForceField())
             flags |= 1 << FFIELD;
-        if (dynamic_cast<core::behavior::BaseAnimationLoop*>(obj)
-            || dynamic_cast<core::behavior::OdeSolver*>(obj))
+        if (obj->toBaseAnimationLoop()
+            || obj->toOdeSolver())
             flags |= 1 << SOLVER;
-        if (dynamic_cast<core::collision::Pipeline*>(obj)
-            || dynamic_cast<core::collision::Intersection*>(obj)
-            || dynamic_cast<core::collision::Detection*>(obj)
-            || dynamic_cast<core::collision::ContactManager*>(obj)
-            || dynamic_cast<core::collision::CollisionGroupManager*>(obj))
+        if (obj->toPipeline()
+            || obj->toIntersection()
+            || obj->toDetection()
+            || obj->toContactManager()
+            || obj->toCollisionGroupManager())
             flags |= 1 << COLLISION;
-        if (dynamic_cast<core::BaseMapping*>(obj))
-            flags |= 1 << ((dynamic_cast<core::BaseMapping*>(obj))->isMechanical()?MMAPPING:MAPPING);
-        if (dynamic_cast<core::behavior::BaseMass*>(obj))
+        if (obj->toBaseMapping())
+            flags |= 1 << ((obj->toBaseMapping())->isMechanical()?MMAPPING:MAPPING);
+        if (obj->toBaseMass())
             flags |= 1 << MASS;
-        if (dynamic_cast<core::topology::Topology *>(obj)
-            || dynamic_cast<core::topology::BaseTopologyObject *>(obj) )
+        if (obj->toTopology ()
+            || obj->toBaseTopologyObject() )
             flags |= 1 << TOPOLOGY;
-        if (dynamic_cast<core::loader::BaseLoader*>(obj))
+        if (obj->toBaseLoader())
             flags |= 1 << LOADER;
-        if (dynamic_cast<core::objectmodel::ConfigurationSetting*>(obj))
+        if (obj->toConfigurationSetting())
             flags |= 1 << CONFIGURATIONSETTING;
-        if (dynamic_cast<core::visual::VisualModel*>(obj) && !flags)
+        if (obj->toVisualModel() && !flags)
             flags |= 1 << VMODEL;
         if (!flags)
             flags |= 1 << OBJECT;
@@ -216,19 +216,28 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
         }
         else
         {
-            //Node with multiple parent
-            QTreeWidgetItem *nodeItem=items[child];
+            static QPixmap pixMultiNode((const char**)iconmultinode_xpm);
+
+            // Node with multiple parents
             if (parent &&
-                parent != findObject(nodeItem->parent()) &&
-                !nodeWithMultipleParents.count(nodeItem))
+                parent != findObject(item->parent()) &&
+                !nodeWithMultipleParents.count(item))
             {
-                QTreeWidgetItem* item= createItem(items[parent]);
+                QTreeWidgetItem* item = createItem(items[parent]);
                 //item->setDropEnabled(true);
-                QString name=QString("MultiNode ") + QString(child->getName().c_str());
-                item->setText(0, name);
+//                QString name=QString("MultiNode ") + QString(child->getName().c_str());
+//                item->setText(0, name);
+                item->setText(0, child->getName().c_str());
                 nodeWithMultipleParents.insert(std::make_pair(items[child], item));
-                static QPixmap pixMultiNode((const char**)iconmultinode_xpm);
                 item->setIcon(0, QIcon(pixMultiNode));
+
+                // this is the second parent, the first child item must be displayed as a multinode
+                if( child->getNbParents()==2 )
+                {
+                    QTreeWidgetItem* item = items[child];
+                    item->setIcon(0, QIcon(pixMultiNode));
+//                    item->setText(0, QString("MultiNode ") + item->text(0) );
+                }
             }
         }
     }
@@ -348,7 +357,7 @@ void GraphListenerQListView::addObject(Node* parent, core::objectmodel::BaseObje
         std::string::size_type pos = name.find('<');
         if (pos != std::string::npos)
             name.erase(pos);
-        if (!dynamic_cast<core::objectmodel::ConfigurationSetting*>(object))
+        if (!object->toConfigurationSetting())
         {
             name += "  ";
             name += object->getName();
@@ -452,7 +461,7 @@ void GraphListenerQListView::addSlave(core::objectmodel::BaseObject* master, cor
         std::string::size_type pos = name.find('<');
         if (pos != std::string::npos)
             name.erase(pos);
-        if (!dynamic_cast<core::objectmodel::ConfigurationSetting*>(slave))
+        if (!slave->toConfigurationSetting())
         {
             name += "  ";
             name += slave->getName();

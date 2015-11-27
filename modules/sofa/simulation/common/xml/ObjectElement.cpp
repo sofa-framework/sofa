@@ -67,7 +67,7 @@ bool ObjectElement::init()
 
 bool ObjectElement::initNode()
 {
-    core::objectmodel::BaseContext* ctx = dynamic_cast<core::objectmodel::BaseContext*>(getParent()->getObject());
+    core::objectmodel::BaseContext* ctx = getParent()->getObject()->toBaseContext();
 
     for (AttributeMap::iterator it = attributes.begin(), itend = attributes.end(); it != itend; ++it)
     {

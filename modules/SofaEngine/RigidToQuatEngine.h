@@ -43,7 +43,7 @@ namespace engine
 {
 
 /*
- * Engine which converts (vectors of) Vec3 + Quaternion to give a (vector of) Rigid
+ * Engine which converts a (vector of) Rigid to give a (vectors of) Vec3 + Quaternion
  *
  */
 

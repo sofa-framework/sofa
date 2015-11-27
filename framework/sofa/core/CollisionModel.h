@@ -68,6 +68,7 @@ class SOFA_CORE_API CollisionModel : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(CollisionModel, objectmodel::BaseObject);
+    SOFA_BASE_CAST_IMPLEMENTATION(CollisionModel)
 
     enum{
         AABB_TYPE = 0,
@@ -492,6 +493,12 @@ protected:
     int enum_type;
 
 	void* userData;
+
+public:
+
+    virtual bool insertInNode( objectmodel::BaseNode* node );
+    virtual bool removeInNode( objectmodel::BaseNode* node );
+
 };
 
 } // namespace core

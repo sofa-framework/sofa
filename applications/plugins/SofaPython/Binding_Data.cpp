@@ -29,6 +29,13 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/objectmodel/Data.h>
 
+
+#include <sofa/core/visual/DisplayFlags.h>
+#include "Binding_DisplayFlagsData.h"
+
+#include <sofa/helper/OptionsGroup.h>
+#include "Binding_OptionsGroupData.h"
+
 #include <SofaDeformable/SpringForceField.h>
 
 using namespace sofa::core::objectmodel;
@@ -64,8 +71,15 @@ PyObject *GetDataValuePython(BaseData* data)
     int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
 
     // special cases...
-    Data<sofa::helper::vector<LinearSpring<SReal> > >* vectorLinearSpring = dynamic_cast<Data<sofa::helper::vector<LinearSpring<SReal> > >*>(data);
-    if (vectorLinearSpring)
+    if( Data<sofa::core::visual::DisplayFlags>* df = dynamic_cast<Data<sofa::core::visual::DisplayFlags>*>(data) )
+    {
+        return SP_BUILD_PYPTR(DisplayFlagsData,BaseData,df,false);
+    }
+    else if( Data<sofa::helper::OptionsGroup>* og = dynamic_cast<Data<sofa::helper::OptionsGroup>*>(data) )
+    {
+        return SP_BUILD_PYPTR(OptionsGroupData,BaseData,og,false);
+    }
+    else if ( Data<sofa::helper::vector<LinearSpring<SReal> > >* vectorLinearSpring = dynamic_cast<Data<sofa::helper::vector<LinearSpring<SReal> > >*>(data) )
     {
         // special type, a vector of LinearSpring objects
         if (typeinfo->size(valueVoidPtr)==1)
@@ -381,7 +395,16 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
     {
         // it's a string
         char *str = PyString_AsString(args); // for setters, only one object and not a tuple....
-        data->read(str);
+
+        if( strlen(str)>0 && str[0]=='@' ) // DataLink
+        {
+            data->setParent(str);
+            data->setDirtyOutputs(); // forcing children updates (should it be done in BaseData?)
+        }
+        else
+        {
+            data->read(str);
+        }
         return true;
     }
     else if (isList)

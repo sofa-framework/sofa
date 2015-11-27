@@ -104,13 +104,13 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
         // also clean the numerous calls to apply
         this->maskFrom1.resize( this->fromModels1.size() );
         for( unsigned i=0 ; i<this->fromModels1.size() ; ++i )
-            if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModels1[i])) this->maskFrom1[i] = &stateFrom->forceMask;
+            if (core::behavior::BaseMechanicalState* stateFrom = this->fromModels1[i]->toBaseMechanicalState()) this->maskFrom1[i] = &stateFrom->forceMask;
         this->maskFrom2.resize( this->fromModels2.size() );
         for( unsigned i=0 ; i<this->fromModels2.size() ; ++i )
-            if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModels2[i])) this->maskFrom2[i] = &stateFrom->forceMask;
+            if (core::behavior::BaseMechanicalState* stateFrom = this->fromModels2[i]->toBaseMechanicalState()) this->maskFrom2[i] = &stateFrom->forceMask;
         this->maskTo.resize( this->toModels.size() );
         for( unsigned i=0 ; i<this->toModels.size() ; ++i )
-            if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModels[i])) this->maskTo[i] = &stateTo->forceMask;
+            if (core::behavior::BaseMechanicalState* stateTo = this->toModels[i]->toBaseMechanicalState()) this->maskTo[i] = &stateTo->forceMask;
             else this->setNonMechanical();
     }
 
@@ -218,13 +218,13 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
         // also clean the numerous calls to apply
         this->maskFrom1.resize( this->fromModels1.size() );
         for( unsigned i=0 ; i<this->fromModels1.size() ; ++i )
-            if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModels1[i])) this->maskFrom1[i] = &stateFrom->forceMask;
+            if (core::behavior::BaseMechanicalState* stateFrom = this->fromModels1[i]->toBaseMechanicalState()) this->maskFrom1[i] = &stateFrom->forceMask;
         this->maskFrom2.resize( this->fromModels2.size() );
         for( unsigned i=0 ; i<this->fromModels2.size() ; ++i )
-            if (core::behavior::BaseMechanicalState* stateFrom = dynamic_cast<core::behavior::BaseMechanicalState*>(this->fromModels2[i])) this->maskFrom2[i] = &stateFrom->forceMask;
+            if (core::behavior::BaseMechanicalState* stateFrom = this->fromModels2[i]->toBaseMechanicalState()) this->maskFrom2[i] = &stateFrom->forceMask;
         this->maskTo.resize( this->toModels.size() );
         for( unsigned i=0 ; i<this->toModels.size() ; ++i )
-            if (core::behavior::BaseMechanicalState* stateTo = dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModels[i])) this->maskTo[i] = &stateTo->forceMask;
+            if (core::behavior::BaseMechanicalState* stateTo = this->toModels[i]->toBaseMechanicalState()) this->maskTo[i] = &stateTo->forceMask;
             else this->setNonMechanical();
     }
 
@@ -279,7 +279,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::init()
     if(!this->fromModel2 && this->getFromModels2().size())     this->fromModel2 = this->getFromModels2()[0];
     if(!this->toModel && this->getToModels().size())           this->toModel = this->getToModels()[0];
 
-    if ( !dynamic_cast<core::behavior::BaseMechanicalState*>(this->toModel))  this->setNonMechanical();
+    if ( !this->toModel->toBaseMechanicalState())  this->setNonMechanical();
 
     component::visualmodel::VisualModelImpl *visual;
     this->getContext()->get( visual, core::objectmodel::BaseContext::Local);
