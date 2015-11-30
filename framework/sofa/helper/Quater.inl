@@ -509,18 +509,18 @@ void Quater<Real>::quatToAxis(defaulttype::Vec<3,Real> & axis, Real &angle) cons
 template<class Real>
 defaulttype::Vec<3,Real> Quater<Real>::toEulerVector() const
 {
-//    Compute the Euler angles:
-//    Roll: rotation about the X-axis
-//    Pitch: rotation about the Y-axis
-//    Yaw: rotation about the Z-axis
+///    Compute the Euler angles:
+///    Roll: rotation about the X-axis
+///    Pitch: rotation about the Y-axis
+///    Yaw: rotation about the Z-axis
 
     Quater<Real> q = *this;
         q.normalize();
 
         defaulttype::Vec<3,Real> vEuler;
-        vEuler[0] = atan(2*(q[3]*q[0] + q[1]*q[2]) / (1-2*(q[0]*q[0] + q[1]*q[1])));        //roll
-        vEuler[1] = asin(2*(q[3]*q[1] - q[2]*q[0]));                                        //pitch
-        vEuler[2] = atan(2*(q[3]*q[2] + q[0]*q[1]) / (1-2*(q[1]*q[1] + q[2]*q[2])))+M_PI;   //yaw
+        vEuler[0] = atan2(2*(q[3]*q[0] + q[1]*q[2]) , (1-2*(q[0]*q[0] + q[1]*q[1])));   //roll
+        vEuler[1] = asin(2*(q[3]*q[1] - q[2]*q[0]));                                    //pitch
+        vEuler[2] = atan2(2*(q[3]*q[2] + q[0]*q[1]) , (1-2*(q[1]*q[1] + q[2]*q[2])));   //yaw
         return vEuler;
 }
 
