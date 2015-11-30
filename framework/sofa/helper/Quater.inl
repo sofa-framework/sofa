@@ -509,21 +509,19 @@ void Quater<Real>::quatToAxis(defaulttype::Vec<3,Real> & axis, Real &angle) cons
 template<class Real>
 defaulttype::Vec<3,Real> Quater<Real>::toEulerVector() const
 {
+//    Compute the Euler angles:
+//    Roll: rotation about the X-axis
+//    Pitch: rotation about the Y-axis
+//    Yaw: rotation about the Z-axis
+
     Quater<Real> q = *this;
-    q.normalize();
+        q.normalize();
 
-    double angle = acos(q._q[3]) * 2;
-
-    defaulttype::Vec<3,Real> v(q._q[0], q._q[1], q._q[2]);
-
-    double norm = sqrt( (double) (v.x() * v.x() + v.y() * v.y() + v.z() * v.z()) );
-    if (norm > 0.0005)
-    {
-        v /= norm;
-        v *= angle;
-    }
-
-    return v;
+        defaulttype::Vec<3,Real> vEuler;
+        vEuler[0] = atan(2*(q[3]*q[0] + q[1]*q[2]) / (1-2*(q[0]*q[0] + q[1]*q[1])));        //roll
+        vEuler[1] = asin(2*(q[3]*q[1] - q[2]*q[0]));                                        //pitch
+        vEuler[2] = atan(2*(q[3]*q[2] + q[0]*q[1]) / (1-2*(q[1]*q[1] + q[2]*q[2])))+M_PI;   //yaw
+        return vEuler;
 }
 
 /*! Returns the slerp interpolation of Quaternions \p a and \p b, at time \p t.
