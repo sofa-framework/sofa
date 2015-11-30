@@ -44,7 +44,11 @@ ProjectionToTargetPlaneMapping<TIn, TOut>::ProjectionToTargetPlaneMapping()
     , f_indices(initData(&f_indices, "indices", "Indices of the parent points"))
     , f_origins(initData(&f_origins, "origins", "Origins of the planes on which the points are projected"))
     , f_normals(initData(&f_normals, "normals", "Normals of the planes on which the points are projected"))
+    , d_drawScale(initData(&d_drawScale, SReal(10), "drawScale", "Draw scale"))
+    , d_drawColor(initData(&d_drawColor, defaulttype::Vec4f(1,0,0,0.5), "drawColor", "Draw color"))
 {
+    d_drawScale.setGroup("Visualization");
+    d_drawColor.setGroup("Visualization");
 }
 
 template <class TIn, class TOut>
@@ -143,6 +147,12 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::draw(const core::visual::VisualP
 {
     if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
+    const SReal& scale = d_drawScale.getValue();
+    if(!scale) return;
+
+    const defaulttype::Vec4f color = d_drawColor.getValue();
+
+
     helper::ReadAccessor< Data<OutVecCoord> > origins(f_origins);
     helper::ReadAccessor< Data<OutVecCoord> > normals(f_normals);
 
@@ -163,7 +173,7 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::draw(const core::visual::VisualP
         t0.normalize();
         t1 = n.cross( t0 );
 
-        vparams->drawTool()->drawQuad( o -t0*10000 -t1*10000, o +t0*10000 -t1*10000, o +t0*10000 +t1*10000, o -t0*10000 +t1*10000, n, defaulttype::Vec4f(1,0,0,1) );
+        vparams->drawTool()->drawQuad( o -t0*scale -t1*scale, o +t0*scale -t1*scale, o +t0*scale +t1*scale, o -t0*scale +t1*scale, n, color );
 
     }
     glEnd();
