@@ -43,10 +43,6 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
 {
     typename CompliantOdeSolver::SolverOperations sop( params, this->getContext(), this->alpha.getValue(), this->beta.getValue(), dt, posId, velId, true );
 
-    // store previous position (for stop criterion)
-    typename CompliantOdeSolver::vec x_prev, x_current;
-
-
     const SReal& threshold = d_threshold.getValue();
     const SReal& velocityFactor = d_velocityFactor.getValue();
 
@@ -65,23 +61,12 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
         this->getContext()->executeVisitor( &bob );
         }
 
-        // stop if it does not move enough from previous iteration
-        if( !x_current.size() ) // scalar vectors can only be allocated after assembly
-        {
-            x_current.resize( this->sys.m );
-            x_prev.resize( this->sys.m );
-        }
-        this->sys.copyFromMultiVec( x_current, posId ); // get current position
-        x_prev -= x_current; // position variation during iteration
-
-        if( x_prev.dot( x_prev ) < threshold*threshold ) break;
-
+        // stop if the velocity norm is too smal i.e. it does not move enough from previous iteration
+        sop.vop.v_dot( velId, velId );
+        double error = sop.vop.finish();
+        if( error < threshold*threshold ) break;
         if( this->f_printLog.getValue() )
-        {
-            serr<<"position variation: "<<sqrt(x_prev.dot( x_prev ))<<sendl;
-        }
-
-        x_prev = x_current; // store previous position
+            serr<<"velocity norm: "<<sqrt(error)<<sendl;
     }
 
     if( this->f_printLog.getValue() ) serr<<i<<" iterations"<<sendl;
