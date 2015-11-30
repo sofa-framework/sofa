@@ -80,6 +80,8 @@ public:
     Data< vector<unsigned> > f_indices;         ///< indices of the parent points
     Data< OutVecCoord >      f_origins; ///< origins of the lines the point is projected to
     Data< OutVecCoord >      f_normals; ///< directions of the lines the point is projected to (should be normalized, and are normalized in init)
+    Data< SReal >            d_drawScale; ///< drawing scale
+    Data< defaulttype::Vec4f >  d_drawColor; ///< drawing color
 
 
     virtual void init();
