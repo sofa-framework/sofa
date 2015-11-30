@@ -35,7 +35,7 @@ class CompliantPseudoStaticSolver : public CompliantOdeSolver {
 				
     Data<SReal> d_threshold;        ///< Convergence threshold between 2 iterations (velocity norm)
     Data<unsigned> d_iterations;    ///< Max number of iterations
-    Data<SReal> d_velocityFactor;        ///< [0,1]  1=fully damped, 0=fully dynamics
+    Data<SReal> d_velocityFactor;        ///< [0,1]  0=fully damped, 1=fully dynamics
 
     CompliantPseudoStaticSolver();
     virtual ~CompliantPseudoStaticSolver(){}
