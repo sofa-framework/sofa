@@ -34,6 +34,29 @@
         </Node>
     
     </Node>
+
+    <!--    converting  Rigid -> Vec in SubsetMultiMapping  -->
+    <Node name="rigid1" activated="1">
+        <GridMeshCreator name="loader" filename="nofile" resolution="2 2"  translation="0 2 0"/>
+        <Mesh src="@loader" />
+        <MechanicalObject template="Rigid3d" src="@loader" name="dof1" />
+
+        <Node name="origid2">
+            <GridMeshCreator name="loader" filename="nofile" resolution="2 2" translation="2 2 0" />
+            <Mesh src="@loader" />
+            <MechanicalObject template="Rigid3d" src="@loader"  name="dof2"/>
+
+            <Node name="concatenation">
+                <MechanicalObject template="Vec3d" name="dofall" showObject="1"/>
+                <SubsetMultiMapping template="Rigid3d,Vec3d" input="@../../dof1 @../dof2" output="@./dofall" indexPairs="0 0 0 1 1 0 1 1"/>
+                <Sphere radius="0.3" selfCollision="1"/>
+                <UniformMass mass="1" />
+                <ConstantForceField points="0" force="1 0 0"/>
+            </Node>
+
+        </Node>
+
+    </Node>
         
     
 </Node>

@@ -29,6 +29,7 @@
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <iostream>
+#include <SofaBaseMechanics/IdentityMapping.h>
 
 namespace sofa
 {
@@ -49,7 +50,7 @@ void SubsetMultiMapping<TIn, TOut>::init()
 
     Inherit::init();
 
-    unsigned Nin = TIn::deriv_total_size, Nout = Nin;
+    unsigned Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size;
 
     for( unsigned i=0; i<baseMatrices.size(); i++ )
         delete baseMatrices[i];
@@ -69,7 +70,7 @@ void SubsetMultiMapping<TIn, TOut>::init()
         unsigned parent = indexPairs.getValue()[i*2];
         Jacobian* jacobian = jacobians[parent];
         unsigned bcol = indexPairs.getValue()[i*2+1];  // parent particle
-        for(unsigned k=0; k<Nin; k++ )
+        for(unsigned k=0; k<Nout; k++ )
         {
             unsigned row = i*Nout + k;
             jacobian->insertBack( row, Nin*bcol +k, (SReal)1. );
@@ -164,7 +165,8 @@ void SubsetMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
         const InDataVecCoord* inPosPtr = dataVecInPos[indexPairs.getValue()[i*2]];
         const InVecCoord& inPos = (*inPosPtr).getValue();
 
-        out[i] =  inPos[indexPairs.getValue()[i*2+1]];
+        //out[i] =  inPos[indexPairs.getValue()[i*2+1]];
+        helper::eq( out[i], inPos[indexPairs.getValue()[i*2+1]] );
     }
 
     dataVecOutPos[0]->endEdit(mparams);
@@ -181,7 +183,8 @@ void SubsetMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams
         const InDataVecDeriv* inDerivPtr = dataVecInVel[indexPairs.getValue()[i*2]];
         const InVecDeriv& inDeriv = (*inDerivPtr).getValue();
 
-        out[i] = inDeriv[indexPairs.getValue()[i*2+1]];
+//        out[i] = inDeriv[indexPairs.getValue()[i*2+1]];
+        helper::eq( out[i], inDeriv[indexPairs.getValue()[i*2+1]] );
     }
 
     dataVecOutVel[0]->endEdit(mparams);
@@ -217,14 +220,17 @@ void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cpa
 
         while (colIt != colItEnd)
         {
-            unsigned int index_parent=  indexP[colIt.index()*2]; // 0 or 1 (for now...)
+            unsigned int index_parent = indexP[colIt.index()*2]; // 0 or 1 (for now...)
             // writeLine provide an iterator on the line... if this line does not exist, the line is created:
             typename InMatrixDeriv::RowIterator o = dOut[index_parent]->beginEdit()->writeLine(rowIt.index());
             dOut[index_parent]->endEdit();
 
             // for each col of the constraint direction, it adds a col in the corresponding parent's constraint direction
             if(indexPairs.getValue()[colIt.index()*2+1] < (unsigned int)this->fromModels[index_parent]->getSize())
-                o.addCol(indexP[colIt.index()*2+1], colIt.val());
+            {
+                InDeriv tmp; helper::eq( tmp, colIt.val() );
+                o.addCol(indexP[colIt.index()*2+1], tmp);
+            }
             ++colIt;
         }
 
@@ -239,7 +245,6 @@ void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cpa
 
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
-//void SubsetMultiMapping<TIn, TOut>::applyJT(const helper::vector<typename SubsetMultiMapping<TIn, TOut>::InVecDeriv*>& parentDeriv , const helper::vector<const OutVecDeriv*>& childDeriv )
 {
     const OutDataVecDeriv* cderData = dataVecInForce[0];
     const OutVecDeriv& cder = cderData->getValue();
@@ -250,7 +255,8 @@ void SubsetMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mparam
         //(*parentDeriv[indexPairs.getValue()[i*2]])[indexPairs.getValue()[i*2+1]] += cder[i];
         InDataVecDeriv* inDerivPtr = dataVecOutForce[indexPairs.getValue()[i*2]];
         InVecDeriv& inDeriv = *(*inDerivPtr).beginEdit(mparams);
-        inDeriv[indexPairs.getValue()[i*2+1]] += cder[i];
+//        inDeriv[indexPairs.getValue()[i*2+1]] += cder[i];
+        helper::peq( inDeriv[indexPairs.getValue()[i*2+1]], cder[i] );
         (*inDerivPtr).endEdit(mparams);
     }
 }
