@@ -364,6 +364,7 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
 
     if (!f_showLegend.getValue()) return;
 
+    glUseProgramObjectARB(0);
 
     // Prepare texture for legend
     // crashes on mac in batch mode (no GL context)
