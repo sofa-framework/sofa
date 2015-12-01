@@ -94,6 +94,8 @@ void OglCylinderModel::draw(const core::visual::VisualParams* vparams)
 {
     if(!vparams->displayFlags().getShowVisualModels()) return;
 
+    glUseProgramObjectARB(0);
+
     // glPushAttrib(GL_ENABLE_BIT);
 
     vparams->drawTool()->setLightingEnabled(true);
