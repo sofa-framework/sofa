@@ -72,7 +72,7 @@ public:
     GLuint getId() const { return id; }
 
 private:
-    Texture(const Texture& ) {};
+    Texture(const Texture& ) {}
     Texture operator=(const Texture& ) { return Texture(); }
 };
 

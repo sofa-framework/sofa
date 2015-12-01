@@ -47,7 +47,7 @@ void GlText::initTexture()
     }
     if (s_asciiTexture == NULL && s_asciiImage != NULL)
     {
-        s_asciiTexture = new sofa::helper::gl::Texture(s_asciiImage);
+        s_asciiTexture = new sofa::helper::gl::Texture(s_asciiImage, false, true, false );
     }
 }
 
