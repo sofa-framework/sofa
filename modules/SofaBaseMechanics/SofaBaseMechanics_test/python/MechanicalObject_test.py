@@ -37,10 +37,13 @@ class VerifController(SofaTest.Controller):
 
         # implicitly defined from topology
         topologynode = self.node.createChild("fromtopoloy")
-        topologynode.createObject('MeshTopology', position="0 0 0 1 1 1 2 2 2", triangles="0 1 2" ) # empty topology
+        topologynode.createObject('MeshTopology', position="0 0 0 1 1 1 2 2 2", triangles="0 1 2" )
         self.dof6 = topologynode.createObject('MechanicalObject', template="Vec3d", name="dof6")
 
-
+        # topology should not interfere
+        topologynode = self.node.createChild("unusedtopoloy")
+        topologynode.createObject('MeshTopology', position="0 0 0 1 1 1 2 2 2", triangles="0 1 2" )
+        self.dof7 = topologynode.createObject('MechanicalObject', template="Vec3d", name="dof7", position="0 0 0")
 
 
 
@@ -69,6 +72,11 @@ class VerifController(SofaTest.Controller):
 
         self.ASSERT(len(self.dof6.position)==3, "test6 implicit topology position size "+str(len(self.dof6.position)) )
         self.ASSERT(len(self.dof6.velocity)==3, "test6 default velocity size "+str(len(self.dof6.velocity)) )
+
+        # it fails with actual MechanicalObject initialization and I do not know how to fix it
+        self.ASSERT(len(self.dof7.position)==1, "test7 given position size "+str(len(self.dof7.position)) )
+        self.ASSERT(len(self.dof7.velocity)==1, "test7 default velocity size "+str(len(self.dof7.velocity)) )
+
 
 
         self.sendSuccess()
