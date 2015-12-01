@@ -227,8 +227,8 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
      */
     virtual bool runTest( const InVecCoord& parentInit,
                           const OutVecCoord& childInit,
-                          const InVecCoord parentNew,
-                          const OutVecCoord expectedChildNew)
+                          const InVecCoord& parentNew,
+                          const OutVecCoord& expectedChildNew)
     {
         if( deltaRange.second / errorMax <= g_minDeltaErrorRatio )
             ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
@@ -269,7 +269,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         {
             if( !this->isSmall( difference(xout[i],expectedChildNew[i]).norm(), errorMax ) ) {
                 ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: \n" << xout[i] <<"\nexpected: \n" << expectedChildNew[i]
-                              <<  "difference should be less than " << errorThreshold << " (" << difference(xout[i],expectedChildNew[i]).norm() << ")" << endl;
+                              <<  " difference should be less than " << errorThreshold << " (" << difference(xout[i],expectedChildNew[i]).norm() << ")" << endl;
                 succeed = false;
             }
         }
