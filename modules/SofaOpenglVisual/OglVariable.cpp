@@ -504,6 +504,7 @@ void OglFloatVector4Variable::initVisual()
 
 //// Matrix /////
 OglMatrix2Variable::OglMatrix2Variable()
+    : transpose(initData(&transpose,false,"transpose","Transpose the matrix (e.g. to use row-dominant matrices in OpenGL"))
 {
 
 }
@@ -535,13 +536,14 @@ void OglMatrix2Variable::initVisual()
 }
 
 OglMatrix3Variable::OglMatrix3Variable()
+    : OglMatrix2Variable()
 {
 
 }
 
 void OglMatrix3Variable::init()
 {
-    OglMatrix2Variable::init();
+    OglVariable<helper::vector<float> >::init();
 
     helper::vector<float> temp = value.getValue();
 
@@ -566,6 +568,7 @@ void OglMatrix3Variable::initVisual()
 }
 
 OglMatrix4Variable::OglMatrix4Variable()
+    : OglMatrix2Variable()
 {
 
 }
@@ -597,6 +600,7 @@ void OglMatrix4Variable::initVisual()
 }
 
 OglMatrix2x3Variable::OglMatrix2x3Variable()
+    : OglMatrix2Variable()
 {
 
 }
@@ -629,6 +633,7 @@ void OglMatrix2x3Variable::initVisual()
 
 
 OglMatrix3x2Variable::OglMatrix3x2Variable()
+    : OglMatrix2Variable()
 {
 
 }
@@ -660,6 +665,7 @@ void OglMatrix3x2Variable::initVisual()
 }
 
 OglMatrix2x4Variable::OglMatrix2x4Variable()
+    : OglMatrix2Variable()
 {
 
 }
@@ -691,6 +697,7 @@ void OglMatrix2x4Variable::initVisual()
 }
 
 OglMatrix4x2Variable::OglMatrix4x2Variable()
+    : OglMatrix2Variable()
 {
 
 }
@@ -722,6 +729,7 @@ void OglMatrix4x2Variable::initVisual()
 }
 
 OglMatrix3x4Variable::OglMatrix3x4Variable()
+    : OglMatrix2Variable()
 {
 
 }
@@ -753,6 +761,7 @@ void OglMatrix3x4Variable::initVisual()
 }
 
 OglMatrix4x3Variable::OglMatrix4x3Variable()
+    : OglMatrix2Variable()
 {
 
 }
