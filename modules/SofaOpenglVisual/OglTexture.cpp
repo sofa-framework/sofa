@@ -42,7 +42,7 @@ SOFA_DECL_CLASS(OglTexture2D)
 int OglTextureClass = core::RegisterObject("OglTexture").add< OglTexture >();
 int OglTexture2DClass = core::RegisterObject("OglTexture2D").add< OglTexture2D >();
 
-unsigned short OglTexture::MAX_NUMBER_OF_TEXTURE_UNIT = 1;
+GLint OglTexture::MAX_NUMBER_OF_TEXTURE_UNIT = 1;
 
 OglTexture::OglTexture()
     :textureFilename(initData(&textureFilename, (std::string) "", "textureFilename", "Texture Filename"))
@@ -207,13 +207,15 @@ void OglTexture::init()
 
 void OglTexture::initVisual()
 {
-    GLint maxTextureUnits;
-    glGetIntegerv(GL_MAX_TEXTURE_UNITS, &maxTextureUnits);
-    MAX_NUMBER_OF_TEXTURE_UNIT = maxTextureUnits;
+#ifdef GL_MAX_TEXTURE_IMAGE_UNITS_ARB //http://developer.nvidia.com/object/General_FAQ.html#t6
+    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS_ARB, &MAX_NUMBER_OF_TEXTURE_UNIT);
+#else
+    glGetIntegerv(GL_MAX_TEXTURE_UNITS, &MAX_NUMBER_OF_TEXTURE_UNIT);
+#endif
 
     if (textureUnit.getValue() > MAX_NUMBER_OF_TEXTURE_UNIT)
     {
-        serr << "Unit Texture too high ; set it at the unit texture n°1" << sendl;
+        serr << "Unit Texture too high ; set it at the unit texture n°1 (MAX_NUMBER_OF_TEXTURE_UNIT=" << MAX_NUMBER_OF_TEXTURE_UNIT << ")" << sendl;
         textureUnit.setValue(1);
     }
 //    if (!img)

@@ -82,7 +82,7 @@ protected:
     helper::io::Image* img;
 
 public:
-    static unsigned short MAX_NUMBER_OF_TEXTURE_UNIT;
+    static GLint MAX_NUMBER_OF_TEXTURE_UNIT;
 protected:
     OglTexture();
     virtual ~OglTexture();
