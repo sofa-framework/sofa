@@ -144,17 +144,21 @@ class RigidBody:
             ## add a component to compute mesh normals at each timestep
             self.normals = self.node.createObject("NormalsFromPoints", template='Vec3'+template_suffix, name="normalsFromPoints", position='@'+self.dofs.name+'.position', triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
 
-        def addVisualModel(self):
+        def addVisualModel(self,loadMesh=True):
             ## add a visual model identical to the collision model
-            self.visual = RigidBody.CollisionMesh.VisualModel( self.node )
+            ## if loadMesh is False it will use the one loaded by the meshloader (more memory friendly but with possible incorrect texture coordinates)
+            self.visual = RigidBody.CollisionMesh.VisualModel( self.node, loadMesh )
             return self.visual
 
         class VisualModel:
-            def __init__(self, node ):
+            def __init__(self, node, loadMesh ):
                 global idxVisualModel;
                 self.node = node.createChild( "visual" )  # node
                 # todo improve normal updates by using the Rigid Transform rather than by doing cross product
-                self.model = self.node.createObject('VisualModel', name="model"+str(idxVisualModel), useNormals=False, updateNormals=True, texcoords="@../loader.texcoords")
+                if loadMesh:
+                    self.model = self.node.createObject('VisualModel', name="model"+str(idxVisualModel), useNormals=False, updateNormals=True, fileMesh="@../loader.filename" )
+                else:
+                    self.model = self.node.createObject('VisualModel', name="model"+str(idxVisualModel), useNormals=False, updateNormals=True, texcoords="@../loader.texcoords")
                 self.mapping = self.node.createObject('IdentityMapping', name="mapping")
                 idxVisualModel+=1
 
