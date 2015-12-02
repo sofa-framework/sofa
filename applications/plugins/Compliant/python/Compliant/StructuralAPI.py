@@ -153,7 +153,8 @@ class RigidBody:
             def __init__(self, node ):
                 global idxVisualModel;
                 self.node = node.createChild( "visual" )  # node
-                self.model = self.node.createObject('VisualModel', name="model"+str(idxVisualModel), useNormals=False, updateNormals=False)
+                # todo improve normal updates by using the Rigid Transform rather than by doing cross product
+                self.model = self.node.createObject('VisualModel', name="model"+str(idxVisualModel), useNormals=False, updateNormals=True, texcoords="@../loader.texcoords")
                 self.mapping = self.node.createObject('IdentityMapping', name="mapping")
                 idxVisualModel+=1
 
