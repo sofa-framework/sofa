@@ -95,6 +95,7 @@ set(HEADER_FILES
     system/thread/thread_specific_ptr.h
     vector.h
     vectorData.h
+    vectorLinks.h
     vector_algebra.h
     vector_device.h
 )
