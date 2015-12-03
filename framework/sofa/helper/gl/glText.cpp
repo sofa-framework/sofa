@@ -35,7 +35,7 @@ namespace gl
 using namespace sofa::defaulttype;
 using std::string;
 
-SOFA_HELPER_API const std::string GlText::ASCII_TEXTURE_PATH("textures/texture_ascii.png");
+SOFA_HELPER_API const std::string GlText::ASCII_TEXTURE_PATH("textures/texture_ascii_smooth.png");
 SOFA_HELPER_API sofa::helper::io::Image *GlText::s_asciiImage = NULL;
 SOFA_HELPER_API sofa::helper::gl::Texture* GlText::s_asciiTexture = NULL;
 
@@ -132,6 +132,8 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
     //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // only tex color (no glColor)
     glEnable(GL_ALPHA_TEST);
     glAlphaFunc(GL_GREATER, 0.0);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     s_asciiTexture->init();
     s_asciiTexture->bind();
 
