@@ -81,8 +81,8 @@ class Deformable:
 
 
     def addVisual(self, color=[1,1,1,1]):
-        if self.dofs is None: # use static (triangulated) mesh from topology
-            self.visual = self.node.createObject("VisualModel", name="model", color=concat(color), src="@"+self.topology.name)
+        if self.dofs is None: # use static (triangulated) mesh (do not use the topology but reload the mesh to have correct texture coordinates)
+            self.visual = self.node.createObject("VisualModel", name="model", color=concat(color), fileMesh="@"+self.meshLoader.name+".filename")
             self.normals = self.visual
         else:   # create a new deformable
             d = Deformable(self.node,"Visual")
@@ -99,7 +99,7 @@ class Deformable:
 
     def visualFromDeformable(self, deformable, color=[1,1,1,1]):
         deformable.node.addChild(self.node)
-        self.visual = self.node.createObject("VisualModel", name="model", filename="@"+SofaPython.Tools.getObjectPath(deformable.meshLoader)+".filename", color=concat(color))
+        self.visual = self.node.createObject("VisualModel", name="model", filename="@"+deformable.meshLoader.getPathName()+".filename", color=concat(color))
         self.mapping = self.node.createObject("IdentityMapping", name="mapping", input='@'+deformable.node.getPathName(),output="@.", mapForces=False, mapConstraints=False, mapMasses=False )
         self.normals = self.meshLoader
 
