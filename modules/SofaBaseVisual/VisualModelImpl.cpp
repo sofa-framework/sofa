@@ -441,7 +441,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             idxs[j] = vertTexNormMap[verts[j]][std::make_pair((tex?texs[j]:-1), (m_useNormals.getValue() ? norms[j] : 0))];
             if ((unsigned)idxs[j] >= (unsigned)nbVOut)
             {
-                serr << "ERROR(VisualModelImpl): index "<<idxs[j]<<" out of range"<<sendl;
+                serr << this->getPathName()<<" index "<<idxs[j]<<" out of range"<<sendl;
                 idxs[j] = 0;
             }
         }
