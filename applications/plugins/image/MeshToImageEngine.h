@@ -350,11 +350,7 @@ protected:
 
             // get orientation from eigen vectors
             helper::Quater< Real > q; q.fromMatrix(M);
-            //  q.toEulerVector() does not work
-            if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
-            tr->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
-            tr->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
-            tr->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
+            tr->getRotation()=q.toEulerVector()* (Real)180.0 / (Real)M_PI;
 
             // get bb
             Coord P;

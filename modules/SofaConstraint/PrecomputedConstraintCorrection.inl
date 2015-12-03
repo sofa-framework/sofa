@@ -465,7 +465,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
     //sout<<"q_test = "<<q_test<<sendl;
 
-    //sout<<"Alpha = "<<q_test.toEulerVector()<< " doit valoir une rotation de Pi/2 autour de l'axe y"<<sendl;
+    //sout<<"Alpha = "<<q_test.toEulerVector()<< " doit valoir une rotation de Pi/2 autour de l'axe y"<<sendl; // Consider to use quatToRotationVector instead of toEulerVector to have the rotation vector
 }
 
 
