@@ -144,21 +144,18 @@ class RigidBody:
             ## add a component to compute mesh normals at each timestep
             self.normals = self.node.createObject("NormalsFromPoints", template='Vec3'+template_suffix, name="normalsFromPoints", position='@'+self.dofs.name+'.position', triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
 
-        def addVisualModel(self,loadMesh=True):
+        def addVisualModel(self):
             ## add a visual model identical to the collision model
-            ## if loadMesh is False it will use the one loaded by the meshloader (more memory friendly but with possible incorrect texture coordinates)
-            self.visual = RigidBody.CollisionMesh.VisualModel( self.node, loadMesh )
+            self.visual = RigidBody.CollisionMesh.VisualModel( self.node )
             return self.visual
 
         class VisualModel:
-            def __init__(self, node, loadMesh ):
+            def __init__(self, node ):
                 global idxVisualModel;
                 self.node = node.createChild( "visual" )  # node
                 # todo improve normal updates by using the Rigid Transform rather than by doing cross product
-                if loadMesh:
-                    self.model = self.node.createObject('VisualModel', name="model"+str(idxVisualModel), useNormals=False, updateNormals=True, fileMesh="@../loader.filename" )
-                else:
-                    self.model = self.node.createObject('VisualModel', name="model"+str(idxVisualModel), useNormals=False, updateNormals=True, texcoords="@../loader.texcoords")
+                # enforcing mesh loading in VisualModel to have correct texture coordinates
+                self.model = self.node.createObject('VisualModel', name="model"+str(idxVisualModel), useNormals=False, updateNormals=True, fileMesh="@../loader.filename" )
                 self.mapping = self.node.createObject('IdentityMapping', name="mapping")
                 idxVisualModel+=1
 
@@ -170,7 +167,7 @@ class RigidBody:
             r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
             self.model = self.node.createObject('VisualModel', name="visual"+str(idxVisualModel), fileMesh=filepath,
                                                 scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r),
-                                                useNormals=False, updateNormals=False)
+                                                useNormals=False, updateNormals=True)
             self.mapping = self.node.createObject('RigidMapping', name="mapping")
             idxVisualModel+=1
 
