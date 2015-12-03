@@ -73,9 +73,6 @@ protected:
 
     void update()
     {
-        for(size_t i =0;i<d_nbInput.getValue();++i)
-            serr << (*vl_input[i])->m_vtexcoords.getValue().size() << sendl;
-
         unsigned int nb = d_nbInput.getValue();
 
         unsigned int nbpos = 0, nbvert = 0, nbedges = 0, nbtris = 0, nbquads = 0;
