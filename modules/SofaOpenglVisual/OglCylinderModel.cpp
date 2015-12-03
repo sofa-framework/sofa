@@ -94,7 +94,12 @@ void OglCylinderModel::draw(const core::visual::VisualParams* vparams)
 {
     if(!vparams->displayFlags().getShowVisualModels()) return;
 
-    glUseProgramObjectARB(0);
+    for(int i = 0; i < 8; ++i)
+    {
+        glActiveTexture(GL_TEXTURE0 + i);
+        glDisable(GL_TEXTURE_2D);
+    }
+    glActiveTexture(GL_TEXTURE0);
 
     // glPushAttrib(GL_ENABLE_BIT);
 
