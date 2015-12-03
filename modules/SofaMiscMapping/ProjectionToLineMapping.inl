@@ -155,11 +155,12 @@ void ProjectionToTargetLineMapping<TIn, TOut>::draw(const core::visual::VisualPa
         points.push_back( origins[i] - directions[i]*scale );
         points.push_back( origins[i] + directions[i]*scale );
     }
-
+#ifndef SOFA_NO_OPENGL
     glPushAttrib(GL_LIGHTING_BIT);
     glDisable(GL_LIGHTING);
     vparams->drawTool()->drawLines( points, 1, color );
     glPopAttrib();
+#endif // SOFA_NO_OPENGL
 }
 
 

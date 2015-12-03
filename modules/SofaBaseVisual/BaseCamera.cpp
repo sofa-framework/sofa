@@ -219,12 +219,13 @@ BaseCamera::Vec3 BaseCamera::screenToWorldCoordinates(int x, int y)
 #endif /* SOFA_NO_OPENGL */
 }
 
+#ifndef SOFA_NO_OPENGL
 void BaseCamera::getOpenGLMatrix(GLdouble mat[16])
 {
     defaulttype::SolidTypes<SReal>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
     world_H_cam.inversed().writeOpenGlMatrix(mat);
 }
-
+#endif // SOFA_NO_OPENGL
 void BaseCamera::getProjectionMatrix(Mat4& projectionMatrix)
 {
     Mat3 intrinsicParameters = d_intrinsicParameters.getValue();
@@ -251,6 +252,7 @@ void BaseCamera::getProjectionMatrix(Mat4& projectionMatrix)
     projectionMatrix[3][3] = 0.0;
 }
 
+#ifndef SOFA_NO_OPENGL
 void BaseCamera::getOpenGLProjectionMatrix(GLdouble oglProjectionMatrix[16])
 {
     Mat4 projectionMatrix;
@@ -271,6 +273,7 @@ void BaseCamera::getOpenGLProjectionMatrix(GLdouble oglProjectionMatrix[16])
 //        std::cout << std::endl;
 //    }
 }
+#endif // SOFA_NO_OPENGL
 
 void BaseCamera::reinit()
 {

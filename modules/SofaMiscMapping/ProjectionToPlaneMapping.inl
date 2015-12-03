@@ -156,6 +156,7 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::draw(const core::visual::VisualP
     helper::ReadAccessor< Data<OutVecCoord> > origins(f_origins);
     helper::ReadAccessor< Data<OutVecCoord> > normals(f_normals);
 
+#ifndef SOFA_NO_OPENGL
     glPushAttrib(GL_LIGHTING_BIT);
     glDisable(GL_LIGHTING);
 
@@ -179,6 +180,7 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::draw(const core::visual::VisualP
     glEnd();
 
     glPopAttrib();
+#endif // SOFA_NO_OPENGL
 }
 
 
