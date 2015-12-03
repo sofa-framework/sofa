@@ -227,9 +227,10 @@ public:
 
     void getProjectionMatrix(Mat4 &projectionMatrix);
 
+#ifndef SOFA_NO_OPENGL
     void getOpenGLMatrix(GLdouble mat[16]);
     void getOpenGLProjectionMatrix(GLdouble oglProjectionMatrix[]);
-
+#endif // SOFA_NO_OPENGL
     Quat getOrientationFromLookAt(const Vec3 &pos, const Vec3& lookat);
     Vec3 getLookAtFromOrientation(const Vec3 &pos, const double &distance,const Quat & orientation);
     Vec3 getPositionFromOrientation(const Vec3 &lookAt, const double &distance, const Quat& orientation);
