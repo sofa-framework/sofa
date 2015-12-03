@@ -57,14 +57,14 @@ bool MeshOffLoader::load()
 
     if (!file.good())
     {
-        serr << "Error: MeshOffLoader: Cannot read file '" << m_filename << "'." << sendl;
+        serr << "Cannot read file '" << m_filename << "'." << sendl;
         return false;
     }
 
     file >> cmd;
     if (cmd != "OFF")
     {
-        serr << "Error: MeshOffLoader: Not a OFF file (header problem) '" << m_filename << "'." << sendl;
+        serr << "Not a OFF file (header problem) '" << m_filename << "'." << sendl;
         return false;
     }
 
