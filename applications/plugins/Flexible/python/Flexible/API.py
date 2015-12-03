@@ -71,12 +71,14 @@ class Deformable:
     def loadVisual(self, meshPath, offset = [0,0,0,0,0,0,1], scale=[1,1,1], color=[1,1,1,1],**kwargs):
         r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
         self.visual =  self.node.createObject("VisualModel", name="model", filename=meshPath, translation=concat(offset[:3]) , rotation=concat(r), scale3d=concat(scale), color=concat(color),**kwargs)
-        self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.visual.name )
+        # NO!! a topology cannot be created from a VisualModel where some point indices (in faces) are refering to a larger list (where superimposed points for normals or texcoords are flattened)
+        # self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.visual.name )
         self.normals = self.visual
 
     def loadVisualCylinder(self, meshPath, offset = [0,0,0,0,0,0,1], scale=[1,1,1], color=[1,1,1,1],radius=0.01,**kwargs):
         r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
-        self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.visual.name )
+        # NO!! a topology cannot be created from a VisualModel where some point indices (in faces) are refering to a larger list (where superimposed points for normals or texcoords are flattened)
+        # self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.visual.name )
         self.normals = self.visual
 
 
@@ -135,20 +137,20 @@ class Deformable:
 
     def addMechanicalObject(self):
         if self.meshLoader is None:
-            print "[Flexible.Deformable] ERROR: no loaded mesh for ", name
+            print "[Flexible.Deformable] ERROR: no loaded mesh for ", self.name
             return
         self.dofs = self.node.createObject("MechanicalObject", template = "Vec3", name="dofs", src="@"+self.meshLoader.name)
 
     def addNormals(self, invert=False):
         if self.topology is None:
-            print "[Flexible.Deformable] ERROR: no topology for ", name
+            print "[Flexible.Deformable] ERROR: no topology for ", self.name
             return
         pos = '@'+self.topology.name+'.position' if self.dofs is None else  '@'+self.dofs.name+'.position'
         self.normals = self.node.createObject("NormalsFromPoints", template='Vec3', name="normalsFromPoints", position=pos, triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
 
     def addMass(self,totalMass):
         if self.dofs is None:
-            print "[Flexible.Deformable] ERROR: no dofs for ", name
+            print "[Flexible.Deformable] ERROR: no dofs for ", self.name
             return
         self.mass = self.node.createObject('UniformMass', totalMass=totalMass)
 
