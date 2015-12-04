@@ -2390,7 +2390,13 @@ SReal MechanicalObject<DataTypes>::vMax(const core::ExecParams* params, core::Co
 
     if (a.type == sofa::core::V_COORD )
     {
-        serr << "Invalid vMax operation: can not compute the max of V_Coord terms in vector "<< a << sendl;
+        const VecCoord &va = this->read(core::ConstVecCoordId(a))->getValue(params);
+
+        for (nat i=0; i<va.size(); i++)
+        {
+            for(unsigned j=0; j<DataTypes::coord_total_size; j++)
+                if (fabs(va[i][j])>r) r=fabs(va[i][j]);
+        }
     }
     else if (a.type == sofa::core::V_DERIV)
     {
