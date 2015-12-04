@@ -71,21 +71,20 @@ class Deformable:
     def loadVisual(self, meshPath, offset = [0,0,0,0,0,0,1], scale=[1,1,1], color=[1,1,1,1],**kwargs):
         r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
         self.visual =  self.node.createObject("VisualModel", name="model", filename=meshPath, translation=concat(offset[:3]) , rotation=concat(r), scale3d=concat(scale), color=concat(color),**kwargs)
-        # NO!! a topology cannot be created from a VisualModel where some point indices (in faces) are refering to a larger list (where superimposed points for normals or texcoords are flattened)
-        # self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.visual.name )
         self.normals = self.visual
 
     def loadVisualCylinder(self, meshPath, offset = [0,0,0,0,0,0,1], scale=[1,1,1], color=[1,1,1,1],radius=0.01,**kwargs):
         r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
-        # NO!! a topology cannot be created from a VisualModel where some point indices (in faces) are refering to a larger list (where superimposed points for normals or texcoords are flattened)
-        # self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.visual.name )
+        # @todo: fix this: loading edge model from file does not seem to work properly..
+        # self.visual =  self.node.createObject("VisualModel", name="model", filename=meshPath, lineWidth=radius, translation=concat(offset[:3]) , rotation=concat(r), scale3d=concat(scale), color=concat(color),**kwargs)
+        self.loadMesh(meshPath,offset,scale)
+        self.visual =  self.node.createObject("VisualModel", name="model", src="@"+self.topology.name, lineWidth=radius,  color=concat(color),**kwargs)
         self.normals = self.visual
 
 
     def addVisual(self, color=[1,1,1,1]):
-        if self.dofs is None: # use static (triangulated) mesh (do not use the topology but reload the mesh to have correct texture coordinates)
-            self.visual = self.node.createObject("VisualModel", name="model", color=concat(color), fileMesh="@"+self.meshLoader.name+".filename")
-            self.normals = self.visual
+        if self.dofs is None:
+            print "[Flexible.Deformable] ERROR: visual mesh not added because there is no dof, use LoadVisual instead to have a static visual mesh ", self.name
         else:   # create a new deformable
             d = Deformable(self.node,"Visual")
             d.visualFromDeformable(self,color)
@@ -157,8 +156,9 @@ class Deformable:
     def addMapping(self, dofRigidNode=None, dofAffineNode=None, labelImage=None, labels=None, useGlobalIndices=False, useIndexLabelPairs=False, assemble=True, isMechanical=True):
         cell = ''
         if not labelImage is None and not labels is None : # use labels to select specific voxels in branching image
-           offsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+self.topology.name+".position", src="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage), labels=concat(labels), useGlobalIndices=useGlobalIndices, useIndexLabelPairs=useIndexLabelPairs)
-           cell = "@"+SofaPython.Tools.getObjectPath(offsets)+".cell"
+            position="@"+self.topology.name+".position" if not self.topology is None else "@"+self.visual.name+".position"
+            offsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position =position, src="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage), labels=concat(labels), useGlobalIndices=useGlobalIndices, useIndexLabelPairs=useIndexLabelPairs)
+            cell = "@"+SofaPython.Tools.getObjectPath(offsets)+".cell"
 
         self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, cell, assemble, isMechanical=isMechanical)
 
