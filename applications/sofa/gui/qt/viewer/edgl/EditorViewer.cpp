@@ -1109,6 +1109,8 @@ void EditorViewer::mousePressEvent ( QMouseEvent * e )
                 std::cout << "select within sphere" << std::endl;
                 break;
             }
+            default: // to fix a warning
+                break;
         }
     }
     else
@@ -1206,6 +1208,8 @@ void EditorViewer::wheelEvent(QWheelEvent* e)
 
                 break;
             }
+            default: // to fix a warning
+                break;
         }
     }
     else if(m_navigating)
