@@ -53,7 +53,7 @@ Visitor::Result StateChangeVisitor::processNodeTopDown(simulation::Node* node)
             return RESULT_PRUNE;
         }
     }
-    if (node->mechanicalState)
+    if (testTags(node->mechanicalState))
     {
         this->processStateChange(node->mechanicalState);
     }
