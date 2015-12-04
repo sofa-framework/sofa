@@ -75,7 +75,7 @@ bool MeshTrianLoader::load()
 
     if (!file.good())
     {
-        serr << "Error: MeshTrianLoader: Cannot read file '" << m_filename << "'." << sendl;
+        serr << "Cannot read file '" << m_filename << "'." << sendl;
         return false;
     }
 

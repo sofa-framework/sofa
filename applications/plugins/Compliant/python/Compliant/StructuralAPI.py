@@ -153,7 +153,9 @@ class RigidBody:
             def __init__(self, node ):
                 global idxVisualModel;
                 self.node = node.createChild( "visual" )  # node
-                self.model = self.node.createObject('VisualModel', name="model"+str(idxVisualModel), useNormals=False, updateNormals=False)
+                # todo improve normal updates by using the Rigid Transform rather than by doing cross product
+                # enforcing mesh loading in VisualModel to have correct texture coordinates
+                self.model = self.node.createObject('VisualModel', name="model"+str(idxVisualModel), useNormals=False, updateNormals=True, fileMesh="@../loader.filename" )
                 self.mapping = self.node.createObject('IdentityMapping', name="mapping")
                 idxVisualModel+=1
 
@@ -165,7 +167,7 @@ class RigidBody:
             r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
             self.model = self.node.createObject('VisualModel', name="visual"+str(idxVisualModel), fileMesh=filepath,
                                                 scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r),
-                                                useNormals=False, updateNormals=False)
+                                                useNormals=False, updateNormals=True)
             self.mapping = self.node.createObject('RigidMapping', name="mapping")
             idxVisualModel+=1
 

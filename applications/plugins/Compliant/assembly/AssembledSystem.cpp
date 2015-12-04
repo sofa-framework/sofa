@@ -58,7 +58,7 @@ void AssembledSystem::debug(SReal /*thres*/) const {
 
 
 
-void AssembledSystem::copyFromMultiVec(vec &target, core::ConstMultiVecId derivId)
+void AssembledSystem::copyFromMultiVec(vec &target, core::ConstMultiVecDerivId derivId)
 {
     assert(target.size() >= m);
     unsigned off = 0;
@@ -76,7 +76,7 @@ void AssembledSystem::copyFromMultiVec(vec &target, core::ConstMultiVecId derivI
 }
 
 
-void AssembledSystem::copyToMultiVec( core::MultiVecId targetId, const vec& source)
+void AssembledSystem::copyToMultiVec( core::MultiVecDerivId targetId, const vec& source)
 {
     unsigned off = 0;
     // master dofs
@@ -92,7 +92,7 @@ void AssembledSystem::copyToMultiVec( core::MultiVecId targetId, const vec& sour
 
 }
 
-void AssembledSystem::addToMultiVec( core::MultiVecId targetId, const vec& source )
+void AssembledSystem::addToMultiVec( core::MultiVecDerivId targetId, const vec& source )
 {
     unsigned off = 0;
     // master dofs
@@ -116,7 +116,7 @@ void AssembledSystem::addToMultiVec( core::MultiVecId targetId, const vec& sourc
 
 
 
-void AssembledSystem::copyFromCompliantMultiVec(vec &target, core::ConstMultiVecId derivId)
+void AssembledSystem::copyFromCompliantMultiVec(vec &target, core::ConstMultiVecDerivId derivId)
 {
     assert(target.size() >= n);
     unsigned off = target.size()==n ? 0 : m; // if target is of size m+n, only copy target.tail(n)
@@ -134,7 +134,7 @@ void AssembledSystem::copyFromCompliantMultiVec(vec &target, core::ConstMultiVec
 }
 
 
-void AssembledSystem::copyToCompliantMultiVec( core::MultiVecId targetId, const vec& source)
+void AssembledSystem::copyToCompliantMultiVec( core::MultiVecDerivId targetId, const vec& source)
 {
     unsigned off = source.size()==n ? 0 : m;
     // compliant dofs
@@ -150,7 +150,7 @@ void AssembledSystem::copyToCompliantMultiVec( core::MultiVecId targetId, const 
 
 }
 
-void AssembledSystem::addToCompliantMultiVec( core::MultiVecId targetId, const vec& source )
+void AssembledSystem::addToCompliantMultiVec( core::MultiVecDerivId targetId, const vec& source )
 {
     unsigned off = source.size()==n ? 0 : m;
     // compliance dofs

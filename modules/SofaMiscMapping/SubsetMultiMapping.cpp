@@ -48,11 +48,13 @@ int SubsetMultiMappingClass = core::RegisterObject("Compute a subset of the inpu
     .add< SubsetMultiMapping< Vec3dTypes, Vec3dTypes > >()
     .add< SubsetMultiMapping< Vec1dTypes, Vec1dTypes > >()
     .add< SubsetMultiMapping< Rigid3dTypes, Rigid3dTypes > >()
+    .add< SubsetMultiMapping< Rigid3dTypes, Vec3dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
     .add< SubsetMultiMapping< Vec3fTypes, Vec3fTypes > >()
     .add< SubsetMultiMapping< Vec1fTypes, Vec1fTypes > >()
     .add< SubsetMultiMapping< Rigid3fTypes, Rigid3fTypes > >()
+    .add< SubsetMultiMapping< Rigid3fTypes, Vec3fTypes > >()
 #endif
         ;
 
@@ -60,11 +62,13 @@ int SubsetMultiMappingClass = core::RegisterObject("Compute a subset of the inpu
 template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3dTypes, Vec3dTypes >;
 template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec1dTypes, Vec1dTypes >;
 template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3dTypes, Rigid3dTypes >;
+template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3dTypes, Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3fTypes, Vec3fTypes >;
 template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec1fTypes, Vec1fTypes >;
 template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3fTypes, Rigid3fTypes >;
+template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3fTypes, Vec3fTypes >;
 #endif
 
 } // namespace mapping

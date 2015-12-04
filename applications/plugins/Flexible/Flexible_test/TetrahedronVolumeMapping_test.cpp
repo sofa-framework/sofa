@@ -90,7 +90,7 @@ struct TetrahedronVolumeMappingTest : public Mapping_test<_TestedMapping>
 
         // expected mapped values
         OutVecCoord expectedChildCoords(Nout);
-        SReal expectedVolume = 1. / 6. / Nout;
+        SReal expectedVolume = 1. / 6. / (SReal)Nout;
         for(int i=0; i<Nout; i++ )
             expectedChildCoords[i] = expectedVolume;
 

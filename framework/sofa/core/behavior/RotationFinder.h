@@ -26,6 +26,7 @@
 #define SOFA_CORE_BEHAVIOR_ROTATIONFINDER_H
 
 #include <sofa/core/behavior/BaseRotationFinder.h>
+#include <sofa/defaulttype/Mat.h>
 
 
 namespace sofa
