@@ -106,6 +106,14 @@ extern "C" PyObject * BaseObject_getPathName(PyObject * self, PyObject * /*args*
     return PyString_FromString(obj->getPathName().c_str());
 }
 
+// the same as 'getPathName' with a extra prefix '@'
+extern "C" PyObject * BaseObject_getLinkPath(PyObject * self, PyObject * /*args*/)
+{
+    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
+
+    return PyString_FromString(("@"+obj->getPathName()).c_str());
+}
+
 
 SP_CLASS_METHODS_BEGIN(BaseObject)
 SP_CLASS_METHOD(BaseObject,init)
@@ -118,6 +126,7 @@ SP_CLASS_METHOD(BaseObject,getContext)
 SP_CLASS_METHOD(BaseObject,getMaster)
 SP_CLASS_METHOD(BaseObject,setSrc)
 SP_CLASS_METHOD(BaseObject,getPathName)
+SP_CLASS_METHOD(BaseObject,getLinkPath)
 SP_CLASS_METHODS_END
 
 

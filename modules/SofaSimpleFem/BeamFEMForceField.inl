@@ -437,7 +437,12 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
     dQ = qDiff(quatB, quatA);
     dQ.normalize();
 
-    dW = dQ.toEulerVector();
+    dW = dQ.quatToRotationVector();     // Use of quatToRotationVector instead of toEulerVector:
+                                        // this is done to keep the old behavior (before the
+                                        // correction of the toEulerVector  function). If the
+                                        // purpose was to obtain the Eulerian vector and not the
+                                        // rotation vector please use the following line instead
+//    dW = dQ.toEulerVector();
 
     SReal Theta = dW.norm();
 
@@ -486,7 +491,7 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
     // dQ = QA.i * QB ou dQ = QB * QA.i() ??
     dQ0 = qDiff(x0[b].getOrientation(), x0[a].getOrientation()); // x0[a].getOrientation().inverse() * x0[b].getOrientation();
     dQ =  qDiff(x[b].getOrientation(), x[a].getOrientation()); // x[a].getOrientation().inverse() * x[b].getOrientation();
-    //u = dQ.toEulerVector() - dQ0.toEulerVector();
+    //u = dQ.toEulerVector() - dQ0.toEulerVector(); // Consider to use quatToRotationVector instead of toEulerVector to have the rotation vector
 
     dQ0.normalize();
     dQ.normalize();
@@ -494,7 +499,12 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
     defaulttype::Quat tmpQ = qDiff(dQ,dQ0);
     tmpQ.normalize();
 
-    u = tmpQ.toEulerVector(); //dQ.toEulerVector() - dQ0.toEulerVector();
+    u = tmpQ.quatToRotationVector(); //dQ.quatToRotationVector() - dQ0.quatToRotationVector();  // Use of quatToRotationVector instead of toEulerVector:
+                                                                                                // this is done to keep the old behavior (before the
+                                                                                                // correction of the toEulerVector  function). If the
+                                                                                                // purpose was to obtain the Eulerian vector and not the
+                                                                                                // rotation vector please use the following line instead
+    //u = tmpQ.toEulerVector(); //dQ.toEulerVector() - dQ0.toEulerVector();
 
     depl[3] = 0.0; 	depl[4] = 0.0; 	depl[5] = 0.0;
     depl[9] = u[0]; depl[10]= u[1]; depl[11]= u[2];

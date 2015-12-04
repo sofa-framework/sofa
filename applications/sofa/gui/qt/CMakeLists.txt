@@ -112,7 +112,6 @@ endif()
 
 
 if(SOFA_ENABLE_QWT)
-    find_package(qwt)
 
     list(APPEND MOC_HEADER_FILES
          GraphDataWidget.h

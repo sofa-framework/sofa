@@ -22,72 +22,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LOADER_MESHOBJLOADER_H
-#define SOFA_COMPONENT_LOADER_MESHOBJLOADER_H
-#include "config.h"
+#include "MergeVisualModels.h"
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/loader/MeshLoader.h>
-#include <sofa/helper/SVector.h>
 namespace sofa
 {
 
 namespace component
 {
 
-namespace loader
+namespace visualmodel
 {
 
-class SOFA_LOADER_API MeshObjLoader : public sofa::core::loader::MeshLoader
-{
-public:
-    enum FaceType { EDGE, TRIANGLE, QUAD, NBFACETYPE };
+SOFA_DECL_CLASS(MergeVisualModels)
 
-    SOFA_CLASS(MeshObjLoader,sofa::core::loader::MeshLoader);
-protected:
-    MeshObjLoader();
-    virtual ~MeshObjLoader();
-public:
-    virtual bool load();
-
-    template <class T>
-    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
-    {
-        return BaseLoader::canCreate (obj, context, arg);
-    }
-
-protected:
-    bool readOBJ (std::ifstream &file, const char* filename);
-//    bool readMTL (const char* filename, helper::vector <sofa::core::loader::Material>& materials);
-//    void addGroup (const sofa::core::loader::PrimitiveGroup& g);
-
-//    sofa::core::loader::Material material;
-//    Data<bool> loadMaterial;
-//    std::string textureName;
-//    FaceType faceType;
-
-public:
-//    Data <helper::vector <sofa::core::loader::Material> > materials;
-//    Data <helper::SVector <helper::SVector <int> > > faceList;
-//    Data <helper::SVector <helper::SVector <int> > > texIndexList;
-//    Data< helper::vector<sofa::defaulttype::Vector2> > texCoordsList;
-//    Data <helper::SVector<helper::SVector<int> > > normalsIndexList;
-//    Data <helper::vector<sofa::defaulttype::Vector3> > normalsList;
-//    Data< helper::vector<sofa::defaulttype::Vector2> > texCoords;
-//    Data< bool > computeMaterialFaces;
-//    helper::vector< Data <helper::vector <unsigned int> >* > subsets_indices;
-
-    Data< bool > d_storeGroups; ///< should sub-groups be stored?
-
-    virtual std::string type() { return "The format of this mesh is OBJ."; }
-};
+int MergeVisualModelsClass = core::RegisterObject("Merge several visual models")
+        .add< MergeVisualModels >(true);
 
 
 
-
-} // namespace loader
+} // namespace visualmodel
 
 } // namespace component
 
 } // namespace sofa
 
-#endif

@@ -137,11 +137,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 Mat<3,3,Real> R;
                 R = container->RotVec3DToRotMat3D(rotation);
                 helper::Quater< float > q; q.fromMatrix(R);
-                // wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;  //  this does not convert quaternion to euler angles
-                if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
-                wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
-                wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
-                wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
+                wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;
             }
             //			Real t0 = wtransform->getRotation()[0];
             //			Real t1 = wtransform->getRotation()[1];
@@ -165,11 +161,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
                     for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
                     Mat<3,3,Real> R; for(unsigned int i=0;i<3;i++) for(unsigned int j=0;j<3;j++) R[i][j]=(Real)affine[3*i+j];
                     helper::Quater< Real > q; q.fromMatrix(R);
-                    // wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;  //  container does not convert quaternion to euler angles
-                    if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
-                    wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
-                    wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
-                    wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
+                    wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;
                     wtransform->getOffsetT()=(Real)offsetT;
                     wtransform->getScaleT()=(Real)scaleT;
                     wtransform->isPerspective()=isPerspective;
@@ -314,13 +306,10 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
             Real d = (Real)data.d;
             Real a = sqrt(1.0 - (b*b+c*c+d*d));
             helper::Quater<Real> q(a,b,c,d);
-            //            wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ; //  this does not convert quaternion to euler angles
-            if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
+
             if (!container->transformIsSet)
             {
-                wtransform->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
-                wtransform->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
-                wtransform->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
+                wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;
             }
         }
 

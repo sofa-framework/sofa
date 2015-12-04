@@ -80,25 +80,25 @@ public:
 
 
     /// Copy a state vector from the scene graph to this system. Only the independent DOFs are copied.
-    void copyFromMultiVec(vec& target, core::ConstMultiVecId sourceId );
+    void copyFromMultiVec(vec& target, core::ConstMultiVecDerivId sourceId );
     /// Copy a state vector from this system to the scene graph. Only the independent DOFs are copied.
-    void copyToMultiVec( core::MultiVecId targetId, const vec& source );
+    void copyToMultiVec( core::MultiVecDerivId targetId, const vec& source );
     /// Add a state vector from this system to the scene graph. Only the independent DOFs are added.
-    void addToMultiVec( core::MultiVecId targetId, const vec& source );
+    void addToMultiVec(core::MultiVecDerivId targetId, const vec& source );
 
 
     /// Copy a state vector from the scene graph to this system. Only the compliant DOFs are copied.
     /// Note the given target can be either of the size n and will then used entierly OR
     /// it could be of size m+n and it will be used starting at index m
-    void copyFromCompliantMultiVec(vec& target, core::ConstMultiVecId sourceId );
+    void copyFromCompliantMultiVec(vec& target, core::ConstMultiVecDerivId sourceId );
     /// Copy a state vector from this system to the scene graph. Only the compliant DOFs are copied.
     /// Note the given target can be either of the size n and will then used entierly OR
     /// it could be of size m+n and it will be used starting at index m
-    void copyToCompliantMultiVec( core::MultiVecId targetId, const vec& source );
+    void copyToCompliantMultiVec( core::MultiVecDerivId targetId, const vec& source );
     /// Add a state vector from this system to the scene graph. Only the compliant DOFs are added.
     /// Note the given target can be either of the size n and will then used entierly OR
     /// it could be of size m+n and it will be used starting at index m
-    void addToCompliantMultiVec( core::MultiVecId targetId, const vec& source );
+    void addToCompliantMultiVec( core::MultiVecDerivId targetId, const vec& source );
 
 };
 

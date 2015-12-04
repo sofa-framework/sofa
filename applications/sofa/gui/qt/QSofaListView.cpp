@@ -418,7 +418,7 @@ void QSofaListView::nodeNameModification(simulation::Node* node)
     QString nameToUse(node->getName().c_str());
     item->setText(0,nameToUse);
 
-    nameToUse=QString("MultiNode ")+nameToUse;
+    nameToUse=/*QString("MultiNode ")+*/nameToUse;
 
     typedef std::multimap<QTreeWidgetItem *, QTreeWidgetItem*>::iterator ItemIterator;
     std::pair<ItemIterator,ItemIterator> range=graphListener_->nodeWithMultipleParents.equal_range(item);

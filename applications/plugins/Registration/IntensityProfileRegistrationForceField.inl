@@ -281,14 +281,17 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
     // convolve
     simi.fill((Ts)0);
 
+
+    typedef sofa::helper::IndexOpenMP<unsigned int>::type IndexOpenMPType;
+
     if(this->SimilarityMeasure.getValue().getSelectedId()==SIMILARITY_SSD)
     {
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-        for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
+        for(IndexOpenMPType i=0;i<dims[1];i++)
         {
-            unsigned int iref=i<profref.height()?i:profref.height()-1;
+            unsigned int iref=i<(IndexOpenMPType)profref.height()?i:(IndexOpenMPType)profref.height()-1;
             for(unsigned int j=0;j<dims[0];j++)
             {
                 Ts& s = simi(j,i);
@@ -312,9 +315,9 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-        for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
+        for(IndexOpenMPType i=0;i<dims[1];i++)
         {
-            unsigned int iref=i<profref.height()?i:profref.height()-1;
+            unsigned int iref=i<(IndexOpenMPType)profref.height()?i:(IndexOpenMPType)profref.height()-1;
             for(unsigned int j=0;j<dims[0];j++)
             {
                 Ts& s = simi(j,i);

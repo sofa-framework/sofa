@@ -44,6 +44,8 @@ ProjectionToTargetLineMapping<TIn, TOut>::ProjectionToTargetLineMapping()
     , f_indices(initData(&f_indices, "indices", "Indices of the parent points"))
     , f_origins(initData(&f_origins, "origins", "Origins of the lines on which the points are projected"))
     , f_directions(initData(&f_directions, "directions", "Directions of the lines on which the points are projected"))
+    , d_drawScale(initData(&d_drawScale, SReal(10), "drawScale", "Draw scale"))
+    , d_drawColor(initData(&d_drawColor, defaulttype::Vec4f(0,1,0,1), "drawColor", "Draw color"))
 {
 }
 
@@ -139,20 +141,26 @@ void ProjectionToTargetLineMapping<TIn, TOut>::draw(const core::visual::VisualPa
 {
     if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
+    const SReal& scale = d_drawScale.getValue();
+    if(!scale) return;
+
+    const defaulttype::Vec4f color = d_drawColor.getValue();
+
     helper::ReadAccessor< Data<OutVecCoord> > origins(f_origins);
     helper::ReadAccessor< Data<OutVecCoord> > directions(f_directions);
 
     vector< defaulttype::Vector3 > points;
     for(unsigned i=0; i<origins.size(); i++ )
     {
-        points.push_back( origins[i] - directions[i]*10000 );
-        points.push_back( origins[i] + directions[i]*10000 );
+        points.push_back( origins[i] - directions[i]*scale );
+        points.push_back( origins[i] + directions[i]*scale );
     }
-
+#ifndef SOFA_NO_OPENGL
     glPushAttrib(GL_LIGHTING_BIT);
     glDisable(GL_LIGHTING);
-    vparams->drawTool()->drawLines( points, 1, defaulttype::Vec4f(0,1,0,1) );
+    vparams->drawTool()->drawLines( points, 1, color );
     glPopAttrib();
+#endif // SOFA_NO_OPENGL
 }
 
 

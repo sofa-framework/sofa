@@ -42,7 +42,7 @@ class Controller(Sofa.PythonScriptController):
         
     ## Send a success event if value is true. Otherwise a failure event is sent.
     #  @param value A value used to set which failure/success event is sent.
-    #  @param msg A meesage to print out.
+    #  @param msg A message to print out.
     def should(self, value, msg = 'unknown'):
         if value:
             self.sendSuccess()
@@ -51,7 +51,7 @@ class Controller(Sofa.PythonScriptController):
             
     ## Send a failure event if value is false.
     #  @param value A value used to set which failure/success event is sent.
-    #  @param msg A meesage to print out.
+    #  @param msg A message to print out.
     def ASSERT(self, value, msg = 'unknown'):
         if not value:
             self.sendFailure( msg )

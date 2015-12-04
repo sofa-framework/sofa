@@ -115,11 +115,13 @@ protected :
 extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
 extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Vec1dTypes, defaulttype::Vec1dTypes >;
 extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Rigid3dTypes, defaulttype::Rigid3dTypes >;
+extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
 extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Vec1fTypes, defaulttype::Vec1fTypes >;
 extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Rigid3fTypes, defaulttype::Rigid3fTypes >;
+extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Rigid3fTypes, defaulttype::Vec3fTypes >;
 #endif
 #endif
 

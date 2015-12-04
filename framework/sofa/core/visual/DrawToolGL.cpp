@@ -869,7 +869,7 @@ void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const Vec4f 
 
     glScalef( scale, scale, scale );
 
-    glLineWidth( fontSize/20.0f );
+//    glLineWidth( fontSize/20.0f );
 
     helper::gl::GlText::textureDraw_Overlay(text);
 
