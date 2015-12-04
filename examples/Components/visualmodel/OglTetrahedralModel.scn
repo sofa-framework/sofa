@@ -1,12 +1,10 @@
+<?xml version="1.0"?>
 <Node name="root" dt="0.02">
+    
     <VisualStyle displayFlags="showVisual" />
-    <Node name="Lens">
-        <MeshGmshLoader filename="mesh/single_tetra.msh" name="loader" />
-        <MechanicalObject src="@loader" template="Vec3d" />
-        <include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
-        <Node>
-            <OglShader geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" vertFilename="shaders/tetra.vert" geoFilename="shaders/tetra_triangles.geo" fragFilename="shaders/tetra.frag" />
-            <OglTetrahedralModel template="Vec3d" />
-        </Node>
-    </Node>
-</Node>
+    
+     <MechanicalObject  template="Vec3d" position="0 0 0   1 0 0 " name="dofs" />
+     <MeshTopology src="@dofs" edges="0 1" />
+     <OglCylinderModel  />
+    
+     </Node>

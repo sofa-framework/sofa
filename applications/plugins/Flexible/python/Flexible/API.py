@@ -34,7 +34,7 @@ def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, cell='', as
                 input1="@"+dofRigidNode.getPathName(), input2="@"+dofAffineNode.getPathName(), output="@.", assemble=assemble, geometricStiffness=geometricStiffness, mapForces=isMechanical, mapConstraints=isMechanical, mapMasses=isMechanical)
 
 class Deformable:
-    """ This class reprents a deformable object build from a mesh.
+    """ This class represents a deformable object built from a mesh.
         Various cases are handled:
         - collision model :
             x static (loaded from file or subset of another static model)
@@ -75,7 +75,9 @@ class Deformable:
 
     def loadVisualCylinder(self, meshPath, offset = [0,0,0,0,0,0,1], scale=[1,1,1], color=[1,1,1,1],radius=0.01,**kwargs):
         r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
-        self.visual =  self.node.createObject("VisualModel", name="model", filename=meshPath, keepLines=True, lineWidth=radius, translation=concat(offset[:3]) , rotation=concat(r), scale3d=concat(scale), color=concat(color),**kwargs)
+        # self.visual =  self.node.createObject("VisualModel", name="model", filename=meshPath, keepLines=True, lineWidth=radius, translation=concat(offset[:3]) , rotation=concat(r), scale3d=concat(scale), color=concat(color),**kwargs)
+        self.dofs = self.node.createObject("MechanicalObject",template="Vec3d" )
+        self.visual = self.node.createObject("OglCylinderModel", radius=".005" ) # TODO: reimplement OglCylinderModel not to use a mstate or a topology
         self.normals = self.visual
 
 
