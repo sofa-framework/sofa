@@ -75,10 +75,7 @@ class Deformable:
 
     def loadVisualCylinder(self, meshPath, offset = [0,0,0,0,0,0,1], scale=[1,1,1], color=[1,1,1,1],radius=0.01,**kwargs):
         r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
-        # @todo: fix this: loading edge model from file does not seem to work properly..
-        # self.visual =  self.node.createObject("VisualModel", name="model", filename=meshPath, lineWidth=radius, translation=concat(offset[:3]) , rotation=concat(r), scale3d=concat(scale), color=concat(color),**kwargs)
-        self.loadMesh(meshPath,offset,scale)
-        self.visual =  self.node.createObject("VisualModel", name="model", src="@"+self.topology.name, lineWidth=radius,  color=concat(color),**kwargs)
+        self.visual =  self.node.createObject("VisualModel", name="model", filename=meshPath, keepLines=True, lineWidth=radius, translation=concat(offset[:3]) , rotation=concat(r), scale3d=concat(scale), color=concat(color),**kwargs)
         self.normals = self.visual
 
 
