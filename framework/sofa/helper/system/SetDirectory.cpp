@@ -74,14 +74,7 @@ SetDirectory::SetDirectory(const char* filename)
 
 SetDirectory::SetDirectory(const std::string& filename)
 {
-    directory = GetParentDir(filename.c_str());
-    if (!directory.empty())
-    {
-//         std::cout << ">chdir("<<directory<<")"<<std::endl;
-        previousDir = GetCurrentDir();
-        if (chdir(directory.c_str()) != 0)
-            std::cerr <<"Error: can't change directory." << std::endl;
-    }
+    SetDirectory(filename.c_str());
 }
 
 SetDirectory::~SetDirectory()
