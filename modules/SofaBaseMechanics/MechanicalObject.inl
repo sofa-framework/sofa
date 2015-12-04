@@ -1068,7 +1068,12 @@ void MechanicalObject<DataTypes>::init()
     if(this->getContext()->getProcessor()!=-1)
         numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
-    m_topology = this->getContext()->getMeshTopology();
+
+    if(this->getTags().empty())
+        m_topology = this->getContext()->getMeshTopology();
+    else
+        this->getContext()->get(m_topology, this->getTags());
+
 
     //helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
     //helper::WriteAccessor< Data<VecDeriv> > v_wA = *this->write(VecDerivId::velocity());
