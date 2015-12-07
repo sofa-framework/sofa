@@ -3,7 +3,7 @@
     
     <VisualStyle displayFlags="showVisual" />
     
-     <MechanicalObject  template="Vec3d" position="0 0 0   1 0 0 " name="dofs" />
+     <MechanicalObject  template="Vec3d" position="0 0 0   10 0 0 " name="dofs" />
      <MeshTopology src="@dofs" edges="0 1" />
      <OglCylinderModel  />
     
