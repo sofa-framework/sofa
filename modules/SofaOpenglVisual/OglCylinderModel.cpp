@@ -90,7 +90,7 @@ void OglCylinderModel::reinit()
     setColor(color.getValue());
 }
 
-void OglCylinderModel::draw(const core::visual::VisualParams* vparams)
+void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
 {
     if(!vparams->displayFlags().getShowVisualModels()) return;
 
