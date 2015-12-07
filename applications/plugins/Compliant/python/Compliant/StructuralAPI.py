@@ -172,8 +172,8 @@ class RigidBody:
     class Offset:
         def __init__(self, node, name, offset):
             self.node = node.createChild( name )
-            self.frame = Frame.Frame( offset )
-            self.dofs = self.frame.insert( self.node, name='dofs', template="Rigid3"+template_suffix )
+            self.frame = Frame.Frame( offset ) # store the offset, relative position to its reference
+            self.dofs = self.frame.insert( self.node, name='dofs', template="Rigid3"+template_suffix ) # current absolute position of this offset
             self.mapping = self.node.createObject('AssembledRigidRigidMapping', name="mapping", source = '0 '+str(self.frame), geometricStiffness=geometric_stiffness)
 
         def addOffset(self, name, offset=[0,0,0,0,0,0,1]):
