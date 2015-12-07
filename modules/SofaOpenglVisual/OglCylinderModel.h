@@ -63,7 +63,7 @@ public:
     virtual void reinit();
 
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void drawVisual(const core::visual::VisualParams* vparams);
 
 private:
     void setColor(float r, float g, float b, float a);
