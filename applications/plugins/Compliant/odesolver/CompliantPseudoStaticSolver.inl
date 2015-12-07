@@ -59,7 +59,7 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
         // dynamics integation
         CompliantOdeSolver::solve( params, dt, posId, velId );
 
-        // stop if the velocity norm is too smal i.e. it does not move enough from previous iteration
+        // stop if the velocity norm is too small i.e. it does not move enough from previous iteration
         sop.vop.v_dot( velId, velId );
         lastVelocity = sop.vop.finish();
 
