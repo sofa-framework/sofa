@@ -37,6 +37,8 @@ class CompliantPseudoStaticSolver : public CompliantOdeSolver {
     Data<unsigned> d_iterations;    ///< Max number of iterations
     Data<SReal> d_velocityFactor;        ///< [0,1]  0=fully damped, 1=fully dynamics
 
+    Data<SReal> d_lastVelocity; ///< output, last velocity square norm
+
     CompliantPseudoStaticSolver();
     virtual ~CompliantPseudoStaticSolver(){}
 
