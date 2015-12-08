@@ -75,9 +75,7 @@ class Deformable:
 
     def loadVisualCylinder(self, meshPath, offset = [0,0,0,0,0,0,1], scale=[1,1,1], color=[1,1,1,1],radius=0.01,**kwargs):
         r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
-        # self.visual =  self.node.createObject("VisualModel", name="model", filename=meshPath, keepLines=True, lineWidth=radius, translation=concat(offset[:3]) , rotation=concat(r), scale3d=concat(scale), color=concat(color),**kwargs)
-        self.dofs = self.node.createObject("MechanicalObject",template="Vec3d" )
-        self.visual = self.node.createObject("OglCylinderModel", radius=".005" ) # TODO: reimplement OglCylinderModel not to use a mstate or a topology
+        self.visual = self.node.createObject("OglCylinderModel", radius=radius, position="@topology.position", edges="@topology.edges" )
         self.normals = self.visual
 
 
@@ -189,7 +187,7 @@ class Deformable:
 
     def read(self, filenamePrefix=None, directory=""):
         """ read weights of the linear mapping
-            WARNING: the mapping shoud be already created
+            WARNING: the mapping should already be created
         """
         if self.mapping is None:
             return
