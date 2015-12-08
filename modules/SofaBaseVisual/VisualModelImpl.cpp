@@ -1859,7 +1859,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
 
     int nbv = x.size();
 
-    for (unsigned int i=0; i<x.size(); i++)
+    for (int i=0; i<nbv; i++)
     {
         *out << "v "<< std::fixed << x[i][0]<<' '<< std::fixed <<x[i][1]<<' '<< std::fixed <<x[i][2]<<'\n';
     }
@@ -1869,7 +1869,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     if (vertNormIdx.empty())
     {
         nbn = vnormals.size();
-        for (unsigned int i=0; i<vnormals.size(); i++)
+        for (int i=0; i<nbn; i++)
         {
             *out << "vn "<< std::fixed << vnormals[i][0]<<' '<< std::fixed <<vnormals[i][1]<<' '<< std::fixed <<vnormals[i][2]<<'\n';
         }
@@ -1897,7 +1897,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     if (!vtexcoords.empty())
     {
         nbt = vtexcoords.size();
-        for (unsigned int i=0; i<vtexcoords.size(); i++)
+        for (int i=0; i<nbt; i++)
         {
             *out << "vt "<< std::fixed << vtexcoords[i][0]<<' '<< std::fixed <<vtexcoords[i][1]<<'\n';
         }
