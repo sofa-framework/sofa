@@ -128,12 +128,12 @@ protected:
 
     int addFace(int p1, int p2, int p3)
     {
-        int nbp = points.size();
+		std::size_t nbp = points.size();
         if ((unsigned)p1<(unsigned)nbp &&
             (unsigned)p2<(unsigned)nbp &&
             (unsigned)p3<(unsigned)nbp)
         {
-            int f = facets.size();
+			std::size_t f = facets.size();
             facets.resize(f+1);
             facets[f].p[0] = p1;
             facets[f].p[1] = p2;
