@@ -132,7 +132,7 @@ if(NOT SOFA_NO_OPENGL)
             endif()
 
            ## QWT
-           option(SOFA_ENABLE_QWT "Enable QWT for Qt GUIs" ON)
+           option(SOFA_ENABLE_QWT "Enable QWT for Qt GUIs")
            if(SOFA_ENABLE_QWT)
                 set(SOFA_HAVE_QWT 1) # cmakedefine
             endif()
