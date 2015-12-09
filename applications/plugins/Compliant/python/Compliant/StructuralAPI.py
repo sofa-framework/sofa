@@ -174,8 +174,8 @@ class RigidBody:
     class Offset:
         def __init__(self, node, name, offset):
             self.node = node.createChild( name )
-            self.frame = Frame.Frame( offset )
-            self.dofs = self.frame.insert( self.node, name='dofs', template="Rigid3"+template_suffix )
+            self.frame = Frame.Frame( offset ) # store the offset, relative position to its reference
+            self.dofs = self.frame.insert( self.node, name='dofs', template="Rigid3"+template_suffix ) # current absolute position of this offset
             self.mapping = self.node.createObject('AssembledRigidRigidMapping', name="mapping", source = '0 '+str(self.frame), geometricStiffness=geometric_stiffness)
 
         def addOffset(self, name, offset=[0,0,0,0,0,0,1]):
@@ -299,7 +299,7 @@ class GenericRigidJoint:
         """ Set the joint position to the target
         WARNING: for angular dof position, the value must be in ]-pi,pi]
         """
-        def __init__(self, node, mask, target, compliance):
+        def __init__(self, node, mask, target, compliance, isCompliance=False):
             self.node = node.createChild( "controller-mask" )
 
             self.dofs = self.node.createObject('MechanicalObject', template='Vec1'+template_suffix, name='dofs')
@@ -307,7 +307,7 @@ class GenericRigidJoint:
             self.nodeTarget = self.node.createChild( "controller-target" )
             self.nodeTarget.createObject('MechanicalObject', template='Vec1'+template_suffix, name='dofs')
             self.mapping = self.nodeTarget.createObject('DifferenceFromTargetMapping', targets=concat(target))
-            self.compliance = self.nodeTarget.createObject('UniformCompliance', name='compliance', compliance=compliance, isCompliance=0)
+            self.compliance = self.nodeTarget.createObject('UniformCompliance', name='compliance', compliance=compliance, isCompliance=isCompliance)
             # self.type = self.nodeTarget.createObject('Stabilization')
 
         def setTarget( self, target ):
@@ -316,7 +316,7 @@ class GenericRigidJoint:
     # The PositionController can be redefined
     PositionController=DefaultPositionController
 
-    def addGenericPositionController(self, target=None, compliance=0, mask=None):
+    def addGenericPositionController(self, target=None, compliance=0, mask=None, isCompliance=False):
         """ Add a controller to this joint.
         The target list must match mask list, il no target is specified, current position is used as a target.
         The mask list selects the controlled dof, if mask is None the joint natural dof are used.
@@ -332,7 +332,7 @@ class GenericRigidJoint:
             for i,v in enumerate(m):
                 if v==1:
                     t.append(self.dofs.position[0][i])
-        return GenericRigidJoint.PositionController(self.node, m, t, compliance)
+        return GenericRigidJoint.PositionController(self.node, m, t, compliance, isCompliance)
 
     class ForceController:
         def __init__(self, node, mask, forces):
