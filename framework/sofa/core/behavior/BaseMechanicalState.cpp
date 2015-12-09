@@ -86,7 +86,7 @@ void BaseMechanicalState::vMultiOp(const ExecParams* params, const VMultiOp& ops
 }
 
 /// Handle state Changes from a given Topology
-void BaseMechanicalState::handleStateChange(core::topology::Topology* t)
+void BaseMechanicalState::handleStateChange(core::topology::Topology* /*t*/)
 {
 //    if (t == this->getContext()->getTopology())
 //    {
