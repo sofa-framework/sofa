@@ -27,6 +27,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/gl/GLSLShader.h>
 
 #include <string>
 #include <iostream>
@@ -443,7 +444,8 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
     //glBlendFunc(GL_ONE, GL_ONE);
     glColor3f(1.0f, 1.0f, 1.0f);
 
-    glUseProgramObjectARB(0);
+    GLhandleARB currentShader = sofa::helper::gl::GLSLShader::GetActiveShaderProgram();
+    sofa::helper::gl::GLSLShader::SetActiveShaderProgram(0);
 
     glBegin(GL_QUADS);
 
@@ -509,7 +511,7 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
                                           textcolor,
                                           smin.str().c_str());
 
-
+    sofa::helper::gl::GLSLShader::SetActiveShaderProgram(currentShader);
 
     // Restore state
     glPopAttrib();

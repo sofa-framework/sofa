@@ -24,7 +24,12 @@ CompliantPseudoStaticSolver<CompliantOdeSolver>::CompliantPseudoStaticSolver()
                    (SReal) 0.5,
                    "velocityFactor",
                    "amount of kept velocity at each iteration (0=fully damped, 1=fully dynamics)"))
-{}
+    , d_lastVelocity(initData(&d_lastVelocity,
+                   "lastVelocity",
+                   "(output) last velocity square norm"))
+{
+    d_lastVelocity.setReadOnly(true);
+}
 
 template< typename CompliantOdeSolver >
 void CompliantPseudoStaticSolver<CompliantOdeSolver>::init()
@@ -46,11 +51,17 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
     const SReal& threshold = d_threshold.getValue();
     const SReal& velocityFactor = d_velocityFactor.getValue();
 
+    SReal lastVelocity = 0;
+
     unsigned i=0;
     for( unsigned imax=d_iterations.getValue() ; i<imax ; ++i )
     {
         // dynamics integation
         CompliantOdeSolver::solve( params, dt, posId, velId );
+
+        // stop if the velocity norm is too small i.e. it does not move enough from previous iteration
+        sop.vop.v_dot( velId, velId );
+        lastVelocity = sop.vop.finish();
 
         // damp velocity
         sop.vop.v_teq( velId, velocityFactor );
@@ -61,15 +72,15 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
         this->getContext()->executeVisitor( &bob );
         }
 
-        // stop if the velocity norm is too smal i.e. it does not move enough from previous iteration
-        sop.vop.v_dot( velId, velId );
-        double error = sop.vop.finish();
-        if( error < threshold*threshold ) break;
         if( this->f_printLog.getValue() )
-            serr<<"velocity norm: "<<sqrt(error)<<sendl;
+            serr<<"velocity norm: "<<sqrt(lastVelocity)<<sendl;
+
+        if( lastVelocity < threshold*threshold ) break;
     }
 
-    if( this->f_printLog.getValue() ) serr<<i<<" iterations"<<sendl;
+    d_lastVelocity.setValue(lastVelocity);
+
+    if( this->f_printLog.getValue() ) serr<<i+1<<" iterations"<<sendl;
 
 }
 

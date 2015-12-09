@@ -68,7 +68,7 @@ void GlText::draw(const T& text, const defaulttype::Vector3& position, const dou
     std::ostringstream oss;
     oss << text;
     std::string str = oss.str();
-    unsigned int length = str.size();
+	std::size_t length = str.size();
 
     std::vector<Vector3> vertices;
     std::vector<Vector2> UVs;
@@ -99,7 +99,7 @@ void GlText::draw(const T& text, const defaulttype::Vector3& position, const dou
     glScalef((float)scale, (float)scale, (float)scale);
     glRotatef(180.0, 1, 0, 0);
 
-    for (unsigned int j = 0; j < length; j++)
+	for (std::size_t j = 0; j < length; j++)
     {
         Vector3 vertex_up_left = Vector3(j*worldWidth, worldHeight, 0.0);
         Vector3 vertex_up_right = Vector3(j*worldWidth + worldWidth, worldHeight, 0.0);
@@ -134,7 +134,7 @@ void GlText::draw(const T& text, const defaulttype::Vector3& position, const dou
     }
 
     glBegin(GL_TRIANGLES);
-    for (unsigned int j = 0; j < vertices.size(); j++)
+	for (std::size_t j = 0; j < vertices.size(); j++)
     {
         glTexCoord2fv(UVs[j].data());
         glVertex3fv(vertices[j].data());
