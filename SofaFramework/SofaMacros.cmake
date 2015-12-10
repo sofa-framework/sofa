@@ -232,3 +232,27 @@ macro(sofa_add_application directory app_name)
 endmacro()
 
 
+
+# get git current branch and hash for given directory
+macro(sofa_get_git_revision directory branch hash)
+
+    find_package(Git REQUIRED)
+
+    # get the current working branch
+    execute_process(
+      COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
+      WORKING_DIRECTORY ${directory}
+      OUTPUT_VARIABLE ${branch}
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+
+    # get the latest commit hash of the working branch
+    execute_process(
+      COMMAND ${GIT_EXECUTABLE} rev-parse -q HEAD
+      WORKING_DIRECTORY ${directory}
+      OUTPUT_VARIABLE ${hash}
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+
+endmacro()
+
