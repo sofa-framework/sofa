@@ -123,7 +123,7 @@ if(NOT SOFA_NO_OPENGL)
             endif()
         
             ## EdViewer
-            option(SOFAGUI_EDITORVIEWER "Compile the QGLViewer Specific to mesh edition for the Qt GUI" ON)
+            option(SOFAGUI_EDITORVIEWER "Compile the QGLViewer Specific to mesh edition for the Qt GUI" OFF)
             if(SOFAGUI_EDITORVIEWER)
                 set(SOFA_GUI_EDITORVIEWER 1) # cmakedefine
                 if(NOT SOFAGUI_QGLVIEWER)
