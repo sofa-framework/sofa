@@ -77,26 +77,10 @@ if(NOT SOFA_NO_OPENGL)
         sofa_create_target(GLEW SofaFramework "${GLEW_LIBRARIES}" "${GLEW_INCLUDE_DIRS}")
         list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLEW_Target})
         list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${GLEW_INCLUDE_DIRS})
+
+        sofa_install_get_libraries(${GLEW_LIBRARIES})
     endif()
     set(SOFA_HAVE_GLEW ${GLEW_FOUND})
-
-    ## GLUT
-    find_package(GLUT)
-    if(GLUT_FOUND)
-        if(NOT APPLE)
-            sofa_create_target(GLUT SofaFramework "${GLUT_glut_LIBRARY}" "${GLUT_INCLUDE_DIR}")
-            list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLUT_Target})
-        else()
-            # Workaround: on OS X, "${GLUT_glut_LIBRARY}" is not a target (it is
-            # actually "-framework GLUT"), so we use find_library to find
-            # something better (like /System/Library/Frameworks/GLUT.framework.)
-            # (Fun fact: FindGLUT.cmake litterally reads "These values for Apple
-            # could probably do with improvement.)"
-            find_library(ACTUAL_GLUT_LIBRARIES "GLUT")
-            list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK "${ACTUAL_GLUT_LIBRARIES}")
-        endif()
-    endif()
-    set(SOFA_HAVE_GLUT ${GLUT_FOUND})
 
 endif()
 
@@ -111,6 +95,8 @@ find_package(ZLIB)
 if(ZLIB_FOUND)
     sofa_create_target(ZLIB SofaFramework "${ZLIB_LIBRARIES}" "${ZLIB_INCLUDE_DIRS}")
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${ZLIB_Target})
+
+    sofa_install_get_libraries(${ZLIB_LIBRARIES})
 endif()
 set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 
@@ -119,6 +105,9 @@ find_package(PNG)
 if(PNG_FOUND)
     sofa_create_target(PNG SofaFramework "${PNG_LIBRARY}" "${PNG_INCLUDE_DIRS}")
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${PNG_Target})
+
+
+    sofa_install_get_libraries("${PNG_LIBRARY}/libpng")
 endif()
 set(SOFA_HAVE_PNG ${PNG_FOUND})
 
@@ -147,6 +136,11 @@ if(SOFA_HAVE_BOOST_SYSTEM
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostThread_Target})
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostDateTime_Target})
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostChrono_Target})
+
+    sofa_install_get_libraries(${Boost_SYSTEM_LIBRARY})
+    sofa_install_get_libraries(${Boost_THREAD_LIBRARY})
+    sofa_install_get_libraries(${Boost_DATE_TIME_LIBRARY})
+    sofa_install_get_libraries(${Boost_CHRONO_LIBRARY})
 else()
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
 endif()
