@@ -256,3 +256,8 @@ macro(sofa_get_git_revision directory branch hash)
 
 endmacro()
 
+# Get path of all library versions (involving symbolic links) for a specified library
+macro(sofa_install_get_libraries library)
+    file(GLOB ABS_LIB "${library}*")
+    install(FILES ${ABS_LIB} DESTINATION lib)
+endmacro()
