@@ -75,21 +75,7 @@ list(APPEND SOFAGUI_TARGETS SofaGuiCommon)
 ## OpenGL-based GUIs
 if(NOT SOFA_NO_OPENGL)
     ## Glut GUI
-    find_package(GLUT)
-    if(GLUT_FOUND)
-        if(NOT APPLE)
-            sofa_create_target(GLUT SofaFramework "${GLUT_glut_LIBRARY}" "${GLUT_INCLUDE_DIR}")
-            list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLUT_Target})
-        else()
-            # Workaround: on OS X, "${GLUT_glut_LIBRARY}" is not a target (it is
-            # actually "-framework GLUT"), so we use find_library to find
-            # something better (like /System/Library/Frameworks/GLUT.framework.)
-            # (Fun fact: FindGLUT.cmake litterally reads "These values for Apple
-            # could probably do with improvement.)"
-            find_library(ACTUAL_GLUT_LIBRARIES "GLUT")
-            list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK "${ACTUAL_GLUT_LIBRARIES}")
-        endif()
-
+    if(SOFA_HAVE_GLUT)
         option(SOFAGUI_GLUT "Compile the Glut GUI" OFF)
         if(SOFAGUI_GLUT)
             set(SOFA_GUI_GLUT 1) # cmakedefine
@@ -97,9 +83,6 @@ if(NOT SOFA_NO_OPENGL)
             add_subdirectory(../applications/sofa/gui/glut ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiGlut)
         endif()
     endif()
-
-    set(SOFA_HAVE_GLUT ${GLUT_FOUND})
-
 
     ## Qt GUI
     # Check if Qt(4/5) is present ; if not, disable ability to compile Qt things
