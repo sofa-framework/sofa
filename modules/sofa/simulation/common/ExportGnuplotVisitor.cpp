@@ -40,7 +40,7 @@ simulation::Visitor::Result InitGnuplotVisitor::processNodeTopDown(simulation::N
 {
     if (node->interactionForceField.getSize() != 0)
     {
-        int size = node->interactionForceField.getSize();
+        int size = (int)node->interactionForceField.getSize();
         for(int i = 0; i < size; i++)
         {
             if (node->interactionForceField.getValue()[i] )
@@ -71,7 +71,7 @@ simulation::Visitor::Result ExportGnuplotVisitor::processNodeTopDown(simulation:
 {
     if (node->interactionForceField.getSize() != 0)
     {
-        int size = node->interactionForceField.getSize();
+        int size = (int)node->interactionForceField.getSize();
         for(int i = 0; i < size; i++)
         {
             if (node->interactionForceField.getValue()[i] )

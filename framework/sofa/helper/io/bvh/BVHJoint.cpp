@@ -130,7 +130,7 @@ void BVHJoint::display(int frameNum)
     glColor3f(1.0,0.0,0.0);
 
 	sofa::helper::fixed_array<float, 3> center(0.0, 0.0, 0.0);
-	helper::gl::drawSphere(center, 0.01);
+	helper::gl::drawSphere(center, (float)0.01);
 
     for (unsigned int i=0; i<children.size(); i++)
     {
@@ -152,7 +152,7 @@ void BVHJoint::displayInGlobalFrame(void)
     glColor3f(1.0, 0.0, 0.0);
 
 	sofa::helper::fixed_array<float, 3> center(0.0, 0.0, 0.0);
-	helper::gl::drawSphere(center, 0.005);
+	helper::gl::drawSphere(center, (float)0.005);
 
     glPopMatrix();
 

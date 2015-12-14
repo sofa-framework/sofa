@@ -166,7 +166,7 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
     vitems.reserve(items.size());
     vitems.insert(vitems.end(), items.rbegin(), items.rend());
 
-    int res = vitems.size();
+    int res = (int)vitems.size();
 
     sofa::core::topology::TopologyModifier* topoMod;
     topo_curr->getContext()->get(topoMod);
@@ -331,7 +331,7 @@ int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collis
     vitems.reserve(items.size());
     vitems.insert(vitems.end(), items.rbegin(), items.rend());
 
-    int res = vitems.size();
+    int res = (int)vitems.size();
 
     sofa::core::topology::TopologyModifier* topoMod;
     topo_curr->getContext()->get(topoMod);

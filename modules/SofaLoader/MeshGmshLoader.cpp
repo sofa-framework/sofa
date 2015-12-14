@@ -270,12 +270,12 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
         switch (etype)
         {
         case 1: // Line
-            addInGroup(my_edgesGroups,tag,my_edges.size());
+            addInGroup(my_edgesGroups,tag,(int)my_edges.size());
             addEdge(&my_edges, Edge(nodes[0], nodes[1]));
             ++nlines;
             break;
         case 2: // Triangle
-            addInGroup(my_trianglesGroups,tag,my_triangles.size());
+            addInGroup(my_trianglesGroups,tag,(int)my_triangles.size());
             addTriangle(&my_triangles, Triangle(nodes[0], nodes[1], nodes[2]));
             ++ntris;
             break;
@@ -284,12 +284,12 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             ++nquads;
             break;
         case 4: // Tetra
-            addInGroup(my_tetrahedraGroups,tag,my_tetrahedra.size());
+            addInGroup(my_tetrahedraGroups,tag,(int)my_tetrahedra.size());
             addTetrahedron(&my_tetrahedra, Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
             ++ntetrahedra;
             break;
         case 5: // Hexa
-            addInGroup(my_hexahedraGroups,tag,my_hexahedra.size());
+            addInGroup(my_hexahedraGroups,tag,(int)my_hexahedra.size());
             addHexahedron(&my_hexahedra,Hexahedron(nodes[0], nodes[1], nodes[2], nodes[3],nodes[4],nodes[5],nodes[6],nodes[7]));
             ++ncubes;
             break;

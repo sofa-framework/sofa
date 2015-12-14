@@ -684,7 +684,7 @@ void DrawToolGL::drawSphere( const Vector3 &p, float radius)
 void DrawToolGL::drawEllipsoid(const Vector3 &p, const Vector3 &radii)
 {
 	glPushMatrix();
-    helper::gl::drawEllipsoid(p, radii[0], radii[1], radii[2], 32, 16);
+    helper::gl::drawEllipsoid(p, (float)radii[0], (float)radii[1], (float)radii[2], 32, 16);
 	glPopMatrix();
 }
 

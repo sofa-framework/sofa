@@ -84,7 +84,7 @@ template< class DataTypes>
 		/// precompute the factorial of the degree.
 		for (size_t i=0;i<tbiArray.size();++i) {
 			tbi=tbiArray[i];
-			bernsteinCoefficientArray[i]=multinomial(degree,tbi); 
+			bernsteinCoefficientArray[i]=(Real)multinomial(degree,tbi); 
 			bernsteinCoeffMap.insert(std::pair<TetrahedronBezierIndex,Real>(tbi,(Real)bernsteinCoefficientArray[i]));
 		}
 		/// insert coefficient for the inferior degree
@@ -107,7 +107,7 @@ template< class DataTypes>
 				for (k=0;k<=(degree-j-i);++k) {
 					l=degree-i-j-k;
 					tbi=TetrahedronBezierIndex(i,j,k,l);
-					index1=container->getLocalIndexFromTetrahedronBezierIndex(tbi);
+					index1=(BezierDegreeType)container->getLocalIndexFromTetrahedronBezierIndex(tbi);
 					for(m=0;m<4;++m) {
 						if (tbi[m]<degree) {
 							for (n=1;n<4;++n) {
@@ -115,7 +115,7 @@ template< class DataTypes>
 									tbiNext=tbi;
 									tbiNext[m]=tbi[m]+1;
 									tbiNext[(m+n)%4]=tbi[(m+n)%4]-1;
-									index2=container->getLocalIndexFromTetrahedronBezierIndex(tbiNext);
+									index2=(BezierDegreeType)container->getLocalIndexFromTetrahedronBezierIndex(tbiNext);
 									Edge e((PointID)std::min(index1,index2),(PointID)std::max(index1,index2));
 									// test if both control points are on an edge or an
 									if (tbi[(m+1+(n%3))%4]==0) {
@@ -152,8 +152,8 @@ typename DataTypes::Coord BezierTetrahedronSetGeometryAlgorithms< DataTypes >::c
 	nodalValue.clear();
 
 	TetrahedronBezierIndex tbi;
-	const VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(tetrahedronIndex);
-	bool isRational=container->isRationalSpline(tetrahedronIndex);
+	const VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints((TetraID)tetrahedronIndex);
+	bool isRational=container->isRationalSpline((TetraID)tetrahedronIndex);
 	if (isRational) {
 		const BezierTetrahedronSetTopologyContainer::SeqWeights &wa=container->getWeightArray();
 		Real weight=(Real)0.0f;
@@ -161,9 +161,9 @@ typename DataTypes::Coord BezierTetrahedronSetGeometryAlgorithms< DataTypes >::c
 		for(size_t i=0; i<tbiArray.size(); ++i)
 		{
 			tbi=tbiArray[i];
-			bernsteinPolynonial=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2])*pow(barycentricCoordinate[3],tbi[3]);
+			bernsteinPolynonial=bernsteinCoefficientArray[i]*(Real)pow(barycentricCoordinate[0],tbi[0])*(Real)pow(barycentricCoordinate[1],tbi[1])*(Real)pow(barycentricCoordinate[2],tbi[2])*(Real)pow(barycentricCoordinate[3],tbi[3]);
 			nodalValue+=wa[indexArray[i]]*p[indexArray[i]]*bernsteinPolynonial;
-			weight+=wa[indexArray[i]]*bernsteinPolynonial;
+			weight+=(Real)wa[indexArray[i]]*bernsteinPolynonial;
 		}
 		nodalValue/=weight;
 	} else {
@@ -185,13 +185,13 @@ typename DataTypes::Coord BezierTetrahedronSetGeometryAlgorithms< DataTypes >::c
 template<class DataTypes>
 typename DataTypes::Real BezierTetrahedronSetGeometryAlgorithms<DataTypes>::computeBernsteinPolynomial(const TetrahedronBezierIndex tbi, const Vec4 barycentricCoordinate)
 {
-	Real  val=pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2])*pow(barycentricCoordinate[3],tbi[3]);
+	Real  val=(Real)pow(barycentricCoordinate[0],tbi[0])*(Real)pow(barycentricCoordinate[1],tbi[1])*(Real)pow(barycentricCoordinate[2],tbi[2])*(Real)pow(barycentricCoordinate[3],tbi[3]);
     typename std::map<TetrahedronBezierIndex,Real>::iterator it=bernsteinCoeffMap.find(tbi);
 	if (it!=bernsteinCoeffMap.end()) {
 		val*=(*it).second;
 		return(val);
 	} else {
-		val*=multinomial(tbi[0]+tbi[1]+tbi[2]+tbi[3],tbi);
+		val*=(Real)multinomial(tbi[0]+tbi[1]+tbi[2]+tbi[3],tbi);
 		return(val);
 	}
 }
@@ -205,8 +205,8 @@ typename DataTypes::Real BezierTetrahedronSetGeometryAlgorithms<DataTypes>::comp
 	TetrahedronBezierIndex tbi;
 	size_t j;
 	Real val;
-	const VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(tetrahedronIndex);
-	bool isRational=container->isRationalSpline(tetrahedronIndex);
+	const VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints((TetraID)tetrahedronIndex);
+	bool isRational=container->isRationalSpline((int)tetrahedronIndex);
 	if (isRational) {
 		const BezierTetrahedronSetTopologyContainer::SeqWeights &wa=container->getWeightArray();
 		Real weight=(Real)0.0f;
@@ -216,10 +216,10 @@ typename DataTypes::Real BezierTetrahedronSetGeometryAlgorithms<DataTypes>::comp
 		for(size_t i=0; i<tbiArray.size(); ++i)
 		{
 			tbi=tbiArray[i];
-			val=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2])*pow(barycentricCoordinate[3],tbi[3]);
+			val=bernsteinCoefficientArray[i]*(Real)pow(barycentricCoordinate[0],tbi[0])*(Real)pow(barycentricCoordinate[1],tbi[1])*(Real)pow(barycentricCoordinate[2],tbi[2])*(Real)pow(barycentricCoordinate[3],tbi[3]);
 			Vec4 dval(0,0,0,0);
 			pos+=wa[indexArray[i]]*val*p[indexArray[i]];
-			weight+=wa[indexArray[i]]*val;
+			weight+=(Real)wa[indexArray[i]]*val;
 			for (j=0;j<4;++j) {
 				if(tbi[j] && barycentricCoordinate[j]){
 					dval[j]=(Real)tbi[j]*val/barycentricCoordinate[j];
@@ -231,7 +231,7 @@ typename DataTypes::Real BezierTetrahedronSetGeometryAlgorithms<DataTypes>::comp
 			}
 			for (j=0;j<3;++j) {
 				dpos[j]+=(dval[j]-dval[3])*wa[indexArray[i]]*p[indexArray[i]];
-				dweight[j]+=(dval[j]-dval[3])*wa[indexArray[i]];
+				dweight[j]+=(dval[j]-dval[3])*(Real)wa[indexArray[i]];
 			}
 		}
 		// computes the derivatives of the ratio of the 2 polynomial terms
@@ -242,7 +242,7 @@ typename DataTypes::Real BezierTetrahedronSetGeometryAlgorithms<DataTypes>::comp
 		for(size_t i=0; i<tbiArray.size(); ++i)
 		{
 			tbi=tbiArray[i];
-			val=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2])*pow(barycentricCoordinate[3],tbi[3]);
+			val=bernsteinCoefficientArray[i]*(Real)pow(barycentricCoordinate[0],tbi[0])*(Real)pow(barycentricCoordinate[1],tbi[1])*(Real)pow(barycentricCoordinate[2],tbi[2])*(Real)pow(barycentricCoordinate[3],tbi[3]);
 			Vec4 dval(0,0,0,0);
 			for (j=0;j<4;++j) {
 				if(tbi[j] && barycentricCoordinate[j]){
@@ -278,11 +278,11 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::computeDeCasteljeauPoint
 	TetrahedronBezierIndex tbi;
 	size_t j;
 	Real val;
-	const VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(tetrahedronIndex);
+	const VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints((TetraID)tetrahedronIndex);
 	// initialize dpos
 	for (j=0;j<4;++j) 
 		dpos[j]=Coord();
-	bool isRational=container->isRationalSpline(tetrahedronIndex);
+	bool isRational=container->isRationalSpline((int)tetrahedronIndex);
 	if (isRational) {
 		const BezierTetrahedronSetTopologyContainer::SeqWeights &wa=container->getWeightArray();
 		Real weight=(Real)0.0f;
@@ -293,9 +293,9 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::computeDeCasteljeauPoint
 		for(size_t i=0; i<tbiArray.size(); ++i)
 		{
 			tbi=tbiArray[i];
-			val=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2])*pow(barycentricCoordinate[3],tbi[3]);
+			val=bernsteinCoefficientArray[i]*(Real)pow(barycentricCoordinate[0],tbi[0])*(Real)pow(barycentricCoordinate[1],tbi[1])*(Real)pow(barycentricCoordinate[2],tbi[2])*(Real)pow(barycentricCoordinate[3],tbi[3]);
 			pos+=val*wa[indexArray[i]]*p[indexArray[i]];
-			weight+=val*wa[indexArray[i]];
+			weight+=val*(Real)wa[indexArray[i]];
 			Vec4 dval(0,0,0,0);
 			for (j=0;j<4;++j) {
 				if(tbi[j] && barycentricCoordinate[j]){
@@ -307,7 +307,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::computeDeCasteljeauPoint
 						dval[j]*=(Real)(pow( barycentricCoordinate[(j+k)%4],tbi[(j+k)%4]));
 				}
 				dpos[j]+=dval[j]*wa[indexArray[i]]*p[indexArray[i]];
-				dweight[j]+=dval[j]*wa[indexArray[i]];
+				dweight[j]+=dval[j]*(Real)wa[indexArray[i]];
 			}
 		}
 		for (j=0;j<4;++j) {
@@ -319,7 +319,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::computeDeCasteljeauPoint
 		for(size_t i=0; i<tbiArray.size(); ++i)
 		{
 			tbi=tbiArray[i];
-			val=bernsteinCoefficientArray[i]*pow(barycentricCoordinate[0],tbi[0])*pow(barycentricCoordinate[1],tbi[1])*pow(barycentricCoordinate[2],tbi[2])*pow(barycentricCoordinate[3],tbi[3]);
+			val=bernsteinCoefficientArray[i]*(Real)pow(barycentricCoordinate[0],tbi[0])*(Real)pow(barycentricCoordinate[1],tbi[1])*(Real)pow(barycentricCoordinate[2],tbi[2])*(Real)pow(barycentricCoordinate[3],tbi[3]);
 			Vec4 dval(0,0,0,0);
 			for (j=0;j<4;++j) {
 				if(tbi[j] && barycentricCoordinate[j]){
@@ -343,7 +343,7 @@ template<class DataTypes>
 bool BezierTetrahedronSetGeometryAlgorithms<DataTypes>::isBezierTetrahedronAffine(const size_t tetrahedronIndex,const VecCoord& p, Real tolerance) const{
 	// get the global indices of all points
 	
-	const VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(tetrahedronIndex);
+	const VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints((TetraID)tetrahedronIndex);
 	bool affine=true;
 
 	/// skip the first 4 control points corresponding to the 4 corners
@@ -387,8 +387,8 @@ bool BezierTetrahedronSetGeometryAlgorithms<DataTypes>::isBezierTetrahedronAffin
          if(barycentricCoordinate[i])
              for(unsigned j=0;j<4;++j)
              {
-                 if(i==j) { if(tbi[i]>1) ddval[j][i]=((Real)tbi[i]-1.)*dval[j]/barycentricCoordinate[i]; }
-                 else { if(tbi[i]) ddval[j][i]=(Real)tbi[i]*dval[j]/barycentricCoordinate[i]; }
+                 if(i==j) { if(tbi[i]>1) ddval[j][i]=(Real)(tbi[i]-1.)*(Real)dval[j]/(Real)barycentricCoordinate[i]; }
+                 else { if(tbi[i]) ddval[j][i]=(Real)tbi[i]*dval[j]/(Real)barycentricCoordinate[i]; }
              }
      return ddval;
  }
@@ -435,7 +435,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
             if (container->getNbTriangles()>0) {
                 // estimate the  mean radius of the spheres from the first Bezier triangle
                 VecPointID indexArray;
-                float radius=	d_referenceRadius.getValue();
+                Real radius=	d_referenceRadius.getValue();
                 std::vector<sofa::defaulttype::Vector3> pointsVertices,pointsEdges,pointsTriangles,pointsTetrahedra;
                 std::vector<float> radiusVertices,radiusEdges,radiusTriangles,radiusTetrahedra;
                 sofa::defaulttype::Vector3 p;
@@ -447,25 +447,25 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
                         p=pos[i];
                         pointsVertices.push_back(p);
 
-                        radiusVertices.push_back(radius*container->getWeight(i));
+                        radiusVertices.push_back((float)(radius*container->getWeight((int)i)));
 
                     } else if (location==BezierTetrahedronSetTopologyContainer::EDGE) {
                         p=pos[i];
                         pointsEdges.push_back(p);
 
-                        radiusEdges.push_back(radius*container->getWeight(i));
+                        radiusEdges.push_back((float)(radius*container->getWeight((int)i)));
 
                     } else if (location==BezierTetrahedronSetTopologyContainer::TRIANGLE) {
                         p=pos[i];
                         pointsTriangles.push_back(p);
 
-                        radiusTriangles.push_back(radius*container->getWeight(i));
+                        radiusTriangles.push_back((float)(radius*container->getWeight((int)i)));
 
                     } else {
                         p=pos[i];
                         pointsTetrahedra.push_back(p);
 
-                        radiusTetrahedra.push_back(radius*container->getWeight(i));
+                        radiusTetrahedra.push_back((float)(radius*container->getWeight((int)i)));
                     }
                 }
                 vparams->drawTool()->setLightingEnabled(true); //Enable lightning
@@ -484,7 +484,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 
             if (!tetraArray.empty())
             {
-                float radius=	d_referenceRadius.getValue();
+                Real radius=	d_referenceRadius.getValue();
                 const typename DataTypes::VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
                 std::vector<sofa::defaulttype::Vector3> pointsVertices;
                 std::vector<float> radiusVertices;
@@ -499,7 +499,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
                         p1=coords[i];
                         pointsVertices.push_back(p1);
 
-                        radiusVertices.push_back(radius*container->getWeight(i));
+                        radiusVertices.push_back((float)(radius*container->getWeight((int)i)));
 
                     }
                 }

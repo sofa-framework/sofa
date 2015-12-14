@@ -443,7 +443,7 @@ void JointSpringForceField<DataTypes>::updateForceMask()
 {
     const helper::vector<Spring>& springs= this->springs.getValue();
 
-    for( unsigned int i=0, iend=springs.size() ; i<iend ; ++i )
+    for( unsigned int i=0, iend=(unsigned int)springs.size() ; i<iend ; ++i )
     {
         const Spring& s = springs[i];
         this->mstate1->forceMask.insertEntry(s.m1);

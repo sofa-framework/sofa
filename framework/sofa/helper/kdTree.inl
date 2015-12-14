@@ -40,7 +40,7 @@ namespace helper
 template<class Coord>
 void kdTree<Coord>::build(const VecCoord& positions)
 {
-    const unsigned int nbp=positions.size();
+    const unsigned int nbp=(const unsigned int)positions.size();
     UIlist list;   for(unsigned int i=0; i<nbp; i++) list.push_back(i);
     tree.resize(nbp);
     firstNode=build(list,(unsigned char)0, positions);

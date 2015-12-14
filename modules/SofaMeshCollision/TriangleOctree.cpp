@@ -74,7 +74,7 @@ void TriangleOctree::draw (const core::visual::VisualParams* vparams)
         glPushMatrix ();
         glTranslatef ((float)center[0], (float)center[1], (float)center[2]);
         vparams->drawTool()->setPolygonMode(0, false);
-        vparams->drawTool()->drawCube(size, sofa::defaulttype::Vec4f(0.5, 0.5, 0.5, 1.0));
+        vparams->drawTool()->drawCube((float)size, sofa::defaulttype::Vec4f(0.5, 0.5, 0.5, 1.0));
         glPopMatrix ();
 
         vparams->drawTool()->setPolygonMode(0, true);
@@ -878,7 +878,7 @@ void TriangleOctreeRoot::buildOctree()
     // for each triangle add it to the octree
     for (size_t i = 0; i < octreeTriangles->size(); i++)
     {
-        fillOctree (i);
+        fillOctree ((int)i);
     }
 }
 

@@ -62,7 +62,7 @@ void SparseGridMultipleTopology::buildAsFinest()
     if( _dataStiffnessCoefs.getValue().size() < _fileTopologies.getValue().size() )
     {
         serr<<"WARNING: SparseGridMultipleTopology: not enough stiffnessCoefs"<<sendl;
-        for(unsigned i=_dataStiffnessCoefs.getValue().size(); i<_fileTopologies.getValue().size(); ++i)
+        for(unsigned i=(unsigned)_dataStiffnessCoefs.getValue().size(); i<(unsigned)_fileTopologies.getValue().size(); ++i)
             _dataStiffnessCoefs.beginEdit()->push_back( 1.0 );
         //           return;
     }
@@ -70,12 +70,12 @@ void SparseGridMultipleTopology::buildAsFinest()
     if( _dataMassCoefs.getValue().size() < _fileTopologies.getValue().size() )
     {
         serr<<"WARNING: SparseGridMultipleTopology: not enough massCoefs\n";
-        for(unsigned i=_dataMassCoefs.getValue().size(); i<_fileTopologies.getValue().size(); ++i)
+        for(unsigned i=(unsigned)_dataMassCoefs.getValue().size(); i<(unsigned)_fileTopologies.getValue().size(); ++i)
             _dataMassCoefs.beginEdit()->push_back( 1.0 );
         // 			return;
     }
 
-    unsigned regularGridsSize = _regularGrids.size();
+    unsigned regularGridsSize = (unsigned)_regularGrids.size();
 
     if (regularGridsSize < _fileTopologies.getValue().size())
     {

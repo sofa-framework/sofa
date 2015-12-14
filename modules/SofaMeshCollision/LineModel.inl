@@ -206,7 +206,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
                     elems[elems.size() - ta->getNbAddedEdges() + i].p[1] = (ta->edgeArray[i])[1];
                 }
 
-                resize( elems.size() );
+                resize( (int)elems.size() );
                 needsUpdate = true;
 
                 break;
@@ -224,7 +224,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
                 }
                 else
                 {
-                    last = elems.size() -1;
+                    last = (unsigned int)elems.size() -1;
                 }
 
                 const sofa::helper::vector< unsigned int > &tab = ( static_cast< const core::topology::EdgesRemoved *>( *itBegin ) )->getArray();
@@ -248,7 +248,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
                     //myedges[ind_k] = myedges[last];
                     //myedges[last] = tmp2;
 
-                    ind_last = elems.size() - 1;
+                    ind_last = (unsigned int)elems.size() - 1;
 
                     if(last != ind_last)
                     {
@@ -262,7 +262,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
                     }
 
                     //myedges.resize( elems.size() - 1 );
-                    resize( elems.size() - 1 );
+                    resize( (int)elems.size() - 1 );
 
                     --last;
                 }
@@ -352,7 +352,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
                 break;
             }; // switch( changeType )
 
-            resize( elems.size() ); // not necessary
+            resize( (int)elems.size() ); // not necessary
 
             ++itBegin;
         } // while( changeIt != last; )
@@ -371,7 +371,7 @@ void TLineModel<DataTypes>::updateFromTopology()
 
         needsUpdate = true;
 
-        const unsigned int nbPoints = mstate->getSize();
+        const unsigned int nbPoints = (const unsigned int)mstate->getSize();
         const unsigned int nbLines = bmt->getNbEdges();
 
         resize( nbLines );
