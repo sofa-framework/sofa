@@ -127,7 +127,7 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
             mesh->getFacets().resize(facets.size() + triangles.size() + quads.size());
             for (unsigned int i = 0; i<facets.size(); ++i)
                 mesh->getFacets()[i].push_back(facets[i]);
-            for (unsigned int i0 = facets.size(), i = 0; i<triangles.size(); ++i)
+            for (unsigned int i0 = (unsigned int)facets.size(), i = 0; i<(unsigned int)triangles.size(); ++i)
             {
                 mesh->getFacets()[i0 + i].resize(1);
                 mesh->getFacets()[i0 + i][0].resize(3);
@@ -135,7 +135,7 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
                 mesh->getFacets()[i0 + i][0][1] = triangles[i][1];
                 mesh->getFacets()[i0 + i][0][2] = triangles[i][2];
             }
-            for (unsigned int i0 = facets.size() + triangles.size(), i = 0; i<quads.size(); ++i)
+            for (unsigned int i0 = (unsigned int)facets.size() + (unsigned int)triangles.size(), i = 0; i<(unsigned int)quads.size(); ++i)
             {
                 mesh->getFacets()[i0 + i].resize(1);
                 mesh->getFacets()[i0 + i][0].resize(4);
@@ -341,7 +341,7 @@ void SparseGridRamificationTopology::buildRamifiedFinestLevel()
         for( helper::vector<Connexion*>::iterator it = _connexions[i].begin(); it != _connexions[i].end() ; ++it)
         {
             hexahedra.push_back( Hexa(nbPoints, nbPoints+1, nbPoints+2, nbPoints+3, nbPoints+4, nbPoints+5, nbPoints+6, nbPoints+7) );
-            (*it)->_hexaIdx = hexahedra.size()-1;
+            (*it)->_hexaIdx = (unsigned int)hexahedra.size()-1;
             (*it)->_nonRamifiedHexaIdx = i;
             nbPoints += 8;
         }
@@ -549,7 +549,7 @@ void SparseGridRamificationTopology::buildFromFiner()
 
                 cubeCorners.push_back(corners);
 
-                _indicesOfRegularCubeInSparseGrid[coarseRegularIndice] = cubeCorners.size()-1;
+                _indicesOfRegularCubeInSparseGrid[coarseRegularIndice] = (int)cubeCorners.size()-1;
                 _indicesOfCubeinRegularGrid.push_back( coarseRegularIndice );
 
                 nonRamifiedHierarchicalCubeMap.push_back( fineIndices );
@@ -723,7 +723,7 @@ void SparseGridRamificationTopology::buildFromFiner()
         for( helper::vector<Connexion*>::iterator it = _connexions[i].begin(); it != _connexions[i].end() ; ++it)
         {
             hexahedra.push_back( Hexa(nbPoints, nbPoints+1, nbPoints+2, nbPoints+3, nbPoints+4, nbPoints+5, nbPoints+6, nbPoints+7) );
-            (*it)->_hexaIdx = hexahedra.size()-1;
+            (*it)->_hexaIdx = (unsigned int)hexahedra.size()-1;
             (*it)->_nonRamifiedHexaIdx = i;
             nbPoints += 8;
         }
@@ -1271,7 +1271,7 @@ void SparseGridRamificationTopology::printNeighbors()
                 {
                     int sum=0;
                     for(int i=0; i<NUM_CONNECTED_NODES; ++i)
-                        sum+=_connexions[cubeIdx][0]->_neighbors[i].size();
+                        sum+=_connexions[cubeIdx][0]->(int)_neighbors[i].size();
                     sout << sum << " ";
                 }
             }

@@ -918,7 +918,7 @@ inline void TetrahedronFEMForceField<DataTypes>::getRotation(Transformation& R, 
     R[1][0] = 0.0 ; R[1][1] = 0.0 ;  R[1][2] = 0.0 ;
     R[2][0] = 0.0 ; R[2][1] = 0.0 ; R[2][2] = 0.0 ;
 
-    unsigned int numTetra=liste_tetra.size();
+    unsigned int numTetra=(unsigned int)liste_tetra.size();
     if (numTetra==0)
     {
         if (!_rotationIdx.empty())
@@ -1697,9 +1697,9 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
 
             for (size_t k = 0; k < 4; k++) {
                 Index ix = (*it)[k];
-                matVert[k][0] = 1.0;
+                matVert[(int)k][0] = 1.0;
                 for (size_t l = 1; l < 4; l++)
-                    matVert[k][l] = X0[ix][l-1];
+                    matVert[(int)k][l] = X0[ix][(int)l-1];
             }
 
             invertMatrix(elemShapeFun[i], matVert);
@@ -2479,9 +2479,9 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
             /// compute gradU
             for (size_t k = 0; k < 3; k++) {
                 for (size_t l = 0; l < 3; l++)  {
-                    gradU[k][l] = 0.0;
+                    gradU[(unsigned)k][(unsigned)l] = 0.0;
                     for (size_t m = 0; m < 4; m++)
-                        gradU[k][l] += shf[l+1][m] * U[(*it)[m]][k];
+                        gradU[(unsigned)k][(unsigned)l] += shf[(unsigned)l+1][(unsigned)m] * U[(*it)[(unsigned)m]][(unsigned)k];
                 }
             }
             //std::cout << "gradU = " << gradU<< std::endl;
@@ -2489,7 +2489,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
             Mat33 strain = ((Real)0.5)*(gradU + gradU.transposed() + gradU.transposed()*gradU);
 
             for (size_t i = 0; i < 3; i++)
-                vStrain[i] = strain[i][i];
+                vStrain[(unsigned)i] = strain[(unsigned)i][(unsigned)i];
             vStrain[3] = strain[1][2];
             vStrain[4] = strain[0][2];
             vStrain[5] = strain[0][1];
@@ -2569,16 +2569,16 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
             /// compute gradU
             for (size_t k = 0; k < 3; k++) {
                 for (size_t l = 0; l < 3; l++)  {
-                    gradU[k][l] = 0.0;
+                    gradU[(unsigned)k][(unsigned)l] = 0.0;
                     for (size_t m = 0; m < 4; m++)
-                        gradU[k][l] += shf[l+1][m] * D[3*m+k];
+                        gradU[(unsigned)k][(unsigned)l] += shf[(unsigned)l+1][(unsigned)m] * D[(unsigned)(3*m+k)];
                 }
             }
 
             Mat33 strain = Real(0.5)*(gradU + gradU.transposed());
 
             for (size_t i = 0; i < 3; i++)
-                vStrain[i] = strain[i][i];
+                vStrain[(unsigned)i] = strain[(unsigned)i][(unsigned)i];
             vStrain[3] = strain[1][2];
             vStrain[4] = strain[0][2];
             vStrain[5] = strain[0][1];
@@ -2619,7 +2619,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 
     /// compute the values of vonMises stress in nodes
     for(size_t dof = 0; dof < dofs.size(); dof++) {
-        core::topology::BaseMeshTopology::TetrahedraAroundVertex tetrasAroundDOF = _mesh->getTetrahedraAroundVertex(dof);
+        core::topology::BaseMeshTopology::TetrahedraAroundVertex tetrasAroundDOF = _mesh->getTetrahedraAroundVertex((unsigned)dof);
 
         vMN[dof] = 0.0;
         for (size_t at = 0; at < tetrasAroundDOF.size(); at++)

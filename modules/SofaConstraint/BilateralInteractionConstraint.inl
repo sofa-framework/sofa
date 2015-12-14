@@ -67,7 +67,7 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const core
     if (!activated)
         return;
     
-    unsigned minp = std::min(m1.getValue().size(), m2.getValue().size());
+    unsigned minp = std::min((unsigned)m1.getValue().size(), (unsigned)m2.getValue().size());
     if (minp == 0)
         return;
 
@@ -248,7 +248,7 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(const cor
     const helper::vector<int> &m1Indices = m1.getValue();
     const helper::vector<int> &m2Indices = m2.getValue();
 
-    unsigned minp = std::min(m1Indices.size(), m2Indices.size());
+    unsigned minp = std::min((unsigned)m1Indices.size(), (unsigned)m2Indices.size());
 
     const VecDeriv& restVector = this->restVector.getValue();
 
@@ -315,7 +315,7 @@ void BilateralInteractionConstraint<DataTypes>::getVelocityViolation(defaulttype
     const VecCoord &v1 = d_v1.getValue();
     const VecCoord &v2 = d_v2.getValue();
 
-    unsigned minp = std::min(m1Indices.size(), m2Indices.size());
+    unsigned minp = std::min((unsigned)m1Indices.size(), (unsigned)m2Indices.size());
     const VecDeriv& restVector = this->restVector.getValue();
     std::vector<Deriv> dPrimefree;
 
@@ -377,7 +377,7 @@ template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(const core::ConstraintParams* cParams, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
     SOFA_UNUSED(cParams);
-    unsigned minp=std::min(m1.getValue().size(),m2.getValue().size());
+    unsigned minp=std::min((unsigned)m1.getValue().size(),(unsigned)m2.getValue().size());
 
     if (!merge.getValue())
     {
@@ -453,7 +453,7 @@ void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualP
         glColor4f(0,1,0,1);
     glBegin(GL_POINTS);
 
-    unsigned minp = std::min(m1.getValue().size(),m2.getValue().size());
+    unsigned minp = std::min((unsigned)m1.getValue().size(),(unsigned)m2.getValue().size());
     for (unsigned i=0; i<minp; i++)
     {
         helper::gl::glVertexT(this->mstate1->read(core::ConstVecCoordId::position())->getValue()[m1.getValue()[i]]);

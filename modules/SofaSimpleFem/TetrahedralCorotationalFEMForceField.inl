@@ -845,7 +845,7 @@ template <class DataTypes>
 inline void TetrahedralCorotationalFEMForceField<DataTypes>::getRotation(Transformation& R, unsigned int nodeIdx)
 {
     const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetraInf = tetrahedronInfo.getValue();
-    int numNeiTetra=_topology->getTetrahedraAroundVertex(nodeIdx).size();
+    int numNeiTetra=(int)_topology->getTetrahedraAroundVertex(nodeIdx).size();
     Transformation r;
     r.clear();
 

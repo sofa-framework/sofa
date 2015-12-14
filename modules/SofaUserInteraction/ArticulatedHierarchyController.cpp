@@ -220,7 +220,7 @@ void ArticulatedHierarchyController::dumpArticulationsAndBindingKeys(void) const
 
 void ArticulatedHierarchyController::updateActiveArticulationsIndices(const char keyChar)
 {
-    unsigned int numKeys = bindingKeys.getValue().size();
+    unsigned int numKeys = (unsigned int)bindingKeys.getValue().size();
 
     if (numKeys != 0)
     {

@@ -71,7 +71,7 @@ public:
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
     {
         //ms->contributeToMatrixDimension(nbRow, nbCol);
-        const unsigned int n = ms->getMatrixSize();
+        const unsigned int n = (const unsigned int) ms->getMatrixSize();
         if (nbRow) *nbRow += n;
         if (nbCol) *nbCol += n;
         if (matrix) matrix->addMechanicalState(ms);

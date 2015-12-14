@@ -193,7 +193,7 @@ SuturePointPerformer<DataTypes>::~SuturePointPerformer()
     if (SpringObject) //means we added a spring
     {
         sofa::helper::vector <Spring> vecSprings = SpringObject->getSprings();
-        unsigned int nbr = vecSprings.size();
+        unsigned int nbr = (unsigned int)vecSprings.size();
 
         for (unsigned int i = 0; i<addedSprings.size(); ++i)
             SpringObject->removeSpring(nbr-1-i );

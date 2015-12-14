@@ -106,7 +106,7 @@ void EdgeSetController<DataTypes>::init()
     else
     {
         /// useful here ??
-        int n = this->mState->getSize();
+        int n = (int)this->mState->getSize();
         if (n > 1)
         {
             if (vertexT.size() >= 2)
@@ -122,7 +122,7 @@ void EdgeSetController<DataTypes>::init()
 template <class DataTypes>
 void EdgeSetController<DataTypes>::computeVertexT()
 {
-    int n = this->mState->getSize();
+    int n = (int)this->mState->getSize();
     const VecCoord& x0 =  this->mState->read(core::ConstVecCoordId::restPosition())->getValue();
 
     vertexT.resize(n);
@@ -228,7 +228,7 @@ void EdgeSetController<DataTypes>::applyController()
     using sofa::defaulttype::Vec;
 
     int startId = startingIndex.getValue();
-    if (startId < 0) startId += this->mState->getSize();
+    if (startId < 0) startId += (int)this->mState->getSize();
     if (startId < 0) startId = 0;
     if (startId >= (int)this->mState->getSize()-1) startId = (int)this->mState->getSize()-1;
 
@@ -302,7 +302,7 @@ void EdgeSetController<DataTypes>::applyController()
             }
             else // reversed  !
             {
-                int n = this->mState->getSize();
+                int n = (int)this->mState->getSize();
 
                 if (n > 0)
                 {
@@ -372,7 +372,7 @@ bool EdgeSetController<DataTypes>::modifyTopology(void)
     assert(edgeGeo != 0);
     bool changed = false;
     int startId = startingIndex.getValue();
-    if (startId < 0) startId += this->mState->getSize();
+    if (startId < 0) startId += (int)this->mState->getSize();
     if (startId < 0) startId = 0;
     if (startId >= (int)this->mState->getSize()-1) startId = (int)this->mState->getSize()-1;
 
@@ -448,7 +448,7 @@ bool EdgeSetController<DataTypes>::modifyTopology(void)
     }
     else // reversed case // TODO implementation for startId !=0
     {
-        int n = this->mState->getSize();
+        int n = (int)this->mState->getSize();
 
         if (n > 1)
         {
@@ -544,7 +544,7 @@ bool EdgeSetController<DataTypes>::modifyTopology(void)
     }
     else // reversed // TODO implementation for startId !=0
     {
-        int n = this->mState->getSize();
+        int n = (int)this->mState->getSize();
 
         if (n > 1)
         {

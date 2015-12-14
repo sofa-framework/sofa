@@ -112,7 +112,7 @@ void BeamFEMForceField<DataTypes>::bwdInit()
 {
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
-    matS.resize(state->getMatrixSize(),state->getMatrixSize());
+    matS.resize((BaseMatrix::Index)state->getMatrixSize(),(BaseMatrix::Index)state->getMatrixSize());
     lastUpdatedStep=-1.0;
 }
 
@@ -176,7 +176,7 @@ void BeamFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void BeamFEMForceField<DataTypes>::reinit()
 {
-    unsigned int n = _indexedElements->size();
+    unsigned int n = (unsigned int)_indexedElements->size();
     //_beamQuat.resize( n );
     //_stiffnessMatrices.resize( n );
     _forces.resize( this->mstate->getSize() );

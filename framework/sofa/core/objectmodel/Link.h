@@ -566,7 +566,7 @@ public:
             // Remove the objects from the container that are not in the new list
             for (size_t i = 0; i != container.size(); i++)
             {
-                DestPtr dest(container[i]);
+                DestPtr dest(container[(unsigned int)i]);
                 bool destFound = false;
                 typename PairVector::iterator j = newList.begin();
                 while (j != newList.end() && !destFound)
@@ -732,7 +732,7 @@ public:
                         DestPtr v = ptr;
                         TraitsValueType::set(value,v);
                         this->updateCounter(aspect);
-                        this->added(v, i);
+                        this->added(v, (unsigned int)i);
                     }
                     else
                     {

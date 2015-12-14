@@ -48,7 +48,7 @@ template<>
 void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintResolution(const core::ConstraintParams* cParams, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
     SOFA_UNUSED(cParams);
-    unsigned minp=std::min(m1.getValue().size(),m2.getValue().size());
+    unsigned minp=std::min((unsigned)m1.getValue().size(),(unsigned)m2.getValue().size());
     for (unsigned pid=0; pid<minp; pid++)
     {
         // 	for(int i=0; i<6; i++)
@@ -70,7 +70,7 @@ void BilateralInteractionConstraint<Rigid3dTypes>::buildConstraintMatrix(const c
     const helper::vector<int> &m1Indices = m1.getValue();
     const helper::vector<int> &m2Indices = m2.getValue();
 
-    unsigned minp = std::min(m1Indices.size(),m2Indices.size());
+    unsigned minp = std::min((unsigned)m1Indices.size(),(unsigned)m2Indices.size());
     cid.resize(minp);
 
     MatrixDeriv &c1 = *c1_d.beginEdit();
@@ -138,7 +138,7 @@ void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintViolation(const 
     const helper::vector<int> &m1Indices = m1.getValue();
     const helper::vector<int> &m2Indices = m2.getValue();
 
-    unsigned minp = std::min(m1Indices.size(),m2Indices.size());
+    unsigned minp = std::min((unsigned)m1Indices.size(),(unsigned)m2Indices.size());
 
     const VecDeriv& restVector = this->restVector.getValue();
     dfree.resize(minp);
@@ -193,7 +193,7 @@ void BilateralInteractionConstraint<Rigid3fTypes>::buildConstraintMatrix(const c
     const helper::vector<int> &m1Indices = m1.getValue();
     const helper::vector<int> &m2Indices = m2.getValue();
 
-    unsigned minp = std::min(m1Indices.size(), m2Indices.size());
+    unsigned minp = std::min((unsigned)m1Indices.size(), (unsigned)m2Indices.size());
     cid.resize(minp);
 
     MatrixDeriv &c1 = *c1_d.beginEdit();
@@ -261,7 +261,7 @@ void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintViolation(const 
     const helper::vector<int> &m1Indices = m1.getValue();
     const helper::vector<int> &m2Indices = m2.getValue();
 
-    unsigned min = std::min(m1Indices.size(), m2Indices.size());
+    unsigned min = std::min((unsigned)m1Indices.size(), (unsigned)m2Indices.size());
     const VecDeriv& restVector = this->restVector.getValue();
     dfree.resize(min);
 
@@ -293,7 +293,7 @@ template<>
 void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintResolution(const core::ConstraintParams* cParams, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
     SOFA_UNUSED(cParams);
-    unsigned minp=std::min(m1.getValue().size(),m2.getValue().size());
+    unsigned minp=std::min((unsigned)m1.getValue().size(),(unsigned)m2.getValue().size());
     for (unsigned pid=0; pid<minp; pid++)
     {
         // 	for(int i=0; i<6; i++)
