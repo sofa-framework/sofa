@@ -409,7 +409,7 @@ RegisterObject::operator int()
         {
             if (!reg.defaultTemplate.empty())
             {
-                Logger::getMainLogger().log(Logger::Error, "Default template for class " + entry.className + " already registered (" + reg.defaultTemplate + "), do not register " + entry.defaultTemplate + " as the default", "ObjectFactory");
+                Logger::getMainLogger().log(Logger::Warning, "Default template for class " + entry.className + " already registered (" + reg.defaultTemplate + "), do not register " + entry.defaultTemplate + " as the default", "ObjectFactory");
             }
             else
             {
@@ -420,7 +420,7 @@ RegisterObject::operator int()
         {
             if (reg.creatorMap.find(itc->first) != reg.creatorMap.end())
             {
-                Logger::getMainLogger().log(Logger::Error, "Class already registered: " + itc->first, "ObjectFactory");
+                Logger::getMainLogger().log(Logger::Warning, "Class already registered: entry.className " + itc->first, "ObjectFactory");
             }
             else
             {
