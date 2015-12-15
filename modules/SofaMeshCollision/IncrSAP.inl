@@ -282,7 +282,7 @@ inline void TIncrSAP<List,Allocator>::addCollisionModel(core::CollisionModel *cm
         CubeModel * cube_model = dynamic_cast<CubeModel *>(cm->getLast()->getPrevious());
         assert(cube_model->getPrevious() == cm->getFirst());
 
-        int old_size = (int)_boxes.size();
+        int old_size = _boxes.size();
         int cube_model_size = cube_model->getSize();
         _boxes.resize(cube_model_size + old_size);
 

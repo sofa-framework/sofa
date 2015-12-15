@@ -143,7 +143,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
             if (!find)
             {
                 my_positions.push_back(vertex);
-                the_tri[j] = (int)my_positions.size()-1;
+                the_tri[j] = my_positions.size()-1;
             }
         }
 

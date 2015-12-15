@@ -466,7 +466,7 @@ void BaseMechanicalVisitor::end(simulation::Node* node, core::objectmodel::BaseO
 
 Visitor::Result MechanicalGetDimensionVisitor::fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
 {
-    const unsigned int n = (unsigned)mm->getMatrixSize();
+    const unsigned int n = mm->getMatrixSize();
     *ctx->nodeData += (SReal)n;
     return RESULT_CONTINUE;
 }

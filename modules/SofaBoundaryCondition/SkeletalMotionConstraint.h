@@ -96,7 +96,7 @@ public:
 	void projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
 	{
 		unsigned blockSize = DataTypes::deriv_total_size;	
-		unsigned size = (unsigned int)this->mstate->getSize();
+		unsigned size = this->mstate->getSize();
 		for( unsigned i=0; i<size; i++ )
 		{
 			M->clearRowsCols( offset + i * blockSize, offset + (i+1) * (blockSize) );

@@ -101,7 +101,7 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
     updateFromTopology();
 
     if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
-    size_t size2=mstate->getSize();
+    int size2=mstate->getSize();
     pNorms.resize(size2);
     for(int i=0; i<size2; i++)
     {

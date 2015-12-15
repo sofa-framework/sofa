@@ -94,7 +94,7 @@ void TPointModel<DataTypes>::init()
         m_lmdFilter = node->getNodeObject< PointLocalMinDistanceFilter >();
     }
 
-    const int npoints = (const int)mstate->getSize();
+    const int npoints = mstate->getSize();
     resize(npoints);
     if (computeNormals.getValue()) updateNormals();
 
@@ -166,7 +166,7 @@ void TPointModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
             vparams->drawTool()->setPolygonMode(0,true);
 
         // Check topological modifications
-        const int npoints = (const int)mstate->getSize();
+        const int npoints = mstate->getSize();
         if (npoints != size)
         {
             resize(npoints);
@@ -271,7 +271,7 @@ template<class DataTypes>
 void TPointModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = (const int)mstate->getSize();
+    const int npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -307,7 +307,7 @@ template<class DataTypes>
 void TPointModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = (const int)mstate->getSize();
+    const int npoints = mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -351,7 +351,7 @@ template<class DataTypes>
 void TPointModel<DataTypes>::updateNormals()
 {
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    int n = (int)x.size();
+    int n = x.size();
     normals.resize(n);
     for (int i=0; i<n; ++i)
     {

@@ -71,7 +71,7 @@ void InitVisitor::processNodeBottomUp(simulation::Node* node)
     node->setDefaultVisualContextValue();
     sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit(params);
 
-    for(unsigned int i=(unsigned int)node->object.size(); i>0; --i)
+    for(unsigned int i=node->object.size(); i>0; --i)
     {
         node->object[i-1]->bwdInit();
         nodeBBox->include(node->object[i-1]->f_bbox.getValue(params));

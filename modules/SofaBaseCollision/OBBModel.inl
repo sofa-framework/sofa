@@ -58,7 +58,7 @@ void TOBBModel<DataTypes>::init()
         return;
     }
 
-    const int npoints = (const int)_mstate->getSize();
+    const int npoints = _mstate->getSize();
     resize(npoints);
 }
 
@@ -86,7 +86,7 @@ void TOBBModel<DataTypes>::resize(int size){
 template<class DataTypes>
 void TOBBModel<DataTypes>::computeBoundingTree(int maxDepth){
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = (const int)_mstate->getSize();
+    const int npoints = _mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -202,7 +202,7 @@ void TOBBModel<DataTypes>::draw(const core::visual::VisualParams* vparams){
     {
         vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
 
-        const int npoints = (const int)_mstate->getSize();
+        const int npoints = _mstate->getSize();
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
         for(int i = 0 ; i < npoints ; ++i )
             draw(vparams,i);
@@ -441,7 +441,7 @@ void TOBBModel<DataTypes>::computeBBox(const core::ExecParams* params, bool only
 
 
     std::vector<Coord> p;
-    const int npoints = (const int)_mstate->getSize();
+    const int npoints = _mstate->getSize();
     for(int i = 0 ; i < npoints ; ++i )
     {
         vertices(i,p);

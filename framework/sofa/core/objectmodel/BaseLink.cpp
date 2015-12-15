@@ -66,7 +66,7 @@ void BaseLink::printValue( std::ostream& o ) const
     bool first = true;
 	for (std::size_t i = 0; i<size; ++i)
     {
-        std::string path = getLinkedPath((unsigned int)i);
+        std::string path = getLinkedPath(i);
         if (path.empty()) continue;
         if (first) first = false;
         else o << ' ';

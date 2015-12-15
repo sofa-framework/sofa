@@ -136,7 +136,7 @@ void Bezier2MeshTopologicalMapping::init()
 		  std::set<size_t>::iterator itvs;
 		  for (i=0,itvs=triangleVertexSet.begin();itvs!=triangleVertexSet.end();++itvs,++i) {
 			  local2GlobalBezierVertexArray.push_back(*itvs);
-			  global2LocalBezierVertexArray[*itvs]=(int)i;
+			  global2LocalBezierVertexArray[*itvs]=i;
 		  }
 		/*
 		   if (toPointMod)
@@ -169,7 +169,7 @@ void Bezier2MeshTopologicalMapping::init()
 		 globalIndexTesselatedBezierTriangleArray.resize(btstc->getNumberOfTriangles());
 		 // get the division of the triangle into subtriangles
 		 sofa::helper::vector< sofa::component::topology::BezierTriangleSetTopologyContainer::LocalTriangleIndex> 
-			 sta=btstc->getLocalIndexSubtriangleArrayOfGivenDegree((BezierDegreeType)bezierTesselation);
+			 sta=btstc->getLocalIndexSubtriangleArrayOfGivenDegree(bezierTesselation);
 
 		// handle triangles
 		size_t nbTriangles=btstc->getNumberOfTriangles()*(bezierTesselation*bezierTesselation);
@@ -190,7 +190,7 @@ void Bezier2MeshTopologicalMapping::init()
 		for (rank=0,i=0;i<btstc->getNumberOfTriangles();++i) {
 			// there are (bezierTesselation)*(bezierTesselation) subtriangles
 			// first store the indices of all the macro triangles into an array
-			sofa::component::topology::Triangle tr=btstc->getTriangle((TriangleID)i);
+			sofa::component::topology::Triangle tr=btstc->getTriangle(i);
 			sofa::helper::vector<size_t> macroTriangleIndexArray;
 			// store the 3 vertices
 
@@ -203,8 +203,8 @@ void Bezier2MeshTopologicalMapping::init()
 
 			// store the edge point
 			if (bezierTesselation>1) {
-				sofa::component::topology::EdgesInTriangle eit=btstc->getEdgesInTriangle((TriangleID)i);
-				 btstc->getGlobalIndexArrayOfBezierPointsInTriangle((TriangleID)i, indexArray);
+				sofa::component::topology::EdgesInTriangle eit=btstc->getEdgesInTriangle(i);
+				 btstc->getGlobalIndexArrayOfBezierPointsInTriangle(i, indexArray);
 				for (j=0;j<3;++j) {
 
 					// store the edge in an array only once 
@@ -219,8 +219,8 @@ void Bezier2MeshTopologicalMapping::init()
 						for(l=1;l<=(bezierDegree-1);++l) {
 
 							trbi[k]=0;
-							trbi[(k+1)%3]=(BezierDegreeType)(bezierDegree-l);
-							trbi[(k+2)%3]=(BezierDegreeType)l;
+							trbi[(k+1)%3]=bezierDegree-l;
+							trbi[(k+2)%3]=l;
 
 							bezierEdge.push_back(indexArray[  btstc->getLocalIndexFromTriangleBezierIndex(trbi)]);
 						}						  
@@ -258,7 +258,7 @@ void Bezier2MeshTopologicalMapping::init()
 			// now add subtriangles to the list
 			for (j=0;j<sta.size();++j,++rank){
 				for(k=0;k<3;++k){
-					subtriangle[k]=macroTriangleIndexArray[sta[(PointID)j][(PointID)k]];
+					subtriangle[k]=macroTriangleIndexArray[sta[j][k]];
 				}
 				// add the subtriangle
 				if (toTriangleMod)

@@ -99,7 +99,7 @@ void InterpolationController<DataTypes>::interpolation() { //VecCoord &interpXs)
         for (size_t i=0; i< interpValues[0].size(); i++) //interpXs[0].size(); i++)
         {
             //interpXs[ptIter][i] = (fromXs[0][ptIter][i] + alpha*(toXs[0][ptIter][i] - fromXs[0][ptIter][i]) );
-            interpValues[(int)ptIter][(int)i] = (fromXs[0][(int)ptIter][(int)i] + alpha*(toXs[0][(int)ptIter][(int)i] - fromXs[0][(int)ptIter][(int)i]) );
+            interpValues[ptIter][i] = (fromXs[0][ptIter][i] + alpha*(toXs[0][ptIter][i] - fromXs[0][ptIter][i]) );
         }
     }
 }
@@ -171,7 +171,7 @@ void InterpolationController<DataTypes>::draw(const core::visual::VisualParams* 
                                  this->toXs[0][0][2] - this->fromXs[0][0][2]);
     const float norm = (float)(fromXs_to_toXs.norm()/10.0);
 
-    for (unsigned ptIter = 0; ptIter < (unsigned)fromXs[0].size(); ptIter += (unsigned)fromXs[0].size()/80)
+    for (unsigned ptIter = 0; ptIter < fromXs[0].size(); ptIter += fromXs[0].size()/80)
     {
         Vector3 p1(interpValues[ptIter][0],interpValues[ptIter][1],interpValues[ptIter][2]), p2;
         //Vector3 p1(interpXs[0][ptIter][0],interpXs[0][ptIter][1],interpXs[0][ptIter][2]), p2;
