@@ -945,6 +945,7 @@ void VisualModelImpl::computeTangents()
     const ResizableExtVector<Quad>& quads = m_quads.getValue();
     const VecCoord& vertices = getVertices();
     const VecTexCoord& texcoords = m_vtexcoords.getValue();
+    VecCoord& normals = *(m_vnormals.beginEdit());
     VecCoord& tangents = *(m_vtangents.beginEdit());
     VecCoord& bitangents = *(m_vbitangents.beginEdit());
 
@@ -1019,8 +1020,12 @@ void VisualModelImpl::computeTangents()
     }
     for (unsigned int i = 0; i < vertices.size(); i++)
     {
-        tangents[i].normalize();
-        bitangents[i].normalize();
+        Coord n = normals[i];
+        Coord& t = tangents[i];
+        Coord& b = bitangents[i];
+
+        b = sofa::defaulttype::cross(n, t.normalized());
+        t = sofa::defaulttype::cross(b, n);
     }
     m_vtangents.endEdit();
     m_vbitangents.endEdit();
