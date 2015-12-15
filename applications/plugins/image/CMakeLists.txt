@@ -99,6 +99,17 @@ endif()
 # AddLinkerDependencies("cxcore")
 # endif()
 
+# OpenMP is bugged in image, forcing it to be single threaded for now
+if(SOFA_OPENMP)
+     message( WARNING "image: deactivating OpenMP" )
+     string(REPLACE "${OpenMP_CXX_FLAGS}" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+     string(REPLACE "${OpenMP_CXX_FLAGS}" "" CMAKE_CXX_LINK_FLAGS ${CMAKE_CXX_LINK_FLAGS})
+endif()
+
+
+
+
+
 find_package(DiffusionSolver CONFIG REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})

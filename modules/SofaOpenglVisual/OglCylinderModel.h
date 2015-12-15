@@ -27,8 +27,10 @@
 #include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
+#include <SofaBaseVisual/VisualModelImpl.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/Topology.h>
 
 namespace sofa
 {
@@ -50,10 +52,12 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_OPENGL_VISUAL_API OglCylinderModel : public core::visual::VisualModel
+
+// I have no idea what is Ogl in this component ?...
+class SOFA_OPENGL_VISUAL_API OglCylinderModel : public core::visual::VisualModel, public ExtVec3fState
 {
 public:
-    SOFA_CLASS(OglCylinderModel,core::visual::VisualModel);
+    SOFA_CLASS2(OglCylinderModel,core::visual::VisualModel,ExtVec3fState);
 protected:
     OglCylinderModel();
     virtual ~OglCylinderModel();
@@ -62,8 +66,9 @@ public:
 
     virtual void reinit();
 
+    virtual void drawVisual(const core::visual::VisualParams* vparams);
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void exportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, int& /*vindex*/, int& /*nindex*/, int& /*tindex*/, int& /*count*/);
 
 private:
     void setColor(float r, float g, float b, float a);
@@ -74,8 +79,9 @@ private:
     // Data<float>		alpha;
     Data<std::string>	color;
 
-    core::topology::BaseMeshTopology*	_topology;
-    core::behavior::BaseMechanicalState* _mstate;
+    typedef sofa::helper::vector<core::topology::Edge>  SeqEdges;
+    Data<SeqEdges> d_edges;
+
 
     float r,g,b,a;
     // component::topology::PointData<sofa::helper::vector<unsigned char> >		pointData;
@@ -83,6 +89,10 @@ private:
     typedef defaulttype::ExtVec3fTypes::Coord Coord;
     typedef defaulttype::ExtVec3fTypes::VecCoord VecCoord;
     typedef defaulttype::ExtVec3fTypes::Real Real;
+
+public:
+    virtual bool insertInNode( core::objectmodel::BaseNode* node ) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    virtual bool removeInNode( core::objectmodel::BaseNode* node ) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 };
 
 } // namespace visualmodel

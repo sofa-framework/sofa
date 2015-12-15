@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(Sofa)
 
+INCLUDE(CPack)
+
 ## Default build type
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
@@ -244,3 +246,9 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
     message("Adding custom file")
     include( "custom.cmake" )
 endif()
+
+
+## when installing, keep an eye on options/params/sources used for compilation
+## this should be internal and not delivered, but this is definitively useful
+sofa_install_git_version( "sofa" ${CMAKE_CURRENT_SOURCE_DIR} )
+install(FILES "${CMAKE_BINARY_DIR}/CMakeCache.txt" DESTINATION .)

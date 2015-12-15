@@ -95,7 +95,12 @@ void FrameSpringForceField<DataTypes>::addSpringForce ( SReal& /*potentialEnergy
     springRef[a] = p1[a];
 
     VecN fT = kst.linearProduct( ( p2[b].getCenter() + Mr02 * ( spring.vec2)) - ( p1[a].getCenter() + Mr01 * ( spring.vec1))) + damping.linearProduct ( getVCenter(Vp1p2));
-    VecN fR = ksr.linearProduct( ( p1[a].getOrientation().inverse() * p2[b].getOrientation()).toEulerVector());
+    VecN fR = ksr.linearProduct( ( p1[a].getOrientation().inverse() * p2[b].getOrientation()).quatToRotationVector());  // Use of quatToRotationVector instead of toEulerVector:
+                                                                                                                        // this is done to keep the old behavior (before the
+                                                                                                                        // correction of the toEulerVector  function). If the
+                                                                                                                        // purpose was to obtain the Eulerian vector and not the
+                                                                                                                        // rotation vector please use the following line instead
+    //VecN fR = ksr.linearProduct( ( p1[a].getOrientation().inverse() * p2[b].getOrientation()).toEulerVector());
 
     VecN C1 = fR + cross( Mr01 * ( spring.vec1), fT) + damping.linearProduct ( getVOrientation(Vp1p2) );
     VecN C2 = fR + cross( Mr02 * ( spring.vec2), fT) + damping.linearProduct ( -getVOrientation(Vp1p2) );

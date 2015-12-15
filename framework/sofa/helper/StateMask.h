@@ -70,7 +70,7 @@ public:
 
     StateMask() : activated(false) {}
 
-    /// filling-up (and eventuelly resize) the mask
+    /// filling-up (and resizing when necessary) the mask
     void assign( size_t size, bool value );
 
     /// the mask can be deactivated when the mappings must be applied to every dofs (e.g. propagatePosition)

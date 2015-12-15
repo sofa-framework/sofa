@@ -716,8 +716,8 @@ public:
         if (!this->m_owner) return false;
         bool ok = true;
         const int aspect = core::ExecParams::currentAspect();
-        size_t n = this->size();
-        for (unsigned int i=0; i<n; ++i)
+        std::size_t n = this->size();
+		for (std::size_t i = 0; i<n; ++i)
         {
             ValueType& value = this->m_value[aspect][i];
             std::string path;
@@ -732,7 +732,7 @@ public:
                         DestPtr v = ptr;
                         TraitsValueType::set(value,v);
                         this->updateCounter(aspect);
-                        this->added(v, i);
+                        this->added(v, (unsigned int)i);
                     }
                     else
                     {

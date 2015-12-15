@@ -61,6 +61,7 @@ EulerImplicitSolver::EulerImplicitSolver()
     , f_velocityDamping( initData(&f_velocityDamping,(SReal)0.,"vdamping","Velocity decay coefficient (no decay if null)") )
     , f_firstOrder (initData(&f_firstOrder, false, "firstOrder", "Use backward Euler scheme for first order ode system."))
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
+    , d_trapezoidalScheme( initData(&d_trapezoidalScheme,false,"trapezoidalScheme","Optional: use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time") )
 {
 }
 
@@ -139,6 +140,17 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     const bool verbose  = f_verbose.getValue();
     const bool firstOrder = f_firstOrder.getValue();
 
+    // the only difference for the trapezoidal rule is the factor tr = 0.5 for some usages of h
+    const bool optTrapezoidal = d_trapezoidalScheme.getValue();
+    SReal tr;
+    if (optTrapezoidal)
+        tr = 0.5;
+    else
+        tr = 1.0;
+
+    if (verbose)
+        std::cout<<"trapezoidal factor = "<< tr <<std::endl;
+
     sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
 	mop->setImplicit(true); // this solver is implicit
     // compute the net forces at the beginning of the time step
@@ -154,19 +166,20 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     else
     {
 #ifdef SOFA_SMP
+        // B v is missing i n this equation. Is this normal?
         mop.computeDfV(b);                // b = K v    , with K=df/dx
         b.teq(h+f_rayleighStiffness.getValue());      // b = (h+rs) K v
-        b.peq(f);      // b = f0 + (h+rs) K v
+        b.peq(f,1.0/tr);      // b = f0 + (h+rs) K v
 
         if (f_rayleighMass.getValue() != 0.0)
         {
             mop.addMdx(b,vel,-f_rayleighMass.getValue()); // no need to propagate vel as dx again
         }
-        b.teq(h);                           // b = h(f0 + (h+rs) K v - rm M v)    Rayleigh mass factor rm is used with a negative sign because it is recorded as a positive real, while its force is opposed to the velocity
+        b.teq(tr*h);                           // b = h(f0 + (h+rs) K v - rm M v)    Rayleigh mass factor rm is used with a negative sign because it is recorded as a positive real, while its force is opposed to the velocity
 #else  // new more powerful visitors
 
         // force in the current configuration
-        b.eq(f);                                                                         // b = f0
+        b.eq(f,1.0/tr);                                                                         // b = f0
         if( verbose )
             serr<<"EulerImplicitSolver, f = "<< f <<sendl;
 
@@ -174,7 +187,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         mop.addMBKv(b, -f_rayleighMass.getValue(), 1, h+f_rayleighStiffness.getValue()); // b =  f0 + ( rm M + B + (h+rs) K ) v
 
         // integration over a time step
-        b.teq(h);                                                                        // b = h(f0 + ( rm M + B + (h+rs) K ) v )
+        b.teq(h*tr);                                                                        // b = h(f0 + ( rm M + B + (h+rs) K ) v )
 #endif
     }
 
@@ -191,9 +204,9 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
 
     if (firstOrder)
-        matrix = MechanicalMatrix::K * (-h) + MechanicalMatrix::M;
+        matrix = MechanicalMatrix::K * (-h*tr) + MechanicalMatrix::M;
     else
-        matrix = MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::B * (-h) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue());
+        matrix = MechanicalMatrix::K * (-tr*h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::B * (-tr*h) + MechanicalMatrix::M * (1+tr*h*f_rayleighMass.getValue());
 
     if( verbose )
     {

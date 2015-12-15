@@ -27,6 +27,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/gl/GLSLShader.h>
 
 #include <string>
 #include <iostream>
@@ -364,7 +365,6 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
 
     if (!f_showLegend.getValue()) return;
 
-
     // Prepare texture for legend
     // crashes on mac in batch mode (no GL context)
     if (vparams->isSupported(core::visual::API_OpenGL)
@@ -414,7 +414,6 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
 
     glPushAttrib(GL_ENABLE_BIT);
     glDisable(GL_DEPTH_TEST);
-    glEnable(GL_TEXTURE_1D);
     glDisable(GL_LIGHTING);
     glDisable(GL_BLEND);
 
@@ -432,10 +431,21 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
     glPushMatrix();
     glLoadIdentity();
 
+    for(int i = 0; i < 8; ++i)
+    {
+        glActiveTexture(GL_TEXTURE0 + i);
+        glDisable(GL_TEXTURE_2D);
+    }
+
+    glActiveTexture(GL_TEXTURE0);
+    glEnable(GL_TEXTURE_1D);
     glBindTexture(GL_TEXTURE_1D, texture);
 
     //glBlendFunc(GL_ONE, GL_ONE);
     glColor3f(1.0f, 1.0f, 1.0f);
+
+    GLhandleARB currentShader = sofa::helper::gl::GLSLShader::GetActiveShaderProgram();
+    sofa::helper::gl::GLSLShader::SetActiveShaderProgram(0);
 
     glBegin(GL_QUADS);
 
@@ -452,6 +462,8 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
     glVertex3f(10.0f+f_legendOffset.getValue().x(), yoffset+120.0f+f_legendOffset.getValue().y(), 0.0f);
 
     glEnd();
+
+    glDisable(GL_TEXTURE_1D);
 
     // Restore projection matrix
     glMatrixMode(GL_PROJECTION);
@@ -499,7 +511,7 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
                                           textcolor,
                                           smin.str().c_str());
 
-
+    sofa::helper::gl::GLSLShader::SetActiveShaderProgram(currentShader);
 
     // Restore state
     glPopAttrib();

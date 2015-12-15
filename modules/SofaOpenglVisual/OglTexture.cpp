@@ -42,7 +42,7 @@ SOFA_DECL_CLASS(OglTexture2D)
 int OglTextureClass = core::RegisterObject("OglTexture").add< OglTexture >();
 int OglTexture2DClass = core::RegisterObject("OglTexture2D").add< OglTexture2D >();
 
-unsigned short OglTexture::MAX_NUMBER_OF_TEXTURE_UNIT = 1;
+GLint OglTexture::MAX_NUMBER_OF_TEXTURE_UNIT = 1;
 
 OglTexture::OglTexture()
     :textureFilename(initData(&textureFilename, (std::string) "", "textureFilename", "Texture Filename"))
@@ -50,7 +50,7 @@ OglTexture::OglTexture()
     ,enabled(initData(&enabled, (bool) true, "enabled", "enabled ?"))
     ,repeat(initData(&repeat, (bool) false, "repeat", "Repeat Texture ?"))
     ,linearInterpolation(initData(&linearInterpolation, (bool) true, "linearInterpolation", "Interpolate Texture ?"))
-    ,generateMipmaps(initData(&generateMipmaps, (bool) false, "generateMipmaps", "Generate mipmaps ?"))
+    ,generateMipmaps(initData(&generateMipmaps, (bool) true, "generateMipmaps", "Generate mipmaps ?"))
     ,srgbColorspace(initData(&srgbColorspace, (bool) false, "srgbColorspace", "SRGB colorspace ?"))
     ,minLod(initData(&minLod, (float) -1000, "minLod", "Minimum mipmap lod ?"))
     ,maxLod(initData(&maxLod, (float)  1000, "maxLod", "Maximum mipmap lod ?"))
@@ -207,13 +207,15 @@ void OglTexture::init()
 
 void OglTexture::initVisual()
 {
-    GLint maxTextureUnits;
-    glGetIntegerv(GL_MAX_TEXTURE_UNITS, &maxTextureUnits);
-    MAX_NUMBER_OF_TEXTURE_UNIT = maxTextureUnits;
+#ifdef GL_MAX_TEXTURE_IMAGE_UNITS_ARB //http://developer.nvidia.com/object/General_FAQ.html#t6
+    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS_ARB, &MAX_NUMBER_OF_TEXTURE_UNIT);
+#else
+    glGetIntegerv(GL_MAX_TEXTURE_UNITS, &MAX_NUMBER_OF_TEXTURE_UNIT);
+#endif
 
     if (textureUnit.getValue() > MAX_NUMBER_OF_TEXTURE_UNIT)
     {
-        serr << "Unit Texture too high ; set it at the unit texture n°1" << sendl;
+        serr << "Unit Texture too high ; set it at the unit texture n°1 (MAX_NUMBER_OF_TEXTURE_UNIT=" << MAX_NUMBER_OF_TEXTURE_UNIT << ")" << sendl;
         textureUnit.setValue(1);
     }
 //    if (!img)

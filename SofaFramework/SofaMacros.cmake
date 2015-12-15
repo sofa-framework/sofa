@@ -232,3 +232,59 @@ macro(sofa_add_application directory app_name)
 endmacro()
 
 
+# Get path of all library versions (involving symbolic links) for a specified library
+macro(sofa_install_get_libraries library)
+    file(GLOB ABS_LIB "${library}*")
+    install(FILES ${ABS_LIB} DESTINATION lib)
+endmacro()
+
+
+
+
+##########################################################
+#################### INSTALL MACROS ######################
+##########################################################
+# move them in a specific file?
+
+
+## to store which sources have been used for installed binaries
+## these should be internal files and not delivered, but this is definitively useful
+## when storing backups / demos across several repositories (e.g. sofa + plugins)
+macro( sofa_install_git_version name sourcedir )
+INSTALL( CODE
+"
+    find_package(Git REQUIRED)
+
+    # get the current working branch
+    execute_process(
+      COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
+      WORKING_DIRECTORY ${sourcedir}
+      OUTPUT_VARIABLE SOFA_GIT_BRANCH
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+
+    # get the current commit hash
+    execute_process(
+      COMMAND  ${GIT_EXECUTABLE} rev-parse -q HEAD
+      WORKING_DIRECTORY ${sourcedir}
+      OUTPUT_VARIABLE SOFA_GIT_HASH
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+
+    # get the current commit date
+    execute_process(
+      COMMAND ${GIT_EXECUTABLE} show -s --format=%ci
+      WORKING_DIRECTORY ${sourcedir}
+      OUTPUT_VARIABLE SOFA_GIT_DATE
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+
+    string( TOLOWER \"${name}\" name_lower )
+    if( name_lower STREQUAL \"sofa\" )
+        file(WRITE \"${CMAKE_INSTALL_PREFIX}/git.version\" \"${name}: \${SOFA_GIT_BRANCH} \${SOFA_GIT_HASH} \${SOFA_GIT_DATE} \n\" )
+    else()
+        file(APPEND \"${CMAKE_INSTALL_PREFIX}/git.version\" \"${name}: \${SOFA_GIT_BRANCH} \${SOFA_GIT_HASH} \${SOFA_GIT_DATE} \n\" )
+    endif()
+"
+)
+endmacro()

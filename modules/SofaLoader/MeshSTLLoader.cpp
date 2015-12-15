@@ -69,7 +69,7 @@ bool MeshSTLLoader::load()
 
     if (!file.good())
     {
-        serr << "Error: MeshSTLLoader: Cannot read file '" << m_filename << "'." << sendl;
+        serr << "Cannot read file '" << m_filename << "'." << sendl;
         return false;
     }
 

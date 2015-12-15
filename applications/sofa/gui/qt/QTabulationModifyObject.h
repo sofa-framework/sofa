@@ -60,9 +60,9 @@ public:
     void addLink(sofa::core::objectmodel::BaseLink *link, const ModifyObjectFlags& flags);
     void addStretch();
 
-    unsigned int getIndex() const {return index;};
+    unsigned int getIndex() const {return index;}
     bool isFull() const;
-    void setFull() {pixelSize=pixelMaxSize;};
+    void setFull() {pixelSize=pixelMaxSize;}
     bool isEmpty() const;
     bool isDirty() const;
 

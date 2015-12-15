@@ -77,6 +77,8 @@ if(NOT SOFA_NO_OPENGL)
         sofa_create_target(GLEW SofaFramework "${GLEW_LIBRARIES}" "${GLEW_INCLUDE_DIRS}")
         list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLEW_Target})
         list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${GLEW_INCLUDE_DIRS})
+
+        sofa_install_get_libraries(${GLEW_LIBRARIES})
     endif()
     set(SOFA_HAVE_GLEW ${GLEW_FOUND})
 
@@ -111,6 +113,8 @@ find_package(ZLIB)
 if(ZLIB_FOUND)
     sofa_create_target(ZLIB SofaFramework "${ZLIB_LIBRARIES}" "${ZLIB_INCLUDE_DIRS}")
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${ZLIB_Target})
+
+    sofa_install_get_libraries(${ZLIB_LIBRARIES})
 endif()
 set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 
@@ -119,6 +123,9 @@ find_package(PNG)
 if(PNG_FOUND)
     sofa_create_target(PNG SofaFramework "${PNG_LIBRARY}" "${PNG_INCLUDE_DIRS}")
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${PNG_Target})
+
+
+    sofa_install_get_libraries("${PNG_LIBRARY}/libpng")
 endif()
 set(SOFA_HAVE_PNG ${PNG_FOUND})
 
@@ -147,6 +154,11 @@ if(SOFA_HAVE_BOOST_SYSTEM
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostThread_Target})
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostDateTime_Target})
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostChrono_Target})
+
+    sofa_install_get_libraries(${Boost_SYSTEM_LIBRARY})
+    sofa_install_get_libraries(${Boost_THREAD_LIBRARY})
+    sofa_install_get_libraries(${Boost_DATE_TIME_LIBRARY})
+    sofa_install_get_libraries(${Boost_CHRONO_LIBRARY})
 else()
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
 endif()

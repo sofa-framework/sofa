@@ -126,7 +126,8 @@ def insertJoint(jointModel, rigids, param=None):
                 limits.append(d.min)
                 limits.append(d.max)
         mask[d.index] = 0
-    joint = StructuralAPI.GenericRigidJoint(jointModel.name, frames[0].node, frames[1].node, mask)
+    if not param is None:
+        joint = StructuralAPI.GenericRigidJoint(jointModel.name, frames[0].node, frames[1].node, mask, compliance=param.jointCompliance)
     if isLimited:
         joint.addLimits(limits)
     return joint
@@ -141,6 +142,8 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         
         self.rigids = dict()
         self.joints = dict()
+
+        self.param.jointCompliance=0
 
         self.param.showRigid=False
         self.param.showRigidScale=0.5 # SI unit (m)

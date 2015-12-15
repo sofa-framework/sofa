@@ -19,6 +19,7 @@ set(HEADER_FILES
     PointSplatModel.h
     config.h
     initOpenGLVisual.h
+    MergeVisualModels.h
 )
 
 set(SOURCE_FILES
@@ -38,6 +39,7 @@ set(SOURCE_FILES
     OglViewport.cpp
     PointSplatModel.cpp
     initOpenGLVisual.cpp
+    MergeVisualModels.cpp
 )
 
 if(SOFA_HAVE_GLEW)
