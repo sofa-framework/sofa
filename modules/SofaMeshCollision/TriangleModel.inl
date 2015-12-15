@@ -130,7 +130,7 @@ template<class DataTypes>
 void TTriangleModel<DataTypes>::updateFromTopology()
 {
     //    needsUpdate = false;
-    const unsigned npoints = (const unsigned)mstate->getSize();
+    const unsigned npoints = mstate->getSize();
     const unsigned ntris = _topology->getNbTriangles();
     const unsigned nquads = _topology->getNbQuads();
     const unsigned newsize = ntris+2*nquads;

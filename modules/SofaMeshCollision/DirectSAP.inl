@@ -172,7 +172,7 @@ void TDirectSAP<List,Allocator>::endBroadPhase()
     _to_del.push_back(end_pts);
 
     int cur_EndPtID = 0;
-    int cur_boxID = (int)_boxes.size();
+    int cur_boxID = _boxes.size();
     for(unsigned int i = 0 ; i < cube_models.size() ; ++i){
         CubeModel * cm = cube_models[i];
         for(int j = 0 ; j < cm->getSize() ; ++j){

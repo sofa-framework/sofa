@@ -88,7 +88,7 @@ void RayModel::init()
     }
 
     {
-        const int npoints = (const int)mstate->getSize();
+        const int npoints = mstate->getSize();
         resize(npoints);
     }
 }

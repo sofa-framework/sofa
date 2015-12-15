@@ -72,7 +72,7 @@ template <class TIn, class TOut>
 int SubsetMapping<TIn, TOut>::addPoint(int index)
 {
     IndexArray& indices = *f_indices.beginEdit();
-    int i = (int)indices.size();
+    int i = indices.size();
     indices.push_back(index);
     f_indices.endEdit();
     return i;
@@ -98,7 +98,7 @@ void SubsetMapping<TIn, TOut>::init()
 {
     const bool ignoreNotFound = f_ignoreNotFound.getValue();
     int numnotfound = 0;
-    unsigned int inSize = (unsigned int)(this->fromModel->getSize());
+    unsigned int inSize = this->fromModel->getSize();
     if (f_indices.getValue().empty() && f_first.getValue() != -1)
     {
         IndexArray& indices = *f_indices.beginEdit();
@@ -194,7 +194,7 @@ void SubsetMapping<TIn, TOut>::apply ( const core::MechanicalParams* /*mparams*/
     const InVecCoord& in = dIn.getValue();
     const OutVecCoord& out0 = this->toModel->read(core::ConstVecCoordId::restPosition())->getValue();
     OutVecCoord& out = *dOut.beginEdit();
-    const unsigned int fromSize = (const unsigned int)in.size();
+    const unsigned int fromSize = in.size();
 
     out.resize(indices.size());
     for(unsigned int i = 0; i < out.size(); ++i)
@@ -215,7 +215,7 @@ void SubsetMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /*mparams*/
 
     const InVecDeriv& in = dIn.getValue();
     OutVecDeriv& out = *dOut.beginEdit();
-    const unsigned int fromSize = (const unsigned int)in.size();
+    const unsigned int fromSize = in.size();
 
     out.resize(indices.size());
     for(unsigned int i = 0; i < out.size(); ++i)
@@ -234,7 +234,7 @@ void SubsetMapping<TIn, TOut>::applyJT ( const core::MechanicalParams* /*mparams
 
     const OutVecDeriv& in = dIn.getValue();
     InVecDeriv& out = *dOut.beginEdit();
-    const unsigned int fromSize = (const unsigned int)out.size();
+    const unsigned int fromSize = out.size();
 
     if (indices.empty())
         return;
@@ -260,7 +260,7 @@ void SubsetMapping<TIn, TOut>::applyJT ( const core::ConstraintParams * /*cparam
 
     InMatrixDeriv& out = *dOut.beginEdit();
     const OutMatrixDeriv& in = dIn.getValue();
-    const unsigned int fromSize = (const unsigned int)this->fromModel->getSize();
+    const unsigned int fromSize = this->fromModel->getSize();
 
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
@@ -310,7 +310,7 @@ const sofa::defaulttype::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
         const InVecCoord& in =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
         const IndexArray& indices = f_indices.getValue();
         assert(indices.size() == out.size());
-        const unsigned int fromSize = (const unsigned int)in.size();
+        const unsigned int fromSize = in.size();
 
         updateJ = false;
         if (matrixJ.get() == 0 ||
@@ -344,8 +344,8 @@ const typename SubsetMapping<TIn, TOut>::js_type* SubsetMapping<TIn, TOut>::getJ
         updateJ = false;
 
         const IndexArray& indices = f_indices.getValue();
-        const unsigned rowsBlock = (const unsigned int)indices.size();
-        const unsigned colsBlock = (const unsigned int)this->fromModel->getSize();
+        const unsigned rowsBlock = indices.size();
+        const unsigned colsBlock = this->fromModel->getSize();
 
         const unsigned rows = rowsBlock * NOut;
         const unsigned cols = colsBlock * NIn;

@@ -304,7 +304,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* /*filename*/)
                         if (vtn[j] >= 1)
                             vtn[j] -=1; // -1 because the numerotation begins at 1 and a vector begins at 0
                         else if (vtn[j] < 0)
-                            vtn[j] += (j==0) ? (int)my_positions.size() : (j==2) ? (int)my_normals.size() : 0/*my_texCoords.size()*/;
+                            vtn[j] += (j==0) ? my_positions.size() : (j==2) ? my_normals.size() : 0/*my_texCoords.size()*/;
                         else
                         {
                             serr << "Invalid index " << tmp << sendl;

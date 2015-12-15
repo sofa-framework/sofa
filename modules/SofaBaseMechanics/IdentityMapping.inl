@@ -43,7 +43,7 @@ namespace mapping
 template<class TIn, class TOut>
 void IdentityMapping<TIn, TOut>::init()
 {
-    const unsigned n = (const unsigned)this->fromModel->getSize();
+    const unsigned n = this->fromModel->getSize();
 
     this->toModel->resize( n );
 
@@ -61,9 +61,9 @@ void IdentityMapping<TIn, TOut>::init()
         {
             for(unsigned r = 0; r < N; ++r)
             {
-                const unsigned row = NOut * (unsigned)i + r;
+                const unsigned row = NOut * i + r;
                 J.compressedMatrix.startVec( row );
-                const unsigned col = NIn * (unsigned)i + r;
+                const unsigned col = NIn * i + r;
                 J.compressedMatrix.insertBack( row, col ) = (OutReal)1;
             }
         }

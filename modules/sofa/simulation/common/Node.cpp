@@ -993,7 +993,7 @@ void Node::sortComponents()
     std::map< BaseObject::SPtr, Vertex > vertex_from_component;
 
     // build the graph
-    for (unsigned int i = (unsigned int)object.size() - 1; i >= 0; i--) // in the reverse order for a final order more similar to the current one
+    for (int i = object.size() - 1; i >= 0; i--) // in the reverse order for a final order more similar to the current one
     {
         Vertex v = add_vertex( dependencyGraph );
         component_from_vertex[v] = object[i];

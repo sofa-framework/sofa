@@ -65,13 +65,13 @@ void TopologySubsetDataHandler <TopologyElementType, VecT>::add(unsigned int nbE
         {
             const sofa::helper::vector< unsigned int > empty_vecint;
             const sofa::helper::vector< double > empty_vecdouble;
-            test = this->applyTestCreateFunction((unsigned int)(size + i), empty_vecint, empty_vecdouble);
+            test = this->applyTestCreateFunction(size + i, empty_vecint, empty_vecdouble);
         }
         else
-            test = this->applyTestCreateFunction((unsigned int)(size + i), ancestors[i], coefs[i]);
+            test = this->applyTestCreateFunction(size + i, ancestors[i], coefs[i]);
 
         if (test)
-            data.push_back( (unsigned int)(size + i) );
+            data.push_back( size+i );
     }
     this->lastElementIndex+=nbElements;
 }
