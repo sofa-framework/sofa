@@ -41,7 +41,10 @@
 
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+
+#ifdef SOFA_HAVE_GLEW
 #include <SofaOpenglVisual/OglTexture.h>
+#endif // SOFA_HAVE_GLEW
 
 namespace sofa
 {
@@ -116,7 +119,6 @@ void LightManager::initVisual()
 #ifdef SOFA_HAVE_GLEW
     for(unsigned int i=0 ; i<shadowShaders.size() ; ++i)
         shadowShaders[i]->initVisual();
-#endif
 
     ///TODO: keep trace of all active textures at the same time, with a static factory
     ///or something like that to avoid conflics with color texture declared in the scene file.
@@ -161,7 +163,7 @@ void LightManager::initVisual()
         }
     }
 
-
+#endif // SOFA_HAVE_GLEW
 
 }
 
@@ -310,6 +312,7 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
 
 void LightManager::bwdDraw(core::visual::VisualParams* )
 {
+#ifdef SOFA_HAVE_GLEW
     for(unsigned int i=0 ; i<lights.size() ; ++i)
     {
         unsigned short shadowTextureUnit = lights[i]->getShadowTextureUnit();
@@ -319,7 +322,7 @@ void LightManager::bwdDraw(core::visual::VisualParams* )
     }
 
     glActiveTexture(GL_TEXTURE0);
-
+#endif // SOFA_HAVE_GLEW
     for (unsigned int i=0 ; i<MAX_NUMBER_OF_LIGHTS ; ++i)
         glDisable(GL_LIGHT0+i);
 
