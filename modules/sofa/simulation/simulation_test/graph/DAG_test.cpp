@@ -193,7 +193,7 @@ Expected output: RABCCBAR
   * @brief More complex graph:
 
   R__
- / \ |
+ / \ \
  A B |
  \ / |
   C  /
@@ -224,14 +224,13 @@ Expected output: RABCDEEDCBAR
   * @brief Even more complex graph:
 
   R__
- / \ |
+ / \ \
  A B C
  \/ \|
   D  E
   |  |
   F  G
 
-Expected output: RABCDEEDCBAR
      */
     void traverse_morecomplex()
     {
@@ -250,7 +249,47 @@ Expected output: RABCDEEDCBAR
         traverse_test( root, "RADFFDABEGGEBCCR", "RADFFDABDFFDEGGEBCEGGECR", "RADFFDABDDEGGEBCEECR", "RABDFCEG" );
     }
 
+
+/**
+  * @brief another complex case
+
+  R______
+ / \ \ \ \
+ A B C D E
+ \/__/_/_/
+  F
+  |\
+  G |
+  |/
+  H
+
+     */
+    void traverse_morecomplex2()
+    {
+        Node::SPtr root = clearScene();
+        root->setName("R");
+        Node::SPtr A = root->createChild("A");
+        Node::SPtr B = root->createChild("B");
+        Node::SPtr C = root->createChild("C");
+        Node::SPtr D = root->createChild("D");
+        Node::SPtr E = root->createChild("E");
+        Node::SPtr F = A->createChild("F");
+        B->addChild(F);
+        C->addChild(F);
+        D->addChild(F);
+        E->addChild(F);
+        Node::SPtr G = F->createChild("G");
+        Node::SPtr H = G->createChild("H");
+        F->addChild(H);
+
+        traverse_test( root, "RAFGHHGFABBCCDDEER",
+                       "RAFGHHGHHFABFGHHGHHFBCFGHHGHHFCDFGHHGHHFDEFGHHGHHFER",
+                       "RAFGHHGHHFABFFBCFFCDFFDEFFER",
+                       "RABCDEFGH" );
+    }
+
 };
+
 
 
 TEST_F( DAG_test, traverse )
@@ -259,6 +298,7 @@ TEST_F( DAG_test, traverse )
     traverse_simple_diamond();
     traverse_complex();
     traverse_morecomplex();
+    traverse_morecomplex2();
 }
 
 TEST(DAGNodeTest, objectDestruction_singleObject)
