@@ -79,6 +79,8 @@ if(NOT SOFA_NO_OPENGL)
         list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${GLEW_INCLUDE_DIRS})
 
         sofa_install_get_libraries(${GLEW_LIBRARIES})
+    else()
+        message("OpenGL advanced functions (e.g shaders, FBO) are disabled.")
     endif()
     set(SOFA_HAVE_GLEW ${GLEW_FOUND})
 
