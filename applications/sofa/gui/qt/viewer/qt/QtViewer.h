@@ -27,6 +27,7 @@
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/gl.h>
+#include <sofa/helper/system/glu.h>
 #include <qgl.h>
 #include <qtimer.h>
 #include <math.h>
