@@ -27,7 +27,10 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
+
+#ifdef SOFA_HAVE_GLEW
 #include <sofa/helper/gl/GLSLShader.h>
+#endif // SOFA_HAVE_GLEW
 
 #include <string>
 #include <iostream>
@@ -431,6 +434,7 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
     glPushMatrix();
     glLoadIdentity();
 
+#ifdef SOFA_HAVE_GLEW
     for(int i = 0; i < 8; ++i)
     {
         glActiveTexture(GL_TEXTURE0 + i);
@@ -446,6 +450,7 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
 
     GLhandleARB currentShader = sofa::helper::gl::GLSLShader::GetActiveShaderProgram();
     sofa::helper::gl::GLSLShader::SetActiveShaderProgram(0);
+#endif // SOFA_HAVE_GLEW
 
     glBegin(GL_QUADS);
 
@@ -511,7 +516,9 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
                                           textcolor,
                                           smin.str().c_str());
 
+#ifdef SOFA_HAVE_GLEW
     sofa::helper::gl::GLSLShader::SetActiveShaderProgram(currentShader);
+#endif // SOFA_HAVE_GLEW
 
     // Restore state
     glPopAttrib();

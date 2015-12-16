@@ -28,7 +28,7 @@
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/VisualParams.h>
-
+#include <sofa/helper/system/glu.h>
 #include <sofa/helper/OptionsGroup.h>
 
 namespace sofa

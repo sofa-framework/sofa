@@ -43,7 +43,6 @@ void initOpenGLVisual()
 }
 
 SOFA_LINK_CLASS(OglModel)
-SOFA_LINK_CLASS(OglViewport)
 SOFA_LINK_CLASS(Light)
 SOFA_LINK_CLASS(LightManager)
 SOFA_LINK_CLASS(PointSplatModel)
@@ -59,6 +58,7 @@ SOFA_LINK_CLASS(OglShaderVisualModel)
 SOFA_LINK_CLASS(OglShadowShader)
 SOFA_LINK_CLASS(OglTetrahedralModel)
 SOFA_LINK_CLASS(OglTexture)
+SOFA_LINK_CLASS(OglViewport)
 #endif
 
 
