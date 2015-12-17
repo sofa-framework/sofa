@@ -134,6 +134,13 @@ sofa_set_python_directory(${PROJECT_NAME} "python")
 
 set(SOFAPYTHON_COMPILER_FLAGS "-DSOFA_BUILD_SOFAPYTHON")
 
+if(MSVC)
+    option(SOFAPYTHON_INTERPRETER_NO_DEBUG "force a SofaPython debug build to link against a release python library" ON)
+    if(SOFAPYTHON_INTERPRETER_NO_DEBUG)
+        add_definitions(-DSOFAPYTHON_INTERPRETER_NO_DEBUG)
+    endif()
+endif()
+
 # The implementation of Python deliberately breaks strict-aliasing rules, so we
 # compile with -fno-strict-aliasing to prevent the compiler from relying on
 # those rules to optimize the code.

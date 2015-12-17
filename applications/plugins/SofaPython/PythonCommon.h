@@ -14,8 +14,8 @@
 
 // undefine _DEBUG since we want to always link to the release version of
 // python and pyconfig.h automatically links debug version if _DEBUG is
-// defined.
-#ifdef _DEBUG
+// defined. This behavior can be changed by setting the SOFA_PYTHON_INTERPRETER_NO_DEBUG cmake option to OFF
+#if defined(_DEBUG) && defined(SOFAPYTHON_INTERPRETER_NO_DEBUG)
 #define _DEBUG_UNDEFED
 #undef _DEBUG
 #endif
