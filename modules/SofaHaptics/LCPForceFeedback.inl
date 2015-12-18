@@ -32,6 +32,7 @@
 #include <sofa/simulation/common/AnimateEndEvent.h>
 
 #include <algorithm>
+#include <boost/thread/mutex.hpp>
 
 namespace
 {
@@ -197,6 +198,7 @@ void LCPForceFeedback<DataTypes>::init()
     }
 }
 
+boost::mutex s_mtx;
 
 template <class DataTypes>
 void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv& forces)
@@ -268,8 +270,12 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
             }
         }
 
+        s_mtx.lock();
+
         // Solving constraints
         cp->solveTimed(cp->tolerance * 0.001, 100, solverTimeout.getValue());	// tol, maxIt, timeout
+
+        s_mtx.unlock();
 
         // Restore Dfree
         for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
