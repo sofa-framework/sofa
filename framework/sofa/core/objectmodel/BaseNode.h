@@ -123,6 +123,7 @@ public:
     virtual bool hasAncestor(const BaseNode* node) const = 0;
 
     /// Remove the current node from the graph: depending on the type of Node, it can have one or several parents.
+    /// \warning You must have a SPtr on the node you detach if you want to keep it or the smart pointer mechanism will remove it !
     virtual void detachFromGraph() = 0;
 
     /// Get this node context
