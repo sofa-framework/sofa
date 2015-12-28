@@ -25,6 +25,8 @@
 #include <SofaTest/Sofa_test.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
+#include <sofa/simulation/common/DeleteVisitor.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 #include <SceneCreator/SceneCreator.h>
 #include <SofaBaseMechanics/UniformMass.h>
 
@@ -56,13 +58,13 @@ struct ParentObject : public O1
 
 /** Test the Simulation class
 */
-struct Simulation_test: public Sofa_test<SReal>
+struct Scene_test: public Sofa_test<SReal>
 {
     // root
     simulation::Simulation* simulation;
     simulation::Node::SPtr root;
 
-    Simulation_test()
+    Scene_test()
     {
         //std::cerr << "Simulation_test::Simulation_test" << std::endl;
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -158,13 +160,33 @@ struct Simulation_test: public Sofa_test<SReal>
         // deletion of toto at function exit
     }
 
+    /// create a scene, remove a node then step the scene
+    void objectDestruction_subNodeAndStep()
+    {
+        root = simulation::getSimulation()->createNewGraph("root");
+        root->addObject(core::objectmodel::New<simulation::DefaultAnimationLoop>());
+
+        core::objectmodel::BaseNode* child  = root->createChild("child").get();
+        child->addObject(core::objectmodel::New<MechanicalObject3>());
+
+        simulation->init(root.get());
+
+        {
+            simulation::Node::SPtr nodeToRemove = static_cast<simulation::Node*>(child);
+            nodeToRemove->detachFromGraph();
+            nodeToRemove->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
+        }
+
+        simulation->animate(root.get());
+        simulation->unload(root);
+    }
+
     /// create and unload a scene and check if all the objects have been destroyed.
     void sceneDestruction_unload()
     {
         createScene();
         simulation->unload(root);
-        if(objectCounter>0)
-            ADD_FAILURE() << objectCounter << " objects not deleted " <<endl;
+        checkDeletions();
     }
 
     /// create and replace a scene and check if all the objects have been destroyed.
@@ -213,18 +235,19 @@ protected:
 };
 
 // run the tests
-TEST_F( Simulation_test,computeBBox) { this->computeBBox(); }
+TEST_F( Scene_test,computeBBox) { this->computeBBox(); }
 
 // component destruction
-TEST_F( Simulation_test,objectDestruction_replace) { this->objectDestruction_replace(); }
-TEST_F( Simulation_test,objectDestruction_delete) { this->objectDestruction_delete(); checkDeletions(); }
-TEST_F( Simulation_test,objectDestruction_setNull) { this->objectDestruction_setNull(); }
-TEST_F( Simulation_test,objectDestruction_reset) { this->objectDestruction_reset(); }
-TEST_F( Simulation_test,objectDestruction_subObject) { this->objectDestruction_subObject(); checkDeletions(); }
+TEST_F( Scene_test,objectDestruction_replace) { this->objectDestruction_replace(); }
+TEST_F( Scene_test,objectDestruction_delete) { this->objectDestruction_delete(); checkDeletions(); }
+TEST_F( Scene_test,objectDestruction_setNull) { this->objectDestruction_setNull(); }
+TEST_F( Scene_test,objectDestruction_reset) { this->objectDestruction_reset(); }
+TEST_F( Scene_test,objectDestruction_subObject) { this->objectDestruction_subObject(); checkDeletions(); }
+TEST_F( Scene_test,objectDestruction_subNodeAndStep) { this->objectDestruction_subNodeAndStep(); }
 
 // graph destruction
-TEST_F( Simulation_test,sceneDestruction_unload) { this->sceneDestruction_unload(); }
-TEST_F( Simulation_test,sceneDestruction_createnewgraph) { this->sceneDestruction_createnewgraph(); }
+TEST_F( Scene_test,sceneDestruction_unload) { this->sceneDestruction_unload(); }
+TEST_F( Scene_test,sceneDestruction_createnewgraph) { this->sceneDestruction_createnewgraph(); }
 // Node destruction does not trigger sub-graph destruction. You need to unload the node before. The two following tests are thus irrelevant.
 //TEST_F( Simulation_test,sceneDestruction_reset) { this->sceneDestruction_reset(); }
 //TEST_F( Simulation_test,sceneDestruction_setNull) { this->sceneDestruction_setNull(); }
