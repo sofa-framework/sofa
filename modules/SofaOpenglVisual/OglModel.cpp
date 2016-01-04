@@ -207,7 +207,7 @@ void OglModel::drawGroup(int ig, bool transparent)
             glBindBufferARB(GL_ARRAY_BUFFER, 0);
         }
         else
-#endif SOFA_HAVE_GLEW
+#endif // SOFA_HAVE_GLEW
         {
             //get the texture coordinates
             const VecTexCoord& vtexcoords = this->getVtexcoords();
@@ -636,7 +636,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         // restore Default value
 #ifdef SOFA_HAVE_GLEW
         glBlendEquation( GL_FUNC_ADD );
-#endif SOFA_HAVE_GLEW
+#endif // SOFA_HAVE_GLEW
         glBlendFunc( GL_ONE, GL_ONE );
         glDisable(GL_BLEND);
         glDepthMask(GL_TRUE);
