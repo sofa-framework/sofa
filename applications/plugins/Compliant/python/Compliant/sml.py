@@ -178,6 +178,16 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
             mergeNode.createObject('SubsetMultiMapping', template = "Rigid3,Rigid3", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
         return mergeNode
 
+    def addMeshExporters(self, dir, ExportAtEnd=False):
+        """ add obj Exporters for each visual model of the scene
+        """
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        for rigid in self.rigids.values():
+            for mid,visual in rigid.visuals.iteritems():
+                filename = os.path.join(dir, os.path.basename(self.model.meshes[mid].source))
+                visual.node.createObject('ObjExporter', name='ObjExporter', filename=filename, printLog=True, ExportAtEnd=ExportAtEnd)
+
     def createScene(self):
         self.node.createObject('RequiredPlugin', name = 'Flexible' )
         self.node.createObject('RequiredPlugin', name = 'Compliant' )
