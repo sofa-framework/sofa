@@ -143,7 +143,7 @@ void ForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const 
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*kFact*/, unsigned int &/*offset*/)
+void ForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*kFact*/, size_t &/*offset*/)
 {
     static int i=0;
     if (i < 10) {
@@ -153,7 +153,7 @@ void ForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addSubKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & subMatrixIndex )
+void ForceField<DataTypes>::addSubKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<size_t> & subMatrixIndex )
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r) addSubKToMatrix(r.matrix, subMatrixIndex, mparams->kFactorIncludingRayleighDamping(rayleighStiffness.getValue()), r.offset);
@@ -161,7 +161,7 @@ void ForceField<DataTypes>::addSubKToMatrix(const MechanicalParams* mparams, con
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::BaseMatrix * mat, const helper::vector<unsigned> & /*subMatrixIndex*/, SReal kFact, unsigned int & offset)
+void ForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::BaseMatrix * mat, const helper::vector<size_t> & /*subMatrixIndex*/, SReal kFact, size_t & offset)
 {
     addKToMatrix(mat,kFact,offset);
 }
@@ -177,7 +177,7 @@ void ForceField<DataTypes>::addBToMatrix(const MechanicalParams* mparams, const 
         addBToMatrix(r.matrix, mparams->bFactor() , r.offset);
 }
 template<class DataTypes>
-void ForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*bFact*/, unsigned int &/*offset*/)
+void ForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*bFact*/, size_t &/*offset*/)
 {
 //    static int i=0;
 //    if (i < 10) {
@@ -187,14 +187,14 @@ void ForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addSubBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & subMatrixIndex)
+void ForceField<DataTypes>::addSubBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<size_t> & subMatrixIndex)
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r) addSubBToMatrix(r.matrix, subMatrixIndex, mparams->bFactor() , r.offset);
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addSubBToMatrix(sofa::defaulttype::BaseMatrix * mat, const helper::vector<unsigned> & /*subMatrixIndex*/, SReal bFact, unsigned int & offset)
+void ForceField<DataTypes>::addSubBToMatrix(sofa::defaulttype::BaseMatrix * mat, const helper::vector<size_t> & /*subMatrixIndex*/, SReal bFact, size_t & offset)
 {
     addBToMatrix(mat,bFact,offset);
 }

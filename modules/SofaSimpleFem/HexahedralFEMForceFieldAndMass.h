@@ -110,7 +110,7 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
-    SReal getElementMass(unsigned int index) const;
+    SReal getElementMass(size_t index) const;
 
     void setDensity(Real d) {_density.setValue( d );}
     Real getDensity() {return _density.getValue();}

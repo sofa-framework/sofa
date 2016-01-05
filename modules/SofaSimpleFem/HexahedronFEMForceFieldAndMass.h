@@ -119,7 +119,7 @@ public:
 
     virtual void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v);
 
-    SReal getElementMass(unsigned int index) const;
+    SReal getElementMass(size_t index) const;
     // visual model
 
     virtual void draw(const core::visual::VisualParams* vparams);

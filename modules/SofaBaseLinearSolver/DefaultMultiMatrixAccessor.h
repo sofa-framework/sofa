@@ -86,10 +86,10 @@ public:
     virtual void setupMatrices();
 
     //give the sum of size of all Real Mechanical State in ordre to set the global matrix dimension
-    virtual int getGlobalDimension() const;
+    virtual size_t getGlobalDimension() const;
 
     //give position in global matrix of the blog related to a given Mechanical State
-    virtual int getGlobalOffset(const sofa::core::behavior::BaseMechanicalState* mstate) const;
+    virtual ptrdiff_t getGlobalOffset(const sofa::core::behavior::BaseMechanicalState* mstate) const;
 
     //give the Matrix Reference (Matrix and Offset) related to a given Mechanical State
     virtual MatrixRef getMatrix(const sofa::core::behavior::BaseMechanicalState* mstate) const;
@@ -111,7 +111,7 @@ public:
 protected:
 
     defaulttype::BaseMatrix* globalMatrix;
-    unsigned int globalDim;
+    size_t globalDim;
 
     //           case1                                           case2
     //      |               |                                  |       |

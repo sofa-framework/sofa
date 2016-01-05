@@ -137,7 +137,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaultty
 }
 
 template<>
-void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset )
+void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, size_t &offset )
 {
 
     if (dest.type == sofa::core::V_COORD)
@@ -197,16 +197,16 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorDifferentSize
 }
 
 template<>
-void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset)
+void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, size_t &offset)
 {
     if (dest.type == sofa::core::V_COORD)
     {
         helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(core::VecCoordId(dest));
-        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+        const size_t coordDim = DataTypeInfo<Coord>::size();
 
-        for (unsigned int i=0; i<vDest.size(); i++)
+        for (size_t i=0; i<vDest.size(); i++)
         {
-            for (unsigned int j=0; j<3; j++)
+            for (size_t j=0; j<3; j++)
             {
                 Real tmp;
                 DataTypeInfo<Coord>::getValue(vDest[i],j,tmp);
@@ -215,7 +215,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core
 
             helper::Quater<double> q_src;
             helper::Quater<double> q_dest;
-            for (unsigned int j=0; j<4; j++)
+            for (size_t j=0; j<4; j++)
             {
                 Real tmp;
                 DataTypeInfo<Coord>::getValue(vDest[i],j+3,tmp);
@@ -224,7 +224,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core
             }
             //q_dest = q_dest*q_src;
             q_dest = q_src*q_dest;
-            for (unsigned int j=0; j<4; j++)
+            for (size_t j=0; j<4; j++)
             {
                 Real tmp=q_dest[j];
                 DataTypeInfo<Coord>::setValue(vDest[i], j+3, tmp);
@@ -236,10 +236,10 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core
     else
     {
         helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(core::VecDerivId(dest));
-        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
-        for (unsigned int i=0; i<vDest.size(); i++)
+        const size_t derivDim = DataTypeInfo<Deriv>::size();
+        for (size_t i=0; i<vDest.size(); i++)
         {
-            for (unsigned int j=0; j<derivDim; j++)
+            for (size_t j=0; j<derivDim; j++)
             {
                 Real tmp;
                 DataTypeInfo<Deriv>::getValue(vDest[i],j,tmp);
@@ -362,14 +362,14 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaultty
 
 
 template<>
-void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset )
+void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, size_t &offset )
 {
     if (dest.type == sofa::core::V_COORD)
     {
 
         helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(core::VecCoordId(dest));
-        const unsigned int coordDim = DataTypeInfo<Coord>::size();
-        const unsigned int nbEntries = src->size()/coordDim;
+        const size_t coordDim = DataTypeInfo<Coord>::size();
+        const size_t nbEntries = src->size()/coordDim;
 
         for (unsigned int i=0; i<nbEntries; i++)
         {
@@ -420,7 +420,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize
 }
 
 template<>
-void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset)
+void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, size_t &offset)
 {
     if (dest.type == sofa::core::V_COORD)
     {

@@ -2117,7 +2117,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPar
 
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
+void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, size_t &offset)
 {
     // Build Matrix Block for this ForceField
     int i,j,n1, n2, row, column, ROW, COLUMN , IT;
@@ -2128,7 +2128,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
     typename VecElement::const_iterator it;
 
     Index noeud1, noeud2;
-    int offd3 = offset/3;
+    size_t offd3 = offset/3;
 
     Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
     Rot[0][1]=Rot[0][2]=0;
@@ -2263,7 +2263,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
 }
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const helper::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset) {
+void TetrahedronFEMForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const helper::vector<size_t> & subMatrixIndex, SReal k, size_t &offset) {
     // Build Matrix Block for this ForceField
     int i,j,n1, n2, row, column, ROW, COLUMN , IT;
 

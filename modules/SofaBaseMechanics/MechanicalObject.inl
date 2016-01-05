@@ -865,7 +865,7 @@ void MechanicalObject<DataTypes>::forcePointPosition(const unsigned int i, const
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::copyToBaseVector(defaulttype::BaseVector * dest, core::ConstVecId src, unsigned int &offset)
+void MechanicalObject<DataTypes>::copyToBaseVector(defaulttype::BaseVector * dest, core::ConstVecId src, size_t &offset)
 {
     if (src.type == sofa::core::V_COORD)
     {
@@ -904,7 +904,7 @@ void MechanicalObject<DataTypes>::copyToBaseVector(defaulttype::BaseVector * des
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::copyFromBaseVector(sofa::core::VecId dest, const defaulttype::BaseVector *src, unsigned int &offset)
+void MechanicalObject<DataTypes>::copyFromBaseVector(sofa::core::VecId dest, const defaulttype::BaseVector *src, size_t &offset)
 {
     if (dest.type == sofa::core::V_COORD)
     {
@@ -943,7 +943,7 @@ void MechanicalObject<DataTypes>::copyFromBaseVector(sofa::core::VecId dest, con
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::addToBaseVector(defaulttype::BaseVector* dest, sofa::core::ConstVecId src, unsigned int &offset)
+void MechanicalObject<DataTypes>::addToBaseVector(defaulttype::BaseVector* dest, sofa::core::ConstVecId src, size_t &offset)
 {
     if (src.type == sofa::core::V_COORD)
     {
@@ -982,7 +982,7 @@ void MechanicalObject<DataTypes>::addToBaseVector(defaulttype::BaseVector* dest,
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(sofa::core::VecId dest, const defaulttype::BaseVector *src, unsigned int &offset)
+void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(sofa::core::VecId dest, const defaulttype::BaseVector *src, size_t &offset)
 {
     if (dest.type == sofa::core::V_COORD)
     {
@@ -1021,7 +1021,7 @@ void MechanicalObject<DataTypes>::addFromBaseVectorSameSize(sofa::core::VecId de
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::addFromBaseVectorDifferentSize(sofa::core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset )
+void MechanicalObject<DataTypes>::addFromBaseVectorDifferentSize(sofa::core::VecId dest, const defaulttype::BaseVector* src, size_t &offset )
 {
     if (dest.type == sofa::core::V_COORD)
     {
@@ -2491,7 +2491,7 @@ void MechanicalObject<DataTypes>::printDOF( core::ConstVecId v, std::ostream& ou
 #endif
 
 template <class DataTypes>
-unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(core::ConstVecId v, unsigned count, unsigned time, std::ostream& out)
+unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(core::ConstVecId v, size_t count, unsigned time, std::ostream& out)
 {
     if (v.type == sofa::core::V_COORD)
     {
@@ -2574,7 +2574,7 @@ void MechanicalObject<DataTypes>::resetConstraint(const core::ExecParams* params
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* /*params*/, sofa::defaulttype::BaseMatrix* J,unsigned int & off)
+void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* /*params*/, sofa::defaulttype::BaseMatrix* J,size_t & off)
 {
     // Compute J
     const size_t N = Deriv::size();
@@ -2602,15 +2602,15 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* 
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::renumberConstraintId(const sofa::helper::vector<unsigned>& /*renumbering*/)
+void MechanicalObject<DataTypes>::renumberConstraintId(const sofa::helper::vector<size_t>& /*renumbering*/)
 {
     this->serr << "MechanicalObject<DataTypes>::renumberConstraintId not implemented in the MatrixDeriv constraint API" << this->sendl;
 }
 
 template <class DataTypes>
-std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObject<DataTypes>::constraintBlocks( const std::list<unsigned int> &indices) const
+std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObject<DataTypes>::constraintBlocks( const std::list<size_t> &indices) const
 {
-    const unsigned int dimensionDeriv = defaulttype::DataTypeInfo< Deriv >::size();
+    const size_t dimensionDeriv = defaulttype::DataTypeInfo< Deriv >::size();
     assert( indices.size() > 0 );
     assert( dimensionDeriv > 0 );
 
@@ -2619,11 +2619,11 @@ std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObje
     typedef sofa::component::linearsolver::SparseMatrix<SReal> matrix_t;
     // typedef sofa::component::linearsolver::FullMatrix<SReal> matrix_t;
 
-    typedef std::map<unsigned int, matrix_t* > blocks_t;
+    typedef std::map<size_t, matrix_t* > blocks_t;
     blocks_t blocks;
 
     // for all row indices
-    typedef std::list<unsigned int> indices_t;
+    typedef std::list<size_t> indices_t;
 
     const MatrixDeriv& constraints = c.getValue();
 
@@ -2639,7 +2639,7 @@ std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObje
 
             for( ; chunk != chunkEnd ; chunk++)
             {
-                const unsigned int column = chunk.index();
+                const size_t column = chunk.index();
                 if( blocks.find( column ) == blocks.end() )
                 {
                     // nope: let's create it
@@ -2653,7 +2653,7 @@ std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObje
                 // fill the right line of the block
                 const Deriv curValue = chunk.val();
 
-                for (unsigned int i = 0; i < dimensionDeriv; ++i)
+                for (size_t i = 0; i < dimensionDeriv; ++i)
                 {
                     SReal value;
                     defaulttype::DataTypeInfo< Deriv >::getValue(curValue, i, value);
@@ -2674,7 +2674,7 @@ std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObje
 }
 
 template <class DataTypes>
-SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned int line, core::ConstVecId id)
+SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(size_t line, core::ConstVecId id)
 {
     SReal result = 0;
 
@@ -3395,7 +3395,7 @@ void MechanicalObject < DataTypes >::printDOF (core::ConstVecId /*v*/, std::ostr
 /// Returns false if this object does not support picking
 template <class DataTypes>
 bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* params */, double rayOx, double rayOy, double rayOz, double rayDx, double rayDy, double rayDz, double radius0, double dRadius,
-                                                std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles)
+                                                std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, size_t> >& particles)
 {
     if (defaulttype::DataTypeInfo<Coord>::size() == 2 || defaulttype::DataTypeInfo<Coord>::size() == 3
             || (defaulttype::DataTypeInfo<Coord>::size() == 7 && defaulttype::DataTypeInfo<Deriv>::size() == 6))

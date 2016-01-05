@@ -129,9 +129,9 @@ public:
     int getCounter(const core::ExecParams* params) const { return m_counters[core::ExecParams::currentAspect(params)]; }
 
     virtual size_t getSize() const = 0;
-    virtual Base* getLinkedBase(unsigned int index=0) const = 0;
-    virtual BaseData* getLinkedData(unsigned int index=0) const = 0;
-    virtual std::string getLinkedPath(unsigned int index=0) const = 0;
+    virtual Base* getLinkedBase(size_t index=0) const = 0;
+    virtual BaseData* getLinkedData(size_t index=0) const = 0;
+    virtual std::string getLinkedPath(size_t index=0) const = 0;
 
     /// @name Serialization API
     /// @{

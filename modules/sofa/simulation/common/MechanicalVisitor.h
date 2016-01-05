@@ -1932,7 +1932,7 @@ protected:
 class SOFA_SIMULATION_COMMON_API MechanicalRenumberConstraint : public MechanicalVisitor
 {
 public:
-    MechanicalRenumberConstraint(const sofa::core::MechanicalParams* mparams , const sofa::helper::vector<unsigned> &renumbering)
+    MechanicalRenumberConstraint(const sofa::core::MechanicalParams* mparams , const sofa::helper::vector<size_t> &renumbering)
         : MechanicalVisitor(mparams) , renumbering(renumbering)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -1966,7 +1966,7 @@ public:
 #endif
 
 protected:
-    const sofa::helper::vector<unsigned> &renumbering;
+    const sofa::helper::vector<size_t> &renumbering;
 };
 
 /** Apply the constraints as filters to the given vector.
@@ -2202,7 +2202,7 @@ public:
     defaulttype::Vec3d rayOrigin, rayDirection;
     double radius0, dRadius;
     sofa::core::objectmodel::Tag tagNoPicking;
-    std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> > particles;
+    std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, size_t> > particles;
     MechanicalPickParticlesVisitor(const sofa::core::ExecParams* mparams, const defaulttype::Vec3d& origin, const defaulttype::Vec3d& direction, double r0=0.001, double dr=0.0, sofa::core::objectmodel::Tag tag = sofa::core::objectmodel::Tag("NoPicking") )
         : BaseMechanicalVisitor(mparams) , rayOrigin(origin), rayDirection(direction), radius0(r0), dRadius(dr), tagNoPicking(tag)
     {

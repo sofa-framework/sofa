@@ -167,12 +167,12 @@ void DefaultMultiMatrixAccessor::setupMatrices()
 #endif
 }
 
-int DefaultMultiMatrixAccessor::getGlobalDimension() const
+size_t DefaultMultiMatrixAccessor::getGlobalDimension() const
 {
     return globalDim;
 }
 
-int DefaultMultiMatrixAccessor::getGlobalOffset(const sofa::core::behavior::BaseMechanicalState* mstate) const
+ptrdiff_t DefaultMultiMatrixAccessor::getGlobalOffset(const sofa::core::behavior::BaseMechanicalState* mstate) const
 {
     std::map< const sofa::core::behavior::BaseMechanicalState*, int >::const_iterator it = realStateOffsets.find(mstate);
     if (it != realStateOffsets.end())

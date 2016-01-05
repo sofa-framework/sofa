@@ -104,7 +104,7 @@ void SphereForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpar
 }
 
 template<class DataTypes>
-void SphereForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal kFactor, unsigned int &offset)
+void SphereForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal kFactor, size_t &offset)
 {
     const Real fact = (Real)(-this->stiffness.getValue()*kFactor);
     for (unsigned int i=0; i<this->contacts.getValue().size(); i++)

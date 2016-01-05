@@ -264,32 +264,32 @@ public:
 
     /// Copy data to a global BaseVector the state stored in a local vector
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    virtual void copyToBaseVector(defaulttype::BaseVector* dest, core::ConstVecId src, unsigned int &offset);
+    virtual void copyToBaseVector(defaulttype::BaseVector* dest, core::ConstVecId src, size_t &offset);
 
     /// Copy data to a local vector the state stored in a global BaseVector
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    virtual void copyFromBaseVector(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset);
+    virtual void copyFromBaseVector(core::VecId dest, const defaulttype::BaseVector* src, size_t &offset);
 
     /// Add data to a global BaseVector from the state stored in a local vector
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    virtual void addToBaseVector(defaulttype::BaseVector* dest, core::ConstVecId src, unsigned int &offset);
+    virtual void addToBaseVector(defaulttype::BaseVector* dest, core::ConstVecId src, size_t &offset);
 
     /// src and dest must have the same size.
     /// Performs: dest[i][j] += src[offset + i][j] 0<= i < src_entries  0<= j < 3 (for 3D objects) 0 <= j < 2 (for 2D objects)
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    virtual void addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset);
+    virtual void addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, size_t &offset);
 
     /// src size can be smaller or equal to dest size.
     /// Performs: dest[ offset + i ][j] += src[i][j]  0<= i < src_entries  0<= j < 3 (for 3D objects) 0 <= j < 2 (for 2D objects)
     /// @param offset the offset in the MechanicalObject local vector specified by VecId dest. It will be updated to the first scalar value after the ones used by this operation when this method returns.
-    virtual void addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
+    virtual void addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, size_t &offset );
 
 
     /// @}
 
     /// Express the matrix L in term of block of matrices, using the indices of the lines in the MatrixDeriv container
-    virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &indices) const;
-    virtual SReal getConstraintJacobianTimesVecDeriv( unsigned int line, core::ConstVecId id);
+    virtual std::list<ConstraintBlock> constraintBlocks( const std::list<size_t> &indices) const;
+    virtual SReal getConstraintJacobianTimesVecDeriv( size_t line, core::ConstVecId id);
 
     void setFilename(std::string s) {filename.setValue(s);}
 
@@ -311,7 +311,7 @@ public:
     std::string getFilename() {return filename.getValue();}
 
     /// Renumber the constraint ids with the given permutation vector
-    void renumberConstraintId(const sofa::helper::vector< unsigned >& renumbering);
+    void renumberConstraintId(const sofa::helper::vector< size_t >& renumbering);
 
 
     /// @name Integration related methods
@@ -385,7 +385,7 @@ public:
 
     virtual void resetConstraint(const core::ExecParams* params);
 
-    virtual void getConstraintJacobian(const core::ExecParams* params, sofa::defaulttype::BaseMatrix* J,unsigned int & off);
+    virtual void getConstraintJacobian(const core::ExecParams* params, sofa::defaulttype::BaseMatrix* J,size_t & off);
 
     /// @}
 
@@ -393,7 +393,7 @@ public:
     /// @{
 
     virtual void printDOF(core::ConstVecId, std::ostream& =std::cerr, int firstIndex=0, int range=-1 ) const ;
-    virtual unsigned printDOFWithElapsedTime(core::ConstVecId, unsigned =0, unsigned =0, std::ostream& =std::cerr );
+    virtual unsigned printDOFWithElapsedTime(core::ConstVecId, size_t =0, unsigned =0, std::ostream& =std::cerr );
 
     void draw(const core::visual::VisualParams* vparams);
 
@@ -406,7 +406,7 @@ public:
     /// A mechanical particle is defined as a 2D or 3D, position or rigid DOF
     /// Returns false if this object does not support picking
     virtual bool pickParticles(const core::ExecParams* params, double rayOx, double rayOy, double rayOz, double rayDx, double rayDy, double rayDz, double radius0, double dRadius,
-            std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles);
+            std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, size_t> >& particles);
 
 
    /// if this mechanical object stores independent dofs (in opposition to mapped dofs)
@@ -486,20 +486,20 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaultty
 #endif
 #ifndef SOFA_FLOAT
 template<>
-void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
+void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, size_t &offset );
 #endif
 #ifndef SOFA_DOUBLE
 template<>
-void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
+void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, size_t &offset );
 #endif
 
 #ifndef SOFA_FLOAT
 template<>
-void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
+void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, size_t &offset );
 #endif
 #ifndef SOFA_DOUBLE
 template<>
-void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
+void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, size_t &offset );
 #endif
 
 #ifndef SOFA_FLOAT

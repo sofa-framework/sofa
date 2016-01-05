@@ -580,7 +580,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
     {
         unsigned int i=0;
 
-		unsigned int &offset = r.offset;
+        size_t &offset = r.offset;
 
         if (_partial_list_segment)
         {

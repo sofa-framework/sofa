@@ -227,30 +227,30 @@ public:
     virtual void resetConstraint(const ExecParams* params = ExecParams::defaultInstance()) = 0;
 
     /// build the jacobian of the constraint in a baseMatrix
-    virtual void getConstraintJacobian(const ExecParams* params, sofa::defaulttype::BaseMatrix* J,unsigned int & off) = 0;
+    virtual void getConstraintJacobian(const ExecParams* params, sofa::defaulttype::BaseMatrix* J,size_t & off) = 0;
 
     /// Renumber the constraint ids with the given permutation vector
-    virtual void renumberConstraintId(const sofa::helper::vector<unsigned>& renumbering) = 0;
+    virtual void renumberConstraintId(const sofa::helper::vector<size_t>& renumbering) = 0;
 
     class ConstraintBlock
     {
     public:
         ConstraintBlock( unsigned int c, defaulttype::BaseMatrix *m):column(c),matrix(m) {}
 
-        unsigned int getColumn() const {return column;}
+        size_t getColumn() const {return column;}
         const defaulttype::BaseMatrix &getMatrix() const {return *matrix;}
         defaulttype::BaseMatrix *getMatrix() {return matrix;}
     protected:
-        unsigned int column;
+        size_t column;
         defaulttype::BaseMatrix *matrix;
     };
 
     /// Express the matrix L in term of block of matrices, using the indices of the lines in the MatrixDeriv container
-    virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &/* indices */) const
+    virtual std::list<ConstraintBlock> constraintBlocks( const std::list<size_t> &/* indices */) const
     {  return std::list<ConstraintBlock>();  }
 
     /// Compute the error given a state vector and a line of the Jacobian (line in vector C)
-    virtual SReal getConstraintJacobianTimesVecDeriv( unsigned int /*line*/, ConstVecId /*id*/)
+    virtual SReal getConstraintJacobianTimesVecDeriv( size_t /*line*/, ConstVecId /*id*/)
     {  this->serr << "NOT IMPLEMENTED YET" << this->sendl; return (SReal)0;  }
 
     /// @}
@@ -306,7 +306,7 @@ public:
     virtual bool pickParticles(const ExecParams* /* params */, double /*rayOx*/, double /*rayOy*/, double /*rayOz*/,
             double /*rayDx*/, double /*rayDy*/, double /*rayDz*/,
             double /*radius0*/, double /*dRadius*/,
-            std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& /*particles*/)
+            std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, size_t> >& /*particles*/)
     {
         return false;
     }
@@ -338,50 +338,50 @@ public:
 
     /// \brief Copy data to a global BaseVector from the state stored in a local vector.
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    virtual void copyToBaseVector(defaulttype::BaseVector* dest, ConstVecId src, unsigned int &offset) = 0;
+    virtual void copyToBaseVector(defaulttype::BaseVector* dest, ConstVecId src, size_t &offset) = 0;
 
     /// \brief Copy data to a local vector from the state stored in a global BaseVector.
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    virtual void copyFromBaseVector(VecId dest, const defaulttype::BaseVector* src, unsigned int &offset) = 0;
+    virtual void copyFromBaseVector(VecId dest, const defaulttype::BaseVector* src, size_t &offset) = 0;
 
     /// \brief Copy data to an external, user-allocated buffer.
     ///
     /// *Exact* element count must be provided for consistency checks.
-    virtual void copyToBuffer(SReal* dst, ConstVecId src, unsigned int n) const = 0;
+    virtual void copyToBuffer(SReal* dst, ConstVecId src, size_t n) const = 0;
 
     /// \brief Copy data from an external, user-allocated buffer.
     ///
     /// *Exact* element count must be provided for consistency checks.
-    virtual void copyFromBuffer(VecId dst, const SReal* src, unsigned int n) = 0;
+    virtual void copyFromBuffer(VecId dst, const SReal* src, size_t n) = 0;
 
     /// \brief Add data from an external, user-allocated buffer.
     ///
     /// *Exact* element count must be provided for consistency checks.
-    virtual void addFromBuffer(VecId dst, const SReal* src, unsigned int n) = 0;
+    virtual void addFromBuffer(VecId dst, const SReal* src, size_t n) = 0;
     
     /// \brief Add data to a global BaseVector from the state stored in a local vector.
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    virtual void addToBaseVector(defaulttype::BaseVector* dest, ConstVecId src, unsigned int &offset) = 0;
+    virtual void addToBaseVector(defaulttype::BaseVector* dest, ConstVecId src, size_t &offset) = 0;
 
     /// \brief
     ///
     /// Perform dest[i][j] += src[offset + i][j] 0<= i < src_entries 0<= j < 3 (for 3D objects) 0 <= j < 2 (for 2D objects)
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    virtual void addFromBaseVectorSameSize(VecId dest, const defaulttype::BaseVector* src, unsigned int &offset) = 0;
+    virtual void addFromBaseVectorSameSize(VecId dest, const defaulttype::BaseVector* src, size_t &offset) = 0;
 
 
     /// \brief
     ///
     /// Perform dest[ offset + i ][j] += src[i][j]  0<= i < src_entries  0<= j < 3 (for 3D objects) 0 <= j < 2 (for 2D objects)
     /// @param offset the offset in the MechanicalObject local vector specified by VecId dest. It will be updated to the first scalar value after the ones used by this operation when this method returns.
-    virtual void addFromBaseVectorDifferentSize(VecId dest, const defaulttype::BaseVector* src, unsigned int &offset ) = 0;
+    virtual void addFromBaseVectorDifferentSize(VecId dest, const defaulttype::BaseVector* src, size_t &offset ) = 0;
     /// @}
 
     /// @name Data output
     /// @{
 
     virtual void printDOF( ConstVecId v, std::ostream& out = std::cerr, int firstIndex = 0, int range = -1 ) const = 0;
-    virtual unsigned printDOFWithElapsedTime(ConstVecId /*v*/, unsigned /*count*/ = 0, unsigned /*time*/ = 0, std::ostream& /*out*/ = std::cerr ) { return 0; }
+    virtual unsigned printDOFWithElapsedTime(ConstVecId /*v*/, size_t /*count*/ = 0, unsigned /*time*/ = 0, std::ostream& /*out*/ = std::cerr ) { return 0; }
     virtual void initGnuplot(const std::string /*filepath*/) {}
     virtual void exportGnuplot(SReal /*time*/) {}
 

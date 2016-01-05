@@ -430,10 +430,10 @@ public:
     // getPotentialEnergy is implemented for small method
     virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&   x) const;
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, size_t &offset);
     virtual void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ );
 
-    virtual void addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const helper::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset);
+    virtual void addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const helper::vector<size_t> & subMatrixIndex, SReal k, size_t &offset);
 
     void draw(const core::visual::VisualParams* vparams);
 

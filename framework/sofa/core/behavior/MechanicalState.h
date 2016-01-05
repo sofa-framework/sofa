@@ -109,7 +109,7 @@ public:
         return name;
     }
 
-	virtual void copyToBuffer(SReal* dst, ConstVecId src, unsigned n) const {
+    virtual void copyToBuffer(SReal* dst, ConstVecId src, size_t n) const {
 		const size_t size = this->getSize();
 		
 		switch(src.type) {
@@ -145,7 +145,7 @@ public:
 		(void) n;
 	}
 
-	virtual void copyFromBuffer(VecId dst, const SReal* src, unsigned n) {
+    virtual void copyFromBuffer(VecId dst, const SReal* src, size_t n) {
 		const size_t size = this->getSize();
 		
 		switch(dst.type) {
@@ -181,7 +181,7 @@ public:
 		(void) n;
 	}
 
-    virtual void addFromBuffer(VecId dst, const SReal* src, unsigned n) {
+    virtual void addFromBuffer(VecId dst, const SReal* src, size_t n) {
         const size_t size = this->getSize();
 
         switch(dst.type) {

@@ -578,17 +578,17 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 }
 
 template<class DataTypes>
-void  StandardTetrahedralFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal kFact, unsigned int &offset)
+void  StandardTetrahedralFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal kFact, size_t &offset)
 {
-	unsigned int nbEdges=_topology->getNbEdges();
+    size_t nbEdges=_topology->getNbEdges();
 	const vector< Edge> &edgeArray=_topology->getEdges() ;
     edgeInformationVector& edgeInf = *(edgeInfo.beginEdit());
 	EdgeInformation *einfo;
-	unsigned int i,j,N0, N1, l;
+    size_t i,j,N0, N1, l;
 	Index noeud0, noeud1;
 	if (sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,Real> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<defaulttype::Mat<3,3,Real> > * >(mat))
 	{
-		int offd3 = offset/3;
+        size_t offd3 = offset/3;
 			
 		for(l=0; l<nbEdges; l++ )
 		{

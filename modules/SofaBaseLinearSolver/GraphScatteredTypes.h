@@ -91,16 +91,16 @@ public:
 #endif
 
     // compatibility with baseMatrix
-    unsigned int rowSize()
+    size_t rowSize()
     {
-        unsigned int nbRow=0, nbCol=0;
+        size_t nbRow=0, nbCol=0;
         this->parent->getMatrixDimension(&nbRow, &nbCol);
         return nbRow;
 
     }
-    int colSize()
+    size_t colSize()
     {
-        unsigned int nbRow=0, nbCol=0;
+        size_t nbRow=0, nbCol=0;
         this->parent->getMatrixDimension(&nbRow, &nbCol);
         return nbCol;
     }

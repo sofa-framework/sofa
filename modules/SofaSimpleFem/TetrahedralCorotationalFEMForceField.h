@@ -213,7 +213,7 @@ public:
         return 0.0;
     }
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, size_t &offset);
 
     // Getting the rotation of the vertex by averaing the rotation of neighboring elements
     void getRotation(Transformation& R, unsigned int nodeIdx);

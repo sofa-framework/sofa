@@ -162,7 +162,7 @@ public:
     virtual void addKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) = 0;
     //virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset);
 
-    virtual void addSubKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & subMatrixIndex);
+    virtual void addSubKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<size_t> & subMatrixIndex);
 
     /// \brief Compute the system matrix corresponding to b B
     ///
@@ -171,7 +171,7 @@ public:
     virtual void addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
     //virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset);
 
-    virtual void addSubBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & vecIds);
+    virtual void addSubBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<size_t> & vecIds);
 
     /// \brief Compute the system matrix corresponding to m M + b B + k K
     ///
@@ -184,7 +184,7 @@ public:
     ////virtual void addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal mFact, SReal bFact, SReal kFact, unsigned int &offset);
 
     /// \brief addMBKToMatrix only on the subMatrixIndex
-    virtual void addSubMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> subMatrixIndex);
+    virtual void addSubMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<size_t> subMatrixIndex);
 
     /// @}
 

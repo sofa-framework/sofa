@@ -801,7 +801,7 @@ void TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix( StiffnessM
 
 
 template<class DataTypes>
-void TriangleFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
+void TriangleFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, size_t &offset)
 {
     //    cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, " << _indexedElements->size() << " elements" << endl<< endl;
 

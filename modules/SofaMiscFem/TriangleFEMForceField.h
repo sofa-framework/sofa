@@ -171,7 +171,7 @@ protected :
 
     //// stiffness matrix assembly
     void computeElementStiffnessMatrix( StiffnessMatrix& S, StiffnessMatrix& SR, const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot );
-    void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset); // compute and add all the element stiffnesses to the global stiffness matrix
+    void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, size_t &offset); // compute and add all the element stiffnesses to the global stiffness matrix
 
 };
 

@@ -67,9 +67,9 @@ namespace sofa
 
                 virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx);
 
-                virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*m*/, SReal /*kFactor*/, unsigned int &/*offset*/) {}
+                virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*m*/, SReal /*kFactor*/, size_t &/*offset*/) {}
 
-                virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal bFact, unsigned int& offset);
+                virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal bFact, size_t& offset);
 
                 virtual SReal getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const;
 

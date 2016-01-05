@@ -115,8 +115,8 @@ public:
     //void addMToMatrix(defaulttype::BaseMatrix * mat, SReal mFact, unsigned int &offset);
     void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
-    SReal getElementMass(unsigned int index) const;
-    void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;
+    SReal getElementMass(size_t index) const;
+    void getElementMass(size_t index, defaulttype::BaseMatrix *m) const;
 
 protected:
     MassType diagonalMass( const Real& m ); ///< return a diagonal matrix mass with value m on all the diagonal

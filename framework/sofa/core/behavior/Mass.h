@@ -143,11 +143,11 @@ public:
     /// @name Matrix operations
     /// @{
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*kFact*/, unsigned int &/*offset*/) {}
-    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*bFact*/, unsigned int &/*offset*/) {}
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*kFact*/, size_t &/*offset*/) {}
+    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*bFact*/, size_t &/*offset*/) {}
 
     virtual void addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
-    virtual void addMToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal mFact, unsigned int &offset);
+    virtual void addMToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal mFact, size_t &offset);
 
     /// Compute the system matrix corresponding to m M + b B + k K
     ///
@@ -158,7 +158,7 @@ public:
     virtual void addMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     /// addMBKToMatrix only on the subMatrixIndex
-    virtual void addSubMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> subMatrixIndex);
+    virtual void addSubMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<size_t> subMatrixIndex);
 
     /// @}
 
@@ -173,8 +173,8 @@ public:
     virtual void addGravityToV(const MechanicalParams* /* mparams */, DataVecDeriv& /* d_v */);
 
 
-    virtual SReal getElementMass(unsigned int) const;
-    virtual void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;
+    virtual SReal getElementMass(size_t) const;
+    virtual void getElementMass(size_t index, defaulttype::BaseMatrix *m) const;
 
 protected:
     /// stream to export Kinematic, Potential and Mechanical Energy to gnuplot files

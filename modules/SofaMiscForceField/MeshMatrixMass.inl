@@ -1659,7 +1659,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
 
 
 template <class DataTypes, class MassType>
-SReal MeshMatrixMass<DataTypes, MassType>::getElementMass(unsigned int index) const
+SReal MeshMatrixMass<DataTypes, MassType>::getElementMass(size_t index) const
 {
     const MassVector &vertexMass= vertexMassInfo.getValue();
     SReal mass = vertexMass[index] * massLumpingCoeff;
@@ -1671,7 +1671,7 @@ SReal MeshMatrixMass<DataTypes, MassType>::getElementMass(unsigned int index) co
 
 //TODO: special case for Rigid Mass
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const
+void MeshMatrixMass<DataTypes, MassType>::getElementMass(size_t index, defaulttype::BaseMatrix *m) const
 {
     static const defaulttype::BaseMatrix::Index dimension = (defaulttype::BaseMatrix::Index) defaulttype::DataTypeInfo<Deriv>::size();
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);

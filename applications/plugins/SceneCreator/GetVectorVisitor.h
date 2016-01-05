@@ -74,7 +74,7 @@ public:
 protected:
     Vector* vec;
     core::ConstVecId src;
-    unsigned offset;
+    size_t offset;
     bool independentOnly;
 
 };

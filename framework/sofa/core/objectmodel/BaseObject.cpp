@@ -86,7 +86,7 @@ void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
 }
 
 /// This method insures that slaves objects have master and context links set correctly
-void BaseObject::changeSlavesLink(BaseObject::SPtr ptr, unsigned int /*index*/, bool add)
+void BaseObject::changeSlavesLink(BaseObject::SPtr ptr, size_t /*index*/, bool add)
 {
     if (!ptr) return;
     if (add) { ptr->l_master.set(this); ptr->l_context.set(getContext()); }

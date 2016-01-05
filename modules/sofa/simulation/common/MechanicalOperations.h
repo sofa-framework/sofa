@@ -127,14 +127,14 @@ public:
     /// @{
 
     // BaseMatrix & BaseVector Computations
-    void getMatrixDimension(unsigned int * const, unsigned int * const, sofa::core::behavior::MultiMatrixAccessor* matrix = NULL);
+    void getMatrixDimension(size_t * const, size_t * const, sofa::core::behavior::MultiMatrixAccessor* matrix = NULL);
     void getMatrixDimension(sofa::core::behavior::MultiMatrixAccessor* matrix)
     {
         getMatrixDimension(NULL, NULL, matrix);
     }
 
     void addMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, SReal mFact, SReal bFact, SReal kFact);
-    void addSubMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & subMatrixIndex, SReal mFact, SReal bFact, SReal kFact);
+    void addSubMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<size_t> & subMatrixIndex, SReal mFact, SReal bFact, SReal kFact);
 
     void multiVector2BaseVector(core::ConstMultiVecId src, defaulttype::BaseVector *dest, const sofa::core::behavior::MultiMatrixAccessor* matrix);
     void multiVectorPeqBaseVector(core::MultiVecDerivId dest, defaulttype::BaseVector *src, const sofa::core::behavior::MultiMatrixAccessor* matrix);

@@ -391,7 +391,7 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Vi
 		{
 			size_t nbPoints=container->getNbPoints();
             size_t elementIndex,elementOffset;
-			int i;
+            size_t i;
 			const typename DataTypes::VecCoord& pos =(this->object->read(core::ConstVecCoordId::position())->getValue());
 			BezierTriangleSetTopologyContainer::BezierTrianglePointLocation location;
 
@@ -417,7 +417,7 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Vi
 
 
 				for (i=0;i<nbPoints;++i) {
-					container->getLocationFromGlobalIndex((size_t)i,location,elementIndex,elementOffset);
+                    container->getLocationFromGlobalIndex(i,location,elementIndex,elementOffset);
 					if (location==BezierTriangleSetTopologyContainer::NONE) {
 					} else if (location==BezierTriangleSetTopologyContainer::POINT) {
 						p=pos[i];
@@ -458,7 +458,7 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Vi
 				VecPointID indexArray;
 				size_t nbPoints=container->getNbPoints();
 				size_t elementIndex,elementOffset;
-                int i;
+                size_t i;
 				const typename DataTypes::VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 				BezierTriangleSetTopologyContainer::BezierTrianglePointLocation location;
 				container->getGlobalIndexArrayOfBezierPointsInTriangle(0, indexArray);
@@ -480,7 +480,7 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Vi
 
 
 				for (i=0;i<nbPoints;++i) {
-					container->getLocationFromGlobalIndex((size_t)i,location,elementIndex,elementOffset);
+                    container->getLocationFromGlobalIndex(i,location,elementIndex,elementOffset);
 					if (location==BezierTriangleSetTopologyContainer::POINT) {
 						p1=coords[i];
 						pointsVertices.push_back(p1);

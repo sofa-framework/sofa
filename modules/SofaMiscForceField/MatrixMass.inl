@@ -227,19 +227,19 @@ void MatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParams 
 
 
 template <class DataTypes, class MassType>
-SReal MatrixMass<DataTypes, MassType>::getElementMass(unsigned int /*index*/) const
+SReal MatrixMass<DataTypes, MassType>::getElementMass(size_t /*index*/) const
 {
     //NOT IMPLEMENTED YET
     return (sofa::defaulttype::Vector3::value_type)(_defaultValue.getValue());
 }
 
 template <class DataTypes, class MassType>
-void MatrixMass<DataTypes, MassType>::getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const
+void MatrixMass<DataTypes, MassType>::getElementMass(size_t index, defaulttype::BaseMatrix *m) const
 {
     MassType mElement=f_mass.getValue()[index];
-    const int dimension=mElement.getNbLines();
+    const size_t dimension=mElement.getNbLines();
 
-    if ((int)m->rowSize() != dimension || (int)m->colSize() != dimension) m->resize(dimension,dimension);
+    if (m->rowSize() != (defaulttype::BaseMatrix::Index)dimension || m->colSize() != (defaulttype::BaseMatrix::Index)dimension ) m->resize(dimension,dimension);
 
     m->clear();
     AddMToMatrixFunctor<Deriv,MassType>()(m, mElement, 0, 1);

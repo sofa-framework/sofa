@@ -471,7 +471,7 @@ void LMConstraintSolver::buildLMatrices( ConstOrder Order,
         const core::behavior::BaseMechanicalState *dof2=constraint->getSimulatedMechModel2();
 
         //Get the entries in the Vector of constraints corresponding to the constraint equations
-        std::list< unsigned int > equationsUsed;
+        std::list< size_t > equationsUsed;
         constraint->getEquationsUsed(Order, equationsUsed);
 
         if (equationsUsed.empty()) continue;
@@ -592,27 +592,27 @@ void LMConstraintSolver::buildInverseMassMatrix( const sofa::core::behavior::Bas
 }
 
 void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanicalState *dof,
-        const std::list<unsigned int> &idxEquations, unsigned int constraintOffset,
-        SparseMatrixEigen& L, sofa::helper::set< unsigned int > &dofUsed) const
+        const std::list<size_t> &idxEquations, size_t constraintOffset,
+        SparseMatrixEigen& L, sofa::helper::set< size_t > &dofUsed) const
 {
-    const unsigned int dimensionDofs=dof->getDerivDimension();
+    const size_t dimensionDofs=dof->getDerivDimension();
     typedef core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
     //Get blocks of values from the Mechanical States
     std::list< ConstraintBlock > blocks=dof->constraintBlocks( idxEquations );
 
 
     //Fill the matrices
-    const unsigned int numEquations=idxEquations.size();
+    const size_t numEquations=idxEquations.size();
 
-    for (unsigned int eq=0; eq<numEquations; ++eq)
+    for (size_t eq=0; eq<numEquations; ++eq)
     {
-        const int idxRow=constraintOffset+eq;
+        const size_t idxRow=constraintOffset+eq;
 
         for (std::list< ConstraintBlock >::const_iterator itBlock=blocks.begin(); itBlock!=blocks.end(); ++itBlock)
         {
             const ConstraintBlock &b=(*itBlock);
             const defaulttype::BaseMatrix &m=b.getMatrix();
-            const unsigned int column=b.getColumn()*dimensionDofs;
+            const size_t column=b.getColumn()*dimensionDofs;
 
             for (Index j=0; j<m.colSize(); ++j)
             {
@@ -813,7 +813,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
         bool isPositionChangesUpdateVelocity,
         const SparseMatrixEigen  &invM_Ltrans,
         const VectorEigen  &c,
-        const sofa::helper::set< unsigned int > &dofUsed,
+        const sofa::helper::set< size_t > &dofUsed,
         sofa::core::behavior::BaseMechanicalState* dofs) const
 {
 
@@ -843,7 +843,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
         {
             VectorEigen Acorrection=VectorEigen::Zero(dofs->getSize()*(3+4));
             //We have to transform the Euler Rotations into a quaternion
-            unsigned int offset=0;
+            size_t offset=0;
 
             for (int l=0; l<A.rows(); l+=6)
             {
@@ -868,10 +868,10 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
         }
         else
         {
-            std::set< unsigned int >::const_iterator it;
+            std::set< size_t >::const_iterator it;
             for (it=dofUsed.begin(); it!=dofUsed.end(); ++it)
             {
-                unsigned int offset=(*it);
+                size_t offset=(*it);
                 FullVector<SReal> v(&(A.data()[offset*dimensionDofs]),dimensionDofs);
                 dofs->addFromBaseVectorDifferentSize(id,&v,offset );
             }
@@ -881,12 +881,12 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
         {
             const double h=1.0/getContext()->getDt();
 
-            std::set< unsigned int >::const_iterator it;
+            std::set< size_t >::const_iterator it;
             for (it=dofUsed.begin(); it!=dofUsed.end(); ++it)
             {
-                unsigned int offset=(*it);
+                size_t offset=(*it);
                 FullVector<SReal> v(&(A.data()[offset*dimensionDofs]),dimensionDofs);
-                for (unsigned int i=0; i<dimensionDofs; ++i) v[i]*=h;
+                for (size_t i=0; i<dimensionDofs; ++i) v[i]*=h;
                 dofs->addFromBaseVectorDifferentSize(id,&v,offset );
             }
         }
@@ -894,10 +894,10 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
     }
     else
     {
-        std::set< unsigned int >::const_iterator it;
+        std::set< size_t >::const_iterator it;
         for (it=dofUsed.begin(); it!=dofUsed.end(); ++it)
         {
-            unsigned int offset=(*it);
+            size_t offset=(*it);
             FullVector<SReal> v(&(A.data()[offset*dimensionDofs]),dimensionDofs);
             dofs->addFromBaseVectorDifferentSize(id,&v,offset );
         }

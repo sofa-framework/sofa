@@ -108,10 +108,10 @@ void FixedPlaneConstraint<DataTypes>::applyConstraint(const core::MechanicalPara
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    int o = matrix->getGlobalOffset(this->mstate.get(mparams));
+    ptrdiff_t o = matrix->getGlobalOffset(this->mstate.get(mparams));
     if (o >= 0)
     {
-        unsigned int offset = (unsigned int)o;
+        size_t offset = (size_t)o;
 		// IMplement plane constraint only when the direction is along the coordinates directions
 		// TODO : generalize projection to any direction
 		Coord dir=direction.getValue();

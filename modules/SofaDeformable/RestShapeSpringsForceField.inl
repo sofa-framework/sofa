@@ -337,7 +337,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
 }
 
 template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & addSubIndex )
+void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<size_t> & addSubIndex )
 {
     //      remove to be able to build in parallel
     // 	const VecIndex& indices = points.getValue();

@@ -1360,10 +1360,10 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
 
 
 template<class DataTypes>
-void TetrahedralCorotationalFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
+void TetrahedralCorotationalFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, size_t &offset)
 {
     // Build Matrix Block for this ForceField
-    unsigned int i,j,n1, n2, row, column, ROW, COLUMN;
+    size_t i,j,n1, n2, row, column, ROW, COLUMN;
 
     Transformation Rot;
     StiffnessMatrix JKJt,tmp;

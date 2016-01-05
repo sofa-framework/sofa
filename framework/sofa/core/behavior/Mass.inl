@@ -216,7 +216,7 @@ void Mass<DataTypes>::addMToMatrix(const MechanicalParams* mparams, const sofa::
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*mFact*/, unsigned int &/*offset*/)
+void Mass<DataTypes>::addMToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*mFact*/, size_t &/*offset*/)
 {
     static int i=0;
     if (i < 10) {
@@ -234,7 +234,7 @@ void Mass<DataTypes>::addMBKToMatrix(const MechanicalParams* mparams, const sofa
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addSubMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> /*subMatrixIndex*/) {
+void Mass<DataTypes>::addSubMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<size_t> /*subMatrixIndex*/) {
     addMBKToMatrix(mparams,matrix); // default implementation use full addMFunction
 }
 
@@ -284,14 +284,14 @@ void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams, SReal time)
 }
 
 template <class DataTypes>
-SReal Mass<DataTypes>::getElementMass(unsigned int ) const
+SReal Mass<DataTypes>::getElementMass(size_t ) const
 {
     serr << "ERROR("<<getClassName()<<"): getElementMass with Scalar not implemented" << sendl;
     return 0.0;
 }
 
 template <class DataTypes>
-void Mass<DataTypes>::getElementMass(unsigned int , defaulttype::BaseMatrix *m) const
+void Mass<DataTypes>::getElementMass(size_t , defaulttype::BaseMatrix *m) const
 {
     static const defaulttype::BaseMatrix::Index dimension = (defaulttype::BaseMatrix::Index) defaulttype::DataTypeInfo<Coord>::size();
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);

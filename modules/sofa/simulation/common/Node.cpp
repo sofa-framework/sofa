@@ -993,14 +993,14 @@ void Node::sortComponents()
     std::map< BaseObject::SPtr, Vertex > vertex_from_component;
 
     // build the graph
-    for (unsigned int i = (unsigned int)object.size() - 1; i >= 0; i--) // in the reverse order for a final order more similar to the current one
+    for (ptrdiff_t i = (ptrdiff_t)object.size() - 1; i >= 0; i--) // in the reverse order for a final order more similar to the current one
     {
         Vertex v = add_vertex( dependencyGraph );
         component_from_vertex[v] = object[i];
         vertex_from_component[object[i]] = v;
     }
     assert( depend.getValue().size()%2 == 0 ); // must contain only pairs
-    for ( unsigned i=0; i<depend.getValue().size(); i+=2 )
+    for ( size_t i=0; i<depend.getValue().size(); i+=2 )
     {
         BaseObject* o1 = getObject( depend.getValue()[i] );
         BaseObject* o2 = getObject( depend.getValue()[i+1] );

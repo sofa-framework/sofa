@@ -464,7 +464,7 @@ void FastTriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalPa
 
 
 template<class DataTypes>
-void FastTriangularBendingSprings<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal scale, unsigned int &offset)
+void FastTriangularBendingSprings<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal scale, size_t &offset)
 {
     const helper::vector<EdgeSpring>& springs = edgeSprings.getValue();
     for(unsigned i=0; i< springs.size() ; i++)

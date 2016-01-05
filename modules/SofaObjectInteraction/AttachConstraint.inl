@@ -751,11 +751,11 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
     if (f_twoWay.getValue())
         return;
 
-    int o = matrix->getGlobalOffset(this->mstate2);
+    ptrdiff_t o = matrix->getGlobalOffset(this->mstate2);
     if (o < 0)
         return;
 
-    unsigned int offset = (unsigned int)o;
+    size_t offset = (size_t)o;
 
     if (this->f_printLog.getValue())
         sout << "applyConstraint in Vector with offset = " << offset << sendl;

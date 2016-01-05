@@ -58,12 +58,12 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API MechanicalGetMatrixDimensionVisitor : public BaseMechanicalVisitor
 {
 public:
-    unsigned int * const nbRow;
-    unsigned int * const nbCol;
+    size_t * const nbRow;
+    size_t * const nbCol;
     sofa::core::behavior::MultiMatrixAccessor* matrix;
 
     MechanicalGetMatrixDimensionVisitor(
-        const core::ExecParams* params, unsigned int * const _nbRow, unsigned int * const _nbCol,
+        const core::ExecParams* params, size_t * const _nbRow, size_t * const _nbCol,
         sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL )
         : BaseMechanicalVisitor(params) , nbRow(_nbRow), nbCol(_nbCol), matrix(_matrix)
     {}
@@ -102,7 +102,7 @@ class SOFA_SIMULATION_COMMON_API MechanicalGetConstraintJacobianVisitor : public
 public:
     defaulttype::BaseMatrix * J;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
-    int offset;
+    ptrdiff_t offset;
 
     MechanicalGetConstraintJacobianVisitor(
         const core::ExecParams* params, defaulttype::BaseMatrix * _J, const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
@@ -113,9 +113,9 @@ public:
     {
         if (matrix) offset = matrix->getGlobalOffset(ms);
 
-        unsigned int o = (unsigned int)offset;
+        size_t o = (size_t)offset;
         ms->getConstraintJacobian(this->params,J,o);
-        offset = (int)o;
+        offset = (ptrdiff_t)o;
         return RESULT_CONTINUE;
     }
 
@@ -134,7 +134,7 @@ public:
     const double positionFactor;// use the OdeSolver to get the position integration factor
     const double velocityFactor;// use the OdeSolver to get the position integration factor
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
-    int offset;
+    ptrdiff_t offset;
 
     MechanicalIntegrateConstraintsVisitor(
         const core::ExecParams* params, defaulttype::BaseVector * _src, double pf,double vf, const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
@@ -146,9 +146,9 @@ public:
         if (matrix) offset = matrix->getGlobalOffset(ms);
         if (src!= NULL && offset >= 0)
         {
-            unsigned int o = (unsigned int)offset;
+            size_t o = (size_t)offset;
             ms->copyFromBaseVector(core::VecDerivId::dx(), src, o);
-            offset = (int)o;
+            offset = (ptrdiff_t)o;
 
             //x = x_free + dx * positionFactor;
             ms->vOp(params,core::VecCoordId::position(),core::ConstVecCoordId::freePosition(),core::VecDerivId::dx(),positionFactor);
@@ -223,9 +223,9 @@ class SOFA_SIMULATION_COMMON_API MechanicalAddSubMBK_ToMatrixVisitor : public Me
 {
 public:
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
-    const helper::vector<unsigned> & subMatrixIndex; // index of the point where the matrix must be computed
+    const helper::vector<size_t> & subMatrixIndex; // index of the point where the matrix must be computed
 
-    MechanicalAddSubMBK_ToMatrixVisitor(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* _matrix, const helper::vector<unsigned> & Id)
+    MechanicalAddSubMBK_ToMatrixVisitor(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* _matrix, const helper::vector<size_t> & Id)
         : MechanicalVisitor(mparams) ,  matrix(_matrix), subMatrixIndex(Id) //,m(_m),b(_b),k(_k)
     {
     }
@@ -289,9 +289,9 @@ public:
         if (matrix) offset = matrix->getGlobalOffset(mm);
         if (vect != NULL && offset >= 0)
         {
-            unsigned int o = (unsigned int)offset;
+            size_t o = (size_t)offset;
             mm->copyToBaseVector(vect, src.getId(mm), o);
-            offset = (int)o;
+            offset = (ptrdiff_t)o;
         }
         //if (!matrix) offset += mm->getMatrixSize();
         return RESULT_CONTINUE;
@@ -322,9 +322,9 @@ public:
         if (matrix) offset = matrix->getGlobalOffset(mm);
         if (src!= NULL && offset >= 0)
         {
-            unsigned int o = (unsigned int)offset;
+            size_t o = (size_t)offset;
             mm->addFromBaseVectorSameSize(dest.getId(mm), src, o);
-            offset = (int)o;
+            offset = (ptrdiff_t)o;
         }
         //if (!matrix) offset += mm->getMatrixSize();
 
@@ -357,9 +357,9 @@ public:
         if (matrix) offset = matrix->getGlobalOffset(mm);
         if (src!= NULL && offset >= 0)
         {
-            unsigned int o = (unsigned int)offset;
+            size_t o = (size_t)offset;
             mm->copyFromBaseVector(dest.getId(mm), src, o);
-            offset = (int)o;
+            offset = (ptrdiff_t)o;
         }
         //if (!matrix) offset += mm->getMatrixSize();
 

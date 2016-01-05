@@ -53,8 +53,8 @@ public:
     const BaseMatrix* getMatrix() const { return matrix; }
 
 
-    virtual int getGlobalDimension() const { return matrix->rowSize(); }
-    virtual int getGlobalOffset(const core::behavior::BaseMechanicalState*) const { return 0; }
+    virtual size_t getGlobalDimension() const { return matrix->rowSize(); }
+    virtual ptrdiff_t getGlobalOffset(const core::behavior::BaseMechanicalState*) const { return 0; }
     virtual MatrixRef getMatrix(const core::behavior::BaseMechanicalState*) const;
 
 

@@ -169,7 +169,7 @@ public:
     {
         return rend();
     }
-    unsigned int size() const
+    size_t size() const
     {
         return (!elems[0])?0:1;
     }
@@ -189,19 +189,19 @@ public:
     {
         return elems[0];
     }
-    const TPtr& operator[](unsigned int i) const
+    const TPtr& operator[](size_t i) const
     {
         return elems[i];
     }
-    TPtr& operator[](unsigned int i)
+    TPtr& operator[](size_t i)
     {
         return elems[i];
     }
-    const TPtr& operator()(unsigned int i) const
+    const TPtr& operator()(size_t i) const
     {
         return elems[i];
     }
-    TPtr& operator()(unsigned int i)
+    TPtr& operator()(size_t i)
     {
         return elems[i];
     }
@@ -468,7 +468,7 @@ public:
         return size();
     }
 
-    std::string getPath(unsigned int index) const
+    std::string getPath(size_t index) const
     {
         const int aspect = core::ExecParams::currentAspect();
         if (index >= m_value[aspect].size())
@@ -485,15 +485,15 @@ public:
         return path;
     }
 
-    Base* getLinkedBase(unsigned int index=0) const
+    Base* getLinkedBase(size_t index=0) const
     {
         return TraitsDestCasts::getBase(getIndex(index));
     }
-    BaseData* getLinkedData(unsigned int index=0) const
+    BaseData* getLinkedData(size_t index=0) const
     {
         return TraitsDestCasts::getData(getIndex(index));
     }
-    std::string getLinkedPath(unsigned int index=0) const
+    std::string getLinkedPath(size_t index=0) const
     {
         return getPath(index);
     }
@@ -637,7 +637,7 @@ protected:
     OwnerType* m_owner;
     helper::fixed_array<Container, SOFA_DATA_MAX_ASPECTS> m_value;
 
-    DestType* getIndex(unsigned int index) const
+    DestType* getIndex(size_t index) const
     {
         const int aspect = core::ExecParams::currentAspect();
         if (index < m_value[aspect].size())
@@ -646,8 +646,8 @@ protected:
             return NULL;
     }
 
-    virtual void added(DestPtr ptr, unsigned int index) = 0;
-    virtual void removed(DestPtr ptr, unsigned int index) = 0;
+    virtual void added(DestPtr ptr, size_t index) = 0;
+    virtual void removed(DestPtr ptr, size_t index) = 0;
 };
 
 /**
@@ -671,7 +671,7 @@ public:
     typedef typename Inherit::TraitsDestCasts TraitsDestCasts;
     typedef typename Inherit::TraitsFindDest TraitsFindDest;
 
-    typedef void (OwnerType::*ValidatorFn)(DestPtr v, unsigned int index, bool add);
+    typedef void (OwnerType::*ValidatorFn)(DestPtr v, size_t index, bool add);
 
     MultiLink(const BaseLink::InitLink<OwnerType>& init)
         : Inherit(init), m_validator(NULL)
@@ -761,13 +761,13 @@ public:
 protected:
     ValidatorFn m_validator;
 
-    void added(DestPtr val, unsigned int index)
+    void added(DestPtr val, size_t index)
     {
         if (m_validator)
             (this->m_owner->*m_validator)(val, index, true);
     }
 
-    void removed(DestPtr val, unsigned int index)
+    void removed(DestPtr val, size_t index)
     {
         if (m_validator)
             (this->m_owner->*m_validator)(val, index, false);
@@ -931,7 +931,7 @@ protected:
     ValidatorFn m_validator;
 
 
-    void added(DestPtr val, unsigned int /*index*/)
+    void added(DestPtr val, size_t /*index*/)
     {
         if (m_validator)
         {
@@ -942,7 +942,7 @@ protected:
         }
     }
 
-    void removed(DestPtr val, unsigned int /*index*/)
+    void removed(DestPtr val, size_t /*index*/)
     {
         if (m_validator)
         {

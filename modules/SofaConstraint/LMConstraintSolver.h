@@ -60,7 +60,7 @@ protected:
 
     typedef helper::set< sofa::core::behavior::BaseMechanicalState* > SetDof;
     typedef std::map< const sofa::core::behavior::BaseMechanicalState *, SparseMatrixEigen > DofToMatrix;
-    typedef std::map< const sofa::core::behavior::BaseMechanicalState *, helper::set<unsigned int> > DofToMask;
+    typedef std::map< const sofa::core::behavior::BaseMechanicalState *, helper::set<size_t> > DofToMask;
     typedef std::map< const sofa::core::behavior::BaseMechanicalState *, core::behavior::BaseConstraintCorrection* > DofToConstraintCorrection;
 
 public:
@@ -138,14 +138,14 @@ protected:
             bool isPositionChangesUpdateVelocity,
             const SparseMatrixEigen  &invM_Ltrans,
             const VectorEigen  &Lambda,
-            const sofa::helper::set< unsigned int > &dofUsed,
+            const sofa::helper::set<size_t> &dofUsed,
             sofa::core::behavior::BaseMechanicalState* dof) const;
 
 
     ///
     virtual void buildLMatrix          ( const sofa::core::behavior::BaseMechanicalState *dof,
-            const std::list<unsigned int> &idxEquations,unsigned int constraintOffset,
-            SparseMatrixEigen& L, sofa::helper::set< unsigned int > &dofUsed ) const;
+            const std::list<size_t> &idxEquations,size_t constraintOffset,
+            SparseMatrixEigen& L, sofa::helper::set< size_t > &dofUsed ) const;
     virtual void buildInverseMassMatrix( const sofa::core::behavior::BaseMechanicalState* mstate,
             const core::behavior::BaseConstraintCorrection* constraintCorrection,
             SparseMatrixEigen& matrix) const;

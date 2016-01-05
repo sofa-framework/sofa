@@ -501,7 +501,7 @@ void MechanicalOperations::m_print( std::ostream& out )
 
 
 // BaseMatrix & BaseVector Computations
-void MechanicalOperations::getMatrixDimension(unsigned int *  const nbRow, unsigned int * const nbCol, sofa::core::behavior::MultiMatrixAccessor* matrix)
+void MechanicalOperations::getMatrixDimension(size_t *  const nbRow, size_t * const nbCol, sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     executeVisitor( MechanicalGetMatrixDimensionVisitor(&mparams, nbRow, nbCol, matrix) );
 }
@@ -518,7 +518,7 @@ void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatr
     }
 }
 
-void MechanicalOperations::addSubMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix,const helper::vector<unsigned> & subMatrixIndex, SReal mFact, SReal bFact, SReal kFact)
+void MechanicalOperations::addSubMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix,const helper::vector<size_t> & subMatrixIndex, SReal mFact, SReal bFact, SReal kFact)
 {
     mparams.setMFactor(mFact);
     mparams.setBFactor(bFact);

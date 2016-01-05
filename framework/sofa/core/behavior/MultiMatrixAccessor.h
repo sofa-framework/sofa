@@ -52,7 +52,7 @@ public:
     {
     public:
         defaulttype::BaseMatrix* matrix;
-        unsigned int offset;
+        size_t offset;
         MatrixRef() : matrix(NULL), offset(0) {}
         defaulttype::BaseMatrix* operator->() const { return matrix; }
         bool operator!() const { return matrix == NULL; }
@@ -65,7 +65,7 @@ public:
     {
     public:
         defaulttype::BaseMatrix* matrix;
-        unsigned int offRow, offCol;
+        size_t offRow, offCol;
         InteractionMatrixRef() : matrix(NULL), offRow(0), offCol(0) {}
         defaulttype::BaseMatrix* operator->() const { return matrix; }
         bool operator!() const { return matrix == NULL; }
@@ -77,8 +77,8 @@ public:
     virtual void addMechanicalMapping(BaseMapping* mapping);
     virtual void addMappedMechanicalState(const BaseMechanicalState* mstate);
 
-    virtual int getGlobalDimension() const = 0;
-    virtual int getGlobalOffset(const BaseMechanicalState* mstate) const = 0;
+    virtual size_t getGlobalDimension() const = 0;
+    virtual ptrdiff_t getGlobalOffset(const BaseMechanicalState* mstate) const = 0;
 
     virtual MatrixRef getMatrix(const BaseMechanicalState* mstate) const = 0;
     virtual InteractionMatrixRef getMatrix(const BaseMechanicalState* mstate1, const BaseMechanicalState* mstate2) const = 0;

@@ -306,10 +306,10 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
 template <class DataTypes>
 void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    int o = matrix->getGlobalOffset(this->mstate.get(mparams));
+    ptrdiff_t o = matrix->getGlobalOffset(this->mstate.get(mparams));
     if (o >= 0)
     {
-        unsigned int offset = (unsigned int)o;
+        size_t offset = (size_t)o;
 
         //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
         //sout << "applyConstraint in Vector with offset = " << offset << sendl;

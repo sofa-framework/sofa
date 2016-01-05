@@ -521,7 +521,7 @@ void DiagonalMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParam
 
 
 template <class DataTypes, class MassType>
-SReal DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index) const
+SReal DiagonalMass<DataTypes, MassType>::getElementMass(size_t index) const
 {
     return (SReal)(f_mass.getValue()[index]);
 }
@@ -529,7 +529,7 @@ SReal DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index) cons
 
 //TODO: special case for Rigid Mass
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const
+void DiagonalMass<DataTypes, MassType>::getElementMass(size_t index, defaulttype::BaseMatrix *m) const
 {
     static const defaulttype::BaseMatrix::Index dimension = (defaulttype::BaseMatrix::Index) defaulttype::DataTypeInfo<Deriv>::size();
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);

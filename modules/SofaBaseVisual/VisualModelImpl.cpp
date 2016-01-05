@@ -376,7 +376,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     }
 
     int nbNOut = 0; /// Number of different normals
-    for (int i = 0, j = 0; i < nbVIn; i++)
+    for (size_t i = 0, j = 0; i < nbVIn; i++)
     {
         positions[i] = verticesImport[i];
 
