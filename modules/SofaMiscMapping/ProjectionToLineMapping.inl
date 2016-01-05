@@ -41,7 +41,7 @@ namespace mapping
 template <class TIn, class TOut>
 ProjectionToTargetLineMapping<TIn, TOut>::ProjectionToTargetLineMapping()
     : Inherit()
-    , f_indices(initData(&f_indices, "indices", "Indices of the parent points"))
+    , f_indices(initData(&f_indices, "indices", "Indices of the parent points (if empty, all input dofs are mapped)"))
     , f_origins(initData(&f_origins, "origins", "Origins of the lines on which the points are projected"))
     , f_directions(initData(&f_directions, "directions", "Directions of the lines on which the points are projected"))
     , d_drawScale(initData(&d_drawScale, SReal(10), "drawScale", "Draw scale"))
@@ -64,7 +64,10 @@ template <class TIn, class TOut>
 void ProjectionToTargetLineMapping<TIn, TOut>::reinit()
 {
     helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
-    this->getToModel()->resize( indices.size() );
+
+    size_t nb = indices.empty() ? this->getFromModel()->getSize() : indices.size(); // if indices is empty, mapping every input dofs
+
+    this->getToModel()->resize( nb );
 
     // ensuring direction are normalized
     helper::WriteAccessor< Data<OutVecCoord> > directions(f_directions);
@@ -73,16 +76,17 @@ void ProjectionToTargetLineMapping<TIn, TOut>::reinit()
 
 
     // precompute constant jacobian
-    jacobian.resizeBlocks(indices.size(),this->getFromModel()->getSize());
-    for(unsigned i=0; i<indices.size(); i++ )
+    jacobian.resizeBlocks(nb,this->getFromModel()->getSize());
+    for(unsigned i=0; i<nb; i++ )
     {
         const OutCoord& n = i<directions.size() ? directions[i] : directions.ref().back();
+        const unsigned& index = indices.empty() ? i : indices[i] ;
 
         for(unsigned j=0; j<Nout; j++)
         {
             for(unsigned k=0; k<Nout; k++ )
             {
-                jacobian.insertBack( i*Nout+j, indices[i]*Nin+k, n[j]*n[k] );
+                jacobian.insertBack( i*Nout+j, index*Nin+k, n[j]*n[k] );
             }
         }
     }
@@ -101,9 +105,12 @@ void ProjectionToTargetLineMapping<TIn, TOut>::apply(const core::MechanicalParam
     helper::ReadAccessor< Data<OutVecCoord> > origins(f_origins);
     helper::ReadAccessor< Data<OutVecCoord> > directions(f_directions);
 
-    for(unsigned i=0; i<indices.size(); i++ )
+    size_t nb = indices.empty() ? this->getFromModel()->getSize() : indices.size(); // if indices is empty, mapping every input dofs
+
+    for(unsigned i=0; i<nb; i++ )
     {
-        const InCoord& p = in[indices[i]];
+        const unsigned& index = indices.empty() ? i : indices[i] ;
+        const InCoord& p = in[index];
         const OutCoord& o = i<origins.size() ? origins[i] : origins.ref().back();
         const OutCoord& n = i<directions.size() ? directions[i] : directions.ref().back();
 
