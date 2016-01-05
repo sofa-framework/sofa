@@ -72,7 +72,7 @@ template <class TIn, class TOut>
 int SubsetMapping<TIn, TOut>::addPoint(int index)
 {
     IndexArray& indices = *f_indices.beginEdit();
-    int i = (int)indices.size();
+    int i = indices.size();
     indices.push_back(index);
     f_indices.endEdit();
     return i;
@@ -98,7 +98,7 @@ void SubsetMapping<TIn, TOut>::init()
 {
     const bool ignoreNotFound = f_ignoreNotFound.getValue();
     int numnotfound = 0;
-    unsigned int inSize = (unsigned)this->fromModel->getSize();
+    unsigned int inSize = this->fromModel->getSize();
     if (f_indices.getValue().empty() && f_first.getValue() != -1)
     {
         IndexArray& indices = *f_indices.beginEdit();

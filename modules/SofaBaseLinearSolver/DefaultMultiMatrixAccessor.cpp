@@ -78,7 +78,7 @@ void DefaultMultiMatrixAccessor::setGlobalMatrix(defaulttype::BaseMatrix* matrix
 
 void DefaultMultiMatrixAccessor::addMechanicalState(const sofa::core::behavior::BaseMechanicalState* mstate)
 {
-    unsigned int dim = (unsigned int)mstate->getMatrixSize();
+    unsigned int dim = mstate->getMatrixSize();
     realStateOffsets[mstate] = globalDim;
     globalDim += dim;
 
@@ -645,7 +645,7 @@ defaulttype::BaseMatrix* DefaultMultiMatrixAccessor::createMatrix(const sofa::co
 
     if(mstate1 == mstate2)
     {
-        m->resize( (component::linearsolver::FullMatrix<SReal>::Index)mstate1->getMatrixSize(),(component::linearsolver::FullMatrix<SReal>::Index)mstate1->getMatrixSize());
+        m->resize( mstate1->getMatrixSize(),mstate1->getMatrixSize());
 
         if( MULTIMATRIX_VERBOSE)/////////////////////////////////////////////////////////
         {
@@ -654,7 +654,7 @@ defaulttype::BaseMatrix* DefaultMultiMatrixAccessor::createMatrix(const sofa::co
     }
     else
     {
-        m->resize( (component::linearsolver::FullMatrix<SReal>::Index)mstate1->getMatrixSize(),(component::linearsolver::FullMatrix<SReal>::Index)mstate2->getMatrixSize() );
+        m->resize( mstate1->getMatrixSize(),mstate2->getMatrixSize() );
 
         if( MULTIMATRIX_VERBOSE)/////////////////////////////////////////////////////////
         {
