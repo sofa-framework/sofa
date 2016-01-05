@@ -52,21 +52,43 @@ ProjectionToTargetLineMapping<TIn, TOut>::ProjectionToTargetLineMapping()
 template <class TIn, class TOut>
 void ProjectionToTargetLineMapping<TIn, TOut>::init()
 {
-    assert( f_indices.getValue().size()==f_origins.getValue().size()) ;
-    assert( f_indices.getValue().size()==f_directions.getValue().size()) ;
-
-    this->getToModel()->resize( f_indices.getValue().size() );
-
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
 
+    reinit();
+    this->Inherit::init();
+}
+
+
+template <class TIn, class TOut>
+void ProjectionToTargetLineMapping<TIn, TOut>::reinit()
+{
+    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    this->getToModel()->resize( indices.size() );
 
     // ensuring direction are normalized
     helper::WriteAccessor< Data<OutVecCoord> > directions(f_directions);
     for( size_t i=0 ; i<directions.size() ; ++i )
         directions[i].normalize( OutCoord(1,0,0) ); // failsafe for null norms
 
-    this->Inherit::init();
+
+    // precompute constant jacobian
+    jacobian.resizeBlocks(indices.size(),this->getFromModel()->getSize());
+    for(unsigned i=0; i<indices.size(); i++ )
+    {
+        const OutCoord& n = i<directions.size() ? directions[i] : directions.ref().back();
+
+        for(unsigned j=0; j<Nout; j++)
+        {
+            for(unsigned k=0; k<Nout; k++ )
+            {
+                jacobian.insertBack( i*Nout+j, indices[i]*Nin+k, n[j]*n[k] );
+            }
+        }
+    }
+    jacobian.compress();
+
+    this->Inherit::reinit();
 }
 
 
@@ -79,25 +101,14 @@ void ProjectionToTargetLineMapping<TIn, TOut>::apply(const core::MechanicalParam
     helper::ReadAccessor< Data<OutVecCoord> > origins(f_origins);
     helper::ReadAccessor< Data<OutVecCoord> > directions(f_directions);
 
-    jacobian.resizeBlocks(out.size(),in.size());
-
     for(unsigned i=0; i<indices.size(); i++ )
     {
         const InCoord& p = in[indices[i]];
-        const OutCoord& o = origins[i];
-        const OutCoord& n = directions[i];
+        const OutCoord& o = i<origins.size() ? origins[i] : origins.ref().back();
+        const OutCoord& n = i<directions.size() ? directions[i] : directions.ref().back();
 
         out[i] = o + n * ( n * ( TIn::getCPos(p) - o ) ); // projection on the line
-
-        for(unsigned j=0; j<Nout; j++)
-        {
-            for(unsigned k=0; k<Nout; k++ )
-            {
-                jacobian.insertBack( i*Nout+j, indices[i]*Nin+k, n[j]*n[k] );
-            }
-        }
     }
-    jacobian.compress();
 }
 
 
@@ -150,10 +161,16 @@ void ProjectionToTargetLineMapping<TIn, TOut>::draw(const core::visual::VisualPa
     helper::ReadAccessor< Data<OutVecCoord> > directions(f_directions);
 
     vector< defaulttype::Vector3 > points;
-    for(unsigned i=0; i<origins.size(); i++ )
+
+    size_t nb = std::max( directions.size(), origins.size() );
+
+    for(unsigned i=0; i<nb; i++ )
     {
-        points.push_back( origins[i] - directions[i]*scale );
-        points.push_back( origins[i] + directions[i]*scale );
+        const OutCoord& o = i<origins.size() ? origins[i] : origins.ref().back();
+        const OutCoord& n = i<directions.size() ? directions[i] : directions.ref().back();
+
+        points.push_back( o - n*scale );
+        points.push_back( o + n*scale );
     }
 #ifndef SOFA_NO_OPENGL
     glPushAttrib(GL_LIGHTING_BIT);

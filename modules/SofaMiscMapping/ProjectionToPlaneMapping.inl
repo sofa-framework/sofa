@@ -54,43 +54,30 @@ ProjectionToTargetPlaneMapping<TIn, TOut>::ProjectionToTargetPlaneMapping()
 template <class TIn, class TOut>
 void ProjectionToTargetPlaneMapping<TIn, TOut>::init()
 {
-    assert( f_indices.getValue().size()==f_origins.getValue().size()) ;
-    assert( f_indices.getValue().size()==f_normals.getValue().size()) ;
-
-    this->getToModel()->resize( f_indices.getValue().size() );
-
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
 
+    reinit();
+    this->Inherit::init();
+}
+
+template <class TIn, class TOut>
+void ProjectionToTargetPlaneMapping<TIn, TOut>::reinit()
+{
+    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    this->getToModel()->resize( indices.size() );
 
     // ensuring direction are normalized
     helper::WriteAccessor< Data<OutVecCoord> > normals(f_normals);
     for( size_t i=0 ; i<normals.size() ; ++i )
         normals[i].normalize( OutCoord(1,0,0) ); // failsafe for null norms
 
-    this->Inherit::init();
-}
 
-
-template <class TIn, class TOut>
-void ProjectionToTargetPlaneMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
-{
-    helper::WriteAccessor< Data<OutVecCoord> >  out = dOut;
-    helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
-    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
-    helper::ReadAccessor< Data<OutVecCoord> > origins(f_origins);
-    helper::ReadAccessor< Data<OutVecCoord> > normals(f_normals);
-
-    jacobian.resizeBlocks(out.size(),in.size());
-
+    // precompute constant jacobian
+    jacobian.resizeBlocks(indices.size(),this->getFromModel()->getSize());
     for(unsigned i=0; i<indices.size(); i++ )
     {
-        const InCoord& p = in[indices[i]];
-        typename In::CPos x =  TIn::getCPos(p);
-        const OutCoord& o = origins[i];
-        const OutCoord& n = normals[i];
-
-        out[i] = x - n * ( (x-o) * n ); // projection on the plane
+        const OutCoord& n = i<normals.size() ? normals[i] : normals.ref().back();
 
         for(unsigned j=0; j<Nout; j++)
         {
@@ -104,6 +91,29 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::apply(const core::MechanicalPara
         }
     }
     jacobian.compress();
+
+
+    this->Inherit::reinit();
+}
+
+template <class TIn, class TOut>
+void ProjectionToTargetPlaneMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
+{
+    helper::WriteAccessor< Data<OutVecCoord> >  out = dOut;
+    helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
+    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    helper::ReadAccessor< Data<OutVecCoord> > origins(f_origins);
+    helper::ReadAccessor< Data<OutVecCoord> > normals(f_normals);
+
+    for(unsigned i=0; i<indices.size(); i++ )
+    {
+        const InCoord& p = in[indices[i]];
+        typename In::CPos x =  TIn::getCPos(p);
+        const OutCoord& o = i<origins.size() ? origins[i] : origins.ref().back();
+        const OutCoord& n = i<normals.size() ? normals[i] : normals.ref().back();
+
+        out[i] = x - n * ( (x-o) * n ); // projection on the plane
+    }
 }
 
 
@@ -161,10 +171,13 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::draw(const core::visual::VisualP
     glDisable(GL_LIGHTING);
 
     glBegin(GL_QUADS);
-    for(unsigned i=0; i<origins.size(); i++ )
+
+
+    size_t nb = std::max( normals.size(), origins.size() );
+    for(unsigned i=0; i<nb; i++ )
     {
-        const OutCoord& n = normals[i];
-        const OutCoord& o = origins[i];
+        const OutCoord& n = i<normals.size() ? normals[i] : normals.ref().back();
+        const OutCoord& o = i<origins.size() ? origins[i] : origins.ref().back();
         OutCoord t0, t1;
 
         if( !helper::isNull(n[1]) ) t0.set( 0, -n[2], n[1] );

@@ -85,6 +85,7 @@ public:
 
 
     virtual void init();
+    virtual void reinit();
 
     virtual void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
 
