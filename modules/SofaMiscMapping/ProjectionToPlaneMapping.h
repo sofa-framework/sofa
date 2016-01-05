@@ -107,6 +107,8 @@ public:
     virtual void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForce*/ ){}
     virtual const defaulttype::BaseMatrix* getK(){ return NULL; }
 
+    virtual void updateForceMask();
+
 
 protected:
     ProjectionToTargetPlaneMapping();

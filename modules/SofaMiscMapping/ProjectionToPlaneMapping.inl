@@ -203,6 +203,17 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::draw(const core::visual::VisualP
 }
 
 
+template <class TIn, class TOut>
+void ProjectionToTargetPlaneMapping<TIn, TOut>::updateForceMask()
+{
+    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    if( indices.empty() ) return Inherit::updateForceMask(); // all dofs are mapped
+
+    for( size_t i=0 ; i<indices.size() ; i++ )
+        if( this->maskTo->getEntry(i) )
+            this->maskFrom->insertEntry( indices[i] );
+}
+
 
 } // namespace mapping
 
