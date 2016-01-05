@@ -84,6 +84,7 @@ public:
     Data< defaulttype::Vec4f >  d_drawColor; ///< drawing color
 
     virtual void init();
+    virtual void reinit();
 
     virtual void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
 
