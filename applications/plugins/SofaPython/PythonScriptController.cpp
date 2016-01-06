@@ -32,6 +32,7 @@
 #include "Binding_Node.h"
 #include "Binding_PythonScriptController.h"
 #include "ScriptEnvironment.h"
+#include "PythonScriptEvent.h"
 
 namespace sofa
 {
