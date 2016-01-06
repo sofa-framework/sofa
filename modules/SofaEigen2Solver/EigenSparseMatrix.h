@@ -283,6 +283,8 @@ protected:
 	
 	template<class OutType, class InType>
 	void mult_impl(OutType& result, const InType& data) const {
+
+        if( data.empty() ) return;
 		 
 		// use optimized product if possible
         if(canCast(data)) {
@@ -332,6 +334,8 @@ protected:
 	template<class OutType, class InType>
 	void addMult_impl( OutType& result, const InType& data, Real fact) const {
 		
+        if( data.empty() ) return;
+
 		// use optimized product if possible
 		if( canCast(data) ) {
 
@@ -381,6 +385,8 @@ protected:
 
 	template<class InType, class OutType>
     void addMultTranspose_impl( InType& result, const OutType& data, Real fact) const {
+
+        if( data.empty() ) return;
 
 		// use optimized product if possible
 		if(canCast(result)) {
