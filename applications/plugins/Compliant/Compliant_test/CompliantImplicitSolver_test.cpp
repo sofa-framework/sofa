@@ -361,16 +361,75 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
 
     }
 
+
+
+    /// stiffness & compliance on an empty mstate
+    /// only ensuring that Assembly is not crashing
+    void testEmptyMState( bool debug )
+    {
+        Node::SPtr root = clearScene();
+
+        // The solver
+        typedef odesolver::CompliantImplicitSolver OdeSolver;
+        OdeSolver::SPtr odeSolver = addNew<OdeSolver>(root);
+        odeSolver->debug.setValue(debug);
+        odeSolver->alpha.setValue(1.0);
+        odeSolver->beta.setValue(1.0);
+
+        linearsolver::LDLTSolver::SPtr linearSolver = addNew<linearsolver::LDLTSolver>(root);
+        linearSolver->debug.setValue(debug);
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(root);
+        (void) response;
+
+
+        MechanicalObject3::SPtr DOF = addNew<MechanicalObject3>(root);
+        DOF->resize(1);
+        UniformMass3::SPtr mass = addNew<UniformMass3>(root);
+        mass->totalMass.setValue(1);
+
+
+        Node::SPtr mappedComplianceNode = root->createChild("mappedComplianceNode");
+        MechanicalObject1::SPtr mappedComplianceDOF = addNew<MechanicalObject1>(mappedComplianceNode);
+        mappedComplianceDOF->resize(0);
+
+        DistanceFromTargetMapping31::SPtr mappingCompliance = addNew<DistanceFromTargetMapping31>(mappedComplianceNode);
+        mappingCompliance->setFrom( DOF.get() );
+        mappingCompliance->setTo( mappedComplianceDOF.get() );
+
+        UniformCompliance1::SPtr compliance = addNew<UniformCompliance1>(mappedComplianceNode);
+        compliance->isCompliance = true;
+        compliance->compliance = 1e-5;
+
+
+        Node::SPtr mappedStiffnessNode = root->createChild("mappedStiffnessNode");
+        MechanicalObject1::SPtr mappedStiffnessDOF = addNew<MechanicalObject1>(mappedStiffnessNode);
+        mappedStiffnessDOF->resize(0);
+
+        DistanceFromTargetMapping31::SPtr mappingStiffness = addNew<DistanceFromTargetMapping31>(mappedStiffnessNode);
+        mappingStiffness->setFrom( DOF.get() );
+        mappingStiffness->setTo( mappedStiffnessDOF.get() );
+
+        UniformCompliance1::SPtr stiffness = addNew<UniformCompliance1>(mappedStiffnessNode);
+        stiffness->isCompliance = false;
+        stiffness->compliance = 1e-5;
+
+
+        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::getSimulation()->animate(root.get(),1);
+
+    }
+
 };
 
 //=================
 // do run the tests
 //=================
 // simple linear cases
-TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringV100 ){    testLinearOneFixedOneComplianceSpringV100(false);  }
-TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringV100 ){     testLinearOneFixedOneStiffnessSpringV100(false);  }
-TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringX200 ){     testLinearOneFixedOneStiffnessSpringX200(false);  }
-TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringX200 ){    testLinearOneFixedOneComplianceSpringX200(false);  }
+TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringV100 ){  testLinearOneFixedOneComplianceSpringV100(false);  }
+TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringV100  ){  testLinearOneFixedOneStiffnessSpringV100(false);  }
+TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringX200  ){  testLinearOneFixedOneStiffnessSpringX200(false);  }
+TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringX200 ){  testLinearOneFixedOneComplianceSpringX200(false);  }
+TEST_F(CompliantImplicitSolver_test, EmptyMState                     ){  testEmptyMState(false);  }
 
 }// sofa
 
