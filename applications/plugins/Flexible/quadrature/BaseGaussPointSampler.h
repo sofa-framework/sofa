@@ -104,30 +104,26 @@ public:
 
     /** @name visu data */
     //@{
-    Data< bool > showSamples;
     Data< float > showSamplesScale; ///< Samples scale
-    Data< int > drawMode; ///< Drawing mode
-                          ///< 0. Green points
-                          ///< 1. Green spheres
+    Data< int > drawMode; ///< Drawing mode: 0. Green points; 1. Green spheres
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const BaseGaussPointSampler* = NULL) { return std::string();    }
 
     BaseGaussPointSampler()    :   Inherited()
-        , f_method ( initData ( &f_method,"method","quadrature method" ) )
-        , f_position(initData(&f_position,SeqPositions(),"position","output sample positions"))
-        , f_transforms(initData(&f_transforms,VTransform(),"transforms","output sample orientations"))
-        , f_order(initData(&f_order,(unsigned int)1,"order","order of quadrature method"))
-        , f_volume(initData(&f_volume,vector<volumeIntegralType>(),"volume","output weighted volume"))
-        , showSamples(initData(&showSamples,false,"showSamples","show samples"))
-        , showSamplesScale(initData(&showSamplesScale,0.0f,"showSamplesScale","show samples scale"))
-        , drawMode(initData(&drawMode,0,"drawMode",""))
+      , f_method ( initData ( &f_method,"method","quadrature method" ) )
+      , f_position(initData(&f_position,SeqPositions(),"position","output sample positions"))
+      , f_transforms(initData(&f_transforms,VTransform(),"transforms","output sample orientations"))
+      , f_order(initData(&f_order,(unsigned int)1,"order","order of quadrature method"))
+      , f_volume(initData(&f_volume,vector<volumeIntegralType>(),"volume","output weighted volume"))
+      , showSamplesScale(initData(&showSamplesScale,0.0f,"showSamplesScale","show samples scale"))
+      , drawMode(initData(&drawMode,0,"drawMode",""))
     {
         helper::OptionsGroup methodOptions(3,"0 - Gauss-Legendre"
-                ,"1 - Newton-Cotes"
-                ,"2 - Elastons"
-                                          );
+                                           ,"1 - Newton-Cotes"
+                                           ,"2 - Elastons"
+                                           );
         methodOptions.setSelectedItem(GAUSSLEGENDRE);
         f_method.setValue(methodOptions);
     }
@@ -156,19 +152,16 @@ protected:
 
 #ifndef SOFA_NO_OPENGL
         if (!vparams->displayFlags().getShowVisualModels()) return;
-        raPositions pos(this->f_position);
-        if (this->showSamples.getValue())
+        if (showSamplesScale.getValue()<=0) return;
+        switch( drawMode.getValue() )
         {
-            switch( drawMode.getValue() )
-            {
-            case 1:
-                glPushAttrib(GL_LIGHTING_BIT);
-                glEnable(GL_LIGHTING);
-                vparams->drawTool()->drawSpheres(this->f_position.getValue(),showSamplesScale.getValue(),Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
-                glPopAttrib();
-            default:
-                vparams->drawTool()->drawPoints(this->f_position.getValue(),showSamplesScale.getValue(),Vec<4,float>(0.2f, 1.0f, 0.2f, 1.0f));
-            }
+        case 1:
+            glPushAttrib(GL_LIGHTING_BIT);
+            glEnable(GL_LIGHTING);
+            vparams->drawTool()->drawSpheres(this->f_position.getValue(),showSamplesScale.getValue(),Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
+            glPopAttrib();
+        default:
+            vparams->drawTool()->drawPoints(this->f_position.getValue(),showSamplesScale.getValue(),Vec<4,float>(0.2f, 1.0f, 0.2f, 1.0f));
         }
 
 #endif /* SOFA_NO_OPENGL */
