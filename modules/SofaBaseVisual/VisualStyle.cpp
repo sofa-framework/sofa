@@ -62,7 +62,7 @@ VisualStyle::VisualStyle()
     :displayFlags(initData(&displayFlags,"displayFlags","Display Flags"))
 {
     displayFlags.setWidget("widget_displayFlags");
-    displayFlags.setGroup("Display Flags");
+//    displayFlags.setGroup("Display Flags");
 }
 
 void VisualStyle::fwdDraw(VisualParams* vparams)
@@ -74,7 +74,6 @@ void VisualStyle::fwdDraw(VisualParams* vparams)
 void VisualStyle::bwdDraw(VisualParams* vparams)
 {
     vparams->displayFlags() = backupFlags;
-
 }
 
 helper::WriteAccessor<sofa::core::visual::DisplayFlags> addVisualStyle( simulation::Node::SPtr node )
