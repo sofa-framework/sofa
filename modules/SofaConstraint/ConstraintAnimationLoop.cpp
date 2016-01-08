@@ -535,9 +535,6 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     static SReal simulationTime=0.0;
 
     simulationTime+=dt;
-    sofa::helper::AdvancedTimer::begin("Animate");
-
-    sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Step");
 #endif
@@ -752,9 +749,6 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     simulation::Visitor::printCloseNode("Step");
 #endif
 
-    sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
-
-    sofa::helper::AdvancedTimer::end("Animate");
 
 }
 

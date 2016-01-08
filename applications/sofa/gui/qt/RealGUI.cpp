@@ -2023,6 +2023,8 @@ void RealGUI::interactionGUI ( bool )
 //called at each step of the rendering
 void RealGUI::step()
 {
+    sofa::helper::AdvancedTimer::begin("Animate");
+
     Node* root = currentSimulation();
     if ( root == NULL ) return;
 
@@ -2076,6 +2078,9 @@ void RealGUI::step()
     emit newStep();
     if ( !currentSimulation()->getContext()->getAnimate() )
         startButton->setChecked ( false );
+
+
+    sofa::helper::AdvancedTimer::end("Animate");
 }
 
 //------------------------------------
