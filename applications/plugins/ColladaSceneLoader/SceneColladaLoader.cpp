@@ -255,7 +255,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                 for(unsigned int j = 0; j < currentAiNode->mNumMeshes; ++j, ++meshId)
                 {
                     std::stringstream meshNameStream;
-                    meshNameStream << "mesh " << (int)meshId;
+                    meshNameStream << "mesh_" << (int)meshId;
                     
                     Node::SPtr meshNode = getSimulation()->createNewNode(meshNameStream.str());
                     currentNode->addChild(meshNode);
@@ -409,9 +409,9 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
 					std::stringstream rigidNameStream;
 					if(currentAiMesh->HasBones())
-						rigidNameStream << "skinning " << (int)meshId;
+						rigidNameStream << "skinning_" << (int)meshId;
 					else
-						rigidNameStream << "rigid " << (int)meshId;
+						rigidNameStream << "rigid_" << (int)meshId;
 
 					Node::SPtr rigidNode = getSimulation()->createNewNode(rigidNameStream.str());
 					currentSubNode->addChild(rigidNode);
