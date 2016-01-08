@@ -238,16 +238,17 @@ struct TestSparseMatrices : public Sofa_test<_Real>
     /** Check that EigenMatrix update works as well as direct init. Return true if the test succeeds.*/
     bool checkEigenMatrixUpdate()
     {
-        // fill two matrices with the same values, one directly, one it two passes, then compare their values
+        // fill two matrices with the same values, one directly (in order), one in two passes, then compare their values
         EigenBlockSparseMatrix a,b;
         a.resize(NROWS,NCOLS);
         b.resize(NROWS,NCOLS);
-        for( unsigned j=0; j<NCOLS; j++)
+        for( unsigned i=0; i<NROWS; i++)
         {
-            for( unsigned i=0; i<NROWS; i++)
+            a.beginRow(i);
+            for( unsigned j=0; j<NCOLS; j++)
             {
                 double valij = i*NCOLS+j;
-                a.add(i,j,valij);
+                a.insertBack(i,j,valij);
                 if( i==j )
                     b.add(i,j,valij);
             }
@@ -273,13 +274,19 @@ struct TestSparseMatrices : public Sofa_test<_Real>
         return Sofa_test<_Real>::matrixMaxDiff(a,b) < 100 * Sofa_test<_Real>::epsilon();
     }
 
-    /** Check the filling of EigenMatrix per rows of blocks. Return true if the test succeeds.*/
-    bool checkEigenMatrixBlockRowFilling()
+    /** Check the filling of EigenMatrix per rows of blocks. */
+    void checkEigenMatrixBlockRowFilling()
     {
         EigenBlockSparseMatrix mb;
         FullMatrix ma;
         unsigned br=3, bc=3;
         ma.resize(br*BROWS,bc*BCOLS);
+
+
+
+
+        // building with unordered blocks
+
         mb.resizeBlocks(br,bc);
         for( unsigned i=0; i<br; i++ )
         {
@@ -302,9 +309,100 @@ struct TestSparseMatrices : public Sofa_test<_Real>
             mb.endBlockRow();
         }
         mb.compress();
+
+
         //    serr()<<"MatrixTest<Real,RN,CN>::checkEigenMatrixBlockRowFilling, ma = " << ma << endl;
         //    serr()<<"MatrixTest<Real,RN,CN>::checkEigenMatrixBlockRowFilling, mb = " << mb << endl;
-        return Sofa_test<_Real>::matrixMaxDiff(ma,mb) < 100*Sofa_test<_Real>::epsilon();
+        ASSERT_TRUE( Sofa_test<_Real>::matrixMaxDiff(ma,mb) < 100*Sofa_test<_Real>::epsilon() );
+
+
+
+
+
+        // building with ordered blocks
+
+        mb.resizeBlocks(br,bc);
+        for( unsigned i=0; i<br; i++ )
+        {
+            mb.beginBlockRow(i);
+            if( i%2==0 ) // leave some rows empty
+            {
+                for( unsigned j=0 ; j<bc; ++j ) // set the blocs in column order
+                {
+                    // create a block and give it some value
+                    BlockMN b;
+                    for( unsigned k=0; k<BROWS && k<BCOLS; k++ ){
+                        b[k][k] = (Real)i+j;
+                    }
+
+                    // insert the block in the matrix
+                    mb.createBlock(j,b);
+                }
+            }
+            mb.endSortedBlockRow();
+        }
+        mb.compress();
+
+        ASSERT_TRUE( Sofa_test<_Real>::matrixMaxDiff(ma,mb) < 100*Sofa_test<_Real>::epsilon() );
+
+
+
+
+
+        // building with scheduled block additions
+
+        mb.resizeBlocks(br,bc);
+        for( unsigned i=0; i<br; i++ )
+        {
+            if( i%2==0 ) // leave some rows empty
+            {
+                for( int j=bc-1; j>=0; j--) // set the blocs in reverse order, for fun.
+                {
+                    // create a block and give it some value
+                    BlockMN b;
+                    for( unsigned k=0; k<BROWS && k<BCOLS; k++ ){
+                        b[k][k] = (Real)i+j;
+                    }
+
+                    // insert the block in the matrix
+                    mb.addBlock(i,j,b);
+                }
+            }
+        }
+        mb.compress();
+
+        ASSERT_TRUE( Sofa_test<_Real>::matrixMaxDiff(ma,mb) < 100*Sofa_test<_Real>::epsilon() );
+
+
+
+        // building with one block per row
+        ma.clear();
+        mb.resizeBlocks(br,bc);
+        for( unsigned i=0; i<br; i++ )
+        {
+            if( i%2==0 ) // leave some rows empty
+            {
+                // create a block and give it some value
+                BlockMN b;
+                for( unsigned k=0; k<BROWS && k<BCOLS; k++ ){
+                    b[k][k] = (Real)i;
+                    ma.set(i*BROWS+k, i*BCOLS+k, i);
+                }
+
+                // insert the block in the matrix
+                mb.insertBackBlock(i,i,b);
+            }
+            else
+            {
+                // empty lines
+                mb.beginBlockRow(i);
+                mb.endSortedBlockRow();
+            }
+
+        }
+        mb.compress();
+
+        ASSERT_TRUE( Sofa_test<_Real>::matrixMaxDiff(ma,mb) < 100*Sofa_test<_Real>::epsilon() );
     }
 
     bool checkEigenMatrixBlockFromCompressedRowSparseMatrix()
