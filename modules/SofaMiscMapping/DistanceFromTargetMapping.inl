@@ -173,13 +173,12 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
             gap[0]=1.0;  // arbitrary unit vector
         }
 
-//        jacobian.beginRow(i);
         for(unsigned j=0; j<Nout; j++)
         {
+            jacobian.beginRow(i*Nout+j);
             for(unsigned k=0; k<Nin; k++ )
             {
                 jacobian.insertBack( i*Nout+j, indices[i]*Nin+k, gap[k] );
-//                jacobian.add( i*Nout+j, indices[i]*Nin+k, gap[k] );
             }
         }
 
@@ -323,9 +322,7 @@ void DistanceFromTargetMapping<TIn, TOut>::updateK( const core::MechanicalParams
 
     //        std::cerr<<SOFA_CLASS_METHOD<<childForce[i][0]<<std::endl;
 
-            K.beginBlockRow(idx);
-            K.createBlock(idx,b);
-            K.endBlockRow();
+            K.addBlock(idx,idx,b);
         }
     }
     K.compress();

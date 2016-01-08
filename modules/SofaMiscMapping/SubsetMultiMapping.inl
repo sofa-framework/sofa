@@ -73,6 +73,8 @@ void SubsetMultiMapping<TIn, TOut>::init()
         for(unsigned k=0; k<Nout; k++ )
         {
             unsigned row = i*Nout + k;
+
+            jacobian->beginRow(row);
             jacobian->insertBack( row, Nin*bcol +k, (SReal)1. );
         }
     }
