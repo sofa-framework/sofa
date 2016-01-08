@@ -88,10 +88,6 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
     if (dt == 0)
         dt = this->gnode->getDt();
 
-    sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
-
-    sofa::helper::AdvancedTimer::begin("Animate");
-    sofa::helper::AdvancedTimer::stepBegin("AnimationLoopStep"); // I am do not understand why the first levels of AdvanderTimer are not displayed
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Step");
@@ -105,14 +101,23 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
 
     SReal startTime = gnode->getTime();
 
+
+    sofa::helper::AdvancedTimer::stepBegin("BehaviorUpdatePositionVisitor");
     BehaviorUpdatePositionVisitor beh(params , dt);
     gnode->execute ( beh );
+    sofa::helper::AdvancedTimer::stepEnd("BehaviorUpdatePositionVisitor");
 
+
+    sofa::helper::AdvancedTimer::stepBegin("AnimateVisitor");
     AnimateVisitor act(params, dt);
     gnode->execute ( act );
+    sofa::helper::AdvancedTimer::stepEnd("AnimateVisitor");
 
+
+    sofa::helper::AdvancedTimer::stepBegin("UpdateSimulationContextVisitor");
     gnode->setTime ( startTime + dt );
     gnode->execute< UpdateSimulationContextVisitor >(params);
+    sofa::helper::AdvancedTimer::stepEnd("UpdateSimulationContextVisitor");
 
     {
         AnimateEndEvent ev ( dt );
@@ -139,13 +144,7 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
     simulation::Visitor::printCloseNode("Step");
 #endif
 
-    ///////////////////////////////////////////////////////////////////////
 
-    ///////////////////////////////////////////////////////////////////////
-
-    sofa::helper::AdvancedTimer::stepEnd("AnimationLoopStep");
-    sofa::helper::AdvancedTimer::end("Animate");
-    sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }
 
 
