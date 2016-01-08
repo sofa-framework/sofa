@@ -112,9 +112,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     if (dt == 0)
         dt = this->gnode->getDt();
 
-    sofa::helper::AdvancedTimer::begin("Animate");
-
-    sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Step");
 #endif
@@ -311,8 +308,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     simulation::Visitor::printCloseNode("Step");
 #endif
 
-    sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
-    sofa::helper::AdvancedTimer::end("Animate");
 }
 
 
