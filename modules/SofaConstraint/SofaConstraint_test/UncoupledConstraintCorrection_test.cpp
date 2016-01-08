@@ -25,6 +25,7 @@
 #include <SofaTest/Sofa_test.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
+#include <sofa/simulation/common/CleanupVisitor.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaConstraint/FreeMotionAnimationLoop.h>
@@ -71,6 +72,7 @@ struct UncoupledConstraintCorrection_test: public Sofa_test<SReal>
         {
             simulation::Node::SPtr nodeToRemove = child;
             nodeToRemove->detachFromGraph();
+            nodeToRemove->execute<simulation::CleanupVisitor>(sofa::core::ExecParams::defaultInstance());
             nodeToRemove->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
         }
 

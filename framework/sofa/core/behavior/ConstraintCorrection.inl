@@ -26,6 +26,7 @@
 #define SOFA_CORE_BEHAVIOR_CONSTRAINTCORRECTION_INL
 
 #include <sofa/core/behavior/ConstraintCorrection.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
 
 
 namespace sofa
@@ -44,6 +45,28 @@ void ConstraintCorrection< DataTypes >::init()
     mstate = dynamic_cast< behavior::MechanicalState< DataTypes >* >(getContext()->getMechanicalState());
 }
 
+template< class DataTypes >
+void ConstraintCorrection< DataTypes >::cleanup()
+{
+    while(!constraintsolvers.empty())
+    {
+        constraintsolvers.back()->removeConstraintCorrection(this);
+        constraintsolvers.pop_back();
+    }
+    sofa::core::behavior::BaseConstraintCorrection::cleanup();
+}
+
+template <class DataTypes>
+void ConstraintCorrection<DataTypes>::addConstraintSolver(core::behavior::ConstraintSolver *s)
+{
+    constraintsolvers.push_back(s);
+}
+
+template <class DataTypes>
+void ConstraintCorrection<DataTypes>::removeConstraintSolver(core::behavior::ConstraintSolver *s)
+{
+    constraintsolvers.remove(s);
+}
 
 template< class DataTypes >
 void ConstraintCorrection< DataTypes >::computeAndApplyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId f, const defaulttype::BaseVector * lambda)

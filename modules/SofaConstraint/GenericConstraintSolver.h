@@ -102,6 +102,8 @@ protected:
 public:
 	void init();
 
+    void cleanup();
+
 	bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
 	bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
         void rebuildSystem(double massFactor, double forceFactor);
@@ -125,6 +127,8 @@ public:
 
 	ConstraintProblem* getConstraintProblem();
 	void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=0);
+
+    virtual void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s);
 
 protected:
 	GenericConstraintProblem cp1, cp2, cp3;
