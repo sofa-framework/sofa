@@ -91,6 +91,7 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
     sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 
     sofa::helper::AdvancedTimer::begin("Animate");
+    sofa::helper::AdvancedTimer::stepBegin("AnimationLoopStep"); // I am do not understand why the first levels of AdvanderTimer are not displayed
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Step");
@@ -122,7 +123,6 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
     sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
     //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
     gnode->execute< UpdateMappingVisitor >(params);
-    sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
     {
         UpdateMappingEndEvent ev ( dt );
         PropagateEventVisitor act ( params , &ev );
@@ -143,6 +143,7 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
 
     ///////////////////////////////////////////////////////////////////////
 
+    sofa::helper::AdvancedTimer::stepEnd("AnimationLoopStep");
     sofa::helper::AdvancedTimer::end("Animate");
     sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }
