@@ -70,8 +70,8 @@ public:
         matC.resize(matrixsize,matrixsize);
 
         for(unsigned i = 0; i < matrixsize; ++i) {
-            matC.compressedMatrix.startVec( i );
-            matC.compressedMatrix.insertBack(i, i) = compliance;
+            matC.beginRow( i );
+            matC.insertBack(i, i, compliance);
         }
         matC.compressedMatrix.finalize();
 

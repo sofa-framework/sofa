@@ -53,8 +53,8 @@ void UniformCompliance<DataTypes>::reinit()
         if( compliance.getValue() ) // only fill the matrix for not null compliance, otherwise let play the sparsity
         {
             for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
-                matC.compressedMatrix.startVec(i);
-                matC.compressedMatrix.insertBack(i, i) = compliance.getValue();
+                matC.beginRow(i);
+                matC.insertBack(i, i, compliance.getValue());
             }
 
             matC.compressedMatrix.finalize();
@@ -81,8 +81,8 @@ void UniformCompliance<DataTypes>::reinit()
         if( k )
         {
             for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
-                matK.compressedMatrix.startVec(i);
-                matK.compressedMatrix.insertBack(i, i) = k;
+                matK.beginRow(i);
+                matK.insertBack(i, i, k);
             }
 
             matK.compressedMatrix.finalize();
@@ -101,8 +101,8 @@ void UniformCompliance<DataTypes>::reinit()
 		matB.resize(state->getMatrixSize(), state->getMatrixSize());
 		
 		for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
-			matB.compressedMatrix.startVec(i);
-			matB.compressedMatrix.insertBack(i, i) = -d;
+            matB.beginRow(i);
+            matB.insertBack(i, i, -d);
 		}
 
 		matB.compressedMatrix.finalize();
