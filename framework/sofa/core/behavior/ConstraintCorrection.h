@@ -76,6 +76,15 @@ protected:
 public:
     void init();
 
+    virtual void cleanup();
+
+    virtual void addConstraintSolver(core::behavior::ConstraintSolver *s);
+    virtual void removeConstraintSolver(core::behavior::ConstraintSolver *s);
+private:
+    std::list<core::behavior::ConstraintSolver*> constraintsolvers;
+
+
+public:
     /// Compute motion correction from the constraint resolution (LCP) calculated force
     ///
     /// @param cparams

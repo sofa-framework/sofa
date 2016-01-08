@@ -86,6 +86,27 @@ void GenericConstraintCorrection::bwdInit() {
     }
 }
 
+void GenericConstraintCorrection::cleanup()
+{
+    while(!constraintsolvers.empty())
+    {
+        constraintsolvers.back()->removeConstraintCorrection(this);
+        constraintsolvers.pop_back();
+    }
+    sofa::core::behavior::BaseConstraintCorrection::cleanup();
+}
+
+void GenericConstraintCorrection::addConstraintSolver(core::behavior::ConstraintSolver *s)
+{
+    constraintsolvers.push_back(s);
+}
+
+void GenericConstraintCorrection::removeConstraintSolver(core::behavior::ConstraintSolver *s)
+{
+    constraintsolvers.remove(s);
+}
+
+
 void GenericConstraintCorrection::rebuildSystem(double massFactor, double forceFactor) {
     for (unsigned i = 0; i < linearsolvers.size(); i++) {
         linearsolvers[i]->rebuildSystem(massFactor, forceFactor);
