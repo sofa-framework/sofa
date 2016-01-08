@@ -178,7 +178,8 @@ public:
     }
 
     /// Insert ASAP in the compressed matrix. There must be no value at this place already.
-    /// @warning basically works only if there is only a block on a row
+    /// @warning basically works only if there is only one block on the row
+    /// @warning empty rows should be created with a call to beginBlockRow + endSortedBlockRow
     void insertBackBlock( unsigned row, unsigned col, const Block& b )
     {
         for( unsigned r=0; r<Nout; r++ )
@@ -191,10 +192,11 @@ public:
 
 
     /** Prepare the insertion of a new row of blocks in the matrix.
-       Then create blocks using createBlock( unsigned column,  const Block& b ).
-        Then finally use endBlockRow() to validate the row insertion.
+        Then create blocks using createBlock( unsigned column,  const Block& b ).
+        Then finally use endBlockRow() or endSortedBlockRow() to validate the row insertion.
         @sa createBlock( unsigned column,  const Block& b )
         @sa endBlockRow()
+        @warning empty rows should be created with a call to beginBlockRow + endSortedBlockRow
         */
     void beginBlockRow(unsigned row)
     {
