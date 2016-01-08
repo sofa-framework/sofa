@@ -41,7 +41,7 @@ namespace sofa
 namespace simulation
 {
 
-SOFA_DECL_CLASS(DefaultVisualManagerLoop);
+SOFA_DECL_CLASS(DefaultVisualManagerLoop)
 
 int DefaultVisualManagerLoopClass = core::RegisterObject("The simplest Visual Loop Manager, created by default when user do not put on scene")
         .add< DefaultVisualManagerLoop >()
