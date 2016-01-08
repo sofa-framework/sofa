@@ -91,8 +91,8 @@ void FullCompliance<DataTypes>::reinit()
         {
             const unsigned index = std::min<unsigned>(i, damping.getValue().size() - 1);
             const SReal d = damping.getValue()[index];
-            matB.compressedMatrix.startVec(i);
-            if( d ) matB.compressedMatrix.insertBack(i, i) = -d;
+            matB.beginRow(i);
+            matB.insertBack(i, i, -d);
         }
         matB.compressedMatrix.finalize();
     }
