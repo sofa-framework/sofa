@@ -55,9 +55,9 @@ void DiagonalCompliance<DataTypes>::reinit()
         {
             for(unsigned int j = 0; j < m; ++j)
             {
-    //            matC.beginRow(row);
-                if( diagonal.getValue()[i][j] ) matC.insertBack(row, row, diagonal.getValue()[i][j]);
-    //            matC.add(row, row, diagonal.getValue()[i][j]);
+                matC.beginRow(row);
+                matC.insertBack(row, row, diagonal.getValue()[i][j]);
+
                 ++row;
             }
         }
@@ -79,7 +79,9 @@ void DiagonalCompliance<DataTypes>::reinit()
                         -1 / diagonal.getValue()[i][j] :
                         -1 / std::numeric_limits<Real>::epsilon();
 
-                if( k ) matK.insertBack(row, row, k);
+                matK.beginRow(row);
+                matK.insertBack(row, row, k);
+
                 ++row;
             }
         }
@@ -95,9 +97,9 @@ void DiagonalCompliance<DataTypes>::reinit()
 			const unsigned index = std::min<unsigned>(i, damping.getValue().size() - 1);
 			
 			const SReal d = damping.getValue()[index];
-			
-            matB.compressedMatrix.startVec(i);
-            if( d ) matB.compressedMatrix.insertBack(i, i) = -d;
+
+            matB.beginRow(i);
+            matB.insertBack(i, i, -d);
         }
 
         matB.compressedMatrix.finalize();

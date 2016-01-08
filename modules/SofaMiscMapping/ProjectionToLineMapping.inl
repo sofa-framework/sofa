@@ -84,6 +84,7 @@ void ProjectionToTargetLineMapping<TIn, TOut>::reinit()
 
         for(unsigned j=0; j<Nout; j++)
         {
+            jacobian.beginRow( i*Nout+j );
             for(unsigned k=0; k<Nout; k++ )
             {
                 jacobian.insertBack( i*Nout+j, index*Nin+k, n[j]*n[k] );
