@@ -155,7 +155,7 @@ class Deformable:
         cell = ''
         if not labelImage is None and not labels is None : # use labels to select specific voxels in branching image
             position="@"+self.topology.name+".position" if not self.topology is None else "@"+self.visual.name+".position"
-            offsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position =position, src="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage), labels=concat(labels), useGlobalIndices=useGlobalIndices, useIndexLabelPairs=useIndexLabelPairs)
+            offsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position =position, image="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage)+".image", transform="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage)+".transform", labels=concat(labels), useGlobalIndices=useGlobalIndices, useIndexLabelPairs=useIndexLabelPairs)
             cell = "@"+SofaPython.Tools.getObjectPath(offsets)+".cell"
 
         self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, cell, assemble, isMechanical=isMechanical)
