@@ -30,6 +30,7 @@
 #include <iostream>
 #include <algorithm>
 #include <sofa/core/collision/IntersectorFactory.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 
 namespace sofa
@@ -203,6 +204,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Ou
 
 int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2, OutputVector* contacts)
 {
+    
     if (e1.getIndex() >= e1.getCollisionModel()->getSize())
     {
         intersection->serr << "NewProximityIntersection::computeIntersection(Triangle, Triangle): ERROR invalid e1 index "
@@ -217,6 +219,12 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
         return 0;
     }
 
+    bool neighbor =  e1.getCollisionModel() == e2.getCollisionModel() && 
+        (e1.p1Index()==e2.p1Index() || e1.p1Index()==e2.p2Index() || e1.p1Index()==e2.p3Index() ||
+         e1.p2Index()==e2.p1Index() || e1.p2Index()==e2.p2Index() || e1.p2Index()==e2.p3Index() ||
+         e1.p3Index()==e2.p1Index() || e1.p3Index()==e2.p2Index() || e1.p3Index()==e2.p3Index());
+    
+
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const SReal dist2 = alarmDist*alarmDist;
     const Vector3& p1 = e1.p1();
@@ -227,6 +235,10 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
     const Vector3& q2 = e2.p2();
     const Vector3& q3 = e2.p3();
     const Vector3& qn = e2.n();
+
+    
+    if(neighbor && pn*qn>0)
+        return 0;
 
     const int f1 = e1.flags();
     const int f2 = e2.flags();
@@ -250,7 +262,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
     if (f2&TriangleModel::FLAG_P3)
         n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q3, contacts, id2+2, false);
 
-    if (intersection->useLineLine.getValue())
+    if (intersection->useLineLine.getValue() && !neighbor)
     {
         if (f1&TriangleModel::FLAG_E12)
         {

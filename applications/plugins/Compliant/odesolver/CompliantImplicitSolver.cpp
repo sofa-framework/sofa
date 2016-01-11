@@ -150,19 +150,22 @@ using namespace core::behavior;
     void CompliantImplicitSolver::integrate( SolverOperations& sop,
                                      const core::MultiVecCoordId& posId,
                                      const core::MultiVecDerivId& velId ) {
-        scoped::timer step("position integration");
-        const SReal& dt = sop.mparams().dt();
+        if(!this->f_onlyVelocity.getValue())
+        {
+            scoped::timer step("position integration");
+            const SReal& dt = sop.mparams().dt();
 
-        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-        VMultiOp multi;
+            typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+            VMultiOp multi;
 
-        multi.resize(1);
+            multi.resize(1);
 
-        multi[0].first = posId;
-        multi[0].second.push_back( std::make_pair(posId, 1.0) );
-        multi[0].second.push_back( std::make_pair(velId, beta.getValue() * dt) );
+            multi[0].first = posId;
+            multi[0].second.push_back( std::make_pair(posId, 1.0) );
+            multi[0].second.push_back( std::make_pair(velId, beta.getValue() * dt) );
 
-        sop.vop.v_multiop( multi );
+            sop.vop.v_multiop( multi );
+        }
     }
 
     void CompliantImplicitSolver::integrate( SolverOperations& sop,
@@ -170,25 +173,27 @@ using namespace core::behavior;
                                      const core::MultiVecDerivId& velId,
                                      const core::MultiVecDerivId& accId,
                                      const SReal& accFactor ) {
-        scoped::timer step("position integration");
-        const SReal& dt = sop.mparams().dt();
+        if(!this->f_onlyVelocity.getValue())
+        {
+            scoped::timer step("position integration");
+            const SReal& dt = sop.mparams().dt();
 
-        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-        VMultiOp multi;
+            typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+            VMultiOp multi;
 
-        multi.resize(2);
+            multi.resize(2);
 
-        multi[0].first = posId;
-        multi[0].second.push_back( std::make_pair(posId, 1.0) );
-        multi[0].second.push_back( std::make_pair(velId, dt*beta.getValue()) );
-        multi[0].second.push_back( std::make_pair(accId, accFactor*dt*beta.getValue()) );
+            multi[0].first = posId;
+            multi[0].second.push_back( std::make_pair(posId, 1.0) );
+            multi[0].second.push_back( std::make_pair(velId, dt*beta.getValue()) );
+            multi[0].second.push_back( std::make_pair(accId, accFactor*dt*beta.getValue()) );
 
-        multi[1].first = velId;
-        multi[1].second.push_back( std::make_pair(velId, 1.0) );
-        multi[1].second.push_back( std::make_pair(accId, accFactor) );
+            multi[1].first = velId;
+            multi[1].second.push_back( std::make_pair(velId, 1.0) );
+            multi[1].second.push_back( std::make_pair(accId, accFactor) );
 
-        sop.vop.v_multiop( multi );
-
+            sop.vop.v_multiop( multi );
+        }
 
 //        sop.vop.v_peq( velId, accId, accFactor );
 //        integrate( sop, posId, velId );
@@ -665,7 +670,7 @@ using namespace core::behavior;
                     dynamics_solution = x;
                 }
 
-                if(!this->f_onlyVelocity.getValue())
+                
                 {
                     switch( formulation.getValue().getSelectedId() )
                     {
