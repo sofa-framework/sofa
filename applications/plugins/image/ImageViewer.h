@@ -153,6 +153,7 @@ public:
     
     ImageViewer() : Inherited()
       , image(initData(&image,ImageTypes(),"image","input image"))
+      , showSlicedModels(initData(&showSlicedModels, false, "slicedModels", "display visual models on cutPlanes"))
       , histo(initData(&histo, HistogramType(256,256,false),"histo",""))
       , transform(initData(&transform, TransformType(), "transform" , ""))
       , plane ( initData ( &plane, ImagePlaneType(), "plane" , "" ) )
@@ -160,7 +161,6 @@ public:
       , vectorVisualization ( initData (&vectorVisualization, defaulttype::VectorVis(), "vectorvis", ""))
       , scroll( initData (&scroll, int(0), "scrollDirection", "0 if no scrolling, 1 for up, 2 for down, 3 left, and 4 for right"))
       , display( initData(&display, true, "display", "true if image is displayed, false otherwise"))
-      , showSlicedModels(initData(&showSlicedModels, false, "slicedModels", "display visual models on cutPlanes"))
 
     {
         this->addAlias(&image, "outputImage");
