@@ -19,6 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sstream>
+using std::stringstream ;
+
 #include "QSofaListView.h"
 #include "QDisplayPropertyWidget.h"
 #include "GraphListenerQListView.h"
@@ -26,13 +29,34 @@
 #include "ModifyObject.h"
 #include "GenGraphForm.h"
 #include "RealGUI.h"
+
 #include <sofa/simulation/DeleteVisitor.h>
 #include <SofaSimulationCommon/TransformationVisitor.h>
 #include <SofaSimulationCommon/xml/BaseElement.h>
 #include <SofaSimulationCommon/xml/XML.h>
 #include <sofa/helper/cast.h>
 
-#include <QMenu>
+#include <sofa/core/SofaLibrary.h>
+using sofa::core::SofaLibrary ;
+using sofa::core::CategoryLibrary ;
+using sofa::core::ComponentLibrary ;
+
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectCreator ;
+using sofa::core::ClassEntry ;
+
+#include <sofa/core/SofaLibrary.h>
+using sofa::core::SofaLibrary ;
+using sofa::core::CategoryLibrary ;
+using sofa::core::ComponentLibrary ;
+
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectCreator ;
+using sofa::core::ClassEntry ;
+
+#include <sofa/simulation/XMLPrintVisitor.h>
+using sofa::simulation::XMLPrintVisitor ;
+
 #include <QtGlobal> // version macro
 #include <QMessageBox>
 
@@ -40,6 +64,9 @@
 #include <QFileInfo>
 #include <QUrl>
 #include <QClipboard>
+#include <QMenu>
+#include <QDrag>
+#include <QMimeData>
 
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
@@ -61,6 +88,8 @@ QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
     attribute_(attribute),
     propertyWidget(NULL)
 {
+    setAcceptDrops(false);
+
     this->setObjectName(name);
     this->setWindowFlags(f);
     //List of objects
@@ -711,6 +740,51 @@ void QSofaListView::transformObject ( Node *node, double dx, double dy, double d
     transform.setScale(scale,scale,scale);
     transform.execute(node);
 }
+
+void QSofaListView::mouseMoveEvent(QMouseEvent *event)
+{
+    if (!(event->buttons() & Qt::LeftButton))
+        return;
+
+    if ((event->pos() - m_dragStartPosition).manhattanLength()
+         < QApplication::startDragDistance())
+        return;
+
+    QDrag *drag = new QDrag(this);
+    QMimeData *mimeData = new QMimeData;
+
+    Base* selectedBase = findBaseFromItem(currentItem()) ;
+    Node* selectedNode = dynamic_cast<Node*>(selectedBase) ;
+    BaseObject* selectedObject = dynamic_cast<BaseObject*>(selectedBase) ;
+    if(selectedNode){
+        stringstream tmp ;
+        sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+
+        XMLPrintVisitor print( params, tmp );
+        selectedNode->execute ( print );
+        mimeData->setText(QString(tmp.str().data()));
+        drag->setMimeData(mimeData);
+        Qt::DropAction dropAction = drag->exec();
+    }else if(selectedObject){
+        stringstream tmp ;
+        sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+
+        XMLPrintVisitor print( params, tmp ) ;
+        print.processBaseObject(selectedObject) ;
+        mimeData->setText(QString(tmp.str().data()));
+        drag->setMimeData(mimeData);
+        Qt::DropAction dropAction = drag->exec();
+    }
+
+}
+
+void QSofaListView::mousePressEvent(QMouseEvent * event){
+    if (event->button() == Qt::LeftButton) {
+        m_dragStartPosition = event->pos();
+    }
+    QTreeWidget::mousePressEvent(event) ;
+}
+
 
 
 

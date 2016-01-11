@@ -27,8 +27,11 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGroupBox>
-#include <QLabel>
 #include <QValidator>
+#include <QMimeData>
+#include <QLabel>
+#include <QDrag>
+#include <QCoreApplication>
 
 #define TEXTSIZE_THRESHOLD 45
 
@@ -53,7 +56,9 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     numWidgets_(0)
 
 {
+    setCursor(Qt::OpenHandCursor);
     gridLayout_ = new QGridLayout();
+
     this->setLayout(gridLayout_);
 
     parent->layout()->addWidget(this);
@@ -151,19 +156,11 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
 
         setStyleSheet("QGroupBox{border:0;}");
         setContentsMargins(0, 0, 0, 0);
-        //setInsideMargin(0);
-        //setInsideSpacing(0);
-
-        //setColumns(numWidgets_);
     }
     else
     {
         setTitle(data_->getName().c_str());
         setContentsMargins(0,0,0,0);
-        //setInsideMargin(4);
-        //setInsideSpacing(2);
-
-        //setColumns(numWidgets_); //datawidget_->numColumnWidget());
     }
     gridLayout_->setContentsMargins(10,10,10,10);
     gridLayout_->addWidget(datawidget_, 0, 1);
@@ -179,6 +176,24 @@ void QDisplayDataWidget::UpdateWidgets()
 {
     emit WidgetUpdate();
 }
+
+void QDisplayDataWidget::mousePressEvent(QMouseEvent * event){
+    if (event->button() == Qt::LeftButton) {
+            QDrag *drag = new QDrag(this);
+            QMimeData *mimeData = new QMimeData;
+
+            QString text;
+            text  = QString(data_->getName().c_str());
+            text += "=\'" ;
+            text += QString(data_->getValueString().c_str());
+            text += "\'\n" ;
+
+            mimeData->setText(text);
+            drag->setMimeData(mimeData);
+            Qt::DropAction dropAction = drag->exec();
+        }
+}
+
 
 QDataSimpleEdit::QDataSimpleEdit(QWidget* parent, const char* name, BaseData* data):
     DataWidget(parent,name,data)
@@ -203,9 +218,6 @@ bool QDataSimpleEdit::createWidgets()
         connect( innerWidget_.widget.lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT( setWidgetDirty() ) );
         layout->addWidget(innerWidget_.widget.lineEdit);
     }
-
-
-
 
     return true;
 }
@@ -252,12 +264,10 @@ void QDataSimpleEdit::writeToData()
     }
 }
 
-/* QPoissonRatioWidget */
 
 QPoissonRatioWidget::QPoissonRatioWidget(QWidget * parent, const char * name, sofa::core::objectmodel::Data<double> *data)
     :TDataWidget<double>(parent,name,data)
 {
-
 }
 
 
