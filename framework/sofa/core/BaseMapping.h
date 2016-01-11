@@ -177,6 +177,10 @@ public:
 protected:
     bool testMechanicalState(BaseState* state);
 
+    /// must be set to true each time Apply is called
+    /// and to false each time updateForceMask() is called
+    /// in order to call updateForceMask() only once per step
+    bool m_forceMaskNewStep;
 
     /// type used for masks
     typedef behavior::BaseMechanicalState::ForceMask ForceMask;

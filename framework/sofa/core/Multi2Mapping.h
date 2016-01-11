@@ -134,6 +134,7 @@ public:
         getConstVecIn2Coord(inPos, vecIn2Pos);
 
         this->apply(mparams, vecOutPos, vecIn1Pos, vecIn2Pos);
+        this->m_forceMaskNewStep = true;
     }
     /// This method must be reimplemented by all mappings.
     /// InPos and OutPos by default contains VecIds of type V_COORD.
@@ -206,7 +207,12 @@ public:
         helper::vector<const OutDataVecDeriv*> vecInForce;
         getConstVecOutDeriv(outForce, vecInForce);
         this->applyJT(mparams, vecOut1Force, vecOut2Force, vecInForce);
-        updateForceMask();
+
+        if( this->m_forceMaskNewStep )
+        {
+            this->m_forceMaskNewStep = false;
+            updateForceMask();
+        }
     }
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
