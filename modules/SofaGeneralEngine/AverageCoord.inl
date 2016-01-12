@@ -65,7 +65,7 @@ void AverageCoord<DataTypes>::init()
 template <class DataTypes>
 void AverageCoord<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>
@@ -102,7 +102,7 @@ void AverageCoord<DataTypes>::handleEvent(core::objectmodel::Event *event)
 template <class DataTypes>
 void AverageCoord<DataTypes>::onBeginAnimationStep(const double /*dt*/)
 {
-    update();
+    this->requestUpdate();
 }
 
 } // namespace engine

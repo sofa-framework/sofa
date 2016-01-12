@@ -77,7 +77,7 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::init()
 template <class DataTypes>
 void ExtrudeQuadsAndGenerateHexas<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

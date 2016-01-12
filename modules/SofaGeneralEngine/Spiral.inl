@@ -65,7 +65,7 @@ void Spiral<DataTypes>::init()
 template <class DataTypes>
 void Spiral<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 

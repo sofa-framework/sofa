@@ -143,7 +143,7 @@ void HausdorffDistance<DataTypes>::handleEvent(core::objectmodel::Event *event)
 template <class DataTypes>
 void HausdorffDistance<DataTypes>::onBeginAnimationStep(const double /*dt*/)
 {
-        update();
+    this->requestUpdate();
 }
 
 } // namespace engine

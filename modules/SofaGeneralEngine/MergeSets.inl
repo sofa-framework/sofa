@@ -71,7 +71,7 @@ void MergeSets<T>::init()
 template <class T>
 void MergeSets<T>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class T>

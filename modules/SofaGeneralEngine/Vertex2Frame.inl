@@ -72,7 +72,7 @@ void Vertex2Frame<DataTypes>::init()
 template <class DataTypes>
 void Vertex2Frame<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

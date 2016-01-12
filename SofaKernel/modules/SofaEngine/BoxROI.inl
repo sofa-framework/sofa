@@ -252,7 +252,7 @@ void BoxROI<DataTypes>::reinit()
     }
     boxes.endEdit();
 
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

@@ -164,7 +164,7 @@ void ValuesFromPositions<DataTypes>::init()
 template <class DataTypes>
 void ValuesFromPositions<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

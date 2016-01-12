@@ -522,7 +522,7 @@ void QuadSetTopologyModifier::propagateTopologicalEngineChanges()
 #ifndef NDEBUG
             std::cout << "QuadSetTopologyModifier::performing: " << topoEngine->getName() << std::endl;
 #endif
-            topoEngine->update();
+            topoEngine->requestUpdate();
         }
     }
 

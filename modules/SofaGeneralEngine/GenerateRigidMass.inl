@@ -88,7 +88,7 @@ void  GenerateRigidMass<DataTypes, MassType>::init()
 template <class DataTypes, class MassType>
 void GenerateRigidMass<DataTypes, MassType>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes, class MassType>

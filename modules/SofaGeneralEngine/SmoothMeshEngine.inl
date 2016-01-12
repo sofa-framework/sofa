@@ -71,7 +71,7 @@ void SmoothMeshEngine<DataTypes>::init()
 template <class DataTypes>
 void SmoothMeshEngine<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

@@ -87,7 +87,7 @@ void ComplementaryROI<DataTypes>::init()
 template <class DataTypes>
 void ComplementaryROI<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

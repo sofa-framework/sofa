@@ -35,7 +35,7 @@ void NormEngine<DataType>::init()
 template <class DataType>
 void NormEngine<DataType>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataType>

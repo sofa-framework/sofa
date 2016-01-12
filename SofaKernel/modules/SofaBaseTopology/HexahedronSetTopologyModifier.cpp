@@ -725,7 +725,7 @@ void HexahedronSetTopologyModifier::propagateTopologicalEngineChanges()
 #ifndef NDEBUG
             std::cout << "HexahedronSetTopologyModifier::performing: " << topoEngine->getName() << std::endl;
 #endif
-            topoEngine->update();
+            topoEngine->requestUpdate();
         }
     }
 

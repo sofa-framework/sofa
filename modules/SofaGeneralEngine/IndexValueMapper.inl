@@ -64,7 +64,7 @@ void IndexValueMapper<DataTypes>::init()
 template <class DataTypes>
 void IndexValueMapper<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

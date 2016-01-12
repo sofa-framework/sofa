@@ -209,7 +209,7 @@ void SubsetTopology<DataTypes>::init()
 template <class DataTypes>
 void SubsetTopology<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

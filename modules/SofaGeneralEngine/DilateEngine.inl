@@ -71,7 +71,7 @@ void DilateEngine<DataTypes>::init()
 template <class DataTypes>
 void DilateEngine<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

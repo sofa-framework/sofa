@@ -133,7 +133,7 @@ void MergeMeshes<DataTypes>::reinit()
 {
     createInputMeshesData();
 
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

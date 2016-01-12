@@ -71,7 +71,7 @@ void ExtrudeSurface<DataTypes>::init()
 template <class DataTypes>
 void ExtrudeSurface<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

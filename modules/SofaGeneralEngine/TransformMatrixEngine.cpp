@@ -75,7 +75,7 @@ void AbstractTransformMatrixEngine::init()
 
 void AbstractTransformMatrixEngine::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 /*

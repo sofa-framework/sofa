@@ -42,7 +42,7 @@ namespace engine
 
 template <class DataTypes>
 ClusteringEngine<DataTypes>::ClusteringEngine()
-    : useTopo(initData(&useTopo, true, "useTopo", "Use avalaible topology to compute neighborhood."))
+    : useTopo(initData(&useTopo, true, "useTopo", "Use available topology to compute neighborhood."))
     //,maxIter(initData(&maxIter, unsigned(500), "maxIter", "Max number of Lloyd iterations."))
     , radius(initData(&radius, (Real)1.0, "radius", "Neighborhood range."))
     , fixedRadius(initData(&fixedRadius, (Real)1.0, "fixedRadius", "Neighborhood range (for non mechanical particles)."))
@@ -285,7 +285,7 @@ bool ClusteringEngine<DataTypes>::load()
 {
     if (!this->input_filename.isSet()) return false;
 
-    input_filename.update();
+    input_filename.requestUpdate();
     std::string fname(this->input_filename.getFullPath());
     if(!fname.compare(loadedFilename)) return true;
 

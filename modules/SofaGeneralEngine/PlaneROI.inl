@@ -166,7 +166,7 @@ void PlaneROI<DataTypes>::init()
 template <class DataTypes>
 void PlaneROI<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 

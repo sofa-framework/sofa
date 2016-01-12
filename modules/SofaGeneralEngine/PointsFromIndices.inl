@@ -76,7 +76,7 @@ void PointsFromIndices<DataTypes>::init()
 template <class DataTypes>
 void PointsFromIndices<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

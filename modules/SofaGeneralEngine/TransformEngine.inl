@@ -69,7 +69,7 @@ void TransformEngine<DataTypes>::init()
 template <class DataTypes>
 void TransformEngine<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 //Declare a TransformOperation class able to do an operation on a Coord

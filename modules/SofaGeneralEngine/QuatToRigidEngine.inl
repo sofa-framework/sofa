@@ -71,7 +71,7 @@ void QuatToRigidEngine<DataTypes>::init()
 template <class DataTypes>
 void QuatToRigidEngine<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

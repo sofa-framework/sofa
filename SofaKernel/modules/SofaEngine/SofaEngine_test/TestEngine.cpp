@@ -62,7 +62,7 @@ void TestEngine::init()
 
 void TestEngine::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 void TestEngine::update()
