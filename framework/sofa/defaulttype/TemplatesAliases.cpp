@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <map>
-#include <sofa/helper/logging/messaging.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
