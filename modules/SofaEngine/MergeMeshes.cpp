@@ -76,7 +76,7 @@ template class SOFA_ENGINE_API MergeMeshes<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 
 
-} // namespace constraint
+} // namespace engine
 
 } // namespace component
 

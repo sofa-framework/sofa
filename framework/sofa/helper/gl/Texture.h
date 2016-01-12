@@ -50,12 +50,12 @@ private:
 public:
 
     Texture()
-        :image(NULL),id(0),repeat(true), linearInterpolation(true), generateMipmaps(false),
+        :image(NULL),id(0),repeat(true), linearInterpolation(true), generateMipmaps(true),
          srgbColorspace(false), minLod(-1000), maxLod(1000)
     {
     }
 
-    Texture (io::Image *img, bool repeat = true, bool linearInterpolation = true, bool generateMipmaps = false,
+    Texture (io::Image *img, bool repeat = true, bool linearInterpolation = true, bool generateMipmaps = true,
             bool srgbColorspace = false, float minLod = -1000, float maxLod = 1000)
         :image(img),id(0),repeat(repeat), linearInterpolation(linearInterpolation), generateMipmaps(generateMipmaps),
          srgbColorspace(srgbColorspace), minLod(minLod), maxLod(maxLod)
@@ -72,7 +72,7 @@ public:
     GLuint getId() const { return id; }
 
 private:
-    Texture(const Texture& ) {};
+    Texture(const Texture& ) {}
     Texture operator=(const Texture& ) { return Texture(); }
 };
 

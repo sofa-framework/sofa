@@ -216,19 +216,32 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
         }
         else
         {
-            //Node with multiple parent
-            QTreeWidgetItem *nodeItem=items[child];
+            static QPixmap pixMultiNode((const char**)iconmultinode_xpm);
+
+            // Node with multiple parents
             if (parent &&
-                parent != findObject(nodeItem->parent()) &&
-                !nodeWithMultipleParents.count(nodeItem))
+                parent != findObject(item->parent()) )
             {
-                QTreeWidgetItem* item= createItem(items[parent]);
-                //item->setDropEnabled(true);
-                QString name=QString("MultiNode ") + QString(child->getName().c_str());
-                item->setText(0, name);
-                nodeWithMultipleParents.insert(std::make_pair(items[child], item));
-                static QPixmap pixMultiNode((const char**)iconmultinode_xpm);
-                item->setIcon(0, QIcon(pixMultiNode));
+                // check that the multinode have not been added yet
+                // i.e. verify that all every item equivalent to current 'item' (in nodeWithMultipleParents) do not have the same 'parent'
+                std::multimap<QTreeWidgetItem *, QTreeWidgetItem*>::iterator it=nodeWithMultipleParents.lower_bound(item), itend=nodeWithMultipleParents.upper_bound(item);
+                for ( ; it!=itend && it->second->parent() != items[parent] ; ++it);
+                if( it==itend )
+                {
+                    QTreeWidgetItem* itemNew = createItem(items[parent]);
+                    //itemNew->setDropEnabled(true);
+    //                QString name=QString("MultiNode ") + QString(child->getName().c_str());
+    //                itemNew->setText(0, name);
+                    itemNew->setText(0, child->getName().c_str());
+                    nodeWithMultipleParents.insert(std::make_pair(item, itemNew));
+                    itemNew->setIcon(0, QIcon(pixMultiNode));
+
+                    // this is one more parent, the first child item must be displayed as a multinode
+                    {
+                        item->setIcon(0, QIcon(pixMultiNode));
+    //                    item->setText(0, QString("MultiNode ") + item->text(0) );
+                    }
+                }
             }
         }
     }

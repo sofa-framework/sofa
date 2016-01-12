@@ -16,7 +16,7 @@ using core::ConstMultiVecDerivId;
 
 /** (Non-linear) Static solver based on several iterations of dynamics integration.
  *  At each iteration, the velocity can be damped to speed-up convergence (velocityFactor)
- *  The solver stops when the last iteration did not move enough the positions (threshold)
+ *  The solver stops when the last iteration did not move enough the positions (threshold on velocity norm)
  *  or when the max nb of iterations is reached (iterations).
  *
  * @warning no collision detection is performed at each iteration (only at each step)
@@ -33,9 +33,11 @@ class CompliantPseudoStaticSolver : public CompliantOdeSolver {
 				
     SOFA_CLASS(CompliantPseudoStaticSolver, CompliantOdeSolver);
 				
-    Data<SReal> d_threshold;        ///< Convergence threshold between 2 iterations
+    Data<SReal> d_threshold;        ///< Convergence threshold between 2 iterations (velocity norm)
     Data<unsigned> d_iterations;    ///< Max number of iterations
-    Data<SReal> d_velocityFactor;        ///< [0,1]  1=fully damped, 0=fully dynamics
+    Data<SReal> d_velocityFactor;        ///< [0,1]  0=fully damped, 1=fully dynamics
+
+    Data<SReal> d_lastVelocity; ///< output, last velocity square norm
 
     CompliantPseudoStaticSolver();
     virtual ~CompliantPseudoStaticSolver(){}

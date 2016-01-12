@@ -15,10 +15,10 @@ set(HEADER_FILES
     OglModel.h
     OglRenderingSRGB.h
     OglSceneFrame.h
-    OglViewport.h
     PointSplatModel.h
     config.h
     initOpenGLVisual.h
+    MergeVisualModels.h
 )
 
 set(SOURCE_FILES
@@ -35,9 +35,9 @@ set(SOURCE_FILES
     OglModel.cpp
     OglRenderingSRGB.cpp
     OglSceneFrame.cpp
-    OglViewport.cpp
     PointSplatModel.cpp
     initOpenGLVisual.cpp
+    MergeVisualModels.cpp
 )
 
 if(SOFA_HAVE_GLEW)
@@ -54,6 +54,7 @@ if(SOFA_HAVE_GLEW)
         OglTexture.h
         OglVariable.h
         OglVariable.inl
+        OglViewport.h
         PostProcessManager.h
         SlicedVolumetricModel.h
         VisualManagerPass.h
@@ -69,6 +70,7 @@ if(SOFA_HAVE_GLEW)
         OglTetrahedralModel.cpp
         OglTexture.cpp
         OglVariable.cpp
+        OglViewport.cpp
         PostProcessManager.cpp
         SlicedVolumetricModel.cpp
         VisualManagerPass.cpp

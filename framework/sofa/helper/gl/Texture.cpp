@@ -311,7 +311,6 @@ void Texture::update()
 
 }
 
-
 void Texture::init()
 {
     io::Image::TextureType textureType = image->getTextureType();
@@ -471,11 +470,10 @@ void Texture::init()
     unsigned mipmaps = image->getMipmapCount();
 
     glGenTextures(1, &id); // Create the texture.
-    update();
-
+    glBindTexture(target, id);
 
 #if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_1_4)
-    if (GLEW_VERSION_1_4 && generateMipmaps)
+    if (generateMipmaps)
         glTexParameteri(target, GL_GENERATE_MIPMAP, GL_TRUE);
     else
 #endif
@@ -490,12 +488,9 @@ void Texture::init()
         glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 #if defined(SOFA_HAVE_GLEW) && defined(GLEW_EXT_texture_filter_anisotropic)
-        if (GLEW_EXT_texture_filter_anisotropic)
-        {
-            GLint maxAniso;
-            glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAniso);
-            glTexParameteri(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAniso);
-        }
+        GLint maxAniso;
+        glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAniso);
+        glTexParameteri(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAniso);
 #endif
     }
     else
@@ -511,14 +506,16 @@ void Texture::init()
     {
         glTexParameteri( target, GL_TEXTURE_WRAP_S, GL_REPEAT );
         glTexParameteri( target, GL_TEXTURE_WRAP_T, GL_REPEAT );
+#ifdef SOFA_HAVE_GLEW
         glTexParameteri( target, GL_TEXTURE_WRAP_R, GL_REPEAT );
+#endif // SOFA_HAVE_GLEW
     }
     else
     {
 #if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_1_2)
-            glTexParameteri( target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-            glTexParameteri( target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-            glTexParameteri( target, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
+        glTexParameteri( target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+        glTexParameteri( target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+        glTexParameteri( target, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
 #else
         std::cerr << __FUNCTION__<< " GLEW_VERSION_1_2 required for cubic texture." << std::endl;
 #endif
@@ -532,12 +529,14 @@ void Texture::init()
 #endif
 
 #if defined(SOFA_HAVE_GLEW) && defined(GLEW_VERSION_1_2)
-    if ((generateMipmaps || mipmaps > 1) && GLEW_VERSION_1_2)
+    if ((generateMipmaps || mipmaps > 1))
     {
         glTexParameterf(target, GL_TEXTURE_MIN_LOD, minLod);
         glTexParameterf(target, GL_TEXTURE_MAX_LOD, maxLod);
     }
 #endif
+
+    update();
 }
 
 void Texture::bind(void)

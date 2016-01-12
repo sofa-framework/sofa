@@ -346,7 +346,7 @@ template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
-
+#ifndef SOFA_NO_OPENGL
     glPushAttrib(GL_LIGHTING_BIT);
 
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
@@ -377,6 +377,7 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     }
 
     glPopAttrib();
+#endif // SOFA_NO_OPENGL
 }
 
 

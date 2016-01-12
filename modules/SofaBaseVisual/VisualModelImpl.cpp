@@ -123,6 +123,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , m_updateTangents  (initData   (&m_updateTangents, true, "updateTangents", "True if tangents should be updated at each iteration"))
     , m_handleDynamicTopology (initData   (&m_handleDynamicTopology, true, "handleDynamicTopology", "True if topological changes should be handled"))
     , m_fixMergedUVSeams (initData   (&m_fixMergedUVSeams, true, "fixMergedUVSeams", "True if UV seams should be handled even when duplicate UVs are merged"))
+    , m_keepLines (initData   (&m_keepLines, false, "keepLines", "keep and draw lines (false by default)"))
     , m_vertices2       (initData   (&m_vertices2, "vertices", "vertices of the model (only if vertices have multiple normals/texcoords, otherwise positions are used)"))
     , m_vtexcoords      (initData   (&m_vtexcoords, "texcoords", "coordinates of the texture"))
     , m_vtangents       (initData   (&m_vtangents, "tangents", "tangents for normal mapping"))
@@ -309,7 +310,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             g.quad0 = facet2tq[g0.p0][NBQ];
             g.nbq = facet2tq[g0.p0+g0.nbp][NBQ] - g.quad0;
             if (g.materialId == -1 && !g0.materialName.empty())
-                sout << "face group " << ig << " name " << g0.materialName << " uses missing material " << g0.materialName << sendl;
+                sout << "face group " << ig << " name " << g0.materialName << " uses missing material " << g0.materialName << "   " << sendl;
         }
     }
 
@@ -321,7 +322,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     for (unsigned int i = 0; i < facetsImport.size(); i++)
     {
         const vector<vector <int> >& vertNormTexIndex = facetsImport[i];
-        if (vertNormTexIndex[0].size() < 3) continue; // ignore lines
+        if (vertNormTexIndex[0].size() < 3 && !m_keepLines.getValue() ) continue; // ignore lines
         const vector<int>& verts = vertNormTexIndex[0];
         const vector<int>& texs = vertNormTexIndex[1];
         const vector<int>& norms = vertNormTexIndex[2];
@@ -340,7 +341,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         nbVOut += s;
     }
 
-    sout << nbVIn << " input positions, " << nbVOut << " final vertices." << sendl;
+    sout << nbVIn << " input positions, " << nbVOut << " final vertices.   " << sendl;
 
     if (nbVIn != nbVOut)
         vsplit = true;
@@ -441,7 +442,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             idxs[j] = vertTexNormMap[verts[j]][std::make_pair((tex?texs[j]:-1), (m_useNormals.getValue() ? norms[j] : 0))];
             if ((unsigned)idxs[j] >= (unsigned)nbVOut)
             {
-                serr << "ERROR(VisualModelImpl): index "<<idxs[j]<<" out of range"<<sendl;
+                serr << this->getPathName()<<" index "<<idxs[j]<<" out of range"<<sendl;
                 idxs[j] = 0;
             }
         }
@@ -944,6 +945,7 @@ void VisualModelImpl::computeTangents()
     const ResizableExtVector<Quad>& quads = m_quads.getValue();
     const VecCoord& vertices = getVertices();
     const VecTexCoord& texcoords = m_vtexcoords.getValue();
+    VecCoord& normals = *(m_vnormals.beginEdit());
     VecCoord& tangents = *(m_vtangents.beginEdit());
     VecCoord& bitangents = *(m_vbitangents.beginEdit());
 
@@ -1018,8 +1020,12 @@ void VisualModelImpl::computeTangents()
     }
     for (unsigned int i = 0; i < vertices.size(); i++)
     {
-        tangents[i].normalize();
-        bitangents[i].normalize();
+        Coord n = normals[i];
+        Coord& t = tangents[i];
+        Coord& b = bitangents[i];
+
+        b = sofa::defaulttype::cross(n, t.normalized());
+        t = sofa::defaulttype::cross(b, n);
     }
     m_vtangents.endEdit();
     m_vbitangents.endEdit();
@@ -1858,7 +1864,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
 
     int nbv = x.size();
 
-    for (unsigned int i=0; i<x.size(); i++)
+    for (int i=0; i<nbv; i++)
     {
         *out << "v "<< std::fixed << x[i][0]<<' '<< std::fixed <<x[i][1]<<' '<< std::fixed <<x[i][2]<<'\n';
     }
@@ -1868,7 +1874,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     if (vertNormIdx.empty())
     {
         nbn = vnormals.size();
-        for (unsigned int i=0; i<vnormals.size(); i++)
+        for (int i=0; i<nbn; i++)
         {
             *out << "vn "<< std::fixed << vnormals[i][0]<<' '<< std::fixed <<vnormals[i][1]<<' '<< std::fixed <<vnormals[i][2]<<'\n';
         }
@@ -1896,7 +1902,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     if (!vtexcoords.empty())
     {
         nbt = vtexcoords.size();
-        for (unsigned int i=0; i<vtexcoords.size(); i++)
+        for (int i=0; i<nbt; i++)
         {
             *out << "vt "<< std::fixed << vtexcoords[i][0]<<' '<< std::fixed <<vtexcoords[i][1]<<'\n';
         }

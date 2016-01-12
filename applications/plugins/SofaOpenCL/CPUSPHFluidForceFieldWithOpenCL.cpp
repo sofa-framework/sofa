@@ -44,9 +44,9 @@ void CPUSPHFluidForceFieldWithOpenCL::addForce(unsigned int _gsize, const _devic
     sofa::gpu::opencl::myopenclEnqueueWriteBuffer(0,_v.m,_v.offset,v,sizeof(float3)*NUM_ELEMENTS);
     sofa::gpu::opencl::myopenclEnqueueWriteBuffer(0,_f.m,_f.offset,f,sizeof(float3)*NUM_ELEMENTS);
 
-    delete(pos4);
-    delete(cells);
-    delete(cellGhost);
-    delete(v);
-    delete(f);
+    delete [] pos4;
+    delete [] cells;
+    delete [] cellGhost;
+    delete [] v;
+    delete [] f;
 }

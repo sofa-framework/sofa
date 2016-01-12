@@ -128,11 +128,7 @@ protected:
         outT->getTranslation() = r.rotate(inT->getTranslation())*s + t;
 
         helper::Quater<Real> q = r*inT->qrotation;
-        // outT->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;  //  this does not convert quaternion to euler angles for some reasons..
-        if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // hack to avoid singularities
-        outT->getRotation()[0]=atan2(2*(q[3]*q[0]+q[1]*q[2]),1-2*(q[0]*q[0]+q[1]*q[1])) * (Real)180.0 / (Real)M_PI;
-        outT->getRotation()[1]=asin(2*(q[3]*q[1]-q[2]*q[0])) * (Real)180.0 / (Real)M_PI;
-        outT->getRotation()[2]=atan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]*q[1]+q[2]*q[2])) * (Real)180.0 / (Real)M_PI;
+        outT->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;
 
         outT->update(); // update internal data
 

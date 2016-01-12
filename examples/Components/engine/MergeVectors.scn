@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<Node name="root" dt="0.05" showBoundingTree="0" gravity="0 -9 1">
+    
+    <VisualStyle displayFlags="showVisual showBehaviorModels" />
+    
+    <Node name="mesh">
+        
+		<MeshObjLoader name="mesh1" filename="mesh/raptor_35kp.obj"/>  
+                <MeshObjLoader name="mesh2" filename="mesh/snake_body.obj"/>  
+                
+                <MergeVectors template="Vec3d" name="mergedPositions"  nbInputs="2" input1="@mesh1.position" input2="@mesh2.position" />
+                <MechanicalObject  template="Vec3d"  position="@mergedPositions.output" showObject="True" />
+                                
+    </Node>
+</Node>

@@ -1068,7 +1068,12 @@ void MechanicalObject<DataTypes>::init()
     if(this->getContext()->getProcessor()!=-1)
         numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
-    m_topology = this->getContext()->getMeshTopology();
+
+    if(this->getTags().empty())
+        m_topology = this->getContext()->getMeshTopology();
+    else
+        this->getContext()->get(m_topology, this->getTags());
+
 
     //helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
     //helper::WriteAccessor< Data<VecDeriv> > v_wA = *this->write(VecDerivId::velocity());
@@ -1083,29 +1088,12 @@ void MechanicalObject<DataTypes>::init()
         vOp(core::ExecParams::defaultInstance(), core::VecId::position(), core::VecId::restPosition());
     }
 
-    if (x_wA.size() != (std::size_t)vsize || v_wA.size() != (std::size_t)vsize)
+    // the given position and velocity vectors are empty
+    // note that when a vector is not  explicitly specified, its size won't change (1 by default)
+    if( x_wA.size() <= 1 && v_wA.size() <= 1 )
     {
-        // X and/or V were user-specified
-        // copy the last specified velocity to all points
-
-        const unsigned int xSize = x_wA.size();
-
-        helper::WriteAccessor< Data<VecDeriv> > v_wA = *this->write(sofa::core::VecDerivId::velocity());
-
-        if (v_wA.size() >= 1 && v_wA.size() < xSize)
-        {
-            unsigned int i = v_wA.size();
-            Deriv v1 = v_wA[i-1];
-            v_wA.resize(xSize);
-            while (i < v_wA.size())
-                v_wA[i++] = v1;
-        }
-
-        resize(xSize > v_wA.size() ? xSize : v_wA.size());
-    }
-    else if ( x_wA.size() <= 1)
-    {
-        if (m_topology != NULL && m_topology->hasPos() && m_topology->getContext() == this->getContext())
+        // if a topology is present, implicitly copy position from it
+        if (m_topology != NULL && m_topology->getNbPoints() && m_topology->getContext() == this->getContext())
         {
             int nbp = m_topology->getNbPoints();
             //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << m_topology->getName() <<std::endl;
@@ -1125,6 +1113,31 @@ void MechanicalObject<DataTypes>::init()
                 DataTypes::set(x_wA[i], m_topology->getPX(i), m_topology->getPY(i), m_topology->getPZ(i));
             }
         }
+        else if( x_wA.size() == 0 )
+        {
+            // special case when the user manually explicitly defined an empty position vector
+            // (e.g. linked to an empty vector)
+            resize(0);
+        }
+    }
+    else if (x_wA.size() != vsize || v_wA.size() != vsize)
+    {
+        // X and/or V were user-specified
+        // copy the last specified velocity to all points
+
+        const unsigned int xSize = x_wA.size();
+        const unsigned int vSize = v_wA.size();
+
+        if (vSize >= 1 && vSize < xSize)
+        {
+            unsigned int i = vSize;
+            Deriv v1 = v_wA[i-1];
+            v_wA.resize(xSize);
+            while (i < xSize)
+                v_wA[i++] = v1;
+        }
+
+        resize(xSize > v_wA.size() ? xSize : v_wA.size());
     }
 
     x_wAData->endEdit();
@@ -1205,7 +1218,7 @@ void MechanicalObject<DataTypes>::reinit()
     if (scale.getValue() != Vector3(1.0,1.0,1.0))
     {
         this->applyScale(scale.getValue()[0],scale.getValue()[1],scale.getValue()[2]);
-        p0 = p0.linearProduct(scale.getValue());
+        if (grid) p0 = p0.linearProduct(scale.getValue());
     }
 
     if (rotation.getValue()[0]!=0.0 || rotation.getValue()[1]!=0.0 || rotation.getValue()[2]!=0.0)
@@ -1223,7 +1236,7 @@ void MechanicalObject<DataTypes>::reinit()
     if (translation.getValue()[0]!=0.0 || translation.getValue()[1]!=0.0 || translation.getValue()[2]!=0.0)
     {
         this->applyTranslation( translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
-        p0 += translation.getValue();
+        if (grid) p0 += translation.getValue();
     }
 
 
@@ -1683,7 +1696,7 @@ void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::V
 #ifdef SOFA_SMP
         if (params->execMode() == core::ExecParams::EXEC_KAAPI)
         {
-            BaseObject::Task< VecInitResize < VecCoord > >(this,**defaulttype::getShared(*this->write(VecCoordId(v))), this->vsize);
+            BaseObject::Task< VecInitResize < VecCoord > >(this,**defaulttype::getShared(*this->write(VecCoordId(v))), vsize);
         }
 #endif /* SOFA_SMP */
     }
@@ -1707,7 +1720,7 @@ void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::V
 #ifdef SOFA_SMP
         if (params->execMode() == core::ExecParams::EXEC_KAAPI)
         {
-            BaseObject::Task < VecInitResize < VecDeriv > >(this,**defaulttype::getShared(*this->write(VecDerivId(v))), this->vsize);
+            BaseObject::Task < VecInitResize < VecDeriv > >(this,**defaulttype::getShared(*this->write(VecDerivId(v))), vsize);
         }
 #endif /* SOFA_SMP */
     }
@@ -1825,14 +1838,14 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
                 if (v.type == sofa::core::V_COORD)
                 {
                     helper::WriteOnlyAccessor< Data<VecCoord> > vv( params, *this->write(core::VecCoordId(v)) );
-                    vv.resize(this->vsize);
+                    vv.resize(vsize);
                     for (unsigned int i=0; i<vv.size(); i++)
                         vv[i] = Coord();
                 }
                 else
                 {
                     helper::WriteOnlyAccessor< Data<VecDeriv> > vv( params, *this->write(core::VecDerivId(v)) );
-                    vv.resize(this->vsize);
+                    vv.resize(vsize);
                     for (unsigned int i=0; i<vv.size(); i++)
                         vv[i] = Deriv();
                 }
@@ -2382,7 +2395,13 @@ SReal MechanicalObject<DataTypes>::vMax(const core::ExecParams* params, core::Co
 
     if (a.type == sofa::core::V_COORD )
     {
-        serr << "Invalid vMax operation: can not compute the max of V_Coord terms in vector "<< a << sendl;
+        const VecCoord &va = this->read(core::ConstVecCoordId(a))->getValue(params);
+
+        for (nat i=0; i<va.size(); i++)
+        {
+            for(unsigned j=0; j<DataTypes::coord_total_size; j++)
+                if (fabs(va[i][j])>r) r=fabs(va[i][j]);
+        }
     }
     else if (a.type == sofa::core::V_DERIV)
     {
@@ -2869,7 +2888,7 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params, core::
                 {
                     BaseObject::Task < vClear < VecCoord,Coord > >
                             (this,**defaulttype::getShared(*this->write(VecCoordId(v))),
-                             (unsigned) (this->vsize));
+                             (unsigned) (vsize));
 
                     /*unsigned int vt=ExecutionGraph::add_operation("v=0");
                      ExecutionGraph::read_var(vt,vv);
@@ -2879,11 +2898,11 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params, core::
                 {
                     BaseObject::Task < vClear < VecDeriv,Deriv > >
                             (this,**defaulttype::getShared(*this->write(VecDerivId(v))),
-                             (unsigned) (this->vsize));
+                             (unsigned) (vsize));
                     /*unsigned int vt=ExecutionGraph::add_operation("v=0");
                      ExecutionGraph::read_var(vt,vv);
                      ExecutionGraph::write_var(vt,vv);
-                     vv->resize(this->this->vsize);
+                     vv->resize(vsize);
                      */
                 }
             }

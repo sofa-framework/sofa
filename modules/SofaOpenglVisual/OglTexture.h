@@ -30,10 +30,9 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/GLSLShader.h>
-#include <SofaOpenglVisual/OglShader.h>
 #include <sofa/helper/gl/Texture.h>
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <SofaOpenglVisual/OglShader.h>
 
 namespace sofa
 {
@@ -82,7 +81,7 @@ protected:
     helper::io::Image* img;
 
 public:
-    static unsigned short MAX_NUMBER_OF_TEXTURE_UNIT;
+    static GLint MAX_NUMBER_OF_TEXTURE_UNIT;
 protected:
     OglTexture();
     virtual ~OglTexture();

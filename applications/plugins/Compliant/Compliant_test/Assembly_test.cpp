@@ -308,7 +308,7 @@ struct Assembly_test : public CompliantSolver_test
         fixNode->addObject(extensions);
 
         DistanceFromTargetMapping31::SPtr distanceMapping = New<DistanceFromTargetMapping31>();
-        MechanicalObject3* DOF = dynamic_cast<MechanicalObject3*>(string1->getMechanicalState());
+        MechanicalObject3* DOF = down_cast<MechanicalObject3>(string1->getMechanicalState());
         assert(DOF != NULL);
         distanceMapping->setModels(DOF,extensions.get());
         fixNode->addObject( distanceMapping );

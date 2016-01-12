@@ -24,7 +24,12 @@ CompliantPseudoStaticSolver<CompliantOdeSolver>::CompliantPseudoStaticSolver()
                    (SReal) 0.5,
                    "velocityFactor",
                    "amount of kept velocity at each iteration (0=fully damped, 1=fully dynamics)"))
-{}
+    , d_lastVelocity(initData(&d_lastVelocity,
+                   "lastVelocity",
+                   "(output) last velocity square norm"))
+{
+    d_lastVelocity.setReadOnly(true);
+}
 
 template< typename CompliantOdeSolver >
 void CompliantPseudoStaticSolver<CompliantOdeSolver>::init()
@@ -43,18 +48,20 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
 {
     typename CompliantOdeSolver::SolverOperations sop( params, this->getContext(), this->alpha.getValue(), this->beta.getValue(), dt, posId, velId, true );
 
-    // store previous position (for stop criterion)
-    typename CompliantOdeSolver::vec x_prev, x_current;
-
-
     const SReal& threshold = d_threshold.getValue();
     const SReal& velocityFactor = d_velocityFactor.getValue();
+
+    SReal lastVelocity = 0;
 
     unsigned i=0;
     for( unsigned imax=d_iterations.getValue() ; i<imax ; ++i )
     {
         // dynamics integation
         CompliantOdeSolver::solve( params, dt, posId, velId );
+
+        // stop if the velocity norm is too small i.e. it does not move enough from previous iteration
+        sop.vop.v_dot( velId, velId );
+        lastVelocity = sop.vop.finish();
 
         // damp velocity
         sop.vop.v_teq( velId, velocityFactor );
@@ -65,26 +72,15 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
         this->getContext()->executeVisitor( &bob );
         }
 
-        // stop if it does not move enough from previous iteration
-        if( !x_current.size() ) // scalar vectors can only be allocated after assembly
-        {
-            x_current.resize( this->sys.m );
-            x_prev.resize( this->sys.m );
-        }
-        this->sys.copyFromMultiVec( x_current, posId ); // get current position
-        x_prev -= x_current; // position variation during iteration
-
-        if( x_prev.dot( x_prev ) < threshold*threshold ) break;
-
         if( this->f_printLog.getValue() )
-        {
-            serr<<"position variation: "<<sqrt(x_prev.dot( x_prev ))<<sendl;
-        }
+            serr<<"velocity norm: "<<sqrt(lastVelocity)<<sendl;
 
-        x_prev = x_current; // store previous position
+        if( lastVelocity < threshold*threshold ) break;
     }
 
-    if( this->f_printLog.getValue() ) serr<<i<<" iterations"<<sendl;
+    d_lastVelocity.setValue(lastVelocity);
+
+    if( this->f_printLog.getValue() ) serr<<i+1<<" iterations"<<sendl;
 
 }
 
