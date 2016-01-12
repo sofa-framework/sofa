@@ -58,7 +58,7 @@ extern "C" PyObject * Base_findData(PyObject *self, PyObject *args )
             msg_error("Base_findData")<<"object '"<<obj->getName()<<"' does no have a field '"<<dataName<<"'";
             std::stringstream s;
             obj->writeDatas(s,";");
-            msg_error("Base_findData")<<s;
+            msg_error("Base_findData")<<s.str();
         }
 
         PyErr_BadArgument();
@@ -92,7 +92,7 @@ extern "C" PyObject * Base_findLink(PyObject *self, PyObject *args)
             msg_error("Base_findLink")<<"object '"<<obj->getName()<<"' does no have a field '"<<linkName<<"'";
             std::stringstream s;
             obj->writeDatas(s,";");
-            msg_error("Base_findLink")<<s;
+            msg_error("Base_findLink")<<s.str();
         }
 
         PyErr_BadArgument();
