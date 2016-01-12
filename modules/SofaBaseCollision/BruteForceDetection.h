@@ -92,7 +92,6 @@ public:
 private:
     bool _is_initialized;
     sofa::helper::vector<core::CollisionModel*> collisionModels;
-    Data<bool> bDraw;
 
     Data< helper::fixed_array<sofa::defaulttype::Vector3,2> > box;
 
@@ -107,7 +106,6 @@ protected:
     virtual bool keepCollisionBetween(core::CollisionModel *cm1, core::CollisionModel *cm2);
 
 public:
-    void setDraw(bool val) { bDraw.setValue(val); }
 
     void init();
     void reinit();
@@ -121,8 +119,7 @@ public:
         collisionModels.clear();
     }
 
-    /* for debugging */
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* /* vparams */) { }
 
     inline virtual bool needsDeepBoundingTree()const{return true;}
 };
