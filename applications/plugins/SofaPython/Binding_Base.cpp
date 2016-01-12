@@ -36,24 +36,29 @@ using namespace sofa::core::visual;
 #include <sofa/helper/OptionsGroup.h>
 using namespace sofa::helper;
 
+#include <sofa/helper/logging/Messaging.h>
+
+
 extern "C" PyObject * Base_findData(PyObject *self, PyObject *args )
 {
     Base* obj=((PySPtr<Base>*)self)->object.get();
     char *dataName;
     if (!PyArg_ParseTuple(args, "s",&dataName))
     {
-        std::cerr<<"Base_findData_impl not a string\n";
+        msg_error("Base_findData") <<"Base_findData_impl not a string\n";
         Py_RETURN_NONE;
     }
     BaseData * data = obj->findData(dataName);
     if (!data)
     {
         if( obj->hasField(dataName) )
-            std::cerr<<"Base_findData: object '"<<obj->getName()<<"' has a field '"<<dataName<<"' but it is not a Data"<<std::endl;
+            msg_error("Base_findData")<<"object '"<<obj->getName()<<"' has a field '"<<dataName<<"' but it is not a Data";
         else
         {
-            std::cerr<<"Base_findData: object '"<<obj->getName()<<"' does no have a field '"<<dataName<<"'"<<std::endl;
-            obj->writeDatas(std::cerr,";");
+            msg_error("Base_findData")<<"object '"<<obj->getName()<<"' does no have a field '"<<dataName<<"'";
+            std::stringstream s;
+            obj->writeDatas(s,";");
+            msg_error("Base_findData")<<s;
         }
 
         PyErr_BadArgument();
@@ -81,11 +86,13 @@ extern "C" PyObject * Base_findLink(PyObject *self, PyObject *args)
     if (!link)
     {
         if( obj->hasField(linkName) )
-            std::cerr<<"Base_findLink: object '"<<obj->getName()<<"' has a field '"<<linkName<<"' but it is not a Link"<<std::endl;
+            msg_error("Base_findLink")<<"object '"<<obj->getName()<<"' has a field '"<<linkName<<"' but it is not a Link";
         else
         {
-            std::cerr<<"Base_findLink: object '"<<obj->getName()<<"' does no have a field '"<<linkName<<"'"<<std::endl;
-            obj->writeDatas(std::cerr,";");
+            msg_error("Base_findLink")<<"object '"<<obj->getName()<<"' does no have a field '"<<linkName<<"'";
+            std::stringstream s;
+            obj->writeDatas(s,";");
+            msg_error("Base_findLink")<<s;
         }
 
         PyErr_BadArgument();
