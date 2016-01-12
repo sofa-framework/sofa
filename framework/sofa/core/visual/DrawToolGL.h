@@ -96,6 +96,8 @@ public:
     virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, const Vec4f& colour,  int subd=16);
     virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, float coneLength, const Vec4f& colour,  int subd=16);
 
+    virtual void drawCross(const Vector3&p, float length, const Vec4f& colour);
+
     virtual void drawPlus    (const float& radius, const Vec4f& colour, const int& subd=16);
 
     virtual void drawPoint(const Vector3 &p, const Vec4f &c);

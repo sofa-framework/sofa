@@ -229,9 +229,9 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
 template <> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
+
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     RigidTypes::Vec3 gravityCenter;
     defaulttype::Vec3d len;
@@ -265,24 +265,17 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualPara
 
         for (unsigned int i=0; i<x0.size(); i++)
         {
-            helper::gl::Axis::draw(x0[i].getCenter(), x0[i].getOrientation(), len*showAxisSize.getValue());
+            vparams->drawTool()->drawFrame(x0[i].getCenter(), x0[i].getOrientation(), len*showAxisSize.getValue());
         }
     }
 
     if(showCenterOfGravity.getValue())
     {
         gravityCenter /= x.size();
-        glColor3f (1,1,0);
-        glBegin (GL_LINES);
-        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(showAxisSize.getValue(),0,0) );
-        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(showAxisSize.getValue(),0,0) );
-        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(0,showAxisSize.getValue(),0) );
-        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(0,showAxisSize.getValue(),0) );
-        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(0,0,showAxisSize.getValue()) );
-        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(0,0,showAxisSize.getValue()) );
-        glEnd();
+        const sofa::defaulttype::Vec4f color(1.0,1.0,0.0,1.0);
+
+        vparams->drawTool()->drawCross(gravityCenter, showAxisSize.getValue(), color);
     }
-#endif /* SOFA_NO_OPENGL */
 }
 
 
@@ -341,14 +334,25 @@ SReal UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const core::Mec
 template <> SOFA_BASE_MECHANICS_API
 void UniformMass<Vec6dTypes, double>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     Mat3x3d R; R.identity();
-    glBegin(GL_LINES);
+
+    std::vector<Vector3> vertices;
+    std::vector<sofa::defaulttype::Vec4f> colors;
+
+    const sofa::defaulttype::Vec4f red(1.0,0.0,0.0,1.0);
+    const sofa::defaulttype::Vec4f green(0.0,1.0,0.0,1.0);
+    const sofa::defaulttype::Vec4f blue(0.0,0.0,1.0,1.0);
+
+    sofa::defaulttype::Vec4f colorSet[3];
+    colorSet[0] = red;
+    colorSet[1] = green;
+    colorSet[2] = blue;
+
     for (unsigned int i=0; i<x.size(); i++)
     {
         defaulttype::Vec3d len(1,1,1);
@@ -360,18 +364,15 @@ void UniformMass<Vec6dTypes, double>::draw(const core::visual::VisualParams* vpa
         len[1] = len[0];
         len[2] = len[0];
         R = R * MatrixFromEulerXYZ(x[i][3], x[i][4], x[i][5]);
-        glColor3f(1,0,0);
-        helper::gl::glVertexT(p);
-        helper::gl::glVertexT(p + R.col(0)*len[0]);
-        glColor3f(0,1,0);
-        helper::gl::glVertexT(p);
-        helper::gl::glVertexT(p + R.col(1)*len[1]);
-        glColor3f(0,0,1);
-        helper::gl::glVertexT(p);
-        helper::gl::glVertexT(p + R.col(2)*len[2]);
+
+        for(unsigned int j=0 ; j<3 ; j++)
+        {
+            vertices.push_back(p);
+            vertices.push_back(p + R.col(j)*len[j]);
+            colors.push_back(colorSet[j]);
+            colors.push_back(colorSet[j]);;
+        }
     }
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
 }
 
 template <> SOFA_BASE_MECHANICS_API
@@ -607,7 +608,6 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
 template <> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
@@ -637,17 +637,14 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualPara
     if(showCenterOfGravity.getValue())
     {
         gravityCenter /= x.size();
-        glColor3f (1,1,0);
-        glBegin (GL_LINES);
-        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(showAxisSize.getValue(),0,0) );
-        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(showAxisSize.getValue(),0,0) );
-        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(0,showAxisSize.getValue(),0) );
-        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(0,showAxisSize.getValue(),0) );
-        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(0,0,showAxisSize.getValue()) );
-        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(0,0,showAxisSize.getValue()) );
-        glEnd();
+        const sofa::defaulttype::Vec4f color(1.0,1.0,0.0,1.0);
+
+//        sofa::defaulttype::Vec3f temp = gravityCenter;
+//        for(unsigned int i=0 ; i<3 ; i++)
+//            temp[i] = gravityCenter[i];
+
+        vparams->drawTool()->drawCross(gravityCenter, showAxisSize.getValue(), color);
     }
-#endif /* SOFA_NO_OPENGL */
 }
 
 template <> SOFA_BASE_MECHANICS_API
@@ -703,14 +700,25 @@ SReal UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const core::Mec
 template <> SOFA_BASE_MECHANICS_API
 void UniformMass<Vec6fTypes, float>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     Mat3x3d R;
-    glBegin(GL_LINES);
+
+    std::vector<Vector3> vertices;
+    std::vector<sofa::defaulttype::Vec4f> colors;
+
+    const sofa::defaulttype::Vec4f red(1.0,0.0,0.0,1.0);
+    const sofa::defaulttype::Vec4f green(0.0,1.0,0.0,1.0);
+    const sofa::defaulttype::Vec4f blue(0.0,0.0,1.0,1.0);
+
+    sofa::defaulttype::Vec4f colorSet[3];
+    colorSet[0] = red;
+    colorSet[1] = green;
+    colorSet[2] = blue;
+
     for (unsigned int i=0; i<x.size(); i++)
     {
         defaulttype::Vec3d len(1,1,1);
@@ -722,18 +730,15 @@ void UniformMass<Vec6fTypes, float>::draw(const core::visual::VisualParams* vpar
         len[1] = len[0];
         len[2] = len[0];
         R = R * MatrixFromEulerXYZ(x[i][3], x[i][4], x[i][5]);
-        glColor3f(1,0,0);
-        helper::gl::glVertexT(p);
-        helper::gl::glVertexT(p + R.col(0)*len[0]);
-        glColor3f(0,1,0);
-        helper::gl::glVertexT(p);
-        helper::gl::glVertexT(p + R.col(1)*len[1]);
-        glColor3f(0,0,1);
-        helper::gl::glVertexT(p);
-        helper::gl::glVertexT(p + R.col(2)*len[2]);
+
+        for(unsigned int j=0 ; j<3 ; j++)
+        {
+            vertices.push_back(p);
+            vertices.push_back(p + R.col(j)*len[j]);
+            colors.push_back(colorSet[j]);
+            colors.push_back(colorSet[j]);;
+        }
     }
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
 }
 
 
