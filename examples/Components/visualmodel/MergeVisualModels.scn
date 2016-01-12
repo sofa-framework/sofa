@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01">
+
+    <OglModel name="visualModel1" fileMesh="mesh/snake_body.obj" translation="0 0 0" useNormals="0"  />
+    <OglModel name="visualModel2" fileMesh="mesh/snake_body.obj" translation="10 0 0" useNormals="0"/>
+    <OglModel name="visualModel3" fileMesh="mesh/snake_body.obj" translation="20 0 0" useNormals="0"/>
+    
+    
+    <MergeVisualModels name="merged" nb="2" input1="@visualModel1"  input2="@visualModel3"   texturename="textures/snakeColorMap.png" color="red"  />
+
+    
+</Node>

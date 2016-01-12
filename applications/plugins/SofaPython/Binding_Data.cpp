@@ -28,6 +28,14 @@
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/objectmodel/BaseNode.h>
+
+
+#include <sofa/core/visual/DisplayFlags.h>
+#include "Binding_DisplayFlagsData.h"
+
+#include <sofa/helper/OptionsGroup.h>
+#include "Binding_OptionsGroupData.h"
 
 #include <SofaDeformable/SpringForceField.h>
 
@@ -64,8 +72,15 @@ PyObject *GetDataValuePython(BaseData* data)
     int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
 
     // special cases...
-    Data<sofa::helper::vector<LinearSpring<SReal> > >* vectorLinearSpring = dynamic_cast<Data<sofa::helper::vector<LinearSpring<SReal> > >*>(data);
-    if (vectorLinearSpring)
+    if( Data<sofa::core::visual::DisplayFlags>* df = dynamic_cast<Data<sofa::core::visual::DisplayFlags>*>(data) )
+    {
+        return SP_BUILD_PYPTR(DisplayFlagsData,BaseData,df,false);
+    }
+    else if( Data<sofa::helper::OptionsGroup>* og = dynamic_cast<Data<sofa::helper::OptionsGroup>*>(data) )
+    {
+        return SP_BUILD_PYPTR(OptionsGroupData,BaseData,og,false);
+    }
+    else if ( Data<sofa::helper::vector<LinearSpring<SReal> > >* vectorLinearSpring = dynamic_cast<Data<sofa::helper::vector<LinearSpring<SReal> > >*>(data) )
     {
         // special type, a vector of LinearSpring objects
         if (typeinfo->size(valueVoidPtr)==1)
@@ -381,7 +396,16 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
     {
         // it's a string
         char *str = PyString_AsString(args); // for setters, only one object and not a tuple....
-        data->read(str);
+
+        if( strlen(str)>0 && str[0]=='@' ) // DataLink
+        {
+            data->setParent(str);
+            data->setDirtyOutputs(); // forcing children updates (should it be done in BaseData?)
+        }
+        else
+        {
+            data->read(str);
+        }
         return true;
     }
     else if (isList)
@@ -811,6 +835,26 @@ extern "C" PyObject * Data_setParent(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
+
+// returns the complete link path name (i.e. following the shape "@/path/to/my/object.dataname")
+extern "C" PyObject * Data_getLinkPath(PyObject * self, PyObject * /*args*/)
+{
+    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    Base* owner = data->getOwner();
+
+    if( owner )
+    {
+        if( BaseObject* obj = owner->toBaseObject() )
+            return PyString_FromString(("@"+obj->getPathName()+"."+data->getName()).c_str());
+        else if( BaseNode* node = owner->toBaseNode() )
+            return PyString_FromString(("@"+node->getPathName()+"."+data->getName()).c_str());
+    }
+
+    // default: no owner or owner of unknown type
+    SP_MESSAGE_WARNING( "Data_getLinkName the Data has no known owner" )
+    return PyString_FromString(data->getName().c_str());
+}
+
 SP_CLASS_METHODS_BEGIN(Data)
 SP_CLASS_METHOD(Data,getValueTypeString)
 SP_CLASS_METHOD(Data,getValueString)
@@ -822,6 +866,7 @@ SP_CLASS_METHOD(Data,unset)
 SP_CLASS_METHOD(Data,updateIfDirty)
 SP_CLASS_METHOD(Data,read)
 SP_CLASS_METHOD(Data,setParent)
+SP_CLASS_METHOD(Data,getLinkPath)
 SP_CLASS_METHODS_END
 
 

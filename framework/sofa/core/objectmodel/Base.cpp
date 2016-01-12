@@ -52,6 +52,7 @@ Base::Base()
 {
     name.setOwnerClass("Base");
     name.setAutoLink(false);
+    name.setReadOnly(true);
     f_printLog.setOwnerClass("Base");
     f_printLog.setAutoLink(false);
     f_tags.setOwnerClass("Base");

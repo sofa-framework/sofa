@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <map>
+#include <sofa/helper/logging/messaging.h>
 
 namespace sofa
 {
@@ -21,8 +22,8 @@ bool TemplateAliases::addAlias(const std::string& name, const std::string& resul
 {
 	TemplateAliasesMap& templateAliases = getTemplateAliasesMap();
 	if (templateAliases.find(name) != templateAliases.end())
-	{
-		std::cerr << "ERROR: ObjectFactory: cannot create template alias " << name << " as it already exists.\n";
+    {
+        msg_warning("ObjectFactory") << "cannot create template alias " << name << " as it already exists";
 		return false;
 	}
 	else

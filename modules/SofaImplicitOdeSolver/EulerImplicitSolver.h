@@ -62,13 +62,13 @@ namespace odesolver
  *
  * This corresponds to the following equation system:
  *
- *   \f$ ( (1+r_M) M - h B - h(h + r_K) K ) dv = h ( f(t) + (h+r_K) K v - r_M M v )\f$
+ *   \f$ ( (1+h r_M) M - h B - h(h + r_K) K ) dv = h ( f(t) + (h+r_K) K v + B v - r_M M v )\f$
  *
  * Moreover, the projective constraints filter out the forbidden motions.
  * This is equivalent with multiplying vectors with a projection matrix \f$P\f$.
  * Finally, the equation system set by this ode solver is:
  *
- *   \f$ P ( (1+r_M) M - h B - h(h + r_K) K ) P dv = P h ( f(t) + (h + r_K) K v - r_M M v )\f$
+ *   \f$ P ( (1+h r_M) M - h B - h(h + r_K) K ) P dv = P h ( f(t) + (h + r_K) K v + B v - r_M M v )\f$
  *
  *** 1st Order ***
  *
@@ -87,6 +87,21 @@ namespace odesolver
  *
  *   \f$ ( M + h K ) v_{t+h} = f_ext \f$
  *
+ *
+ *** Trapezoidal Rule ***
+ *
+ * The trapezoidal scheme is based on
+ *
+ *   \f$v_{t+h} = h/2 ( f(t+h) + f(t) )\f$
+ *
+ * With this and the same techniques as for the implicit Euler scheme we receive for *** 2nd Order *** equations
+ *
+ *   \f$ P ( (1+h/2 r_M) M - h/2 B - h/2 (h + r_K) K ) P dv = P h/2 ( 2 f(t) + (h + r_K) K v + B v - r_M M v )\f$
+ *
+ * and for *** 1st Order ***
+ *
+ *   \f$ ( M + h/2 K ) v_{t+h} = f_ext \f$
+ *
  */
 class SOFA_IMPLICIT_ODE_SOLVER_API EulerImplicitSolver : public sofa::core::behavior::OdeSolver
 {
@@ -98,6 +113,7 @@ public:
     Data<SReal> f_velocityDamping;
     Data<bool> f_firstOrder;
     Data<bool> f_verbose;
+    Data<bool> d_trapezoidalScheme;
 protected:
     EulerImplicitSolver();
 public:

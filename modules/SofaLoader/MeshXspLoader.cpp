@@ -67,7 +67,7 @@ bool MeshXspLoader::load()
 
     if (!file.good())
     {
-        serr << "Error: MeshXspLoader: Cannot read file '" << m_filename << "'." << sendl;
+        serr << "Cannot read file '" << m_filename << "'." << sendl;
         return false;
     }
 
@@ -88,7 +88,7 @@ bool MeshXspLoader::load()
     }
     else
     {
-        serr << "Error: MeshXspLoader: File '" << m_filename << "' finally appears not to be a Xsp file." << sendl;
+        serr << "File '" << m_filename << "' finally appears not to be a Xsp file." << sendl;
         file.close();
         return false;
 

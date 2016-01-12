@@ -21,6 +21,7 @@ set(HEADER_FILES
     Binding_Data.h
     Binding_DataEngine.h
     Binding_DisplayFlagsData.h
+    Binding_OptionsGroupData.h
     Binding_GridTopology.h
     Binding_LinearSpring.h
     Binding_Link.h
@@ -68,6 +69,7 @@ set(SOURCE_FILES
     Binding_Data.cpp
     Binding_DataEngine.cpp
     Binding_DisplayFlagsData.cpp
+    Binding_OptionsGroupData.cpp
     Binding_GridTopology.cpp
     Binding_LinearSpring.cpp
     Binding_Link.cpp
@@ -115,6 +117,7 @@ set(PYTHON_FILES
 
 
 find_package(PythonLibs 2.7 REQUIRED)
+sofa_create_target(PythonLibs SofaPython "${PYTHON_LIBRARIES}" "${PYTHON_INCLUDE_DIRS}")
 find_package(SofaGui REQUIRED)
 find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
@@ -139,7 +142,7 @@ if(${CMAKE_COMPILER_IS_GNUCC})
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral ${PYTHON_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral ${PythonLibs_Target})
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     # dlopen() is used on Linux for a workaround (see PythonEnvironnement.cpp)
     target_link_libraries(${PROJECT_NAME} PRIVATE dl)
@@ -147,7 +150,6 @@ endif()
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-target_include_directories(${PROJECT_NAME} PUBLIC "${PYTHON_INCLUDE_DIRS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${SOFAPYTHON_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAPYTHON_COMPILER_FLAGS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")

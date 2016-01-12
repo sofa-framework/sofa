@@ -18,7 +18,9 @@ namespace engine
 ///////////////////////////////////////////////////////////////
 template < class DataTypes, class OutputType >
 DisplacementTransformEngine< DataTypes, OutputType >::DisplacementTransformEngine()
-: d_x0( initData( &d_x0, "x0", "Rest position" ) )
+:
+Inherit()
+, d_x0( initData( &d_x0, "x0", "Rest position" ) )
 , d_x( initData( &d_x, "x", "Current position" ) )
 , d_displacements( initData( &d_displacements, "displacements", "Displacement transforms with respect to original rigid positions") )
 {
@@ -31,6 +33,9 @@ DisplacementTransformEngine< DataTypes, OutputType >::DisplacementTransformEngin
 template < class DataTypes, class OutputType >
 void DisplacementTransformEngine< DataTypes, OutputType >::init()
 {
+    // parent method
+    Inherit::init();
+
     // Computation of inverse matrix
     const VecCoord& x0 = d_x0.getValue();
     inverses.resize(x0.size());
@@ -43,6 +48,9 @@ void DisplacementTransformEngine< DataTypes, OutputType >::init()
 template < class DataTypes, class OutputType >
 void DisplacementTransformEngine< DataTypes, OutputType >::update()
 {
+    // parent method
+    Inherit::init();
+
     const VecCoord& x = d_x.getValue();
     const VecCoord& x0 = d_x0.getValue();
     const size_t size = x.size();
@@ -81,7 +89,6 @@ DisplacementMatrixEngine< DataTypes >::DisplacementMatrixEngine()
     this->d_displacements.setName( "displaceMats" );
     this->addAlias( &this->d_displacements, "displaceMats" );
 }
-
 
 template < class DataTypes >
 void DisplacementMatrixEngine< DataTypes >::init()
@@ -131,6 +138,8 @@ void DisplacementMatrixEngine< DataTypes >::reinit()
 
         this->SxInverses[i] =  S * this->inverses[i];
     }
+
+    this->update();
 }
 
 template < class DataTypes >
@@ -160,7 +169,6 @@ void DisplacementMatrixEngine< DataTypes >::update()
         displacements[i] = displacements[i] * this->SxInverses[i];
     }
     this->d_displacements.endEdit();
-
 }
 
 } // namespace engine

@@ -313,6 +313,17 @@ void QtGLViewer::init(void)
     setShortcut(QGLViewer::HELP, Qt::Key_H);
     // Disable ESC shortcut
     setShortcut(QGLViewer::EXIT_VIEWER, 0);
+
+
+    // some useful libQGLViewer's mouse bindings are using Shift and Ctrl keys
+    // that causes trouble with SOFA bindings
+    // so let's redefined them
+
+    // change pivot center: right click + double left click
+    setMouseBinding(Qt::NoModifier, Qt::LeftButton, RAP_FROM_PIXEL, true, Qt::RightButton);
+
+    // Zoom: right click + double middle click
+    setMouseBinding(Qt::NoModifier, Qt::MiddleButton, ZOOM_ON_PIXEL, true, Qt::RightButton);
 }
 
 // ---------------------------------------------------------

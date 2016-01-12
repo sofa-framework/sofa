@@ -177,6 +177,9 @@ public:
 
     Quater inverse() const;
 
+
+    defaulttype::Vec<3,Real> quatToRotationVector() const;
+
     defaulttype::Vec<3,Real> toEulerVector() const;
 
 
@@ -285,7 +288,9 @@ public:
     /// Return the eulerian vector resulting of the movement between 2 quaternions
     defaulttype::Vec<3,Real> angularDisplacement( Quater a, const Quater& b)
     {
-        return quatDiff(a,b).toEulerVector();
+        return quatDiff(a,b).quatToRotationVector();    // Use of quatToRotationVector instead of toEulerVector:
+                                                        // this is done to keep the old behavior (before the
+                                                        // correction of the toEulerVector function).
     }
 
 

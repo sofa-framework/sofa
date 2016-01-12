@@ -407,7 +407,7 @@ RegisterObject::operator int()
         {
             if (!reg.defaultTemplate.empty())
             {
-                msg_error("ObjectFactory") << "Default template for class " << entry.className << " already registered (" << reg.defaultTemplate << "), do not register " << entry.defaultTemplate << " as the default";
+                msg_warning("ObjectFactory") << "Default template for class " << entry.className << " already registered (" << reg.defaultTemplate << "), do not register " << entry.defaultTemplate << " as the default";
             }
             else
             {
@@ -418,7 +418,7 @@ RegisterObject::operator int()
         {
             if (reg.creatorMap.find(itc->first) != reg.creatorMap.end())
             {
-                msg_error("ObjectFactory") << "Class already registered: " << itc->first;
+                msg_warning("ObjectFactory") << "Class already registered: " << itc->first;
             }
             else
             {

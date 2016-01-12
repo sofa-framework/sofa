@@ -540,9 +540,7 @@ MeshTopology::MeshTopology()
     addAlias(&seqEdges,"lines");
     addAlias(&seqTetrahedra,"tetras");
     addAlias(&seqHexahedra,"hexas");
-
-
-
+    addAlias(&seqUVs,"texcoords");
 }
 
 void MeshTopology::init()
@@ -551,8 +549,6 @@ void MeshTopology::init()
     BaseMeshTopology::init();
     if (nbPoints==0)
     {
-
-
         // looking for upper topology
         if (seqHexahedra.isSet())
             UpperTopology = sofa::core::topology::HEXAHEDRON;
@@ -649,14 +645,14 @@ void MeshTopology::init()
 void MeshTopology::clear()
 {
     nbPoints = 0;
-    seqPoints.beginEdit()->clear(); seqPoints.endEdit();
-    seqEdges.beginEdit()->clear(); seqEdges.endEdit();
-    seqTriangles.beginEdit()->clear(); seqTriangles.endEdit();
-    seqQuads.beginEdit()->clear(); seqQuads.endEdit();
-    seqTetrahedra.beginEdit()->clear(); seqTetrahedra.endEdit();
-    seqHexahedra.beginEdit()->clear(); seqHexahedra.endEdit();
+    seqPoints.beginWriteOnly()->clear(); seqPoints.endEdit();
+    seqEdges.beginWriteOnly()->clear(); seqEdges.endEdit();
+    seqTriangles.beginWriteOnly()->clear(); seqTriangles.endEdit();
+    seqQuads.beginWriteOnly()->clear(); seqQuads.endEdit();
+    seqTetrahedra.beginWriteOnly()->clear(); seqTetrahedra.endEdit();
+    seqHexahedra.beginWriteOnly()->clear(); seqHexahedra.endEdit();
 
-    seqUVs.beginEdit()->clear(); seqUVs.endEdit();
+    seqUVs.beginWriteOnly()->clear(); seqUVs.endEdit();
 
     invalidate();
 }

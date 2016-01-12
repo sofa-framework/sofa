@@ -121,31 +121,31 @@ void OffSequenceLoader::handleEvent(sofa::core::objectmodel::Event* event)
 
 void OffSequenceLoader::clear()
 {
-    positions.beginEdit()->clear();
+    positions.beginWriteOnly()->clear();
     positions.endEdit();
-    edges.beginEdit()->clear();
+    edges.beginWriteOnly()->clear();
     edges.endEdit();
-    triangles.beginEdit()->clear();
+    triangles.beginWriteOnly()->clear();
     triangles.endEdit();
-    quads.beginEdit()->clear();
+    quads.beginWriteOnly()->clear();
     quads.endEdit();
-    polygons.beginEdit()->clear();
+    polygons.beginWriteOnly()->clear();
     polygons.endEdit();
-    tetrahedra.beginEdit()->clear();
+    tetrahedra.beginWriteOnly()->clear();
     tetrahedra.endEdit();
-    hexahedra.beginEdit()->clear();
+    hexahedra.beginWriteOnly()->clear();
     hexahedra.endEdit();
-    edgesGroups.beginEdit()->clear();
+    edgesGroups.beginWriteOnly()->clear();
     edgesGroups.endEdit();
-    trianglesGroups.beginEdit()->clear();
+    trianglesGroups.beginWriteOnly()->clear();
     trianglesGroups.endEdit();
-    quadsGroups.beginEdit()->clear();
+    quadsGroups.beginWriteOnly()->clear();
     quadsGroups.endEdit();
-    polygonsGroups.beginEdit()->clear();
+    polygonsGroups.beginWriteOnly()->clear();
     polygonsGroups.endEdit();
-    tetrahedraGroups.beginEdit()->clear();
+    tetrahedraGroups.beginWriteOnly()->clear();
     tetrahedraGroups.endEdit();
-    hexahedraGroups.beginEdit()->clear();
+    hexahedraGroups.beginWriteOnly()->clear();
     hexahedraGroups.endEdit();
 }
 
@@ -159,14 +159,14 @@ bool OffSequenceLoader::load(const char * filename)
 
     if (!file.good())
     {
-        serr << "Error: OffSequenceLoader: Cannot read file '" << m_filename << "'." << sendl;
+        serr << "Cannot read file '" << m_filename << "'." << sendl;
         return false;
     }
 
     file >> cmd;
     if (cmd != "OFF")
     {
-        serr << "Error: OffSequenceLoader: Not a OFF file (header problem) '" << m_filename << "'." << sendl;
+        serr << "Not a OFF file (header problem) '" << m_filename << "'." << sendl;
         return false;
     }
 

@@ -152,7 +152,7 @@ void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintViolation(const 
         const Coord dof2 = x2[m2Indices[pid]];
 
         getVCenter(dfree[pid]) = dof2.getCenter() - dof1.getCenter();
-        getVOrientation(dfree[pid]) =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation())) ;
+        getVOrientation(dfree[pid]) =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation())) ; // angularDisplacement compute the rotation vector btw the two quaternions
 
         if (pid < restVector.size())
             dfree[pid] -= restVector[pid];
@@ -179,7 +179,7 @@ void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::addContact(Deriv
     wm2.push_back(m2);
     Deriv diff;
     getVCenter(diff) = Q.getCenter() - P.getCenter();
-    getVOrientation(diff) =  P.rotate(q.angularDisplacement(Q.getOrientation() , P.getOrientation())) ;
+    getVOrientation(diff) =  P.rotate(q.angularDisplacement(Q.getOrientation() , P.getOrientation())) ; // angularDisplacement compute the rotation vector btw the two quaternions
     wrest.push_back(diff);
 }
 
@@ -274,7 +274,7 @@ void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintViolation(const 
         Coord dof2 = x2[m2Indices[pid]];
 
         getVCenter(dfree[pid]) = dof2.getCenter() - dof1.getCenter();
-        getVOrientation(dfree[pid]) =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation()));
+        getVOrientation(dfree[pid]) =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation())); // angularDisplacement compute the rotation vector btw the two quaternions
         if (pid < restVector.size())
             dfree[pid] -= restVector[pid];
 
@@ -319,7 +319,7 @@ void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::addContact(Deriv
     wm2.push_back(m2);
     Deriv diff;
     getVCenter(diff) = Q.getCenter() - P.getCenter();
-    getVOrientation(diff) =  P.rotate(q.angularDisplacement(Q.getOrientation() , P.getOrientation())) ;
+    getVOrientation(diff) =  P.rotate(q.angularDisplacement(Q.getOrientation() , P.getOrientation())) ; // angularDisplacement compute the rotation vector btw the two quaternions
     wrest.push_back(diff);
 }
 

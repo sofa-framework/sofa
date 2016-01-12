@@ -112,7 +112,6 @@ endif()
 
 
 if(SOFA_ENABLE_QWT)
-    find_package(qwt)
 
     list(APPEND MOC_HEADER_FILES
          GraphDataWidget.h
@@ -140,6 +139,14 @@ if(SOFAGUI_QGLVIEWER)
 
     list(APPEND MOC_HEADER_FILES viewer/qgl/QtGLViewer.h)
     list(APPEND SOURCE_FILES viewer/qgl/QtGLViewer.cpp)
+endif()
+
+# EdViewer
+if(SOFAGUI_EDITORVIEWER)
+    find_package(QGLViewer)
+
+    list(APPEND MOC_HEADER_FILES viewer/edgl/EditorViewer.h)
+    list(APPEND SOURCE_FILES viewer/edgl/EditorViewer.cpp)
 endif()
 
 if(SOFA_DUMP_VISITOR_INFO)

@@ -64,6 +64,7 @@
 
 #include <sofa/helper/system/console.h>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/logging/ConsoleMessageHandler.h>
 
 #ifdef SOFA_HAVE_GLUT_GUI
 #include <sofa/helper/system/glut.h>
@@ -188,6 +189,10 @@ int main(int argc, char** argv)
     .option(&affinity,'f',"affinity","Enable aFfinity base Work Stealing")
 #endif
     (argc,argv);
+
+    // Initialize the message handler(s), for logged messages
+    gMessageDispatcher.addHandler(new sofa::helper::logging::ConsoleMessageHandler());
+    // TODO: create additionnal handlers depending on command-line parameters
 
     // Note that initializations must be done after ArgumentParser that can exit the application (without cleanup)
     // even if everything is ok e.g. asking for help
