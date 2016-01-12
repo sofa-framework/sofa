@@ -521,10 +521,9 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                     }
                     else
                     {
-                        printf("Lists not yet supported...\n");
+                        msg_warning("SetDataValuePython") << "Lists not yet supported...";
                         PyErr_BadArgument();
                         return false;
-
                     }
                 }
 
@@ -620,7 +619,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                 }
                 else
                 {
-                    printf("Lists not yet supported...\n");
+                    msg_warning("SetDataValuePython") << "Lists not yet supported...";
                     PyErr_BadArgument();
                     return false;
 
@@ -747,9 +746,9 @@ extern "C" PyObject * Data_getSize(PyObject *self, PyObject * /*args*/)
     int rowWidth = typeinfo->size();
     int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
 
-    printf("Data_getSize rowWidth=%d nbRows=%d\n",rowWidth,nbRows);
+ //   printf("Data_getSize rowWidth=%d nbRows=%d\n",rowWidth,nbRows);
 
-    return PyInt_FromLong(0); //temp
+    return PyInt_FromLong(0); //temp ==> WTF ?????
 }
 
 extern "C" PyObject * Data_setSize(PyObject *self, PyObject * args)
