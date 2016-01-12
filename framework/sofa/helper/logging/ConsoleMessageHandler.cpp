@@ -57,7 +57,10 @@ ConsoleMessageHandler::ConsoleMessageHandler(MessageFormatter* formatter)
 void ConsoleMessageHandler::process(Message &m) {
     ostringstream out;
     m_formatter->formatMessage(m, out) ;
-    std::cout << out.str() << std::endl ;
+    if (m.type()=="error" || m.type()=="fatal")
+        std::cerr << out.str() << std::endl ;
+    else
+        std::cout << out.str() << std::endl ;
 }
 
 

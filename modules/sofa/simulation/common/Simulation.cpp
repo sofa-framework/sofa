@@ -245,6 +245,8 @@ void Simulation::initNode( Node* node)
 /// Execute one timestep. If do is 0, the dt parameter in the graph will be used
 void Simulation::animate ( Node* root, SReal dt )
 {
+    sofa::helper::AdvancedTimer::stepBegin("Simulation::animate");
+
     if ( !root ) {
         serr<<"Simulation::animate, no root found"<<sendl;
         return;
@@ -262,10 +264,13 @@ void Simulation::animate ( Node* root, SReal dt )
         return;
     }
 
+    sofa::helper::AdvancedTimer::stepEnd("Simulation::animate");
 }
 
 void Simulation::updateVisual ( Node* root)
 {
+    sofa::helper::AdvancedTimer::stepBegin("Simulation::updateVisual");
+
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     core::visual::VisualLoop* vloop = root->getVisualLoop();
 
@@ -278,6 +283,8 @@ void Simulation::updateVisual ( Node* root)
         serr<<"ERROR in updateVisual(): VisualLoop expected at the root node"<<sendl;
         return;
     }
+
+    sofa::helper::AdvancedTimer::stepEnd("Simulation::updateVisual");
 }
 
 /// Reset to initial state
@@ -387,6 +394,9 @@ void Simulation::updateVisualContext (Node* root)
 /// Render the scene
 void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
 {
+    sofa::helper::AdvancedTimer::begin("Animate");
+    sofa::helper::AdvancedTimer::stepBegin("Simulation::draw");
+
     core::visual::VisualLoop* vloop = root->getVisualLoop();
     if(vloop)
     {
@@ -400,6 +410,9 @@ void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
         serr<<"ERROR in draw() : VisualLoop expected at the root node"<<sendl;
         return;
     }
+
+    sofa::helper::AdvancedTimer::stepEnd("Simulation::draw");
+    sofa::helper::AdvancedTimer::end("Animate");
 }
 
 /// Export a scene to an OBJ 3D Scene

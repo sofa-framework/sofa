@@ -47,6 +47,8 @@ namespace core
 namespace behavior
 {
 
+class ConstraintSolver;
+
 /// @todo All methods in this class need to be commented
 
 /**
@@ -81,6 +83,16 @@ public:
     }
 
     /// @}
+
+    /// Keeps track of the constraint solver
+    ///
+    /// @param s is the constraint solver
+    virtual void addConstraintSolver(ConstraintSolver *s) = 0;
+
+    /// Remove reference to constraint solver
+    ///
+    /// @param s is the constraint solver
+    virtual void removeConstraintSolver(ConstraintSolver *s) = 0;
 
 
     /// Compute motion correction from the constraint resolution (LCP) calculated force

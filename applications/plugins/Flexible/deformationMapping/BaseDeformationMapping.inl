@@ -484,20 +484,8 @@ void BaseDeformationMappingT<JacobianBlockType>::updateK( const core::Mechanical
         }
     }
 
-
     for(size_t i=0; i<in.size(); i++)
-    {
-        //            vector<KBlock> blocks;
-        //            vector<unsigned> columns;
-        //            columns.push_back( i );
-        //            blocks.push_back( diagonalBlocks[i] );
-        //            K.appendBlockRow( i, columns, blocks );
-
-        K.beginBlockRow(i);
-        K.createBlock(i,diagonalBlocks[i]);
-        K.endBlockRow();
-    }
-    //        K.endEdit();
+        K.insertBackBlock(i,i,diagonalBlocks[i]);
     K.compress();
 }
 

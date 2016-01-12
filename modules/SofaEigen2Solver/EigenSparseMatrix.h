@@ -141,7 +141,6 @@ public:
     /// Resize the matrix without preserving the data (the matrix is set to zero), with the size given in number of blocks
     void resizeBlocks(int nbBlockRows, int nbBlockCols)
     {
-//        this->compressedMatrix.resize(nbBlockRows * Nout, nbBlockCols * Nin);
         this->resize(nbBlockRows * Nout, nbBlockCols * Nin);
     }
 
@@ -170,11 +169,34 @@ public:
 //    }
 
 
+    /// Schedule the addition of the block at the given place. Scheduled additions must be finalized using function compress().
+    void addBlock( unsigned row, unsigned col, const Block& b )
+    {
+        for( unsigned r=0; r<Nout; r++ )
+            for( unsigned c=0; c<Nin; c++ )
+                this->add( r + row*Nout, c + col*Nin, b[r][c] );
+    }
+
+    /// Insert ASAP in the compressed matrix. There must be no value at this place already.
+    /// @warning basically works only if there is only one block on the row
+    /// @warning empty rows should be created with a call to beginBlockRow + endSortedBlockRow
+    void insertBackBlock( unsigned row, unsigned col, const Block& b )
+    {
+        for( unsigned r=0; r<Nout; r++ )
+        {
+            this->beginRow( r + row*Nout );
+            for( unsigned c=0; c<Nin; c++ )
+                this->insertBack( r + row*Nout, c + col*Nin, b[r][c] );
+        }
+    }
+
+
     /** Prepare the insertion of a new row of blocks in the matrix.
-       Then create blocks using createBlock( unsigned column,  const Block& b ).
-        Then finally use endBlockRow() to validate the row insertion.
+        Then create blocks using createBlock( unsigned column,  const Block& b ).
+        Then finally use endBlockRow() or endSortedBlockRow() to validate the row insertion.
         @sa createBlock( unsigned column,  const Block& b )
         @sa endBlockRow()
+        @warning empty rows should be created with a call to beginBlockRow + endSortedBlockRow
         */
     void beginBlockRow(unsigned row)
     {
@@ -184,10 +206,16 @@ public:
     }
 
     /** Create a block in the current row, which must be previously
-        initialized using beginBlockRow(unsigned row).  The blocks
-        need not be created in column order. The blocks are not
-        actually created in the matrix until method endBlockRow() is
-        called.  If the block already exists, they will be added.
+        initialized using beginBlockRow(unsigned row).
+
+        If the blocks are NOT created in column order, call endBlockRow().
+        If the blocks are given in column order, endSortedBlockRow() will
+        be more efficient.
+
+        The blocks are not actually created in the matrix until method
+        endBlockRow()/endSortedBlockRow() is called.
+
+        @warning the block must NOT already exist
         */
     void createBlock( unsigned column,  const Block& b )
     {
@@ -198,6 +226,9 @@ public:
     /** Finalize the creation of the current block row.
       @sa beginBlockRow(unsigned row)
       @sa createBlock( unsigned column,  const Block& b )
+
+      If the block have been given in column order,
+      endSortedBlockRow() is more efficient.
       */
     void endBlockRow()
     {
@@ -205,20 +236,40 @@ public:
 
         for( unsigned r=0; r<Nout; r++ )   // process one scalar row after another
         {
-//           this->beginRow(r+ bRow*Nout);
+            this->beginRow(r+ bRow*Nout);
             for(unsigned i=0; i<p.size(); i++ )  // process the blocks in ascending order
             {
                 const Block& b = blocks[p[i]];
                 for( unsigned c=0; c<Nin; c++ )
                 {
-                    if( b[r][c]!=0.0 ){
-//                        this->insertBack( r + bRow*Nout, c + bColumns[p[i]] * Nin, b[r][c]);
-                        this->add( r + bRow*Nout, c + bColumns[p[i]] * Nin, b[r][c]);
-                    }
+                    this->insertBack( r + bRow*Nout, c + bColumns[p[i]] * Nin, b[r][c]);
                 }
             }
         }
     }
+
+
+    /** Finalize the creation of the current block row with
+     * blocks given in colum order.
+      @sa beginBlockRow(unsigned row)
+      @sa createBlock( unsigned column,  const Block& b ) in column order
+      */
+    void endSortedBlockRow()
+    {
+        for( unsigned r=0; r<Nout; r++ )   // process one scalar row after another
+        {
+            this->beginRow(r+ bRow*Nout);
+            for(unsigned i=0; i<bColumns.size(); i++ )  // process the blocks in ascending order
+            {
+                const Block& b = blocks[i];
+                for( unsigned c=0; c<Nin; c++ )
+                {
+                    this->insertBack( r + bRow*Nout, c + bColumns[i] * Nin, b[r][c]);
+                }
+            }
+        }
+    }
+
 
 
     // max: added template real type to work around the mess between
@@ -283,6 +334,8 @@ protected:
 	
 	template<class OutType, class InType>
 	void mult_impl(OutType& result, const InType& data) const {
+
+        if( data.empty() ) return;
 		 
 		// use optimized product if possible
         if(canCast(data)) {
@@ -332,6 +385,8 @@ protected:
 	template<class OutType, class InType>
 	void addMult_impl( OutType& result, const InType& data, Real fact) const {
 		
+        if( data.empty() ) return;
+
 		// use optimized product if possible
 		if( canCast(data) ) {
 
@@ -381,6 +436,8 @@ protected:
 
 	template<class InType, class OutType>
     void addMultTranspose_impl( InType& result, const OutType& data, Real fact) const {
+
+        if( data.empty() ) return;
 
 		// use optimized product if possible
 		if(canCast(result)) {

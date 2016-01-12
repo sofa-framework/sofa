@@ -182,6 +182,11 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         /// test apply: check if the child positions are the expected ones
         bool succeed=true;
         ReadOutVecCoord xout = outDofs->readPositions();
+        if (expectedChildCoords.size() != xout.size()) {
+            ADD_FAILURE() << "Size of output dofs is wrong: " << xout.size() << " expected: " << expectedChildCoords.size();
+            succeed = false;
+        }
+
         for( Index i=0; i<xout.size(); i++ )
         {
             if( !this->isSmall( difference(xout[i],expectedChildCoords[i]).norm(), errorMax ) ) {

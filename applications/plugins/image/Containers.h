@@ -78,7 +78,7 @@ public:
     /// difference
     bool operator!=( const NoPreallocationVector<T>& c ) const
     {
-        return ! *this==c;
+        return !(*this==c);
     }
 
     /// add a entry at the end
