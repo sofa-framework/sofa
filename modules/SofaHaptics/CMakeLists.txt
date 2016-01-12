@@ -21,8 +21,10 @@ set(SOURCE_FILES
     initHaptics.cpp
 )
 
+find_package(Boost QUIET REQUIRED COMPONENTS thread)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaConstraint)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${Boost_LIBRARIES} SofaConstraint)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_HAPTICS")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 

@@ -64,7 +64,7 @@ void SubsetMultiMapping<TIn, TOut>::init()
         jacobians[i]->resize(Nout*indexPairSize,Nin*this->fromModels[i]->getSize() ); // each jacobian has the same number of rows
     }
 
-    // fill the jacobians
+    // fill the Jacobians
     for(unsigned i=0; i<indexPairSize; i++)
     {
         unsigned parent = indexPairs.getValue()[i*2];
@@ -73,31 +73,15 @@ void SubsetMultiMapping<TIn, TOut>::init()
         for(unsigned k=0; k<Nout; k++ )
         {
             unsigned row = i*Nout + k;
-            jacobian->insertBack( row, Nin*bcol +k, (SReal)1. );
+
+            // the Jacobian could be filled in order, but empty rows should have to be managed
+            jacobian->add( row, Nin*bcol +k, (SReal)1. );
         }
     }
-//    // fill the jacobians
-//    vector<unsigned> rowIndex(this->getFrom().size(),0); // current block row index in each jacobian
-//    for(unsigned i=0; i<indexPairSize; i++)
-//    {
-//        unsigned parent = indexPairs[i*2];
-//        Jacobian* jacobian = jacobians[parent];
-//        unsigned& brow = rowIndex[parent];
-//        unsigned bcol = indexPairs[i*2+1];  // parent particle
-//        for(unsigned k=0; k<Nin; k++ )
-//        {
-////            baseMatrices[ indexPairs[i*2] ]->set( Nout*i+k, Nin*indexPairs[i*2+1], (SReal)1. );
-//            jacobian->beginRow(Nout*brow+k);
-//            jacobian->insertBack( Nout*brow+k, Nin*bcol +k, (SReal)1. );
-//        }
-//        brow++;
-//    }
 
-    // finalize the jacobians
+    // finalize the Jacobians
     for(unsigned i=0; i<baseMatrices.size(); i++ )
-    {
         baseMatrices[i]->compress();
-    }
 }
 
 template <class TIn, class TOut>

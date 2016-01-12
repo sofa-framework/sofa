@@ -354,6 +354,7 @@ const typename SubsetMapping<TIn, TOut>::js_type* SubsetMapping<TIn, TOut>::getJ
 
         for (unsigned i = 0; i < indices.size(); ++i) {
             for( unsigned j = 0; j < NOut; ++j) {
+                eigen.beginRow( i*NOut+j );
                 eigen.insertBack( i*NOut+j, indices[i]*NIn+j ,(SReal)1. );
             }
         }

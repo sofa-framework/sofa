@@ -487,12 +487,12 @@ void QSofaListView::RemoveNode()
     if( object_.type == typeNode)
     {
         emit Lock(true);
-        Node* node = object_.ptr.Node;
+        Node::SPtr node = object_.ptr.Node;
         if ( node == node->getRoot() )
         {
             //Attempt to destroy the Root node : create an empty node to handle new graph interaction
             Node::SPtr root = simulation::getSimulation()->createNewGraph( "Root" );
-            graphListener_->removeChild ( NULL, node);
+            graphListener_->removeChild ( NULL, node.get());
             graphListener_->addChild ( NULL, root.get() );
             emit RootNodeChanged(root.get(),NULL);
         }

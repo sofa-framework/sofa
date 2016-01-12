@@ -102,6 +102,8 @@ public:
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
     Data< ImageTypes > image;
     
+    Data<bool> showSlicedModels;
+
     // @name Histogram
     /**@{*/
     typedef defaulttype::Histogram<T> HistogramType;
@@ -151,6 +153,7 @@ public:
     
     ImageViewer() : Inherited()
       , image(initData(&image,ImageTypes(),"image","input image"))
+      , showSlicedModels(initData(&showSlicedModels, false, "slicedModels", "display visual models on cutPlanes"))
       , histo(initData(&histo, HistogramType(256,256,false),"histo",""))
       , transform(initData(&transform, TransformType(), "transform" , ""))
       , plane ( initData ( &plane, ImagePlaneType(), "plane" , "" ) )
@@ -158,6 +161,7 @@ public:
       , vectorVisualization ( initData (&vectorVisualization, defaulttype::VectorVis(), "vectorvis", ""))
       , scroll( initData (&scroll, int(0), "scrollDirection", "0 if no scrolling, 1 for up, 2 for down, 3 left, and 4 for right"))
       , display( initData(&display, true, "display", "true if image is displayed, false otherwise"))
+
     {
         this->addAlias(&image, "outputImage");
         this->addAlias(&transform, "outputTransform");
@@ -679,7 +683,33 @@ protected:
         {
             CImg<unsigned char> cplane = convertToUC( rplane->get_slice(rplane->getPlane()[i],i).resize(cutplane_res,cutplane_res,1,-100,1).cut(rplane->getClamp()[0],rplane->getClamp()[1]) );
 
-            if(cplane)
+            if (showSlicedModels.getValue())
+            {
+              CImg<unsigned char> cmodelplane =
+                  convertToUC(rplane->get_slicedModels(rplane->getPlane()[i], i)
+                                  .resize(cutplane_res, cutplane_res, 1, -100, 1)
+                                  .cut(rplane->getClamp()[0], rplane->getClamp()[1]));
+
+              cimg_forXYC(cmodelplane, x, y, c)
+              {
+                if (cmodelplane(x, y, 0, c) == 0)
+                  cmodelplane(x, y, 0, c) = (unsigned char)(cplane(x, y, 0, 0));
+              }
+              if (cmodelplane)
+              {
+                cimg_forXY(cmodelplane, x, y)
+                {
+                  unsigned char* b = cutplane_tex[i]->getImage()->getPixels() +
+                                     4 * (y * cutplane_res + x);
+                  for (unsigned int c = 0;
+                       c < 3 && c < (unsigned int)cmodelplane.spectrum(); c++)
+                    b[c] = cmodelplane(x, y, 0, c);
+                  b[3] = (unsigned char)(-1);
+                }
+                cutplane_tex[i]->update();
+              }
+            }
+            else if(cplane)
             {
                 cimg_forXY(cplane,x,y)
                 {

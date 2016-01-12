@@ -161,14 +161,13 @@ public:
         unsigned i = 0, j = 0;
         while( i < numBlocks )
         {
-            jacobian.beginBlockRow(i);
             if( j!=indices.size() && i==indices[j] )   // constrained particle
             {
                 Deriv::getJRigid(oldPos[j],block,method);
-                jacobian.createBlock(i,block); j++;
+                jacobian.insertBackBlock(i,i,block);
+                j++;
             }
-            else jacobian.createBlock(i,Block::s_identity);         // unconstrained particle: set diagonal to identity block
-            jacobian.endBlockRow();   // only one block to create
+            else jacobian.insertBackBlock(i,i,Block::s_identity);         // unconstrained particle: set diagonal to identity block
             i++;
         }
         jacobian.compress();

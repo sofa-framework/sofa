@@ -352,17 +352,7 @@ public:
         unsigned int size = this->fromModel->getSize();
         K.resizeBlocks(size,size);
         for(size_t i=0; i<jacobian.size(); i++)
-        {
-//            vector<KBlock> blocks;
-//            vector<unsigned> columns;
-//            columns.push_back( i );
-//            blocks.push_back( jacobian[i].getK(childForce[i]) );
-//            K.appendBlockRow( i, columns, blocks );
-            K.beginBlockRow(i);
-            K.createBlock(i,jacobian[i].getK(childForce[i]));
-            K.endBlockRow();
-        }
-//        K.endEdit();
+            K.insertBackBlock( i, i, jacobian[i].getK(childForce[i]) );
         K.compress();
     }
 
@@ -411,17 +401,7 @@ protected:
 
         eigenJacobian.resizeBlocks(outsize,insize);
         for(size_t i=0; i<jacobian.size(); i++)
-        {
-//            vector<MatBlock> blocks;
-//            vector<unsigned> columns;
-//            columns.push_back( i );
-//            blocks.push_back( jacobian[i].getJ() );
-//            eigenJacobian.appendBlockRow( i, columns, blocks );
-            eigenJacobian.beginBlockRow(i);
-            eigenJacobian.createBlock(i,jacobian[i].getJ());
-            eigenJacobian.endBlockRow();
-        }
-//        eigenJacobian.endEdit();
+            eigenJacobian.insertBackBlock( i, i, jacobian[i].getJ() );
         eigenJacobian.compress();
     }
 

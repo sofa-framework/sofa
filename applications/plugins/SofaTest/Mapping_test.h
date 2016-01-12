@@ -265,6 +265,11 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         /// test apply: check if the child positions are the expected ones
         bool succeed=true;
+
+        if (expectedChildNew.size() != xout.size()) {
+            ADD_FAILURE() << "Size of output dofs is wrong: " << xout.size() << " expected: " << expectedChildNew.size();
+            succeed = false;
+        }
         for( unsigned i=0; i<xout.size(); i++ )
         {
             if( !this->isSmall( difference(xout[i],expectedChildNew[i]).norm(), errorMax ) ) {

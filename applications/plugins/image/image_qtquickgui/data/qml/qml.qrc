@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>SofaDataTypes/qmldir</file>
-        <file>SofaDataTypes/DataType_imageplane.qml</file>
-        <file>SofaInteractors/qmldir</file>
-        <file>SofaInteractors/UserInteractor_Image.qml</file>
-    </qresource>
-</RCC>

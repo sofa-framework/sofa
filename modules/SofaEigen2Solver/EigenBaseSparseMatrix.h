@@ -64,6 +64,7 @@ This matrix can not be accessed randomly. Two access modes are implemented.
 
 The first access mode consists in inserting entries in increasing row, increasing column order.
 Method beginRow(Index index) must be called before any entry can be appended to row i.
+@warning beginRow must be called even for empty rows
 Then insertBack(i,j,value) must be used in for increasing j. There is no need to explicitly end a row.
 Finally, method compress() must be called after the last entry has been inserted.
 This is the most efficient access mode.
@@ -138,14 +139,20 @@ public:
         compress();
     }
 
-    /// Schedule the addition of the value at the given place. Scheduled additions must be finalized using function compress() .
+    /// Schedule the addition of the value at the given place. Scheduled additions must be finalized using function compress().
     void add( Index row, Index col, double value ){
         if( value!=0.0 ) incoming.push_back( Triplet(row,col,(Real)value) );
     }
 
+    void beginRow(Index index)
+    {
+        compressedMatrix.startVec(index);
+    }
+
     /// Insert in the compressed matrix. There must be no value at this place already. Efficient only if the value is inserted at the last place of the last row.
+    /// @warning the line must be created previously with "beginRow"
     void insertBack( Index row, Index col, Real value){
-        if( value!=0.0 ) compressedMatrix.insert(row,col) = value;
+        if( value!=0.0 ) compressedMatrix.insertBack(row,col) = value;
     }
 
     /// Return a reference to the given entry in the compressed matrix.There can (must ?) be a value at this place already. Efficient only if the it is at the last place of the compressed matrix.
