@@ -26,6 +26,11 @@
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/DataEngine.h>
+#ifdef SOFA_HAVE_BOOST_THREAD
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/lock_guard.hpp> 
+#endif
+//#include <sofa/helper/BackTrace.h>
 
 //#define SOFA_DDG_TRACE
 
@@ -38,10 +43,24 @@ namespace core
 namespace objectmodel
 {
 
+struct DDGNode::UpdateState
+{
+    sofa::helper::system::atomic<int> updateThreadID;
+    sofa::helper::system::atomic<int> lastUpdateThreadID;
+#ifdef SOFA_HAVE_BOOST_THREAD
+    boost::mutex updateMutex;
+#endif
+    UpdateState()
+    : updateThreadID(-1)
+    , lastUpdateThreadID(-1)
+    {}
+};
+
 /// Constructor
 DDGNode::DDGNode()
     : inputs(initLink("inputs", "Links to inputs Data"))
     , outputs(initLink("outputs", "Links to outputs Data"))
+    , updateStates(new UpdateState[SOFA_DATA_MAX_ASPECTS])
 {
 }
 
@@ -51,6 +70,7 @@ DDGNode::~DDGNode()
         (*it)->doDelOutput(this);
     for(DDGLinkIterator it=outputs.begin(); it!=outputs.end(); ++it)
         (*it)->doDelInput(this);
+    delete[] updateStates;
 }
 
 template<>
@@ -65,10 +85,9 @@ TClass<DDGNode,void>::TClass()
 
 void DDGNode::setDirtyValue(const core::ExecParams* params)
 {
-    bool& dirtyValue = dirtyFlags[currentAspect(params)].dirtyValue;
-    if (!dirtyValue)
+    FlagType& dirtyValue = dirtyFlags[currentAspect(params)].dirtyValue;
+    if (!dirtyValue.exchange_and_add(1))
     {
-        dirtyValue = true;
 
 #ifdef SOFA_DDG_TRACE
         // TRACE LOG
@@ -82,10 +101,9 @@ void DDGNode::setDirtyValue(const core::ExecParams* params)
 
 void DDGNode::setDirtyOutputs(const core::ExecParams* params)
 {
-    bool& dirtyOutputs = dirtyFlags[currentAspect(params)].dirtyOutputs;
-    if (!dirtyOutputs)
+    FlagType& dirtyOutputs = dirtyFlags[currentAspect(params)].dirtyOutputs;
+    if (!dirtyOutputs.exchange_and_add(1))
     {
-        dirtyOutputs = true;
         for(DDGLinkIterator it=outputs.begin(params), itend=outputs.end(params); it != itend; ++it)
         {
             (*it)->setDirtyValue(params);
@@ -93,12 +111,117 @@ void DDGNode::setDirtyOutputs(const core::ExecParams* params)
     }
 }
 
+void DDGNode::doCleanDirty(const core::ExecParams* params, bool warnBadUse)
+{
+    //if (!params) params = core::ExecParams::defaultInstance();
+    const int aspect = currentAspect(params);
+    FlagType& dirtyValue = dirtyFlags[aspect].dirtyValue;
+    if (!dirtyValue) // this node is not dirty, nothing to do
+    {
+        return;
+    }
+
+    UpdateState& state = updateStates[aspect];
+    int updateThreadID = state.updateThreadID;
+    if (updateThreadID != -1) // a thread is currently updating this node, dirty flags will be updated once it finishes.
+    {
+        return;
+    }
+
+    if (warnBadUse)
+    {
+        Base* owner = getOwner();
+        if (owner)
+        {
+            owner->serr << "Data " << getName() << " deprecated cleanDirty() called. "
+                "Instead of calling update() directly, requestUpdate() should now be called "
+                "to manage dirty flags and provide thread safety." << getOwner()->sendl;
+        }
+        //sofa::helper::BackTrace::dump();
+    }
+
+#ifdef SOFA_HAVE_BOOST_THREAD
+    // Here we know this thread does not own the lock (otherwise updateThreadID would not be -1 earlier), so we can take it
+    boost::lock_guard<boost::mutex> guard(state.updateMutex);
+#endif
+
+    dirtyValue = 0;
+
+#ifdef SOFA_DDG_TRACE
+    Base* owner = getOwner();
+    if (owner)
+        owner->sout << "Data " << getName() << " has been updated." << owner->sendl;
+#endif
+
+    for(DDGLinkIterator it=inputs.begin(params), itend=inputs.end(params); it != itend; ++it)
+        (*it)->dirtyFlags[aspect].dirtyOutputs = 0;
+}
+
 void DDGNode::cleanDirty(const core::ExecParams* params)
 {
-    bool& dirtyValue = dirtyFlags[currentAspect(params)].dirtyValue;
-    if (dirtyValue)
+    doCleanDirty(params, true);
+}
+
+void DDGNode::forceCleanDirty(const core::ExecParams* params)
+{
+    doCleanDirty(params, false);
+}
+
+void DDGNode::requestUpdate(const core::ExecParams* params)
+{
+    setDirtyValue(params);
+    requestUpdateIfDirty(params);
+}
+
+void DDGNode::requestUpdateIfDirty(const core::ExecParams* params)
+{
+    /*if (!params)*/ params = core::ExecParams::defaultInstance();
+    const int aspect = currentAspect(params);
+    FlagType& dirtyValue = dirtyFlags[aspect].dirtyValue;
+    UpdateState& state = updateStates[aspect];
+    const int currentThreadID = params->threadID();
+    int updateThreadID = state.updateThreadID;
+    if (updateThreadID == currentThreadID) // recursive call to update, ignoring
     {
-        dirtyValue = false;
+
+        //if (getOwner())
+        //    getOwner()->serr << "Data " << getName() << " recursive update() ignored." << getOwner()->sendl;
+        return;
+    }
+
+    if (dirtyValue == 0)
+    {
+        if (getOwner())
+            getOwner()->serr << "Data " << getName() << " requestUpdateIfDirty nothing to do." << getOwner()->sendl;
+        return;
+    }
+
+    // Make sure all inputs are updated (before taking the lock)
+    for(DDGLinkIterator it=inputs.begin(params), itend=inputs.end(params); it != itend; ++it)
+        (*it)->updateIfDirty(params);
+
+    if (dirtyValue == 0)
+    {
+        //if (getOwner())
+        //    getOwner()->serr << "Data " << getName() << " requestUpdateIfDirty nothing to do after updating inputs." << getOwner()->sendl;
+        return;
+    }
+
+#ifdef SOFA_HAVE_BOOST_THREAD
+    // Here we know this thread does not own the lock (otherwise updateThreadID would be currentThreadID earlier), so we can take it
+    boost::lock_guard<boost::mutex> guard(state.updateMutex);
+#endif
+    if (dirtyValue != 0)
+    {
+        // we need to call update
+
+        state.updateThreadID = currentThreadID; // store the thread ID to detect recursive calls
+        state.lastUpdateThreadID = currentThreadID;
+
+        update();
+
+        // dirtyValue is updated only once update() is complete, so that other threads know that they need to wait for it
+        dirtyValue = 0;
 
 #ifdef SOFA_DDG_TRACE
         Base* owner = getOwner();
@@ -107,8 +230,18 @@ void DDGNode::cleanDirty(const core::ExecParams* params)
 #endif
 
         for(DDGLinkIterator it=inputs.begin(params), itend=inputs.end(params); it != itend; ++it)
-            (*it)->dirtyFlags[currentAspect(params)].dirtyOutputs = false;
+            (*it)->dirtyFlags[aspect].dirtyOutputs = 0;
+        
+        state.updateThreadID = -1;
     }
+    else // else nothing to do, as another thread already updated this while we were waiting to acquire the lock
+    {
+#ifdef SOFA_DDG_TRACE
+        if (getOwner())
+            getOwner()->serr << "Data " << getName() << " update() from multiple threads (" << state.lastUpdateThreadID << " and " << currentThreadID << ")" << getOwner()->sendl;
+#endif
+    }
+
 }
 
 void DDGNode::copyAspect(int destAspect, int srcAspect)

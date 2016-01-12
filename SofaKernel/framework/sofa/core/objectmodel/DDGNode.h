@@ -169,13 +169,25 @@ public:
     /// Get the list of outputs for this DDGNode
     const DDGLinkContainer& getOutputs();
 
-    /// Update this value
+
+    /// Request this value to be updated (thread-safe)
+    void requestUpdate(const core::ExecParams* params = 0);
+
+    /// Request this value to be updated if it is dirty (thread-safe)
+    void requestUpdateIfDirty(const core::ExecParams* params = 0);
+
+private:
+    /// Update this value. For thread-safety, should no longer be called directly. Use requestUpdate() instead.
     virtual void update() = 0;
 
+    /// Set dirty flag to false ( internal method )
+    void doCleanDirty(const core::ExecParams* params, bool warnBadUse);
+
+public:
     /// Returns true if the DDGNode needs to be updated
     bool isDirty(const core::ExecParams* params = 0) const
     {
-        return dirtyFlags[currentAspect(params)].dirtyValue;
+        return dirtyFlags[currentAspect(params)].dirtyValue != 0;
     }
 
     /// Indicate the value needs to be updated
@@ -184,15 +196,18 @@ public:
     /// Indicate the outputs needs to be updated. This method must be called after changing the value of this node.
     virtual void setDirtyOutputs(const core::ExecParams* params = 0);
 
-    /// Set dirty flag to false
+    /// Set dirty flag to false ( note that this is no longer required, done automatically at the end of requestUpdate() / requestUpdateIfDirty() )
     void cleanDirty(const core::ExecParams* params = 0);
+
+    /// Force set dirty flag to false. Use with caution (beware of thread safety)
+    void forceCleanDirty(const core::ExecParams* params = 0);
 
     /// Utility method to call update if necessary. This method should be called before reading of writing the value of this node.
     void updateIfDirty(const core::ExecParams* params = 0) const
     {
         if (isDirty(params))
         {
-            const_cast <DDGNode*> (this)->update();
+            const_cast <DDGNode*> (this)->requestUpdateIfDirty(params);
         }
     }
 
@@ -253,14 +268,20 @@ protected:
 
 private:
 
+    typedef sofa::helper::system::atomic<int> FlagType;
+
     struct DirtyFlags
     {
-        DirtyFlags() : dirtyValue(false), dirtyOutputs(false) {}
+        DirtyFlags() : dirtyValue(0), dirtyOutputs(0) {}
 
-        bool dirtyValue;
-        bool dirtyOutputs;
+        FlagType dirtyValue;
+        FlagType dirtyOutputs;
     };
     helper::fixed_array<DirtyFlags, SOFA_DATA_MAX_ASPECTS> dirtyFlags;
+
+    // Thread safety structure, private to implementation
+    struct UpdateState;
+    UpdateState* updateStates;
 };
 
 } // namespace objectmodel
