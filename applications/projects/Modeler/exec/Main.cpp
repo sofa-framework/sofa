@@ -32,6 +32,8 @@
 #include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
+#include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/logging/ConsoleMessageHandler.h>
 
 #include <SofaComponentBase/initComponentBase.h>
 #include <SofaComponentCommon/initComponentCommon.h>
@@ -60,6 +62,9 @@ int main(int argc, char** argv)
     sofa::component::initComponentAdvanced();
     sofa::component::initComponentMisc();
 
+    // Initialize the message handler(s), for logged messages
+    gMessageDispatcher.addHandler(new sofa::helper::logging::ConsoleMessageHandler());
+    // TODO: create additionnal handlers depending on command-line parameters
 
     QApplication* application = new QApplication(argc, argv);
     (void)application;
