@@ -36,6 +36,13 @@
 #include <string.h>
 #include <fstream>
 
+#include <QtGlobal>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5,4,0)
+#include <QOpenGLWidget>
+#include <QSurfaceFormat>
+#include <QOpenGLContext>
+#endif // QT_VERSION >= QT_VERSION_CHECK(5,4,0)
 
 #include <sofa/gui/qt/viewer/SofaViewer.h>
 
@@ -76,9 +83,22 @@ using namespace sofa::helper::system::thread;
 using namespace sofa::component::collision;
 
 
-class QtViewer : public QGLWidget,  public sofa::gui::qt::viewer::OglModelSofaViewer
+class QtViewer
+#if QT_VERSION >= QT_VERSION_CHECK(5,4,0)
+        : public QOpenGLWidget
+#else
+        : public QGLWidget
+#endif // QT_VERSION >= QT_VERSION_CHECK(5,4,0)
+        , public sofa::gui::qt::viewer::OglModelSofaViewer
 {
     Q_OBJECT
+
+#if QT_VERSION >= QT_VERSION_CHECK(5,4,0)
+    typedef QOpenGLWidget OpenGLWidgetType;
+#else
+    typedef QGLWidget OpenGLWidgetType;
+#endif // QT_VERSION >= QT_VERSION_CHECK(5,4,0)
+
 
 private:
 #ifdef TRACKING
@@ -161,7 +181,11 @@ public:
     /// and can be used to unregister classes associated with in the the ObjectFactory.
     static int DisableViewer();
 
+#if QT_VERSION >= QT_VERSION_CHECK(5,4,0)
+    static QSurfaceFormat setupGLFormat(const unsigned int nbMSAASamples = 1);
+#else
     static QGLFormat setupGLFormat(const unsigned int nbMSAASamples = 1);
+#endif // QT_VERSION < QT_VERSION_CHECK(5,4,0)
     QtViewer( QWidget* parent, const char* name="", const unsigned int nbMSAASamples = 1 );
     ~QtViewer();
 
@@ -213,11 +237,11 @@ public:
     int GetWidth()
     {
         return _W;
-    };
+    }
     int GetHeight()
     {
         return _H;
-    };
+    }
 
     void	UpdateOBJ(void);
     void moveRayPickInteractor(int eventX, int eventY);
