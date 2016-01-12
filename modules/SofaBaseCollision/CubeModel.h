@@ -159,8 +159,6 @@ public:
 
     virtual bool isLeaf( int index ) const;
 
-    void draw(const core::visual::VisualParams*,int index);
-
     void draw(const core::visual::VisualParams* vparams);
 
     int addCube(Cube subcellsBegin, Cube subcellsEnd);
