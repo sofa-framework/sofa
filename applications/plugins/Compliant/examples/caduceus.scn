@@ -30,11 +30,11 @@
     
     <Node name="Snake" >
 
-        <SparseGridRamification n="4 12 3" fileTopology="mesh/snake_body.obj" nbVirtualFinerLevels="3" finestConnectivity="0" />
-        <!--                <SparseGridRamification n="8 20 5" fileTopology="mesh/snake_body.obj" nbVirtualFinerLevels="1" finestConnectivity="0" /> -->
+        <SparseGridRamification name="grid"  n="4 12 3" fileTopology="mesh/snake_body.obj" nbVirtualFinerLevels="3" finestConnectivity="0" />
+        <!--                <SparseGridRamification name="grid" n="8 20 5" fileTopology="mesh/snake_body.obj" nbVirtualFinerLevels="1" finestConnectivity="0" /> -->
 
         
-        <MechanicalObject name="dofs"  scale="1" dy="2"/>
+        <MechanicalObject name="dofs"  scale="1" dy="2" position="@grid.position"  tags="NoPicking" />
         <UniformMass totalMass="1000.0" />
         <HexahedronFEMForceField name="FEM" youngModulus="30000.0" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" isCompliance="0"/>
 
