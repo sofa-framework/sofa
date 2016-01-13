@@ -92,7 +92,7 @@ bool QtViewer::_mouseTrans = false;
 bool QtViewer::_mouseRotate = false;
 Quaternion QtViewer::_mouseInteractorNewQuat;
 
-#if QT_VERSION >= QT_VERSION_CHECK(5,4,0)
+#if defined(QT_VERSION) && QT_VERSION >= 0x050400
 QSurfaceFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
 {
     QSurfaceFormat f = QSurfaceFormat::defaultFormat();
@@ -152,23 +152,23 @@ QGLFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
     return f;
 }
 
-#endif // QT_VERSION >= QT_VERSION_CHECK(5,4,0)
+#endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
 
 // ---------------------------------------------------------
 // --- Constructor
 // ---------------------------------------------------------
 QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAASamples)
-#if QT_VERSION >= QT_VERSION_CHECK(5,4,0)
+#if defined(QT_VERSION) && QT_VERSION >= 0x050400
     : QOpenGLWidget(parent)
  #else
-    : QGLWidget(setupGLFormat(nbMSAASamples), parent)
-#endif // QT_VERSION >= QT_VERSION_CHECK(5,4,0)
+    : QOpenGLWidget(setupGLFormat(nbMSAASamples), parent)
+#endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
 {
     this->setObjectName(name);
 
-#if QT_VERSION >= QT_VERSION_CHECK(5,4,0)
+#if defined(QT_VERSION) && QT_VERSION >= 0x050400
     this->setFormat(setupGLFormat(nbMSAASamples));
-#endif // QT_VERSION >= QT_VERSION_CHECK(5,4,0)
+#endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
 
     groot = NULL;
     initTexturesDone = false;
@@ -1128,7 +1128,7 @@ void QtViewer::paintGL()
 
 void QtViewer::paintEvent(QPaintEvent* qpe)
 {
-    OpenGLWidgetType::paintEvent(qpe );
+    QOpenGLWidget::paintEvent(qpe );
 /*
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);

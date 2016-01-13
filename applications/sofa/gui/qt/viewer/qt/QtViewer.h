@@ -38,11 +38,11 @@
 
 #include <QtGlobal>
 
-#if QT_VERSION >= QT_VERSION_CHECK(5,4,0)
+#if defined(QT_VERSION) && QT_VERSION >= 0x050400
 #include <QOpenGLWidget>
 #include <QSurfaceFormat>
 #include <QOpenGLContext>
-#endif // QT_VERSION >= QT_VERSION_CHECK(5,4,0)
+#endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
 
 #include <sofa/gui/qt/viewer/SofaViewer.h>
 
@@ -82,23 +82,17 @@ using namespace sofa::helper::gl;
 using namespace sofa::helper::system::thread;
 using namespace sofa::component::collision;
 
+#if defined(QT_VERSION) && QT_VERSION >= 0x050400
+typedef QOpenGLWidget QOpenGLWidget;
+#else
+typedef QGLWidget QOpenGLWidget;
+#endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
 
 class QtViewer
-#if QT_VERSION >= QT_VERSION_CHECK(5,4,0)
         : public QOpenGLWidget
-#else
-        : public QGLWidget
-#endif // QT_VERSION >= QT_VERSION_CHECK(5,4,0)
         , public sofa::gui::qt::viewer::OglModelSofaViewer
 {
     Q_OBJECT
-
-#if QT_VERSION >= QT_VERSION_CHECK(5,4,0)
-    typedef QOpenGLWidget OpenGLWidgetType;
-#else
-    typedef QGLWidget OpenGLWidgetType;
-#endif // QT_VERSION >= QT_VERSION_CHECK(5,4,0)
-
 
 private:
 #ifdef TRACKING
@@ -181,11 +175,11 @@ public:
     /// and can be used to unregister classes associated with in the the ObjectFactory.
     static int DisableViewer();
 
-#if QT_VERSION >= QT_VERSION_CHECK(5,4,0)
+#if defined(QT_VERSION) && QT_VERSION >= 0x050400
     static QSurfaceFormat setupGLFormat(const unsigned int nbMSAASamples = 1);
 #else
     static QGLFormat setupGLFormat(const unsigned int nbMSAASamples = 1);
-#endif // QT_VERSION < QT_VERSION_CHECK(5,4,0)
+#endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
     QtViewer( QWidget* parent, const char* name="", const unsigned int nbMSAASamples = 1 );
     ~QtViewer();
 
