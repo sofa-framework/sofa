@@ -478,17 +478,8 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const
     if (rootNode) picker.execute(rootNode->getContext());
     else std::cerr << "ERROR: root node not found." << std::endl;
 
-    if (!picker.particles.empty())
-    {
-        core::behavior::BaseMechanicalState *mstate = picker.particles.begin()->second.first;
-        result.mstate=mstate;
-        result.indexCollisionElement = picker.particles.begin()->second.second;
-        result.point[0] = mstate->getPX(result.indexCollisionElement);
-        result.point[1] = mstate->getPY(result.indexCollisionElement);
-        result.point[2] = mstate->getPZ(result.indexCollisionElement);
-        result.dist =  0;
-        result.rayLength = (result.point-origin)*direction;
-    }
+    picker.getClosestParticle( result.mstate, result.indexCollisionElement, result.point, result.rayLength );
+
     return result;
 }
 
