@@ -169,6 +169,14 @@ extern "C" PyObject * Node_getPathName(PyObject * self, PyObject * /*args*/)
     return PyString_FromString(node->getPathName().c_str());
 }
 
+extern "C" PyObject * Node_getRootPath(PyObject * self, PyObject * /*args*/)
+{
+    // BaseNode is not binded in SofaPython, so getRootPath is binded in Node instead
+    Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
+
+    return PyString_FromString(node->getRootPath().c_str());
+}
+
 // the same as 'getPathName' with a extra prefix '@'
 extern "C" PyObject * Node_getLinkPath(PyObject * self, PyObject * /*args*/)
 {
@@ -377,6 +385,7 @@ SP_CLASS_METHOD(Node,getChild)
 SP_CLASS_METHOD(Node,getChildren)
 SP_CLASS_METHOD(Node,getParents)
 SP_CLASS_METHOD(Node,getPathName)
+SP_CLASS_METHOD(Node,getRootPath)
 SP_CLASS_METHOD(Node,getLinkPath)
 SP_CLASS_METHOD(Node,createChild)
 SP_CLASS_METHOD(Node,addObject)
