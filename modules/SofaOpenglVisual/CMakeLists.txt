@@ -52,6 +52,7 @@ if(SOFA_HAVE_GLEW)
         OglTetrahedralModel.h
         OglTetrahedralModel.inl
         OglTexture.h
+        OglTexturePointer.h
         OglVariable.h
         OglVariable.inl
         OglViewport.h
@@ -69,6 +70,7 @@ if(SOFA_HAVE_GLEW)
         OglShadowShader.cpp
         OglTetrahedralModel.cpp
         OglTexture.cpp
+        OglTexturePointer.cpp
         OglVariable.cpp
         OglViewport.cpp
         PostProcessManager.cpp
