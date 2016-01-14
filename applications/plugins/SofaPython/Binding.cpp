@@ -45,7 +45,6 @@
 #include "Binding_MeshTopology.h"
 #include "Binding_GridTopology.h"
 #include "Binding_RegularGridTopology.h"
-#include "Binding_GridTopology.h"
 #include "Binding_BaseMechanicalState.h"
 #include "Binding_MechanicalObject.h"
 #include "Binding_PythonScriptController.h"
