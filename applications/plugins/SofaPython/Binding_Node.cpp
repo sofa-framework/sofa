@@ -195,7 +195,7 @@ extern "C" PyObject * Node_createChild(PyObject *self, PyObject * args)
     return SP_BUILD_PYSPTR(child);
 }
 
-extern "C" PyObject * Node_addObject(PyObject *self, PyObject * args)
+extern "C" PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, bool printWarnings)
 {
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     PyObject* pyChild;
@@ -209,8 +209,8 @@ extern "C" PyObject * Node_addObject(PyObject *self, PyObject * args)
     }
     node->addObject(object);
 
-    if (node->isInitialized())
-        SP_MESSAGE_WARNING( "Sofa.Node.addObject called on a node("<<node->getName()<<") that is already initialized" )
+    if (printWarnings && node->isInitialized())
+        SP_MESSAGE_WARNING( "Sofa.Node.addObject called on a node("<<node->getName()<<") that is already initialized ("<<object->getName()<<")" )
 //    if (!ScriptEnvironment::isNodeCreatedByScript(node))
 //        SP_MESSAGE_WARNING( "Sofa.Node.addObject called on a node("<<node->getName()<<") that is not created by the script" )
 
@@ -218,6 +218,15 @@ extern "C" PyObject * Node_addObject(PyObject *self, PyObject * args)
     // plus besoin !! node->init(sofa::core::ExecParams::defaultInstance());
 
     Py_RETURN_NONE;
+}
+
+extern "C" PyObject * Node_addObject(PyObject * self, PyObject * args)
+{
+    return Node_addObject_Impl( self, args, true );
+}
+extern "C" PyObject * Node_addObject_noWarning(PyObject * self, PyObject * args)
+{
+    return Node_addObject_Impl( self, args, false );
 }
 
 extern "C" PyObject * Node_removeObject(PyObject *self, PyObject * args)
@@ -389,6 +398,7 @@ SP_CLASS_METHOD(Node,getRootPath)
 SP_CLASS_METHOD(Node,getLinkPath)
 SP_CLASS_METHOD(Node,createChild)
 SP_CLASS_METHOD(Node,addObject)
+SP_CLASS_METHOD(Node,addObject_noWarning)
 SP_CLASS_METHOD(Node,removeObject)
 SP_CLASS_METHOD(Node,addChild)
 SP_CLASS_METHOD(Node,removeChild)
