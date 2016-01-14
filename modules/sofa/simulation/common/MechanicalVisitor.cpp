@@ -1595,10 +1595,11 @@ Visitor::Result MechanicalPickParticlesVisitor::fwdMechanicalMapping(simulation:
 /// get the closest pickable particle
 void MechanicalPickParticlesVisitor::getClosestParticle( core::behavior::BaseMechanicalState*& mstate, unsigned int& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength )
 {
+    mstate = NULL;
+
     if( particles.empty() ) return;
 
     rayLength = std::numeric_limits<SReal>::max();
-    indexCollisionElement = -1;
 
     core::behavior::BaseMechanicalState* mstatei;
     unsigned int indexCollisionElementi;
