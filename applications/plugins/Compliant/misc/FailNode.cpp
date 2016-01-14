@@ -85,6 +85,9 @@ const BaseContext* FailNode::getContext() const{ fail(); return 0; }
 /// Return the full path name of this node
 std::string FailNode::getPathName() const {fail(); return 0; }
 
+/// Return the path from this node to the root node
+std::string FailNode::getRootPath() const {fail(); return 0; }
+
 void* FailNode::findLinkDestClass(const BaseClass* /*destType*/, const std::string& /*path*/, const BaseLink* /*link*/){ fail(); return 0;}
 
 
