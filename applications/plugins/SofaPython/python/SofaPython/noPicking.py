@@ -8,7 +8,6 @@ class Visitor(object):
 ## so picking is only performed by collision detection on CollisionModel
 
     def treeTraversal(self):
-        #print 'ValidationVisitor treeTraversal'
         return -1 # dag
 
     def processNodeTopDown(self,node):
@@ -17,9 +16,7 @@ class Visitor(object):
         if state is not None:
             tags = state.tags
             tags.append( ['NoPicking'] )
-            sys.stdout.flush()
             state.tags = Tools.listListToStr(tags)
-
         return True
 
     def processNodeBottomUp(self,node):
