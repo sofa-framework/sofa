@@ -57,8 +57,6 @@ using sofa::core::objectmodel::Base;
 // Ceci afin de permettre l'utilisation de fonctions des sous-classes de Base
 PyObject* SP_BUILD_PYSPTR(Base* obj)
 {
-
-
     if( obj->toBaseObject() )
     {
         if( obj->toBaseLoader() )
@@ -72,14 +70,14 @@ PyObject* SP_BUILD_PYSPTR(Base* obj)
         {
             if( obj->toBaseMeshTopology() )
             {
+                if (dynamic_cast<sofa::component::topology::RegularGridTopology*>(obj))
+                    return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(RegularGridTopology));
+                if (dynamic_cast<sofa::component::topology::GridTopology*>(obj))
+                    return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(GridTopology));
                 if (dynamic_cast<sofa::component::topology::MeshTopology*>(obj))
                     return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(MeshTopology));
                 return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseMeshTopology));
             }
-            if (dynamic_cast<sofa::component::topology::RegularGridTopology*>(obj))
-                return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(RegularGridTopology));
-            if (dynamic_cast<sofa::component::topology::GridTopology*>(obj))
-                return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(GridTopology));
             return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(Topology));
         }
 
