@@ -60,6 +60,7 @@ public:
     /// inputs
     Data< SeqTriangles > triangles;
     Data< SeqQuads > quads;
+    Data< SetIndex > inputROI;
 
     /// outputs
     Data< SetIndex > indices;
@@ -72,6 +73,7 @@ protected:
     MeshBoundaryROI()    : Inherited()
       , triangles(initData(&triangles,"triangles","input triangles"))
       , quads(initData(&quads,"quads","input quads"))
+      , inputROI(initData(&inputROI,"inputROI","optional subset of the input mesh"))
       , indices(initData(&indices,"indices","Index lists of the closing parts"))
     {
     }
@@ -83,6 +85,7 @@ public:
     {
         addInput(&triangles);
         addInput(&quads);
+        addInput(&inputROI);
         addOutput(&indices);
         setDirtyValue();
     }
@@ -100,17 +103,19 @@ public:
 
         std::map<PointPair, unsigned int> edgeCount;
         for(size_t i=0;i<tri.size();i++)
-            for(unsigned int j=0;j<3;j++)
-            {
-                PointPair edge(tri[i][j],tri[i][(j==2)?0:j+1]);
-                this->countEdge(edgeCount,edge);
-            }
+            if(inROI(tri[i][0]) && inROI(tri[i][1]) && inROI(tri[i][2]))
+                for(unsigned int j=0;j<3;j++)
+                {
+                    PointPair edge(tri[i][j],tri[i][(j==2)?0:j+1]);
+                    this->countEdge(edgeCount,edge);
+                }
         for(size_t i=0;i<qd.size();i++)
-            for(unsigned int j=0;j<4;j++)
-            {
-                PointPair edge(qd[i][j],qd[i][(j==3)?0:j+1]);
-                this->countEdge(edgeCount,edge);
-            }
+            if(inROI(qd[i][0]) && inROI(qd[i][1]) && inROI(qd[i][2]) && inROI(qd[i][3]))
+                for(unsigned int j=0;j<4;j++)
+                {
+                    PointPair edge(qd[i][j],qd[i][(j==3)?0:j+1]);
+                    this->countEdge(edgeCount,edge);
+                }
 
         std::set<PointID> indexset; // enforce uniqueness since SetIndex is not a set..
         for(std::map<PointPair, unsigned int>::iterator it=edgeCount.begin();it!=edgeCount.end();++it)
@@ -123,7 +128,7 @@ public:
             oindices.push_back(*it);
     }
 
-    void countEdge(std::map<PointPair, unsigned int>& edgeCount,PointPair& edge)
+    void countEdge(std::map<PointPair, unsigned int>& edgeCount,PointPair& edge) const
     {
         if(edge.first>edge.second)
         {
@@ -135,6 +140,15 @@ public:
         if(it!=edgeCount.end()) it->second++;
         else  edgeCount[edge]=1;
     }
+
+    inline bool inROI(const PointID& index) const
+    {
+        const SetIndex& ROI=this->inputROI.getValue();
+        if(ROI.size()==0) return true; // ROI empty -> use all points
+        if(std::find(ROI.begin(),ROI.end(),index)==ROI.end()) return false;
+        return true;
+    }
+
 };
 
 } // namespace engine
