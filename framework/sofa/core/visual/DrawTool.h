@@ -168,6 +168,8 @@ public:
     virtual void setLightingEnabled(bool _isAnabled) = 0 ;
     /// @}
 
+    virtual void enableBlending() = 0;
+    virtual void disableBlending() = 0;
 
     /// @name Overlay methods
 

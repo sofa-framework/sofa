@@ -1279,14 +1279,13 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-    if ( !vparams->isSupported(sofa::core::visual::API_OpenGL) )
-    {
-        this->sout << "WARNING in : " << this->getClassName() << " in draw(VisualParams*) method :\n" <<
-                "Cannot display this component debug info beacause of using GL render instructions"<<
-                this->sendl;
-        return;
-    }
+//    if ( !vparams->isSupported(sofa::core::visual::API_OpenGL) )
+//    {
+//        this->sout << "WARNING in : " << this->getClassName() << " in draw(VisualParams*) method :\n" <<
+//                "Cannot display this component debug info beacause of using GL render instructions"<<
+//                this->sendl;
+//        return;
+//    }
 
 // 	serr<<"HexahedronFEMForceField<DataTypes>::draw()"<<sendl;
     if (!vparams->displayFlags().getShowForceFields()) return;
@@ -1351,12 +1350,9 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         Coord ph = x[h]-(x[h]-center)*percentage;
 
 
-
-
         if(_sparseGrid )
         {
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            vparams->drawTool()->enableBlending();
         }
 
 
@@ -1430,8 +1426,7 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         vparams->drawTool()->setPolygonMode(0,false);
 
     if(_sparseGrid )
-        glDisable(GL_BLEND);
-#endif /* SOFA_NO_OPENGL */
+       vparams->drawTool()->disableBlending();
 }
 
 
