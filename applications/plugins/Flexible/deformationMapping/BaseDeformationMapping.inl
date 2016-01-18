@@ -72,6 +72,7 @@ BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State
     , showColorOnTopology ( initData ( &showColorOnTopology,"showColorOnTopology","Color mapping method" ) )
     , showColorScale(initData(&showColorScale, (float)1.0, "showColorScale", "Color mapping scale"))
     , d_geometricStiffness(initData(&d_geometricStiffness, 0u, "geometricStiffness", "0=no GS, 1=non symmetric, 2=symmetrized"))
+    , d_parallel(initData(&d_parallel, false, "parallel", "use openmp parallelisation?"))
 {
     helper::OptionsGroup methodOptions(3,"0 - None"
                                        ,"1 - trace(F^T.F)-3"
@@ -89,7 +90,7 @@ BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State
     showDeformationGradientStyle.setValue(styleOptions);
 }
 
-
+/*
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::updateIndex(const size_t parentSize, const size_t childSize)
 {
@@ -164,6 +165,7 @@ void BaseDeformationMappingT<JacobianBlockType>::updateIndex()
         }
     }
 }
+*/
 
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::resizeAll(const InVecCoord& p0, const OutVecCoord& c0, const VecCoord& x0, const VecVRef& index, const VecVReal& w, const VecVGradient& dw, const VecVHessian& ddw, const VMaterialToSpatial& F0)
@@ -207,7 +209,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeAll(const InVecCoord& p0,
     for(size_t i=0; i<cSize; ++i)
         wa_F0[i] = F0[i];
 
-    updateIndex(p0.size(), c0.size());
+//    updateIndex(p0.size(), c0.size());
 
     initJacobianBlocks(p0, c0);
 }
@@ -266,7 +268,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
         size = out.size();
         this->toModel->resize(size);
         pos0.resize(size);  for(size_t i=0; i<size; i++ )  Out::get(pos0[i][0],pos0[i][1],pos0[i][2],out[i]);
-//        F0.resize(size); for(size_t i=0; i<size; ++i) identity(F0[i]); // necessary ?
+        //        F0.resize(size); for(size_t i=0; i<size; ++i) identity(F0[i]); // necessary ?
     }
 
     // init shape function
@@ -299,7 +301,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
         serr << "ShapeFunction<"<<ShapeFunctionType::Name()<<"> component not found" << sendl;
     }
 
-    updateIndex();
+//    updateIndex();
 
     // init jacobians
     initJacobianBlocks();
@@ -357,7 +359,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
 
     if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< size <<" custom gauss points imported"<<std::endl;
 
-    updateIndex();
+//    updateIndex();
 
     // init jacobians
     initJacobianBlocks();
@@ -439,7 +441,7 @@ void BaseDeformationMappingT<JacobianBlockType>::updateJ()
 
     J.compress();
 
-//    maskedEigenJacobian.resize(0,0);
+    //    maskedEigenJacobian.resize(0,0);
 }
 
 
@@ -501,7 +503,7 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(OutVecCoord& out, const I
     }
 
 #ifdef _OPENMP
-#pragma omp parallel for
+#pragma omp parallel for if (this->d_parallel.getValue())
 #endif
     for(helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian.size(); i++)
     {
@@ -553,7 +555,7 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
     const VecVRef& indices = this->f_index.getValue();
 
 #ifdef _OPENMP
-#pragma omp parallel for
+#pragma omp parallel for if (this->d_parallel.getValue())
 #endif
     for(helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian.size(); i++)
     {
@@ -580,13 +582,13 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJ(const core::MechanicalPa
     {
         if( !eigenJacobian.rows() ) updateJ();
 
-//        if( this->maskTo->isActivated() )
-//        {
-//            updateMaskedJ();
-//            maskedEigenJacobian.mult(dOut,dIn);
-//        }
-//        else
-            eigenJacobian.mult(dOut,dIn);
+        //        if( this->maskTo->isActivated() )
+        //        {
+        //            updateMaskedJ();
+        //            maskedEigenJacobian.mult(dOut,dIn);
+        //        }
+        //        else
+        eigenJacobian.mult(dOut,dIn);
     }
     else
     {
@@ -618,13 +620,13 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
     {
         if( !eigenJacobian.rows() ) updateJ();
 
-//        if( this->maskTo->isActivated() )
-//        {
-//            updateMaskedJ();
-//            maskedEigenJacobian.addMultTranspose(dIn,dOut);
-//        }
-//        else
-            eigenJacobian.addMultTranspose(dIn,dOut);
+        //        if( this->maskTo->isActivated() )
+        //        {
+        //            updateMaskedJ();
+        //            maskedEigenJacobian.addMultTranspose(dIn,dOut);
+        //        }
+        //        else
+        eigenJacobian.addMultTranspose(dIn,dOut);
     }
     else
     {
@@ -678,17 +680,30 @@ void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::Mechanical
         else
         {
 
-    #ifdef _OPENMP
-    #pragma omp parallel for
-    #endif
-            for(helper::IndexOpenMP<unsigned int>::type i=0; i<this->f_index_parentToChild.size(); i++)
+        const VecVRef& indices = this->f_index.getValue();
+        for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+        {
+            if( this->maskTo->getEntry(i) )
             {
-                for(size_t j=0; j<this->f_index_parentToChild[i].size(); j+=2)
+                for(size_t j=0; j<jacobian[i].size(); j++)
                 {
-                    size_t indexc=this->f_index_parentToChild[i][j];
-                    jacobian[indexc][this->f_index_parentToChild[i][j+1]].addDForce(parentForce[i],parentDisplacement[i],childForce[indexc], mparams->kFactor());
+                    size_t index=indices[i][j];
+                    jacobian[i][j].addDForce(parentForce[i],parentDisplacement[i],childForce[index], mparams->kFactor());
                 }
             }
+        }
+
+//#ifdef _OPENMP
+//#pragma omp parallel for if (this->d_parallel.getValue())
+//#endif
+//            for(helper::IndexOpenMP<unsigned int>::type i=0; i<this->f_index_parentToChild.size(); i++)
+//            {
+//                for(size_t j=0; j<this->f_index_parentToChild[i].size(); j+=2)
+//                {
+//                    size_t indexc=this->f_index_parentToChild[i][j];
+//                    jacobian[indexc][this->f_index_parentToChild[i][j+1]].addDForce(parentForce[i],parentDisplacement[i],childForce[indexc], mparams->kFactor());
+//                }
+//            }
 
         }
     }
@@ -977,11 +992,11 @@ const defaulttype::BaseMatrix* BaseDeformationMappingT<JacobianBlockType>::getJ(
 {
     if(!this->assemble.getValue() || !BlockType::constant || !eigenJacobian.rows()) updateJ();
 
-//    if( this->maskTo->isActivated() )
-//    {
-//        updateMaskedJ();
-//        return &maskedEigenJacobian;
-//    }
+    //    if( this->maskTo->isActivated() )
+    //    {
+    //        updateMaskedJ();
+    //        return &maskedEigenJacobian;
+    //    }
 
     return &eigenJacobian;
 }
@@ -992,15 +1007,15 @@ const vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMappingT<JacobianBl
 {
     if(!this->assemble.getValue() || !BlockType::constant || !eigenJacobian.rows()) updateJ();
 
-//    if( this->maskTo->isActivated() )
-//    {
-//        updateMaskedJ();
-//        baseMatrices[0] = &maskedEigenJacobian;
-//    }
-//    else
-//    {
-//        baseMatrices[0] = &eigenJacobian;
-//    }
+    //    if( this->maskTo->isActivated() )
+    //    {
+    //        updateMaskedJ();
+    //        baseMatrices[0] = &maskedEigenJacobian;
+    //    }
+    //    else
+    //    {
+    //        baseMatrices[0] = &eigenJacobian;
+    //    }
 
     return &baseMatrices;
 }
@@ -1036,7 +1051,7 @@ void BaseDeformationMappingT<JacobianBlockType>::updateForceMask()
         }
     }
 
-//    serr<<"updateForceMask "<<this->maskTo->nbActiveDofs()<<" "<<this->maskFrom->nbActiveDofs()<<sendl;
+    //    serr<<"updateForceMask "<<this->maskTo->nbActiveDofs()<<" "<<this->maskFrom->nbActiveDofs()<<sendl;
 }
 
 
