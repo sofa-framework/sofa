@@ -19,9 +19,7 @@ def createScene(node):
 	rigidNode.createObject('MechanicalObject', template='Rigid', name='dofs', position="0 0 0 0 0 0 1", showObject='1', showObjectScale='0.8')
 
 	deformableMappedNode = rigidNode.createChild('mapped_deformable_nodes_yellow')
-	deformableMappedNode.createObject('MeshObjLoader', filename="mesh/cube.obj", name="loader")
-	deformableMappedNode.createObject('MeshTopology', src="@loader")
-	mappedDofs = deformableMappedNode.createObject('MechanicalObject', name="mappedDofs", template='Vec3d', position="@loader.position", showObject='1', showObjectScale='10', showColor="1 1 0 1")
+	mappedDofs = deformableMappedNode.createObject('MechanicalObject', name="mappedDofs", template='Vec3d', position="1 -1 -1   1 1 -1  1 -1 1   1 1 1  -1 -1 -1   -1 1 -1  -1 -1 1   -1 1 1", showObject='1', showObjectScale='10', showColor="1 1 0 1")
 	deformableMappedNode.createObject('RigidMapping')
 
 	deformableIndependentNode = node.createChild('independent_deformable_nodes_white')
@@ -35,7 +33,7 @@ def createScene(node):
 	deformableNode.createObject('MechanicalObject', name="deformableDofs", template='Vec3d', showObject='1', showObjectScale='0.8')
 	deformableNode.createObject('UniformMass', template='Vec3d', totalMass="3")
 	deformableNode.createObject('HexahedronFEMForceField',youngModulus="10",poissonRatio="0.1")
-	deformableNode.createObject('SubsetMultiMapping', template='Vec3d,Vec3d', input=independentDofs.getLinkPath()+" "+mappedDofs.getLinkPath(), output='@./' , indexPairs="1 0  0 0  1 4  0 1  1 1  0 2  1 5  0 3" )
+	deformableNode.createObject('SubsetMultiMapping', template='Vec3d,Vec3d', input=independentDofs.getLinkPath()+" "+mappedDofs.getLinkPath(), output='@./' , indexPairs="1 0  0 0  1 1  0 1  1 2  0 2  1 3  0 3" )
 	deformableIndependentNode.addChild( deformableNode )
 
 	return 0
