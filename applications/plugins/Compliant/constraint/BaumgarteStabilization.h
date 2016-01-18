@@ -11,8 +11,8 @@ namespace odesolver {
 
    ConstraintValue for Baumgarte stabilization
 
-   Assuming a velocity formulation and a holonomic constraint \dot g=Jv=0
-   the stabilization add a position term \dot g=Jv+\alpha g=0
+   Assuming a velocity formulation and a holonomic constraint: \dot g = Jv = 0
+   Baumgarte stabilization adds a term depending on current violation g: \dot g = Jv + \alpha g = 0
 
 
 */
