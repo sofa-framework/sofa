@@ -176,7 +176,7 @@ protected:
         case SMALL:
         {
 #ifdef _OPENMP
-#pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
             for( int i=0 ; i < static_cast<int>(jacobianBlock.size()) ; i++ )
             {
@@ -188,7 +188,7 @@ protected:
         case QR:
         {
 #ifdef _OPENMP
-#pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
             for( int i=0 ; i < static_cast<int>(jacobianBlock.size()) ; i++ )
             {
@@ -200,7 +200,7 @@ protected:
         case POLAR:
         {
 #ifdef _OPENMP
-#pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
             for( int i=0 ; i < static_cast<int>(jacobianBlock.size()) ; i++ )
             {
@@ -213,7 +213,7 @@ protected:
         case SVD:
         {
 #ifdef _OPENMP
-#pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
             for( int i=0 ; i < static_cast<int>(jacobianBlock.size()) ; i++ )
             {
@@ -243,7 +243,7 @@ protected:
         case SMALL:
         {
 #ifdef _OPENMP
-        #pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
             for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
             {
@@ -255,7 +255,7 @@ protected:
         case QR:
         {
 #ifdef _OPENMP
-        #pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
             for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
             {
@@ -267,7 +267,7 @@ protected:
         case POLAR:
         {
 #ifdef _OPENMP
-        #pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
             for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
             {
@@ -279,7 +279,7 @@ protected:
         case SVD:
         {
 #ifdef _OPENMP
-        #pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
             for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
             {
@@ -323,7 +323,7 @@ protected:
             case QR:
             {
 #ifdef _OPENMP
-        #pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
                 for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
                 {
@@ -334,7 +334,7 @@ protected:
             case POLAR:
             {
 #ifdef _OPENMP
-        #pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
                 for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
                 {
@@ -345,7 +345,7 @@ protected:
             case SVD:
             {
 #ifdef _OPENMP
-        #pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
                 for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
                 {
