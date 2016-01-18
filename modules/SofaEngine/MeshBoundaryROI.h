@@ -77,13 +77,13 @@ public:
     };
 
     /// inputs
-    Data< SeqTriangles > triangles;
-    Data< SeqQuads > quads;
-    Data< SetIndex > inputROI;
+    Data< SeqTriangles > d_triangles;
+    Data< SeqQuads > d_quads;
+    Data< SetIndex > d_inputROI;
 
     /// outputs
-    Data< SetIndex > indices;
-    Data< SeqEdges > edges;
+    Data< SetIndex > d_indices;
+    Data< SeqEdges > d_edges;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const MeshBoundaryROI* = NULL) { return std::string();    }
@@ -91,11 +91,11 @@ public:
 protected:
 
     MeshBoundaryROI()    : Inherited()
-      , triangles(initData(&triangles,"triangles","input triangles"))
-      , quads(initData(&quads,"quads","input quads"))
-      , inputROI(initData(&inputROI,"inputROI","optional subset of the input mesh"))
-      , indices(initData(&indices,"indices","Index lists of the closing vertices"))
-      , edges(initData(&edges,"edges","lists of the closing edges"))
+      , d_triangles(initData(&d_triangles,"triangles","input triangles"))
+      , d_quads(initData(&d_quads,"quads","input quads"))
+      , d_inputROI(initData(&d_inputROI,"inputROI","optional subset of the input mesh"))
+      , d_indices(initData(&d_indices,"indices","Index lists of the closing vertices"))
+      , d_edges(initData(&d_edges,"edges","lists of the closing edges"))
     {
     }
 
@@ -104,40 +104,40 @@ protected:
 public:
     virtual void init()
     {
-        addInput(&triangles);
-        addInput(&quads);
-        addInput(&inputROI);
-        addOutput(&indices);
-        addOutput(&edges);
+        addInput(&d_triangles);
+        addInput(&d_quads);
+        addInput(&d_inputROI);
+        addOutput(&d_indices);
+        addOutput(&d_edges);
         setDirtyValue();
     }
 
     virtual void reinit()    { update();  }
     void update()
     {
-        helper::ReadAccessor<Data< SeqTriangles > > tri(this->triangles);
-        helper::ReadAccessor<Data< SeqQuads > > qd(this->quads);
+        helper::ReadAccessor<Data< SeqTriangles > > triangles(this->d_triangles);
+        helper::ReadAccessor<Data< SeqQuads > > quads(this->d_quads);
 
         cleanDirty();
 
-        helper::WriteOnlyAccessor<Data< SetIndex > >  oindices(this->indices);
-        helper::WriteOnlyAccessor<Data< SeqEdges > >  oedges(this->edges);
-        oindices.clear();
-        oedges.clear();
+        helper::WriteOnlyAccessor<Data< SetIndex > >  indices(this->d_indices);
+        helper::WriteOnlyAccessor<Data< SeqEdges > >  edges(this->d_edges);
+        indices.clear();
+        edges.clear();
 
         std::map<PointPair, unsigned int> edgeCount;
-        for(size_t i=0;i<tri.size();i++)
-            if(inROI(tri[i][0]) && inROI(tri[i][1]) && inROI(tri[i][2]))
+        for(size_t i=0;i<triangles.size();i++)
+            if(inROI(triangles[i][0]) && inROI(triangles[i][1]) && inROI(triangles[i][2]))
                 for(unsigned int j=0;j<3;j++)
                 {
-                    PointPair edge(tri[i][j],tri[i][(j==2)?0:j+1]);
+                    PointPair edge(triangles[i][j],triangles[i][(j==2)?0:j+1]);
                     this->countEdge(edgeCount,edge);
                 }
-        for(size_t i=0;i<qd.size();i++)
-            if(inROI(qd[i][0]) && inROI(qd[i][1]) && inROI(qd[i][2]) && inROI(qd[i][3]))
+        for(size_t i=0;i<quads.size();i++)
+            if(inROI(quads[i][0]) && inROI(quads[i][1]) && inROI(quads[i][2]) && inROI(quads[i][3]))
                 for(unsigned int j=0;j<4;j++)
                 {
-                    PointPair edge(qd[i][j],qd[i][(j==3)?0:j+1]);
+                    PointPair edge(quads[i][j],quads[i][(j==3)?0:j+1]);
                     this->countEdge(edgeCount,edge);
                 }
 
@@ -148,12 +148,12 @@ public:
                 indexset.insert(it->first.index.first);
                 indexset.insert(it->first.index.second);
                 if (it->first.inverted)
-                    oedges.push_back(Edge(it->first.index.second, it->first.index.first));
+                    edges.push_back(Edge(it->first.index.second, it->first.index.first));
                 else
-                    oedges.push_back(Edge(it->first.index.first, it->first.index.second));
+                    edges.push_back(Edge(it->first.index.first, it->first.index.second));
             }
         for(std::set<PointID>::iterator it=indexset.begin();it!=indexset.end();++it)
-            oindices.push_back(*it);
+            indices.push_back(*it);
     }
 
     void countEdge(std::map<PointPair, unsigned int>& edgeCount,PointPair& edge) const
@@ -167,7 +167,7 @@ public:
 
     inline bool inROI(const PointID& index) const
     {
-        const SetIndex& ROI=this->inputROI.getValue();
+        const SetIndex& ROI=this->d_inputROI.getValue();
         if(ROI.size()==0) return true; // ROI empty -> use all points
         if(std::find(ROI.begin(),ROI.end(),index)==ROI.end()) return false;
         return true;
