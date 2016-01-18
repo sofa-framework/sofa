@@ -2,8 +2,6 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include "../utils/map.h"
-using std::cerr;
-using std::endl;
 
 namespace sofa {
 namespace component {
