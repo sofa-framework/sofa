@@ -688,7 +688,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::Mechanical
                 for(size_t j=0; j<jacobian[i].size(); j++)
                 {
                     size_t index=indices[i][j];
-                    jacobian[i][j].addDForce(parentForce[i],parentDisplacement[i],childForce[index], mparams->kFactor());
+                    jacobian[i][j].addDForce(parentForce[index],parentDisplacement[index],childForce[i], mparams->kFactor());
                 }
             }
         }
