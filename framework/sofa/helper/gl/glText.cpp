@@ -110,8 +110,10 @@ void GlText::draw()
 void GlText::textureDraw_Overlay(const char* text, const double scale)
 {
     if (!s_asciiTexture)
+    {
         GlText::initTexture();
-
+        s_asciiTexture->init();
+    }
     const unsigned int nb_char_width = 16;
     const unsigned int nb_char_height = 16;
     const float worldHeight = 1.0;
@@ -134,7 +136,7 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
     glAlphaFunc(GL_GREATER, 0.0);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    s_asciiTexture->init();
+
     s_asciiTexture->bind();
 
     glScalef((float)scale, (float)scale, (float)scale);
