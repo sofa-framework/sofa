@@ -57,7 +57,7 @@ public:
     SOFA_BASE_CAST_IMPLEMENTATION(BaseMeshTopology)
 
     typedef sofa::helper::vector<Edge> 		        SeqEdges;
-    typedef sofa::helper::vector<Triangle>		        SeqTriangles;
+    typedef sofa::helper::vector<Triangle>		    SeqTriangles;
     typedef sofa::helper::vector<Quad>		        SeqQuads;
     typedef sofa::helper::vector<Tetra>		        SeqTetrahedra;
     typedef sofa::helper::vector<Hexa>		        SeqHexahedra;
@@ -66,7 +66,7 @@ public:
     /// @{
     typedef EdgeID		                LineID;
     typedef Edge		                Line;
-    typedef SeqEdges	                        SeqLines;
+    typedef SeqEdges	                SeqLines;
 #ifndef SOFA_NEW_HEXA
     typedef HexaID                              CubeID;
     typedef Hexa                                Cube;
@@ -78,25 +78,25 @@ public:
     /// @{
     typedef sofa::helper::fixed_array<EdgeID,3>		EdgesInTriangle;
     typedef sofa::helper::fixed_array<EdgeID,4>		EdgesInQuad;
-    typedef sofa::helper::fixed_array<TriangleID,4>	        TrianglesInTetrahedron;
+    typedef sofa::helper::fixed_array<TriangleID,4>	TrianglesInTetrahedron;
     typedef sofa::helper::fixed_array<EdgeID,6>		EdgesInTetrahedron;
     typedef sofa::helper::fixed_array<QuadID,6>		QuadsInHexahedron;
-    typedef sofa::helper::fixed_array<EdgeID,12>		EdgesInHexahedron;
+    typedef sofa::helper::fixed_array<EdgeID,12>    EdgesInHexahedron;
     /// @}
 
     /// dynamic-size neighbors arrays
     /// @{
-    typedef sofa::helper::vector<PointID>		        VerticesAroundVertex;
+    typedef sofa::helper::vector<PointID>		    VerticesAroundVertex;
     typedef sofa::helper::vector<EdgeID>			EdgesAroundVertex;
-    typedef sofa::helper::vector<TriangleID>	                TrianglesAroundVertex;
+    typedef sofa::helper::vector<TriangleID>	    TrianglesAroundVertex;
     typedef sofa::helper::vector<QuadID>			QuadsAroundVertex;
-    typedef sofa::helper::vector<TetraID>		        TetrahedraAroundVertex;
+    typedef sofa::helper::vector<TetraID>		    TetrahedraAroundVertex;
     typedef sofa::helper::vector<HexaID>			HexahedraAroundVertex;
-    typedef sofa::helper::vector<TriangleID>	                TrianglesAroundEdge;
+    typedef sofa::helper::vector<TriangleID>	    TrianglesAroundEdge;
     typedef sofa::helper::vector<QuadID>			QuadsAroundEdge;
-    typedef sofa::helper::vector<TetraID>		        TetrahedraAroundEdge;
+    typedef sofa::helper::vector<TetraID>		    TetrahedraAroundEdge;
     typedef sofa::helper::vector<HexaID>			HexahedraAroundEdge;
-    typedef sofa::helper::vector<TetraID>		        TetrahedraAroundTriangle;
+    typedef sofa::helper::vector<TetraID>		    TetrahedraAroundTriangle;
     typedef sofa::helper::vector<HexaID>			HexahedraAroundQuad;
     /// @}
 protected:
