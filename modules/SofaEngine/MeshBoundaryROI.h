@@ -50,31 +50,12 @@ public:
     typedef core::DataEngine Inherited;
     SOFA_CLASS(MeshBoundaryROI,Inherited);
 
-    typedef core::topology::BaseMeshTopology::Edge Edge;
     typedef core::topology::BaseMeshTopology::Triangle Triangle;
-    typedef core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef core::topology::BaseMeshTopology::SeqQuads SeqQuads;
     typedef core::topology::BaseMeshTopology::PointID PointID;
     typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
-
-    struct PointPair {
-        std::pair<PointID, PointID> index;
-        bool inverted;
-
-        PointPair(PointID const& index1, PointID const& index2)
-            : index(index1,index2)
-            , inverted(false)
-        {}
-
-        friend bool operator<(PointPair const& l, PointPair const& r) {return l.index<r.index;}
-
-        void invert()
-        {
-            std::swap(index.first, index.second);
-            inverted = !inverted;
-        }
-    };
+    typedef std::pair<PointID, PointID> PointPair;
 
     /// inputs
     Data< SeqTriangles > d_triangles;
@@ -83,7 +64,6 @@ public:
 
     /// outputs
     Data< SetIndex > d_indices;
-    Data< SeqEdges > d_edges;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const MeshBoundaryROI* = NULL) { return std::string();    }
@@ -95,7 +75,6 @@ protected:
       , d_quads(initData(&d_quads,"quads","input quads"))
       , d_inputROI(initData(&d_inputROI,"inputROI","optional subset of the input mesh"))
       , d_indices(initData(&d_indices,"indices","Index lists of the closing vertices"))
-      , d_edges(initData(&d_edges,"edges","lists of the closing edges"))
     {
     }
 
@@ -108,7 +87,7 @@ public:
         addInput(&d_quads);
         addInput(&d_inputROI);
         addOutput(&d_indices);
-        addOutput(&d_edges);
+
         setDirtyValue();
     }
 
@@ -121,9 +100,7 @@ public:
         cleanDirty();
 
         helper::WriteOnlyAccessor<Data< SetIndex > >  indices(this->d_indices);
-        helper::WriteOnlyAccessor<Data< SeqEdges > >  edges(this->d_edges);
         indices.clear();
-        edges.clear();
 
         std::map<PointPair, unsigned int> edgeCount;
         for(size_t i=0;i<triangles.size();i++)
@@ -145,12 +122,8 @@ public:
         for(std::map<PointPair, unsigned int>::iterator it=edgeCount.begin();it!=edgeCount.end();++it)
             if(it->second==1)
             {
-                indexset.insert(it->first.index.first);
-                indexset.insert(it->first.index.second);
-                if (it->first.inverted)
-                    edges.push_back(Edge(it->first.index.second, it->first.index.first));
-                else
-                    edges.push_back(Edge(it->first.index.first, it->first.index.second));
+                indexset.insert(it->first.first);
+                indexset.insert(it->first.second);
             }
         for(std::set<PointID>::iterator it=indexset.begin();it!=indexset.end();++it)
             indices.push_back(*it);
@@ -158,8 +131,12 @@ public:
 
     void countEdge(std::map<PointPair, unsigned int>& edgeCount,PointPair& edge) const
     {
-        if(edge.index.first>edge.index.second)
-            edge.invert();
+        if(edge.first>edge.second)
+        {
+            PointID i=edge.first;
+            edge.first=edge.second;
+            edge.second=i;
+        }
         std::map<PointPair, unsigned int>::iterator it=edgeCount.find(edge);
         if(it!=edgeCount.end()) it->second++;
         else  edgeCount[edge]=1;
