@@ -54,6 +54,9 @@ class MessageHandler ;
 class SOFA_HELPER_API MessageDispatcher
 {
 public:
+    MessageDispatcher();
+
+
     // handlers stuff is not static
     int addHandler(MessageHandler* o) ;
     int rmHandler(MessageHandler* o) ;
@@ -113,8 +116,8 @@ public:
 
     private:
         FileInfo m_fileInfo;
-        const std::string& m_class;
-        const std::string& m_type;
+        std::string m_class;
+        std::string m_type;
         std::string m_sender;
         MessageDispatcher& m_dispatcher;
         std::ostringstream m_stream;
