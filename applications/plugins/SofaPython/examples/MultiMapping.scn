@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<Node gravity="0 0 0"  time="0"  animate="0"  >
-	<RequiredPlugin name="SofaPython"  printLog="0"  pluginName="SofaPython" />
-	<VisualStyle   displayFlags="hideBehaviorModels hideCollisionModels hideMappings showForceFields hideVisualModels" />
-	<PythonScriptController name="PythonNode"  listening="1"  filename="MultiMapping.py"  classname="MultiMapping" />
-</Node>

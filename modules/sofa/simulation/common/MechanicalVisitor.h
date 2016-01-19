@@ -2202,7 +2202,8 @@ public:
     defaulttype::Vec3d rayOrigin, rayDirection;
     double radius0, dRadius;
     sofa::core::objectmodel::Tag tagNoPicking;
-    std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> > particles;
+    typedef std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> > Particles;
+    Particles particles;
     MechanicalPickParticlesVisitor(const sofa::core::ExecParams* mparams, const defaulttype::Vec3d& origin, const defaulttype::Vec3d& direction, double r0=0.001, double dr=0.0, sofa::core::objectmodel::Tag tag = sofa::core::objectmodel::Tag("NoPicking") )
         : BaseMechanicalVisitor(mparams) , rayOrigin(origin), rayDirection(direction), radius0(r0), dRadius(dr), tagNoPicking(tag)
     {
@@ -2221,6 +2222,11 @@ public:
     {
     }
 #endif
+
+    /// get the closest pickable particle
+    void getClosestParticle( core::behavior::BaseMechanicalState*& mstate, unsigned int& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength );
+
+
 };
 
 

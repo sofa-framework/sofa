@@ -10,6 +10,7 @@ set(SOURCE_FILES
     defaulttype/VecTypes_test.cpp
     helper/KdTree_test.cpp
     helper/Utils_test.cpp
+    helper/Quater_test.cpp
     helper/system/FileSystem_test.cpp
     helper/system/atomic_test.cpp
     main.cpp

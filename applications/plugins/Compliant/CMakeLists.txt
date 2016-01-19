@@ -30,6 +30,7 @@ set(HEADER_FILES
     constraint/Stabilization.h
     constraint/UnilateralConstraint.h
     constraint/VelocityConstraintValue.h
+    constraint/BaumgarteStabilization.h
     contact/BaseContact.h
     contact/CompliantContact.h
     contact/FrictionCompliantContact.h
@@ -135,6 +136,7 @@ set(SOURCE_FILES
     constraint/Stabilization.cpp
     constraint/UnilateralConstraint.cpp
     constraint/VelocityConstraintValue.cpp
+    constraint/BaumgarteStabilization.cpp
     contact/CompliantContact.cpp
     contact/FrictionCompliantContact.cpp
     contact/PenalityCompliantContact.cpp

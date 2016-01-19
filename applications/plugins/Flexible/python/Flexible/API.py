@@ -72,6 +72,7 @@ class Deformable:
     def loadVisual(self, meshPath, offset = [0,0,0,0,0,0,1], scale=[1,1,1], color=[1,1,1,1],**kwargs):
         r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
         self.visual =  self.node.createObject("VisualModel", name="model", filename=meshPath, translation=concat(offset[:3]) , rotation=concat(r), scale3d=concat(scale), color=concat(color),**kwargs)
+        self.visual.setColor(color[0],color[1],color[2],color[3]) # the previous assignement fails when reloading a scene..
         self.normals = self.visual
 
     def loadVisualCylinder(self, meshPath, offset = [0,0,0,0,0,0,1], scale=[1,1,1], color=[1,1,1,1],radius=0.01,**kwargs):
@@ -99,6 +100,7 @@ class Deformable:
     def visualFromDeformable(self, deformable, color=[1,1,1,1]):
         deformable.node.addChild(self.node)
         self.visual = self.node.createObject("VisualModel", name="model", filename="@"+deformable.meshLoader.getPathName()+".filename", color=concat(color))
+        self.visual.setColor(color[0],color[1],color[2],color[3]) # the previous assignement fails when reloading a scene..
         self.mapping = self.node.createObject("IdentityMapping", name="mapping", input='@'+deformable.node.getPathName(),output="@.", mapForces=False, mapConstraints=False, mapMasses=False )
         self.normals = self.meshLoader
 

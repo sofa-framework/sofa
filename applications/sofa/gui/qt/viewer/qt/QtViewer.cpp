@@ -47,9 +47,7 @@
 
 #include <sofa/helper/gl/glText.inl>
 #include <sofa/helper/gl/RAII.h>
-#ifdef SOFA_HAVE_GLEW
-#include <sofa/helper/gl/GLSLShader.h>
-#endif
+
 #include <sofa/helper/io/ImageBMP.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
@@ -94,7 +92,31 @@ bool QtViewer::_mouseTrans = false;
 bool QtViewer::_mouseRotate = false;
 Quaternion QtViewer::_mouseInteractorNewQuat;
 
+#if defined(QT_VERSION) && QT_VERSION >= 0x050400
+QSurfaceFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
+{
+    QSurfaceFormat f = QSurfaceFormat::defaultFormat();
 
+    //Multisampling
+    if(nbMSAASamples > 1)
+    {
+        std::cout <<"QtViewer: Set multisampling anti-aliasing (MSSA) with " << nbMSAASamples << " samples." << std::endl;
+        f.setSamples(nbMSAASamples);
+    }
+
+    //VSync
+    std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
+    f.setSwapInterval(0); // disable vertical refresh sync
+
+    int vmajor = 3, vminor = 2;
+    f.setVersion(vmajor,vminor);
+    f.setProfile(QSurfaceFormat::CompatibilityProfile);
+
+    f.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+
+    return f;
+}
+#else
 QGLFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
 {
     QGLFormat f = QGLFormat::defaultFormat();
@@ -130,17 +152,23 @@ QGLFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
     return f;
 }
 
+#endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
+
 // ---------------------------------------------------------
 // --- Constructor
 // ---------------------------------------------------------
 QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAASamples)
-    : QGLWidget(setupGLFormat(nbMSAASamples), parent)
+#if defined(QT_VERSION) && QT_VERSION >= 0x050400
+    : QOpenGLWidget(parent)
+ #else
+    : QOpenGLWidget(setupGLFormat(nbMSAASamples), parent)
+#endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
 {
     this->setObjectName(name);
 
-#if defined(QT_VERSION) && QT_VERSION >= 0x040700
-    std::cout << "QtViewer: OpenGL " << format().majorVersion() << "." << format().minorVersion() << " context created." << std::endl;
-#endif
+#if defined(QT_VERSION) && QT_VERSION >= 0x050400
+    this->setFormat(setupGLFormat(nbMSAASamples));
+#endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
 
     groot = NULL;
     initTexturesDone = false;
@@ -196,6 +224,8 @@ QtViewer::~QtViewer()
 // -----------------------------------------------------------------
 void QtViewer::initializeGL(void)
 {
+    std::cout << "QtViewer: OpenGL " << glGetString(GL_VERSION) << " context created." << std::endl;
+
     static GLfloat specref[4];
     static GLfloat ambientLight[4];
     static GLfloat diffuseLight[4];
@@ -1098,7 +1128,7 @@ void QtViewer::paintGL()
 
 void QtViewer::paintEvent(QPaintEvent* qpe)
 {
-    QGLWidget::paintEvent(qpe );
+    QOpenGLWidget::paintEvent(qpe );
 /*
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
@@ -1634,13 +1664,13 @@ void QtViewer::saveView()
 void QtViewer::setSizeW(int size)
 {
     resizeGL(size, _H);
-    updateGL();
+    update();
 }
 
 void QtViewer::setSizeH(int size)
 {
     resizeGL(_W, size);
-    updateGL();
+    update();
 }
 
 //void QtViewer::setCameraMode(core::visual::VisualParams::CameraType mode)

@@ -77,6 +77,9 @@ public:
     /// Return the full path name of this node
     virtual std::string getPathName() const;
 
+    /// Return the path from this node to the root node
+    virtual std::string getRootPath() const;
+
     virtual void* findLinkDestClass(const core::objectmodel::BaseClass* destType, 
 									const std::string& path, 
 									const BaseLink* link);

@@ -505,6 +505,24 @@ void DrawToolGL::drawArrow(const Vector3& p1, const Vector3 &p2, float radius, f
 
 }
 
+void DrawToolGL::drawCross(const Vector3&p, float length, const Vec4f& colour)
+{
+    std::vector<sofa::defaulttype::Vector3> bounds;
+
+    for ( unsigned int i=0 ; i<3 ; i++ )
+    {
+        sofa::defaulttype::Vector3 p0 = p;
+        sofa::defaulttype::Vector3 p1 = p;
+
+        p0[i] -= length;
+        p1[i] += length;
+
+        bounds.push_back(p0);
+        bounds.push_back(p1);
+    }
+    drawLines(bounds, 1, colour);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void DrawToolGL::drawPlus ( const float& radius, const Vec<4,float>& colour, const int& subd)
@@ -883,6 +901,17 @@ void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const Vec4f 
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
 
+}
+
+void DrawToolGL::enableBlending()
+{
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+void DrawToolGL::disableBlending()
+{
+    glDisable(GL_BLEND);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void DrawToolGL::draw3DText(const Vector3 &p, float scale, const Vec4f &color, const char* text)

@@ -77,6 +77,7 @@ BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::BaseDeforma
     , showColorOnTopology ( initData ( &showColorOnTopology,"showColorOnTopology","Color mapping method" ) )
     , showColorScale(initData(&showColorScale, (float)1.0, "showColorScale", "Color mapping scale"))
     , d_geometricStiffness(initData(&d_geometricStiffness, 0u, "geometricStiffness", "0=no GS, 1=non symmetric, 2=symmetrized"))
+    , d_parallel(initData(&d_parallel, false, "parallel", "use openmp parallelisation?"))
 {
     helper::OptionsGroup methodOptions(3,"0 - None"
                                        ,"1 - trace(F^T.F)-3"
@@ -430,7 +431,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::apply(
     const InVecCoord2& in2 = dIn2.getValue();
 
 #ifdef _OPENMP
-#pragma omp parallel for
+#pragma omp parallel for if (this->d_parallel.getValue())
 #endif
 	for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian1.size(); i++)
     {
@@ -602,7 +603,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyD
 //            if(!BlockType1::constant)
 //            {
 //#ifdef _OPENMP
-//#pragma omp parallel for
+//#pragma omp parallel for if (this->d_parallel.getValue())
 //#endif
 //                for(unsigned int i=0; i<this->f_index_parentToChild1.size(); i++)
 //                {
@@ -616,7 +617,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyD
 //            if(!BlockType2::constant)
 //            {
 //#ifdef _OPENMP
-//#pragma omp parallel for
+//#pragma omp parallel for if (this->d_parallel.getValue())
 //#endif
 //                for(unsigned int i=0; i<this->f_index_parentToChild2.size(); i++)
 //                {

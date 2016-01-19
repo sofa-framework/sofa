@@ -22,37 +22,89 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define FLEXIBLE_TETRAHEDRONFEMFORCEFIELD_CPP
-
-#include <Flexible/config.h>
-#include "FlexibleTetrahedronFEMForceField.h"
+#include <SofaOpenglVisual/OglTexturePointer.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/ForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/helper/system/FileRepository.h>
 
 namespace sofa
 {
 namespace component
 {
-namespace forcefield
+
+namespace visualmodel
 {
 
-using namespace sofa::defaulttype;
+SOFA_DECL_CLASS(OglTexturePointer)
 
+// Register the OglTexturePointer class in the Factory
+int OglTexturePointerClass = core::RegisterObject("OglTexturePointer").add< OglTexturePointer >();
 
-SOFA_DECL_CLASS(FlexibleTetrahedronFEMForceField)
-
-// Register in the Factory
-int FlexibleTetrahedronFEMForceFieldClass = core::RegisterObject("Flexible Tetrahedral finite elements")
-
-
-        .add< FlexibleTetrahedronFEMForceField< Vec3Types > >(true)
-        ;
-
-template class SOFA_Flexible_API FlexibleTetrahedronFEMForceField< Vec3Types >;
-
-}
-}
+OglTexturePointer::OglTexturePointer()
+    :l_oglTexture( initLink( "oglTexture", "OglTexture" ) )
+    ,textureUnit(initData(&textureUnit, (unsigned short) 1, "textureUnit", "Set the texture unit"))
+    ,enabled(initData(&enabled, (bool) true, "enabled", "enabled ?"))
+{
+    
 }
 
+OglTexturePointer::~OglTexturePointer()
+{
 
+}
+
+void OglTexturePointer::setActiveTexture(unsigned short unit)
+{
+    glActiveTexture(GL_TEXTURE0 + unit);
+}
+
+void OglTexturePointer::init()
+{
+    OglShaderElement::init();
+}
+
+void OglTexturePointer::initVisual()
+{
+
+}
+
+void OglTexturePointer::reinit()
+{
+
+}
+
+void OglTexturePointer::fwdDraw(core::visual::VisualParams*)
+{
+    if (enabled.getValue() && !l_oglTexture.empty())
+    {
+        setActiveTexture(textureUnit.getValue());
+        bind();
+        setActiveTexture(0);
+    }
+}
+
+void OglTexturePointer::bwdDraw(core::visual::VisualParams*)
+{
+    if (enabled.getValue() && !l_oglTexture.empty())
+    {
+        setActiveTexture(textureUnit.getValue());
+        unbind();
+        setActiveTexture(0);
+    }
+}
+
+void OglTexturePointer::bind()
+{
+    if(!l_oglTexture.empty())
+        l_oglTexture->bind();
+}
+
+void OglTexturePointer::unbind()
+{
+    if(!l_oglTexture.empty())
+        l_oglTexture->unbind();
+}
+
+}//end of namespaces
+}
+}

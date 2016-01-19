@@ -422,23 +422,22 @@ SReal HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*i
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     // 		  serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::draw()  "<<this->getIndexedElements()->size()<<""<<sendl;
     HexahedronFEMForceFieldT::draw(vparams);
 
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    glDisable (GL_LIGHTING);
-    glPointSize(2);
-    glColor4f (1,1,1,1);
-    glBegin (GL_POINTS);
-    for (unsigned int i=0; i<x.size(); i++)
+    // since drawTool requires a std::vector<Vector3> we have to convert x in an ugly way
+    std::vector<defaulttype::Vector3> pos;
+    pos.resize(x.size());
+    std::vector<defaulttype::Vector3>::iterator posIT = pos.begin();
+    typename VecCoord::const_iterator xIT = x.begin();
+    for(; posIT != pos.end() ; ++posIT, ++xIT)
     {
-        helper::gl::glVertexT(x[i]);
+        *posIT = *xIT;
     }
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->drawPoints(pos,2.0f, defaulttype::Vec4f(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 } // namespace forcefield
