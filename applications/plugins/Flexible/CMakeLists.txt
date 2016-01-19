@@ -36,7 +36,7 @@ set(HEADER_FILES
     engine/ComputeDualQuatEngine.h
     engine/ComputeDualQuatEngine.inl
     engine/ComputeWeightEngine.h
-    # forceField/FlexibleTetrahedronFEMForceField.h
+    forceField/FlexibleCorotationalFEMForceField.h
     helper.h
     mass/AffineMass.h
     material/BaseMaterial.h
@@ -127,7 +127,7 @@ set(SOURCE_FILES
     deformationMapping/VolumeMapping.cpp
     engine/ComputeDualQuatEngine.cpp
     engine/ComputeWeightEngine.cpp
-    # forceField/FlexibleTetrahedronFEMForceField.cpp
+    forceField/FlexibleCorotationalFEMForceField.cpp
     initFlexible.cpp
     mass/AffineMass.cpp
     material/BaseMaterialForceField.cpp

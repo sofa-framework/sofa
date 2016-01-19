@@ -78,7 +78,7 @@ class TInteractionPerformer: public InteractionPerformer
 {
 public:
 
-    TInteractionPerformer(BaseMouseInteractor *i):InteractionPerformer(i) {};
+    TInteractionPerformer(BaseMouseInteractor *i):InteractionPerformer(i) {}
 
     template <class RealObject>
     static RealObject* create( RealObject*, BaseMouseInteractor* interactor)

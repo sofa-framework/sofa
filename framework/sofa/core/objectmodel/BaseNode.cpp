@@ -102,6 +102,15 @@ std::string BaseNode::getPathName() const {
     return str;
 }
 
+std::string BaseNode::getRootPath() const {
+    std::string str;
+
+    for(Parents parents = getParents(); parents.size() > 0; parents = parents[0]->getParents())
+        str += "../";
+
+    return str;
+}
+
 } // namespace objectmodel
 
 } // namespace core

@@ -55,7 +55,8 @@ void SofaViewer::redraw()
 void SofaViewer::keyPressEvent(QKeyEvent * e)
 {
     sofa::core::objectmodel::KeypressedEvent kpe(e->key());
-    currentCamera->manageEvent(&kpe);
+    if(currentCamera)
+        currentCamera->manageEvent(&kpe);
 
     switch (e->key())
     {

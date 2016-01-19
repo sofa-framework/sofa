@@ -144,45 +144,6 @@ void CubeModel::updateCubes()
         updateCube(i);
 }
 
-void CubeModel::draw(const core::visual::VisualParams* , int index)
-{
-#ifndef SOFA_NO_OPENGL
-    const Vector3& vmin = elems[index].minBBox;
-    const Vector3& vmax = elems[index].maxBBox;
-
-    glBegin(GL_LINES);
-    {
-        glVertex3d(vmin[0], vmin[1], vmin[2]);
-        glVertex3d(vmin[0], vmin[1], vmax[2]);
-        glVertex3d(vmin[0], vmax[1], vmin[2]);
-        glVertex3d(vmin[0], vmax[1], vmax[2]);
-        glVertex3d(vmax[0], vmin[1], vmin[2]);
-        glVertex3d(vmax[0], vmin[1], vmax[2]);
-        glVertex3d(vmax[0], vmax[1], vmin[2]);
-        glVertex3d(vmax[0], vmax[1], vmax[2]);
-
-        glVertex3d(vmin[0], vmin[1], vmin[2]);
-        glVertex3d(vmin[0], vmax[1], vmin[2]);
-        glVertex3d(vmin[0], vmin[1], vmax[2]);
-        glVertex3d(vmin[0], vmax[1], vmax[2]);
-        glVertex3d(vmax[0], vmin[1], vmin[2]);
-        glVertex3d(vmax[0], vmax[1], vmin[2]);
-        glVertex3d(vmax[0], vmin[1], vmax[2]);
-        glVertex3d(vmax[0], vmax[1], vmax[2]);
-
-        glVertex3d(vmin[0], vmin[1], vmin[2]);
-        glVertex3d(vmax[0], vmin[1], vmin[2]);
-        glVertex3d(vmin[0], vmax[1], vmin[2]);
-        glVertex3d(vmax[0], vmax[1], vmin[2]);
-        glVertex3d(vmin[0], vmin[1], vmax[2]);
-        glVertex3d(vmax[0], vmin[1], vmax[2]);
-        glVertex3d(vmin[0], vmax[1], vmax[2]);
-        glVertex3d(vmax[0], vmax[1], vmax[2]);
-    }
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
-}
-
 void CubeModel::draw(const core::visual::VisualParams* vparams)
 {
     if (!isActive() || !((getNext()==NULL)?vparams->displayFlags().getShowCollisionModels():vparams->displayFlags().getShowBoundingCollisionModels())) return;

@@ -53,6 +53,7 @@ set(HEADER_FILES
     MeshBarycentricMapperEngine.inl
     MeshClosingEngine.h
     MeshClosingEngine.inl
+    MeshBoundaryROI.h
     MeshROI.h
     MeshROI.inl
     MeshSampler.h
@@ -134,6 +135,7 @@ set(SOURCE_FILES
     MergeVectors.cpp
     MeshBarycentricMapperEngine.cpp
     MeshClosingEngine.cpp
+    MeshBoundaryROI.cpp
     MeshROI.cpp
     MeshSampler.cpp
     MeshSplittingEngine.cpp
