@@ -47,6 +47,7 @@ using std::remove ;
 #include "MessageDispatcher.h"
 
 #include "MessageHandler.h"
+#include "ConsoleMessageHandler.h"
 
 #include <sofa/core/objectmodel/Base.h>
 
@@ -86,6 +87,13 @@ sofa::helper::logging::Message& operator<<=(MessageDispatcher &d, sofa::helper::
     d.process(m);
     return m;
 }
+
+MessageDispatcher::MessageDispatcher()
+{
+    // add a default handler
+    addHandler(new sofa::helper::logging::ConsoleMessageHandler());
+}
+
 
 int MessageDispatcher::getLastMessageId() {
     return s_m_lastAllocatedID ;
