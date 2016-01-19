@@ -28,7 +28,6 @@
 #include "BaseDeformationMapping.h"
 #include "BaseDeformationImpl.inl"
 #include <SofaBaseVisual/VisualModelImpl.h>
-#include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/helper/gl/Color.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/helper/IndexOpenMP.h>
@@ -54,6 +53,7 @@ BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State
     : Inherit ( from, to )
     , f_shapeFunction_name(initData(&f_shapeFunction_name,"shapeFunction","name of shape function (optional)"))
     , _shapeFunction(NULL)
+    , _sampler(NULL)
     , f_index ( initData ( &f_index,"indices","parent indices for each child" ) )
     , f_w ( initData ( &f_w,"weights","influence weights of the Dofs" ) )
     , f_dw ( initData ( &f_dw,"weightGradients","weight gradients" ) )
@@ -239,18 +239,17 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
 
     size_t size;
 
-    engine::BaseGaussPointSampler* sampler;
-    this->getContext()->get(sampler,core::objectmodel::BaseContext::Local);
+    if( !_sampler ) this->getContext()->get(_sampler,core::objectmodel::BaseContext::Local);
     bool restPositionSet=false;
     helper::ReadAccessor<Data< OutVecCoord > >  rest(*this->toModel->read(core::ConstVecCoordId::restPosition()));
 
-    if(sampler) // retrieve initial positions from gauss point sampler (deformation gradient types)
+    if(_sampler) // retrieve initial positions from gauss point sampler (deformation gradient types)
     {
-        size = sampler->getNbSamples();
+        size = _sampler->getNbSamples();
         if(rest.size()==size && size!=1)  restPositionSet=true;
 
         this->toModel->resize(size);
-        pos0.resize(size);  for(size_t i=0; i<size; i++) pos0[i]=sampler->getSamples()[i];
+        pos0.resize(size);  for(size_t i=0; i<size; i++) pos0[i]=_sampler->getSamples()[i];
         F0.resize(size);
         if(restPositionSet)     // use custom rest positions defined in state (to set material directions or set residual deformations)
         {
@@ -259,7 +258,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
         }
         else
         {
-            for(size_t i=0; i<size; ++i) copy(F0[i],sampler->getTransforms()[i]);
+            for(size_t i=0; i<size; ++i) copy(F0[i],_sampler->getTransforms()[i]);
         }
         if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< size <<" gauss points imported"<<std::endl;
     }
@@ -315,7 +314,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     reinit();
 
     // set deformation gradient state rest position when defined by gaussPointSampler
-    if(sampler && restPositionSet == false && this->toModel->read(core::VecCoordId::restPosition())->getValue().size()==size ) // not for states that do not have restpos (like visualmodel)
+    if(_sampler && restPositionSet == false && this->toModel->read(core::VecCoordId::restPosition())->getValue().size()==size ) // not for states that do not have restpos (like visualmodel)
     {
         helper::ReadAccessor<Data< VMaterialToSpatial > >  ra_F0(this->f_F0);
         helper::WriteOnlyAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));
@@ -373,9 +372,8 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
     reinit();
 
     // update deformation gradient state rest position
-    engine::BaseGaussPointSampler* sampler;
-    this->getContext()->get(sampler,core::objectmodel::BaseContext::Local);
-    if(sampler && this->toModel->read(core::VecCoordId::restPosition())->getValue().size()==size ) // not for states that do not have restpos (like visualmodel)
+    if( !_sampler ) this->getContext()->get(_sampler,core::objectmodel::BaseContext::Local);
+    if(_sampler && this->toModel->read(core::VecCoordId::restPosition())->getValue().size()==size ) // not for states that do not have restpos (like visualmodel)
     {
         helper::ReadAccessor<Data< VMaterialToSpatial > >  ra_F0(this->f_F0);
         helper::WriteOnlyAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));

@@ -89,7 +89,7 @@
   <BarycentricShapeFunction nbRef="8" />
         <Node 	name="Rotated nodes"   >
 	    <MechanicalObject  name="dofs" template="Vec3d" showObject="0" showObjectScale="5" />
-	    <CorotationalMeshMapping name="mapping" inputHexahedra="@../mesh.hexahedra" method="polar"/>
+	    <CorotationalMeshMapping name="mapping" inputHexahedra="@../mesh.hexahedra" />
 
 	    <Mesh name="mesh" src="@mapping" position="@dofs.position"/>
 		
@@ -155,6 +155,35 @@
         
         <Node name="Visual"  >
             <VisualModel  fileMesh="mesh/Armadillo_simplified.obj" color='blue'  />
+            <IdentityMapping template="Vec3d,ExtVec3f"  />
+        </Node>
+   </Node>
+
+</Node>
+
+
+
+<Node name="yellow: meta-Flexible"   >
+  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+  <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
+  
+  <Mesh  name="mesh" src="@../sampler" />
+  <MechanicalObject  name="dofs" tags="NoPicking" position="@./mesh.position"/>
+  <UniformMass totalMass="20"/>
+
+        <BoxROI template="Vec3d" box="5 7 -8 10 15 3" position="@mesh.position" name="FixedROI" drawBoxes='1'/>
+        <FixedConstraint indices="@FixedROI.indices" />
+
+	  <FlexibleCorotationalFEMForceField youngModulus="3000.0" poissonRatio="0.3" method="polar"  order="2" />
+
+  <Node name="Collision">      
+	<Mesh  src="@../../loader" />
+	<MechanicalObject name="dof" />
+	<TTriangleModel />
+	 <BarycentricMapping input="@.." output="@." />
+        
+        <Node name="Visual"  >
+            <VisualModel  fileMesh="mesh/Armadillo_simplified.obj" color='yellow'  />
             <IdentityMapping template="Vec3d,ExtVec3f"  />
         </Node>
    </Node>

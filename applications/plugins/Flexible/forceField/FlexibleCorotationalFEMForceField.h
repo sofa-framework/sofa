@@ -12,6 +12,8 @@
 #include "../types/StrainTypes.h"
 
 #include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseTopology/MeshTopology.h>
+
 
 namespace sofa
 {
@@ -22,17 +24,27 @@ namespace component
 namespace forcefield
 {
 
+/// WORK IN PROGRESS
+/// meta-forcefield using Flexible components internally without adding extra computation neither extra memory
+/// hard-coded implementation of corotational FEM
+///
+/// TODO
+/// - CorotationalMeshMapping + Cauchy + preassembly
+/// - assembly
+/// - geometric stiffness
+/// - potential energy
+/// - masks?
+///
 template<class DataTypes>
-class SOFA_Flexible_API FlexibleTetrahedronFEMForceField : virtual public core::behavior::ForceField<DataTypes>, virtual public shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction3>
+class SOFA_Flexible_API FlexibleCorotationalFEMForceField : public core::behavior::ForceField<DataTypes>, public shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction>
 {
 public:
 
-    typedef core::behavior::ForceField<DataTypes> Inherit;
 
-    SOFA_CLASS2(SOFA_TEMPLATE(FlexibleTetrahedronFEMForceField,DataTypes),SOFA_TEMPLATE(core::behavior::ForceField,DataTypes),SOFA_TEMPLATE(shapefunction::BarycentricShapeFunction,core::behavior::ShapeFunction3));
+    SOFA_CLASS2(SOFA_TEMPLATE(FlexibleCorotationalFEMForceField,DataTypes),SOFA_TEMPLATE(core::behavior::ForceField,DataTypes),SOFA_TEMPLATE(shapefunction::BarycentricShapeFunction,core::behavior::ShapeFunction));
 
-    virtual std::string getTemplateName() const { return Inherit::getTemplateName(); }
-    static std::string templateName( const FlexibleTetrahedronFEMForceField<DataTypes>* = NULL) { return DataTypes::Name(); }
+    virtual std::string getTemplateName() const { return templateName(this); }
+    static std::string templateName( const FlexibleCorotationalFEMForceField<DataTypes>* = NULL) { return DataTypes::Name(); }
 
     /** @name  Input types    */
     //@{
@@ -47,7 +59,6 @@ public:
     //@}
 
 
-
     /** @name forceField functions */
     //@{
     virtual void init()
@@ -59,7 +70,7 @@ public:
         }
 
 
-        core::topology::BaseMeshTopology *topo = NULL;
+        topology::MeshTopology *topo = NULL;
         this->getContext()->get( topo, core::objectmodel::BaseContext::SearchUp );
         if( !topo ) { serr<<"No MeshTopology found"<<sendl; return; }
 
@@ -71,23 +82,20 @@ public:
 
 
 /// GaussPointSampler
-        GaussPointSampler* gaussPointSampler  = static_cast< GaussPointSampler* >( _baseGaussPointSampler.get() );
-        gaussPointSampler->f_method.setValue( 0 );
-        gaussPointSampler->f_order.setValue( 1 );
-        gaussPointSampler->parentTopology = topo;
-        gaussPointSampler->f_inPosition.setValue( static_cast<topology::MeshTopology*>(topo)->seqPoints.getValue() );
-        gaussPointSampler->init();
+        m_gaussPointSampler->f_method.setValue( 0 );
+        m_gaussPointSampler->f_order.setValue( d_order.getValue() );
+        m_gaussPointSampler->parentTopology = topo;
+        m_gaussPointSampler->f_inPosition.setValue( topo->seqPoints.getValue() );
+        m_gaussPointSampler->init();
 
 
 /// DeformationMapping
-        DeformationDofs* deformationDofs = static_cast< DeformationDofs* >( _baseDeformationDofs.get() );
-        _baseDeformationMapping = core::objectmodel::New< DeformationMapping >( this->mstate, deformationDofs );
-        DeformationMapping* deformationMapping = static_cast< DeformationMapping* >( _baseDeformationMapping.get() );
-        deformationMapping->_sampler = gaussPointSampler;
-        deformationMapping->_shapeFunction = this;
-        deformationMapping->init( false );
+        m_deformationMapping = core::objectmodel::New< DeformationMapping >( this->mstate, m_deformationDofs.get() );
+        m_deformationMapping->_sampler = m_gaussPointSampler.get();
+        m_deformationMapping->_shapeFunction = (ShapeFunction*)this;
+        m_deformationMapping->init();
 
-        unsigned size = gaussPointSampler->getNbSamples();
+        unsigned size = m_gaussPointSampler->getNbSamples();
 
 
 
@@ -97,24 +105,60 @@ public:
 
 /// Material
         _materialBlocks.resize( size );
-        for( unsigned int i=0 ; i<size ; i++ ) _materialBlocks[i].volume=&gaussPointSampler->f_volume.getValue()[i];
+        for( unsigned int i=0 ; i<size ; i++ ) _materialBlocks[i].volume=&m_gaussPointSampler->f_volume.getValue()[i];
 
 
 
-        Inherit::init();
+        ForceField::init();
 
         reinit();
     }
 
     virtual void reinit()
     {
-        _lambda = _youngModulus.getValue()*_poissonRatio.getValue()/((1-2*_poissonRatio.getValue())*(1+_poissonRatio.getValue()));
-        _mu2    = _youngModulus.getValue()/(1+_poissonRatio.getValue());
+//        _lambda = _youngModulus.getValue()*_poissonRatio.getValue()/((1-2*_poissonRatio.getValue())*(1+_poissonRatio.getValue()));
+//        _mu2    = _youngModulus.getValue()/(1+_poissonRatio.getValue());
 
+        switch( d_method.getValue().getSelectedId() )
+        {
+            case SMALL:
+            {
+                for( size_t i=0 ; i<_strainJacobianBlocks.size() ; i++ )
+                {
+                    _strainJacobianBlocks[i].init_small();
+                }
+                break;
+            }
+            case QR:
+            {
+                for( size_t i=0 ; i<_strainJacobianBlocks.size() ; i++ )
+                {
+                    _strainJacobianBlocks[i].init_qr( d_geometricStiffness.getValue() );
+                }
+                break;
+            }
+            case POLAR:
+            {
+                for( size_t i=0 ; i<_strainJacobianBlocks.size() ; i++ )
+                {
+                    _strainJacobianBlocks[i].init_polar( d_geometricStiffness.getValue() );
+                }
+                break;
+            }
+            case SVD:
+            {
+                for( size_t i=0 ; i<_strainJacobianBlocks.size() ; i++ )
+                {
+                    _strainJacobianBlocks[i].init_svd( d_geometricStiffness.getValue() );
+                }
+                break;
+            }
+        }
+
+        std::vector<Real> params; params.push_back( _youngModulus.getValue()); params.push_back(_poissonRatio.getValue());
         for( unsigned i=0; i < _materialBlocks.size() ; ++i )
         {
-            //_strainJacobianBlocks[i].init();
-            _materialBlocks[i].init( _youngModulus.getValue(), _poissonRatio.getValue(), _lambda, _mu2, _viscosity.getValue() );
+            _materialBlocks[i].init( params, _viscosity.getValue() );
         }
 
         // reinit matrices
@@ -122,37 +166,44 @@ public:
         //if(this->assembleK.getValue()) updateK();
         //if(this->assembleB.getValue()) updateB();
 
-        Inherit::reinit();
+        ForceField::reinit();
+        ShapeFunction::reinit();
     }
 
-    virtual void addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& _v)
+    virtual void addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& _f, const DataVecCoord& _x, const DataVecDeriv& _v)
     {
-        if( isCompliance.getValue() ) return; // if seen as a compliance, then apply no force directly, they will be applied as constraints in writeConstraints
+        VecDeriv& f = *_f.beginEdit();
+        const VecCoord& x = _x.getValue();
+        const VecDeriv& v = _v.getValue();
 
-        VecDeriv&  f = *_f.beginEdit();
-        const VecCoord&  x = _x.getValue();
-        const VecDeriv&  v = _v.getValue();
+        typename DeformationMapping::SparseMatrix& deformationJacobianBlocks = m_deformationMapping->getJacobianBlocks();
 
-        DeformationMapping* deformationMapping = static_cast< DeformationMapping* >( _baseDeformationMapping.get() );
-        typename DeformationMapping::SparseMatrix& deformationJacobianBlocks = deformationMapping->getJacobianBlocks();
+
+        // temporaries
+        defaulttype::F331Types::Coord F;
+        defaulttype::F331Types::Deriv VF;
+        defaulttype::F331Types::Deriv PF;
+        defaulttype::E331Types::Coord E;
+        defaulttype::E331Types::Deriv VE;
+        defaulttype::E331Types::Deriv PE;
+
 
         // TODO use masks
         for( unsigned i=0; i < _strainJacobianBlocks.size() ; ++i )
         {
-            defaulttype::F331Types::Coord F;
-            defaulttype::F331Types::Deriv VF;
-            defaulttype::F331Types::Deriv PF;
+            F.clear();
+            VF.clear();
+            PF.clear();
+            E.clear();
+            VE.clear();
+            PE.clear();
 
             for( unsigned int j=0 ; j<deformationJacobianBlocks[i].size() ; j++ )
             {
-                unsigned int index = deformationMapping->f_index.getValue()[i][j];
+                unsigned int index = m_deformationMapping->f_index.getValue()[i][j];
                 deformationJacobianBlocks[i][j].addapply( F, x[index] );
                 deformationJacobianBlocks[i][j].addmult( VF, v[index] );
             }
-
-            defaulttype::E331Types::Coord E;
-            defaulttype::E331Types::Deriv VE;
-            defaulttype::E331Types::Deriv PE;
 
             _strainJacobianBlocks[i].addapply_svd( E, F );
             _strainJacobianBlocks[i].addmult( VE, VF );
@@ -163,7 +214,7 @@ public:
 
             for( unsigned int j=0 ; j<deformationJacobianBlocks[i].size() ; j++ )
             {
-                unsigned int index = deformationMapping->f_index.getValue()[i][j];
+                unsigned int index = m_deformationMapping->f_index.getValue()[i][j];
                 deformationJacobianBlocks[i][j].addMultTranspose( f[index], PF );
             }
         }
@@ -179,32 +230,34 @@ public:
         }*/
     }
 
-    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&   _df , const DataVecDeriv&   _dx )
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv&  _df, const DataVecDeriv&  _dx )
     {
-        if( isCompliance.getValue() ) return; // if seen as a compliance, then apply no force directly, they will be applied as constraints
+        VecDeriv& df = *_df.beginEdit();
+        const VecDeriv& dx = _dx.getValue();
 
 
-        VecDeriv&  df = *_df.beginEdit();
-        const VecDeriv&  dx = _dx.getValue();
+        typename DeformationMapping::SparseMatrix& deformationJacobianBlocks = m_deformationMapping->getJacobianBlocks();
 
+        // temporaries
+        defaulttype::F331Types::Coord F;
+        defaulttype::F331Types::Deriv PF;
+        defaulttype::E331Types::Coord E;
+        defaulttype::E331Types::Deriv PE;
 
-        DeformationMapping* deformationMapping = static_cast< DeformationMapping* >( _baseDeformationMapping.get() );
-        typename DeformationMapping::SparseMatrix& deformationJacobianBlocks = deformationMapping->getJacobianBlocks();
 
         // TODO use masks
         for( unsigned i=0; i < _strainJacobianBlocks.size() ; ++i )
         {
-            defaulttype::F331Types::Coord F;
-            defaulttype::F331Types::Deriv PF;
+            F.clear();
+            PF.clear();
+            E.clear();
+            PE.clear();
 
             for( unsigned int j=0 ; j<deformationJacobianBlocks[i].size() ; j++ )
             {
-                unsigned int index = deformationMapping->f_index.getValue()[i][j];
+                unsigned int index = m_deformationMapping->f_index.getValue()[i][j];
                 deformationJacobianBlocks[i][j].addmult( F, dx[index] );
             }
-
-            defaulttype::E331Types::Coord E;
-            defaulttype::E331Types::Deriv PE;
 
             _strainJacobianBlocks[i].addmult( E, F );
 
@@ -212,10 +265,14 @@ public:
 
             _strainJacobianBlocks[i].addMultTranspose( PF, PE );
 
+            // TODO _strainJacobianBlocks geometric stiffness
+
             for( unsigned int j=0 ; j<deformationJacobianBlocks[i].size() ; j++ )
             {
-                unsigned int index = deformationMapping->f_index.getValue()[i][j];
+                unsigned int index = m_deformationMapping->f_index.getValue()[i][j];
                 deformationJacobianBlocks[i][j].addMultTranspose( df[index], PF );
+
+                // TODO deformationJacobianBlocks geometric stiffness
             }
         }
 
@@ -245,14 +302,22 @@ public:
 //        return &B;
 //    }
 
+
+
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/) const
+    {
+        // TODO not implemented
+        return 0;
+    }
+
     void draw(const core::visual::VisualParams* /*vparams*/)
     {
     }
     //@}
 
 
-
-    typedef shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction3> ShapeFunction;
+    typedef core::behavior::ForceField<DataTypes> ForceField;
+    typedef shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction> ShapeFunction;
     typedef engine::TopologyGaussPointSampler GaussPointSampler;
     typedef mapping::LinearMapping< DataTypes, defaulttype::F331Types > DeformationMapping;
     //typedef mapping::CorotationalStrainMapping< defaulttype::F331Types, defaulttype::E331Types > StrainMapping;
@@ -275,46 +340,62 @@ public:
     MaterialBlocks _materialBlocks;
 
 
+    /** @name  Corotational methods */
+    //@{
+    enum DecompositionMethod { POLAR=0, QR, SMALL, SVD, NB_DecompositionMethod };
+    Data<helper::OptionsGroup> d_method;
+    //@}
+
+    Data<unsigned> d_order; ///< order of spatial integration
 
     /** @name  Material parameters */
     //@{
     Data<Real> _youngModulus;
     Data<Real> _poissonRatio;
     Data<Real> _viscosity;
-    Real _lambda;  ///< Lamé first coef
-    Real _mu2;     ///< Lamé second coef * 2
+//    Real _lambda;  ///< Lamé first coef
+//    Real _mu2;     ///< Lamé second coef * 2
     //@}
 
+
+    Data<bool> d_geometricStiffness; ///< should geometricStiffness be considered?
 
 
 
 protected:
 
 
-    core::BaseMapping::SPtr _baseDeformationMapping;
-    BaseMechanicalState::SPtr _baseDeformationDofs;
-    //shapefunction::BaseShapeFunction<core::behavior::ShapeFunction3>::SPtr _baseShapeFunction;
-    engine::BaseGaussPointSampler::SPtr _baseGaussPointSampler;
+    typename DeformationMapping::SPtr m_deformationMapping;
+    DeformationDofs::SPtr m_deformationDofs;
+    GaussPointSampler::SPtr m_gaussPointSampler;
 
-    Data< bool > isCompliance;  ///< Consider as compliance, else consider as stiffness
 
-    FlexibleTetrahedronFEMForceField( MStateType *mm = NULL )
-        : Inherit( mm )
+    FlexibleCorotationalFEMForceField()
+        : ForceField(), ShapeFunction()
         //, assembleC ( initData ( &assembleC,false, "assembleC","Assemble the Compliance matrix" ) )
         //, assembleK ( initData ( &assembleK,false, "assembleK","Assemble the Stiffness matrix" ) )
         //, assembleB ( initData ( &assembleB,false, "assembleB","Assemble the Damping matrix" ) )
+        , d_method( initData( &d_method, "method", "Decomposition method" ) )
+        , d_order( initData( &d_order, 1u, "order", "Order of quadrature method" ) )
         , _youngModulus(initData(&_youngModulus,(Real)5000,"youngModulus","Young Modulus"))
-        , _poissonRatio(initData(&_poissonRatio,(Real)0.45f,"poissonRatio","Poisson Ratio"))
+        , _poissonRatio(initData(&_poissonRatio,(Real)0,"poissonRatio","Poisson Ratio"))
         , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
-        , isCompliance( initData(&isCompliance, false, "isCompliance", "Consider the component as a compliance, else as a stiffness"))
+        , d_geometricStiffness( initData( &d_geometricStiffness, false, "geometricStiffness", "Should geometricStiffness be considered?" ) )
     {
-        _baseDeformationDofs = core::objectmodel::New< DeformationDofs >();
-        _baseGaussPointSampler = core::objectmodel::New< GaussPointSampler >();
-        //_baseShapeFunction = core::objectmodel::New< ShapeFunction >();
+        helper::OptionsGroup Options;
+        Options.setNbItems( NB_DecompositionMethod );
+        Options.setItemName( SMALL, "small" );
+        Options.setItemName( QR,    "qr"    );
+        Options.setItemName( POLAR, "polar" );
+        Options.setItemName( SVD,   "svd"   );
+        Options.setSelectedItem( SVD );
+        d_method.setValue( Options );
 
+        m_deformationDofs = core::objectmodel::New< DeformationDofs >();
+        m_gaussPointSampler = core::objectmodel::New< GaussPointSampler >();
     }
 
-    virtual ~FlexibleTetrahedronFEMForceField() {}
+    virtual ~FlexibleCorotationalFEMForceField() {}
 
 
     //Data<bool> assembleC;
@@ -391,16 +472,12 @@ protected:
 
 
 
-}; // class FlexibleTetrahedronFEMForceField
+}; // class FlexibleCorotationalFEMForceField
 
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_TETRAHEDRONFEMFORCEFIELD_CPP)
-#ifdef SOFA_FLOAT
-extern template class SOFA_Flexible_API FlexibleTetrahedronFEMForceField<defaulttype::Vec3fTypes>;
-#else
-extern template class SOFA_Flexible_API FlexibleTetrahedronFEMForceField<defaulttype::Vec3dTypes>;
-#endif
+extern template class SOFA_Flexible_API FlexibleCorotationalFEMForceField<defaulttype::Vec3Types>;
 #endif
 
 } // namespace forcefield
