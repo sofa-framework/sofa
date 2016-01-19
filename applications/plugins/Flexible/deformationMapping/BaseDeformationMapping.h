@@ -34,6 +34,7 @@
 #include <sofa/simulation/common/Simulation.h>
 
 #include "../shapeFunction/BaseShapeFunction.h"
+#include "../quadrature/BaseGaussPointSampler.h"
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -317,6 +318,7 @@ public:
 
     Data<std::string> f_shapeFunction_name; ///< Name of the shape function component (optional: if not specified, will searchup)
     BaseShapeFunction* _shapeFunction;      ///< Where the weights are computed
+    engine::BaseGaussPointSampler* _sampler;
     Data<VecVRef > f_index;            ///< Store child to parent relationship. index[i][j] is the index of the j-th parent influencing child i.
 //    vector<VRef> f_index_parentToChild;     ///< Store parent to child relationship.
 //                                            /**< @warning For each parent i, child index <b>and parent index (again)</b> are stored.

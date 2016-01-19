@@ -22,13 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define FLEXIBLE_TETRAHEDRONFEMFORCEFIELD_CPP
+#define __FlexibleCorotationalFEMForceField_CPP
 
 #include <Flexible/config.h>
-#include "FlexibleTetrahedronFEMForceField.h"
+#include "FlexibleCorotationalFEMForceField.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
+#include "../deformationMapping/BaseDeformationMapping.inl"
 
 namespace sofa
 {
@@ -40,16 +41,14 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(FlexibleTetrahedronFEMForceField)
+SOFA_DECL_CLASS(FlexibleCorotationalFEMForceField)
 
 // Register in the Factory
-int FlexibleTetrahedronFEMForceFieldClass = core::RegisterObject("Flexible Tetrahedral finite elements")
-
-
-        .add< FlexibleTetrahedronFEMForceField< Vec3Types > >(true)
+int FlexibleCorotationalFEMForceFieldClass = core::RegisterObject("Flexible Tetrahedral finite elements")
+        .add< FlexibleCorotationalFEMForceField< Vec3Types > >(true)
         ;
 
-template class SOFA_Flexible_API FlexibleTetrahedronFEMForceField< Vec3Types >;
+template class SOFA_Flexible_API FlexibleCorotationalFEMForceField< Vec3Types >;
 
 }
 }

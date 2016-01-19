@@ -1,4 +1,3 @@
-<!--Notice: FlexibleTetrahedronFEMForceField is not compiled yet-->
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -0.5 0 " dt="1"  >
     <RequiredPlugin pluginName="Flexible"/>
@@ -6,48 +5,41 @@
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
     
-    <EulerImplicitSolver />
-    <CGLinearSolver  />
+    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 
+   <Node name="meta-Flexible"   activated="1" >
    
-
-        <Node name="FlexibleTetrahedronFEMForceField"   >
-        <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-	<Mesh name="mesh" src="@loader" />
+        <EulerImplicitSolver />
+        <CGLinearSolver  iterations="50" tolerance="1e-5" threshold="1e-5"/>
+    
+	<Mesh name="mesh" src="@../loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
+       <UniformMass totalMass="250" />
 
         <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
         <FixedConstraint indices="@FixedROI.indices" />
         
-         <!--<FlexibleTetrahedronFEMForceField  template="Vec3d" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0" />	-->
-	    
-        <Node 	name="mass"   >
-             <MechanicalObject template="Vec3d" position="@../mesh.position"  />
-	     <UniformMass totalMass="250" />
-	     <LinearMapping template="Vec3d,Vec3d"  />
-        </Node>
+        <BarycentricShapeFunction  />
 
-        <Node name="collision"  >
-	     <MeshObjLoader name="loader" filename="mesh/torus.obj" />
-	     <Mesh src="@loader"/>
- 	     <MechanicalObject  />
-             <Triangle />
-             <LinearMapping template="Vec3d,Vec3f"/>
-	</Node>
+        <FlexibleCorotationalFEMForceField youngModulus="2000.0" poissonRatio="0.2" viscosity="0" order="1"/>
 
 	<Node name="Visual"  >
 	     <VisualModel  fileMesh="mesh/torus.obj" />
              <LinearMapping template="Vec3d,ExtVec3f"/>
-        </Node>
+	</Node>
+	
     </Node>
-
     
 
     
-   <Node name="Flexible"   >
-        <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-	<Mesh name="mesh" src="@loader" />
+   <Node name="Flexible"   activated="1" >
+   
+        <EulerImplicitSolver />
+        <CGLinearSolver  iterations="50" tolerance="1e-5" threshold="1e-5"/>
+    
+	<Mesh name="mesh" src="@../loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
+       <UniformMass totalMass="250" />
 
         <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
         <FixedConstraint indices="@FixedROI.indices" />
@@ -64,27 +56,13 @@
 	    	<CorotationalStrainMapping template="F331,E331"   method="svd"/>
 	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"    />	    
 	    </Node>
-	    
         </Node>
-
-	<Node 	name="mass"   >
-	     <MechanicalObject position="@../mesh.position"  />
-	     <UniformMass totalMass="250" />
-	     <LinearMapping template="Vec3d,Vec3d"  />
-        </Node>
-
-	<Node name="collision"  >
-	     <MeshObjLoader name="loader" filename="mesh/torus.obj" />
-	     <Mesh src="@loader"/>
- 	     <MechanicalObject  />
-             <Triangle />
-             <LinearMapping template="Vec3d,Vec3f"/>
-	</Node>
 
 	<Node name="Visual"  >
 	     <VisualModel  fileMesh="mesh/torus.obj" color="1 .4 0.5 1" />
              <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
+	
     </Node>
     
 
