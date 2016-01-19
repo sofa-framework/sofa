@@ -125,8 +125,7 @@ public:
                 indexset.insert(it->first.first);
                 indexset.insert(it->first.second);
             }
-        for(std::set<PointID>::iterator it=indexset.begin();it!=indexset.end();++it)
-            indices.push_back(*it);
+        indices.wref().insert(indices.end(), indexset.begin(), indexset.end());
     }
 
     void countEdge(std::map<PointPair, unsigned int>& edgeCount,PointPair& edge) const
