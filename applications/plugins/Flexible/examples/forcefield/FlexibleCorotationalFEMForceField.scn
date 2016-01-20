@@ -6,7 +6,31 @@
     <DefaultVisualManagerLoop />
     
     <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+    
+    
+   <Node name="meta-Flexible-mesh"   activated="0" >
+   
+        <EulerImplicitSolver />
+        <CGLinearSolver  iterations="50" tolerance="1e-5" threshold="1e-5"/>
+    
+	<Mesh name="mesh" src="@../loader" />
+	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
+       <UniformMass totalMass="250" />
 
+        <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
+        <FixedConstraint indices="@FixedROI.indices" />
+        
+        <FlexibleCorotationalMeshFEMForceField youngModulus="2000.0" poissonRatio="0.2" viscosity="0" order="1"/>
+
+	<Node name="Visual"  >
+	     <VisualModel  fileMesh="mesh/torus.obj" />
+             <LinearMapping template="Vec3d,ExtVec3f"/>
+	</Node>
+	
+    </Node>
+    
+    
+    
    <Node name="meta-Flexible"   activated="1" >
    
         <EulerImplicitSolver />
@@ -19,9 +43,7 @@
         <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
         <FixedConstraint indices="@FixedROI.indices" />
         
-        <BarycentricShapeFunction  />
-
-        <FlexibleCorotationalFEMForceField youngModulus="2000.0" poissonRatio="0.2" viscosity="0" order="1"/>
+        <FlexibleCorotationalFEMForceField youngModulus="2000.0" poissonRatio="0.2" viscosity="0" order="1" method="svd" geometricStiffness="true"/>
 
 	<Node name="Visual"  >
 	     <VisualModel  fileMesh="mesh/torus.obj" />
@@ -53,7 +75,7 @@
 
 	    <Node 	name="Strain"   >
 		<MechanicalObject  template="E331" name="E"  />
-	    	<CorotationalStrainMapping template="F331,E331"   method="svd"/>
+	    	<CorotationalStrainMapping template="F331,E331"   method="svd"  geometricStiffness="true"/>
 	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"    />	    
 	    </Node>
         </Node>
