@@ -33,7 +33,7 @@
 #define MESSAGEDISPATCHER_H
 
 #include <sofa/helper/helper.h>
-#include <sofa/core/objectmodel/Base.h>
+
 #include "Message.h"
 
 #include <boost/shared_ptr.hpp>
@@ -42,6 +42,14 @@
 
 namespace sofa
 {
+
+namespace core
+{
+namespace objectmodel
+{
+    class Base;
+}
+}
 
 namespace helper
 {
@@ -92,7 +100,7 @@ public:
             m_fileInfo(fileInfo),
             m_class(mclass),
             m_type(type),
-            m_sender(sender->getName()), // temporary, until Base object reference kept in the message itself
+            m_sender(""), // temporary, until Base object reference kept in the message itself
             m_dispatcher(dispatcher)
         {
         }
