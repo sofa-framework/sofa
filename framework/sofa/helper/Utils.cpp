@@ -35,6 +35,7 @@
 # include <mach-o/dyld.h>       // for _NSGetExecutablePath()
 # include <errno.h>
 #else
+# include <string.h>            // for strerror()
 # include <unistd.h>            // for readlink()
 # include <errno.h>
 # include <linux/limits.h>      // for PATH_MAX
