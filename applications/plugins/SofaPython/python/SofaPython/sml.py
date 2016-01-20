@@ -45,6 +45,7 @@ class Model:
             def __init__(self):
                 self.index=list()
                 self.data=dict()
+                self.tags=set()
 
         def __init__(self, meshXml=None):
             self.format=None
@@ -63,6 +64,7 @@ class Model:
                 self.group[g.attrib["id"]].index = Tools.strToListInt(g.find("index").text)
                 for d in g.iter("data"):
                     self.group[g.attrib["id"]].data[d.attrib["name"]]=parseData(d)
+                parseTag(self.group[g.attrib["id"]], g)
 
     class MeshAttributes:
         def __init__(self,objXml=None):
