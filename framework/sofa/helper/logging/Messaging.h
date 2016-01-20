@@ -81,7 +81,7 @@
 #include "MessageDispatcher.h"
 #include "Message.h"
 
-extern sofa::helper::logging::MessageDispatcher gMessageDispatcher;
+extern SOFA_HELPER_API sofa::helper::logging::MessageDispatcher gMessageDispatcher;
 
 //todo(bruno&damien): the first quick&dirty version should be improved to preserve the semantic between
 // the version compiled with WITH_SOFA_DEVTOOLS enabled and the other.

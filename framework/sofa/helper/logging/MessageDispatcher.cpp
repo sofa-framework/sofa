@@ -49,7 +49,6 @@ using std::remove ;
 #include "MessageHandler.h"
 #include "ConsoleMessageHandler.h"
 
-#include <sofa/core/objectmodel/Base.h>
 
 namespace sofa
 {
@@ -138,7 +137,7 @@ void MessageDispatcher::process(sofa::helper::logging::Message& m){
 } // sofa
 
 // THE main MessageDipatcher...
-sofa::helper::logging::MessageDispatcher gMessageDispatcher;
+SOFA_HELPER_API sofa::helper::logging::MessageDispatcher gMessageDispatcher;
 
 
 
