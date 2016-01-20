@@ -22,7 +22,6 @@ def parseIdName(obj,objXml):
 def parseTag(obj, objXml):
     """ set tags of the object
     """
-    obj.tags=set()
     for xmlTag in objXml.iter("tag"):
         obj.tags.add(xmlTag.text)
 
