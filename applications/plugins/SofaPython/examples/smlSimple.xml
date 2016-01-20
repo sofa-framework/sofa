@@ -4,6 +4,10 @@
 <sml name="sml_display">
     <mesh id="ball">
         <source format="obj">mesh/ball.obj</source>
+        <group id="group01">
+            <index>1 2 3 4</index>
+            <tag>test</tag>
+        </group>
     </mesh>
     <mesh id="armadillo">
         <source format="obj">mesh/Armadillo_verysimplified.obj</source>

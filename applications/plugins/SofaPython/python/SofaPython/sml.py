@@ -22,7 +22,6 @@ def parseIdName(obj,objXml):
 def parseTag(obj, objXml):
     """ set tags of the object
     """
-    obj.tags=set()
     for xmlTag in objXml.iter("tag"):
         obj.tags.add(xmlTag.text)
 
@@ -46,11 +45,13 @@ class Model:
             def __init__(self):
                 self.index=list()
                 self.data=dict()
+                self.tags=set()
 
         def __init__(self, meshXml=None):
             self.format=None
             self.source=None
-            self.group=dict()
+            self.group=dict() # should be groups with *s*
+            self.groupsByTag=dict()
             if not meshXml is None:
                 self.parseXml(meshXml)
 
@@ -64,6 +65,7 @@ class Model:
                 self.group[g.attrib["id"]].index = Tools.strToListInt(g.find("index").text)
                 for d in g.iter("data"):
                     self.group[g.attrib["id"]].data[d.attrib["name"]]=parseData(d)
+                parseTag(self.group[g.attrib["id"]], g)
 
     class MeshAttributes:
         def __init__(self,objXml=None):
@@ -376,9 +378,11 @@ class Model:
 
     def updateTag(self):
         """ Update internal Model tag structures
-        Call this method after you changed solids or surfaceLinks tag """
+        Call this method after you changed solids, surfaceLinks or mesh groups tags """
         self._updateTag(self.solids, self.solidsByTag)
         self._updateTag(self.surfaceLinks, self.surfaceLinksByTag)
+        for id,mesh in self.meshes.iteritems():
+            self._updateTag(mesh.group, mesh.groupsByTag)
 
 def insertVisual(parentNode, solid, color):
     node = parentNode.createChild("node_"+solid.name)
