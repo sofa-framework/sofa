@@ -50,7 +50,8 @@ class Model:
         def __init__(self, meshXml=None):
             self.format=None
             self.source=None
-            self.group=dict()
+            self.group=dict() # should be groups with *s*
+            self.groupsByTag=dict()
             if not meshXml is None:
                 self.parseXml(meshXml)
 
@@ -377,9 +378,11 @@ class Model:
 
     def updateTag(self):
         """ Update internal Model tag structures
-        Call this method after you changed solids or surfaceLinks tag """
+        Call this method after you changed solids, surfaceLinks or mesh groups tags """
         self._updateTag(self.solids, self.solidsByTag)
         self._updateTag(self.surfaceLinks, self.surfaceLinksByTag)
+        for id,mesh in self.meshes.iteritems():
+            self._updateTag(mesh.group, mesh.groupsByTag)
 
 def insertVisual(parentNode, solid, color):
     node = parentNode.createChild("node_"+solid.name)
