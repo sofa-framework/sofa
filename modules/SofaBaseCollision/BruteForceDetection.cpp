@@ -56,8 +56,7 @@ int BruteForceDetectionClass = core::RegisterObject("Collision detection using e
 using namespace core::objectmodel;
 
 BruteForceDetection::BruteForceDetection()
-    : bDraw(initData(&bDraw, false, "draw", "enable/disable display of results"))
-    , box(initData(&box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored"))
+    : box(initData(&box, "box", "if not empty, objects that do not intersect this bounding-box will be ignored"))
 {
 }
 
@@ -411,31 +410,6 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
 
     //sofa::helper::AdvancedTimer::stepEnd("BruteForceDetection::addCollisionPair");
     //sout << "Narrow phase "<<cm1->getLast()->getName()<<"("<<gettypename(typeid(*cm1->getLast()))<<") - "<<cm2->getLast()->getName()<<"("<<gettypename(typeid(*cm2->getLast()))<<"): "<<elemPairs.size()-size0<<" contacts."<<sendl;
-}
-
-void BruteForceDetection::draw(const core::visual::VisualParams* )
-{
-    if (!bDraw.getValue()) return;
-    /*
-        glDisable(GL_LIGHTING);
-        glColor3f(1.0, 0.0, 1.0);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glLineWidth(3);
-        glPointSize(5);
-
-        for (DetectionOutputMap::iterator it = outputsMap.begin(); it!=outputsMap.end(); it++)
-        {
-            core::collision::DetectionOutputVector& outputs = it->second;
-            for (core::collision::DetectionOutputVector::iterator it2 = outputs.begin(); it2!=outputs.end(); it2++)
-            {
-                it2->elem.first.draw(vparams);
-                it2->elem.second.draw(vparams);
-            }
-        }
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glLineWidth(1);
-        glPointSize(1);
-    */
 }
 
 } // namespace collision

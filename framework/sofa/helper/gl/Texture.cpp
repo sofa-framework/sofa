@@ -506,7 +506,9 @@ void Texture::init()
     {
         glTexParameteri( target, GL_TEXTURE_WRAP_S, GL_REPEAT );
         glTexParameteri( target, GL_TEXTURE_WRAP_T, GL_REPEAT );
+#ifdef SOFA_HAVE_GLEW
         glTexParameteri( target, GL_TEXTURE_WRAP_R, GL_REPEAT );
+#endif // SOFA_HAVE_GLEW
     }
     else
     {

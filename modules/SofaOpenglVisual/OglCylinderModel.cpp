@@ -59,9 +59,8 @@ using namespace sofa::core::topology;
 
 OglCylinderModel::OglCylinderModel() 
     : radius(initData(&radius, 1.0f, "radius", "Radius of the cylinder.")),
-      color(initData(&color, std::string("white"), "color", "Color of the cylinders.")),
-      _topology(NULL),
-      _mstate(NULL)
+      color(initData(&color, std::string("white"), "color", "Color of the cylinders."))
+    , d_edges(initData(&d_edges,"edges","List of edge indices"))
 	  // , pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
 {
 }
@@ -72,12 +71,6 @@ OglCylinderModel::~OglCylinderModel()
 
 void OglCylinderModel::init()
 {
-    getContext()->get(_topology);
-    if(_topology)
-        _mstate = _topology->getContext()->getMechanicalState();
-    else
-        getContext()->get(_mstate);
-
     VisualModel::init();
 
     reinit();
@@ -90,11 +83,11 @@ void OglCylinderModel::reinit()
     setColor(color.getValue());
 }
 
-void OglCylinderModel::draw(const core::visual::VisualParams* vparams)
+void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
 {
     if(!vparams->displayFlags().getShowVisualModels()) return;
 
-    glUseProgramObjectARB(0);
+    const VecCoord& pos = this->read( core::ConstVecCoordId::position() )->getValue();
 
     // glPushAttrib(GL_ENABLE_BIT);
 
@@ -103,15 +96,15 @@ void OglCylinderModel::draw(const core::visual::VisualParams* vparams)
 
 	Vec<4,float> col( r, g, b, a );
 
-	if(_topology){
-		for(BaseMeshTopology::SeqEdges::const_iterator it = _topology->getEdges().begin(); it != _topology->getEdges().end(); ++it){
-			int pid1 = (*it)[0];
-			int pid2 = (*it)[1];
-			Coord p1((Real)_mstate->getPX(pid1),(Real)_mstate->getPY(pid1),(Real)_mstate->getPZ(pid1));
-			Coord p2((Real)_mstate->getPX(pid2),(Real)_mstate->getPY(pid2),(Real)_mstate->getPZ(pid2));
-			vparams->drawTool()->drawCylinder(p1,p2,_radius,col);
-		}
-	}
+    const SeqEdges& edges = d_edges.getValue();
+
+    for( SeqEdges::const_iterator it=edges.begin(), itend=edges.end() ; it !=itend ; ++it )
+    {
+        const Coord& p1 = pos[(*it)[0]];
+        const Coord& p2 = pos[(*it)[1]];
+
+        vparams->drawTool()->drawCylinder(p1,p2,_radius,col);
+    }
 
     // glPopAttrib();
 }
@@ -176,6 +169,27 @@ void OglCylinderModel::setColor(std::string color)
     }
     setColor(r,g,b,a);
 }
+
+void OglCylinderModel::exportOBJ(std::string name, std::ostream* out, std::ostream* /*mtl*/, int& vindex, int& /*nindex*/, int& /*tindex*/, int& /*count*/)
+{
+    const VecCoord& x = this->read( core::ConstVecCoordId::position() )->getValue();
+    const SeqEdges& edges = d_edges.getValue();
+
+    int nbv = x.size();
+
+    *out << "g "<<name<<"\n";
+
+    for( int i=0 ; i<nbv; i++ )
+        *out << "v "<< std::fixed << x[i][0]<<' '<< std::fixed <<x[i][1]<<' '<< std::fixed <<x[i][2]<<'\n';
+
+    for( size_t i = 0 ; i < edges.size() ; i++ )
+        *out << "f " << edges[i][0]+vindex+1 << " " << edges[i][1]+vindex+1 << '\n';
+
+    *out << sendl;
+
+    vindex += nbv;
+}
+
 
 
 } // namespace visualmodel

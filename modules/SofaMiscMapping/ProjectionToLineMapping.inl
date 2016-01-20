@@ -41,7 +41,7 @@ namespace mapping
 template <class TIn, class TOut>
 ProjectionToTargetLineMapping<TIn, TOut>::ProjectionToTargetLineMapping()
     : Inherit()
-    , f_indices(initData(&f_indices, "indices", "Indices of the parent points"))
+    , f_indices(initData(&f_indices, "indices", "Indices of the parent points (if empty, all input dofs are mapped)"))
     , f_origins(initData(&f_origins, "origins", "Origins of the lines on which the points are projected"))
     , f_directions(initData(&f_directions, "directions", "Directions of the lines on which the points are projected"))
     , d_drawScale(initData(&d_drawScale, SReal(10), "drawScale", "Draw scale"))
@@ -52,21 +52,48 @@ ProjectionToTargetLineMapping<TIn, TOut>::ProjectionToTargetLineMapping()
 template <class TIn, class TOut>
 void ProjectionToTargetLineMapping<TIn, TOut>::init()
 {
-    assert( f_indices.getValue().size()==f_origins.getValue().size()) ;
-    assert( f_indices.getValue().size()==f_directions.getValue().size()) ;
-
-    this->getToModel()->resize( f_indices.getValue().size() );
-
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
 
+    reinit();
+    this->Inherit::init();
+}
+
+
+template <class TIn, class TOut>
+void ProjectionToTargetLineMapping<TIn, TOut>::reinit()
+{
+    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+
+    size_t nb = indices.empty() ? this->getFromModel()->getSize() : indices.size(); // if indices is empty, mapping every input dofs
+
+    this->getToModel()->resize( nb );
 
     // ensuring direction are normalized
     helper::WriteAccessor< Data<OutVecCoord> > directions(f_directions);
     for( size_t i=0 ; i<directions.size() ; ++i )
         directions[i].normalize( OutCoord(1,0,0) ); // failsafe for null norms
 
-    this->Inherit::init();
+
+    // precompute constant jacobian
+    jacobian.resizeBlocks(nb,this->getFromModel()->getSize());
+    for(unsigned i=0; i<nb; i++ )
+    {
+        const OutCoord& n = i<directions.size() ? directions[i] : directions.ref().back();
+        const unsigned& index = indices.empty() ? i : indices[i] ;
+
+        for(unsigned j=0; j<Nout; j++)
+        {
+            jacobian.beginRow( i*Nout+j );
+            for(unsigned k=0; k<Nout; k++ )
+            {
+                jacobian.insertBack( i*Nout+j, index*Nin+k, n[j]*n[k] );
+            }
+        }
+    }
+    jacobian.compress();
+
+    this->Inherit::reinit();
 }
 
 
@@ -79,25 +106,17 @@ void ProjectionToTargetLineMapping<TIn, TOut>::apply(const core::MechanicalParam
     helper::ReadAccessor< Data<OutVecCoord> > origins(f_origins);
     helper::ReadAccessor< Data<OutVecCoord> > directions(f_directions);
 
-    jacobian.resizeBlocks(out.size(),in.size());
+    size_t nb = indices.empty() ? this->getFromModel()->getSize() : indices.size(); // if indices is empty, mapping every input dofs
 
-    for(unsigned i=0; i<indices.size(); i++ )
+    for(unsigned i=0; i<nb; i++ )
     {
-        const InCoord& p = in[indices[i]];
-        const OutCoord& o = origins[i];
-        const OutCoord& n = directions[i];
+        const unsigned& index = indices.empty() ? i : indices[i] ;
+        const InCoord& p = in[index];
+        const OutCoord& o = i<origins.size() ? origins[i] : origins.ref().back();
+        const OutCoord& n = i<directions.size() ? directions[i] : directions.ref().back();
 
         out[i] = o + n * ( n * ( TIn::getCPos(p) - o ) ); // projection on the line
-
-        for(unsigned j=0; j<Nout; j++)
-        {
-            for(unsigned k=0; k<Nout; k++ )
-            {
-                jacobian.insertBack( i*Nout+j, indices[i]*Nin+k, n[j]*n[k] );
-            }
-        }
     }
-    jacobian.compress();
 }
 
 
@@ -150,18 +169,36 @@ void ProjectionToTargetLineMapping<TIn, TOut>::draw(const core::visual::VisualPa
     helper::ReadAccessor< Data<OutVecCoord> > directions(f_directions);
 
     vector< defaulttype::Vector3 > points;
-    for(unsigned i=0; i<origins.size(); i++ )
-    {
-        points.push_back( origins[i] - directions[i]*scale );
-        points.push_back( origins[i] + directions[i]*scale );
-    }
 
+    size_t nb = std::max( directions.size(), origins.size() );
+
+    for(unsigned i=0; i<nb; i++ )
+    {
+        const OutCoord& o = i<origins.size() ? origins[i] : origins.ref().back();
+        const OutCoord& n = i<directions.size() ? directions[i] : directions.ref().back();
+
+        points.push_back( o - n*scale );
+        points.push_back( o + n*scale );
+    }
+#ifndef SOFA_NO_OPENGL
     glPushAttrib(GL_LIGHTING_BIT);
     glDisable(GL_LIGHTING);
     vparams->drawTool()->drawLines( points, 1, color );
     glPopAttrib();
+#endif // SOFA_NO_OPENGL
 }
 
+
+template <class TIn, class TOut>
+void ProjectionToTargetLineMapping<TIn, TOut>::updateForceMask()
+{
+    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    if( indices.empty() ) return Inherit::updateForceMask(); // all dofs are mapped
+
+    for( unsigned i=0 ; i<indices.size() ; i++ )
+        if( this->maskTo->getEntry(i) )
+            this->maskFrom->insertEntry( indices[i] );
+}
 
 
 } // namespace mapping

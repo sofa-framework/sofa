@@ -39,6 +39,8 @@ namespace core
 namespace behavior
 {
 
+class BaseConstraintCorrection;
+
 /**
  *  \brief Component responsible for the expression and solution of system of equations related to constraints.
  The main method is solveConstraint(const ConstraintParams *, MultiVecId , MultiVecId );
@@ -125,6 +127,12 @@ public:
     }
 
     /// @}
+
+    /// Remove reference to ConstraintCorrection
+    ///
+    /// @param c is the ConstraintCorrection
+    virtual void removeConstraintCorrection(BaseConstraintCorrection *s) = 0;
+
 
 protected:
 

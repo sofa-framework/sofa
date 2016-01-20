@@ -40,13 +40,13 @@ SOFA_DECL_CLASS(MassFromDensity)
 int MassFromDensityClass = core::RegisterObject("Compute a mass matrix from a density image")
         .add<MassFromDensity<Affine3Types,ImageD > >(true)
         .add<MassFromDensity<Affine3Types,ImageF > >()
-        .add<MassFromDensity<Affine3Types,ImageUI> >()
+        .add<MassFromDensity<Affine3Types,ImageUI > >()
         .add<MassFromDensity<Affine3Types,ImageUC > >()
 ;
 
 template class SOFA_Flexible_API MassFromDensity<Affine3Types,ImageD  >;
-template class SOFA_Flexible_API MassFromDensity<Affine3Types,ImageF   >;
-template class SOFA_Flexible_API MassFromDensity<Affine3Types,ImageUI  >;
+template class SOFA_Flexible_API MassFromDensity<Affine3Types,ImageF  >;
+template class SOFA_Flexible_API MassFromDensity<Affine3Types,ImageUI >;
 template class SOFA_Flexible_API MassFromDensity<Affine3Types,ImageUC >;
 
 }

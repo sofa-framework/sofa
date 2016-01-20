@@ -35,7 +35,7 @@ def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, cell='', as
                 input1="@"+dofRigidNode.getPathName(), input2="@"+dofAffineNode.getPathName(), output="@.", assemble=assemble, geometricStiffness=geometricStiffness, mapForces=isMechanical, mapConstraints=isMechanical, mapMasses=isMechanical)
 
 class Deformable:
-    """ This class reprents a deformable object build from a mesh.
+    """ This class represents a deformable object built from a mesh.
         Various cases are handled:
         - collision model :
             x static (loaded from file or subset of another static model)
@@ -72,19 +72,18 @@ class Deformable:
     def loadVisual(self, meshPath, offset = [0,0,0,0,0,0,1], scale=[1,1,1], color=[1,1,1,1],**kwargs):
         r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
         self.visual =  self.node.createObject("VisualModel", name="model", filename=meshPath, translation=concat(offset[:3]) , rotation=concat(r), scale3d=concat(scale), color=concat(color),**kwargs)
-        self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.visual.name )
+        self.visual.setColor(color[0],color[1],color[2],color[3]) # the previous assignement fails when reloading a scene..
         self.normals = self.visual
 
     def loadVisualCylinder(self, meshPath, offset = [0,0,0,0,0,0,1], scale=[1,1,1], color=[1,1,1,1],radius=0.01,**kwargs):
         r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
-        self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.visual.name )
+        self.visual = self.node.createObject("OglCylinderModel", radius=radius, position="@topology.position", edges="@topology.edges" )
         self.normals = self.visual
 
 
     def addVisual(self, color=[1,1,1,1]):
-        if self.dofs is None: # use static (triangulated) mesh from topology
-            self.visual = self.node.createObject("VisualModel", name="model", color=concat(color), src="@"+self.topology.name)
-            self.normals = self.visual
+        if self.dofs is None:
+            print "[Flexible.Deformable] ERROR: visual mesh not added because there is no dof, use LoadVisual instead to have a static visual mesh ", self.name
         else:   # create a new deformable
             d = Deformable(self.node,"Visual")
             d.visualFromDeformable(self,color)
@@ -100,7 +99,8 @@ class Deformable:
 
     def visualFromDeformable(self, deformable, color=[1,1,1,1]):
         deformable.node.addChild(self.node)
-        self.visual = self.node.createObject("VisualModel", name="model", filename="@"+SofaPython.Tools.getObjectPath(deformable.meshLoader)+".filename", color=concat(color))
+        self.visual = self.node.createObject("VisualModel", name="model", filename="@"+deformable.meshLoader.getPathName()+".filename", color=concat(color))
+        self.visual.setColor(color[0],color[1],color[2],color[3]) # the previous assignement fails when reloading a scene..
         self.mapping = self.node.createObject("IdentityMapping", name="mapping", input='@'+deformable.node.getPathName(),output="@.", mapForces=False, mapConstraints=False, mapMasses=False )
         self.normals = self.meshLoader
 
@@ -136,28 +136,29 @@ class Deformable:
 
     def addMechanicalObject(self):
         if self.meshLoader is None:
-            print "[Flexible.Deformable] ERROR: no loaded mesh for ", name
+            print "[Flexible.Deformable] ERROR: no loaded mesh for ", self.name
             return
         self.dofs = self.node.createObject("MechanicalObject", template = "Vec3", name="dofs", src="@"+self.meshLoader.name)
 
     def addNormals(self, invert=False):
         if self.topology is None:
-            print "[Flexible.Deformable] ERROR: no topology for ", name
+            print "[Flexible.Deformable] ERROR: no topology for ", self.name
             return
         pos = '@'+self.topology.name+'.position' if self.dofs is None else  '@'+self.dofs.name+'.position'
         self.normals = self.node.createObject("NormalsFromPoints", template='Vec3', name="normalsFromPoints", position=pos, triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
 
     def addMass(self,totalMass):
         if self.dofs is None:
-            print "[Flexible.Deformable] ERROR: no dofs for ", name
+            print "[Flexible.Deformable] ERROR: no dofs for ", self.name
             return
         self.mass = self.node.createObject('UniformMass', totalMass=totalMass)
 
     def addMapping(self, dofRigidNode=None, dofAffineNode=None, labelImage=None, labels=None, useGlobalIndices=False, useIndexLabelPairs=False, assemble=True, isMechanical=True):
         cell = ''
         if not labelImage is None and not labels is None : # use labels to select specific voxels in branching image
-           offsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+self.topology.name+".position", src="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage), labels=concat(labels), useGlobalIndices=useGlobalIndices, useIndexLabelPairs=useIndexLabelPairs)
-           cell = "@"+SofaPython.Tools.getObjectPath(offsets)+".cell"
+            position="@"+self.topology.name+".position" if not self.topology is None else "@"+self.visual.name+".position"
+            offsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position =position, image="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage)+".image", transform="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage)+".transform", labels=concat(labels), useGlobalIndices=useGlobalIndices, useIndexLabelPairs=useIndexLabelPairs)
+            cell = "@"+SofaPython.Tools.getObjectPath(offsets)+".cell"
 
         self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, cell, assemble, isMechanical=isMechanical)
 
@@ -189,7 +190,7 @@ class Deformable:
 
     def read(self, filenamePrefix=None, directory=""):
         """ read weights of the linear mapping
-            WARNING: the mapping shoud be already created
+            WARNING: the mapping should already be created
         """
         if self.mapping is None:
             return

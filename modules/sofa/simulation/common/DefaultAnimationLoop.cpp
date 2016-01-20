@@ -88,9 +88,6 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
     if (dt == 0)
         dt = this->gnode->getDt();
 
-    sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
-
-    sofa::helper::AdvancedTimer::begin("Animate");
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Step");
@@ -104,14 +101,23 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
 
     SReal startTime = gnode->getTime();
 
+
+    sofa::helper::AdvancedTimer::stepBegin("BehaviorUpdatePositionVisitor");
     BehaviorUpdatePositionVisitor beh(params , dt);
     gnode->execute ( beh );
+    sofa::helper::AdvancedTimer::stepEnd("BehaviorUpdatePositionVisitor");
 
+
+    sofa::helper::AdvancedTimer::stepBegin("AnimateVisitor");
     AnimateVisitor act(params, dt);
     gnode->execute ( act );
+    sofa::helper::AdvancedTimer::stepEnd("AnimateVisitor");
 
+
+    sofa::helper::AdvancedTimer::stepBegin("UpdateSimulationContextVisitor");
     gnode->setTime ( startTime + dt );
     gnode->execute< UpdateSimulationContextVisitor >(params);
+    sofa::helper::AdvancedTimer::stepEnd("UpdateSimulationContextVisitor");
 
     {
         AnimateEndEvent ev ( dt );
@@ -122,7 +128,6 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
     sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
     //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
     gnode->execute< UpdateMappingVisitor >(params);
-    sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
     {
         UpdateMappingEndEvent ev ( dt );
         PropagateEventVisitor act ( params , &ev );
@@ -139,12 +144,7 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
     simulation::Visitor::printCloseNode("Step");
 #endif
 
-    ///////////////////////////////////////////////////////////////////////
 
-    ///////////////////////////////////////////////////////////////////////
-
-    sofa::helper::AdvancedTimer::end("Animate");
-    sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }
 
 

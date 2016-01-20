@@ -41,7 +41,7 @@ namespace mapping
 template <class TIn, class TOut>
 ProjectionToTargetPlaneMapping<TIn, TOut>::ProjectionToTargetPlaneMapping()
     : Inherit()
-    , f_indices(initData(&f_indices, "indices", "Indices of the parent points"))
+    , f_indices(initData(&f_indices, "indices", "Indices of the parent points (if empty, all input dofs are mapped)"))
     , f_origins(initData(&f_origins, "origins", "Origins of the planes on which the points are projected"))
     , f_normals(initData(&f_normals, "normals", "Normals of the planes on which the points are projected"))
     , d_drawScale(initData(&d_drawScale, SReal(10), "drawScale", "Draw scale"))
@@ -54,23 +54,51 @@ ProjectionToTargetPlaneMapping<TIn, TOut>::ProjectionToTargetPlaneMapping()
 template <class TIn, class TOut>
 void ProjectionToTargetPlaneMapping<TIn, TOut>::init()
 {
-    assert( f_indices.getValue().size()==f_origins.getValue().size()) ;
-    assert( f_indices.getValue().size()==f_normals.getValue().size()) ;
-
-    this->getToModel()->resize( f_indices.getValue().size() );
-
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
 
+    reinit();
+    this->Inherit::init();
+}
+
+template <class TIn, class TOut>
+void ProjectionToTargetPlaneMapping<TIn, TOut>::reinit()
+{
+    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    size_t nb = indices.empty() ? this->getFromModel()->getSize() : indices.size(); // if indices is empty, mapping every input dofs
+
+    this->getToModel()->resize( nb );
 
     // ensuring direction are normalized
     helper::WriteAccessor< Data<OutVecCoord> > normals(f_normals);
     for( size_t i=0 ; i<normals.size() ; ++i )
         normals[i].normalize( OutCoord(1,0,0) ); // failsafe for null norms
 
-    this->Inherit::init();
-}
 
+    // precompute constant jacobian
+    jacobian.resizeBlocks(nb,this->getFromModel()->getSize());
+    for(unsigned i=0; i<nb; i++ )
+    {
+        const OutCoord& n = i<normals.size() ? normals[i] : normals.ref().back();
+        const unsigned& index = indices.empty() ? i : indices[i] ;
+
+        for(unsigned j=0; j<Nout; j++)
+        {
+            jacobian.beginRow(i*Nout+j);
+            for(unsigned k=0; k<Nout; k++ )
+            {
+                if( j == k )
+                    jacobian.insertBack( i*Nout+j, index*Nin+k, 1-n[j]*n[k] );
+                else
+                    jacobian.insertBack( i*Nout+j, index*Nin+k, -n[j]*n[k] );
+            }
+        }
+    }
+    jacobian.compress();
+
+
+    this->Inherit::reinit();
+}
 
 template <class TIn, class TOut>
 void ProjectionToTargetPlaneMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
@@ -81,29 +109,18 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::apply(const core::MechanicalPara
     helper::ReadAccessor< Data<OutVecCoord> > origins(f_origins);
     helper::ReadAccessor< Data<OutVecCoord> > normals(f_normals);
 
-    jacobian.resizeBlocks(out.size(),in.size());
+    size_t nb = indices.empty() ? this->getFromModel()->getSize() : indices.size(); // if indices is empty, mapping every input dofs
 
-    for(unsigned i=0; i<indices.size(); i++ )
+    for(unsigned i=0; i<nb; i++ )
     {
-        const InCoord& p = in[indices[i]];
+        const unsigned& index = indices.empty() ? i : indices[i] ;
+        const InCoord& p = in[index];
         typename In::CPos x =  TIn::getCPos(p);
-        const OutCoord& o = origins[i];
-        const OutCoord& n = normals[i];
+        const OutCoord& o = i<origins.size() ? origins[i] : origins.ref().back();
+        const OutCoord& n = i<normals.size() ? normals[i] : normals.ref().back();
 
         out[i] = x - n * ( (x-o) * n ); // projection on the plane
-
-        for(unsigned j=0; j<Nout; j++)
-        {
-            for(unsigned k=0; k<Nout; k++ )
-            {
-                if( j == k )
-                    jacobian.insertBack( i*Nout+j, indices[i]*Nin+k, 1-n[j]*n[k] );
-                else
-                    jacobian.insertBack( i*Nout+j, indices[i]*Nin+k, -n[j]*n[k] );
-            }
-        }
     }
-    jacobian.compress();
 }
 
 
@@ -156,14 +173,18 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::draw(const core::visual::VisualP
     helper::ReadAccessor< Data<OutVecCoord> > origins(f_origins);
     helper::ReadAccessor< Data<OutVecCoord> > normals(f_normals);
 
+#ifndef SOFA_NO_OPENGL
     glPushAttrib(GL_LIGHTING_BIT);
     glDisable(GL_LIGHTING);
 
     glBegin(GL_QUADS);
-    for(unsigned i=0; i<origins.size(); i++ )
+
+
+    size_t nb = std::max( normals.size(), origins.size() );
+    for(unsigned i=0; i<nb; i++ )
     {
-        const OutCoord& n = normals[i];
-        const OutCoord& o = origins[i];
+        const OutCoord& n = i<normals.size() ? normals[i] : normals.ref().back();
+        const OutCoord& o = i<origins.size() ? origins[i] : origins.ref().back();
         OutCoord t0, t1;
 
         if( !helper::isNull(n[1]) ) t0.set( 0, -n[2], n[1] );
@@ -179,8 +200,20 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::draw(const core::visual::VisualP
     glEnd();
 
     glPopAttrib();
+#endif // SOFA_NO_OPENGL
 }
 
+
+template <class TIn, class TOut>
+void ProjectionToTargetPlaneMapping<TIn, TOut>::updateForceMask()
+{
+    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    if( indices.empty() ) return Inherit::updateForceMask(); // all dofs are mapped
+
+    for( size_t i=0 ; i<indices.size() ; i++ )
+        if( this->maskTo->getEntry(i) )
+            this->maskFrom->insertEntry( indices[i] );
+}
 
 
 } // namespace mapping

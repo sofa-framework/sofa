@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 0 0" dt="1"  >
+  <RequiredPlugin pluginName="image"/>
+  <Background color="1 1 1" />
+  <VisualStyle displayFlags="showVisual showBehaviorModels" />
+
+  <MeshObjLoader name="mesh1" filename="mesh/c_open.obj" triangulate="0"/>
+  <RegularGrid name="mesh2" nx=5 ny=5 nz=1 xmin=-10 xmax=10 ymin=-10 ymax=10 zmin=-5 zmax=-5/>
+  <MergeMeshes name="mesh" nbMeshes="2" position1="@mesh1.position" position2="@mesh2.position" triangles1="@mesh1.triangles" triangles2="@mesh2.triangles" quads1="@mesh1.quads" quads2="@mesh2.quads"/>
+
+  <VisualModel name="visual"  src="@mesh" color="0.5 0.5 1 1" />
+
+  <MechanicalObject template="Vec3d" position="@mesh.position" />
+  <MeshBoundaryROI name="roi" triangles="@mesh.triangles" quads="@mesh.quads"/>
+  <FixedConstraint template="Vec3d" indices="@roi.indices" />
+
+</Node>
+

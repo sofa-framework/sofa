@@ -5,17 +5,17 @@
   <MeshObjLoader name="mesh" filename="mesh/c_open.obj" triangulate="0"/>
   <MeshClosingEngine name="closer" inputPosition="@mesh.position" inputTriangles="@mesh.triangles" inputQuads="@mesh.quads"/>
 
-<Node name="visu of original open mesh (wireframe)" >
-    <VisualStyle displayFlags="showVisual showWireframe" />
-    <VisualModel name="visual"  src="@../mesh" color="0.5 0.5 1 1" />
-</Node>
-
 <Node name="plain visu of closing area (red)" >
       <VisualModel name="closingVisual"  position="@../closer.closingPosition" triangles="@../closer.closingTriangles" color="1 0.1 0.1 1"/>
 </Node>
 
 <Node name="visu of closed mesh (green)" >
     <VisualModel name="closedMesh"  position="@../closer.position" vertices="@../closer.position" triangles="@../closer.triangles" quads="@../closer.quads" color="0.5 1 0.5 1" translation="0 0 4"/>
+</Node>
+
+<Node name="visu of original open mesh (wireframe)" >
+    <VisualStyle displayFlags="showVisual showWireframe" />
+    <VisualModel name="visual"  src="@../mesh" color="0.5 0.5 1 1" />
 </Node>
 
 

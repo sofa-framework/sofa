@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.02">
+    
+    <VisualStyle displayFlags="showVisual" />
+    
+     <OglCylinderModel  position="0 0 0   10 0 0 "  edges="0 1" />
+    
+     </Node>

@@ -22,18 +22,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef IMAGE_QTQUICKGUI_INIT_H
-#define IMAGE_QTQUICKGUI_INIT_H
+#include "MergeVisualModels.h"
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/helper/system/config.h>
+namespace sofa
+{
 
-#define BUILD_ALL_IMAGE_TYPES // comment to reduce compilation time
+namespace component
+{
 
-#ifdef SOFA_BUILD_IMAGE_QTQUICKGUI
-#define SOFA_IMAGE_QTQUICKGUI_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#define SOFA_IMAGE_QTQUICKGUI_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace visualmodel
+{
 
-#endif //IMAGE_QTQUICKGUI_INIT_H
+SOFA_DECL_CLASS(MergeVisualModels)
+
+int MergeVisualModelsClass = core::RegisterObject("Merge several visual models")
+        .add< MergeVisualModels >(true);
+
+
+
+} // namespace visualmodel
+
+} // namespace component
+
+} // namespace sofa
 

@@ -22,37 +22,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define FLEXIBLE_TETRAHEDRONFEMFORCEFIELD_CPP
-
-#include <Flexible/config.h>
-#include "FlexibleTetrahedronFEMForceField.h"
+#define SOFA_COMPONENT_ENGINE_MeshBoundaryROI_CPP
+#include <SofaEngine/MeshBoundaryROI.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/ForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
 
 namespace sofa
 {
+
 namespace component
 {
-namespace forcefield
+
+namespace engine
 {
 
-using namespace sofa::defaulttype;
+SOFA_DECL_CLASS(MeshBoundaryROI)
 
+int MeshBoundaryROIClass = core::RegisterObject("Outputs indices of boundary vertices of a triangle/quad mesh")
+        .add< MeshBoundaryROI >(true);
 
-SOFA_DECL_CLASS(FlexibleTetrahedronFEMForceField)
+} // namespace constraint
 
-// Register in the Factory
-int FlexibleTetrahedronFEMForceFieldClass = core::RegisterObject("Flexible Tetrahedral finite elements")
+} // namespace component
 
-
-        .add< FlexibleTetrahedronFEMForceField< Vec3Types > >(true)
-        ;
-
-template class SOFA_Flexible_API FlexibleTetrahedronFEMForceField< Vec3Types >;
-
-}
-}
-}
-
+} // namespace sofa
 

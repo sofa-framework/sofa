@@ -22,71 +22,89 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_IMAGE_QTQUICKGUI_IMAGEPLANEVIEW_H
-#define SOFA_IMAGE_QTQUICKGUI_IMAGEPLANEVIEW_H
-
-#include "ImageQtQuickGUI.h"
-
-#include <QQuickPaintedItem>
-#include <QImage>
+#include <SofaOpenglVisual/OglTexturePointer.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/FileRepository.h>
 
 namespace sofa
 {
-
-namespace qtquick
+namespace component
 {
 
-class ImagePlaneModel;
-
-class SOFA_IMAGE_QTQUICKGUI_API ImagePlaneView : public QQuickPaintedItem
+namespace visualmodel
 {
-    Q_OBJECT
 
-public:
-    ImagePlaneView(QQuickItem* parent = 0);
+SOFA_DECL_CLASS(OglTexturePointer)
 
-public:
-    void paint(QPainter* painter);
+// Register the OglTexturePointer class in the Factory
+int OglTexturePointerClass = core::RegisterObject("OglTexturePointer").add< OglTexturePointer >();
 
-public slots:
-    void update();
+OglTexturePointer::OglTexturePointer()
+    :l_oglTexture( initLink( "oglTexture", "OglTexture" ) )
+    ,textureUnit(initData(&textureUnit, (unsigned short) 1, "textureUnit", "Set the texture unit"))
+    ,enabled(initData(&enabled, (bool) true, "enabled", "enabled ?"))
+{
+    
+}
 
-public:
-    Q_PROPERTY(sofa::qtquick::ImagePlaneModel* imagePlaneModel READ imagePlaneModel WRITE setImagePlaneModel NOTIFY imagePlaneModelChanged)
-    Q_PROPERTY(int axis READ axis WRITE setAxis NOTIFY axisChanged)
-    Q_PROPERTY(int index READ index WRITE setIndex NOTIFY indexChanged)
-    Q_PROPERTY(int length READ length NOTIFY lengthChanged)
-
-public:
-    sofa::qtquick::ImagePlaneModel* imagePlaneModel() const {return myImagePlaneModel;}
-    int axis() const {return myAxis;}
-    int index() const {return myIndex;}
-    int length() const {return myLength;}
-
-protected:
-    void setImagePlaneModel(sofa::qtquick::ImagePlaneModel* imagePlaneModel);
-    void setAxis(int axis);
-    void setIndex(int index);
-    void setLength(int length);
-
-signals:
-    void imagePlaneModelChanged();
-    void lengthChanged();
-    void axisChanged();
-    void indexChanged();
-
-private:
-    ImagePlaneModel*                    myImagePlaneModel;
-
-    int                                 myAxis;
-    int                                 myIndex;
-    QImage                              myImage;
-    int                                 myLength;
-
-};
+OglTexturePointer::~OglTexturePointer()
+{
 
 }
 
+void OglTexturePointer::setActiveTexture(unsigned short unit)
+{
+    glActiveTexture(GL_TEXTURE0 + unit);
 }
 
-#endif // SOFA_IMAGE_QTQUICKGUI_IMAGEPLANEVIEW_H
+void OglTexturePointer::init()
+{
+    OglShaderElement::init();
+}
+
+void OglTexturePointer::initVisual()
+{
+
+}
+
+void OglTexturePointer::reinit()
+{
+
+}
+
+void OglTexturePointer::fwdDraw(core::visual::VisualParams*)
+{
+    if (enabled.getValue() && !l_oglTexture.empty())
+    {
+        setActiveTexture(textureUnit.getValue());
+        bind();
+        setActiveTexture(0);
+    }
+}
+
+void OglTexturePointer::bwdDraw(core::visual::VisualParams*)
+{
+    if (enabled.getValue() && !l_oglTexture.empty())
+    {
+        setActiveTexture(textureUnit.getValue());
+        unbind();
+        setActiveTexture(0);
+    }
+}
+
+void OglTexturePointer::bind()
+{
+    if(!l_oglTexture.empty())
+        l_oglTexture->bind();
+}
+
+void OglTexturePointer::unbind()
+{
+    if(!l_oglTexture.empty())
+        l_oglTexture->unbind();
+}
+
+}//end of namespaces
+}
+}

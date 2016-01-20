@@ -71,6 +71,7 @@ public:
     virtual void init();
     virtual void reinit() {graphKineticEnergy.setDisplayed(traceKineticEnergy.getValue());};
 
+    virtual void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s);
 
     virtual bool prepareStates(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null());
     virtual bool buildSystem(const core::ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null());

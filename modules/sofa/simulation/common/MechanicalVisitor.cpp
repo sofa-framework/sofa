@@ -1592,6 +1592,46 @@ Visitor::Result MechanicalPickParticlesVisitor::fwdMechanicalMapping(simulation:
 
 
 
+/// get the closest pickable particle
+void MechanicalPickParticlesVisitor::getClosestParticle( core::behavior::BaseMechanicalState*& mstate, unsigned int& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength )
+{
+    mstate = NULL;
+
+    if( particles.empty() ) return;
+
+    rayLength = std::numeric_limits<SReal>::max();
+
+    core::behavior::BaseMechanicalState* mstatei;
+    unsigned int indexCollisionElementi;
+    defaulttype::Vector3 pointi;
+    SReal rayLengthi;
+
+    // particles are sorted from their distance to the ray
+    // threshold for valid particles is the shortest distance + small tolerance relative to ray length
+    SReal dmax = particles.begin()->first + radius0*1e-10;
+
+    for( Particles::const_iterator it=particles.begin(), itend=particles.end() ; it!=itend ; ++it )
+    {
+        if( it->first > dmax ) break; // from now on, particles are too far from the ray
+
+        // get current valid particle
+        mstatei = it->second.first;
+        indexCollisionElementi = it->second.second;
+        pointi[0] = mstatei->getPX(indexCollisionElementi);
+        pointi[1] = mstatei->getPY(indexCollisionElementi);
+        pointi[2] = mstatei->getPZ(indexCollisionElementi);
+        rayLengthi = (pointi-rayOrigin)*rayDirection;
+
+        if( rayLengthi < rayLength ) // keep the closest particle to the ray origin
+        {
+            mstate = mstatei;
+            indexCollisionElement = indexCollisionElementi;
+            point = pointi;
+            rayLength = rayLengthi;
+        }
+    }
+}
+
 
 
 Visitor::Result MechanicalVSizeVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)

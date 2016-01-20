@@ -1068,7 +1068,12 @@ void MechanicalObject<DataTypes>::init()
     if(this->getContext()->getProcessor()!=-1)
         numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
-    m_topology = this->getContext()->getMeshTopology();
+
+    if(this->getTags().empty())
+        m_topology = this->getContext()->getMeshTopology();
+    else
+        this->getContext()->get(m_topology, this->getTags());
+
 
     //helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
     //helper::WriteAccessor< Data<VecDeriv> > v_wA = *this->write(VecDerivId::velocity());
@@ -2390,7 +2395,13 @@ SReal MechanicalObject<DataTypes>::vMax(const core::ExecParams* params, core::Co
 
     if (a.type == sofa::core::V_COORD )
     {
-        serr << "Invalid vMax operation: can not compute the max of V_Coord terms in vector "<< a << sendl;
+        const VecCoord &va = this->read(core::ConstVecCoordId(a))->getValue(params);
+
+        for (nat i=0; i<va.size(); i++)
+        {
+            for(unsigned j=0; j<DataTypes::coord_total_size; j++)
+                if (fabs(va[i][j])>r) r=fabs(va[i][j]);
+        }
     }
     else if (a.type == sofa::core::V_DERIV)
     {
@@ -3388,6 +3399,7 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
 {
     if (defaulttype::DataTypeInfo<Coord>::size() == 2 || defaulttype::DataTypeInfo<Coord>::size() == 3
             || (defaulttype::DataTypeInfo<Coord>::size() == 7 && defaulttype::DataTypeInfo<Deriv>::size() == 6))
+        // TODO: this verification is awful and should be done by template specialization
     {
         // seems to be valid DOFs
         const VecCoord& x =this->read(core::ConstVecCoordId::position())->getValue();
@@ -3405,15 +3417,14 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
 
 //                                    cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << " = " << pos << endl;
             if (pos == origin) continue;
-            double dist = (pos-origin)*direction;
+            SReal dist = (pos-origin)*direction;
             if (dist < 0) continue; // discard particles behind the camera, such as mouse position
 
             defaulttype::Vec<3,Real> vecPoint = (pos-origin) - direction*dist;
-            double distToRay = vecPoint.norm2();
-            double maxr = radius0 + dRadius*dist;
+            SReal distToRay = vecPoint.norm2();
+            SReal maxr = radius0 + dRadius*dist;
 //                                    cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << ", maxR = " << maxr << endl;
-            double r2 = (pos-origin-direction*dist).norm2();
-            if (r2 <= maxr*maxr)
+            if (distToRay <= maxr*maxr)
             {
                 particles.insert(std::make_pair(distToRay,std::make_pair(this,i)));
 //                                            cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << ", distance = " << r2 << " inserted " << endl;

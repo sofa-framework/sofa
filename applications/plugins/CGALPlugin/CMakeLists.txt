@@ -49,11 +49,30 @@ configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/CGALPlugin/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/CGALPlugin/config.h" DESTINATION "include/CGALPlugin")
 
 if(WIN32)
-    # Copy CGAL dlls
-    file(GLOB sharedObjects "${CGAL_DIR}/bin/*.dll")
-    foreach(sharedObject ${sharedObjects})
-        file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-    endforeach()
+    #add library dir as it is not added automatically on Windows (?)
+    link_directories(${CGAL_LIBRARIES_DIR})
+    # # Copy CGAL dlls
+    # file(GLOB sharedObjects "${CGAL_INSTALL_PREFIX}/bin/*.dll")
+    # foreach(sharedObject ${sharedObjects})
+    #     file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
+    # endforeach()
+
+    file(GLOB CGAL_DLLS "${CGAL_INSTALL_PREFIX}/bin/*.dll")
+    # We suppose that the auxiliary DLLS for CGAL are always used from the CGAL package
+    file(GLOB CGAL_AUX_DLLS "${GMP_INCLUDE_DIR}/../lib/*.dll")
+    ## Copy DLLs to the build tree
+    if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
+        foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+            file(COPY ${CGAL_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
+            file(COPY ${CGAL_AUX_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
+        endforeach()
+    else()                      # Single-config generator (nmake)
+        file(COPY ${CGAL_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+        file(COPY ${CGAL_AUX_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+    endif()
+    ## Install DLLs
+    install(FILES ${DLLS} DESTINATION bin)
+    install(FILES ${LIBS} DESTINATION lib)
 endif()
 
 
@@ -62,7 +81,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BIN
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-target_include_directories(${PROJECT_NAME} PUBLIC ${GMP_INCLUDE_DIR} ${MPFR_INCLUDE_DIR} ${CGAL_DIR}/include)
+target_include_directories(${PROJECT_NAME} PUBLIC ${GMP_INCLUDE_DIR} ${MPFR_INCLUDE_DIR} ${CGAL_INCLUDE_DIRS})
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${CGALPLUGIN_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_CGALPLUGIN")

@@ -490,7 +490,7 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Vi
 				vparams->drawTool()->drawSpheres(pointsVertices, radiusVertices,  defaulttype::Vec<4,float>(1.0f,0,0,1.0f));
 				vparams->drawTool()->setLightingEnabled(false); //Disable lightning
 
-				#ifndef SOFA_NO_OPENGL
+#ifndef SOFA_NO_OPENGL
 				glDisable(GL_LIGHTING);
 				
 				glColor3f(0.0f, 1.0f, 0.0f);
@@ -525,13 +525,13 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Vi
 				glDisable(GL_POLYGON_OFFSET_LINE);
 				
 			}
-			#endif
+#endif // SOFA_NO_OPENGL
 		}
 		
 		// Draw edges linking Bezier Triangle control points with a color code
 		if (drawControlPointsEdges.getValue())
 		{
-			#ifndef SOFA_NO_OPENGL
+#ifndef SOFA_NO_OPENGL
 			const sofa::helper::vector<Triangle> &trianArray = this->m_topology->getTriangles();
 
 			if (!trianArray.empty())
@@ -569,8 +569,9 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Vi
 					}
 				}
 				glEnd();
+#endif // SOFA_NO_OPENGL
 			}
-			#endif
+
 		}
 	}
 	

@@ -487,6 +487,8 @@ void DAGNode::doExecuteVisitor(simulation::Visitor* action, bool precomputedOrde
 
         // Tous les noeuds executés à la descente sont stockés dans executedNodes dont l'ordre inverse est utilisé pour la remontée
 
+        updateDescendancy();
+
         Visitor::TreeTraversalRepetition repeat;
         if( action->treeTraversal(repeat) )
         {

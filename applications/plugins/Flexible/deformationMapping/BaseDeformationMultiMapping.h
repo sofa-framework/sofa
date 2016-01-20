@@ -245,8 +245,8 @@ public:
     Data<VecVRef > f_index;            ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
     Data<VecVRef > f_index1;            ///< The numChildren * numRefs column indices. index1[i][j] is the index of the j-th parent of type 1 influencing child i.
     Data<VecVRef > f_index2;            ///< The numChildren * numRefs column indices. index2[i][j] is the index of the j-th parent of type 2 influencing child i.
-    VecVRef f_index_parentToChild1;            ///< Constructed at init from f_index1 to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i of type 1.
-    VecVRef f_index_parentToChild2;            ///< Constructed at init from f_index2 to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i of type 2.
+//    VecVRef f_index_parentToChild1;            ///< Constructed at init from f_index1 to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i of type 1.
+//    VecVRef f_index_parentToChild2;            ///< Constructed at init from f_index2 to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i of type 2.
     Data<VecVReal >       f_w;
     Data<VecVGradient >   f_dw;
     Data<VecVHessian >    f_ddw;
@@ -308,7 +308,7 @@ protected:
     Data< helper::OptionsGroup > showColorOnTopology;
     Data< float > showColorScale;
     Data< unsigned > d_geometricStiffness;
-
+    Data< bool > d_parallel;		///< use openmp ?
 
     virtual void updateForceMask();
 };

@@ -155,20 +155,18 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
                 gap[i]=p;
         }
 
-        // insert in increasing row and column order
-//        jacobian.beginRow(i);
+        // insert in increasing column order
         if( links[i][1]<links[i][0])
         {
             for(unsigned j=0; j<Nout; j++)
             {
+                jacobian.beginRow(i*Nout+j);
                 for(unsigned k=0; k<In::spatial_dimensions; k++ )
                 {
                     jacobian.insertBack( i*Nout+j, links[i][1]*Nin+k, gap[k] );
-//                    jacobian.add( i*Nout+j, links[i][1]*Nin+k, gap[k] );
                 }
                 for(unsigned k=0; k<In::spatial_dimensions; k++ )
                 {
-//                    jacobian.add( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
                     jacobian.insertBack( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
                 }
             }
@@ -177,14 +175,13 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
         {
             for(unsigned j=0; j<Nout; j++)
             {
+                jacobian.beginRow(i*Nout+j);
                 for(unsigned k=0; k<In::spatial_dimensions; k++ )
                 {
-//                    jacobian.add( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
                     jacobian.insertBack( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
                 }
                 for(unsigned k=0; k<In::spatial_dimensions; k++ )
                 {
-//                    jacobian.add( i*Nout+j, links[i][1]*Nin+k, gap[k] );
                     jacobian.insertBack( i*Nout+j, links[i][1]*Nin+k, gap[k] );
                 }
             }
@@ -311,6 +308,7 @@ void DistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, 
         if( childForce[i][0] < 0 || geometricStiffness==1 )
         {
             sofa::defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
+
             for(unsigned j=0; j<In::spatial_dimensions; j++)
             {
                 for(unsigned k=0; k<In::spatial_dimensions; k++)
@@ -323,14 +321,11 @@ void DistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, 
             }
             b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
 
-            K.beginBlockRow(links[i][0]);
-            K.createBlock(links[i][0],b);
-            K.createBlock(links[i][1],-b);
-            K.endBlockRow();
-            K.beginBlockRow(links[i][1]);
-            K.createBlock(links[i][0],-b);
-            K.createBlock(links[i][1],b);
-            K.endBlockRow();
+            // Note that 'links' is not sorted so the matrix can not be filled-up in order
+            K.addBlock(links[i][0],links[i][0],b);
+            K.addBlock(links[i][0],links[i][1],-b);
+            K.addBlock(links[i][1],links[i][0],-b);
+            K.addBlock(links[i][1],links[i][1],b);
         }
     }
     K.compress();
@@ -346,7 +341,7 @@ template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
-
+#ifndef SOFA_NO_OPENGL
     glPushAttrib(GL_LIGHTING_BIT);
 
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
@@ -377,6 +372,7 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     }
 
     glPopAttrib();
+#endif // SOFA_NO_OPENGL
 }
 
 
@@ -568,12 +564,17 @@ void DistanceMultiMapping<TIn, TOut>::apply(const helper::vector<OutVecCoord*>& 
                 gap[i]=p;
         }
 
+        SparseMatrixEigen* J0 = static_cast<SparseMatrixEigen*>(baseMatrices[pair0[0]]);
+        SparseMatrixEigen* J1 = static_cast<SparseMatrixEigen*>(baseMatrices[pair1[0]]);
+
         for(unsigned j=0; j<Nout; j++)
         {
+            J0->beginRow(i*Nout+j);
+            J1->beginRow(i*Nout+j);
             for(unsigned k=0; k<In::spatial_dimensions; k++ )
             {
-                static_cast<SparseMatrixEigen*>(baseMatrices[pair0[0]])->add( i*Nout+j, pair0[1]*Nin+k, -gap[k] );
-                static_cast<SparseMatrixEigen*>(baseMatrices[pair1[0]])->add( i*Nout+j, pair1[1]*Nin+k,  gap[k] );
+                J0->insertBack( i*Nout+j, pair0[1]*Nin+k, -gap[k] );
+                J1->insertBack( i*Nout+j, pair1[1]*Nin+k,  gap[k] );
             }
         }
 
@@ -764,14 +765,10 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
             }
             globalIndex1 += pair1[1];
 
-            K.beginBlockRow(globalIndex0);
-            K.createBlock(globalIndex0,b);
-            K.createBlock(globalIndex1,-b);
-            K.endBlockRow();
-            K.beginBlockRow(globalIndex1);
-            K.createBlock(globalIndex0,-b);
-            K.createBlock(globalIndex1,b);
-            K.endBlockRow();
+            K.addBlock(globalIndex0,globalIndex0,b);
+            K.addBlock(globalIndex0,globalIndex1,-b);
+            K.addBlock(globalIndex1,globalIndex0,-b);
+            K.addBlock(globalIndex1,globalIndex1,b);
         }
     }
     K.compress();

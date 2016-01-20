@@ -27,13 +27,16 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/RAII.h>
-#include <sofa/helper/gl/GLSLShader.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sstream>
 #include <string.h>
+
+#ifdef SOFA_HAVE_GLEW
+#include <sofa/helper/gl/GLSLShader.h>
+#endif // SOFA_HAVE_GLEW
 
 //#define NO_VBO
 //#define DEBUG_DRAW
@@ -194,7 +197,7 @@ void OglModel::drawGroup(int ig, bool transparent)
         }
 
         glEnable(GL_TEXTURE_2D);
-
+#ifdef SOFA_HAVE_GLEW
         if(VBOGenDone && useVBO.getValue())
         {
             glBindBufferARB(GL_ARRAY_BUFFER, vbo);
@@ -204,6 +207,7 @@ void OglModel::drawGroup(int ig, bool transparent)
             glBindBufferARB(GL_ARRAY_BUFFER, 0);
         }
         else
+#endif // SOFA_HAVE_GLEW
         {
             //get the texture coordinates
             const VecTexCoord& vtexcoords = this->getVtexcoords();
@@ -455,18 +459,18 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glColor3f(1.0 , 1.0, 1.0);
 
+#ifdef SOFA_HAVE_GLEW
     if(VBOGenDone && useVBO.getValue())
     {
-//#ifdef SOFA_HAVE_GLEW
         glBindBufferARB(GL_ARRAY_BUFFER, vbo);
 
         glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
         glNormalPointer(GL_FLOAT, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0])));
 
         glBindBufferARB(GL_ARRAY_BUFFER, 0);
-//#endif
     }
     else
+#endif // SOFA_HAVE_GLEW
     {
         glVertexPointer (3, GL_FLOAT, 0, vertices.getData());
         glNormalPointer (GL_FLOAT, 0, vnormals.getData());
@@ -480,7 +484,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         glEnable(GL_TEXTURE_2D);
         if(tex)
             tex->bind();
-
+#ifdef SOFA_HAVE_GLEW
         if(VBOGenDone && useVBO.getValue())
         {
             glBindBufferARB(GL_ARRAY_BUFFER, vbo);
@@ -488,6 +492,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             glBindBufferARB(GL_ARRAY_BUFFER, 0);
         }
         else
+#endif // SOFA_HAVE_GLEW
         {
             glTexCoordPointer(2, GL_FLOAT, 0, getData(vtexcoords));
         }
@@ -495,6 +500,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
         if (hasTangents)
         {
+#ifdef SOFA_HAVE_GLEW
             glClientActiveTexture(GL_TEXTURE1);
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
             if(VBOGenDone && useVBO.getValue())
@@ -525,6 +531,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
                 glTexCoordPointer(3, GL_FLOAT, 0, vbitangents.getData());
 
             glClientActiveTexture(GL_TEXTURE0);
+#endif //  SOFA_HAVE_GLEW
         }
     }
 
@@ -548,7 +555,9 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     if (alphaBlend.getValue())
     {
         glDepthMask(GL_FALSE);
+#ifdef SOFA_HAVE_GLEW
         glBlendEquation( blendEq );
+#endif // SOFA_HAVE_GLEW
         glBlendFunc( sfactor, dfactor );
         glEnable(GL_BLEND);
     }
@@ -625,7 +634,9 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     if (alphaBlend.getValue())
     {
         // restore Default value
+#ifdef SOFA_HAVE_GLEW
         glBlendEquation( GL_FUNC_ADD );
+#endif // SOFA_HAVE_GLEW
         glBlendFunc( GL_ONE, GL_ONE );
         glDisable(GL_BLEND);
         glDepthMask(GL_TRUE);
@@ -637,7 +648,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             tex->unbind();
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
         glDisable(GL_TEXTURE_2D);
-
+#ifdef SOFA_HAVE_GLEW
         if (hasTangents)
         {
             glClientActiveTexture(GL_TEXTURE1);
@@ -646,6 +657,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             glDisableClientState(GL_TEXTURE_COORD_ARRAY);
             glClientActiveTexture(GL_TEXTURE0);
         }
+#endif // SOFA_HAVE_GLEW
     }
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisable(GL_LIGHTING);
@@ -663,8 +675,10 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
     if (vparams->displayFlags().getShowNormals())
     {
+#ifdef SOFA_HAVE_GLEW
         GLhandleARB currentShader = sofa::helper::gl::GLSLShader::GetActiveShaderProgram();
         sofa::helper::gl::GLSLShader::SetActiveShaderProgram(0);
+#endif // SOFA_HAVE_GLEW
         glColor3f (1.0, 1.0, 1.0);
         for (unsigned int i=0; i<xforms.size(); i++)
         {
@@ -684,7 +698,9 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
             glPopMatrix();
         }
+#ifdef SOFA_HAVE_GLEW
         sofa::helper::gl::GLSLShader::SetActiveShaderProgram(currentShader);
+#endif // SOFA_HAVE_GLEW
     }
 //    m_vtexcoords.updateIfDirty();
 }
@@ -1185,6 +1201,7 @@ GLenum OglModel::getGLenum(const char* c ) const
     {
         return GL_ONE_MINUS_SRC_ALPHA;
     }
+#ifdef SOFA_HAVE_GLEW
     // .... add ohter OGL symbolic constants
     // glBlendEquation Value
     else if  ( strcmp( c, "GL_FUNC_ADD") == 0)
@@ -1203,7 +1220,7 @@ GLenum OglModel::getGLenum(const char* c ) const
     {
         return GL_MIN;
     }
-
+#endif // SOFA_HAVE_GLEW
     else
     {
         // error: not valid

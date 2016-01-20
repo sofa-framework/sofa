@@ -22,78 +22,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define __FlexibleCorotationalFEMForceField_CPP
 
-#include "ImageQtQuickGUI.h"
-
-#include <QApplication>
-
-#include "ImagePlaneView.h"
-#include "ImagePlaneModel.h"
-
-using namespace sofa::qtquick;
-
-const int versionMajor = 1;
-const int versionMinor = 0;
-
-static void initResources()
-{
-    Q_INIT_RESOURCE(qml);
-}
+#include <Flexible/config.h>
+#include "FlexibleCorotationalFEMForceField.h"
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include "../deformationMapping/BaseDeformationMapping.inl"
 
 namespace sofa
 {
-
 namespace component
 {
-
-extern "C" {
-    SOFA_IMAGE_QTQUICKGUI_API void initExternalModule();
-    SOFA_IMAGE_QTQUICKGUI_API const char* getModuleName();
-    SOFA_IMAGE_QTQUICKGUI_API const char* getModuleVersion();
-    SOFA_IMAGE_QTQUICKGUI_API const char* getModuleLicense();
-    SOFA_IMAGE_QTQUICKGUI_API const char* getModuleDescription();
-    SOFA_IMAGE_QTQUICKGUI_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace forcefield
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
 
-        initResources();
+using namespace sofa::defaulttype;
 
-        qmlRegisterType<ImagePlaneModel>    ("ImagePlaneModel", versionMajor, versionMinor, "ImagePlaneModel");
-        qmlRegisterType<ImagePlaneView>     ("ImagePlaneView",  versionMajor, versionMinor, "ImagePlaneView" );
-    }
+
+SOFA_DECL_CLASS(FlexibleCorotationalFEMForceField)
+
+// Register in the Factory
+int FlexibleCorotationalFEMForceFieldClass = core::RegisterObject("Flexible Tetrahedral finite elements")
+        .add< FlexibleCorotationalFEMForceField< Vec3Types > >(true)
+        ;
+
+template class SOFA_Flexible_API FlexibleCorotationalFEMForceField< Vec3Types >;
+
+}
+}
 }
 
-const char* getModuleName()
-{
-    return "Image Plugin - QtQuick GUI";
-}
 
-const char* getModuleVersion()
-{
-    return "0.1";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "Image QtQuick GUI";
-}
-
-const char* getModuleComponentList()
-{
-    return "";
-}
-
-} // namespace component
-
-} // namespace sofa

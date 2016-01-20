@@ -13,7 +13,7 @@ TEST_F(TestMatrix, set_eiBlock1 ) { ASSERT_TRUE( matrixMaxDiff(fullMat,eiBlock1)
 TEST_F(TestMatrix, set_eiBlock2 ) { ASSERT_TRUE( matrixMaxDiff(fullMat,eiBlock2) < 100*epsilon() ); }
 TEST_F(TestMatrix, set_eiBase ) { ASSERT_TRUE( matrixMaxDiff(fullMat,eiBase) < 100*epsilon() ); }
 TEST_F(TestMatrix, eigenMatrix_update ) { ASSERT_TRUE( checkEigenMatrixUpdate() ); }
-TEST_F(TestMatrix, eigenMatrix_block_row_filling ) { ASSERT_TRUE( checkEigenMatrixBlockRowFilling() ); }
+TEST_F(TestMatrix, eigenMatrix_block_row_filling ) { checkEigenMatrixBlockRowFilling(); }
 TEST_F(TestMatrix, eigenMatrixBlockFromCompressedRowSparseMatrix ) { ASSERT_TRUE( checkEigenMatrixBlockFromCompressedRowSparseMatrix() ); }
 TEST_F(TestMatrix, eigenMapToDenseMatrix ) { ASSERT_TRUE( checkEigenDenseMatrix() ); }
 

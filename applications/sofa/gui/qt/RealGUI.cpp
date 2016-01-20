@@ -199,6 +199,11 @@ void RealGUI::CreateApplication(int /*_argc*/, char** /*_argv*/)
     argv[0] = strdup ( BaseGUI::GetProgramName() );
     argv[1]=NULL;
     application = new QSOFAApplication ( *argc,argv );
+
+    //force locale to Standard C
+    //(must be done immediatly after the QApplication has been created)
+    QLocale locale(QLocale::C);
+    QLocale::setDefault(locale);
 }
 
 //------------------------------------
@@ -421,7 +426,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     if(mCreateViewersOpt)
         getQtViewer()->getQWidget()->installEventFilter(this);
 #endif
-    
 
 }
 
@@ -2019,6 +2023,8 @@ void RealGUI::interactionGUI ( bool )
 //called at each step of the rendering
 void RealGUI::step()
 {
+    sofa::helper::AdvancedTimer::begin("Animate");
+
     Node* root = currentSimulation();
     if ( root == NULL ) return;
 
@@ -2072,6 +2078,9 @@ void RealGUI::step()
     emit newStep();
     if ( !currentSimulation()->getContext()->getAnimate() )
         startButton->setChecked ( false );
+
+
+    sofa::helper::AdvancedTimer::end("Animate");
 }
 
 //------------------------------------

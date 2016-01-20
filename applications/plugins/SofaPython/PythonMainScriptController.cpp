@@ -31,6 +31,7 @@
 #include "Binding_BaseContext.h"
 #include "Binding_Node.h"
 #include "ScriptEnvironment.h"
+#include "PythonScriptEvent.h"
 
 namespace sofa
 {

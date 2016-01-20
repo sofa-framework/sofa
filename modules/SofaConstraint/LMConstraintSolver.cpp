@@ -89,10 +89,16 @@ void LMConstraintSolver::init()
         if (constrainedDof)
         {
             constraintCorrections.insert(std::make_pair(constrainedDof, listConstraintCorrection[i]));
+            listConstraintCorrection[i]->removeConstraintSolver(this);
+            listConstraintCorrection[i]->addConstraintSolver(this);
         }
     }
 
     graphKineticEnergy.setDisplayed(traceKineticEnergy.getValue());
+}
+void LMConstraintSolver::removeConstraintCorrection(core::behavior::BaseConstraintCorrection */*s*/)
+{
+    //TODO: remove the pair containing s from constraintCorrections
 }
 
 void LMConstraintSolver::convertSparseToDense(const SparseMatrixEigen& sparseM, MatrixEigen& denseM) const

@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(Sofa)
 
+INCLUDE(CPack)
+
 ## Default build type
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
@@ -171,6 +173,13 @@ install(DIRECTORY modules/sofa/component/typedef/ DESTINATION include/sofa/compo
 
 
 ### Extlibs
+option(SOFA_USE_MASK "Use mask optimization" ON)
+if(SOFA_USE_MASK)
+    add_definitions(-DSOFA_USE_MASK)
+endif()
+
+
+### Extlibs
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
 if(SOFA_BUILD_TESTS)
     # Enable testing features of cmake, like the add_test() command.
@@ -244,3 +253,9 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
     message("Adding custom file")
     include( "custom.cmake" )
 endif()
+
+
+## when installing, keep an eye on options/params/sources used for compilation
+## this should be internal and not delivered, but this is definitively useful
+sofa_install_git_version( "sofa" ${CMAKE_CURRENT_SOURCE_DIR} )
+install(FILES "${CMAKE_BINARY_DIR}/CMakeCache.txt" DESTINATION .)

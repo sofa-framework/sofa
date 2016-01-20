@@ -138,6 +138,8 @@ protected:
 public:
     void init();
 
+    void cleanup();
+
     bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
     bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
     bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
@@ -173,7 +175,9 @@ public:
     ConstraintProblem* getConstraintProblem();
     void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=0); ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread
 
-private:
+    virtual void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s);
+
+    private:
     std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
 	std::vector<char> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
     void computeInitialGuess();

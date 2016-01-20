@@ -29,7 +29,7 @@
 
 #include "HexahedronFEMForceField.h"
 #include <sofa/core/behavior/Mass.h>
-#include <sofa/helper/gl/template.h>
+
 namespace sofa
 {
 

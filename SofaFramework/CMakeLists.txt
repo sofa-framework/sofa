@@ -77,6 +77,10 @@ if(NOT SOFA_NO_OPENGL)
         sofa_create_target(GLEW SofaFramework "${GLEW_LIBRARIES}" "${GLEW_INCLUDE_DIRS}")
         list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLEW_Target})
         list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${GLEW_INCLUDE_DIRS})
+
+        sofa_install_get_libraries(${GLEW_LIBRARIES})
+    else()
+        message("OpenGL advanced functions (e.g shaders, FBO) are disabled.")
     endif()
     set(SOFA_HAVE_GLEW ${GLEW_FOUND})
 
@@ -111,6 +115,8 @@ find_package(ZLIB)
 if(ZLIB_FOUND)
     sofa_create_target(ZLIB SofaFramework "${ZLIB_LIBRARIES}" "${ZLIB_INCLUDE_DIRS}")
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${ZLIB_Target})
+
+    sofa_install_get_libraries(${ZLIB_LIBRARIES})
 endif()
 set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 
@@ -119,6 +125,9 @@ find_package(PNG)
 if(PNG_FOUND)
     sofa_create_target(PNG SofaFramework "${PNG_LIBRARY}" "${PNG_INCLUDE_DIRS}")
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${PNG_Target})
+
+
+    sofa_install_get_libraries("${PNG_LIBRARY}/libpng")
 endif()
 set(SOFA_HAVE_PNG ${PNG_FOUND})
 
@@ -147,6 +156,11 @@ if(SOFA_HAVE_BOOST_SYSTEM
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostThread_Target})
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostDateTime_Target})
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostChrono_Target})
+
+    sofa_install_get_libraries(${Boost_SYSTEM_LIBRARY})
+    sofa_install_get_libraries(${Boost_THREAD_LIBRARY})
+    sofa_install_get_libraries(${Boost_DATE_TIME_LIBRARY})
+    sofa_install_get_libraries(${Boost_CHRONO_LIBRARY})
 else()
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
 endif()
@@ -218,7 +232,9 @@ if(NOT WIN32)
         #   set_target_properties(Foo PROPERTIES SOFA_NO_CXX11 1)
 
         target_compile_options(SofaHelper PUBLIC "$<$<AND:$<NOT:$<BOOL:$<TARGET_PROPERTY:SOFA_NO_CXX11>>>,$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>>:${CXX11_FLAG}>")
-        target_compile_options(SofaHelper PUBLIC "$<$<AND:$<NOT:$<BOOL:$<TARGET_PROPERTY:SOFA_NO_CXX11>>>,$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>>:-Wno-deprecated-register>")
+        if ("${CMAKE_CXX_COMPILER} ${CMAKE_CXX_COMPILER_ARG1}" MATCHES ".*clang") # Wno-deprecated-register does not exist in GCC
+            target_compile_options(SofaHelper PUBLIC "$<$<AND:$<NOT:$<BOOL:$<TARGET_PROPERTY:SOFA_NO_CXX11>>>,$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>>:-Wno-deprecated-register>")
+        endif()
     endif()
 endif()
 

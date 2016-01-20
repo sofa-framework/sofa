@@ -61,6 +61,7 @@ class DisplacementTransformEngine : public sofa::core::DataEngine
 public:
     SOFA_CLASS( SOFA_TEMPLATE2( DisplacementTransformEngine, DataTypes, OutputType ), sofa::core::DataEngine );
 
+    typedef sofa::core::DataEngine Inherit;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord; // rigid
     typedef typename DataTypes::VecCoord VecCoord;

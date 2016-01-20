@@ -19,8 +19,8 @@
   <CGLinearSolver />
   
   
-  <Mesh  src="@sampler" />
-  <MechanicalObject  name="dofs" />
+  <Mesh  name="grid" src="@sampler" />
+  <MechanicalObject  name="dofs" tags="NoPicking" position="@grid.position"/>
 
   <BarycentricShapeFunction nbRef="8" />
 

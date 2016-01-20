@@ -85,6 +85,7 @@ public:
 
 
     virtual void init();
+    virtual void reinit();
 
     virtual void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
 
@@ -105,6 +106,8 @@ public:
     virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentForce*/, core::ConstMultiVecDerivId  /*childForce*/ ){}
     virtual void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForce*/ ){}
     virtual const defaulttype::BaseMatrix* getK(){ return NULL; }
+
+    virtual void updateForceMask();
 
 
 protected:

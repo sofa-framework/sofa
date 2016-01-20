@@ -293,11 +293,7 @@ protected:
 
         C.resizeBlocks(size,size);
         for(unsigned int i=0; i<material.size(); i++)
-        {
-            C.beginBlockRow(i);
-            C.createBlock(i,material[i].getC());
-            C.endBlockRow();
-        }
+            C.insertBackBlock( i, i, material[i].getC() );
         C.compress();
     }
 
@@ -309,11 +305,7 @@ protected:
 
         K.resizeBlocks(size,size);
         for(unsigned int i=0; i<material.size(); i++)
-        {
-            K.beginBlockRow(i);
-            K.createBlock(i,material[i].getK());
-            K.endBlockRow();
-        }
+            K.insertBackBlock( i, i, material[i].getK() );
         K.compress();
     }
 
@@ -326,11 +318,7 @@ protected:
 
         B.resizeBlocks(size,size);
         for(unsigned int i=0; i<material.size(); i++)
-        {
-            B.beginBlockRow(i);
-            B.createBlock(i,material[i].getB());
-            B.endBlockRow();
-        }
+            B.insertBackBlock( i, i, material[i].getB() );
         B.compress();
     }
 

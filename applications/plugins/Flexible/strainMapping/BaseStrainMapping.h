@@ -201,7 +201,7 @@ public:
 
         OutVecDeriv& out = *dOut.beginWriteOnly();
 #ifdef _OPENMP
-		#pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
         for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i < jacobianBlock.size(); i++)
         {
@@ -223,7 +223,7 @@ public:
         const InVecCoord& in = dIn.getValue();
 
 #ifdef _OPENMP
-        #pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
         for(int i=0; i < static_cast<int>(jacobian.size()); i++)
         {
@@ -244,7 +244,7 @@ public:
             const InVecDeriv& in = dIn.getValue();
 
 #ifdef _OPENMP
-        #pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)
             {
@@ -265,7 +265,7 @@ public:
             const OutVecDeriv& out = dOut.getValue();
 
 #ifdef _OPENMP
-        #pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)
             {
@@ -312,7 +312,7 @@ public:
         else
         {
 #ifdef _OPENMP
-			#pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)
             {
@@ -352,17 +352,7 @@ public:
         unsigned int size = this->fromModel->getSize();
         K.resizeBlocks(size,size);
         for(size_t i=0; i<jacobian.size(); i++)
-        {
-//            vector<KBlock> blocks;
-//            vector<unsigned> columns;
-//            columns.push_back( i );
-//            blocks.push_back( jacobian[i].getK(childForce[i]) );
-//            K.appendBlockRow( i, columns, blocks );
-            K.beginBlockRow(i);
-            K.createBlock(i,jacobian[i].getK(childForce[i]));
-            K.endBlockRow();
-        }
-//        K.endEdit();
+            K.insertBackBlock( i, i, jacobian[i].getK(childForce[i]) );
         K.compress();
     }
 
@@ -383,12 +373,13 @@ public:
 
 
     Data<bool> assemble;
-
+    Data< bool > d_parallel;		///< use openmp ?
 
 protected:
     BaseStrainMappingT (core::State<In>* from = NULL, core::State<Out>* to= NULL)
         : Inherit ( from, to )
         , assemble ( initData ( &assemble,false, "assemble","Assemble the matrices (Jacobian and Geometric Stiffness) or use optimized matrix/vector multiplications" ) )
+        , d_parallel(initData(&d_parallel, false, "parallel", "use openmp parallelisation?"))
         , maskFrom(NULL)
         , maskTo(NULL)
     {
@@ -411,17 +402,7 @@ protected:
 
         eigenJacobian.resizeBlocks(outsize,insize);
         for(size_t i=0; i<jacobian.size(); i++)
-        {
-//            vector<MatBlock> blocks;
-//            vector<unsigned> columns;
-//            columns.push_back( i );
-//            blocks.push_back( jacobian[i].getJ() );
-//            eigenJacobian.appendBlockRow( i, columns, blocks );
-            eigenJacobian.beginBlockRow(i);
-            eigenJacobian.createBlock(i,jacobian[i].getJ());
-            eigenJacobian.endBlockRow();
-        }
-//        eigenJacobian.endEdit();
+            eigenJacobian.insertBackBlock( i, i, jacobian[i].getJ() );
         eigenJacobian.compress();
     }
 

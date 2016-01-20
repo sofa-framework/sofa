@@ -113,6 +113,7 @@ set(PYTHON_FILES
     python/SofaPython/script.py
     python/SofaPython/sml.py
     python/SofaPython/units.py
+    python/SofaPython/noPicking.py
 )
 
 

@@ -28,8 +28,6 @@
 #include "PythonEnvironment.h"
 #include "ScriptController.h"
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/loader/BaseLoader.h>
-#include "PythonScriptEvent.h"
 
 namespace sofa
 {

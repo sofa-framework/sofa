@@ -1,0 +1,194 @@
+<?xml version="1.0"?>
+<Node name="Root" gravity="0 -10 0" dt="1"  >
+
+  <RequiredPlugin pluginName="Flexible"/>
+  <RequiredPlugin pluginName="image"/>
+
+  <VisualStyle displayFlags="showVisual" />
+
+  <DefaultAnimationLoop />
+  <DefaultVisualManagerLoop />
+
+  <MeshObjLoader name="loader" filename="mesh/Armadillo_simplified.obj" triangulate="1"/>
+  <MeshToImageEngine  name="rasterizer" src="@loader" voxelSize="0.4" padSize="1" rotateImage="true" />
+  <ImageContainer template="ImageB" name="image" src="@rasterizer" drawBB="false"/>
+  <!-- <ImageViewer template="ImageB" name="viewer" src="@image"  /> -->
+  <ImageSampler template="ImageB" name="sampler" src="@image" param="1" showEdges="false" printLog="true"/>
+
+  
+<!-- 
+  <RequiredPlugin pluginName="Compliant"/>
+  <CompliantImplicitSolver />
+  <CgSolver  iterations='25' precision='1e-5'/>  
+ -->
+
+
+
+<Node name="red: flexible"   >
+  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+  <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
+  
+  <Mesh  name="mesh" src="@../sampler" />
+  <MechanicalObject  name="dofs" tags="NoPicking" position="@./mesh.position"/>
+  <UniformMass totalMass="20"/>
+
+        <BoxROI template="Vec3d" box="5 7 -8 10 15 3" position="@mesh.position" name="FixedROI" drawBoxes='1'/>
+        <FixedConstraint indices="@FixedROI.indices" />
+
+  <BarycentricShapeFunction nbRef="8" />
+    <Node name="behavior"   >
+	<TopologyGaussPointSampler name="sampler" inPosition="@../dofs.rest_position" method="0" order="2"/>
+	<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+    	<LinearMapping template="Vec3d,F331"  assemble="true" parallel="false"/>
+
+	    <Node name="Strain"   >
+		<MechanicalObject  template="E331" name="E"  />
+	    	<CorotationalStrainMapping template="F331,E331" method="polar" geometricStiffness="false"   assemble="true" parallel="false"/>
+	        <HookeForceField  template="E331" name="ff" youngModulus="3000" poissonRatio="0.3" viscosity="0"/>
+            </Node>
+    </Node>
+  <Node name="Collision">      
+	<Mesh  src="@../../loader" />
+	<MechanicalObject name="dof" />
+	<TTriangleModel />
+        <LinearMapping name="colmap" template="Vec3d,Vec3d"  assemble="true" parallel="false"/>
+        
+        <Node name="Visual"  >
+            <VisualModel  fileMesh="mesh/Armadillo_simplified.obj"  color='red' />
+            <IdentityMapping template="Vec3d,ExtVec3f"  />
+        </Node>
+   </Node>
+
+   <!-- 
+    <Node name="VisuHexa"  >
+            <VisualModel color="0.8 0.8 1 0.1" />
+            <IdentityMapping />
+    </Node>
+    <Node name="VisuHexa2"  >
+            <VisualStyle displayFlags="showWireframe"/>
+            <VisualModel color="0.8 0.8 1 1" />
+            <IdentityMapping />
+    </Node>
+    -->
+</Node>
+
+
+
+
+<Node name="green: flexible_corotational mesh"   >
+  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+  <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
+  
+  <Mesh  name="mesh" src="@../sampler" />
+  <MechanicalObject  name="dofs" tags="NoPicking" position="@./mesh.position"/>
+  <UniformMass totalMass="20"/>
+
+        <BoxROI template="Vec3d" box="5 7 -8 10 15 3" position="@mesh.position" name="FixedROI" drawBoxes='1'/>
+        <FixedConstraint indices="@FixedROI.indices" />
+
+  <BarycentricShapeFunction nbRef="8" />
+        <Node 	name="Rotated nodes"   >
+	    <MechanicalObject  name="dofs" template="Vec3d" showObject="0" showObjectScale="5" />
+	    <CorotationalMeshMapping name="mapping" inputHexahedra="@../mesh.hexahedra" />
+
+	    <Mesh name="mesh" src="@mapping" position="@dofs.position"/>
+		
+	    <BarycentricShapeFunction nbRef="8" />
+    		<Node name="behavior"   >
+			<TopologyGaussPointSampler name="sampler" inPosition="@../dofs.rest_position" method="0" order="2"/>
+			<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+    			<LinearMapping template="Vec3d,F331"  assemble="true" parallel="false"/>
+
+	    		<Node name="Strain"   >
+				<MechanicalObject  template="E331" name="E"  />
+	    			<CauchyStrainMapping template="F331,E331"  assemble="true" parallel="false"/>
+	        		<HookeForceField  template="E331" name="ff" youngModulus="3000" poissonRatio="0.3" viscosity="0"/>
+            		</Node>
+    		</Node>
+    	</Node>
+  <Node name="Collision">      
+	<Mesh  src="@../../loader" />
+	<MechanicalObject name="dof" />
+	<TTriangleModel />
+        <LinearMapping name="colmap" template="Vec3d,Vec3d"  assemble="true" parallel="false"/>
+        
+        <Node name="Visual"  >
+            <VisualModel  fileMesh="mesh/Armadillo_simplified.obj" color='green'  />
+            <IdentityMapping template="Vec3d,ExtVec3f"  />
+        </Node>
+   </Node>
+
+   <!-- 
+    <Node name="VisuHexa"  >
+            <VisualModel color="0.8 0.8 1 0.1" />
+            <IdentityMapping />
+    </Node>
+    <Node name="VisuHexa2"  >
+            <VisualStyle displayFlags="showWireframe"/>
+            <VisualModel color="0.8 0.8 1 1" />
+            <IdentityMapping />
+    </Node>
+    -->
+</Node>
+
+
+    
+    
+<Node name="blue: hexaFEMforcefield"   >
+  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+  <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
+  
+  <Mesh  name="mesh" src="@../sampler" />
+  <MechanicalObject  name="dofs" tags="NoPicking" position="@./mesh.position"/>
+  <UniformMass totalMass="20"/>
+
+        <BoxROI template="Vec3d" box="5 7 -8 10 15 3" position="@mesh.position" name="FixedROI" drawBoxes='1'/>
+        <FixedConstraint indices="@FixedROI.indices" />
+
+	  <HexahedronFEMForceField youngModulus="3000.0" poissonRatio="0.3" method="polar" updateStiffnessMatrix="false" />
+
+  <Node name="Collision">      
+	<Mesh  src="@../../loader" />
+	<MechanicalObject name="dof" />
+	<TTriangleModel />
+	 <BarycentricMapping input="@.." output="@." />
+        
+        <Node name="Visual"  >
+            <VisualModel  fileMesh="mesh/Armadillo_simplified.obj" color='blue'  />
+            <IdentityMapping template="Vec3d,ExtVec3f"  />
+        </Node>
+   </Node>
+
+</Node>
+
+
+
+<Node name="yellow: meta-Flexible"   >
+  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+  <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
+  
+  <Mesh  name="mesh" src="@../sampler" />
+  <MechanicalObject  name="dofs" tags="NoPicking" position="@./mesh.position"/>
+  <UniformMass totalMass="20"/>
+
+        <BoxROI template="Vec3d" box="5 7 -8 10 15 3" position="@mesh.position" name="FixedROI" drawBoxes='1'/>
+        <FixedConstraint indices="@FixedROI.indices" />
+
+	  <FlexibleCorotationalFEMForceField youngModulus="3000.0" poissonRatio="0.3" method="polar"  order="2" />
+
+  <Node name="Collision">      
+	<Mesh  src="@../../loader" />
+	<MechanicalObject name="dof" />
+	<TTriangleModel />
+	 <BarycentricMapping input="@.." output="@." />
+        
+        <Node name="Visual"  >
+            <VisualModel  fileMesh="mesh/Armadillo_simplified.obj" color='yellow'  />
+            <IdentityMapping template="Vec3d,ExtVec3f"  />
+        </Node>
+   </Node>
+
+</Node>
+
+
+</Node>

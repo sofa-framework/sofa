@@ -95,6 +95,7 @@ set(HEADER_FILES
     system/thread/thread_specific_ptr.h
     vector.h
     vectorData.h
+    vectorLinks.h
     vector_algebra.h
     vector_device.h
 )
@@ -178,6 +179,7 @@ if(NOT SOFA_NO_OPENGL)
         gl/Axis.h
         gl/BasicShapes.h
         gl/Cylinder.h
+        gl/Texture.h
         gl/Trackball.h
         gl/Transformation.h
         gl/glText.h
@@ -188,6 +190,7 @@ if(NOT SOFA_NO_OPENGL)
         gl/Cylinder.cpp
         gl/glText.cpp
         gl/Capture.cpp
+        gl/Texture.cpp
         gl/Color.cpp
         gl/glfont.cpp
         system/gl.cpp
@@ -208,7 +211,6 @@ if(NOT SOFA_NO_OPENGL)
         list(APPEND SOURCE_FILES
             gl/FrameBufferObject.cpp
             gl/GLSLShader.cpp
-            gl/Texture.cpp
         )
     endif()
 

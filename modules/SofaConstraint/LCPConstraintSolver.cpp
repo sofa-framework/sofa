@@ -333,13 +333,34 @@ void LCPConstraintSolver::init()
     // Prevents ConstraintCorrection accumulation due to multiple AnimationLoop initialization on dynamic components Add/Remove operations.
     if (!constraintCorrections.empty())
     {
+        for (unsigned int i = 0; i < constraintCorrections.size(); i++)
+            constraintCorrections[i]->removeConstraintSolver(this);
         constraintCorrections.clear();
     }
 
     getContext()->get<core::behavior::BaseConstraintCorrection>(&constraintCorrections, core::objectmodel::BaseContext::SearchDown);
-	constraintCorrectionIsActive.resize(constraintCorrections.size());
+    constraintCorrectionIsActive.resize(constraintCorrections.size());
+    for (unsigned int i = 0; i < constraintCorrections.size(); i++)
+        constraintCorrections[i]->addConstraintSolver(this);
 
     context = (simulation::Node*) getContext();
+}
+
+void LCPConstraintSolver::cleanup()
+{
+    if (!constraintCorrections.empty())
+    {
+        for (unsigned int i = 0; i < constraintCorrections.size(); i++)
+            constraintCorrections[i]->removeConstraintSolver(this);
+        constraintCorrections.clear();
+    }
+
+    core::behavior::ConstraintSolver::cleanup();
+}
+
+void LCPConstraintSolver::removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s)
+{
+    constraintCorrections.erase(std::remove(constraintCorrections.begin(), constraintCorrections.end(), s), constraintCorrections.end());
 }
 
 void LCPConstraintSolver::build_LCP()

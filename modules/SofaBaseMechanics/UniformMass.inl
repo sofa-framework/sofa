@@ -30,7 +30,6 @@
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/helper/accessor.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
@@ -457,7 +456,6 @@ void UniformMass<DataTypes, MassType>::getElementMass ( unsigned int /* index */
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if ( !vparams->displayFlags().getShowBehaviorModels() )
         return;
     helper::ReadAccessor<VecCoord> x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
@@ -514,20 +512,18 @@ void UniformMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vp
 
     if ( showCenterOfGravity.getValue() )
     {
-        points.clear();
-        glBegin ( GL_LINES );
-        glColor4f (1,1,0,1 );
         gravityCenter /= x.size();
-        for ( unsigned int i=0 ; i<Coord::spatial_dimensions ; i++ )
-        {
-            Coord v;
-            v[i] = showAxisSize.getValue();
-            helper::gl::glVertexT ( gravityCenter-v );
-            helper::gl::glVertexT ( gravityCenter+v );
-        }
-        glEnd();
+        const sofa::defaulttype::Vec4f color(1.0,1.0,0.0,1.0);
+
+        Real axisSize = showAxisSize.getValue();
+        sofa::defaulttype::Vector3 temp;
+
+        for ( unsigned int i=0 ; i<3 ; i++ )
+            if(i < Coord::spatial_dimensions )
+                temp[i] = gravityCenter[i];
+
+        vparams->drawTool()->drawCross(temp, axisSize, color);
     }
-#endif /* SOFA_NO_OPENGL */
 }
 
 template<class DataTypes, class MassType>

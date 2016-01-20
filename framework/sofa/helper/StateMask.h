@@ -61,6 +61,11 @@ namespace helper
  *              updateForceMask() must insert only active parent dofs in the parent mask (or should add nothing if parents have already been added in ApplyJT)
  *
  */
+#
+
+
+#ifdef SOFA_USE_MASK
+
 class SOFA_HELPER_API StateMask
 {
 
@@ -70,7 +75,7 @@ public:
 
     StateMask() : activated(false) {}
 
-    /// filling-up (and eventuelly resize) the mask
+    /// filling-up (and resizing when necessary) the mask
     void assign( size_t size, bool value );
 
     /// the mask can be deactivated when the mappings must be applied to every dofs (e.g. propagatePosition)
@@ -128,8 +133,7 @@ public:
     /// return the number of dofs in the mask
     size_t nbActiveDofs() const;
 
-//    size_t getHash() const;
-
+    //    size_t getHash() const;
 
 protected:
 
@@ -137,6 +141,94 @@ protected:
     bool activated; // automatic switch (the mask is only used for specific operations)
 
 };
+
+#else
+
+class SOFA_HELPER_API StateMask
+{
+
+public:
+
+    StateMask() : activated(false) {
+        m_size = 0;
+    }
+
+    /// filling-up (and resizing when necessary) the mask
+    void assign( size_t size, bool value );
+
+    /// the mask can be deactivated when the mappings must be applied to every dofs (e.g. propagatePosition)
+    /// it must be activated when the mappings can be limited to active dofs
+    void activate( bool a );
+    inline bool isActivated() const {
+        return activated;
+    }
+
+    /// add the given dof index in the mask
+    inline void insertEntry( size_t /*index */) {}
+
+    /// is the given dof index in the mask?
+    /// @warning always returns the mask value w/o checking if the mask is activated (ie do no forget to check if mask is activated in Mapping::applyJ)
+    inline bool getEntry( size_t /*index*/ ) const {
+        return true;
+    } // unsafe to be use where we do not care if the mapping in deactivated
+
+    /// getting mask entries is useful for advanced uses.
+    //    const InternalStorage& getEntries() const { return mask; }
+
+    void resize( size_t size );
+    inline void clear() {
+        m_size = 0;
+    }
+
+    size_t size() const {
+        return m_size;
+    }
+
+    inline friend std::ostream& operator<< ( std::ostream& os, const StateMask& /*sm*/ )
+    {
+        return os;
+    }
+
+
+    /// filtering the given input matrix by using the mask as a diagonal projection matrix
+    /// output = mask.asDiagonal() * input
+    template<class Real>
+    void maskedMatrix( Eigen::SparseMatrix<Real,Eigen::RowMajor>& output, const Eigen::SparseMatrix<Real,Eigen::RowMajor>& input, size_t blockSize=1 ) const
+    {
+        typedef Eigen::SparseMatrix<Real,Eigen::RowMajor> Mat;
+
+        output.resize( input.rows(), input.cols() );
+
+        for( size_t k=0 ; k<m_size ; ++k )
+        {
+            for( size_t i=0 ; i<blockSize ; ++i )
+            {
+                int row = k*blockSize+i;
+                output.startVec( row );
+                for( typename Mat::InnerIterator it(input,row) ; it ; ++it )
+                    output.insertBack( row, it.col() ) = it.value();
+            }
+        }
+        output.finalize();
+    }
+
+
+
+    /// return the number of dofs in the mask
+    size_t nbActiveDofs() const;
+
+    //    size_t getHash() const;
+
+
+protected:
+
+    bool activated; // automatic switch (the mask is only used for specific operations)
+    unsigned m_size;
+
+};
+
+#endif
+
 
 
 } // namespace helper

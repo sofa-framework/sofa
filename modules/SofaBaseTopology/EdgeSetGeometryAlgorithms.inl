@@ -710,7 +710,6 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
 template<class DataTypes>
 void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     PointSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Edges indices
@@ -719,7 +718,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         sofa::defaulttype::Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-		sofa::defaulttype::Vec4f color4(color[0], color[1], color[2], 1.0);
+        sofa::defaulttype::Vec4f color4(color[0], color[1], color[2], 1.0);
         float scale = this->getIndicesScale();
 
         //for edges:
@@ -728,17 +727,17 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         const sofa::helper::vector <Edge>& edgeArray = this->m_topology->getEdges();
 
         helper::vector<defaulttype::Vector3> positions;
-		for (unsigned int i = 0; i < edgeArray.size(); i++)
-		{
+        for (unsigned int i = 0; i < edgeArray.size(); i++)
+        {
 
-			Edge the_edge = edgeArray[i];
-			Coord vertex1 = coords[the_edge[0]];
-			Coord vertex2 = coords[the_edge[1]];
+            Edge the_edge = edgeArray[i];
+            Coord vertex1 = coords[the_edge[0]];
+            Coord vertex2 = coords[the_edge[1]];
             defaulttype::Vector3 center;
             center = (DataTypes::getCPos(vertex1) + DataTypes::getCPos(vertex2)) / 2;
 
             positions.push_back(center);
-		}
+        }
         vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
     }
 
@@ -750,34 +749,22 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
         if (!edgeArray.empty())
         {
-            glDisable(GL_LIGHTING);
             const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-            glColor3f(color[0], color[1], color[2]);
-
             const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-            glPointSize(4);
+            std::vector<defaulttype::Vector3> positions;
+            positions.reserve(edgeArray.size()*2u);
             for (unsigned int i = 0; i<edgeArray.size(); i++)
             {
                 const Edge& e = edgeArray[i];
-                sofa::defaulttype::Vec3f coordP1; coordP1 = DataTypes::getCPos(coords[e[0]]);
-                sofa::defaulttype::Vec3f coordP2; coordP2 = DataTypes::getCPos(coords[e[1]]);
-                glBegin(GL_LINES);
-                glVertex3f(coordP1[0], coordP1[1], coordP1[2]);
-                glVertex3f(coordP2[0], coordP2[1], coordP2[2]);
-                glEnd();
-
-
-                glBegin(GL_POINTS);
-                glVertex3d(coordP1[0], coordP1[1], coordP1[2]);
-                glVertex3d(coordP2[0], coordP2[1], coordP2[2]);
-                glEnd();
+                positions.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[0]])));
+                positions.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[1]])));
             }
-            glPointSize(1);
+            vparams->drawTool()->drawLines(positions,1.0f, defaulttype::Vec4f(color[0], color[1], color[2], 1.0f) );
+            vparams->drawTool()->drawPoints(positions, 4.0f, defaulttype::Vec4f(color[0], color[1], color[2], 1.0f));
         }
     }
 
-#endif /* SOFA_NO_OPENGL */
 }
 
 

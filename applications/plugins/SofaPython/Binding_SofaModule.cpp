@@ -37,6 +37,8 @@
 #include <sofa/gui/GUIManager.h>
 #include <sofa/helper/GenerateRigid.h>
 #include <sofa/simulation/common/Simulation.h>
+//#include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
+#include "ScriptEnvironment.h"
 
 
 using namespace sofa::core;
@@ -305,6 +307,32 @@ extern "C" PyObject * Sofa_exportGraph(PyObject * /*self*/, PyObject * args)
     return Py_BuildValue("i",0);
 }
 
+
+
+extern "C" PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * /*args*/)
+{
+    Simulation* simulation = getSimulation();
+    Node*root=simulation->GetRoot().get();
+
+    //    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+//    root->execute<UpdateBoundingBoxVisitor>(params);
+//    simulation->updateVisualContext(root);
+    simulation->updateVisual(root);
+
+
+    Py_RETURN_NONE;
+}
+
+// sometimes nodes created in Python are not initialized ASAP
+// e.g. when created in callbacks initGraph or bwdInitGraph
+// this function forces the initialization of every nodes created in python that are not yet initialized
+extern "C" PyObject * Sofa_forceInitNodeCreatedInPython(PyObject * /*self*/, PyObject * /*args*/)
+{
+    sofa::simulation::ScriptEnvironment::initScriptNodes();
+    Py_RETURN_NONE;
+}
+
+
 // Methods of the module
 SP_MODULE_METHODS_BEGIN(Sofa)
 SP_MODULE_METHOD(Sofa,getSofaPythonVersion) 
@@ -319,6 +347,8 @@ SP_MODULE_METHOD(Sofa,setViewerCamera)
 SP_MODULE_METHOD(Sofa,getViewerCamera)
 SP_MODULE_METHOD(Sofa,generateRigid)
 SP_MODULE_METHOD(Sofa,exportGraph)
+SP_MODULE_METHOD(Sofa,updateVisual)
+SP_MODULE_METHOD(Sofa,forceInitNodeCreatedInPython)
 SP_MODULE_METHODS_END
 
 

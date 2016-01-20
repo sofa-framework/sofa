@@ -835,7 +835,6 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filena
 template<class DataTypes>
 void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     QuadSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Hexa indices
@@ -845,7 +844,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
 
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-		sofa::defaulttype::Vec4f color4(color[0], color[1], color[2], 1.0);
+        sofa::defaulttype::Vec4f color4(color[0], color[1], color[2], 1.0);
 
         float scale = this->getIndicesScale();
 
@@ -880,41 +879,34 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
     {
         const sofa::helper::vector<Hexahedron> &hexaArray = this->m_topology->getHexahedra();
 
-        if (!hexaArray.empty())
+        const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
+        const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
+
+        std::vector<defaulttype::Vector3> pos;
+        pos.reserve(24u*hexaArray.size());
+        for (unsigned int i = 0; i<hexaArray.size(); i++)
         {
-            glDisable(GL_LIGHTING);
-            const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-            glColor3f(color[0], color[1], color[2]);
-            glBegin(GL_LINES);
-            const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
+            const Hexahedron& H = hexaArray[i];
+            sofa::helper::vector <sofa::defaulttype::Vector3> hexaCoord;
 
-            for (unsigned int i = 0; i<hexaArray.size(); i++)
+            for (unsigned int j = 0; j<8; j++)
             {
-                const Hexahedron& H = hexaArray[i];
-                sofa::helper::vector <sofa::defaulttype::Vec3f> hexaCoord;
-
-                for (unsigned int j = 0; j<8; j++)
-                {
-                    sofa::defaulttype::Vec3f p; p = DataTypes::getCPos(coords[H[j]]);
-                    hexaCoord.push_back(p);
-                }
-
-                for (unsigned int j = 0; j<4; j++)
-                {
-                    glVertex3f(hexaCoord[j][0], hexaCoord[j][1], hexaCoord[j][2]);
-                    glVertex3f(hexaCoord[(j+1)%4][0], hexaCoord[(j+1)%4][1], hexaCoord[(j+1)%4][2]);
-
-                    glVertex3f(hexaCoord[j+4][0], hexaCoord[j+4][1], hexaCoord[j+4][2]);
-                    glVertex3f(hexaCoord[(j+1)%4 +4][0], hexaCoord[(j+1)%4 +4][1], hexaCoord[(j+1)%4 +4][2]);
-
-                    glVertex3f(hexaCoord[j][0], hexaCoord[j][1], hexaCoord[j][2]);
-                    glVertex3f(hexaCoord[j+4][0], hexaCoord[j+4][1], hexaCoord[j+4][2]);
-                }
+                sofa::defaulttype::Vector3 p; p = DataTypes::getCPos(coords[H[j]]);
+                hexaCoord.push_back(p);
             }
-            glEnd();
+
+            for (unsigned int j = 0; j<4; j++)
+            {
+                pos.push_back(hexaCoord[j]);
+                pos.push_back(hexaCoord[(j+1)%4]);
+                pos.push_back(hexaCoord[j+4]);
+                pos.push_back(hexaCoord[(j+1)%4 +4]);
+                pos.push_back(hexaCoord[j]);
+                pos.push_back(hexaCoord[j+4]);
+            }
         }
+        vparams->drawTool()->drawLines(pos, 1.0f, defaulttype::Vec4f(color[0], color[1], color[2], 1.0f));
     }
-#endif /* SOFA_NO_OPENGL */
 }
 
 

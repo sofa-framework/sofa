@@ -418,7 +418,7 @@ void QSofaListView::nodeNameModification(simulation::Node* node)
     QString nameToUse(node->getName().c_str());
     item->setText(0,nameToUse);
 
-    nameToUse=QString("MultiNode ")+nameToUse;
+    nameToUse=/*QString("MultiNode ")+*/nameToUse;
 
     typedef std::multimap<QTreeWidgetItem *, QTreeWidgetItem*>::iterator ItemIterator;
     std::pair<ItemIterator,ItemIterator> range=graphListener_->nodeWithMultipleParents.equal_range(item);
@@ -487,12 +487,12 @@ void QSofaListView::RemoveNode()
     if( object_.type == typeNode)
     {
         emit Lock(true);
-        Node* node = object_.ptr.Node;
+        Node::SPtr node = object_.ptr.Node;
         if ( node == node->getRoot() )
         {
             //Attempt to destroy the Root node : create an empty node to handle new graph interaction
             Node::SPtr root = simulation::getSimulation()->createNewGraph( "Root" );
-            graphListener_->removeChild ( NULL, node);
+            graphListener_->removeChild ( NULL, node.get());
             graphListener_->addChild ( NULL, root.get() );
             emit RootNodeChanged(root.get(),NULL);
         }

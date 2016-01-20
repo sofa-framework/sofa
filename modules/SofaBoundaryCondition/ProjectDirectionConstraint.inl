@@ -191,17 +191,15 @@ void  ProjectDirectionConstraint<DataTypes>::reinit()
     unsigned i = 0;
     while( i < numBlocks )
     {
-        jacobian.beginBlockRow(i);
         if( it != tmp.end() && i==*it )  // constrained particle: set diagonal to projection block, and  the cursor to the next constraint
         {
-            jacobian.createBlock(i,bProjection);
+            jacobian.insertBackBlock(i,i,bProjection);
             it++;
         }
         else           // unconstrained particle: set diagonal to identity block
         {
-            jacobian.createBlock(i,Block::s_identity);
+            jacobian.insertBackBlock(i,i,Block::s_identity);
         }
-        jacobian.endBlockRow();   // only one block to create
         i++;
     }
     jacobian.compress();
