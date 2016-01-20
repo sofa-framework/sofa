@@ -738,6 +738,8 @@ extern "C" PyObject * Data_getValueString(PyObject *self, PyObject * /*args*/)
     return PyString_FromString(data->getValueString().c_str());
 }
 
+
+// TODO a description of what this function is supposed to do?
 extern "C" PyObject * Data_getSize(PyObject *self, PyObject * /*args*/)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object;
@@ -746,7 +748,7 @@ extern "C" PyObject * Data_getSize(PyObject *self, PyObject * /*args*/)
     int rowWidth = typeinfo->size();
     int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
 
- //   printf("Data_getSize rowWidth=%d nbRows=%d\n",rowWidth,nbRows);
+    SP_MESSAGE_WARNING( "Data_getSize (this fonction always returns 0) rowWidth="<<rowWidth<<" nbRows="<<nbRows );
 
     return PyInt_FromLong(0); //temp ==> WTF ?????
 }
