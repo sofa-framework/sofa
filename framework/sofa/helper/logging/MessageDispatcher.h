@@ -96,7 +96,7 @@ public:
         }
 
         LoggerStream(MessageDispatcher& dispatcher, const std::string& mclass, const std::string& type,
-                     const sofa::core::objectmodel::Base* sender, FileInfo fileInfo):
+                     const sofa::core::objectmodel::Base* /* sender */, FileInfo fileInfo):
             m_fileInfo(fileInfo),
             m_class(mclass),
             m_type(type),
