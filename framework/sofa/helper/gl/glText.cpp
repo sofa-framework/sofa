@@ -192,8 +192,10 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
 void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& positions, const double& scale)
 {
     if (!s_asciiTexture)
+    {
         GlText::initTexture();
-    
+        s_asciiTexture->init();
+    }
     defaulttype::Mat<4, 4, GLfloat> modelviewM;
 
     const unsigned int nb_char_width = 16;
@@ -208,7 +210,7 @@ void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& pos
     //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // only tex color (no glColor)
     glEnable(GL_ALPHA_TEST);
     glAlphaFunc(GL_GREATER, 0.0);
-    s_asciiTexture->init();
+
     s_asciiTexture->bind();
 
     for (unsigned int i = 0; i < positions.size(); i++)
