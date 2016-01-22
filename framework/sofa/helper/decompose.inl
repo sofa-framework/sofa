@@ -27,6 +27,7 @@
 #include "decompose.h"
 
 #include <limits>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -636,7 +637,7 @@ Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, d
     det = Mk(0,0) * MadjTk(0,0) + Mk(0,1) * MadjTk(0,1) + Mk(0,2) * MadjTk(0,2);
     if (det == 0.0)
     {
-        std::cerr<<"Decompose::polarDecomposition: zero determinant encountered.\n";
+        msg_warning("Decompose")<<"polarDecomposition: zero determinant encountered.";
         break;
     }
 
@@ -699,7 +700,7 @@ Real Decompose<Real>::polarDecomposition( const defaulttype::Mat<3,3,Real>& M, d
     det = Mk(0,0) * MadjTk(0,0) + Mk(0,1) * MadjTk(0,1) + Mk(0,2) * MadjTk(0,2);
     if (det == 0.0)
     {
-        std::cerr<<"Decompose::polarDecomposition: zero determinant encountered.\n";
+        msg_warning("Decompose")<<"polarDecomposition: zero determinant encountered.";
         break;
     }
 
