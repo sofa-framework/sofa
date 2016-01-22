@@ -39,6 +39,7 @@
 #include <sofa/simulation/common/Simulation.h>
 //#include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
 #include "ScriptEnvironment.h"
+#include <sofa/helper/logging/Messaging.h>
 
 
 using namespace sofa::core;
@@ -333,6 +334,94 @@ extern "C" PyObject * Sofa_forceInitNodeCreatedInPython(PyObject * /*self*/, PyO
 }
 
 
+static const std::string s_emitter = "PythonScript";
+static const std::string s_emitterlong = "PythonScript - ";
+
+extern "C" PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args)
+{
+    char *emitter, *message;
+    if( !PyArg_ParseTuple(args, "ss",&emitter, &message) )
+    {
+        if( !PyArg_ParseTuple(args, "s", &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        // no emitter
+        msg_info( s_emitter ) << message;
+        Py_RETURN_NONE;
+    }
+
+    msg_info( s_emitterlong+std::string(emitter) ) << message;
+
+    Py_RETURN_NONE;
+}
+
+extern "C" PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args)
+{
+    char *emitter, *message;
+    if( !PyArg_ParseTuple(args, "ss",&emitter, &message) )
+    {
+        if( !PyArg_ParseTuple(args, "s", &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        // no emitter
+        msg_warning( s_emitter ) << message;
+        Py_RETURN_NONE;
+    }
+
+    msg_warning( s_emitterlong+std::string(emitter) ) << message;
+
+    Py_RETURN_NONE;
+}
+
+extern "C" PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args)
+{
+    char *emitter, *message;
+    if( !PyArg_ParseTuple(args, "ss",&emitter, &message) )
+    {
+        if( !PyArg_ParseTuple(args, "s", &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        // no emitter
+        msg_error( s_emitter ) << message;
+        Py_RETURN_NONE;
+    }
+
+    msg_error( s_emitterlong+std::string(emitter) ) << message;
+
+    Py_RETURN_NONE;
+}
+
+extern "C" PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args)
+{
+    char *emitter, *message;
+    if( !PyArg_ParseTuple(args, "ss",&emitter, &message) )
+    {
+        if( !PyArg_ParseTuple(args, "s", &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        // no emitter
+        msg_fatal( s_emitter ) << message;
+        Py_RETURN_NONE;
+    }
+
+    msg_fatal( s_emitterlong+std::string(emitter) ) << message;
+
+    Py_RETURN_NONE;
+}
+
+
 // Methods of the module
 SP_MODULE_METHODS_BEGIN(Sofa)
 SP_MODULE_METHOD(Sofa,getSofaPythonVersion) 
@@ -349,6 +438,10 @@ SP_MODULE_METHOD(Sofa,generateRigid)
 SP_MODULE_METHOD(Sofa,exportGraph)
 SP_MODULE_METHOD(Sofa,updateVisual)
 SP_MODULE_METHOD(Sofa,forceInitNodeCreatedInPython)
+SP_MODULE_METHOD(Sofa,msg_info)
+SP_MODULE_METHOD(Sofa,msg_warning)
+SP_MODULE_METHOD(Sofa,msg_error)
+SP_MODULE_METHOD(Sofa,msg_fatal)
 SP_MODULE_METHODS_END
 
 
