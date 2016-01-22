@@ -78,7 +78,7 @@ public:
             m_dispatcher(s.m_dispatcher) {}
 
     public:
-        LoggerStream(MessageDispatcher& dispatcher, const std::string& mclass, Message::Type type,
+        LoggerStream(MessageDispatcher& dispatcher, Message::Class mclass, Message::Type type,
                      const std::string& sender, FileInfo fileInfo):
             m_fileInfo(fileInfo),
             m_class(mclass),
@@ -88,7 +88,7 @@ public:
         {
         }
 
-        LoggerStream(MessageDispatcher& dispatcher, const std::string& mclass, Message::Type type,
+        LoggerStream(MessageDispatcher& dispatcher, Message::Class mclass, Message::Type type,
                      const sofa::core::objectmodel::Base* sender, FileInfo fileInfo):
             m_fileInfo(fileInfo),
             m_class(mclass),
@@ -117,52 +117,52 @@ public:
 
     private:
         FileInfo m_fileInfo;
-        std::string m_class; // dev or runtime
+        Message::Class m_class; // dev or runtime
         Message::Type m_type;
         std::string m_sender;
         MessageDispatcher& m_dispatcher;
         std::ostringstream m_stream;
     };
 
-    LoggerStream log(const std::string& mclass, Message::Type type,
+    LoggerStream log(Message::Class mclass, Message::Type type,
                      const std::string& sender = "", FileInfo fileInfo = FileInfo()) {
         return LoggerStream(*this, mclass, type, sender, fileInfo);
     }
 
-    LoggerStream log(const std::string& mclass, Message::Type type,
+    LoggerStream log(Message::Class mclass, Message::Type type,
                      const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
         return LoggerStream(*this, mclass, type, sender, fileInfo);
     }
 
-    LoggerStream info(const std::string& mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) {
+    LoggerStream info(Message::Class mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) {
         return log(mclass, Message::Info, sender, fileInfo);
     }
 
-    LoggerStream info(const std::string& mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
+    LoggerStream info(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
         return log(mclass, Message::Info, sender, fileInfo);
     }
 
-    LoggerStream warning(const std::string& mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) {
+    LoggerStream warning(Message::Class mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) {
         return log(mclass, Message::Warning, sender, fileInfo);
     }
 
-    LoggerStream warning(const std::string& mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
+    LoggerStream warning(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
         return log(mclass, Message::Warning, sender, fileInfo);
     }
 
-    LoggerStream error(const std::string& mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) {
+    LoggerStream error(Message::Class mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) {
         return log(mclass, Message::Error, sender, fileInfo);
     }
 
-    LoggerStream error(const std::string& mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
+    LoggerStream error(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
         return log(mclass, Message::Error, sender, fileInfo);
     }
 
-    LoggerStream fatal(const std::string& mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) {
+    LoggerStream fatal(Message::Class mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) {
         return log(mclass, Message::Fatal, sender, fileInfo);
     }
 
-    LoggerStream fatal(const std::string& mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
+    LoggerStream fatal(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
         return log(mclass, Message::Fatal, sender, fileInfo);
     }
 

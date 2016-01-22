@@ -86,10 +86,10 @@ extern SOFA_HELPER_API sofa::helper::logging::MessageDispatcher gMessageDispatch
 //todo(bruno&damien): the first quick&dirty version should be improved to preserve the semantic between
 // the version compiled with WITH_SOFA_DEVTOOLS enabled and the other.
 #ifdef WITH_SOFA_DEVTOOLS
-#define dmsg_info(emitter)     gMessageDispatcher <<= sofa::helper::logging::Message("dev", "info", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
-#define dmsg_warning(emitter)  gMessageDispatcher <<= sofa::helper::logging::Message("dev", "warn", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
-#define dmsg_error(emitter)    gMessageDispatcher <<= sofa::helper::logging::Message("dev", "error", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
-#define dmsg_fatal(emitter)    gMessageDispatcher <<= sofa::helper::logging::Message("dev", "fatal", emitter, __FILE__, __LINE__) <= std::stringstream() << ""
+#define dmsg_info(emitter)     gMessageDispatcher.info(sofa::helper::logging::Message::dev, emitter, SOFA_FILE_INFO)
+#define dmsg_warning(emitter)     gMessageDispatcher.warning(sofa::helper::logging::Message::dev, emitter, SOFA_FILE_INFO)
+#define dmsg_error(emitter)     gMessageDispatcher.error(sofa::helper::logging::Message::dev, emitter, SOFA_FILE_INFO)
+#define dmsg_fatal(emitter)     gMessageDispatcher.fatal(sofa::helper::logging::Message::dev, emitter, SOFA_FILE_INFO)
 #else
 #define dmsg_info(emitter)     sofa::helper::logging::Nop::getAnInstance()
 #define dmsg_warning(emitter)  sofa::helper::logging::Nop::getAnInstance()
@@ -97,9 +97,9 @@ extern SOFA_HELPER_API sofa::helper::logging::MessageDispatcher gMessageDispatch
 #define dmsg_fatal(emitter)    sofa::helper::logging::Nop::getAnInstance()
 #endif // NDEBUG
 
-#define msg_info(emitter)    gMessageDispatcher.info("runtime", emitter, SOFA_FILE_INFO)
-#define msg_warning(emitter) gMessageDispatcher.warning("runtime", emitter, SOFA_FILE_INFO)
-#define msg_error(emitter)   gMessageDispatcher.error("runtime", emitter, SOFA_FILE_INFO)
-#define msg_fatal(emitter)   gMessageDispatcher.fatal("runtime", emitter, SOFA_FILE_INFO)
+#define msg_info(emitter)    gMessageDispatcher.info(sofa::helper::logging::Message::runtime, emitter, SOFA_FILE_INFO)
+#define msg_warning(emitter) gMessageDispatcher.warning(sofa::helper::logging::Message::runtime, emitter, SOFA_FILE_INFO)
+#define msg_error(emitter)   gMessageDispatcher.error(sofa::helper::logging::Message::runtime, emitter, SOFA_FILE_INFO)
+#define msg_fatal(emitter)   gMessageDispatcher.fatal(sofa::helper::logging::Message::runtime, emitter, SOFA_FILE_INFO)
 
 #endif // MESSAGING_H
