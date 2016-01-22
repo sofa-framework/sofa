@@ -75,13 +75,16 @@ public:
     /// possible levels of messages (ordered)
     enum Type {Info=0, Warning, Error, Fatal, TypeCount};
 
+    /// class of messages
+    enum Class {dev,runtime};
+
     Message() {}
-    Message(const string& mclass, Type type, const string& message,
+    Message(Class mclass, Type type, const string& message,
             const string& sender = "", const FileInfo& fileInfo = FileInfo());
 
     const FileInfo& fileInfo() const ;
     const string&   message() const ;
-    const string&   context() const ;
+    Class           context() const ;
     Type            type() const ;
     const string&   sender() const ;
     int             id() const ;
@@ -92,7 +95,7 @@ private:
     string   m_sender;
     FileInfo m_fileInfo;
     string   m_message;
-    string   m_class;
+    Class    m_class;
     Type     m_type;
     int      m_id;
 };
