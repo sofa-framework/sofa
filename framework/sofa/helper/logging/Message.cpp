@@ -50,7 +50,7 @@ namespace helper
 namespace logging
 {
 
-Message::Message(const string& mclass, const string& type, const string& message,
+Message::Message(const string& mclass, Type type, const string& message,
                  const string& sender, const FileInfo& fileInfo):
     m_sender(sender),
     m_fileInfo(fileInfo),
@@ -77,7 +77,7 @@ const string& Message::context() const  {
     return m_class;
 }
 
-const string& Message::type() const {
+Message::Type Message::type() const {
     return m_type;
 }
 

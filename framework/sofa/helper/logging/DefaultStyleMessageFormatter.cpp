@@ -52,66 +52,54 @@ namespace logging
 
 static DefaultStyleMessageFormatter s_DefaultStyleMessageFormatter;
 
-#define BLUE "\033[1;34m "
-#define GREEN "\033[1;32m "
-#define CYAN "\033[1;36m "
-#define RED "\033[1;31m "
-#define PURPLE "\033[1;35m "
-#define YELLOW "\033[1;33m "
-#define WHITE "\033[1;37m "
-#define ENDL " \033[0m"
+
+static helper::fixed_array<std::string,Message::TypeCount> setPrefixes()
+{
+    helper::fixed_array<std::string,Message::TypeCount> prefixes;
+
+    prefixes[Message::Debug]   = "[DEBUG]   ";
+    prefixes[Message::Info]    = "[INFO]    ";
+    prefixes[Message::Warning] = "[WARNING] ";
+    prefixes[Message::Error]   = "[ERROR]   ";
+    prefixes[Message::Fatal]   = "[FATAL]   ";
+
+    return prefixes;
+}
+const helper::fixed_array<std::string,Message::TypeCount> DefaultStyleMessageFormatter::s_MessageTypePrefixes = setPrefixes();
+
+
+static helper::fixed_array<Console::ColorType,Message::TypeCount> setColors()
+{
+    helper::fixed_array<Console::ColorType,Message::TypeCount> colors;
+
+    colors[Message::Debug]   = Console::DEFAULT_COLOR;
+    colors[Message::Info]    = Console::BRIGHT_GREEN;
+    colors[Message::Warning] = Console::BRIGHT_CYAN;
+    colors[Message::Error]   = Console::BRIGHT_RED;
+    colors[Message::Fatal]   = Console::BRIGHT_PURPLE;
+
+    return colors;
+}
+const helper::fixed_array<Console::ColorType,Message::TypeCount> DefaultStyleMessageFormatter::s_MessageTypeColors = setColors();
+
+
+
+
+
 
 MessageFormatter* DefaultStyleMessageFormatter::getInstance()
 {
     return &s_DefaultStyleMessageFormatter;
 }
 
-
-void reformat(unsigned int begin, const std::string& input, std::ostream& out)
-{
-    unsigned int linebreak = 120 ;
-    unsigned int idx=begin ;
-    unsigned int curr=0 ;
-    while(curr < input.size()){
-        if(idx==linebreak){
-            out << endl ;
-            for(unsigned int i=0;i<begin;i++)
-                out << ' ' ;
-            idx=begin ;
-
-            if(input[curr]==' ')curr ++ ;
-        }
-        if(curr >= input.size()) break;
-        out << input[curr++] ;
-        idx++;
-    }
-}
-
 void DefaultStyleMessageFormatter::formatMessage(const Message& m,std::ostream& out)
 {
-    std::ostringstream tmpStr;
-    if(m.type() == "info"){
-        tmpStr << GREEN << "[INFO]" << ENDL ;
-    }else if(m.type() == "warn"){
-        tmpStr << CYAN << "[WARN]" << ENDL ;
-    }else if(m.type() == "error"){
-        tmpStr << RED << "[ERROR]" << ENDL ;
-    }else if(m.type() == "fatal"){
-        tmpStr << RED << "[FATAL]" << ENDL ;
-    }
+    out << s_MessageTypeColors[m.type()] << s_MessageTypePrefixes[m.type()] << Console::DEFAULT_COLOR;
 
-    if (m.sender().size() != 0)
-        tmpStr << "[" << m.sender() << "]: ";
+    if (!m.sender().empty())
+        out << Console::BRIGHT_BLUE << "[" << m.sender() << "] " << Console::DEFAULT_COLOR;
 
-    //todo(damien): this is ugly !! the -11 is to remove the color codes from the string !
-    // fix this by making a function that count the size of a string ignoring the escapes...
-    // or adding the color code when the formatting is already finished.
-    unsigned int numspaces = tmpStr.str().size() - 10 ;
-    if(numspaces >= tmpStr.str().size() ){
-        numspaces = tmpStr.str().size() ;
-    }
-    reformat(numspaces+2, m.message(), tmpStr) ;
-    out << tmpStr.str();
+    out << m.message();
 }
 
 
