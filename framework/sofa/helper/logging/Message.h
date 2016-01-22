@@ -73,7 +73,7 @@ class SOFA_HELPER_API Message
 public:
 
     /// possible levels of messages (ordered)
-    enum Type {Debug=0, Info, Warning, Error, Fatal, TypeCount};
+    enum Type {Info=0, Warning, Error, Fatal, TypeCount};
 
     Message() {}
     Message(const string& mclass, Type type, const string& message,

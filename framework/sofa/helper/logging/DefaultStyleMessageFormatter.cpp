@@ -57,7 +57,6 @@ static helper::fixed_array<std::string,Message::TypeCount> setPrefixes()
 {
     helper::fixed_array<std::string,Message::TypeCount> prefixes;
 
-    prefixes[Message::Debug]   = "[DEBUG]   ";
     prefixes[Message::Info]    = "[INFO]    ";
     prefixes[Message::Warning] = "[WARNING] ";
     prefixes[Message::Error]   = "[ERROR]   ";
@@ -72,7 +71,6 @@ static helper::fixed_array<Console::ColorType,Message::TypeCount> setColors()
 {
     helper::fixed_array<Console::ColorType,Message::TypeCount> colors;
 
-    colors[Message::Debug]   = Console::DEFAULT_COLOR;
     colors[Message::Info]    = Console::BRIGHT_GREEN;
     colors[Message::Warning] = Console::BRIGHT_CYAN;
     colors[Message::Error]   = Console::BRIGHT_RED;
