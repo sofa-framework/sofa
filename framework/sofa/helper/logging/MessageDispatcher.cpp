@@ -59,9 +59,6 @@ namespace helper
 namespace logging
 {
 
-// todo(damien): beurk une constante.
-const unsigned int messagequeuesize = 10000;
-
 // keep a track of messages.
 vector<MessageHandler*> s_m_handlers ;
 
@@ -76,11 +73,11 @@ sofa::helper::logging::Message& operator<<=(MessageDispatcher &d, sofa::helper::
 
     m.setId(s_m_lastAllocatedID) ;
 
-    if(m.type() =="error")
+    if(m.type()==Message::Error)
         s_m_lastErrorId = s_m_lastAllocatedID ;
-    else if(m.type()=="warn")
+    else if(m.type()==Message::Warning)
         s_m_lastWarningId = s_m_lastAllocatedID ;
-    else if(m.type()=="info")
+    else if(m.type()==Message::Info)
         s_m_lastInfoId = s_m_lastAllocatedID ;
 
     d.process(m);

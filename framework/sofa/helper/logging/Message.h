@@ -71,25 +71,30 @@ using std::string ;
 class SOFA_HELPER_API Message
 {
 public:
-    Message() {};
-    Message(const string& mclass, const string& type, const string& message,
+
+    /// possible levels of messages (ordered)
+    enum Type {Debug=0, Info, Warning, Error, Fatal, TypeCount};
+
+    Message() {}
+    Message(const string& mclass, Type type, const string& message,
             const string& sender = "", const FileInfo& fileInfo = FileInfo());
 
     const FileInfo& fileInfo() const ;
-    const string& message() const ;
-    const string& context() const ;
-    const string& type() const ;
-    const string& sender() const ;
-    int           id() const ;
-    void          setId(int id) ;
+    const string&   message() const ;
+    const string&   context() const ;
+    Type            type() const ;
+    const string&   sender() const ;
+    int             id() const ;
+    void            setId(int id) ;
+
 
 private:
-    string  m_sender;
+    string   m_sender;
     FileInfo m_fileInfo;
-    string  m_message;
-    string  m_class;
-    string  m_type;
-    int     m_id;
+    string   m_message;
+    string   m_class;
+    Type     m_type;
+    int      m_id;
 };
 
 ostream& operator<< (ostream&, const Message&) ;

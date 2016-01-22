@@ -48,7 +48,7 @@ class Message;
 class SOFA_HELPER_API MessageHandler
 {
 public:
-    virtual ~MessageHandler(){};
+    virtual ~MessageHandler(){}
     virtual void process(Message& m) = 0 ;
 private:
 };

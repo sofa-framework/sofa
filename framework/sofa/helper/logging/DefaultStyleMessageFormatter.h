@@ -32,8 +32,12 @@
 #define DEFAULTSTYLEMESSAGEFORMATTER_H
 #include <sstream>
 #include <string>
+#include "Message.h"
 #include "MessageFormatter.h"
 #include <sofa/helper/helper.h>
+#include <sofa/helper/system/console.h>
+#include <sofa/helper/fixed_array.h>
+
 
 namespace sofa
 {
@@ -49,6 +53,10 @@ class SOFA_HELPER_API DefaultStyleMessageFormatter : public MessageFormatter
 public:
     static MessageFormatter* getInstance();
     virtual void formatMessage(const Message& m,std::ostream& out);
+
+protected:
+    static const helper::fixed_array<std::string,Message::TypeCount> s_MessageTypePrefixes;
+    static const helper::fixed_array<Console::ColorType,Message::TypeCount> s_MessageTypeColors;
 };
 
 } // logging
