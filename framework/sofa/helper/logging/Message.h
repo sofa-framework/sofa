@@ -35,13 +35,15 @@
 #include <string>
 #include <sofa/helper/helper.h>
 
-namespace sofa {
-namespace core {
-namespace objectmodel{
-class Base ;
-}
-}
-}
+#include <sstream>
+
+//namespace sofa {
+//namespace core {
+//namespace objectmodel{
+//class Base ;
+//}
+//}
+//}
 
 namespace sofa
 {
@@ -65,8 +67,6 @@ struct FileInfo
 
 #define SOFA_FILE_INFO sofa::helper::logging::FileInfo(__FILE__, __LINE__)
 
-using std::ostream ;
-using std::string ;
 
 class SOFA_HELPER_API Message
 {
@@ -79,28 +79,43 @@ public:
     enum Class {dev,runtime};
 
     Message() {}
-    Message(Class mclass, Type type, const string& message,
-            const string& sender = "", const FileInfo& fileInfo = FileInfo());
+    Message( const Message& msg );
+    Message(Class mclass, Type type,
+            const std::string& sender = "", const FileInfo& fileInfo = FileInfo());
 
-    const FileInfo& fileInfo() const ;
-    const string&   message() const ;
-    Class           context() const ;
-    Type            type() const ;
-    const string&   sender() const ;
-    int             id() const ;
-    void            setId(int id) ;
+    Message& operator=( const Message& msg );
+
+    const FileInfo&          fileInfo() const { return m_fileInfo; }
+    const std::stringstream& message() const  { return m_stream; }
+    Class                    context() const  { return m_class; }
+    Type                     type() const     { return m_type; }
+    const std::string&       sender() const   { return m_sender; }
+    int                      id() const       { return m_id; }
+    void                     setId(int id)    { m_id=id; }
+
+    bool empty() const { return m_stream.rdbuf()->in_avail() <= 0; }
+
+    template<class T>
+    Message& operator<<(const T &x)
+    {
+        m_stream << x;
+        return *this;
+    }
 
 
-private:
-    string   m_sender;
-    FileInfo m_fileInfo;
-    string   m_message;
-    Class    m_class;
-    Type     m_type;
-    int      m_id;
+
+protected:
+    std::string       m_sender; ///< who send the message (component or module)
+    FileInfo          m_fileInfo; ///< What is it??! Should it be stored here or in the handler that needs it?
+    std::stringstream m_stream; ///< the actual message
+    Class             m_class; ///< who is the attender of the message (developers or users)?
+    Type              m_type; ///< the message level
+    int               m_id; ///< should it be stored here or in the handler that needs it?
+
 };
 
-ostream& operator<< (ostream&, const Message&) ;
+
+std::ostream& operator<< (std::ostream&, const Message&) ;
 
 } // logging
 } // helper

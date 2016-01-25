@@ -97,7 +97,7 @@ void DefaultStyleMessageFormatter::formatMessage(const Message& m,std::ostream& 
     if (!m.sender().empty())
         out << Console::BLUE << "[" << m.sender() << "] " << Console::DEFAULT_COLOR;
 
-    out << m.message();
+    out << m.message().rdbuf();
 }
 
 

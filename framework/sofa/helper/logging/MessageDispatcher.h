@@ -70,58 +70,43 @@ public:
         // We need the copy constructor to return LoggerStreams by value, but it
         // should be optimized away any decent compiler.
     private:
-        LoggerStream(const LoggerStream& s):
-            m_fileInfo(s.m_fileInfo),
-            m_class(s.m_class),
-            m_type(s.m_type),
-            m_sender(s.m_sender),
-            m_dispatcher(s.m_dispatcher) {}
+        LoggerStream(const LoggerStream& s)
+            : m_message( s.m_message )
+            , m_dispatcher(s.m_dispatcher) {}
 
     public:
         LoggerStream(MessageDispatcher& dispatcher, Message::Class mclass, Message::Type type,
-                     const std::string& sender, FileInfo fileInfo):
-            m_fileInfo(fileInfo),
-            m_class(mclass),
-            m_type(type),
-            m_sender(sender),
-            m_dispatcher(dispatcher)
+                     const std::string& sender, FileInfo fileInfo)
+            : m_message( mclass, type, sender, fileInfo )
+            , m_dispatcher(dispatcher)
         {
         }
 
         LoggerStream(MessageDispatcher& dispatcher, Message::Class mclass, Message::Type type,
-                     const sofa::core::objectmodel::Base* sender, FileInfo fileInfo):
-            m_fileInfo(fileInfo),
-            m_class(mclass),
-            m_type(type),
-            m_sender(sender->getClassName()), // temporary, until Base object reference kept in the message itself
-            m_dispatcher(dispatcher)
+                     const sofa::core::objectmodel::Base* sender, FileInfo fileInfo)
+            : m_message( mclass, type, sender->getClassName() /* temporary, until Base object reference kept in the message itself*/, fileInfo )
+            , m_dispatcher(dispatcher)
         {
         }
 
         ~LoggerStream()
         {
-            const std::string message(m_stream.str());
-            if (message.size() > 0)
-            {
-                Message m(m_class, m_type, message, m_sender, m_fileInfo);
-                m_dispatcher.process(m);
-            }
+            if ( !m_message.empty() ) m_dispatcher.process(m_message);
         }
 
         template<class T>
         LoggerStream& operator<<(const T &x)
         {
-            m_stream << x;
+            m_message << x;
             return *this;
         }
 
     private:
-        FileInfo m_fileInfo;
-        Message::Class m_class; // dev or runtime
-        Message::Type m_type;
-        std::string m_sender;
+
+
+        Message m_message;
+
         MessageDispatcher& m_dispatcher;
-        std::ostringstream m_stream;
     };
 
     LoggerStream log(Message::Class mclass, Message::Type type,

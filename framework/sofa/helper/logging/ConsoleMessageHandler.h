@@ -45,7 +45,6 @@ namespace logging
 {
 
 class MessageFormatter;
-class Message;
 
 class SOFA_HELPER_API ConsoleMessageHandler : public MessageHandler
 {
