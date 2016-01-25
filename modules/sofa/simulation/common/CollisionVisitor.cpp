@@ -34,8 +34,25 @@ namespace simulation
 
 Visitor::Result CollisionVisitor::processNodeTopDown(simulation::Node* node)
 {
+    for_each(this, node, node->constraintSet, &CollisionVisitor::fwdConstraintSet);
     for_each(this, node, node->collisionPipeline, &CollisionVisitor::processCollisionPipeline);
     return RESULT_CONTINUE;
+}
+
+void CollisionVisitor::fwdConstraintSet(simulation::Node*
+#ifdef SOFA_DUMP_VISITOR_INFO
+        node
+#endif
+        , core::behavior::BaseConstraintSet* c)
+{
+#ifdef SOFA_DUMP_VISITOR_INFO
+    printComment("computeCollisionDetectionInConstraints");
+    ctime_t t0=begin(node, obj);
+#endif
+    c->processGeometricalData();
+#ifdef SOFA_DUMP_VISITOR_INFO
+    end(node, obj,t0);
+#endif
 }
 
 void CollisionVisitor::processCollisionPipeline(simulation::Node*

@@ -1452,6 +1452,7 @@ Visitor::Result MechanicalWriteLMConstraint::fwdConstraintSet(simulation::Node* 
 
 Visitor::Result MechanicalAccumulateConstraint::fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c)
 {
+    c->setConstraintId(contactId);
     c->buildConstraintMatrix(cparams, res, contactId);
     return RESULT_CONTINUE;
 }
