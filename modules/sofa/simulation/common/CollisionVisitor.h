@@ -45,6 +45,8 @@ class SOFA_SIMULATION_COMMON_API CollisionVisitor : public Visitor
 public:
     CollisionVisitor(const core::ExecParams* params) :Visitor(params) {}
 
+    virtual void fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet);
+
     virtual void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj);
 
     virtual Result processNodeTopDown(simulation::Node* node);

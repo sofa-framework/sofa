@@ -112,6 +112,7 @@ public:
     {
         ctime_t t0 = begin(node, c);
 
+        c->setConstraintId(contactId);
         c->buildConstraintMatrix(cparams, res, contactId);
 
         end(node, c, t0);
