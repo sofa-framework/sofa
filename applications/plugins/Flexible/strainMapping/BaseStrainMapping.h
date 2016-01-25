@@ -152,11 +152,11 @@ public:
     {
         if(this->assemble.getValue()) updateJ();
 
-        // clear forces
-        helper::WriteOnlyAccessor<Data< OutVecDeriv > > f(*this->toModel->write(core::VecDerivId::force())); for(unsigned int i=0;i<f.size();i++) f[i].clear();
-
-        apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel->read(core::ConstVecCoordId::position()));
-        applyJ(NULL, *this->toModel->write(core::VecDerivId::velocity()), *this->fromModel->read(core::ConstVecDerivId::velocity()));
+        // clear forces and force apply
+        // bg: do we need this ?
+        // helper::WriteOnlyAccessor<Data< OutVecDeriv > > f(*this->toModel->write(core::VecDerivId::force())); for(unsigned int i=0;i<f.size();i++) f[i].clear();
+        // apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel->read(core::ConstVecCoordId::position()));
+        // applyJ(NULL, *this->toModel->write(core::VecDerivId::velocity()), *this->fromModel->read(core::ConstVecDerivId::velocity()));
 
         Inherit::reinit();
     }
