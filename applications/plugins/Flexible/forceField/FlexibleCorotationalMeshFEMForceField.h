@@ -91,7 +91,7 @@ public:
 //        m_corotationalDeformationMapping->in_triangles.setParent( &topo->seqTriangles );
 //        m_corotationalDeformationMapping->in_quads.setParent( &topo->seqQuads );
         m_corotationalDeformationMapping->in_tetrahedra.setParent( &topo->seqTetrahedra );
-//        m_corotationalDeformationMapping->in_hexahedra.setParent( &topo->seqHexahedra );
+        m_corotationalDeformationMapping->in_hexahedra.setParent( &topo->seqHexahedra );
         m_corotationalDeformationMapping->init();
 
 /// Rotated Mesh
@@ -100,7 +100,7 @@ public:
 //        m_rotatedTopology->seqTriangles.setParent( &m_corotationalDeformationMapping->out_triangles );
 //        m_rotatedTopology->seqQuads.setParent( &m_corotationalDeformationMapping->out_quads );
         m_rotatedTopology->seqTetrahedra.setParent( &m_corotationalDeformationMapping->out_tetrahedra );
-//        m_rotatedTopology->seqHexahedra.setParent( &m_corotationalDeformationMapping->out_hexahedra );
+        m_rotatedTopology->seqHexahedra.setParent( &m_corotationalDeformationMapping->out_hexahedra );
 
 /// ShapeFunction 2
         m_internalShapeFunction->_state = m_rotatedDofs.get();
@@ -273,7 +273,6 @@ public:
 
         m_rotatedDofs->f.endEdit();
 
-        m_rotatedDofs.get()->forceMask.assign( m_rotatedDofs->getSize(), true );
         m_corotationalDeformationMapping->applyJT( mparams, _df, m_rotatedDofs->f);
     }
 
