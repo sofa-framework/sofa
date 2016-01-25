@@ -108,8 +108,11 @@ int MessageDispatcher::getLastInfoId(){
 }
 
 int MessageDispatcher::addHandler(MessageHandler* o){
-    s_m_handlers.push_back(o) ;
-    return s_m_handlers.size()-1 ;
+    if( std::find(s_m_handlers.begin(), s_m_handlers.end(), o) == s_m_handlers.end()){
+        s_m_handlers.push_back(o) ;
+        return s_m_handlers.size()-1 ;
+    }
+    return -1;
 }
 
 int MessageDispatcher::rmHandler(MessageHandler* o){

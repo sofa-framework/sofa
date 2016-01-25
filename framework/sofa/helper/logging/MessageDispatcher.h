@@ -57,12 +57,6 @@ class SOFA_HELPER_API MessageDispatcher
 public:
     MessageDispatcher();
 
-
-    // handlers stuff is not static
-    int addHandler(MessageHandler* o) ;
-    int rmHandler(MessageHandler* o) ;
-    void clearHandlers(bool deleteExistingOnes=true) ;
-
     struct LoggerStream
     {
 
@@ -152,6 +146,10 @@ public:
     }
 
     // message IDs can stay static, they won't interfere if several dispatchers coexist
+    static int addHandler(MessageHandler* o) ;
+    static int rmHandler(MessageHandler* o) ;
+    static void clearHandlers(bool deleteExistingOnes=true) ;
+
     static int getLastMessageId() ;
     static int getLastErrorId() ;
     static int getLastWarningId() ;
