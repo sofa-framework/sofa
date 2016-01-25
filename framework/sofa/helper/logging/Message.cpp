@@ -48,6 +48,8 @@ namespace helper
 namespace logging
 {
 
+Message Message::emptyMsg(CEmpty, TEmpty, "", FileInfo()) ;
+
 Message::Message(Class mclass, Type type,
                  const string& sender, const FileInfo& fileInfo):
     m_sender(sender),

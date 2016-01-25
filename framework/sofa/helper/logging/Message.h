@@ -74,10 +74,10 @@ class SOFA_HELPER_API Message
 public:
 
     /// possible levels of messages (ordered)
-    enum Type {Info=0, Warning, Error, Fatal, TypeCount};
+    enum Type {Info=0, Warning, Error, Fatal, TEmpty, TypeCount};
 
     /// class of messages
-    enum Class {dev,runtime};
+    enum Class {Dev, Runtime, CEmpty, ClassCount};
 
     Message() {}
     Message( const Message& msg );
@@ -104,6 +104,7 @@ public:
     }
 
 
+    static Message emptyMsg ;
 
 protected:
     std::string       m_sender; ///< who send the message (component or module)
