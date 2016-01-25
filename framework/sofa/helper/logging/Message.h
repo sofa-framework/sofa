@@ -57,6 +57,7 @@ namespace logging
 
 static const char * s_unknownFile = "unknown-file";
 
+/// To keep a trace (file,line) from where the message have been created
 struct FileInfo
 {
     const char *filename;
@@ -106,7 +107,7 @@ public:
 
 protected:
     std::string       m_sender; ///< who send the message (component or module)
-    FileInfo          m_fileInfo; ///< What is it??! Should it be stored here or in the handler that needs it?
+    FileInfo          m_fileInfo; ///< a trace (file,line) from where the message have been created
     std::stringstream m_stream; ///< the actual message
     Class             m_class; ///< who is the attender of the message (developers or users)?
     Type              m_type; ///< the message level
