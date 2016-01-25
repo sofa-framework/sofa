@@ -38,8 +38,6 @@ using std::cerr ;
 #include <map>
 using std::map ;
 
-//#include <string>
-//using std::string ;
 
 #include "Message.h"
 #include "LoggerMessageHandler.h"

@@ -29,8 +29,6 @@
 * User of this library should read the documentation
 * in the TextMessaging.h file.
 ******************************************************************************/
-#include <sstream>
-using std::ostringstream ;
 
 #include <iostream>
 using std::endl ;
@@ -38,8 +36,8 @@ using std::endl ;
 #include <string>
 using std::string ;
 
-//#include "Messagehandler.h"
 #include "Message.h"
+
 
 namespace sofa
 {
@@ -50,50 +48,43 @@ namespace helper
 namespace logging
 {
 
-Message::Message(Class mclass, Type type, const string& message,
+Message::Message(Class mclass, Type type,
                  const string& sender, const FileInfo& fileInfo):
     m_sender(sender),
     m_fileInfo(fileInfo),
-    m_message(message),
     m_class(mclass),
     m_type(type),
     m_id(-1)
 {
 }
 
-const FileInfo& Message::fileInfo() const {
-    return m_fileInfo;
+Message::Message( const Message& msg )
+    : m_sender(msg.sender())
+    , m_fileInfo(msg.fileInfo())
+    , m_class(msg.context())
+    , m_type(msg.type())
+    , m_id(msg.id())
+{
+    m_stream << msg.message().rdbuf();
 }
 
-const string& Message::message() const  {
-    return m_message;
+Message& Message::operator=( const Message& msg )
+{
+    m_sender = msg.sender();
+    m_fileInfo = msg.fileInfo();
+    m_class = msg.context();
+    m_type = msg.type();
+    m_id = msg.id();
+    m_stream << msg.message().rdbuf();
+    return *this;
 }
 
-const std::string&  Message::sender() const  {
-    return m_sender;
-}
-
-Message::Class Message::context() const  {
-    return m_class;
-}
-
-Message::Type Message::type() const {
-    return m_type;
-}
-
-int Message::id() const  {
-    return m_id;
-}
-
-void Message::setId(int id){
-    m_id = id;
-}
 
 std::ostream& operator<< (std::ostream& s, const Message& m){
     s << "[" << m.sender() << "]: " << endl ;
     s << "         Message id: " << m.id() << endl ;
     s << "       Message type: " << m.type() << endl ;
-    s << "    Message content: " << m.message() << endl ;
+    s << "    Message content: " << m.message().rdbuf() << endl ;
     s << "    source code loc: " << m.fileInfo().filename << ":" << m.fileInfo().line << endl ;
     return s;
 }

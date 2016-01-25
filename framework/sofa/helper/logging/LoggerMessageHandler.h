@@ -43,8 +43,6 @@ namespace helper
 namespace logging
 {
 
-class Message;
-
 class LoggerMessageHandler : public MessageHandler
 {
 public:
