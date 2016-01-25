@@ -362,6 +362,7 @@ class Behavior:
         self.sampler = None
         self.dofs = None
         self.mapping = None
+        self.forcefield = None
         self.cell = ''
 
     def addGaussPointSampler(self, shapeFunction, nbPoints, **kwargs):
@@ -446,12 +447,17 @@ class Behavior:
             print 'Exported Gauss Points as a mesh: '+filename
 
 
-    def addHooke(self, strainMeasure="Corotational", youngModulus=0, poissonRatio=0, viscosity=0, assemble=True):
+    def addHooke(self, strainMeasure="Corotational", youngModulus=0, poissonRatio=0, viscosity=0, useOffset=False, assemble=True):
         eNode = self.node.createChild("E")
         eNode.createObject('MechanicalObject',  template="E"+self.type, name="E")
         eNode.createObject(strainMeasure+'StrainMapping', template="F"+self.type+",E"+self.type, assemble=assemble)
-        eNode.createObject('HookeForceField', name="ff", template="E"+self.type, youngModulus= youngModulus, poissonRatio=poissonRatio, viscosity=viscosity, assemble=assemble, isCompliance=False)
+        if useOffset:
+            eOffNode = eNode.createChild("offsetE")
+            eOffNode.createObject('MechanicalObject',  template="E"+self.type, name="E")
+            eOffNode.createObject('RelativeStrainMapping', template="E"+self.type+",E"+self.type, assemble=assemble)
+            self.forcefield = eOffNode.createObject('HookeForceField', name="ff", template="E"+self.type, youngModulus= youngModulus, poissonRatio=poissonRatio, viscosity=viscosity, assemble=assemble, isCompliance=False)
+        else:
+            self.forcefield = eNode.createObject('HookeForceField', name="ff", template="E"+self.type, youngModulus= youngModulus, poissonRatio=poissonRatio, viscosity=viscosity, assemble=assemble, isCompliance=False)
 
     def addProjective(self, youngModulus=0, viscosity=0, assemble=True):
-        self.node.createObject('ProjectiveForceField', name="ff", template="F"+self.type,  youngModulus=youngModulus, viscosity=viscosity,assemble=assemble)
-
+        self.forcefield = self.node.createObject('ProjectiveForceField', name="ff", template="F"+self.type,  youngModulus=youngModulus, viscosity=viscosity,assemble=assemble)
