@@ -13,6 +13,7 @@ set(SOURCE_FILES
     helper/Quater_test.cpp
     helper/system/FileSystem_test.cpp
     helper/system/atomic_test.cpp
+    helper/logging/logging_test.cpp
     main.cpp
 )
 
