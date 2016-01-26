@@ -87,6 +87,8 @@ public:
             const std::vector<Vector3>  &normal,
             const Vec4f& colour) = 0 ;
 
+
+
     virtual void drawFrame   (const Vector3& position, const Quaternion &orientation, const Vec3f &size) = 0 ;
     virtual void drawFrame   (const Vector3& position, const Quaternion &orientation, const Vec3f &size, const Vec4f &colour) = 0 ;
 
@@ -137,12 +139,15 @@ public:
             const Vec4f &c1, const Vec4f &c2, const Vec4f &c3, const Vec4f &c4) = 0 ;
     virtual void drawQuads(const std::vector<Vector3> &points, const Vec4f& colour) = 0 ;
 
+    virtual void drawTetrahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, const Vec4f &color) = 0 ;
+    virtual void drawTetrahedra(const std::vector<Vector3> &points, const Vec4f& colour) = 0;
+
     virtual void drawSphere( const Vector3 &p, float radius) = 0 ;
-	virtual void drawEllipsoid(const Vector3 &p, const Vector3 &radii) = 0;
+    virtual void drawEllipsoid(const Vector3 &p, const Vector3 &radii) = 0;
 
     virtual void drawBoundingBox( const Vector3 &min, const Vector3 &max ) = 0;
 
-	virtual void draw3DText(const Vector3 &p, float scale, const Vec4f &color, const char* text) = 0;
+    virtual void draw3DText(const Vector3 &p, float scale, const Vec4f &color, const char* text) = 0;
     virtual void draw3DText_Indices(const helper::vector<Vector3> &positions, float scale, const Vec4f &color) = 0;
     /// @}
 
