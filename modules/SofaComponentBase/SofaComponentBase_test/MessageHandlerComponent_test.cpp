@@ -119,5 +119,5 @@ TEST(MessageHandlerComponent, clangHandler)
     MessageHandlerComponent* component = NULL;
     root->getTreeObject(component) ;
     EXPECT_TRUE(component!=NULL) ;
-    EXPECT_FALSE(component->isValid()) ;
+    EXPECT_TRUEcomponent->isValid()) ;
 }
