@@ -104,3 +104,20 @@ TEST(MessageHandlerComponent, invalidHandler)
     EXPECT_FALSE(component->isValid()) ;
 }
 
+TEST(MessageHandlerComponent, clangHandler)
+{
+    string scene =
+        "<?xml version='1.0'?>                                               "
+        "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
+        "       <MessageHandlerComponent handler='clang'/>                   "
+        "</Node>                                                             " ;
+
+    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
+                                                       scene.c_str(),
+                                                       scene.size() ) ;
+
+    MessageHandlerComponent* component = NULL;
+    root->getTreeObject(component) ;
+    EXPECT_TRUE(component!=NULL) ;
+    EXPECT_FALSE(component->isValid()) ;
+}

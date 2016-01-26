@@ -124,7 +124,7 @@ namespace unique{
     public:
         static int addHandler(MessageHandler* o) ;
         static int rmHandler(MessageHandler* o) ;
-        static void clearHandlers(bool deleteExistingOnes=true) ;
+        static void clearHandlers() ;
         static ConsoleMessageHandler* getDefaultMessageHandler();
 
         static int getLastMessageId() ;
