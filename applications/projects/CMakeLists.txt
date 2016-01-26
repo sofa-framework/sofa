@@ -15,4 +15,5 @@ if(SOFA_HAVE_QT_LIBRARIES)
 endif()
 
 sofa_add_application(GenerateRigid GenerateRigid)
+sofa_add_application(meshconv meshconv OFF)
 sofa_add_application(runSofa runSofa ON)
