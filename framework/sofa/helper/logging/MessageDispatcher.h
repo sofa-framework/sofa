@@ -51,6 +51,7 @@ namespace logging
 {
 
 class MessageHandler ;
+class ConsoleMessageHandler;
 
 class SOFA_HELPER_API MessageDispatcher
 {
@@ -149,6 +150,7 @@ public:
     static int addHandler(MessageHandler* o) ;
     static int rmHandler(MessageHandler* o) ;
     static void clearHandlers(bool deleteExistingOnes=true) ;
+    static ConsoleMessageHandler* getDefaultMessageHandler();
 
     static int getLastMessageId() ;
     static int getLastErrorId() ;

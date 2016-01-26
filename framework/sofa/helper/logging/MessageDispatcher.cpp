@@ -87,7 +87,7 @@ sofa::helper::logging::Message& operator<<=(MessageDispatcher &d, sofa::helper::
 MessageDispatcher::MessageDispatcher()
 {
     // add a default handler
-    addHandler(new sofa::helper::logging::ConsoleMessageHandler());
+    addHandler(getDefaultMessageHandler());
 }
 
 
@@ -131,6 +131,14 @@ void MessageDispatcher::process(sofa::helper::logging::Message& m){
     for(unsigned int i=0;i<s_m_handlers.size();i++)
         s_m_handlers[i]->process(m) ;
 }
+
+static ConsoleMessageHandler s_defaultMessageHandler;
+
+ConsoleMessageHandler* MessageDispatcher::getDefaultMessageHandler()
+{
+    return &s_defaultMessageHandler;
+}
+
 
 } // logging
 } // helper
