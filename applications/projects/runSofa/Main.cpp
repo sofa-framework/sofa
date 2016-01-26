@@ -77,9 +77,10 @@
 #endif
 
 #include <sofa/helper/logging/MessageDispatcher.h>
-#include <sofa/helper/logging/ConsoleMessageHandler.h>
-#include <sofa/helper/logging/ClangStyleMessageFormatter.h>
+using sofa::helper::logging::unique::MessageDispatcher ;
 
+#include <sofa/helper/logging/ClangMessageHandler.h>
+using sofa::helper::logging::ClangMessageHandler ;
 
 using std::cerr;
 using std::endl;
@@ -256,10 +257,10 @@ int main(int argc, char** argv)
         Console::setColorsStatus(Console::ColorsEnabled);
     else if (colorsStatus == "no")
         Console::setColorsStatus(Console::ColorsDisabled);
-    else if  (colorsStatus == "clang")
-        sofa::helper::logging::unique::MessageDispatcher::getDefaultMessageHandler()->setMessageFormatter(sofa::helper::logging::ClangStyleMessageFormatter::getInstance());
-    else
-    {
+    else if  (colorsStatus == "clang"){
+        MessageDispatcher::clearHandlers() ;
+        MessageDispatcher::addHandler( new ClangMessageHandler() ) ;
+    }else{
         Console::setColorsStatus(Console::ColorsAuto);
         msg_warning("main") << "Invalid argument ‘" << colorsStatus << "‘ for ‘--colors‘";
     }
