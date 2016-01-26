@@ -47,11 +47,11 @@ void CollisionVisitor::fwdConstraintSet(simulation::Node*
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     printComment("computeCollisionDetectionInConstraints");
-    ctime_t t0=begin(node, obj);
+    ctime_t t0=begin(node, c);
 #endif
     c->processGeometricalData();
 #ifdef SOFA_DUMP_VISITOR_INFO
-    end(node, obj,t0);
+    end(node, c,t0);
 #endif
 }
 
