@@ -554,7 +554,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
             if (!tetraArray.empty())
             {
                 glDisable(GL_LIGHTING);
-                const sofa::defaulttype::Vec3f& color =  this->_drawColor.getValue();
+                const sofa::defaulttype::Vec4f& color =  this->_drawColor.getValue();
                 glColor3f(color[0], color[1], color[2]);
                 glBegin(GL_LINES);
                 const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
