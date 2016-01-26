@@ -63,6 +63,10 @@ void ConsoleMessageHandler::process(Message &m) {
         std::cout << out.str() << std::endl ;
 }
 
+void ConsoleMessageHandler::setMessageFormatter(MessageFormatter* formatter)
+{
+    m_formatter = formatter;
+}
 
 } // logging
 } // helper
