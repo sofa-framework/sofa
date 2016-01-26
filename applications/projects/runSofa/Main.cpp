@@ -76,6 +76,11 @@
 #include <windows.h>
 #endif
 
+#include <sofa/helper/logging/MessageDispatcher.h>
+#include <sofa/helper/logging/ConsoleMessageHandler.h>
+#include <sofa/helper/logging/ClangStyleMessageFormatter.h>
+
+
 using std::cerr;
 using std::endl;
 using sofa::helper::Utils;
@@ -181,7 +186,7 @@ int main(int argc, char** argv)
     .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
     .option(&testMode,'x',"test","select test mode with xml output after N iteration")
     .option(&verif,'v',"verification","load verification data for the scene")
-    .option(&colorsStatus,'z',"colors","use colors on stdout and stderr (yes, no, auto)")
+    .option(&colorsStatus,'z',"colors","use colors on stdout and stderr (yes, no, auto, clang)")
 #ifdef SOFA_SMP
     .option(&disableStealing,'w',"disableStealing","Disable Work Stealing")
     .option(&nProcs,'c',"nprocs","Number of processor")
@@ -251,6 +256,8 @@ int main(int argc, char** argv)
         Console::setColorsStatus(Console::ColorsEnabled);
     else if (colorsStatus == "no")
         Console::setColorsStatus(Console::ColorsDisabled);
+    else if  (colorsStatus == "clang")
+        sofa::helper::logging::MessageDispatcher::getDefaultMessageHandler()->setMessageFormatter(sofa::helper::logging::ClangStyleMessageFormatter::getInstance());
     else
     {
         Console::setColorsStatus(Console::ColorsAuto);
