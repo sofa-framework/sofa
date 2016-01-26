@@ -283,7 +283,7 @@ int main(int argc, char** argv)
         MessageDispatcher::addHandler( new ClangMessageHandler() ) ;
     }else{
         Console::setColorsStatus(Console::ColorsAuto);
-        msg_warning("main") << "Invalid argument ‘" << colorsStatus << "‘ for ‘--colors‘";
+        msg_warning("") << "Invalid argument ‘" << colorsStatus << "‘ for ‘--colors‘";
     }
 
     // Add the plugin directory to PluginRepository
