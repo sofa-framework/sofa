@@ -4,10 +4,12 @@ project(SofaComponentBase)
 set(HEADER_FILES
     config.h
     initComponentBase.h
+    messageHandlerComponent.h
 )
 
 set(SOURCE_FILES
     initComponentBase.cpp
+    messageHandlerComponent.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
