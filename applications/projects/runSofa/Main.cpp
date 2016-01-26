@@ -257,7 +257,7 @@ int main(int argc, char** argv)
     else if (colorsStatus == "no")
         Console::setColorsStatus(Console::ColorsDisabled);
     else if  (colorsStatus == "clang")
-        sofa::helper::logging::MessageDispatcher::getDefaultMessageHandler()->setMessageFormatter(sofa::helper::logging::ClangStyleMessageFormatter::getInstance());
+        sofa::helper::logging::unique::MessageDispatcher::getDefaultMessageHandler()->setMessageFormatter(sofa::helper::logging::ClangStyleMessageFormatter::getInstance());
     else
     {
         Console::setColorsStatus(Console::ColorsAuto);

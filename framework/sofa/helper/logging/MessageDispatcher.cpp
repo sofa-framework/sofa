@@ -59,84 +59,126 @@ namespace helper
 namespace logging
 {
 
-// keep a track of messages.
-vector<MessageHandler*> s_m_handlers ;
+////////////////////// THE UNDERLYING OBJECT ///////////////////////////////////
+class SOFA_HELPER_API MessageDispatcherImpl
+{
+public:
+    MessageDispatcherImpl();
 
-// todo(damien): currently the message list and id are shared by all the message handler.
-int s_m_lastAllocatedID = -1 ; // keep a count of the last id allocated
-int s_m_lastErrorId = -1 ;     // keep count of the last error message received.
-int s_m_lastWarningId = -1 ;
-int s_m_lastInfoId = -1 ;
+    LoggerStream log(Message::Class mclass, Message::Type type,
+                     const std::string& sender = "", FileInfo fileInfo = FileInfo()) {
+        return LoggerStream(*this, mclass, type, sender, fileInfo);
+    }
 
-sofa::helper::logging::Message& operator<<=(MessageDispatcher &d, sofa::helper::logging::Message& m){
-    s_m_lastAllocatedID++ ;
+    LoggerStream log(Message::Class mclass, Message::Type type,
+                     const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
+        return LoggerStream(*this, mclass, type, sender, fileInfo);
+    }
 
-    m.setId(s_m_lastAllocatedID) ;
+    int addHandler(MessageHandler* o) ;
+    int rmHandler(MessageHandler* o) ;
+    void clearHandlers() ;
+    ConsoleMessageHandler* getDefaultMessageHandler();
+
+    int getLastMessageId() ;
+    int getLastErrorId() ;
+    int getLastWarningId() ;
+    int getLastInfoId() ;
+
+    void process(sofa::helper::logging::Message &m);
+
+private:
+    // keep a track of messages.
+    vector<MessageHandler*> m_handlers ;
+
+    // todo(damien): currently the message list and id are shared by all the message handler.
+    int m_lastAllocatedID ; // keep a count of the last id allocated
+    int m_lastErrorId ;     // keep count of the last error message received.
+    int m_lastWarningId ;
+    int m_lastInfoId ;
+
+
+    friend Message& operator<<=(MessageDispatcherImpl& d, Message& m) ;
+};
+
+
+sofa::helper::logging::Message& operator<<=(MessageDispatcherImpl &d, sofa::helper::logging::Message& m){
+    d.m_lastAllocatedID++ ;
+
+    m.setId(d.m_lastAllocatedID) ;
 
     if(m.type()==Message::Error)
-        s_m_lastErrorId = s_m_lastAllocatedID ;
+        d.m_lastErrorId = d.m_lastAllocatedID ;
     else if(m.type()==Message::Warning)
-        s_m_lastWarningId = s_m_lastAllocatedID ;
+        d.m_lastWarningId = d.m_lastAllocatedID ;
     else if(m.type()==Message::Info)
-        s_m_lastInfoId = s_m_lastAllocatedID ;
+        d.m_lastInfoId = d.m_lastAllocatedID ;
 
     d.process(m);
     return m;
 }
 
-MessageDispatcher::MessageDispatcher()
+MessageDispatcherImpl::MessageDispatcherImpl()
 {
+    m_lastAllocatedID = -1 ; // keep a count of the last id allocated
+    m_lastErrorId = -1 ;     // keep count of the last error message received.
+    m_lastWarningId = -1 ;
+    m_lastInfoId = -1 ;
+
     // add a default handler
     addHandler(getDefaultMessageHandler());
 }
 
 
-int MessageDispatcher::getLastMessageId() {
-    return s_m_lastAllocatedID ;
+int MessageDispatcherImpl::getLastMessageId() {
+    return m_lastAllocatedID ;
 }
 
-int MessageDispatcher::getLastErrorId(){
-    return s_m_lastErrorId ;
+int MessageDispatcherImpl::getLastErrorId(){
+    return m_lastErrorId ;
 }
 
-int MessageDispatcher::getLastWarningId(){
-    return s_m_lastWarningId ;
+int MessageDispatcherImpl::getLastWarningId(){
+    return m_lastWarningId ;
 }
 
-int MessageDispatcher::getLastInfoId(){
-    return s_m_lastInfoId ;
+int MessageDispatcherImpl::getLastInfoId(){
+    return m_lastInfoId ;
 }
 
-int MessageDispatcher::addHandler(MessageHandler* o){
-    if( std::find(s_m_handlers.begin(), s_m_handlers.end(), o) == s_m_handlers.end()){
-        s_m_handlers.push_back(o) ;
-        return s_m_handlers.size()-1 ;
+int MessageDispatcherImpl::addHandler(MessageHandler* o){
+    if( std::find(m_handlers.begin(), m_handlers.end(), o) == m_handlers.end()){
+        m_handlers.push_back(o) ;
+        return m_handlers.size()-1 ;
     }
     return -1;
 }
 
-int MessageDispatcher::rmHandler(MessageHandler* o){
-    s_m_handlers.erase(remove(s_m_handlers.begin(), s_m_handlers.end(), o), s_m_handlers.end());
-    return s_m_handlers.size()-1 ;
+int MessageDispatcherImpl::rmHandler(MessageHandler* o){
+    m_handlers.erase(remove(m_handlers.begin(), m_handlers.end(), o), m_handlers.end());
+    return m_handlers.size()-1 ;
 }
 
-void MessageDispatcher::clearHandlers(bool del){
-    if(del)
-        for(unsigned int i = 0;i<s_m_handlers.size();i++)
-            delete (s_m_handlers[i]) ;
-    s_m_handlers.clear() ;
+void MessageDispatcherImpl::clearHandlers(){
+    m_handlers.clear() ;
 }
 
-void MessageDispatcher::process(sofa::helper::logging::Message& m){
-    for(unsigned int i=0;i<s_m_handlers.size();i++)
-        s_m_handlers[i]->process(m) ;
+void MessageDispatcherImpl::process(sofa::helper::logging::Message& m){
+    for(unsigned int i=0;i<m_handlers.size();i++)
+        m_handlers[i]->process(m) ;
 }
 
-static ConsoleMessageHandler s_defaultMessageHandler;
+ConsoleMessageHandler s_defaultMessageHandler;
 
-ConsoleMessageHandler* MessageDispatcher::getDefaultMessageHandler()
+ConsoleMessageHandler* MessageDispatcherImpl::getDefaultMessageHandler()
 {
     return &s_defaultMessageHandler;
+}
+
+
+LoggerStream::~LoggerStream()
+{
+    if ( !m_message.empty() ) m_dispatcher.process(m_message);
 }
 
 
@@ -144,8 +186,89 @@ ConsoleMessageHandler* MessageDispatcher::getDefaultMessageHandler()
 } // helper
 } // sofa
 
+
+/////////////////////////// UNIQUE NAMESPACE //////////////////////////////////
+namespace sofa
+{
+namespace helper
+{
+namespace logging
+{
+namespace unique
+{
+
 // THE main MessageDipatcher...
-SOFA_HELPER_API sofa::helper::logging::MessageDispatcher gMessageDispatcher;
+SOFA_HELPER_API sofa::helper::logging::MessageDispatcherImpl gMessageDispatcher;
+
+int MessageDispatcher::addHandler(MessageHandler* o){
+    return gMessageDispatcher.addHandler(o) ;
+}
+
+int MessageDispatcher::rmHandler(MessageHandler* o){
+    return gMessageDispatcher.rmHandler(o) ;
+}
+
+void MessageDispatcher::clearHandlers(bool deleteExistingOnes){
+    gMessageDispatcher.clearHandlers() ;
+}
+
+ConsoleMessageHandler* MessageDispatcher::getDefaultMessageHandler(){
+    return gMessageDispatcher.getDefaultMessageHandler() ;
+}
+
+int MessageDispatcher::getLastMessageId(){
+    return gMessageDispatcher.getLastMessageId() ;
+}
+
+int MessageDispatcher::getLastErrorId(){
+    return gMessageDispatcher.getLastErrorId() ;
+}
+
+int MessageDispatcher::getLastWarningId(){
+    return gMessageDispatcher.getLastWarningId() ;
+}
+
+int MessageDispatcher::getLastInfoId(){
+    return gMessageDispatcher.getLastInfoId() ;
+}
+
+LoggerStream MessageDispatcher::info(Message::Class mclass, const std::string& sender, FileInfo fileInfo) {
+    return gMessageDispatcher.log(mclass, Message::Info, sender, fileInfo);
+}
+
+LoggerStream MessageDispatcher::info(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo) {
+    return gMessageDispatcher.log(mclass, Message::Info, sender, fileInfo);
+}
+
+LoggerStream MessageDispatcher::warning(Message::Class mclass, const std::string& sender, FileInfo fileInfo) {
+    return gMessageDispatcher.log(mclass, Message::Warning, sender, fileInfo);
+}
+
+LoggerStream MessageDispatcher::warning(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo) {
+    return gMessageDispatcher.log(mclass, Message::Warning, sender, fileInfo);
+}
+
+LoggerStream MessageDispatcher::error(Message::Class mclass, const std::string& sender, FileInfo fileInfo) {
+    return gMessageDispatcher.log(mclass, Message::Error, sender, fileInfo);
+}
+
+LoggerStream MessageDispatcher::error(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo) {
+    return gMessageDispatcher.log(mclass, Message::Error, sender, fileInfo);
+}
+
+LoggerStream MessageDispatcher::fatal(Message::Class mclass, const std::string& sender, FileInfo fileInfo) {
+    return gMessageDispatcher.log(mclass, Message::Fatal, sender, fileInfo);
+}
+
+LoggerStream MessageDispatcher::fatal(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo) {
+    return gMessageDispatcher.log(mclass, Message::Fatal, sender, fileInfo);
+}
+
+}
+}
+}
+}
+
 
 
 
