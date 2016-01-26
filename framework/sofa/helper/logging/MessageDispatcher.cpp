@@ -59,6 +59,8 @@ namespace helper
 namespace logging
 {
 
+Nop Nop::s_nop;
+
 ////////////////////// THE UNDERLYING OBJECT ///////////////////////////////////
 class SOFA_HELPER_API MessageDispatcherImpl
 {
@@ -206,7 +208,7 @@ int MessageDispatcher::rmHandler(MessageHandler* o){
     return gMessageDispatcher.rmHandler(o) ;
 }
 
-void MessageDispatcher::clearHandlers(bool deleteExistingOnes){
+void MessageDispatcher::clearHandlers(){
     gMessageDispatcher.clearHandlers() ;
 }
 
