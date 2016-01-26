@@ -362,6 +362,8 @@ class Behavior:
         self.sampler = None
         self.dofs = None
         self.mapping = None
+        self.strainMapping = None
+        self.relativeStrainMapping = None
         self.forcefield = None
         self.cell = ''
 
@@ -450,11 +452,11 @@ class Behavior:
     def addHooke(self, strainMeasure="Corotational", youngModulus=0, poissonRatio=0, viscosity=0, useOffset=False, assemble=True):
         eNode = self.node.createChild("E")
         eNode.createObject('MechanicalObject',  template="E"+self.type, name="E")
-        eNode.createObject(strainMeasure+'StrainMapping', template="F"+self.type+",E"+self.type, assemble=assemble)
+        self.strainMapping = eNode.createObject(strainMeasure+'StrainMapping', template="F"+self.type+",E"+self.type, assemble=assemble)
         if useOffset:
             eOffNode = eNode.createChild("offsetE")
             eOffNode.createObject('MechanicalObject',  template="E"+self.type, name="E")
-            eOffNode.createObject('RelativeStrainMapping', template="E"+self.type+",E"+self.type, assemble=assemble)
+            self.relativeStrainMapping = eOffNode.createObject('RelativeStrainMapping', template="E"+self.type+",E"+self.type, assemble=assemble)
             self.forcefield = eOffNode.createObject('HookeForceField', name="ff", template="E"+self.type, youngModulus= youngModulus, poissonRatio=poissonRatio, viscosity=viscosity, assemble=assemble, isCompliance=False)
         else:
             self.forcefield = eNode.createObject('HookeForceField', name="ff", template="E"+self.type, youngModulus= youngModulus, poissonRatio=poissonRatio, viscosity=viscosity, assemble=assemble, isCompliance=False)

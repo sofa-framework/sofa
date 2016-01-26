@@ -409,9 +409,10 @@ void BaseDeformationMappingT<JacobianBlockType>::reinit()
 {
     if(this->isMechanical() && this->assemble.getValue()) updateJ();
 
-    apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel->read(core::ConstVecCoordId::position()));
-
-    if(this->toModel->write(core::VecDerivId::velocity())) applyJ(NULL, *this->toModel->write(core::VecDerivId::velocity()), *this->fromModel->read(core::ConstVecDerivId::velocity()));
+    // force apply
+    // bg: do we need this ?
+    //    apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel->read(core::ConstVecCoordId::position()));
+    //    if(this->toModel->write(core::VecDerivId::velocity())) applyJ(NULL, *this->toModel->write(core::VecDerivId::velocity()), *this->fromModel->read(core::ConstVecDerivId::velocity()));
 
     Inherit::reinit();
 }
