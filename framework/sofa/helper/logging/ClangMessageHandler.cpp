@@ -20,7 +20,7 @@
 *                                                                             *
 * This component is open-source                                               *
 *                                                                             *
-* Authors: Bruno Carrez                                                       *
+* Authors: Damien Marchal                                                     *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -28,11 +28,16 @@
 * User of this library should read the documentation
 * in the messaging.h file.
 ******************************************************************************/
-#ifndef MESSAGEFORMATTER_H
-#define MESSAGEFORMATTER_H
 
 #include <sstream>
-#include <sofa/helper/helper.h>
+using std::ostringstream ;
+
+#include <iostream>
+
+#include "Message.h"
+#include "MessageFormatter.h"
+#include "ClangMessageHandler.h"
+#include "ClangStyleMessageFormatter.h"
 
 namespace sofa
 {
@@ -43,19 +48,23 @@ namespace helper
 namespace logging
 {
 
-class Message;
-
-class SOFA_HELPER_API MessageFormatter
+ClangMessageHandler::ClangMessageHandler()
 {
-public:
-    virtual ~MessageFormatter() {}
-    virtual void formatMessage(const Message& m,std::ostream& out) = 0 ;
-private:
-};
+    m_formatter = new ClangStyleMessageFormatter() ;
+}
+
+ClangMessageHandler::~ClangMessageHandler()
+{
+    if(m_formatter)
+        delete m_formatter ;
+}
+
+
+void ClangMessageHandler::process(Message &m) {
+    m_formatter->formatMessage(m, std::cerr) ;
+}
 
 } // logging
 } // helper
 } // sofa
 
-
-#endif // MESSAGEFORMATTER_H
