@@ -160,6 +160,7 @@ public:
     virtual void multMatrix(float*  ) = 0;
 
     virtual void scale(float ) = 0;
+    virtual void translate(float x, float y, float z) = 0;
     /// @}
 
     /// @name Drawing style methods.
@@ -175,6 +176,10 @@ public:
 
     virtual void enableBlending() = 0;
     virtual void disableBlending() = 0;
+
+    /// @name States (save/restore)
+    virtual void saveLastState() = 0;
+    virtual void restoreLastState() = 0;
 
     /// @name Overlay methods
 
