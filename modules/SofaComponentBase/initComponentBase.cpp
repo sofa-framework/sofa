@@ -31,6 +31,10 @@
 #include <SofaBaseAnimationLoop/initBaseAnimationLoop.h>
 #include <SofaBaseVisual/initBaseVisual.h>
 
+#include "messageHandlerComponent.h"
+using sofa::component::logging::MessageHandlerComponent ;
+using sofa::component::logging::FileMessageHandlerComponent ;
+
 namespace sofa
 {
 
@@ -53,6 +57,8 @@ void initComponentBase()
     }
 }
 
+SOFA_LINK_CLASS(MessageHandlerComponent)
+SOFA_LINK_CLASS(FileMessageHandlerComponent)
 
 } // namespace component
 
