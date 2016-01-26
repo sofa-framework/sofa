@@ -43,7 +43,7 @@ using sofa::helper::logging::ClangStyleMessageFormatter;
 using sofa::helper::logging::DefaultStyleMessageFormatter;
 
 #include <sofa/helper/logging/Messaging.h>
-using sofa::helper::logging::MessageDispatcher;
+using sofa::helper::logging::unique::MessageDispatcher;
 
 #include "messageHandlerComponent.h"
 
@@ -67,7 +67,7 @@ void MessageHandlerComponent::parse ( BaseObjectDescription* arg )
 
     const char* type=arg->getAttribute("handler") ;
     if(type==NULL){
-        msg_info(this) << "missing the handler attribute " << type << ", the default sofa style will be used. "
+        msg_info(this) << "The 'handler' attribute is missing. The default sofa style will be used. "
                           "To suppress this message you need to specify the 'handler' attribute. "
                           "eg: handler='silent' ";
         return ;
@@ -78,15 +78,16 @@ void MessageHandlerComponent::parse ( BaseObjectDescription* arg )
 
     if(stype=="sofa"){
 
-        gMessageDispatcher.addHandler(new ConsoleMessageHandler()) ;
+        MessageDispatcher::addHandler(new ConsoleMessageHandler()) ;
     }else if(stype=="clang"){
-        gMessageDispatcher.addHandler(new ConsoleMessageHandler(ClangStyleMessageFormatter::getInstance())) ;
+        MessageDispatcher::addHandler(new ConsoleMessageHandler(ClangStyleMessageFormatter::getInstance())) ;
     }else if(stype=="log"){
-        gMessageDispatcher.addHandler(new LoggerMessageHandler()) ;
+        MessageDispatcher::addHandler(new LoggerMessageHandler()) ;
     }else if(stype=="silent"){
-        gMessageDispatcher.clearHandlers(true) ;
+        MessageDispatcher::clearHandlers(true) ;
     }else{
-        msg_info(this) << "[" << stype << "] is not a supported format the default sofa style will be used. "
+        msg_info(this) << " the following handler '" << stype << "' is not a supported. "
+                          "The default sofa style will be used. "
                           "To supress this message you need to specify a valid attribute "
                           "among [clang, log, silent, sofa]." ;
         return ;
@@ -115,7 +116,7 @@ FileMessageHandlerComponent::FileMessageHandlerComponent() :
 
 FileMessageHandlerComponent::~FileMessageHandlerComponent()
 {
-    gMessageDispatcher.rmHandler(m_handler) ;
+    MessageDispatcher::rmHandler(m_handler) ;
 
     delete m_handler ;
 }
@@ -126,8 +127,8 @@ void FileMessageHandlerComponent::parse ( BaseObjectDescription* arg )
 
     const char* type=arg->getAttribute("filename") ;
     if(type==NULL){
-        msg_warning(this) << "missing the name of the file where the logs are stored. "
-                             "To fix this error you need to add the missing attribute eg:"
+        msg_warning(this) << "Name of the log file is missing. "
+                             "To suppress this message you need to add the specify the filename eg:"
                              "  filename='nameOfTheLogFile.log' ";
         return ;
     }
@@ -140,15 +141,15 @@ void FileMessageHandlerComponent::parse ( BaseObjectDescription* arg )
     }
 
     if(!handler->isValid()){
-        msg_warning(this) << " unable to open file named [" << type << "]. "
+        msg_warning(this) << " Unable to open the file named '" << type << "'. "
                              " Logs will not be written. ";
         return ;
     }
 
-    msg_info(this) << " now logging messages into [" << type << "]." ;
+    msg_info(this) << " Logging messages into the file " << type << "." ;
 
     m_handler = handler;
-    gMessageDispatcher.addHandler(m_handler) ;
+    MessageDispatcher::addHandler(m_handler) ;
 
     m_isValid = true ;
 }
