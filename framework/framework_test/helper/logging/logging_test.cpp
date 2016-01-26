@@ -9,7 +9,7 @@ using std::endl ;
 using std::vector ;
 
 #include <sofa/helper/logging/Messaging.h>
-using sofa::helper::logging::MessageDispatcher ;
+using sofa::helper::logging::unique::MessageDispatcher ;
 
 #include <sofa/helper/logging/MessageHandler.h>
 using sofa::helper::logging::MessageHandler ;
