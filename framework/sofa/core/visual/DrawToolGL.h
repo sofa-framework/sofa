@@ -150,12 +150,16 @@ public:
     virtual void popMatrix();
     virtual void multMatrix(float* glTransform );
     virtual void scale( float s );
+    virtual void translate(float x, float y, float z);
 
     virtual void writeOverlayText( int x, int y, unsigned fontSize, const Vec4f &color, const char* text );
 
     virtual void enableBlending();
 
     virtual void disableBlending();
+
+    virtual void saveLastState();
+    virtual void restoreLastState();
 
 protected:
 

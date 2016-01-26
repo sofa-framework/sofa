@@ -38,7 +38,6 @@
 #include <sofa/simulation/common/Visitor.h>
 #endif
 
-#include <sofa/helper/system/gl.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 #define VERBOSE(a) if (bVerbose.getValue()) a; else {}

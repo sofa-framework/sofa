@@ -30,11 +30,9 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/helper/gl/BasicShapes.h>
 
 
 
@@ -333,15 +331,12 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
 template <class DataTypes>
 void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     //serr<<"FixedConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
 
-
-
+    vparams->drawTool()->saveLastState();
 
     const SetIndexArray & indices = f_indices.getValue();
 
@@ -369,7 +364,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     }
     else // new drawing by spheres
     {
-        glEnable( GL_LIGHTING );
+        vparams->drawTool()->setLightingEnabled(true);
 
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
@@ -391,7 +386,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
 
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace constraint

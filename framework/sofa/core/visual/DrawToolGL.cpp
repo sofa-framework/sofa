@@ -879,6 +879,11 @@ void DrawToolGL::scale( float s )
     glScale(s,s,s);
 }
 
+void DrawToolGL::translate(float x, float y, float z)
+{
+    glTranslatef(x, y, z);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const Vec4f &color, const char* text )
 {
@@ -952,6 +957,16 @@ void DrawToolGL::draw3DText_Indices(const helper::vector<Vector3> &positions, fl
     glColor4f(color[0], color[1], color[2], color[3]);
 
     sofa::helper::gl::GlText::textureDraw_Indices(positions, scale);
+}
+
+void DrawToolGL::saveLastState()
+{
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+}
+
+void DrawToolGL::restoreLastState()
+{
+    glPopAttrib();
 }
 
 } // namespace visual
