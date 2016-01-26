@@ -65,15 +65,15 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
 protected:
-	bool initializedCubatureTables;
-	void defineTetrahedronCubaturePoints();
+    bool initializedCubatureTables;
+    void defineTetrahedronCubaturePoints();
 
     TetrahedronSetGeometryAlgorithms()
         : TriangleSetGeometryAlgorithms<DataTypes>()
-		,initializedCubatureTables(false)
+        ,initializedCubatureTables(false)
         ,showTetrahedraIndices (core::objectmodel::Base::initData(&showTetrahedraIndices, (bool) false, "showTetrahedraIndices", "Debug : view Tetrahedrons indices"))
-        , _draw(core::objectmodel::Base::initData(&_draw, false, "drawTetrahedra","if true, draw the tetrahedra in the topology"))
-        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vec3f(1.0f,1.0f,0.0f), "drawColorTetrahedra", "RGB code color used to draw tetrahedra."))
+        , _drawTetrahedra(core::objectmodel::Base::initData(&_drawTetrahedra, false, "drawTetrahedra","if true, draw the tetrahedra in the topology"))
+        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vec4f(1.0f,1.0f,0.0f,1.0f), "drawColorTetrahedra", "RGBA code color used to draw tetrahedra."))
     {
         core::objectmodel::Base::addAlias(&showTetrahedraIndices, "showTetrasIndices");
     }
@@ -132,15 +132,15 @@ public:
 
     bool checkNodeSequence(Tetra& tetra);
 
-	/// return a pointer to the container of cubature points
-	NumericalIntegrationDescriptor<Real,4> &getTetrahedronNumericalIntegrationDescriptor();
+    /// return a pointer to the container of cubature points
+    NumericalIntegrationDescriptor<Real,4> &getTetrahedronNumericalIntegrationDescriptor();
 
 protected:
     Data<bool> showTetrahedraIndices;
-    Data<bool> _draw;
-    Data<sofa::defaulttype::Vec3f> _drawColor;
-	/// include cubature points
-	NumericalIntegrationDescriptor<Real,4> tetrahedronNumericalIntegration;
+    Data<bool> _drawTetrahedra;
+    Data<sofa::defaulttype::Vec4f> _drawColor;
+    /// include cubature points
+    NumericalIntegrationDescriptor<Real,4> tetrahedronNumericalIntegration;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_CPP)
