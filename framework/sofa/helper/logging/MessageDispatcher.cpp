@@ -88,10 +88,8 @@ public:
     void process(sofa::helper::logging::Message &m);
 
 private:
-    // keep a track of messages.
     vector<MessageHandler*> m_handlers ;
 
-    // todo(damien): currently the message list and id are shared by all the message handler.
     int m_lastAllocatedID ; // keep a count of the last id allocated
     int m_lastErrorId ;     // keep count of the last error message received.
     int m_lastWarningId ;
@@ -198,7 +196,7 @@ namespace unique
 {
 
 // THE main MessageDipatcher...
-SOFA_HELPER_API sofa::helper::logging::MessageDispatcherImpl gMessageDispatcher;
+sofa::helper::logging::MessageDispatcherImpl gMessageDispatcher;
 
 int MessageDispatcher::addHandler(MessageHandler* o){
     return gMessageDispatcher.addHandler(o) ;
