@@ -91,7 +91,7 @@ void MessageHandlerComponent::parse ( BaseObjectDescription* arg )
     }else if(stype=="log"){
         MessageDispatcher::addHandler(new LoggerMessageHandler()) ;
     }else if(stype=="silent"){
-        MessageDispatcher::clearHandlers(true) ;
+        MessageDispatcher::clearHandlers() ;
     }else{
         msg_info(this) << " the following handler '" << stype << "' is not a supported. "
                           "The default sofa style will be used. "
