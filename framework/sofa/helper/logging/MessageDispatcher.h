@@ -50,7 +50,7 @@ namespace helper
 namespace logging
 {
 
-class Nop
+class SOFA_HELPER_API Nop
 {
 public:
     static inline Nop& getAnInstance(){ return s_nop; }
@@ -72,7 +72,7 @@ class MessageHandler ;
 class ConsoleMessageHandler;
 class MessageDispatcherImpl ;
 
-class LoggerStream
+class SOFA_HELPER_API LoggerStream
 {
 
     friend class MessageDispatcherImpl;
@@ -119,7 +119,7 @@ private:
 
 ////////////////////// THE STATIC FACADE ///////////////////////////////////
 namespace unique{
-    class MessageDispatcher{
+    class SOFA_HELPER_API MessageDispatcher{
 
     public:
         static int addHandler(MessageHandler* o) ;
