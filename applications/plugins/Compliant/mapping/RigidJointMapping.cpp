@@ -32,7 +32,6 @@ template class SOFA_Compliant_API RigidJointMapping<  Rigid3dTypes, Vec6dTypes >
 
 #ifndef SOFA_DOUBLE
 template class SOFA_Compliant_API RigidJointMapping< Rigid3fTypes, Vec6fTypes >;
-
 #endif
 
 
