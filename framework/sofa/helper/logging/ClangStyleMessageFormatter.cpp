@@ -31,15 +31,18 @@
 
 #include "ClangStyleMessageFormatter.h"
 #include "Message.h"
-
 using std::ostringstream ;
+
+#include <string>
+using std::string ;
 
 #include <iostream>
 using std::endl ;
 using std::cout ;
 using std::cerr ;
 
-
+#include <sofa/helper/fixed_array.h>
+using sofa::helper::fixed_array ;
 
 namespace sofa
 {
@@ -50,38 +53,37 @@ namespace helper
 namespace logging
 {
 
-static ClangStyleMessageFormatter s_ClangStyleMessageFormatter;
-
-MessageFormatter* ClangStyleMessageFormatter::getInstance()
-{
-    return &s_ClangStyleMessageFormatter;
+namespace unique {
+    ClangStyleMessageFormatter clangstyleformatter;
 }
 
+// This string conversion is internal to the way clang
+// format the info/warning/error. The typing are important.
+// In the current state there is no reason to have this function in the public
+// headers.
+// Don't transform this into a static array. The lazy initialization is here
+// to not rely in the implicit static initialization mechanisme.
+string getTypeString(const Message::Type t){
+    static bool isInited=false;
+    static fixed_array<string,Message::TypeCount> messageTypeStrings;
 
-
-static helper::fixed_array<std::string,Message::TypeCount> setMessageTypeStrings()
-{
-    helper::fixed_array<std::string,Message::TypeCount> messageTypeStrings;
-
-    messageTypeStrings[Message::Info]    = "info";
-    messageTypeStrings[Message::Warning] = "warning";
-    messageTypeStrings[Message::Error]   = "error";
-    messageTypeStrings[Message::Fatal]   = "fatal";
-    messageTypeStrings[Message::TEmpty]  = "empty";
-
-    return messageTypeStrings;
+    if(!isInited){
+        messageTypeStrings[Message::Info]    = "info";
+        messageTypeStrings[Message::Warning] = "warning";
+        messageTypeStrings[Message::Error]   = "error";
+        messageTypeStrings[Message::Fatal]   = "fatal";
+        messageTypeStrings[Message::TEmpty]  = "empty";
+        isInited = true ;
+    }
+    return messageTypeStrings[t];
 }
-const helper::fixed_array<std::string,Message::TypeCount> ClangStyleMessageFormatter::s_MessageTypeStrings = setMessageTypeStrings();
-
-
-
 
 void ClangStyleMessageFormatter::formatMessage(const Message& m,std::ostream& out)
 {
     if(m.sender()!="")
-        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << s_MessageTypeStrings[m.type()] << ": " << m.message().rdbuf() << std::endl ;
+        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << getTypeString(m.type()) << ": " << m.message().rdbuf() << std::endl ;
     else
-        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << s_MessageTypeStrings[m.type()] << ": ["<< m.sender() <<"] " << m.message().rdbuf() << std::endl ;
+        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << getTypeString(m.type()) << ": ["<< m.sender() <<"] " << m.message().rdbuf() << std::endl ;
     out << " message id: " << m.id() << std::endl ;
 }
 

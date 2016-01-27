@@ -38,6 +38,7 @@ using std::ostringstream ;
 #include "MessageFormatter.h"
 #include "ClangMessageHandler.h"
 #include "ClangStyleMessageFormatter.h"
+using sofa::helper::logging::unique::clangstyleformatter ;
 
 namespace sofa
 {
@@ -50,7 +51,7 @@ namespace logging
 
 
 void ClangMessageHandler::process(Message &m) {
-    ClangStyleMessageFormatter::getInstance()->formatMessage(m, std::cerr) ;
+    clangstyleformatter.formatMessage(m, std::cerr) ;
 }
 
 } // logging
