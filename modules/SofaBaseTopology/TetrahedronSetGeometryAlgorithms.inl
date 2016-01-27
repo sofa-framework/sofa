@@ -810,18 +810,14 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filen
 template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     TriangleSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
+    const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
     //Draw tetra indices
     if (showTetrahedraIndices.getValue())
     {
-        sofa::defaulttype::Mat<4,4, GLfloat> modelviewM;
-
-        const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-        const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-        defaulttype::Vec4f color4(color[0] - 0.2f, color[1] - 0.2f, color[2] - 0.2f, 1.0);
-        glDisable(GL_LIGHTING);
+        const sofa::defaulttype::Vec4f& color_tmp = _drawColor.getValue();
+        defaulttype::Vec4f color4(color_tmp[0] - 0.2f, color_tmp[1] - 0.2f, color_tmp[2] - 0.2f, 1.0);
         float scale = this->getIndicesScale();
 
         //for tetra:
@@ -848,45 +844,22 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
 
 
     // Draw Tetra
-    if (_draw.getValue())
+    if (_drawTetrahedra.getValue())
     {
         const sofa::helper::vector<Tetrahedron> &tetraArray = this->m_topology->getTetrahedra();
+        std::vector<defaulttype::Vector3>   pos;
+        pos.reserve(tetraArray.size()*4u);
 
-        if (!tetraArray.empty())
+        for (unsigned int i = 0; i<tetraArray.size(); ++i)
         {
-            glDisable(GL_LIGHTING);
-            const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-            glColor3f(color[0], color[1], color[2]);
-            glBegin(GL_LINES);
-            const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-
-            for (unsigned int i = 0; i<tetraArray.size(); i++)
+            const Tetrahedron& tet = tetraArray[i];
+            for (unsigned int j = 0u; j<4u; ++j)
             {
-                const Tetrahedron& tet = tetraArray[i];
-                sofa::helper::vector <sofa::defaulttype::Vec3f> tetraCoord;
-
-                for (unsigned int j = 0; j<4; j++)
-                {
-                    sofa::defaulttype::Vec3f p; p = DataTypes::getCPos(coords[tet[j]]);
-                    tetraCoord.push_back(p);
-                }
-
-                for (unsigned int j = 0; j<4; j++)
-                {
-                    glVertex3f(tetraCoord[j][0], tetraCoord[j][1], tetraCoord[j][2]);
-                    glVertex3f(tetraCoord[(j+1)%4][0], tetraCoord[(j+1)%4][1], tetraCoord[(j+1)%4][2]);
-                }
-
-                glVertex3f(tetraCoord[0][0], tetraCoord[0][1], tetraCoord[0][2]);
-                glVertex3f(tetraCoord[2][0], tetraCoord[2][1], tetraCoord[2][2]);
-
-                glVertex3f(tetraCoord[1][0], tetraCoord[1][1], tetraCoord[1][2]);
-                glVertex3f(tetraCoord[3][0], tetraCoord[3][1], tetraCoord[3][2]);
+                pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[tet[j]])));
             }
-            glEnd();
         }
+        vparams->drawTool()->drawTetrahedra(pos,_drawColor.getValue());
     }
-#endif /* SOFA_NO_OPENGL */
 }
 
 

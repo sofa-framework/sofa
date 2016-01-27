@@ -463,6 +463,11 @@ protected :
     */
     void drawIndices(const core::visual::VisualParams* vparams);
 
+    /**
+    * @brief Internal function : Draw vectors
+    */
+    void drawVectors(const core::visual::VisualParams* vparams);
+
     /// Given the number of a constraint Equation, find the index in the MatrixDeriv C, where the constraint is actually stored
     // unsigned int getIdxConstraintFromId(unsigned int id) const;
 
