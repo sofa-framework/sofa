@@ -29,7 +29,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/helper/gl/template.h>
 #include <iostream>
 
 

@@ -255,9 +255,8 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core
 template<>
 void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-    glPushAttrib(GL_LIGHTING_BIT);
-    glDisable(GL_LIGHTING);
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->setLightingEnabled(false);
 
 	if (showIndices.getValue())
 	{
@@ -266,45 +265,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
 
     if (showVectors.getValue())
     {
-//        Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-//        sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
-        glColor3f(1.0,1.0,1.0);
-//        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        //float scale = (sceneMaxBBox - sceneMinBBox).norm() * showVectorsScale.getValue();
-        float scale = showVectorsScale.getValue();
-        sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::ConstVecDerivId::velocity());
-        //std::cout << "number of velocity values: " << v_rA.size() << std::endl;
-        vector<Vector3> points;
-        points.resize(2);
-        for( unsigned i=0; i<v_rA.size(); ++i )
-        {
-            Real vx=0.0,vy=0.0,vz=0.0;
-            DataTypes::get(vx,vy,vz,v_rA[i]);
-            //v = DataTypes::getDPos(v_rA[i]);
-            //Real vx = v[0]; Real vy = v[1]; Real vz = v[2];
-            //std::cout << "v=" << vx << ", " << vy << ", " << vz << std::endl;
-            Vector3 p1 = Vector3(getPX(i), getPY(i), getPZ(i));
-            Vector3 p2 = Vector3(getPX(i)+scale*vx, getPY(i)+scale*vy, getPZ(i)+scale*vz);
-
-            float rad = (float)( (p1-p2).norm()/20.0 );
-            switch (drawMode.getValue())
-            {
-            case 0:
-                points[0] = p1;
-                points[1] = p2;
-                vparams->drawTool()->drawLines(points, 1, Vec4f(1.0,1.0,1.0,1.0));
-                break;
-            case 1:
-                vparams->drawTool()->drawCylinder(p1, p2, rad, Vec4f(1.0,1.0,1.0,1.0));
-                break;
-            case 2:
-                vparams->drawTool()->drawArrow(p1, p2, rad, Vec4f(1.0,1.0,1.0,1.0));
-                break;
-            default:
-                serr << "No proper drawing mode found!" << sendl;
-                break;
-            }
-        }
+        drawVectors(vparams);
     }
 
     if (showObject.getValue())
@@ -315,6 +276,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
         {
             vparams->drawTool()->pushMatrix();
             float glTransform[16];
+            ///TODO: check if the drawtool use OpenGL-shaped matrix
             x[i].writeOpenGlMatrix ( glTransform );
             vparams->drawTool()->multMatrix( glTransform );
             vparams->drawTool()->scale ( scale );
@@ -341,8 +303,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
             vparams->drawTool()->popMatrix();
         }
     }
-    glPopAttrib();
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 #endif
@@ -483,7 +444,8 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core
 template<>
 void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->setLightingEnabled(false);
 
 	if (showIndices.getValue())
 	{
@@ -492,45 +454,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
 
     if (showVectors.getValue())
     {
-//        Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-//        sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
-        glColor3f(1.0,1.0,1.0);
-//        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        //float scale = (sceneMaxBBox - sceneMinBBox).norm() * showVectorsScale.getValue();
-        float scale = showVectorsScale.getValue();
-        sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::ConstVecDerivId::velocity());
-        //std::cout << "number of velocity values: " << v_rA.size() << std::endl;
-        vector<Vector3> points;
-        points.resize(2);
-        for( unsigned i=0; i<v_rA.size(); ++i )
-        {
-            Real vx=0.0,vy=0.0,vz=0.0;
-            DataTypes::get(vx,vy,vz,v_rA[i]);
-            //v = DataTypes::getDPos(v_rA[i]);
-            //Real vx = v[0]; Real vy = v[1]; Real vz = v[2];
-            //std::cout << "v=" << vx << ", " << vy << ", " << vz << std::endl;
-            Vector3 p1 = Vector3(getPX(i), getPY(i), getPZ(i));
-            Vector3 p2 = Vector3(getPX(i)+scale*vx, getPY(i)+scale*vy, getPZ(i)+scale*vz);
-
-            float rad = (float)( (p1-p2).norm()/20.0 );
-            switch (drawMode.getValue())
-            {
-            case 0:
-                points[0] = p1;
-                points[1] = p2;
-                vparams->drawTool()->drawLines(points, 1, Vec4f(1.0,1.0,1.0,1.0));
-                break;
-            case 1:
-                vparams->drawTool()->drawCylinder(p1, p2, rad, Vec4f(1.0,1.0,1.0,1.0));
-                break;
-            case 2:
-                vparams->drawTool()->drawArrow(p1, p2, rad, Vec4f(1.0,1.0,1.0,1.0));
-                break;
-            default:
-                serr << "No proper drawing mode found!" << sendl;
-                break;
-            }
-        }
+        drawVectors(vparams);
     }
 
     if (showObject.getValue())
@@ -563,7 +487,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
             vparams->drawTool()->popMatrix();
         }
     }
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 #endif
@@ -571,7 +495,9 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
 template<>
 void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->setLightingEnabled(false);
+
 	if (showIndices.getValue())
 	{
         drawIndices(vparams);
@@ -584,7 +510,7 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
         for (size_t i = 0; i < vsize; ++i)
         {
             vparams->drawTool()->pushMatrix();
-            glTranslatef((float)getPX(i), (float)getPY(i), (float)getPZ(i));
+            vparams->drawTool()->translate((float)getPX(i), (float)getPY(i), (float)getPZ(i));
             vparams->drawTool()->scale ( scale );
 
             switch( drawMode.getValue() )
@@ -605,7 +531,8 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
             vparams->drawTool()->popMatrix();
         }
     }
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->restoreLastState();
 }
 
 

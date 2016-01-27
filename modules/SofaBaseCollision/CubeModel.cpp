@@ -28,7 +28,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <algorithm>
 #include <math.h>
-#include <sofa/helper/system/gl.h>
 
 namespace sofa
 {

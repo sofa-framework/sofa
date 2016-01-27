@@ -32,8 +32,6 @@
 #include <stack>
 #include <sofa/helper/AdvancedTimer.h>
 
-#include <sofa/helper/system/gl.h>
-
 namespace sofa
 {
 
