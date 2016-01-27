@@ -110,8 +110,8 @@ protected:
 
 		for( unsigned i = 0, n = p.size(); i < n; ++i) {
 
-			const coord_type parent = in[0][ p[i](0) ];
-			const coord_type child = in[1][ p[i](1) ];
+            const coord_type& parent = in[0][ p[i](0) ];
+            const coord_type& child = in[1][ p[i](1) ];
 			const coord_type delta = se3::prod( se3::inv(parent), child);
             
             impl::fill(out[i], delta);
@@ -263,14 +263,14 @@ protected:
 			typename self::jacobian_type::CompressedMatrix& J = this->jacobian(j).compressedMatrix;
 			J.resize( 6 * p.size(), 
 			          6 * in[j].size() );
-			J.setZero();
+//			J.setZero();
 		}
 		
 		// each pair
 		for(unsigned i = 0, n = p.size(); i < n; ++i) {
 			
-			const coord_type parent = in[0][ p[i](0) ];
-			const coord_type child = in[1][ p[i](1) ];
+            const coord_type& parent = in[0][ p[i](0) ];
+            const coord_type& child = in[1][ p[i](1) ];
 			
 			const coord_type delta = se3::prod( se3::inv(parent), child);
 			
@@ -279,8 +279,7 @@ protected:
 
 				typename self::jacobian_type::CompressedMatrix& J = this->jacobian(j).compressedMatrix;
 				
-				const mat33 Rp = se3::rotation(parent).normalized().toRotationMatrix();
-				const mat33 Rc = se3::rotation(child).normalized().toRotationMatrix();
+                const mat33 Rp_T = (se3::rotation(parent).normalized().toRotationMatrix()).transpose();
 
 //				mat33 Rdelta = se3::rotation(delta).toRotationMatrix();
 				const typename se3::vec3 s = se3::translation(child) - se3::translation(parent);
@@ -288,10 +287,11 @@ protected:
                 mat33 chunk;
 
                 if( use_dlog ) {
+                    const mat33 Rc = se3::rotation(child).normalized().toRotationMatrix();
                     // note: dlog is in spatial coordinates !
                     chunk = se3::dlog( se3::rotation(delta).normalized() ) * Rc.transpose();
                 } else {
-                    chunk = Rp.transpose();
+                    chunk = Rp_T;
                 }
                  
 				mat66 ddelta; 
@@ -299,12 +299,12 @@ protected:
 				if( j ) {
 					// child
 					ddelta << 
-						Rp.transpose(), mat33::Zero(),
+                        Rp_T, mat33::Zero(),
 						mat33::Zero(), chunk;
 				} else {
 					// parent
                     ddelta << 
-                        -Rp.transpose(), Rp.transpose() * se3::hat(s),
+                        -Rp_T, Rp_T * se3::hat(s),
                         mat33::Zero(), -chunk;
 				}
 				
