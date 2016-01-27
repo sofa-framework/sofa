@@ -212,7 +212,10 @@ sofa::simulation::tree::GNode::SPtr PythonEnvironment::initGraphFromScript( cons
 	
     struct raii {
       raii() {
-        PythonEnvironment::Init();
+          // initialization is done when loading the plugin
+          // otherwise it can be executed too soon
+          // when an application is directly linking with the SofaPython library
+//        PythonEnvironment::Init();
       }
 
       ~raii() {

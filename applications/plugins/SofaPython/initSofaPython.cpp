@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include "SceneLoaderPY.h"
 #include <SofaPython/config.h>
+#include "PythonEnvironment.h"
 
 
 extern "C" {
@@ -33,6 +34,7 @@ SOFA_SOFAPYTHON_API void initExternalModule()
     static bool first = true;
     if (first)
     {
+        sofa::simulation::PythonEnvironment::Init();
         first = false;        
     }
 }
