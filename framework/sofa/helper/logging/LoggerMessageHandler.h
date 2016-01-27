@@ -43,7 +43,7 @@ namespace helper
 namespace logging
 {
 
-class LoggerMessageHandler : public MessageHandler
+class SOFA_HELPER_API LoggerMessageHandler : public MessageHandler
 {
 public:
     virtual void process(Message& m) ;
