@@ -48,10 +48,11 @@ class Message;
 class SOFA_HELPER_API MessageFormatter
 {
 public:
-    virtual ~MessageFormatter() {}
     virtual void formatMessage(const Message& m,std::ostream& out) = 0 ;
+
 protected:
     MessageFormatter(){} // no public default constructor, it should be enough to have singleton for MessageFormatters
+
 };
 
 } // logging

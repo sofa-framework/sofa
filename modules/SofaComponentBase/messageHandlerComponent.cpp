@@ -140,7 +140,7 @@ void FileMessageHandlerComponent::parse ( BaseObjectDescription* arg )
         return ;
     }
 
-    FileMessageHandler *handler = new FileMessageHandler(type, DefaultStyleMessageFormatter::getInstance()) ;
+    FileMessageHandler *handler = new FileMessageHandler(type, &DefaultStyleMessageFormatter::getInstance()) ;
     if(handler==NULL){
         msg_fatal(this) << "Unable to allocate memory. This is a fatal error. To fix"
                            "this you may free more RAM before running Sofa." ;
