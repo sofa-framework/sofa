@@ -34,7 +34,6 @@
 #include "Message.h"
 #include "MessageFormatter.h"
 #include <sofa/helper/helper.h>
-#include <sofa/helper/fixed_array.h>
 
 namespace sofa
 {
@@ -49,12 +48,13 @@ namespace logging
 class SOFA_HELPER_API ClangStyleMessageFormatter : public MessageFormatter
 {
 public:
-    static MessageFormatter* getInstance();
     virtual void formatMessage(const Message& m,std::ostream& out);
 protected:
-    static const helper::fixed_array<std::string,Message::TypeCount> s_MessageTypeStrings;
 };
 
+namespace unique{
+    extern ClangStyleMessageFormatter SOFA_HELPER_API clangstyleformatter;
+} // uniqu
 } // logging
 } // helper
 } // sofa
