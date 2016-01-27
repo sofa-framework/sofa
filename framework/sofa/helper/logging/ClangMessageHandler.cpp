@@ -20,7 +20,7 @@
 *                                                                             *
 * This component is open-source                                               *
 *                                                                             *
-* Authors: Bruno Carrez                                                       *
+* Authors: Damien Marchal                                                     *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -29,17 +29,15 @@
 * in the messaging.h file.
 ******************************************************************************/
 
-#include "ClangStyleMessageFormatter.h"
-#include "Message.h"
-
+#include <sstream>
 using std::ostringstream ;
 
 #include <iostream>
-using std::endl ;
-using std::cout ;
-using std::cerr ;
 
-
+#include "Message.h"
+#include "MessageFormatter.h"
+#include "ClangMessageHandler.h"
+#include "ClangStyleMessageFormatter.h"
 
 namespace sofa
 {
@@ -50,42 +48,23 @@ namespace helper
 namespace logging
 {
 
-static ClangStyleMessageFormatter s_ClangStyleMessageFormatter;
-
-MessageFormatter* ClangStyleMessageFormatter::getInstance()
+ClangMessageHandler::ClangMessageHandler()
 {
-    return &s_ClangStyleMessageFormatter;
+    m_formatter = new ClangStyleMessageFormatter() ;
 }
 
-const char* typeToString(const Message::Type& t)
+ClangMessageHandler::~ClangMessageHandler()
 {
-    switch(t){
-    case Message::Info:
-        return "info" ;
-    case Message::Warning:
-        return "warning" ;
-    case Message::Error:
-        return "error" ;
-    case Message::Fatal:
-        return "fatal" ;
-    case Message::TEmpty:
-        return "empty" ;
-    case Message::TypeCount:
-        return "count" ;
-    }
-    return "undefined" ;
+    if(m_formatter)
+        delete m_formatter ;
 }
 
-void ClangStyleMessageFormatter::formatMessage(const Message& m,std::ostream& out)
-{
-    if(m.sender()!="")
-        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << typeToString(m.type()) << ": " << m.message().rdbuf() << std::endl ;
-    else
-        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << typeToString(m.type()) << ": ["<< m.sender() <<"] " << m.message().rdbuf() << std::endl ;
-    out << " message id: " << m.id() << std::endl ;
-}
 
+void ClangMessageHandler::process(Message &m) {
+    m_formatter->formatMessage(m, std::cerr) ;
+}
 
 } // logging
 } // helper
 } // sofa
+

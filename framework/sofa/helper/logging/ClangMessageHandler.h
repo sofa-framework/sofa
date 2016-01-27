@@ -20,7 +20,8 @@
 *                                                                             *
 * This component is open-source                                               *
 *                                                                             *
-* Authors: Bruno Carrez                                                       *
+* Authors: Damien Marchal                                                     *
+*          Bruno Carrez                                                       *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -28,18 +29,11 @@
 * User of this library should read the documentation
 * in the messaging.h file.
 ******************************************************************************/
+#ifndef CLANGMESSAGEHANDLER_H
+#define CLANGMESSAGEHANDLER_H
 
-#include "ClangStyleMessageFormatter.h"
-#include "Message.h"
-
-using std::ostringstream ;
-
-#include <iostream>
-using std::endl ;
-using std::cout ;
-using std::cerr ;
-
-
+#include "MessageHandler.h"
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
@@ -50,42 +44,20 @@ namespace helper
 namespace logging
 {
 
-static ClangStyleMessageFormatter s_ClangStyleMessageFormatter;
+class MessageFormatter;
 
-MessageFormatter* ClangStyleMessageFormatter::getInstance()
+class SOFA_HELPER_API ClangMessageHandler : public MessageHandler
 {
-    return &s_ClangStyleMessageFormatter;
-}
-
-const char* typeToString(const Message::Type& t)
-{
-    switch(t){
-    case Message::Info:
-        return "info" ;
-    case Message::Warning:
-        return "warning" ;
-    case Message::Error:
-        return "error" ;
-    case Message::Fatal:
-        return "fatal" ;
-    case Message::TEmpty:
-        return "empty" ;
-    case Message::TypeCount:
-        return "count" ;
-    }
-    return "undefined" ;
-}
-
-void ClangStyleMessageFormatter::formatMessage(const Message& m,std::ostream& out)
-{
-    if(m.sender()!="")
-        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << typeToString(m.type()) << ": " << m.message().rdbuf() << std::endl ;
-    else
-        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << typeToString(m.type()) << ": ["<< m.sender() <<"] " << m.message().rdbuf() << std::endl ;
-    out << " message id: " << m.id() << std::endl ;
-}
-
+public:
+    ClangMessageHandler() ;
+    virtual ~ClangMessageHandler() ;
+    virtual void process(Message &m) ;
+private:
+    MessageFormatter    *m_formatter;
+};
 
 } // logging
 } // helper
 } // sofa
+
+#endif // CLANGMESSAGEHANDLER_H

@@ -33,14 +33,21 @@ using sofa::core::RegisterObject ;
 
 #include <sofa/helper/logging/LoggerMessageHandler.h>
 using sofa::helper::logging::LoggerMessageHandler ;
+
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 using sofa::helper::logging::ConsoleMessageHandler ;
+
 #include <sofa/helper/logging/FileMessageHandler.h>
 using sofa::helper::logging::FileMessageHandler ;
+
 #include <sofa/helper/logging/ClangStyleMessageFormatter.h>
 using sofa::helper::logging::ClangStyleMessageFormatter;
+
 #include <sofa/helper/logging/DefaultStyleMessageFormatter.h>
 using sofa::helper::logging::DefaultStyleMessageFormatter;
+
+#include <sofa/helper/logging/ClangMessageHandler.h>
+using sofa::helper::logging::ClangMessageHandler ;
 
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::unique::MessageDispatcher;
@@ -80,11 +87,11 @@ void MessageHandlerComponent::parse ( BaseObjectDescription* arg )
 
         MessageDispatcher::addHandler(new ConsoleMessageHandler()) ;
     }else if(stype=="clang"){
-        MessageDispatcher::addHandler(new ConsoleMessageHandler(ClangStyleMessageFormatter::getInstance())) ;
+        MessageDispatcher::addHandler(new ClangMessageHandler()) ;
     }else if(stype=="log"){
         MessageDispatcher::addHandler(new LoggerMessageHandler()) ;
     }else if(stype=="silent"){
-        MessageDispatcher::clearHandlers(true) ;
+        MessageDispatcher::clearHandlers() ;
     }else{
         msg_info(this) << " the following handler '" << stype << "' is not a supported. "
                           "The default sofa style will be used. "

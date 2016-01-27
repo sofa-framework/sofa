@@ -48,6 +48,7 @@ class Message;
 class SOFA_HELPER_API MessageFormatter
 {
 public:
+    virtual ~MessageFormatter() {}
     virtual void formatMessage(const Message& m,std::ostream& out) = 0 ;
 private:
 };
