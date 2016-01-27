@@ -154,7 +154,7 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
     {
         Direction& gap = directions[i];
 
-        // gap = in[links[i][1]] - in[links[i][0]] (only for position)
+        // gap = in[indices[i]] - targetPositions[i] (only for position)
         computeCoordPositionDifference( gap, targetPositions[i], in[indices[i]] );
 
         Real gapNorm = gap.norm();
