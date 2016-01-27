@@ -57,31 +57,31 @@ MessageFormatter* ClangStyleMessageFormatter::getInstance()
     return &s_ClangStyleMessageFormatter;
 }
 
-const char* typeToString(const Message::Type& t)
+
+
+static helper::fixed_array<std::string,Message::TypeCount> setMessageTypeStrings()
 {
-    switch(t){
-    case Message::Info:
-        return "info" ;
-    case Message::Warning:
-        return "warning" ;
-    case Message::Error:
-        return "error" ;
-    case Message::Fatal:
-        return "fatal" ;
-    case Message::TEmpty:
-        return "empty" ;
-    case Message::TypeCount:
-        return "count" ;
-    }
-    return "undefined" ;
+    helper::fixed_array<std::string,Message::TypeCount> messageTypeStrings;
+
+    messageTypeStrings[Message::Info]    = "info";
+    messageTypeStrings[Message::Warning] = "warning";
+    messageTypeStrings[Message::Error]   = "error";
+    messageTypeStrings[Message::Fatal]   = "fatal";
+    messageTypeStrings[Message::TEmpty]  = "empty";
+
+    return messageTypeStrings;
 }
+const helper::fixed_array<std::string,Message::TypeCount> ClangStyleMessageFormatter::s_MessageTypeStrings = setMessageTypeStrings();
+
+
+
 
 void ClangStyleMessageFormatter::formatMessage(const Message& m,std::ostream& out)
 {
     if(m.sender()!="")
-        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << typeToString(m.type()) << ": " << m.message().rdbuf() << std::endl ;
+        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << s_MessageTypeStrings[m.type()] << ": " << m.message().rdbuf() << std::endl ;
     else
-        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << typeToString(m.type()) << ": ["<< m.sender() <<"] " << m.message().rdbuf() << std::endl ;
+        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << s_MessageTypeStrings[m.type()] << ": ["<< m.sender() <<"] " << m.message().rdbuf() << std::endl ;
     out << " message id: " << m.id() << std::endl ;
 }
 

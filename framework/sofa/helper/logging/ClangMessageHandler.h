@@ -49,11 +49,7 @@ class MessageFormatter;
 class SOFA_HELPER_API ClangMessageHandler : public MessageHandler
 {
 public:
-    ClangMessageHandler() ;
-    virtual ~ClangMessageHandler() ;
     virtual void process(Message &m) ;
-private:
-    MessageFormatter    *m_formatter;
 };
 
 } // logging
