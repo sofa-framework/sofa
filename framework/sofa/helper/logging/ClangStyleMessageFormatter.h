@@ -49,12 +49,17 @@ class SOFA_HELPER_API ClangStyleMessageFormatter : public MessageFormatter
 {
 public:
     virtual void formatMessage(const Message& m,std::ostream& out);
-protected:
+    static ClangStyleMessageFormatter& getInstance() { return s_instance; }
+
+private:
+    // singleton API
+    ClangStyleMessageFormatter();
+    ClangStyleMessageFormatter(const ClangStyleMessageFormatter&);
+    void operator=(const ClangStyleMessageFormatter&);
+    static ClangStyleMessageFormatter s_instance;
 };
 
-namespace unique{
-    extern ClangStyleMessageFormatter SOFA_HELPER_API clangstyleformatter;
-} // uniqu
+
 } // logging
 } // helper
 } // sofa

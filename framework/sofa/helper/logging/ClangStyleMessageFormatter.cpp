@@ -53,37 +53,26 @@ namespace helper
 namespace logging
 {
 
-namespace unique {
-    ClangStyleMessageFormatter clangstyleformatter;
+helper::fixed_array<std::string,Message::TypeCount> s_messageTypeStrings;
+ClangStyleMessageFormatter ClangStyleMessageFormatter::s_instance;
+
+
+ClangStyleMessageFormatter::ClangStyleMessageFormatter()
+{
+    s_messageTypeStrings[Message::Info]    = "info";
+    s_messageTypeStrings[Message::Warning] = "warning";
+    s_messageTypeStrings[Message::Error]   = "error";
+    s_messageTypeStrings[Message::Fatal]   = "fatal";
+    s_messageTypeStrings[Message::TEmpty]  = "empty";
 }
 
-// This string conversion is internal to the way clang
-// format the info/warning/error. The typing are important.
-// In the current state there is no reason to have this function in the public
-// headers.
-// Don't transform this into a static array. The lazy initialization is here
-// to not rely in the implicit static initialization mechanisme.
-string getTypeString(const Message::Type t){
-    static bool isInited=false;
-    static fixed_array<string,Message::TypeCount> messageTypeStrings;
-
-    if(!isInited){
-        messageTypeStrings[Message::Info]    = "info";
-        messageTypeStrings[Message::Warning] = "warning";
-        messageTypeStrings[Message::Error]   = "error";
-        messageTypeStrings[Message::Fatal]   = "fatal";
-        messageTypeStrings[Message::TEmpty]  = "empty";
-        isInited = true ;
-    }
-    return messageTypeStrings[t];
-}
 
 void ClangStyleMessageFormatter::formatMessage(const Message& m,std::ostream& out)
 {
     if(m.sender()!="")
-        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << getTypeString(m.type()) << ": " << m.message().rdbuf() << std::endl ;
+        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << s_messageTypeStrings[m.type()] << ": " << m.message().rdbuf() << std::endl ;
     else
-        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << getTypeString(m.type()) << ": ["<< m.sender() <<"] " << m.message().rdbuf() << std::endl ;
+        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << s_messageTypeStrings[m.type()] << ": ["<< m.sender() <<"] " << m.message().rdbuf() << std::endl ;
     out << " message id: " << m.id() << std::endl ;
 }
 

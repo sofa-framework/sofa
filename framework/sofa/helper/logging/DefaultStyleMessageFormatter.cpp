@@ -40,6 +40,9 @@ using std::cerr ;
 #include "DefaultStyleMessageFormatter.h"
 #include "Message.h"
 
+#include <sofa/helper/system/console.h>
+#include <sofa/helper/fixed_array.h>
+
 
 namespace sofa
 {
@@ -50,55 +53,37 @@ namespace helper
 namespace logging
 {
 
-static DefaultStyleMessageFormatter s_DefaultStyleMessageFormatter;
+
+helper::fixed_array<std::string,Message::TypeCount> s_messageTypePrefixes;
+helper::fixed_array<Console::ColorType,Message::TypeCount> s_messageTypeColors;
+DefaultStyleMessageFormatter DefaultStyleMessageFormatter::s_instance;
 
 
-static helper::fixed_array<std::string,Message::TypeCount> setPrefixes()
+
+
+DefaultStyleMessageFormatter::DefaultStyleMessageFormatter()
 {
-    helper::fixed_array<std::string,Message::TypeCount> prefixes;
+    s_messageTypePrefixes[Message::Info]    = "[INFO]    ";
+    s_messageTypePrefixes[Message::Warning] = "[WARNING] ";
+    s_messageTypePrefixes[Message::Error]   = "[ERROR]   ";
+    s_messageTypePrefixes[Message::Fatal]   = "[FATAL]   ";
+    s_messageTypePrefixes[Message::TEmpty]  = "[EMPTY]   ";
 
-    prefixes[Message::Info]    = "[INFO]    ";
-    prefixes[Message::Warning] = "[WARNING] ";
-    prefixes[Message::Error]   = "[ERROR]   ";
-    prefixes[Message::Fatal]   = "[FATAL]   ";
-    prefixes[Message::TEmpty]  = "[EMPTY]   ";
-
-    return prefixes;
-}
-const helper::fixed_array<std::string,Message::TypeCount> DefaultStyleMessageFormatter::s_MessageTypePrefixes = setPrefixes();
-
-
-static helper::fixed_array<Console::ColorType,Message::TypeCount> setColors()
-{
-    helper::fixed_array<Console::ColorType,Message::TypeCount> colors;
-
-    colors[Message::Info]    = Console::BRIGHT_GREEN;
-    colors[Message::Warning] = Console::BRIGHT_CYAN;
-    colors[Message::Error]   = Console::BRIGHT_RED;
-    colors[Message::Fatal]   = Console::BRIGHT_PURPLE;
-
-    return colors;
-}
-const helper::fixed_array<Console::ColorType,Message::TypeCount> DefaultStyleMessageFormatter::s_MessageTypeColors = setColors();
-
-
-
-
-
-
-MessageFormatter* DefaultStyleMessageFormatter::getInstance()
-{
-    return &s_DefaultStyleMessageFormatter;
+    s_messageTypeColors[Message::Info]    = Console::BRIGHT_GREEN;
+    s_messageTypeColors[Message::Warning] = Console::BRIGHT_CYAN;
+    s_messageTypeColors[Message::Error]   = Console::BRIGHT_RED;
+    s_messageTypeColors[Message::Fatal]   = Console::BRIGHT_PURPLE;
+    s_messageTypeColors[Message::TEmpty]  = Console::DEFAULT_COLOR;
 }
 
 void DefaultStyleMessageFormatter::formatMessage(const Message& m,std::ostream& out)
 {
-    out << s_MessageTypeColors[m.type()] << s_MessageTypePrefixes[m.type()] << Console::DEFAULT_COLOR;
+    out << s_messageTypeColors[m.type()] << s_messageTypePrefixes[m.type()];
 
     if (!m.sender().empty())
-        out << Console::BLUE << "[" << m.sender() << "] " << Console::DEFAULT_COLOR;
+        out << Console::BLUE << "[" << m.sender() << "] ";
 
-    out << m.message().rdbuf();
+    out << Console::DEFAULT_COLOR << m.message().rdbuf();
 }
 
 
