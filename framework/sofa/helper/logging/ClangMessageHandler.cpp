@@ -48,20 +48,9 @@ namespace helper
 namespace logging
 {
 
-ClangMessageHandler::ClangMessageHandler()
-{
-    m_formatter = new ClangStyleMessageFormatter() ;
-}
-
-ClangMessageHandler::~ClangMessageHandler()
-{
-    if(m_formatter)
-        delete m_formatter ;
-}
-
 
 void ClangMessageHandler::process(Message &m) {
-    m_formatter->formatMessage(m, std::cerr) ;
+    ClangStyleMessageFormatter::getInstance()->formatMessage(m, std::cerr) ;
 }
 
 } // logging

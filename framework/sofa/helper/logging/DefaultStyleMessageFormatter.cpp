@@ -61,6 +61,7 @@ static helper::fixed_array<std::string,Message::TypeCount> setPrefixes()
     prefixes[Message::Warning] = "[WARNING] ";
     prefixes[Message::Error]   = "[ERROR]   ";
     prefixes[Message::Fatal]   = "[FATAL]   ";
+    prefixes[Message::TEmpty]  = "[EMPTY]   ";
 
     return prefixes;
 }
