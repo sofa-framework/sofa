@@ -296,6 +296,15 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
                 case 3:
                     vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
                     break;
+                case 4:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(1,1,0,1) );
+                    break;
+                case 5:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(1,0,1,1) );
+                    break;
+                case 6:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,1,1,1) );
+                    break;
                 default:
                     vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
             }
@@ -480,6 +489,15 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
                 case 3:
                     vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
                     break;
+                case 4:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(1,1,0,1) );
+                    break;
+                case 5:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(1,0,1,1) );
+                    break;
+                case 6:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,1,1,1) );
+                    break;
                 default:
                     vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ) );
             }
@@ -523,6 +541,15 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
                     break;
                 case 3:
                     vparams->drawTool()->drawFrame ( Vector3(), x[i].getOrientation(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
+                    break;
+                case 4:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(1,1,0,1) );
+                    break;
+                case 5:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(1,0,1,1) );
+                    break;
+                case 6:
+                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,1,1,1) );
                     break;
                 default:
                     vparams->drawTool()->drawFrame ( Vector3(), x[i].getOrientation(), Vector3 ( 1,1,1 ) );
