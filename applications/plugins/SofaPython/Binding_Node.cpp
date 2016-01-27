@@ -28,6 +28,8 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/UpdateMappingVisitor.h>
+#include <sofa/simulation/common/VisualVisitor.h>
 #include "ScriptEnvironment.h"
 using namespace sofa::simulation;
 #include <sofa/core/ExecParams.h>
@@ -374,6 +376,8 @@ extern "C" PyObject * Node_propagatePositionAndVelocity(PyObject * self, PyObjec
     Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
     node->execute<MechanicalPropagatePositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance());
+    node->execute<UpdateMappingVisitor>(sofa::core::MechanicalParams::defaultInstance());
+    node->execute<VisualUpdateVisitor>(sofa::core::MechanicalParams::defaultInstance());
 
     Py_RETURN_NONE;
 }
