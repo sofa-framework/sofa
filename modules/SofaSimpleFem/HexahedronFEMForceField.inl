@@ -262,6 +262,10 @@ void HexahedronFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
     WDataRefVecDeriv _df = v;
     RDataRefVecCoord _dx = x;
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+//    std::cout<<"HexahedronFEMForceField<DataTypes>::addDForce, rK = "<<this->rayleighStiffness.getValue()<<std::endl;
+//    std::cout<<"HexahedronFEMForceField<DataTypes>::addDForce, b =  "<<mparams->bFactor()  <<std::endl;
+//    std::cout<<"HexahedronFEMForceField<DataTypes>::addDForce, k =  "<<mparams->kFactor()  <<std::endl;
+//    std::cout<<"HexahedronFEMForceField<DataTypes>::addDForce, k+b*rK= "<<kFactor<<std::endl;
 
     if (_df.size() != _dx.size())
         _df.resize(_dx.size());

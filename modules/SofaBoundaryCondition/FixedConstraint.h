@@ -89,6 +89,7 @@ public:
     Data<bool> f_fixAll;
     Data<SReal> f_drawSize;
 
+    Data<bool> f_drawing;
 
 protected:
     FixedConstraintInternalData<DataTypes>* data;

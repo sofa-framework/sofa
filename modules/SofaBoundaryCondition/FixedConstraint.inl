@@ -78,6 +78,7 @@ FixedConstraint<DataTypes>::FixedConstraint()
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    , f_drawing(initData(&f_drawing,true,"drawing"," draw the fixed indices if true"))
     , data(new FixedConstraintInternalData<DataTypes>())
 {
     // default to indice 0
@@ -162,6 +163,7 @@ void  FixedConstraint<DataTypes>::reinit()
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
 {
+    std::cout<<"FixedConstraint<DataTypes>::projectMatrix is called "<<std::endl;
     static const unsigned blockSize = DataTypes::deriv_total_size;
 
     if( f_fixAll.getValue()==true )
@@ -186,7 +188,7 @@ void FixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
-//    cerr<<"FixedConstraint<DataTypes>::projectResponse is called "<<endl;
+    //std::cout<<"FixedConstraint<DataTypes>::projectResponse is called "<<std::endl;
 //    assert(false);
     helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
     const SetIndexArray & indices = f_indices.getValue(mparams);
@@ -295,7 +297,7 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
         {
             // Reset Fixed Row and Col
             for (unsigned int c=0; c<N; ++c)
-                r.matrix->clearRowCol(r.offset + N * (*it) + c);
+                r.matrix->clearRowCol(r.offset + N * (*it) + c);//Reset the value of both row and column i to 0
             // Set Fixed Vertex
             for (unsigned int c=0; c<N; ++c)
                 r.matrix->set(r.offset + N * (*it) + c, r.offset + N * (*it) + c, 1.0);
@@ -333,6 +335,9 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
 template <class DataTypes>
 void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if(!f_drawing.getValue())
+        return;
+
 #ifndef SOFA_NO_OPENGL
 
     if (!vparams->displayFlags().getShowBehaviorModels()) return;

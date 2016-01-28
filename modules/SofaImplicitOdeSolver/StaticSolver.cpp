@@ -68,11 +68,11 @@ void StaticSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::M
     //MultiVecDeriv vel2(&vop, vResult /*core::VecDerivId::velocity()*/ );
 
 //    MultiVecDeriv b(&vop);
-    MultiVecDeriv x(&vop);
+    MultiVecDeriv x(&vop);// x is the solution
 
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
     MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
-	mop->setImplicit(true); // this solver is implicit
+    mop->setImplicit(false); // this solver is implicit
     mop.addSeparateGravity(dt);	// v += dt*g . Used if mass wants to add G to v separately from the other forces.
 
     // compute the right-hand term of the equation system
@@ -84,12 +84,13 @@ void StaticSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::M
         serr<<"StaticSolver, f0 = "<< force <<sendl;
     core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
     //matrix = MechanicalMatrix::K;
-    matrix = MechanicalMatrix(massCoef.getValue(),dampingCoef.getValue(),stiffnessCoef.getValue());
+    matrix = MechanicalMatrix(massCoef.getValue(),dampingCoef.getValue(),stiffnessCoef.getValue());//compute matrix and project it into constraint space
 
     if( f_printLog.getValue() )
         serr<<"StaticSolver, matrix = "<< (MechanicalMatrix::K) << " = " << matrix <<sendl;
 
     matrix.solve(x,force);
+    force.id();
     // x is the opposite solution of the system
 
     // apply the solution
@@ -104,7 +105,9 @@ void StaticSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::M
     else
         pos2.eq( pos, x, -1 );
 
+    //std::cout<<"StaticSolver::solve, solveConstraint"<<std::endl;
     mop.solveConstraint(pos2, core::ConstraintParams::POS);
+    //std::cout<<"StaticSolver::solve, solveConstraint DONE"<<std::endl;
 
     /*    serr<<"StaticSolver::solve, new pos = "<<pos2<<sendl;*/
 }

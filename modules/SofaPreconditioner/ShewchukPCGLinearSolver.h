@@ -28,6 +28,7 @@
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <SofaBaseLinearSolver/GraphScatteredTypes.h>
 #include <sofa/helper/map.h>
 
 #include <math.h>
@@ -61,6 +62,7 @@ public:
     Data< std::string > f_preconditioners;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
 
+    Data<std::string> f_target;
 
 protected:
     ShewchukPCGLinearSolver();
@@ -80,10 +82,10 @@ private :
 protected:
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
     /// It computes: p = p*beta + r
-    inline void cgstep_beta(Vector& p, Vector& r, double beta);
+    inline void cgstep_beta(const core::ExecParams* params,Vector& p, Vector& r, double beta);
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
     /// It computes: x += p*alpha, r -= q*alpha
-    inline void cgstep_alpha(Vector& x,Vector& p,double alpha);
+    inline void cgstep_alpha(const core::ExecParams* params, Vector& x, Vector& r, Vector& p, Vector& q, SReal alpha);
 
     void handleEvent(sofa::core::objectmodel::Event* event);
 
@@ -91,23 +93,25 @@ protected:
 };
 
 template<class TMatrix, class TVector>
-inline void ShewchukPCGLinearSolver<TMatrix,TVector>::cgstep_beta(Vector& p, Vector& r, double beta)
+inline void ShewchukPCGLinearSolver<TMatrix,TVector>::cgstep_beta(const core::ExecParams* /*params*/,Vector& p, Vector& r, double beta)
 {
+    std::cout<<"ShewchukPCGLinearSolver<TMatrix,TVector>::cgstep_beta is called !!!!!!!!!!!!"<<std::endl;
     p *= beta;
     p += r; //z;
 }
 
 template<class TMatrix, class TVector>
-inline void ShewchukPCGLinearSolver<TMatrix,TVector>::cgstep_alpha(Vector& x,Vector& p,double alpha)
+inline void ShewchukPCGLinearSolver<TMatrix,TVector>::cgstep_alpha(const core::ExecParams* /*params*/, Vector& x, Vector& r, Vector& p, Vector& q, SReal alpha)
 {
+    std::cout<<"ShewchukPCGLinearSolver<TMatrix,TVector>::cgstep_alpha is called !!!!!!!!!!!!"<<std::endl;
     x.peq(p,alpha);                 // x = x + alpha p
 }
 
 template<>
-inline void ShewchukPCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, double beta);
+inline void ShewchukPCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(const core::ExecParams* params,Vector& p, Vector& r, double beta);
 
 template<>
-inline void ShewchukPCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x,Vector& p,double alpha);
+inline void ShewchukPCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(const core::ExecParams* params, Vector& x, Vector& r, Vector& p, Vector& q, SReal alpha);
 
 } // namespace linearsolver
 

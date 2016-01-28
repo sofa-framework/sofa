@@ -30,6 +30,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/BaseVector.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
@@ -50,6 +51,7 @@ LinearForceField<DataTypes>::LinearForceField()
     , keyTimes(initData(&keyTimes, "times", "key times for the interpolation"))
     , keyForces(initData(&keyForces, "forces", "forces corresponding to the key times"))
     , arrowSizeCoef(initData(&arrowSizeCoef,(SReal)0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
+    , color(initData(&color, defaulttype::Vec<4,SReal>(0.2f,0.9f,0.3f,1.0f), "color", ""))
 { }
 
 
@@ -61,6 +63,7 @@ void LinearForceField<DataTypes>::init()
     // Initialize functions and parameters for topology data and handler
     points.createTopologicalEngine(topology);
     points.registerTopologicalData();
+    ft=Deriv();
 
     Inherit::init();
 }
@@ -154,10 +157,13 @@ void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mpara
             Deriv ff = slope*(cT - prevT) + prevF;
 
             Real f = force.getValue();
+            ft=ff*f;
+            //std::cout<<"LinearForceField<DataTypes>::addForce, applied force  = "<<ft<<std::endl;
 
             for(unsigned i = 0; i < indices.size(); i++)
             {
-                _f1[indices[i]] += ff*f;
+                //std::cout<<"LinearForceField<DataTypes>::addForce, indice = "<<indices[i]<<" ,ff*f = "<<ff*f<<std::endl;
+                _f1[indices[i]] += ft;
             }
         }
     }
@@ -186,10 +192,74 @@ SReal LinearForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPara
     return e;
 }// LinearForceField::getPotentialEnergy
 
-template< class DataTypes>
-void LinearForceField<DataTypes>::draw(const core::visual::VisualParams* /*vparams*/)
+template<class DataTypes>
+void LinearForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
 
+}
+
+template< class DataTypes>
+void LinearForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
+{
+#ifndef SOFA_NO_OPENGL
+    double aSC = arrowSizeCoef.getValue();
+
+    if ((!vparams->displayFlags().getShowForceFields() && (aSC==0)) || (aSC < 0.0)) return;
+    const SetIndexArray& indices = points.getValue();
+    const VecCoord& x = this->mstate->read(sofa::core::ConstVecCoordId::position())->getValue();
+
+    //std::cout<<"LinearForceField<DataTypes>::draw, indices size = "<<indices.size()<<std::endl;
+    if( fabs(aSC)<1.0e-10 )
+    {
+        std::vector<defaulttype::Vector3> points;
+        for (unsigned int i=0; i<indices.size(); i++)
+        {
+            Real xx,xy,xz,fx,fy,fz;
+
+            DataTypes::get(xx,xy,xz,x[indices[i]]);
+
+            DataTypes::get(fx,fy,fz,ft);
+            points.push_back(defaulttype::Vector3(xx, xy, xz ));
+            points.push_back(defaulttype::Vector3(xx+fx, xy+fy, xz+fz ));
+        }
+        //vparams->drawTool()->drawLines(points, 2, defaulttype::Vec<4,float>(0,1,0,1));
+    }
+    else
+    {
+        glPushAttrib(GL_LIGHTING_BIT);
+        glEnable(GL_LIGHTING);
+        for (unsigned int i=0; i<indices.size(); i++)
+        {
+            Real xx,xy,xz,fx,fy,fz;
+
+            DataTypes::get(xx,xy,xz,x[indices[i]]);
+
+            DataTypes::get(fx,fy,fz,ft);
+
+            defaulttype::Vector3 p1( xx, xy, xz);
+            defaulttype::Vector3 p2( aSC*fx+xx, aSC*fy+xy, aSC*fz+xz );
+
+            //std::cout<<"ft=" <<ft<<std::endl;
+
+            //float norm = (float)(p2-p1).norm();
+
+            //defaulttype::Vec4f color(0.2f,0.9f,0.3f,1.0f);
+
+            if( aSC > 0)
+            {
+                //helper::gl::drawArrow(p1,p2, norm/20.0);
+                vparams->drawTool()->drawArrow(p1,p2, 1/20.0f /*norm/20.0f*/, color.getValue());
+            }
+            else
+            {
+                //helper::gl::drawArrow(p2,p1, norm/20.0);
+                vparams->drawTool()->drawArrow(p2,p1, 1/20.0f /*norm/20.0f*/, color.getValue());
+            }
+        }
+        glPopAttrib();
+    }
+
+#endif /* SOFA_NO_OPENGL */
 
 }
 

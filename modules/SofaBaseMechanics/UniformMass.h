@@ -125,6 +125,7 @@ public:
     bool isDiagonal() {return true;}
 
     void draw(const core::visual::VisualParams* vparams);
+    bool needUpdateTopology;
 };
 
 //Specialization for rigids

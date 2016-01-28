@@ -1431,9 +1431,9 @@ public:
     template<typename RB, typename RVB, typename RVI, typename MB, typename MVB, typename MVI >
     void mul( CompressedRowSparseMatrix<RB,RVB,RVI>& res, const CompressedRowSparseMatrix<MB,MVB,MVI>& m ) const
     {
-        assert( Bloc::nbCols == MB::nbLines );
-        assert( RB::nbLines == Bloc::nbLines );
-        assert( MB::nbCols == RB::nbCols );
+//        assert( Bloc::nbCols == MB::nbLines );
+//        assert( RB::nbLines == Bloc::nbLines );
+//        assert( MB::nbCols == RB::nbCols );
 
         assert( colSize() == m.rowSize() );
 

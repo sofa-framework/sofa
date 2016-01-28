@@ -83,9 +83,9 @@ namespace odesolver
  *   \f$ M v_{t+h} = f_ext{t+h} \f$
  *   \f$           = f_ext{t} + h (df_ext/dt){t+h} \f$
  *   \f$           = f_ext{t} + h (df_ext/dx){t+h} v_{t+h} \f$
- *   \f$           = f_ext{t} - h K v_{t+h} \f$
+ *   \f$           = f_ext{t} + h K v_{t+h} \f$
  *
- *   \f$ ( M + h K ) v_{t+h} = f_ext \f$
+ *   \f$ ( M - h K ) v_{t+h} = f_ext \f$
  *
  *
  *** Trapezoidal Rule ***

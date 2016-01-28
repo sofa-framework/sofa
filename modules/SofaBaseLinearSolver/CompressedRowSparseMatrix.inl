@@ -296,6 +296,96 @@ inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMa
     rowBegin.push_back(vid); // end of last row
 }
 
+template <>
+template<typename RB, typename RVB, typename RVI, typename MB, typename MVB, typename MVI >
+void CompressedRowSparseMatrix<double>::mulTranspose( CompressedRowSparseMatrix<RB,RVB,RVI>& res, const CompressedRowSparseMatrix<MB,MVB,MVI>& m ) const
+{
+    assert( rowSize() == m.rowSize() );
+
+    // must already be compressed, since matrices are const they cannot be modified
+    //compress();
+    //m.compress();
+    ((Matrix*)this)->compress();  /// \warning this violates the const-ness of the method
+    ((CompressedRowSparseMatrix<MB,MVB,MVI>*)&m)->compress();  /// \warning this violates the const-ness of the parameter
+
+
+    res.resize( this->nCol, m.nCol );  // clear and resize the result
+
+    if( m.rowIndex.empty() ) return; // if m is null
+
+    for( Index xi = 0 ; xi < (Index)rowIndex.size() ; ++xi )  // for each non-null transpose block column
+    {
+        unsigned mr = 0; // block row index in m
+
+        Index col = rowIndex[xi];      // block col (transposed col = row)
+
+        Range rowRange( rowBegin[xi], rowBegin[xi+1] );
+        for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)  // for each non-null block
+        {
+            Index row = colsIndex[xj];     // block row (transposed row = col)
+            const Bloc& b = colsValue[xj]; // block value
+
+            // find the non-null row in m, if any
+            while( mr<m.rowIndex.size() && m.rowIndex[mr]<col ) mr++;
+            if( mr==m.rowIndex.size() || m.rowIndex[mr] > col ) continue;  // no matching row, ignore this block
+
+            // Accumulate  res[row] += b^T * m[col]
+            Range mrowRange( m.rowBegin[mr], m.rowBegin[mr+1] );
+            for( Index mj = mrowRange.begin() ; mj< mrowRange.end() ; ++mj ) // for each non-null block in  m[col]
+            {
+                Index mcol = m.colsIndex[mj];     // column index of the non-null block
+                *res.wbloc(row,mcol,true) += (b * m.colsValue[mj]);  // find the matching bloc in res, and accumulate the block product
+            }
+        }
+    }
+    res.compress();
+}
+
+template <>
+template<typename RB, typename RVB, typename RVI, typename MB, typename MVB, typename MVI >
+void CompressedRowSparseMatrix<float>::mulTranspose( CompressedRowSparseMatrix<RB,RVB,RVI>& res, const CompressedRowSparseMatrix<MB,MVB,MVI>& m ) const
+{
+
+    assert( rowSize() == m.rowSize() );
+
+    // must already be compressed, since matrices are const they cannot be modified
+    //compress();
+    //m.compress();
+    ((Matrix*)this)->compress();  /// \warning this violates the const-ness of the method
+    ((CompressedRowSparseMatrix<MB,MVB,MVI>*)&m)->compress();  /// \warning this violates the const-ness of the parameter
+
+
+    res.resize( this->nCol, m.nCol );  // clear and resize the result
+
+    if( m.rowIndex.empty() ) return; // if m is null
+
+    for( Index xi = 0 ; xi < (Index)rowIndex.size() ; ++xi )  // for each non-null transpose block column
+    {
+        unsigned mr = 0; // block row index in m
+
+        Index col = rowIndex[xi];      // block col (transposed col = row)
+
+        Range rowRange( rowBegin[xi], rowBegin[xi+1] );
+        for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)  // for each non-null block
+        {
+            Index row = colsIndex[xj];     // block row (transposed row = col)
+            const Bloc& b = colsValue[xj]; // block value
+
+            // find the non-null row in m, if any
+            while( mr<m.rowIndex.size() && m.rowIndex[mr]<col ) mr++;
+            if( mr==m.rowIndex.size() || m.rowIndex[mr] > col ) continue;  // no matching row, ignore this block
+
+            // Accumulate  res[row] += b^T * m[col]
+            Range mrowRange( m.rowBegin[mr], m.rowBegin[mr+1] );
+            for( Index mj = mrowRange.begin() ; mj< mrowRange.end() ; ++mj ) // for each non-null block in  m[col]
+            {
+                Index mcol = m.colsIndex[mj];     // column index of the non-null block
+                *res.wbloc(row,mcol,true) += (b * m.colsValue[mj]);  // find the matching bloc in res, and accumulate the block product
+            }
+        }
+    }
+    res.compress();
+}
 
 } // namespace linearsolver
 

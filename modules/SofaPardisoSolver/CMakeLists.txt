@@ -13,7 +13,7 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaSimulationTree SofaMeshCollision SofaBaseVisual)
-target_link_libraries(${PROJECT_NAME} pardiso500-GNU461-X86-64 gfortran blas lapack gomp)
+target_link_libraries(${PROJECT_NAME} /media/hpbui/data1_hdd/dev/pardiso/libpardiso500-GNU481-X86-64.so SofaBaseLinearSolver gfortran blas lapack gomp)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_PARDISO_SOLVER")
 
 sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})

@@ -672,6 +672,25 @@ void DrawToolGL::drawQuads(const std::vector<Vector3> &points, const Vec4f& colo
     resetMaterial(colour);
 }
 
+void DrawToolGL::drawQuads(const std::vector<Vector3> &points, const std::vector<Vec4f> &colour)
+{
+    setMaterial(colour[0]);
+    glBegin(GL_QUADS);
+    {
+        for (unsigned int i=0; i<points.size()/4; ++i)
+        {
+            const Vector3& a = points[ 4*i+0 ];
+            const Vector3& b = points[ 4*i+1 ];
+            const Vector3& c = points[ 4*i+2 ];
+            const Vector3& d = points[ 4*i+3 ];
+            Vector3 n = cross((b-a),(c-a));
+            n.normalize();
+            drawQuad(a,b,c,d,n, colour[4*i+0],colour[4*i+1],colour[4*i+2],colour[4*i+3]);
+        }
+    } glEnd();
+    resetMaterial(colour[0]);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void DrawToolGL::drawSphere( const Vector3 &p, float radius)

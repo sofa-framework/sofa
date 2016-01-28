@@ -65,7 +65,7 @@ UniformMass<DataTypes, MassType>::UniformMass()
     , showX0 ( initData ( &showX0, false, "showX0", "display the rest positions" ) )
     , localRange ( initData ( &localRange, defaulttype::Vec<2,int> ( -1,-1 ), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
     , m_handleTopoChange ( initData ( &m_handleTopoChange, false, "handleTopoChange", "The mass and totalMass are recomputed on particles add/remove." ) )
-    , d_preserveTotalMass( initData ( &d_preserveTotalMass, false, "preserveTotalMass", "Prevent totalMass from decreasing when removing particles."))
+    , needUpdateTopology(false)
 {
     this->addAlias ( &totalMass, "totalMass" );
 }
@@ -91,23 +91,21 @@ void UniformMass<DataTypes, MassType>::reinit()
 {
     if ( this->totalMass.getValue() >0 && this->mstate!=NULL )
     {
-        MassType *m = this->mass.beginEdit();
+        MassType* m = this->mass.beginEdit();
 
-        if (localRange.getValue()[0] >= 0
-            && localRange.getValue()[1] > 0
-            && localRange.getValue()[1] + 1 < (int)this->mstate->getSize())
+        if(localRange.getValue() [0] >= 0  && localRange.getValue() [1] > 0 && ( unsigned int ) localRange.getValue() [1]+1 < this->mstate->read(core::ConstVecCoordId::position())->getValue().size() )
         {
-            *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / (localRange.getValue()[1]-localRange.getValue()[0]) );
+            *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / (localRange.getValue()[1]+1-localRange.getValue()[0]) );
         }
         else
         {
-            *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->getSize() );
+            *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->read(core::ConstVecCoordId::position())->getValue().size() );
         }
         this->mass.endEdit();
     }
     else
     {
-        this->totalMass.setValue ( this->mstate->getSize() * (Real)this->mass.getValue() );
+        this->totalMass.setValue ( this->mstate->read(core::ConstVecCoordId::position())->getValue().size() * (Real)this->mass.getValue() );
     }
 }
 
@@ -144,7 +142,17 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
                 if ( m_handleTopoChange.getValue() )
                 {
                     MassType* m = this->mass.beginEdit();
-                    *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->getSize() );
+                    //*m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->read(core::ConstVecCoordId::position())->getValue().size() );
+
+                    if(localRange.getValue() [0] >= 0  && localRange.getValue() [1] > 0 && ( unsigned int ) localRange.getValue() [1]+1 < this->mstate->read(core::ConstVecCoordId::position())->getValue().size() )
+                    {
+                        *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / (localRange.getValue()[1]+1-localRange.getValue()[0]) );
+                    }
+                    else
+                    {
+                        *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->read(core::ConstVecCoordId::position())->getValue().size() );
+                    }
+
                     this->mass.endEdit();
                 }
                 break;
@@ -152,12 +160,18 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
             case core::topology::POINTSREMOVED:
                 if ( m_handleTopoChange.getValue() )
                 {
-                    if (!d_preserveTotalMass.getValue())
+                    MassType* m = this->mass.beginEdit();
+                    //this->totalMass.setValue (this->mstate->read(core::ConstVecCoordId::position())->getValue().size() * (Real)this->mass.getValue() );
+                    if(localRange.getValue() [0] >= 0  && localRange.getValue() [1] > 0 && ( unsigned int ) localRange.getValue() [1]+1 < this->mstate->read(core::ConstVecCoordId::position())->getValue().size() )
                     {
-                        this->totalMass.setValue (this->mstate->getSize() * (Real)this->mass.getValue() );
-                    } else {
-                        this->mass.setValue( static_cast< MassType >( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->getSize()) );
+                        *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / (localRange.getValue()[1]+1-localRange.getValue()[0]) );
                     }
+                    else
+                    {
+                        *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->read(core::ConstVecCoordId::position())->getValue().size() );
+                    }
+
+                    this->mass.endEdit();
                 }
                 break;
 
@@ -168,6 +182,8 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
             ++it;
         }
     }
+
+     needUpdateTopology = true;
 }
 
 
@@ -186,6 +202,8 @@ void UniformMass<DataTypes, MassType>::addMDx ( const core::MechanicalParams*, D
 
     if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
         iend = localRange.getValue() [1]+1;
+
+    //std::cout<<"UniformMass<DataTypes, MassType>::addMDx, mFactor = "<<factor<<std::endl;
 
     MassType m = mass.getValue();
     if ( factor != 1.0 )
@@ -279,6 +297,25 @@ void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*,
 
     if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
         iend = localRange.getValue() [1]+1;
+
+    if (needUpdateTopology)
+    {
+        //printf("111111111111111111111\n");
+        //std::cout<<"iend = "<<iend<<std::endl;
+        //std::cout<<"f.size() = "<<f.size()<<std::endl;
+        const SReal* g = this->getContext()->getGravity().ptr();
+        Deriv theGravity;
+        DataTypes::set
+        ( theGravity, g[0], g[1], g[2] );
+        for(unsigned i=0; i<f.size();++i)
+        {
+            const MassType mm = 0.0;
+            f[i] = theGravity*mm;
+        }
+        reinit();
+        needUpdateTopology = false;
+    }
+
 
     // weight
     const SReal* g = this->getContext()->getGravity().ptr();

@@ -179,15 +179,15 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 #else  // new more powerful visitors
 
         // force in the current configuration
-        b.eq(f,1.0/tr);                                                                         // b = f0
+        b.eq(f,1.0/tr);                                                                         // b = f0*1/tr
         if( verbose )
             serr<<"EulerImplicitSolver, f = "<< f <<sendl;
 
         // add the change of force due to stiffness + Rayleigh damping
-        mop.addMBKv(b, -f_rayleighMass.getValue(), 1, h+f_rayleighStiffness.getValue()); // b =  f0 + ( rm M + B + (h+rs) K ) v
+        mop.addMBKv(b, -f_rayleighMass.getValue(), 0/*1*/, h+f_rayleighStiffness.getValue()); // b =  f0 + ( rm M + 1*B + (h+rs) K ) v
 
         // integration over a time step
-        b.teq(h*tr);                                                                        // b = h(f0 + ( rm M + B + (h+rs) K ) v )
+        b.teq(h*tr);                                                                        // b = h*tr*(f0 + ( rm M + B + (h+rs) K ) v )
 #endif
     }
 
@@ -206,7 +206,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     if (firstOrder)
         matrix = MechanicalMatrix::K * (-h*tr) + MechanicalMatrix::M;
     else
-        matrix = MechanicalMatrix::K * (-tr*h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::B * (-tr*h) + MechanicalMatrix::M * (1+tr*h*f_rayleighMass.getValue());
+        matrix = MechanicalMatrix::K * (-tr*h*(h+f_rayleighStiffness.getValue())) /*+ MechanicalMatrix::B * (-tr*h)*/ + MechanicalMatrix::M * (1+tr*h*f_rayleighMass.getValue());
 
     if( verbose )
     {
@@ -313,7 +313,6 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         serr<<"EulerImplicitSolver, final v = "<< newVel <<sendl;
         mop.computeForce(f);
         serr<<"EulerImplicitSolver, final f = "<< f <<sendl;
-
     }
 
 }

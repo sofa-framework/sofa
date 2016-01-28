@@ -83,6 +83,7 @@ public:
 
     /// for drawing. The sign changes the direction, 0 doesn't draw arrow
     Data< SReal > arrowSizeCoef;
+    Data<defaulttype::Vec<4,SReal> > color;
 protected:
     LinearForceField();
     virtual ~LinearForceField() { delete data; };
@@ -116,9 +117,12 @@ public:
     {
         //TODO: remove this line (avoid warning message) ...
         mparams->setKFactorUsed(true);
-    };
+    }
 
     virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const;
+
+    virtual void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/);
+
 
 private :
     /// the key times surrounding the current simulation time (for interpolation)
@@ -129,6 +133,7 @@ private :
 
     /// initial constrained DOFs position
     //VecCoord x0;
+    Deriv ft;//force at time t
 
 protected:
     sofa::core::topology::BaseMeshTopology* topology;
