@@ -96,7 +96,7 @@ public:
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cIndex is the index of the next constraint equation
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void getConstraintViolation(const ConstraintParams* /*cParams*/, defaulttype::BaseVector */*v*/, unsigned int /*cIndex*/) {
+    virtual void getConstraintViolation(const ConstraintParams* /*cParams*/, defaulttype::BaseVector * /*v*/, unsigned int /*cIndex*/) {
         std::cerr << "ERROR getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v, const unsigned int cIndex) must be defined. " << std::endl;
     }
 
