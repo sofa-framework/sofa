@@ -78,6 +78,8 @@ public:
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes>* getMState() { return mstate; }
 
+    using BaseConstraintSet::getConstraintViolation;
+
     /// Construct the Constraint violations vector of each constraint
     ///
     /// \param v is the result vector that contains the whole constraints violations
