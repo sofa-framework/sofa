@@ -32,6 +32,7 @@ namespace forcefield
 ///
 /// TODO
 /// - optimization
+///     -- assemble constant matrix element per element so it is easily multithreadable
 ///     -- work element by element rather than full corotationalDeformationMapping (or full with vectorialized SVD)
 ///     -- no need for full linearMapping (Jacobians should be enough since indices are easy to deduce)
 /// - assembly API
@@ -133,11 +134,29 @@ public:
         for( unsigned int i=0 ; i<size ; i++ ) _materialBlocks[i].volume=&m_gaussPointSampler->f_volume.getValue()[i];
 
 
-
         ForceField::init();
 
         reinit();
 
+    }
+
+
+
+
+
+    virtual void reinit()
+    {
+
+        unsigned size = _materialBlocks.size();
+
+        std::vector<Real> params; params.push_back( _youngModulus.getValue()); params.push_back(_poissonRatio.getValue());
+        for( unsigned i=0; i < size ; ++i )
+        {
+            _materialBlocks[i].init( params, _viscosity.getValue() );
+        }
+
+
+        // if _youngModulus or _poissonRatio changed, the assembled matrices must be updated
 
 //        typedef linearsolver::EigenBaseSparseMatrix<SReal> Sqmat;
 //        Sqmat sqmat( size, size );
@@ -179,21 +198,8 @@ public:
         m_assembledK.compressedMatrix = Jdefo.compressedMatrix.transpose() * Jstrain.compressedMatrix.transpose() * K.compressedMatrix * Jstrain.compressedMatrix * Jdefo.compressedMatrix;
 
 
-//        serr<<K.compressedMatrix.nonZeros()<<" "<<Jstrain.compressedMatrix.nonZeros()<<" "<<Jdefo.compressedMatrix.nonZeros()<<" "<<m_assembledK.compressedMatrix.nonZeros()<<sendl;
+        //        serr<<K.compressedMatrix.nonZeros()<<" "<<Jstrain.compressedMatrix.nonZeros()<<" "<<Jdefo.compressedMatrix.nonZeros()<<" "<<m_assembledK.compressedMatrix.nonZeros()<<sendl;
 
-    }
-
-
-
-
-
-    virtual void reinit()
-    {
-        std::vector<Real> params; params.push_back( _youngModulus.getValue()); params.push_back(_poissonRatio.getValue());
-        for( unsigned i=0; i < _materialBlocks.size() ; ++i )
-        {
-            _materialBlocks[i].init( params, _viscosity.getValue() );
-        }
 
 //        //if(this->assemble.getValue()) updateK();
 
