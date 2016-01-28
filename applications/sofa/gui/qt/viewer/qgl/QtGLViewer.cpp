@@ -833,7 +833,11 @@ void QtGLViewer::resizeGL(int width, int height)
     QGLViewer::resizeGL( width,  height);
     // 	    camera()->setScreenWidthAndHeight(_W,_H);
 
+    // TODO: find a better fix
+#if not defined(__APPLE__)
     this->resize(width, height);
+#endif
+
     emit( resizeW( _W ) );
     emit( resizeH( _H ) );
 }
