@@ -1,5 +1,5 @@
-#ifndef FLEXIBLE_TETRAHEDRONFEMFORCEFIELD_H
-#define FLEXIBLE_TETRAHEDRONFEMFORCEFIELD_H
+#ifndef FLEXIBLE_METAFEMFORCEFIELD_H
+#define FLEXIBLE_METAFEMFORCEFIELD_H
 
 
 #include "../shapeFunction/BarycentricShapeFunction.h"
@@ -551,7 +551,7 @@ protected:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_TETRAHEDRONFEMFORCEFIELD_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_METAFEMFORCEFIELD_CPP)
 extern template class SOFA_Flexible_API FlexibleCorotationalFEMForceField<defaulttype::Vec3Types>;
 #endif
 
@@ -559,4 +559,4 @@ extern template class SOFA_Flexible_API FlexibleCorotationalFEMForceField<defaul
 } // namespace component
 } // namespace sofa
 
-#endif // FLEXIBLE_TETRAHEDRONFEMFORCEFIELD_H
+#endif // FLEXIBLE_METAFEMFORCEFIELD_H

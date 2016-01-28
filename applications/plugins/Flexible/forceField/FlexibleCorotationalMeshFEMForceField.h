@@ -1,5 +1,5 @@
-#ifndef FLEXIBLE_TETRAHEDRONFEMFORCEFIELD_H
-#define FLEXIBLE_TETRAHEDRONFEMFORCEFIELD_H
+#ifndef FLEXIBLE_METACOROTATIONALMESHFEMFORCEFIELD_H
+#define FLEXIBLE_METACOROTATIONALMESHFEMFORCEFIELD_H
 
 
 #include "../shapeFunction/BarycentricShapeFunction.h"
@@ -15,6 +15,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/MeshTopology.h>
 
+#include <SofaBaseLinearSolver/SingleMatrixAccessor.h>
 
 namespace sofa
 {
@@ -33,7 +34,6 @@ namespace forcefield
 /// - optimization
 ///     -- work element by element rather than full corotationalDeformationMapping (or full with vectorialized SVD)
 ///     -- no need for full linearMapping (Jacobians should be enough since indices are easy to deduce)
-///     -- preassemble constant sub-graph
 /// - assembly API
 /// - potential energy
 /// - masks?
@@ -137,7 +137,55 @@ public:
         ForceField::init();
 
         reinit();
+
+
+//        typedef linearsolver::EigenBaseSparseMatrix<SReal> Sqmat;
+//        Sqmat sqmat( size, size );
+//        linearsolver::SingleMatrixAccessor accessor( &sqmat );
+//        ffield->addMBKToMatrix( ffield->isCompliance.getValue() ? &mparamsWithoutStiffness : mparams, &accessor );
+
+
+        linearsolver::EigenSparseMatrix<defaulttype::E331Types,defaulttype::E331Types> K;
+        K.resizeBlocks(size,size);
+        for(unsigned int i=0; i<size; i++)
+            K.insertBackBlock( i, i, _materialBlocks[i].getK() );
+        K.compress();
+
+        linearsolver::EigenSparseMatrix<defaulttype::F331Types,defaulttype::E331Types> Jstrain;
+        Jstrain.resizeBlocks(size,size);
+        for(size_t i=0; i<size; i++)
+            Jstrain.insertBackBlock( i, i, _strainJacobianBlocks[i].getJ() );
+        Jstrain.compress();
+
+//        m_linearDeformationMapping->getJ(core::MechanicalParams::defaultInstance()); // to update J
+//        const linearsolver::EigenSparseMatrix<DataTypes,defaulttype::F331Types> &Jdefo = m_linearDeformationMapping->eigenJacobian;
+
+
+        linearsolver::EigenSparseMatrix<DataTypes,defaulttype::F331Types> Jdefo;
+        Jdefo.resizeBlocks(size,m_rotatedDofs->getSize());
+        typename LinearDeformationMapping::SparseMatrix& linearDeformationJacobianBlocks = m_linearDeformationMapping->getJacobianBlocks();
+        const VecVRef& index = m_linearDeformationMapping->f_index.getValue();
+
+        for( size_t i=0 ; i<size ; ++i)
+        {
+            Jdefo.beginBlockRow(i);
+            for(size_t j=0; j<linearDeformationJacobianBlocks[i].size(); j++)
+                Jdefo.createBlock( index[i][j], linearDeformationJacobianBlocks[i][j].getJ());
+            Jdefo.endBlockRow();
+        }
+        Jdefo.compress();
+
+
+        m_assembledK.compressedMatrix = Jdefo.compressedMatrix.transpose() * Jstrain.compressedMatrix.transpose() * K.compressedMatrix * Jstrain.compressedMatrix * Jdefo.compressedMatrix;
+
+
+//        serr<<K.compressedMatrix.nonZeros()<<" "<<Jstrain.compressedMatrix.nonZeros()<<" "<<Jdefo.compressedMatrix.nonZeros()<<" "<<m_assembledK.compressedMatrix.nonZeros()<<sendl;
+
     }
+
+
+
+
 
     virtual void reinit()
     {
@@ -147,10 +195,7 @@ public:
             _materialBlocks[i].init( params, _viscosity.getValue() );
         }
 
-//        // reinit matrices
-//        //if(this->assembleC.getValue()) updateC();
-//        //if(this->assembleK.getValue()) updateK();
-//        //if(this->assembleB.getValue()) updateB();
+//        //if(this->assemble.getValue()) updateK();
 
         ForceField::reinit();
         ShapeFunction::reinit();
@@ -235,41 +280,7 @@ public:
         VecDeriv& df = *m_rotatedDofs->f.beginEdit();
         std::fill(df.begin(),df.end(),Deriv());
 
-        typename LinearDeformationMapping::SparseMatrix& linearDeformationJacobianBlocks = m_linearDeformationMapping->getJacobianBlocks();
-
-        // temporaries
-        defaulttype::F331Types::Coord F;
-        defaulttype::F331Types::Deriv PF;
-        defaulttype::E331Types::Coord E;
-        defaulttype::E331Types::Deriv PE;
-
-
-        // TODO use masks
-        for( unsigned i=0; i < _strainJacobianBlocks.size() ; ++i )
-        {
-            F.clear();
-            PF.clear();
-            E.clear();
-            PE.clear();
-
-            for( unsigned int j=0 ; j<linearDeformationJacobianBlocks[i].size() ; j++ )
-            {
-                unsigned int index = m_linearDeformationMapping->f_index.getValue()[i][j];
-                linearDeformationJacobianBlocks[i][j].addmult( F, dx[index] );
-            }
-
-            _strainJacobianBlocks[i].addmult( E, F );
-
-            _materialBlocks[i].addDForce( PE, E, mparams->kFactor(), mparams->bFactor() );
-
-            _strainJacobianBlocks[i].addMultTranspose( PF, PE );
-
-            for( unsigned int j=0 ; j<linearDeformationJacobianBlocks[i].size() ; j++ )
-            {
-                unsigned int index = m_linearDeformationMapping->f_index.getValue()[i][j];
-                linearDeformationJacobianBlocks[i][j].addMultTranspose( df[index], PF );
-            }
-        }
+        m_assembledK.addMult( df, dx, mparams->kFactor() );
 
         m_rotatedDofs->f.endEdit();
 
@@ -338,18 +349,22 @@ protected:
 
     typename LinearDeformationMapping::SPtr m_linearDeformationMapping;
     typename CorotationalDeformationMapping::SPtr m_corotationalDeformationMapping;
-    typename RotatedDofs::SPtr m_rotatedDofs;
     DeformationDofs::SPtr m_deformationDofs;
     GaussPointSampler::SPtr m_gaussPointSampler;
     ShapeFunction::SPtr m_internalShapeFunction; // on rotated nodes
+
+
+    typename RotatedDofs::SPtr m_rotatedDofs;
     MeshTopology::SPtr m_rotatedTopology;  // on rotated nodes
+
+
+    linearsolver::EigenSparseMatrix<DataTypes,DataTypes> m_assembledK; ///< assembled linear part defo*strain*stiffness
+    // linearsolver::EigenSparseMatrix<DataTypes,DataTypes> m_fullAssembledK; ///< full assembled matrix inclusing non-linear corotational mesh
 
 
     FlexibleCorotationalMeshFEMForceField()
         : ForceField(), ShapeFunction()
-        //, assembleC ( initData ( &assembleC,false, "assembleC","Assemble the Compliance matrix" ) )
-        //, assembleK ( initData ( &assembleK,false, "assembleK","Assemble the Stiffness matrix" ) )
-        //, assembleB ( initData ( &assembleB,false, "assembleB","Assemble the Damping matrix" ) )
+        //, assemble ( initData ( &assemble,false, "assemble","Assemble the full matrix" ) )
         , d_method( initData( &d_method, "method", "Decomposition method" ) )
         , d_order( initData( &d_order, 1u, "order", "Order of quadrature method" ) )
         , _youngModulus(initData(&_youngModulus,(Real)5000,"youngModulus","Young Modulus"))
@@ -381,77 +396,9 @@ protected:
     virtual ~FlexibleCorotationalMeshFEMForceField() {}
 
 
-    //Data<bool> assembleC;
-    //SparseMatrixEigen C;
-
-    /*  void updateC()
-      {
-          if(!(this->mstate)) { serr<<"state not found"<< sendl; return; }
-          typename mstateType::ReadVecCoord X = this->mstate->readPositions();
-
-          C.resizeBlocks(X.size(),X.size());
-          for(unsigned int i=0;i<material.size();i++)
-          {
-              //        eigenJacobian.setBlock( i, i, jacobian[i].getJ());
-
-              // Put all the blocks of the row in an array, then send the array to the matrix
-              // Not very efficient: MatBlock creations could be avoided.
-              vector<MatBlock> blocks;
-              vector<unsigned> columns;
-              columns.push_back( i );
-              blocks.push_back( material[i].getC() );
-              C.appendBlockRow( i, columns, blocks );
-          }
-          C.endEdit();
-      }
 
 
-      void updateK()
-      {
-          if(!(this->mstate)) { serr<<"state not found"<< sendl; return; }
-          typename mstateType::ReadVecCoord X = this->mstate->readPositions();
-
-          K.resizeBlocks(X.size(),X.size());
-          for(unsigned int i=0;i<material.size();i++)
-          {
-              //        eigenJacobian.setBlock( i, i, jacobian[i].getJ());
-
-              // Put all the blocks of the row in an array, then send the array to the matrix
-              // Not very efficient: MatBlock creations could be avoided.
-              vector<MatBlock> blocks;
-              vector<unsigned> columns;
-              columns.push_back( i );
-              blocks.push_back( material[i].getK() );
-              K.appendBlockRow( i, columns, blocks );
-          }
-          K.endEdit();
-      }
-
-
-      Data<bool> assembleB;
-      SparseMatrixEigen B;
-
-      void updateB()
-      {
-          if(!(this->mstate)) { serr<<"state not found"<< sendl; return; }
-          typename mstateType::ReadVecCoord X = this->mstate->readPositions();
-
-          B.resizeBlocks(X.size(),X.size());
-          for(unsigned int i=0;i<material.size();i++)
-          {
-              //        eigenJacobian.setBlock( i, i, jacobian[i].getJ());
-
-              // Put all the blocks of the row in an array, then send the array to the matrix
-              // Not very efficient: MatBlock creations could be avoided.
-              vector<MatBlock> blocks;
-              vector<unsigned> columns;
-              columns.push_back( i );
-              blocks.push_back( material[i].getB() );
-              B.appendBlockRow( i, columns, blocks );
-          }
-          B.endEdit();
-      }*/
-
+//      Data<bool> assemble;
 
 
 
@@ -459,7 +406,7 @@ protected:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_TETRAHEDRONFEMFORCEFIELD_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_METACOROTATIONALMESHFEMFORCEFIELD_CPP)
 extern template class SOFA_Flexible_API FlexibleCorotationalMeshFEMForceField<defaulttype::Vec3Types>;
 #endif
 
@@ -467,4 +414,4 @@ extern template class SOFA_Flexible_API FlexibleCorotationalMeshFEMForceField<de
 } // namespace component
 } // namespace sofa
 
-#endif // FLEXIBLE_TETRAHEDRONFEMFORCEFIELD_H
+#endif // FLEXIBLE_METACOROTATIONALMESHFEMFORCEFIELD_H
