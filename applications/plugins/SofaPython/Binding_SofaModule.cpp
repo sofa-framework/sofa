@@ -335,7 +335,6 @@ extern "C" PyObject * Sofa_forceInitNodeCreatedInPython(PyObject * /*self*/, PyO
 
 
 static const std::string s_emitter = "PythonScript";
-static const std::string s_emitterlong = "PythonScript - ";
 
 extern "C" PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args)
 {
@@ -353,7 +352,7 @@ extern "C" PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args)
         Py_RETURN_NONE;
     }
 
-    msg_info( s_emitterlong+std::string(emitter) ) << message;
+    msg_info( emitter ) << message;
 
     Py_RETURN_NONE;
 }
@@ -374,7 +373,7 @@ extern "C" PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args)
         Py_RETURN_NONE;
     }
 
-    msg_warning( s_emitterlong+std::string(emitter) ) << message;
+    msg_warning( emitter ) << message;
 
     Py_RETURN_NONE;
 }
@@ -395,7 +394,7 @@ extern "C" PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args)
         Py_RETURN_NONE;
     }
 
-    msg_error( s_emitterlong+std::string(emitter) ) << message;
+    msg_error( emitter ) << message;
 
     Py_RETURN_NONE;
 }
@@ -416,7 +415,7 @@ extern "C" PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args)
         Py_RETURN_NONE;
     }
 
-    msg_fatal( s_emitterlong+std::string(emitter) ) << message;
+    msg_fatal( emitter ) << message;
 
     Py_RETURN_NONE;
 }
