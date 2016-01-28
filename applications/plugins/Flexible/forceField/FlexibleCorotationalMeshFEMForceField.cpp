@@ -41,7 +41,7 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 
-SOFA_DECL_CLASS(FlexibleCorotationalMeshFEMForceField)
+SOFA_DECL_CLASS(FLEXIBLE_METACOROTATIONALMESHFEMFORCEFIELD_CPP)
 
 // Register in the Factory
 int FlexibleCorotationalMeshFEMForceFieldClass = core::RegisterObject("Flexible Tetrahedral finite elements")

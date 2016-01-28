@@ -191,7 +191,7 @@
 </Node>
 
 
-<Node name="purple: meta-FlexibleCorotationalMesh"   >
+<Node name="magenta: meta-FlexibleCorotationalMesh"   >
   <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
   <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
   
@@ -211,7 +211,7 @@
 	 <BarycentricMapping input="@.." output="@." />
         
         <Node name="Visual"  >
-            <VisualModel  fileMesh="mesh/Armadillo_simplified.obj" color='purple'  />
+            <VisualModel  fileMesh="mesh/Armadillo_simplified.obj" color='magenta'  />
             <IdentityMapping template="Vec3d,ExtVec3f"  />
         </Node>
    </Node>

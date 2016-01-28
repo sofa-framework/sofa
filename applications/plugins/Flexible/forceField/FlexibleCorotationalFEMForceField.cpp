@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define __FlexibleCorotationalFEMForceField_CPP
+#define FLEXIBLE_METAFEMFORCEFIELD_CPP
 
 #include <Flexible/config.h>
 #include "FlexibleCorotationalFEMForceField.h"
