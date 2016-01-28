@@ -96,11 +96,6 @@ public:
             if(!this->parentTopology) serr<<"MeshTopology not found"<<sendl;
         }
 
-        if(!this->tetraGeoAlgo)
-        {
-            this->getContext()->get(tetraGeoAlgo,core::objectmodel::BaseContext::SearchUp);
-        }
-
         addInput(&f_inPosition);
         addInput(&f_fineVolumes);
         addInput(&f_indices);
@@ -276,6 +271,7 @@ protected:
             }
             else if(this->f_method.getValue().getSelectedId() == GAUSSLEGENDRE)
             {
+                if(!this->tetraGeoAlgo) this->getContext()->get(tetraGeoAlgo,core::objectmodel::BaseContext::SearchUp);
                 if(tetraGeoAlgo)  // retrieve gauss points from geometry algorithm
                 {
                     typedef topology::NumericalIntegrationDescriptor<Real,4> IntegrationDescriptor;
