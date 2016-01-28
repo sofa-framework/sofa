@@ -271,12 +271,15 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     }
 
     // init shape function
-    sofa::core::objectmodel::BaseContext* context = this->getContext();
-    std::vector<BaseShapeFunction*> sf; context->get<BaseShapeFunction>(&sf,core::objectmodel::BaseContext::SearchUp);
-    for(unsigned int i=0;i<sf.size();i++)
+    if( !_shapeFunction )
     {
-        if(this->f_shapeFunction_name.isSet()) {if(this->f_shapeFunction_name.getValue().compare(sf[i]->getName()) == 0) _shapeFunction=sf[i];}
-        else if(sf[i]->f_position.getValue().size() == this->fromModel->getSize()) _shapeFunction=sf[i];
+        sofa::core::objectmodel::BaseContext* context = this->getContext();
+        std::vector<BaseShapeFunction*> sf; context->get<BaseShapeFunction>(&sf,core::objectmodel::BaseContext::SearchUp);
+        for(unsigned int i=0;i<sf.size();i++)
+        {
+            if(this->f_shapeFunction_name.isSet()) {if(this->f_shapeFunction_name.getValue().compare(sf[i]->getName()) == 0) _shapeFunction=sf[i];}
+            else if(sf[i]->f_position.getValue().size() == this->fromModel->getSize()) _shapeFunction=sf[i];
+        }
     }
 
     if(_shapeFunction) // if we have a shape function, we use it to compute needed data (index, weights, etc.)
@@ -372,12 +375,15 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
     reinit();
 
     // update deformation gradient state rest position
-    if( !_sampler ) this->getContext()->get(_sampler,core::objectmodel::BaseContext::Local);
-    if(_sampler && this->toModel->read(core::VecCoordId::restPosition())->getValue().size()==size ) // not for states that do not have restpos (like visualmodel)
+    if( this->toModel->read(core::VecCoordId::restPosition())->getValue().size()==size ) // not for states that do not have restpos (like visualmodel)
     {
-        helper::ReadAccessor<Data< VMaterialToSpatial > >  ra_F0(this->f_F0);
-        helper::WriteOnlyAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));
-        for(size_t i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = (OutReal)ra_F0[i][j][k];
+        if( !_sampler ) this->getContext()->get(_sampler,core::objectmodel::BaseContext::Local);
+        if(_sampler )
+        {
+            helper::ReadAccessor<Data< VMaterialToSpatial > >  ra_F0(this->f_F0);
+            helper::WriteOnlyAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));
+            for(size_t i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = (OutReal)ra_F0[i][j][k];
+        }
     }
 }
 
@@ -385,17 +391,6 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::init()
 {
-    component::visualmodel::VisualModelImpl *visual;
-    this->getContext()->get( visual, core::objectmodel::BaseContext::Local);
-    if(visual) {this->extTriangles = &visual->getTriangles(); this->extvertPosIdx = &visual->m_vertPosIdx.getValue(); this->triangles=0; }
-    else
-    {
-        core::topology::BaseMeshTopology *topo;
-        this->getContext()->get( topo, core::objectmodel::BaseContext::Local);
-        if(topo) {this->triangles = &topo->getTriangles();  this->extTriangles=0; }
-    }
-
-
     baseMatrices.resize( 1 ); // just a wrapping for getJs()
     baseMatrices[0] = &eigenJacobian;
 
@@ -932,54 +927,70 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
         }
     }
 
-    if(showColorOnTopology.getValue().getSelectedId() && (this->extTriangles || this->triangles))
+    if(showColorOnTopology.getValue().getSelectedId() )
     {
-        std::vector< Real > val(out.size());
-        MaterialToSpatial F;
-        for(size_t i=0; i<out.size(); i++ )
+        if( !this->extTriangles && !this->triangles )
         {
-            if(OutDataTypesInfo<Out>::FMapped) F=OutDataTypesInfo<Out>::getF(out[i]); else F=f_F[i];
-
-            if(showColorOnTopology.getValue().getSelectedId()==1) val[i]=(defaulttype::trace(F.transposed()*F)-3.);
-            else  val[i]=sqrt(defaulttype::determinant(F.transposed()*F))-1.;
-
-            //if (val[i]<0) val[i]=2*val[i]/(val[i]+1.);
-            val[i]*=240 * this->showColorScale.getValue();
-            val[i]+=120;
-            if (val[i]<0) val[i]=0;
-            if (val[i]>240) val[i]=240;
+            component::visualmodel::VisualModelImpl *visual = NULL;
+            this->getContext()->get( visual, core::objectmodel::BaseContext::Local);
+            if(visual) {this->extTriangles = &visual->getTriangles(); this->extvertPosIdx = &visual->m_vertPosIdx.getValue(); this->triangles=0; }
+            else
+            {
+                core::topology::BaseMeshTopology *topo = NULL;
+                this->getContext()->get( topo, core::objectmodel::BaseContext::Local);
+                if(topo) {this->triangles = &topo->getTriangles();  this->extTriangles=0; }
+            }
         }
 
-        size_t nb =0;
-        if(triangles) nb+=triangles->size();
-        if(extTriangles) nb+=extTriangles->size();
+        if( this->extTriangles || this->triangles )
+        {
+            std::vector< Real > val(out.size());
+            MaterialToSpatial F;
+            for(size_t i=0; i<out.size(); i++ )
+            {
+                if(OutDataTypesInfo<Out>::FMapped) F=OutDataTypesInfo<Out>::getF(out[i]); else F=f_F[i];
 
-        std::vector< defaulttype::Vector3 > points(3*nb),normals;
-        std::vector< defaulttype::Vec<4,float> > colors(3*nb);
-        size_t count=0;
+                if(showColorOnTopology.getValue().getSelectedId()==1) val[i]=(defaulttype::trace(F.transposed()*F)-3.);
+                else  val[i]=sqrt(defaulttype::determinant(F.transposed()*F))-1.;
 
-        if(triangles)
-            for ( size_t i = 0; i < triangles->size(); i++)
-                for ( size_t j = 0; j < 3; j++)
-                {
-                    size_t index = (*triangles)[i][j];
-                    if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
-                    sofa::helper::gl::Color::getHSVA(&colors[count][0],(float)val[index],1.f,.8f,1.f);
-                    count++;
-                }
-        if(extTriangles)
-            for ( size_t i = 0; i < extTriangles->size(); i++)
-                for ( size_t j = 0; j < 3; j++)
-                {
-                    size_t index = (*extTriangles)[i][j];
-                    if(this->extvertPosIdx) index=(*extvertPosIdx)[index];
-                    if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
-                    sofa::helper::gl::Color::getHSVA(&colors[count][0],(float)val[index],1.f,.8f,1.f);
-                    count++;
-                }
+                //if (val[i]<0) val[i]=2*val[i]/(val[i]+1.);
+                val[i]*=240 * this->showColorScale.getValue();
+                val[i]+=120;
+                if (val[i]<0) val[i]=0;
+                if (val[i]>240) val[i]=240;
+            }
 
-        glDisable( GL_LIGHTING);
-        vparams->drawTool()->drawTriangles(points, normals, colors);
+            size_t nb =0;
+            if(triangles) nb+=triangles->size();
+            if(extTriangles) nb+=extTriangles->size();
+
+            std::vector< defaulttype::Vector3 > points(3*nb),normals;
+            std::vector< defaulttype::Vec<4,float> > colors(3*nb);
+            size_t count=0;
+
+            if(triangles)
+                for ( size_t i = 0; i < triangles->size(); i++)
+                    for ( size_t j = 0; j < 3; j++)
+                    {
+                        size_t index = (*triangles)[i][j];
+                        if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
+                        sofa::helper::gl::Color::getHSVA(&colors[count][0],(float)val[index],1.f,.8f,1.f);
+                        count++;
+                    }
+            if(extTriangles)
+                for ( size_t i = 0; i < extTriangles->size(); i++)
+                    for ( size_t j = 0; j < 3; j++)
+                    {
+                        size_t index = (*extTriangles)[i][j];
+                        if(this->extvertPosIdx) index=(*extvertPosIdx)[index];
+                        if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
+                        sofa::helper::gl::Color::getHSVA(&colors[count][0],(float)val[index],1.f,.8f,1.f);
+                        count++;
+                    }
+
+            glDisable( GL_LIGHTING);
+            vparams->drawTool()->drawTriangles(points, normals, colors);
+        }
     }
     glPopAttrib();
 #endif /* SOFA_NO_OPENGL */
