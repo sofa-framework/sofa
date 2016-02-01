@@ -46,6 +46,7 @@
 #include <sofa/gui/qt/GenGraphForm.h>
 
 #include <sofa/helper/gl/glText.inl>
+#include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/RAII.h>
 #include <sofa/helper/io/ImageBMP.h>
 
@@ -687,6 +688,25 @@ void QtGLViewer::DisplayOBJs()
 
             if (vparams->sceneBBox().isValid())
                 DrawBox(vparams->sceneBBox().minBBoxPtr(), vparams->sceneBBox().maxBBoxPtr());
+
+            // 2D Axis: project current world orientation in the lower left part of the screen
+            glMatrixMode(GL_PROJECTION);
+            glPushMatrix();
+            glLoadIdentity();
+            glOrtho(0.0,vparams->viewport()[2],0,vparams->viewport()[3],-30,30);
+            glMatrixMode(GL_MODELVIEW);
+            glPushMatrix();
+            glLoadIdentity();
+            sofa::defaulttype::Quaternion sofaQuat( this->camera()->orientation()[0]
+                                                  , this->camera()->orientation()[1]
+                                                  , this->camera()->orientation()[2]
+                                                  , this->camera()->orientation()[3]);
+            helper::gl::Axis::draw(sofa::defaulttype::Vector3(30.0,30.0,0.0),sofaQuat.inverse(), 25.0);
+            glMatrixMode(GL_PROJECTION);
+            glPopMatrix();
+            glMatrixMode(GL_MODELVIEW);
+            glPopMatrix();
+
         }
     }
 
