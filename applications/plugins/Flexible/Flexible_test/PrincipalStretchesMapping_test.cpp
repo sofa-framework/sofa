@@ -1,7 +1,8 @@
 #include "../strainMapping/PrincipalStretchesMapping.h"
 
 #include "StrainMapping_test.h"
-#include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/Logger.h>
+using sofa::helper::Logger;
 
 
 namespace sofa {
@@ -34,7 +35,7 @@ namespace sofa {
                 {
                     if( tmp.getStrain()[j] == min && min != std::numeric_limits<Real>::max() )
                     {
-                        msg_warning("PrincipalStretchesJacobianBlockTester") << "Several strain components are identical, the test cannot find the comparison order, try with another data set.";
+                        Logger::mainlog( Logger::Warning, "Several strain components are identical, the test cannot find the comparison order, try with another data set.", "PrincipalStretchesJacobianBlockTester" );
                         std::cerr<<tmp.getStrain()<<std::endl;
                     }
 
