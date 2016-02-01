@@ -26,14 +26,12 @@
 #define SOFA_COMPONENT_LINEARSOLVER_SparsePARDISOSolver_H
 #include "config.h"
 
-#include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/helper/map.h>
-#include <math.h>
 
 #include <assert.h>
 #include <float.h>
