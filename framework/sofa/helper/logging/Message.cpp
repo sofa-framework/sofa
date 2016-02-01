@@ -65,7 +65,7 @@ Message::Message( const Message& msg )
     , m_fileInfo(msg.fileInfo())
     , m_class(msg.context())
     , m_type(msg.type())
-    , m_id(msg.id())
+//    , m_id(msg.id())
 {
     m_stream << msg.message().rdbuf();
 }
@@ -76,7 +76,7 @@ Message& Message::operator=( const Message& msg )
     m_fileInfo = msg.fileInfo();
     m_class = msg.context();
     m_type = msg.type();
-    m_id = msg.id();
+//    m_id = msg.id();
     m_stream << msg.message().rdbuf();
     return *this;
 }
@@ -84,7 +84,7 @@ Message& Message::operator=( const Message& msg )
 
 std::ostream& operator<< (std::ostream& s, const Message& m){
     s << "[" << m.sender() << "]: " << endl ;
-    s << "         Message id: " << m.id() << endl ;
+//    s << "         Message id: " << m.id() << endl ;
     s << "       Message type: " << m.type() << endl ;
     s << "    Message content: " << m.message().rdbuf() << endl ;
     s << "    source code loc: " << m.fileInfo().filename << ":" << m.fileInfo().line << endl ;
