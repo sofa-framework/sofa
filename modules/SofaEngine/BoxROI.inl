@@ -769,8 +769,10 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
 
 template <class DataTypes>
-void BoxROI<DataTypes>::computeBBox(const core::ExecParams*  params , bool /*onlyVisible*/)
+void BoxROI<DataTypes>::computeBBox(const core::ExecParams*  params , bool onlyVisible)
 {
+    if( onlyVisible && !p_drawBoxes.getValue() ) return;
+
     const helper::vector<Vec6>& vb=boxes.getValue(params);
     const Real max_real = std::numeric_limits<Real>::max();
     const Real min_real = std::numeric_limits<Real>::min();
