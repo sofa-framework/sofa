@@ -87,6 +87,8 @@ protected:
 public:
     SetIndex f_indices;
     Data<bool> f_fixAll;
+    Data<VecCoord> d_positions;
+    Data<bool> d_clearVelocities;
     Data<SReal> f_drawSize;
 
 
