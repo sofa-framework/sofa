@@ -127,10 +127,10 @@ namespace unique{
         static void clearHandlers() ;
         static ConsoleMessageHandler* getDefaultMessageHandler();
 
-        static int getLastMessageId() ;
-        static int getLastErrorId() ;
-        static int getLastWarningId() ;
-        static int getLastInfoId() ;
+//        static int getLastMessageId() ;
+//        static int getLastErrorId() ;
+//        static int getLastWarningId() ;
+//        static int getLastInfoId() ;
 
         static LoggerStream info(Message::Class mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) ;
         static LoggerStream info(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) ;

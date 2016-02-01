@@ -31,8 +31,8 @@
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::RegisterObject ;
 
-#include <sofa/helper/logging/LoggerMessageHandler.h>
-using sofa::helper::logging::LoggerMessageHandler ;
+//#include <sofa/helper/logging/LoggerMessageHandler.h>
+//using sofa::helper::logging::LoggerMessageHandler ;
 
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 using sofa::helper::logging::ConsoleMessageHandler ;
@@ -63,7 +63,9 @@ namespace logging
 
 MessageHandlerComponent::MessageHandlerComponent() :
     d_type(initData(&d_type, "handler", "Type of the message handler to use among "
-                                        "[sofa, clang, log, silent]. "))
+                                        "[sofa, clang\
+                                        //, log\
+                                        , silent]. "))
 {
     m_isValid = false ;
 }
@@ -88,8 +90,8 @@ void MessageHandlerComponent::parse ( BaseObjectDescription* arg )
         MessageDispatcher::addHandler(new ConsoleMessageHandler()) ;
     }else if(stype=="clang"){
         MessageDispatcher::addHandler(new ClangMessageHandler()) ;
-    }else if(stype=="log"){
-        MessageDispatcher::addHandler(new LoggerMessageHandler()) ;
+//    }else if(stype=="log"){
+//        MessageDispatcher::addHandler(new LoggerMessageHandler()) ;
     }else if(stype=="silent"){
         MessageDispatcher::clearHandlers() ;
     }else{
@@ -105,7 +107,7 @@ void MessageHandlerComponent::parse ( BaseObjectDescription* arg )
     m_isValid = true ;
 }
 
-SOFA_DECL_CLASS(MessageHandlerComponent) ;
+SOFA_DECL_CLASS(MessageHandlerComponent)
 
 int MessageHandlerComponentClass = RegisterObject("This object controls the way Sofa print's "
                                                   "info/warning/error/fatal messages. ")
@@ -161,7 +163,7 @@ void FileMessageHandlerComponent::parse ( BaseObjectDescription* arg )
     m_isValid = true ;
 }
 
-SOFA_DECL_CLASS(FileMessageHandlerComponent) ;
+SOFA_DECL_CLASS(FileMessageHandlerComponent)
 
 int FileMessageHandlerComponentClass = RegisterObject("This component dump all the messages into"
                                                       "a file.")

@@ -62,13 +62,15 @@ using sofa::core::objectmodel::Data ;
 using std::string ;
 using sofa::helper::logging::MessageHandler;
 
+
+/// A sofa component to add a MessageHandler to the main logger
 class SOFA_COMPONENT_BASE_API MessageHandlerComponent : public virtual BaseObject
 {
 public:
     SOFA_CLASS(MessageHandlerComponent, BaseObject);
 
     MessageHandlerComponent() ;
-    virtual ~MessageHandlerComponent(){} ;
+    virtual ~MessageHandlerComponent(){}
 
     /// Inherited from BaseObject.
     /// Parse the given description to assign values to this object's fields and
@@ -81,7 +83,9 @@ public:
     bool isValid(){ return m_isValid; }
 };
 
-class FileMessageHandlerComponent : public virtual BaseObject
+
+/// A sofa component to add a FileMessageHandlerComponent to the main logger
+class SOFA_COMPONENT_BASE_API FileMessageHandlerComponent : public virtual BaseObject
 {
 public:
     SOFA_CLASS(FileMessageHandlerComponent, BaseObject) ;

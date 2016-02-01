@@ -91,8 +91,8 @@ public:
     Class                    context() const  { return m_class; }
     Type                     type() const     { return m_type; }
     const std::string&       sender() const   { return m_sender; }
-    int                      id() const       { return m_id; }
-    void                     setId(int id)    { m_id=id; }
+//    int                      id() const       { return m_id; }
+//    void                     setId(int id)    { m_id=id; }
 
     bool empty() const { return m_stream.rdbuf()->in_avail() <= 0; }
 
