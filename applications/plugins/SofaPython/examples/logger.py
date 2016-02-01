@@ -1,4 +1,5 @@
 import Sofa
+import SofaPython.sml
 
 def createScene(node):
 
@@ -19,3 +20,6 @@ def createScene(node):
     Sofa.msg_warning( "my message warning" )
     Sofa.msg_error( "my message error" )
     Sofa.msg_fatal( "my message fatal" )
+
+    # more complex code
+    model = SofaPython.sml.Model("smlSimple.xml")
