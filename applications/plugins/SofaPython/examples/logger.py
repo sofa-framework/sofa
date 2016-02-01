@@ -2,14 +2,20 @@ import Sofa
 
 def createScene(node):
 
+    # some code before
+    a = 0
+
 # w/ emitter
-    Sofa.msg_info( "emitter1", "my message info" )
-    Sofa.msg_warning( "emitter2", "my message warning" )
-    Sofa.msg_error( "emitter3", "my message error" )
-    Sofa.msg_fatal( "emitter4", "my message fatal" )
+    Sofa.msg_info( "MyPythonEmitter", "my message info  a="+str(a) )
+    Sofa.msg_warning( "MyPythonEmitter  a="+str(a), "my message warning" )
+    Sofa.msg_error( "MyPythonEmitter", "my message error" )
+    Sofa.msg_fatal( "MyPythonEmitter", "my message fatal" )
+
+    # some code in between
+    a = 2
 
 # w/o emitter
-    Sofa.msg_info( "my message info" )
+    Sofa.msg_info( "my message info  a="+str(a) )
     Sofa.msg_warning( "my message warning" )
     Sofa.msg_error( "my message error" )
     Sofa.msg_fatal( "my message fatal" )
