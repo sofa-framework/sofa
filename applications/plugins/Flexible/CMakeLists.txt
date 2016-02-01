@@ -104,9 +104,11 @@ set(HEADER_FILES
     types/QuadraticTypes.h
     types/RigidConstraint.h
     types/StrainTypes.h
-    miscMapping/rigidScaleMappingJacobian.h
+    miscMapping/RigidScaleMappingJacobian.h
     miscMapping/RigidScaleToAffineMultiMapping.h
     miscMapping/RigidScaleToAffineMultiMapping.inl
+    miscMapping/RigidScaleToRigidMultiMapping.h
+    miscMapping/RigidScaleToRigidMultiMapping.inl
 )
 
 set(SOURCE_FILES
@@ -166,6 +168,7 @@ set(SOURCE_FILES
     types/RigidConstraint.cpp
     types/StrainTypes.cpp
     miscMapping/RigidScaleToAffineMultiMapping.cpp
+    miscMapping/RigidScaleToRigidMultiMapping.cpp
 )
 
 set(PYTHON_FILES

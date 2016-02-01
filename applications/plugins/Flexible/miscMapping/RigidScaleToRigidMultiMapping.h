@@ -22,9 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef RIGIDTOAFFINEMULTIMAPPING_H
-#define RIGIDTOAFFINEMULTIMAPPING_H
+#ifndef RIGIDANDSCALETORIGIDMULTIMAPPING_H
+#define RIGIDANDSCALETORIGIDMULTIMAPPING_H
 
+#include <Compliant/utils/se3.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/BaseMatrix.h> 
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
@@ -47,16 +48,15 @@ namespace mapping
 {
 using namespace sofa::defaulttype;
 
-
 /**
  * @author Ali Dicko @date 2015
  */
 template <class In1, class In2, class Out>
-class RigidScaleToAffineMultiMapping : public core::Multi2Mapping<In1, In2, Out>
+class RigidScaleToRigidMultiMapping : public core::Multi2Mapping<In1, In2, Out>
 {
 public:
 
-    SOFA_CLASS(SOFA_TEMPLATE3(RigidScaleToAffineMultiMapping, In1, In2, Out), SOFA_TEMPLATE3(core::Multi2Mapping, In1, In2, Out));
+    SOFA_CLASS(SOFA_TEMPLATE3(RigidScaleToRigidMultiMapping, In1, In2, Out), SOFA_TEMPLATE3(core::Multi2Mapping, In1, In2, Out));
 
     typedef typename core::Multi2Mapping<In1, In2, Out>  Inherit;
 
@@ -66,16 +66,16 @@ public:
 
     typedef typename In1::Real Real;
     typedef typename In1::Coord InCoord1;
-	typedef typename In1::Deriv InDeriv1;
-	typedef typename In1::VecCoord InVecCoord1;
-	typedef typename In1::VecDeriv InVecDeriv1;
+    typedef typename In1::Deriv InDeriv1;
+    typedef typename In1::VecCoord InVecCoord1;
+    typedef typename In1::VecDeriv InVecDeriv1;
     typedef typename In1::MatrixDeriv InMatrixDeriv1;
     typedef typename Inherit::In1DataVecCoord In1DataVecCoord;
     typedef typename Inherit::In1DataVecDeriv In1DataVecDeriv;
     typedef typename Inherit::In1DataMatrixDeriv In1DataMatrixDeriv;
 
-	typedef typename In2::Coord InCoord2;
-	typedef typename In2::Deriv InDeriv2;
+    typedef typename In2::Coord InCoord2;
+    typedef typename In2::Deriv InDeriv2;
     typedef typename In2::VecCoord InVecCoord2;
     typedef typename In2::VecDeriv InVecDeriv2;
     typedef typename In2::MatrixDeriv InMatrixDeriv2;
@@ -92,25 +92,32 @@ public:
     typedef typename Inherit::OutDataVecDeriv OutDataVecDeriv;
     typedef typename Inherit::OutDataMatrixDeriv OutDataMatrixDeriv;
 
-    typedef Mat<OutDeriv::total_size,InDeriv1::total_size, SReal> MatBlock1;
-	typedef Mat<OutDeriv::total_size, InDeriv2::total_size, SReal> MatBlock2;
+    typedef Mat<OutDeriv::total_size, InDeriv1::total_size, SReal> MatBlock1;
+    typedef Mat<OutDeriv::total_size, InDeriv2::total_size, SReal> MatBlock2;
+
+    typedef Mat<InDeriv1::total_size, InDeriv1::total_size, SReal> MatKBlock1;
+    typedef Mat<InDeriv2::total_size, InDeriv2::total_size, SReal> MatKBlock2;
 
     typedef component::linearsolver::EigenSparseMatrix<In1, Out> SparseJMatrixEigen1;
     typedef component::linearsolver::EigenSparseMatrix<In2, Out> SparseJMatrixEigen2;
     typedef linearsolver::EigenSparseMatrix<In1,In1> SparseKMatrixEigen1;
     typedef linearsolver::EigenSparseMatrix<In2,In2> SparseKMatrixEigen2;
+    typedef typename linearsolver::EigenSparseMatrix<In1,In1>::CompressedMatrix CompressKMatrixEigen1;
+    typedef typename linearsolver::EigenSparseMatrix<In2,In2>::CompressedMatrix CompressKMatrixEigen2;
 
     typedef helper::vector<defaulttype::BaseMatrix*> jacobianMatrices;
     typedef helper::vector<defaulttype::BaseMatrix*> stiffnessMatrices;
 
+    typedef SE3< Real > se3;
+
 	/****************** CONSTRUCTOR / DESTRUCTOR ***********************/
-    RigidScaleToAffineMultiMapping();
-    ~RigidScaleToAffineMultiMapping();
+    RigidScaleToRigidMultiMapping();
+    ~RigidScaleToRigidMultiMapping();
 
 	/************************** SOFA METHOD ****************************/
     void init();
     void reinit();
-	void reset();
+    void reset();
 
     using Inherit::apply;
     using Inherit::applyJ;
@@ -152,37 +159,34 @@ public:
 
     void computeAccFromMapping(const core::MechanicalParams* /*mparams*/, OutVecDeriv& /*f*/,const OutVecCoord& /*x*/, const OutVecDeriv& /*v*/);
 
-    const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*outForce*/ );
 
+    const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
     const sofa::defaulttype::BaseMatrix* getJ();
 
     const sofa::defaulttype::BaseMatrix* getK();		                   
 
-	Data< vector<unsigned> > index;  ///< Two indices per child: the index of the rigid, and the index of scale
-	Data< bool > automaticInit; ///< Automatic setup based only on the rigid position. The index data is init, the scale mechanical state is reinit and the affine mechanical state is reinit.
+    Data< vector<unsigned> > index; ///< Two indices per child: the index of the rigid, and the index of scale
+    Data< bool > automaticInit; ///< Automatic setup based only on the rigid position. The index data is init, the scale mechanical state is reinit and the affine mechanical state is reinit.
     Data< bool > useGeometricStiffness; ///< To indication if we use the geometric stiffness
 
 protected:
     /****************************  METHODS ****************************/
-	void autoInit();
     void setup();
 
-    void updateK1(SparseKMatrixEigen1& /*stiffness*/, const InVecCoord1& /*vIn1*/, const OutVecDeriv& /*childForce*/);
-    void updateK2(SparseKMatrixEigen2& /*stiffness*/, const InVecCoord1& /*vIn1*/, const OutVecDeriv& /*childForce*/);
+    void updateK1(SparseKMatrixEigen1& /*stiffness*/, const InVecCoord1& /*vIn1*/, const InVecCoord2& /*vIn2*/, const OutVecDeriv& /*childForce*/);
+    void updateK2(SparseKMatrixEigen2& /*stiffness*/, const InVecCoord1& /*vIn1*/, const InVecCoord2& /*vIn2*/, const OutVecDeriv& /*childForce*/);
 
     void updateJ1(SparseJMatrixEigen1& /*jacobian*/, const InVecCoord1& /*vIn1*/, const InVecCoord2& /*vIn2*/, const OutVecCoord& /*vOut*/);    
-	void updateJ2(SparseJMatrixEigen2& /*jacobian*/, const InVecCoord1& /*vIn1*/, const InVecCoord2& /*vIn2*/, const OutVecCoord& /*vOut*/);
+    void updateJ2(SparseJMatrixEigen2& /*jacobian*/, const InVecCoord1& /*vIn1*/, const InVecCoord2& /*vIn2*/, const OutVecCoord& /*vOut*/);
 
-	/// computeAffineFromRigidAndScale : function f(r, s) = a. 
-	/// r = rigid body defined by (p, q) => p is the position and q is the quarternion which describe the rigid orientation
-	/// s = scale matrix, but defined by only the diagonal component (sx, sy, sz)
-	/// J1 = df/dr and J2 = df/ds
-	void computeAffineFromRigidAndScale(const InCoord1&, const InCoord2&, OutCoord&);
+    /// computeRigidFromRigidAndScale : function f(r, s) = r1.
+    /// r = rigid body defined by (p, q) => p is the position and q is the quarternion which describe the rigid orientation
+    /// s = scale matrix, but defined by only the diagonal component (sx, sy, sz)
+    /// J1 = df/dr and J2 = df/ds
+    void computeRigidFromRigidAndScale(const InCoord1&, const InCoord2&, const OutCoord&, OutCoord&);
 
     /*********************** CLASS ATTRIBUTES **************************/
-//    SparseKMatrixEigen1 _K1;
-//    SparseKMatrixEigen2 _K2;
-
     SparseJMatrixEigen1 _J1;
     SparseJMatrixEigen2 _J2;
     jacobianMatrices _Js;
@@ -193,6 +197,9 @@ protected:
     InType1* stateIn1;
     InType2* stateIn2;
     OutType* stateOut;
+
+    // Others
+    OutVecCoord relativeCoord;
 };
 
 }//namespace mapping

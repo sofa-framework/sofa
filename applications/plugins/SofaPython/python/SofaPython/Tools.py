@@ -1,7 +1,8 @@
 import Sofa
 
-import os.path
+import os, os.path
 import json
+import glob
 
 import units
 
@@ -102,7 +103,139 @@ class Material:
     
     def poissonRatio(self, material):
         return self._get(material, "poissonRatio")
-        
+
+class SceneDataIO:
+    """ Read/Write from a scene or sub-scene all the data of each component to/from a json files
+        The user gives as input the list of type of component he wants to save the state
+        @sa example/sceneDataIO_write.py
+        @sa example/sceneDataIO_read.py
+    """
+    def __init__(self, node=None, classNameList=None):
+        # main node which contains the components to update
+        self.node = node
+
+        # components name to process
+        self.classNameList = classNameList
+
+    """ Read/Write from a scene or sub-scene all the data of each component to/from a json file
+        @sa example/sceneDataIO_write.py
+        @sa example/sceneDataIO_read.py
+    """
+    def writeData(self, directory=None):
+
+        # directory where all the data will be stored
+        if directory is None:
+            directory = "scene_data_at_t_"+str(self.node.getTime())
+            try:
+                os.makedirs(directory)
+            except OSError:
+                if not os.path.isdir(directory):
+                    raise
+        elif not os.path.isdir(directory):
+            os.makedirs(directory)
+
+        # lets get all the component of the scene
+        visitor = SceneDataIO.SofaVisitor('SceneIOVisitor')
+        self.node.executeVisitor(visitor)
+        componentList = visitor.componentList
+
+        # process the scene to store each component data
+        for component in componentList:
+            # we do not treat the components which are not among the accepted components
+            if (self.classNameList==None) or (not component.getClassName() in self.classNameList):
+                continue
+            # if the component is among the accepted class name
+            filteredData = dict()
+            componentData = component.getDataFields()
+            filename = directory + os.sep + component.getContext().name + '_' + component.name +".json"
+
+            for name, value in componentData.iteritems():
+                if isinstance(value, (list, dict, str, int, float, bool)):
+                    if isinstance(value, (list)) and len(value):
+                        filteredData[name] = value
+                    elif isinstance(value, (dict)) and len(value):
+                        filteredData[name] = value
+                    elif isinstance(value, (str)) and (len(value) or value!=""):
+                        filteredData[name] = value
+                    elif isinstance(value, (int, float, bool)):
+                        filteredData[name] = value
+                    elif isinstance(value, (unicode)):
+                        filteredData[name] = value
+
+            with open(filename,'w') as file:
+                try:
+                    json.dump(filteredData, file)
+                except IOError:
+                    raise
+
+        print "[SceneDataIO]: the scene:", os.path.basename(__file__), "data has been save into the directory:", directory
+        return 1
+
+    def readData(self, directory=None):
+
+        # Lets check that the directory exists and it is not empty
+        if directory == None or not os.path.isdir(directory):
+            print "[SceneDataIO]: There is no directory where component data has been stored."
+            return -1
+
+        if not len(os.listdir(directory)):
+            print "[SceneDataIO]: The selected directory:", directory, "is empty."
+            return -1
+
+        nb_json = 0
+        for file in os.listdir(directory):
+            if file.endswith('.json'):
+                nb_json = nb_json +1
+        if not nb_json:
+            print "[SceneDataIO]: The selected directory:", directory, "do not contains any json files."
+            return
+
+        # Lets get all the components of the scene
+        visitor = SceneDataIO.SofaVisitor('SceneIOVisitor')
+        self.node.executeVisitor(visitor)
+        componentList = visitor.componentList
+
+        # process the scene to load each component data
+        for component in componentList:
+            if (self.classNameList==None) or (not component.getClassName() in self.classNameList):
+                continue
+            filename = directory + component.getContext().name + '_' + component.name +".json"
+            if not os.path.isfile(filename):
+                continue
+            with open(filename,'r') as file:
+                componentData = json.load(file)
+                for name, value in componentData.iteritems():
+                    if isinstance(value, (list)) and len(value):
+                        component.findData(name).value = value
+                    elif isinstance(value, (dict)) and len(value):
+                        component.findData(name).value = value
+                    elif isinstance(value, (str)) and (len(value) or value!=""):
+                        component.findData(name).value = value
+                    elif isinstance(value, (int, float, bool)):
+                        component.findData(name).value = value
+                    elif isinstance(value, (unicode)):
+                        component.findData(name).value = value.encode("ascii")
+            component.reinit()
+
+        print "[SceneDataIO]: the previous scene state has been restored."
+
+        return 1
+
+    """ Internal visitor of the SceneIO component to process each graph component
+    """
+    class SofaVisitor(object):
+        def __init__(self, name):
+            self.name = name
+            self.componentList = list()
+
+        def processNodeTopDown(self, node):
+            self.componentList.extend(node.getObjects())
+
+        def processNodeBottomUp(self, node):
+            return
+
+        def treeTraversal(self):
+            return
         
 class ComponentDataIO:
     """ Read/Write component data to/from a json file
