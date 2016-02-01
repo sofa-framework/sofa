@@ -31,6 +31,8 @@
 #ifndef SOFA_MESSAGEHANDLERCOMPONENT_H
 #define SOFA_MESSAGEHANDLERCOMPONENT_H
 
+#include "config.h"
+
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Data.h>
@@ -60,7 +62,7 @@ using sofa::core::objectmodel::Data ;
 using std::string ;
 using sofa::helper::logging::MessageHandler;
 
-class MessageHandlerComponent : public virtual BaseObject
+class SOFA_COMPONENT_BASE_API MessageHandlerComponent : public virtual BaseObject
 {
 public:
     SOFA_CLASS(MessageHandlerComponent, BaseObject);
