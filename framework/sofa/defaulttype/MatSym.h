@@ -465,7 +465,7 @@ bool invertMatrix(MatSym<S,real>& dest, const MatSym<S,real>& from)
 
         if (pivot <= (real) MIN_DETERMINANT)
         {
-            std::cerr<<"Warning: invertMatrix finds too small determinant, matrix = "<<from<<std::endl;
+            msg_error("MatSym") << "invertMatrix finds too small determinant, matrix = "<<from;
             return false;
         }
 
@@ -520,7 +520,7 @@ bool invertMatrix(MatSym<3,real>& dest, const MatSym<3,real>& from)
 
     if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
     {
-        std::cerr<<"Warning: invertMatrix finds too small determinant, matrix = "<<from<<std::endl;
+        msg_error("MatSym") << "invertMatrix finds too small determinant, matrix = "<<from;
         return false;
     }
 
@@ -542,7 +542,7 @@ bool invertMatrix(MatSym<2,real>& dest, const MatSym<2,real>& from)
 
     if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
     {
-        std::cerr<<"Warning: invertMatrix finds too small determinant, matrix = "<<from<<std::endl;
+        msg_error("MatSym") << "invertMatrix finds too small determinant, matrix = "<<from;
         return false;
     }
 

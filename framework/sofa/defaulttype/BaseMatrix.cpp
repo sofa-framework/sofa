@@ -464,7 +464,7 @@ void BaseMatrix::opPMulTV(double* result, const double* v) const
 /// Multiply the transposed matrix by matrix m and store the result in matrix result
 void BaseMatrix::opMulTM(BaseMatrix * /*result*/,BaseMatrix * /*m*/) const
 {
-    std::cerr <<"WARNING : BASEMATRIX::opMulTM not yet implemented"<<std::endl;
+    msg_warning("BaseMatrix") <<"opMulTM not yet implemented";
 }
 
 
