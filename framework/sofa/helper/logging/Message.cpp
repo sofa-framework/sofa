@@ -30,11 +30,10 @@
 * in the TextMessaging.h file.
 ******************************************************************************/
 
-using std::endl ;
-using std::string ;
-
 #include "Message.h"
 
+using std::endl ;
+using std::string ;
 
 namespace sofa
 {
