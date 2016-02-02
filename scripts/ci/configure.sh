@@ -78,7 +78,7 @@ generator() {
 call-cmake() {
     if [ $(uname) != Darwin -a $(uname) != Linux ]; then
         # Run cmake after calling vcvarsall.bat to setup compiler stuff
-        if ["$CI_COMPILER" == "VS-2015"]
+        if ["$CI_COMPILER" == "VS-2015"]; then
             local vcvarsall="call \"%VS140COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
             echo "Calling $COMSPEC /c \"$vcvarsall & cmake $*\""
             $COMSPEC /c "$vcvarsall & cmake $*"
