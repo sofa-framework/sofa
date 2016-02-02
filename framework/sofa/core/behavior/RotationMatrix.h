@@ -251,7 +251,7 @@ public:
 
     friend std::ostream& operator << (std::ostream& out, const RotationMatrix<Real> & v )
     {
-        std::cout.precision(4);
+        out.precision(4);
         out << "[";
         for (unsigned y=0; y<v.data.size(); y+=9)
         {

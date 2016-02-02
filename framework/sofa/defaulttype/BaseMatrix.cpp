@@ -26,6 +26,7 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -275,7 +276,7 @@ public:
     template <class Real, class M, class V1, class V2>
     static inline void opDynamicRealDefault(const M* mat, V1& result, const V2& v, Index NL, Index NC, BaseMatrix::MatrixCategory /*category*/)
     {
-        std::cout << "PERFORMANCE WARNING: multiplication by matric with block size " << NL << "x" << NC << " not optimized." << std::endl;
+        msg_warning("BaseMatrix") << "PERFORMANCE WARNING: multiplication by matric with block size " << NL << "x" << NC << " not optimized.";
         opFull(mat, result, v);
     }
 
