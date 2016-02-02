@@ -27,6 +27,7 @@
 #include "BaseObject.h"
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <iostream>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -146,7 +147,7 @@ Base* BaseObjectDescription::findObject(const char* nodeName)
     }
     else
     {
-        std::cerr << "Node "<<nodeName<<" NOT FOUND."<<std::endl;
+        msg_error("BaseObjectDescription") << "findObject: Node "<<nodeName<<" NOT FOUND.";
         return NULL;
     }
 }
