@@ -75,8 +75,6 @@ FixedConstraint<DataTypes>::FixedConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
-    , d_positions( initData(&d_positions,"positions","Impose position at each time step") )
-    , d_clearVelocities( initData(&d_clearVelocities, false, "clearVelocities","Clear Velocities") )
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , data(new FixedConstraintInternalData<DataTypes>())
 {
@@ -273,32 +271,6 @@ void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& /*xData*/)
 {
-    helper::WriteAccessor<Data <VecCoord> > X = *this->getMState()->write(core::VecCoordId::position());
-    helper::WriteAccessor<Data <VecCoord> > Xfree = *this->getMState()->write(core::VecCoordId::freePosition());
-
-    const SetIndexArray & indices = f_indices.getValue();
-
-    unsigned p=0;
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, p++)
-    {
-
-        if (X.size()>*it && d_positions.getValue().size()>p) X[*it] = d_positions.getValue()[p];
-        if (Xfree.size()>*it && d_positions.getValue().size()>p) Xfree[*it] = d_positions.getValue()[p];
-    }
-
-
-    if (d_clearVelocities.getValue()) {
-        helper::WriteAccessor<Data <VecDeriv> > V = *this->getMState()->write(core::VecDerivId::velocity());
-        helper::WriteAccessor<Data <VecDeriv> > Vfree = *this->getMState()->write(core::VecDerivId::freeVelocity());
-
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, p++)
-        {
-            if (V.size()>*it) V[*it] = Deriv();
-            if (Vfree.size()>*it) Vfree[*it] = Deriv();
-        }
-
-    }
-
 
 }
 
