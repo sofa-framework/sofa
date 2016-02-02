@@ -82,7 +82,7 @@ class Deformable:
 
     def addVisual(self, color=[1,1,1,1]):
         if self.dofs is None:
-            Sofa.msg_error("Flexible.API.Deformable","addVisual : visual mesh not added because there is no dof, use LoadVisual instead to have a static visual mesh ", self.name)
+            Sofa.msg_error("Flexible.API.Deformable","addVisual : visual mesh not added because there is no dof, use LoadVisual instead to have a static visual mesh ")
         else:   # create a new deformable
             d = Deformable(self.node,"Visual")
             d.visualFromDeformable(self,color)
@@ -135,20 +135,20 @@ class Deformable:
 
     def addMechanicalObject(self):
         if self.meshLoader is None:
-            Sofa.msg_error("Flexible.API.Deformable","addMechanicalObject: no loaded mesh for ", self.name)
+            Sofa.msg_error("Flexible.API.Deformable","addMechanicalObject: no loaded mesh for "+ self.name)
             return
         self.dofs = self.node.createObject("MechanicalObject", template = "Vec3", name="dofs", src="@"+self.meshLoader.name)
 
     def addNormals(self, invert=False):
         if self.topology is None:
-            Sofa.msg_error("Flexible.API.Deformable","addNormals : no topology for ", self.name)
+            Sofa.msg_error("Flexible.API.Deformable","addNormals : no topology for "+ self.name)
             return
         pos = '@'+self.topology.name+'.position' if self.dofs is None else  '@'+self.dofs.name+'.position'
         self.normals = self.node.createObject("NormalsFromPoints", template='Vec3', name="normalsFromPoints", position=pos, triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
 
     def addMass(self,totalMass):
         if self.dofs is None:
-            Sofa.msg_error("Flexible.API.Deformable","addMass : no dofs for ", self.name)
+            Sofa.msg_error("Flexible.API.Deformable","addMass : no dofs for "+ self.name)
             return
         self.mass = self.node.createObject('UniformMass', totalMass=totalMass)
 
