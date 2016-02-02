@@ -64,7 +64,7 @@ using sofa::helper::logging::MessageHandler;
 
 
 /// A sofa component to add a MessageHandler to the main logger
-class SOFA_COMPONENT_BASE_API MessageHandlerComponent : public virtual BaseObject
+class SOFA_COMPONENT_BASE_API MessageHandlerComponent : public BaseObject
 {
 public:
     SOFA_CLASS(MessageHandlerComponent, BaseObject);
@@ -85,7 +85,7 @@ public:
 
 
 /// A sofa component to add a FileMessageHandlerComponent to the main logger
-class SOFA_COMPONENT_BASE_API FileMessageHandlerComponent : public virtual BaseObject
+class SOFA_COMPONENT_BASE_API FileMessageHandlerComponent : public BaseObject
 {
 public:
     SOFA_CLASS(FileMessageHandlerComponent, BaseObject) ;
