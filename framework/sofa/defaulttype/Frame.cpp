@@ -26,7 +26,6 @@
  */
 #include <sofa/defaulttype/Frame.h>
 #include <iostream>
-using std::cout;
 using std::endl;
 
 namespace sofa
