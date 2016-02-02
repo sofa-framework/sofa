@@ -25,6 +25,7 @@
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/system/Locale.h>
+#include <algorithm>
 
 #ifdef WIN32
 # include <Windows.h>

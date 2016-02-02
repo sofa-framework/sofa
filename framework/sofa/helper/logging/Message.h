@@ -31,19 +31,12 @@
 *****************************************************************************/
 #ifndef MESSAGE_H
 #define MESSAGE_H
+
 #include <iostream>
 #include <string>
 #include <sofa/helper/helper.h>
-
 #include <sstream>
 
-//namespace sofa {
-//namespace core {
-//namespace objectmodel{
-//class Base ;
-//}
-//}
-//}
 
 namespace sofa
 {
