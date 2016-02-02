@@ -1,5 +1,6 @@
 import Sofa
 import SofaPython.sml
+import sys
 
 def createScene(node):
 
@@ -21,5 +22,13 @@ def createScene(node):
     Sofa.msg_error( "my message error" )
     Sofa.msg_fatal( "my message fatal" )
 
-    # more complex code
+    # more complex code was causing trouble, so try it
     model = SofaPython.sml.Model("smlSimple.xml")
+
+
+    # # invalid calls
+    # Sofa.msg_info( 100 )
+    # Sofa.msg_info( "emitter", "message", "extra" )
+
+
+    sys.stdout.flush()
