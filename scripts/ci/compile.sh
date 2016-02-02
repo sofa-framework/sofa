@@ -40,7 +40,7 @@ if [ -z "$CI_ARCH" ]; then CI_ARCH="x86"; fi
 call-make() {
     if [[ "$(uname)" != "Darwin" && "$(uname)" != "Linux" ]]; then
         # We need to call vcvarsall.bat before nmake to setup compiler stuff
-        if ["$CI_COMPILER" == "VS-2015"]
+        if ["$CI_COMPILER" == "VS-2015"]; then
             local vcvarsall="call \"%VS140COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
             $COMSPEC /c "$vcvarsall & nmake $CI_MAKE_OPTIONS"
         else
