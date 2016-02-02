@@ -28,6 +28,16 @@ struct EigenSparseSolver<LinearSolver,symmetric>::pimpl_type {
     
     SubKKT sub;
 
+    bool m_trackSparsityPattern;
+    cmat::Index m_previousSize;
+    cmat::Index m_previousNonZeros;
+
+    pimpl_type()
+        : m_trackSparsityPattern(false)
+        , m_previousSize(0)
+        , m_previousNonZeros(0)
+    {}
+
 
     // for kkt solve, pimpl will have the same API as a Response
     // (such as the same functions can be called in SubKKT)
@@ -37,7 +47,8 @@ struct EigenSparseSolver<LinearSolver,symmetric>::pimpl_type {
         if( symmetric ) tmp = A.template triangularView< Eigen::Lower >();  // only copy the triangular part (default to Lower)
         else tmp = A;    // TODO there IS a temporary here, from rmat to cmat
 
-        solver.compute( tmp ); // the conversion from rmat to cmat needs to be explicit for iterative solvers
+        // the conversion from rmat to cmat needs to be explicit for iterative solvers
+        compute( tmp );
 
         if( solver.info() != Eigen::Success ) {
             std::cerr << "EigenSparseSolver non invertible matrix" << std::endl;
@@ -48,6 +59,25 @@ struct EigenSparseSolver<LinearSolver,symmetric>::pimpl_type {
     {
         lval = solver.solve( rval );
     }
+
+    void compute(const cmat& A)
+    {
+        if( !m_trackSparsityPattern )
+            solver.compute( A );
+        else
+        {
+            // TODO the sparsity structure verification is poor
+            // but it is enough in some specific cases
+            if( tmp.rows()!=m_previousSize || tmp.nonZeros()!=m_previousNonZeros )
+            {
+                solver.analyzePattern( A );
+                m_previousSize = A.rows();
+                m_previousNonZeros = A.nonZeros();
+            }
+            solver.factorize( A );
+        }
+    }
+
 };
 
 
@@ -62,6 +92,7 @@ EigenSparseSolver<LinearSolver,symmetric>::EigenSparseSolver()
                      "schur",
                      "use schur complement"))
     , d_regularization(initData(&d_regularization, std::numeric_limits<SReal>::epsilon(), "regularization", "Optional diagonal Tikhonov regularization on constraints"))
+    , d_trackSparsityPattern( initData(&d_trackSparsityPattern, false, "trackSparsityPattern", "if the sparsity pattern remains similar from one step to the other, the factorization can be faster") )
     , pimpl( new pimpl_type )
 {}
 
@@ -98,6 +129,8 @@ void EigenSparseSolver<LinearSolver,symmetric>::reinit() {
                  << " added to the scene" << sendl;
         }
     }
+
+    pimpl->m_trackSparsityPattern = d_trackSparsityPattern.getValue();
 }
 
 template<class LinearSolver,bool symmetric>
@@ -161,10 +194,10 @@ void EigenSparseSolver<LinearSolver,symmetric>::factor_schur( const AssembledSys
             if( symmetric )
             {
                 pimpl->tmp = pimpl->schur.template triangularView< Eigen::Lower >(); // to make it work with MINRES
-                pimpl->solver.compute( pimpl->tmp );
+                pimpl->compute( pimpl->tmp );
             }
             else
-                pimpl->solver.compute( pimpl->schur );
+                pimpl->compute( pimpl->schur );
         }
 
         if( pimpl->solver.info() == Eigen::NumericalIssue ){
