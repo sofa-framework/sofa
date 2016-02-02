@@ -5,6 +5,7 @@ import SofaPython.Tools
 import SofaPython.units
 from SofaPython.Tools import listToStr as concat
 from SofaPython import Quaternion
+import Sofa
 
 class Image:
     """ This class proposes a high-level API to build images. It support multiple meshes rasterization.
@@ -74,7 +75,8 @@ class Image:
         name = self.meshSeq[0] if meshName is None else meshName
         mesh = self.meshes[name]
         if mesh.mesh is None:
-            print "[ImageAPI.Image] ERROR: no mesh for", meshName
+            Sofa.msg_error('Image.API',"addMeshVisual : no mesh for "+ meshName)
+            return
         mesh.visual = self.node.createObject("VisualModel", name="visual_"+name, src="@"+SofaPython.Tools.getObjectPath(mesh.mesh))
         if not color is None:
             mesh.visual.setColor(color[0],color[1],color[2],color[3])
@@ -89,7 +91,8 @@ class Image:
         for name in self.meshSeq:
             mesh = self.meshes[name]
             if mesh.mesh is None:
-                print "[ImageAPI.Image] ERROR: no mesh for", name
+                Sofa.msg_error('Image.API',"addMeshToImage : no mesh for "+ name)
+                return
             meshPath = SofaPython.Tools.getObjectPath(mesh.mesh)
             args["position"+str(i)]="@"+meshPath+".position"
             args["triangles"+str(i)]="@"+meshPath+".triangles"
@@ -106,7 +109,8 @@ class Image:
 
     def addViewer(self):
         if self.image is None:
-            print "[ImageAPI.Image] ERROR: no image"
+            Sofa.msg_error('Image.API',"addViewer : no image")
+            return
         imagePath = SofaPython.Tools.getObjectPath(self.image)
         self.viewer = self.node.createObject('ImageViewer', name="viewer", template=self.imageType, image="@"+imagePath+".image", transform="@"+imagePath+".transform")
 
@@ -120,7 +124,8 @@ class Image:
 
     def addExporter(self, filename=None, directory=""):
         if self.image is None:
-            print "[ImageAPI.Image] ERROR: no image"
+            Sofa.msg_error('Image.API',"addExporter : no image")
+            return
         imagePath = SofaPython.Tools.getObjectPath(self.image)
         self.exporter = self.node.createObject('ImageExporter', template=self.imageType, name="exporter", image="@"+imagePath+".image", transform="@"+imagePath+".transform", filename=self.getFilename(filename, directory), exportAtBegin=True, printLog=True)
 
@@ -152,7 +157,7 @@ class Sampler:
 
     def addMesh(self):
         if self.sampler is None:
-            print "[SofaImage.API.Sampler] ERROR: no sampler"
+            Sofa.msg_error('Image.API',"addMesh : no sampler")
             return None
         self.mesh = self.node.createObject('Mesh', name="mesh" ,src="@"+SofaPython.Tools.getObjectPath(self.sampler))
         return self.mesh
