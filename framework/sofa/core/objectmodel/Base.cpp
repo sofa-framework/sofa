@@ -270,7 +270,7 @@ void Base::processStream(std::ostream& out)
         sout << "\n";
         if (f_printLog.getValue())
         {
-            msg_warning(this) << str;
+            msg_info(this) << str;
         }
         if (outputs.size()+str.size() >= MAXLOGSIZE)
         {
