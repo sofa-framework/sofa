@@ -49,6 +49,8 @@ using std::remove ;
 #include "MessageHandler.h"
 #include "ConsoleMessageHandler.h"
 
+#include <sofa/core/objectmodel/Base.h>
+
 
 namespace sofa
 {
@@ -175,6 +177,17 @@ ConsoleMessageHandler* MessageDispatcherImpl::getDefaultMessageHandler()
     return &s_defaultMessageHandler;
 }
 
+
+
+
+
+
+LoggerStream::LoggerStream(MessageDispatcherImpl& dispatcher, Message::Class mclass, Message::Type type,
+             const sofa::core::objectmodel::Base* sender, FileInfo fileInfo)
+    : m_message( mclass, type, sender->getClassName() /* temporary, until Base object reference kept in the message itself*/, fileInfo )
+    , m_dispatcher(dispatcher)
+{
+}
 
 LoggerStream::~LoggerStream()
 {

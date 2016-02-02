@@ -32,17 +32,20 @@
 #ifndef MESSAGEDISPATCHER_H
 #define MESSAGEDISPATCHER_H
 
-#include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/helper.h>
-
 #include "Message.h"
-
-#include <boost/shared_ptr.hpp>
-
-#include <sstream>
 
 namespace sofa
 {
+
+namespace core
+{
+namespace objectmodel
+{
+class Base; // forward declaration
+} // namespace objectmodel
+} // namespace core
+
 
 namespace helper
 {
@@ -61,7 +64,6 @@ public:
     static Nop s_nop;
 };
 
-using std::vector ;
 
 namespace unique{
     class MessageDispatcher ;
@@ -95,11 +97,7 @@ public:
     }
 
     LoggerStream(MessageDispatcherImpl& dispatcher, Message::Class mclass, Message::Type type,
-                 const sofa::core::objectmodel::Base* sender, FileInfo fileInfo)
-        : m_message( mclass, type, sender->getClassName() /* temporary, until Base object reference kept in the message itself*/, fileInfo )
-        , m_dispatcher(dispatcher)
-    {
-    }
+                 const sofa::core::objectmodel::Base* sender, FileInfo fileInfo);
 
     ~LoggerStream() ;
 

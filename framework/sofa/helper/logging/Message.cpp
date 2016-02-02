@@ -30,10 +30,7 @@
 * in the TextMessaging.h file.
 ******************************************************************************/
 
-#include <iostream>
 using std::endl ;
-
-#include <string>
 using std::string ;
 
 #include "Message.h"
