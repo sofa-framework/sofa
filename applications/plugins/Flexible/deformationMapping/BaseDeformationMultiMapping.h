@@ -52,7 +52,6 @@ namespace component
 namespace mapping
 {
 
-using helper::vector;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class InDataTypes1,class InDataTypes2, class OutDataTypes>
