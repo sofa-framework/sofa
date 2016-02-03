@@ -38,7 +38,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <Flexible/types/AffineTypes.h>
-#include <Flexible/miscMapping/RigidScaleToAffineMultiMapping.h>
+#include <mapping/RigidScaleToAffineMultiMapping.h>
 
 #include <SofaTest/Multi2Mapping_test.h>
 

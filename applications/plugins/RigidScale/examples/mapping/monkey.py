@@ -16,6 +16,7 @@ def createScene(root_node) :
     root_node.createObject('RequiredPlugin', pluginName='image')
     root_node.createObject('RequiredPlugin', pluginName='Flexible')
     root_node.createObject('RequiredPlugin', pluginName='Compliant')
+    root_node.createObject('RequiredPlugin', pluginName='RigidScale')
 
     # Script launch
     root_node.createObject('PythonScriptController', name='script', filename=__file, classname='MyClass')

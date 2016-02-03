@@ -1,4 +1,4 @@
-#include <Flexible/config.h>
+#include <initRigidScale.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Vec.h>
 
@@ -6,7 +6,7 @@
 
 #include <sofa/core/Multi2Mapping.inl>
 
-#include <Flexible/miscMapping/RigidScaleToRigidMultiMapping.inl>
+#include <RigidScale/mapping/RigidScaleToRigidMultiMapping.inl>
 
 namespace sofa
 {
@@ -29,10 +29,10 @@ int RigidScaleToRigidMultiMappingClass = core::RegisterObject("Convert a rigid i
 ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_Flexible_API RigidScaleToRigidMultiMapping<Rigid3dTypes, Vec3dTypes, Rigid3dTypes>;
+template class SOFA_RIGIDSCALE_API RigidScaleToRigidMultiMapping<Rigid3dTypes, Vec3dTypes, Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API RigidScaleToRigidMultiMapping<Rigid3fTypes, Vec3fTypes, Rigid3fTypes>;
+template class SOFA_RIGIDSCALE_API RigidScaleToRigidMultiMapping<Rigid3fTypes, Vec3fTypes, Rigid3fTypes>;
 #endif
 
 }//namespace forcefield

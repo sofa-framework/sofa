@@ -1,19 +1,22 @@
 import sys,os
 import Sofa
+import numpy
 import Flexible.IO
 from Compliant import Tools as Tools
-import toolbox
+import SofaPython
+import SofaPython.Quaternion
+from SofaPython.Tools import listToStr as listToStr, listListToStr as listListToStr
 
 # main path
 currentdir = os.path.dirname(os.path.realpath(__file__))+'/'
 __file = __file__.replace('\\', '/')  # windows compatible filename
 p1 = [2.143849, 10.597820, 0.624865]
 p2 = [1.667256, 13.205175, 0.711915]
-j1 = toolbox.VECT3_middle(p1, p2)
-dofs_postion = [p1, p2]
+j1 = ((numpy.array(p1) + numpy.array(p2))/2).tolist()
+dofs_position = [p1, p2]
 joint_position = [j1]
-joint_orientation = toolbox.computeQuatFromPoints(p1, p2, -1, 2)
-offset_position = [toolbox.VECT3_diff(j1, p1), toolbox.VECT3_diff(j1, p2)]
+joint_orientation = SofaPython.Quaternion.from_line((numpy.array(p1)-numpy.array(p2)).tolist(), -1, 2)
+offset_position = [(numpy.array(j1) - numpy.array(p1)).tolist(), (numpy.array(j1) - numpy.array(p2)).tolist()]
 
 # ================================================================= #
 # Method called in Sofa
@@ -25,6 +28,8 @@ def createScene(root_node) :
     root_node.createObject('RequiredPlugin', pluginName='Compliant')
     root_node.createObject('RequiredPlugin', pluginName='SohusimDev')
     root_node.createObject('RequiredPlugin', pluginName='Registration')
+    root_node.createObject('RequiredPlugin', pluginName='RigidScale')
+
     # Script launch
     root_node.createObject('PythonScriptController', name='script', filename=__file, classname='MyClass')
 
@@ -34,6 +39,7 @@ def createScene(root_node) :
 class MyClass(Sofa.PythonScriptController):
          
     def createGraph(self, root):
+
         # Variable
         self.E_t = 0
         self.E_t_dt = 0
@@ -52,7 +58,7 @@ class MyClass(Sofa.PythonScriptController):
         node.createObject('MeshObjLoader',name='source', filename='./mesh/source.obj', triangulate=1, translation='0 0 0', rotation='0 0 0', scale3d='1 1 1')
         node.createObject('MeshToImageEngine', template='ImageUC', name='rasterizer', src='@source', insideValue='1', voxelSize=0.01, padSize=2, rotateImage='false')
         node.createObject('ImageContainer', template='ImageUC', name='image', src='@rasterizer', drawBB='false')
-        node.createObject('MeshTopology', name='frame_topo', position=toolbox.toStr(dofs_postion))
+        node.createObject('MeshTopology', name='frame_topo', position=listListToStr(dofs_position))
 
         #================================ Target model ===================================
         targetNode = node.createChild('target')
@@ -76,7 +82,7 @@ class MyClass(Sofa.PythonScriptController):
         #=========================== Alignement constraint ===============================
         offsetNode = rigidNode.createChild('offset')
         offsetNode.createObject('MechanicalObject', template='Rigid', name='DOFs', position='0 0 0 0 0 0 1  0 0 0 0 0 0 1', showObject=1, showObjectScale='0.1')
-        offsetNode.createObject('AssembledRigidRigidMapping', template='Rigid,Rigid', source='0 '+toolbox.toStr(offset_position[0], 1) + toolbox.toStr(joint_orientation, 1) + ' 1 '+toolbox.toStr(offset_position[1], 1) + toolbox.toStr(joint_orientation, 1))
+        offsetNode.createObject('AssembledRigidRigidMapping', template='Rigid,Rigid', source='0 '+listToStr(offset_position[0]) + listToStr(joint_orientation) + ' 1 '+listToStr(offset_position[1]) + listToStr(joint_orientation))
         # --- old things even if they don't work well are often more stable, just for creating the prototype ...
         offsetNode.createObject('JointSpringForceField', template='Rigid', name='joint', object1='@.', object2='@.', spring=' BEGIN_SPRING 0 1 FREE_AXIS 0 1 0 0 0 0 KS_T 0 1E10 KS_R 0 1e10 KS_B 3E3 KD 0.1 R_LIM_X 0 0 R_LIM_Y 0 0 R_LIM_Z 0 0 REST_T 0 1 0 END_SPRING')
 
