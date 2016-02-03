@@ -1,0 +1,12 @@
+# CMake package configuration file for the RigidScale plugin
+
+@PACKAGE_INIT@
+
+find_package(Compliant REQUIRED)
+find_package(Flexible REQUIRED)
+
+if(NOT TARGET RigidScale)
+    include("${CMAKE_CURRENT_LIST_DIR}/RigidScaleTargets.cmake")
+endif()
+
+check_required_components(RigidScale)

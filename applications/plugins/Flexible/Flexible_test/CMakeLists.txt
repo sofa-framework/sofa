@@ -27,8 +27,6 @@ set(SOURCE_FILES
     StabilizedNeoHookeHexahedraMaterial_test.cpp
     TetrahedraMaterial_test.cpp
     TetrahedronVolumeMapping_test.cpp
-    RigidScaleToAffineMultiMapping_test.cpp
-    #RigidScaleToRigidMultiMapping_test.cpp # this line is comment for the moment because this test does nit work yet.
 )
 
 set(PYTHON_FILES
