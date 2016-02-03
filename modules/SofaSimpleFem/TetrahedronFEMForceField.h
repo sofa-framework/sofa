@@ -64,7 +64,6 @@ namespace component
 namespace forcefield
 {
 
-using sofa::helper::vector;
 
 template<class DataTypes>
 class TetrahedronFEMForceField;

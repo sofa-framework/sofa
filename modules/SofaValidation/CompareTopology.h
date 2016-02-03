@@ -90,7 +90,7 @@ protected :
 
 
 /// Create CompareTopology component in the graph each time needed
-class SOFA_VALIDATION_API CompareTopologyCreator: public Visitor
+class SOFA_VALIDATION_API CompareTopologyCreator: public simulation::Visitor
 {
 public:
     CompareTopologyCreator(const core::ExecParams* params);
@@ -112,7 +112,7 @@ protected:
 };
 
 
-class SOFA_VALIDATION_API CompareTopologyResult: public Visitor
+class SOFA_VALIDATION_API CompareTopologyResult: public simulation::Visitor
 {
 public:
     CompareTopologyResult(const core::ExecParams* params);

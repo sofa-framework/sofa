@@ -36,7 +36,6 @@ namespace component
 namespace fem
 {
 
-//using namespace sofa::defaulttype;
 
 /**
  * Generic material class

@@ -50,8 +50,6 @@ class VisualParams;
 namespace simulation
 {
 
-using std::cerr;
-using std::endl;
 
 class SOFA_SIMULATION_COMMON_API VisualVisitor : public Visitor
 {

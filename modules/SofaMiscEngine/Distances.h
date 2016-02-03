@@ -66,14 +66,6 @@ class DynamicSparseGridGeometryAlgorithms;
 namespace engine
 {
 
-//using helper::vector;
-//using helper::SVector;
-//using helper::set;
-//using std::map;
-//using std::string;
-//using core::behavior::MechanicalState;
-
-
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class DataTypes>
 class DistancesInternalData

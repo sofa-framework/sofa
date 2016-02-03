@@ -48,8 +48,6 @@ namespace component
 namespace forcefield
 {
 
-//using sofa::helper::vector;
-
 
 template<class DataTypes>
 class TriangularAnisotropicFEMForceField : public sofa::component::forcefield::TriangularFEMForceField<DataTypes>

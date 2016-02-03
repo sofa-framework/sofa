@@ -88,7 +88,7 @@ protected :
 };
 
 /// Create CompareState component in the graph each time needed
-class SOFA_VALIDATION_API CompareStateCreator: public Visitor
+class SOFA_VALIDATION_API CompareStateCreator: public simulation::Visitor
 {
 public:
     CompareStateCreator(const core::ExecParams* params);
@@ -110,7 +110,7 @@ protected:
     int counterCompareState; //avoid to have two same files if two mechanical objects has the same name
 };
 
-class SOFA_VALIDATION_API CompareStateResult: public Visitor
+class SOFA_VALIDATION_API CompareStateResult: public simulation::Visitor
 {
 public:
     CompareStateResult(const core::ExecParams* params) : Visitor(params)

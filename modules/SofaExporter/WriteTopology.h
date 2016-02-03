@@ -114,7 +114,7 @@ public:
 
 
 ///Create WriteTopology component in the graph each time needed
-class SOFA_EXPORTER_API WriteTopologyCreator: public Visitor
+class SOFA_EXPORTER_API WriteTopologyCreator: public simulation::Visitor
 {
 public:
     WriteTopologyCreator(const core::ExecParams* params);
