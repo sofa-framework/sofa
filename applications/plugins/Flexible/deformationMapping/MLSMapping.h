@@ -45,11 +45,6 @@ namespace component
 namespace mapping
 {
 
-using helper::vector;
-using defaulttype::Mat;
-using defaulttype::MatSym;
-
-
 /** Generic moving least squares mapping, from a variety of input types to a variety of output types.
 */
 

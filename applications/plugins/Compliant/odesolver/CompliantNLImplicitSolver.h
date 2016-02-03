@@ -10,10 +10,6 @@ namespace sofa {
 namespace component {
 namespace odesolver {
 
-using core::MultiVecCoordId;
-using core::MultiVecDerivId;
-using core::ConstMultiVecCoordId;
-using core::ConstMultiVecDerivId;
 
 /** Implicit solver with Newton iterations to solve the non-linear implicit equation at arbitrary precision.
 
@@ -69,14 +65,14 @@ class SOFA_Compliant_API CompliantNLImplicitSolver : public CompliantImplicitSol
     virtual void compute_forces(SolverOperations& sop, core::behavior::MultiVecDeriv& f, core::behavior::MultiVecDeriv* f_k=NULL );
 
     /// Residual of the non-linear implicit integration equation
-    SReal compute_residual( SolverOperations sop, MultiVecDerivId residual, MultiVecCoordId newX, const MultiVecDerivId newV, MultiVecDerivId newF, MultiVecCoordId oldX, MultiVecDerivId oldV, MultiVecDerivId oldF, const vec& lambda, chuck_type* residual_constraints=NULL );
+    SReal compute_residual( SolverOperations sop, core::MultiVecDerivId residual, core::MultiVecCoordId newX, const core::MultiVecDerivId newV, core::MultiVecDerivId newF, core::MultiVecCoordId oldX, core::MultiVecDerivId oldV, core::MultiVecDerivId oldF, const vec& lambda, chuck_type* residual_constraints=NULL );
 
     /// Jacobian of the residual
     void compute_jacobian( SolverOperations sop );
 
     /// perform a line search, i.e. finds the sub-step that decreased "sufficiently" the error
     /// re-arranged from numerical recipies, look at the book for more details!
-    bool lnsrch( SReal& resnorm, vec& p /*correction*/, vec& residual, SReal stpmax, SolverOperations sop, MultiVecDerivId err, MultiVecCoordId newX, const MultiVecDerivId newV, MultiVecDerivId newF, MultiVecCoordId oldX, MultiVecDerivId oldV, MultiVecDerivId oldF );
+    bool lnsrch( SReal& resnorm, vec& p /*correction*/, vec& residual, SReal stpmax, SolverOperations sop, core::MultiVecDerivId err, core::MultiVecCoordId newX, const core::MultiVecDerivId newV, core::MultiVecDerivId newF, core::MultiVecCoordId oldX, core::MultiVecDerivId oldV, core::MultiVecDerivId oldF );
 
 
     /// multivec temporaries

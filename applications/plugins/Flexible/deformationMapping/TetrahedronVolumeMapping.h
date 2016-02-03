@@ -14,8 +14,6 @@ namespace component
 namespace mapping
 {
 
-using helper::vector;
-
 
 
 /** Map volumes from tetrahedra */

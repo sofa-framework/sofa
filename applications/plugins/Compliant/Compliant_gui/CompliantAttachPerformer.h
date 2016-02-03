@@ -41,7 +41,6 @@
 
 namespace sofa
 {
-using defaulttype::Vec;
 
 namespace gui
 {
@@ -86,7 +85,7 @@ class SOFA_Compliant_gui_API CompliantAttachPerformer: public TInteractionPerfor
 
 
 
-    typedef defaulttype::StdVectorTypes< Vec<1,Real>, Vec<1,Real>  >  DataTypes1;
+    typedef defaulttype::StdVectorTypes< defaulttype::Vec<1,Real>, defaulttype::Vec<1,Real>  >  DataTypes1;
 
 
     simulation::Node::SPtr pickedNode;       ///< Node containing the picked MechanicalState

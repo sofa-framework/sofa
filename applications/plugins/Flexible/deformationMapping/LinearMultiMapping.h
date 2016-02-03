@@ -45,8 +45,6 @@ namespace component
 namespace mapping
 {
 
-using helper::vector;
-
 
 /** Generic linear mapping, from a variety of input types to a variety of output types.
 */
