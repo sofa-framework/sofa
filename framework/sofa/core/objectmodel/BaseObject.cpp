@@ -31,8 +31,6 @@
 #include <sofa/helper/TagFactory.h>
 #include <iostream>
 
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {

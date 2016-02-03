@@ -73,7 +73,7 @@ void ClangStyleMessageFormatter::formatMessage(const Message& m,std::ostream& ou
         out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << s_messageTypeStrings[m.type()] << ": " << m.message().rdbuf() << std::endl ;
     else
         out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << s_messageTypeStrings[m.type()] << ": ["<< m.sender() <<"] " << m.message().rdbuf() << std::endl ;
-    out << " message id: " << m.id() << std::endl ;
+//    out << " message id: " << m.id() << std::endl ;
 }
 
 

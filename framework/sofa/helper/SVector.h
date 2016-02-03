@@ -26,6 +26,7 @@
 #define SOFA_HELPER_SVECTOR_H
 
 #include <sofa/helper/vector.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -107,7 +108,7 @@ public:
 
         if ( c != '[' )
         {
-            std::cerr << "SVector::read : Bad begin character : " << c << ", expected  [" << std::endl;
+            msg_error("Svector") << "read : Bad begin character : " << c << ", expected  [";
             return in;
         }
         std::streampos pos = in.tellg();
@@ -128,7 +129,7 @@ public:
             }
             if ( c != ']' )
             {
-                std::cerr << "SVector::read : Bad end character : " << c << ", expected  ]" << std::endl;
+                msg_error("Svector") << "read : Bad end character : " << c << ", expected  ]";
                 return in;
             }
         }

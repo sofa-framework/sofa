@@ -25,6 +25,7 @@
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/BackTrace.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -78,10 +79,10 @@ BaseData::BaseData( const BaseInitData& init)
     m_isSets.assign(false);
     if (init.data && init.data != this)
     {
-        std::cerr << "CODE ERROR: initData POINTER MISMATCH: field name \"" << init.name << "\"";
+        helper::logging::LoggerStream msgerror = msg_error("BaseData");
+        msgerror << "initData POINTER MISMATCH: field name \"" << init.name << "\"";
         if (init.owner)
-            std::cerr << " created by class " << init.owner->getClassName();
-        std::cerr << "!...aborting" << std::endl;
+            msgerror << " created by class " << init.owner->getClassName();
         sofa::helper::BackTrace::dump();
         exit( EXIT_FAILURE );
     }
@@ -308,7 +309,7 @@ bool BaseData::findDataLinkDest(BaseData*& ptr, const std::string& path, const B
         return m_owner->findDataLinkDest(ptr, path, link);
     else
     {
-        std::cerr << "DATA LINK ERROR: no owner defined for Data " << getName() << ", cannot lookup Data link " << path << std::endl;
+        msg_error("BaseData") << "findDataLinkDest: no owner defined for Data " << getName() << ", cannot lookup Data link " << path;
         return false;
     }
 }

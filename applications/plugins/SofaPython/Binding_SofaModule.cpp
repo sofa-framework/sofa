@@ -338,8 +338,22 @@ static const std::string s_emitter = "PythonScript";
 
 extern "C" PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args)
 {
-    char *emitter, *message;
-    if( !PyArg_ParseTuple(args, "ss",&emitter, &message) )
+    size_t argSize = PyTuple_Size(args);
+
+    char* message;
+
+    if( argSize==2 )
+    {
+        char* emitter;
+        if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        msg_info( emitter ) << message;
+    }
+    else // no emitter
     {
         if( !PyArg_ParseTuple(args, "s", &message) )
         {
@@ -347,20 +361,30 @@ extern "C" PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args)
             Py_RETURN_NONE;
         }
 
-        // no emitter
         msg_info( s_emitter ) << message;
-        Py_RETURN_NONE;
     }
-
-    msg_info( emitter ) << message;
 
     Py_RETURN_NONE;
 }
 
 extern "C" PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args)
 {
-    char *emitter, *message;
-    if( !PyArg_ParseTuple(args, "ss",&emitter, &message) )
+    size_t argSize = PyTuple_Size(args);
+
+    char* message;
+
+    if( argSize==2 )
+    {
+        char* emitter;
+        if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        msg_warning( emitter ) << message;
+    }
+    else // no emitter
     {
         if( !PyArg_ParseTuple(args, "s", &message) )
         {
@@ -368,20 +392,30 @@ extern "C" PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args)
             Py_RETURN_NONE;
         }
 
-        // no emitter
         msg_warning( s_emitter ) << message;
-        Py_RETURN_NONE;
     }
-
-    msg_warning( emitter ) << message;
 
     Py_RETURN_NONE;
 }
 
 extern "C" PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args)
 {
-    char *emitter, *message;
-    if( !PyArg_ParseTuple(args, "ss",&emitter, &message) )
+    size_t argSize = PyTuple_Size(args);
+
+    char* message;
+
+    if( argSize==2 )
+    {
+        char* emitter;
+        if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        msg_error( emitter ) << message;
+    }
+    else // no emitter
     {
         if( !PyArg_ParseTuple(args, "s", &message) )
         {
@@ -389,20 +423,30 @@ extern "C" PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args)
             Py_RETURN_NONE;
         }
 
-        // no emitter
         msg_error( s_emitter ) << message;
-        Py_RETURN_NONE;
     }
-
-    msg_error( emitter ) << message;
 
     Py_RETURN_NONE;
 }
 
 extern "C" PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args)
 {
-    char *emitter, *message;
-    if( !PyArg_ParseTuple(args, "ss",&emitter, &message) )
+    size_t argSize = PyTuple_Size(args);
+
+    char* message;
+
+    if( argSize==2 )
+    {
+        char* emitter;
+        if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        msg_fatal( emitter ) << message;
+    }
+    else // no emitter
     {
         if( !PyArg_ParseTuple(args, "s", &message) )
         {
@@ -410,12 +454,8 @@ extern "C" PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args)
             Py_RETURN_NONE;
         }
 
-        // no emitter
         msg_fatal( s_emitter ) << message;
-        Py_RETURN_NONE;
     }
-
-    msg_fatal( emitter ) << message;
 
     Py_RETURN_NONE;
 }

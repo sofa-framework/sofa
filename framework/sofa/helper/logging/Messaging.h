@@ -77,9 +77,7 @@
 #ifndef MESSAGING_H
 #define MESSAGING_H
 
-#include <sstream>
 #include "MessageDispatcher.h"
-#include "Message.h"
 
 #define nmsg_info(emitter)     sofa::helper::logging::Nop::getAnInstance()
 #define nmsg_warning(emitter)  sofa::helper::logging::Nop::getAnInstance()

@@ -31,19 +31,12 @@
 *****************************************************************************/
 #ifndef MESSAGE_H
 #define MESSAGE_H
+
 #include <iostream>
 #include <string>
 #include <sofa/helper/helper.h>
-
 #include <sstream>
 
-//namespace sofa {
-//namespace core {
-//namespace objectmodel{
-//class Base ;
-//}
-//}
-//}
 
 namespace sofa
 {
@@ -91,8 +84,8 @@ public:
     Class                    context() const  { return m_class; }
     Type                     type() const     { return m_type; }
     const std::string&       sender() const   { return m_sender; }
-    int                      id() const       { return m_id; }
-    void                     setId(int id)    { m_id=id; }
+//    int                      id() const       { return m_id; }
+//    void                     setId(int id)    { m_id=id; }
 
     bool empty() const { return m_stream.rdbuf()->in_avail() <= 0; }
 

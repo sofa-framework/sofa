@@ -34,7 +34,7 @@
 #include <iostream>
 #include <algorithm>
 #include <boost/scoped_ptr.hpp>
-
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -282,7 +282,7 @@ public:
             allocator->resize(data, size, maxsize, temp);
         else
         {
-            std::cerr << "Error: invalid reserve request ("<<size<<">"<<maxsize<<") on external vector without allocator.\n";
+            msg_error("VecTypes") << "reserve: invalid reserve request ("<<size<<">"<<maxsize<<") on external vector without allocator.";
         }
     }
     void resize(size_type size)
@@ -294,7 +294,7 @@ public:
         else
         {
             cursize = maxsize;
-            std::cerr << "Error: invalid resize request ("<<size<<">"<<maxsize<<") on external vector without allocator.\n";
+            msg_error("VecTypes") << "resize: invalid resize request ("<<size<<">"<<maxsize<<") on external vector without allocator.";
         }
     }
     void clear()
