@@ -31,8 +31,6 @@
 
 #include <algorithm>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -41,18 +39,16 @@ namespace component
 namespace shapefunction
 {
 
-using core::behavior::BaseShapeFunction;
-using defaulttype::Mat;
 /**
 Barycentric shape functions are the barycentric coordinates of points inside cells (can be edges, triangles, quads, tetrahedra, hexahedra)
   */
 
 template <class ShapeFunctionTypes_>
-class BarycentricShapeFunction : public BaseShapeFunction<ShapeFunctionTypes_>
+class BarycentricShapeFunction : public core::behavior::BaseShapeFunction<ShapeFunctionTypes_>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(BarycentricShapeFunction, ShapeFunctionTypes_) , SOFA_TEMPLATE(BaseShapeFunction, ShapeFunctionTypes_));
-    typedef BaseShapeFunction<ShapeFunctionTypes_> Inherit;
+    SOFA_CLASS(SOFA_TEMPLATE(BarycentricShapeFunction, ShapeFunctionTypes_) , SOFA_TEMPLATE(core::behavior::BaseShapeFunction, ShapeFunctionTypes_));
+    typedef core::behavior::BaseShapeFunction<ShapeFunctionTypes_> Inherit;
 
     typedef typename Inherit::Real Real;
     typedef typename Inherit::Coord Coord;
@@ -69,7 +65,7 @@ public:
     typedef typename Inherit::Gradient Gradient;
     typedef typename Inherit::Hessian Hessian;
     enum {spatial_dimensions=Inherit::spatial_dimensions};
-    typedef Mat<spatial_dimensions,spatial_dimensions,Real> Basis;
+    typedef defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> Basis;
     sofa::helper::vector<Basis> bases;
     Data< Real > f_tolerance;
     Cell cellIndex;  ///< used by external classes to retrieve the index of the cell where barycentric weights are computed from

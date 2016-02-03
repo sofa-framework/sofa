@@ -38,9 +38,7 @@ namespace component
 {
 namespace forcefield
 {
-
-using helper::vector;
-using helper::OptionsGroup;
+;
 
 /** Apply VolumePreservation's Law for isotropic homogeneous incompressible materials.
   * The energy is : k/2 ln( I3^1/2 )^2 = k/2 ln( (U1*U2*U3)^1/2 )^2
@@ -59,8 +57,8 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<OptionsGroup> f_method;
-    Data<vector<Real> > f_k;
+    Data<helper::OptionsGroup> f_method;
+    Data<helper::vector<Real> > f_k;
     //@}
 
     virtual void reinit()

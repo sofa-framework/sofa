@@ -45,10 +45,6 @@ namespace sofa
 namespace defaulttype
 {
 
-using std::endl;
-using helper::vector;
-
-
 /**
     Generic class to implement a mechanical state representing strain
     strain is decomposed in a basis of an certain order.

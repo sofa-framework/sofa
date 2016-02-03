@@ -38,7 +38,6 @@ namespace component
 namespace forcefield
 {
 
-using helper::vector;
 
 /** Apply NeoHookean's Law for isotropic homogeneous incompressible materials.
   * The energy is : mu/2 ( I1/ I3^1/3  - 3) + bulk/2 (I3-1)^2

@@ -61,9 +61,6 @@ namespace component
 namespace shapefunction
 {
 
-using core::behavior::BaseShapeFunction;
-using defaulttype::Mat;
-using defaulttype::Vec;
 
 /**
 Shape functions computed using heat diffusion in images

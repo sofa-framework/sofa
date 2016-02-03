@@ -42,9 +42,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using defaulttype::Vec;
-using defaulttype::Mat;
 
 /**
  * Register a set of meshes of similar topology

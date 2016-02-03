@@ -37,8 +37,6 @@ namespace component
 namespace shapefunction
 {
 
-using core::behavior::BaseShapeFunction;
-using defaulttype::Mat;
 /**
 Compactly supported hat shape function followed by normalization
   */
@@ -50,11 +48,11 @@ struct HatShapeFunctionInternalData
 
 
 template <class ShapeFunctionTypes_>
-class HatShapeFunction : public BaseShapeFunction<ShapeFunctionTypes_>
+class HatShapeFunction : public core::behavior::BaseShapeFunction<ShapeFunctionTypes_>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(HatShapeFunction, ShapeFunctionTypes_) , SOFA_TEMPLATE(BaseShapeFunction, ShapeFunctionTypes_));
-    typedef BaseShapeFunction<ShapeFunctionTypes_> Inherit;
+    SOFA_CLASS(SOFA_TEMPLATE(HatShapeFunction, ShapeFunctionTypes_) , SOFA_TEMPLATE(core::behavior::BaseShapeFunction, ShapeFunctionTypes_));
+    typedef core::behavior::BaseShapeFunction<ShapeFunctionTypes_> Inherit;
 
     typedef typename Inherit::Real Real;
     typedef typename Inherit::Coord Coord;

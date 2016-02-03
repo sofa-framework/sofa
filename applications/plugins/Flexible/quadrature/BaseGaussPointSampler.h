@@ -45,10 +45,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using defaulttype::Vec;
-using defaulttype::Mat;
-
 ///Abstract class for sampling integration points according to a specific quadrature method.
 /**
  * Samplers provide:
@@ -79,8 +75,8 @@ public:
     /** @name position data */
     //@{
     static const unsigned int spatial_dimensions = 3;
-    typedef Vec<spatial_dimensions,Real> Coord;   // TODO: put as a template to handle the 2D case (currently the conversion 3D-> 2D is done in the deformation mapping) ?
-    typedef vector<Coord> SeqPositions;
+    typedef defaulttype::Vec<spatial_dimensions,Real> Coord;   // TODO: put as a template to handle the 2D case (currently the conversion 3D-> 2D is done in the deformation mapping) ?
+    typedef helper::vector<Coord> SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > f_position; ///< Samples position
@@ -88,8 +84,8 @@ public:
 
     /** @name orientation data */
     //@{
-    typedef Mat<spatial_dimensions,spatial_dimensions,Real> Transform;
-    typedef vector<Transform> VTransform;
+    typedef defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> Transform;
+    typedef helper::vector<Transform> VTransform;
     Data< VTransform > f_transforms;        ///< linear transformation in world space to orient samples
     //@}
 
@@ -158,10 +154,10 @@ protected:
         case 1:
             glPushAttrib(GL_LIGHTING_BIT);
             glEnable(GL_LIGHTING);
-            vparams->drawTool()->drawSpheres(this->f_position.getValue(),showSamplesScale.getValue(),Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
+            vparams->drawTool()->drawSpheres(this->f_position.getValue(),showSamplesScale.getValue(),defaulttype::Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
             glPopAttrib();
         default:
-            vparams->drawTool()->drawPoints(this->f_position.getValue(),showSamplesScale.getValue(),Vec<4,float>(0.2f, 1.0f, 0.2f, 1.0f));
+            vparams->drawTool()->drawPoints(this->f_position.getValue(),showSamplesScale.getValue(),defaulttype::Vec<4,float>(0.2f, 1.0f, 0.2f, 1.0f));
         }
 
 #endif /* SOFA_NO_OPENGL */

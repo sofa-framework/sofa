@@ -54,8 +54,6 @@ namespace component
 namespace forcefield
 {
 
-using helper::vector;
-using namespace sofa::defaulttype;
 
 template<class DataTypes>
 class ClosestPointRegistrationForceFieldInternalData

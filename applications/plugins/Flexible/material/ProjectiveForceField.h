@@ -39,7 +39,6 @@ namespace component
 namespace forcefield
 {
 
-using helper::vector;
 
 /**
     Forcefield based on a quadratic distance measure between dofs and a projection

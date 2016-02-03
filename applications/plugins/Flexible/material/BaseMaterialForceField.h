@@ -42,7 +42,6 @@ namespace component
 namespace forcefield
 {
 
-using helper::vector;
 
 /** Abstract interface to allow for resizing
 */

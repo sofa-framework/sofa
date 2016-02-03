@@ -49,7 +49,6 @@ namespace component
 namespace mapping
 {
 
-using helper::vector;
 
 /** Abstract interface to allow for resizing
 */

@@ -38,7 +38,6 @@ namespace component
 namespace forcefield
 {
 
-using helper::vector;
 
 /** Apply MooneyRivlin's Law for isotropic homogeneous incompressible materials.
   * The energy is : C1 ( I1/ J^2/3  - 3)  + C2 ( I2/ J^4/3  - 3) + bulk/2 (J-1)^2

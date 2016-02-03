@@ -38,7 +38,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
 
 /**
  * This class samples an object represented by a mesh
@@ -368,10 +367,10 @@ protected:
     inline void getCubeVolumes(volumeIntegralType &V, const Coord& p1,const Coord& p2,const Coord& p3,const Coord& p4, const unsigned int order)
     {
         Coord u=p2-p1,v=p3-p1,w=p4-p1;
-        Vec<3,Real> l;  for(unsigned int i=0; i<3; i++) l[i]=helper::rmax(helper::rmax(helper::rabs(u[i]),helper::rabs(v[i])),helper::rabs(w[i]));
-        Vec<3,Real> l2;  for(unsigned int i=0; i<3; i++) l2[i]=l[i]*l[i];
-        Vec<3,Real> l3;  for(unsigned int i=0; i<3; i++) l3[i]=l2[i]*l[i];
-        Vec<3,Real> l5;  for(unsigned int i=0; i<3; i++) l5[i]=l3[i]*l2[i];
+        defaulttype::Vec<3,Real> l;  for(unsigned int i=0; i<3; i++) l[i]=helper::rmax(helper::rmax(helper::rabs(u[i]),helper::rabs(v[i])),helper::rabs(w[i]));
+        defaulttype::Vec<3,Real> l2;  for(unsigned int i=0; i<3; i++) l2[i]=l[i]*l[i];
+        defaulttype::Vec<3,Real> l3;  for(unsigned int i=0; i<3; i++) l3[i]=l2[i]*l[i];
+        defaulttype::Vec<3,Real> l5;  for(unsigned int i=0; i<3; i++) l5[i]=l3[i]*l2[i];
 
 
         unsigned int dim=(order+1)*(order+2)*(order+3)/6;          V.resize(dim);

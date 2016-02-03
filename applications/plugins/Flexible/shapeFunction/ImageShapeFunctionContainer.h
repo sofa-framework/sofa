@@ -38,7 +38,6 @@ namespace component
 namespace shapefunction
 {
 
-using core::behavior::BaseShapeFunction;
 
 /**
 Provides interface to mapping from precomputed shape functions
