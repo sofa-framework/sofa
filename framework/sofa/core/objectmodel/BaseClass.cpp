@@ -26,6 +26,7 @@
 #ifdef __GNUC__
 #include <sofa/core/ps3/cxxabi.h>
 #endif
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -54,7 +55,7 @@ std::string BaseClass::decodeFullName(const std::type_info& t)
     char* allocname = abi::__cxa_demangle(t.name(), 0, /*&length*/0, &status);
     if(allocname == 0)
     {
-        std::cerr << "Unable to demangle symbol: " << t.name() << std::endl;
+        msg_error("BaseClass") << "decodeFullName: Unable to demangle symbol: " << t.name();
     }
     else
     {

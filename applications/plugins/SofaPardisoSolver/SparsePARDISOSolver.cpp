@@ -29,14 +29,13 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
-#include "sofa/helper/system/thread/CTime.h"
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.inl>
 #include <sofa/helper/AdvancedTimer.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.inl>
+
 
 #ifndef WIN32
 #include <unistd.h>

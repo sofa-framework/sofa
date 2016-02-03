@@ -33,6 +33,7 @@
 #include <cstdlib>
 
 #include <sofa/helper/helper.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -159,7 +160,7 @@ inline std::istream& set<int, std::less<int>, std::allocator<int> >::read( std::
                 tinc = atoi(s3.c_str());
                 if (tinc == 0)
                 {
-                    std::cerr << "ERROR parsing \""<<s<<"\": increment is 0\n";
+                    msg_error("set") << "parsing \""<<s<<"\": increment is 0";
                     tinc = (t1<t2) ? 1 : -1;
                 }
                 if ((t2-t1)*tinc < 0)
@@ -219,7 +220,7 @@ inline std::istream& set<unsigned int, std::less<unsigned int>, std::allocator<u
                 tinc = atoi(s3.c_str());
                 if (tinc == 0)
                 {
-                    std::cerr << "ERROR parsing \""<<s<<"\": increment is 0\n";
+                    msg_error("set") << "parsing \""<<s<<"\": increment is 0";
                     tinc = (t1<t2) ? 1 : -1;
                 }
                 if (((int)(t2-t1))*tinc < 0)

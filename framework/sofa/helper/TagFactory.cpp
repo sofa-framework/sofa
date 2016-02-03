@@ -23,7 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/TagFactory.h>
-#include <iostream>
+#include <sofa/helper/logging/Messaging.h>
+
 namespace sofa
 {
 
@@ -55,7 +56,7 @@ TagFactory::TagFactory()
     else
     {
 #ifndef NDEBUG
-        std::cout << "TagFactory: creating new tag "<<i<<": "<<name<<std::endl;
+        msg_info("TagFactory") <<"creating new tag "<<i<<": "<<name;
 #endif
         tagfac->tagsList.push_back(name);
         return i;

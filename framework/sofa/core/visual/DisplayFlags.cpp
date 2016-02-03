@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/visual/DisplayFlags.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -96,7 +97,7 @@ std::istream& FlagTreeItem::read(std::istream &in)
             parse_map[token] = true;
         }
         else
-            std::cerr << "DisplayFlags: unknown token " << token << std::endl;
+            msg_error("DisplayFlags") << "FlagTreeItem: unknown token " << token;
     }
     if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
 

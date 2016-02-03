@@ -10,6 +10,7 @@ def createScene(node):
     
     vtk = node.createChild("vtk")
     meshLoader = SofaPython.Tools.meshLoader(vtk, "mesh/liver.vtk")
-    vtk.createObject('VisualModel', name="visual", src="@"+meshLoader.name)
+    vm = vtk.createObject('VisualModel', name="visual", src="@"+meshLoader.name)
+    vm.setColor(1,0,0,.5)
     
     return node

@@ -49,6 +49,8 @@ using std::remove ;
 #include "MessageHandler.h"
 #include "ConsoleMessageHandler.h"
 
+#include <sofa/core/objectmodel/Base.h>
+
 
 namespace sofa
 {
@@ -82,69 +84,69 @@ public:
     void clearHandlers() ;
     ConsoleMessageHandler* getDefaultMessageHandler();
 
-    int getLastMessageId() ;
-    int getLastErrorId() ;
-    int getLastWarningId() ;
-    int getLastInfoId() ;
+//    int getLastMessageId() ;
+//    int getLastErrorId() ;
+//    int getLastWarningId() ;
+//    int getLastInfoId() ;
 
     void process(sofa::helper::logging::Message &m);
 
 private:
     vector<MessageHandler*> m_handlers ;
 
-    int m_lastAllocatedID ; // keep a count of the last id allocated
-    int m_lastErrorId ;     // keep count of the last error message received.
-    int m_lastWarningId ;
-    int m_lastInfoId ;
+//    int m_lastAllocatedID ; // keep a count of the last id allocated
+//    int m_lastErrorId ;     // keep count of the last error message received.
+//    int m_lastWarningId ;
+//    int m_lastInfoId ;
 
 
-    friend Message& operator<<=(MessageDispatcherImpl& d, Message& m) ;
+//    friend Message& operator<<=(MessageDispatcherImpl& d, Message& m) ;
 };
 
 
-sofa::helper::logging::Message& operator<<=(MessageDispatcherImpl &d, sofa::helper::logging::Message& m){
-    d.m_lastAllocatedID++ ;
+//sofa::helper::logging::Message& operator<<=(MessageDispatcherImpl &d, sofa::helper::logging::Message& m){
+//    d.m_lastAllocatedID++ ;
 
-    m.setId(d.m_lastAllocatedID) ;
+//    m.setId(d.m_lastAllocatedID) ;
 
-    if(m.type()==Message::Error)
-        d.m_lastErrorId = d.m_lastAllocatedID ;
-    else if(m.type()==Message::Warning)
-        d.m_lastWarningId = d.m_lastAllocatedID ;
-    else if(m.type()==Message::Info)
-        d.m_lastInfoId = d.m_lastAllocatedID ;
+//    if(m.type()==Message::Error)
+//        d.m_lastErrorId = d.m_lastAllocatedID ;
+//    else if(m.type()==Message::Warning)
+//        d.m_lastWarningId = d.m_lastAllocatedID ;
+//    else if(m.type()==Message::Info)
+//        d.m_lastInfoId = d.m_lastAllocatedID ;
 
-    d.process(m);
-    return m;
-}
+//    d.process(m);
+//    return m;
+//}
 
 MessageDispatcherImpl::MessageDispatcherImpl()
 {
-    m_lastAllocatedID = -1 ; // keep a count of the last id allocated
-    m_lastErrorId = -1 ;     // keep count of the last error message received.
-    m_lastWarningId = -1 ;
-    m_lastInfoId = -1 ;
+//    m_lastAllocatedID = -1 ; // keep a count of the last id allocated
+//    m_lastErrorId = -1 ;     // keep count of the last error message received.
+//    m_lastWarningId = -1 ;
+//    m_lastInfoId = -1 ;
 
     // add a default handler
     addHandler(getDefaultMessageHandler());
 }
 
 
-int MessageDispatcherImpl::getLastMessageId() {
-    return m_lastAllocatedID ;
-}
+//int MessageDispatcherImpl::getLastMessageId() {
+//    return m_lastAllocatedID ;
+//}
 
-int MessageDispatcherImpl::getLastErrorId(){
-    return m_lastErrorId ;
-}
+//int MessageDispatcherImpl::getLastErrorId(){
+//    return m_lastErrorId ;
+//}
 
-int MessageDispatcherImpl::getLastWarningId(){
-    return m_lastWarningId ;
-}
+//int MessageDispatcherImpl::getLastWarningId(){
+//    return m_lastWarningId ;
+//}
 
-int MessageDispatcherImpl::getLastInfoId(){
-    return m_lastInfoId ;
-}
+//int MessageDispatcherImpl::getLastInfoId(){
+//    return m_lastInfoId ;
+//}
 
 int MessageDispatcherImpl::addHandler(MessageHandler* o){
     if( std::find(m_handlers.begin(), m_handlers.end(), o) == m_handlers.end()){
@@ -175,6 +177,17 @@ ConsoleMessageHandler* MessageDispatcherImpl::getDefaultMessageHandler()
     return &s_defaultMessageHandler;
 }
 
+
+
+
+
+
+LoggerStream::LoggerStream(MessageDispatcherImpl& dispatcher, Message::Class mclass, Message::Type type,
+             const sofa::core::objectmodel::Base* sender, FileInfo fileInfo)
+    : m_message( mclass, type, sender->getClassName() /* temporary, until Base object reference kept in the message itself*/, fileInfo )
+    , m_dispatcher(dispatcher)
+{
+}
 
 LoggerStream::~LoggerStream()
 {
@@ -216,21 +229,21 @@ ConsoleMessageHandler* MessageDispatcher::getDefaultMessageHandler(){
     return gMessageDispatcher.getDefaultMessageHandler() ;
 }
 
-int MessageDispatcher::getLastMessageId(){
-    return gMessageDispatcher.getLastMessageId() ;
-}
+//int MessageDispatcher::getLastMessageId(){
+//    return gMessageDispatcher.getLastMessageId() ;
+//}
 
-int MessageDispatcher::getLastErrorId(){
-    return gMessageDispatcher.getLastErrorId() ;
-}
+//int MessageDispatcher::getLastErrorId(){
+//    return gMessageDispatcher.getLastErrorId() ;
+//}
 
-int MessageDispatcher::getLastWarningId(){
-    return gMessageDispatcher.getLastWarningId() ;
-}
+//int MessageDispatcher::getLastWarningId(){
+//    return gMessageDispatcher.getLastWarningId() ;
+//}
 
-int MessageDispatcher::getLastInfoId(){
-    return gMessageDispatcher.getLastInfoId() ;
-}
+//int MessageDispatcher::getLastInfoId(){
+//    return gMessageDispatcher.getLastInfoId() ;
+//}
 
 LoggerStream MessageDispatcher::info(Message::Class mclass, const std::string& sender, FileInfo fileInfo) {
     return gMessageDispatcher.log(mclass, Message::Info, sender, fileInfo);

@@ -32,6 +32,6 @@ timeout "visualization/strainDiscretizer.scn" "50"
 
 # This scene needs time to load and runs quite slowly
 iterations "deformations/linearHexaFEM-comparison.scn" "3"
-timeout "deformations/linearHexaFEM-comparison.scn" "100"
+timeout "deformations/linearHexaFEM-comparison.scn" "200"
 
 

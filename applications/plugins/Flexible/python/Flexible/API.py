@@ -3,8 +3,7 @@ import os.path
 import Sofa
 import json
 
-import Flexible.IO
-import sys
+import Sofa
 
 import SofaPython.Tools
 from SofaPython.Tools import listToStr as concat
@@ -19,7 +18,7 @@ def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, cell='', as
     TODO: better names for input dofRigidNode and dofAffineNode, they can be any kind of nodes
     """
     if dofRigidNode is None and dofAffineNode is None:
-        print "[Flexible.API.insertLinearMapping] ERROR: no dof given"
+        Sofa.msg_error("Flexible.API","insertLinearMapping : no dof given")
     else:
         if dofRigidNode is None:
             return node.createObject(
@@ -83,7 +82,7 @@ class Deformable:
 
     def addVisual(self, color=[1,1,1,1]):
         if self.dofs is None:
-            print "[Flexible.Deformable] ERROR: visual mesh not added because there is no dof, use LoadVisual instead to have a static visual mesh ", self.name
+            Sofa.msg_error("Flexible.API.Deformable","addVisual : visual mesh not added because there is no dof, use LoadVisual instead to have a static visual mesh ")
         else:   # create a new deformable
             d = Deformable(self.node,"Visual")
             d.visualFromDeformable(self,color)
@@ -136,20 +135,20 @@ class Deformable:
 
     def addMechanicalObject(self):
         if self.meshLoader is None:
-            print "[Flexible.Deformable] ERROR: no loaded mesh for ", self.name
+            Sofa.msg_error("Flexible.API.Deformable","addMechanicalObject: no loaded mesh for "+ self.name)
             return
         self.dofs = self.node.createObject("MechanicalObject", template = "Vec3", name="dofs", src="@"+self.meshLoader.name)
 
     def addNormals(self, invert=False):
         if self.topology is None:
-            print "[Flexible.Deformable] ERROR: no topology for ", self.name
+            Sofa.msg_error("Flexible.API.Deformable","addNormals : no topology for "+ self.name)
             return
         pos = '@'+self.topology.name+'.position' if self.dofs is None else  '@'+self.dofs.name+'.position'
         self.normals = self.node.createObject("NormalsFromPoints", template='Vec3', name="normalsFromPoints", position=pos, triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
 
     def addMass(self,totalMass):
         if self.dofs is None:
-            print "[Flexible.Deformable] ERROR: no dofs for ", self.name
+            Sofa.msg_error("Flexible.API.Deformable","addMass : no dofs for "+ self.name)
             return
         self.mass = self.node.createObject('UniformMass', totalMass=totalMass)
 
@@ -186,7 +185,8 @@ class Deformable:
         data = {'indices': self.mapping.indices, 'weights': self.mapping.weights}
         with open(filename, 'w') as f:
             json.dump(data, f)
-            print 'Exported Weights to '+filename
+            if printLog:
+                Sofa.msg_info("Flexible.API.Deformable",'Exported Weights to '+filename)
 
     def read(self, filenamePrefix=None, directory=""):
         """ read weights of the linear mapping
@@ -204,7 +204,7 @@ class Deformable:
                 self.mapping.indices= str(data['indices'])
                 self.mapping.weights= str(data['weights'])
                 if printLog:
-                    print 'Imported Weights from '+filename
+                    Sofa.msg_info("Flexible.API.Deformable",'Imported Weights from '+filename)
 
 class AffineMass:
     def __init__(self, dofAffineNode):
@@ -234,14 +234,15 @@ class AffineMass:
                 data.update(json.load(f))
                 self.mass = self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix=data['massMatrix'])
                 if printLog:
-                    print 'Imported Affine Mass from '+filename
+                    Sofa.msg_info("Flexible.API.AffineMass",'Imported Affine Mass from '+filename)
 
     def write(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
         data = {'massMatrix': str(self.mass.findData('massMatrix').value).replace('\n',' ')}
         with open(filename, 'w') as f:
             json.dump(data, f)
-            print 'Exported Affine Mass to '+filename
+            if printLog:
+                Sofa.msg_info("Flexible.API.AffineMass",'Exported Affine Mass to '+filename)
 
 # fix of Sofa<->python serialization
 def affineDatatostr(data):
@@ -263,7 +264,8 @@ class AffineDof:
 
     def addMechanicalObject(self, src, **kwargs):
         if src is None:
-            print "[Flexible.API.AffineDof] ERROR: no source"
+            Sofa.msg_error("Flexible.API.AffineDof","addMechanicalObject : no source")
+            return
         self.src = "@"+SofaPython.Tools.getObjectPath(src)+".position"
         self.dof = self.node.createObject("MechanicalObject", template="Affine", name="dofs", position=self.src, **kwargs)
 
@@ -281,14 +283,15 @@ class AffineDof:
                 data.update(json.load(f))
                 self.dof = self.node.createObject("MechanicalObject", template="Affine", name="dofs", position=data['position'], rest_position=data['rest_position'])
                 if printLog:
-                    print 'Imported Affine Dof from '+filename
+                    Sofa.msg_info("Flexible.API.AffineDof",'Imported Affine Dof from '+filename)
 
     def write(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
         data = {'template':'Affine', 'rest_position': affineDatatostr(self.dof.rest_position), 'position': affineDatatostr(self.dof.position)}
         with open(filename, 'w') as f:
             json.dump(data, f)
-            print 'Exported Affine Dof to '+filename
+            if printLog:
+                Sofa.msg_info("Flexible.API.AffineDof",'Exported Affine Dof to '+filename)
 
 
 class ShapeFunction:
@@ -303,7 +306,8 @@ class ShapeFunction:
         """ Add a Voronoi shape function using path to position  and possibly cells
         """
         if position =='':
-            print "[Flexible.API.ShapeFunction] ERROR: no position"
+            Sofa.msg_error("Flexible.API.ShapeFunction","addVoronoi : no position")
+            return
         imagePath = SofaPython.Tools.getObjectPath(image.branchingImage)
         self.shapeFunction = self.node.createObject(
             "VoronoiShapeFunction", template="ShapeFunction,"+"Branching"+image.imageType, 
@@ -325,17 +329,18 @@ class ShapeFunction:
 
     def addExporter(self, filenamePrefix=None, directory=""):
         if self.shapeFunction is None:
-            print "[Flexible.API.ShapeFunction] ERROR: no shapeFunction"
+            Sofa.msg_error("Flexible.API.ShapeFunction","addExporter : no shapeFunction")
+            return
         sfPath = SofaPython.Tools.getObjectPath(self.shapeFunction)
         self.node.createObject(
             "ImageExporter", template="BranchingImageUI", name="exporterIndices", 
             image="@"+sfPath+".indices", transform="@"+sfPath+".transform",
             filename=self.getFilenameIndices(filenamePrefix, directory),
-            exportAtBegin=True, printLog=True)
+            exportAtBegin=True, printLog=printLog)
         self.node.createObject(
             "ImageExporter", template="BranchingImageR", name="exporterWeights",
             image="@"+sfPath+".weights", transform="@"+sfPath+".transform",
-            filename=self.getFilenameWeights(filenamePrefix, directory), exportAtBegin=True, printLog=True)
+            filename=self.getFilenameWeights(filenamePrefix, directory), exportAtBegin=True, printLog=printLog)
        
     def addContainer(self, filenamePrefix=None, directory=""):
         self.node.createObject(
@@ -385,7 +390,8 @@ class Behavior:
 
     def addMechanicalObject(self, dofRigidNode=None, dofAffineNode=None, assemble=True, **kwargs):
         if self.sampler is None:
-            print "[Flexible.API.Behavior] ERROR: no sampler"
+            Sofa.msg_error("Flexible.API.Behavior","addMechanicalObject : no sampler")
+            return
         self.dofs = self.node.createObject("MechanicalObject", template="F"+self.type, name="dofs", **kwargs)
         self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, self.cell , assemble)
     
@@ -406,7 +412,7 @@ class Behavior:
                 celloffsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+SofaPython.Tools.getObjectPath(self.sampler)+".position", src="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage), labels=concat(self.labels))
                 self.cell = "@"+SofaPython.Tools.getObjectPath(celloffsets)+".cell"
             if printLog:
-                print 'Imported Gauss Points from '+filename
+                Sofa.msg_info("Flexible.API.Behavior",'Imported Gauss Points from '+filename)
 
 
     def readWeights(self, filenamePrefix=None, directory=""):
@@ -427,7 +433,7 @@ class Behavior:
                 self.mapping.weightGradients= str(data['weightGradients'])
                 self.mapping.weightHessians= str(data['weightHessians'])    
                 if printLog:
-                    print 'Imported Weights from '+filename
+                    Sofa.msg_info("Flexible.API.Behavior",'Imported Weights from '+filename)
 
     def write(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
@@ -438,7 +444,8 @@ class Behavior:
         # @todo: add restShape ?
         with open(filename, 'w') as f:
             json.dump(data, f)
-            print 'Exported Gauss Points to '+filename
+            if printLog:
+                Sofa.msg_info("Flexible.API.Behavior",'Exported Gauss Points to '+filename)
 
     def writeObj(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory).replace("json","obj")
@@ -446,7 +453,8 @@ class Behavior:
             f.write(self.name+"\n")
             for p in self.sampler.position:
                 f.write("v "+SofaPython.Tools.listToStr(p)+"\n")
-            print 'Exported Gauss Points as a mesh: '+filename
+            if printLog:
+                Sofa.msg_info("Flexible.API.Behavior",'Exported Gauss Points as a mesh: '+filename)
 
 
     def addHooke(self, strainMeasure="Corotational", youngModulus=0, poissonRatio=0, viscosity=0, useOffset=False, assemble=True):

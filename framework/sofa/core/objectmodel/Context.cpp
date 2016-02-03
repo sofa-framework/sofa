@@ -24,8 +24,6 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/Context.h>
 // #include <sofa/simulation/common/Visitor.h>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {

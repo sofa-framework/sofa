@@ -270,7 +270,7 @@ void Base::processStream(std::ostream& out)
         sout << "\n";
         if (f_printLog.getValue())
         {
-            msg_warning(this) << str;
+            msg_info(this) << str;
         }
         if (outputs.size()+str.size() >= MAXLOGSIZE)
         {
@@ -408,7 +408,7 @@ bool Base::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseL
 
 void* Base::findLinkDestClass(const BaseClass* /*destType*/, const std::string& /*path*/, const BaseLink* /*link*/)
 {
-    std::cerr << "Base: calling unimplemented findLinkDest method" << std::endl;
+    serr << "Base: calling unimplemented findLinkDest method" << sendl;
     return NULL;
 }
 

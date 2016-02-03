@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(SofaGeneral)
 
-## Options
-option(SOFAGENERAL_PARDISOSOLVER "Build the SofaPardisoSolver library" OFF)
 
 
 ## Dependencies
@@ -52,10 +50,6 @@ endif()
 
 list(APPEND SOFAGENERAL_TARGETS SofaEigen2Solver)
 
-
-if(SOFAGENERAL_PARDISOSOLVER)
-    list(APPEND SOFAGENERAL_TARGETS SofaPardisoSolver)
-endif()
 
 foreach(TARGET ${SOFAGENERAL_TARGETS})
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})

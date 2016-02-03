@@ -104,7 +104,7 @@ set(HEADER_FILES
     logging/ConsoleMessageHandler.h
     logging/SilentMessageHandler.h
     logging/FileMessageHandler.h
-    logging/LoggerMessageHandler.h
+#    logging/LoggerMessageHandler.h
     logging/MessageHandler.h
     logging/MessageFormatter.h
     logging/ClangMessageHandler.h
@@ -174,7 +174,7 @@ set(SOURCE_FILES
     logging/ConsoleMessageHandler.cpp
     logging/SilentMessageHandler.cpp
     logging/FileMessageHandler.cpp
-    logging/LoggerMessageHandler.cpp
+#    logging/LoggerMessageHandler.cpp
 )
 
 if(SOFA_HAVE_PNG)

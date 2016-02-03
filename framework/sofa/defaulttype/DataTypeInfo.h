@@ -31,6 +31,7 @@
 #include <sofa/helper/set.h>
 #include <sstream>
 #include <typeinfo>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -1105,7 +1106,7 @@ struct SetTypeInfo
         }
         else
         {
-            std::cerr << "ERROR: SetTypeInfo::setValue not implemented for set with composite values." << std::endl;
+            msg_error("SetTypeInfo") << "setValue not implemented for set with composite values.";
         }
     }
 
@@ -1143,7 +1144,7 @@ struct SetTypeInfo
         }
         else
         {
-            std::cerr << "ERROR: SetTypeInfo::setValueString not implemented for set with composite values." << std::endl;
+            msg_error("SetTypeInfo") << "setValueString not implemented for set with composite values.";
         }
     }
 

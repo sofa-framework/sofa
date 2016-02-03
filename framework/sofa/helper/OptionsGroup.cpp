@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/helper/OptionsGroup.h>
 #include <cstdlib>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -117,7 +118,7 @@ void OptionsGroup::setSelectedItem(const std::string & m_string)
     int id_stringinButtonList = isInOptionsList(m_string);
     if (id_stringinButtonList == -1)
     {
-        std::cout<<"WARNING(OptionsGroup) : \""<< m_string <<"\" is not a parameter in button list :\" "<<(*this)<<"\""<< std::endl;
+        msg_warning("OptionsGroup") << "\""<< m_string <<"\" is not a parameter in button list :\" "<<(*this)<<"\"";
     }
     else
     {
@@ -151,7 +152,7 @@ void OptionsGroup::readFromStream(std::istream & stream)
         if (idx >=0 && idx < (int)size()) 
 			setSelectedItem(idx);
         else
-            std::cerr<<"WARNING(OptionsGroup) : \""<< tempostring <<"\" is not a parameter in button list :\" "<<(*this)<<"\""<< std::endl;
+            msg_warning("OptionsGroup") << "\""<< tempostring <<"\" is not a parameter in button list :\" "<<(*this)<<"\"";
     }
     else
     {
