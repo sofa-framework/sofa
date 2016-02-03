@@ -130,7 +130,7 @@ public:
     const sofa::defaulttype::BaseMatrix* getJ();
 
 public:
-    typedef vector< defaulttype::BaseMatrix* > js_type;
+    typedef helper::vector< defaulttype::BaseMatrix* > js_type;
     virtual const js_type* getJs();
 
 protected:

@@ -96,14 +96,14 @@ public:
 
     topology::TriangleData <helper::vector< Deriv> > localFiberDirection;
 
-    class TRQSTriangleHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,vector<Deriv> >
+    class TRQSTriangleHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<Deriv> >
     {
     public:
         typedef typename TriangularAnisotropicFEMForceField::Deriv triangleInfo;
 
         TRQSTriangleHandler(TriangularAnisotropicFEMForceField<DataTypes>* _ff, topology::TriangleData<helper::vector<triangleInfo> >*  _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, helper::vector<triangleInfo> >(_data), ff(_ff) {}
 
-        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,vector<Deriv> >::applyCreateFunction;
+        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<Deriv> >::applyCreateFunction;
         void applyCreateFunction(unsigned int triangleIndex,
                                  helper::vector<triangleInfo> & ,
                                  const core::topology::BaseMeshTopology::Triangle & t,

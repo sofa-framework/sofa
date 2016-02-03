@@ -2733,7 +2733,7 @@ inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualP
 {
     float scale = showVectorsScale.getValue();
     sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::ConstVecDerivId::velocity());
-    vector<Vector3> points;
+    helper::vector<Vector3> points;
     points.resize(2);
     for( unsigned i=0; i<v_rA.size(); ++i )
     {
@@ -2785,7 +2785,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
     if (showObject.getValue())
     {
         const float& scale = showObjectScale.getValue();
-        vector<Vector3> positions(vsize);
+        helper::vector<Vector3> positions(vsize);
         for (size_t i = 0; i < vsize; ++i)
             positions[i] = Vector3(getPX(i), getPY(i), getPZ(i));
 

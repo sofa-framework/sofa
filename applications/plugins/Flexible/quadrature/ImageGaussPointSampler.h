@@ -145,7 +145,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         // fixed points = points set by the user in soft regions.
         // Disabled for now since pos is cleared
         SeqPositions fpos_voxelIndex;
-        vector<unsigned int> fpos_voronoiIndex;
+        helper::vector<unsigned int> fpos_voronoiIndex;
         for(unsigned int i=0; i<pos.size(); i++)
         {
             Coord p = transform->toImageInt(pos[i]);
@@ -167,7 +167,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         // farthest point sampling using geodesic distances
         SeqPositions newpos_voxelIndex;
-        vector<unsigned int> newpos_voronoiIndex;
+        helper::vector<unsigned int> newpos_voronoiIndex;
 
         for(unsigned int i=0; i<fpos_voxelIndex.size(); i++) AddSeedPoint<DistT>(trial,dist,regimg, fpos_voxelIndex[i],fpos_voronoiIndex[i]);
         while(newpos_voxelIndex.size()+fpos_voxelIndex.size()<nbsoft)
@@ -330,8 +330,8 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         waDist werr(This->f_error);        typename DistTypes::CImgT& dist = werr->getCImg();
 
         // compute
-        vector<Coord> pos(2);
-        vector<unsigned int> vorindex;
+        helper::vector<Coord> pos(2);
+        helper::vector<unsigned int> vorindex;
         vorindex.push_back(*(This->Reg[index].voronoiIndices.begin()));
         vorindex.push_back(This->Reg.size()+1);
         for(unsigned int i=0; i<This->Reg.size(); i++) if(vorindex[1]==*(This->Reg[i].voronoiIndices.begin())) vorindex[1]++; // check that the voronoi index is unique. not necessary in principle
@@ -407,7 +407,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         // list of absolute coords
         factType &fact = This->Reg[factIndex];
-        vector<Coord> pi(fact.nb);
+        helper::vector<Coord> pi(fact.nb);
 
         // weights (one line for each parent)
         typename ImageGaussPointSampler::Matrix wi(fact.parentsToNodeIndex.size(),fact.nb); wi.setZero();
@@ -578,7 +578,7 @@ protected:
     typedef typename std::set<unsigned int> indList;  ///< list of parent indices
     typedef typename indList::iterator indListIt;
     typedef typename defaulttype::PolynomialFitFactors<Real> factType;
-    vector<factType> Reg;  ///< data related to each voronoi region
+    helper::vector<factType> Reg;  ///< data related to each voronoi region
     //@}
 
     // polynomial orders

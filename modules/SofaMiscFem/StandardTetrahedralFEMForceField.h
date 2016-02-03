@@ -169,10 +169,10 @@ public:
 	void setMaterialName(const std::string& name) {
 		f_materialName.setValue(name);
 	}
-	void setparameter(const vector<Real>& param) {
+    void setparameter(const helper::vector<Real>& param) {
 		f_parameterSet.setValue(param);
 	}
-	void setdirection(const vector<Coord>& direction) {
+    void setdirection(const helper::vector<Coord>& direction) {
 		f_anisotropySet.setValue(direction);
 	}
 

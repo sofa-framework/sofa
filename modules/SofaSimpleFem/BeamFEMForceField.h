@@ -272,7 +272,7 @@ protected:
     ////////////// large displacements method
     //vector<fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
     //VecReal _initialLength;
-    vector<Transformation> _nodeRotations;
+    helper::vector<Transformation> _nodeRotations;
     //vector<Quat> _beamQuat;
     void initLarge(int i, Index a, Index b);
     //void computeRotationLarge( Transformation &r, const Vector &p, Index a, Index b);

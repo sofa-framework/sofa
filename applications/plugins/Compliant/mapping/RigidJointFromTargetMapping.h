@@ -45,7 +45,7 @@ public:
 
     typedef typename TIn::Real Real;
 
-    typedef vector< coord_type > targets_type;
+    typedef helper::vector< coord_type > targets_type;
     Data< targets_type > targets;
 
     Data< bool > rotation, translation;
@@ -73,7 +73,7 @@ protected:
 
         bool rotation = this->rotation.getValue();
         bool translation = this->translation.getValue();
-        const vector< coord_type >& targets = this->targets.getValue();
+        const helper::vector< coord_type >& targets = this->targets.getValue();
 
         assert( in_pos.size() == targets.size() );
 
@@ -143,7 +143,7 @@ protected:
 
         bool rotation = this->rotation.getValue();
         bool translation = this->translation.getValue();
-        const vector< coord_type >& targets = this->targets.getValue();
+        const helper::vector< coord_type >& targets = this->targets.getValue();
 
         for(unsigned i = 0, n = in.size(); i < n; ++i) {
 			

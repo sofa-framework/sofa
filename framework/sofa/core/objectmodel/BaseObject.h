@@ -42,7 +42,6 @@
 
 namespace sofa
 {
-using helper::vector;
 
 namespace core
 {
@@ -83,6 +82,12 @@ class SOFA_CORE_API BaseObject : public virtual Base
 public:
     SOFA_CLASS(BaseObject, Base);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseObject)
+
+    // the helper::vector (serialization + index assert) is used by default in any BaseObject
+    template<class T>
+    using vector = helper::vector<T,  helper::CPUMemoryManager<T> >;
+
+
 protected:
     BaseObject();
 

@@ -140,8 +140,8 @@ protected:
     /// @{
 
     typedef std::pair<int,Real> Col_Value;
-    typedef vector< Col_Value > CompressedValue;
-    typedef vector< CompressedValue > CompressedMatrix;
+    typedef helper::vector< Col_Value > CompressedValue;
+    typedef helper::vector< CompressedValue > CompressedMatrix;
     typedef unsigned int Index;
 
     CompressedMatrix _stiffnesses;

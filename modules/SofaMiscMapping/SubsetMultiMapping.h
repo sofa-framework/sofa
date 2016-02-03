@@ -98,14 +98,14 @@ public:
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
 
-    Data< vector<unsigned> > indexPairs;                     ///< Two indices per child: the parent, and the index within the parent
+    Data< helper::vector<unsigned> > indexPairs;                     ///< Two indices per child: the parent, and the index within the parent
 
 protected :
 
     SubsetMultiMapping();
     virtual ~SubsetMultiMapping();
 
-    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
 };
 

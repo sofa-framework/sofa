@@ -93,7 +93,7 @@ public:
     typedef defaulttype::Vec<24, Real> Displacement;		///< the displacement vector
 
     typedef defaulttype::Mat<6, 6, Real> MaterialStiffness;	///< the matrix of material stiffness
-    typedef vector<MaterialStiffness> VecMaterialStiffness;  ///< a vector of material stiffness matrices
+    typedef helper::vector<MaterialStiffness> VecMaterialStiffness;  ///< a vector of material stiffness matrices
     typedef defaulttype::Mat<24, 24, Real> ElementMass;
 
     typedef defaulttype::Mat<24, 24, Real> ElementStiffness;

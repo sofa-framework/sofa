@@ -153,6 +153,8 @@ public:
     typedef core::Mapping<typename JacobianBlockType::In, typename JacobianBlockType::Out> Inherit;
     SOFA_ABSTRACT_CLASS2(SOFA_TEMPLATE(BaseDeformationMappingT,JacobianBlockType), SOFA_TEMPLATE2(core::Mapping,typename JacobianBlockType::In,typename JacobianBlockType::Out), SOFA_TEMPLATE2(BasePointMapper,JacobianBlockType::Out::spatial_dimensions,typename JacobianBlockType::In::Real) );
 
+    template<class T> using vector = helper::vector<T, helper::CPUMemoryManager<T> >;
+
     /** @name  Input types    */
     //@{
     typedef typename JacobianBlockType::In In;
@@ -197,9 +199,9 @@ public:
     /** @name  Coord types    */
     //@{
     typedef defaulttype::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
-    typedef vector<Coord> VecCoord;
+    typedef helper::vector<Coord> VecCoord;
     typedef defaulttype::Mat<spatial_dimensions,material_dimensions,Real> MaterialToSpatial;     ///< local liner transformation from material space to world space = deformation gradient type
-    typedef vector<MaterialToSpatial> VMaterialToSpatial;
+    typedef helper::vector<MaterialToSpatial> VMaterialToSpatial;
     typedef helper::kdTree<Coord> KDT;      ///< kdTree for fast search of closest mapped points
     typedef typename KDT::distanceSet distanceSet;
     //@}
@@ -207,7 +209,7 @@ public:
     /** @name  Jacobian types    */
     //@{
     typedef JacobianBlockType BlockType;
-    typedef vector<vector<BlockType> >  SparseMatrix;
+    typedef helper::vector<vector<BlockType> >  SparseMatrix;
 
     typedef typename BlockType::MatBlock  MatBlock;  ///< Jacobian block matrix
     typedef linearsolver::EigenSparseMatrix<In,Out>    SparseMatrixEigen;

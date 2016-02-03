@@ -121,8 +121,8 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
             IndT ind=indices(P[0],P[1],P[2],r);
             if(ind>0)
             {
-                vector<DistT> val; val.reserve(27);
-                vector<Coord> pos; pos.reserve(27);
+                helper::vector<DistT> val; val.reserve(27);
+                helper::vector<Coord> pos; pos.reserve(27);
                 // add neighbors with same index
                 count=0;
                 for (int k=-1; k<=1; k++) for (int j=-1; j<=1; j++) for (int i=-1; i<=1; i++)
@@ -136,7 +136,7 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
                     count++;
                 }
                 // fit weights
-                vector<Real> coeff;
+                helper::vector<Real> coeff;
                 defaulttype::PolynomialFit(coeff,val,pos, order);
                 //std::cout<<ind<<":"<<coeff[0]<<", err= "<<getPolynomialFit_Error(coeff,val,pos)<< std::endl;
                 if(!dw) defaulttype::getPolynomialFit_differential(coeff,w[index]);
@@ -217,7 +217,7 @@ public:
     Data< IndTypes > f_index;
 
     // only used for branching image
-     Data< vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
+     Data< helper::vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this); }

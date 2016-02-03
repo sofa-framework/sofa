@@ -78,7 +78,7 @@ private:
 
     friend struct distanceHitSort;
 
-    sofa::vector<Hit> hits;  ///< raw result
+    helper::vector<Hit> hits;  ///< raw result
 
 };
 

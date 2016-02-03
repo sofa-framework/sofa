@@ -75,7 +75,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
     {
         typename MechanicalState::ReadVecCoord restPosition = ff->mstate->readRestPositions();
 
-        helper::WriteAccessor<Data<vector<EdgeSpring> > > edgeData(ff->edgeSprings);
+        helper::WriteAccessor<Data<helper::vector<EdgeSpring> > > edgeData(ff->edgeSprings);
         
         for (unsigned int i=0; i<triangleAdded.size(); ++i)
         {

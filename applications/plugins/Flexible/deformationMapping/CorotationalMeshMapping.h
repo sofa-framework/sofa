@@ -224,7 +224,7 @@ public:
 
 
     virtual const sofa::defaulttype::BaseMatrix* getJ() { return &jacobian; }
-    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs()    { return &baseMatrices; }
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs()    { return &baseMatrices; }
 
 
 protected:
@@ -247,7 +247,7 @@ protected:
 
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     SparseKMatrixEigen geometricStiffness;               ///< Stiffness due to the non-linearity of the mapping
-    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
 public:
     Data< SeqTetrahedra > in_tetrahedra;

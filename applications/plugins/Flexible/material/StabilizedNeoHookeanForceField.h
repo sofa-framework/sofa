@@ -58,8 +58,8 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<vector<Real> > _youngModulus;
-    Data<vector<Real> > _poissonRatio;
+    Data<helper::vector<Real> > _youngModulus;
+    Data<helper::vector<Real> > _poissonRatio;
     //@}
 
     virtual void reinit()
@@ -89,8 +89,8 @@ public:
 protected:
     StabilizedNeoHookeanForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
-        , _youngModulus(initData(&_youngModulus,vector<Real>((int)1,(Real)1000),"youngModulus","stiffness"))
-        , _poissonRatio(initData(&_poissonRatio,vector<Real>((int)1,(Real)0),"poissonRatio","incompressibility ]-1,0.5["))
+        , _youngModulus(initData(&_youngModulus,helper::vector<Real>((int)1,(Real)1000),"youngModulus","stiffness"))
+        , _poissonRatio(initData(&_poissonRatio,helper::vector<Real>((int)1,(Real)0),"poissonRatio","incompressibility ]-1,0.5["))
 //        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
     {
         this->f_listening.setValue(true);

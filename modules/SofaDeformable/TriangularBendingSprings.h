@@ -128,7 +128,7 @@ protected:
 
     sofa::component::topology::EdgeData<helper::vector<EdgeInformation> > edgeInfo;
 
-    class TriangularBSEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, vector<EdgeInformation> >
+    class TriangularBSEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeInformation> >
     {
     public:
         typedef typename TriangularBendingSprings<DataTypes>::EdgeInformation EdgeInformation;
@@ -151,7 +151,7 @@ protected:
 
         void applyPointRenumbering(const helper::vector<unsigned int> &pointToRenumber);
 
-        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, vector<EdgeInformation> >::ApplyTopologyChange;
+        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeInformation> >::ApplyTopologyChange;
         /// Callback to add triangles elements.
         void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
         /// Callback to remove triangles elements.

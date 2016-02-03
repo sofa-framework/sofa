@@ -73,7 +73,7 @@ public:
 	
 	typedef defaulttype::Vec<2, unsigned> index_pair;
 
-	typedef vector< index_pair > pairs_type;
+    typedef helper::vector< index_pair > pairs_type;
 	Data< pairs_type > pairs;
 
 	typedef typename TIn::Real in_real;
@@ -101,7 +101,7 @@ protected:
         {}
 	
 	void apply(typename self::out_pos_type& out,
-	           const vector< typename self::in_pos_type >& in ) {
+               const helper::vector< typename self::in_pos_type >& in ) {
 		// assert( this->getFrom().size() == 2 );
 
 		const pairs_type& p = pairs.getValue();
@@ -123,7 +123,7 @@ protected:
 
 
 
-    void assemble_geometric(const vector<typename self::const_in_coord_type>& in_pos,
+    void assemble_geometric(const helper::vector<typename self::const_in_coord_type>& in_pos,
                             const typename self::const_out_deriv_type& out_force) {
         // we're done lol
         if( true || ! geometricStiffness.getValue() ) return;
@@ -250,7 +250,7 @@ protected:
         
     }
 
-	void assemble(const vector< typename self::in_pos_type >& in ) {
+    void assemble(const helper::vector< typename self::in_pos_type >& in ) {
 		assert(this->getFrom()[0] != this->getFrom()[1]);
 
 		const pairs_type& p = pairs.getValue();

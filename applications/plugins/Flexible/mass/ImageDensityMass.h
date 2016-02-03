@@ -73,7 +73,7 @@ public:
     /** @name Interpolation stuff */
     //@{
     typedef defaulttype::LinearJacobianBlock<DataTypes,defaulttype::Vec3Types > LinearJacobianBlock;
-    typedef vector<LinearJacobianBlock> VecLinearJacobianBlock;
+    typedef helper::vector<LinearJacobianBlock> VecLinearJacobianBlock;
     //@}
 
 

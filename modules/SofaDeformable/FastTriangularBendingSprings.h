@@ -233,7 +233,7 @@ protected:
         }
 
         /// replace all the vertex indices with the given ones
-        void replaceIndices( const vector<unsigned> &newIndices )
+        void replaceIndices( const helper::vector<unsigned> &newIndices )
         {
             for(unsigned i=0; i<4; i++)
                 vid[i] = newIndices[vid[i]];
@@ -257,7 +257,7 @@ protected:
     /// The list of edge springs, one for each edge between two triangles
     sofa::component::topology::EdgeData<helper::vector<EdgeSpring> > edgeSprings;
 
-    class TriangularBSEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, vector<EdgeSpring> >
+    class TriangularBSEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeSpring> >
     {
     public:
         typedef typename FastTriangularBendingSprings<DataTypes>::EdgeSpring EdgeSpring;
@@ -280,7 +280,7 @@ protected:
 
         void applyPointRenumbering(const sofa::helper::vector<unsigned int> &pointToRenumber);
 
-        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, vector<EdgeSpring> >::ApplyTopologyChange;
+        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeSpring> >::ApplyTopologyChange;
         /// Callback to add triangles elements.
         void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
         /// Callback to remove triangles elements.
