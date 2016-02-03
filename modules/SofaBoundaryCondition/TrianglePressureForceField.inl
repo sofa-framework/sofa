@@ -114,7 +114,7 @@ void TrianglePressureForceField<DataTypes>::addForce(const core::MechanicalParam
 		}
 	} else {
         //sofa::helper::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
-		typedef sofa::component::topology::BaseMeshTopology::Triangle Triangle;
+        typedef core::topology::BaseMeshTopology::Triangle Triangle;
 		const sofa::helper::vector<Triangle> &ta = _topology->getTriangles();
 		const  VecDeriv p = d_x.getValue();
         //Real area;

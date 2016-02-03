@@ -102,12 +102,12 @@ public:
 
     VecMass f_mass;
 
-    typedef sofa::component::topology::Point Point;
-    typedef sofa::component::topology::Edge Edge;
-    typedef sofa::component::topology::Quad Quad;
-    typedef sofa::component::topology::Triangle Triangle;
-    typedef sofa::component::topology::Tetrahedron Tetrahedron;
-    typedef sofa::component::topology::Hexahedron Hexahedron;
+    typedef core::topology::BaseMeshTopology::Point Point;
+    typedef core::topology::BaseMeshTopology::Edge Edge;
+    typedef core::topology::BaseMeshTopology::Quad Quad;
+    typedef core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
+    typedef core::topology::BaseMeshTopology::Hexahedron Hexahedron;
 
     class DMassPointHandler : public topology::TopologyDataHandler<Point,MassVector>
     {

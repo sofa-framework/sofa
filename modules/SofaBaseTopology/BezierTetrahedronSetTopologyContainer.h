@@ -39,7 +39,7 @@ namespace topology
 {
 class BezierTetrahedronSetTopologyModifier;
 
-using core::topology::BaseMeshTopology;
+//using core::topology::BaseMeshTopology;
 
 typedef unsigned char BezierDegreeType;
 typedef sofa::defaulttype::Vec<4,BezierDegreeType> TetrahedronBezierIndex;

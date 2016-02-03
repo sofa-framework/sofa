@@ -48,17 +48,18 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(TriangleSetGeometryAlgorithms,DataTypes), SOFA_TEMPLATE(EdgeSetGeometryAlgorithms,DataTypes));
 
 
+    typedef sofa::core::topology::BaseMeshTopology::PointID PointID;
     typedef sofa::core::topology::BaseMeshTopology::EdgeID EdgeID;
     typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
     typedef sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef sofa::core::topology::BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
 
-    typedef BaseMeshTopology::TriangleID TriangleID;
-    typedef BaseMeshTopology::Triangle Triangle;
-    typedef BaseMeshTopology::SeqTriangles SeqTriangles;
-    typedef BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
-    typedef BaseMeshTopology::TrianglesAroundEdge TrianglesAroundEdge;
-    typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
+    typedef core::topology::BaseMeshTopology::TriangleID TriangleID;
+    typedef core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
+    typedef core::topology::BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
+    typedef core::topology::BaseMeshTopology::TrianglesAroundEdge TrianglesAroundEdge;
+    typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

@@ -110,8 +110,8 @@ void SuturePointPerformer<DataTypes>::start()
 
         // Get vertices of both triangles
         sofa::helper::vector<sofa::defaulttype::Vector3 > listCoords;
-        const component::topology::Triangle Triangle1 = triangleContainer->getTriangle(firstPicked.indexCollisionElement);
-        const component::topology::Triangle Triangle2 = triangleContainer->getTriangle(picked.indexCollisionElement);
+        const core::topology::BaseMeshTopology::Triangle Triangle1 = triangleContainer->getTriangle(firstPicked.indexCollisionElement);
+        const core::topology::BaseMeshTopology::Triangle Triangle2 = triangleContainer->getTriangle(picked.indexCollisionElement);
 
         for (unsigned int i=0; i<3; i++)
         {

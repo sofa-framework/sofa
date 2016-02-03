@@ -45,20 +45,8 @@ namespace component
 namespace topology
 {
 
-
-using helper::vector;
-using helper::fixed_array;
-using sofa::defaulttype::Vector2;
-
-using sofa::core::topology::Topology;
-
-
 class MeshTopology;
-namespace internal
-{
 
-
-}
 
 
 class SOFA_BASE_TOPOLOGY_API MeshTopology : public core::topology::BaseMeshTopology
@@ -143,8 +131,8 @@ public:
 
     // If using STEP loader, include also uv coordinates
     typedef index_type					UVID;
-    typedef Vector2						UV;
-    typedef vector<Vector2>				SeqUV;
+    typedef defaulttype::Vector2						UV;
+    typedef vector<UV>				SeqUV;
     virtual const SeqUV& getUVs();
     virtual int getNbUVs();
     virtual const UV getUV(UVID i);

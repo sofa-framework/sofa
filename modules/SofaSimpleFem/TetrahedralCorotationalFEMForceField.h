@@ -152,19 +152,19 @@ protected:
 
     sofa::core::topology::BaseMeshTopology* _topology;
 public:
-    class TetrahedronHandler : public topology::TopologyDataHandler<topology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >
+    class TetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >
     {
     public :
         typedef typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation TetrahedronInformation;
         TetrahedronHandler(TetrahedralCorotationalFEMForceField<DataTypes>* ff,
                            topology::TetrahedronData<sofa::helper::vector<TetrahedronInformation> >* data)
-            :topology::TopologyDataHandler<topology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >(data)
+            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >(data)
             ,ff(ff)
         {
 
         }
 
-        void applyCreateFunction(unsigned int, TetrahedronInformation &t, const topology::Tetrahedron &,
+        void applyCreateFunction(unsigned int, TetrahedronInformation &t, const core::topology::BaseMeshTopology::Tetrahedron &,
                 const sofa::helper::vector<unsigned int> &,
                 const sofa::helper::vector<double> &);
 
@@ -222,7 +222,7 @@ public:
 
     // Getting the stiffness matrix of index i
     void getElementStiffnessMatrix(Real* stiffness, unsigned int nodeIdx);
-    void getElementStiffnessMatrix(Real* stiffness, topology::Tetrahedron& te);
+    void getElementStiffnessMatrix(Real* stiffness, core::topology::BaseMeshTopology::Tetrahedron& te);
 
     void draw(const core::visual::VisualParams* vparams);
 

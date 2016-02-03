@@ -37,7 +37,7 @@ namespace topology
 {
 class BezierTriangleSetTopologyModifier;
 
-using core::topology::BaseMeshTopology;
+//using core::topology::BaseMeshTopology;
 
 
 

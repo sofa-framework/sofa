@@ -506,7 +506,6 @@ void MeshTopology::QuadUpdate::update()
 using namespace sofa::defaulttype;
 using core::topology::BaseMeshTopology;
 
-using namespace sofa::component::topology::internal;
 
 SOFA_DECL_CLASS(MeshTopology)
 

@@ -116,13 +116,13 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
-    class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, SetIndexArray >
+    class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
     {
     public:
         typedef typename LinearVelocityConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
         FCPointHandler(LinearVelocityConstraint<DataTypes>* _lc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, SetIndexArray >(_data), lc(_lc) {}
+            : sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), lc(_lc) {}
 
 
 

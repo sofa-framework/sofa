@@ -379,7 +379,7 @@ void TLineModel<DataTypes>::updateFromTopology()
 
         for (unsigned int i = 0; i < nbLines; i++)
         {
-            topology::BaseMeshTopology::Line idx = bmt->getEdge(i);
+            core::topology::BaseMeshTopology::BaseMeshTopology::Line idx = bmt->getEdge(i);
 
             if (idx[0] >= nbPoints || idx[1] >= nbPoints)
             {
