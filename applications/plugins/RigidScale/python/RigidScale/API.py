@@ -22,7 +22,7 @@ import SofaPython.Tools
 import SofaPython.mass
 import math
 import SofaPython.Quaternion as quat
-import serialization
+import Flexible.Serialization
 
 # to specify the floating point encoding (double by default)
 template_suffix=''
