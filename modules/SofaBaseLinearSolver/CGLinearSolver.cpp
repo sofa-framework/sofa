@@ -74,35 +74,6 @@ void CGLinearSolver< CompressedRowSparseMatrix<double>, FullVector<double> >::so
     sofa::component::linearsolver::CompressedRowSparseMatrix<SReal> Mfiltered;
     Mfiltered.copyNonZeros(M);
 
-
-//    std::ofstream myfile ("M.m",std::ios::trunc);
-//    const double ZERO = 1e-16;
-//    myfile<<"Afull = zeros("<<Mfiltered.nRow<<");" <<std::endl;
-//    for(int r=0; r< Mfiltered.nRow; ++r)// n: number of column
-//    {
-//        for(int c=0; c< Mfiltered.nCol; ++c)// n: number of column
-//        {
-//            if(Mfiltered.element(r,c)>ZERO)
-//                myfile <<"Afull(" <<r+1<<","<<c+1<< ")="<< Mfiltered.element(r,c)<<";" <<std::endl;
-//        }
-//    }
-
-//    myfile << "bfull=[";
-
-//    for(int q=0; q<b.size(); ++q)
-//    {
-//        myfile << b[q] <<" ";
-//    }
-//    myfile << "];"<<std::endl;
-
-//    myfile <<"S=sparse(Afull);"<<std::endl;
-
-//    myfile<<"tic"<<std::endl;
-//    myfile<<"x=cgs(S,bfull',"<<f_tolerance.getValue()<<");"<<std::endl;
-//    myfile<<"toc"<<std::endl;
-
-//    myfile.close();
-
     if( verbose )
         sout<<"CGLinearSolver, b = "<< b <<sendl;
 
