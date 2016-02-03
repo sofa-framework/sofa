@@ -141,7 +141,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         if(recursive)
         {
-            vector<unsigned int> indices; indices.resize(pos.size()); for(unsigned int i=0; i<pos.size(); i++) indices[i]=i;
+            helper::vector<unsigned int> indices; indices.resize(pos.size()); for(unsigned int i=0; i<pos.size(); i++) indices[i]=i;
             sampler->subdivide(indices);
         }
 

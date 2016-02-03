@@ -34,7 +34,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
     typedef DifferenceMapping self;
 	
 	typedef defaulttype::Vec<2, unsigned> index_pair;
-    typedef vector< index_pair > pairs_type;
+    typedef helper::vector< index_pair > pairs_type;
 
 	Data< pairs_type > pairs;
     Data< SReal > d_showObjectScale; ///< drawing size
@@ -124,7 +124,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
         if( d_showObjectScale.getValue() == 0 )
         {
-            vector< defaulttype::Vector3 > points(p.size()*2);
+            helper::vector< defaulttype::Vector3 > points(p.size()*2);
             for(unsigned i=0; i<p.size(); i++ )
             {
                 points[i*2  ] = defaulttype::Vector3( TIn::getCPos(pos[p[i][0]]) );
@@ -232,7 +232,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
         }
 
         virtual void apply(typename self::out_pos_type& out,
-                           const vector<typename self::in_pos_type>& in)  {
+                           const helper::vector<typename self::in_pos_type>& in)  {
             // macro_trace;
             assert( in.size() == 2 );
 
@@ -249,7 +249,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
 
         typedef defaulttype::Vec<2, unsigned> index_pair;
-        typedef vector< index_pair > pairs_type;
+        typedef helper::vector< index_pair > pairs_type;
 
         Data< pairs_type > pairs;
 
@@ -260,7 +260,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
         }
 
-        void assemble(const vector<typename self::in_pos_type>& in ) {
+        void assemble(const helper::vector<typename self::in_pos_type>& in ) {
 
             const pairs_type& p = pairs.getValue();
             assert( !p.empty() );

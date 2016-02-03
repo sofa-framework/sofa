@@ -69,7 +69,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCre
                                                                                             const sofa::helper::vector<double> &)
 {
     if (ff) {
-        const vector< core::topology::BaseMeshTopology::Tetrahedron > &tetrahedronArray=ff->_topology->getTetrahedra() ;
+        const helper::vector< core::topology::BaseMeshTopology::Tetrahedron > &tetrahedronArray=ff->_topology->getTetrahedra() ;
         const std::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=ff->_topology->getEdges() ;
 		unsigned int j;
         /*int l*/;
@@ -262,8 +262,8 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
 	/// initialize the data structure associated with each tetrahedron
 	for (i=0;i<_topology->getNbTetrahedra();++i) {
             tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
-                        _topology->getTetrahedron(i),  (const vector< unsigned int > )0,
-                        (const vector< double >)0);
+                        _topology->getTetrahedron(i),  (const helper::vector< unsigned int > )0,
+                        (const helper::vector< double >)0);
 	}
 	/// set the call back function upon creation of a tetrahedron
 
@@ -298,7 +298,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
 	tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 	helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
 	unsigned int nbEdges=_topology->getNbEdges();
-    const vector< core::topology::BaseMeshTopology::Edge> &edgeArray=_topology->getEdges() ;
+    const helper::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=_topology->getEdges() ;
 	TetrahedronRestInformation *tetInfo;
 	EdgeInformation *einfo;
 
@@ -478,7 +478,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 
 	unsigned int l=0;
 	unsigned int nbEdges=_topology->getNbEdges();
-    const vector< core::topology::BaseMeshTopology::Edge> &edgeArray=_topology->getEdges() ;
+    const helper::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=_topology->getEdges() ;
 
 	helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
 //	tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
@@ -581,7 +581,7 @@ template<class DataTypes>
 void  StandardTetrahedralFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal kFact, unsigned int &offset)
 {
 	unsigned int nbEdges=_topology->getNbEdges();
-	const vector< Edge> &edgeArray=_topology->getEdges() ;
+    const helper::vector< Edge> &edgeArray=_topology->getEdges() ;
     edgeInformationVector& edgeInf = *(edgeInfo.beginEdit());
 	EdgeInformation *einfo;
 	unsigned int i,j,N0, N1, l;

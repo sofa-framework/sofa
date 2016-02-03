@@ -504,7 +504,7 @@ void TriangleOctree::allTriangles (const defaulttype::Vector3 & /*origin*/,
 
 void TriangleOctree::allTriangles (const defaulttype::Vector3 & origin,
         const defaulttype::Vector3 & direction,
-        vector<traceResult>& results)
+        helper::vector<traceResult>& results)
 {
     static RayTriangleIntersection intersectionSolver;
     defaulttype::Vector3 P;
@@ -722,7 +722,7 @@ void TriangleOctree::traceAll (const defaulttype::Vector3 & origin,
     }
 }
 
-void TriangleOctree::traceAll(defaulttype::Vector3 origin, defaulttype::Vector3 direction, vector<traceResult>& results)
+void TriangleOctree::traceAll(defaulttype::Vector3 origin, defaulttype::Vector3 direction, helper::vector<traceResult>& results)
 {
     traceAllStart(origin, direction, results);
 }

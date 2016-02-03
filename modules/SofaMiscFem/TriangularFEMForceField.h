@@ -218,7 +218,7 @@ public:
     topology::EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo;
 
 
-    class TRQSTriangleHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,vector<TriangleInformation> >
+    class TRQSTriangleHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<TriangleInformation> >
     {
     public:
         TRQSTriangleHandler(TriangularFEMForceField<DataTypes>* _ff, topology::TriangleData<sofa::helper::vector<TriangleInformation> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, sofa::helper::vector<TriangleInformation> >(_data), ff(_ff) {}

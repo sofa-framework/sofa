@@ -134,7 +134,7 @@ protected:
     typedef linearsolver::EigenSparseMatrix<TIn, TOut> eigen_type;
     eigen_type J;
 
-    typedef vector< defaulttype::BaseMatrix* > js_type;
+    typedef helper::vector< defaulttype::BaseMatrix* > js_type;
     js_type Js;
 
 //    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence

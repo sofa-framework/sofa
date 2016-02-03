@@ -48,7 +48,7 @@ public:
 protected:
 
 	void apply(typename self::out_pos_type& out,
-	           const vector< typename self::in_pos_type >& in ) {
+               const helper::vector< typename self::in_pos_type >& in ) {
 
         // auto resize output
         this->to()->resize( 1 );
@@ -70,7 +70,7 @@ protected:
 
 
 
-    void assemble_geometric(const vector<typename self::const_in_coord_type>& /*in_pos*/,
+    void assemble_geometric(const helper::vector<typename self::const_in_coord_type>& /*in_pos*/,
                             const typename self::const_out_deriv_type& out_force) {
         typedef typename self::geometric_type::CompressedMatrix matrix_type;
         matrix_type& dJ = this->geometric.compressedMatrix;
@@ -106,7 +106,7 @@ protected:
 
     }
 
-	void assemble(const vector< typename self::in_pos_type >& in ) {
+    void assemble(const helper::vector< typename self::in_pos_type >& in ) {
 		assert(this->getFrom()[0] != this->getFrom()[1]);
 
 		for(unsigned i = 0, n = in.size(); i < n; ++i) {

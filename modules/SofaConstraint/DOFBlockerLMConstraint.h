@@ -140,7 +140,7 @@ public:
     SetIndex f_indices;
     Data<SReal> showSizeAxis;
 
-    class FCTPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, vector<unsigned int> >
+    class FCTPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<unsigned int> >
     {
     public:
         FCTPointHandler(DOFBlockerLMConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<helper::vector<unsigned int> >* _data)

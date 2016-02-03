@@ -83,7 +83,7 @@ struct TetrahedronFEMForceField_test : public ForceField_test<_TetrahedronFEMFor
         
         // Set force parameters
         Inherited::force->_poissonRatio.setValue(0);
-        vector<Real> youngModulusVec;youngModulusVec.push_back(40);
+        helper::vector<Real> youngModulusVec;youngModulusVec.push_back(40);
         Inherited::force->_youngModulus.setValue(youngModulusVec);
         Inherited::force->f_method.setValue("small");
 

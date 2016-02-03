@@ -143,7 +143,7 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         waInd vorData(This->f_voronoi);         typename IndTypes::CImgT& voronoi = vorData->getCImg();
         waDist distData(This->f_distances);     typename DistTypes::CImgT& dist = distData->getCImg();
 
-        helper::ReadAccessor<Data<vector<Coord> > > parent(This->f_position);
+        helper::ReadAccessor<Data<helper::vector<Coord> > > parent(This->f_position);
         if(!parent.size()) { This->serr<<"Parent nodes not found"<<This->sendl; return; }
         helper::vector<iCoord> parentiCoord;        for(unsigned int i=0; i<parent.size(); i++) { Coord p = inT->toImageInt(parent[i]);  parentiCoord.push_back(iCoord(p[0],p[1],p[2])); }
 

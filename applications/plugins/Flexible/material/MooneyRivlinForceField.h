@@ -56,9 +56,9 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<vector<Real> > f_C1;
-    Data<vector<Real> > f_C2;
-    Data<vector<Real> > f_bulk;
+    Data<helper::vector<Real> > f_C1;
+    Data<helper::vector<Real> > f_C2;
+    Data<helper::vector<Real> > f_bulk;
     Data<bool > f_PSDStabilization;
     //@}
 
@@ -87,9 +87,9 @@ public:
 protected:
     MooneyRivlinForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
-        , f_C1(initData(&f_C1,vector<Real>((int)1,(Real)1000),"C1","weight of (~I1-3) term in energy"))
-        , f_C2(initData(&f_C2,vector<Real>((int)1,(Real)1000),"C2","weight of (~I2-3) term in energy"))
-        , f_bulk(initData(&f_bulk,vector<Real>((int)1,(Real)0),"bulk","bulk modulus (working on I3=J=detF=volume variation)"))
+        , f_C1(initData(&f_C1,helper::vector<Real>((int)1,(Real)1000),"C1","weight of (~I1-3) term in energy"))
+        , f_C2(initData(&f_C2,helper::vector<Real>((int)1,(Real)1000),"C2","weight of (~I2-3) term in energy"))
+        , f_bulk(initData(&f_bulk,helper::vector<Real>((int)1,(Real)0),"bulk","bulk modulus (working on I3=J=detF=volume variation)"))
         , f_PSDStabilization(initData(&f_PSDStabilization,false,"PSDStabilization","project stiffness matrix to its nearest symmetric, positive semi-definite matrix"))
 //        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
     {

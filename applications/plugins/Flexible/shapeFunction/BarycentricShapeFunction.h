@@ -147,7 +147,7 @@ protected:
 
         static void init( BarycentricShapeFunction<ShapeFunctionTypes_>* B )
         {
-            helper::ReadAccessor<Data<vector<Coord> > > parent(B->f_position);
+            helper::ReadAccessor<Data<helper::vector<Coord> > > parent(B->f_position);
             if(!parent.size()) { B->serr<<"Parent nodes not found"<<B->sendl; return; }
 
             const Topo::SeqTetrahedra& tetrahedra = B->parentTopology->getTetrahedra();
@@ -234,7 +234,7 @@ protected:
             // get parent topology and nodes
             if(!B->parentTopology) return;
 
-            helper::ReadAccessor<Data<vector<Coord> > > parent(B->f_position);
+            helper::ReadAccessor<Data<helper::vector<Coord> > > parent(B->f_position);
             if(!parent.size()) return;
 
             const Topo::SeqTetrahedra& tetrahedra = B->parentTopology->getTetrahedra();
@@ -427,7 +427,7 @@ protected:
 
         static void init( BarycentricShapeFunction<ShapeFunctionTypes_>* B )
         {
-            helper::ReadAccessor<Data<vector<Coord> > > parent(B->f_position);
+            helper::ReadAccessor<Data<helper::vector<Coord> > > parent(B->f_position);
             if(!parent.size()) { B->serr<<"Parent nodes not found"<<B->sendl; return; }
 
             const Topo::SeqTriangles& triangles = B->parentTopology->getTriangles();
@@ -483,7 +483,7 @@ protected:
             // get parent topology and nodes
             if(!B->parentTopology) return;
 
-            helper::ReadAccessor<Data<vector<Coord> > > parent(B->f_position);
+            helper::ReadAccessor<Data<helper::vector<Coord> > > parent(B->f_position);
             if(!parent.size()) return;
 
             const Topo::SeqTriangles& triangles = B->parentTopology->getTriangles();

@@ -173,7 +173,7 @@ void MeshMatrixMass<DataTypes, MassType>::TetrahedronMassHandler::applyCreateFun
 	//		std::cerr<<"Mass Matrix= "<<TetrahedronMass<<std::endl;
 	//		std::cerr<<"Lumped Mass Matrix= "<<lumpedVertexMass<<std::endl;
 			// now updates the the mass matrix on each vertex.
-			vector<MassType>& my_vertexMassInfo = *MMM->vertexMassInfo.beginEdit();
+            helper::vector<MassType>& my_vertexMassInfo = *MMM->vertexMassInfo.beginEdit();
 			for (j=0;j<nbControlPoints;j++) {
 				my_vertexMassInfo[indexArray[j]]+=lumpedVertexMass[j];
 			}
@@ -199,7 +199,7 @@ void MeshMatrixMass<DataTypes, MassType>::TetrahedronMassHandler::applyCreateFun
 			// mass for mass lumping
 			mass=totalMass/nbControlPoints;
 			// now updates the the mass matrix on each vertex.
-			vector<MassType>& my_vertexMassInfo = *MMM->vertexMassInfo.beginEdit();
+            helper::vector<MassType>& my_vertexMassInfo = *MMM->vertexMassInfo.beginEdit();
 			for (j=0;j<nbControlPoints;j++) {
 				my_vertexMassInfo[indexArray[j]]+=mass;
 			}
@@ -267,7 +267,7 @@ void MeshMatrixMass<DataTypes, MassType>::TetrahedronMassHandler::applyCreateFun
 			}
 
 			// now updates the the mass matrix on each vertex.
-			vector<MassType>& my_vertexMassInfo = *MMM->vertexMassInfo.beginEdit();
+            helper::vector<MassType>& my_vertexMassInfo = *MMM->vertexMassInfo.beginEdit();
 			for (j=0;j<nbControlPoints;j++) {
 				my_vertexMassInfo[indexArray[j]]+=lumpedVertexMass[j];
 			}
@@ -291,7 +291,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleCreati
 
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET)
     {
-        helper::WriteAccessor< Data< vector<MassType> > > VertexMasses ( MMM->vertexMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->vertexMassInfo );
         // Initialisation
         typename DataTypes::Real densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
@@ -325,7 +325,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleCreation
 
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET)
     {
-        helper::WriteAccessor< Data< vector<MassType> > > EdgeMasses ( MMM->edgeMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->edgeMassInfo );
         // Initialisation
         typename DataTypes::Real densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
@@ -356,7 +356,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleDestru
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET)
     {
-        helper::WriteAccessor< Data< vector<MassType> > > VertexMasses ( MMM->vertexMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->vertexMassInfo );
         // Initialisation
         typename DataTypes::Real densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
@@ -387,7 +387,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleDestruct
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET)
     {
-        helper::WriteAccessor< Data< vector<MassType> > > EdgeMasses ( MMM->edgeMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->edgeMassInfo );
         // Initialisation
         typename DataTypes::Real densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
@@ -466,7 +466,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadCreation(c
 
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_QUADSET)
     {
-        helper::WriteAccessor< Data< vector<MassType> > > VertexMasses ( MMM->vertexMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->vertexMassInfo );
         // Initialisation
         typename DataTypes::Real densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
@@ -501,7 +501,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadCreation(con
 
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_QUADSET)
     {
-        helper::WriteAccessor< Data< vector<MassType> > > EdgeMasses ( MMM->edgeMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->edgeMassInfo );
         // Initialisation
         typename DataTypes::Real densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
@@ -532,7 +532,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadDestructio
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_QUADSET)
     {
-        helper::WriteAccessor< Data< vector<MassType> > > VertexMasses ( MMM->vertexMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->vertexMassInfo );
         // Initialisation
         typename DataTypes::Real densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
@@ -562,7 +562,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadDestruction(
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_QUADSET)
     {
-        helper::WriteAccessor< Data< vector<MassType> > > EdgeMasses ( MMM->edgeMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->edgeMassInfo );
         // Initialisation
         typename DataTypes::Real densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
@@ -643,7 +643,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronCre
 
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET)
     {
-        helper::WriteAccessor< Data< vector<MassType> > > VertexMasses ( MMM->vertexMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->vertexMassInfo );
         // Initialisation
         typename DataTypes::Real densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
@@ -678,7 +678,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronCreat
 
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET)
     {
-        helper::WriteAccessor< Data< vector<MassType> > > EdgeMasses ( MMM->edgeMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->edgeMassInfo );
         // Initialisation
         typename DataTypes::Real densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
@@ -709,7 +709,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronDes
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET)
     {
-        helper::WriteAccessor< Data< vector<MassType> > > VertexMasses ( MMM->vertexMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->vertexMassInfo );
         // Initialisation
         typename DataTypes::Real densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
@@ -739,7 +739,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronDestr
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET)
     {
-        helper::WriteAccessor< Data< vector<MassType> > > EdgeMasses ( MMM->edgeMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->edgeMassInfo );
         // Initialisation
         typename DataTypes::Real densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
@@ -819,7 +819,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronCrea
 
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_HEXAHEDRONSET)
     {
-        helper::WriteAccessor< Data< vector<MassType> > > VertexMasses ( MMM->vertexMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->vertexMassInfo );
         // Initialisation
         typename DataTypes::Real densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
@@ -854,7 +854,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronCreati
 
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_HEXAHEDRONSET)
     {
-        helper::WriteAccessor< Data< vector<MassType> > > EdgeMasses ( MMM->edgeMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->edgeMassInfo );
         // Initialisation
         typename DataTypes::Real densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
@@ -885,7 +885,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronDest
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_HEXAHEDRONSET)
     {
-        helper::WriteAccessor< Data< vector<MassType> > > VertexMasses ( MMM->vertexMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->vertexMassInfo );
         // Initialisation
         typename DataTypes::Real densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
@@ -916,7 +916,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronDestru
     MeshMatrixMass<DataTypes, MassType> *MMM = this->m;
     if (MMM && MMM->getMassTopologyType()==MeshMatrixMass<DataTypes, MassType>::TOPOLOGY_HEXAHEDRONSET)
     {
-        helper::WriteAccessor< Data< vector<MassType> > > EdgeMasses ( MMM->edgeMassInfo );
+        helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->edgeMassInfo );
         // Initialisation
         typename DataTypes::Real densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
@@ -1083,8 +1083,8 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
         clear();
 
         /// prepare to store info in the vertex array
-        vector<MassType>& my_vertexMassInfo = *vertexMassInfo.beginEdit();
-        vector<MassType>& my_edgeMassInfo = *edgeMassInfo.beginEdit();
+        helper::vector<MassType>& my_vertexMassInfo = *vertexMassInfo.beginEdit();
+        helper::vector<MassType>& my_edgeMassInfo = *edgeMassInfo.beginEdit();
 
         unsigned int ndof = this->mstate->getSize();
         unsigned int nbEdges=_topology->getNbEdges();
@@ -1124,7 +1124,7 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
 
 		else if (_topology->getNbTetrahedra()>0 && bezierTetraGeo)  // Bezier Tetrahedron topology
         {
-			vector<MassVector>& my_tetrahedronMassInfo = *tetrahedronMassInfo.beginEdit();
+            helper::vector<MassVector>& my_tetrahedronMassInfo = *tetrahedronMassInfo.beginEdit();
 
 
 			size_t  nbTetrahedra=_topology->getNbTetrahedra();

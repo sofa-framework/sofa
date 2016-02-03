@@ -181,7 +181,7 @@ x[i] = points.getValue()[i];
 template <class TIn, class TOut>
 void RigidRigidMapping<TIn, TOut>::setRepartition(unsigned int value)
 {
-    vector<unsigned int>& rep = *this->repartition.beginEdit();
+    helper::vector<unsigned int>& rep = *this->repartition.beginEdit();
     rep.clear();
     rep.push_back(value);
     this->repartition.endEdit();
@@ -190,7 +190,7 @@ void RigidRigidMapping<TIn, TOut>::setRepartition(unsigned int value)
 template <class TIn, class TOut>
 void RigidRigidMapping<TIn, TOut>::setRepartition(sofa::helper::vector<unsigned int> values)
 {
-    vector<unsigned int>& rep = *this->repartition.beginEdit();
+    helper::vector<unsigned int>& rep = *this->repartition.beginEdit();
     rep.clear();
     rep.reserve(values.size());
     //repartition.setValue(values);

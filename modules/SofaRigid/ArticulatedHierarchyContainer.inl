@@ -71,7 +71,7 @@ ArticulationCenter* ArticulatedHierarchyContainer::getArticulationCenterAsChild(
     return (*ac);
 }
 
-vector<ArticulationCenter*> ArticulatedHierarchyContainer::getAcendantList(int index)
+helper::vector<ArticulationCenter*> ArticulatedHierarchyContainer::getAcendantList(int index)
 {
     unsigned int i=0;
     acendantList.clear();

@@ -1068,14 +1068,14 @@ public:
 
 
 public:
-    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
 protected:
     typedef linearsolver::EigenSparseMatrix<InDataTypes, OutDataTypes> eigen_type;
 
     // eigen matrix for use with Compliant plugin
     eigen_type eigen;
-    vector< defaulttype::BaseMatrix* > js;
+    helper::vector< defaulttype::BaseMatrix* > js;
 
     virtual void updateForceMask();
 

@@ -99,7 +99,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 
 		const unsigned n = this->getFrom().size();
 
-		vector<const_in_coord_type> in_vec; in_vec.reserve(n);
+        helper::vector<const_in_coord_type> in_vec; in_vec.reserve(n);
 
         core::ConstMultiVecCoordId pos = core::ConstVecCoordId::position();
         
@@ -123,7 +123,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 	
 		const unsigned n = this->getFrom().size();
 
-		vector<in_pos_type> in_vec; in_vec.reserve(n);
+        helper::vector<in_pos_type> in_vec; in_vec.reserve(n);
 
 		for( unsigned i = 0; i < n; ++i ) {
 			in_vec.push_back( in_pos_type(dataVecInPos[i]) );
@@ -198,7 +198,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 	}
 
 	
-	virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs() {
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() {
 		if( js.empty() ) std::cout << "warning: empty js for " << this->getName() << " " 
 		                           <<  this->getClassName() << std::endl;
 
@@ -251,15 +251,15 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 	
 	// perform a jacobian blocs assembly
 	// TODO pass out value as well ?
-	virtual void assemble( const vector<in_pos_type>& in ) = 0;
+    virtual void assemble( const helper::vector<in_pos_type>& in ) = 0;
 
-    virtual void assemble_geometric( const vector<const_in_coord_type>& /*in*/,
+    virtual void assemble_geometric( const helper::vector<const_in_coord_type>& /*in*/,
                                      const const_out_deriv_type& /*out*/) { }
     
     using Inherit::apply;
 	// perform mapping operation on positions
     virtual void apply(out_pos_type& out, 
-					   const vector<in_pos_type>& in ) = 0;
+                       const helper::vector<in_pos_type>& in ) = 0;
 
   private:
 
@@ -288,7 +288,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 	}
 
 	
-	typedef vector< sofa::defaulttype::BaseMatrix* > js_type;
+    typedef helper::vector< sofa::defaulttype::BaseMatrix* > js_type;
 	js_type js;
 
 

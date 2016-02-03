@@ -64,7 +64,7 @@ namespace mapping
 
 
         virtual void apply(typename Inherit::out_pos_type& /*out*/,
-                           const vector<typename Inherit::in_pos_type>& in)  {
+                           const helper::vector<typename Inherit::in_pos_type>& in)  {
             // macro_trace;
             assert( in.size() == 2 );
             assert( this->Nout == 1 );
@@ -74,7 +74,7 @@ namespace mapping
 
         typedef defaulttype::Vec<2, unsigned> index_type;
         typedef defaulttype::Vec<2, index_type> index_pair;
-        typedef vector< index_pair > pairs_type;
+        typedef helper::vector< index_pair > pairs_type;
 
         Data< pairs_type > d_pairs;
         Data< Real > d_ratio; // a different ratio for each pair
@@ -86,7 +86,7 @@ namespace mapping
             , d_ratio( initData(&d_ratio, (Real)1, "ratio", "gear link ratio (can be negative)") )
         {}
 
-        void assemble(const vector<typename Inherit::in_pos_type>& in ) {
+        void assemble(const helper::vector<typename Inherit::in_pos_type>& in ) {
 
             const Real& ratio = d_ratio.getValue();
 

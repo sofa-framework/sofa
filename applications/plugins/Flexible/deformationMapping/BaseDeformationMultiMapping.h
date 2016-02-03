@@ -90,6 +90,8 @@ public:
     typedef core::Multi2Mapping<typename JacobianBlockType1::In, typename JacobianBlockType2::In, typename JacobianBlockType1::Out> Inherit;
     SOFA_ABSTRACT_CLASS2(SOFA_TEMPLATE2(BaseDeformationMultiMappingT,JacobianBlockType1,JacobianBlockType2), SOFA_TEMPLATE3(core::Multi2Mapping,typename JacobianBlockType1::In,typename JacobianBlockType2::In,typename JacobianBlockType1::Out), SOFA_TEMPLATE2(BasePointMapper,JacobianBlockType1::Out::spatial_dimensions,typename JacobianBlockType1::In::Real) );
 
+    template<class T> using vector = helper::vector<T, helper::CPUMemoryManager<T> >;
+
     /** @name  Input types    */
     //@{
     typedef typename JacobianBlockType1::In In1;

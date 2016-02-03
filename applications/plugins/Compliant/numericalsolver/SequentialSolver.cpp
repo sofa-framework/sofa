@@ -364,7 +364,7 @@ int SequentialSolverClass = core::RegisterObject("Sequential Impulses solver").a
 static unsigned projection_bilateral(AssembledSystem::rmat& Q_bilat, AssembledSystem::rmat& Q_unil, const AssembledSystem& sys)
 {
     // flag which constraint are bilateral
-    static vector<bool> bilateral;
+    static helper::vector<bool> bilateral;
     bilateral.resize( sys.n );
     unsigned nb_bilaterals = 0;
 
@@ -379,7 +379,7 @@ static unsigned projection_bilateral(AssembledSystem::rmat& Q_bilat, AssembledSy
         {
             bool bilat = !constraint.projector.get(); // flag bilateral or not
             if( bilat ) nb_bilaterals += dim;
-            const vector<bool>::iterator itoff = bilateral.begin() + off;
+            const helper::vector<bool>::iterator itoff = bilateral.begin() + off;
             std::fill( itoff, itoff+dim, bilat );
             off += dim;
         }

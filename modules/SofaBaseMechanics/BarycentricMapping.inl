@@ -3733,7 +3733,7 @@ void BarycentricMapping<TIn, TOut>::handleTopologyChange ( core::topology::Topol
 
 
 template<class TIn, class TOut>
-const vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::getJs()
+const helper::vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::getJs()
 {
     //std::cerr << this->getName() << ": getJs " << std::endl;
     typedef typename Mapper::MatrixType mat_type;

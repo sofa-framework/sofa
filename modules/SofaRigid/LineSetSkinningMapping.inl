@@ -128,7 +128,7 @@ void LineSetSkinningMapping<TIn, TOut>::init()
     for(unsigned int verticeIndex=0; verticeIndex<xto.size(); verticeIndex++)
     {
         double	sumWeights = 0.0;
-        vector<influencedLineType> lines;
+        helper::vector<influencedLineType> lines;
         lines.resize(t->getNbLines());
 
         for(unsigned int lineIndex=0; lineIndex< (unsigned) t->getNbLines(); lineIndex++)

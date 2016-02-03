@@ -184,7 +184,7 @@ public:
     }
 
     virtual const sofa::defaulttype::BaseMatrix* getJ() { return &jacobian; }
-    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs()    { return &baseMatrices; }
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs()    { return &baseMatrices; }
 
 protected:
     TetrahedronVolumeMapping (core::State<TIn>* from = NULL, core::State<TOut>* to= NULL)
@@ -200,7 +200,7 @@ protected:
     sofa::core::topology::BaseMeshTopology* m_topology;  ///< where the triangles/quads are defined
 
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
-    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen geometricStiffness; ///< Stiffness due to the non-linearity of the mapping
     typedef defaulttype::Mat<12,12,Real> Hessian;
     typedef std::list<Hessian> Hessians;

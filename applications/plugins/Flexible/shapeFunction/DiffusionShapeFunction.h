@@ -393,7 +393,7 @@ public:
     //@{
     typedef typename Inherit::Real Real;
     typedef typename Inherit::Coord Coord;
-    typedef helper::ReadAccessor<Data<vector<Coord> > > raVecCoord;
+    typedef helper::ReadAccessor<Data<helper::vector<Coord> > > raVecCoord;
     //@}
 
     /** @name  Image data */

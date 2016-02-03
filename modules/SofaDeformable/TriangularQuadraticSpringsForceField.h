@@ -178,7 +178,7 @@ public:
     void updateLameCoefficients();
 
 
-    class TRQSTriangleHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,vector<TriangleRestInformation> >
+    class TRQSTriangleHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<TriangleRestInformation> >
     {
     public:
         typedef typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation TriangleRestInformation;
@@ -195,7 +195,7 @@ public:
         TriangularQuadraticSpringsForceField<DataTypes>* ff;
     };
 
-    class TRQSEdgeHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,vector<EdgeRestInformation> >
+    class TRQSEdgeHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,helper::vector<EdgeRestInformation> >
     {
     public:
         typedef typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;

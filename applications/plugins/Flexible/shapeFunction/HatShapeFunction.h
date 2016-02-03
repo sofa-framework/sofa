@@ -70,7 +70,7 @@ public:
     typedef typename Inherit::VecVHessian VecVHessian;
     typedef HatShapeFunctionInternalData<ShapeFunctionTypes_> InternalData;
 
-    typedef vector<double> ParamTypes;
+    typedef helper::vector<double> ParamTypes;
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 
     Data<helper::OptionsGroup> method;

@@ -1013,7 +1013,7 @@ const defaulttype::BaseMatrix* BaseDeformationMappingT<JacobianBlockType>::getJ(
 
 
 template <class JacobianBlockType>
-const vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMappingT<JacobianBlockType>::getJs()
+const helper::vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMappingT<JacobianBlockType>::getJs()
 {
     if(!this->assemble.getValue() || !BlockType::constant || !eigenJacobian.rows()) updateJ();
 

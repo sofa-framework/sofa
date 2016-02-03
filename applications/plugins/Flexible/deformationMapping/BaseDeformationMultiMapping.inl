@@ -808,7 +808,7 @@ unsigned int BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>
 
 
 template <class JacobianBlockType1,class JacobianBlockType2>
-const vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::getJs()
+const helper::vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::getJs()
 {
     if( !this->assemble.getValue() )
     {
