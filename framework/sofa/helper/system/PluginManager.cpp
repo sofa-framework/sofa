@@ -29,6 +29,7 @@
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <fstream>
+#include <sofa/helper/system/config.h>
 
 using sofa::helper::Utils;
 
