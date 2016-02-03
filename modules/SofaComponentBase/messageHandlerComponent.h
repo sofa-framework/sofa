@@ -56,18 +56,12 @@ namespace component
 {
 namespace logging
 {
-using sofa::core::objectmodel::BaseObjectDescription ;
-using sofa::core::objectmodel::BaseObject ;
-using sofa::core::objectmodel::Data ;
-using std::string ;
-using sofa::helper::logging::MessageHandler;
-
 
 /// A sofa component to add a MessageHandler to the main logger
-class SOFA_COMPONENT_BASE_API MessageHandlerComponent : public BaseObject
+class SOFA_COMPONENT_BASE_API MessageHandlerComponent : public core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(MessageHandlerComponent, BaseObject);
+    SOFA_CLASS(MessageHandlerComponent, core::objectmodel::BaseObject);
 
     MessageHandlerComponent() ;
     virtual ~MessageHandlerComponent(){}
@@ -75,9 +69,9 @@ public:
     /// Inherited from BaseObject.
     /// Parse the given description to assign values to this object's fields and
     /// potentially other parameters.
-    virtual void parse ( BaseObjectDescription* arg ) ;
+    virtual void parse ( core::objectmodel::BaseObjectDescription* arg ) ;
 
-    Data<string>        d_type       ;
+    Data<std::string>        d_type       ;
     bool                m_isValid    ;
 
     bool isValid(){ return m_isValid; }
@@ -85,10 +79,10 @@ public:
 
 
 /// A sofa component to add a FileMessageHandlerComponent to the main logger
-class SOFA_COMPONENT_BASE_API FileMessageHandlerComponent : public BaseObject
+class SOFA_COMPONENT_BASE_API FileMessageHandlerComponent : public core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(FileMessageHandlerComponent, BaseObject) ;
+    SOFA_CLASS(FileMessageHandlerComponent, core::objectmodel::BaseObject) ;
 
     FileMessageHandlerComponent() ;
     virtual ~FileMessageHandlerComponent() ;
@@ -96,10 +90,10 @@ public:
     /// Inherited from BaseObject.
     /// Parse the given description to assign values to this object's fields and
     /// potentially other parameters.
-    virtual void parse ( BaseObjectDescription* arg ) ;
+    virtual void parse ( core::objectmodel::BaseObjectDescription* arg ) ;
 
-    Data<string>        d_filename        ;
-    MessageHandler*     m_handler         ;
+    Data<std::string>        d_filename        ;
+    helper::logging::MessageHandler*     m_handler         ;
 
 
     bool                m_isValid    ;

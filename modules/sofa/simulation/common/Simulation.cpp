@@ -458,7 +458,7 @@ void Simulation::dumpState ( Node* root, std::ofstream& out )
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     out<<root->getTime() <<" ";
     WriteStateVisitor ( params, out ).execute ( root );
-    out<<endl;
+    out<<std::endl;
 }
 
 

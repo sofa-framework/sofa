@@ -39,9 +39,6 @@ namespace simulation
 {
 
 
-using std::cerr;
-using std::endl;
-
 
 /** Find all components of a given type and store pointers in a list.
 */

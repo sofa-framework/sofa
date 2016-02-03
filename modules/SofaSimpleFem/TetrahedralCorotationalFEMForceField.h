@@ -55,7 +55,6 @@ namespace component
 namespace forcefield
 {
 
-using sofa::helper::vector;
 
 
 
@@ -261,21 +260,13 @@ protected:
 
 };
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
-#endif
-
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-#endif
-
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<Vec3dTypes>;
+extern template class SOFA_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<sofa::defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<Vec3fTypes>;
+extern template class SOFA_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<sofa::defaulttype::Vec3fTypes>;
 #endif
 
 #endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_CPP)

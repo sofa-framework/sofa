@@ -49,8 +49,6 @@ namespace topology
 {
 class MultilevelHexahedronSetTopologyModifier;
 
-//using sofa::defaulttype::Vec;
-//using sofa::core::topology::TopologyChange;
 
 class SOFA_NON_UNIFORM_FEM_API MultilevelHexahedronSetTopologyContainer : public HexahedronSetTopologyContainer
 {

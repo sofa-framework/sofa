@@ -113,7 +113,7 @@ public:
 };
 
 ///Create WriteState component in the graph each time needed
-class SOFA_EXPORTER_API WriteStateCreator: public Visitor
+class SOFA_EXPORTER_API WriteStateCreator: public simulation::Visitor
 {
 public:
     WriteStateCreator(const core::ExecParams* params);

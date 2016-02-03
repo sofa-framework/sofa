@@ -381,7 +381,7 @@ UpdateAllSleepStates::UpdateAllSleepStates(const core::ExecParams* params)
 	: simulation::Visitor(params)
 {}
 
-Visitor::Result UpdateAllSleepStates::processNodeTopDown(simulation::Node* node)
+simulation::Visitor::Result UpdateAllSleepStates::processNodeTopDown(simulation::Node* node)
 {
 	if (!node->canChangeSleepingState()) // nodes that can change their sleep state are directly manipulated and do not depend on their parents
 	{
@@ -406,7 +406,7 @@ Visitor::Result UpdateAllSleepStates::processNodeTopDown(simulation::Node* node)
 int SleepControllerClass = core::RegisterObject("A controller that puts node into sleep when the objects are not moving, and wake them up again when there are in collision with a moving object")
 .add< SleepController >();
 
-SOFA_DECL_CLASS(SleepController);
+SOFA_DECL_CLASS(SleepController)
 
 } // namespace controller
 

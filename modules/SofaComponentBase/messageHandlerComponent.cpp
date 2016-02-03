@@ -54,6 +54,8 @@ using sofa::helper::logging::unique::MessageDispatcher;
 
 #include "messageHandlerComponent.h"
 
+using std::string;
+
 namespace sofa
 {
 namespace component
@@ -70,7 +72,7 @@ MessageHandlerComponent::MessageHandlerComponent() :
     m_isValid = false ;
 }
 
-void MessageHandlerComponent::parse ( BaseObjectDescription* arg )
+void MessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
 {
     BaseObject::parse(arg) ;
 
@@ -130,7 +132,7 @@ FileMessageHandlerComponent::~FileMessageHandlerComponent()
     delete m_handler ;
 }
 
-void FileMessageHandlerComponent::parse ( BaseObjectDescription* arg )
+void FileMessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
 {
     BaseObject::parse(arg) ;
 
