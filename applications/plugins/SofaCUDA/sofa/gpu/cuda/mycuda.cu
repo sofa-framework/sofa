@@ -24,7 +24,6 @@
 ******************************************************************************/
 #ifdef _WIN32
 #include <windows.h>
-#include <sofa/helper/system/gl.h>
 #endif
 
 #include "mycuda.h"

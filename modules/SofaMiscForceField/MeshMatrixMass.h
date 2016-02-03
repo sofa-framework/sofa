@@ -68,7 +68,7 @@ class MeshMatrixMassInternalData
 
 // template<class Vec> void readVec1(Vec& vec, const char* str);
 template <class DataTypes, class TMassType>
-class SOFA_MISC_FORCEFIELD_API MeshMatrixMass : public core::behavior::Mass<DataTypes>
+class MeshMatrixMass : public core::behavior::Mass<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(MeshMatrixMass,DataTypes,TMassType), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
