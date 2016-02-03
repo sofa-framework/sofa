@@ -75,7 +75,7 @@ public:
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > transform;
 
-    typedef vector<Coord > SeqPositions;
+    typedef helper::vector<Coord > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > position;

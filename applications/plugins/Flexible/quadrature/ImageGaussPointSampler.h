@@ -490,7 +490,7 @@ public:
     typedef typename MaskTypes::T  MaskT;
     typedef helper::ReadAccessor<Data< MaskTypes > > raMask;
     Data< MaskTypes > f_mask;
-    typedef vector<MaskT> MaskLabelsType;
+    typedef helper::vector<MaskT> MaskLabelsType;
     typedef helper::ReadAccessor<Data< MaskLabelsType > > raMaskLabels;
     Data< MaskLabelsType > f_maskLabels;
 
@@ -674,10 +674,10 @@ protected:
         vol.resize ( nb );
         transforms.resize ( nb );
 
-        vector<vector<unsigned int> > index(nb);
-        vector<vector<Real> > w(nb);
-        vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw(nb);
-        vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw(nb);
+        helper::vector<helper::vector<unsigned int> > index(nb);
+        helper::vector<helper::vector<Real> > w(nb);
+        helper::vector<helper::vector<defaulttype::Vec<spatial_dimensions,Real> > > dw(nb);
+        helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw(nb);
 
         for(unsigned int i=0; i<nb; i++)
         {

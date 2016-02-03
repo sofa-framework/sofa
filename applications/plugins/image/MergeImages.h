@@ -171,7 +171,7 @@ protected:
 
     struct pttype  // to handle overlaps, we need to record some values and positions for each image
     {
-        vector<vector<double> > vals;
+        helper::vector<helper::vector<double> > vals;
         Coord u;
     };
 
@@ -235,7 +235,7 @@ protected:
             for(unsigned int t=0; t<dim[4]; t++) for(unsigned int k=0; k<dim[3]; k++) img(t)(x,y,z,k) = (T)0;
 
             Coord p = outT->fromImage(Coord(x,y,z)); //coordinate of voxel (x,y,z) in world space
-            vector<struct pttype> pts;
+            helper::vector<struct pttype> pts;
             for(unsigned int j=0; j<nb; j++) // store values at p from input images
             {
                 raImage in(this->inputImages[j]);
@@ -250,21 +250,21 @@ protected:
                     if(Interpolation.getValue().getSelectedId()==INTERPOLATION_NEAREST)
                         for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
                         {
-                            pt.vals.push_back(vector<double>());                         
+                            pt.vals.push_back(helper::vector<double>());
                             for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
                                 pt.vals[t].push_back((double)inImg(t).atXYZ(sofa::helper::round((double)inp[0]),sofa::helper::round((double)inp[1]),sofa::helper::round((double)inp[2]),k));
                         }
                     else if(Interpolation.getValue().getSelectedId()==INTERPOLATION_LINEAR)
                         for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
                         {
-                            pt.vals.push_back(vector<double>());                        
+                            pt.vals.push_back(helper::vector<double>());
                             for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
                                 pt.vals[t].push_back((double)inImg(t).linear_atXYZ(inp[0],inp[1],inp[2],k));
                         }
                     else
                         for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
                         {
-                            pt.vals.push_back(vector<double>());
+                            pt.vals.push_back(helper::vector<double>());
                             for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
                                 pt.vals[t].push_back((double)inImg(t).cubic_atXYZ(inp[0],inp[1],inp[2],k));
 

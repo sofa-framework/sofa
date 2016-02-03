@@ -88,7 +88,7 @@ class SOFA_Compliant_API CompliantNLImplicitSolver : public CompliantImplicitSol
     void v_eq_all(const core::ExecParams* params, sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a);
 
     /// keep an eye on which constraints are not bilateral
-    vector<linearsolver::Constraint::SPtr> m_projectors;
+    helper::vector<linearsolver::Constraint::SPtr> m_projectors;
     /// handle unilateral constraints as an active set of bilateral constraints
     /// so UnilateralProjector are removed from the system so the solver solve their correction as bilateral
     /// note the first guess always treat them as unilateral

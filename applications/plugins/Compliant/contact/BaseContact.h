@@ -352,7 +352,7 @@ protected:
     /// insert a ConstraintValue component in the given graph depending on restitution/damping values
     /// return possible pointer to the activated constraint mask
     template<class contact_dofs_type>
-    vector<bool>* addConstraintValue( node_type* node, contact_dofs_type* dofs/*, real damping*/, real restitution=0 )
+    helper::vector<bool>* addConstraintValue( node_type* node, contact_dofs_type* dofs/*, real damping*/, real restitution=0 )
     {
         assert( restitution>=0 && restitution<=1 );
 
@@ -439,7 +439,7 @@ protected:
 //    }
 
     /// @internal copying the contact normals to the given vector
-    typedef vector< defaulttype::Vec<3, real> > normal_type;
+    typedef helper::vector< defaulttype::Vec<3, real> > normal_type;
     void copyNormals( normal_type& res ) const {
         const unsigned size = mappedContacts.size();
         assert( size );

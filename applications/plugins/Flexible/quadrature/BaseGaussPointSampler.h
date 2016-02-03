@@ -93,9 +93,9 @@ public:
     /** @name volume integral data */
     //@{
     Data< unsigned int > f_order; ///< Order of quadrature method
-    typedef vector<Real> volumeIntegralType;
-    Data< vector<volumeIntegralType> > f_volume; ///< Weighted volumes associated to samples
-    typedef helper::WriteOnlyAccessor< Data< vector<volumeIntegralType> > > waVolume;
+    typedef helper::vector<Real> volumeIntegralType;
+    Data< helper::vector<volumeIntegralType> > f_volume; ///< Weighted volumes associated to samples
+    typedef helper::WriteOnlyAccessor< Data< helper::vector<volumeIntegralType> > > waVolume;
     //@}
 
     /** @name visu data */
@@ -112,7 +112,7 @@ public:
       , f_position(initData(&f_position,SeqPositions(),"position","output sample positions"))
       , f_transforms(initData(&f_transforms,VTransform(),"transforms","output sample orientations"))
       , f_order(initData(&f_order,(unsigned int)1,"order","order of quadrature method"))
-      , f_volume(initData(&f_volume,vector<volumeIntegralType>(),"volume","output weighted volume"))
+      , f_volume(initData(&f_volume,helper::vector<volumeIntegralType>(),"volume","output weighted volume"))
       , showSamplesScale(initData(&showSamplesScale,0.0f,"showSamplesScale","show samples scale"))
       , drawMode(initData(&drawMode,0,"drawMode",""))
     {

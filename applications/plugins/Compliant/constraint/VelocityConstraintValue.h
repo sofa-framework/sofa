@@ -27,7 +27,7 @@ class SOFA_Compliant_API VelocityConstraintValue : public BaseConstraintValue {
     virtual void dynamics(SReal* dst, unsigned n, unsigned dim, bool, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
 
 
-    Data< vector<SReal> > d_velocities;  ///< fixed velocities
+    Data< helper::vector<SReal> > d_velocities;  ///< fixed velocities
 	
 };
 

@@ -709,7 +709,7 @@ void RecordedCamera::draw(const core::visual::VisualParams* /*vparams*/)
 
         // Camera positions
         glBegin(GL_LINES);
-        vector <Vec3> _positions = m_translationPositions.getValue();
+        helper::vector <Vec3> _positions = m_translationPositions.getValue();
         for (unsigned int i=0; i < _positions.size()-1; ++i)
         {
             glVertex3f((float)_positions[i  ][0], (float)_positions[i  ][1], (float)_positions[i  ][2]);
