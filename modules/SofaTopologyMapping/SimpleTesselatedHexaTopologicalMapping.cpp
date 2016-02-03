@@ -79,7 +79,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
 
             for (int i=0; i<fromModel->getNbHexahedra(); ++i)
             {
-                Hexa h = fromModel->getHexahedron(i);
+                core::topology::BaseMeshTopology::Hexa h = fromModel->getHexahedron(i);
 
                 Vector3 p0(fromModel->getPX(h[0]), fromModel->getPY(h[0]), fromModel->getPZ(h[0]));
                 Vector3 p1(fromModel->getPX(h[1]), fromModel->getPY(h[1]), fromModel->getPZ(h[1]));
@@ -247,7 +247,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
 
             for (int i=0; i<fromModel->getNbHexahedra(); ++i)
             {
-                Hexa h = fromModel->getHexahedron(i);
+                core::topology::BaseMeshTopology::Hexa h = fromModel->getHexahedron(i);
 
                 Vec3d p0(fromModel->getPX(h[0]), fromModel->getPY(h[0]), fromModel->getPZ(h[0]));
                 Vec3d p1(fromModel->getPX(h[1]), fromModel->getPY(h[1]), fromModel->getPZ(h[1]));

@@ -227,7 +227,7 @@ void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
 }
 
 template< class DataTypes>
-void BeamFEMForceField<DataTypes>::BeamFFEdgeHandler::applyCreateFunction(unsigned int edgeIndex, BeamInfo &ei, const topology::Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void BeamFEMForceField<DataTypes>::BeamFFEdgeHandler::applyCreateFunction(unsigned int edgeIndex, BeamInfo &ei, const core::topology::BaseMeshTopology::Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
     if(ff)
     {

@@ -36,7 +36,7 @@
 
 namespace sofa
 {
-using helper::vector;
+//using helper::vector;
 
 namespace component
 {

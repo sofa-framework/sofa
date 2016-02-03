@@ -74,6 +74,12 @@ public:
 	    POLAR_DECOMPOSITION_MODIFIED,
 		LINEAR_ELASTIC
     } RotationDecompositionMethod;
+
+    typedef core::topology::BaseMeshTopology::Tetra Tetra;
+    typedef core::topology::BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
+    typedef core::topology::BaseMeshTopology::Tetra Tetrahedron;
+
+
 protected:
 
 
@@ -134,21 +140,21 @@ protected:
         }
     };
 
-    class FTCFTetrahedronHandler : public topology::TopologyDataHandler<topology::Tetrahedron, sofa::helper::vector<TetrahedronRestInformation> >
+    class FTCFTetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronRestInformation> >
     {
     public:
         typedef typename FastTetrahedralCorotationalForceField<DataTypes>::TetrahedronRestInformation TetrahedronRestInformation;
 
         FTCFTetrahedronHandler(FastTetrahedralCorotationalForceField<DataTypes>* ff,
                 topology::TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> >* data )
-            :topology::TopologyDataHandler<topology::Tetrahedron, sofa::helper::vector<TetrahedronRestInformation> >(data)
+            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronRestInformation> >(data)
             ,ff(ff)
         {
 
         }
 
         void applyCreateFunction(unsigned int, TetrahedronRestInformation &t,
-                                 const topology::Tetrahedron&,
+                                 const core::topology::BaseMeshTopology::Tetrahedron&,
                                  const sofa::helper::vector<unsigned int> &,
                                  const sofa::helper::vector<double> &);
 

@@ -44,7 +44,7 @@ class MultilevelModification;
 namespace forcefield
 {
 
-using sofa::helper::vector;
+//using sofa::helper::vector;
 
 /**
 

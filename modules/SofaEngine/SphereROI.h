@@ -47,14 +47,6 @@ namespace component
 namespace engine
 {
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Rigid3dTypes;
-#endif //#ifndef SOFA_FLOAT
-
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Rigid3fTypes;
-#endif //#ifndef SOFA_
-
 
 /**
  * This class find all the points/edges/triangles/tetrahedra located inside a given sphere.
@@ -185,23 +177,23 @@ public:
 };
 
 #ifndef SOFA_FLOAT
-template<> bool SphereROI<Rigid3dTypes>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
-template<> bool SphereROI<Rigid3dTypes>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
-template<> bool SphereROI<Rigid3dTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
-template<> bool SphereROI<Rigid3dTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle);
-template<> bool SphereROI<Rigid3dTypes>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
-template<> bool SphereROI<Rigid3dTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
-template<> void SphereROI<Rigid3dTypes>::update();
+template<> bool SphereROI<defaulttype::Rigid3dTypes>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
+template<> bool SphereROI<defaulttype::Rigid3dTypes>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
+template<> bool SphereROI<defaulttype::Rigid3dTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
+template<> bool SphereROI<defaulttype::Rigid3dTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle);
+template<> bool SphereROI<defaulttype::Rigid3dTypes>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
+template<> bool SphereROI<defaulttype::Rigid3dTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
+template<> void SphereROI<defaulttype::Rigid3dTypes>::update();
 #endif
 
 #ifndef SOFA_DOUBLE
-template<> bool SphereROI<Rigid3fTypes>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
-template<> bool SphereROI<Rigid3fTypes>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
-template<> bool SphereROI<Rigid3fTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
-template<> bool SphereROI<Rigid3fTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle);
-template<> bool SphereROI<Rigid3fTypes>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
-template<> bool SphereROI<Rigid3fTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
-template<> void SphereROI<Rigid3fTypes>::update();
+template<> bool SphereROI<defaulttype::Rigid3fTypes>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
+template<> bool SphereROI<defaulttype::Rigid3fTypes>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
+template<> bool SphereROI<defaulttype::Rigid3fTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
+template<> bool SphereROI<defaulttype::Rigid3fTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle);
+template<> bool SphereROI<defaulttype::Rigid3fTypes>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
+template<> bool SphereROI<defaulttype::Rigid3fTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
+template<> void SphereROI<defaulttype::Rigid3fTypes>::update();
 #endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SPHEREROI_CPP)

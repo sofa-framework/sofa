@@ -68,8 +68,8 @@ public:
     sofa::core::objectmodel::DataFileName stlFilename;
     Data<bool> m_fileFormat;      //0 for Ascii Formats, 1 for Binary File Format
     Data<defaulttype::Vec3Types::VecCoord> m_position;
-    Data< vector< sofa::component::topology::Triangle > > m_triangle;
-    Data< vector< sofa::component::topology::Quad > > m_quad;
+    Data< vector< core::topology::BaseMeshTopology::Triangle > > m_triangle;
+    Data< vector< core::topology::BaseMeshTopology::Quad > > m_quad;
     
     Data<unsigned int> exportEveryNbSteps;
     Data<bool> exportAtBegin;

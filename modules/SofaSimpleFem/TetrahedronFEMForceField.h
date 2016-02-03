@@ -132,6 +132,9 @@ protected:
     /// Strain-displacement matrix
     typedef defaulttype::Mat<12, 6, Real> StrainDisplacement;
 
+
+    defaulttype::MatNoInit<3, 3, Real> R0;
+
     /// Rigid transformation (rotation) matrix
     typedef defaulttype::MatNoInit<3, 3, Real> Transformation;
 

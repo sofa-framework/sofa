@@ -52,7 +52,7 @@ namespace forcefield
 //#define PLOT_CURVE //lose some FPS
 
 
-using sofa::helper::vector;
+//using sofa::helper::vector;
 
 /** corotational triangle from
 * @InProceedings{NPF05,
@@ -218,13 +218,13 @@ public:
     topology::EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo;
 
 
-    class TRQSTriangleHandler : public topology::TopologyDataHandler<topology::Triangle,vector<TriangleInformation> >
+    class TRQSTriangleHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,vector<TriangleInformation> >
     {
     public:
-        TRQSTriangleHandler(TriangularFEMForceField<DataTypes>* _ff, topology::TriangleData<sofa::helper::vector<TriangleInformation> >* _data) : topology::TopologyDataHandler<topology::Triangle, sofa::helper::vector<TriangleInformation> >(_data), ff(_ff) {}
+        TRQSTriangleHandler(TriangularFEMForceField<DataTypes>* _ff, topology::TriangleData<sofa::helper::vector<TriangleInformation> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, sofa::helper::vector<TriangleInformation> >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int triangleIndex, TriangleInformation& ,
-                const topology::Triangle & t,
+                const core::topology::BaseMeshTopology::Triangle & t,
                 const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double > &);
 

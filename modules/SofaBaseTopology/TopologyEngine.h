@@ -45,15 +45,6 @@ namespace component
 namespace topology
 {
 
-// Define topology elements
-using core::topology::BaseMeshTopology;
-typedef BaseMeshTopology::Point Point;
-typedef BaseMeshTopology::Edge Edge;
-typedef BaseMeshTopology::Triangle Triangle;
-typedef BaseMeshTopology::Quad Quad;
-typedef BaseMeshTopology::Tetrahedron Tetrahedron;
-typedef BaseMeshTopology::Hexahedron Hexahedron;
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +59,16 @@ public:
     typedef VecT container_type;
     typedef typename container_type::value_type value_type;
     typedef sofa::core::topology::BaseTopologyData<VecT> t_topologicalData;
+
+
+
+    typedef core::topology::BaseMeshTopology::Point Point;
+    typedef core::topology::BaseMeshTopology::Edge Edge;
+    typedef core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef core::topology::BaseMeshTopology::Quad Quad;
+    typedef core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
+    typedef core::topology::BaseMeshTopology::Hexahedron Hexahedron;
+
 
 protected:
     //TopologyEngineImpl();

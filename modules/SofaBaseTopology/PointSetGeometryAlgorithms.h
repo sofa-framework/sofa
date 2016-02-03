@@ -39,9 +39,6 @@ namespace component
 
 namespace topology
 {
-using core::topology::BaseMeshTopology;
-using core::behavior::MechanicalState;
-typedef BaseMeshTopology::PointID PointID;
 
 /**
  * A class that can perform some geometric computation on a set of points.
@@ -52,6 +49,7 @@ class PointSetGeometryAlgorithms : public core::topology::GeometryAlgorithms
 public:
     SOFA_CLASS(SOFA_TEMPLATE(PointSetGeometryAlgorithms,DataTypes),core::topology::GeometryAlgorithms);
 
+    typedef core::topology::BaseMeshTopology::PointID PointID;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
