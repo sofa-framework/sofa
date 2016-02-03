@@ -86,7 +86,6 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaUniformMass.inl
     sofa/gpu/cuda/CudaVisualModel.h
     sofa/gpu/cuda/CudaVisualModel.inl
-    sofa/gpu/cuda/gpucuda.h
     sofa/gpu/cuda/mycuda.h
 )
 
@@ -248,13 +247,18 @@ endif()
 # quick and dirty fix for nvcc compatibility with -fno-partial-inlining flag
 set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 
+if(WIN32)
+    add_definitions("-DWIN32")
+	set(WINDOWSOPTIONS "/MD")
+endif()
+
 # Make the compiler definitions available to nvcc
-add_definitions("-DSOFA_BUILD_GPU_CUDA")
+add_definitions("-DSOFA_BUILD_SOFACUDA")
 # Give include directories to nvcc compiler.
 # Note: keep cuda_include_directories() before cuda_add_library().
 cuda_include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 cuda_include_directories("${CMAKE_BINARY_DIR}/include")
-cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS} ${WINDOWS_OPTIONS})
+cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS} ${WINDOWSOPTIONS})
 
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
