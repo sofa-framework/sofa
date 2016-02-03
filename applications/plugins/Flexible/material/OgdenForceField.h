@@ -38,8 +38,6 @@ namespace component
 namespace forcefield
 {
 
-using helper::vector;
-
 
 /** Ogden compressible energy with N=3 (note that a more generic implementation for any N is possible)
     W = sum(1<=i=<N) mui/alphai (~U1^alphai+~U2^alphai+~U3^alphai-3) + sum(1<=i=<N) 1/di(J-1)^{2i} with J = U1*U2*U3 and ~Ui=J^{-1/3}Ui deviatoric principal stretches

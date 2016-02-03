@@ -43,7 +43,6 @@ namespace component
 namespace forcefield
 {
 
-using helper::vector;
 
 /** Compute stress from strain (=apply material law)
   * using Hooke's Law for isotropic homogeneous materials:

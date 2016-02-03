@@ -38,7 +38,6 @@ namespace component
 namespace forcefield
 {
 
-using helper::vector;
 
 /** Apply Blemker Material's Law for Tendon materials.
     from 2005 paper: "A 3D model of Muscle reveals the causes of nonuniform strains in the biceps brachii"

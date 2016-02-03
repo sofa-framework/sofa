@@ -55,12 +55,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using defaulttype::Vec;
-using defaulttype::Mat;
-using cimg_library::CImg;
-
-
 
 
 /// Default implementation does not compile
@@ -95,7 +89,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         // get tranform and image at time t
         typename ImageSampler::raImage in(sampler->image);
         typename ImageSampler::raTransform inT(sampler->transform);
-        const CImg<T>& inimg = in->getCImg(sampler->time);
+        const cimg_library::CImg<T>& inimg = in->getCImg(sampler->time);
 
         // data access
         typename ImageSampler::waPositions pos(sampler->position);       pos.clear();
@@ -104,7 +98,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typename ImageSampler::waHexa h(sampler->hexahedra);             h.clear();
 
         // convert to single channel boolean image
-        CImg<bool> img(inimg.width()+1,inimg.height()+1,inimg.depth()+1,1,false);
+        cimg_library::CImg<bool> img(inimg.width()+1,inimg.height()+1,inimg.depth()+1,1,false);
         if(atcorners) {  cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) { img(x,y,z)=img(x+1,y,z)=img(x,y+1,z)=img(x+1,y+1,z)=img(x,y,z+1)=img(x+1,y,z+1)=img(x,y+1,z+1)=img(x+1,y+1,z+1)=true; } }
         else cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) img(x,y,z)=true;
 
@@ -113,8 +107,8 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         cimg_foroff(img,off) if(img[off]) nb++;
         pos.resize(nb);
         // record indices of previous y line and z plane for connectivity
-        CImg<unsigned int> pLine(img.width()),nLine(img.width());
-        CImg<unsigned int> pPlane(img.width(),img.height()),nPlane(img.width(),img.height());
+        cimg_library::CImg<unsigned int> pLine(img.width()),nLine(img.width());
+        cimg_library::CImg<unsigned int> pPlane(img.width(),img.height()),nPlane(img.width(),img.height());
         // fill pos and edges
         nb=0;
         cimg_forZ(img,z)
@@ -169,8 +163,8 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         // get tranform and image at time t
         typename ImageSampler::raImage in(sampler->image);
         typename ImageSampler::raTransform inT(sampler->transform);
-        const CImg<T>& inimg = in->getCImg(sampler->time);
-        const CImg<T>* biasFactor=bias?&inimg:NULL;
+        const cimg_library::CImg<T>& inimg = in->getCImg(sampler->time);
+        const cimg_library::CImg<T>* biasFactor=bias?&inimg:NULL;
 
         // data access
         typename ImageSampler::raPositions fpos(sampler->fixedPosition);
@@ -184,18 +178,18 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         dim[3]=dim[4]=1;
         typename ImageSampler::waVor vorData(sampler->voronoi);
         vorData->setDimensions(dim);
-        CImg<unsigned int>& voronoi = vorData->getCImg(); voronoi.fill(0);
+        cimg_library::CImg<unsigned int>& voronoi = vorData->getCImg(); voronoi.fill(0);
         typename ImageSampler::waDist distData(sampler->distances);
         distData->setDimensions(dim);
-        CImg<Real>& dist = distData->getCImg(); dist.fill(-1);
+        cimg_library::CImg<Real>& dist = distData->getCImg(); dist.fill(-1);
         cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg_library::cimg::type<Real>::max();
 
         // list of seed points
         std::set<std::pair<Real,sofa::defaulttype::Vec<3,int> > > trial;
 
         // add fixed points
-        vector<unsigned int> fpos_voronoiIndex;
-        vector<Coord> fpos_VoxelIndex;
+        helper::vector<unsigned int> fpos_voronoiIndex;
+        helper::vector<Coord> fpos_VoxelIndex;
 
         for(unsigned int i=0; i<fpos.size(); i++)
         {
@@ -215,8 +209,8 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         }
 
         // farthest point sampling using geodesic distances
-        vector<unsigned int> pos_voronoiIndex;
-        vector<Coord> pos_VoxelIndex;
+        helper::vector<unsigned int> pos_voronoiIndex;
+        helper::vector<Coord> pos_VoxelIndex;
         while(pos_VoxelIndex.size()<nb)
         {
             Real dmax=0;  Coord pmax;
@@ -263,7 +257,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         }
 
         // add 3D points
-        std::vector<Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
+        std::vector<defaulttype::Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
         for(unsigned int i=0; i<pos_VoxelIndex.size(); i++) pos.push_back(inT->fromImage(pos_VoxelIndex[i]));
         sampler->position.endEdit();
 
@@ -289,8 +283,8 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         // get tranform and image at time t
         typename ImageSampler::raImage in(sampler->image);
         typename ImageSampler::raTransform inT(sampler->transform);
-        const CImg<T>& inimg = in->getCImg(sampler->time);
-        const CImg<T>* biasFactor=bias?&inimg:NULL;
+        const cimg_library::CImg<T>& inimg = in->getCImg(sampler->time);
+        const cimg_library::CImg<T>* biasFactor=bias?&inimg:NULL;
 
         // data access
         typename ImageSampler::raPositions fpos(sampler->fixedPosition);
@@ -304,18 +298,18 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         dim[3]=dim[4]=1;
         typename ImageSampler::waVor vorData(sampler->voronoi);
         vorData->setDimensions(dim);
-        CImg<unsigned int>& voronoi = vorData->getCImg(); voronoi.fill(0);
+        cimg_library::CImg<unsigned int>& voronoi = vorData->getCImg(); voronoi.fill(0);
         typename ImageSampler::waDist distData(sampler->distances);
         distData->setDimensions(dim);
-        CImg<Real>& dist = distData->getCImg(); dist.fill(-1);
+        cimg_library::CImg<Real>& dist = distData->getCImg(); dist.fill(-1);
         cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg_library::cimg::type<Real>::max();
 
         // list of seed points
         std::set<std::pair<Real,sofa::defaulttype::Vec<3,int> > > trial;
 
         // add fixed points
-        vector<unsigned int> fpos_voronoiIndex;
-        vector<Coord> fpos_VoxelIndex;
+        helper::vector<unsigned int> fpos_voronoiIndex;
+        helper::vector<Coord> fpos_VoxelIndex;
 
         for(unsigned int i=0; i<fpos.size(); i++)
         {
@@ -335,12 +329,12 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         }
 
         // new points
-        vector<unsigned int> pos_voronoiIndex;
-        vector<Coord> pos_VoxelIndex;
+        helper::vector<unsigned int> pos_voronoiIndex;
+        helper::vector<Coord> pos_VoxelIndex;
         while(pos_VoxelIndex.size()<nb)
         {
-            vector<unsigned int> newpos_voronoiIndex;
-            vector<Coord> newpos_VoxelIndex;
+            helper::vector<unsigned int> newpos_voronoiIndex;
+            helper::vector<Coord> newpos_VoxelIndex;
 
             // farthest sampling of N points
             unsigned int currentN = N;
@@ -418,7 +412,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         }
 
         // add 3D points
-        std::vector<Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
+        std::vector<defaulttype::Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
         for(unsigned int i=0; i<pos_VoxelIndex.size(); i++) pos.push_back(inT->fromImage(pos_VoxelIndex[i]));
         sampler->position.endEdit();
 
@@ -481,7 +475,7 @@ public:
 
     //@name sample data (points+connectivity)
     /**@{*/
-    typedef vector<Vec<3,Real> > SeqPositions;
+    typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > position;

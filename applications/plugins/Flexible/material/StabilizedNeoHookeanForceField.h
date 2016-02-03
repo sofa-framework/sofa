@@ -38,7 +38,6 @@ namespace component
 namespace forcefield
 {
 
-using helper::vector;
 
 /** Apply stabilized NeoHookean's Law for isotropic homogeneous incompressible materials from principal stretches.
   * This is the stabilized formulation from "Energetically Consistent Invertible Elasticity", SCA'12

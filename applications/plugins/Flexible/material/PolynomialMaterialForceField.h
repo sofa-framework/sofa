@@ -38,7 +38,6 @@ namespace component
 namespace forcefield
 {
 
-using helper::vector;
 
 /** Apply Polynomial Material's Law for isotropic homogeneous incompressible materials.
   * The energy is : sum Cij ( I1/ I3^1/3  - 3)^i.( I2/ I3^2/3  - 3)^j + bulk/2 (I3-1)^2

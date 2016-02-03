@@ -46,11 +46,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using defaulttype::Vec;
-using defaulttype::Mat;
-using cimg_library::CImg;
-using cimg_library::CImgList;
 
 /**
  * This class generates flat faces between adjacent regions of an image
@@ -243,7 +238,7 @@ protected:
         raTransform inT(this->transform);
 
         // get image at time t
-        CImg<T> img = in->getCImg(this->time);
+        cimg_library::CImg<T> img = in->getCImg(this->time);
 
         T mx = img.max()+1;
 
@@ -259,14 +254,14 @@ protected:
         }
         else        // use voronoi of the background to add surface details
         {
-            CImg<T> bkg = inb->getCImg(this->time);
+            cimg_library::CImg<T> bkg = inb->getCImg(this->time);
             cimg_forXYZ(img,x,y,z)
                     if(img(x,y,z)==0)
                         img(x,y,z)=mx+bkg(x,y,z)-1;
         }
 
         // identify special voxel corners (with more than three neighboring regions)
-        CImg<unsigned int> UIimg(img.width(),img.height(),img.depth());
+        cimg_library::CImg<unsigned int> UIimg(img.width(),img.height(),img.depth());
         UIimg.fill(0);
 
         IDtoInd regions;

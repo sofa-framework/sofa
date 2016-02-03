@@ -36,8 +36,6 @@ namespace component
 namespace mass
 {
 
-using sofa::component::topology::PointData;
-
 /**
 * Compute mass matrices based on a density map
 * Mass is defined as a global matrix (including non diagonal terms)

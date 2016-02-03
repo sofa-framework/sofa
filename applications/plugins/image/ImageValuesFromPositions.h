@@ -43,11 +43,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using defaulttype::Vec;
-using defaulttype::Mat;
-using cimg_library::CImg;
-
 /**
  * Get image intensities at sample locations
  */
@@ -76,7 +71,7 @@ struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         typename ImageValuesFromPositions::raImage in(This.image);
         if(in->isEmpty()) return;
-        const CImg<T>& img = in->getCImg(This.time);
+        const cimg_library::CImg<T>& img = in->getCImg(This.time);
 
         typename ImageValuesFromPositions::waValues val(This.values);
         Real outval=This.outValue.getValue();
@@ -148,7 +143,7 @@ public:
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > transform;
 
-    typedef vector<Vec<3,Real> > SeqPositions;
+    typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     Data< SeqPositions > position;
 

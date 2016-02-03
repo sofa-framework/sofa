@@ -46,10 +46,6 @@ namespace component
 namespace shapefunction
 {
 
-using core::behavior::BaseShapeFunction;
-using defaulttype::Mat;
-using defaulttype::Vec;
-
 
 
 
@@ -172,14 +168,14 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 abstract class for shape functions computed from a set of images (typically rasterized objects)
   */
 template <class ShapeFunctionTypes_,class ImageTypes_>
-class BaseImageShapeFunction : public BaseShapeFunction<ShapeFunctionTypes_>
+class BaseImageShapeFunction : public core::behavior::BaseShapeFunction<ShapeFunctionTypes_>
 {
     friend struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>;
     friend struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
 
 public:
-    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(BaseImageShapeFunction, ShapeFunctionTypes_,ImageTypes_) , SOFA_TEMPLATE(BaseShapeFunction, ShapeFunctionTypes_));
-    typedef BaseShapeFunction<ShapeFunctionTypes_> Inherit;
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(BaseImageShapeFunction, ShapeFunctionTypes_,ImageTypes_) , SOFA_TEMPLATE(core::behavior::BaseShapeFunction, ShapeFunctionTypes_));
+    typedef core::behavior::BaseShapeFunction<ShapeFunctionTypes_> Inherit;
 
     /** @name  Shape function types */
     //@{

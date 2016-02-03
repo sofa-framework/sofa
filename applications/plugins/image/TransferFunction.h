@@ -45,10 +45,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using cimg_library::CImg;
-using cimg_library::CImgList;
-
 /**
  * This class transforms pixel intensities
  */
@@ -74,12 +70,12 @@ struct TransferFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typename TransferFunction::raParam p(This.param);
         typename TransferFunction::raImagei in(This.inputImage);
         if(in->isEmpty()) return;
-        const CImgList<Ti>& inimg = in->getCImgList();
+        const cimg_library::CImgList<Ti>& inimg = in->getCImgList();
 
         typename TransferFunction::waImageo out(This.outputImage);
         typename TransferFunction::imCoord dim=in->getDimensions();
         out->setDimensions(dim);
-        CImgList<To>& img = out->getCImgList();
+        cimg_library::CImgList<To>& img = out->getCImgList();
 
         switch(This.filter.getValue().getSelectedId())
         {

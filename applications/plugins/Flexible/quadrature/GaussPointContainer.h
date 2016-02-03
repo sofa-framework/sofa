@@ -36,8 +36,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-
 /**
  * This class is empty. It is just used to contain custom Gauss points and provide interface with mappings
  */

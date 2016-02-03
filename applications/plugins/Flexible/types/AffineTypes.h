@@ -44,9 +44,6 @@ namespace sofa
 namespace defaulttype
 {
 
-using std::endl;
-using helper::vector;
-
 /** DOF types associated with deformable frames. Each deformable frame generates an affine displacement field, with 12 independent degrees of freedom.
  */
 template<int _spatial_dimensions, typename _Real>

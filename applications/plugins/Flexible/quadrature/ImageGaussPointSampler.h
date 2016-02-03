@@ -47,8 +47,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-
 /**
  * This class samples an object represented by an image with gauss points
  */
@@ -116,7 +114,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typedef typename ImageGaussPointSampler::raTransform raTransform;
         typedef typename ImageGaussPointSampler::factType factType;
 
-        typedef Vec<3,int> iCoord;
+        typedef defaulttype::Vec<3,int> iCoord;
         typedef std::pair<DistT,iCoord > DistanceToPoint;
 
         // retrieve data
@@ -321,7 +319,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typedef typename ImageGaussPointSampler::Coord Coord;
         typedef typename ImageGaussPointSampler::factType factType;
 
-        typedef Vec<3,int> iCoord;
+        typedef defaulttype::Vec<3,int> iCoord;
         typedef std::pair<DistT,iCoord > DistanceToPoint;
 
         // retrieve data

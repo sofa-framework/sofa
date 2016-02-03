@@ -45,8 +45,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using cimg_library::CImg;
 
 /**
  * This class wraps images from a video stream into a single image
