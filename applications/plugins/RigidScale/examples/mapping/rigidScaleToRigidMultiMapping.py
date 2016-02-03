@@ -18,6 +18,8 @@ def createScene(root_node) :
     root_node.createObject('RequiredPlugin', pluginName='image')
     root_node.createObject('RequiredPlugin', pluginName='Flexible')
     root_node.createObject('RequiredPlugin', pluginName='Compliant')
+    root_node.createObject('RequiredPlugin', pluginName='RigidScale')
+
     # Script launch
     root_node.createObject('PythonScriptController', name='script', filename=__file, classname='MyClass')
 
@@ -40,29 +42,35 @@ class MyClass(Sofa.PythonScriptController):
         self.root_node.findData('gravity').value = '0 0 0'
 
         # Object to transfer creation
-        node = self.root_node.createChild('left_humerus')
+        node = self.root_node.createChild('cube_source')
         node.createObject('MeshObjLoader',name='source', filename=source, triangulate=1, translation='0 0 0', rotation='0 0 0', scale3d='1 1 1')
-        node.createObject('MeshToImageEngine', template='ImageUC', name='rasterizer', src='@source', insideValue='1', voxelSize=voxel_size, padSize=2, rotateImage='false')
+        node.createObject('MeshToImageEngine', template='ImageUC', name='rasterizer', src='@source', insideValue='1', voxelSize=voxel_size, padSize=0, rotateImage='false')
         node.createObject('ImageContainer', template='ImageUC', name='image', src='@rasterizer', drawBB='false')
         node.createObject('ImageSampler', template='ImageUC', name='sampler', src='@image', method=1, param='1 0', clearData=0)
         node.createObject('MeshTopology', name='frame_topo', position='@sampler.position') 
                 
         #================================ Target model ===================================
         targetNode = node.createChild('target') 
-        targetNode.createObject('MeshObjLoader', name='target', filename=target, triangulate=1, translation='0 0 0', rotation='0 0 0', scale3d='3 3 3', showObject=0)        
+        targetNode.createObject('MeshObjLoader', name='target', filename=target, triangulate=1, translation='2 0 0', rotation='0 90 45', scale3d='1.5 3 2', showObject=0)
         targetNode.createObject('MechanicalObject', template='Vec3d', name='DOFs', src='@target', showObject=0)
         targetNode.createObject('FixedConstraint', fixAll='1' )          
         targetVisuNode = targetNode.createChild('visu')
         targetVisuNode.createObject('OglModel', template='ExtVec3f', name='visual', src='@../target', color='0.5 0.5 0.5 0.75') 
         
-        #================================ Rigid frame ====================================
-        rigidNode = node.createChild('rigid')
-        rigidNode.createObject('MechanicalObject', template='Rigid3d', name='DOFs', src='@../frame_topo', showObject=0, showObjectScale='0.1')
-                
         #=================================== Scale =======================================
         scaleNode = node.createChild('scale')
         scaleNode.createObject('MechanicalObject', template='Vec3d', name='DOFs', position='1 1 1', showObject=0, showObjectScale='0.1')
+        
+        #================================ Rigid frame ====================================
+        rigidNode = node.createChild('rigid')
+        rigidNode.createObject('MechanicalObject', template='Rigid3d', name='DOFs', src='@../frame_topo', showObject=0, showObjectScale='0.1')
 
+        #================== offsets mapped to both rigid and scale =======================
+        offsetNode = rigidNode.createChild('offset')
+        scaleNode.addChild(offsetNode)
+        offsetNode.createObject('MechanicalObject', template='Rigid3d', name='DOFs', position='0 1 0 0 0 0 1', showObject=1, showObjectScale='0.25')
+        offsetNode.createObject('RigidScaleToRigidMultiMapping', template='Rigid,Vec3d,Rigid', input1='@../../rigid/DOFs', input2='@../../scale/DOFs', output='@.', index='0 0 0', printLog='0')
+        
         #============================= Registration model ================================
         objMainNode = rigidNode.createChild('main')
         scaleNode.addChild(objMainNode)

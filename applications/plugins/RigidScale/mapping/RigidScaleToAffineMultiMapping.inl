@@ -4,7 +4,7 @@
 #include <sofa/helper/rmath.h>
 #include <Compliant/utils/se3.h>
 
-#include <Flexible/miscMapping/RigidScaleToAffineMultiMapping.h>
+#include <RigidScale/mapping/RigidScaleToAffineMultiMapping.h>
 
 namespace sofa
 {

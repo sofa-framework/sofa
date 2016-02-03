@@ -37,7 +37,7 @@
 #include <sofa/core/core.h>
 #include <sofa/core/VecId.h>
 
-#include <Flexible/miscMapping/RigidScaleMappingJacobian.h>
+#include <RigidScale/mapping/RigidScaleMappingJacobian.h>
 
 namespace sofa
 {
