@@ -121,7 +121,7 @@ public:
     typedef typename iomap::const_iterator iomapit;
 
 
-    typedef vector<double> ParamTypes;
+    typedef helper::vector<double> ParamTypes;
     typedef helper::WriteOnlyAccessor<Data< ParamTypes > > waParam;
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 

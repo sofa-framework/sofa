@@ -90,8 +90,6 @@ public:
     typedef core::Multi2Mapping<typename JacobianBlockType1::In, typename JacobianBlockType2::In, typename JacobianBlockType1::Out> Inherit;
     SOFA_ABSTRACT_CLASS2(SOFA_TEMPLATE2(BaseDeformationMultiMappingT,JacobianBlockType1,JacobianBlockType2), SOFA_TEMPLATE3(core::Multi2Mapping,typename JacobianBlockType1::In,typename JacobianBlockType2::In,typename JacobianBlockType1::Out), SOFA_TEMPLATE2(BasePointMapper,JacobianBlockType1::Out::spatial_dimensions,typename JacobianBlockType1::In::Real) );
 
-    template<class T> using vector = helper::vector<T, helper::CPUMemoryManager<T> >;
-
     /** @name  Input types    */
     //@{
     typedef typename JacobianBlockType1::In In1;
@@ -142,9 +140,9 @@ public:
     /** @name  Coord types    */
     //@{
     typedef defaulttype::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
-    typedef vector<Coord> VecCoord;
+    typedef helper::vector<Coord> VecCoord;
     typedef defaulttype::Mat<spatial_dimensions,material_dimensions,Real> MaterialToSpatial;           ///< local liner transformation from material space to world space
-    typedef vector<MaterialToSpatial> VMaterialToSpatial;
+    typedef helper::vector<MaterialToSpatial> VMaterialToSpatial;
     typedef helper::kdTree<Coord> KDT;      ///< kdTree for fast search of closest mapped points
     typedef typename KDT::distanceSet distanceSet;
     //@}
@@ -152,9 +150,9 @@ public:
     /** @name  Jacobian types    */
     //@{
     typedef JacobianBlockType1 BlockType1;
-    typedef vector<vector<BlockType1> >  SparseMatrix1;
+    typedef helper::vector<helper::vector<BlockType1> >  SparseMatrix1;
     typedef JacobianBlockType2 BlockType2;
-    typedef vector<vector<BlockType2> >  SparseMatrix2;
+    typedef helper::vector<helper::vector<BlockType2> >  SparseMatrix2;
 
     typedef typename BlockType1::MatBlock  MatBlock1;  ///< Jacobian block matrix
     typedef linearsolver::EigenSparseMatrix<In1,Out>    SparseMatrixEigen1;
@@ -171,7 +169,7 @@ public:
 
 
     void resizeOut(); /// automatic resizing (of output model and jacobian blocks) when input samples have changed. Recomputes weights from shape function component.
-    virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0); /// resizing given custom positions and weights
+    virtual void resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0); /// resizing given custom positions and weights
 
     /** @name Mapping functions */
     //@{
@@ -207,7 +205,7 @@ public:
     }
     virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId );
 
-    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
     virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
 
@@ -252,7 +250,7 @@ public:
     Data<VecVGradient >   f_dw;
     Data<VecVHessian >    f_ddw;
     Data<VMaterialToSpatial>    f_F0;   ///< initial value of deformation gradients
-    Data< vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
+    Data< helper::vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
 
 
     Data<bool> assemble;
@@ -295,7 +293,7 @@ protected:
     SparseMatrixEigen2 eigenJacobian2/*, maskedEigenJacobian2*/;  ///< Assembled Jacobian matrix
     void updateJ2();
 //    void updateMaskedJ();
-    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
+    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
 
     SparseKMatrixEigen1 K;  ///< Assembled geometric stiffness matrix
 

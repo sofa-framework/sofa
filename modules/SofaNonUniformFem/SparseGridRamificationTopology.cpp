@@ -121,7 +121,7 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
             mesh = new helper::io::Mesh();
             for (unsigned int i = 0; i<vertices.getValue().size(); ++i)
                 mesh->getVertices().push_back(vertices.getValue()[i]);
-            const vector < vector <int> >& facets = this->facets.getValue();
+            const helper::vector < helper::vector <int> >& facets = this->facets.getValue();
             const SeqTriangles& triangles = this->input_triangles.getValue();
             const SeqQuads& quads = this->input_quads.getValue();
             mesh->getFacets().resize(facets.size() + triangles.size() + quads.size());
@@ -321,7 +321,7 @@ void SparseGridRamificationTopology::buildRamifiedFinestLevel()
     SeqHexahedra& hexahedra = *seqHexahedra.beginEdit();
 
 
-    vector< CubeCorners > cubeCorners; // saving temporary positions of all cube corners
+    helper::vector< CubeCorners > cubeCorners; // saving temporary positions of all cube corners
     for(unsigned i=0; i<hexahedra.size(); ++i)
     {
         CubeCorners c;
@@ -486,7 +486,7 @@ void SparseGridRamificationTopology::buildFromFiner()
 
 
 
-    vector< CubeCorners > cubeCorners; // saving temporary positions of all cube corners
+    helper::vector< CubeCorners > cubeCorners; // saving temporary positions of all cube corners
     MapBetweenCornerPositionAndIndice cubeCornerPositionIndiceMap; // to compute cube corner indice values
 
 

@@ -465,7 +465,7 @@ public:
 
     //@name option data
     /**@{*/
-    typedef vector<double> ParamTypes;
+    typedef helper::vector<double> ParamTypes;
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 
     Data<helper::OptionsGroup> method;
@@ -769,7 +769,7 @@ protected:
 
 
     /// subdivide positions indexed in indices in eight sub-lists, add new points in this->position and run recursively
-    void subdivide(vector<unsigned int> &indices)
+    void subdivide(helper::vector<unsigned int> &indices)
     {
         waPositions pos(this->position);
         waEdges g(this->graphEdges);
@@ -800,7 +800,7 @@ protected:
         }
         //        for(unsigned int i=0;i<nb;i++) std::cout<<"("<<pos[indices[i]]<<") ";  std::cout<<std::endl;
         Coord p;
-        typename vector<Coord>::iterator it;
+        typename helper::vector<Coord>::iterator it;
         // add corners
         unsigned int corners[8]= {addPoint(Coord(BB[0][0],BB[0][1],BB[0][2]),pos,indices),addPoint(Coord(BB[1][0],BB[0][1],BB[0][2]),pos,indices),addPoint(Coord(BB[0][0],BB[1][1],BB[0][2]),pos,indices),addPoint(Coord(BB[1][0],BB[1][1],BB[0][2]),pos,indices),addPoint(Coord(BB[0][0],BB[0][1],BB[1][2]),pos,indices),addPoint(Coord(BB[1][0],BB[0][1],BB[1][2]),pos,indices),addPoint(Coord(BB[0][0],BB[1][1],BB[1][2]),pos,indices),addPoint(Coord(BB[1][0],BB[1][1],BB[1][2]),pos,indices)};
         // add cell center
@@ -833,7 +833,7 @@ protected:
         if(edgs[11]!=corners[3] && edgs[11]!=corners[7]) {addEdge(Edge(corners[3],edgs[11]),g); addEdge(Edge(corners[7],edgs[11]),g);}
 
         // check in which octant lies each point
-        vector<vector<unsigned int> > octant(8); for(unsigned int i=0; i<8; i++)  octant[i].reserve(nb);
+        helper::vector<helper::vector<unsigned int> > octant(8); for(unsigned int i=0; i<8; i++)  octant[i].reserve(nb);
         for(unsigned int i=0; i<indices.size(); i++)
         {
             unsigned int index=indices[i];
@@ -854,10 +854,10 @@ protected:
     }
 
     // add point p in pos if not already there are return its index
-    unsigned int addPoint(const Coord& p, waPositions& pos, vector<unsigned int> &indices)
+    unsigned int addPoint(const Coord& p, waPositions& pos, helper::vector<unsigned int> &indices)
     {
         unsigned int ret ;
-        typename vector<Coord>::iterator it=std::find(pos.begin(),pos.end(),p);
+        typename helper::vector<Coord>::iterator it=std::find(pos.begin(),pos.end(),p);
         if(it==pos.end()) {ret=pos.size(); indices.push_back(ret); pos.push_back(p); }
         else ret=it-pos.begin();
         return ret;
@@ -867,7 +867,7 @@ protected:
     void addEdge(const Edge e, waEdges& edg)
     {
         if(e[0]==e[1]) return;
-        typename vector<Edge>::iterator it=edg.begin();
+        typename helper::vector<Edge>::iterator it=edg.begin();
         while(it!=edg.end() && ((*it)[0]!=e[0] || (*it)[1]!=e[1])) ++it; // to replace std::find that does not compile here for some reasons..
         if(it==edg.end()) edg.push_back(e);
     }

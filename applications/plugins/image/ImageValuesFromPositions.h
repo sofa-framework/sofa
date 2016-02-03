@@ -149,7 +149,7 @@ public:
 
     Data< helper::OptionsGroup > Interpolation;  ///< nearest, linear, cubic
 
-    typedef vector<Real> valuesType;
+    typedef helper::vector<Real> valuesType;
     typedef helper::WriteOnlyAccessor<Data< valuesType > > waValues;
     Data< valuesType > values;  ///< output interpolated values
     Data< Real > outValue;

@@ -189,7 +189,7 @@ protected:
         unsigned int count=0,p1,p2,p3;
         pos.resize(dimx*dimy);
         tc.resize(dimx*dimy);
-        vector<bool> isValid(dimx*dimy);
+        helper::vector<bool> isValid(dimx*dimy);
         Real cameraZ= 0.5; // camera position relative to image plane = offset for depth
         Real minT= minThreshold.getValue();
         for(unsigned int y=0; y<dimy; y++)

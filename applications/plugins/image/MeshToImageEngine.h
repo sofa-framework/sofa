@@ -71,7 +71,7 @@ public:
     typedef SReal Real;
 
     Data< helper::vector<Real> > voxelSize; // should be a Vec<3,Real>, but it is easier to be backward-compatible that way
-    typedef helper::WriteOnlyAccessor<Data< vector<Real> > > waVecReal;
+    typedef helper::WriteOnlyAccessor<Data< helper::vector<Real> > > waVecReal;
     Data< defaulttype::Vec<3,unsigned> > nbVoxels;
     Data< bool > rotateImage;
     Data< unsigned int > padSize;
@@ -134,7 +134,7 @@ public:
     static std::string templateName(const MeshToImageEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
 
     MeshToImageEngine()    :   Inherited()
-      , voxelSize(initData(&voxelSize,vector<Real>(3,(Real)1.0),"voxelSize","voxel Size (redondant with and not priority over nbVoxels)"))
+      , voxelSize(initData(&voxelSize,helper::vector<Real>(3,(Real)1.0),"voxelSize","voxel Size (redondant with and not priority over nbVoxels)"))
       , nbVoxels(initData(&nbVoxels,defaulttype::Vec<3,unsigned>(0,0,0),"nbVoxels","number of voxel (redondant with and priority over voxelSize)"))
       , rotateImage(initData(&rotateImage,false,"rotateImage","orient the image bounding box according to the mesh (OBB)"))
       , padSize(initData(&padSize,(unsigned int)(0),"padSize","size of border in number of voxels"))

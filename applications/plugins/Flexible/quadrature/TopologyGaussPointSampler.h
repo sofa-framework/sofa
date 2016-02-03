@@ -67,8 +67,8 @@ public:
     Data< SeqPositions > f_inPosition;
     typedef sofa::core::topology::BaseMeshTopology Topo;
     Topo* parentTopology;
-    Data< vector<unsigned int> > f_cell;
-    Data< vector<unsigned int> > f_indices;
+    Data< helper::vector<unsigned int> > f_cell;
+    Data< helper::vector<unsigned int> > f_indices;
 
     typedef topology::TetrahedronSetGeometryAlgorithms<defaulttype::StdVectorTypes<Coord,Coord,Real> > TetraGeoAlg;
     TetraGeoAlg* tetraGeoAlgo;
@@ -80,7 +80,7 @@ public:
     Data< bool > f_useLocalOrientation;
     //@}
 
-    Data< vector<Real> > f_fineVolumes;
+    Data< helper::vector<Real> > f_fineVolumes;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const TopologyGaussPointSampler* = NULL) { return std::string();    }
@@ -151,7 +151,7 @@ protected:
         waPositions pos(this->f_position);
         waVolume vol(this->f_volume);
         helper::WriteOnlyAccessor<Data< VTransform > > transforms(this->f_transforms);
-        helper::WriteOnlyAccessor<Data< vector<unsigned int> > > cel(f_cell);
+        helper::WriteOnlyAccessor<Data< helper::vector<unsigned int> > > cel(f_cell);
         pos.clear();
         vol.clear();
         transforms.clear();

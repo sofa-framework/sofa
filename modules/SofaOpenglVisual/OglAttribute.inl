@@ -323,7 +323,7 @@ void OglAttribute< size, type, DataTypes>::handleTopologyChange()
 
                 const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::core::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
                 sofa::defaulttype::ResizableExtVector<DataTypes>& data = *value.beginEdit();
-                vector<DataTypes> tmp;
+                helper::vector<DataTypes> tmp;
                 for ( unsigned int i = 0; i < tab.size(); ++i)
                 {
                     tmp.push_back( data[tab[i]]);

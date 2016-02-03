@@ -80,7 +80,7 @@ public:
     typedef helper::WriteOnlyAccessor<Data< TransformType > > waTransform;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
 
-    typedef vector<double> ParamTypes;
+    typedef helper::vector<double> ParamTypes;
 	typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 	typedef sofa::defaulttype::Vec<3,SReal> Vector3;
 	// -------- Datas ----------------------------

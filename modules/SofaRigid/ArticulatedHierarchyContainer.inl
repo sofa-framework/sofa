@@ -61,8 +61,8 @@ ArticulationCenter::ArticulationCenter():
 
 ArticulationCenter* ArticulatedHierarchyContainer::getArticulationCenterAsChild(int index)
 {
-    vector<ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
-    vector<ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
+    helper::vector<ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
+    helper::vector<ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
     for (; ac != acEnd; ac++)
     {
         if ((*ac)->childIndex.getValue() == index)
@@ -237,8 +237,8 @@ void ArticulatedHierarchyContainer::init ()
     else
     {
         context->getTreeObjects<ArticulationCenter>(&articulationCenters);
-        vector<ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
-        vector<ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
+        helper::vector<ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
+        helper::vector<ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
         for (; ac != acEnd; ac++)
         {
             context = dynamic_cast<simulation::Node *>((*ac)->getContext());
