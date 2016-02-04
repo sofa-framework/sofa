@@ -41,12 +41,6 @@ namespace helper
 namespace io
 {
 
-using sofa::helper::vector;
-using sofa::core::loader::Material;
-using sofa::core::loader::PrimitiveGroup;
-using sofa::defaulttype::Vector3;
-
-using sofa::defaulttype::Vec4f;
 
 class SOFA_HELPER_API Mesh
 {    

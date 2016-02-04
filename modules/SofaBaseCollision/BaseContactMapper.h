@@ -70,7 +70,6 @@ public :
     }
 };
 
-using sofa::defaulttype::Vector3;
 
 /// This class will be specialized to whatever mapper is required
 template < class TCollisionModel, class DataTypes = typename TCollisionModel::DataTypes >

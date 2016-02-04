@@ -62,8 +62,6 @@ namespace gui
 namespace qt
 {
 
-using cimg_library::CImg;
-
 //-----------------------------------------------------------------------------------------------//
 //	image widget -> draw image and handle mouse events
 //-----------------------------------------------------------------------------------------------//
@@ -293,7 +291,7 @@ public:
         this->indexmax=this->imageplane->getDimensions()[this->axis]-1;
         this->index=this->backupindex=this->imageplane->getPlane()[this->axis];
 
-        CImg<T> temp = this->imageplane->get_slice(0,this->axis);
+        cimg_library::CImg<T> temp = this->imageplane->get_slice(0,this->axis);
         this->image=QImage(temp.width(),temp.height(),QImage::Format_RGB32);
         draw();
     }
@@ -325,7 +323,7 @@ public:
         else P=Coord((pt.x()),(pt.y()),this->index);
 
         Coord p=this->imageplane->get_pointCoord(P);
-        CImg<T> val=this->imageplane->get_point(P);
+        cimg_library::CImg<T> val=this->imageplane->get_point(P);
 
         QString tval;
         if(!val) tval=QString("-");
@@ -367,7 +365,7 @@ public:
     {
         if(!this->imageplane) return;
 
-        CImg<unsigned char> plane = convertToUC( this->imageplane->get_slice(this->index, this->axis).cut(imageplane->getClamp()[0],imageplane->getClamp()[1]) );
+        cimg_library::CImg<unsigned char> plane = convertToUC( this->imageplane->get_slice(this->index, this->axis).cut(imageplane->getClamp()[0],imageplane->getClamp()[1]) );
 
         if(plane)
         {
@@ -376,7 +374,7 @@ public:
             else  { for( int y=0; y<this->image.height(); y++) for( int x=0; x<this->image.width(); x++) this->image.setPixel ( x, y,  qRgb(plane(x,y,0,0),plane(x,y,0,1),plane(x,y,0,2))); }
         }
 
-        CImg<unsigned char> slicedModels; 	if(this->visumodels) slicedModels = this->imageplane->get_slicedModels(this->index,this->axis);
+        cimg_library::CImg<unsigned char> slicedModels; 	if(this->visumodels) slicedModels = this->imageplane->get_slicedModels(this->index,this->axis);
 
         if(slicedModels)
             for( int y=0; y<this->image.height(); y++)

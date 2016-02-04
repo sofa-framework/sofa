@@ -64,8 +64,8 @@ public:
 
     virtual void init();
 
-    HexaID getTopoIndexFromRegularGridIndex ( unsigned int index, bool& existing );
-    unsigned int getRegularGridIndexFromTopoIndex ( HexaID index );
+    core::topology::BaseMeshTopology::HexaID getTopoIndexFromRegularGridIndex ( unsigned int index, bool& existing );
+    unsigned int getRegularGridIndexFromTopoIndex ( core::topology::BaseMeshTopology::HexaID index );
 
 protected:
     DynamicSparseGridTopologyContainer* topoContainer;

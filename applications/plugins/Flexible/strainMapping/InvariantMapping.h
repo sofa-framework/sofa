@@ -36,7 +36,6 @@ namespace component
 namespace mapping
 {
 
-using helper::vector;
 
 /** Map deformation gradients to invariants of the right Cauchy Green deformation tensor: I1, I2 and J
 s*/

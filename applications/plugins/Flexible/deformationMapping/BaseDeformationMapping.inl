@@ -285,7 +285,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     if(_shapeFunction) // if we have a shape function, we use it to compute needed data (index, weights, etc.)
     {
         if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : found shape function "<<_shapeFunction->getName()<<std::endl;
-        vector<mCoord> mpos0;
+        helper::vector<mCoord> mpos0;
         mpos0.resize(pos0.size());
         for(size_t i=0; i<pos0.size(); ++i) defaulttype::StdVectorTypes<mCoord,mCoord>::set( mpos0[i], pos0[i][0] , pos0[i][1] , pos0[i][2]);
 
@@ -328,7 +328,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
 
 
 template <class JacobianBlockType>
-void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
+void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
 {
     {
         // TODO this must be done before resizeOut() but is done again in Inherit::init();
@@ -467,7 +467,7 @@ void BaseDeformationMappingT<JacobianBlockType>::updateK( const core::Mechanical
     const VecVRef& indices = this->f_index.getValue();
 
     K.resizeBlocks(in.size(),in.size());
-    vector<KBlock> diagonalBlocks; diagonalBlocks.resize(in.size());
+    helper::vector<KBlock> diagonalBlocks; diagonalBlocks.resize(in.size());
 
     // TODO: need to take into account mask in geometric stiffness, I do no think so!??
 
@@ -858,7 +858,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
 
     if (vparams->displayFlags().getShowMechanicalMappings())
     {
-        vector< defaulttype::Vector3 > edge;     edge.resize(2);
+        helper::vector< defaulttype::Vector3 > edge;     edge.resize(2);
         defaulttype::Vec<4,float> col;
 
         for(size_t i=0; i<out.size(); i++ )
@@ -1013,7 +1013,7 @@ const defaulttype::BaseMatrix* BaseDeformationMappingT<JacobianBlockType>::getJ(
 
 
 template <class JacobianBlockType>
-const vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMappingT<JacobianBlockType>::getJs()
+const helper::vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMappingT<JacobianBlockType>::getJs()
 {
     if(!this->assemble.getValue() || !BlockType::constant || !eigenJacobian.rows()) updateJ();
 

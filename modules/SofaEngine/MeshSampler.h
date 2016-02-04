@@ -40,10 +40,6 @@ namespace component
 namespace engine
 {
 
-using namespace core::behavior;
-using namespace core::topology;
-using namespace core::objectmodel;
-
 /**
  * Select uniformly distributed points on a mesh based on Euclidean or Geodesic distance measure
  * The method uses farthest point sampling followed by Lloyd (k-means) relaxation
@@ -59,7 +55,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename Coord::value_type Real;
 
-    typedef BaseMeshTopology::PointID ID;
+    typedef core::topology::BaseMeshTopology::PointID ID;
     typedef helper::vector<ID> VI;
     typedef helper::vector<VI> VVI;
 
@@ -68,7 +64,7 @@ public:
 
     typedef defaulttype::Vec<2,unsigned int> indicesType;
 
-    typedef BaseMeshTopology::SeqEdges SeqEdges;
+    typedef core::topology::BaseMeshTopology::SeqEdges SeqEdges;
 
 public:
 

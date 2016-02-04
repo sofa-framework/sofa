@@ -86,7 +86,7 @@ public:
     helper::vectorData<SetIndices> hexahedronIndices;
 
     /// outputs
-    Data< vector<unsigned int> > indexPairs;
+    Data< helper::vector<unsigned int> > indexPairs;
     helper::vectorData<SeqPositions> position;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
@@ -108,7 +108,7 @@ protected:
       , quadIndices(this, "quadIndices", "input quad indices", helper::DataEngineInput)
       , tetrahedronIndices(this, "tetrahedronIndices", "input tetrahedron indices", helper::DataEngineInput)
       , hexahedronIndices(this, "hexahedronIndices", "input hexahedron indices", helper::DataEngineInput)
-      , indexPairs( initData( &indexPairs, vector<unsigned>(), "indexPairs", "couples for input vertices: ROI index + index in the ROI"))
+      , indexPairs( initData( &indexPairs, helper::vector<unsigned>(), "indexPairs", "couples for input vertices: ROI index + index in the ROI"))
       , position(this, "position", "output vertices", helper::DataEngineOutput)
     {
         resizeData();

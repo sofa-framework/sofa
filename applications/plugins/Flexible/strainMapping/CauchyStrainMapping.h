@@ -36,8 +36,6 @@ namespace component
 namespace mapping
 {
 
-using helper::vector;
-
 /** Deformation Gradient to linear/Cauchy Strain mapping
 */
 

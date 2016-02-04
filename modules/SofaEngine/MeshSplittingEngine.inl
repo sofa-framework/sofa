@@ -37,7 +37,7 @@ namespace engine
 {
 
 template <class container>
-inline void parseIndices(vector<unsigned int>& pairs, const container& indices, const unsigned int parentIndex)
+inline void parseIndices(helper::vector<unsigned int>& pairs, const container& indices, const unsigned int parentIndex)
 {
     for(size_t i=0;i<indices.size();++i)
         if(2*indices[i]<pairs.size())
@@ -45,7 +45,7 @@ inline void parseIndices(vector<unsigned int>& pairs, const container& indices, 
 }
 
 template <class container1,class container2>
-inline void parseIndices(vector<unsigned int>& pairs, const container1& indices,const container2& cells, const unsigned int parentIndex)
+inline void parseIndices(helper::vector<unsigned int>& pairs, const container1& indices,const container2& cells, const unsigned int parentIndex)
 {
     for(size_t i=0;i<indices.size();++i)
         for(size_t j=0;j<cells[indices[i]].size();++j)
@@ -63,7 +63,7 @@ void MeshSplittingEngine<DataTypes>::update()
     helper::ReadAccessor<Data< SeqPositions > > i_pos(this->inputPosition);
     const size_t& nb = nbInputs.getValue();
 
-    helper::WriteOnlyAccessor<Data< vector<unsigned int> > > indPairs(this->indexPairs);
+    helper::WriteOnlyAccessor<Data< helper::vector<unsigned int> > > indPairs(this->indexPairs);
     indPairs.resize(2*i_pos.size());
     for(size_t i=0;i<i_pos.size();++i) indPairs[2*i]=nb; // assign to remaining sub mesh
 

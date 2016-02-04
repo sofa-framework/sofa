@@ -98,7 +98,7 @@ void Hexa2QuadTopologicalMapping::init()
             QuadSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
 
-            const sofa::helper::vector<Quad> &quadArray=fromModel->getQuads();
+            const sofa::helper::vector<core::topology::BaseMeshTopology::Quad> &quadArray=fromModel->getQuads();
 
             sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
             Loc2GlobVec.clear();
@@ -109,7 +109,7 @@ void Hexa2QuadTopologicalMapping::init()
             {
                 if (fromModel->getHexahedraAroundQuad(i).size()==1)
                 {
-                    Quad q = quadArray[i];
+                    core::topology::BaseMeshTopology::Quad q = quadArray[i];
                     if(flipN)
                     {
                         unsigned int tmp3 = q[3];
@@ -276,11 +276,11 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     if (fromModel)
                     {
 
-                        const sofa::helper::vector<Hexahedron> &hexahedronArray=fromModel->getHexahedra();
+                        const sofa::helper::vector<core::topology::BaseMeshTopology::Hexahedron> &hexahedronArray=fromModel->getHexahedra();
 
                         const sofa::helper::vector<unsigned int> &tab = ( static_cast< const HexahedraRemoved *>( *itBegin ) )->getArray();
 
-                        sofa::helper::vector< Quad > quads_to_create;
+                        sofa::helper::vector< core::topology::BaseMeshTopology::Quad > quads_to_create;
                         sofa::helper::vector< unsigned int > quadsIndexList;
                         int nb_elems = toModel->getNbQuads();
                         const bool flipN = flipNormals.getValue();
@@ -324,9 +324,9 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                                     if(!is_present)
                                     {
 
-                                        Quad q;
+                                        core::topology::BaseMeshTopology::Quad q;
 
-                                        const Hexahedron &he=hexahedronArray[ind_test];
+                                        const core::topology::BaseMeshTopology::Hexahedron &he=hexahedronArray[ind_test];
                                         int h = fromModel->getQuadIndexInHexahedron(fromModel->getQuadsInHexahedron(ind_test),k);
                                         //unsigned int hh = (fromModel->getQuadsInHexahedron(ind_test))[h];
 

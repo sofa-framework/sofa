@@ -1445,7 +1445,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
 
     // In case the ind_t is not the good one.
-    if ( (!is_intersected || indices[0] == last_point || indices[1] == last_point) && (last_point != BaseMeshTopology::InvalidID))
+    if ( (!is_intersected || indices[0] == last_point || indices[1] == last_point) && (last_point != core::topology::BaseMeshTopology::InvalidID))
     {
 
         const sofa::helper::vector< unsigned int >& shell = this->m_topology->getTrianglesAroundVertex (last_point);
@@ -1708,7 +1708,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
         }
     }
 
-    if (ind_tb == BaseMeshTopology::InvalidID)
+    if (ind_tb == core::topology::BaseMeshTopology::InvalidID)
         ind_tb = ind_triangle;
 
     bool is_reached = (ind_tb==ind_triangle && coord_k_test>=1.0);
@@ -1782,7 +1782,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
         sofa::defaulttype::Vec<3,double> baryCoords;
 
         // 1 - First point a (for the moment: always a point in a triangle)
-        if (last_point != BaseMeshTopology::InvalidID)
+        if (last_point != core::topology::BaseMeshTopology::InvalidID)
         {
             topoPath_list.push_back (core::topology::POINT);
             indices_list.push_back (last_point);

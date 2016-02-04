@@ -41,11 +41,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using defaulttype::Vec;
-using defaulttype::Mat;
-using cimg_library::CImg;
-
 /**
  * Compute rigid mass from a density image
  */
@@ -133,7 +128,7 @@ protected:
         raTransform inT(this->transform);
         raImage in(this->image);
         if(in->isEmpty()) return;
-        const CImg<T>& img = in->getCImg(this->time);
+        const cimg_library::CImg<T>& img = in->getCImg(this->time);
 
         d_density.updateIfDirty();
         d_mult.updateIfDirty();

@@ -64,7 +64,7 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::init()
 template <class TIn, class TOut>
 void ProjectionToTargetPlaneMapping<TIn, TOut>::reinit()
 {
-    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    helper::ReadAccessor< Data<helper::vector<unsigned> > > indices(f_indices);
     size_t nb = indices.empty() ? this->getFromModel()->getSize() : indices.size(); // if indices is empty, mapping every input dofs
 
     this->getToModel()->resize( nb );
@@ -105,7 +105,7 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::apply(const core::MechanicalPara
 {
     helper::WriteAccessor< Data<OutVecCoord> >  out = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
-    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    helper::ReadAccessor< Data<helper::vector<unsigned> > > indices(f_indices);
     helper::ReadAccessor< Data<OutVecCoord> > origins(f_origins);
     helper::ReadAccessor< Data<OutVecCoord> > normals(f_normals);
 
@@ -152,7 +152,7 @@ const sofa::defaulttype::BaseMatrix* ProjectionToTargetPlaneMapping<TIn, TOut>::
 }
 
 template <class TIn, class TOut>
-const vector<sofa::defaulttype::BaseMatrix*>* ProjectionToTargetPlaneMapping<TIn, TOut>::getJs()
+const helper::vector<sofa::defaulttype::BaseMatrix*>* ProjectionToTargetPlaneMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }
@@ -207,7 +207,7 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::draw(const core::visual::VisualP
 template <class TIn, class TOut>
 void ProjectionToTargetPlaneMapping<TIn, TOut>::updateForceMask()
 {
-    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    helper::ReadAccessor< Data<helper::vector<unsigned> > > indices(f_indices);
     if( indices.empty() ) return Inherit::updateForceMask(); // all dofs are mapped
 
     for( size_t i=0 ; i<indices.size() ; i++ )

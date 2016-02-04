@@ -35,9 +35,9 @@ class SOFA_Compliant_API DifferenceFromTargetMapping : public AssembledMapping<T
     typedef typename TIn::Coord InCoord;
     typedef typename TIn::VecCoord InVecCoord;
 
-    Data< vector<unsigned> > indices;         ///< indices of the parent points
+    Data< helper::vector<unsigned> > indices;         ///< indices of the parent points
 
-    typedef vector< InCoord > targets_type;
+    typedef helper::vector< InCoord > targets_type;
     Data< targets_type > targets;
 
     Data< bool > inverted;
@@ -57,7 +57,7 @@ class SOFA_Compliant_API DifferenceFromTargetMapping : public AssembledMapping<T
 
     virtual void init()
     {
-        const vector<unsigned>& ind = indices.getValue();
+        const helper::vector<unsigned>& ind = indices.getValue();
         if( ind.empty() ) this->toModel->resize( this->fromModel->getSize() );
         else this->toModel->resize( ind.size() );
 
@@ -91,7 +91,7 @@ class SOFA_Compliant_API DifferenceFromTargetMapping : public AssembledMapping<T
                        const typename Self::in_pos_type& in )
     {
         const targets_type& t = targets.getValue();
-        const vector<unsigned>& ind = indices.getValue();
+        const helper::vector<unsigned>& ind = indices.getValue();
 
         if( ind.empty() )
         {
@@ -129,7 +129,7 @@ class SOFA_Compliant_API DifferenceFromTargetMapping : public AssembledMapping<T
     {
         assert( Nout==Nin ); // supposing TIn==TOut
 
-        const vector<unsigned>& ind = indices.getValue();
+        const helper::vector<unsigned>& ind = indices.getValue();
         typename Self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
 
         if( ind.empty() )

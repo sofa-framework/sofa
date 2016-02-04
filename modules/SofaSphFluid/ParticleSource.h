@@ -126,7 +126,7 @@ public:
     sofa::component::topology::PointSubsetData< VecIndex > lastparticles;
     VecCoord lastpos;
 
-    class PSPointHandler : public sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, VecIndex >
+    class PSPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, VecIndex >
     {
     public:
         typedef typename ParticleSource<DataTypes>::VecIndex VecIndex;
@@ -134,7 +134,7 @@ public:
         typedef typename container_type::value_type value_type;
 
         PSPointHandler(ParticleSource<DataTypes>* _ps, sofa::component::topology::PointSubsetData<VecIndex >* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, VecIndex >(_data), ps(_ps) {}
+            : sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, VecIndex >(_data), ps(_ps) {}
 
         void applyDestroyFunction(unsigned int index, value_type& /*T*/)
         {

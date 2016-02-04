@@ -160,7 +160,7 @@ protected:
         const SReal restitutionCoefficient = this->restitution_coef.getValue() ? this->restitution_coef.getValue() : this->model1->getContactRestitution(0) * this->model2->getContactRestitution(0);
 
         // constraint value + keep an eye on violated contacts
-        vector<bool>* cvmask = this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
+        helper::vector<bool>* cvmask = this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
 
         // projector
         projector = sofa::core::objectmodel::New<projector_type>();
@@ -181,7 +181,7 @@ protected:
 
 
     // viscous friction
-    void create_friction_node( SReal frictionCoefficient, size_t size, vector<bool>* cvmask )
+    void create_friction_node( SReal frictionCoefficient, size_t size, helper::vector<bool>* cvmask )
     {
         friction_node = node_type::create( this->getName() + "_contact_tangents" );
 
@@ -269,7 +269,7 @@ protected:
 
         // updating constraint value
         contact_node->removeObject( this->baseConstraintValue ) ;
-        vector<bool>* cvmask = this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
+        helper::vector<bool>* cvmask = this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
 
         if( restitutionCoefficient ) projector->mask = cvmask; // for restitution, only activate violated constraints
         else projector->mask = NULL;

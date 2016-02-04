@@ -128,16 +128,16 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams);
 
 
-    class FCPointHandler : public component::topology::TopologySubsetDataHandler<component::topology::Point, Indices >
+    class FCPointHandler : public component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, Indices >
     {
     public:
         typedef typename ProjectToLineConstraint<DataTypes>::Indices Indices;
         typedef sofa::core::topology::Point Point;
         FCPointHandler(ProjectToLineConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<Indices>* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<sofa::core::topology::Point, Indices >(_data), fc(_fc) {}
+            : sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, Indices >(_data), fc(_fc) {}
 
 
-        using component::topology::TopologySubsetDataHandler<component::topology::Point, Indices >::applyDestroyFunction;
+        using component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, Indices >::applyDestroyFunction;
         void applyDestroyFunction(unsigned int /*index*/, core::objectmodel::Data<value_type>& /*T*/);
 
         bool applyTestCreateFunction(unsigned int /*index*/,

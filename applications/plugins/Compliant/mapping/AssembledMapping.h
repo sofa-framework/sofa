@@ -17,7 +17,7 @@ namespace sofa {
 				typedef AssembledMapping self;
                 typedef typename core::Mapping<In, Out> base;
 	
-				typedef vector<sofa::defaulttype::BaseMatrix*> js_type;
+                typedef helper::vector<sofa::defaulttype::BaseMatrix*> js_type;
 				js_type js;
 			public:
 

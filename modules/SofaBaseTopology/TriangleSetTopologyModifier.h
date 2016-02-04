@@ -36,13 +36,6 @@ namespace topology
 {
 class TriangleSetTopologyContainer;
 
-using core::topology::BaseMeshTopology;
-typedef BaseMeshTopology::TriangleID TriangleID;
-typedef BaseMeshTopology::Triangle Triangle;
-typedef BaseMeshTopology::SeqTriangles SeqTriangles;
-typedef BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
-typedef BaseMeshTopology::TrianglesAroundEdge TrianglesAroundEdge;
-typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 /**
  * A class that modifies the topology by adding and removing triangles
@@ -51,6 +44,13 @@ class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyModifier : public EdgeSetTopolog
 {
 public:
     SOFA_CLASS(TriangleSetTopologyModifier,EdgeSetTopologyModifier);
+
+    typedef core::topology::BaseMeshTopology::TriangleID TriangleID;
+    typedef core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
+    typedef core::topology::BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
+    typedef core::topology::BaseMeshTopology::TrianglesAroundEdge TrianglesAroundEdge;
+    typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 protected:
     TriangleSetTopologyModifier()
         : list_Out(initData(&list_Out,"list_Out","triangles with at least one null values."))

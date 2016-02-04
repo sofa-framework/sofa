@@ -318,16 +318,16 @@ public:
 
 
     typedef defaulttype::LinearJacobianBlock< DataTypes, defaulttype::F331Types > LinearJacobianBlock;
-    typedef vector< LinearJacobianBlock >  LinearJacobianBlocks;
+    typedef helper::vector< LinearJacobianBlock >  LinearJacobianBlocks;
 //    LinearJacobianBlocks _linearJacobianBlocks;
 
     typedef defaulttype::CauchyStrainJacobianBlock< defaulttype::F331Types, defaulttype::E331Types > StrainJacobianBlock;
-    typedef vector< StrainJacobianBlock >  StrainJacobianBlocks;
+    typedef helper::vector< StrainJacobianBlock >  StrainJacobianBlocks;
     StrainJacobianBlocks _strainJacobianBlocks;
 
 	typedef defaulttype::IsotropicHookeLaw<typename defaulttype::E331Types::Real, defaulttype::E331Types::material_dimensions, defaulttype::E331Types::strain_size> LawType;
     typedef defaulttype::HookeMaterialBlock< defaulttype::E331Types, LawType > MaterialBlock;
-    typedef vector< MaterialBlock >  MaterialBlocks;
+    typedef helper::vector< MaterialBlock >  MaterialBlocks;
     MaterialBlocks _materialBlocks;
 
 

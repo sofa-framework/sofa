@@ -111,7 +111,7 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3fTypes>::addDForce(cons
 	Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
 	unsigned int nbEdges=_topology->getNbEdges();
-	const vector< topology::Edge> &edgeArray=_topology->getEdges() ;
+    const helper::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=_topology->getEdges() ;
 
     unsigned int nbTetrahedra=_topology->getNbTetrahedra();
 
@@ -220,7 +220,7 @@ void StandardTetrahedralFEMForceField<CudaVec3fTypes>::initNeighbourhoodEdges()
             {
                 unsigned int tetraID;
                 tetraID = _topology->getTetrahedraAroundEdge(i)[j];
-                topology::BaseMeshTopology::EdgesInTetrahedron te=_topology->getEdgesInTetrahedron(tetraID);
+                core::topology::BaseMeshTopology::EdgesInTetrahedron te=_topology->getEdgesInTetrahedron(tetraID);
                 if( (unsigned)i == te[0])
                     StandardTetrahedralFEMForceField_neighbourhoodEdges()[i*StandardTetrahedralFEMForceField_nbMaxTetraPerEdge() + j] = tetraID*6 + 0;
                 else if( (unsigned)i == te[1])

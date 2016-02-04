@@ -71,7 +71,7 @@ protected:
      *
          * Does nothing.
          */
-    virtual ~Mesh2PointTopologicalMapping() {};
+    virtual ~Mesh2PointTopologicalMapping() {}
 public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */
@@ -137,9 +137,9 @@ protected:
     Data< bool > copyTriangles; ///< Activate mapping of input triangles into the output topology (requires at least one item in pointBaryCoords)
 	Data< bool > copyTetrahedra; ///< Activate mapping of input tetrahedras into the output topology (requires at least one item in pointBaryCoords)
 
-    helper::fixed_array< vector< vector<int> >, NB_ELEMENTS > pointsMappedFrom; ///< Points mapped from the differents elements (see the enum Element declared before)
+    helper::fixed_array< helper::vector< helper::vector<int> >, NB_ELEMENTS > pointsMappedFrom; ///< Points mapped from the differents elements (see the enum Element declared before)
 
-    vector< std::pair<Element,int> > pointSource; ///< Correspondance between the points mapped and the elements from which are mapped
+    helper::vector< std::pair<Element,int> > pointSource; ///< Correspondance between the points mapped and the elements from which are mapped
 
     std::set<unsigned int> pointsToRemove;
 

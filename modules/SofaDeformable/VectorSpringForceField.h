@@ -98,7 +98,7 @@ protected:
     bool useTopology;
     bool usingMask;
     /// indices in case we don't use the topology
-    sofa::helper::vector<topology::Edge> edgeArray;
+    sofa::helper::vector<core::topology::BaseMeshTopology::Edge> edgeArray;
 
 
     void resizeArray(unsigned int n);
@@ -109,19 +109,19 @@ public:
     /// where the springs information are stored
     sofa::component::topology::EdgeData<sofa::helper::vector<Spring> > springArray;
 
-    class EdgeDataHandler : public sofa::component::topology::TopologyDataHandler< topology::Edge, sofa::helper::vector<Spring> >
+    class EdgeDataHandler : public sofa::component::topology::TopologyDataHandler< core::topology::BaseMeshTopology::Edge, sofa::helper::vector<Spring> >
     {
     public:
         typedef typename VectorSpringForceField<DataTypes>::Spring Spring;
         EdgeDataHandler(VectorSpringForceField<DataTypes>* ff, topology::EdgeData<sofa::helper::vector<Spring> >* data)
-            :topology::TopologyDataHandler< topology::Edge,sofa::helper::vector<Spring> >(data)
+            :topology::TopologyDataHandler< core::topology::BaseMeshTopology::Edge,sofa::helper::vector<Spring> >(data)
             ,ff(ff)
         {
 
         }
 
         void applyCreateFunction(unsigned int, Spring &t,
-                const topology::Edge &,
+                const core::topology::BaseMeshTopology::Edge &,
                 const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &);
     protected:
         VectorSpringForceField<DataTypes>* ff;

@@ -39,7 +39,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(RigidJointMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMapping,TIn,TOut));
 	
 	typedef defaulttype::Vec<2, unsigned> index_pair;
-	typedef vector< index_pair > pairs_type;
+    typedef helper::vector< index_pair > pairs_type;
     typedef typename TIn::Real Real;
 	
 	Data< pairs_type > pairs;

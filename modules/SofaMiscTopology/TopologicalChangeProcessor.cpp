@@ -440,7 +440,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 {
                     helper::vector<unsigned int>& ancestor = p_ancestors[i];
                     ancestor.resize(3);
-                    const topology::Triangle& t = m_topology->getTriangle( triangles[i] );
+                    const core::topology::BaseMeshTopology::Triangle& t = m_topology->getTriangle( triangles[i] );
                     ancestor[0] = t[0];
                     ancestor[1] = t[1];
                     ancestor[2] = t[2];
