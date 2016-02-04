@@ -72,6 +72,7 @@ class Model:
             self.collision=True
             self.simulation=True
             self.visual=True
+            self.tags = set()
             if not objXml is None:
                 self.parseXml(objXml)
 
@@ -82,6 +83,7 @@ class Model:
                 self.simulation = False if objXml.attrib["simulation"] in {'False','0','false'} else True
             if "visual" in objXml.attrib:
                 self.visual = False if objXml.attrib["visual"] in {'False','0','false'} else True
+            parseTag(self, objXml)
 
     class Solid:
         def __init__(self, solidXml=None):
