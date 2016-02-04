@@ -179,6 +179,7 @@ case $CI_JOB in
         append "-DPLUGIN_THMPGSPATIALHASHING=ON"
         # Requires XiRobot library.
         append "-DPLUGIN_XITACT=OFF"
+        append "-DRIGIDSCALE=ON"
         ;;
 esac
 
