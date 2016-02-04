@@ -77,6 +77,7 @@ FixedConstraint<DataTypes>::FixedConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
+    , f_projectVelocity( initData(&f_projectVelocity, false,"projectVelocity","project velocity to ensure no drift of the fixed point"))
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , data(new FixedConstraintInternalData<DataTypes>())
 {
@@ -247,27 +248,30 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
 // projectVelocity applies the same changes on velocity vector as projectResponse on position vector :
 // Each fixed point received a null velocity vector.
 // When a new fixed point is added while its velocity vector is already null, projectVelocity is not usefull.
-// But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null. If not, the fixed point is going to drift.
+// But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null or 
+// to set the projectVelocity option to True. If not, the fixed point is going to drift.
 template <class DataTypes>
-void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*vData*/)
+void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& vData)
 {
-#if 0 /// @todo ADD A FLAG FOR THIS
-    const SetIndexArray & indices = f_indices.getValue();
-    //serr<<"FixedConstraint<DataTypes>::projectVelocity, res.size()="<<res.size()<<sendl;
-    if( f_fixAll.getValue()==true )    // fix everyting
+    if(f_projectVelocity.getValue())
     {
-        for( unsigned i=0; i<res.size(); i++ )
-            res[i] = Deriv();
-    }
-    else
-    {
-        unsigned i=0;
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
+        helper::WriteAccessor<DataVecDeriv> res = vData;
+        const SetIndexArray & indices = f_indices.getValue();
+        //serr<<"FixedConstraint<DataTypes>::projectVelocity, res.size()="<<res.size()<<sendl;
+        if( f_fixAll.getValue()==true )    // fix everyting
         {
-            res[*it] = Deriv();
+            for( unsigned i=0; i<res.size(); i++ )
+                res[i] = Deriv();
+        }
+        else
+        {
+            unsigned i=0;
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
+            {
+                res[*it] = Deriv();
+            }
         }
     }
-#endif
 }
 
 template <class DataTypes>
