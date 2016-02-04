@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<Node name="Root" gravity="0 0 0" dt="1"  >
+    <RequiredPlugin pluginName="Flexible"/>
+    <RequiredPlugin pluginName="image"/>
+
+    <VisualStyle displayFlags="showVisual showBehavior" />
+    
+    <MeshObjLoader name="loader" filename="mesh/Armadillo_simplified.obj" triangulate="1"/>
+    <MeshToImageEngine template="ImageUC" name="rasterizer" src="@loader" voxelSize="0.2" padSize="1" rotateImage="true" />
+    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
+    <!--<ImageViewer template="ImageUC" name="viewer" src="@image"  /> -->
+    <!--<ImageSampler template="ImageUC" name="sampler" src="@image" method="0" param="0" showEdges="false" printLog="true"/>-->
+    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="50" showEdges="false" printLog="true"/>
+    <VoronoiShapeFunction name="SF" position="@sampler.position" src="@image" useDijkstra="true" method="0" nbRef="5" />
+    
+    <Node name="Affine" >
+        <EulerImplicitSolver />
+        <CGLinearSolver iterations="20" tolerance="1e-15" threshold="1e-15"/>
+        
+        <MechanicalObject template="Affine" name="dof"  showObject="true" showObjectScale="1" position="@../sampler.position" />
+        <FixedConstraint indices="0" />
+        
+        <UniformMass totalMass="10" />
+        
+        <Node name="behavior">
+            <ImageGaussPointSampler name="sampler" indices="@../../SF.indices" weights="@../../SF.weights" transform="@../../SF.transform" method="2" order="2" showSamplesScale="0" printLog="true" targetNumber="1"/>
+            <MechanicalObject template="F331" name="F" />
+            <LinearMapping template="Affine,F331" />
+            <Node name="Strain">
+                <MechanicalObject  template="E331" name="E"  /> 
+                <CorotationalStrainMapping template="F331,E331" method="qr" />
+                <HookeForceField  template="E331" name="ff" youngModulus="3000" poissonRatio="0.3" viscosity="0"/>
+            </Node>
+        </Node>
+        
+        <Node name="Collision">
+            <Mesh src="@../../loader" />
+            <MechanicalObject name="dof" />
+            <TTriangleModel />
+            <LinearMapping template="Affine,Vec3d" />
+            <Node name="Visual"  >
+                <VisualModel  fileMesh="mesh/Armadillo_simplified.obj"   />
+                <IdentityMapping template="Vec3d,ExtVec3f"  />
+            </Node>
+        </Node>
+        
+    </Node>
+</Node>
