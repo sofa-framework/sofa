@@ -48,7 +48,7 @@ void decodePosition( sofa::component::collision::BodyPicked& body, const sofa::d
 
 
 /* Launches the drawColourPicking() method of each CollisionModel */
-class SOFA_SOFAGUI_API ColourPickingVisitor : public Visitor
+class SOFA_SOFAGUI_API ColourPickingVisitor : public simulation::Visitor
 {
 
 public:
@@ -74,7 +74,7 @@ public:
     /// the TriangleElement with the given index
 
     ColourPickingVisitor(const core::visual::VisualParams* params, ColourCode Method)
-        :Visitor(params),vparams(params),method(Method)
+        :simulation::Visitor(params),vparams(params),method(Method)
     {}
 
     void processCollisionModel(simulation::Node* node, core::CollisionModel* /*o*/);

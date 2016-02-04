@@ -39,7 +39,7 @@ public:
 	// TODO why bother with VecDeriv instead of just SReal vec ?
     Data< VecDeriv > diagonal; ///< diagonal values
 
-    Data< vector<SReal> > damping; ///< diagonal damping
+    Data< helper::vector<SReal> > damping; ///< diagonal damping
 
     virtual void init();
 

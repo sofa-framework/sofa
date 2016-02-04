@@ -41,10 +41,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using cimg_library::CImg;
-using cimg_library::CImgList;
-
 /**
  * Apply a transform to the data 'transform'
  * in future: could be templated on ImageTransform type

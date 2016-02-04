@@ -45,10 +45,10 @@ public:
 
     typedef typename TIn::Real real;
 
-	typedef vector< defaulttype::Vec<3, real> > normal_type;
+    typedef helper::vector< defaulttype::Vec<3, real> > normal_type;
     Data<normal_type> normal;
 
-    vector<bool> mask; ///< flag activated constraints (if empty -default- all constraints are activated)
+    helper::vector<bool> mask; ///< flag activated constraints (if empty -default- all constraints are activated)
 
 
     ContactMapping()

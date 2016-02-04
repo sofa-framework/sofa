@@ -39,6 +39,8 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/Data.h>
 
+#include <sofa/helper/logging/Messaging.h>
+
 namespace sofa
 {
 
@@ -65,7 +67,7 @@ VisualManagerPass::VisualManagerPass()
 {
     if(factor.getValue()==0.0)
     {
-        cerr<<this->getName()<<":\"factor\" attribute shall not be null. Using 1.0 instead..."<<endl;
+        msg_warning("VisualManagerPass") << this->getName()<<":\"factor\" attribute shall not be null. Using 1.0 instead...";
         factor.setValue(1.0);
     }
 

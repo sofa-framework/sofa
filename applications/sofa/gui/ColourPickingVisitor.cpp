@@ -89,7 +89,7 @@ void decodePosition(BodyPicked& body, const sofa::defaulttype::Vec4f /*colour*/,
     body.point = s.center();
 }
 
-Visitor::Result ColourPickingVisitor::processNodeTopDown(simulation::Node* node)
+simulation::Visitor::Result ColourPickingVisitor::processNodeTopDown(simulation::Node* node)
 {
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES

@@ -39,8 +39,6 @@ namespace topology
 {
 class PointSetTopologyContainer;
 
-using core::topology::BaseMeshTopology;
-typedef BaseMeshTopology::PointID PointID;
 
 /**
 * A class that can apply basic topology transformations on a set of points.

@@ -50,10 +50,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using cimg_library::CImg;
-using cimg_library::CImgList;
-
 /**
  * This class computes an image as an operation between two images
  */
@@ -127,8 +123,8 @@ protected:
 
         if(in1->isEmpty() || in2->isEmpty()) return;
 
-        const CImgList<T>& inimg1 = in1->getCImgList() , inimg2 = in2->getCImgList();
-        CImgList<T>& img = out->getCImgList();
+        const cimg_library::CImgList<T>& inimg1 = in1->getCImgList() , inimg2 = in2->getCImgList();
+        cimg_library::CImgList<T>& img = out->getCImgList();
         img.assign(inimg1);	// copy
 
         switch(this->operation.getValue().getSelectedId())

@@ -52,11 +52,11 @@ protected:
 public:
 #if 0
     /// the triangles associated to a point
-    vector<vector<int> > pTri;
+    helper::vector<helper::vector<int> > pTri;
 #endif
 
     /// the normals for each point
-    vector<defaulttype::Vector3> pNorms;
+    helper::vector<defaulttype::Vector3> pNorms;
     //vector < defaulttype::Vector4 > octreeVec;
     void draw(const core::visual::VisualParams* vparams);
     virtual void computeBoundingTree(int maxDepth=0);

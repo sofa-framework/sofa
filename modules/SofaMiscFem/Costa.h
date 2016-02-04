@@ -58,9 +58,9 @@ template<class DataTypes>
 class Costa: public HyperelasticMaterial<DataTypes>{
 
   typedef typename DataTypes::Coord::value_type Real;
-  typedef Mat<3,3,Real> Matrix3;
-  typedef Mat<6,6,Real> Matrix6;
-  typedef MatSym<3,Real> MatrixSym;
+  typedef defaulttype::Mat<3,3,Real> Matrix3;
+  typedef defaulttype::Mat<6,6,Real> Matrix6;
+  typedef defaulttype::MatSym<3,Real> MatrixSym;
  
   public:
 

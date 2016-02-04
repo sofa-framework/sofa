@@ -36,8 +36,6 @@ namespace component
 namespace mass
 {
 
-using sofa::component::topology::PointData;
-
 /**
 * Compute mass matrices based on a density map
 * Mass is defined as a global matrix (including non diagonal terms)
@@ -75,7 +73,7 @@ public:
     /** @name Interpolation stuff */
     //@{
     typedef defaulttype::LinearJacobianBlock<DataTypes,defaulttype::Vec3Types > LinearJacobianBlock;
-    typedef vector<LinearJacobianBlock> VecLinearJacobianBlock;
+    typedef helper::vector<LinearJacobianBlock> VecLinearJacobianBlock;
     //@}
 
 

@@ -42,7 +42,6 @@ namespace component
 namespace engine
 {
 
-using cimg_library::CImg;
 
 /**
  * Create reference intensity profiles from custom values
@@ -95,7 +94,7 @@ protected:
         helper::WriteOnlyAccessor<Data< ImageTypes > > out(this->image);
         imCoord dim(val.size(),1,1,1,1);
         out->setDimensions(dim);
-        CImg<T>& outImg=out->getCImg();
+        cimg_library::CImg<T>& outImg=out->getCImg();
         for(size_t i=0;i<val.size();++i) outImg(i,0,0,0)=val[i];
     }
 

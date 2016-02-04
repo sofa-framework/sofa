@@ -45,9 +45,6 @@ namespace sofa
 namespace defaulttype
 {
 
-using std::endl;
-using helper::vector;
-
 /** Local deformation state of a material object.
 Template parameters are used to define the spatial dimensions, the material dimensions, and the order.
 Order 1 corresponds to a traditional deformation gradient, while order 2 corresponds to an elaston.

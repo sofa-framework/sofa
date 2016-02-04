@@ -139,11 +139,11 @@ void STLExporter::writeSTL()
         return;
     }
     
-    helper::ReadAccessor< Data< vector< sofa::component::topology::Triangle > > > triangleIndices = m_triangle;  
-    helper::ReadAccessor< Data< vector< sofa::component::topology::Quad > > > quadIndices = m_quad;  
+    helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Triangle > > > triangleIndices = m_triangle;
+    helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Quad > > > quadIndices = m_quad;
     helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > positionIndices = m_position;
     
-    vector< sofa::component::topology::Triangle > vecTri;
+    helper::vector< core::topology::BaseMeshTopology::Triangle > vecTri;
         
     if(positionIndices.empty())
     {
@@ -159,7 +159,7 @@ void STLExporter::writeSTL()
     }
     else if(!quadIndices.empty())
     {
-        sofa::component::topology::Triangle tri;
+        core::topology::BaseMeshTopology::Triangle tri;
         for(unsigned int i=0;i<quadIndices.size();i++)
         {
             for(int j=0;j<3;j++)
@@ -233,11 +233,11 @@ void STLExporter::writeSTLBinary()
         return;
     }
     
-    helper::ReadAccessor< Data< vector< sofa::component::topology::Triangle > > > triangleIndices = m_triangle;  
-    helper::ReadAccessor< Data< vector< sofa::component::topology::Quad > > > quadIndices = m_quad;  
+    helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Triangle > > > triangleIndices = m_triangle;
+    helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Quad > > > quadIndices = m_quad;
     helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > positionIndices = m_position;
     
-    vector< sofa::component::topology::Triangle > vecTri;
+    helper::vector< core::topology::BaseMeshTopology::Triangle > vecTri;
     
     if(positionIndices.empty())
     {
@@ -253,7 +253,7 @@ void STLExporter::writeSTLBinary()
     }
     else if(!quadIndices.empty())
     {
-        sofa::component::topology::Triangle tri;
+        core::topology::BaseMeshTopology::Triangle tri;
         for(unsigned int i=0;i<quadIndices.size();i++)
         {
             for(int j=0;j<3;j++)

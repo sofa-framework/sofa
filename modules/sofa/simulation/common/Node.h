@@ -78,8 +78,6 @@ namespace simulation
 class Visitor;
 }
 }
-using sofa::simulation::Visitor;
-using sofa::simulation::VisitorScheduler;
 
 #include <sofa/helper/system/thread/CTime.h>
 #include <string>

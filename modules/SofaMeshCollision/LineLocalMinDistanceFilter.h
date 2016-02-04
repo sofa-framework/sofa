@@ -167,10 +167,10 @@ public:
     /**
      * @brief New Points creations callback.
      */
-    class PointInfoHandler : public topology::TopologyDataHandler<topology::Point, helper::vector<PointInfo> >
+    class PointInfoHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<PointInfo> >
     {
     public:
-        PointInfoHandler(LineLocalMinDistanceFilter* _f, topology::PointData<helper::vector<PointInfo> >* _data) : topology::TopologyDataHandler<topology::Point, helper::vector<PointInfo> >(_data), f(_f) {}
+        PointInfoHandler(LineLocalMinDistanceFilter* _f, topology::PointData<helper::vector<PointInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<PointInfo> >(_data), f(_f) {}
 
         void applyCreateFunction(unsigned int pointIndex, PointInfo& m, const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double > &);
@@ -181,12 +181,12 @@ public:
     /**
      * @brief New Edges creations callback.
      */
-    class LineInfoHandler : public topology::TopologyDataHandler<topology::Edge, helper::vector<LineInfo> >
+    class LineInfoHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<LineInfo> >
     {
     public:
-        LineInfoHandler(LineLocalMinDistanceFilter* _f, topology::EdgeData<helper::vector<LineInfo> >* _data) : topology::TopologyDataHandler<topology::Edge, helper::vector<LineInfo> >(_data), f(_f) {}
+        LineInfoHandler(LineLocalMinDistanceFilter* _f, topology::EdgeData<helper::vector<LineInfo> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<LineInfo> >(_data), f(_f) {}
 
-        void applyCreateFunction(unsigned int edgeIndex, LineInfo& m, const topology::Edge&, const sofa::helper::vector< unsigned int > &,
+        void applyCreateFunction(unsigned int edgeIndex, LineInfo& m, const core::topology::BaseMeshTopology::Edge&, const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double > &);
     protected:
         LineLocalMinDistanceFilter* f;

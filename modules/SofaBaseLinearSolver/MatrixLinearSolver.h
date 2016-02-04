@@ -240,14 +240,14 @@ public:
     /// Invert the system, this method is optional because it's call when solveSystem() is called for the first time
     virtual void invertSystem();
 
-    void prepareVisitor(Visitor* v)
+    void prepareVisitor(simulation::Visitor* v)
     {
         v->setTags(this->getTags());
     }
 
     void prepareVisitor(simulation::BaseMechanicalVisitor* v)
     {
-        prepareVisitor((Visitor*)v);
+        prepareVisitor((simulation::Visitor*)v);
     }
 
     template<class T>

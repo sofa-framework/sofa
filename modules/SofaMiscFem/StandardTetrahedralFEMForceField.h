@@ -169,10 +169,10 @@ public:
 	void setMaterialName(const std::string& name) {
 		f_materialName.setValue(name);
 	}
-	void setparameter(const vector<Real>& param) {
+    void setparameter(const helper::vector<Real>& param) {
 		f_parameterSet.setValue(param);
 	}
-	void setdirection(const vector<Coord>& direction) {
+    void setdirection(const helper::vector<Coord>& direction) {
 		f_anisotropySet.setValue(direction);
 	}
 
@@ -201,20 +201,20 @@ public:
 
   //  defaulttype::Mat<3,3,double> getPhi( int );
 
-    class GHTetrahedronHandler : public topology::TopologyDataHandler<topology::Tetrahedron, tetrahedronRestInfoVector >
+    class GHTetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, tetrahedronRestInfoVector >
         {
         public:
           typedef typename StandardTetrahedralFEMForceField<DataTypes>::TetrahedronRestInformation TetrahedronRestInformation;
 
           GHTetrahedronHandler(StandardTetrahedralFEMForceField<DataTypes>* ff,
                                topology::TetrahedronData<tetrahedronRestInfoVector>* data )
-            :topology::TopologyDataHandler<topology::Tetrahedron, tetrahedronRestInfoVector >(data)
+            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, tetrahedronRestInfoVector >(data)
             ,ff(ff)
           {
           }
 
           void applyCreateFunction(unsigned int, TetrahedronRestInformation &t,
-                                   const topology::Tetrahedron&,
+                                   const core::topology::BaseMeshTopology::Tetrahedron&,
                                    const sofa::helper::vector<unsigned int> &,
                                    const sofa::helper::vector<double> &);
 

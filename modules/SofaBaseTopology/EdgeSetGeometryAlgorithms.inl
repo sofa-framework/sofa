@@ -770,7 +770,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
 
 template< class DataTypes>
-void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vector<unsigned>& numEdges, vector<Edge>& vertexEdges, vector<Vec3d>& weights ) const
+void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helper::vector<unsigned>& numEdges, helper::vector<Edge>& vertexEdges, helper::vector<Vec3d>& weights ) const
 {
     const VecCoord& pos =(this->object->read(core::ConstVecCoordId::position())->getValue()); // point positions
 

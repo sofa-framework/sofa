@@ -102,7 +102,7 @@ public:
 
 private:
 
-    vector<Triplet> incoming;             ///< Scheduled additions
+    helper::vector<Triplet> incoming;             ///< Scheduled additions
 
 
 public:

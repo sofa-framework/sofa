@@ -36,7 +36,6 @@ namespace component
 namespace mapping
 {
 
-using helper::vector;
 
 /** Deformation Gradient to Green Lagrangian Strain mapping
 */

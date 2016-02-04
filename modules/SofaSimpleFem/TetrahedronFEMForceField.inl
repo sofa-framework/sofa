@@ -1134,6 +1134,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f
 ////////////////////  polar decomposition method  ////////////////////
 //////////////////////////////////////////////////////////////////////
 
+
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::initPolar(int i, Index& a, Index&b, Index&c, Index&d)
 {
@@ -1150,6 +1151,8 @@ void TetrahedronFEMForceField<DataTypes>::initPolar(int i, Index& a, Index&b, In
     _initialRotations[i].transpose( R_0_1 );
     rotations[i] = _initialRotations[i];
 
+
+
     //save the element index as the node index
     _rotationIdx[a] = i;
     _rotationIdx[b] = i;
@@ -1162,6 +1165,17 @@ void TetrahedronFEMForceField<DataTypes>::initPolar(int i, Index& a, Index&b, In
     _rotatedInitialElements[i][3] = R_0_1*initialPoints[d];
 
     computeStrainDisplacement( strainDisplacements[i],_rotatedInitialElements[i][0], _rotatedInitialElements[i][1],_rotatedInitialElements[i][2],_rotatedInitialElements[i][3] );
+
+
+
+    if( i==860 )
+    {
+        R0 = rotations[i];
+
+        serr<<"init"<<rotations[i]<<" "<<sendl;
+
+//        serr<<"K "<<" "<<strainDisplacements[i]*materialsStiffnesses[i]*strainDisplacements[i].transposed()<<sendl;
+    }
 }
 
 template<class DataTypes>
@@ -1199,6 +1213,17 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f
     D[10] = _rotatedInitialElements[elementIndex][3][1] - deforme[3][1];
     D[11] = _rotatedInitialElements[elementIndex][3][2] - deforme[3][2];
     //serr<<"D : "<<D<<sendl;
+
+
+
+    if( elementIndex==860 )
+    {
+        serr<<"rot "<<rotations[elementIndex]<<" "<<sendl;
+        serr<<rotations[elementIndex]*R0.transposed()<<sendl;
+
+//        serr<<"deforme "<<deforme<<" "<<sendl;
+//        serr<<"D "<<D<<" "<<sendl;
+    }
 
     Displacement F;
     if(_updateStiffnessMatrix.getValue())

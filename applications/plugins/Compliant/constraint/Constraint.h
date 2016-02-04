@@ -29,7 +29,7 @@ struct SOFA_Compliant_API Constraint : public core::objectmodel::BaseObject {
     /// ie filter out all deactivated constraints (force lambda to 0)
     /// If mask is NULL or empty, all constraints are activated
     /// A value per constraint block (NOT per constraint line)
-    vector<bool>* mask;
+    helper::vector<bool>* mask;
 	
 };
 

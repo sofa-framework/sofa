@@ -33,8 +33,6 @@
 
 #include <algorithm>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -43,7 +41,6 @@ namespace component
 namespace shapefunction
 {
 
-using defaulttype::Mat;
 /**
 Bezier shape functions are the Bezier coordinates of points inside cells (can be edges, triangles, quads, tetrahedra, hexahedra)
 there are computed from barycentric coordinates

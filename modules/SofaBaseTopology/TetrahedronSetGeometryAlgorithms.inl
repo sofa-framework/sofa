@@ -532,7 +532,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
         for (unsigned int t=0; t<ind2ask.size(); t++)
         {
             unsigned int ind_t = ind2ask[t];
-            sofa::component::topology::TrianglesInTetrahedron adjacent_triangles = this->m_topology->getTrianglesInTetrahedron(ind_t);
+            core::topology::BaseMeshTopology::TrianglesInTetrahedron adjacent_triangles = this->m_topology->getTrianglesInTetrahedron(ind_t);
 
             for (unsigned int i=0; i<adjacent_triangles.size(); i++)
             {
@@ -628,7 +628,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
         for (unsigned int t=0; t<ind2ask.size(); t++)
         {
             unsigned int ind_t = ind2ask[t];
-            sofa::component::topology::TrianglesInTetrahedron adjacent_triangles = this->m_topology->getTrianglesInTetrahedron(ind_t);
+            core::topology::BaseMeshTopology::TrianglesInTetrahedron adjacent_triangles = this->m_topology->getTrianglesInTetrahedron(ind_t);
 
             for (unsigned int i=0; i<adjacent_triangles.size(); i++)
             {

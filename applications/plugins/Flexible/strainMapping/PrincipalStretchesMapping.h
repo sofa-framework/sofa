@@ -38,8 +38,6 @@ namespace component
 namespace mapping
 {
 
-using helper::vector;
-
 
 /** Deformation Gradient to Principal Stretches mapping.
 */

@@ -9,11 +9,6 @@ namespace sofa {
 namespace component {
 namespace odesolver {
 
-using core::MultiVecCoordId;
-using core::MultiVecDerivId;
-using core::ConstMultiVecCoordId;
-using core::ConstMultiVecDerivId;
-
 /** (Non-linear) Static solver based on several iterations of dynamics integration.
  *  At each iteration, the velocity can be damped to speed-up convergence (velocityFactor)
  *  The solver stops when the last iteration did not move enough the positions (threshold on velocity norm)

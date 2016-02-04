@@ -178,14 +178,14 @@ public:
     void updateLameCoefficients();
 
 
-    class TRQSTriangleHandler : public sofa::component::topology::TopologyDataHandler<sofa::component::topology::Triangle,vector<TriangleRestInformation> >
+    class TRQSTriangleHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<TriangleRestInformation> >
     {
     public:
         typedef typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation TriangleRestInformation;
-        TRQSTriangleHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, sofa::component::topology::TriangleData<sofa::helper::vector<TriangleRestInformation> >* _data) : sofa::component::topology::TopologyDataHandler<sofa::component::topology::Triangle, sofa::helper::vector<TriangleRestInformation> >(_data), ff(_ff) {}
+        TRQSTriangleHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, sofa::component::topology::TriangleData<sofa::helper::vector<TriangleRestInformation> >* _data) : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, sofa::helper::vector<TriangleRestInformation> >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int triangleIndex, TriangleRestInformation& ,
-                const sofa::component::topology::Triangle & t,
+                const core::topology::BaseMeshTopology::Triangle & t,
                 const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double > &);
 
@@ -195,14 +195,14 @@ public:
         TriangularQuadraticSpringsForceField<DataTypes>* ff;
     };
 
-    class TRQSEdgeHandler : public sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge,vector<EdgeRestInformation> >
+    class TRQSEdgeHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,helper::vector<EdgeRestInformation> >
     {
     public:
         typedef typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
-        TRQSEdgeHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> >* _data) : sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge, sofa::helper::vector<EdgeRestInformation> >(_data), ff(_ff) {}
+        TRQSEdgeHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> >* _data) : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeRestInformation> >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int edgeIndex, EdgeRestInformation& ,
-                const sofa::component::topology::Edge & t,
+                const core::topology::BaseMeshTopology::Edge & t,
                 const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double > &);
 
@@ -222,20 +222,13 @@ protected :
 
 };
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
-#endif
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-#endif
-
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_DEFORMABLE_API TriangularQuadraticSpringsForceField<Vec3dTypes>;
+extern template class SOFA_DEFORMABLE_API TriangularQuadraticSpringsForceField<sofa::defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_DEFORMABLE_API TriangularQuadraticSpringsForceField<Vec3fTypes>;
+extern template class SOFA_DEFORMABLE_API TriangularQuadraticSpringsForceField<sofa::defaulttype::Vec3fTypes>;
 #endif
 
 

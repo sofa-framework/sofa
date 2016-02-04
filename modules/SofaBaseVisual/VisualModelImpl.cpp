@@ -1637,7 +1637,7 @@ void VisualModelImpl::handleTopologyChange()
 
                                     if(ind_forgotten<m_topology->getNbTriangles())
                                     {
-                                        const sofa::component::topology::Triangle t_forgotten = m_topology->getTriangle(ind_forgotten);
+                                        const core::topology::BaseMeshTopology::Triangle t_forgotten = m_topology->getTriangle(ind_forgotten);
                                         sout << "INFO_print : Vis - last = " << last << sendl;
                                         sout << "INFO_print : Vis - lastIndexVec[i] = " << lastIndexVec[i] << sendl;
                                         sout << "INFO_print : Vis - tab.size() = " << tab.size() << " , tab = " << tab << sendl;

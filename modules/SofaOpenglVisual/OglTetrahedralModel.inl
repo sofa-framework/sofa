@@ -143,7 +143,7 @@ void OglTetrahedralModel<DataTypes>::computeMesh()
     }
     lastMeshRev = m_topology->getRevision();
     // update m_tetrahedrons
-    const topology::BaseMeshTopology::SeqTetrahedra& inputTetrahedrons = m_topology->getTetrahedra();
+    const core::topology::BaseMeshTopology::SeqTetrahedra& inputTetrahedrons = m_topology->getTetrahedra();
     if( this->f_printLog.getValue() ) 
         sout<<"OglTetrahedralModel: copying "<< inputTetrahedrons.size() << " tetrahedrons from topology." <<sendl;
     helper::WriteAccessor< Data< sofa::defaulttype::ResizableExtVector<Tetrahedron> > > tetrahedrons = m_tetrahedrons;

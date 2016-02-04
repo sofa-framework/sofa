@@ -48,7 +48,6 @@ namespace sofa
 namespace defaulttype
 {
 
-using helper::vector;
 
 template< int _N, typename _Real, int _dim, int _order>
 class Basis

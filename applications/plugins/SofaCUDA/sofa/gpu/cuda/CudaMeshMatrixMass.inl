@@ -59,7 +59,7 @@ using namespace sofa::gpu::cuda;
 template<>
 void MeshMatrixMass<CudaVec2fTypes, float>::copyVertexMass()
 {
-    vector<MassType>& vertexInf = *(vertexMassInfo.beginEdit());
+    helper::vector<MassType>& vertexInf = *(vertexMassInfo.beginEdit());
     data.vMass.resize(_topology->getNbPoints());
 
     for (int i=0; i<this->_topology->getNbPoints(); ++i)

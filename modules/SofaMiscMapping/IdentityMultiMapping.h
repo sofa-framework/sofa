@@ -91,7 +91,7 @@ protected :
     IdentityMultiMapping();
     virtual ~IdentityMultiMapping();
 
-    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
     typedef linearsolver::EigenSparseMatrix<TIn,TOut> EigenMatrix;
 //    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence

@@ -45,8 +45,6 @@ namespace sofa
 namespace defaulttype
 {
 
-using std::endl;
-using sofa::helper::vector;
 
 /** DOF types associated with 2nd order deformable frames. Each deformable frame generates an quadratic displacement field, with 30 independent degrees of freedom.
 */

@@ -78,7 +78,7 @@ protected :
     Data< bool > FixedXRotation;
     Data< bool > FixedYRotation;
     Data< bool > FixedZRotation;
-    vector<defaulttype::Quat> previousOrientation;
+    helper::vector<defaulttype::Quat> previousOrientation;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDROTATIONCONSTRAINT_CPP)
