@@ -6,7 +6,6 @@
 #include "PickedPoint.h"
 
 
-typedef sofa::defaulttype::Vector3 Vec3;
 
 namespace sofa{
 namespace simplegui{
@@ -29,6 +28,9 @@ protected:
     PickedPoint _pickedPoint;     ///< The point attached to this
 
 public:
+
+    typedef defaulttype::Vector3 Vec3;
+
     Interactor( const PickedPoint&  picked );
     virtual ~Interactor();
 
