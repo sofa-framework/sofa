@@ -85,6 +85,7 @@ protected:
 public:
     SetIndex f_indices;
     Data<bool> f_fixAll;
+    Data<bool> f_projectVelocity;
     Data<SReal> _drawSize;
     enum { NumDimensions = Deriv::total_size };
     typedef sofa::helper::fixed_array<bool,NumDimensions> VecBool;
