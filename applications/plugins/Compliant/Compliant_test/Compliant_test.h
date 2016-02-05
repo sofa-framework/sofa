@@ -284,7 +284,7 @@ protected:
         bool areEqual = std::abs(diff.maxCoeff())<tolerance && std::abs(diff.minCoeff())<tolerance;
         if( !areEqual )
         {
-            cerr<<"CompliantSolver_test::matricesAreEqual1, tolerance = "<< tolerance << ", difference = " << endl << diff << endl;
+            std::cerr<<"CompliantSolver_test::matricesAreEqual1, tolerance = "<< tolerance << ", difference = " << std::endl << diff << std::endl;
         }
         return areEqual;
 
@@ -301,7 +301,7 @@ protected:
             {
                 if( fabs(it.value()) >tolerance )
                 {
-                    cerr<<"CompliantSolver_test::matricesAreEqual2, tolerance = "<< tolerance << ", difference = " << endl << it.value() << endl;
+                    std::cerr<<"CompliantSolver_test::matricesAreEqual2, tolerance = "<< tolerance << ", difference = " << std::endl << it.value() << std::endl;
                     return false;
                 }
 
@@ -315,7 +315,7 @@ protected:
     {
         if( m1.size()!=m2.size() )
         {
-            cerr<<"CompliantSolver_test::vectorsAreEqual: sizes " << m1.size() << " != " << m2.size() << endl;
+            std::cerr<<"CompliantSolver_test::vectorsAreEqual: sizes " << m1.size() << " != " << m2.size() << std::endl;
             return false;
         }
 
@@ -323,7 +323,7 @@ protected:
         bool areEqual = std::abs(diff.maxCoeff())<tolerance && std::abs(diff.minCoeff())<tolerance;
         if( !areEqual )
         {
-            cerr<<"CompliantSolver_test::vectorsAreEqual, tolerance = "<< tolerance << ", difference = " << endl << diff << endl;
+            std::cerr<<"CompliantSolver_test::vectorsAreEqual, tolerance = "<< tolerance << ", difference = " << std::endl << diff << std::endl;
         }
         return areEqual;
     }

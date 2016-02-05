@@ -124,7 +124,7 @@ struct PointConstraint_test : public Sofa_test<typename _DataTypes::Real>
             for (unsigned int j = 0; j < readV[i].size(); ++j) {
                 if( readV[i][j]>epsilon )
                 {
-                    ADD_FAILURE() << "Error: non null velocity in direction " << j << endl;
+                    ADD_FAILURE() << "Error: non null velocity in direction " << j << std::endl;
                     return false;
                 }
             }
