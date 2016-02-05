@@ -23,3 +23,4 @@ TODO: (what is missing)
                     - solution3: the fast and dirty: add a numerical regularization in the constraint Jacobian
 - constraint solver as post-process of a free dynamics (new numerical solver)
 - handles sub-parts of the dynamics with different numerical solvers (=> having several Response components handling a sub-graph)
+- specialized constraints with reparametrization (around 0 in the free directions) : Hinge, Slider...
