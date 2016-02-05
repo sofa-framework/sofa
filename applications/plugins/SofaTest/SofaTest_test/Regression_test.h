@@ -45,14 +45,16 @@ namespace sofa {
 
 /// To Perform a Regression Test on scenes
 ///
-/// A scene is run for a given number of steps and the state (position/velocity) of every independent dof is stored in files. These files must be added to the repository.
-/// At each commit, a test run the scenes agai for the same given number of steps and the independent states are compared to the references stored in the files.
+/// A scene is run for a given number of steps and the state (position/velocity) of every independent dofs is stored in files. These files must be added to the repository.
+/// At each commit, a test runs the scenes again for the same given number of steps. Then the independent states are compared to the references stored in the files.
 ///
-/// The reference files can be generated when running the test for the first time on a scene. These newly created reference files must be added to the repository.
-/// If the result if the simulation changed voluntarily, these files must be manually deleted, and then created again (by running the test) and then pushed to the repository.
+/// The reference files are generated when running the test for the first time on a scene.
+/// @warning These newly created reference files must be added to the repository.
+/// If the result of the simulation changed voluntarily, these files must be manually deleted (locally) so they can be created again (by running the test).
+/// Their modifications must be pushed to the repository.
 ///
 /// Scene tested for regression must be listed in a file "list.txt" located in a "regression" directory in the test directory ( e.g. myplugin/myplugin_test/regression/list.txt)
-/// Each line of the "list.txt" file must contains : a local path to the scene, the number of simulation steps to run, and a numerical epsilon for comparison.
+/// Each line of the "list.txt" file must contain: a local path to the scene, the number of simulation steps to run, and a numerical epsilon for comparison.
 /// e.g. "gravity.scn 5 1e-10" to run the scene "regression/gravity.scn" for 5 time steps, and the state difference must be smaller than 1e-10
 ///
 /// As an example, have a look to SofaTest_test/regression
