@@ -52,7 +52,7 @@ class SOFA_HELPER_API ExceptionMessageHandler : public MessageHandler
 public:
 
     /// the exception raised by an error Message
-    struct ErrorMessageException: public std::exception
+    struct SOFA_HELPER_API ErrorMessageException: public std::exception
     {
         ErrorMessageException(/*could take some parameters to get Message's infos*/){}
 
