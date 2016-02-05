@@ -110,6 +110,7 @@ set(HEADER_FILES
     logging/ClangMessageHandler.h
     logging/ClangStyleMessageFormatter.h
     logging/DefaultStyleMessageFormatter.h
+    logging/ExceptionMessageHandler.h
 )
 
 set(SOURCE_FILES
