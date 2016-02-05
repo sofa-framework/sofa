@@ -69,6 +69,7 @@ PartialFixedConstraint<DataTypes>::PartialFixedConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
+    , f_projectVelocity( initData(&f_projectVelocity, false,"projectVelocity","project velocity to ensure no drift of the fixed point"))
     , _drawSize( initData(&_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , fixedDirections( initData(&fixedDirections,"fixedDirections","for each direction, 1 if fixed, 0 if free") )
 {
@@ -188,31 +189,42 @@ void PartialFixedConstraint<DataTypes>::projectResponse(const core::MechanicalPa
 // projectVelocity applies the same changes on velocity vector as projectResponse on position vector :
 // Each fixed point received a null velocity vector.
 // When a new fixed point is added while its velocity vector is already null, projectVelocity is not usefull.
-// But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null. If not, the fixed point is going to drift.
+// But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null or 
+// to set the projectVelocity option to True. If not, the fixed point is going to drift.
 template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*vData*/)
+void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& vData)
 {
-#if 0 /// @TODO ADD A FLAG FOR THIS
-    helper::WriteAccessor<DataVecDeriv> res = vData;
-    //serr<<"PartialFixedConstraint<DataTypes>::projectVelocity, res.size()="<<res.size()<<sendl;
-    if( f_fixAll.getValue()==true )
+    if(f_projectVelocity.getValue())
     {
-        // fix everyting
-        for( unsigned i=0; i<res.size(); i++ )
+        const unsigned int N = Deriv::size();
+        const VecBool& blockedDirection = fixedDirections.getValue();
+        helper::WriteAccessor<DataVecDeriv> res = vData;
+        //serr<<"PartialFixedConstraint<DataTypes>::projectVelocity, res.size()="<<res.size()<<sendl;
+        if( f_fixAll.getValue()==true )
         {
-            res[i] = Deriv();
+            // fix everyting
+            for( unsigned i=0; i<res.size(); i++ )
+            {
+                for (unsigned int c=0; c<N; ++c)
+                {
+                    if( blockedDirection[c] ) res[i][c] = 0;
+                }
+            }
+        }
+        else
+        {
+            const SetIndexArray & indices = f_indices.getValue();
+            unsigned i=0;
+            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
+            {
+
+                for (unsigned int c=0; c<N; ++c)
+                {
+                    if( blockedDirection[c] ) res[*it][c] = 0;
+                }
+            }
         }
     }
-    else
-    {
-        const SetIndexArray & indices = f_indices.getValue();
-        unsigned i=0;
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
-        {
-            res[*it] = Deriv();
-        }
-    }
-#endif
 }
 
 template <class DataTypes>
