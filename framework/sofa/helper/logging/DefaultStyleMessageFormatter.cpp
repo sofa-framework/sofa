@@ -29,13 +29,6 @@
 * in the messaging.h file.
 ******************************************************************************/
 
-#include <sstream>
-using std::ostringstream ;
-
-#include <iostream>
-using std::endl ;
-using std::cout ;
-using std::cerr ;
 
 #include "DefaultStyleMessageFormatter.h"
 #include "Message.h"
@@ -83,7 +76,7 @@ void DefaultStyleMessageFormatter::formatMessage(const Message& m,std::ostream& 
     if (!m.sender().empty())
         out << Console::BLUE << "[" << m.sender() << "] ";
 
-    out << Console::DEFAULT_COLOR << m.message().rdbuf();
+    out << Console::DEFAULT_COLOR << m.message().rdbuf() << std::endl;
 }
 
 

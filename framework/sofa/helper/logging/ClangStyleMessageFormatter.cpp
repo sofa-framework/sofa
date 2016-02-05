@@ -31,18 +31,8 @@
 
 #include "ClangStyleMessageFormatter.h"
 #include "Message.h"
-using std::ostringstream ;
-
-#include <string>
-using std::string ;
-
-#include <iostream>
-using std::endl ;
-using std::cout ;
-using std::cerr ;
 
 #include <sofa/helper/fixed_array.h>
-using sofa::helper::fixed_array ;
 
 namespace sofa
 {

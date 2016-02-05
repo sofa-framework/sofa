@@ -176,6 +176,7 @@ set(SOURCE_FILES
     logging/SilentMessageHandler.cpp
     logging/FileMessageHandler.cpp
 #    logging/LoggerMessageHandler.cpp
+    logging/ExceptionMessageHandler.cpp
 )
 
 if(SOFA_HAVE_PNG)
