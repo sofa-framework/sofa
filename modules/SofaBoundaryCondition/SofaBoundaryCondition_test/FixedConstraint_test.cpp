@@ -112,7 +112,7 @@ struct FixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
         typename MechanicalObject::ReadVecCoord readX = dofs->readPositions();
         if( (readX[0]-initCoord).norm2()>epsilon )
         {
-            ADD_FAILURE() << "Error: unmatching position between " << readX[0] << " and " << initCoord<< endl;
+            ADD_FAILURE() << "Error: unmatching position between " << readX[0] << " and " << initCoord<< std::endl;
             return false;
         }
         return true;

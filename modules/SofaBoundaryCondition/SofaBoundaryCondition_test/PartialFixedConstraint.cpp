@@ -118,7 +118,7 @@ struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
             typename MechanicalObject::ReadVecDeriv readV = dofs->readVelocities();
             if( readV[0][i]>epsilon )
             {
-                ADD_FAILURE() << "Error: non null velocity in direction " << i << endl;
+                ADD_FAILURE() << "Error: non null velocity in direction " << i << std::endl;
                 return false;
             }
 

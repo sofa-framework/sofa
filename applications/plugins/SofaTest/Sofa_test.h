@@ -37,9 +37,6 @@
 #include <sofa/helper/cast.h>
 #include <time.h>
 #include <iostream>
-using std::cout;
-using std::cerr;
-using std::endl;
 
 // Maybe not the right place to put this (private header?)
 #ifndef SOFA_FLOAT
