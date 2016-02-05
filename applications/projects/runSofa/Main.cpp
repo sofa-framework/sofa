@@ -109,6 +109,9 @@ using sofa::helper::logging::unique::MessageDispatcher ;
 #include <sofa/helper/logging/ClangMessageHandler.h>
 using sofa::helper::logging::ClangMessageHandler ;
 
+#include <sofa/helper/logging/ExceptionMessageHandler.h>
+using sofa::helper::logging::ExceptionMessageHandler;
+
 
 
 void loadVerificationData(string& directory, string& filename, Node* node)
@@ -210,7 +213,7 @@ int main(int argc, char** argv)
     .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
     .option(&testMode,'x',"test","select test mode with xml output after N iteration")
     .option(&verif,'v',"verification","load verification data for the scene")
-    .option(&colorsStatus,'z',"colors","use colors on stdout and stderr (yes, no, auto, clang)")
+    .option(&colorsStatus,'z',"colors","use colors on stdout and stderr (yes, no, auto, clang, test)")
 #ifdef SOFA_SMP
     .option(&disableStealing,'w',"disableStealing","Disable Work Stealing")
     .option(&nProcs,'c',"nprocs","Number of processor")
@@ -278,10 +281,14 @@ int main(int argc, char** argv)
         Console::setColorsStatus(Console::ColorsEnabled);
     else if (colorsStatus == "no")
         Console::setColorsStatus(Console::ColorsDisabled);
-    else if  (colorsStatus == "clang"){
+    else if (colorsStatus == "clang"){
         MessageDispatcher::clearHandlers() ;
         MessageDispatcher::addHandler( new ClangMessageHandler() ) ;
-    }else{
+    }
+    else if (colorsStatus == "test"){
+        MessageDispatcher::addHandler( new ExceptionMessageHandler() ) ;
+    }
+    else{
         Console::setColorsStatus(Console::ColorsAuto);
         msg_warning("") << "Invalid argument ‘" << colorsStatus << "‘ for ‘--colors‘";
     }
