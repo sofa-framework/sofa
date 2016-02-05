@@ -29,6 +29,8 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
+#include <sofa/helper/logging/MessageDispatcher.h>
+#include "TestMessageHandler.h"
 
 using sofa::helper::system::PluginRepository;
 using sofa::helper::system::DataRepository;
@@ -36,6 +38,19 @@ using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
 
 namespace sofa {
+
+
+// some basic RAII stuff to automatically add a TestMessageHandler to every tests
+namespace {
+
+    static struct raii {
+      raii() {
+            helper::logging::unique::MessageDispatcher::addHandler( &helper::logging::TestMessageHandler::getInstance() ) ;
+      }
+
+    } singleton;
+}
+
 
 int BaseSofa_test::seed = (unsigned int)time(NULL);
 

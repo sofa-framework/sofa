@@ -15,6 +15,7 @@ set(HEADER_FILES
     Multi2Mapping_test.h
     PrimitiveCreation.h
     Sofa_test.h
+    TestMessageHandler.h
 )
 
 set(SOURCE_FILES
