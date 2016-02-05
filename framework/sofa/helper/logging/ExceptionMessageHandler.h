@@ -32,7 +32,6 @@
 #define EXCEPTIONMESSAGEHANDLER_H
 
 #include "MessageHandler.h"
-#include <sofa/helper/logging/Message.h>
 #include <sofa/helper/helper.h>
 
 namespace sofa
@@ -64,14 +63,7 @@ public:
 
 
 
-    virtual void process(Message &m)
-    {
-        if( m.type()>=Message::Error )
-        {
-           ErrorMessageException errorMessageException/*(some Message's informations could be added to the exception)*/;
-           throw errorMessageException;
-        }
-    }
+    virtual void process(Message &m);
 
 };
 

@@ -29,13 +29,7 @@
 * in the messaging.h file.
 ******************************************************************************/
 
-#include <sstream>
-using std::ostringstream ;
-
-#include <iostream>
-
 #include "Message.h"
-#include "MessageFormatter.h"
 #include "ClangMessageHandler.h"
 #include "ClangStyleMessageFormatter.h"
 

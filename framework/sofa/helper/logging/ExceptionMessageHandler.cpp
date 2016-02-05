@@ -20,7 +20,7 @@
 *                                                                             *
 * This component is open-source                                               *
 *                                                                             *
-* Authors: Damien Marchal                                                     *
+* Authors: Matthieu Nesme                                                     *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -28,11 +28,10 @@
 * User of this library should read the documentation
 * in the messaging.h file.
 ******************************************************************************/
-#ifndef MESSAGEHANDLER_H
-#define MESSAGEHANDLER_H
-#include <sstream>
-#include <string>
-#include <sofa/helper/helper.h>
+
+
+#include "ExceptionMessageHandler.h"
+#include "Message.h"
 
 namespace sofa
 {
@@ -43,18 +42,20 @@ namespace helper
 namespace logging
 {
 
-class Message;
 
-class SOFA_HELPER_API MessageHandler
-{
-public:
-    virtual ~MessageHandler(){}
-    virtual void process(Message& m) = 0 ;
-};
+
+    void ExceptionMessageHandler::process(Message &m)
+    {
+        if( m.type()>=Message::Error )
+        {
+           ErrorMessageException errorMessageException/*(some Message's informations could be added to the exception)*/;
+           throw errorMessageException;
+        }
+    }
+
 
 
 } // logging
 } // helper
 } // sofa
 
-#endif // MESSAGEHANDLER_H

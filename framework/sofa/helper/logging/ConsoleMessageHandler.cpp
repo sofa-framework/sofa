@@ -29,13 +29,7 @@
 * in the messaging.h file.
 ******************************************************************************/
 
-#include <sstream>
-using std::ostringstream ;
-
-#include <iostream>
-
 #include "Message.h"
-#include "MessageFormatter.h"
 #include "ConsoleMessageHandler.h"
 #include "DefaultStyleMessageFormatter.h"
 
@@ -55,12 +49,7 @@ ConsoleMessageHandler::ConsoleMessageHandler(MessageFormatter* formatter)
 }
 
 void ConsoleMessageHandler::process(Message &m) {
-    ostringstream out;
-    m_formatter->formatMessage(m, out) ;
-    if( m.type()>=Message::Error )
-        std::cerr << out.str() << std::endl ;
-    else
-        std::cout << out.str() << std::endl ;
+    m_formatter->formatMessage(m, m.type()>=Message::Error ? std::cerr : std::cout ) ;
 }
 
 void ConsoleMessageHandler::setMessageFormatter(MessageFormatter* formatter)
