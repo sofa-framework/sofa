@@ -79,14 +79,17 @@ protected:
 	virtual void assemble( const typename self::in_pos_type& in_pos ) {
 		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
 
-		J.resize(6 * pairs.getValue().size(),
+
+        const pairs_type& p = pairs.getValue();
+
+        J.resize(6 * p.size(),
 		         in_pos.size() * 6);
 
 //		J.setZero();
-		
-        const pairs_type& p = pairs.getValue();
+
         bool rotation = this->rotation.getValue();
         bool translation = this->translation.getValue();
+        bool exact_dlog = this->exact_dlog.getValue();
 
 		typedef typename se3::mat66 mat66;
 		typedef typename se3::mat33 mat33;
@@ -122,7 +125,7 @@ protected:
 
             if( rotation )
             {
-                if( exact_dlog.getValue() ) {
+                if( exact_dlog ) {
                     mat33 Rc = se3::rotation(child).normalized().toRotationMatrix();
                     // note: dlog is in spatial coordinates !
                     chunk = se3::dlog( se3::rotation(diff).normalized() ) * Rc.transpose();

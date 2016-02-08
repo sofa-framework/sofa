@@ -188,6 +188,7 @@ SReal BaseSequentialSolver::step(vec& lambda,
 	// compute anyways)
 	real estimate = 0;
 
+    SReal omega = this->omega.getValue();
 		
 	// inner loop
 	for(unsigned i = 0, n = blocks.size(); i < n; ++i) {
@@ -218,7 +219,7 @@ SReal BaseSequentialSolver::step(vec& lambda,
             error_chunk = lambda_chunk;
 
             // update lambdas
-            lambda_chunk = lambda_chunk + omega.getValue() * delta_chunk;
+            lambda_chunk = lambda_chunk + omega * delta_chunk;
 
             // project new lambdas if needed
             if( b.projector ) {

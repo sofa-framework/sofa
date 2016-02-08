@@ -321,11 +321,13 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
 {
     eigenJacobian1.resizeBlocks(jacobian1.size(),getFromSize1());
 
+    const VecVRef& index1 = this->f_index1.getValue();
+
     for( size_t i=0 ; i<getToSize() ; ++i)
     {
         eigenJacobian1.beginBlockRow(i);
         for(size_t j=0; j<jacobian1[i].size(); j++)
-            eigenJacobian1.createBlock( this->f_index1.getValue()[i][j], jacobian1[i][j].getJ());
+            eigenJacobian1.createBlock( index1[i][j], jacobian1[i][j].getJ());
         eigenJacobian1.endBlockRow();
     }
 
@@ -339,11 +341,13 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
 {
     eigenJacobian2.resizeBlocks(jacobian2.size(),getFromSize2());
 
+    const VecVRef& index2 = this->f_index2.getValue();
+
     for( size_t i=0 ; i<getToSize() ; ++i)
     {
         eigenJacobian2.beginBlockRow(i);
         for(size_t j=0; j<jacobian2[i].size(); j++)
-            eigenJacobian2.createBlock( this->f_index2.getValue()[i][j], jacobian2[i][j].getJ());
+            eigenJacobian2.createBlock( index2[i][j], jacobian2[i][j].getJ());
         eigenJacobian2.endBlockRow();
     }
 
@@ -432,6 +436,9 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::apply(
     const InVecCoord1& in1 = dIn1.getValue();
     const InVecCoord2& in2 = dIn2.getValue();
 
+    const VecVRef& index1 = this->f_index1.getValue();
+    const VecVRef& index2 = this->f_index2.getValue();
+
 #ifdef _OPENMP
 #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
@@ -440,12 +447,12 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::apply(
         out[i]=OutCoord();
         for(size_t j=0; j<jacobian1[i].size(); j++)
         {
-            size_t index=this->f_index1.getValue()[i][j];
+            size_t index=index1[i][j];
             jacobian1[i][j].addapply(out[i],in1[index]);
         }
         for(size_t j=0; j<jacobian2[i].size(); j++)
         {
-            size_t index=this->f_index2.getValue()[i][j];
+            size_t index=index2[i][j];
             jacobian2[i][j].addapply(out[i],in2[index]);
         }
     }
@@ -491,6 +498,9 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
         const InVecDeriv1& in1 = dIn1.getValue();
         const InVecDeriv2& in2 = dIn2.getValue();
 
+        const VecVRef& index1 = this->f_index1.getValue();
+        const VecVRef& index2 = this->f_index2.getValue();
+
         for( size_t i=0 ; i<this->maskTo[0]->size() ; ++i)
         {
             if( !this->maskTo[0]->isActivated() || this->maskTo[0]->getEntry(i) )
@@ -498,12 +508,12 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
                 out[i]=OutDeriv();
                 for(size_t j=0; j<jacobian1[i].size(); j++)
                 {
-                    size_t index=this->f_index1.getValue()[i][j];
+                    size_t index=index1[i][j];
                     jacobian1[i][j].addmult(out[i],in1[index]);
                 }
                 for(size_t j=0; j<jacobian2[i].size(); j++)
                 {
-                    size_t index=this->f_index2.getValue()[i][j];
+                    size_t index=index2[i][j];
                     jacobian2[i][j].addmult(out[i],in2[index]);
                 }
             }
@@ -541,18 +551,21 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
         InVecDeriv2& in2 = *dIn2.beginEdit();
         const OutVecDeriv& out = dOut.getValue();
 
+        const VecVRef& index1 = this->f_index1.getValue();
+        const VecVRef& index2 = this->f_index2.getValue();
+
         for( size_t i=0 ; i<this->maskTo[0]->size() ; ++i)
         {
             if( this->maskTo[0]->getEntry(i) )
             {
                 for(size_t j=0; j<jacobian1[i].size(); j++)
                 {
-                    size_t index=this->f_index1.getValue()[i][j];
+                    size_t index=index1[i][j];
                     jacobian1[i][j].addMultTranspose(in1[index],out[i]);
                 }
                 for(size_t j=0; j<jacobian2[i].size(); j++)
                 {
-                    size_t index=this->f_index2.getValue()[i][j];
+                    size_t index=index2[i][j];
                     jacobian2[i][j].addMultTranspose(in2[index],out[i]);
                 }
             }
@@ -669,6 +682,9 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
     InMatrixDeriv2& out2 = *_out2.beginEdit();
     const OutMatrixDeriv& in = _in.getValue();
 
+    const VecVRef& index1 = this->f_index1.getValue();
+    const VecVRef& index2 = this->f_index2.getValue();
+
     typename OutMatrixDeriv::RowConstIterator rowItEnd = in.end();
 
     for (typename OutMatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
@@ -686,7 +702,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 
                 for(size_t j=0; j<jacobian1[indexIn].size(); j++)
                 {
-                    size_t indexOut = this->f_index1.getValue()[indexIn][j];
+                    size_t indexOut = index1[indexIn][j];
 
                     InDeriv1 tmp;
                     jacobian1[indexIn][j].addMultTranspose( tmp, colIt.val() );
@@ -702,7 +718,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 
                 for(size_t j=0; j<jacobian2[indexIn].size(); j++)
                 {
-                    size_t indexOut = this->f_index2.getValue()[indexIn][j];
+                    size_t indexOut = index2[indexIn][j];
 
                     InDeriv2 tmp;
                     jacobian2[indexIn][j].addMultTranspose( tmp, colIt.val() );

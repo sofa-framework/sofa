@@ -496,6 +496,8 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(OutVecCoord& out, const I
         std::cout << "Out size : " << out.size() << std::endl;
     }
 
+    const VecVRef& indices = this->f_index.getValue();
+
 #ifdef _OPENMP
 #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
@@ -504,7 +506,7 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(OutVecCoord& out, const I
         out[i]=OutCoord();
         for(size_t j=0; j<jacobian[i].size(); j++)
         {
-            size_t index=this->f_index.getValue()[i][j];
+            size_t index=indices[i][j];
             jacobian[i][j].addapply(out[i],in[index]);
         }
     }
@@ -524,6 +526,8 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJ(OutVecDeriv& out, const 
     }
     else
     {
+        const VecVRef& indices = this->f_index.getValue();
+
         for( size_t i=0 ; i<this->maskTo->size() ; ++i)
         {
             if( !this->maskTo->isActivated() || this->maskTo->getEntry(i) )
@@ -531,7 +535,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJ(OutVecDeriv& out, const 
                 out[i]=OutDeriv();
                 for(size_t j=0; j<jacobian[i].size(); j++)
                 {
-                    size_t index=this->f_index.getValue()[i][j];
+                    size_t index=indices[i][j];
                     jacobian[i][j].addmult(out[i],in[index]);
                 }
             }
