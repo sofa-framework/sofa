@@ -213,10 +213,9 @@ class AffineMass:
 
     def massFromDensityImage(self, dofNode, dofRigidNode, densityImage, lumping='0'):
         node = dofNode.createChild('Mass')
-        dof = node.createObject('MechanicalObject', name='massPoints', template='Vec3')
+        node.createObject('MechanicalObject', name='massPoints', template='Vec3')
         insertLinearMapping(node, dofRigidNode, self.dofAffineNode, assemble=False)
-        densityImage.addBranchingToImage('0') # MassFromDensity on branching images does not exist yet
-        massFromDensity = node.createObject('MassFromDensity',  name="MassFromDensity",  template="Affine,ImageR", image="@"+SofaPython.Tools.getObjectPath(densityImage.image)+".image", transform="@"+SofaPython.Tools.getObjectPath(densityImage.image)+'.transform', lumping=lumping)
+        massFromDensity = node.createObject('MassFromDensity',  name="MassFromDensity",  template="Affine,"+"Branching"+densityImage.imageType, image="@"+SofaPython.Tools.getObjectPath(densityImage.branchingImage)+".image", transform="@"+SofaPython.Tools.getObjectPath(densityImage.branchingImage)+'.transform', lumping=lumping)
         self.mass = self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix="@"+SofaPython.Tools.getObjectPath(massFromDensity)+".massMatrix")
 
     def getFilename(self, filenamePrefix=None, directory=""):
