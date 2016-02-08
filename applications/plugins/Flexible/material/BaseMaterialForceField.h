@@ -189,9 +189,10 @@ public:
         }
         else
         {
+            const SReal& rayleighStiffness = this->rayleighStiffness.getValue();
             for(unsigned int i=0; i<material.size(); i++)
             {
-                material[i].addDForce(df[i],dx[i],mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()),mparams->bFactor());
+                material[i].addDForce(df[i],dx[i],mparams->kFactorIncludingRayleighDamping(rayleighStiffness),mparams->bFactor());
             }
         }
 

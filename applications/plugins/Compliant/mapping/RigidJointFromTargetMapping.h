@@ -74,6 +74,7 @@ protected:
         bool rotation = this->rotation.getValue();
         bool translation = this->translation.getValue();
         const helper::vector< coord_type >& targets = this->targets.getValue();
+        bool exact_dlog = this->exact_dlog.getValue();
 
         assert( in_pos.size() == targets.size() );
 
@@ -101,7 +102,7 @@ protected:
 
             if( rotation )
             {
-                if( exact_dlog.getValue() ) {
+                if( exact_dlog ) {
                     mat33 Rc = se3::rotation(child).normalized().toRotationMatrix();
                     // note: dlog is in spatial coordinates !
                     chunk = se3::dlog( se3::rotation(diff).normalized() ) * Rc.transpose();
