@@ -4,6 +4,9 @@ ignore "loadvideo.scn"
 # Requires Sofa to be compiled with SOFA_IMAGE_HAVE_OPENCV and to have installed opencv
 ignore "testCam.scn"
 
-# Requires Sofa to be compiled with SOFA-EXTERNAL_LIBFREENECT and to have launch kinect_capture.scn
+# Requires Sofa to be compiled with SOFA-EXTERNAL_LIBFREENECT
+ignore "Kinect.scn"
+ignore "Kinect_capture.scn"
+# and to have launch kinect_capture.scn
 ignore "Kinect_offline.scn"
 
