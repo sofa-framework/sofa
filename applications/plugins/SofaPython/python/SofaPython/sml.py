@@ -10,6 +10,7 @@ from Tools import listToStr as concat
 import units
 import mass
 import DAGValidation
+import SofaPython.MeshLoader
 
 def parseIdName(obj,objXml):
     """ set id and name of obj
@@ -66,6 +67,13 @@ class Model:
                 for d in g.iter("data"):
                     self.group[g.attrib["id"]].data[d.attrib["name"]]=parseData(d)
                 parseTag(self.group[g.attrib["id"]], g)
+
+        def load(self):
+            if self.format.lower() == "obj":
+                return SofaPython.MeshLoader.loadOBJ(self.source)
+            else:
+                Sofa.msg_error("SofaPython.sml","Mesh: format "+self.format+" not yet loadable")
+                return SofaPython.MeshLoader.Mesh()
 
     class MeshAttributes:
         def __init__(self,objXml=None):
