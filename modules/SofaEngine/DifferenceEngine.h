@@ -26,6 +26,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_DifferenceEngine_H
 #define SOFA_COMPONENT_ENGINE_DifferenceEngine_H
 
+#include "config.h"
 #include <sofa/core/DataEngine.h>
 #include <sofa/defaulttype/Vec.h>
 

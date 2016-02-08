@@ -2,7 +2,7 @@
 #define SOFA_COMPONENT_ENGINE_DifferenceEngine_INL
 
 
-#include <sofa/component/engine/DifferenceEngine.h>
+#include "DifferenceEngine.h"
 
 
 namespace sofa
