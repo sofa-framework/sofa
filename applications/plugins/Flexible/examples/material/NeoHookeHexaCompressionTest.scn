@@ -38,14 +38,14 @@
       <TetrahedronSetTopologyModifier />
       <TetrahedronSetTopologyAlgorithms template="Vec3d" />
       <TetrahedronSetGeometryAlgorithms template="Vec3d" />
-      <Hexa2TetraTopologicalMapping name="default28" object1="../hexahedra" object2="TetraContainer" />
+      <Hexa2TetraTopologicalMapping name="default28" input="@../hexahedra" output="@TetraContainer" />
       
       <!--Quads for QuadPressureForceField-->
       <QuadSetTopologyContainer name="QuadContainer" />
       <QuadSetTopologyModifier />
       <QuadSetTopologyAlgorithms template="Vec3d" />
       <QuadSetGeometryAlgorithms template="Vec3d" />
-      <Hexa2QuadTopologicalMapping name="default28" object1="../hexahedra" object2="QuadContainer" />
+      <Hexa2QuadTopologicalMapping name="default28" input="@../hexahedra" output="@QuadContainer" />
       <!--Compression-->
       <QuadPressureForceField normal="1 0 0" dmin="0.99" dmax="1.01" showForces="1" pressure="-0.2 0 0"/>
      
