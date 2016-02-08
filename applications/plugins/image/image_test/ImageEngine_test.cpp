@@ -371,7 +371,7 @@ struct ImageDataEngine_test : public DataEngine_test<DataEngineType>
                 defaulttype::BaseImage* img = static_cast<defaulttype::BaseImage*>( data->beginEditVoidPtr() );
 //                std::cerr<<data->getName()<<" is a Data<Image>\n";
                 // allocate input
-                img->setDimensions( defaulttype::BaseImage::imCoord(1,1,1,1,1) );
+                img->setDimensions( defaulttype::BaseImage::imCoord(2,2,2,1,1) );
                 data->endEditVoidPtr();
             }
         }
