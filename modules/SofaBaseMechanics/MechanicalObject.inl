@@ -1069,10 +1069,11 @@ void MechanicalObject<DataTypes>::init()
         numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
 
-    if(this->getTags().empty())
+    //Look at a topology associated to this instance of MechanicalObject by a tag
+    this->getContext()->get(m_topology, this->getTags());
+    // If no topology found, no association, then look to the nearest one
+    if(m_topology == NULL)
         m_topology = this->getContext()->getMeshTopology();
-    else
-        this->getContext()->get(m_topology, this->getTags());
 
 
     //helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
