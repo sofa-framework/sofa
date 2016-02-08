@@ -3,11 +3,11 @@
 
 <Node 	name="Root" gravity="0 -10 0" time="0" animate="0"  dt="0.01" >
 <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
-<CompliantAttachButtonSetting />
 
       <RequiredPlugin name="Compliant"/>
       <RequiredPlugin name="CompliantDev"/>
 
+<CompliantAttachButtonSetting />
       
 <Node 	name="CONSTRAINT 0" activated="1">
   
