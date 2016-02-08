@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_DifferenceEngine_CPP
-#include <sofa/component/engine/DifferenceEngine.inl>
+#include "DifferenceEngine.inl"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
