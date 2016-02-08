@@ -141,14 +141,6 @@ if(SOFAGUI_QGLVIEWER)
     list(APPEND SOURCE_FILES viewer/qgl/QtGLViewer.cpp)
 endif()
 
-# EdViewer
-if(SOFAGUI_EDITORVIEWER)
-    find_package(QGLViewer)
-
-    list(APPEND MOC_HEADER_FILES viewer/edgl/EditorViewer.h)
-    list(APPEND SOURCE_FILES viewer/edgl/EditorViewer.cpp)
-endif()
-
 if(SOFA_DUMP_VISITOR_INFO)
 endif()
 
