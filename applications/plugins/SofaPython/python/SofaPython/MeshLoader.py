@@ -5,16 +5,19 @@ import os
 import Sofa
 
 class Mesh:
-    vertices = [] # vertices positions
-    normals = [] # normals
-    uv = [] # texture coordinates
-    faceVertices = [] # indices in vertices
-    faceNormals = [] # indices in normals
-    faceUv = [] # indices in uv
+
+    def __init__(self):
+        self.vertices = [] # vertices positions
+        self.normals = [] # normals
+        self.uv = [] # texture coordinates
+        self.faceVertices = [] # indices in vertices
+        self.faceNormals = [] # indices in normals
+        self.faceUv = [] # indices in uv
 
 
 def loadOBJ(filename):
     ## quickly written .obj import
+    # Sofa.msg_info("PythonMeshLoader","loadOBJ: "+filename)
 
     m = Mesh()
 
@@ -36,13 +39,18 @@ def loadOBJ(filename):
             t = map(float, vals[1:3])
             m.uv.append(t)
         elif vals[0] == "f" or vals[0] == "l":
+            faceV = []
+            faceUV = []
+            faceN = []
             for f in vals[1:]:
                 w = f.split("/")
-                m.faceVertices.append(int(w[0])-1)
-
+                faceV.append(int(w[0])-1)
                 if len(w) > 1:
-                    m.faceUv.append(int(w[1])-1)
+                    faceUV.append(int(w[1])-1)
                 if len(w) > 2:
-                    m.faceNormals.append(int(w[2])-1)
+                    faceN.append(int(w[2])-1)
+            m.faceVertices.append(faceV)
+            m.faceUv.append(faceUV)
+            m.faceNormals.append(faceN)
 
     return m

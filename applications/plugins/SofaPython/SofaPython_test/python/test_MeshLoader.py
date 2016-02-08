@@ -16,6 +16,6 @@ def run():
 
     ok &= EXPECT_EQ( len(objmesh.vertices), 1190 )
     ok &= EXPECT_EQ( len(objmesh.normals), 0 )
-    ok &= EXPECT_EQ( len(objmesh.faceVertices), 7692 )
+    ok &= EXPECT_EQ( len(objmesh.faceVertices), 2564 )
 
     return ok
