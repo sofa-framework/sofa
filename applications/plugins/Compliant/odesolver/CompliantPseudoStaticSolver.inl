@@ -50,6 +50,7 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
 
     const SReal& threshold = d_threshold.getValue();
     const SReal& velocityFactor = d_velocityFactor.getValue();
+    bool printLog = this->f_printLog.getValue();
 
     SReal lastVelocity = 0;
 
@@ -68,7 +69,7 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
         // damp velocity
         sop.vop.v_teq( velId, velocityFactor );
 
-        if( this->f_printLog.getValue() )
+        if( printLog )
             serr<<"velocity norm: "<<sqrt(lastVelocity)<<sendl;
 
         if( lastVelocity < threshold*threshold ) break;
@@ -80,7 +81,7 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
 
     d_lastVelocity.setValue(lastVelocity);
 
-    if( this->f_printLog.getValue() ) serr<<i+1<<" iterations"<<sendl;
+    if( printLog ) serr<<i+1<<" iterations"<<sendl;
 
 }
 
