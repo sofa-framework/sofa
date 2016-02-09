@@ -124,7 +124,6 @@ SOFA_LINK_CLASS(TopologyGaussPointSampler)
 SOFA_LINK_CLASS(GaussPointContainer)
 SOFA_LINK_CLASS(AffineMechanicalObject)
 SOFA_LINK_CLASS(QuadraticMechanicalObject)
-SOFA_LINK_CLASS(AffineUniformMass)
 SOFA_LINK_CLASS(RigidConstraint)
 SOFA_LINK_CLASS(AffineMass)
 
