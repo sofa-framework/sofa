@@ -11,8 +11,8 @@
   <!-- EXPORT IMAGE --> 
   <ImageExporter name="writer" src="@image" filename="test.raw" exportAtBegin="true" />
   
-  <!-- VERIF --> 
-  <ImageContainer  name="image2" filename="@writer.filename"/>
+  <!-- VERIF   cannot be run the first time, the export must have been done first--> 
+<!--   <ImageContainer  name="image2" filename="@writer.filename"/> -->
 <!--   <ImageViewer  name="viewer2" src="@image2" /> -->
  
   
