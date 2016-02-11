@@ -123,7 +123,7 @@ extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args)
         }
     if (!childNode)
     {
-        SP_MESSAGE_ERROR( "Node.getChildNode("<<path<<") not found.")
+        SP_MESSAGE_ERROR( "Node.getChild(\""<<path<<"\") not found.")
         Py_RETURN_NONE;
     }
     return SP_BUILD_PYSPTR(childNode);
