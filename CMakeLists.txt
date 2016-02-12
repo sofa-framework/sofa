@@ -116,6 +116,12 @@ if(NOT Boost_FOUND)
     add_subdirectory(extlibs/miniBoost)
 endif()
 
+find_package(SWIG)
+find_package(PythonLibs)
+if(SWIG_FOUND AND PYTHONLIBS_FOUND)
+    set(CMAKE_SWIG_OUTDIR ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/python2.7/site-packages/sofa)
+endif()
+
 
 ### Dependency pack for Windows
 if(MSVC)
