@@ -3,17 +3,26 @@
 %include "std_string.i"
 
 %{
-#include <sofa/simulation/common/Node.h>
-
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObject.h>
+    
+#include <sofa/simulation/common/Node.h>
 %}
+
 
 namespace sofa
 {
 namespace core 
 {
+
+%nodefaultctor ObjectFactory;
+%nodefaultdtor ObjectFactory;
+class ObjectFactory {
+public:
+    static sofa::core::objectmodel::BaseObject::SPtr CreateObject(sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg);
+};
+    
 namespace objectmodel
 {
 
@@ -29,12 +38,22 @@ public:
     virtual std::string getValueTypeString() const = 0;
 };
 
+class BaseObjectDescription {
+public:
+    BaseObjectDescription(const char* name=NULL, const char* type=NULL);
+    virtual void setAttribute(const std::string& attr, const char* val);
+};
+
 %nodefaultctor Base;
 %nodefaultdtor Base;
 class Base {
 public:
     sofa::core::objectmodel::BaseData* findData( const std::string &name ) const;
 };
+
+%nodefaultctor BaseContext;
+%nodefaultdtor BaseContext;
+class BaseContext;
 
 %nodefaultctor BaseObject;
 %nodefaultdtor BaseObject;
@@ -58,20 +77,22 @@ namespace simulation
 class Node {
 public:
     virtual sofa::simulation::Node::SPtr createChild(const std::string& nodeName)=0;
+    const sofa::core::objectmodel::BaseContext* getContext() const;
 };
 
-%extend Node {
-    sofa::core::objectmodel::BaseObject::SPtr createObject(std::string const& type) {
-        sofa::core::objectmodel::BaseContext* context = self->toBaseContext();
-        sofa::core::objectmodel::BaseObjectDescription desc(type.c_str(),type.c_str());
-        sofa::core::objectmodel::BaseObject::SPtr obj = sofa::core::ObjectFactory::getInstance()->createObject(context,&desc);
-        if (obj==0) {
-        }
-        return obj.get();
-    }
+}
 }
 
-}
-}
+%pythoncode %{
+# mimic SofaPython Node.createObject method
+def Node_createObject(self, type, **kwargs):
+    desc = BaseObjectDescription(type, type)
+    if kwargs is not None:
+        for key, value in kwargs.iteritems():
+            desc.setAttribute(key, value)
+    return ObjectFactory.CreateObject(self.getContext(), desc)
+# turn the function into a Node method
+Node.__dict__["createObject"]=Node_createObject
+%}
 
 
