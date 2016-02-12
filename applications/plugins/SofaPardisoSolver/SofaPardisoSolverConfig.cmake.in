@@ -1,0 +1,21 @@
+# CMake package configuration file for the SofaPardisoSolver plugin
+
+@PACKAGE_INIT@
+
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH} @CMAKE_MODULE_PATH@")
+
+find_package(SofaFramework REQUIRED)
+find_package(SofaBase REQUIRED)
+
+link_directories(@SOFAPARDISOSOLVER_LINK_DIR@)
+
+find_package(GFortran REQUIRED)
+find_package(BLAS REQUIRED)
+find_package(LAPACK REQUIRED)
+find_package(OpenMP REQUIRED)
+
+if(NOT TARGET SofaPardisoSolver)
+    include("${CMAKE_CURRENT_LIST_DIR}/SofaPardisoSolverTargets.cmake")
+endif()
+
+check_required_components(SofaPardisoSolver)

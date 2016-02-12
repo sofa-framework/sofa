@@ -297,7 +297,7 @@ public:
     {
         compress();
 #ifdef _OPENMP
-        result = linearsolver::mul_EigenSparseDenseMatrix_MT( result, compressedMatrix );
+        result = linearsolver::mul_EigenSparseDenseMatrix_MT( compressedMatrix, data );
 #else
         result = compressedMatrix * data;
 #endif

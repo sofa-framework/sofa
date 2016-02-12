@@ -74,6 +74,9 @@ public:
     virtual const char* getCategoryName() const { return "visual"; }
     virtual const char* getClassName() const { return "VisualVisitor"; }
 
+    /// visual visitor must be executed as a tree, such as forward and backward orders are coherent
+    virtual bool treeTraversal(TreeTraversalRepetition& repeat) { repeat=NO_REPETITION; return true; }
+
 protected:
     core::visual::VisualParams* vparams;
 };

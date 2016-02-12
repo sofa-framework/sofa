@@ -67,6 +67,7 @@ UniformMass<DataTypes, MassType>::UniformMass()
     , d_preserveTotalMass( initData ( &d_preserveTotalMass, false, "preserveTotalMass", "Prevent totalMass from decreasing when removing particles."))
 {
     this->addAlias ( &totalMass, "totalMass" );
+    constructor_message();
 }
 
 template <class DataTypes, class MassType>

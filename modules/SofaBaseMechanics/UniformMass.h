@@ -82,6 +82,10 @@ protected:
     UniformMass();
 
     ~UniformMass();
+
+    /// @internal fonction called in the constructor that can be specialized (does nothing by default)
+    void constructor_message() {}
+
 public:
     void setMass(const MassType& mass);
     const MassType& getMass() const { return mass.getValue(); }
