@@ -1633,6 +1633,103 @@ void MechanicalPickParticlesVisitor::getClosestParticle( core::behavior::BaseMec
     }
 }
 
+Visitor::Result MechanicalPickParticlesWithTagsVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+{
+	//    std::cerr << "MechanicalPickParticlesVisitor::fwdMechanicalState, Picking particles on state " << mm->getName() << " within radius " << radius0 << " + dist * " << dRadius << std::endl;
+	bool tagOk = mustContainAllTags || tags.empty();
+	for(auto tagIt = tags.begin(); tags.end() != tagIt; ++tagIt)
+	{
+		if (!mm->hasTag(*tagIt)) // picking disabled for this model
+		{
+			if(mustContainAllTags)
+			{
+				tagOk = false;
+				break;
+			}
+		}
+		else if (mm->hasTag(*tagIt)) // picking disabled for this model
+		{
+			tagOk = true;
+
+			if(!mustContainAllTags)
+				break;
+		}
+	}
+
+	if(!tagOk)
+		return RESULT_CONTINUE;
+
+	//We deactivate the Picking with static objects (not simulated)
+	core::CollisionModel *c;
+	mm->getContext()->get(c, core::objectmodel::BaseContext::Local);
+	if (c && !c->isSimulated()) //If it is an obstacle, we don't try to pick
+	{
+		return RESULT_CONTINUE;
+	}
+	mm->pickParticles(this->params, rayOrigin[0], rayOrigin[1], rayOrigin[2], rayDirection[0], rayDirection[1], rayDirection[2], radius0, dRadius, particles);
+
+	return RESULT_CONTINUE;
+}
+
+
+Visitor::Result MechanicalPickParticlesWithTagsVisitor::fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm)
+{
+	if (node->mechanicalMapping  && !node->mechanicalMapping->isMechanical())
+		return RESULT_PRUNE;
+	mm->pickParticles(this->params, rayOrigin[0], rayOrigin[1], rayOrigin[2], rayDirection[0], rayDirection[1], rayDirection[2], radius0, dRadius, particles);
+	return RESULT_CONTINUE;
+}
+
+
+Visitor::Result MechanicalPickParticlesWithTagsVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+{
+	if (!map->isMechanical())
+		return RESULT_PRUNE;
+	return RESULT_CONTINUE;
+}
+
+
+
+/// get the closest pickable particle
+void MechanicalPickParticlesWithTagsVisitor::getClosestParticle( core::behavior::BaseMechanicalState*& mstate, unsigned int& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength )
+{
+	mstate = NULL;
+
+	if( particles.empty() ) return;
+
+	rayLength = std::numeric_limits<SReal>::max();
+
+	core::behavior::BaseMechanicalState* mstatei;
+	unsigned int indexCollisionElementi;
+	defaulttype::Vector3 pointi;
+	SReal rayLengthi;
+
+	// particles are sorted from their distance to the ray
+	// threshold for valid particles is the shortest distance + small tolerance relative to ray length
+	SReal dmax = particles.begin()->first + radius0*1e-10;
+
+	for( Particles::const_iterator it=particles.begin(), itend=particles.end() ; it!=itend ; ++it )
+	{
+		if( it->first > dmax ) break; // from now on, particles are too far from the ray
+
+		// get current valid particle
+		mstatei = it->second.first;
+		indexCollisionElementi = it->second.second;
+		pointi[0] = mstatei->getPX(indexCollisionElementi);
+		pointi[1] = mstatei->getPY(indexCollisionElementi);
+		pointi[2] = mstatei->getPZ(indexCollisionElementi);
+		rayLengthi = (pointi-rayOrigin)*rayDirection;
+
+		if( rayLengthi < rayLength ) // keep the closest particle to the ray origin
+		{
+			mstate = mstatei;
+			indexCollisionElement = indexCollisionElementi;
+			point = pointi;
+			rayLength = rayLengthi;
+		}
+	}
+}
+
 
 
 Visitor::Result MechanicalVSizeVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
