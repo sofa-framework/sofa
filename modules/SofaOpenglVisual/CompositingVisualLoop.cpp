@@ -36,10 +36,6 @@
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/simulation/common/VisualVisitor.h>
-#include <sofa/simulation/common/UpdateContextVisitor.h>
-#include <sofa/simulation/common/UpdateMappingVisitor.h>
-#include <sofa/simulation/common/UpdateMappingEndEvent.h>
-#include <sofa/simulation/common/PropagateEventVisitor.h>
 
 
 #include <sofa/helper/AdvancedTimer.h>

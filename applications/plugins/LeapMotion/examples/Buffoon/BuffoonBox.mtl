@@ -1,0 +1,40 @@
+# Max2Mtl Version 4.0 Mar 10th, 2001
+#
+# Multi/Sub Buffoon (4) to come 
+#
+newmtl Skin
+Ka  0.6 0.6 0.6
+Kd  0.6 0.6 0.6
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  0.0
+illum 2
+map_Kd Buffoon.png
+#
+newmtl Yellow
+Ka  1.0 0.9 0.2
+Kd  1.0 0.9 0.2
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  0.0
+illum 2
+#
+newmtl Purple
+Ka  0.6 0.1 1.0
+Kd  0.6 0.1 1.0
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  0.0
+illum 2
+#
+newmtl Red
+Ka  0.9 0.2 0.1
+Kd  0.9 0.2 0.1
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  0.0
+illum 2
+#
+# Multi/Sub Buffoon done 
+#
+# EOF

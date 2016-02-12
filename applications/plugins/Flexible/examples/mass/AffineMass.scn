@@ -38,7 +38,7 @@
 	      <TransferFunction name="density" template="ImageUC,ImageD" inputImage="@../image.image" param="0 0 1 2" />
 	      <MechanicalObject template="Vec3d" />
 	      <LinearMapping template="Affine,Vec3d"  />
-	      <MassFromDensity  name="MassFromDensity"  template="Affine,ImageD" image="@density.outputImage" transform="@../image.transform"  lumping="0"/>
+	      <MassFromDensity  name="MassFromDensity"  template="Affine,ImageD" image="@density.outputImage" transform="@../image.transform"  lumping="0" printLog="True"/>
     </Node>
     <AffineMass massMatrix="@mass/MassFromDensity.massMatrix"/>
 <!-- <TransferFunction name="density" template="ImageUC,ImageD" inputImage="@image.image" param="0 0 1 0.01" />-->

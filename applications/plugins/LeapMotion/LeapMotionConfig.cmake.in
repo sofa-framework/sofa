@@ -1,0 +1,21 @@
+# CMake package configuration file for the LeapMotion library
+
+@PACKAGE_INIT@
+
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH} @CMAKE_MODULE_PATH@")
+
+find_package(SofaFramework REQUIRED)
+find_package(SofaBase REQUIRED)
+find_package(SofaGeneral REQUIRED)
+
+link_directories(@LEAP_INCLUDE_DIR@)
+find_package(Leap REQUIRED)
+
+
+if(NOT TARGET LeapMotion)
+    include("${CMAKE_CURRENT_LIST_DIR}/LeapMotionTargets.cmake")
+endif()
+
+
+set(LeapMotion_LIBRARIES LeapMotion)
+set(LeapMotion_INCLUDE_DIRS @PACKAGE_LEAPMOTION_INCLUDE_DIR@)
