@@ -36,12 +36,12 @@ void MyListener::onExit(const Controller& )
   std::cout << "Exited" << std::endl;
 }
 
-bool IsOdd (Leap::Finger finger)
+bool IsOdd (Leap::Finger /*finger*/)
 {
 	return true;
 }
 
-void MyListener::update( Leap::Frame frame )
+void MyListener::update( Leap::Frame /*frame*/ )
 {
     //double curSysTimeSeconds = timer.getElapsedTimeInSec();
     t2=timer.getTime();
