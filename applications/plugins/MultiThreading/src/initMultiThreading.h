@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,51 +22,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <MultiThreading/config.h>
+#ifndef PLUGIN_MULTITHREADING_INIT_H
+#define PLUGIN_MULTITHREADING_INIT_H
+
+#include <sofa/SofaGeneral.h>
+
+#ifndef WIN32
+    #define SOFA_EXPORT_DYNAMIC_LIBRARY 
+    #define SOFA_IMPORT_DYNAMIC_LIBRARY
+    #define SOFA_MULTITHREADING_PLUGIN_API
+#else
+    #ifdef SOFA_MULTITHREADING_PLUGIN
+		#define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
+		#define SOFA_MULTITHREADING_PLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
+    #else
+		#define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
+		#define SOFA_MULTITHREADING_PLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
+    #endif
+#endif
 
 
-extern "C"
+namespace sofa
 {
-
-void initExternalModule()
+namespace component
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
+	extern "C" {
+                SOFA_MULTITHREADING_PLUGIN_API void initExternalModule();
+                SOFA_MULTITHREADING_PLUGIN_API const char* getModuleName();
+                SOFA_MULTITHREADING_PLUGIN_API const char* getModuleVersion();
+                SOFA_MULTITHREADING_PLUGIN_API const char* getModuleLicense();		
+                SOFA_MULTITHREADING_PLUGIN_API const char* getModuleDescription();
+                SOFA_MULTITHREADING_PLUGIN_API const char* getModuleComponentList();
+	}
 
-const char* getModuleName()
-{
-    return "MultiThreading";
-}
-
-const char* getModuleVersion()
-{
-    return "1.0";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "MultiThreading SOFA Framework";
-}
-
-const char* getModuleComponentList()
-{
-    return "DataExchange, AnimationLoopParallelScheduler ";
-}
-
-}
+} //component
+} //sofa 
 
 
-// Fix this it doesn't compile with these lines !!
-//#ifdef SOFA_HAVE_BOOST
-//SOFA_LINK_CLASS(AnimationLoopParallelScheduler)
-//#endif
-//SOFA_LINK_CLASS(DataExchange)
+#endif /* PLUGIN_XICATH_INIT_H */
