@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 0 0" time="0" animate="0"   >
+    <RequiredPlugin name="SofaPython" pluginName="SofaPython" />
+	
+    <PythonScriptController filename="test1.py" classname="Test1"/>
+    <OglModel  name="VisualSnake" fileMesh="mesh/snake_body.obj"   />       
+</Node>
