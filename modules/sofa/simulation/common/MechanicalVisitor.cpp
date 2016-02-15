@@ -1637,7 +1637,7 @@ Visitor::Result MechanicalPickParticlesWithTagsVisitor::fwdMechanicalState(simul
 {
 	//    std::cerr << "MechanicalPickParticlesVisitor::fwdMechanicalState, Picking particles on state " << mm->getName() << " within radius " << radius0 << " + dist * " << dRadius << std::endl;
 	bool tagOk = mustContainAllTags || tags.empty();
-	for(auto tagIt = tags.begin(); tags.end() != tagIt; ++tagIt)
+    for(std::list<sofa::core::objectmodel::Tag>::const_iterator tagIt = tags.begin(); tags.end() != tagIt; ++tagIt)
 	{
 		if (!mm->hasTag(*tagIt)) // picking disabled for this model
 		{
