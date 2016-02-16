@@ -9,7 +9,7 @@
   <BruteForceDetection />
 <!--   <DiscreteIntersection/> -->
   <NewProximityIntersection alarmDistance=".5" contactDistance=".05" />
-  <DefaultContactManager response="PenalityCompliantContact" responseParams="stiffness=1e10"  />
+  <DefaultContactManager response="PenaltyCompliantContact" responseParams="stiffness=1e5"  />
 
   <CompliantImplicitSolver stabilization="0" />
   <LDLTSolver/>
