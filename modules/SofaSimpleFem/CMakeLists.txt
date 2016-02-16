@@ -2,40 +2,18 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaSimpleFem)
 
 set(HEADER_FILES
-    BeamFEMForceField.h
-    BeamFEMForceField.inl
-    HexahedralFEMForceField.h
-    HexahedralFEMForceField.inl
-    HexahedralFEMForceFieldAndMass.h
-    HexahedralFEMForceFieldAndMass.inl
     HexahedronFEMForceField.h
     HexahedronFEMForceField.inl
-    HexahedronFEMForceFieldAndMass.h
-    HexahedronFEMForceFieldAndMass.inl
-    LengthContainer.h
-    PoissonContainer.h
-    RadiusContainer.h
-    StiffnessContainer.h
-    TetrahedralCorotationalFEMForceField.h
-    TetrahedralCorotationalFEMForceField.inl
     TetrahedronFEMForceField.h
     TetrahedronFEMForceField.inl
-    TriangularFEMForceFieldOptim.h
-    TriangularFEMForceFieldOptim.inl
     config.h
     initSimpleFEM.h
 )
 
 set(SOURCE_FILES
     initSimpleFEM.cpp
-    BeamFEMForceField.cpp
-    HexahedralFEMForceField.cpp
-    HexahedralFEMForceFieldAndMass.cpp
     HexahedronFEMForceField.cpp
-    HexahedronFEMForceFieldAndMass.cpp
-    TetrahedralCorotationalFEMForceField.cpp
     TetrahedronFEMForceField.cpp
-    TriangularFEMForceFieldOptim.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

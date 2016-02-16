@@ -55,7 +55,7 @@ using sofa::simulation::Node;
 #include <SofaComponentAdvanced/initComponentAdvanced.h>
 #include <SofaComponentMisc/initComponentMisc.h>
 
-#include <SofaLoader/ReadState.h>
+#include <SofaGeneralLoader/ReadState.h>
 #include <SofaValidation/CompareState.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/cast.h>

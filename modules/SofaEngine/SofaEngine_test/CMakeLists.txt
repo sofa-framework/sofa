@@ -4,15 +4,9 @@ project(SofaEngine_test)
 
 
 set(HEADER_FILES
-
-    TestEngine.h
         )
 
-set(SOURCE_FILES
-
-    TestEngine.cpp
-	Engine_test.cpp
-	TransformEngine_test.cpp)
+set(SOURCE_FILES)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)

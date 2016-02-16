@@ -29,7 +29,7 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <SofaSimpleFem/RadiusContainer.h>
+#include <SofaGeneralSimpleFem/RadiusContainer.h>
 #include <vector>
 
 namespace sofa

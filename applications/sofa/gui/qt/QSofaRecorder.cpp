@@ -34,7 +34,7 @@
 #include <sofa/simulation/common/WriteStateVisitor.h>
 #include <sofa/simulation/common/UpdateContextVisitor.h>
 
-#include <SofaLoader/ReadState.h>
+#include <SofaGeneralLoader/ReadState.h>
 #include <SofaExporter/WriteState.h>
 
 #include <sofa/helper/system/SetDirectory.h>

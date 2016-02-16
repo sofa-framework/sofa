@@ -28,7 +28,7 @@
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/helper/FnDispatcher.inl>
 #include <SofaExplicitOdeSolver/EulerSolver.h>
-#include <SofaExplicitOdeSolver/RungeKutta4Solver.h>
+#include <SofaGeneralExplicitOdeSolver/RungeKutta4Solver.h>
 #include <SofaImplicitOdeSolver/StaticSolver.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
