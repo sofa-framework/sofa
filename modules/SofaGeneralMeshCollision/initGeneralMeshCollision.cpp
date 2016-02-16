@@ -32,7 +32,7 @@ namespace component
 {
 
 
-void initMeshCollision()
+void initGeneralMeshCollision()
 {
     static bool first = true;
     if (first)

@@ -24,6 +24,16 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 #include <SofaComponentGeneral/initComponentGeneral.h>
+
+#include <SofaGeneralAnimationLoop/initGeneralAnimationLoop.h>
+#include <SofaGeneralDeformable/initGeneralDeformable.h>
+#include <SofaGeneralExplicitOdeSolver/initGeneralExplicitOdeSolver.h>
+#include <SofaGeneralImplicitOdeSolver/initGeneralImplicitOdeSolver.h>
+#include <SofaGeneralLoader/initGeneralLoader.h>
+#include <SofaGeneralMeshCollision/initGeneralMeshCollision.h>
+#include <SofaGeneralObjectInteraction/initGeneralObjectInteraction.h>
+#include <SofaGeneralRigid/initGeneralRigid.h>
+#include <SofaGeneralSimpleFem/initGeneralSimpleFem.h>
 #include <SofaValidation/initValidation.h>
 #include <SofaExporter/initExporter.h>
 #include <SofaEngine/initEngine.h>
@@ -64,6 +74,16 @@ void initComponentGeneral()
         first = false;
     }
 
+
+    initGeneralAnimationLoop();
+    initGeneralDeformable();
+    initGeneralExplicitODESolver();
+    initGeneralImplicitODESolver();
+    initGeneralLoader();
+    initGeneralMeshCollision();
+    initGeneralObjectInteraction();
+    initGeneralRigid();
+    initGeneralSimpleFEM();
     initValidation();
     initExporter();
     initEngine();

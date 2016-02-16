@@ -14,7 +14,6 @@ install(FILES "${CMAKE_BINARY_DIR}/include/SofaBase/config.h" DESTINATION "inclu
 ### Subdirectories
 
 set(SOFABASE_TARGETS
-    SofaBaseAnimationLoop
     SofaBaseCollision
     SofaBaseLinearSolver
     SofaBaseMechanics

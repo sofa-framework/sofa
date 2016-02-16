@@ -22,18 +22,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseAnimationLoop/MultiTagAnimationLoop.h>
+#include <SofaGeneralAnimationLoop/MultiStepAnimationLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/common/UpdateMappingEndEvent.h>
+#include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
 #include <sofa/simulation/common/PropagateEventVisitor.h>
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/common/UpdateContextVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
-#include <sofa/simulation/common/UpdateMappingEndEvent.h>
-#include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
 #include <math.h>
 #include <iostream>
 
@@ -49,35 +49,30 @@ namespace component
 namespace animationloop
 {
 
-int MultiTagAnimationLoopClass = core::RegisterObject("Simple animation loop that given a list of tags, animate the graph one tag after another.")
-        .add< MultiTagAnimationLoop >()
-        .addAlias("MultiTagMasterSolver")
+int MultiStepAnimationLoopClass = core::RegisterObject("Multi steps animation loop, multi integration steps in a single animation step are managed.")
+        .add< MultiStepAnimationLoop >()
+        .addAlias("MultiStepMasterSolver")
         ;
 
-SOFA_DECL_CLASS(MultiTagAnimationLoop);
+SOFA_DECL_CLASS(MultiStepAnimationLoop);
 
-MultiTagAnimationLoop::MultiTagAnimationLoop(simulation::Node* gnode)
+MultiStepAnimationLoop::MultiStepAnimationLoop(simulation::Node* gnode)
     : Inherit(gnode)
+    , collisionSteps( initData(&collisionSteps,1,"collisionSteps", "number of collision steps between each frame rendering") )
+    , integrationSteps( initData(&integrationSteps,1,"integrationSteps", "number of integration steps between each collision detection") )
 {
 }
 
-MultiTagAnimationLoop::~MultiTagAnimationLoop()
+MultiStepAnimationLoop::~MultiStepAnimationLoop()
 {
 }
 
-void MultiTagAnimationLoop::init()
+void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
 {
-    tagList = this->getTags();
-    sofa::core::objectmodel::TagSet::iterator it;
-
-    for (it = tagList.begin(); it != tagList.end(); ++it)
-        this->removeTag (*it);
-}
+    if (dt == 0)
+        dt = this->gnode->getDt();
 
 
-
-void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
-{
     sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("Step");
@@ -94,27 +89,28 @@ void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
     BehaviorUpdatePositionVisitor beh(params , dt);
     this->gnode->execute ( beh );
 
-    sofa::core::objectmodel::TagSet::iterator it;
+    const int ncollis = collisionSteps.getValue();
+    const int ninteg = integrationSteps.getValue();
 
-    for (it = tagList.begin(); it != tagList.end(); ++it)
+    SReal stepDt = dt / (ncollis * ninteg);
+    for (int c = 0; c < ncollis; ++c)
     {
-        this->addTag (*it);
-
-        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, begin constraints reset" << sendl;
+        // First we reset the constraints
         sofa::simulation::MechanicalResetConstraintVisitor(params).execute(this->getContext());
-        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end constraints reset" << sendl;
-        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, begin collision for tag: "<< *it << sendl;
+        // Then do collision detection and response creation
+        sout << "collision" << sendl;
         computeCollision(params);
-        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end collision" << sendl;
-        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, begin integration  for tag: "<< *it << sendl;
-        integrate(params, dt);
-        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end integration" << sendl;
+        for (int i = 0; i < ninteg; ++i)
+        {
+            // Then integrate the time step
+            sout << "integration at time = " << startTime+i*stepDt << sendl;
+            integrate(params, stepDt);
 
-        this->removeTag (*it);
+            this->gnode->setTime ( startTime + (i+1)*stepDt );
+            this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
+        }
     }
 
-    this->gnode->setTime ( startTime + dt );
-    this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
 
     {
         AnimateEndEvent ev ( dt );
@@ -144,20 +140,6 @@ void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
 
     sofa::helper::AdvancedTimer::stepEnd("AnimationStep");
 }
-
-void MultiTagAnimationLoop::clear()
-{
-    if (!tagList.empty())
-    {
-        sofa::core::objectmodel::TagSet::iterator it;
-        for (it = tagList.begin(); it != tagList.end(); ++it)
-            this->addTag (*it);
-
-        tagList.clear();
-    }
-}
-
-
 
 } // namespace animationloop
 

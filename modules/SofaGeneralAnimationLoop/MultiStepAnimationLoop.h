@@ -22,15 +22,53 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_BASE_ANIMATION_LOOP_BASE_ANIMATION_LOOP_H
-#define SOFA_BASE_ANIMATION_LOOP_BASE_ANIMATION_LOOP_H
+#ifndef SOFA_COMPONENT_ANIMATIONLOOP_MULTISTEPANIMATIONLOOP_H
+#define SOFA_COMPONENT_ANIMATIONLOOP_MULTISTEPANIMATIONLOOP_H
+#include "config.h"
 
-#include <sofa/helper/system/config.h>
+#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/simulation/common/CollisionAnimationLoop.h>
 
-#ifdef SOFA_BUILD_BASE_ANIMATION_LOOP
-#  define SOFA_BASE_ANIMATION_LOOP_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_BASE_ANIMATION_LOOP_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofa
+{
 
-#endif
+namespace component
+{
+
+namespace animationloop
+{
+
+class SOFA_GENERAL_ANIMATION_LOOP_API MultiStepAnimationLoop : public sofa::simulation::CollisionAnimationLoop
+{
+public:
+    typedef sofa::simulation::CollisionAnimationLoop Inherit;
+    SOFA_CLASS(MultiStepAnimationLoop, sofa::simulation::CollisionAnimationLoop);
+protected:
+    MultiStepAnimationLoop(simulation::Node* gnode);
+
+    virtual ~MultiStepAnimationLoop();
+public:
+    virtual void step (const sofa::core::ExecParams* params, SReal dt);
+
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
+    {
+        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
+        return obj;
+    }
+
+    Data<int> collisionSteps;
+    Data<int> integrationSteps;
+};
+
+} // namespace animationloop
+
+} // namespace component
+
+} // namespace sofa
+
+#endif /* SOFA_COMPONENT_ANIMATIONLOOP_MULTISTEPANIMATIONLOOP_H */

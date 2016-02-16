@@ -28,7 +28,6 @@
 #include <SofaBaseMechanics/initBaseMechanics.h>
 #include <SofaBaseCollision/initBaseCollision.h>
 #include <SofaBaseLinearSolver/initBaseLinearSolver.h>
-#include <SofaBaseAnimationLoop/initBaseAnimationLoop.h>
 #include <SofaBaseVisual/initBaseVisual.h>
 
 #include "messageHandlerComponent.h"
@@ -51,7 +50,6 @@ void initComponentBase()
         initBaseMechanics();
         initBaseCollision();
         initBaseLinearSolver();
-        initBaseAnimationLoop();
         initBaseVisual();
         first = false;
     }
