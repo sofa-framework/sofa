@@ -55,6 +55,10 @@ set(HEADER_FILES
     ScriptFunction.h
 )
 
+if(SOFA_USE_C++11)
+    list(APPEND HEADER_FILES PythonScriptHelper.h)
+endif()
+
 set(SOURCE_FILES
     Binding.cpp
     Binding_Base.cpp
