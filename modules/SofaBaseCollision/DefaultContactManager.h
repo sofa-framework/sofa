@@ -87,6 +87,7 @@ public:
         return obj;
     }
 
+    void reset();
     void cleanup();
 
     virtual std::string getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2);
