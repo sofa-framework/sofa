@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-#include <SofaBaseAnimationLoop/initBaseAnimationLoop.h>
+#include <SofaGeneralAnimationLoop/initGeneralAnimationLoop.h>
 
 
 namespace sofa
@@ -33,7 +33,7 @@ namespace component
 {
 
 
-void initBaseAnimationLoop()
+void initGeneralAnimationLoop()
 {
     static bool first = true;
     if (first)

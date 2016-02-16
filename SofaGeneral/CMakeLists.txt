@@ -22,6 +22,7 @@ install(FILES "${CMAKE_BINARY_DIR}/include/SofaGeneral/config.h" DESTINATION "in
 ### Subdirectories
 
 set(SOFAGENERAL_TARGETS
+    SofaGeneralAnimationLoop
     SofaGeneralDeformable
     SofaGeneralExplicitOdeSolver
     SofaGeneralImplicitOdeSolver

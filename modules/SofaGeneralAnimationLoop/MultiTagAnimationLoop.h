@@ -22,17 +22,59 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseAnimationLoop/BaseAnimationLoop.h>
-#include <sofa/core/Plugin.h>
+#ifndef SOFA_COMPONENT_ANIMATIONLOOP_MULTITAGANIMATIONLOOP_H
+#define SOFA_COMPONENT_ANIMATIONLOOP_MULTITAGANIMATIONLOOP_H
+#include "config.h"
 
-class BaseAnimationLoopPlugin: public sofa::core::Plugin {
+#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/simulation/common/CollisionAnimationLoop.h>
+
+namespace sofa
+{
+
+namespace component
+{
+
+namespace animationloop
+{
+
+/** Simple animation loop that given a list of tags, animate the graph one tag after another.
+*/
+class SOFA_GENERAL_ANIMATION_LOOP_API MultiTagAnimationLoop : public sofa::simulation::CollisionAnimationLoop
+{
 public:
-    BaseAnimationLoopPlugin(): Plugin("BaseAnimationLoop") {
-        setDescription("");
-        setVersion("");
-        setLicense("LGPL");
-        setAuthors("The SOFA Team");
+    typedef sofa::simulation::CollisionAnimationLoop Inherit;
+    SOFA_CLASS(MultiTagAnimationLoop,sofa::simulation::CollisionAnimationLoop);
+
+    MultiTagAnimationLoop(simulation::Node* gnode);
+
+    virtual void init();
+
+    virtual void clear();
+
+    virtual ~MultiTagAnimationLoop();
+
+    virtual void step (const sofa::core::ExecParams* params, SReal dt);
+
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
+    {
+        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
+        return obj;
     }
+
+private:
+    sofa::core::objectmodel::TagSet tagList;
 };
 
-SOFA_PLUGIN(BaseAnimationLoopPlugin);
+} // namespace animationloop
+
+} // namespace component
+
+} // namespace sofa
+
+#endif /* SOFA_COMPONENT_ANIMATIONLOOP_MULTITAGANIMATIONLOOP_H */
