@@ -22,7 +22,7 @@ DiagonalCompliance<DataTypes>::DiagonalCompliance( core::behavior::MechanicalSta
     , diagonal( initData(&diagonal, 
                          "compliance", 
                          "Compliance value diagonally applied to all the DOF."))
-    , damping( initData(&damping, "damping", "uniform viscous damping."))
+    , damping( initData(&damping, "damping", "viscous damping."))
 {
 	this->isCompliance.setValue(true);
     editOnly(damping)->push_back(0);
