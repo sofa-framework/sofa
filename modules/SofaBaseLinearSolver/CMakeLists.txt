@@ -2,13 +2,9 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaBaseLinearSolver)
 
 set(HEADER_FILES
-    BTDLinearSolver.h
-    BTDLinearSolver.inl
     BlocMatrixWriter.h
     CGLinearSolver.h
     CGLinearSolver.inl
-    CholeskySolver.h
-    CholeskySolver.inl
     CompressedRowSparseMatrix.h
     CompressedRowSparseMatrix.inl
     DefaultMultiMatrixAccessor.h
@@ -19,8 +15,6 @@ set(HEADER_FILES
     MatrixExpr.h
     MatrixLinearSolver.h
     MatrixLinearSolver.inl
-    MinResLinearSolver.h
-    MinResLinearSolver.inl
     SingleMatrixAccessor.h
     SparseMatrix.h
     config.h
@@ -29,14 +23,11 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    BTDLinearSolver.cpp
     CGLinearSolver.cpp
-    CholeskySolver.cpp
     DefaultMultiMatrixAccessor.cpp
     FullVector.cpp
     GraphScatteredTypes.cpp
     MatrixLinearSolver.cpp
-    MinResLinearSolver.cpp
     SingleMatrixAccessor.cpp
     initBaseLinearSolver.cpp
 )

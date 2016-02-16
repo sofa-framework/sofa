@@ -26,7 +26,7 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 
-#include <SofaBaseLinearSolver/BTDLinearSolver.inl>
+#include <SofaGeneralLinearSolver/BTDLinearSolver.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 

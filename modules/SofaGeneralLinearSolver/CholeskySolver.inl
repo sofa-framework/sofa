@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_CholeskySolver_INL
 #define SOFA_COMPONENT_LINEARSOLVER_CholeskySolver_INL
 
-#include <SofaBaseLinearSolver/CholeskySolver.h>
+#include <SofaGeneralLinearSolver/CholeskySolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>

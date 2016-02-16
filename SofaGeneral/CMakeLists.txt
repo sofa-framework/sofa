@@ -26,6 +26,7 @@ set(SOFAGENERAL_TARGETS
     SofaGeneralDeformable
     SofaGeneralExplicitOdeSolver
     SofaGeneralImplicitOdeSolver
+    SofaGeneralLinearSolver
     SofaGeneralLoader
     SofaGeneralMeshCollision
     SofaGeneralObjectInteraction

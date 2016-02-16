@@ -24,7 +24,7 @@
 ******************************************************************************/
 // Author: Matthieu Nesme, INRIA, (C) 2012
 #define SOFA_COMPONENT_LINEARSOLVER_MINRESLINEARSOLVER_CPP
-#include <SofaBaseLinearSolver/MinResLinearSolver.inl>
+#include <SofaGeneralLinearSolver/MinResLinearSolver.inl>
 
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
