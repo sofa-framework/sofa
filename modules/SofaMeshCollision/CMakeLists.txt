@@ -7,13 +7,9 @@ set(HEADER_FILES
     BarycentricPenalityContact.h
     BarycentricPenalityContact.inl
     CollisionPM.h
-    DirectSAP.h
-    DirectSAP.inl
     EndPoint.h
     IdentityContactMapper.h
     IdentityContactMapper.inl
-    IncrSAP.h
-    IncrSAP.inl
     IntrMeshUtility.h
     IntrMeshUtility.inl
     IntrTriangleOBB.h
@@ -23,11 +19,8 @@ set(HEADER_FILES
     LineModel.h
     LineModel.inl
     LocalMinDistanceFilter.h
-    MeshDiscreteIntersection.h
-    MeshDiscreteIntersection.inl
     MeshIntTool.h
     MeshIntTool.inl
-    MeshMinProximityIntersection.h
     MeshNewProximityIntersection.h
     MeshNewProximityIntersection.inl
     Point.h
@@ -37,14 +30,10 @@ set(HEADER_FILES
     RayTriangleIntersection.h
     RigidContactMapper.h
     RigidContactMapper.inl
-    SubsetContactMapper.h
-    SubsetContactMapper.inl
     Triangle.h
     TriangleLocalMinDistanceFilter.h
     TriangleModel.h
     TriangleModel.inl
-    TriangleOctree.h
-    TriangleOctreeModel.h
     config.h
     initMeshCollision.h
 )
@@ -52,27 +41,20 @@ set(HEADER_FILES
 set(SOURCE_FILES
     BarycentricContactMapper.cpp
     BarycentricPenalityContact.cpp
-    DirectSAP.cpp
     IdentityContactMapper.cpp
-    IncrSAP.cpp
     IntrMeshUtility.cpp
     IntrTriangleOBB.cpp
     LineLocalMinDistanceFilter.cpp
     LineModel.cpp
     LocalMinDistanceFilter.cpp
-    MeshDiscreteIntersection.cpp
     MeshIntTool.cpp
-    MeshMinProximityIntersection.cpp
     MeshNewProximityIntersection.cpp
     PointLocalMinDistanceFilter.cpp
     PointModel.cpp
     RayTriangleIntersection.cpp
     RigidContactMapper.cpp
-    SubsetContactMapper.cpp
     TriangleLocalMinDistanceFilter.cpp
     TriangleModel.cpp
-    TriangleOctree.cpp
-    TriangleOctreeModel.cpp
     initMeshCollision.cpp
 )
 

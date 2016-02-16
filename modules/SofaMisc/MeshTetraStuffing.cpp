@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <SofaMeshCollision/TriangleOctree.h>
+#include <SofaGeneralMeshCollision/TriangleOctree.h>
 #include <SofaMeshCollision/RayTriangleIntersection.h>
 
 #include <iostream>

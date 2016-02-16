@@ -2,26 +2,14 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaObjectInteraction)
 
 set(HEADER_FILES
-    AttachConstraint.h
-    AttachConstraint.inl
-    BoxStiffSpringForceField.h
-    BoxStiffSpringForceField.inl
-    InteractionEllipsoidForceField.h
-    InteractionEllipsoidForceField.inl
     PenalityContactForceField.h
     PenalityContactForceField.inl
-    RepulsiveSpringForceField.h
-    RepulsiveSpringForceField.inl
     config.h
     initObjectInteraction.h
 )
 
 set(SOURCE_FILES
-    AttachConstraint.cpp
-    BoxStiffSpringForceField.cpp
-    InteractionEllipsoidForceField.cpp
     PenalityContactForceField.cpp
-    RepulsiveSpringForceField.cpp
     initObjectInteraction.cpp
 )
 

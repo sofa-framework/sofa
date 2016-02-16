@@ -2,19 +2,13 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaExplicitOdeSolver)
 
 set(HEADER_FILES
-    CentralDifferenceSolver.h
     EulerSolver.h
-    RungeKutta2Solver.h
-    RungeKutta4Solver.h
     config.h
     initExplicitODESolver.h
 )
 
 set(SOURCE_FILES
-    CentralDifferenceSolver.cpp
     EulerSolver.cpp
-    RungeKutta2Solver.cpp
-    RungeKutta4Solver.cpp
     initExplicitODESolver.cpp
 )
 

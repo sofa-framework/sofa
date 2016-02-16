@@ -17,6 +17,7 @@ install(FILES "${CMAKE_BINARY_DIR}/include/SofaCommon/config.h" DESTINATION "inc
 set(SOFACOMMON_TARGETS
     SofaComponentCommon
     SofaDeformable
+    SofaEngine
     SofaExplicitOdeSolver
     SofaImplicitOdeSolver
     SofaLoader

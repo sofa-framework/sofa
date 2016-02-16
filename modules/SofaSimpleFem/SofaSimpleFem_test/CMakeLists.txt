@@ -3,9 +3,7 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaSimpleFem_test)
 
 set(SOURCE_FILES
-    AffinePatch_test.cpp
     HexahedronFEMForceField_test.cpp
-    LinearElasticity_test.cpp
     TetrahedronFEMForceField_test.cpp
 )
 

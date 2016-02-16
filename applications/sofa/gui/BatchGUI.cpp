@@ -117,7 +117,7 @@ void BatchGUI::startDumpVisitor()
     if (root)
     {
         m_dumpVisitorStream.str("");
-        Visitor::startDumpVisitor(&m_dumpVisitorStream, root->getTime());
+        sofa::simulation::Visitor::startDumpVisitor(&m_dumpVisitorStream, root->getTime());
     }
 #endif
 }
@@ -125,7 +125,7 @@ void BatchGUI::startDumpVisitor()
 void BatchGUI::stopDumpVisitor()
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
-    Visitor::stopDumpVisitor();
+    sofa::simulation::Visitor::stopDumpVisitor();
     m_dumpVisitorStream.flush();
     m_dumpVisitorStream.str("");
 #endif

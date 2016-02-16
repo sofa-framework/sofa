@@ -42,7 +42,7 @@ namespace sofa
 {
 
 namespace component
-{
+{ 
 
 namespace odesolver
 {

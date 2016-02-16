@@ -2,35 +2,20 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaRigid)
 
 set(HEADER_FILES
-    ArticulatedHierarchyContainer.h
-    ArticulatedHierarchyContainer.inl
-    ArticulatedSystemMapping.h
-    ArticulatedSystemMapping.inl
     JointSpringForceField.h
     JointSpringForceField.inl
-    LaparoscopicRigidMapping.h
-    LaparoscopicRigidMapping.inl
-    LineSetSkinningMapping.h
-    LineSetSkinningMapping.inl
     RigidMapping.h
     RigidMapping.inl
     RigidRigidMapping.h
     RigidRigidMapping.inl
-    SkinningMapping.h
-    SkinningMapping.inl
     config.h
     initRigid.h
 )
 
 set(SOURCE_FILES
-    ArticulatedHierarchyContainer.cpp
-    ArticulatedSystemMapping.cpp
     JointSpringForceField.cpp
-    LaparoscopicRigidMapping.cpp
-    LineSetSkinningMapping.cpp
     RigidMapping.cpp
     RigidRigidMapping.cpp
-    SkinningMapping.cpp
     initRigid.cpp
 )
 
