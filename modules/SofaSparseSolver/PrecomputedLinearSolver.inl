@@ -51,7 +51,7 @@
 #include <SofaSparseSolver/SparseCholeskySolver.h>
 #endif
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-#include <SofaBaseLinearSolver/CholeskySolver.h>
+#include <SofaGeneralLinearSolver/CholeskySolver.h>
 
 namespace sofa
 {

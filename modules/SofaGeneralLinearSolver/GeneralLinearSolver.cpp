@@ -22,35 +22,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: Hadrien Courtecuisse
-//
-// Copyright: See COPYING file that comes with this distribution
-#include <SofaGeneralLinearSolver/CholeskySolver.inl>
-#include <SofaDenseSolver/NewMatMatrix.h>
+#include <SofaGeneralLinearSolver/GeneralLinearSolver.h>
+#include <sofa/core/Plugin.h>
 
-#include <sofa/core/ObjectFactory.h>
+class GeneralLinearSolverPlugin: public sofa::core::Plugin {
+public:
+    GeneralLinearSolverPlugin(): Plugin("GeneralLinearSolver") {
+        setDescription("");
+        setVersion("");
+        setLicense("LGPL");
+        setAuthors("The SOFA Team");
+    }
+};
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
-{
-
-
-//SOFA_DECL_CLASS(CholeskySolver)
-
-int NewMatCholeskySolverClass = core::RegisterObject("NewMat direct linear solver based on Cholesky factorization, for dense matrices")
-//.add< CholeskySolver< NewMatBandMatrix, NewMatVector > >(true)
-//.add< CholeskySolver< NewMatMatrix, NewMatVector > >()
-        .add< CholeskySolver< NewMatSymmetricMatrix, NewMatVector > >()
-//.add< CholeskySolver< NewMatSymmetricBandMatrix, NewMatVector > >()
-        ;
-
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
+SOFA_PLUGIN(GeneralLinearSolverPlugin);
