@@ -25,6 +25,7 @@
 #include "init.h"
 
 #include <sofa/helper/system/console.h>
+#include <sofa/helper/logging/Messaging.h>
 
 #include <iostream>
 
@@ -67,15 +68,15 @@ SOFA_HELPER_API bool isCleanedUp()
 SOFA_HELPER_API void printUninitializedLibraryWarning(const std::string& library,
                                                       const std::string& initFunction)
 {
-    std::cerr << "Warning: the " << library << " library has not been initialized ("
-              << initFunction << " has never been called, see sofa/helper/init.h)" << std::endl;
+    msg_warning("Helper") << "the " << library << " library has not been initialized ("
+              << initFunction << " has never been called, see sofa/helper/init.h)";
 }
 
 SOFA_HELPER_API void printLibraryNotCleanedUpWarning(const std::string& library,
                                                      const std::string& cleanupFunction)
 {
-    std::cerr << "Warning: the " << library << " library has not been cleaned up ("
-              << cleanupFunction << " has never been called, see sofa/helper/init.h)" << std::endl;
+    msg_warning("Helper") << "the " << library << " library has not been cleaned up ("
+              << cleanupFunction << " has never been called, see sofa/helper/init.h)";
 }
 
 // Detect missing cleanup() call.
