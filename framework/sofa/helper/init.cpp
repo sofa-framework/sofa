@@ -68,20 +68,27 @@ SOFA_HELPER_API bool isCleanedUp()
 SOFA_HELPER_API void printUninitializedLibraryWarning(const std::string& library,
                                                       const std::string& initFunction)
 {
-    msg_warning("Helper") << "the " << library << " library has not been initialized ("
+    msg_warning(library) << "the library has not been initialized ("
               << initFunction << " has never been called, see sofa/helper/init.h)";
 }
 
 SOFA_HELPER_API void printLibraryNotCleanedUpWarning(const std::string& library,
                                                      const std::string& cleanupFunction)
 {
-    msg_warning("Helper") << "the " << library << " library has not been cleaned up ("
+    msg_warning(library) << "the library has not been cleaned up ("
               << cleanupFunction << " has never been called, see sofa/helper/init.h)";
 }
 
 // Detect missing cleanup() call.
-struct CleanupCheck
+static const struct CleanupCheck
 {
+    CleanupCheck()
+    {
+        // to make sure the static variable is created before this
+        // and so will be deleted after (at least in c++11)
+        // such as an eventual message is possible during this' destructor
+        logging::MessageDispatcher::getHandlers();
+    }
     ~CleanupCheck()
     {
         if (helper::isInitialized() && !helper::isCleanedUp())
