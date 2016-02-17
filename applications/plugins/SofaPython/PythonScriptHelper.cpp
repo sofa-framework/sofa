@@ -79,6 +79,15 @@ void PythonScript_pyObjectToValue(PyObject* pyObject, int & val)
         SP_MESSAGE_ERROR("Cannot convert pyObject to int");
 }
 
+void PythonScript_pyObjectToValue(PyObject* pyObject, float & val)
+{
+    if (!pyObject) return;
+    if(PyFloat_Check(pyObject))
+        val = (float)PyFloat_AS_DOUBLE(pyObject);
+    else
+        SP_MESSAGE_ERROR("Cannot convert pyObject to float");
+}
+
 void PythonScript_pyObjectToValue(PyObject* pyObject, double & val)
 {
     if (!pyObject) return;
@@ -86,6 +95,14 @@ void PythonScript_pyObjectToValue(PyObject* pyObject, double & val)
         val = PyFloat_AS_DOUBLE(pyObject);
     else
         SP_MESSAGE_ERROR("Cannot convert pyObject to double");
+}
+void PythonScript_pyObjectToValue(PyObject* pyObject, std::string & val)
+{
+    if (!pyObject) return;
+    if(PyString_Check(pyObject))
+        val = PyString_AS_STRING(pyObject);
+    else
+        SP_MESSAGE_ERROR("Cannot convert pyObject to std::string");
 }
 
 }  // namespase internal
