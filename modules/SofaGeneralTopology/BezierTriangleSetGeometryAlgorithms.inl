@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_BEZIERTRIANGLESETGEOMETRYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_BEZIERTRIANGLESETGEOMETRYALGORITHMS_INL
 
-#include <SofaBaseTopology/BezierTriangleSetGeometryAlgorithms.h>
+#include <SofaGeneralTopology/BezierTriangleSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
 #include <sofa/helper/rmath.h>

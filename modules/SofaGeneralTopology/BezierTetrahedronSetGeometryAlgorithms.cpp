@@ -22,55 +22,54 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaBaseTopology/initBaseTopology.h>
-
-
+#define SOFA_COMPONENT_TOPOLOGY_BEZIERTETRAHEDRONSETGEOMETRYALGORITHMS_CPP
+#include <SofaGeneralTopology/BezierTetrahedronSetGeometryAlgorithms.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/core/ObjectFactory.h>
 namespace sofa
 {
 
 namespace component
 {
 
-
-void initBaseTopology()
+namespace topology
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
+using namespace sofa::defaulttype;
+SOFA_DECL_CLASS(BezierTetrahedronSetGeometryAlgorithms)
+int BezierTetrahedronSetGeometryAlgorithmsClass = core::RegisterObject("Bezier Tetrahedron set geometry algorithms")
+#ifdef SOFA_FLOAT
+        .add< BezierTetrahedronSetGeometryAlgorithms<Vec3fTypes> >(true) // default template
+#else
+        .add< BezierTetrahedronSetGeometryAlgorithms<Vec3dTypes> >(true) // default template
+#ifndef SOFA_DOUBLE
+        .add< BezierTetrahedronSetGeometryAlgorithms<Vec3fTypes> >() // default template
+#endif
+#endif
+#ifndef SOFA_FLOAT
+        .add< BezierTetrahedronSetGeometryAlgorithms<Vec2dTypes> >()
+        .add< BezierTetrahedronSetGeometryAlgorithms<Vec1dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< BezierTetrahedronSetGeometryAlgorithms<Vec2fTypes> >()
+        .add< BezierTetrahedronSetGeometryAlgorithms<Vec1fTypes> >()
+#endif
+        ;
 
-SOFA_LINK_CLASS(EdgeSetGeometryAlgorithms)
-SOFA_LINK_CLASS(EdgeSetTopologyAlgorithms)
-SOFA_LINK_CLASS(EdgeSetTopologyContainer)
-SOFA_LINK_CLASS(EdgeSetTopologyModifier)
-SOFA_LINK_CLASS(GridTopology)
-SOFA_LINK_CLASS(HexahedronSetGeometryAlgorithms)
-SOFA_LINK_CLASS(HexahedronSetTopologyAlgorithms)
-SOFA_LINK_CLASS(HexahedronSetTopologyContainer)
-SOFA_LINK_CLASS(HexahedronSetTopologyModifier)
-SOFA_LINK_CLASS(MeshTopology)
-SOFA_LINK_CLASS(PointSetGeometryAlgorithms)
-SOFA_LINK_CLASS(PointSetTopologyAlgorithms)
-SOFA_LINK_CLASS(PointSetTopologyContainer)
-SOFA_LINK_CLASS(PointSetTopologyModifier)
-SOFA_LINK_CLASS(QuadSetGeometryAlgorithms)
-SOFA_LINK_CLASS(QuadSetTopologyAlgorithms)
-SOFA_LINK_CLASS(QuadSetTopologyContainer)
-SOFA_LINK_CLASS(QuadSetTopologyModifier)
-SOFA_LINK_CLASS(RegularGridTopology)
-SOFA_LINK_CLASS(SparseGridTopology)
-SOFA_LINK_CLASS(TetrahedronSetGeometryAlgorithms)
-SOFA_LINK_CLASS(TetrahedronSetTopologyAlgorithms)
-SOFA_LINK_CLASS(TetrahedronSetTopologyContainer)
-SOFA_LINK_CLASS(TetrahedronSetTopologyModifier)
-SOFA_LINK_CLASS(TriangleSetGeometryAlgorithms)
-SOFA_LINK_CLASS(TriangleSetTopologyAlgorithms)
-SOFA_LINK_CLASS(TriangleSetTopologyContainer)
-SOFA_LINK_CLASS(TriangleSetTopologyModifier)
+#ifndef SOFA_FLOAT
+template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<Vec3dTypes>;
+template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<Vec2dTypes>;
+template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<Vec1dTypes>;
+#endif
+
+#ifndef SOFA_DOUBLE
+template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<Vec3fTypes>;
+template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<Vec2fTypes>;
+template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<Vec1fTypes>;
+#endif
+
+} // namespace topology
 
 } // namespace component
 
 } // namespace sofa
+

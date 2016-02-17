@@ -27,7 +27,7 @@
 #include "config.h"
 
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/BezierTetrahedronSetTopologyContainer.h>
+#include <SofaGeneralTopology/BezierTetrahedronSetTopologyContainer.h>
 
 
 namespace sofa

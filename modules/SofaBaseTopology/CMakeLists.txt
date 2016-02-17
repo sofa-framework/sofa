@@ -3,15 +3,7 @@ project(SofaBaseTopology)
 
 
 set(HEADER_FILES
-    BezierTetrahedronSetGeometryAlgorithms.h
-    BezierTetrahedronSetGeometryAlgorithms.inl
-    BezierTetrahedronSetTopologyContainer.h
-    BezierTriangleSetGeometryAlgorithms.h
-    BezierTriangleSetGeometryAlgorithms.inl
-    BezierTriangleSetTopologyContainer.h
     CommonAlgorithms.h
-    CubeTopology.h
-    CylinderGridTopology.h
     EdgeSetGeometryAlgorithms.h
     EdgeSetGeometryAlgorithms.inl
     EdgeSetTopologyAlgorithms.h
@@ -42,7 +34,6 @@ set(HEADER_FILES
     QuadSetTopologyModifier.h
     RegularGridTopology.h
     SparseGridTopology.h
-    SphereQuadTopology.h
     TetrahedronSetGeometryAlgorithms.h
     TetrahedronSetGeometryAlgorithms.inl
     TetrahedronSetTopologyAlgorithms.h
@@ -74,12 +65,6 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    BezierTetrahedronSetGeometryAlgorithms.cpp
-    BezierTetrahedronSetTopologyContainer.cpp
-    BezierTriangleSetGeometryAlgorithms.cpp
-    BezierTriangleSetTopologyContainer.cpp
-    CubeTopology.cpp
-    CylinderGridTopology.cpp
     EdgeSetGeometryAlgorithms.cpp
     EdgeSetTopologyAlgorithms.cpp
     EdgeSetTopologyContainer.cpp
@@ -101,7 +86,6 @@ set(SOURCE_FILES
     QuadSetTopologyModifier.cpp
     RegularGridTopology.cpp
     SparseGridTopology.cpp
-    SphereQuadTopology.cpp
     TetrahedronSetGeometryAlgorithms.cpp
     TetrahedronSetTopologyAlgorithms.cpp
     TetrahedronSetTopologyContainer.cpp

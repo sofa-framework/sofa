@@ -32,6 +32,7 @@ set(SOFAGENERAL_TARGETS
     SofaGeneralObjectInteraction
     SofaGeneralRigid
     SofaGeneralSimpleFem
+    SofaGeneralTopology
     SofaBoundaryCondition
     SofaComponentGeneral
     SofaConstraint

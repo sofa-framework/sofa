@@ -23,8 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaTopologyMapping/Mesh2BezierTopologicalMapping.h>
-#include <SofaBaseTopology/BezierTetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/BezierTriangleSetTopologyContainer.h>
+#include <SofaGeneralTopology/BezierTetrahedronSetTopologyContainer.h>
+#include <SofaGeneralTopology/BezierTriangleSetTopologyContainer.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>

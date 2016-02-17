@@ -22,55 +22,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaBaseTopology/initBaseTopology.h>
+#include <SofaGeneralTopology/BaseTopology.h>
+#include <sofa/core/Plugin.h>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-
-void initBaseTopology()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
+class GeneralTopologyPlugin: public sofa::core::Plugin {
+public:
+    GeneralTopologyPlugin(): Plugin("GeneralTopology") {
+        setDescription("");
+        setVersion("");
+        setLicense("LGPL");
+        setAuthors("The SOFA Team");
     }
-}
+};
 
-SOFA_LINK_CLASS(EdgeSetGeometryAlgorithms)
-SOFA_LINK_CLASS(EdgeSetTopologyAlgorithms)
-SOFA_LINK_CLASS(EdgeSetTopologyContainer)
-SOFA_LINK_CLASS(EdgeSetTopologyModifier)
-SOFA_LINK_CLASS(GridTopology)
-SOFA_LINK_CLASS(HexahedronSetGeometryAlgorithms)
-SOFA_LINK_CLASS(HexahedronSetTopologyAlgorithms)
-SOFA_LINK_CLASS(HexahedronSetTopologyContainer)
-SOFA_LINK_CLASS(HexahedronSetTopologyModifier)
-SOFA_LINK_CLASS(MeshTopology)
-SOFA_LINK_CLASS(PointSetGeometryAlgorithms)
-SOFA_LINK_CLASS(PointSetTopologyAlgorithms)
-SOFA_LINK_CLASS(PointSetTopologyContainer)
-SOFA_LINK_CLASS(PointSetTopologyModifier)
-SOFA_LINK_CLASS(QuadSetGeometryAlgorithms)
-SOFA_LINK_CLASS(QuadSetTopologyAlgorithms)
-SOFA_LINK_CLASS(QuadSetTopologyContainer)
-SOFA_LINK_CLASS(QuadSetTopologyModifier)
-SOFA_LINK_CLASS(RegularGridTopology)
-SOFA_LINK_CLASS(SparseGridTopology)
-SOFA_LINK_CLASS(TetrahedronSetGeometryAlgorithms)
-SOFA_LINK_CLASS(TetrahedronSetTopologyAlgorithms)
-SOFA_LINK_CLASS(TetrahedronSetTopologyContainer)
-SOFA_LINK_CLASS(TetrahedronSetTopologyModifier)
-SOFA_LINK_CLASS(TriangleSetGeometryAlgorithms)
-SOFA_LINK_CLASS(TriangleSetTopologyAlgorithms)
-SOFA_LINK_CLASS(TriangleSetTopologyContainer)
-SOFA_LINK_CLASS(TriangleSetTopologyModifier)
-
-} // namespace component
-
-} // namespace sofa
+SOFA_PLUGIN(GeneralTopologyPlugin);

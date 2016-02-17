@@ -31,7 +31,7 @@
 #include <SofaBaseTopology/QuadSetTopologyModifier.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
 #include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
-#include <SofaBaseTopology/BezierTriangleSetTopologyContainer.h>
+#include <SofaGeneralTopology/BezierTriangleSetTopologyContainer.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseTopology/TopologyData.inl>

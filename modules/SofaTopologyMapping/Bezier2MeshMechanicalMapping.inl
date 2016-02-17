@@ -28,8 +28,8 @@
 #include "Bezier2MeshMechanicalMapping.h"
 
 #include <SofaTopologyMapping/Bezier2MeshTopologicalMapping.h>
-#include <SofaBaseTopology/BezierTriangleSetTopologyContainer.h>
-#include <SofaBaseTopology/BezierTriangleSetGeometryAlgorithms.h>
+#include <SofaGeneralTopology/BezierTriangleSetTopologyContainer.h>
+#include <SofaGeneralTopology/BezierTriangleSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
 
 namespace sofa
