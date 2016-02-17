@@ -44,7 +44,9 @@ namespace linearsolver
 
 //#define DISPLAY_TIME
 
-/// Linear system solver using the conjugate gradient iterative algorithm
+/// Linear system solver using the MINRES iterative algorithm
+/// @author Matthieu Nesme
+/// @date 2013
 template<class TMatrix, class TVector>
 class MinResLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix, TVector>
 {

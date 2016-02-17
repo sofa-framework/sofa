@@ -203,8 +203,10 @@ using namespace core::behavior;
     void CompliantImplicitSolver::reset() {
         if( !lagrange.id().isNull() )
         {
-            sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
-            vop.v_clear( lagrange.id() );
+            // warning, vop.v_clear would only clear independent dofs
+            simulation::MechanicalVOpVisitor clearVisitor(core::ExecParams::defaultInstance(), lagrange.id(), core::ConstMultiVecId::null(), core::ConstMultiVecId::null(), 1.0);
+            clearVisitor.mapped = true;
+            send( clearVisitor );
         }
     }
 
