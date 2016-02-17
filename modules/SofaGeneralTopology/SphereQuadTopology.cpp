@@ -22,12 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_SPHEREQUADTOPOLOGY_H
-#define SOFA_COMPONENT_TOPOLOGY_SPHEREQUADTOPOLOGY_H
-#include "config.h"
-
-#include <SofaBaseTopology/CubeTopology.h>
-#include <sofa/defaulttype/Vec.h>
+#include <SofaGeneralTopology/SphereQuadTopology.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/rmath.h>
 
 namespace sofa
 {
@@ -38,21 +36,36 @@ namespace component
 namespace topology
 {
 
-class SOFA_BASE_TOPOLOGY_API SphereQuadTopology : public CubeTopology
-{
-public:
-    SOFA_CLASS(SphereQuadTopology,CubeTopology);
-    typedef sofa::defaulttype::Vector3 Vector3;
-protected:
-    SphereQuadTopology(int nx, int ny, int nz);
-    SphereQuadTopology();
-public:
-    Vector3 getPoint(int x, int y, int z) const;
+using namespace sofa::defaulttype;
 
-protected:
-    Data< Vector3 > center;
-    Data< SReal > radius;
-};
+
+
+SOFA_DECL_CLASS(SphereQuadTopology)
+
+int SphereQuadTopologyClass = core::RegisterObject("Sphere topology constructed with deformed quads")
+        .addAlias("SphereQuad")
+        .add< SphereQuadTopology >()
+        ;
+
+SphereQuadTopology::SphereQuadTopology(int nx, int ny, int nz)
+    : CubeTopology(nx, ny, nz),
+      center(initData(&center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the sphere")),
+      radius(initData(&radius,(SReal)1.0,"radius", "Radius of the sphere"))
+{
+}
+
+SphereQuadTopology::SphereQuadTopology()
+    : center(initData(&center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the sphere")),
+      radius(initData(&radius,(SReal)1.0,"radius", "Radius of the sphere"))
+{
+}
+
+Vector3 SphereQuadTopology::getPoint(int x, int y, int z) const
+{
+    Vector3 p((2*x)/(SReal)(nx.getValue()-1) - 1, (2*y)/(SReal)(ny.getValue()-1) - 1, (2*z)/(SReal)(nz.getValue()-1) - 1);
+    p.normalize();
+    return center.getValue()+p*radius.getValue();
+}
 
 } // namespace topology
 
@@ -60,4 +73,3 @@ protected:
 
 } // namespace sofa
 
-#endif

@@ -36,7 +36,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
-#include <SofaBaseTopology/BezierTetrahedronSetGeometryAlgorithms.h>
+#include <SofaGeneralTopology/BezierTetrahedronSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>

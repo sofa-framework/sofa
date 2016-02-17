@@ -35,6 +35,7 @@
 #include <SofaGeneralObjectInteraction/initGeneralObjectInteraction.h>
 #include <SofaGeneralRigid/initGeneralRigid.h>
 #include <SofaGeneralSimpleFem/initGeneralSimpleFem.h>
+#include <SofaGeneralTopology/initGeneralTopology.h>
 #include <SofaValidation/initValidation.h>
 #include <SofaExporter/initExporter.h>
 #include <SofaEngine/initEngine.h>
@@ -86,6 +87,7 @@ void initComponentGeneral()
     initGeneralObjectInteraction();
     initGeneralRigid();
     initGeneralSimpleFEM();
+    initGeneralTopology();
     initValidation();
     initExporter();
     initEngine();

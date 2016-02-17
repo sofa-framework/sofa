@@ -26,9 +26,9 @@
 #include <SofaTopologyMapping/BezierTetra2BezierTriangleTopologicalMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <SofaBaseTopology/BezierTriangleSetTopologyContainer.h>
+#include <SofaGeneralTopology/BezierTriangleSetTopologyContainer.h>
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
-#include <SofaBaseTopology/BezierTetrahedronSetTopologyContainer.h>
+#include <SofaGeneralTopology/BezierTetrahedronSetTopologyContainer.h>
 #include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/defaulttype/Vec.h>

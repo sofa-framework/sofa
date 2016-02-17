@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_BEZIERTRIANGLESETGEOMETRYALGORITHMS_H
 
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/BezierTriangleSetTopologyContainer.h>
+#include <SofaGeneralTopology/BezierTriangleSetTopologyContainer.h>
 
 
 namespace sofa
