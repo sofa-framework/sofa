@@ -39,66 +39,17 @@ namespace sofa {
 namespace helper {
 
 
-namespace { // anonymous namespase
+namespace internal {
 
-PyObject* PythonScript_valueToPyObject(bool param)
-{
-    PyObject* value = nullptr;
-    value = Py_BuildValue("b", param);
-    return value;
-}
-PyObject* PythonScript_valueToPyObject(int param)
-{
-    PyObject* value = nullptr;
-    value = Py_BuildValue("i", param);
-    return value;
-}
-PyObject* PythonScript_valueToPyObject(unsigned int param)
-{
-    PyObject* value = nullptr;
-    value = Py_BuildValue("UI", param);
-    return value;
-}
-PyObject* PythonScript_valueToPyObject(double param)
-{
-    PyObject* value = nullptr;
-    value = Py_BuildValue("d", param);
-    return value;
-}
-PyObject* PythonScript_valueToPyObject(std::string const& param)
-{
-    PyObject* value = nullptr;
-    value = Py_BuildValue("s", param.c_str());
-    return value;
-}
+PyObject* PythonScript_valueToPyObject(bool param);
+PyObject* PythonScript_valueToPyObject(int param);
+PyObject* PythonScript_valueToPyObject(unsigned int param);
+PyObject* PythonScript_valueToPyObject(double param);
+PyObject* PythonScript_valueToPyObject(std::string const& param);
 
-void PythonScript_pyObjectToValue(PyObject* pyObject, bool & val)
-{
-    if (!pyObject) return;
-    if(PyBool_Check(pyObject))
-        val = (Py_False != pyObject);
-    else
-        SP_MESSAGE_ERROR("Cannot convert pyObject to bool");
-}
-
-void PythonScript_pyObjectToValue(PyObject* pyObject, int & val)
-{
-    if (!pyObject) return;
-    if(PyInt_Check(pyObject))
-        val = (int)PyInt_AS_LONG(pyObject);
-    else
-        SP_MESSAGE_ERROR("Cannot convert pyObject to int");
-}
-
-void PythonScript_pyObjectToValue(PyObject* pyObject, double & val)
-{
-    if (!pyObject) return;
-    if(PyFloat_Check(pyObject))
-        val = PyFloat_AS_DOUBLE(pyObject);
-    else
-        SP_MESSAGE_ERROR("Cannot convert pyObject to double");
-}
-
+void PythonScript_pyObjectToValue(PyObject* pyObject, bool & val);
+void PythonScript_pyObjectToValue(PyObject* pyObject, int & val);
+void PythonScript_pyObjectToValue(PyObject* pyObject, double & val);
 
 void PythonScript_parameterVector(std::vector<PyObject*> & /*vecParam*/) {return;}
 
@@ -120,7 +71,7 @@ PyObject* PythonScript_parameterTuple(ParametersType... parameters)
     return tuple;
 }
 
-} // anonymous namespase
+} // namespase internal
 
 /// A helper function to call \a funcName in \a pythonScriptControllerName
 template<typename ResultType, typename... ParametersType>
@@ -139,10 +90,10 @@ void PythonScriptFunction_call(ResultType & result, std::string const& pythonScr
     }
 
     sofa::core::objectmodel::PythonScriptFunction pyFunction(pyCallableObject, true);
-    sofa::core::objectmodel::PythonScriptFunctionParameter pyParameter(PythonScript_parameterTuple(parameters...), true);
+    sofa::core::objectmodel::PythonScriptFunctionParameter pyParameter(internal::PythonScript_parameterTuple(parameters...), true);
     sofa::core::objectmodel::PythonScriptFunctionResult pyResult;
     pyFunction(&pyParameter, &pyResult);
-    PythonScript_pyObjectToValue(pyResult.data(), result);
+    internal::PythonScript_pyObjectToValue(pyResult.data(), result);
 }
 
 template<typename... ParametersType>

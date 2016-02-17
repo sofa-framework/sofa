@@ -107,6 +107,10 @@ set(SOURCE_FILES
     initSofaPython.cpp
 )
 
+if(SOFA_USE_C++11)
+    list(APPEND SOURCE_FILES PythonScriptHelper.cpp)
+endif()
+
 set(PYTHON_FILES
     python/SofaPython/DAGValidation.py
     python/SofaPython/Quaternion.py
