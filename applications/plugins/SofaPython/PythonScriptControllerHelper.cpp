@@ -23,45 +23,45 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "PythonScriptHelper.h"
+#include "PythonScriptControllerHelper.h"
 
 namespace sofa {
 namespace helper {
 
 namespace internal {
 
-PyObject* PythonScript_valueToPyObject(bool param)
+PyObject* PythonScriptController_valueToPyObject(bool param)
 {
     PyObject* value = nullptr;
     value = Py_BuildValue("b", param);
     return value;
 }
-PyObject* PythonScript_valueToPyObject(int param)
+PyObject* PythonScriptController_valueToPyObject(int param)
 {
     PyObject* value = nullptr;
     value = Py_BuildValue("i", param);
     return value;
 }
-PyObject* PythonScript_valueToPyObject(unsigned int param)
+PyObject* PythonScriptController_valueToPyObject(unsigned int param)
 {
     PyObject* value = nullptr;
     value = Py_BuildValue("UI", param);
     return value;
 }
-PyObject* PythonScript_valueToPyObject(double param)
+PyObject* PythonScriptController_valueToPyObject(double param)
 {
     PyObject* value = nullptr;
     value = Py_BuildValue("d", param);
     return value;
 }
-PyObject* PythonScript_valueToPyObject(std::string const& param)
+PyObject* PythonScriptController_valueToPyObject(std::string const& param)
 {
     PyObject* value = nullptr;
     value = Py_BuildValue("s", param.c_str());
     return value;
 }
 
-void PythonScript_pyObjectToValue(PyObject* pyObject, bool & val)
+void PythonScriptController_pyObjectToValue(PyObject* pyObject, bool & val)
 {
     if (!pyObject) return;
     if(PyBool_Check(pyObject))
@@ -70,7 +70,7 @@ void PythonScript_pyObjectToValue(PyObject* pyObject, bool & val)
         SP_MESSAGE_ERROR("Cannot convert pyObject to bool");
 }
 
-void PythonScript_pyObjectToValue(PyObject* pyObject, int & val)
+void PythonScriptController_pyObjectToValue(PyObject* pyObject, int & val)
 {
     if (!pyObject) return;
     if(PyInt_Check(pyObject))
@@ -79,7 +79,7 @@ void PythonScript_pyObjectToValue(PyObject* pyObject, int & val)
         SP_MESSAGE_ERROR("Cannot convert pyObject to int");
 }
 
-void PythonScript_pyObjectToValue(PyObject* pyObject, float & val)
+void PythonScriptController_pyObjectToValue(PyObject* pyObject, float & val)
 {
     if (!pyObject) return;
     if(PyFloat_Check(pyObject))
@@ -88,7 +88,7 @@ void PythonScript_pyObjectToValue(PyObject* pyObject, float & val)
         SP_MESSAGE_ERROR("Cannot convert pyObject to float");
 }
 
-void PythonScript_pyObjectToValue(PyObject* pyObject, double & val)
+void PythonScriptController_pyObjectToValue(PyObject* pyObject, double & val)
 {
     if (!pyObject) return;
     if(PyFloat_Check(pyObject))
@@ -96,7 +96,7 @@ void PythonScript_pyObjectToValue(PyObject* pyObject, double & val)
     else
         SP_MESSAGE_ERROR("Cannot convert pyObject to double");
 }
-void PythonScript_pyObjectToValue(PyObject* pyObject, std::string & val)
+void PythonScriptController_pyObjectToValue(PyObject* pyObject, std::string & val)
 {
     if (!pyObject) return;
     if(PyString_Check(pyObject))

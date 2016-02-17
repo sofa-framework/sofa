@@ -9,7 +9,7 @@ set(SOURCE_FILES
 )
 
 if(SOFA_USE_C++11)
-    list(APPEND SOURCE_FILES PythonScriptHelper_test.cpp)
+    list(APPEND SOURCE_FILES PythonScriptControllerHelper_test.cpp)
 endif()
 
 set(PYTHON_FILES
@@ -24,7 +24,7 @@ set(PYTHON_FILES
 )
 
 if(SOFA_USE_C++11)
-    list(APPEND PYTHON_FILES python/test_PythonScriptHelper.py)
+    list(APPEND PYTHON_FILES python/test_PythonScriptControllerHelper.py)
 endif()
 
 find_package(SofaTest)
