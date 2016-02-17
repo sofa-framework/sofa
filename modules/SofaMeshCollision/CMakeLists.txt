@@ -30,6 +30,8 @@ set(HEADER_FILES
     RayTriangleIntersection.h
     RigidContactMapper.h
     RigidContactMapper.inl
+    SubsetContactMapper.h
+    SubsetContactMapper.inl
     Triangle.h
     TriangleLocalMinDistanceFilter.h
     TriangleModel.h
@@ -53,6 +55,7 @@ set(SOURCE_FILES
     PointModel.cpp
     RayTriangleIntersection.cpp
     RigidContactMapper.cpp
+    SubsetContactMapper.cpp
     TriangleLocalMinDistanceFilter.cpp
     TriangleModel.cpp
     initMeshCollision.cpp
