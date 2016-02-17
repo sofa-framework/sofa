@@ -31,7 +31,6 @@
 #include <SofaBaseTopology/QuadSetTopologyModifier.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
 #include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
-#include <SofaGeneralTopology/BezierTriangleSetTopologyContainer.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseTopology/TopologyData.inl>
@@ -1279,18 +1278,7 @@ void VisualModelImpl::computePositions()
         m_vertices2.endEdit();
     }
 }
-double multinomial(const size_t n,const sofa::component::topology::TriangleBezierIndex tbiIn)
-{
-	size_t i,ival;
-	sofa::component::topology::TriangleBezierIndex tbi=tbiIn;
-	// divide n! with the largest of the multinomial coefficient
-	std::sort(tbi.begin(),tbi.end());
-	ival=1;
-	for (i=n;i>tbi[2];--i){
-		ival*=i;
-	}
-	return(((double)ival)/(sofa::helper::factorial(tbi[0])*sofa::helper::factorial(tbi[1])));
-}
+
 void VisualModelImpl::computeMesh()
 {
     using sofa::component::topology::SparseGridTopology;

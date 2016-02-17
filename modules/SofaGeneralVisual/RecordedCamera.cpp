@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseVisual/RecordedCamera.h>
+#include <SofaGeneralVisual/RecordedCamera.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
