@@ -70,6 +70,7 @@ SOFA_SIMULATION_COMMON_API bool isCleanedUp()
 // Detect missing cleanup() call.
 static const struct CleanupCheck
 {
+    CleanupCheck() {}
     ~CleanupCheck()
     {
         if (simulation::common::isInitialized() && !simulation::common::isCleanedUp())
