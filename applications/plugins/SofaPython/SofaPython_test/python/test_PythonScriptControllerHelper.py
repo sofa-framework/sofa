@@ -20,6 +20,12 @@ class TestController(Sofa.PythonScriptController):
     def getString(self):
         return "test string"
 
+    def getNone(self):
+        return None
+
+    def getNothing(self):
+        pass
+
     def add(a,b):
         return a+b
 

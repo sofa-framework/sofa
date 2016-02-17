@@ -77,9 +77,12 @@ PyObject* PythonScript_parametersToTuple(ParametersType... parameters)
 
 } // namespase internal
 
-/// A helper function to call \a funcName in \a pythonScriptControllerName
+/** A helper function to call \a funcName in \a pythonScriptControllerName.
+ * The function returned value is stored in \a result.
+ * If the controller functions returns None, or if you are not interested by the returned value, call it with \c nullptr
+ */
 template<typename ResultType, typename... ParametersType>
-void PythonScriptController_call(ResultType & result, std::string const& pythonScriptControllerName, std::string const& funcName, ParametersType... parameters)
+void PythonScriptController_call(ResultType * result, std::string const& pythonScriptControllerName, std::string const& funcName, ParametersType... parameters)
 {
     sofa::component::controller::PythonScriptController* controller = nullptr;
     controller = dynamic_cast<sofa::component::controller::PythonScriptController*>(sofa::simulation::getSimulation()->GetRoot()->getObject(pythonScriptControllerName.c_str()));
@@ -94,17 +97,18 @@ void PythonScriptController_call(ResultType & result, std::string const& pythonS
     }
 
     sofa::core::objectmodel::PythonScriptFunction pyFunction(pyCallableObject, true);
-    sofa::core::objectmodel::PythonScriptFunctionParameter pyParameter(internal::PythonScript_parameterTuple(parameters...), true);
+    sofa::core::objectmodel::PythonScriptFunctionParameter pyParameter(internal::PythonScript_parametersToTuple(parameters...), true);
     sofa::core::objectmodel::PythonScriptFunctionResult pyResult;
     pyFunction(&pyParameter, &pyResult);
-    internal::PythonScriptController_pyObjectToValue(pyResult.data(), result);
+    if (result!=nullptr)
+        internal::PythonScriptController_pyObjectToValue(pyResult.data(), *result);
 }
 
 template<typename... ParametersType>
-void PythonScriptController_callNoResult(std::string const& pythonScriptControllerName, std::string const& funcName, ParametersType... parameters)
+void PythonScriptController_call(std::nullptr_t /*result*/, std::string const& pythonScriptControllerName, std::string const& funcName, ParametersType... parameters)
 {
-    int result; // dummy result
-    PythonScriptController_call(result, pythonScriptControllerName, funcName, parameters...);
+    int* none=nullptr;
+    PythonScriptController_call(none, pythonScriptControllerName, funcName, parameters...);
 }
 
 } // namespace helper
