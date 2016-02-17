@@ -407,7 +407,6 @@ def setupUnits(myUnits):
     for quantity,unit in myUnits.iteritems():
         exec("units.local_{0} = units.{0}_{1}".format(quantity,unit))
         message+=" "+quantity+":"+unit
-    print message
     Sofa.msg_info("SofaPython.sml",message)
 
 def getSolidRigidMassInfo(solid, density):
