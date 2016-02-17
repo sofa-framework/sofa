@@ -22,47 +22,85 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_ADDRECORDEDCAMERABUTTON_H
-#define SOFA_COMPONENT_CONFIGURATIONSETTING_ADDRECORDEDCAMERABUTTON_H
-#include "config.h"
+#include <SofaGeneralVisual/VisualTransform.h>
+#include <sofa/core/visual/VisualParams.h>
+//#include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/ObjectFactory.h>
+//#include <sofa/simulation/common/UpdateContextVisitor.h>
 
-#include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <SofaGraphComponent/MouseButtonSetting.h>
-#include <SofaGeneralVisual/RecordedCamera.h>
+#include <sofa/core/visual/DrawTool.h>
 
 namespace sofa
 {
-
 namespace component
 {
-
-namespace configurationsetting
+namespace visualmodel
 {
 
-class SOFA_GRAPH_COMPONENT_API AddRecordedCameraButtonSetting: public MouseButtonSetting
-{
-public:
-    SOFA_CLASS(AddRecordedCameraButtonSetting,MouseButtonSetting);
-protected:
-    AddRecordedCameraButtonSetting(){};
-public:
-    std::string getOperationType() {return "Add recorded camera's position and orientation";}
+SOFA_DECL_CLASS(VisualTransform)
 
-};
+int VisualTransformClass = sofa::core::RegisterObject("TODO")
+        .add<VisualTransform>();
 
-class SOFA_GRAPH_COMPONENT_API StartNavigationButtonSetting: public MouseButtonSetting
+VisualTransform::VisualTransform()
+    : transform(initData(&transform,"transform","Transformation to apply"))
+    , recursive(initData(&recursive,false,"recursive","True to apply transform to all nodes below"))
+    , nbpush(0)
 {
-public:
-    SOFA_CLASS(StartNavigationButtonSetting,MouseButtonSetting);
-protected:
-    StartNavigationButtonSetting(){};
-public:
-    std::string getOperationType() {return "Start navigation if some view poins have been saved";}
-};
+}
+
+VisualTransform::~VisualTransform()
+{
+}
+
+void VisualTransform::push(const sofa::core::visual::VisualParams* vparams)
+{
+    Coord xform = transform.getValue();
+    vparams->drawTool()->pushMatrix();
+    ++nbpush;
+    float glTransform[16];
+    xform.writeOpenGlMatrix ( glTransform );
+    vparams->drawTool()->multMatrix( glTransform );
 
 }
 
+void VisualTransform::pop(const sofa::core::visual::VisualParams* vparams)
+{
+    if (nbpush > 0)
+    {
+        vparams->drawTool()->popMatrix();
+        --nbpush;
+    }
+}
+
+void VisualTransform::fwdDraw(sofa::core::visual::VisualParams* vparams)
+{
+    push(vparams);
+}
+
+void VisualTransform::draw(const sofa::core::visual::VisualParams* /*vparams*/)
+{
+    //pop(vparams);
+}
+
+void VisualTransform::drawVisual(const sofa::core::visual::VisualParams* vparams)
+{
+    if (!recursive.getValue())
+        pop(vparams);
+}
+
+void VisualTransform::drawTransparent(const sofa::core::visual::VisualParams* vparams)
+{
+    if (!recursive.getValue())
+        pop(vparams);
+}
+
+void VisualTransform::bwdDraw(sofa::core::visual::VisualParams* vparams)
+{
+    pop(vparams);
 }
 
 }
-#endif
+}
+}
+

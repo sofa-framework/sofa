@@ -4,10 +4,8 @@ project(SofaBaseVisual)
 set(HEADER_FILES
     BaseCamera.h
     InteractiveCamera.h
-    RecordedCamera.h
     VisualModelImpl.h
     VisualStyle.h
-    VisualTransform.h
     config.h
     initBaseVisual.h
 )
@@ -15,10 +13,8 @@ set(HEADER_FILES
 set(SOURCE_FILES
     BaseCamera.cpp
     InteractiveCamera.cpp
-    RecordedCamera.cpp
     VisualModelImpl.cpp
     VisualStyle.cpp
-    VisualTransform.cpp
     initBaseVisual.cpp
 )
 

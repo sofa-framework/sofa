@@ -22,47 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_ADDRECORDEDCAMERABUTTON_H
-#define SOFA_COMPONENT_CONFIGURATIONSETTING_ADDRECORDEDCAMERABUTTON_H
-#include "config.h"
+#ifndef SOFAGENERALVISUAL_CONFIG_H
+#define SOFAGENERALVISUAL_CONFIG_H
 
-#include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <SofaGraphComponent/MouseButtonSetting.h>
-#include <SofaGeneralVisual/RecordedCamera.h>
+#include <SofaGeneral/config.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace configurationsetting
-{
-
-class SOFA_GRAPH_COMPONENT_API AddRecordedCameraButtonSetting: public MouseButtonSetting
-{
-public:
-    SOFA_CLASS(AddRecordedCameraButtonSetting,MouseButtonSetting);
-protected:
-    AddRecordedCameraButtonSetting(){};
-public:
-    std::string getOperationType() {return "Add recorded camera's position and orientation";}
-
-};
-
-class SOFA_GRAPH_COMPONENT_API StartNavigationButtonSetting: public MouseButtonSetting
-{
-public:
-    SOFA_CLASS(StartNavigationButtonSetting,MouseButtonSetting);
-protected:
-    StartNavigationButtonSetting(){};
-public:
-    std::string getOperationType() {return "Start navigation if some view poins have been saved";}
-};
-
-}
-
-}
-
-}
 #endif
