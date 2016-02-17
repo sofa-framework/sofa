@@ -9,7 +9,7 @@ using std::endl ;
 using std::vector ;
 
 #include <sofa/helper/logging/Messaging.h>
-using sofa::helper::logging::unique::MessageDispatcher ;
+using sofa::helper::logging::MessageDispatcher ;
 
 #include <sofa/helper/logging/MessageHandler.h>
 using sofa::helper::logging::MessageHandler ;
@@ -87,13 +87,9 @@ TEST(LoggingTest, withoutDevMode)
     msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
     msg_error("") << " error message with conversion" << 1.5 << "\n" ;
 
-    nmsg_info("") << " debug info message with conversion" << 1.5 << "\n" ;
-    nmsg_warning("") << " debug warning message with conversion "<< 1.5 << "\n" ;
-    nmsg_error("") << " debug error message with conversion" << 1.5 << "\n" ;
-
-    nmsg_info("") << " debug info message with conversion" << 1.5 << "\n" ;
-    nmsg_warning("") << " debug warning message with conversion "<< 1.5 << "\n" ;
-    nmsg_error("") << " debug error message with conversion" << 1.5 << "\n" ;
+    nmsg_info("") << " null info message with conversion" << 1.5 << "\n" ;
+    nmsg_warning("") << " null warning message with conversion "<< 1.5 << "\n" ;
+    nmsg_error("") << " null error message with conversion" << 1.5 << "\n" ;
 
     EXPECT_TRUE( h->numMessages() == 3 ) ;
 }
@@ -131,9 +127,9 @@ TEST(LoggingTest, withDevMode)
     msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
     msg_error("") << " error message with conversion" << 1.5 << "\n" ;
 
-    nmsg_info("") << " debug info message with conversion" << 1.5 << "\n" ;
-    nmsg_warning("") << " debug warning message with conversion "<< 1.5 << "\n" ;
-    nmsg_error("") << " debug error message with conversion" << 1.5 << "\n" ;
+    nmsg_info("") << " null info message with conversion" << 1.5 << "\n" ;
+    nmsg_warning("") << " null warning message with conversion "<< 1.5 << "\n" ;
+    nmsg_error("") << " null error message with conversion" << 1.5 << "\n" ;
 
     dmsg_info("") << " debug info message with conversion" << 1.5 << "\n" ;
     dmsg_warning("") << " debug warning message with conversion "<< 1.5 << "\n" ;

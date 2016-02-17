@@ -50,7 +50,7 @@ using sofa::helper::logging::DefaultStyleMessageFormatter;
 using sofa::helper::logging::ClangMessageHandler ;
 
 #include <sofa/helper/logging/Messaging.h>
-using sofa::helper::logging::unique::MessageDispatcher;
+using sofa::helper::logging::MessageDispatcher;
 
 #include "messageHandlerComponent.h"
 

@@ -264,7 +264,7 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
         dup2(fds[1][1],2);
 
         int retexec = execvp(command.c_str(), cargs);
-        helper::logging::LoggerStream msgerror = msg_error("PipeProcess");
+        helper::logging::MessageDispatcher::LoggerStream msgerror = msg_error("PipeProcess");
         msgerror << "execlp( "<< command.c_str() << " " ;
         for (unsigned int i=0; i<args.size() + 1 ; ++i)
             msgerror << cargs[i] << " ";

@@ -64,7 +64,7 @@ SOFA_DEFAULTTYPE_API bool isCleanedUp()
 }
 
 // Detect missing cleanup() call.
-struct CleanupCheck
+static const struct CleanupCheck
 {
     ~CleanupCheck()
     {
