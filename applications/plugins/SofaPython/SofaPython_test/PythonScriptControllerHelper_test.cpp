@@ -27,22 +27,29 @@ protected:
     void checkResult()
     {
         bool b;
-        PythonScriptController_call(b, "controller", "getTrue");
+        PythonScriptController_call(&b, "controller", "getTrue");
         EXPECT_TRUE(b);
-        PythonScriptController_call(b, "controller", "getFalse");
+        PythonScriptController_call(&b, "controller", "getFalse");
         EXPECT_FALSE(b);
         int i;
-        PythonScriptController_call(i, "controller", "getInt");
+        PythonScriptController_call(&i, "controller", "getInt");
         EXPECT_EQ(7, i);
         double d;
-        PythonScriptController_call(d, "controller", "getFloat");
+        PythonScriptController_call(&d, "controller", "getFloat");
         EXPECT_FLOAT_EQ(12.34, d);
         float f;
-        PythonScriptController_call(f, "controller", "getFloat");
+        PythonScriptController_call(&f, "controller", "getFloat");
         EXPECT_FLOAT_EQ(12.34, f);
         std::string s;
-        PythonScriptController_call(s, "controller", "getString");
+        PythonScriptController_call(&s, "controller", "getString");
         EXPECT_EQ("test string", s);
+        int* none=nullptr;
+        PythonScriptController_call(none, "controller", "getNone"); // just for testing
+        EXPECT_EQ(nullptr, none);
+        PythonScriptController_call(nullptr, "controller", "getNone"); // this is the way you do in your code
+        PythonScriptController_call(none, "controller", "getNothing"); // just for testing
+        EXPECT_EQ(nullptr, none);
+        PythonScriptController_call(nullptr, "controller", "getNothing"); // this is the way you do in your code
     }
 
 };
