@@ -55,20 +55,20 @@ void PythonScriptController_pyObjectToValue(PyObject* pyObject, double & val);
 void PythonScriptController_pyObjectToValue(PyObject* pyObject, std::string & val);
 
 
-void PythonScriptController_parameterVector(std::vector<PyObject*> & /*vecParam*/) {return;}
+void PythonScriptController_parametersToVector(std::vector<PyObject*> & /*vecParam*/) {return;}
 
 template<typename T, typename... ParametersType>
-void PythonScriptController_parameterVector(std::vector<PyObject*> & vecParam, T param, ParametersType... otherParameters)
+void PythonScriptController_parametersToVector(std::vector<PyObject*> & vecParam, T param, ParametersType... otherParameters)
 {
     vecParam.push_back(PythonScriptController_valueToPyObject(param));
-    PythonScriptController_parameterVector(vecParam, otherParameters...);
+    PythonScriptController_parametersToVector(vecParam, otherParameters...);
 }
 
 template<typename... ParametersType>
-PyObject* PythonScript_parameterTuple(ParametersType... parameters)
+PyObject* PythonScript_parametersToTuple(ParametersType... parameters)
 {
     std::vector<PyObject*> vecParam;
-    PythonScriptController_parameterVector(vecParam, parameters...);
+    PythonScriptController_parametersToVector(vecParam, parameters...);
     PyObject* tuple = PyTuple_New(vecParam.size());
     for (std::size_t i=0; i<vecParam.size(); ++i)
         PyTuple_SetItem(tuple, i, vecParam[i]);
