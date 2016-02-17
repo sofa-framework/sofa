@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_SUBSETCONTACTMAPPER_INL
 #define SOFA_COMPONENT_COLLISION_SUBSETCONTACTMAPPER_INL
 
-#include <SofaGeneralMeshCollision/SubsetContactMapper.h>
+#include <SofaMeshCollision/SubsetContactMapper.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>

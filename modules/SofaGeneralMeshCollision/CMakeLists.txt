@@ -13,8 +13,8 @@ set(HEADER_FILES
     MeshMinProximityIntersection.h
     # RigidContactMapper.h
     # RigidContactMapper.inl
-    SubsetContactMapper.h
-    SubsetContactMapper.inl
+    # SubsetContactMapper.h
+    # SubsetContactMapper.inl
     TriangleOctree.h
     TriangleOctreeModel.h
     config.h
@@ -28,7 +28,7 @@ set(SOURCE_FILES
     MeshDiscreteIntersection.cpp
     MeshMinProximityIntersection.cpp
     # RigidContactMapper.cpp
-    SubsetContactMapper.cpp
+    # SubsetContactMapper.cpp
     TriangleOctree.cpp
     TriangleOctreeModel.cpp
     initGeneralMeshCollision.cpp
