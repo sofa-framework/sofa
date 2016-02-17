@@ -56,7 +56,7 @@ set(HEADER_FILES
 )
 
 if(SOFA_USE_C++11)
-    list(APPEND HEADER_FILES PythonScriptHelper.h)
+    list(APPEND HEADER_FILES PythonScriptControllerHelper.h)
 endif()
 
 set(SOURCE_FILES
@@ -108,7 +108,7 @@ set(SOURCE_FILES
 )
 
 if(SOFA_USE_C++11)
-    list(APPEND SOURCE_FILES PythonScriptHelper.cpp)
+    list(APPEND SOURCE_FILES PythonScriptControllerHelper.cpp)
 endif()
 
 set(PYTHON_FILES
