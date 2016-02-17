@@ -26,6 +26,7 @@
 #define PYTHONSCRIPTHELPER_H
 
 #include <vector>
+#include <string>
 
 #include "PythonMacros.h"
 #include <SofaPython/config.h>
@@ -49,7 +50,10 @@ PyObject* PythonScript_valueToPyObject(std::string const& param);
 
 void PythonScript_pyObjectToValue(PyObject* pyObject, bool & val);
 void PythonScript_pyObjectToValue(PyObject* pyObject, int & val);
+void PythonScript_pyObjectToValue(PyObject* pyObject, float & val);
 void PythonScript_pyObjectToValue(PyObject* pyObject, double & val);
+void PythonScript_pyObjectToValue(PyObject* pyObject, std::string & val);
+
 
 void PythonScript_parameterVector(std::vector<PyObject*> & /*vecParam*/) {return;}
 
