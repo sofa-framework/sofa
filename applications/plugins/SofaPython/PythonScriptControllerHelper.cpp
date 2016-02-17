@@ -63,17 +63,15 @@ PyObject* PythonScriptController_valueToPyObject(std::string const& param)
 
 void PythonScriptController_pyObjectToValue(PyObject* pyObject, bool & val)
 {
-    if (!pyObject) return;
-    if(PyBool_Check(pyObject))
-        val = (Py_False != pyObject);
+    if (pyObject && pyObject!=Py_None && PyBool_Check(pyObject))
+        val = (Py_True == pyObject);
     else
         SP_MESSAGE_ERROR("Cannot convert pyObject to bool");
 }
 
 void PythonScriptController_pyObjectToValue(PyObject* pyObject, int & val)
 {
-    if (!pyObject) return;
-    if(PyInt_Check(pyObject))
+    if (pyObject && pyObject!=Py_None && PyInt_Check(pyObject))
         val = (int)PyInt_AS_LONG(pyObject);
     else
         SP_MESSAGE_ERROR("Cannot convert pyObject to int");
@@ -81,8 +79,7 @@ void PythonScriptController_pyObjectToValue(PyObject* pyObject, int & val)
 
 void PythonScriptController_pyObjectToValue(PyObject* pyObject, float & val)
 {
-    if (!pyObject) return;
-    if(PyFloat_Check(pyObject))
+    if (pyObject && pyObject!=Py_None && PyFloat_Check(pyObject))
         val = (float)PyFloat_AS_DOUBLE(pyObject);
     else
         SP_MESSAGE_ERROR("Cannot convert pyObject to float");
@@ -90,16 +87,14 @@ void PythonScriptController_pyObjectToValue(PyObject* pyObject, float & val)
 
 void PythonScriptController_pyObjectToValue(PyObject* pyObject, double & val)
 {
-    if (!pyObject) return;
-    if(PyFloat_Check(pyObject))
+    if (pyObject && pyObject!=Py_None && PyFloat_Check(pyObject))
         val = PyFloat_AS_DOUBLE(pyObject);
     else
         SP_MESSAGE_ERROR("Cannot convert pyObject to double");
 }
 void PythonScriptController_pyObjectToValue(PyObject* pyObject, std::string & val)
 {
-    if (!pyObject) return;
-    if(PyString_Check(pyObject))
+    if (pyObject && pyObject!=Py_None && PyString_Check(pyObject))
         val = PyString_AS_STRING(pyObject);
     else
         SP_MESSAGE_ERROR("Cannot convert pyObject to std::string");
