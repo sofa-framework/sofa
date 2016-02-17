@@ -70,6 +70,7 @@ SOFA_SIMULATION_GRAPH_API bool isCleanedUp()
 // Detect missing cleanup() call.
 static const struct CleanupCheck
 {
+    CleanupCheck() {}
     ~CleanupCheck()
     {
         if (simulation::graph::isInitialized() && !simulation::graph::isCleanedUp())
