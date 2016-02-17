@@ -26,6 +26,7 @@ class TestController(Sofa.PythonScriptController):
     def getNothing(self):
         pass
 
-    def add(a,b):
+    def add(self,a,b):
+        print "add ", a, b, a+b
         return a+b
 

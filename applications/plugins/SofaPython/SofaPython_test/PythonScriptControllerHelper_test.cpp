@@ -9,7 +9,7 @@ using namespace sofa::helper;
 
 namespace sofa {
 
-struct PythonScriptHelper_test : public ::testing::Test
+struct PythonScriptControllerHelper_test : public ::testing::Test
 {
 protected:
 
@@ -24,7 +24,7 @@ protected:
         simulation::getSimulation()->init(root.get());
     }
 
-    void checkResult()
+    void testResult()
     {
         bool b;
         PythonScriptController_call(&b, "controller", "getTrue");
@@ -52,11 +52,31 @@ protected:
         PythonScriptController_call(nullptr, "controller", "getNothing"); // this is the way you do in your code
     }
 
+    void testParam()
+    {
+        int i;
+        PythonScriptController_call(&i, "controller", "add", 5, 6);
+        EXPECT_EQ(11, i);
+
+        double d;
+        PythonScriptController_call(&d, "controller", "add", 7., 8.5);
+        EXPECT_FLOAT_EQ(15.5, d);
+
+        std::string s;
+        PythonScriptController_call(&s, "controller", "add", (std::string)"hello ", (std::string)"world !"); // the cast looks necessary...
+        EXPECT_EQ("hello world !", s);
+    }
+
 };
 
-TEST_F(PythonScriptHelper_test, result)
+TEST_F(PythonScriptControllerHelper_test, result)
 {
-    checkResult();
+    testResult();
+}
+
+TEST_F(PythonScriptControllerHelper_test, param)
+{
+    testParam();
 }
 
 }
