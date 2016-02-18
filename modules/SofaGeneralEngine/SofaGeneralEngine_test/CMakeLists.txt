@@ -3,15 +3,10 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaGeneralEngine_test)
 
 
-set(HEADER_FILES
-
-    TestEngine.h
-        )
+set(HEADER_FILES)
 
 set(SOURCE_FILES
 
-    TestEngine.cpp
-	Engine_test.cpp
 	TransformEngine_test.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
