@@ -76,7 +76,13 @@ void PythonScriptController_pyObjectToValue(PyObject* pyObject, int & val)
     else
         SP_MESSAGE_ERROR("Cannot convert pyObject to int");
 }
-
+void PythonScriptController_pyObjectToValue(PyObject* pyObject, unsigned int & val)
+{
+    if (pyObject && pyObject!=Py_None && PyInt_Check(pyObject))
+        val = (unsigned int)PyInt_AsUnsignedLongMask(pyObject);
+    else
+        SP_MESSAGE_ERROR("Cannot convert pyObject to unsigned int");
+}
 void PythonScriptController_pyObjectToValue(PyObject* pyObject, float & val)
 {
     if (pyObject && pyObject!=Py_None && PyFloat_Check(pyObject))

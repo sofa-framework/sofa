@@ -50,6 +50,7 @@ PyObject* PythonScriptController_valueToPyObject(std::string const& param);
 
 void PythonScriptController_pyObjectToValue(PyObject* pyObject, bool & val);
 void PythonScriptController_pyObjectToValue(PyObject* pyObject, int & val);
+void PythonScriptController_pyObjectToValue(PyObject* pyObject, unsigned int & val);
 void PythonScriptController_pyObjectToValue(PyObject* pyObject, float & val);
 void PythonScriptController_pyObjectToValue(PyObject* pyObject, double & val);
 void PythonScriptController_pyObjectToValue(PyObject* pyObject, std::string & val);
