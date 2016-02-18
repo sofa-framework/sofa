@@ -339,9 +339,10 @@ public:
     ///   Messages and warnings logging
     /// @{
 
-    mutable sofa::helper::system::SofaOStream<Base> sendl;
-    mutable std::ostringstream                      serr;
-    mutable std::ostringstream                      sout;
+    mutable helper::system::SofaOStream serr;
+    mutable helper::system::SofaOStream sout;
+    mutable helper::system::SofaEndl<Base> sendl;
+
 
     const std::string& getWarnings() const;
     const std::string& getOutputs() const;
