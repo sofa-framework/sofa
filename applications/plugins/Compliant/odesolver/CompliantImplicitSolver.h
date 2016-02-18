@@ -229,7 +229,7 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
     virtual void perform_assembly( const core::MechanicalParams *mparams, system_type& sys );
 				
 	// send a visitor 
-    void send(simulation::Visitor& vis);
+    void send(simulation::Visitor& vis, bool precomputedTraversalOrder=true);
 			  
 	// integrate positions
     virtual void integrate( SolverOperations& sop,
