@@ -187,7 +187,7 @@ void SphereForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     const Real r = sphereRadius.getValue();
 
     glEnable(GL_LIGHTING);
-    vparams->drawTool()->drawSphere(center, r*0.99);
+    vparams->drawTool()->drawSphere(center, (float)(r*0.99) );
     glDisable(GL_LIGHTING);
 
 #endif /* SOFA_NO_OPENGL */
