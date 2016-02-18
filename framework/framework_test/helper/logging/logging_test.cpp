@@ -77,35 +77,35 @@ TEST(LoggingTest, oneHandler)
 {
     MessageDispatcher::clearHandlers() ;
 
-    MyMessageHandler *h=new MyMessageHandler() ;
+    MyMessageHandler h;
 
     // add is expected to return the handler ID. Here is it the o'th
-    EXPECT_TRUE(MessageDispatcher::addHandler(h) == 0 ) ;
+    EXPECT_TRUE(MessageDispatcher::addHandler(&h) == 0 ) ;
 
     msg_info("") << " info message with conversion" << 1.5 << "\n" ;
     msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
     msg_error("") << " error message with conversion" << 1.5 << "\n" ;
 
-    EXPECT_TRUE( h->numMessages() == 3 ) ;
+    EXPECT_TRUE( h.numMessages() == 3 ) ;
 }
 
 TEST(LoggingTest, duplicatedHandler)
 {
     MessageDispatcher::clearHandlers() ;
 
-    MyMessageHandler *h=new MyMessageHandler() ;
+    MyMessageHandler h;
 
     // First add is expected to return the handler ID.
-    EXPECT_TRUE(MessageDispatcher::addHandler(h) == 0) ;
+    EXPECT_TRUE(MessageDispatcher::addHandler(&h) == 0) ;
 
     // Second is supposed to fail to add and thus return -1.
-    EXPECT_TRUE(MessageDispatcher::addHandler(h) == -1) ;
+    EXPECT_TRUE(MessageDispatcher::addHandler(&h) == -1) ;
 
     msg_info("") << " info message with conversion" << 1.5 << "\n" ;
     msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
     msg_error("") << " error message with conversion" << 1.5 << "\n" ;
 
-    EXPECT_TRUE( h->numMessages() == 3) ;
+    EXPECT_TRUE( h.numMessages() == 3) ;
 }
 
 
@@ -113,8 +113,8 @@ TEST(LoggingTest, withoutDevMode)
 {
     MessageDispatcher::clearHandlers() ;
 
-    MyMessageHandler *h=new MyMessageHandler() ;
-    MessageDispatcher::addHandler(h) ;
+    MyMessageHandler h;
+    MessageDispatcher::addHandler(&h) ;
 
     msg_info("") << " info message with conversion" << 1.5 << "\n" ;
     msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
@@ -124,15 +124,15 @@ TEST(LoggingTest, withoutDevMode)
     nmsg_warning("") << " null warning message with conversion "<< 1.5 << "\n" ;
     nmsg_error("") << " null error message with conversion" << 1.5 << "\n" ;
 
-    EXPECT_TRUE( h->numMessages() == 3 ) ;
+    EXPECT_TRUE( h.numMessages() == 3 ) ;
 }
 
 //TEST(LoggingTest, speedTest)
 //{
 //    MessageDispatcher::clearHandlers() ;
 
-//    MyMessageHandler *h=new MyMessageHandler() ;
-//    MessageDispatcher::addHandler(h) ;
+//    MyMessageHandler h;
+//    MessageDispatcher::addHandler(&h) ;
 
 //    for(unsigned int i=0;i<10000;i++){
 //        msg_info("") << " info message with conversion" << 1.5 << "\n" ;
@@ -145,26 +145,26 @@ TEST(LoggingTest, withoutDevMode)
 TEST(LoggingTest, BaseObject)
 {
     MessageDispatcher::clearHandlers() ;
-    MyMessageHandler *h=new MyMessageHandler() ;
-    MessageDispatcher::addHandler(h) ;
+    MyMessageHandler h;
+    MessageDispatcher::addHandler(&h) ;
 
     MyComponent c;
-    EXPECT_TRUE( h->numMessages() == 4 ) ;
+    EXPECT_EQ( h.numMessages(), 4 ) ;
 
     c.serr<<"regular external serr"<<c.sendl;
-    EXPECT_TRUE( h->lastMessage().fileInfo().line == 0 );
-    EXPECT_TRUE( !strcmp( h->lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
+    EXPECT_EQ( h.lastMessage().fileInfo().line, 0 );
+    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
     c.sout<<"regular external sout"<<c.sendl;
-    EXPECT_TRUE( h->lastMessage().fileInfo().line == 0 );
-    EXPECT_TRUE( !strcmp( h->lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
+    EXPECT_EQ( h.lastMessage().fileInfo().line, 0 );
+    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
     c.serr<<SOFA_FILE_INFO<<"external serr with fileinfo"<<c.sendl;
-    EXPECT_TRUE( h->lastMessage().fileInfo().line == __LINE__-1 );
-    EXPECT_TRUE( !strcmp( h->lastMessage().fileInfo().filename, __FILE__ ) );
+    EXPECT_EQ( h.lastMessage().fileInfo().line, __LINE__-1 );
+    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, __FILE__ ) );
     c.sout<<SOFA_FILE_INFO<<"external sout with fileinfo"<<c.sendl;
-    EXPECT_TRUE( h->lastMessage().fileInfo().line == __LINE__-1 );
-    EXPECT_TRUE( !strcmp( h->lastMessage().fileInfo().filename, __FILE__ ) );
+    EXPECT_EQ( h.lastMessage().fileInfo().line, __LINE__-1 );
+    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, __FILE__ ) );
 
-    EXPECT_TRUE( h->numMessages() == 8 ) ;
+    EXPECT_EQ( h.numMessages(), 8 ) ;
 }
 
 #undef MESSAGING_H
@@ -179,8 +179,8 @@ TEST(LoggingTest, withDevMode)
 {
     MessageDispatcher::clearHandlers() ;
 
-    MyMessageHandler *h=new MyMessageHandler() ;
-    MessageDispatcher::addHandler(h) ;
+    MyMessageHandler h;
+    MessageDispatcher::addHandler(&h) ;
 
     msg_info("") << " info message with conversion" << 1.5 << "\n" ;
     msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
@@ -194,5 +194,5 @@ TEST(LoggingTest, withDevMode)
     dmsg_warning("") << " debug warning message with conversion "<< 1.5 << "\n" ;
     dmsg_error("") << " debug error message with conversion" << 1.5 << "\n" ;
 
-    EXPECT_TRUE( h->numMessages() == 6 ) ;
+    EXPECT_TRUE( h.numMessages() == 6 ) ;
 }
