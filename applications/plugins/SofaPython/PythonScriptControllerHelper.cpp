@@ -45,7 +45,7 @@ PyObject* PythonScriptController_valueToPyObject(int param)
 PyObject* PythonScriptController_valueToPyObject(unsigned int param)
 {
     PyObject* value = nullptr;
-    value = Py_BuildValue("UI", param);
+    value = Py_BuildValue("I", param);
     return value;
 }
 PyObject* PythonScriptController_valueToPyObject(double param)
