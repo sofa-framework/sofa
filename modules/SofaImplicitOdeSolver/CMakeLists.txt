@@ -4,7 +4,6 @@ project(SofaImplicitOdeSolver)
 set(HEADER_FILES
     EulerImplicitSolver.h
     StaticSolver.h
-    VariationalSymplecticSolver.h
     config.h
     initImplicitODESolver.h
 )
@@ -12,7 +11,6 @@ set(HEADER_FILES
 set(SOURCE_FILES
     EulerImplicitSolver.cpp
     StaticSolver.cpp
-    VariationalSymplecticSolver.cpp
     initImplicitODESolver.cpp
 )
 
