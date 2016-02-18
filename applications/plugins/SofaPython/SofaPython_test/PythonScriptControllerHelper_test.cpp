@@ -55,8 +55,12 @@ protected:
     void testParam()
     {
         int i;
-        PythonScriptController_call(&i, "controller", "add", 5, 6);
-        EXPECT_EQ(11, i);
+        PythonScriptController_call(&i, "controller", "add", -5, 6);
+        EXPECT_EQ(1, i);
+
+        unsigned int ui;
+        PythonScriptController_call(&ui, "controller", "add", (unsigned int)5, (unsigned int)6);
+        EXPECT_EQ(11, ui);
 
         double d;
         PythonScriptController_call(&d, "controller", "add", 7., 8.5);
