@@ -359,6 +359,20 @@ void STLExporter::handleEvent(sofa::core::objectmodel::Event *event)
                 writeSTL();
         }
     }
+
+
+    if (sofa::core::objectmodel::GUIEvent::checkEventType(event))
+    {
+        sofa::core::objectmodel::GUIEvent *guiEvent = static_cast<sofa::core::objectmodel::GUIEvent *>(event);
+
+        if (guiEvent->getValueName().compare("STLExport") == 0)
+        {
+            if(m_fileFormat.getValue())
+                writeSTLBinary();
+            else
+                writeSTL();
+        }
+    }
 }
 
 void STLExporter::cleanup()
