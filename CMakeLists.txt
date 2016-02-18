@@ -119,7 +119,6 @@ endif()
 
 ### Dependency pack for Windows
 if(MSVC)
-
     #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
     add_definitions(-DBOOST_ALL_DYN_LINK)
 
@@ -156,7 +155,6 @@ if(MSVC)
     install(FILES ${DLLS} DESTINATION bin)
     install(FILES ${LIBS} DESTINATION lib)
     install(DIRECTORY ${DEPENDENCY_PACK_DIR}/include/ DESTINATION include)
-
 endif()
 
 
@@ -197,7 +195,6 @@ add_subdirectory(extlibs)
 
 
 ### Main Sofa subdirectories
-
 add_subdirectory(SofaFramework)
 add_subdirectory(SofaSimulation)
 if(SOFA_BUILD_TESTS)
@@ -206,41 +203,48 @@ if(SOFA_BUILD_TESTS)
 endif()
 add_subdirectory(SofaBase)
 add_subdirectory(SofaCommon)
-add_subdirectory(SofaGeneral)
-add_subdirectory(SofaAdvanced)
-add_subdirectory(SofaMisc)
-add_subdirectory(SofaGui)
 
-# SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
-sofa_add_plugin( applications/plugins/SofaPython SofaPython )
+option(SOFA_BUILD_PACKAGES_EXTENSIONS "Compile General, Advanced, Misc and GUIs packages." OFF)
 
-if(SOFA_BUILD_TESTS)
-    # Library used by SofaTest.
-    add_subdirectory(applications/plugins/SceneCreator SceneCreator)
-    # Library used to write high level tests involving many components.
-    add_subdirectory(applications/plugins/SofaTest SofaTest)
-    # Tests for all the modules, written using SofaTest.
-    add_subdirectory(modules/tests)
-    # SofaPython_test is a special case, because it depends on
-    # SofaTest, which depends on SofaPython...
-    if(PLUGIN_SOFAPYTHON)
-        add_subdirectory(applications/plugins/SofaPython/SofaPython_test)
+if(SOFA_BUILD_PACKAGES_EXTENSIONS)
+    add_subdirectory(SofaGeneral)
+    add_subdirectory(SofaAdvanced)
+    add_subdirectory(SofaMisc)
+    add_subdirectory(SofaGui)
+
+
+    # SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
+    sofa_add_plugin( applications/plugins/SofaPython SofaPython )
+
+    if(SOFA_BUILD_TESTS)
+        # Library used by SofaTest.
+        add_subdirectory(applications/plugins/SceneCreator SceneCreator)
+        # Library used to write high level tests involving many components.
+        add_subdirectory(applications/plugins/SofaTest SofaTest)
+        # Tests for all the modules, written using SofaTest.
+        add_subdirectory(modules/tests)
+        # SofaPython_test is a special case, because it depends on
+        # SofaTest, which depends on SofaPython...
+        if(PLUGIN_SOFAPYTHON)
+            add_subdirectory(applications/plugins/SofaPython/SofaPython_test)
+        endif()
+
+        # Not sure what is it
+        add_subdirectory(applications/plugins/SofaTest/SofaTest_test SofaTest/SofaTest_test)
     endif()
 
-    # Not sure what is it
-    add_subdirectory(applications/plugins/SofaTest/SofaTest_test SofaTest/SofaTest_test)
-endif()
+    ## Plugins
+    add_subdirectory(applications/plugins)
 
-## Plugins
-add_subdirectory(applications/plugins)
+    ## Applications
+    add_subdirectory(applications/projects)
 
-## Applications
-add_subdirectory(applications/projects)
+    ## Tutorials
+    option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
+    if(SOFA_BUILD_TUTORIALS)
+        add_subdirectory(applications/tutorials)
+    endif()
 
-## Tutorials
-option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
-if(SOFA_BUILD_TUTORIALS)
-    add_subdirectory(applications/tutorials)
 endif()
 
 ## Build external projects at the same time
