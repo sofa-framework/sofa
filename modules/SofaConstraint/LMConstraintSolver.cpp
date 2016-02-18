@@ -96,7 +96,7 @@ void LMConstraintSolver::init()
 
     graphKineticEnergy.setDisplayed(traceKineticEnergy.getValue());
 }
-void LMConstraintSolver::removeConstraintCorrection(core::behavior::BaseConstraintCorrection */*s*/)
+void LMConstraintSolver::removeConstraintCorrection(core::behavior::BaseConstraintCorrection * /*s*/)
 {
     //TODO: remove the pair containing s from constraintCorrections
 }

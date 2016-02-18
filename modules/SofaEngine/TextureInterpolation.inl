@@ -247,8 +247,8 @@ void TextureInterpolation<DataTypes>::standardLinearInterpolation()
     {
         const Coord3D& p0 = coords[i];
         Coord2D& textC = outputs[i];
-        textC[0] = (p0[axe1] - Cmin[axe1])*Uscale;
-        textC[1] = (p0[axe2] - Cmin[axe2])*Vscale;
+        textC[0] = (Real)((p0[axe1] - Cmin[axe1])*Uscale);
+        textC[1] = (Real)((p0[axe2] - Cmin[axe2])*Vscale);
     }
 
     _outputCoord.endEdit();

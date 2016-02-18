@@ -112,7 +112,7 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int
 {
     TSphere<DataTypes> t(this,index);
 
-	vparams->drawTool()->drawSphere(t.p(), t.r());
+    vparams->drawTool()->drawSphere(t.p(), (float)t.r());
 }
 
 
