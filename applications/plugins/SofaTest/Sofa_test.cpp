@@ -45,7 +45,7 @@ namespace {
 
     static struct raii {
       raii() {
-            helper::logging::unique::MessageDispatcher::addHandler( &helper::logging::TestMessageHandler::getInstance() ) ;
+            helper::logging::MessageDispatcher::addHandler( &helper::logging::TestMessageHandler::getInstance() ) ;
       }
 
     } singleton;

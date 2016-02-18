@@ -28,6 +28,7 @@
 #include <sofa/helper/helper.h>
 #include <sstream>
 #include <iostream>
+#include <sofa/helper/logging/Message.h>
 
 namespace sofa
 {
@@ -38,34 +39,28 @@ namespace helper
 namespace system
 {
 
-//class SOFA_HELPER_API SofaOStreamContainer
-//{
-//public:
-//    virtual ~SofaOStreamContainer();
-//    virtual void processStream(std::ostream& out) = 0;
-//};
 
+/// SofaEndl asks its eventual container to process the stream
 template<class Container>
-class SofaOStream
+class SofaEndl
 {
+
 protected:
+
     Container* parent;
+
 public:
 
-    friend inline std::ostream &operator << (std::ostream& out, const SofaOStream<Container> & s)
+    friend inline std::ostream &operator << (std::ostream& out, const SofaEndl<Container> & s)
     {
         if (s.parent)
             s.parent->processStream(out);
-        else out << std::endl;
+        else
+            out << std::endl;
         return out;
     }
 
-    SofaOStream()
-        : parent(NULL)
-    {
-    }
-
-    ~SofaOStream()
+    SofaEndl(): parent(NULL)
     {
     }
 
@@ -73,8 +68,38 @@ public:
     {
         parent = p;
     }
+};
+
+
+
+/// a SofaOStream is a simple std::ostringstream that can stream a logging::FileInfo
+class SofaOStream : public std::ostringstream
+{
+protected:
+    logging::FileInfo m_fileInfo;
+
+public:
+
+    void clear()
+    {
+        this->str("");
+        m_fileInfo = helper::logging::FileInfo();
+    }
+
+    const logging::FileInfo& fileInfo() const
+    {
+        return m_fileInfo;
+    }
+
+    friend inline SofaOStream& operator<<( SofaOStream& out, const logging::FileInfo& fi )
+    {
+        out.m_fileInfo = fi;
+        return out;
+    }
 
 };
+
+
 
 }
 

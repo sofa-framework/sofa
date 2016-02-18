@@ -98,6 +98,11 @@ void DefaultContactManager::cleanup()
     contactMap.clear();
 }
 
+void DefaultContactManager::reset()
+{
+    cleanup();
+}
+
 void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
 {
     using core::CollisionModel;

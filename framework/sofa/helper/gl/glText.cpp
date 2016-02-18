@@ -150,11 +150,8 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
 
         vertices.push_back(vertex_up_left);
         vertices.push_back(vertex_down_left);
-        vertices.push_back(vertex_up_right);
-
         vertices.push_back(vertex_down_right);
         vertices.push_back(vertex_up_right);
-        vertices.push_back(vertex_down_left);
 
         char character = str[j] - 32;
 
@@ -168,14 +165,11 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
 
         UVs.push_back(uv_up_left);
         UVs.push_back(uv_down_left);
-        UVs.push_back(uv_up_right);
-
         UVs.push_back(uv_down_right);
         UVs.push_back(uv_up_right);
-        UVs.push_back(uv_down_left);
     }
 
-    glBegin(GL_TRIANGLES);
+    glBegin(GL_QUADS);
     for (unsigned int j = 0; j < vertices.size(); j++)
     {
         glTexCoord2fv(UVs[j].data());
@@ -250,11 +244,8 @@ void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& pos
 
             vertices.push_back(vertex_up_left);
             vertices.push_back(vertex_down_left);
-            vertices.push_back(vertex_up_right);
-
             vertices.push_back(vertex_down_right);
             vertices.push_back(vertex_up_right);
-            vertices.push_back(vertex_down_left);
 
             char character = str[j] - 32;
 
@@ -268,14 +259,11 @@ void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& pos
 
             UVs.push_back(uv_up_left);
             UVs.push_back(uv_down_left);
-            UVs.push_back(uv_up_right);
-
             UVs.push_back(uv_down_right);
             UVs.push_back(uv_up_right);
-            UVs.push_back(uv_down_left);
         }
 
-        glBegin(GL_TRIANGLES);
+        glBegin(GL_QUADS);
         for (unsigned int j = 0; j < vertices.size(); j++)
         {
             glTexCoord2fv(UVs[j].data());

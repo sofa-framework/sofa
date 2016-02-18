@@ -79,10 +79,12 @@ BaseData::BaseData( const BaseInitData& init)
     m_isSets.assign(false);
     if (init.data && init.data != this)
     {
-        helper::logging::LoggerStream msgerror = msg_error("BaseData");
+        {
+        helper::logging::MessageDispatcher::LoggerStream msgerror = msg_error("BaseData");
         msgerror << "initData POINTER MISMATCH: field name \"" << init.name << "\"";
         if (init.owner)
             msgerror << " created by class " << init.owner->getClassName();
+        }
         sofa::helper::BackTrace::dump();
         exit( EXIT_FAILURE );
     }
