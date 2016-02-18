@@ -73,7 +73,7 @@ public:
 
 
 /// a SofaOStream is a simple std::ostringstream that can stream a logging::FileInfo
-class SofaOStream : public std::ostringstream
+class SOFA_HELPER_API SofaOStream : public std::ostringstream
 {
 protected:
     logging::FileInfo m_fileInfo;
