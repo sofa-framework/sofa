@@ -17,18 +17,45 @@ using sofa::helper::logging::MessageHandler ;
 #include <sofa/helper/logging/Message.h>
 using sofa::helper::logging::Message ;
 
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/ObjectFactory.h>
+
+
 class MyMessageHandler : public MessageHandler
 {
     vector<Message> m_messages ;
 public:
     virtual void process(Message& m){
-        m_messages.push_back(m) ;
+        m_messages.push_back(m);
+
+        if( !m.sender().empty() )
+            //std::cerr<<m.message().rdbuf()<<" "<<m.fileInfo().filename<<" "<<m.fileInfo().line<<std::endl;
+            std::cerr<<m<<std::endl;
     }
 
     int numMessages(){
         return m_messages.size() ;
     }
 } ;
+
+
+class MyComponent : public sofa::core::objectmodel::BaseObject
+{
+public:
+    SOFA_CLASS( MyComponent, sofa::core::objectmodel::BaseObject );
+    MyComponent()
+    {
+        f_printLog.setValue(true); // to print sout
+        serr<<"regular serr"<<sendl;
+        sout<<"regular sout"<<sendl;
+        serr<<SOFA_FILE_INFO<<"serr with fileinfo"<<sendl;
+        sout<<SOFA_FILE_INFO<<"sout with fileinfo"<<sendl;
+    }
+};
+
+SOFA_DECL_CLASS(MyComponent)
+int MyComponentClass = sofa::core::RegisterObject("MyComponent")
+        .add< MyComponent >();
 
 TEST(LoggingTest, noHandler)
 {
@@ -94,18 +121,28 @@ TEST(LoggingTest, withoutDevMode)
     EXPECT_TRUE( h->numMessages() == 3 ) ;
 }
 
-TEST(LoggingTest, speedTest)
+//TEST(LoggingTest, speedTest)
+//{
+//    MessageDispatcher::clearHandlers() ;
+
+//    MyMessageHandler *h=new MyMessageHandler() ;
+//    MessageDispatcher::addHandler(h) ;
+
+//    for(unsigned int i=0;i<10000;i++){
+//        msg_info("") << " info message with conversion" << 1.5 << "\n" ;
+//        msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
+//        msg_error("") << " error message with conversion" << 1.5 << "\n" ;
+//    }
+//}
+
+
+TEST(LoggingTest, BaseObject)
 {
     MessageDispatcher::clearHandlers() ;
-
     MyMessageHandler *h=new MyMessageHandler() ;
     MessageDispatcher::addHandler(h) ;
 
-    for(unsigned int i=0;i<10000;i++){
-        msg_info("") << " info message with conversion" << 1.5 << "\n" ;
-        msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
-        msg_error("") << " error message with conversion" << 1.5 << "\n" ;
-    }
+    MyComponent c;
 }
 
 #undef MESSAGING_H
