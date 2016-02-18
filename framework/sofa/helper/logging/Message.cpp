@@ -81,8 +81,8 @@ Message& Message::operator=( const Message& msg )
 std::ostream& operator<< (std::ostream& s, const Message& m){
     s << "[" << m.sender() << "]: " << endl ;
 //    s << "         Message id: " << m.id() << endl ;
-    s << "       Message type: " << m.type() << endl ;
-    s << "    Message content: " << m.message().rdbuf() << endl ;
+    s << "    Message type   : " << m.type() << endl ;
+    s << "    Message content: " << m.message().str() << endl ;
     s << "    source code loc: " << m.fileInfo().filename << ":" << m.fileInfo().line << endl ;
     return s;
 }

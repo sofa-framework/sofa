@@ -897,11 +897,12 @@ void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const Vec4f 
     glDepthMask(GL_FALSE);
     glDisable(GL_DEPTH_TEST);
 
-
     glPushAttrib( GL_LIGHTING_BIT );
     glEnable( GL_COLOR_MATERIAL );
 
     glPushAttrib( GL_ENABLE_BIT );
+
+    glDisable(GL_CULL_FACE);
 
     glColor4f( color[0], color[1], color[2], color[3] );
 

@@ -71,7 +71,7 @@ public:
     
     PotentialEnergy( core::behavior::MechanicalState<DataTypes> *mm = 0)
         : Base(mm),
-          sign(initData(&sign, (SReal)1.0, "sign", "scalar factor")) { };
+          sign(initData(&sign, (SReal)1.0, "sign", "scalar factor")) {}
 
 protected:
     

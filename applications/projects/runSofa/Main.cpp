@@ -104,7 +104,7 @@ using sofa::helper::system::PluginRepository;
 using sofa::helper::system::PluginManager;
 
 #include <sofa/helper/logging/MessageDispatcher.h>
-using sofa::helper::logging::unique::MessageDispatcher ;
+using sofa::helper::logging::MessageDispatcher ;
 
 #include <sofa/helper/logging/ClangMessageHandler.h>
 using sofa::helper::logging::ClangMessageHandler ;

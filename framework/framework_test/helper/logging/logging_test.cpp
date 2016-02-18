@@ -9,7 +9,7 @@ using std::endl ;
 using std::vector ;
 
 #include <sofa/helper/logging/Messaging.h>
-using sofa::helper::logging::unique::MessageDispatcher ;
+using sofa::helper::logging::MessageDispatcher ;
 
 #include <sofa/helper/logging/MessageHandler.h>
 using sofa::helper::logging::MessageHandler ;
@@ -17,18 +17,51 @@ using sofa::helper::logging::MessageHandler ;
 #include <sofa/helper/logging/Message.h>
 using sofa::helper::logging::Message ;
 
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/ObjectFactory.h>
+
+
 class MyMessageHandler : public MessageHandler
 {
     vector<Message> m_messages ;
 public:
     virtual void process(Message& m){
-        m_messages.push_back(m) ;
+        m_messages.push_back(m);
+
+//        if( !m.sender().empty() )
+//            std::cerr<<m<<std::endl;
     }
 
     int numMessages(){
         return m_messages.size() ;
     }
+
+    const vector<Message>& messages() const {
+        return m_messages;
+    }
+    const Message& lastMessage() const {
+        return m_messages.back();
+    }
 } ;
+
+
+class MyComponent : public sofa::core::objectmodel::BaseObject
+{
+public:
+    SOFA_CLASS( MyComponent, sofa::core::objectmodel::BaseObject );
+    MyComponent()
+    {
+        f_printLog.setValue(true); // to print sout
+        serr<<"regular serr"<<sendl;
+        sout<<"regular sout"<<sendl;
+        serr<<SOFA_FILE_INFO<<"serr with fileinfo"<<sendl;
+        sout<<SOFA_FILE_INFO<<"sout with fileinfo"<<sendl;
+    }
+};
+
+SOFA_DECL_CLASS(MyComponent)
+int MyComponentClass = sofa::core::RegisterObject("MyComponent")
+        .add< MyComponent >();
 
 TEST(LoggingTest, noHandler)
 {
@@ -87,29 +120,51 @@ TEST(LoggingTest, withoutDevMode)
     msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
     msg_error("") << " error message with conversion" << 1.5 << "\n" ;
 
-    nmsg_info("") << " debug info message with conversion" << 1.5 << "\n" ;
-    nmsg_warning("") << " debug warning message with conversion "<< 1.5 << "\n" ;
-    nmsg_error("") << " debug error message with conversion" << 1.5 << "\n" ;
-
-    nmsg_info("") << " debug info message with conversion" << 1.5 << "\n" ;
-    nmsg_warning("") << " debug warning message with conversion "<< 1.5 << "\n" ;
-    nmsg_error("") << " debug error message with conversion" << 1.5 << "\n" ;
+    nmsg_info("") << " null info message with conversion" << 1.5 << "\n" ;
+    nmsg_warning("") << " null warning message with conversion "<< 1.5 << "\n" ;
+    nmsg_error("") << " null error message with conversion" << 1.5 << "\n" ;
 
     EXPECT_TRUE( h->numMessages() == 3 ) ;
 }
 
-TEST(LoggingTest, speedTest)
+//TEST(LoggingTest, speedTest)
+//{
+//    MessageDispatcher::clearHandlers() ;
+
+//    MyMessageHandler *h=new MyMessageHandler() ;
+//    MessageDispatcher::addHandler(h) ;
+
+//    for(unsigned int i=0;i<10000;i++){
+//        msg_info("") << " info message with conversion" << 1.5 << "\n" ;
+//        msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
+//        msg_error("") << " error message with conversion" << 1.5 << "\n" ;
+//    }
+//}
+
+
+TEST(LoggingTest, BaseObject)
 {
     MessageDispatcher::clearHandlers() ;
-
     MyMessageHandler *h=new MyMessageHandler() ;
     MessageDispatcher::addHandler(h) ;
 
-    for(unsigned int i=0;i<10000;i++){
-        msg_info("") << " info message with conversion" << 1.5 << "\n" ;
-        msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
-        msg_error("") << " error message with conversion" << 1.5 << "\n" ;
-    }
+    MyComponent c;
+    EXPECT_TRUE( h->numMessages() == 4 ) ;
+
+    c.serr<<"regular external serr"<<c.sendl;
+    EXPECT_TRUE( h->lastMessage().fileInfo().line == 0 );
+    EXPECT_TRUE( !strcmp( h->lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
+    c.sout<<"regular external sout"<<c.sendl;
+    EXPECT_TRUE( h->lastMessage().fileInfo().line == 0 );
+    EXPECT_TRUE( !strcmp( h->lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
+    c.serr<<SOFA_FILE_INFO<<"external serr with fileinfo"<<c.sendl;
+    EXPECT_TRUE( h->lastMessage().fileInfo().line == __LINE__-1 );
+    EXPECT_TRUE( !strcmp( h->lastMessage().fileInfo().filename, __FILE__ ) );
+    c.sout<<SOFA_FILE_INFO<<"external sout with fileinfo"<<c.sendl;
+    EXPECT_TRUE( h->lastMessage().fileInfo().line == __LINE__-1 );
+    EXPECT_TRUE( !strcmp( h->lastMessage().fileInfo().filename, __FILE__ ) );
+
+    EXPECT_TRUE( h->numMessages() == 8 ) ;
 }
 
 #undef MESSAGING_H
@@ -131,9 +186,9 @@ TEST(LoggingTest, withDevMode)
     msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
     msg_error("") << " error message with conversion" << 1.5 << "\n" ;
 
-    nmsg_info("") << " debug info message with conversion" << 1.5 << "\n" ;
-    nmsg_warning("") << " debug warning message with conversion "<< 1.5 << "\n" ;
-    nmsg_error("") << " debug error message with conversion" << 1.5 << "\n" ;
+    nmsg_info("") << " null info message with conversion" << 1.5 << "\n" ;
+    nmsg_warning("") << " null warning message with conversion "<< 1.5 << "\n" ;
+    nmsg_error("") << " null error message with conversion" << 1.5 << "\n" ;
 
     dmsg_info("") << " debug info message with conversion" << 1.5 << "\n" ;
     dmsg_warning("") << " debug warning message with conversion "<< 1.5 << "\n" ;

@@ -7,6 +7,7 @@ import Sofa
 
 import SofaPython.Tools
 from SofaPython.Tools import listToStr as concat
+from SofaPython.Tools import listListToStr as lconcat
 from SofaPython import Quaternion
 
 printLog = True
@@ -280,11 +281,14 @@ class AffineDof:
             data = dict()
             with open(filename,'r') as f:
                 data.update(json.load(f))
-                self.dof = self.node.createObject("MechanicalObject", template="Affine", name="dofs", position=data['position'], rest_position=data['rest_position'])
+                self.dof = self.node.createObject("MechanicalObject", name="dofs", template=data['template'], position=data['position'], rest_position=data['rest_position'])
                 if printLog:
                     Sofa.msg_info("Flexible.API.AffineDof",'Imported Affine Dof from '+filename)
 
     def write(self, filenamePrefix=None, directory=""):
+        if self.dof is None:
+            Sofa.msg_error("Flexible.API.AffineDof","write : no dof")
+            return
         filename = self.getFilename(filenamePrefix,directory)
         data = {'template':'Affine', 'rest_position': affineDatatostr(self.dof.rest_position), 'position': affineDatatostr(self.dof.position)}
         with open(filename, 'w') as f:
@@ -353,7 +357,122 @@ class ShapeFunction:
             position='0 0 0', # dummy value to avoid a warning from baseShapeFunction
             transform="@containerWeights.transform",
             weights="@containerWeights.image", indices="@containerIndices.image")
-        
+
+
+
+class FEMDof:
+    def __init__(self, node):
+        self.node = node
+        self.dof = None
+        self.mesh = None
+        self.mapping = None
+        self.mass = None
+        self.shapeFunction = None
+
+    def addMesh(self, src=None, **kwargs):
+        if src is None:
+            Sofa.msg_error("Flexible.API.FEMDof","addMesh : no input mesh")
+            return
+        self.mesh = self.node.createObject("Mesh", name="mesh", src=src, **kwargs)
+
+    def addMechanicalObject(self, position=None, **kwargs):
+        if position is None:
+            if not self.mesh is None: # use implicit definition from mesh topology
+                self.dof = self.node.createObject("MechanicalObject", template="Vec3", name="dofs", **kwargs)
+            else:
+                Sofa.msg_error("Flexible.API.FEMDof","addMechanicalObject : no input position")
+            return
+        self.dof = self.node.createObject("MechanicalObject", template="Vec3", name="dofs", position=position, **kwargs)
+
+    def addUniformMass(self, totalMass):
+        self.mass=self.node.createObject("UniformMass", template="Vec3", name="mass", totalMass=totalMass)
+
+    def addShapeFunction(self):
+        self.shapeFunction=self.node.createObject("BarycentricShapeFunction", name="shapeFunction")
+
+    def getFilename(self, filenamePrefix=None, directory=""):
+        _filename=filenamePrefix if not filenamePrefix is None else "FEMDof"
+        _filename+=".json"
+        _filename=os.path.join(directory, _filename)
+        return _filename
+
+    def read(self, filenamePrefix=None, directory=""):
+        filename = self.getFilename(filenamePrefix,directory)
+        if os.path.isfile(filename):
+            data = dict()
+            with open(filename,'r') as f:
+                data.update(json.load(f))
+                # dofs
+                self.dof = self.node.createObject("MechanicalObject", name="dofs", template=data['template'], position=(data['position']), rest_position=(data['rest_position']))
+                # mesh
+                if 'hexahedra' in data and 'tetrahedra' in data:
+                    self.mesh = self.node.createObject("Mesh", name="mesh", position=(data['rest_position']), hexahedra=data['hexahedra'],  tetrahedra=data['tetrahedra'] )
+                # uniform mass
+                if 'totalMass' in data :
+                    self.addUniformMass(data['totalMass'])
+                if printLog:
+                    Sofa.msg_info("Flexible.API.FEMDof",'Imported FEM Dof from '+filename)
+
+    def readMapping(self, filenamePrefix=None, directory=""):
+        """ read mapping parameters
+            WARNING: the mapping shoud be already created
+        """
+        if self.mapping is None:
+            return
+        filename = self.getFilename(filenamePrefix,directory)
+        if os.path.isfile(filename):
+            data = dict()
+            with open(filename,'r') as f:
+                data.update(json.load(f))
+                if 'mappingType' in data:
+                    if data['mappingType'].find("Linear") != -1:
+                        self.mapping.indices= str(data['indices'])
+                        self.mapping.weights= str(data['weights'])
+                    elif data['mappingType'].find("SubsetMultiMapping") != -1:
+                        self.mapping.indexPairs= str(data['indexPairs'])
+                    elif data['mappingType'].find("SubsetMapping") != -1:
+                        self.mapping.indices= str(data['indices'])
+                if printLog:
+                    Sofa.msg_info("Flexible.API.FEMDof",'Imported FEM Dof mapping from '+filename)
+
+    def write(self, filenamePrefix=None, directory=""):
+        if self.dof is None:
+            Sofa.msg_error("Flexible.API.FEMDof","write : no dof")
+            return
+        filename = self.getFilename(filenamePrefix,directory)
+        data = {'template':'Vec3', 'rest_position': lconcat(self.dof.rest_position), 'position': lconcat(self.dof.position)}
+
+        # add mapping data if existing
+        if not self.mapping is None:
+            if self.mapping.getClassName().find("Linear") != -1:
+                data['mappingType']=self.mapping.getClassName()
+                data['indices']=self.mapping.indices
+                data['weights']=self.mapping.weights
+            elif self.mapping.getClassName().find("SubsetMultiMapping") != -1:
+                data['mappingType']=self.mapping.getClassName()
+                data['indexPairs']=lconcat(self.mapping.indexPairs)
+            elif self.mapping.getClassName().find("SubsetMapping") != -1:
+                data['mappingType']=self.mapping.getClassName()
+                data['indices']=lconcat(self.mapping.indices)
+
+        # add some topology data if existing
+        if not self.mesh is None:
+            # data['edges']=self.mesh.edges
+            # data['triangles']=self.mesh.triangles
+            # data['quads']=self.mesh.quads
+            data['hexahedra']=lconcat(self.mesh.hexahedra)
+            data['tetrahedra']=lconcat(self.mesh.tetrahedra)
+
+        # add mass data if existing
+        if not self.mass is None:
+            data['totalMass']=self.mass.totalMass
+
+        with open(filename, 'w') as f:
+            json.dump(data, f)
+            if printLog:
+                Sofa.msg_info("Flexible.API.FEMDof",'Exported FEM Dof to '+filename)
+
+
 class Behavior:
     """ High level API to add a behavior
     """

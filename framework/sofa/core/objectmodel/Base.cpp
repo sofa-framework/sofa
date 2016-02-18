@@ -252,7 +252,7 @@ void Base::processStream(std::ostream& out)
         std::string str = serr.str();
         serr << "\n";
 
-        msg_warning(this) << str;
+        helper::logging::MessageDispatcher::warning(helper::logging::Message::Runtime, this, serr.fileInfo()) << str;
 
         if (warnings.size()+str.size() >= MAXLOGSIZE)
         {
@@ -262,7 +262,7 @@ void Base::processStream(std::ostream& out)
             warnings = msg;
         }
         warnings += str;
-        serr.str("");
+        serr.clear();
     }
     else if (&out == &sout)
     {
@@ -270,7 +270,7 @@ void Base::processStream(std::ostream& out)
         sout << "\n";
         if (f_printLog.getValue())
         {
-            msg_info(this) << str;
+            helper::logging::MessageDispatcher::info(helper::logging::Message::Runtime, this, sout.fileInfo()) << str;
         }
         if (outputs.size()+str.size() >= MAXLOGSIZE)
         {
@@ -280,7 +280,7 @@ void Base::processStream(std::ostream& out)
             outputs = msg;
         }
         outputs += str;
-        sout.str("");
+        sout.clear();
     }
 }
 

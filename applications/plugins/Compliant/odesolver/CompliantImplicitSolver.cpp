@@ -136,10 +136,10 @@ using namespace core::behavior;
 
 
 
-    void CompliantImplicitSolver::send(simulation::Visitor& vis) {
+    void CompliantImplicitSolver::send(simulation::Visitor& vis, bool precomputedTraversalOrder) {
 //        scoped::timer step("visitor execution");
 
-        this->getContext()->executeVisitor( &vis, true );
+        this->getContext()->executeVisitor( &vis, precomputedTraversalOrder );
 
     }
 
@@ -203,8 +203,10 @@ using namespace core::behavior;
     void CompliantImplicitSolver::reset() {
         if( !lagrange.id().isNull() )
         {
-            sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
-            vop.v_clear( lagrange.id() );
+            // warning, vop.v_clear would only clear independent dofs
+            simulation::MechanicalVOpVisitor clearVisitor(core::ExecParams::defaultInstance(), lagrange.id(), core::ConstMultiVecId::null(), core::ConstMultiVecId::null(), 1.0);
+            clearVisitor.only_mapped = true;
+            send( clearVisitor, false );
         }
     }
 
