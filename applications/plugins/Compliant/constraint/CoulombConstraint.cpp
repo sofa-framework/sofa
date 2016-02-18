@@ -4,7 +4,9 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-using namespace sofa::defaulttype; 
+using namespace sofa::defaulttype;
+
+SOFA_COMPLIANT_CONSTRAINT_CPP(CoulombConstraintBase)
 
 // TODO register in the factory in case we want to use it manually in
 // the graph
