@@ -151,6 +151,8 @@ TEST(LoggingTest, BaseObject)
     MyComponent c;
     EXPECT_EQ( h.numMessages(), 4 ) ;
 
+    if( h.numMessages() < 4 ) return; // not to crash
+
     c.serr<<"regular external serr"<<c.sendl;
     EXPECT_EQ( h.lastMessage().fileInfo().line, 0 );
     EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
