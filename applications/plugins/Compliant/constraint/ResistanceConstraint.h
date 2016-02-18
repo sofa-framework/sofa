@@ -15,6 +15,7 @@ namespace linearsolver {
 struct SOFA_Compliant_API ResistanceConstraint : Constraint {
 	
     SOFA_CLASS(ResistanceConstraint, Constraint);
+    SOFA_COMPLIANT_CONSTRAINT_H( ResistanceConstraint )
 
 
     ResistanceConstraint();
