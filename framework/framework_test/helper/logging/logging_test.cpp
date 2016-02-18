@@ -28,13 +28,19 @@ public:
     virtual void process(Message& m){
         m_messages.push_back(m);
 
-        if( !m.sender().empty() )
-            //std::cerr<<m.message().rdbuf()<<" "<<m.fileInfo().filename<<" "<<m.fileInfo().line<<std::endl;
-            std::cerr<<m<<std::endl;
+//        if( !m.sender().empty() )
+//            std::cerr<<m<<std::endl;
     }
 
     int numMessages(){
         return m_messages.size() ;
+    }
+
+    const vector<Message>& messages() const {
+        return m_messages;
+    }
+    const Message& lastMessage() const {
+        return m_messages.back();
     }
 } ;
 
@@ -143,6 +149,22 @@ TEST(LoggingTest, BaseObject)
     MessageDispatcher::addHandler(h) ;
 
     MyComponent c;
+    EXPECT_TRUE( h->numMessages() == 4 ) ;
+
+    c.serr<<"regular external serr"<<c.sendl;
+    EXPECT_TRUE( h->lastMessage().fileInfo().line == 0 );
+    EXPECT_TRUE( !strcmp( h->lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
+    c.sout<<"regular external sout"<<c.sendl;
+    EXPECT_TRUE( h->lastMessage().fileInfo().line == 0 );
+    EXPECT_TRUE( !strcmp( h->lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
+    c.serr<<SOFA_FILE_INFO<<"external serr with fileinfo"<<c.sendl;
+    EXPECT_TRUE( h->lastMessage().fileInfo().line == __LINE__-1 );
+    EXPECT_TRUE( !strcmp( h->lastMessage().fileInfo().filename, __FILE__ ) );
+    c.sout<<SOFA_FILE_INFO<<"external sout with fileinfo"<<c.sendl;
+    EXPECT_TRUE( h->lastMessage().fileInfo().line == __LINE__-1 );
+    EXPECT_TRUE( !strcmp( h->lastMessage().fileInfo().filename, __FILE__ ) );
+
+    EXPECT_TRUE( h->numMessages() == 8 ) ;
 }
 
 #undef MESSAGING_H
