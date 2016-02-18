@@ -455,16 +455,16 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
     glBegin(GL_QUADS);
 
     glTexCoord1f(1.0);
-    glVertex3f(10.0f+f_legendOffset.getValue().x(), yoffset+20.0f+f_legendOffset.getValue().y(), 0.0f);
-
-    glTexCoord1f(1.0);
     glVertex3f(20.0f+f_legendOffset.getValue().x(), yoffset+20.0f+f_legendOffset.getValue().y(), 0.0f);
 
-    glTexCoord1f(0.0);
-    glVertex3f(20.0f+f_legendOffset.getValue().x(), yoffset+120.0f+f_legendOffset.getValue().y(), 0.0f);
+    glTexCoord1f(1.0);
+    glVertex3f(10.0f+f_legendOffset.getValue().x(), yoffset+20.0f+f_legendOffset.getValue().y(), 0.0f);
 
     glTexCoord1f(0.0);
     glVertex3f(10.0f+f_legendOffset.getValue().x(), yoffset+120.0f+f_legendOffset.getValue().y(), 0.0f);
+
+    glTexCoord1f(0.0);
+    glVertex3f(20.0f+f_legendOffset.getValue().x(), yoffset+120.0f+f_legendOffset.getValue().y(), 0.0f);
 
     glEnd();
 
@@ -478,20 +478,20 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
 
-
     // Maximum & minimum
     std::ostringstream smin, smax;
     smin << d_min.getValue();
     smax << d_max.getValue();
 
-    static const Color whiteTextcolor(1.0f, 1.0f, 1.0f, 1.0f);
-    static const Color blackTextcolor(0.0f, 0.0f, 0.0f, 1.0f);
-    // We check here if the background is dark enough to have white text
-    // else we use black text
+    // Adjust the text color according to the background luminance
     GLfloat bgcol[4];
     glGetFloatv(GL_COLOR_CLEAR_VALUE,bgcol);
-    static const float maxdarkcolor = 0.2f;
-    const Color& textcolor = (bgcol[0] > maxdarkcolor || bgcol[1] > maxdarkcolor || bgcol[2] > maxdarkcolor) ? blackTextcolor : whiteTextcolor;
+
+    Color textcolor(1.0f, 1.0f, 1.0f, 1.0f);
+    sofa::defaulttype::Vec3f luminanceMatrix(0.212f, 0.715f, 0.072f);
+    float backgroundLuminance = sofa::defaulttype::Vec3f(bgcol[0], bgcol[1], bgcol[2]) * luminanceMatrix;
+    if(backgroundLuminance > 0.5f)
+        textcolor = Color(0.0f, 0.0f, 0.0f, 1.0f);
 
     if( !legendTitle.empty() )
     {
