@@ -1,0 +1,25 @@
+class CythonController : public sofa::core::objectmodel::BaseObject
+{
+        public: 
+        
+                PyObject* m_obj ;            
+                
+                CythonController(){
+                        m_obj=NULL;
+                        printf("Cython constructor\n");   
+                        std::cout << "NAME IS: " << getName() << std::endl;       
+                }
+                
+                ~CythonController(){
+                        printf("Cython Destructor\n");   
+                }
+                
+                void setPythonObject(PyObject* o){
+                        if(m_obj!=NULL)
+                                Py_DECREF(m_obj) ;
+                        m_obj = o ;
+                        Py_INCREF(m_obj);
+                }
+                              
+};
+

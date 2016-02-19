@@ -1,11 +1,14 @@
 all: cython
   
 cython:
-	python setup.py build_ext --inplace
-	cp sofacython.so modules/python/
-
+	rm -f src/pyx/*.cpp
+	python setup2.py build_ext --inplace
+	cp *.so modules/python/sofa
+	
 clean:
+	rm -rf *.so
 	rm -rf build/*
-	rm -f *.so
-	rm -f *.cpp
-	rm -f *.pyx
+	rm -f src/sofa/*.so
+	rm -f src/sofa/*.cpp
+	rm -f modules/python/sofa/*.so
+

@@ -1,8 +1,9 @@
 # -*- coding: UTF8 -*-
 import Sofa
-import sofacython
-from sofacython import *
+from sofa import *
+#from sofacython import *
 import ipshell
+import timeit
 
 def testBasicAPI():
         r = Simulation.getRoot()   # The current root of the simulation
@@ -55,11 +56,81 @@ def testBasicAPI():
         
         print("]") 
         
-       
+r = None
+dp = []
+def doSofaBench():
+        s = r.getObject("VisualSnake")
+        a = None
+        #print("Size: "+str(len(s.position)))
+        
+        #for i in range(0, len(s.position)):
+        #        #a = s.position[i]
+        #        s.position[i] = [i, i, i] 
+        
+        #p = s.position
+        #for i in range(0,len(p)):
+        #        p[i] = [i, i, i]
+        #s.position = p
+        s.position = dp 
+        
+        return a 
+        
+def doCythonBench():
+        global dp 
+        
+        s = r.getObject("VisualSnake")
+        a = None
+        #print("Size: "+str(len(s.position)))
+        for i in range(0, len(dp)):
+                s.position[i] = dp[i] 
+        return a 
 
+def doCythonBench2():
+        global dp 
+        
+        s = r.getObject("VisualSnake")
+        a = None
+        #print("Size: "+str(len(s.position)))
+        p = s.position
+        for i in range(0, len(dp)):
+                p[i] = dp[i]
+        return a 
+        
+def doCythonBench3():
+        global dp 
+        s = r.getObject("VisualSnake")
+        a = None
+        s.position = dp  
+        return a
+                
 class Test1(Sofa.PythonScriptController):
+        def initGraph(self,node):
+		self.node = node
+
+        def doBench(self):
+                global r, dp
+                dp = []
+                r = self.node.getRoot()
+                s = r.getObject("VisualSnake")
+                
+                for i in range(0,len(s.position)):
+                        dp.append([i, i, i])
+                 
+                r = self.node.getRoot()
+                print("SOFA TIME: "+str(timeit.timeit(doSofaBench, number=50)))                
+                
+                r = Simulation.getRoot() 
+                print("Cython TIME: "+str(timeit.timeit(doCythonBench, number=50)))                
+                
+                r = Simulation.getRoot() 
+                print("Cython2 TIME: "+str(timeit.timeit(doCythonBench2, number=50)))      
+                
+                r = Simulation.getRoot() 
+                print("Cython3 TIME: "+str(timeit.timeit(doCythonBench3, number=50)))           
+
         def onKeyPressed(self, k):
-                if k == 'c':
+                if k == 'C':
                         ipshell.start()
                 else:
-                        testBasicAPI() 
+                        self.doBench()
+                        #testBasicAPI() 
