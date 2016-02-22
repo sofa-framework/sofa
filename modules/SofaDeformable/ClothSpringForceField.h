@@ -50,7 +50,15 @@ class ClothSpringForceField : public sofa::component::interactionforcefield::Sti
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ClothSpringForceField, DataTypes), SOFA_TEMPLATE(StiffSpringForceField, DataTypes));
 
-public:
+    typedef StiffSpringForceField<DataTypes> Inherit;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename Coord::value_type Real;
+    typedef typename Inherit::Spring Spring;
+    typedef std::pair<unsigned,unsigned> IndexPair;
+
     /// create the spring network 
     virtual void init();
 
@@ -67,7 +75,6 @@ protected:
 
     }
 
-    typedef std::pair<unsigned,unsigned> IndexPair;
     void addSpring( unsigned, unsigned, std::set<IndexPair>& );
 
 };
