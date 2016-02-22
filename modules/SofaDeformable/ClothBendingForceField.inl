@@ -282,7 +282,7 @@ void ClothBendingForceField<DataTypes>::init()
         }
     }
     // init the parent class
-    StiffSpringForceField<DataTypes>::init();
+    Inherit::init();
 }
 
 template<class DataTypes>
@@ -291,7 +291,7 @@ void ClothBendingForceField<DataTypes>::draw(const core::visual::VisualParams* v
     if(debug.getValue())
     {
         defaulttype::Vec4f color(0,0,1,1);
-        std::vector<Vector3> force(2);
+        std::vector<defaulttype::Vector3> force(2);
         for(unsigned i=0; i<debug_forces.size()/4; i++)
         {
             force[0] = debug_forces[i*4];
@@ -302,7 +302,7 @@ void ClothBendingForceField<DataTypes>::draw(const core::visual::VisualParams* v
             vparams->drawTool()->drawLines(force, 1, debug_colors[i]);
         }
     }
-    this->StiffSpringForceField::draw(vparams);
+    Inherit::draw(vparams);
 }
 
 } // namespace interactionforcefield
