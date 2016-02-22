@@ -56,6 +56,7 @@ TTriangleModel<DataTypes>::TTriangleModel()
     : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the triangle model") )
     , mstate(NULL)
     , computeNormals(initData(&computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
+    , triangulateQuads(initData(&triangulateQuads, true, "triangulateQuads", "split quads into triangles for collision detection"))
     , meshRevision(-1)
     , m_lmdFilter(NULL)
 {
@@ -132,8 +133,10 @@ void TTriangleModel<DataTypes>::updateFromTopology()
     //    needsUpdate = false;
     const unsigned npoints = mstate->getSize();
     const unsigned ntris = _topology->getNbTriangles();
+    unsigned newsize = ntris;
     const unsigned nquads = _topology->getNbQuads();
-    const unsigned newsize = ntris+2*nquads;
+    if(triangulateQuads.getValue())
+        newsize += 2*nquads;
 
     int revision = _topology->getRevision();
     if (newsize==(unsigned)size && revision == meshRevision)
@@ -167,25 +170,28 @@ void TTriangleModel<DataTypes>::updateFromTopology()
             mytriangles[index] = idx;
             ++index;
         }
-        for (unsigned i=0; i<nquads; i++)
+        if(triangulateQuads.getValue())
         {
-            topology::BaseMeshTopology::Quad idx = _topology->getQuad(i);
-            if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
+            for (unsigned i=0; i<nquads; i++)
             {
-                serr << "ERROR: Out of range index in quad "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" "<<idx[3]<<" ( total points="<<npoints<<")"<<sendl;
-                if (idx[0] >= npoints) idx[0] = npoints-1;
-                if (idx[1] >= npoints) idx[1] = npoints-1;
-                if (idx[2] >= npoints) idx[2] = npoints-1;
-                if (idx[3] >= npoints) idx[3] = npoints-1;
+                topology::BaseMeshTopology::Quad idx = _topology->getQuad(i);
+                if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
+                {
+                    serr << "ERROR: Out of range index in quad "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" "<<idx[3]<<" ( total points="<<npoints<<")"<<sendl;
+                    if (idx[0] >= npoints) idx[0] = npoints-1;
+                    if (idx[1] >= npoints) idx[1] = npoints-1;
+                    if (idx[2] >= npoints) idx[2] = npoints-1;
+                    if (idx[3] >= npoints) idx[3] = npoints-1;
+                }
+                mytriangles[index][0] = idx[1];
+                mytriangles[index][1] = idx[2];
+                mytriangles[index][2] = idx[0];
+                ++index;
+                mytriangles[index][0] = idx[3];
+                mytriangles[index][1] = idx[0];
+                mytriangles[index][2] = idx[2];
+                ++index;
             }
-            mytriangles[index][0] = idx[1];
-            mytriangles[index][1] = idx[2];
-            mytriangles[index][2] = idx[0];
-            ++index;
-            mytriangles[index][0] = idx[3];
-            mytriangles[index][1] = idx[0];
-            mytriangles[index][2] = idx[2];
-            ++index;
         }
     }
     updateFlags();
@@ -863,7 +869,10 @@ int TTriangleModel<DataTypes>::getTriangleFlags(int i)
         {
             const sofa::core::topology::BaseMeshTopology::TrianglesAroundVertex& tav = _topology->getTrianglesAroundVertex(t[j]);
             if (tav[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
+            {
+                sout<<"flag for p"<<j<<sendl;
                 f |= (FLAG_P1 << j);
+            }
         }
 
         const sofa::core::topology::BaseMeshTopology::EdgesInTriangle& e = _topology->getEdgesInTriangle(i);
