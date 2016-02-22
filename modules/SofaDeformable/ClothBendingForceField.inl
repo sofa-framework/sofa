@@ -185,15 +185,17 @@ bool ClothBendingForceField<DataTypes>::findAlignedEdges(const unsigned index1, 
     const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = topology->getQuads();
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = topology->getTriangles();
 
-    Real angle;
-    bool finded = false;
+
 
     sofa::core::topology::BaseMeshTopology::QuadsAroundVertex quadsAroundVertex = topology->getQuadsAroundVertex(index2);
     sofa::core::topology::BaseMeshTopology::TrianglesAroundVertex trianglesAroundVertex = topology->getTrianglesAroundVertex(index2);
 
+    bool finded = false;
+
     //quads
     for(unsigned i=0; i<quadsAroundVertex.size(); i++)
     {
+        Real angle = 1.0;
         const sofa::core::topology::BaseMeshTopology::Quad& face = quads[quadsAroundVertex[i]];
         for(unsigned j=0; j<face.size(); j++)
         {
@@ -216,6 +218,7 @@ bool ClothBendingForceField<DataTypes>::findAlignedEdges(const unsigned index1, 
     //triangles
     for(unsigned i=0; i<trianglesAroundVertex.size(); i++)
     {
+        Real angle = 1.0;
         const sofa::core::topology::BaseMeshTopology::Triangle& face = triangles[trianglesAroundVertex[i]];
         for(unsigned j=0; j<face.size(); j++)
         {

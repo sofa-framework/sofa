@@ -65,7 +65,7 @@ void ClothSpringForceField<DataTypes>::init()
     const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = topology->getQuads();
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = topology->getTriangles();
 
-    for(unsigned i=0; i<topology->getNbPoints(); ++i)
+    for(int i=0; i<topology->getNbPoints(); ++i)
     {
         // quads
         sofa::core::topology::BaseMeshTopology::QuadsAroundVertex quadsAroundVertex = topology->getQuadsAroundVertex(i);
