@@ -60,7 +60,7 @@ public:
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef Inherit::Spring Spring;
+    typedef typename Inherit::Spring Spring;
 
 
     Data<SReal> kb; // flexural rigidity 
