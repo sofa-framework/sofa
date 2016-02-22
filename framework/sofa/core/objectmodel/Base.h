@@ -339,8 +339,14 @@ public:
     ///   Messages and warnings logging
     /// @{
 
+    /// write into component buffer + Message processedby message handlers
+    /// default message type = Warning
     mutable helper::system::SofaOStream serr;
+    /// write into component buffer.
+    /// Message is processed by message handlers only if printLog==true
+    /// /// default message type = Info
     mutable helper::system::SofaOStream sout;
+    /// runs the stream processing
     mutable helper::system::SofaEndl<Base> sendl;
 
 

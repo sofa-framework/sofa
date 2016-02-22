@@ -77,13 +77,20 @@ class SOFA_HELPER_API SofaOStream : public std::ostringstream
 {
 protected:
     logging::FileInfo m_fileInfo;
+    logging::Message::Type m_messageType;
+    logging::Message::Type m_defaultMessageType;
 
 public:
+
+    SofaOStream()
+        : m_defaultMessageType( helper::logging::Message::Info )
+    {}
 
     void clear()
     {
         this->str("");
         m_fileInfo = helper::logging::FileInfo();
+        m_messageType = m_defaultMessageType;
     }
 
     const logging::FileInfo& fileInfo() const
@@ -91,9 +98,25 @@ public:
         return m_fileInfo;
     }
 
+    const logging::Message::Type& messageType() const
+    {
+        return m_messageType;
+    }
+
+    void setDefaultMessageType( logging::Message::Type mt )
+    {
+        m_defaultMessageType = mt;
+    }
+
     friend inline SofaOStream& operator<<( SofaOStream& out, const logging::FileInfo& fi )
     {
         out.m_fileInfo = fi;
+        return out;
+    }
+
+    friend inline SofaOStream& operator<<( SofaOStream& out, const logging::Message::Type& mt )
+    {
+        out.m_messageType = mt;
         return out;
     }
 

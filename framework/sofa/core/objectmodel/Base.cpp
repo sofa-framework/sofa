@@ -63,6 +63,8 @@ Base::Base()
     f_bbox.setDisplayed(false);
     f_bbox.setAutoLink(false);
     sendl.setParent(this);
+    serr.setDefaultMessageType(helper::logging::Message::Warning);
+    sout.setDefaultMessageType(helper::logging::Message::Info);
 }
 
 Base::~Base()
@@ -252,7 +254,7 @@ void Base::processStream(std::ostream& out)
         std::string str = serr.str();
         serr << "\n";
 
-        helper::logging::MessageDispatcher::warning(helper::logging::Message::Runtime, this, serr.fileInfo()) << str;
+        helper::logging::MessageDispatcher::log(helper::logging::Message::Runtime, serr.messageType(), this, serr.fileInfo()) << str;
 
         if (warnings.size()+str.size() >= MAXLOGSIZE)
         {
@@ -270,7 +272,7 @@ void Base::processStream(std::ostream& out)
         sout << "\n";
         if (f_printLog.getValue())
         {
-            helper::logging::MessageDispatcher::info(helper::logging::Message::Runtime, this, sout.fileInfo()) << str;
+            helper::logging::MessageDispatcher::log(helper::logging::Message::Runtime, sout.messageType(), this, sout.fileInfo()) << str;
         }
         if (outputs.size()+str.size() >= MAXLOGSIZE)
         {
