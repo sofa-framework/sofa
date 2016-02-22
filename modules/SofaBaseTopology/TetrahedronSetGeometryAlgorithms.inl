@@ -29,6 +29,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
 #include <SofaBaseTopology/NumericalIntegrationDescriptor.inl>
+#include <fstream>
 namespace sofa
 {
 

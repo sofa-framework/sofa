@@ -23,7 +23,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/ClassInfo.h>
-#include <iostream>
 
 namespace sofa
 {

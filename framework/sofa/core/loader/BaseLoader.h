@@ -29,11 +29,9 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 
-//#include <cstdlib>
 #include <string>
 #include <cstring>
-//#include <iostream>
-//#include <sofa/helper/vector.h>
+#include <fstream>
 
 namespace sofa
 {
