@@ -174,6 +174,7 @@ protected:
 
     core::behavior::MechanicalState<DataTypes>* mstate;
     Data<bool> computeNormals;
+    Data<bool> triangulateQuads;
     int meshRevision;
 
     sofa::core::topology::BaseMeshTopology* _topology;
