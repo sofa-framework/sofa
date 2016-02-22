@@ -870,7 +870,6 @@ int TTriangleModel<DataTypes>::getTriangleFlags(int i)
             const sofa::core::topology::BaseMeshTopology::TrianglesAroundVertex& tav = _topology->getTrianglesAroundVertex(t[j]);
             if (tav[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
             {
-                sout<<"flag for p"<<j<<sendl;
                 f |= (FLAG_P1 << j);
             }
         }
