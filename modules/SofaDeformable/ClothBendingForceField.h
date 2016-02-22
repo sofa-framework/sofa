@@ -50,6 +50,7 @@ class ClothBendingForceField : public StiffSpringForceField<DataTypes>
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ClothBendingForceField, DataTypes), SOFA_TEMPLATE(StiffSpringForceField, DataTypes));
 
+    typedef StiffSpringForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -57,6 +58,9 @@ public:
     typedef typename Coord::value_type Real;
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
+    enum { N=DataTypes::spatial_dimensions };
+    typedef defaulttype::Mat<N,N,Real> Mat;
+    typedef Inherit::Spring Spring;
 
 
     Data<SReal> kb; // flexural rigidity 
