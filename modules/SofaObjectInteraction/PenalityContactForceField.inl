@@ -56,7 +56,7 @@ void PenalityContactForceField<DataTypes>::clear(int reserve)
 
 
 template<class DataTypes>
-void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, int index1, int index2, const Deriv& norm, Real dist, Real ks, Real /*mu_s*/, Real mu_v, int oldIndex)
+void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, int index1, int index2, const Deriv& norm, Real dist, Real ks, Real /*mu_s*/, Real /*mu_v*/, int oldIndex)
 {
     int i = contacts.getValue().size();
     contacts.beginEdit()->resize(i+1);
@@ -69,7 +69,7 @@ void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, int index1
     c.dist = dist;
     c.ks = ks;
 //	c.mu_s = mu_s;
-	c.mu_v = mu_v;
+//	c.mu_v = mu_v;
     c.pen = 0;
     if (oldIndex > 0 && oldIndex <= (int)prevContacts.size())
     {
@@ -83,14 +83,14 @@ void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, int index1
 }
 
 template<class DataTypes>
-void PenalityContactForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
+void PenalityContactForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& /*data_v1*/, const DataVecDeriv& /*data_v2*/ )
 {
     VecDeriv&       f1 = *data_f1.beginEdit();
     const VecCoord& x1 =  data_x1.getValue();
-    const VecDeriv& v1 =  data_v1.getValue();
+    //const VecDeriv& v1 =  data_v1.getValue();
     VecDeriv&       f2 = *data_f2.beginEdit();
     const VecCoord& x2 =  data_x2.getValue();
-    const VecDeriv& v2 =  data_v2.getValue();
+    //const VecDeriv& v2 =  data_v2.getValue();
 
     helper::vector<Contact>& cc = *contacts.beginEdit();
 
@@ -107,10 +107,6 @@ void PenalityContactForceField<DataTypes>::addForce(const sofa::core::Mechanical
             Real fN = c.ks * c.pen;
             Deriv force = -c.norm*fN;
 
-            Deriv vr = v2[c.m2]-v1[c.m1];
-            Deriv vt = vr - vr*c.norm*c.norm;
-            //force += vt*c.mu_v;
-           
             f1[c.m1]+=force;
             f2[c.m2]-=force;
         }
