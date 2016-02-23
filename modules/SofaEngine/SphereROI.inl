@@ -351,19 +351,18 @@ void SphereROI<DataTypes>::update()
     //Points
     for( unsigned i=0; i<x0->size(); ++i )
     {
+        bool isInSpheres = false;
         for (unsigned int j=0; j<cen.size(); ++j)
         {
             if (isPointInSphere(cen[j], rad[j], (*x0)[i]))
             {
                 indices.push_back(i);
                 pointsInROI.push_back((*x0)[i]);
+                isInSpheres = true;
                 break;
             }
-            else
-            {
-                indicesOut.push_back(i);
-            }
         }
+        if (!isInSpheres) indicesOut.push_back(i);
     }
 
     //Edges
