@@ -16,7 +16,16 @@ namespace mapping
 
 
 
-/** Map volumes from tetrahedra */
+/** Map volumes from tetrahedra
+ *
+ * Two methods:
+ *     - either a volume per tetra,
+ *     - or volumes are dispatched per vertex (taking a quarter of its incident tetrahedra).
+ *
+ * @author Matthieu Nesme
+ * @date 2014
+ *
+*/
 
 template <class TIn, class TOut>
 class TetrahedronVolumeMapping : public core::Mapping<TIn,TOut>
