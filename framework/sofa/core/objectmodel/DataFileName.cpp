@@ -56,7 +56,7 @@ void DataFileName::updatePath()
     {
         fullpath = m_values[currentAspect()].getValue();
         if (!fullpath.empty())
-            helper::system::DataRepository.findFile(fullpath,"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));
+            helper::system::DataRepository.findFile(fullpath,"",(this->m_owner ? &(this->m_owner->serr.ostringstream()) : &std::cerr));
     }
 }
 
@@ -77,7 +77,7 @@ void DataFileNameVector::updatePath()
             }
             else
             {
-                helper::system::DataRepository.findFile(fullpath[i],"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));
+                helper::system::DataRepository.findFile(fullpath[i],"",(this->m_owner ? &(this->m_owner->serr.ostringstream()) : &std::cerr));
             }
         }
 }

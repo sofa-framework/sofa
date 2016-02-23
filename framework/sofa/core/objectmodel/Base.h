@@ -339,13 +339,20 @@ public:
     ///   Messages and warnings logging
     /// @{
 
+private:
+
+    /// effective ostringstream for logging
+    mutable std::ostringstream _serr, _sout;
+
+public:
+
     /// write into component buffer + Message processedby message handlers
     /// default message type = Warning
-    mutable helper::system::SofaOStream serr;
+    mutable helper::system::SofaOStream<helper::logging::Message::Warning> serr;
     /// write into component buffer.
     /// Message is processed by message handlers only if printLog==true
     /// /// default message type = Info
-    mutable helper::system::SofaOStream sout;
+    mutable helper::system::SofaOStream<helper::logging::Message::Info> sout;
     /// runs the stream processing
     mutable helper::system::SofaEndl<Base> sendl;
 

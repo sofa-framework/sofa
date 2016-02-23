@@ -49,6 +49,8 @@ Base::Base()
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, print logs at run-time"))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
     , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
+    , serr(_serr)
+    , sout(_sout)
 {
     name.setOwnerClass("Base");
     name.setAutoLink(false);
@@ -63,8 +65,6 @@ Base::Base()
     f_bbox.setDisplayed(false);
     f_bbox.setAutoLink(false);
     sendl.setParent(this);
-    serr.setDefaultMessageType(helper::logging::Message::Warning);
-    sout.setDefaultMessageType(helper::logging::Message::Info);
 }
 
 Base::~Base()
@@ -249,7 +249,7 @@ void Base::processStream(std::ostream& out)
 {
     // const std::string name = getClassName() + " \"" + getName() + "\"";
 
-    if (&out == &serr)
+    if (serr==out)
     {
         std::string str = serr.str();
         serr << "\n";
@@ -266,7 +266,7 @@ void Base::processStream(std::ostream& out)
         warnings += str;
         serr.clear();
     }
-    else if (&out == &sout)
+    else if (sout==out)
     {
         std::string str = sout.str();
         sout << "\n";

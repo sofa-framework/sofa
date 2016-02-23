@@ -333,7 +333,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             std::streamsize prevPrecision = sout.precision();
             sout.precision(2);
             sout << "Precomputing constraint correction : " << std::fixed << (float)f / (float)nbNodes * 100.0f << " %   " << '\xd';
-            sout.flush();
+            sout << sendl;
             sout.precision(prevPrecision);
 
             // Deriv unitary_force;
