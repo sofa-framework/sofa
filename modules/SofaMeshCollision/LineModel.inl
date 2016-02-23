@@ -397,20 +397,6 @@ void TLineModel<DataTypes>::updateFromTopology()
 }
 
 template<class DataTypes>
-void TLineModel<DataTypes>::draw(const core::visual::VisualParams* ,int index)
-{
-#ifndef SOFA_NO_OPENGL
-    TLine<DataTypes> l(this,index);
-    if (!l.activated())
-        return;
-    glBegin(GL_LINES);
-    helper::gl::glVertexT(l.p1());
-    helper::gl::glVertexT(l.p2());
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
-}
-
-template<class DataTypes>
 void TLineModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (vparams->displayFlags().getShowCollisionModels())
