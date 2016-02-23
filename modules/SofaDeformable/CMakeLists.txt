@@ -2,10 +2,6 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaDeformable)
 
 set(HEADER_FILES
-    ClothBendingForceField.h
-    ClothBendingForceField.inl
-    ClothSpringForceField.h
-    ClothSpringForceField.inl
     FastTriangularBendingSprings.h
     FastTriangularBendingSprings.inl
     FrameSpringForceField.h
@@ -41,8 +37,6 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    ClothBendingForceField.cpp
-    ClothSpringForceField.cpp
     FastTriangularBendingSprings.cpp
     FrameSpringForceField.cpp
     MeshSpringForceField.cpp
