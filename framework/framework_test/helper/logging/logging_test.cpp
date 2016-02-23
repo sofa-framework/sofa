@@ -28,8 +28,8 @@ public:
     virtual void process(Message& m){
         m_messages.push_back(m);
 
-//        if( !m.sender().empty() )
-//            std::cerr<<m<<std::endl;
+        if( !m.sender().empty() )
+            std::cerr<<m<<std::endl;
     }
 
     int numMessages(){
@@ -181,7 +181,28 @@ TEST(LoggingTest, BaseObject)
     EXPECT_EQ( h.lastMessage().fileInfo().line, __LINE__-1 );
     EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, __FILE__ ) );
 
-    EXPECT_EQ( h.numMessages(), 10 ) ;
+    c.serr<<SOFA_FILE_INFO<<sofa::helper::logging::Message::Error<<"external serr as Error with fileinfo"<<c.sendl;
+    EXPECT_EQ( h.lastMessage().fileInfo().line, __LINE__-1 );
+    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, __FILE__ ) );
+    EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Error );
+
+    c.sout<<sofa::helper::logging::Message::Error<<SOFA_FILE_INFO<<"external sout as Error with fileinfo"<<c.sendl;
+    EXPECT_EQ( h.lastMessage().fileInfo().line, __LINE__-1 );
+    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, __FILE__ ) );
+    EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Error );
+
+    c.serr<<"serr with sendl that comes in a second time";
+    c.serr<<c.sendl;
+    EXPECT_EQ( h.lastMessage().fileInfo().line, 0 );
+    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
+    EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Warning );
+
+    c.serr<<"\n serr with \n end of "<<std::endl<<" lines"<<c.sendl;
+    EXPECT_EQ( h.lastMessage().fileInfo().line, 0 );
+    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
+    EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Warning );
+
+    EXPECT_EQ( h.numMessages(), 14 ) ;
 }
 
 #undef MESSAGING_H

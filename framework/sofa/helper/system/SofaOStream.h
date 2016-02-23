@@ -85,16 +85,16 @@ public:
 
     // operator std::ostream&() const { return m_ostream; }
 
-    friend inline std::ostringstream& operator<<( SofaOStream& out, const logging::FileInfo& fi )
+    friend inline SofaOStream& operator<<( SofaOStream& out, const logging::FileInfo& fi )
     {
         out.m_fileInfo = fi;
-        return out.m_ostream;
+        return out;
     }
 
-    friend inline std::ostringstream& operator<<( SofaOStream& out, const logging::Message::Type& mt )
+    friend inline SofaOStream& operator<<( SofaOStream& out, const logging::Message::Type& mt )
     {
         out.m_messageType = mt;
-        return out.m_ostream;
+        return out;
     }
 
     template<class T>
