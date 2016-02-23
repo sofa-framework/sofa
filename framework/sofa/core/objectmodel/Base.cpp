@@ -45,12 +45,12 @@ static const std::string unnamed_label=std::string("unnamed");
 
 Base::Base()
     : ref_counter(0)
+    , serr(_serr)
+    , sout(_sout)
     , name(initData(&name,unnamed_label,"name","object name"))
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, print logs at run-time"))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
     , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
-    , serr(_serr)
-    , sout(_sout)
 {
     name.setOwnerClass("Base");
     name.setAutoLink(false);

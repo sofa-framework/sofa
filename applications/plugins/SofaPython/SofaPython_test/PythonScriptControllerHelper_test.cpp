@@ -60,7 +60,7 @@ protected:
 
         unsigned int ui;
         PythonScriptController_call(&ui, "controller", "add", (unsigned int)5, (unsigned int)6);
-        EXPECT_EQ(11, ui);
+        EXPECT_EQ(11u, ui);
 
         double d;
         PythonScriptController_call(&d, "controller", "add", 7., 8.5);
