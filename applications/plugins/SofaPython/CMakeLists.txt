@@ -56,7 +56,7 @@ set(HEADER_FILES
 )
 
 if(SOFA_USE_C++11)
-    list(APPEND HEADER_FILES PythonScriptHelper.h)
+    list(APPEND HEADER_FILES PythonScriptControllerHelper.h)
 endif()
 
 set(SOURCE_FILES
@@ -106,6 +106,10 @@ set(SOURCE_FILES
     ScriptFunction.cpp
     initSofaPython.cpp
 )
+
+if(SOFA_USE_C++11)
+    list(APPEND SOURCE_FILES PythonScriptControllerHelper.cpp)
+endif()
 
 set(PYTHON_FILES
     python/SofaPython/DAGValidation.py

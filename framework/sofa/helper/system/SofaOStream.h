@@ -27,7 +27,6 @@
 
 #include <sofa/helper/helper.h>
 #include <sstream>
-#include <iostream>
 #include <sofa/helper/logging/Message.h>
 
 namespace sofa
@@ -72,24 +71,19 @@ public:
 
 
 
-/// a SofaOStream is a simple std::ostringstream that can stream a logging::FileInfo
-class SofaOStream : public std::ostringstream
+
+/// a SofaOStream is a std::ostringstream encapsulation that can stream a logging::FileInfo and a logging::Message::Type
+template< int DefaultMessageType = logging::Message::Info >
+class SofaOStream
 {
-protected:
-    logging::FileInfo m_fileInfo;
 
 public:
 
-    void clear()
-    {
-        this->str("");
-        m_fileInfo = helper::logging::FileInfo();
-    }
+    SofaOStream(std::ostringstream& os) : m_ostream(os), m_messageType((logging::Message::Type)DefaultMessageType) {}
 
-    const logging::FileInfo& fileInfo() const
-    {
-        return m_fileInfo;
-    }
+    bool operator==(const std::ostream& os) { return &os == &m_ostream; }
+
+    // operator std::ostream&() const { return m_ostream; }
 
     friend inline SofaOStream& operator<<( SofaOStream& out, const logging::FileInfo& fi )
     {
@@ -97,6 +91,46 @@ public:
         return out;
     }
 
+    friend inline SofaOStream& operator<<( SofaOStream& out, const logging::Message::Type& mt )
+    {
+        out.m_messageType = mt;
+        return out;
+    }
+
+    template<class T>
+    friend inline std::ostringstream& operator<<( SofaOStream& out, const T& t )
+    {
+        out.m_ostream << t;
+        return out.m_ostream;
+    }
+
+    // a few useful functions on ostringstream, for a complete API, convert this in a ostringstream
+    std::string str() const { return m_ostream.str(); }
+    void str(const std::string& s) { m_ostream.str(s); }
+    std::streamsize precision() const { return m_ostream.precision(); }
+    std::streamsize precision( std::streamsize p ) { return m_ostream.precision(p); }
+
+    std::ostringstream& ostringstream() const { return m_ostream; }
+    const logging::FileInfo& fileInfo() const { return m_fileInfo; }
+    const logging::Message::Type& messageType() const { return m_messageType; }
+
+    /// clearing the SofaOStream (set empty string, empty FileInfo, default Message type)
+    void clear()
+    {
+        str("");
+        m_fileInfo = helper::logging::FileInfo();
+        m_messageType = (logging::Message::Type)DefaultMessageType;
+    }
+
+protected:
+
+    /// the effective ostringstream
+    std::ostringstream& m_ostream;
+
+    /// the current FileInfo
+    logging::FileInfo m_fileInfo;
+    /// the current Message type
+    logging::Message::Type m_messageType;
 };
 
 

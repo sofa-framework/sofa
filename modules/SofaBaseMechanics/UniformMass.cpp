@@ -372,6 +372,8 @@ void UniformMass<Vec6dTypes, double>::draw(const core::visual::VisualParams* vpa
             colors.push_back(colorSet[j]);;
         }
     }
+
+    vparams->drawTool()->drawLines(vertices, 1, colors);
 }
 
 template <> SOFA_BASE_MECHANICS_API
@@ -738,6 +740,7 @@ void UniformMass<Vec6fTypes, float>::draw(const core::visual::VisualParams* vpar
             colors.push_back(colorSet[j]);;
         }
     }
+    vparams->drawTool()->drawLines(vertices, 1, colors);
 }
 
 

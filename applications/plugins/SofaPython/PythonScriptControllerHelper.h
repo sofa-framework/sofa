@@ -22,10 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef PYTHONSCRIPTHELPER_H
-#define PYTHONSCRIPTHELPER_H
+#ifndef PYTHONSCRIPTCONTROLLERHELPER_H
+#define PYTHONSCRIPTCONTROLLERHELPER_H
 
 #include <vector>
+#include <string>
 
 #include "PythonMacros.h"
 #include <SofaPython/config.h>
@@ -39,92 +40,50 @@ namespace sofa {
 namespace helper {
 
 
-namespace { // anonymous namespase
+namespace internal {
 
-PyObject* PythonScript_valueToPyObject(bool param)
-{
-    PyObject* value = nullptr;
-    value = Py_BuildValue("b", param);
-    return value;
-}
-PyObject* PythonScript_valueToPyObject(int param)
-{
-    PyObject* value = nullptr;
-    value = Py_BuildValue("i", param);
-    return value;
-}
-PyObject* PythonScript_valueToPyObject(unsigned int param)
-{
-    PyObject* value = nullptr;
-    value = Py_BuildValue("UI", param);
-    return value;
-}
-PyObject* PythonScript_valueToPyObject(double param)
-{
-    PyObject* value = nullptr;
-    value = Py_BuildValue("d", param);
-    return value;
-}
-PyObject* PythonScript_valueToPyObject(std::string const& param)
-{
-    PyObject* value = nullptr;
-    value = Py_BuildValue("s", param.c_str());
-    return value;
-}
+PyObject* PythonScriptController_valueToPyObject(bool param);
+PyObject* PythonScriptController_valueToPyObject(int param);
+PyObject* PythonScriptController_valueToPyObject(unsigned int param);
+PyObject* PythonScriptController_valueToPyObject(double param);
+PyObject* PythonScriptController_valueToPyObject(std::string const& param);
 
-void PythonScript_pyObjectToValue(PyObject* pyObject, bool & val)
-{
-    if (!pyObject) return;
-    if(PyBool_Check(pyObject))
-        val = (Py_False != pyObject);
-    else
-        SP_MESSAGE_ERROR("Cannot convert pyObject to bool");
-}
-
-void PythonScript_pyObjectToValue(PyObject* pyObject, int & val)
-{
-    if (!pyObject) return;
-    if(PyInt_Check(pyObject))
-        val = (int)PyInt_AS_LONG(pyObject);
-    else
-        SP_MESSAGE_ERROR("Cannot convert pyObject to int");
-}
-
-void PythonScript_pyObjectToValue(PyObject* pyObject, double & val)
-{
-    if (!pyObject) return;
-    if(PyFloat_Check(pyObject))
-        val = PyFloat_AS_DOUBLE(pyObject);
-    else
-        SP_MESSAGE_ERROR("Cannot convert pyObject to double");
-}
+void PythonScriptController_pyObjectToValue(PyObject* pyObject, bool & val);
+void PythonScriptController_pyObjectToValue(PyObject* pyObject, int & val);
+void PythonScriptController_pyObjectToValue(PyObject* pyObject, unsigned int & val);
+void PythonScriptController_pyObjectToValue(PyObject* pyObject, float & val);
+void PythonScriptController_pyObjectToValue(PyObject* pyObject, double & val);
+void PythonScriptController_pyObjectToValue(PyObject* pyObject, std::string & val);
 
 
-void PythonScript_parameterVector(std::vector<PyObject*> & /*vecParam*/) {return;}
+void PythonScriptController_parametersToVector(std::vector<PyObject*> & /*vecParam*/) {return;}
 
 template<typename T, typename... ParametersType>
-void PythonScript_parameterVector(std::vector<PyObject*> & vecParam, T param, ParametersType... otherParameters)
+void PythonScriptController_parametersToVector(std::vector<PyObject*> & vecParam, T param, ParametersType... otherParameters)
 {
-    vecParam.push_back(PythonScript_valueToPyObject(param));
-    PythonScript_parameterVector(vecParam, otherParameters...);
+    vecParam.push_back(PythonScriptController_valueToPyObject(param));
+    PythonScriptController_parametersToVector(vecParam, otherParameters...);
 }
 
 template<typename... ParametersType>
-PyObject* PythonScript_parameterTuple(ParametersType... parameters)
+PyObject* PythonScript_parametersToTuple(ParametersType... parameters)
 {
     std::vector<PyObject*> vecParam;
-    PythonScript_parameterVector(vecParam, parameters...);
+    PythonScriptController_parametersToVector(vecParam, parameters...);
     PyObject* tuple = PyTuple_New(vecParam.size());
     for (std::size_t i=0; i<vecParam.size(); ++i)
         PyTuple_SetItem(tuple, i, vecParam[i]);
     return tuple;
 }
 
-} // anonymous namespase
+} // namespase internal
 
-/// A helper function to call \a funcName in \a pythonScriptControllerName
+/** A helper function to call \a funcName in \a pythonScriptControllerName.
+ * The function returned value is stored in \a result.
+ * If the controller functions returns None, or if you are not interested by the returned value, call it with \c nullptr
+ */
 template<typename ResultType, typename... ParametersType>
-void PythonScriptFunction_call(ResultType & result, std::string const& pythonScriptControllerName, std::string const& funcName, ParametersType... parameters)
+void PythonScriptController_call(ResultType * result, std::string const& pythonScriptControllerName, std::string const& funcName, ParametersType... parameters)
 {
     sofa::component::controller::PythonScriptController* controller = nullptr;
     controller = dynamic_cast<sofa::component::controller::PythonScriptController*>(sofa::simulation::getSimulation()->GetRoot()->getObject(pythonScriptControllerName.c_str()));
@@ -139,20 +98,21 @@ void PythonScriptFunction_call(ResultType & result, std::string const& pythonScr
     }
 
     sofa::core::objectmodel::PythonScriptFunction pyFunction(pyCallableObject, true);
-    sofa::core::objectmodel::PythonScriptFunctionParameter pyParameter(PythonScript_parameterTuple(parameters...), true);
+    sofa::core::objectmodel::PythonScriptFunctionParameter pyParameter(internal::PythonScript_parametersToTuple(parameters...), true);
     sofa::core::objectmodel::PythonScriptFunctionResult pyResult;
     pyFunction(&pyParameter, &pyResult);
-    PythonScript_pyObjectToValue(pyResult.data(), result);
+    if (result!=nullptr)
+        internal::PythonScriptController_pyObjectToValue(pyResult.data(), *result);
 }
 
 template<typename... ParametersType>
-void PythonScriptFunction_callNoResult(std::string const& pythonScriptControllerName, std::string const& funcName, ParametersType... parameters)
+void PythonScriptController_call(std::nullptr_t /*result*/, std::string const& pythonScriptControllerName, std::string const& funcName, ParametersType... parameters)
 {
-    int result; // dummy result
-    PythonScriptFunction_call(result, pythonScriptControllerName, funcName, parameters...);
+    int* none=nullptr;
+    PythonScriptController_call(none, pythonScriptControllerName, funcName, parameters...);
 }
 
 } // namespace helper
 } // namespace sofa
 
-#endif // PYTHONSCRIPTHELPER_H
+#endif // PYTHONSCRIPTCONTROLLERHELPER_H

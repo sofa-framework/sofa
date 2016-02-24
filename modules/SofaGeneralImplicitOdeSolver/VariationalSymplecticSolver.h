@@ -3,6 +3,7 @@
 #include "config.h"
 
 #include <sofa/core/behavior/OdeSolver.h>
+#include <fstream>
 
 namespace sofa
 {

@@ -103,13 +103,11 @@ void MessageDispatcher::process(sofa::helper::logging::Message& m){
 }
 
 
-inline MessageDispatcher::LoggerStream log(Message::Class mclass, Message::Type type,
-                const std::string& sender = "", FileInfo fileInfo = FileInfo()) {
+MessageDispatcher::LoggerStream MessageDispatcher::log(Message::Class mclass, Message::Type type, const std::string& sender, FileInfo fileInfo) {
     return MessageDispatcher::LoggerStream( mclass, type, sender, fileInfo);
 }
 
-inline MessageDispatcher::LoggerStream log(Message::Class mclass, Message::Type type,
-                const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) {
+MessageDispatcher::LoggerStream MessageDispatcher::log(Message::Class mclass, Message::Type type, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo) {
     return MessageDispatcher::LoggerStream(mclass, type, sender, fileInfo);
 }
 

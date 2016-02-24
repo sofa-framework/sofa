@@ -194,7 +194,6 @@ Node::SPtr createHouseOfCards(Node::SPtr root,  unsigned int size, SReal distanc
 
 int main(int argc, char** argv)
 {
-    glutInit(&argc,argv);
     sofa::simulation::tree::init();
     sofa::component::initComponentBase();
     sofa::component::initComponentCommon();

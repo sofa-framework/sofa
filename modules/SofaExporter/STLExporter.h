@@ -32,6 +32,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
+#include <sofa/core/objectmodel/GUIEvent.h>
 
 #include <fstream>
 
