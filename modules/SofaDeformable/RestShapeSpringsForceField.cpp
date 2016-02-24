@@ -199,24 +199,20 @@ void RestShapeSpringsForceField<Rigid3dTypes>::draw(const core::visual::VisualPa
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->setLightingEnabled(false);
 
-    const VecIndex& indices = points.getValue();
-    const VecIndex& ext_indices=external_points.getValue();
-
     sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
     sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
 
-
     sofa::helper::vector< Vector3 > vertices;
 
-    for (unsigned int i=0; i<indices.size(); i++)
+    for (unsigned int i=0; i<m_indices.size(); i++)
     {
-        const unsigned int index = indices[i];
+        const unsigned int index = m_indices[i];
 
         vertices.push_back(p[index].getCenter());
 
         if(useRestMState)
         {
-            const unsigned int ext_index = ext_indices[i];
+            const unsigned int ext_index = m_ext_indices[i];
             vertices.push_back(p0[ext_index].getCenter());
         }
         else
@@ -224,7 +220,6 @@ void RestShapeSpringsForceField<Rigid3dTypes>::draw(const core::visual::VisualPa
             vertices.push_back(p0[index].getCenter());
         }
     }
-
     vparams->drawTool()->drawLines(vertices,5,springColor.getValue());
     vparams->drawTool()->restoreLastState();
 }
@@ -340,18 +335,15 @@ void RestShapeSpringsForceField<Rigid3fTypes>::draw(const core::visual::VisualPa
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->setLightingEnabled(false);
 
-    const VecIndex& indices = points.getValue();
-    const VecIndex& ext_indices=external_points.getValue();
-
     sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
     sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
 
     sofa::helper::vector<sofa::defaulttype::Vector3> vertices;
 
     sofa::defaulttype::Vec4f green(0.0, 1.0, 0.0, 1.0);
-    for (unsigned int i=0; i<indices.size(); i++)
+    for (unsigned int i=0; i<m_indices.size(); i++)
     {
-        const unsigned int index = indices[i];
+        const unsigned int index = m_indices[i];
 
         glLineWidth(4.0);
         glBegin(GL_LINES);
@@ -360,7 +352,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::draw(const core::visual::VisualPa
         sofa::defaulttype::Vector3 v0(p[index].getCenter()[0],
                                       p[index].getCenter()[1],
                                       p[index].getCenter()[2]);
-        unsigned int tempIndex = (useRestMState) ? ext_indices[i] : index;
+        unsigned int tempIndex = (useRestMState) ? m_ext_indices[i] : index;
 
         sofa::defaulttype::Vector3 v1(p0[tempIndex].getCenter()[0],
                                       p0[tempIndex].getCenter()[1],
@@ -407,38 +399,6 @@ else
 }
 */
 
-
-template<>
-void RestShapeSpringsForceField<Vec3dTypes>::draw(const core::visual::VisualParams* vparams)
-{
-#ifndef SOFA_NO_OPENGL
-    if (!vparams->displayFlags().getShowForceFields() || !drawSpring.getValue())
-        return;  /// \todo put this in the parent class
-
-    sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
-
-    sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
-
-    const VecIndex& indices = m_indices;
-    const VecIndex& ext_indices = (useRestMState ? m_ext_indices : m_indices);
-
-
-    for (unsigned int i=0; i<indices.size(); i++)
-    {
-        const unsigned int index = indices[i];
-        const unsigned int ext_index = ext_indices[i];
-
-        glDisable(GL_LIGHTING);
-        glBegin(GL_LINES);
-        glColor3f(0,1,0);
-
-        glVertex3f( (GLfloat)p[index][0], (GLfloat)p[index][1], (GLfloat)p[index][2] );
-        glVertex3f( (GLfloat)p0[ext_index][0], (GLfloat)p0[ext_index][1], (GLfloat)p0[ext_index][2] );
-
-        glEnd();
-    }
-#endif /* SOFA_NO_OPENGL */
-}
 #endif
 
 
