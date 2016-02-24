@@ -28,8 +28,8 @@ public:
     virtual void process(Message& m){
         m_messages.push_back(m);
 
-        if( !m.sender().empty() )
-            std::cerr<<m<<std::endl;
+//        if( !m.sender().empty() )
+//            std::cerr<<m<<std::endl;
     }
 
     int numMessages(){
@@ -52,15 +52,15 @@ public:
 protected:
     MyComponent()
     {        
-        std::cerr<<SOFA_CLASS_METHOD<<"constructor"<<std::endl;
+//        std::cerr<<SOFA_CLASS_METHOD<<"constructor"<<std::endl;
         f_printLog.setValue(true); // to print sout
-        std::cerr<<SOFA_CLASS_METHOD<<"regular serr"<<std::endl;
+//        std::cerr<<SOFA_CLASS_METHOD<<"regular serr"<<std::endl;
         serr<<"regular serr"<<sendl;
-        std::cerr<<SOFA_CLASS_METHOD<<"regular sout"<<std::endl;
+//        std::cerr<<SOFA_CLASS_METHOD<<"regular sout"<<std::endl;
         sout<<"regular sout"<<sendl;
-        std::cerr<<SOFA_CLASS_METHOD<<"serr with fileinfo"<<std::endl;
+//        std::cerr<<SOFA_CLASS_METHOD<<"serr with fileinfo"<<std::endl;
         serr<<SOFA_FILE_INFO<<"serr with fileinfo"<<sendl;
-        std::cerr<<SOFA_CLASS_METHOD<<"sout with fileinfo"<<std::endl;
+//        std::cerr<<SOFA_CLASS_METHOD<<"sout with fileinfo"<<std::endl;
         sout<<SOFA_FILE_INFO<<"sout with fileinfo"<<sendl;
     }
 };
@@ -148,6 +148,23 @@ TEST(LoggingTest, withoutDevMode)
 //}
 
 
+
+TEST(LoggingTest, emptyMessage)
+{
+    MessageDispatcher::clearHandlers() ;
+    MyMessageHandler h;
+    MessageDispatcher::addHandler(&h) ;
+
+    // an empty message should not be processed
+
+    msg_info("");
+    EXPECT_EQ( h.numMessages(), 0 );
+
+    msg_info("")<<"ok";
+    msg_info("");
+    EXPECT_EQ( h.numMessages(), 1 );
+}
+
 TEST(LoggingTest, BaseObject)
 {
     MessageDispatcher::clearHandlers() ;
@@ -212,6 +229,8 @@ TEST(LoggingTest, BaseObject)
     EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Warning );
 
     EXPECT_EQ( h.numMessages(), 14 ) ;
+
+
 }
 
 #undef MESSAGING_H

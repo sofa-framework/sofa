@@ -240,9 +240,9 @@ bool FileRepository::findFile(std::string& filename, const std::string& basedir,
         for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
             tmplog << ':'<<*it;
         if( errlog==&std::cerr || errlog==&std::cout)
-                msg_error("FileRepository") << tmplog.rdbuf();
+                msg_error("FileRepository") << tmplog.str();
         else
-            (*errlog)<<tmplog.rdbuf()<<std::endl;
+            (*errlog)<<tmplog.str()<<std::endl;
     }
     return false;
 }
