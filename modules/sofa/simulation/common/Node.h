@@ -132,8 +132,8 @@ public:
     void reinit(const core::ExecParams* params);
     /// Do one step forward in time
 //    void animate(const core::ExecParams* params, SReal dt);
-    /// Draw the objects in an OpenGl context
-    void glDraw(core::visual::VisualParams* params);
+    /// Draw the objects (using visual visitors)
+    void draw(core::visual::VisualParams* params);
     /// @}
 
     /// @name Visitor handling

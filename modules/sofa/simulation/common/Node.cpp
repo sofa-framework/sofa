@@ -194,7 +194,7 @@ void Node::reinit(const core::ExecParams* params)
 //    //cerr<<"Node::animate, end execute"<<endl;
 //}
 
-void Node::glDraw(core::visual::VisualParams* vparams)
+void Node::draw(core::visual::VisualParams* vparams)
 {
     execute<simulation::VisualUpdateVisitor>(vparams);
     execute<simulation::VisualDrawVisitor>(vparams);
