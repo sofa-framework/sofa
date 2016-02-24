@@ -201,8 +201,9 @@ void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* m
     }
     else
     {
-        unsigned i=0;
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
+        for (SetIndexArray::const_iterator it = indices.begin();
+                it != indices.end();
+                ++it)
         {
             res[*it] = Deriv();
         }
@@ -232,8 +233,9 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
     {
         while (rowIt != rowItEnd)
         {
-            unsigned i=0;
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<rowIt.row().size(); ++it, ++i)
+            for (SetIndexArray::const_iterator it = indices.begin();
+                    it != indices.end();
+                    ++it)
             {
                 rowIt.row().erase(*it);
             }
@@ -260,8 +262,9 @@ void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /
     }
     else
     {
-        unsigned i=0;
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
+        for (SetIndexArray::const_iterator it = indices.begin();
+                it != indices.end();
+                ++it)
         {
             res[*it] = Deriv();
         }
@@ -354,14 +357,13 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
                 points.push_back(point);
             }
         else
+            for (SetIndexArray::const_iterator it = indices.begin();
+                    it != indices.end();
+                    ++it)
         {
-            unsigned i=0;
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<x.size(); ++it, ++i)
-            {
                 point = DataTypes::getCPos(x[*it]);
                 points.push_back(point);
             }
-        }
         vparams->drawTool()->drawPoints(points, 10, sofa::defaulttype::Vec<4,float>(1,0.5,0.5,1));
     }
     else // new drawing by spheres
@@ -377,14 +379,13 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
                 points.push_back(point);
             }
         else
+            for (SetIndexArray::const_iterator it = indices.begin();
+                    it != indices.end();
+                    ++it)
         {
-            unsigned i=0;
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<x.size(); ++it, ++i)
-            {
                 point = DataTypes::getCPos(x[*it]);
                 points.push_back(point);
             }
-        }
         vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
 
