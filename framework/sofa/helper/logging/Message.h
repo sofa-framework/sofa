@@ -110,7 +110,7 @@ protected:
 };
 
 
-std::ostream& operator<< (std::ostream&, const Message&) ;
+SOFA_HELPER_API std::ostream& operator<< (std::ostream&, const Message&) ;
 
 } // logging
 } // helper

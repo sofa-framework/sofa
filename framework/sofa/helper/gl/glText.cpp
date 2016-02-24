@@ -116,8 +116,8 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
     }
     const unsigned int nb_char_width = 16;
     const unsigned int nb_char_height = 16;
-    const float worldHeight = 1.0;
-    const float worldWidth = 0.50;
+    const float worldHeight = 1.0f;
+    const float worldWidth = 0.50f;
 
     std::vector<Vector3> vertices;
     std::vector<Vector2> UVs;
@@ -156,7 +156,7 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
         char character = str[j] - 32;
 
         float uv_x = (character % nb_char_width) / (float)nb_char_width;
-        float uv_y = 1.0 - ((character / nb_char_height) / (float)nb_char_height);
+        float uv_y = 1.0f - ((character / nb_char_height) / (float)nb_char_height);
 
         Vector2 uv_up_left = Vector2(uv_x, (uv_y - (1.0f / (float)nb_char_height)));
         Vector2 uv_up_right = Vector2(uv_x + (1.0f / (float)nb_char_width), (uv_y - (1.0f / (float)nb_char_height)));
@@ -237,10 +237,10 @@ void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& pos
 
         for (unsigned int j = 0; j < length; j++)
         {
-            Vector3 vertex_up_left = Vector3(j*worldWidth, worldHeight, 0.0);
-            Vector3 vertex_up_right = Vector3(j*worldWidth + worldWidth, worldHeight, 0.0);
-            Vector3 vertex_down_right = Vector3(j*worldWidth + worldWidth, 0.0, 0.0);
-            Vector3 vertex_down_left = Vector3(j*worldWidth, 0.0, 0.0);
+            Vector3 vertex_up_left = Vector3(j*worldWidth, worldHeight, 0.0f);
+            Vector3 vertex_up_right = Vector3(j*worldWidth + worldWidth, worldHeight, 0.0f);
+            Vector3 vertex_down_right = Vector3(j*worldWidth + worldWidth, 0.0f, 0.0f);
+            Vector3 vertex_down_left = Vector3(j*worldWidth, 0.0f, 0.0f);
 
             vertices.push_back(vertex_up_left);
             vertices.push_back(vertex_down_left);
@@ -250,7 +250,7 @@ void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& pos
             char character = str[j] - 32;
 
             float uv_x = (character % nb_char_width) / (float)nb_char_width;
-            float uv_y = 1.0 - ((character / nb_char_height) / (float)nb_char_height);
+            float uv_y = 1.0f - ((character / nb_char_height) / (float)nb_char_height);
 
             Vector2 uv_up_left = Vector2(uv_x, (uv_y - (1.0f / (float)nb_char_height)));
             Vector2 uv_up_right = Vector2(uv_x + (1.0f / (float)nb_char_width), (uv_y - (1.0f / (float)nb_char_height)));

@@ -29,6 +29,7 @@
 #include <sofa/helper/gl/template.h>
 #include <iostream>
 #include <sofa/core/visual/VisualParams.h>
+#include <fstream>
 
 namespace sofa
 {

@@ -79,7 +79,7 @@ void STLExporter::init()
     context->get(topology, sofa::core::objectmodel::BaseContext::Local);
     context->get(mstate, sofa::core::objectmodel::BaseContext::Local);
     context->get(vmodel, sofa::core::objectmodel::BaseContext::Local);
-    
+
     // Test if the position has not been modified
     if(!m_position.isSet())
     {
@@ -120,6 +120,7 @@ void STLExporter::init()
 void STLExporter::writeSTL()
 {
     std::string filename = stlFilename.getFullPath();
+
     if (maxStep)
     {
         std::ostringstream oss;
@@ -352,6 +353,22 @@ void STLExporter::handleEvent(sofa::core::objectmodel::Event *event)
 
         stepCounter++;
         if(stepCounter % maxStep == 0)
+        {
+            if(m_fileFormat.getValue())
+                writeSTLBinary();
+            else
+                writeSTL();
+        }
+    }
+
+
+    if (sofa::core::objectmodel::GUIEvent::checkEventType(event))
+    {
+        maxStep = 0; // to keep the name of the file set as input
+
+        sofa::core::objectmodel::GUIEvent *guiEvent = static_cast<sofa::core::objectmodel::GUIEvent *>(event);
+
+        if (guiEvent->getValueName().compare("STLExport") == 0)
         {
             if(m_fileFormat.getValue())
                 writeSTLBinary();

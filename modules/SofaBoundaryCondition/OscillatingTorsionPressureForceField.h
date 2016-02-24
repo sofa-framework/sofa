@@ -29,6 +29,7 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologySparseData.h>
+#include <fstream>
 
 
 

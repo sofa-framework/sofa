@@ -25,7 +25,6 @@
 #define SOFA_CORE_OBJECTMODEL_DATA_CPP
 
 #include <sofa/core/objectmodel/Data.h>
-#include <string>
 
 namespace sofa
 {

@@ -34,13 +34,7 @@
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/vector.h>
 #include <boost/shared_ptr.hpp>
-#include <cstdlib>
 #include <string>
-#include <sstream>
-#include <fstream>
-#include <vector>
-#include <algorithm>
-#include <map>
 
 namespace sofa
 {

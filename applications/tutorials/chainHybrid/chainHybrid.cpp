@@ -226,7 +226,6 @@ Node *createChainHybrid(Node *root)
 
 int main(int argc, char** argv)
 {
-    glutInit(&argc,argv);
     sofa::simulation::tree::init();
     sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
     (argc,argv);

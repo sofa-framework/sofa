@@ -564,9 +564,9 @@ public:
     {
         m.identity();
         orientation.toMatrix(m);
-        m[0][3] = center[0];
-        m[1][3] = center[1];
-        m[2][3] = center[2];
+        m[0][3] = (typename Mat::Real)center[0];
+        m[1][3] = (typename Mat::Real)center[1];
+        m[2][3] = (typename Mat::Real)center[2];
     }
 
     /// create a homogeneous vector from a 3d vector
