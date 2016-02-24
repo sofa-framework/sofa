@@ -284,7 +284,10 @@ void RestShapeSpringsForceField<DataTypes>::draw(const core::visual::VisualParam
         return;  /// \todo put this in the parent class
 
     if(DataTypes::spatial_dimensions > 3)
+    {
         serr << "Draw function not implemented for this DataType" << sendl;
+        return;
+    }
 
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->setLightingEnabled(false);
