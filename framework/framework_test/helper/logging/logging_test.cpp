@@ -45,29 +45,6 @@ public:
 } ;
 
 
-class MyComponent : public sofa::core::objectmodel::BaseObject
-{
-public:
-    SOFA_CLASS( MyComponent, sofa::core::objectmodel::BaseObject );
-protected:
-    MyComponent()
-    {        
-//        std::cerr<<SOFA_CLASS_METHOD<<"constructor"<<std::endl;
-        f_printLog.setValue(true); // to print sout
-//        std::cerr<<SOFA_CLASS_METHOD<<"regular serr"<<std::endl;
-        serr<<"regular serr"<<sendl;
-//        std::cerr<<SOFA_CLASS_METHOD<<"regular sout"<<std::endl;
-        sout<<"regular sout"<<sendl;
-//        std::cerr<<SOFA_CLASS_METHOD<<"serr with fileinfo"<<std::endl;
-        serr<<SOFA_FILE_INFO<<"serr with fileinfo"<<sendl;
-//        std::cerr<<SOFA_CLASS_METHOD<<"sout with fileinfo"<<std::endl;
-        sout<<SOFA_FILE_INFO<<"sout with fileinfo"<<sendl;
-    }
-};
-
-SOFA_DECL_CLASS(MyComponent)
-int MyComponentClass = sofa::core::RegisterObject("MyComponent")
-        .add< MyComponent >();
 
 TEST(LoggingTest, noHandler)
 {
@@ -165,6 +142,23 @@ TEST(LoggingTest, emptyMessage)
     EXPECT_EQ( h.numMessages(), 1 );
 }
 
+
+
+
+
+class MyComponent : public sofa::core::objectmodel::BaseObject
+{
+public:
+    MyComponent()
+    {
+        f_printLog.setValue(true); // to print sout
+        serr<<"regular serr"<<sendl;
+        sout<<"regular sout"<<sendl;
+        serr<<SOFA_FILE_INFO<<"serr with fileinfo"<<sendl;
+        sout<<SOFA_FILE_INFO<<"sout with fileinfo"<<sendl;
+    }
+};
+
 TEST(LoggingTest, BaseObject)
 {
     MessageDispatcher::clearHandlers() ;
@@ -172,64 +166,67 @@ TEST(LoggingTest, BaseObject)
     MessageDispatcher::addHandler(&h) ;
 
 
-    typename MyComponent::SPtr c = sofa::core::objectmodel::New<MyComponent>();
-
+    MyComponent c;
 
     /// the constructor of MyComponent is sending 4 messages
     EXPECT_EQ( h.numMessages(), 4 ) ;
 
-    c->serr<<"regular external serr"<<c->sendl;
+    c.serr<<"regular external serr"<<c.sendl;
     EXPECT_EQ( h.lastMessage().fileInfo().line, 0 );
     EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
     EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Warning );
 
-    c->serr<<sofa::helper::logging::Message::Error<<"external serr as Error"<<c->sendl;
+    c.serr<<sofa::helper::logging::Message::Error<<"external serr as Error"<<c.sendl;
     EXPECT_EQ( h.lastMessage().fileInfo().line, 0 );
     EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
     EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Error );
 
-    c->sout<<"regular external sout"<<c->sendl;
+    c.sout<<"regular external sout"<<c.sendl;
     EXPECT_EQ( h.lastMessage().fileInfo().line, 0 );
     EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
     EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Info );
 
-    c->sout<<sofa::helper::logging::Message::Error<<"external sout as Error"<<c->sendl;
+    c.sout<<sofa::helper::logging::Message::Error<<"external sout as Error"<<c.sendl;
     EXPECT_EQ( h.lastMessage().fileInfo().line, 0 );
     EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
     EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Error );
 
 
-    c->serr<<SOFA_FILE_INFO<<"external serr with fileinfo"<<c->sendl;
+    c.serr<<SOFA_FILE_INFO<<"external serr with fileinfo"<<c.sendl;
     EXPECT_EQ( h.lastMessage().fileInfo().line, __LINE__-1 );
     EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, __FILE__ ) );
 
-    c->sout<<SOFA_FILE_INFO<<"external sout with fileinfo"<<c->sendl;
+    c.sout<<SOFA_FILE_INFO<<"external sout with fileinfo"<<c.sendl;
     EXPECT_EQ( h.lastMessage().fileInfo().line, __LINE__-1 );
     EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, __FILE__ ) );
 
-    c->serr<<SOFA_FILE_INFO<<sofa::helper::logging::Message::Error<<"external serr as Error with fileinfo"<<c->sendl;
-    EXPECT_EQ( h.lastMessage().fileInfo().line, __LINE__-1 );
-    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, __FILE__ ) );
-    EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Error );
-
-    c->sout<<sofa::helper::logging::Message::Error<<SOFA_FILE_INFO<<"external sout as Error with fileinfo"<<c->sendl;
+    c.serr<<SOFA_FILE_INFO<<sofa::helper::logging::Message::Error<<"external serr as Error with fileinfo"<<c.sendl;
     EXPECT_EQ( h.lastMessage().fileInfo().line, __LINE__-1 );
     EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, __FILE__ ) );
     EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Error );
 
-    c->serr<<"serr with sendl that comes in a second time";
-    c->serr<<c->sendl;
+    c.sout<<sofa::helper::logging::Message::Error<<SOFA_FILE_INFO<<"external sout as Error with fileinfo"<<c.sendl;
+    EXPECT_EQ( h.lastMessage().fileInfo().line, __LINE__-1 );
+    EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, __FILE__ ) );
+    EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Error );
+
+    c.serr<<"serr with sendl that comes in a second time";
+    c.serr<<c.sendl;
     EXPECT_EQ( h.lastMessage().fileInfo().line, 0 );
     EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
     EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Warning );
 
-    c->serr<<"\n serr with \n end of "<<std::endl<<" lines"<<c->sendl;
+    c.serr<<"\n serr with \n end of "<<std::endl<<" lines"<<c.sendl;
     EXPECT_EQ( h.lastMessage().fileInfo().line, 0 );
     EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
     EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Warning );
 
     EXPECT_EQ( h.numMessages(), 14 ) ;
 
+    // an empty message should not be processed
+    c.serr<<c.sendl;
+
+    EXPECT_EQ( h.numMessages(), 14 ) ;
 
 }
 
