@@ -298,8 +298,10 @@ protected:
                     {
                     case 2:
                         result = new VTKDataIO<defaulttype::Vec<2, int> >;
+                        break;
                     case 3:
                         result = new VTKDataIO<defaulttype::Vec<3, int> >;
+                        break;
                     default:
                         return NULL;
                     }
@@ -313,8 +315,10 @@ protected:
                     {
                     case 2:
                         result = new VTKDataIO<defaulttype::Vec<2, unsigned int> >;
+                        break;
                     case 3:
                         result = new VTKDataIO<defaulttype::Vec<3, unsigned int> >;
+                        break;
                     default:
                         return NULL;
                     }
@@ -325,8 +329,10 @@ protected:
                     {
                     case 2:
                         result = new VTKDataIO<defaulttype::Vec<2, float> >;
+                        break;
                     case 3:
                         result = new VTKDataIO<defaulttype::Vec<3, float> >;
+                        break;
                     default:
                         return NULL;
                     }
@@ -337,8 +343,10 @@ protected:
                     {
                     case 2:
                         result = new VTKDataIO<defaulttype::Vec<2, double> >;
+                        break;
                     case 3:
                         result = new VTKDataIO<defaulttype::Vec<3, double> >;
+                        break;
                     default:
                         return NULL;
                     }

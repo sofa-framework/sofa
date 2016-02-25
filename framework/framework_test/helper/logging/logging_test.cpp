@@ -32,7 +32,7 @@ public:
 //            std::cerr<<m<<std::endl;
     }
 
-    int numMessages(){
+    size_t numMessages(){
         return m_messages.size() ;
     }
 
@@ -69,7 +69,7 @@ TEST(LoggingTest, oneHandler)
     msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
     msg_error("") << " error message with conversion" << 1.5 << "\n" ;
 
-    EXPECT_TRUE( h.numMessages() == 3 ) ;
+    EXPECT_TRUE( h.numMessages() == 3u ) ;
 }
 
 TEST(LoggingTest, duplicatedHandler)
@@ -88,7 +88,7 @@ TEST(LoggingTest, duplicatedHandler)
     msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
     msg_error("") << " error message with conversion" << 1.5 << "\n" ;
 
-    EXPECT_TRUE( h.numMessages() == 3) ;
+    EXPECT_TRUE( h.numMessages() == 3u) ;
 }
 
 
@@ -107,7 +107,7 @@ TEST(LoggingTest, withoutDevMode)
     nmsg_warning("") << " null warning message with conversion "<< 1.5 << "\n" ;
     nmsg_error("") << " null error message with conversion" << 1.5 << "\n" ;
 
-    EXPECT_TRUE( h.numMessages() == 3 ) ;
+    EXPECT_TRUE( h.numMessages() == 3u ) ;
 }
 
 //TEST(LoggingTest, speedTest)
@@ -135,11 +135,11 @@ TEST(LoggingTest, emptyMessage)
     // an empty message should not be processed
 
     msg_info("");
-    EXPECT_EQ( h.numMessages(), 0 );
+    EXPECT_EQ( h.numMessages(), 0u );
 
     msg_info("")<<"ok";
     msg_info("");
-    EXPECT_EQ( h.numMessages(), 1 );
+    EXPECT_EQ( h.numMessages(), 1u );
 }
 
 
@@ -169,7 +169,7 @@ TEST(LoggingTest, BaseObject)
     MyComponent c;
 
     /// the constructor of MyComponent is sending 4 messages
-    EXPECT_EQ( h.numMessages(), 4 ) ;
+    EXPECT_EQ( h.numMessages(), 4u ) ;
 
     c.serr<<"regular external serr"<<c.sendl;
     EXPECT_EQ( h.lastMessage().fileInfo().line, 0 );
@@ -221,12 +221,12 @@ TEST(LoggingTest, BaseObject)
     EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
     EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Warning );
 
-    EXPECT_EQ( h.numMessages(), 14 ) ;
+    EXPECT_EQ( h.numMessages(), 14u ) ;
 
     // an empty message should not be processed
     c.serr<<c.sendl;
 
-    EXPECT_EQ( h.numMessages(), 14 ) ;
+    EXPECT_EQ( h.numMessages(), 14u ) ;
 
 }
 
@@ -257,5 +257,5 @@ TEST(LoggingTest, withDevMode)
     dmsg_warning("") << " debug warning message with conversion "<< 1.5 << "\n" ;
     dmsg_error("") << " debug error message with conversion" << 1.5 << "\n" ;
 
-    EXPECT_TRUE( h.numMessages() == 6 ) ;
+    EXPECT_TRUE( h.numMessages() == 6u ) ;
 }
