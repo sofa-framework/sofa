@@ -45,6 +45,7 @@ set(HEADER_FILES
     PythonMacros.h
     PythonMainScriptController.h
     PythonScriptController.h
+    PythonScriptControllerHelper.h
     PythonScriptEvent.h
     PythonScriptFunction.h
     PythonVisitor.h
@@ -54,10 +55,6 @@ set(HEADER_FILES
     ScriptEvent.h
     ScriptFunction.h
 )
-
-if(SOFA_USE_C++11)
-    list(APPEND HEADER_FILES PythonScriptControllerHelper.h)
-endif()
 
 set(SOURCE_FILES
     Binding.cpp
@@ -96,6 +93,7 @@ set(SOURCE_FILES
     PythonMacros.cpp
     PythonMainScriptController.cpp
     PythonScriptController.cpp
+    PythonScriptControllerHelper.cpp
     PythonScriptEvent.cpp
     PythonScriptFunction.cpp
     PythonVisitor.cpp
@@ -106,10 +104,6 @@ set(SOURCE_FILES
     ScriptFunction.cpp
     initSofaPython.cpp
 )
-
-if(SOFA_USE_C++11)
-    list(APPEND SOURCE_FILES PythonScriptControllerHelper.cpp)
-endif()
 
 set(PYTHON_FILES
     python/SofaPython/DAGValidation.py
