@@ -18,7 +18,7 @@ SOFA_DECL_CLASS(RigidJointMultiMapping)
 using namespace defaulttype;
 
 // Register in the Factory
-static int RigidJointMultiMappingClass = core::RegisterObject("Computes relative rigid configurations")
+const int RigidJointMultiMappingClass = core::RegisterObject("Computes relative rigid configurations")
 
 #ifndef SOFA_FLOAT
     .add< RigidJointMultiMapping< Rigid3dTypes, Vec6dTypes > >()

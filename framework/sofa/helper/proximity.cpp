@@ -210,9 +210,9 @@ NewComputation(const Vector3 &P1, const Vector3 &P2, const Vector3 &P3, const Ve
     else
     {
         printf(" no result from LCP !\n");
-        alpha=0;
-        beta=0;
-        gamma=0;
+//        alpha=0;
+//        beta=0;
+//        gamma=0;
         Presult = P1;
         Qresult = Q1;
     }
@@ -282,8 +282,8 @@ NewComputation(const Vector3 &P1, const Vector3 &P2, const Vector3 &P3, const Ve
     else
     {
         printf(" no result from LCP !\n");
-        alpha=0;
-        beta=0;
+//        alpha=0;
+//        beta=0;
         Presult = P1;
     }
 }

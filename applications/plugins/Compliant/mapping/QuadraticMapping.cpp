@@ -16,7 +16,7 @@ SOFA_DECL_CLASS(QuadraticMapping)
 using namespace defaulttype;
 
 // Register in the Factory
-static int QuadraticMappingClass = core::RegisterObject("scaled squared norm")
+int QuadraticMappingClass = core::RegisterObject("scaled squared norm")
 
 #ifndef SOFA_FLOAT
 .add< QuadraticMapping< Vec6dTypes, Vec1dTypes > >()        

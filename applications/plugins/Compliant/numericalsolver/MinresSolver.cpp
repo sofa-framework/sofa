@@ -13,7 +13,7 @@ namespace component {
 namespace linearsolver {
  
 SOFA_DECL_CLASS(MinresSolver)
-static int MinresSolverClass = core::RegisterObject("Sparse Minres linear solver").add< MinresSolver >();
+const int MinresSolverClass = core::RegisterObject("Sparse Minres linear solver").add< MinresSolver >();
 
 
 
