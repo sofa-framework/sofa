@@ -60,9 +60,10 @@ int DataDisplayClass = core::RegisterObject("Rendering of meshes colored by data
 void DataDisplay::init()
 {
     topology = this->getContext()->getMeshTopology();
-    if (!topology) {
+    if (!topology)
         sout << "No topology information, drawing just points." << sendl;
-    }
+    else
+        sout << "using topology "<< topology->getPathName() << sendl;
 
     this->getContext()->get(colorMap);
     if (!colorMap) {
