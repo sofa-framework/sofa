@@ -25,10 +25,11 @@
 #ifndef PYTHONSCRIPTCONTROLLERHELPER_H
 #define PYTHONSCRIPTCONTROLLERHELPER_H
 
+#include "PythonMacros.h"
+
 #include <vector>
 #include <string>
 
-#include "PythonMacros.h"
 #include <SofaPython/config.h>
 
 #include <sofa/simulation/common/Simulation.h>
