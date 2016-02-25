@@ -13,7 +13,7 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(CompliantPenaltyForceField)
-static int CompliantPenaltyForceFieldClass = core::RegisterObject("Penalty ForceField")
+int CompliantPenaltyForceFieldClass = core::RegisterObject("Penalty ForceField")
     
 #ifndef SOFA_FLOAT    
     .add< CompliantPenaltyForceField< Vec1dTypes > >(true)
