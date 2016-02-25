@@ -18,7 +18,7 @@ SOFA_DECL_CLASS(PairingMultiMapping)
 using namespace defaulttype;
 
 // Register in the Factory
-static int PairingMultiMappingClass = core::RegisterObject("dot product between vec dofs")
+const int PairingMultiMappingClass = core::RegisterObject("dot product between vec dofs")
 
 #ifndef SOFA_FLOAT
     .add< PairingMultiMapping< Vec6dTypes, Vec1dTypes > >()    

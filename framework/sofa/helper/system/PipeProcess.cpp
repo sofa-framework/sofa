@@ -138,6 +138,7 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
 #endif
     {
         msg_error("PipeProcess") << "pipe failed.";
+        delete [] cargs;
         return false;
     }
 #ifdef WIN32
@@ -184,6 +185,7 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
             &piProcInfo))  // receives PROCESS_INFORMATION
     {
         msg_error("PipeProcess") << "CreateProcess failed : "<<GetLastError();
+        delete [] cargs;
         return 1;
     }
 
@@ -248,6 +250,7 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
     if (pid < 0)
     {
         msg_error("PipeProcess") << "fork failed.";
+        delete [] cargs;
         return false;
     }
     else if (pid == 0)
@@ -269,6 +272,7 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
         for (unsigned int i=0; i<args.size() + 1 ; ++i)
             msgerror << cargs[i] << " ";
         msgerror << ") returned "<<retexec;
+        delete [] cargs;
         return false;
     }
     else
@@ -364,6 +368,7 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
 
         outString = outStream.str();
         errorString = errorStream.str();
+        delete [] cargs;
         return (status == 0);
     }
 #endif
