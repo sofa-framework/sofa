@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -728,7 +728,7 @@ void DrawToolGL::drawSphere( const Vector3 &p, float radius)
 void DrawToolGL::drawEllipsoid(const Vector3 &p, const Vector3 &radii)
 {
     glPushMatrix();
-    helper::gl::drawEllipsoid(p, radii[0], radii[1], radii[2], 32, 16);
+    helper::gl::drawEllipsoid(p, (float)radii[0], (float)radii[1], (float)radii[2], 32, 16);
     glPopMatrix();
 }
 
@@ -897,11 +897,12 @@ void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const Vec4f 
     glDepthMask(GL_FALSE);
     glDisable(GL_DEPTH_TEST);
 
-
     glPushAttrib( GL_LIGHTING_BIT );
     glEnable( GL_COLOR_MATERIAL );
 
     glPushAttrib( GL_ENABLE_BIT );
+
+    glDisable(GL_CULL_FACE);
 
     glColor4f( color[0], color[1], color[2], color[3] );
 
@@ -949,7 +950,7 @@ void DrawToolGL::draw3DText(const Vector3 &p, float scale, const Vec4f &color, c
 {
     glColor4fv(color.ptr());
 
-    sofa::helper::gl::GlText::draw(text, p, scale);
+    sofa::helper::gl::GlText::draw(text, p, (double)scale);
 }
 
 void DrawToolGL::draw3DText_Indices(const helper::vector<Vector3> &positions, float scale, const Vec4f &color)

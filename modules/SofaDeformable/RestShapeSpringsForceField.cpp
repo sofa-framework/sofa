@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -180,12 +180,12 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addKToMatrix(const core::Mechanic
 
     for (unsigned int col=0; col<mat->colSize(); col++)
     {
-    	for (unsigned int row=0; row<mat->rowSize(); row++)
-    	{
-    			std::cout<<" "<<mat->element(row, col);
-    	}
+        for (unsigned int row=0; row<mat->rowSize(); row++)
+        {
+                std::cout<<" "<<mat->element(row, col);
+        }
 
-    	std::cout<<""<<std::endl;
+        std::cout<<""<<std::endl;
     }
     */
 }
@@ -193,84 +193,35 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addKToMatrix(const core::Mechanic
 template<>
 void RestShapeSpringsForceField<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-    if (vparams->displayFlags().getShowForceFields())
-        //return;  /// \todo put this in the parent class
+    if (!vparams->displayFlags().getShowForceFields() || !drawSpring.getValue())
+        return;  /// \todo put this in the parent class
+
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->setLightingEnabled(false);
+
+    sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
+    sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
+
+    sofa::helper::vector< Vector3 > vertices;
+
+    for (unsigned int i=0; i<m_indices.size(); i++)
     {
-        const VecIndex& indices = points.getValue();
-        const VecIndex& ext_indices=external_points.getValue();
+        const unsigned int index = m_indices[i];
 
-        sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
-        sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
+        vertices.push_back(p[index].getCenter());
 
-        //  if(ext_indices.size() == indices.size())
-
-        for (unsigned int i=0; i<indices.size(); i++)
+        if(useRestMState)
         {
-            const unsigned int index = indices[i];
-
-            glDisable(GL_LIGHTING);
-            glLineWidth(4.0);
-            glBegin(GL_LINES);
-            glColor3f(0,1,0);
-
-            glVertex3dv(&p[index].getCenter().elems[0]);
-
-            if(useRestMState)
-            {
-
-                const unsigned int ext_index = ext_indices[i];
-                glVertex3dv(&p0[ext_index].getCenter().elems[0]);
-            }
-            else
-            {
-
-                glVertex3dv(&p0[index].getCenter().elems[0]);
-            }
-            glEnd();
+            const unsigned int ext_index = m_ext_indices[i];
+            vertices.push_back(p0[ext_index].getCenter());
+        }
+        else
+        {
+            vertices.push_back(p0[index].getCenter());
         }
     }
-    if(drawSpring.getValue())
-    {
-        const VecIndex& indices = points.getValue();
-        const VecIndex& ext_indices=external_points.getValue();
-
-        sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
-        sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
-
-
-        std::vector< Vector3 > points;
-        //  if(ext_indices.size() == indices.size())
-
-        for (unsigned int i=0; i<indices.size(); i++)
-        {
-            const unsigned int index = indices[i];
-
-
-
-            points.push_back(p[index].getCenter());
-            //glVertex3dv(&p[index].getCenter().elems[0]);
-
-            if(useRestMState)
-            {
-
-
-                const unsigned int ext_index = ext_indices[i];
-                //glVertex3dv(&p0[ext_index].getCenter().elems[0]);
-                points.push_back(p0[ext_index].getCenter());
-            }
-            else
-            {
-
-                //glVertex3dv(&p0[index].getCenter().elems[0]);
-                points.push_back(p0[index].getCenter());
-            }
-            //glEnd();
-
-            vparams->drawTool()->drawLines(points,5,springColor.getValue());
-        }
-    }
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->drawLines(vertices,5,springColor.getValue());
+    vparams->drawTool()->restoreLastState();
 }
 
 
@@ -378,41 +329,43 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addKToMatrix(const core::Mechanic
 template<>
 void RestShapeSpringsForceField<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields() || !drawSpring.getValue())
         return;  /// \todo put this in the parent class
 
-    const VecIndex& indices = points.getValue();
-    const VecIndex& ext_indices=external_points.getValue();
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->setLightingEnabled(false);
 
     sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
     sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
 
-//  if(ext_indices.size() == indices.size())
+    sofa::helper::vector<sofa::defaulttype::Vector3> vertices;
 
-    for (unsigned int i=0; i<indices.size(); i++)
+    sofa::defaulttype::Vec4f green(0.0, 1.0, 0.0, 1.0);
+    for (unsigned int i=0; i<m_indices.size(); i++)
     {
-        const unsigned int index = indices[i];
+        const unsigned int index = m_indices[i];
 
-        glDisable(GL_LIGHTING);
         glLineWidth(4.0);
         glBegin(GL_LINES);
         glColor3f(0,1,0);
 
-        glVertex3fv(&p[index].getCenter().elems[0]);
+        sofa::defaulttype::Vector3 v0(p[index].getCenter()[0],
+                                      p[index].getCenter()[1],
+                                      p[index].getCenter()[2]);
+        unsigned int tempIndex = (useRestMState) ? m_ext_indices[i] : index;
 
-        if(useRestMState)
-        {
-            const unsigned int ext_index = ext_indices[i];
-            glVertex3fv(&p0[ext_index].getCenter().elems[0]);
-        }
-        else
-        {
-            glVertex3fv(&p0[index].getCenter().elems[0]);
-        }
-        glEnd();
+        sofa::defaulttype::Vector3 v1(p0[tempIndex].getCenter()[0],
+                                      p0[tempIndex].getCenter()[1],
+                                      p0[tempIndex].getCenter()[2]);
+
+
+        vertices.push_back(v0);
+        vertices.push_back(v1);
     }
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->drawLines(vertices,5,springColor.getValue());
+
+    vparams->drawTool()->restoreLastState();
 }
 
 #endif // SOFA_DOUBLE
@@ -446,38 +399,6 @@ else
 }
 */
 
-
-template<>
-void RestShapeSpringsForceField<Vec3dTypes>::draw(const core::visual::VisualParams* vparams)
-{
-#ifndef SOFA_NO_OPENGL
-    if (!vparams->displayFlags().getShowForceFields() || !drawSpring.getValue())
-        return;  /// \todo put this in the parent class
-
-    sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
-
-    sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
-
-    const VecIndex& indices = m_indices;
-    const VecIndex& ext_indices = (useRestMState ? m_ext_indices : m_indices);
-
-
-    for (unsigned int i=0; i<indices.size(); i++)
-    {
-        const unsigned int index = indices[i];
-        const unsigned int ext_index = ext_indices[i];
-
-        glDisable(GL_LIGHTING);
-        glBegin(GL_LINES);
-        glColor3f(0,1,0);
-
-        glVertex3f( (GLfloat)p[index][0], (GLfloat)p[index][1], (GLfloat)p[index][2] );
-        glVertex3f( (GLfloat)p0[ext_index][0], (GLfloat)p0[ext_index][1], (GLfloat)p0[ext_index][2] );
-
-        glEnd();
-    }
-#endif /* SOFA_NO_OPENGL */
-}
 #endif
 
 

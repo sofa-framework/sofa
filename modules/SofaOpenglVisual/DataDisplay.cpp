@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -60,9 +60,10 @@ int DataDisplayClass = core::RegisterObject("Rendering of meshes colored by data
 void DataDisplay::init()
 {
     topology = this->getContext()->getMeshTopology();
-    if (!topology) {
+    if (!topology)
         sout << "No topology information, drawing just points." << sendl;
-    }
+    else
+        sout << "using topology "<< topology->getPathName() << sendl;
 
     this->getContext()->get(colorMap);
     if (!colorMap) {
@@ -81,15 +82,19 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowVisualModels()) return;
 
+    if (vparams->displayFlags().getShowWireFrame())
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     const VecCoord& x = this->read(sofa::core::ConstVecCoordId::position())->getValue();
     const VecPointData &ptData = f_pointData.getValue();
-    const VecCellData &clData = f_cellData.getValue();
+    const VecCellData &triData = f_triangleData.getValue();
+    const VecCellData &quadData = f_quadData.getValue();
+    const VecPointData &pointTriData = f_pointTriangleData.getValue();
+    const VecPointData &pointQuadData = f_pointQuadData.getValue();
 
     bool bDrawPointData = false;
     bool bDrawCellData = false;
 
-    // For now support only triangular topology
-    topology::TriangleSetTopologyContainer* tt = dynamic_cast<topology::TriangleSetTopologyContainer*>(topology);
 
     // Safety checks
     // TODO: can this go to updateVisual()?
@@ -99,18 +104,32 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         } else {
             bDrawPointData = true;
         }
-    } else if (clData.size() > 0) {
-        if (!topology || !tt) {
-            serr << "Triangular topology is necessary for drawing cell data" << sendl;
-        } else if ((int)clData.size() != tt->getNbTriangles()) {
-            serr << "Size of cellData does not match number of triangles" << sendl;
+    } else if (triData.size() > 0 || quadData.size()>0 ) {
+        if (!topology ) {
+            serr << "Topology is necessary for drawing cell data" << sendl;
+        } else if ((int)triData.size() != topology->getNbTriangles()) {
+            serr << "Size of triangleData does not match number of triangles" << sendl;
+        } else if ((int)quadData.size() != topology->getNbQuads()) {
+            serr << "Size of quadData does not match number of quads" << sendl;
+        } else {
+            bDrawCellData = true;
+        }
+    } else if (pointTriData.size()>0 || pointQuadData.size()>0) {
+        if (!topology ) {
+            serr << "Topology is necessary for drawing cell data" << sendl;
+        } else if ((int)pointTriData.size() != topology->getNbTriangles()*3) {
+            serr << "Size of pointTriData does not match number of triangles" << sendl;
+        } else if ((int)pointQuadData.size() != topology->getNbQuads()*4) {
+            serr << "Size of pointQuadData does not match number of quads" << sendl;
         } else {
             bDrawCellData = true;
         }
     }
 
     // Range for points
-    Real min=0.0, max=0.0;
+    float& min = *d_currentMin.beginWriteOnly();
+    float& max = *d_currentMax.beginWriteOnly();
+    min = max = 0;
     if (bDrawPointData) {
         VecPointData::const_iterator i = ptData.begin();
         min = *i;
@@ -123,14 +142,44 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 
     // Range for cells
     if (bDrawCellData) {
-        VecCellData::const_iterator i = clData.begin();
+        if(!triData.empty()) {
+        VecCellData::const_iterator i = triData.begin();
         min = *i;
         max = *i;
-        while (++i != clData.end()) {
+        while (++i != triData.end()) {
             if (min > *i) min = *i;
             if (max < *i) max = *i;
         }
+        }
+        if(!quadData.empty()) {
+        VecCellData::const_iterator i = quadData.begin();
+        min = *i;
+        max = *i;
+        while (++i != quadData.end()) {
+            if (min > *i) min = *i;
+            if (max < *i) max = *i;
+        }
+        }
+        if(!pointTriData.empty()) {
+        VecPointData::const_iterator i = pointTriData.begin();
+        min = *i;
+        max = *i;
+        while (++i != pointTriData.end()) {
+            if (min > *i) min = *i;
+            if (max < *i) max = *i;
+        }
+        }
+        if(!pointQuadData.empty()) {
+        VecPointData::const_iterator i = pointQuadData.begin();
+        min = *i;
+        max = *i;
+        while (++i != pointQuadData.end()) {
+            if (min > *i) min = *i;
+            if (max < *i) max = *i;
+        }
+        }
     }
+
 
     if( d_userRange.getValue()[0] < d_userRange.getValue()[1] )
     {
@@ -154,26 +203,101 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         max = oldMax;
         min = oldMin;
     }
+    d_currentMin.endEdit();
+    d_currentMax.endEdit();
 
     vparams->drawTool()->setLightingEnabled(false);
 
     if (bDrawCellData) {
-        // Triangles
+
         ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
-        int nbTriangles = tt->getNbTriangles();
-        glBegin(GL_TRIANGLES);
-        for (int i=0; i<nbTriangles; i++)
+
+        if( !triData.empty() )
         {
-            Vec4f color = isnan(clData[i])
-                ? f_colorNaN.getValue()
-                : eval(clData[i]);
-            Triangle t = tt->getTriangle(i);
-            vparams->drawTool()->drawTriangle(
-                x[ t[0] ], x[ t[1] ], x[ t[2] ],
-                m_normals[ t[0] ], m_normals[ t[1] ], m_normals[ t[2] ],
-                color, color, color);
+            // Triangles
+            int nbTriangles = topology->getNbTriangles();
+            glBegin(GL_TRIANGLES);
+            for (int i=0; i<nbTriangles; i++)
+            {
+                Vec4f color = isnan(triData[i])
+                    ? f_colorNaN.getValue()
+                    : eval(triData[i]);
+                const Triangle& t = topology->getTriangle(i);
+                vparams->drawTool()->drawTriangle(
+                    x[ t[0] ], x[ t[1] ], x[ t[2] ],
+                    m_normals[ t[0] ], m_normals[ t[1] ], m_normals[ t[2] ],
+                    color, color, color);
+            }
+            glEnd();
         }
-        glEnd();
+        else if( !pointTriData.empty() )
+        {
+            // Triangles
+            int nbTriangles = topology->getNbTriangles();
+            glBegin(GL_TRIANGLES);
+            for (int i=0; i<nbTriangles; i++)
+            {
+                Vec4f color0 = isnan(pointTriData[i*3])
+                    ? f_colorNaN.getValue()
+                    : eval(pointTriData[i*3]);
+                Vec4f color1 = isnan(pointTriData[i*3+1])
+                        ? f_colorNaN.getValue()
+                        : eval(pointTriData[i*3+1]);
+                Vec4f color2 = isnan(pointTriData[i*3+2])
+                    ? f_colorNaN.getValue()
+                    : eval(pointTriData[i*3+2]);
+                const Triangle& t = topology->getTriangle(i);
+                vparams->drawTool()->drawTriangle(
+                    x[ t[0] ], x[ t[1] ], x[ t[2] ],
+                    m_normals[ t[0] ], m_normals[ t[1] ], m_normals[ t[2] ],
+                    color0, color1, color2);
+            }
+            glEnd();
+        }
+
+        if( !quadData.empty() )
+        {
+            int nbQuads = topology->getNbQuads();
+            glBegin(GL_QUADS);
+            for (int i=0; i<nbQuads; i++)
+            {
+                Vec4f color = isnan(quadData[i])
+                    ? f_colorNaN.getValue()
+                    : eval(quadData[i]);
+                const Quad& t = topology->getQuad(i);
+                vparams->drawTool()->drawQuad(
+                    x[ t[0] ], x[ t[1] ], x[ t[2] ], x[ t[3] ],
+                    m_normals[ t[0] ], m_normals[ t[1] ], m_normals[ t[2] ], m_normals[ t[3] ],
+                    color, color, color, color);
+            }
+            glEnd();
+        }
+        else if( !pointQuadData.empty() )
+        {
+            int nbQuads = topology->getNbQuads();
+            glBegin(GL_QUADS);
+            for (int i=0; i<nbQuads; i++)
+            {
+                Vec4f color0 = isnan(pointQuadData[i*4])
+                    ? f_colorNaN.getValue()
+                    : eval(pointQuadData[i*4]);
+                Vec4f color1 = isnan(pointQuadData[i*4+1])
+                        ? f_colorNaN.getValue()
+                        : eval(pointQuadData[i*4+1]);
+                Vec4f color2 = isnan(pointQuadData[i*4+2])
+                    ? f_colorNaN.getValue()
+                    : eval(pointQuadData[i*4+2]);
+                Vec4f color3 = isnan(pointQuadData[i*4+3])
+                    ? f_colorNaN.getValue()
+                    : eval(pointQuadData[i*4+3]);
+                const Quad& t = topology->getQuad(i);
+                vparams->drawTool()->drawQuad(
+                    x[ t[0] ], x[ t[1] ], x[ t[2] ], x[ t[3] ],
+                    m_normals[ t[0] ], m_normals[ t[1] ], m_normals[ t[2] ], m_normals[ t[3] ],
+                    color0, color1, color2, color3);
+            }
+            glEnd();
+        }
     }
 
     if ((bDrawCellData || !topology) && bDrawPointData) {
@@ -240,6 +364,8 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         glPopAttrib();
     }
 
+    if (vparams->displayFlags().getShowWireFrame())
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void DataDisplay::computeNormals()
@@ -255,7 +381,7 @@ void DataDisplay::computeNormals()
 
         Coord edge0 = (x[t[1]]-x[t[0]]); edge0.normalize();
         Coord edge1 = (x[t[2]]-x[t[0]]); edge1.normalize();
-        Real triangleSurface = (Real)(edge0*edge1*0.5);
+        Real triangleSurface = (Real)(edge0*edge1*0.5); // after edge normalization, it is no longer the area !?
         Vec3f triangleNormal = cross( edge0, edge1 ) * triangleSurface;
 
         for( int i=0 ; i<3 ; ++i )
@@ -272,7 +398,7 @@ void DataDisplay::computeNormals()
         {
             Coord edge0 = (x[q[(i+1)%3]]-x[q[i]]); edge0.normalize();
             Coord edge1 = (x[q[(i+2)%3]]-x[q[i]]); edge1.normalize();
-            Real triangleSurface = (Real)(edge0*edge1*0.5);
+            Real triangleSurface = (Real)(edge0*edge1*0.5);  // after edge normalization, it is no longer the area !? and what about a QUAD area ?
             Vec3f quadNormal = cross( edge0, edge1 ) * triangleSurface;
 
             m_normals[q[i]] += quadNormal;

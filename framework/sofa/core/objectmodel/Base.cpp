@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,6 +45,8 @@ static const std::string unnamed_label=std::string("unnamed");
 
 Base::Base()
     : ref_counter(0)
+    , serr(_serr)
+    , sout(_sout)
     , name(initData(&name,unnamed_label,"name","object name"))
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, print logs at run-time"))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
@@ -247,12 +249,12 @@ void Base::processStream(std::ostream& out)
 {
     // const std::string name = getClassName() + " \"" + getName() + "\"";
 
-    if (&out == &serr)
+    if (serr==out)
     {
         std::string str = serr.str();
         serr << "\n";
 
-        msg_warning(this) << str;
+        helper::logging::MessageDispatcher::log(helper::logging::Message::Runtime, serr.messageType(), this, serr.fileInfo()) << str;
 
         if (warnings.size()+str.size() >= MAXLOGSIZE)
         {
@@ -262,15 +264,15 @@ void Base::processStream(std::ostream& out)
             warnings = msg;
         }
         warnings += str;
-        serr.str("");
+        serr.clear();
     }
-    else if (&out == &sout)
+    else if (sout==out)
     {
         std::string str = sout.str();
         sout << "\n";
         if (f_printLog.getValue())
         {
-            msg_info(this) << str;
+            helper::logging::MessageDispatcher::log(helper::logging::Message::Runtime, sout.messageType(), this, sout.fileInfo()) << str;
         }
         if (outputs.size()+str.size() >= MAXLOGSIZE)
         {
@@ -280,7 +282,7 @@ void Base::processStream(std::ostream& out)
             outputs = msg;
         }
         outputs += str;
-        sout.str("");
+        sout.clear();
     }
 }
 

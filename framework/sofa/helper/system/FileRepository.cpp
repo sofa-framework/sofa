@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -240,9 +240,9 @@ bool FileRepository::findFile(std::string& filename, const std::string& basedir,
         for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
             tmplog << ':'<<*it;
         if( errlog==&std::cerr || errlog==&std::cout)
-                msg_error("FileRepository") << tmplog.rdbuf();
+                msg_error("FileRepository") << tmplog.str();
         else
-            (*errlog)<<tmplog.rdbuf()<<std::endl;
+            (*errlog)<<tmplog.str()<<std::endl;
     }
     return false;
 }

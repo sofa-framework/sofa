@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -1030,6 +1030,16 @@ bool QtGLViewer::mouseEvent(QMouseEvent * e)
 void QtGLViewer::wheelEvent(QWheelEvent* e)
 {
     QGLViewer::wheelEvent(e);
+    if(isControlPressed())  // pass event to the scene elements
+    {
+        if (groot)
+        {
+            sofa::core::objectmodel::MouseEvent me(sofa::core::objectmodel::MouseEvent::Wheel, e->delta());
+            groot->propagateEvent(core::ExecParams::defaultInstance(), &me);
+        }
+    }
+    else
+        QGLViewer::wheelEvent(e);
 }
 
 void QtGLViewer::moveRayPickInteractor(int eventX, int eventY)

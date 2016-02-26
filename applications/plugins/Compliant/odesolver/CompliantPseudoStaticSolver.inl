@@ -70,7 +70,7 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
         sop.vop.v_teq( velId, velocityFactor );
 
         if( printLog )
-            serr<<"velocity norm: "<<sqrt(lastVelocity)<<sendl;
+            sout<<"velocity norm: "<<sqrt(lastVelocity)<<sendl;
 
         if( lastVelocity < threshold*threshold ) break;
 
@@ -81,7 +81,7 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
 
     d_lastVelocity.setValue(lastVelocity);
 
-    if( printLog ) serr<<i+1<<" iterations"<<sendl;
+    if( printLog ) sout<<i+1<<" iterations"<<sendl;
 
 }
 

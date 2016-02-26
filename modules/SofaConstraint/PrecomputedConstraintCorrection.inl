@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -333,7 +333,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             std::streamsize prevPrecision = sout.precision();
             sout.precision(2);
             sout << "Precomputing constraint correction : " << std::fixed << (float)f / (float)nbNodes * 100.0f << " %   " << '\xd';
-            sout.flush();
+            sout << sendl;
             sout.precision(prevPrecision);
 
             // Deriv unitary_force;

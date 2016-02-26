@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,6 +22,7 @@
 *                                                                             *
 * Authors: Damien Marchal                                                     *
 *          Bruno Carrez                                                       *
+*          Matthieu Nesme                                                     *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -34,6 +35,7 @@
 
 #include <sofa/helper/helper.h>
 #include "Message.h"
+#include <vector>
 
 namespace sofa
 {
@@ -53,82 +55,75 @@ namespace helper
 namespace logging
 {
 
-class SOFA_HELPER_API Nop
-{
-public:
-    static inline Nop& getAnInstance(){ return s_nop; }
 
-    //todo(damien): This function breaks the semantic because it returns a Nop instead of a message...
-    template<typename T> inline Nop& operator<<(const T /*v*/){ return *this; }
-
-    static Nop s_nop;
-};
+// forward declaration
+class MessageHandler;
 
 
-namespace unique{
-    class MessageDispatcher ;
-}
-
-
-class MessageHandler ;
-class ConsoleMessageHandler;
-class MessageDispatcherImpl ;
-
-class SOFA_HELPER_API LoggerStream
+/// static interface to manage the list of MessageHandlers
+/// that process the Messages
+class SOFA_HELPER_API MessageDispatcher
 {
 
-    friend class MessageDispatcherImpl;
-    friend class MessageDispatcher;
-
-
 public:
-    // We need the copy constructor to return LoggerStreams by value, but it
-    // should be optimized away any decent compiler.
 
-    LoggerStream(const LoggerStream& s)
-        : m_message( s.m_message )
-        , m_dispatcher(s.m_dispatcher) {}
+        /// a utility interface to automatically process a Message
+        /// at the end of scope of the LoggerStream variable
+        /// (processed by all the handlers of the MessageDispatcher)
+        class SOFA_HELPER_API LoggerStream
+        {
 
-    LoggerStream(MessageDispatcherImpl& dispatcher, Message::Class mclass, Message::Type type,
-                 const std::string& sender, FileInfo fileInfo)
-        : m_message( mclass, type, sender, fileInfo )
-        , m_dispatcher(dispatcher)
-    {
-    }
+        public:
 
-    LoggerStream(MessageDispatcherImpl& dispatcher, Message::Class mclass, Message::Type type,
-                 const sofa::core::objectmodel::Base* sender, FileInfo fileInfo);
+            LoggerStream(const LoggerStream& s)
+                : m_message( s.m_message )
+            {}
 
-    ~LoggerStream() ;
+            LoggerStream(Message::Class mclass, Message::Type type,
+                         const std::string& sender, FileInfo fileInfo)
+                : m_message( mclass, type, sender, fileInfo )
+            {
+            }
 
-    template<class T>
-    LoggerStream& operator<<(const T &x)
-    {
-        m_message << x;
-        return *this;
-    }
+            LoggerStream(Message::Class mclass, Message::Type type,
+                         const sofa::core::objectmodel::Base* sender, FileInfo fileInfo);
+
+            ~LoggerStream() ;
+
+            template<class T>
+            LoggerStream& operator<<(const T &x)
+            {
+                m_message << x;
+                return *this;
+            }
+
+        private:
+
+            Message m_message;
+
+        };
+
+        /// @internal to be able to redirect Messages to nowhere
+        class SOFA_HELPER_API NullLoggerStream
+        {
+        public:
+            template<typename T> inline const NullLoggerStream& operator<<(const T& /*v*/) const { return *this; }
+        private:
+            NullLoggerStream(){}
+            NullLoggerStream(const NullLoggerStream&);
+            ~NullLoggerStream(){}
+        protected:
+            friend class MessageDispatcher;
+            static const NullLoggerStream& getInstance(){ static const NullLoggerStream s_nop; return s_nop; }
+        };
 
 
-private:
-    Message m_message;
-    MessageDispatcherImpl& m_dispatcher;
-};
 
 
-////////////////////// THE STATIC FACADE ///////////////////////////////////
-namespace unique{
-    class SOFA_HELPER_API MessageDispatcher{
-
-    public:
-        static int addHandler(MessageHandler* o) ;
-        static int rmHandler(MessageHandler* o) ;
-        static void clearHandlers() ;
-        static ConsoleMessageHandler* getDefaultMessageHandler();
-
-//        static int getLastMessageId() ;
-//        static int getLastErrorId() ;
-//        static int getLastWarningId() ;
-//        static int getLastInfoId() ;
+        static int addHandler(MessageHandler* o) ; ///< to add a MessageHandler
+        static int rmHandler(MessageHandler* o) ; ///< to remove a MessageHandler
+        static void clearHandlers() ; ///< to remove every MessageHandlers
+        static std::vector<MessageHandler*>& getHandlers(); ///< the list of MessageHandlers
 
         static LoggerStream info(Message::Class mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) ;
         static LoggerStream info(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) ;
@@ -138,8 +133,24 @@ namespace unique{
         static LoggerStream error(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) ;
         static LoggerStream fatal(Message::Class mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) ;
         static LoggerStream fatal(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) ;
-    };
-}
+        static const NullLoggerStream& null() { return NullLoggerStream::getInstance(); }
+        static MessageDispatcher::LoggerStream log(Message::Class mclass, Message::Type type, const std::string& sender = "", FileInfo fileInfo = FileInfo());
+        static MessageDispatcher::LoggerStream log(Message::Class mclass, Message::Type type, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo());
+
+        /// Process the Message by all the Message handlers.
+        /// Called in the destructor of LoggerStream
+        /// and can be called manually on a hand-made (possibly predefined) Message
+        static void process(sofa::helper::logging::Message& m);
+
+    private:
+
+        // static interface
+        MessageDispatcher();
+        MessageDispatcher(const MessageDispatcher&);
+        ~MessageDispatcher();
+
+};
+
 
 } // logging
 } // helper

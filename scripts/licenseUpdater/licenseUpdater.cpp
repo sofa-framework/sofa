@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, devel version           *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,6 +16,7 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 ******************************************************************************/
+
 #include <iostream>
 #include <string>
 #include <regex>
@@ -52,7 +53,7 @@ int main(int argc, char** argv)
     const std::string license_LGPL =
             "/******************************************************************************\n"
             "*       SOFA, Simulation Open-Framework Architecture, development version     *\n"
-            "*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *\n"
+            "*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *\n"
             "*                                                                             *\n"
             "* This library is free software; you can redistribute it and/or modify it     *\n"
             "* under the terms of the GNU Lesser General Public License as published by    *\n"
@@ -72,7 +73,7 @@ int main(int argc, char** argv)
     const std::string license_GPL =
             "/******************************************************************************\n"
             "*       SOFA, Simulation Open-Framework Architecture, development version     *\n"
-            "*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *\n"
+            "*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *\n"
             "*                                                                             *\n"
             "* This library is free software; you can redistribute it and/or modify it     *\n"
             "* under the terms of the GNU General Public License as published by the Free  *\n"
@@ -95,6 +96,7 @@ int main(int argc, char** argv)
     if(argc > 1)
     {
         const fs::path dir(argv[1]);
+        std::cout << "updating licence in directory : " << dir.string() << std::endl;
         if (fs::exists(dir) && fs::is_directory(dir))
         {
             for (fs::recursive_directory_iterator dirIT(dir), end ; dirIT != end ; ++dirIT)
@@ -150,6 +152,8 @@ int main(int argc, char** argv)
                     }
                 }
             }
+        } else {
+            std::cerr << "The given directory doesn't exist : " << dir.string() << std::endl;
         }
     }
     return 0;

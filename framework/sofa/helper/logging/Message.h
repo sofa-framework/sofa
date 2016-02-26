@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -87,7 +87,7 @@ public:
 //    int                      id() const       { return m_id; }
 //    void                     setId(int id)    { m_id=id; }
 
-    bool empty() const { return m_stream.rdbuf()->in_avail() <= 0; }
+    bool empty() const;
 
     template<class T>
     Message& operator<<(const T &x)
@@ -110,7 +110,7 @@ protected:
 };
 
 
-std::ostream& operator<< (std::ostream&, const Message&) ;
+SOFA_HELPER_API std::ostream& operator<< (std::ostream&, const Message&) ;
 
 } // logging
 } // helper

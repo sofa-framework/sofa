@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -79,18 +79,18 @@
 
 #include "MessageDispatcher.h"
 
-#define nmsg_info(emitter)     sofa::helper::logging::Nop::getAnInstance()
-#define nmsg_warning(emitter)  sofa::helper::logging::Nop::getAnInstance()
-#define nmsg_error(emitter)    sofa::helper::logging::Nop::getAnInstance()
-#define nmsg_fatal(emitter)    sofa::helper::logging::Nop::getAnInstance()
+#define nmsg_info(emitter)     sofa::helper::logging::MessageDispatcher::null()
+#define nmsg_warning(emitter)  sofa::helper::logging::MessageDispatcher::null()
+#define nmsg_error(emitter)    sofa::helper::logging::MessageDispatcher::null()
+#define nmsg_fatal(emitter)    sofa::helper::logging::MessageDispatcher::null()
 
 //todo(bruno&damien): the first quick&dirty version should be improved to preserve the semantic between
 // the version compiled with WITH_SOFA_DEVTOOLS enabled and the other.
 #ifdef WITH_SOFA_DEVTOOLS
-#define dmsg_info(emitter)      sofa::helper::logging::unique::MessageDispatcher::info(sofa::helper::logging::Message::Dev, emitter, SOFA_FILE_INFO)
-#define dmsg_warning(emitter)   sofa::helper::logging::unique::MessageDispatcher::warning(sofa::helper::logging::Message::Dev, emitter, SOFA_FILE_INFO)
-#define dmsg_error(emitter)     sofa::helper::logging::unique::MessageDispatcher::error(sofa::helper::logging::Message::Dev, emitter, SOFA_FILE_INFO)
-#define dmsg_fatal(emitter)     sofa::helper::logging::unique::MessageDispatcher::fatal(sofa::helper::logging::Message::Dev, emitter, SOFA_FILE_INFO)
+#define dmsg_info(emitter)      sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Dev, emitter, SOFA_FILE_INFO)
+#define dmsg_warning(emitter)   sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Dev, emitter, SOFA_FILE_INFO)
+#define dmsg_error(emitter)     sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Dev, emitter, SOFA_FILE_INFO)
+#define dmsg_fatal(emitter)     sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Dev, emitter, SOFA_FILE_INFO)
 #else
 #define dmsg_info(emitter)     nmsg_info(emitter)
 #define dmsg_warning(emitter)  nmsg_warning(emitter)
@@ -98,9 +98,9 @@
 #define dmsg_fatal(emitter)    nmsg_fatal(emitter)
 #endif // NDEBUG
 
-#define msg_info(emitter)    sofa::helper::logging::unique::MessageDispatcher::info(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
-#define msg_warning(emitter) sofa::helper::logging::unique::MessageDispatcher::warning(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
-#define msg_error(emitter)   sofa::helper::logging::unique::MessageDispatcher::error(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
-#define msg_fatal(emitter)   sofa::helper::logging::unique::MessageDispatcher::fatal(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
+#define msg_info(emitter)    sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
+#define msg_warning(emitter) sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
+#define msg_error(emitter)   sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
+#define msg_fatal(emitter)   sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
 
 #endif // MESSAGING_H

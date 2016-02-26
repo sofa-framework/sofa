@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,6 @@
 #define SOFA_DEFAULTTYPE_SOLIDTYPES_INL
 
 #include <sofa/defaulttype/SolidTypes.h>
-#include <sofa/helper/system/gl.h>
 #include <iostream>
 
 namespace sofa
@@ -50,7 +49,7 @@ SolidTypes<R>::SpatialVector::SpatialVector( const Vec& l, const Vec& f ):lineVe
 template<class R>
 SolidTypes<R>::SpatialVector::SpatialVector(const SolidTypes<R>::Transform &DTrans)
 {
-	freeVec = DTrans.getOrigin();
+    freeVec = DTrans.getOrigin();
     lineVec = DTrans.getOrientation().toEulerVector(); // Consider to use quatToRotationVector instead of toEulerVector to have the rotation vector
 }
 */
@@ -375,23 +374,24 @@ void SolidTypes<R>::Transform::writeOpenGlMatrix( GLdouble *m ) const
     m[14] = t[2];
 }
 
-template<class R>
-void SolidTypes<R>::Transform::glDraw() const
-{
-#ifndef SOFA_NO_OPENGL
-    glPushAttrib( GL_COLOR_BUFFER_BIT );
-    glColor3f(1,0,0);
-    glVertex3f( 0,0,0 );
-    glVertex3f( 1,0,0 );
-    glColor3f(0,1,0);
-    glVertex3f( 0,0,0 );
-    glVertex3f( 0,1,0 );
-    glColor3f(0,0,1);
-    glVertex3f( 0,0,0 );
-    glVertex3f( 0,0,1 );
-    glPopAttrib();
-#endif /* SOFA_NO_OPENGL */
-}
+//This type should not have its own draw function
+//template<class R>
+//void SolidTypes<R>::Transform::glDraw() const
+//{
+//#ifndef SOFA_NO_OPENGL
+//    glPushAttrib( GL_COLOR_BUFFER_BIT );
+//    glColor3f(1,0,0);
+//    glVertex3f( 0,0,0 );
+//    glVertex3f( 1,0,0 );
+//    glColor3f(0,1,0);
+//    glVertex3f( 0,0,0 );
+//    glVertex3f( 0,1,0 );
+//    glColor3f(0,0,1);
+//    glVertex3f( 0,0,0 );
+//    glVertex3f( 0,0,1 );
+//    glPopAttrib();
+//#endif /* SOFA_NO_OPENGL */
+//}
 
 template<class R>
 void SolidTypes<R>::Transform::printInternal( std::ostream& out ) const

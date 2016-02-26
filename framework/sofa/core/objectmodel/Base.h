@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -339,9 +339,23 @@ public:
     ///   Messages and warnings logging
     /// @{
 
-    mutable sofa::helper::system::SofaOStream<Base> sendl;
-    mutable std::ostringstream                      serr;
-    mutable std::ostringstream                      sout;
+private:
+
+    /// effective ostringstream for logging
+    mutable std::ostringstream _serr, _sout;
+
+public:
+
+    /// write into component buffer + Message processedby message handlers
+    /// default message type = Warning
+    mutable helper::system::SofaOStream<helper::logging::Message::Warning> serr;
+    /// write into component buffer.
+    /// Message is processed by message handlers only if printLog==true
+    /// /// default message type = Info
+    mutable helper::system::SofaOStream<helper::logging::Message::Info> sout;
+    /// runs the stream processing
+    mutable helper::system::SofaEndl<Base> sendl;
+
 
     const std::string& getWarnings() const;
     const std::string& getOutputs() const;

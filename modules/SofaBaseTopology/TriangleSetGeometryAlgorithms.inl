@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,6 +28,7 @@
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
+#include <fstream>
 
 namespace sofa
 {
@@ -2264,11 +2265,13 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
         size_t nbrTtri = triangleArray.size();
 
         Coord point2;
-        sofa::defaulttype::Vec<3,double> colors;
+        sofa::defaulttype::Vec<4,float> color;
         SReal normalLength = _drawNormalLength.getValue();
 
-        glDisable(GL_LIGHTING);
-        glBegin(GL_LINES);
+        vparams->drawTool()->setLightingEnabled(false);
+
+        sofa::helper::vector<sofa::defaulttype::Vector3> vertices;
+        sofa::helper::vector<sofa::defaulttype::Vec4f> colors;
 
         for (unsigned int i =0; i<nbrTtri; i++)
         {
@@ -2284,14 +2287,14 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
             sofa::defaulttype::Vec3d point2 = center + normal*normalLength;
 
             for(unsigned int j=0; j<3; j++)
-                colors[j] = fabs (normal[j]);
+                color[j] = fabs (normal[j]);
 
-            glColor3f ((float)colors[0], (float)colors[1], (float)colors[2]);
-
-            glVertex3d(center[0], center[1], center[2]);
-            glVertex3d(point2[0], point2[1], point2[2]);
+            vertices.push_back(center);
+            colors.push_back(color);
+            vertices.push_back(point2);
+            colors.push_back(color);
         }
-        glEnd();
+        vparams->drawTool()->drawLines(vertices,1.0f,colors);
     }
 
 }

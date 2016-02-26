@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,22 +57,33 @@ protected:
     DataDisplay()
         : f_maximalRange(initData(&f_maximalRange, true, "maximalRange", "Keep the maximal range through all timesteps"))
           , f_pointData(initData(&f_pointData, "pointData", "Data associated with nodes"))
-          , f_cellData(initData(&f_cellData, "cellData", "Data associated with elements"))
+          , f_triangleData(initData(&f_triangleData, "triangleData", "Data associated with triangles"))
+          , f_quadData(initData(&f_quadData, "quadData", "Data associated with quads"))
+          , f_pointTriangleData(initData(&f_pointTriangleData, "pointTriangleData", "Data associated with nodes per triangle"))
+          , f_pointQuadData(initData(&f_pointQuadData, "pointQuadData", "Data associated with nodes per quad"))
           , f_colorNaN(initData(&f_colorNaN, sofa::defaulttype::Vec4f(0.0f,0.0f,0.0f,1.0f), "colorNaN", "Color used for NaN values"))
           , d_userRange(initData(&d_userRange, defaulttype::Vec2f(1,-1), "userRange", "Clamp to this values (if max>min)"))
+          , d_currentMin(initData(&d_currentMin, 0.f, "currentMin", "Current min range"))
+          , d_currentMax(initData(&d_currentMax, 0.f, "currentMax", "Current max range"))
           , state(NULL)
           , topology(NULL)
           , oldMin(0)
           , oldMax(0)
-    {}
+    {
+        this->addAlias(&f_triangleData,"cellData"); // backward compatibility
+        d_currentMin.setReadOnly(true);
+        d_currentMax.setReadOnly(true);
+    }
 
 public:
 
     Data<bool> f_maximalRange;
     Data<VecPointData> f_pointData;
-    Data<VecCellData> f_cellData;
+    Data<VecCellData> f_triangleData, f_quadData;
+    Data<VecPointData> f_pointTriangleData, f_pointQuadData;
     Data<sofa::defaulttype::Vec4f> f_colorNaN; // Color for NaNs (alpha channel is not used)
     Data<defaulttype::Vec2f> d_userRange;
+    Data<float> d_currentMin, d_currentMax;
 
     visualmodel::ColorMap *colorMap;
     core::State<DataTypes> *state;

@@ -45,6 +45,7 @@ set(HEADER_FILES
     PythonMacros.h
     PythonMainScriptController.h
     PythonScriptController.h
+    PythonScriptControllerHelper.h
     PythonScriptEvent.h
     PythonScriptFunction.h
     PythonVisitor.h
@@ -92,6 +93,7 @@ set(SOURCE_FILES
     PythonMacros.cpp
     PythonMainScriptController.cpp
     PythonScriptController.cpp
+    PythonScriptControllerHelper.cpp
     PythonScriptEvent.cpp
     PythonScriptFunction.cpp
     PythonVisitor.cpp
