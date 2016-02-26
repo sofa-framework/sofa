@@ -116,6 +116,7 @@ set(PYTHON_FILES
     python/SofaPython/sml.py
     python/SofaPython/units.py
     python/SofaPython/noPicking.py
+    python/SofaPython/livecoding.py
 )
 
 
