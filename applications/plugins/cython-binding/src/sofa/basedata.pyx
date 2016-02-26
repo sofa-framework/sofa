@@ -2,6 +2,12 @@
 import cython
 from libcpp cimport bool
 from libcpp.string cimport string as libcpp_string
+from cython.operator cimport dereference as deref, preincrement as inc, address as address
+
+import array
+from cpython cimport array
+
+from libc.string cimport memcpy
 
 cdef class BaseData:
         """ A BaseData exposes the component data fields.
@@ -161,6 +167,21 @@ cdef class BaseData:
         @cython.nonecheck(False)    
         @cython.boundscheck(False)    
         @cython.wraparound(False)    
+        @cython.overflowcheck(False)  
+        cdef setValuesFromArray(BaseData self, const _AbstractTypeInfo* nfo, void* ptr, array.array ca):
+                        cdef int i=0
+                        cdef int mi = nfo.size(ptr)
+                        cdef void* rawsrcptr = ca.data.as_voidptr
+                        cdef void* rawdstptr = nfo.getValuePtr(ptr) 
+                         
+                        #for i in range(0, mi):
+                        #        nfo.setScalarValue(ptr, i, rawptr[i])
+                        memcpy(rawdstptr, rawsrcptr, mi * sizeof(float))
+
+        
+        @cython.nonecheck(False)    
+        @cython.boundscheck(False)    
+        @cython.wraparound(False)    
         @cython.overflowcheck(False)    
         def setValues(self, values):
                 """ Change the content of a complete datafield """
@@ -171,8 +192,13 @@ cdef class BaseData:
                 
                 cdef int i = 0 
                 cdef int j = 0 
-                cdef int mi = 0                                
-                if nfo.Container():
+                cdef int mi = 0    
+                
+                # Fast array API path.
+                if isinstance(values, array.array):
+                        self.setValuesFromArray(nfo, ptr, values)
+                        
+                elif nfo.Container():
                         # We only have one entry ...
                         if nfo.FixedSize() and rowwidth == len(values):
                                 if nfo.Scalar():        

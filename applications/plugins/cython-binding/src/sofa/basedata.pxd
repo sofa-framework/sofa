@@ -1,6 +1,7 @@
 # -*- coding: ASCII -*-
 from libcpp cimport bool
 from libcpp.string cimport string as libcpp_string 
+from cpython cimport array
 
 cdef extern from "../../../../../framework/sofa/defaulttype/DataTypeInfo.h" namespace "sofa::defaulttype": 
     cdef cppclass _AbstractTypeInfo "sofa::defaulttype::AbstractTypeInfo":
@@ -20,7 +21,8 @@ cdef extern from "../../../../../framework/sofa/defaulttype/DataTypeInfo.h" name
         void setScalarValue (void* data, size_t index, double value) 
         void setTextValue(void* data, size_t index, libcpp_string& value) 
         bool setSize(void* data, size_t size)
-
+        void* getValuePtr(void* type) 
+        
 
 cdef extern from "../../../../../framework/sofa/core/objectmodel/BaseData.h" namespace "sofa::core::objectmodel":       
     cdef cppclass _BaseData "sofa::core::objectmodel::BaseData":
@@ -33,6 +35,7 @@ cdef extern from "../../../../../framework/sofa/core/objectmodel/BaseData.h" nam
         void* beginEditVoidPtr()
         void endEditVoidPtr()
         char* getHelp() 
+        
         
         void setPersistent(bool) 
         bool isPersistent()
@@ -48,4 +51,7 @@ cdef class BaseData:
         cdef setValueScalar(BaseData self, const _AbstractTypeInfo* nfo, void* ptr, int rowwidth, int numrow, int idx, value) 
         cdef setValueInteger(BaseData self, const _AbstractTypeInfo* nfo, void* ptr, int rowwidth, int numrow, int idx, value)
         cdef setValueText(BaseData self, const _AbstractTypeInfo* nfo, void* ptr, int rowwidth, int numrow, int idx, value)
+        
+        cdef setValuesFromArray(BaseData self, const _AbstractTypeInfo* nfo, void* ptr, array.array ca)
+         
        
