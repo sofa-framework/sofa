@@ -188,7 +188,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
     list(APPEND SOURCE_FILES  system/FileMonitor_macosx.cpp)
 endif()
 
-if(CMAKE_SYSTEM_NAME STREQUAL Win32)
+if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     list(APPEND SOURCE_FILES  system/FileMonitor_windows.cpp)
 endif()
 
