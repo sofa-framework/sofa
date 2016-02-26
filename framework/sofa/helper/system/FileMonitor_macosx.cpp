@@ -41,6 +41,19 @@ FSEventStreamRef FileMonitor_init()
 }
 
 
+
+void FileMonitor::removeFileListener(const string& filename,
+                                     FileEventListener *listener)
+{
+
+}
+
+
+void FileMonitor::removeListener(FileEventListener *listener)
+{
+
+}
+
 int FileMonitor::addFile(const std::string& filepath, FileEventListener* listener)
 {
     if(!FileSystem::exists(filepath))
