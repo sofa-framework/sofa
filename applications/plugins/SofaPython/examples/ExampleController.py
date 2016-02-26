@@ -126,6 +126,11 @@ class ExampleController(Sofa.PythonScriptController):
 		sys.stdout.flush()
 		return 0 
 
+	def onMouseMove(self, x, y):
+                print 'onMouseMove x='+str(x)+' y='+str(y)
+		sys.stdout.flush() 
+                return 0                
+
 	def onMouseButtonLeft(self,x,y,pressed):
 		print 'onMouseButtonLeft x='+str(x)+' y='+str(y)+' pressed='+str(pressed)
 		sys.stdout.flush()
@@ -152,7 +157,6 @@ class ExampleController(Sofa.PythonScriptController):
 		print 'onMouseButtonWheel x='+str(x)+' y='+str(y)+' delta='+str(delta)
 		sys.stdout.flush()
 		return 0
-
 
 	# called at each draw (possibility to use PyOpenGL)
 	def draw(self):

@@ -238,6 +238,25 @@ extern "C" PyObject * PythonScriptController_onKeyReleased(PyObject * /*self*/, 
     Py_RETURN_FALSE;
 }
 
+
+extern "C" PyObject * PythonScriptController_onMouseMove(PyObject * /*self*/, PyObject * args)
+{
+    int x,y;
+    if (!PyArg_ParseTuple(args, "ii",&x,&y))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+#ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
+    std::cerr << obj->m_classname.getValueString() << ".onMouseMove not implemented in " << obj->name.getValueString() << std::endl;
+#endif
+
+    Py_RETURN_NONE;
+}
+
+
 extern "C" PyObject * PythonScriptController_onMouseButtonLeft(PyObject * /*self*/, PyObject * args)
 {
     int x,y;
@@ -368,6 +387,7 @@ SP_CLASS_METHOD(PythonScriptController,initGraph)
 SP_CLASS_METHOD(PythonScriptController,bwdInitGraph)
 SP_CLASS_METHOD(PythonScriptController,onKeyPressed)
 SP_CLASS_METHOD(PythonScriptController,onKeyReleased)
+SP_CLASS_METHOD(PythonScriptController,onMouseMove)
 SP_CLASS_METHOD(PythonScriptController,onMouseButtonLeft)
 SP_CLASS_METHOD(PythonScriptController,onMouseButtonRight)
 SP_CLASS_METHOD(PythonScriptController,onMouseButtonMiddle)

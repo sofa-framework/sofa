@@ -136,6 +136,11 @@ bool PythonMainScriptController::script_onKeyReleased(const char c)
     return b;
 }
 
+void PythonMainScriptController::script_onMouseMove(const int posX,const int posY)
+{
+    SP_CALL_FILEFUNC(const_cast<char*>("onMouseMove"),const_cast<char*>("(ii)"), posX,posY)
+}
+
 void PythonMainScriptController::script_onMouseButtonLeft(const int posX,const int posY,const bool pressed)
 {
     PyObject *pyPressed = pressed? Py_True : Py_False;

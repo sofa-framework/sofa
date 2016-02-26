@@ -268,6 +268,14 @@ bool PythonScriptController::script_onKeyReleased(const char c)
     return b;
 }
 
+void PythonScriptController::script_onMouseMove(const int posX,const int posY)
+{
+    helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonScriptController_Event_")+this->getName()).c_str() );
+
+    SP_CALL_OBJECTFUNC(const_cast<char*>("onMouseMove"),const_cast<char*>("(ii)"), posX,posY)
+}
+
+
 void PythonScriptController::script_onMouseButtonLeft(const int posX,const int posY,const bool pressed)
 {
     helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonScriptController_Event_")+this->getName()).c_str() );
