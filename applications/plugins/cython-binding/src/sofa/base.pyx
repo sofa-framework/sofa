@@ -73,9 +73,6 @@ cdef class Base(object):
                 super(Base, self).__init__()
                 self.realptr = src.realptr    
 
-    #def __dir__(self):
-    #            return self.getDataNames() 
-
     def __getattr__(self, item):
                 r = self.findData(item)
                 if r != None:
@@ -91,8 +88,6 @@ cdef class Base(object):
                 if r:
                         r.setValues(values)
                         return
-                
-                # Fall back to the default python way of adding atributes. 
                 self.__dict__[item] = values 
                
 
@@ -101,5 +96,4 @@ cdef class Base(object):
                 return self.realptr == other.realptr     
         if op == 3: 
                 return self.realptr != other.realptr     
-        
         return NotImplemented()
