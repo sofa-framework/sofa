@@ -188,6 +188,10 @@ if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
     list(APPEND SOURCE_FILES  system/FileMonitor_macosx.cpp)
 endif()
 
+if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+    list(APPEND SOURCE_FILES  system/FileMonitor_windows.cpp)
+endif()
+
 if(SOFA_HAVE_PNG)
     list(APPEND HEADER_FILES  io/ImagePNG.h)
     list(APPEND SOURCE_FILES  io/ImagePNG.cpp)
