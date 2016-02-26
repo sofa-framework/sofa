@@ -347,7 +347,17 @@ extern "C" PyObject * PythonScriptController_draw(PyObject * /*self*/, PyObject 
     Py_RETURN_NONE;
 }
 
+extern "C" PyObject * PythonScriptController_onHeartBeatEvent(PyObject * /*self*/, PyObject * args)
+{
+    SOFA_UNUSED(args) ;
 
+#ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
+    std::cerr << obj->m_classname.getValueString() << ".onHeartBeatEvent not implemented in " << obj->name.getValueString() << std::endl;
+#endif
+
+    Py_RETURN_NONE;
+}
 
 
 
@@ -370,6 +380,7 @@ SP_CLASS_METHOD(PythonScriptController,cleanup)
 SP_CLASS_METHOD(PythonScriptController,onGUIEvent)
 SP_CLASS_METHOD(PythonScriptController,onScriptEvent)
 SP_CLASS_METHOD(PythonScriptController,draw)
+SP_CLASS_METHOD(PythonScriptController,onHeartBeatEvent)
 SP_CLASS_METHODS_END
 
 

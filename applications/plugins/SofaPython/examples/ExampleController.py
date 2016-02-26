@@ -141,6 +141,13 @@ class ExampleController(Sofa.PythonScriptController):
 		sys.stdout.flush()
 		return 0
 
+        def onHeartBeatEvent(self):
+		sys.stdout.flush()
+		return 0
+
+        def onRecompile(self):
+                print("The source ["+__file__+"] has changed and is reloaded.")
+                
 	def onMouseWheel(self,x,y,delta):
 		print 'onMouseButtonWheel x='+str(x)+' y='+str(y)+' delta='+str(delta)
 		sys.stdout.flush()

@@ -209,6 +209,12 @@ void PythonMainScriptController::script_draw(const core::visual::VisualParams*)
     SP_CALL_FILEFUNC(const_cast<char*>("draw"),0)
 }
 
+void PythonMainScriptController::script_onHeartBeatEvent(HeartBeatEvent* event)
+{
+    SOFA_UNUSED(event) ;
+    SP_CALL_FILEFUNC(const_cast<char*>("onHeartBeatEvent"), 0)
+}
+
 void PythonMainScriptController::handleEvent(core::objectmodel::Event *event)
 {
     if (sofa::core::objectmodel::PythonScriptEvent::checkEventType(event))
@@ -218,6 +224,7 @@ void PythonMainScriptController::handleEvent(core::objectmodel::Event *event)
     }
     else ScriptController::handleEvent(event);
 }
+
 
 
 } // namespace controller

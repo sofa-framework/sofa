@@ -27,6 +27,10 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
 
+#include <sofa/helper/system/FileMonitor.h>
+using sofa::helper::system::FileMonitor ;
+using sofa::helper::system::FileEventListener ;
+
 #include "Binding_Base.h"
 #include "Binding_BaseContext.h"
 #include "Binding_Node.h"
@@ -43,6 +47,41 @@ namespace component
 namespace controller
 {
 
+// call a function that returns void
+#define SP_CALL_FILEFUNC(func, ...){\
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));\
+    PyObject *pFunc = PyDict_GetItemString(pDict, func);\
+    if (PyCallable_Check(pFunc))\
+{\
+    PyObject *res = PyObject_CallFunction(pFunc,__VA_ARGS__); \
+    if( res )  Py_DECREF(res); \
+}\
+}
+
+class MyFileEventListener : public FileEventListener
+{
+    PythonScriptController* m_controller ;
+public:
+    MyFileEventListener(PythonScriptController* psc){
+        m_controller = psc ;
+    }
+
+    virtual ~MyFileEventListener(){}
+
+    virtual void fileHasChanged(const std::string& filepath){
+        /// This function is called when the file has changed. Two cases have
+        /// to be considered if the script was already loaded once or not.
+        if(!m_controller->scriptControllerInstance()){
+           m_controller->doLoadScript();
+        }else{
+            std::string file=filepath;
+            SP_CALL_FILEFUNC(const_cast<char*>("onReimpAFile"),
+                             const_cast<char*>("s"),
+                             const_cast<char*>(file.data()));
+        }
+    }
+};
+
 int PythonScriptControllerClass = core::RegisterObject("A Sofa controller scripted in python")
         .add< PythonScriptController >()
         //.addAlias("PythonController")
@@ -55,14 +94,28 @@ PythonScriptController::PythonScriptController()
     , m_filename(initData(&m_filename, "filename","Python script filename"))
     , m_classname(initData(&m_classname, "classname","Python class implemented in the script to instanciate for the controller"))
     , m_variables( initData( &m_variables, "variables", "Array of string variables (equivalent to a c-like argv)" ) )
+    , m_doAutoReload( initData( &m_doAutoReload, false, "autoreload", "Automatically reload the file when the source code is changed" ) )
     , m_ScriptControllerClass(0)
     , m_ScriptControllerInstance(0)
 {
     // various initialization stuff here...
+    m_filelistener = new MyFileEventListener(this) ;
+}
+
+PythonScriptController::~PythonScriptController()
+{
+    if(m_filelistener){
+        FileMonitor::removeListener(m_filelistener) ;
+        delete m_filelistener ;
+    }
 }
 
 void PythonScriptController::loadScript()
 {
+    if(m_doAutoReload.getValue()){
+        FileMonitor::addFile(m_filename.getFullPath(), m_filelistener) ;
+    }
+
     if(!sofa::simulation::PythonEnvironment::runFile(m_filename.getFullPath().c_str()))
     {
         // LOAD ERROR
@@ -170,6 +223,10 @@ using namespace sofa::core::objectmodel;
     } \
 }
 
+void PythonScriptController::doLoadScript()
+{
+    loadScript() ;
+}
 
 void PythonScriptController::script_onLoaded(sofa::simulation::Node *node)
 {
@@ -294,6 +351,16 @@ void PythonScriptController::script_onScriptEvent(core::objectmodel::ScriptEvent
         SP_CALL_OBJECTFUNC(const_cast<char*>("onScriptEvent"),const_cast<char*>("(OsO)"),SP_BUILD_PYSPTR(pyEvent->getSender().get()),const_cast<char*>(pyEvent->getEventName().c_str()),pyEvent->getUserData())
     }
 
+}
+
+void PythonScriptController::script_onHeartBeatEvent(HeartBeatEvent* /*event*/)
+{
+    FileMonitor::updates(0);
+    SP_CALL_OBJECTFUNC(const_cast<char*>("onHeartBeatEvent"),0)
+
+    // Flush the console to avoid the sys.stdout.flush() in each script function.
+    std::cout.flush() ;
+    std::cerr.flush() ;
 }
 
 void PythonScriptController::script_draw(const core::visual::VisualParams*)

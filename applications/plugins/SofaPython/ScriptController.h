@@ -32,6 +32,15 @@
 #include "ScriptEvent.h"
 #include "ScriptFunction.h"
 
+/// fwd declaration
+namespace sofa {
+    namespace core {
+        namespace objectmodel {
+            class HeartBeatEvent ;
+        }
+    }
+}
+
 namespace sofa
 {
 
@@ -40,6 +49,7 @@ namespace component
 
 namespace controller
 {
+    using sofa::core::objectmodel::HeartBeatEvent ;
 
 class SOFA_SOFAPYTHON_API ScriptController : public Controller
 {
@@ -119,10 +129,10 @@ public:
 
     virtual void handleEvent(core::objectmodel::Event *);
 
-	/**
-	 * @brief draw callback.
-	 */
-	virtual void draw(const core::visual::VisualParams*);
+    /**
+     * @brief draw callback.
+     */
+    virtual void draw(const core::visual::VisualParams*);
 
 protected:
 
@@ -163,8 +173,11 @@ protected:
     /// Script events; user data is implementation-dependant
     virtual void script_onScriptEvent(core::objectmodel::ScriptEvent *) = 0;
 
-	/// drawing
-	virtual void script_draw(const core::visual::VisualParams*) = 0;
+    /// HeartBeat event is sent a regular interval from the host application
+    virtual void script_onHeartBeatEvent(HeartBeatEvent* event) = 0;
+
+    /// drawing
+    virtual void script_draw(const core::visual::VisualParams*) = 0;
 
     /// @}
 

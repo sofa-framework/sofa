@@ -28,6 +28,17 @@
 #include "PythonEnvironment.h"
 #include "ScriptController.h"
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/objectmodel/HeartBeatEvent.h>
+
+////////////////// FORWARD DECLARATION /////////////////////////////////////////
+namespace sofa{
+    namespace helper{
+        namespace system{
+            class FileEventListener ;
+        }
+    }
+}
+
 
 namespace sofa
 {
@@ -38,15 +49,19 @@ namespace component
 namespace controller
 {
 
+using sofa::core::objectmodel::HeartBeatEvent ;
+using sofa::helper::system::FileEventListener ;
+
 class SOFA_SOFAPYTHON_API PythonScriptController : public ScriptController
 {
 public:
     SOFA_CLASS(PythonScriptController,ScriptController);
 
-	PyObject* scriptControllerInstance() const {return m_ScriptControllerInstance;}
+    PyObject* scriptControllerInstance() const {return m_ScriptControllerInstance;}
 
 protected:
     PythonScriptController();
+    virtual ~PythonScriptController();
 
     void handleEvent(core::objectmodel::Event *event);
 
@@ -86,8 +101,11 @@ protected:
     /// Script events; user data is implementation-dependant
     virtual void script_onScriptEvent(core::objectmodel::ScriptEvent* event);
 
-	/// drawing
-	virtual void script_draw(const core::visual::VisualParams*);
+    /// drawing
+    virtual void script_draw(const core::visual::VisualParams*);
+
+    /// HeartBeat event is sent a regular interval from the host application
+    virtual void script_onHeartBeatEvent(HeartBeatEvent* event);
 
     /// @}
 
@@ -96,8 +114,14 @@ public:
     sofa::core::objectmodel::DataFileName       m_filename;
     sofa::core::objectmodel::Data<std::string>  m_classname;
     sofa::core::objectmodel::Data< helper::vector< std::string > >  m_variables; // array of string variables (equivalent to a c-like argv), while waiting to have a better way to share variables
+    sofa::core::objectmodel::Data<bool>         m_doAutoReload;
 
+    void doLoadScript();
 protected:
+    FileEventListener* m_filelistener ;     // hold a reference to the file listener
+                                            // to call when the source file is changed.
+
+
     PyObject *m_ScriptControllerClass;      // class implemented in the script to use to instanciate the python controller
 //    PyObject *m_ScriptControllerInstanceDict;  // functions dictionnary
     PyObject *m_ScriptControllerInstance;   // instance of m_ScriptControllerClass

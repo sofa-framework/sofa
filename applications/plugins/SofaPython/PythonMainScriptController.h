@@ -29,6 +29,14 @@
 #include "ScriptController.h"
 #include <sofa/core/objectmodel/DataFileName.h>
 
+namespace sofa {
+    namespace core{
+        namespace objectmodel{
+            class HeartBeatEvent ;
+        }
+    }
+}
+
 namespace sofa
 {
 
@@ -37,6 +45,7 @@ namespace component
 
 namespace controller
 {
+using sofa::core::objectmodel::HeartBeatEvent ;
 
 /// very similar to PythonScriptController expect the callbacks are not in
 /// a python object (class) but directly in the file
@@ -90,7 +99,7 @@ protected:
     /// drawing
     virtual void script_draw(const core::visual::VisualParams*);
 
-    /// @}
+    void script_onHeartBeatEvent(HeartBeatEvent* event) ;
 
 
 public:
