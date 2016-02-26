@@ -117,7 +117,7 @@ class RigidBody:
         return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
 
     def setFixed(self, isFixed=True):
-        """ Add/remove a fixed constraint for this rigid, also set spedd to 0
+        """ Add/remove a fixed constraint for this rigid, also set speed to 0
         """
         if isFixed and self.fixedConstraint is None:
             self.fixedConstraint = self.node.createObject("FixedConstraint", name="fixedConstraint")
