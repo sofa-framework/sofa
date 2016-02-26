@@ -217,8 +217,12 @@ protected:
     void paintGL();
     void paintEvent(QPaintEvent* qpe);
     void resizeGL( int w, int h );
+
     /// Overloaded from SofaViewer
-    virtual void viewAll() {}
+    virtual void viewAll() ;
+    virtual void switchAxisViewing() ;
+    virtual void toogleBoundingBoxDraw() ;
+
 
 public:
 
@@ -292,7 +296,10 @@ private:
     virtual void mouseReleaseEvent ( QMouseEvent * e );
     virtual void mouseMoveEvent ( QMouseEvent * e );
     virtual void wheelEvent ( QWheelEvent* e);
-    virtual bool mouseEvent ( QMouseEvent * e );
+    //virtual bool mouseEvent ( QMouseEvent * e );
+
+    bool m_drawBoundingBox ;
+    bool m_drawAxis ;
 };
 
 } // namespace qt

@@ -132,9 +132,12 @@ protected:
     void init();
     /// Overloaded from QGLViewer to render the scene
     virtual void draw();
+    void resizeGL( int w, int h );
+
     /// Overloaded from SofaViewer
     virtual void viewAll();
-    void resizeGL( int w, int h );
+    virtual void switchAxisViewing() ;
+    virtual void toogleBoundingBoxDraw() ;
 
 public:
 
@@ -191,9 +194,6 @@ protected:
     virtual void mouseReleaseEvent ( QMouseEvent * e );
     virtual void mouseMoveEvent ( QMouseEvent * e );
     virtual void wheelEvent(QWheelEvent* e);
-    bool         mouseEvent( QMouseEvent * e );
-
-
 
 public slots:
     void resetView();

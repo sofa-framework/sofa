@@ -38,9 +38,9 @@ namespace viewer
 
 SofaViewer::SofaViewer()
     : sofa::gui::BaseViewer()
-    , m_isControlPressed(false)
 {
     colourPickingRenderCallBack = ColourPickingRenderCallBack(this);
+    m_state = SofaViewer::STATE_CAMERAMANIPULATION ;
 }
 
 SofaViewer::~SofaViewer()
@@ -52,267 +52,292 @@ void SofaViewer::redraw()
     getQWidget()->update();
 }
 
-void SofaViewer::keyPressEvent(QKeyEvent * e)
+bool SofaViewer::keyPressEvent_p(QKeyEvent * e)
 {
     sofa::core::objectmodel::KeypressedEvent kpe(e->key());
-    if(currentCamera)
-        currentCamera->manageEvent(&kpe);
 
-    switch (e->key())
-    {
-    case Qt::Key_T:
-    {
-        if (currentCamera->getCameraType() == core::visual::VisualParams::ORTHOGRAPHIC_TYPE)
-            setCameraMode(core::visual::VisualParams::PERSPECTIVE_TYPE);
-        else
-            setCameraMode(core::visual::VisualParams::ORTHOGRAPHIC_TYPE);
-        break;
-    }
-    case Qt::Key_Shift:
-        GLint viewport[4];
-        glGetIntegerv(GL_VIEWPORT,viewport);
-        getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
-        break;
-    case Qt::Key_B:
-        // --- change background
-    {
-        _background = (_background + 1) % 3;
-        break;
-    }
-    case Qt::Key_R:
-        // --- draw axis
-    {
-        _axis = !_axis;
-        break;
-    }
-    case Qt::Key_S:
-    {
-        screenshot(capture.findFilename());
-        break;
-    }
-    case Qt::Key_V:
-        // --- save video
-    {
-        if(!_video)
-        {
-            switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
-            {
-            case SofaVideoRecorderManager::SCREENSHOTS :
-                break;
-            case SofaVideoRecorderManager::MOVIE :
-            {
-#ifdef SOFA_HAVE_FFMPEG
-                SofaVideoRecorderManager* videoManager = SofaVideoRecorderManager::getInstance();
-                unsigned int bitrate = videoManager->getBitrate();
-                unsigned int framerate = videoManager->getFramerate();
-                std::string videoFilename = videoRecorder.findFilename(videoManager->getCodecExtension());
-                videoRecorder.init( videoFilename, framerate, bitrate, videoManager->getCodecName());
-#endif
+    if(m_state==STATE_SCENEFORWARDING){
+        if(e->key() == Qt::Key_Control )
+            return true;
 
-                break;
-            }
-            default :
-                break;
-            }
-            if (SofaVideoRecorderManager::getInstance()->realtime())
-            {
-                unsigned int framerate = SofaVideoRecorderManager::getInstance()->getFramerate();
-                std::cout << "Starting capture timer ( " << framerate << " Hz )" << std::endl;
-                unsigned int interv = (1000+framerate-1)/framerate;
-                captureTimer.start(interv);
-            }
-
-        }
-        else
-        {
-            if(captureTimer.isActive())
-            {
-                std::cout << "Stopping capture timer" << std::endl;
-                captureTimer.stop();
-            }
-            switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
-            {
-            case SofaVideoRecorderManager::SCREENSHOTS :
-                break;
-            case SofaVideoRecorderManager::MOVIE :
-            {
-#ifdef SOFA_HAVE_FFMPEG
-                videoRecorder.finishVideo();
-#endif //SOFA_HAVE_FFMPEG
-                break;
-            }
-            default :
-                break;
-            }
-        }
-
-        _video = !_video;
-        //capture.setCounter();
-
-        break;
-    }
-    case Qt::Key_W:
-        // --- save current view
-    {
-        saveView();
-        break;
-    }
-    case Qt::Key_F1:
-        // --- enable stereo mode
-    {
-        currentCamera->setStereoEnabled(!currentCamera->getStereoEnabled());
-        std::cout << "Stereoscopic View " << (currentCamera->getStereoEnabled() ? "Enabled" : "Disabled") << std::endl;
-        break;
-    }
-    case Qt::Key_F2:
-        // --- reduce shift distance
-    {
-        currentCamera->setStereoShift(currentCamera->getStereoShift()-0.1);
-        std::cout << "Stereo separation = " << currentCamera->getStereoShift() << std::endl;
-        break;
-    }
-    case Qt::Key_F3:
-        // --- increase shift distance
-    {
-        currentCamera->setStereoShift(currentCamera->getStereoShift()+0.1);
-        std::cout << "Stereo separation = " << currentCamera->getStereoShift() << std::endl;
-        break;
-    }
-    case Qt::Key_F4:
-    {
-        // --- Switch between parallax and toedIn stereovision
-        switch (currentCamera->getStereoStrategy()) {
-        case sofa::component::visualmodel::BaseCamera::PARALLEL:
-            currentCamera->setStereoStrategy(sofa::component::visualmodel::BaseCamera::TOEDIN);
-            std::cout << "Stereo Strategy: TOEDIN" << std::endl;
-            break;
-        case sofa::component::visualmodel::BaseCamera::TOEDIN:
-            currentCamera->setStereoStrategy(sofa::component::visualmodel::BaseCamera::PARALLEL);
-            std::cout << "Stereo Strategy: Parallel" << std::endl;
-            break;
-        default:
-            currentCamera->setStereoStrategy(sofa::component::visualmodel::BaseCamera::PARALLEL);
-            break;
-        }
-        break;
-    }
-    case Qt::Key_F5:
-        // --- enable binocular mode
-    {
-        //_stereoMode = (StereoMode)(((int)_stereoMode+1)%(int)NB_STEREO_MODES);
-        currentCamera->setStereoMode((sofa::component::visualmodel::BaseCamera::StereoMode)(((int)currentCamera->getStereoMode()+1)%(int)sofa::component::visualmodel::BaseCamera::NB_STEREO_MODES));
-        switch (currentCamera->getStereoMode())
-        {
-        case sofa::component::visualmodel::BaseCamera::STEREO_INTERLACED:
-            std::cout << "Stereo mode: Interlaced" << std::endl;
-            break;
-        case sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE:
-            std::cout << "Stereo mode: Side by Side" << std::endl; break;
-        case sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE_HALF:
-            std::cout << "Stereo mode: Side by Side Half" << std::endl; break;
-        case sofa::component::visualmodel::BaseCamera::STEREO_FRAME_PACKING:
-            std::cout << "Stereo mode: Frame Packing" << std::endl; break;
-        case sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM:
-            std::cout << "Stereo mode: Top Bottom" << std::endl; break;
-        case sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM_HALF:
-            std::cout << "Stereo mode: Top Bottom Half" << std::endl; break;
-        case sofa::component::visualmodel::BaseCamera::STEREO_AUTO:
-            std::cout << "Stereo mode: Automatic" << std::endl; break;
-        case sofa::component::visualmodel::BaseCamera::STEREO_NONE:
-            std::cout << "Stereo mode: None" << std::endl; break;
-        default:
-            std::cout << "Stereo mode: INVALID" << std::endl; break;
-            break;
-        }
-        break;
-    }
-    case Qt::Key_Control:
-    {
-        m_isControlPressed = true;
-//        std::cerr<<"QtViewer::keyPressEvent, CONTROL pressed"<<std::endl;
-        break;
-    }
-    default:
-    {
-        e->ignore();
-    }
-    }
-}
-
-void SofaViewer::keyReleaseEvent(QKeyEvent * e)
-{
-    sofa::core::objectmodel::KeyreleasedEvent kre(e->key());
-    currentCamera->manageEvent(&kre);
-
-    switch (e->key())
-    {
-    case Qt::Key_Shift:
-        getPickHandler()->deactivateRay();
-
-        break;
-    case Qt::Key_Control:
-    {
-        m_isControlPressed = false;
-
-        // Send Control Release Info to a potential ArticulatedRigid Instrument
-        sofa::core::objectmodel::MouseEvent mouseEvent(
-            sofa::core::objectmodel::MouseEvent::Reset);
-        if (groot)
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
-    }
-    default:
-    {
-        e->ignore();
-    }
-    }
-
-    if (isControlPressed())
-    {
         sofa::core::objectmodel::KeyreleasedEvent keyEvent(e->key());
         if (groot)
             groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
-    }
+    }else if(m_state==STATE_PICKING){
+        // Nothing to do
+    }else if(m_state==STATE_CAMERAMANIPULATION){
+        if(currentCamera)
+            currentCamera->manageEvent(&kpe);
 
+        switch (e->key())
+        {
+        case Qt::Key_A:
+        {
+            switchAxisViewing();
+            break ;
+        }
+        case Qt::Key_C:
+            viewAll() ;
+            break ;
+        case Qt::Key_B:
+            // --- change background
+        {
+            _background = (_background + 1) % 3;
+            break;
+        }
+        case Qt::Key_R:
+            // --- draw bounding box
+        {
+            toogleBoundingBoxDraw();
+            break;
+        }
+        case Qt::Key_S:
+        {
+            screenshot(capture.findFilename());
+            break;
+        }
+        case Qt::Key_T:
+        {
+            if (currentCamera->getCameraType() == core::visual::VisualParams::ORTHOGRAPHIC_TYPE){
+                setCameraMode(core::visual::VisualParams::PERSPECTIVE_TYPE);
+            }else{
+                setCameraMode(core::visual::VisualParams::ORTHOGRAPHIC_TYPE);
+            }
+            break;
+        }
+        case Qt::Key_V:
+            // --- save video
+        {
+            if(!_video)
+            {
+                switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
+                {
+                case SofaVideoRecorderManager::SCREENSHOTS :
+                    break;
+                case SofaVideoRecorderManager::MOVIE :
+                {
+#ifdef SOFA_HAVE_FFMPEG
+                    SofaVideoRecorderManager* videoManager = SofaVideoRecorderManager::getInstance();
+                    unsigned int bitrate = videoManager->getBitrate();
+                    unsigned int framerate = videoManager->getFramerate();
+                    std::string videoFilename = videoRecorder.findFilename(videoManager->getCodecExtension());
+                    videoRecorder.init( videoFilename, framerate, bitrate, videoManager->getCodecName());
+#endif
+
+                    break;
+                }
+                default :
+                    break;
+                }
+                if (SofaVideoRecorderManager::getInstance()->realtime())
+                {
+                    unsigned int framerate = SofaVideoRecorderManager::getInstance()->getFramerate();
+                    std::cout << "Starting capture timer ( " << framerate << " Hz )" << std::endl;
+                    unsigned int interv = (1000+framerate-1)/framerate;
+                    captureTimer.start(interv);
+                }
+
+            }
+            else
+            {
+                if(captureTimer.isActive())
+                {
+                    std::cout << "Stopping capture timer" << std::endl;
+                    captureTimer.stop();
+                }
+                switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
+                {
+                case SofaVideoRecorderManager::SCREENSHOTS :
+                    break;
+                case SofaVideoRecorderManager::MOVIE :
+                {
+#ifdef SOFA_HAVE_FFMPEG
+                    videoRecorder.finishVideo();
+#endif //SOFA_HAVE_FFMPEG
+                    break;
+                }
+                default :
+                    break;
+                }
+            }
+
+            _video = !_video;
+            //capture.setCounter();
+
+            break;
+        }
+        case Qt::Key_W:
+            // --- save current view
+        {
+            saveView();
+            break;
+        }
+        case Qt::Key_F1:
+            // --- enable stereo mode
+        {
+            currentCamera->setStereoEnabled(!currentCamera->getStereoEnabled());
+            std::cout << "Stereoscopic View " << (currentCamera->getStereoEnabled() ? "Enabled" : "Disabled") << std::endl;
+            break;
+        }
+        case Qt::Key_F2:
+            // --- reduce shift distance
+        {
+            currentCamera->setStereoShift(currentCamera->getStereoShift()-0.1);
+            std::cout << "Stereo separation = " << currentCamera->getStereoShift() << std::endl;
+            break;
+        }
+        case Qt::Key_F3:
+            // --- increase shift distance
+        {
+            currentCamera->setStereoShift(currentCamera->getStereoShift()+0.1);
+            std::cout << "Stereo separation = " << currentCamera->getStereoShift() << std::endl;
+            break;
+        }
+        case Qt::Key_F4:
+        {
+            // --- Switch between parallax and toedIn stereovision
+            switch (currentCamera->getStereoStrategy()) {
+            case sofa::component::visualmodel::BaseCamera::PARALLEL:
+                currentCamera->setStereoStrategy(sofa::component::visualmodel::BaseCamera::TOEDIN);
+                std::cout << "Stereo Strategy: TOEDIN" << std::endl;
+                break;
+            case sofa::component::visualmodel::BaseCamera::TOEDIN:
+                currentCamera->setStereoStrategy(sofa::component::visualmodel::BaseCamera::PARALLEL);
+                std::cout << "Stereo Strategy: Parallel" << std::endl;
+                break;
+            default:
+                currentCamera->setStereoStrategy(sofa::component::visualmodel::BaseCamera::PARALLEL);
+                break;
+            }
+            break;
+        }
+        case Qt::Key_F5:
+            // --- enable binocular mode
+        {
+            //_stereoMode = (StereoMode)(((int)_stereoMode+1)%(int)NB_STEREO_MODES);
+            currentCamera->setStereoMode((sofa::component::visualmodel::BaseCamera::StereoMode)(((int)currentCamera->getStereoMode()+1)%(int)sofa::component::visualmodel::BaseCamera::NB_STEREO_MODES));
+            switch (currentCamera->getStereoMode())
+            {
+            case sofa::component::visualmodel::BaseCamera::STEREO_INTERLACED:
+                std::cout << "Stereo mode: Interlaced" << std::endl;
+                break;
+            case sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE:
+                std::cout << "Stereo mode: Side by Side" << std::endl; break;
+            case sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE_HALF:
+                std::cout << "Stereo mode: Side by Side Half" << std::endl; break;
+            case sofa::component::visualmodel::BaseCamera::STEREO_FRAME_PACKING:
+                std::cout << "Stereo mode: Frame Packing" << std::endl; break;
+            case sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM:
+                std::cout << "Stereo mode: Top Bottom" << std::endl; break;
+            case sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM_HALF:
+                std::cout << "Stereo mode: Top Bottom Half" << std::endl; break;
+            case sofa::component::visualmodel::BaseCamera::STEREO_AUTO:
+                std::cout << "Stereo mode: Automatic" << std::endl; break;
+            case sofa::component::visualmodel::BaseCamera::STEREO_NONE:
+                std::cout << "Stereo mode: None" << std::endl; break;
+            default:
+                std::cout << "Stereo mode: INVALID" << std::endl; break;
+                break;
+            }
+            break;
+        }
+        case Qt::Key_Control:
+            m_state = STATE_SCENEFORWARDING ;
+            break;
+        case Qt::Key_Shift:
+            m_state = STATE_PICKING ;
+            GLint viewport[4];
+            glGetIntegerv(GL_VIEWPORT,viewport);
+            getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
+            break;
+        default:
+            break;
+        }
+    }// END STATE_MANIPULATION
+
+    return true;
 }
 
-bool SofaViewer::isControlPressed() const
+bool SofaViewer::keyReleaseEvent_p(QKeyEvent * e)
 {
-    return m_isControlPressed;
+    sofa::core::objectmodel::KeyreleasedEvent kre(e->key());
+
+    if(m_state==STATE_SCENEFORWARDING){
+        if(e->key() == Qt::Key_Control){
+            m_state = STATE_CAMERAMANIPULATION;
+            return true;
+        }
+        sofa::core::objectmodel::KeyreleasedEvent keyEvent(e->key());
+        if (groot)
+            groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
+
+        // TODO(dmarchal): this seems a kind of patchy... should be remove.
+        // A Control release that rise a mouseEvent sound real weird to me.
+        // Send Control Release Info to a potential ArticulatedRigid Instrument
+        sofa::core::objectmodel::MouseEvent mouseEvent(
+                    sofa::core::objectmodel::MouseEvent::Reset);
+        if (groot)
+            groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+    }else if(m_state==STATE_PICKING){
+        if(e->key() == Qt::Key_Shift){
+            getPickHandler()->deactivateRay();
+            m_state = STATE_CAMERAMANIPULATION;
+        }
+    }else if(m_state==STATE_CAMERAMANIPULATION){
+
+    }
+
+    return true;
 }
 
 // ---------------------- Here are the Mouse controls   ----------------------
-void SofaViewer::wheelEvent(QWheelEvent *e)
+bool SofaViewer::wheelEvent_p(QWheelEvent *e)
 {
-    //<CAMERA API>
-	if (!currentCamera) return;
     sofa::core::objectmodel::MouseEvent me(sofa::core::objectmodel::MouseEvent::Wheel,e->delta());
-    currentCamera->manageEvent(&me);
 
-    getQWidget()->update();
-#ifndef SOFA_GUI_INTERACTION
-    if (groot)
-        groot->propagateEvent(core::ExecParams::defaultInstance(), &me);
-#endif
+    switch(m_state){
+    case STATE_SCENEFORWARDING:
+        if (groot)
+            groot->propagateEvent(core::ExecParams::defaultInstance(), &me);
+        break;
+    case STATE_PICKING:
+        break;
+    case STATE_CAMERAMANIPULATION:
+        if (currentCamera)
+            currentCamera->manageEvent(&me);
+        break;
+    default:
+        break;
+    }
+
+    return true;
 }
 
-void SofaViewer::mouseMoveEvent ( QMouseEvent *e )
+bool SofaViewer::mouseMoveEvent_p( QMouseEvent *e )
 {
-    //<CAMERA API>
-	if (!currentCamera) return;
     sofa::core::objectmodel::MouseEvent me(sofa::core::objectmodel::MouseEvent::Move,e->x(), e->y());
-    currentCamera->manageEvent(&me);
 
-    getQWidget()->update();
-#ifndef SOFA_GUI_INTERACTION
-    if (groot)
-        groot->propagateEvent(core::ExecParams::defaultInstance(), &me);
-#endif
+    switch(m_state){
+    case STATE_SCENEFORWARDING:
+        if (groot)
+            groot->propagateEvent(core::ExecParams::defaultInstance(), &me);
+        break;
+    case STATE_PICKING:
+        updatePicking(e);
+        break;
+    case STATE_CAMERAMANIPULATION:
+        if (currentCamera)
+            currentCamera->manageEvent(&me);
+        break;
+    default:
+        break;
+    }
+
+    return true;
 }
 
-void SofaViewer::mousePressEvent ( QMouseEvent * e)
+bool SofaViewer::mousePressEvent_p( QMouseEvent * e)
 {
-    //<CAMERA API>
-	if (!currentCamera) return;
     sofa::core::objectmodel::MouseEvent* mEvent = NULL;
     if (e->button() == Qt::LeftButton)
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed, e->x(), e->y());
@@ -320,23 +345,32 @@ void SofaViewer::mousePressEvent ( QMouseEvent * e)
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightPressed, e->x(), e->y());
     else if (e->button() == Qt::MidButton)
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddlePressed, e->x(), e->y());
-	else{
-		// A fallback event to rules them all... 
-	    mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::AnyExtraButtonPressed, e->x(), e->y());
-	}
-    currentCamera->manageEvent(mEvent);
+    else{
+        // A fallback event to rules them all...
+        mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::AnyExtraButtonPressed, e->x(), e->y());
+    }
 
-    getQWidget()->update();
-#ifndef SOFA_GUI_INTERACTION
-    if (groot)
-        groot->propagateEvent(core::ExecParams::defaultInstance(), mEvent);
-#endif
+    switch(m_state){
+    case STATE_SCENEFORWARDING:
+        if (groot)
+            groot->propagateEvent(core::ExecParams::defaultInstance(), mEvent);
+        break;
+    case STATE_PICKING:
+        updatePicking(e);
+        break;
+    case STATE_CAMERAMANIPULATION:
+        if (currentCamera)
+            currentCamera->manageEvent(mEvent);
+        break;
+    default:
+        break;
+    }
+    delete mEvent;
+    return true;
 }
 
-void SofaViewer::mouseReleaseEvent ( QMouseEvent * e)
+bool SofaViewer::mouseReleaseEvent_p( QMouseEvent * e)
 {
-    //<CAMERA API>
-	if (!currentCamera) return;
     sofa::core::objectmodel::MouseEvent* mEvent = NULL;
     if (e->button() == Qt::LeftButton)
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased, e->x(), e->y());
@@ -344,21 +378,32 @@ void SofaViewer::mouseReleaseEvent ( QMouseEvent * e)
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightReleased, e->x(), e->y());
     else if (e->button() == Qt::MidButton)
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddleReleased, e->x(), e->y());
-	else{
-		// A fallback event to rules them all... 
-	    mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::AnyExtraButtonReleased, e->x(), e->y());
-	}
+    else{
+        // A fallback event to rules them all...
+        mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::AnyExtraButtonReleased, e->x(), e->y());
+    }
 
-    currentCamera->manageEvent(mEvent);
+    switch(m_state){
+    case STATE_SCENEFORWARDING:
+        if (groot)
+            groot->propagateEvent(core::ExecParams::defaultInstance(), mEvent);
+        break;
+    case STATE_PICKING:
+        updatePicking(e);
+        break;
+    case STATE_CAMERAMANIPULATION:
+        if (currentCamera)
+            currentCamera->manageEvent(mEvent);
+        break;
+    default:
+        break;
+    }
 
-    getQWidget()->update();
-#ifndef SOFA_GUI_INTERACTION
-    if (groot)
-        groot->propagateEvent(core::ExecParams::defaultInstance(), mEvent);
-#endif
+    delete mEvent;
+    return true;
 }
 
-bool SofaViewer::mouseEvent(QMouseEvent *e)
+bool SofaViewer::updatePicking(QMouseEvent *e)
 {
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT,viewport);
@@ -369,57 +414,50 @@ bool SofaViewer::mouseEvent(QMouseEvent *e)
     mousepos.x      = e->x();
     mousepos.y      = e->y();
 
-    if (e->modifiers() & Qt::ShiftModifier)
+    getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
+    getPickHandler()->updateMouse2D( mousepos );
+
+    switch (e->type())
     {
+    case QEvent::MouseButtonPress:
 
-        getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
-        getPickHandler()->updateMouse2D( mousepos );
-
-        //_sceneTransform.ApplyInverse();
-        switch (e->type())
+        if (e->button() == Qt::LeftButton)
         {
-        case QEvent::MouseButtonPress:
-
-            if (e->button() == Qt::LeftButton)
-            {
-                getPickHandler()->handleMouseEvent(PRESSED, LEFT);
-            }
-            else if (e->button() == Qt::RightButton) // Shift+Rightclick to remove triangles
-            {
-                getPickHandler()->handleMouseEvent(PRESSED, RIGHT);
-            }
-            else if (e->button() == Qt::MidButton) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
-            {
-                getPickHandler()->handleMouseEvent(PRESSED, MIDDLE);
-            }
-            break;
-        case QEvent::MouseButtonRelease:
-            //if (e->button() == Qt::LeftButton)
+            getPickHandler()->handleMouseEvent(PRESSED, LEFT);
+        }
+        else if (e->button() == Qt::RightButton) // Shift+Rightclick to remove triangles
         {
-
-            if (e->button() == Qt::LeftButton)
-            {
-                getPickHandler()->handleMouseEvent(RELEASED, LEFT);
-            }
-            else if (e->button() == Qt::RightButton)
-            {
-                getPickHandler()->handleMouseEvent(RELEASED, RIGHT);
-            }
-            else if (e->button() == Qt::MidButton)
-            {
-                getPickHandler()->handleMouseEvent(RELEASED, MIDDLE);
-            }
+            getPickHandler()->handleMouseEvent(PRESSED, RIGHT);
+        }
+        else if (e->button() == Qt::MidButton) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
+        {
+            getPickHandler()->handleMouseEvent(PRESSED, MIDDLE);
         }
         break;
-        default:
-            break;
-        }
-        moveRayPickInteractor(e->x(), e->y());
-    }
-    else
+    case QEvent::MouseButtonRelease:
+        //if (e->button() == Qt::LeftButton)
     {
-        getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
+
+        if (e->button() == Qt::LeftButton)
+        {
+            getPickHandler()->handleMouseEvent(RELEASED, LEFT);
+        }
+        else if (e->button() == Qt::RightButton)
+        {
+            getPickHandler()->handleMouseEvent(RELEASED, RIGHT);
+        }
+        else if (e->button() == Qt::MidButton)
+        {
+            getPickHandler()->handleMouseEvent(RELEASED, MIDDLE);
+        }
     }
+        break;
+    default:
+        break;
+    }
+    moveRayPickInteractor(e->x(), e->y());
+
+
     return true;
 }
 

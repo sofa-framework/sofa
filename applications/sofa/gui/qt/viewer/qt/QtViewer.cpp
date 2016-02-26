@@ -194,7 +194,6 @@ QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAAS
     ////////////////
     // Interactor //
     ////////////////
-    m_isControlPressed = false;
     _mouseInteractorMoving = false;
     _mouseInteractorTranslationMode = false;
     _mouseInteractorRotationMode = false;
@@ -208,6 +207,8 @@ QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAAS
 #endif // TRACKING
     _mouseInteractorTrackball.ComputeQuaternion(0.0, 0.0, 0.0, 0.0);
     _mouseInteractorNewQuat = _mouseInteractorTrackball.GetQuaternion();
+
+    m_drawBoundingBox = false;
 
     connect( &captureTimer, SIGNAL(timeout()), this, SLOT(captureEvent()) );
 }
@@ -704,9 +705,7 @@ void QtViewer::DisplayOBJs()
 
         getSimulation()->draw(vparams,groot.get());
 
-        if (_axis)
-        {
-
+        if(m_drawAxis){
             SReal* minBBox = vparams->sceneBBox().minBBoxPtr();
             SReal* maxBBox = vparams->sceneBBox().maxBBoxPtr();
             SReal maxDistance = std::numeric_limits<SReal>::min();
@@ -723,6 +722,10 @@ void QtViewer::DisplayOBJs()
 
             // World Axis: Arrows of axis are defined as 10% of maxBBox
             DrawAxis(0.0, 0.0, 0.0,(maxDistance*0.1));
+           }
+
+            if (m_drawBoundingBox)
+            {
 
             if (vparams->sceneBBox().minBBox().x() < vparams->sceneBBox().maxBBox().x())
                 DrawBox(vparams->sceneBBox().minBBoxPtr(), vparams->sceneBBox().maxBBoxPtr());
@@ -740,7 +743,6 @@ void QtViewer::DisplayOBJs()
             glPopMatrix();
             glMatrixMode(GL_MODELVIEW);
             glPopMatrix();
-
         }
     }
 
@@ -1241,16 +1243,10 @@ void QtViewer::ApplyMouseInteractorTransformation(int x, int y)
 
 void QtViewer::keyPressEvent(QKeyEvent * e)
 {
-    if (isControlPressed()) // pass event to the scene data structure
-    {
-        //	cerr<<"QtViewer::keyPressEvent, key = "<<e->key()<<" with Control pressed "<<endl;
-        if (groot)
-        {
-            sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
-        }
-    }
-    else
+    if( SofaViewer::keyPressEvent_p(e) )
+        return ;
+    else{
+
         // control the GUI
         switch (e->key())
         {
@@ -1279,42 +1275,45 @@ void QtViewer::keyPressEvent(QKeyEvent * e)
             }
             break;
         }
-        default:
-        {
-            SofaViewer::keyPressEvent(e);
         }
-        update();
-        }
+    }
+    update();
 }
 
 void QtViewer::keyReleaseEvent(QKeyEvent * e)
 {
-    SofaViewer::keyReleaseEvent(e);
+    SofaViewer::keyReleaseEvent_p(e);
+    update();
 }
 
 void QtViewer::wheelEvent(QWheelEvent* e)
 {
-    SofaViewer::wheelEvent(e);
+    SofaViewer::wheelEvent_p(e);
+    update();
 }
 
 void QtViewer::mousePressEvent(QMouseEvent * e)
 {
-    mouseEvent(e);
-
-    SofaViewer::mousePressEvent(e);
+    //mouseEvent(e);
+    SofaViewer::mousePressEvent_p(e);
+    update();
 }
 
 void QtViewer::mouseReleaseEvent(QMouseEvent * e)
 {
-    mouseEvent(e);
-
-    SofaViewer::mouseReleaseEvent(e);
-
+    //mouseEvent(e);
+    SofaViewer::mouseReleaseEvent_p(e);
+    update();
 }
 
 void QtViewer::mouseMoveEvent(QMouseEvent * e)
 {
+    //if the mouse move is not "interactive", give the event to the camera
+    //if(!mouseEvent(e))
+    SofaViewer::mouseMoveEvent_p(e);
+    update();
 
+    // TODO(damien): to remove.
 #ifdef TRACKING
     if (tracking)
     {
@@ -1337,9 +1336,7 @@ void QtViewer::mouseMoveEvent(QMouseEvent * e)
         firstTime = true;
     }
 #endif // TRACKING
-    //if the mouse move is not "interactive", give the event to the camera
-    if(!mouseEvent(e))
-        SofaViewer::mouseMoveEvent(e);
+
 }
 
 // ---------------------- Here are the mouse controls for the scene  ----------------------
@@ -1425,11 +1422,6 @@ bool QtViewer::mouseEvent(QMouseEvent * e)
         }
 
         ApplyMouseInteractorTransformation(eventX, eventY);
-    }
-    else if (e->modifiers() & Qt::ShiftModifier)
-    {
-        isInteractive = true;
-        SofaViewer::mouseEvent(e);
     }
     else if (e->modifiers() & Qt::ControlModifier)
     {
@@ -1686,6 +1678,19 @@ void QtViewer::setSizeH(int size)
     resizeGL(_W, size);
     update();
 }
+
+void QtViewer::viewAll() {
+    std::cout << "Not implemented in QtViewer.." << std::endl ;
+}
+
+void QtViewer::switchAxisViewing() {
+    m_drawAxis = ! m_drawAxis ;
+}
+
+void QtViewer::toogleBoundingBoxDraw(){
+    m_drawBoundingBox = !m_drawBoundingBox ;
+}
+
 
 //void QtViewer::setCameraMode(core::visual::VisualParams::CameraType mode)
 //{

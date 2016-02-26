@@ -66,6 +66,15 @@ class SOFA_SOFAGUIQT_API SofaViewer : public sofa::gui::BaseViewer
 {
 
 public:
+    typedef enum
+    {
+        STATE_CAMERAMANIPULATION,
+        STATE_PICKING,
+        STATE_SCENEFORWARDING,
+        STATE_COUNT
+    } State ;
+
+public:
     SofaViewer();
     virtual ~SofaViewer();
 
@@ -75,7 +84,11 @@ public:
     virtual void configureViewerTab(QTabWidget *) {}
 
     virtual QWidget* getQWidget()=0;
-    virtual QString helpString() const =0;
+    virtual QString helpString() const = 0;
+
+    virtual void viewAll() = 0 ;
+    virtual void switchAxisViewing() = 0;
+    virtual void toogleBoundingBoxDraw() = 0 ;
 
     //*************************************************************
     // QT
@@ -84,22 +97,25 @@ public:
     virtual void captureEvent();
 
     // ---------------------- Here are the Keyboard controls   ----------------------
-    virtual void keyPressEvent(QKeyEvent * e);
-    virtual void keyReleaseEvent(QKeyEvent * e);
-    bool isControlPressed() const;
+    virtual bool keyPressEvent_p(QKeyEvent * e);
+    virtual bool keyReleaseEvent_p(QKeyEvent * e);
+
     // ---------------------- Here are the Mouse controls   ----------------------
-    virtual void wheelEvent(QWheelEvent *e);
-    virtual void mouseMoveEvent ( QMouseEvent *e );
-    virtual void mousePressEvent ( QMouseEvent * e);
-    virtual void mouseReleaseEvent ( QMouseEvent * e);
-    virtual bool mouseEvent(QMouseEvent *e);
+    virtual bool wheelEvent_p(QWheelEvent *e);
+    virtual bool mouseMoveEvent_p(QMouseEvent *e );
+    virtual bool mousePressEvent_p(QMouseEvent * e);
+    virtual bool mouseReleaseEvent_p(QMouseEvent * e);
+
+    virtual bool updatePicking(QMouseEvent *e);
+
+    State state(){ return m_state; }
 
 protected:
     virtual void redraw();
 
     QTimer captureTimer;
 
-    bool m_isControlPressed;
+    State m_state ;
 
     ColourPickingRenderCallBack colourPickingRenderCallBack;
 

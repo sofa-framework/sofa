@@ -77,11 +77,6 @@ using namespace sofa::simulation;
 helper::SofaViewerCreator<QtGLViewer> QtGLViewer_class("qglviewer",false);
 SOFA_DECL_CLASS ( QGLViewerGUI )
 
-
-//static bool LeftPressedForMove = false;
-//static bool RightPressedForMove = false;
-
-
 // ---------------------------------------------------------
 // --- Constructor
 // ---------------------------------------------------------
@@ -135,7 +130,6 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbM
     _mouseInteractorMoving = false;
     _mouseInteractorSavedPosX = 0;
     _mouseInteractorSavedPosY = 0;
-    m_isControlPressed = false;
 
     setManipulatedFrame( new qglviewer::ManipulatedFrame() );
     //near and far plane are better placed
@@ -806,6 +800,15 @@ void QtGLViewer::drawScene(void)
 
 }
 
+void QtGLViewer::switchAxisViewing(){
+    QGLViewer::toggleAxisIsDrawn() ;
+}
+
+void QtGLViewer::toogleBoundingBoxDraw()
+{
+    std::cout << "Viewing bounding box is not implemented in qtglviewer" << std::endl ;
+}
+
 void QtGLViewer::viewAll()
 {
     if (!groot) return;
@@ -910,8 +913,7 @@ void QtGLViewer::draw()
 
 void QtGLViewer::setCameraMode(core::visual::VisualParams::CameraType mode)
 {
-    SofaViewer::setCameraMode(mode);
-
+    BaseViewer::setCameraMode(mode);
     switch (mode)
     {
     case core::visual::VisualParams::ORTHOGRAPHIC_TYPE:
@@ -931,115 +933,54 @@ void QtGLViewer::setCameraMode(core::visual::VisualParams::CameraType mode)
 
 void QtGLViewer::keyPressEvent ( QKeyEvent * e )
 {
-
-    //Tracking Mode
-
-//    std::cerr<<"QtGLViewer::keyPressEvent, get "<<e->key()<<std::endl;
-    if( isControlPressed() ) // pass event to the scene data structure
-    {
-//        std::cerr<<"QtGLViewer::keyPressEvent, key = "<<e->key()<<" with Control pressed "<<std::endl;
-        if (groot)
-        {
-            sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
-        }
-    }
-    else  // control the GUI
-    {
-        //                            cerr<<"QtGLViewer::keyPressEvent, key = "<<e->key()<<" without Control pressed "<<endl;
-        switch(e->key())
-        {
-        case Qt::Key_A: //axis
-        case Qt::Key_S: //sofa screenshot
-        case Qt::Key_H: //shortcuts for screenshot and help page specified for qglviewer
-        {
-            QGLViewer::keyPressEvent(e);
-            break;
-        }
-        case Qt::Key_C:
-        {
-            viewAll();
-            break;
-        }
-        default:
-        {
-            SofaViewer::keyPressEvent(e);
-            QGLViewer::keyPressEvent(e);
-        }
-        }
-    }
+    SofaViewer::keyPressEvent_p(e) ;
     update();
 }
 
-
-
-
-
 void QtGLViewer::keyReleaseEvent ( QKeyEvent * e )
 {
-
-    QGLViewer::keyReleaseEvent(e);
-    SofaViewer::keyReleaseEvent(e);
+    SofaViewer::keyReleaseEvent_p(e) ;
+    update() ;
 }
-
-
-
-
-
 
 void QtGLViewer::mousePressEvent ( QMouseEvent * e )
 {
-    if( ! mouseEvent(e) )
-        QGLViewer::mousePressEvent(e);
+    if(state() != STATE_CAMERAMANIPULATION)
+        SofaViewer::mousePressEvent_p(e) ;
+    else
+        QGLViewer::mousePressEvent(e) ;
+
+    update();
 }
-
-
-
 
 void QtGLViewer::mouseReleaseEvent ( QMouseEvent * e )
 {
-    if( ! mouseEvent(e) )
-        QGLViewer::mouseReleaseEvent(e);
+    if(state() != STATE_CAMERAMANIPULATION)
+        SofaViewer::mouseReleaseEvent_p(e) ;
+    else
+        QGLViewer::mouseReleaseEvent(e) ;
+
+    update();
 }
-
-
-
-
 
 void QtGLViewer::mouseMoveEvent ( QMouseEvent * e )
 {
-    if( ! mouseEvent(e) )
-        QGLViewer::mouseMoveEvent(e);
-}
+    if(state() != STATE_CAMERAMANIPULATION)
+        SofaViewer::mouseMoveEvent_p(e);
+    else
+        QGLViewer::mouseMoveEvent(e) ;
 
-
-
-
-
-bool QtGLViewer::mouseEvent(QMouseEvent * e)
-{
-    if(e->modifiers()&Qt::ShiftModifier)
-    {
-        SofaViewer::mouseEvent(e);
-        return true;
-    }
-
-    return false;
+    update();
 }
 
 void QtGLViewer::wheelEvent(QWheelEvent* e)
 {
-    QGLViewer::wheelEvent(e);
-    if(isControlPressed())  // pass event to the scene elements
-    {
-        if (groot)
-        {
-            sofa::core::objectmodel::MouseEvent me(sofa::core::objectmodel::MouseEvent::Wheel, e->delta());
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &me);
-        }
+    if(state() != STATE_CAMERAMANIPULATION)
+        SofaViewer::wheelEvent_p(e);
+    else{
+        QGLViewer::wheelEvent(e) ;
     }
-    else
-        QGLViewer::wheelEvent(e);
+    update();
 }
 
 void QtGLViewer::moveRayPickInteractor(int eventX, int eventY)
@@ -1206,12 +1147,12 @@ QString QtGLViewer::helpString() const
     static QString text(
         (QString)"<H1>QtGLViewer</H1><hr>\
                 <ul>\
-                <li><b>Mouse</b>: TO NAVIGATE<br></li>\
-                <li><b>Shift & Left Button</b>: TO PICK OBJECTS<br></li>\
+                <li><b>Shift pressed</b>: picking mode <br></li>\
+                <li><b>Ctrl pressed</b>: forwarding mode <br></li>\
+                <li><b>No shift or Ctrl</b>: Viewpoint control <br></li>\
                 <li><b>A</b>: TO DRAW AXIS<br></li>\
                 <li><b>B</b>: TO CHANGE THE BACKGROUND<br></li>\
                 <li><b>C</b>: TO CENTER THE VIEW<br></li>\
-                <li><b>H</b>: TO OPEN HELP of QGLViewer<br></li>\
                 <li><b>O</b>: TO EXPORT TO .OBJ<br>\
                 The generated files scene-time.obj and scene-time.mtl are saved in the running project directory<br></li>\
                 <li><b>P</b>: TO SAVE A SEQUENCE OF OBJ<br>\

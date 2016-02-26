@@ -1561,8 +1561,9 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
     }
     default:
     {
+        // TODO(dmarchal): mmm suspicious code... no release..
         if (qtViewer)
-            qtViewer->keyPressEvent(e);
+            qtViewer->keyPressEvent_p(e);
         break;
     }
     }
