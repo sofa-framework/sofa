@@ -21,7 +21,7 @@
 #*                                                                             *
 #* Authors: damien.marchal@univ-lille1.fr Copyright (C) CNRS                   *
 #*                                                                             *
-*# Contact information: contact@sofa-framework.org                             *
+#* Contact information: contact@sofa-framework.org                             *
 #******************************************************************************/
 
 import traceback
