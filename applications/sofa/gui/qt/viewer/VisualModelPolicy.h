@@ -49,7 +49,7 @@ public:
     virtual void load() = 0;
     virtual void unload() = 0;
 protected:
-    sofa::core::visual::VisualParams* vparams;
+    core::visual::VisualParams* vparams;
 
 };
 
@@ -57,20 +57,20 @@ protected:
 class OglModelPolicy : public VisualModelPolicy
 {
 protected:
-    sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
-    sofa::core::visual::DrawToolGL drawTool;
+    core::ObjectFactory::ClassEntry::SPtr classVisualModel;
+    core::visual::DrawToolGL drawTool;
 public:
     void load()
     {
         // Replace generic visual models with OglModel
-        sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
+        core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
                 &classVisualModel);
         vparams->drawTool() = &drawTool;
-        vparams->setSupported(sofa::core::visual::API_OpenGL);
+        vparams->setSupported(core::visual::API_OpenGL);
     }
     void unload()
     {
-        sofa::core::ObjectFactory::ResetAlias("VisualModel", classVisualModel);
+        core::ObjectFactory::ResetAlias("VisualModel", classVisualModel);
         vparams->drawTool() = NULL;
     }
 };
