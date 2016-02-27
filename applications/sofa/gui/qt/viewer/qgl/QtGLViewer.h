@@ -44,12 +44,8 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/common/xml/Element.h>
 
-
-
 #include <QGLViewer/qglviewer.h>
 #include <QGLViewer/manipulatedFrame.h>
-
-#define TRACKING_MOUSE
 
 namespace sofa
 {
@@ -66,70 +62,71 @@ namespace viewer
 namespace qgl
 {
 
-class SOFA_SOFAGUIQT_API QtGLViewer :public QGLViewer,   public sofa::gui::qt::viewer::OglModelSofaViewer
+using helper::system::thread::ctime_t;
+using sofa::defaulttype::Vector3;
+using sofa::defaulttype::Vec3d;
+using sofa::defaulttype::Quat;
+using sofa::core::visual::VisualParams;
+using sofa::core::objectmodel::BaseNode;
+using sofa::core::objectmodel::BaseObject;
+
+class SOFA_SOFAGUIQT_API QtGLViewer : public QGLViewer,
+                                      public OglModelSofaViewer
 {
-    typedef defaulttype::Vector3::value_type Real;
+    typedef Vector3::value_type Real;
     Q_OBJECT
-private:
-
-#ifdef TRACKING_MOUSE
-    bool m_grabActived;
-#endif
-
-    QTimer* timerAnimate;
-    int				_W, _H;
-    int				_clearBuffer;
-    bool			_lightModelTwoSides;
-    float			_lightPosition[4];
-
-
-    double lastProjectionMatrix[16];
-    double lastModelviewMatrix[16];
-
-    GLUquadricObj*	_arrow;
-    GLUquadricObj*	_tube;
-    GLUquadricObj*	_sphere;
-    GLUquadricObj*	_disk;
-    GLuint _numOBJmodels;
-    GLuint _materialMode;
-    GLboolean _facetNormal;
-
-    int _renderingMode;
-
-    helper::system::thread::ctime_t _beginTime;
-
-
-    bool _waitForRender;
-
 
 public:
+    static QtGLViewer* create(QtGLViewer*,
+                              BaseViewerArgument& arg);
 
-    static QtGLViewer* create(QtGLViewer*, sofa::gui::BaseViewerArgument& arg)
-    {
-        BaseViewerArgument* pArg = &arg;
-        ViewerQtArgument* viewerArg = dynamic_cast<ViewerQtArgument*>(pArg);
-        return viewerArg ?
-                new QtGLViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str(), viewerArg->getNbMSAASamples() ) :
-                new QtGLViewer(NULL, pArg->getName().c_str(), pArg->getNbMSAASamples() )
-                ;
-    }
-
-    static const char* viewerName()  { return "QGLViewer"; }
-
-    static const char* acceleratedName()  { return "&QGLViewer"; }
-
-    virtual void drawColourPicking (ColourPickingVisitor::ColourCode code);
-
-    QtGLViewer( QWidget* parent, const char* name="", const unsigned int nbMSAASamples = 1 );
+    QtGLViewer( QWidget* parent, const char* name="",
+                                 const unsigned int nbMSAASamples = 1 );
     ~QtGLViewer();
 
     QWidget* getQWidget() { return this; }
 
-protected:
-     static QGLFormat setupGLFormat(const unsigned int nbMSAASamples = 1);
+    static const char* viewerName()  { return "QGLViewer"; }
+    static const char* acceleratedName()  { return "&QGLViewer"; }
+    virtual void drawColourPicking (ColourPickingVisitor::ColourCode code);
 
-    //     void calcProjection();
+    int GetWidth() { return _W; }
+    int GetHeight() { return _H; }
+    bool ready() {return !_waitForRender;}
+    void wait() {_waitForRender = true;}
+
+    void UpdateOBJ(void);
+    void moveRayPickInteractor(int eventX, int eventY);
+
+    void setCameraMode(VisualParams::CameraType mode);
+
+    QString helpString() const;
+
+public slots:
+    void resetView();
+    void saveView();
+    void setSizeW(int);
+    void setSizeH(int);
+
+    virtual void getView(Vec3d& pos, Quat& ori) const;
+    virtual void setView(const Vec3d& pos, const Quat &ori);
+    virtual void captureEvent() { SofaViewer::captureEvent(); }
+    void fitObjectBBox(BaseObject* object) ;
+    void fitNodeBBox(BaseNode* node) ;
+
+signals:
+    void redrawn();
+    void resizeW( int );
+    void resizeH( int );
+    void quit();
+
+protected:
+    static QGLFormat setupGLFormat(const unsigned int nbMSAASamples = 1);
+
     void init();
+    virtual void	drawScene();
+    virtual void	DrawLogo(void);
+
     /// Overloaded from QGLViewer to render the scene
     virtual void draw();
     void resizeGL( int w, int h );
@@ -139,108 +136,53 @@ protected:
     virtual void switchAxisViewing() ;
     virtual void toogleBoundingBoxDraw() ;
 
-public:
-
-    //void			reshape(int width, int height);
-    int GetWidth()
-    {
-        return _W;
-    }
-    int GetHeight()
-    {
-        return _H;
-    }
-    bool ready() {return !_waitForRender;}
-    void wait() {_waitForRender = true;}
-
-    void	UpdateOBJ(void);
-
-    void moveRayPickInteractor(int eventX, int eventY);
-
-    void setCameraMode(core::visual::VisualParams::CameraType mode);
-
-    QString helpString() const;
-
+    /// Overloaded from QGLViewer
+    virtual void keyPressEvent(QKeyEvent* e);
+    virtual void keyReleaseEvent(QKeyEvent* e);
+    virtual void mousePressEvent(QMouseEvent* e);
+    virtual void mouseReleaseEvent(QMouseEvent* e);
+    virtual void mouseMoveEvent(QMouseEvent* e);
+    virtual void wheelEvent(QWheelEvent* e);
 
 private:
-
     void	InitGFX(void);
     void	PrintString(void* font, char* string);
     void	Display3DText(float x, float y, float z, char* string);
     void	DrawAxis(double xpos, double ypos, double zpos, double arrowSize);
     void	DrawBox(Real* minBBox, Real* maxBBox, Real r=0.0);
-    void	DrawXYPlane(double zo, double xmin, double xmax, double ymin, double ymax, double step);
-    void	DrawYZPlane(double xo, double ymin, double ymax, double zmin, double zmax, double step);
-    void	DrawXZPlane(double yo, double xmin, double xmax, double zmin, double zmax, double step);
+    void	DrawXYPlane(double zo, double xmin, double xmax,
+                        double ymin, double ymax, double step);
+    void	DrawYZPlane(double xo, double ymin, double ymax,
+                        double zmin, double zmax, double step);
+    void	DrawXZPlane(double yo, double xmin, double xmax,
+                        double zmin, double zmax, double step);
     void	CreateOBJmodelDisplayList(int material_mode);
-    //int     loadBMP(char *filename, TextureImage *texture);
-    //void	LoadGLTexture(char *Filename);
     void	DisplayOBJs();
     void	DisplayMenu(void);
-    void        MakeStencilMask();
+    void    MakeStencilMask();
 
-    //int		handle(int event);	// required by FLTK
+private:
+    QTimer*         timerAnimate;
+    int				_W, _H;
+    int				_clearBuffer;
+    bool			_lightModelTwoSides;
+    float			_lightPosition[4];
 
-protected:
-    //virtual bool event ( QEvent * e );
+    double          lastProjectionMatrix[16];
+    double          lastModelviewMatrix[16];
 
-    virtual void	drawScene();
-    virtual void	DrawLogo(void);
+    GLUquadricObj*	_arrow;
+    GLUquadricObj*	_tube;
+    GLUquadricObj*	_sphere;
+    GLUquadricObj*	_disk;
+    GLuint          _numOBJmodels;
+    GLuint          _materialMode;
+    GLboolean       _facetNormal;
 
+    int             _renderingMode;
+    ctime_t         _beginTime;
 
-    virtual void keyPressEvent ( QKeyEvent * e );
-    virtual void keyReleaseEvent ( QKeyEvent * e );
-    virtual void mousePressEvent ( QMouseEvent * e );
-    virtual void mouseReleaseEvent ( QMouseEvent * e );
-    virtual void mouseMoveEvent ( QMouseEvent * e );
-    virtual void wheelEvent(QWheelEvent* e);
-
-public slots:
-    void resetView();
-    void saveView();
-    void setSizeW(int);
-    void setSizeH(int);
-
-    virtual void getView(defaulttype::Vec3d& pos, defaulttype::Quat& ori) const;
-    virtual void setView(const defaulttype::Vec3d& pos, const defaulttype::Quat &ori);
-    virtual void captureEvent() { SofaViewer::captureEvent(); }
-    void fitObjectBBox(sofa::core::objectmodel::BaseObject* object)
-    {
-        if( object->f_bbox.getValue().isValid() && !object->f_bbox.getValue().isFlat() )
-            this->camera()->fitBoundingBox(
-                ::qglviewer::Vec(object->f_bbox.getValue().minBBox()),
-                ::qglviewer::Vec(object->f_bbox.getValue().maxBBox())
-            );
-        else
-        {
-            if(object->getContext()->f_bbox.getValue().isValid() && !object->getContext()->f_bbox.getValue().isFlat()  )
-            {
-                this->camera()->fitBoundingBox(
-                    ::qglviewer::Vec(object->getContext()->f_bbox.getValue().minBBox()),
-                    ::qglviewer::Vec(object->getContext()->f_bbox.getValue().maxBBox())
-                );
-            }
-        }
-        this->update();
-    }
-
-    void fitNodeBBox(sofa::core::objectmodel::BaseNode* node)
-    {
-        if( node->f_bbox.getValue().isValid() && !node->f_bbox.getValue().isFlat() )
-            this->camera()->fitBoundingBox(
-                ::qglviewer::Vec(node->f_bbox.getValue().minBBox()),
-                ::qglviewer::Vec(node->f_bbox.getValue().maxBBox())
-            );
-
-        this->update();
-
-    }
-
-signals:
-    void redrawn();
-    void resizeW( int );
-    void resizeH( int );
-    void quit();
+    bool            _waitForRender;
 };
 
 } // namespace qgl

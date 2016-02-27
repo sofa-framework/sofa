@@ -231,7 +231,6 @@ public:
         return groot.get();
     }
 
-    //void			reshape(int width, int height);
     int GetWidth()
     {
         return _W;
@@ -259,10 +258,7 @@ public:
     static bool _mouseTrans;
     static bool _mouseRotate;
 
-
     QString helpString() const;
-//    void setCameraMode(core::visual::VisualParams::CameraType mode);
-
 private:
 
     void	InitGFX(void);
@@ -296,7 +292,7 @@ private:
     virtual void mouseReleaseEvent ( QMouseEvent * e );
     virtual void mouseMoveEvent ( QMouseEvent * e );
     virtual void wheelEvent ( QWheelEvent* e);
-    //virtual bool mouseEvent ( QMouseEvent * e );
+    virtual bool mouseEvent ( QMouseEvent * e );
 
     bool m_drawBoundingBox ;
     bool m_drawAxis ;

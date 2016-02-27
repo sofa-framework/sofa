@@ -40,8 +40,6 @@
 #include <QTabWidget>
 #include <QTimer>
 
-//#include <qcursor.h>
-
 namespace sofa
 {
 
@@ -59,10 +57,7 @@ enum
     BTLEFT_MODE = 101, BTRIGHT_MODE = 102, BTMIDDLE_MODE = 103,
 };
 
-
-
-
-class SOFA_SOFAGUIQT_API SofaViewer : public sofa::gui::BaseViewer
+class SOFA_SOFAGUIQT_API SofaViewer : public BaseViewer
 {
 
 public:
@@ -96,11 +91,11 @@ public:
     //SLOTS
     virtual void captureEvent();
 
-    // ---------------------- Here are the Keyboard controls   ----------------------
+    // ---------------------- Here are the Keyboard controls   -----------------
     virtual bool keyPressEvent_p(QKeyEvent * e);
     virtual bool keyReleaseEvent_p(QKeyEvent * e);
 
-    // ---------------------- Here are the Mouse controls   ----------------------
+    // ---------------------- Here are the Mouse controls   --------------------
     virtual bool wheelEvent_p(QWheelEvent *e);
     virtual bool mouseMoveEvent_p(QMouseEvent *e );
     virtual bool mousePressEvent_p(QMouseEvent * e);
@@ -109,6 +104,8 @@ public:
     virtual bool updatePicking(QMouseEvent *e);
 
     State state(){ return m_state; }
+
+    bool hasVideoRecording() ;
 
 protected:
     virtual void redraw();
@@ -126,7 +123,8 @@ signals:
 };
 
 template < typename VisualModelPolicyType >
-class CustomPolicySofaViewer : public VisualModelPolicyType, public sofa::gui::qt::viewer::SofaViewer
+class CustomPolicySofaViewer : public VisualModelPolicyType,
+                               public SofaViewer
 {
 public:
     using VisualModelPolicyType::load;
