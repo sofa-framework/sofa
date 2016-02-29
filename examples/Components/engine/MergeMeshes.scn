@@ -3,28 +3,18 @@
   <EulerImplicitSolver />
   <CGLinearSolver iterations="25" tolerance="1e-05" threshold="1e-05"/>
   <Node>
-    <MeshObjLoader name="r_femur" filename="mesh/r_femur.obj" />
-    <MeshObjLoader name="r_femur_0" filename="mesh/r_femur_0.obj" />
-    <MeshObjLoader name="r_femur_1" filename="mesh/r_femur_1.obj" />
-    <MeshObjLoader name="r_femur_2" filename="mesh/r_femur_2.obj" />
-    <MeshObjLoader name="r_femur_3" filename="mesh/r_femur_3.obj" />
-    <MeshObjLoader name="r_femur_4" filename="mesh/r_femur_4.obj" />
-    <MergeMeshes name="basis" nbMeshes="6" 
-                 position1="@r_femur.position" 
-                 triangles1="@r_femur.triangles"
-                 position2="@r_femur_0.position"
-                 triangles2="@r_femur_0.triangles"
-                 position3="@r_femur_1.position"
-                 triangles3="@r_femur_1.triangles"
-                 position4="@r_femur_2.position"
-                 triangles4="@r_femur_2.triangles"
-                 position5="@r_femur_3.position"
-                 triangles5="@r_femur_3.triangles"
-                 position6="@r_femur_4.position"
-                 triangles6="@r_femur_4.triangles"/>
+    <MeshObjLoader name="frog" filename="mesh/frog.obj" />
+    <MeshObjLoader name="dragon" filename="mesh/dragon.obj" />
+
+    <MergeMeshes name="basis" nbMeshes="2" 
+                 position1="@frog.position" 
+                 triangles1="@frog.triangles"
+                 position2="@dragon.position"
+                 triangles2="@dragon.triangles"
+                 />
 	  
     <MeshTopology src="@basis" drawTriangles="1"/>
-    <MechanicalObject />
+    <MechanicalObject showObject="1"/>
     <UniformMass />
   </Node>
 </Node>

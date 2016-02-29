@@ -26,7 +26,6 @@
                 <TriangleSetTopologyModifier name="Modifier" />
                 <Tetra2TriangleTopologicalMapping input="@../TetraTop" output="@TriangleTop" />
                 <TTriangleModel template="Vec3d" />
-                <MeshInformation printLog="true" />
                 <Node name="Visu">
                     <OglModel template="ExtVec3f" name="Visual" />
                     <IdentityMapping template="Vec3d,ExtVec3f" input="@../.." output="@Visual" />
