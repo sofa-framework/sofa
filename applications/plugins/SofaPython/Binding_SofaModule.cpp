@@ -68,7 +68,7 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, Py
         Py_RETURN_NONE;
     }
 
-    SP_MESSAGE_WARNING( "Sofa.createObject is deprecated; use Sofa.Node.createObject instead." )
+    SP_MESSAGE_DEPRECATED( "Sofa.createObject is deprecated; use Sofa.Node.createObject instead." )
 
     // temporarily, the name is set to the type name.
     // if a "name" parameter is provided, it will overwrite it.
@@ -102,7 +102,7 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, Py
 extern "C" PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * /*args*/)
 {
     // deprecated on date 2012/07/18
-    SP_MESSAGE_ERROR( "Sofa.getObject(BaseContext,path) is deprecated. Please use BaseContext.getObject(path) instead." )
+    SP_MESSAGE_DEPRECATED( "Sofa.getObject(BaseContext,path) is deprecated. Please use BaseContext.getObject(path) instead." )
     PyErr_BadArgument();
     Py_RETURN_NONE;
 
@@ -111,7 +111,7 @@ extern "C" PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * /*args*/)
 extern "C" PyObject * Sofa_getChildNode(PyObject * /*self*/, PyObject * /*args*/)
 {
     // deprecated on date 2012/07/18
-    SP_MESSAGE_ERROR( "Sofa.getChildNode(Node,path) is deprecated. Please use Node.getChild(path) instead." )
+    SP_MESSAGE_DEPRECATED( "Sofa.getChildNode(Node,path) is deprecated. Please use Node.getChild(path) instead." )
     PyErr_BadArgument();
     Py_RETURN_NONE;
 }
@@ -367,6 +367,37 @@ extern "C" PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args)
     Py_RETURN_NONE;
 }
 
+extern "C" PyObject * Sofa_msg_deprecated(PyObject * /*self*/, PyObject * args)
+{
+    size_t argSize = PyTuple_Size(args);
+
+    char* message;
+
+    if( argSize==2 )
+    {
+        char* emitter;
+        if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        msg_deprecated( emitter ) << message;
+    }
+    else // no emitter
+    {
+        if( !PyArg_ParseTuple(args, "s", &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        msg_deprecated( s_emitter ) << message;
+    }
+
+    Py_RETURN_NONE;
+}
+
 extern "C" PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args)
 {
     size_t argSize = PyTuple_Size(args);
@@ -478,6 +509,7 @@ SP_MODULE_METHOD(Sofa,exportGraph)
 SP_MODULE_METHOD(Sofa,updateVisual)
 SP_MODULE_METHOD(Sofa,forceInitNodeCreatedInPython)
 SP_MODULE_METHOD(Sofa,msg_info)
+SP_MODULE_METHOD(Sofa,msg_deprecated)
 SP_MODULE_METHOD(Sofa,msg_warning)
 SP_MODULE_METHOD(Sofa,msg_error)
 SP_MODULE_METHOD(Sofa,msg_fatal)

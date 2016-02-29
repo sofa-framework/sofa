@@ -97,6 +97,12 @@ public:
         return out;
     }
 
+    friend inline SofaOStream& operator<<( SofaOStream& out, const logging::Message::Class& mc )
+    {
+        out.m_messageClass = mc;
+        return out;
+    }
+
     template<class T>
     friend inline std::ostringstream& operator<<( SofaOStream& out, const T& t )
     {
@@ -113,6 +119,7 @@ public:
     std::ostringstream& ostringstream() const { return m_ostream; }
     const logging::FileInfo& fileInfo() const { return m_fileInfo; }
     const logging::Message::Type& messageType() const { return m_messageType; }
+    const logging::Message::Class& messageClass() const { return m_messageClass; }
 
     /// clearing the SofaOStream (set empty string, empty FileInfo, default Message type)
     void clear()
@@ -120,6 +127,7 @@ public:
         str("");
         m_fileInfo = helper::logging::FileInfo();
         m_messageType = (logging::Message::Type)DefaultMessageType;
+        m_messageClass = logging::Message::Runtime;
     }
 
 protected:
@@ -131,6 +139,8 @@ protected:
     logging::FileInfo m_fileInfo;
     /// the current Message type
     logging::Message::Type m_messageType;
+    /// the current Message class
+    logging::Message::Class m_messageClass;
 };
 
 
