@@ -160,7 +160,7 @@ void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
     }
     if (!oldFlags.empty())
     {
-        serr << "Deprecated visual flags attributes used. Instead, add the following object within the Node:" << sendl;
+        serr << helper::logging::Message::Deprecated << "Deprecated visual flags attributes used. Instead, add the following object within the Node:\n";
         serr << "<VisualStyle displayFlags=\"" << oldFlags << "\" />" << sendl;
 
         sofa::core::objectmodel::BaseObjectDescription objDesc("displayFlags","VisualStyle");
