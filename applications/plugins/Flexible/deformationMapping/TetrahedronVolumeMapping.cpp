@@ -36,7 +36,7 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(TetrahedronVolumeMapping);
+SOFA_DECL_CLASS(TetrahedronVolumeMapping)
 
 using namespace defaulttype;
 

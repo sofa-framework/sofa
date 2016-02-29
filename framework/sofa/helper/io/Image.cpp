@@ -237,7 +237,8 @@ unsigned Image::getMipmapCount() const
 
 unsigned Image::getPixelCount() const
 {
-    return getImageSize() / getBytesPerPixel();
+    unsigned bytesPerPixel = getBytesPerPixel();
+    return bytesPerPixel ? getImageSize() / getBytesPerPixel() : 0;
 }
 
 unsigned Image::getLineSize(unsigned mipmap) const

@@ -25,10 +25,11 @@
 #ifndef PYTHONSCRIPTCONTROLLERHELPER_H
 #define PYTHONSCRIPTCONTROLLERHELPER_H
 
+#include "PythonMacros.h"
+
 #include <vector>
 #include <string>
 
-#include "PythonMacros.h"
 #include <SofaPython/config.h>
 
 #include <sofa/simulation/common/Simulation.h>
@@ -58,6 +59,7 @@ void PythonScriptController_pyObjectToValue(PyObject* pyObject, std::string & va
 
 void PythonScriptController_parametersToVector(std::vector<PyObject*> & /*vecParam*/) {return;}
 
+#if __cplusplus > 201100L
 template<typename T, typename... ParametersType>
 void PythonScriptController_parametersToVector(std::vector<PyObject*> & vecParam, T param, ParametersType... otherParameters)
 {
@@ -75,12 +77,16 @@ PyObject* PythonScript_parametersToTuple(ParametersType... parameters)
         PyTuple_SetItem(tuple, i, vecParam[i]);
     return tuple;
 }
+#else
+// implement a c++98 version if necessary
+#endif
 
 } // namespase internal
 
+#if __cplusplus > 201100L
 /** A helper function to call \a funcName in \a pythonScriptControllerName.
  * The function returned value is stored in \a result.
- * If the controller functions returns None, or if you are not interested by the returned value, call it with \c nullptr
+ * If the controller functions returns \c None, or if you are not interested by the returned value, call it with \c nullptr as first parameter.
  */
 template<typename ResultType, typename... ParametersType>
 void PythonScriptController_call(ResultType * result, std::string const& pythonScriptControllerName, std::string const& funcName, ParametersType... parameters)
@@ -111,6 +117,10 @@ void PythonScriptController_call(std::nullptr_t /*result*/, std::string const& p
     int* none=nullptr;
     PythonScriptController_call(none, pythonScriptControllerName, funcName, parameters...);
 }
+
+#else
+// implement a c++98 version if necessary
+#endif
 
 } // namespace helper
 } // namespace sofa

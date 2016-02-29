@@ -207,7 +207,12 @@ bool Mesh::loadVtk(const char* filename)
             std::cout << "Found " << n << " " << typestr << " points" << std::endl;
             inputPoints = newVTKDataIO(typestr);
             if (inputPoints == NULL) return false;
-            if (!inputPoints->read(inVTKFile, 3*n, binary)) return false;
+            if (!inputPoints->read(inVTKFile, 3*n, binary))
+            {
+                if (inputPoints) delete inputPoints;
+                if (inputPolygons) delete inputPolygons;
+                return false;
+            }
             nbp = n;
         }
         else if (kw == "POLYGONS")
@@ -216,8 +221,13 @@ bool Mesh::loadVtk(const char* filename)
             ln >> n >> ni;
             std::cout << "Found " << n << " polygons ( " << (ni - 3*n) << " triangles )" << std::endl;
             inputPolygons = new VTKDataIO<int>;
-            if (!inputPolygons->read(inVTKFile, ni, binary)) return false;
-            nbf = ni - 3*n;
+            if (!inputPolygons->read(inVTKFile, ni, binary))
+            {
+                if (inputPoints) delete inputPoints;
+                if (inputPolygons) delete inputPolygons;
+                return false;
+            }
+//            nbf = ni - 3*n;
         }
         else
             std::cerr << "WARNING: Unknown keyword " << kw << std::endl;

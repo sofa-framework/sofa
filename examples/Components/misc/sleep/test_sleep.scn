@@ -2,7 +2,7 @@
 <Node name="root" dt="0.01" gravity="0 -9.810 0">
 	<VisualStyle displayFlags="" /> <!-- showInteractionForceFields -->
     <FreeMotionAnimationLoop />
-    <GenericConstraintSolver />
+    <GenericConstraintSolver maxIterations="1000" tolerance="0.001"/>
     <CollisionPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.1" angleCone="0.0" />
@@ -25,7 +25,7 @@
 	
     <Node name="Cube1" canChangeSleepingState="true">
         <EulerImplicit printLog="false" />
-        <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
+        <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9"  />
         <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="0" dz="0.0" />
         <UniformMass totalmass="1" />
         <UncoupledConstraintCorrection />
@@ -35,7 +35,7 @@
 			<ValuesFromIndices name="colorEngine" template="Vec3" in="0 0 1  0.5 0.5 0.5" indices="@Cube1.sleeping" />
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
             <OglModel name="Visual" fileMesh="mesh/cube.obj" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Colli">
             <MeshObjLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
@@ -60,7 +60,7 @@
 			<ValuesFromIndices name="colorEngine" template="Vec3" in="0 1 0  0.5 0.5 0.5" indices="@Cube2.sleeping" />
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
             <OglModel name="Visual" fileMesh="mesh/cube.obj" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Colli">
             <MeshObjLoader name="loader" filename="mesh/cube.obj" triangulate="1" />

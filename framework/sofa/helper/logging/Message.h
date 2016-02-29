@@ -87,7 +87,7 @@ public:
 //    int                      id() const       { return m_id; }
 //    void                     setId(int id)    { m_id=id; }
 
-    bool empty() const { return m_stream.rdbuf()->in_avail() <= 0; }
+    bool empty() const;
 
     template<class T>
     Message& operator<<(const T &x)

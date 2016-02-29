@@ -63,7 +63,7 @@ Message::Message( const Message& msg )
     , m_type(msg.type())
 //    , m_id(msg.id())
 {
-    m_stream << msg.message().rdbuf();
+    m_stream << msg.message().str();
 }
 
 Message& Message::operator=( const Message& msg )
@@ -73,7 +73,7 @@ Message& Message::operator=( const Message& msg )
     m_class = msg.context();
     m_type = msg.type();
 //    m_id = msg.id();
-    m_stream << msg.message().rdbuf();
+    m_stream << msg.message().str();
     return *this;
 }
 
@@ -85,6 +85,24 @@ std::ostream& operator<< (std::ostream& s, const Message& m){
     s << "    Message content: " << m.message().str() << endl ;
     s << "    source code loc: " << m.fileInfo().filename << ":" << m.fileInfo().line << endl ;
     return s;
+}
+
+bool Message::empty() const
+{
+    // getting the size without creating a copy like m_stream.str().size()
+
+    std::streambuf* buf = m_stream.rdbuf();
+
+    // the current position to restore it after
+    std::stringstream::pos_type cur = buf->pubseekoff(0, std::ios_base::cur);
+
+    // go to the end
+    std::stringstream::pos_type end = buf->pubseekoff(0, std::ios_base::end);
+
+    // restore initial position
+    buf->pubseekpos(cur, m_stream.out);
+
+    return end <= 0;
 }
 
 } // logging

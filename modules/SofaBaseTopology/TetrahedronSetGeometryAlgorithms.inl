@@ -861,19 +861,6 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
 
         vparams->drawTool()->drawTetrahedra(pos,_drawColor.getValue());
     }
-
-//    if(d_displayTotalVolume)
-    if(true)
-    {
-        float tetraVolume = 0.0;
-        const sofa::helper::vector<Tetrahedron> &tetraArray = this->m_topology->getTetrahedra();
-        for (unsigned int i = 0; i<tetraArray.size(); ++i)
-        {
-            tetraVolume += this->computeTetrahedronVolume(i);
-        }
-
-        std::cout << "TOTAL VOLUME= " << tetraVolume << std::endl;;
-    }
 }
 
 

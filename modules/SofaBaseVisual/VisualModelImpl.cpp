@@ -409,9 +409,11 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         }
     }
 
-    if (!vsplit)
-        nbNOut = nbVOut;
-    else if (nbNOut == nbVOut)
+//    if (!vsplit)
+//        nbNOut = nbVOut;
+//    else if (nbNOut == nbVOut)
+//        vertNormIdx.resize(0);
+    if( vsplit && nbNOut == nbVOut )
         vertNormIdx.resize(0);
 
 

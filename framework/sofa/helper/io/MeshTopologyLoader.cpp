@@ -345,12 +345,12 @@ bool MeshTopologyLoader::loadXsp(std::ifstream &file, bool vector_spring)
             double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
             //bool fixed=false;
             file >> index >> location >> px >> py >> pz >> vx >> vy >> vz >> mass >> elastic;
-            if (mass < 0)
-            {
+//            if (mass < 0)
+//            {
                 // fixed point initialization
-                mass = -mass;
+//                mass = -mass;
                 //fixed = true;
-            }
+//            }
             addPoint(px,py,pz);
         }
         else if (cmd=="lspg")	// linear springs connector
@@ -1009,7 +1009,11 @@ bool MeshTopologyLoader::loadVtk(const char *filename)
             int n;
             ln >> n;
             inputCellTypes = new VTKDataIO<int>;
-            if (!inputCellTypes->read(inVTKFile, n, binary)) return false;
+            if (!inputCellTypes->read(inVTKFile, n, binary))
+            {
+                if (inputCellTypes) delete inputCellTypes;
+                return false;
+            }
         }
         else if (!kw.empty())
             std::cerr << "WARNING: Unknown keyword " << kw << std::endl;

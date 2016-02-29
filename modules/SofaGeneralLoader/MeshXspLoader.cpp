@@ -143,12 +143,12 @@ bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
             double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
             //bool fixed=false;
             file >> index >> location >> px >> py >> pz >> vx >> vy >> vz >> mass >> elastic;
-            if (mass < 0)
-            {
-                // fixed point initialization
-                mass = -mass;
-                //fixed = true;
-            }
+//            if (mass < 0)
+//            {
+//                // fixed point initialization
+//                mass = -mass;
+//                //fixed = true;
+//            }
             my_positions.push_back(Vector3(px, py, pz));
         }
         else if (cmd=="lspg")	// linear springs connector
