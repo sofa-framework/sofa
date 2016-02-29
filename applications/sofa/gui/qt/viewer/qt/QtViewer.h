@@ -228,7 +228,7 @@ public:
 
     sofa::simulation::Node* getScene()
     {
-        return groot.get();
+        return m_simulationRoot.get();
     }
 
     int GetWidth()

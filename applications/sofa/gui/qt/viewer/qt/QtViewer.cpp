@@ -171,20 +171,20 @@ QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAAS
     this->setFormat(setupGLFormat(nbMSAASamples));
 #endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
 
-    groot = NULL;
-    initTexturesDone = false;
-    backgroundColour[0] = 1.0f;
-    backgroundColour[1] = 1.0f;
-    backgroundColour[2] = 1.0f;
+    m_simulationRoot = NULL;
+    m_initTexturesDone = false;
+    m_backgroundColour[0] = 1.0f;
+    m_backgroundColour[1] = 1.0f;
+    m_backgroundColour[2] = 1.0f;
 
     // setup OpenGL mode for the window
     //Fl_Gl_Window::mode(FL_RGB | FL_DOUBLE | FL_DEPTH | FL_ALPHA);
     timerAnimate = new QTimer(this);
     //connect( timerAnimate, SIGNAL(timeout()), this, SLOT(animate()) );
 
-    _video = false;
-    _axis = false;
-    _background = 0;
+    m_doVideoRecording = false;
+    m_doDrawAxis = false;
+    m_backgroundIndex = 0;
     _numOBJmodels = 0;
     _materialMode = 0;
     _facetNormal = GL_FALSE;
@@ -661,7 +661,7 @@ void QtViewer::drawColourPicking(ColourPickingVisitor::ColourCode code)
 
 
     ColourPickingVisitor cpv(sofa::core::visual::VisualParams::defaultInstance(), code);
-    cpv.execute( groot.get() );
+    cpv.execute( m_simulationRoot.get() );
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
@@ -675,16 +675,16 @@ void QtViewer::drawColourPicking(ColourPickingVisitor::ColourCode code)
 void QtViewer::DisplayOBJs()
 {
 
-    if (_background == 0)
+    if (m_backgroundIndex == 0)
         DrawLogo();
 
-    if (!groot)
+    if (!m_simulationRoot)
         return;
     Enable<GL_LIGHTING> light;
     Enable<GL_DEPTH_TEST> depth;
 
 
-    vparams->sceneBBox() = groot->f_bbox.getValue();
+    vparams->sceneBBox() = m_simulationRoot->f_bbox.getValue();
 
 
     glShadeModel(GL_SMOOTH);
@@ -692,18 +692,18 @@ void QtViewer::DisplayOBJs()
     glColor4f(1, 1, 1, 1);
     glDisable(GL_COLOR_MATERIAL);
 
-    if (!initTexturesDone)
+    if (!m_initTexturesDone)
     {
         // 		std::cout << "-----------------------------------> initTexturesDone\n";
         //---------------------------------------------------
-        getSimulation()->initTextures(groot.get());
+        getSimulation()->initTextures(m_simulationRoot.get());
         //---------------------------------------------------
-        initTexturesDone = true;
+        m_initTexturesDone = true;
     }
 
     {
 
-        getSimulation()->draw(vparams,groot.get());
+        getSimulation()->draw(vparams,m_simulationRoot.get());
 
         if(m_drawAxis){
             SReal* minBBox = vparams->sceneBBox().minBBoxPtr();
@@ -808,7 +808,7 @@ void QtViewer::MakeStencilMask()
 // ---------------------------------------------------------
 void QtViewer::drawScene(void)
 {
-    if (!groot) return;
+    if (!m_simulationRoot) return;
 
     if(!currentCamera)
     {
@@ -1056,9 +1056,9 @@ void QtViewer::calcProjection(int width, int height)
     if (!currentCamera)
         return;
 
-    if (groot && (!groot->f_bbox.getValue().isValid() || _axis))
+    if (m_simulationRoot && (!m_simulationRoot->f_bbox.getValue().isValid() || m_doDrawAxis))
     {
-        vparams->sceneBBox() = groot->f_bbox.getValue();
+        vparams->sceneBBox() = m_simulationRoot->f_bbox.getValue();
         currentCamera->setBoundingBox(vparams->sceneBBox().minBBox(), vparams->sceneBBox().maxBBox());
     }
     currentCamera->computeZ();
@@ -1120,13 +1120,13 @@ void QtViewer::calcProjection(int width, int height)
 void QtViewer::paintGL()
 {
     // clear buffers (color and depth)
-    if (_background == 0)
+    if (m_backgroundIndex == 0)
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    else if (_background == 1)
+    else if (m_backgroundIndex == 1)
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    else if (_background == 2)
-        glClearColor(backgroundColour[0], backgroundColour[1],
-                backgroundColour[2], 1.0f);
+    else if (m_backgroundIndex == 2)
+        glClearColor(m_backgroundColour[0], m_backgroundColour[1],
+                m_backgroundColour[2], 1.0f);
     glClearDepth(1.0);
     glClear( _clearBuffer);
 
@@ -1615,9 +1615,9 @@ void QtViewer::resetView()
     Quat orientation;
     bool fileRead = false;
 
-    if (!sceneFileName.empty())
+    if (!m_sceneFileName.empty())
     {
-        std::string viewFileName = sceneFileName + "." + VIEW_FILE_EXTENSION;
+        std::string viewFileName = m_sceneFileName + "." + VIEW_FILE_EXTENSION;
         fileRead = currentCamera->importParametersFromFile(viewFileName);
     }
 
@@ -1657,9 +1657,9 @@ void QtViewer::moveView(const Vec3d& pos, const Quat &ori)
 
 void QtViewer::saveView()
 {
-    if (!sceneFileName.empty())
+    if (!m_sceneFileName.empty())
     {
-        std::string viewFileName = sceneFileName + "." + VIEW_FILE_EXTENSION;
+        std::string viewFileName = m_sceneFileName + "." + VIEW_FILE_EXTENSION;
         if(currentCamera->exportParametersInFile(viewFileName))
             std::cout << "View parameters saved in " << viewFileName << std::endl;
         else

@@ -68,10 +68,10 @@ namespace qgl
 
 using std::cout;
 using std::endl;
-using std::string ;
+using std::string;
 using sofa::gui::BaseGUI;
-using sofa::helper::gl::Axis ;
-using sofa::helper::gl::GlText ;
+using sofa::helper::gl::Axis;
+using sofa::helper::gl::GlText;
 using sofa::simulation::getSimulation;
 // TODO(dmarchal): Fix this full namespace import.
 using namespace sofa::simulation;
@@ -103,21 +103,21 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbM
 {
     this->setObjectName(name);
 
-    groot = NULL;
-    initTexturesDone = false;
+    m_simulationRoot = NULL;
+    m_initTexturesDone = false;
 
-    backgroundColour[0]=1.0f;
-    backgroundColour[1]=1.0f;
-    backgroundColour[2]=1.0f;
+    m_backgroundColour[0]=1.0f;
+    m_backgroundColour[1]=1.0f;
+    m_backgroundColour[2]=1.0f;
 
     // setup OpenGL mode for the window
     //Fl_Gl_Window::mode(FL_RGB | FL_DOUBLE | FL_DEPTH | FL_ALPHA);
     timerAnimate = new QTimer(this);
     connect( timerAnimate, SIGNAL(timeout()), this, SLOT(animate()) );
 
-    _video = false;
-    _axis = false;
-    _background = 0;
+    m_doVideoRecording = false;
+    m_doDrawAxis = false;
+    m_backgroundIndex = 0;
     _numOBJmodels = 0;
     _materialMode = 0;
     _facetNormal = GL_FALSE;
@@ -486,7 +486,7 @@ void QtGLViewer::drawColourPicking(ColourPickingVisitor::ColourCode code)
 
     ColourPickingVisitor cpv(sofa::core::visual::VisualParams::defaultInstance(),
                              code);
-    cpv.execute(groot.get());
+    cpv.execute(m_simulationRoot.get());
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
@@ -554,10 +554,10 @@ void QtGLViewer::DisplayOBJs()
 {
 
 
-    if (_background==0)
+    if (m_backgroundIndex==0)
         DrawLogo();
 
-    if (!groot)
+    if (!m_simulationRoot)
         return;
 
     // Initialize lighting
@@ -569,11 +569,11 @@ void QtGLViewer::DisplayOBJs()
 
     glColor3f(0.5f, 0.5f, 0.6f);
 
-    if (!groot->f_bbox.getValue().isValid())
+    if (!m_simulationRoot->f_bbox.getValue().isValid())
         viewAll();
 
     sofa::defaulttype::BoundingBox& bbox = vparams->sceneBBox();
-    bbox = groot->f_bbox.getValue();
+    bbox = m_simulationRoot->f_bbox.getValue();
 
     Enable<GL_LIGHTING> light;
     Enable<GL_DEPTH_TEST> depth;
@@ -582,16 +582,16 @@ void QtGLViewer::DisplayOBJs()
     glColor4f(1,1,1,1);
     glDisable(GL_COLOR_MATERIAL);
 
-    if (!initTexturesDone)
+    if (!m_initTexturesDone)
     {
-        simulation::getSimulation()->initTextures(groot.get());
-        initTexturesDone = true;
+        simulation::getSimulation()->initTextures(m_simulationRoot.get());
+        m_initTexturesDone = true;
     }
 
     {
         //Draw Debug information of the components
-        simulation::getSimulation()->draw(vparams,groot.get());
-        if (_axis)
+        simulation::getSimulation()->draw(vparams,m_simulationRoot.get());
+        if (m_doDrawAxis)
         {
             this->setSceneBoundingBox(qglviewer::Vec(vparams->sceneBBox().minBBoxPtr()),
                                       qglviewer::Vec(vparams->sceneBBox().maxBBoxPtr()) );
@@ -716,11 +716,11 @@ void QtGLViewer::toogleBoundingBoxDraw()
 
 void QtGLViewer::viewAll()
 {
-    if (!groot)
+    if (!m_simulationRoot)
         return;
 
     sofa::defaulttype::BoundingBox& bbox = vparams->sceneBBox();
-    bbox = groot->f_bbox.getValue();
+    bbox = m_simulationRoot->f_bbox.getValue();
 
     if (bbox.minBBox().x() == bbox.maxBBox().x() || !bbox.isValid())
     {
@@ -776,14 +776,14 @@ void QtGLViewer::resizeGL(int width, int height)
 // ---------------------------------------------------------
 void QtGLViewer::draw()
 {
-    if (_background==0)
+    if (m_backgroundIndex==0)
         glClearColor(0.0f,0.0f,0.0f,1.0f);
-    else if (_background==1)
+    else if (m_backgroundIndex==1)
         glClearColor(0.0f,0.0f,0.0f,0.0f);
-    else if (_background==2)
-        glClearColor(backgroundColour[0],
-                     backgroundColour[1],
-                     backgroundColour[2], 1.0f);
+    else if (m_backgroundIndex==2)
+        glClearColor(m_backgroundColour[0],
+                     m_backgroundColour[1],
+                     m_backgroundColour[2], 1.0f);
     glClearDepth(1.0);
     glClear(_clearBuffer);
 
@@ -913,7 +913,7 @@ void QtGLViewer::moveRayPickInteractor(int eventX, int eventY)
     position  = transform*Vec4d(0,0,0,1);
     direction = transform*Vec4d(0,0,1,0);
     direction.normalize();
-    pick->updateRay(position, direction);
+    m_pickhandler->updateRay(position, direction);
 }
 
 // -------------------------------------------------------------------
@@ -923,11 +923,11 @@ void QtGLViewer::resetView()
 {
     viewAll();
 
-    if (!sceneFileName.empty())
+    if (!m_sceneFileName.empty())
     {
         //Test if we have a specific view point for the QGLViewer
         //That case, the camera will be well placed
-        string viewFileName = sceneFileName+"."+BaseGUI::GetGUIName()+".view";
+        string viewFileName = m_sceneFileName+"."+BaseGUI::GetGUIName()+".view";
         std::ifstream in(viewFileName.c_str());
         if (!in.fail())
         {
@@ -955,7 +955,7 @@ void QtGLViewer::resetView()
         {
             //If we have the default QtViewer view file, we have to use, showEntireScene
             //as the FOV of the QtViewer is not constant, so the parameters are not good
-            string viewFileName = sceneFileName+".view";
+            string viewFileName = m_sceneFileName+".view";
             std::ifstream in(viewFileName.c_str());
             if (!in.fail())
             {
@@ -987,9 +987,9 @@ void QtGLViewer::resetView()
 
 void QtGLViewer::saveView()
 {
-    if (!sceneFileName.empty())
+    if (!m_sceneFileName.empty())
     {
-        string viewFileName = sceneFileName+"."+BaseGUI::GetGUIName()+".view";
+        string viewFileName = m_sceneFileName+"."+BaseGUI::GetGUIName()+".view";
         std::ofstream out(viewFileName.c_str());
         if (!out.fail())
         {

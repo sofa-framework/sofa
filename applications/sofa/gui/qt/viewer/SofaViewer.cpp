@@ -59,6 +59,75 @@ void SofaViewer::redraw()
     getQWidget()->update();
 }
 
+void SofaViewer::toggleVideoRecording(){
+    if(!m_doVideoRecording)
+    {
+        switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
+        {
+        case SofaVideoRecorderManager::SCREENSHOTS :
+            break;
+        case SofaVideoRecorderManager::MOVIE :
+        {
+           #ifdef SOFA_HAVE_FFMPEG
+                SofaVideoRecorderManager* videoManager = SofaVideoRecorderManager::getInstance();
+                unsigned int bitrate = videoManager->getBitrate();
+                unsigned int framerate = videoManager->getFramerate();
+                std::string videoFilename = videoRecorder.findFilename(videoManager->getCodecExtension());
+                videoRecorder.init( videoFilename, framerate, bitrate, videoManager->getCodecName());
+           #else
+                std::cout << "This version of SOFA has not been compiled with "
+                             "video recording support. Try to enable FFMPEG support" << std::endl ;
+           #endif // SOFA_HAVE_FFMPEG
+
+            break;
+        }
+        default :
+            break;
+        }
+        if (SofaVideoRecorderManager::getInstance()->realtime())
+        {
+            unsigned int framerate = SofaVideoRecorderManager::getInstance()->getFramerate();
+            std::cout << "Starting capture timer ( " << framerate << " Hz )" << std::endl;
+            unsigned int interv = (1000+framerate-1)/framerate;
+            captureTimer.start(interv);
+        }
+
+    }
+    else
+    {
+        if(captureTimer.isActive())
+        {
+            std::cout << "Stopping capture timer" << std::endl;
+            captureTimer.stop();
+        }
+        switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
+        {
+        case SofaVideoRecorderManager::SCREENSHOTS :
+            break;
+        case SofaVideoRecorderManager::MOVIE :
+        {
+            #ifdef SOFA_HAVE_FFMPEG
+                videoRecorder.finishVideo();
+            #endif
+            break;
+
+        }
+        default :
+            break;
+        }
+    }
+
+    m_doVideoRecording = !m_doVideoRecording;
+}
+
+void  SofaViewer::toggleCameraMode(){
+    if (currentCamera->getCameraType() == VisualParams::ORTHOGRAPHIC_TYPE){
+        setCameraMode(VisualParams::PERSPECTIVE_TYPE);
+    }else{
+        setCameraMode(VisualParams::ORTHOGRAPHIC_TYPE);
+    }
+}
+
 bool SofaViewer::keyPressEvent_p(QKeyEvent * e)
 {
     KeypressedEvent kpe(e->key());
@@ -67,120 +136,49 @@ bool SofaViewer::keyPressEvent_p(QKeyEvent * e)
         if(e->key() == Qt::Key_Control )
             return true;
 
-        KeyreleasedEvent keyEvent(e->key());
-        if (groot)
-            groot->propagateEvent(ExecParams::defaultInstance(), &keyEvent);
+        if (m_simulationRoot)
+            m_simulationRoot->propagateEvent(ExecParams::defaultInstance(), &kpe);
     }else if(m_state==STATE_PICKING){
         // Nothing to do
+
     }else if(m_state==STATE_CAMERAMANIPULATION){
         if(currentCamera)
             currentCamera->manageEvent(&kpe);
 
         switch (e->key())
         {
-        case Qt::Key_A:
-        {
+        case Qt::Key_A: {
             switchAxisViewing();
             break ;
         }
-        case Qt::Key_C:
+        case Qt::Key_C: {
             viewAll() ;
             break ;
-        case Qt::Key_B:
-        {
+        }
+        case Qt::Key_B: {
             // TODO(dmarchal): do we really need a short cut for that ?
             // it should probably be much more suited as a configuration option
             // theme or something.
-            _background = (_background + 1) % 3;
+            m_backgroundIndex = (m_backgroundIndex + 1) % 3;
             break;
         }
-        case Qt::Key_R:
-        {
+        case Qt::Key_R: {
             toogleBoundingBoxDraw();
             break;
         }
-        case Qt::Key_S:
-        {
+        case Qt::Key_S: {
             screenshot(capture.findFilename());
             break;
         }
-        case Qt::Key_T:
-        {
-            if (currentCamera->getCameraType() == VisualParams::ORTHOGRAPHIC_TYPE){
-                setCameraMode(VisualParams::PERSPECTIVE_TYPE);
-            }else{
-                setCameraMode(VisualParams::ORTHOGRAPHIC_TYPE);
-            }
+        case Qt::Key_T: {
+            toggleCameraMode();
             break;
         }
-        case Qt::Key_V:
-            // --- save video
-        {
-            if(!_video)
-            {
-                switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
-                {
-                case SofaVideoRecorderManager::SCREENSHOTS :
-                    break;
-                case SofaVideoRecorderManager::MOVIE :
-                {
-                   #ifdef SOFA_HAVE_FFMPEG
-                        SofaVideoRecorderManager* videoManager = SofaVideoRecorderManager::getInstance();
-                        unsigned int bitrate = videoManager->getBitrate();
-                        unsigned int framerate = videoManager->getFramerate();
-                        std::string videoFilename = videoRecorder.findFilename(videoManager->getCodecExtension());
-                        videoRecorder.init( videoFilename, framerate, bitrate, videoManager->getCodecName());
-                   #else
-                        std::cout << "This version of SOFA has not been compiled with "
-                                     "video recording support. Try to enable FFMPEG support" << std::endl ;
-                   #endif // SOFA_HAVE_FFMPEG
-
-                    break;
-                }
-                default :
-                    break;
-                }
-                if (SofaVideoRecorderManager::getInstance()->realtime())
-                {
-                    unsigned int framerate = SofaVideoRecorderManager::getInstance()->getFramerate();
-                    std::cout << "Starting capture timer ( " << framerate << " Hz )" << std::endl;
-                    unsigned int interv = (1000+framerate-1)/framerate;
-                    captureTimer.start(interv);
-                }
-
-            }
-            else
-            {
-                if(captureTimer.isActive())
-                {
-                    std::cout << "Stopping capture timer" << std::endl;
-                    captureTimer.stop();
-                }
-                switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
-                {
-                case SofaVideoRecorderManager::SCREENSHOTS :
-                    break;
-                case SofaVideoRecorderManager::MOVIE :
-                {
-                    #ifdef SOFA_HAVE_FFMPEG
-                        videoRecorder.finishVideo();
-                    #endif
-                    break;
-
-                }
-                default :
-                    break;
-                }
-            }
-
-            _video = !_video;
-            //capture.setCounter();
-
+        case Qt::Key_V: {
+            toggleVideoRecording() ;
             break;
         }
-        case Qt::Key_W:
-            // --- save current view
-        {
+        case Qt::Key_W: {
             saveView();
             break;
         }
@@ -256,12 +254,14 @@ bool SofaViewer::keyPressEvent_p(QKeyEvent * e)
         case Qt::Key_Control:
             m_state = STATE_SCENEFORWARDING ;
             break;
+
         case Qt::Key_Shift:
             m_state = STATE_PICKING ;
             GLint viewport[4];
             glGetIntegerv(GL_VIEWPORT,viewport);
-            getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
+            getPickHandler()->activateRay(viewport[2],viewport[3], m_simulationRoot.get());
             break;
+
         default:
             break;
         }
@@ -279,16 +279,15 @@ bool SofaViewer::keyReleaseEvent_p(QKeyEvent * e)
             m_state = STATE_CAMERAMANIPULATION;
             return true;
         }
-        KeyreleasedEvent keyEvent(e->key());
-        if (groot)
-            groot->propagateEvent(ExecParams::defaultInstance(), &keyEvent);
+        if (m_simulationRoot)
+            m_simulationRoot->propagateEvent(ExecParams::defaultInstance(), &kre);
 
         // TODO(dmarchal): this seems a kind of patchy... should be remove.
         // A Control release that rise a mouseEvent sound real weird to me.
         // Send Control Release Info to a potential ArticulatedRigid Instrument
         MouseEvent mouseEvent(MouseEvent::Reset);
-        if (groot)
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+        if (m_simulationRoot)
+            m_simulationRoot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
     }else if(m_state==STATE_PICKING){
         if(e->key() == Qt::Key_Shift){
             getPickHandler()->deactivateRay();
@@ -308,8 +307,8 @@ bool SofaViewer::wheelEvent_p(QWheelEvent *e)
 
     switch(m_state){
     case STATE_SCENEFORWARDING:
-        if (groot)
-            groot->propagateEvent(ExecParams::defaultInstance(), &me);
+        if (m_simulationRoot)
+            m_simulationRoot->propagateEvent(ExecParams::defaultInstance(), &me);
         break;
     case STATE_PICKING:
         break;
@@ -330,8 +329,8 @@ bool SofaViewer::mouseMoveEvent_p( QMouseEvent *e )
 
     switch(m_state){
     case STATE_SCENEFORWARDING:
-        if (groot)
-            groot->propagateEvent(ExecParams::defaultInstance(), &me);
+        if (m_simulationRoot)
+            m_simulationRoot->propagateEvent(ExecParams::defaultInstance(), &me);
         break;
     case STATE_PICKING:
         updatePicking(e);
@@ -367,8 +366,8 @@ bool SofaViewer::mousePressEvent_p( QMouseEvent * e)
 
     switch(m_state){
     case STATE_SCENEFORWARDING:
-        if (groot)
-            groot->propagateEvent(ExecParams::defaultInstance(), mEvent);
+        if (m_simulationRoot)
+            m_simulationRoot->propagateEvent(ExecParams::defaultInstance(), mEvent);
         break;
     case STATE_PICKING:
         updatePicking(e);
@@ -404,8 +403,8 @@ bool SofaViewer::mouseReleaseEvent_p( QMouseEvent * e)
 
     switch(m_state){
     case STATE_SCENEFORWARDING:
-        if (groot)
-            groot->propagateEvent(ExecParams::defaultInstance(), mEvent);
+        if (m_simulationRoot)
+            m_simulationRoot->propagateEvent(ExecParams::defaultInstance(), mEvent);
         break;
     case STATE_PICKING:
         updatePicking(e);
@@ -433,7 +432,7 @@ bool SofaViewer::updatePicking(QMouseEvent *e)
     mousepos.x      = e->x();
     mousepos.y      = e->y();
 
-    getPickHandler()->activateRay(viewport[2],viewport[3], groot.get());
+    getPickHandler()->activateRay(viewport[2],viewport[3], m_simulationRoot.get());
     getPickHandler()->updateMouse2D( mousepos );
 
     switch (e->type())
@@ -475,13 +474,12 @@ bool SofaViewer::updatePicking(QMouseEvent *e)
     }
     moveRayPickInteractor(e->x(), e->y());
 
-
     return true;
 }
 
 void SofaViewer::captureEvent()
 {
-    if (_video)
+    if (m_doVideoRecording)
     {
         bool skip = false;
         unsigned int frameskip = SofaVideoRecorderManager::getInstance()->getFrameskip();

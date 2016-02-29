@@ -36,20 +36,20 @@ namespace gui
 {
 
 BaseViewer::BaseViewer()
-    : groot(NULL)
-    , currentCamera(NULL)
+    : m_simulationRoot(NULL)
+    , m_currentCamera(NULL)
 #ifndef SOFA_NO_OPENGL
     , texLogo(NULL)
 #endif
-    , _video(false)
-    , _axis(false)
-    , backgroundColour(defaulttype::Vector3())
-    , backgroundImageFile("textures/SOFA_logo.bmp")
-    , ambientColour(defaulttype::Vector3())
-    , pick(NULL)
-    , _screenshotDirectory(".")
+    , m_doVideoRecording(false)
+    , m_doDrawAxis(false)
+    , m_backgroundColour(defaulttype::Vector3())
+    , m_ambientColour(defaulttype::Vector3())
+    , m_backgroundImageFilename("textures/SOFA_logo.bmp")
+    , m_pickhandler(NULL)
+    , m_screenshotDirectoryName(".")
 {
-    pick = new PickHandler();
+    m_pickhandler = new PickHandler();
 }
 
 BaseViewer::~BaseViewer()
@@ -65,15 +65,15 @@ BaseViewer::~BaseViewer()
 
 sofa::simulation::Node* BaseViewer::getScene()
 {
-    return groot.get();
+    return m_simulationRoot.get();
 }
 const std::string& BaseViewer::getSceneFileName()
 {
-    return sceneFileName;
+    return m_sceneFileName;
 }
 void BaseViewer::setSceneFileName(const std::string &f)
 {
-    sceneFileName = f;
+    m_sceneFileName = f;
 }
 
 void BaseViewer::setScene(sofa::simulation::Node::SPtr scene, const char* filename /* = NULL */, bool /* = false */)
@@ -83,14 +83,14 @@ void BaseViewer::setScene(sofa::simulation::Node::SPtr scene, const char* filena
         prefix = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename) + "_";
     setPrefix(prefix);
 
-    sceneFileName = filename ? filename : std::string("default.scn");
-    groot = scene;
-    initTexturesDone = false;
+    m_sceneFileName = filename ? filename : std::string("default.scn");
+    m_simulationRoot = scene;
+    m_initTexturesDone = false;
 }
 
 void BaseViewer::setCameraMode(core::visual::VisualParams::CameraType mode)
 {
-    currentCamera->setCameraType(mode);
+    m_currentCamera->setCameraType(mode);
 }
 
 bool BaseViewer::ready()
@@ -110,9 +110,9 @@ void BaseViewer::configure(sofa::component::configurationsetting::ViewerSetting*
     else
         setCameraMode(VisualParams::PERSPECTIVE_TYPE);
     if ( viewerConf->objectPickingMethod.getValue().getSelectedId() == gui::PickHandler::RAY_CASTING)
-        pick->setPickingMethod( gui::PickHandler::RAY_CASTING );
+        m_pickhandler->setPickingMethod( gui::PickHandler::RAY_CASTING );
     else
-        pick->setPickingMethod( gui::PickHandler::SELECTION_BUFFER);
+        m_pickhandler->setPickingMethod( gui::PickHandler::SELECTION_BUFFER);
 }
 
 //Fonctions needed to take a screenshot
@@ -121,7 +121,7 @@ const std::string BaseViewer::screenshotName()
 #ifndef SOFA_NO_OPENGL
     return capture.findFilename().c_str();
 #else
-	return "";
+    return "";
 #endif
 }
 
@@ -145,11 +145,11 @@ void BaseViewer::screenshot(const std::string& filename, int compression_level)
 
 void BaseViewer::getView(defaulttype::Vector3& pos, defaulttype::Quat& ori) const
 {
-    if (!currentCamera)
+    if (!m_currentCamera)
         return;
 
-    const defaulttype::Vec3d& camPosition = currentCamera->getPosition();
-    const defaulttype::Quat& camOrientation = currentCamera->getOrientation();
+    const defaulttype::Vec3d& camPosition = m_currentCamera->getPosition();
+    const defaulttype::Quat& camOrientation = m_currentCamera->getOrientation();
 
     pos[0] = camPosition[0];
     pos[1] = camPosition[1];
@@ -172,28 +172,28 @@ void BaseViewer::setView(const defaulttype::Vector3& pos, const defaulttype::Qua
     }
     orientation[3] = ori[3];
 
-    if (currentCamera)
-        currentCamera->setView(position, orientation);
+    if (m_currentCamera)
+        m_currentCamera->setView(position, orientation);
 
     redraw();
 }
 
 void BaseViewer::moveView(const defaulttype::Vector3& pos, const defaulttype::Quat &ori)
 {
-    if (!currentCamera)
+    if (!m_currentCamera)
         return;
 
-    currentCamera->moveCamera(pos, ori);
+    m_currentCamera->moveCamera(pos, ori);
 
     redraw();
 }
 
 void BaseViewer::newView()
 {
-    if (!currentCamera || !groot)
+    if (!m_currentCamera || !m_simulationRoot)
         return;
 
-    currentCamera->setDefaultView(groot->getGravity());
+    m_currentCamera->setDefaultView(m_simulationRoot->getGravity());
 }
 
 void BaseViewer::resetView()
@@ -203,19 +203,19 @@ void BaseViewer::resetView()
 
 void BaseViewer::setBackgroundColour(float r, float g, float b)
 {
-    _background = 2;
-    backgroundColour[0] = r;
-    backgroundColour[1] = g;
-    backgroundColour[2] = b;
+    m_backgroundIndex = 2;
+    m_backgroundColour[0] = r;
+    m_backgroundColour[1] = g;
+    m_backgroundColour[2] = b;
 }
 
 void BaseViewer::setBackgroundImage(std::string imageFileName)
 {
-    _background = 0;
+    m_backgroundIndex = 0;
 
     if( sofa::helper::system::DataRepository.findFile(imageFileName) )
     {
-        backgroundImageFile = sofa::helper::system::DataRepository.getFile(imageFileName);
+        m_backgroundImageFilename = sofa::helper::system::DataRepository.getFile(imageFileName);
 #ifndef SOFA_NO_OPENGL
         std::string extension = sofa::helper::system::SetDirectory::GetExtension(imageFileName.c_str());
         std::transform(extension.begin(),extension.end(),extension.begin(),::tolower );
@@ -224,7 +224,7 @@ void BaseViewer::setBackgroundImage(std::string imageFileName)
             delete texLogo;
             texLogo = NULL;
         }
-        helper::io::Image* image =  helper::io::Image::FactoryImage::getInstance()->createObject(extension,backgroundImageFile);
+        helper::io::Image* image =  helper::io::Image::FactoryImage::getInstance()->createObject(extension,m_backgroundImageFilename);
         if( !image )
         {
             helper::vector<std::string> validExtensions;
@@ -243,30 +243,30 @@ void BaseViewer::setBackgroundImage(std::string imageFileName)
 
 std::string BaseViewer::getBackgroundImage()
 {
-    return backgroundImageFile;
+    return m_backgroundImageFilename;
 }
 
 PickHandler* BaseViewer::getPickHandler()
 {
-    return pick;
+    return m_pickhandler;
 }
 
 bool BaseViewer::load()
 {
-    if (groot)
+    if (m_simulationRoot)
     {
-        groot->get(currentCamera);
-        if (!currentCamera)
+        m_simulationRoot->get(m_currentCamera);
+        if (!m_currentCamera)
         {
-            currentCamera = sofa::core::objectmodel::New<component::visualmodel::InteractiveCamera>();
-            currentCamera->setName(core::objectmodel::Base::shortName(currentCamera.get()));
-            groot->addObject(currentCamera);
-            currentCamera->p_position.forceSet();
-            currentCamera->p_orientation.forceSet();
-            currentCamera->bwdInit();
+            m_currentCamera = sofa::core::objectmodel::New<component::visualmodel::InteractiveCamera>();
+            m_currentCamera->setName(core::objectmodel::Base::shortName(m_currentCamera.get()));
+            m_simulationRoot->addObject(m_currentCamera);
+            m_currentCamera->p_position.forceSet();
+            m_currentCamera->p_orientation.forceSet();
+            m_currentCamera->bwdInit();
         }
         component::visualmodel::VisualStyle::SPtr visualStyle = NULL;
-        groot->get(visualStyle);
+        m_simulationRoot->get(visualStyle);
         if (!visualStyle)
         {
             visualStyle = sofa::core::objectmodel::New<component::visualmodel::VisualStyle>();
@@ -276,14 +276,15 @@ bool BaseViewer::load()
             displayFlags->setShowVisualModels(sofa::core::visual::tristate::true_value);
             visualStyle->displayFlags.endEdit();
 
-            groot->addObject(visualStyle);
+            m_simulationRoot->addObject(visualStyle);
             visualStyle->init();
         }
 
-        currentCamera->setBoundingBox(groot->f_bbox.getValue().minBBox(), groot->f_bbox.getValue().maxBBox());
+        m_currentCamera->setBoundingBox(m_simulationRoot->f_bbox.getValue().minBBox(),
+                                        m_simulationRoot->f_bbox.getValue().maxBBox());
 
         // init pickHandler
-        pick->init(groot.get());
+        m_pickhandler->init(m_simulationRoot.get());
 
         return true;
     }
@@ -300,9 +301,9 @@ bool BaseViewer::unload()
 
 void BaseViewer::fitNodeBBox(sofa::core::objectmodel::BaseNode * node )
 {
-    if(!currentCamera) return;
+    if(!m_currentCamera) return;
     if( node->f_bbox.getValue().isValid() && !node->f_bbox.getValue().isFlat() )
-        currentCamera->fitBoundingBox(
+        m_currentCamera->fitBoundingBox(
             node->f_bbox.getValue().minBBox(),
             node->f_bbox.getValue().maxBBox()
         );
@@ -312,26 +313,22 @@ void BaseViewer::fitNodeBBox(sofa::core::objectmodel::BaseNode * node )
 
 void BaseViewer::fitObjectBBox(sofa::core::objectmodel::BaseObject * object)
 {
-    if(!currentCamera) return;
+    if(!m_currentCamera) return;
 
     if( object->f_bbox.getValue().isValid() && !object->f_bbox.getValue().isFlat() )
-        currentCamera->fitBoundingBox(object->f_bbox.getValue().minBBox(),
+        m_currentCamera->fitBoundingBox(object->f_bbox.getValue().minBBox(),
                 object->f_bbox.getValue().maxBBox());
     else
     {
         if(object->getContext()->f_bbox.getValue().isValid() && !object->getContext()->f_bbox.getValue().isFlat()  )
         {
-            currentCamera->fitBoundingBox(
+            m_currentCamera->fitBoundingBox(
                 object->getContext()->f_bbox.getValue().minBBox(),
                 object->getContext()->f_bbox.getValue().maxBBox());
         }
     }
     redraw();
 }
-
-
-
-
 
 }
 }

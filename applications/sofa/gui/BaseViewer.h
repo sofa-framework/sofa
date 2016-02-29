@@ -149,11 +149,11 @@ protected:
     virtual void redraw() = 0;
 
     /// the sofa root note of the current scene
-    sofa::simulation::Node::SPtr groot;
+    sofa::simulation::Node::SPtr m_simulationRoot;
 
-    sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
+    sofa::component::visualmodel::BaseCamera::SPtr m_currentCamera;
 
-    std::string sceneFileName;
+    std::string m_sceneFileName;
 
 #ifndef SOFA_NO_OPENGL
     sofa::helper::gl::Capture capture;
@@ -164,26 +164,25 @@ protected:
     sofa::helper::gl::VideoRecorder videoRecorder;
 #endif
 
-    bool _video;
-    bool _axis;
-    bool _fullScreen;
-    int _background;
-    bool initTexturesDone;
+    bool   m_doVideoRecording;
+    bool   m_doDrawAxis;
+    bool   m_isInFullScreenMode;
+    int    m_backgroundIndex;
+    bool   m_initTexturesDone;
 
-    sofa::defaulttype::Vector3 backgroundColour;
-    std::string backgroundImageFile;
+    sofa::defaulttype::Vector3 m_backgroundColour;
+    sofa::defaulttype::Vector3 m_ambientColour;
 
-    sofa::defaulttype::Vector3 ambientColour;
-
-    PickHandler *pick;
+    std::string                m_backgroundImageFilename;
 
     //instruments handling
+    PickHandler* m_pickhandler;
     int _navigationMode;
     bool _mouseInteractorMoving;
     int _mouseInteractorSavedPosX;
     int _mouseInteractorSavedPosY;
 
-    std::string _screenshotDirectory;
+    std::string m_screenshotDirectoryName;
 };
 
 }

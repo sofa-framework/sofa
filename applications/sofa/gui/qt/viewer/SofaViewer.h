@@ -85,6 +85,9 @@ public:
     virtual void switchAxisViewing() = 0;
     virtual void toogleBoundingBoxDraw() = 0 ;
 
+    void toggleVideoRecording() ;
+    void toggleCameraMode() ;
+
     //*************************************************************
     // QT
     //*************************************************************
@@ -111,9 +114,7 @@ protected:
     virtual void redraw();
 
     QTimer captureTimer;
-
     State m_state ;
-
     ColourPickingRenderCallBack colourPickingRenderCallBack;
 
 signals:
