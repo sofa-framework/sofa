@@ -1,26 +1,19 @@
-## @package StructuralAPI
-# An alternative high(mid?)-level python API to describe a Compliant scene.
-#
-# With this API, the SOFA structure is not hidden and must be known by the user.
-# But the obscure python-based structures (like Frame) are hidden.
-#
-# An important advantage is that a pointer is accessible for any created node and component
-# (simplifying component customization, manual sub-scene creation, etc.)
-#
-# Note that both python APIs and manual creation can be used together.
-#
-# see Compliant/examples/StructuralAPI.py for a basic example.
-from operator import ge
+#from operator import ge
+
+import math
+import numpy
+
+import Sofa
 
 import Compliant.Frame as Frame
 import Compliant.Tools as Tools
 from Compliant.Tools import cat as concat
-import numpy
-import Sofa
+
+
 from SofaPython import Quaternion
 import SofaPython.Tools
 import SofaPython.mass
-import math
+
 import SofaPython.Quaternion as quat
 import Flexible.Serialization
 
@@ -60,7 +53,7 @@ class ShearlessAffineBody:
         self.framecom = Frame.Frame() # frame at the center of mass
         self.numberOfPoints = numberOfPoints # number of controlling a bone
 
-    def setFromMesh(self, filepath, density=1000, offset=[0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces=False, voxel_size=0.01, generatedDir=None):
+    def setFromMesh(self, filepath, density=1000, offset=[0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces=False, voxelSize=0.01, generatedDir=None):
         # variables
         r = Quaternion.to_euler(offset[3:]) * 180.0 / math.pi
         path_affine_rigid = '@'+ Tools.node_path_rel(self.affineNode, self.rigidNode)
@@ -79,7 +72,7 @@ class ShearlessAffineBody:
             self.affineNode.createObject('MeshObjLoader',name='source', filename=filepath, triangulate=1, scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r))
 
             if generatedDir is None:
-                self.meshToImageEngine = self.affineNode.createObject('MeshToImageEngine', template='ImageUC', name='rasterizer', src='@source', value=1, insideValue=1, voxelSize=voxel_size, padSize=0, rotateImage='false')
+                self.meshToImageEngine = self.affineNode.createObject('MeshToImageEngine', template='ImageUC', name='rasterizer', src='@source', value=1, insideValue=1, voxelSize=voxelSize, padSize=0, rotateImage='false')
                 self.affineNode.createObject('ImageContainer', template='ImageUC', name='image', src='@rasterizer')
                 self.shapeFunction=self.affineNode.createObject('VoronoiShapeFunction', template='ShapeFunctiond,ImageUC', name='SF', position='@dofs.rest_position', image='@image.image', transform='@image.transform', nbRef=8, clearData=1, bias=0)
             else:
@@ -98,7 +91,7 @@ class ShearlessAffineBody:
             meshLoaderComponent = self.rigidNode.createObject('MeshObjLoader',name='source', filename=filepath, triangulate=1, scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r))
 
             if generatedDir is None:
-                self.meshToImageEngine = self.rigidNode.createObject('MeshToImageEngine', template='ImageUC', name='rasterizer', src='@source', value=1, insideValue=1, voxelSize=voxel_size, padSize=0, rotateImage='false')
+                self.meshToImageEngine = self.rigidNode.createObject('MeshToImageEngine', template='ImageUC', name='rasterizer', src='@source', value=1, insideValue=1, voxelSize=voxelSize, padSize=0, rotateImage='false')
                 imageContainerComponent = self.rigidNode.createObject('ImageContainer', template='ImageUC', name='image', src='@rasterizer')
             else:
                 imageContainerComponent = self.rigidNode.createObject('ImageContainer', template='ImageUC', name='image', filename=generatedDir+self.node.name+"_rasterization.raw", drawBB='false')
@@ -152,7 +145,7 @@ class ShearlessAffineBody:
             serialization.importAffineMass(self.affineNode,generatedDir+self.node.name+"_affinemass.json")
         return
 
-    def setManually(self, filepath=None, offset=[[0,0,0,0,0,0,1]], mass=[1], inertia=[[1,1,1]], inertia_forces=False, voxel_size=0.01, density=2000, generatedDir=None):
+    def setManually(self, filepath=None, offset=[[0,0,0,0,0,0,1]], mass=[1], inertia=[[1,1,1]], inertia_forces=False, voxelSize=0.01, density=2000, generatedDir=None):
         if len(offset) == 0:
             print 'StructuralAPIShearlessAffine: The case the number of points per bones equal ' + str(self.numberOfPoints) + 'is not yet handled.'
             return
@@ -188,7 +181,7 @@ class ShearlessAffineBody:
         if filepath:
             self.affineNode.createObject('MeshObjLoader',name='source', filename=filepath, triangulate=1)
             if generatedDir is None:
-                self.meshToImageEngine = self.affineNode.createObject('MeshToImageEngine', template='ImageUC', name='rasterizer', src='@source', value=1, insideValue=1, voxelSize=voxel_size, padSize=0, rotateImage='false')
+                self.meshToImageEngine = self.affineNode.createObject('MeshToImageEngine', template='ImageUC', name='rasterizer', src='@source', value=1, insideValue=1, voxelSize=voxelSize, padSize=0, rotateImage='false')
                 self.affineNode.createObject('ImageContainer', template='ImageUC', name='image', src='@rasterizer')
                 self.shapeFunction=self.affineNode.createObject('VoronoiShapeFunction', template='ShapeFunctiond,ImageUC', name='SF', position='@dofs.rest_position', image='@image.image', transform='@image.transform', nbRef=8, clearData=1, bias=0)
             else:
@@ -250,7 +243,7 @@ class ShearlessAffineBody:
         self.visual = ShearlessAffineBody.VisualModel(self.affineNode, filepath, scale3d, offset, name_suffix, generatedDir=generatedDir)
         return self.visual
 
-    def addOffset(self, name, offset=[0,0,0,0,0,0,1], index=-1):
+    def addOffset(self, name, offset=[0,0,0,0,0,0,1], index=-1): #TODO None value instead of -1
         ## adding a relative offset to the rigid body (e.g. used as a joint location)
         # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
         if index > -1:

@@ -127,6 +127,7 @@ ColorMap::ColorMap()
 , f_legendTitle(initData(&f_legendTitle,"legendTitle", "Add a title to the legend"))
 , d_min(initData(&d_min,0.0f,"min","min value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the min"))
 , d_max(initData(&d_max,0.0f,"max","max value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the max"))
+, d_legendRangeScale(initData(&d_legendRangeScale,1.f,"legendRangeScale","to change the unit of the min/max value of the legend"))
 , texture(0)
 {
    f_colorScheme.beginEdit()->setNames(19,
@@ -480,8 +481,8 @@ void ColorMap::drawVisual(const core::visual::VisualParams* vparams)
 
     // Maximum & minimum
     std::ostringstream smin, smax;
-    smin << d_min.getValue();
-    smax << d_max.getValue();
+    smin << d_min.getValue() * d_legendRangeScale.getValue();
+    smax << d_max.getValue() * d_legendRangeScale.getValue();
 
     // Adjust the text color according to the background luminance
     GLfloat bgcol[4];

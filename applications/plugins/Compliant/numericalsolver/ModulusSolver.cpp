@@ -44,7 +44,7 @@ namespace component {
 namespace linearsolver {
 
 SOFA_DECL_CLASS(ModulusSolver)
-static int ModulusSolverClass = core::RegisterObject("Modulus solver").add< ModulusSolver >();
+const int ModulusSolverClass = core::RegisterObject("Modulus solver").add< ModulusSolver >();
 
 
 

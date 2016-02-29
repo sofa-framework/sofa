@@ -372,7 +372,7 @@ int resoudreLCP(int dim, double * q, double ** M, double * res)
         {
             afficheLCP(q,M,dim);
             printf("*** Pas de solution *** \n");
-            boucles=MAX_BOU;
+//            boucles=MAX_BOU;
             result=0;
             for(compteur=0; compteur<dim; compteur++)
             {
@@ -642,7 +642,7 @@ int lcp_lexicolemke(int dim, double * q, double ** M, double * res)
         {
             res[ic] = 0.0;
             //wlem[ic] = q[ic];
-            z0 = 0.0;
+//            z0 = 0.0;
         }
 
         Ifound=1;
@@ -896,7 +896,7 @@ int lcp_lexicolemke(int dim, double * q, double ** M, double **A, double * res)
         {
             res[ic] = 0.0;
             //wlem[ic] = q[ic];
-            z0 = 0.0;
+//            z0 = 0.0;
         }
 
         Ifound=1;
