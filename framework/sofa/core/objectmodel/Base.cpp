@@ -65,6 +65,8 @@ Base::Base()
     f_bbox.setDisplayed(false);
     f_bbox.setAutoLink(false);
     sendl.setParent(this);
+
+    m_mask = 0XFFFFFFFFFFFFFFFF ;
 }
 
 Base::~Base()

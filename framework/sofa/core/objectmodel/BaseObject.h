@@ -87,7 +87,7 @@ protected:
     BaseObject();
 
     virtual ~BaseObject();
-	
+
 public:
 
     /// @name control
@@ -143,7 +143,7 @@ public:
     ///@}
 
     /// @name Context accessors
-    /// @{    
+    /// @{
 
     const BaseContext* getContext() const;
 

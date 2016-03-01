@@ -27,6 +27,8 @@
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/core/objectmodel/HeartBeatEvent.h>
+#include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/helper/TagFactory.h>
 #include <iostream>
@@ -55,6 +57,8 @@ BaseObject::BaseObject()
     l_context.set(BaseContext::getDefault());
     l_slaves.setValidator(&sofa::core::objectmodel::BaseObject::changeSlavesLink);
     f_listening.setAutoLink(false);
+    m_mask = m_mask & ~(1 << HeartBeatEvent::getEventType() | 1 << MouseEvent::getEventType()) ;
+
 }
 
 BaseObject::~BaseObject()
@@ -293,13 +297,13 @@ void BaseObject::init()
         setPartition(new Iterative::IterativePartition());
 #endif
 
-	for(VecData::const_iterator iData = this->m_vecData.begin(); iData != this->m_vecData.end(); ++iData)
-	{
-		if ((*iData)->isRequired() && !(*iData)->isSet())
-		{
+    for(VecData::const_iterator iData = this->m_vecData.begin(); iData != this->m_vecData.end(); ++iData)
+    {
+        if ((*iData)->isRequired() && !(*iData)->isSet())
+        {
             serr << "Required data \"" << (*iData)->getName() << "\" has not been set. (Current value is " << (*iData)->getValueString() << ")" << sendl;
-		}
-	}
+        }
+    }
 }
 
 void BaseObject::bwdInit()

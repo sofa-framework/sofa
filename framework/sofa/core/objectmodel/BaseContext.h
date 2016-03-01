@@ -92,12 +92,13 @@ public:
 protected:
     BaseContext();
     virtual ~BaseContext();
-	
-private:	
-	BaseContext(const BaseContext&);
+
+private:
+    BaseContext(const BaseContext&);
     BaseContext& operator=(const BaseContext& );
-    
+
 public:
+
     /// Get the default Context object, that contains the default values for
     /// all parameters and can be used when no local context is defined.
     static BaseContext* getDefault();
@@ -117,11 +118,11 @@ public:
     /// State of the context
     virtual void setActive(bool) {}
 
-	/// Sleeping state of the context
-	virtual bool isSleeping() const;
+    /// Sleeping state of the context
+    virtual bool isSleeping() const;
 
-	/// Whether the context can change its sleeping state or not
-	virtual bool canChangeSleepingState() const;
+    /// Whether the context can change its sleeping state or not
+    virtual bool canChangeSleepingState() const;
 
     /// Simulation time
     virtual SReal getTime() const;
@@ -379,13 +380,13 @@ public:
     virtual void setAnimate(bool /*val*/)
     { }
 
-	/// Sleeping state of the context
-	virtual void setSleeping(bool /*val*/) 
-	{ }
+    /// Sleeping state of the context
+    virtual void setSleeping(bool /*val*/)
+    { }
 
-	/// Sleeping state change of the context
-	virtual void setChangeSleepingState(bool /*val*/)
-	{ }
+    /// Sleeping state change of the context
+    virtual void setChangeSleepingState(bool /*val*/)
+    { }
 
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// Multiresolution support (UNSTABLE) : Set the current level, return false if l >= coarsestLevel
