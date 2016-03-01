@@ -35,6 +35,16 @@
 #include <sofa/core/objectmodel/HeartBeatEvent.h>
 using sofa::core::objectmodel::HeartBeatEvent ;
 
+#include <sofa/core/objectmodel/DrawEvent.h>
+using sofa::core::objectmodel::DrawEvent ;
+
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+using sofa::simulation::AnimateBeginEvent ;
+
+#include <sofa/simulation/common/AnimateEndEvent.h>
+using sofa::simulation::AnimateEndEvent ;
+
+
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
 
@@ -77,6 +87,11 @@ void ScriptController::init()
     // init the script
     script_initGraph( down_cast<simulation::Node>(getContext()) );
 //    ScriptEnvironment::initScriptNodes();
+
+   /* m_mask = m_mask & ~( 1 << AnimateBeginEvent::getEventType() |
+                         1 << AnimateEndEvent::getEventType() |
+                         1 << DrawEvent::getEventType() ) ;
+                         */
 }
 
 void ScriptController::bwdInit()

@@ -119,6 +119,7 @@ set(HEADER_FILES
     objectmodel/Link.h
     objectmodel/MouseEvent.h
     objectmodel/HeartBeatEvent.h
+    objectmodel/DrawEvent.h
     objectmodel/SPtr.h
     objectmodel/Tag.h
     topology/BaseMeshTopology.h
@@ -216,6 +217,7 @@ set(SOURCE_FILES
     objectmodel/KeyreleasedEvent.cpp
     objectmodel/MouseEvent.cpp
     objectmodel/HeartBeatEvent.cpp
+    objectmodel/DrawEvent.cpp
     objectmodel/Tag.cpp
     topology/BaseMeshTopology.cpp
     topology/BaseTopology.cpp

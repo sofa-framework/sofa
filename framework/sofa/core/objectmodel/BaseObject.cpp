@@ -57,8 +57,9 @@ BaseObject::BaseObject()
     l_context.set(BaseContext::getDefault());
     l_slaves.setValidator(&sofa::core::objectmodel::BaseObject::changeSlavesLink);
     f_listening.setAutoLink(false);
-    m_mask = m_mask & ~(1 << HeartBeatEvent::getEventType() | 1 << MouseEvent::getEventType()) ;
-
+    /*m_mask = m_mask & ~( 1 << HeartBeatEvent::getEventType() |
+                         1 << MouseEvent::getEventType() ) ;
+    */
 }
 
 BaseObject::~BaseObject()

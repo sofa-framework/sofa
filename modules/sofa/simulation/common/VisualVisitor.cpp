@@ -25,6 +25,8 @@
 #include <sofa/simulation/common/VisualVisitor.h>
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/objectmodel/DrawEvent.h>
+using sofa::core::objectmodel::DrawEvent ;
 
 //#define DEBUG_DRAW
 
@@ -37,15 +39,18 @@ namespace simulation
 
 Visitor::Result VisualDrawVisitor::processNodeTopDown(simulation::Node* node)
 {
+    if( (node->m_mask & (1 << DrawEvent::getEventType() )) == 0)
+        return RESULT_CONTINUE ;
+
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
     glPushMatrix();
     double glMatrix[16];
     node->getPositionInWorld().writeOpenGlMatrix(glMatrix);
     glMultMatrixd( glMatrix );
 #endif
-	// NB: hasShader is only used when there are visual models and getShader does a graph search when there is no shader,
-	// which will most probably be the case when there are no visual models, so we skip the search unless we have visual models. 
-	hasShader = !node->visualModel.empty() && (node->getShader()!=NULL); 
+    // NB: hasShader is only used when there are visual models and getShader does a graph search when there is no shader,
+    // which will most probably be the case when there are no visual models, so we skip the search unless we have visual models.
+    hasShader = !node->visualModel.empty() && (node->getShader()!=NULL);
 
     for_each(this, node, node->visualModel,     &VisualDrawVisitor::fwdVisualModel);
     this->VisualVisitor::processNodeTopDown(node);
@@ -63,6 +68,9 @@ void VisualDrawVisitor::processNodeBottomUp(simulation::Node* node)
 
 void VisualDrawVisitor::processObject(simulation::Node* /*node*/, core::objectmodel::BaseObject* o)
 {
+    if( (o->m_mask & (1 << DrawEvent::getEventType() )) == 0)
+        return ;
+
     if (vparams->pass() == core::visual::VisualParams::Std || vparams->pass() == core::visual::VisualParams::Shadow)
     {
 #ifdef DEBUG_DRAW
