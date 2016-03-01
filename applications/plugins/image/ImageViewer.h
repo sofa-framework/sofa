@@ -623,11 +623,13 @@ protected:
 
         this->transform.update();
 
-        float color[]={1.,1.,1.,0.}, specular[]={0.,0.,0.,0.};
+        float color[]={1.,1.,1.,1.}, specular[]={0.,0.,0.,0.};
         glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
         glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,specular);
         glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0.0);
         glColor4fv(color);
+
+        glDisable(GL_CULL_FACE);
 
         for (unsigned int i=0;i<3;i++)
             if(rplane->getPlane()[i]<rplane->getDimensions()[i])
