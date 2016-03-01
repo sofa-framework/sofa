@@ -10,5 +10,5 @@
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
         <VTKExporter filename="volumetricTongue" edges="0" tetras="1" listening="true" exportAtBegin="true" />
         <MechanicalObject template="Vec3d"/>
-</Node>
+    </Node>
 </Node>
