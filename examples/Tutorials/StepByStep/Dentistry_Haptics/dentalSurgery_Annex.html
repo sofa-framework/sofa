@@ -11,7 +11,7 @@
 		<div id="orangeText">Preliminary note:</div>
 
 		<p align="left">
-			Note that this scene requires CGAL plugin. You must compile it to use it. If you don't know how to compile it, visit <b>http://wiki.sofa-framework.org/wiki/Using_CGAL</b>.
+			This scene is based on the component MeshTetraStuffing to generate from a surface mesh a tetrahedral mesh. Note that this can also be done using the CGAL plugin (which you would need to compile).
 		</p>
 
 		<div id="orangeText">Description:</div>
@@ -26,7 +26,7 @@
 
 		<ul>
 			<li>Loading of the surfacic mesh with the <b>Mesh</b> component.</li>
-			<li>The <b>MeshGenerationFromPolyhedron</b> component (only available with CGAL plugin) generates the interior volume geometry from the surfacic mesh.</li>
+			<li>The <b>MeshTetraStuffing</b> component generates the interior volume geometry from the surfacic mesh.</li>
 			<li>We build a mesh from the generated geometry in a second <b>Mesh</b> component.</li>
 			<li>We export the mesh as a VTK file with the <b>VTKExporter</b> component.</li>
 		</ul>
@@ -34,7 +34,7 @@
 		<div id="orangeText">Note:</div>
 
 		<p align="left">
-			The <b>MeshGenerationFromPolyhedron</b> component needs some crucial parameters to generate good quality meshes. See CGAL documentation for more information about this parameters (<b>http://www.cgal.org/Manual/3.6/doc_html/cgal_manual/Mesh_3/Chapter_main.html</b>).
+			The <b>MeshTetraStuffing</b> component needs some crucial parameters to generate good quality meshes.
 		</p>
 
 		<center><h3><a href="dentalSurgery_07.scn">Back</a></center></h3>
