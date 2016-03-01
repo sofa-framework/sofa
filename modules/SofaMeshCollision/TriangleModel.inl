@@ -72,6 +72,7 @@ void TTriangleModel<DataTypes>::resize(int size)
     //e.resize(size);
     //elems.endEdit();
     normals.resize(size);
+    toIgnore.resize(size, false);
 }
 
 template<class DataTypes>
@@ -858,9 +859,11 @@ void TTriangleModel<DataTypes>::setFilter(TriangleLocalMinDistanceFilter *lmdFil
 }
 
 template<class DataTypes>
-int TTriangleModel<DataTypes>::getTriangleFlags(int i)
+int TTriangleModel<DataTypes>::getTriangleFlags(int i, bool continuousCollision)
 {
     int f = 0;
+    if(continuousCollision && toIgnore[i])
+        return f;
     sofa::core::topology::BaseMeshTopology::Triangle t = (*triangles)[i];
 
     if (i < _topology->getNbTriangles())
