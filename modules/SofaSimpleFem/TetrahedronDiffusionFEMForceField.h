@@ -30,7 +30,6 @@
 #endif
 
 #include <sofa/core/behavior/ForceField.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
@@ -71,7 +70,6 @@ using namespace sofa::helper;
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 using namespace sofa::component::topology;
-using namespace sofa::component::container;
 using namespace sofa::helper::system::thread;
 
 
@@ -92,7 +90,7 @@ class TetrahedronDiffusionFEMForceField : public core::behavior::ForceField<Data
       /// assumes the mechanical object type (3D)
       typedef Vec<3,Real>                            Vec3;
       typedef StdVectorTypes< Vec3, Vec3, Real >     MechanicalTypes ;
-      typedef MechanicalObject<MechanicalTypes>      MechObject;
+      typedef sofa::core::behavior::MechanicalState<MechanicalTypes>      MechObject;
 
       typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
       typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
@@ -157,9 +155,9 @@ protected:
       /// Vector saving the edge diffusion coefficients
       sofa::helper::vector<Real> edgeDiffusionCoefficient;
       /// Pointer to mechanical mechanicalObject
-      MechanicalObject<MechanicalTypes> *mechanicalObject;
+      typename MechObject::SPtr mechanicalObject;
       /// Pointer to topology
-      sofa::core::topology::BaseMeshTopology* topology;
+      sofa::core::topology::BaseMeshTopology::SPtr topology;
       /// Saving the number of edges
       unsigned int nbEdges;
 
