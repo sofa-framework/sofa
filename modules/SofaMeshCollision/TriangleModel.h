@@ -161,6 +161,7 @@ protected:
 
     //topology::TriangleData<TriangleInfo> elems;
     VecDeriv normals;
+    std::vector<bool> toIgnore;
 
     const sofa::core::topology::BaseMeshTopology::SeqTriangles* triangles;
 
@@ -170,7 +171,7 @@ protected:
     virtual void updateFromTopology();
     virtual void updateFlags(int ntri=-1);
     virtual void updateNormals();
-    int getTriangleFlags(int i);
+    int getTriangleFlags(int i, bool continuousCollision = false);
 
     core::behavior::MechanicalState<DataTypes>* mstate;
     Data<bool> computeNormals;
