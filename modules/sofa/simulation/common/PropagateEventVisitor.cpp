@@ -53,18 +53,29 @@ PropagateEventVisitor::~PropagateEventVisitor()
 
 Visitor::Result PropagateEventVisitor::processNodeTopDown(simulation::Node* node)
 {
-    for_each(this, node, node->object, &PropagateEventVisitor::processObject);
+    if( (node->m_mask & (1 << m_event->getEventTypeIndex())) != 0 ){
+        for_each(this, node, node->object, &PropagateEventVisitor::processObject) ;
 
-    if( m_event->isHandled() )
-        return Visitor::RESULT_PRUNE;
-    else
-        return Visitor::RESULT_CONTINUE;
+        if( m_event->isHandled() )
+            return Visitor::RESULT_PRUNE;
+        else
+            return Visitor::RESULT_CONTINUE;
+    }
+    return Visitor::RESULT_CONTINUE;
 }
 
 void PropagateEventVisitor::processObject(simulation::Node*, core::objectmodel::BaseObject* obj)
 {
-    if( obj->f_listening.getValue()==true )
+    //if( obj->f_listening.getValue()==true )
+    //std::cout << "processObject: " << obj->getName() << std::endl;
+    //std::cout << "mask: " << obj->m_mask << " event " << m_event->getEventTypeIndex() << std::endl ;
+    //std::cout <<  (obj->m_mask & (1 << m_event->getEventTypeIndex())) << std::endl ;
+    if( (obj->m_mask & (1 << m_event->getEventTypeIndex())) != 0){
         obj->handleEvent( m_event );
+    }/*else{
+        std::cout << "Event not propagated to : " << m_event->getClassName() << " to " << obj->getName() << std::endl ;
+        std::cout << "Why " << m_event->getEventTypeIndex() << std::endl ;
+    }*/
 }
 
 
