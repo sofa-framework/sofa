@@ -223,7 +223,7 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint2(SReal dist
 
 
 
-inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2, int flags, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& p3, const defaulttype::Vector3& /*n*/, const defaulttype::Vector3& q, OutputVector* contacts, int id, bool swapElems)
+inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2, int flags, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& p3, const defaulttype::Vector3& n, const defaulttype::Vector3& q, OutputVector* contacts, int id, bool swapElems, bool useNormal)
 {
     const defaulttype::Vector3 AB = p2-p1;
     const defaulttype::Vector3 AC = p3-p1;
@@ -239,6 +239,7 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
 
     SReal alpha = 0.5;
     SReal beta = 0.5;
+    const SReal epsilon=1e-6;
 
     //if (det < -0.000000000001 || det > 0.000000000001)
     {
@@ -248,28 +249,28 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
         //    beta  < 0.000001 ||
         //    alpha + beta  > 0.999999)
         //        return 0;
-        if (alpha < 0.000001 || beta < 0.000001 || alpha + beta > 0.999999)
+        if (alpha < epsilon || beta < epsilon || alpha + beta > 1 - epsilon)
         {
             // nearest point is on an edge or corner
             // barycentric coordinate on AB
             SReal pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
             // barycentric coordinate on AC
             SReal pAC = b[1] / A[1][1]; // AQ*AB / AB*AB
-            if (pAB < 0.000001 && pAC < 0.0000001)
+            if (pAB < epsilon && pAC < epsilon)
             {
                 // closest point is A
                 if (!(flags&TriangleModel::FLAG_P1)) return 0; // this corner is not considered
                 alpha = 0.0;
                 beta = 0.0;
             }
-            else if (pAB < 0.999999 && beta < 0.000001)
+            else if (pAB < 1 - epsilon && pAB >= epsilon && beta < epsilon)
             {
                 // closest point is on AB
                 if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
                 alpha = pAB;
                 beta = 0.0;
             }
-            else if (pAC < 0.999999 && alpha < 0.000001)
+            else if (pAC < 1 - epsilon && pAC >= epsilon && alpha < epsilon)
             {
                 // closest point is on AC
                 if (!(flags&TriangleModel::FLAG_E31)) return 0; // this edge is not considered
@@ -281,14 +282,14 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
                 // barycentric coordinate on BC
                 // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
                 SReal pBC = (b[1] - b[0] + A[0][0] - A[0][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
-                if (pBC < 0.000001)
+                if (pBC < epsilon)
                 {
                     // closest point is B
                     if (!(flags&TriangleModel::FLAG_P2)) return 0; // this edge is not considered
                     alpha = 1.0;
                     beta = 0.0;
                 }
-                else if (pBC > 0.999999)
+                else if (pBC > 1 - epsilon)
                 {
                     // closest point is C
                     if (!(flags&TriangleModel::FLAG_P3)) return 0; // this edge is not considered
@@ -324,12 +325,16 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
         detection->point[0]=q;
         detection->point[1]=p;
         detection->normal = -pq / detection->value;
+        if(useNormal && detection->normal*n<0) // inclusion test
+            detection->value *= -1;
     }
     else
     {
         detection->point[0]=p;
         detection->point[1]=q;
         detection->normal = pq / detection->value;
+        if(useNormal && detection->normal*n<0) // inclusion test
+            detection->value *= -1;
     }
     //printf("\n normale : x = %f , y = %f, z = %f",detection->normal.x(),detection->normal.y(),detection->normal.z());
     //if (e2.getCollisionModel()->isStatic() && detection->normal * e2.n() < -0.95)
