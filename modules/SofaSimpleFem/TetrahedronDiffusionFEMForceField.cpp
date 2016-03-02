@@ -61,21 +61,21 @@ int TetrahedronDiffusionFEMForceFieldClass = core::RegisterObject("Isotropic or 
 ;
 
 #ifndef SOFA_FLOAT
-  template class TetrahedronDiffusionFEMForceField<Vec1dTypes>;
-  template class TetrahedronDiffusionFEMForceField<Vec2dTypes>;
-  template class TetrahedronDiffusionFEMForceField<Vec3dTypes>;
+  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec1dTypes>;
+  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec2dTypes>;
+  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-  template class TetrahedronDiffusionFEMForceField<Vec1fTypes>;
-  template class TetrahedronDiffusionFEMForceField<Vec2fTypes>;
-  template class TetrahedronDiffusionFEMForceField<Vec3fTypes>;
+  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec1fTypes>;
+  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec2fTypes>;
+  template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec3fTypes>;
 #endif
 
 
 
 } // namespace forcefield
 
-} // namespace Components
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
 
