@@ -66,6 +66,7 @@ map<int, string> fd2fn ;
 map<string, ListOfListeners> file2listener ;
 
 int filemonitor_inotifyfd=-1 ;
+const char* eventmaskToString(int evtmask);
 
 //
 void addAFileListenerInDict(string pathfilename, FileEventListener* listener)
@@ -170,7 +171,9 @@ int FileMonitor::addFile(const std::string& parentname,
     } else {
         // If the directory is not yet monitored we add it to the system.
         dir2files[parentname] = ListOfFiles() ;
-        int wd=inotify_add_watch( filemonitor_inotifyfd, parentname.c_str(), IN_CLOSE ) ;
+        int wd=inotify_add_watch( filemonitor_inotifyfd,
+                                  parentname.c_str(),
+                                  IN_CLOSE | IN_MOVED_TO ) ;
         fd2fn[wd]=string(parentname) ;
         addAFileListenerInDict(parentname+"/"+filename,listener);
 
@@ -217,8 +220,10 @@ int FileMonitor::updates(int timeout)
         vector<string> changedfiles ;
         while (buffer_i < length) {
             struct inotify_event* pevent = (struct inotify_event *)&buffer[buffer_i] ;
-
-            if(pevent->mask & ( IN_CLOSE_WRITE )) {
+            //cout << "Event received ...from " << string(fd2fn[pevent->wd])
+            //      << ":" << pevent->name
+            //      << "->" << eventmaskToString(pevent->mask) << endl;
+            if(pevent->mask & ( IN_CLOSE_WRITE  | IN_MOVED_TO )) {
                 if(dir2files.find(fd2fn[pevent->wd])!=dir2files.end()) {
                     ListOfFiles& dl=dir2files[fd2fn[pevent->wd]] ;
                     string fullname = string(fd2fn[pevent->wd])+"/"+string(pevent->name) ;
@@ -228,9 +233,6 @@ int FileMonitor::updates(int timeout)
                         }
                     }
                 }
-            } else {
-               //cout << "Event received ... " << string(fd2fn[pevent->wd])
-               // << "->" << eventmaskToString(pevent->mask) << endl;
             }
             buffer_i += sizeof(struct inotify_event)+pevent->len ;
         }
