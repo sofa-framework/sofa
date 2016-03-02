@@ -39,7 +39,7 @@ void HolonomicConstraintValue::dynamics(SReal* dst, unsigned n, unsigned dim, bo
         unsigned i = 0;
         for(SReal* last = dst + size; dst < last; dst+=dim, ++i) {
             if( mask[i] ) memset( dst, 0, dim*sizeof(SReal) ); // already violated
-            else map(dst, dim) = -map(dst, dim) / this->getContext()->getDt(); // not violated
+            else map(dst, dim) *= -1.0 / this->getContext()->getDt(); // not violated
         }
     }
 

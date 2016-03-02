@@ -27,7 +27,7 @@ void BaumgarteStabilization::dynamics(SReal* dst, unsigned n, unsigned dim, bool
     mstate->copyToBuffer(dst, posId.getId(mstate.get()), size);
 
 	using namespace utils;
-    map(dst, size) = -map(dst, size) * d_alpha.getValue();
+    map(dst, size) *= -d_alpha.getValue();
 }
 
 

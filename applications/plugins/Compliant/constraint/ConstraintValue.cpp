@@ -36,9 +36,8 @@ void ConstraintValue::dynamics(SReal* dst, unsigned n, unsigned dim, bool, const
 
     mstate->copyToBuffer(dst, posId.getId(mstate.get()), size);
 
-	using namespace utils;
-    map(dst, size) = -map(dst, size) / this->getContext()->getDt();
-	
+    using namespace utils;
+    map(dst, size) *= (-1.0/this->getContext()->getDt());
 }
 
 
