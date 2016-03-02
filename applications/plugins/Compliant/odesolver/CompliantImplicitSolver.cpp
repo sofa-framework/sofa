@@ -354,7 +354,7 @@ using namespace core::behavior;
         // In compute_forces (in multivec representation) it would require a visitor (more expensive).
         res.head( sys.m ) = sys.P * res.head( sys.m );
 
-        vec res_constraint(sys.n);
+        vec res_constraint(sys.n); // todo remove this temporary
         rhs_constraints_dynamics( res_constraint, sys, posId, velId );
         res.tail(sys.n).noalias() = res_constraint;
     }
