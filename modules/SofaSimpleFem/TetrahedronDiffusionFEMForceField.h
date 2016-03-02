@@ -29,6 +29,8 @@
 #pragma once
 #endif
 
+#include "config.h"
+
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
@@ -66,6 +68,7 @@ namespace component
 
 namespace forcefield
 {
+
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
@@ -166,25 +169,23 @@ public:
       bool loadedDiffusivity;
 };
 
-
-#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TetrahedronDiffusionFEMForceField_CPP)
-#pragma warning(disable : 4231)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
-  template class TetrahedronDiffusionFEMForceField<Vec1dTypes>;
-  template class TetrahedronDiffusionFEMForceField<Vec2dTypes>;
-  template class TetrahedronDiffusionFEMForceField<Vec3dTypes>;
+extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec1dTypes>;
+extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec2dTypes>;
+extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-  template class TetrahedronDiffusionFEMForceField<Vec1fTypes>;
-  template class TetrahedronDiffusionFEMForceField<Vec2fTypes>;
-  template class TetrahedronDiffusionFEMForceField<Vec3fTypes>;
+extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec1fTypes>;
+extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec2fTypes>;
+extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 
 } //namespace forcefield
 
-} // namespace Components
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif /* SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_H */
