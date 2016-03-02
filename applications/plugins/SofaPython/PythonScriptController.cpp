@@ -55,6 +55,9 @@ using sofa::core::objectmodel::KeyreleasedEvent ;
 #include <sofa/simulation/common/Node.h>
 using sofa::simulation::Node ;
 
+#include "ScriptEvent.h"
+using sofa::component::controller::ScriptEvent ;
+
 #include "Binding_Base.h"
 #include "Binding_BaseContext.h"
 #include "Binding_Node.h"
@@ -233,8 +236,8 @@ void PythonScriptController::loadScript()
         }
     }
 
-    Node* node=(Node*)getContext() ;
-    node->m_mask = m_mask ;
+    //Node* node=(Node*)getContext() ;
+    //node->m_mask = m_mask ;
 /*
 #define BIND_SCRIPT_FUNC(funcName) \
     { \
