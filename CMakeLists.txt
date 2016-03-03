@@ -7,15 +7,16 @@ SET(CPACK_PACKAGE_VERSION_MINOR "12")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENCE.txt")
 SET(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/readme.txt")
-SET(CPACK_BUNDLE_NAME "Sofa")
-SET(CPACK_BUNDLE_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/etc/Info.plist)
-SET(CPACK_BUNDLE_STARTUP_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/etc/bundle_start.sh)
-SET(CPACK_BUNDLE_ICON ${CMAKE_CURRENT_SOURCE_DIR}/etc/sofa_icon.icns)
+SET(CPACK_PACKAGE_ICON ${CMAKE_CURRENT_SOURCE_DIR}/etc/sofa_icon.icns)
+
+# if(APPLE)
+#     SET(CPACK_BUNDLE_NAME "Sofa")
+#     SET(CPACK_BUNDLE_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/etc/Info.plist)
+#     SET(CPACK_BUNDLE_STARTUP_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/etc/bundle_start.sh)
+#     SET(CPACK_BUNDLE_ICON ${CMAKE_CURRENT_SOURCE_DIR}/etc/sofa_icon.icns)
+# endif()
 
 INCLUDE(CPack)
-
-
-message("Bundle ${CPACK_BUNDLE_NAME}")
 
 ## Default build type
 if(NOT CMAKE_BUILD_TYPE)
@@ -273,3 +274,4 @@ endif()
 ## this should be internal and not delivered, but this is definitively useful
 sofa_install_git_version( "sofa" ${CMAKE_CURRENT_SOURCE_DIR} )
 install(FILES "${CMAKE_BINARY_DIR}/CMakeCache.txt" DESTINATION .)
+
