@@ -15,15 +15,15 @@ ENDIF(APPLE)
 # Install the  application, on Apple, the bundle is at the root of the
 # install tree, and on other platforms it'll go into the bin directory.
 INSTALL(TARGETS ${PROJECT_NAME} 
-    BUNDLE DESTINATION . COMPONENT Runtime
-    RUNTIME DESTINATION bin COMPONENT Runtime
-    LIBRARY DESTINATION lib COMPONENT  Runtime
+    BUNDLE DESTINATION . COMPONENT BundlePack
+    RUNTIME DESTINATION bin COMPONENT BundlePack
+    LIBRARY DESTINATION lib COMPONENT  BundlePack
     )
 
 ## Install resource files
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/share/ DESTINATION runSofa.app/Contents/MacOS/share/sofa COMPONENT Runtime )
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/examples/ DESTINATION runSofa.app/Contents/MacOS/share/sofa/examples COMPONENT Runtime )
-install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION runSofa.app/Contents/MacOS/etc RENAME sofa.ini COMPONENT Runtime)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/share/ DESTINATION runSofa.app/Contents/MacOS/share/sofa COMPONENT BundlePack )
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/examples/ DESTINATION runSofa.app/Contents/MacOS/share/sofa/examples COMPONENT BundlePack )
+install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION runSofa.app/Contents/MacOS/etc RENAME sofa.ini COMPONENT BundlePack)
 
 # Own way to get plugins dir
 find_package(Qt5 COMPONENTS Core Gui Widgets) # to get SOFA_HAVE_GLUT
@@ -37,15 +37,15 @@ get_filename_component(QT_PLUGINS_PLATFORMS_DIR ${QtCocoaLocation} DIRECTORY)
 #--------------------------------------------------------------------------------
 # Install needed Qt plugins by copying directories from the qt installation
 # One can cull what gets copied by using 'REGEX "..." EXCLUDE'
-INSTALL(DIRECTORY "${QT_PLUGINS_IMAGES_DIR}" DESTINATION ${plugin_dest_dir}/plugins COMPONENT Runtime)
-INSTALL(DIRECTORY "${QT_PLUGINS_PLATFORMS_DIR}" DESTINATION ${plugin_dest_dir}/plugins COMPONENT Runtime)
+INSTALL(DIRECTORY "${QT_PLUGINS_IMAGES_DIR}" DESTINATION ${plugin_dest_dir}/plugins COMPONENT BundlePack)
+INSTALL(DIRECTORY "${QT_PLUGINS_PLATFORMS_DIR}" DESTINATION ${plugin_dest_dir}/plugins COMPONENT BundlePack)
 
 #--------------------------------------------------------------------------------
 # install a qt.conf file
 # this inserts some cmake code into the install script to write the file
 INSTALL(CODE "
     file(WRITE \"\${CMAKE_INSTALL_PREFIX}/${qtconf_dest_dir}/qt.conf\" \"[Paths]\n Plugins = ../plugins \")
-    " COMPONENT Runtime)
+    " COMPONENT BundlePack)
 
 
 #--------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ INSTALL(CODE "
     set(BU_CHMOD_BUNDLE_ITEMS ON)
     include(BundleUtilities)
     fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
-    " COMPONENT Runtime)
+    " COMPONENT BundlePack)
 
 
 # To Create a package, one can run "cpack -G DragNDrop CPackConfig.cmake" on Mac OS X
