@@ -336,6 +336,7 @@ static PyTypeObject DummyChild_PyTypeObject = {
 
 //#define SP_MESSAGE_BASE( level, msg ) { MAINLOGGER( level, msg, "SofaPython" ) }
 #define SP_MESSAGE_INFO( msg ) msg_info("SofaPython") << msg;
+#define SP_MESSAGE_DEPRECATED( msg ) msg_deprecated("SofaPython") << msg;
 #define SP_MESSAGE_WARNING( msg ) msg_warning("SofaPython") << msg;
 #define SP_MESSAGE_ERROR( msg ) msg_error("SofaPython") << msg;
 #define SP_MESSAGE_EXCEPTION( msg ) msg_fatal("SofaPython") << msg;

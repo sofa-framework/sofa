@@ -84,6 +84,7 @@ set(HEADER_FILES
     RigidToQuatEngine.h
     RigidToQuatEngine.inl
     SelectLabelROI.h
+    SelectConnectedLabelsROI.cpp
     ShapeMatching.h
     ShapeMatching.inl
     SmoothMeshEngine.h
@@ -155,6 +156,7 @@ set(SOURCE_FILES
     RandomPointDistributionInSurface.cpp
     RigidToQuatEngine.cpp
     SelectLabelROI.cpp
+    SelectConnectedLabelsROI.cpp
     ShapeMatching.cpp
     SmoothMeshEngine.cpp
     SphereROI.cpp

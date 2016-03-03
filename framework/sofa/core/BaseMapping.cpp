@@ -138,7 +138,7 @@ const sofa::defaulttype::BaseMatrix* BaseMapping::getJ(const MechanicalParams* /
 
 const sofa::defaulttype::BaseMatrix* BaseMapping::getJ()
 {
-    serr << "Calling deprecated getJ() method in " << getClassName() << ". Use getJ(const MechanicalParams *) instead." << sendl;
+    serr << helper::logging::Message::Deprecated << "Calling deprecated getJ() method in " << getClassName() << ". Use getJ(const MechanicalParams *) instead." << sendl;
     return NULL;
 }
 

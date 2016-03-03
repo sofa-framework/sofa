@@ -18,56 +18,41 @@
 *******************************************************************************
 *                               SOFA :: Modules                               *
 *                                                                             *
-* This component is open-source                                               *
-*                                                                             *
-* Authors: Bruno Carrez                                                       *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*****************************************************************************
-* User of this library should read the documentation
-* in the messaging.h file.
-******************************************************************************/
+#define SelectConnectedLabelsROI_CPP_
 
-#include "ClangStyleMessageFormatter.h"
-#include "Message.h"
-
-#include <sofa/helper/fixed_array.h>
+#include "SelectConnectedLabelsROI.h"
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 
-namespace helper
+namespace component
 {
 
-namespace logging
+namespace engine
 {
 
-helper::fixed_array<std::string,Message::TypeCount> s_messageTypeStrings;
-ClangStyleMessageFormatter ClangStyleMessageFormatter::s_instance;
+SOFA_DECL_CLASS(SelectConnectedLabelsROI)
 
+int SelectConnectedLabelsROIClass = core::RegisterObject("Select a subset of points or cells labeled from different sources, that are connected given a list of connection pairs")
+        .add< SelectConnectedLabelsROI<unsigned int> >(true)
+        .add< SelectConnectedLabelsROI<unsigned char> >()
+        .add< SelectConnectedLabelsROI<unsigned short> >()
+        .add< SelectConnectedLabelsROI<int> >()
+        ;
 
-ClangStyleMessageFormatter::ClangStyleMessageFormatter()
-{
-    s_messageTypeStrings[Message::Info]       = "info";
-    s_messageTypeStrings[Message::Deprecated] = "deprecated";
-    s_messageTypeStrings[Message::Warning]    = "warning";
-    s_messageTypeStrings[Message::Error]      = "error";
-    s_messageTypeStrings[Message::Fatal]      = "fatal";
-    s_messageTypeStrings[Message::TEmpty]     = "empty";
-}
+template class SOFA_ENGINE_API SelectConnectedLabelsROI<unsigned int>;
+template class SOFA_ENGINE_API SelectConnectedLabelsROI<unsigned char>;
+template class SOFA_ENGINE_API SelectConnectedLabelsROI<unsigned short>;
+template class SOFA_ENGINE_API SelectConnectedLabelsROI<int>;
 
+} // namespace engine
 
-void ClangStyleMessageFormatter::formatMessage(const Message& m,std::ostream& out)
-{
-    if(m.sender()!="")
-        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << s_messageTypeStrings[m.type()] << ": " << m.message().str() << std::endl ;
-    else
-        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << s_messageTypeStrings[m.type()] << ": ["<< m.sender() <<"] " << m.message().str() << std::endl ;
-//    out << " message id: " << m.id() << std::endl ;
-}
+} // namespace component
 
-
-} // logging
-} // helper
-} // sofa
+} // namespace sofa
