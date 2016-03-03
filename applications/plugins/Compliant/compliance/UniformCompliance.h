@@ -60,14 +60,15 @@ public:
     /// addDForce does nothing when this component is processed like a compliance.
     virtual void addDForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecDeriv &);
 
+    /// unassembled API
+    virtual void addClambda(const core::MechanicalParams *, DataVecDeriv &, const DataVecDeriv &, SReal);
+
 
 protected:
     UniformCompliance( core::behavior::MechanicalState<DataTypes> *mm = NULL);
 
-	typedef linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matrix_type;
-	matrix_type matC; ///< compliance matrix
-
     typedef linearsolver::EigenSparseMatrix<TDataTypes,TDataTypes> block_matrix_type;
+    block_matrix_type matC; ///< compliance matrix
     block_matrix_type matK; ///< stiffness matrix (Negative S.D.)
     block_matrix_type matB; /// damping matrix (Negative S.D.)
 
