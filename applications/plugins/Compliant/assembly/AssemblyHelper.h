@@ -4,6 +4,8 @@
 
 #include "../utils/sparse.h"
 
+#include <Compliant/config.h>
+
 namespace sofa {
 
 
@@ -356,7 +358,7 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const {return "MechanicalAddLambdas";}
+    virtual const char* getClassName() const {return "MechanicalAddComplianceForce";}
     virtual std::string getInfos() const
     {
         std::string name=std::string("[")+res.getName()+","+lambdas.getName()+std::string("]");
@@ -377,6 +379,63 @@ public:
     }
 #endif
 };
+
+
+
+
+/// propagate constraint *forces* (lambdas/dt) toward independent dofs
+class SOFA_Compliant_API propagate_constraint_force_visitor : public simulation::MechanicalVisitor {
+
+    core::MultiVecDerivId force, lambda;
+    SReal invdt;
+
+public:
+
+    propagate_constraint_force_visitor(const sofa::core::MechanicalParams* mparams,
+                      const core::MultiVecDerivId& out,
+                      const core::MultiVecDerivId& in,
+                      SReal dt)
+        : simulation::MechanicalVisitor(mparams)
+        , force( out )
+        , lambda( in )
+        , invdt( 1.0/dt )
+    {}
+
+
+    Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* state)
+    {
+        // lambdas should only be present at compliance location
+
+        if( !node->forceField.empty() && node->forceField[0]->isCompliance.getValue() ) // TODO handle interactionFF
+            // compliance should be alone in the node
+            state->vOp( mparams, force.getId(state), core::ConstVecId::null(), lambda.getId(state), invdt ); // constraint force = lambda / dt
+        else
+            state->resetForce(mparams, force.getId(state));
+
+        return RESULT_CONTINUE;
+    }
+
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* state)
+    {
+        // compliance cannot be present at independent dof level
+        state->resetForce(mparams, force.getId(state));
+        return RESULT_CONTINUE;
+    }
+
+    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+    {
+        map->applyJT(mparams, force, force);
+    }
+
+    void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
+    {
+        c->projectResponse( mparams, force );
+    }
+
+
+};
+
+
 
 
 } // namespace simulation
