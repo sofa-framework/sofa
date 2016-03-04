@@ -25,6 +25,10 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/share/ DESTINATION runSofa.app/Contents/Ma
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/examples/ DESTINATION runSofa.app/Contents/MacOS/share/sofa/examples COMPONENT BundlePack )
 install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION runSofa.app/Contents/MacOS/etc RENAME sofa.ini COMPONENT BundlePack)
 
+### TODO: split examples/resources between the ones in the package and the ones outside the package
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/share/ DESTINATION share/sofa COMPONENT BundlePack)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/examples/ DESTINATION share/sofa/examples COMPONENT BundlePack)
+
 # Own way to get plugins dir
 find_package(Qt5 COMPONENTS Core Gui Widgets) # to get SOFA_HAVE_GLUT
 get_target_property(QtJpegLocation Qt5::QJpegPlugin LOCATION_release)
@@ -73,9 +77,10 @@ INSTALL(CODE "
     fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
     " COMPONENT BundlePack)
 
-
 # To Create a package, one can run "cpack -G DragNDrop CPackConfig.cmake" on Mac OS X
 # where CPackConfig.cmake is created by including CPack
 # And then there's ways to customize this as well
+SET(CPACK_PACKAGE_ICON ${CMAKE_CURRENT_SOURCE_DIR}/runSOFA.icns)
 set(CPACK_BINARY_DRAGNDROP ON)
+
 # include(CPack)
