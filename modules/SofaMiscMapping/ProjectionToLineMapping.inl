@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,7 +63,7 @@ void ProjectionToTargetLineMapping<TIn, TOut>::init()
 template <class TIn, class TOut>
 void ProjectionToTargetLineMapping<TIn, TOut>::reinit()
 {
-    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    helper::ReadAccessor< Data<helper::vector<unsigned> > > indices(f_indices);
 
     size_t nb = indices.empty() ? this->getFromModel()->getSize() : indices.size(); // if indices is empty, mapping every input dofs
 
@@ -102,7 +102,7 @@ void ProjectionToTargetLineMapping<TIn, TOut>::apply(const core::MechanicalParam
 {
     helper::WriteAccessor< Data<OutVecCoord> >  out = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
-    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    helper::ReadAccessor< Data<helper::vector<unsigned> > > indices(f_indices);
     helper::ReadAccessor< Data<OutVecCoord> > origins(f_origins);
     helper::ReadAccessor< Data<OutVecCoord> > directions(f_directions);
 
@@ -148,7 +148,7 @@ const sofa::defaulttype::BaseMatrix* ProjectionToTargetLineMapping<TIn, TOut>::g
 }
 
 template <class TIn, class TOut>
-const vector<sofa::defaulttype::BaseMatrix*>* ProjectionToTargetLineMapping<TIn, TOut>::getJs()
+const helper::vector<sofa::defaulttype::BaseMatrix*>* ProjectionToTargetLineMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }
@@ -168,7 +168,7 @@ void ProjectionToTargetLineMapping<TIn, TOut>::draw(const core::visual::VisualPa
     helper::ReadAccessor< Data<OutVecCoord> > origins(f_origins);
     helper::ReadAccessor< Data<OutVecCoord> > directions(f_directions);
 
-    vector< defaulttype::Vector3 > points;
+    helper::vector< defaulttype::Vector3 > points;
 
     size_t nb = std::max( directions.size(), origins.size() );
 
@@ -192,7 +192,7 @@ void ProjectionToTargetLineMapping<TIn, TOut>::draw(const core::visual::VisualPa
 template <class TIn, class TOut>
 void ProjectionToTargetLineMapping<TIn, TOut>::updateForceMask()
 {
-    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    helper::ReadAccessor< Data<helper::vector<unsigned> > > indices(f_indices);
     if( indices.empty() ) return Inherit::updateForceMask(); // all dofs are mapped
 
     for( unsigned i=0 ; i<indices.size() ; i++ )

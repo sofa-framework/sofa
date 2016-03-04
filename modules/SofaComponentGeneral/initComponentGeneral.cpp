@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,9 +44,6 @@
 #include <SofaTaucsSolver/initTaucsSolver.h>
 #endif
 #include <SofaEigen2Solver/initEigen2Solver.h>
-#ifdef SOFA_HAVE_PARDISO
-#include <SofaPardisoSolver/initPardisoSolver.h>
-#endif
 
 #include <SofaPreconditioner/initPreconditioner.h>
 #include <SofaOpenglVisual/initOpenGLVisual.h>
@@ -86,9 +83,6 @@ void initComponentGeneral()
     initTaucsSolver();
 #endif
 initEigen2Solver();
-#ifdef SOFA_HAVE_PARDISO
-    initPardisoSolver();
-#endif
     initPreconditioner();
 #ifndef SOFA_NO_OPENGL
     initOpenGLVisual();

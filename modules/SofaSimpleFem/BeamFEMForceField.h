@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -68,8 +68,8 @@ public:
 
 
     typedef unsigned int Index;
-    typedef topology::Edge Element;
-    typedef sofa::helper::vector<topology::Edge> VecElement;
+    typedef core::topology::BaseMeshTopology::Edge Element;
+    typedef sofa::helper::vector<core::topology::BaseMeshTopology::Edge> VecElement;
     typedef helper::vector<unsigned int> VecIndex;
     typedef defaulttype::Vec<3, Real> Vec3;
 
@@ -178,15 +178,15 @@ protected:
     topology::EdgeData< sofa::helper::vector<BeamInfo> > beamsData;
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
-    class BeamFFEdgeHandler : public topology::TopologyDataHandler<topology::Edge,sofa::helper::vector<BeamInfo> >
+    class BeamFFEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::helper::vector<BeamInfo> >
     {
     public:
         typedef typename BeamFEMForceField<DataTypes>::BeamInfo BeamInfo;
         BeamFFEdgeHandler(BeamFEMForceField<DataTypes>* ff, topology::EdgeData<sofa::helper::vector<BeamInfo> >* data)
-            :topology::TopologyDataHandler<topology::Edge,sofa::helper::vector<BeamInfo> >(data),ff(ff) {}
+            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::helper::vector<BeamInfo> >(data),ff(ff) {}
 
         void applyCreateFunction(unsigned int edgeIndex, BeamInfo&,
-                                 const topology::Edge& e,
+                                 const core::topology::BaseMeshTopology::Edge& e,
                                  const sofa::helper::vector<unsigned int> &,
                                  const sofa::helper::vector< double > &);
 
@@ -272,7 +272,7 @@ protected:
     ////////////// large displacements method
     //vector<fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
     //VecReal _initialLength;
-    vector<Transformation> _nodeRotations;
+    helper::vector<Transformation> _nodeRotations;
     //vector<Quat> _beamQuat;
     void initLarge(int i, Index a, Index b);
     //void computeRotationLarge( Transformation &r, const Vector &p, Index a, Index b);

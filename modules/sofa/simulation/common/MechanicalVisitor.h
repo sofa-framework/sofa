@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -2225,6 +2225,45 @@ public:
 
     /// get the closest pickable particle
     void getClosestParticle( core::behavior::BaseMechanicalState*& mstate, unsigned int& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength );
+
+
+};
+
+/** Find mechanical particles hit by the given ray on dof containing one tag or all provided by a tag list
+*
+*  A mechanical particle is defined as a 2D or 3D, position or rigid DOF
+*  which is linked to the free mechanical DOFs by mechanical mappings
+*/
+class SOFA_SIMULATION_COMMON_API MechanicalPickParticlesWithTagsVisitor : public BaseMechanicalVisitor
+{
+public:
+	defaulttype::Vec3d rayOrigin, rayDirection;
+	double radius0, dRadius;
+	std::list<sofa::core::objectmodel::Tag> tags;
+	bool mustContainAllTags;
+	typedef std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> > Particles;
+	Particles particles;
+	MechanicalPickParticlesWithTagsVisitor(const sofa::core::ExecParams* mparams, const defaulttype::Vec3d& origin, const defaulttype::Vec3d& direction, double r0=0.001, double dr=0.0, std::list<sofa::core::objectmodel::Tag> _tags = std::list<sofa::core::objectmodel::Tag>(), bool _mustContainAllTags = false)
+		: BaseMechanicalVisitor(mparams) , rayOrigin(origin), rayDirection(direction), radius0(r0), dRadius(dr), tags(_tags), mustContainAllTags(_mustContainAllTags)
+	{
+	}
+
+	virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+	virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
+	virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
+
+	/// Return a class name for this visitor
+	/// Only used for debugging / profiling purposes
+	virtual const char* getClassName() const { return "MechanicalPickParticlesWithTags"; }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+	void setReadWriteVectors()
+	{
+	}
+#endif
+
+	/// get the closest pickable particle
+	void getClosestParticle( core::behavior::BaseMechanicalState*& mstate, unsigned int& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength );
 
 
 };

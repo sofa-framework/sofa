@@ -163,7 +163,7 @@
 
 
 
-<Node name="yellow: meta-Flexible"   >
+<Node name="yellow: meta-FlexibleCorotationalStrain"   >
   <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
   <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
   
@@ -191,4 +191,30 @@
 </Node>
 
 
+<Node name="magenta: meta-FlexibleCorotationalMesh"   >
+  <EulerImplicit rayleighMass="1" rayleighStiffness="0.03" />
+  <CGLinearSolver iterations='25' tolerance='1e-5' threshold='1e-5'/>
+  
+  <Mesh  name="mesh" src="@../sampler" />
+  <MechanicalObject  name="dofs" tags="NoPicking" position="@./mesh.position"/>
+  <UniformMass totalMass="20"/>
+
+        <BoxROI template="Vec3d" box="5 7 -8 10 15 3" position="@mesh.position" name="FixedROI" drawBoxes='1'/>
+        <FixedConstraint indices="@FixedROI.indices" />
+
+	  <FlexibleCorotationalMeshFEMForceField youngModulus="3000.0" poissonRatio="0.3" method="polar"  order="2" />
+
+  <Node name="Collision">      
+	<Mesh  src="@../../loader" />
+	<MechanicalObject name="dof" />
+	<TTriangleModel />
+	 <BarycentricMapping input="@.." output="@." />
+        
+        <Node name="Visual"  >
+            <VisualModel  fileMesh="mesh/Armadillo_simplified.obj" color='magenta'  />
+            <IdentityMapping template="Vec3d,ExtVec3f"  />
+        </Node>
+   </Node>
+
+</Node>
 </Node>

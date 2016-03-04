@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,9 +44,6 @@ namespace sofa
 
 namespace defaulttype
 {
-
-using std::endl;
-using helper::vector;
 
 /** Local deformation state of a material object.
 Template parameters are used to define the spatial dimensions, the material dimensions, and the order.

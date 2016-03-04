@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -111,7 +111,7 @@ void Quad2TriangleTopologicalMapping::init()
             TriangleSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
 
-            const sofa::helper::vector<Quad> &quadArray=fromModel->getQuads();
+            const sofa::helper::vector<core::topology::BaseMeshTopology::Quad> &quadArray=fromModel->getQuads();
 
             sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
@@ -157,13 +157,13 @@ void Quad2TriangleTopologicalMapping::init()
                 unsigned int p3 = quadArray[i][3];
                 if (((i%scale) ^ (i/scale)) & 1)
                 {
-                    to_tstm->addTriangleProcess(Triangle((unsigned int) p0, (unsigned int) p1, (unsigned int) p3));
-                    to_tstm->addTriangleProcess(Triangle((unsigned int) p2, (unsigned int) p3, (unsigned int) p1));
+                    to_tstm->addTriangleProcess(core::topology::BaseMeshTopology::Triangle((unsigned int) p0, (unsigned int) p1, (unsigned int) p3));
+                    to_tstm->addTriangleProcess(core::topology::BaseMeshTopology::Triangle((unsigned int) p2, (unsigned int) p3, (unsigned int) p1));
                 }
                 else
                 {
-                    to_tstm->addTriangleProcess(Triangle((unsigned int) p1, (unsigned int) p2, (unsigned int) p0));
-                    to_tstm->addTriangleProcess(Triangle((unsigned int) p3, (unsigned int) p0, (unsigned int) p2));
+                    to_tstm->addTriangleProcess(core::topology::BaseMeshTopology::Triangle((unsigned int) p1, (unsigned int) p2, (unsigned int) p0));
+                    to_tstm->addTriangleProcess(core::topology::BaseMeshTopology::Triangle((unsigned int) p3, (unsigned int) p0, (unsigned int) p2));
                 }
 
                 Loc2GlobVec.push_back(i);
@@ -230,11 +230,11 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     if (fromModel)
                     {
 
-                        const sofa::helper::vector<Quad> &quadArray=fromModel->getQuads();
+                        const sofa::helper::vector<core::topology::BaseMeshTopology::Quad> &quadArray=fromModel->getQuads();
 
                         const sofa::helper::vector<unsigned int> &tab = ( static_cast< const QuadsAdded *>( *itBegin ) )->getArray();
 
-                        sofa::helper::vector< Triangle > triangles_to_create;
+                        sofa::helper::vector< core::topology::BaseMeshTopology::Triangle > triangles_to_create;
                         sofa::helper::vector< unsigned int > trianglesIndexList;
                         int nb_elems = toModel->getNbTriangles();
 
@@ -246,8 +246,8 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                             unsigned int p1 = quadArray[k][1];
                             unsigned int p2 = quadArray[k][2];
                             unsigned int p3 = quadArray[k][3];
-                            Triangle t1 = Triangle((unsigned int) p0, (unsigned int) p1, (unsigned int) p2);
-                            Triangle t2 = Triangle((unsigned int) p0, (unsigned int) p2, (unsigned int) p3);
+                            core::topology::BaseMeshTopology::Triangle t1 = core::topology::BaseMeshTopology::Triangle((unsigned int) p0, (unsigned int) p1, (unsigned int) p2);
+                            core::topology::BaseMeshTopology::Triangle t2 = core::topology::BaseMeshTopology::Triangle((unsigned int) p0, (unsigned int) p2, (unsigned int) p3);
 
                             triangles_to_create.push_back(t1);
                             trianglesIndexList.push_back(nb_elems);

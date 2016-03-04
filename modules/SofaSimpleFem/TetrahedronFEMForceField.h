@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -64,7 +64,6 @@ namespace component
 namespace forcefield
 {
 
-using sofa::helper::vector;
 
 template<class DataTypes>
 class TetrahedronFEMForceField;
@@ -132,6 +131,9 @@ protected:
     /// Strain-displacement matrix
     typedef defaulttype::Mat<12, 6, Real> StrainDisplacement;
 
+
+    defaulttype::MatNoInit<3, 3, Real> R0;
+
     /// Rigid transformation (rotation) matrix
     typedef defaulttype::MatNoInit<3, 3, Real> Transformation;
 
@@ -144,8 +146,8 @@ protected:
     /// @}
 
     /// Vector of material stiffness of each tetrahedron
-    typedef vector<MaterialStiffness> VecMaterialStiffness;
-    typedef vector<StrainDisplacement> VecStrainDisplacement;  ///< a vector of strain-displacement matrices
+    typedef helper::vector<MaterialStiffness> VecMaterialStiffness;
+    typedef helper::vector<StrainDisplacement> VecStrainDisplacement;  ///< a vector of strain-displacement matrices
 
     /// structures used to compute vonMises stress
     typedef defaulttype::Mat<4, 4, Real> Mat44;
@@ -155,16 +157,16 @@ protected:
     /// Vector of material stiffness matrices of each tetrahedron
     VecMaterialStiffness materialsStiffnesses;
     VecStrainDisplacement strainDisplacements;   ///< the strain-displacement matrices vector
-    vector<Transformation> rotations;
+    helper::vector<Transformation> rotations;
 
-    vector<VoigtTensor> _plasticStrains; ///< one plastic strain per element
+    helper::vector<VoigtTensor> _plasticStrains; ///< one plastic strain per element
 
     /// @name Full system matrix assembly support
     /// @{
 
     typedef std::pair<int,Real> Col_Value;
-    typedef vector< Col_Value > CompressedValue;
-    typedef vector< CompressedValue > CompressedMatrix;
+    typedef helper::vector< Col_Value > CompressedValue;
+    typedef helper::vector< CompressedValue > CompressedMatrix;
 
     CompressedMatrix _stiffnesses;
     /// @}
@@ -462,19 +464,19 @@ protected:
     void applyStiffnessSmall( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, SReal fact=1.0  );
 
     ////////////// large displacements method
-    vector<helper::fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
-    vector<Transformation> _initialRotations;
+    helper::vector<helper::fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
+    helper::vector<Transformation> _initialRotations;
     void initLarge(int i, Index&a, Index&b, Index&c, Index&d);
     void computeRotationLarge( Transformation &r, const Vector &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
 
     ////////////// polar decomposition method
-    vector<unsigned int> _rotationIdx;
+    helper::vector<unsigned int> _rotationIdx;
     void initPolar(int i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForcePolar( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
 
     ////////////// svd decomposition method
-    vector<Transformation>  _initialTransformation;
+    helper::vector<Transformation>  _initialTransformation;
     void initSVD(int i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForceSVD( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
 

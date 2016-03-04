@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -131,14 +131,14 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class VecT >
-class PointSubsetData : public TopologySubsetDataImpl<Point, VecT>
+class PointSubsetData : public TopologySubsetDataImpl<core::topology::BaseMeshTopology::Point, VecT>
 {
 public:
-    typedef typename TopologySubsetDataImpl<Point, VecT>::container_type container_type;
-    typedef typename TopologySubsetDataImpl<Point, VecT>::value_type value_type;
+    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Point, VecT>::container_type container_type;
+    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Point, VecT>::value_type value_type;
 
     PointSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySubsetDataImpl<Point, VecT>(data)
+        : TopologySubsetDataImpl<core::topology::BaseMeshTopology::Point, VecT>(data)
     {}
 
 protected:
@@ -153,14 +153,14 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class VecT >
-class EdgeSubsetData : public TopologySubsetDataImpl<Edge, VecT>
+class EdgeSubsetData : public TopologySubsetDataImpl<core::topology::BaseMeshTopology::Edge, VecT>
 {
 public:
-    typedef typename TopologySubsetDataImpl<Edge, VecT>::container_type container_type;
-    typedef typename TopologySubsetDataImpl<Edge, VecT>::value_type value_type;
+    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Edge, VecT>::container_type container_type;
+    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Edge, VecT>::value_type value_type;
 
     EdgeSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySubsetDataImpl<Edge, VecT>(data)
+        : TopologySubsetDataImpl<core::topology::BaseMeshTopology::Edge, VecT>(data)
     {}
 
 protected:
@@ -174,14 +174,14 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class VecT >
-class TriangleSubsetData : public TopologySubsetDataImpl<Triangle, VecT>
+class TriangleSubsetData : public TopologySubsetDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>
 {
 public:
-    typedef typename TopologySubsetDataImpl<Triangle, VecT>::container_type container_type;
-    typedef typename TopologySubsetDataImpl<Triangle, VecT>::value_type value_type;
+    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>::container_type container_type;
+    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>::value_type value_type;
 
     TriangleSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySubsetDataImpl<Triangle, VecT>(data)
+        : TopologySubsetDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>(data)
     {}
 
 protected:
@@ -196,14 +196,14 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class VecT >
-class QuadSubsetData : public TopologySubsetDataImpl<Quad, VecT>
+class QuadSubsetData : public TopologySubsetDataImpl<core::topology::BaseMeshTopology::Quad, VecT>
 {
 public:
-    typedef typename TopologySubsetDataImpl<Quad, VecT>::container_type container_type;
-    typedef typename TopologySubsetDataImpl<Quad, VecT>::value_type value_type;
+    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Quad, VecT>::container_type container_type;
+    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Quad, VecT>::value_type value_type;
 
     QuadSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySubsetDataImpl<Quad, VecT>(data)
+        : TopologySubsetDataImpl<core::topology::BaseMeshTopology::Quad, VecT>(data)
     {}
 
 protected:
@@ -218,14 +218,14 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class VecT >
-class TetrahedronSubsetData : public TopologySubsetDataImpl<Tetrahedron, VecT>
+class TetrahedronSubsetData : public TopologySubsetDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>
 {
 public:
-    typedef typename TopologySubsetDataImpl<Tetrahedron, VecT>::container_type container_type;
-    typedef typename TopologySubsetDataImpl<Tetrahedron, VecT>::value_type value_type;
+    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>::container_type container_type;
+    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>::value_type value_type;
 
     TetrahedronSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySubsetDataImpl<Tetrahedron, VecT>(data)
+        : TopologySubsetDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>(data)
     {}
 
 protected:
@@ -241,14 +241,14 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class VecT >
-class HexahedronSubsetData : public TopologySubsetDataImpl<Hexahedron, VecT>
+class HexahedronSubsetData : public TopologySubsetDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>
 {
 public:
-    typedef typename TopologySubsetDataImpl<Hexahedron, VecT>::container_type container_type;
-    typedef typename TopologySubsetDataImpl<Hexahedron, VecT>::value_type value_type;
+    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>::container_type container_type;
+    typedef typename TopologySubsetDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>::value_type value_type;
 
     HexahedronSubsetData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySubsetDataImpl<Hexahedron, VecT>(data)
+        : TopologySubsetDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>(data)
     {}
 
 protected:

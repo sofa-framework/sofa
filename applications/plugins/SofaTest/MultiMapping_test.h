@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -42,9 +42,6 @@
 
 namespace sofa {
 
-using std::cout;
-using std::endl;
-using helper::vector;
 typedef std::size_t Index;
 
 
@@ -88,11 +85,11 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
 
 
     core::MultiMapping<In,Out>* mapping; ///< the mapping to be tested
-    vector<InDOFs*>  inDofs;  ///< mapping input
+    helper::vector<InDOFs*>  inDofs;  ///< mapping input
     OutDOFs* outDofs; ///< mapping output
     simulation::Node* root;         ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Node::SPtr child; ///< Child node, created by setupScene
-    vector<simulation::Node::SPtr> parents; ///< Parent nodes, created by setupScene
+    helper::vector<simulation::Node::SPtr> parents; ///< Parent nodes, created by setupScene
     simulation::Simulation* simulation;  ///< created by the constructor an re-used in the tests
     std::pair<Real,Real> deltaRange; ///< The minimum and maximum magnitudes of the change of each scalar value of the small displacement is deltaRange * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
     Real errorMax;     ///< The test is successfull if the (infinite norm of the) difference is less than  maxError * numeric_limits<Real>::epsilon
@@ -153,7 +150,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
      *\param parentCoords Parent positions (one InVecCoord per parent)
      *\param expectedChildCoords expected position of the child corresponding to the parent positions
      */
-    bool runTest( const vector<InVecCoord>& parentCoords,
+    bool runTest( const helper::vector<InVecCoord>& parentCoords,
                   const OutVecCoord& expectedChildCoords)
     {
         if( deltaRange.second / errorMax <= g_minDeltaErrorRatio )
@@ -198,12 +195,12 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
 
         /// test applyJ and everything related to Jacobians. First, create auxiliary vectors.
         const Index Nc=outDofs->getSize();
-        vector<Index> Np(inDofs.size());
+        helper::vector<Index> Np(inDofs.size());
         for(Index i=0; i<Np.size(); i++)
             Np[i] = inDofs[i]->getSize();
 
-        vector<InVecCoord> xp(Np.size()),xp1(Np.size());
-        vector<InVecDeriv> vp(Np.size()),fp(Np.size()),dfp(Np.size()),fp2(Np.size());
+        helper::vector<InVecCoord> xp(Np.size()),xp1(Np.size());
+        helper::vector<InVecDeriv> vp(Np.size()),fp(Np.size()),dfp(Np.size()),fp2(Np.size());
         OutVecCoord xc(Nc),xc1(Nc);
         OutVecDeriv vc(Nc),fc(Nc);
 
@@ -268,7 +265,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         }
 
         // Jacobian will be obsolete after applying new positions
-        const vector<defaulttype::BaseMatrix*>* J = mapping->getJs();
+        const helper::vector<defaulttype::BaseMatrix*>* J = mapping->getJs();
         OutVecDeriv Jv(Nc);
         for( Index p=0; p<Np.size(); p++ ){
             //cout<<"J["<< p <<"] = "<< endl << *(*J)[p] << endl;
@@ -278,14 +275,14 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         }
 
         // ================ test applyJT()
-        vector<InVecDeriv> jfc(Np.size());
+        helper::vector<InVecDeriv> jfc(Np.size());
         for( Index p=0; p<Np.size(); p++ ) {
             jfc[p] = InVecDeriv( Np[p],InDeriv());
             EigenSparseMatrix* JJ = dynamic_cast<EigenSparseMatrix*>((*J)[p]);
             JJ->addMultTranspose(jfc[p],fc);
             if( this->vectorMaxDiff(jfc[p],fp[p])>this->epsilon()*errorMax ){
                 succeed = false;
-                ADD_FAILURE() << "applyJT test failed"<<endl<<"jfc["<< p <<"] = " << jfc[p] << endl<<" fp["<< p <<"] = " << fp[p] << endl;
+                ADD_FAILURE() << "applyJT test failed"<<std::endl<<"jfc["<< p <<"] = " << jfc[p] << std::endl<<" fp["<< p <<"] = " << fp[p] << std::endl;
             }
         }
         // ================ test getJs()
@@ -293,12 +290,12 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         if( this->vectorMaxDiff(Jv,vc)>this->epsilon()*errorMax ){
             succeed = false;
             for( Index p=0; p<Np.size(); p++ ) {
-                cout<<"J["<< p <<"] = "<< endl << *(*J)[p] << endl;
-                cout<<"vp["<< p <<"] = " << vp[p] << endl;
+                std::cout<<"J["<< p <<"] = "<< std::endl << *(*J)[p] << std::endl;
+                std::cout<<"vp["<< p <<"] = " << vp[p] << std::endl;
             }
-            cout<<"Jvp = " << Jv << endl;
-            cout<<"vc  = " << vc << endl;
-            ADD_FAILURE() << "getJs() test failed"<<endl<<"Jvp = " << Jv << endl <<"vc  = " << vc << endl;
+            std::cout<<"Jvp = " << Jv << std::endl;
+            std::cout<<"vc  = " << vc << std::endl;
+            ADD_FAILURE() << "getJs() test failed"<<std::endl<<"Jvp = " << Jv << std::endl <<"vc  = " << vc << std::endl;
         }
 
 
@@ -337,9 +334,9 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         }
         if( this->vectorMaxDiff(dxc,vc)>this->epsilon()*errorMax ){
             succeed = false;
-            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << this->epsilon()*errorMax  << endl
-                          << "position change = " << dxc << endl
-                          << "velocity        = " << vc << endl;
+            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << this->epsilon()*errorMax  << std::endl
+                          << "position change = " << dxc << std::endl
+                          << "velocity        = " << vc << std::endl;
         }
 
 
@@ -352,7 +349,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         }
         copyToData( fout, fc );
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        vector<InVecDeriv> fp12(Np.size());
+        helper::vector<InVecDeriv> fp12(Np.size());
         for( Index p=0; p<Np.size(); p++ ){
             copyFromData( fp2[p], inDofs[p]->readForces() );
 //            cout<<"updated parent forces fp2["<< p <<"] = "<< fp2[p] << endl;
@@ -364,9 +361,9 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             // ================ test applyDJT()
             if( this->vectorMaxDiff(dfp[p],fp12[p])>this->epsilon()*errorMax ){
                 succeed = false;
-                ADD_FAILURE() << "applyDJT test failed" << endl <<
-                                 "dfp["<<p<<"]    = " << dfp[p] << endl <<
-                                 "fp2["<<p<<"]-fp["<<p<<"] = " << fp12[p] << endl;
+                ADD_FAILURE() << "applyDJT test failed" << std::endl <<
+                                 "dfp["<<p<<"]    = " << dfp[p] << std::endl <<
+                                 "fp2["<<p<<"]-fp["<<p<<"] = " << fp12[p] << std::endl;
             }
         }
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,7 +57,7 @@ void SubsetMultiMapping<TIn, TOut>::init()
 
     typedef linearsolver::EigenSparseMatrix<TIn,TOut> Jacobian;
     baseMatrices.resize( this->getFrom().size() );
-    vector<Jacobian*> jacobians( this->getFrom().size() );
+    helper::vector<Jacobian*> jacobians( this->getFrom().size() );
     for(unsigned i=0; i<baseMatrices.size(); i++ )
     {
         baseMatrices[i] = jacobians[i] = new linearsolver::EigenSparseMatrix<TIn,TOut>;
@@ -87,7 +87,7 @@ void SubsetMultiMapping<TIn, TOut>::init()
 template <class TIn, class TOut>
 SubsetMultiMapping<TIn, TOut>::SubsetMultiMapping()
     : Inherit()
-    , indexPairs( initData( &indexPairs, vector<unsigned>(), "indexPairs", "list of couples (parent index + index in the parent)"))
+    , indexPairs( initData( &indexPairs, helper::vector<unsigned>(), "indexPairs", "list of couples (parent index + index in the parent)"))
 {}
 
 template <class TIn, class TOut>
@@ -127,7 +127,7 @@ template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::addPoint( int from, int index)
 {
     assert((size_t)from < this->fromModels.size());
-    vector<unsigned>& indexPairsVector = *indexPairs.beginEdit();
+    helper::vector<unsigned>& indexPairsVector = *indexPairs.beginEdit();
     indexPairsVector.push_back(from);
     indexPairsVector.push_back(index);
     indexPairs.endEdit();
@@ -177,7 +177,7 @@ void SubsetMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cparams*/, const helper::vector< InDataMatrixDeriv* >& dOut, const helper::vector< const OutDataMatrixDeriv* >& dIn)
 {
-    vector<unsigned>  indexP = indexPairs.getValue();
+    helper::vector<unsigned>  indexP = indexPairs.getValue();
 
     // hypothesis: one child only:
     const OutMatrixDeriv& in = dIn[0]->getValue();

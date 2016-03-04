@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -537,7 +537,7 @@ void BezierTriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Vi
 			if (!trianArray.empty())
 			{
 				glDisable(GL_LIGHTING);
-                const sofa::defaulttype::Vec3f& color =  this->_drawColor.getValue();
+				const sofa::defaulttype::Vec4f& color =  this->_drawColor.getValue();
 				glColor3f(color[0], color[1], color[2]);
 				glBegin(GL_LINES);
 				const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());

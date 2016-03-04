@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -60,8 +60,7 @@
 #include <fstream>
 #include <string.h>
 
-
-
+#include <sofa/helper/logging/Messaging.h>
 
 // #include <sofa/simulation/common/FindByTypeVisitor.h>
 
@@ -111,6 +110,9 @@ void setSimulation ( Simulation* s )
 
 Simulation* getSimulation()
 {
+    //TODO(damien):  replace that with an assert system that use the messaging API.
+    assert(Simulation::theSimulation.get()!=NULL && "There is no simulation initialized.") ;
+
     return Simulation::theSimulation.get();
 }
 
@@ -335,7 +337,7 @@ void Simulation::initTextures ( Node* root )
 /// Compute the bounding box of the scene.
 void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool init )
 {
-	if ( !root ) return;
+    if ( !root ) return;
     sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
     core::visual::VisualLoop* vloop = root->getVisualLoop();
     if(vloop)
@@ -456,7 +458,7 @@ void Simulation::dumpState ( Node* root, std::ofstream& out )
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     out<<root->getTime() <<" ";
     WriteStateVisitor ( params, out ).execute ( root );
-    out<<endl;
+    out<<std::endl;
 }
 
 

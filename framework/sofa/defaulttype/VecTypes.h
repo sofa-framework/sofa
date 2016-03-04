@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,7 +34,7 @@
 #include <iostream>
 #include <algorithm>
 #include <boost/scoped_ptr.hpp>
-
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -282,7 +282,7 @@ public:
             allocator->resize(data, size, maxsize, temp);
         else
         {
-            std::cerr << "Error: invalid reserve request ("<<size<<">"<<maxsize<<") on external vector without allocator.\n";
+            msg_error("VecTypes") << "reserve: invalid reserve request ("<<size<<">"<<maxsize<<") on external vector without allocator.";
         }
     }
     void resize(size_type size)
@@ -294,7 +294,7 @@ public:
         else
         {
             cursize = maxsize;
-            std::cerr << "Error: invalid resize request ("<<size<<">"<<maxsize<<") on external vector without allocator.\n";
+            msg_error("VecTypes") << "resize: invalid resize request ("<<size<<">"<<maxsize<<") on external vector without allocator.";
         }
     }
     void clear()

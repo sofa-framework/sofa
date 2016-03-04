@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,12 +44,6 @@ namespace core
 namespace behavior
 {
 
-using defaulttype::StdVectorTypes;
-using defaulttype::Vec;
-using defaulttype::Mat;
-using defaulttype::MatSym;
-using helper::vector;
-using helper::SVector;
 
 template<typename TShapeFunctionTypes>
 struct ShapeFunctionInternalData
@@ -120,7 +114,7 @@ public:
                 pos.resize(_state->getSize());
                 for(unsigned int i=0; i<pos.size(); ++i)
                 {
-                    StdVectorTypes<Coord,Coord>::set( pos[i], _state->getPX(i),_state->getPY(i),_state->getPZ(i) );
+                    defaulttype::StdVectorTypes<Coord,Coord>::set( pos[i], _state->getPX(i),_state->getPY(i),_state->getPZ(i) );
 //                    pos[i]=Coord(_state->getPX(i),_state->getPY(i),_state->getPZ(i));
 				}
             }
@@ -204,21 +198,21 @@ template <int spatial_dimensions_, class Real_>
 struct ShapeFunctionTypes
 {
     typedef Real_ Real;
-	typedef vector<unsigned int> VRef;
-	typedef vector<Real> VReal;
-    typedef Vec<spatial_dimensions_,Real> Coord;                          ///< Spatial coordinates in world space
-	typedef vector<Coord> VCoord;
-    typedef Vec<spatial_dimensions_,Real> Gradient;                       ///< Gradient of a scalar value in world space
-	typedef vector<Gradient> VGradient;
-    typedef Mat<spatial_dimensions_,spatial_dimensions_,Real> Hessian;    ///< Hessian (second derivative) of a scalar value in world space
-	typedef vector<Hessian> VHessian;
+    typedef helper::vector<unsigned int> VRef;
+    typedef helper::vector<Real> VReal;
+    typedef defaulttype::Vec<spatial_dimensions_,Real> Coord;                          ///< Spatial coordinates in world space
+    typedef helper::vector<Coord> VCoord;
+    typedef defaulttype::Vec<spatial_dimensions_,Real> Gradient;                       ///< Gradient of a scalar value in world space
+    typedef helper::vector<Gradient> VGradient;
+    typedef defaulttype::Mat<spatial_dimensions_,spatial_dimensions_,Real> Hessian;    ///< Hessian (second derivative) of a scalar value in world space
+    typedef helper::vector<Hessian> VHessian;
 	typedef int Cell;
-	typedef vector<Cell> VCell;
+    typedef helper::vector<Cell> VCell;
 
-    typedef vector< SVector<unsigned int> > VecVRef;
-    typedef vector< SVector<Real> > VecVReal;
-    typedef vector< SVector<Gradient> > VecVGradient;
-    typedef vector< SVector<Hessian> > VecVHessian;
+    typedef helper::vector< helper::SVector<unsigned int> > VecVRef;
+    typedef helper::vector< helper::SVector<Real> > VecVReal;
+    typedef helper::vector< helper::SVector<Gradient> > VecVGradient;
+    typedef helper::vector< helper::SVector<Hessian> > VecVHessian;
 
     static const int spatial_dimensions=spatial_dimensions_ ;
     static const char* Name();

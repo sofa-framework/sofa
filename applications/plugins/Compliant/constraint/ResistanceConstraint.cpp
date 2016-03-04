@@ -9,8 +9,9 @@ namespace component {
 namespace linearsolver {
 
 
+SOFA_COMPLIANT_CONSTRAINT_CPP(ResistanceConstraint)
 
-SOFA_DECL_CLASS(ResistanceConstraint);
+SOFA_DECL_CLASS(ResistanceConstraint)
 int ResistanceConstraintClass = core::RegisterObject("Constraint creating a resistance (comparable to internal, dry friction in a joint)")
         .add< ResistanceConstraint >();
 

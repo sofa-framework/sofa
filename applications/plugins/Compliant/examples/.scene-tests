@@ -15,3 +15,5 @@ add "StructuralAPI.py"
 add "contact/soup.py"
 add "contact/friction_simple.py"
 
+# sml examples
+add "bielle_manivelle/scene_sml.py"

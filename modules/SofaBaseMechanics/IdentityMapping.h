@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -134,7 +134,7 @@ protected:
     typedef linearsolver::EigenSparseMatrix<TIn, TOut> eigen_type;
     eigen_type J;
 
-    typedef vector< defaulttype::BaseMatrix* > js_type;
+    typedef helper::vector< defaulttype::BaseMatrix* > js_type;
     js_type Js;
 
 //    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence

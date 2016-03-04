@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,6 +33,7 @@
 #define cimg_use_opencv
 #endif
 
+#define cimg_display 0
 #include <CImg/SOFACImg.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -64,6 +65,7 @@ struct BaseImage
 {
     typedef Vec<5,unsigned int> imCoord; // [x,y,z,s,t]
     virtual void setDimensions(const imCoord& dim) = 0;
+    virtual void fill(const SReal val)=0;
     virtual ~BaseImage() {}
 };
 
@@ -167,6 +169,10 @@ public:
         else if(img.size()<dim[4]) img.insert(dim[4]-img.size(),cimg_library::CImg<T>(dim[0],dim[1],dim[2],dim[3]));
     }
 
+    void fill(const SReal val)
+    {
+        cimglist_for(img,l) img(l).fill((T)val);
+    }
 
     //iostream
     inline friend std::istream& operator >> ( std::istream& in, Image<T>& im )
@@ -244,14 +250,14 @@ public:
             cimglist_for(img,l)
                     cimg_forXYZC(img(l),x,y,z,c)
             {
-				if((long double)value_max-(long double)value_min !=0)
-				{
-					const T val = img(l)(x,y,z,c);
-					long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
-					if(v<0) v=0;
-					else if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
-					++res((int)(v),0,0,c);
-				}
+                if((long double)value_max-(long double)value_min !=0)
+                {
+                    const T val = img(l)(x,y,z,c);
+                    long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
+                    if(v<0) v=0;
+                    else if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
+                    ++res((int)(v),0,0,c);
+                }
             }
         }
         return res;
@@ -705,8 +711,8 @@ public:
         transform=&_transform;
         img=&_img;
         visualModels.assign(_visualModels.begin(),_visualModels.end());
-//        this->setPlane(pCoord(this->img->getDimensions()[0]/2,this->img->getDimensions()[1]/2,this->img->getDimensions()[2]/2));
-//        this->imagePlaneDirty=true;
+        //        this->setPlane(pCoord(this->img->getDimensions()[0]/2,this->img->getDimensions()[1]/2,this->img->getDimensions()[2]/2));
+        //        this->imagePlaneDirty=true;
     }
 
     const pCoord& getPlane() const {return plane;}
@@ -812,13 +818,13 @@ public:
         {
             const ResizableExtVector<VisualModelTypes::Coord>& verts= visualModels[m]->getVertices();
             //            const ResizableExtVector<VisualModelTypes::Coord>& verts= visualModels[m]->m_positions.getValue();
-//            const ResizableExtVector<int> * extvertPosIdx = &visualModels[m]->m_vertPosIdx.getValue();
+            //            const ResizableExtVector<int> * extvertPosIdx = &visualModels[m]->m_vertPosIdx.getValue();
 
             ResizableExtVector<Coord> tposition; tposition.resize(verts.size());
             unsigned int ind;
             for(unsigned int i=0; i<tposition.size(); i++)
             {
-/*                if(!extvertPosIdx->empty()) ind=(*extvertPosIdx)[i]; else */ind=i;
+                /*                if(!extvertPosIdx->empty()) ind=(*extvertPosIdx)[i]; else */ind=i;
                 tposition[i]=transform->toImage(Coord((Real)verts[ind][0],(Real)verts[ind][1],(Real)verts[ind][2]));
             }
             helper::ReadAccessor<Data< core::loader::Material > > mat(visualModels[m]->material);

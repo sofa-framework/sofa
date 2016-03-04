@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,9 +61,6 @@ namespace component
 namespace shapefunction
 {
 
-using core::behavior::BaseShapeFunction;
-using defaulttype::Mat;
-using defaulttype::Vec;
 
 /**
 Shape functions computed using heat diffusion in images
@@ -396,7 +393,7 @@ public:
     //@{
     typedef typename Inherit::Real Real;
     typedef typename Inherit::Coord Coord;
-    typedef helper::ReadAccessor<Data<vector<Coord> > > raVecCoord;
+    typedef helper::ReadAccessor<Data<helper::vector<Coord> > > raVecCoord;
     //@}
 
     /** @name  Image data */

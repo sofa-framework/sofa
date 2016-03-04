@@ -27,7 +27,7 @@ void Stabilization::correction(SReal* dst, unsigned n, unsigned dim, const core:
     assert( mask.getValue().empty() || mask.getValue().size() == n );
 	
     mstate->copyToBuffer(dst, posId.getId(mstate.get()), size);
-    map(dst, size) = -map(dst, size) / this->getContext()->getDt();
+    map(dst, size) *= -1.0 / this->getContext()->getDt();
 
 	const mask_type& mask = this->mask.getValue();
 
@@ -56,7 +56,7 @@ void Stabilization::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabiliz
     {
         // elastic constraints
         mstate->copyToBuffer(dst, posId.getId(mstate.get()), size);
-        map(dst, size) = -map(dst, size) / this->getContext()->getDt();
+        map(dst, size) *= -1.0 / this->getContext()->getDt();
     }
     else
     {
@@ -69,7 +69,7 @@ void Stabilization::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabiliz
             unsigned i = 0;
             for(SReal* last = dst + size; dst < last; dst+=dim, ++i) {
                 if( mask[i] ) memset( dst, 0, dim*sizeof(SReal) ); // already violated
-                else map(dst, dim) = -map(dst, dim) / this->getContext()->getDt(); // not violated
+                else map(dst, dim) *= -1.0 / this->getContext()->getDt(); // not violated
             }
         }
     }
@@ -77,7 +77,7 @@ void Stabilization::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabiliz
 
 
 
-void Stabilization::filterConstraints( vector<bool>* activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim )
+void Stabilization::filterConstraints( helper::vector<bool>* activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim )
 {
     // All the constraints remain active
     // but non-violated constraint must not be stabilized

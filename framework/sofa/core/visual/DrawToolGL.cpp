@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -394,7 +394,7 @@ void DrawToolGL::drawCone(const Vector3& p1, const Vector3 &p2, float radius1, f
     q.normalize();
 
     int i2;
-    
+
     /* build the cylinder from rectangular subd */
     std::vector<Vector3> points;
     std::vector<Vector3> normals;
@@ -537,11 +537,11 @@ void DrawToolGL::drawPlus ( const float& radius, const Vec<4,float>& colour, con
 void DrawToolGL::drawPoint(const Vector3 &p, const Vec<4,float> &c)
 {
 #ifdef PS3
-	// bit of a hack we force to enter our emulation of draw immediate
-	// because glColor4f already exists in OGL ES.
+    // bit of a hack we force to enter our emulation of draw immediate
+    // because glColor4f already exists in OGL ES.
     glColor3f(c[0],c[1],c[2]);
-#else 
-	glColor4f(c[0],c[1],c[2],c[3]);
+#else
+    glColor4f(c[0],c[1],c[2],c[3]);
 #endif
     glVertexNv<3>(p.ptr());
 }
@@ -551,11 +551,11 @@ void DrawToolGL::drawPoint(const Vector3 &p, const Vec<4,float> &c)
 void DrawToolGL::drawPoint(const Vector3 &p, const Vector3 &n, const Vec<4,float> &c)
 {
 #ifdef PS3
-	// bit of a hack we force to enter our emulation of draw immediate
-	// because glColor4f already exists in OGL ES.
+    // bit of a hack we force to enter our emulation of draw immediate
+    // because glColor4f already exists in OGL ES.
     glColor3f(c[0],c[1],c[2]);
-#else 
-	glColor4f(c[0],c[1],c[2],c[3]);
+#else
+    glColor4f(c[0],c[1],c[2],c[3]);
 #endif
     glNormalT(n);
     glVertexNv<3>(p.ptr());
@@ -690,6 +690,32 @@ void DrawToolGL::drawQuads(const std::vector<Vector3> &points, const Vec4f& colo
     resetMaterial(colour);
 }
 
+void DrawToolGL::drawTetrahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, const Vec4f &colour)
+{
+    setMaterial(colour);
+    glBegin(GL_TRIANGLES);
+    {
+        this->drawTriangle(p0,p1,p2, cross((p1-p0),(p2-p0)), colour);
+        this->drawTriangle(p0,p1,p3, cross((p1-p0),(p3-p0)), colour);
+        this->drawTriangle(p0,p2,p3, cross((p2-p0),(p3-p0)), colour);
+        this->drawTriangle(p1,p2,p3, cross((p2-p1),(p3-p1)), colour);
+    } glEnd();
+    resetMaterial(colour);
+}
+
+void DrawToolGL::drawTetrahedra(const std::vector<Vector3> &points, const Vec4f &colour)
+{
+    for (std::vector<Vector3>::const_iterator it = points.begin(), end = points.end(); it != end;)
+    {
+        const Vector3& p0 = *(it++);
+        const Vector3& p1 = *(it++);
+        const Vector3& p2 = *(it++);
+        const Vector3& p3 = *(it++);
+        this->drawTetrahedron(p0,p1,p2,p3,colour);
+    }
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void DrawToolGL::drawSphere( const Vector3 &p, float radius)
@@ -701,9 +727,9 @@ void DrawToolGL::drawSphere( const Vector3 &p, float radius)
 
 void DrawToolGL::drawEllipsoid(const Vector3 &p, const Vector3 &radii)
 {
-	glPushMatrix();
-    helper::gl::drawEllipsoid(p, radii[0], radii[1], radii[2], 32, 16);
-	glPopMatrix();
+    glPushMatrix();
+    helper::gl::drawEllipsoid(p, (float)radii[0], (float)radii[1], (float)radii[2], 32, 16);
+    glPopMatrix();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -853,6 +879,11 @@ void DrawToolGL::scale( float s )
     glScale(s,s,s);
 }
 
+void DrawToolGL::translate(float x, float y, float z)
+{
+    glTranslatef(x, y, z);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const Vec4f &color, const char* text )
 {
@@ -866,11 +897,12 @@ void DrawToolGL::writeOverlayText( int x, int y, unsigned fontSize, const Vec4f 
     glDepthMask(GL_FALSE);
     glDisable(GL_DEPTH_TEST);
 
-
     glPushAttrib( GL_LIGHTING_BIT );
     glEnable( GL_COLOR_MATERIAL );
 
     glPushAttrib( GL_ENABLE_BIT );
+
+    glDisable(GL_CULL_FACE);
 
     glColor4f( color[0], color[1], color[2], color[3] );
 
@@ -916,9 +948,9 @@ void DrawToolGL::disableBlending()
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void DrawToolGL::draw3DText(const Vector3 &p, float scale, const Vec4f &color, const char* text)
 {
-	glColor4fv(color.ptr());
-	
-    sofa::helper::gl::GlText::draw(text, p, scale);
+    glColor4fv(color.ptr());
+
+    sofa::helper::gl::GlText::draw(text, p, (double)scale);
 }
 
 void DrawToolGL::draw3DText_Indices(const helper::vector<Vector3> &positions, float scale, const Vec4f &color)
@@ -926,6 +958,16 @@ void DrawToolGL::draw3DText_Indices(const helper::vector<Vector3> &positions, fl
     glColor4f(color[0], color[1], color[2], color[3]);
 
     sofa::helper::gl::GlText::textureDraw_Indices(positions, scale);
+}
+
+void DrawToolGL::saveLastState()
+{
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+}
+
+void DrawToolGL::restoreLastState()
+{
+    glPopAttrib();
 }
 
 } // namespace visual

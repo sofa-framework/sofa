@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -30,11 +30,9 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/helper/gl/BasicShapes.h>
 
 
 
@@ -77,6 +75,7 @@ FixedConstraint<DataTypes>::FixedConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
+    , f_showObject(initData(&f_showObject,true,"showObject","draw or not the fixed constraints"))
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , data(new FixedConstraintInternalData<DataTypes>())
 {
@@ -333,15 +332,13 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
 template <class DataTypes>
 void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
+    if (!f_showObject.getValue()) return;
     if (!this->isActive()) return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     //serr<<"FixedConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
 
-
-
+    vparams->drawTool()->saveLastState();
 
     const SetIndexArray & indices = f_indices.getValue();
 
@@ -369,7 +366,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     }
     else // new drawing by spheres
     {
-        glEnable( GL_LIGHTING );
+        vparams->drawTool()->setLightingEnabled(true);
 
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
@@ -391,7 +388,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
 
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace constraint

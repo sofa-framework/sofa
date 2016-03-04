@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -64,6 +64,18 @@ private:
 public:
     virtual void resetConstraint() {}
 
+    /// Set the id of the constraint (this id is build in the getConstraintViolation function)
+    ///
+    /// \param cId is Id of the first constraint in the sparse matrix
+    virtual void setConstraintId(unsigned cId) {
+        m_cId = cId;
+    }
+
+    /// Process geometrical data.
+    ///
+    /// This function is called by the CollisionVisitor, it can be used to process a collision detection specific for the constraint
+    virtual void processGeometricalData() {}
+
     /// Construct the Jacobian Matrix
     ///
     /// \param cId is the result constraint sparse matrix Id
@@ -75,7 +87,18 @@ public:
     ///
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v) = 0;
+    virtual void getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v) {
+        getConstraintViolation(cParams,v,m_cId);
+    }
+
+    /// Construct the Constraint violations vector
+    ///
+    /// \param v is the result vector that contains the whole constraints violations
+    /// \param cIndex is the index of the next constraint equation
+    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
+    virtual void getConstraintViolation(const ConstraintParams* /*cParams*/, defaulttype::BaseVector * /*v*/, unsigned int /*cIndex*/) {
+        std::cerr << "ERROR getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v, const unsigned int cIndex) must be defined. " << std::endl;
+    }
 
     /// Useful when the Constraint is applied only on a subset of dofs.
     /// It is automatically called by buildConstraintMatrix
@@ -92,6 +115,7 @@ public:
 
     virtual bool insertInNode( objectmodel::BaseNode* node );
     virtual bool removeInNode( objectmodel::BaseNode* node );
+    unsigned m_cId;
 
 };
 

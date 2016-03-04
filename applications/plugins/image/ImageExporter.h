@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,10 +52,6 @@ namespace component
 namespace misc
 {
 
-using cimg_library::CImg;
-using defaulttype::Vec;
-using defaulttype::Mat;
-
 
 
 
@@ -96,9 +92,9 @@ struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
             double scale[3]; for(unsigned int i=0; i<3; i++) scale[i]=(double)rtransform->getScale()[i];
             double translation[3]; for(unsigned int i=0; i<3; i++) translation[i]=(double)rtransform->getTranslation()[i];
-            Vec<3,Real> rotation = rtransform->getRotation() * (Real)M_PI / (Real)180.0;
+            defaulttype::Vec<3,Real> rotation = rtransform->getRotation() * (Real)M_PI / (Real)180.0;
             helper::Quater< Real > q = helper::Quater< Real >::createQuaterFromEuler(rotation);
-            Mat<3,3,Real> R;  q.toMatrix(R);
+            defaulttype::Mat<3,3,Real> R;  q.toMatrix(R);
             double affine[9]; for(unsigned int i=0; i<3; i++) for(unsigned int j=0; j<3; j++) affine[3*i+j]=(double)R[i][j];
             double offsetT=(double)rtransform->getOffsetT();
             double scaleT=(double)rtransform->getScaleT();
@@ -110,13 +106,13 @@ struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>
             // nfo files are used for compatibility with gridmaterial of frame and voxelizer plugins
             std::ofstream fileStream (fname.c_str(), std::ofstream::out);
             if (!fileStream.is_open()) { exporter.serr << "GridMaterial, Can not open " << fname << exporter.sendl; return false; }
-            fileStream << "voxelType: " << CImg<T>::pixel_type() << std::endl;
+            fileStream << "voxelType: " << cimg_library::CImg<T>::pixel_type() << std::endl;
             fileStream << "dimensions: " << rimage->getDimensions()[0] << " " << rimage->getDimensions()[1]<< " " << rimage->getDimensions()[2]  << std::endl;
             fileStream << "origin: " << rtransform->getTranslation()[0] << " " << rtransform->getTranslation()[1]<< " " << rtransform->getTranslation()[2]<< std::endl;
             fileStream << "voxelSize: " << rtransform->getScale()[0] << " " << rtransform->getScale()[1]<< " " << rtransform->getScale()[2]<< std::endl;
             fileStream.close();
             std::string imgName (fname);  imgName.replace(imgName.find_last_of('.')+1,imgName.size(),"raw");
-            CImg<unsigned char> ucimg = rimage->getCImg(exporter.time);
+            cimg_library::CImg<unsigned char> ucimg = rimage->getCImg(exporter.time);
             ucimg.save_raw(imgName.c_str());
         }
         else if	(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
@@ -166,7 +162,7 @@ struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>
             header.nifti_QForm = 1; //method 2
             header.nifti_SForm = 0;
 
-            Vec<3,Real> rotation = rtransform->getRotation() * (Real)M_PI / (Real)180.0;
+            defaulttype::Vec<3,Real> rotation = rtransform->getRotation() * (Real)M_PI / (Real)180.0;
             helper::Quater<Real> q = helper::Quater<Real>::createQuaterFromEuler(rotation);
 
             for (unsigned int i = 0; i< 3; i++)

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,6 +25,7 @@
 #include <sofa/simulation/common/xml/NodeElement.h>
 //#include <sofa/simulation/common/xml/ObjectElement.h>
 #include <sofa/simulation/common/xml/Element.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -83,7 +84,9 @@ bool NodeElement::init()
     for (unsigned int i=0; i<errors.size(); ++i)
     {
         const std::string name = getObject()->getClassName() + " \"" + getObject()->getName() + "\"";
-        MAINLOGGER( Error, errors[i], name );
+        //MAINLOGGER( Error, errors[i], name );
+        //msg_error(this) << errors[i];
+        msg_error(name) << errors[i];
     }
 
     return res;

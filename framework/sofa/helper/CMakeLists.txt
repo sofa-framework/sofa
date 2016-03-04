@@ -17,7 +17,6 @@ set(HEADER_FILES
     LCPSolver.h
     LCPSolver.inl
     LCPcalc.h
-    Logger.h
     MarchingCubeUtility.h
     MatEigen.h
     MemoryManager.h
@@ -98,6 +97,20 @@ set(HEADER_FILES
     vectorLinks.h
     vector_algebra.h
     vector_device.h
+    logging/Messaging.h
+    logging/Message.h
+    logging/MessageDispatcher.h
+    logging/MessageHandler.h
+    logging/ConsoleMessageHandler.h
+    logging/SilentMessageHandler.h
+    logging/FileMessageHandler.h
+#    logging/LoggerMessageHandler.h
+    logging/MessageHandler.h
+    logging/MessageFormatter.h
+    logging/ClangMessageHandler.h
+    logging/ClangStyleMessageFormatter.h
+    logging/DefaultStyleMessageFormatter.h
+    logging/ExceptionMessageHandler.h
 )
 
 set(SOURCE_FILES
@@ -108,7 +121,6 @@ set(SOURCE_FILES
     Factory.cpp
     GenerateRigid.cpp
     LCPcalc.cpp
-    Logger.cpp
     MarchingCubeUtility.cpp
     OptionsGroup.cpp
     StateMask.cpp
@@ -155,6 +167,16 @@ set(SOURCE_FILES
     system/thread/CircularQueue.cpp
     system/thread/debug.cpp
     vector.cpp
+    logging/Message.cpp
+    logging/MessageDispatcher.cpp
+    logging/ClangMessageHandler.cpp
+    logging/ClangStyleMessageFormatter.cpp
+    logging/DefaultStyleMessageFormatter.cpp
+    logging/ConsoleMessageHandler.cpp
+    logging/SilentMessageHandler.cpp
+    logging/FileMessageHandler.cpp
+#    logging/LoggerMessageHandler.cpp
+    logging/ExceptionMessageHandler.cpp
 )
 
 if(SOFA_HAVE_PNG)
@@ -221,9 +243,9 @@ endif()
     list(APPEND HEADER_FILES gl/VideoRecorder.h)
 
     list(APPEND SOURCE_FILES "gl/VideoRecorder.cpp")
-	include_directories(${SOFA-EXTERNAL_FFMPEG_PATH}/include)
+        include_directories(${SOFA-EXTERNAL_FFMPEG_PATH}/include)
 endif()
-	
+
 
 if(PS3)
     list(APPEND HEADER_FILES gl/ps3gl_compat.h)
@@ -246,14 +268,14 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     target_include_directories(${PROJECT_NAME} PRIVATE ${X11_X11_INCLUDE_PATH})
 endif()
 if(SOFA-EXTERNAL_FFMPEG)
-	if (WIN32)
-		 set( FFMPEG_LIBS
-		 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/avformat.lib"
-		 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/avcodec.lib"
-		 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/avutil.lib"
-		 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/swscale.lib"
-		 )
-		target_link_libraries(${PROJECT_NAME} PRIVATE ${FFMPEG_LIBS} )		
+        if (WIN32)
+                 set( FFMPEG_LIBS
+                 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/avformat.lib"
+                 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/avcodec.lib"
+                 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/avutil.lib"
+                 "${SOFA-EXTERNAL_FFMPEG_PATH}/lib/swscale.lib"
+                 )
+                target_link_libraries(${PROJECT_NAME} PRIVATE ${FFMPEG_LIBS} )
         elseif (APPLE)
                 set( FFMPEG_LIBS
                         "libavcodec.a"
@@ -268,20 +290,20 @@ if(SOFA-EXTERNAL_FFMPEG)
                         "libswresample.a"
                         "/usr/lib/libiconv.dylib"
                         )
-						find_library(FOUNDATION CoreFoundation)
-			find_library(VIDEO CoreVideo)
-			find_library(VIDEO_DECOD_ACC VideoDecodeAcceleration)
-			find_library(ICONV iconv)
-			target_link_libraries(${PROJECT_NAME}  ${FFMPEG_LIBS} ${FOUNDATION} ${VIDEO} ${VIDEO_DECOD_ACC})
+                                                find_library(FOUNDATION CoreFoundation)
+                        find_library(VIDEO CoreVideo)
+                        find_library(VIDEO_DECOD_ACC VideoDecodeAcceleration)
+                        find_library(ICONV iconv)
+                        target_link_libraries(${PROJECT_NAME}  ${FFMPEG_LIBS} ${FOUNDATION} ${VIDEO} ${VIDEO_DECOD_ACC})
         elseif (UNIX)
             AddLinkerDependencies(avcodec)
-		    AddLinkerDependencies(avformat)  
-			AddLinkerDependencies(avutil) 
-			AddLinkerDependencies(swscale) 
-			AddLinkerDependencies(avdevice)
-			AddLinkerDependencies(avfilter)									 
-			AddLinkerDependencies(swresample)
-		endif()
+                    AddLinkerDependencies(avformat)
+                        AddLinkerDependencies(avutil)
+                        AddLinkerDependencies(swscale)
+                        AddLinkerDependencies(avdevice)
+                        AddLinkerDependencies(avfilter)
+                        AddLinkerDependencies(swresample)
+                endif()
 
 endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK})

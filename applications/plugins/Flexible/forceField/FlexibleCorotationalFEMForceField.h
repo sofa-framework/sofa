@@ -1,5 +1,5 @@
-#ifndef FLEXIBLE_TETRAHEDRONFEMFORCEFIELD_H
-#define FLEXIBLE_TETRAHEDRONFEMFORCEFIELD_H
+#ifndef FLEXIBLE_METAFEMFORCEFIELD_H
+#define FLEXIBLE_METAFEMFORCEFIELD_H
 
 
 #include "../shapeFunction/BarycentricShapeFunction.h"
@@ -29,11 +29,10 @@ namespace forcefield
 /// hard-coded implementation of corotational FEM
 ///
 /// TODO
-/// - CorotationalMeshMapping + Cauchy + preassembly
 /// - assembly
-/// - geometric stiffness
 /// - potential energy
 /// - masks?
+/// - more generic (templated on strain mapping and material)
 ///
 template<class DataTypes>
 class SOFA_Flexible_API FlexibleCorotationalFEMForceField : public core::behavior::ForceField<DataTypes>, public shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction>
@@ -85,7 +84,7 @@ public:
         m_gaussPointSampler->f_method.setValue( 0 );
         m_gaussPointSampler->f_order.setValue( d_order.getValue() );
         m_gaussPointSampler->parentTopology = topo;
-        m_gaussPointSampler->f_inPosition.setValue( topo->seqPoints.getValue() );
+        m_gaussPointSampler->f_inPosition.setParent( &topo->seqPoints );
         m_gaussPointSampler->init();
 
 
@@ -94,8 +93,10 @@ public:
         m_deformationMapping->_sampler = m_gaussPointSampler.get();
         m_deformationMapping->_shapeFunction = (ShapeFunction*)this;
         m_deformationMapping->init();
+        m_deformationDofs->resize(0); ///< was allocated by m_deformationMapping->init()...
 
         unsigned size = m_gaussPointSampler->getNbSamples();
+
 
 
 
@@ -112,6 +113,14 @@ public:
         ForceField::init();
 
         reinit();
+
+
+
+        if( d_geometricStiffness.getValue() )
+        {
+             _stresses.resize(size);
+        }
+
     }
 
     virtual void reinit()
@@ -170,6 +179,8 @@ public:
         ShapeFunction::reinit();
     }
 
+
+
     virtual void addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& _f, const DataVecCoord& _x, const DataVecDeriv& _v)
     {
         VecDeriv& f = *_f.beginEdit();
@@ -177,6 +188,9 @@ public:
         const VecDeriv& v = _v.getValue();
 
         typename DeformationMapping::SparseMatrix& deformationJacobianBlocks = m_deformationMapping->getJacobianBlocks();
+
+        DecompositionMethod method = (DecompositionMethod)d_method.getValue().getSelectedId();
+        bool geometricStiffness = d_geometricStiffness.getValue();
 
 
         // temporaries
@@ -188,7 +202,6 @@ public:
         defaulttype::E331Types::Deriv PE;
 
 
-        // TODO use masks
         for( unsigned i=0; i < _strainJacobianBlocks.size() ; ++i )
         {
             F.clear();
@@ -205,7 +218,33 @@ public:
                 deformationJacobianBlocks[i][j].addmult( VF, v[index] );
             }
 
-            _strainJacobianBlocks[i].addapply_svd( E, F );
+            // TODO move the switch outside of the loop
+            switch( method )
+            {
+                case SMALL:
+                {
+                    _strainJacobianBlocks[i].addapply_small( E, F );
+                    break;
+                }
+                case QR:
+                {
+                    _strainJacobianBlocks[i].addapply_qr( E, F );
+                    break;
+                }
+                case POLAR:
+                {
+                    _strainJacobianBlocks[i].addapply_polar( E, F );
+                    break;
+                }
+                case SVD:
+                {
+                    _strainJacobianBlocks[i].addapply_svd( E, F );
+                    break;
+                }
+                default:
+                    break;
+            }
+
             _strainJacobianBlocks[i].addmult( VE, VF );
 
             _materialBlocks[i].addForce( PE, E, VE );
@@ -217,8 +256,13 @@ public:
                 unsigned int index = m_deformationMapping->f_index.getValue()[i][j];
                 deformationJacobianBlocks[i][j].addMultTranspose( f[index], PF );
             }
-        }
 
+
+            if( geometricStiffness )
+            {
+                _stresses[i] = PE;
+            }
+        }
 
         _f.endEdit();
 
@@ -230,13 +274,21 @@ public:
         }*/
     }
 
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv&  _df, const DataVecDeriv&  _dx )
+
+
+
+
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& _df, const DataVecDeriv& _dx )
     {
         VecDeriv& df = *_df.beginEdit();
         const VecDeriv& dx = _dx.getValue();
 
 
         typename DeformationMapping::SparseMatrix& deformationJacobianBlocks = m_deformationMapping->getJacobianBlocks();
+
+
+        DecompositionMethod method = (DecompositionMethod)d_method.getValue().getSelectedId();
+        bool geometricStiffness = d_geometricStiffness.getValue();
 
         // temporaries
         defaulttype::F331Types::Coord F;
@@ -265,14 +317,36 @@ public:
 
             _strainJacobianBlocks[i].addMultTranspose( PF, PE );
 
-            // TODO _strainJacobianBlocks geometric stiffness
+            // geometricStiffness: need for saving stress and deformation gradients
+            if( geometricStiffness )
+            {
+                // TODO move the switch outside of the loop
+                switch( method )
+                {
+                    case QR:
+                    {
+                        _strainJacobianBlocks[i].addDForce_qr( PF, F, _stresses[i], mparams->kFactor() );
+                        break;
+                    }
+                    case POLAR:
+                    {
+                        _strainJacobianBlocks[i].addDForce_polar( PF, F, _stresses[i], mparams->kFactor() );
+                        break;
+                    }
+                    case SVD:
+                    {
+                        _strainJacobianBlocks[i].addDForce_svd( PF, F, _stresses[i], mparams->kFactor() );
+                        break;
+                    }
+                    default:
+                        break;
+                }
+            }
 
             for( unsigned int j=0 ; j<deformationJacobianBlocks[i].size() ; j++ )
             {
                 unsigned int index = m_deformationMapping->f_index.getValue()[i][j];
                 deformationJacobianBlocks[i][j].addMultTranspose( df[index], PF );
-
-                // TODO deformationJacobianBlocks geometric stiffness
             }
         }
 
@@ -327,16 +401,16 @@ public:
     //typedef component::container::MechanicalObject < defaulttype::E331Types > StrainDofs;
 
     //typedef defaulttype::LinearJacobianBlock< defaulttype::F331Types, defaulttype::E331Types > DeformationJacobianBlock;
-    //typedef vector< DeformationJacobianBlock >  DeformationJacobianBlocks;
+    //typedef helper::vector< DeformationJacobianBlock >  DeformationJacobianBlocks;
     //DeformationJacobianBlocks _deformationJacobianBlocks;
 
     typedef defaulttype::CorotationalStrainJacobianBlock< defaulttype::F331Types, defaulttype::E331Types > StrainJacobianBlock;
-    typedef vector< StrainJacobianBlock >  StrainJacobianBlocks;
+    typedef helper::vector< StrainJacobianBlock >  StrainJacobianBlocks;
     StrainJacobianBlocks _strainJacobianBlocks;
 
 	typedef defaulttype::IsotropicHookeLaw<typename defaulttype::E331Types::Real, defaulttype::E331Types::material_dimensions, defaulttype::E331Types::strain_size> LawType;
     typedef defaulttype::HookeMaterialBlock< defaulttype::E331Types, LawType > MaterialBlock;
-    typedef vector< MaterialBlock >  MaterialBlocks;
+    typedef helper::vector< MaterialBlock >  MaterialBlocks;
     MaterialBlocks _materialBlocks;
 
 
@@ -368,6 +442,7 @@ protected:
     typename DeformationMapping::SPtr m_deformationMapping;
     DeformationDofs::SPtr m_deformationDofs;
     GaussPointSampler::SPtr m_gaussPointSampler;
+    defaulttype::E331Types::VecDeriv _stresses; // optionaln for geometric stiffness
 
 
     FlexibleCorotationalFEMForceField()
@@ -476,7 +551,7 @@ protected:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_TETRAHEDRONFEMFORCEFIELD_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_METAFEMFORCEFIELD_CPP)
 extern template class SOFA_Flexible_API FlexibleCorotationalFEMForceField<defaulttype::Vec3Types>;
 #endif
 
@@ -484,4 +559,4 @@ extern template class SOFA_Flexible_API FlexibleCorotationalFEMForceField<defaul
 } // namespace component
 } // namespace sofa
 
-#endif // FLEXIBLE_TETRAHEDRONFEMFORCEFIELD_H
+#endif // FLEXIBLE_METAFEMFORCEFIELD_H

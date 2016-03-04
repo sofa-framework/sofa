@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -110,8 +110,8 @@ void SuturePointPerformer<DataTypes>::start()
 
         // Get vertices of both triangles
         sofa::helper::vector<sofa::defaulttype::Vector3 > listCoords;
-        const component::topology::Triangle Triangle1 = triangleContainer->getTriangle(firstPicked.indexCollisionElement);
-        const component::topology::Triangle Triangle2 = triangleContainer->getTriangle(picked.indexCollisionElement);
+        const core::topology::BaseMeshTopology::Triangle Triangle1 = triangleContainer->getTriangle(firstPicked.indexCollisionElement);
+        const core::topology::BaseMeshTopology::Triangle Triangle2 = triangleContainer->getTriangle(picked.indexCollisionElement);
 
         for (unsigned int i=0; i<3; i++)
         {

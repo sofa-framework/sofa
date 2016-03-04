@@ -34,10 +34,11 @@ set(HEADER_FILES
     contact/BaseContact.h
     contact/CompliantContact.h
     contact/FrictionCompliantContact.h
-    contact/PenalityCompliantContact.h
+    contact/PenaltyCompliantContact.h
     controller/CompliantSleepController.h
     forcefield/PotentialEnergy.h
     forcefield/UniformLinearPotentialEnergy.h
+    forcefield/CompliantPenaltyForceField.h
     mapping/AffineMultiMapping.h
     mapping/AssembledMapping.h
     mapping/AssembledMultiMapping.h
@@ -54,6 +55,7 @@ set(HEADER_FILES
     mapping/RigidComMultiMapping.h
     mapping/RigidJointMapping.h
     mapping/RigidJointMultiMapping.h
+    mapping/RigidJointFromTargetMapping.h
     misc/CompliantAttachButtonSetting.h
     misc/CompliantSolverMerger.h
     misc/FailNode.h
@@ -139,10 +141,11 @@ set(SOURCE_FILES
     constraint/BaumgarteStabilization.cpp
     contact/CompliantContact.cpp
     contact/FrictionCompliantContact.cpp
-    contact/PenalityCompliantContact.cpp
+    contact/PenaltyCompliantContact.cpp
     controller/CompliantSleepController.cpp
     forcefield/PotentialEnergy.cpp
     forcefield/UniformLinearPotentialEnergy.cpp
+    forcefield/CompliantPenaltyForceField.cpp
     initCompliant.cpp
     mapping/AffineMultiMapping.cpp
     mapping/AssembledRigidRigidMapping.cpp
@@ -158,6 +161,7 @@ set(SOURCE_FILES
     mapping/RigidComMultiMapping.cpp
     mapping/RigidJointMapping.cpp
     mapping/RigidJointMultiMapping.cpp
+    mapping/RigidJointFromTargetMapping.cpp
     misc/CompliantAttachButtonSetting.cpp
     misc/CompliantSolverMerger.cpp
     misc/FailNode.cpp

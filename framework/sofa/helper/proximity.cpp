@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -210,9 +210,9 @@ NewComputation(const Vector3 &P1, const Vector3 &P2, const Vector3 &P3, const Ve
     else
     {
         printf(" no result from LCP !\n");
-        alpha=0;
-        beta=0;
-        gamma=0;
+//        alpha=0;
+//        beta=0;
+//        gamma=0;
         Presult = P1;
         Qresult = Q1;
     }
@@ -282,8 +282,8 @@ NewComputation(const Vector3 &P1, const Vector3 &P2, const Vector3 &P3, const Ve
     else
     {
         printf(" no result from LCP !\n");
-        alpha=0;
-        beta=0;
+//        alpha=0;
+//        beta=0;
         Presult = P1;
     }
 }

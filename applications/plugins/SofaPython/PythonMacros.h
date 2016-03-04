@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,7 +33,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 
 
-#include <sofa/helper/Logger.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/cast.h>
 
 #include <SofaPython/config.h>
@@ -334,11 +334,12 @@ static PyTypeObject DummyChild_PyTypeObject = {
 // ERROR / WARNING MESSAGES
 // =============================================================================
 
-#define SP_MESSAGE_BASE( level, msg ) { MAINLOGGER( level, msg, "SofaPython" ) }
-#define SP_MESSAGE_INFO( msg ) { SP_MESSAGE_BASE( Info, msg ) }
-#define SP_MESSAGE_WARNING( msg ) { SP_MESSAGE_BASE( Warning, msg ) }
-#define SP_MESSAGE_ERROR( msg ) { SP_MESSAGE_BASE( Error, msg ) }
-#define SP_MESSAGE_EXCEPTION( msg ) { SP_MESSAGE_BASE( Exception, msg )  }
+//#define SP_MESSAGE_BASE( level, msg ) { MAINLOGGER( level, msg, "SofaPython" ) }
+#define SP_MESSAGE_INFO( msg ) msg_info("SofaPython") << msg;
+#define SP_MESSAGE_DEPRECATED( msg ) msg_deprecated("SofaPython") << msg;
+#define SP_MESSAGE_WARNING( msg ) msg_warning("SofaPython") << msg;
+#define SP_MESSAGE_ERROR( msg ) msg_error("SofaPython") << msg;
+#define SP_MESSAGE_EXCEPTION( msg ) msg_fatal("SofaPython") << msg;
 
 
 // get python exceptions and print their error message

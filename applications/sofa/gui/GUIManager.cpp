@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -33,6 +33,8 @@
 #include <sofa/simulation/common/init.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
+#include <sofa/helper/logging/Messaging.h>
+
 
 using std::cerr;
 using std::endl;
@@ -77,7 +79,7 @@ int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* i
 			++it;
 		if (it != itend)
 		{
-			std::cerr << "ERROR(GUIManager): GUI "<<name<<" duplicate registration."<<std::endl;
+            msg_error("GUIManager") << "ERROR(GUIManager): GUI "<<name<<" duplicate registration.";
 			return 1;
 		}
 	}
@@ -119,7 +121,8 @@ const char* GUIManager::GetValidGUIName()
     std::string lastGuiFilename = BaseGUI::getConfigDirectoryPath() + "/lastUsedGUI.ini";
     if (guiCreators.empty())
     {
-        std::cerr << "ERROR(SofaGUI): No GUI registered."<<std::endl;
+
+        msg_error("GUIManager") << "ERROR(SofaGUI): No GUI registered.";
         return NULL;
     }
     else
@@ -144,11 +147,11 @@ const char* GUIManager::GetValidGUIName()
                     return it1->name;
                 }
             }
-            std::cerr << "WARNING(SofaGUI): Previously used GUI not registered. Using default GUI." << std::endl;
+            msg_warning("GUIManager") << "WARNING(SofaGUI): Previously used GUI not registered. Using default GUI.";
         }
         else
         {
-            std::cout << "INFO(SofaGUI): lastUsedGUI.ini not found; using default GUI." << std::endl;
+            msg_info("GUIManager") << "INFO(SofaGUI): lastUsedGUI.ini not found; using default GUI.";
         }
 
         std::list<GUICreator>::iterator it =guiCreators.begin();

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -410,9 +410,11 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         }
     }
 
-    if (!vsplit)
-        nbNOut = nbVOut;
-    else if (nbNOut == nbVOut)
+//    if (!vsplit)
+//        nbNOut = nbVOut;
+//    else if (nbNOut == nbVOut)
+//        vertNormIdx.resize(0);
+    if( vsplit && nbNOut == nbVOut )
         vertNormIdx.resize(0);
 
 
@@ -1637,7 +1639,7 @@ void VisualModelImpl::handleTopologyChange()
 
                                     if(ind_forgotten<m_topology->getNbTriangles())
                                     {
-                                        const sofa::component::topology::Triangle t_forgotten = m_topology->getTriangle(ind_forgotten);
+                                        const core::topology::BaseMeshTopology::Triangle t_forgotten = m_topology->getTriangle(ind_forgotten);
                                         sout << "INFO_print : Vis - last = " << last << sendl;
                                         sout << "INFO_print : Vis - lastIndexVec[i] = " << lastIndexVec[i] << sendl;
                                         sout << "INFO_print : Vis - tab.size() = " << tab.size() << " , tab = " << tab << sendl;

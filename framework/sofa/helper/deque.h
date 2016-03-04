@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,6 +33,7 @@
 #include <cstdlib>
 
 #include <sofa/helper/helper.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -153,7 +154,7 @@ inline std::istream& deque<int >::read( std::istream& in )
                 tinc = atoi(s3.c_str());
                 if (tinc == 0)
                 {
-                    std::cerr << "ERROR parsing \""<<s<<"\": increment is 0\n";
+                    msg_error("deque") << "parsing \""<<s<<"\": increment is 0";
                     tinc = (t1<t2) ? 1 : -1;
                 }
                 if ((t2-t1)*tinc < 0)
@@ -241,7 +242,7 @@ inline std::istream& deque<unsigned int >::read( std::istream& in )
                 tinc = atoi(s3.c_str());
                 if (tinc == 0)
                 {
-                    std::cerr << "ERROR parsing \""<<s<<"\": increment is 0\n";
+                    msg_error("deque") << "parsing \""<<s<<"\": increment is 0";
                     tinc = (t1<t2) ? 1 : -1;
                 }
                 if (((int)(t2-t1))*tinc < 0)

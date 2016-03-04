@@ -136,10 +136,10 @@ using namespace core::behavior;
 
 
 
-    void CompliantImplicitSolver::send(simulation::Visitor& vis) {
+    void CompliantImplicitSolver::send(simulation::Visitor& vis, bool precomputedTraversalOrder) {
 //        scoped::timer step("visitor execution");
 
-        this->getContext()->executeVisitor( &vis, true );
+        this->getContext()->executeVisitor( &vis, precomputedTraversalOrder );
 
     }
 
@@ -178,10 +178,12 @@ using namespace core::behavior;
 
         multi.resize(2);
 
+        SReal beta = this->beta.getValue();
+
         multi[0].first = posId;
         multi[0].second.push_back( std::make_pair(posId, 1.0) );
-        multi[0].second.push_back( std::make_pair(velId, dt*beta.getValue()) );
-        multi[0].second.push_back( std::make_pair(accId, accFactor*dt*beta.getValue()) );
+        multi[0].second.push_back( std::make_pair(velId, dt*beta) );
+        multi[0].second.push_back( std::make_pair(accId, accFactor*dt*beta) );
 
         multi[1].first = velId;
         multi[1].second.push_back( std::make_pair(velId, 1.0) );
@@ -201,8 +203,10 @@ using namespace core::behavior;
     void CompliantImplicitSolver::reset() {
         if( !lagrange.id().isNull() )
         {
-            sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
-            vop.v_clear( lagrange.id() );
+            // warning, vop.v_clear would only clear independent dofs
+            simulation::MechanicalVOpVisitor clearVisitor(core::ExecParams::defaultInstance(), lagrange.id(), core::ConstMultiVecId::null(), core::ConstMultiVecId::null(), 1.0);
+            clearVisitor.only_mapped = true;
+            send( clearVisitor, false );
         }
     }
 
@@ -299,26 +303,28 @@ using namespace core::behavior;
         SReal m_factor, b_factor, k_factor;
         const SReal& h = sys.dt;
 
+        SReal alpha = this->alpha.getValue();
+
         switch( formulation.getValue().getSelectedId() )
         {
         case FORMULATION_DV: // c_k = h.f_k + h²Kv + hDv
             m_factor = 0.0;
             b_factor = h;
-            k_factor = h*h*alpha.getValue();
+            k_factor = h*h*alpha;
             break;
         case FORMULATION_ACC: // c_k = f_k + hKv + Dv
             m_factor = 0.0;
             b_factor = 1.0;
-            k_factor = h*alpha.getValue();
+            k_factor = h*alpha;
             break;
         case FORMULATION_VEL: // c_k = h.f_k + Mv
         default:
             // M v_k
             m_factor = 1;
             // h (1-alpha) B v_k
-            b_factor = h * (1 - alpha.getValue());
+            b_factor = h * (1 - alpha);
             // h^2 alpha (1 - beta ) K v_k
-            k_factor = h * h * alpha.getValue() * (1 - beta.getValue());
+            k_factor = h * h * alpha * (1 - beta.getValue());
             break;
         }
 
@@ -348,7 +354,7 @@ using namespace core::behavior;
         // In compute_forces (in multivec representation) it would require a visitor (more expensive).
         res.head( sys.m ) = sys.P * res.head( sys.m );
 
-        vec res_constraint(sys.n);
+        vec res_constraint(sys.n); // todo remove this temporary
         rhs_constraints_dynamics( res_constraint, sys, posId, velId );
         res.tail(sys.n).noalias() = res_constraint;
     }
@@ -363,6 +369,12 @@ using namespace core::behavior;
 
         unsigned off = 0;
 
+        unsigned stabilization = this->stabilization.getValue().getSelectedId();
+        unsigned formulation = this->formulation.getValue().getSelectedId();
+
+        SReal alpha = this->alpha.getValue();
+        SReal beta = this->beta.getValue();
+
 
         // compliant dofs
         for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
@@ -374,50 +386,50 @@ using namespace core::behavior;
             const unsigned total_dim = dim*constraint_dim; // nb constraint lines
 
             assert( constraint.value ); // at least a fallback must be added in filter_constraints
-            constraint.value->dynamics( &res(off), dim, constraint_dim, stabilization.getValue().getSelectedId()!=NO_STABILIZATION, posId, velId );
+            constraint.value->dynamics( &res(off), dim, constraint_dim, stabilization!=NO_STABILIZATION, posId, velId );
 
             // adjust compliant value based on alpha/beta
 
 
-            switch( formulation.getValue().getSelectedId() )
+            switch( formulation )
             {
             case FORMULATION_VEL: // ( phi/a -(1-b)*J.v ) / b
             {
-                if( alpha.getValue() != 1 ) res.segment(off,total_dim) /= alpha.getValue();
-                if( beta.getValue() != 1 )
+                if( alpha != 1 ) res.segment(off,total_dim) /= alpha;
+                if( beta != 1 )
                 {
                     // get constraint violation velocity
                     vec v_constraint( total_dim );
                     dofs->copyToBuffer( &v_constraint(0), velId.getId(dofs), total_dim );
 
-                    res.segment(off,total_dim).noalias() -= (1 - beta.getValue()) * v_constraint;
-                    res.segment(off,total_dim) /= beta.getValue();
+                    res.segment(off,total_dim).noalias() -= (1 - beta) * v_constraint;
+                    res.segment(off,total_dim) /= beta;
                 }
                 break;
             }
             case FORMULATION_DV: // ( phi/a -J.v ) / b
             {
-                if( alpha.getValue() != 1 ) res.segment(off,total_dim) /= alpha.getValue();
+                if( alpha != 1 ) res.segment(off,total_dim) /= alpha;
 
                 vec v_constraint( total_dim );
                 dofs->copyToBuffer( &v_constraint(0), velId.getId(dofs), total_dim );
 
                 res.segment(off,total_dim).noalias() -= v_constraint;
 
-                if( beta.getValue() != 1 ) res.segment(off,total_dim) /= beta.getValue();
+                if( beta != 1 ) res.segment(off,total_dim) /= beta;
 
                 break;
             }
             case FORMULATION_ACC: // ( phi/a -J.v ) / bh
             {
-                if( alpha.getValue() != 1 ) res.segment(off,total_dim) /= alpha.getValue();
+                if( alpha != 1 ) res.segment(off,total_dim) /= alpha;
 
                 vec v_constraint( total_dim );
                 dofs->copyToBuffer( &v_constraint(0), velId.getId(dofs), total_dim );
 
                 res.segment(off,total_dim).noalias() -= v_constraint;
 
-                res.segment(off,total_dim) /= ( beta.getValue() * sys.dt );
+                res.segment(off,total_dim) /= ( beta * sys.dt );
 
                 break;
             }
@@ -430,13 +442,13 @@ using namespace core::behavior;
 
 
 //        // adjust compliant value based on alpha/beta
-//        if(alpha.getValue() != 1 ) res.tail( sys.n ) /= alpha.getValue();
+//        if(alpha != 1 ) res.tail( sys.n ) /= alpha;
 
-//        if( beta.getValue() != 1 ) {
+//        if( beta != 1 ) {
 //            // TODO dofs->copyToBuffer(v_compliant, core::VecDerivId::vel(), dim); rather than sys.J * v, v_compliant is already mapped
 //            // TODO use v_compliant to implement constraint damping
-//            res.tail( sys.n ).noalias() -= (1 - beta.getValue()) * (sys.J * v);
-//            res.tail( sys.n ) /= beta.getValue();
+//            res.tail( sys.n ).noalias() -= (1 - beta) * (sys.J * v);
+//            res.tail( sys.n ) /= beta;
 //        }
     }
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,12 +55,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using defaulttype::Vec;
-using defaulttype::Mat;
-using cimg_library::CImg;
-using cimg_library::CImgList;
-
 /**
  * This class rasterizes meshes into a boolean image (1: inside mesh, 0: outside) or a scalar image (val: inside mesh, 0: outside)
  * \todo adjust type of value, closingValue, backgroundValue, roiValue according to ImageTypes
@@ -76,9 +70,9 @@ public:
 
     typedef SReal Real;
 
-    Data< vector<Real> > voxelSize; // should be a Vec<3,Real>, but it is easier to be backward-compatible that way
-    typedef helper::WriteOnlyAccessor<Data< vector<Real> > > waVecReal;
-    Data< Vec<3,unsigned> > nbVoxels;
+    Data< helper::vector<Real> > voxelSize; // should be a Vec<3,Real>, but it is easier to be backward-compatible that way
+    typedef helper::WriteOnlyAccessor<Data< helper::vector<Real> > > waVecReal;
+    Data< defaulttype::Vec<3,unsigned> > nbVoxels;
     Data< bool > rotateImage;
     Data< unsigned int > padSize;
     Data< unsigned int > subdiv;
@@ -96,7 +90,7 @@ public:
     typedef helper::WriteOnlyAccessor<Data< TransformType > > waTransform;
     Data< TransformType > transform;
 
-    typedef vector<Vec<3,Real> > SeqPositions;
+    typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     helper::vectorData< SeqPositions > vf_positions;
@@ -140,8 +134,8 @@ public:
     static std::string templateName(const MeshToImageEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
 
     MeshToImageEngine()    :   Inherited()
-      , voxelSize(initData(&voxelSize,vector<Real>(3,(Real)1.0),"voxelSize","voxel Size (redondant with and not priority over nbVoxels)"))
-      , nbVoxels(initData(&nbVoxels,Vec<3,unsigned>(0,0,0),"nbVoxels","number of voxel (redondant with and priority over voxelSize)"))
+      , voxelSize(initData(&voxelSize,helper::vector<Real>(3,(Real)1.0),"voxelSize","voxel Size (redondant with and not priority over nbVoxels)"))
+      , nbVoxels(initData(&nbVoxels,defaulttype::Vec<3,unsigned>(0,0,0),"nbVoxels","number of voxel (redondant with and priority over voxelSize)"))
       , rotateImage(initData(&rotateImage,false,"rotateImage","orient the image bounding box according to the mesh (OBB)"))
       , padSize(initData(&padSize,(unsigned int)(0),"padSize","size of border in number of voxels"))
       , subdiv(initData(&subdiv,(unsigned int)(4),"subdiv","number of subdivisions for face rasterization (if needed, increase to avoid holes)"))
@@ -213,7 +207,7 @@ public:
     void clearImage()
     {
         waImage iml(this->image);
-        CImg<T>& im= iml->getCImg();
+        cimg_library::CImg<T>& im= iml->getCImg();
         im.fill((T)0);
     }
 
@@ -330,7 +324,7 @@ protected:
             }
             mean/=(Real)nbpTotal;
 
-            Mat<3,3,Real> M; M.fill(0);
+            defaulttype::Mat<3,3,Real> M; M.fill(0);
             for( unsigned meshId=0; meshId<f_nbMeshes.getValue() ; ++meshId )
             {
                 raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
@@ -346,7 +340,7 @@ protected:
             NEWMAT::Jacobi(e, D, V);
             for(size_t j=0; j<3; j++) for(size_t k=0; k<3; k++) M[j][k]=V(j+1,k+1);
             if(determinant(M)<0) M*=(Real)-1.0;
-            Mat<3,3,Real> MT=M.transposed();
+            defaulttype::Mat<3,3,Real> MT=M.transposed();
 
             // get orientation from eigen vectors
             helper::Quater< Real > q; q.fromMatrix(M);
@@ -395,7 +389,7 @@ protected:
         else  iml->getCImgList()(0).assign(dim[0],dim[1],dim[2],1);  // Just realloc the memory of the image to suit new size
 
         // Keep it as a pointer since the code will be called recursively
-        CImg<T>& im = iml->getCImg();
+        cimg_library::CImg<T>& im = iml->getCImg();
         im.fill( (T)backgroundValue.getValue() );
 
         for( size_t meshId=0 ; meshId<f_nbMeshes.getValue() ; ++meshId )        rasterizeAndFill ( meshId, im, tr );
@@ -406,7 +400,7 @@ protected:
 
 
     // regular rasterization like first implementation, with inside filled by the unique value
-    void rasterizeAndFill( const unsigned int &meshId, CImg<T>& im, const waTransform& tr )
+    void rasterizeAndFill( const unsigned int &meshId, cimg_library::CImg<T>& im, const waTransform& tr )
     {
         raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
         raTriangles tri(*this->vf_triangles[meshId]);       unsigned int nbtri = tri.size();
@@ -424,7 +418,7 @@ protected:
         //        T OutsideColor = (T)this->backgroundValue.getValue();
 
         /// draw surface
-        CImg<bool> mask;
+        cimg_library::CImg<bool> mask;
         mask.assign( im.width(), im.height(), im.depth(), 1 );
         mask.fill(false);
 
@@ -554,7 +548,7 @@ protected:
 
 
     template<class PixelT>
-    bool isInsideImage(CImg<PixelT>& img, unsigned int x, unsigned int y, unsigned z)
+    bool isInsideImage(cimg_library::CImg<PixelT>& img, unsigned int x, unsigned int y, unsigned z)
     {
         //		if(x<0) return false;
         //		if(y<0) return false;
@@ -566,7 +560,7 @@ protected:
     }
 
     template<class PixelT>
-    void draw_line(CImg<PixelT>& im,CImg<bool>& mask,const Coord& p0,const Coord& p1,const PixelT& color,const unsigned int subdiv)
+    void draw_line(cimg_library::CImg<PixelT>& im,cimg_library::CImg<bool>& mask,const Coord& p0,const Coord& p1,const PixelT& color,const unsigned int subdiv)
     // floating point bresenham
     {
         Coord P0(p0),P1(p1);
@@ -589,7 +583,7 @@ protected:
     }
 
     template<class PixelT>
-    void draw_line(CImg<PixelT>& im,CImg<bool>& mask,const Coord& p0,const Coord& p1,const Real& color0,const Real& color1,const unsigned int subdiv)
+    void draw_line(cimg_library::CImg<PixelT>& im,cimg_library::CImg<bool>& mask,const Coord& p0,const Coord& p1,const Real& color0,const Real& color1,const unsigned int subdiv)
     // floating point bresenham
     {
         Coord P0(p0),P1(p1);
@@ -634,7 +628,7 @@ protected:
     };
 
     template<class PixelT>
-    void draw_triangle(CImg<PixelT>& im,CImg<bool>& mask,const Coord& p0,const Coord& p1,const Coord& p2,const PixelT& color,const unsigned int subdiv)
+    void draw_triangle(cimg_library::CImg<PixelT>& im,cimg_library::CImg<bool>& mask,const Coord& p0,const Coord& p1,const Coord& p2,const PixelT& color,const unsigned int subdiv)
     {
         // fill along two directions to be sure that there is no hole,
         // let's choose the two smaller edges
@@ -650,7 +644,7 @@ protected:
     }
 
     template<class PixelT>
-    void _draw_triangle(CImg<PixelT>& im,CImg<bool>& mask,const Coord& p0,const Coord& p1,const Coord& p2,const PixelT& color,const unsigned int subdiv)
+    void _draw_triangle(cimg_library::CImg<PixelT>& im,cimg_library::CImg<bool>& mask,const Coord& p0,const Coord& p1,const Coord& p2,const PixelT& color,const unsigned int subdiv)
     // double bresenham
     {
         Coord P0(p0),P1(p1);
@@ -668,7 +662,7 @@ protected:
     }
 
     template<class PixelT>
-    void draw_triangle(CImg<PixelT>& im,CImg<bool>& mask,const Coord& p0,const Coord& p1,const Coord& p2,const Real& color0,const Real& color1,const Real& color2,const unsigned int subdiv)
+    void draw_triangle(cimg_library::CImg<PixelT>& im,cimg_library::CImg<bool>& mask,const Coord& p0,const Coord& p1,const Coord& p2,const Real& color0,const Real& color1,const Real& color2,const unsigned int subdiv)
     {
         // fill along two directions to be sure that there is no hole,
         // let's choose the two smaller edges
@@ -684,7 +678,7 @@ protected:
     }
 
     template<class PixelT>
-    void _draw_triangle(CImg<PixelT>& im,CImg<bool>& mask,const Coord& p0,const Coord& p1,const Coord& p2,const Real& color0,const Real& color1,const Real& color2,const unsigned int subdiv)
+    void _draw_triangle(cimg_library::CImg<PixelT>& im,cimg_library::CImg<bool>& mask,const Coord& p0,const Coord& p1,const Coord& p2,const Real& color0,const Real& color1,const Real& color2,const unsigned int subdiv)
     // double bresenham
     {
         Coord P0(p0),P1(p1);

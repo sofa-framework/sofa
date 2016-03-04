@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -107,7 +107,7 @@ public:
 
 
 ///Create ReadState component in the graph each time needed
-class SOFA_LOADER_API ReadStateCreator: public Visitor
+class SOFA_LOADER_API ReadStateCreator: public simulation::Visitor
 {
 public:
     ReadStateCreator(const core::ExecParams* params);
@@ -115,7 +115,7 @@ public:
     virtual Result processNodeTopDown( simulation::Node*  );
 
     void setSceneName(std::string &n) { sceneName = n;}
-    void setCounter(int c) {counterReadState = c;};
+    void setCounter(int c) {counterReadState = c;}
     void setCreateInMapping(bool b) {createInMapping=b;}
     virtual const char* getClassName() const { return "ReadStateCreator"; }
 protected:
@@ -127,14 +127,14 @@ protected:
     int counterReadState; //avoid to have two same files if two mechanical objects has the same name
 };
 
-class SOFA_LOADER_API ReadStateActivator: public Visitor
+class SOFA_LOADER_API ReadStateActivator: public simulation::Visitor
 {
 public:
     ReadStateActivator(const core::ExecParams* params, bool active) : Visitor(params), state(active) {}
     virtual Result processNodeTopDown( simulation::Node*  );
 
-    bool getState() const {return state;};
-    void setState(bool active) {state=active;};
+    bool getState() const {return state;}
+    void setState(bool active) {state=active;}
     virtual const char* getClassName() const { return "ReadStateActivator"; }
 protected:
     void changeStateReader(sofa::component::misc::ReadState *ws);

@@ -37,6 +37,7 @@ set(HEADER_FILES
     engine/ComputeDualQuatEngine.inl
     engine/ComputeWeightEngine.h
     forceField/FlexibleCorotationalFEMForceField.h
+    forceField/FlexibleCorotationalMeshFEMForceField.h
     helper.h
     mass/AffineMass.h
     material/BaseMaterial.h
@@ -103,9 +104,6 @@ set(HEADER_FILES
     types/QuadraticTypes.h
     types/RigidConstraint.h
     types/StrainTypes.h
-    miscMapping/rigidScaleMappingJacobian.h
-    miscMapping/RigidScaleToAffineMultiMapping.h
-    miscMapping/RigidScaleToAffineMultiMapping.inl
 )
 
 set(SOURCE_FILES
@@ -128,6 +126,7 @@ set(SOURCE_FILES
     engine/ComputeDualQuatEngine.cpp
     engine/ComputeWeightEngine.cpp
     forceField/FlexibleCorotationalFEMForceField.cpp
+    forceField/FlexibleCorotationalMeshFEMForceField.cpp
     initFlexible.cpp
     mass/AffineMass.cpp
     material/BaseMaterialForceField.cpp
@@ -163,7 +162,6 @@ set(SOURCE_FILES
     types/QuadraticComponents.cpp
     types/RigidConstraint.cpp
     types/StrainTypes.cpp
-    miscMapping/RigidScaleToAffineMultiMapping.cpp
 )
 
 set(PYTHON_FILES

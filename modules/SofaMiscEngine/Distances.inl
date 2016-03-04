@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,7 +51,7 @@ using std::queue;
 using sofa::core::loader::VoxelLoader;
 
 template<class DataTypes>
-Distances< DataTypes >::Distances ( sofa::component::topology::DynamicSparseGridTopologyContainer* hexaTopoContainer, MechanicalState<DataTypes>* targetPointSet ) :
+Distances< DataTypes >::Distances ( sofa::component::topology::DynamicSparseGridTopologyContainer* hexaTopoContainer, core::behavior::MechanicalState<DataTypes>* targetPointSet ) :
     showMapIndex ( initData ( &showMapIndex, (unsigned int)0, "showMapIndex","Frame DOF index on which display values." ) ),
     showDistanceMap ( initData ( &showDistanceMap, false, "showDistancesMap","show the dsitance for each point of the target point set." ) ),
     showGoalDistanceMap ( initData ( &showGoalDistanceMap, false, "showGoalDistancesMap","show the dsitance for each point of the target point set." ) ),
@@ -164,7 +164,7 @@ void Distances< DataTypes >::update()
 template<class DataTypes>
 void Distances< DataTypes >::computeDistanceMap ( VecCoord beginElts, const double& distMax )
 {
-    vector<sofa::component::topology::HexaID> hfrom;
+    helper::vector<core::topology::BaseMeshTopology::HexaID> hfrom;
     findCorrespondingHexas ( hfrom, beginElts );
 
     std::string filename=fileDistance.getValue();
@@ -253,7 +253,7 @@ void Distances< DataTypes >::addElt ( const Coord& elt, VecCoord beginElts, cons
     }
     else if ( distanceType.getValue().getSelectedId() == TYPE_HARMONIC )
     {
-        vector<sofa::component::topology::HexaID> hfrom;
+        helper::vector<core::topology::BaseMeshTopology::HexaID> hfrom;
         findCorrespondingHexas ( hfrom, tmpvcoord );
         computeHarmonicCoords ( mapIndex, hfrom, false );
     }
@@ -267,7 +267,7 @@ void Distances< DataTypes >::addElt ( const Coord& elt, VecCoord beginElts, cons
     }
     else if ( distanceType.getValue().getSelectedId() == TYPE_HARMONIC_STIFFNESS )
     {
-        vector<sofa::component::topology::HexaID> hfrom;
+        helper::vector<core::topology::BaseMeshTopology::HexaID> hfrom;
         findCorrespondingHexas ( hfrom, tmpvcoord );
         computeHarmonicCoords ( mapIndex, hfrom, true );
     }
@@ -288,7 +288,7 @@ void Distances< DataTypes >::computeGeodesicalDistance ( const unsigned int& map
         distanceMap[mapIndex][i] = -1.0;
 
     queue<Distance> hexasBeingParsed;
-    set<sofa::component::topology::HexaID> hexasParsed;
+    helper::set<core::topology::BaseMeshTopology::HexaID> hexasParsed;
     Distance hexaCoord;
     defaulttype::Vector3 baryC;
     const Coord& offSet = offset.getValue();
@@ -307,7 +307,7 @@ void Distances< DataTypes >::computeGeodesicalDistance ( const unsigned int& map
     {
         hexaCoord = hexasBeingParsed.front(); // Get the front element of the queue.
         hexasBeingParsed.pop();             // Remove it from the queue.
-        const sofa::component::topology::HexaID& hexaID = hexaCoord.first;
+        const core::topology::BaseMeshTopology::HexaID& hexaID = hexaCoord.first;
         const double& distance = hexaCoord.second;
 
         if ( hexasParsed.find ( hexaID ) != hexasParsed.end() ) continue;
@@ -317,14 +317,14 @@ void Distances< DataTypes >::computeGeodesicalDistance ( const unsigned int& map
         const Coord hexaIDpos = hexaGeoAlgo->computeHexahedronRestCenter ( hexaID );
 
         // Propagate
-        helper::set<sofa::component::topology::HexaID> neighbors;
+        helper::set<core::topology::BaseMeshTopology::HexaID> neighbors;
         getNeighbors ( hexaID, neighbors );
 
         unsigned int hexaID1;
         find1DCoord(hexaID1, hexaGeoAlgo->computeHexahedronRestCenter(hexaID));
         double densityValue1 = densityValues[hexaID1];
 
-        for ( helper::set<sofa::component::topology::HexaID>::iterator it = neighbors.begin(); it != neighbors.end(); it++ )
+        for ( helper::set<core::topology::BaseMeshTopology::HexaID>::iterator it = neighbors.begin(); it != neighbors.end(); it++ )
         {
             Distance newDist;
             double stiffCoeff = 1.0;
@@ -346,19 +346,19 @@ void Distances< DataTypes >::computeGeodesicalDistance ( const unsigned int& map
 
 
 template<class DataTypes>
-void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapIndex, const vector<sofa::component::topology::HexaID>& hfrom, const bool& useStiffnessMap )
+void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapIndex, const helper::vector<core::topology::BaseMeshTopology::HexaID>& hfrom, const bool& useStiffnessMap )
 {
     // Init the distance Map. TODO: init the distance map between each elt before diffusing
-    vector<double>& dMIndex = distanceMap[mapIndex];
+    helper::vector<double>& dMIndex = distanceMap[mapIndex];
     dMIndex.clear();
     dMIndex.resize ( hexaContainer->getNumberOfHexahedra() );
 
     const sofa::helper::vector<sofa::core::topology::BaseMeshTopology::HexaID>& iirg = hexaContainer->idxInRegularGrid.getValue();
-    const map<unsigned int, unsigned int>& zones = zonesFramePair.getValue();
+    const std::map<unsigned int, unsigned int>& zones = zonesFramePair.getValue();
 
     for ( unsigned int j = 0; j < hexaContainer->getNumberOfHexahedra(); j++ )
     {
-        map<unsigned int, unsigned int>::const_iterator it = zones.find( (unsigned int)segmentIDData[iirg[j]]);
+        std::map<unsigned int, unsigned int>::const_iterator it = zones.find( (unsigned int)segmentIDData[iirg[j]]);
         if ( it != zones.end())
         {
             if ( it->second == mapIndex)
@@ -370,7 +370,7 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
             dMIndex[j] = harmonicMaxValue.getValue()/2.0;
     }
 
-    for ( vector<sofa::component::topology::HexaID>::const_iterator it = hfrom.begin(); it != hfrom.end(); it++ )
+    for ( helper::vector<core::topology::BaseMeshTopology::HexaID>::const_iterator it = hfrom.begin(); it != hfrom.end(); it++ )
         dMIndex[*it] = harmonicMaxValue.getValue();
 
     dMIndex[hfrom[mapIndex]] = 0.0;
@@ -531,7 +531,7 @@ void Distances< DataTypes >::computeVoronoiDistances( const unsigned int& /*mapI
 template<class DataTypes>
 void Distances< DataTypes >::getDistances ( VVD& distances, VecVecCoord& gradients, const VecCoord& goals )
 {
-    vector<sofa::component::topology::HexaID> hgoal;
+    helper::vector<core::topology::BaseMeshTopology::HexaID> hgoal;
     findCorrespondingHexas ( hgoal, goals );
 
     distances.clear();
@@ -542,7 +542,7 @@ void Distances< DataTypes >::getDistances ( VVD& distances, VecVecCoord& gradien
     for ( unsigned int i = 0; i < distanceMap.size(); i++ )
     {
         // Compute Harmonic Coords
-        vector<double>& dists = distances[i];
+        helper::vector<double>& dists = distances[i];
         VecCoord& grads = gradients[i];
         computeGradients ( i, dists, grads, hgoal, goals );
     }
@@ -550,10 +550,10 @@ void Distances< DataTypes >::getDistances ( VVD& distances, VecVecCoord& gradien
 
 
 template<class DataTypes>
-void Distances< DataTypes >::addContribution ( double& valueWrite, int& nbTest, const vector<double>& valueRead, const unsigned int& gridID, const int coeff )
+void Distances< DataTypes >::addContribution ( double& valueWrite, int& nbTest, const helper::vector<double>& valueRead, const unsigned int& gridID, const int coeff )
 {
     bool existing;
-    sofa::component::topology::HexaID hexaID = hexaGeoAlgo->getTopoIndexFromRegularGridIndex ( gridID, existing );
+    core::topology::BaseMeshTopology::HexaID hexaID = hexaGeoAlgo->getTopoIndexFromRegularGridIndex ( gridID, existing );
     if ( existing )
     {
         valueWrite += coeff * valueRead[hexaID];
@@ -583,14 +583,14 @@ void Distances< DataTypes >::addContribution ( double& valueWrite, int& nbTest, 
 
 
 template<class DataTypes>
-void Distances< DataTypes >::computeGradients ( const unsigned int mapIndex, vector<double>& distances, VecCoord& gradients, const vector<sofa::component::topology::HexaID>& hexaGoal, const VecCoord& goals )
+void Distances< DataTypes >::computeGradients ( const unsigned int mapIndex, helper::vector<double>& distances, VecCoord& gradients, const helper::vector<core::topology::BaseMeshTopology::HexaID>& hexaGoal, const VecCoord& goals )
 {
     // Store the distance and compute gradient for each goal.
     sofa::defaulttype::Vec3i res = hexaContainer->resolution.getValue();
     const defaulttype::Vector3& voxelSize = hexaContainer->voxelSize.getValue();
     for ( unsigned int i = 0; i < hexaGoal.size(); i++ )
     {
-        const sofa::component::topology::HexaID& hID = hexaGoal[i];
+        const core::topology::BaseMeshTopology::HexaID& hID = hexaGoal[i];
         const Coord& point = goals[i];
 
         // Distance value for the center of the voxel
@@ -604,12 +604,12 @@ void Distances< DataTypes >::computeGradients ( const unsigned int mapIndex, vec
         }
 
         Coord grad;
-        helper::set<sofa::component::topology::HexaID> neighbors;
+        helper::set<core::topology::BaseMeshTopology::HexaID> neighbors;
         getNeighbors ( hID, neighbors );
 
         unsigned int gridID = hexaGeoAlgo->getRegularGridIndexFromTopoIndex ( hID );
         bool existing;
-        sofa::component::topology::HexaID hexaID;
+        core::topology::BaseMeshTopology::HexaID hexaID;
 
         // Test on X
         int nbTest = 0;
@@ -670,7 +670,7 @@ void Distances< DataTypes >::computeGradients ( const unsigned int mapIndex, vec
 }
 
 template<class DataTypes>
-void Distances< DataTypes >::findCorrespondingHexas ( vector<sofa::component::topology::HexaID>& hexas, const VecCoord& pointSet )
+void Distances< DataTypes >::findCorrespondingHexas ( helper::vector<core::topology::BaseMeshTopology::HexaID>& hexas, const VecCoord& pointSet )
 {
     for ( unsigned int i = 0; i < pointSet.size(); i++ )
     {
@@ -695,12 +695,12 @@ void Distances< DataTypes >::find1DCoord ( unsigned int& hexaID, const Coord& po
 }
 
 template<class DataTypes>
-void Distances< DataTypes >::getNeighbors ( const sofa::component::topology::HexaID& hexaID, helper::set<sofa::component::topology::HexaID>& neighbors ) const
+void Distances< DataTypes >::getNeighbors ( const core::topology::BaseMeshTopology::HexaID& hexaID, helper::set<core::topology::BaseMeshTopology::HexaID>& neighbors ) const
 {
-    const sofa::component::topology::EdgesInHexahedron& edgeSet = hexaContainer->getEdgesInHexahedron ( hexaID );
+    const core::topology::BaseMeshTopology::EdgesInHexahedron& edgeSet = hexaContainer->getEdgesInHexahedron ( hexaID );
     for ( unsigned int i = 0; i < edgeSet.size(); i++ )
     {
-        const sofa::component::topology::HexahedraAroundEdge& hexaSet = hexaContainer->getHexahedraAroundEdge ( edgeSet[i] );
+        const core::topology::BaseMeshTopology::HexahedraAroundEdge& hexaSet = hexaContainer->getHexahedraAroundEdge ( edgeSet[i] );
         for ( unsigned int j = 0; j < hexaSet.size(); j++ )
             if ( hexaSet[j] != hexaID )
                 neighbors.insert ( hexaSet[j] );
@@ -715,7 +715,7 @@ void Distances< DataTypes >::draw(const core::visual::VisualParams* )
     if ( showDistanceMap.getValue() )
     {
         glColor3f ( 1.0f, 0.0f, 0.3f );
-        const vector<double>& distMap = distanceMap[showMapIndex.getValue()%distanceMap.size()];
+        const helper::vector<double>& distMap = distanceMap[showMapIndex.getValue()%distanceMap.size()];
         for ( unsigned int j = 0; j < distMap.size(); j++ )
         {
             Coord point = hexaGeoAlgo->computeHexahedronRestCenter ( j );

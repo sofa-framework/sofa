@@ -12,8 +12,10 @@ set(HEADER_FILES
     InitPlugin_test.h
     Mapping_test.h
     MultiMapping_test.h
+    Multi2Mapping_test.h
     PrimitiveCreation.h
     Sofa_test.h
+    TestMessageHandler.h
 )
 
 set(SOURCE_FILES

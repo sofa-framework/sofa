@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,27 +58,6 @@ namespace topology
 {
 class HexahedronSetTopologyModifier;
 
-using core::topology::BaseMeshTopology;
-
-typedef BaseMeshTopology::PointID			         PointID;
-typedef BaseMeshTopology::PointID			         LocalPointID;
-typedef BaseMeshTopology::EdgeID			            EdgeID;
-typedef BaseMeshTopology::TriangleID	         	QuadID;
-typedef BaseMeshTopology::HexaID			            HexaID;
-typedef BaseMeshTopology::Edge				         Edge;
-typedef BaseMeshTopology::Quad				         Quad;
-typedef BaseMeshTopology::Hexa				         Hexa;
-typedef BaseMeshTopology::SeqHexahedra			      SeqHexahedra;
-typedef BaseMeshTopology::HexahedraAroundVertex		HexahedraAroundVertex;
-typedef BaseMeshTopology::HexahedraAroundEdge		HexahedraAroundEdge;
-typedef BaseMeshTopology::HexahedraAroundQuad		HexahedraAroundQuad;
-typedef BaseMeshTopology::EdgesInHexahedron		   EdgesInHexahedron;
-typedef BaseMeshTopology::QuadsInHexahedron		   QuadsInHexahedron;
-
-typedef Hexa		Hexahedron;
-typedef EdgesInHexahedron	EdgesInHexahedron;
-typedef QuadsInHexahedron	QuadsInHexahedron;
-typedef sofa::helper::vector<HexaID>               VecHexaID;
 
 /** a class that stores a set of hexahedra and provides access with adjacent quads, edges and vertices */
 class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyContainer : public QuadSetTopologyContainer
@@ -88,9 +67,27 @@ class SOFA_BASE_TOPOLOGY_API HexahedronSetTopologyContainer : public QuadSetTopo
 public:
     SOFA_CLASS(HexahedronSetTopologyContainer,QuadSetTopologyContainer);
 
+
+
+    typedef core::topology::BaseMeshTopology::PointID			         PointID;
+    typedef core::topology::BaseMeshTopology::PointID			         LocalPointID;
+    typedef core::topology::BaseMeshTopology::EdgeID			            EdgeID;
+    typedef core::topology::BaseMeshTopology::TriangleID	         	QuadID;
+    typedef core::topology::BaseMeshTopology::HexaID			            HexaID;
+    typedef core::topology::BaseMeshTopology::Edge				         Edge;
+    typedef core::topology::BaseMeshTopology::Quad				         Quad;
+    typedef core::topology::BaseMeshTopology::Hexa				         Hexa;
+    typedef core::topology::BaseMeshTopology::SeqHexahedra			      SeqHexahedra;
+    typedef core::topology::BaseMeshTopology::HexahedraAroundVertex		HexahedraAroundVertex;
+    typedef core::topology::BaseMeshTopology::HexahedraAroundEdge		HexahedraAroundEdge;
+    typedef core::topology::BaseMeshTopology::HexahedraAroundQuad		HexahedraAroundQuad;
+    typedef core::topology::BaseMeshTopology::EdgesInHexahedron		   EdgesInHexahedron;
+    typedef core::topology::BaseMeshTopology::QuadsInHexahedron		   QuadsInHexahedron;
+
+    typedef sofa::helper::vector<HexaID>               VecHexaID;
+
+
     typedef Hexa		Hexahedron;
-    typedef EdgesInHexahedron	EdgesInHexahedron;
-    typedef QuadsInHexahedron	QuadsInHexahedron;
 	typedef sofa::defaulttype::Vec<3,unsigned char> HexahedronBinaryIndex;
 protected:
     HexahedronSetTopologyContainer();

@@ -39,7 +39,7 @@ public:
     Data< block_matrix_type > matC; ///< input compliance matrix (PSD)
     Data< block_matrix_type > matK; ///< input stiffness matrix (PSD)
 
-    Data< vector<SReal> > damping; ///< Full damping
+    Data< helper::vector<SReal> > damping; ///< Full damping
 
     virtual void init();
 

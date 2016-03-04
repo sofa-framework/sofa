@@ -1,11 +1,12 @@
 #include "UnilateralConstraint.h"
 #include <sofa/core/ObjectFactory.h>
 
-//#include <Eigen/Core>
-
 namespace sofa {
 namespace component {
 namespace linearsolver {
+
+
+SOFA_COMPLIANT_CONSTRAINT_CPP(UnilateralConstraint)
 
 SOFA_DECL_CLASS(UnilateralConstraint)
 int UnilateralConstraintClass = core::RegisterObject("Unilateral constraint")
@@ -16,8 +17,23 @@ int UnilateralConstraintClass = core::RegisterObject("Unilateral constraint")
 void UnilateralConstraint::project(SReal* out, unsigned n, unsigned, bool) const
 {
     for(unsigned i = 0; i < n; ++i)
-//        out[i] = std::max( (SReal)0.0, out[i] );
         if( out[i] < 0 ) out[i] = 0;
+}
+
+
+//////////////////////
+
+SOFA_COMPLIANT_CONSTRAINT_CPP(NegativeUnilateralConstraint)
+
+SOFA_DECL_CLASS(NegativeUnilateralConstraint)
+int NegativeUnilateralConstraintClass = core::RegisterObject("Unilateral constraint")
+        .add< NegativeUnilateralConstraint >();
+
+
+void NegativeUnilateralConstraint::project(SReal* out, unsigned n, unsigned, bool) const
+{
+    for(unsigned i = 0; i < n; ++i)
+        if( out[i] > 0 ) out[i] = 0;
 }
 
 

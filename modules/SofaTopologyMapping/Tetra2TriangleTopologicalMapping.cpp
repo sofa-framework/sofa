@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -100,7 +100,7 @@ void Tetra2TriangleTopologicalMapping::init()
             TriangleSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
 
-            const sofa::helper::vector<Triangle> &triangleArray=fromModel->getTriangles();
+            const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle> &triangleArray=fromModel->getTriangles();
             const bool flipN = flipNormals.getValue();
 
             /// only initialize with border triangles if necessary
@@ -119,7 +119,7 @@ void Tetra2TriangleTopologicalMapping::init()
                     {
                         if(flipN)
                         {
-                            Triangle t = triangleArray[i];
+                            core::topology::BaseMeshTopology::Triangle t = triangleArray[i];
                             unsigned int tmp = t[2];
                             t[2] = t[1];
                             t[1] = tmp;
@@ -217,7 +217,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                             ind_last = ind_last - 1;
 
                             unsigned int ind_k = Glob2LocMap[k];
-                            ind_real_last = ind_k;
+//                            ind_real_last = ind_k;
 
                             std::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
                             if(iter_2 != Glob2LocMap.end())
@@ -298,17 +298,17 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 {
                     const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TrianglesAdded *>( *itBegin ) )->getArray();
 
-                    const sofa::helper::vector<Tetrahedron> &tetrahedronArray=fromModel->getTetrahedra();
-                    sofa::helper::vector< Triangle > triangles_to_create;
+                    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron> &tetrahedronArray=fromModel->getTetrahedra();
+                    sofa::helper::vector< core::topology::BaseMeshTopology::Triangle > triangles_to_create;
                     sofa::helper::vector< unsigned int > trianglesIndexList;
                     int nb_elems = toModel->getNbTriangles();
                     const bool flipN = flipNormals.getValue();
 
                     for (unsigned int i = 0; i <tab.size(); ++i)
                     {
-                        Triangle t;
+                        core::topology::BaseMeshTopology::Triangle t;
                         t=fromModel->getTriangle(tab[i]);
-                        const TetrahedraAroundTriangle tetraId=fromModel->getTetrahedraAroundTriangle(tab[i]);
+                        const core::topology::BaseMeshTopology::TetrahedraAroundTriangle tetraId=fromModel->getTetrahedraAroundTriangle(tab[i]);
 
                         if(tetraId.size()==1)
                         {
@@ -319,7 +319,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                             }
                             else
                             {
-                                Tetrahedron te=tetrahedronArray[tetraId[0]];
+                                core::topology::BaseMeshTopology::Tetrahedron te=tetrahedronArray[tetraId[0]];
 
                                 for(int j=0; j<4; j++)
                                 {
@@ -380,7 +380,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                         //const sofa::helper::vector<Tetrahedron> &tetrahedronArray=fromModel->getTetrahedra();
                         const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraAdded *>( *itBegin ) )->getArray();
 
-                        sofa::helper::vector< TriangleID > triangles_to_remove;
+                        sofa::helper::vector< core::topology::BaseMeshTopology::TriangleID > triangles_to_remove;
                         //int nb_elems = toModel->getNbTriangles();
 
                         for (unsigned int i = 0; i < tab.size(); ++i)
@@ -473,10 +473,10 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     if ((fromModel) && (noNewTriangles.getValue()==false))
                     {
 
-                        const sofa::helper::vector<Tetrahedron> &tetrahedronArray=fromModel->getTetrahedra();
+                        const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron> &tetrahedronArray=fromModel->getTetrahedra();
                         const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraRemoved *>( *itBegin ) )->getArray();
 
-                        sofa::helper::vector< Triangle > triangles_to_create;
+                        sofa::helper::vector< core::topology::BaseMeshTopology::Triangle > triangles_to_create;
                         sofa::helper::vector< unsigned int > trianglesIndexList;
                         int nb_elems = toModel->getNbTriangles();
                         const bool flipN = flipNormals.getValue();
@@ -534,8 +534,8 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                                     if(!is_present)
                                     {
 
-                                        Triangle t;
-                                        const Tetrahedron &te=tetrahedronArray[ind_test];
+                                        core::topology::BaseMeshTopology::Triangle t;
+                                        const core::topology::BaseMeshTopology::Tetrahedron &te=tetrahedronArray[ind_test];
 
                                         int h = fromModel->getTriangleIndexInTetrahedron(fromModel->getTrianglesInTetrahedron(ind_test),k);
 

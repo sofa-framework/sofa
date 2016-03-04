@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -188,14 +188,14 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
         typename DOF::ReadVecDeriv actualfp = this->dof->readForces();
         typename DOF::ReadVecDeriv actualfc = childDof->readForces();
         if(this->debug){
-            cout << "run_test,          xp = " << xp << endl;
-            cout << "                   xc = " << xc << endl;
-            cout << "                   vp = " << vp << endl;
-            cout << "                   vc = " << vc << endl;
-            cout << "          expected fp = " << fp << endl;
-            cout << "            actual fp = " << actualfp << endl;
-            cout << "          expected fc = " << fc << endl;
-            cout << "            actual fc = " << actualfc << endl;
+            std::cout << "run_test,          xp = " << xp << std::endl;
+            std::cout << "                   xc = " << xc << std::endl;
+            std::cout << "                   vp = " << vp << std::endl;
+            std::cout << "                   vc = " << vc << std::endl;
+            std::cout << "          expected fp = " << fp << std::endl;
+            std::cout << "            actual fp = " << actualfp << std::endl;
+            std::cout << "          expected fc = " << fc << std::endl;
+            std::cout << "            actual fc = " << actualfc << std::endl;
         }
         ASSERT_TRUE( this->vectorMaxDiff(fp,actualfp)< this->errorMax*this->epsilon() );
         ASSERT_TRUE( this->vectorMaxDiff(fc,actualfc)< this->errorMax*this->epsilon() );

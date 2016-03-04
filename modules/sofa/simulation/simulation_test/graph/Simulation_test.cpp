@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -102,7 +102,7 @@ struct Scene_test: public Sofa_test<SReal>
 
         if( vectorMaxDiff(sceneMinBBox,expectedMin)>this->epsilon() || vectorMaxDiff(sceneMaxBBox,expectedMax)>this->epsilon() )
         {
-            ADD_FAILURE() << "Wrong bounding box, expected (" << expectedMin <<", "<<expectedMax<<") , got ("<< sceneMinBBox <<", "<<sceneMaxBBox << ")" << endl;
+            ADD_FAILURE() << "Wrong bounding box, expected (" << expectedMin <<", "<<expectedMax<<") , got ("<< sceneMinBBox <<", "<<sceneMaxBBox << ")" << std::endl;
         }
 
     }
@@ -116,7 +116,7 @@ struct Scene_test: public Sofa_test<SReal>
         Component::SPtr toto = core::objectmodel::New<Component>();
         toto = core::objectmodel::New<Component>(); // this should first delete the previous one
         if(objectCounter != 1)
-            ADD_FAILURE() << objectCounter << " objects, should be only 1 ! " <<endl;
+            ADD_FAILURE() << objectCounter << " objects, should be only 1 ! " <<std::endl;
     }
 
     /// create a component and replace it with an other one
@@ -230,7 +230,7 @@ protected:
     }
     void checkDeletions() {
         if(objectCounter>0)
-            ADD_FAILURE() << objectCounter << " objects not deleted " <<endl;
+            ADD_FAILURE() << objectCounter << " objects not deleted " <<std::endl;
     }
 };
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -96,8 +96,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
         CoordinateBuf[c].x() = 0.0;
     }
 
-    vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
-    vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
+    helper::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
+    helper::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
 
     for (; ac != acEnd; ac++)
     {
@@ -146,8 +146,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
         out[0] = (*inroot)[m_fromRootModel->getSize()-1];
     }
 
-    vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
-    vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
+    helper::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
+    helper::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
 
     for (; ac != acEnd; ac++)
     {
@@ -164,9 +164,9 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
         (*ac)->globalPosition.setValue(out[parent].getCenter() +
                 out[parent].getOrientation().rotate((*ac)->posOnParent.getValue()));
 
-        vector< sofa::component::container::Articulation* > articulations = (*ac)->getArticulations();
-        vector< sofa::component::container::Articulation* >::const_iterator a = articulations.begin();
-        vector< sofa::component::container::Articulation* >::const_iterator aEnd = articulations.end();
+        helper::vector< sofa::component::container::Articulation* > articulations = (*ac)->getArticulations();
+        helper::vector< sofa::component::container::Articulation* >::const_iterator a = articulations.begin();
+        helper::vector< sofa::component::container::Articulation* >::const_iterator aEnd = articulations.end();
 
         int process = (*ac)->articulationProcess.getValue();
 
@@ -245,7 +245,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
             // step 1: compute the new position of the articulation center and the articulation pos
             //         rq: the articulation center folows the translations
             (*ac)->globalPosition.setValue(out[parent].getCenter() + out[parent].getOrientation().rotate((*ac)->posOnParent.getValue()) + (*ac)->DisplacementArticulationCenter);
-            vector< sofa::component::container::Articulation* >::const_iterator a = articulations.begin();
+            helper::vector< sofa::component::container::Articulation* >::const_iterator a = articulations.begin();
 
             for (; a != aEnd; a++)
             {
@@ -369,8 +369,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
     else
         out[0] = OutDeriv();
 
-    vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
-    vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
+    helper::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
+    helper::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
 
     int i = 0;
 
@@ -385,9 +385,9 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
         getVCenter(out[child]) = getVCenter(out[parent]) + cross(P-C, getVOrientation(out[parent]));
         //sout<<"P:"<< P  <<"- C: "<< C;
 
-        vector< sofa::component::container::Articulation* > articulations = (*ac)->getArticulations();
-        vector< sofa::component::container::Articulation* >::const_iterator a = articulations.begin();
-        vector< sofa::component::container::Articulation* >::const_iterator aEnd = articulations.end();
+        helper::vector< sofa::component::container::Articulation* > articulations = (*ac)->getArticulations();
+        helper::vector< sofa::component::container::Articulation* >::const_iterator a = articulations.begin();
+        helper::vector< sofa::component::container::Articulation* >::const_iterator aEnd = articulations.end();
 
         for (; a != aEnd; a++)
         {
@@ -449,8 +449,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
     OutVecDeriv fObjects6DBuf = in;
     InVecDeriv OutBuf = out;
 
-    vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.end();
-    vector< sofa::component::container::ArticulationCenter* >::const_iterator acBegin = articulationCenters.begin();
+    helper::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.end();
+    helper::vector< sofa::component::container::ArticulationCenter* >::const_iterator acBegin = articulationCenters.begin();
 
     int i=ArticulationAxis.size();
     while (ac != acBegin)
@@ -464,10 +464,10 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
         sofa::defaulttype::Vec<3,OutReal> C = xto[child].getCenter();
         getVOrientation(fObjects6DBuf[parent]) += getVOrientation(fObjects6DBuf[child]) + cross(C-P,  getVCenter(fObjects6DBuf[child]));
 
-        vector< sofa::component::container::Articulation* > articulations = (*ac)->getArticulations();
+        helper::vector< sofa::component::container::Articulation* > articulations = (*ac)->getArticulations();
 
-        vector< sofa::component::container::Articulation* >::const_iterator a = articulations.end();
-        vector< sofa::component::container::Articulation* >::const_iterator aBegin = articulations.begin();
+        helper::vector< sofa::component::container::Articulation* >::const_iterator a = articulations.end();
+        helper::vector< sofa::component::container::Articulation* >::const_iterator aBegin = articulations.begin();
 
         while (a != aBegin)
         {
@@ -555,17 +555,17 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
                 const OutDeriv valueConst = colIt.val();
 
                 sofa::defaulttype::Vec<3,OutReal> C = xto[childIndex].getCenter();
-                vector< sofa::component::container::ArticulationCenter* > ACList = ahc->getAcendantList(childIndex);
+                helper::vector< sofa::component::container::ArticulationCenter* > ACList = ahc->getAcendantList(childIndex);
 
-                vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = ACList.begin();
-                vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = ACList.end();
+                helper::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = ACList.begin();
+                helper::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = ACList.end();
 
                 for (; ac != acEnd; ac++)
                 {
-                    vector< sofa::component::container::Articulation* > articulations = (*ac)->getArticulations();
+                    helper::vector< sofa::component::container::Articulation* > articulations = (*ac)->getArticulations();
 
-                    vector< sofa::component::container::Articulation* >::const_iterator a = articulations.begin();
-                    vector< sofa::component::container::Articulation* >::const_iterator aEnd = articulations.end();
+                    helper::vector< sofa::component::container::Articulation* >::const_iterator a = articulations.begin();
+                    helper::vector< sofa::component::container::Articulation* >::const_iterator aEnd = articulations.end();
 
                     for (; a != aEnd; a++)
                     {
@@ -621,16 +621,16 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
     std::vector< sofa::defaulttype::Vector3 > points;
     std::vector< sofa::defaulttype::Vector3 > pointsLine;
 
-    vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
-    vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
+    helper::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
+    helper::vector< sofa::component::container::ArticulationCenter* >::const_iterator acEnd = articulationCenters.end();
     unsigned int i=0;
     for (; ac != acEnd; ac++)
     {
 //		int parent = (*ac)->parentIndex.getValue();
 //		int child = (*ac)->childIndex.getValue();
-        vector< sofa::component::container::Articulation* > articulations = (*ac)->getArticulations();
-        vector< sofa::component::container::Articulation* >::const_iterator a = articulations.begin();
-        vector< sofa::component::container::Articulation* >::const_iterator aEnd = articulations.end();
+        helper::vector< sofa::component::container::Articulation* > articulations = (*ac)->getArticulations();
+        helper::vector< sofa::component::container::Articulation* >::const_iterator a = articulations.begin();
+        helper::vector< sofa::component::container::Articulation* >::const_iterator aEnd = articulations.end();
         for (; a != aEnd; a++)
         {
 

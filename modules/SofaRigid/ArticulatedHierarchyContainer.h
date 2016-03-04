@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,12 +69,12 @@ public:
 
     void setFilename(std::string f) {filename.setValue(f);}
 
-    vector<ArticulationCenter*> getArticulationCenters() { return articulationCenters; }
+    helper::vector<ArticulationCenter*> getArticulationCenters() { return articulationCenters; }
     ArticulationCenter* getArticulationCenterAsChild(int index);
-    vector<ArticulationCenter*> getAcendantList(int index);
+    helper::vector<ArticulationCenter*> getAcendantList(int index);
 
-    vector<ArticulationCenter*> articulationCenters;
-    vector<ArticulationCenter*> acendantList;
+    helper::vector<ArticulationCenter*> articulationCenters;
+    helper::vector<ArticulationCenter*> acendantList;
 
     bool chargedFromFile;
     int numOfFrames;
@@ -117,7 +117,7 @@ public:
     */
 protected:
     ArticulationCenter();
-    ~ArticulationCenter() {};
+    ~ArticulationCenter() {}
 public:
     /**
     *	All DOF's can be identified, in an univocal way, by an index
@@ -162,7 +162,7 @@ public:
     ArticulatedHierarchyContainer::Transform H_p_pLc, H_c_cLp, H_pLc_cLp;
 
 
-    vector<Articulation*> articulations;
+    helper::vector<Articulation*> articulations;
 
     defaulttype::Vector3 posOnChildGlobal(defaulttype::Quat localToGlobal)
     {
@@ -199,7 +199,7 @@ public:
 
     }
 
-    vector<Articulation*>& getArticulations() { return articulations; }
+    helper::vector<Articulation*>& getArticulations() { return articulations; }
 
     defaulttype::Quat OrientationArticulationCenter;
     defaulttype::Vector3 DisplacementArticulationCenter;
@@ -228,7 +228,7 @@ public:
     */
 protected:
     Articulation();
-    ~Articulation() {};
+    ~Articulation() {}
 public:
     /**
     *	this variable defines the motion axis

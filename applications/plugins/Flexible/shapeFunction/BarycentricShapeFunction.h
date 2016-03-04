@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -31,8 +31,6 @@
 
 #include <algorithm>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -41,18 +39,16 @@ namespace component
 namespace shapefunction
 {
 
-using core::behavior::BaseShapeFunction;
-using defaulttype::Mat;
 /**
 Barycentric shape functions are the barycentric coordinates of points inside cells (can be edges, triangles, quads, tetrahedra, hexahedra)
   */
 
 template <class ShapeFunctionTypes_>
-class BarycentricShapeFunction : public BaseShapeFunction<ShapeFunctionTypes_>
+class BarycentricShapeFunction : public core::behavior::BaseShapeFunction<ShapeFunctionTypes_>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(BarycentricShapeFunction, ShapeFunctionTypes_) , SOFA_TEMPLATE(BaseShapeFunction, ShapeFunctionTypes_));
-    typedef BaseShapeFunction<ShapeFunctionTypes_> Inherit;
+    SOFA_CLASS(SOFA_TEMPLATE(BarycentricShapeFunction, ShapeFunctionTypes_) , SOFA_TEMPLATE(core::behavior::BaseShapeFunction, ShapeFunctionTypes_));
+    typedef core::behavior::BaseShapeFunction<ShapeFunctionTypes_> Inherit;
 
     typedef typename Inherit::Real Real;
     typedef typename Inherit::Coord Coord;
@@ -69,7 +65,7 @@ public:
     typedef typename Inherit::Gradient Gradient;
     typedef typename Inherit::Hessian Hessian;
     enum {spatial_dimensions=Inherit::spatial_dimensions};
-    typedef Mat<spatial_dimensions,spatial_dimensions,Real> Basis;
+    typedef defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> Basis;
     sofa::helper::vector<Basis> bases;
     Data< Real > f_tolerance;
     Cell cellIndex;  ///< used by external classes to retrieve the index of the cell where barycentric weights are computed from
@@ -151,7 +147,7 @@ protected:
 
         static void init( BarycentricShapeFunction<ShapeFunctionTypes_>* B )
         {
-            helper::ReadAccessor<Data<vector<Coord> > > parent(B->f_position);
+            helper::ReadAccessor<Data<helper::vector<Coord> > > parent(B->f_position);
             if(!parent.size()) { B->serr<<"Parent nodes not found"<<B->sendl; return; }
 
             const Topo::SeqTetrahedra& tetrahedra = B->parentTopology->getTetrahedra();
@@ -238,7 +234,7 @@ protected:
             // get parent topology and nodes
             if(!B->parentTopology) return;
 
-            helper::ReadAccessor<Data<vector<Coord> > > parent(B->f_position);
+            helper::ReadAccessor<Data<helper::vector<Coord> > > parent(B->f_position);
             if(!parent.size()) return;
 
             const Topo::SeqTetrahedra& tetrahedra = B->parentTopology->getTetrahedra();
@@ -431,7 +427,7 @@ protected:
 
         static void init( BarycentricShapeFunction<ShapeFunctionTypes_>* B )
         {
-            helper::ReadAccessor<Data<vector<Coord> > > parent(B->f_position);
+            helper::ReadAccessor<Data<helper::vector<Coord> > > parent(B->f_position);
             if(!parent.size()) { B->serr<<"Parent nodes not found"<<B->sendl; return; }
 
             const Topo::SeqTriangles& triangles = B->parentTopology->getTriangles();
@@ -487,7 +483,7 @@ protected:
             // get parent topology and nodes
             if(!B->parentTopology) return;
 
-            helper::ReadAccessor<Data<vector<Coord> > > parent(B->f_position);
+            helper::ReadAccessor<Data<helper::vector<Coord> > > parent(B->f_position);
             if(!parent.size()) return;
 
             const Topo::SeqTriangles& triangles = B->parentTopology->getTriangles();

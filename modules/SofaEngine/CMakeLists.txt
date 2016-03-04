@@ -10,6 +10,8 @@ set(HEADER_FILES
     ClusteringEngine.inl
     DilateEngine.h
     DilateEngine.inl
+    DifferenceEngine.h
+    DifferenceEngine.inl
     ExtrudeEdgesAndGenerateQuads.h
     ExtrudeEdgesAndGenerateQuads.inl
     ExtrudeQuadsAndGenerateHexas.h
@@ -81,6 +83,8 @@ set(HEADER_FILES
     RandomPointDistributionInSurface.inl
     RigidToQuatEngine.h
     RigidToQuatEngine.inl
+    SelectLabelROI.h
+    SelectConnectedLabelsROI.cpp
     ShapeMatching.h
     ShapeMatching.inl
     SmoothMeshEngine.h
@@ -113,6 +117,7 @@ set(SOURCE_FILES
     BoxROI.cpp
     ClusteringEngine.cpp
     DilateEngine.cpp
+    DifferenceEngine.cpp
     ExtrudeEdgesAndGenerateQuads.cpp
     ExtrudeQuadsAndGenerateHexas.cpp
     ExtrudeSurface.cpp
@@ -150,6 +155,8 @@ set(SOURCE_FILES
     ROIValueMapper.cpp
     RandomPointDistributionInSurface.cpp
     RigidToQuatEngine.cpp
+    SelectLabelROI.cpp
+    SelectConnectedLabelsROI.cpp
     ShapeMatching.cpp
     SmoothMeshEngine.cpp
     SphereROI.cpp

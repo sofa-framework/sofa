@@ -19,3 +19,5 @@ add_subdirectory(../SofaMiscTopology/SofaMiscTopology_test tests/SofaMiscTopolog
 add_subdirectory(../SofaRigid/SofaRigid_test tests/SofaRigid)
 add_subdirectory(../SofaSimpleFem/SofaSimpleFem_test tests/SofaSimpleFem)
 add_subdirectory(../sofa/simulation/simulation_test tests/simulation)
+add_subdirectory(../SofaComponentBase/SofaComponentBase_test tests/SofaComponentBase)
+

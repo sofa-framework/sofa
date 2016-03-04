@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,7 +35,6 @@
 
 namespace sofa
 {
-using helper::vector;
 
 namespace component
 {
@@ -215,7 +214,7 @@ public:
     }
 
     virtual const sofa::defaulttype::BaseMatrix* getJ() { return &jacobian; }
-    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs()    { return &baseMatrices; }
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs()    { return &baseMatrices; }
 
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
@@ -237,7 +236,7 @@ public:
 protected:
     VolumeMapping()
         : Inherit()
-        , offset(initData(&offset, vector<Real>((int)1,(Real)0.0), "offset", "offsets added to output volumes"))
+        , offset(initData(&offset, helper::vector<Real>((int)1,(Real)0.0), "offset", "offsets added to output volumes"))
         , f_nbMeshes( initData (&f_nbMeshes, (unsigned)1, "nbMeshes", "number of meshes to compute the volume for") )
         , vf_triangles(this,"triangles", "input triangles for mesh ")
         , vf_quads(this,"quads", "input quads for mesh ")
@@ -252,7 +251,7 @@ protected:
 
     virtual ~VolumeMapping() {}
 
-    Data<vector<Real> > offset;
+    Data<helper::vector<Real> > offset;
 
     Data<unsigned int> f_nbMeshes;
     helper::vectorData< SeqTriangles > vf_triangles;
@@ -260,8 +259,8 @@ protected:
     Data<bool> f_geometricStiffness; ///< should geometricStiffness be considered?
 
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
-    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
-    vector<SparseKMatrixEigen> hessian;
+    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    helper::vector<SparseKMatrixEigen> hessian;
     SparseKMatrixEigen K; ///< Stiffness due to the non-linearity of the mapping
 };
 

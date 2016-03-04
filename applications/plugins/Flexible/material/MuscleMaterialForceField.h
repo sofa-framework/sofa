@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,7 +38,6 @@ namespace component
 namespace forcefield
 {
 
-using helper::vector;
 
 /** Apply exponential law for active muscles
 */
@@ -56,13 +55,13 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<vector<Real> > f_lambda0;
-    Data<vector<Real> > f_sigmaMax;
-    Data<vector<Real> > f_a;
-    Data<vector<Real> > f_b;
-    Data<vector<Real> > f_Vvm;
-    Data<vector<Real> > f_Ver;
-    Data<vector<Real> > f_Vsh;
+    Data<helper::vector<Real> > f_lambda0;
+    Data<helper::vector<Real> > f_sigmaMax;
+    Data<helper::vector<Real> > f_a;
+    Data<helper::vector<Real> > f_b;
+    Data<helper::vector<Real> > f_Vvm;
+    Data<helper::vector<Real> > f_Ver;
+    Data<helper::vector<Real> > f_Vsh;
     //@}
 
     virtual void reinit()
@@ -93,13 +92,13 @@ public:
 protected:
     MuscleMaterialForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
-        , f_lambda0(initData(&f_lambda0,vector<Real>((int)1,(Real)1.),"lambda0","optimal fiber stretch"))
-        , f_sigmaMax(initData(&f_sigmaMax,vector<Real>((int)1,(Real)3E5),"sigmaMax","maximum isometric stress"))
-        , f_a(initData(&f_a,vector<Real>((int)1,(Real)0),"a","activation level"))
-        , f_b(initData(&f_b,vector<Real>((int)1,(Real)0.5),"b",""))
-        , f_Vvm(initData(&f_Vvm,vector<Real>((int)1,(Real)10),"Vvm",""))
-        , f_Ver(initData(&f_Ver,vector<Real>((int)1,(Real)0.5),"Ver",""))
-        , f_Vsh(initData(&f_Vsh,vector<Real>((int)1,(Real)0.3),"Vsh",""))
+        , f_lambda0(initData(&f_lambda0,helper::vector<Real>((int)1,(Real)1.),"lambda0","optimal fiber stretch"))
+        , f_sigmaMax(initData(&f_sigmaMax,helper::vector<Real>((int)1,(Real)3E5),"sigmaMax","maximum isometric stress"))
+        , f_a(initData(&f_a,helper::vector<Real>((int)1,(Real)0),"a","activation level"))
+        , f_b(initData(&f_b,helper::vector<Real>((int)1,(Real)0.5),"b",""))
+        , f_Vvm(initData(&f_Vvm,helper::vector<Real>((int)1,(Real)10),"Vvm",""))
+        , f_Ver(initData(&f_Ver,helper::vector<Real>((int)1,(Real)0.5),"Ver",""))
+        , f_Vsh(initData(&f_Vsh,helper::vector<Real>((int)1,(Real)0.3),"Vsh",""))
     {
         this->f_listening.setValue(true);
     }

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,18 +38,6 @@ namespace topology
 {
 class TriangleSetTopologyModifier;
 
-using core::topology::BaseMeshTopology;
-
-typedef BaseMeshTopology::PointID		            	PointID;
-typedef BaseMeshTopology::EdgeID		               	EdgeID;
-typedef BaseMeshTopology::TriangleID	               TriangleID;
-typedef BaseMeshTopology::Edge		        	         Edge;
-typedef BaseMeshTopology::Triangle	        	         Triangle;
-typedef BaseMeshTopology::SeqTriangles	        	      SeqTriangles;
-typedef BaseMeshTopology::EdgesInTriangle	         	EdgesInTriangle;
-typedef BaseMeshTopology::TrianglesAroundVertex    	TrianglesAroundVertex;
-typedef BaseMeshTopology::TrianglesAroundEdge        	TrianglesAroundEdge;
-typedef sofa::helper::vector<TriangleID>                  VecTriangleID;
 
 /*! \class TriangleSetTopologyContainer
 \brief: Object that stores a set of triangles and provides access
@@ -60,6 +48,21 @@ class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyContainer : public EdgeSetTopolo
 
 public:
     SOFA_CLASS(TriangleSetTopologyContainer,EdgeSetTopologyContainer);
+
+
+
+    typedef core::topology::BaseMeshTopology::PointID		            	PointID;
+    typedef core::topology::BaseMeshTopology::EdgeID		               	EdgeID;
+    typedef core::topology::BaseMeshTopology::TriangleID	               TriangleID;
+    typedef core::topology::BaseMeshTopology::Edge		        	         Edge;
+    typedef core::topology::BaseMeshTopology::Triangle	        	         Triangle;
+    typedef core::topology::BaseMeshTopology::SeqTriangles	        	      SeqTriangles;
+    typedef core::topology::BaseMeshTopology::EdgesInTriangle	         	EdgesInTriangle;
+    typedef core::topology::BaseMeshTopology::TrianglesAroundVertex    	TrianglesAroundVertex;
+    typedef core::topology::BaseMeshTopology::TrianglesAroundEdge        	TrianglesAroundEdge;
+    typedef sofa::helper::vector<TriangleID>                  VecTriangleID;
+
+
 protected:
     TriangleSetTopologyContainer();
 

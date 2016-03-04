@@ -154,8 +154,8 @@ struct DampedOscillator_test : public CompliantSolver_test
         MechanicalObject1::ReadVecCoord X = DOF->readPositions();
         MechanicalObject1::ReadVecDeriv V = DOF->readVelocities();
 
-        cout<<"computed x= "<< X[0][0] << " , v= " << V[0][0] << " , t= "<< t << endl;
-        cout<<"   exact x= "<< theoreticalPosition(t) << endl;
+        std::cout<<"computed x= "<< X[0][0] << " , v= " << V[0][0] << " , t= "<< t << std::endl;
+        std::cout<<"   exact x= "<< theoreticalPosition(t) << std::endl;
     }
 
 

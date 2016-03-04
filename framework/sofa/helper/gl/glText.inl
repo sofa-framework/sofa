@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,8 +56,10 @@ template <typename T>
 void GlText::draw(const T& text, const defaulttype::Vector3& position, const double& scale)
 {
     if (!s_asciiTexture)
+    {
         GlText::initTexture();
-
+        s_asciiTexture->init();
+    }
     defaulttype::Mat<4, 4, GLfloat> modelviewM;
 
     const unsigned int nb_char_width = 16;
@@ -73,17 +75,19 @@ void GlText::draw(const T& text, const defaulttype::Vector3& position, const dou
     std::vector<Vector3> vertices;
     std::vector<Vector2> UVs;
 
+    glPushAttrib(GL_TEXTURE_BIT);
     glEnable(GL_TEXTURE_2D);
 
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glEnable(GL_ALPHA_TEST);
     glAlphaFunc(GL_GREATER, 0.0);
 
-    s_asciiTexture->init();
+
     s_asciiTexture->bind();
 
     glDisable(GL_LIGHTING);
 
+    glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
 
     // Makes text always face the viewer by removing the scene rotation

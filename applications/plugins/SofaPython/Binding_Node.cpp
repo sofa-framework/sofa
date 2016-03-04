@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,6 +28,8 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/UpdateMappingVisitor.h>
+#include <sofa/simulation/common/VisualVisitor.h>
 #include "ScriptEnvironment.h"
 using namespace sofa::simulation;
 #include <sofa/core/ExecParams.h>
@@ -67,7 +69,7 @@ extern "C" PyObject * Node_simulationStep(PyObject * self, PyObject * args)
     if (!PyArg_ParseTuple(args, "d",&dt))
         Py_RETURN_NONE;
 
-    printf("Node_simulationStep node=%s dt=%f\n",node->getName().c_str(),(float)dt);
+//    printf("Node_simulationStep node=%s dt=%f\n",node->getName().c_str(),(float)dt);
 
     getSimulation()->animate ( node, (SReal)dt );
 //    simulation::getSimulation()->updateVisual( root );
@@ -121,7 +123,7 @@ extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args)
         }
     if (!childNode)
     {
-        SP_MESSAGE_ERROR( "Node.getChildNode("<<path<<") not found.")
+        SP_MESSAGE_ERROR( "Node.getChild(\""<<path<<"\") not found.")
         Py_RETURN_NONE;
     }
     return SP_BUILD_PYSPTR(childNode);
@@ -374,6 +376,8 @@ extern "C" PyObject * Node_propagatePositionAndVelocity(PyObject * self, PyObjec
     Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
     node->execute<MechanicalPropagatePositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance());
+    node->execute<UpdateMappingVisitor>(sofa::core::MechanicalParams::defaultInstance());
+    node->execute<VisualUpdateVisitor>(sofa::core::MechanicalParams::defaultInstance());
 
     Py_RETURN_NONE;
 }

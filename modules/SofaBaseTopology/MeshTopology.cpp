@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -105,10 +105,10 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
                 edgeMap[e]=edgeIndex;
                 seqEdges.push_back(e);
             }
-            else
-            {
-                edgeIndex=(*ite).second;
-            }
+//            else
+//            {
+//                edgeIndex=(*ite).second;
+//            }
             //m_edgesInTetrahedron[i][j]=edgeIndex;
         }
     }
@@ -145,10 +145,10 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
                 seqEdges.push_back(e);
 
             }
-            else
-            {
-                edgeIndex=(*ite).second;
-            }
+//            else
+//            {
+//                edgeIndex=(*ite).second;
+//            }
             //m_edgesInHexahedron[i][j]=edgeIndex;
         }
     }
@@ -190,10 +190,10 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
                 edgeMap[e]=edgeIndex;
                 seqEdges.push_back(e);
             }
-            else
-            {
-                edgeIndex=(*ite).second;
-            }
+//            else
+//            {
+//                edgeIndex=(*ite).second;
+//            }
             //m_edgesInTriangle[i][j]=edgeIndex;
         }
     }
@@ -221,10 +221,10 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
                 edgeMap[e]=edgeIndex;
                 seqEdges.push_back(e);
             }
-            else
-            {
-                edgeIndex=(*ite).second;
-            }
+//            else
+//            {
+//                edgeIndex=(*ite).second;
+//            }
             //m_edgesInQuad[i][j]=edgeIndex;
         }
     }
@@ -286,10 +286,10 @@ void MeshTopology::TriangleUpdate::update()
                 triangleMap[tr]=triangleIndex;
                 seqTriangles.push_back(tr);
             }
-            else
-            {
-                triangleIndex=(*itt).second;
-            }
+//            else
+//            {
+//                triangleIndex=(*itt).second;
+//            }
             //m_trianglesInTetrahedron[i][j]=triangleIndex;
         }
     }
@@ -352,10 +352,10 @@ void MeshTopology::QuadUpdate::update()
 
             seqQuads.push_back(qu);
         }
-        else
-        {
-            quadIndex=(*itt).second;
-        }
+//        else
+//        {
+//            quadIndex=(*itt).second;
+//        }
         //m_quadsInHexahedron[i][0]=quadIndex;
 
         // Quad 1 :
@@ -381,10 +381,10 @@ void MeshTopology::QuadUpdate::update()
             seqQuads.push_back(qu);
 
         }
-        else
-        {
-            quadIndex=(*itt).second;
-        }
+//        else
+//        {
+//            quadIndex=(*itt).second;
+//        }
         //m_quadsInHexahedron[i][1]=quadIndex;
 
         // Quad 2 :
@@ -409,10 +409,10 @@ void MeshTopology::QuadUpdate::update()
             quadMap[qu]=quadIndex;
             seqQuads.push_back(qu);
         }
-        else
-        {
-            quadIndex=(*itt).second;
-        }
+//        else
+//        {
+//            quadIndex=(*itt).second;
+//        }
         //m_quadsInHexahedron[i][2]=quadIndex;
 
         // Quad 3 :
@@ -437,10 +437,10 @@ void MeshTopology::QuadUpdate::update()
             quadMap[qu]=quadIndex;
             seqQuads.push_back(qu);
         }
-        else
-        {
-            quadIndex=(*itt).second;
-        }
+//        else
+//        {
+//            quadIndex=(*itt).second;
+//        }
         //m_quadsInHexahedron[i][3]=quadIndex;
 
         // Quad 4 :
@@ -465,10 +465,10 @@ void MeshTopology::QuadUpdate::update()
             quadMap[qu]=quadIndex;
             seqQuads.push_back(qu);
         }
-        else
-        {
-            quadIndex=(*itt).second;
-        }
+//        else
+//        {
+//            quadIndex=(*itt).second;
+//        }
         //m_quadsInHexahedron[i][4]=quadIndex;
 
         // Quad 5 :
@@ -493,10 +493,10 @@ void MeshTopology::QuadUpdate::update()
             quadMap[qu]=quadIndex;
             seqQuads.push_back(qu);
         }
-        else
-        {
-            quadIndex=(*itt).second;
-        }
+//        else
+//        {
+//            quadIndex=(*itt).second;
+//        }
         //m_quadsInHexahedron[i][5]=quadIndex;
     }
 
@@ -506,7 +506,6 @@ void MeshTopology::QuadUpdate::update()
 using namespace sofa::defaulttype;
 using core::topology::BaseMeshTopology;
 
-using namespace sofa::component::topology::internal;
 
 SOFA_DECL_CLASS(MeshTopology)
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -121,7 +121,7 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
             mesh = new helper::io::Mesh();
             for (unsigned int i = 0; i<vertices.getValue().size(); ++i)
                 mesh->getVertices().push_back(vertices.getValue()[i]);
-            const vector < vector <int> >& facets = this->facets.getValue();
+            const helper::vector < helper::vector <int> >& facets = this->facets.getValue();
             const SeqTriangles& triangles = this->input_triangles.getValue();
             const SeqQuads& quads = this->input_quads.getValue();
             mesh->getFacets().resize(facets.size() + triangles.size() + quads.size());
@@ -321,7 +321,7 @@ void SparseGridRamificationTopology::buildRamifiedFinestLevel()
     SeqHexahedra& hexahedra = *seqHexahedra.beginEdit();
 
 
-    vector< CubeCorners > cubeCorners; // saving temporary positions of all cube corners
+    helper::vector< CubeCorners > cubeCorners; // saving temporary positions of all cube corners
     for(unsigned i=0; i<hexahedra.size(); ++i)
     {
         CubeCorners c;
@@ -486,7 +486,7 @@ void SparseGridRamificationTopology::buildFromFiner()
 
 
 
-    vector< CubeCorners > cubeCorners; // saving temporary positions of all cube corners
+    helper::vector< CubeCorners > cubeCorners; // saving temporary positions of all cube corners
     MapBetweenCornerPositionAndIndice cubeCornerPositionIndiceMap; // to compute cube corner indice values
 
 
@@ -502,7 +502,7 @@ void SparseGridRamificationTopology::buildFromFiner()
                 int y = 2*j;
                 int z = 2*k;
 
-                fixed_array<int,8> fineIndices;
+                helper::fixed_array<int,8> fineIndices;
                 for(int idx=0; idx<8; ++idx)
                 {
                     const int idxX = x + (idx & 1);
@@ -569,7 +569,7 @@ void SparseGridRamificationTopology::buildFromFiner()
         helper::vector< unsigned > allFineConnexionsPlace;
 
 
-        fixed_array<int,8>& children = nonRamifiedHierarchicalCubeMap[idx]; // the child hexa
+        helper::fixed_array<int,8>& children = nonRamifiedHierarchicalCubeMap[idx]; // the child hexa
 
         for( int child = 0; child < 8 ; child ++)
         {
@@ -848,7 +848,7 @@ void SparseGridRamificationTopology::buildFromFiner()
 
     for(unsigned i=0 ; i<_connexions.size(); ++i)
     {
-        fixed_array<int,8> nonRamifiedFineIndices = nonRamifiedHierarchicalCubeMap[ i ];
+        helper::fixed_array<int,8> nonRamifiedFineIndices = nonRamifiedHierarchicalCubeMap[ i ];
 
         if( _connexions[i].size()==1 ) // 1 seule connexion pour l'element ==> element normal non ramifi� ==> meme enfants
         {
@@ -860,7 +860,7 @@ void SparseGridRamificationTopology::buildFromFiner()
 
             for( helper::vector<Connexion*>::iterator it = _connexions[i].begin(); it != _connexions[i].end() ; ++it)
             {
-                fixed_array<int,8> fineIndices;
+                helper::fixed_array<int,8> fineIndices;
 
                 for( std::list<Connexion::Children>::iterator child=(*it)->_children.begin(); child!=(*it)->_children.end(); ++child)
                 {

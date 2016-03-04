@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,6 +29,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <boost/static_assert.hpp>
 #include <iostream>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -835,7 +836,7 @@ bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 
         if (pivot <= (real) MIN_DETERMINANT)
         {
-            std::cerr<<"Warning (Mat.h) : invertMatrix finds too small determinant, matrix = "<<from<<std::endl;
+            msg_error("Mat") << "invertMatrix finds too small determinant, matrix = "<<from;
             return false;
         }
 
@@ -877,7 +878,7 @@ bool invertMatrix(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
 
     if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
     {
-        std::cerr<<"Warning (Mat.h) : invertMatrix finds too small determinant, matrix = "<<from<<std::endl;
+        msg_error("Mat") << "invertMatrix finds too small determinant, matrix = "<<from;
         return false;
     }
 
@@ -902,7 +903,7 @@ bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
 
     if ( -(real) MIN_DETERMINANT<=det && det<=(real) MIN_DETERMINANT)
     {
-        std::cerr<<"Warning (Mat.h) : invertMatrix finds too small determinant, matrix = "<<from<<std::endl;
+        msg_error("Mat") << "invertMatrix finds too small determinant, matrix = "<<from;
         return false;
     }
 

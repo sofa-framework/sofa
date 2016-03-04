@@ -13,7 +13,7 @@ namespace component {
 namespace linearsolver {
 
 SOFA_DECL_CLASS(BiCgStabSolver)
-static int BiCgStabSolverClass = core::RegisterObject("Sparse biCGStab linear solver").add< BiCgStabSolver >();
+const int BiCgStabSolverClass = core::RegisterObject("Sparse biCGStab linear solver").add< BiCgStabSolver >();
 
 BiCgStabSolver::BiCgStabSolver()
 {

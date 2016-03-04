@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -113,18 +113,18 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
         // end simulation
         // test convergence
         if( n==nMax )
-            ADD_FAILURE() << "Solver test has not converged in " << nMax << " iterations, precision = " << precision << endl
-                          <<" previous x = " << x0.transpose() << endl
-                          <<" current x  = " << x1.transpose() << endl
-                          <<" previous v = " << v0.transpose() << endl
-                          <<" current v  = " << v1.transpose() << endl;
+            ADD_FAILURE() << "Solver test has not converged in " << nMax << " iterations, precision = " << precision << std::endl
+                          <<" previous x = " << x0.transpose() << std::endl
+                          <<" current x  = " << x1.transpose() << std::endl
+                          <<" previous v = " << v0.transpose() << std::endl
+                          <<" current v  = " << v1.transpose() << std::endl;
 
         // test position of the second particle
         Vec3d actual( x0[3],x0[4],x0[5]); // position of second particle after relaxation
         if( vectorMaxDiff(expected,actual)>precision )
             ADD_FAILURE() << "Solver test has not converged to the expected position" <<
-                             " expected: " << expected << endl <<
-                             " actual " << actual << endl;
+                             " expected: " << expected << std::endl <<
+                             " actual " << actual << std::endl;
 
     }
 };
@@ -222,18 +222,18 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
         // end simulation
         // test convergence
         if( n==nMax )
-            ADD_FAILURE() << "Solver test has not converged in " << nMax << " iterations, precision = " << precision << endl
-                          <<" previous x = " << x0.transpose() << endl
-                          <<" current x  = " << x1.transpose() << endl
-                          <<" previous v = " << v0.transpose() << endl
-                          <<" current v  = " << v1.transpose() << endl;
+            ADD_FAILURE() << "Solver test has not converged in " << nMax << " iterations, precision = " << precision << std::endl
+                          <<" previous x = " << x0.transpose() << std::endl
+                          <<" current x  = " << x1.transpose() << std::endl
+                          <<" previous v = " << v0.transpose() << std::endl
+                          <<" current v  = " << v1.transpose() << std::endl;
 
         // test position of the second particle
         Vec3d actual( x0[3],x0[4],x0[5]); // position of second particle after relaxation
         if( vectorMaxDiff(expected,actual)>precision )
             ADD_FAILURE() << "Solver test has not converged to the expected position" <<
-                             " expected: " << expected << endl <<
-                             " actual " << actual << endl;
+                             " expected: " << expected << std::endl <<
+                             " actual " << actual << std::endl;
 
     }
 

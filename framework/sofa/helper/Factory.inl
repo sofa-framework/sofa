@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,8 +29,8 @@
 #include <iostream>
 #include <typeinfo>
 
-#include <sofa/helper/Logger.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -122,13 +122,13 @@ bool Factory<TKey, TObject, TArgument, TPtr>::duplicateEntry( Key existing, Key 
 {
     if( !hasKey(existing) )
     {
-        Logger::getMainLogger().log(Logger::Error, std::string("Key not found: ") + existing, "Factory::duplicateEntry()");
+        msg_error("Factory::duplicateEntry()") << "Key not found: " << existing;
         return false;
     }
 
     if( hasKey(duplicate) )
     {
-        Logger::getMainLogger().log(Logger::Error, std::string("Key already exists: ") + duplicate + ", you must call resetEntry(" + duplicate + "," + existing + ") first.", "Factory::duplicateEntry()");
+        msg_error("Factory::duplicateEntry()") << "Key already exists: " << duplicate << ", you must call resetEntry(" << duplicate << "," << existing << ") first." ;
         return false;
     }
 
@@ -154,7 +154,7 @@ bool Factory<TKey, TObject, TArgument, TPtr>::resetEntry( Key existingKey)
 {
     if( !hasKey(existingKey) )
     {
-        Logger::getMainLogger().log(Logger::Error, std::string("Key not found: ") + existingKey, "Factory::resetEntry()");
+        msg_error("Factory::resetEntry()") << "Key not found: " << existingKey;
         return false;
     }
 

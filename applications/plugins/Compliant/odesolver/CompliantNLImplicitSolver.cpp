@@ -248,9 +248,9 @@ public:
 };
 
 
-SReal CompliantNLImplicitSolver::compute_residual( SolverOperations sop, MultiVecDerivId residual,
-                                      MultiVecCoordId newX, const MultiVecDerivId newV, MultiVecDerivId newF,
-                                      MultiVecCoordId oldX, MultiVecDerivId oldV, MultiVecDerivId oldF,
+SReal CompliantNLImplicitSolver::compute_residual( SolverOperations sop, core::MultiVecDerivId residual,
+                                      core::MultiVecCoordId newX, const core::MultiVecDerivId newV, core::MultiVecDerivId newF,
+                                      core::MultiVecCoordId oldX, core::MultiVecDerivId oldV, core::MultiVecDerivId oldF,
                                       const vec& lambda, chuck_type* residual_constraints )
 {
     const SReal h = sop.mparams().dt();
@@ -729,7 +729,7 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
 
 
 
-bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, SReal stpmax, SolverOperations sop, MultiVecDerivId err, MultiVecCoordId newX, const MultiVecDerivId newV, MultiVecDerivId newF, MultiVecCoordId oldX, MultiVecDerivId oldV, MultiVecDerivId oldF )
+bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, SReal stpmax, SolverOperations sop, core::MultiVecDerivId err, core::MultiVecCoordId newX, const core::MultiVecDerivId newV, core::MultiVecDerivId newF, core::MultiVecCoordId oldX, core::MultiVecDerivId oldV, core::MultiVecDerivId oldF )
 {
     static const SReal ALF=1.0e-4, TOLX=std::numeric_limits<SReal>::epsilon();
     static const SReal MINIMALSTEP = exp(log(std::numeric_limits<SReal>::epsilon())/4.0); // to increase the smallest amount of correction

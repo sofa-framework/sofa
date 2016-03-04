@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,8 +38,6 @@ namespace component
 namespace forcefield
 {
 
-using helper::vector;
-
 
 /** Ogden compressible energy with N=3 (note that a more generic implementation for any N is possible)
     W = sum(1<=i=<N) mui/alphai (~U1^alphai+~U2^alphai+~U3^alphai-3) + sum(1<=i=<N) 1/di(J-1)^{2i} with J = U1*U2*U3 and ~Ui=J^{-1/3}Ui deviatoric principal stretches
@@ -57,15 +55,15 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<vector<Real> > f_mu1;
-    Data<vector<Real> > f_mu2;
-    Data<vector<Real> > f_mu3;
-    Data<vector<Real> > f_alpha1;
-    Data<vector<Real> > f_alpha2;
-    Data<vector<Real> > f_alpha3;
-    Data<vector<Real> > f_d1;
-    Data<vector<Real> > f_d2;
-    Data<vector<Real> > f_d3;
+    Data<helper::vector<Real> > f_mu1;
+    Data<helper::vector<Real> > f_mu2;
+    Data<helper::vector<Real> > f_mu3;
+    Data<helper::vector<Real> > f_alpha1;
+    Data<helper::vector<Real> > f_alpha2;
+    Data<helper::vector<Real> > f_alpha3;
+    Data<helper::vector<Real> > f_d1;
+    Data<helper::vector<Real> > f_d2;
+    Data<helper::vector<Real> > f_d3;
     Data<bool > f_PSDStabilization;
     //@}
 
@@ -103,15 +101,15 @@ public:
 protected:
     OgdenForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
-        , f_mu1(initData(&f_mu1,vector<Real>((int)1,(Real)1000),"mu1",""))
-        , f_mu2(initData(&f_mu2,vector<Real>((int)1,(Real)1000),"mu2",""))
-        , f_mu3(initData(&f_mu3,vector<Real>((int)1,(Real)1000),"mu3",""))
-        , f_alpha1(initData(&f_alpha1,vector<Real>((int)1,(Real)1000),"alpha1",""))
-        , f_alpha2(initData(&f_alpha2,vector<Real>((int)1,(Real)1000),"alpha2",""))
-        , f_alpha3(initData(&f_alpha3,vector<Real>((int)1,(Real)1000),"alpha3",""))
-        , f_d1(initData(&f_d1,vector<Real>((int)1,(Real)1000),"d1",""))
-        , f_d2(initData(&f_d2,vector<Real>((int)1,(Real)1000),"d2",""))
-        , f_d3(initData(&f_d3,vector<Real>((int)1,(Real)1000),"d3",""))
+        , f_mu1(initData(&f_mu1,helper::vector<Real>((int)1,(Real)1000),"mu1",""))
+        , f_mu2(initData(&f_mu2,helper::vector<Real>((int)1,(Real)1000),"mu2",""))
+        , f_mu3(initData(&f_mu3,helper::vector<Real>((int)1,(Real)1000),"mu3",""))
+        , f_alpha1(initData(&f_alpha1,helper::vector<Real>((int)1,(Real)1000),"alpha1",""))
+        , f_alpha2(initData(&f_alpha2,helper::vector<Real>((int)1,(Real)1000),"alpha2",""))
+        , f_alpha3(initData(&f_alpha3,helper::vector<Real>((int)1,(Real)1000),"alpha3",""))
+        , f_d1(initData(&f_d1,helper::vector<Real>((int)1,(Real)1000),"d1",""))
+        , f_d2(initData(&f_d2,helper::vector<Real>((int)1,(Real)1000),"d2",""))
+        , f_d3(initData(&f_d3,helper::vector<Real>((int)1,(Real)1000),"d3",""))
         , f_PSDStabilization(initData(&f_PSDStabilization,false,"PSDStabilization","project stiffness matrix to its nearest symmetric, positive semi-definite matrix"))
     {
         this->f_listening.setValue(true);

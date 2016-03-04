@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -247,8 +247,8 @@ void TextureInterpolation<DataTypes>::standardLinearInterpolation()
     {
         const Coord3D& p0 = coords[i];
         Coord2D& textC = outputs[i];
-        textC[0] = (p0[axe1] - Cmin[axe1])*Uscale;
-        textC[1] = (p0[axe2] - Cmin[axe2])*Vscale;
+        textC[0] = (Real)((p0[axe1] - Cmin[axe1])*Uscale);
+        textC[1] = (Real)((p0[axe2] - Cmin[axe2])*Vscale);
     }
 
     _outputCoord.endEdit();

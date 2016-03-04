@@ -44,7 +44,7 @@ namespace component {
 namespace linearsolver {
 
 SOFA_DECL_CLASS(ModulusSolver)
-static int ModulusSolverClass = core::RegisterObject("Modulus solver").add< ModulusSolver >();
+const int ModulusSolverClass = core::RegisterObject("Modulus solver").add< ModulusSolver >();
 
 
 
@@ -92,9 +92,8 @@ void ModulusSolver::factor(const system_type& sys) {
         }
 
         typedef linearsolver::CoulombConstraintBase proj_type;
-        proj_type* proj = dynamic_cast<proj_type*>(sys.constraints[i].projector.get());
-
-        if( proj ) {
+        Constraint* c = sys.constraints[i].projector.get();
+        if( c && proj_type::checkConstraintType(c) ) {
             assert( dim % 3 == 0 && "non vec3 dofs not handled");
             for(unsigned j = 0, je = dim / 3; j < je; ++j) {
                 // set both tangent values to max tangent value

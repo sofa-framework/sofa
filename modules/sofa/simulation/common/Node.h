@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -78,8 +78,6 @@ namespace simulation
 class Visitor;
 }
 }
-using sofa::simulation::Visitor;
-using sofa::simulation::VisitorScheduler;
 
 #include <sofa/helper/system/thread/CTime.h>
 #include <string>
@@ -134,8 +132,8 @@ public:
     void reinit(const core::ExecParams* params);
     /// Do one step forward in time
 //    void animate(const core::ExecParams* params, SReal dt);
-    /// Draw the objects in an OpenGl context
-    void glDraw(core::visual::VisualParams* params);
+    /// Draw the objects (using visual visitors)
+    void draw(core::visual::VisualParams* params);
     /// @}
 
     /// @name Visitor handling

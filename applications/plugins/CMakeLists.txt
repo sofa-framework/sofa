@@ -33,3 +33,9 @@ sofa_add_plugin(SofaCUDA SofaCUDA)
 sofa_add_plugin(SofaHAPI SofaHAPI)
 sofa_add_plugin(THMPGSpatialHashing THMPGSpatialHashing)
 sofa_add_plugin(SofaCarving SofaCarving)
+sofa_add_plugin(RigidScale RigidScale)
+sofa_add_plugin(LeapMotion LeapMotion)
+
+if((${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") AND (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
+    sofa_add_plugin(SofaPardisoSolver SofaPardisoSolver) # SofaPardisoSolver is only available under linux with gcc
+endif()

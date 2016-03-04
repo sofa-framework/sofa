@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,11 +24,12 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/helper/Logger.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <map>
 #include <typeinfo>
 #include <string.h>
 #include <sstream>
+
 
 namespace sofa
 {
@@ -44,6 +45,8 @@ static const std::string unnamed_label=std::string("unnamed");
 
 Base::Base()
     : ref_counter(0)
+    , serr(_serr)
+    , sout(_sout)
     , name(initData(&name,unnamed_label,"name","object name"))
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, print logs at run-time"))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
@@ -244,56 +247,43 @@ void Base::setName(const std::string& n, int counter)
 
 void Base::processStream(std::ostream& out)
 {
-    using sofa::helper::Logger;
-    const std::string name = getClassName() + " \"" + getName() + "\"";
+    // const std::string name = getClassName() + " \"" + getName() + "\"";
 
-    if (&out == &serr)
+    if (serr==out)
     {
         std::string str = serr.str();
         serr << "\n";
 
-        getComponentLogger().log(Logger::Warning, str, name);
+        helper::logging::MessageDispatcher::log(serr.messageClass(), serr.messageType(), this, serr.fileInfo()) << str;
 
         if (warnings.size()+str.size() >= MAXLOGSIZE)
         {
             const std::string msg = "Log overflow! Resetting serr buffer.";
-            getComponentLogger().log(Logger::Warning, msg, name);
+            msg_warning(this) << msg;
             warnings.clear();
             warnings = msg;
         }
         warnings += str;
-        serr.str("");
+        serr.clear();
     }
-    else if (&out == &sout)
+    else if (sout==out)
     {
         std::string str = sout.str();
         sout << "\n";
         if (f_printLog.getValue())
         {
-            getComponentLogger().log(Logger::Info, str, name);
+            helper::logging::MessageDispatcher::log(serr.messageClass(), sout.messageType(), this, sout.fileInfo()) << str;
         }
         if (outputs.size()+str.size() >= MAXLOGSIZE)
         {
             const std::string msg = "Log overflow! Resetting sout buffer.";
-            getComponentLogger().log(Logger::Warning, msg, name);
+            msg_warning(this) << msg;
             outputs.clear();
             outputs = msg;
         }
         outputs += str;
-        sout.str("");
+        sout.clear();
     }
-}
-
-helper::Logger::SPtr Base::s_componentLogger = helper::Logger::SPtr(new helper::TTYLogger());
-
-helper::Logger& Base::getComponentLogger()
-{
-    return *s_componentLogger.get();
-}
-
-void Base::setComponentLogger(helper::Logger::SPtr logger)
-{
-    s_componentLogger = logger;
 }
 
 const std::string& Base::getWarnings() const
@@ -420,7 +410,7 @@ bool Base::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseL
 
 void* Base::findLinkDestClass(const BaseClass* /*destType*/, const std::string& /*path*/, const BaseLink* /*link*/)
 {
-    std::cerr << "Base: calling unimplemented findLinkDest method" << std::endl;
+    serr << "Base: calling unimplemented findLinkDest method" << sendl;
     return NULL;
 }
 

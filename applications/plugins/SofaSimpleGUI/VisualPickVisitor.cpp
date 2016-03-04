@@ -17,7 +17,7 @@ VisualPickVisitor::VisualPickVisitor(core::visual::VisualParams* params)
 }
 
 
-Visitor::Result VisualPickVisitor::processNodeTopDown(simulation::Node* node)
+simulation::Visitor::Result VisualPickVisitor::processNodeTopDown(simulation::Node* node)
 {
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
     glPushMatrix();

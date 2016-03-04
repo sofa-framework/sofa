@@ -10,6 +10,7 @@ from Tools import listToStr as concat
 import units
 import mass
 import DAGValidation
+import SofaPython.MeshLoader
 
 def parseIdName(obj,objXml):
     """ set id and name of obj
@@ -67,11 +68,19 @@ class Model:
                     self.group[g.attrib["id"]].data[d.attrib["name"]]=parseData(d)
                 parseTag(self.group[g.attrib["id"]], g)
 
+        def load(self):
+            if self.format.lower() == "obj":
+                return SofaPython.MeshLoader.loadOBJ(self.source)
+            else:
+                Sofa.msg_error("SofaPython.sml","Mesh: format "+self.format+" not yet loadable")
+                return SofaPython.MeshLoader.Mesh()
+
     class MeshAttributes:
         def __init__(self,objXml=None):
             self.collision=True
             self.simulation=True
             self.visual=True
+            self.tags = set()
             if not objXml is None:
                 self.parseXml(objXml)
 
@@ -82,6 +91,7 @@ class Model:
                 self.simulation = False if objXml.attrib["simulation"] in {'False','0','false'} else True
             if "visual" in objXml.attrib:
                 self.visual = False if objXml.attrib["visual"] in {'False','0','false'} else True
+            parseTag(self, objXml)
 
     class Solid:
         def __init__(self, solidXml=None):
@@ -239,19 +249,19 @@ class Model:
             for m in modelXml.iter("mesh"):
                 if not m.find("source") is None:
                     if m.attrib["id"] in self.meshes:
-                        print "WARNING: sml.Model: mesh id {0} already defined".format(m.attrib["id"])
+                        Sofa.msg_warning("SofaPython.sml","Model: mesh id {0} already defined".format(m.attrib["id"]) )
                     mesh = Model.Mesh(m)
                     sourceFullPath = os.path.join(self.modelDir,mesh.source)
                     if os.path.exists(sourceFullPath):
                         mesh.source=sourceFullPath
                     else:
-                        print "WARNING: sml.Model: mesh not found:", mesh.source
+                        Sofa.msg_warning("SofaPython.sml","Model: mesh not found: "+mesh.source )
                     self.meshes[m.attrib["id"]] = mesh
                     
             # solids
             for objXml in modelXml.iter("solid"):
                 if objXml.attrib["id"] in self.solids:
-                    print "ERROR: sml.Model: solid defined twice, id:", r.attrib["id"]
+                    Sofa.msg_error("SofaPython.sml","Model: solid defined twice, id:" + objXml.attrib["id"])
                     continue
                 solid=Model.Solid(objXml)
                 self.parseMeshes(solid, objXml)
@@ -263,20 +273,20 @@ class Model:
                 # TODO: support multiple meshes for skinning (currently only the first mesh is skinned)
                 for s in objXml.iter("skinning"):
                     if not s.attrib["solid"] in self.solids:
-                        print "ERROR: sml.Model: skinning for solid {0}: solid {1} is not defined".format(solid.name, s.attrib["solid"])
+                        Sofa.msg_error("SofaPython.sml","Model: skinning for solid {0}: solid {1} is not defined".format(solid.name, s.attrib["solid"]) )
                         continue
                     skinning = Model.Skinning()
                     if not s.attrib["solid"] in self.solids :
-                        print "ERROR: sml.Model: skinning for solid {0}: bone (solid) {1} not defined".format(solid.name, s.attrib["solid"])
+                        Sofa.msg_error("SofaPython.sml","Model: skinning for solid {0}: bone (solid) {1} not defined".format(solid.name, s.attrib["solid"]) )
                         continue
                     skinning.solid = self.solids[s.attrib["solid"]]
                     if not s.attrib["mesh"] in self.meshes :
-                        print "ERROR: sml.Model: skinning for solid {0}: mesh {1} not defined".format(solid.name, s.attrib["mesh"])
+                        Sofa.msg_error("SofaPython.sml","Model: skinning for solid {0}: mesh {1} not defined".format(solid.name, s.attrib["mesh"]) )
                         continue
                     skinning.mesh = self.meshes[s.attrib["mesh"]]
                     #TODO: check that this mesh is also part of the solid
                     if not (s.attrib["group"] in skinning.mesh.group and s.attrib["weight"] in skinning.mesh.group[s.attrib["group"]].data):
-                        print "ERROR: sml.Model: skinning for solid {0}: mesh {1} - group {2} - weight {3} is not defined".format(name, s.attrib["mesh"], s.attrib["group"], s.attrib["weight"])
+                        Sofa.msg_error("SofaPython.sml","Model: skinning for solid {0}: mesh {1} - group {2} - weight {3} is not defined".format(solid.name, s.attrib["mesh"], s.attrib["group"], s.attrib["weight"]))
                         continue
                     skinning.index = skinning.mesh.group[s.attrib["group"]].index
                     skinning.weight = skinning.mesh.group[s.attrib["group"]].data[s.attrib["weight"]]
@@ -290,7 +300,7 @@ class Model:
             # contacts
             for c in modelXml.iter("surfaceLink"):
                 if c.attrib["id"] in self.surfaceLinks:
-                    print "ERROR: sml.Model: surfaceLink defined twice, id:", c.attrib["id"]
+                    Sofa.msg_error("SofaPython.sml","Model: surfaceLink defined twice, id:", c.attrib["id"])
                     continue
                 surfaceLink = Model.SurfaceLink(c)
                 surfaces=c.findall("surface")
@@ -299,11 +309,11 @@ class Model:
                     if s.attrib["solid"] in self.solids:
                         surfaceLink.surfaces[i].solid = self.solids[s.attrib["solid"]]
                     else:
-                        print "ERROR: sml.Model: in contact {0}, unknown solid {1} referenced".format(surfaceLink.name, s.attrib["solid"])
+                        Sofa.msg_error("SofaPython.sml","Model: in contact {0}, unknown solid {1} referenced".format(surfaceLink.name, s.attrib["solid"]))
                     if s.attrib["mesh"] in self.meshes:
                         surfaceLink.surfaces[i].mesh = self.meshes[s.attrib["mesh"]]
                     else:
-                        print "ERROR: sml.Model: in contact {0}, unknown mesh {1} referenced".format(surfaceLink.name, s.attrib["mesh"])
+                        Sofa.msg_error("SofaPython.sml","Model: in contact {0}, unknown mesh {1} referenced".format(surfaceLink.name, s.attrib["mesh"]))
                     if "group" in s.attrib: # optional
                         if len(s.attrib["group"]): # discard empty string
                             surfaceLink.surfaces[i].group = s.attrib["group"]
@@ -329,12 +339,12 @@ class Model:
             if meshId in self.meshes:
                 obj.addMesh(self.meshes[meshId], attr)
             else:
-                print "ERROR: sml.Model: solid {0} references undefined mesh {1}".format(obj.name, meshId)
+                Sofa.msg_error("SofaPython.sml","Model: solid {0} references undefined mesh {1}".format(obj.name, meshId))
 
     def parseJointGenerics(self,modelXml):
         for j in modelXml.iter("jointGeneric"):
             if j.attrib["id"] in self.genericJoints:
-                print "ERROR: sml.Model: jointGeneric defined twice, id:", j.attrib["id"]
+                Sofa.msg_error("SofaPython.sml","Model: jointGeneric defined twice, id:", j.attrib["id"])
                 continue
 
             joint=Model.JointGeneric(j)
@@ -343,7 +353,7 @@ class Model:
                 if o.attrib["id"] in self.solids:
                     joint.solids[i] = self.solids[o.attrib["id"]]
                 else:
-                    print "ERROR: sml.Model: in joint {0}, unknown solid {1} referenced".format(joint.name, o.attrib["id"])
+                    Sofa.msg_error("SofaPython.sml","Model: in joint {0}, unknown solid {1} referenced".format(joint.name, o.attrib["id"]))
             self.genericJoints[joint.id]=joint
 
     def _setTagFromTag(self, tag, newTag, objects, objectsByTag):
@@ -397,7 +407,7 @@ def setupUnits(myUnits):
     for quantity,unit in myUnits.iteritems():
         exec("units.local_{0} = units.{0}_{1}".format(quantity,unit))
         message+=" "+quantity+":"+unit
-    print message    
+    Sofa.msg_info("SofaPython.sml",message)
 
 def getSolidRigidMassInfo(solid, density):
     massInfo = mass.RigidMassInfo()
@@ -495,9 +505,9 @@ class BaseScene:
     def dagValidation(self):
         err = DAGValidation.test( self.root, True )
         if not len(err) is 0:
-            print "ERROR (SofaPython.BaseScene) your DAG scene is not valid"
+            Sofa.msg_error("SofaPython.sml","BaseScene: your DAG scene is not valid")
             for e in err:
-                print e
+                Sofa.msg_error("SofaPython.sml",e)
 
 class SceneDisplay(BaseScene):
     """ Creates a scene to display solid meshes
@@ -521,6 +531,6 @@ class SceneDisplay(BaseScene):
     def createScene(self):
         model=self.model # shortcut
         for solid in model.solids.values():
-            print "Display solid:", solid.name
+            Sofa.msg_info("SofaPython.sml","SceneDisplay: Display solid:" + solid.name)
             color = self.getTagColor(solid.tags)
             insertVisual(self.node, solid, color)

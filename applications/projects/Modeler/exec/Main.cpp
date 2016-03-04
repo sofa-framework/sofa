@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -32,6 +32,7 @@
 #include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
+#include <sofa/helper/logging/Messaging.h>
 
 #include <SofaComponentBase/initComponentBase.h>
 #include <SofaComponentCommon/initComponentCommon.h>
@@ -60,6 +61,7 @@ int main(int argc, char** argv)
     sofa::component::initComponentAdvanced();
     sofa::component::initComponentMisc();
 
+    // TODO: create additionnal handlers depending on command-line parameters
 
     QApplication* application = new QApplication(argc, argv);
     (void)application;

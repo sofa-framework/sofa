@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,7 +27,6 @@
 #include "config.h"
 
 #include <stdlib.h>
-#include <vector>
 #include <string>
 #include <iostream>
 #include <sofa/core/topology/Topology.h>
@@ -45,20 +44,8 @@ namespace component
 namespace topology
 {
 
-
-using helper::vector;
-using helper::fixed_array;
-using sofa::defaulttype::Vector2;
-
-using sofa::core::topology::Topology;
-
-
 class MeshTopology;
-namespace internal
-{
 
-
-}
 
 
 class SOFA_BASE_TOPOLOGY_API MeshTopology : public core::topology::BaseMeshTopology
@@ -143,8 +130,8 @@ public:
 
     // If using STEP loader, include also uv coordinates
     typedef index_type					UVID;
-    typedef Vector2						UV;
-    typedef vector<Vector2>				SeqUV;
+    typedef defaulttype::Vector2						UV;
+    typedef helper::vector<UV>				SeqUV;
     virtual const SeqUV& getUVs();
     virtual int getNbUVs();
     virtual const UV getUV(UVID i);
@@ -202,12 +189,12 @@ public:
     virtual unsigned int getNumberOfConnectedComponent();
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-    virtual const sofa::helper::vector<unsigned int> getConnectedElement(unsigned int elem);
+    virtual const helper::vector<unsigned int> getConnectedElement(unsigned int elem);
 
     /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-    virtual const sofa::helper::vector<unsigned int> getElementAroundElement(unsigned int elem);
+    virtual const helper::vector<unsigned int> getElementAroundElement(unsigned int elem);
     /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-    virtual const sofa::helper::vector<unsigned int> getElementAroundElements(sofa::helper::vector<unsigned int> elems);
+    virtual const helper::vector<unsigned int> getElementAroundElements(helper::vector<unsigned int> elems);
     /// @}
 
     // Get point positions (same methods as points accessors but not inherited)
@@ -272,13 +259,13 @@ public:
     void reOrientateTriangle(TriangleID id);
 
     // functions returning border elements. To be moved in a mapping.
-    //virtual const sofa::helper::vector <TriangleID>& getTrianglesOnBorder();
+    //virtual const helper::vector <TriangleID>& getTrianglesOnBorder();
 
-    //virtual const sofa::helper::vector <EdgeID>& getEdgesOnBorder();
+    //virtual const helper::vector <EdgeID>& getEdgesOnBorder();
 
-    //virtual const sofa::helper::vector <PointID>& getPointsOnBorder();
+    //virtual const helper::vector <PointID>& getPointsOnBorder();
 public:
-    typedef vector<defaulttype::Vec<3, SReal > > SeqPoints;
+    typedef helper::vector<defaulttype::Vec<3, SReal > > SeqPoints;
     Data< SeqPoints > seqPoints;
     Data<SeqEdges> seqEdges;
     Data<SeqTriangles> seqTriangles;
@@ -302,64 +289,64 @@ protected:
 
 
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
-    vector< EdgesAroundVertex > m_edgesAroundVertex;
+    helper::vector< EdgesAroundVertex > m_edgesAroundVertex;
 
     /** the array that stores the set of oriented edge-vertex shells, ie for each vertex gives the set of adjacent edges */
-    vector< EdgesAroundVertex > m_orientedEdgesAroundVertex;
+    helper::vector< EdgesAroundVertex > m_orientedEdgesAroundVertex;
 
     /** the array that stores the set of edge-triangle shells, ie for each triangle gives the 3 adjacent edges */
-    vector< EdgesInTriangle > m_edgesInTriangle;
+    helper::vector< EdgesInTriangle > m_edgesInTriangle;
 
     /// provides the 4 edges in each quad
-    vector< EdgesInQuad > m_edgesInQuad;
+    helper::vector< EdgesInQuad > m_edgesInQuad;
 
     /// provides the set of edges for each tetrahedron
-    vector< EdgesInTetrahedron > m_edgesInTetrahedron;
+    helper::vector< EdgesInTetrahedron > m_edgesInTetrahedron;
 
     /// provides the set of edges for each hexahedron
-    vector< EdgesInHexahedron > m_edgesInHexahedron;
+    helper::vector< EdgesInHexahedron > m_edgesInHexahedron;
 
     /// for each vertex provides the set of triangles adjacent to that vertex
-    vector< TrianglesAroundVertex > m_trianglesAroundVertex;
+    helper::vector< TrianglesAroundVertex > m_trianglesAroundVertex;
 
     /// for each vertex provides the set of oriented triangles adjacent to that vertex
-    vector< TrianglesAroundVertex > m_orientedTrianglesAroundVertex;
+    helper::vector< TrianglesAroundVertex > m_orientedTrianglesAroundVertex;
 
     /// for each edge provides the set of triangles adjacent to that edge
-    vector< TrianglesAroundEdge > m_trianglesAroundEdge;
+    helper::vector< TrianglesAroundEdge > m_trianglesAroundEdge;
 
     /// provides the set of triangles adjacent to each tetrahedron
-    vector< TrianglesInTetrahedron > m_trianglesInTetrahedron;
+    helper::vector< TrianglesInTetrahedron > m_trianglesInTetrahedron;
 
     /// for each vertex provides the set of quads adjacent to that vertex
-    vector< QuadsAroundVertex > m_quadsAroundVertex;
+    helper::vector< QuadsAroundVertex > m_quadsAroundVertex;
 
     /// for each vertex provides the set of oriented quads adjacent to that vertex
-    vector< QuadsAroundVertex > m_orientedQuadsAroundVertex;
+    helper::vector< QuadsAroundVertex > m_orientedQuadsAroundVertex;
 
     /// for each edge provides the set of quads adjacent to that edge
-    vector< QuadsAroundEdge > m_quadsAroundEdge;
+    helper::vector< QuadsAroundEdge > m_quadsAroundEdge;
 
     /// provides the set of quads adjacents to each hexahedron
-    vector< QuadsInHexahedron > m_quadsInHexahedron;
+    helper::vector< QuadsInHexahedron > m_quadsInHexahedron;
 
     /// provides the set of tetrahedrons adjacents to each vertex
-    vector< TetrahedraAroundVertex> m_tetrahedraAroundVertex;
+    helper::vector< TetrahedraAroundVertex> m_tetrahedraAroundVertex;
 
     /// for each edge provides the set of tetrahedra adjacent to that edge
-    vector< TetrahedraAroundEdge > m_tetrahedraAroundEdge;
+    helper::vector< TetrahedraAroundEdge > m_tetrahedraAroundEdge;
 
     /// for each triangle provides the set of tetrahedrons adjacent to that triangle
-    vector< TetrahedraAroundTriangle > m_tetrahedraAroundTriangle;
+    helper::vector< TetrahedraAroundTriangle > m_tetrahedraAroundTriangle;
 
     /// provides the set of hexahedrons for each vertex
-    vector< HexahedraAroundVertex > m_hexahedraAroundVertex;
+    helper::vector< HexahedraAroundVertex > m_hexahedraAroundVertex;
 
     /// for each edge provides the set of tetrahedra adjacent to that edge
-    vector< HexahedraAroundEdge > m_hexahedraAroundEdge;
+    helper::vector< HexahedraAroundEdge > m_hexahedraAroundEdge;
 
     /// for each quad provides the set of hexahedrons adjacent to that quad
-    vector< HexahedraAroundQuad > m_hexahedraAroundQuad;
+    helper::vector< HexahedraAroundQuad > m_hexahedraAroundQuad;
 
     /** \brief Creates the EdgeSetIndex.
      *
@@ -502,58 +489,58 @@ protected:
 
 
     /** \brief Returns the EdgesInTriangle array (i.e. provide the 3 edge indices for each triangle). */
-    const sofa::helper::vector< EdgesInTriangle > &getEdgesInTriangleArray();
+    const helper::vector< EdgesInTriangle > &getEdgesInTriangleArray();
 
     /** \brief Returns the TrianglesAroundVertex array (i.e. provide the triangles indices adjacent to each vertex). */
-    const sofa::helper::vector< TrianglesAroundVertex > &getTrianglesAroundVertexArray();
+    const helper::vector< TrianglesAroundVertex > &getTrianglesAroundVertexArray();
 
     /** \brief Returns the TrianglesAroundEdge array (i.e. provide the triangles indices adjacent to each edge). */
-    const sofa::helper::vector< TrianglesAroundEdge > &getTrianglesAroundEdgeArray();
+    const helper::vector< TrianglesAroundEdge > &getTrianglesAroundEdgeArray();
 
 
 
     /** \brief Returns the EdgesInQuadArray array (i.e. provide the 4 edge indices for each quad) */
-    const sofa::helper::vector< EdgesInQuad > &getEdgesInQuadArray();
+    const helper::vector< EdgesInQuad > &getEdgesInQuadArray();
 
     /** \brief Returns the QuadsAroundVertex array (i.e. provide the quad indices adjacent to each vertex). */
-    const sofa::helper::vector< QuadsAroundVertex > &getQuadsAroundVertexArray();
+    const helper::vector< QuadsAroundVertex > &getQuadsAroundVertexArray();
 
     /** \brief Returns the QuadsAroundEdge array (i.e. provide the quad indices adjacent to each edge). */
-    const sofa::helper::vector< QuadsAroundEdge > &getQuadsAroundEdgeArray();
+    const helper::vector< QuadsAroundEdge > &getQuadsAroundEdgeArray();
 
 
 
     /** \brief Returns the EdgesInHexahedron array (i.e. provide the 12 edge indices for each hexahedron).	*/
-    const sofa::helper::vector< EdgesInHexahedron > &getEdgesInHexahedronArray();
+    const helper::vector< EdgesInHexahedron > &getEdgesInHexahedronArray();
 
     /** \brief Returns the QuadsInHexahedron array (i.e. provide the 8 quad indices for each hexahedron).	*/
-    const sofa::helper::vector< QuadsInHexahedron > &getQuadsInHexahedronArray();
+    const helper::vector< QuadsInHexahedron > &getQuadsInHexahedronArray();
 
     /** \brief Returns the HexahedraAroundVertex array (i.e. provide the hexahedron indices adjacent to each vertex).*/
-    const sofa::helper::vector< HexahedraAroundVertex > &getHexahedraAroundVertexArray();
+    const helper::vector< HexahedraAroundVertex > &getHexahedraAroundVertexArray();
 
     /** \brief Returns the HexahedraAroundEdge array (i.e. provide the hexahedron indices adjacent to each edge). */
-    const sofa::helper::vector< HexahedraAroundEdge > &getHexahedraAroundEdgeArray();
+    const helper::vector< HexahedraAroundEdge > &getHexahedraAroundEdgeArray();
 
     /** \brief Returns the HexahedraAroundQuad array (i.e. provide the hexahedron indices adjacent to each quad). */
-    const sofa::helper::vector< HexahedraAroundQuad > &getHexahedraAroundQuadArray();
+    const helper::vector< HexahedraAroundQuad > &getHexahedraAroundQuadArray();
 
 
 
     /** \brief Returns the EdgesInTetrahedron array (i.e. provide the 6 edge indices for each tetrahedron). */
-    const sofa::helper::vector< EdgesInTetrahedron > &getEdgesInTetrahedronArray();
+    const helper::vector< EdgesInTetrahedron > &getEdgesInTetrahedronArray();
 
     /** \brief Returns the TrianglesInTetrahedron array (i.e. provide the 4 triangle indices for each tetrahedron). */
-    const sofa::helper::vector< TrianglesInTetrahedron > &getTrianglesInTetrahedronArray();
+    const helper::vector< TrianglesInTetrahedron > &getTrianglesInTetrahedronArray();
 
     /** \brief Returns the TetrahedraAroundVertex array (i.e. provide the tetrahedron indices adjacent to each vertex). */
-    const sofa::helper::vector< TetrahedraAroundVertex > &getTetrahedraAroundVertexArray();
+    const helper::vector< TetrahedraAroundVertex > &getTetrahedraAroundVertexArray();
 
     /** \brief Returns the TetrahedraAroundEdge array (i.e. provide the tetrahedron indices adjacent to each edge). */
-    const sofa::helper::vector< TetrahedraAroundEdge > &getTetrahedraAroundEdgeArray();
+    const helper::vector< TetrahedraAroundEdge > &getTetrahedraAroundEdgeArray();
 
     /** \brief Returns the TetrahedraAroundTriangle array (i.e. provide the tetrahedron indices adjacent to each triangle). */
-    const sofa::helper::vector< TetrahedraAroundTriangle > &getTetrahedraAroundTriangleArray();
+    const helper::vector< TetrahedraAroundTriangle > &getTetrahedraAroundTriangleArray();
 
 
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,6 +57,8 @@ typedef int socket_t;
 #define BUFSIZE (64*1024-1)
 #define STEPSIZE (1024)
 //#define STEPSIZE BUFSIZE
+
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -135,7 +137,8 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
     if (pipe(fds[0]) || pipe(fds[1]))
 #endif
     {
-        std::cerr << "pipe failed."<<std::endl;
+        msg_error("PipeProcess") << "pipe failed.";
+        delete [] cargs;
         return false;
     }
 #ifdef WIN32
@@ -151,7 +154,7 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
 
     if (hFile == INVALID_HANDLE_VALUE)
     {
-        std::cerr<<"failed to open file for stdin\n";
+        msg_error("PipeProcess") << "failed to open file for stdin";
     }
 
     // Ensure that the read handle to the child process's pipe for STDOUT is not inherited.
@@ -181,7 +184,8 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
             &siStartInfo,  // STARTUPINFO pointer
             &piProcInfo))  // receives PROCESS_INFORMATION
     {
-        std::cerr << "CreateProcess failed : "<<GetLastError()<<std::endl;
+        msg_error("PipeProcess") << "CreateProcess failed : "<<GetLastError();
+        delete [] cargs;
         return 1;
     }
 
@@ -245,7 +249,8 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
     pid = fork();
     if (pid < 0)
     {
-        std::cerr << "fork failed."<<std::endl;
+        msg_error("PipeProcess") << "fork failed.";
+        delete [] cargs;
         return false;
     }
     else if (pid == 0)
@@ -262,10 +267,12 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
         dup2(fds[1][1],2);
 
         int retexec = execvp(command.c_str(), cargs);
-        std::cerr << "PipeProcess : ERROR: execlp( "<< command.c_str() << " " ;
+        helper::logging::MessageDispatcher::LoggerStream msgerror = msg_error("PipeProcess");
+        msgerror << "execlp( "<< command.c_str() << " " ;
         for (unsigned int i=0; i<args.size() + 1 ; ++i)
-            std::cerr << cargs[i] << " ";
-        std::cerr << ") returned "<<retexec<<std::endl;
+            msgerror << cargs[i] << " ";
+        msgerror << ") returned "<<retexec;
+        delete [] cargs;
         return false;
     }
     else
@@ -361,6 +368,7 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
 
         outString = outStream.str();
         errorString = errorStream.str();
+        delete [] cargs;
         return (status == 0);
     }
 #endif

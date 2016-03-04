@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,20 +37,7 @@ namespace component
 
 namespace topology
 {
-using core::topology::BaseMeshTopology;
-typedef BaseMeshTopology::TetraID TetraID;
-typedef BaseMeshTopology::Tetra Tetra;
-typedef BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
-typedef BaseMeshTopology::SeqEdges SeqEdges;
-typedef BaseMeshTopology::TetrahedraAroundVertex TetrahedraAroundVertex;
-typedef BaseMeshTopology::TetrahedraAroundEdge TetrahedraAroundEdge;
-typedef BaseMeshTopology::TetrahedraAroundTriangle TetrahedraAroundTriangle;
-typedef BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
-typedef BaseMeshTopology::TrianglesInTetrahedron TrianglesInTetrahedron;
 
-typedef Tetra Tetrahedron;
-typedef EdgesInTetrahedron EdgesInTetrahedron;
-typedef TrianglesInTetrahedron TrianglesInTetrahedron;
 
 /**
 * A class that provides geometry information on an TetrahedronSet.
@@ -64,16 +51,30 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
+
+
+
+    typedef core::topology::BaseMeshTopology::TetraID TetraID;
+    typedef core::topology::BaseMeshTopology::Tetra Tetra;
+    typedef core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
+    typedef core::topology::BaseMeshTopology::SeqEdges SeqEdges;
+    typedef core::topology::BaseMeshTopology::TetrahedraAroundVertex TetrahedraAroundVertex;
+    typedef core::topology::BaseMeshTopology::TetrahedraAroundEdge TetrahedraAroundEdge;
+    typedef core::topology::BaseMeshTopology::TetrahedraAroundTriangle TetrahedraAroundTriangle;
+    typedef core::topology::BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
+    typedef core::topology::BaseMeshTopology::TrianglesInTetrahedron TrianglesInTetrahedron;
+    typedef Tetra Tetrahedron;
+
 protected:
-	bool initializedCubatureTables;
-	void defineTetrahedronCubaturePoints();
+    bool initializedCubatureTables;
+    void defineTetrahedronCubaturePoints();
 
     TetrahedronSetGeometryAlgorithms()
         : TriangleSetGeometryAlgorithms<DataTypes>()
-		,initializedCubatureTables(false)
+        ,initializedCubatureTables(false)
         ,showTetrahedraIndices (core::objectmodel::Base::initData(&showTetrahedraIndices, (bool) false, "showTetrahedraIndices", "Debug : view Tetrahedrons indices"))
-        , _draw(core::objectmodel::Base::initData(&_draw, false, "drawTetrahedra","if true, draw the tetrahedra in the topology"))
-        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vec3f(1.0f,1.0f,0.0f), "drawColorTetrahedra", "RGB code color used to draw tetrahedra."))
+        , _drawTetrahedra(core::objectmodel::Base::initData(&_drawTetrahedra, false, "drawTetrahedra","if true, draw the tetrahedra in the topology"))
+        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vec4f(1.0f,1.0f,0.0f,1.0f), "drawColorTetrahedra", "RGBA code color used to draw tetrahedra."))
     {
         core::objectmodel::Base::addAlias(&showTetrahedraIndices, "showTetrasIndices");
     }
@@ -132,15 +133,15 @@ public:
 
     bool checkNodeSequence(Tetra& tetra);
 
-	/// return a pointer to the container of cubature points
-	NumericalIntegrationDescriptor<Real,4> &getTetrahedronNumericalIntegrationDescriptor();
+    /// return a pointer to the container of cubature points
+    NumericalIntegrationDescriptor<Real,4> &getTetrahedronNumericalIntegrationDescriptor();
 
 protected:
     Data<bool> showTetrahedraIndices;
-    Data<bool> _draw;
-    Data<sofa::defaulttype::Vec3f> _drawColor;
-	/// include cubature points
-	NumericalIntegrationDescriptor<Real,4> tetrahedronNumericalIntegration;
+    Data<bool> _drawTetrahedra;
+    Data<sofa::defaulttype::Vec4f> _drawColor;
+    /// include cubature points
+    NumericalIntegrationDescriptor<Real,4> tetrahedronNumericalIntegration;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_CPP)

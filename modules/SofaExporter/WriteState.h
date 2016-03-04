@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -113,7 +113,7 @@ public:
 };
 
 ///Create WriteState component in the graph each time needed
-class SOFA_EXPORTER_API WriteStateCreator: public Visitor
+class SOFA_EXPORTER_API WriteStateCreator: public simulation::Visitor
 {
 public:
     WriteStateCreator(const core::ExecParams* params);

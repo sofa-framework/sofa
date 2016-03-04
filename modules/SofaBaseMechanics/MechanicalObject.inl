@@ -1069,10 +1069,11 @@ void MechanicalObject<DataTypes>::init()
         numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
 
-    if(this->getTags().empty())
+    //Look at a topology associated to this instance of MechanicalObject by a tag
+    this->getContext()->get(m_topology, this->getTags());
+    // If no topology found, no association, then look to the nearest one
+    if(m_topology == NULL)
         m_topology = this->getContext()->getMeshTopology();
-    else
-        this->getContext()->get(m_topology, this->getTags());
 
 
     //helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
@@ -2717,7 +2718,6 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
 template <class DataTypes>
 inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     defaulttype::Vec4f color(1.0, 1.0, 1.0, 1.0);
 
     float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
@@ -2727,15 +2727,51 @@ inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualP
         positions.push_back(defaulttype::Vector3(getPX(i), getPY(i), getPZ(i)));
 
     vparams->drawTool()->draw3DText_Indices(positions, scale, color);
-#endif // SOFA_NO_OPENGL
+}
+
+template <class DataTypes>
+inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualParams* vparams)
+{
+    float scale = showVectorsScale.getValue();
+    sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::ConstVecDerivId::velocity());
+    helper::vector<Vector3> points;
+    points.resize(2);
+    for( unsigned i=0; i<v_rA.size(); ++i )
+    {
+        Real vx=0.0,vy=0.0,vz=0.0;
+        DataTypes::get(vx,vy,vz,v_rA[i]);
+        //v = DataTypes::getDPos(v_rA[i]);
+        //Real vx = v[0]; Real vy = v[1]; Real vz = v[2];
+        //std::cout << "v=" << vx << ", " << vy << ", " << vz << std::endl;
+        Vector3 p1 = Vector3(getPX(i), getPY(i), getPZ(i));
+        Vector3 p2 = Vector3(getPX(i)+scale*vx, getPY(i)+scale*vy, getPZ(i)+scale*vz);
+
+        float rad = (float)( (p1-p2).norm()/20.0 );
+        switch (drawMode.getValue())
+        {
+        case 0:
+            points[0] = p1;
+            points[1] = p2;
+            vparams->drawTool()->drawLines(points, 1, defaulttype::Vec<4,float>(1.0,1.0,1.0,1.0));
+            break;
+        case 1:
+            vparams->drawTool()->drawCylinder(p1, p2, rad, defaulttype::Vec<4,float>(1.0,1.0,1.0,1.0));
+            break;
+        case 2:
+            vparams->drawTool()->drawArrow(p1, p2, rad, defaulttype::Vec<4,float>(1.0,1.0,1.0,1.0));
+            break;
+        default:
+            serr << "No proper drawing mode found!" << sendl;
+            break;
+        }
+    }
 }
 
 template <class DataTypes>
 inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-    glPushAttrib(GL_LIGHTING_BIT);
-    glDisable(GL_LIGHTING);
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->setLightingEnabled(false);
 
     if (showIndices.getValue())
     {
@@ -2744,50 +2780,13 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
 
     if (showVectors.getValue())
     {
-//        Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-//        sofa::simulation::Node* context = static_cast<sofa::simulation::Node*>(this->getContext());
-        glColor3f(1.0,1.0,1.0);
-//        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        //float scale = (sceneMaxBBox - sceneMinBBox).norm() * showVectorsScale.getValue();
-        float scale = showVectorsScale.getValue();
-        sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::ConstVecDerivId::velocity());
-        //std::cout << "number of velocity values: " << v_rA.size() << std::endl;
-        vector<Vector3> points;
-        points.resize(2);
-        for( unsigned i=0; i<v_rA.size(); ++i )
-        {
-            Real vx=0.0,vy=0.0,vz=0.0;
-            DataTypes::get(vx,vy,vz,v_rA[i]);
-            //v = DataTypes::getDPos(v_rA[i]);
-            //Real vx = v[0]; Real vy = v[1]; Real vz = v[2];
-            //std::cout << "v=" << vx << ", " << vy << ", " << vz << std::endl;
-            Vector3 p1 = Vector3(getPX(i), getPY(i), getPZ(i));
-            Vector3 p2 = Vector3(getPX(i)+scale*vx, getPY(i)+scale*vy, getPZ(i)+scale*vz);
-
-            float rad = (float)( (p1-p2).norm()/20.0 );
-            switch (drawMode.getValue())
-            {
-            case 0:
-                points[0] = p1;
-                points[1] = p2;
-                vparams->drawTool()->drawLines(points, 1, defaulttype::Vec<4,float>(1.0,1.0,1.0,1.0));
-                break;
-            case 1:
-                vparams->drawTool()->drawCylinder(p1, p2, rad, defaulttype::Vec<4,float>(1.0,1.0,1.0,1.0));
-                break;
-            case 2:
-                vparams->drawTool()->drawArrow(p1, p2, rad, defaulttype::Vec<4,float>(1.0,1.0,1.0,1.0));
-                break;
-            default:
-                serr << "No proper drawing mode found!" << sendl;
-                break;
-            }
-        }
+        drawVectors(vparams);
     }
+
     if (showObject.getValue())
     {
         const float& scale = showObjectScale.getValue();
-        vector<Vector3> positions(vsize);
+        helper::vector<Vector3> positions(vsize);
         for (size_t i = 0; i < vsize; ++i)
             positions[i] = Vector3(getPX(i), getPY(i), getPZ(i));
 
@@ -2797,19 +2796,19 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
             vparams->drawTool()->drawPoints(positions,scale,defaulttype::Vec<4,float>(d_color.getValue()));
             break;
         case 1:
-            glEnable(GL_LIGHTING);
+            vparams->drawTool()->setLightingEnabled(true);
             vparams->drawTool()->drawSpheres(positions,scale,defaulttype::Vec<4,float>(d_color.getValue()));
             break;
         case 2:
-            glEnable(GL_LIGHTING);
+            vparams->drawTool()->setLightingEnabled(true);
             vparams->drawTool()->drawSpheres(positions,scale,defaulttype::Vec<4,float>(1.0,0.0,0.0,1.0));
             break;
         case 3:
-            glEnable(GL_LIGHTING);
+            vparams->drawTool()->setLightingEnabled(true);
             vparams->drawTool()->drawSpheres(positions,scale,defaulttype::Vec<4,float>(0.0,1.0,0.0,1.0));
             break;
         case 4:
-            glEnable(GL_LIGHTING);
+           vparams->drawTool()->setLightingEnabled(true);
             vparams->drawTool()->drawSpheres(positions,scale,defaulttype::Vec<4,float>(0.0,0.0,1.0,1.0));
             break;
         default:
@@ -2817,8 +2816,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
             break;
         }
     }
-    glPopAttrib();
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 #ifdef SOFA_SMP

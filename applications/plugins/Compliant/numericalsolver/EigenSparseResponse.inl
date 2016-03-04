@@ -12,9 +12,12 @@ namespace linearsolver {
 
 template<class LinearSolver,bool symmetric>
 EigenSparseResponse<LinearSolver,symmetric>::EigenSparseResponse()
-    : d_regularize( initData(&d_regularize, std::numeric_limits<real>::epsilon(), "regularize", "add identity*regularize to matrix H to make it definite."))
-    , d_constant( initData(&d_constant, false, "constant", "reuse first factorization"))
+    : d_regularize( initData(&d_regularize, std::numeric_limits<real>::epsilon(), "regularize", "add identity*regularize to matrix H to make it definite.") )
+    , d_constant( initData(&d_constant, false, "constant", "reuse first factorization") )
+    , d_trackSparsityPattern( initData(&d_trackSparsityPattern, false, "trackSparsityPattern", "if the sparsity pattern remains similar from one step to the other, the factorization can be faster") )
     , m_factorized( false )
+    , m_previousSize(0)
+    , m_previousNonZeros(0)
 {}
 
 template<class LinearSolver,bool symmetric>
@@ -44,7 +47,7 @@ void EigenSparseResponse<LinearSolver,symmetric>::factor(const rmat& H) {
     else tmp = H; // TODO there IS a temporary here, from rmat to cmat. Explicit copy is needed for iterative solvers
 
 
-    response.compute( tmp );
+    compute( tmp );
 	
     if( response.info() != Eigen::Success )
     {
@@ -70,6 +73,29 @@ void EigenSparseResponse<LinearSolver,symmetric>::factor(const rmat& H) {
 
     assert( response.info() == Eigen::Success );
 
+}
+
+template<class LinearSolver,bool symmetric>
+void EigenSparseResponse<LinearSolver,symmetric>::compute(const cmat& M)
+{
+    if( !d_trackSparsityPattern.getValue() )
+    {
+        response.compute( M );
+    }
+    else
+    {
+        // TODO the sparsity structure verification is poor
+        // but it is enough in some specific cases
+        if( M.rows()!=m_previousSize || M.nonZeros()!=m_previousNonZeros )
+        {
+            response.analyzePattern( M );
+            m_previousSize = M.rows();
+            m_previousNonZeros = M.nonZeros();
+        }
+        // If the matrice has the same structure as the previous step,
+        // the symbolic decomposition based on the sparcity is still valid.
+        response.factorize( M );
+    }
 }
 
 template<class LinearSolver,bool symmetric>

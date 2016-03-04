@@ -181,6 +181,27 @@ def to_matrix(quat):
 
     return matrix
 
+def from_line(v, sign=1, xyz=1):
+    """
+    Compute a quaternion from a line
+    @param v: director vector describing the line which will be used to compute the quaternion
+    @type v: list
+    @param sign: to change the sign of the vector director v
+    @type sign: 1 / -1
+    @param xyz: to indicate if v is the axis x (xyz=1), y (xyz=2) or z (xyz=3) of the matrix corresponding to the output quaternion
+    @type xyz: int with the value 1/2/3
+    """
+    v1 = numpy.array(v) / numpy.linalg.norm(numpy.array(v), 2) * sign;
+    v2 = numpy.array([v1[1], -v1[0], 0]) / numpy.linalg.norm(numpy.array([v1[1], -v1[0], 0]), 2);
+    v3 = numpy.cross(v1, v2)
+    if(xyz==1) :
+        m = numpy.matrix([ [v1[0], v2[0], v3[0]], [v1[1], v2[1], v3[1]], [v1[2], v2[2], v3[2]] ]).getT() # The transpose is import because the given lines are normally the column
+    if(xyz==2) :
+        m = numpy.matrix([ [v2[0], v1[0], v3[0]], [v2[1], v1[1], v3[1]], [v2[2], v1[2], v3[2]] ]).getT() # The transpose is import because the given lines are normally the column
+    if(xyz>=3) :
+        m = numpy.matrix([ [v2[0], v3[0], v1[0]], [v2[1], v3[1], v1[1]], [v2[2], v3[2], v1[2]] ]).getT() # The transpose is import because the given lines are normally the column
+    q = from_matrix(m)
+    return q
 
 
 def axisToQuat(axis, phi):

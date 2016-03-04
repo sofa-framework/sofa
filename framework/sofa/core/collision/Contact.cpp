@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/core/collision/Contact.h>
 #include <sofa/helper/Factory.inl>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -56,7 +57,7 @@ Contact::SPtr Contact::Create(const std::string& type, core::CollisionModel* mod
         std::string otype(type, 0, args);
 
 		if (verbose)
-			std::cout << model1->getName() << "-" << model2->getName() << " " << otype << " :";
+            msg_info("Contact") << model1->getName() << "-" << model2->getName() << " " << otype << " :";
 
         Contact::SPtr c = Factory::CreateObject(otype,std::make_pair(std::make_pair(model1,model2),intersectionMethod));
 
@@ -72,20 +73,17 @@ Contact::SPtr Contact::Create(const std::string& type, core::CollisionModel* mod
                 std::string val(type, eq+1, (next == std::string::npos ? type.size() : next) - (eq+1));
 
 				if (verbose)
-					std::cout << " " << var << " = " << val;
+                    msg_info("Contact") << " " << var << " = " << val;
 
                 std::vector< objectmodel::BaseData* > v = c->findGlobalField( var.c_str() );
                 if (v.empty() && verbose)
-                    std::cerr << "ERROR: parameter " << var << " not found in contact type " << otype << std::endl;
+                    msg_error("Contact") << "parameter " << var << " not found in contact type " << otype;
                 else
                     for (unsigned int i=0; i<v.size(); ++i)
                         v[i]->read(val);
             }
             args = next;
         }
-
-		if (verbose)
-			std::cout << std::endl;
 
         return c;
     }

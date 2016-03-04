@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -54,11 +54,6 @@ namespace component
 
 namespace misc
 {
-
-using cimg_library::CImg;
-using cimg_library::CImgList;
-using defaulttype::Vec;
-using defaulttype::Vector3;
 
 /**
    * \brief This component is responsible for displaying images in SOFA
@@ -404,20 +399,20 @@ public:
     }
 
 
-    void getCorners(Vec<8,Vector3> &c) // get image corners
+    void getCorners(defaulttype::Vec<8,defaulttype::Vector3> &c) // get image corners
     {
         raImage rimage(this->image);
         const imCoord dim= rimage->getDimensions();
 
-        Vec<8,Vector3> p;
-        p[0]=Vector3(-0.5,-0.5,-0.5);
-        p[1]=Vector3(dim[0]-0.5,-0.5,-0.5);
-        p[2]=Vector3(-0.5,dim[1]-0.5,-0.5);
-        p[3]=Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
-        p[4]=Vector3(-0.5,-0.5,dim[2]-0.5);
-        p[5]=Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
-        p[6]=Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
-        p[7]=Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
+        defaulttype::Vec<8,defaulttype::Vector3> p;
+        p[0]=defaulttype::Vector3(-0.5,-0.5,-0.5);
+        p[1]=defaulttype::Vector3(dim[0]-0.5,-0.5,-0.5);
+        p[2]=defaulttype::Vector3(-0.5,dim[1]-0.5,-0.5);
+        p[3]=defaulttype::Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
+        p[4]=defaulttype::Vector3(-0.5,-0.5,dim[2]-0.5);
+        p[5]=defaulttype::Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
+        p[6]=defaulttype::Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
+        p[7]=defaulttype::Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
 
         raTransform rtransform(this->transform);
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
@@ -426,7 +421,7 @@ public:
     virtual void computeBBox(const core::ExecParams*  params, bool /*onlyVisible=false*/ )
     {
         //        if( onlyVisible) return;
-        Vec<8,Vector3> c;
+        defaulttype::Vec<8,defaulttype::Vector3> c;
         getCorners(c);
 
         Real bbmin[3]  = {c[0][0],c[0][1],c[0][2]} , bbmax[3]  = {c[0][0],c[0][1],c[0][2]};
@@ -455,7 +450,7 @@ protected:
 
         double size = rVis->getShapeScale();
         imCoord dims=rplane->getDimensions();
-        Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
+        defaulttype::Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
         defaulttype::Vec4f colour(1.0,0.5,0.5,1.0);
 
         unsigned int x,y,z;
@@ -470,7 +465,7 @@ protected:
                     for(ip[y] = 0; ip[y] < dims[y]; ip[y] += sampling[y])
                     {
                         Coord base = rtransform->fromImage(ip);
-                        CImg<T> vect = rimage->getCImg(rplane->getTime()).get_vector_at(ip[0],ip[1],ip[2]);
+                        cimg_library::CImg<T> vect = rimage->getCImg(rplane->getTime()).get_vector_at(ip[0],ip[1],ip[2]);
                         Coord relativeVec((double)vect[0], (double)vect[1], (double)vect[2]);
                         vparams->drawTool()->drawArrow(base,base+relativeVec*size,size*relativeVec.norm()/10,colour);
                     }
@@ -487,7 +482,7 @@ protected:
 
         double size = rVis->getShapeScale();
         imCoord dims=rplane->getDimensions();
-        Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
+        defaulttype::Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
 
         int counter=0;
 
@@ -507,11 +502,11 @@ protected:
 
                         Coord base = rtransform->fromImage(ip);
 
-                        CImg<T> vector = rimage->getCImg(rplane->getTime()).get_vector_at(ip[0], ip[1], ip[2]);
+                        cimg_library::CImg<T> vector = rimage->getCImg(rplane->getTime()).get_vector_at(ip[0], ip[1], ip[2]);
 
                         //CImg::get_tensor_at() assumes a different tensor input than we expect.
                         // That is why we are generating the tensor manually from the vector instead.
-                        CImg<T> tensor;
+                        cimg_library::CImg<T> tensor;
 
                         if(rVis->getTensorOrder().compare("LowerTriRowMajor") == 0)
                         {
@@ -532,9 +527,9 @@ protected:
                             return;
                         }
 
-                        CImgList<T> eig = tensor.get_symmetric_eigen();
-                        const CImg<T> &val = eig[0];
-                        const CImg<T> &vec = eig[1];
+                        cimg_library::CImgList<T> eig = tensor.get_symmetric_eigen();
+                        const cimg_library::CImg<T> &val = eig[0];
+                        const cimg_library::CImg<T> &vec = eig[1];
 
                         glPushMatrix();
 
@@ -582,9 +577,9 @@ protected:
 
     }
 
-    CImg<T> computeTensorFromLowerTriRowMajorVector(CImg<T> vector)
+    cimg_library::CImg<T> computeTensorFromLowerTriRowMajorVector(cimg_library::CImg<T> vector)
     {
-        CImg<T> tensor(3,3);
+        cimg_library::CImg<T> tensor(3,3);
         tensor(0,0) = vector(0);
         tensor(1,0) = tensor(0,1) = vector(1);
         tensor(1,1) = vector(2);
@@ -595,9 +590,9 @@ protected:
         return tensor;
     }
 
-    CImg<T> computeTensorFromUpperTriRowMajorVector(CImg<T> vector)
+    cimg_library::CImg<T> computeTensorFromUpperTriRowMajorVector(cimg_library::CImg<T> vector)
     {
-        CImg<T> tensor(3,3);
+        cimg_library::CImg<T> tensor(3,3);
         tensor(0,0) = vector(0);
         tensor(0,1) = tensor(1,0) = vector(1);
         tensor(0,2) = tensor(2,0) = vector(2);
@@ -608,9 +603,9 @@ protected:
         return tensor;
     }
 
-    CImg<T> computeTensorFromDiagonalFirstVector(CImg<T> vector)
+    cimg_library::CImg<T> computeTensorFromDiagonalFirstVector(cimg_library::CImg<T> vector)
     {
-        CImg<T> tensor(3,3);
+        cimg_library::CImg<T> tensor(3,3);
         tensor(0,0) = vector(0);
         tensor(1,1) = vector(1);
         tensor(2,2) = vector(2);
@@ -628,11 +623,13 @@ protected:
 
         this->transform.update();
 
-        float color[]={1.,1.,1.,0.}, specular[]={0.,0.,0.,0.};
+        float color[]={1.,1.,1.,1.}, specular[]={0.,0.,0.,0.};
         glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,color);
         glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,specular);
         glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0.0);
         glColor4fv(color);
+
+        glDisable(GL_CULL_FACE);
 
         for (unsigned int i=0;i<3;i++)
             if(rplane->getPlane()[i]<rplane->getDimensions()[i])
@@ -640,8 +637,8 @@ protected:
                     if(i==1 || rplane->getDimensions()[1]>1)
                         if(i==2 || rplane->getDimensions()[2]>1)
                         {
-                            Vec<4,Vector3> pts = rplane->get_sliceCoord(rplane->getPlane()[i],i);
-                            Vector3 n=cross(pts[1]-pts[0],pts[2]-pts[0]); n.normalize();
+                            defaulttype::Vec<4,defaulttype::Vector3> pts = rplane->get_sliceCoord(rplane->getPlane()[i],i);
+                            defaulttype::Vector3 n=cross(pts[1]-pts[0],pts[2]-pts[0]); n.normalize();
 
                             glEnable( GL_TEXTURE_2D );
                             glDisable( GL_LIGHTING);
@@ -681,11 +678,11 @@ protected:
 
         for (unsigned int i=0;i<3;i++)
         {
-            CImg<unsigned char> cplane = convertToUC( rplane->get_slice(rplane->getPlane()[i],i).resize(cutplane_res,cutplane_res,1,-100,1).cut(rplane->getClamp()[0],rplane->getClamp()[1]) );
+            cimg_library::CImg<unsigned char> cplane = convertToUC( rplane->get_slice(rplane->getPlane()[i],i).resize(cutplane_res,cutplane_res,1,-100,1).cut(rplane->getClamp()[0],rplane->getClamp()[1]) );
 
             if (showSlicedModels.getValue())
             {
-              CImg<unsigned char> cmodelplane =
+              cimg_library::CImg<unsigned char> cmodelplane =
                   convertToUC(rplane->get_slicedModels(rplane->getPlane()[i], i)
                                   .resize(cutplane_res, cutplane_res, 1, -100, 1)
                                   .cut(rplane->getClamp()[0], rplane->getClamp()[1]));

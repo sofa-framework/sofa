@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -236,7 +236,6 @@ void PointSetGeometryAlgorithms<DataTypes>::initPointAdded(unsigned int index, c
 template<class DataTypes>
 void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (showPointIndices.getValue())
     {
         sofa::defaulttype::Mat<4,4, GLfloat> modelviewM;
@@ -244,7 +243,7 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
         sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
-		defaulttype::Vec4f color4(1.0, 1.0, 1.0, 1.0);
+        defaulttype::Vec4f color4(1.0, 1.0, 1.0, 1.0);
 
         sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
 
@@ -259,7 +258,6 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
         }
         vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
     }
-#endif /* SOFA_NO_OPENGL */
 }
 
 

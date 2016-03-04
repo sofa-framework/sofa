@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -64,7 +64,7 @@ using namespace sofa::component::topology;
 TopologicalChangeManager::TopologicalChangeManager()
 {
     incision.firstCut = true;
-    incision.indexPoint = BaseMeshTopology::InvalidID;
+    incision.indexPoint = core::topology::BaseMeshTopology::InvalidID;
 }
 
 TopologicalChangeManager::~TopologicalChangeManager()
@@ -444,8 +444,8 @@ bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionModel
 
 
 // Perform incision in triangulation
-bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel , TriangleID idxA, const Vector3& firstPoint,
-        TriangleModel *secondModel, TriangleID idxB, const Vector3& secondPoint,
+bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel , core::topology::BaseMeshTopology::TriangleID idxA, const Vector3& firstPoint,
+        TriangleModel *secondModel, core::topology::BaseMeshTopology::TriangleID idxB, const Vector3& secondPoint,
         int snapingValue, int snapingBorderValue)
 {
 
@@ -497,7 +497,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
 
 
         // Path first point Indice. This might be useful if topology is in movement. (coord of point "a" doesn't belongs anymore to triangle of index : "idxA" since pickhandler)
-        PointID& last_indexPoint = incision.indexPoint;
+        core::topology::BaseMeshTopology::PointID& last_indexPoint = incision.indexPoint;
 
         if(!incision.firstCut) //Not the first cut, look for new coord of a
         {
@@ -531,7 +531,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
 
         // -- STEP 5: Splitting elements along path (incision path is stored inside "new_edges")
         sofa::helper::vector< unsigned int > new_edges;
-        int result = triangleAlgorithm->SplitAlongPath(last_indexPoint, coord_a, BaseMeshTopology::InvalidID, coord_b, topoPath_list, indices_list, coords2_list, new_edges, epsilonSnap, epsilonBorderSnap);
+        int result = triangleAlgorithm->SplitAlongPath(last_indexPoint, coord_a, core::topology::BaseMeshTopology::InvalidID, coord_b, topoPath_list, indices_list, coords2_list, new_edges, epsilonSnap, epsilonBorderSnap);
 
         if (result == -1)
         {

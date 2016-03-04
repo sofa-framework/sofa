@@ -1,6 +1,8 @@
+<?xml version="1.0"?>
 <Node name="root" gravity="0 -9.81 0" dt="0.02">
-    <VisualStyle displayFlags="showBehavior" />
-    <Node name="Liver" gravity="0 -9.81 0" depend="topo dofs">
+    <VisualStyle displayFlags="showBehavior showVisual" />
+    
+    <Node name="Liver" >
         <MeshGmshLoader name="meshLoader" filename="mesh/liver.msh" />
         <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
         <MechanicalObject name="dofs" src="@meshLoader" />
@@ -8,17 +10,24 @@
         <DiagonalMass name="computed using mass density" massDensity="1" />
         <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
-        <Node name="Visu" tags="Visual" gravity="0 -9.81 0">
+        <Node name="WireframeVisu" >
             <VisualStyle displayFlags="showVisual showWireframe" />
             <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" />
             <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
         </Node>
-        <Node name="Surf" gravity="0 -9.81 0">
+        <Node name="Sphere" >
             <VisualStyle displayFlags="hideBehavior showCollision showWireframe" />
 	    <SphereLoader filename="mesh/liver.sph" />
             <MechanicalObject name="spheres" position="@[-1].position" />
             <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius" />
             <BarycentricMapping name="sphere mapping" input="@../dofs" output="@spheres" />
         </Node>
+        
+        
+        <Node name="TranslatedSurface" gravity="0 -9.81 0">
+<!--             default rendering should be flat rendered and not wireframed -->
+            <OglModel fileMesh="mesh/liver.obj" translation="5 0 0" />
+        </Node>
+        
     </Node>
 </Node>

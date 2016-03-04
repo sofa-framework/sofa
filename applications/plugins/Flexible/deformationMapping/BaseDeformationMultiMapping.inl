@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -167,7 +167,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
     if (_shapeFunction)
     {
         if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : found shape function "<<_shapeFunction->getName()<<std::endl;
-        vector<mCoord> mpos0;
+        helper::vector<mCoord> mpos0;
         mpos0.resize(pos0.size());
         for(size_t i=0; i<pos0.size(); ++i)  defaulttype::StdVectorTypes<mCoord,mCoord>::set( mpos0[i], pos0[i][0] , pos0[i][1] , pos0[i][2]);
 
@@ -212,7 +212,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
 
 
 template <class JacobianBlockType1,class JacobianBlockType2>
-void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
+void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
 {
     {
         // TODO this must be done before resizeOut() but is done again in Inherit::init();
@@ -299,6 +299,12 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::init()
     resizeOut();
 
     Inherit::init();
+
+    // check that all children particles got a parent
+    const VecVRef& indices = this->f_index.getValue();
+    for (std::size_t i=0; i < indices.size(); ++i)
+        if (!indices[i].size() > 0)
+            serr << "Particle " << i << " has no parent" << sendl;
 }
 
 template <class JacobianBlockType1,class JacobianBlockType2>
@@ -306,8 +312,10 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::reinit
 {
     if(this->assemble.getValue()) { updateJ1(); updateJ2(); }
 
-    apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel1->read(core::ConstVecCoordId::position()), *this->fromModel2->read(core::ConstVecCoordId::position()) );
-    if(this->toModel->write(core::VecDerivId::velocity())) applyJ(NULL, *this->toModel->write(core::VecDerivId::velocity()), *this->fromModel1->read(core::ConstVecDerivId::velocity()), *this->fromModel2->read(core::ConstVecDerivId::velocity()));
+    // force apply
+    // bg: do we need this ?
+    //    apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel1->read(core::ConstVecCoordId::position()), *this->fromModel2->read(core::ConstVecCoordId::position()) );
+    //    if(this->toModel->write(core::VecDerivId::velocity())) applyJ(NULL, *this->toModel->write(core::VecDerivId::velocity()), *this->fromModel1->read(core::ConstVecDerivId::velocity()), *this->fromModel2->read(core::ConstVecDerivId::velocity()));
 
     Inherit::reinit();
 }
@@ -319,11 +327,13 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
 {
     eigenJacobian1.resizeBlocks(jacobian1.size(),getFromSize1());
 
+    const VecVRef& index1 = this->f_index1.getValue();
+
     for( size_t i=0 ; i<getToSize() ; ++i)
     {
         eigenJacobian1.beginBlockRow(i);
         for(size_t j=0; j<jacobian1[i].size(); j++)
-            eigenJacobian1.createBlock( this->f_index1.getValue()[i][j], jacobian1[i][j].getJ());
+            eigenJacobian1.createBlock( index1[i][j], jacobian1[i][j].getJ());
         eigenJacobian1.endBlockRow();
     }
 
@@ -337,11 +347,13 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
 {
     eigenJacobian2.resizeBlocks(jacobian2.size(),getFromSize2());
 
+    const VecVRef& index2 = this->f_index2.getValue();
+
     for( size_t i=0 ; i<getToSize() ; ++i)
     {
         eigenJacobian2.beginBlockRow(i);
         for(size_t j=0; j<jacobian2[i].size(); j++)
-            eigenJacobian2.createBlock( this->f_index2.getValue()[i][j], jacobian2[i][j].getJ());
+            eigenJacobian2.createBlock( index2[i][j], jacobian2[i][j].getJ());
         eigenJacobian2.endBlockRow();
     }
 
@@ -430,6 +442,9 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::apply(
     const InVecCoord1& in1 = dIn1.getValue();
     const InVecCoord2& in2 = dIn2.getValue();
 
+    const VecVRef& index1 = this->f_index1.getValue();
+    const VecVRef& index2 = this->f_index2.getValue();
+
 #ifdef _OPENMP
 #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
@@ -438,12 +453,12 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::apply(
         out[i]=OutCoord();
         for(size_t j=0; j<jacobian1[i].size(); j++)
         {
-            size_t index=this->f_index1.getValue()[i][j];
+            size_t index=index1[i][j];
             jacobian1[i][j].addapply(out[i],in1[index]);
         }
         for(size_t j=0; j<jacobian2[i].size(); j++)
         {
-            size_t index=this->f_index2.getValue()[i][j];
+            size_t index=index2[i][j];
             jacobian2[i][j].addapply(out[i],in2[index]);
         }
     }
@@ -489,6 +504,9 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
         const InVecDeriv1& in1 = dIn1.getValue();
         const InVecDeriv2& in2 = dIn2.getValue();
 
+        const VecVRef& index1 = this->f_index1.getValue();
+        const VecVRef& index2 = this->f_index2.getValue();
+
         for( size_t i=0 ; i<this->maskTo[0]->size() ; ++i)
         {
             if( !this->maskTo[0]->isActivated() || this->maskTo[0]->getEntry(i) )
@@ -496,12 +514,12 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
                 out[i]=OutDeriv();
                 for(size_t j=0; j<jacobian1[i].size(); j++)
                 {
-                    size_t index=this->f_index1.getValue()[i][j];
+                    size_t index=index1[i][j];
                     jacobian1[i][j].addmult(out[i],in1[index]);
                 }
                 for(size_t j=0; j<jacobian2[i].size(); j++)
                 {
-                    size_t index=this->f_index2.getValue()[i][j];
+                    size_t index=index2[i][j];
                     jacobian2[i][j].addmult(out[i],in2[index]);
                 }
             }
@@ -539,18 +557,21 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
         InVecDeriv2& in2 = *dIn2.beginEdit();
         const OutVecDeriv& out = dOut.getValue();
 
+        const VecVRef& index1 = this->f_index1.getValue();
+        const VecVRef& index2 = this->f_index2.getValue();
+
         for( size_t i=0 ; i<this->maskTo[0]->size() ; ++i)
         {
             if( this->maskTo[0]->getEntry(i) )
             {
                 for(size_t j=0; j<jacobian1[i].size(); j++)
                 {
-                    size_t index=this->f_index1.getValue()[i][j];
+                    size_t index=index1[i][j];
                     jacobian1[i][j].addMultTranspose(in1[index],out[i]);
                 }
                 for(size_t j=0; j<jacobian2[i].size(); j++)
                 {
-                    size_t index=this->f_index2.getValue()[i][j];
+                    size_t index=index2[i][j];
                     jacobian2[i][j].addMultTranspose(in2[index],out[i]);
                 }
             }
@@ -667,6 +688,9 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
     InMatrixDeriv2& out2 = *_out2.beginEdit();
     const OutMatrixDeriv& in = _in.getValue();
 
+    const VecVRef& index1 = this->f_index1.getValue();
+    const VecVRef& index2 = this->f_index2.getValue();
+
     typename OutMatrixDeriv::RowConstIterator rowItEnd = in.end();
 
     for (typename OutMatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
@@ -684,7 +708,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 
                 for(size_t j=0; j<jacobian1[indexIn].size(); j++)
                 {
-                    size_t indexOut = this->f_index1.getValue()[indexIn][j];
+                    size_t indexOut = index1[indexIn][j];
 
                     InDeriv1 tmp;
                     jacobian1[indexIn][j].addMultTranspose( tmp, colIt.val() );
@@ -700,7 +724,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 
                 for(size_t j=0; j<jacobian2[indexIn].size(); j++)
                 {
-                    size_t indexOut = this->f_index2.getValue()[indexIn][j];
+                    size_t indexOut = index2[indexIn][j];
 
                     InDeriv2 tmp;
                     jacobian2[indexIn][j].addMultTranspose( tmp, colIt.val() );
@@ -806,7 +830,7 @@ unsigned int BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>
 
 
 template <class JacobianBlockType1,class JacobianBlockType2>
-const vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::getJs()
+const helper::vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::getJs()
 {
     if( !this->assemble.getValue() )
     {
@@ -860,7 +884,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
 
     if (vparams->displayFlags().getShowMechanicalMappings())
     {
-        vector< defaulttype::Vector3 > edge;     edge.resize(2);
+        helper::vector< defaulttype::Vector3 > edge;     edge.resize(2);
         defaulttype::Vec<4,float> col;
 
         for(size_t i=0; i<out.size(); i++ )

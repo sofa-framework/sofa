@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,6 +28,7 @@
 #include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
+#include <fstream>
 
 namespace sofa
 {
@@ -350,7 +351,6 @@ bool is_point_in_quad(const Coord& p,
 template<class DataTypes>
 void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     EdgeSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Quads indices
@@ -387,69 +387,59 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
 
     // Draw Quads
-    if (_draw.getValue())
+    if (_drawQuads.getValue())
     {
         const sofa::helper::vector<Quad>& quadArray = this->m_topology->getQuads();
 
         if (!quadArray.empty()) // Draw Quad surfaces
         {
             const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-
-            glDisable(GL_LIGHTING);
             const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-            glColor3f(color[0], color[1], color[2]);
-            glBegin(GL_QUADS);
-            for (unsigned int i = 0; i<quadArray.size(); i++)
-            {
-                const Quad& q = quadArray[i];
+            defaulttype::Vec4f color4(color[0], color[1], color[2], 1.0f);
 
-                for (unsigned int j = 0; j<4; j++)
-                {
-                    sofa::defaulttype::Vec3f coordP; coordP = DataTypes::getCPos(coords[q[j]]);
-                    glVertex3f(coordP[0], coordP[1], coordP[2]);
-                }
-            }
-            glEnd();
-
-            glColor3f(color[0]-0.2f, color[1]-0.2f, color[2]-0.2f);
-            glBegin(GL_LINES);
-            const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
-
-            if (!edgeArray.empty()) //Draw quad edges for better display
-            {
-                for (unsigned int i = 0; i<edgeArray.size(); i++)
-                {
-                    const Edge& e = edgeArray[i];
-                    sofa::defaulttype::Vec3f coordP1; coordP1 = DataTypes::getCPos(coords[e[0]]);
-                    sofa::defaulttype::Vec3f coordP2; coordP2 = DataTypes::getCPos(coords[e[1]]);
-                    glVertex3f(coordP1[0], coordP1[1], coordP1[2]);
-                    glVertex3f(coordP2[0], coordP2[1], coordP2[2]);
-                }
-            }
-            else
-            {
-                for (unsigned int i = 0; i<quadArray.size(); i++)
+            { // drawing quads
+                std::vector<defaulttype::Vector3> pos;
+                pos.reserve(quadArray.size()*4u);
+                for (unsigned int i=0u; i< quadArray.size(); i++)
                 {
                     const Quad& q = quadArray[i];
-                    sofa::helper::vector <sofa::defaulttype::Vec3f> quadCoord;
-
-                    for (unsigned int j = 0; j<4; j++)
+                    for (unsigned int j = 0u; j<4u; j++)
                     {
-                        sofa::defaulttype::Vec3f p; p = DataTypes::getCPos(coords[q[j]]);
-                        quadCoord.push_back(p);
-                    }
-
-                    for (unsigned int j = 0; j<4; j++)
-                    {
-                        glVertex3f(quadCoord[j][0], quadCoord[j][1], quadCoord[j][2]);
-                        glVertex3f(quadCoord[(j+1)%4][0], quadCoord[(j+1)%4][1], quadCoord[(j+1)%4][2]);
+                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[q[j]])));
                     }
                 }
+                vparams->drawTool()->drawQuads(pos, color4);
             }
-            glEnd();
+
+            { // drawing edges
+                const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
+                const sofa::defaulttype::Vec4f edge_color(color[0]-0.2f, color[1]-0.2f, color[2]-0.2f,1.0f);
+                std::vector<defaulttype::Vector3> pos;
+                pos.reserve(edgeArray.size()*2u);
+
+                if (!edgeArray.empty())
+                {
+                    for (unsigned int i = 0u; i<edgeArray.size(); i++)
+                    {
+                        const Edge& e = edgeArray[i];
+                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[0]])));
+                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[1]])));
+                    }
+                } else {
+                    for (unsigned int i = 0u; i<quadArray.size(); i++)
+                    {
+                        const Quad& q = quadArray[i];
+                        for (unsigned int j = 0u; j<4u; j++)
+                        {
+                            pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[q[j]])));
+                            pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[q[(j+1u)%4u]])));
+                        }
+                    }
+                }
+                vparams->drawTool()->drawLines(pos,1.0f, edge_color );
+            }
         }
     }
-#endif /* SOFA_NO_OPENGL */
 }
 
 

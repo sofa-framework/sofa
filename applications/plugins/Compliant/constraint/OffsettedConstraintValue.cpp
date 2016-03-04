@@ -30,7 +30,7 @@ void OffsettedConstraintValue::dynamics(SReal* dst, unsigned n, unsigned dim, bo
     for( unsigned i=0;i<size;++i) dst[i] += offset;
 
 	using namespace utils;
-    map(dst, size) = -map(dst, size) / this->getContext()->getDt();
+    map(dst, size) *= -1.0 / this->getContext()->getDt();
 }
 
 

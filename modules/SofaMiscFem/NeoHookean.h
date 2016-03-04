@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,9 +43,6 @@ namespace component
 
 namespace fem
 {
-using namespace std;
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
 
 /** a Class that describe a generic hyperelastic material : exemple of Boyce and Arruda
 The material is described based on continuum mechanics and the description is independent
@@ -60,9 +57,9 @@ template<class DataTypes>
 class NeoHookean : public HyperelasticMaterial<DataTypes>{
 
   typedef typename DataTypes::Coord::value_type Real;
-  typedef Mat<3,3,Real> Matrix3;
-  typedef Mat<6,6,Real> Matrix6;
-  typedef MatSym<3,Real> MatrixSym;
+  typedef defaulttype::Mat<3,3,Real> Matrix3;
+  typedef defaulttype::Mat<6,6,Real> Matrix6;
+  typedef defaulttype::MatSym<3,Real> MatrixSym;
  
   virtual Real getStrainEnergy(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param) {
 		Real mu=param.parameterArray[0];

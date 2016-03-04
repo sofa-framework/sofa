@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,8 +25,6 @@
 #include "UnitTest.h"
 #include <time.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -47,11 +45,11 @@ bool UnitTest::checkIf( bool testSucceeded, std::string testDescription, unsigne
     if( !testSucceeded ) nerr++;
     if( testSucceeded )
     {
-        sout()  << "---- SUCCESS of : " << testDescription << endl;
+        sout()  << "---- SUCCESS of : " << testDescription << std::endl;
     }
     else
     {
-        serr() <<  "==== FAILURE of : " << testDescription << endl;
+        serr() <<  "==== FAILURE of : " << testDescription << std::endl;
     }
     return testSucceeded;
 }

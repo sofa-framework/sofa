@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -49,7 +49,7 @@ namespace interactionforcefield
 
 template<class DataTypes>
 void VectorSpringForceField<DataTypes>::EdgeDataHandler::applyCreateFunction(unsigned int, Spring &t,
-        const topology::Edge & e,
+        const core::topology::BaseMeshTopology::Edge & e,
         const sofa::helper::vector<unsigned int> & ancestors,
         const sofa::helper::vector<double> & coefs)
 {
@@ -134,7 +134,7 @@ void VectorSpringForceField<DataTypes>::addSpring(int m1, int m2, SReal ks, SRea
     else
     {
         springArrayData.push_back(Spring((Real)ks, (Real)kd, restVector));
-        edgeArray.push_back(topology::Edge(m1,m2));
+        edgeArray.push_back(core::topology::BaseMeshTopology::Edge(m1,m2));
     }
 }
 
@@ -306,7 +306,7 @@ void VectorSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /
         Deriv force;
         for (int i=0; i<_topology->getNbEdges(); i++)
         {
-            const topology::Edge &e=_topology->getEdge(i);
+            const core::topology::BaseMeshTopology::Edge &e=_topology->getEdge(i);
             const Spring &s=springArrayData[i];
             // paul---------------------------------------------------------------
             Deriv current_direction = x2[e[1]]-x1[e[0]];
@@ -325,7 +325,7 @@ void VectorSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /
         Deriv force;
         for (size_t i=0; i<edgeArray.size(); i++)
         {
-            const topology::Edge &e=edgeArray[i];
+            const core::topology::BaseMeshTopology::Edge &e=edgeArray[i];
             const Spring &s=springArrayData[i];
             // paul---------------------------------------------------------------
             Deriv current_direction = x2[e[1]]-x1[e[0]];
@@ -364,7 +364,7 @@ void VectorSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* 
 
         for (int i=0; i<_topology->getNbEdges(); i++)
         {
-            const topology::Edge &e=_topology->getEdge(i);
+            const core::topology::BaseMeshTopology::Edge &e=_topology->getEdge(i);
             const Spring &s=springArrayData[i];
             d = dx2[e[1]]-dx1[e[0]];
             dforce = d*(s.ks*kFactor);
@@ -378,7 +378,7 @@ void VectorSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* 
 
         for (size_t i=0; i<edgeArray.size(); i++)
         {
-            const topology::Edge &e=edgeArray[i];
+            const core::topology::BaseMeshTopology::Edge &e=edgeArray[i];
             const Spring &s=springArrayData[i];
             d = dx2[e[1]]-dx1[e[0]];
             dforce = d*(s.ks*kFactor);
@@ -409,7 +409,7 @@ void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* v
     {
         for (unsigned int i=0; i<springArray.getValue().size(); i++)
         {
-            const topology::Edge &e=_topology->getEdge(i);
+            const core::topology::BaseMeshTopology::Edge &e=_topology->getEdge(i);
             //const Spring &s=springArray[i];
 
             points.push_back(Vector3(x1[e[0]]));
@@ -422,7 +422,7 @@ void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* v
 
         for (unsigned int i=0; i<springArray.getValue().size(); i++)
         {
-            const topology::Edge &e=edgeArray[i];
+            const core::topology::BaseMeshTopology::Edge &e=edgeArray[i];
             //const Spring &s=springArray[i];
 
             points.push_back(Vector3(x1[e[0]]));
@@ -441,7 +441,7 @@ void VectorSpringForceField<DataTypes>::updateForceMask()
     {
         for (int i=0; i<_topology->getNbEdges(); i++)
         {
-            const topology::Edge &e=_topology->getEdge(i);
+            const core::topology::BaseMeshTopology::Edge &e=_topology->getEdge(i);
             this->mstate1->forceMask.insertEntry(e[0]);
             this->mstate2->forceMask.insertEntry(e[1]);
         }
@@ -450,7 +450,7 @@ void VectorSpringForceField<DataTypes>::updateForceMask()
     {
         for (size_t i=0; i<edgeArray.size(); i++)
         {
-            const topology::Edge &e=edgeArray[i];
+            const core::topology::BaseMeshTopology::Edge &e=edgeArray[i];
             this->mstate1->forceMask.insertEntry(e[0]);
             this->mstate2->forceMask.insertEntry(e[1]);
         }

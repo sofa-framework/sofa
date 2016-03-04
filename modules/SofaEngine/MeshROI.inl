@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -304,7 +304,7 @@ bool MeshROI<DataTypes>::isPointInMesh(const typename DataTypes::CPos& p)
 // Compute the reference point outside the bounding box
     const Vec6 b = f_box.getValue();
     typename DataTypes::CPos Vec;
-    if (sqrt( (b[0]-p[0])*(b[0]-p[0]) + (b[1]-p[1])*(b[1]-p[1]) + (b[2]-p[2])*(b[2]-p[2]) ) < sqrt( (b[3]-p[0])*(b[3]-p[0]) + (b[4]-p[1])*(b[4]-p[1]) + (b[5]-p[2])*(b[5]-p[2]) ) )
+    if (( (b[0]-p[0])*(b[0]-p[0]) + (b[1]-p[1])*(b[1]-p[1]) + (b[2]-p[2])*(b[2]-p[2]) ) < ( (b[3]-p[0])*(b[3]-p[0]) + (b[4]-p[1])*(b[4]-p[1]) + (b[5]-p[2])*(b[5]-p[2]) ) )
     {Vec[0] = (b[0]-100.0f)-p[0] ; Vec[1]= (b[1]-100.0f)-p[1]; Vec[2]= (b[2]-100.0f)-p[2];}
     else
     {Vec[0] = (b[3]+100.0f)-p[0] ; Vec[1]= (b[4]+100.0f)-p[1]; Vec[2]= (b[5]+100.0f)-p[2];}

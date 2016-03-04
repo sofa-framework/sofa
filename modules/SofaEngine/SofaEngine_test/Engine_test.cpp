@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -199,6 +199,8 @@ TEST_F(Engine_test , check_propagation )
 #include <SofaEngine/PairBoxRoi.h>
 #include <SofaEngine/PlaneROI.h>
 #include <SofaEngine/SphereROI.h>
+#include <SofaEngine/SelectLabelROI.h>
+#include <SofaEngine/SelectConnectedLabelsROI.h>
 #include <SofaEngine/DilateEngine.h>
 #include <SofaEngine/GenerateCylinder.h>
 #include <SofaEngine/ExtrudeSurface.h>
@@ -254,6 +256,8 @@ typedef testing::Types<
 //TestDataEngine< component::engine::PairBoxROI<defaulttype::Vec3Types> >, // getObject pb -> require a scene
 //TestDataEngine< component::engine::PlaneROI<defaulttype::Vec3Types> >, // getObject pb -> require a scene
 //TestDataEngine< component::engine::SphereROI<defaulttype::Vec3Types> >, // getObject pb -> require a scene
+TestDataEngine< component::engine::SelectLabelROI<unsigned int> >,
+TestDataEngine< component::engine::SelectConnectedLabelsROI<unsigned int> >,
 TestDataEngine< component::engine::DilateEngine<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::GenerateCylinder<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::ExtrudeSurface<defaulttype::Vec3Types> >,

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -155,7 +155,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
             binormal.normalize();
             for(unsigned int i = 0; i < my_map.size() ; i++)
             {
-                sofa::component::topology::Edge e = _topology->getEdge(my_map[i]);  // FF,13/03/2012: This seems more consistent
+                core::topology::BaseMeshTopology::Edge e = _topology->getEdge(my_map[i]);  // FF,13/03/2012: This seems more consistent
 
                 Coord tang = x[e[1]] - x[e[0]]; tang.normalize();
                 Coord normal = binormal.cross(tang);
@@ -173,7 +173,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
         {
             for(unsigned i = 0; i < my_map.size() ; i++)
             {
-                sofa::component::topology::Edge e = _topology->getEdge(my_map[i]), f;
+                core::topology::BaseMeshTopology::Edge e = _topology->getEdge(my_map[i]), f;
 
                 Vec3d tang, n1, n2;
                 n2 = Vec3d(0,0,1);
@@ -198,11 +198,11 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
 
                 }
 
-                sofa::component::topology::TrianglesAroundEdge t_a_E = _completeTopology->getTrianglesAroundEdge(k);
+                core::topology::BaseMeshTopology::TrianglesAroundEdge t_a_E = _completeTopology->getTrianglesAroundEdge(k);
 
                 if(t_a_E.size() == 1) // 2D cases
                 {
-                    sofa::component::topology::Triangle t = _completeTopology->getTriangle(t_a_E[0]);
+                    core::topology::BaseMeshTopology::Triangle t = _completeTopology->getTriangle(t_a_E[0]);
                     Vec3d vert;
 
 
@@ -347,17 +347,17 @@ void EdgePressureForceField<DataTypes>::selectEdgesFromString()
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::selectEdgesFromEdgeList()
 {
-    const helper::vector<sofa::component::topology::Edge>& inputEdges = edges.getValue();
-    const helper::vector<sofa::component::topology::Edge>& topologyEdges = _topology->getEdges();
+    const helper::vector<core::topology::BaseMeshTopology::Edge>& inputEdges = edges.getValue();
+    const helper::vector<core::topology::BaseMeshTopology::Edge>& topologyEdges = _topology->getEdges();
 
     helper::vector<unsigned int> indices(inputEdges.size());
 
     for(unsigned int i=0; i<inputEdges.size(); i++)
     {
-        sofa::component::topology::Edge inputEdge = inputEdges[i];
+        core::topology::BaseMeshTopology::Edge inputEdge = inputEdges[i];
         for(unsigned int j=0; j<topologyEdges.size(); j++)
         {
-            sofa::component::topology::Edge topologyEdge = topologyEdges[j];
+            core::topology::BaseMeshTopology::Edge topologyEdge = topologyEdges[j];
             //If they are the same edge
             if(inputEdge[0] == topologyEdge[0] && inputEdge[1] == topologyEdge[1])
             {

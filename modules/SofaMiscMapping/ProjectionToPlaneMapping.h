@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -77,7 +77,7 @@ public:
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
     typedef defaulttype::Vec<In::spatial_dimensions> Normals;
 
-    Data< vector<unsigned> > f_indices;         ///< indices of the parent points
+    Data< helper::vector<unsigned> > f_indices;         ///< indices of the parent points
     Data< OutVecCoord >      f_origins; ///< origins of the lines the point is projected to
     Data< OutVecCoord >      f_normals; ///< directions of the lines the point is projected to (should be normalized, and are normalized in init)
     Data< SReal >            d_drawScale; ///< drawing scale
@@ -97,7 +97,7 @@ public:
 
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
-    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
 
     virtual void draw(const core::visual::VisualParams* vparams);
@@ -115,7 +115,7 @@ protected:
     virtual ~ProjectionToTargetPlaneMapping() {}
 
     SparseMatrixEigen jacobian;                      ///< Jacobian of the mapping
-    vector<defaulttype::BaseMatrix*> baseMatrices;   ///< Jacobian of the mapping, in a vector
+    helper::vector<defaulttype::BaseMatrix*> baseMatrices;   ///< Jacobian of the mapping, in a vector
     };
 
 

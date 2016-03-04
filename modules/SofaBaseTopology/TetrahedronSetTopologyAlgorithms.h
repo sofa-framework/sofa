@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,10 +55,13 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(TetrahedronSetTopologyAlgorithms,DataTypes),SOFA_TEMPLATE(TriangleSetTopologyAlgorithms,DataTypes));
 
     typedef typename DataTypes::Real Real;
-    typedef BaseMeshTopology::TetraID TetraID;
-    typedef BaseMeshTopology::Tetra Tetra;
-    typedef BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
-    typedef BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
+    typedef core::topology::BaseMeshTopology::Edge Edge;
+    typedef core::topology::BaseMeshTopology::EdgeID EdgeID;
+    typedef core::topology::BaseMeshTopology::TetraID TetraID;
+    typedef core::topology::BaseMeshTopology::Tetra Tetra;
+    typedef core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
+    typedef core::topology::BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
+    typedef core::topology::BaseMeshTopology::TetrahedraAroundEdge TetrahedraAroundEdge;
     typedef typename DataTypes::Coord Coord;
 protected:
     TetrahedronSetTopologyAlgorithms()

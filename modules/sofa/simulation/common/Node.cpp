@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -160,7 +160,7 @@ void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
     }
     if (!oldFlags.empty())
     {
-        serr << "Deprecated visual flags attributes used. Instead, add the following object within the Node:" << sendl;
+        serr << helper::logging::Message::Deprecated << "Deprecated visual flags attributes used. Instead, add the following object within the Node:\n";
         serr << "<VisualStyle displayFlags=\"" << oldFlags << "\" />" << sendl;
 
         sofa::core::objectmodel::BaseObjectDescription objDesc("displayFlags","VisualStyle");
@@ -194,7 +194,7 @@ void Node::reinit(const core::ExecParams* params)
 //    //cerr<<"Node::animate, end execute"<<endl;
 //}
 
-void Node::glDraw(core::visual::VisualParams* vparams)
+void Node::draw(core::visual::VisualParams* vparams)
 {
     execute<simulation::VisualUpdateVisitor>(vparams);
     execute<simulation::VisualDrawVisitor>(vparams);

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -95,7 +95,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::init(const typename O
     _fromContainer->getContext()->get ( _fromGeomAlgo );
 
     int outside = 0;
-    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
 
     sofa::helper::vector<sofa::defaulttype::Matrix3> bases;
     sofa::helper::vector<sofa::defaulttype::Vector3> centers;
@@ -167,7 +167,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::
 {
     actualTetraPosition=in;
     //get number of point being mapped
-    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
     const sofa::helper::vector<MappingData >& map = this->map.getValue();
     const sofa::helper::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();
 
@@ -180,7 +180,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
         int index = map[i].in_index;
-        const topology::Tetrahedron& tetra = tetrahedra[index];
+        const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
 
         sofa::defaulttype::Vector3 rotatedPosition= in[tetra[0]] * ( 1-fx-fy-fz ) + in[tetra[1]] * fx + in[tetra[2]] * fy + in[tetra[3]] * fz ;
         Out::setCPos(out[i] , rotatedPosition); // glPointPositions[i] );
@@ -193,7 +193,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::apply( typename Out::
     for (unsigned int point = 0; point < mapOrient.size(); point++)
     {
         int index = mapOrient[point][0].in_index;
-        const topology::Tetrahedron& tetra = tetrahedra[index];
+        const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
 
         //compute the rotation of the rigid point using the "basis" approach
         sofa::defaulttype::Matrix3 orientationMatrix, polarMatrixQ; // orthogMatrix
@@ -230,7 +230,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJ( typename Out:
 {
     out.resize( map.getValue().size() );
 
-    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
     const sofa::helper::vector<MappingData >& map = this->map.getValue();
     // TODO: use mapOrient
     //const sofa::helper::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();
@@ -243,7 +243,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJ( typename Out:
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
         int index = map[i].in_index;
-        const topology::Tetrahedron& tetra = tetrahedra[index];
+        const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
         Out::setDPos(out[i] , in[tetra[0]] * ( 1-fx-fy-fz )
                 + in[tetra[1]] * fx
                 + in[tetra[2]] * fy
@@ -264,7 +264,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJ( typename Out:
 template<class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
     const sofa::helper::vector<MappingData >& map = this->map.getValue();
     typename core::behavior::MechanicalState<Out>* mechanicalObject;
     this->getContext()->get(mechanicalObject);
@@ -288,7 +288,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In:
         const OutReal fy = ( OutReal ) map[i].baryCoords[1];
         const OutReal fz = ( OutReal ) map[i].baryCoords[2];
         int index = map[i].in_index;
-        const topology::Tetrahedron& tetra = tetrahedra[index];
+        const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
         out[tetra[0]] += v * ( 1-fx-fy-fz );
         out[tetra[1]] += v * fx;
         out[tetra[2]] += v * fy;
@@ -338,7 +338,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopologyRigi
     else
         matrixJ->clear();
 
-    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
     const sofa::helper::vector<MappingData >& map = this->map.getValue();
     // TODO: use mapOrient
     //const sofa::helper::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();
@@ -353,7 +353,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopologyRigi
 
 
         int index = map[beamNode].in_index;
-        const topology::Tetrahedron& tetra = tetrahedra[index];
+        const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
 
         for (int dim = 0; dim < 3; dim++)
         {
@@ -388,7 +388,7 @@ template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
-    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
     const sofa::helper::vector<MappingData >& map = this->map.getValue();
     // TODO: use mapOrient
     //const sofa::helper::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();
@@ -411,7 +411,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT ( typename In
                 const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
                 const OutReal fz = ( OutReal ) map[indexIn].baryCoords[2];
                 int index = map[indexIn].in_index;
-                const topology::Tetrahedron& tetra = tetrahedra[index];
+                const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
 
                 o.addCol (tetra[0], data * ( 1-fx-fy-fz ) );
                 o.addCol (tetra[1], data * fx );
@@ -426,7 +426,7 @@ template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
 #ifndef SOFA_NO_OPENGL
-    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
+    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
     const sofa::helper::vector<MappingData >& map = this->map.getValue();
     // TODO: use mapOrient
     //const sofa::helper::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();
@@ -439,7 +439,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::vi
             const Real fy = map[i].baryCoords[1];
             const Real fz = map[i].baryCoords[2];
             int index = map[i].in_index;
-            const topology::Tetrahedron& tetra = tetrahedra[index];
+            const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
             Real f[4];
             f[0] = ( 1-fx-fy-fz );
             f[1] = fx;
@@ -469,7 +469,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::vi
         //const OutReal fy = ( OutReal ) map[i].baryCoords[1];
         //const OutReal fz = ( OutReal ) map[i].baryCoords[2];
         int index = map[i].in_index;
-        const topology::Tetrahedron& tetra = tetrahedra[index];
+        const core::topology::BaseMeshTopology::Tetrahedron& tetra = tetrahedra[index];
 
         //out[tetra[0]] += v * ( 1-fx-fy-fz );
         //out[tetra[1]] += v * fx;

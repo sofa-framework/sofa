@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,9 +34,9 @@
 #include <sstream>
 #include <string.h>
 
-#ifdef SOFA_HAVE_GLEW
-#include <sofa/helper/gl/GLSLShader.h>
-#endif // SOFA_HAVE_GLEW
+//#ifdef SOFA_HAVE_GLEW
+//#include <sofa/helper/gl/GLSLShader.h>
+//#endif // SOFA_HAVE_GLEW
 
 //#define NO_VBO
 //#define DEBUG_DRAW
@@ -675,10 +675,10 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
     if (vparams->displayFlags().getShowNormals())
     {
-#ifdef SOFA_HAVE_GLEW
-        GLhandleARB currentShader = sofa::helper::gl::GLSLShader::GetActiveShaderProgram();
-        sofa::helper::gl::GLSLShader::SetActiveShaderProgram(0);
-#endif // SOFA_HAVE_GLEW
+//#ifdef SOFA_HAVE_GLEW
+//        GLhandleARB currentShader = sofa::helper::gl::GLSLShader::GetActiveShaderProgram();
+//        sofa::helper::gl::GLSLShader::SetActiveShaderProgram(0);
+//#endif // SOFA_HAVE_GLEW
         glColor3f (1.0, 1.0, 1.0);
         for (unsigned int i=0; i<xforms.size(); i++)
         {
@@ -698,9 +698,9 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
             glPopMatrix();
         }
-#ifdef SOFA_HAVE_GLEW
-        sofa::helper::gl::GLSLShader::SetActiveShaderProgram(currentShader);
-#endif // SOFA_HAVE_GLEW
+//#ifdef SOFA_HAVE_GLEW
+//        sofa::helper::gl::GLSLShader::SetActiveShaderProgram(currentShader);
+//#endif // SOFA_HAVE_GLEW
     }
 //    m_vtexcoords.updateIfDirty();
 }

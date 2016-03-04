@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -82,8 +82,8 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
     }
 
 	typedef defaulttype::SerializablePair<unsigned, typename TIn::Coord> source_type;
-    typedef vector< source_type > source_vectype;
-	Data< vector< source_type > > source;
+    typedef helper::vector< source_type > source_vectype;
+    Data< helper::vector< source_type > > source;
 
     Data<int> geometricStiffness;
 
@@ -107,7 +107,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
         const source_vectype& src = source.getValue();
 
         // sorted in-out
-        typedef std::map<unsigned, vector<unsigned> > in_out_type;
+        typedef std::map<unsigned, helper::vector<unsigned> > in_out_type;
         in_out_type in_out;
 
         // wahoo it is heavy, can't we find lighter?

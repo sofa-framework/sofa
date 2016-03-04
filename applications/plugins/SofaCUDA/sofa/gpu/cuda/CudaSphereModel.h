@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,6 +41,18 @@ namespace cuda
 typedef sofa::component::collision::TSphereModel<gpu::cuda::CudaVec3Types> CudaSphereModel;
 typedef sofa::component::collision::TSphere<gpu::cuda::CudaVec3Types> CudaSphere;
 
+
+} // namespace cuda
+
+} // namespace gpu
+
+
+namespace component
+{
+namespace collision
+{
+
+
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_GPU_CUDA)
 extern template class SOFA_GPU_CUDA_API sofa::component::collision::TSphereModel<sofa::gpu::cuda::CudaVec3fTypes>;
 extern template class SOFA_GPU_CUDA_API sofa::component::collision::TSphereModel<sofa::gpu::cuda::CudaVec3f1Types>;
@@ -50,9 +62,10 @@ extern template class SOFA_GPU_CUDA_API sofa::component::collision::TSphereModel
 #endif // SOFA_GPU_CUDA_DOUBLE
 #endif
 
-} // namespace cuda
+} // namespace collision
 
-} // namespace gpu
+} // namespace component
+
 
 } // namespace sofa
 

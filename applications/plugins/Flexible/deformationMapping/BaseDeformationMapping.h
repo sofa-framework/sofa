@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -98,7 +98,6 @@ namespace component
 namespace mapping
 {
 
-using helper::vector;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class InDataTypes, class OutDataTypes>
@@ -124,7 +123,7 @@ public:
     virtual void BackwardMapping(Coord& p0,const Coord& p,const Real Thresh=1e-5, const size_t NbMaxIt=10)=0;     ///< iteratively approximate spatial coord p0 in rest configuration corresponding to the deformed coord p (warning! p0 need to be initialized in the object first, for instance using closest point matching)
     virtual unsigned int getClosestMappedPoint(const Coord& p, Coord& x0,Coord& x, bool useKdTree=false)=0; ///< returns closest mapped point x from input point p, its rest pos x0, and its index
 
-    virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)=0; /// resizing given custom positions and weights
+    virtual void resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)=0; /// resizing given custom positions and weights
 };
 
 
@@ -198,9 +197,9 @@ public:
     /** @name  Coord types    */
     //@{
     typedef defaulttype::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
-    typedef vector<Coord> VecCoord;
+    typedef helper::vector<Coord> VecCoord;
     typedef defaulttype::Mat<spatial_dimensions,material_dimensions,Real> MaterialToSpatial;     ///< local liner transformation from material space to world space = deformation gradient type
-    typedef vector<MaterialToSpatial> VMaterialToSpatial;
+    typedef helper::vector<MaterialToSpatial> VMaterialToSpatial;
     typedef helper::kdTree<Coord> KDT;      ///< kdTree for fast search of closest mapped points
     typedef typename KDT::distanceSet distanceSet;
     //@}
@@ -208,7 +207,7 @@ public:
     /** @name  Jacobian types    */
     //@{
     typedef JacobianBlockType BlockType;
-    typedef vector<vector<BlockType> >  SparseMatrix;
+    typedef helper::vector<helper::vector<BlockType> >  SparseMatrix;
 
     typedef typename BlockType::MatBlock  MatBlock;  ///< Jacobian block matrix
     typedef linearsolver::EigenSparseMatrix<In,Out>    SparseMatrixEigen;
@@ -225,7 +224,7 @@ public:
 //    void updateIndex();
 //    void updateIndex(const size_t parentSize, const size_t childSize);
     void resizeOut(); /// automatic resizing (of output model and jacobian blocks) when input samples have changed. Recomputes weights from shape function component.
-    virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0); /// resizing given custom positions and weights
+    virtual void resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0); /// resizing given custom positions and weights
 
     /*!
      * \brief Resize all required data and initialize jacobian blocks
@@ -260,7 +259,7 @@ public:
     const defaulttype::BaseMatrix* getJ(const core::MechanicalParams * /*mparams*/);
 
     // Compliant plugin experimental API
-    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
     virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
     virtual const defaulttype::BaseMatrix* getK();
@@ -328,7 +327,7 @@ public:
     Data<VecVGradient >   f_dw;        ///< Influence weight gradients
     Data<VecVHessian >    f_ddw;       ///< Influence weight hessians
     Data<VMaterialToSpatial>    f_F0;       ///< initial value of deformation gradients
-    Data< vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
+    Data< helper::vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
 
 
     Data<bool> assemble;
@@ -365,7 +364,7 @@ protected :
     virtual void initJacobianBlocks(const InVecCoord& /*inCoord*/, const OutVecCoord& /*outCoord*/){ std::cout << "Only implemented in LinearMapping for now." << std::endl;}
 
     SparseMatrixEigen eigenJacobian/*, maskedEigenJacobian*/;  ///< Assembled Jacobian matrix
-    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
+    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
     void updateJ();
 //    void updateMaskedJ();
 //    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,7 +38,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
 
 /**
  * This class samples an object represented by a mesh
@@ -68,8 +67,8 @@ public:
     Data< SeqPositions > f_inPosition;
     typedef sofa::core::topology::BaseMeshTopology Topo;
     Topo* parentTopology;
-    Data< vector<unsigned int> > f_cell;
-    Data< vector<unsigned int> > f_indices;
+    Data< helper::vector<unsigned int> > f_cell;
+    Data< helper::vector<unsigned int> > f_indices;
 
     typedef topology::TetrahedronSetGeometryAlgorithms<defaulttype::StdVectorTypes<Coord,Coord,Real> > TetraGeoAlg;
     TetraGeoAlg* tetraGeoAlgo;
@@ -81,7 +80,7 @@ public:
     Data< bool > f_useLocalOrientation;
     //@}
 
-    Data< vector<Real> > f_fineVolumes;
+    Data< helper::vector<Real> > f_fineVolumes;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const TopologyGaussPointSampler* = NULL) { return std::string();    }
@@ -94,11 +93,6 @@ public:
         {
             this->getContext()->get(parentTopology,core::objectmodel::BaseContext::SearchUp);
             if(!this->parentTopology) serr<<"MeshTopology not found"<<sendl;
-        }
-
-        if(!this->tetraGeoAlgo)
-        {
-            this->getContext()->get(tetraGeoAlgo,core::objectmodel::BaseContext::SearchUp);
         }
 
         addInput(&f_inPosition);
@@ -157,7 +151,7 @@ protected:
         waPositions pos(this->f_position);
         waVolume vol(this->f_volume);
         helper::WriteOnlyAccessor<Data< VTransform > > transforms(this->f_transforms);
-        helper::WriteOnlyAccessor<Data< vector<unsigned int> > > cel(f_cell);
+        helper::WriteOnlyAccessor<Data< helper::vector<unsigned int> > > cel(f_cell);
         pos.clear();
         vol.clear();
         transforms.clear();
@@ -276,6 +270,7 @@ protected:
             }
             else if(this->f_method.getValue().getSelectedId() == GAUSSLEGENDRE)
             {
+                if(!this->tetraGeoAlgo) this->getContext()->get(tetraGeoAlgo,core::objectmodel::BaseContext::SearchUp);
                 if(tetraGeoAlgo)  // retrieve gauss points from geometry algorithm
                 {
                     typedef topology::NumericalIntegrationDescriptor<Real,4> IntegrationDescriptor;
@@ -372,10 +367,10 @@ protected:
     inline void getCubeVolumes(volumeIntegralType &V, const Coord& p1,const Coord& p2,const Coord& p3,const Coord& p4, const unsigned int order)
     {
         Coord u=p2-p1,v=p3-p1,w=p4-p1;
-        Vec<3,Real> l;  for(unsigned int i=0; i<3; i++) l[i]=helper::rmax(helper::rmax(helper::rabs(u[i]),helper::rabs(v[i])),helper::rabs(w[i]));
-        Vec<3,Real> l2;  for(unsigned int i=0; i<3; i++) l2[i]=l[i]*l[i];
-        Vec<3,Real> l3;  for(unsigned int i=0; i<3; i++) l3[i]=l2[i]*l[i];
-        Vec<3,Real> l5;  for(unsigned int i=0; i<3; i++) l5[i]=l3[i]*l2[i];
+        defaulttype::Vec<3,Real> l;  for(unsigned int i=0; i<3; i++) l[i]=helper::rmax(helper::rmax(helper::rabs(u[i]),helper::rabs(v[i])),helper::rabs(w[i]));
+        defaulttype::Vec<3,Real> l2;  for(unsigned int i=0; i<3; i++) l2[i]=l[i]*l[i];
+        defaulttype::Vec<3,Real> l3;  for(unsigned int i=0; i<3; i++) l3[i]=l2[i]*l[i];
+        defaulttype::Vec<3,Real> l5;  for(unsigned int i=0; i<3; i++) l5[i]=l3[i]*l2[i];
 
 
         unsigned int dim=(order+1)*(order+2)*(order+3)/6;          V.resize(dim);

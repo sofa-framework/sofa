@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -190,38 +190,38 @@ public:
     /// compute lambda and mu based on the Young modulus and Poisson ratio
     void updateLameCoefficients();
 
-    class TRBSEdgeHandler : public sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge, sofa::helper::vector<EdgeRestInformation> >
+    class TRBSEdgeHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeRestInformation> >
     {
     public:
         typedef typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
 
         TRBSEdgeHandler(TriangularBiquadraticSpringsForceField<DataTypes>* ff,
                 sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> >* data)
-            :sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge, sofa::helper::vector<EdgeRestInformation> >(data)
+            :sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeRestInformation> >(data)
             ,ff(ff)
         {
         }
-        void applyCreateFunction(unsigned int, EdgeRestInformation &t, const sofa::component::topology::Edge &,
+        void applyCreateFunction(unsigned int, EdgeRestInformation &t, const core::topology::BaseMeshTopology::Edge &,
                 const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &);
 
     protected:
         TriangularBiquadraticSpringsForceField<DataTypes>* ff;
     };
 
-    class TRBSTriangleHandler : public sofa::component::topology::TopologyDataHandler<sofa::component::topology::Triangle,sofa::helper::vector<TriangleRestInformation> >
+    class TRBSTriangleHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,sofa::helper::vector<TriangleRestInformation> >
     {
     public:
         typedef typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation TriangleRestInformation;
 
         TRBSTriangleHandler(TriangularBiquadraticSpringsForceField<DataTypes>* ff,
                 sofa::component::topology::TriangleData<sofa::helper::vector<TriangleRestInformation> >* data)
-            :sofa::component::topology::TopologyDataHandler<sofa::component::topology::Triangle,sofa::helper::vector<TriangleRestInformation> >(data)
+            :sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,sofa::helper::vector<TriangleRestInformation> >(data)
             ,ff(ff)
         {
         }
 
         void applyCreateFunction(unsigned int, TriangleRestInformation &t,
-                const sofa::component::topology::Triangle &,
+                const core::topology::BaseMeshTopology::Triangle &,
                 const sofa::helper::vector<unsigned int> &,
                 const sofa::helper::vector<double> &);
         void applyDestroyFunction(unsigned int, TriangleRestInformation &);
@@ -241,20 +241,14 @@ protected :
 
 };
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
-#endif
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-#endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_DEFORMABLE_API TriangularBiquadraticSpringsForceField<Vec3dTypes>;
+extern template class SOFA_DEFORMABLE_API TriangularBiquadraticSpringsForceField<sofa::defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_DEFORMABLE_API TriangularBiquadraticSpringsForceField<Vec3fTypes>;
+extern template class SOFA_DEFORMABLE_API TriangularBiquadraticSpringsForceField<sofa::defaulttype::Vec3fTypes>;
 #endif
 
 #endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_CPP)

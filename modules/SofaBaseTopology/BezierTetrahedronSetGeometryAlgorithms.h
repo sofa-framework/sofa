@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,8 +38,6 @@ namespace component
 
 namespace topology
 {
-using core::topology::BaseMeshTopology;
-
 
 /**
 * A class that provides geometry information on an TetrahedronSet.
@@ -55,15 +53,17 @@ public:
     typedef sofa::defaulttype::Vec<4,Real> Vec4;
     typedef sofa::defaulttype::Mat<4,4,Real> Mat44;
 
-	typedef BaseMeshTopology::TetraID TetraID;
-	typedef BaseMeshTopology::Tetra Tetra;
-	typedef BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
-	typedef BaseMeshTopology::SeqEdges SeqEdges;
-	typedef BaseMeshTopology::TetrahedraAroundVertex TetrahedraAroundVertex;
-	typedef BaseMeshTopology::TetrahedraAroundEdge TetrahedraAroundEdge;
-	typedef BaseMeshTopology::TetrahedraAroundTriangle TetrahedraAroundTriangle;
-	typedef BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
-	typedef BaseMeshTopology::TrianglesInTetrahedron TrianglesInTetrahedron;
+    typedef core::topology::BaseMeshTopology::PointID PointID;
+    typedef core::topology::BaseMeshTopology::Edge Edge;
+    typedef core::topology::BaseMeshTopology::TetraID TetraID;
+    typedef core::topology::BaseMeshTopology::Tetra Tetra;
+    typedef core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
+    typedef core::topology::BaseMeshTopology::SeqEdges SeqEdges;
+    typedef core::topology::BaseMeshTopology::TetrahedraAroundVertex TetrahedraAroundVertex;
+    typedef core::topology::BaseMeshTopology::TetrahedraAroundEdge TetrahedraAroundEdge;
+    typedef core::topology::BaseMeshTopology::TetrahedraAroundTriangle TetrahedraAroundTriangle;
+    typedef core::topology::BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
+    typedef core::topology::BaseMeshTopology::TrianglesInTetrahedron TrianglesInTetrahedron;
 	typedef BezierTetrahedronSetTopologyContainer::VecPointID VecPointID;
 
 	typedef Tetra Tetrahedron;

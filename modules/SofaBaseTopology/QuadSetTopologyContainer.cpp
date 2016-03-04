@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -235,7 +235,7 @@ void QuadSetTopologyContainer::createEdgesInQuadArray()
     }
 }
 
-const sofa::helper::vector<Quad> &QuadSetTopologyContainer::getQuadArray()
+const sofa::helper::vector<QuadSetTopologyContainer::Quad> &QuadSetTopologyContainer::getQuadArray()
 {
     if(!hasQuads() && getNbPoints()>0)
     {
@@ -248,7 +248,7 @@ const sofa::helper::vector<Quad> &QuadSetTopologyContainer::getQuadArray()
     return d_quad.getValue();
 }
 
-const Quad QuadSetTopologyContainer::getQuad (QuadID i)
+const QuadSetTopologyContainer::Quad QuadSetTopologyContainer::getQuad (QuadID i)
 {
     if(!hasQuads())
         createQuadSetArray();
@@ -338,7 +338,7 @@ const sofa::helper::vector< sofa::helper::vector<unsigned int> > &QuadSetTopolog
     return m_quadsAroundEdge;
 }
 
-const sofa::helper::vector< EdgesInQuad> &QuadSetTopologyContainer::getEdgesInQuadArray()
+const sofa::helper::vector< QuadSetTopologyContainer::EdgesInQuad> &QuadSetTopologyContainer::getEdgesInQuadArray()
 {
     if(m_edgesInQuad.empty())
         createEdgesInQuadArray();
@@ -346,7 +346,7 @@ const sofa::helper::vector< EdgesInQuad> &QuadSetTopologyContainer::getEdgesInQu
     return m_edgesInQuad;
 }
 
-const QuadsAroundVertex& QuadSetTopologyContainer::getQuadsAroundVertex(PointID i)
+const QuadSetTopologyContainer::QuadsAroundVertex& QuadSetTopologyContainer::getQuadsAroundVertex(PointID i)
 {
     if(!hasQuadsAroundVertex())	// this method should only be called when the shell array exists
     {
@@ -366,7 +366,7 @@ const QuadsAroundVertex& QuadSetTopologyContainer::getQuadsAroundVertex(PointID 
     return m_quadsAroundVertex[i];
 }
 
-const QuadsAroundEdge& QuadSetTopologyContainer::getQuadsAroundEdge(EdgeID i)
+const QuadSetTopologyContainer::QuadsAroundEdge& QuadSetTopologyContainer::getQuadsAroundEdge(EdgeID i)
 {
     if(!hasQuadsAroundEdge())	// this method should only be called when the shell array exists
     {
@@ -386,7 +386,7 @@ const QuadsAroundEdge& QuadSetTopologyContainer::getQuadsAroundEdge(EdgeID i)
     return m_quadsAroundEdge[i];
 }
 
-const EdgesInQuad &QuadSetTopologyContainer::getEdgesInQuad(const unsigned int i)
+const QuadSetTopologyContainer::EdgesInQuad &QuadSetTopologyContainer::getEdgesInQuad(const unsigned int i)
 {
     if(m_edgesInQuad.empty())
         createEdgesInQuadArray();
@@ -590,7 +590,7 @@ unsigned int QuadSetTopologyContainer::getNumberOfConnectedComponent()
 }
 
 
-const VecQuadID QuadSetTopologyContainer::getConnectedElement(QuadID elem)
+const QuadSetTopologyContainer::VecQuadID QuadSetTopologyContainer::getConnectedElement(QuadID elem)
 {
     if(!hasQuadsAroundVertex())	// this method should only be called when the shell array exists
     {
@@ -657,7 +657,7 @@ const VecQuadID QuadSetTopologyContainer::getConnectedElement(QuadID elem)
 }
 
 
-const VecQuadID QuadSetTopologyContainer::getElementAroundElement(QuadID elem)
+const QuadSetTopologyContainer::VecQuadID QuadSetTopologyContainer::getElementAroundElement(QuadID elem)
 {
     VecQuadID elems;
 
@@ -699,7 +699,7 @@ const VecQuadID QuadSetTopologyContainer::getElementAroundElement(QuadID elem)
 }
 
 
-const VecQuadID QuadSetTopologyContainer::getElementAroundElements(VecQuadID elems)
+const QuadSetTopologyContainer::VecQuadID QuadSetTopologyContainer::getElementAroundElements(VecQuadID elems)
 {
     VecQuadID elemAll;
     VecQuadID elemTmp;

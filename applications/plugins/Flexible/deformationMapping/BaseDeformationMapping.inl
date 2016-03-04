@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -271,18 +271,21 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     }
 
     // init shape function
-    sofa::core::objectmodel::BaseContext* context = this->getContext();
-    std::vector<BaseShapeFunction*> sf; context->get<BaseShapeFunction>(&sf,core::objectmodel::BaseContext::SearchUp);
-    for(unsigned int i=0;i<sf.size();i++)
+    if( !_shapeFunction )
     {
-        if(this->f_shapeFunction_name.isSet()) {if(this->f_shapeFunction_name.getValue().compare(sf[i]->getName()) == 0) _shapeFunction=sf[i];}
-        else if(sf[i]->f_position.getValue().size() == this->fromModel->getSize()) _shapeFunction=sf[i];
+        sofa::core::objectmodel::BaseContext* context = this->getContext();
+        std::vector<BaseShapeFunction*> sf; context->get<BaseShapeFunction>(&sf,core::objectmodel::BaseContext::SearchUp);
+        for(unsigned int i=0;i<sf.size();i++)
+        {
+            if(this->f_shapeFunction_name.isSet()) {if(this->f_shapeFunction_name.getValue().compare(sf[i]->getName()) == 0) _shapeFunction=sf[i];}
+            else if(sf[i]->f_position.getValue().size() == this->fromModel->getSize()) _shapeFunction=sf[i];
+        }
     }
 
     if(_shapeFunction) // if we have a shape function, we use it to compute needed data (index, weights, etc.)
     {
         if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : found shape function "<<_shapeFunction->getName()<<std::endl;
-        vector<mCoord> mpos0;
+        helper::vector<mCoord> mpos0;
         mpos0.resize(pos0.size());
         for(size_t i=0; i<pos0.size(); ++i) defaulttype::StdVectorTypes<mCoord,mCoord>::set( mpos0[i], pos0[i][0] , pos0[i][1] , pos0[i][2]);
 
@@ -325,7 +328,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
 
 
 template <class JacobianBlockType>
-void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
+void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const helper::vector<Coord>& position0, helper::vector<helper::vector<unsigned int> > index,helper::vector<helper::vector<Real> > w, helper::vector<helper::vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, helper::vector<helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, helper::vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
 {
     {
         // TODO this must be done before resizeOut() but is done again in Inherit::init();
@@ -372,12 +375,15 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
     reinit();
 
     // update deformation gradient state rest position
-    if( !_sampler ) this->getContext()->get(_sampler,core::objectmodel::BaseContext::Local);
-    if(_sampler && this->toModel->read(core::VecCoordId::restPosition())->getValue().size()==size ) // not for states that do not have restpos (like visualmodel)
+    if( this->toModel->read(core::VecCoordId::restPosition())->getValue().size()==size ) // not for states that do not have restpos (like visualmodel)
     {
-        helper::ReadAccessor<Data< VMaterialToSpatial > >  ra_F0(this->f_F0);
-        helper::WriteOnlyAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));
-        for(size_t i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = (OutReal)ra_F0[i][j][k];
+        if( !_sampler ) this->getContext()->get(_sampler,core::objectmodel::BaseContext::Local);
+        if(_sampler )
+        {
+            helper::ReadAccessor<Data< VMaterialToSpatial > >  ra_F0(this->f_F0);
+            helper::WriteOnlyAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));
+            for(size_t i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = (OutReal)ra_F0[i][j][k];
+        }
     }
 }
 
@@ -385,23 +391,18 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::init()
 {
-    component::visualmodel::VisualModelImpl *visual;
-    this->getContext()->get( visual, core::objectmodel::BaseContext::Local);
-    if(visual) {this->extTriangles = &visual->getTriangles(); this->extvertPosIdx = &visual->m_vertPosIdx.getValue(); this->triangles=0; }
-    else
-    {
-        core::topology::BaseMeshTopology *topo;
-        this->getContext()->get( topo, core::objectmodel::BaseContext::Local);
-        if(topo) {this->triangles = &topo->getTriangles();  this->extTriangles=0; }
-    }
-
-
     baseMatrices.resize( 1 ); // just a wrapping for getJs()
     baseMatrices[0] = &eigenJacobian;
 
     resizeOut();
 
     Inherit::init();
+
+    // check that all children particles got a parent
+    const VecVRef& indices = this->f_index.getValue();
+    for (std::size_t i=0; i < indices.size(); ++i)
+        if (!indices[i].size() > 0)
+            serr << "Particle " << i << " has no parent" << sendl;
 }
 
 template <class JacobianBlockType>
@@ -409,9 +410,10 @@ void BaseDeformationMappingT<JacobianBlockType>::reinit()
 {
     if(this->isMechanical() && this->assemble.getValue()) updateJ();
 
-    apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel->read(core::ConstVecCoordId::position()));
-
-    if(this->toModel->write(core::VecDerivId::velocity())) applyJ(NULL, *this->toModel->write(core::VecDerivId::velocity()), *this->fromModel->read(core::ConstVecDerivId::velocity()));
+    // force apply
+    // bg: do we need this ?
+    //    apply(NULL, *this->toModel->write(core::VecCoordId::position()), *this->fromModel->read(core::ConstVecCoordId::position()));
+    //    if(this->toModel->write(core::VecDerivId::velocity())) applyJ(NULL, *this->toModel->write(core::VecDerivId::velocity()), *this->fromModel->read(core::ConstVecDerivId::velocity()));
 
     Inherit::reinit();
 }
@@ -471,7 +473,7 @@ void BaseDeformationMappingT<JacobianBlockType>::updateK( const core::Mechanical
     const VecVRef& indices = this->f_index.getValue();
 
     K.resizeBlocks(in.size(),in.size());
-    vector<KBlock> diagonalBlocks; diagonalBlocks.resize(in.size());
+    helper::vector<KBlock> diagonalBlocks; diagonalBlocks.resize(in.size());
 
     // TODO: need to take into account mask in geometric stiffness, I do no think so!??
 
@@ -500,6 +502,8 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(OutVecCoord& out, const I
         std::cout << "Out size : " << out.size() << std::endl;
     }
 
+    const VecVRef& indices = this->f_index.getValue();
+
 #ifdef _OPENMP
 #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
@@ -508,7 +512,7 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(OutVecCoord& out, const I
         out[i]=OutCoord();
         for(size_t j=0; j<jacobian[i].size(); j++)
         {
-            size_t index=this->f_index.getValue()[i][j];
+            size_t index=indices[i][j];
             jacobian[i][j].addapply(out[i],in[index]);
         }
     }
@@ -528,6 +532,8 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJ(OutVecDeriv& out, const 
     }
     else
     {
+        const VecVRef& indices = this->f_index.getValue();
+
         for( size_t i=0 ; i<this->maskTo->size() ; ++i)
         {
             if( !this->maskTo->isActivated() || this->maskTo->getEntry(i) )
@@ -535,7 +541,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJ(OutVecDeriv& out, const 
                 out[i]=OutDeriv();
                 for(size_t j=0; j<jacobian[i].size(); j++)
                 {
-                    size_t index=this->f_index.getValue()[i][j];
+                    size_t index=indices[i][j];
                     jacobian[i][j].addmult(out[i],in[index]);
                 }
             }
@@ -862,7 +868,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
 
     if (vparams->displayFlags().getShowMechanicalMappings())
     {
-        vector< defaulttype::Vector3 > edge;     edge.resize(2);
+        helper::vector< defaulttype::Vector3 > edge;     edge.resize(2);
         defaulttype::Vec<4,float> col;
 
         for(size_t i=0; i<out.size(); i++ )
@@ -931,54 +937,70 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
         }
     }
 
-    if(showColorOnTopology.getValue().getSelectedId() && (this->extTriangles || this->triangles))
+    if(showColorOnTopology.getValue().getSelectedId() )
     {
-        std::vector< Real > val(out.size());
-        MaterialToSpatial F;
-        for(size_t i=0; i<out.size(); i++ )
+        if( !this->extTriangles && !this->triangles )
         {
-            if(OutDataTypesInfo<Out>::FMapped) F=OutDataTypesInfo<Out>::getF(out[i]); else F=f_F[i];
-
-            if(showColorOnTopology.getValue().getSelectedId()==1) val[i]=(defaulttype::trace(F.transposed()*F)-3.);
-            else  val[i]=sqrt(defaulttype::determinant(F.transposed()*F))-1.;
-
-            //if (val[i]<0) val[i]=2*val[i]/(val[i]+1.);
-            val[i]*=240 * this->showColorScale.getValue();
-            val[i]+=120;
-            if (val[i]<0) val[i]=0;
-            if (val[i]>240) val[i]=240;
+            component::visualmodel::VisualModelImpl *visual = NULL;
+            this->getContext()->get( visual, core::objectmodel::BaseContext::Local);
+            if(visual) {this->extTriangles = &visual->getTriangles(); this->extvertPosIdx = &visual->m_vertPosIdx.getValue(); this->triangles=0; }
+            else
+            {
+                core::topology::BaseMeshTopology *topo = NULL;
+                this->getContext()->get( topo, core::objectmodel::BaseContext::Local);
+                if(topo) {this->triangles = &topo->getTriangles();  this->extTriangles=0; }
+            }
         }
 
-        size_t nb =0;
-        if(triangles) nb+=triangles->size();
-        if(extTriangles) nb+=extTriangles->size();
+        if( this->extTriangles || this->triangles )
+        {
+            std::vector< Real > val(out.size());
+            MaterialToSpatial F;
+            for(size_t i=0; i<out.size(); i++ )
+            {
+                if(OutDataTypesInfo<Out>::FMapped) F=OutDataTypesInfo<Out>::getF(out[i]); else F=f_F[i];
 
-        std::vector< defaulttype::Vector3 > points(3*nb),normals;
-        std::vector< defaulttype::Vec<4,float> > colors(3*nb);
-        size_t count=0;
+                if(showColorOnTopology.getValue().getSelectedId()==1) val[i]=(defaulttype::trace(F.transposed()*F)-3.);
+                else  val[i]=sqrt(defaulttype::determinant(F.transposed()*F))-1.;
 
-        if(triangles)
-            for ( size_t i = 0; i < triangles->size(); i++)
-                for ( size_t j = 0; j < 3; j++)
-                {
-                    size_t index = (*triangles)[i][j];
-                    if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
-                    sofa::helper::gl::Color::getHSVA(&colors[count][0],(float)val[index],1.f,.8f,1.f);
-                    count++;
-                }
-        if(extTriangles)
-            for ( size_t i = 0; i < extTriangles->size(); i++)
-                for ( size_t j = 0; j < 3; j++)
-                {
-                    size_t index = (*extTriangles)[i][j];
-                    if(this->extvertPosIdx) index=(*extvertPosIdx)[index];
-                    if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
-                    sofa::helper::gl::Color::getHSVA(&colors[count][0],(float)val[index],1.f,.8f,1.f);
-                    count++;
-                }
+                //if (val[i]<0) val[i]=2*val[i]/(val[i]+1.);
+                val[i]*=240 * this->showColorScale.getValue();
+                val[i]+=120;
+                if (val[i]<0) val[i]=0;
+                if (val[i]>240) val[i]=240;
+            }
 
-        glDisable( GL_LIGHTING);
-        vparams->drawTool()->drawTriangles(points, normals, colors);
+            size_t nb =0;
+            if(triangles) nb+=triangles->size();
+            if(extTriangles) nb+=extTriangles->size();
+
+            std::vector< defaulttype::Vector3 > points(3*nb),normals;
+            std::vector< defaulttype::Vec<4,float> > colors(3*nb);
+            size_t count=0;
+
+            if(triangles)
+                for ( size_t i = 0; i < triangles->size(); i++)
+                    for ( size_t j = 0; j < 3; j++)
+                    {
+                        size_t index = (*triangles)[i][j];
+                        if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
+                        sofa::helper::gl::Color::getHSVA(&colors[count][0],(float)val[index],1.f,.8f,1.f);
+                        count++;
+                    }
+            if(extTriangles)
+                for ( size_t i = 0; i < extTriangles->size(); i++)
+                    for ( size_t j = 0; j < 3; j++)
+                    {
+                        size_t index = (*extTriangles)[i][j];
+                        if(this->extvertPosIdx) index=(*extvertPosIdx)[index];
+                        if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
+                        sofa::helper::gl::Color::getHSVA(&colors[count][0],(float)val[index],1.f,.8f,1.f);
+                        count++;
+                    }
+
+            glDisable( GL_LIGHTING);
+            vparams->drawTool()->drawTriangles(points, normals, colors);
+        }
     }
     glPopAttrib();
 #endif /* SOFA_NO_OPENGL */
@@ -1001,7 +1023,7 @@ const defaulttype::BaseMatrix* BaseDeformationMappingT<JacobianBlockType>::getJ(
 
 
 template <class JacobianBlockType>
-const vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMappingT<JacobianBlockType>::getJs()
+const helper::vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMappingT<JacobianBlockType>::getJs()
 {
     if(!this->assemble.getValue() || !BlockType::constant || !eigenJacobian.rows()) updateJ();
 

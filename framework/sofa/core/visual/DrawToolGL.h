@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -127,12 +127,15 @@ public:
     virtual void drawQuads(const std::vector<Vector3> &points, const Vec4f& colour) ;
 
 
+    virtual void drawTetrahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, const Vec4f &colour);
+    virtual void drawTetrahedra(const std::vector<Vector3> &points, const Vec4f& colour);
+
     virtual void drawSphere( const Vector3 &p, float radius);
-	virtual void drawEllipsoid(const Vector3 &p, const Vector3 &radii);
+    virtual void drawEllipsoid(const Vector3 &p, const Vector3 &radii);
 
     virtual void drawBoundingBox( const Vector3 &min, const Vector3 &max );
 
-	virtual void draw3DText(const Vector3 &p, float scale, const Vec4f &color, const char* text);
+    virtual void draw3DText(const Vector3 &p, float scale, const Vec4f &color, const char* text);
 
     virtual void draw3DText_Indices(const helper::vector<Vector3> &positions, float scale, const Vec4f &color);
 
@@ -147,12 +150,16 @@ public:
     virtual void popMatrix();
     virtual void multMatrix(float* glTransform );
     virtual void scale( float s );
+    virtual void translate(float x, float y, float z);
 
     virtual void writeOverlayText( int x, int y, unsigned fontSize, const Vec4f &color, const char* text );
 
     virtual void enableBlending();
 
     virtual void disableBlending();
+
+    virtual void saveLastState();
+    virtual void restoreLastState();
 
 protected:
 

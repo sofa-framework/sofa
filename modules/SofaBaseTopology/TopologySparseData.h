@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -145,14 +145,14 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class VecT >
-class PointSparseData : public TopologySparseDataImpl<Point, VecT>
+class PointSparseData : public TopologySparseDataImpl<core::topology::BaseMeshTopology::Point, VecT>
 {
 public:
-    typedef typename TopologySparseDataImpl<Point, VecT>::container_type container_type;
-    typedef typename TopologySparseDataImpl<Point, VecT>::value_type value_type;
+    typedef typename TopologySparseDataImpl<core::topology::BaseMeshTopology::Point, VecT>::container_type container_type;
+    typedef typename TopologySparseDataImpl<core::topology::BaseMeshTopology::Point, VecT>::value_type value_type;
 
     PointSparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySparseDataImpl<Point, VecT>(data)
+        : TopologySparseDataImpl<core::topology::BaseMeshTopology::Point, VecT>(data)
     {}
 
 protected:
@@ -167,14 +167,14 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class VecT >
-class EdgeSparseData : public TopologySparseDataImpl<Edge, VecT>
+class EdgeSparseData : public TopologySparseDataImpl<core::topology::BaseMeshTopology::Edge, VecT>
 {
 public:
-    typedef typename TopologySparseDataImpl<Edge, VecT>::container_type container_type;
-    typedef typename TopologySparseDataImpl<Edge, VecT>::value_type value_type;
+    typedef typename TopologySparseDataImpl<core::topology::BaseMeshTopology::Edge, VecT>::container_type container_type;
+    typedef typename TopologySparseDataImpl<core::topology::BaseMeshTopology::Edge, VecT>::value_type value_type;
 
     EdgeSparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySparseDataImpl<Edge, VecT>(data)
+        : TopologySparseDataImpl<core::topology::BaseMeshTopology::Edge, VecT>(data)
     {}
 
 protected:
@@ -188,14 +188,14 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class VecT >
-class TriangleSparseData : public TopologySparseDataImpl<Triangle, VecT>
+class TriangleSparseData : public TopologySparseDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>
 {
 public:
-    typedef typename TopologySparseDataImpl<Triangle, VecT>::container_type container_type;
-    typedef typename TopologySparseDataImpl<Triangle, VecT>::value_type value_type;
+    typedef typename TopologySparseDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>::container_type container_type;
+    typedef typename TopologySparseDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>::value_type value_type;
 
     TriangleSparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySparseDataImpl<Triangle, VecT>(data)
+        : TopologySparseDataImpl<core::topology::BaseMeshTopology::Triangle, VecT>(data)
     {}
 
 protected:
@@ -210,14 +210,14 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class VecT >
-class QuadSparseData : public TopologySparseDataImpl<Quad, VecT>
+class QuadSparseData : public TopologySparseDataImpl<core::topology::BaseMeshTopology::Quad, VecT>
 {
 public:
-    typedef typename TopologySparseDataImpl<Quad, VecT>::container_type container_type;
-    typedef typename TopologySparseDataImpl<Quad, VecT>::value_type value_type;
+    typedef typename TopologySparseDataImpl<core::topology::BaseMeshTopology::Quad, VecT>::container_type container_type;
+    typedef typename TopologySparseDataImpl<core::topology::BaseMeshTopology::Quad, VecT>::value_type value_type;
 
     QuadSparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySparseDataImpl<Quad, VecT>(data)
+        : TopologySparseDataImpl<core::topology::BaseMeshTopology::Quad, VecT>(data)
     {}
 
 protected:
@@ -232,14 +232,14 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class VecT >
-class TetrahedronSparseData : public TopologySparseDataImpl<Tetrahedron, VecT>
+class TetrahedronSparseData : public TopologySparseDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>
 {
 public:
-    typedef typename TopologySparseDataImpl<Tetrahedron, VecT>::container_type container_type;
-    typedef typename TopologySparseDataImpl<Tetrahedron, VecT>::value_type value_type;
+    typedef typename TopologySparseDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>::container_type container_type;
+    typedef typename TopologySparseDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>::value_type value_type;
 
     TetrahedronSparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySparseDataImpl<Tetrahedron, VecT>(data)
+        : TopologySparseDataImpl<core::topology::BaseMeshTopology::Tetrahedron, VecT>(data)
     {}
 
 protected:
@@ -255,14 +255,14 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template< class VecT >
-class HexahedronSparseData : public TopologySparseDataImpl<Hexahedron, VecT>
+class HexahedronSparseData : public TopologySparseDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>
 {
 public:
-    typedef typename TopologySparseDataImpl<Hexahedron, VecT>::container_type container_type;
-    typedef typename TopologySparseDataImpl<Hexahedron, VecT>::value_type value_type;
+    typedef typename TopologySparseDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>::container_type container_type;
+    typedef typename TopologySparseDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>::value_type value_type;
 
     HexahedronSparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : TopologySparseDataImpl<Hexahedron, VecT>(data)
+        : TopologySparseDataImpl<core::topology::BaseMeshTopology::Hexahedron, VecT>(data)
     {}
 
 protected:

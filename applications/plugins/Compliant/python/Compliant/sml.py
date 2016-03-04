@@ -14,6 +14,8 @@ import SofaPython.sml
 import Flexible.API
 import Flexible.sml
 
+import Sofa
+
 printLog = True
 
 def insertRigid(parentNode, rigidModel, density, param=None):
@@ -24,10 +26,10 @@ def insertRigid(parentNode, rigidModel, density, param=None):
     """
 
     if printLog:
-        print "[Compliant.sml.insertRigid] ", rigidModel.name
+        Sofa.msg_info("Compliant.sml","insertRigid "+rigidModel.name)
         for mesh in rigidModel.mesh :
             if rigidModel.meshAttributes[mesh.id].collision is True:
-                print "     collision mesh: ", mesh.name
+                Sofa.msg_info("Compliant.sml","     collision mesh: "+mesh.name)
         sys.stdout.flush()
 
     rigid = StructuralAPI.RigidBody(parentNode, rigidModel.name)
@@ -67,7 +69,7 @@ def insertRigid(parentNode, rigidModel, density, param=None):
             #rigid.mass.mass = mass
     else:
         # no mesh, get mass/inertia if present, default to a unit sphere
-        print "WARNING: Compliant.sml.insertRigid using default rigidMass"
+        Sofa.msg_warning("Compliant.sml","insertRigid: using default rigidMass")
         mass = rigidModel.mass  if not rigidModel.mass is None else SofaPython.units.mass_from_SI(1.)
         inertia = [1,1,1]
         t = rigidModel.position
@@ -99,8 +101,7 @@ def insertJoint(jointModel, rigids, param=None):
     """ create a StructuralAPI.GenericRigidJoint from the jointModel """
 
     if printLog:
-        print "[Compliant.sml.insertJoint] joint: ", jointModel.name
-        sys.stdout.flush()
+        Sofa.msg_info("Compliant.sml","insertJoint "+jointModel.name)
 
     frames=list()
     for i,offset in enumerate(jointModel.offsets):
@@ -161,7 +162,7 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         if tag in self.model.solidsByTag:
             for solid in self.model.solidsByTag[tag]:
                 if not solid.id in self.rigids:
-                    print "[Compliant.sml.SceneArticulatedRigid.insertMergeRigid] WARNING: "+solid.name+" is not a rigid"
+                    Sofa.msg_warning("Compliant.sml","SceneArticulatedRigid.insertMergeRigid: "+solid.name+" is not a rigid")
                     continue
                 rigid = self.rigids[solid.id]
                 if mergeNode is None:
