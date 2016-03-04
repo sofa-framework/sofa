@@ -46,12 +46,14 @@ namespace component
 namespace collision
 {
 
-inline int MeshNewProximityIntersection::doIntersectionLineLine(SReal dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q1, const defaulttype::Vector3& q2, OutputVector* contacts, int id)
+inline int MeshNewProximityIntersection::doIntersectionLineLine(SReal dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q1, const defaulttype::Vector3& q2, OutputVector* contacts, int id, const defaulttype::Vector3& n, bool useNormal)
 {  
     defaulttype::Vector3 p,q;
     IntrUtil<SReal>::segNearestPoints(p1,p2,q1,q2,p,q);
 
     defaulttype::Vector3 pq = q-p;
+    if(useNormal && pq*n<0) // inclusion test
+        return 0;
     SReal norm2 = pq.norm2();
 
     if (norm2 >= dist2)
@@ -66,6 +68,9 @@ inline int MeshNewProximityIntersection::doIntersectionLineLine(SReal dist2, con
     detection->value = helper::rsqrt(norm2);
     detection->normal = pq / detection->value;
     //detection->value -= contactDist;
+
+    
+
     return 1;
 }
 
@@ -251,6 +256,7 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
         //        return 0;
         if (alpha < epsilon || beta < epsilon || alpha + beta > 1 - epsilon)
         {
+            //return 0;
             // nearest point is on an edge or corner
             // barycentric coordinate on AB
             SReal pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
@@ -311,8 +317,9 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
     p = p1 + AB * alpha + AC * beta;
     pq = q-p;
     SReal norm2 = pq.norm2();
-    if (pq.norm2() >= dist2)
+    if (pq.norm2() >= dist2 /*|| (useNormal && pq.normalized()*n<0.9)*/)
         return 0;
+
 
     //const SReal contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
@@ -320,29 +327,27 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
     //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = id;
     detection->value = helper::rsqrt(norm2);
+
     if (swapElems)
     {
         detection->point[0]=q;
         detection->point[1]=p;
         detection->normal = -pq / detection->value;
-        if(useNormal && detection->normal*n<0) // inclusion test
-            detection->value *= -1;
     }
     else
     {
         detection->point[0]=p;
         detection->point[1]=q;
         detection->normal = pq / detection->value;
-        if(useNormal && detection->normal*n<0) // inclusion test
-            detection->value *= -1;
     }
-    //printf("\n normale : x = %f , y = %f, z = %f",detection->normal.x(),detection->normal.y(),detection->normal.z());
-    //if (e2.getCollisionModel()->isStatic() && detection->normal * e2.n() < -0.95)
-    //{ // The elements are interpenetrating
-    //	detection->normal = -detection->normal;
-    //	detection->value = -detection->value;
-    //}
-    //detection->value -= contactDist;
+
+    if(useNormal && detection->normal*n<0) // inclusion test
+    {
+        //detection->normal = detection->normal - 2*(detection->normal*n)*n;
+        detection->value = 0;
+        detection->normal = n;
+    }
+
     return 1;
 }
 

@@ -249,14 +249,15 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
     bool useNormal = true;
     bool bothSide1 = e1.getCollisionModel()->bothSide.getValue();
     bool bothSide2 = e2.getCollisionModel()->bothSide.getValue();
+
     if(bothSide1 && bothSide2)
         useNormal=false;
     else
         if(!bothSide1)
-            qn = -pn;
+            qn = pn;
         else
             if(!bothSide2) 
-                pn = -qn;
+                pn = qn;
 
     int n = 0;
     if (f1&TriangleModel::FLAG_P1)
@@ -278,31 +279,31 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
         if (f1&TriangleModel::FLAG_E12)
         {
             if (f2&TriangleModel::FLAG_E12)
-                n += doIntersectionLineLine(dist2, p1, p2, q1, q2, contacts, id2+3);
+                n += doIntersectionLineLine(dist2, p1, p2, q1, q2, contacts, id2+3, pn, useNormal);
             if (f2&TriangleModel::FLAG_E23)
-                n += doIntersectionLineLine(dist2, p1, p2, q2, q3, contacts, id2+4);
+                n += doIntersectionLineLine(dist2, p1, p2, q2, q3, contacts, id2+4, pn, useNormal);
             if (f2&TriangleModel::FLAG_E31)
-                n += doIntersectionLineLine(dist2, p1, p2, q3, q1, contacts, id2+5);
+                n += doIntersectionLineLine(dist2, p1, p2, q3, q1, contacts, id2+5, pn, useNormal);
         }
 
         if (f1&TriangleModel::FLAG_E23)
         {
             if (f2&TriangleModel::FLAG_E12)
-                n += doIntersectionLineLine(dist2, p2, p3, q1, q2, contacts, id2+6);
+                n += doIntersectionLineLine(dist2, p2, p3, q1, q2, contacts, id2+6, pn, useNormal);
             if (f2&TriangleModel::FLAG_E23)
-                n += doIntersectionLineLine(dist2, p2, p3, q2, q3, contacts, id2+7);
+                n += doIntersectionLineLine(dist2, p2, p3, q2, q3, contacts, id2+7, pn, useNormal);
             if (f2&TriangleModel::FLAG_E31)
-                n += doIntersectionLineLine(dist2, p2, p3, q3, q1, contacts, id2+8);
+                n += doIntersectionLineLine(dist2, p2, p3, q3, q1, contacts, id2+8, pn, useNormal);
         }
 
         if (f1&TriangleModel::FLAG_E31)
         {
             if (f2&TriangleModel::FLAG_E12)
-                n += doIntersectionLineLine(dist2, p3, p1, q1, q2, contacts, id2+9);
+                n += doIntersectionLineLine(dist2, p3, p1, q1, q2, contacts, id2+9, pn, useNormal);
             if (f2&TriangleModel::FLAG_E23)
-                n += doIntersectionLineLine(dist2, p3, p1, q2, q3, contacts, id2+10);
+                n += doIntersectionLineLine(dist2, p3, p1, q2, q3, contacts, id2+10, pn, useNormal);
             if (f2&TriangleModel::FLAG_E31)
-                n += doIntersectionLineLine(dist2, p3, p1, q3, q1, contacts, id2+11);
+                n += doIntersectionLineLine(dist2, p3, p1, q3, q1, contacts, id2+11, pn, useNormal);
         }
     }
 

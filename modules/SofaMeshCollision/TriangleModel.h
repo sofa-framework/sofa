@@ -97,6 +97,10 @@ public:
 	TTriangle& shape() { return *this; }
     const TTriangle& shape() const { return *this; }
 
+    void setCcdIgnore(bool x);
+
+    bool ccdIgnore() const;
+
     Coord interpX(defaulttype::Vec<2,Real> bary) const
     {
 		return (p1()*(1-bary[0]-bary[1])) + (p2()*bary[0]) + (p3()*bary[1]);
@@ -171,7 +175,7 @@ protected:
     virtual void updateFromTopology();
     virtual void updateFlags(int ntri=-1);
     virtual void updateNormals();
-    int getTriangleFlags(int i, bool continuousCollision = false);
+    int getTriangleFlags(int i);
 
     core::behavior::MechanicalState<DataTypes>* mstate;
     Data<bool> computeNormals;
@@ -227,6 +231,7 @@ public:
     void setFilter(TriangleLocalMinDistanceFilter * /*lmdFilter*/);
 
     Deriv velocity(int index)const;
+
 
 
     /// Pre-construction check method called by ObjectFactory.
@@ -315,6 +320,16 @@ inline int TTriangle<DataTypes>::flags() const { return this->model->getTriangle
 
 template<class DataTypes>
 inline bool TTriangle<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
+
+template<class DataTypes>
+inline void TTriangle<DataTypes>::setCcdIgnore(bool x) {
+    this->model->toIgnore[p1Index()] = this->model->toIgnore[p2Index()] = this->model->toIgnore[p3Index()] = x;
+}
+
+template<class DataTypes>
+inline bool TTriangle<DataTypes>::ccdIgnore() const {
+    return this->model->toIgnore[p1Index()] || this->model->toIgnore[p2Index()] || this->model->toIgnore[p3Index()];
+}
 
 template<class DataTypes>
 inline typename DataTypes::Deriv TTriangleModel<DataTypes>::velocity(int index) const { return (mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(triangles))[index][0]] + mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(triangles))[index][1]] +
