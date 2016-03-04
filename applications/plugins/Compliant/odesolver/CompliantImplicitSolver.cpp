@@ -104,16 +104,7 @@ using namespace core::behavior;
         scoped::timer step("position integration");
         const SReal& dt = sop.mparams().dt();
 
-        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-        VMultiOp multi;
-
-        multi.resize(1);
-
-        multi[0].first = posId;
-        multi[0].second.push_back( std::make_pair(posId, 1.0) );
-        multi[0].second.push_back( std::make_pair(velId, beta.getValue() * dt) );
-
-        sop.vop.v_multiop( multi );
+        sop.vop.v_op( posId, posId, velId, beta.getValue() * dt );
     }
 
     void CompliantImplicitSolver::integrate( SolverOperations& sop,
@@ -124,27 +115,20 @@ using namespace core::behavior;
         scoped::timer step("position integration");
         const SReal& dt = sop.mparams().dt();
 
-        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-        VMultiOp multi;
-
+        core::behavior::BaseMechanicalState::VMultiOp multi;
         multi.resize(2);
 
-        SReal beta = this->beta.getValue();
+        const SReal& beta = this->beta.getValue();
 
-        multi[0].first = posId;
-        multi[0].second.push_back( std::make_pair(posId, 1.0) );
-        multi[0].second.push_back( std::make_pair(velId, dt*beta) );
-        multi[0].second.push_back( std::make_pair(accId, accFactor*dt*beta) );
+        multi[0].first = velId;
+        multi[0].second.push_back( std::make_pair(velId, 1.0) );
+        multi[0].second.push_back( std::make_pair(accId, accFactor) );
 
-        multi[1].first = velId;
-        multi[1].second.push_back( std::make_pair(velId, 1.0) );
-        multi[1].second.push_back( std::make_pair(accId, accFactor) );
+        multi[1].first = posId;
+        multi[1].second.push_back( std::make_pair(posId, 1.0) );
+        multi[1].second.push_back( std::make_pair(velId, dt*beta) );
 
         sop.vop.v_multiop( multi );
-
-
-//        sop.vop.v_peq( velId, accId, accFactor );
-//        integrate( sop, posId, velId );
     }
 
     CompliantImplicitSolver::~CompliantImplicitSolver() {
