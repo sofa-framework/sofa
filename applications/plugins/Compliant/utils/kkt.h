@@ -13,6 +13,9 @@ class AssembledSystem;
 }
 }
 
+
+// | Q A^T |
+// | A  C  |
 struct kkt {
 				
     // Should not these types be templates? to let utils/ktt.h outside of sofa
