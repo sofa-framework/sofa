@@ -18,7 +18,7 @@
 // p.precision = 1e-16;
 
 // solver::vec x, b;
-// solver::solve(x, A, b);
+// solver::solve(x, A, b, p);
 
 template<class U>
 struct minres  {
@@ -33,7 +33,7 @@ struct minres  {
 	// @A is a function object vec -> vec implementing matrix multiplication
 	template<class Matrix>
 	static void solve(vec& x, const Matrix& A, const vec& b, params& p, real sigma = 0) {
-		
+
 		vec residual = b;
     
 		// deal with warm start

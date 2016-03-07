@@ -413,7 +413,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
         }
         else if (alpha >= 1.0){
             Q = e2.p2();
-            alpha = 1.0;
+//            alpha = 1.0;
         }
         else{
             Q = e2.p1() + AB * alpha;

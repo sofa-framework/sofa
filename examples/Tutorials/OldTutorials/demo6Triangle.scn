@@ -2,7 +2,7 @@
 <Node name="root" dt="0.01">
     <VisualStyle displayFlags="showForceFields" />
     <CollisionPipeline depth="6" verbose="0" draw="1" />
-    <BruteForceDetection name="N2" draw="1" />
+    <BruteForceDetection name="N2" />
     <!--<ProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5" useTriangleTriangle="1" useLineTriangle="0"/>-->
     <MinProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5"  />
     <Node name="Poutre1">
@@ -127,11 +127,11 @@
                 <RigidMapping />
             </Node>
         </Node>
-        <StiffSpringForceField name="ExternalSprings1" filename="BehaviorModels/linkSmCube27.xs3" object1="@M1" object2="@Points" />
-        <StiffSpringForceField name="ExternalSprings2" filename="BehaviorModels/linkSmCube27.xs3" object1="@Points" object2="@M3" />
-        <StiffSpringForceField name="ExternalSprings3" filename="BehaviorModels/linkSmCube27.xs3" object1="@M3" object2="@Points" />
-        <StiffSpringForceField name="ExternalSprings4" filename="BehaviorModels/linkSmCube27.xs3" object1="@Points" object2="@M5" />
-        <StiffSpringForceField name="ExternalSprings5" filename="BehaviorModels/linkSmCube27.xs3" object1="@M5" object2="@Points" />
+        <StiffSpringForceField name="ExternalSprings1" filename="BehaviorModels/linkSmCube27.xs3" object1="@M1" object2="@M2/Points" />
+        <StiffSpringForceField name="ExternalSprings2" filename="BehaviorModels/linkSmCube27.xs3" object1="@M2/Points" object2="@M3" />
+        <StiffSpringForceField name="ExternalSprings3" filename="BehaviorModels/linkSmCube27.xs3" object1="@M3" object2="@M4/Points" />
+        <StiffSpringForceField name="ExternalSprings4" filename="BehaviorModels/linkSmCube27.xs3" object1="@M4/Points" object2="@M5" />
+        <StiffSpringForceField name="ExternalSprings5" filename="BehaviorModels/linkSmCube27.xs3" object1="@M5" object2="@M6/Points" />
     </Node>
     <Node name="Floor">
         <MeshObjLoader filename="mesh/floor.obj" name="loader" />

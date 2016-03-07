@@ -28,11 +28,11 @@ public:
     virtual void process(Message& m){
         m_messages.push_back(m);
 
-        if( !m.sender().empty() )
-            std::cerr<<m<<std::endl;
+//        if( !m.sender().empty() )
+//            std::cerr<<m<<std::endl;
     }
 
-    int numMessages(){
+    size_t numMessages(){
         return m_messages.size() ;
     }
 
@@ -45,29 +45,13 @@ public:
 } ;
 
 
-class MyComponent : public sofa::core::objectmodel::BaseObject
-{
-public:
-    SOFA_CLASS( MyComponent, sofa::core::objectmodel::BaseObject );
-    MyComponent()
-    {
-        f_printLog.setValue(true); // to print sout
-        serr<<"regular serr"<<sendl;
-        sout<<"regular sout"<<sendl;
-        serr<<SOFA_FILE_INFO<<"serr with fileinfo"<<sendl;
-        sout<<SOFA_FILE_INFO<<"sout with fileinfo"<<sendl;
-    }
-};
-
-SOFA_DECL_CLASS(MyComponent)
-int MyComponentClass = sofa::core::RegisterObject("MyComponent")
-        .add< MyComponent >();
 
 TEST(LoggingTest, noHandler)
 {
     MessageDispatcher::clearHandlers() ;
 
     msg_info("") << " info message with conversion" << 1.5 << "\n" ;
+    msg_deprecated("") << " deprecated message with conversion" << 1.5 << "\n" ;
     msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
     msg_error("") << " error message with conversion" << 1.5 << "\n" ;
 }
@@ -83,10 +67,11 @@ TEST(LoggingTest, oneHandler)
     EXPECT_TRUE(MessageDispatcher::addHandler(&h) == 0 ) ;
 
     msg_info("") << " info message with conversion" << 1.5 << "\n" ;
+    msg_deprecated("") << " deprecated message with conversion" << 1.5 << "\n" ;
     msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
     msg_error("") << " error message with conversion" << 1.5 << "\n" ;
 
-    EXPECT_TRUE( h.numMessages() == 3 ) ;
+    EXPECT_TRUE( h.numMessages() == 4u ) ;
 }
 
 TEST(LoggingTest, duplicatedHandler)
@@ -102,10 +87,11 @@ TEST(LoggingTest, duplicatedHandler)
     EXPECT_TRUE(MessageDispatcher::addHandler(&h) == -1) ;
 
     msg_info("") << " info message with conversion" << 1.5 << "\n" ;
+    msg_deprecated("") << " deprecated message with conversion" << 1.5 << "\n" ;
     msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
     msg_error("") << " error message with conversion" << 1.5 << "\n" ;
 
-    EXPECT_TRUE( h.numMessages() == 3) ;
+    EXPECT_TRUE( h.numMessages() == 4u) ;
 }
 
 
@@ -117,14 +103,16 @@ TEST(LoggingTest, withoutDevMode)
     MessageDispatcher::addHandler(&h) ;
 
     msg_info("") << " info message with conversion" << 1.5 << "\n" ;
+    msg_deprecated("") << " deprecated message with conversion" << 1.5 << "\n" ;
     msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
     msg_error("") << " error message with conversion" << 1.5 << "\n" ;
 
     nmsg_info("") << " null info message with conversion" << 1.5 << "\n" ;
+    nmsg_deprecated("") << " null deprecated message with conversion" << 1.5 << "\n" ;
     nmsg_warning("") << " null warning message with conversion "<< 1.5 << "\n" ;
     nmsg_error("") << " null error message with conversion" << 1.5 << "\n" ;
 
-    EXPECT_TRUE( h.numMessages() == 3 ) ;
+    EXPECT_TRUE( h.numMessages() == 4u ) ;
 }
 
 //TEST(LoggingTest, speedTest)
@@ -142,36 +130,76 @@ TEST(LoggingTest, withoutDevMode)
 //}
 
 
+
+TEST(LoggingTest, emptyMessage)
+{
+    MessageDispatcher::clearHandlers() ;
+    MyMessageHandler h;
+    MessageDispatcher::addHandler(&h) ;
+
+    // an empty message should not be processed
+
+    msg_info("");
+    EXPECT_EQ( h.numMessages(), 0u );
+
+    msg_info("")<<"ok";
+    msg_info("");
+    EXPECT_EQ( h.numMessages(), 1u );
+}
+
+
+
+
+
+class MyComponent : public sofa::core::objectmodel::BaseObject
+{
+public:
+    MyComponent()
+    {
+        f_printLog.setValue(true); // to print sout
+        serr<<"regular serr"<<sendl;
+        sout<<"regular sout"<<sendl;
+        serr<<SOFA_FILE_INFO<<"serr with fileinfo"<<sendl;
+        sout<<SOFA_FILE_INFO<<"sout with fileinfo"<<sendl;
+    }
+};
+
 TEST(LoggingTest, BaseObject)
 {
     MessageDispatcher::clearHandlers() ;
     MyMessageHandler h;
     MessageDispatcher::addHandler(&h) ;
 
-    MyComponent c;
-    EXPECT_EQ( h.numMessages(), 4 ) ;
 
-    if( h.numMessages() < 4 ) return; // not to crash
+    MyComponent c;
+
+    /// the constructor of MyComponent is sending 4 messages
+    EXPECT_EQ( h.numMessages(), 4u ) ;
 
     c.serr<<"regular external serr"<<c.sendl;
     EXPECT_EQ( h.lastMessage().fileInfo().line, 0 );
     EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
     EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Warning );
+    EXPECT_EQ( h.lastMessage().context(), sofa::helper::logging::Message::Runtime );
 
     c.serr<<sofa::helper::logging::Message::Error<<"external serr as Error"<<c.sendl;
     EXPECT_EQ( h.lastMessage().fileInfo().line, 0 );
     EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
     EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Error );
+    EXPECT_EQ( h.lastMessage().context(), sofa::helper::logging::Message::Runtime );
 
     c.sout<<"regular external sout"<<c.sendl;
     EXPECT_EQ( h.lastMessage().fileInfo().line, 0 );
     EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
     EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Info );
+    EXPECT_EQ( h.lastMessage().context(), sofa::helper::logging::Message::Runtime );
 
     c.sout<<sofa::helper::logging::Message::Error<<"external sout as Error"<<c.sendl;
     EXPECT_EQ( h.lastMessage().fileInfo().line, 0 );
     EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
     EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Error );
+    EXPECT_EQ( h.lastMessage().context(), sofa::helper::logging::Message::Runtime );
+
 
     c.serr<<SOFA_FILE_INFO<<"external serr with fileinfo"<<c.sendl;
     EXPECT_EQ( h.lastMessage().fileInfo().line, __LINE__-1 );
@@ -190,6 +218,7 @@ TEST(LoggingTest, BaseObject)
     EXPECT_EQ( h.lastMessage().fileInfo().line, __LINE__-1 );
     EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, __FILE__ ) );
     EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Error );
+    EXPECT_EQ( h.lastMessage().context(), sofa::helper::logging::Message::Runtime );
 
     c.serr<<"serr with sendl that comes in a second time";
     c.serr<<c.sendl;
@@ -202,7 +231,18 @@ TEST(LoggingTest, BaseObject)
     EXPECT_TRUE( !strcmp( h.lastMessage().fileInfo().filename, sofa::helper::logging::s_unknownFile ) );
     EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Warning );
 
-    EXPECT_EQ( h.numMessages(), 14 ) ;
+    c.serr<<sofa::helper::logging::Message::Dev<<sofa::helper::logging::Message::Error<<"external Dev serr"<<c.sendl;
+    EXPECT_EQ( h.lastMessage().type(), sofa::helper::logging::Message::Error );
+    EXPECT_EQ( h.lastMessage().context(), sofa::helper::logging::Message::Dev );
+
+
+    EXPECT_EQ( h.numMessages(), 15u ) ;
+
+    // an empty message should not be processed
+    c.serr<<c.sendl;
+
+    EXPECT_EQ( h.numMessages(), 15u ) ;
+
 }
 
 #undef MESSAGING_H
@@ -232,5 +272,5 @@ TEST(LoggingTest, withDevMode)
     dmsg_warning("") << " debug warning message with conversion "<< 1.5 << "\n" ;
     dmsg_error("") << " debug error message with conversion" << 1.5 << "\n" ;
 
-    EXPECT_TRUE( h.numMessages() == 6 ) ;
+    EXPECT_TRUE( h.numMessages() == 6u ) ;
 }

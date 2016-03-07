@@ -67,7 +67,7 @@ class SOFA_HELPER_API Message
 public:
 
     /// possible levels of messages (ordered)
-    enum Type {Info=0, Warning, Error, Fatal, TEmpty, TypeCount};
+    enum Type {Info=0, Deprecated, Warning, Error, Fatal, TEmpty, TypeCount};
 
     /// class of messages
     enum Class {Dev, Runtime, CEmpty, ClassCount};
@@ -87,7 +87,7 @@ public:
 //    int                      id() const       { return m_id; }
 //    void                     setId(int id)    { m_id=id; }
 
-    bool empty() const { return m_stream.rdbuf()->in_avail() <= 0; }
+    bool empty() const;
 
     template<class T>
     Message& operator<<(const T &x)

@@ -210,7 +210,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                             ind_last = ind_last - 1;
 
                             unsigned int ind_k = Glob2LocMap[k];
-                            ind_real_last = ind_k;
+//                            ind_real_last = ind_k;
 
                             std::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
                             if(iter_2 != Glob2LocMap.end())

@@ -200,6 +200,7 @@ TEST_F(Engine_test , check_propagation )
 #include <SofaEngine/PlaneROI.h>
 #include <SofaEngine/SphereROI.h>
 #include <SofaEngine/SelectLabelROI.h>
+#include <SofaEngine/SelectConnectedLabelsROI.h>
 #include <SofaEngine/DilateEngine.h>
 #include <SofaEngine/GenerateCylinder.h>
 #include <SofaEngine/ExtrudeSurface.h>
@@ -256,6 +257,7 @@ typedef testing::Types<
 //TestDataEngine< component::engine::PlaneROI<defaulttype::Vec3Types> >, // getObject pb -> require a scene
 //TestDataEngine< component::engine::SphereROI<defaulttype::Vec3Types> >, // getObject pb -> require a scene
 TestDataEngine< component::engine::SelectLabelROI<unsigned int> >,
+TestDataEngine< component::engine::SelectConnectedLabelsROI<unsigned int> >,
 TestDataEngine< component::engine::DilateEngine<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::GenerateCylinder<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::ExtrudeSurface<defaulttype::Vec3Types> >,

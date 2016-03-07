@@ -18,7 +18,7 @@ namespace linearsolver {
 class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver,
                                      public utils::eigen_types {
   public:
-    SOFA_ABSTRACT_CLASS(KKTSolver, core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(KKTSolver, core::behavior::BaseLinearSolver);
 
 	// solve the KKT system: \mat{ M - h^2 K & J^T \\ J, -C } x = rhs
 	// (watch out for the compliance scaling)

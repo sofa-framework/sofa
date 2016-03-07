@@ -32,31 +32,31 @@ namespace internal {
 
 PyObject* PythonScriptController_valueToPyObject(bool param)
 {
-    PyObject* value = nullptr;
+    PyObject* value = NULL;
     value = Py_BuildValue("b", param);
     return value;
 }
 PyObject* PythonScriptController_valueToPyObject(int param)
 {
-    PyObject* value = nullptr;
+    PyObject* value = NULL;
     value = Py_BuildValue("i", param);
     return value;
 }
 PyObject* PythonScriptController_valueToPyObject(unsigned int param)
 {
-    PyObject* value = nullptr;
+    PyObject* value = NULL;
     value = Py_BuildValue("I", param);
     return value;
 }
 PyObject* PythonScriptController_valueToPyObject(double param)
 {
-    PyObject* value = nullptr;
+    PyObject* value = NULL;
     value = Py_BuildValue("d", param);
     return value;
 }
 PyObject* PythonScriptController_valueToPyObject(std::string const& param)
 {
-    PyObject* value = nullptr;
+    PyObject* value = NULL;
     value = Py_BuildValue("s", param.c_str());
     return value;
 }
