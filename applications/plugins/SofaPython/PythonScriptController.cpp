@@ -32,6 +32,7 @@
 #include "Binding_Node.h"
 #include "Binding_PythonScriptController.h"
 #include "ScriptEnvironment.h"
+#include "ScriptController.h"
 #include "PythonScriptEvent.h"
 
 namespace sofa
@@ -42,6 +43,31 @@ namespace component
 
 namespace controller
 {
+
+////////////////////// LIST OF FUNCTION TO OVERRIDE IN PYTHON //////////////////
+
+/// The mapping between the python name and the index in the structure.
+std::vector<std::string> methodsToTest;
+int initScriptController()
+{
+        methodsToTest.resize(CONTROLLERFUNCTIONLIST_COUNT);
+
+        methodsToTest[DRAW] = "draw";
+        methodsToTest[ONBEGINANIMATIONSTEP] = "onBeginAnimationStep";
+        methodsToTest[ONENDANIMATIONSTEP] = "onEndAnimationStep";
+        methodsToTest[ONKEYPRESSED] = "onKeyPressed";
+        methodsToTest[ONKEYRELEASED] = "onKeyReleased";
+        methodsToTest[ONMOUSEMOVE] = "onMouseMove";
+        methodsToTest[ONMOUSEBUTTONLEFT] = "onMouseButtonLeft";
+        methodsToTest[ONMOUSEBUTTONRIGHT] = "onMouseButtonRight";
+        methodsToTest[ONMOUSEBUTTONMIDDLE] = "onMouseButtonMiddle";
+        methodsToTest[ONMOUSEWHEEL] = "onMouseWheel";
+        methodsToTest[ONGUIEVENT] = "onGUIEvent";
+        methodsToTest[ONSCRIPTEVENT] = "onScriptEvent";
+        return 1;
+}
+int initScriptCtrl = initScriptController() ;
+
 
 int PythonScriptControllerClass = core::RegisterObject("A Sofa controller scripted in python")
         .add< PythonScriptController >()
@@ -102,6 +128,24 @@ void PythonScriptController::loadScript()
         return;
     }
     //std::cout << getName() << " class \""<<m_classname.getValueString()<<"\" instanciation OK." << std::endl;
+
+    for(unsigned int i=0;i<methodsToTest.size();i++){
+        m_functionAvailables[i] = false;
+        const std::string& fctname = methodsToTest[i] ;
+        if(  PyObject_HasAttrString((PyObject*)&SP_SOFAPYTYPEOBJECT(PythonScriptController),fctname.c_str() ) ){
+            if( PyObject_RichCompareBool(
+                        PyObject_GetAttrString(m_ScriptControllerClass, fctname.c_str()),
+                        PyObject_GetAttrString((PyObject*)&SP_SOFAPYTYPEOBJECT(PythonScriptController), fctname.c_str()),Py_NE) ){
+                std::cout << "implementation found for: " << fctname << std::endl ;
+                m_functionAvailables[i] = true ;
+            }
+        }else{
+            if( PyObject_HasAttrString(m_ScriptControllerInstance, fctname.c_str())) {
+                std::cout << "implementation found for: " << fctname << std::endl ;
+                m_functionAvailables[i] = true ;
+            }
+        }
+    }
 
 
 /*

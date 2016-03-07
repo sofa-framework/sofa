@@ -43,7 +43,7 @@ class SOFA_SOFAPYTHON_API PythonScriptController : public ScriptController
 public:
     SOFA_CLASS(PythonScriptController,ScriptController);
 
-	PyObject* scriptControllerInstance() const {return m_ScriptControllerInstance;}
+    PyObject* scriptControllerInstance() const {return m_ScriptControllerInstance;}
 
 protected:
     PythonScriptController();
@@ -86,8 +86,8 @@ protected:
     /// Script events; user data is implementation-dependant
     virtual void script_onScriptEvent(core::objectmodel::ScriptEvent* event);
 
-	/// drawing
-	virtual void script_draw(const core::visual::VisualParams*);
+    /// drawing
+    virtual void script_draw(const core::visual::VisualParams*);
 
     /// @}
 
@@ -120,6 +120,7 @@ protected:
     PyObject *m_Func_reset;
     PyObject *m_Func_cleanup;
 */
+
 };
 
 
