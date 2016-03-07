@@ -255,20 +255,28 @@ void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /
 {
     if(f_projectVelocity.getValue())
     {
+        const VecDeriv &freeV = (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState()))->read(core::ConstVecDerivId::freeVelocity())->getValue();
         helper::WriteAccessor<DataVecDeriv> res = vData;
         const SetIndexArray & indices = f_indices.getValue();
+        size_t freeVsize = freeV.size();
         //serr<<"FixedConstraint<DataTypes>::projectVelocity, res.size()="<<res.size()<<sendl;
         if( f_fixAll.getValue()==true )    // fix everyting
         {
             for( unsigned i=0; i<res.size(); i++ )
-                res[i] = Deriv();
+                if(freeVsize>i)
+                    res[i] = freeV[i];
+                else 
+                    res[i] =Deriv();
         }
         else
         {
             unsigned i=0;
             for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
             {
-                res[*it] = Deriv();
+                if(freeVsize>*it)
+                    res[*it] = freeV[*it];
+                else 
+                    res[*it] = Deriv();
             }
         }
     }
