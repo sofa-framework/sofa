@@ -61,6 +61,8 @@ public:
     /// addDForce does nothing when this component is processed like a compliance.
     virtual void addDForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecDeriv &);
 
+    /// unassembled API
+    virtual void addClambda(const core::MechanicalParams *, DataVecDeriv &, const DataVecDeriv &, SReal);
 
 protected:
     FullCompliance( core::behavior::MechanicalState<DataTypes> *mm = NULL);

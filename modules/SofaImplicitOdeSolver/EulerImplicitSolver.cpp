@@ -204,9 +204,9 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
 
     if (firstOrder)
-        matrix = MechanicalMatrix::K * (-h*tr) + MechanicalMatrix::M;
+        matrix = MechanicalMatrix(1,0,-h*tr); //MechanicalMatrix::K * (-h*tr) + MechanicalMatrix::M;
     else
-        matrix = MechanicalMatrix::K * (-tr*h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::B * (-tr*h) + MechanicalMatrix::M * (1+tr*h*f_rayleighMass.getValue());
+        matrix = MechanicalMatrix(1+tr*h*f_rayleighMass.getValue(),-tr*h,-tr*h*(h+f_rayleighStiffness.getValue())); // MechanicalMatrix::K * (-tr*h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::B * (-tr*h) + MechanicalMatrix::M * (1+tr*h*f_rayleighMass.getValue());
 
     if( verbose )
     {

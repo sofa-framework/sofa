@@ -49,20 +49,21 @@ ClangStyleMessageFormatter ClangStyleMessageFormatter::s_instance;
 
 ClangStyleMessageFormatter::ClangStyleMessageFormatter()
 {
-    s_messageTypeStrings[Message::Info]    = "info";
-    s_messageTypeStrings[Message::Warning] = "warning";
-    s_messageTypeStrings[Message::Error]   = "error";
-    s_messageTypeStrings[Message::Fatal]   = "fatal";
-    s_messageTypeStrings[Message::TEmpty]  = "empty";
+    s_messageTypeStrings[Message::Info]       = "info";
+    s_messageTypeStrings[Message::Deprecated] = "deprecated";
+    s_messageTypeStrings[Message::Warning]    = "warning";
+    s_messageTypeStrings[Message::Error]      = "error";
+    s_messageTypeStrings[Message::Fatal]      = "fatal";
+    s_messageTypeStrings[Message::TEmpty]     = "empty";
 }
 
 
 void ClangStyleMessageFormatter::formatMessage(const Message& m,std::ostream& out)
 {
     if(m.sender()!="")
-        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << s_messageTypeStrings[m.type()] << ": " << m.message().rdbuf() << std::endl ;
+        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << s_messageTypeStrings[m.type()] << ": " << m.message().str() << std::endl ;
     else
-        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << s_messageTypeStrings[m.type()] << ": ["<< m.sender() <<"] " << m.message().rdbuf() << std::endl ;
+        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << s_messageTypeStrings[m.type()] << ": ["<< m.sender() <<"] " << m.message().str() << std::endl ;
 //    out << " message id: " << m.id() << std::endl ;
 }
 

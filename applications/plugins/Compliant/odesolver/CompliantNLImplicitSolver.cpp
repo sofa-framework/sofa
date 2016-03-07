@@ -708,7 +708,7 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
     // propagate lambdas if asked to
     if( propagate_lambdas.getValue() ) {
         scoped::timer step("lambda propagation");
-        propagate_constraint_force_visitor prop( &sop.mparams(), core::VecId::force(), lagrange.id(), sys.dt );
+        simulation::propagate_constraint_force_visitor prop( &sop.mparams(), core::VecId::force(), lagrange.id(), sys.dt );
         send( prop );
     }
 

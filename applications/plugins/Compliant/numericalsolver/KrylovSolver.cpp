@@ -136,7 +136,11 @@ void KrylovSolver::solve_kkt(AssembledSystem::vec& x,
 	params_type p = params(b);
 			
 	vec rhs = b;
-	if( system.n ) rhs.tail(system.n) = -rhs.tail(system.n);
+
+     // constraint rhs must be negated to fit the PSD KKT system
+     //  | H -J^T | |  v   | = | b  |
+     //  | -J  -C | |lamdba|   |-phi|
+    if( system.n ) rhs.tail(system.n) *= -1;
 	
 	kkt_type A(system, parallel.getValue(), damping);
 

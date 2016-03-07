@@ -13,7 +13,7 @@ namespace forcefield
 using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(UniformLinearPotentialEnergy)
-static int UniformLinearPotentialEnergyClass = core::RegisterObject("Linear potential energy")
+int UniformLinearPotentialEnergyClass = core::RegisterObject("Linear potential energy")
     
 #ifndef SOFA_FLOAT    
     .add< UniformLinearPotentialEnergy<Vec1dTypes> >(true)
