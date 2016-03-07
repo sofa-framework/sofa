@@ -20,7 +20,7 @@ HolonomicConstraintValue::HolonomicConstraintValue( mstate_type* mstate )
 
 
 void HolonomicConstraintValue::dynamics(SReal* dst, unsigned n, unsigned dim, bool /*stabilization*/, const core::MultiVecCoordId& posId, const core::MultiVecDerivId&) const {
-	assert( mstate );
+    assert( mstate );
 
     const unsigned size = n*dim;
 
@@ -37,9 +37,9 @@ void HolonomicConstraintValue::dynamics(SReal* dst, unsigned n, unsigned dim, bo
         mstate->copyToBuffer(dst, posId.getId(mstate.get()), size);
 
         unsigned i = 0;
-        for(SReal* last = dst + size; dst < last; dst+=dim, ++i) {
-            if( mask[i] ) memset( dst, 0, dim*sizeof(SReal) ); // already violated
-            else map(dst, dim) *= -1.0 / this->getContext()->getDt(); // not violated
+        for(SReal *it=dst, *last = dst + size; it < last; it+=dim, ++i) {
+            if( mask[i] ) memset( it, 0, dim*sizeof(SReal) ); // already violated
+            else map(it, dim) *= -1.0 / this->getContext()->getDt(); // not violated
         }
     }
 
