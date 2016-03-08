@@ -72,11 +72,14 @@ protected:
     TetrahedronSetGeometryAlgorithms()
         : TriangleSetGeometryAlgorithms<DataTypes>()
         ,initializedCubatureTables(false)
-        ,showTetrahedraIndices (core::objectmodel::Base::initData(&showTetrahedraIndices, (bool) false, "showTetrahedraIndices", "Debug : view Tetrahedrons indices"))
-        , _drawTetrahedra(core::objectmodel::Base::initData(&_drawTetrahedra, false, "drawTetrahedra","if true, draw the tetrahedra in the topology"))
-        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vec4f(1.0f,1.0f,0.0f,1.0f), "drawColorTetrahedra", "RGBA code color used to draw tetrahedra."))
+        , d_showTetrahedraIndices (initData(&d_showTetrahedraIndices, (bool) false, "showTetrahedraIndices", "Debug : view Tetrahedrons indices"))
+        , d_drawTetrahedra(initData(&d_drawTetrahedra, false, "drawTetrahedra","if true, draw the tetrahedra in the topology"))
+        , d_drawScaleTetrahedra(initData(&d_drawScaleTetrahedra, (float) 1.0, "drawScaleTetrahedra", "Scale of the terahedra (between 0 and 1; if <1.0, it produces gaps between the tetrahedra)"))
+        , d_drawColorTetrahedra(initData(&d_drawColorTetrahedra, sofa::defaulttype::Vec4f(1.0f,1.0f,0.0f,1.0f), "drawColorTetrahedra", "RGBA code color used to draw tetrahedra."))
     {
-        core::objectmodel::Base::addAlias(&showTetrahedraIndices, "showTetrasIndices");
+        addAlias(&d_showTetrahedraIndices, "showTetrasIndices");
+        addAlias(&d_drawTetrahedra, "drawTetra");
+        addAlias(&d_drawTetrahedra, "drawTetrahedron");
     }
 
     virtual ~TetrahedronSetGeometryAlgorithms() {}
@@ -137,9 +140,10 @@ public:
     NumericalIntegrationDescriptor<Real,4> &getTetrahedronNumericalIntegrationDescriptor();
 
 protected:
-    Data<bool> showTetrahedraIndices;
-    Data<bool> _drawTetrahedra;
-    Data<sofa::defaulttype::Vec4f> _drawColor;
+    Data<bool> d_showTetrahedraIndices;
+    Data<bool> d_drawTetrahedra;
+    Data<float> d_drawScaleTetrahedra;
+    Data<sofa::defaulttype::Vec4f> d_drawColorTetrahedra;
     /// include cubature points
     NumericalIntegrationDescriptor<Real,4> tetrahedronNumericalIntegration;
 };
