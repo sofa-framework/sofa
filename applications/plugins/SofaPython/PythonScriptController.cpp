@@ -152,20 +152,24 @@ void PythonScriptController::loadScript()
     }
 
 
-/*
+
 #define BIND_SCRIPT_FUNC(funcName) \
     { \
-    m_Func_##funcName = PyDict_GetItemString(m_ScriptControllerInstanceDict,#funcName); \
+    if(PyObject_HasAttrString(m_ScriptControllerInstance,#funcName)){ \
+            m_Func_##funcName = PyObject_GetAttrString(m_ScriptControllerInstance,#funcName); \
             if (!PyCallable_Check(m_Func_##funcName)) \
                 {m_Func_##funcName=0; std::cout<<#funcName<<" not found"<<std::endl;} \
             else \
                 {std::cout<<#funcName<<" OK"<<std::endl;} \
+    }else{ \
+        m_Func_##funcName=0;     } \
     }
 
 
     // functions are also borrowed references
 //    std::cout << "Binding functions of script \"" << m_filename.getFullPath().c_str() << "\"" << std::endl;
 //    std::cout << "Number of dictionnay entries: "<< PyDict_Size(m_ScriptDict) << std::endl;
+
     BIND_SCRIPT_FUNC(onLoaded)
     BIND_SCRIPT_FUNC(createGraph)
     BIND_SCRIPT_FUNC(initGraph)
@@ -182,7 +186,27 @@ void PythonScriptController::loadScript()
     BIND_SCRIPT_FUNC(cleanup)
     BIND_SCRIPT_FUNC(onGUIEvent)
     BIND_SCRIPT_FUNC(onScriptEvent)
-*/
+    BIND_SCRIPT_FUNC(draw)
+
+    // UNCOMMENT THIS TO SEE THE DIFFERENCE
+    /*
+    m_Func_cleanup=0;
+    m_Func_createGraph = 0;
+    m_Func_initGraph= 0;
+    m_Func_initGraph = 0;
+    m_Func_onKeyPressed = 0;
+    m_Func_onKeyReleased = 0;
+    m_Func_onMouseButtonLeft = 0;
+    m_Func_onMouseButtonMiddle = 0;
+    m_Func_onMouseButtonRight = 0;
+    m_Func_storeResetState = 0;
+    m_Func_reset = 0;
+    m_Func_cleanup = 0;
+    m_Func_onGUIEvent = 0;
+    m_Func_onScriptEvent = 0;
+    m_Func_onBeginAnimationStep= 0 ;
+    m_Func_onEndAnimationStep = 0;
+    m_Func_draw = 0;*/
 }
 
 //using namespace simulation::tree;
@@ -294,14 +318,24 @@ void PythonScriptController::script_onMouseWheel(const int posX,const int posY,c
 void PythonScriptController::script_onBeginAnimationStep(const double dt)
 {
     helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonScriptController_AnimationStep_")+this->getName()).c_str() );
-//    SP_CALL_MODULEFUNC(m_Func_onBeginAnimationStep, "(d)", dt)
+
+    if(m_Func_onBeginAnimationStep){
+        SP_CALL_MODULEFUNC(m_Func_onBeginAnimationStep, "(d)", dt)
+        return ;
+    }
+
     SP_CALL_OBJECTFUNC(const_cast<char*>(s_methodsToTest[ScriptController::ONBEGINANIMATIONSTEP].c_str()),const_cast<char*>("(d)"), dt)
 }
 
 void PythonScriptController::script_onEndAnimationStep(const double dt)
 {
     helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonScriptController_AnimationStep_")+this->getName()).c_str() );
-//    SP_CALL_MODULEFUNC(m_Func_onEndAnimationStep, "(d)", dt)
+
+    if(m_Func_onEndAnimationStep){
+        SP_CALL_MODULEFUNC(m_Func_onEndAnimationStep, "(d)", dt)
+        return ;
+    }
+
     SP_CALL_OBJECTFUNC(const_cast<char*>(s_methodsToTest[ScriptController::ONENDANIMATIONSTEP].c_str()),const_cast<char*>("(d)"), dt)
 }
 
@@ -346,8 +380,21 @@ void PythonScriptController::script_onScriptEvent(core::objectmodel::ScriptEvent
 
 void PythonScriptController::script_draw(const core::visual::VisualParams*)
 {
-//    SP_CALL_MODULEFUNC_NOPARAM(m_Func_storeResetState)
-    SP_CALL_OBJECTFUNC(const_cast<char*>(s_methodsToTest[ScriptController::DRAW].c_str()),0)
+    helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonScriptController_draw_")+this->getName()).c_str() );
+
+    if(m_Func_draw){
+        PyObject *res = PyObject_CallFunctionObjArgs(m_Func_draw, 0) ;
+        if (!res)
+        {
+            SP_MESSAGE_EXCEPTION( "unable to call function") ;
+            PyErr_Print();
+        }
+        else
+            Py_DECREF(res);
+        return ;
+    }
+
+    SP_CALL_OBJECTFUNC(const_cast<char*>(s_methodsToTest[ScriptController::DRAW].c_str()),0);
 }
 
 
