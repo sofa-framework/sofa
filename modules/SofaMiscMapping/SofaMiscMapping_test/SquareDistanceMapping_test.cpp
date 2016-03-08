@@ -24,33 +24,32 @@
 ******************************************************************************/
 
 #include <SofaTest/Mapping_test.h>
-#include <SofaMiscMapping/DistanceMapping.h>
+#include <SofaMiscMapping/SquareDistanceMapping.h>
 
 
 namespace sofa {
 namespace {
 
 
-
-/**  Test suite for DistanceMapping.
+/**  Test suite for SquareDistanceMapping.
  *
  * @author Matthieu Nesme
   */
-template <typename DistanceMapping>
-struct DistanceMappingTest : public Mapping_test<DistanceMapping>
+template <typename SquareDistanceMapping>
+struct SquareDistanceMappingTest : public Mapping_test<SquareDistanceMapping>
 {
-    typedef typename DistanceMapping::In InDataTypes;
+    typedef typename SquareDistanceMapping::In InDataTypes;
     typedef typename InDataTypes::VecCoord InVecCoord;
     typedef typename InDataTypes::Coord InCoord;
 
-    typedef typename DistanceMapping::Out OutDataTypes;
+    typedef typename SquareDistanceMapping::Out OutDataTypes;
     typedef typename OutDataTypes::VecCoord OutVecCoord;
     typedef typename OutDataTypes::Coord OutCoord;
 
 
     bool test()
     {
-        DistanceMapping* map = static_cast<DistanceMapping*>( this->mapping );
+        SquareDistanceMapping* map = static_cast<SquareDistanceMapping*>( this->mapping );
         map->f_computeDistance.setValue(true);
         map->d_geometricStiffness.setValue(1);
 
@@ -64,7 +63,7 @@ struct DistanceMappingTest : public Mapping_test<DistanceMapping>
 
         // expected child positions
         OutVecCoord expectedoutcoord;
-        expectedoutcoord.push_back( defaulttype::Vector1( std::sqrt(3.0) ) );
+        expectedoutcoord.push_back( defaulttype::Vector1( 3 ) );
 
         return this->runTest( incoord, expectedoutcoord );
     }
@@ -75,15 +74,15 @@ struct DistanceMappingTest : public Mapping_test<DistanceMapping>
 // Define the list of types to instanciate.
 using testing::Types;
 typedef Types<
-component::mapping::DistanceMapping<defaulttype::Vec3Types,defaulttype::Vec1Types>,
-component::mapping::DistanceMapping<defaulttype::Rigid3Types,defaulttype::Vec1Types>
+component::mapping::SquareDistanceMapping<defaulttype::Vec3Types,defaulttype::Vec1Types>
+, component::mapping::SquareDistanceMapping<defaulttype::Rigid3Types,defaulttype::Vec1Types>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE( DistanceMappingTest, DataTypes );
+TYPED_TEST_CASE( SquareDistanceMappingTest, DataTypes );
 
 // test case
-TYPED_TEST( DistanceMappingTest , test )
+TYPED_TEST( SquareDistanceMappingTest , test )
 {
     ASSERT_TRUE(this->test());
 }
