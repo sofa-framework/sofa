@@ -29,7 +29,7 @@
 	
     </Node>
     
-    <Node 	name="CorotationalMesh"  activated="1"  >
+    <Node 	name="CorotationalMesh"   >
 	<EulerImplicitSolver /> 
 	<CGLinearSolver    iterations="50" tolerance="1e-5" threshold="1e-5"/>
 	<Mesh name="mesh" src="@../loader" />
@@ -80,7 +80,7 @@
     
     
     
-   <Node name="meta-Flexible"   activated="0" >
+   <Node name="meta-Flexible"   activated="1" >
    
         <EulerImplicitSolver />
         <CGLinearSolver  iterations="50" tolerance="1e-5" threshold="1e-5"/>
@@ -103,7 +103,7 @@
     
 
     
-   <Node name="Flexible"   activated="0" >
+   <Node name="Flexible"   activated="1" >
    
         <EulerImplicitSolver />
         <CGLinearSolver  iterations="50" tolerance="1e-5" threshold="1e-5"/>
@@ -139,29 +139,6 @@
 
 
 
-    
-   <Node name="TetrahedronFEMForceField"   activated="1" >
-   
-        <EulerImplicitSolver />
-        <CGLinearSolver  iterations="50" tolerance="1e-5" threshold="1e-5"/>
-    
-	<Mesh name="mesh" src="@../loader" />
-	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
-       <UniformMass totalMass="250" />
-
-        <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
-        <FixedConstraint indices="@FixedROI.indices" />
-        
-          <TetrahedronFEMForceField  youngModulus="2000.0" poissonRatio="0.2"  method="polar" />
-
-
-	<Node name="Visual"  >
-	     <VisualModel  fileMesh="mesh/torus.obj" color="1 .4 0.5 1" />
-             <BarycentricMapping template="Vec3d,ExtVec3f"/>
-	</Node>
-	
-    </Node>
-    
 
 
 
