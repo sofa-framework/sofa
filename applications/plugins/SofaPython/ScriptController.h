@@ -41,28 +41,31 @@ namespace component
 namespace controller
 {
 
-typedef enum
-{
-    DRAW = 0,
-    ONBEGINANIMATIONSTEP,
-    ONENDANIMATIONSTEP,
-    ONKEYPRESSED,
-    ONKEYRELEASED,
-    ONMOUSEMOVE,
-    ONMOUSEBUTTONLEFT,
-    ONMOUSEBUTTONRIGHT,
-    ONMOUSEBUTTONMIDDLE,
-    ONMOUSEWHEEL,
-    ONSCRIPTEVENT,
-    ONGUIEVENT,
-    CONTROLLERFUNCTIONLIST_COUNT
-}ControllerFunctionList;
-
 
 class SOFA_SOFAPYTHON_API ScriptController : public Controller
 {
 public:
     SOFA_CLASS(ScriptController,Controller);
+
+
+    typedef enum
+    {
+        DRAW = 0,
+        ONBEGINANIMATIONSTEP,
+        ONENDANIMATIONSTEP,
+        ONKEYPRESSED,
+        ONKEYRELEASED,
+        ONMOUSEMOVE,
+        ONMOUSEBUTTONLEFT,
+        ONMOUSEBUTTONRIGHT,
+        ONMOUSEBUTTONMIDDLE,
+        ONMOUSEWHEEL,
+        ONSCRIPTEVENT,
+        ONGUIEVENT,
+        CONTROLLERFUNCTIONLIST_COUNT
+    } ControllerFunctionList;
+
+
 
 protected:
     ScriptController();
