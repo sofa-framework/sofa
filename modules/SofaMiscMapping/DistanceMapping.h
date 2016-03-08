@@ -51,7 +51,7 @@ public:
 };
 
 
-/** Maps point positions to distances, in meters.
+/** Maps point positions to distances (in distance unit).
   Type TOut corresponds to a scalar value.
   The pairs are given in an EdgeSetTopologyContainer in the same node.
   If the rest lengths are not defined, they are set using the initial values.
@@ -145,7 +145,18 @@ protected:
 
 
 
+/** Maps point positions from serveral mstates to distances (in distance unit).
+  Type TOut corresponds to a scalar value.
+  The pairs are given in an EdgeSetTopologyContainer in the same node.
+  The points index are given as pair(mstate_index,dof_index) in the Data indexPairs.
+  If the rest lengths are not defined, they are set using the initial values.
+  If computeDistance is set to true, the rest lengths are set to 0.
 
+    In: parent point positions
+    Out: distance between point pairs, minus a rest distance.
+
+@author Matthieu Nesme
+  */
 template <class TIn, class TOut>
 class DistanceMultiMapping : public core::MultiMapping<TIn, TOut>
 {

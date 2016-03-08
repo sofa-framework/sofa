@@ -20,6 +20,13 @@ struct krylov
     };
 
 
+    // by default, write a 'vec' as a line (a column is not readable)
+    friend std::ostream& operator<<( std::ofstream& o, const vec& v )
+    {
+        return o<<v.transpose();
+    }
+
+
 };
 
 

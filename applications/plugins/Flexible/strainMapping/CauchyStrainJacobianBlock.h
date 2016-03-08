@@ -76,11 +76,19 @@ public:
       */
 
     static const bool constant=true;
+    bool _asStrain;
+
+    void init( bool asStrain )
+    {
+        _asStrain = asStrain;
+    }
 
     void addapply( OutCoord& result, const InCoord& data )
     {
         result.getStrain() += StrainMatToVoigt( data.getF() ); // ( F + Ft ) * 0.5
-        for(unsigned int j=0; j<material_dimensions; j++) result.getStrain()[j]-=1.;
+
+        if( _asStrain )
+            for(unsigned int j=0; j<material_dimensions; j++) result.getStrain()[j]-=1.;
 
         if( order > 0 )
         {
@@ -132,7 +140,7 @@ public:
         // order 0
         typedef Eigen::Matrix<Real,strain_size,frame_size,Eigen::RowMajor> JBlock;
         Frame Id;  for( unsigned int i=0; i<material_dimensions; i++ ) Id[i][i]=(Real)1.;
-        JBlock J = this->assembleJ(Id);
+        const JBlock J = this->assembleJ(Id);
         eB.block(0,0,strain_size,frame_size) = J;
 
         if( order > 0 )
