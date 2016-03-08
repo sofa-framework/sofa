@@ -205,7 +205,6 @@ public:
 
         ForceField::reinit();
         ShapeFunction::reinit();
-
     }
 
 
@@ -216,79 +215,56 @@ public:
         m_corotationalDeformationMapping->apply( mparams, m_rotatedDofs->x ,_x);
         m_corotationalDeformationMapping->applyJ( mparams, m_rotatedDofs->v ,_v);
 
-
         const VecCoord& x = m_rotatedDofs->x.getValue();
-        const VecCoord& x0 = m_rotatedDofs->x0.getValue();
+        const VecDeriv& v = m_rotatedDofs->v.getValue();
         VecDeriv& f = *m_rotatedDofs->f.beginEdit();
+        std::fill(f.begin(),f.end(),Deriv());
 
 
-        VecCoord D(x.size());
+        typename LinearDeformationMapping::SparseMatrix& linearDeformationJacobianBlocks = m_linearDeformationMapping->getJacobianBlocks();
 
-        for (size_t i=0 ; i<m_corotationalDeformationMapping->clusters.size() ; ++i)
+
+        // temporaries
+        defaulttype::F331Types::Coord F;
+        defaulttype::F331Types::Deriv VF;
+        defaulttype::F331Types::Deriv PF;
+        defaulttype::E331Types::Coord E;
+        defaulttype::E331Types::Deriv VE;
+        defaulttype::E331Types::Deriv PE;
+
+
+        for( unsigned i=0; i < _strainJacobianBlocks.size() ; ++i )
         {
-            for(size_t j=0;j<m_corotationalDeformationMapping->clusters[i].size();++j)
+            F.clear();
+            VF.clear();
+            PF.clear();
+            E.clear();
+            VE.clear();
+            PE.clear();
+
+            for( unsigned int j=0 ; j<linearDeformationJacobianBlocks[i].size() ; j++ )
             {
-                size_t index=m_corotationalDeformationMapping->clusters[i][j];
-                D[index] = m_corotationalDeformationMapping->rot0[i] * ( x0[index] - x[index] );
+                unsigned int index = m_linearDeformationMapping->f_index.getValue()[i][j];
+                linearDeformationJacobianBlocks[i][j].addapply( F, x[index] );
+                linearDeformationJacobianBlocks[i][j].addmult( VF, v[index] );
+            }
+
+            _strainJacobianBlocks[i].addapply( E, F );
+
+            _strainJacobianBlocks[i].addmult( VE, VF );
+
+            _materialBlocks[i].addForce( PE, E, VE );
+
+            _strainJacobianBlocks[i].addMultTranspose( PF, PE );
+
+            for( unsigned int j=0 ; j<linearDeformationJacobianBlocks[i].size() ; j++ )
+            {
+                unsigned int index = m_linearDeformationMapping->f_index.getValue()[i][j];
+                linearDeformationJacobianBlocks[i][j].addMultTranspose( f[index], PF );
             }
         }
 
-
-
-        m_assembledK.mult( f, D );
-
         m_rotatedDofs->f.endEdit();
-
-
-//        const VecCoord& x = m_rotatedDofs->x.getValue();
-//        const VecDeriv& v = m_rotatedDofs->v.getValue();
-//        VecDeriv& f = *m_rotatedDofs->f.beginEdit();
-//        std::fill(f.begin(),f.end(),Deriv());
-
-//        typename LinearDeformationMapping::SparseMatrix& linearDeformationJacobianBlocks = m_linearDeformationMapping->getJacobianBlocks();
-
-
-//        // temporaries
-//        defaulttype::F331Types::Coord F;
-//        defaulttype::F331Types::Deriv VF;
-//        defaulttype::F331Types::Deriv PF;
-//        defaulttype::E331Types::Coord E;
-//        defaulttype::E331Types::Deriv VE;
-//        defaulttype::E331Types::Deriv PE;
-
-
-//        for( unsigned i=0; i < _strainJacobianBlocks.size() ; ++i )
-//        {
-//            F.clear();
-//            VF.clear();
-//            PF.clear();
-//            E.clear();
-//            VE.clear();
-//            PE.clear();
-
-//            for( unsigned int j=0 ; j<linearDeformationJacobianBlocks[i].size() ; j++ )
-//            {
-//                unsigned int index = m_linearDeformationMapping->f_index.getValue()[i][j];
-//                linearDeformationJacobianBlocks[i][j].addapply( F, x[index] );
-//                linearDeformationJacobianBlocks[i][j].addmult( VF, v[index] );
-//            }
-
-//            _strainJacobianBlocks[i].addapply( E, F );
-
-//            _strainJacobianBlocks[i].addmult( VE, VF );
-
-//            _materialBlocks[i].addForce( PE, E, VE );
-
-//            _strainJacobianBlocks[i].addMultTranspose( PF, PE );
-
-//            for( unsigned int j=0 ; j<linearDeformationJacobianBlocks[i].size() ; j++ )
-//            {
-//                unsigned int index = m_linearDeformationMapping->f_index.getValue()[i][j];
-//                linearDeformationJacobianBlocks[i][j].addMultTranspose( f[index], PF );
-//            }
-//        }
-
-//        m_rotatedDofs->f.endEdit();
 
 
         m_corotationalDeformationMapping->applyJT( mparams, _f, m_rotatedDofs->f );
@@ -302,51 +278,19 @@ public:
 //        }*/
     }
 
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv&  /*_df*/, const DataVecDeriv&  _dx )
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv&  _df, const DataVecDeriv&  _dx )
     {
         m_corotationalDeformationMapping->applyJ( mparams, m_rotatedDofs->dx ,_dx);
-
 
         const VecDeriv& dx = m_rotatedDofs->dx.getValue();
         VecDeriv& df = *m_rotatedDofs->f.beginEdit();
         std::fill(df.begin(),df.end(),Deriv());
 
-
-        VecDeriv D(dx.size());
-
-        for (size_t i=0 ; i<m_corotationalDeformationMapping->clusters.size() ; ++i)
-        {
-            for(size_t j=0;j<m_corotationalDeformationMapping->clusters[i].size();++j)
-            {
-                size_t index=m_corotationalDeformationMapping->clusters[i][j];
-                D[index] = m_corotationalDeformationMapping->rot0[i] * dx[index];
-            }
-        }
-
-
-
-        m_assembledK.addMult( df, D, mparams->kFactor() );
-
+        m_assembledK.addMult( df, dx, mparams->kFactor() );
 
         m_rotatedDofs->f.endEdit();
 
-//        DataVecDeriv F;
-//        F.beginWriteOnly()->resize(dx.size()); F.endEdit();
-
-//        m_corotationalDeformationMapping->applyJT( mparams, F, m_rotatedDofs->f);
-
-
-//        VecDeriv F(dx.size());
-
-//        for (size_t i=0 ; i<m_corotationalDeformationMapping->clusters.size() ; ++i)
-//        {
-//            for(size_t j=0;j<m_corotationalDeformationMapping->clusters[i].size();++j)
-//            {
-//                size_t index=m_corotationalDeformationMapping->clusters[i][j];
-//                _df = m_corotationalDeformationMapping->rot0[i].multTranspose( df[index] );
-//            }
-//        }
-
+        m_corotationalDeformationMapping->applyJT( mparams, _df, m_rotatedDofs->f);
     }
 
 

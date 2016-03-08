@@ -48,28 +48,13 @@ public:
 
     SOFA_CLASS(SOFA_TEMPLATE2(CauchyStrainMapping,TIn,TOut), SOFA_TEMPLATE(BaseStrainMappingT,BlockType ));
 
-    Data<bool> d_asStrain;
-
-    virtual void reinit()
-    {
-        bool asStrain = d_asStrain.getValue();
-        for(unsigned int i=0; i<this->jacobian.size(); i++)
-        {
-            this->jacobian[i].init( asStrain );
-        }
-        Inherit::reinit();
-    }
-
 protected:
     CauchyStrainMapping (core::State<TIn>* from = NULL, core::State<TOut>* to= NULL)
         : Inherit ( from, to )
-        , d_asStrain(initData(&d_asStrain,true,"asStrain","if false, computes (F + Ft)*2  (extra Identity)"))
     {
     }
 
     virtual ~CauchyStrainMapping()     { }
-
-
 
     virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentDfId*/, core::ConstMultiVecDerivId /*childForce*/)    {}
 };
