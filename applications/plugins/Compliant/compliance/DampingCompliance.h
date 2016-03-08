@@ -17,6 +17,8 @@ namespace forcefield
     A compliance for viscous damping, i.e. generates a force along - \alpha.v
     This component must be a compliance, otherwise there is other way to generate damping (regular B matrix)
     @warning: must be coupled with a DampingValue
+
+    @author Matthieu Nesme
  */
 
 template<class TDataTypes>

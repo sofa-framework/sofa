@@ -40,6 +40,9 @@ namespace mapping
 
 
 /** Deformation Gradient to Principal Stretches mapping.
+ *
+ * @author Matthieu Nesme
+ *
 */
 
 
