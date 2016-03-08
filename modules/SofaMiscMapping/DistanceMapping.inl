@@ -183,7 +183,7 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
     }
 
     jacobian.compress();
-    //      cerr<<"DistanceMapping<TIn, TOut>::apply, jacobian: "<<endl<< jacobian << endl;
+//    serr<<"apply, jacobian: "<<std::endl<< jacobian << sendl;
 
 }
 
