@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaMiscMapping_test)
 
 set(SOURCE_FILES
+    DistanceMapping_test.cpp
     ProjectionToTargetLineMapping_test.cpp
     ProjectionToTargetPlaneMapping_test.cpp
     SubsetMultiMapping_test.cpp)
