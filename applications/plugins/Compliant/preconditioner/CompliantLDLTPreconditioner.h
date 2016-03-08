@@ -13,6 +13,7 @@ namespace linearsolver {
  *  Linear system preconditioner based on LDLT pre-factorization
  *  @warning in most cases this preconditioner is really ineficient and must be used with care!
  * 
+ * @author Matthieu Nesme
 */
 
 class SOFA_Compliant_API CompliantLDLTPreconditioner : public BasePreconditioner

@@ -9,6 +9,9 @@ namespace component {
 namespace linearsolver {
 
 /// Preconditioned Conjugate Gradient (iterative, linear solver for symmetric, definite matrix)
+///
+/// @author Matthieu Nesme
+///
 class SOFA_Compliant_API PreconditionedCgSolver : public CgSolver, public PreconditionedSolver
 {
 

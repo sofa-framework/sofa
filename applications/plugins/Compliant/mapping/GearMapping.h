@@ -24,6 +24,8 @@ namespace mapping
 
  @warning: it is a pure velocity mapping, and no positions are computed
 
+ @author Matthieu Nesme
+
 */
 
     template <class TIn, class TOut >

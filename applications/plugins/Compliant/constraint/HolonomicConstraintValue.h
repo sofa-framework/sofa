@@ -11,6 +11,9 @@ namespace odesolver {
 /// - the dynamics pass cancels relative velocity
 /// - the optional correction pass cancels the constraint violation
 /// W/o stabilization the constraints remains violated
+///
+/// @author Matthieu Nesme
+///
 class SOFA_Compliant_API HolonomicConstraintValue : public Stabilization {
   public:
 

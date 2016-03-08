@@ -34,6 +34,8 @@ namespace forcefield
 /// - masks?
 /// - more generic (templated on strain mapping and material)
 ///
+/// @author Matthieu Nesme
+///
 template<class DataTypes>
 class SOFA_Flexible_API FlexibleCorotationalFEMForceField : public core::behavior::ForceField<DataTypes>, public shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction>
 {

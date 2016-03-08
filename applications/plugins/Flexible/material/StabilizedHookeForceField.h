@@ -43,6 +43,9 @@ namespace forcefield
   * This is the stabilized formulation from "Energetically Consistent Invertible Elasticity", SCA'12
   *
   * The energy is : mu.sum_i((Ui-1)^2) + lambda/2(J-1)^2
+  *
+  @author Matthieu Nesme
+
 */
 
 template <class _DataTypes>

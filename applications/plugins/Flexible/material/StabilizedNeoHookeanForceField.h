@@ -43,6 +43,9 @@ namespace forcefield
   * This is the stabilized formulation from "Energetically Consistent Invertible Elasticity", SCA'12
   *
   * W = mu/2(I1-3)-mu.ln(J)+lambda/2(ln(J))^2
+  *
+  * @author Matthieu Nesme
+  *
 */
 
 template <class _DataTypes>
