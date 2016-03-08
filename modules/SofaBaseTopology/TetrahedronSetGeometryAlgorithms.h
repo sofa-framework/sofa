@@ -77,9 +77,9 @@ protected:
         , d_drawScaleTetrahedra(initData(&d_drawScaleTetrahedra, (float) 1.0, "drawScaleTetrahedra", "Scale of the terahedra (between 0 and 1; if <1.0, it produces gaps between the tetrahedra)"))
         , d_drawColorTetrahedra(initData(&d_drawColorTetrahedra, sofa::defaulttype::Vec4f(1.0f,1.0f,0.0f,1.0f), "drawColorTetrahedra", "RGBA code color used to draw tetrahedra."))
     {
-        addAlias(&d_showTetrahedraIndices, "showTetrasIndices");
-        addAlias(&d_drawTetrahedra, "drawTetra");
-        addAlias(&d_drawTetrahedra, "drawTetrahedron");
+        core::objectmodel::Base::addAlias(&d_showTetrahedraIndices, "showTetrasIndices");
+        core::objectmodel::Base::addAlias(&d_drawTetrahedra, "drawTetra");
+        core::objectmodel::Base::addAlias(&d_drawTetrahedra, "drawTetrahedron");
     }
 
     virtual ~TetrahedronSetGeometryAlgorithms() {}

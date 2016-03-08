@@ -72,8 +72,8 @@ protected:
         , d_drawScaleHexahedra(initData(&d_drawScaleHexahedra, float(1.0), "drawScaleHexahedra", "Scale of the hexahedra (between 0 and 1; if <1.0, it produces gaps between the hexahedra)"))
         , d_drawColorHexahedra(initData(&d_drawColorHexahedra, sofa::defaulttype::Vec3f(1.0f,0.5f,0.0f), "drawColorHexahedra", "RGB code color used to draw hexahedra."))
     {
-        addAlias(&d_drawHexahedra, "drawHexa");
-        addAlias(&d_drawHexahedra, "drawHexahedron");
+        core::objectmodel::Base::addAlias(&d_drawHexahedra, "drawHexa");
+        core::objectmodel::Base::addAlias(&d_drawHexahedra, "drawHexahedron");
     }
 
     virtual ~HexahedronSetGeometryAlgorithms() {}
