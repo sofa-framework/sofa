@@ -16,51 +16,31 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                               SOFA :: Plugins                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef INITLEAPMOTION_H
+#define INITLEAPMOTION_H
+
+
 #include <sofa/helper/system/config.h>
-#include <SofaOpenglVisual/initOpenGLVisual.h>
 
 
-namespace sofa
-{
+#ifndef WIN32
+        #define SOFA_EXPORT_DYNAMIC_LIBRARY
+        #define SOFA_IMPORT_DYNAMIC_LIBRARY
+        #define SOFA_LEAPMOTION_API
+#else
+        #ifdef SOFA_BUILD_LEAPMOTION
+                #define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
+                #define SOFA_LEAPMOTION_API SOFA_EXPORT_DYNAMIC_LIBRARY
+        #else
+                #define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
+                #define SOFA_LEAPMOTION_API SOFA_IMPORT_DYNAMIC_LIBRARY
+        #endif
+#endif // not WIN32
 
-namespace component
-{
-
-
-void initOpenGLVisual()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-SOFA_LINK_CLASS(OglModel)
-SOFA_LINK_CLASS(Light)
-SOFA_LINK_CLASS(LightManager)
-SOFA_LINK_CLASS(PointSplatModel)
-SOFA_LINK_CLASS(OglCylinderModel)
-SOFA_LINK_CLASS(OglRenderingSRGB)
-SOFA_LINK_CLASS(ClipPlane)
-SOFA_LINK_CLASS(ColorMap)
-SOFA_LINK_CLASS(DataDisplay)
-SOFA_LINK_CLASS(OglLabel)
-#ifdef SOFA_HAVE_GLEW
-SOFA_LINK_CLASS(OglShader)
-SOFA_LINK_CLASS(OglShaderVisualModel)
-SOFA_LINK_CLASS(OglShadowShader)
-SOFA_LINK_CLASS(OglTexture)
-SOFA_LINK_CLASS(OglViewport)
-#endif
-
-
-} // namespace component
-
-} // namespace sofa
+#endif // INITLEAPMOTION_H
