@@ -22,10 +22,12 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED  ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
+#Force includes to be like <VolumetricRendering/xxxxxx.h>
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/>")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_VOLUMETRICRENDERING")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${VOLUMETRICRENDERING_VERSION})
 
 target_link_libraries(${PROJECT_NAME} SofaHelper SofaOpenglVisual )
