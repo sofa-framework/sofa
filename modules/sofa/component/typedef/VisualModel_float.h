@@ -41,7 +41,6 @@
 #ifndef SOFA_NO_OPENGL
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaOpenglVisual/OglShaderVisualModel.h>
-#include <SofaOpenglVisual/OglTetrahedralModel.h>
 #endif
 
 #include <SofaBaseVisual/VisualModelImpl.h>
@@ -61,12 +60,6 @@ typedef sofa::component::visualmodel::OglShaderVisualModel OglShaderVisualModelE
 
 
 //---------------------------------------------------------------------------------------------
-//Typedef for OglTetrahedralModel
-typedef sofa::component::visualmodel::OglTetrahedralModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > OglTetrahedralModel3f;
-#endif
-
-
-//---------------------------------------------------------------------------------------------
 //Typedef for VisualModelImpl
 typedef sofa::component::visualmodel::VisualModelImpl VisualModelImplExt3f;
 
@@ -78,7 +71,6 @@ typedef sofa::component::visualmodel::VisualModelImpl VisualModelImplExt3f;
 #ifndef SOFA_NO_OPENGL
 typedef OglModelExt3f OglModelExt3;
 typedef OglShaderVisualModelExt3f OglShaderVisualModelExt3;
-typedef OglTetrahedralModel3f OglTetrahedralModel3;
 #endif
 typedef VisualModelImplExt3f VisualModelImplExt3;
 #endif
