@@ -13,7 +13,6 @@ set(HEADER_FILES
     FrictionContact.h
     FrictionContact.inl
     GenericConstraintCorrection.h
-    GenericConstraintCorrection.inl
     GenericConstraintSolver.h
     LCPConstraintSolver.h
     LMDNewProximityIntersection.h

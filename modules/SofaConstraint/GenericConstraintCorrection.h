@@ -26,26 +26,24 @@
 #define SOFA_CORE_COLLISION_GENERICCONTACTCORRECTION_H
 #include "config.h"
 
-#include <sofa/core/behavior/ConstraintCorrection.h>
+#include <sofa/core/behavior/BaseConstraintCorrection.h>
 
-#include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/core/behavior/LinearSolver.h>
+namespace sofa
+{
 
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+    namespace core { namespace behavior { class OdeSolver; class LinearSolver; } }
 
-#include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
 
-namespace sofa {
+namespace component
+{
 
-namespace component {
+namespace constraintset
+{
 
-namespace constraintset {
-
-class GenericConstraintCorrection : public sofa::core::behavior::BaseConstraintCorrection {
+class GenericConstraintCorrection : public core::behavior::BaseConstraintCorrection
+{
 public:
-    SOFA_CLASS(GenericConstraintCorrection, sofa::core::behavior::BaseConstraintCorrection);
+    SOFA_CLASS(GenericConstraintCorrection, core::behavior::BaseConstraintCorrection);
 
 protected:
     GenericConstraintCorrection();
@@ -54,7 +52,7 @@ protected:
 public:
     virtual void bwdInit();
     
-    virtual void cleanup();
+    virtual void addComplianceInConstraintSpace(const core::ConstraintParams *cparams, defaulttype::BaseMatrix* W);
 
     virtual void addConstraintSolver(core::behavior::ConstraintSolver *s);
     virtual void removeConstraintSolver(core::behavior::ConstraintSolver *s);
@@ -62,17 +60,16 @@ private:
     std::list<core::behavior::ConstraintSolver*> constraintsolvers;
 
 public:
-    virtual void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, defaulttype::BaseMatrix* W);
 
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const;
 
-    virtual void computeAndApplyMotionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId v, sofa::core::MultiVecDerivId f, const defaulttype::BaseVector * lambda);
+    virtual void computeAndApplyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId f, const defaulttype::BaseVector * lambda);
 
-    virtual void computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId f, const defaulttype::BaseVector *lambda);
+    virtual void computeAndApplyPositionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda);
 
-    virtual void computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecDerivId v, sofa::core::MultiVecDerivId f, const sofa::defaulttype::BaseVector *lambda);
+    virtual void computeAndApplyVelocityCorrection(const core::ConstraintParams *cparams, core::MultiVecDerivId v, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda);
 
-    virtual void applyPredictiveConstraintForce(const sofa::core::ConstraintParams * /*cparams*/, sofa::core::MultiVecDerivId /*f*/, const defaulttype::BaseVector *lambda);
+    virtual void applyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda);
 
     virtual void rebuildSystem(double massFactor, double forceFactor);
 
@@ -80,20 +77,21 @@ public:
 
     virtual void resetContactForce();
 
-    virtual void computeResidual(const sofa::core::ExecParams* /*params*/, sofa::defaulttype::BaseVector *lambda);
+    virtual void computeResidual(const core::ExecParams* /*params*/, defaulttype::BaseVector *lambda);
 
     Data< helper::vector< std::string > >  solverName;
 
     /// Pre-construction check method called by ObjectFactory.
     template<class T>
-    static bool canCreate(T*& obj, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg) {
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
         return BaseConstraintCorrection::canCreate(obj, context, arg);
     }
 
 protected:
 
-    sofa::core::behavior::OdeSolver* odesolver;
-    std::vector<sofa::core::behavior::LinearSolver*> linearsolvers;
+    core::behavior::OdeSolver* odesolver;
+    std::vector< core::behavior::LinearSolver* > linearsolvers;
 };
 
 } // namespace collision
@@ -102,4 +100,4 @@ protected:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_CORE_COLLISION_GENERICCONTACTCORRECTION_H

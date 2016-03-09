@@ -23,17 +23,231 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_CONSTRAINT_GENERICCONSTRAINTCORRECTION_CPP
-#include "GenericConstraintCorrection.inl"
-#include <sofa/defaulttype/Vec3Types.h>
+
+#include "GenericConstraintCorrection.h"
+
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa {
+namespace sofa 
+{
 
-namespace component {
+namespace component 
+{
 
-namespace constraintset {
+namespace constraintset 
+{
 
-using namespace sofa::defaulttype;
+GenericConstraintCorrection::GenericConstraintCorrection()
+: solverName( initData(&solverName, "solverName", "name of the constraint solver") )
+{
+    odesolver = NULL;
+}
+
+GenericConstraintCorrection::~GenericConstraintCorrection() {}
+
+void GenericConstraintCorrection::bwdInit()
+{
+    core::objectmodel::BaseContext* c = this->getContext();
+
+    c->get(odesolver, core::objectmodel::BaseContext::Local);
+
+    linearsolvers.clear();
+
+    const helper::vector<std::string>& solverNames = solverName.getValue();
+    if (solverNames.size() == 0) 
+    {
+        core::behavior::LinearSolver* s = NULL;
+        c->get(s);
+        if (s)
+        {
+            if (s->getTemplateName() == "GraphScattered") 
+            {
+                serr << "ERROR GenericConstraintCorrection cannot use the solver " << s->getName() << " because it is templated on GraphScatteredType" << sendl;
+            }
+            else
+            {
+                linearsolvers.push_back(s);
+            }
+        }
+    }
+    else 
+    {
+        for (unsigned int i=0; i<solverNames.size(); ++i)
+        {
+            core::behavior::LinearSolver* s = NULL;
+            c->get(s, solverNames[i]);
+
+            if (s)
+            {
+                if (s->getTemplateName() == "GraphScattered")
+                {
+                    serr << "ERROR GenericConstraintCorrection cannot use the solver " << solverNames[i] << " because it is templated on GraphScatteredType" << sendl;
+                }
+                else
+                {
+                    linearsolvers.push_back(s);
+                }
+            } 
+            else serr << "Solver \"" << solverNames[i] << "\" not found." << sendl;
+        }
+    }
+
+    if (odesolver == NULL)
+    {
+        serr << "GenericConstraintCorrection: ERROR no OdeSolver found."<<sendl;
+        return;
+    }
+
+    if (linearsolvers.size() == 0)
+    {
+        serr << "GenericConstraintCorrection: ERROR no LinearSolver found."<<sendl;
+        return;
+    }
+
+    sout << "Found " << linearsolvers.size() << " linearsolvers" << sendl;
+    for (unsigned i = 0; i < linearsolvers.size(); i++)
+    {
+        sout << linearsolvers[i]->getName() << sendl;
+    }
+}
+
+void GenericConstraintCorrection::rebuildSystem(double massFactor, double forceFactor)
+{
+    for (unsigned i = 0; i < linearsolvers.size(); i++)
+    {
+        linearsolvers[i]->rebuildSystem(massFactor, forceFactor);
+    }
+}
+
+void GenericConstraintCorrection::addComplianceInConstraintSpace(const core::ConstraintParams *cparams, defaulttype::BaseMatrix* W)
+{
+    if (!odesolver) return;
+
+    // use the OdeSolver to get the position integration factor
+    double factor = 1.0;
+
+    switch (cparams->constOrder())
+    {
+        case core::ConstraintParams::POS_AND_VEL :
+        case core::ConstraintParams::POS :
+            factor = odesolver->getPositionIntegrationFactor();
+            break;
+
+        case core::ConstraintParams::ACC :
+        case core::ConstraintParams::VEL :
+            factor = odesolver->getVelocityIntegrationFactor();
+            break;
+
+        default :
+            break;
+    }
+
+    // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
+    for (unsigned i = 0; i < linearsolvers.size(); i++)
+    {
+        linearsolvers[i]->buildComplianceMatrix(W, factor);
+    }
+}
+
+void GenericConstraintCorrection::computeAndApplyMotionCorrection(const core::ConstraintParams * /*cparams*/, core::MultiVecCoordId /*xId*/, core::MultiVecDerivId /*vId*/, core::MultiVecDerivId /*fId*/, const defaulttype::BaseVector *lambda)
+{
+    if (!odesolver) return;
+
+    const double positionFactor = odesolver->getPositionIntegrationFactor();
+    const double velocityFactor = odesolver->getVelocityIntegrationFactor();
+
+    for (unsigned i = 0; i < linearsolvers.size(); i++)
+    {
+        linearsolvers[i]->applyContactForce(lambda,positionFactor,velocityFactor);
+    }
+}
+
+
+void GenericConstraintCorrection::computeResidual(const core::ExecParams* params, defaulttype::BaseVector *lambda)
+{
+    for (unsigned i = 0; i < linearsolvers.size(); i++)
+    {
+        linearsolvers[i]->computeResidual(params,lambda);
+    }
+}
+
+void GenericConstraintCorrection::computeAndApplyPositionCorrection(const core::ConstraintParams * /*cparams*/, core::MultiVecCoordId /*xId*/, core::MultiVecDerivId /*fId*/, const defaulttype::BaseVector *lambda)
+{
+    if (!odesolver) return;
+
+    const double positionFactor = odesolver->getPositionIntegrationFactor();
+
+    for (unsigned i = 0; i < linearsolvers.size(); i++)
+    {
+        linearsolvers[i]->applyContactForce(lambda,positionFactor,0.0);
+    }
+}
+
+void GenericConstraintCorrection::computeAndApplyVelocityCorrection(const core::ConstraintParams * /*cparams*/, core::MultiVecDerivId /*vId*/, core::MultiVecDerivId /*fId*/, const defaulttype::BaseVector *lambda)
+{
+    if (!odesolver) return;
+
+    const double velocityFactor = odesolver->getVelocityIntegrationFactor();
+
+    for (unsigned i = 0; i < linearsolvers.size(); i++)
+    {
+        linearsolvers[i]->applyContactForce(lambda,0.0,velocityFactor);
+    }
+}
+
+void GenericConstraintCorrection::applyContactForce(const defaulttype::BaseVector *f)
+{
+    if (!odesolver) return;
+
+    const double positionFactor = odesolver->getPositionIntegrationFactor();
+    const double velocityFactor = odesolver->getVelocityIntegrationFactor();
+
+    for (unsigned i = 0; i < linearsolvers.size(); i++)
+    {
+        linearsolvers[i]->applyContactForce(f,positionFactor,velocityFactor);
+    }
+}
+
+void GenericConstraintCorrection::getComplianceMatrix(defaulttype::BaseMatrix* Minv) const
+{
+    if (!odesolver) return;
+
+    // use the OdeSolver to get the position integration factor
+    double factor = odesolver->getPositionIntegrationFactor();
+
+    // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
+    for (unsigned i = 0; i < linearsolvers.size(); i++) 
+    {
+        linearsolvers[i]->buildComplianceMatrix(Minv, factor);
+    }
+}
+
+void GenericConstraintCorrection::applyPredictiveConstraintForce(const core::ConstraintParams * /*cparams*/, core::MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/)
+{
+//    printf("GenericConstraintCorrection::applyPredictiveConstraintForce not implemented\n");
+//    if (mstate)
+//    {
+//        Data< VecDeriv > *f_d = f[mstate].write();
+
+//        if (f_d)
+//        {
+//            applyPredictiveConstraintForce(cparams, *f_d, lambda);
+//        }
+//    }
+}
+
+void GenericConstraintCorrection::resetContactForce()
+{
+//    printf("GenericConstraintCorrection::resetContactForce not implemented\n");
+//    Data<VecDeriv>& forceData = *this->mstate->write(core::VecDerivId::force());
+//    VecDeriv& force = *forceData.beginEdit();
+//    for( unsigned i=0; i<force.size(); ++i )
+//        force[i] = Deriv();
+//    forceData.endEdit();
+}
+
 
 SOFA_DECL_CLASS(GenericConstraintCorrection)
 
@@ -43,7 +257,7 @@ int GenericConstraintCorrectionClass = core::RegisterObject("")
 
 class SOFA_CONSTRAINT_API GenericConstraintCorrection;
 
-} // namespace collision
+} // namespace constraintset
 
 } // namespace component
 
