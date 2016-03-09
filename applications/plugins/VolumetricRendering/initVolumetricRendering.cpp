@@ -16,15 +16,15 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                               SOFA :: Plugins                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaOpenglVisual/initOpenGLVisual.h>
 
+#include <VolumetricRendering/config.h>
+#include <sofa/helper/system/config.h>
 
 namespace sofa
 {
@@ -32,8 +32,18 @@ namespace sofa
 namespace component
 {
 
+//Here are just several convenient functions to help user to know what contains the plugin
 
-void initOpenGLVisual()
+extern "C" {
+    SOFA_VOLUMETRICRENDERING_API void initExternalModule();
+    SOFA_VOLUMETRICRENDERING_API const char* getModuleName();
+    SOFA_VOLUMETRICRENDERING_API const char* getModuleVersion();
+    SOFA_VOLUMETRICRENDERING_API const char* getModuleLicense();
+    SOFA_VOLUMETRICRENDERING_API const char* getModuleDescription();
+    SOFA_VOLUMETRICRENDERING_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
     static bool first = true;
     if (first)
@@ -42,25 +52,36 @@ void initOpenGLVisual()
     }
 }
 
-SOFA_LINK_CLASS(OglModel)
-SOFA_LINK_CLASS(Light)
-SOFA_LINK_CLASS(LightManager)
-SOFA_LINK_CLASS(PointSplatModel)
-SOFA_LINK_CLASS(OglCylinderModel)
-SOFA_LINK_CLASS(OglRenderingSRGB)
-SOFA_LINK_CLASS(ClipPlane)
-SOFA_LINK_CLASS(ColorMap)
-SOFA_LINK_CLASS(DataDisplay)
-SOFA_LINK_CLASS(OglLabel)
-#ifdef SOFA_HAVE_GLEW
-SOFA_LINK_CLASS(OglShader)
-SOFA_LINK_CLASS(OglShaderVisualModel)
-SOFA_LINK_CLASS(OglShadowShader)
-SOFA_LINK_CLASS(OglTexture)
-SOFA_LINK_CLASS(OglViewport)
-#endif
+const char* getModuleName()
+{
+    return "VolumetricRendering";
+}
+
+const char* getModuleVersion()
+{
+    return "0.1";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+
+const char* getModuleDescription()
+{
+    return "A plugin for volumetric rendering (tetrahedron, hexahedron)";
+}
+
+const char* getModuleComponentList()
+{
+    return "OglTetrahedralModel";
+}
+
 
 
 } // namespace component
 
 } // namespace sofa
+
+SOFA_LINK_CLASS(OglTetrahedralModel)

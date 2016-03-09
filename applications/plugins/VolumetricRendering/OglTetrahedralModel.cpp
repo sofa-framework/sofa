@@ -22,45 +22,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaOpenglVisual/initOpenGLVisual.h>
+#define SOFA_COMPONENT_VISUALMODEL_OGLTETRAHEDRALMODEL_CPP
 
+#include "OglTetrahedralModel.inl"
+
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
-
 namespace component
 {
-
-
-void initOpenGLVisual()
+namespace visualmodel
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-SOFA_LINK_CLASS(OglModel)
-SOFA_LINK_CLASS(Light)
-SOFA_LINK_CLASS(LightManager)
-SOFA_LINK_CLASS(PointSplatModel)
-SOFA_LINK_CLASS(OglCylinderModel)
-SOFA_LINK_CLASS(OglRenderingSRGB)
-SOFA_LINK_CLASS(ClipPlane)
-SOFA_LINK_CLASS(ColorMap)
-SOFA_LINK_CLASS(DataDisplay)
-SOFA_LINK_CLASS(OglLabel)
-#ifdef SOFA_HAVE_GLEW
-SOFA_LINK_CLASS(OglShader)
-SOFA_LINK_CLASS(OglShaderVisualModel)
-SOFA_LINK_CLASS(OglShadowShader)
-SOFA_LINK_CLASS(OglTexture)
-SOFA_LINK_CLASS(OglViewport)
+using namespace sofa::defaulttype;
+
+SOFA_DECL_CLASS(OglTetrahedralModel)
+
+int OglTetrahedralModelClass = sofa::core::RegisterObject("Tetrahedral model for OpenGL display")
+#ifndef SOFA_FLOAT
+        .add< OglTetrahedralModel<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< OglTetrahedralModel<Vec3fTypes> >()
+#endif
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_VOLUMETRICRENDERING_API OglTetrahedralModel<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_VOLUMETRICRENDERING_API OglTetrahedralModel<Vec3fTypes>;
 #endif
 
-
-} // namespace component
-
-} // namespace sofa
+}
+}
+}
