@@ -149,11 +149,12 @@ void OglTetrahedralModel<DataTypes>::init()
 template<class DataTypes>
 void OglTetrahedralModel<DataTypes>::initVisual()
 {
-    const ResizableExtVector<Coord> tmpvertices = m_positions.getValue();
-    ResizableExtVector<Vec3f> vertices;
+    const defaulttype::ResizableExtVector<Coord> tmpvertices = m_positions.getValue();
+    defaulttype::ResizableExtVector<defaulttype::Vec3f> vertices;
+
     for (unsigned int i = 0; i<tmpvertices.size(); i++)
     {
-        vertices.push_back(Vec3f(tmpvertices[i][0], tmpvertices[i][1], tmpvertices[i][2]));
+        vertices.push_back(defaulttype::Vec3f(tmpvertices[i][0], tmpvertices[i][1], tmpvertices[i][2]));
     }
 
     m_mappingTableValues->initVisual();
@@ -217,7 +218,7 @@ void OglTetrahedralModel<DataTypes>::computeMesh()
     {
         if (this->f_printLog.getValue())
             sout << "OglTetrahedralModel: copying " << m_topology->getNbPoints() << "points from topology." << sendl;
-        helper::WriteAccessor<  Data<ResizableExtVector<Coord> > > position = m_positions;
+        helper::WriteAccessor<  Data<defaulttype::ResizableExtVector<Coord> > > position = m_positions;
         position.resize(m_topology->getNbPoints());
         for (unsigned int i = 0; i<position.size(); i++) 
         {
@@ -230,7 +231,7 @@ void OglTetrahedralModel<DataTypes>::computeMesh()
     {
         if (this->f_printLog.getValue())
             sout << "OglTetrahedralModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
-        helper::WriteAccessor< Data<ResizableExtVector<Coord> > > position = m_positions;
+        helper::WriteAccessor< Data<defaulttype::ResizableExtVector<Coord> > > position = m_positions;
         position.resize(mstate->getSize());
         for (unsigned int i = 0; i<position.size(); i++)
         {
@@ -248,7 +249,7 @@ void OglTetrahedralModel<DataTypes>::computeMesh()
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& inputTetrahedrons = m_topology->getTetrahedra();
     if (this->f_printLog.getValue())
         sout << "OglTetrahedralModel: copying " << inputTetrahedrons.size() << " tetrahedrons from topology." << sendl;
-    helper::WriteAccessor< Data< ResizableExtVector<Tetrahedron> > > tetrahedrons = m_tetrahedrons;
+    helper::WriteAccessor< Data< defaulttype::ResizableExtVector<Tetrahedron> > > tetrahedrons = m_tetrahedrons;
     tetrahedrons.resize(inputTetrahedrons.size());
     for (unsigned int i = 0; i<inputTetrahedrons.size(); i++) {
         tetrahedrons[i] = inputTetrahedrons[i];
@@ -324,7 +325,7 @@ void OglTetrahedralModel<DataTypes>::computeBBox(const core::ExecParams * params
         const core::topology::BaseMeshTopology::SeqTetrahedra& vec = m_topology->getTetrahedra();
         core::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
         Coord v;
-        const ResizableExtVector<Coord>& position = m_positions.getValue();
+        const defaulttype::ResizableExtVector<Coord>& position = m_positions.getValue();
         const SReal max_real = std::numeric_limits<SReal>::max();
         const SReal min_real = std::numeric_limits<SReal>::min();
 
@@ -354,11 +355,11 @@ void OglTetrahedralModel<DataTypes>::computeBBox(const core::ExecParams * params
 template<class DataTypes>
 void OglTetrahedralModel<DataTypes>::updateVertexBuffer()
 {
-    const ResizableExtVector<Coord> tmpvertices = m_positions.getValue();
-    ResizableExtVector<Vec3f> vertices;
+    const defaulttype::ResizableExtVector<Coord> tmpvertices = m_positions.getValue();
+    defaulttype::ResizableExtVector<defaulttype::Vec3f> vertices;
     for (unsigned int i = 0; i<tmpvertices.size(); i++)
     {
-        vertices.push_back(Vec3f(tmpvertices[i][0], tmpvertices[i][1], tmpvertices[i][2]));
+        vertices.push_back(defaulttype::Vec3f(tmpvertices[i][0], tmpvertices[i][1], tmpvertices[i][2]));
     }
 
     unsigned positionsBufferSize;
