@@ -61,6 +61,14 @@ PythonScriptController::PythonScriptController()
     // various initialization stuff here...
 }
 
+bool PythonScriptController::isDerivedFrom(const std::string& name, const std::string& module)
+{
+    PyObject* moduleDict = PyModule_GetDict(PyImport_AddModule(module.c_str()));
+    PyObject* imagePlaneControllerClass = PyDict_GetItemString(moduleDict, name.c_str());
+
+    return 1 == PyObject_IsInstance(m_ScriptControllerInstance, imagePlaneControllerClass);
+}
+
 void PythonScriptController::loadScript()
 {
     if(!sofa::simulation::PythonEnvironment::runFile(m_filename.getFullPath().c_str()))
@@ -301,7 +309,6 @@ void PythonScriptController::script_draw(const core::visual::VisualParams*)
 //    SP_CALL_MODULEFUNC_NOPARAM(m_Func_storeResetState)
     SP_CALL_OBJECTFUNC(const_cast<char*>("draw"),0)
 }
-
 
 void PythonScriptController::handleEvent(core::objectmodel::Event *event)
 {

@@ -854,6 +854,7 @@ public:
 
     // returns the transformed point (for the widget)
     Coord get_pointCoord(const Coord& ip) const { return transform->fromImage(ip); }
+    Coord get_pointImageCoord(const Coord& ip) const { return transform->toImage(ip); }
     // returns the 4 slice corners
     Vec<4,Coord> get_sliceCoord(const unsigned int index,const unsigned int axis,const Mat<2,3,unsigned int>& roi) const
     {

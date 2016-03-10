@@ -45,6 +45,8 @@ public:
 
 	PyObject* scriptControllerInstance() const {return m_ScriptControllerInstance;}
 
+    bool isDerivedFrom(const std::string& name, const std::string& module = "__main__");
+
 protected:
     PythonScriptController();
 
@@ -91,7 +93,6 @@ protected:
 
     /// @}
 
-
 public:
     sofa::core::objectmodel::DataFileName       m_filename;
     sofa::core::objectmodel::Data<std::string>  m_classname;
@@ -99,7 +100,7 @@ public:
 
 protected:
     PyObject *m_ScriptControllerClass;      // class implemented in the script to use to instanciate the python controller
-//    PyObject *m_ScriptControllerInstanceDict;  // functions dictionnary
+//    PyObject *m_ScriptControllerInstanceDict;  // functions dictionary
     PyObject *m_ScriptControllerInstance;   // instance of m_ScriptControllerClass
 /*
     // optionnal script entry points:
