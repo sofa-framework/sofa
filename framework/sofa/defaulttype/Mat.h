@@ -1087,6 +1087,20 @@ inline defaulttype::Mat<3, 3, Real> crossProductMatrix(const defaulttype::Vec<3,
 }
 
 
+/// return a^T * b
+template<int L,class Real>
+static Mat<L,L,Real> tensorProduct(const Vec<L,Real> a, const Vec<L,Real> b )
+{
+    typedef Mat<L,L,Real> Mat;
+    Mat m;
+
+    for( typename Mat::size_type i=0; i<L ; ++i )
+        for( typename Mat::size_type j=0; j<L ; ++j )
+            m[i][j] = a[i]*b[j];
+
+    return m;
+}
+
 
 
 ////////////////////////////////////////////
