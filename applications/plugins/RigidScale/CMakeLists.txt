@@ -38,6 +38,7 @@ if(Flexible_FOUND)
     if(Compliant_FOUND)
         list(APPEND PYTHON_FILES
             python/RigidScale/API.py
+            python/RigidScale/sml.py
             )
     endif()
 endif()
