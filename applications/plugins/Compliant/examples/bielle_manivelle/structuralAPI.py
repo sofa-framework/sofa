@@ -27,7 +27,7 @@ joint_offsets = [
     ["offset2", 3, [-0.113, 0, 0, 0, 0, 0, 1]],
 
     ["offset3", 3, [0.15, 0, 0, 0, 0, 0, 1]],
-    ["offset3", 0, [2.2, 0, 0.33, 0, 0, 0, 1]]    
+    ["offset3", 0, [2.2, 0, 0.33, 0, 0, 0, 1]]
 ]
 
 # joints: name, offset1, offset2, joint type, joint axis
@@ -53,7 +53,7 @@ def createScene(node):
     node.createObject('VisualStyle', displayFlags='hideBehaviorModels hideCollisionModels hideMappings hideForceFields')
     
     node.dt=0.01
-    node.gravity='0 -9.81 0'
+    node.gravity='0 0 0'
     
     node.createObject('RequiredPlugin', name = 'Compliant' )
     node.createObject('CompliantAttachButtonSetting' )
@@ -111,19 +111,19 @@ def createScene(node):
       
         o = rigids[o[1]].addOffset( o[0], o[2] )
         
-        o.dofs.showObject=True
+        o.dofs.showObject=False
         o.dofs.showObjectScale=0.25
         
         offsets.append( o )
         
         
     ## create joints
-    for l in links:
+    #for l in links:
+
+    #  j = l[3] (l[4], l[0], offsets[l[1]].node, offsets[l[2]].node )
+    #  j.constraint.compliance.compliance = compliance
       
-      j = l[3] (l[4], l[0], offsets[l[1]].node, offsets[l[2]].node )
-      j.constraint.compliance.compliance = compliance
-      
-      joints.append( j )
+    #  joints.append( j )
     
           
     # just for fun!
