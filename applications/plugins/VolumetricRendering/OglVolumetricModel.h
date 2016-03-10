@@ -55,13 +55,13 @@ public:
     typedef sofa::core::topology::Tetrahedron Tetrahedron;
     typedef sofa::core::topology::Hexahedron Hexahedron;
     typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
-    typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqHexhedra;
+    typedef sofa::core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
 
     Data< sofa::defaulttype::ResizableExtVector<Tetrahedron> > d_tetrahedra;
     Data< sofa::defaulttype::ResizableExtVector<Hexahedron> > d_hexahedra;
 
-    Data<bool> depthTest;
-    Data<bool> blending;
+    Data<bool> d_depthTest;
+    Data<bool> d_blending;
 
     virtual ~OglVolumetricModel();
 
@@ -72,15 +72,17 @@ private:
     core::topology::BaseMeshTopology::SPtr m_topology;
 
     bool b_modified;
-    int m_lastMeshRev;
     bool b_useTopology;
 
     GLuint m_vbo;
     void updateVertexBuffer();
+    void splitHexahedra();
 
     //Tables
     sofa::component::visualmodel::OglFloatVector4Variable::SPtr m_mappingTableValues;
     sofa::component::visualmodel::OglFloatVector4Variable::SPtr m_runSelectTableValues;
+
+    sofa::defaulttype::ResizableExtVector<Tetrahedron> m_hexaToTetrahedra;
 
 public:
     void init();
@@ -88,11 +90,13 @@ public:
     void drawTransparent(const core::visual::VisualParams* vparams);
     void computeBBox(const core::ExecParams *, bool onlyVisible=false);
 
-    virtual void updateVisual();
-    virtual void computeMesh();
+    void handleTopologyChange();
 
-    virtual bool insertInNode(core::objectmodel::BaseNode* node) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
-    virtual bool removeInNode(core::objectmodel::BaseNode* node) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+    void updateVisual();
+    void computeMeshFromTopology();
+
+    bool insertInNode(core::objectmodel::BaseNode* node) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    bool removeInNode(core::objectmodel::BaseNode* node) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 
 };
 

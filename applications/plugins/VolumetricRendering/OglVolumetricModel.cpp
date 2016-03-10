@@ -52,10 +52,9 @@ int OglVolumetricModelClass = sofa::core::RegisterObject("Volumetric model for O
 
 OglVolumetricModel::OglVolumetricModel()
     : b_modified(false)
-    , m_lastMeshRev(-1)
     , b_useTopology(false)
-    , depthTest(initData(&depthTest, (bool)false, "depthTest", "Set Depth Test"))
-    , blending(initData(&blending, (bool)false, "blending", "Set Blending"))
+    , d_depthTest(initData(&d_depthTest, (bool)false, "depthTest", "Set Depth Test"))
+    , d_blending(initData(&d_blending, (bool)false, "blending", "Set Blending"))
 {
 }
 
@@ -180,26 +179,27 @@ void OglVolumetricModel::initVisual()
 
 void OglVolumetricModel::updateVisual()
 {
-    if ((b_modified && !m_positions.getValue().empty())
-        || b_useTopology)
+
+    if (b_modified || d_tetrahedra.isDirty() || d_hexahedra.isDirty() || m_positions.isDirty())
     {
-        // update mesh either when data comes from b_useTopology initially or vertices
-        // get modified
-        if(b_useTopology && m_topology->getRevision() != m_lastMeshRev)
-            computeMesh();
-        
+        if(b_useTopology)
+            computeMeshFromTopology();
+        else
+        {
+            d_tetrahedra.updateIfDirty();
+            d_hexahedra.updateIfDirty();
+            m_positions.updateIfDirty();
+        }
+
+        splitHexahedra();
+        updateVertexBuffer();
         b_modified = false;
     }
 
-    d_tetrahedra.updateIfDirty();
-    d_hexahedra.updateIfDirty();
 
-    m_positions.updateIfDirty();
-
-    updateVertexBuffer();
 }
 
-void OglVolumetricModel::computeMesh()
+void OglVolumetricModel::computeMeshFromTopology()
 {
     using sofa::core::behavior::BaseMechanicalState;
 
@@ -234,37 +234,73 @@ void OglVolumetricModel::computeMesh()
         {
             serr << "OglVolumetricModel: can not update vertices!" << sendl;
         }
-
-        m_lastMeshRev = m_topology->getRevision();
-
+        
         // update Tetrahedrons
-        const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& inputTetrahedra = m_topology->getTetrahedra();
+        const SeqTetrahedra& inputTetrahedra = m_topology->getTetrahedra();
         sout << "OglVolumetricModel: copying " << inputTetrahedra.size() << " tetrahedra from topology." << sendl;
         helper::WriteAccessor< Data< defaulttype::ResizableExtVector<Tetrahedron> > > tetrahedra = d_tetrahedra;
+        tetrahedra.clear();
         tetrahedra.resize(inputTetrahedra.size());
         for (unsigned int i = 0; i<inputTetrahedra.size(); i++) {
             tetrahedra[i] = inputTetrahedra[i];
         }
-
+        
         // update Hexahedrons
-        const sofa::core::topology::BaseMeshTopology::SeqHexahedra& inputHexahedra = m_topology->getHexahedra();
+        const SeqHexahedra& inputHexahedra = m_topology->getHexahedra();
         sout << "OglVolumetricModel: copying " << inputHexahedra.size() << " hexahedra from topology." << sendl;
         helper::WriteAccessor< Data< defaulttype::ResizableExtVector<Hexahedron> > > hexahedra = d_hexahedra;
-        hexahedra.resize(hexahedra.size());
-        for (unsigned int i = 0; i<inputHexahedra.size(); i++) {
+        hexahedra.clear();
+        hexahedra.resize(inputHexahedra.size());
+        for (unsigned int i = 0; i < inputHexahedra.size(); i++) {
             hexahedra[i] = inputHexahedra[i];
         }
+                
     }
 
     //else we assumed all data are correctly set
+}
+
+void OglVolumetricModel::splitHexahedra()
+{
+    helper::ReadAccessor< Data< defaulttype::ResizableExtVector<Tetrahedron> > > tetrahedra = d_tetrahedra;
+    helper::ReadAccessor< Data< defaulttype::ResizableExtVector<Hexahedron> > > hexahedra = d_hexahedra;
+    m_hexaToTetrahedra.clear();
+
+    //split hexahedron to 5 tetrahedra
+    for (unsigned int i = 0; i<hexahedra.size(); i++)
+    {
+        const Hexahedron& hex = hexahedra[i];
+        Tetrahedron tet[5];
+        tet[0][0] = hex[6]; tet[0][1] = hex[4]; tet[0][2] = hex[1]; tet[0][3] = hex[5];
+        tet[1][0] = hex[4]; tet[1][1] = hex[3]; tet[1][2] = hex[1]; tet[1][3] = hex[0];
+        tet[2][0] = hex[4]; tet[2][1] = hex[7]; tet[2][2] = hex[6]; tet[2][3] = hex[3];
+        tet[3][0] = hex[3]; tet[3][1] = hex[6]; tet[3][2] = hex[1]; tet[3][3] = hex[2];
+        tet[4][0] = hex[4]; tet[4][1] = hex[6]; tet[4][2] = hex[1]; tet[4][3] = hex[3];
+        for (unsigned int j = 0; j < 5; j++)
+            if (j != 40) m_hexaToTetrahedra.push_back(tet[j]);
+    }
+}
+
+void OglVolumetricModel::handleTopologyChange()
+{
+    std::list< const core::topology::TopologyChange * >::const_iterator itBegin = m_topology->beginChange();
+    std::list< const core::topology::TopologyChange * >::const_iterator itEnd = m_topology->endChange();
+
+    //TODO one day: update only necessary things
+    //but for now, if there is only one change, we update everything
+    bool oneTime = true;
+    for (std::list< const core::topology::TopologyChange * >::const_iterator changeIt = itBegin; changeIt != itEnd && oneTime; ++changeIt)
+    {
+        //const  core::topology::TopologyChangeType changeType = (*changeIt)->getChangeType();
+        b_modified = true;
+        oneTime = false;
+    }
 }
 
 void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vparams)
 {
     using sofa::component::topology::TetrahedronSetTopologyContainer;
     if (!vparams->displayFlags().getShowVisualModels()) return;
-    if (m_topology == NULL) return;
-    if (m_topology->getNbTetrahedra() < 1) return;
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     if (vparams->displayFlags().getShowWireFrame())
@@ -274,13 +310,13 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
         glCullFace(GL_FRONT);
     }
 
-    if (blending.getValue())
+    if (d_blending.getValue())
     {
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    if (depthTest.getValue())
+    if (d_depthTest.getValue())
     {
         glDepthFunc(GL_NEVER);
         glDisable(GL_DEPTH_TEST);
@@ -298,11 +334,15 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
     //helper::ReadAccessor< Data< defaulttype::ResizableExtVector<Tetrahedron> > > tetrahedra = d_tetrahedra;
     const defaulttype::ResizableExtVector<Tetrahedron>& tetrahedra = d_tetrahedra.getValue();
 
-    glDrawElements(GL_LINES_ADJACENCY_EXT, tetrahedra.size() * 4, GL_UNSIGNED_INT, tetrahedra.begin());
+    if(tetrahedra.size() > 0)
+        glDrawElements(GL_LINES_ADJACENCY_EXT, tetrahedra.size() * 4, GL_UNSIGNED_INT, tetrahedra.begin());
+    if(m_hexaToTetrahedra.size() > 0)
+        glDrawElements(GL_LINES_ADJACENCY_EXT, m_hexaToTetrahedra.size() * 4, GL_UNSIGNED_INT, m_hexaToTetrahedra.begin());
+        
 
 #else
-    //
-#endif
+    serr << "Your OpenGL driver does not support GL_LINES_ADJACENCY_EXT" << sendl;
+#endif // GL_LINES_ADJACENCY_EXT
 
     if (vparams->displayFlags().getShowWireFrame())
     {
