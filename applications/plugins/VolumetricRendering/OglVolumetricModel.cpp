@@ -137,14 +137,17 @@ void OglVolumetricModel::init()
     }
 
     if (!m_topology)
-    {// currently OglTetrahedralMedal has to use topology to initialize data
-        serr << "OglVolumetricModel : Error : no BaseMeshTopology found." << sendl;
-        return;
+    {
+        sout << "No BaseMeshTopology found." << sendl;
+        b_useTopology = false;
+        b_modified = false;
     }
-    // for now, no mesh file will be loaded directly from OglVolumetricModel component
-    // so force b_useTopology and modified to be true to enable the first time data loading from topology
-    b_useTopology = true;
-    modified = true;
+    else
+    {
+        b_useTopology = true;
+        b_modified = true;
+    }
+
     VisualModel::init();
     updateVisual();
 
@@ -177,29 +180,20 @@ void OglVolumetricModel::initVisual()
 
 void OglVolumetricModel::updateVisual()
 {
-    if ((modified && !m_positions.getValue().empty())
+    if ((b_modified && !m_positions.getValue().empty())
         || b_useTopology)
     {
         // update mesh either when data comes from b_useTopology initially or vertices
         // get modified
-        if (b_useTopology)
-        {
-            sofa::core::topology::TopologyModifier* topoMod;
-            getContext()->get(topoMod);
-
-            if (topoMod)
-            {// topology will be handled by handleTopologyChange() with topologyModifier
-                b_useTopology = false;
-                computeMesh();
-            }
-            else if (topoMod == NULL&& m_topology->getRevision() != m_lastMeshRev)
-            {
-                computeMesh();
-            }
-        }
-        modified = false;
+        if(b_useTopology && m_topology->getRevision() != m_lastMeshRev)
+            computeMesh();
+        
+        b_modified = false;
     }
-    m_tetrahedrons.updateIfDirty();
+
+    d_tetrahedra.updateIfDirty();
+    d_hexahedra.updateIfDirty();
+
     m_positions.updateIfDirty();
 
     updateVertexBuffer();
@@ -208,47 +202,61 @@ void OglVolumetricModel::updateVisual()
 void OglVolumetricModel::computeMesh()
 {
     using sofa::core::behavior::BaseMechanicalState;
-    // update m_positions
-    if (m_topology->hasPos())
+
+    if (b_useTopology)
     {
-        if (this->f_printLog.getValue())
+        // update m_positions
+        if (m_topology->hasPos())
+        {
             sout << "OglVolumetricModel: copying " << m_topology->getNbPoints() << "points from topology." << sendl;
-        helper::WriteAccessor<  Data<defaulttype::ResizableExtVector<Coord> > > position = m_positions;
-        position.resize(m_topology->getNbPoints());
-        for (unsigned int i = 0; i<position.size(); i++) 
-        {
-            position[i][0] = (Real)m_topology->getPX(i);
-            position[i][1] = (Real)m_topology->getPY(i);
-            position[i][2] = (Real)m_topology->getPZ(i);
+            helper::WriteAccessor<  Data<defaulttype::ResizableExtVector<Coord> > > position = m_positions;
+            position.resize(m_topology->getNbPoints());
+            for (unsigned int i = 0; i<position.size(); i++) 
+            {
+                position[i][0] = (Real)m_topology->getPX(i);
+                position[i][1] = (Real)m_topology->getPY(i);
+                position[i][2] = (Real)m_topology->getPZ(i);
+            }
         }
-    }
-    else if (BaseMechanicalState* mstate = dynamic_cast< BaseMechanicalState* >(m_topology->getContext()->getMechanicalState()))
-    {
-        if (this->f_printLog.getValue())
+        else if (BaseMechanicalState* mstate = dynamic_cast< BaseMechanicalState* >(m_topology->getContext()->getMechanicalState()))
+        {
             sout << "OglVolumetricModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
-        helper::WriteAccessor< Data<defaulttype::ResizableExtVector<Coord> > > position = m_positions;
-        position.resize(mstate->getSize());
-        for (unsigned int i = 0; i<position.size(); i++)
+            helper::WriteAccessor< Data<defaulttype::ResizableExtVector<Coord> > > position = m_positions;
+            position.resize(mstate->getSize());
+            for (unsigned int i = 0; i<position.size(); i++)
+            {
+                position[i][0] = (Real)mstate->getPX(i);
+                position[i][1] = (Real)mstate->getPY(i);
+                position[i][2] = (Real)mstate->getPZ(i);
+            }
+        }
+        else
         {
-            position[i][0] = (Real)mstate->getPX(i);
-            position[i][1] = (Real)mstate->getPY(i);
-            position[i][2] = (Real)mstate->getPZ(i);
+            serr << "OglVolumetricModel: can not update vertices!" << sendl;
+        }
+
+        m_lastMeshRev = m_topology->getRevision();
+
+        // update Tetrahedrons
+        const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& inputTetrahedra = m_topology->getTetrahedra();
+        sout << "OglVolumetricModel: copying " << inputTetrahedra.size() << " tetrahedra from topology." << sendl;
+        helper::WriteAccessor< Data< defaulttype::ResizableExtVector<Tetrahedron> > > tetrahedra = d_tetrahedra;
+        tetrahedra.resize(inputTetrahedra.size());
+        for (unsigned int i = 0; i<inputTetrahedra.size(); i++) {
+            tetrahedra[i] = inputTetrahedra[i];
+        }
+
+        // update Hexahedrons
+        const sofa::core::topology::BaseMeshTopology::SeqHexahedra& inputHexahedra = m_topology->getHexahedra();
+        sout << "OglVolumetricModel: copying " << inputHexahedra.size() << " hexahedra from topology." << sendl;
+        helper::WriteAccessor< Data< defaulttype::ResizableExtVector<Hexahedron> > > hexahedra = d_hexahedra;
+        hexahedra.resize(hexahedra.size());
+        for (unsigned int i = 0; i<inputHexahedra.size(); i++) {
+            hexahedra[i] = inputHexahedra[i];
         }
     }
-    else
-    {
-        serr << "OglVolumetricModel: can not update vertices!" << sendl;
-    }
-    m_lastMeshRev = m_topology->getRevision();
-    // update m_tetrahedrons
-    const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& inputTetrahedrons = m_topology->getTetrahedra();
-    if (this->f_printLog.getValue())
-        sout << "OglVolumetricModel: copying " << inputTetrahedrons.size() << " tetrahedrons from topology." << sendl;
-    helper::WriteAccessor< Data< defaulttype::ResizableExtVector<Tetrahedron> > > tetrahedrons = m_tetrahedrons;
-    tetrahedrons.resize(inputTetrahedrons.size());
-    for (unsigned int i = 0; i<inputTetrahedrons.size(); i++) {
-        tetrahedrons[i] = inputTetrahedrons[i];
-    }
+
+    //else we assumed all data are correctly set
 }
 
 void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vparams)
@@ -261,13 +269,16 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     if (vparams->displayFlags().getShowWireFrame())
     {
-        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        //glEnable(GL_CULL_FACE);
-        //glCullFace(GL_FRONT);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
     }
 
     if (blending.getValue())
+    {
         glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    }
 
     if (depthTest.getValue())
     {
@@ -276,16 +287,7 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
         glDepthMask(GL_FALSE);
     }
 
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-    //core::topology::BaseMeshTopology::SeqHexahedra::const_iterator it;
-    core::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
-
 #ifdef GL_LINES_ADJACENCY_EXT
-
-    const core::topology::BaseMeshTopology::SeqTetrahedra& vec = m_topology->getTetrahedra();
-
-    Coord v;
-
     glBindBufferARB(GL_ARRAY_BUFFER, m_vbo);
 
     glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
@@ -293,8 +295,10 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
 
     glEnableClientState(GL_VERTEX_ARRAY);
 
-    glDrawElements(GL_LINES_ADJACENCY_EXT, m_topology->getNbTetrahedra() * 4, GL_UNSIGNED_INT, vec.data());
+    //helper::ReadAccessor< Data< defaulttype::ResizableExtVector<Tetrahedron> > > tetrahedra = d_tetrahedra;
+    const defaulttype::ResizableExtVector<Tetrahedron>& tetrahedra = d_tetrahedra.getValue();
 
+    glDrawElements(GL_LINES_ADJACENCY_EXT, tetrahedra.size() * 4, GL_UNSIGNED_INT, tetrahedra.begin());
 
 #else
     //
@@ -302,8 +306,8 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
 
     if (vparams->displayFlags().getShowWireFrame())
     {
-        //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        //glDisable(GL_CULL_FACE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glDisable(GL_CULL_FACE);
     }
 
     glDisable(GL_BLEND);
@@ -315,8 +319,6 @@ void OglVolumetricModel::computeBBox(const core::ExecParams * params, bool /* on
 {
     if (m_topology)
     {
-        const core::topology::BaseMeshTopology::SeqTetrahedra& vec = m_topology->getTetrahedra();
-        core::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
         Coord v;
         const defaulttype::ResizableExtVector<Coord>& position = m_positions.getValue();
         const SReal max_real = std::numeric_limits<SReal>::max();
@@ -325,22 +327,17 @@ void OglVolumetricModel::computeBBox(const core::ExecParams * params, bool /* on
         SReal maxBBox[3] = { min_real,min_real,min_real };
         SReal minBBox[3] = { max_real,max_real,max_real };
 
-        for (it = vec.begin(); it != vec.end(); it++)
+        for (unsigned int i = 0; i< position.size(); i++)
         {
-            for (unsigned int i = 0; i< 4; i++)
-            {
-                v = position[(*it)[i]];
-                //v = x[(*it)[i]];
+            v = position[i];
 
-                if (minBBox[0] > v[0]) minBBox[0] = v[0];
-                if (minBBox[1] > v[1]) minBBox[1] = v[1];
-                if (minBBox[2] > v[2]) minBBox[2] = v[2];
-                if (maxBBox[0] < v[0]) maxBBox[0] = v[0];
-                if (maxBBox[1] < v[1]) maxBBox[1] = v[1];
-                if (maxBBox[2] < v[2]) maxBBox[2] = v[2];
-            }
+            if (minBBox[0] > v[0]) minBBox[0] = v[0];
+            if (minBBox[1] > v[1]) minBBox[1] = v[1];
+            if (minBBox[2] > v[2]) minBBox[2] = v[2];
+            if (maxBBox[0] < v[0]) maxBBox[0] = v[0];
+            if (maxBBox[1] < v[1]) maxBBox[1] = v[1];
+            if (maxBBox[2] < v[2]) maxBBox[2] = v[2];
         }
-
         this->f_bbox.setValue(params, sofa::defaulttype::TBoundingBox<SReal>(minBBox, maxBBox));
     }
 }
