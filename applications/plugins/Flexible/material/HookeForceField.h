@@ -26,14 +26,10 @@
 #define SOFA_HookeFORCEFIELD_H
 
 #include <Flexible/config.h>
-#include "../material/BaseMaterialForceField.h"
-#include "../material/HookeMaterialBlock.inl"
-//#include "../material/HookeMaterialBlock.h"
-//#include <sofa/core/behavior/MechanicalState.h>
+#include "BaseMaterialForceField.h"
+#include "HookeMaterialBlock.inl"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-
-#include <sofa/simulation/common/AnimateEndEvent.h>
 
 
 namespace sofa
@@ -133,14 +129,6 @@ public:
          _f.endEdit();
      }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
-    {
-        if (simulation::AnimateEndEvent::checkEventType(event))
-        {
-            if(_youngModulus.isDirty() || _poissonRatio.isDirty() || _viscosity.isDirty()) reinit();
-        }
-    }
-
 
     /// Uniform damping ratio (i.e. viscosity/stiffness) applied to all the constrained values.
     virtual SReal getDampingRatio()
@@ -157,7 +145,6 @@ protected:
         , _viscosity(initData(&_viscosity,helper::vector<Real>((int)1,(Real)0),"viscosity","Viscosity (stress/strainRate)"))
     {
         // _poissonRatio.setWidget("poissonRatio");
-        this->f_listening.setValue(true);
     }
 
     virtual ~HookeForceField()     {    }
@@ -251,17 +238,6 @@ public:
         Inherit::reinit();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
-    {
-        if (simulation::AnimateEndEvent::checkEventType(event))
-        {
-            if(_youngModulusX.isDirty() || _youngModulusY.isDirty() || _youngModulusZ.isDirty() ||
-                    _poissonRatioXY.isDirty() || _poissonRatioYZ.isDirty() || _poissonRatioZX.isDirty() ||
-                    _shearModulusXY.isDirty() || _shearModulusYZ.isDirty() || _shearModulusZX.isDirty() ||
-                    _viscosity.isDirty()) reinit();
-        }
-    }
-
 
     /// Uniform damping ratio (i.e. viscosity/stiffness) applied to all the constrained values.
     virtual SReal getDampingRatio()
@@ -285,7 +261,6 @@ protected:
         , _viscosity(initData(&_viscosity,helper::vector<Real>((int)1,(Real)0),"viscosity","Viscosity (stress/strainRate)"))
     {
         // _poissonRatio.setWidget("poissonRatio");
-        this->f_listening.setValue(true);
     }
 
     virtual ~HookeOrthotropicForceField()     {    }
@@ -343,17 +318,6 @@ public:
         Inherit::reinit();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
-    {
-        if (simulation::AnimateEndEvent::checkEventType(event))
-        {
-            if(_youngModulusX.isDirty() || _youngModulusY.isDirty() ||
-                    _poissonRatioXY.isDirty() || _poissonRatioYZ.isDirty() ||
-                    _shearModulusXY.isDirty() ||
-                    _viscosity.isDirty()) reinit();
-        }
-    }
-
 
     /// Uniform damping ratio (i.e. viscosity/stiffness) applied to all the constrained values.
     virtual SReal getDampingRatio()
@@ -373,7 +337,6 @@ protected:
         , _viscosity(initData(&_viscosity,helper::vector<Real>((int)1,(Real)0),"viscosity","Viscosity (stress/strainRate)"))
     {
         // _poissonRatio.setWidget("poissonRatio");
-        this->f_listening.setValue(true);
     }
 
     virtual ~HookeTransverseForceField()     {    }

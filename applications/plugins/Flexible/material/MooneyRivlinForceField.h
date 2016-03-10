@@ -29,8 +29,6 @@
 #include "../material/BaseMaterialForceField.h"
 #include "../material/MooneyRivlinMaterialBlock.h"
 
-#include <sofa/simulation/common/AnimateEndEvent.h>
-
 namespace sofa
 {
 namespace component
@@ -75,13 +73,6 @@ public:
         Inherit::reinit();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
-    {
-        if (simulation::AnimateEndEvent::checkEventType(event))
-        {
-            if(f_C1.isDirty() || f_C2.isDirty() || f_bulk.isDirty() || f_PSDStabilization.isDirty() ) reinit();
-        }
-    }
 
 
 protected:
@@ -93,7 +84,6 @@ protected:
         , f_PSDStabilization(initData(&f_PSDStabilization,false,"PSDStabilization","project stiffness matrix to its nearest symmetric, positive semi-definite matrix"))
 //        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
     {
-        this->f_listening.setValue(true);
     }
 
     virtual ~MooneyRivlinForceField()     {    }
