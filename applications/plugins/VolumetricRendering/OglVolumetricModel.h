@@ -53,9 +53,13 @@ public:
     SOFA_CLASS2(OglVolumetricModel, core::visual::VisualModel, ExtVec3fState);
 
     typedef sofa::core::topology::Tetrahedron Tetrahedron;
+    typedef sofa::core::topology::Hexahedron Hexahedron;
     typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
+    typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqHexhedra;
 
-    Data< sofa::defaulttype::ResizableExtVector<Tetrahedron> > m_tetrahedrons;
+    Data< sofa::defaulttype::ResizableExtVector<Tetrahedron> > d_tetrahedra;
+    Data< sofa::defaulttype::ResizableExtVector<Hexahedron> > d_hexahedra;
+
     Data<bool> depthTest;
     Data<bool> blending;
 

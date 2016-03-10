@@ -11,7 +11,7 @@
  		<OglFloat4Variable id="vertexColor" value="1 1 0 1"/>
  		<OglFloatVariable id="tetraScale" value="0.8"/>
  		<OglFloatVariable id="u_enableLight" value="2"/>
-		<OglVolumetricModel />
+		<OglVolumetricModel printLog="false"/>
 	</Node>
 
 </Node>
