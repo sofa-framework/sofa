@@ -29,7 +29,6 @@
 #include "../material/BaseMaterialForceField.h"
 #include "../material/OgdenMaterialBlock.h"
 
-#include <sofa/simulation/common/AnimateEndEvent.h>
 
 namespace sofa
 {
@@ -89,16 +88,6 @@ public:
         Inherit::reinit();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
-    {
-        if (simulation::AnimateEndEvent::checkEventType(event))
-        {
-            if( f_mu1.isDirty() || f_mu2.isDirty() || f_mu3.isDirty() ||
-                 f_alpha1.isDirty() || f_alpha2.isDirty() || f_alpha3.isDirty() ||
-                    f_d1.isDirty() || f_d2.isDirty() || f_d3.isDirty() ||
-                    f_PSDStabilization.isDirty() ) reinit();
-        }
-    }
 
 
 protected:
@@ -115,7 +104,6 @@ protected:
         , f_d3(initData(&f_d3,helper::vector<Real>((int)1,(Real)1000),"d3",""))
         , f_PSDStabilization(initData(&f_PSDStabilization,false,"PSDStabilization","project stiffness matrix to its nearest symmetric, positive semi-definite matrix"))
     {
-        this->f_listening.setValue(true);
     }
 
     virtual ~OgdenForceField()     {    }
