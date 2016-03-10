@@ -34,6 +34,8 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <SofaOpenglVisual/OglVariable.h>
+#include <SofaOpenglVisual/OglAttribute.h>
+
 
 namespace sofa
 {
@@ -60,6 +62,7 @@ public:
     Data< sofa::defaulttype::ResizableExtVector<Tetrahedron> > d_tetrahedra;
     Data< sofa::defaulttype::ResizableExtVector<Hexahedron> > d_hexahedra;
 
+    Data<float> d_volumeScale;
     Data<bool> d_depthTest;
     Data<bool> d_blending;
 
@@ -70,19 +73,26 @@ protected:
 
 private:
     core::topology::BaseMeshTopology::SPtr m_topology;
+    component::visualmodel::OglShader::SPtr m_shader;
 
     bool b_modified;
     bool b_useTopology;
 
     GLuint m_vbo;
+    GLuint m_tbo, m_tbo_tex;
+
     void updateVertexBuffer();
     void splitHexahedra();
+    void computeBarycenters();
 
     //Tables
     sofa::component::visualmodel::OglFloatVector4Variable::SPtr m_mappingTableValues;
     sofa::component::visualmodel::OglFloatVector4Variable::SPtr m_runSelectTableValues;
 
     sofa::defaulttype::ResizableExtVector<Tetrahedron> m_hexaToTetrahedra;
+
+    sofa::helper::vector<Coord> m_tetraBarycenters;
+    sofa::helper::vector<Coord> m_hexaBarycenters;
 
 public:
     void init();

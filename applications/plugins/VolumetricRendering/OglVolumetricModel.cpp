@@ -29,12 +29,10 @@
 #include <sstream>
 #include <limits>
 
-#include <sofa/helper/gl/GLSLShader.h>
-#include <sofa/defaulttype/BoundingBox.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-
 #include <sofa/core/ObjectFactory.h>
-
+#include <sofa/helper/gl/GLSLShader.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <sofa/defaulttype/BoundingBox.h>
 namespace sofa
 {
 namespace component
@@ -53,6 +51,7 @@ int OglVolumetricModelClass = sofa::core::RegisterObject("Volumetric model for O
 OglVolumetricModel::OglVolumetricModel()
     : b_modified(false)
     , b_useTopology(false)
+    , d_volumeScale(initData(&d_volumeScale, (float)1.0, "volumeScale", "Scale for each volumetric primitive"))
     , d_depthTest(initData(&d_depthTest, (bool)false, "depthTest", "Set Depth Test"))
     , d_blending(initData(&d_blending, (bool)false, "blending", "Set Blending"))
 {
@@ -66,6 +65,13 @@ void OglVolumetricModel::init()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     m_topology = context->getMeshTopology();
+
+    context->get(m_shader);
+    if (!m_shader)
+    {
+        serr << "Need an OglShader to work !" << sendl;
+        return;
+    }
 
     //instanciate the mapping tables
     //Useful for the PT algorithm only
@@ -106,10 +112,8 @@ void OglVolumetricModel::init()
             << "0 0 1 0 1 0 0 0 0 0 0 1 0 1 0 0 "
             << "0 0 0 1 1 0 0 0 0 0 1 0 0 1 0 0";
         m_mappingTableValues->value.read(oss.str());
-        this->getContext()->addObject(m_mappingTableValues);
+        context->addObject(m_mappingTableValues);
         m_mappingTableValues->init();
-
-
     }
     if (!m_runSelectTableValues)
     {
@@ -131,9 +135,10 @@ void OglVolumetricModel::init()
             << "0. 0. 1. 0. "
             << "0. 1. 0. 0. ";
         m_runSelectTableValues->value.read(oss.str());
-        this->getContext()->addObject(m_runSelectTableValues);
+        context->addObject(m_runSelectTableValues);
         m_runSelectTableValues->init();
     }
+
 
     if (!m_topology)
     {
@@ -154,7 +159,7 @@ void OglVolumetricModel::init()
 
 void OglVolumetricModel::initVisual()
 {
-    const defaulttype::ResizableExtVector<Coord>& vertices = m_positions.getValue();
+    const defaulttype::ResizableExtVector<Coord>& positions = m_positions.getValue();
 
     m_mappingTableValues->initVisual();
     m_runSelectTableValues->initVisual();
@@ -162,7 +167,7 @@ void OglVolumetricModel::initVisual()
     glGenBuffersARB(1, &m_vbo);
     unsigned positionsBufferSize;
 
-    positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
+    positionsBufferSize = (positions.size()*sizeof(positions[0]));
     unsigned int totalSize = positionsBufferSize;
 
     glBindBufferARB(GL_ARRAY_BUFFER, m_vbo);
@@ -175,6 +180,7 @@ void OglVolumetricModel::initVisual()
 
     updateVertexBuffer();
     glBindBufferARB(GL_ARRAY_BUFFER, 0);
+
 }
 
 void OglVolumetricModel::updateVisual()
@@ -192,6 +198,7 @@ void OglVolumetricModel::updateVisual()
         }
 
         splitHexahedra();
+        computeBarycenters();
         updateVertexBuffer();
         b_modified = false;
     }
@@ -232,7 +239,7 @@ void OglVolumetricModel::computeMeshFromTopology()
         }
         else
         {
-            serr << "OglVolumetricModel: can not update vertices!" << sendl;
+            serr << "OglVolumetricModel: can not update positions!" << sendl;
         }
         
         // update Tetrahedrons
@@ -279,6 +286,46 @@ void OglVolumetricModel::splitHexahedra()
         for (unsigned int j = 0; j < 5; j++)
             if (j != 40) m_hexaToTetrahedra.push_back(tet[j]);
     }
+}
+
+
+void OglVolumetricModel::computeBarycenters()
+{
+    helper::ReadAccessor< Data< defaulttype::ResizableExtVector<Tetrahedron> > > tetrahedra = d_tetrahedra;
+    helper::ReadAccessor< Data< defaulttype::ResizableExtVector<Hexahedron> > > hexahedra = d_hexahedra;
+    const defaulttype::ResizableExtVector<Coord>& positions = m_positions.getValue();
+
+    m_tetraBarycenters.clear();
+    for (unsigned int i = 0; i < tetrahedra.size(); i++)
+    {
+        const Tetrahedron& t = tetrahedra[i];
+        Coord barycenter = (positions[t[0]] + positions[t[1]] + positions[t[2]] + positions[t[3]])*0.25;
+        m_tetraBarycenters.push_back(barycenter);
+    }
+
+    m_hexaBarycenters.clear();
+    for (unsigned int i = 0; i < hexahedra.size(); i++)
+    {
+        const Hexahedron& h = hexahedra[i];
+        Coord barycenter = (positions[h[0]] + positions[h[1]] + positions[h[2]] + positions[h[3]] +
+                            positions[h[4]] + positions[h[5]] + positions[h[6]] + positions[h[7]])*0.125;
+        m_hexaBarycenters.push_back(barycenter);
+        m_hexaBarycenters.push_back(barycenter);
+        m_hexaBarycenters.push_back(barycenter);
+        m_hexaBarycenters.push_back(barycenter);
+        m_hexaBarycenters.push_back(barycenter);
+    }
+
+
+    //Texture buffer object
+    unsigned int hexaBarycentersBufferSize = m_hexaBarycenters.size() * 3 * sizeof(GLfloat);
+    glGenBuffers(1, &m_tbo);
+    glBindBuffer(GL_TEXTURE_BUFFER, m_tbo);
+    glBufferData(GL_TEXTURE_BUFFER, hexaBarycentersBufferSize, &(m_hexaBarycenters[0]), GL_DYNAMIC_COPY);
+
+    glGenTextures(1, &m_tbo_tex);
+
+    glBindBuffer(GL_TEXTURE_BUFFER, 0);
 }
 
 void OglVolumetricModel::handleTopologyChange()
@@ -329,16 +376,24 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
     glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
     glBindBufferARB(GL_ARRAY_BUFFER, 0);
 
+    glBindTexture(GL_TEXTURE_BUFFER, m_tbo_tex);
+    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, m_tbo);
+
     glEnableClientState(GL_VERTEX_ARRAY);
 
     //helper::ReadAccessor< Data< defaulttype::ResizableExtVector<Tetrahedron> > > tetrahedra = d_tetrahedra;
     const defaulttype::ResizableExtVector<Tetrahedron>& tetrahedra = d_tetrahedra.getValue();
+    const defaulttype::ResizableExtVector<Hexahedron>& hexahedra = d_hexahedra.getValue();
 
-    if(tetrahedra.size() > 0)
-        glDrawElements(GL_LINES_ADJACENCY_EXT, tetrahedra.size() * 4, GL_UNSIGNED_INT, tetrahedra.begin());
+    //if(tetrahedra.size() > 0)
+    //    glDrawElements(GL_LINES_ADJACENCY_EXT, tetrahedra.size() * 4, GL_UNSIGNED_INT, tetrahedra.begin());
     if(m_hexaToTetrahedra.size() > 0)
         glDrawElements(GL_LINES_ADJACENCY_EXT, m_hexaToTetrahedra.size() * 4, GL_UNSIGNED_INT, m_hexaToTetrahedra.begin());
-        
+  
+    //if(hexahedra.size())
+    //    glDrawElements(GL_TRIANGLE_STRIP_ADJACENCY, hexahedra.size() * 8, GL_UNSIGNED_INT, hexahedra.begin());
+
+    glBindTexture(GL_TEXTURE_BUFFER, 0);
 
 #else
     serr << "Your OpenGL driver does not support GL_LINES_ADJACENCY_EXT" << sendl;
@@ -384,18 +439,18 @@ void OglVolumetricModel::computeBBox(const core::ExecParams * params, bool /* on
 
 void OglVolumetricModel::updateVertexBuffer()
 {
-    const defaulttype::ResizableExtVector<Coord>& vertices = m_positions.getValue();
+    const defaulttype::ResizableExtVector<Coord>& positions = m_positions.getValue();
 
     unsigned positionsBufferSize;
 
-    positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
+    positionsBufferSize = (positions.size()*sizeof(positions[0]));
 
     glBindBufferARB(GL_ARRAY_BUFFER, m_vbo);
     //Positions
     glBufferSubDataARB(GL_ARRAY_BUFFER,
         0,
         positionsBufferSize,
-        vertices.getData());
+        positions.getData());
 
     glBindBufferARB(GL_ARRAY_BUFFER, 0);
 
