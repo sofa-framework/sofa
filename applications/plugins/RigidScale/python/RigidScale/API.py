@@ -15,7 +15,9 @@ import SofaPython.Tools
 import SofaPython.mass
 
 import SofaPython.Quaternion as quat
+
 import Flexible.Serialization
+import Flexible.API
 
 # to specify the floating point encoding (double by default)
 template_suffix=''
@@ -301,9 +303,9 @@ class ShearlessAffineBody:
         ## adding a constant force/torque to the rigid body (that could be driven by a controller to simulate a motor)
         return self.rigidNode.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
 
-    def addElasticBehavior(self, name, stiffness=1E2, poissonRatio=0, numberOfGaussPoint=100, generatedDir=None):
+    def addElasticBehavior(self, name, stiffness=1E2, poissonCoef=0, numberOfGaussPoint=100, generatedDir=None):
         ## adding elastic behavior to the component
-        self.behavior = ShearlessAffineBody.ElasticBehavior(self.affineNode, name, stiffness, poissonRatio, numberOfGaussPoint, generatedDir=generatedDir)
+        self.behavior = ShearlessAffineBody.ElasticBehavior(self.affineNode, name, stiffness, poissonCoef, numberOfGaussPoint, generatedDir=generatedDir)
         return self.behavior
 
     def setFixed(self, isFixed=True):
@@ -414,20 +416,22 @@ class ShearlessAffineBody:
 
         def __init__(self, node, name, stiffness=1E2, poissonCoef=0, numberOfGaussPoint=100, generatedDir=None):
             self.node = node.createChild(name)
+
             if generatedDir is None:
                 self.sampler = self.node.createObject('ImageGaussPointSampler', name='sampler', indices='@../SF.indices', weights='@../SF.weights', transform='@../SF.transform', method=2, order=1, targetNumber=numberOfGaussPoint)
             else:
                 serialization.importGaussPoints(self.node,generatedDir+"_gauss.json")
             self.dofs = self.node.createObject('MechanicalObject', template='F331')
+
             if generatedDir is None:
                 self.mapping = self.node.createObject('LinearMapping', template='Affine,F331')
             else:
                 serialization.importLinearMapping(self.node,generatedDir+"_behaviormapping.json")
-            self.forcefield = self.node.createObject('ProjectiveForceField', template='F331', youngModulus=stiffness, poissonRatio=poissonCoef, viscosity=0, isCompliance=0)
+            self.forcefield = self.node.createObject('ProjectiveForceField', template='F331', youngModulus=stiffness, poissonCoef=poissonCoef, viscosity=0, isCompliance=0)
             #strainNode = self.node.createChild('strain')
             #strainNode.createObject('MechanicalObject', template="E331", name="E")
             #strainNode.createObject('CorotationalStrainMapping', template="F331,E331", method="svd", geometricStiffness=0)
-            #self.forcefield = strainNode.createObject('HookeForceField', template="E331", name="forcefield", youngModulus=stiffness, poissonRatio=poissonCoef, viscosity="0.0")
+            #self.forcefield = strainNode.createObject('HookeForceField', template="E331", name="forcefield", youngModulus=stiffness, poissonCoef=poissonCoef, viscosity="0.0")
 
     # Export of class
     def exportRasterization(self,path="./generated"):
