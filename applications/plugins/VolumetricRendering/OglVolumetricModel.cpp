@@ -55,7 +55,9 @@ OglVolumetricModel::OglVolumetricModel()
     , d_volumeScale(initData(&d_volumeScale, (float)1.0, "volumeScale", "Scale for each volumetric primitive"))
     , d_depthTest(initData(&d_depthTest, (bool)false, "depthTest", "Set Depth Test"))
     , d_blending(initData(&d_blending, (bool)false, "blending", "Set Blending"))
+    , d_defaultColor(initData(&d_defaultColor, defaulttype::Vec4f(), "defaultColor", "Color for each volume (if the attribute a_vertexColor is not detected)"))
 {
+    addAlias(&d_defaultColor, "color");
 }
 
 OglVolumetricModel::~OglVolumetricModel()
@@ -73,6 +75,8 @@ void OglVolumetricModel::init()
         serr << "Need an OglShader to work !" << sendl;
         return;
     }
+
+  
 
     //instanciate the mapping tables
     //Useful for the PT algorithm only
@@ -182,11 +186,38 @@ void OglVolumetricModel::initVisual()
     updateVertexBuffer();
     glBindBufferARB(GL_ARRAY_BUFFER, 0);
 
+    //Check attributes
+    sofa::helper::vector<sofa::component::visualmodel::OglFloat4Attribute::SPtr > listVec4Attributes;
+    this->getContext()->core::objectmodel::BaseContext::template get<sofa::component::visualmodel::OglFloat4Attribute, sofa::helper::vector<sofa::component::visualmodel::OglFloat4Attribute::SPtr> >
+        (&listVec4Attributes, core::objectmodel::BaseContext::Local);
+    for (unsigned int i = 0; i < listVec4Attributes.size(); i++)
+    {
+        std::string idVec4 = listVec4Attributes[i]->getId();
+
+        if (!m_vertexColors)
+        {
+            if (idVec4.compare("a_vertexColor") == 0)
+                m_vertexColors = listVec4Attributes[i];
+        }
+    }
+    if (!m_vertexColors)
+    {
+        serr << "No attributes called a_vertexColor found, instanciating one with a default color" << sendl;
+        m_vertexColors = sofa::core::objectmodel::New<sofa::component::visualmodel::OglFloat4Attribute>();
+        m_vertexColors->setName("a_vertexColor");
+        m_vertexColors->setID("a_vertexColor");
+        m_vertexColors->setIndexShader(0);
+    }
+
+    getContext()->addObject(m_vertexColors);
+    m_vertexColors->init();
+    m_vertexColors->initVisual();
+
+
 }
 
 void OglVolumetricModel::updateVisual()
 {
-
     if (b_modified || d_tetrahedra.isDirty() || d_hexahedra.isDirty() || m_positions.isDirty())
     {
         if(b_useTopology)
@@ -203,8 +234,22 @@ void OglVolumetricModel::updateVisual()
         updateVertexBuffer();
         b_modified = false;
     }
+    
+    if (m_vertexColors)
+    {
+        sofa::defaulttype::ResizableExtVector<defaulttype::Vec4f>& vertexColors = *(m_vertexColors->beginEdit());
+        unsigned int nbPositions = m_positions.getValue().size();
+        if ((vertexColors.size() != nbPositions) )
+        {
+            const defaulttype::Vec4f& defaultColor = d_defaultColor.getValue();
+            vertexColors.clear();
+            for (unsigned int i = 0; i < nbPositions; i++)
+            {
+                vertexColors.push_back(defaultColor);
+            }
+        }
 
-
+    }
 }
 
 void OglVolumetricModel::computeMeshFromTopology()

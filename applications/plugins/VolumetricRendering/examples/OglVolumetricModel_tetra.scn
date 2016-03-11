@@ -9,10 +9,10 @@
 	<Node>
  		<OglShader geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" 
  			vertFilename="share/shaders/tetra.vert" geoFilename="share/shaders/tetra_triangles.geo" fragFilename="share/shaders/tetra.frag" />
- 		<OglFloat4Variable id="vertexColor" value="1 1 0 1"/>
  		<OglFloatVariable id="volumeScale" value="0.9"/>
- 		<OglFloatVariable id="u_enableLight" value="2"/>
-		<OglVolumetricModel printLog="false"/>
+ 		<OglFloatVariable id="u_enableLight" value="1"/>
+ 		<OglFloat4Attribute id="a_vertexColor" value="@../loader.position"/>
+		<OglVolumetricModel printLog="false"  />
 	</Node>
 
 </Node>
