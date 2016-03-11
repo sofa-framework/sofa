@@ -504,7 +504,6 @@ void OglVolumetricModel::computeBBox(const core::ExecParams * params, bool /* on
 void OglVolumetricModel::updateVertexBuffer()
 {
     const defaulttype::ResizableExtVector<Coord>& positions = m_positions.getValue();
-    std::cout << positions[0] << std::endl;
     unsigned positionsBufferSize;
 
     positionsBufferSize = (positions.size()*sizeof(positions[0]));
