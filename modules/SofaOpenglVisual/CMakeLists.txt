@@ -3,7 +3,7 @@ project(SofaOpenglVisual)
 
 set(HEADER_FILES
     ClipPlane.h
-    ColorMap.h
+    OglColorMap.h
     CompositingVisualLoop.h
     DataDisplay.h
     Light.h
@@ -23,7 +23,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     ClipPlane.cpp
-    ColorMap.cpp
+    OglColorMap.cpp
     CompositingVisualLoop.cpp
     DataDisplay.cpp
     Light.cpp
