@@ -144,7 +144,7 @@ ColorMap::ColorMap(unsigned int paletteSize, const std::string& colorScheme)
 : m_paletteSize(paletteSize)
 , m_colorScheme("HSV")
 {
-
+    init();
 }
 
 ColorMap::~ColorMap() 
