@@ -1,6 +1,6 @@
 uniform float u_enableLight;
 
-varying vec3 triangleNormal;
+in vec3 triangleNormal;
 
 void main()
 {
@@ -20,7 +20,7 @@ void main()
 
 		vec3 norm = normalize(triangleNormal);
 
-		float diff = max(dot(norm, lightDir), 0.0);
+		float diff = max(abs(dot(norm, lightDir)), 0.0);
 		vec4 diffuseComp = diff * lightColor;
 
 		finalColor = diffuse * diffuseComp;

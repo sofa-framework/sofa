@@ -4,9 +4,9 @@
 uniform samplerBuffer u_barycenter_tex;
 
 uniform float volumeScale;
-varying in vec4 volumeColor[4]; 
-varying in mat4 matproj[4]; 
-varying out vec3 triangleNormal;
+in vec4 volumeColor[4]; 
+in mat4 matproj[4]; 
+out vec3 triangleNormal;
 
 void main() 
 { 
@@ -30,10 +30,13 @@ void main()
     vec4 d2 = gl_PositionIn[2] - gl_PositionIn[0];
     triangleNormal = cross(d1.xyz,d2.xyz);
     gl_FrontColor = volumeColor[0];
+    gl_ClipVertex = gl_ClipVertexIn[0];
     gl_Position = newPositionIn[0];
     EmitVertex(); 
+    gl_ClipVertex = gl_ClipVertexIn[2];
     gl_Position = newPositionIn[2];
     EmitVertex(); 
+    gl_ClipVertex = gl_ClipVertexIn[3];
     gl_Position = newPositionIn[3];
     EmitVertex(); 
     EndPrimitive();
@@ -43,10 +46,13 @@ void main()
     d2 = gl_PositionIn[1] - gl_PositionIn[0];
     triangleNormal = cross(d1.xyz,d2.xyz);
     gl_FrontColor =volumeColor[1];
+    gl_ClipVertex = gl_ClipVertexIn[0];
     gl_Position = newPositionIn[0]; 
     EmitVertex(); 
+    gl_ClipVertex = gl_ClipVertexIn[1];
     gl_Position = newPositionIn[1];
     EmitVertex(); 
+    gl_ClipVertex = gl_ClipVertexIn[2];
     gl_Position = newPositionIn[2];
     EmitVertex(); 
     EndPrimitive();
@@ -56,10 +62,13 @@ void main()
     d2 = gl_PositionIn[3] - gl_PositionIn[0];
     triangleNormal = cross(d1.xyz,d2.xyz);
     gl_FrontColor =volumeColor[2];
+    gl_ClipVertex = gl_ClipVertexIn[0];
     gl_Position = newPositionIn[0]; 
     EmitVertex(); 
+    gl_ClipVertex = gl_ClipVertexIn[1];
     gl_Position = newPositionIn[1];
     EmitVertex(); 
+    gl_ClipVertex = gl_ClipVertexIn[3];
     gl_Position = newPositionIn[3];
     EmitVertex(); 
     EndPrimitive();
@@ -69,10 +78,13 @@ void main()
     d2 = gl_PositionIn[3] - gl_PositionIn[1];
     triangleNormal = cross(d1.xyz,d2.xyz);
     gl_FrontColor =volumeColor[3];;
+    gl_ClipVertex = gl_ClipVertexIn[1];
     gl_Position = newPositionIn[1]; 
     EmitVertex(); 
+    gl_ClipVertex = gl_ClipVertexIn[2];
     gl_Position = newPositionIn[2];
     EmitVertex(); 
+    gl_ClipVertex = gl_ClipVertexIn[3];
     gl_Position = newPositionIn[3];
     EmitVertex(); 
     EndPrimitive();
