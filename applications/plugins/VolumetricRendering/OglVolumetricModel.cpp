@@ -158,6 +158,10 @@ void OglVolumetricModel::init()
     }
 
     VisualModel::init();
+
+    if (b_useTopology)
+        computeMeshFromTopology();
+
     updateVisual();
 
 }
@@ -208,6 +212,17 @@ void OglVolumetricModel::initVisual()
         m_vertexColors->setID("a_vertexColor");
         m_vertexColors->setIndexShader(0);
     }
+    sofa::defaulttype::ResizableExtVector<defaulttype::Vec4f>& vertexColors = *(m_vertexColors->beginEdit());
+    unsigned int nbPositions = m_positions.getValue().size();
+    if ((vertexColors.size() != nbPositions))
+    {
+        const defaulttype::Vec4f& defaultColor = d_defaultColor.getValue();
+        vertexColors.clear();
+        for (unsigned int i = 0; i < nbPositions; i++)
+        {
+            vertexColors.push_back(defaultColor);
+        }
+    }
 
     getContext()->addObject(m_vertexColors);
     m_vertexColors->init();
@@ -220,9 +235,9 @@ void OglVolumetricModel::updateVisual()
 {
     if (b_modified || d_tetrahedra.isDirty() || d_hexahedra.isDirty() || m_positions.isDirty())
     {
-        if(b_useTopology)
-            computeMeshFromTopology();
-        else
+        //if(b_useTopology)
+        //    computeMeshFromTopology();
+        //else
         {
             d_tetrahedra.updateIfDirty();
             d_hexahedra.updateIfDirty();
@@ -230,87 +245,70 @@ void OglVolumetricModel::updateVisual()
         }
 
         splitHexahedra();
-        computeBarycenters();
-        updateVertexBuffer();
         b_modified = false;
     }
-    
-    if (m_vertexColors)
-    {
-        sofa::defaulttype::ResizableExtVector<defaulttype::Vec4f>& vertexColors = *(m_vertexColors->beginEdit());
-        unsigned int nbPositions = m_positions.getValue().size();
-        if ((vertexColors.size() != nbPositions) )
-        {
-            const defaulttype::Vec4f& defaultColor = d_defaultColor.getValue();
-            vertexColors.clear();
-            for (unsigned int i = 0; i < nbPositions; i++)
-            {
-                vertexColors.push_back(defaultColor);
-            }
-        }
 
-    }
+
+    computeBarycenters();
+    updateVertexBuffer();
+    
 }
 
 void OglVolumetricModel::computeMeshFromTopology()
 {
     using sofa::core::behavior::BaseMechanicalState;
 
-    if (b_useTopology)
+    // update m_positions
+    if (m_topology->hasPos())
     {
-        // update m_positions
-        if (m_topology->hasPos())
+        sout << "OglVolumetricModel: copying " << m_topology->getNbPoints() << "points from topology." << sendl;
+        helper::WriteAccessor<  Data<defaulttype::ResizableExtVector<Coord> > > position = m_positions;
+        position.resize(m_topology->getNbPoints());
+        for (unsigned int i = 0; i<position.size(); i++) 
         {
-            sout << "OglVolumetricModel: copying " << m_topology->getNbPoints() << "points from topology." << sendl;
-            helper::WriteAccessor<  Data<defaulttype::ResizableExtVector<Coord> > > position = m_positions;
-            position.resize(m_topology->getNbPoints());
-            for (unsigned int i = 0; i<position.size(); i++) 
-            {
-                position[i][0] = (Real)m_topology->getPX(i);
-                position[i][1] = (Real)m_topology->getPY(i);
-                position[i][2] = (Real)m_topology->getPZ(i);
-            }
+            position[i][0] = (Real)m_topology->getPX(i);
+            position[i][1] = (Real)m_topology->getPY(i);
+            position[i][2] = (Real)m_topology->getPZ(i);
         }
-        else if (BaseMechanicalState* mstate = dynamic_cast< BaseMechanicalState* >(m_topology->getContext()->getMechanicalState()))
-        {
-            sout << "OglVolumetricModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
-            helper::WriteAccessor< Data<defaulttype::ResizableExtVector<Coord> > > position = m_positions;
-            position.resize(mstate->getSize());
-            for (unsigned int i = 0; i<position.size(); i++)
-            {
-                position[i][0] = (Real)mstate->getPX(i);
-                position[i][1] = (Real)mstate->getPY(i);
-                position[i][2] = (Real)mstate->getPZ(i);
-            }
-        }
-        else
-        {
-            serr << "OglVolumetricModel: can not update positions!" << sendl;
-        }
+    }
+    else
         
-        // update Tetrahedrons
-        const SeqTetrahedra& inputTetrahedra = m_topology->getTetrahedra();
-        sout << "OglVolumetricModel: copying " << inputTetrahedra.size() << " tetrahedra from topology." << sendl;
-        helper::WriteAccessor< Data< defaulttype::ResizableExtVector<Tetrahedron> > > tetrahedra = d_tetrahedra;
-        tetrahedra.clear();
-        tetrahedra.resize(inputTetrahedra.size());
-        for (unsigned int i = 0; i<inputTetrahedra.size(); i++) {
-            tetrahedra[i] = inputTetrahedra[i];
+    if (BaseMechanicalState* mstate = dynamic_cast< BaseMechanicalState* >(m_topology->getContext()->getMechanicalState()))
+    {
+        sout << "OglVolumetricModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
+        helper::WriteAccessor< Data<defaulttype::ResizableExtVector<Coord> > > position = m_positions;
+        position.resize(mstate->getSize());
+        for (unsigned int i = 0; i<position.size(); i++)
+        {
+            position[i][0] = (Real)mstate->getPX(i);
+            position[i][1] = (Real)mstate->getPY(i);
+            position[i][2] = (Real)mstate->getPZ(i);
         }
-        
-        // update Hexahedrons
-        const SeqHexahedra& inputHexahedra = m_topology->getHexahedra();
-        sout << "OglVolumetricModel: copying " << inputHexahedra.size() << " hexahedra from topology." << sendl;
-        helper::WriteAccessor< Data< defaulttype::ResizableExtVector<Hexahedron> > > hexahedra = d_hexahedra;
-        hexahedra.clear();
-        hexahedra.resize(inputHexahedra.size());
-        for (unsigned int i = 0; i < inputHexahedra.size(); i++) {
-            hexahedra[i] = inputHexahedra[i];
-        }
-                
+    }
+    else
+    {
+        serr << "OglVolumetricModel: can not update positions!" << sendl;
     }
 
-    //else we assumed all data are correctly set
+    // update Tetrahedrons
+    const SeqTetrahedra& inputTetrahedra = m_topology->getTetrahedra();
+    sout << "OglVolumetricModel: copying " << inputTetrahedra.size() << " tetrahedra from topology." << sendl;
+    helper::WriteAccessor< Data< defaulttype::ResizableExtVector<Tetrahedron> > > tetrahedra = d_tetrahedra;
+    tetrahedra.clear();
+    tetrahedra.resize(inputTetrahedra.size());
+    for (unsigned int i = 0; i<inputTetrahedra.size(); i++) {
+        tetrahedra[i] = inputTetrahedra[i];
+    }
+        
+    // update Hexahedrons
+    const SeqHexahedra& inputHexahedra = m_topology->getHexahedra();
+    sout << "OglVolumetricModel: copying " << inputHexahedra.size() << " hexahedra from topology." << sendl;
+    helper::WriteAccessor< Data< defaulttype::ResizableExtVector<Hexahedron> > > hexahedra = d_hexahedra;
+    hexahedra.clear();
+    hexahedra.resize(inputHexahedra.size());
+    for (unsigned int i = 0; i < inputHexahedra.size(); i++) {
+        hexahedra[i] = inputHexahedra[i];
+    }
 }
 
 void OglVolumetricModel::splitHexahedra()
@@ -506,7 +504,7 @@ void OglVolumetricModel::computeBBox(const core::ExecParams * params, bool /* on
 void OglVolumetricModel::updateVertexBuffer()
 {
     const defaulttype::ResizableExtVector<Coord>& positions = m_positions.getValue();
-
+    std::cout << positions[0] << std::endl;
     unsigned positionsBufferSize;
 
     positionsBufferSize = (positions.size()*sizeof(positions[0]));
