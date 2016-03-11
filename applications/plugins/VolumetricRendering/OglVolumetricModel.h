@@ -65,6 +65,7 @@ public:
     Data<float> d_volumeScale;
     Data<bool> d_depthTest;
     Data<bool> d_blending;
+    Data<defaulttype::Vec4f> d_defaultColor;
 
     virtual ~OglVolumetricModel();
 
@@ -87,9 +88,12 @@ private:
     void splitHexahedra();
     void computeBarycenters();
 
-    //Tables
+    //Uniforms
     sofa::component::visualmodel::OglFloatVector4Variable::SPtr m_mappingTableValues;
     sofa::component::visualmodel::OglFloatVector4Variable::SPtr m_runSelectTableValues;
+
+    //Attributes
+    sofa::component::visualmodel::OglFloat4Attribute::SPtr m_vertexColors;
 
     sofa::defaulttype::ResizableExtVector<Tetrahedron> m_hexaToTetrahedra;
 
