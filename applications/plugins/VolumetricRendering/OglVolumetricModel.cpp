@@ -51,6 +51,7 @@ int OglVolumetricModelClass = sofa::core::RegisterObject("Volumetric model for O
 OglVolumetricModel::OglVolumetricModel()
     : b_modified(false)
     , b_useTopology(false)
+    , b_tboCreated(false)
     , d_volumeScale(initData(&d_volumeScale, (float)1.0, "volumeScale", "Scale for each volumetric primitive"))
     , d_depthTest(initData(&d_depthTest, (bool)false, "depthTest", "Set Depth Test"))
     , d_blending(initData(&d_blending, (bool)false, "blending", "Set Blending"))
@@ -294,7 +295,7 @@ void OglVolumetricModel::computeBarycenters()
     helper::ReadAccessor< Data< defaulttype::ResizableExtVector<Tetrahedron> > > tetrahedra = d_tetrahedra;
     helper::ReadAccessor< Data< defaulttype::ResizableExtVector<Hexahedron> > > hexahedra = d_hexahedra;
     const defaulttype::ResizableExtVector<Coord>& positions = m_positions.getValue();
-
+    
     m_tetraBarycenters.clear();
     for (unsigned int i = 0; i < tetrahedra.size(); i++)
     {
@@ -308,23 +309,38 @@ void OglVolumetricModel::computeBarycenters()
     {
         const Hexahedron& h = hexahedra[i];
         Coord barycenter = (positions[h[0]] + positions[h[1]] + positions[h[2]] + positions[h[3]] +
-                            positions[h[4]] + positions[h[5]] + positions[h[6]] + positions[h[7]])*0.125;
+            positions[h[4]] + positions[h[5]] + positions[h[6]] + positions[h[7]])*0.125;
         m_hexaBarycenters.push_back(barycenter);
         m_hexaBarycenters.push_back(barycenter);
         m_hexaBarycenters.push_back(barycenter);
         m_hexaBarycenters.push_back(barycenter);
         m_hexaBarycenters.push_back(barycenter);
     }
-
-
-    //Texture buffer object
+    unsigned int tetraBarycentersBufferSize = m_tetraBarycenters.size() * 3 * sizeof(GLfloat);
     unsigned int hexaBarycentersBufferSize = m_hexaBarycenters.size() * 3 * sizeof(GLfloat);
-    glGenBuffers(1, &m_tbo);
-    glBindBuffer(GL_TEXTURE_BUFFER, m_tbo);
-    glBufferData(GL_TEXTURE_BUFFER, hexaBarycentersBufferSize, &(m_hexaBarycenters[0]), GL_DYNAMIC_COPY);
+    if (!b_tboCreated)
+    {
+        //Texture buffer objects
 
-    glGenTextures(1, &m_tbo_tex);
+        glGenBuffers(1, &m_tetraBarycentersTbo);
+        glBindBuffer(GL_TEXTURE_BUFFER, m_tetraBarycentersTbo);
+        glBufferData(GL_TEXTURE_BUFFER, tetraBarycentersBufferSize, &(m_tetraBarycenters[0]), GL_DYNAMIC_COPY);
+        glGenTextures(1, &m_tetraBarycentersTboTexture);
+        glBindBuffer(GL_TEXTURE_BUFFER, 0);
 
+        glGenBuffers(1, &m_hexaBarycentersTbo);
+        glBindBuffer(GL_TEXTURE_BUFFER, m_hexaBarycentersTbo);
+        glBufferData(GL_TEXTURE_BUFFER, hexaBarycentersBufferSize, &(m_hexaBarycenters[0]), GL_DYNAMIC_COPY);
+        glGenTextures(1, &m_hexaBarycentersTboTexture);
+        glBindBuffer(GL_TEXTURE_BUFFER, 0);
+
+        b_tboCreated = true;
+    }
+
+    glBindBuffer(GL_TEXTURE_BUFFER, m_tetraBarycentersTbo);
+    glBufferSubData(GL_TEXTURE_BUFFER, 0, tetraBarycentersBufferSize, &(m_tetraBarycenters[0]));
+    glBindBuffer(GL_TEXTURE_BUFFER, m_hexaBarycentersTbo);
+    glBufferSubData(GL_TEXTURE_BUFFER, 0, hexaBarycentersBufferSize, &(m_hexaBarycenters[0]));
     glBindBuffer(GL_TEXTURE_BUFFER, 0);
 }
 
@@ -376,8 +392,7 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
     glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
     glBindBufferARB(GL_ARRAY_BUFFER, 0);
 
-    glBindTexture(GL_TEXTURE_BUFFER, m_tbo_tex);
-    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, m_tbo);
+
 
     glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -385,15 +400,21 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
     const defaulttype::ResizableExtVector<Tetrahedron>& tetrahedra = d_tetrahedra.getValue();
     const defaulttype::ResizableExtVector<Hexahedron>& hexahedra = d_hexahedra.getValue();
 
-    //if(tetrahedra.size() > 0)
-    //    glDrawElements(GL_LINES_ADJACENCY_EXT, tetrahedra.size() * 4, GL_UNSIGNED_INT, tetrahedra.begin());
+    if (tetrahedra.size() > 0)
+    {
+        glBindTexture(GL_TEXTURE_BUFFER, m_tetraBarycentersTboTexture);
+        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, m_tetraBarycentersTbo);
+        glDrawElements(GL_LINES_ADJACENCY_EXT, tetrahedra.size() * 4, GL_UNSIGNED_INT, tetrahedra.begin());
+        glBindTexture(GL_TEXTURE_BUFFER, 0);
+    }
     if(m_hexaToTetrahedra.size() > 0)
+    {
+        glBindTexture(GL_TEXTURE_BUFFER, m_hexaBarycentersTboTexture);
+        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, m_hexaBarycentersTbo);
         glDrawElements(GL_LINES_ADJACENCY_EXT, m_hexaToTetrahedra.size() * 4, GL_UNSIGNED_INT, m_hexaToTetrahedra.begin());
-  
-    //if(hexahedra.size())
-    //    glDrawElements(GL_TRIANGLE_STRIP_ADJACENCY, hexahedra.size() * 8, GL_UNSIGNED_INT, hexahedra.begin());
+        glBindTexture(GL_TEXTURE_BUFFER, 0);
+    }
 
-    glBindTexture(GL_TEXTURE_BUFFER, 0);
 
 #else
     serr << "Your OpenGL driver does not support GL_LINES_ADJACENCY_EXT" << sendl;

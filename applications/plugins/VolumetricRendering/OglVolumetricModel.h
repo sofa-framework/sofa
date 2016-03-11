@@ -79,7 +79,9 @@ private:
     bool b_useTopology;
 
     GLuint m_vbo;
-    GLuint m_tbo, m_tbo_tex;
+    bool b_tboCreated;
+    GLuint m_tetraBarycentersTbo, m_tetraBarycentersTboTexture;
+    GLuint m_hexaBarycentersTbo, m_hexaBarycentersTboTexture;
 
     void updateVertexBuffer();
     void splitHexahedra();
