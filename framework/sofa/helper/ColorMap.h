@@ -22,42 +22,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_COLORMAP_H
-#define SOFA_COMPONENT_VISUALMODEL_COLORMAP_H
-#include "config.h"
+#ifndef SOFA_HELPER_COLORMAP_H
+#define SOFA_HELPER_COLORMAP_H
 
-#ifndef SOFA_NO_OPENGL
+#include <sofa/helper/helper.h>
 
-#include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/Vec.h>
 #include <string>
+//#include <sofa/helper/OptionsGroup.h>
 
 
 namespace sofa
 {
 
-namespace component
+namespace helper
 {
-
-namespace visualmodel
-{
-
-class SOFA_OPENGL_VISUAL_API ColorMap : public sofa::core::visual::VisualModel
+    
+class SOFA_HELPER_API ColorMap 
 {
 public:
-    SOFA_CLASS(ColorMap, sofa::core::visual::VisualModel);
 
     typedef defaulttype::Vec3f Color3;  // Color tripplet
     typedef defaulttype::Vec4f Color;   // ... with alpha value
     typedef sofa::helper::vector<Color> VecColor;
     
-protected:
-    ColorMap();
+    ColorMap(unsigned int paletteSize = 256, const std::string& colorScheme = "HSV");
     virtual ~ColorMap();
 
 public:
@@ -91,31 +82,19 @@ public:
         Real vscale;
     };
 
-    Data<unsigned int> f_paletteSize;
-    Data<sofa::helper::OptionsGroup> f_colorScheme;
-
-    Data<bool> f_showLegend;
-    Data<defaulttype::Vec2f> f_legendOffset;
-    Data<std::string> f_legendTitle;
-    Data<float> d_min, d_max;
-    Data<float> d_legendRangeScale; ///< to convert unit
-
+    unsigned int m_paletteSize;
+    std::string m_colorScheme;
+    
     VecColor entries;
-    GLuint texture;
-
-    void initOld(const std::string &data);
-
+    
     void init();
     void reinit();
+    
+    unsigned int getPaletteSize() { return m_paletteSize;  }
+    void setPaletteSize(unsigned int paletteSize) { m_paletteSize = paletteSize; }
 
-    //void initVisual() { initTextures(); }
-    //void clearVisual() { }
-    //void initTextures() {}
-    void drawVisual(const core::visual::VisualParams* vparams);
-    //void drawTransparent(const VisualParams* /*vparams*/)
-    //void updateVisual();
-
-
+    const std::string& getColorScheme() { return m_colorScheme;  }
+    void setColorScheme(const std::string& colorScheme) { m_colorScheme = colorScheme; }
 
     unsigned int getNbColors() { return (unsigned int) entries.size(); }
     Color getColor(unsigned int i) {
@@ -139,30 +118,21 @@ public:
 
     inline friend std::ostream& operator << (std::ostream& out, const ColorMap& m )
     {
-        if (m.getName().empty()) out << "\"\"";
-        else out << m.getName();
-        out << " ";
         out << m.entries;
         return out;
     }
 
     inline friend std::istream& operator >> (std::istream& in, ColorMap& m )
     {
-        std::string name;
-        in >> name;
-        if (name == "\"\"") m.setName("");
-        else m.setName(name);
         in >> m.entries;
         return in;
     }
 };
 
-} // namespace visualmodel
 
-} // namespace component
+} // namespace helper
 
 } // namespace sofa
 
-#endif /* SOFA_NO_OPENGL */
 
 #endif
