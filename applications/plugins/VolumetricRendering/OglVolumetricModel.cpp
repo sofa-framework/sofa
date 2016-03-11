@@ -434,14 +434,13 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
 
     glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
     glBindBufferARB(GL_ARRAY_BUFFER, 0);
-
-
-
+    
     glEnableClientState(GL_VERTEX_ARRAY);
 
     //helper::ReadAccessor< Data< defaulttype::ResizableExtVector<Tetrahedron> > > tetrahedra = d_tetrahedra;
     const defaulttype::ResizableExtVector<Tetrahedron>& tetrahedra = d_tetrahedra.getValue();
     const defaulttype::ResizableExtVector<Hexahedron>& hexahedra = d_hexahedra.getValue();
+    //glEnable(GL_CLIP_DISTANCE0);
 
     if (tetrahedra.size() > 0)
     {
@@ -457,7 +456,7 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
         glDrawElements(GL_LINES_ADJACENCY_EXT, m_hexaToTetrahedra.size() * 4, GL_UNSIGNED_INT, m_hexaToTetrahedra.begin());
         glBindTexture(GL_TEXTURE_BUFFER, 0);
     }
-
+    //glDisable(GL_CLIP_DISTANCE0);
 
 #else
     serr << "Your OpenGL driver does not support GL_LINES_ADJACENCY_EXT" << sendl;
