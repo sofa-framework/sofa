@@ -7,9 +7,10 @@
  	<include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
 
 	<Node>
- 		<OglShader geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" vertFilename="share/shaders/tetra.vert" geoFilename="share/shaders/tetra_triangles.geo" fragFilename="share/shaders/tetra.frag" />
+ 		<OglShader geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" 
+ 			vertFilename="share/shaders/tetra.vert" geoFilename="share/shaders/tetra_triangles.geo" fragFilename="share/shaders/tetra.frag" />
  		<OglFloat4Variable id="vertexColor" value="1 1 0 1"/>
- 		<OglFloatVariable id="tetraScale" value="0.8"/>
+ 		<OglFloatVariable id="volumeScale" value="0.9"/>
  		<OglFloatVariable id="u_enableLight" value="2"/>
 		<OglVolumetricModel printLog="false"/>
 	</Node>
