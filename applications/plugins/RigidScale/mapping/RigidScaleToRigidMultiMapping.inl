@@ -21,7 +21,7 @@ template <class I1, class I2, class O>
 RigidScaleToRigidMultiMapping
 <I1,I2,O>::RigidScaleToRigidMultiMapping():
 Inherit()
-, index(initData(&index, vector<unsigned>(), "index", "list of couples (index in rigid DOF + index in scale with the type Vec3d)"))
+, index(initData(&index, helper::vector<unsigned>(), "index", "list of couples (index in rigid DOF + index in scale with the type Vec3d)"))
 , automaticInit(initData(&automaticInit, false, "autoInit", "Init the scale and affine mechanical state, and the index data."))
 , useGeometricStiffness(initData(&useGeometricStiffness, false, "useGeometricStiffness", "To specify if the geometric stiffness is used or not."))
 , _Js(2)
@@ -76,7 +76,7 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::apply(const core::MechanicalParams*
 {
 	// Index size
 	unsigned int ind0, ind1, ind2;
-	const vector<unsigned>& index_const = this->index.getValue();
+    const helper::vector<unsigned>& index_const = this->index.getValue();
 	unsigned int indexSize = (unsigned int)index_const.size() / 3;
 	
 	// Access to input position
@@ -226,7 +226,7 @@ void RigidScaleToRigidMultiMapping<I1, I2, O>::setup()
 	if ((this->stateIn1 && this->stateIn2) && this->stateOut)
 	{
 		// Get the inputs
-		const vector<unsigned>& index_const = this->index.getValue();
+        const helper::vector<unsigned>& index_const = this->index.getValue();
 		const InVecCoord1& x1_const = this->stateIn1->read(sofa::core::ConstVecCoordId::position())->getValue();
 		const InVecCoord2& x2_const = this->stateIn2->read(sofa::core::ConstVecCoordId::position())->getValue();
 		const OutVecCoord& xout_const = this->stateOut->read(sofa::core::ConstVecCoordId::position())->getValue();
@@ -308,7 +308,7 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::updateJ1(SparseJMatrixEigen1& _J, c
 
     // index
 	unsigned int ind0, ind1, ind2;
-	const vector<unsigned>& index_const = this->index.getValue();
+    const helper::vector<unsigned>& index_const = this->index.getValue();
 	unsigned int indexSize = (unsigned int)index_const.size() / 3;
     // Computation of the new jacobian matrix
 	for (unsigned int i = 0; i < indexSize; ++i)
@@ -340,7 +340,7 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::updateJ2(SparseJMatrixEigen2& _J, c
 
 	// index size
 	unsigned int ind0, ind1, ind2;
-	const vector<unsigned>& index_const = this->index.getValue();
+    const helper::vector<unsigned>& index_const = this->index.getValue();
 	unsigned int indexSize = (unsigned int)index_const.size() / 3;
 	for (unsigned int i = 0; i < indexSize; ++i)
 	{
@@ -377,10 +377,10 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::updateK1(SparseKMatrixEigen1& _K, c
 
     // index
     unsigned int ind0, ind1, ind2;
-    const vector<unsigned>& index_const = this->index.getValue();
+    const helper::vector<unsigned>& index_const = this->index.getValue();
     unsigned int indexSize = (unsigned int)index_const.size() / 3;
-    std::map< unsigned int, vector<unsigned int> > in1_out;
-    std::map< unsigned int, vector<unsigned int> >::iterator it;
+    std::map< unsigned int, helper::vector<unsigned int> > in1_out;
+    std::map< unsigned int, helper::vector<unsigned int> >::iterator it;
 
     // index map
     for (unsigned int i = 0; i < indexSize; ++i)
