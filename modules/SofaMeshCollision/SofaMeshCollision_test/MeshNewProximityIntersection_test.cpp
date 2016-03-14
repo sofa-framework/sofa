@@ -1,7 +1,7 @@
 
 #include <gtest/gtest.h>
 #include <SofaTest/Sofa_test.h>
-#include <SofaMeshCollision/MeshNewProximityIntersection.h>
+#include <SofaMeshCollision/MeshNewProximityIntersection.inl>
 
 #include <iostream>
 #include <sstream>
@@ -15,8 +15,6 @@ namespace sofa{
         typedef sofa::defaulttype::Vector3 Vec3;
         typedef sofa::defaulttype::Vector2 Vec2;
         typedef sofa::component::collision::MeshNewProximityIntersection ProximityIntersection;
-
-        ProximityIntersection* intersection;
 
         MeshNewProximityIntersectionTest(){
         }
