@@ -15,7 +15,7 @@
 	 	 />
 
  		<Node>
-			<!-- <ClipPlane id="0" position="0 0 0" normal="0 0 1" /> -->
+			<ClipPlane id="0" position="0 0 0" normal="0 0 1" />
 	 		<OglShader geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" 
 	 			vertFilename="share/shaders/tetra.vert" geoFilename="share/shaders/tetra_triangles.geo" fragFilename="share/shaders/tetra.frag" />
 	 		<OglFloatVariable id="volumeScale" value="0.9"/>
