@@ -60,6 +60,7 @@ namespace collision
 
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
+using helper::vector;
 
 TopologicalChangeManager::TopologicalChangeManager()
 {

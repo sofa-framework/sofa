@@ -64,6 +64,7 @@ namespace visualmodel
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 using namespace sofa::core::loader;
+using helper::vector;
 
 void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 {

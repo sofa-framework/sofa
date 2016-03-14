@@ -315,9 +315,9 @@ public:
 
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
-    typedef vector<Coord> VecCoord;
-    typedef vector<Deriv> VecDeriv;
-    typedef vector<Real> VecReal;
+    typedef helper::vector<Coord> VecCoord;
+    typedef helper::vector<Deriv> VecDeriv;
+    typedef helper::vector<Real> VecReal;
 
     template<typename T>
     static void set(Coord& c, T x, T, T)
