@@ -1094,9 +1094,12 @@ static Mat<L,L,Real> tensorProduct(const Vec<L,Real> a, const Vec<L,Real> b )
     typedef Mat<L,L,Real> Mat;
     Mat m;
 
-    for( typename Mat::size_type i=0; i<L ; ++i )
-        for( typename Mat::size_type j=0; j<L ; ++j )
-            m[i][j] = a[i]*b[j];
+    for( typename Mat::size_type i=0 ; i<L ; ++i )
+    {
+        m[i][i] = a[i]*b[i];
+        for( typename Mat::size_type j=i+1 ; j<L ; ++j )
+            m[i][j] = m[j][i] = a[i]*b[j];
+    }
 
     return m;
 }
