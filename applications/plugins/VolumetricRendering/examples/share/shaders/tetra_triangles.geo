@@ -1,17 +1,29 @@
-#version 130
+#version 120
 #extension GL_EXT_geometry_shader4: enable
 
-uniform samplerBuffer u_barycenter_tex;
+//GLSL >= 130
+//uniform samplerBuffer u_barycenter_tex;
+uniform sampler2D u_barycenter_tex;
 
 uniform float volumeScale;
-in vec4 volumeColor[4]; 
-in mat4 matproj[4]; 
-out vec3 triangleNormal;
+
+//GLSL >= 130
+//in vec4 volumeColor[4]; 
+//in mat4 matproj[4]; 
+//out vec3 triangleNormal;
+
+varying in vec4 volumeColor[4]; 
+varying in mat4 matproj[4]; 
+varying out vec3 triangleNormal;
 
 void main() 
 { 
     //vec4 barycenter = (gl_PositionIn[0]+gl_PositionIn[1]+gl_PositionIn[2]+gl_PositionIn[3])*0.25;
-    vec3 texBarycenter = texelFetch(u_barycenter_tex, gl_PrimitiveIDIn).xyz;
+
+    //GLSL >= 130
+    //vec3 texBarycenter = texelFetch(u_barycenter_tex, gl_PrimitiveIDIn).xyz;
+    vec3 texBarycenter = texture2D(u_barycenter_tex, vec2(gl_PrimitiveIDIn,0)).xyz;
+
     vec4 barycenter = matproj[0] * vec4(texBarycenter, 1.0);
 
     float currentVolumeScale = 1.0;
