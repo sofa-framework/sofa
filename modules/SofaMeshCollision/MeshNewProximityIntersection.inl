@@ -262,14 +262,14 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
                 alpha = 0.0;
                 beta = 0.0;
             }
-            else if (pAB < 0.999999 && beta < 0.000001)
+            else if (pAB < 0.999999 && beta < 0.000001 && pAB >= 0.000001)
             {
                 // closest point is on AB
                 if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
                 alpha = pAB;
                 beta = 0.0;
             }
-            else if (pAC < 0.999999 && alpha < 0.000001)
+            else if (pAC < 0.999999 && alpha < 0.000001 && pAC >= 0.000001)
             {
                 // closest point is on AC
                 if (!(flags&TriangleModel::FLAG_E31)) return 0; // this edge is not considered
