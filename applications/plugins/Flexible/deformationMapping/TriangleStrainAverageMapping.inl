@@ -65,7 +65,7 @@ void TriangleStrainAverageMapping<TIn, TOut>::init()
     triangleContainer = this->core::objectmodel::BaseObject::searchUp<topology::TriangleSetTopologyContainer>();
     if( !triangleContainer ) serr<<"No TriangleSetTopologyContainer found ! "<<sendl;
 
-    SeqTriangles triangles = triangleContainer->getTriangles();
+    const SeqTriangles& triangles = triangleContainer->getTriangles();
 
     typedef std::map< unsigned, std::set<unsigned> > MapNodeToTriangles;
     MapNodeToTriangles nodeToTriangles;
