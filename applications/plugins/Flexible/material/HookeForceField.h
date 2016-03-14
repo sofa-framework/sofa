@@ -28,8 +28,6 @@
 #include <Flexible/config.h>
 #include "BaseMaterialForceField.h"
 #include "HookeMaterialBlock.inl"
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
 
 
 namespace sofa

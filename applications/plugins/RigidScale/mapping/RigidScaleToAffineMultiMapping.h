@@ -158,7 +158,7 @@ public:
 
     const sofa::defaulttype::BaseMatrix* getK();		                   
 
-	Data< vector<unsigned> > index;  ///< Two indices per child: the index of the rigid, and the index of scale
+    Data< helper::vector<unsigned> > index;  ///< Two indices per child: the index of the rigid, and the index of scale
 	Data< bool > automaticInit; ///< Automatic setup based only on the rigid position. The index data is init, the scale mechanical state is reinit and the affine mechanical state is reinit.
     Data< bool > useGeometricStiffness; ///< To indication if we use the geometric stiffness
 
@@ -187,7 +187,7 @@ protected:
     SparseJMatrixEigen2 _J2;
     jacobianMatrices _Js;
 
-    vector<SparseJMatrixEigen1*> _DJ1;
+    helper::vector<SparseJMatrixEigen1*> _DJ1;
 
     // In/Out mechanical object
     InType1* stateIn1;
