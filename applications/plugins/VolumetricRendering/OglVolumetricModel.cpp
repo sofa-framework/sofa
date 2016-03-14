@@ -33,6 +33,8 @@
 #include <sofa/helper/gl/GLSLShader.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <sofa/defaulttype/BoundingBox.h>
+#include <SofaOpenglVisual/OglAttribute.inl>
+
 namespace sofa
 {
 namespace component

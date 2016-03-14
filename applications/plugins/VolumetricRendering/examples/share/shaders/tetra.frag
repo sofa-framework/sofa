@@ -1,6 +1,8 @@
 uniform float u_enableLight;
 
-in vec3 triangleNormal;
+//GLSL >= 130
+//in vec3 triangleNormal;
+varying vec3 triangleNormal;
 
 void main()
 {
