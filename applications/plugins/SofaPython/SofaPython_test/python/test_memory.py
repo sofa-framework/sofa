@@ -29,7 +29,7 @@ class AllocationTestController(Sofa.PythonScriptController):
     def remove(self):
         # removing all components, the destructor should be called, decrementing the counter
         for o in self.node.getObjects():
-            node.removeObject(o)
+            self.node.removeObject(o)
             # del o # even forcing the python object deleting does not call the component destructor...
 
     def addSub(self):
