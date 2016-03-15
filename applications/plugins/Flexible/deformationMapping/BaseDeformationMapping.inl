@@ -282,7 +282,11 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
         }
     }
 
-    if(_shapeFunction) // if we have a shape function, we use it to compute needed data (index, weights, etc.)
+    if(0 != f_index.getValue().size() && pos0.size() == f_index.getValue().size() && f_w.getValue().size() == f_index.getValue().size()) // we already have the needed data, we directly use them
+    {
+        if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : using filled data" <<std::endl;
+    }
+    else if(_shapeFunction) // if we do not have the needed data, and have a shape function, we use it to compute needed data (index, weights, etc.)
     {
         if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : found shape function "<<_shapeFunction->getName()<<std::endl;
         helper::vector<mCoord> mpos0;
@@ -293,10 +297,6 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
         if(this->f_cell.getValue().size()==size) _shapeFunction->computeShapeFunction(mpos0,*this->f_index.beginWriteOnly(),*this->f_w.beginWriteOnly(),*this->f_dw.beginWriteOnly(),*this->f_ddw.beginWriteOnly(),this->f_cell.getValue());
         else _shapeFunction->computeShapeFunction(mpos0,*this->f_index.beginWriteOnly(),*this->f_w.beginWriteOnly(),*this->f_dw.beginWriteOnly(),*this->f_ddw.beginWriteOnly());
         this->f_index.endEdit();      this->f_w.endEdit();        this->f_dw.endEdit();        this->f_ddw.endEdit();
-    }
-    else if(0 != f_index.getValue().size() && pos0.size() == f_index.getValue().size() && f_w.getValue().size() == f_index.getValue().size()) // if we do not have a shape function but we already have the needed data, we directly use them
-    {
-        if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : using filled data" <<std::endl;
     }
     else // if the prerequisites are not fulfilled we print an error
     {
