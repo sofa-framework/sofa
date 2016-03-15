@@ -72,6 +72,7 @@ struct MemoryTest : public ::testing::Test
 
 
         pythonScriptFunctionADD(NULL, NULL);
+        EXPECT_EQ( s_nbAlloc, 10u );
         simulation::getSimulation()->unload(root);
         EXPECT_EQ( s_nbAlloc, 0u );
     }
