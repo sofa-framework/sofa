@@ -24,6 +24,8 @@ namespace linearsolver {
 /// schur = 0
 /// KKT system solve
 ///
+/// @author Matthieu Nesme
+///
 template<class LinearSolver, bool symmetric=false>
 class EigenSparseSolver : public KKTSolver {
   public:

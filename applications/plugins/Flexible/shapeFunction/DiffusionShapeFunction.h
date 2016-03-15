@@ -64,6 +64,9 @@ namespace shapefunction
 
 /**
 Shape functions computed using heat diffusion in images
+
+@author Matthieu Nesme
+
   */
 
 

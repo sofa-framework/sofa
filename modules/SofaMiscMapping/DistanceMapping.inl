@@ -158,38 +158,32 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
         // insert in increasing column order
         if( links[i][1]<links[i][0])
         {
-            for(unsigned j=0; j<Nout; j++)
+            jacobian.beginRow(i);
+            for(unsigned k=0; k<In::spatial_dimensions; k++ )
             {
-                jacobian.beginRow(i*Nout+j);
-                for(unsigned k=0; k<In::spatial_dimensions; k++ )
-                {
-                    jacobian.insertBack( i*Nout+j, links[i][1]*Nin+k, gap[k] );
-                }
-                for(unsigned k=0; k<In::spatial_dimensions; k++ )
-                {
-                    jacobian.insertBack( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
-                }
+                jacobian.insertBack( i, links[i][1]*Nin+k, gap[k] );
+            }
+            for(unsigned k=0; k<In::spatial_dimensions; k++ )
+            {
+                jacobian.insertBack( i, links[i][0]*Nin+k, -gap[k] );
             }
         }
         else
         {
-            for(unsigned j=0; j<Nout; j++)
+            jacobian.beginRow(i);
+            for(unsigned k=0; k<In::spatial_dimensions; k++ )
             {
-                jacobian.beginRow(i*Nout+j);
-                for(unsigned k=0; k<In::spatial_dimensions; k++ )
-                {
-                    jacobian.insertBack( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
-                }
-                for(unsigned k=0; k<In::spatial_dimensions; k++ )
-                {
-                    jacobian.insertBack( i*Nout+j, links[i][1]*Nin+k, gap[k] );
-                }
+                jacobian.insertBack( i, links[i][0]*Nin+k, -gap[k] );
+            }
+            for(unsigned k=0; k<In::spatial_dimensions; k++ )
+            {
+                jacobian.insertBack( i, links[i][1]*Nin+k, gap[k] );
             }
         }
     }
 
     jacobian.compress();
-    //      cerr<<"DistanceMapping<TIn, TOut>::apply, jacobian: "<<endl<< jacobian << endl;
+//    serr<<"apply, jacobian: "<<std::endl<< jacobian << sendl;
 
 }
 
@@ -197,14 +191,14 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
-    if( jacobian.rowSize() > 0 )
+    if( jacobian.rowSize() )
         jacobian.mult(dOut,dIn);
 }
 
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
 {
-    if( jacobian.rowSize() > 0 )
+    if( jacobian.rowSize() )
         jacobian.addMultTranspose(dIn,dOut);
 }
 
@@ -567,15 +561,12 @@ void DistanceMultiMapping<TIn, TOut>::apply(const helper::vector<OutVecCoord*>& 
         SparseMatrixEigen* J0 = static_cast<SparseMatrixEigen*>(baseMatrices[pair0[0]]);
         SparseMatrixEigen* J1 = static_cast<SparseMatrixEigen*>(baseMatrices[pair1[0]]);
 
-        for(unsigned j=0; j<Nout; j++)
+        J0->beginRow(i);
+        J1->beginRow(i);
+        for(unsigned k=0; k<In::spatial_dimensions; k++ )
         {
-            J0->beginRow(i*Nout+j);
-            J1->beginRow(i*Nout+j);
-            for(unsigned k=0; k<In::spatial_dimensions; k++ )
-            {
-                J0->insertBack( i*Nout+j, pair0[1]*Nin+k, -gap[k] );
-                J1->insertBack( i*Nout+j, pair1[1]*Nin+k,  gap[k] );
-            }
+            J0->insertBack( i, pair0[1]*Nin+k, -gap[k] );
+            J1->insertBack( i, pair1[1]*Nin+k,  gap[k] );
         }
 
     }

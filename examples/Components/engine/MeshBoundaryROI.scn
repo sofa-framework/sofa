@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
-  <RequiredPlugin pluginName="image"/>
   <Background color="1 1 1" />
   <VisualStyle displayFlags="showVisual showBehaviorModels" />
 

@@ -42,7 +42,6 @@ namespace sofa
 namespace defaulttype
 {
 
-using helper::vector;
 
 template<class TCoord, class TDeriv, class TReal = typename TCoord::value_type>
 class StdVectorTypes
@@ -51,9 +50,9 @@ public:
     typedef TCoord Coord;
     typedef TDeriv Deriv;
     typedef TReal Real;
-    typedef vector<Coord> VecCoord;
-    typedef vector<Deriv> VecDeriv;
-    typedef vector<Real> VecReal;
+    typedef helper::vector<Coord> VecCoord;
+    typedef helper::vector<Deriv> VecDeriv;
+    typedef helper::vector<Real> VecReal;
 
     enum { spatial_dimensions = Coord::spatial_dimensions };
     enum { coord_total_size = Coord::total_size };

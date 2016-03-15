@@ -13,6 +13,7 @@ namespace linearsolver {
 
 /// Solving the dynamics equation
 /// @warning with "constant" set to true, mass and stiffness cannot be added dynamically (like a mouse-spring or penalities)
+/// @author Matthieu Nesme
 template<class LinearSolver, bool symmetric=false>
 class SOFA_Compliant_API EigenSparseResponse : public Response {
 public:

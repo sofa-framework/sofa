@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 -9.81 0" dt="0.005" >
+    <VisualStyle displayFlags="showVisualModels showBehaviorModels hideCollisionModels hideBoundingCollisionModels hideMappings hideMechanicalMappings showForceFields showInteractionForceFields hideWireframe hideNormals" />
+	<RequiredPlugin name="Sensable plugin" pluginName="Sensable" />
+
+	<Gravity name="G"  gravity="0 -9.8 0" />
+	<DefaultPipeline name="pipeline"  verbose="0"  depth="6" />
+	<BruteForceDetection name="detection" />
+	<DefaultContactManager name="response"  response="FrictionContact" />
+	<LocalMinDistance name="proximity"  alarmDistance="0.3"  contactDistance="0.15"  angleCone="0" />
+	<FreeMotionAnimationLoop name="default37" />
+	<LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
+	<NewOmniDriver name="default38"  listening="1"  scale="50"  positionBase="0 1 -0.5"  permanent="1"  omniVisu="0" />
+	<Node 	name="Omni" gravity="0 -9.81 0" >
+		<MechanicalObject template="Rigid" name="DOFs"  position="1.2 1.6 -3.55 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  free_position="0 0 0 0 0 0 1"  free_velocity="0 0 0 0 0 0"  restScale="1" />
+		<MechanicalStateController template="Rigid" name="default40"  listening="1"  handleEventTriggersUpdate="1"  mainDirection="-1 0 0" />
+		<Node 	name="RefModel" gravity="0 -9.81 0" >
+			<MeshObjLoader name="loader"  filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj" />
+			<MeshTopology src="@loader" name="default42" />
+			<MechanicalObject src="@loader" template="Vec3d" name="instrumentCollisionState"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  derivX="0 0 0"  free_position="0 0 0"  free_velocity="0 0 0"  restScale="1"  translation="-1.2 -1.6 3.55"  rotation="180 0 150" />
+			<RigidMapping template="Rigid,Vec3d" name="default43" />
+		</Node>
+	</Node>
+	<Node 	name="Instrument" gravity="0 -9.81 0" >
+		<EulerImplicitSolver name="ODE solver"  rayleighStiffness="0.01"  rayleighMass="1" />
+		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-010"  threshold="1e-009" />
+		<MechanicalObject template="Rigid" name="instrumentState"  position="1.2 1.6 -3.55 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  free_position="0 0 0 0 0 0 1"  free_velocity="0 0 0 0 0 0"  restScale="1" />
+		<UniformMass template="Rigid" name="mass"  totalmass="0.05"  filename="BehaviorModels/dental_instrument.rigid" />
+		<LCPForceFeedback template="Rigid" name="default44"  listening="1"  activate="1"  forceCoef="0.005" />
+		<UncoupledConstraintCorrection template="Rigid" name="default45" />
+		<Node 	name="VisualModel" gravity="0 -9.81 0" >
+			<OglModel template="ExtVec3f" name="InstrumentVisualModel"  fileMesh="Demos/Dentistry/data/mesh/dental_instrument.obj"  translation="-1.2 -1.6 3.55"  rotation="180 0 150"  material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
+			<RigidMapping template="Rigid,ExtVec3f" name="MM->VM mapping"  input="@instrumentState"  output="@InstrumentVisualModel" />
+		</Node>
+		<Node 	name="CollisionModel" gravity="0 -9.81 0" >
+			<MeshObjLoader name="loader"  filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj" />
+			<MeshTopology src="@loader" name="InstrumentCollisionModel" />
+			<MechanicalObject src="@loader" template="Vec3d" name="instrumentCollisionState"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  derivX="0 0 0"  free_position="0 0 0"  free_velocity="0 0 0"  restScale="1"  translation="-1.2 -1.6 3.55"  rotation="180 0 150" />
+			<TTriangleModel template="Vec3d" name="instrument"  contactStiffness="10" />
+			<LineModel name="instrument"  contactStiffness="10" />
+			<PointModel name="instrument"  contactStiffness="10" />
+			<RigidMapping template="Rigid,Vec3d" name="MM->CM mapping"  input="@instrumentState"  output="@instrumentCollisionState" />
+		</Node>
+		<VectorSpringForceField template="Vec3d" name="default47"  object1="@Omni/RefModel/instrumentCollisionState"  object2="@Instrument/CollisionModel/instrumentCollisionState"  stiffness="10"  viscosity="0" />
+		<JointSpringForceField template="Rigid" name="joint springs"  object1="@Omni"  object2="@instrumentState"  spring="BEGIN_SPRING  0 0  KS_T 50 50  KS_R 500 500  KS_B 500  END_SPRING
+" />
+	</Node>
+	<Node 	name="Tooth" gravity="0 -9.81 0" >
+		<Node 	name="VisualModel" gravity="0 -9.81 0" >
+			<OglModel template="ExtVec3f" name="ToothVisualModel"  fileMesh="Demos/Dentistry/data/mesh/tooth-closed.obj"  translation="2 0.5 0"  rotation="0 0 -90"  material="Default Diffuse 1 1 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45" />
+		</Node>
+		<Node 	name="CollisionModel" gravity="0 -9.81 0" >
+			<MeshObjLoader name="loader"  filename="Demos/Dentistry/data/mesh/tooth-closed.obj" />
+			<MeshTopology src="@loader" name="ToothCollisionModel" />
+			<MechanicalObject src="@loader" template="Vec3d" name="toothState"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  derivX="0 0 0"  free_position="0 0 0"  free_velocity="0 0 0"  restScale="1"  translation="2 0.5 0"  rotation="0 0 -90" />
+			<TTriangleModel template="Vec3d" name="tooth"  moving="0"  simulated="0"  contactStiffness="100" />
+			<LineModel name="tooth"  moving="0"  simulated="0"  contactStiffness="100" />
+			<PointModel name="tooth"  moving="0"  simulated="0"  contactStiffness="100" />
+		</Node>
+	</Node>
+</Node>

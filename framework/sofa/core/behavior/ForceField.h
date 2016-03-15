@@ -78,6 +78,7 @@ public:
 
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes>* getMState() { return mstate.get(); }
+    const MechanicalState<DataTypes>* getMState() const { return mstate.get(); }
 
 
     /// @name Vector operations
@@ -121,6 +122,14 @@ public:
     virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId );
 
     virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) = 0;
+
+    /// Compute the product of the Compliance matrix C
+    /// with the Lagrange multipliers lambda
+    /// res += cFactor * C * lambda
+    /// used by the graph-scattered (unassembledà API when the ForceField is handled as a constraint
+    virtual void addClambda(const MechanicalParams* mparams, MultiVecDerivId resId, MultiVecDerivId lambdaId, SReal cFactor );
+
+    virtual void addClambda(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& lambda, SReal cFactor );
 
 
 

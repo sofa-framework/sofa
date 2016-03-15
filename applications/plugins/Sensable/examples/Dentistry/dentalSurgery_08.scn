@@ -1,0 +1,101 @@
+<!-- 
+Using LCP contact detection and resolution:
+ + Added a driver for the Omni phantom device 
+ + Added a mechanical state controller that gathers data from the phantom and updates the position of a representation of the device in the simulation 
+ + Added a computation (LCPForceFeedback) of the haptic forces 
+ + Added VectorSpringForceField && JointSpringForceField to link the mouvements of the Omni phantom and the instrument
+-->
+<Node name="root" dt="0.005">
+    <BackgroundSetting color="0.901960784 0.925490196 0.964705882" />
+    <RequiredPlugin name="Sensable plugin" pluginName="Sensable" />
+
+    <Gravity name="G" gravity="0 -9.8 0" />
+    <CollisionPipeline name="pipeline" depth="6" verbose="0" />
+    <BruteForceDetection name="detection" />
+    <CollisionResponse name="response" response="FrictionContact" />
+    <LocalMinDistance name="proximity" alarmDistance="0.3" contactDistance="0.15" angleCone="0.0" />
+    <FreeMotionAnimationLoop />
+    <OmniDriver scale="0.1" orientation="0 180 0" />
+    <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
+    <Node name="Head">
+        <OglModel name="HeadVisualModel" fileMesh="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/head.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png" />
+        <Node name="input-tongue">
+            <Mesh name="surface" filename="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/tongue.obj" />
+            <MeshTetraStuffing name="stuffing" snapPoints="true" splitTetras="true" draw="true" size="0.2" alphaLong="0.2" alphaShort="0.4" inputPoints="@surface.position" inputTriangles="@surface.triangles" inputQuads="@surface.quads"  />
+            <OglModel name="VisualModel" src="@surface" color="1.0 0.0 0.0 1.0" />
+        </Node>
+
+        <Node name="Tongue">
+            <VisualStyle displayFlags="showForceFields" />
+            <EulerImplicit name="odesolver" />
+            <CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+            <TetrahedronSetTopologyContainer name="volume" points="@../input-tongue/stuffing.outputPoints" tetras="@../input-tongue/stuffing.outputTetras" />
+            <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
+            <MechanicalObject name="mecaTongue" />
+            <DiagonalMass massDensity="1" name="computed using mass density" />
+            <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.45" method="large" />
+            <Node name="TongueVisualModel">
+                <OglModel name="TongueVisualModel" fileMesh="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/tongue.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/tongue_color.png" />
+                <BarycentricMapping name="tongueMapping" input="@../mecaTongue" output="@TongueVisualModel" />
+            </Node>
+            <Node name="TongueCollisionModel">
+                <TriangleSetTopologyContainer name="TriContainer" />
+                <TriangleSetTopologyModifier name="Modifier" />
+                <TriangleSetTopologyAlgorithms name="TopoAlgo" />
+                <TriangleSetGeometryAlgorithms name="GeomAlgo" />
+                <Tetra2TriangleTopologicalMapping name="mapping" input="@../volume" output="@TriContainer" flipNormals="0" />
+                <MechanicalObject name="colTongue" />
+                <Triangle name="tongue" />
+                <IdentityMapping name="identityMappingToCollision" input="@../mecaTongue" output="@colTongue" isMechanical="false" />
+            </Node>
+        </Node>
+        <Node name="Teeth">
+            <MeshObjLoader filename="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/teeth.obj" name="loader" />
+            <Node name="CollisionModel">
+                <Mesh src="@../loader" name="ToothCollisionModel" />
+                <MechanicalObject src="@../loader" name="toothState" />
+                <Triangle name="tooth" contactStiffness="5" simulated="0" moving="0" />
+                <Line name="tooth" contactStiffness="5" simulated="0" moving="0" />
+                <Point name="tooth" contactStiffness="5" simulated="0" moving="0" />
+            </Node>
+            <Node name="VisualModel">
+                <OglModel name="TeethVisualModel" fileMesh="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/teeth.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/teeth_color.png" />
+            </Node>
+        </Node>
+    </Node>
+    <!-- ADDED: the Mechanical state Controller gathers events from the Omni driver and populates the Mechanical state -->
+    <Node name="Omni">
+        <MechanicalObject template="Rigid" name="DOFs" position="1.2 1.6 -3.55  0 0 0 1" />
+        <MechanicalStateController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true" />
+        <Node name="RefModel">
+            <MeshObjLoader filename="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/dental_instrument_centerline.obj" name="loader" />
+            <Mesh src="@loader" />
+            <MechanicalObject src="@loader" name="instrumentCollisionState" rx="180" rz="150" dx="-1.2" dy="-1.6" dz="3.55" />
+            <RigidMapping />
+        </Node>
+    </Node>
+    <Node name="Instrument">
+        <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.01" rayleighMass="1.0" />
+        <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" />
+        <MechanicalObject name="instrumentState" template="Rigid" position="1.2 1.6 -3.55  0 0 0 1" />
+        <UniformMass name="mass" totalmass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
+        <LCPForceFeedback activate="true" forceCoef="0.005" />
+        <!-- ADDED : Compute a force-feedback for the device -->
+        <UncoupledConstraintCorrection />
+        <Node name="VisualModel">
+            <OglModel name="InstrumentVisualModel" fileMesh="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/dental_instrument.obj" color="0.8 0.8 0.8 1.0" dz="-10" />
+            <RigidMapping name="MM-&gt;VM mapping" input="@instrumentState" output="@InstrumentVisualModel" />
+        </Node>
+        <Node name="CollisionModel">
+            <MeshObjLoader filename="Tutorials/StepByStep/Dentistry_Haptics/data/mesh/dental_instrument_centerline.obj" name="loader" />
+            <Mesh src="@loader" name="InstrumentCollisionModel" />
+            <MechanicalObject src="@loader" name="instrumentCollisionState" translation="0 -2 -10" />
+            <Triangle name="instrument" contactStiffness="10" />
+            <Line name="instrument" contactStiffness="10" />
+            <Point name="instrument" contactStiffness="10" />
+            <RigidMapping name="MM-&gt;CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
+        </Node>
+        <VectorSpringForceField object1="@Omni/RefModel/instrumentCollisionState" object2="@Instrument/CollisionModel/instrumentCollisionState" stiffness="10" viscosity="0" />
+        <JointSpringForceField template="Rigid" name="joint springs" object1="@Omni" object2="@instrumentState" spring="BEGIN_SPRING 0 0 KS_T 50 50  KS_R 500.0 500.0  KS_B 500.0  KD 0.0 END_SPRING" />
+    </Node>
+</Node>

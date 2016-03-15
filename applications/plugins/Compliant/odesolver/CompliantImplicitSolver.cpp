@@ -7,9 +7,6 @@
 #include "../assembly/AssemblyVisitor.h"
 #include "../utils/scoped.h"
 
-using std::cerr;
-using std::endl;
-
 namespace sofa {
 namespace component {
 namespace odesolver {
@@ -22,52 +19,6 @@ int CompliantImplicitSolverClass = core::RegisterObject("Example compliance solv
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using namespace core::behavior;
-
-
-
-
-    propagate_constraint_force_visitor::propagate_constraint_force_visitor(const sofa::core::MechanicalParams* mparams,
-                                         const core::MultiVecDerivId& force,
-                                         const core::MultiVecDerivId& lambda,
-                                         SReal dt)
-        : simulation::MechanicalVisitor(mparams)
-        , force( force )
-        , lambda( lambda )
-        , invdt( 1.0/dt )
-    {}
-
-    propagate_constraint_force_visitor::Result propagate_constraint_force_visitor::fwdMechanicalState(simulation::Node* /*node*/,
-                                                                    core::behavior::BaseMechanicalState* state) {
-        // compliance cannot be present at independent dof level
-        state->resetForce(mparams, force.getId(state));
-        return RESULT_CONTINUE;
-    }
-
-    propagate_constraint_force_visitor::Result propagate_constraint_force_visitor::fwdMappedMechanicalState(simulation::Node* node,
-                                                                          core::behavior::BaseMechanicalState* state) {
-
-        // lambdas should only be present at compliance location
-
-        if( !node->forceField.empty() && node->forceField[0]->isCompliance.getValue() )
-            // compliance should be alone in the node
-            state->vOp( mparams, force.getId(state), core::ConstVecId::null(), lambda.getId(state), invdt ); // constraint force = lambda / dt
-        else
-            state->resetForce(mparams, force.getId(state));
-
-        return RESULT_CONTINUE;
-    }
-
-
-    void propagate_constraint_force_visitor::bwdMechanicalMapping(simulation::Node* /*node*/,
-                                                        core::BaseMapping* map) {
-        map->applyJT(mparams, force, force);
-    }
-
-    void propagate_constraint_force_visitor::bwdProjectiveConstraintSet(simulation::Node* /*node*/,
-                                                              core::behavior::BaseProjectiveConstraintSet* c) {
-        c->projectResponse( mparams, force );
-    }
-
 
 
 
@@ -153,16 +104,7 @@ using namespace core::behavior;
         scoped::timer step("position integration");
         const SReal& dt = sop.mparams().dt();
 
-        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-        VMultiOp multi;
-
-        multi.resize(1);
-
-        multi[0].first = posId;
-        multi[0].second.push_back( std::make_pair(posId, 1.0) );
-        multi[0].second.push_back( std::make_pair(velId, beta.getValue() * dt) );
-
-        sop.vop.v_multiop( multi );
+        sop.vop.v_op( posId, posId, velId, beta.getValue() * dt );
     }
 
     void CompliantImplicitSolver::integrate( SolverOperations& sop,
@@ -173,27 +115,20 @@ using namespace core::behavior;
         scoped::timer step("position integration");
         const SReal& dt = sop.mparams().dt();
 
-        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-        VMultiOp multi;
-
+        core::behavior::BaseMechanicalState::VMultiOp multi;
         multi.resize(2);
 
-        SReal beta = this->beta.getValue();
+        const SReal& beta = this->beta.getValue();
 
-        multi[0].first = posId;
-        multi[0].second.push_back( std::make_pair(posId, 1.0) );
-        multi[0].second.push_back( std::make_pair(velId, dt*beta) );
-        multi[0].second.push_back( std::make_pair(accId, accFactor*dt*beta) );
+        multi[0].first = velId;
+        multi[0].second.push_back( std::make_pair(velId, 1.0) );
+        multi[0].second.push_back( std::make_pair(accId, accFactor) );
 
-        multi[1].first = velId;
-        multi[1].second.push_back( std::make_pair(velId, 1.0) );
-        multi[1].second.push_back( std::make_pair(accId, accFactor) );
+        multi[1].first = posId;
+        multi[1].second.push_back( std::make_pair(posId, 1.0) );
+        multi[1].second.push_back( std::make_pair(velId, dt*beta) );
 
         sop.vop.v_multiop( multi );
-
-
-//        sop.vop.v_peq( velId, accId, accFactor );
-//        integrate( sop, posId, velId );
     }
 
     CompliantImplicitSolver::~CompliantImplicitSolver() {
@@ -225,7 +160,7 @@ using namespace core::behavior;
 
         scoped::timer step("compute_forces");
 
-        SReal factor = ( (formulation.getValue().getSelectedId()==FORMULATION_ACC) ? 1.0 : sop.mparams().dt() );
+        const SReal factor = ( (formulation.getValue().getSelectedId()==FORMULATION_ACC) ? 1.0 : sop.mparams().dt() );
 
         {
             scoped::timer substep("forces computation");
@@ -244,8 +179,11 @@ using namespace core::behavior;
             scoped::timer substep("f += fc");
 
             // using lambdas computed at the previous time step as an approximation of the forces generated by compliances
-            // If no approximation are known, 0 is used and the associated compliance won't contribute
-            // to geometric sitffness generation for this step.
+            // at the current configuration (due to non-linearities, after integration of the previous time-step,
+            // elastic forces are too large leading to locking)
+            // If no lambdas are known (e.g. first time-step, newly created constraint, contact w/o history...),
+            // 0 is used and the associated compliance won't contribute to geometric stiffness generation for this step,
+            // like regular constraints.
             simulation::MechanicalAddComplianceForce lvis( &sop.mparams(), f, lagrange, factor ); // f += fc  with  fc = lambda / dt
             send( lvis );
         }
@@ -354,7 +292,7 @@ using namespace core::behavior;
         // In compute_forces (in multivec representation) it would require a visitor (more expensive).
         res.head( sys.m ) = sys.P * res.head( sys.m );
 
-        vec res_constraint(sys.n);
+        vec res_constraint(sys.n); // todo remove this temporary
         rhs_constraints_dynamics( res_constraint, sys, posId, velId );
         res.tail(sys.n).noalias() = res_constraint;
     }
@@ -591,7 +529,7 @@ using namespace core::behavior;
         {
             scoped::timer step("lambdas alloc");
             lagrange.realloc( &sop.vop, false, true );
-//            vop.print( lagrange,std::cerr, "BEGIN lambda: ", "\n" );
+//            vop.print( lagrange,serr, "BEGIN lambda: ", "\n" );
         }
 
         // compute forces and implicit right part warning: must be
@@ -644,10 +582,10 @@ using namespace core::behavior;
                 kkt->correct(x, sys, rhs, stabilization_damping.getValue() );
 
                 if( debug.getValue() ) {
-                    std::cerr << "correction rhs:" << std::endl
+                    serr << "correction rhs:" << std::endl
                               << rhs.transpose() << std::endl
                               << "solution:" << std::endl
-                              << x.transpose() << std::endl;
+                              << x.transpose() << sendl;
                 }
 
                 MultiVecDeriv v_stab( &sop.vop ); // a temporary multivec not to modify velocity
@@ -667,10 +605,10 @@ using namespace core::behavior;
                 kkt->solve(x, sys, rhs);
 				
                 if( debug.getValue() ) {
-                    std::cerr << "dynamics rhs:" << std::endl
+                    sout << "dynamics rhs:" << std::endl
                               << rhs.transpose() << std::endl
                               << "solution:" << std::endl
-                              << x.transpose() << std::endl;
+                              << x.transpose() << sendl;
                 }
                 if( storeDSol ) {
                     dynamics_rhs = rhs;
@@ -702,7 +640,7 @@ using namespace core::behavior;
             // propagate lambdas if asked to (constraint forces must be propagated before post_stab)
             if( propagate_lambdas.getValue() && sys.n ) {
                 scoped::timer step("lambda propagation");
-                propagate_constraint_force_visitor prop( &sop.mparams(), core::VecId::force(), lagrange.id(), useVelocity ? sys.dt : 1.0 );
+                simulation::propagate_constraint_force_visitor prop( &sop.mparams(), core::VecId::force(), lagrange.id(), useVelocity ? sys.dt : 1.0 );
                 send( prop );
             }
 
@@ -717,7 +655,7 @@ using namespace core::behavior;
         clear_constraints();
 
 
-//        vop.print( lagrange,std::cerr, "END lambda: ", "\n" );
+//        vop.print( lagrange,serr, "END lambda: ", "\n" );
 
 
     }
@@ -793,10 +731,10 @@ using namespace core::behavior;
         kkt->correct(x, sys, rhs, stabilization_damping.getValue() );
 
         if( debug.getValue() ) {
-            std::cerr << "correction rhs:" << std::endl
+            sout << "correction rhs:" << std::endl
                       << rhs.transpose() << std::endl
                       << "solution:" << std::endl
-                      << x.transpose() << std::endl;
+                      << x.transpose() << sendl;
         }
 
         MultiVecDeriv v_stab( &sop.vop );  // a temporary multivec not to modify velocity

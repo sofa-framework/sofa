@@ -12,6 +12,9 @@ namespace linearsolver {
 /**
  *
  *  Linear system preconditioner based on an Incomplete Cholesky factorization
+ *
+ * @author Matthieu Nesme
+ *
 */
 
 class SOFA_Compliant_API IncompleteCholeskyPreconditioner : public BasePreconditioner

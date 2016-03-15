@@ -39,6 +39,7 @@ namespace component
 namespace topology
 {
 
+using helper::vector;
 
 
 MeshTopology::EdgeUpdate::EdgeUpdate(MeshTopology* t)

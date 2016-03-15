@@ -41,6 +41,9 @@ namespace mapping
 
 
 /// Decompose the total strain to an elastic strain + a plastic strain
+///
+/// @author Matthieu Nesme
+///
 template <class TStrain>
 class PlasticStrainMapping : public BaseStrainMappingT<defaulttype::PlasticStrainJacobianBlock<TStrain> >
 {

@@ -139,8 +139,16 @@ public:
             const Vec4f &c1, const Vec4f &c2, const Vec4f &c3, const Vec4f &c4) = 0 ;
     virtual void drawQuads(const std::vector<Vector3> &points, const Vec4f& colour) = 0 ;
 
-    virtual void drawTetrahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, const Vec4f &color) = 0 ;
+    virtual void drawTetrahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, const Vec4f &colour) = 0 ;
     virtual void drawTetrahedra(const std::vector<Vector3> &points, const Vec4f& colour) = 0;
+    //Scale each tetrahedron
+    virtual void drawScaledTetrahedra(const std::vector<Vector3> &points, const Vec4f& colour, const float scale) = 0;
+
+    virtual void drawHexahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, 
+        const Vector3 &p4, const Vector3 &p5, const Vector3 &p6, const Vector3 &p7, const Vec4f &colour) = 0;
+    virtual void drawHexahedra(const std::vector<Vector3> &points, const Vec4f& colour) = 0;
+    //Scale each hexahedron
+    virtual void drawScaledHexahedra(const std::vector<Vector3> &points, const Vec4f& colour, const float scale) = 0;
 
     virtual void drawSphere( const Vector3 &p, float radius) = 0 ;
     virtual void drawEllipsoid(const Vector3 &p, const Vector3 &radii) = 0;

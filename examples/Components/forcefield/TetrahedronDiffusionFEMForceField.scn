@@ -1,0 +1,34 @@
+<Node name="root" dt="0.00001" gravity="0 0 0" >
+    <VisualStyle displayFlags="showBehaviorModels"/>
+
+    <MeshVTKLoader name="meshLoader" filename="mesh/raptorTetra_8418.vtu" />
+    <MeshObjLoader name="potentialLoader" filename="mesh/raptorTemperature.obj" />
+    
+    <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" tags="mechanics"/>
+    <MechanicalObject template="Vec3d" name="raptorDOFs" src="@meshLoader" tags="mechanics" />
+    <TetrahedronSetTopologyModifier name="Modifier" tags="mechanics"/>
+    <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" tags="mechanics"/>
+    <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"  tags="mechanics"/>
+    <BoxROI name="box-hot" box="-3 4 4 3 8 8" drawBoxes="1" position="@raptorDOFs.position"/>
+    <BoxROI name="box-cold" box="-3 4 -4 3 8 -10" drawBoxes="1" position="@raptorDOFs.position"/>
+
+
+    <Node name="Temperature" gravity="0 0 0"  >
+
+        <EulerImplicitSolver name="Euler" firstOrder="1" tags="heat"/>
+        <CGLinearSolver name="CG" iterations="1000" tolerance="1.0e-10" threshold="1.0e-30" tags="heat"/>
+        <MechanicalObject template="Vec1d" position="@../potentialLoader.position"  name="gridTemperature" bbox="0 0 0 0 0 0" tags="heat"/>
+        <TetrahedronDiffusionFEMForceField template="Vec1d" name="DiffusionForceField" constantDiffusionCoefficient="1500" printLog="0" drawConduc="0" tagMechanics="mechanics" tags="heat"/>
+        <MeshMatrixMass template="Vec1d" name="Mass" lumping="0" massDensity="1.0" printLog="0" tags="heat"/>
+
+        <FixedConstraint indices="@../box-cold.indices" />
+        <LinearMovementConstraint template="Vec1d" keyTimes="0 0.005 0.006" movements="0 0 1" indices="@../box-cold.indices" />
+        <LinearMovementConstraint template="Vec1d" keyTimes="0.001 0.002 0.004 0.005 0.006" movements="0 1 0.5 1 0" indices="@../box-hot.indices" />
+
+        <Node name="Visu">
+            <TextureInterpolation template="Vec1d" name="EngineInterpolation"  input_states="@../gridTemperature.position"  input_coordinates="@../../raptorDOFs.position"  min_value="0.0"  max_value="1.0"  manual_scale="1"  drawPotentiels="0"  showIndicesScale="5e-05" />
+            <OglModel template="ExtVec3f" name="oglPotentiel"  texcoords="@EngineInterpolation.output_coordinates" texturename="textures/heatColor.bmp"  useVBO="0" scale3d="1000 1000 1000"  material="Default Diffuse 1 1 1 1 0.5 Ambient 1 1 1 1 0.3 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material "/>
+            <IdentityMapping input="@../../raptorDOFs" output="@oglPotentiel" />
+        </Node>
+    </Node>
+</Node>

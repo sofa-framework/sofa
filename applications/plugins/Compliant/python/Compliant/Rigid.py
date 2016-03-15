@@ -8,9 +8,11 @@
 # refer to the python examples in Compliant for more information.
 #
 
-print "WARNING Compliant's Rigid.py is now deprecated (and will be deleted soon), please use StructuralAPI instead"
 
 import Sofa
+
+
+Sofa.msg_deprecated("Compliant.Rigid","Compliant's Rigid.py is now deprecated (and will be deleted soon), please use StructuralAPI instead" )
 
 from subprocess import Popen, PIPE
 

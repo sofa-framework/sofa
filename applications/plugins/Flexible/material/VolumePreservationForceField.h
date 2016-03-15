@@ -30,7 +30,6 @@
 #include "../material/VolumePreservationMaterialBlock.inl"
 
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
 
 namespace sofa
 {
@@ -72,13 +71,6 @@ public:
         Inherit::reinit();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
-    {
-        if (simulation::AnimateEndEvent::checkEventType(event))
-        {
-            if(f_k.isDirty()) reinit();
-        }
-    }
 
     virtual SReal getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const typename Inherit::DataVecCoord& x ) const
     {
@@ -117,7 +109,6 @@ protected:
                 ,"1 - k.(J-1)^2/2" );
         Options.setSelectedItem(1);
         f_method.setValue(Options);
-        this->f_listening.setValue(true);
     }
 
     virtual ~VolumePreservationForceField() {}
