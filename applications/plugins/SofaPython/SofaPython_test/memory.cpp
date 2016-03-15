@@ -54,6 +54,7 @@ struct MemoryTest : public ::testing::Test
         sofa::core::objectmodel::PythonScriptFunction pythonScriptFunctionREMOVE(PyObject_GetAttrString(ctr->scriptControllerInstance(), "remove"), false);
         sofa::core::objectmodel::PythonScriptFunction pythonScriptFunctionADDSUB(PyObject_GetAttrString(ctr->scriptControllerInstance(), "addSub"), false);
         sofa::core::objectmodel::PythonScriptFunction pythonScriptFunctionREMOVESUB(PyObject_GetAttrString(ctr->scriptControllerInstance(), "removeSub"), false);
+        sofa::core::objectmodel::PythonScriptFunction pythonScriptFunctionDETACHSUB(PyObject_GetAttrString(ctr->scriptControllerInstance(), "detachSub"), false);
 
         pythonScriptFunctionADD(NULL, NULL);
         EXPECT_EQ( s_nbAlloc, 10u );
@@ -69,6 +70,13 @@ struct MemoryTest : public ::testing::Test
 
         pythonScriptFunctionREMOVE(NULL, NULL);
         EXPECT_EQ( s_nbAlloc, 0u );
+
+
+        pythonScriptFunctionADDSUB(NULL, NULL);
+        EXPECT_EQ( s_nbAlloc, 10u );
+        pythonScriptFunctionDETACHSUB(NULL, NULL);
+        EXPECT_EQ( s_nbAlloc, 0u );
+
 
 
         pythonScriptFunctionADD(NULL, NULL);

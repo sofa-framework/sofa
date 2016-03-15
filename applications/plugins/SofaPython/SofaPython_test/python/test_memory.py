@@ -18,7 +18,6 @@ class AllocationTestController(Sofa.PythonScriptController):
 
     def onLoaded(self,node):
         self.node = node
-        self.subnode = node.createChild('subnode')
 
 
     def add(self):
@@ -30,10 +29,10 @@ class AllocationTestController(Sofa.PythonScriptController):
         # removing all components, the destructor should be called, decrementing the counter
         for o in self.node.getObjects():
             self.node.removeObject(o)
-            # del o # even forcing the python object deleting does not call the component destructor...
 
     def addSub(self):
         # adding components in subnode, that increment a counter at each construction
+        self.subnode = self.node.createChild('subnode')
         for i in xrange(10):
             self.subnode.createObject('PythonTestAllocationCounter')
 
@@ -42,3 +41,6 @@ class AllocationTestController(Sofa.PythonScriptController):
         self.node.removeChild(self.subnode)
         self.subnode = None # this is mandatory not to keep any pointer on the python side
 
+    def detachSub(self):
+        self.subnode.detachFromGraph()
+        self.subnode = None # this is mandatory not to keep any pointer on the python side
