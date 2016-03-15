@@ -49,6 +49,8 @@ struct SquareDistanceMappingTest : public Mapping_test<SquareDistanceMapping>
 
     bool test()
     {
+        this->errorMax *= 5;
+
         SquareDistanceMapping* map = static_cast<SquareDistanceMapping*>( this->mapping );
         map->f_computeDistance.setValue(true);
         map->d_geometricStiffness.setValue(1);
