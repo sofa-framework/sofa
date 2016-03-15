@@ -55,15 +55,18 @@ struct SquareDistanceMappingTest : public Mapping_test<SquareDistanceMapping>
 
         component::topology::EdgeSetTopologyContainer::SPtr edges = modeling::addNew<component::topology::EdgeSetTopologyContainer>(this->root);
         edges->addEdge( 0, 1 );
+        edges->addEdge( 2, 1 );
 
         // parent positions
-        InVecCoord incoord(2);
+        InVecCoord incoord(3);
         InDataTypes::set( incoord[0], 0,0,0 );
         InDataTypes::set( incoord[1], 1,1,1 );
+        InDataTypes::set( incoord[2], 6,3,-1 );
 
         // expected child positions
         OutVecCoord expectedoutcoord;
         expectedoutcoord.push_back( defaulttype::Vector1( 3 ) );
+        expectedoutcoord.push_back( defaulttype::Vector1( 33 ) );
 
         return this->runTest( incoord, expectedoutcoord );
     }
