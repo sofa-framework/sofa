@@ -55,7 +55,7 @@ public:
     enum { coord_total_size = VSize };
     enum { deriv_total_size = VSize };
     typedef _Real Real;
-    typedef vector<Real> VecReal;
+    typedef helper::vector<Real> VecReal;
 
     // ------------    Types and methods defined for easier data access
     typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
@@ -173,7 +173,7 @@ public:
         void operator=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
     };
 
-    typedef vector<Coord> VecCoord;
+    typedef helper::vector<Coord> VecCoord;
 
     static const char* Name();
 
@@ -326,7 +326,7 @@ public:
 
     };
 
-    typedef vector<Deriv> VecDeriv;
+    typedef helper::vector<Deriv> VecDeriv;
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
     static Deriv interpolate ( const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs )

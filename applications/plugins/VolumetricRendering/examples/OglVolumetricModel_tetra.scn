@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.02">
+    <RequiredPlugin name="VolumetricRendering" />
+
+	<MeshVTKLoader name="loader" filename="mesh/raptorTetra_8418.vtu" />
+	<MechanicalObject src="@loader" template="Vec3d" />
+ 	<include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
+
+	<Node>
+ 		<OglShader geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" 
+ 			vertFilename="share/shaders/tetra.vert" geoFilename="share/shaders/tetra_triangles.geo" fragFilename="share/shaders/tetra.frag" />
+ 		<OglFloatVariable id="volumeScale" value="0.9"/>
+ 		<OglFloatVariable id="u_enableLight" value="1"/>
+ 		<OglFloat4Attribute id="a_vertexColor" value="@../loader.position"/>
+		<OglVolumetricModel printLog="false"  />
+	</Node>
+
+</Node>

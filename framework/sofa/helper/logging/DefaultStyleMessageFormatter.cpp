@@ -56,17 +56,19 @@ DefaultStyleMessageFormatter DefaultStyleMessageFormatter::s_instance;
 
 DefaultStyleMessageFormatter::DefaultStyleMessageFormatter()
 {
-    s_messageTypePrefixes[Message::Info]    = "[INFO]    ";
-    s_messageTypePrefixes[Message::Warning] = "[WARNING] ";
-    s_messageTypePrefixes[Message::Error]   = "[ERROR]   ";
-    s_messageTypePrefixes[Message::Fatal]   = "[FATAL]   ";
-    s_messageTypePrefixes[Message::TEmpty]  = "[EMPTY]   ";
+    s_messageTypePrefixes[Message::Info]       = "[INFO]    ";
+    s_messageTypePrefixes[Message::Deprecated] = "[DEPRECATED] ";
+    s_messageTypePrefixes[Message::Warning]    = "[WARNING] ";
+    s_messageTypePrefixes[Message::Error]      = "[ERROR]   ";
+    s_messageTypePrefixes[Message::Fatal]      = "[FATAL]   ";
+    s_messageTypePrefixes[Message::TEmpty]     = "[EMPTY]   ";
 
-    s_messageTypeColors[Message::Info]    = Console::BRIGHT_GREEN;
-    s_messageTypeColors[Message::Warning] = Console::BRIGHT_CYAN;
-    s_messageTypeColors[Message::Error]   = Console::BRIGHT_RED;
-    s_messageTypeColors[Message::Fatal]   = Console::BRIGHT_PURPLE;
-    s_messageTypeColors[Message::TEmpty]  = Console::DEFAULT_COLOR;
+    s_messageTypeColors[Message::Info]       = Console::BRIGHT_GREEN;
+    s_messageTypeColors[Message::Deprecated] = Console::BRIGHT_YELLOW;
+    s_messageTypeColors[Message::Warning]    = Console::BRIGHT_CYAN;
+    s_messageTypeColors[Message::Error]      = Console::BRIGHT_RED;
+    s_messageTypeColors[Message::Fatal]      = Console::BRIGHT_PURPLE;
+    s_messageTypeColors[Message::TEmpty]     = Console::DEFAULT_COLOR;
 }
 
 void DefaultStyleMessageFormatter::formatMessage(const Message& m,std::ostream& out)

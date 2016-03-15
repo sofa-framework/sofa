@@ -167,6 +167,11 @@ void FullCompliance<DataTypes>::addDForce(const core::MechanicalParams *mparams,
     }
 }
 
+template<class DataTypes>
+void FullCompliance<DataTypes>::addClambda(const core::MechanicalParams *, DataVecDeriv &res, const DataVecDeriv &lambda, SReal cfactor)
+{
+    matC.getValue().addMult( res, lambda, cfactor );
+}
 
 }
 }

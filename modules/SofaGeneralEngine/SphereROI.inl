@@ -289,8 +289,17 @@ void SphereROI<DataTypes>::update()
 
     if (cen.size() != rad.size())
     {
-        serr << "WARNING: number of sphere centers and radius doesn't match." <<sendl;
-        return;
+		if (rad.size() == 1)
+		{
+			Real r = rad[0];
+			helper::WriteOnlyAccessor< Data<helper::vector<Real> > > radWriter = radii;
+			for (unsigned int i = 0; i < cen.size() - 1; i++) radWriter.push_back(r);
+		}
+		else
+		{
+			serr << "WARNING: number of sphere centers and radius doesn't match." << sendl;
+			return;
+		}
     }
 
     Real eAngle = edgeAngle.getValue();

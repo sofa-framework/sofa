@@ -1,6 +1,5 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.25" showBoundingTree="0" gravity="0 0 0">
-   <RequiredPlugin name="SofaAdvancedFEM plugin" pluginName="SofaAdvancedFEM" />
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showVisual" />
     <CollisionPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />

@@ -9,6 +9,9 @@ namespace component {
 namespace odesolver {
 
 /// a constraint value for elastic contact (with restitution)
+///
+/// @author Matthieu Nesme
+///
 class SOFA_Compliant_API Restitution : public ConstraintValue
 {
   public:

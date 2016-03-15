@@ -299,6 +299,12 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::init()
     resizeOut();
 
     Inherit::init();
+
+    // check that all children particles got a parent
+    const VecVRef& indices = this->f_index.getValue();
+    for (std::size_t i=0; i < indices.size(); ++i)
+        if (indices[i].empty())
+            serr << "Particle " << i << " has no parent" << sendl;
 }
 
 template <class JacobianBlockType1,class JacobianBlockType2>

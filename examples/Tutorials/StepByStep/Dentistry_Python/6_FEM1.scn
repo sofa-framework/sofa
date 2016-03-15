@@ -1,6 +1,7 @@
 <!-- 
 Step 6:
 FEM force field of the tongue
+Control the instrument with the UP and DOWN keys + CTRL
 -->
 <Node name="root" dt="0.05">
 
@@ -24,29 +25,29 @@ FEM force field of the tongue
             <CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
             <SparseGrid n="4 4 6" fileTopology="data/mesh/tongue.obj" />
-	    <MechanicalObject name="mecaTongue" />
+            <HexahedronSetGeometryAlgorithms />
+    	    <MechanicalObject name="mecaTongue" />
             <DiagonalMass massDensity="1" name="computed using mass density" />
+    	    <PrecomputedConstraintCorrection recompute="true"/>
+    	    <HexahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.45" method="large" />
             
-	    <PrecomputedConstraintCorrection recompute="true"/>
-	    <HexahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.45" method="large" />
-        
             <BoxROI name="ROI" box="-1 1 -1 1 2 1" drawBoxes="1"/>
             <FixedConstraint template="Vec3d" indices="@ROI.indices"/>   
 
 
             <Node name="TongueVisualModel">
-            <VisualStyle displayFlags="showWireframe" /> 
+                <VisualStyle displayFlags="showWireframe" /> 
                 <OglModel name="TongueVisualModel" fileMesh="data/mesh/tongue.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/tongue_color.png" />
                 <BarycentricMapping name="tongueMapping" input="@../mecaTongue" output="@TongueVisualModel" />
             </Node>
             <Node name="TongueCollisionModel">
-	 	<MeshObjLoader filename="data/mesh/tongue.obj"  name="loader"/>
-		<Mesh src="@loader" name="tongueCollisionModel"  />
-		<MechanicalObject src="@loader" name="colTongue"/>		
-		<Triangle name="tongue" contactStiffness="5"/>
-		<Line name="tongue" contactStiffness="5"/>	
-		<Point name="tongue" contactStiffness="5"/>	
-		<BarycentricMapping name="tongueMapping" input="@../mecaTongue" output="@colTongue" mapForces="false"/>
+        	 	<MeshObjLoader filename="data/mesh/tongue.obj"  name="loader"/>
+        		<Mesh src="@loader" name="tongueCollisionModel"  />
+        		<MechanicalObject src="@loader" name="colTongue"/>		
+        		<Triangle name="tongue" contactStiffness="5"/>
+        		<Line name="tongue" contactStiffness="5"/>	
+        		<Point name="tongue" contactStiffness="5"/>	
+        		<BarycentricMapping name="tongueMapping" input="@../mecaTongue" output="@colTongue" mapForces="false"/>
             </Node>
         </Node>
     </Node>

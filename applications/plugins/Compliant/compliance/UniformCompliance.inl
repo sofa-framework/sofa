@@ -186,6 +186,12 @@ void UniformCompliance<DataTypes>::addDForce(const core::MechanicalParams *mpara
     }
 }
 
+template<class DataTypes>
+void UniformCompliance<DataTypes>::addClambda(const core::MechanicalParams *, DataVecDeriv &res, const DataVecDeriv &lambda, SReal cfactor)
+{
+    matC.addMult( res, lambda, cfactor );
+}
+
 
 }
 }

@@ -11,6 +11,9 @@ namespace linearsolver {
 /// Solving the dynamics equation after lumping the matrix (summing all line entries on the diagonal)
 /// @warning its usage is really specific. Lumping the stiffness matrix does not make sense in the general case.
 /// When the elasticity is in compliance, it can make sense to lump the geometric stiffness.
+///
+/// @author Matthieu Nesme
+///
 class SOFA_Compliant_API LumpedResponse : public Response {
 public:
     SOFA_CLASS(LumpedResponse, Response);

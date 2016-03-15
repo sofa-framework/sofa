@@ -76,7 +76,7 @@ typedef struct
 
 typedef struct
 {
-    vector<ForceFeedback*> forceFeedbacks;
+    helper::vector<ForceFeedback*> forceFeedbacks;
     //ForceFeedback* forceFeedback;
     // changement ajout
     int forceFeedbackIndice;
@@ -138,7 +138,7 @@ public:
     virtual void draw(const core::visual::VisualParams*);
 
     //ajout
-    void setForceFeedbacks(vector<ForceFeedback*> ffs);
+    void setForceFeedbacks(helper::vector<ForceFeedback*> ffs);
 
     void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
     void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *);
@@ -163,7 +163,7 @@ public:
     Data<VecCoord> trajPts;
     Data<helper::vector<double> > trajTim;
 
-    int getCurrentToolIndex() { return currentToolIndex;};
+    int getCurrentToolIndex() { return currentToolIndex;}
     void handleEvent(core::objectmodel::Event *);
 
 private:

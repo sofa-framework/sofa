@@ -815,9 +815,9 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
 
     const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
     //Draw tetra indices
-    if (showTetrahedraIndices.getValue())
+    if (d_showTetrahedraIndices.getValue())
     {
-        const sofa::defaulttype::Vec4f& color_tmp = _drawColor.getValue();
+        const sofa::defaulttype::Vec4f& color_tmp = d_drawColorTetrahedra.getValue();
         defaulttype::Vec4f color4(color_tmp[0] - 0.2f, color_tmp[1] - 0.2f, color_tmp[2] - 0.2f, 1.0);
         float scale = this->getIndicesScale();
 
@@ -844,8 +844,13 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
     }
 
     // Draw Tetra
-    if (_drawTetrahedra.getValue())
+    if (d_drawTetrahedra.getValue())
     {
+        if (vparams->displayFlags().getShowWireFrame())
+            vparams->drawTool()->setPolygonMode(0, true);
+        const sofa::defaulttype::Vec4f& color_tmp = d_drawColorTetrahedra.getValue();
+        defaulttype::Vec4f color4(color_tmp[0] - 0.2f, color_tmp[1] - 0.2f, color_tmp[2] - 0.2f, 1.0);
+
         const sofa::helper::vector<Tetrahedron> &tetraArray = this->m_topology->getTetrahedra();
         std::vector<defaulttype::Vector3>   pos;
         pos.reserve(tetraArray.size()*4u);
@@ -859,7 +864,15 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
             }
         }
 
-        vparams->drawTool()->drawTetrahedra(pos,_drawColor.getValue());
+        const float& scale = d_drawScaleTetrahedra.getValue();
+
+        if (scale >= 1.0 && scale < 0.001)
+            vparams->drawTool()->drawTetrahedra(pos, color4);
+        else
+            vparams->drawTool()->drawScaledTetrahedra(pos, color4, scale);
+
+        if (vparams->displayFlags().getShowWireFrame())
+            vparams->drawTool()->setPolygonMode(0, false);
     }
 }
 

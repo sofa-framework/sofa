@@ -279,7 +279,12 @@ void OglModel::drawGroup(int ig, bool transparent)
     const bool drawPoints = (primitiveType.getValue().getSelectedId() == 3);
     if (drawPoints)
     {
+        //Disable lighting if we draw points 
+        glDisable(GL_LIGHTING);
+        glColor4fv(diffuse.ptr());
         glDrawArrays(GL_POINTS, 0, vertices.size());
+        glEnable(GL_LIGHTING);
+        glColor4f(1.0,1.0,1.0,1.0);
     }
     if (g.nbe > 0 && !drawPoints)
     {

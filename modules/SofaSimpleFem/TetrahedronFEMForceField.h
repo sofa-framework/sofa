@@ -36,11 +36,14 @@
 #include <sofa/helper/OptionsGroup.h>
 
 // FIX: temporarily disabled as SofaSimpleFem is not supposed to depend on SofaOpenGLVisual
-//#define SIMPLEFEM_COLORMAP
+#define SIMPLEFEM_COLORMAP
+#define SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
 
-#ifdef SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
-#include <SofaOpenglVisual/ColorMap.h>
-#endif
+//#ifdef SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
+//#include <SofaOpenglVisual/ColorMap.h>
+//#endif
+
+#include <sofa/helper/ColorMap.h>
 
 // corotational tetrahedron from
 // @InProceedings{NPF05,
@@ -290,12 +293,14 @@ public:
     Data<int> _computeVonMisesStress;
     Data<helper::vector<Real> > _vonMisesPerElement;
     Data<helper::vector<Real> > _vonMisesPerNode;
-    Data<helper::vector<defaulttype::Vec3f> > _vonMisesStressColors;
+    Data<helper::vector<defaulttype::Vec4f> > _vonMisesStressColors;
+    
 
 #ifdef SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
-#ifndef SOFA_NO_OPENGL
-	visualmodel::ColorMap::SPtr _showStressColorMapReal;
-#endif
+//#ifndef SOFA_NO_OPENGL
+//	visualmodel::ColorMap::SPtr _showStressColorMapReal;
+//#endif
+    helper::ColorMap m_VonMisesColorMap;
 
     Data<std::string> _showStressColorMap;
     Data<float> _showStressAlpha;
@@ -335,7 +340,7 @@ protected:
         , _vonMisesStressColors(initData(&_vonMisesStressColors, "vonMisesStressColors", "Vector of colors describing the VonMises stress"))
 #ifdef SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
 #ifndef SOFA_NO_OPENGL
-        , _showStressColorMapReal(sofa::core::objectmodel::New< visualmodel::ColorMap >())
+//        , _showStressColorMapReal(sofa::core::objectmodel::New< visualmodel::ColorMap >())
 #endif
         , _showStressColorMap(initData(&_showStressColorMap,"showStressColorMap", "Color map used to show stress values"))
         , _showStressAlpha(initData(&_showStressAlpha, 1.0f, "showStressAlpha", "Alpha for vonMises visualisation"))

@@ -50,6 +50,7 @@ using namespace component;
 using namespace defaulttype;
 using namespace simulation;
 using namespace modeling;
+using helper::vector;
 
 /**  Dynamic solver test.
 Test the dynamic behavior of solver with non linear force : study a sun-planet system with gravitational force.

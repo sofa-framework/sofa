@@ -15,7 +15,9 @@ import SofaPython.Tools
 import SofaPython.mass
 
 import SofaPython.Quaternion as quat
+
 import Flexible.Serialization
+import Flexible.API
 
 # to specify the floating point encoding (double by default)
 template_suffix=''
@@ -50,7 +52,7 @@ class ShearlessAffineBody:
         self.fixedConstraint = None # to fix the ShearlessAffineBody
         # others class attributes required for several computation
         self.frame = [] # required for many computation, these position are those used to define bones dofs
-        self.framecom = Frame.Frame() # frame at the center of mass
+        self.framecom = Frame.Frame() # frame computed at the center of mass
         self.numberOfPoints = numberOfPoints # number of controlling a bone
 
     def setFromMesh(self, filepath, density=1000, offset=[0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces=False, voxelSize=0.01, generatedDir=None):
@@ -60,14 +62,15 @@ class ShearlessAffineBody:
         path_affine_scale = '@'+ Tools.node_path_rel(self.affineNode, self.scaleNode)
         massInfo = SofaPython.mass.RigidMassInfo()
         massInfo.setFromMesh(filepath, density, scale3d)
-        # get the object mass center
-        self.framecom = Frame.Frame()
-        self.framecom.translation = massInfo.com
-        self.framecom.rotation = massInfo.inertia_rotation
-        self.framecom = Frame.Frame(offset) * self.framecom
+
         if self.numberOfPoints == 1:
-            self.frame = [self.framecom]
+            # get the object mass center
+            self.framecom = Frame.Frame()
+            self.framecom.translation = massInfo.com
+            self.framecom.rotation = massInfo.inertia_rotation
+            self.frame = [Frame.Frame(offset) * self.framecom]
             self.setFromRigidInfo(massInfo, offset, inertia_forces)
+
             # shape function
             self.affineNode.createObject('MeshObjLoader',name='source', filename=filepath, triangulate=1, scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r))
 
@@ -114,7 +117,6 @@ class ShearlessAffineBody:
             self.affineDofs = self.affineNode.createObject('MechanicalObject', template='Affine', name='dofs', showObject=1, showObjectScale='0.1')
             self.affineNode.createObject('RigidScaleToAffineMultiMapping', template='Rigid,Vec3d,Affine', input1=path_affine_rigid, input2=path_affine_scale, output='@.', autoInit='1', printLog='0')
 
-
             if generatedDir is None:
                 self.affineNode.createObject('ImageContainer', template='ImageUC', name='image', src=path_affine_rigid+'/rasterizer')
                 self.shapeFunction=self.affineNode.createObject('VoronoiShapeFunction', template='ShapeFunctiond,ImageUC', name='SF', position='@dofs.rest_position', image='@image.image', transform='@image.transform', nbRef=8, clearData=1, bias=0)
@@ -122,7 +124,6 @@ class ShearlessAffineBody:
                 imageSamplerComponent.init()
             else:
                 self.shapeFunction=serialization.importImageShapeFunction( self.affineNode, generatedDir+self.node.name+"_SF_indices.raw",generatedDir+self.node.name+"_SF_weights.raw", 'dofs' )
-
 
             # init of component for being able to acces to bones position
             imageContainerComponent.init()
@@ -162,6 +163,7 @@ class ShearlessAffineBody:
         str_position = ""
         for p in offset:
             str_position = str_position + concat(p) + " "
+
         # scene creation
         # rigid dof
         self.rigidDofs = self.rigidNode.createObject('MechanicalObject', template='Rigid3'+template_suffix, name='dofs', position=str_position, rest_position=str_position)
@@ -243,13 +245,13 @@ class ShearlessAffineBody:
         self.visual = ShearlessAffineBody.VisualModel(self.affineNode, filepath, scale3d, offset, name_suffix, generatedDir=generatedDir)
         return self.visual
 
-    def addOffset(self, name, offset=[0,0,0,0,0,0,1], index=-1): #TODO None value instead of -1
+    def addOffset(self, name, offset=[0,0,0,0,0,0,1], index=-1):
         ## adding a relative offset to the rigid body (e.g. used as a joint location)
         # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-        if index > -1:
-            return ShearlessAffineBody.Offset(self.rigidNode, name, offset, index)
         if self.numberOfPoints == 1:
-            return ShearlessAffineBody.Offset(self.rigidNode, name, offset, 0)
+            return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, (self.framecom.inv() * Frame.Frame(offset)).offset(), 0)
+        elif index > -1:
+            return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset, index)
         else:
             # computation of absolute position of the offset
             offset_abs = self.framecom*Frame.Frame(offset)
@@ -263,58 +265,15 @@ class ShearlessAffineBody:
                     ind = i
             # add of the offset according to this position
             offset = (self.frame[ind].inv()*offset_abs).offset()
-            return ShearlessAffineBody.Offset(self.rigidNode, name, offset, ind)
+            return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset, ind)
 
     def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1], index=-1):
         ## adding a offset given in absolute coordinates to the rigid body
-        if index > -1:
-            return ShearlessAffineBody.Offset(self.rigidNode, name, (self.frame[index].inv()*Frame.Frame(offset)).offset(), index)
         if self.numberOfPoints == 1:
             offset = (self.frame[0].inv()*Frame.Frame(offset)).offset()
-            return ShearlessAffineBody.Offset(self.rigidNode, name, offset, 0)
-        else:
-            # computation of the index of the closest point to the offset
-            ind = 0
-            offset = Frame.Frame(offset)
-            min_dist = numpy.linalg.norm(numpy.array(offset.translation) - numpy.array(self.frame[0].translation), 2)
-            for i, p in enumerate(self.frame):
-                dist = numpy.linalg.norm(numpy.array(offset.translation) - numpy.array(p.translation), 2)
-                if(dist < min_dist):
-                    min_dist = dist
-                    ind = i
-            # add of the offset according to this position
-            offset = (self.frame[ind].inv()*offset).offset()
-            return ShearlessAffineBody.Offset(self.rigidNode, name, offset, ind)
-
-    def addRigidScaleOffset(self, name, offset=[0,0,0,0,0,0,1], index=-1):
-        ## adding a relative offset to the rigid body (e.g. used as a joint location)
-        # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-        if index > -1:
-            return ShearlessAffineBody.RigidScaleOffset(self.rigidNode, self.scaleNode, name, offset, index)
-        if self.numberOfPoints == 1:
-            return ShearlessAffineBody.RigidScaleOffset(self.rigidNode, self.scaleNode, name, offset, 0)
-        else:
-            # computation of absolute position of the offset
-            offset_abs = self.framecom*Frame.Frame(offset)
-            # computation of the index of the closest point to the offset
-            ind = 0
-            min_dist = numpy.linalg.norm(numpy.array(offset_abs.translation) - numpy.array(self.frame[0].translation), 2)
-            for i, p in enumerate(self.frame):
-                dist = numpy.linalg.norm(numpy.array(offset_abs.translation) - numpy.array(p.translation), 2)
-                if(dist < min_dist):
-                    min_dist = dist
-                    ind = i
-            # add of the offset according to this position
-            offset = (self.frame[ind].inv()*offset_abs).offset()
-            return ShearlessAffineBody.RigidScaleOffset(self.rigidNode, self.scaleNode, name, offset, ind)
-
-    def addAbsoluteRigidScaleOffset(self, name, offset=[0,0,0,0,0,0,1], index=-1):
-        ## adding a offset given in absolute coordinates to the rigid body
-        if index > -1:
-            return ShearlessAffineBody.RigidScaleOffset(self.rigidNode, self.scaleNode, name, (self.frame[index].inv()*Frame.Frame(offset)).offset(), index)
-        if self.numberOfPoints == 1:
-            offset = (self.frame[0].inv()*Frame.Frame(offset)).offset()
-            return ShearlessAffineBody.RigidScaleOffset(self.rigidNode, self.scaleNode, name, offset, 0)
+            return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset, 0)
+        elif index > -1:
+            return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset, index)
         elif self.numberOfPoints > 1:
             # computation of the index of the closest point to the offset
             index_computed = 0
@@ -327,7 +286,7 @@ class ShearlessAffineBody:
                     index_computed = i
             # add of the offset according to this position
             offset_computed = (self.frame[index_computed].inv()*offset).offset()
-            return ShearlessAffineBody.RigidScaleOffset(self.rigidNode, self.scaleNode, name, offset_computed, index_computed)
+            return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset_computed, index_computed)
 
     def addMappedPoint(self, name, relativePosition=[0,0,0]):
         ## adding a relative position to the rigid body
@@ -344,9 +303,9 @@ class ShearlessAffineBody:
         ## adding a constant force/torque to the rigid body (that could be driven by a controller to simulate a motor)
         return self.rigidNode.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
 
-    def addElasticBehavior(self, name, stiffness=1E2, poissonRatio=0, numberOfGaussPoint=100, generatedDir=None):
+    def addElasticBehavior(self, name, stiffness=1E2, poissonCoef=0, numberOfGaussPoint=100, generatedDir=None):
         ## adding elastic behavior to the component
-        self.behavior = ShearlessAffineBody.ElasticBehavior(self.affineNode, name, stiffness, poissonRatio, numberOfGaussPoint, generatedDir=generatedDir)
+        self.behavior = ShearlessAffineBody.ElasticBehavior(self.affineNode, name, stiffness, poissonCoef, numberOfGaussPoint, generatedDir=generatedDir)
         return self.behavior
 
     def setFixed(self, isFixed=True):
@@ -404,11 +363,19 @@ class ShearlessAffineBody:
 
     class Offset:
 
-        def __init__(self, rigidNode, name, offset, arg=0):
+        def __init__(self, rigidNode, scaleNode, name, offset, arg=0):
+            # node creation
             self.node = rigidNode.createChild(name)
+            scaleNode.addChild(self.node)
+            # variables
             self.frame = Frame.Frame(offset)
-            self.dofs = self.frame.insert(self.node, name='dofs', template='Rigid3'+template_suffix)
-            self.mapping = self.node.createObject('AssembledRigidRigidMapping', name='mapping', source = str(arg)+' '+str(self.frame), geometricStiffness=geometric_stiffness)
+            path_offset_rigid = '@'+ Tools.node_path_rel(self.node, rigidNode)
+            path_offset_scale = '@'+ Tools.node_path_rel(self.node, scaleNode)
+            # scene creation
+            self.dofs = self.frame.insert(self.node, template='Rigid3'+template_suffix, name='dofs')
+            self.mapping = self.node.createObject('RigidScaleToRigidMultiMapping', template='Rigid3'+template_suffix+',Vec3'+template_suffix+',Rigid3'+template_suffix
+                                                                                 , input1=path_offset_rigid, input2=path_offset_scale, output='@.'
+                                                                                 , index='0 '+ str(arg) + ' ' + str(arg), useGeometricStiffness=geometric_stiffness, printLog='0')
 
         def addOffset(self, name, offset=[0,0,0,0,0,0,1]):
             ## adding a relative offset to the offset
@@ -438,50 +405,6 @@ class ShearlessAffineBody:
                 self.dofs = self.node.createObject('MechanicalObject', name='dofs', template='Vec3'+template_suffix, position=concat(position))
                 self.mapping = self.node.createObject('RigidMapping', name='mapping', geometricStiffness = geometric_stiffness)
 
-    class RigidScaleOffset:
-
-        def __init__(self, rigidNode, scaleNode, name, offset, arg=0):
-            # node creation
-            self.node = rigidNode.createChild(name)
-            scaleNode.addChild(self.node)
-            # variables
-            self.frame = Frame.Frame(offset)
-            path_offset_rigid = '@'+ Tools.node_path_rel(self.node, rigidNode)
-            path_offset_scale = '@'+ Tools.node_path_rel(self.node, scaleNode)
-            # scene creation
-            self.dofs = self.frame.insert(self.node, name='dofs', template='Rigid3'+template_suffix)
-            self.mapping = self.node.createObject('RigidScaleToRigidMultiMapping', template='Rigid3'+template_suffix+',Vec3'+template_suffix+',Rigid3'+template_suffix
-                                                                                 , input1=path_offset_rigid, input2=path_offset_scale, output='@.'
-                                                                                 , index='0 '+ str(arg) + ' ' + str(arg), useGeometricStiffness=geometric_stiffness, printLog='0')
-
-        def addOffset(self, name, offset=[0,0,0,0,0,0,1]):
-            ## adding a relative offset to the offset
-            return ShearlessAffineBody.Offset(self.node, name, offset)
-
-        def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1]):
-            ## adding a offset given in absolute coordinates to the offset
-            return ShearlessAffineBody.Offset(self.node, name, (Frame.Frame(offset) * self.frame.inv()).offset())
-
-        def addMotor(self, forces=[0,0,0,0,0,0]):
-            ## adding a constant force/torque at the offset location (that could be driven by a controller to simulate a motor)
-            return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
-
-        def addMappedPoint(self, name, relativePosition=[0,0,0]):
-            ## adding a relative position to the rigid body
-            return ShearlessAffineBody.RigidScaleOffset.MappedPoint(self.node, name, relativePosition)
-
-        def addAbsoluteMappedPoint(self, name, position=[0,0,0]):
-            ## adding a position given in absolute coordinates to the rigid body
-            frame = Frame.Frame(); frame.translation = position
-            return ShearlessAffineBody.RigidScaleOffset.MappedPoint(self.node, name, (frame * self.frame.inv()).translation)
-
-        class MappedPoint:
-
-            def __init__(self, node, name, position):
-                self.node = node.createChild(name)
-                self.dofs = self.node.createObject('MechanicalObject', name='dofs', template='Vec3'+template_suffix, position=concat(position))
-                self.mapping = self.node.createObject('RigidMapping', name='mapping', geometricStiffness = geometric_stiffness)
-
     class MappedPoint:
 
         def __init__(self, node, name, position):
@@ -493,23 +416,24 @@ class ShearlessAffineBody:
 
         def __init__(self, node, name, stiffness=1E2, poissonCoef=0, numberOfGaussPoint=100, generatedDir=None):
             self.node = node.createChild(name)
+
             if generatedDir is None:
                 self.sampler = self.node.createObject('ImageGaussPointSampler', name='sampler', indices='@../SF.indices', weights='@../SF.weights', transform='@../SF.transform', method=2, order=1, targetNumber=numberOfGaussPoint)
             else:
                 serialization.importGaussPoints(self.node,generatedDir+"_gauss.json")
             self.dofs = self.node.createObject('MechanicalObject', template='F331')
+
             if generatedDir is None:
                 self.mapping = self.node.createObject('LinearMapping', template='Affine,F331')
             else:
                 serialization.importLinearMapping(self.node,generatedDir+"_behaviormapping.json")
-            self.forcefield = self.node.createObject('ProjectiveForceField', template='F331', youngModulus=stiffness, poissonRatio=poissonCoef, viscosity=0, isCompliance=0)
+            self.forcefield = self.node.createObject('ProjectiveForceField', template='F331', youngModulus=stiffness, poissonCoef=poissonCoef, viscosity=0, isCompliance=0)
             #strainNode = self.node.createChild('strain')
             #strainNode.createObject('MechanicalObject', template="E331", name="E")
             #strainNode.createObject('CorotationalStrainMapping', template="F331,E331", method="svd", geometricStiffness=0)
-            #self.forcefield = strainNode.createObject('HookeForceField', template="E331", name="forcefield", youngModulus=stiffness, poissonRatio=poissonCoef, viscosity="0.0")
+            #self.forcefield = strainNode.createObject('HookeForceField', template="E331", name="forcefield", youngModulus=stiffness, poissonCoef=poissonCoef, viscosity="0.0")
 
-
-
+    # Export of class
     def exportRasterization(self,path="./generated"):
         self.meshToImageEngine.getContext().createObject('ImageExporter', name="writer", src="@rasterizer", filename=path+"/"+self.node.name+"_rasterization.raw", exportAtBegin="true")
 

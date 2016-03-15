@@ -67,7 +67,7 @@ struct DefGradientTypes
     enum { coord_total_size = VSize };
     enum { deriv_total_size = VSize };
 
-    typedef vector<Real> VecReal;
+    typedef helper::vector<Real> VecReal;
 
     /** Time derivative of a (generalized) deformation gradient, or other vector-like associated quantities, such as generalized forces.
     */
@@ -165,7 +165,7 @@ struct DefGradientTypes
 
     };
 
-    typedef vector<Deriv> VecDeriv;
+    typedef helper::vector<Deriv> VecDeriv;
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
     static Deriv interpolate ( const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs )
@@ -180,7 +180,7 @@ struct DefGradientTypes
 
 //    void clear(){ v.clear(); b.clear(); for( unsigned int i = 0; i < material_dimensions; ++i) getF()[i][i] = (Real)1.0;}
 
-    typedef vector<Coord> VecCoord;
+    typedef helper::vector<Coord> VecCoord;
 
     static const char* Name();
 

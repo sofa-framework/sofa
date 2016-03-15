@@ -44,9 +44,13 @@ using sofa::simulation::SceneLoaderXML ;
 #include <SofaComponentBase/messageHandlerComponent.h>
 using sofa::component::logging::MessageHandlerComponent ;
 
+#include <SofaComponentBase/initComponentBase.h>
+
 TEST(MessageHandlerComponent, simpleInit)
 {
-    string scene =
+    sofa::component::initComponentBase();
+
+	string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
         "   <Node>  "
@@ -70,7 +74,9 @@ TEST(MessageHandlerComponent, simpleInit)
 
 TEST(MessageHandlerComponent, missingHandler)
 {
-    string scene =
+    sofa::component::initComponentBase();
+
+	string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
         "       <MessageHandlerComponent/>                   "
@@ -88,7 +94,9 @@ TEST(MessageHandlerComponent, missingHandler)
 
 TEST(MessageHandlerComponent, invalidHandler)
 {
-    string scene =
+    sofa::component::initComponentBase();
+
+	string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
         "       <MessageHandlerComponent handler='thisisinvalid'/>           "
@@ -106,7 +114,9 @@ TEST(MessageHandlerComponent, invalidHandler)
 
 TEST(MessageHandlerComponent, clangHandler)
 {
-    string scene =
+    sofa::component::initComponentBase();
+
+	string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
         "       <MessageHandlerComponent handler='clang'/>                   "

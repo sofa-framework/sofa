@@ -119,6 +119,14 @@ MessageDispatcher::LoggerStream MessageDispatcher::info(Message::Class mclass, c
     return log(mclass, Message::Info, sender, fileInfo);
 }
 
+MessageDispatcher::LoggerStream MessageDispatcher::deprecated(Message::Class mclass, const std::string& sender, FileInfo fileInfo) {
+    return log(mclass, Message::Deprecated, sender, fileInfo);
+}
+
+MessageDispatcher::LoggerStream MessageDispatcher::deprecated(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo) {
+    return log(mclass, Message::Deprecated, sender, fileInfo);
+}
+
 MessageDispatcher::LoggerStream MessageDispatcher::warning(Message::Class mclass, const std::string& sender, FileInfo fileInfo) {
     return log(mclass, Message::Warning, sender, fileInfo);
 }

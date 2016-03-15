@@ -1731,18 +1731,8 @@ public:
     sofa::core::MultiVecDerivId res;
     bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
 
-    MechanicalAddMBKdxVisitor(const sofa::core::MechanicalParams* mparams, sofa::core::MultiVecDerivId res)
-        : MechanicalVisitor(mparams) , res(res), accumulate(true)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-        mparamsWithoutStiffness = *mparams;
-        mparamsWithoutStiffness.setKFactor(0);
-    }
-
     MechanicalAddMBKdxVisitor(const sofa::core::MechanicalParams* mparams,
-                              sofa::core::MultiVecDerivId res, bool accumulate)
+                              sofa::core::MultiVecDerivId res, bool accumulate=true)
         : MechanicalVisitor(mparams) , res(res), accumulate(accumulate)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO

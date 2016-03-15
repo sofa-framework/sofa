@@ -313,7 +313,7 @@ public:
             {
                 for (unsigned int j = 0; j < 3 ; j++) { v[j] = position[triangle[i][j]]; pt[j]=Vec<3,int>((int)helper::round(v[j][0]),(int)helper::round(v[j][1]),(int)helper::round(v[j][2])); }
 
-                vector<Vec<3,int> > pts;
+                helper::vector<Vec<3,int> > pts;
                 for (unsigned int j = 0; j < 3 ; j++)
                 {
                     if(pt[j][axis]==(int)coord) pts.push_back(pt[j]);
@@ -344,7 +344,7 @@ public:
             {
                 for (unsigned int j = 0; j < 4 ; j++) { v[j] = position[quad[i][j]]; pt[j]=Vec<3,int>((int)helper::round(v[j][0]),(int)helper::round(v[j][1]),(int)helper::round(v[j][2])); }
 
-                vector<Vec<3,int> > pts;
+                helper::vector<Vec<3,int> > pts;
                 for (unsigned int j = 0; j < 4 ; j++)
                 {
                     if(pt[j][axis]==(int)coord) pts.push_back(pt[j]);
@@ -854,6 +854,7 @@ public:
 
     // returns the transformed point (for the widget)
     Coord get_pointCoord(const Coord& ip) const { return transform->fromImage(ip); }
+    Coord get_pointImageCoord(const Coord& ip) const { return transform->toImage(ip); }
     // returns the 4 slice corners
     Vec<4,Coord> get_sliceCoord(const unsigned int index,const unsigned int axis,const Mat<2,3,unsigned int>& roi) const
     {

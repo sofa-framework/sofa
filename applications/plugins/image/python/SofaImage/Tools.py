@@ -1,3 +1,4 @@
+import Sofa
 import os.path
 import SofaPython.Quaternion as quat
 from SofaPython.Tools import listToStr as concat
@@ -61,3 +62,19 @@ def transformToData(scale,offset,timeOffset=0,timeScale=1,isPerspective=False):
     """ Returns a transform, formatted to sofa data given voxelsize, rigid position (offset), time and camera parameters
     """
     return concat(offset[:3])+' '+concat(quat.to_euler(offset[3:])*180./math.pi)+' '+concat(scale)+' '+str(timeOffset)+' '+str(timeScale)+' '+str(int(isPerspective))
+
+# controller you must derived from and instanciate in the same context than your ImageViewer if you want to define actions to manually add / remove point from an image plane
+class ImagePlaneController(Sofa.PythonScriptController):
+    def addPoint(self, id, x, y, z):
+        return
+
+    def removePoint(self, id):
+        return
+
+    def clearPoints(self):
+        return
+
+    # return a dictionary of id -> point: {id0 : point0, idn : pointn, ...}
+    # a point is defined as follows: {'position': [x, y, z], 'color': [r, g, b], ...custom parameters... }
+    def getPoints(self):
+        return

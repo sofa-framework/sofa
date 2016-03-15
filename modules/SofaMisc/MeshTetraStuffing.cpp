@@ -44,6 +44,7 @@ namespace misc
 {
 
 using namespace sofa::defaulttype;
+using helper::vector;
 
 SOFA_DECL_CLASS(MeshTetraStuffing)
 

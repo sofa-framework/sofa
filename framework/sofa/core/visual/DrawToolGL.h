@@ -129,6 +129,12 @@ public:
 
     virtual void drawTetrahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, const Vec4f &colour);
     virtual void drawTetrahedra(const std::vector<Vector3> &points, const Vec4f& colour);
+    virtual void drawScaledTetrahedra(const std::vector<Vector3> &points, const Vec4f& colour, const float scale);
+
+    virtual void drawHexahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3,
+        const Vector3 &p4, const Vector3 &p5, const Vector3 &p6, const Vector3 &p7, const Vec4f &colour);
+    virtual void drawHexahedra(const std::vector<Vector3> &points, const Vec4f& colour);
+    virtual void drawScaledHexahedra(const std::vector<Vector3> &points, const Vec4f& colour, const float scale);
 
     virtual void drawSphere( const Vector3 &p, float radius);
     virtual void drawEllipsoid(const Vector3 &p, const Vector3 &radii);
