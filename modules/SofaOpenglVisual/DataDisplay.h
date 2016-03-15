@@ -29,7 +29,7 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaOpenglVisual/ColorMap.h>
+#include <SofaOpenglVisual/OglColorMap.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
 
 namespace sofa
@@ -85,7 +85,7 @@ public:
     Data<defaulttype::Vec2f> d_userRange;
     Data<float> d_currentMin, d_currentMax;
 
-    visualmodel::ColorMap *colorMap;
+    visualmodel::OglColorMap *colorMap;
     core::State<DataTypes> *state;
     core::topology::BaseMeshTopology* topology;
     Real oldMin, oldMax;

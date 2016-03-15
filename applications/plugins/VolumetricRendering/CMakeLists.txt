@@ -13,14 +13,16 @@ set(HEADER_FILES
     initVolumetricRendering.h
     OglTetrahedralModel.h
     OglTetrahedralModel.inl
+    OglVolumetricModel.h
 )
 
 set(SOURCE_FILES
     initVolumetricRendering.cpp
     OglTetrahedralModel.cpp
+    OglVolumetricModel.cpp
 )
 
-add_library(${PROJECT_NAME} SHARED  ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
+add_library(${PROJECT_NAME} SHARED  ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 #Force includes to be like <VolumetricRendering/xxxxxx.h>
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
