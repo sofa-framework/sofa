@@ -48,10 +48,51 @@
       <LinearMapping template="Vec3d,ExtVec3f"  />
     </Node>
   </Node>
+  
+  
+
+  <Node 	name="FlexibleI MR" activated="1"  >
+
+    <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+    <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
+
+    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+    <Mesh name="mesh" src="@loader" />
+    <MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
+
+    <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
+    <FixedConstraint indices="@FixedROI.indices" />
+
+    <BarycentricShapeFunction  />
+
+    <Node 	name="behavior"   >
+      <TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamplesScale="0" />
+      <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+      <LinearMapping template="Vec3d,F331"  />
+
+      <Node 	name="I"   >
+        <MechanicalObject  template="I331" name="I"  />
+        <InvariantMapping template="F331,I331"  />
+        <MooneyRivlinForceField  template="I331" C1="192.307692308" C2="0" bulk="833.333333333"      />
+      </Node>
+    </Node>
+
+    <Node 	name="mass"   >
+      <MechanicalObject position="@../mesh.position" />
+      <UniformMass totalMass="250" />
+      <LinearMapping template="Vec3d,Vec3d"  />
+    </Node>
+
+    <Node 	name="visual"   >
+      <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="0.4 0.4 0.4"/>
+      <LinearMapping template="Vec3d,ExtVec3f"  />
+    </Node>
+  </Node>
 
 
-
-
+  
+  
+  
   <Node name="FlexibleU" activated="1"  >
 
     <EulerImplicitSolver name="cg_odesolver" printLog="0" />
@@ -91,7 +132,46 @@
 
 
 
-<!--  <Node 	name="FEM"  activated="1" >
+  <Node name="FlexibleU MR" activated="1"  >
+
+    <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+    <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
+
+    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+    <Mesh name="mesh" src="@loader" />
+    <MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
+
+    <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
+    <FixedConstraint indices="@FixedROI.indices" />
+
+    <BarycentricShapeFunction  />
+
+    <Node name="behavior"   >
+      <TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamplesScale="0" />
+      <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+      <LinearMapping template="Vec3d,F331"  />
+      <Node name="U"   >
+        <MechanicalObject  template="U331" name="U"  />
+        <PrincipalStretchesMapping template="F331,U331" asStrain="false" threshold="0.6"    />
+        <MooneyRivlinForceField  template="U331" C1="192.307692308" C2="0" bulk="833.333333333"   PSDStabilization="true"       />
+      </Node>
+    </Node>
+
+    <Node 	name="mass"   >
+      <MechanicalObject position="@../mesh.position" />
+      <UniformMass totalMass="250" />
+      <LinearMapping template="Vec3d,Vec3d"  />
+    </Node>
+
+    <Node 	name="visual"   >
+      <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="0.1 0.8 0.1 1" />
+      <LinearMapping template="Vec3d,ExtVec3f"  />
+    </Node>
+  </Node>
+  
+  
+  
+<!--  <Node 	name="MJED"  activated="1" >
 
     <EulerImplicitSolver name="cg_odesolver" printLog="0" />
     <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
@@ -149,6 +229,39 @@
     </Node>
 
   </Node>
+  
+  
+  
+  <Node name="FlexibleU 2D MR" >
+    <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+    <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
+    <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" translation="6 0 0" rotation="90 0 0 " scale="5 5 0" />
+    <MeshTopology name="mesh" src="@loader" />
+    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
+    <BarycentricShapeFunction template="ShapeFunctiond"  />
 
+    <BoxConstraint box="5.9 -1 -1    6.1 1 6 " />
+    <UniformMass  name="mass" totalMass="1"/>
+
+    <Node name="deformationNode" >
+      <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
+      <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
+      <LinearMapping template="Vec3d,F321"  />
+
+      <Node name="StrainNode">
+        <MechanicalObject template="U321"  name="U" />
+        <PrincipalStretchesMapping template="F321,U321" asStrain="false" threshold="0.6"   />
+        <MooneyRivlinForceField  template="U321" C1="192.307692308" C2="0" bulk="833.333333333"   PSDStabilization="true"       />
+      </Node>
+
+
+    </Node>
+
+    <Node name="Visual" >
+      <VisualModel color="0.1 0.8 0.1 1" />
+      <IdentityMapping />
+    </Node>
+
+  </Node>
 
 </Node>
