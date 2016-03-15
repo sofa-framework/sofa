@@ -42,6 +42,7 @@ set(HEADER_FILES
     mass/AffineMass.h
     material/BaseMaterial.h
     material/BaseMaterialForceField.h
+    material/HEMLStVKForceField.h
     material/HookeForceField.h
     material/HookeMaterialBlock.h
     material/HookeMaterialBlock.inl
@@ -130,6 +131,7 @@ set(SOURCE_FILES
     initFlexible.cpp
     mass/AffineMass.cpp
     material/BaseMaterialForceField.cpp
+    material/HEMLStVKForceField.cpp
     material/HookeForceField.cpp
     material/MooneyRivlinForceField.cpp
     material/MuscleMaterialForceField.cpp
