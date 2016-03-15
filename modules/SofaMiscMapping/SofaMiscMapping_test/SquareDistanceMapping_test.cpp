@@ -49,7 +49,7 @@ struct SquareDistanceMappingTest : public Mapping_test<SquareDistanceMapping>
 
     bool test()
     {
-        this->errorMax *= 5;
+        this->errorMax *= 10;
 
         SquareDistanceMapping* map = static_cast<SquareDistanceMapping*>( this->mapping );
         map->f_computeDistance.setValue(true);
