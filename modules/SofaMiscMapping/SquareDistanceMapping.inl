@@ -137,53 +137,43 @@ void SquareDistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mp
         // gap = in[links[i][1]] - in[links[i][0]] (only for position)
         computeCoordPositionDifference( gap, p0, p1 );
 
-        Real gapNorm = gap.norm2();
+        const Real gapNorm = gap.norm2();
         out[i] = gapNorm - restLengths[i]*restLengths[i];  // output
 
-
         // insert in increasing column order
-        if( links[i][1]<links[i][0])
+        gap *= 2; // 2*p[1]-2*p[0]
+        jacobian.beginRow(i);
+        if( links[i][1]<links[i][0] )
         {
-            jacobian.beginRow(i);
             for(unsigned k=0; k<In::spatial_dimensions; k++ )
-            {
-                jacobian.insertBack( i, links[i][1]*Nin+k, 2*p1[k]-2*p0[k] );
-            }
+                jacobian.insertBack( i, links[i][1]*Nin+k, gap[k] );
             for(unsigned k=0; k<In::spatial_dimensions; k++ )
-            {
-                jacobian.insertBack( i, links[i][0]*Nin+k, 2*p0[k]-2*p1[k] );
-            }
+                jacobian.insertBack( i, links[i][0]*Nin+k, -gap[k] );
         }
         else
         {
-            jacobian.beginRow(i);
             for(unsigned k=0; k<In::spatial_dimensions; k++ )
-            {
-                jacobian.insertBack( i, links[i][0]*Nin+k, 2*p0[k]-2*p1[k] );
-            }
+                jacobian.insertBack( i, links[i][0]*Nin+k, -gap[k] );
             for(unsigned k=0; k<In::spatial_dimensions; k++ )
-            {
-                jacobian.insertBack( i, links[i][1]*Nin+k, 2*p1[k]-2*p0[k] );
-            }
+                jacobian.insertBack( i, links[i][1]*Nin+k, gap[k] );
         }
     }
 
     jacobian.compress();
-
 }
 
 
 template <class TIn, class TOut>
 void SquareDistanceMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
-    if( jacobian.rowSize() > 0 )
+    if( jacobian.rowSize() )
         jacobian.mult(dOut,dIn);
 }
 
 template <class TIn, class TOut>
 void SquareDistanceMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
 {
-    if( jacobian.rowSize() > 0 )
+    if( jacobian.rowSize() )
         jacobian.addMultTranspose(dIn,dOut);
 }
 
