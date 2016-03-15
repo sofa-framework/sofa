@@ -99,8 +99,9 @@ public:
     {
         Inherit1::reinit();
 
-        m_lambda = d_youngModulus.getValue()*d_poissonRatio.getValue()/((1 + d_poissonRatio.getValue())*(1 - 2*d_poissonRatio.getValue()));
-        m_mu = d_youngModulus.getValue()/(2*(1 + d_poissonRatio.getValue()));
+        // lame coef
+        Real lambda = d_youngModulus.getValue()*d_poissonRatio.getValue()/((1 + d_poissonRatio.getValue())*(1 - 2*d_poissonRatio.getValue()));
+        Real mu = d_youngModulus.getValue()/(2*(1 + d_poissonRatio.getValue()));
 
         static const Mat33 D[6] = { Mat33( Vec3(1,0.5,0.5), Vec3(0.5,0,0), Vec3(0.5,0,0)),
                                     Mat33( Vec3(0,0.5,0), Vec3(0.5,1,0.5), Vec3(0,0.5,0)),
@@ -110,15 +111,16 @@ public:
                                     Mat33( Vec3(0,0,0), Vec3(0,0,-0.5), Vec3(0,-0.5,0)), };
                 // warning indices of edges are not the same in sofa topology and in the HEML article  (l5 and l6 are inverted)
 
-        m_topology = this->getContext()->template get<topology::MeshTopology>( core::objectmodel::BaseContext::SearchUp );
-        if( !m_topology ) serr<<"No Topology found ! "<<sendl;
+
+        topology::MeshTopology* topology = this->getContext()->template get<topology::MeshTopology>( core::objectmodel::BaseContext::SearchUp );
+        if( !topology ) serr<<"No Topology found ! "<<sendl;
 
 
         // big mess to get positions...
         const VecCoord3* _points;
-        Data<VecCoord3>* datapoints = static_cast<Data<VecCoord3>*>(m_topology->findData("position"));
+        Data<VecCoord3>* datapoints = static_cast<Data<VecCoord3>*>(topology->findData("position"));
         if( !datapoints || datapoints->getValue().empty() )
-            _points = static_cast<const VecCoord3*>(m_topology->getContext()->getState()->baseRead(core::ConstVecCoordId::position())->getValueVoidPtr());
+            _points = static_cast<const VecCoord3*>(topology->getContext()->getState()->baseRead(core::ConstVecCoordId::position())->getValueVoidPtr());
         else
             _points = &datapoints->getValue();
         const VecCoord3& pos = *_points;
@@ -127,7 +129,7 @@ public:
 
         m_K.resize( this->getMState()->getMatrixSize(), this->getMState()->getMatrixSize() );
 
-        const core::topology::BaseMeshTopology::SeqTetrahedra& tetras = m_topology->getTetrahedra();
+        const core::topology::BaseMeshTopology::SeqTetrahedra& tetras = topology->getTetrahedra();
         const size_t nbtetras = tetras.size();
 
         for( size_t t=0 ; t<nbtetras ; ++t )
@@ -159,10 +161,10 @@ public:
                     Mtr[i][j] = Mtr[j][i] = trace( C[i]*C[j] ); // TODO no need for computing the entire matrice product
             }
 
-            Mat66 M = m_lambda/8.0*( defaulttype::tensorProduct( vtr, vtr ) ) + m_mu/4.0*Mtr;
+            Mat66 M = lambda/8.0*( defaulttype::tensorProduct( vtr, vtr ) ) + mu/4.0*Mtr;
             M *= std::abs( dot(edge0,cross(edge1,edge2)) / 6.0 ); // vol   TODO get volume from a Gauss point sampler
 
-            const core::topology::BaseMeshTopology::EdgesInTetrahedron& edges = m_topology->getEdgesInTetrahedron(t);
+            const core::topology::BaseMeshTopology::EdgesInTetrahedron& edges = topology->getEdgesInTetrahedron(t);
             for( int i=0 ; i<6 ; ++i )
                 for( int j=0 ; j<6 ; ++j )
                     m_K.add( edges[i], edges[j], -2*M[i][j] ); // K = -2 M
@@ -213,9 +215,9 @@ public:
 
 
     // df += -2 M dx == K dx
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& _df, const DataVecDeriv& _dx )
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx )
     {
-        m_K.addMult( _df, _dx, mparams->kFactor()  );
+        m_K.addMult( df, dx, mparams->kFactor()  );
     }
 
 
@@ -237,12 +239,7 @@ protected:
     virtual ~HEMLStVKForceField() {}
 
 
-    Real m_lambda, m_mu; // lame coef
-
-    topology::MeshTopology* m_topology; // have an eye on tetra and edges
-
-    typedef linearsolver::EigenSparseMatrix<DataTypes,DataTypes> block_matrix_type;
-    block_matrix_type m_K; // assembled stiffness matrix (per edge)
+    linearsolver::EigenSparseMatrix<DataTypes,DataTypes> m_K; ///< assembled stiffness matrix (per edge)
 
 };
 
@@ -258,4 +255,5 @@ protected:
 }
 
 #endif
+
 

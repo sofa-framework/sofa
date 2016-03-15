@@ -191,14 +191,14 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
-    if( jacobian.rowSize() > 0 )
+    if( jacobian.rowSize() )
         jacobian.mult(dOut,dIn);
 }
 
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
 {
-    if( jacobian.rowSize() > 0 )
+    if( jacobian.rowSize() )
         jacobian.addMultTranspose(dIn,dOut);
 }
 
