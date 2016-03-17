@@ -93,6 +93,21 @@ class Model:
                 self.visual = False if objXml.attrib["visual"] in {'False','0','false'} else True
             parseTag(self, objXml)
 
+
+
+    class Image:
+        def __init__(self, imageXml=None):
+            self.format=None
+            self.source=None
+            if not imageXml is None:
+                self.parseXml(imageXml)
+
+        def parseXml(self, imageXml):
+            parseIdName(self,imageXml)
+            self.format = imageXml.find("source").attrib["format"]
+            self.source = imageXml.find("source").text
+
+
     class Solid:
         def __init__(self, solidXml=None):
             self.id = None
@@ -101,6 +116,7 @@ class Model:
             self.position = None
             self.mesh = list() # list of meshes
             self.meshAttributes = dict() # attributes associated with each mesh
+            self.image = list() # list of images
 
             #TODO replace this with a MassInfo?
             self.mass = None
@@ -118,6 +134,10 @@ class Model:
                 self.meshAttributes[mesh.id]=attr
             else:
                 self.meshAttributes[mesh.id]= Model.MeshAttributes()
+
+        def addImage(self, image):
+            self.image.append(image)
+
 
         def parseXml(self, objXml):
             parseIdName(self, objXml)
@@ -198,7 +218,6 @@ class Model:
             self.solid=None # a Model.Solid object
             self.mesh=None  # a Model.Mesh object
             self.group=None # the vertex indices of the group
-            self.image=None
 
     class SurfaceLink:
         def __init__(self,objXml=None):
@@ -223,6 +242,7 @@ class Model:
         self.modelDir = None
         self.units=dict()
         self.meshes=dict()
+        self.images=dict()
         self.solids=dict()
         self.solidsByTag=dict()
         self.surfaceLinksByTag=dict()
@@ -257,7 +277,21 @@ class Model:
                     else:
                         Sofa.msg_warning("SofaPython.sml","Model: mesh not found: "+mesh.source )
                     self.meshes[m.attrib["id"]] = mesh
-                    
+
+            # images
+            for m in modelXml.iter("image"):
+                if not m.find("source") is None:
+                    if m.attrib["id"] in self.images:
+                        Sofa.msg_warning("SofaPython.sml","Model: image id {0} already defined".format(m.attrib["id"]) )
+                    image = Model.Image(m)
+                    sourceFullPath = os.path.join(self.modelDir,image.source)
+                    if os.path.exists(sourceFullPath):
+                        image.source=sourceFullPath
+                    else:
+                        Sofa.msg_warning("SofaPython.sml","Model: image not found: "+image.source )
+                    self.images[m.attrib["id"]] = image
+
+
             # solids
             for objXml in modelXml.iter("solid"):
                 if objXml.attrib["id"] in self.solids:
@@ -265,6 +299,7 @@ class Model:
                     continue
                 solid=Model.Solid(objXml)
                 self.parseMeshes(solid, objXml)
+                self.parseImages(solid, objXml)
                 self.solids[solid.id]=solid
 
             # skinning
@@ -340,6 +375,17 @@ class Model:
                 obj.addMesh(self.meshes[meshId], attr)
             else:
                 Sofa.msg_error("SofaPython.sml","Model: solid {0} references undefined mesh {1}".format(obj.name, meshId))
+
+
+    def parseImages(self, obj, objXml):
+        images=objXml.findall("image")
+        for i,m in enumerate(images):
+            imageId = m.attrib["id"]
+            if imageId in self.images:
+                obj.addImage(self.images[imageId])
+            else:
+                Sofa.msg_error("SofaPython.sml","Model: solid {0} references undefined image {1}".format(obj.name, imageId))
+
 
     def parseJointGenerics(self,modelXml):
         for j in modelXml.iter("jointGeneric"):
