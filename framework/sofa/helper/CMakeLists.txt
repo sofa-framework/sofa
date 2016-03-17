@@ -329,7 +329,7 @@ install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/" DESTINATION "include/sofa/helpe
 # python wrapping using swig
 #
 if(SWIG_FOUND AND PYTHONLIBS_FOUND)
-    message(STATUS "Add sofa.helper python package generation using SWIG")
+    message("Add sofa.helper python package generation using SWIG")
     include_directories(${PYTHON_INCLUDE_PATH})
     include(${SWIG_USE_FILE})
 

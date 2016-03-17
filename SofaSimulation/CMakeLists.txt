@@ -37,7 +37,7 @@ sofa_write_package_config_files(SofaSimulation ${SOFASIMULATION_VERSION})
 # python wrapping using swig
 #
 if(SWIG_FOUND AND PYTHONLIBS_FOUND)
-    message(STATUS "Add sofa.simulation python package generation using SWIG")
+    message("Add sofa.simulation python package generation using SWIG")
     include_directories(${PYTHON_INCLUDE_PATH})
     include(${SWIG_USE_FILE})
 
