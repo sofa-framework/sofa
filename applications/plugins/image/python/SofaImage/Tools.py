@@ -47,7 +47,7 @@ def getImageTransform(filename, scaleFactor=1):
                 scale = map(float,splitted[2:5])
             if 'Position'==splitted[0] or 'Offset'==splitted[0] or 'translation'==splitted[0] or 'origin'==splitted[0]:
                 tr = map(float,splitted[2:5])
-            if 'Orientation'==splitted[0] :
+            if 'Orientation'==splitted[0] or 'Rotation'==splitted[0] or 'TransformMatrix'==splitted[0] :
                 R = numpy.array([map(float,splitted[2:5]),map(float,splitted[5:8]),map(float,splitted[8:11])])
             if 'DimSize'==splitted[0] or 'dimensions'==splitted[0] or 'dim'==splitted[0]:
                 dim = map(int,splitted[2:5])
@@ -57,6 +57,41 @@ def getImageTransform(filename, scaleFactor=1):
         tr = [t*scaleFactor for t in tr]
     offset=[tr[0],tr[1],tr[2],q[0],q[1],q[2],q[3]]
     return (dim,scale,offset)
+
+
+def getImageType(filename):
+    """ Returns type of an image given an .mhd header image file
+    """
+    t=""
+    with open(filename,'r') as f:
+        for line in f:
+            splitted = line.split()
+            if 'ElementType'==splitted[0] or 'voxelType'==splitted[0] or 'scale3d'==splitted[0] or 'voxelSize'==splitted[0]:
+                t = str(splitted[2])
+    if t=="MET_CHAR":
+        return "ImageC"
+    elif t=="MET_DOUBLE":
+        return "ImageD"
+    elif t=="MET_FLOAT":
+        return "ImageF"
+    elif t=="MET_INT":
+        return "ImageI"
+    elif t=="MET_LONG":
+        return "ImageL"
+    elif t=="MET_SHORT":
+        return "ImageS"
+    elif t=="MET_UCHAR":
+        return "ImageUC"
+    elif t=="MET_UINT":
+        return "ImageUI"
+    elif t=="MET_ULONG":
+        return "ImageUL"
+    elif t=="MET_USHORT":
+        return "ImageUS"
+    elif t=="MET_BOOL":
+        return "ImageB"
+    else:
+        return None
 
 def transformToData(scale,offset,timeOffset=0,timeScale=1,isPerspective=False):
     """ Returns a transform, formatted to sofa data given voxelsize, rigid position (offset), time and camera parameters
