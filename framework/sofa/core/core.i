@@ -40,6 +40,12 @@ public:
     virtual std::string getValueTypeString() const = 0;
 };
 
+%extend BaseData {
+    std::string __str__() {
+        return self->getValueString();
+    }
+}
+
 
 class BaseObject : public virtual Base {
 public:
@@ -65,3 +71,5 @@ public:
 
 } // core
 } // sofa
+
+
