@@ -1,0 +1,1 @@
+export PYTHONPATH="/local2/build/sofa-swig/lib/python2.7/site-packages"
