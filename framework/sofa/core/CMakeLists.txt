@@ -281,3 +281,22 @@ sofa_install_targets(SofaFramework SofaCore "")
 
 install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/" DESTINATION "include/sofa/core"
         FILES_MATCHING PATTERN "*.h" PATTERN "*.inl")
+
+#
+# python wrapping using swig
+#
+if(SWIG_FOUND AND PYTHONLIBS_FOUND)
+    set(SWIG_MODULE_NAME "core")
+    message("Add sofa.${SWIG_MODULE_NAME} python package generation using SWIG")
+    include_directories(${PYTHON_INCLUDE_PATH})
+    include(${SWIG_USE_FILE})
+
+    set_source_files_properties(${SWIG_MODULE_NAME}.i PROPERTIES CPLUSPLUS ON)
+    # TODO optimization, explore the -builtin swig option
+    swig_add_module(${SWIG_MODULE_NAME} python ${SWIG_MODULE_NAME}.i)
+    swig_link_libraries(${SWIG_MODULE_NAME} ${PYTHON_LIBRARIES} ${PROJECT_NAME})
+    # TODO:
+    set_target_properties(${SWIG_MODULE_${SWIG_MODULE_NAME}_REAL_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SWIG_OUTDIR})
+    install(TARGETS ${SWIG_MODULE_${SWIG_MODULE_NAME}_REAL_NAME} DESTINATION lib/python2.7/site-packages/sofa)
+    install(FILES ${CMAKE_SWIG_OUTDIR}/${SWIG_MODULE_NAME}.py DESTINATION lib/python2.7/site-packages/sofa)
+endif()

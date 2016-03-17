@@ -329,16 +329,16 @@ install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/" DESTINATION "include/sofa/helpe
 # python wrapping using swig
 #
 if(SWIG_FOUND AND PYTHONLIBS_FOUND)
-    message("Add sofa.helper python package generation using SWIG")
+    set(SWIG_MODULE_NAME "helper")
+    message("Add sofa.${SWIG_MODULE_NAME} python package generation using SWIG")
     include_directories(${PYTHON_INCLUDE_PATH})
     include(${SWIG_USE_FILE})
 
-    set_source_files_properties(helper.i PROPERTIES CPLUSPLUS ON)
-    set_source_files_properties(helper.i PROPERTIES SWIG_FLAGS "-includeall")
-    swig_add_module(helper python helper.i)
+    set_source_files_properties(${SWIG_MODULE_NAME}.i PROPERTIES CPLUSPLUS ON)
+    swig_add_module(${SWIG_MODULE_NAME} python ${SWIG_MODULE_NAME}.i)
     swig_link_libraries(helper ${PYTHON_LIBRARIES} ${PROJECT_NAME})
-    set_target_properties(${SWIG_MODULE_helper_REAL_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SWIG_OUTDIR})
-    install(TARGETS ${SWIG_MODULE_helper_REAL_NAME} DESTINATION lib/python2.7/site-packages/sofa)
-    install(FILES ${CMAKE_SWIG_OUTDIR}/helper.py DESTINATION lib/python2.7/site-packages/sofa)
+    set_target_properties(${SWIG_MODULE_${SWIG_MODULE_NAME}_REAL_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SWIG_OUTDIR})
+    install(TARGETS ${SWIG_MODULE_${SWIG_MODULE_NAME}_REAL_NAME} DESTINATION lib/python2.7/site-packages/sofa)
+    install(FILES ${CMAKE_SWIG_OUTDIR}/${SWIG_MODULE_NAME}.py DESTINATION lib/python2.7/site-packages/sofa)
 endif()
 
