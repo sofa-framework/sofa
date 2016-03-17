@@ -120,6 +120,7 @@ find_package(SWIG)
 find_package(PythonLibs)
 if(SWIG_FOUND AND PYTHONLIBS_FOUND)
     set(CMAKE_SWIG_OUTDIR ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/python2.7/site-packages/sofa)
+    file(COPY __init__.py DESTINATION ${CMAKE_SWIG_OUTDIR})
 endif()
 
 
