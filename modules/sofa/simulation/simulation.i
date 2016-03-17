@@ -82,7 +82,7 @@ def Node_createObject(self, type, **kwargs):
             desc.setAttribute(key, value)
     return sofa.core.ObjectFactory.CreateObject(self.getContext(), desc)
 
-# turn the function into a Node method
+# turn the function into a method of Node class
 Node.createObject=Node_createObject
 %}
 
