@@ -35,9 +35,9 @@ public:
 class BaseData {
 public:
     const std::string& getName() const;
-    void setName(const std::string& name);
     virtual std::string getValueString() const = 0;
     virtual std::string getValueTypeString() const = 0;
+    virtual bool read(const std::string& value) = 0;
 };
 
 %extend BaseData {
