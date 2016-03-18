@@ -372,6 +372,22 @@ void printPythonExceptions();
     } \
 }
 
+// call a function that returns a boolean
+#define SP_CALL_MODULEBOOLFUNC(func, ...) { \
+    if (func) { \
+        PyObject *res = PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__)); \
+        if (!res) \
+        { \
+            SP_MESSAGE_EXCEPTION( "SP_CALL_MODULEFUNC_BOOL" ) \
+            PyErr_Print(); \
+        } \
+        else \
+        { \
+            if PyBool_Check(res) b = ( res == Py_True ); \
+            Py_DECREF(res); \
+        } \
+    } \
+}
 
 
 #endif // PYTHONMACROS_H

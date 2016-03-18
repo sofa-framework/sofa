@@ -49,13 +49,6 @@ ScriptController::ScriptController()
 {
     // various initialization stuff here...
     f_listening = true; // par défaut, on écoute les events sinon le script va pas servir à grand chose
-
-
-    // Initialize the list of function that are available in the child object.
-    m_functionAvailables.resize(CONTROLLERFUNCTIONLIST_COUNT) ;
-    for(unsigned int i=0;i<m_functionAvailables.size();i++)
-        m_functionAvailables[i] = true ;
-
 }
 
 
@@ -117,18 +110,12 @@ void ScriptController::cleanup()
 
 void ScriptController::onBeginAnimationStep(const double dt)
 {
-    if(!m_functionAvailables[ONBEGINANIMATIONSTEP])
-        return ;
-
     script_onBeginAnimationStep(dt);
     ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::onEndAnimationStep(const double dt)
 {
-    if(!m_functionAvailables[ONENDANIMATIONSTEP])
-        return ;
-
     script_onEndAnimationStep(dt);
     ScriptEnvironment::initScriptNodes();
 }
@@ -140,45 +127,24 @@ void ScriptController::onMouseEvent(core::objectmodel::MouseEvent * evt)
     case core::objectmodel::MouseEvent::Move:
         break;
     case core::objectmodel::MouseEvent::LeftPressed:
-        if(!m_functionAvailables[ONMOUSEBUTTONLEFT])
-            return ;
-
         script_onMouseButtonLeft(evt->getPosX(),evt->getPosY(),true);
         break;
     case core::objectmodel::MouseEvent::LeftReleased:
-        if(!m_functionAvailables[ONMOUSEBUTTONLEFT])
-            return ;
-
         script_onMouseButtonLeft(evt->getPosX(),evt->getPosY(),false);
         break;
     case core::objectmodel::MouseEvent::RightPressed:
-        if(!m_functionAvailables[ONMOUSEBUTTONRIGHT])
-            return ;
-
         script_onMouseButtonRight(evt->getPosX(),evt->getPosY(),true);
         break;
     case core::objectmodel::MouseEvent::RightReleased:
-        if(!m_functionAvailables[ONMOUSEBUTTONRIGHT])
-            return ;
-
         script_onMouseButtonRight(evt->getPosX(),evt->getPosY(),false);
         break;
     case core::objectmodel::MouseEvent::MiddlePressed:
-        if(!m_functionAvailables[ONMOUSEBUTTONMIDDLE])
-            return ;
-
         script_onMouseButtonMiddle(evt->getPosX(),evt->getPosY(),true);
         break;
     case core::objectmodel::MouseEvent::MiddleReleased:
-        if(!m_functionAvailables[ONMOUSEBUTTONMIDDLE])
-            return ;
-
         script_onMouseButtonMiddle(evt->getPosX(),evt->getPosY(),false);
         break;
     case core::objectmodel::MouseEvent::Wheel:
-        if(!m_functionAvailables[ONMOUSEWHEEL])
-            return ;
-
         script_onMouseWheel(evt->getPosX(),evt->getPosY(),evt->getWheelDelta());
         break;
     case core::objectmodel::MouseEvent::Reset:
@@ -192,9 +158,6 @@ void ScriptController::onMouseEvent(core::objectmodel::MouseEvent * evt)
 
 void ScriptController::onKeyPressedEvent(core::objectmodel::KeypressedEvent * evt)
 {
-    if(!m_functionAvailables[ONKEYPRESSED])
-        return ;
-
     if( script_onKeyPressed(evt->getKey()) )
         evt->setHandled();
     ScriptEnvironment::initScriptNodes();
@@ -202,9 +165,6 @@ void ScriptController::onKeyPressedEvent(core::objectmodel::KeypressedEvent * ev
 
 void ScriptController::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent * evt)
 {
-    if(!m_functionAvailables[ONKEYRELEASED])
-        return ;
-
     if( script_onKeyReleased(evt->getKey()) )
         evt->setHandled();
     ScriptEnvironment::initScriptNodes();
@@ -212,9 +172,6 @@ void ScriptController::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent * 
 
 void ScriptController::onGUIEvent(core::objectmodel::GUIEvent *event)
 {
-    if(!m_functionAvailables[ONGUIEVENT])
-        return ;
-
     script_onGUIEvent(event->getControlID().c_str(),
             event->getValueName().c_str(),
             event->getValue().c_str());
@@ -226,9 +183,6 @@ void ScriptController::handleEvent(core::objectmodel::Event *event)
 {
     if (sofa::core::objectmodel::ScriptEvent::checkEventType(event))
     {
-        if(!m_functionAvailables[ONSCRIPTEVENT])
-            return ;
-
         script_onScriptEvent(static_cast<core::objectmodel::ScriptEvent *> (event));
         ScriptEnvironment::initScriptNodes();
     }
@@ -237,9 +191,6 @@ void ScriptController::handleEvent(core::objectmodel::Event *event)
 
 void ScriptController::draw(const core::visual::VisualParams* vis)
 {
-    if(!m_functionAvailables[DRAW])
-        return ;
-
     script_draw(vis);
     ScriptEnvironment::initScriptNodes();
 }

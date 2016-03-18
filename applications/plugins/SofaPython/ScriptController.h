@@ -189,7 +189,6 @@ protected:
 
     /// @}
 
-    sofa::helper::vector<bool> m_functionAvailables;
 };
 
 
