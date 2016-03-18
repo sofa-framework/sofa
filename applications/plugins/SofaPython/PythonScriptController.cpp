@@ -43,7 +43,7 @@ using sofa::simulation::PythonEnvironment;
 #include "PythonScriptEvent.h"
 using sofa::core::objectmodel::PythonScriptEvent;
 
-// RAII AdvancedTimer that can be deactivated && that allow to give a base object.
+//TODO(dmarchal): This have to be merged with the ScopedAdvancedTimer
 struct ActivableScopedAdvancedTimer {
     const char* message;
     bool m_active ;

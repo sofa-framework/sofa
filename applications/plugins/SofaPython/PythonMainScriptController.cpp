@@ -25,15 +25,28 @@
 #include "PythonMacros.h"
 #include "PythonMainScriptController.h"
 #include <sofa/core/ObjectFactory.h>
+using sofa::core::RegisterObject;
+
 #include <sofa/helper/AdvancedTimer.h>
+using sofa::helper::ScopedAdvancedTimer;
 
 #include "Binding_Base.h"
 #include "Binding_BaseContext.h"
 #include "Binding_Node.h"
+using sofa::core::visual::VisualParams;
+
 #include "ScriptEnvironment.h"
+using sofa::simulation::ScriptEnvironment;
+using sofa::simulation::PythonEnvironment;
+
 #include "PythonScriptEvent.h"
+using sofa::core::objectmodel::Event;
+using sofa::core::objectmodel::ScriptEvent;
+using sofa::core::objectmodel::PythonScriptEvent;
 
 #include <sofa/helper/logging/Messaging.h>
+
+//TODO(dmarchal): Use the deactivable ScopedTimer
 
 namespace sofa
 {
@@ -44,10 +57,10 @@ namespace component
 namespace controller
 {
 
-int PythonMainScriptControllerClass = core::RegisterObject("A Sofa controller scripted in python, looking for callbacks directly in the file (not in a class like the more general and powerful PythonScriptController")
-        .add< PythonMainScriptController >()
-        ;
-
+int PythonMainScriptControllerClass = RegisterObject("A Sofa controller scripted in python, looking for callbacks directly "
+                                                     "in the file (not in a class like the more general and powerful "
+                                                     "PythonScriptController")
+        .add< PythonMainScriptController >();
 
 PythonMainScriptController::PythonMainScriptController()
     : ScriptController()
@@ -63,23 +76,15 @@ PythonMainScriptController::PythonMainScriptController(const char* filename)
     loadScript();
 }
 
-
-
-
 void PythonMainScriptController::loadScript()
 {
-    if(!sofa::simulation::PythonEnvironment::runFile(m_filename))
+    if(!PythonEnvironment::runFile(m_filename))
     {
-        // LOAD ERROR
         SP_MESSAGE_ERROR( getName() << " object - "<<m_filename<<" script load error." )
-                return;
+        return;
     }
 
-
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
-
-
-
 
     BIND_SCRIPT_FUNC(onLoaded)
             BIND_SCRIPT_FUNC(createGraph)
@@ -129,37 +134,37 @@ void PythonMainScriptController::script_bwdInitGraph(sofa::simulation::Node *nod
 bool PythonMainScriptController::script_onKeyPressed(const char c)
 {
     bool b = false;
-    SP_CALL_MODULEBOOLFUNC(m_Func_onKeyPressed,"(c)", c)
-            return b;
+    SP_CALL_MODULEBOOLFUNC(m_Func_onKeyPressed,"(c)", c);
+    return b;
 }
 bool PythonMainScriptController::script_onKeyReleased(const char c)
 {
     bool b = false;
-    SP_CALL_MODULEBOOLFUNC(m_Func_onKeyReleased,"(c)", c)
-            return b;
+    SP_CALL_MODULEBOOLFUNC(m_Func_onKeyReleased,"(c)", c);
+    return b;
 }
 
 void PythonMainScriptController::script_onMouseButtonLeft(const int posX,const int posY,const bool pressed)
 {
     PyObject *pyPressed = pressed? Py_True : Py_False;
-    SP_CALL_MODULEFUNC(m_Func_onMouseButtonLeft,"(iiO)", posX,posY,pyPressed)
+    SP_CALL_MODULEFUNC(m_Func_onMouseButtonLeft,"(iiO)", posX,posY,pyPressed);
 }
 
 void PythonMainScriptController::script_onMouseButtonRight(const int posX,const int posY,const bool pressed)
 {
     PyObject *pyPressed = pressed? Py_True : Py_False;
-    SP_CALL_MODULEFUNC(m_Func_onMouseButtonRight,"(iiO)", posX,posY,pyPressed)
+    SP_CALL_MODULEFUNC(m_Func_onMouseButtonRight,"(iiO)", posX,posY,pyPressed);
 }
 
 void PythonMainScriptController::script_onMouseButtonMiddle(const int posX,const int posY,const bool pressed)
 {
     PyObject *pyPressed = pressed? Py_True : Py_False;
-    SP_CALL_MODULEFUNC(m_Func_onMouseButtonMiddle,"(iiO)", posX,posY,pyPressed)
+    SP_CALL_MODULEFUNC(m_Func_onMouseButtonMiddle,"(iiO)", posX,posY,pyPressed);
 }
 
 void PythonMainScriptController::script_onMouseWheel(const int posX,const int posY,const int delta)
 {
-    SP_CALL_MODULEFUNC(m_Func_onMouseWheel,"(iii)", posX,posY,delta)
+    SP_CALL_MODULEFUNC(m_Func_onMouseWheel,"(iii)", posX,posY,delta);
 }
 
 
@@ -195,25 +200,25 @@ void PythonMainScriptController::script_onGUIEvent(const char* controlID, const 
     SP_CALL_MODULEFUNC(m_Func_onGUIEvent,"(sss)",controlID,valueName,value)
 }
 
-void PythonMainScriptController::script_onScriptEvent(core::objectmodel::ScriptEvent* event)
+void PythonMainScriptController::script_onScriptEvent(ScriptEvent* event)
 {
     helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonMainScriptController_Event_")+this->getName()).c_str() );
 
-    core::objectmodel::PythonScriptEvent *pyEvent = static_cast<core::objectmodel::PythonScriptEvent*>(event);
+    PythonScriptEvent *pyEvent = static_cast<PythonScriptEvent*>(event);
     SP_CALL_MODULEFUNC(m_Func_onScriptEvent,"(OsO)",SP_BUILD_PYSPTR(pyEvent->getSender().get()),const_cast<char*>(pyEvent->getEventName().c_str()),pyEvent->getUserData())
 }
 
-void PythonMainScriptController::script_draw(const core::visual::VisualParams*)
+void PythonMainScriptController::script_draw(const VisualParams*)
 {
     SP_CALL_MODULEFUNC_NOPARAM(m_Func_draw)
 }
 
-void PythonMainScriptController::handleEvent(core::objectmodel::Event *event)
+void PythonMainScriptController::handleEvent(Event *event)
 {
-    if (sofa::core::objectmodel::PythonScriptEvent::checkEventType(event))
+    if (PythonScriptEvent::checkEventType(event))
     {
-        script_onScriptEvent(static_cast<core::objectmodel::PythonScriptEvent *> (event));
-        simulation::ScriptEnvironment::initScriptNodes();
+        script_onScriptEvent(static_cast<PythonScriptEvent *> (event));
+        ScriptEnvironment::initScriptNodes();
     }
     else ScriptController::handleEvent(event);
 }
