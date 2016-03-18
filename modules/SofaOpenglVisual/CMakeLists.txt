@@ -3,7 +3,7 @@ project(SofaOpenglVisual)
 
 set(HEADER_FILES
     ClipPlane.h
-    ColorMap.h
+    OglColorMap.h
     CompositingVisualLoop.h
     DataDisplay.h
     Light.h
@@ -23,7 +23,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     ClipPlane.cpp
-    ColorMap.cpp
+    OglColorMap.cpp
     CompositingVisualLoop.cpp
     DataDisplay.cpp
     Light.cpp
@@ -49,8 +49,6 @@ if(SOFA_HAVE_GLEW)
         OglShaderMacro.h
         OglShaderVisualModel.h
         OglShadowShader.h
-        OglTetrahedralModel.h
-        OglTetrahedralModel.inl
         OglTexture.h
         OglTexturePointer.h
         OglVariable.h
@@ -68,7 +66,6 @@ if(SOFA_HAVE_GLEW)
         OglShaderMacro.cpp
         OglShaderVisualModel.cpp
         OglShadowShader.cpp
-        OglTetrahedralModel.cpp
         OglTexture.cpp
         OglTexturePointer.cpp
         OglVariable.cpp

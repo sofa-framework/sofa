@@ -22,38 +22,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_VISUALMODEL_OGLTETRAHEDRALMODEL_CPP
-#include "OglTetrahedralModel.inl"
+#ifndef VOLUMETRICRENDERING_CONFIG_H
+#define VOLUMETRICRENDERING_CONFIG_H
 
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/config.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace visualmodel
-{
+#define VOLUMETRICRENDERING_MAJOR_VERSION ${IMAGE_MAJOR_VERSION}
+#define VOLUMETRICRENDERING_MINOR_VERSION ${IMAGE_MINOR_VERSION}
 
-using namespace sofa::defaulttype;
-
-SOFA_DECL_CLASS(OglTetrahedralModel)
-
-int OglTetrahedralModelClass = sofa::core::RegisterObject("Tetrahedral model for OpenGL display")
-#ifndef SOFA_FLOAT
-        .add< OglTetrahedralModel<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< OglTetrahedralModel<Vec3fTypes> >()
-#endif
-        ;
-
-#ifndef SOFA_FLOAT
-template class OglTetrahedralModel<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class OglTetrahedralModel<Vec3fTypes>;
+#ifdef SOFA_BUILD_VOLUMETRICRENDERING
+#  define SOFA_TARGET VolumetricRendering
+#  define SOFA_VOLUMETRICRENDERING_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_VOLUMETRICRENDERING_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-}
-}
-}
+#endif

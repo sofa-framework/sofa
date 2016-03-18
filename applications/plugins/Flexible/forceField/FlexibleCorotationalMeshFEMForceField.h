@@ -39,6 +39,8 @@ namespace forcefield
 /// - potential energy
 /// - masks?
 ///
+/// @author Matthieu Nesme
+///
 template<class DataTypes>
 class SOFA_Flexible_API FlexibleCorotationalMeshFEMForceField : public core::behavior::ForceField<DataTypes>, public shapefunction::BarycentricShapeFunction<core::behavior::ShapeFunction>
 {

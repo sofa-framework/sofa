@@ -42,6 +42,9 @@ namespace mass
 * The interpolation weights are given by a BaseShapeFunction component present in the scene
 * @warning the interpolation is done by a LinearJacobianBlock hard-coded in this component
 * @todo find a way to describe the mass interpolation as a sofa graph with regular mappings
+*
+* @author Matthieu Nesme
+*
 */
 template <class DataTypes,class ShapeFunctionTypes,class MassType>
 class ImageDensityMass : public core::behavior::Mass<DataTypes>

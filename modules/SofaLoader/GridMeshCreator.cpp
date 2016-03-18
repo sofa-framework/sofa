@@ -38,6 +38,7 @@ namespace loader
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
+using helper::vector;
 
 SOFA_DECL_CLASS(GridMeshCreator)
 

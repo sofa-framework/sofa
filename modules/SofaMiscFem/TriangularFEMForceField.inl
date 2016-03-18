@@ -33,7 +33,7 @@
 #include "TriangularFEMForceField.h"
 
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaOpenglVisual/ColorMap.h>
+#include <SofaOpenglVisual/OglColorMap.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/gl.h>
 
@@ -1826,7 +1826,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
                 maxStress = averageStress;
         }
 
-        visualmodel::ColorMap::evaluator<double> evalColor = visualmodel::ColorMap::getDefault()->getEvaluator(minStress, maxStress);
+        helper::ColorMap::evaluator<double> evalColor = helper::ColorMap::getDefault()->getEvaluator(minStress, maxStress);
         glBegin(GL_TRIANGLES);
         for(unsigned int i=0; i<nbTriangles; ++i)
         {

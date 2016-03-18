@@ -1,0 +1,1 @@
+This plugin allows to render volumetric meshes such tetrahedron-based or hexahedron-based models.

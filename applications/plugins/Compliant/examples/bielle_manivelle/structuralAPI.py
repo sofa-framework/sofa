@@ -27,7 +27,7 @@ joint_offsets = [
     ["offset2", 3, [-0.113, 0, 0, 0, 0, 0, 1]],
 
     ["offset3", 3, [0.15, 0, 0, 0, 0, 0, 1]],
-    ["offset3", 0, [2.2, 0, 0.33, 0, 0, 0, 1]]    
+    ["offset3", 0, [2.2, 0, 0.33, 0, 0, 0, 1]]
 ]
 
 # joints: name, offset1, offset2, joint type, joint axis
@@ -119,7 +119,7 @@ def createScene(node):
         
     ## create joints
     for l in links:
-      
+
       j = l[3] (l[4], l[0], offsets[l[1]].node, offsets[l[2]].node )
       j.constraint.compliance.compliance = compliance
       

@@ -40,6 +40,9 @@ namespace mapping
 
 
 /** Deformation Gradient to Corotational Lagrangian Strain mapping
+ *
+ * @author Matthieu Nesme
+ *
 */
 
 template <class TIn, class TOut>

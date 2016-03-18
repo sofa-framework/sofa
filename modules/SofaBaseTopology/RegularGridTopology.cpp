@@ -36,7 +36,7 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
-
+using helper::vector;
 
 
 void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)

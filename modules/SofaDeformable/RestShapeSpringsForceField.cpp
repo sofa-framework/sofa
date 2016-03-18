@@ -340,14 +340,9 @@ void RestShapeSpringsForceField<Rigid3fTypes>::draw(const core::visual::VisualPa
 
     sofa::helper::vector<sofa::defaulttype::Vector3> vertices;
 
-    sofa::defaulttype::Vec4f green(0.0, 1.0, 0.0, 1.0);
     for (unsigned int i=0; i<m_indices.size(); i++)
     {
         const unsigned int index = m_indices[i];
-
-        glLineWidth(4.0);
-        glBegin(GL_LINES);
-        glColor3f(0,1,0);
 
         sofa::defaulttype::Vector3 v0(p[index].getCenter()[0],
                                       p[index].getCenter()[1],

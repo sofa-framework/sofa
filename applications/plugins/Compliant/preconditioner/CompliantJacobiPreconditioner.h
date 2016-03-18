@@ -12,6 +12,7 @@ namespace linearsolver {
  *  Jacobi/diagonal Linear system preconditioner
  *  efficient for diagonal dominant matrices
  * 
+ * @author Matthieu Nesme
 */
 
 class SOFA_Compliant_API CompliantJacobiPreconditioner : public BasePreconditioner

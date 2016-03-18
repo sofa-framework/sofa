@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(runSofa)
 
-option(RUNSOFA_INSTALL_AS_BUNDLE "Create a bundle containing all the installation files (Only Mac OS X for now)" ON)
+option(RUNSOFA_INSTALL_AS_BUNDLE "Create a bundle containing all the installation files (Only Mac OS X for now)" OFF)
 
 if(APPLE)
     set(RC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/runSOFA.icns")

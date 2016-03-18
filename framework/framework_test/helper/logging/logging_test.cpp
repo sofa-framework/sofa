@@ -248,6 +248,7 @@ TEST(LoggingTest, BaseObject)
 #undef MESSAGING_H
 #define WITH_SOFA_DEVTOOLS
 #undef dmsg_info
+#undef dmsg_deprecated
 #undef dmsg_error
 #undef dmsg_warning
 #undef dmsg_fatal

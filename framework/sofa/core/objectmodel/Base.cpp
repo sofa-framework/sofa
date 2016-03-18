@@ -252,7 +252,6 @@ void Base::processStream(std::ostream& out)
     if (serr==out)
     {
         std::string str = serr.str();
-        serr << "\n";
 
         helper::logging::MessageDispatcher::log(serr.messageClass(), serr.messageType(), this, serr.fileInfo()) << str;
 
@@ -263,13 +262,13 @@ void Base::processStream(std::ostream& out)
             warnings.clear();
             warnings = msg;
         }
-        warnings += str;
+        warnings += str + '\n';
         serr.clear();
     }
     else if (sout==out)
     {
         std::string str = sout.str();
-        sout << "\n";
+
         if (f_printLog.getValue())
         {
             helper::logging::MessageDispatcher::log(serr.messageClass(), sout.messageType(), this, sout.fileInfo()) << str;
@@ -281,7 +280,7 @@ void Base::processStream(std::ostream& out)
             outputs.clear();
             outputs = msg;
         }
-        outputs += str;
+        outputs += str + '\n';
         sout.clear();
     }
 }
