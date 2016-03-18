@@ -347,6 +347,24 @@ void printPythonExceptions();
 
 
 // =============================================================================
+// PYTHON SEARCH FOR A METHOD WITH A GIVEN NAME
+// =============================================================================
+#define BIND_SCRIPT_FUNC(funcName) \
+    { \
+    if( PyObject_HasAttrString((PyObject*)&SP_SOFAPYTYPEOBJECT(PythonScriptController),#funcName ) && \
+        PyObject_RichCompareBool( PyObject_GetAttrString(m_ScriptControllerClass, #funcName),\
+                                   PyObject_GetAttrString((PyObject*)&SP_SOFAPYTYPEOBJECT(PythonScriptController), #funcName),Py_NE ) && \
+        PyObject_HasAttrString(m_ScriptControllerInstance,#funcName ) ) { \
+            m_Func_##funcName = PyObject_GetAttrString(m_ScriptControllerInstance,#funcName); \
+            if (!PyCallable_Check(m_Func_##funcName)) \
+                {m_Func_##funcName=0; sout<<#funcName<<" not callable"<<sendl;} \
+            else \
+                {sout<<#funcName<<" found"<<sendl;} \
+    }else{ \
+        m_Func_##funcName=0; sout<<#funcName<<" not found"<<sendl; } \
+    }
+
+// =============================================================================
 // PYTHON SCRIPT METHOD CALL
 // =============================================================================
 #define SP_CALL_MODULEFUNC(func, ...) \

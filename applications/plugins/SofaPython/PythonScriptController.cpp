@@ -89,7 +89,6 @@ void PythonScriptController::loadScript()
 
 
     // verify that the class is a subclass of PythonScriptController
-
     if (1!=PyObject_IsSubclass(m_ScriptControllerClass,(PyObject*)&SP_SOFAPYTYPEOBJECT(PythonScriptController)))
     {
         // LOAD ERROR
@@ -98,7 +97,6 @@ void PythonScriptController::loadScript()
     }
 
     // créer l'instance de la classe
-
     m_ScriptControllerInstance = BuildPySPtr<Base>(this,(PyTypeObject*)m_ScriptControllerClass);
 
     if (!m_ScriptControllerInstance)
@@ -107,29 +105,6 @@ void PythonScriptController::loadScript()
         SP_MESSAGE_ERROR( getName() << " load error (class \""<<m_classname.getValueString()<<"\" instanciation error)." )
         return;
     }
-    //std::cout << getName() << " class \""<<m_classname.getValueString()<<"\" instanciation OK." << std::endl;
-
-
-
-#define BIND_SCRIPT_FUNC(funcName) \
-    { \
-    if( PyObject_HasAttrString((PyObject*)&SP_SOFAPYTYPEOBJECT(PythonScriptController),#funcName ) && \
-        PyObject_RichCompareBool( PyObject_GetAttrString(m_ScriptControllerClass, #funcName),\
-                                   PyObject_GetAttrString((PyObject*)&SP_SOFAPYTYPEOBJECT(PythonScriptController), #funcName),Py_NE ) && \
-        PyObject_HasAttrString(m_ScriptControllerInstance,#funcName ) ) { \
-            m_Func_##funcName = PyObject_GetAttrString(m_ScriptControllerInstance,#funcName); \
-            if (!PyCallable_Check(m_Func_##funcName)) \
-                {m_Func_##funcName=0; sout<<#funcName<<" not callable"<<sendl;} \
-            else \
-                {sout<<#funcName<<" found"<<sendl;} \
-    }else{ \
-        m_Func_##funcName=0; sout<<#funcName<<" not found"<<sendl; } \
-    }
-
-
-    // functions are also borrowed references
-//    std::cout << "Binding functions of script \"" << m_filename.getFullPath().c_str() << "\"" << std::endl;
-//    std::cout << "Number of dictionnay entries: "<< PyDict_Size(m_ScriptDict) << std::endl;
 
     BIND_SCRIPT_FUNC(onLoaded)
     BIND_SCRIPT_FUNC(createGraph)
@@ -149,9 +124,6 @@ void PythonScriptController::loadScript()
     BIND_SCRIPT_FUNC(onGUIEvent)
     BIND_SCRIPT_FUNC(onScriptEvent)
     BIND_SCRIPT_FUNC(draw)
-
-#undef BIND_SCRIPT_FUNC
-
 }
 
 
