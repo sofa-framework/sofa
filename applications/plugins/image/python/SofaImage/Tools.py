@@ -4,6 +4,7 @@ import SofaPython.Quaternion as quat
 from SofaPython.Tools import listToStr as concat
 import math
 import numpy
+import inspect
 
 # be sure that the cache path exists
 # automatic generation when s-t changed
@@ -113,3 +114,26 @@ class ImagePlaneController(Sofa.PythonScriptController):
     # a point is defined as follows: {'position': [x, y, z], 'color': [r, g, b], ...custom parameters... }
     def getPoints(self):
         return
+
+
+# simpler python script controllers based on SofaPython.script
+class Controller(ImagePlaneController):
+    def __new__(cls, node, name='pythonScriptController'):
+
+        node.createObject('PythonScriptController',
+                          filename = inspect.getfile(cls),
+                          classname = cls.__name__,
+                          name = name)
+        try:
+            res = Controller.instance
+            del Controller.instance
+            return res
+        except AttributeError:
+            # if this fails, you need to call
+            # Controller.onLoaded(self, node) in derived classes
+            print "[SofaPython.script.Controller.__new__] instance not found, did you call 'SofaPython.script.Controller.onLoaded' on your overloaded 'onLoaded' in {} ?".format(cls)
+            raise
+
+    def onLoaded(self, node):
+        Controller.instance = self
+
