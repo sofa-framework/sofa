@@ -1,7 +1,6 @@
 #include "CompliantImplicitSolver.h"
 
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-#include <SofaEigen2Solver/EigenVector.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include "../assembly/AssemblyVisitor.h"
