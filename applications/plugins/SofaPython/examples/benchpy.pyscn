@@ -16,7 +16,7 @@ def createScene(rootNode):
 	rootNode.createObject('DefaultCollisionGroupManager')
 	
 	o = rootNode.createChild("optimize")
-	for i in range(0, 200):
+	for i in range(0, 1000):
         	o.createObject('PythonScriptController', filename="EmptyController.py", classname="ExampleController")
         
 	return rootNode
