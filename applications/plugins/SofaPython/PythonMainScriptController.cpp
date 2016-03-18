@@ -78,13 +78,7 @@ void PythonMainScriptController::loadScript()
 
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
-#define BIND_SCRIPT_FUNC(funcName){\
-        m_Func_##funcName = PyDict_GetItemString(pDict, #funcName);\
-        if (!PyCallable_Check(m_Func_##funcName)) \
-            {m_Func_##funcName=0; msg_info("PythonMainScriptController")<<#funcName<<" not found";} \
-        else \
-            {msg_info("PythonMainScriptController")<<#funcName<<" found";} \
-    }
+
 
 
     BIND_SCRIPT_FUNC(onLoaded)
@@ -106,7 +100,6 @@ void PythonMainScriptController::loadScript()
     BIND_SCRIPT_FUNC(onScriptEvent)
     BIND_SCRIPT_FUNC(draw)
 
-#undef BIND_SCRIPT_FUNC
 }
 
 
