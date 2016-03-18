@@ -17,6 +17,6 @@ def createScene(rootNode):
 	
 	o = rootNode.createChild("optimize")
 	for i in range(0, 1000):
-        	o.createObject('PythonScriptController', filename="EmptyController.py", classname="ExampleController")
+        	o.createObject('PythonScriptController', name="Damien"+str(i), filename="EmptyController.py", classname="ExampleController", timingEnabled="1")
         
 	return rootNode
