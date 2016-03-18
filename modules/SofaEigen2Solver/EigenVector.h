@@ -28,6 +28,7 @@
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <Eigen/Dense>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {

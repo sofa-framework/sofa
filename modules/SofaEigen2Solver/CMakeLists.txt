@@ -16,6 +16,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     EigenMatrixManipulator.cpp
+    EigenVector.cpp
     SVDLinearSolver.cpp
     initEigen2Solver.cpp
 )

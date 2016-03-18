@@ -25,6 +25,7 @@
 
 
 #include <SofaEigen2Solver/EigenVector.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 
 namespace sofa
@@ -36,11 +37,12 @@ namespace component
 namespace linearsolver
 {
 
+template<>
 const char* EigenVector<defaulttype::Vec3dTypes>::Name() { return "EigenVector3d"; }
+template<>
 const char* EigenVector<defaulttype::Vec3fTypes>::Name() { return "EigenVector3f"; }
 
 const char* EigenVector<double>::Name() { return "EigenVectord"; }
-
 }
 }
 }
