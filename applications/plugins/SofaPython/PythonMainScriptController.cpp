@@ -72,7 +72,7 @@ void PythonMainScriptController::loadScript()
     {
         // LOAD ERROR
         SP_MESSAGE_ERROR( getName() << " object - "<<m_filename<<" script load error." )
-        return;
+                return;
     }
 
 
@@ -82,27 +82,24 @@ void PythonMainScriptController::loadScript()
 
 
     BIND_SCRIPT_FUNC(onLoaded)
-    BIND_SCRIPT_FUNC(createGraph)
-    BIND_SCRIPT_FUNC(initGraph)
-    BIND_SCRIPT_FUNC(bwdInitGraph)
-    BIND_SCRIPT_FUNC(onKeyPressed)
-    BIND_SCRIPT_FUNC(onKeyReleased)
-    BIND_SCRIPT_FUNC(onMouseButtonLeft)
-    BIND_SCRIPT_FUNC(onMouseButtonRight)
-    BIND_SCRIPT_FUNC(onMouseButtonMiddle)
-    BIND_SCRIPT_FUNC(onMouseWheel)
-    BIND_SCRIPT_FUNC(onBeginAnimationStep)
-    BIND_SCRIPT_FUNC(onEndAnimationStep)
-    BIND_SCRIPT_FUNC(storeResetState)
-    BIND_SCRIPT_FUNC(reset)
-    BIND_SCRIPT_FUNC(cleanup)
-    BIND_SCRIPT_FUNC(onGUIEvent)
-    BIND_SCRIPT_FUNC(onScriptEvent)
-    BIND_SCRIPT_FUNC(draw)
-
+            BIND_SCRIPT_FUNC(createGraph)
+            BIND_SCRIPT_FUNC(initGraph)
+            BIND_SCRIPT_FUNC(bwdInitGraph)
+            BIND_SCRIPT_FUNC(onKeyPressed)
+            BIND_SCRIPT_FUNC(onKeyReleased)
+            BIND_SCRIPT_FUNC(onMouseButtonLeft)
+            BIND_SCRIPT_FUNC(onMouseButtonRight)
+            BIND_SCRIPT_FUNC(onMouseButtonMiddle)
+            BIND_SCRIPT_FUNC(onMouseWheel)
+            BIND_SCRIPT_FUNC(onBeginAnimationStep)
+            BIND_SCRIPT_FUNC(onEndAnimationStep)
+            BIND_SCRIPT_FUNC(storeResetState)
+            BIND_SCRIPT_FUNC(reset)
+            BIND_SCRIPT_FUNC(cleanup)
+            BIND_SCRIPT_FUNC(onGUIEvent)
+            BIND_SCRIPT_FUNC(onScriptEvent)
+            BIND_SCRIPT_FUNC(draw)
 }
-
-
 
 void PythonMainScriptController::script_onLoaded(sofa::simulation::Node *node)
 {
@@ -133,13 +130,13 @@ bool PythonMainScriptController::script_onKeyPressed(const char c)
 {
     bool b = false;
     SP_CALL_MODULEBOOLFUNC(m_Func_onKeyPressed,"(c)", c)
-    return b;
+            return b;
 }
 bool PythonMainScriptController::script_onKeyReleased(const char c)
 {
     bool b = false;
     SP_CALL_MODULEBOOLFUNC(m_Func_onKeyReleased,"(c)", c)
-    return b;
+            return b;
 }
 
 void PythonMainScriptController::script_onMouseButtonLeft(const int posX,const int posY,const bool pressed)
