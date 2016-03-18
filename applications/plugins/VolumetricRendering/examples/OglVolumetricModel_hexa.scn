@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.02">
+    <RequiredPlugin name="VolumetricRendering" />
+
+	<SparseGrid name="grid" n="51 51 51" fileTopology="mesh/raptor_8kp.obj" />
+
+	<MechanicalObject template="Vec3d" />
+ 	<HexahedronSetTopologyContainer hexahedra="@grid.hexahedra" />
+
+	<Node>
+ 		<OglShader geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" 
+ 			vertFilename="share/shaders/tetra.vert" geoFilename="share/shaders/tetra_triangles.geo" fragFilename="share/shaders/tetra.frag" />
+ 		<OglFloatVariable id="volumeScale" value="0.9"/>
+ 		<OglFloatVariable id="u_enableLight" value="1"/>
+		<OglVolumetricModel printLog="false" color="1 0 1 1" />
+	</Node>
+
+</Node>

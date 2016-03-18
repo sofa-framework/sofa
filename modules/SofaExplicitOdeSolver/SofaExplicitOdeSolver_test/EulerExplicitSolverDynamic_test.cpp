@@ -46,6 +46,7 @@ using namespace component;
 using namespace defaulttype;
 using namespace simulation;
 using namespace modeling;
+using helper::vector;
 
 /**  Dynamic solver test.
 Test the dynamic behavior of solver: study a mass-spring system under gravity initialize with spring rest length it will oscillate around its equilibrium position if there is no damping.

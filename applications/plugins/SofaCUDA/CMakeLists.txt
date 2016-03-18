@@ -72,8 +72,6 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaSubsetMapping.inl
     sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.h
     sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.inl
-    sofa/gpu/cuda/CudaTetrahedralVisualModel.h
-    sofa/gpu/cuda/CudaTetrahedralVisualModel.inl
     sofa/gpu/cuda/CudaTetrahedronFEMForceField.h
     sofa/gpu/cuda/CudaTetrahedronFEMForceField.inl
     sofa/gpu/cuda/CudaTetrahedronTLEDForceField.h
@@ -137,7 +135,6 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cpp
     sofa/gpu/cuda/CudaSubsetMapping.cpp
     sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.cpp
-    sofa/gpu/cuda/CudaTetrahedralVisualModel.cpp
     sofa/gpu/cuda/CudaTetrahedronFEMForceField.cpp
     sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cpp
     sofa/gpu/cuda/CudaTriangleModel.cpp
@@ -188,6 +185,16 @@ set(README_FILES SofaCUDA.txt)
 find_package(SofaAdvanced REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(CUDA REQUIRED)
+find_package(VolumetricRendering QUIET)
+
+if(VolumetricRendering_FOUND)   
+    list(APPEND HEADER_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.h)
+    list(APPEND HEADER_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.inl)
+    list(APPEND SOURCE_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.cpp)
+    add_definitions("-DSOFACUDA_ENABLE_VOLUMETRICRENDERING")
+else()
+    message(STATUS "SofaCUDA: Plugin VolumetricRendering was not enabled/found, therefore CudaTetrahedralVisualModel will not be compiled.")
+endif()
 
 option(SOFACUDA_VERBOSE_PTXAS "???" OFF)
 if(SOFACUDA_VERBOSE_PTXAS)
@@ -249,7 +256,7 @@ set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 
 if(WIN32)
     add_definitions("-DWIN32")
-	set(WINDOWSOPTIONS "/MD")
+    set(WINDOWSOPTIONS "/MD")
 endif()
 
 # Make the compiler definitions available to nvcc
@@ -272,6 +279,9 @@ if(SOFACUDA_CUBLAS)
 endif()
 if(SOFACUDA_CUDPP)
     target_link_libraries(${PROJECT_NAME} cudpp)
+endif()
+if(VolumetricRendering_FOUND)  
+    target_link_libraries(${PROJECT_NAME} VolumetricRendering) 
 endif()
 
 ## SofaCUDANvccFlags.cmake

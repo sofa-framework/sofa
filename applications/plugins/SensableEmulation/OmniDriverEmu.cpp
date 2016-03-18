@@ -78,6 +78,7 @@ namespace controller
 using namespace sofa::defaulttype;
 using namespace core::behavior;
 using namespace sofa::defaulttype;
+using helper::vector;
 
 OmniDriverEmu::OmniDriverEmu()
     : forceScale(initData(&forceScale, 1.0, "forceScale","Default forceScale applied to the force feedback. "))

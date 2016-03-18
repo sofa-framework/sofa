@@ -839,12 +839,12 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
     QuadSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Hexa indices
-    if (showHexaIndices.getValue())
+    if (d_showHexaIndices.getValue())
     {
         sofa::defaulttype::Mat<4,4, GLfloat> modelviewM;
 
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-        const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
+        const sofa::defaulttype::Vec3f& color = d_drawColorHexahedra.getValue();
         sofa::defaulttype::Vec4f color4(color[0], color[1], color[2], 1.0);
 
         float scale = this->getIndicesScale();
@@ -876,37 +876,42 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
 
 
     //Draw hexahedra
-    if (_draw.getValue())
+    if (d_drawHexahedra.getValue())
     {
+        if (vparams->displayFlags().getShowWireFrame())
+            vparams->drawTool()->setPolygonMode(0, true);
+
         const sofa::helper::vector<Hexahedron> &hexaArray = this->m_topology->getHexahedra();
 
-        const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
+        const sofa::defaulttype::Vec3f& color = d_drawColorHexahedra.getValue();
+        sofa::defaulttype::Vec4f color4(color[0], color[1], color[2], 1.0f);
+
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-        std::vector<defaulttype::Vector3> pos;
-        pos.reserve(24u*hexaArray.size());
+        sofa::helper::vector <sofa::defaulttype::Vector3> hexaCoords;
+
         for (unsigned int i = 0; i<hexaArray.size(); i++)
         {
             const Hexahedron& H = hexaArray[i];
-            sofa::helper::vector <sofa::defaulttype::Vector3> hexaCoord;
 
             for (unsigned int j = 0; j<8; j++)
             {
                 sofa::defaulttype::Vector3 p; p = DataTypes::getCPos(coords[H[j]]);
-                hexaCoord.push_back(p);
-            }
 
-            for (unsigned int j = 0; j<4; j++)
-            {
-                pos.push_back(hexaCoord[j]);
-                pos.push_back(hexaCoord[(j+1)%4]);
-                pos.push_back(hexaCoord[j+4]);
-                pos.push_back(hexaCoord[(j+1)%4 +4]);
-                pos.push_back(hexaCoord[j]);
-                pos.push_back(hexaCoord[j+4]);
+                hexaCoords.push_back(p);
             }
         }
-        vparams->drawTool()->drawLines(pos, 1.0f, defaulttype::Vec4f(color[0], color[1], color[2], 1.0f));
+
+        const float& scale = d_drawScaleHexahedra.getValue();
+
+        if(scale >= 1.0 && scale < 0.001)
+            vparams->drawTool()->drawHexahedra(hexaCoords, color4);
+        else
+            vparams->drawTool()->drawScaledHexahedra(hexaCoords, color4, scale);
+
+        if (vparams->displayFlags().getShowWireFrame())
+            vparams->drawTool()->setPolygonMode(0, false);
+           
     }
 }
 

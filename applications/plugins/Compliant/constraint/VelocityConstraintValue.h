@@ -11,6 +11,8 @@ namespace odesolver {
 
    Enforce the velocities to the given values
 
+   @author Matthieu Nesme
+
 */
 
 class SOFA_Compliant_API VelocityConstraintValue : public BaseConstraintValue {

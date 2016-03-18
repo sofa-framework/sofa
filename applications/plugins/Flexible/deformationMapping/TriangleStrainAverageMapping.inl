@@ -65,7 +65,7 @@ void TriangleStrainAverageMapping<TIn, TOut>::init()
     triangleContainer = this->core::objectmodel::BaseObject::searchUp<topology::TriangleSetTopologyContainer>();
     if( !triangleContainer ) serr<<"No TriangleSetTopologyContainer found ! "<<sendl;
 
-    SeqTriangles triangles = triangleContainer->getTriangles();
+    const SeqTriangles& triangles = triangleContainer->getTriangles();
 
     typedef std::map< unsigned, std::set<unsigned> > MapNodeToTriangles;
     MapNodeToTriangles nodeToTriangles;
@@ -75,9 +75,9 @@ void TriangleStrainAverageMapping<TIn, TOut>::init()
             nodeToTriangles[triangles[i][j]].insert(i);
     }
 
-    helper::WriteOnlyAccessor< Data<vector<unsigned> > > triangleIndices(f_triangleIndices); triangleIndices.resize(0);
-    helper::WriteOnlyAccessor< Data<vector<unsigned> > > endIndices(f_endIndices); endIndices.resize(0);
-    helper::WriteOnlyAccessor< Data<vector<Real> > > weights(f_weights); weights.resize(0);
+    helper::WriteOnlyAccessor< Data<helper::vector<unsigned> > > triangleIndices(f_triangleIndices); triangleIndices.resize(0);
+    helper::WriteOnlyAccessor< Data<helper::vector<unsigned> > > endIndices(f_endIndices); endIndices.resize(0);
+    helper::WriteOnlyAccessor< Data<helper::vector<Real> > > weights(f_weights); weights.resize(0);
     unsigned endIndex=0;
     for( MapNodeToTriangles::const_iterator i=nodeToTriangles.begin(), iend=nodeToTriangles.end(); i!=iend; i++ ) // for each node
     {
@@ -128,9 +128,9 @@ void TriangleStrainAverageMapping<TIn, TOut>::mult( Data<OutVecCoord>& dOut, con
 {
     helper::WriteOnlyAccessor< Data<OutVecCoord> >  nodeValues = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  triangleValues = dIn;
-    helper::ReadAccessor< Data<vector<unsigned> > > triangleIndices(f_triangleIndices);
-    helper::ReadAccessor< Data<vector<unsigned> > > endIndices(f_endIndices);
-    helper::ReadAccessor< Data<vector<Real> > > weights(f_weights);
+    helper::ReadAccessor< Data<helper::vector<unsigned> > > triangleIndices(f_triangleIndices);
+    helper::ReadAccessor< Data<helper::vector<unsigned> > > endIndices(f_endIndices);
+    helper::ReadAccessor< Data<helper::vector<Real> > > weights(f_weights);
 
 //    cerr<<"begin TriangleStrainAverageMapping<TIn, TOut>::mult, parent: " << triangleValues << endl;
     unsigned startIndex=0;
@@ -167,9 +167,9 @@ void TriangleStrainAverageMapping<TIn, TOut>::applyJT(const core::MechanicalPara
 {
     helper::ReadAccessor< Data<OutVecDeriv> >  nodeValues = dOut;
     helper::WriteAccessor< Data<InVecDeriv> >  triangleValues = dIn;
-    helper::ReadAccessor< Data<vector<unsigned> > > triangleIndices(f_triangleIndices);
-    helper::ReadAccessor< Data<vector<unsigned> > > endIndices(f_endIndices);
-    helper::ReadAccessor< Data<vector<Real> > > weights(f_weights);
+    helper::ReadAccessor< Data<helper::vector<unsigned> > > triangleIndices(f_triangleIndices);
+    helper::ReadAccessor< Data<helper::vector<unsigned> > > endIndices(f_endIndices);
+    helper::ReadAccessor< Data<helper::vector<Real> > > weights(f_weights);
 
 //    cerr<<"begin TriangleStrainAverageMapping<TIn, TOut>::applyJT, child vector : " << nodeValues << endl;
     unsigned startIndex=0;
@@ -203,7 +203,7 @@ const sofa::defaulttype::BaseMatrix* TriangleStrainAverageMapping<TIn, TOut>::ge
 }
 
 template <class TIn, class TOut>
-const vector<sofa::defaulttype::BaseMatrix*>* TriangleStrainAverageMapping<TIn, TOut>::getJs()
+const helper::vector<sofa::defaulttype::BaseMatrix*>* TriangleStrainAverageMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }

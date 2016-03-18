@@ -56,7 +56,7 @@ public:
     /**
      * @brief Default Destructor.
      */
-    virtual ~ARTrackVirtualTimeController () {};
+    virtual ~ARTrackVirtualTimeController () {}
 
     /**
      * @brief SceneGraph callback initialization method.
@@ -157,7 +157,7 @@ public:
 
 protected:
     core::behavior::MechanicalState<DataTypes> *mstate; ///< Controlled MechanicalState.
-    vector<sofa::component::container::Articulation*> articulations;
+    helper::vector<sofa::component::container::Articulation*> articulations;
     bool leftPressed, rightPressed, wheel;
     Vec3d beginLocalPosition,endLocalPosition;
 };

@@ -29,8 +29,6 @@
 #include "../material/BaseMaterialForceField.h"
 #include "../material/TendonMaterialBlock.h"
 
-#include <sofa/simulation/common/AnimateEndEvent.h>
-
 namespace sofa
 {
 namespace component
@@ -74,13 +72,6 @@ public:
         Inherit::reinit();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
-    {
-        if (simulation::AnimateEndEvent::checkEventType(event))
-        {
-            if(f_L1.isDirty() || f_L2.isDirty() || f_lambdaL.isDirty() ) reinit();
-        }
-    }
 
 
 protected:
@@ -90,7 +81,6 @@ protected:
         , f_L2(initData(&f_L2,helper::vector<Real>((int)1,(Real)46.4),"L2",""))
         , f_lambdaL(initData(&f_lambdaL,helper::vector<Real>((int)1,(Real)1.03),"lambdaL","stretch above which behavior becomes linear"))
     {
-        this->f_listening.setValue(true);
     }
 
     virtual ~TendonMaterialForceField()     {    }

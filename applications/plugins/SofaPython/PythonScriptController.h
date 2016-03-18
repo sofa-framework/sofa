@@ -45,6 +45,8 @@ public:
 
     PyObject* scriptControllerInstance() const {return m_ScriptControllerInstance;}
 
+    bool isDerivedFrom(const std::string& name, const std::string& module = "__main__");
+
 protected:
     PythonScriptController();
 
@@ -90,7 +92,6 @@ protected:
     virtual void script_draw(const core::visual::VisualParams*);
 
     /// @}
-
 
 public:
     sofa::core::objectmodel::DataFileName       m_filename;

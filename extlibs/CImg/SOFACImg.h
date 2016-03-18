@@ -171,7 +171,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
             if(translation) for(unsigned int i=0;i<3;i++) if(i<nbdims) translation[i] = (F)val[i];
             if(offsetT) if(nbdims>3) *offsetT = (F)val[3];
         }
-        else if(!str.compare("Orientation"))
+        else if(!str.compare("Orientation") || !str.compare("TransformMatrix") || !str.compare("Rotation"))
         {
             fileStream >> str2; // '='
             double val[4*4];

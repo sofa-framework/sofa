@@ -70,7 +70,7 @@ public:
     static const bool constantK=false;
 
     Real mimuVol;  ///< 0.5 * shear modulus * volume
-    Real mibulkVol;   ///<  bulk modulus * volume
+    Real bulkVol;   ///<  bulk modulus * volume
     bool stabilization;
 
     mutable MatBlock _K;
@@ -84,7 +84,7 @@ public:
         Real bulk = youngM/(3*(1-2*poissonR));
 
         mimuVol = mu*0.5*vol;
-        mibulkVol = bulk*0.5*vol;
+        bulkVol = bulk*vol;
         stabilization = _stabilization;
     }
 
@@ -98,7 +98,7 @@ public:
         Real Jm1 = J-1;
         Real squareU[3] = { U1*U1, U2*U2, U3*U3 };
         return mimuVol*((squareU[0]+squareU[1]+squareU[2])*pow(J,-2.0/3.0)-(Real)3.) +
-                0.5*mibulkVol*Jm1*Jm1;
+                0.5*bulkVol*Jm1*Jm1;
     }
 
     void addForce( Deriv& f, const Coord& x, const Deriv& /*v*/) const
@@ -125,7 +125,7 @@ public:
         Real I1 = squareU[0]+squareU[1]+squareU[2];
 
         Real t4 = -0.2e1 / 0.3e1 * I1 * Jm53;
-        Real t2 = mibulkVol * Jm1;
+        Real t2 = bulkVol * Jm1;
 
 
         Real t9 = U2 * U3;
@@ -136,18 +136,18 @@ public:
         f.getStrain()[2] -= mimuVol * (0.2e1 * U3 * Jm23 + t4 * t1) + t2 * t1;
 
         Real t10 = 0.2e1 * Jm23;
-        Real t11 = mibulkVol * squareU[1];
+        Real t11 = bulkVol * squareU[1];
         Real t12 = (0.10e2 / 0.9e1 * J * Jm83 - 0.2e1 / 0.3e1 * Jm53) * I1;
         t2 = 0.2e1 * Jm1;
-        Real t13 = mibulkVol * U3 * t2 + mimuVol * U3 * (t12 - 0.4e1 / 0.3e1 * Jm53 * (squareU[0] + squareU[1]));
-        Real t14 = mibulkVol * U2 * t2 + mimuVol * U2 * (t12 - 0.4e1 / 0.3e1 * Jm53 * (squareU[0] + squareU[2]));
+        Real t13 = bulkVol * U3 * t2 + mimuVol * U3 * (t12 - 0.4e1 / 0.3e1 * Jm53 * (squareU[0] + squareU[1]));
+        Real t14 = bulkVol * U2 * t2 + mimuVol * U2 * (t12 - 0.4e1 / 0.3e1 * Jm53 * (squareU[0] + squareU[2]));
         Real t16 = -0.8e1 / 0.3e1 * Jm53;
-        t2 = mibulkVol * U1 * t2 + mimuVol * U1 * (t12 - 0.4e1 / 0.3e1 * Jm53 * (squareU[1] + squareU[2]));
+        t2 = bulkVol * U1 * t2 + mimuVol * U1 * (t12 - 0.4e1 / 0.3e1 * Jm53 * (squareU[1] + squareU[2]));
         _K[0][0] = mimuVol * (t9 * (-0.8e1 / 0.3e1 * U1 * Jm53 + 0.10e2 / 0.9e1 * t9 * I1 * Jm83) + t10) + t11 * squareU[2];
         _K[0][1] = t13;
         _K[0][2] = t14;
         _K[1][0] = _K[0][1];
-        _K[1][1] = mimuVol * (t15 * (t16 * U2 + 0.10e2 / 0.9e1 * t15 * I1 * Jm83) + t10) + mibulkVol * squareU[0] * squareU[2];
+        _K[1][1] = mimuVol * (t15 * (t16 * U2 + 0.10e2 / 0.9e1 * t15 * I1 * Jm83) + t10) + bulkVol * squareU[0] * squareU[2];
         _K[1][2] = t2;
         _K[2][0] = _K[0][2];
         _K[2][1] = _K[1][2];
@@ -211,7 +211,7 @@ public:
     static const bool constantK=false;
 
     Real mimuVol;  ///< 0.5 * shear modulus * volume
-    Real mibulkVol;   ///<  bulk modulus * volume
+    Real bulkVol;   ///<  bulk modulus * volume
     bool stabilization;
 
     mutable MatBlock _K;
@@ -225,7 +225,7 @@ public:
         Real bulk = youngM/(3*(1-2*poissonR));
 
         mimuVol = mu*0.5*vol;
-        mibulkVol = bulk*0.5*vol;
+        bulkVol = bulk*vol;
         stabilization = _stabilization;
     }
 
@@ -238,7 +238,7 @@ public:
         Real Jm1 = J-1;
         Real squareU[2] = { U1*U1, U2*U2 };
         return mimuVol*((squareU[0]+squareU[1]+1)*pow(J,-2.0/3.0)-(Real)3.) +
-                0.5*mibulkVol*Jm1*Jm1;
+                0.5*bulkVol*Jm1*Jm1;
     }
 
     void addForce( Deriv& f, const Coord& x, const Deriv& /*v*/) const
@@ -259,7 +259,7 @@ public:
 
         Real firstInv = 2 * Jm23;
         Real secondInv = -2.0/3.0 * I1 * Jm53;
-        Real thirdInv = mibulkVol * Jm1;
+        Real thirdInv = bulkVol * Jm1;
 
         f.getStrain()[0] -= mimuVol * (firstInv * U1 + secondInv * U2) + thirdInv * U2;
         f.getStrain()[1] -= mimuVol * (firstInv * U2 + secondInv * U1) + thirdInv * U1;
@@ -268,10 +268,10 @@ public:
         firstInv += -8.0/3.0 * J * Jm53;
         secondInv = 10.0/9.0 * I1 * Jm83;
 
-        _K[0][0] = mimuVol * ( firstInv + secondInv*squareU[1] ) + mibulkVol * squareU[1];
-        _K[0][1] = mimuVol * ( -4.0/3.0 * Jm53 * ( squareU[0] + squareU[1] + 0.5*I1 ) + secondInv*J ) + mibulkVol * J;
+        _K[0][0] = mimuVol * ( firstInv + secondInv*squareU[1] ) + bulkVol * squareU[1];
+        _K[0][1] = mimuVol * ( -4.0/3.0 * Jm53 * ( squareU[0] + squareU[1] + 0.5*I1 ) + secondInv*J ) + bulkVol * J;
         _K[1][0] = _K[0][1];
-        _K[1][1] = mimuVol * ( firstInv + secondInv*squareU[0] ) + mibulkVol * squareU[0];
+        _K[1][1] = mimuVol * ( firstInv + secondInv*squareU[0] ) + bulkVol * squareU[0];
 
         // ensure _K is symmetric positive semi-definite (even if it is not as good as positive definite) as suggested in [Teran05]
         if( stabilization ) helper::Decompose<Real>::PSDProjection( _K );
@@ -330,7 +330,7 @@ public:
     static const bool constantK=false;
 
     Real mimuVol;  ///<  first coef * volume * 2
-    Real mibulkVol; ///< bulk modulus * volume
+    Real bulkVol; ///< bulk modulus * volume
 
     void init(const Real &youngM,const Real &poissonR,bool)
     {
@@ -341,33 +341,33 @@ public:
         Real bulk = youngM/(3*(1-2*poissonR));
 
         mimuVol = mu*0.5*vol;
-        mibulkVol = bulk*0.5*vol;
+        bulkVol = bulk*vol;
     }
 
     Real getPotentialEnergy(const Coord& x) const
     {
         Real Jm1 = x.getStrain()[2]-(Real)1;
         return mimuVol*(Real)0.5*(x.getStrain()[0]*x.getStrain()[0]-(Real)3.) +
-               mibulkVol*(Real)0.5*Jm1*Jm1;
+               bulkVol*(Real)0.5*Jm1*Jm1;
     }
 
     void addForce( Deriv& f , const Coord& x , const Deriv& /*v*/) const
     {
         f.getStrain()[0]-=mimuVol*x.getStrain()[0];
-        f.getStrain()[2]-=mibulkVol*(x.getStrain()[2]-(Real)1.);
+        f.getStrain()[2]-=bulkVol*(x.getStrain()[2]-(Real)1.);
     }
 
     void addDForce( Deriv&   df, const Deriv&   dx, const SReal& kfactor, const SReal& /*bfactor*/ ) const
     {
         df.getStrain()[0]-=mimuVol*dx.getStrain()[0]*kfactor;
-        df.getStrain()[2]-=mibulkVol*dx.getStrain()[2]*kfactor;
+        df.getStrain()[2]-=bulkVol*dx.getStrain()[2]*kfactor;
     }
 
     MatBlock getK() const
     {
         MatBlock K = MatBlock();
         K[0][0]=-mimuVol;
-        K[2][2]=-mibulkVol;
+        K[2][2]=-bulkVol;
         return K;
     }
 
@@ -375,7 +375,7 @@ public:
     {
         MatBlock C = MatBlock();
         C[0][0]=1./mimuVol;
-        C[2][2]=1./mibulkVol;
+        C[2][2]=1./bulkVol;
         return C;
     }
 

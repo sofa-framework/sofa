@@ -29,7 +29,6 @@
 #include "../material/BaseMaterialForceField.h"
 #include "../material/MuscleMaterialBlock.h"
 
-#include <sofa/simulation/common/AnimateEndEvent.h>
 
 namespace sofa
 {
@@ -81,13 +80,6 @@ public:
         Inherit::reinit();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
-    {
-        if (simulation::AnimateEndEvent::checkEventType(event))
-        {
-            if(f_lambda0.isDirty() || f_sigmaMax.isDirty() || f_a.isDirty() || f_b.isDirty() || f_Vvm.isDirty() || f_Ver.isDirty() || f_Vsh.isDirty()) reinit();
-        }
-    }
 
 protected:
     MuscleMaterialForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
@@ -100,7 +92,6 @@ protected:
         , f_Ver(initData(&f_Ver,helper::vector<Real>((int)1,(Real)0.5),"Ver",""))
         , f_Vsh(initData(&f_Vsh,helper::vector<Real>((int)1,(Real)0.3),"Vsh",""))
     {
-        this->f_listening.setValue(true);
     }
 
     virtual ~MuscleMaterialForceField()     {    }
