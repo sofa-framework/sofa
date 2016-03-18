@@ -347,9 +347,20 @@ void printPythonExceptions();
 
 
 // =============================================================================
+// PYTHON SEARCH FOR A FUNCTION WITH A GIVEN NAME
+// =============================================================================
+#define BIND_SCRIPT_FUNC(funcName){\
+        m_Func_##funcName = PyDict_GetItemString(pDict, #funcName);\
+        if (!PyCallable_Check(m_Func_##funcName)) \
+            {m_Func_##funcName=0; msg_info("PythonMainScriptController")<<#funcName<<" not found";} \
+        else \
+            {msg_info("PythonMainScriptController")<<#funcName<<" found";} \
+    }
+
+// =============================================================================
 // PYTHON SEARCH FOR A METHOD WITH A GIVEN NAME
 // =============================================================================
-#define BIND_SCRIPT_FUNC(funcName) \
+#define BIND_OBJECT_METHOD(funcName) \
     { \
     if( PyObject_HasAttrString((PyObject*)&SP_SOFAPYTYPEOBJECT(PythonScriptController),#funcName ) && \
         PyObject_RichCompareBool( PyObject_GetAttrString(m_ScriptControllerClass, #funcName),\
