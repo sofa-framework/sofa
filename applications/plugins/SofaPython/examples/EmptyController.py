@@ -28,12 +28,12 @@ class ExampleController(Sofa.PythonScriptController):
 
 	# called on each animation step
 	#total_time = 0
-        #def onBeginAnimationStep(self,dt):
+        def onBeginAnimationStep(self,dt):
 	#	print 'onBeginAnimatinStep (python) dt=%f total time=%f'%(dt,self.total_time)
-	#	return 0
+		return 0
 
-	#def onEndAnimationStep(self,dt):
-	#        return 0
+	def onEndAnimationStep(self,dt):
+	        return 0
 
 	# called when necessary by Sofa framework... 
 	def storeResetState(self):
@@ -75,6 +75,6 @@ class ExampleController(Sofa.PythonScriptController):
 		return 0
 
 	# called at each draw (possibility to use PyOpenGL)
-	#def draw(self):
-	#	return 0
+	def draw(self):
+		return 0
  
