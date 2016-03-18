@@ -117,6 +117,7 @@ protected:
     PyObject *m_Func_onLoaded;
     PyObject *m_Func_createGraph;
     PyObject *m_Func_initGraph;
+    PyObject *m_Func_bwdInitGraph;
     PyObject *m_Func_storeResetState;
     PyObject *m_Func_reset;
     PyObject *m_Func_cleanup;
