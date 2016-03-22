@@ -74,7 +74,7 @@ public:
 
     MatrixInvertData * createInvertData()
     {
-        return new SparsePARDISOSolverInvertData(f_symmetric.getValue(),sout,serr);
+        return new SparsePARDISOSolverInvertData(f_symmetric.getValue(),std::cout,std::cerr);
     }
 
 protected:
