@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,9 +24,7 @@
 ******************************************************************************/
 #include <sofa/core/ExecParams.h>
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
-#include <sofa/helper/BackTrace.h>
-#include <cassert>
-#include <iostream>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -53,7 +51,7 @@ ExecParams* ExecParams::defaultInstance()
         ptr = new ExecParams(new ExecParamsThreadStorage(g_nbThreads.exchange_and_add(1)));
         threadParams = ptr;
         if (ptr->threadID())
-            std::cout << "[THREAD " << ptr->threadID() << "]: local ExecParams storage created." << std::endl;
+            msg_info("ExecParams") << "[THREAD " << ptr->threadID() << "]: local ExecParams storage created.";
     }
     return ptr;
 }
@@ -70,7 +68,7 @@ bool ExecParams::checkValidStorage() const
     if (storage == ts)
         return true;
 
-    std::cerr << "[THREAD " << ts->threadID << "]: ERROR invalid ExecParams used, belonging to thread " << storage->threadID << std::endl;
+    msg_error("ExecParams") <<  "[THREAD " << ts->threadID << "]:  invalid ExecParams used, belonging to thread " << storage->threadID;
     const_cast<ExecParams*>(this)->storage = ts;
     return false;
 }

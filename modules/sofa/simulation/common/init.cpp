@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -68,8 +68,9 @@ SOFA_SIMULATION_COMMON_API bool isCleanedUp()
 }
 
 // Detect missing cleanup() call.
-struct CleanupCheck
+static const struct CleanupCheck
 {
+    CleanupCheck() {}
     ~CleanupCheck()
     {
         if (simulation::common::isInitialized() && !simulation::common::isCleanedUp())

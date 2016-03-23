@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -315,9 +315,9 @@ public:
 
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
-    typedef vector<Coord> VecCoord;
-    typedef vector<Deriv> VecDeriv;
-    typedef vector<Real> VecReal;
+    typedef helper::vector<Coord> VecCoord;
+    typedef helper::vector<Deriv> VecDeriv;
+    typedef helper::vector<Real> VecReal;
 
     template<typename T>
     static void set(Coord& c, T x, T, T)

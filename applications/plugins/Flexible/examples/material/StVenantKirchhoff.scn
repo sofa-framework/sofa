@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 -0.5 0 " dt="1"  >
+  
+      <RequiredPlugin pluginName="Flexible"/>
+  
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
+    
+
+    <Node 	name="GreenLagrange  grey"   >
+    <EulerImplicitSolver rayleighMass="0" rayleighStiffness="0"/> <CGLinearSolver  iterations="10" threshold="1e-5" tolerance="1e-5"/>
+
+        
+	<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh"  />
+        <Mesh name="mesh" src="@loader" />
+	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
+
+        <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@loader.position" name="FixedROI"/>
+        <FixedConstraint indices="@FixedROI.indices" />
+        
+        <UniformMass totalMass="200"/>
+             
+        <BarycentricShapeFunction  />
+
+        <Node 	name="behavior"   >
+	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="2" />
+	    <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+    	    <LinearMapping template="Vec3d,F331"  />
+
+	    <Node 	name="Strain"   >
+		<MechanicalObject  template="E331" name="E"  />
+	    	<GreenStrainMapping template="F331,E331"     />
+	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"    />	    
+            </Node>
+        </Node>
+
+
+             
+	<Node name="Visual"  >
+	     <VisualModel  fileMesh="mesh/torus.obj" />
+             <LinearMapping template="Vec3d,ExtVec3f"/>
+	</Node>
+    </Node>
+    
+    
+    
+    
+    
+    <Node 	name="PrincipalStretches  green"   >
+<EulerImplicitSolver rayleighMass="0" rayleighStiffness="0"/> <CGLinearSolver  iterations="10" threshold="1e-5" tolerance="1e-5"/>
+        
+        
+	<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh"  />
+        <Mesh name="mesh" src="@loader" />
+	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
+
+        <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@loader.position" name="FixedROI"/>
+        <FixedConstraint indices="@FixedROI.indices" />
+        
+        <UniformMass totalMass="200"/>
+             
+        <BarycentricShapeFunction  />
+
+        <Node 	name="behavior"   >
+	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
+	    <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+    	    <LinearMapping template="Vec3d,F331"  />
+
+	    <Node 	name="Strain"   >
+		<MechanicalObject  template="U331" name="U"  />
+	    	<PrincipalStretchesMapping template="F331,U331"    asStrain="1" />
+	        <HookeForceField  template="U331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"    />	    
+            </Node>
+        </Node>
+
+
+             
+	<Node name="Visual"  >
+	     <VisualModel  fileMesh="mesh/torus.obj" color="green"/>
+             <LinearMapping template="Vec3d,ExtVec3f"/>
+	</Node>
+    </Node>
+    
+    
+    
+    
+    
+     <Node 	name="HEML  pink"   >
+         
+<EulerImplicitSolver rayleighMass="0" rayleighStiffness="0"/> <CGLinearSolver  iterations="10" threshold="1e-5" tolerance="1e-5"/>
+         
+    
+	      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+	      <Mesh name="mesh" position="@loader.position"  tetrahedra="@loader.tetrahedra" />  <!--warning Mesh should have no edge or the full tetrahedra edges-->
+                            
+	      <MechanicalObject template="Vec3d" name="parent" />
+
+             <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@loader.position" name="FixedROI"/>
+             <FixedConstraint indices="@FixedROI.indices" />
+
+	     <UniformMass totalMass="200"/>
+
+             <Node>
+                  <MechanicalObject template="Vec1d" name="parent" />
+                  <HEMLStVKForceField youngModulus="2000" poissonRatio="0.2"/>
+                  <EdgeSetTopologyContainer src="@../mesh"/>
+                  <SquareDistanceMapping  applyRestPosition="1" computeDistance="1" geometricStiffness="2"/>   <!--warning rest pos must be computed -->
+            </Node>
+
+	    <Node 	name="visual"   >
+		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 .4 0.5 1"/>
+	    	<BarycentricMapping template="Vec3d,ExtVec3f"/>
+	    </Node>
+        </Node>
+
+
+</Node>

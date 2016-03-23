@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,8 +43,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using cimg_library::CImg;
 
 /**
  * This class discretize shape functions in an image
@@ -135,7 +133,7 @@ protected:
         raImage in(this->f_image);
         raTransform inT(this->f_transform);
         if(in->isEmpty())  { serr<<"Image not found"<<sendl; return; }
-        const CImg<T>& inimg = in->getCImg(0);  // suppose time=0
+        const cimg_library::CImg<T>& inimg = in->getCImg(0);  // suppose time=0
 
         cleanDirty();
 
@@ -146,9 +144,9 @@ protected:
         dim[4]=1;
 
         waInd indData(this->f_index); indData->setDimensions(dim);
-        CImg<IndT>& indices = indData->getCImg(); indices.fill(0);
+        cimg_library::CImg<IndT>& indices = indData->getCImg(); indices.fill(0);
         waDist weightData(this->f_w);         weightData->setDimensions(dim);
-        CImg<DistT>& weights = weightData->getCImg(); weights.fill(0);
+        cimg_library::CImg<DistT>& weights = weightData->getCImg(); weights.fill(0);
 
 //        // fill indices and weights images
 //#ifdef _OPENMP

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,13 +38,6 @@ namespace topology
 {
 class QuadSetTopologyContainer;
 
-using core::topology::BaseMeshTopology;
-typedef BaseMeshTopology::QuadID QuadID;
-typedef BaseMeshTopology::Quad Quad;
-typedef BaseMeshTopology::SeqQuads SeqQuads;
-typedef BaseMeshTopology::QuadsAroundVertex QuadsAroundVertex;
-typedef BaseMeshTopology::QuadsAroundEdge QuadsAroundEdge;
-typedef BaseMeshTopology::EdgesInQuad EdgesInQuad;
 
 /**
 * A class that modifies the topology by adding and removing quads
@@ -53,6 +46,13 @@ class SOFA_BASE_TOPOLOGY_API QuadSetTopologyModifier : public EdgeSetTopologyMod
 {
 public:
     SOFA_CLASS(QuadSetTopologyModifier,EdgeSetTopologyModifier);
+
+    typedef core::topology::BaseMeshTopology::QuadID QuadID;
+    typedef core::topology::BaseMeshTopology::Quad Quad;
+    typedef core::topology::BaseMeshTopology::SeqQuads SeqQuads;
+    typedef core::topology::BaseMeshTopology::QuadsAroundVertex QuadsAroundVertex;
+    typedef core::topology::BaseMeshTopology::QuadsAroundEdge QuadsAroundEdge;
+    typedef core::topology::BaseMeshTopology::EdgesInQuad EdgesInQuad;
 protected:
     QuadSetTopologyModifier()
         : EdgeSetTopologyModifier()

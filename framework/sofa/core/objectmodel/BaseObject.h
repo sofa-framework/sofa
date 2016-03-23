@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,7 +42,6 @@
 
 namespace sofa
 {
-using helper::vector;
 
 namespace core
 {
@@ -83,6 +82,7 @@ class SOFA_CORE_API BaseObject : public virtual Base
 public:
     SOFA_CLASS(BaseObject, Base);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseObject)
+
 protected:
     BaseObject();
 
@@ -194,12 +194,12 @@ public:
 
     /// Local search of all objects of the given type
     template<class T>
-    vector<typename T::SPtr> searchAllLocal() const
+    helper::vector<typename T::SPtr> searchAllLocal() const
     {
-        vector<T*> v;
+        helper::vector<T*> v;
         const BaseContext* context = getContext();
         context->get<T>(&v,BaseContext::Local);
-        vector<typename T::SPtr> vp;
+        helper::vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
             vp.push_back(typename T::SPtr(v[i]));
@@ -208,12 +208,12 @@ public:
     }
     /// Upward search of all objects of the given type, starting from the local context
     template<class T>
-    vector<typename T::SPtr> searchAllUp() const
+    helper::vector<typename T::SPtr> searchAllUp() const
     {
-        vector<T*> v;
+        helper::vector<T*> v;
         const BaseContext* context = getContext();
         context->get<T>(&v,BaseContext::SearchUp);
-        vector<typename T::SPtr> vp;
+        helper::vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
             vp.push_back(typename T::SPtr(v[i]));
@@ -222,12 +222,12 @@ public:
     }
     /// Downward search of all objects of the given type, starting from the local context
     template<class T>
-    vector<typename T::SPtr> searchAllDown() const
+    helper::vector<typename T::SPtr> searchAllDown() const
     {
-        vector<T*> v;
+        helper::vector<T*> v;
         const BaseContext* context = getContext();
         context->get<T>(&v,BaseContext::SearchDown);
-        vector<typename T::SPtr> vp;
+        helper::vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
             vp.push_back(typename T::SPtr(v[i]));
@@ -236,12 +236,12 @@ public:
     }
     /// Search of all objects of the given type, starting from the root
     template<class T>
-    vector<typename T::SPtr> searchAllFromRoot() const
+    helper::vector<typename T::SPtr> searchAllFromRoot() const
     {
-        vector<T*> v;
+        helper::vector<T*> v;
         const BaseContext* context = getContext();
         context->get<T>(&v,BaseContext::SearchRoot);
-        vector<typename T::SPtr> vp;
+        helper::vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
             vp.push_back(typename T::SPtr(v[i]));
@@ -251,12 +251,12 @@ public:
     /// Search of all objects of the given type, in the parents of the local context
     /// @todo is this an upward search starting from each parent, or only a local search in each parent ?
     template<class T>
-    vector<typename T::SPtr> searchAllInParents() const
+    helper::vector<typename T::SPtr> searchAllInParents() const
     {
-        vector<T*> v;
+        helper::vector<T*> v;
         const BaseContext* context = getContext();
         context->get<T>(&v,BaseContext::SearchParents);
-        vector<typename T::SPtr> vp;
+        helper::vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
             vp.push_back(typename T::SPtr(v[i]));
@@ -268,12 +268,12 @@ public:
 
     /// Local search of all objects of the given type with a given Tag
     template<class T>
-    vector<typename T::SPtr> searchAllLocal(const Tag& t) const
+    helper::vector<typename T::SPtr> searchAllLocal(const Tag& t) const
     {
-        vector<T*> v;
+        helper::vector<T*> v;
         const BaseContext* context = getContext();
         context->get<T>(&v,t,BaseContext::Local);
-        vector<typename T::SPtr> vp;
+        helper::vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
             vp.push_back(typename T::SPtr(v[i]));
@@ -282,12 +282,12 @@ public:
     }
     /// Upward search of all objects of the given type with a given Tag, starting from the local context
     template<class T>
-    vector<typename T::SPtr> searchAllUp(const Tag& t) const
+    helper::vector<typename T::SPtr> searchAllUp(const Tag& t) const
     {
-        vector<T*> v;
+        helper::vector<T*> v;
         const BaseContext* context = getContext();
         context->get<T>(&v,t,BaseContext::SearchUp);
-        vector<typename T::SPtr> vp;
+        helper::vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
             vp.push_back(typename T::SPtr(v[i]));
@@ -296,12 +296,12 @@ public:
     }
     /// Downward search of all objects of the given typee with a given Tag, starting from the local context
     template<class T>
-    vector<typename T::SPtr> searchAllDown(const Tag& t) const
+    helper::vector<typename T::SPtr> searchAllDown(const Tag& t) const
     {
-        vector<T*> v;
+        helper::vector<T*> v;
         const BaseContext* context = getContext();
         context->get<T>(&v,t,BaseContext::SearchDown);
-        vector<typename T::SPtr> vp;
+        helper::vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
             vp.push_back(typename T::SPtr(v[i]));
@@ -310,12 +310,12 @@ public:
     }
     /// Search of all objects of the given typee with a given Tag, starting from the root
     template<class T>
-    vector<typename T::SPtr> searchAllFromRoot(const Tag& t) const
+    helper::vector<typename T::SPtr> searchAllFromRoot(const Tag& t) const
     {
-        vector<T*> v;
+        helper::vector<T*> v;
         const BaseContext* context = getContext();
         context->get<T>(&v,t,BaseContext::SearchRoot);
-        vector<typename T::SPtr> vp;
+        helper::vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
             vp.push_back(typename T::SPtr(v[i]));
@@ -325,12 +325,12 @@ public:
     /// Search of all objects of the given typee with a given Tag, in the parents of the local context
     /// @todo is this an upward search starting from each parent, or only a local search in each parent ?
     template<class T>
-    vector<typename T::SPtr> searchAllInParents(const Tag& t) const
+    helper::vector<typename T::SPtr> searchAllInParents(const Tag& t) const
     {
-        vector<T*> v;
+        helper::vector<T*> v;
         const BaseContext* context = getContext();
         context->get<T>(&v,t,BaseContext::SearchParents);
-        vector<typename T::SPtr> vp;
+        helper::vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
             vp.push_back(typename T::SPtr(v[i]));
@@ -343,12 +343,12 @@ public:
 
     /// Local search of all objects of the given type with a given TagSet
     template<class T>
-    vector<typename T::SPtr> searchAllLocal(const TagSet& t) const
+    helper::vector<typename T::SPtr> searchAllLocal(const TagSet& t) const
     {
-        vector<T*> v;
+        helper::vector<T*> v;
         const BaseContext* context = getContext();
         context->get<T>(&v,t,BaseContext::Local);
-        vector<typename T::SPtr> vp;
+        helper::vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
             vp.push_back(typename T::SPtr(v[i]));
@@ -357,12 +357,12 @@ public:
     }
     /// Upward search of all objects of the given type with a given TagSet, starting from the local context
     template<class T>
-    vector<typename T::SPtr> searchAllUp(const TagSet& t) const
+    helper::vector<typename T::SPtr> searchAllUp(const TagSet& t) const
     {
-        vector<T*> v;
+        helper::vector<T*> v;
         const BaseContext* context = getContext();
         context->get<T>(&v,t,BaseContext::SearchUp);
-        vector<typename T::SPtr> vp;
+        helper::vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
             vp.push_back(typename T::SPtr(v[i]));
@@ -371,12 +371,12 @@ public:
     }
     /// Downward search of all objects of the given typee with a given TagSet, starting from the local context
     template<class T>
-    vector<typename T::SPtr> searchAllDown(const TagSet& t) const
+    helper::vector<typename T::SPtr> searchAllDown(const TagSet& t) const
     {
-        vector<T*> v;
+        helper::vector<T*> v;
         const BaseContext* context = getContext();
         context->get<T>(&v,t,BaseContext::SearchDown);
-        vector<typename T::SPtr> vp;
+        helper::vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
             vp.push_back(typename T::SPtr(v[i]));
@@ -385,12 +385,12 @@ public:
     }
     /// Search of all objects of the given typee with a given TagSet, starting from the root
     template<class T>
-    vector<typename T::SPtr> searchAllFromRoot(const TagSet& t) const
+    helper::vector<typename T::SPtr> searchAllFromRoot(const TagSet& t) const
     {
-        vector<T*> v;
+        helper::vector<T*> v;
         const BaseContext* context = getContext();
         context->get<T>(&v,t,BaseContext::SearchRoot);
-        vector<typename T::SPtr> vp;
+        helper::vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
             vp.push_back(typename T::SPtr(v[i]));
@@ -400,12 +400,12 @@ public:
     /// Search of all objects of the given typee with a given TagSet, in the parents of the local context
     /// @todo is this an upward search starting from each parent, or only a local search in each parent ?
     template<class T>
-    vector<typename T::SPtr> searchAllInParents(const TagSet& t) const
+    helper::vector<typename T::SPtr> searchAllInParents(const TagSet& t) const
     {
-        vector<T*> v;
+        helper::vector<T*> v;
         const BaseContext* context = getContext();
         context->get<T>(&v,t,BaseContext::SearchParents);
-        vector<typename T::SPtr> vp;
+        helper::vector<typename T::SPtr> vp;
         for( unsigned i=0; i<v.size(); i++ )
         {
             vp.push_back(typename T::SPtr(v[i]));

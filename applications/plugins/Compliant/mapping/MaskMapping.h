@@ -31,7 +31,7 @@ public:
 	typedef typename TOut::Real out_real;
 
 	// should only be used with vector dofs
-	typedef vector< typename TIn::Coord > dofs_type;
+    typedef helper::vector< typename TIn::Coord > dofs_type;
 	Data< dofs_type > dofs;
 
 	typedef AssembledMapping<TIn, TOut> base;

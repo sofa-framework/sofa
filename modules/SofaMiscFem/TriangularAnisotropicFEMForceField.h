@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -47,8 +47,6 @@ namespace component
 {
 namespace forcefield
 {
-
-using sofa::helper::vector;
 
 
 template<class DataTypes>
@@ -98,17 +96,17 @@ public:
 
     topology::TriangleData <helper::vector< Deriv> > localFiberDirection;
 
-    class TRQSTriangleHandler : public topology::TopologyDataHandler<topology::Triangle,vector<Deriv> >
+    class TRQSTriangleHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<Deriv> >
     {
     public:
         typedef typename TriangularAnisotropicFEMForceField::Deriv triangleInfo;
 
-        TRQSTriangleHandler(TriangularAnisotropicFEMForceField<DataTypes>* _ff, topology::TriangleData<helper::vector<triangleInfo> >*  _data) : topology::TopologyDataHandler<topology::Triangle, helper::vector<triangleInfo> >(_data), ff(_ff) {}
+        TRQSTriangleHandler(TriangularAnisotropicFEMForceField<DataTypes>* _ff, topology::TriangleData<helper::vector<triangleInfo> >*  _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, helper::vector<triangleInfo> >(_data), ff(_ff) {}
 
-        using topology::TopologyDataHandler<topology::Triangle,vector<Deriv> >::applyCreateFunction;
+        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<Deriv> >::applyCreateFunction;
         void applyCreateFunction(unsigned int triangleIndex,
                                  helper::vector<triangleInfo> & ,
-                                 const topology::Triangle & t,
+                                 const core::topology::BaseMeshTopology::Triangle & t,
                                  const sofa::helper::vector< unsigned int > &,
                                  const sofa::helper::vector< double > &);
 

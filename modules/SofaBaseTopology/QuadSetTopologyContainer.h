@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,18 +36,7 @@ namespace topology
 {
 class QuadSetTopologyModifier;
 
-using core::topology::BaseMeshTopology;
 
-typedef BaseMeshTopology::PointID			PointID;
-typedef BaseMeshTopology::EdgeID			EdgeID;
-typedef BaseMeshTopology::QuadID			QuadID;
-typedef BaseMeshTopology::Edge				Edge;
-typedef BaseMeshTopology::Quad				Quad;
-typedef BaseMeshTopology::SeqQuads			SeqQuads;
-typedef BaseMeshTopology::EdgesInQuad			EdgesInQuad;
-typedef BaseMeshTopology::QuadsAroundVertex		QuadsAroundVertex;
-typedef BaseMeshTopology::QuadsAroundEdge		QuadsAroundEdge;
-typedef sofa::helper::vector<QuadID>                  VecQuadID;
 
 /** Object that stores a set of quads and provides access
 to each quad and its edges and vertices */
@@ -57,6 +46,18 @@ class SOFA_BASE_TOPOLOGY_API QuadSetTopologyContainer : public EdgeSetTopologyCo
 
 public:
     SOFA_CLASS(QuadSetTopologyContainer,EdgeSetTopologyContainer);
+
+    typedef BaseMeshTopology::PointID			PointID;
+    typedef BaseMeshTopology::EdgeID			EdgeID;
+    typedef BaseMeshTopology::QuadID			QuadID;
+    typedef BaseMeshTopology::Edge				Edge;
+    typedef BaseMeshTopology::Quad				Quad;
+    typedef BaseMeshTopology::SeqQuads			SeqQuads;
+    typedef BaseMeshTopology::EdgesInQuad			EdgesInQuad;
+    typedef BaseMeshTopology::QuadsAroundVertex		QuadsAroundVertex;
+    typedef BaseMeshTopology::QuadsAroundEdge		QuadsAroundEdge;
+    typedef sofa::helper::vector<QuadID>                  VecQuadID;
+
 protected:
     QuadSetTopologyContainer();
 

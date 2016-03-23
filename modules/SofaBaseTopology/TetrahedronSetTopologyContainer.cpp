@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -408,7 +408,7 @@ void TetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArray ()
     }
 }
 
-const sofa::helper::vector<Tetrahedron> &TetrahedronSetTopologyContainer::getTetrahedronArray()
+const sofa::helper::vector<TetrahedronSetTopologyContainer::Tetrahedron> &TetrahedronSetTopologyContainer::getTetrahedronArray()
 {
     if (!hasTetrahedra() && getNbPoints()>0)
     {
@@ -422,7 +422,7 @@ const sofa::helper::vector<Tetrahedron> &TetrahedronSetTopologyContainer::getTet
 }
 
 
-const Tetrahedron TetrahedronSetTopologyContainer::getTetrahedron (TetraID i)
+const TetrahedronSetTopologyContainer::Tetrahedron TetrahedronSetTopologyContainer::getTetrahedron (TetraID i)
 {
     if(!hasTetrahedra())
         createTetrahedronSetArray();
@@ -506,7 +506,7 @@ const sofa::helper::vector< sofa::helper::vector<unsigned int> > &TetrahedronSet
     return m_tetrahedraAroundTriangle;
 }
 
-const sofa::helper::vector< EdgesInTetrahedron> &TetrahedronSetTopologyContainer::getEdgesInTetrahedronArray()
+const sofa::helper::vector< TetrahedronSetTopologyContainer::EdgesInTetrahedron> &TetrahedronSetTopologyContainer::getEdgesInTetrahedronArray()
 {
     if (!hasEdgesInTetrahedron())
         createEdgesInTetrahedronArray();
@@ -514,13 +514,13 @@ const sofa::helper::vector< EdgesInTetrahedron> &TetrahedronSetTopologyContainer
     return m_edgesInTetrahedron;
 }
 
-Edge TetrahedronSetTopologyContainer::getLocalEdgesInTetrahedron (const unsigned int i) const
+TetrahedronSetTopologyContainer::Edge TetrahedronSetTopologyContainer::getLocalEdgesInTetrahedron (const unsigned int i) const
 {
     assert(i<6);
     return Edge (edgesInTetrahedronArray[i][0], edgesInTetrahedronArray[i][1]);
 }
 
-Triangle TetrahedronSetTopologyContainer::getLocalTrianglesInTetrahedron (const unsigned int i) const
+TetrahedronSetTopologyContainer::Triangle TetrahedronSetTopologyContainer::getLocalTrianglesInTetrahedron (const unsigned int i) const
 {
     assert(i<4);
     return Triangle (trianglesInTetrahedronArray[i][0],
@@ -528,7 +528,7 @@ Triangle TetrahedronSetTopologyContainer::getLocalTrianglesInTetrahedron (const 
             trianglesInTetrahedronArray[i][2]);
 }
 
-const sofa::helper::vector< TrianglesInTetrahedron> &TetrahedronSetTopologyContainer::getTrianglesInTetrahedronArray()
+const sofa::helper::vector< TetrahedronSetTopologyContainer::TrianglesInTetrahedron> &TetrahedronSetTopologyContainer::getTrianglesInTetrahedronArray()
 {
     if (!hasTrianglesInTetrahedron())
         createTrianglesInTetrahedronArray();
@@ -566,7 +566,7 @@ const sofa::helper::vector< unsigned int > &TetrahedronSetTopologyContainer::get
     return m_tetrahedraAroundTriangle[i];
 }
 
-const EdgesInTetrahedron &TetrahedronSetTopologyContainer::getEdgesInTetrahedron(const unsigned int i)
+const TetrahedronSetTopologyContainer::EdgesInTetrahedron &TetrahedronSetTopologyContainer::getEdgesInTetrahedron(const unsigned int i)
 {
     if (!hasEdgesInTetrahedron())
         createEdgesInTetrahedronArray();
@@ -576,7 +576,7 @@ const EdgesInTetrahedron &TetrahedronSetTopologyContainer::getEdgesInTetrahedron
     return m_edgesInTetrahedron[i];
 }
 
-const TrianglesInTetrahedron &TetrahedronSetTopologyContainer::getTrianglesInTetrahedron(const unsigned int i)
+const TetrahedronSetTopologyContainer::TrianglesInTetrahedron &TetrahedronSetTopologyContainer::getTrianglesInTetrahedron(const unsigned int i)
 {
     if (!hasTrianglesInTetrahedron())
         createTrianglesInTetrahedronArray();
@@ -808,7 +808,7 @@ unsigned int TetrahedronSetTopologyContainer::getNumberOfConnectedComponent()
 }
 
 
-const VecTetraID TetrahedronSetTopologyContainer::getConnectedElement(TetraID elem)
+const TetrahedronSetTopologyContainer::VecTetraID TetrahedronSetTopologyContainer::getConnectedElement(TetraID elem)
 {
     if(!hasTetrahedraAroundVertex())	// this method should only be called when the shell array exists
     {
@@ -875,7 +875,7 @@ const VecTetraID TetrahedronSetTopologyContainer::getConnectedElement(TetraID el
 }
 
 
-const VecTetraID TetrahedronSetTopologyContainer::getElementAroundElement(TetraID elem)
+const TetrahedronSetTopologyContainer::VecTetraID TetrahedronSetTopologyContainer::getElementAroundElement(TetraID elem)
 {
     VecTetraID elems;
 
@@ -917,7 +917,7 @@ const VecTetraID TetrahedronSetTopologyContainer::getElementAroundElement(TetraI
 }
 
 
-const VecTetraID TetrahedronSetTopologyContainer::getElementAroundElements(VecTetraID elems)
+const TetrahedronSetTopologyContainer::VecTetraID TetrahedronSetTopologyContainer::getElementAroundElements(VecTetraID elems)
 {
     VecTetraID elemAll;
     VecTetraID elemTmp;

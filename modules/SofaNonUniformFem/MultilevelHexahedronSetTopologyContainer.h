@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -49,8 +49,6 @@ namespace topology
 {
 class MultilevelHexahedronSetTopologyModifier;
 
-using sofa::defaulttype::Vec;
-using sofa::core::topology::TopologyChange;
 
 class SOFA_NON_UNIFORM_FEM_API MultilevelHexahedronSetTopologyContainer : public HexahedronSetTopologyContainer
 {
@@ -59,7 +57,7 @@ class SOFA_NON_UNIFORM_FEM_API MultilevelHexahedronSetTopologyContainer : public
 public:
     SOFA_CLASS(MultilevelHexahedronSetTopologyContainer,HexahedronSetTopologyContainer);
 
-    typedef Vec<3,int>			Vec3i;
+    typedef defaulttype::Vec<3,int>			Vec3i;
 protected:
     MultilevelHexahedronSetTopologyContainer();
 
@@ -82,14 +80,14 @@ public:
             const unsigned int vertexId,
             helper::vector<unsigned int> &neighbors);
 
-    void addTopologyChangeFine(const TopologyChange *topologyChange)
+    void addTopologyChangeFine(const core::topology::TopologyChange *topologyChange)
     {
         m_changeListFine.push_back(topologyChange);
     }
 
     void resetTopologyChangeListFine()
     {
-        for(std::list<const TopologyChange *>::iterator it = m_changeListFine.begin();
+        for(std::list<const core::topology::TopologyChange *>::iterator it = m_changeListFine.begin();
             it != m_changeListFine.end(); ++it)
         {
             delete (*it);
@@ -97,17 +95,17 @@ public:
         m_changeListFine.clear();
     }
 
-    std::list<const TopologyChange *>::const_iterator beginChangeFine() const
+    std::list<const core::topology::TopologyChange *>::const_iterator beginChangeFine() const
     {
         return m_changeListFine.begin();
     }
 
-    std::list<const TopologyChange *>::const_iterator endChangeFine() const
+    std::list<const core::topology::TopologyChange *>::const_iterator endChangeFine() const
     {
         return m_changeListFine.end();
     }
 
-    const std::list<const TopologyChange *>& getChangeListFine() const
+    const std::list<const core::topology::TopologyChange *>& getChangeListFine() const
     {
         return m_changeListFine;
     }
@@ -196,7 +194,7 @@ private:
 private:
 
 
-    std::list<const TopologyChange *>	m_changeListFine;
+    std::list<const core::topology::TopologyChange *>	m_changeListFine;
 
     HexahedronData<sofa::helper::vector<Component*> >		_coarseComponents;	// map between hexahedra and components - coarse
     HexahedronData<sofa::helper::vector<Component*> >		_fineComponents;	// map between hexahedra and components - fine
@@ -214,7 +212,7 @@ class SOFA_NON_UNIFORM_FEM_API MultilevelModification : public core::topology::T
 public:
     static const int MULTILEVEL_MODIFICATION = core::topology::TOPOLOGYCHANGE_LASTID + 1;
 
-    typedef Vec<3,int>	Vec3i;
+    typedef defaulttype::Vec<3,int>	Vec3i;
 
     MultilevelModification(const sofa::helper::vector<unsigned int>& _tArray,
             const std::map<unsigned int, std::list<Vec3i> >& removedVoxels)

@@ -3,14 +3,14 @@
 
     <RequiredPlugin pluginName="Flexible"/>
     <RequiredPlugin pluginName="image"/>
-    <RequiredPlugin pluginName="SofaMJEDFEM"/>
+<!--     <RequiredPlugin pluginName="SofaMJEDFEM"/> -->
   
     <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 
     <CGSolver tolerance="1.0e-9" threshold="1.0e-9" />
 
     <!-- <PythonScriptController filename="RealTimeController.py" classname="RealTimeController"/> -->
 
-     <Node 	name="FEM"   activated="0" >
+<!--     <Node 	name="FEM"   activated="0" >
     	      <VisualStyle displayFlags="showVisualModels hideBehaviorModels" />
 	      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 	      <Mesh name="mesh" src="@loader" />
@@ -21,14 +21,13 @@
 
 	     <UniformMass totalMass="20" />
 
-	<!--  <TetrahedronFEMForceField name="ff" youngModulus="2000" poissonRatio="0.2" method="svd"/>  --> 
  <MJEDTetrahedralForceField name="ff" materialName="StVenantKirchhoff" ParameterSet="833.3333 555.55555" /> 
 
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 .4 0.5 1"/>
 	    	<BarycentricMapping template="Vec3d,ExtVec3f"/>
 	    </Node>
-    </Node>
+    </Node>-->
 
 
 

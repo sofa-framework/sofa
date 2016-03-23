@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,11 +43,6 @@ class EdgeSetTopologyModifier;
 template < class DataTypes >
 class EdgeSetGeometryAlgorithms;
 
-using core::topology::BaseMeshTopology;
-typedef BaseMeshTopology::EdgeID EdgeID;
-//	typedef BaseMeshTopology::Edge Edge;
-typedef BaseMeshTopology::SeqEdges SeqEdges;
-typedef BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
 
 /**
 * A class that performs topology algorithms on an EdgeSet.
@@ -58,6 +53,12 @@ class EdgeSetTopologyAlgorithms : public PointSetTopologyAlgorithms<DataTypes>
 public:
     SOFA_CLASS(SOFA_TEMPLATE(EdgeSetTopologyAlgorithms,DataTypes),SOFA_TEMPLATE(PointSetTopologyAlgorithms,DataTypes));
 protected:
+
+    typedef core::topology::BaseMeshTopology::EdgeID EdgeID;
+    //	typedef core::topology::BaseMeshTopology::Edge Edge;
+    typedef core::topology::BaseMeshTopology::SeqEdges SeqEdges;
+    typedef core::topology::BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
+
     EdgeSetTopologyAlgorithms()
         : PointSetTopologyAlgorithms<DataTypes>()
     {}

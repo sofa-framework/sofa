@@ -182,6 +182,7 @@ bool CmdLine::parse(int argc, char** argv, bool* error)
     if (c=='?' || c==':')
     {
       if (error!=NULL) *error = true;
+      delete [] options;
       return false;
     }
     bool longopt = true;
@@ -199,6 +200,7 @@ bool CmdLine::parse(int argc, char** argv, bool* error)
     {
       std::cerr<<"Error parsing options"<<std::endl;
       if (error!=NULL) *error = true;
+      delete [] options;
       return false;
     }
 
@@ -213,6 +215,7 @@ bool CmdLine::parse(int argc, char** argv, bool* error)
 	else         std::cerr << '-'<<opt->shortname;
 	std::cerr << " requires no value while \""<<optarg<<"\" was specified."<<std::endl;
 	if (error!=NULL) *error = true;
+    delete [] options;
 	return false;
       }
       else
@@ -224,6 +227,7 @@ bool CmdLine::parse(int argc, char** argv, bool* error)
 	  else         std::cerr << "-"<<opt->shortname;
 	  std::cerr << " .\n";
 	  if (error!=NULL) *error = true;
+      delete [] options;
 	  return false;
 	}
       }
@@ -237,6 +241,7 @@ bool CmdLine::parse(int argc, char** argv, bool* error)
 	else         std::cerr << '-'<<opt->shortname;
 	std::cerr << " requires a value."<<std::endl;
 	if (error!=NULL) *error = true;
+    delete [] options;
 	return false;
       }
       else
@@ -248,6 +253,7 @@ bool CmdLine::parse(int argc, char** argv, bool* error)
 	  else         std::cerr << '-'<<opt->shortname;
 	  std::cerr << " .\n";
 	  if (error!=NULL) *error = true;
+      delete [] options;
 	  return false;
 	}
       }
@@ -263,8 +269,10 @@ bool CmdLine::parse(int argc, char** argv, bool* error)
   {
     if (description==NULL) std::cout << program<< "\n";
     std::cout << help() << std::endl;
+    delete [] options;
     return false;
   }
+  delete [] options;
   return true;
 }
 

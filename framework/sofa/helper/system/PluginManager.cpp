@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,8 +27,9 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
-#include <sofa/helper/Logger.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <fstream>
+#include <sofa/helper/system/config.h>
 
 using sofa::helper::Utils;
 
@@ -124,7 +125,7 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
     if (!FileSystem::exists(pluginPath))
     {
         const std::string msg = "File not found: " + pluginPath;
-        Logger::getMainLogger().log(Logger::Error, msg, "PluginManager");
+        msg_error("PluginManager") << msg;
         if (errlog) (*errlog) << msg << std::endl;
         return false;
     }
@@ -134,7 +135,7 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
     if( ! d.isValid() )
     {
         const std::string msg = "Plugin loading failed (" + pluginPath + "): " + DynamicLibrary::getLastError();
-        Logger::getMainLogger().log(Logger::Error, msg, "PluginManager");
+        msg_error("PluginManager") << msg;
         if (errlog) (*errlog) << msg << std::endl;
         return false;
     }
@@ -143,7 +144,7 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
         if(! getPluginEntry(p.initExternalModule,d))
         {
             const std::string msg = "Plugin loading failed (" + pluginPath + "): function initExternalModule() not found";
-            Logger::getMainLogger().log(Logger::Error, msg, "PluginManager");
+            msg_error("PluginManager") << msg;
             if (errlog) (*errlog) << msg << std::endl;
             return false;
         }
@@ -158,7 +159,7 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
     m_pluginMap[pluginPath] = p;
     p.initExternalModule();
 
-    Logger::getMainLogger().log(Logger::Info, "Loaded plugin: " + pluginPath, "PluginManager");
+    msg_info("PluginManager") << "Loaded plugin: " << pluginPath;
     return true;
 }
 
@@ -173,7 +174,7 @@ bool PluginManager::loadPluginByName(const std::string& pluginName, std::ostream
     else
     {
         const std::string msg = "Plugin not found: \"" + pluginName + "\"";
-        Logger::getMainLogger().log(Logger::Error, msg, "PluginManager");
+        msg_error("PluginManager") << msg;
         if (errlog) (*errlog) << msg << std::endl;
         return false;
     }
@@ -194,7 +195,7 @@ bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* er
     if(!pluginIsLoaded(pluginPath))
     {
         const std::string msg = "Plugin not loaded: " + pluginPath;
-        Logger::getMainLogger().log(Logger::Error, msg, "PluginManager::unloadPlugin()");
+        msg_error("PluginManager::unloadPlugin()") << msg;
         if (errlog) (*errlog) << msg << std::endl;
         return false;
     }

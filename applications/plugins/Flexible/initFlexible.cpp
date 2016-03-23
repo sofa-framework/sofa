@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -124,7 +124,6 @@ SOFA_LINK_CLASS(TopologyGaussPointSampler)
 SOFA_LINK_CLASS(GaussPointContainer)
 SOFA_LINK_CLASS(AffineMechanicalObject)
 SOFA_LINK_CLASS(QuadraticMechanicalObject)
-SOFA_LINK_CLASS(AffineUniformMass)
 SOFA_LINK_CLASS(RigidConstraint)
 SOFA_LINK_CLASS(AffineMass)
 

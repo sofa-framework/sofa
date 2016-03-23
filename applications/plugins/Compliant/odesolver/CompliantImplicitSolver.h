@@ -42,39 +42,6 @@ namespace odesolver {
 
 
 
-// this class must be outside CompliantImplicitSolver in order to be dll exported on Windows
-/// propagate constraint *forces* (lambdas/dt) toward independent dofs
-class SOFA_Compliant_API propagate_constraint_force_visitor : public simulation::MechanicalVisitor {
-
-    core::MultiVecDerivId force, lambda;
-    SReal invdt;
-
-public:
-
-    propagate_constraint_force_visitor(const sofa::core::MechanicalParams* mparams,
-                      const core::MultiVecDerivId& out,
-                      const core::MultiVecDerivId& in,
-                      SReal dt);
-
-    Result fwdMappedMechanicalState(simulation::Node* node,
-                                    core::behavior::BaseMechanicalState* state);
-
-    Result fwdMechanicalState(simulation::Node* node,
-                            core::behavior::BaseMechanicalState* state);
-
-    void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map);
-
-    void bwdProjectiveConstraintSet(simulation::Node* /*node*/,
-                                    core::behavior::BaseProjectiveConstraintSet* c);
-
-};
-
-
-
-
-
-
-
 /** DAE Solver combining implicit time integration and constraint stabilization.
  * The system matrix is assembled in a regularized KKT form.
   Constraint compliance is used to regularize the equation, so that the Schur complement is always positive definite.
@@ -229,7 +196,7 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
     virtual void perform_assembly( const core::MechanicalParams *mparams, system_type& sys );
 				
 	// send a visitor 
-    void send(simulation::Visitor& vis);
+    void send(simulation::Visitor& vis, bool precomputedTraversalOrder=true);
 			  
 	// integrate positions
     virtual void integrate( SolverOperations& sop,

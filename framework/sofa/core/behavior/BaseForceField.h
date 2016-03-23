@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -190,19 +190,34 @@ public:
 
 
 
-    /** @name API used in the Compliant solver to perform global matrix assembly
+    /** @name API to consider the ForceField as a constraint as in the "Compliant formulation"
+     * see [M Tournier, M Nesme, B Gilles, F Faure, Stable Constrained Dynamics, Siggraph 2015] for more details
      * Each ForceField may be processed either as a traditional force function, or a as a compliance (provided that its stiffness matrix is invertible).
      * If isCompliance==false then the ForceField is handled as a traditional force function.
      * In this case, the stiffness matrix is used to set up the implicit equation matrix, while addForce is used to set up the right-hand term as usual.
-     * If isCompliance==true, the ForceField is handled as a compliance and getComplianceMatrix must return a non-null pointer.
+     * If isCompliance==true, the ForceField is handled as a compliance and getComplianceMatrix must return a non-null pointer for assembled solver and/or
+     * must implement addClambda for a graph-scattered (unassembled) implementation.
      */
     /// @{
 
-    /// Considered as compliance, else consider as stiffness
+    /// Considered as compliance, else considered as stiffness (default to false)
     Data< bool > isCompliance;
 
-    /// Return a pointer to the compliance matrix
+    /// Return a pointer to the compliance matrix C
+    /// $ C = K^{-1} $
     virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const MechanicalParams*) { return NULL; }
+
+    /// \brief Accumulate the contribution of the C compliant matrix multiplied
+    /// by the given Lagrange multipliers lambda vector with the given cFactor coefficient.
+    ///
+    /// This method computes
+    ///
+    ///            $ res += cFactor C lambda $
+    ///
+    /// where C is the Compliant matrix (inverse of the Stiffness matrix K
+    /// $ C = K^{-1} $
+    ///
+    virtual void addClambda(const MechanicalParams* /*mparams*/, MultiVecDerivId /*resId*/, MultiVecDerivId /*lambdaId*/, SReal /*cFactor*/ ){}
 
     /// @}
 

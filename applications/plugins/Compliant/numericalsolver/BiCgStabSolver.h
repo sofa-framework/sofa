@@ -8,7 +8,8 @@ namespace component {
 namespace linearsolver {
 
 /// Bi-Conjugate Gradient Stabilized (iterative, linear solver for non-symmetric, definite matrix)
-// TODO add numerator threshold ? damping ?
+/// /// @author Matthieu Nesme
+// @TODO add numerator threshold ? damping ?
 class SOFA_Compliant_API BiCgStabSolver : public KrylovSolver {
 
   public:

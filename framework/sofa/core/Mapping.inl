@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -224,12 +224,14 @@ void Mapping<In,Out>::applyJT(const MechanicalParams *mparams, MultiVecDerivId i
         if(out && in)
         {
             this->applyJT(mparams, *out, *in);
+#ifdef SOFA_USE_MASK
 
             if( this->m_forceMaskNewStep )
             {
                 this->m_forceMaskNewStep = false;
                 updateForceMask();
             }
+#endif /*SOFA_USE_MASK*/
         }
     }
 }// Mapping::applyJT

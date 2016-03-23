@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -137,8 +137,8 @@ private:
         influencedLineType()
         {
             weight = 0.0;
-        };
-        ~influencedLineType() {};
+        }
+        ~influencedLineType() {}
         int lineIndex;
         double weight;
         OutCoord position;
@@ -153,8 +153,8 @@ private:
         influencedVerticeType()
         {
             weight = 0.0;
-        };
-        ~influencedVerticeType() {};
+        }
+        ~influencedVerticeType() {}
         int verticeIndex;
         double weight;
         OutCoord position;
@@ -173,22 +173,22 @@ private:
     /*!
     	Stores the lines influenced by each vertice
     */
-    vector<vector<influencedLineType> > linesInfluencedByVertice;
+    helper::vector<helper::vector<influencedLineType> > linesInfluencedByVertice;
 
     /*!
     	Stores the vertices influenced by each line
     */
-    vector<vector<influencedVerticeType> > verticesInfluencedByLine;
+    helper::vector<helper::vector<influencedVerticeType> > verticesInfluencedByLine;
 
     /*!
     	Stores the first level line neighborhood
     */
-    vector<std::set<int> > neighborhoodLinesSet;
+    helper::vector<std::set<int> > neighborhoodLinesSet;
 
     /*!
     	Stores the n level line neighborhood
     */
-    vector<std::set<int> > neighborhood;
+    helper::vector<std::set<int> > neighborhood;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_CPP)

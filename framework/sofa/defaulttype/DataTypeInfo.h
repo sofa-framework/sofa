@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -31,6 +31,7 @@
 #include <sofa/helper/set.h>
 #include <sstream>
 #include <typeinfo>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -1105,7 +1106,7 @@ struct SetTypeInfo
         }
         else
         {
-            std::cerr << "ERROR: SetTypeInfo::setValue not implemented for set with composite values." << std::endl;
+            msg_error("SetTypeInfo") << "setValue not implemented for set with composite values.";
         }
     }
 
@@ -1143,7 +1144,7 @@ struct SetTypeInfo
         }
         else
         {
-            std::cerr << "ERROR: SetTypeInfo::setValueString not implemented for set with composite values." << std::endl;
+            msg_error("SetTypeInfo") << "setValueString not implemented for set with composite values.";
         }
     }
 

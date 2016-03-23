@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,6 +36,7 @@
 #include <sofa/helper/system/config.h>
 #include <cassert>
 #include <iostream>
+#include <fstream>
 
 
 
@@ -385,57 +386,92 @@ void JointSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *m
 template<class DataTypes>
 void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+    vparams->drawTool()->saveLastState();
 
-    glDisable(GL_LIGHTING);
+    vparams->drawTool()->setLightingEnabled(true);
+
     bool external = (this->mstate1!=this->mstate2);
     const helper::vector<Spring>& springs = this->springs.getValue();
 
+    sofa::helper::vector<sofa::defaulttype::Vector3> vertices;
+    sofa::helper::vector<sofa::defaulttype::Vec4f> colors;
+
+    sofa::defaulttype::Vec4f yellow(1.0,1.0,0.0,1.0);
+
     for (unsigned int i=0; i<springs.size(); i++)
     {
+        sofa::defaulttype::Vec4f color;
+
         Real d = (p2[springs[i].m2]-p1[springs[i].m1]).getCenter().norm();
         if (external)
         {
             if (d<springs[i].initTrans.norm()*0.9999)
-                glColor4f(1,0,0,1);
+                color = sofa::defaulttype::Vec4f(1,0,0,1);
             else
-                glColor4f(0,1,0,1);
+                color = sofa::defaulttype::Vec4f(0,1,0,1);
         }
         else
         {
             if (d<springs[i].initTrans.norm()*0.9999)
-                glColor4f(1,0.5f,0,1);
+                color = sofa::defaulttype::Vec4f(1,0.5f,0,1);
             else
-                glColor4f(0,1,0.5f,1);
+                color = sofa::defaulttype::Vec4f(0,1,0.5f,1);
         }
-        glBegin(GL_LINES);
-        helper::gl::glVertexT(p1[springs[i].m1].getCenter());
-        helper::gl::glVertexT(p2[springs[i].m2].getCenter());
-        glEnd();
 
+        sofa::defaulttype::Vector3 v0(p1[springs[i].m1].getCenter()[0], p1[springs[i].m1].getCenter()[1], p1[springs[i].m1].getCenter()[2]);
+        sofa::defaulttype::Vector3 v1(p2[springs[i].m2].getCenter()[0], p2[springs[i].m2].getCenter()[1], p2[springs[i].m2].getCenter()[2]);
+
+        vertices.push_back(v0);
+        colors.push_back(color);
+        vertices.push_back(v1);
+        colors.push_back(color);
+
+        sofa::defaulttype::Quaternion q0 = p1[springs[i].m1].getOrientation();
         if(springs[i].freeMovements[3] == 1)
         {
-            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vector((Real)(1.0*showFactorSize.getValue()),0,0));
+            sofa::defaulttype::Vector3 axis((Real)(1.0*showFactorSize.getValue()),0,0);
+            sofa::defaulttype::Vector3 vrot = v0 + q0.rotate(axis);
+
+            vparams->drawTool()->drawCylinder(v0, vrot, showFactorSize.getValue()/15.0,yellow );
         }
         if(springs[i].freeMovements[4] == 1)
         {
-            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vector(0,(Real)(1.0*showFactorSize.getValue()),0));
+            sofa::defaulttype::Vector3 axis(0,(Real)(1.0*showFactorSize.getValue()),0);
+            sofa::defaulttype::Vector3 vrot = v0 + q0.rotate(axis);
+
+            vparams->drawTool()->drawCylinder(v0, vrot, showFactorSize.getValue()/15.0,yellow );
+
         }
         if(springs[i].freeMovements[5] == 1)
         {
-            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vector(0,0,(Real)(1.0*showFactorSize.getValue())) );
+            sofa::defaulttype::Vector3 axis(0,0,(Real)(1.0*showFactorSize.getValue()));
+            sofa::defaulttype::Vector3 vrot = v0 + q0.rotate(axis);
+
+            vparams->drawTool()->drawCylinder(v0, vrot, showFactorSize.getValue()/15.0,yellow );
         }
 
         //---debugging
         if (showLawfulTorsion.getValue())
-            helper::gl::drawArrow(p1[springs[i].m1].getCenter(), p1[springs[i].m1].projectPoint(springs[i].lawfulTorsion), (float)(0.5*showFactorSize.getValue()));
+        {
+            Vector vtemp = p1[springs[i].m1].projectPoint(springs[i].lawfulTorsion);
+            v1 = sofa::defaulttype::Vector3(vtemp[0], vtemp[1], vtemp[2]);
+
+            vparams->drawTool()->drawArrow(v0, v1, (float)(0.5*showFactorSize.getValue()), yellow );
+        }
         if (showExtraTorsion.getValue())
-            helper::gl::drawArrow(p1[springs[i].m1].getCenter(), p1[springs[i].m1].projectPoint(springs[i].torsion-springs[i].lawfulTorsion), (float)(0.5*showFactorSize.getValue()));
+        {
+            Vector vtemp =  p1[springs[i].m1].projectPoint(springs[i].torsion-springs[i].lawfulTorsion);
+            v1 = sofa::defaulttype::Vector3(vtemp[0], vtemp[1], vtemp[2]);
+
+            vparams->drawTool()->drawArrow(v0, v1, (float)(0.5*showFactorSize.getValue()), yellow );
+        }
     }
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->drawLines(vertices,1, colors);
+
+    vparams->drawTool()->restoreLastState();
 }
 
 template <class DataTypes>

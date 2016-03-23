@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -31,6 +31,10 @@
 #include <SofaBaseAnimationLoop/initBaseAnimationLoop.h>
 #include <SofaBaseVisual/initBaseVisual.h>
 
+#include "messageHandlerComponent.h"
+using sofa::component::logging::MessageHandlerComponent ;
+using sofa::component::logging::FileMessageHandlerComponent ;
+
 namespace sofa
 {
 
@@ -53,6 +57,8 @@ void initComponentBase()
     }
 }
 
+SOFA_LINK_CLASS(MessageHandlerComponent)
+SOFA_LINK_CLASS(FileMessageHandlerComponent)
 
 } // namespace component
 

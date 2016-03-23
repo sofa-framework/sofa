@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -39,6 +39,7 @@
 #include <sofa/simulation/common/Simulation.h>
 //#include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
 #include "ScriptEnvironment.h"
+#include <sofa/helper/logging/Messaging.h>
 
 
 using namespace sofa::core;
@@ -67,7 +68,7 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, Py
         Py_RETURN_NONE;
     }
 
-    SP_MESSAGE_WARNING( "Sofa.createObject is deprecated; use Sofa.Node.createObject instead." )
+    SP_MESSAGE_DEPRECATED( "Sofa.createObject is deprecated; use Sofa.Node.createObject instead." )
 
     // temporarily, the name is set to the type name.
     // if a "name" parameter is provided, it will overwrite it.
@@ -101,7 +102,7 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, Py
 extern "C" PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * /*args*/)
 {
     // deprecated on date 2012/07/18
-    SP_MESSAGE_ERROR( "Sofa.getObject(BaseContext,path) is deprecated. Please use BaseContext.getObject(path) instead." )
+    SP_MESSAGE_DEPRECATED( "Sofa.getObject(BaseContext,path) is deprecated. Please use BaseContext.getObject(path) instead." )
     PyErr_BadArgument();
     Py_RETURN_NONE;
 
@@ -110,7 +111,7 @@ extern "C" PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * /*args*/)
 extern "C" PyObject * Sofa_getChildNode(PyObject * /*self*/, PyObject * /*args*/)
 {
     // deprecated on date 2012/07/18
-    SP_MESSAGE_ERROR( "Sofa.getChildNode(Node,path) is deprecated. Please use Node.getChild(path) instead." )
+    SP_MESSAGE_DEPRECATED( "Sofa.getChildNode(Node,path) is deprecated. Please use Node.getChild(path) instead." )
     PyErr_BadArgument();
     Py_RETURN_NONE;
 }
@@ -333,6 +334,164 @@ extern "C" PyObject * Sofa_forceInitNodeCreatedInPython(PyObject * /*self*/, PyO
 }
 
 
+static const std::string s_emitter = "PythonScript";
+
+extern "C" PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args)
+{
+    size_t argSize = PyTuple_Size(args);
+
+    char* message;
+
+    if( argSize==2 )
+    {
+        char* emitter;
+        if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        msg_info( emitter ) << message;
+    }
+    else // no emitter
+    {
+        if( !PyArg_ParseTuple(args, "s", &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        msg_info( s_emitter ) << message;
+    }
+
+    Py_RETURN_NONE;
+}
+
+extern "C" PyObject * Sofa_msg_deprecated(PyObject * /*self*/, PyObject * args)
+{
+    size_t argSize = PyTuple_Size(args);
+
+    char* message;
+
+    if( argSize==2 )
+    {
+        char* emitter;
+        if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        msg_deprecated( emitter ) << message;
+    }
+    else // no emitter
+    {
+        if( !PyArg_ParseTuple(args, "s", &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        msg_deprecated( s_emitter ) << message;
+    }
+
+    Py_RETURN_NONE;
+}
+
+extern "C" PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args)
+{
+    size_t argSize = PyTuple_Size(args);
+
+    char* message;
+
+    if( argSize==2 )
+    {
+        char* emitter;
+        if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        msg_warning( emitter ) << message;
+    }
+    else // no emitter
+    {
+        if( !PyArg_ParseTuple(args, "s", &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        msg_warning( s_emitter ) << message;
+    }
+
+    Py_RETURN_NONE;
+}
+
+extern "C" PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args)
+{
+    size_t argSize = PyTuple_Size(args);
+
+    char* message;
+
+    if( argSize==2 )
+    {
+        char* emitter;
+        if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        msg_error( emitter ) << message;
+    }
+    else // no emitter
+    {
+        if( !PyArg_ParseTuple(args, "s", &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        msg_error( s_emitter ) << message;
+    }
+
+    Py_RETURN_NONE;
+}
+
+extern "C" PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args)
+{
+    size_t argSize = PyTuple_Size(args);
+
+    char* message;
+
+    if( argSize==2 )
+    {
+        char* emitter;
+        if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        msg_fatal( emitter ) << message;
+    }
+    else // no emitter
+    {
+        if( !PyArg_ParseTuple(args, "s", &message) )
+        {
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
+        }
+
+        msg_fatal( s_emitter ) << message;
+    }
+
+    Py_RETURN_NONE;
+}
+
+
 // Methods of the module
 SP_MODULE_METHODS_BEGIN(Sofa)
 SP_MODULE_METHOD(Sofa,getSofaPythonVersion) 
@@ -349,6 +508,11 @@ SP_MODULE_METHOD(Sofa,generateRigid)
 SP_MODULE_METHOD(Sofa,exportGraph)
 SP_MODULE_METHOD(Sofa,updateVisual)
 SP_MODULE_METHOD(Sofa,forceInitNodeCreatedInPython)
+SP_MODULE_METHOD(Sofa,msg_info)
+SP_MODULE_METHOD(Sofa,msg_deprecated)
+SP_MODULE_METHOD(Sofa,msg_warning)
+SP_MODULE_METHOD(Sofa,msg_error)
+SP_MODULE_METHOD(Sofa,msg_fatal)
 SP_MODULE_METHODS_END
 
 

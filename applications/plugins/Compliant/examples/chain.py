@@ -32,7 +32,7 @@ def createScene(root):
     obj = []
     
     for i in xrange(n):
-	# rigid bodies
+    # rigid bodies
         body = Rigid.Body()
         body.name = 'link-' + str(i)
         body.dofs.translation = [0, length * i, 0]
@@ -47,7 +47,7 @@ def createScene(root):
         
     # joints creation
     for i in xrange( n-1 ):
-	# the joint
+    # the joint
         j = Rigid.SphericalJoint()
         
         # joint offset definitions

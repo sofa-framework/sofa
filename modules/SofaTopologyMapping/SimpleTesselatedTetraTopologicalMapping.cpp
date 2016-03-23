@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -130,8 +130,8 @@ void SimpleTesselatedTetraTopologicalMapping::init()
 
             for (int i=0; i<from_tstc->getNbTetrahedra(); i++)
             {
-                Tetra t = from_tstc->getTetrahedron(i);
-                EdgesInTetrahedron e = from_tstc->getEdgesInTetrahedron(i);
+                core::topology::BaseMeshTopology::Tetra t = from_tstc->getTetrahedron(i);
+                core::topology::BaseMeshTopology::EdgesInTetrahedron e = from_tstc->getEdgesInTetrahedron(i);
                 to_tstc->addTetra(t[0],	pointMappedFromEdgeData[e[0]], pointMappedFromEdgeData[e[1]], pointMappedFromEdgeData[e[2]]);
                 newTetrahedraIndices[0] = newTetraIndex; tetraSourceData[newTetraIndex] = i; newTetraIndex++;
 

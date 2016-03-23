@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -153,25 +153,25 @@ public:
     void updateLameCoefficients();
 
 
-    class TetrahedralTMEdgeHandler : public topology::TopologyDataHandler<topology::Edge,edgeRestInfoVector >
+    class TetrahedralTMEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,edgeRestInfoVector >
     {
     public:
         typedef typename TetrahedralTensorMassForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
-        TetrahedralTMEdgeHandler(TetrahedralTensorMassForceField<DataTypes>* _ff, topology::EdgeData<edgeRestInfoVector >* _data) : topology::TopologyDataHandler<topology::Edge, edgeRestInfoVector >(_data), ff(_ff) {}
+        TetrahedralTMEdgeHandler(TetrahedralTensorMassForceField<DataTypes>* _ff, topology::EdgeData<edgeRestInfoVector >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, edgeRestInfoVector >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int edgeIndex, EdgeRestInformation& ei,
-                const topology::Edge &,
+                const core::topology::BaseMeshTopology::Edge &,
                 const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double > &);
 
         void applyTetrahedronCreation(const sofa::helper::vector<unsigned int> &edgeAdded,
-                const sofa::helper::vector<topology::Tetrahedron> &,
+                const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron> &,
                 const sofa::helper::vector<sofa::helper::vector<unsigned int> > &,
                 const sofa::helper::vector<sofa::helper::vector<double> > &);
 
         void applyTetrahedronDestruction(const sofa::helper::vector<unsigned int> &edgeRemoved);
 
-        using topology::TopologyDataHandler<topology::Edge,edgeRestInfoVector >::ApplyTopologyChange;
+        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,edgeRestInfoVector >::ApplyTopologyChange;
         /// Callback to add tetrahedron elements.
         void ApplyTopologyChange(const core::topology::TetrahedraAdded* /*event*/);
         /// Callback to remove tetrahedron elements.

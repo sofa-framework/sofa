@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -99,7 +99,7 @@ void CatmullRomSplineMapping<TIn, TOut>::init()
     m_index.resize(targetP);
 
     unsigned int count=0;
-    sofa::defaulttype::Vec<4,ID> id(0,0,0,0); vector<ID> n1,n2;
+    sofa::defaulttype::Vec<4,ID> id(0,0,0,0); helper::vector<ID> n1,n2;
     OutReal t,t2,t3;
     for ( unsigned int i=0; i<P; i++ ) // initial points
     {
@@ -141,8 +141,8 @@ void CatmullRomSplineMapping<TIn, TOut>::init()
     }
     else
     {
-        vector< Edge >         edges_to_create  ; edges_to_create.resize (targetE);
-        vector< unsigned int > edgesIndexList   ; edgesIndexList.resize  (targetE); for ( unsigned int i=0; i<targetE; i++ ) edgesIndexList[i]=i;
+        helper::vector< Edge >         edges_to_create  ; edges_to_create.resize (targetE);
+        helper::vector< unsigned int > edgesIndexList   ; edgesIndexList.resize  (targetE); for ( unsigned int i=0; i<targetE; i++ ) edgesIndexList[i]=i;
         count=0;
         for ( unsigned int i=0; i<E; i++ )
         {

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,17 +48,18 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(TriangleSetGeometryAlgorithms,DataTypes), SOFA_TEMPLATE(EdgeSetGeometryAlgorithms,DataTypes));
 
 
+    typedef sofa::core::topology::BaseMeshTopology::PointID PointID;
     typedef sofa::core::topology::BaseMeshTopology::EdgeID EdgeID;
     typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
     typedef sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef sofa::core::topology::BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
 
-    typedef BaseMeshTopology::TriangleID TriangleID;
-    typedef BaseMeshTopology::Triangle Triangle;
-    typedef BaseMeshTopology::SeqTriangles SeqTriangles;
-    typedef BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
-    typedef BaseMeshTopology::TrianglesAroundEdge TrianglesAroundEdge;
-    typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
+    typedef core::topology::BaseMeshTopology::TriangleID TriangleID;
+    typedef core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
+    typedef core::topology::BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
+    typedef core::topology::BaseMeshTopology::TrianglesAroundEdge TrianglesAroundEdge;
+    typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -71,7 +72,7 @@ protected:
         : EdgeSetGeometryAlgorithms<DataTypes>()
         ,showTriangleIndices (initData(&showTriangleIndices, (bool) false, "showTriangleIndices", "Debug : view Triangle indices"))
         , _draw(initData(&_draw, false, "drawTriangles","if true, draw the triangles in the topology"))
-        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vec3f(0.2f,1.0f,1.0f), "drawColorTriangles", "RGB code color used to draw edges."))
+        , _drawColor(initData(&_drawColor, sofa::defaulttype::Vec4f(0.2f,1.0f,1.0f,1.0f), "drawColorTriangles", "RGBA code color used to draw edges."))
         , _drawNormals(initData(&_drawNormals, false, "drawNormals","if true, draw the triangles in the topology"))
         , _drawNormalLength (initData(&_drawNormalLength, (SReal)10, "drawNormalLength", "Fiber length visualisation."))
         , p_recomputeTrianglesOrientation(initData(&p_recomputeTrianglesOrientation, false, "recomputeTrianglesOrientation","if true, will recompute triangles orientation according to normals."))
@@ -280,7 +281,7 @@ public:
 protected:
     Data<bool> showTriangleIndices;
     Data<bool> _draw;
-    Data<sofa::defaulttype::Vec3f> _drawColor;
+    Data<sofa::defaulttype::Vec4f> _drawColor;
     Data<bool> _drawNormals;
     Data <SReal> _drawNormalLength;
     Data<bool> p_recomputeTrianglesOrientation;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -171,7 +171,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
             if(translation) for(unsigned int i=0;i<3;i++) if(i<nbdims) translation[i] = (F)val[i];
             if(offsetT) if(nbdims>3) *offsetT = (F)val[3];
         }
-        else if(!str.compare("Orientation"))
+        else if(!str.compare("Orientation") || !str.compare("TransformMatrix") || !str.compare("Rotation"))
         {
             fileStream >> str2; // '='
             double val[4*4];

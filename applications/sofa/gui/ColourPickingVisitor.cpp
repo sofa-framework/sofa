@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -89,7 +89,7 @@ void decodePosition(BodyPicked& body, const sofa::defaulttype::Vec4f /*colour*/,
     body.point = s.center();
 }
 
-Visitor::Result ColourPickingVisitor::processNodeTopDown(simulation::Node* node)
+simulation::Visitor::Result ColourPickingVisitor::processNodeTopDown(simulation::Node* node)
 {
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES

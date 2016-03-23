@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,7 +42,7 @@ namespace component{
 namespace collision {
 
 
-RayTriangleVisitor::RayTriangleVisitor(const core::ExecParams* params):Visitor(params)
+RayTriangleVisitor::RayTriangleVisitor(const core::ExecParams* params):simulation::Visitor(params)
 {}
 
 struct distanceHitSort{
@@ -231,11 +231,11 @@ void RayTriangleVisitor::processOglModel(simulation::Node* /*node*/, component::
     }
 }
 
-Visitor::Result RayTriangleVisitor::processNodeTopDown(simulation::Node* node)
+simulation::Visitor::Result RayTriangleVisitor::processNodeTopDown(simulation::Node* node)
 {
     using core::visual::VisualModel;
     using sofa::component::visualmodel::OglModel;
-    typedef simulation::Node::Sequence<CollisionModel> CollisionModels;
+    typedef simulation::Node::Sequence<core::CollisionModel> CollisionModels;
     typedef simulation::Node::Sequence<VisualModel> VisualModels;
     using component::collision::TriangleModel;
 

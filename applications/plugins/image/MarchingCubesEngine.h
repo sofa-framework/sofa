@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -47,12 +47,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using defaulttype::Vec;
-using defaulttype::Mat;
-using cimg_library::CImg;
-using cimg_library::CImgList;
-
 /**
  * This class computes an isosurface from an image using marching cubes algorithm
  */
@@ -68,7 +62,7 @@ public:
     typedef SReal Real;
 
     Data< Real > isoValue;
-    Data< Vec<3,unsigned int> > subdiv;
+    Data< defaulttype::Vec<3,unsigned int> > subdiv;
     Data< bool > invertNormals;
     Data< bool > showMesh;
 
@@ -83,7 +77,7 @@ public:
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > transform;
 
-    typedef vector<Vec<3,Real> > SeqPositions;
+    typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > position;
@@ -99,7 +93,7 @@ public:
 
     MarchingCubesEngine()    :   Inherited()
         , isoValue(initData(&isoValue,(Real)(1.0),"isoValue","pixel value to extract isosurface"))
-        , subdiv(initData(&subdiv,Vec<3,unsigned int>(0,0,0),"subdiv","number of subdividions in x,y,z directions (use image dimension if =0)"))
+        , subdiv(initData(&subdiv,defaulttype::Vec<3,unsigned int>(0,0,0),"subdiv","number of subdividions in x,y,z directions (use image dimension if =0)"))
         , invertNormals(initData(&invertNormals,false,"invertNormals","invert triangle vertex order"))
         , showMesh(initData(&showMesh,false,"showMesh","show reconstructed mesh"))
         , image(initData(&image,ImageTypes(),"image",""))
@@ -134,18 +128,18 @@ protected:
 		raTransform inT(this->transform);
 
         // get image at time t
-        const CImg<T>& img = in->getCImg(this->time);
+        const cimg_library::CImg<T>& img = in->getCImg(this->time);
 
         // get subdivision
-        Vec<3,int> r((int)this->subdiv.getValue()[0],(int)this->subdiv.getValue()[1],(int)this->subdiv.getValue()[2]);
+        defaulttype::Vec<3,int> r((int)this->subdiv.getValue()[0],(int)this->subdiv.getValue()[1],(int)this->subdiv.getValue()[2]);
         for(unsigned int i=0; i<3; i++) if(!r[i]) r[i]=-100;
 
         // get isovalue
         const float val=(float)this->isoValue.getValue();
 
         // marching cubes using cimg
-        CImgList<unsigned int> faces;
-        CImg<float> points = img.get_shared_channel(0).get_isosurface3d (faces, val,r[0],r[1],r[2]);
+        cimg_library::CImgList<unsigned int> faces;
+        cimg_library::CImg<float> points = img.get_shared_channel(0).get_isosurface3d (faces, val,r[0],r[1],r[2]);
 
         // update points and faces
         waPositions pos(this->position);
@@ -208,10 +202,10 @@ protected:
         for (unsigned int i=0; i<tri.size(); ++i)
         {
             if(wireframe) glBegin(GL_LINE_LOOP);
-            const Vec<3,Real>& a = pos[ tri[i][0] ];
-            const Vec<3,Real>& b = pos[ tri[i][1] ];
-            const Vec<3,Real>& c = pos[ tri[i][2] ];
-            Vec<3,Real> n = cross((a-b),(a-c));	n.normalize();
+            const defaulttype::Vec<3,Real>& a = pos[ tri[i][0] ];
+            const defaulttype::Vec<3,Real>& b = pos[ tri[i][1] ];
+            const defaulttype::Vec<3,Real>& c = pos[ tri[i][2] ];
+            defaulttype::Vec<3,Real> n = cross((a-b),(a-c));	n.normalize();
             glNormal3d(n[0],n[1],n[2]);
 
 

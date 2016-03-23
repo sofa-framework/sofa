@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -413,7 +413,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, Point& e1, Outpu
         }
         else if (alpha >= 1.0){
             Q = e2.p2();
-            alpha = 1.0;
+//            alpha = 1.0;
         }
         else{
             Q = e2.p1() + AB * alpha;

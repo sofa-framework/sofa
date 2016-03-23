@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,6 +27,7 @@
 #include "BaseObject.h"
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <iostream>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -146,7 +147,7 @@ Base* BaseObjectDescription::findObject(const char* nodeName)
     }
     else
     {
-        std::cerr << "Node "<<nodeName<<" NOT FOUND."<<std::endl;
+        msg_error("BaseObjectDescription") << "findObject: Node "<<nodeName<<" NOT FOUND.";
         return NULL;
     }
 }

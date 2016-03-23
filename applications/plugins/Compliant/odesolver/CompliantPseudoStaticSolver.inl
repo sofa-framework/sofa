@@ -50,8 +50,11 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
 
     const SReal& threshold = d_threshold.getValue();
     const SReal& velocityFactor = d_velocityFactor.getValue();
+    bool printLog = this->f_printLog.getValue();
 
     SReal lastVelocity = 0;
+
+    simulation::MechanicalPropagatePositionAndVelocityVisitor propagatePositionAndVelocityVisitor( sofa::core::MechanicalParams::defaultInstance() );
 
     unsigned i=0;
     for( unsigned imax=d_iterations.getValue() ; i<imax ; ++i )
@@ -66,21 +69,19 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
         // damp velocity
         sop.vop.v_teq( velId, velocityFactor );
 
-        // propagate damped velocity
-        {
-        simulation::MechanicalPropagatePositionAndVelocityVisitor bob( sofa::core::MechanicalParams::defaultInstance() );
-        this->getContext()->executeVisitor( &bob );
-        }
-
-        if( this->f_printLog.getValue() )
-            serr<<"velocity norm: "<<sqrt(lastVelocity)<<sendl;
+        if( printLog )
+            sout<<"velocity norm: "<<sqrt(lastVelocity)<<sendl;
 
         if( lastVelocity < threshold*threshold ) break;
+
+        // propagating damped velocity
+        // note the last propagation will be performed by the AnimationLoop
+        this->getContext()->executeVisitor( &propagatePositionAndVelocityVisitor );
     }
 
     d_lastVelocity.setValue(lastVelocity);
 
-    if( this->f_printLog.getValue() ) serr<<i+1<<" iterations"<<sendl;
+    if( printLog ) sout<<i+1<<" iterations"<<sendl;
 
 }
 

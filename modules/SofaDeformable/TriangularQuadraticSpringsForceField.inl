@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -78,7 +78,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleHandler::apply
         helper::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
         /// describe the jth edge index of triangle no i
-        const EdgesInTriangle &te= ff->_topology->getEdgesInTriangle(triangleIndex);
+        const core::topology::BaseMeshTopology::EdgesInTriangle &te= ff->_topology->getEdgesInTriangle(triangleIndex);
         // store square rest length
         for(j=0; j<3; ++j)
         {
@@ -130,7 +130,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleHandler::apply
         helper::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
         /// describe the jth edge index of triangle no i
-        const EdgesInTriangle &te= ff->_topology->getEdgesInTriangle(triangleIndex);
+        const core::topology::BaseMeshTopology::EdgesInTriangle &te= ff->_topology->getEdgesInTriangle(triangleIndex);
         // store square rest length
         for(j=0; j<3; ++j)
         {
@@ -282,9 +282,9 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(const core::Mecha
         {
             tinfo=&triangleInf[i];
             /// describe the jth edge index of triangle no i
-            const EdgesInTriangle &tea= _topology->getEdgesInTriangle(i);
+            const core::topology::BaseMeshTopology::EdgesInTriangle &tea= _topology->getEdgesInTriangle(i);
             /// describe the jth vertex index of triangle no i
-            const Triangle &ta= _topology->getTriangle(i);
+            const core::topology::BaseMeshTopology::Triangle &ta= _topology->getTriangle(i);
 
             // store points
             for(j=0; j<3; ++j)
@@ -345,9 +345,9 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(const core::Mech
         {
             tinfo=&triangleInf[l];
             /// describe the jth edge index of triangle no i
-            const EdgesInTriangle &tea= _topology->getEdgesInTriangle(l);
+            const core::topology::BaseMeshTopology::EdgesInTriangle &tea= _topology->getEdgesInTriangle(l);
             /// describe the jth vertex index of triangle no i
-            const Triangle &ta= _topology->getTriangle(l);
+            const core::topology::BaseMeshTopology::Triangle &ta= _topology->getTriangle(l);
 
             // store points
             for(k=0; k<3; ++k)
@@ -417,7 +417,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(const core::Mech
     {
         tinfo=&triangleInf[l];
         /// describe the jth vertex index of triangle no l
-        const Triangle &ta= _topology->getTriangle(l);
+        const core::topology::BaseMeshTopology::Triangle &ta= _topology->getTriangle(l);
 
         // store points
         for(k=0; k<3; ++k)

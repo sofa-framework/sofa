@@ -7,7 +7,10 @@ namespace sofa {
 namespace component {
 namespace odesolver {
 
-// Constraint value for damping compliance
+/// Constraint value for damping compliance
+///
+/// @author Matthieu Nesme
+///
 class SOFA_Compliant_API DampingValue : public ConstraintValue
 {
   public:

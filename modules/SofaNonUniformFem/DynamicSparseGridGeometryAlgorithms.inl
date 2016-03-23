@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,9 +57,9 @@ void DynamicSparseGridGeometryAlgorithms<DataTypes>::init()
 }
 
 template < class DataTypes >
-HexaID DynamicSparseGridGeometryAlgorithms<DataTypes>::getTopoIndexFromRegularGridIndex ( unsigned int index, bool& existing )
+core::topology::BaseMeshTopology::HexaID DynamicSparseGridGeometryAlgorithms<DataTypes>::getTopoIndexFromRegularGridIndex ( unsigned int index, bool& existing )
 {
-    std::map< unsigned int, BaseMeshTopology::HexaID>::const_iterator it = topoContainer->idInRegularGrid2IndexInTopo.getValue().find( index);
+    std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>::const_iterator it = topoContainer->idInRegularGrid2IndexInTopo.getValue().find( index);
     existing = !(it == topoContainer->idInRegularGrid2IndexInTopo.getValue().end());
     if( !existing)
     {
@@ -70,7 +70,7 @@ HexaID DynamicSparseGridGeometryAlgorithms<DataTypes>::getTopoIndexFromRegularGr
 }
 
 template < class DataTypes >
-unsigned int DynamicSparseGridGeometryAlgorithms<DataTypes>::getRegularGridIndexFromTopoIndex ( HexaID index )
+unsigned int DynamicSparseGridGeometryAlgorithms<DataTypes>::getRegularGridIndexFromTopoIndex ( core::topology::BaseMeshTopology::HexaID index )
 {
     return topoContainer->idxInRegularGrid.getValue()[ index];
 }
@@ -94,9 +94,9 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     if( currentIndex[1] > resolution[1]) currentIndex[1] = resolution[1];
     if( currentIndex[2] > resolution[2]) currentIndex[2] = resolution[2];
 
-    const std::map< unsigned int, BaseMeshTopology::HexaID>& regular2topo = topoContainer->idInRegularGrid2IndexInTopo.getValue();
+    const std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>& regular2topo = topoContainer->idInRegularGrid2IndexInTopo.getValue();
     unsigned int regularGridIndex;
-    std::map< unsigned int, BaseMeshTopology::HexaID>::const_iterator it;
+    std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>::const_iterator it;
     for( int k = 0; k < 3; k++)
     {
         if((((int)currentIndex[2])-1+k < 0) || (currentIndex[2]-1+k > resolution[2])) continue;

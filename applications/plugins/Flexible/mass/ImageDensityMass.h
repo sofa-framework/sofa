@@ -36,14 +36,15 @@ namespace component
 namespace mass
 {
 
-using sofa::component::topology::PointData;
-
 /**
 * Compute mass matrices based on a density map
 * Mass is defined as a global matrix (including non diagonal terms)
 * The interpolation weights are given by a BaseShapeFunction component present in the scene
 * @warning the interpolation is done by a LinearJacobianBlock hard-coded in this component
 * @todo find a way to describe the mass interpolation as a sofa graph with regular mappings
+*
+* @author Matthieu Nesme
+*
 */
 template <class DataTypes,class ShapeFunctionTypes,class MassType>
 class ImageDensityMass : public core::behavior::Mass<DataTypes>
@@ -75,7 +76,7 @@ public:
     /** @name Interpolation stuff */
     //@{
     typedef defaulttype::LinearJacobianBlock<DataTypes,defaulttype::Vec3Types > LinearJacobianBlock;
-    typedef vector<LinearJacobianBlock> VecLinearJacobianBlock;
+    typedef helper::vector<LinearJacobianBlock> VecLinearJacobianBlock;
     //@}
 
 

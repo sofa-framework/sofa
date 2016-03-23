@@ -32,7 +32,7 @@ class SOFA_Compliant_API PythonMultiMapping : public AssembledMultiMapping<TIn, 
 	SOFA_CLASS(SOFA_TEMPLATE2(PythonMultiMapping,TIn,TOut), 
 			   SOFA_TEMPLATE2(AssembledMultiMapping,TIn,TOut));
 	
-	typedef vector< typename TIn::Real > matrix_type;
+    typedef helper::vector< typename TIn::Real > matrix_type;
 	typedef typename TOut::VecCoord value_type;
 
 	Data<matrix_type> matrix;
@@ -44,7 +44,7 @@ class SOFA_Compliant_API PythonMultiMapping : public AssembledMultiMapping<TIn, 
 	}
 
 
-	virtual void assemble( const vector<typename self::in_pos_type>& in )  {
+    virtual void assemble( const helper::vector<typename self::in_pos_type>& in )  {
 		// initialize jacobians
 
 		typedef typename self::jacobian_type::CompressedMatrix jack_type;
@@ -120,7 +120,7 @@ class SOFA_Compliant_API PythonMultiMapping : public AssembledMultiMapping<TIn, 
 
 
     virtual void apply(typename self::out_pos_type& out, 
-                       const vector<typename self::in_pos_type>& /*in*/ ) {
+                       const helper::vector<typename self::in_pos_type>& /*in*/ ) {
 		
 		// let's be paranoid
 		assert( out.size() == value.getValue().size() );

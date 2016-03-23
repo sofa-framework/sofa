@@ -1,8 +1,10 @@
+import Sofa
 import os.path
 import SofaPython.Quaternion as quat
 from SofaPython.Tools import listToStr as concat
 import math
 import numpy
+import inspect
 
 # be sure that the cache path exists
 # automatic generation when s-t changed
@@ -46,7 +48,7 @@ def getImageTransform(filename, scaleFactor=1):
                 scale = map(float,splitted[2:5])
             if 'Position'==splitted[0] or 'Offset'==splitted[0] or 'translation'==splitted[0] or 'origin'==splitted[0]:
                 tr = map(float,splitted[2:5])
-            if 'Orientation'==splitted[0] :
+            if 'Orientation'==splitted[0] or 'Rotation'==splitted[0] or 'TransformMatrix'==splitted[0] :
                 R = numpy.array([map(float,splitted[2:5]),map(float,splitted[5:8]),map(float,splitted[8:11])])
             if 'DimSize'==splitted[0] or 'dimensions'==splitted[0] or 'dim'==splitted[0]:
                 dim = map(int,splitted[2:5])
@@ -57,7 +59,81 @@ def getImageTransform(filename, scaleFactor=1):
     offset=[tr[0],tr[1],tr[2],q[0],q[1],q[2],q[3]]
     return (dim,scale,offset)
 
+
+def getImageType(filename):
+    """ Returns type of an image given an .mhd header image file
+    """
+    t=""
+    with open(filename,'r') as f:
+        for line in f:
+            splitted = line.split()
+            if 'ElementType'==splitted[0] or 'voxelType'==splitted[0] or 'scale3d'==splitted[0] or 'voxelSize'==splitted[0]:
+                t = str(splitted[2])
+    if t=="MET_CHAR":
+        return "ImageC"
+    elif t=="MET_DOUBLE":
+        return "ImageD"
+    elif t=="MET_FLOAT":
+        return "ImageF"
+    elif t=="MET_INT":
+        return "ImageI"
+    elif t=="MET_LONG":
+        return "ImageL"
+    elif t=="MET_SHORT":
+        return "ImageS"
+    elif t=="MET_UCHAR":
+        return "ImageUC"
+    elif t=="MET_UINT":
+        return "ImageUI"
+    elif t=="MET_ULONG":
+        return "ImageUL"
+    elif t=="MET_USHORT":
+        return "ImageUS"
+    elif t=="MET_BOOL":
+        return "ImageB"
+    else:
+        return None
+
 def transformToData(scale,offset,timeOffset=0,timeScale=1,isPerspective=False):
     """ Returns a transform, formatted to sofa data given voxelsize, rigid position (offset), time and camera parameters
     """
     return concat(offset[:3])+' '+concat(quat.to_euler(offset[3:])*180./math.pi)+' '+concat(scale)+' '+str(timeOffset)+' '+str(timeScale)+' '+str(int(isPerspective))
+
+# controller you must derived from and instanciate in the same context than your ImageViewer if you want to define actions to manually add / remove point from an image plane
+class ImagePlaneController(Sofa.PythonScriptController):
+    def addPoint(self, id, x, y, z):
+        return
+
+    def removePoint(self, id):
+        return
+
+    def clearPoints(self):
+        return
+
+    # return a dictionary of id -> point: {id0 : point0, idn : pointn, ...}
+    # a point is defined as follows: {'position': [x, y, z], 'color': [r, g, b], ...custom parameters... }
+    def getPoints(self):
+        return
+
+
+# simpler python script controllers based on SofaPython.script
+class Controller(ImagePlaneController):
+    def __new__(cls, node, name='pythonScriptController'):
+
+        node.createObject('PythonScriptController',
+                          filename = inspect.getfile(cls),
+                          classname = cls.__name__,
+                          name = name)
+        try:
+            res = Controller.instance
+            del Controller.instance
+            return res
+        except AttributeError:
+            # if this fails, you need to call
+            # Controller.onLoaded(self, node) in derived classes
+            print "[SofaPython.script.Controller.__new__] instance not found, did you call 'SofaPython.script.Controller.onLoaded' on your overloaded 'onLoaded' in {} ?".format(cls)
+            raise
+
+    def onLoaded(self, node):
+        Controller.instance = self
+

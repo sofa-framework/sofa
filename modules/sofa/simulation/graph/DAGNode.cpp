@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -479,24 +479,41 @@ void DAGNode::doExecuteVisitor(simulation::Visitor* action, bool precomputedOrde
 //        std::cerr<<SOFA_CLASS_METHOD<<"not precomputed "<<action->getClassName()<<"      -  "<<action->getCategoryName()<<" "<<action->getInfos()<<std::endl;
 
 
-        // on ne passe à un enfant que si tous ses parents ont été visités
-        // un enfant n'est pruné que si tous ses parents le sont
-        // pour chaque noeud "prune" on continue à parcourir quand même juste pour marquer le noeud comme parcouru (mais on n'execute rien)
+        // WARNING: do not store the traversal infos in the DAGNode, as several visitors could traversed the graph simultaneously
+        // These infos are stored in a StatusMap per visitor.
 
-        // NE PAS stocker les infos de parcours dans le DAGNode, plusieurs visiteurs pouvant parcourir le graphe simultanément (ici dans une map StatusMap par visiteur)
-
-        // Tous les noeuds executés à la descente sont stockés dans executedNodes dont l'ordre inverse est utilisé pour la remontée
 
         updateDescendancy();
 
         Visitor::TreeTraversalRepetition repeat;
         if( action->treeTraversal(repeat) )
         {
+            // Tree traversal order
+            //
+            // Diamond shapes are ignored, a child node is visited as soon as a parent node has been visited.
+            // The multi-nodes (with several parents) are visited either: only once, only twice or for every times
+            // depending on the visitor's 'repeat'
+            //
+            // Some particular visitors such as a flat graph display or VisualVisitors must follow such a traversal order.
+
             StatusMap statusMap;
             executeVisitorTreeTraversal( action, statusMap, repeat );
         }
         else
         {
+            // Direct acyclic graph traversal order
+            //
+            // This is the default order, used for mechanics.
+            //
+            // A child node is visited only when all its parents have been visited.
+            // A child node is 'pruned' only if all its parents are 'pruned'.
+            // Every excecuted node in the forward traversal are stored in 'executedNodes',
+            // its reverse order is used for the backward traversal.
+
+            // Note that a newly 'pruned' node is still traversed (w/o execution) to be sure to execute its child nodes,
+            // that can have ancestors in another branch that is not pruned...
+            // An already pruned node is ignored.
+
             NodeList executedNodes;
             {
                 StatusMap statusMap;
@@ -553,7 +570,7 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
             {
                 // all parents must have been visited before
                 if ( statusMap[parents[i]] == NOT_VISITED )
-                    return; // skipped for now... the other parent should come latter
+                    return; // skipped for now... the other parent should come later
 
                 allParentsPruned = allParentsPruned && ( statusMap[parents[i]] == PRUNED );
                 hasParent = true;

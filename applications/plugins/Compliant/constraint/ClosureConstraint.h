@@ -14,9 +14,12 @@ namespace linearsolver {
 /// The sub-system (dynamics+bilaterals) used in certain solvers
 /// can then be solved in linear-time.
 /// cf Baraff 96 Linear-Time Dynamics using Lagrange Multipliers
+///
+/// @author Matthieu Nesme
 struct SOFA_Compliant_API ClosureConstraint : Constraint {
 	
     SOFA_CLASS(ClosureConstraint, Constraint);
+    SOFA_COMPLIANT_CONSTRAINT_H( ClosureConstraint )
 	
     virtual void project(SReal*, unsigned, unsigned, bool=false) const {}
 	

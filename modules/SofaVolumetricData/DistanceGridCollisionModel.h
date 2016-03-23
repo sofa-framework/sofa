@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -298,8 +298,8 @@ public:
             GCoord bary; ///< Barycentric coordinates
             int index; ///< Index of corresponding point in DistanceGrid
         };
-        vector<Point> points; ///< barycentric coordinates of included points
-        vector<GCoord> normals; ///< normals in barycentric coordinates of included points
+        helper::vector<Point> points; ///< barycentric coordinates of included points
+        helper::vector<GCoord> normals; ///< normals in barycentric coordinates of included points
         GCoord initP0,initDP,invDP; ///< Initial corners position
         GCoord corners[8]; ///< Current corners position
         enum {C000 = 0+0+0,
@@ -339,8 +339,8 @@ public:
 
         GCoord center; ///< current center;
         GSReal radius; ///< radius of enclosing sphere
-        vector<GCoord> deformedPoints; ///< deformed points
-        vector<GCoord> deformedNormals; ///< deformed normals
+        helper::vector<GCoord> deformedPoints; ///< deformed points
+        helper::vector<GCoord> deformedNormals; ///< deformed normals
         bool pointsUpdated; ///< true the deformedPoints vector has been updated with the latest positions
         void updatePoints(); ///< Update the deformedPoints position if not done yet (i.e. if pointsUpdated==false)
         bool facesUpdated; ///< true the faces plane vector has been updated with the latest positions

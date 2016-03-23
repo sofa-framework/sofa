@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -46,7 +46,6 @@ namespace component
 namespace forcefield
 {
 
-using sofa::helper::vector;
 
 template<class DataTypes>
 class HexahedronFEMForceField;
@@ -132,7 +131,7 @@ protected:
     typedef defaulttype::Vec<24, Real> Displacement;		///< the displacement vector
 
     typedef defaulttype::Mat<6, 6, Real> MaterialStiffness;	///< the matrix of material stiffness
-    typedef vector<MaterialStiffness> VecMaterialStiffness;         ///< a vector of material stiffness matrices
+    typedef helper::vector<MaterialStiffness> VecMaterialStiffness;         ///< a vector of material stiffness matrices
     VecMaterialStiffness _materialsStiffnesses;					///< the material stiffness matrices vector
 
     typedef defaulttype::Mat<24, 24, Real> ElementStiffness;
@@ -143,8 +142,8 @@ protected:
 
 
     typedef std::pair<int,Real> Col_Value;
-    typedef vector< Col_Value > CompressedValue;
-    typedef vector< CompressedValue > CompressedMatrix;
+    typedef helper::vector< Col_Value > CompressedValue;
+    typedef helper::vector< CompressedValue > CompressedMatrix;
     CompressedMatrix _stiffnesses;
     SReal m_potentialEnergy;
 
@@ -376,9 +375,9 @@ protected:
 
 
     ////////////// large displacements method
-    vector<helper::fixed_array<Coord,8> > _rotatedInitialElements;   ///< The initials positions in its frame
-    vector<Transformation> _rotations;
-    vector<Transformation> _initialrotations;
+    helper::vector<helper::fixed_array<Coord,8> > _rotatedInitialElements;   ///< The initials positions in its frame
+    helper::vector<Transformation> _rotations;
+    helper::vector<Transformation> _initialrotations;
     void initLarge(int i, const Element&elem);
     void computeRotationLarge( Transformation &r, Coord &edgex, Coord &edgey);
     virtual void accumulateForceLarge( WDataRefVecDeriv &f, RDataRefVecCoord &p, int i, const Element&elem  );

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -117,7 +117,7 @@ void BatchGUI::startDumpVisitor()
     if (root)
     {
         m_dumpVisitorStream.str("");
-        Visitor::startDumpVisitor(&m_dumpVisitorStream, root->getTime());
+        sofa::simulation::Visitor::startDumpVisitor(&m_dumpVisitorStream, root->getTime());
     }
 #endif
 }
@@ -125,7 +125,7 @@ void BatchGUI::startDumpVisitor()
 void BatchGUI::stopDumpVisitor()
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
-    Visitor::stopDumpVisitor();
+    sofa::simulation::Visitor::stopDumpVisitor();
     m_dumpVisitorStream.flush();
     m_dumpVisitorStream.str("");
 #endif

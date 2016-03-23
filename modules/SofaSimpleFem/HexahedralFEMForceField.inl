@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,7 +63,7 @@ namespace forcefield
 template< class DataTypes>
 void HexahedralFEMForceField<DataTypes>::HFFHexahedronHandler::applyCreateFunction(unsigned int hexahedronIndex,
         HexahedronInformation &,
-        const topology::Hexahedron &,
+        const core::topology::BaseMeshTopology::Hexahedron &,
         const sofa::helper::vector<unsigned int> &,
         const sofa::helper::vector<double> &)
 {
@@ -682,7 +682,7 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     for(int i = 0 ; i<_topology->getNbHexahedra(); ++i)
     {
-        const topology::Hexahedron &t=_topology->getHexahedron(i);
+        const core::topology::BaseMeshTopology::Hexahedron &t=_topology->getHexahedron(i);
 
         Index a = t[0];
         Index b = t[1];

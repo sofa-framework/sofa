@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,7 +76,7 @@ void DistanceMapping<TIn, TOut>::init()
     // compute the rest lengths if they are not known
     if( f_restLengths.getValue().size() != links.size() )
     {
-        helper::WriteOnlyAccessor< Data<vector<Real> > > restLengths(f_restLengths);
+        helper::WriteOnlyAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
         typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
         restLengths.resize( links.size() );
         if(!(f_computeDistance.getValue()))
@@ -98,7 +98,7 @@ void DistanceMapping<TIn, TOut>::init()
     else // manually set
         if( compliance ) // for warning message
         {
-            helper::ReadAccessor< Data<vector<Real> > > restLengths(f_restLengths);
+            helper::ReadAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
             for(unsigned i=0; i<links.size(); i++ )
                 if( restLengths[i]<=s_null_distance_epsilon ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
         }
@@ -120,7 +120,7 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
 {
     helper::WriteOnlyAccessor< Data<OutVecCoord> >  out = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
-    helper::ReadAccessor<Data<vector<Real> > > restLengths(f_restLengths);
+    helper::ReadAccessor<Data<helper::vector<Real> > > restLengths(f_restLengths);
     SeqEdges links = edgeContainer->getEdges();
 
     //    jacobian.clear();
@@ -158,38 +158,32 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
         // insert in increasing column order
         if( links[i][1]<links[i][0])
         {
-            for(unsigned j=0; j<Nout; j++)
+            jacobian.beginRow(i);
+            for(unsigned k=0; k<In::spatial_dimensions; k++ )
             {
-                jacobian.beginRow(i*Nout+j);
-                for(unsigned k=0; k<In::spatial_dimensions; k++ )
-                {
-                    jacobian.insertBack( i*Nout+j, links[i][1]*Nin+k, gap[k] );
-                }
-                for(unsigned k=0; k<In::spatial_dimensions; k++ )
-                {
-                    jacobian.insertBack( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
-                }
+                jacobian.insertBack( i, links[i][1]*Nin+k, gap[k] );
+            }
+            for(unsigned k=0; k<In::spatial_dimensions; k++ )
+            {
+                jacobian.insertBack( i, links[i][0]*Nin+k, -gap[k] );
             }
         }
         else
         {
-            for(unsigned j=0; j<Nout; j++)
+            jacobian.beginRow(i);
+            for(unsigned k=0; k<In::spatial_dimensions; k++ )
             {
-                jacobian.beginRow(i*Nout+j);
-                for(unsigned k=0; k<In::spatial_dimensions; k++ )
-                {
-                    jacobian.insertBack( i*Nout+j, links[i][0]*Nin+k, -gap[k] );
-                }
-                for(unsigned k=0; k<In::spatial_dimensions; k++ )
-                {
-                    jacobian.insertBack( i*Nout+j, links[i][1]*Nin+k, gap[k] );
-                }
+                jacobian.insertBack( i, links[i][0]*Nin+k, -gap[k] );
+            }
+            for(unsigned k=0; k<In::spatial_dimensions; k++ )
+            {
+                jacobian.insertBack( i, links[i][1]*Nin+k, gap[k] );
             }
         }
     }
 
     jacobian.compress();
-    //      cerr<<"DistanceMapping<TIn, TOut>::apply, jacobian: "<<endl<< jacobian << endl;
+//    serr<<"apply, jacobian: "<<std::endl<< jacobian << sendl;
 
 }
 
@@ -197,14 +191,14 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
-    if( jacobian.rowSize() > 0 )
+    if( jacobian.rowSize() )
         jacobian.mult(dOut,dIn);
 }
 
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
 {
-    if( jacobian.rowSize() > 0 )
+    if( jacobian.rowSize() )
         jacobian.addMultTranspose(dIn,dOut);
 }
 
@@ -281,7 +275,7 @@ const sofa::defaulttype::BaseMatrix* DistanceMapping<TIn, TOut>::getJ()
 }
 
 template <class TIn, class TOut>
-const vector<sofa::defaulttype::BaseMatrix*>* DistanceMapping<TIn, TOut>::getJs()
+const helper::vector<sofa::defaulttype::BaseMatrix*>* DistanceMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }
@@ -352,7 +346,7 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     if( d_showObjectScale.getValue() == 0 )
     {
         glDisable(GL_LIGHTING);
-        vector< defaulttype::Vector3 > points;
+        helper::vector< defaulttype::Vector3 > points;
         for(unsigned i=0; i<links.size(); i++ )
         {
             points.push_back( sofa::defaulttype::Vector3( TIn::getCPos(pos[links[i][0]]) ) );
@@ -442,7 +436,7 @@ template <class TIn, class TOut>
 void DistanceMultiMapping<TIn, TOut>::addPoint( int from, int index)
 {
     assert((size_t)from<this->fromModels.size());
-    vector<defaulttype::Vec2i>& indexPairsVector = *d_indexPairs.beginEdit();
+    helper::vector<defaulttype::Vec2i>& indexPairsVector = *d_indexPairs.beginEdit();
     indexPairsVector.push_back(defaulttype::Vec2i(from,index));
     d_indexPairs.endEdit();
 }
@@ -458,7 +452,7 @@ void DistanceMultiMapping<TIn, TOut>::init()
 
     this->getToModels()[0]->resize( links.size() );
 
-    const vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
+    const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
 
     // only used for warning message
     bool compliance = ((simulation::Node*)(this->getContext()))->forceField.size() && ((simulation::Node*)(this->getContext()))->forceField[0]->isCompliance.getValue();
@@ -466,7 +460,7 @@ void DistanceMultiMapping<TIn, TOut>::init()
     // compute the rest lengths if they are not known
     if( f_restLengths.getValue().size() != links.size() )
     {
-        helper::WriteAccessor< Data<vector<Real> > > restLengths(f_restLengths);
+        helper::WriteAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
         restLengths.resize( links.size() );
         if(!(f_computeDistance.getValue()))
         {
@@ -493,7 +487,7 @@ void DistanceMultiMapping<TIn, TOut>::init()
     else // manually set
         if( compliance ) // for warning message
         {
-            helper::ReadAccessor< Data<vector<Real> > > restLengths(f_restLengths);
+            helper::ReadAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
             for(unsigned i=0; i<links.size(); i++ )
                 if( restLengths[i]<=s_null_distance_epsilon ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
         }
@@ -514,8 +508,8 @@ void DistanceMultiMapping<TIn, TOut>::apply(const helper::vector<OutVecCoord*>& 
 {
     OutVecCoord& out = *outPos[0];
 
-    const vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
-    helper::ReadAccessor<Data<vector<Real> > > restLengths(f_restLengths);
+    const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
+    helper::ReadAccessor<Data<helper::vector<Real> > > restLengths(f_restLengths);
     const SeqEdges& links = edgeContainer->getEdges();
 
 
@@ -567,15 +561,12 @@ void DistanceMultiMapping<TIn, TOut>::apply(const helper::vector<OutVecCoord*>& 
         SparseMatrixEigen* J0 = static_cast<SparseMatrixEigen*>(baseMatrices[pair0[0]]);
         SparseMatrixEigen* J1 = static_cast<SparseMatrixEigen*>(baseMatrices[pair1[0]]);
 
-        for(unsigned j=0; j<Nout; j++)
+        J0->beginRow(i);
+        J1->beginRow(i);
+        for(unsigned k=0; k<In::spatial_dimensions; k++ )
         {
-            J0->beginRow(i*Nout+j);
-            J1->beginRow(i*Nout+j);
-            for(unsigned k=0; k<In::spatial_dimensions; k++ )
-            {
-                J0->insertBack( i*Nout+j, pair0[1]*Nin+k, -gap[k] );
-                J1->insertBack( i*Nout+j, pair1[1]*Nin+k,  gap[k] );
-            }
+            J0->insertBack( i, pair0[1]*Nin+k, -gap[k] );
+            J1->insertBack( i, pair1[1]*Nin+k,  gap[k] );
         }
 
     }
@@ -635,12 +626,12 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
     const SReal kfactor = mparams->kFactor();
     const OutVecDeriv& childForce = this->getToModels()[0]->readForces().ref();
     const SeqEdges& links = edgeContainer->getEdges();
-    const vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
+    const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
 
     unsigned size = this->getFromModels().size();
 
-    vector<InVecDeriv*> parentForce( size );
-    vector<const InVecDeriv*> parentDisplacement( size );
+    helper::vector<InVecDeriv*> parentForce( size );
+    helper::vector<const InVecDeriv*> parentDisplacement( size );
     for( unsigned i=0; i< size ; i++ )
     {
         core::State<In>* fromModel = this->getFromModels()[i];
@@ -708,7 +699,7 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
 
 
 template <class TIn, class TOut>
-const vector<sofa::defaulttype::BaseMatrix*>* DistanceMultiMapping<TIn, TOut>::getJs()
+const helper::vector<sofa::defaulttype::BaseMatrix*>* DistanceMultiMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }
@@ -721,7 +712,7 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
 
     helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[(const core::State<TOut>*)this->getToModels()[0]].read() );
     const SeqEdges& links = edgeContainer->getEdges();
-    const vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
+    const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
 
     for(size_t i=0; i<links.size(); i++)
     {
@@ -788,11 +779,11 @@ void DistanceMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
 
     const SeqEdges& links = edgeContainer->getEdges();
 
-    const vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
+    const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
 
     if( d_showObjectScale.getValue() == 0 )
     {
-        vector< defaulttype::Vector3 > points;
+        helper::vector< defaulttype::Vector3 > points;
         for(unsigned i=0; i<links.size(); i++ )
         {
             const defaulttype::Vec2i& pair0 = pairs[ links[i][0] ];
@@ -828,7 +819,7 @@ template <class TIn, class TOut>
 void DistanceMultiMapping<TIn, TOut>::updateForceMask()
 {
     const SeqEdges& links = edgeContainer->getEdges();
-    const vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
+    const helper::vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
 
     for(size_t i=0; i<links.size(); i++ )
     {

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,10 +37,6 @@ namespace component
 
 namespace topology
 {
-using core::topology::BaseMeshTopology;
-
-
-
 
 
 /**
@@ -52,12 +48,15 @@ class BezierTriangleSetGeometryAlgorithms : public TriangleSetGeometryAlgorithms
 public:
     SOFA_CLASS(SOFA_TEMPLATE(BezierTriangleSetGeometryAlgorithms,DataTypes),SOFA_TEMPLATE(TriangleSetGeometryAlgorithms,DataTypes));
 
-	typedef BaseMeshTopology::TriangleID TriangleID;
-	typedef BaseMeshTopology::Triangle Triangle;
-	typedef BaseMeshTopology::SeqTriangles SeqTriangles;
-	typedef BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
-	typedef BaseMeshTopology::TrianglesAroundEdge TrianglesAroundEdge;
-	typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
+
+    typedef core::topology::BaseMeshTopology::PointID PointID;
+    typedef core::topology::BaseMeshTopology::Edge Edge;
+    typedef core::topology::BaseMeshTopology::TriangleID TriangleID;
+    typedef core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
+    typedef core::topology::BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
+    typedef core::topology::BaseMeshTopology::TrianglesAroundEdge TrianglesAroundEdge;
+    typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 	typedef BezierTriangleSetTopologyContainer::VecPointID VecPointID;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;

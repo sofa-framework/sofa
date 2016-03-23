@@ -1,7 +1,6 @@
 #include <sofa/helper/system/FileSystem.h>
-
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Utils.h>
-#include <sofa/helper/Logger.h>
 
 #include <fstream>
 #include <iostream>
@@ -75,7 +74,7 @@ bool FileSystem::listDirectory(const std::string& directoryPath,
     WIN32_FIND_DATA ffd;
     HANDLE hFind = helper_FindFirstFile(directoryPath, &ffd);
     if (hFind == INVALID_HANDLE_VALUE) {
-        Logger::getMainLogger().log(Logger::Error, directoryPath + ": " + Utils::GetLastError(), "FileSystem::listDirectory()");
+        msg_error("FileSystem::listDirectory()") << directoryPath << ": " << Utils::GetLastError();
         return false;
     }
 
@@ -93,14 +92,14 @@ bool FileSystem::listDirectory(const std::string& directoryPath,
     // Check for errors
     bool errorOccured = ::GetLastError() != ERROR_NO_MORE_FILES;
     if (errorOccured)
-        Logger::getMainLogger().log(Logger::Error, directoryPath + ": " + Utils::GetLastError(), "FileSystem::listDirectory()");
+        msg_error("FileSystem::listDirectory()") << directoryPath << ": " << Utils::GetLastError();
 
     FindClose(hFind);
     return errorOccured;
 #else
     DIR *dp = opendir(directoryPath.c_str());
     if (dp == NULL) {
-        Logger::getMainLogger().log(Logger::Error, directoryPath + ": " + strerror(errno), "FileSystem::listDirectory()");
+        msg_error("FileSystem::listDirectory()") << directoryPath << ": " << strerror(errno);
         return true;
     }
 
@@ -122,13 +121,13 @@ bool FileSystem::createDirectory(const std::string& path)
     if (CreateDirectory(Utils::widenString(path).c_str(), NULL) == 0)
     {
         DWORD errorCode = ::GetLastError();
-        Logger::getMainLogger().log(Logger::Error, path + ": " + Utils::GetLastError(), "FileSystem::createdirectory()");
+        msg_error("FileSystem::createdirectory()") << path << ": " << Utils::GetLastError();
         return true;
     }
 #else
     if (mkdir(path.c_str(), 0755))
     {
-        Logger::getMainLogger().log(Logger::Error, path + ": " + strerror(errno), "FileSystem::createdirectory()");
+        msg_error("FileSystem::createdirectory()") << path << ": " << strerror(errno);
         return true;
     }
 #endif
@@ -145,13 +144,13 @@ bool FileSystem::removeDirectory(const std::string& path)
     if (RemoveDirectory(Utils::widenString(path).c_str()) == 0)
     {
         DWORD errorCode = ::GetLastError();
-        Logger::getMainLogger().log(Logger::Error, path + ": " + Utils::GetLastError(), "FileSystem::removedirectory()");
+        msg_error("FileSystem::removedirectory()") << path << ": " << Utils::GetLastError();
         return true;
     }
 #else
     if (rmdir(path.c_str()))
     {
-        Logger::getMainLogger().log(Logger::Error, path + ": " + strerror(errno), "FileSystem::removedirectory()");
+        msg_error("FileSystem::removedirectory()") << path << ": " << strerror(errno);
         return true;
     }
 #endif
@@ -169,7 +168,7 @@ bool FileSystem::exists(const std::string& path)
     {
         DWORD errorCode = ::GetLastError();
         if (errorCode != ERROR_FILE_NOT_FOUND && errorCode != ERROR_PATH_NOT_FOUND) // not No such file error
-            Logger::getMainLogger().log(Logger::Error, path + ": " + Utils::GetLastError(), "FileSystem::exists()");
+            msg_error("FileSystem::exists()") << path << ": " << Utils::GetLastError();
         return false;
     }
 
@@ -184,7 +183,7 @@ bool FileSystem::exists(const std::string& path)
         if (errno == ENOENT)    // No such file or directory
             return false;
         else {
-            Logger::getMainLogger().log(Logger::Error, path + ": " + strerror(errno), "FileSystem::exists()");
+            msg_error("FileSystem::exists()") << path << ": " << strerror(errno);
             return false;
         }
 #endif
@@ -196,7 +195,7 @@ bool FileSystem::isDirectory(const std::string& path)
 #if defined(WIN32)
     DWORD fileAttrib = GetFileAttributes(Utils::widenString(path).c_str());
     if (fileAttrib == INVALID_FILE_ATTRIBUTES) {
-        Logger::getMainLogger().log(Logger::Error, path + ": " + Utils::GetLastError(), "FileSystem::isDirectory()");
+        msg_error("FileSystem::isDirectory()") << path << ": " << Utils::GetLastError();
         return false;
     }
     else
@@ -204,7 +203,7 @@ bool FileSystem::isDirectory(const std::string& path)
 #elif defined (_XBOX)
     DWORD fileAttrib = GetFileAttributes(path.c_str());
     if (fileAttrib == -1) {
-        Logger::getMainLogger().log(Logger::Error, path + ": " + Utils::GetLastError(), "FileSystem::isDirectory()");
+        msg_error("FileSystem::isDirectory()") << path << ": " << Utils::GetLastError();
         return false;
     }
     else
@@ -212,7 +211,7 @@ bool FileSystem::isDirectory(const std::string& path)
 #else
     struct stat st_buf;
     if (stat(path.c_str(), &st_buf) != 0) {
-        Logger::getMainLogger().log(Logger::Error, path + ": " + strerror(errno), "FileSystem::isDirectory()");
+        msg_error("FileSystem::isDirectory()") << path << ": " << strerror(errno);
         return false;
     }
     else

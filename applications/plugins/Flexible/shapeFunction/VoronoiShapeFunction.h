@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -50,11 +50,6 @@ namespace component
 {
 namespace shapefunction
 {
-
-using sofa::helper::round;
-using core::behavior::BaseShapeFunction;
-using defaulttype::Mat;
-using defaulttype::Vec;
 
 /**
 Voronoi shape functions are natural neighbor interpolants
@@ -135,7 +130,7 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typedef typename VoronoiShapeFunction::IndTypes IndTypes;
         typedef typename VoronoiShapeFunction::waInd waInd;
 
-        typedef Vec<3,int> iCoord;
+        typedef defaulttype::Vec<3,int> iCoord;
         typedef std::pair<DistT,iCoord > DistanceToPoint;
 
         // retrieve data
@@ -148,9 +143,9 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         waInd vorData(This->f_voronoi);         typename IndTypes::CImgT& voronoi = vorData->getCImg();
         waDist distData(This->f_distances);     typename DistTypes::CImgT& dist = distData->getCImg();
 
-        helper::ReadAccessor<Data<vector<Coord> > > parent(This->f_position);
+        helper::ReadAccessor<Data<helper::vector<Coord> > > parent(This->f_position);
         if(!parent.size()) { This->serr<<"Parent nodes not found"<<This->sendl; return; }
-        vector<iCoord> parentiCoord;        for(unsigned int i=0; i<parent.size(); i++) { Coord p = inT->toImageInt(parent[i]);  parentiCoord.push_back(iCoord(p[0],p[1],p[2])); }
+        helper::vector<iCoord> parentiCoord;        for(unsigned int i=0; i<parent.size(); i++) { Coord p = inT->toImageInt(parent[i]);  parentiCoord.push_back(iCoord(p[0],p[1],p[2])); }
 
         // compute voronoi and distances based on nodes
         std::set<DistanceToPoint> trial;                // list of seed points
@@ -175,7 +170,7 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typedef typename VoronoiShapeFunction::IndTypes IndTypes;
         typedef typename VoronoiShapeFunction::waInd waInd;
 
-        typedef Vec<3,int> iCoord;
+        typedef defaulttype::Vec<3,int> iCoord;
         typedef std::pair<DistT,iCoord > DistanceToPoint;
 
         // retrieve data
@@ -190,9 +185,9 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         waInd indData(This->f_index);           typename IndTypes::CImgT& indices = indData->getCImg();
         waDist weightData(This->f_w);           typename DistTypes::CImgT& weights = weightData->getCImg();
 
-        helper::ReadAccessor<Data<vector<Coord> > > parent(This->f_position);
+        helper::ReadAccessor<Data<helper::vector<Coord> > > parent(This->f_position);
         if(!parent.size()) { This->serr<<"Parent nodes not found"<<This->sendl; return; }
-        vector<iCoord> parentiCoord;        for(unsigned int i=0; i<parent.size(); i++) { Coord p = inT->toImageInt(parent[i]);  parentiCoord.push_back(iCoord(p[0],p[1],p[2])); }
+        helper::vector<iCoord> parentiCoord;        for(unsigned int i=0; i<parent.size(); i++) { Coord p = inT->toImageInt(parent[i]);  parentiCoord.push_back(iCoord(p[0],p[1],p[2])); }
 
         unsigned int nbref=This->f_nbRef.getValue();
 
@@ -294,7 +289,7 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typedef typename VoronoiShapeFunction::IndTypes IndTypes;
         typedef typename VoronoiShapeFunction::waInd waInd;
 
-        typedef Vec<3,int> iCoord;
+        typedef defaulttype::Vec<3,int> iCoord;
         typedef std::pair<DistT,iCoord > DistanceToPoint;
 
         typedef NaturalNeighborData<Real> NNData;
@@ -316,7 +311,7 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         Coord voxelsize(inT->getScale());
         Real pixelvol=voxelsize[0]*voxelsize[1]*voxelsize[2];
-        Vec<3,Real> pixelsurf(voxelsize[1]*voxelsize[2],voxelsize[0]*voxelsize[2],voxelsize[0]*voxelsize[1]);
+        defaulttype::Vec<3,Real> pixelsurf(voxelsize[1]*voxelsize[2],voxelsize[0]*voxelsize[2],voxelsize[0]*voxelsize[1]);
         unsigned int indexPt=This->f_position.getValue().size()+1; // voronoi index of points that will be added to compute NNI
 
         // compute weights voxel-by-voxel
@@ -423,7 +418,7 @@ public:
     typedef typename Inherit::waInd waInd;
     Data< IndTypes > f_voronoi;
 
-    typedef Vec<3,int> iCoord;
+    typedef defaulttype::Vec<3,int> iCoord;
     typedef std::pair<Real,iCoord > DistanceToPoint;
 
     //@}

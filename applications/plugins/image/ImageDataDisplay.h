@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,8 +42,6 @@ namespace component
 namespace engine
 {
 
-using helper::SVector;
-using cimg_library::CImg;
 
 /**
  * This class Store custom data in an image
@@ -69,7 +67,7 @@ public:
 
     Data< InImageTypes > inputImage;
     Data< OutImageTypes > outputImage;
-    Data<SVector<SVector<To> > > VoxelData;
+    Data<helper::SVector<helper::SVector<To> > > VoxelData;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const ImageDataDisplay<InImageTypes,OutImageTypes>* = NULL) { return InImageTypes::Name()+std::string(",")+OutImageTypes::Name(); }
@@ -99,7 +97,7 @@ protected:
 
     virtual void update()
     {
-        const SVector<SVector<To> >& dat = this->VoxelData.getValue();
+        const helper::SVector<helper::SVector<To> >& dat = this->VoxelData.getValue();
         raImagei in(this->inputImage);
 
         cleanDirty();
@@ -110,8 +108,8 @@ protected:
         dim[InImageTypes::DIMENSION_S] = dat.size()?dat[0].size():1;
         out->setDimensions(dim);
 
-        const CImg<Ti>& inImg=in->getCImg();
-        CImg<To>& outImg=out->getCImg();
+        const cimg_library::CImg<Ti>& inImg=in->getCImg();
+        cimg_library::CImg<To>& outImg=out->getCImg();
         outImg.fill(0);
 
         unsigned int count=0;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,8 +58,8 @@ DistanceFromTargetMapping<TIn, TOut>::~DistanceFromTargetMapping()
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::createTarget(unsigned index, const InCoord &position, Real distance)
 {
-    helper::WriteAccessor< Data< vector<Real> > > distances(f_restDistances);
-    helper::WriteAccessor< Data<vector<unsigned> > > indices(f_indices);
+    helper::WriteAccessor< Data< helper::vector<Real> > > distances(f_restDistances);
+    helper::WriteAccessor< Data<helper::vector<unsigned> > > indices(f_indices);
     helper::WriteAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
 
     indices.push_back(index);
@@ -73,7 +73,7 @@ template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::updateTarget(unsigned index, const InCoord &position)
 {
     helper::WriteAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
-    helper::WriteAccessor< Data<vector<unsigned> > > indices(f_indices);
+    helper::WriteAccessor< Data<helper::vector<unsigned> > > indices(f_indices);
 //    cerr<<"DistanceFromTargetMapping<TIn, TOut>::updateTarget index " << index << " at position " << position << endl;
 
     // find the target with given index
@@ -93,9 +93,9 @@ void DistanceFromTargetMapping<TIn, TOut>::updateTarget(unsigned index, SReal x,
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::clear()
 {
-    helper::WriteAccessor< Data< vector<Real> > > distances(f_restDistances);
+    helper::WriteAccessor< Data< helper::vector<Real> > > distances(f_restDistances);
     helper::WriteAccessor< Data<InVecCoord > > positions(f_targetPositions);
-    helper::WriteAccessor< Data<vector<unsigned> > > indices(f_indices);
+    helper::WriteAccessor< Data<helper::vector<unsigned> > > indices(f_indices);
 
     distances.clear();
     positions.clear();
@@ -114,7 +114,7 @@ void DistanceFromTargetMapping<TIn, TOut>::init()
     // unset distances are set to 0
     if(f_restDistances.getValue().size() != f_indices.getValue().size())
     {
-        helper::WriteAccessor< Data< vector<Real> > > distances(f_restDistances);
+        helper::WriteAccessor< Data< helper::vector<Real> > > distances(f_restDistances);
         unsigned prevsize = distances.size();
         distances.resize( f_indices.getValue().size() );
         for(unsigned i=prevsize; i<distances.size(); i++ )
@@ -141,8 +141,8 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
 {
     helper::WriteAccessor< Data<OutVecCoord> >  out = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
-    helper::WriteAccessor<Data<vector<Real> > > restDistances(f_restDistances);
-    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    helper::WriteAccessor<Data<helper::vector<Real> > > restDistances(f_restDistances);
+    helper::ReadAccessor< Data<helper::vector<unsigned> > > indices(f_indices);
     helper::ReadAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
 
     jacobian.resizeBlocks(out.size(),in.size());
@@ -154,7 +154,7 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
     {
         Direction& gap = directions[i];
 
-        // gap = in[links[i][1]] - in[links[i][0]] (only for position)
+        // gap = in[indices[i]] - targetPositions[i] (only for position)
         computeCoordPositionDifference( gap, targetPositions[i], in[indices[i]] );
 
         Real gapNorm = gap.norm();
@@ -225,7 +225,7 @@ void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel));  // parent displacement
     const SReal kfactor = mparams->kFactor();
     helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel));
-    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    helper::ReadAccessor< Data<helper::vector<unsigned> > > indices(f_indices);
 
     for(unsigned i=0; i<indices.size(); i++ )
     {
@@ -276,7 +276,7 @@ const sofa::defaulttype::BaseMatrix* DistanceFromTargetMapping<TIn, TOut>::getJ(
 }
 
 template <class TIn, class TOut>
-const vector<sofa::defaulttype::BaseMatrix*>* DistanceFromTargetMapping<TIn, TOut>::getJs()
+const helper::vector<sofa::defaulttype::BaseMatrix*>* DistanceFromTargetMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }
@@ -294,7 +294,7 @@ void DistanceFromTargetMapping<TIn, TOut>::updateK( const core::MechanicalParams
     if( !geometricStiffness ) { K.resize(0,0); return; }
 
     helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get(mparams)].read() );
-    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    helper::ReadAccessor< Data<helper::vector<unsigned> > > indices(f_indices);
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
 
     K.resizeBlocks(in.size(),in.size());
@@ -338,9 +338,9 @@ void DistanceFromTargetMapping<TIn, TOut>::draw(const core::visual::VisualParams
 
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
     helper::ReadAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
-    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    helper::ReadAccessor< Data<helper::vector<unsigned> > > indices(f_indices);
 
-    vector< sofa::defaulttype::Vector3 > points;
+    helper::vector< sofa::defaulttype::Vector3 > points;
 
     for(unsigned i=0; i<indices.size(); i++ )
     {
@@ -359,7 +359,7 @@ void DistanceFromTargetMapping<TIn, TOut>::draw(const core::visual::VisualParams
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::updateForceMask()
 {
-    helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
+    helper::ReadAccessor< Data<helper::vector<unsigned> > > indices(f_indices);
     for( size_t i = 0 ; i<this->maskTo->size() ; ++i )
         if( this->maskTo->getEntry(i) )
             this->maskFrom->insertEntry(indices[i]);

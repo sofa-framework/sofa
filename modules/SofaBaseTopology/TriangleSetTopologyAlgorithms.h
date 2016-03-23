@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,13 +41,6 @@ class TriangleSetTopologyModifier;
 template < class DataTypes >
 class TriangleSetGeometryAlgorithms;
 
-using core::topology::BaseMeshTopology;
-typedef BaseMeshTopology::TriangleID TriangleID;
-typedef BaseMeshTopology::Triangle Triangle;
-typedef BaseMeshTopology::SeqTriangles SeqTriangles;
-typedef BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
-typedef BaseMeshTopology::TrianglesAroundEdge TrianglesAroundEdge;
-typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 /**
 * A class that performs topology algorithms on an TriangleSet.
@@ -62,6 +55,19 @@ public:
     typedef typename DataTypes::VecCoord VecDeriv;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
+
+
+    typedef core::topology::BaseMeshTopology::Edge Edge;
+    typedef core::topology::BaseMeshTopology::PointID PointID;
+    typedef core::topology::BaseMeshTopology::EdgeID EdgeID;
+    typedef core::topology::BaseMeshTopology::TriangleID TriangleID;
+    typedef core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
+    typedef core::topology::BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
+    typedef core::topology::BaseMeshTopology::TrianglesAroundEdge TrianglesAroundEdge;
+    typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
+
+
 protected:
     TriangleSetTopologyAlgorithms()
         : EdgeSetTopologyAlgorithms<DataTypes>()

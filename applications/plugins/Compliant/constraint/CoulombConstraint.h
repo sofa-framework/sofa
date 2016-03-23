@@ -10,6 +10,8 @@ namespace linearsolver {
 
 struct SOFA_Compliant_API CoulombConstraintBase : Constraint
 {
+    SOFA_COMPLIANT_CONSTRAINT_H( CoulombConstraintBase )
+
     // friction coefficient f_T <= mu. f_N
     SReal mu;
 };

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -112,7 +112,7 @@ struct FixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
         typename MechanicalObject::ReadVecCoord readX = dofs->readPositions();
         if( (readX[0]-initCoord).norm2()>epsilon )
         {
-            ADD_FAILURE() << "Error: unmatching position between " << readX[0] << " and " << initCoord<< endl;
+            ADD_FAILURE() << "Error: unmatching position between " << readX[0] << " and " << initCoord<< std::endl;
             return false;
         }
         return true;

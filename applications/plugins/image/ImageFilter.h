@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -74,10 +74,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using cimg_library::CImg;
-using cimg_library::CImgList;
-
 /**
  * This class computes a filtered image
  */
@@ -106,7 +102,7 @@ public:
     typedef helper::WriteOnlyAccessor<Data< TransformType > > waTransform;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
 
-    typedef vector<double> ParamTypes;
+    typedef helper::vector<double> ParamTypes;
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 
     Data<helper::OptionsGroup> filter;
@@ -200,8 +196,8 @@ protected:
 
 		if(in->isEmpty()) return;
 
-        const CImgList<Ti>& inimg = in->getCImgList();
-        CImgList<To>& img = out->getCImgList();
+        const cimg_library::CImgList<Ti>& inimg = in->getCImgList();
+        cimg_library::CImgList<To>& img = out->getCImgList();
         if(updateImage) img.assign(inimg);	// copy
         if(updateTransform) outT->operator=(inT);	// copy
 
@@ -375,7 +371,7 @@ protected:
                 float sizex=(float)inT->getScale()[0]*scale;
                 float sizey=(float)inT->getScale()[1]*scale;
                 float sizez=(float)inT->getScale()[2]*scale;
-                CImg<float> metric_distance(2,2,2,1,0);
+                cimg_library::CImg<float> metric_distance(2,2,2,1,0);
                 metric_distance(1,0,0)=sizex;
                 metric_distance(0,1,0)=sizey;
                 metric_distance(0,0,1)=sizez;
@@ -499,11 +495,11 @@ protected:
 
                 cimglist_for(img,l)
                 {
-                    const CImgList<Real> grad = inimg(l).get_gradient("xyz");
-                    CImg<Real> flux = inimg(l).get_flux(grad,1,1);
+                    const cimg_library::CImgList<Real> grad = inimg(l).get_gradient("xyz");
+                    cimg_library::CImg<Real> flux = inimg(l).get_flux(grad,1,1);
                     if (dlt2) // correction proposed by Torsello 03
                     {
-                        CImg<Real> logdensity = inimg(l).get_logdensity(inimg(l),grad,flux,dlt1);
+                        cimg_library::CImg<Real> logdensity = inimg(l).get_logdensity(inimg(l),grad,flux,dlt1);
                         flux = inimg(l).get_corrected_flux(logdensity,grad,flux,dlt2);
                     }
                     img(l) = inimg(l).get_skeleton(flux,inimg(l),curve,thresh);
@@ -517,7 +513,7 @@ protected:
                 typename InImageTypes::imCoord dim = in->getDimensions();
 
                 // a mask to know which pixel to compute
-                CImg<bool> mask;
+                cimg_library::CImg<bool> mask;
                 mask.assign( dim[0], dim[1], dim[2], 1 );
 
                 unsigned int maxDiffusionIterations=0; if(p.size()) maxDiffusionIterations=(unsigned int)p[0];
@@ -525,7 +521,7 @@ protected:
                 bool excludeOutside=true; if(p.size()>2) excludeOutside=(p[2]!=0);
                 To threshold=std::numeric_limits<To>::epsilon(); if(p.size()>3) threshold=(To)p[3];
 
-                CImg<To> imTmp;
+                cimg_library::CImg<To> imTmp;
 
                 cimglist_for(inimg,l)
                 {
@@ -601,7 +597,7 @@ protected:
 
                 cimglist_for(img,l)
                 {
-                    CImg<unsigned char> im = inimg(l);
+                    cimg_library::CImg<unsigned char> im = inimg(l);
                     cimg_foroff(im,off) if( im[off]!=0 ) im[off]=1;
                     unsigned char fillColor = (unsigned char)2;
                     im.draw_fill(0,0,0,&fillColor); // flood fill from voxel (0,0,0)
@@ -631,7 +627,7 @@ protected:
                 cimglist_for(img,l)
                 {
                     typedef unsigned int Tlabel;
-                    CImg<Tlabel> im = inimg(l);
+                    cimg_library::CImg<Tlabel> im = inimg(l);
                     im.label(false,tol);
                     //histo
                     std::map<Tlabel,unsigned long> histo;

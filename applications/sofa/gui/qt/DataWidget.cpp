@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -27,11 +27,9 @@
 #include "DataWidget.h"
 #include "ModifyObject.h"
 #include <sofa/helper/Factory.inl>
+#include <sofa/helper/logging/Messaging.h>
 
 #include <QToolTip>
-
-#include <sofa/helper/Logger.h>
-using sofa::helper::Logger;
 
 #define SIZE_TEXT     60
 namespace sofa
@@ -123,7 +121,7 @@ DataWidget::updateDataValue()
             }
             else
             {
-                Logger::mainlog( Logger::Error, std::string("updateDataValue: ") + baseData->getName() + std::string(" has an owner that is neither a Node nor an Object. Something went wrong..."), "DataWidget" );
+                msg_error("DataWidget") << "updateDataValue: " << baseData->getName() << " has an owner that is neither a Node nor an Object. Something went wrong...";
             }
 
             const QString dataString = (path + " = " + baseData->getValueString()).c_str();

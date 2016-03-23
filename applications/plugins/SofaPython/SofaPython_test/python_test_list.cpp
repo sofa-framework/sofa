@@ -19,6 +19,7 @@ static struct Tests : public Python_test_list
         addTest( "test_Tools.py", scenePath );
         addTest( "test_units.py", scenePath );
         addTest( "test_mass.py", scenePath );
+        addTest( "test_MeshLoader.py", scenePath );
 
         // add python tests here
     }

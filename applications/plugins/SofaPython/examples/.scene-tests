@@ -1,3 +1,16 @@
 # Big, long, PrecomputedConstraintCorrection in this scene:
 timeout "keyboardControl.scn" "80"
 
+# adding a few python examples
+add "DAG.py"
+add "ControllerVariable.py"
+add "link.py"
+add "linkPath.py"
+add "logger.py"
+add "mass.py"
+add "meshLoader.py"
+add "MultiMapping.py"
+add "PythonMainScriptController.py"
+add "units.py"
+add "variables.py"
+add "Visitor.py"

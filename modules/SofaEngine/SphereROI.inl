@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -289,8 +289,17 @@ void SphereROI<DataTypes>::update()
 
     if (cen.size() != rad.size())
     {
-        serr << "WARNING: number of sphere centers and radius doesn't match." <<sendl;
-        return;
+		if (rad.size() == 1)
+		{
+			Real r = rad[0];
+			helper::WriteOnlyAccessor< Data<helper::vector<Real> > > radWriter = radii;
+			for (unsigned int i = 0; i < cen.size() - 1; i++) radWriter.push_back(r);
+		}
+		else
+		{
+			serr << "WARNING: number of sphere centers and radius doesn't match." << sendl;
+			return;
+		}
     }
 
     Real eAngle = edgeAngle.getValue();
@@ -351,19 +360,18 @@ void SphereROI<DataTypes>::update()
     //Points
     for( unsigned i=0; i<x0->size(); ++i )
     {
+        bool isInSpheres = false;
         for (unsigned int j=0; j<cen.size(); ++j)
         {
             if (isPointInSphere(cen[j], rad[j], (*x0)[i]))
             {
                 indices.push_back(i);
                 pointsInROI.push_back((*x0)[i]);
+                isInSpheres = true;
                 break;
             }
-            else
-            {
-                indicesOut.push_back(i);
-            }
         }
+        if (!isInSpheres) indicesOut.push_back(i);
     }
 
     //Edges
@@ -605,7 +613,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 #ifndef SOFA_FLOAT
 
 template <>
-bool SphereROI<Rigid3dTypes>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p)
+bool SphereROI<defaulttype::Rigid3dTypes>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p)
 {
 	if((p.getCenter()-c).norm() > r)
 		return false;
@@ -614,7 +622,7 @@ bool SphereROI<Rigid3dTypes>::isPointInSphere(const Vec3& c, const Real& r, cons
 }
 
 template <>
-bool SphereROI<Rigid3dTypes>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p)
+bool SphereROI<defaulttype::Rigid3dTypes>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p)
 {
 	const VecCoord x0 = f_X0.getValue();
 	CPos c =  x0[pid].getCenter();
@@ -622,7 +630,7 @@ bool SphereROI<Rigid3dTypes>::isPointInSphere(const PointID& pid, const Real& r,
 }
 
 template <>
-bool SphereROI<Rigid3dTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge)
+bool SphereROI<defaulttype::Rigid3dTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge)
 {
 	const VecCoord* x0 = &f_X0.getValue();
 	for (unsigned int i=0; i<2; ++i)
@@ -636,7 +644,7 @@ bool SphereROI<Rigid3dTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const
 }
 
 template <>
-bool SphereROI<Rigid3dTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle)
+bool SphereROI<defaulttype::Rigid3dTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle)
 {
 	const VecCoord* x0 = &f_X0.getValue();
 	for (unsigned int i=0; i<3; ++i)
@@ -650,7 +658,7 @@ bool SphereROI<Rigid3dTypes>::isTriangleInSphere(const Vec3& c, const Real& r, c
 }
 
 template <>
-bool SphereROI<Rigid3dTypes>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad)
+bool SphereROI<defaulttype::Rigid3dTypes>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad)
 {
 	const VecCoord* x0 = &f_X0.getValue();
 	for (unsigned int i=0; i<4; ++i)
@@ -665,7 +673,7 @@ bool SphereROI<Rigid3dTypes>::isQuadInSphere(const Vec3& c, const Real& r, const
 
 
 template <>
-bool SphereROI<Rigid3dTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron)
+bool SphereROI<defaulttype::Rigid3dTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron)
 {
 	const VecCoord* x0 = &f_X0.getValue();
 	for (unsigned int i=0; i<4; ++i)
@@ -680,7 +688,7 @@ bool SphereROI<Rigid3dTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r
 
 
 template <>
-void SphereROI<Rigid3dTypes>::update()
+void SphereROI<defaulttype::Rigid3dTypes>::update()
 {
 	cleanDirty();
 
@@ -865,7 +873,7 @@ void SphereROI<Rigid3dTypes>::update()
 #ifndef SOFA_DOUBLE
 
 template <>
-bool SphereROI<Rigid3fTypes>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p)
+bool SphereROI<defaulttype::Rigid3fTypes>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p)
 {
 	if((p.getCenter()-c).norm() > r)
 		return false;
@@ -874,7 +882,7 @@ bool SphereROI<Rigid3fTypes>::isPointInSphere(const Vec3& c, const Real& r, cons
 }
 
 template <>
-bool SphereROI<Rigid3fTypes>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p)
+bool SphereROI<defaulttype::Rigid3fTypes>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p)
 {
 	const VecCoord x0 = f_X0.getValue();
 	CPos c =  x0[pid].getCenter();
@@ -882,7 +890,7 @@ bool SphereROI<Rigid3fTypes>::isPointInSphere(const PointID& pid, const Real& r,
 }
 
 template <>
-bool SphereROI<Rigid3fTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge)
+bool SphereROI<defaulttype::Rigid3fTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge)
 {
 	const VecCoord* x0 = &f_X0.getValue();
 	for (unsigned int i=0; i<2; ++i)
@@ -896,7 +904,7 @@ bool SphereROI<Rigid3fTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const
 }
 
 template <>
-bool SphereROI<Rigid3fTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle)
+bool SphereROI<defaulttype::Rigid3fTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle)
 {
 	const VecCoord* x0 = &f_X0.getValue();
 	for (unsigned int i=0; i<3; ++i)
@@ -910,7 +918,7 @@ bool SphereROI<Rigid3fTypes>::isTriangleInSphere(const Vec3& c, const Real& r, c
 }
 
 template <>
-bool SphereROI<Rigid3fTypes>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad)
+bool SphereROI<defaulttype::Rigid3fTypes>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad)
 {
 	const VecCoord* x0 = &f_X0.getValue();
 	for (unsigned int i=0; i<4; ++i)
@@ -925,7 +933,7 @@ bool SphereROI<Rigid3fTypes>::isQuadInSphere(const Vec3& c, const Real& r, const
 
 
 template <>
-bool SphereROI<Rigid3fTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron)
+bool SphereROI<defaulttype::Rigid3fTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron)
 {
 	const VecCoord* x0 = &f_X0.getValue();
 	for (unsigned int i=0; i<4; ++i)
@@ -940,7 +948,7 @@ bool SphereROI<Rigid3fTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r
 
 
 template <>
-void SphereROI<Rigid3fTypes>::update()
+void SphereROI<defaulttype::Rigid3fTypes>::update()
 {
 	cleanDirty();
 

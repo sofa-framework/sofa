@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,7 +38,6 @@
 
 namespace sofa
 {
-using helper::vector;
 
 namespace component
 {
@@ -88,9 +87,9 @@ public:
 
 
 
-    Data< vector<unsigned> > f_triangleIndices;  ///< For each node, indices of the adjacent triangles
-    Data< vector<unsigned> > f_endIndices;   ///< For each node, index of the end of the list of triangle indices, in f_indices.
-    Data< vector<Real> > f_weights;      ///< For each node, weight of the triangles in the average
+    Data< helper::vector<unsigned> > f_triangleIndices;  ///< For each node, indices of the adjacent triangles
+    Data< helper::vector<unsigned> > f_endIndices;   ///< For each node, index of the end of the list of triangle indices, in f_indices.
+    Data< helper::vector<Real> > f_weights;      ///< For each node, weight of the triangles in the average
 
     virtual void init();
 
@@ -104,7 +103,7 @@ public:
 
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
-    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
 
 protected:
@@ -113,12 +112,12 @@ protected:
 
     topology::TriangleSetTopologyContainer::SPtr triangleContainer;  ///< where the edges are defined
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
-    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
     /// Compute the product, used in apply and applyJ
     virtual void mult(Data<OutVecCoord>& out, const Data<InVecCoord>& in);
 
-    vector<Real> diagMat; ///< diagonal matrix used to scale up node values based on the area they represent
+    helper::vector<Real> diagMat; ///< diagonal matrix used to scale up node values based on the area they represent
 };
 
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -46,6 +46,7 @@
 #include <sofa/gui/qt/GenGraphForm.h>
 
 #include <sofa/helper/gl/glText.inl>
+#include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/RAII.h>
 #include <sofa/helper/io/ImageBMP.h>
 
@@ -687,6 +688,25 @@ void QtGLViewer::DisplayOBJs()
 
             if (vparams->sceneBBox().isValid())
                 DrawBox(vparams->sceneBBox().minBBoxPtr(), vparams->sceneBBox().maxBBoxPtr());
+
+            // 2D Axis: project current world orientation in the lower left part of the screen
+            glMatrixMode(GL_PROJECTION);
+            glPushMatrix();
+            glLoadIdentity();
+            glOrtho(0.0,vparams->viewport()[2],0,vparams->viewport()[3],-30,30);
+            glMatrixMode(GL_MODELVIEW);
+            glPushMatrix();
+            glLoadIdentity();
+            sofa::defaulttype::Quaternion sofaQuat( this->camera()->orientation()[0]
+                                                  , this->camera()->orientation()[1]
+                                                  , this->camera()->orientation()[2]
+                                                  , this->camera()->orientation()[3]);
+            helper::gl::Axis::draw(sofa::defaulttype::Vector3(30.0,30.0,0.0),sofaQuat.inverse(), 25.0);
+            glMatrixMode(GL_PROJECTION);
+            glPopMatrix();
+            glMatrixMode(GL_MODELVIEW);
+            glPopMatrix();
+
         }
     }
 
@@ -833,7 +853,11 @@ void QtGLViewer::resizeGL(int width, int height)
     QGLViewer::resizeGL( width,  height);
     // 	    camera()->setScreenWidthAndHeight(_W,_H);
 
+    // TODO: find a better fix
+#if not defined(__APPLE__)
     this->resize(width, height);
+#endif
+
     emit( resizeW( _W ) );
     emit( resizeH( _H ) );
 }
@@ -1006,6 +1030,16 @@ bool QtGLViewer::mouseEvent(QMouseEvent * e)
 void QtGLViewer::wheelEvent(QWheelEvent* e)
 {
     QGLViewer::wheelEvent(e);
+    if(isControlPressed())  // pass event to the scene elements
+    {
+        if (groot)
+        {
+            sofa::core::objectmodel::MouseEvent me(sofa::core::objectmodel::MouseEvent::Wheel, e->delta());
+            groot->propagateEvent(core::ExecParams::defaultInstance(), &me);
+        }
+    }
+    else
+        QGLViewer::wheelEvent(e);
 }
 
 void QtGLViewer::moveRayPickInteractor(int eventX, int eventY)

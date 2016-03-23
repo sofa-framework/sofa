@@ -1,0 +1,37 @@
+# Empty list, sofa coordinates are used  
+o source_keypoint_humerus
+v -1.682034 13.278206 0.654612 
+
+o target_keypoint_humerus
+v -1.858956 12.917434 0.742930 
+
+o target_keypoint.002
+v -2.164974 10.890919 0.805464 
+
+o source_keypoint.002
+v -2.199578 10.397043 0.665721 
+
+o source_keypoint.001
+v -2.456930 8.236761 1.076358 
+
+o target_keypoint.001
+v -2.435123 11.087391 3.605198 
+
+o target_keypoint
+v -2.602614 11.762765 3.605198 
+
+o source_keypoint
+v -2.671054 7.333543 1.357690 
+
+o Constraint_s_ulna_radius_hand
+v -2.499684 8.221661 1.142404 
+
+o Constraint_s_humerus_ulna_radius
+v -2.130480 10.512712 0.670172 
+
+o Constraint_s_humerus_ulna_radius_a
+v -2.130480 10.512712 0.670172 
+
+o Constraint_s_ulna_radius_hand_a
+v -2.499684 8.221661 1.142404 
+

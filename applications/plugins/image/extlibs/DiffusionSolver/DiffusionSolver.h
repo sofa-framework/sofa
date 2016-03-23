@@ -1,6 +1,7 @@
 #ifndef __DIFFUSIONSOLVER_H__
 #define __DIFFUSIONSOLVER_H__
 
+#define cimg_display 0
 #include <CImg/CImg.h>
 
 

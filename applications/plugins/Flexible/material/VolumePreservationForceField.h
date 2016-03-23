@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -30,7 +30,6 @@
 #include "../material/VolumePreservationMaterialBlock.inl"
 
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
 
 namespace sofa
 {
@@ -38,9 +37,7 @@ namespace component
 {
 namespace forcefield
 {
-
-using helper::vector;
-using helper::OptionsGroup;
+;
 
 /** Apply VolumePreservation's Law for isotropic homogeneous incompressible materials.
   * The energy is : k/2 ln( I3^1/2 )^2 = k/2 ln( (U1*U2*U3)^1/2 )^2
@@ -59,8 +56,8 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<OptionsGroup> f_method;
-    Data<vector<Real> > f_k;
+    Data<helper::OptionsGroup> f_method;
+    Data<helper::vector<Real> > f_k;
     //@}
 
     virtual void reinit()
@@ -74,13 +71,6 @@ public:
         Inherit::reinit();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
-    {
-        if (simulation::AnimateEndEvent::checkEventType(event))
-        {
-            if(f_k.isDirty()) reinit();
-        }
-    }
 
     virtual SReal getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const typename Inherit::DataVecCoord& x ) const
     {
@@ -113,13 +103,12 @@ protected:
     VolumePreservationForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
         , f_method ( initData ( &f_method,"method","energy form" ) )
-        , f_k(initData(&f_k,vector<Real>((int)1,(Real)0),"k","bulk modulus: weight ln(J)^2/2 term in energy "))
+        , f_k(initData(&f_k,helper::vector<Real>((int)1,(Real)0),"k","bulk modulus: weight ln(J)^2/2 term in energy "))
     {
         helper::OptionsGroup Options(2	,"0 - k.ln(J)^2/2"
                 ,"1 - k.(J-1)^2/2" );
         Options.setSelectedItem(1);
         f_method.setValue(Options);
-        this->f_listening.setValue(true);
     }
 
     virtual ~VolumePreservationForceField() {}

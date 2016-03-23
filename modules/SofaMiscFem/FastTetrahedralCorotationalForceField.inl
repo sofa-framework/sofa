@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,17 +42,13 @@ namespace component
 namespace forcefield
 {
 
-typedef core::topology::BaseMeshTopology::Tetra Tetra;
-typedef core::topology::BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
 
-typedef topology::Tetra Tetrahedron;
-typedef topology::EdgesInTetrahedron EdgesInTetrahedron;
 
 
 template< class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::applyCreateFunction(unsigned int tetrahedronIndex,
         TetrahedronRestInformation &my_tinfo,
-        const topology::Tetrahedron &,
+        const core::topology::BaseMeshTopology::Tetrahedron &,
         const sofa::helper::vector<unsigned int> &,
         const sofa::helper::vector<double> &)
 {
@@ -94,7 +90,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::a
         /// compute the edge stiffness of the linear elastic material
         for(j=0; j<6; ++j)
         {
-            topology::Edge e=ff->_topology->getLocalEdgesInTetrahedron(j);
+            core::topology::BaseMeshTopology::Edge e=ff->_topology->getLocalEdgesInTetrahedron(j);
             k=e[0];
             l=e[1];
 
@@ -245,9 +241,9 @@ void FastTetrahedralCorotationalForceField<DataTypes>::updateTopologyInformation
     {
         tetinfo=&tetrahedronInf[i];
         /// describe the jth edge index of triangle no i
-        const topology::EdgesInTetrahedron &tea= _topology->getEdgesInTetrahedron(i);
+        const core::topology::BaseMeshTopology::EdgesInTetrahedron &tea= _topology->getEdgesInTetrahedron(i);
         /// describe the jth vertex index of triangle no i
-        const topology::Tetrahedron &ta= _topology->getTetrahedron(i);
+        const core::topology::BaseMeshTopology::Tetrahedron &ta= _topology->getTetrahedron(i);
 
         for (j=0; j<4; ++j)
         {

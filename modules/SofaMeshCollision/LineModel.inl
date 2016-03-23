@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -379,7 +379,7 @@ void TLineModel<DataTypes>::updateFromTopology()
 
         for (unsigned int i = 0; i < nbLines; i++)
         {
-            topology::BaseMeshTopology::Line idx = bmt->getEdge(i);
+            core::topology::BaseMeshTopology::Line idx = bmt->getEdge(i);
 
             if (idx[0] >= nbPoints || idx[1] >= nbPoints)
             {
@@ -394,20 +394,6 @@ void TLineModel<DataTypes>::updateFromTopology()
 
         meshRevision = revision;
     }
-}
-
-template<class DataTypes>
-void TLineModel<DataTypes>::draw(const core::visual::VisualParams* ,int index)
-{
-#ifndef SOFA_NO_OPENGL
-    TLine<DataTypes> l(this,index);
-    if (!l.activated())
-        return;
-    glBegin(GL_LINES);
-    helper::gl::glVertexT(l.p1());
-    helper::gl::glVertexT(l.p2());
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
 }
 
 template<class DataTypes>

@@ -41,11 +41,11 @@ void Restitution::correction(SReal* dst, unsigned n, unsigned dim, const core::M
     const mask_type& mask = this->mask.getValue();
 
     unsigned i = 0;
-    for(SReal* last = dst + size; dst < last; dst+=dim, ++i) {
+    for(SReal *it = dst, *last = dst + size; it < last; it+=dim, ++i) {
         if( (!mask.empty() && !mask[i]) || std::fabs(v[i*dim]) > HARD_CODED_VELOCITY_THRESHOLD )
-            memset( dst, 0, dim*sizeof(SReal) ); // do not stabilize non violated or fast enough constraints
+            memset( it, 0, dim*sizeof(SReal) ); // do not stabilize non violated or fast enough constraints
         else
-            map(dst, dim) = -map(dst, dim) / this->getContext()->getDt(); // regular stabilized constraint
+            map(it, dim) *= -1.0 / this->getContext()->getDt(); // regular stabilized constraint
     }
 
     delete [] v;
@@ -116,7 +116,7 @@ void Restitution::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabilizat
 }
 
 
-void Restitution::filterConstraints( vector<bool>* activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim )
+void Restitution::filterConstraints( helper::vector<bool>* activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim )
 {
     // non-violated constraints with restitution MUST be deactivated
 

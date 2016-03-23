@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -70,12 +70,12 @@ public:
 
     /// initialization to export potential energy to gnuplot files format
     virtual void initGnuplot(const std::string path){
-        std::cout << path << std::endl << "Warning ::: initGnuplot not implemented for all interaction force field" << std::endl;
+        sout << path << std::endl << "Warning ::: initGnuplot not implemented for all interaction force field" << sendl;
     }
 
     /// export kinetic and potential energy state at "time" to a gnuplot file
     virtual void exportGnuplot(SReal time){
-        std::cout << time << std::endl << "Warning ::: exportGnuplot not implemented for all interaction force field" << std::endl;
+        sout << time << std::endl << "Warning ::: exportGnuplot not implemented for all interaction force field" << sendl;
     }
 
 

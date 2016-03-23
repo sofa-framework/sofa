@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -60,9 +60,9 @@ BaseContext* BaseContext::getDefault()
 ////////////////
 
 /// The Context is active
-bool BaseContext::isActive() const { return true;};
+bool BaseContext::isActive() const { return true; }
 #ifdef SOFA_SMP
-bool BaseContext::is_partition() const { return false;};
+bool BaseContext::is_partition() const { return false; }
 #endif
 
 /// The Context is not sleeping by default
@@ -180,7 +180,7 @@ BaseContext* BaseContext::getRootContext() const
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* BaseContext::getObject(const ClassInfo& /*class_info*/, SearchDirection /*dir*/) const
 {
-    std::cerr << "BaseContext: calling unimplemented getObject method" << std::endl;
+    serr << "calling unimplemented getObject method" << sendl;
     return NULL;
 }
 
@@ -189,7 +189,7 @@ void* BaseContext::getObject(const ClassInfo& /*class_info*/, SearchDirection /*
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* BaseContext::getObject(const ClassInfo& /*class_info*/, const TagSet& /*tags*/, SearchDirection /*dir*/) const
 {
-    std::cerr << "BaseContext: calling unimplemented getObject method" << std::endl;
+    serr << "calling unimplemented getObject method" << sendl;
     return NULL;
 }
 
@@ -198,7 +198,7 @@ void* BaseContext::getObject(const ClassInfo& /*class_info*/, const TagSet& /*ta
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* BaseContext::getObject(const ClassInfo& /*class_info*/, const std::string& /*path*/) const
 {
-    std::cerr << "BaseContext: calling unimplemented getObject method" << std::endl;
+    serr << "calling unimplemented getObject method" << sendl;
     return NULL;
 }
 
@@ -207,7 +207,7 @@ void* BaseContext::getObject(const ClassInfo& /*class_info*/, const std::string&
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void BaseContext::getObjects(const ClassInfo& /*class_info*/, GetObjectsCallBack& /*container*/, SearchDirection /*dir*/) const
 {
-    std::cerr << "BaseContext: calling unimplemented getObjects method" << std::endl;
+    serr << "calling unimplemented getObjects method" << sendl;
 }
 
 /// Generic list of objects access, given a set of required tags, possibly searching up or down from the current context
@@ -215,7 +215,7 @@ void BaseContext::getObjects(const ClassInfo& /*class_info*/, GetObjectsCallBack
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void BaseContext::getObjects(const ClassInfo& /*class_info*/, GetObjectsCallBack& /*container*/, const TagSet& /*tags*/, SearchDirection /*dir*/) const
 {
-    std::cerr << "BaseContext: calling unimplemented getObject method" << std::endl;
+    serr << "calling unimplemented getObject method" << sendl;
 }
 
 /// Degrees-of-Freedom
@@ -257,12 +257,12 @@ core::visual::Shader* BaseContext::getShader() const
 /// Propagate an event
 void BaseContext::propagateEvent( const core::ExecParams*, Event* )
 {
-    serr<<"WARNING !!! BaseContext::propagateEvent not overloaded, does nothing"<<sendl;
+    serr<<"propagateEvent not overloaded, does nothing"<<sendl;
 }
 
 void BaseContext::executeVisitor(simulation::Visitor*, bool)
 {
-    serr<<"WARNING !!! BaseContext::executeVisitor not overloaded, does nothing"<<sendl;
+    serr<<"executeVisitor not overloaded, does nothing"<<sendl;
     //assert(false);
 }
 

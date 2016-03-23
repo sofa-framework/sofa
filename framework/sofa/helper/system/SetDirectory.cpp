@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -39,6 +39,8 @@
 #include <string.h>
 #include <iostream>
 
+#include <sofa/helper/logging/Messaging.h>
+
 namespace sofa
 {
 
@@ -68,7 +70,7 @@ SetDirectory::SetDirectory(const char* filename)
 //         std::cout << ">chdir("<<directory<<")"<<std::endl;
         previousDir = GetCurrentDir();
         if (chdir(directory.c_str()) != 0)
-            std::cerr <<"Error: can't change directory." << std::endl;
+            msg_error("SetDirectory") << "can't change directory.";
     }
 }
 
@@ -83,7 +85,7 @@ SetDirectory::~SetDirectory()
     {
 //         std::cout << "<chdir("<<directory<<")"<<std::endl;
         if (chdir(previousDir.c_str()) != 0)
-            std::cerr <<"Error: can't change directory." << std::endl;
+            msg_error("SetDirectory") << "can't change directory.";
     }
 }
 
@@ -104,7 +106,7 @@ std::string SetDirectory::GetCurrentDir()
     char dir[1024];
     memset(dir,0,sizeof(dir));
     if (getcwd(dir, sizeof(dir)) == NULL)
-        std::cerr <<"Error: can't get current directory." << std::endl;
+        msg_error("SetDirectory") << "can't get current directory.";
     return dir;
 }
 
@@ -212,7 +214,7 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
         char path[1024];
         memset(path,0,sizeof(path));
         if (readlink("/proc/self/exe",path,sizeof(path)-1) == -1)
-            std::cerr <<"Error: can't read the contents of the link." << std::endl;
+            msg_error("SetDirectory") << "can't read the contents of the link.";
 // 		std::cout << "Current process: "<< path <<std::endl;
         if (path[0])
             return path;

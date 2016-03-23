@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,7 +56,7 @@ namespace forcefield
 typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 template< class DataTypes>
-void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCreateFunction(unsigned int /*edgeIndex*/, EdgeSpring &ei, const sofa::component::topology::Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCreateFunction(unsigned int /*edgeIndex*/, EdgeSpring &ei, const core::topology::BaseMeshTopology::Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {
@@ -68,21 +68,21 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCrea
 
 
 template< class DataTypes>
-void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded, const sofa::helper::vector<sofa::component::topology::Triangle> &, const sofa::helper::vector<sofa::helper::vector<unsigned int> > &, const sofa::helper::vector<sofa::helper::vector<double> > &)
+void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded, const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle> &, const sofa::helper::vector<sofa::helper::vector<unsigned int> > &, const sofa::helper::vector<sofa::helper::vector<double> > &)
 {
     using namespace sofa::component::topology;
     if (ff)
     {
         typename MechanicalState::ReadVecCoord restPosition = ff->mstate->readRestPositions();
 
-        helper::WriteAccessor<Data<vector<EdgeSpring> > > edgeData(ff->edgeSprings);
+        helper::WriteAccessor<Data<helper::vector<EdgeSpring> > > edgeData(ff->edgeSprings);
         
         for (unsigned int i=0; i<triangleAdded.size(); ++i)
         {
             /// edges of the new triangle
             EdgesInTriangle te2 = ff->_topology->getEdgesInTriangle(triangleAdded[i]);
             /// vertices of the new triangle
-            Triangle t2 = ff->_topology->getTriangle(triangleAdded[i]);
+            core::topology::BaseMeshTopology::Triangle t2 = ff->_topology->getTriangle(triangleAdded[i]);
 
 			double epsilonSq = ff->d_minDistValidity.getValue();
 			epsilonSq *= epsilonSq;
@@ -99,7 +99,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
                 {
                     // the other triangle and its edges
                     EdgesInTriangle te1;
-                    Triangle t1;
+                    core::topology::BaseMeshTopology::Triangle t1;
                     if(shell[0] == triangleAdded[i])
                     {
 
@@ -116,12 +116,12 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
 
                     int i1 = ff->_topology->getEdgeIndexInTriangle(te1, edgeIndex); // index of the vertex opposed to the current edge in the other triangle (?)
                     int i2 = ff->_topology->getEdgeIndexInTriangle(te2, edgeIndex); // index of the vertex opposed to the current edge in the new triangle (?)
-                    Edge edge = ff->_topology->getEdge(edgeIndex);                  // indices of the vertices of the current edge
+                    core::topology::BaseMeshTopology::Edge edge = ff->_topology->getEdge(edgeIndex);                  // indices of the vertices of the current edge
 
-					const PointID& v1 = t1[i1];
-					const PointID& v2 = t2[i2];
-					const PointID& e1 = edge[0];
-					const PointID& e2 = edge[1];
+                    const core::topology::BaseMeshTopology::PointID& v1 = t1[i1];
+                    const core::topology::BaseMeshTopology::PointID& v2 = t2[i2];
+                    const core::topology::BaseMeshTopology::PointID& e1 = edge[0];
+                    const core::topology::BaseMeshTopology::PointID& e2 = edge[1];
 
 					Deriv vp = restPosition[v2]-restPosition[v1];
 					Deriv ve = restPosition[e2]-restPosition[e1];
@@ -204,9 +204,9 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
                 if (valid)
                 {
                     EdgesInTriangle te1;
-                    Triangle t1;
+                    core::topology::BaseMeshTopology::Triangle t1;
                     EdgesInTriangle te2;
-                    Triangle t2;
+                    core::topology::BaseMeshTopology::Triangle t2;
 
                     te1 = ff->_topology->getEdgesInTriangle(keepingTri[0]);
                     t1 = ff->_topology->getTriangle(keepingTri[0]);
@@ -216,12 +216,12 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTria
                     int i1 = ff->_topology->getEdgeIndexInTriangle(te1, edgeIndex);
                     int i2 = ff->_topology->getEdgeIndexInTriangle(te2, edgeIndex);
 
-                    Edge edge = ff->_topology->getEdge(edgeIndex);
+                    core::topology::BaseMeshTopology::Edge edge = ff->_topology->getEdge(edgeIndex);
 
-					const PointID& v1 = t1[i1];
-					const PointID& v2 = t2[i2];
-					const PointID& e1 = edge[0];
-					const PointID& e2 = edge[1];
+                    const core::topology::BaseMeshTopology::PointID& v1 = t1[i1];
+                    const core::topology::BaseMeshTopology::PointID& v2 = t2[i2];
+                    const core::topology::BaseMeshTopology::PointID& e1 = edge[0];
+                    const core::topology::BaseMeshTopology::PointID& e2 = edge[1];
 
 					Deriv vp = restPosition[v2]-restPosition[v1];
 					Deriv ve = restPosition[e2]-restPosition[e1];
@@ -250,7 +250,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopo
 {
     using namespace sofa::component::topology;
     const sofa::helper::vector<unsigned int> &triangleAdded = e->getIndexArray();
-    const sofa::helper::vector<Triangle> &elems = e->getElementArray();
+    const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle> &elems = e->getElementArray();
     const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ancestors = e->ancestorsList;
     const sofa::helper::vector<sofa::helper::vector<double> > & coefs = e->coefs;
 
@@ -418,7 +418,7 @@ void FastTriangularBendingSprings<DataTypes>::reinit()
         triangleAdded.push_back(i);
 
     edgeHandler->applyTriangleCreation(triangleAdded,
-            (const sofa::helper::vector<Triangle>)0,
+            (const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle>)0,
             (const sofa::helper::vector<sofa::helper::vector<unsigned int> >)0,
             (const sofa::helper::vector<sofa::helper::vector<double> >)0);
 

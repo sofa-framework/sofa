@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -47,7 +47,6 @@ public:
     SOFA_CLASS(PythonMainScriptController,ScriptController);
 
 protected:
-    PythonMainScriptController();
     PythonMainScriptController( const char* filename );
 
     void handleEvent(core::objectmodel::Event *event);
@@ -94,7 +93,30 @@ protected:
 
 
 public:
-    sofa::core::objectmodel::DataFileName d_filename;
+    const char* m_filename;
+
+    // optionnal script entry points:
+    PyObject *m_Func_onKeyPressed;
+    PyObject *m_Func_onKeyReleased;
+    PyObject *m_Func_onMouseButtonLeft;
+    PyObject *m_Func_onMouseButtonRight;
+    PyObject *m_Func_onMouseButtonMiddle;
+    PyObject *m_Func_onMouseWheel;
+    PyObject *m_Func_onGUIEvent;
+    PyObject *m_Func_onScriptEvent;
+    PyObject *m_Func_onBeginAnimationStep;
+    PyObject *m_Func_onEndAnimationStep;
+    PyObject *m_Func_onLoaded;
+    PyObject *m_Func_createGraph;
+    PyObject *m_Func_initGraph;
+    PyObject *m_Func_bwdInitGraph;
+    PyObject *m_Func_storeResetState;
+    PyObject *m_Func_reset;
+    PyObject *m_Func_cleanup;
+    PyObject *m_Func_draw;
+
+private:
+    PythonMainScriptController();
 
 };
 

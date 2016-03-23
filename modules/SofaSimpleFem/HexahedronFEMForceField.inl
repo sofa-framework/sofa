@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -1100,6 +1100,9 @@ void HexahedronFEMForceField<DataTypes>::initPolar(int i, const Element& elem)
 #endif
 
     computeRotationPolar( _rotations[i], nodes );
+
+    if( i==0 ) serr<<"init"<<_rotations[i]<<" "<<sendl;
+
     _initialrotations[i] = _rotations[i];
 
     for(int j=0; j<8; ++j)
@@ -1163,6 +1166,8 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( WDataRefVecDeriv 
 
 // 	Transformation R_0_2; // Rotation matrix (deformed and displaced Tetrahedron/world)
     computeRotationPolar( _rotations[i], nodes );
+
+    if( i==0 ) serr<<"init"<<_rotations[i]<<" "<<sendl;
 
 // 	_rotations[i].transpose( R_0_2 );
 
@@ -1279,14 +1284,13 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-    if ( !vparams->isSupported(sofa::core::visual::API_OpenGL) )
-    {
-        this->sout << "WARNING in : " << this->getClassName() << " in draw(VisualParams*) method :\n" <<
-                "Cannot display this component debug info beacause of using GL render instructions"<<
-                this->sendl;
-        return;
-    }
+//    if ( !vparams->isSupported(sofa::core::visual::API_OpenGL) )
+//    {
+//        this->sout << "WARNING in : " << this->getClassName() << " in draw(VisualParams*) method :\n" <<
+//                "Cannot display this component debug info beacause of using GL render instructions"<<
+//                this->sendl;
+//        return;
+//    }
 
 // 	serr<<"HexahedronFEMForceField<DataTypes>::draw()"<<sendl;
     if (!vparams->displayFlags().getShowForceFields()) return;
@@ -1351,12 +1355,9 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         Coord ph = x[h]-(x[h]-center)*percentage;
 
 
-
-
         if(_sparseGrid )
         {
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            vparams->drawTool()->enableBlending();
         }
 
 
@@ -1430,8 +1431,7 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         vparams->drawTool()->setPolygonMode(0,false);
 
     if(_sparseGrid )
-        glDisable(GL_BLEND);
-#endif /* SOFA_NO_OPENGL */
+       vparams->drawTool()->disableBlending();
 }
 
 

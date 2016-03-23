@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -31,13 +31,10 @@
 #include <SofaOpenglVisual/OglModel.h>
 #include <sofa/defaulttype/Vec.h>
 
-using namespace sofa::core;
-
 
 namespace sofa
 {
 
-typedef defaulttype::Vec<3,SReal> Vec3;
 
 namespace component {
 namespace collision {
@@ -48,19 +45,20 @@ namespace collision {
  * We are only interested in counting the intersections, not modeling their geometry.
  * @author Francois Faure, 2014
  */
-class  SOFA_MISC_COLLISION_API  RayTriangleVisitor : public Visitor
+class  SOFA_MISC_COLLISION_API  RayTriangleVisitor : public simulation::Visitor
 {
 
 public:
 
+    typedef defaulttype::Vec<3,SReal> Vec3;
     defaulttype::Vec3d origin;    ///< Ray starting point
     defaulttype::Vec3d direction; ///< Ray direction
 
     /// Return the embedding model. In case of nested hierarchy, return the smallest (deepest). NULL if no embedding model.
-    objectmodel::BaseObject* embeddingModel();
+    core::objectmodel::BaseObject* embeddingModel();
 
     // generic
-    RayTriangleVisitor(const core::ExecParams* params = ExecParams::defaultInstance());
+    RayTriangleVisitor(const core::ExecParams* params = core::ExecParams::defaultInstance());
     virtual void processTriangleModel(simulation::Node* node, component::collision::TriangleModel* obj);
     virtual void processOglModel(simulation::Node* node, component::visualmodel::OglModel* obj);
     virtual Result processNodeTopDown(simulation::Node* node);
@@ -80,7 +78,7 @@ private:
 
     friend struct distanceHitSort;
 
-    sofa::vector<Hit> hits;  ///< raw result
+    helper::vector<Hit> hits;  ///< raw result
 
 };
 

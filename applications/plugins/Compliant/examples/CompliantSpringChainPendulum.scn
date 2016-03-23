@@ -3,16 +3,15 @@
 
 <Node 	name="Root" gravity="0 -10 0" time="0" animate="0"  dt="0.01" >
 <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
-<CompliantAttachButtonSetting />
 
       <RequiredPlugin name="Compliant"/>
-      <RequiredPlugin name="CompliantDev"/>
 
+<CompliantAttachButtonSetting />
       
 <Node 	name="CONSTRAINT 0" activated="1">
   
     <CompliantImplicitSolver/>
-<LDLTSolver/>
+<LDLTSolver schur="false"/>
 <!--<MinresSolver precision="0" iterations="100"/>-->
 
     <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="3 0 0"/>
@@ -35,7 +34,7 @@
 <Node 	name="CONSTRAINT 1e-15" activated="1">
   
     <CompliantImplicitSolver/>
-<LDLTSolver/>
+<LDLTSolver schur="false"/>
 <!--<MinresSolver precision="0" iterations="100"/>-->
 
     <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="3 3 0"/>
@@ -57,7 +56,7 @@
 <Node 	name="CONSTRAINT 1e-5" activated="1">
   
     <CompliantImplicitSolver/>
-<LDLTSolver/>
+<LDLTSolver schur="false"/>
 <!--<MinresSolver precision="0" iterations="100"/>-->
 
     <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="3 6 0"/>
@@ -82,7 +81,7 @@
 <Node 	name="COMPLIANCE 0" activated="1">
   
     <CompliantImplicitSolver neglecting_compliance_forces_in_geometric_stiffness="false"/>
-<LDLTSolver/>
+<LDLTSolver schur="false" regularization="1e-15"/>
     <!--<MinresSolver precision="0" iterations="100"/>-->
 
     <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="0 0 0"/>
@@ -104,7 +103,7 @@
 <Node 	name="COMPLIANCE 1e-15" >
   
     <CompliantImplicitSolver neglecting_compliance_forces_in_geometric_stiffness="false"/>
-<LDLTSolver/>
+<LDLTSolver schur="false"/>
 <!--<MinresSolver precision="0" iterations="100"/>-->
 
     <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="0 3 0"/>
@@ -127,7 +126,7 @@
 <Node 	name="COMPLIANCE 1e-5" activated="1">
   
     <CompliantImplicitSolver neglecting_compliance_forces_in_geometric_stiffness="false"/>
-<LDLTSolver/>
+<LDLTSolver schur="false"/>
 <!--<MinresSolver precision="0" iterations="100"/>-->
 
     <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="0 6 0"/>
@@ -154,7 +153,7 @@
 <Node 	name="STIFFNESS 0" activated="1">
   
     <CompliantImplicitSolver/>
-<LDLTSolver/>
+<LDLTSolver schur="false"/>
 <!--<MinresSolver precision="0" iterations="100"/>-->
 
     <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="-3 0 0"/>
@@ -176,7 +175,7 @@
 <Node 	name="STIFFNESS 1e-15" activated="1">
   
     <CompliantImplicitSolver/>
-<LDLTSolver/>
+<LDLTSolver schur="false"/>
 <!--<MinresSolver precision="0" iterations="100"/>-->
 
     <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="-3 3 0"/>
@@ -198,7 +197,7 @@
 <Node 	name="STIFFNESS 1e-5" activated="1">
   
     <CompliantImplicitSolver/>
-<LDLTSolver/>
+<LDLTSolver schur="false"/>
 <!--<MinresSolver precision="0" iterations="100"/>-->
 
     <StringMeshCreator name="loader" resolution="10" scale="2 1 0" translation="-3 6 0"/>

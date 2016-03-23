@@ -2,7 +2,6 @@
 <Node 	name="Root" gravity="0 -0.5 0 " dt="0.3"  >
   
       <RequiredPlugin pluginName="Flexible"/>
-    <RequiredPlugin pluginName="SofaMJEDFEM"/>
   
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultAnimationLoop />
@@ -85,7 +84,7 @@
 
     
 
-   <Node 	name="FEM_stVenant"   >
+<!--   <Node 	name="FEM_stVenant"   >
     <EulerImplicitSolver /> <CGLinearSolver  />
 	    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" translation="0 0 5" />
 	    <Mesh name="mesh" src="@loader" />
@@ -96,14 +95,14 @@
 
 	     <UniformMass totalMass="250" />
 
-	 <!--    <StandardTetrahedralFEMForceField name="ff" materialName="StVenantKirchhoff" ParameterSet="833.3333 555.55555" /> -->
+	    <StandardTetrahedralFEMForceField name="ff" materialName="StVenantKirchhoff" ParameterSet="833.3333 555.55555" />
 	    <MJEDTetrahedralForceField name="ff" materialName="StVenantKirchhoff" ParameterSet="833.3333 555.55555" /> 
 
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 .4 0.5 1" translation="0 0 5"/>
 	    	<BarycentricMapping template="Vec3d,ExtVec3f"/>
 	    </Node>
-    </Node>
+    </Node>-->
 
 
     <Node 	name="Flexible_stVenant"   >

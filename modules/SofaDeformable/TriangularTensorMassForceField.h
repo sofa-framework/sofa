@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -104,7 +104,7 @@ protected:
 
     sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
 
-    class TriangularTMEdgeHandler : public topology::TopologyDataHandler<topology::Edge,helper::vector<EdgeRestInformation> >
+    class TriangularTMEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,helper::vector<EdgeRestInformation> >
     {
     public:
         typedef typename TriangularTensorMassForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
@@ -113,23 +113,23 @@ protected:
             TriangularTensorMassForceField<DataTypes>* ff,
             sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> >* data
         )
-            :sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge,sofa::helper::vector<EdgeRestInformation> >(data),ff(ff)
+            :sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::helper::vector<EdgeRestInformation> >(data),ff(ff)
         {
         }
 
         void applyCreateFunction(unsigned int edgeIndex, EdgeRestInformation&,
-                const sofa::component::topology::Edge& e,
+                const core::topology::BaseMeshTopology::Edge& e,
                 const sofa::helper::vector<unsigned int> &,
                 const sofa::helper::vector<double> &);
 
         void applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded,
-                const sofa::helper::vector<sofa::component::topology::Triangle> & ,
+                const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle> & ,
                 const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ,
                 const sofa::helper::vector<sofa::helper::vector<double> > &);
 
         void applyTriangleDestruction(const sofa::helper::vector<unsigned int> &triangleRemoved);
 
-        using topology::TopologyDataHandler<topology::Edge,helper::vector<EdgeRestInformation> >::ApplyTopologyChange;
+        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,helper::vector<EdgeRestInformation> >::ApplyTopologyChange;
         /// Callback to add triangles elements.
         void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
         /// Callback to remove triangles elements.
@@ -191,20 +191,14 @@ protected :
     sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
 };
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
-#endif
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-#endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_DEFORMABLE_API TriangularTensorMassForceField<Vec3dTypes>;
+extern template class SOFA_DEFORMABLE_API TriangularTensorMassForceField<sofa::defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_DEFORMABLE_API TriangularTensorMassForceField<Vec3fTypes>;
+extern template class SOFA_DEFORMABLE_API TriangularTensorMassForceField<sofa::defaulttype::Vec3fTypes>;
 #endif
 
 #endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_CPP)

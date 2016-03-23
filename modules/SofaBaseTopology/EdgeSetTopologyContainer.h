@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,14 +36,7 @@ namespace component
 
 namespace topology
 {
-using core::topology::BaseMeshTopology;
 
-typedef BaseMeshTopology::PointID		   	PointID;
-typedef BaseMeshTopology::EdgeID			      EdgeID;
-typedef BaseMeshTopology::Edge				   Edge;
-typedef BaseMeshTopology::SeqEdges			   SeqEdges;
-typedef BaseMeshTopology::EdgesAroundVertex	EdgesAroundVertex;
-typedef sofa::helper::vector<EdgeID>         VecEdgeID;
 
 /** a class that stores a set of edges  and provides access to the adjacency between points and edges */
 class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyContainer : public PointSetTopologyContainer
@@ -52,6 +45,15 @@ class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyContainer : public PointSetTopologyC
 
 public:
     SOFA_CLASS(EdgeSetTopologyContainer,PointSetTopologyContainer);
+
+    typedef BaseMeshTopology::PointID		   	PointID;
+    typedef BaseMeshTopology::EdgeID			      EdgeID;
+    typedef BaseMeshTopology::Edge				   Edge;
+    typedef BaseMeshTopology::SeqEdges			   SeqEdges;
+    typedef BaseMeshTopology::EdgesAroundVertex	EdgesAroundVertex;
+    typedef sofa::helper::vector<EdgeID>         VecEdgeID;
+
+
 protected:
     EdgeSetTopologyContainer();
 

@@ -22,7 +22,7 @@ DiagonalCompliance<DataTypes>::DiagonalCompliance( core::behavior::MechanicalSta
     , diagonal( initData(&diagonal, 
                          "compliance", 
                          "Compliance value diagonally applied to all the DOF."))
-    , damping( initData(&damping, "damping", "uniform viscous damping."))
+    , damping( initData(&damping, "damping", "viscous damping."))
 {
 	this->isCompliance.setValue(true);
     editOnly(damping)->push_back(0);
@@ -187,6 +187,11 @@ void DiagonalCompliance<DataTypes>::addDForce(const core::MechanicalParams *mpar
     }
 }
 
+template<class DataTypes>
+void DiagonalCompliance<DataTypes>::addClambda(const core::MechanicalParams *, DataVecDeriv &res, const DataVecDeriv &lambda, SReal cfactor)
+{
+    matC.addMult( res, lambda, cfactor );
+}
 
 }
 }

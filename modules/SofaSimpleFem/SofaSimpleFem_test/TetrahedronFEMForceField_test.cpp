@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -83,7 +83,7 @@ struct TetrahedronFEMForceField_test : public ForceField_test<_TetrahedronFEMFor
         
         // Set force parameters
         Inherited::force->_poissonRatio.setValue(0);
-        vector<Real> youngModulusVec;youngModulusVec.push_back(40);
+        helper::vector<Real> youngModulusVec;youngModulusVec.push_back(40);
         Inherited::force->_youngModulus.setValue(youngModulusVec);
         Inherited::force->f_method.setValue("small");
 

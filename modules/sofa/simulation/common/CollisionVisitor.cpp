@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -34,8 +34,25 @@ namespace simulation
 
 Visitor::Result CollisionVisitor::processNodeTopDown(simulation::Node* node)
 {
+    for_each(this, node, node->constraintSet, &CollisionVisitor::fwdConstraintSet);
     for_each(this, node, node->collisionPipeline, &CollisionVisitor::processCollisionPipeline);
     return RESULT_CONTINUE;
+}
+
+void CollisionVisitor::fwdConstraintSet(simulation::Node*
+#ifdef SOFA_DUMP_VISITOR_INFO
+        node
+#endif
+        , core::behavior::BaseConstraintSet* c)
+{
+#ifdef SOFA_DUMP_VISITOR_INFO
+    printComment("computeCollisionDetectionInConstraints");
+    ctime_t t0=begin(node, c);
+#endif
+    c->processGeometricalData();
+#ifdef SOFA_DUMP_VISITOR_INFO
+    end(node, c,t0);
+#endif
 }
 
 void CollisionVisitor::processCollisionPipeline(simulation::Node*

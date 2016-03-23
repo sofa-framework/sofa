@@ -1,7 +1,6 @@
 #include "console.h"
 #include <sofa/helper/Utils.h>
-#include <sofa/helper/Logger.h>
-
+#include <sofa/helper/logging/Messaging.h>
 #include <stdlib.h>             // For getenv()
 
 #ifndef WIN32
@@ -28,7 +27,7 @@ namespace helper {
             else if (colors == "auto")
                 s_colorsStatus = Console::ColorsAuto;
             else
-                Logger::getMainLogger().log(Logger::Warning, "Bad value for environnement variable SOFA_COLOR_TERMINAL (" + colors + ")");
+                msg_warning("Console::init()") << "Bad value for environnement variable SOFA_COLOR_TERMINAL (" << colors << ")";
         }
     }
 

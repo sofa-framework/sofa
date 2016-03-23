@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -47,10 +47,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using helper::fixed_array;
-using defaulttype::Vec;
-using cimg_library::CImg;
 
 /**
  * This class computes a mesh from a depth map image
@@ -85,13 +81,13 @@ public:
     typedef helper::ReadAccessor<Data< TextureTypes > > raTexture;
     Data< TextureTypes > texImage;
 
-    typedef vector<Vec<3,Real> > SeqPositions;
+    typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > position;
 
-    typedef fixed_array<Real,2> TexCoord;
-    typedef vector<TexCoord> SeqTexCoords;
+    typedef helper::fixed_array<Real,2> TexCoord;
+    typedef helper::vector<TexCoord> SeqTexCoords;
     typedef helper::ReadAccessor<Data< SeqTexCoords > > raTexCoords;
     typedef helper::WriteOnlyAccessor<Data< SeqTexCoords > > waTexCoords;
     Data< SeqTexCoords > texCoord;
@@ -169,15 +165,15 @@ protected:
         waTriangles tri(this->triangles);
 
         // get image at time t
-        const CImg<T>& img = in->getCImg(this->time);
+        const cimg_library::CImg<T>& img = in->getCImg(this->time);
         Real f = this->depthFactor.getValue();
 
 #ifndef SOFA_NO_OPENGL
         // update texture
         if(texture && !inTex->isEmpty())
         {
-            const CImg<T>& tex = inTex->getCImg(this->time);
-            CImg<unsigned char> plane=convertToUC( tex.get_resize(texture_res,texture_res,1,-100,1) );
+            const cimg_library::CImg<T>& tex = inTex->getCImg(this->time);
+            cimg_library::CImg<unsigned char> plane=convertToUC( tex.get_resize(texture_res,texture_res,1,-100,1) );
             cimg_forXY(plane,x,y)
             {
                 unsigned char *b=texture->getImage()->getPixels()+4*(y*texture_res+x);
@@ -193,7 +189,7 @@ protected:
         unsigned int count=0,p1,p2,p3;
         pos.resize(dimx*dimy);
         tc.resize(dimx*dimy);
-        vector<bool> isValid(dimx*dimy);
+        helper::vector<bool> isValid(dimx*dimy);
         Real cameraZ= 0.5; // camera position relative to image plane = offset for depth
         Real minT= minThreshold.getValue();
         for(unsigned int y=0; y<dimy; y++)
@@ -281,10 +277,10 @@ protected:
         glBegin(GL_TRIANGLES);
         for (unsigned int i=0; i<tri.size(); ++i)
         {
-            const Vec<3,Real>& a = pos[ tri[i][0] ];
-            const Vec<3,Real>& b = pos[ tri[i][1] ];
-            const Vec<3,Real>& c = pos[ tri[i][2] ];
-            Vec<3,Real> n = cross((c-a),(b-a));	n.normalize();
+            const defaulttype::Vec<3,Real>& a = pos[ tri[i][0] ];
+            const defaulttype::Vec<3,Real>& b = pos[ tri[i][1] ];
+            const defaulttype::Vec<3,Real>& c = pos[ tri[i][2] ];
+            defaulttype::Vec<3,Real> n = cross((c-a),(b-a));	n.normalize();
             glNormal3d(n[0],n[1],n[2]);
 
             glTexCoord2d(tc[tri[i][0]][0],tc[tri[i][0]][1]); glVertex3d(a[0],a[1],a[2]);

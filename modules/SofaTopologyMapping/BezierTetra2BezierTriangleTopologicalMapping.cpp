@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -105,7 +105,7 @@ void BezierTetra2BezierTriangleTopologicalMapping::init()
            TriangleSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
 
-            const sofa::helper::vector<Triangle> &triangleArray=fromModel->getTriangles();
+            const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle> &triangleArray=fromModel->getTriangles();
             const bool flipN = flipNormals.getValue();
 
 			// set the degree of Bezier triangle equal to that of Bezier tetra
@@ -126,11 +126,11 @@ void BezierTetra2BezierTriangleTopologicalMapping::init()
 			for (unsigned int i=0; i<triangleArray.size(); ++i)
 			{
 				/// find triangles on the border of the tetrahedral mesh 
-				TetrahedraAroundTriangle tat=fromModel->getTetrahedraAroundTriangle(i);
+                core::topology::BaseMeshTopology::TetrahedraAroundTriangle tat=fromModel->getTetrahedraAroundTriangle(i);
 				if (tat.size()==1)
 				{
 					// add macro triangle
-					Triangle t = triangleArray[i];
+                    core::topology::BaseMeshTopology::Triangle t = triangleArray[i];
 					if(flipN)
 					{
 						unsigned int tmp = t[2];
@@ -150,10 +150,10 @@ void BezierTetra2BezierTriangleTopologicalMapping::init()
 					// get the control points of the tetrahedron adjacent to that triangle
 					const BezierTriangleSetTopologyContainer::VecPointID  &indexArray=
 						from_btstc->getGlobalIndexArrayOfBezierPoints(tat[0]);
-					Tetrahedron tet=from_btstc->getTetrahedron(tat[0]);
+                    core::topology::BaseMeshTopology::Tetrahedron tet=from_btstc->getTetrahedron(tat[0]);
 					size_t k,j,l,equiv[3];
 					// get the index of that triangle in the tetrahedron
-					TrianglesInTetrahedron tit=from_btstc->getTrianglesInTetrahedron(tat[0]);
+                    core::topology::BaseMeshTopology::TrianglesInTetrahedron tit=from_btstc->getTrianglesInTetrahedron(tat[0]);
 					for (l=0;tit[l]!=i;++l);
 					// find the equivalence between the triangle index and tetrahedron index
 					for(j=0;j<3;++j) {

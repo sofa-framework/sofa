@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,9 +69,9 @@ void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::helper
 
     unsigned int hexaSize = m_DynContainer->getNumberOfHexahedra(); // Get the size before adding elements
     HexahedronSetTopologyModifier::addHexahedraProcess ( hexahedra );
-    helper::vector<BaseMeshTopology::HexaID>& iirg = *m_DynContainer->idxInRegularGrid.beginEdit();
+    helper::vector<core::topology::BaseMeshTopology::HexaID>& iirg = *m_DynContainer->idxInRegularGrid.beginEdit();
 
-    std::map< unsigned int, BaseMeshTopology::HexaID> &idrg2topo=*m_DynContainer->idInRegularGrid2IndexInTopo.beginEdit();
+    std::map< unsigned int, core::topology::BaseMeshTopology::HexaID> &idrg2topo=*m_DynContainer->idInRegularGrid2IndexInTopo.beginEdit();
     for ( unsigned int i = 0; i < hexahedra.size(); i++ )  // For each element
     {
         iirg[hexaSize + i] = indices[i];
@@ -95,11 +95,11 @@ void DynamicSparseGridTopologyModifier::removeHexahedraProcess( const sofa::help
 
 void DynamicSparseGridTopologyModifier::renumberAttributes( const sofa::helper::vector<unsigned int> &hexahedra )
 {
-    helper::vector<BaseMeshTopology::HexaID>& iirg = *m_DynContainer->idxInRegularGrid.beginEdit();
+    helper::vector<core::topology::BaseMeshTopology::HexaID>& iirg = *m_DynContainer->idxInRegularGrid.beginEdit();
 
     // Update the data
     unsigned int nbElt = iirg.size();
-    std::map< unsigned int, BaseMeshTopology::HexaID>& regularG2Topo = *m_DynContainer->idInRegularGrid2IndexInTopo.beginEdit();
+    std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>& regularG2Topo = *m_DynContainer->idInRegularGrid2IndexInTopo.beginEdit();
     for ( sofa::helper::vector<unsigned int>::const_iterator it = hexahedra.begin(); it != hexahedra.end(); ++it )
     {
         nbElt--;
@@ -111,7 +111,7 @@ void DynamicSparseGridTopologyModifier::renumberAttributes( const sofa::helper::
 
         // Renumbering the map.
         // We delete the reference of the delete elt.
-        std::map< unsigned int, BaseMeshTopology::HexaID>::iterator itMap = regularG2Topo.find( idHexaInRegularGrid);
+        std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>::iterator itMap = regularG2Topo.find( idHexaInRegularGrid);
         if( itMap != regularG2Topo.end())
         {
             regularG2Topo.erase( itMap);

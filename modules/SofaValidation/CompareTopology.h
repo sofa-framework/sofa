@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -90,7 +90,7 @@ protected :
 
 
 /// Create CompareTopology component in the graph each time needed
-class SOFA_VALIDATION_API CompareTopologyCreator: public Visitor
+class SOFA_VALIDATION_API CompareTopologyCreator: public simulation::Visitor
 {
 public:
     CompareTopologyCreator(const core::ExecParams* params);
@@ -112,7 +112,7 @@ protected:
 };
 
 
-class SOFA_VALIDATION_API CompareTopologyResult: public Visitor
+class SOFA_VALIDATION_API CompareTopologyResult: public simulation::Visitor
 {
 public:
     CompareTopologyResult(const core::ExecParams* params);

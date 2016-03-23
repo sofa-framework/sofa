@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -76,10 +76,6 @@ int QGLViewerGUIClass = GUIManager::RegisterGUI ( "qglviewer", &qt::RealGUI::Cre
 
 #ifdef SOFA_GUI_QTVIEWER
 int QtGUIClass = GUIManager::RegisterGUI ( "qt", &qt::RealGUI::CreateGUI, &qt::RealGUI::InitGUI, 2 );
-#endif
-
-#ifdef SOFA_GUI_EDITORVIEWER
-int EditorGUIClass = GUIManager::RegisterGUI ( "editor", &qt::RealGUI::CreateGUI, &qt::RealGUI::InitGUI, 4 );
 #endif
 
 } // namespace gui

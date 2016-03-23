@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -103,26 +103,26 @@ protected:
     Data<OutVecCoord> f_initPos;  // initial child coordinates in the world reference frame
 
     // data for linear blending
-    vector<vector<OutCoord> > f_localPos; /// initial child coordinates in local frame x weight :   dp = dMa_i (w_i \bar M_i f_localPos)
-    vector<vector<OutCoord> > f_rotatedPos;  /// rotated child coordinates :  dp = Omega_i x f_rotatedPos  :
+    helper:: vector<helper::vector<OutCoord> > f_localPos; /// initial child coordinates in local frame x weight :   dp = dMa_i (w_i \bar M_i f_localPos)
+    helper::vector<helper::vector<OutCoord> > f_rotatedPos;  /// rotated child coordinates :  dp = Omega_i x f_rotatedPos  :
     SparseJMatrixEigen   _J; /// jacobian matrix for compliant API
 
     // data for dual quat blending
 #ifdef SOFA_DEV
-    vector<vector< Mat44 > > f_T0; /// Real part of blended quaternion Jacobian : db = [T0,TE] dq
-    vector<vector< Mat44 > > f_TE; /// Dual part of blended quaternion Jacobian : db = [T0,TE] dq
-    vector<vector< Mat33 > > f_Pa; /// dp = Pa.Omega_i  : affine part
-    vector<vector< Mat33 > > f_Pt; /// dp = Pt.dt_i : translation part
+    helper::vector<helper::vector< Mat44 > > f_T0; /// Real part of blended quaternion Jacobian : db = [T0,TE] dq
+    helper::vector<helper::vector< Mat44 > > f_TE; /// Dual part of blended quaternion Jacobian : db = [T0,TE] dq
+    helper::vector<helper::vector< Mat33 > > f_Pa; /// dp = Pa.Omega_i  : affine part
+    helper::vector<helper::vector< Mat33 > > f_Pt; /// dp = Pt.dt_i : translation part
     Data<bool> useDQ;  // use dual quat blending instead of linear blending
 #endif
 
-    Data< vector<unsigned int> > nbRef; // Number of primitives influencing each point.
-    Data< vector<sofa::helper::SVector<unsigned int> > > f_index; // indices of primitives influencing each point.
-    Data< vector<sofa::helper::SVector<InReal> > > weight;
+    Data< helper::vector<unsigned int> > nbRef; // Number of primitives influencing each point.
+    Data< helper::vector<sofa::helper::SVector<unsigned int> > > f_index; // indices of primitives influencing each point.
+    Data< helper::vector<sofa::helper::SVector<InReal> > > weight;
     void updateWeights();
 
 public:
-    void setWeights(const vector<sofa::helper::SVector<InReal> >& weights, const vector<sofa::helper::SVector<unsigned int> >& indices, const vector<unsigned int>& nbrefs);
+    void setWeights(const helper::vector<sofa::helper::SVector<InReal> >& weights, const helper::vector<sofa::helper::SVector<unsigned int> >& indices, const helper::vector<unsigned int>& nbrefs);
 
 public:
     Data<unsigned int> showFromIndex;

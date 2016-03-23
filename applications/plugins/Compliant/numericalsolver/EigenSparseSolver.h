@@ -24,6 +24,8 @@ namespace linearsolver {
 /// schur = 0
 /// KKT system solve
 ///
+/// @author Matthieu Nesme
+///
 template<class LinearSolver, bool symmetric=false>
 class EigenSparseSolver : public KKTSolver {
   public:
@@ -43,6 +45,14 @@ class EigenSparseSolver : public KKTSolver {
     EigenSparseSolver();
     ~EigenSparseSolver();
 
+
+    Data<bool> d_schur;
+    Data<SReal> d_regularization;
+    /// if the sparsity pattern remains similar from one step to another,
+    /// the factorization can be faster
+    Data<bool> d_trackSparsityPattern;
+
+
   protected:
 
     // response matrix
@@ -53,12 +63,8 @@ class EigenSparseSolver : public KKTSolver {
     void solve_schur(vec& x, const AssembledSystem& system, const vec& rhs) const;
     void solve_kkt(vec& x, const AssembledSystem& system, const vec& rhs) const;
 
-    Data<bool> d_schur;
-    Data<SReal> d_regularization;
-
     struct pimpl_type;
     scoped::ptr<pimpl_type> pimpl;
-
 
 };
 

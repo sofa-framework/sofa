@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -240,14 +240,14 @@ public:
     /// Invert the system, this method is optional because it's call when solveSystem() is called for the first time
     virtual void invertSystem();
 
-    void prepareVisitor(Visitor* v)
+    void prepareVisitor(simulation::Visitor* v)
     {
         v->setTags(this->getTags());
     }
 
     void prepareVisitor(simulation::BaseMechanicalVisitor* v)
     {
-        prepareVisitor((Visitor*)v);
+        prepareVisitor((simulation::Visitor*)v);
     }
 
     template<class T>

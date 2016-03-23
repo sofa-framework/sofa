@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -205,7 +205,7 @@ void VaccumSphereForceField<DataTypes>::draw(const core::visual::VisualParams* v
     const Real r = sphereRadius.getValue();
 
 	glEnable(GL_LIGHTING);
-	vparams->drawTool()->drawSphere(center, r*0.99);
+    vparams->drawTool()->drawSphere(center, (float)(r*0.99));
 	glDisable(GL_LIGHTING);
 
 #endif /* SOFA_NO_OPENGL */

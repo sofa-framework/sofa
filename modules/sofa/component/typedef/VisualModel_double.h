@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -39,20 +39,9 @@
 
 
 
-#include <SofaOpenglVisual/OglTetrahedralModel.h>
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for OglTetrahedralModel
-typedef sofa::component::visualmodel::OglTetrahedralModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > OglTetrahedralModel3d;
 
 
 
 
-
-#ifndef SOFA_FLOAT
-typedef OglTetrahedralModel3d OglTetrahedralModel3;
-#endif
 
 #endif

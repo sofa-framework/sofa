@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,6 +33,8 @@ using namespace sofa::component::controller;
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
 
+#include <sofa/helper/logging/Messaging.h>
+
 // These functions are empty ones;
 // they are meant to be overriden by real python controller scripts
 
@@ -52,7 +54,7 @@ extern "C" PyObject * PythonScriptController_onLoaded(PyObject * /*self*/, PyObj
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)pyNode)->object.get());
-    std::cerr << obj->m_classname.getValueString() << ".onLoaded not implemented in " << obj->name.getValueString() << std::endl;
+    msg_error("PythonScriptController")<< obj->m_classname.getValueString() << ".onLoaded not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     Py_RETURN_NONE;
@@ -70,7 +72,7 @@ extern "C" PyObject * PythonScriptController_createGraph(PyObject * /*self*/, Py
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)pyNode)->object.get());
-    std::cerr << obj->m_classname.getValueString() << ".createGraph not implemented in " << obj->name.getValueString() << std::endl;
+    msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".createGraph not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     Py_RETURN_NONE;
@@ -88,7 +90,7 @@ extern "C" PyObject * PythonScriptController_initGraph(PyObject * /*self*/, PyOb
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)pyNode)->object.get());
-    std::cerr << obj->m_classname.getValueString() << ".initGraph not implemented in " << obj->name.getValueString() << std::endl;
+    msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".initGraph not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     Py_RETURN_NONE;
@@ -106,7 +108,7 @@ extern "C" PyObject * PythonScriptController_bwdInitGraph(PyObject * /*self*/, P
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)pyNode)->object.get());
-    std::cerr << obj->m_classname.getValueString() << ".bwdInitGraph not implemented in " << obj->name.getValueString() << std::endl;
+    msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".bwdInitGraph not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     Py_RETURN_NONE;
@@ -127,7 +129,7 @@ extern "C" PyObject * PythonScriptController_onBeginAnimationStep(PyObject * /*s
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
-    std::cerr << obj->m_classname.getValueString() << ".onBeginAnimationStep not implemented in " << obj->name.getValueString() << std::endl;
+    msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".onBeginAnimationStep not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     Py_RETURN_NONE;
@@ -144,7 +146,7 @@ extern "C" PyObject * PythonScriptController_onEndAnimationStep(PyObject * /*sel
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
-    std::cerr << obj->m_classname.getValueString() << ".onEndAnimationStep not implemented in " << obj->name.getValueString() << std::endl;
+    msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".onEndAnimationStep not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     Py_RETURN_NONE;
@@ -155,7 +157,7 @@ extern "C" PyObject * PythonScriptController_storeResetState(PyObject * /*self*/
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
-    std::cerr << obj->m_classname.getValueString() << ".storeresetState not implemented in " << obj->name.getValueString() << std::endl;
+    msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".storeresetState not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     Py_RETURN_NONE;
@@ -166,7 +168,7 @@ extern "C" PyObject * PythonScriptController_reset(PyObject * /*self*/, PyObject
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
-    std::cerr << obj->m_classname.getValueString() << ".reset not implemented in " << obj->name.getValueString() << std::endl;
+    msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".reset not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     Py_RETURN_NONE;
@@ -177,7 +179,7 @@ extern "C" PyObject * PythonScriptController_cleanup(PyObject * /*self*/, PyObje
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
-    std::cerr << obj->m_classname.getValueString() << ".cleanup not implemented in " << obj->name.getValueString() << std::endl;
+    msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".cleanup not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     Py_RETURN_NONE;
@@ -196,7 +198,7 @@ extern "C" PyObject * PythonScriptController_onGUIEvent(PyObject * /*self*/, PyO
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
-    std::cerr << obj->m_classname.getValueString() << ".onGUIEvent not implemented in " << obj->name.getValueString() << std::endl;
+    msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".onGUIEvent not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     Py_RETURN_NONE;
@@ -213,7 +215,7 @@ extern "C" PyObject * PythonScriptController_onKeyPressed(PyObject * /*self*/, P
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
-    std::cerr << obj->m_classname.getValueString() << ".onKeyPressed not implemented in " << obj->name.getValueString() << std::endl;
+    msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".onKeyPressed not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     Py_RETURN_FALSE;
@@ -230,7 +232,7 @@ extern "C" PyObject * PythonScriptController_onKeyReleased(PyObject * /*self*/, 
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
-    std::cerr << obj->m_classname.getValueString() << ".onKeyReleased not implemented in " << obj->name.getValueString() << std::endl;
+    msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".onKeyReleased not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     Py_RETURN_FALSE;
@@ -248,7 +250,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonLeft(PyObject * /*self
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
-    std::cerr << obj->m_classname.getValueString() << ".onMouseButtonLeft not implemented in " << obj->name.getValueString() << std::endl;
+    msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".onMouseButtonLeft not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     Py_RETURN_NONE;
@@ -266,7 +268,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonMiddle(PyObject * /*se
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
-    std::cerr << obj->m_classname.getValueString() << ".onMouseButtonMiddle not implemented in " << obj->name.getValueString() << std::endl;
+    msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".onMouseButtonMiddle not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     Py_RETURN_NONE;
@@ -284,7 +286,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonRight(PyObject * /*sel
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
-    std::cerr << obj->m_classname.getValueString() << ".onMouseButtonRight not implemented in " << obj->name.getValueString() << std::endl;
+    msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".onMouseButtonRight not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     Py_RETURN_NONE;
@@ -301,7 +303,7 @@ extern "C" PyObject * PythonScriptController_onMouseWheel(PyObject * /*self*/, P
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
-    std::cerr << obj->m_classname.getValueString() << ".onMouseWheel not implemented in " << obj->name.getValueString() << std::endl;
+    msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".onMouseWheel not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     Py_RETURN_NONE;
@@ -328,7 +330,7 @@ extern "C" PyObject * PythonScriptController_onScriptEvent(PyObject * /*self*/, 
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
-    std::cerr << obj->m_classname.getValueString() << ".onScriptEvent not implemented in " << obj->name.getValueString() << std::endl;
+    msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".onScriptEvent not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     Py_RETURN_NONE;
@@ -339,7 +341,7 @@ extern "C" PyObject * PythonScriptController_draw(PyObject * /*self*/, PyObject 
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
-    std::cerr << obj->m_classname.getValueString() << ".draw not implemented in " << obj->name.getValueString() << std::endl;
+    msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".draw not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     Py_RETURN_NONE;

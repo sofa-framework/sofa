@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -54,8 +54,6 @@ namespace component
 namespace forcefield
 {
 
-using helper::vector;
-using namespace sofa::defaulttype;
 
 template<class DataTypes>
 class ClosestPointRegistrationForceFieldInternalData
@@ -119,7 +117,7 @@ protected :
     void updateClosestPoints();
 
     VecCoord closestPos;
-    vector<unsigned int>  cnt;
+    helper::vector<unsigned int>  cnt;
     SReal m_potentialEnergy;
 
     Real min,max;
@@ -138,21 +136,21 @@ protected :
     // source mesh data
     Data< helper::vector< tri > > sourceTriangles;
     Data< VecCoord > sourceNormals;
-    vector< distanceSet >  closestSource; // CacheSize-closest target points from source
-    vector< distanceToPoint > cacheThresh_max;	vector< distanceToPoint > cacheThresh_min; VecCoord previousX; // storage for cache acceleration
+    helper::vector< distanceSet >  closestSource; // CacheSize-closest target points from source
+    helper::vector< distanceToPoint > cacheThresh_max;	helper::vector< distanceToPoint > cacheThresh_min; VecCoord previousX; // storage for cache acceleration
     KDT sourceKdTree;
-    vector< bool > sourceBorder;
-    vector< bool > sourceIgnored;  // flag ignored vertices
-    vector< bool > targetIgnored;  // flag ignored vertices
+    helper::vector< bool > sourceBorder;
+    helper::vector< bool > sourceIgnored;  // flag ignored vertices
+    helper::vector< bool > targetIgnored;  // flag ignored vertices
     void initSource(); // built k-d tree and identify border vertices
 
     // target mesh data
     Data< VecCoord > targetPositions;
     Data< VecCoord > targetNormals;
     Data< helper::vector< tri > > targetTriangles;
-    vector< distanceSet >  closestTarget; // CacheSize-closest source points from target
+    helper::vector< distanceSet >  closestTarget; // CacheSize-closest source points from target
     KDT targetKdTree;
-    vector< bool > targetBorder;
+    helper::vector< bool > targetBorder;
     void initTarget();  // built k-d tree and identify border vertices
 
     Data<float> showArrowSize;
@@ -160,7 +158,7 @@ protected :
     Data<bool> drawColorMap;
     Data<bool> theCloserTheStiffer;
 
-    void detectBorder(vector<bool> &border,const helper::vector< tri > &triangles);
+    void detectBorder(helper::vector<bool> &border,const helper::vector< tri > &triangles);
 };
 
 

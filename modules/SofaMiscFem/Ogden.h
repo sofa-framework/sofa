@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,9 +32,9 @@
 #include <SofaMiscFem/HyperelasticMaterial.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/MatSym.h>
 #include <string>
 
-//#include <Eigen/Core>
 #include <Eigen/QR>
 #include <Eigen/Eigenvalues>
 namespace sofa
@@ -45,9 +45,6 @@ namespace component
 
 namespace fem
 {
-using namespace std;
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
 
 /** a Class that describe a generic hyperelastic material : exemple of Boyce and Arruda
 The material is described based on continuum mechanics and the description is independent
@@ -63,10 +60,10 @@ class Ogden: public HyperelasticMaterial<DataTypes>
 {
 
     typedef typename DataTypes::Coord::value_type Real;
-    typedef Mat<3,3,Real> Matrix3;
-    typedef Mat<6,6,Real> Matrix6;
-    typedef MatSym<3,Real> MatrixSym;
-    typedef Vec<3,Real> Vect;
+    typedef defaulttype::Mat<3,3,Real> Matrix3;
+    typedef defaulttype::Mat<6,6,Real> Matrix6;
+    typedef defaulttype::MatSym<3,Real> MatrixSym;
+    typedef defaulttype::Vec<3,Real> Vect;
     typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::MatrixType EigenMatrix;
     typedef typename Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real,3,3> >::RealVectorType CoordEigen;
 
@@ -111,7 +108,7 @@ class Ogden: public HyperelasticMaterial<DataTypes>
         Calpha_1.Mat2Sym(Ca,Calpha_1);
         MatrixSym inversematrix;
         invertMatrix(inversematrix,sinfo->deformationTensor);
-        SPKTensorGeneral=mu1/alpha1*pow(sinfo->J,-alpha1/(Real)3.0)*(-(Real)1.0/(Real)3.0*inversematrix*trCalpha+Calpha_1)+k0*log(sinfo->J)*inversematrix;
+        SPKTensorGeneral=(-(Real)1.0/(Real)3.0*trCalpha*inversematrix+Calpha_1)*(mu1/alpha1*pow(sinfo->J,-alpha1/(Real)3.0))+inversematrix*k0*log(sinfo->J);
     }
 
 
@@ -151,8 +148,10 @@ class Ogden: public HyperelasticMaterial<DataTypes>
         Firstmatrix.Mat2Sym(inversematrix.SymMatMultiply(inputTensor.SymSymMultiply(inversematrix)),Firstmatrix);
         MatrixSym Secondmatrix;
         Secondmatrix.Mat2Sym(Calpha_2.SymMatMultiply(inputTensor.SymSymMultiply(Calpha_2)),Secondmatrix);
-        outputTensor=mu1/alpha1*pow(sinfo->J,-alpha1/(Real)3.0)*(_trHC*(-alpha1/(Real)6.0)*(-(Real)1.0/(Real)3.0*inversematrix*trCalpha+Calpha_1)+(Real)1.0/(Real)3.0*Firstmatrix*trCalpha-(Real)1.0/(Real)3.0*inversematrix*_trHCalpha_1*alpha1/(Real)2.0
-                +(alpha1/(Real)2.0-(Real)1)*Secondmatrix)+k0/(Real)2.0*_trHC*inversematrix-(Real)(k0*log(sinfo->J))*Firstmatrix;
+        outputTensor =
+                (_trHC*(-alpha1/(Real)6.0)*(-(Real)1.0/(Real)3.0*inversematrix*trCalpha+Calpha_1)+(Real)1.0/(Real)3.0*Firstmatrix*trCalpha-(Real)1.0/(Real)3.0*inversematrix*_trHCalpha_1*alpha1/(Real)2.0
+                +(alpha1/(Real)2.0-(Real)1)*Secondmatrix) * (mu1/alpha1*pow(sinfo->J,-alpha1/(Real)3.0))
+                +k0/(Real)2.0*_trHC*inversematrix-(Real)(k0*log(sinfo->J))*Firstmatrix;
 
     }
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,7 +36,6 @@
 
 namespace sofa
 {
-using helper::vector;
 
 namespace component
 {
@@ -44,15 +43,8 @@ namespace component
 namespace mapping
 {
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
-template<class InDataTypes, class OutDataTypes>
-class DistanceMappingInternalData
-{
-public:
-};
 
-
-/** Maps point positions to distances, in meters.
+/** Maps point positions to distances (in distance unit).
   Type TOut corresponds to a scalar value.
   The pairs are given in an EdgeSetTopologyContainer in the same node.
   If the rest lengths are not defined, they are set using the initial values.
@@ -100,7 +92,7 @@ public:
 
 
     Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
-    Data< vector< Real > > f_restLengths;		///< rest length of each link
+    Data< helper::vector< Real > > f_restLengths;		///< rest length of each link
     Data< Real >           d_showObjectScale;   ///< drawing size
     Data< defaulttype::Vec4f > d_color;         ///< drawing color
     Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
@@ -120,7 +112,7 @@ public:
     virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
-    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
     virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce );
     virtual const defaulttype::BaseMatrix* getK();
@@ -135,10 +127,10 @@ protected:
 
     topology::EdgeSetTopologyContainer* edgeContainer;  ///< where the edges are defined
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
-    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen K;                               ///< Assembled geometric stiffness matrix
-    vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
-    vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
+    helper::vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
+    helper::vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
 
     /// r=b-a only for position (eventual rotation, affine transform... remains null)
     void computeCoordPositionDifference( Direction& r, const InCoord& a, const InCoord& b );
@@ -146,7 +138,18 @@ protected:
 
 
 
+/** Maps point positions from serveral mstates to distances (in distance unit).
+  Type TOut corresponds to a scalar value.
+  The pairs are given in an EdgeSetTopologyContainer in the same node.
+  The points index are given as pair(mstate_index,dof_index) in the Data indexPairs.
+  If the rest lengths are not defined, they are set using the initial values.
+  If computeDistance is set to true, the rest lengths are set to 0.
 
+    In: parent point positions
+    Out: distance between point pairs, minus a rest distance.
+
+@author Matthieu Nesme
+  */
 template <class TIn, class TOut>
 class DistanceMultiMapping : public core::MultiMapping<TIn, TOut>
 {
@@ -183,10 +186,10 @@ public:
 
 
     Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
-    Data< vector< Real > > f_restLengths;		///< rest length of each link
+    Data< helper::vector< Real > > f_restLengths;		///< rest length of each link
     Data< Real >           d_showObjectScale;   ///< drawing size
     Data< defaulttype::Vec4f > d_color;         ///< drawing color
-    Data< vector<defaulttype::Vec2i> > d_indexPairs;  ///< for each child, its parent and index in parent
+    Data< helper::vector<defaulttype::Vec2i> > d_indexPairs;  ///< for each child, its parent and index in parent
     Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     // Append particle of given index within the given model to the subset.
@@ -265,7 +268,7 @@ public:
     virtual void applyJT( const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ ) {}
     virtual void applyDJT(const core::MechanicalParams*, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce);
 
-    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
     virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce );
     virtual const defaulttype::BaseMatrix* getK();
@@ -279,9 +282,9 @@ protected:
     virtual ~DistanceMultiMapping();
 
     topology::EdgeSetTopologyContainer* edgeContainer;  ///< where the edges are defined
-    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
-    vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
-    vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
+    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    helper::vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
+    helper::vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
 
     SparseKMatrixEigen K;
 

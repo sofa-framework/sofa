@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -424,7 +424,7 @@ void TriangleSetTopologyContainer::reOrientateTriangle(TriangleID id)
 }
 
 
-const sofa::helper::vector<Triangle> & TriangleSetTopologyContainer::getTriangleArray()
+const sofa::helper::vector<TriangleSetTopologyContainer::Triangle> & TriangleSetTopologyContainer::getTriangleArray()
 {
     if(!hasTriangles() && getNbPoints()>0)
     {
@@ -438,7 +438,7 @@ const sofa::helper::vector<Triangle> & TriangleSetTopologyContainer::getTriangle
 }
 
 
-const Triangle TriangleSetTopologyContainer::getTriangle (TriangleID i)
+const TriangleSetTopologyContainer::Triangle TriangleSetTopologyContainer::getTriangle (TriangleID i)
 {
     if(!hasTriangles())
         createTriangleSetArray();
@@ -519,7 +519,7 @@ const sofa::helper::vector< sofa::helper::vector<unsigned int> > &TriangleSetTop
     return m_trianglesAroundEdge;
 }
 
-const sofa::helper::vector<EdgesInTriangle> &TriangleSetTopologyContainer::getEdgesInTriangleArray()
+const sofa::helper::vector<TriangleSetTopologyContainer::EdgesInTriangle> &TriangleSetTopologyContainer::getEdgesInTriangleArray()
 {
     if(m_edgesInTriangle.empty())
         createEdgesInTriangleArray();
@@ -527,7 +527,7 @@ const sofa::helper::vector<EdgesInTriangle> &TriangleSetTopologyContainer::getEd
     return m_edgesInTriangle;
 }
 
-const TrianglesAroundVertex& TriangleSetTopologyContainer::getTrianglesAroundVertex(PointID i)
+const TriangleSetTopologyContainer::TrianglesAroundVertex& TriangleSetTopologyContainer::getTrianglesAroundVertex(PointID i)
 {
     if(!hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
     {
@@ -547,7 +547,7 @@ const TrianglesAroundVertex& TriangleSetTopologyContainer::getTrianglesAroundVer
     return m_trianglesAroundVertex[i];
 }
 
-const TrianglesAroundEdge& TriangleSetTopologyContainer::getTrianglesAroundEdge(EdgeID i)
+const TriangleSetTopologyContainer::TrianglesAroundEdge& TriangleSetTopologyContainer::getTrianglesAroundEdge(EdgeID i)
 {
     if(!hasTrianglesAroundEdge())	// this method should only be called when the shell array exists
     {
@@ -567,7 +567,7 @@ const TrianglesAroundEdge& TriangleSetTopologyContainer::getTrianglesAroundEdge(
     return m_trianglesAroundEdge[i];
 }
 
-const EdgesInTriangle &TriangleSetTopologyContainer::getEdgesInTriangle(const unsigned int i)
+const TriangleSetTopologyContainer::EdgesInTriangle &TriangleSetTopologyContainer::getEdgesInTriangle(const unsigned int i)
 {
     if(m_edgesInTriangle.empty())
         createEdgesInTriangleArray();
@@ -608,7 +608,7 @@ int TriangleSetTopologyContainer::getEdgeIndexInTriangle(const EdgesInTriangle &
 }
 
 
-const sofa::helper::vector <TriangleID>& TriangleSetTopologyContainer::getTrianglesOnBorder()
+const sofa::helper::vector <TriangleSetTopologyContainer::TriangleID>& TriangleSetTopologyContainer::getTrianglesOnBorder()
 {
     if (!hasBorderElementLists()) // this method should only be called when border lists exists
     {
@@ -622,7 +622,7 @@ const sofa::helper::vector <TriangleID>& TriangleSetTopologyContainer::getTriang
 }
 
 
-const sofa::helper::vector <EdgeID>& TriangleSetTopologyContainer::getEdgesOnBorder()
+const sofa::helper::vector <TriangleSetTopologyContainer::EdgeID>& TriangleSetTopologyContainer::getEdgesOnBorder()
 {
     if (!hasBorderElementLists()) // this method should only be called when border lists exists
     {
@@ -636,7 +636,7 @@ const sofa::helper::vector <EdgeID>& TriangleSetTopologyContainer::getEdgesOnBor
 }
 
 
-const sofa::helper::vector <PointID>& TriangleSetTopologyContainer::getPointsOnBorder()
+const sofa::helper::vector <TriangleSetTopologyContainer::PointID>& TriangleSetTopologyContainer::getPointsOnBorder()
 {
     if (!hasBorderElementLists()) // this method should only be called when border lists exists
     {
@@ -839,7 +839,7 @@ unsigned int TriangleSetTopologyContainer::getNumberOfConnectedComponent()
 }
 
 
-const VecTriangleID TriangleSetTopologyContainer::getConnectedElement(TriangleID elem)
+const TriangleSetTopologyContainer::VecTriangleID TriangleSetTopologyContainer::getConnectedElement(TriangleID elem)
 {
     if(!hasTrianglesAroundVertex())	// this method should only be called when the shell array exists
     {
@@ -903,7 +903,7 @@ const VecTriangleID TriangleSetTopologyContainer::getConnectedElement(TriangleID
 }
 
 
-const VecTriangleID TriangleSetTopologyContainer::getElementAroundElement(TriangleID elem)
+const TriangleSetTopologyContainer::VecTriangleID TriangleSetTopologyContainer::getElementAroundElement(TriangleID elem)
 {
     VecTriangleID elems;
 
@@ -944,7 +944,7 @@ const VecTriangleID TriangleSetTopologyContainer::getElementAroundElement(Triang
 }
 
 
-const VecTriangleID TriangleSetTopologyContainer::getElementAroundElements(VecTriangleID elems)
+const TriangleSetTopologyContainer::VecTriangleID TriangleSetTopologyContainer::getElementAroundElements(VecTriangleID elems)
 {
     VecTriangleID elemAll;
     VecTriangleID elemTmp;
