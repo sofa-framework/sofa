@@ -173,10 +173,9 @@ void TTriangleModel<DataTypes>::updateFromTopology()
         }
         if(triangulateQuads.getValue())
         {
-            core::topology::BaseMeshTopology::Quad idx = _topology->getQuad(i);
-            if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
+            for (unsigned i=0; i<nquads; i++)
             {
-                topology::BaseMeshTopology::Quad idx = _topology->getQuad(i);
+                core::topology::BaseMeshTopology::Quad idx = _topology->getQuad(i);
                 if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
                 {
                     serr << "ERROR: Out of range index in quad "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" "<<idx[3]<<" ( total points="<<npoints<<")"<<sendl;
