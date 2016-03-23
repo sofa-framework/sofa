@@ -66,12 +66,12 @@ public:
     typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
 
     typedef defaulttype::Vec<2, unsigned> IndexPair;
-    typedef vector< IndexPair > PairVector;
+    typedef sofa::helper::vector< IndexPair > PairVector;
     typedef sofa::helper::vector<core::collision::DetectionOutput> DetectionOutputVector;
 
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
-    vector<bool> mask; ///< flag activated constraints (if empty -default- all constraints are activated)
+    helper::vector<bool> mask; ///< flag activated constraints (if empty -default- all constraints are activated)
 
     ContactMultiMapping()
         : contacts(NULL), pairs(NULL)
@@ -104,7 +104,7 @@ public:
 
 
     virtual void apply(typename self::out_pos_type& out,
-        const vector<typename self::in_pos_type>& in) {
+        const helper::vector<typename self::in_pos_type>& in) {
 		
 		// local frames have been computed in assemble
         assert( contacts->size() == out.size() || std::count( mask.begin(),mask.end(),true)==out.size() );
@@ -135,7 +135,7 @@ protected:
     PairVector* pairs;
 
 
-	virtual void assemble( const vector<typename self::in_pos_type>& in ) {
+	virtual void assemble( const helper::vector<typename self::in_pos_type>& in ) {
 
 
         Eigen::Matrix<real, 3, self::Nout> local_frame;
