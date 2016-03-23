@@ -5,6 +5,14 @@ namespace sofa{namespace component{namespace collision{
 //template<>
 bool BaseIntTool::testIntersection(Cube &cube1, Cube &cube2,SReal alarmDist)
 {
+    if(cube1 == cube2) 
+    {
+        if(cube1.getConeAngle()<M_PI/2)
+            return false;
+        else
+            return true;
+    }
+
     const defaulttype::Vector3& minVect1 = cube1.minVect();
     const defaulttype::Vector3& minVect2 = cube2.minVect();
     const defaulttype::Vector3& maxVect1 = cube1.maxVect();
